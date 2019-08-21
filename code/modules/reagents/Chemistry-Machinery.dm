@@ -20,25 +20,27 @@
 	var/amount = 30
 	var/accept_glass = FALSE //At FALSE ONLY accepts glass containers. Kinda misleading varname.
 	var/atom/beaker = null
-	var/list/dispensable_reagents = list("lithium","carbon","ammonia","acetone",
-	"sodium","aluminum","silicon","phosphorus","sulfur","hclacid","potassium","iron",
-	"copper","mercury","radium","water","ethanol","sugar","sacid","tungsten", "charcoal")
+	var/list/dispensable_reagents = list()
 	var/stat = 0
 	not_movable = FALSE
 	not_disassemblable = TRUE
+	flammable = TRUE
 
-/obj/structure/chemical_dispenser/New()
-	..()
-	dispensable_reagents = sortList(dispensable_reagents)
+/obj/structure/chemical_dispenser/full
+	dispensable_reagents = list(list("lithium", 100), list("carbon", 100), list("ammonia", 100), list("acetone", 100), list("sodium", 100), list("aluminum", 100), list("silicon", 100), list("phosphorus", 100), list("sulfur", 100), list("hclacid", 100), list("potassium", 100), list("iron", 100), list("copper", 100), list("mercury", 100), list("radium", 100), list("water", 100), list("ethanol", 100), list("sugar", 100), list("sacid", 100), list("tungsten", 100), list("charcoal", 100))
+
+	New()
+		..()
+		dispensable_reagents = sortList(dispensable_reagents)
 
 /obj/structure/chemical_dispenser/ex_act(severity)
 	switch(severity)
 		if (1.0)
-			del(src)
+			qdel(src)
 			return
 		if (2.0)
 			if (prob(50))
-				del(src)
+				qdel(src)
 				return
 
 
@@ -79,10 +81,10 @@
 		data["beakerMaxVolume"] = null
 
 	var chemicals[0]
-	for (var/re in dispensable_reagents)
-		var/datum/reagent/temp = chemical_reagents_list[re]
+	for (var/list/re in dispensable_reagents)
+		var/datum/reagent/temp = chemical_reagents_list[re[1]]
 		if (temp)
-			chemicals.Add(list(list("title" = temp.name, "id" = temp.id, "commands" = list("dispense" = temp.id)))) // list in a list because Byond merges the first list...
+			chemicals.Add(list(list("title" = "[temp.name] ([re[2]])", "id" = temp.id, "commands" = list("dispense" = temp.id)))) // list in a list because Byond merges the first list...
 	data["chemicals"] = chemicals
 
 	// update the ui if it exists, returns null if no ui is passed/found
@@ -108,14 +110,15 @@
 			amount = 120
 
 	if (href_list["dispense"])
-		if (dispensable_reagents.Find(href_list["dispense"]) && beaker != null && beaker.is_open_container())
-			var/obj/item/weapon/reagent_containers/B = beaker
-			var/datum/reagents/R = B.reagents
-			var/space = R.maximum_volume - R.total_volume
-
-			//uses TRUE energy per 10 units.
-			var/added_amount = min(amount, space)
-			R.add_reagent(href_list["dispense"], added_amount)
+		if (beaker != null && beaker.is_open_container())
+			for (var/list/l in dispensable_reagents)
+				if (l[1] == href_list["dispense"] && l[2] > 0)
+					var/obj/item/weapon/reagent_containers/B = beaker
+					var/datum/reagents/R = B.reagents
+					var/space = R.maximum_volume - R.total_volume
+					var/added_amount = min(min(amount, space),l[2])
+					l[2] -= added_amount
+					R.add_reagent(href_list["dispense"], added_amount)
 	if (href_list["ejectBeaker"])
 		if (beaker)
 			var/obj/item/weapon/reagent_containers/B = beaker
@@ -123,12 +126,29 @@
 			beaker = null
 
 	add_fingerprint(usr)
+	for (var/list/r in dispensable_reagents)
+		if (r[2] <= 0)
+			dispensable_reagents -= r
 	return TRUE // update UIs attached to this object
 
 /obj/structure/chemical_dispenser/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/user as mob)
 	if (beaker)
-		user << "A beaker is already placed in the dispenser."
-		return
+		if (B.reagents.reagent_list.len)
+			user << "You transfer the reagents to the dispenser."
+			for(var/datum/reagent/R in B.reagents.reagent_list)
+				if (dispensable_reagents.len)
+					for (var/list/r in dispensable_reagents)
+						if (R.id == r[1])
+							r[2] += B.reagents.get_reagent_amount(R.id)
+						else
+							dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
+				else
+					dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
+			B.reagents.clear_reagents()
+			return
+		else
+			user << "A beaker is already placed in the dispenser."
+			return
 	if (istype(B, /obj/item/weapon/reagent_containers/glass) || istype(B, /obj/item/weapon/reagent_containers/food))
 		if (!accept_glass && istype(B,/obj/item/weapon/reagent_containers/food))
 			user << "<span class='notice'>You should only use beakers to manage chemicals.</span>"
@@ -141,6 +161,8 @@
 
 /obj/structure/chemical_dispenser/attack_hand(mob/user as mob)
 	ui_interact(user)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /obj/structure/lab_distillery
 	name = "laboratory distiller"
