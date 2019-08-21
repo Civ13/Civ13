@@ -22,9 +22,10 @@
 	item_state = "stone_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 18.0
+	w_class = 4.0
 	flammable = FALSE
 	equiptimer = 32
+	weight = 80
 
 /obj/item/weapon/sledgehammer/lead/sledgehammer
 	name = "Lead Sledgehammer"
@@ -34,9 +35,10 @@
 	item_state = "lead_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 24.0
+	w_class = 4.0
 	flammable = FALSE
 	equiptimer = 35
+	weight = 80
 
 /obj/item/weapon/sledgehammer/bronze/sledgehammer
 	name = "Bronze Sledgehammer"
@@ -46,9 +48,10 @@
 	item_state = "bronze_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 17.0
+	w_class = 4.0
 	flammable = FALSE
 	equiptimer = 32
+	weight = 80
 
 /obj/item/weapon/sledgehammer/iron/sledgehammer
 	name = "Iron Sledgehammer"
@@ -58,9 +61,10 @@
 	item_state = "Iron_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 17.0
+	w_class = 4.0
 	flammable = FALSE
 	equiptimer = 32
+	weight = 80
 
 /obj/item/weapon/sledgehammer/steel/sledgehammer
 	name = "Steel Sledgehammer"
@@ -70,9 +74,10 @@
 	item_state = "steel_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 24.0
+	w_class = 4.0
 	flammable = FALSE
 	equiptimer = 35
+	weight = 80
 
 /obj/item/weapon/sledgehammer/uranium/sledgehammer
 	name = "Uranium Sledgehammer"
@@ -82,6 +87,7 @@
 	item_state = "uranium_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 14.0
+	w_class = 4.0
 	flammable = FALSE
 	equiptimer = 30
+	weight = 80
