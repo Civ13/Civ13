@@ -356,7 +356,7 @@
 			new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("wood jail bars", /obj/covers/jail/woodjail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("wood jail door", /obj/structure/simple_door/key_door/anyone/jail/wood, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("wood jail door", /obj/structure/simple_door/key_door/custom/jail/woodjail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	else
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
@@ -1196,7 +1196,7 @@
 /material/steelrods/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	if (current_res[1] >= 95 && map.ordinal_age >= 3)
 		recipes += new/datum/stack_recipe("jail bars", /obj/covers/jail/steeljail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/anyone/jail/steel, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/custom/jail/steeljail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/bearpelt/brown/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
