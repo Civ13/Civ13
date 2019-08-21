@@ -709,11 +709,11 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
 	name = "Makeshift AK-47"
-	desc = "A crude replication of the AK-47, chambered in 7.62x39mm."
+	desc = "A crude replication of the AK-47, chambered in 7.5mm."
 	icon_state = "makeshift ak"
 	item_state = "makeshiftak"
 	base_icon = "makeshiftak"
-	caliber = "a762x39"
+	caliber = "intermediumrifle"
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 3.47
