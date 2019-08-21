@@ -1162,6 +1162,8 @@
 		recipes += new/datum/stack_recipe("steam engine",/obj/structure/engine/external/steam, 15, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("wood stove",/obj/structure/oven/woodstove, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("IV drip",/obj/structure/iv_drip, 6, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[1] >= 95 && current_res[3] >= 98)
+		recipes += new/datum/stack_recipe("wheelchair",/obj/structure/bed/chair/wheelchair, 6, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("zippo lighter",/obj/item/weapon/flame/lighter/zippo, 4, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
