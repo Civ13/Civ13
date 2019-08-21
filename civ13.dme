@@ -263,7 +263,6 @@
 #include "code\game\objects\map_metadata\khalkhyn_gol.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
-#include "code\game\objects\map_metadata\nanjing.dm"
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\nomads.dm"
 #include "code\game\objects\map_metadata\nomads_continental.dm"
