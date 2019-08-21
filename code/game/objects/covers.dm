@@ -644,6 +644,7 @@
 	explosion_resistance = 5
 	buildstackamount = 8
 	buildstack = /obj/item/stack/material/wood
+	opacity = 0
 
 /obj/covers/jail/steeljail
 	name = "steel jail bars"
@@ -661,6 +662,7 @@
 	explosion_resistance = 5
 	buildstackamount = 8
 	buildstack = /obj/item/stack/rods
+	opacity = 0
 
 /obj/covers/jail/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
