@@ -436,7 +436,7 @@
 		if (!WT.salty)
 			water = max_water //water within 2 tiles means no need to manually water the plants.
 			return
-	for(var/turf/floor/trench/TR in range(2,src))
+	for(var/turf/floor/trench/flooded/TR in range(2,src))
 		if (TR.flooded && !TR.salty)
 			water = max_water //water within 2 tiles means no need to manually water the plants.
 			return
