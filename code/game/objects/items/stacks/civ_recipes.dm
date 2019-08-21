@@ -178,6 +178,7 @@
 
 /material/iron/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("iron sledgehammer", /obj/item/weapon/sledgehammer/iron/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 33)
 		recipes += new/datum/stack_recipe("extraction kit", /obj/item/weapon/reagent_containers/glass/extraction_kit, 14, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 33)
@@ -635,6 +636,7 @@
 
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("stone sledgehammer", /obj/item/weapon/sledgehammer/stone/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone pillar",	/obj/structure/mine_support/stone, 2, _time = 130, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone brazier",	/obj/structure/brazier/stone, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map && map.ordinal_age == 0 && map.research_active == TRUE)
@@ -1123,6 +1125,7 @@
 			new/datum/stack_recipe("pink cable coil (10m)", /obj/item/stack/cable_coil/pink, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/bronze/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("bronze sledgehammer", /obj/item/weapon/sledgehammer/bronze/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 21 && current_res[2] >= 16)
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
@@ -1149,6 +1152,7 @@
 	recipes += new/datum/stack_recipe("shears", /obj/item/weapon/shears, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/steel/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("steel sledgehammer", /obj/item/weapon/sledgehammer/steel/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 96)
 		recipes += new/datum/stack_recipe("steel floor", /obj/covers/steelplating, 1, _time = 15, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("white floor", /obj/covers/steelplating/white, 1, _time = 15, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -1484,6 +1488,7 @@
 	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))
 
 /material/lead/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	recipes += new/datum/stack_recipe("lead sledgehammer", /obj/item/weapon/sledgehammer/lead/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[3] >= 65)
 		recipes = list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
 
