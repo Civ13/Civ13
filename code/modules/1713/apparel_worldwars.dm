@@ -367,7 +367,132 @@ obj/item/clothing/head/ww2/jap_mp
 	icon_state = "japcap_mp"
 	item_state = "japcap_mp"
 	worn_state = "japcap_mp"
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/obj/item/clothing/under/ww2/chiuni
+	name = "chinese uniform"
+	desc = "A chinese army uniform."
+	icon_state = "ww2_china"
+	item_state = "ww2_china"
+	worn_state = "ww2_china"
+	var/rolled = FALSE
 
+/obj/item/clothing/under/ww2/chiuni/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/chiuni)
+		return
+	else
+		if (rolled)
+			item_state = "ww2_china"
+			worn_state = "ww2_china"
+			item_state_slots["slot_w_uniform"] = "ww2_china"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "ww2_china_rolled"
+			worn_state = "ww2_china_rolled"
+			item_state_slots["slot_w_uniform"] = "ww2_china_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/under/ww2/chiuni_off
+	name = "chinese uniform"
+	desc = "A chinese army uniform."
+	icon_state = "ww2_china_off"
+	item_state = "ww2_china_off"
+	worn_state = "ww2_china_off"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/chiuni_off/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/chiuni_off)
+		return
+	else
+		if (rolled)
+			item_state = "ww2_china_off"
+			worn_state = "ww2_china_off"
+			item_state_slots["slot_w_uniform"] = "ww2_china_off"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "ww2_china_off_rolled"
+			worn_state = "ww2_china_off_rolled"
+			item_state_slots["slot_w_uniform"] = "ww2_china_off_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/under/ww2/chiuni2
+	name = "chinese uniform"
+	desc = "A chinese army uniform."
+	icon_state = "ww2_china2"
+	item_state = "ww2_china2"
+	worn_state = "ww2_china2"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/chiuni2/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/chiuni2)
+		return
+	else
+		if (rolled)
+			item_state = "ww2_china2"
+			worn_state = "ww2_china2"
+			item_state_slots["slot_w_uniform"] = "ww2_china2"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "ww2_china2_rolled"
+			worn_state = "ww2_china2_rolled"
+			item_state_slots["slot_w_uniform"] = "ww2_china2_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/under/ww2/chiuni2_off
+	name = "chinese uniform"
+	desc = "A chinese army uniform."
+	icon_state = "ww2_china2_off"
+	item_state = "ww2_china2_off"
+	worn_state = "ww2_china2_off"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/chiuni2_off/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/chiuni2_off)
+		return
+	else
+		if (rolled)
+			item_state = "ww2_china_off"
+			worn_state = "ww2_china_off"
+			item_state_slots["slot_w_uniform"] = "ww2_china_off"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "ww2_china_off_rolled"
+			worn_state = "ww2_china_off_rolled"
+			item_state_slots["slot_w_uniform"] = "ww2_china_off_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+obj/item/clothing/head/ww2/chicap
+	name = "chinese cap"
+	desc = "A cap worn by the chinese army."
+	icon_state = "fieldcap_china"
+	item_state = "fieldcap_china"
+	worn_state = "fieldcap_china"
+
+obj/item/clothing/head/ww2/chicap2
+	name = "chinese cap"
+	desc = "A cap worn by the chinese army."
+	icon_state = "fieldcap_china2"
+	item_state = "fieldcap_china2"
+	worn_state = "fieldcap_china2"
 ///////////WW1 UNIFORMS///////////
 /obj/item/clothing/under/ww1/german
 	name = "german uniform"

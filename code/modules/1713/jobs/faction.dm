@@ -25,7 +25,8 @@
 #define TEAM_GE 14
 #define TEAM_US 15
 #define TEAM_VI 16
-var/global/soldiers[16]
+#define TEAM_CH 17
+var/global/soldiers[17]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -140,6 +141,14 @@ var/global/soldiers[16]
 	icon_state = ""
 	title = "Vietnamese Soldier"
 	team = TEAM_VI
+
+/datum/faction/chinese/base_type()
+	return "/datum/faction/chinese"
+
+/datum/faction/chinese
+	icon_state = ""
+	title = "Chinese Soldier"
+	team = TEAM_CH
 
 /datum/faction/american/base_type()
 	return "/datum/faction/american"
