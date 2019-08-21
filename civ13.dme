@@ -275,6 +275,7 @@
 #include "code\game\objects\map_metadata\nomads_karafuta.dm"
 #include "code\game\objects\map_metadata\nomads_mountain.dm"
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
+#include "code\game\objects\map_metadata\nomads_wasteland.dm"
 #include "code\game\objects\map_metadata\omaha.dm"
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\reichstag.dm"
@@ -861,5 +862,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads.dmm"
+#include "maps\special\nomads_wasteland.dmm"
 // END_INCLUDE

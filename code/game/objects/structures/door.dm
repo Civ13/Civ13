@@ -256,6 +256,7 @@
 	basic_icon = "fence"
 	icon_state = "fence"
 	name = "Fence Door"
+	opacity = FALSE
 /obj/structure/simple_door/cell/New(var/newloc,var/material_name)
 	..(newloc, "iron")
 /obj/structure/simple_door/stone/New(var/newloc,var/material_name)
