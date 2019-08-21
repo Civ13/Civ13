@@ -21,7 +21,7 @@
 	battle_name = "battle of Nanjing"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Chinese command</b>. The Chinese will win if they manage to defend their command for <b>30 minutes!</b>.</font>"
 	faction1 = JAPANESE
-	faction2 = RUSSIAN
+	faction2 = CHINESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
