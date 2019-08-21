@@ -46,6 +46,20 @@
 	unique_door_name = "Private"
 #undef CV_CUSTOM
 
+#define CV_CUSTOM_JAILWOOD 999
+/obj/structure/simple_door/key_door/custom/jail/woodjail
+	custom = TRUE
+	custom_code = 999
+	unique_door_name = "Private"
+#undef CV_CUSTOM_JAILWOOD
+
+#define CV_CUSTOM_JAILSTEEL 999
+/obj/structure/simple_door/key_door/custom/jail/steeljail
+	custom = TRUE
+	custom_code = 999
+	unique_door_name = "Private"
+#undef CV_CUSTOM_JAILSTEEL
+
 #define CV_CODE 1000
 /datum/keyslot/civ
 	code = CV_CODE

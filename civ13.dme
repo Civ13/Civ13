@@ -138,7 +138,6 @@
 #include "code\game\objects\effects\explosion_particles.dm"
 #include "code\game\objects\effects\gibs.dm"
 #include "code\game\objects\effects\list_container.dm"
-#include "code\game\objects\effects\mines.dm"
 #include "code\game\objects\effects\open_floor.dm"
 #include "code\game\objects\effects\overlays.dm"
 #include "code\game\objects\effects\spawner.dm"

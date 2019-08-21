@@ -248,10 +248,15 @@
 			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("magazine (30)", /obj/item/ammo_magazine/emptymagazine/small, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
-
+	else if (current_res[2] >= 115 && map.ordinal_age >= 8)
+		recipes += new/datum/stack_recipe_list("magazines", list(
+			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("magazine (30)", /obj/item/ammo_magazine/emptymagazine/small, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("makeshift AK-47 magazine (28)", /obj/item/ammo_magazine/ak47/makeshift, 6, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[1] >= 95)
 		recipes += new/datum/stack_recipe("canner", /obj/structure/canner, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
-
 	if (current_res[1] >= 115 && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("engine maker", /obj/item/weapon/enginemaker, 5, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 90 && map.ordinal_age >= 4)
@@ -286,7 +291,9 @@
 			new/datum/stack_recipe("retractor", /obj/item/weapon/surgery/retractor, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bone saw",/obj/item/weapon/surgery/bone_saw, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bone setter",/obj/item/weapon/surgery/bonesetter, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("scalpel", /obj/item/weapon/surgery/scalpel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("scalpel", /obj/item/weapon/surgery/scalpel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 
 	if (current_res[2] >= 70)
 		recipes += new/datum/stack_recipe_list("firearms", list(
@@ -347,7 +354,10 @@
 			new/datum/stack_recipe("log wall corner", /obj/covers/wood_wall/log/corner, 7, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("wood jail bars", /obj/covers/jail/woodjail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("wood jail door", /obj/structure/simple_door/key_door/custom/jail/woodjail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),))
+
 	else
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 5, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -608,7 +618,7 @@
 			new/datum/stack_recipe("light tube", /obj/item/lightbulb/tube, 1, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("lightbulb", /obj/item/lightbulb, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map && map.ordinal_age >= 4)
-		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("dropper", /obj/item/weapon/reagent_containers/dropper, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("vial", /obj/item/weapon/reagent_containers/glass/beaker/vial, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("beaker", /obj/item/weapon/reagent_containers/glass/beaker, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("large beaker", /obj/item/weapon/reagent_containers/glass/beaker/large, 3, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -1183,6 +1193,11 @@
 		recipes += new/datum/stack_recipe("tin can (x2)", /obj/item/weapon/can, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("large tin can", /obj/item/weapon/can/large, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
+/material/steelrods/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	if (current_res[1] >= 95 && map.ordinal_age >= 3)
+		recipes += new/datum/stack_recipe("jail bars", /obj/covers/jail/steeljail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/custom/jail/steeljail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+
 /material/bearpelt/brown/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 89)
@@ -1262,18 +1277,19 @@
 
 /material/electronics/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
-	recipes += new/datum/stack_recipe("telephone", /obj/structure/telephone, 5, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("radio transmitter", /obj/structure/radio/transmitter, 12, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("pill maker", /obj/structure/chem_master, 20, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("telephone", /obj/structure/telephone, 2, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("radio transmitter", /obj/structure/radio/transmitter, 6, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("radio receiver", /obj/structure/radio, 3, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("television", /obj/structure/TV, 3, _time = 80, _one_per_turf =TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("geiger counter", /obj/item/weapon/geiger_counter, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 141)
-		recipes += new/datum/stack_recipe("2-way radio", /obj/structure/radio/transmitter_receiver, 15, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("portable radio", /obj/item/weapon/radio, 18, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("2-way radio", /obj/structure/radio/transmitter_receiver, 10, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("portable radio", /obj/item/weapon/radio, 12, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 178)
-		recipes += new/datum/stack_recipe("walkie-talkie radio", /obj/item/weapon/radio/walkietalkie, 22, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("walkie-talkie radio", /obj/item/weapon/radio/walkietalkie, 16, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 218)
-		recipes += new/datum/stack_recipe("component analyser", /obj/item/weapon/analyser, 25, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("component analyser", /obj/item/weapon/analyser, 18, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/woolcloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("wool coat", /obj/item/clothing/suit/storage/coat/fur/white, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)

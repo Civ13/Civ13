@@ -308,6 +308,7 @@
 			return
 
 	log_ooc("[mob.name]/[key] : [msg]")
+	discord_log("[mob.name]/[key]:","[msg]")
 
 	var/ooc_style = "everyone"
 	if (holder && !holder.fakekey)

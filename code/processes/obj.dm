@@ -18,7 +18,6 @@
 		else
 			catchBadType(O)
 			processing_objects -= O
-
 		PROCESS_LIST_CHECK
 		PROCESS_TICK_CHECK
 

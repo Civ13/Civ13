@@ -64,10 +64,8 @@
 	var/can_stand
 	var/pain = FALSE
 	var/fracturetimer = 0
-	var/has_tendon = FALSE             // Can this limb be hamstrung?
 	var/artery_name = "artery"         // Flavour text for carotid artery, aorta, etc.
 	var/arterial_bleed_severity = 1    // Multiplier for bleeding in a limb.
-	var/tendon_name = "tendon"         // Flavour text for Achilles tendon, etc.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
@@ -270,12 +268,21 @@
 //		if(can_feel_pain() && prob(40))
 //			owner.emote("scream")	//getting hit on broken hand hurts
 	var/canbreak = TRUE
-	if (used_weapon)
-		if (istype(used_weapon, /obj/item/projectile))
-			canbreak = FALSE
 	if(blunt_dam > min_broken_damage && prob(blunt_dam)) //blunt damage is gud at fracturing
 		if (canbreak)
-			fracture()
+			if (istype(used_weapon, /obj/item/projectile))
+				if (prob(35))
+					fracture()
+			else
+				fracture()
+
+	if(brute_dam*0.8 > min_broken_damage && prob(brute_dam*0.7))
+		if (canbreak)
+			if (istype(used_weapon, /obj/item/projectile))
+				if (prob(18))
+					fracture()
+			else
+				fracture()
 
 	var/can_cut = (prob(brute*2) || sharp)
 	var/spillover = 0
@@ -331,35 +338,37 @@
 						edge_eligible = 1
 				else
 					edge_eligible = 1
-			brute = pure_brute
-			if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
-				if (prob(20))
-					droplimb(0, DROPLIMB_EDGE)
-					for(var/mob/living/carbon/human/NB in view(6,src))
-						if (!NB.orc)
-							NB.mood -= 10
-							NB.ptsd += 1
-			else if(burn >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(burn/3))
-				if (prob(20))
-					droplimb(0, DROPLIMB_BURN)
-					for(var/mob/living/carbon/human/NB in view(6,src))
-						if (!NB.orc)
-							NB.mood -= 10
-							NB.ptsd += 1
-			else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
-				if (prob(20))
-					droplimb(0, DROPLIMB_BLUNT)
-					for(var/mob/living/carbon/human/NB in view(6,src))
-						if (!NB.orc)
-							NB.mood -= 10
-							NB.ptsd += 1
-			else if(brute >= max_damage / DROPLIMB_THRESHOLD_TEAROFF && prob(brute/3))
-				if (prob(20))
-					droplimb(0, DROPLIMB_BLUNT)
-					for(var/mob/living/carbon/human/NB in view(6,src))
-						if (!NB.orc)
-							NB.mood -= 10
-							NB.ptsd += 1
+
+			if (!istype(used_weapon, /obj/item/projectile))
+				brute = pure_brute
+				if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
+					if (prob(20))
+						droplimb(0, DROPLIMB_EDGE)
+						for(var/mob/living/carbon/human/NB in view(6,src))
+							if (!NB.orc)
+								NB.mood -= 10
+								NB.ptsd += 1
+				else if(burn >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(burn/3))
+					if (prob(20))
+						droplimb(0, DROPLIMB_BURN)
+						for(var/mob/living/carbon/human/NB in view(6,src))
+							if (!NB.orc)
+								NB.mood -= 10
+								NB.ptsd += 1
+				else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
+					if (prob(20))
+						droplimb(0, DROPLIMB_BLUNT)
+						for(var/mob/living/carbon/human/NB in view(6,src))
+							if (!NB.orc)
+								NB.mood -= 10
+								NB.ptsd += 1
+				else if(brute >= max_damage / DROPLIMB_THRESHOLD_TEAROFF && prob(brute/3))
+					if (prob(20))
+						droplimb(0, DROPLIMB_BLUNT)
+						for(var/mob/living/carbon/human/NB in view(6,src))
+							if (!NB.orc)
+								NB.mood -= 10
+								NB.ptsd += 1
 
 	if(owner && update_damstate())
 		owner.UpdateDamageIcon()
@@ -969,7 +978,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return FALSE
 
 /obj/item/organ/external/is_usable()
-	return !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD)) && !(status & ORGAN_TENDON_CUT) && (pain < pain_disability_threshold)
+	return !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD))
 
 /obj/item/organ/external/proc/embed(var/obj/item/weapon/W, var/silent = FALSE, var/supplied_message)
 
@@ -1147,8 +1156,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	amputation_point = "left shoulder"
 	can_grasp = TRUE
 	artery_name = "basilic vein"
-	tendon_name = "palmaris longus tendon"
-	has_tendon = TRUE
 /obj/item/organ/external/arm/right
 	limb_name = "r_arm"
 	name = "right arm"
@@ -1170,9 +1177,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "left knee"
 	amputation_point = "left hip"
 	can_stand = TRUE
-	tendon_name = "cruciate ligament"
 	artery_name = "femoral artery"
-	has_tendon = TRUE
 /obj/item/organ/external/leg/right
 	limb_name = "r_leg"
 	name = "right leg"
@@ -1194,9 +1199,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "l_leg"
 	joint = "left ankle"
 	amputation_point = "left ankle"
-	tendon_name = "Achilles tendon"
 	can_stand = TRUE
-	has_tendon = TRUE
 /obj/item/organ/external/foot/removed()
 	if (owner) owner.u_equip(owner.shoes)
 	..()
@@ -1222,9 +1225,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "l_arm"
 	joint = "left wrist"
 	amputation_point = "left wrist"
-	tendon_name = "carpal ligament"
 	can_grasp = TRUE
-	has_tendon = TRUE
 /obj/item/organ/external/hand/removed()
 	owner.u_equip(owner.gloves)
 	..()
@@ -1359,12 +1360,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 		status |= ORGAN_ARTERY_CUT
 		if(artery_name == "carotid artery" && owner)
 			playsound(owner.loc, 'sound/voice/throat.ogg', 50, 1, -1)
-		return TRUE
-	return FALSE
-
-/obj/item/organ/external/proc/sever_tendon()
-	if(has_tendon && !(status & ORGAN_TENDON_CUT))
-		status |= ORGAN_TENDON_CUT
 		return TRUE
 	return FALSE
 
