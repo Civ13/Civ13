@@ -217,6 +217,21 @@
 	var/buildstackamount = 0//How much mats it takes to make it.
 	var/buildstack = /obj/item/stack/rods //the item it is made with.
 
+/obj/structure/simple_door/key_door/custom/jail/jailwood/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You pound the bars uselessly!"//sucker
+	else if (istype(W,/obj/item/weapon/wrench) || istype(W,/obj/item/weapon/hammer))//if it is a wrench
+		user << "<span class='notice'>You start disassembling the [src]...</span>"
+		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+		if (do_after(user, 30, target = src))
+			for (var/i = TRUE, i <= buildstackamount, i++)
+				new buildstack(get_turf(src))
+			qdel(src)
+			return
+	else
+		attack_hand(user)//keys!
+	return TRUE // for key_doors
+
 /obj/structure/simple_door/key_door/custom/jail/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker

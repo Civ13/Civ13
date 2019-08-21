@@ -245,7 +245,7 @@
 			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("revolver speedloader (6)", /obj/item/ammo_magazine/emptyspeedloader, 1, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
-	else if (current_res[2] >= 110 && map.ordinal_age >= 6)
+	else if (current_res[2] >= 110 && map.ordinal_age >= 6 && map.ordinal_age <= 7)
 		recipes += new/datum/stack_recipe_list("magazines", list(
 			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
