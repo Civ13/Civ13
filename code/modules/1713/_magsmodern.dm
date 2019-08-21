@@ -134,3 +134,14 @@
 	weight = 0.045
 	multiple_sprites = TRUE
 	clip = TRUE
+
+/obj/item/ammo_magazine/p90
+	name = "P90 Magazine (a57x28mm)"
+	icon_state = "clip"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a57x28
+	caliber = "a57x28"
+	max_ammo = 50
+	weight = 0.045
+	multiple_sprites = TRUE
+	clip = TRUE

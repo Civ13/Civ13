@@ -15,24 +15,29 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 		var/cID = href_list["quickBan_removeBan_cID"]
 		var/ip = href_list["quickBan_removeBan_ip"]
 
-		var/F = file("SQL/bans.txt")
-		if (fexists(F))
-			var/full_banlist = file2text(F)
-			fcopy("SQL/bans.txt","SQL/bans_backup.txt")
-			fdel(F)
-			var/list/full_list_split = splittext(full_banlist, "|||\n")
-			for(var/i=1;i<=full_list_split.len;i++)
-				var/list/full_list_split_two = splittext(full_list_split[i], ";")
-				if (full_list_split_two[1] == "[ckey]" || full_list_split_two[2] == "[cID]" || full_list_split_two[3] == "[ip]")
-					full_list_split_two[10] = 0
-					if (text2num(full_list_split_two[10]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasn't been reached yet
-						text2file("[full_list_split[i]]|||","SQL/bans.txt")
-					log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
-					message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
+		var/ckey_file = null
+		var/ip_file = null
+		var/cid_file = null
 
-				for (var/client/C in clients)
-					if (C.ckey == ckey)
-						C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
+		if (fexists("SQL/bans/ckey/[ckey].txt"))
+			ckey_file = "SQL/bans/ckey/[ckey].txt"
+		if (fexists("SQL/bans/ip/[ckey].txt"))
+			ip_file = "SQL/bans/ip/[ckey].txt"
+		if (fexists("SQL/bans/cid/[ckey].txt"))
+			cid_file = "SQL/bans/cid/[ckey].txt"
+
+		if (ckey_file || ip_file || cid_file)
+			log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
+			message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
+			if (ckey_file)
+				fdel(ckey_file)
+			if (cid_file)
+				fdel(cid_file)
+			if (ip_file)
+				fdel(ip_file)
+			for (var/client/C in clients)
+				if (C.ckey == ckey)
+					C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
 
 
 var/datum/quickBan_handler/quickBan_handler = null
@@ -43,11 +48,9 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	if (!quickBan_handler)
 		quickBan_handler = new
-	var/full_banlist = file2text("SQL/bans.txt")
-	var/list/full_list_split = splittext(full_banlist, "|||\n")
 	var/list/result = list()
-
-	var/option = input(src, "Search for a ban?") in list("Yes","Show All","Cancel")
+	var/path = "SQL/bans/"
+	var/option = input(src, "Search for a ban?") in list("Yes","Show all ckeys", "Show all IPs", "Show all cIDs","Cancel")
 	if (option == "No")
 		return
 	else if (option == "Yes")
@@ -56,36 +59,40 @@ var/datum/quickBan_handler/quickBan_handler = null
 			return
 		else if (option2 == "ckey")
 			var/_ckey = ckey(input(src, "What ckey will you search for?") as null|text)
-			for(var/i=1;i<=full_list_split.len;i++)
-				var/list/full_list_split_two = splittext(full_list_split[i], ";")
-				if (full_list_split_two[1] == _ckey)
-					result += list(full_list_split_two)
-
+			if (fexists("SQL/bans/ckey/[_ckey].txt"))
+				result += file2text("SQL/bans/ckey/[_ckey].txt")
 		else if (option2 == "cID")
 			var/cID = input(src, "What cID will you search for?") as null|text
-			for(var/i=1;i<=full_list_split.len;i++)
-				var/list/full_list_split_two = splittext(full_list_split[i], ";")
-				if (full_list_split_two[2] == cID)
-					result += list(full_list_split_two)
-
+			if (fexists("SQL/bans/cid/[cID].txt"))
+				result += file2text("SQL/bans/cid/[cID].txt")
 		else if (option2 == "ip")
 			var/ip = input(src, "What address will you search for?") as null|text
-			for(var/i=1;i<=full_list_split.len;i++)
-				var/list/full_list_split_two = splittext(full_list_split[i], ";")
-				if (full_list_split_two[3] == ip)
-					result += list(full_list_split_two)
+			if (fexists("SQL/bans/ip/[ip].txt"))
+				result += file2text("SQL/bans/ip/[ip].txt")
+	else if (option == "Show all ckeys")
+		path = "SQL/bans/ckey/"
+		var/list/filenames = flist(path)
+		for (var/filename in filenames)
+			if (fexists("[path][filename]"))
+				result += list(splittext(file2text("[path][filename]"),";"))
+	else if (option == "Show all IPs")
+		path = "SQL/bans/ip/"
+		var/list/filenames = flist(path)
+		for (var/filename in filenames)
+			if (fexists("[path][filename]"))
+				result += list(splittext(file2text("[path][filename]"),";"))
+	else if (option == "Show all cIDs")
+		path = "SQL/bans/cid/"
+		var/list/filenames = flist(path)
+		for (var/filename in filenames)
+			if (fexists("[path][filename]"))
+				result += list(splittext(file2text("[path][filename]"),";"))
 
-	else if (option == "Show All")
-		for(var/i=1;i<=full_list_split.len;i++)
-			var/list/full_list_split_two = splittext(full_list_split[i], ";")
-			result += list(full_list_split_two)
 	var/html = "<center><big>List of Quick Bans</big></center>"
 	var/list/possibilities = list()
 	if (islist(result) && !isemptylist(result))
-		for (var/v = 1; v<=result.len; v++)
-			if (islist(result[v]))
-				possibilities += "<big><b>UID [result[v][6]]</b> (<a href='byond://?src=\ref[quickBan_handler];caller=\ref[src];quickBan_removeBan=1;quickBan_removeBan_UID=[result[v][6]];quickBan_removeBan_ckey=[result[v][1]];quickBan_removeBan_cID=[result[v][2]];quickBan_removeBan_ip=[result[v][3]]'>DELETE</a>)</big>: [result[v][1]]/[result[v][2]]/[result[v][3]], type '[result[v][4]]' ([result[v][5]]): banned for '[result[v][7]]' by [result[v][8]] on [result[v][9]]. <b>[result[v][11]]</b>. (After assigned date)"
-
+		for (var/list/v in result)
+			possibilities += "<big><b>UID [v[3]]</b> (<a href='byond://?src=\ref[quickBan_handler];caller=\ref[src];quickBan_removeBan=1;quickBan_removeBan_UID=[v[3]];quickBan_removeBan_ckey=[v[9]];quickBan_removeBan_cID=[v[10]];quickBan_removeBan_ip=[v[11]]'>DELETE</a>)</big>: [v[9]]/[v[10]]/[v[11]], type '[v[1]]' ([v[2]]): banned for '[v[4]]' by [v[5]] on [v[6]]. <b>[v[8]]</b>. (After assigned date)"
 	for (var/possibility in possibilities)
 		html += "<br>"
 		html += possibility
@@ -339,7 +346,11 @@ var/datum/quickBan_handler/quickBan_handler = null
 	var/expire_info = fields["expire_info"]
 
 	//txt database
-	text2file("[fields["ckey"]];[fields["cID"]];[fields["ip"]];[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]]|||","SQL/bans.txt")
+	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/ip/[banip].txt")
+	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/cid/[bancID].txt")
+	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/ckey/[banckey].txt")
+
+
 	if (banner)
 		banner << "<span class = 'notice'>You have successfully banned [banckey]/[bancID]/[banip]. This ban [lowertext(expire_info)]."
 	var/M = "[key_name(banner)] banned [banckey]/[bancID]/[banip] (bantype = [fields["type"]] ([fields["type_specific_info"]])) for reason '[fields["reason"]]'. This ban [lowertext(expire_info)]."
@@ -365,18 +376,21 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 /* checking if we're banned */
 /client/proc/quickBan_isbanned(var/ban_type = "Server", var/type_specific_info = "nil")
-	var/list/bans = list()
-	var/full_banlist = file2text("SQL/bans.txt")
-	var/list/full_list_split = splittext(full_banlist, "|||\n")
-	for(var/i=1;i<full_list_split.len;i++)
-		var/list/full_list_split_two = splittext(full_list_split[i], ";")
-		if (full_list_split_two[1] == "[ckey]" || full_list_split_two[2] == "[computer_id]" || full_list_split_two[3] == "[address]")
-			if (!(text2num(full_list_split_two[10]) < text2num(num2text(world.realtime,20)))) // not expired?
-				bans += list(full_list_split_two)
-	if (islist(bans) && !isemptylist(bans))
-		for (var/x=1;x<=bans.len;x++)
-			if(ban_type == bans[x][4] && type_specific_info == bans[x][5])
-				return TRUE
+	if (fexists("SQL/bans/ckey/[ckey].txt"))
+		var/details = file2text("SQL/bans/ckey/[ckey].txt")
+		var/list/details2 = splittext(details, ";")
+		if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+			return TRUE
+	if (fexists("SQL/bans/cid/[computer_id].txt"))
+		var/details = file2text("SQL/bans/cid/[computer_id].txt")
+		var/list/details2 = splittext(details, ";")
+		if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+			return TRUE
+	if (fexists("SQL/bans/ip/[address].txt"))
+		var/details = file2text("SQL/bans/ip/[address].txt")
+		var/list/details2 = splittext(details, ";")
+		if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+			return TRUE
 	return FALSE
 /* check if we're banned and tell us why we're banned */
 /client/proc/quickBan_rejected(var/bantype = "Server")
