@@ -51,6 +51,7 @@
 	custom = TRUE
 	custom_code = 999
 	unique_door_name = "Private"
+	opacity = 0
 #undef CV_CUSTOM_JAILWOOD
 
 #define CV_CUSTOM_JAILSTEEL 999
@@ -58,6 +59,7 @@
 	custom = TRUE
 	custom_code = 999
 	unique_door_name = "Private"
+	opacity = 0
 #undef CV_CUSTOM_JAILSTEEL
 
 #define CV_CODE 1000
