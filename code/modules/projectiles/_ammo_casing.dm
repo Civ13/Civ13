@@ -820,6 +820,16 @@
 	caliber = "a44p"
 	value = 2
 
+/obj/item/ammo_casing/a57x28
+	name = "a57x28mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a57x28
+	caliber = "a57x28"
+	value = 2
+
 /obj/item/ammo_casing/shotgun
 	name = "buckshot shell"
 	desc = "A 12 gauge buckshot."

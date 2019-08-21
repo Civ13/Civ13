@@ -694,7 +694,7 @@
 	base_icon = "p90"
 	caliber = "a57x28"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	magazine_type = /obj/item/ammo_magazine/hk
+	magazine_type = /obj/item/ammo_magazine/p90
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
 	weight = 2.3
 	equiptimer = 8
