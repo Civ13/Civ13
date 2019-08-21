@@ -1493,12 +1493,14 @@
 		recipes += new/datum/stack_recipe("blood pack", /obj/item/weapon/reagent_containers/blood/empty, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 7 && current_res[1] >= 150)
 		recipes += new/datum/stack_recipe("lighter",/obj/item/weapon/flame/lighter/random, 3, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("trash bag",/obj/item/weapon/storage/bag/trash, 1, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("plastic bag",/obj/item/weapon/storage/bag/plasticbag, 0.75, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 5 && current_res[3] >= 102)
 		recipes += new/datum/stack_recipe("german gas mask", /obj/item/clothing/mask/gas/german, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("british gas mask", /obj/item/clothing/mask/gas/british, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 7 && current_res[3] >= 132)
 		recipes += new/datum/stack_recipe("modern gas mask (single sided)", /obj/item/clothing/mask/gas/modern, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("modern gas mask (double_sized)", /obj/item/clothing/mask/gas/modern2, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("modern gas mask (double sized)", /obj/item/clothing/mask/gas/modern2, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 6 && current_res[1] >= 125)
 		recipes += new/datum/stack_recipe_list("signs", list(
 			new/datum/stack_recipe("traffic cone", /obj/structure/sign/traffic/cone, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
