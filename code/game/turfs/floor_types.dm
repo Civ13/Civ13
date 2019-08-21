@@ -215,6 +215,11 @@
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
 
+
+/turf/floor/beach/water/New()
+	..()
+	water_turf_list += src
+
 /turf/floor/beach/water/coastwater
 	name = "coast water"
 	desc = "lovely water hitting the coast line"

@@ -85,6 +85,9 @@
 			set_light(0)
 			update_icon()
 			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
+			if(prob(15))
+				var byproduct = new/obj/item/stack/ore/charcoal
+				contents += byproduct
 			process()
 			for (var/obj/item/weapon/reagent_containers/glass/small_pot/I in get_turf(src))
 				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)

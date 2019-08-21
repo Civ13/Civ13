@@ -11,14 +11,14 @@
 	name = "artillery shell"
 	icon_state = "shell"
 	w_class = 4.0
-	value = 18
+	value = 20
 
 /obj/item/cannon_ball/mortar_shell
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "mortar shell"
 	icon_state = "shell_mortar"
 	w_class = 4.0
-	value = 15
+	value = 20
 
 /obj/item/cannon_ball/shell/gas/chlorine
 	reagent_payload = "chlorine_gas"
@@ -57,7 +57,14 @@
 	name = "Nuclear Shell"
 	icon_state = "shell_nuclear"
 	w_class = 4.0
-	value = 15
+	value = 25
+
+/obj/item/cannon_ball/shell/nuclear/makeshift
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "Makeshift Nuclear Shell"
+	icon_state = "shell_nuclear"
+	w_class = 4.0
+	value = 20
 
 /obj/item/cannon_ball/shell/nuclear/W9
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -71,18 +78,18 @@
 	name = "W19 Katie Nuclear Shell"
 	icon_state = "shell_nuclear"
 	w_class = 4.0
-	value = 20
+	value = 30
 
 /obj/item/cannon_ball/shell/nuclear/W33
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "W33 Nuclear Shell"
 	icon_state = "shell_nuclear"
 	w_class = 4.0
-	value = 10
+	value = 20
 
 /obj/item/cannon_ball/shell/nuclear/W33Boosted
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Boosted W33 Nuclear Shell"
 	icon_state = "shell_nuclear"
 	w_class = 4.0
-	value = 40
+	value = 50

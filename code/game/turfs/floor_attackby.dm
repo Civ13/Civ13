@@ -207,7 +207,7 @@
 			H << "<span class = 'notice'>Empty \the [ET] first.</span>"
 			return
 		if (istype(H))
-			visible_message("<span class = 'notice'>[user] carefully examine \the [src] with \the [C.name]...</span>", "<span class = 'notice'>You start to carefully examine \the [src] with \the [C.name].</span>")
+			visible_message("<span class = 'notice'>[user] carefully examines \the [src] with \the [C.name]...</span>", "<span class = 'notice'>You start to carefully examine \the [src] with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 110/(H.getStatCoeff("dexterity"))
 			if (do_after(user, timera))
@@ -681,6 +681,7 @@
 	var/randreg = pick(elements)
 	if (E.reagents.total_volume <= 0)
 		E.reagents.add_reagent(randreg,5)
+		E.update_icon()
 
 /turf/proc/mining_proc(var/mob/living/carbon/human/H)
 	if (!H || !src)

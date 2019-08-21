@@ -87,7 +87,6 @@
 			var/internal = FALSE
 			var/open = FALSE
 			var/bleeding = FALSE
-			var/cuttendon = FALSE
 			var/foreign = FALSE // sharpnel, implants, and etcera
 
 			if (!e)
@@ -102,8 +101,6 @@
 					unsplinted_limbs.Add(e.name)
 			if (e.has_infected_wound())
 				infected = TRUE
-			if (e.status & ORGAN_TENDON_CUT)
-				cuttendon = TRUE
 			if (e.implants.len)
 				foreign = TRUE
 			for (var/datum/wound/W in e.wounds)
@@ -121,20 +118,17 @@
 					inner += "[bleeding ? " bleeding" : ""]"
 					inner += "[infected && e.germ_level > 175 ? " infected" : ""]"
 					inner += " wound[wounds > 1 ? "s" : ""]"
-					inner += " [foreign || internal || broken|| cuttendon || e.burn_dam > 2 || e.brute_dam > 2 ? "and " : "at"]"
+					inner += " [foreign || internal || broken || e.burn_dam > 2 || e.brute_dam > 2 ? "and " : "at"]"
 				if (e.brute_dam > 2)
 					var/sev = pick_severity(e.brute_dam)
 					inner += "[sev ? severity_adj[sev] : "dismissable"] bruises"
-					inner += " [foreign || internal || broken|| cuttendon || e.burn_dam > 2 ? "and " : "at"]"
+					inner += " [foreign || internal || broken || e.burn_dam > 2 ? "and " : "at"]"
 				if (e.burn_dam > 2)
 					var/sev = pick_severity(e.burn_dam)
 					inner += "[sev ? severity_adj[sev] : "dismissable"] burns"
-					inner += " [foreign || internal || broken|| cuttendon ? "and " : "at"]"
+					inner += " [foreign || internal || broken ? "and " : "at"]"
 				if (broken)
 					inner += "broken bones"
-					inner += " [foreign || internal || cuttendon ? "and " : "in"]"
-				if (cuttendon)
-					inner += "cut tendon"
 					inner += " [foreign || internal ? "and " : "in"]"
 				if (internal)
 					inner += "signs of internal bleeding"
