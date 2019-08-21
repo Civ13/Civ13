@@ -46,6 +46,20 @@
 	unique_door_name = "Private"
 #undef CV_CUSTOM
 
+#define CV_CUSTOM_JAILWOOD 999
+/obj/structure/simple_door/key_door/custom/jail/woodjail
+	custom = TRUE
+	custom_code = 999
+	unique_door_name = "Private"
+#undef CV_CUSTOM_JAILWOOD
+
+#define CV_CUSTOM_JAILSTEEL 999
+/obj/structure/simple_door/key_door/custom/jail/steeljail
+	custom = TRUE
+	custom_code = 999
+	unique_door_name = "Private"
+#undef CV_CUSTOM_JAILSTEEL
+
 #define CV_CODE 1000
 /datum/keyslot/civ
 	code = CV_CODE
@@ -341,6 +355,19 @@
 	keyslot_type = /datum/keyslot/vietnamese
 	unique_door_name = "Vietnamese locked"
 #undef VC_CODE
+
+#define CH_CODE 995 * 11
+/datum/keyslot/chinese
+	code = CH_CODE
+
+/obj/item/weapon/key/chinese
+	code = CH_CODE
+	name = "Chinese key"
+
+/obj/structure/simple_door/key_door/chinese
+	keyslot_type = /datum/keyslot/chinese
+	unique_door_name = "Chinese locked"
+#undef CH_CODE
 
 #define INS_CODE 995 * 9
 /datum/keyslot/insurgent

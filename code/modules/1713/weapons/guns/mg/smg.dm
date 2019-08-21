@@ -686,12 +686,33 @@
 	effectiveness_mod = 1.08
 	sel_mode = 1
 
+/obj/item/weapon/gun/projectile/submachinegun/p90
+	name = "P90"
+	desc = "A compact but powerful firearm, chambered in 5.7x28mm."
+	icon_state = "p90"
+	item_state = "p90"
+	base_icon = "p90"
+	caliber = "a57x28"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/hk
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
+	weight = 2.3
+	equiptimer = 8
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0.6, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0.8, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.0, recoil=1.0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
+		)
+	effectiveness_mod = 1.15
+	sel_mode = 1
+
 /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
 	name = "Makeshift AK-47"
 	desc = "A crude replication of the AK-47, chambered in 7.62x39mm."
 	icon_state = "makeshift ak"
-	item_state = "ak47"
-	base_icon = "ak47"
+	item_state = "makeshiftak"
+	base_icon = "makeshiftak"
 	caliber = "a762x39"
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47

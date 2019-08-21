@@ -74,6 +74,10 @@
 /datum/job/vietnamese
 	default_language = "Vietnamese"
 	additional_languages = list("French" = 5, "English" = 5, "Chinese" = 10)
+
+/datum/job/chinese
+	default_language = "Chinese"
+	additional_languages = list("English" = 5, "Vietnamese" = 10, "Japanese" = 5)
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 
@@ -163,6 +167,11 @@
 		if (VIETNAMESE)
 			for (var/datum/language/vietnamese/V in H.languages)
 				H.default_language = V
+				break
+				break
+		if (CHINESE)
+			for (var/datum/language/chinese/CH in H.languages)
+				H.default_language = CH
 				break
 		if (AMERICAN)
 			if (map.ID == MAP_ARAB_TOWN)

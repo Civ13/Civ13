@@ -103,3 +103,6 @@
 
 	if (constant == VIETNAMESE)
 		return "Vietnamese"
+
+	if (constant == CHINESE)
+		return "Chinese"

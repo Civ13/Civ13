@@ -390,9 +390,9 @@
 /obj/item/clothing/head/helmet/scrap
 	name = "scrap metal helmet"
 	desc = "A makeshift helmet made of random metal."
-	icon_state = "knight_simple"
-	item_state = "knight_simple"
-	worn_state = "knight_simple"
+	icon_state = "scraphelmet"
+	item_state = "scraphelmet"
+	worn_state = "scraphelmet"
 	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
 	flags_inv = BLOCKHAIR

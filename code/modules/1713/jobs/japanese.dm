@@ -372,7 +372,7 @@
 	return TRUE
 
 /datum/job/japanese/whitesash_infantry
-	title = "Shrio Nitohei"
+	title = "Shiro Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
