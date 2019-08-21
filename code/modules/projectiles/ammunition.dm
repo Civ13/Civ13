@@ -194,7 +194,15 @@
 	w_class = 4
 	multiple_sprites = TRUE
 	belt = TRUE
-
+/obj/item/ammo_magazine/emptymagazine/p90
+	name = "P90 magazine (50)"
+	mag_type = MAGAZINE
+	icon_state = "p90-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 15
+	weight = 0.2
+	multiple_sprites = TRUE
 /obj/item/ammo_magazine/verb/toggle_open()
 	set category = null
 	set src in view(1)
