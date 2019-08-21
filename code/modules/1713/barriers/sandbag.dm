@@ -88,6 +88,10 @@
 /obj/structure/window/sandbag/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
 	user.dir = get_dir(user, src)
 	if (istype(O, /obj/item/weapon/sandbag/sandbag))
+		var/obj/item/weapon/sandbag/sandbag/bag = O
+		if (bag.sand_amount <= 0)
+			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
+			return
 		if (progress < 3)
 			progress += 1
 			if (progress == 2)
@@ -224,8 +228,25 @@
 	icon_state = "sandbag_new"
 	icon = 'icons/obj/items.dmi'
 	w_class = TRUE
-	sand_amount = FALSE
+	sand_amount = TRUE
 	value = 0
+
+/obj/item/weapon/sandbag/sandbag/empty
+	sand_amount = FALSE
+	icon_state = "sandbag_new_empty"
+
+/obj/item/weapon/sandbag/sandbag/empty/attackby(var/obj/item/stack/O as obj, mob/user as mob)
+	if (istype(O, /obj/item/stack/ore/glass) && sand_amount < 1)
+		O.amount--
+		user << "You fill the sandbag with sand."
+		sand_amount = TRUE
+		if (O.amount<=0)
+			qdel(O)
+		return
+
+	else
+		..()
+
 /obj/item/weapon/sandbag/sandbag/attack_self(mob/user)
 	return
 /obj/structure/window/sandbag/sandbag/attack_hand(var/mob/user as mob)

@@ -31,16 +31,19 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
+	var/usespeed = 1.2
 
 /obj/item/weapon/shovel/bone
 	name = "bone shovel"
 	icon_state = "shovel_bone"
+	usespeed = 1
 
 /obj/item/weapon/shovel/trench
 	name = "Entrenching Tool"
 	desc = "A shovel used specifically for digging trenches."
 	icon_state = "german_shovel2"
 	var/dig_speed = 7
+	usespeed = 0.8
 
 /obj/item/weapon/pickaxe
 	name = "pickaxe"
@@ -56,10 +59,12 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
+	var/usespeed = 1.2
 
 /obj/item/weapon/pickaxe/bone
 	name = "bone pickaxe"
 	icon_state = "pickaxe_bone"
+	usespeed = 1
 
 /obj/item/weapon/shovel/spade
 	name = "spade"
@@ -70,16 +75,19 @@
 	throwforce = 20.0
 	w_class = 2.0
 	weight = 1.18
+	usespeed = 0.8
 
 /obj/item/weapon/shovel/spade/foldable
 	name = "foldable shovel"
 	icon_state = "german_shovel2"
 	item_state = "lopata"
+	usespeed = 0.7
 
 /obj/item/weapon/shovel/spade/small
 	name = "small shovel"
 	icon_state = "lopata"
 	item_state = "lopata"
+	usespeed = 0.7
 
 /obj/item/weapon/wirecutters/boltcutters
 	name = "boltcutters"

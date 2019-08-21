@@ -107,13 +107,14 @@
 	else if (istype(C, /obj/item/weapon/shovel))
 		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user
+		var/obj/item/weapon/shovel/SH = C
 
 		if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
 			if (T.available_snow >= 1)
 				H.shoveling_snow = TRUE
 				visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)))
+				if (do_after(user, rand(45,60)/SH.usespeed))
 					visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
 					H.shoveling_snow = FALSE
 					H.adaptStat("strength", 1)
@@ -135,7 +136,7 @@
 				H.shoveling_dirt = TRUE
 				visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)))
+				if (do_after(user, rand(45,60)/SH.usespeed))
 					visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
 					H.shoveling_dirt = FALSE
 					H.adaptStat("strength", 1)
@@ -150,7 +151,7 @@
 				H.shoveling_sand = TRUE
 				visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)))
+				if (do_after(user, rand(45,60)/SH.usespeed))
 					visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
 					H.shoveling_sand = FALSE
 					H.adaptStat("strength", 1)
@@ -189,12 +190,13 @@
 			qdel(C)
 			return
 	else if (istype(C, /obj/item/weapon/pickaxe))
+		var/obj/item/weapon/pickaxe/SH = C
 		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, 160/(H.getStatCoeff("strength"))))
+			if (do_after(user, (160/(H.getStatCoeff("strength"))/SH.usespeed)))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
 					return
@@ -216,7 +218,9 @@
 			return ..(C, user)
 
 	else if (istype(C, /obj/item/weapon/sandbag/sandbag))
-
+		var/obj/item/weapon/sandbag/sandbag/bag = C
+		if (bag.sand_amount <= 0)
+			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
 		var/your_dir = "NORTH"
 
 		switch (user.dir)
@@ -240,7 +244,6 @@
 			if (WWinput(user, "This will start building a sandbag wall [your_dir] of you.", "Sandbag Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
 				if (do_after(user, sandbag_time, user.loc))
-					var/obj/item/weapon/sandbag/sandbag/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
 					var/obj/structure/window/sandbag/sandbag/incomplete/sb = new/obj/structure/window/sandbag/sandbag/incomplete(src, user)

@@ -718,7 +718,8 @@
 	if (current_res[3] >= 19)
 		recipes += list(new/datum/stack_recipe("bandages", /obj/item/stack/medical/bruise_pack/bint, 1, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("foldable canopy", /obj/item/weapon/tent, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
-
+	if (current_res[2] >= 90)
+		recipes += list(new/datum/stack_recipe("sandbag", /obj/item/weapon/sandbag/sandbag/empty, 1, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 56)
 		recipes += list(new/datum/stack_recipe("trauma kit", /obj/item/stack/medical/advanced/bruise_pack, 2, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 43)
