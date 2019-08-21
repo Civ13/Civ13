@@ -34,6 +34,7 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[JAPANESE]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[RUSSIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[VIETNAMESE]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CHINESE]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[AMERICAN]
 	else
 		for (var/faction in map.faction_organization)
@@ -414,6 +415,8 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateGE"
 				if (VIETNAMESE)
 					spawn_location = "JoinLateJP"
+				if (CHINESE)
+					spawn_location = "JoinLateRU"
 				if (AMERICAN)
 					spawn_location = "JoinLateRN"
 		// fixes spawning at 1,1,1
@@ -569,6 +572,7 @@ var/global/datum/controller/occupations/job_master
 	var/russian = alive_n_of_side(RUSSIAN)
 	var/american = alive_n_of_side(AMERICAN)
 	var/vietnamese = alive_n_of_side(VIETNAMESE)
+	var/chinese = alive_n_of_side(CHINESE)
 
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
@@ -587,6 +591,7 @@ var/global/datum/controller/occupations/job_master
 	var/max_german = INFINITY
 	var/max_american = INFINITY
 	var/max_vietnamese = INFINITY
+	var/max_chinese = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -641,6 +646,8 @@ var/global/datum/controller/occupations/job_master
 
 		if (map.faction_distribution_coeffs.Find(VIETNAMESE))
 			max_vietnamese = ceil(relevant_clients * map.faction_distribution_coeffs[VIETNAMESE])
+		if (map.faction_distribution_coeffs.Find(CHINESE))
+			max_vietnamese = ceil(relevant_clients * map.faction_distribution_coeffs[CHINESE])
 	switch (side)
 		if (CIVILIAN)
 			if (civilians_forceEnabled)
@@ -735,5 +742,10 @@ var/global/datum/controller/occupations/job_master
 			if (vietnamese_forceEnabled)
 				return FALSE
 			if (vietnamese >= max_vietnamese)
+				return TRUE
+		if (CHINESE)
+			if (chinese_forceEnabled)
+				return FALSE
+			if (chinese >= max_chinese)
 				return TRUE
 	return FALSE

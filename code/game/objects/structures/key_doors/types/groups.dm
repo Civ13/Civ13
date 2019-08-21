@@ -342,6 +342,19 @@
 	unique_door_name = "Vietnamese locked"
 #undef VC_CODE
 
+#define CH_CODE 995 * 11
+/datum/keyslot/chinese
+	code = CH_CODE
+
+/obj/item/weapon/key/chinese
+	code = CH_CODE
+	name = "Chinese key"
+
+/obj/structure/simple_door/key_door/chinese
+	keyslot_type = /datum/keyslot/chinese
+	unique_door_name = "Chinese locked"
+#undef CH_CODE
+
 #define INS_CODE 995 * 9
 /datum/keyslot/insurgent
 	code = INS_CODE
