@@ -72,6 +72,10 @@
 		/obj/item/flashlight,
 		/obj/item/weapon/material/minihoe,
 		/obj/item/weapon/material/hatchet,
+		/obj/item/weapon/material/kunai_normal,
+		/obj/item/weapon/material/throwing_knife,
+		/obj/item/weapon/material/tomahawk,
+		/obj/item/weapon/material/throwing_axe,
 		)
 
 
