@@ -18,6 +18,7 @@
 	var/amount = FALSE
 	var/wall = FALSE
 	var/wood = TRUE
+	var/material = "Wood" //Depending on mat, depending on what harms it.
 	var/onfire = FALSE
 	flammable = TRUE
 	var/current_area_type = /area/caribbean
@@ -27,6 +28,23 @@
 //	invisibility = 101 //starts invisible
 
 
+/obj/covers/attackby(obj/item/W as obj, mob/user as mob)
+	switch(material)
+		if ("Wood")
+			//Do nothing, anything can cut through wood.
+		else if ("Stone")
+			//Swords no work on stone, unga dunga no knify wifey the wall.
+			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
+				user << "Your [W.name] glances off the [src.name]!"
+			else
+				//Damage the wall.
+		else if ("Metal")
+			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
+				user << "Your [W.name] glances off the [src.name]!"
+			else
+				//Damage the wall.
+		else
+			//Do nothing, you're not important.
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
@@ -34,6 +52,7 @@
 	passable = TRUE
 	amount = 1
 	layer = 1.99
+	material = "Wood"
 
 /obj/covers/wood/stairs
 	name = "wood stairs"

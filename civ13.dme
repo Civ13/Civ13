@@ -212,6 +212,7 @@
 #include "code\game\objects\items\weapons\nomadstuff.dm"
 #include "code\game\objects\items\weapons\paint.dm"
 #include "code\game\objects\items\weapons\shields.dm"
+#include "code\game\objects\items\weapons\sledgehammer.dm"
 #include "code\game\objects\items\weapons\snowball.dm"
 #include "code\game\objects\items\weapons\soap.dm"
 #include "code\game\objects\items\weapons\surgery_tools.dm"

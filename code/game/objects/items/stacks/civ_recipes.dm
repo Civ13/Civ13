@@ -1196,6 +1196,7 @@
 		recipes += new/datum/stack_recipe("large tin can", /obj/item/weapon/can/large, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/steelrods/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
 	if (current_res[1] >= 95 && map.ordinal_age >= 3)
 		recipes += new/datum/stack_recipe("jail bars", /obj/covers/jail/steeljail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/custom/jail/steeljail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
