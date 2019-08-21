@@ -131,7 +131,7 @@ var/global/list/exclude_jobs = list()
 
 //spawn
 var/global/list/latejoin_turfs = list()
-
+var/global/list/supplydrop_turfs = list()
 // Runes
 var/global/list/rune_list = new()
 var/global/list/escape_list = list()
