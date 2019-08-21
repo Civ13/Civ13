@@ -65,10 +65,12 @@ obj/structure/anvil/New()
 		return
 	else if (steel_amt > 0)
 		var/list/display = list("Swords", "Cancel")
-		if (map.ordinal_age == 4)
-			display = list("Swords","Guns", "Cancel")
+		if (map.ordinal_age == 3)
+			display = list("Swords","Other", "Cancel")
+		else if (map.ordinal_age == 4)
+			display = list("Swords", "Guns", "Other", "Cancel")
 		else if (map.ordinal_age >= 5)
-			display = list("Swords", "Armor", "Cancel")
+			display = list("Swords", "Guns", "Armor", "Other", "Cancel")
 		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display)
 		var/list/display2 = list("Cancel")
 		if (choice == "Cancel")
@@ -98,6 +100,9 @@ obj/structure/anvil/New()
 				display2 = list("M-1969 Flak Jacket (12)","woodland PASGT (15)","khaki PASGT (15)","Cancel")
 			else if (map.ordinal_age == 8)
 				display2 = list("Interceptor body armor (16)","Cancel")
+		else if (choice == "Other")
+			if (map.ordinal_age >= 4)
+				display2 = list("Steel rods (2)", "Cancel")
 		var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display2)
 		if (choice2 == "Cancel")
 			return
@@ -463,6 +468,23 @@ obj/structure/anvil/New()
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
+//Other crafting, more to add here later.
+		if (choice2 == "Steel rods (2)")
+			if (steel_amt >= 2)
+				user << "You begin crafting some steel rods..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,40,src) && steel_amt >= 2)
+					user << "You craft three steel rods!"
+					steel_amt -= 2
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/stack/material/steelrods(user.loc)
+					new/obj/item/stack/material/steelrods(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+//iron smelting stuff.
 	else if (iron_amt > 0)
 		var/list/display = list("Swords", "Armor", "Cancel")
 		if (map.ordinal_age >= 5)
