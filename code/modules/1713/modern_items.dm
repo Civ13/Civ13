@@ -232,6 +232,9 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+/obj/structure/lamp/lamp_small/broken
+	lamp_broken= TRUE
+
 /obj/structure/lamp/lamp_small/alwayson
 	powerneeded = 0
 	on = TRUE
@@ -248,6 +251,9 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	ltype = "ltube"
+
+/obj/structure/lamp/lamp_big/broken
+	lamp_broken= TRUE
 
 /obj/structure/lamp/lamp_big/alwayson
 	powerneeded = 0
