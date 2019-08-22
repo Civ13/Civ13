@@ -14,7 +14,7 @@
 	not_disassemblable = TRUE
 	var/protection_chance = 85 //prob of the projectile hitting the barricade
 
-
+/*
 /obj/structure/barricade/attackby(obj/item/W as obj, mob/user as mob)
 	switch(material)
 		if ("wood")
@@ -32,7 +32,7 @@
 				returns
 			else
 				//Damage the wall.
-		..()
+		..()*/
 
 /obj/structure/barricade/New(var/newloc)
 	..(newloc)

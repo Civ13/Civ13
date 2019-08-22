@@ -26,7 +26,7 @@
 	var/bullethole_count = 0
 //	invisibility = 101 //starts invisible
 	var/material = "Wood" //Depending on mat, depending on what harms it.
-
+/*
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
 	switch(material)
@@ -47,7 +47,7 @@
 				//Damage the wall.
 		else
 			//Do nothing, you're not important.
-			..()
+			..()*/
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
