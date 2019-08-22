@@ -20,24 +20,30 @@ var/list/global/floor_cache = list()
 	spawn(4)
 		if (src)
 			update_icon()
-			for (var/direction in list(1,2,4,8,5,6,9,10))
-				if (istype(get_step(src,direction),/turf/floor))
-					var/turf/floor/FF = get_step(src,direction)
-					if (istype(FF, /turf/floor/beach/water) && !flooded)
-						var/turf/floor/beach/water/WT = FF
-						flooded = TRUE
-						if (WT.salty)
-							ChangeTurf(/turf/floor/trench/flooded/salty)
-						else
-							ChangeTurf(/turf/floor/trench/flooded)
-					if (istype(FF, /turf/floor/trench/flooded) && !flooded)
-						var/turf/floor/trench/TR = FF
-						if (!TR.flooded)
-							if (salty)
-								TR.ChangeTurf(/turf/floor/trench/flooded/salty)
+			if (istype(src, /turf/floor/trench/flooded))
+				for (var/direction in list(1,2,4,8,5,6,9,10))
+					if (istype(get_step(src,direction),/turf/floor))
+						var/turf/floor/FF = get_step(src,direction)
+						if (istype(FF, /turf/floor/trench))
+							var/turf/floor/trench/TR = FF
+							if (!TR.flooded)
+								if (salty)
+									TR.ChangeTurf(/turf/floor/trench/flooded/salty)
+								else
+									TR.ChangeTurf(/turf/floor/trench/flooded)
+						FF.update_icon() //so siding get updated properly
+			else
+				for (var/direction in list(1,2,4,8,5,6,9,10))
+					if (istype(get_step(src,direction),/turf/floor))
+						var/turf/floor/FF = get_step(src,direction)
+						if (istype(FF, /turf/floor/beach/water) && !flooded)
+							var/turf/floor/beach/water/WT = FF
+							flooded = TRUE
+							if (WT.salty)
+								ChangeTurf(/turf/floor/trench/flooded/salty)
 							else
-								TR.ChangeTurf(/turf/floor/trench/flooded)
-					FF.update_icon() //so siding get updated properly
+								ChangeTurf(/turf/floor/trench/flooded)
+						FF.update_icon() //so siding get updated properly
 /turf/floor/trench/make_grass()
 	overlays.Cut()
 	if (islist(decals))
