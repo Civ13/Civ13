@@ -187,7 +187,7 @@
 
 /obj/structure/farming/plant/New()
 	..()
-	max_water = water
+	water = max_water
 
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
@@ -196,6 +196,7 @@
 	plant = "tomato"
 	biomes = list("temperate", "sea","semiarid", "desert", "jungle","savanna")
 	seasons = list("SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 55
 
 /obj/structure/farming/plant/hemp
 	name = "hemp plant"
@@ -203,6 +204,7 @@
 	icon_state = "hemp-grow1"
 	plant = "hemp"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	max_water = 60
 
 /obj/structure/farming/plant/corn
 	name = "corn plant"
@@ -211,6 +213,7 @@
 	plant = "corn"
 	biomes = list("temperate", "jungle","savanna", "desert", "sea","semiarid", "taiga")
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 70
 
 /obj/structure/farming/plant/wheat
 	name = "wheat plant"
@@ -219,18 +222,21 @@
 	plant = "wheat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "tundra", "taiga", "sea")
+	max_water = 50
 
 /obj/structure/farming/plant/potato
 	name = "potato plant"
 	desc = "a potato plant."
 	icon_state = "potato-grow1"
 	plant = "potato"
+	max_water = 75
 
 /obj/structure/farming/plant/carrot
 	name = "carrot plant"
 	desc = "a carrot plant."
 	icon_state = "carrot-grow1"
 	plant = "carrot"
+	max_water = 75
 
 /obj/structure/farming/plant/poppy
 	name = "poppy plant"
@@ -238,6 +244,7 @@
 	icon_state = "poppy-grow1"
 	plant = "poppy"
 	biomes = list("jungle","savanna", "desert")
+	max_water = 75
 
 /obj/structure/farming/plant/cabbage
 	name = "cabbage plant"
@@ -245,6 +252,7 @@
 	icon_state = "cabbage-grow1"
 	plant = "cabbage"
 	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
+	max_water = 70
 
 /obj/structure/farming/plant/apple
 	name = "apple tree"
@@ -252,6 +260,7 @@
 	icon_state = "orange-grow1"
 	plant = "apple"
 	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
+	max_water = 75
 
 /obj/structure/farming/plant/orange
 	name = "orange tree"
@@ -259,6 +268,7 @@
 	icon_state = "orange-grow1"
 	plant = "orange"
 	biomes = list("temperate", "tundra", "taiga", "desert", "sea","semiarid")
+	max_water = 75
 
 /obj/structure/farming/plant/tobacco
 	name = "tobacco plant"
@@ -266,6 +276,7 @@
 	icon_state = "tobacco-grow1"
 	plant = "tobacco"
 	biomes = list("desert", "jungle","savanna", "semiarid")
+	max_water = 55
 
 /obj/structure/farming/plant/sugarcane
 	name = "sugarcane"
@@ -273,6 +284,7 @@
 	icon_state = "sugarcane-grow1"
 	plant = "sugarcane"
 	biomes = list("jungle","savanna", "sea")
+	max_water = 60
 
 /obj/structure/farming/plant/tea
 	name = "tea"
@@ -280,6 +292,7 @@
 	icon_state = "tea-grow1"
 	plant = "tea"
 	biomes = list("jungle","savanna","sea","semiarid")
+	max_water = 50
 
 /obj/structure/farming/plant/peyote
 	name = "peyote"
@@ -287,6 +300,7 @@
 	icon_state = "peyote-grow1"
 	plant = "peyote"
 	biomes = list("desert")
+	max_water = 100
 
 /obj/structure/farming/plant/coffee
 	name = "coffee"
@@ -294,6 +308,7 @@
 	icon_state = "coffee-grow1"
 	plant = "coffee"
 	biomes = list("jungle","savanna", "desert", "semiarid")
+	max_water = 80
 
 /obj/structure/farming/plant/cotton
 	name = "cotton"
@@ -303,6 +318,7 @@
 	harvest_verb = "pick"
 	biomes = list("temperate", "desert", "sea","semiarid")
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 50
 
 /obj/structure/farming/plant/grapes
 	name = "grapes"
@@ -311,7 +327,7 @@
 	plant = "grapes"
 	biomes = list("temperate", "desert", "sea","semiarid")
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
-
+	max_water = 65
 /obj/structure/farming/plant/tree
 	name = "tree"
 	desc = "a tree, grown for wood."
@@ -319,6 +335,7 @@
 	plant = "tree"
 	harvest_verb = "cut some logs from"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	max_water = 80
 
 /obj/structure/farming/plant/rice
 	name = "rice"
@@ -327,6 +344,7 @@
 	plant = "rice"
 	harvest_verb = "harvest"
 	biomes = list("jungle","savanna","sea")
+	max_water = 30
 
 /obj/structure/farming/plant/banana
 	name = "banana"
@@ -334,6 +352,7 @@
 	icon_state = "banana-grow1"
 	plant = "banana"
 	biomes = list("jungle","savanna")
+	max_water = 45
 
 /obj/structure/farming/plant/coca
 	name = "coca"
@@ -341,6 +360,7 @@
 	icon_state = "coca-grow1"
 	plant = "coca"
 	biomes = list("jungle","savanna")
+	max_water = 75
 
 /obj/structure/farming/plant/mushroom
 	name = "mushroom"
@@ -350,13 +370,14 @@
 	harvest_verb = "harvest"
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
-
+	max_water = 55
 /obj/structure/farming/plant/olives
 	name = "olive"
 	desc = "an olive tree."
 	icon_state = "olives-grow1"
 	plant = "olives"
 	biomes = list("temperate", "desert", "sea","semiarid")
+	max_water = 70
 
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()
