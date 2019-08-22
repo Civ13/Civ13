@@ -19,11 +19,11 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak47/makeshift
-	name = "makeshift AK-47 magazine (7.62x39mm)"
+	name = "makeshift AK-47 magazine (7.5mm)"
 	icon_state = "makeshiftak-47"
 	mag_type = MAGAZINE
-	caliber = "a762x39"
-	ammo_type = /obj/item/ammo_casing/a762x39
+	caliber = "intermediumrifle"
+	ammo_type = /obj/item/ammo_casing/intermediumrifle
 	max_ammo = 28
 	weight = 0.6
 	multiple_sprites = TRUE

@@ -138,6 +138,7 @@
 		"medical" = list(100,100),
 		"philosophy" = list(100,100),
 		"mg" = list(100,100),
+		"farming" = list(100,100),
 		"stamina" = list(100,100))
 
 	var/has_hunger_and_thirst = TRUE

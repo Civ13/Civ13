@@ -182,6 +182,13 @@
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 	var/vstatic = FALSE // to "freeze" the image, so it can be used as a prop
 	var/fertilized = FALSE
+	var/water = 60
+	var/max_water = 60
+
+/obj/structure/farming/plant/New()
+	..()
+	max_water = water
+
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
 	desc = "a tomato plant."
@@ -377,6 +384,7 @@
 /obj/structure/farming/plant/proc/growth()
 	if (!vstatic)
 		if (stage < 12)
+			water_proc()
 			if (stage < readyStageMin)
 				icon_state = "[plant]-grow[stage]"
 				desc = "A young [plant] plant."
@@ -422,6 +430,41 @@
 		else // destroy
 			user << "<span class = 'warning'>You uproot the dead [name].</span>"
 			qdel(src)
+
+/obj/structure/farming/plant/proc/water_proc()
+	for(var/turf/floor/beach/water/WT in range(2,src))
+		if (!WT.salty)
+			water = max_water //water within 2 tiles means no need to manually water the plants.
+			return
+	for(var/turf/floor/trench/flooded/TR in range(2,src))
+		if (TR.flooded && !TR.salty)
+			water = max_water //water within 2 tiles means no need to manually water the plants.
+			return
+	var/currcl = get_area(get_turf(src)).climate
+	if (currcl == "desert" || currcl == "savanna" || currcl == "semiarid")
+		water -= 25
+	else
+		water -= 15
+
+	if (water <= 0)
+		stage = 11
+		icon_state = "[plant]-dead"
+		desc = "A dead [plant] plant."
+		name = "dead [plant] plant"
+
+/obj/structure/farming/plant/examine(mob/user)
+	..(user)
+	if (ishuman(user))
+		var/mob/living/carbon/human/H = user
+		if (H.getStatCoeff("farming")>= 1.6)
+			var/water_desc = "healthy"
+			if (water/max_water < 0.66 && water/max_water >= 0.33)
+				water_desc = "dry"
+			if (water/max_water < 0.33)
+				water_desc = "wilted"
+			user << "\The [src] seems <b>[water_desc]</b>."
+			if (fertilized)
+				user << "The ground is fertilized."
 
 //some specific, non-food plants
 /obj/structure/farming/plant/hemp/spawnProduce()

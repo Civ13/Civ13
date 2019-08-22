@@ -311,7 +311,7 @@
 	discord_log("[mob.name]/[key]:","[msg]")
 
 	var/ooc_style = "everyone"
-	if (holder && !holder.fakekey)
+	if (holder && !holder.fakekey && holder.rank != "HHost")
 		ooc_style = "elevated"
 		if (holder.rights & R_MOD)
 			ooc_style = "moderator"
@@ -323,7 +323,7 @@
 	for (var/client/target in clients)
 		if (target.is_preference_enabled(/datum/client_preference/show_ooc))
 			var/display_name = key
-			if (holder)
+			if (holder && holder.rank != "HHost")
 				if (holder.fakekey)
 					if (target.holder)
 						display_name = "[holder.fakekey]/([key])"

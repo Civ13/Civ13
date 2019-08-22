@@ -20,7 +20,10 @@
 	if (map && map.civilizations)
 		var/list/current_res = list(0,0,0)
 		if ((civ == "Nomad" || map.ID == MAP_TRIBES) && user)
-			current_res = map.custom_civs[user.civilization]
+			if (user.civilization == "none")
+				current_res = list(map.default_research,map.default_research,map.default_research)
+			else
+				current_res = map.custom_civs[user.civilization]
 		else
 			if (civ == "Civilization A Citizen")
 				current_res = map.civa_research
@@ -175,6 +178,7 @@
 
 /material/iron/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("iron sledgehammer", /obj/item/weapon/sledgehammer/iron/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 33)
 		recipes += new/datum/stack_recipe("extraction kit", /obj/item/weapon/reagent_containers/glass/extraction_kit, 14, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 33)
@@ -242,7 +246,7 @@
 			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("revolver speedloader (6)", /obj/item/ammo_magazine/emptyspeedloader, 1, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
-	else if (current_res[2] >= 110 && map.ordinal_age >= 6)
+	else if (current_res[2] >= 110 && map.ordinal_age >= 6 && map.ordinal_age <= 7)
 		recipes += new/datum/stack_recipe_list("magazines", list(
 			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -627,9 +631,12 @@
 		recipes += new/datum/stack_recipe("mirror", /obj/structure/mirror, 3, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("shower", /obj/structure/shower, 10, _time = 190, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (map && map.ordinal_age >= 3)
+		recipes += new/datum/stack_recipe("chemical dispenser", /obj/structure/chemical_dispenser, 12, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("stone sledgehammer", /obj/item/weapon/sledgehammer/stone/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone pillar",	/obj/structure/mine_support/stone, 2, _time = 130, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone brazier",	/obj/structure/brazier/stone, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map && map.ordinal_age == 0 && map.research_active == TRUE)
@@ -713,7 +720,8 @@
 	if (current_res[3] >= 19)
 		recipes += list(new/datum/stack_recipe("bandages", /obj/item/stack/medical/bruise_pack/bint, 1, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("foldable canopy", /obj/item/weapon/tent, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
-
+	if (current_res[2] >= 90)
+		recipes += list(new/datum/stack_recipe("sandbag", /obj/item/weapon/sandbag/sandbag/empty, 1, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 56)
 		recipes += list(new/datum/stack_recipe("trauma kit", /obj/item/stack/medical/advanced/bruise_pack, 2, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 43)
@@ -1117,6 +1125,7 @@
 			new/datum/stack_recipe("pink cable coil (10m)", /obj/item/stack/cable_coil/pink, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/bronze/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("bronze sledgehammer", /obj/item/weapon/sledgehammer/bronze/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 21 && current_res[2] >= 16)
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
@@ -1143,6 +1152,7 @@
 	recipes += new/datum/stack_recipe("shears", /obj/item/weapon/shears, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/steel/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("steel sledgehammer", /obj/item/weapon/sledgehammer/steel/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 96)
 		recipes += new/datum/stack_recipe("steel floor", /obj/covers/steelplating, 1, _time = 15, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("white floor", /obj/covers/steelplating/white, 1, _time = 15, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -1196,6 +1206,7 @@
 		recipes += new/datum/stack_recipe("large tin can", /obj/item/weapon/can/large, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/steelrods/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
 	if (current_res[1] >= 95 && map.ordinal_age >= 3)
 		recipes += new/datum/stack_recipe("jail bars", /obj/covers/jail/steeljail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/custom/jail/steeljail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -1477,6 +1488,7 @@
 	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))
 
 /material/lead/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	recipes += new/datum/stack_recipe("lead sledgehammer", /obj/item/weapon/sledgehammer/lead/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[3] >= 65)
 		recipes = list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
 
@@ -1488,12 +1500,14 @@
 		recipes += new/datum/stack_recipe("blood pack", /obj/item/weapon/reagent_containers/blood/empty, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 7 && current_res[1] >= 150)
 		recipes += new/datum/stack_recipe("lighter",/obj/item/weapon/flame/lighter/random, 3, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("trash bag",/obj/item/weapon/storage/bag/trash, 1, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("plastic bag",/obj/item/weapon/storage/bag/plasticbag, 0.75, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 5 && current_res[3] >= 102)
 		recipes += new/datum/stack_recipe("german gas mask", /obj/item/clothing/mask/gas/german, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("british gas mask", /obj/item/clothing/mask/gas/british, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 7 && current_res[3] >= 132)
 		recipes += new/datum/stack_recipe("modern gas mask (single sided)", /obj/item/clothing/mask/gas/modern, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("modern gas mask (double_sized)", /obj/item/clothing/mask/gas/modern2, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("modern gas mask (double sized)", /obj/item/clothing/mask/gas/modern2, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 6 && current_res[1] >= 125)
 		recipes += new/datum/stack_recipe_list("signs", list(
 			new/datum/stack_recipe("traffic cone", /obj/structure/sign/traffic/cone, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),

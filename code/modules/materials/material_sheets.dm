@@ -250,6 +250,9 @@
 	value = 5
 	max_amount = 500
 
+/obj/item/stack/material/steel/twentyfive
+	amount = 25
+
 /obj/item/stack/material/wood
 	name = "wooden plank"
 	icon_state = "sheet-wood"

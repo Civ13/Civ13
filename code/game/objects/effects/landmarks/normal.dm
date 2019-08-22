@@ -15,6 +15,9 @@
 	tag = text("landmark*[]", name)
 
 	switch(name)			//some of these are probably obsolete
+		if ("supplydrop")
+			supplydrop_turfs += get_turf(src)
+			qdel(src)
 		if ("start")
 			newplayer_start += loc
 			delete_me = TRUE

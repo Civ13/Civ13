@@ -186,7 +186,7 @@
 	name = "sand"
 	icon_state = "sand"
 	is_diggable = TRUE
-	available_sand = 4
+	available_sand = 22
 	initial_flooring = /decl/flooring/sand_beach
 
 /turf/floor/beach/sand/dark

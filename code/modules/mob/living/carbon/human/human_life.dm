@@ -168,7 +168,7 @@
 					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
-	if (stats.len)
+	if (stats && stats.len)
 	// hotfixes some stamina bugs
 		if (stats["stamina"][1] < 0)
 			stats["stamina"][1] = 0

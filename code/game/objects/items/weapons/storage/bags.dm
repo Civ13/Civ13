@@ -60,7 +60,9 @@
 	w_class = 4
 	max_w_class = 2
 	can_hold = list() // any
-
+	allow_quick_gather = FALSE
+	allow_quick_empty = TRUE
+	use_to_pickup = FALSE
 // -----------------------------
 //        Mining Satchel
 // -----------------------------
