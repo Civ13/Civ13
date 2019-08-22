@@ -8,4 +8,6 @@
 	nutriment_desc = list("potato" = TRUE)
 	decay = 70*400
 	satisfaction = -3
+	New()
+		..()
 		reagents.add_reagent("solanine", 2)

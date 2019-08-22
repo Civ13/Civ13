@@ -469,7 +469,7 @@ obj/structure/anvil/New()
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 //Other crafting, more to add here later.
-		if (choice2 == "Steel rods (2)")
+/*		if (choice2 == "Steel rods (2)")
 			if (steel_amt >= 2)
 				user << "You begin crafting some steel rods..."
 				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -483,7 +483,7 @@ obj/structure/anvil/New()
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
+				return*/
 //iron smelting stuff.
 	else if (iron_amt > 0)
 		var/list/display = list("Swords", "Armor", "Cancel")

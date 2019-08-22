@@ -36,15 +36,18 @@
 			//Swords no work on stone, unga dunga no knify wifey the wall.
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
 				user << "Your [W.name] glances off the [src.name]!"
+				return
 			else
 				//Damage the wall.
 		else if ("Metal" || "steel")
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
 				user << "Your [W.name] glances off the [src.name]!"
+				return
 			else
 				//Damage the wall.
 		else
 			//Do nothing, you're not important.
+			..()
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
