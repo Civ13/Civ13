@@ -45,6 +45,29 @@
 	var/dig_speed = 7
 	usespeed = 0.8
 
+/obj/item/weapon/pickaxe/jackhammer
+	name = "jackhammer"
+	desc = "An effecient mining tool."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "jackhammer"
+	force = 12.0
+	flags = CONDUCT
+	throwforce = 1.0
+	w_class = 6.0
+	item_state = "jackhammer"
+	attack_verb = list("drilled", "bludgeoned", "stabbed", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	slot_flags = SLOT_BACK
+	usespeed = 1.4
+
+//Needs two hands to use.
+/obj/item/weapon/pickaxe/jackhammer/proc/special_check(mob/user)
+	if (!(user.has_empty_hand(both = FALSE)))
+		user << "<span class='warning'>You need both hands to use the [src]!</span>"
+		return FALSE
+	..()
+
 /obj/item/weapon/pickaxe
 	name = "pickaxe"
 	desc = "Miner's favorite."
