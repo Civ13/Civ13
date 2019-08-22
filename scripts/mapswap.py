@@ -86,6 +86,8 @@ elif map == "NOMADS_CONTINENTAL":
 	dmms.append("#include \"maps\\special\\nomads_continental.dmm\"")
 elif map == "NOMADS_PANGEA":
 	dmms.append("#include \"maps\\special\\nomads_pangea.dmm\"")
+elif map == "NOMADS_WASTELAND":
+	dmms.append("#include \"maps\\special\\nomads_wasteland.dmm\"")
 
 elif map == "LITTLE_CREEK":
 	dmms.append("#include \"maps\\1873\\little_creek.dmm\"")

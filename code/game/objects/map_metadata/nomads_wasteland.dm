@@ -1,7 +1,7 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/nomads_wasteland
 	ID = MAP_NOMADS_WASTELAND
-	title = "Nomads (Temperate) (155x155x2)"
+	title = "Nomads (Wasteland) (235x235x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -14,7 +14,7 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "5000 B.C."
+	age = "2013"
 	civilizations = TRUE
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
@@ -27,7 +27,7 @@
 		"Empire Earth Intro:1" = 'sound/music/words_through_the_sky.ogg',)
 	research_active = TRUE
 	nomads = TRUE
-	gamemode = "Modern (No Research)"
+	gamemode = "Nuclear Wasteland"
 	ordinal_age = 8
 	default_research = 230
 /obj/map_metadata/nomads_wasteland/New()
