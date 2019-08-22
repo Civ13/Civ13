@@ -694,7 +694,7 @@
 /turf/proc/extracting_proc(var/mob/living/carbon/human/H, var/obj/item/weapon/reagent_containers/glass/extraction_kit/E)
 	if (!H || !src || !E)
 		return
-	var/list/elements = list("hydrogen", "helium", "lithium", "beryllium", "boron", "nitrogen", "oxygen", "fluorine", "neon", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "argon", "potassium", "calcium", "titanium", "cobalt", "nickel", "zinc", "gallium", "arsenic", "selenium", "krypton", "cadmium", "tellurium", "iodine", "xenon", "cesium", "barium", "tungsten", "iridium", "platinum", "bismuth", "polonium", "radon", "radium", "thorium")
+	var/list/elements = list("hydrogen", "helium", "lithium", "nitrogen", "oxygen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine")
 	var/randreg = pick(elements)
 	if (E.reagents.total_volume <= 0)
 		E.reagents.add_reagent(randreg,5)

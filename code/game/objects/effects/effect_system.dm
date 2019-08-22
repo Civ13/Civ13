@@ -352,6 +352,24 @@ steam.start() -- spawns the effect
 /datum/effect/effect/system/smoke_spread/bad
 	smoke_type = /obj/effect/effect/smoke/bad
 
+/datum/effect/effect/system/smoke_spread/bad/chem/payload/chlorine_gas
+	smoke_type = /obj/effect/effect/smoke/chem/payload/chlorine_gas
+
+/datum/effect/effect/system/smoke_spread/bad/chem/payload/mustard_gas
+	smoke_type = /obj/effect/effect/smoke/chem/payload/mustard_gas
+
+/datum/effect/effect/system/smoke_spread/bad/chem/payload/phosgene
+	smoke_type = /obj/effect/effect/smoke/chem/payload/phosgene
+
+/datum/effect/effect/system/smoke_spread/bad/chem/payload/white_phosphorus_gas
+	smoke_type = /obj/effect/effect/smoke/chem/payload/white_phosphorus_gas
+
+/datum/effect/effect/system/smoke_spread/bad/chem/payload/xylyl_bromide
+	smoke_type = /obj/effect/effect/smoke/chem/payload/xylyl_bromide
+
+/datum/effect/effect/system/smoke_spread/bad/chem/payload/zyklon_b
+	smoke_type = /obj/effect/effect/smoke/chem/payload/zyklon_b
+
 /datum/effect/effect/system/smoke_spread/sleepy
 	smoke_type = /obj/effect/effect/smoke/sleepy
 
