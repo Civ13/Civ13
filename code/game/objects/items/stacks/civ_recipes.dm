@@ -1111,6 +1111,7 @@
 		recipes += new/datum/stack_recipe("ammo clip (5)", /obj/item/ammo_magazine/emptyclip, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("ammo belt (100)", /obj/item/ammo_magazine/emptybelt, 7, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("grenade casing", /obj/item/stack/ammopart/casing/grenade, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe_list("cables", list(
