@@ -440,18 +440,38 @@
 		if (TR.flooded && !TR.salty)
 			water = max_water //water within 2 tiles means no need to manually water the plants.
 			return
+	var/area/A = get_area(loc)
+	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
+		water += 15
+		return
+	else if (findtext(A.icon_state, "snow_storm"))
+		stage = 11
+		icon_state = "[plant]-dead"
+		desc = "A frozen [plant] plant."
+		name = "frozen [plant] plant"
+		return
+	else if (findtext(A.icon_state, "sandstorm"))
+		stage = 11
+		icon_state = "[plant]-dead"
+		desc = "A destroyed [plant] plant."
+		name = "destroyed [plant] plant"
+		return
 	var/currcl = get_area(get_turf(src)).climate
 	if (currcl == "desert" || currcl == "savanna" || currcl == "semiarid")
 		water -= 25
 	else
 		water -= 15
 
+	if (map.heat_wave)
+		water -= 10
+
 	if (water <= 0)
 		stage = 11
 		icon_state = "[plant]-dead"
-		desc = "A dead [plant] plant."
-		name = "dead [plant] plant"
-
+		desc = "A dry [plant] plant."
+		name = "dry [plant] plant"
+		return
+	return
 /obj/structure/farming/plant/examine(mob/user)
 	..(user)
 	if (ishuman(user))
