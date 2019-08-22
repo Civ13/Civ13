@@ -34,7 +34,8 @@
 	..()
 	spawn(18000)
 		seasons()
-		nuke_proc()
+		var/randtimer = rand(108000,144000)
+		nuke_proc(randtimer)
 		supplydrop_proc()
 /obj/map_metadata/nomads_wasteland/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
@@ -45,10 +46,48 @@
 /obj/map_metadata/nomads_wasteland/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_wasteland/proc/nuke_proc()
-
+/obj/map_metadata/nomads_wasteland/proc/nuke_proc(var/timer=108000)
+	if (processes.ticker.playtime_elapsed > timer)
+		var/vx = rand(25,world.maxx-25)
+		var/vy = rand(25,world.maxy-25)
+		var/turf/epicenter = get_turf(locate(vx,vy,2))
+		world << "<font size=3 color='red'><center>ATTENTION<br>A nuclear missile is incoming! Take cover!</center></font>"
+		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		for (var/mob/M in player_list)
+			M.client << warning_sound
+		spawn(330)
+			world << "<font size=3 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>"
+			nuke_map(epicenter, 200, 180, 0)
+			message_admins("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
+			log_game("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
+			return
+	else
+		spawn(600)
+			nuke_proc(timer)
+	return
 /obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
+	if (world_radiation >= 280)
+		var/droptype = pick("supplies","food","weapons","medicine")
+		var/turf/locationt = pick(supplydrop_turfs)
+		switch(droptype)
+			if("supplies")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Supplies have been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/supplies(locationt)
 
+			if("food")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Food has been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/food(locationt)
+				new/obj/item/weapon/reagent_containers/glass/barrel/modern/water(locationt)
+
+			if("weapons")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Weapons and ammunition have been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/weapons(locationt)
+
+			if("medicine")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Medicine has been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/medicine(locationt)
+	spawn(rand(36000, 72000))
+		supplydrop_proc()
 /obj/map_metadata/nomads_wasteland/proc/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
