@@ -447,10 +447,12 @@
 	var/mob/living/carbon/human/U = user
 	recipes = material.get_recipes_civs(U.original_job_title, U)
 	..()
-
+/*
 /obj/item/stack/material/steelrods
 	name = "steel rods"
 	icon_state = "rods"
 	default_type = "steelrods"
-	value = 10
+	w_class = 2.0
+	value = 6
 	max_amount = 500
+	singular_name = "steel rod"*/

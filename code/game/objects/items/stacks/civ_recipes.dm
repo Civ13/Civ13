@@ -1163,6 +1163,9 @@
 		recipes += new/datum/stack_recipe_list("throwing", list(
 			new/datum/stack_recipe("throwing axe", /obj/item/weapon/material/throwing_axe, 3, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("[display_name] throwing knife", /obj/item/weapon/material/throwing_knife, 2, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),))
+		recipes += new/datum/stack_recipe("jail bars", /obj/covers/jail/steeljail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/custom/jail/steeljail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+
 	if (current_res[1] >= 71 && current_res[2] >= 79)
 		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 95 && current_res[2] >= 109)
@@ -1204,12 +1207,6 @@
 		recipes += new/datum/stack_recipe("small tin can (x3)", /obj/item/weapon/can/small, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("tin can (x2)", /obj/item/weapon/can, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("large tin can", /obj/item/weapon/can/large, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
-
-/material/steelrods/generate_recipes_civs(var/list/current_res = list(0,0,0))
-	..()
-	if (current_res[1] >= 95 && map.ordinal_age >= 3)
-		recipes += new/datum/stack_recipe("jail bars", /obj/covers/jail/steeljail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/custom/jail/steeljail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/bearpelt/brown/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
