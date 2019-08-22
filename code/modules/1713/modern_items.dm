@@ -234,6 +234,7 @@
 
 /obj/structure/lamp/lamp_small/broken
 	lamp_broken= TRUE
+	icon_state = "bulb_broken"
 
 /obj/structure/lamp/lamp_small/alwayson
 	powerneeded = 0
@@ -254,6 +255,7 @@
 
 /obj/structure/lamp/lamp_big/broken
 	lamp_broken= TRUE
+	icon_state = "tube_broken"
 
 /obj/structure/lamp/lamp_big/alwayson
 	powerneeded = 0

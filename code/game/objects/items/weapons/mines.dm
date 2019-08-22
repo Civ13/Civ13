@@ -104,6 +104,9 @@
 /obj/item/mine/Crossed(AM as mob|obj)
 	if (isobserver(AM)) return
 	if (istype(AM, /obj/item/projectile)) return
+	if (istype(AM, /mob/living))
+		var/mob/living/AMM = AM
+		if (AMM.mob_size <= MOB_SMALL) return
 	Bumped(AM)
 
 
@@ -111,6 +114,9 @@
 	if (isobserver(AM)) return
 	if (!anchored) return //If armed
 	if (triggered) return
+	if (istype(AM, /mob/living))
+		var/mob/living/AMM = AM
+		if (AMM.mob_size <= MOB_SMALL) return
 	trigger(AM)
 
 /obj/item/mine/proc/trigger(atom/movable/AM)

@@ -131,12 +131,13 @@ var/list/flooring_cache = list()
 		else
 			name = replacetext(name, "irradiated ", "")
 	else if (istype(src, /turf/floor/beach/water))
-		if(radiation >= 20)
+		if(radiation >= 20 && !findtext(name, "irradiated"))
 			if (!overlays.len)
 				overlays += icon(icon,"seashallow_swamp_overlay")
 				name = "irradiated " + name
 			else
 				overlays.Cut()
+				overlays += icon(icon,"seashallow_swamp_overlay")
 		else
 			name = replacetext(name, "irradiated ", "")
 /turf/floor/proc/get_flooring_overlay(var/cache_key, var/icon_base, var/icon_dir = FALSE)

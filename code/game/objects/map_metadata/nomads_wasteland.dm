@@ -100,6 +100,7 @@
 		for (var/turf/floor/winter/grass/G)
 			if (prob(60))
 				G.ChangeTurf(/turf/floor/grass)
+				G.radiation = world_radiation/10
 		for (var/turf/floor/dirt/burned/B)
 			var/area/A = get_area(B)
 			if (A.location == AREA_OUTSIDE)
@@ -141,6 +142,7 @@
 			var/area/A = get_area(D)
 			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed) && A.location == AREA_OUTSIDE && !istype(A,/area/caribbean/forest/dirt))
 				D.ChangeTurf(/turf/floor/grass)
+				D.radiation = world_radiation/10
 			D.update_icon()
 		for (var/turf/floor/dirt/burned/BD)
 			BD.ChangeTurf(/turf/floor/dirt)

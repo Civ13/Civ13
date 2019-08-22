@@ -48,16 +48,12 @@
 		return
 	radiation += amount
 	if(radiation >= 15 && (icon_state != deadicon_state || icon != deadicon) && !findtext(name,"irradiated"))
-		if(deadicon_state != "none")
-			icon = deadicon
-			icon_state = deadicon_state
-			health = health/2
-			maxhealth = maxhealth/2
-		else
-			health = health/2
-			maxhealth = maxhealth/2
+		icon = deadicon
+		icon_state = deadicon_state
+		health = health/2
+		maxhealth = maxhealth/2
 		name = "irradiated " + name
-	update_icon()
+		update_icon()
 
 /turf/floor/rad_act(amount)
 	if(amount <= 0)
