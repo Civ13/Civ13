@@ -48,6 +48,21 @@
 		else
 			//Do nothing, you're not important.
 			..()*/
+
+
+/obj/covers/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			Destroy(src)
+			return
+		if (2.0)
+			health -= initial(health)/2
+			return
+		if (3.0)
+			health -= initial(health)/10
+			return
+		else
+	return
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
