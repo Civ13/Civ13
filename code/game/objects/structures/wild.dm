@@ -206,6 +206,7 @@
 	edible = TRUE
 	leaves = 2
 	max_leaves = 2
+	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
 
 /obj/structure/wild/tree/live_tree/snow
 	name = "tree"
@@ -220,6 +221,7 @@
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
+	current_icon = 'icons/obj/flora/bigtrees_winter.dmi'
 /obj/structure/wild/tree/live_tree/snow/update_icon()
 	..()
 	icon = 'icons/obj/flora/bigtrees_winter.dmi'
@@ -258,23 +260,24 @@
 		icon_state = deadicon_state
 		return
 	else
+		icon = current_icon
+
+/obj/structure/wild/tree/live_tree/proc/change_season()
+	..()
+	if (radiation >= 15)
+		icon = deadicon
+		icon_state = deadicon_state
+		return
+	else
 		if (season == "WINTER")
-			icon = 'icons/obj/flora/bigtrees_winter.dmi'
-		else if (season == "SUMMER")
-			icon = 'icons/obj/flora/bigtrees.dmi'
-
-		else if (season == "FALL")
-			if (prob(40))
-				icon = 'icons/obj/flora/deadtrees.dmi'
+			current_icon = 'icons/obj/flora/bigtrees_winter.dmi'
+		else if (season in list("SUMMER","Wet Season"))
+			current_icon = 'icons/obj/flora/bigtrees.dmi'
+		else if (season in list("FALL","SPRING","Dry Season"))
+			if (prob(50))
+				current_icon = 'icons/obj/flora/deadtrees.dmi'
 			else
-				icon = 'icons/obj/flora/bigtrees.dmi'
-
-		else if (season == "SPRING")
-			if (prob(40))
-				icon = 'icons/obj/flora/bigtrees.dmi'
-			else
-				icon = 'icons/obj/flora/deadtrees.dmi'
-
+				current_icon = 'icons/obj/flora/bigtrees.dmi'
 
 /obj/structure/wild/tree/live_tree/try_destroy()
 	if (health <= 0)

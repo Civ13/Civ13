@@ -127,7 +127,7 @@
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/winter/D in get_area_turfs(/area/caribbean/nomads/forest))
 			if (get_area(D).climate == "temperate")
 				if (prob(60))
@@ -170,7 +170,7 @@
 		season = "FALL"
 		world << "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>. In the hot climates, the dry season continues.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/burned/BD)
 			BD.ChangeTurf(/turf/floor/dirt)
 		for (var/turf/floor/grass/G)
