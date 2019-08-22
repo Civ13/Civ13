@@ -257,23 +257,23 @@
 		icon = deadicon
 		icon_state = deadicon_state
 		return
-
-	else if (season == "WINTER")
-		icon = 'icons/obj/flora/bigtrees_winter.dmi'
-	else if (season == "SUMMER")
-		icon = 'icons/obj/flora/bigtrees.dmi'
-
-	else if (season == "FALL")
-		if (prob(40))
-			icon = 'icons/obj/flora/deadtrees.dmi'
-		else
+	else
+		if (season == "WINTER")
+			icon = 'icons/obj/flora/bigtrees_winter.dmi'
+		else if (season == "SUMMER")
 			icon = 'icons/obj/flora/bigtrees.dmi'
 
-	else if (season == "SPRING")
-		if (prob(40))
-			icon = 'icons/obj/flora/bigtrees.dmi'
-		else
-			icon = 'icons/obj/flora/deadtrees.dmi'
+		else if (season == "FALL")
+			if (prob(40))
+				icon = 'icons/obj/flora/deadtrees.dmi'
+			else
+				icon = 'icons/obj/flora/bigtrees.dmi'
+
+		else if (season == "SPRING")
+			if (prob(40))
+				icon = 'icons/obj/flora/bigtrees.dmi'
+			else
+				icon = 'icons/obj/flora/deadtrees.dmi'
 
 
 /obj/structure/wild/tree/live_tree/try_destroy()

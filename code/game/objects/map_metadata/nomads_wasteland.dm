@@ -19,7 +19,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>The nukes will drop in 3 to 4 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 3 to 4 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
