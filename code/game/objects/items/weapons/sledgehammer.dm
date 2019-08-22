@@ -26,7 +26,7 @@
 	flammable = FALSE
 	equiptimer = 32
 	weight = 80
-
+	force = 24
 /obj/item/weapon/sledgehammer/lead/sledgehammer
 	name = "Lead Sledgehammer"
 	desc = "A lead sledgehammer, extremely heavy, nearly impossible to use."
@@ -39,6 +39,7 @@
 	flammable = FALSE
 	equiptimer = 35
 	weight = 80
+	force = 32
 
 /obj/item/weapon/sledgehammer/bronze/sledgehammer
 	name = "Bronze Sledgehammer"
@@ -52,6 +53,7 @@
 	flammable = FALSE
 	equiptimer = 32
 	weight = 80
+	force = 40
 
 /obj/item/weapon/sledgehammer/iron/sledgehammer
 	name = "Iron Sledgehammer"
@@ -65,6 +67,7 @@
 	flammable = FALSE
 	equiptimer = 32
 	weight = 80
+	force = 52
 
 /obj/item/weapon/sledgehammer/steel/sledgehammer
 	name = "Steel Sledgehammer"
@@ -78,6 +81,8 @@
 	flammable = FALSE
 	equiptimer = 35
 	weight = 80
+	force = 66
+	slowdown = 5
 
 /obj/item/weapon/sledgehammer/uranium/sledgehammer
 	name = "Uranium Sledgehammer"
@@ -91,3 +96,9 @@
 	flammable = FALSE
 	equiptimer = 30
 	weight = 80
+	force = 60
+
+/obj/item/weapon/sledgehammer/uranium/attack()
+	explosion(src.loc, 2, 2, 2, 2)
+	radiation_pulse(src.loc, 4, 15, 300, TRUE)
+	qdel(src)

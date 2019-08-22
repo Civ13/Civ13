@@ -462,3 +462,12 @@
 	color = "#707c13"
 	strength = 15
 	metabolism = REM
+
+/datum/reagent/toxin/solanine
+	name = "Solanine"
+	id = "solanine"
+	description = "Potatoes natural defense."
+	taste_description = "starch"
+	reagent_state = LIQUID
+	color = "#D3D3D3"
+	strength = 5
