@@ -19,7 +19,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 3 to 4 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
@@ -30,11 +30,20 @@
 	gamemode = "Nuclear Wasteland"
 	ordinal_age = 8
 	default_research = 230
+	research_active = FALSE
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
+	age5_done = TRUE
+	age6_done = TRUE
+	age7_done = TRUE
+	age8_done = TRUE
 /obj/map_metadata/nomads_wasteland/New()
 	..()
 	spawn(18000)
 		seasons()
-		var/randtimer = rand(108000,144000)
+		var/randtimer = rand(72000,108000)
 		nuke_proc(randtimer)
 		supplydrop_proc()
 /obj/map_metadata/nomads_wasteland/faction2_can_cross_blocks()
@@ -46,7 +55,7 @@
 /obj/map_metadata/nomads_wasteland/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_wasteland/proc/nuke_proc(var/timer=108000)
+/obj/map_metadata/nomads_wasteland/proc/nuke_proc(var/timer=72000)
 	if (processes.ticker.playtime_elapsed > timer)
 		var/vx = rand(25,world.maxx-25)
 		var/vy = rand(25,world.maxy-25)
