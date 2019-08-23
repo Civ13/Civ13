@@ -378,9 +378,9 @@
 
 /obj/structure/oilwell/attack_hand(var/mob/living/carbon/human/H)
 	if (!isemptylist(barrel))
-		H << "You start taking \the [barrel[1]] from \the [src]..."
+		H << "You start taking \the barrel from \the [src]..."
 		if (do_after(H,35,src))
-			visible_message("You remove \the [barrel[1]].","[H] removes \the [barrel[1]] from \the [src].")
+			visible_message("You remove \the barrel.","[H] removes \the barrel from \the [src].")
 		for(var/obj/item/weapon/reagent_containers/glass/barrel/B in barrel)
 			B.loc = get_turf(src)
 			barrel -= B

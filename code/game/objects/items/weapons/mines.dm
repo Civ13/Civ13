@@ -229,3 +229,16 @@
 			Bumped(user)
 	else
 		..()
+
+/obj/item/mine/boobytrap/trigger(atom/movable/AM)
+	if (world.time < nextCanExplode)
+		return
+	if (istype(AM, /mob/living))
+		for (var/mob/O in viewers(7, loc))
+			O << "<font color='red'>[AM] triggered the [src]!</font>"
+		triggered = TRUE
+		visible_message("<span class = 'red'><b>Click!</b></span>")
+		explosion(get_turf(src),2,2,4)
+		spawn(9)
+			if (src)
+				qdel(src)
