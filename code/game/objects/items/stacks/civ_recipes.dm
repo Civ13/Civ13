@@ -1487,9 +1487,9 @@
 	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))
 
 /material/lead/generate_recipes_civs(var/list/current_res = list(0,0,0))
-	recipes += new/datum/stack_recipe("lead sledgehammer", /obj/item/weapon/sledgehammer/lead/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes = list(new/datum/stack_recipe("lead sledgehammer", /obj/item/weapon/sledgehammer/lead/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE))
 	if (current_res[3] >= 65)
-		recipes = list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
 
 /material/plastic/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	recipes = list(new/datum/stack_recipe("filing cabinet",/obj/structure/filingcabinet, 6, _time = 95, _one_per_turf = TRUE, _on_floor = TRUE))
