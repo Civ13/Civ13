@@ -1,42 +1,35 @@
 #define NO_WINNER "The round is proceeding normally."
-/obj/map_metadata/colony
-	ID = MAP_COLONY
-	title = "Colony (155x225x2)"
-	lobby_icon_state = "imperial"
+/obj/map_metadata/pioneers
+	ID = MAP_PIONEERS
+	title = "Pioneers (200x200x2)"
+	lobby_icon_state = "wildwest"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	squad_spawn_locations = FALSE
 	faction_organization = list(
-		INDIANS,
-		CIVILIAN,
-		PIRATES,
-		SPANISH)
+		CIVILIAN)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(INDIANS) = /area/caribbean/british,
 		list(CIVILIAN) = /area/caribbean/british,
-		list(PIRATES) = /area/caribbean/british,
-		list(SPANISH) = /area/caribbean/british,
 		)
-	age = "1713"
-	ordinal_age = 3
-	faction_distribution_coeffs = list(INDIANS = 0.4, CIVILIAN = 0.4, PIRATE = 0.1, SPANISH = 0.1)
-	battle_name = "new colony"
-	mission_start_message = "<big>Europeans</b> have reached the shore! The <b>Colonists</b> must build their villages. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND COLONISTS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
+	age = "1873"
+	ordinal_age = 4
+	faction_distribution_coeffs = list( CIVILIAN = 1,)
+	battle_name = "new frontier"
+	mission_start_message = "<big>Pioneers</b> have reached the frontier! The <b>Pioneers</b> must build their town. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - PIONEERS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
-	faction1 = INDIANS
 	faction2 = CIVILIAN
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
-	gamemode = "Colony Building RP"
+	gamemode = "Pioneer Building RP"
 
-/obj/map_metadata/colony/New()
+/obj/map_metadata/pioneers/colony/New()
 	..()
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/colony/proc/seasons()
+/obj/map_metadata/pioneers/proc/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"
@@ -189,13 +182,11 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	if (istype(J, /datum/job/civilian/fantasy))
 		. = FALSE
-/obj/map_metadata/colony/faction2_can_cross_blocks()
+
+/obj/map_metadata/pioneers/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/colony/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/colony/cross_message(faction)
+/obj/map_metadata/pioneers/cross_message(faction)
 	return ""
 
 

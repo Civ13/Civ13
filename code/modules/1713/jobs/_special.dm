@@ -16,6 +16,8 @@
 /datum/job/var/is_governor = FALSE
 /datum/job/var/is_merchant = FALSE
 /datum/job/var/is_religious = FALSE
+/datum/job/var/is_pioneer = FALSE
+/datum/job/var/is_1713 = FALSE
 /datum/job/var/is_RP = FALSE //to enable civilian jobs per faction
 /datum/job/var/is_army = FALSE //land troops
 /datum/job/var/is_marooned = FALSE //marooned pirate
