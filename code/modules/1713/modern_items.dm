@@ -985,3 +985,14 @@
 	else
 		icon_state = "bakelizer"
 
+/obj/structure/shopping_cart
+	name = "shopping_cart"
+	desc = "A metal shopping cart."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "shopping_cart"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	anchored = FALSE
+	opacity = FALSE
+

@@ -121,6 +121,10 @@
 	..(newloc,"steel","lime")
 
 
+/obj/structure/bed/chair/office
+	anchored = FALSE
+	buckle_movable = TRUE
+
 /obj/structure/bed/chair/office/update_icon()
 	return
 
@@ -168,6 +172,18 @@
 			victim.apply_effect(6, STUTTER, blocked)
 			victim.apply_damage(10, BRUTE, def_zone, blocked)
 		occupant.visible_message("<span class='danger'>[occupant] crashed into \the [A]!</span>")
+
+/obj/structure/bed/chair/office/light
+	icon_state = "officechair_white"
+
+/obj/structure/bed/chair/office/dark
+	icon_state = "officechair_dark"
+
+/obj/structure/bed/chair/office/New()
+	..()
+	var/image/I = image(icon, "[icon_state]_over")
+	I.layer = FLY_LAYER
+	overlays += I
 
 
 // Chair types
