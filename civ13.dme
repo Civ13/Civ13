@@ -278,6 +278,7 @@
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
 #include "code\game\objects\map_metadata\omaha.dm"
+#include "code\game\objects\map_metadata\pioneers.dm"
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\reichstag.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
