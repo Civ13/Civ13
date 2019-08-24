@@ -667,7 +667,7 @@
 		overlays += colorov2
 
 /obj/item/weapon/can/filled
-	var/list/randbrand = list("Master Taislin", "Metsobeshi", "Old Man", "Welmert", "McDonohugh", "Freeman", "Kostas Finest", "Slowman", "Pajeet Special", "Toyoda", "Uma Delicia", "Ooga's Cuisine", "Burner King")
+	var/list/randbrand = list("Master Taislin", "Metsobeshi", "Old Man", "Welmert", "McDonohugh", "McKellen's Delight", "Freeman", "Kostas Finest", "Slowman", "Pajeet Special", "Toyoda", "Uma Delicia", "Ooga's Cuisine", "Burner King")
 	var/list/custcolor = list("#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe", "#008080", "#e6beff", "#9a6324", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080", "#ffffff", "#000000")
 	var/list/filllist = list(/obj/item/weapon/reagent_containers/food/snacks/grown/grapes, /obj/item/weapon/reagent_containers/food/snacks/grown/olives, /obj/item/weapon/reagent_containers/food/snacks/grown/mushroom, /obj/item/weapon/reagent_containers/food/snacks/grown/melon, /obj/item/weapon/reagent_containers/food/snacks/grown/orange, /obj/item/weapon/reagent_containers/food/snacks/grown/apple, /obj/item/weapon/reagent_containers/food/snacks/grown/banana, /obj/item/weapon/reagent_containers/food/snacks/grown/coconut, /obj/item/weapon/reagent_containers/food/snacks/grown/tomato, /obj/item/weapon/reagent_containers/food/snacks/grown/beans, /obj/item/weapon/reagent_containers/food/snacks/grown/cabbage, /obj/item/weapon/reagent_containers/food/snacks/grown/carrot, /obj/item/weapon/reagent_containers/food/snacks/grown/corn)
 	var/currspawn = null
