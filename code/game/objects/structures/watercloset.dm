@@ -133,16 +133,18 @@
 
 /obj/structure/toilet/outhouse
 	name = "outhouse"
-	desc = "An outhouse, more privacy then a pit latrine!"
+	desc = "An outhouse, more privacy than a pit latrine!"
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "outhouse_closed"
+	density = TRUE
 	var/icon_state_closed = "outhouse_closed"
 	var/icon_state_open = "outhouse_open"
 	open = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	var/storage_capacity = 1 // One person size.
+	var/storage_capacity = 1 * MOB_MEDIUM // One person size.
 	var/stored_units = FALSE
+	var/store_mobs = TRUE
 	var/added_units = 0
 
 /obj/structure/toilet/outhouse/New()
@@ -154,12 +156,15 @@
 /obj/structure/toilet/outhouse/attack_hand(mob/living/user as mob)
 	if(open == FALSE)
 		open = TRUE
+		density = FALSE
 		icon_state = icon_state_open
 		dump_contents()
 	else
 		open = FALSE
+		density = TRUE
 		icon_state = icon_state_closed
-		store_mobs(stored_units)
+		store_mobs()
+		stored_units += store_mobs(stored_units)
 
 /obj/structure/toilet/outhouse/AltClick(var/mob/living/user)
 	return
@@ -174,20 +179,19 @@
 		if (M.client)
 			M.client.perspective = EYE_PERSPECTIVE
 			M.client.eye = src
+			M.crap_inside = TRUE
 		M.forceMove(src)
 		added_units += M.mob_size
 	return added_units
 
 /obj/structure/toilet/outhouse/proc/dump_contents()
 	//Cham Projector Exception
-	for (var/obj/I in src)
-		I.forceMove(loc)
-
 	for (var/mob/M in src)
 		M.forceMove(loc)
 		if (M.client)
 			M.client.eye = M.client.mob
 			M.client.perspective = MOB_PERSPECTIVE
+			M.crap_inside = FALSE
 
 /obj/structure/toilet/outhouse/male
 	name = "outhouse"
