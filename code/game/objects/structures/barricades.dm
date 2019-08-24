@@ -674,12 +674,12 @@
 	material_name = "wood"
 	protection_chance = 25
 
-/*
+
 /obj/structure/barricade/shelf/New()
 	..()
-	icon_state = pick("shelf1","shelf2","shelf3")
+	icon_state = "shelf0"
 	name = "shelf"
-*/
+
 
 /obj/structure/barricade/car
 	name = "car"

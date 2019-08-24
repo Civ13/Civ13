@@ -986,7 +986,7 @@
 		icon_state = "bakelizer"
 
 /obj/structure/shopping_cart
-	name = "shopping_cart"
+	name = "shopping cart"
 	desc = "A metal shopping cart."
 	icon = 'icons/obj/modern_structures.dmi'
 	icon_state = "shopping_cart"
@@ -996,30 +996,35 @@
 	anchored = FALSE
 	density = TRUE
 	opacity = FALSE
+	var/obj/item/weapon/storage/internal/storage
 
-/obj/structure/shopping_cart/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	update_icon()
-	if (istype(W, /obj/item/weapon/grab))
-		var/obj/item/weapon/grab/G = W
-		MouseDrop_T(G.affecting, user)      //act like they were dragged onto the closet
-		update_icon()
-		return FALSE
-	if (W.loc != user) // This should stop mounted modules ending up outside the module.
-		update_icon()
-		return
-	usr.drop_item()
-	if (W)
-		W.forceMove(loc)
-		if (contents.len < 5)
-			W.forceMove(loc)
-			user << "You put \the [W] in \the [src]."
-		else
-			user << "<span class = 'notice'>\The [src] is full!</span>"
-	update_icon()
-	return
-
-/obj/structure/shopping_cart/relaymove(mob/user, direction)
+/obj/structure/shopping_cart/update_icon()
+	overlays.Cut()
+	for (var/obj/item/I in storage)
+		overlays += image(I.icon, I.icon_state, layer=src.layer-0.1)
 	..()
-	for (var/obj/item/I in src)
-		I.forceMove(loc)
-		I.update_icon()
+
+/obj/structure/shopping_cart/New()
+	..()
+	storage = new/obj/item/weapon/storage/internal(src)
+	storage.storage_slots = 5	//two slots
+	storage.max_w_class = 5		//fit only pocket sized items
+	storage.max_storage_space = 25
+
+/obj/structure/shopping_cart/Destroy()
+	qdel(storage)
+	storage = null
+	..()
+
+/obj/structure/shopping_cart/attack_hand(mob/user as mob)
+	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+		storage.open(user)
+	else
+		return
+/obj/structure/shopping_cart/MouseDrop(obj/over_object as obj)
+	if (storage.handle_mousedrop(usr, over_object))
+		..(over_object)
+
+/obj/structure/shopping_cart/attackby(obj/item/W as obj, mob/user as mob)
+	..()
+	storage.attackby(W, user)
