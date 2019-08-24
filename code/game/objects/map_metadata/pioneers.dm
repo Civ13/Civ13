@@ -19,7 +19,7 @@
 	battle_name = "new frontier"
 	mission_start_message = "<big>Pioneers</b> have reached the frontier! The <b>Pioneers</b> must build their town. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - PIONEERS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
-	faction2 = CIVILIAN
+	faction1 = CIVILIAN
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Pioneer Building RP"
@@ -149,7 +149,7 @@
 	spawn(18000)
 		seasons()
 
-obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
+obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian))
 		. = TRUE
@@ -161,6 +161,8 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		if (J.is_rcw == TRUE)
 			. = FALSE
+		if (J.is_pioneer == TRUE)
+			. = TRUE
 	else if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
 	else if (J.is_medieval == TRUE)
@@ -168,8 +170,6 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (J.is_army == TRUE)
-		. = FALSE
-	else if (J.is_pioneer == TRUE)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE
