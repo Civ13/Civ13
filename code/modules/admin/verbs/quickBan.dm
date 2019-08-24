@@ -395,17 +395,32 @@ var/datum/quickBan_handler/quickBan_handler = null
 /* check if we're banned and tell us why we're banned */
 /client/proc/quickBan_rejected(var/bantype = "Server")
 
-	var/list/fields = quickBan_isbanned(bantype)
+	var/list/fields = list()
 
+	if (fexists("SQL/bans/ckey/[ckey].txt"))
+		var/details = file2text("SQL/bans/ckey/[ckey].txt")
+		var/list/details2 = splittext(details, ";")
+		if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+			fields = details2
+	else if (fexists("SQL/bans/ckey/[computer_id].txt"))
+		var/details = file2text("SQL/bans/ckey/[ckey].txt")
+		var/list/details2 = splittext(details, ";")
+		if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+			fields = details2
+	else if (fexists("SQL/bans/ckey/[address].txt"))
+		var/details = file2text("SQL/bans/ckey/[ckey].txt")
+		var/list/details2 = splittext(details, ";")
+		if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+			fields = details2
 	if (fields == FALSE)
 		fields = list()
 
-	if (!fields.Find("reason"))
+	if (!fields[2] == "nil")
 		return FALSE
 
-	var/reason = fields["reason"]
-	var/date = fields["ban_date"]
-	var/expire_info = fields["expire_info"]
+	var/reason = fields[2]
+	var/date = fields[6]
+	var/expire_info = fields[8]
 
 	if (reason)
 		if (bantype == "Server")
