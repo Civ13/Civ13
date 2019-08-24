@@ -665,3 +665,35 @@
 		var/image/colorov2 = image("icon" = icon, "icon_state" = "[base_icon]_o2")
 		colorov2.color = customcolor2
 		overlays += colorov2
+
+/obj/item/weapon/can/filled
+	var/list/randbrand = list("Master Taislin", "Metsobeshi", "Old Man", "Welmert", "McDonohugh", "Freeman", "Kostas Finest", "Slowman", "Pajeet Special", "Toyoda", "Uma Delicia", "Ooga's Cuisine", "Burner King")
+	var/list/custcolor = list("#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe", "#008080", "#e6beff", "#9a6324", "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080", "#ffffff", "#000000")
+	var/list/filllist = list(/obj/item/weapon/reagent_containers/food/snacks/grown/grapes, /obj/item/weapon/reagent_containers/food/snacks/grown/olives, /obj/item/weapon/reagent_containers/food/snacks/grown/mushroom, /obj/item/weapon/reagent_containers/food/snacks/grown/melon, /obj/item/weapon/reagent_containers/food/snacks/grown/orange, /obj/item/weapon/reagent_containers/food/snacks/grown/apple, /obj/item/weapon/reagent_containers/food/snacks/grown/banana, /obj/item/weapon/reagent_containers/food/snacks/grown/coconut, /obj/item/weapon/reagent_containers/food/snacks/grown/tomato, /obj/item/weapon/reagent_containers/food/snacks/grown/beans, /obj/item/weapon/reagent_containers/food/snacks/grown/cabbage, /obj/item/weapon/reagent_containers/food/snacks/grown/carrot, /obj/item/weapon/reagent_containers/food/snacks/grown/corn)
+	var/currspawn = null
+	icon_state = "can"
+/obj/item/weapon/can/filled/New()
+	..()
+	currspawn = pick(filllist)
+	brand = "[pick(randbrand)]"
+	stored = fill()
+	open = FALSE
+	sealed = TRUE
+	customcolor1 = pick(custcolor)
+	customcolor2 = pick(custcolor)
+	name = "[brand]'s [stored[1].name]"
+	spawn(1)
+		do_color()
+
+/obj/item/weapon/can/filled/proc/fill()
+	var/list/tlist = list()
+	currspawn = pick(filllist)
+	for (var/i=1, i <= rand(3,5), i++)
+		var/obj/item/weapon/reagent_containers/food/snacks/grown/GS = new currspawn(src)
+		GS.name = "canned [GS.name]"
+		if (GS.satisfaction > 0)
+			GS.satisfaction *= 0.5 //canned food doesn't taste as good
+		else
+			GS.satisfaction *= 1.5 //food that is already bad will taste worse when canned
+		tlist += GS
+	return tlist
