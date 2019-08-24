@@ -232,6 +232,10 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+/obj/structure/lamp/lamp_small/broken
+	lamp_broken= TRUE
+	icon_state = "bulb_broken"
+
 /obj/structure/lamp/lamp_small/alwayson
 	powerneeded = 0
 	on = TRUE
@@ -248,6 +252,10 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	ltype = "ltube"
+
+/obj/structure/lamp/lamp_big/broken
+	lamp_broken= TRUE
+	icon_state = "tube_broken"
 
 /obj/structure/lamp/lamp_big/alwayson
 	powerneeded = 0
@@ -977,3 +985,53 @@
 	else
 		icon_state = "bakelizer"
 
+/obj/structure/shopping_cart
+	name = "shopping cart"
+	desc = "A metal shopping cart."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "shopping_cart"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	anchored = FALSE
+	density = TRUE
+	opacity = FALSE
+	var/obj/item/weapon/storage/internal/storage
+
+/obj/structure/shopping_cart/update_icon()
+	overlays.Cut()
+	for (var/obj/item/I in storage)
+		var/image/IM = image(I.icon, I.icon_state, layer=src.layer-0.1)
+		var/matrix/M = matrix()
+		M.Scale(0.7)
+		IM.transform = M
+		overlays += IM
+	..()
+
+/obj/structure/shopping_cart/New()
+	..()
+	storage = new/obj/item/weapon/storage/internal(src)
+	storage.storage_slots = 5	//two slots
+	storage.max_w_class = 5		//fit only pocket sized items
+	storage.max_storage_space = 25
+	update_icon()
+/obj/structure/shopping_cart/Destroy()
+	qdel(storage)
+	storage = null
+	..()
+
+/obj/structure/shopping_cart/attack_hand(mob/user as mob)
+	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+		storage.open(user)
+		update_icon()
+	else
+		return
+/obj/structure/shopping_cart/MouseDrop(obj/over_object as obj)
+	if (storage.handle_mousedrop(usr, over_object))
+		..(over_object)
+		update_icon()
+
+/obj/structure/shopping_cart/attackby(obj/item/W as obj, mob/user as mob)
+	..()
+	storage.attackby(W, user)
+	update_icon()

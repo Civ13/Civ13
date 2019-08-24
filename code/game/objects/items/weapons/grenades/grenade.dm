@@ -545,3 +545,17 @@
 		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
 		prime()
 		return
+
+/obj/item/weapon/grenade/coldwar/nonfrag/custom
+	name = "explosive grenade"
+	desc = "An explosive grenade with no shrapnel."
+	icon_state = "m26"
+	det_time = 50
+	throw_range = 10
+
+/obj/item/weapon/grenade/modern/custom
+	name = "shrapnel grenade"
+	desc = "A grenade filled with metallic shrapnel."
+	icon_state = "mk2"
+	det_time = 50
+	throw_range = 9

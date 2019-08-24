@@ -108,6 +108,7 @@
 				MAP_REICHSTAG = 0,
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
+				MAP_NANJING = 10,
 			)
 
 		if (epoch == "Early Modern Era (1896-1933)")
@@ -163,6 +164,7 @@
 				MAP_NOMADS_DIVIDE = 0,
 				MAP_NOMADS_CONTINENTAL = 20,
 				MAP_NOMADS_PANGEA = 10,
+				MAP_NOMADS_WASTELAND = 0,
 				MAP_TRIBES = 8,
 				MAP_COLONY = 6,
 				MAP_JUNGLE_COLONY = 6,

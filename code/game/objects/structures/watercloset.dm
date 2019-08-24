@@ -364,30 +364,39 @@
 			if (H.head)
 				if (H.head.clean_blood())
 					H.update_inv_head(0)
+				H.head.radiation = 0
 			if (H.wear_suit)
 				if (H.wear_suit.clean_blood())
 					H.update_inv_wear_suit(0)
+				H.wear_suit.radiation = 0
 			else if (H.w_uniform)
 				if (H.w_uniform.clean_blood())
 					H.update_inv_w_uniform(0)
+				H.w_uniform.radiation = 0
 			if (H.gloves && washgloves)
 				if (H.gloves.clean_blood())
 					H.update_inv_gloves(0)
+				H.gloves.radiation = 0
 			if (H.shoes && washshoes)
 				if (H.shoes.clean_blood())
 					H.update_inv_shoes(0)
+				H.shoes.radiation = 0
 			if (H.wear_mask && washmask)
 				if (H.wear_mask.clean_blood())
 					H.update_inv_wear_mask(0)
+				H.wear_mask.radiation = 0
 			if (H.l_ear && washears)
 				if (H.l_ear.clean_blood())
 					H.update_inv_ears(0)
+				H.l_ear.radiation = 0
 			if (H.r_ear && washears)
 				if (H.r_ear.clean_blood())
 					H.update_inv_ears(0)
+				H.r_ear.radiation = 0
 			if (H.belt)
 				if (H.belt.clean_blood())
 					H.update_inv_belt(0)
+				H.belt.radiation = 0
 			H.clean_blood(washshoes)
 		else
 			if (M.wear_mask)						//if the mob is not human, it cleans the mask without asking for bitflags
@@ -615,6 +624,8 @@
 	if (user.get_active_hand() != I) return		//Person has switched hands or the item in their hands
 
 	O.clean_blood()
+	if (istype(O, /obj/item/clothing))
+		O.radiation = 0
 	user.visible_message( \
 		"<span class='notice'>[user] washes \a [I] using \the [src].</span>", \
 		"<span class='notice'>You wash \a [I] using \the [src].</span>")

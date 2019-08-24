@@ -8,6 +8,7 @@
 	throw_range = 15
 	sharp = TRUE
 	edge =  TRUE
+	w_class = 1
 
 /obj/item/weapon/material/star/New()
 	..()
@@ -24,6 +25,7 @@
 	throw_range = 13
 	sharp = TRUE
 	edge =  TRUE
+	w_class = 1
 
 /obj/item/weapon/material/kunai_normal/New()
 	..()
@@ -40,6 +42,7 @@
 	throw_range = 12
 	sharp = TRUE
 	edge =  TRUE
+	w_class = 1
 
 /obj/item/weapon/material/throwing_knife/New()
 	..()
@@ -56,6 +59,7 @@
 	throw_range = 8
 	sharp = TRUE
 	edge =  TRUE
+	w_class = 1
 
 /obj/item/weapon/material/tomahawk/New()
 	..()
@@ -72,7 +76,7 @@
 	throw_range = 9
 	sharp = TRUE
 	edge =  TRUE
-
+	w_class = 1
 /obj/item/weapon/material/throwing_axe/New()
 	..()
 	pixel_x = rand(-4, 4)

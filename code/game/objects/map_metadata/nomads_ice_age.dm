@@ -33,7 +33,7 @@
 /obj/map_metadata/nomads_ice_age/New()
 	..()
 	for (var/obj/structure/wild/tree/live_tree/TREES)
-		TREES.update_icon()
+		TREES.change_season()
 	spawn(9000)
 		seasons()
 
@@ -52,7 +52,7 @@
 		world << "<big>It's getting very cold. <b>Winter</b> has started.</big>"
 			change_weather_somehow()
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/obj/structure/wild/smallbush/SB)
 			new/obj/structure/wild/smallbush/winter(SB.loc)
 			qdel(SB)
@@ -76,7 +76,7 @@
 		world << "<big>The weather gets warmer. <b>Summer</b> has started.</big>"
 			change_weather_somehow()
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/obj/structure/wild/smallbush/winter/SBW)
 			new/obj/structure/wild/smallbush(SBW.loc)
 			qdel(SBW)

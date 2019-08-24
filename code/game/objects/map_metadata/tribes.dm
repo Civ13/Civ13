@@ -56,7 +56,7 @@
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 			TREES.leaves = TREES.max_leaves
 		for (var/turf/floor/dirt/winter/D)
 			if (prob(60))
@@ -100,7 +100,7 @@
 		season = "FALL"
 		world << "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/D)
 			var/area/A = get_area(D)
 			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed) && A.location == AREA_OUTSIDE)
@@ -134,7 +134,7 @@
 		season = "WINTER"
 		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/D)
 			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground) && !istype(D,/turf/floor/dirt/dust))
 				var/area/A = get_area(D)
@@ -162,7 +162,7 @@
 		season = "SUMMER"
 		world << "<big>The weather is warm. It is now <b>Summer</b>.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/winter/D)
 			D.ChangeTurf(/turf/floor/dirt)
 		for (var/turf/floor/winter/grass/G)

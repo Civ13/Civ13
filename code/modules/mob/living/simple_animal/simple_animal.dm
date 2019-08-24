@@ -666,6 +666,8 @@
 		for(var/turf/floor/grass/GT in range(2,src))
 			if (prob(33))
 				visible_message("\The [src] eats some grass.")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 550
 				adjustBruteLoss(-4)
 				GT.grassamt -= 1
@@ -681,6 +683,8 @@
 		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
 			if (prob(30))
 				visible_message("\The [src] eats some of the wheat.")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 550
 				adjustBruteLoss(-4)
 				qdel(WT)
@@ -691,6 +695,8 @@
 		for(var/obj/item/stack/farming/seeds/SD in range(2,src))
 			if (prob(35))
 				visible_message("<span class='notice'>\The [src] eats \the [SD]!</span>")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 500
 				adjustBruteLoss(-4)
 				qdel(SD)
@@ -698,6 +704,8 @@
 		for(var/obj/structure/farming/plant/PL in range(2,src))
 			if (prob(15))
 				visible_message("<span class='notice'>\The [src] eats \the [PL]!</span>")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 400
 				adjustBruteLoss(-4)
 				qdel(PL)
@@ -711,6 +719,8 @@
 			if (ML.stat == DEAD)
 				if (prob(33))
 					visible_message("\The [src] bites some meat of \the [ML].")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 					simplehunger += 400
 					adjustBruteLoss(-4)
 					if (istype(ML, /mob/living/simple_animal))
@@ -727,6 +737,8 @@
 		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
 			if (prob(33))
 				visible_message("\The [src] bites some of \the [FD].")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 400
 				adjustBruteLoss(-4)
 				if (prob(30))

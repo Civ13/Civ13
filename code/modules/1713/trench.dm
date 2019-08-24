@@ -9,23 +9,45 @@ var/list/global/floor_cache = list()
 	plane = UNDERFLOOR_PLANE
 	initial_flooring = /decl/flooring/trench
 	var/trench_filling = 0
+	var/flooded = FALSE
+	var/salty = FALSE
 
 /turf/floor/trench/New()
 	if (!icon_state)
 		icon_state = "trench"
-	//over_OS_darkness = image('icons/turf/floors.dmi', "black_open")
-	//over_OS_darkness.plane = GAME_PLANE
-	//over_OS_darkness.layer = 25
-	//over_OS_darkness.blend_mode = BLEND_MULTIPLY
+
 	..()
 	spawn(4)
 		if (src)
 			update_icon()
+			if (istype(src, /turf/floor/trench/flooded))
+				for (var/turf/floor/trench/TF in range(1, src))
+					if (!TF.flooded || !istype(TF,/turf/floor/trench/flooded))
+						if (salty)
+							TF.ChangeTurf(/turf/floor/trench/flooded/salty)
+						else
+							TF.ChangeTurf(/turf/floor/trench/flooded)
+			else
+				for (var/turf/floor/TF in range(1, src))
+					if (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded))
+						flooded = TRUE
+						if (istype(TF, /turf/floor/trench/flooded))
+							var/turf/floor/trench/flooded/WT = TF
+							if (WT.salty)
+								ChangeTurf(/turf/floor/trench/flooded/salty)
+							else
+								ChangeTurf(/turf/floor/trench/flooded)
+						else if (istype(TF, /turf/floor/beach/water))
+							var/turf/floor/beach/water/WT = TF
+							if (WT.salty)
+								ChangeTurf(/turf/floor/trench/flooded/salty)
+							else
+								ChangeTurf(/turf/floor/trench/flooded)
 			for (var/direction in list(1,2,4,8,5,6,9,10))
-				if (istype(get_step(src,direction),/turf/floor))
-					var/turf/floor/FF = get_step(src,direction)
-					FF.update_icon() //so siding get updated properly
-
+				if (istype(get_step(src,direction),/turf))
+					var/turf/FF = get_step(src,direction)
+					if (istype(FF, /turf/floor/trench))
+						FF.update_icon() //so siding get updated properly
 /turf/floor/trench/make_grass()
 	overlays.Cut()
 	if (islist(decals))
@@ -36,6 +58,20 @@ var/list/global/floor_cache = list()
 	levelupdate()
 
 	ChangeTurf(/turf/floor/trench)
+
+/turf/floor/trench/flooded
+	name = "flooded trench"
+	flooded = TRUE
+	icon_state = "trench_flooded"
+	base_icon_state = "trench_flooded"
+	initial_flooring = /decl/flooring/trench/flooded
+	salty = FALSE
+	move_delay = 4
+
+/turf/floor/trench/flooded/salty
+	name = "flooded saltwater trench"
+	salty = TRUE
+
 
 /turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
@@ -58,12 +94,21 @@ var/list/global/floor_cache = list()
 	if (trench_filling >= 2)
 		ChangeTurf(get_base_turf_by_area(src))
 	return
+
 /decl/flooring/trench
 	name = "trench"
-	desc = "Hole in the ground."
+	desc = "A knee-high trench."
 	icon = 'icons/turf/trench.dmi'
 	icon_base = "trench"
 	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+
+/decl/flooring/trench/flooded
+	name = "flooded trench"
+	desc = "A knee-high trench, flooded with water."
+	icon = 'icons/turf/trench.dmi'
+	icon_base = "trench_flooded"
+	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+
 
 /turf/floor/dirt
 	var/trench_stage = 0
@@ -129,15 +174,6 @@ var/list/global/floor_cache = list()
 				return TRUE
 
 	return ..()
-
-/turf/open/trench/update_icon()
-	..()
-	//Trench needs open_space like system or some object upon it so the objects inside get shaded
-	//overlays.Cut()
-	//var/image/over_OS_darkness = image('icons/turf/floors.dmi', "black_open")
-	//over_OS_darkness.plane = GAME_PLANE
-	//over_OS_darkness.layer = 25
-	//overlays += over_OS_darkness
 
 /turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/shovel/trench))

@@ -34,7 +34,7 @@
 		qdel(I)
 		return
 	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
-		fuel += 0.5
+		fuel += 1
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))

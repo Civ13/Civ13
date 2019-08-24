@@ -53,7 +53,7 @@ obj/structure/closet/crate/chest
 	icon_state = "wood_chest"
 	icon_opened = "wood_chest_opened"
 	icon_closed = "wood_chest"
-	storage_capacity = 3 * MOB_MEDIUM
+	storage_capacity = 5 * MOB_MEDIUM
 
 obj/structure/closet/crate/treasurechest
 	name = "treasure chest"
@@ -173,6 +173,20 @@ obj/structure/closet/crate/empty
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
+
+
+/obj/structure/closet/crate/cash_register
+	name = "cash_register"
+	desc = "A metal shopping cart."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "cash_register"
+	icon_opened = "cash_register_opened"
+	icon_closed = "cash_register"
+	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	anchored = TRUE
+	opacity = FALSE
 
 /obj/structure/closet/crate/bayonets
 	name = "bayonets crate"
@@ -486,4 +500,35 @@ obj/structure/closet/crate/coldwar/m26
 obj/structure/closet/crate/ww2/artillery_shells
 	name = "HE artillery shells"
 	paths = list(/obj/item/cannon_ball/shell = 10)
+
+obj/structure/closet/crate/airdrops
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	name = "military crate"
+
+obj/structure/closet/crate/airdrops/supplies
+	name = "supplies crate"
+	paths = list(/obj/item/weapon/reagent_containers/food/snacks/MRE/generic = 3,
+				/obj/item/stack/medical/advanced/bruise_pack = 1,
+				/obj/item/stack/medical/advanced/ointment = 1,
+				/obj/item/stack/material/steel/twentyfive = 1,
+				/obj/item/weapon/storage/pill_bottle/potassium_iodide = 1,)
+
+obj/structure/closet/crate/airdrops/food
+	name = "food crate"
+	paths = list(/obj/item/weapon/reagent_containers/food/snacks/MRE/generic = 10,)
+
+obj/structure/closet/crate/airdrops/weapons
+	name = "weapons crate"
+	paths = list(/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47 = 2,
+				/obj/item/ammo_magazine/ak47/makeshift = 4,
+				/obj/item/weapon/grenade/coldwar/m67 = 3)
+
+obj/structure/closet/crate/airdrops/medicine
+	name = "medicine crate"
+	paths = list(/obj/item/weapon/storage/firstaid/combat/modern = 1,
+				/obj/item/weapon/storage/firstaid/adv = 1,
+				/obj/item/weapon/storage/pill_bottle/potassium_iodide = 1,)
+
 #undef DYNAMIC_AMT

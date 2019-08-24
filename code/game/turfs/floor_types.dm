@@ -156,6 +156,8 @@
 	is_diggable = TRUE
 	available_snow = 2
 	initial_flooring = /decl/flooring/snow_grass
+	var/deadicon = 'icons/turf/snow.dmi'//Rad stuff what to turn into
+	var/deadicon_state = "dead_snowgrass"//Rad stuff what to turn into
 
 /turf/floor/winter/grass/New()
 	..()
@@ -186,7 +188,7 @@
 	name = "sand"
 	icon_state = "sand"
 	is_diggable = TRUE
-	available_sand = 4
+	available_sand = 22
 	initial_flooring = /decl/flooring/sand_beach
 
 /turf/floor/beach/sand/dark

@@ -12,6 +12,12 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 18750)
 	var/deployed = FALSE
 
+/obj/item/weapon/beartrap/armed
+	deployed = TRUE
+	anchored = TRUE
+	icon_state = "beartrap1"
+	layer = 2
+
 /obj/item/weapon/beartrap/proc/can_use(mob/user)
 	return (user.IsAdvancedToolUser() && !user.stat && !user.restrained())
 

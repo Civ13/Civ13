@@ -21,7 +21,7 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "stamps on"
 	density = FALSE
-	var/body_color //brown, gray and white, leave blank for random
+	var/body_color //brown, gray, black and white, leave blank for random
 	layer = MOB_LAYER
 	minbodytemp = 223		//Below -50 Degrees Celcius
 	maxbodytemp = 323	//Above 50 Degrees Celcius
@@ -108,6 +108,10 @@
 /mob/living/simple_animal/mouse/brown
 	body_color = "brown"
 	icon_state = "mouse_brown"
+
+/mob/living/simple_animal/mouse/black
+	body_color = "black"
+	icon_state = "mouse_black"
 
 //TOM IS ALIVE! SQUEEEEEEEE~K :)
 /mob/living/simple_animal/mouse/brown/Tom

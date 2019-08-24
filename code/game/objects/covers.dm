@@ -25,8 +25,44 @@
 	explosion_resistance = TRUE
 	var/bullethole_count = 0
 //	invisibility = 101 //starts invisible
+	var/material = "Wood" //Depending on mat, depending on what harms it.
+/*
+
+/obj/covers/attackby(obj/item/W as obj, mob/user as mob)
+	switch(material)
+		if ("Wood")
+			//Do nothing, anything can cut through wood.
+		else if ("Stone")
+			//Swords no work on stone, unga dunga no knify wifey the wall.
+			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
+				user << "Your [W.name] glances off the [src.name]!"
+				return
+			else
+				//Damage the wall.
+		else if ("Metal" || "steel")
+			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
+				user << "Your [W.name] glances off the [src.name]!"
+				return
+			else
+				//Damage the wall.
+		else
+			//Do nothing, you're not important.
+			..()*/
 
 
+/obj/covers/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			Destroy(src)
+			return
+		if (2.0)
+			health -= initial(health)/2
+			return
+		if (3.0)
+			health -= initial(health)/10
+			return
+		else
+	return
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
@@ -34,11 +70,13 @@
 	passable = TRUE
 	amount = 1
 	layer = 1.99
+	material = "Wood"
 
 /obj/covers/wood/stairs
 	name = "wood stairs"
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "wood2_stairs"
+	material = "Wood"
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -51,11 +89,13 @@
 	layer = 1.99
 	flammable = FALSE
 	explosion_resistance = 2
+	material = "Stone"
 
 /obj/covers/cobblestone/stairs
 	name = "stone stairs"
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "rampup"
+	material = "Stone"
 
 /obj/covers/road
 	name = "road"
@@ -68,6 +108,7 @@
 	layer = 1.99
 	flammable = FALSE
 	explosion_resistance = 2
+	material = "Stone"
 
 /obj/covers/road/New()
 	..()
@@ -84,10 +125,12 @@
 	layer = 1.99
 	flammable = FALSE
 	explosion_resistance = 3
+	material = "Steel"
 
 /obj/covers/steelplating/white
 	name = "white floor"
 	icon_state = "white"
+	material = "Steel"
 
 /obj/covers/concretefloor
 	name = "concrete floor"
@@ -99,6 +142,7 @@
 	layer = 1.99
 	flammable = FALSE
 	explosion_resistance = 4
+	material = "Stone"
 
 /obj/covers/concretefloor/New()
 	..()
@@ -115,6 +159,7 @@
 	layer = 1.99
 	flammable = FALSE
 	explosion_resistance = 2
+	material = "Stone"
 
 /obj/covers/wood_ship
 	name = "wood floor"
@@ -123,6 +168,7 @@
 	not_movable = TRUE
 	amount = 1
 	layer = 1.99
+	material = "Wood"
 
 //Carpets - To be Expanded upon Later
 
@@ -261,6 +307,7 @@
 	health = 90
 	wall = FALSE
 	explosion_resistance = 3
+	material = "Wood"
 
 
 /obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
@@ -286,6 +333,7 @@
 	health = 150
 	wall = TRUE
 	explosion_resistance = 5
+	material = "Wood"
 
 /obj/covers/wood_wall/shoji
 	name = "shoji wall"
@@ -301,6 +349,7 @@
 	health = 70
 	wall = TRUE
 	explosion_resistance = 1
+	material = "Wood"
 
 /obj/covers/wood_wall/shoji_divider
 	name = "shoji dividing wall"
@@ -316,6 +365,7 @@
 	health = 50
 	wall = TRUE
 	explosion_resistance = 1
+	material = "Wood"
 
 /obj/covers/wood_wall/log
 	name = "log wall"
@@ -331,9 +381,11 @@
 	health = 180
 	wall = TRUE
 	explosion_resistance = 7
+	material = "Wood"
 
 /obj/covers/wood_wall/log/corner
 	icon_state = "log_wall_corner"
+	material = "Wood"
 
 /obj/covers/stone_wall
 	name = "stone wall"
@@ -351,6 +403,7 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 10
+	material = "Stone"
 
 /obj/covers/sandstone_wall
 	name = "sandstone wall"
@@ -368,6 +421,7 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 8
+	material = "Stone"
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -401,6 +455,7 @@
 	wood = TRUE
 	wall = TRUE
 	explosion_resistance = 2
+	material = "Wood"
 
 /obj/covers/dirt_wall/blocks
 	name = "dirt blocks wall"
@@ -475,6 +530,7 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 6
+	material = "Stone"
 
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
@@ -493,6 +549,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	material = "Stone"
 
 /obj/covers/clay_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
@@ -532,6 +589,7 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 6
+	material = "Stone"
 
 /obj/covers/cement_wall
 	name = "cement wall"
@@ -549,6 +607,7 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 7
+	material = "Stone"
 
 /obj/covers/cement_wall/incomplete
 	name = "cement wall"
@@ -567,6 +626,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	material = "Stone"
 
 /obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
@@ -598,6 +658,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	material = "Stone"
 
 /obj/covers/brick_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired))
@@ -611,7 +672,87 @@
 			return
 	..()
 
+/obj/covers/jail/
+	name = "jail"
+	desc = "Do not use this."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "woodjail"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 3
+	health = 100000
+	wall = TRUE
+	explosion_resistance = 100
+	var/buildstackamount = 8
+	var/buildstack = /obj/item/stack/material/wood
+	material = "Wood"
 
+/obj/covers/jail/woodjail
+	name = "wood jail bars"
+	desc = "To keep prisoners in."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "woodjail"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 3
+	health = 200
+	wall = TRUE
+	explosion_resistance = 5
+	buildstackamount = 8
+	buildstack = /obj/item/stack/material/wood
+	opacity = 0
+	material = "Wood"
+
+/obj/covers/jail/steeljail
+	name = "steel jail bars"
+	desc = "To keep prisoners in better."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "steeljail"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 3
+	health = 800
+	wall = TRUE
+	explosion_resistance = 5
+	buildstackamount = 8
+	buildstack = /obj/item/stack/rods
+	opacity = 0
+	material = "Steel"
+
+/obj/covers/jail/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You pound the bars uselessly!"//sucker
+	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
+		user << "<span class='notice'>You start disassembling the [src]...</span>"
+		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+		if (do_after(user, 30, target = src))
+			for (var/i = TRUE, i <= buildstackamount, i++)
+				new buildstack(get_turf(src))
+			qdel(src)
+			return
+	return TRUE
+
+/obj/covers/jail/woodjail/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench or hammer since im wood..
+		user << "You pound the bars uselessly!" //sucker
+	else if (istype(W,/obj/item/weapon/wrench) || istype(W,/obj/item/weapon/hammer))//if it is a wrench or hammer since im wood.
+		user << "<span class='notice'>You start disassembling the [src]...</span>"
+		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+		if (do_after(user, 30, target = src))
+			for (var/i = TRUE, i <= buildstackamount, i++)
+				new buildstack(get_turf(src))
+			qdel(src)
+			return
+	return TRUE
 
 /obj/covers/New()
 	..()
@@ -639,7 +780,7 @@
 
 /obj/covers/Destroy()
 	var/area/caribbean/CURRENTAREA = get_area(src)
-	if (istype(CURRENTAREA, /area/caribbean/void/caves))
+	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
 			new current_area_type(get_turf(src))
 			visible_message("The roof collapses!")

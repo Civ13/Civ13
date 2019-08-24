@@ -188,8 +188,137 @@
 	max_amount = 1
 	value = 4
 
+/obj/item/stack/ammopart/casing/grenade
+	name = "empty grenade casing"
+	desc = "A large empty grenade casing."
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "casing"
+	force = WEAPON_FORCE_HARMLESS+4
+	throwforce = WEAPON_FORCE_HARMLESS+7
+	resultpath = null
+	gunpowder_max = 2
+	max_amount = 1
+	value = 4
+	var/finished = FALSE
+	var/stype = "explosive"
+
+/obj/item/stack/ammopart/casing/grenade/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
+		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
+			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+	if (istype(W, /obj/item/stack/material/iron))
+		if (!(gunpowder >= gunpowder_max*amount))
+			user << "<span class = 'notice'>You need to fill the casings with gunpowder before filling the charge.</span>"
+			return
+		else if (W.amount < amount)
+			user << "<span class = 'notice'>Not enough iron. reduce the casings stack or add more iron to the stack.</span>"
+		else if (W.amount >= amount)
+			W.amount -= amount
+			stype = "shrapnel"
+			finished = TRUE
+			if (W.amount <= 0)
+				qdel(W)
+	if (gunpowder >= gunpowder_max*amount && finished)
+		attack_self(user)
+		return
+
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder >= gunpowder_max)
+		make_chemical(W,user)
+		return
+
+/obj/item/stack/ammopart/casing/grenade/proc/make_chemical(var/obj/item/weapon/reagent_containers/CH, var/mob/living/user)
+	for (var/reg in list("xylyl_bromide","mustard_gas","white_phosphorus_gas","chlorine_gas","phosgene_gas","zyklon_b", "hexachloroetane", "napalm", "magnesium"))
+		if (CH.reagents.has_reagent(reg, 10))
+			CH.reagents.remove_reagent(reg, 10)
+			var/turf/T = get_turf(user)
+			user << "You craft a chemical warhead."
+			reg = replacetext(reg,"_gas","")
+			if (reg == "hexachloroetane")
+				var/resultp = text2path("/obj/item/weapon/grenade/smokebomb")
+				new resultp(T)
+			else if (reg == "napalm")
+				var/resultp = text2path("/obj/item/weapon/grenade/incendiary")
+				new resultp(T)
+			else if (reg == "magnesium")
+				var/resultp = text2path("/obj/item/weapon/grenade/flashbang")
+				new resultp(T)
+			else
+				var/resultp = text2path("/obj/item/weapon/grenade/chemical/[reg]")
+				new resultp(T)
+			if (amount <= 1)
+				qdel(src)
+			else
+				amount--
+			return
+	return
+/obj/item/stack/ammopart/casing/grenade/attack_self(mob/user)
+	if (finished)
+		switch(stype)
+			if ("explosive")
+				new/obj/item/weapon/grenade/coldwar/nonfrag/custom(user.loc)
+				qdel(src)
+				return
+			if ("shrapnel")
+				new/obj/item/weapon/grenade/modern/custom(user.loc)
+				qdel(src)
+				return
+	else
+		user << "<span class = 'notice'> You cannot do this yet.</span>"
+		return
+
 /obj/item/stack/ammopart/casing/artillery/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
+		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
+			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+	if (istype(W, /obj/item/stack/ammopart/bullet))
+		if (!(gunpowder >= gunpowder_max*amount))
+			user << "<span class = 'notice'>You need to fill the casings with gunpowder before putting the bullet.</span>"
+			return
+		else if (W.amount < amount)
+			user << "<span class = 'notice'>Not enough bullets. reduce the casings stack or add more bullets.</span>"
+		else if (W.amount >= amount)
+			bulletn = amount
+			W.amount -= amount
+			if (W.amount <= 0)
+				qdel(W)
+	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
+		attack_self(user)
+		return
+
 	if (istype(W, /obj/item/stack/cable_coil/))
 		if(W.amount < 5)
 			user << "<span class='notice'>You need more wires to do this.</span>"
@@ -203,6 +332,25 @@
 			qdel(src)
 			W.amount = W.amount - 1
 			new/obj/item/stack/ammopart/casing/artillery/wired(user.loc)
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder >= gunpowder_max)
+		make_chemical(W,user)
+		return
+
+/obj/item/stack/ammopart/casing/artillery/proc/make_chemical(var/obj/item/weapon/reagent_containers/CH, var/mob/living/user)
+	for (var/reg in list("xylyl_bromide","mustard_gas","white_phosphorus_gas","chlorine_gas","phosgene_gas","zyklon_b"))
+		if (CH.reagents.has_reagent(reg, 20))
+			CH.reagents.remove_reagent(reg, 20)
+			var/turf/T = get_turf(user)
+			user << "You craft a chemical warhead."
+			reg = replacetext(reg,"_gas","")
+			var/resultp = text2path("/obj/item/cannon_ball/shell/gas/[reg]")
+			new resultp(T)
+			if (amount <= 1)
+				qdel(src)
+			else
+				amount--
+			return
+	return
 
 /obj/item/stack/ammopart/casing/artillery/wired/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
@@ -344,6 +492,7 @@
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		for(var/i=1;i<=amount;i++)
 			new/obj/item/cannon_ball/shell(user.loc)
+		user << "You produce HE artillery shells."
 		qdel(src)
 		return
 	else
@@ -818,6 +967,16 @@
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a44p
 	caliber = "a44p"
+	value = 2
+
+/obj/item/ammo_casing/a57x28
+	name = "a57x28mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a57x28
+	caliber = "a57x28"
 	value = 2
 
 /obj/item/ammo_casing/shotgun

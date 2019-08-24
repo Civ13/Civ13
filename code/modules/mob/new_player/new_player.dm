@@ -629,6 +629,8 @@
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
 		dat += "[alive_vietnamese.len] Vietnamese "
+	if (CHINESE in map.faction_organization)
+		dat += "[alive_chinese.len] Chinese "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -652,6 +654,7 @@
 		GERMAN = FALSE,
 		AMERICAN = FALSE,
 		VIETNAMESE = FALSE,
+		CHINESE = FALSE,
 		)
 
 	var/prev_side = FALSE
@@ -726,6 +729,8 @@
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/vietnamese) && !vietnamese_toggled)
+			job_is_available = FALSE
+		if (istype(job, /datum/job/chinese) && !chinese_toggled)
 			job_is_available = FALSE
 		// check if the job is admin-locked or disabled codewise
 

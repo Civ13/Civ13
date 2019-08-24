@@ -538,7 +538,9 @@
 				if (world.time >= mob.next_mud_message)
 					mob << "<span class = 'warning'>The mud slows you down.</span>"
 					mob.next_mud_message = world.time+100
-
+			if (istype(F, /turf/floor/trench/flooded))
+				standing_on_snow = rand(2,3)
+				mob.next_mud_message = world.time+100
 		if (mob.velocity_lastdir != -1)
 			if (direct != mob.velocity_lastdir)
 				mob.velocity = max(mob.velocity-pick(1,2), FALSE)

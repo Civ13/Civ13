@@ -32,7 +32,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic
 	base_state = "mre_food"
 	icon_state = "mre_food"
-	name = "Generic MRE"
+	name = "MRE"
 	opens = FALSE
 	trash = /obj/item/weapon/generic_MRE_trash
 

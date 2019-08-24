@@ -369,11 +369,23 @@
 	item_state = "kevlarvest"
 	worn_state = "kevlarvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.3
 	w_class = 4
 	weight = 3.8
+
+/obj/item/clothing/head/helmet/kevlarhelmet
+	name = "black kevlar helmet"
+	desc = "A standard bulletproof helmet, made of kevlar."
+	icon_state = "kevlarhelmet"
+	item_state = "kevlarhelmet"
+	worn_state = "kevlarhelmet"
+	body_parts_covered = HEAD|FACE|EYES
+	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
 
 /obj/item/clothing/suit/armor/scrap
 	name = "scrap plate armor"
@@ -390,9 +402,9 @@
 /obj/item/clothing/head/helmet/scrap
 	name = "scrap metal helmet"
 	desc = "A makeshift helmet made of random metal."
-	icon_state = "knight_simple"
-	item_state = "knight_simple"
-	worn_state = "knight_simple"
+	icon_state = "scraphelmet"
+	item_state = "scraphelmet"
+	worn_state = "scraphelmet"
 	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
 	flags_inv = BLOCKHAIR
