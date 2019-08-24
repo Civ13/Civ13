@@ -865,5 +865,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_wasteland.dmm"
+#include "maps\1873\pioneers.dmm"
 // END_INCLUDE
