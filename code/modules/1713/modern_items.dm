@@ -994,5 +994,32 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	anchored = FALSE
+	density = TRUE
 	opacity = FALSE
 
+/obj/structure/shopping_cart/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	update_icon()
+	if (istype(W, /obj/item/weapon/grab))
+		var/obj/item/weapon/grab/G = W
+		MouseDrop_T(G.affecting, user)      //act like they were dragged onto the closet
+		update_icon()
+		return FALSE
+	if (W.loc != user) // This should stop mounted modules ending up outside the module.
+		update_icon()
+		return
+	usr.drop_item()
+	if (W)
+		W.forceMove(loc)
+		if (contents.len < 5)
+			W.forceMove(loc)
+			user << "You put \the [W] in \the [src]."
+		else
+			user << "<span class = 'notice'>\The [src] is full!</span>"
+	update_icon()
+	return
+
+/obj/structure/shopping_cart/relaymove(mob/user, direction)
+	..()
+	for (var/obj/item/I in src)
+		I.forceMove(loc)
+		I.update_icon()

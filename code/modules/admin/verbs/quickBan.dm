@@ -346,8 +346,14 @@ var/datum/quickBan_handler/quickBan_handler = null
 	var/expire_info = fields["expire_info"]
 
 	//txt database
+	if (fexists("SQL/bans/ip/[banip].txt"))
+		fdel("SQL/bans/ip/[banip].txt")
 	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/ip/[banip].txt")
+	if (fexists("SQL/bans/ip/[bancID].txt"))
+		fdel("SQL/bans/ip/[bancID].txt")
 	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/cid/[bancID].txt")
+	if (fexists("SQL/bans/ip/[banckey].txt"))
+		fdel("SQL/bans/ip/[banckey].txt")
 	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/ckey/[banckey].txt")
 
 
