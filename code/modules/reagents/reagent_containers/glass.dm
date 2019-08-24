@@ -485,6 +485,13 @@
 		..()
 		reagents.add_reagent("diesel",250)
 
+/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel/low
+	name = "diesel barrel"
+	desc = "A steel barrel, filled with diesel."
+	New()
+		..()
+		reagents.add_reagent("diesel",30)
+
 /obj/item/weapon/reagent_containers/glass/barrel/modern/biodiesel
 	name = "biodiesel barrel"
 	desc = "A steel barrel, filled with biodiesel."

@@ -53,7 +53,7 @@ obj/structure/closet/crate/chest
 	icon_state = "wood_chest"
 	icon_opened = "wood_chest_opened"
 	icon_closed = "wood_chest"
-	storage_capacity = 3 * MOB_MEDIUM
+	storage_capacity = 5 * MOB_MEDIUM
 
 obj/structure/closet/crate/treasurechest
 	name = "treasure chest"
@@ -173,6 +173,20 @@ obj/structure/closet/crate/empty
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
+
+
+/obj/structure/closet/crate/cash_register
+	name = "cash_register"
+	desc = "A metal shopping cart."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "cash_register"
+	icon_opened = "cash_register_opened"
+	icon_closed = "cash_register"
+	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	anchored = TRUE
+	opacity = FALSE
 
 /obj/structure/closet/crate/bayonets
 	name = "bayonets crate"

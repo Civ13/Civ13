@@ -668,15 +668,16 @@
 	name = "shelf"
 	desc = "A store shelf."
 	icon = 'icons/obj/junk.dmi'
-	icon_state = "shelf1"
+	icon_state = "shelf0"
 	health = 130
 	maxhealth = 130
 	material_name = "wood"
 	protection_chance = 25
 
+
 /obj/structure/barricade/shelf/New()
 	..()
-	icon_state = pick("shelf1","shelf2","shelf3")
+	icon_state = "shelf0"
 	name = "shelf"
 
 
