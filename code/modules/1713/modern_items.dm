@@ -1001,7 +1001,11 @@
 /obj/structure/shopping_cart/update_icon()
 	overlays.Cut()
 	for (var/obj/item/I in storage)
-		overlays += image(I.icon, I.icon_state, layer=src.layer-0.1)
+		var/image/IM = image(I.icon, I.icon_state, layer=src.layer-0.1)
+		var/matrix/M = matrix()
+		M.Scale(0.7)
+		IM.transform = M
+		overlays += IM
 	..()
 
 /obj/structure/shopping_cart/New()
@@ -1010,7 +1014,7 @@
 	storage.storage_slots = 5	//two slots
 	storage.max_w_class = 5		//fit only pocket sized items
 	storage.max_storage_space = 25
-
+	update_icon()
 /obj/structure/shopping_cart/Destroy()
 	qdel(storage)
 	storage = null
@@ -1019,12 +1023,15 @@
 /obj/structure/shopping_cart/attack_hand(mob/user as mob)
 	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
 		storage.open(user)
+		update_icon()
 	else
 		return
 /obj/structure/shopping_cart/MouseDrop(obj/over_object as obj)
 	if (storage.handle_mousedrop(usr, over_object))
 		..(over_object)
+		update_icon()
 
 /obj/structure/shopping_cart/attackby(obj/item/W as obj, mob/user as mob)
 	..()
 	storage.attackby(W, user)
+	update_icon()
