@@ -529,17 +529,10 @@ datum/admins/proc/print_chemical_reactions()
 /datum/chemical_reaction/napalm
 	name = "Napalm"
 	id = "napalm"
-	result = null
+	result = "napalm"
 	required_reagents = list("gasoline" = 1, "cotton" = 1)
 	result_amount = TRUE
 
-/datum/chemical_reaction/napalm/on_reaction(var/datum/reagents/holder, var/created_volume)
-	var/turf/location = get_turf(holder.my_atom.loc)
-	for (var/turf/floor/target_tile in range(0,location))
-	//	target_tile.assume_gas("tungsten", created_volume, 400+T0C)
-		spawn (0) target_tile.hotspot_expose(700, 400)
-	holder.del_reagent("napalm")
-	return
 
 /datum/chemical_reaction/chemsmoke
 	name = "Chemsmoke"
@@ -547,6 +540,63 @@ datum/admins/proc/print_chemical_reactions()
 	result = null
 	required_reagents = list("potassium" = 1, "sugar" = 1, "phosphorus" = 1)
 	result_amount = 0.4
+
+/datum/chemical_reaction/hexachloroetane
+	name = "Hexachloroetane"
+	id = "hexachloroetane"
+	result = "hexachloroetane"
+	required_reagents = list("chlorine" = 6, "carbon" = 2)
+	result_amount = 10
+
+/datum/chemical_reaction/chlorine_gas
+	name = "Chlorine Gas"
+	id = "chlorine_gas"
+	result = "chlorine_gas"
+	required_reagents = list("chlorine" = 5, "hydrogen" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/mustard_gas
+	name = "Mustard Gas"
+	id = "mustard_gas"
+	result = "mustard_gas"
+	required_reagents = list("carbon" = 4, "hydrogen" = 8, "chlorine" = 2, "sulfur" = 1)
+	result_amount = 10
+
+/datum/chemical_reaction/white_phosphorus_gas
+	name = "White Phosphorus Gas"
+	id = "white_phosphorus_gas"
+	result = "white_phosphorus_gas"
+	required_reagents = list("phosphorus" = 5, "hydrogen" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/phosgene_gas
+	name = "Phosgene Gas"
+	id = "phosgene_gas"
+	result = "phosgene_gas"
+	required_reagents = list("chlorine" = 5, "carbon" = 2.5, "oxygen" = 2.5)
+	catalysts = list("carbon" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/xylyl_bromide
+	name = "Xylyl Bromide"
+	id = "xylyl_bromide"
+	result = "xylyl_bromide"
+	required_reagents = list("carbon" = 6, "hydrogen" = 4, "bromine" = 1)
+	result_amount = 5
+
+/datum/chemical_reaction/zyklon_b
+	name = "Zyklon B"
+	id = "zyklon_b"
+	result = "zyklon_b"
+	required_reagents = list("cyanide" = 10, "hydrogen" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/cyanide
+	name = "Cyanide"
+	id = "cyanide"
+	result = "cyanide"
+	required_reagents = list("carbon" = 1, "nitrogen" = 1)
+	result_amount = 1
 
 /datum/chemical_reaction/chemsmoke/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)

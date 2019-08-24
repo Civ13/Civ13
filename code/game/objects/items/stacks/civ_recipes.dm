@@ -257,8 +257,7 @@
 			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("magazine (30)", /obj/item/ammo_magazine/emptymagazine/small, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("makeshift AK-47 magazine (28)", /obj/item/ammo_magazine/ak47/makeshift, 6, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[1] >= 95)
 		recipes += new/datum/stack_recipe("canner", /obj/structure/canner, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 115 && map.ordinal_age >= 5)
@@ -1111,6 +1110,7 @@
 		recipes += new/datum/stack_recipe("ammo clip (5)", /obj/item/ammo_magazine/emptyclip, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("ammo belt (100)", /obj/item/ammo_magazine/emptybelt, 7, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("grenade casing", /obj/item/stack/ammopart/casing/grenade, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe_list("cables", list(
@@ -1163,6 +1163,9 @@
 		recipes += new/datum/stack_recipe_list("throwing", list(
 			new/datum/stack_recipe("throwing axe", /obj/item/weapon/material/throwing_axe, 3, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("[display_name] throwing knife", /obj/item/weapon/material/throwing_knife, 2, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),))
+		recipes += new/datum/stack_recipe("jail bars", /obj/covers/jail/steeljail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/custom/jail/steeljail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+
 	if (current_res[1] >= 71 && current_res[2] >= 79)
 		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 95 && current_res[2] >= 109)
@@ -1196,7 +1199,8 @@
 
 		recipes += new/datum/stack_recipe_list("electrical", list(
 			new/datum/stack_recipe("street lamp", /obj/structure/lamp/lamppost_small, 3, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),))
-
+	if (map && map.ordinal_age >= 7)
+		new/datum/stack_recipe("jackhammer", /obj/item/weapon/pickaxe/jackhammer, 24, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/tin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("small tin pot", /obj/item/weapon/reagent_containers/glass/small_pot, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -1204,12 +1208,6 @@
 		recipes += new/datum/stack_recipe("small tin can (x3)", /obj/item/weapon/can/small, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("tin can (x2)", /obj/item/weapon/can, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("large tin can", /obj/item/weapon/can/large, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
-
-/material/steelrods/generate_recipes_civs(var/list/current_res = list(0,0,0))
-	..()
-	if (current_res[1] >= 95 && map.ordinal_age >= 3)
-		recipes += new/datum/stack_recipe("jail bars", /obj/covers/jail/steeljail, 8, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("jail door", /obj/structure/simple_door/key_door/custom/jail/steeljail, 12, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/bearpelt/brown/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -1488,9 +1486,9 @@
 	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))
 
 /material/lead/generate_recipes_civs(var/list/current_res = list(0,0,0))
-	recipes += new/datum/stack_recipe("lead sledgehammer", /obj/item/weapon/sledgehammer/lead/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes = list(new/datum/stack_recipe("lead sledgehammer", /obj/item/weapon/sledgehammer/lead/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE))
 	if (current_res[3] >= 65)
-		recipes = list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
 
 /material/plastic/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	recipes = list(new/datum/stack_recipe("filing cabinet",/obj/structure/filingcabinet, 6, _time = 95, _one_per_turf = TRUE, _on_floor = TRUE))

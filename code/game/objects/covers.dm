@@ -26,7 +26,7 @@
 	var/bullethole_count = 0
 //	invisibility = 101 //starts invisible
 	var/material = "Wood" //Depending on mat, depending on what harms it.
-
+/*
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
 	switch(material)
@@ -36,15 +36,33 @@
 			//Swords no work on stone, unga dunga no knify wifey the wall.
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
 				user << "Your [W.name] glances off the [src.name]!"
+				return
 			else
 				//Damage the wall.
 		else if ("Metal" || "steel")
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
 				user << "Your [W.name] glances off the [src.name]!"
+				return
 			else
 				//Damage the wall.
 		else
 			//Do nothing, you're not important.
+			..()*/
+
+
+/obj/covers/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			Destroy(src)
+			return
+		if (2.0)
+			health -= initial(health)/2
+			return
+		if (3.0)
+			health -= initial(health)/10
+			return
+		else
+	return
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
@@ -762,7 +780,7 @@
 
 /obj/covers/Destroy()
 	var/area/caribbean/CURRENTAREA = get_area(src)
-	if (istype(CURRENTAREA, /area/caribbean/void/caves))
+	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
 			new current_area_type(get_turf(src))
 			visible_message("The roof collapses!")

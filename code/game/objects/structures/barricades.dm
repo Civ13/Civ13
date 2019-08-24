@@ -14,7 +14,7 @@
 	not_disassemblable = TRUE
 	var/protection_chance = 85 //prob of the projectile hitting the barricade
 
-
+/*
 /obj/structure/barricade/attackby(obj/item/W as obj, mob/user as mob)
 	switch(material)
 		if ("wood")
@@ -23,14 +23,16 @@
 			//Swords no work on stone, unga dunga no knify wifey the wall.
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
 				user << "Your [W.name] glances off the [src.name]!"
+				return
 			else
 				//Damage the wall.
 		else if ("metal" || "steel")
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
 				user << "Your [W.name] glances off the [src.name]!"
+				returns
 			else
 				//Damage the wall.
-		..()
+		..()*/
 
 /obj/structure/barricade/New(var/newloc)
 	..(newloc)

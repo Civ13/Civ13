@@ -20,24 +20,34 @@ var/list/global/floor_cache = list()
 	spawn(4)
 		if (src)
 			update_icon()
-			for (var/direction in list(1,2,4,8,5,6,9,10))
-				if (istype(get_step(src,direction),/turf/floor))
-					var/turf/floor/FF = get_step(src,direction)
-					if (istype(FF, /turf/floor/beach/water) && !flooded)
-						var/turf/floor/beach/water/WT = FF
-						flooded = TRUE
-						if (WT.salty)
-							ChangeTurf(/turf/floor/trench/flooded/salty)
+			if (istype(src, /turf/floor/trench/flooded))
+				for (var/turf/floor/trench/TF in range(1, src))
+					if (!TF.flooded || !istype(TF,/turf/floor/trench/flooded))
+						if (salty)
+							TF.ChangeTurf(/turf/floor/trench/flooded/salty)
 						else
-							ChangeTurf(/turf/floor/trench/flooded)
-					if (istype(FF, /turf/floor/trench/flooded) && !flooded)
-						var/turf/floor/trench/TR = FF
-						if (!TR.flooded)
-							if (salty)
-								TR.ChangeTurf(/turf/floor/trench/flooded/salty)
+							TF.ChangeTurf(/turf/floor/trench/flooded)
+			else
+				for (var/turf/floor/TF in range(1, src))
+					if (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded))
+						flooded = TRUE
+						if (istype(TF, /turf/floor/trench/flooded))
+							var/turf/floor/trench/flooded/WT = TF
+							if (WT.salty)
+								ChangeTurf(/turf/floor/trench/flooded/salty)
 							else
-								TR.ChangeTurf(/turf/floor/trench/flooded)
-					FF.update_icon() //so siding get updated properly
+								ChangeTurf(/turf/floor/trench/flooded)
+						else if (istype(TF, /turf/floor/beach/water))
+							var/turf/floor/beach/water/WT = TF
+							if (WT.salty)
+								ChangeTurf(/turf/floor/trench/flooded/salty)
+							else
+								ChangeTurf(/turf/floor/trench/flooded)
+			for (var/direction in list(1,2,4,8,5,6,9,10))
+				if (istype(get_step(src,direction),/turf))
+					var/turf/FF = get_step(src,direction)
+					if (istype(FF, /turf/floor/trench))
+						FF.update_icon() //so siding get updated properly
 /turf/floor/trench/make_grass()
 	overlays.Cut()
 	if (islist(decals))

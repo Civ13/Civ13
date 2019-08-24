@@ -131,6 +131,8 @@
 			return
 
 /mob/living/carbon/human/handle_mutations_and_radiation()
+	get_rads_from_equipment()
+
 	if (world_radiation > 125)
 		var/area/A = get_area(src)
 		var/multiplier = 0.7
@@ -209,3 +211,22 @@
 			radiation = 0
 		else if (radiation > 750)
 			radiation = 750
+
+/mob/living/carbon/human/proc/get_rads_from_equipment()
+	if (head && head.radiation>0)
+		rad_act(head.radiation/6/1500)
+
+	if (wear_suit && wear_suit.radiation>0)
+		rad_act(wear_suit.radiation/4/1500)
+
+	if (w_uniform && w_uniform.radiation>0)
+		rad_act(w_uniform.radiation/4/1500)
+
+	if (gloves && gloves.radiation>0)
+		rad_act(gloves.radiation/10/1500)
+
+	if (shoes && shoes.radiation>0)
+		rad_act(shoes.radiation/10/1500)
+
+	if (wear_mask && wear_mask.radiation>0)
+		rad_act(wear_mask.radiation/10/1500)

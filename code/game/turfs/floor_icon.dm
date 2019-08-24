@@ -130,13 +130,24 @@ var/list/flooring_cache = list()
 					G.icon_state = G.deadicon_state
 		else
 			name = replacetext(name, "irradiated ", "")
+	if (istype(src, /turf/floor/winter/grass))
+		var/turf/floor/winter/grass/G = src
+		if(radiation >= 15)
+			if (G.icon_state != G.deadicon_state)
+				name = "irradiated " + name
+				if(G.deadicon_state != "none")
+					G.icon = G.deadicon
+					G.icon_state = G.deadicon_state
+		else
+			name = replacetext(name, "irradiated ", "")
 	else if (istype(src, /turf/floor/beach/water))
-		if(radiation >= 20)
+		if(radiation >= 20 && !findtext(name, "irradiated"))
 			if (!overlays.len)
 				overlays += icon(icon,"seashallow_swamp_overlay")
 				name = "irradiated " + name
 			else
 				overlays.Cut()
+				overlays += icon(icon,"seashallow_swamp_overlay")
 		else
 			name = replacetext(name, "irradiated ", "")
 /turf/floor/proc/get_flooring_overlay(var/cache_key, var/icon_base, var/icon_dir = FALSE)
