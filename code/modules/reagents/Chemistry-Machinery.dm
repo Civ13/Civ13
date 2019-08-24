@@ -136,13 +136,17 @@
 		if (B.reagents.reagent_list.len)
 			user << "You transfer the reagents to the dispenser."
 			for(var/datum/reagent/R in B.reagents.reagent_list)
-				if (dispensable_reagents.len)
-					for (var/list/r in dispensable_reagents)
-						if (R.id == r[1])
-							r[2] += B.reagents.get_reagent_amount(R.id)
-						else
-							dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
-				else
+				var/done = FALSE
+				for (var/list/r in dispensable_reagents)
+					if (R.id == r[1])
+						r[2] += B.reagents.get_reagent_amount(R.id)
+						done = TRUE
+						break
+					else
+						dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
+						done = TRUE
+						break
+				if (!done)
 					dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
 			B.reagents.clear_reagents()
 			return
