@@ -630,8 +630,8 @@
 		recipes += new/datum/stack_recipe("mirror", /obj/structure/mirror, 3, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("shower", /obj/structure/shower, 10, _time = 190, _one_per_turf = TRUE, _on_floor = TRUE)
-//	if (map && map.ordinal_age >= 3)
-//		recipes += new/datum/stack_recipe("chemical dispenser", /obj/structure/chemical_dispenser, 12, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (map && map.ordinal_age >= 3)
+		recipes += new/datum/stack_recipe("chemical dispenser", /obj/structure/chemical_dispenser, 12, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
