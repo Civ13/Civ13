@@ -1016,7 +1016,7 @@
 	density = TRUE
 	opacity = FALSE
 	var/obj/item/weapon/storage/internal/storage
-
+	var/max_storage = 6
 /obj/structure/shopping_cart/update_icon()
 	overlays.Cut()
 	for (var/obj/item/I in storage)
@@ -1030,9 +1030,9 @@
 /obj/structure/shopping_cart/New()
 	..()
 	storage = new/obj/item/weapon/storage/internal(src)
-	storage.storage_slots = 5	//two slots
-	storage.max_w_class = 5		//fit only pocket sized items
-	storage.max_storage_space = 25
+	storage.storage_slots = max_storage
+	storage.max_w_class = 5
+	storage.max_storage_space = max_storage*5
 	update_icon()
 /obj/structure/shopping_cart/Destroy()
 	qdel(storage)
@@ -1054,3 +1054,10 @@
 	..()
 	storage.attackby(W, user)
 	update_icon()
+
+/obj/structure/shopping_cart/mine
+	name = "mining cart"
+	desc = "A wooden mining cart, for underground rails."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "miningcaropen"
+	max_storage = 8
