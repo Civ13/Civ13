@@ -143,7 +143,7 @@
 		if (!NCC) return
 		NCC.connections += src
 		connections += NCC
-		user << "You connect the cable to the [src]."
+		user << "You connect the cable to \the [src]."
 		var/opdir1 = 0
 		var/opdir2 = 0
 		if (NCC.tiledir == "horizontal")
