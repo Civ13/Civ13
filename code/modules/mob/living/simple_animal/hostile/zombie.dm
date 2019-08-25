@@ -13,14 +13,14 @@
 	emote_hear = list("spooks")
 	emote_see = list("stares", "moves slowly","groans")
 	speak_chance = TRUE
-	speed = 8
+	speed = 12
 	maxHealth = 80
 	health = 80
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 14
 	melee_damage_lower = 8
 	melee_damage_upper = 14
-	move_to_delay = 8
+	move_to_delay = 12
 	break_stuff_probability = 25
 	attacktext = "scratched"
 	attack_sound = 'sound/animals/zombie/zombiehit.ogg'
@@ -29,9 +29,10 @@
 
 /mob/living/simple_animal/hostile/zombie/New()
 	..()
-	var/list/totalbodyparts = list("l_hand_s","r_hand_s","l_arm_s","r_arm_s","l_leg_s","r_leg_s","l_foot_s","r_foot_s", "head_s")
+	var/list/totalbodyparts = list("l_hand_s","r_hand_s","l_arm_s","r_arm_s","l_leg_s","r_leg_s","l_foot_s","r_foot_s")
 	icon = pick('icons/mob/zombie1.dmi','icons/mob/zombie2.dmi','icons/mob/zombie3.dmi')
 	bodyparts = totalbodyparts
+	bodyparts += "head_s"
 	if (prob(30))
 		if (prob(60))
 			bodyparts -= "l_hand_s"
@@ -56,10 +57,9 @@
 		else
 			bodyparts -= "l_leg_s"
 			bodyparts -= "l_foot_s"
-	move_to_delay = rand(6,9)
-	speed = rand(6,9)
 	maxHealth = rand(60,120)
 	health = maxHealth
+	limb_updates()
 	update_icons()
 
 /mob/living/simple_animal/hostile/zombie/update_icons()
@@ -102,3 +102,82 @@
 		if (HOSTILE_STANCE_ATTACKING)
 			var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
 			playsound(src.loc, sound2play, 100, TRUE)
+
+/mob/living/simple_animal/hostile/zombie/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
+	if (hit_zone in list("r_leg", "l_leg", "l_arm", "r_arm") && prob(25))
+		visible_message("<span class='notice'>[user] tried to strike \the [src] but missed!</span>")
+		return
+	else if (hit_zone in list("r_foot", "l_foot", "l_hand", "r_hand") && prob(40))
+		visible_message("<span class='notice'>[user] tried to strike \the [src] but missed!</span>")
+		return
+
+	else if (hit_zone == "head" && prob(35))
+		visible_message("<span class='notice'>[user] tried to strike \the [src] but missed!</span>")
+		return
+	else
+		visible_message("<span class='danger'>\The [src] has been attacked in \the [hit_zone] with \the [O] by [user].</span>")
+
+		if (O.force <= resistance)
+			user << "<span class='danger'>This weapon is ineffective, it does no damage.</span>"
+			return 2
+
+		var/damage = O.force
+		if (O.damtype == HALLOSS)
+			damage = FALSE
+
+		adjustBruteLoss(damage)
+		limb_hit(hit_zone)
+	return FALSE
+
+
+/mob/living/simple_animal/hostile/zombie/proc/limb_hit(var/limb)
+	if (limb == "head")
+		death()
+	else
+		if (limb in list("r_leg", "l_leg", "l_arm", "r_arm") && prob(50))
+			bodyparts -= "[limb]_s"
+			visible_message("[src]'s [parse_zone(limb)] gets severed!")
+			var/tmplimb = limb
+			tmplimb = replacetext(tmplimb, "arm", "hand")
+			tmplimb = replacetext(tmplimb, "leg", "foot")
+			bodyparts -= "[tmplimb]_s"
+		else
+			bodyparts -= "[limb]_s"
+			visible_message("[src]'s [parse_zone(limb)] gets severed!")
+	limb_updates()
+	update_icons()
+
+/mob/living/simple_animal/hostile/zombie/proc/limb_updates()
+	harm_intent_damage = 14
+	melee_damage_lower = 8
+	melee_damage_upper = 14
+	move_to_delay = 12
+	speed = 12
+
+	for (var/i in bodyparts)
+		if (i == "l_leg_s")
+			move_to_delay -= 2
+			speed -= 2
+		else if (i == "r_leg_s")
+			move_to_delay -= 2
+			speed -= 2
+		else if (i == "l_foot_s")
+			move_to_delay -= 1
+			speed -= 1
+		else if (i == "r_foot_s")
+			move_to_delay -= 1
+			speed -= 1
+		else if (i == "l_hand_s")
+			harm_intent_damage -= 4
+			melee_damage_lower -= 2
+			melee_damage_upper -= 4
+		else if (i == "r_hand_s")
+			harm_intent_damage -= 4
+			melee_damage_lower -= 2
+			melee_damage_upper -= 4
+		else if (i == "l_arm_s")
+			move_to_delay -= 1
+			speed -= 1
+		else if (i == "r_arm_s")
+			move_to_delay -= 1
+			speed -= 1
