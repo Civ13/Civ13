@@ -718,6 +718,9 @@
 			unlocked = 0
 			unlockedvol = 0
 			return
+	else
+		user << "Put money on the pump to use it."
+		return
 
 /obj/structure/fuelpump/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
