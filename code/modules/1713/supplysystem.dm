@@ -150,12 +150,12 @@
 	var/finalpath
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" )
-		for (var/i=1;i<=18,i++)
+		for (var/i=1;i<=23,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]+(itemprices[itemsnr[i]]*(import_tax_rate/100))] reales" //Simplicity so the crate's name can be shown in the list
 	else
 		import_tax_rate = input(user, "Set the import tax rate: (0%-100%)") as num
 		import_tax_rate = Clamp(import_tax_rate, 0, 100)
-		for (var/i=1;i<=28,i++)
+		for (var/i=1;i<=33,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]+(itemprices[itemsnr[i]]*(import_tax_rate/100))] reales"
 	var/choice = WWinput(user, "Order a crate: (Current Money: [money] reales; included IT: [import_tax_rate]%)", "Imports", "Cancel", display)
 	if (choice == "Cancel")

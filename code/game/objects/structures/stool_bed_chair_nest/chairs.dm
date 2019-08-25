@@ -193,6 +193,24 @@
 	icon_state = "wooden_chair"
 	applies_material_colour = FALSE
 
+/obj/structure/bed/chair/wood/bleacher
+	name = "wood bleacher"
+	desc = "A long bench like seat for a church."
+	icon_state = "bleacher"
+	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/wood/bleacher/r
+	name = "wood bleacher"
+	desc = "A long bench like seat for a church."
+	icon_state = "bleacher_r"
+	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/wood/bleacher/l
+	name = "wood bleacher"
+	desc = "A long bench like seat for a church."
+	icon_state = "bleacher_l"
+	applies_material_colour = FALSE
+
 /obj/structure/bed/chair/stone
 	name = "stone chair"
 	desc = "Old is never too old to not be in fashion."

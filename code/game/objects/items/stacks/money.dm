@@ -32,14 +32,14 @@
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "Dollar Bill"
 		icon_state = "money"
-		amount = 50
+		amount = 1
 		value = 1
 	else if (map.ordinal_age == 0)
 		name = "spanish reales"
 		desc = "A small silver coin."
 		singular_name = "real"
 		icon_state = "silvercoin_pile"
-		amount = 50
+		amount = 1
 		value = 1
 
 /obj/item/stack/money/dollar
@@ -56,7 +56,7 @@
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "5 Dollar Bill"
 		icon_state = "money"
-		amount = 20
+		amount = 1
 		value = 5
 	else if (map.ordinal_age == 0)
 		name = "spanish dollars"
@@ -80,7 +80,7 @@
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "20 Dollar Bill"
 		icon_state = "money"
-		amount = 25
+		amount = 1
 		value = 20
 	else if (map.ordinal_age == 0)
 		name = "spanish escudos"
@@ -104,7 +104,7 @@
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "50 Dollar Bill"
 		icon_state = "money"
-		amount = 10
+		amount = 1
 		value = 50
 	else if (map.ordinal_age == 0)
 		name = "spanish doubloons"
