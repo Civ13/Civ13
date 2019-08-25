@@ -167,3 +167,4 @@
 	icon_state = "flashlight_off"
 	on_state = "flashlight_on"
 	off_state = "flashlight_off"
+	slot_flags = SLOT_BELT|SLOT_MASK
