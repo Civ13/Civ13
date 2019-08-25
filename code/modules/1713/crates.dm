@@ -176,8 +176,8 @@ obj/structure/closet/crate/empty
 
 
 /obj/structure/closet/crate/cash_register
-	name = "cash_register"
-	desc = "A metal shopping cart."
+	name = "cash register"
+	desc = "Used to hold money at a shop."
 	icon = 'icons/obj/modern_structures.dmi'
 	icon_state = "cash_register"
 	icon_opened = "cash_register_opened"
