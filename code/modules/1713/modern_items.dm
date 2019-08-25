@@ -666,6 +666,22 @@
 	var/keycode = "0000"
 	var/customcolor = 0
 
+/obj/structure/fuelpump/premade
+	name = "UngOil fuel pump"
+	price = 0.3
+
+/obj/structure/fuelpump/premade/New()
+	..()
+	icon_state = "oilpump3"
+	customcolor = "#3cb44b"
+	keycode = "1000"
+	fueltype = pick("gasoline","diesel","biodiesel","ethanol","petroleum")
+	vol = rand(140,290)
+	do_color()
+	name = "UngOil [fueltype] pump"
+	price = rand(0.25,0.45)
+	updatedesc()
+
 /obj/structure/fuelpump/n
 	icon_state = "oilpump3"
 
