@@ -14,8 +14,8 @@
 	emote_see = list("stares", "moves slowly","groans")
 	speak_chance = TRUE
 	speed = 8
-	maxHealth = 100
-	health = 100
+	maxHealth = 80
+	health = 80
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 14
 	melee_damage_lower = 8
@@ -26,7 +26,6 @@
 	attack_sound = 'sound/animals/zombie/zombiehit.ogg'
 	faction = "neutral"
 	var/list/bodyparts = list()
-	var/stance_step = FALSE
 
 /mob/living/simple_animal/hostile/zombie/New()
 	..()
@@ -59,7 +58,10 @@
 			bodyparts -= "l_foot_s"
 	move_to_delay = rand(6,9)
 	speed = rand(6,9)
+	maxHealth = rand(60,120)
+	health = maxHealth
 	update_icons()
+
 /mob/living/simple_animal/hostile/zombie/update_icons()
 	..()
 	overlays.Cut()
@@ -76,65 +78,27 @@
 	. =..()
 	if (!.)
 		return
-
+	..()
 	switch(stance)
 
 		if (HOSTILE_STANCE_TIRED)
-			stop_automated_movement = TRUE
-			stance_step++
-			if (stance_step >= 10) //rests for 10 ticks
-				if (target_mob && target_mob in ListTargets(7))
-					stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
-				else
-					stance = HOSTILE_STANCE_IDLE
-					var/sound2play = pick('sound/animals/zombie/zombie_idle1.ogg', 'sound/animals/zombie/zombie_idle2.ogg', 'sound/animals/zombie/zombie_idle3.ogg','sound/animals/zombie/zombie_idle4.ogg','sound/animals/zombie/zombie_idle5.ogg','sound/animals/zombie/zombie_idle6.ogg','sound/animals/zombie/zombie_idle7.ogg')
-					playsound(src.loc, sound2play, 100, TRUE)
+			stance = HOSTILE_STANCE_IDLE
+
+		if (HOSTILE_STANCE_IDLE)
+			if (prob(10))
+				var/sound2play = pick('sound/animals/zombie/zombie_idle1.ogg', 'sound/animals/zombie/zombie_idle2.ogg', 'sound/animals/zombie/zombie_idle3.ogg','sound/animals/zombie/zombie_idle4.ogg','sound/animals/zombie/zombie_idle5.ogg','sound/animals/zombie/zombie_idle6.ogg','sound/animals/zombie/zombie_idle7.ogg')
+				playsound(src.loc, sound2play, 100, TRUE)
 
 		if (HOSTILE_STANCE_ALERT)
-			stop_automated_movement = TRUE
-			var/found_mob = FALSE
-			if (target_mob && target_mob in ListTargets(7))
-				if (!(SA_attackable(target_mob)))
-					stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
-					stance_step++
-					found_mob = TRUE
-					set_dir(get_dir(src,target_mob))	//Keep staring at the mob
+			if (prob(10))
+				var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
+				playsound(src.loc, sound2play, 100, TRUE)
 
-					if (stance_step in list(1,4,7)) //every 3 ticks
-						var/action = pick( list( "growls at [target_mob].", "stares angrily at [target_mob].", "prepares to attack [target_mob].", "closely watches [target_mob]." ) )
-						if (action)
-							custom_emote(1,action)
-							var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
-							playsound(src.loc, sound2play, 100, TRUE)
-
-			if (!found_mob)
-				stance_step--
-
-			if (stance_step <= -20) //If we have not found a mob for 20-ish ticks, revert to idle mode
-				stance = HOSTILE_STANCE_IDLE
-			if (stance_step >= 3)   //If we have been staring at a mob for 7 ticks,
-				stance = HOSTILE_STANCE_ATTACK
+		if (HOSTILE_STANCE_ATTACK)
+			if (prob(10))
 				var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
 				playsound(src.loc, sound2play, 100, TRUE)
 
 		if (HOSTILE_STANCE_ATTACKING)
-			if (stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
-				custom_emote(1, "is worn out and needs to rest." )
-				stance = HOSTILE_STANCE_TIRED
-				stance_step = FALSE
-				walk(src, FALSE) //This stops the bear's walking
-				return
-
-/mob/living/simple_animal/hostile/zombie/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ALERT
-		stance_step = 6
-		target_mob = user
-	..()
-
-/mob/living/simple_animal/hostile/zombie/attack_hand(mob/living/carbon/human/M as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ALERT
-		stance_step = 6
-		target_mob = M
-	..()
+			var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
+			playsound(src.loc, sound2play, 100, TRUE)
