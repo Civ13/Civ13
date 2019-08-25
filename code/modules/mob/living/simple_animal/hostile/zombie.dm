@@ -58,8 +58,8 @@
 			bodyparts -= "l_foot_s"
 	move_to_delay = rand(6,9)
 	speed = rand(6,9)
-	max_health = rand(60,120)
-	health = max_health
+	maxHealth = rand(60,120)
+	health = maxHealth
 	update_icons()
 
 /mob/living/simple_animal/hostile/zombie/update_icons()
