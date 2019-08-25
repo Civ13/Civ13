@@ -2,15 +2,15 @@
 	name = "\improper zombie"
 	desc = "A reanimated dead corpse."
 	icon = 'icons/mob/zombie1.dmi'
-	icon_state = "chest_s"
+	icon_state = ""
 	icon_dead = ""
 	turns_per_move = 8
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
-	speak = list("...")
-	speak_emote = list("groans")
-	emote_hear = list("spooks")
+	speak = list("arghh", "urrgh")
+	speak_emote = list("groans", "moans")
+	emote_hear = list("stares")
 	emote_see = list("stares", "moves slowly","groans")
 	speak_chance = TRUE
 	speed = 12
@@ -33,6 +33,7 @@
 	icon = pick('icons/mob/zombie1.dmi','icons/mob/zombie2.dmi','icons/mob/zombie3.dmi')
 	bodyparts = totalbodyparts
 	bodyparts += "head_s"
+	bodyparts += "chest_s"
 	if (prob(30))
 		if (prob(60))
 			bodyparts -= "l_hand_s"
@@ -65,15 +66,16 @@
 /mob/living/simple_animal/hostile/zombie/update_icons()
 	..()
 	overlays.Cut()
-	for(var/i in bodyparts)
-		overlays += image(icon, i)
+	if (stat == DEAD)
+		for(var/i in bodyparts)
+			overlays += image(icon, "[i]_dead")
+	else
+		for(var/i in bodyparts)
+			overlays += image(icon, i)
 
 /mob/living/simple_animal/hostile/zombie/death()
+	update_icons()
 	..()
-	new/obj/structure/religious/remains(src.loc)
-	qdel(src)
-	return
-
 /mob/living/simple_animal/hostile/zombie/Life()
 	. =..()
 	if (!.)
@@ -115,7 +117,7 @@
 		visible_message("<span class='notice'>[user] tried to strike \the [src] but missed!</span>")
 		return
 	else
-		visible_message("<span class='danger'>\The [src] has been attacked in \the [hit_zone] with \the [O] by [user].</span>")
+		visible_message("<span class='danger'>\The [src] has been attacked in \the [parse_zone(hit_zone)] with \the [O] by [user].</span>")
 
 		if (O.force <= resistance)
 			user << "<span class='danger'>This weapon is ineffective, it does no damage.</span>"
@@ -132,7 +134,9 @@
 
 /mob/living/simple_animal/hostile/zombie/proc/limb_hit(var/limb)
 	if (limb == "head")
-		death()
+		if (prob(50))
+			health = 0
+			death()
 	else
 		if (limb in list("r_leg", "l_leg", "l_arm", "r_arm") && prob(50))
 			bodyparts -= "[limb]_s"
@@ -141,9 +145,6 @@
 			tmplimb = replacetext(tmplimb, "arm", "hand")
 			tmplimb = replacetext(tmplimb, "leg", "foot")
 			bodyparts -= "[tmplimb]_s"
-		else
-			bodyparts -= "[limb]_s"
-			visible_message("[src]'s [parse_zone(limb)] gets severed!")
 	limb_updates()
 	update_icons()
 
