@@ -24,7 +24,7 @@
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Pioneer Building RP"
 	is_singlefaction = TRUE
-/obj/map_metadata/pioneers/colony/New()
+/obj/map_metadata/pioneers/New()
 	..()
 	spawn(18000)
 		seasons()
