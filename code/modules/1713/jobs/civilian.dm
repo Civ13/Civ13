@@ -1395,7 +1395,7 @@
 	return TRUE
 /datum/job/civilian/merchant_pioneer
 	title = "Merchant"
-	en_meaning = "Colony Trader"
+	en_meaning = "Town Trader"
 	rank_abbreviation = "Merchant"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
@@ -1450,7 +1450,7 @@
 	H.setStat("medical", STAT_NORMAL)
 
 	return TRUE
-/datum/job/civilian/priest
+/datum/job/civilian/priest_pioneer
 	title = "Priest"
 	en_meaning = "Town Priest"
 	rank_abbreviation = ""
@@ -1463,7 +1463,7 @@
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/civilian/priest/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/priest_pioneer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
@@ -1491,9 +1491,9 @@
 
 	return TRUE
 
-/datum/job/civilian/prospector
+/datum/job/civilian/prospector_pioneer
 	title = "Prospector"
-	en_meaning = "Colony Miner/Explorer"
+	en_meaning = "Miner/Explorer"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
@@ -1504,7 +1504,7 @@
 	min_positions = 3
 	max_positions = 40
 
-/datum/job/civilian/prospector/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/prospector_pioneer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1545,7 +1545,7 @@
 
 	return TRUE
 
-/datum/job/civilian/farmer
+/datum/job/civilian/farmer_pioneer
 	title = "Farmer"
 	en_meaning = "Farmer/Rancher"
 	rank_abbreviation = ""
@@ -1558,7 +1558,7 @@
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/civilian/farmer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/farmer_pioneer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1601,9 +1601,9 @@
 	H.setStat("farming", STAT_VERY_HIGH)
 
 	return TRUE
-/datum/job/civilian/carpenter
+/datum/job/civilian/carpenter_pioneer
 	title = "Carpenter"
-	en_meaning = "Colony Carpenter/Craftsman"
+	en_meaning = "Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
@@ -1614,7 +1614,7 @@
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/civilian/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/carpenter_pioneer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1672,9 +1672,9 @@
 
 	return TRUE
 
-/datum/job/civilian/blacksmith
+/datum/job/civilian/blacksmith_pioneer
 	title = "Blacksmith"
-	en_meaning = "Colony Blacksmith"
+	en_meaning = "Blacksmith"
 	rank_abbreviation = "Blacksmith"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
@@ -1686,7 +1686,7 @@
 	min_positions = 2
 	max_positions = 3
 
-/datum/job/civilian/blacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/blacksmith_pioneer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1745,9 +1745,9 @@
 	H.setStat("medical", STAT_VERY_LOW)
 	return TRUE
 
-/datum/job/civilian/inkeeper
+/datum/job/civilian/inkeeper_pioneer
 	title = "Inkeeper"
-	en_meaning = "Colony Innkeeper/Taverner"
+	en_meaning = "Innkeeper/Taverner"
 	rank_abbreviation = "Innkeeper"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivD"
@@ -1758,7 +1758,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/inkeeper/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/inkeeper_pioneer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1800,9 +1800,9 @@
 
 	return TRUE
 
-/datum/job/civilian/barkeep
+/datum/job/civilian/barkeep_pioneer
 	title = "Bar Keep/Bar Maiden"
-	en_meaning = "Colony Taverner"
+	en_meaning = "Taverner"
 	rank_abbreviation = "Waiter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
@@ -1813,7 +1813,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/barkeep/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/barkeep_pioneer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1857,7 +1857,7 @@
 
 
 
-/datum/job/civilian/worker
+/datum/job/civilian/worker_pioneer
 	title = "Pioneer"
 	en_meaning = "Settler"
 	rank_abbreviation = ""
@@ -1870,26 +1870,22 @@
 	min_positions = 10
 	max_positions = 150
 
-/datum/job/civilian/worker/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/worker_pioneer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
+		var/randcloth = rand(1,3)
 		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
 		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 
 	//head
 		var/randhead = rand(1,5)
@@ -1917,7 +1913,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
-	H.add_note("Role", "You are a simple <b>Colonist</b>. Build your village!")
+	H.add_note("Role", "You are a simple <b>Pioneer</b>build your town!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW)

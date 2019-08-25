@@ -25,6 +25,22 @@
 	icon_state = "silvercoin_pile"
 	amount = 50
 	value = 1
+/obj/item/stack/money/real/New()
+	..()
+	if (map.ordinal_age >= 4)
+		name = "Dollar Bills"
+		desc = "A/some dollar(s) of paper money."
+		singular_name = "Dollar Bill"
+		icon_state = "money"
+		amount = 50
+		value = 1
+	else if (map.ordinal_age == 0)
+		name = "spanish reales"
+		desc = "A small silver coin."
+		singular_name = "real"
+		icon_state = "silvercoin_pile"
+		amount = 50
+		value = 1
 
 /obj/item/stack/money/dollar
 	name = "spanish dollars"
@@ -33,6 +49,22 @@
 	icon_state = "silvercoin_pile"
 	amount = 1
 	value = 8
+/obj/item/stack/money/dollar/New()
+	..()
+	if (map.ordinal_age >= 4)
+		name = "5 Dollar Bills"
+		desc = "A/some dollar(s) of paper money."
+		singular_name = "5 Dollar Bill"
+		icon_state = "money"
+		amount = 20
+		value = 5
+	else if (map.ordinal_age == 0)
+		name = "spanish dollars"
+		desc = "A silver coin, also called piece of eight, worth 8 reales."
+		singular_name = "dollar"
+		icon_state = "silvercoin_pile"
+		amount = 1
+		value = 8
 
 /obj/item/stack/money/escudo
 	name = "spanish escudos"
@@ -41,6 +73,22 @@
 	icon_state = "goldcoin_pile"
 	amount = 1
 	value = 16
+/obj/item/stack/money/escudo/dollar/New()
+	..()
+	if (map.ordinal_age >= 4)
+		name = "20 Dollar Bills"
+		desc = "A/some dollar(s) of paper money."
+		singular_name = "20 Dollar Bill"
+		icon_state = "money"
+		amount = 25
+		value = 20
+	else if (map.ordinal_age == 0)
+		name = "spanish escudos"
+		desc = "A gold coin. Worth 16 reales."
+		singular_name = "escudo"
+		icon_state = "goldcoin_pile"
+		amount = 1
+		value = 16
 
 /obj/item/stack/money/doubloon
 	name = "spanish doubloons"
@@ -49,6 +97,22 @@
 	icon_state = "goldcoin_pile"
 	amount = 1
 	value = 32
+/obj/item/stack/money/doubloon/dollar/New()
+	..()
+	if (map.ordinal_age >= 4)
+		name = "50 Dollar Bills"
+		desc = "A/some dollar(s) of paper money."
+		singular_name = "50 Dollar Bill"
+		icon_state = "money"
+		amount = 10
+		value = 50
+	else if (map.ordinal_age == 0)
+		name = "spanish doubloons"
+		desc = "A large gold coin, the largest in circulation. Worth 32 reales."
+		singular_name = "doubloon"
+		icon_state = "goldcoin_pile"
+		amount = 1
+		value = 32
 
 /obj/item/stack/money/goldnugget
 	name = "gold nuggets"
