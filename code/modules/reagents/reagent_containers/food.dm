@@ -34,6 +34,8 @@
 			var/obj/structure/closet/fridge/F = loc
 			if (F.powered)
 				decaytimer += 100 //much slower
+			else
+				decaytimer += 300
 		else if (isturf(loc) && !findtext(src.name, "canned")) //if on the floor (i.e. not stored inside something), decay faster
 			decaytimer += 600
 		else if (!istype(loc, /obj/item/weapon/can) && !findtext(src.name, "canned")) //if not canned, since canned food doesn't spoil
