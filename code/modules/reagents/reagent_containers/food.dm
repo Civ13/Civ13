@@ -30,7 +30,11 @@
 	spawn(600)
 		if (decay == 0)
 			return
-		if (isturf(loc) && !findtext(src.name, "canned")) //if on the floor (i.e. not stored inside something), decay faster
+		if (istype(loc, /obj/structure/closet/fridge))
+			var/obj/structure/closet/fridge/F = loc
+			if (F.powered)
+				decaytimer += 100 //much slower
+		else if (isturf(loc) && !findtext(src.name, "canned")) //if on the floor (i.e. not stored inside something), decay faster
 			decaytimer += 600
 		else if (!istype(loc, /obj/item/weapon/can) && !findtext(src.name, "canned")) //if not canned, since canned food doesn't spoil
 			decaytimer += 300

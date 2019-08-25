@@ -324,6 +324,7 @@
 #include "code\game\objects\structures\crates_lockers\crates.dm"
 #include "code\game\objects\structures\crates_lockers\largecrate.dm"
 #include "code\game\objects\structures\crates_lockers\closets\coffin.dm"
+#include "code\game\objects\structures\crates_lockers\closets\fridge.dm"
 #include "code\game\objects\structures\crates_lockers\closets\wardrobe.dm"
 #include "code\game\objects\structures\key_doors\key.dm"
 #include "code\game\objects\structures\key_doors\key_door.dm"
