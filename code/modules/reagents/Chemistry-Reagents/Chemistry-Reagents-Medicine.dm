@@ -223,7 +223,7 @@
 	scannable = TRUE
 
 /datum/reagent/potassium_iodide/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.radiation = max(M.radiation - 15 * removed, FALSE)
+	M.radiation -= 15 * removed
 
 /datum/reagent/penicillin
 	name = "penicillin"

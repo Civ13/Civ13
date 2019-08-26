@@ -106,8 +106,7 @@
 	M.water += removed * 40
 	M.addictions["alcohol"] += 0.02
 
-	if (M.radiation>0)
-		M.radiation-=removed*0.02
+	M.radiation -= 1 * removed
 
 	M.add_chemical_effect(CE_ALCOHOL, TRUE)
 

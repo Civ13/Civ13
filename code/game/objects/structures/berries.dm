@@ -78,6 +78,16 @@
 	satisfaction = 3
 	var/randeffect = "neutral"
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/New()
+	..()
+	for (var/list/i in map.berryeffects)
+		if (i[1] == randeffect)
+			switch (i[2])
+				if ("drug","poisonous","healing")
+					reagents.add_reagent(i[3],5)
+				if ("tasty")
+					satisfaction = 6
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries/tinto
 	name = "tinto berries"
 	icon_state = "tintoberry"

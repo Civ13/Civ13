@@ -175,7 +175,7 @@ var/civmax_research = list(230,230,230)
 	var/list/wolfman = list()
 	var/list/crab = list()
 
-	var/list/berryeffects = list(list("neutral","neutral"), list("tinto","neutral"), list("amar","neutral"), list("majo","neutral"), list("narco","neutral"), list("azul","neutral"))
+	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"))
 
 /obj/map_metadata/New()
 	..()
@@ -206,7 +206,12 @@ var/civmax_research = list(230,230,230)
 
 	for (var/list/i in berryeffects)
 		i[2] = pick("neutral", "poisonous", "drug", "healing", "tasty")
-
+		if (i[2] == "poisonous")
+			i[3] = pick("amatoxin","cyanide", "food_poisoning", "solanine")
+		else if (i[2] == "drug")
+			i[3] = pick("peyote", "psilocybin","mindbreaker")
+		else if (i[2] == "healing")
+			i[3] = pick("paracetamol", "peninilin", "opium", "cocaine", "sal_acid")
 	spawn(5000)
 		pollution()
 	spawn(2400)

@@ -546,7 +546,7 @@
     chemical_symbol = "I"
 
 /datum/reagent/iodine/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	M.apply_effect(max(M.radiation - 2 * removed, 0), IRRADIATE, blocked = 0)
+	M.radiation -= 2 * removed
 
 /datum/reagent/xenon
 	name = "Xenon"
