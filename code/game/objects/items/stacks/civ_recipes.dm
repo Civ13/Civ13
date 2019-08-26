@@ -257,8 +257,7 @@
 			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("magazine (30)", /obj/item/ammo_magazine/emptymagazine/small, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("makeshift AK-47 magazine (28)", /obj/item/ammo_magazine/ak47/makeshift, 6, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[1] >= 95)
 		recipes += new/datum/stack_recipe("canner", /obj/structure/canner, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 115 && map.ordinal_age >= 5)
@@ -1115,7 +1114,7 @@
 
 	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe_list("cables", list(
-			new/datum/stack_recipe("cable connector", /obj/item/connector, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+//			new/datum/stack_recipe("cable connector", /obj/item/connector, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("white cable coil (10m)", /obj/item/stack/cable_coil/white, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red cable coil (10m)", /obj/item/stack/cable_coil/red, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue cable coil (10m)", /obj/item/stack/cable_coil/blue, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -1201,7 +1200,9 @@
 		recipes += new/datum/stack_recipe_list("electrical", list(
 			new/datum/stack_recipe("street lamp", /obj/structure/lamp/lamppost_small, 3, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map && map.ordinal_age >= 7)
-		new/datum/stack_recipe("jackhammer", /obj/item/weapon/pickaxe/jackhammer, 24, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("jackhammer", /obj/item/weapon/pickaxe/jackhammer, 24, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("refrigerator", /obj/structure/closet/fridge, 15, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
+
 /material/tin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("small tin pot", /obj/item/weapon/reagent_containers/glass/small_pot, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -1487,9 +1488,9 @@
 	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))
 
 /material/lead/generate_recipes_civs(var/list/current_res = list(0,0,0))
-	recipes += new/datum/stack_recipe("lead sledgehammer", /obj/item/weapon/sledgehammer/lead/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes = list(new/datum/stack_recipe("lead sledgehammer", /obj/item/weapon/sledgehammer/lead/sledgehammer, 12, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE))
 	if (current_res[3] >= 65)
-		recipes = list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
 
 /material/plastic/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	recipes = list(new/datum/stack_recipe("filing cabinet",/obj/structure/filingcabinet, 6, _time = 95, _one_per_turf = TRUE, _on_floor = TRUE))

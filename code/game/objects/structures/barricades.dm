@@ -664,22 +664,19 @@
 	icon_state = "hescobastion"
 	name = "hesco bastion"
 
-/obj/structure/barricade/shelf
+/obj/structure/shelf
 	name = "shelf"
 	desc = "A store shelf."
 	icon = 'icons/obj/junk.dmi'
-	icon_state = "shelf1"
-	health = 130
-	maxhealth = 130
-	material_name = "wood"
-	protection_chance = 25
+	icon_state = "shelf0"
 
-/obj/structure/barricade/shelf/New()
-	..()
-	icon_state = pick("shelf1","shelf2","shelf3")
-	name = "shelf"
-
-
+/obj/structure/shelf/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+	if (user.a_intent == I_HELP)
+		user.drop_from_inventory(W)
+		W.forceMove(loc)
+		user << "You put \the [W] on the shelf."
+	else
+		..()
 /obj/structure/barricade/car
 	name = "car"
 	desc = "An abandoned car."

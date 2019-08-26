@@ -131,6 +131,93 @@
 /obj/structure/toilet/pit_latrine/AltClick(var/mob/living/user)
 	return
 
+<<<<<<< master
+/obj/structure/toilet/outhouse
+	name = "outhouse"
+	desc = "An outhouse, more privacy than a pit latrine!"
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_closed"
+	density = TRUE
+	var/icon_state_closed = "outhouse_closed"
+	var/icon_state_open = "outhouse_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/storage_capacity = 1 * MOB_MEDIUM // One person size.
+	var/stored_units = FALSE
+	var/store_mobs = TRUE
+	var/added_units = 0
+
+/obj/structure/toilet/outhouse/New()
+	open = FALSE
+
+/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
+	return
+
+/obj/structure/toilet/outhouse/attack_hand(mob/living/user as mob)
+	if(open == FALSE)
+		open = TRUE
+		density = FALSE
+		icon_state = icon_state_open
+		dump_contents()
+	else
+		open = FALSE
+		density = TRUE
+		icon_state = icon_state_closed
+		store_mobs()
+		stored_units += store_mobs(stored_units)
+
+/obj/structure/toilet/outhouse/AltClick(var/mob/living/user)
+	return
+
+/obj/structure/toilet/outhouse/proc/store_mobs(var/stored_units)
+	var/added_units = FALSE
+	for (var/mob/living/M in loc)
+		if (M.buckled || M.pinned.len)
+			continue
+		if (stored_units + added_units + M.mob_size > storage_capacity)
+			break
+		if (M.client)
+			M.client.perspective = EYE_PERSPECTIVE
+			M.client.eye = src
+			M.crap_inside = TRUE
+		M.forceMove(src)
+		added_units += M.mob_size
+	return added_units
+
+/obj/structure/toilet/outhouse/proc/dump_contents()
+	//Cham Projector Exception
+	for (var/mob/M in src)
+		M.forceMove(loc)
+		if (M.client)
+			M.client.eye = M.client.mob
+			M.client.perspective = MOB_PERSPECTIVE
+			M.crap_inside = FALSE
+
+/obj/structure/toilet/outhouse/male
+	name = "outhouse"
+	desc = "An outhouse, designated for males."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_male_closed"
+	icon_state_closed = "outhouse_male_closed"
+	icon_state_open = "outhouse_male_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/toilet/outhouse/female
+	name = "outhouse"
+	desc = "An outhouse, designated for females."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_female_closed"
+	icon_state_closed = "outhouse_female_closed"
+	icon_state_open = "outhouse_female_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+=======
+>>>>>>> master
 /obj/structure/shower
 	name = "shower"
 	desc = "A basic, hot-and-cold shower system."

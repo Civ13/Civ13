@@ -143,7 +143,7 @@
 		if (!NCC) return
 		NCC.connections += src
 		connections += NCC
-		user << "You connect the cable to the [src]."
+		user << "You connect the cable to \the [src]."
 		var/opdir1 = 0
 		var/opdir2 = 0
 		if (NCC.tiledir == "horizontal")
@@ -366,7 +366,7 @@
 				else
 					done = FALSE
 					return
-		else if (choice == "Bioiesel Engine (90 sheets per 1000 cc)")
+		else if (choice == "Biodiesel Engine (90 sheets per 1000 cc)")
 			enginesize = input(H, "Choose the engine size, in cc: (minimum 300, maximum 7000)") as num
 			enginesize = Clamp(enginesize, 300, 7000)
 			if ((enginesize/1000)*80 > steelamt)

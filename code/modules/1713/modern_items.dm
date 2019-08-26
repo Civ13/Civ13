@@ -666,6 +666,22 @@
 	var/keycode = "0000"
 	var/customcolor = 0
 
+/obj/structure/fuelpump/premade
+	name = "UngOil fuel pump"
+	price = 0.3
+
+/obj/structure/fuelpump/premade/New()
+	..()
+	icon_state = "oilpump3"
+	customcolor = "#3cb44b"
+	keycode = "1000"
+	fueltype = pick("gasoline","diesel","biodiesel","ethanol","petroleum")
+	vol = rand(140,290)
+	do_color()
+	name = "UngOil [fueltype] pump"
+	price = rand(0.25,0.45)
+	updatedesc()
+
 /obj/structure/fuelpump/n
 	icon_state = "oilpump3"
 
@@ -702,6 +718,9 @@
 			unlocked = 0
 			unlockedvol = 0
 			return
+	else
+		user << "Put money on the pump to use it."
+		return
 
 /obj/structure/fuelpump/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
@@ -985,3 +1004,60 @@
 	else
 		icon_state = "bakelizer"
 
+/obj/structure/shopping_cart
+	name = "shopping cart"
+	desc = "A metal shopping cart."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "shopping_cart"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	anchored = FALSE
+	density = TRUE
+	opacity = FALSE
+	var/obj/item/weapon/storage/internal/storage
+	var/max_storage = 6
+/obj/structure/shopping_cart/update_icon()
+	overlays.Cut()
+	for (var/obj/item/I in storage)
+		var/image/IM = image(I.icon, I.icon_state, layer=src.layer-0.1)
+		var/matrix/M = matrix()
+		M.Scale(0.7)
+		IM.transform = M
+		overlays += IM
+	..()
+
+/obj/structure/shopping_cart/New()
+	..()
+	storage = new/obj/item/weapon/storage/internal(src)
+	storage.storage_slots = max_storage
+	storage.max_w_class = 5
+	storage.max_storage_space = max_storage*5
+	update_icon()
+/obj/structure/shopping_cart/Destroy()
+	qdel(storage)
+	storage = null
+	..()
+
+/obj/structure/shopping_cart/attack_hand(mob/user as mob)
+	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+		storage.open(user)
+		update_icon()
+	else
+		return
+/obj/structure/shopping_cart/MouseDrop(obj/over_object as obj)
+	if (storage.handle_mousedrop(usr, over_object))
+		..(over_object)
+		update_icon()
+
+/obj/structure/shopping_cart/attackby(obj/item/W as obj, mob/user as mob)
+	..()
+	storage.attackby(W, user)
+	update_icon()
+
+/obj/structure/shopping_cart/mine
+	name = "mining cart"
+	desc = "A wooden mining cart, for underground rails."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "miningcaropen"
+	max_storage = 8

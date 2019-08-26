@@ -86,6 +86,8 @@ elif map == "NOMADS_CONTINENTAL":
 	dmms.append("#include \"maps\\special\\nomads_continental.dmm\"")
 elif map == "NOMADS_PANGEA":
 	dmms.append("#include \"maps\\special\\nomads_pangea.dmm\"")
+elif map == "NOMADS_WASTELAND":
+	dmms.append("#include \"maps\\special\\nomads_wasteland.dmm\"")
 
 elif map == "LITTLE_CREEK":
 	dmms.append("#include \"maps\\1873\\little_creek.dmm\"")
@@ -115,6 +117,10 @@ elif map == "TSARITSYN":
 	dmms.append("#include \"maps\\1903\\tsaritsyn.dmm\"")
 elif map == "ROAD_TO_DAK_TO":
 	dmms.append("#include \"maps\\1969\\road_to_dak_to.dmm\"")
+elif map == "NANJING":
+	dmms.append("#include \"maps\\1943\\nanjing.dmm\"")
+elif map == "PIONEERS":
+	dmms.append("#include \"maps\\1873\\pioneers.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()

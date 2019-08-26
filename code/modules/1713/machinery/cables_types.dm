@@ -177,6 +177,17 @@
 				if (!(NCOC in C.connections) && !list_cmp(C.connections, NCOC.connections))
 					C.connections += NCOC
 				user << "You connect the two cables."
+	var/list/turflist = list()
+	for(var/obj/structure/cable/CL in get_turf(user))
+		turflist += CL
+		if (CL != C)
+			CL.connections += C
+	for(var/obj/structure/cable/CLC in turflist)
+		for(var/obj/structure/cable/CLD in turflist)
+			if (!(CLD in CLC.connections) && CLC != CLD)
+				CLC.connections += CLD
+	if (turflist.len > 1)
+		user << "You connect the cables on this tile."
 	return C
 
 //////////////////////////////

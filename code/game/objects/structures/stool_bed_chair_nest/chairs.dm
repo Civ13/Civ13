@@ -121,6 +121,10 @@
 	..(newloc,"steel","lime")
 
 
+/obj/structure/bed/chair/office
+	anchored = FALSE
+	buckle_movable = TRUE
+
 /obj/structure/bed/chair/office/update_icon()
 	return
 
@@ -169,12 +173,42 @@
 			victim.apply_damage(10, BRUTE, def_zone, blocked)
 		occupant.visible_message("<span class='danger'>[occupant] crashed into \the [A]!</span>")
 
+/obj/structure/bed/chair/office/light
+	icon_state = "officechair_white"
+
+/obj/structure/bed/chair/office/dark
+	icon_state = "officechair_dark"
+
+/obj/structure/bed/chair/office/New()
+	..()
+	var/image/I = image(icon, "[icon_state]_over")
+	I.layer = FLY_LAYER
+	overlays += I
+
 
 // Chair types
 /obj/structure/bed/chair/wood
 	name = "wooden chair"
 	desc = "Old is never too old to not be in fashion."
 	icon_state = "wooden_chair"
+	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/wood/bleacher
+	name = "wood bleacher"
+	desc = "A long bench like seat for a church."
+	icon_state = "bleacher"
+	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/wood/bleacher/r
+	name = "wood bleacher"
+	desc = "A long bench like seat for a church."
+	icon_state = "bleacher_r"
+	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/wood/bleacher/l
+	name = "wood bleacher"
+	desc = "A long bench like seat for a church."
+	icon_state = "bleacher_l"
 	applies_material_colour = FALSE
 
 /obj/structure/bed/chair/stone

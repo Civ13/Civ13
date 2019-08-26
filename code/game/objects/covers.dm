@@ -780,7 +780,7 @@
 
 /obj/covers/Destroy()
 	var/area/caribbean/CURRENTAREA = get_area(src)
-	if (istype(CURRENTAREA, /area/caribbean/void/caves))
+	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
 			new current_area_type(get_turf(src))
 			visible_message("The roof collapses!")
