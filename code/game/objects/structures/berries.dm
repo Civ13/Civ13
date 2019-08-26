@@ -77,7 +77,9 @@
 	icon_state = "tintoberry"
 	satisfaction = 3
 	var/randeffect = "neutral"
-
+	nutriment_desc = list("fruit" = 1)
+	nutriment_amt = 1
+	decay = 18*600
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries/New()
 	..()
 	for (var/list/i in map.berryeffects)
@@ -85,9 +87,13 @@
 			switch (i[2])
 				if ("drug","poisonous","healing")
 					reagents.add_reagent(i[3],5)
+					nutriment_desc = list("bitterness" = 1)
 				if ("tasty")
 					satisfaction = 6
-
+					nutriment_desc = list("sweetness" = 1)
+				if ("disgusting")
+					satisfaction = -6
+					nutriment_desc = list("disgusting food" = 1)
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries/tinto
 	name = "tinto berries"
 	icon_state = "tintoberry"
