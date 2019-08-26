@@ -50,6 +50,12 @@
 	if (floortype)
 		set_flooring(get_flooring_data(floortype))
 
+/turf/floor/proc/isemptyfloor()
+	for(var/obj/O in src)
+		if (O.density || istype(O, /obj/structure) || istype(O, /obj/covers))
+			return FALSE
+	return TRUE
+
 /turf/floor/proc/set_flooring(var/decl/flooring/newflooring)
 	make_plating(defer_icon_update = TRUE)
 	flooring = newflooring
