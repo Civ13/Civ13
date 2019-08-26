@@ -175,6 +175,8 @@ var/civmax_research = list(230,230,230)
 	var/list/wolfman = list()
 	var/list/crab = list()
 
+	var/list/berryeffects = list(list("neutral","neutral"), list("tinto","neutral"), list("amar","neutral"), list("majo","neutral"), list("narco","neutral"), list("azul","neutral"))
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -201,6 +203,10 @@ var/civmax_research = list(230,230,230)
 
 	// makes win condition helper datum
 	win_condition = new
+
+	for (var/list/i in berryeffects)
+		i[2] = pick("neutral", "poisonous", "drug", "healing", "tasty")
+
 	spawn(5000)
 		pollution()
 	spawn(2400)

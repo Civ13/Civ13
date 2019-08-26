@@ -10,7 +10,6 @@
 	maxhealth = 40
 	var/berries = 0
 	var/btype = /obj/item/weapon/reagent_containers/food/snacks/grown/berries
-	var/randeffect = "neutral"
 
 /obj/structure/wild/berrybush/proc/berryproc()
 	spawn(3000)
@@ -70,3 +69,37 @@
 	icon_state = "narcobush_1"
 	berries = 1
 	btype = /obj/item/weapon/reagent_containers/food/snacks/grown/berries/narco
+
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries
+	name = "berries"
+	icon = 'icons/obj/flora/berries.dmi'
+	icon_state = "tintoberry"
+	satisfaction = 3
+	var/randeffect = "neutral"
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/tinto
+	name = "tinto berries"
+	icon_state = "tintoberry"
+	randeffect = "tinto"
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/azul
+	name = "azul berries"
+	icon_state = "azulberry"
+	randeffect = "azul"
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/amar
+	name = "amar berries"
+	icon_state = "amarberry"
+	randeffect = "amar"
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/majo
+	name = "majo berries"
+	icon_state = "majoberry"
+	randeffect = "majo"
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/narco
+	name = "narco berries"
+	icon_state = "narcoberry"
+	randeffect = "narco"
+

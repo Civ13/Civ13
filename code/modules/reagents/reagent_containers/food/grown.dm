@@ -157,29 +157,3 @@
 		return
 	else
 		return
-
-/obj/item/weapon/reagent_containers/food/snacks/grown/berries
-	name = "berries"
-	icon = 'icons/obj/flora/berries.dmi'
-	icon_state = "tintoberry"
-	satisfaction = 3
-
-/obj/item/weapon/reagent_containers/food/snacks/grown/berries/tinto
-	name = "tinto berries"
-	icon_state = "tintoberry"
-
-/obj/item/weapon/reagent_containers/food/snacks/grown/berries/azul
-	name = "azul berries"
-	icon_state = "azulberry"
-
-/obj/item/weapon/reagent_containers/food/snacks/grown/berries/amar
-	name = "amar berries"
-	icon_state = "amarberry"
-
-/obj/item/weapon/reagent_containers/food/snacks/grown/berries/majo
-	name = "majo berries"
-	icon_state = "majoberry"
-
-/obj/item/weapon/reagent_containers/food/snacks/grown/berries/narco
-	name = "narco berries"
-	icon_state = "narcoberry"
