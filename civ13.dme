@@ -291,6 +291,7 @@
 #include "code\game\objects\map_metadata\ypres.dm"
 #include "code\game\objects\structures\barricades.dm"
 #include "code\game\objects\structures\bedsheet_bin.dm"
+#include "code\game\objects\structures\berries.dm"
 #include "code\game\objects\structures\blacksmithing.dm"
 #include "code\game\objects\structures\bookcase.dm"
 #include "code\game\objects\structures\curtains.dm"
