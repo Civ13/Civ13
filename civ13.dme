@@ -319,6 +319,7 @@
 #include "code\game\objects\structures\transports.dm"
 #include "code\game\objects\structures\vending.dm"
 #include "code\game\objects\structures\watercloset.dm"
+#include "code\game\objects\structures\watercloset_locker.dm"
 #include "code\game\objects\structures\wild.dm"
 #include "code\game\objects\structures\window.dm"
 #include "code\game\objects\structures\crates_lockers\closets.dm"
