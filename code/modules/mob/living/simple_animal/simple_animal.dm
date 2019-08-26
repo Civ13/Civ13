@@ -751,12 +751,17 @@
 			return
 
 /mob/living/simple_animal/handle_mutations_and_radiation()
-	if(radiation)
+	if (z == world.maxz)
+		rad_act((world_radiation/1000))
+	if (radiation < 0)
+		radiation = 0
+	if(radiation > 0)
 		radiation -= 0.05
 		switch(radiation)
 			if(100 to INFINITY)
 				adjustFireLoss(radiation*0.002)
 				updatehealth()
 
-		radiation = Clamp(radiation, 0, 750)
+		if (radiation > 80)
+			death()
 		return

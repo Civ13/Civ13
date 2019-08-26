@@ -65,11 +65,11 @@
 	check_rads()
 
 /obj/structure/wild/proc/check_rads()
-	rad_act(world_radiation/10000)
-	if (radiation > 60)
+	rad_act(world_radiation/5000)
+	if (radiation > 35)
 		return
 	else
-		spawn(100)
+		spawn(200)
 			check_rads()
 /obj/structure/wild/Destroy()
 	if (amount > 0)
