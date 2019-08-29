@@ -32,7 +32,7 @@
 		singular_name = "Dollar Bill"
 		icon_state = "money"
 		amount = 50
-		value = 4
+		value = 1
 		return ..()
 	else if (map.ordinal_age == 0)
 		name = "spanish reales"
