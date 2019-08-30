@@ -8,8 +8,9 @@
 
 //var/global/list/global_map = null
 
-
-
+				//For single Mayor/Governor maps
+var/global_export_tax = 0	//Global Export Tax
+var/global_import_tax = 0	//Global Import Tax
 var/diary               = null
 var/attack_log          = null
 var/href_logfile        = null
