@@ -94,3 +94,18 @@
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 15
+
+/datum/reagent/water/irradiated
+	name = "Irradiated Water"
+	id = "irradiated_water"
+	description = "A ubiquitous chemical substance that is composed of hydrogen and oxygen. This one has a lot of radiation in it."
+	reagent_state = LIQUID
+	color = "#0064C877"
+	metabolism = REM * 10
+	taste_description = "water"
+
+/datum/reagent/water/irradiated/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	if (M.water < 0)
+		M.water += rand(40,50)
+	M.water += removed * 15
+	M.rad_act(removed/3)

@@ -343,3 +343,12 @@
 	icon_state = "nbc2"
 	item_state = "nbc2"
 	worn_state = "nbc2"
+
+/obj/item/clothing/suit/hazmat
+	name = "hazmat suit"
+	desc = "A bright hazard protection suit, made protect against biological, chemical and nuclear threats."
+	icon_state = "hazmat_suit"
+	item_state = "hazmat_suit"
+	worn_state = "hazmat_suit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS|HEAD
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 100)

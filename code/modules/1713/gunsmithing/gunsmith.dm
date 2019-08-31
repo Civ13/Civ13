@@ -16,8 +16,8 @@
 /obj/structure/gunbench/attackby(obj/item/P as obj, mob/user as mob)
 	if (istype(P, /obj/item/stack/material/wood))
 		user << "You begin cutting the wood..."
-		playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-		if (do_after(user,35*P.amount,src))
+		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
+		if (do_after(user,15*P.amount,src))
 			user << "<span class='notice'>You cut the wood.</span>"
 			wood_amt += P.amount
 			desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
@@ -27,7 +27,7 @@
 	else if (istype(P, /obj/item/stack/material/steel))
 		user << "You begin smithing the steel..."
 		playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-		if (do_after(user,35*P.amount,src))
+		if (do_after(user,15*P.amount,src))
 			user << "<span class='notice'>You smite the steel.</span>"
 			steel_amt += P.amount
 			desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
@@ -125,15 +125,18 @@
 ////////////////FEEDING/SYSTEM///////////////////////////////
 	var/list/display3 = list("Cancel")
 	if (map.ordinal_age == 5)
-		display3 = list("Internal Magazine","Tubular", "Cancel")
+		display3 = list("Internal Magazine","Tubular")
 	else if (map.ordinal_age >= 6)
-		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazine","Open (Belt-Fed)", "Cancel")
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine","Open (Belt-Fed)")
 	if (choice_receiver == "Pump-Action")
-		display3 = list("Tubular", "Cancel")
+		display3 = list("Tubular")
 	if (choice_receiver == "Revolver")
-		display3 = list("Revolving", "Cancel")
+		display3 = list("Revolving")
 	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (small)" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazine", "Cancel")
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine")
+	if (choice_stock == "Pistol Grip" && choice_receiver != "Revolver")
+		display3 += "Internal Magazine (Removable)"
+	display3 += "Cancel"
 	var/choice_feeding = WWinput(user, "Choose the feeding system:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display3)
 	if (choice_feeding == "Cancel")
 		current_gun = null
@@ -142,6 +145,8 @@
 		return
 	else if (choice_feeding == "Internal Magazine")
 		using_steel += 4
+	else if (choice_feeding == "Internal Magazine (Removable)")
+		using_steel += 6
 	else if (choice_feeding == "Tubular")
 		using_steel += 5
 	else if (choice_feeding == "Revolving")
@@ -218,6 +223,9 @@
 		if ("Dual Selective Fire", "Triple Selective Fire")
 			caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
 
+	if (choice_feeding == "Internal Magazine (Removable)")
+		caliberlist = list("9mm pistol",".45 pistol","Cancel")
+
 	var/choice_caliber = WWinput(user, "Choose the caliber:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", caliberlist)
 	if (choice_caliber == "Cancel")
 		current_gun = null
@@ -252,10 +260,6 @@
 		current_gun.caliber = "smallintermediumrifle"
 		current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
 	if (choice_caliber != "Cancel" && choice_stock != "Cancel" && choice_barrel != "Cancel" && choice_receiver != "Cancel" && choice_feeding != "Cancel")
-		wood_amt -= using_wood
-		steel_amt -= using_steel
-		using_wood = 0
-		using_steel = 0
 		var/named = input(user, "Choose a name for this gun (max 15 characters):", "Gunsmithing", "gun")
 		if (named && named != "")
 			named = sanitize(named,15)
@@ -270,10 +274,20 @@
 				return
 		if (current_gun)
 			current_gun.finish()
-		var/obj/item/weapon/gun/projectile/custom/NEWGUN = current_gun
-		NEWGUN.loc = get_turf(src)
-		current_gun = null
-		return TRUE
+			wood_amt -= using_wood
+			steel_amt -= using_steel
+			using_wood = 0
+			using_steel = 0
+			var/obj/item/weapon/gun/projectile/custom/NEWGUN = current_gun
+			NEWGUN.loc = get_turf(src)
+			current_gun = null
+			return TRUE
+		else
+			using_wood = 0
+			using_steel = 0
+			current_gun = null
+			return
+
 	else
 		current_gun = null
 		using_wood = 0
@@ -562,7 +576,7 @@
 					VERY_LONG_RANGE_MOVING = 30),
 			)
 			w_class = 2
-			slot_flags = SLOT_BELT|SLOT_POCKET||SLOT_HOLSTER
+			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 			accuracy_increase_mod = 1.50
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_LOW
@@ -972,15 +986,25 @@
 			load_shell_sound = 'sound/weapons/clip_reload.ogg'
 			max_shells = 5
 			magazine_type = /obj/item/ammo_magazine/emptyclip
+		if ("Internal Magazine (Removable)")
+			handle_casings = EJECT_CASINGS
+			load_method = MAGAZINE
+			if (receiver_type == "Semi-Auto (small)")
+				if (caliber == "pistol9")
+					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+				else
+					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
 		if ("Tubular")
 			handle_casings = EJECT_CASINGS
 			load_method = SINGLE_CASING
 			load_shell_sound = 'sound/weapons/clip_reload.ogg'
 			max_shells = 8
+			slot_flags &= ~SLOT_HOLSTER
 		if ("Revolving")
 			handle_casings = CYCLE_CASINGS
 			max_shells = 6
 		if ("External Magazine")
+			handle_casings = EJECT_CASINGS
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine/small
 			if (receiver_type == "Semi-Auto (small)")
@@ -988,9 +1012,11 @@
 					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
 				else
 					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
+			slot_flags &= ~SLOT_HOLSTER
 		if ("Large External Magazine")
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine
+			slot_flags &= ~SLOT_HOLSTER
 		if ("Open (Belt-Fed)")
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptybelt

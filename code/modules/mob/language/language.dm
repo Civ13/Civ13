@@ -92,6 +92,16 @@
 	var/full_name = "Hideki Tojo"
 	return full_name
 
+/datum/language/proc/get_random_chinese_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_chinese)) + " " + capitalize(pick(last_names_chinese))
+		else
+			return capitalize(pick(first_names_male_chinese)) + " " + capitalize(pick(last_names_chinese))
+
+	var/full_name = "Sun Tzu"
+	return full_name
+
 /datum/language/proc/get_random_russian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -343,6 +353,8 @@
 				cname_check = FALSE
 			else if (istype(l, /datum/language/japanese))
 				cname_check = FALSE
+			else if (istype(l, /datum/language/chinese))
+				cname_check = FALSE
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
 			if (ishuman(src))
@@ -388,6 +400,14 @@
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_japanese_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/chinese))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_chinese_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 

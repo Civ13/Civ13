@@ -94,6 +94,7 @@ var/global/list/alphabet_uppercase = list("A","B","C","D","E","F","G","H","I","J
 
 var/global/list/turfs = list()						//list of all turfs
 var/global/list/grass_turf_list = list() // list of all /turf/floor/grass
+var/global/list/water_turf_list = list() // list of all /turf/floor/grass
 //Languages/species/whitelist.
 var/global/list/all_species[0]
 var/global/list/all_languages[0]
@@ -130,7 +131,7 @@ var/global/list/exclude_jobs = list()
 
 //spawn
 var/global/list/latejoin_turfs = list()
-
+var/global/list/supplydrop_turfs = list()
 // Runes
 var/global/list/rune_list = new()
 var/global/list/escape_list = list()

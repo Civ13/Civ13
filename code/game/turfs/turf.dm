@@ -418,8 +418,24 @@ var/const/enterloopsanity = 100
 				footstepsound = "carpetfootsteps"
 			else 	if (istype(src, /turf/floor/dirt))
 				footstepsound = "dirtfootsteps"
+			else 	if (istype(src, /turf/floor/trench))
+				if (istype(src, /turf/floor/trench/flooded))
+					footstepsound = "waterfootsteps"
+				else
+					footstepsound = "dirtfootsteps"
 			else
 				footstepsound = "erikafootsteps"
+
+			for(var/obj/covers/CV in src)
+				if (istype(CV, /obj/covers/carpet))
+					footstepsound = "carpetfootsteps"
+					break
+				else if (istype(CV, /obj/covers/wood))
+					footstepsound = "woodfootsteps"
+					break
+				else
+					footstepsound = "platingfootsteps"
+					break
 
 			if (H.m_intent != "stealth" && H.m_intent != "proning")
 				var/fsvol = 60

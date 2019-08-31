@@ -12,8 +12,27 @@
 	var/material_name = "wood"
 	not_movable = TRUE
 	not_disassemblable = TRUE
-
 	var/protection_chance = 85 //prob of the projectile hitting the barricade
+
+/*
+/obj/structure/barricade/attackby(obj/item/W as obj, mob/user as mob)
+	switch(material)
+		if ("wood")
+			//Do nothing, anything can cut through wood.
+		else if ("stone")
+			//Swords no work on stone, unga dunga no knify wifey the wall.
+			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
+				user << "Your [W.name] glances off the [src.name]!"
+				return
+			else
+				//Damage the wall.
+		else if ("metal" || "steel")
+			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
+				user << "Your [W.name] glances off the [src.name]!"
+				returns
+			else
+				//Damage the wall.
+		..()*/
 
 /obj/structure/barricade/New(var/newloc)
 	..(newloc)
@@ -645,22 +664,19 @@
 	icon_state = "hescobastion"
 	name = "hesco bastion"
 
-/obj/structure/barricade/shelf
+/obj/structure/shelf
 	name = "shelf"
 	desc = "A store shelf."
 	icon = 'icons/obj/junk.dmi'
-	icon_state = "shelf1"
-	health = 130
-	maxhealth = 130
-	material_name = "wood"
-	protection_chance = 25
+	icon_state = "shelf0"
 
-/obj/structure/barricade/shelf/New()
-	..()
-	icon_state = pick("shelf1","shelf2","shelf3")
-	name = "shelf"
-
-
+/obj/structure/shelf/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+	if (user.a_intent == I_HELP)
+		user.drop_from_inventory(W)
+		W.forceMove(loc)
+		user << "You put \the [W] on the shelf."
+	else
+		..()
 /obj/structure/barricade/car
 	name = "car"
 	desc = "An abandoned car."

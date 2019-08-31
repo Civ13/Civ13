@@ -172,49 +172,6 @@
 		"<span class = 'red'>Your hand slips, applying [trans] units of the solution to the wrong place in [target]'s [affected.name] with the [tool]!</span>")
 
 		//no damage or anything, just wastes medicine
-
-//////////////////////////////////////////////////////////////////
-//	 Tendon fix surgery step
-//////////////////////////////////////////////////////////////////
-/datum/surgery_step/fix_tendon
-	priority = 2
-	allowed_tools = list(
-		1 = list("/obj/item/weapon/surgery/hemostat",100),
-		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
-		3 = list("/obj/item/stack/material/rope",50),
-	)
-	can_infect = 1
-	blood_level = 1
-
-	min_duration = 70
-	max_duration = 90
-
-/datum/surgery_step/fix_tendon/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if(!hasorgans(target))
-		return 0
-	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return affected && (affected.status & ORGAN_TENDON_CUT) && affected.open == 1
-
-/datum/surgery_step/fix_tendon/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	user.visible_message("[user] starts reattaching the damaged [affected.tendon_name] in [target]'s [affected.name] with \the [tool]." , \
-	"You start reattaching the damaged [affected.tendon_name] in [target]'s [affected.name] with \the [tool].")
-	target.custom_pain("The pain in your [affected.name] is unbearable!",100,affecting = affected)
-	..()
-
-/datum/surgery_step/fix_tendon/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	user.visible_message("<span class='notice'>[user] has reattached the [affected.tendon_name] in [target]'s [affected.name] with \the [tool].</span>", \
-		"<span class='notice'>You have reattached the [affected.tendon_name] in [target]'s [affected.name] with \the [tool].</span>")
-	affected.status &= ~ORGAN_TENDON_CUT
-	affected.update_damages()
-
-/datum/surgery_step/fix_tendon/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	user.visible_message("<span class='warning'>[user]'s hand slips, smearing [tool] in the incision in [target]'s [affected.name]!</span>" , \
-	"<span class='warning'>Your hand slips, smearing [tool] in the incision in [target]'s [affected.name]!</span>")
-	affected.take_damage(5, used_weapon = tool)
-
 //////////////////////////////////////////////////////////////////
 //	 Disinfection step
 //////////////////////////////////////////////////////////////////

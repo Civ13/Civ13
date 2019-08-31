@@ -16,6 +16,8 @@ var/list/alive_russian = list()
 var/list/alive_german = list()
 var/list/alive_american = list()
 var/list/alive_vietnamese = list()
+var/list/alive_chinese = list()
+
 
 var/list/heavily_injured_british = list()
 var/list/heavily_injured_pirates = list()
@@ -33,6 +35,7 @@ var/list/heavily_injured_russian = list()
 var/list/heavily_injured_german = list()
 var/list/heavily_injured_american = list()
 var/list/heavily_injured_vietnamese = list()
+var/list/heavily_injured_chinese = list()
 
 var/list/dead_british = list()
 var/list/dead_pirates = list()
@@ -50,6 +53,7 @@ var/list/dead_russian = list()
 var/list/dead_german = list()
 var/list/dead_american = list()
 var/list/dead_vietnamese = list()
+var/list/dead_chinese = list()
 
 var/list/recently_died = list()
 
@@ -124,6 +128,10 @@ var/list/recently_died = list()
 				dead = dead_vietnamese
 				injured = heavily_injured_vietnamese
 				alive = alive_vietnamese
+			if (CHINESE)
+				dead = dead_chinese
+				injured = heavily_injured_chinese
+				alive = alive_chinese
 	return list(alive, dead, injured)
 
 /mob/living/carbon/human/death()

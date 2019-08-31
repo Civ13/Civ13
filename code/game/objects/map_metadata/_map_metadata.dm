@@ -175,6 +175,8 @@ var/civmax_research = list(230,230,230)
 	var/list/wolfman = list()
 	var/list/crab = list()
 
+	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"))
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -201,12 +203,50 @@ var/civmax_research = list(230,230,230)
 
 	// makes win condition helper datum
 	win_condition = new
+
+	for (var/list/i in berryeffects)
+		i[2] = pick("neutral", "poisonous", "drug", "healing", "tasty", "disgusting")
+		if (i[2] == "poisonous")
+			i[3] = pick("amatoxin","cyanide", "food_poisoning", "solanine")
+		else if (i[2] == "drug")
+			i[3] = pick("peyote", "psilocybin","mindbreaker")
+		else if (i[2] == "healing")
+			i[3] = pick("paracetamol", "penicilin", "opium", "cocaine", "sal_acid")
 	spawn(5000)
 		pollution()
 	spawn(2400)
 		wind()
 	spawn(2000)
 		religious_timer()
+
+	if (nomads || civilizations || ID==MAP_COLONY || ID==MAP_FOUR_COLONIES || ID==MAP_PIONEERS)
+		var/amt_to_create = (world.maxx*world.maxy)/5000
+		for (var/v=1, v<=amt_to_create)
+			var/turf/floor/grass/G = pick(grass_turf_list)
+			if (G.isemptyfloor())
+				new/obj/structure/wild/berrybush/tinto(G)
+				v++
+		for (var/v=1, v<=amt_to_create)
+			var/turf/floor/grass/G = pick(grass_turf_list)
+			if (G.isemptyfloor())
+				new/obj/structure/wild/berrybush/azul(G)
+				v++
+		for (var/v=1, v<=amt_to_create)
+			var/turf/floor/grass/G = pick(grass_turf_list)
+			if (G.isemptyfloor())
+				new/obj/structure/wild/berrybush/amar(G)
+				v++
+		for (var/v=1, v<=amt_to_create)
+			var/turf/floor/grass/G = pick(grass_turf_list)
+			if (G.isemptyfloor())
+				new/obj/structure/wild/berrybush/majo(G)
+				v++
+		for (var/v=1, v<=amt_to_create)
+			var/turf/floor/grass/G = pick(grass_turf_list)
+			if (G.isemptyfloor())
+				new/obj/structure/wild/berrybush/narco(G)
+				v++
+
 /obj/map_metadata/proc/religious_timer()
 	if (map.custom_religions.len > 0)
 		for (var/rel in map.custom_religions)
@@ -442,7 +482,7 @@ var/civmax_research = list(230,230,230)
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, RUSSIAN, AMERICAN)
+				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, RUSSIAN, AMERICAN, CHINESE)
 					return !faction1_can_cross_blocks()
 				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB, GERMAN, JAPANESE, VIETNAMESE)
 					return !faction2_can_cross_blocks()
@@ -595,7 +635,8 @@ var/civmax_research = list(230,230,230)
 		RUSSIAN = 0,
 		GERMAN = 0,
 		AMERICAN = 0,
-		VIETNAMESE = 0,)
+		VIETNAMESE = 0,
+		CHINESE = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -703,6 +744,8 @@ var/civmax_research = list(230,230,230)
 			return "American"
 		if (VIETNAMESE)
 			return "Vietnamese"
+		if (CHINESE)
+			return "Chinese"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -737,6 +780,8 @@ var/civmax_research = list(230,230,230)
 			return "United States"
 		if (VIETNAMESE)
 			return "Vietcong group"
+		if (CHINESE)
+			return "Poeple's Liberation Army"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -771,6 +816,8 @@ var/civmax_research = list(230,230,230)
 			return "American"
 		if ("Vietcong group")
 			return "Vietnamese"
+		if ("People's Liberation Army")
+			return "Chinese"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

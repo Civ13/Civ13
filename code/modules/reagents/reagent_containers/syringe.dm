@@ -176,10 +176,10 @@
 					user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 					user.do_attack_animation(target)
 
-					if (!do_mob(user, target, injtime))
+					if (do_after(user, injtime, target.loc))
+						user.visible_message("<span class='warning'>[user] injects [target] with the syringe!</span>")
+					else
 						return
-
-					user.visible_message("<span class='warning'>[user] injects [target] with the syringe!</span>")
 
 				var/trans
 				if (ismob(target))

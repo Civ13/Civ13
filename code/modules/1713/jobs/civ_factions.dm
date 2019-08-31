@@ -473,6 +473,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("farming", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
 /datum/job/british/civilian/carpenter
@@ -1247,6 +1248,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("farming", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
 /datum/job/spanish/civilian/carpenter
@@ -2022,6 +2024,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("farming", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
 /datum/job/portuguese/civilian/carpenter
@@ -2797,6 +2800,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("farming", STAT_VERY_HIGH)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
 /datum/job/french/civilian/carpenter

@@ -521,7 +521,37 @@
 		gender = MALE
 		growth = 1
 
+//BANG!
+	chad
+		name = "Chad"
+		icon_state = "hair_chad"
+		gender = MALE
+		growth = 1
 
+
+	slick
+		name = "Slick"
+		icon_state = "hair_slick"
+		gender = MALE
+		growth = 2
+
+	fade
+		name = "Fade"
+		icon_state = "hair_fade"
+		gender = MALE
+		growth = 1
+
+	undercut
+		name = "Undercut"
+		icon_state = "hair_undercut"
+		gender = MALE
+		growth = 1
+
+	averagejoe
+		name = "Average Joe"
+		icon_state = "hair_averagejoe"
+		gender = MALE
+		growth = 1
 /*
 ///////////////////////////////////
 /  =---------------------------=  /

@@ -1,10 +1,8 @@
 # to be called from mapswap.py only
 
 import os
-import shutil 
+import shutil
 import time
-import subprocess
-import sys 
 
 t1 = time.time()
 

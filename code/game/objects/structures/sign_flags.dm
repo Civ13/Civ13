@@ -82,6 +82,25 @@
 /obj/structure/sign
 	anchored = TRUE
 
+/obj/structure/sign/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			qdel(src)
+			return
+		if (2.0)
+			if (prob(66))
+				qdel(src)
+			return
+		if (3.0)
+			if (prob(33))
+				qdel(src)
+			return
+		else
+	return
+/obj/structure/sign/radiation
+	name = "radiation in the area!"
+	icon_state = "radiation"
+
 /obj/structure/sign/traffic
 	name = "STOP sign"
 	desc = ""
@@ -105,35 +124,17 @@
 	name = "pedestrian crossing"
 	icon_state = "zebra"
 	layer = 2
-/obj/structure/sign/traffic/zebracrossing/ex_act(severity)
-	switch(severity)
-		if (3.0)
-			qdel(src)
-			return
-		else
-	return
+
 /obj/structure/sign/traffic/central
 	name = "white line"
 	icon_state = "centralline"
 	layer = 2
-/obj/structure/sign/traffic/central/ex_act(severity)
-	switch(severity)
-		if (3.0)
-			qdel(src)
-			return
-		else
-	return
+
 /obj/structure/sign/traffic/side
 	name = "yellow line"
 	icon_state = "sideline"
 	layer = 2
-/obj/structure/sign/traffic/side/ex_act(severity)
-	switch(severity)
-		if (3.0)
-			qdel(src)
-			return
-		else
-	return
+
 /obj/structure/sign/traffic/cone
 	name = "traffic cone"
 	icon_state = "cone1"

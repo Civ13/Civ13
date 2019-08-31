@@ -35,12 +35,14 @@ bullet_act
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
 					if (!crab)
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "[src.body_build.name] meat"
-						meat.amount = 4
+						for(var/i=1;i<=4;i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
+							meat.name = "[src.body_build.name] meat"
+							meat.radiation = radiation/10
 					else
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-						meat.amount = 4
+						for(var/i=1;i<=4;i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+							meat.radiation = radiation/10
 					if (orc)
 						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
 						HP.amount = 3
@@ -112,7 +114,7 @@ bullet_act
 		else
 			SH = r_hand
 		if (istype(P, /obj/item/projectile/arrow/arrow))
-			if (prob(min(SH.base_block_chance*2,92)))
+			if (prob(min(SH.base_block_chance,92)))
 				visible_message("<span class = 'warning'>[src] blocks the arrow with the [SH.name]!</span>")
 				P.blockedhit = TRUE
 				SH.health -= 2
@@ -209,7 +211,7 @@ bullet_act
 	//Shrapnel
 	if (P.can_embed())
 		var/armor = getarmor_organ(organ, "gun")
-		if (prob(20 + max(P.damage - armor, -10)))
+		if (prob(20 + max(P.damage - armor, 10)))
 			var/obj/item/weapon/material/shard/shrapnel/SP = new()
 			SP.name = (P.name != "shrapnel")? "[P.name] shrapnel" : "shrapnel"
 			SP.desc = "[SP.desc] It looks like it was fired from [P.shot_from]."
@@ -472,7 +474,7 @@ bullet_act
 	if(effective_force > 10 || effective_force >= 5 && prob(33))
 		forcesay(hit_appends)	//forcesay checks stat already
 
-	//Ok this block of text handles cutting arteries, tendons, and limbs off.
+	//Ok this block of text handles cutting arteries, and limbs off.
 	//First we cut an artery, the reason for that, is that arteries are funninly enough, not that lethal, and don't have the biggest impact. They'll still make you bleed out, but they're less immediately lethal.
 	if(I.sharp && prob(I.force/10) && !(affecting.status & ORGAN_ARTERY_CUT))
 		affecting.sever_artery()
@@ -480,11 +482,6 @@ bullet_act
 			src.visible_message("<span class='danger'><b>[user] slices [src]'s throat!</b></span>")
 		else
 			src.visible_message("<span class='danger'><b>[user] slices open [src]'s [affecting.artery_name] artery!</b></span>")
-
-	//Next tendon, which disables the limb, but does not remove it, making it easier to fix, and less lethal, than losing it.
-	else if(I.sharp && prob(I.force/12) && !(affecting.status & ORGAN_TENDON_CUT) && affecting.has_tendon)
-		affecting.sever_tendon()
-		src.visible_message("<span class='danger'><b>[user] slices open [src]'s [affecting.tendon_name] tendon!</b></span>")
 
 	//Finally if we pass all that, we cut the limb off. This should reduce the number of one hit sword kills.
 	else if(I.sharp && I.edge)

@@ -104,6 +104,9 @@
 /obj/item/mine/Crossed(AM as mob|obj)
 	if (isobserver(AM)) return
 	if (istype(AM, /obj/item/projectile)) return
+	if (istype(AM, /mob/living))
+		var/mob/living/AMM = AM
+		if (AMM.mob_size <= MOB_SMALL) return
 	Bumped(AM)
 
 
@@ -111,6 +114,9 @@
 	if (isobserver(AM)) return
 	if (!anchored) return //If armed
 	if (triggered) return
+	if (istype(AM, /mob/living))
+		var/mob/living/AMM = AM
+		if (AMM.mob_size <= MOB_SMALL) return
 	trigger(AM)
 
 /obj/item/mine/proc/trigger(atom/movable/AM)
@@ -223,3 +229,16 @@
 			Bumped(user)
 	else
 		..()
+
+/obj/item/mine/boobytrap/trigger(atom/movable/AM)
+	if (world.time < nextCanExplode)
+		return
+	if (istype(AM, /mob/living))
+		for (var/mob/O in viewers(7, loc))
+			O << "<font color='red'>[AM] triggered the [src]!</font>"
+		triggered = TRUE
+		visible_message("<span class = 'red'><b>Click!</b></span>")
+		explosion(get_turf(src),2,2,4)
+		spawn(9)
+			if (src)
+				qdel(src)

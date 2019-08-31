@@ -131,6 +131,90 @@
 /obj/structure/toilet/pit_latrine/AltClick(var/mob/living/user)
 	return
 
+/obj/structure/toilet/outhouse
+	name = "outhouse"
+	desc = "An outhouse, more privacy than a pit latrine!"
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_closed"
+	density = TRUE
+	var/icon_state_closed = "outhouse_closed"
+	var/icon_state_open = "outhouse_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/storage_capacity = 1 * MOB_MEDIUM // One person size.
+	var/stored_units = FALSE
+	var/store_mobs = TRUE
+	var/added_units = 0
+
+/obj/structure/toilet/outhouse/New()
+	open = FALSE
+
+/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
+	return
+
+/obj/structure/toilet/outhouse/attack_hand(mob/living/user as mob)
+	if(open == FALSE)
+		open = TRUE
+		density = FALSE
+		icon_state = icon_state_open
+		dump_contents()
+	else
+		open = FALSE
+		density = TRUE
+		icon_state = icon_state_closed
+		store_mobs()
+		stored_units += store_mobs(stored_units)
+
+/obj/structure/toilet/outhouse/AltClick(var/mob/living/user)
+	return
+
+/obj/structure/toilet/outhouse/proc/store_mobs(var/stored_units)
+	var/added_units = FALSE
+	for (var/mob/living/M in loc)
+		if (M.buckled || M.pinned.len)
+			continue
+		if (stored_units + added_units + M.mob_size > storage_capacity)
+			break
+		if (M.client)
+			M.client.perspective = EYE_PERSPECTIVE
+			M.client.eye = src
+			M.crap_inside = TRUE
+		M.forceMove(src)
+		added_units += M.mob_size
+	return added_units
+
+/obj/structure/toilet/outhouse/proc/dump_contents()
+	//Cham Projector Exception
+	for (var/mob/M in src)
+		M.forceMove(loc)
+		if (M.client)
+			M.client.eye = M.client.mob
+			M.client.perspective = MOB_PERSPECTIVE
+			M.crap_inside = FALSE
+
+/obj/structure/toilet/outhouse/male
+	name = "outhouse"
+	desc = "An outhouse, designated for males."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_male_closed"
+	icon_state_closed = "outhouse_male_closed"
+	icon_state_open = "outhouse_male_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/toilet/outhouse/female
+	name = "outhouse"
+	desc = "An outhouse, designated for females."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_female_closed"
+	icon_state_closed = "outhouse_female_closed"
+	icon_state_open = "outhouse_female_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 /obj/structure/shower
 	name = "shower"
 	desc = "A basic, hot-and-cold shower system."
@@ -284,30 +368,39 @@
 			if (H.head)
 				if (H.head.clean_blood())
 					H.update_inv_head(0)
+				H.head.radiation = 0
 			if (H.wear_suit)
 				if (H.wear_suit.clean_blood())
 					H.update_inv_wear_suit(0)
+				H.wear_suit.radiation = 0
 			else if (H.w_uniform)
 				if (H.w_uniform.clean_blood())
 					H.update_inv_w_uniform(0)
+				H.w_uniform.radiation = 0
 			if (H.gloves && washgloves)
 				if (H.gloves.clean_blood())
 					H.update_inv_gloves(0)
+				H.gloves.radiation = 0
 			if (H.shoes && washshoes)
 				if (H.shoes.clean_blood())
 					H.update_inv_shoes(0)
+				H.shoes.radiation = 0
 			if (H.wear_mask && washmask)
 				if (H.wear_mask.clean_blood())
 					H.update_inv_wear_mask(0)
+				H.wear_mask.radiation = 0
 			if (H.l_ear && washears)
 				if (H.l_ear.clean_blood())
 					H.update_inv_ears(0)
+				H.l_ear.radiation = 0
 			if (H.r_ear && washears)
 				if (H.r_ear.clean_blood())
 					H.update_inv_ears(0)
+				H.r_ear.radiation = 0
 			if (H.belt)
 				if (H.belt.clean_blood())
 					H.update_inv_belt(0)
+				H.belt.radiation = 0
 			H.clean_blood(washshoes)
 		else
 			if (M.wear_mask)						//if the mob is not human, it cleans the mask without asking for bitflags
@@ -463,17 +556,20 @@
 		user << "<span class='warning'>\The [src] is dry!</span>"
 		return
 	var/obj/item/weapon/reagent_containers/RG = O
+	var/watertype = "water"
+	if (radiation>0)
+		watertype = "irradiated_water"
 	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
 		if  (volume > 0)
 			if (min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this) > volume)
 				if (istype(src, /obj/structure/sink/puddle))
 					if (prob(10))
 						RG.reagents.add_reagent("food_poisoning", 1)
-						RG.reagents.add_reagent("water", volume-1)
+						RG.reagents.add_reagent(watertype, volume-1)
 					else
-						RG.reagents.add_reagent("water", volume)
+						RG.reagents.add_reagent(watertype, volume)
 				else
-					RG.reagents.add_reagent("water", volume)
+					RG.reagents.add_reagent(watertype, volume)
 				volume = 0
 				spawn(3)
 					update_icon()
@@ -486,9 +582,9 @@
 				if (istype(src, /obj/structure/sink/puddle))
 					if (prob(15))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				else
 					var/dirty = FALSE
 					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
@@ -496,9 +592,9 @@
 							dirty = TRUE
 					if (dirty)
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				if (RG.reagents)
 					volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
 				spawn(3)
@@ -510,7 +606,7 @@
 
 
 	else if (istype(O, /obj/item/weapon/mop))
-		O.reagents.add_reagent("water", 5)
+		O.reagents.add_reagent(watertype, 5)
 		user << "<span class='notice'>You wet \the [O] in \the [src].</span>"
 		playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
 		return
@@ -532,6 +628,8 @@
 	if (user.get_active_hand() != I) return		//Person has switched hands or the item in their hands
 
 	O.clean_blood()
+	if (istype(O, /obj/item/clothing))
+		O.radiation = 0
 	user.visible_message( \
 		"<span class='notice'>[user] washes \a [I] using \the [src].</span>", \
 		"<span class='notice'>You wash \a [I] using \the [src].</span>")

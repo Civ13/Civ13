@@ -179,6 +179,7 @@ var/russian_toggled = TRUE
 var/german_toggled = TRUE
 var/american_toggled = TRUE
 var/vietnamese_toggled = TRUE
+var/chinese_toggled = TRUE
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
 	set category = "Special"
@@ -205,6 +206,7 @@ var/vietnamese_toggled = TRUE
 	choices += "GERMAN ([german_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "AMERICAN ([american_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "VIETNAMESE ([vietnamese_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "CHINESE ([chinese_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -245,7 +247,7 @@ var/vietnamese_toggled = TRUE
 		world << "<span class = 'warning'>The Dutch faction has been [dutch_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Dutch faction 'enabled' setting to [dutch_toggled].")
 	else if (findtext(choice, "JAPANESE"))
-		dutch_toggled = !japanese_toggled
+		japanese_toggled = !japanese_toggled
 		world << "<span class = 'warning'>The Japanese faction has been [japanese_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Japanese faction 'enabled' setting to [japanese_toggled].")
 	else if (findtext(choice, "RUSSIAN"))
@@ -276,6 +278,10 @@ var/vietnamese_toggled = TRUE
 		vietnamese_toggled = !vietnamese_toggled
 		world << "<span class = 'warning'>The Vietnamese faction has been [vietnamese_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Vietnamese faction 'enabled' setting to [vietnamese_toggled].")
+	else if (findtext(choice, "CHINESE"))
+		chinese_toggled = !chinese_toggled
+		world << "<span class = 'warning'>The Chinese faction has been [chinese_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Chinese faction 'enabled' setting to [chinese_toggled].")
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
@@ -292,6 +298,7 @@ var/russian_forceEnabled = FALSE
 var/german_forceEnabled = FALSE
 var/american_forceEnabled = FALSE
 var/vietnamese_forceEnabled = FALSE
+var/chinese_forceEnabled = FALSE
 /client/proc/forcibly_enable_faction()
 	set name = "Forcibly Enable Faction"
 	set category = "Special"
@@ -318,6 +325,7 @@ var/vietnamese_forceEnabled = FALSE
 	choices += "GERMAN ([german_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "AMERICAN ([american_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "VIETNAMESE ([vietnamese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "CHINESE ([chinese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -390,6 +398,10 @@ var/vietnamese_forceEnabled = FALSE
 		vietnamese_forceEnabled = vietnamese_forceEnabled
 		world << "<span class = 'notice'>The Vietnamese faction [vietnamese_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Vietnamese faction 'forceEnabled' setting to [vietnamese_forceEnabled].")
+	else if (findtext(choice, "CHINESE"))
+		chinese_forceEnabled = !chinese_forceEnabled
+		world << "<span class = 'notice'>The Chinese faction [chinese_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Chinese faction 'forceEnabled' setting to [chinese_forceEnabled].")
 
 /client/proc/toggle_respawn_delays()
 	set category = "Special"
@@ -443,6 +455,7 @@ var/vietnamese_forceEnabled = FALSE
 	var/total_german = alive_german.len + dead_german.len + heavily_injured_german.len
 	var/total_american = alive_american.len + dead_american.len + heavily_injured_american.len
 	var/total_vietnamese = alive_vietnamese.len + dead_vietnamese.len + heavily_injured_vietnamese.len
+	var/total_chinese = alive_chinese.len + dead_chinese.len + heavily_injured_chinese.len
 
 	var/mortality_coefficient_pirates = 0
 	var/mortality_coefficient_british = 0
@@ -460,6 +473,7 @@ var/vietnamese_forceEnabled = FALSE
 	var/mortality_coefficient_german = 0
 	var/mortality_coefficient_american = 0
 	var/mortality_coefficient_vietnamese = 0
+	var/mortality_coefficient_chinese = 0
 
 	if (dead_british.len > 0)
 		mortality_coefficient_british = dead_british.len/total_british
@@ -509,6 +523,9 @@ var/vietnamese_forceEnabled = FALSE
 	if (dead_vietnamese.len > 0)
 		mortality_coefficient_vietnamese = dead_vietnamese.len/total_vietnamese
 
+	if (dead_chinese.len > 0)
+		mortality_coefficient_chinese = dead_chinese.len/total_chinese
+
 	var/mortality_british = round(mortality_coefficient_british*100)
 	var/mortality_pirates = round(mortality_coefficient_pirates*100)
 	var/mortality_civilian = round(mortality_coefficient_civilian*100)
@@ -525,6 +542,7 @@ var/vietnamese_forceEnabled = FALSE
 	var/mortality_german = round(mortality_coefficient_german*100)
 	var/mortality_american = round(mortality_coefficient_american*100)
 	var/mortality_vietnamese = round(mortality_coefficient_vietnamese*100)
+	var/mortality_chinese = round(mortality_coefficient_chinese*100)
 
 	var/msg1 = "British: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
 	var/msg2 = "Pirates: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
@@ -542,6 +560,7 @@ var/vietnamese_forceEnabled = FALSE
 	var/msg14 = "German: [alive_german.len] alive, [heavily_injured_german.len] heavily injured or unconscious, [dead_german.len] deceased. Mortality rate: [mortality_german]%"
 	var/msg15 = "American: [alive_american.len] alive, [heavily_injured_american.len] heavily injured or unconscious, [dead_american.len] deceased. Mortality rate: [mortality_american]%"
 	var/msg16 = "Vietnamese: [alive_vietnamese.len] alive, [heavily_injured_vietnamese.len] heavily injured or unconscious, [dead_vietnamese.len] deceased. Mortality rate: [mortality_vietnamese]%"
+	var/msg17 = "Chinese: [alive_chinese.len] alive, [heavily_injured_chinese.len] heavily injured or unconscious, [dead_chinese.len] deceased. Mortality rate: [mortality_chinese]%"
 
 	var/msg_religions = ""
 	var/relp = ""
@@ -609,6 +628,8 @@ var/vietnamese_forceEnabled = FALSE
 		msg15 = null
 	if (map && !map.faction_organization.Find(VIETNAMESE))
 		msg16 = null
+	if (map && !map.faction_organization.Find(CHINESE))
+		msg17 = null
 	var/public = "Yes"
 
 	if (shower && !private)
@@ -652,6 +673,8 @@ var/vietnamese_forceEnabled = FALSE
 				world << "<font size=3>[msg15]</font>"
 			if (msg16)
 				world << "<font size=3>[msg16]</font>"
+			if (msg17)
+				world << "<font size=3>[msg17]</font>"
 			if (map.civilizations && msg_religions != "")
 				world << "<font size=3>[msg_religions]</font>"
 			if (map.civilizations && msg_factions != "")
@@ -693,3 +716,5 @@ var/vietnamese_forceEnabled = FALSE
 			shower << msg15
 		if (msg16)
 			shower << msg16
+		if (msg17)
+			shower << msg17

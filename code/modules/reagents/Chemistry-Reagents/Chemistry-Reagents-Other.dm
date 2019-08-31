@@ -361,7 +361,7 @@
 	color = "#985b10"
 
 /datum/reagent/biodiesel
-	name = "Bioiesel"
+	name = "Biodiesel"
 	id = "biodiesel"
 	description = "Refined from many different agricultural fats."
 	taste_description = "diesel"

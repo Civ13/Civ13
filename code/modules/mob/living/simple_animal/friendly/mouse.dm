@@ -21,7 +21,7 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "stamps on"
 	density = FALSE
-	var/body_color //brown, gray and white, leave blank for random
+	var/body_color //brown, gray, black and white, leave blank for random
 	layer = MOB_LAYER
 	minbodytemp = 223		//Below -50 Degrees Celcius
 	maxbodytemp = 323	//Above 50 Degrees Celcius
@@ -40,7 +40,7 @@
 	..()
 
 	if (!body_color)
-		body_color = pick( list("brown","gray","white") )
+		body_color = pick( list("brown","gray","white", "black") )
 	icon_state = "mouse_[body_color]"
 	item_state = "mouse_[body_color]"
 	icon_living = "mouse_[body_color]"
@@ -87,6 +87,7 @@
 			user.visible_message("<span class = 'notice'>[user] butchers [src] into a sole meat slab.</span>")
 			var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 			meat.name = "[name] meatsteak"
+			meat.radiation = radiation/2
 			if (istype(user, /mob/living/carbon/human))
 				var/mob/living/carbon/human/HM = user
 				HM.adaptStat("medical", 0.3)
@@ -107,6 +108,10 @@
 /mob/living/simple_animal/mouse/brown
 	body_color = "brown"
 	icon_state = "mouse_brown"
+
+/mob/living/simple_animal/mouse/black
+	body_color = "black"
+	icon_state = "mouse_black"
 
 //TOM IS ALIVE! SQUEEEEEEEE~K :)
 /mob/living/simple_animal/mouse/brown/Tom

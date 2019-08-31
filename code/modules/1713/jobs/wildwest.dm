@@ -451,6 +451,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("farming", STAT_VERY_HIGH)
 
 	return TRUE
 

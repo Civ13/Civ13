@@ -10,6 +10,7 @@
 /mob
 	var/bladder = 0
 	var/bowels = 0
+	var/crap_inside = FALSE
 
 //#####DECALS#####
 /obj/effect/decal/cleanable/poo
@@ -140,12 +141,23 @@
 	icon_state = "poop2"
 	item_state = "poop"
 	satisfaction = -25 //tastes like shit
+	disgusting = TRUE
+	decay = 20*600
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/New()
 	..()
 	icon_state = pick("poop1", "poop2", "poop3", "poop4", "poop5", "poop6", "poop7")
 	reagents.add_reagent("poo", 10)
 	bitesize = 3
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal
+	name = "manure"
+	desc = "Makes good fertilizer at least."
+	icon_state = "animal1"
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/New()
+	..()
+	icon_state = pick("animal1", "animal2", "animal3")
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/throw_impact(atom/hit_atom)
 	//if(prob(50)) //this is so we actually have a chance of recovering some from disposal.
@@ -260,8 +272,11 @@
 		//Poo in the loo.
 		var/obj/structure/toilet/T = locate() in src.loc
 		var/mob/living/M = locate() in src.loc
-		if (T && T.open)
-			message = "<B>[src]</B> defecates into \the [T]."
+		if ((T && T.open) || (M.crap_inside))
+			if (M.crap_inside)
+				message = "<B>[src]</B> defecates into the hole."
+			else
+				message = "<B>[src]</B> defecates into \the [T]."
 			var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
 			if(reagents)
 				reagents.trans_to(V, rand(1,5))
@@ -307,6 +322,7 @@
 		to_chat(src, "You don't have to.")
 		return
 
+	var/mob/living/M = locate() in src.loc
 	var/obj/structure/toilet/T = locate() in src.loc
 	var/obj/structure/toilet/T2 = locate() in src.loc
 	var/obj/structure/sink/S = locate() in src.loc
@@ -319,6 +335,10 @@
 		message = "<B>[src]</B> urinates into [T]."
 		reagents.remove_any(rand(1,8))
 
+	else if (M.crap_inside) //Into the hole inside the outhouse.
+		message = "<B>[src]</B> urinates into the hole."
+		reagents.remove_any(rand(1,8))
+	
 	else if(RC && (istype(RC,/obj/item/weapon/reagent_containers/food/drinks || istype(RC,/obj/item/weapon/reagent_containers/glass))))
 		if(RC.is_open_container())
 			//Inside a beaker, glass, drink, etc.

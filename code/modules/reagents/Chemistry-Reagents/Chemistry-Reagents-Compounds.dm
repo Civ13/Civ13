@@ -24,6 +24,32 @@
 		usr << "<span class='notice'>The solution dissolves the ink on the book.</span>"
 	return
 
+/datum/reagent/hexachloroetane
+	name = "Hexachloroetane"
+	id = "hexachloroetane"
+	taste_description = "camphor"
+	taste_mult = 2
+	description = "A crystalline substance used in the production of smoke bombs."
+	reagent_state = SOLID
+	color = "#ffffff"
+	metabolism = REM * 0.5
+
+/datum/reagent/napalm
+	name = "Napalm"
+	id = "napalm"
+	taste_description = "gasoline"
+	taste_mult = 4
+	description = "A compound of gasoline and a gelling agent."
+	reagent_state = LIQUID
+	color = "#ffffe0"
+
+/datum/reagent/napalm/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	..()
+	M.adjustToxLoss(10)
+
+/datum/reagent/gasoline/touch_mob(var/mob/living/L, var/amount)
+	if (istype(L))
+		L.adjust_fire_stacks(amount / 2)
 /datum/reagent/ammonia
 	name = "Ammonia"
 	id = "ammonia"
@@ -80,7 +106,7 @@
 	M.water += removed * 40
 	M.addictions["alcohol"] += 0.02
 
-	M.apply_effect(max(M.radiation - 1 * removed, 0), IRRADIATE, blocked = 0)
+	M.radiation -= 1 * removed
 
 	M.add_chemical_effect(CE_ALCOHOL, TRUE)
 

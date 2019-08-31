@@ -34,7 +34,7 @@
 		qdel(I)
 		return
 	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
-		fuel += 0.5
+		fuel += 1
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
@@ -85,6 +85,9 @@
 			set_light(0)
 			update_icon()
 			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
+			if(prob(15))
+				var byproduct = new/obj/item/stack/ore/charcoal
+				contents += byproduct
 			process()
 			for (var/obj/item/weapon/reagent_containers/glass/small_pot/I in get_turf(src))
 				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)
@@ -200,7 +203,10 @@
 				var/obj/item/weapon/reagent_containers/food/F = I
 				F.roasted = TRUE
 				F.raw = FALSE
-				F.satisfaction = abs(F.satisfaction*2)
+				if (!F.disgusting)
+					F.satisfaction = abs(F.satisfaction*2)
+				else
+					F.satisfaction *= 0.75
 
 	for (var/obj/item/I in contents)
 		I.loc = get_turf(src)

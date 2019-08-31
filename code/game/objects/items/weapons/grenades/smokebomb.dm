@@ -1,10 +1,10 @@
 /obj/item/weapon/grenade/smokebomb
 	desc = "It is set to detonate in 2 seconds."
-	name = "smoke bomb"
+	name = "smoke grenade"
 	icon = 'icons/obj/grenade.dmi'
-	icon_state = "flashbang"
+	icon_state = "m18smoke"
 	det_time = 20
-	item_state = "flashbang"
+	item_state = "m18smoke"
 	slot_flags = SLOT_BELT
 	var/datum/effect/effect/system/smoke_spread/bad/smoke
 
@@ -82,3 +82,72 @@
 		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
 		active = TRUE
 		prime()
+
+
+/obj/item/weapon/grenade/chemical
+	desc = "It is set to detonate in 5 seconds."
+	name = "chemical grenade"
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "m18smoke"
+	det_time = 50
+	item_state = "m18smoke"
+	slot_flags = SLOT_BELT
+	var/datum/effect/effect/system/smoke_spread/bad/smoke
+	var/stype = /datum/effect/effect/system/smoke_spread/bad
+
+/obj/item/weapon/grenade/chemical/New()
+	..()
+	smoke = PoolOrNew(stype)
+	smoke.attach(src)
+
+/obj/item/weapon/grenade/chemical/Destroy()
+	qdel(smoke)
+	smoke = null
+	return ..()
+
+/obj/item/weapon/grenade/chemical/prime()
+	if (active)
+		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
+		smoke.set_up(10, FALSE, usr ? usr.loc : loc)
+		spawn(0)
+			smoke.start()
+			sleep(10)
+			smoke.start()
+			sleep(10)
+			smoke.start()
+			sleep(10)
+			smoke.start()
+
+		sleep(80)
+		qdel(src)
+		return
+
+/obj/item/weapon/grenade/chemical/fast_activate()
+	spawn(round(det_time/10))
+		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		active = TRUE
+		prime()
+
+/obj/item/weapon/grenade/chemical/chlorine
+	name = "chlorine gas grenade"
+	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/chlorine_gas
+
+/obj/item/weapon/grenade/chemical/mustard
+	name = "mustard gas grenade"
+	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/mustard_gas
+
+/obj/item/weapon/grenade/chemical/phosgene
+	name = "phosgene gas grenade"
+	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/phosgene
+
+/obj/item/weapon/grenade/chemical/white_phosphorus
+	name = "white phosphorus gas grenade"
+	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/white_phosphorus_gas
+
+/obj/item/weapon/grenade/chemical/xylyl_bromide
+	name = "xylil bromide gas grenade"
+	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/xylyl_bromide
+
+/obj/item/weapon/grenade/chemical/zyklon_b
+	name = "Zyklon B gas grenade"
+	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/zyklon_b

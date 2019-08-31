@@ -19,7 +19,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settling down. Will they be able to work together?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settling down. Will they be able to work together?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
@@ -47,7 +47,7 @@
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/winter/D)
 			if (prob(60))
 				D.ChangeTurf(/turf/floor/dirt)
@@ -89,7 +89,7 @@
 		season = "FALL"
 		world << "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/D)
 			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed) && D.z == world.maxz)
 				D.ChangeTurf(/turf/floor/grass)
@@ -120,7 +120,7 @@
 		season = "WINTER"
 		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
 			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground))
 				if (D.z == world.maxz)
@@ -147,7 +147,7 @@
 		season = "SUMMER"
 		world << "<big>The weather is warm. It is now <b>Summer</b>.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/winter/D)
 			D.ChangeTurf(/turf/floor/dirt)
 		for (var/turf/floor/winter/grass/G)

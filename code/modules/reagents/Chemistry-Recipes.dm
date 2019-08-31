@@ -17,6 +17,39 @@
 				chemical_reactions_list[reagent_id] = list()
 			chemical_reactions_list[reagent_id] += D
 
+//prints all the recipes into a txt file
+datum/admins/proc/print_chemical_reactions()
+	set category = "Debug"
+	set desc="Print all the ingame chemical reactions into a txt file."
+	set name="Print Chemical Reactions"
+	var/paths = typesof(/datum/chemical_reaction) - /datum/chemical_reaction
+	var/recipe_list = file("recipes.txt")
+	if (fexists(recipe_list))
+		fdel(recipe_list)
+	for (var/path in paths)
+		var/datum/chemical_reaction/D = new path()
+		var/in_reagents = ""
+		var/cat_reagents = ""
+		var/req_reagents = ""
+		for (var/i in D.required_reagents)
+			var/amt = D.required_reagents[i]
+			req_reagents += " [amt]u. [i]"
+		for (var/j in D.catalysts)
+			var/amt = D.catalysts[j]
+			cat_reagents += " [amt]u. [j]"
+		for (var/k in D.inhibitors)
+			var/amt = D.inhibitors[k]
+			in_reagents += " [amt]u. [k]"
+		var/chemical_reactions_print_var = "[D.name]:"
+		if (req_reagents && req_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Ingredients:[req_reagents],"
+		if (in_reagents && in_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Inhibitors:[in_reagents],"
+		if (cat_reagents && cat_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Catalysts:[cat_reagents],"
+		chemical_reactions_print_var = "[chemical_reactions_print_var] Produces: [D.result_amount]. (ID: [D.id])"
+		recipe_list << chemical_reactions_print_var
+	world.log << "Finished saving all recipes into \"recipes.txt\"."
 //helper that ensures the reaction rate holds after iterating
 //Ex. REACTION_RATE(0.3) means that 30% of the reagents will react each chemistry tick (~2 seconds by default).
 #define REACTION_RATE(rate) (1.0 - (1.0-rate)**(1.0/PROCESS_REACTION_ITER))
@@ -225,6 +258,13 @@
 	required_reagents = list("hydrogen_chloride" = 1, "water" = 5)
 	result_amount = 5
 
+/datum/chemical_reaction/potassium_iodide
+	name = "Potassium Iodide"
+	id = "potassium_iodide"
+	result = "potassium_iodide"
+	required_reagents = list("potassium" = 1, "iodine" = 1)
+	result_amount = 1
+
 
 /datum/chemical_reaction/ammonia
 	name = "Ammonia"
@@ -316,14 +356,14 @@
 	name = "Aqua regia"
 	id = "aqua_regia"
 	result = "aqua_regia"
-	required_reagents = list("nitric_acid" =1, "clorhydric_acid" = 3, )
+	required_reagents = list("nitric_acid" = 1, "clorhydric_acid" = 3, )
 	result_amount = 2
 
 /datum/chemical_reaction/nitric_acid
 	name = "Nitric acid"
 	id = "nitric_acid"
 	result = "nitric_acid"
-	required_reagents = list("nitrogen" =2, "oxygen" =5, "water" = 3 )
+	required_reagents = list("nitrogen" = 2, "oxygen" = 5, "water" = 3 )
 	result_amount = 4
 
 /datum/chemical_reaction/clorhydric_acid
@@ -353,6 +393,13 @@
 	result = "sodium_hypochlorite"
 	required_reagents = list("potassium" =1, "oxygen" = 1, "chlorine" = 1 )
 	result_amount = 2
+
+/datum/chemical_reaction/hydrazine
+	name = "Hydrazine"
+	id = "hydrazine"
+	result = "hydrazine"
+	required_reagents = list("ammonia" =1, "hydrogen" = 1, "nitrogen" = 1 )
+	result_amount = 1
 
 /datum/chemical_reaction/condensedcapsaicin
 	name = "Condensed Capsaicin"
@@ -457,6 +504,14 @@
 	result_amount = 3
 	log_is_important = TRUE
 
+/datum/chemical_reaction/gunpowder_charcoal
+	name = "Gunpowder"
+	id = "gunpowder"
+	result = "gunpowder"
+	required_reagents = list("sulfur" = 1, "charcoal" = 1, "potassium" = 1)
+	result_amount = 3
+	log_is_important = TRUE
+
 /datum/chemical_reaction/ngunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/exloc = get_turf(holder.my_atom)
 	var/datum/effect/effect/system/reagents_explosion/e = new()
@@ -474,17 +529,10 @@
 /datum/chemical_reaction/napalm
 	name = "Napalm"
 	id = "napalm"
-	result = null
+	result = "napalm"
 	required_reagents = list("gasoline" = 1, "cotton" = 1)
 	result_amount = TRUE
 
-/datum/chemical_reaction/napalm/on_reaction(var/datum/reagents/holder, var/created_volume)
-	var/turf/location = get_turf(holder.my_atom.loc)
-	for (var/turf/floor/target_tile in range(0,location))
-	//	target_tile.assume_gas("tungsten", created_volume, 400+T0C)
-		spawn (0) target_tile.hotspot_expose(700, 400)
-	holder.del_reagent("napalm")
-	return
 
 /datum/chemical_reaction/chemsmoke
 	name = "Chemsmoke"
@@ -492,6 +540,63 @@
 	result = null
 	required_reagents = list("potassium" = 1, "sugar" = 1, "phosphorus" = 1)
 	result_amount = 0.4
+
+/datum/chemical_reaction/hexachloroetane
+	name = "Hexachloroetane"
+	id = "hexachloroetane"
+	result = "hexachloroetane"
+	required_reagents = list("chlorine" = 6, "carbon" = 2)
+	result_amount = 10
+
+/datum/chemical_reaction/chlorine_gas
+	name = "Chlorine Gas"
+	id = "chlorine_gas"
+	result = "chlorine_gas"
+	required_reagents = list("chlorine" = 5, "hydrogen" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/mustard_gas
+	name = "Mustard Gas"
+	id = "mustard_gas"
+	result = "mustard_gas"
+	required_reagents = list("carbon" = 4, "hydrogen" = 8, "chlorine" = 2, "sulfur" = 1)
+	result_amount = 10
+
+/datum/chemical_reaction/white_phosphorus_gas
+	name = "White Phosphorus Gas"
+	id = "white_phosphorus_gas"
+	result = "white_phosphorus_gas"
+	required_reagents = list("phosphorus" = 5, "hydrogen" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/phosgene_gas
+	name = "Phosgene Gas"
+	id = "phosgene_gas"
+	result = "phosgene_gas"
+	required_reagents = list("chlorine" = 5, "carbon" = 2.5, "oxygen" = 2.5)
+	catalysts = list("carbon" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/xylyl_bromide
+	name = "Xylyl Bromide"
+	id = "xylyl_bromide"
+	result = "xylyl_bromide"
+	required_reagents = list("carbon" = 6, "hydrogen" = 4, "bromine" = 1)
+	result_amount = 5
+
+/datum/chemical_reaction/zyklon_b
+	name = "Zyklon B"
+	id = "zyklon_b"
+	result = "zyklon_b"
+	required_reagents = list("cyanide" = 10, "hydrogen" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/cyanide
+	name = "Cyanide"
+	id = "cyanide"
+	result = "cyanide"
+	required_reagents = list("carbon" = 1, "nitrogen" = 1)
+	result_amount = 1
 
 /datum/chemical_reaction/chemsmoke/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)

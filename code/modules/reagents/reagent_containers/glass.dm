@@ -36,6 +36,8 @@
 		/obj/item/stack/ammopart,
 		/obj/structure/vehicle,
 		/obj/structure/fuelpump,
+		/obj/item/stack/ore,
+		/turf/floor/dirt/underground,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -483,6 +485,13 @@
 		..()
 		reagents.add_reagent("diesel",250)
 
+/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel/low
+	name = "diesel barrel"
+	desc = "A steel barrel, filled with diesel."
+	New()
+		..()
+		reagents.add_reagent("diesel",30)
+
 /obj/item/weapon/reagent_containers/glass/barrel/modern/biodiesel
 	name = "biodiesel barrel"
 	desc = "A steel barrel, filled with biodiesel."
@@ -643,3 +652,46 @@
 	else
 		user << "The [src] is full!"
 	..()
+
+/obj/item/weapon/reagent_containers/glass/extraction_kit
+	name = "extraction kit"
+	desc = "A professional kit for extracting elements from raw ores."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "extraction_kit"
+	amount_per_transfer_from_this = 5
+	volume = 5
+	density = FALSE
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_WEAK
+	flammable = FALSE
+
+	update_icon()
+		overlays.Cut()
+
+		if (!is_open_container())
+			var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
+			overlays += lid
+
+
+		if (reagents.total_volume)
+			var/image/filling = image(icon, src, "[icon_state]_full")
+			filling.color = reagents.get_color()
+			overlays += filling
+/obj/item/weapon/analyser
+	name = "analyser"
+	desc = "An electronic analyser, to check the ingredients of a chemical mixture."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "spectrometer"
+	w_class = 2.0
+	slot_flags = SLOT_BELT|SLOT_ID|SLOT_POCKET
+	flammable = TRUE
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_WEAK
+
+	afterattack(obj/M, mob/user)
+		if (istype(M, /obj/item/weapon/reagent_containers))
+			var/obj/item/weapon/reagent_containers/RG = M
+			user << "<font color='yellow'><big><b>Reagents detected:</b></big></font>"
+			for(var/i=1 to RG.reagents.reagent_list.len)
+				user << "<font color='yellow'><i><b>[RG.reagents.reagent_list[i].name]: </b>[RG.reagents.reagent_list[i].volume] units</i></font>"
+		..()

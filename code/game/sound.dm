@@ -212,6 +212,30 @@ var/list/charge_sounds_us = list(
 	'sound/effects/emotes/charge_eng.ogg',)
 var/list/charge_sounds_isr = list(
 	'sound/effects/emotes/charge_isr.ogg',)
+var/list/charge_sounds_orc = list(
+	'sound/effects/emotes/charge_orc1.ogg',
+	'sound/effects/emotes/charge_orc2.ogg',)
+var/list/charge_sounds_wolfman = list(
+	'sound/effects/emotes/charge_wolfman1.ogg',
+	'sound/effects/emotes/charge_wolfman2.ogg',
+	'sound/effects/emotes/charge_wolfman3.ogg',
+	'sound/effects/emotes/charge_wolfman4.ogg',)
+var/list/charge_sounds_ant = list(
+	'sound/effects/emotes/charge_ant1.ogg',
+	'sound/effects/emotes/charge_ant2.ogg',
+	'sound/effects/emotes/charge_ant3.ogg',)
+var/list/charge_sounds_crab  = list(
+	'sound/effects/emotes/charge_crab1.ogg',
+	'sound/effects/emotes/charge_crab2.ogg',
+	'sound/effects/emotes/charge_crab3.ogg',)
+var/list/charge_sounds_lizard = list(
+	'sound/effects/emotes/charge_lizard1.ogg',
+	'sound/effects/emotes/charge_lizard2.ogg',
+	'sound/effects/emotes/charge_lizard3.ogg',)
+var/list/charge_sounds_gorilla = list(
+	'sound/effects/emotes/charge_ape1.ogg',
+	'sound/effects/emotes/charge_ape2.ogg',
+	'sound/effects/emotes/charge_ape3.ogg',)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -428,4 +452,16 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_us)
 			if ("charge_ISRAELI")
 				soundin = pick(charge_sounds_isr)
+			if ("charge_ORC")
+				soundin = pick(charge_sounds_orc)
+			if ("charge_WOLFMAN")
+				soundin = pick(charge_sounds_wolfman)
+			if ("charge_ANT")
+				soundin = pick(charge_sounds_ant)
+			if ("charge_CRAB")
+				soundin = pick(charge_sounds_crab)
+			if ("charge_LIZARD")
+				soundin = pick(charge_sounds_lizard)
+			if ("charge_GORILLA")
+				soundin = pick(charge_sounds_gorilla)
 	return soundin

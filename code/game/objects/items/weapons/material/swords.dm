@@ -37,15 +37,25 @@
 		var/mob/living/carbon/human/H = user
 		H.adaptStat("swords", 1*modif)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
-		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+		if (istype(damage_source, /obj/item/weapon/sledgehammer))
+			health -= 10
+			if(prob(35))
+				user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
+				user.drop_from_inventory(src)
+				throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
+
+		else if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
 			health -= 5
+			if(prob(15))
+				user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
+				user.drop_from_inventory(src)
+				throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
 		else
 			health-= 0.5
-		if(prob(15))
-			user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
-			user.drop_from_inventory(src)
-			throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
-
+			if(prob(10))
+				user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
+				user.drop_from_inventory(src)
+				throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
 		return 1
 	return 0
 
@@ -331,11 +341,12 @@ obj/item/weapon/material/sword/longsword/diamond
 	block_chance = 40
 	cooldownw = 15
 	value = 55
+
 /obj/item/weapon/material/sword/rapier
 	name = "rapier"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
 	icon_state = "rapier"
-	item_state = "longsword2"
+	item_state = "rapier"
 	throw_speed = 4
 	throw_range = 4
 	force_divisor = 0.65 // 40 when wielded with hardness 60 (steel)
@@ -347,8 +358,6 @@ obj/item/weapon/material/sword/longsword/diamond
 
 obj/item/weapon/material/sword/rapier/iron
 	default_material = "iron"
-
-
 
 /obj/item/weapon/material/sword/gladius
 	name = "gladius"

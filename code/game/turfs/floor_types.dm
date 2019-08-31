@@ -46,10 +46,12 @@
 	name = "Grass patch"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "grass1"
+	var/deadicon = 'icons/turf/floors.dmi'//Rad stuff what to turn into
+	var/deadicon_state = "dead_grass1"//Rad stuff what to turn into
 	var/grassamt = 1
-
 	New()
 		icon_state = "grass[pick("0","1","2","3")]"
+		deadicon_state = "dead_grass[pick("0","1","2","3")]"//Rad stuff what to turn into
 		..()
 		spawn(4)
 			if (src)
@@ -62,7 +64,6 @@
 /turf/floor/carpet
 	name = "Carpet"
 	icon_state = "carpet"
-
 	New()
 		if (!icon_state)
 			icon_state = "carpet"
@@ -135,6 +136,7 @@
 /turf/floor/grass/jungle/savanna/New()
 	..()
 	icon_state = "grass_dry"
+	deadicon_state = "dead_grass[pick("0","1","2","3")]"//Rad stuff what to turn into
 
 /turf/floor/winter
 	name = "snow"
@@ -154,6 +156,8 @@
 	is_diggable = TRUE
 	available_snow = 2
 	initial_flooring = /decl/flooring/snow_grass
+	var/deadicon = 'icons/turf/snow.dmi'//Rad stuff what to turn into
+	var/deadicon_state = "dead_snowgrass"//Rad stuff what to turn into
 
 /turf/floor/winter/grass/New()
 	..()
@@ -184,7 +188,7 @@
 	name = "sand"
 	icon_state = "sand"
 	is_diggable = TRUE
-	available_sand = 4
+	available_sand = 22
 	initial_flooring = /decl/flooring/sand_beach
 
 /turf/floor/beach/sand/dark
@@ -212,6 +216,11 @@
 	var/sickness = 1 //amount of toxins, from 0 to 3
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
+
+
+/turf/floor/beach/water/New()
+	..()
+	water_turf_list += src
 
 /turf/floor/beach/water/coastwater
 	name = "coast water"
@@ -387,7 +396,6 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "white"
 	interior = TRUE
-
 
 /turf/floor/plating/cobblestone
 	name = "road"

@@ -22,7 +22,7 @@
 		default_type = DEFAULT_WALL_MATERIAL
 	material = get_material_by_name("[default_type]")
 	if (material)
-		recipes = material.get_recipes_civs()
+		recipes = material.get_recipes_civs(forced=TRUE)
 		stacktype = material.stack_type
 
 
@@ -250,6 +250,9 @@
 	value = 5
 	max_amount = 500
 
+/obj/item/stack/material/steel/twentyfive
+	amount = 25
+
 /obj/item/stack/material/wood
 	name = "wooden plank"
 	icon_state = "sheet-wood"
@@ -444,3 +447,12 @@
 	var/mob/living/carbon/human/U = user
 	recipes = material.get_recipes_civs(U.original_job_title, U)
 	..()
+/*
+/obj/item/stack/material/steelrods
+	name = "steel rods"
+	icon_state = "rods"
+	default_type = "steelrods"
+	w_class = 2.0
+	value = 6
+	max_amount = 500
+	singular_name = "steel rod"*/

@@ -426,7 +426,9 @@
 			target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>"
 		else
 			visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
-
+		if (istype(target_mob, /mob/living/simple_animal/hostile/zombie))
+			var/mob/living/simple_animal/hostile/zombie/Z = target_mob
+			Z.limb_hit(hit_zone)
 	//admin logs
 	if (!no_attack_log)
 		if (istype(firer, /mob))
@@ -457,6 +459,11 @@
 	var/passthrough = TRUE //if the projectile should continue flying
 	var/passthrough_message = null
 
+	if (istype(get_turf(firer), /turf/floor/trench) && firer.prone)
+		if (!istype(T,/turf/floor/trench) && get_dist(T, firer)>2)
+			world << "<span class = 'warning'>The [name] hits \the trench wall!</span>"
+			qdel(src)
+			return
 	if(can_hit_in_trench == 1)
 		if(kill_count < (initial(kill_count) - 1))
 			if(!istype(T, /turf/floor/trench))
@@ -511,10 +518,15 @@
 								passthrough = FALSE
 						else
 							if (!istype(T, /turf/floor/trench) || get_dist(firer,T)<=2 || (istype(get_turf(firer),/turf/floor/trench) && istype(T, /turf/floor/trench) && get_dist(firer,T)<=5) || prob(20))
-								L.pre_bullet_act(src)
-								attack_mob(L)
-								if (L && !L.lying)
+								if (L && !L.lying && !L.prone)
+									L.pre_bullet_act(src)
+									attack_mob(L)
 									passthrough = FALSE
+								else if (L.lying || L.prone)
+									if (prob(30) && !istype(T, /turf/floor/trench))
+										L.pre_bullet_act(src)
+										attack_mob(L)
+										passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM
 					if (O.density || istype(O, /obj/structure/window/classic)) // hack
@@ -718,6 +730,3 @@
 	var/output = trace.launch(target) //Test it!
 	qdel(trace) //No need for it anymore
 	return output //Send it back to the gun!
-
-/obj/item/projectile/bullet
-	embed = TRUE

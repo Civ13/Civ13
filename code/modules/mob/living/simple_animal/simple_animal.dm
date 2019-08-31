@@ -99,6 +99,7 @@
 	handle_weakened()
 	handle_paralysed()
 	handle_supernatural()
+	handle_mutations_and_radiation()
 
 	if (herbivore || carnivore || predatory_carnivore || granivore)
 		simplehunger-=1
@@ -319,7 +320,8 @@
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
-					new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/P  = new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					P.radiation = radiation/2
 					if (istype(user, /mob/living/carbon/human))
 						var/mob/living/carbon/human/HM = user
 						HM.adaptStat("medical", 0.3)
@@ -349,9 +351,11 @@
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 						meat.name = "[name] meatsteak"
 						meat.amount = namt
+						meat.radiation = radiation/2
 					else
 						var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
 						meat.amount = namt
+						meat.radiation = radiation/2
 
 					if ((amt-2) >= 1)
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
@@ -390,9 +394,11 @@
 					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 					meat.name = "[name] meatsteak"
 					meat.amount = namt
+					meat.radiation = radiation/2
 				else
 					var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
 					meat.amount = namt
+					meat.radiation = radiation/2
 
 				if ((amt-2) >= 1)
 					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
@@ -660,6 +666,8 @@
 		for(var/turf/floor/grass/GT in range(2,src))
 			if (prob(33))
 				visible_message("\The [src] eats some grass.")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 550
 				adjustBruteLoss(-4)
 				GT.grassamt -= 1
@@ -675,6 +683,8 @@
 		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
 			if (prob(30))
 				visible_message("\The [src] eats some of the wheat.")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 550
 				adjustBruteLoss(-4)
 				qdel(WT)
@@ -685,6 +695,8 @@
 		for(var/obj/item/stack/farming/seeds/SD in range(2,src))
 			if (prob(35))
 				visible_message("<span class='notice'>\The [src] eats \the [SD]!</span>")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 500
 				adjustBruteLoss(-4)
 				qdel(SD)
@@ -692,6 +704,8 @@
 		for(var/obj/structure/farming/plant/PL in range(2,src))
 			if (prob(15))
 				visible_message("<span class='notice'>\The [src] eats \the [PL]!</span>")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 400
 				adjustBruteLoss(-4)
 				qdel(PL)
@@ -705,6 +719,8 @@
 			if (ML.stat == DEAD)
 				if (prob(33))
 					visible_message("\The [src] bites some meat of \the [ML].")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 					simplehunger += 400
 					adjustBruteLoss(-4)
 					if (istype(ML, /mob/living/simple_animal))
@@ -721,6 +737,8 @@
 		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
 			if (prob(33))
 				visible_message("\The [src] bites some of \the [FD].")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 400
 				adjustBruteLoss(-4)
 				if (prob(30))
@@ -732,4 +750,18 @@
 		for(var/mob/living/ML in range(2,src))
 			return
 
+/mob/living/simple_animal/handle_mutations_and_radiation()
+	if (z == world.maxz)
+		rad_act((world_radiation/1000))
+	if (radiation < 0)
+		radiation = 0
+	if(radiation > 0)
+		radiation -= 0.05
+		switch(radiation)
+			if(100 to INFINITY)
+				adjustFireLoss(radiation*0.002)
+				updatehealth()
 
+		if (radiation > 80)
+			death()
+		return

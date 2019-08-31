@@ -19,7 +19,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settling down. Will they be able to work together?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settling down. Will they be able to work together?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
@@ -127,7 +127,7 @@
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/winter/D in get_area_turfs(/area/caribbean/nomads/forest))
 			if (get_area(D).climate == "temperate")
 				if (prob(60))
@@ -170,7 +170,7 @@
 		season = "FALL"
 		world << "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>. In the hot climates, the dry season continues.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.update_icon()
+			TREES.change_season()
 		for (var/turf/floor/dirt/burned/BD)
 			BD.ChangeTurf(/turf/floor/dirt)
 		for (var/turf/floor/grass/G)

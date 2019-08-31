@@ -378,7 +378,7 @@
 	name = "inlaid gold crown"
 	desc = "A crown of gold, with a diamond in it. Extra Fancy."
 	icon_state = "gold_crown_diamond"
-	item_state = "gold_crown"
+	item_state = "gold_crown_diamond"
 	worn_state = "gold_crown_diamond"
 	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
@@ -386,27 +386,37 @@
 	name = "inlaid silver crown"
 	desc = "A crown of silver, with a diamond in it. Extra Fancy."
 	icon_state = "silver_crown_diamond"
-	item_state = "silver_crown"
-	worn_state = "gold_crown_diamond"
+	item_state = "silver_crown_diamond"
+	worn_state = "silver_crown_diamond"
 	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
 /obj/item/clothing/head/helmet/silver_crown/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return//I really don't understand why this check is needed
+	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
-		qdel(src)
-		qdel(W)
+		if(W.amount <= 1)
+			qdel(src)
+			qdel(W)
+			new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
+		else
+			qdel(src)
+			W.amount = W.amount - 1
+			new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
 
 /obj/item/clothing/head/helmet/gold_crown/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return//I really don't understand why this check is needed
+	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
-		qdel(src)
-		qdel(W)
+		if(W.amount <= 1)
+			qdel(src)
+			qdel(W)
+			new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
+		else
+			qdel(src)
+			W.amount = W.amount - 1
+			new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
 //continue
 
 /obj/item/clothing/head/helmet/medieval

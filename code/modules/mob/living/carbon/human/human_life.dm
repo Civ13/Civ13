@@ -118,13 +118,15 @@
 	if (stat != DEAD && !map.civilizations)
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
-		healing_stage += 1
+		healing_stage += 2
 	else
 		healing_stage = 0
 	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
 		healing_stage = 0
-		if (getBruteLoss() >= 40)
+		if (getBruteLoss() >= 15)
 			adjustBruteLoss(-2)
+			if (halloss > 40)
+				adjustHalLoss(-10)
 
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
@@ -166,7 +168,7 @@
 					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
-	if (stats.len)
+	if (stats && stats.len)
 	// hotfixes some stamina bugs
 		if (stats["stamina"][1] < 0)
 			stats["stamina"][1] = 0
@@ -223,12 +225,7 @@
 				adjustToxLoss(rand(8,12))
 			//3 more minutes
 			else if (disease_progression >= 90 && prob(10) && stat != DEAD)
-				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
-				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
-				var/turf/location = loc
-				if (istype(location, /turf))
-					new /obj/effect/decal/cleanable/vomit/bloody(location)
-				nutrition -= 40
+				vomit_blood()
 			// 3 more minutes
 			else if (disease_progression >= 180 && disease_progression <= 300 && prob(15))
 				adjustBrainLoss(rand(3,5))
@@ -1333,16 +1330,16 @@
 	if (shock_stage == 10)
 		src << "<span class='danger'>[pick("It hurts so much", "You really need some painkillers", "Dear god, the pain")]!</span>"
 
-	if (shock_stage >= 30)
+	if (shock_stage >= 55)
 		if (shock_stage == 30) emote("me",1,"is having trouble keeping their eyes open.")
 		eye_blurry = max(2, eye_blurry)
 		stuttering = max(stuttering, 5)
 
-	if (shock_stage == 40)
+	if (shock_stage == 50)
 		src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
 
-	if (shock_stage >= 60)
-		if (shock_stage == 60) emote("me",1,"'s body becomes limp.")
+	if (shock_stage >= 70)
+		if (shock_stage == 90) emote("me",1,"'s body becomes limp.")
 		if (prob(2))
 			src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
 			Weaken(20)
@@ -1743,3 +1740,25 @@
 		return
 	else
 		return
+
+/mob/living/carbon/human/proc/handle_embedded_objects()
+
+	for (var/obj/item/organ/external/organ in organs)
+		if (organ.status & ORGAN_SPLINTED) //Splints prevent movement.
+			continue
+		for (var/obj/item/O in organ.implants)
+			if (/*!istype(O,/obj/item/weapon/implant) && */prob(2)) //Moving with things stuck in you could be bad.
+				// All kinds of embedded objects cause bleeding.
+				if (species.flags & NO_PAIN)
+					src << "<span class='warning'>You feel [O] moving inside your [organ.name].</span>"
+				else
+					var/msg = pick( \
+						"<span class='warning'>A spike of pain jolts your [organ.name] as you bump [O] inside.</span>", \
+						"<span class='warning'>Your movement jostles [O] in your [organ.name] painfully.</span>", \
+						"<span class='warning'>Your movement jostles [O] in your [organ.name] painfully.</span>")
+					src << msg
+
+				organ.take_damage(rand(1,3), FALSE, FALSE)
+				if (!(species.flags & NO_BLOOD)) //There is no blood in protheses.
+					organ.status |= ORGAN_BLEEDING
+					adjustToxLoss(rand(1,3))

@@ -182,6 +182,13 @@
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 	var/vstatic = FALSE // to "freeze" the image, so it can be used as a prop
 	var/fertilized = FALSE
+	var/water = 60
+	var/max_water = 60
+
+/obj/structure/farming/plant/New()
+	..()
+	water = max_water
+
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
 	desc = "a tomato plant."
@@ -189,6 +196,7 @@
 	plant = "tomato"
 	biomes = list("temperate", "sea","semiarid", "desert", "jungle","savanna")
 	seasons = list("SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 55
 
 /obj/structure/farming/plant/hemp
 	name = "hemp plant"
@@ -196,6 +204,7 @@
 	icon_state = "hemp-grow1"
 	plant = "hemp"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	max_water = 60
 
 /obj/structure/farming/plant/corn
 	name = "corn plant"
@@ -204,6 +213,7 @@
 	plant = "corn"
 	biomes = list("temperate", "jungle","savanna", "desert", "sea","semiarid", "taiga")
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 70
 
 /obj/structure/farming/plant/wheat
 	name = "wheat plant"
@@ -212,18 +222,21 @@
 	plant = "wheat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "tundra", "taiga", "sea")
+	max_water = 50
 
 /obj/structure/farming/plant/potato
 	name = "potato plant"
 	desc = "a potato plant."
 	icon_state = "potato-grow1"
 	plant = "potato"
+	max_water = 75
 
 /obj/structure/farming/plant/carrot
 	name = "carrot plant"
 	desc = "a carrot plant."
 	icon_state = "carrot-grow1"
 	plant = "carrot"
+	max_water = 75
 
 /obj/structure/farming/plant/poppy
 	name = "poppy plant"
@@ -231,6 +244,7 @@
 	icon_state = "poppy-grow1"
 	plant = "poppy"
 	biomes = list("jungle","savanna", "desert")
+	max_water = 75
 
 /obj/structure/farming/plant/cabbage
 	name = "cabbage plant"
@@ -238,6 +252,7 @@
 	icon_state = "cabbage-grow1"
 	plant = "cabbage"
 	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
+	max_water = 70
 
 /obj/structure/farming/plant/apple
 	name = "apple tree"
@@ -245,6 +260,7 @@
 	icon_state = "orange-grow1"
 	plant = "apple"
 	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
+	max_water = 75
 
 /obj/structure/farming/plant/orange
 	name = "orange tree"
@@ -252,6 +268,7 @@
 	icon_state = "orange-grow1"
 	plant = "orange"
 	biomes = list("temperate", "tundra", "taiga", "desert", "sea","semiarid")
+	max_water = 75
 
 /obj/structure/farming/plant/tobacco
 	name = "tobacco plant"
@@ -259,6 +276,7 @@
 	icon_state = "tobacco-grow1"
 	plant = "tobacco"
 	biomes = list("desert", "jungle","savanna", "semiarid")
+	max_water = 55
 
 /obj/structure/farming/plant/sugarcane
 	name = "sugarcane"
@@ -266,6 +284,7 @@
 	icon_state = "sugarcane-grow1"
 	plant = "sugarcane"
 	biomes = list("jungle","savanna", "sea")
+	max_water = 60
 
 /obj/structure/farming/plant/tea
 	name = "tea"
@@ -273,6 +292,7 @@
 	icon_state = "tea-grow1"
 	plant = "tea"
 	biomes = list("jungle","savanna","sea","semiarid")
+	max_water = 50
 
 /obj/structure/farming/plant/peyote
 	name = "peyote"
@@ -280,6 +300,7 @@
 	icon_state = "peyote-grow1"
 	plant = "peyote"
 	biomes = list("desert")
+	max_water = 100
 
 /obj/structure/farming/plant/coffee
 	name = "coffee"
@@ -287,6 +308,7 @@
 	icon_state = "coffee-grow1"
 	plant = "coffee"
 	biomes = list("jungle","savanna", "desert", "semiarid")
+	max_water = 80
 
 /obj/structure/farming/plant/cotton
 	name = "cotton"
@@ -296,6 +318,7 @@
 	harvest_verb = "pick"
 	biomes = list("temperate", "desert", "sea","semiarid")
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 50
 
 /obj/structure/farming/plant/grapes
 	name = "grapes"
@@ -304,7 +327,7 @@
 	plant = "grapes"
 	biomes = list("temperate", "desert", "sea","semiarid")
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
-
+	max_water = 65
 /obj/structure/farming/plant/tree
 	name = "tree"
 	desc = "a tree, grown for wood."
@@ -312,6 +335,7 @@
 	plant = "tree"
 	harvest_verb = "cut some logs from"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	max_water = 80
 
 /obj/structure/farming/plant/rice
 	name = "rice"
@@ -320,6 +344,7 @@
 	plant = "rice"
 	harvest_verb = "harvest"
 	biomes = list("jungle","savanna","sea")
+	max_water = 30
 
 /obj/structure/farming/plant/banana
 	name = "banana"
@@ -327,6 +352,7 @@
 	icon_state = "banana-grow1"
 	plant = "banana"
 	biomes = list("jungle","savanna")
+	max_water = 45
 
 /obj/structure/farming/plant/coca
 	name = "coca"
@@ -334,6 +360,7 @@
 	icon_state = "coca-grow1"
 	plant = "coca"
 	biomes = list("jungle","savanna")
+	max_water = 75
 
 /obj/structure/farming/plant/mushroom
 	name = "mushroom"
@@ -343,18 +370,22 @@
 	harvest_verb = "harvest"
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
-
+	max_water = 55
 /obj/structure/farming/plant/olives
 	name = "olive"
 	desc = "an olive tree."
 	icon_state = "olives-grow1"
 	plant = "olives"
 	biomes = list("temperate", "desert", "sea","semiarid")
+	max_water = 70
 
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()
 	..()
 	growth()
+	var/turf/T = get_turf(src)
+	if (T.radiation >= 5)
+		radiation = 5
 
 /obj/structure/farming/plant/proc/readyHarvest()
 	if (stage >= readyStageMin && stage <= readyStageMax)
@@ -366,13 +397,15 @@
 
 /obj/structure/farming/plant/proc/spawnProduce()
 	var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
-	new fruitpath(loc)
+	var/obj/item/I = new fruitpath(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new fruitpath(loc)
-
+		var/obj/item/I2 = new fruitpath(loc)
+		I2.radiation = radiation/2
 /obj/structure/farming/plant/proc/growth()
 	if (!vstatic)
 		if (stage < 12)
+			water_proc()
 			if (stage < readyStageMin)
 				icon_state = "[plant]-grow[stage]"
 				desc = "A young [plant] plant."
@@ -419,43 +452,117 @@
 			user << "<span class = 'warning'>You uproot the dead [name].</span>"
 			qdel(src)
 
+/obj/structure/farming/plant/proc/water_proc()
+	for(var/turf/floor/beach/water/WT in range(2,src))
+		if (!WT.salty)
+			water = max_water //water within 2 tiles means no need to manually water the plants.
+			return
+	for(var/turf/floor/trench/flooded/TR in range(2,src))
+		if (TR.flooded && !TR.salty)
+			water = max_water //water within 2 tiles means no need to manually water the plants.
+			return
+	var/area/A = get_area(loc)
+	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
+		water += 15
+		return
+	else if (findtext(A.icon_state, "snow_storm"))
+		stage = 11
+		icon_state = "[plant]-dead"
+		desc = "A frozen [plant] plant."
+		name = "frozen [plant] plant"
+		return
+	else if (findtext(A.icon_state, "sandstorm"))
+		stage = 11
+		icon_state = "[plant]-dead"
+		desc = "A destroyed [plant] plant."
+		name = "destroyed [plant] plant"
+		return
+	var/currcl = get_area(get_turf(src)).climate
+	if (currcl == "desert" || currcl == "savanna" || currcl == "semiarid")
+		water -= 25
+	else
+		water -= 15
+
+	if (map.heat_wave)
+		water -= 10
+
+	if (water <= 0)
+		stage = 11
+		icon_state = "[plant]-dead"
+		desc = "A dry [plant] plant."
+		name = "dry [plant] plant"
+		return
+	return
+/obj/structure/farming/plant/examine(mob/user)
+	..(user)
+	if (ishuman(user))
+		var/mob/living/carbon/human/H = user
+		if (H.getStatCoeff("farming")>= 1.6 && H.getStatCoeff("farming") < 2.2)
+			var/water_desc = "healthy"
+			if (water/max_water < 0.66 && water/max_water >= 0.33)
+				water_desc = "dry"
+			if (water/max_water < 0.33)
+				water_desc = "wilted"
+			user << "\The [src] seems <b>[water_desc]</b>."
+		else if (H.getStatCoeff("farming") >= 2.2)
+			user << "[src]'s water level is at <b>[water]/[max_water]</b>."
+		if (H.getStatCoeff("farming")>= 1.3)
+			if (fertilized)
+				user << "The ground is fertilized."
+
 //some specific, non-food plants
 /obj/structure/farming/plant/hemp/spawnProduce()
-	new/obj/item/stack/material/rope(loc)
+	var/obj/item/stack/material/rope/I = new/obj/item/stack/material/rope(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/rope(loc)
+		var/obj/item/stack/material/rope/I2 = new/obj/item/stack/material/rope(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/tobacco/spawnProduce()
-	new/obj/item/stack/material/tobacco(loc)
+	var/obj/item/stack/material/tobacco/I = new/obj/item/stack/material/tobacco(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/tobacco(loc)
+		var/obj/item/stack/material/tobacco/I2 = new/obj/item/stack/material/tobacco(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/coca/spawnProduce()
-	new/obj/item/stack/material/coca(loc)
+	var/obj/item/stack/material/coca/I = new/obj/item/stack/material/coca(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/coca(loc)
+		var/obj/item/stack/material/coca/I2 = new/obj/item/stack/material/coca(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/sugarcane/spawnProduce()
-	new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+	var/obj/item/weapon/reagent_containers/food/condiment/bsugar/I = new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+		var/obj/item/weapon/reagent_containers/food/condiment/bsugar/I2 = new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/tea/spawnProduce()
-	new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+	var/obj/item/weapon/reagent_containers/food/condiment/tealeaves/I = new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+		var/obj/item/weapon/reagent_containers/food/condiment/tealeaves/I2 = new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/poppy/spawnProduce()
-	new/obj/item/stack/material/poppy(loc)
+	var/obj/item/stack/material/poppy/I = new/obj/item/stack/material/poppy(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/poppy(loc)
+		var/obj/item/stack/material/poppy/I2 = new/obj/item/stack/material/poppy(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/tree/spawnProduce()
 	var/obj/item/stack/material/wood/NW = new/obj/item/stack/material/wood(loc)
 	NW.amount = 3
+	NW.radiation = radiation/2
 	if (fertilized)
 		NW.amount = 6
+
 /obj/structure/farming/plant/cotton/spawnProduce()
-	new/obj/item/stack/material/cotton(loc)
+	var/obj/item/stack/material/cotton/I = new/obj/item/stack/material/cotton(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/cotton(loc)
+		var/obj/item/stack/material/cotton/I2 = new/obj/item/stack/material/cotton(loc)
+		I2.radiation = radiation/2

@@ -791,10 +791,6 @@
 	color = "#0064C8" // rgb: FALSE, 100, 200
 	strength = 25
 
-/datum/reagent/ethanol/vodka/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.apply_effect(max(M.radiation - 1 * removed, FALSE), IRRADIATE, check_protection = FALSE)
-
 /datum/reagent/ethanol/whiskey
 	name = "Whiskey"
 	id = "whiskey"

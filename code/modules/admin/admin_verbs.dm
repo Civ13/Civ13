@@ -48,6 +48,9 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/togglelooc,		//toggles looc on/off for everyone,
 	/datum/admins/proc/toggleoocdead,	//toggles ooc on/off for everyone who is dead,
 	/datum/admins/proc/toggledsay,		//toggles dsay on/off for everyone,
+	/datum/admins/proc/get_world_values,
+	/datum/admins/proc/set_world_radiation,
+	/datum/admins/proc/set_world_pollution,
 	/datum/admins/proc/PlayerNotes,
 	/datum/admins/proc/show_player_info,
 	/client/proc/free_slot,			//frees slot for chosen job,
@@ -106,6 +109,7 @@ var/list/admin_verbs_fun = list(
 	/client/proc/cmd_admin_crush_self,
 	/client/proc/drop_bomb,
 	/client/proc/radiation_emission,
+	/client/proc/nuke,
 	/client/proc/make_sound,
 	/client/proc/editappear,
 	/client/proc/randomize_lobby_music,
@@ -156,7 +160,8 @@ var/list/admin_verbs_debug = list(
 	/client/proc/change_wind_spd,
 	/client/proc/randomly_change_weather,
 	/client/proc/randomly_modify_weather,
-	/client/proc/change_colour_filter
+	/client/proc/change_colour_filter,
+	/datum/admins/proc/print_chemical_reactions,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(
@@ -200,6 +205,10 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/cmd_admin_crush_self,
 	/client/proc/drop_bomb,
+	/client/proc/nuke,
+	/datum/admins/proc/get_world_values,
+	/datum/admins/proc/set_world_radiation,
+	/datum/admins/proc/set_world_pollution,
 	/client/proc/radiation_emission,
 	/client/proc/make_sound,
 	/client/proc/ToRban,
@@ -879,3 +888,39 @@ var/global/list/global_colour_matrix = null
 	radiation_pulse(epicenter, range, severity, duration, 0)
 	message_admins("[key] created a radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration].")
 	log_game("[key] created a radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration].")
+
+/client/proc/nuke()
+	set category = "Special"
+	set name = "Nuke the Map"
+	set desc = "Spawns a large explosion and turns the whole map into a wasteland."
+
+	var/conf_1 = input("Are you absolutely positively sure you want to NUKE THE WHOLE MAP? This is irreversible!") in list ("Yes", "No")
+	if (conf_1 == "No")
+		return
+
+	var/conf_2 = input("Seriously? THIS WILL LAG THE GAME FOR A WHILE!") in list ("Yes", "No")
+	if (conf_2 == "No")
+		return
+	var/warning = input("Do you want to give a 30 second warning before the nuke hits?") in list ("Yes", "No")
+
+	if (!mob || !mob.loc)
+		src << "<span class = 'warning'>You can't create a radiation emission here.</span>"
+		return
+
+	if (!processes.explosion || !processes.explosion.fires_at_gamestates.Find(ticker.current_state))
+		src << "<span class = 'warning'>You can't create a radiation emission now.</span>"
+		return
+
+	var/turf/epicenter = mob.loc
+	var/warningtimer = 5
+	if (warning == "Yes")
+		world << "<font size=3 color='red'><center>ATTENTION<br>A nuclear missile is incoming! Take cover!</center></font>"
+		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		for (var/mob/M in player_list)
+			M.client << warning_sound
+		warningtimer = 330
+	spawn(warningtimer)
+		world << "<font size=3 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>"
+		nuke_map(epicenter, 200, 180, 0)
+		message_admins("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
+		log_game("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")

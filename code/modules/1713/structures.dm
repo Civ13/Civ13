@@ -287,6 +287,11 @@
 	name = "USA Flag"
 	desc = "The US flag."
 
+/obj/structure/flag/confed
+	icon_state = "confed"
+	name = "Confederate flag"
+	desc = "The Confederate flag"
+
 /obj/structure/flag/reich
 	icon_state = "reich"
 	name = "Third Reich Flag"

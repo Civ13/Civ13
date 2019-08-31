@@ -19,6 +19,7 @@
 	var/ammotype = /obj/item/cannon_ball
 	var/spritemod = TRUE //if true, uses 32x64
 	var/explosion = TRUE
+	var/nuclear = FALSE
 	var/reagent_payload = "none"
 	var/maxrange = 50
 	var/maxsway = 3
@@ -51,6 +52,35 @@
 	maxrange = 23
 	maxsway = 7
 	firedelay = 12
+
+/obj/structure/cannon/davycrockett
+	name = "M29 Davy Crockett"
+	icon = 'icons/obj/cannon_ball.dmi'
+	layer = MOB_LAYER + 1 //just above mobs
+	density = TRUE
+	icon_state = "m29_davy_crockett_empty"
+	var/icon_state_unloaded = "m29_davy_crockett_empty"
+	var/icon_state_loaded = "m29_davy_crockett_loaded"
+	bound_height = 32
+	bound_width = 32
+	anchored = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	ammotype = /obj/item/cannon_ball/rocket/nuclear
+	spritemod = TRUE //if true, uses 32x64
+	explosion = TRUE
+	nuclear = TRUE
+	reagent_payload = "none"
+	maxrange = 40
+	maxsway = 8
+	firedelay = 24
+
+/obj/structure/cannon/davycrockett/attackby(obj/item/W as obj, mob/M as mob)
+	if (loaded)
+		icon_state = "m29_davy_crockett_loaded"
+	else
+		icon_state = "m29_davy_crockett_empty"
+
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
@@ -202,6 +232,9 @@
 			else
 				explosion = FALSE
 				reagent_payload = loaded.reagent_payload
+			if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
+				explosion = TRUE
+				nuclear = TRUE
 			qdel(loaded)
 			loaded = null
 
@@ -267,6 +300,22 @@
 								explosion(target, 1, 2, 2, 3)
 							else
 								explosion(target, 1, 2, 3, 4)
+						if (nuclear)
+							if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
+								radiation_pulse(target, 8, 60, 700, TRUE)
+							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W19))
+								radiation_pulse(target, 6, 40, 700, TRUE)
+							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33))
+								radiation_pulse(target, 8, 35, 700, TRUE)
+							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
+								radiation_pulse(target, 10, 40, 700, TRUE)
+							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/makeshift))
+								radiation_pulse(target, 4, 15, 300, TRUE)
+							else if (istype(src,/obj/item/cannon_ball/rocket/nuclear))
+								radiation_pulse(target, 12, 80, 1400, TRUE)
+							else
+								radiation_pulse(target, 4, 50, 700, TRUE)
+
 							var/target_area_original_integrity = target_area.artillery_integrity
 							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
 								for (var/mob/living/L in view(20, target))

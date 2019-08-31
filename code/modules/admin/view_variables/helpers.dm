@@ -37,13 +37,7 @@
 		<option value='?_src_=vars;mob_player_panel=\ref[src]'>Show player panel</option>
 		<option value='?_src_=vars;delall=\ref[src]'>Delete all of type</option>
 		<option>---</option>
-		<option value='?_src_=vars;give_spell=\ref[src]'>Give Spell</option>
-		<option value='?_src_=vars;give_disease2=\ref[src]'>Give Disease</option>
-		<option value='?_src_=vars;give_disease=\ref[src]'>Give TG-style Disease</option>
 		<option value='?_src_=vars;godmode=\ref[src]'>Toggle Godmode</option>
-		<option value='?_src_=vars;build_mode=\ref[src]'>Toggle Build Mode</option>
-
-		<option value='?_src_=vars;make_skeleton=\ref[src]'>Make 2spooky</option>
 
 		<option value='?_src_=vars;direct_control=\ref[src]'>Assume Direct Control</option>
 		<option value='?_src_=vars;drop_everything=\ref[src]'>Drop Everything</option>

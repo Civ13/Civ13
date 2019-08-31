@@ -7,6 +7,7 @@
 	max_ammo = 30
 	weight = 0.7
 	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ak74
 	name = "AK-74 magazine (5.45x39mm)"
 	icon_state = "ak74"
@@ -15,6 +16,16 @@
 	ammo_type = /obj/item/ammo_casing/a545x39
 	max_ammo = 30
 	weight = 0.5
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/ak47/makeshift
+	name = "makeshift AK-47 magazine (7.5mm)"
+	icon_state = "makeshiftak-47"
+	mag_type = MAGAZINE
+	caliber = "intermediumrifle"
+	ammo_type = /obj/item/ammo_casing/intermediumrifle
+	max_ammo = 28
+	weight = 0.6
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/m16
@@ -120,6 +131,17 @@
 	ammo_type = /obj/item/ammo_casing/a762x51
 	caliber = "a762x51"
 	max_ammo = 5
+	weight = 0.045
+	multiple_sprites = TRUE
+	clip = TRUE
+
+/obj/item/ammo_magazine/p90
+	name = "P90 Magazine (a57x28mm)"
+	icon_state = "clip"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a57x28
+	caliber = "a57x28"
+	max_ammo = 50
 	weight = 0.045
 	multiple_sprites = TRUE
 	clip = TRUE
