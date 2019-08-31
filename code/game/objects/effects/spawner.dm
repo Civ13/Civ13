@@ -436,7 +436,7 @@
 	max_number = 10
 	max_range = 5
 	create_path = /mob/living/simple_animal/hostile/zombie
-	timer = 2500
+	timer = 1000
 ////////////////////OBJ SPAWNER///////////
 /obj/effect/spawner/objspawner
 	name = "obj spawner"

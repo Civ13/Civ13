@@ -537,9 +537,9 @@
 		if (map.ordinal_age == 4)
 			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
 		else if (map.ordinal_age == 5)
-			listing = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+			listing = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "Cancel")
 		else if (map.ordinal_age >= 6)
-			listing = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+			listing = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
 
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")

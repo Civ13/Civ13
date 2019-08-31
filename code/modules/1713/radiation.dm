@@ -118,55 +118,6 @@
 			var/blocked = getarmor_rad("chest")
 			var/new_amount = max(0, amount*(1 - blocked/100))
 			I.rad_act(new_amount)
-	if(!orc && !ant && !wolfman && !lizard && !gorillaman && !crab && can_mutate) //If you are not any special race.
-		if(radiation >= 300) //If you are super irradiated, and somehow still alive.
-			if (prob(5))
-				if (prob(50))
-					src << "<span> You feel yourself getting more muscular and angry!</span>"
-				else
-					src << "<span> Your skin starts to turn a greenish hue!</span>"
-				orc = 1
-				radiation -= radiation/8 //Reduce radiation a little.
-			else if (prob(15))
-				if (prob(50))
-					src << "<span> Your skin starts to get covered with an exoskeleton!</span>"
-				else
-					src << "<span> You feel something sprout from your head!</span>"
-				ant = 1
-				radiation -= radiation/8 //Reduce radiation a little.
-			else if (prob(15))
-				if (prob(50))
-					src << "<span> You start to grow a shell!</span>"
-				else
-					src << "<span> Your hands turn into claws!</span>"
-				crab = 1
-				radiation -= radiation/8 //Reduce radiation a little.
-			else if (prob(10))
-				if (prob(50))
-					src << "<span> You start to grow fur all over your body!</span>"
-				else
-					src << "<span> You suddenly feel the urge to howl!</span>"
-				wolfman = 1
-				radiation -= radiation/4 //Reduce radiation because you ain't resistant.
-			else if (prob(10))
-				if (prob(50))
-					src << "<span> Your skin starts to grow out scales!</span>"
-				else
-					src << "<span> Your tongue becomes forked and long!</span>"
-				lizard = 1
-				radiation -= radiation/4 //Reduce radiation because you ain't resistant.
-			else if (prob(10))
-				if (prob(50))
-					src << "<span> You feel yourself craving bananas!</span>"
-				else
-					src << "<span> You notice dark fur spreading across your body!</span>"
-				gorillaman = 1
-				radiation -= radiation/4 //Reduce radiation because you ain't resistant.
-			else
-				//do nothing,
-		else
-			//do nothing again.
-	return
 /mob/living/carbon/human/proc/getarmor_rad(organ)
 	return getarmor_organ(get_organ(organ), "rad")
 
@@ -340,6 +291,13 @@
 		global_colour_matrix = list(0.8, 0.1, 0.1,\
 						0.1, 0.8, 0.1,\
 						0.1, 0.1, 0.8)
+	spawn(50)
+		for (var/obj/structure/wild/W)
+			W.rad_act(22)
+	spawn(65)
+		for (var/obj/structure/farming/F)
+			F.rad_act(22)
+
 	if (log)
 		log_game("<font color='red'>Nuke detonated in the map!</font>")
 
