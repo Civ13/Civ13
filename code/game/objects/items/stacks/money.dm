@@ -39,10 +39,10 @@
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "Dollar Bill"
 		icon_state = "money"
-		amount = 12  //Starting money
+		amount = 12
 		value = 4
 		return ..()
-	else if (map.ordinal_age == 0)
+	else if (map.ordinal_age < 4)
 		name = "spanish reales"
 		desc = "A small silver coin."
 		singular_name = "real"
@@ -67,7 +67,7 @@
 		amount = 1
 		value = 20
 		return ..()
-	else if (map.ordinal_age == 0)
+	else if (map.ordinal_age < 4)
 		name = "spanish dollars"
 		desc = "A silver coin, also called piece of eight, worth 8 reales."
 		singular_name = "dollar"
@@ -92,7 +92,7 @@
 		amount = 1
 		value = 80
 		return ..()
-	else if (map.ordinal_age == 0)
+	else if (map.ordinal_age < 4)
 		name = "spanish escudos"
 		desc = "A gold coin. Worth 16 reales."
 		singular_name = "escudo"
@@ -117,7 +117,7 @@
 		amount = 1
 		value = 200
 		return ..()
-	else if (map.ordinal_age == 0)
+	else if (map.ordinal_age < 4)
 		name = "spanish doubloons"
 		desc = "A large gold coin, the largest in circulation. Worth 32 reales."
 		singular_name = "doubloon"
