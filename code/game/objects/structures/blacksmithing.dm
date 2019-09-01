@@ -89,8 +89,6 @@ obj/structure/anvil/New()
 				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (30)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (30)", "Cancel")
 			if (map.ordinal_age == 8)
 				display2 = list("Makeshift AK-47 (32)", "Cancel")
-			else
-				display2 = list("Cancel")
 		else if (choice == "Armor")
 			if (map.ordinal_age == 5)
 				display2 = list("Dayfield body armor (10)", "breastplate body armor (12)","Cancel")
