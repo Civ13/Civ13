@@ -1239,6 +1239,52 @@
 
 	return TRUE
 
+/datum/job/civilian/judge_pioneer
+	title = "Town Judge"
+	en_meaning = "Judge"
+	rank_abbreviation = "Judge"
+	head_position = TRUE
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCivA"
+	is_officer = TRUE
+	whitelisted = TRUE
+	SL_check_independent = TRUE
+	is_pioneer = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/judge_pioneer/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
+//	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	H.add_note("Role", "You are a <b>[title]</b>, the judge of the local town. Help sentence justice upon those evil doers!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
 /datum/job/civilian/officer_pioneer
 	title = "Union Guard Officer"
 	en_meaning = "Town Security Leader"
@@ -1336,7 +1382,7 @@
 
 
 /datum/job/civilian/medic_pioneer
-	title = "Doctor"
+	title = "Medical Doctor"
 	en_meaning = "Town Doctor"
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
@@ -1394,7 +1440,7 @@
 
 	return TRUE
 /datum/job/civilian/merchant_pioneer
-	title = "Merchant"
+	title = "Trader"
 	en_meaning = "Town Trader"
 	rank_abbreviation = "Trader"
 	selection_color = "#2d2d63"
@@ -1451,7 +1497,7 @@
 
 	return TRUE
 /datum/job/civilian/priest_pioneer
-	title = "Priest"
+	title = "Church Priest"
 	en_meaning = "Town Priest"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1492,7 +1538,7 @@
 	return TRUE
 
 /datum/job/civilian/prospector_pioneer
-	title = "Prospector"
+	title = "Town Prospector"
 	en_meaning = "Miner/Explorer"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1546,7 +1592,7 @@
 	return TRUE
 
 /datum/job/civilian/farmer_pioneer
-	title = "Farmer"
+	title = "Local Farmer"
 	en_meaning = "Farmer/Rancher"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1602,7 +1648,7 @@
 
 	return TRUE
 /datum/job/civilian/carpenter_pioneer
-	title = "Carpenter"
+	title = "Town Carpenter"
 	en_meaning = "Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
 	selection_color = "#2d2d63"
@@ -1673,8 +1719,8 @@
 	return TRUE
 
 /datum/job/civilian/blacksmith_pioneer
-	title = "Blacksmith"
-	en_meaning = "Blacksmith"
+	title = "Pioneer Blacksmith"
+	en_meaning = "Town Blacksmith"
 	rank_abbreviation = "Blacksmith"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
@@ -1746,8 +1792,8 @@
 	return TRUE
 
 /datum/job/civilian/inkeeper_pioneer
-	title = "Inkeeper"
-	en_meaning = "Innkeeper/Taverner"
+	title = "Innkeeper"
+	en_meaning = "Innkeeper"
 	rank_abbreviation = "Innkeeper"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivD"
@@ -1801,9 +1847,9 @@
 	return TRUE
 
 /datum/job/civilian/barkeep_pioneer
-	title = "Bar Keep/Bar Maiden"
+	title = "Bar Keeper"
 	en_meaning = "Taverner"
-	rank_abbreviation = "Waiter"
+	rank_abbreviation = "Barkeeper"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	SL_check_independent = TRUE
