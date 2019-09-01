@@ -7,15 +7,17 @@
 	respawn_delay = 7200 // 12 minutes!
 	squad_spawn_locations = FALSE
 	faction_organization = list(
-		CIVILIAN)
+		CIVILIAN,
+		INDIANS)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british,
+		list(INDIANS) = /area/caribbean/british
 		)
 	age = "1873"
 	ordinal_age = 4
-	faction_distribution_coeffs = list( CIVILIAN = 1)
+	faction_distribution_coeffs = list( CIVILIAN = 0.8,INDIANS = 0.2)
 	battle_name = "new frontier"
 	mission_start_message = "<big>Pioneers</b> have reached the frontier! The <b>Pioneers</b> must build their town. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - PIONEERS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')

@@ -1338,7 +1338,7 @@
 /datum/job/civilian/medic_pioneer
 	title = "Doctor"
 	en_meaning = "Town Doctor"
-	rank_abbreviation = "Doctor"
+	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	SL_check_independent = TRUE
@@ -1396,7 +1396,7 @@
 /datum/job/civilian/merchant_pioneer
 	title = "Merchant"
 	en_meaning = "Town Trader"
-	rank_abbreviation = "Merchant"
+	rank_abbreviation = "Trader"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
