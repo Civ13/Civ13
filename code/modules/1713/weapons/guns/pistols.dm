@@ -147,6 +147,29 @@
 	else
 		icon_state = "waltherp380"
 	return
+	
+/obj/item/weapon/gun/projectile/pistol/glock17
+	name = "Glock 17"
+	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
+	icon_state = "glock17"
+	fire_delay = 2.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/glock17
+	weight = 0.594
+	max_shells = 17 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/glock17/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "glock17"
+	else
+		icon_state = "glock170"
+	return
 
 /obj/item/weapon/gun/projectile/pistol/mauser
 	name = "Mauser c96"
