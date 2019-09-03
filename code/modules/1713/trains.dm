@@ -19,7 +19,7 @@
 	flammable = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	anchored = FALSE
+	anchored = TRUE
 	density = TRUE
 	opacity = FALSE
 	var/automovement = FALSE
