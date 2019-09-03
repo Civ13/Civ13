@@ -173,6 +173,171 @@
 	else
 		..()
 
+//pig
+/mob/living/simple_animal/pig_boar
+	name = "pig boar"
+	desc = "A small Mammal, with a stocky Body, Flat snout and small eyes they are a member of the Suidae Family."
+	icon_state = "pig_boar"
+	icon_living = "pig_boar"
+	icon_dead = "pig_boar_dead"
+	speak = list("OINK!","SQWEEEL!")
+	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
+	speak_chance = 1
+	turns_per_move = 5
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 5
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	faction = list("neutral")
+	attack_sound = 'sound/weapons/punch1.ogg'
+	health = 60
+	maxHealth = 60
+	melee_damage_lower = 2
+	melee_damage_upper = 6
+	stop_automated_movement_when_pulled = 1
+	mob_size = MOB_MEDIUM
+	var/piglet = FALSE
+	herbivore = 1 //if it eats grass of the floor (i.e. goats, cows)
+	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
+	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
+	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+
+/mob/living/simple_animal/pig_gilt
+	name = "pig gilt"
+	desc = "A small Mammal, with a stocky Body, Flat snout and small eyes they are a member of the Suidae Family."
+	icon_state = "pig_gilt"
+	icon_living = "pig_gilt"
+	icon_dead = "pig_gilt_dead"
+	speak = list("OINK!","SQWEEEL!")
+	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
+	speak_chance = 1
+	turns_per_move = 5
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 6
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 60
+	var/piglet = FALSE
+	var/datum/reagents/udder = null
+	var/pregnant = FALSE
+	var/birthCountdown = 0
+	var/overpopulationCountdown = 0
+	mob_size = MOB_MEDIUM
+	herbivore = 1 //if it eats grass of the floor (i.e. goats, cows)
+	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
+	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
+	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+
+/mob/living/simple_animal/pig_gilt/death()
+	..()
+	pig_count -= 1
+
+/mob/living/simple_animal/pig_boar/death()
+	..()
+	pig_count -= 1
+
+/mob/living/simple_animal/pig_boar/New()
+	pig_count += 1
+	..()
+	spawn(1)
+		if (piglet)
+			icon_state = "pig_piglet"
+			icon_living = "pig_piglet"
+			icon_dead = "pig_piglet_dead"
+			meat_amount = 2
+			mob_size = MOB_SMALL
+			spawn(3000)
+				piglet = FALSE
+				icon_state = "pig_boar"
+				icon_living = "pig_boar"
+				icon_dead = "pig_boar_dead"
+				mob_size = MOB_MEDIUM
+
+/mob/living/simple_animal/pig_gilt/New()
+	pig_count += 1
+	udder = new(50)
+	udder.my_atom = src
+	..()
+	spawn(1)
+		if (piglet)
+			icon_state = "pig_piglet"
+			icon_living = "pig_piglet"
+			icon_dead = "pig_piglet_dead"
+			meat_amount = 2
+			udder.remove_reagent("milk")
+			mob_size = MOB_SMALL
+			spawn(3000)
+				piglet = FALSE
+				icon_state = "pig_gilt"
+				icon_living = "pig_gilt"
+				icon_dead = "pig_gilt_dead"
+				mob_size = MOB_MEDIUM
+
+/mob/living/simple_animal/pig_gilt/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	var/obj/item/weapon/reagent_containers/glass/G = O
+	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
+		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
+		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
+		if (G.reagents.total_volume >= G.volume)
+			user << "<span class = 'red'>The [O] is full.</span>"
+		if (!transfered)
+			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+	else
+		..()
+
+/mob/living/simple_animal/pig_gilt/Life()
+	. = ..()
+	if (stat == CONSCIOUS)
+		if (udder && prob(5) && !piglet)
+			udder.add_reagent("milk", rand(5, 10))
+	else
+		return
+
+	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
+		overpopulationCountdown--
+		return
+
+	if (!pregnant && pig_count < 30)
+		var/nearbyObjects = range(1,src) //3x3 area around pig
+		for(var/mob/living/simple_animal/pig_boar/M in nearbyObjects)
+			if (M.stat == CONSCIOUS)
+				pregnant = TRUE
+				birthCountdown = 600
+				break
+
+		if (pregnant)
+			nearbyObjects = range(7,src) //15x15 area around pig
+
+			var/pigCount = 0
+			for(var/mob/living/simple_animal/pig_gilt/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					pigCount++
+
+			for(var/mob/living/simple_animal/pig_boar/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					pigCount++
+
+			if (pigCount > 5) // max 5 pig_boars/pig_gilts in a 15x15 area around pig gilt
+				overpopulationCountdown = 300
+				pregnant = FALSE
+	else if (pregnant)
+		birthCountdown--
+		if (birthCountdown <= 0)
+			pregnant = FALSE
+			if (prob(50))
+				var/mob/living/simple_animal/pig_gilt/C = new/mob/living/simple_animal/pig_gilt(loc)
+				C.piglet = TRUE
+			else
+				var/mob/living/simple_animal/pig_boar/B = new/mob/living/simple_animal/pig_boar(loc)
+				B.piglet = TRUE
+			visible_message("A piglet has been born!")
+
+
 //goat
 /mob/living/simple_animal/goat
 	name = "goat ram"
