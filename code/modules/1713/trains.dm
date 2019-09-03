@@ -25,7 +25,8 @@
 	var/automovement = FALSE
 	var/list/linked = list()
 	var/health = 100
-	var/train_speed = 4 //deciseconds of delay, so lower is better
+	var/train_speed = 6 //deciseconds of delay, so lower is better
+
 /obj/structure/trains/Bumped(atom/AM)
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
@@ -57,7 +58,6 @@
 		if (!automovement)
 			playsound(src.loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
 			return FALSE
-		playsound(src.loc, 'sound/machines/train/moving.ogg', 100, TRUE)
 		process_rail_movement()
 		rail_movement()
 		rail_sound()
@@ -71,6 +71,9 @@
 	if (automovement)
 		var/turf/tgtt = get_step(src,dir)
 		var/turf/curr = get_turf(src)
+		if (!curr || !tgtt)
+			automovement = FALSE
+			return FALSE
 		if (rail_canmove(dir))
 			//push (or hit) wtv is in front...
 			for (var/obj/structure/trains/TF in tgtt)
@@ -113,9 +116,12 @@
 	if (!tgtt)
 		return FALSE
 	for (var/obj/structure/rails/R in tgtt)
-		if (mdir in list(1,2) && R.dir in list(1,2))
-			return TRUE
-		else if (mdir in list(4,8) && R.dir in list(4,8))
+		if (mdir == 1 || mdir == 2)
+			if (R.dir == 1 || R.dir == 2)
+				return TRUE
+		else if (mdir == 4 || mdir == 8)
+			if (R.dir == 4 || R.dir == 4)
+				return TRUE
 			return TRUE
 	return FALSE
 
