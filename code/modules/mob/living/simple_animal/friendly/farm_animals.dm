@@ -199,7 +199,7 @@
 	stop_automated_movement_when_pulled = 1
 	mob_size = MOB_MEDIUM
 	var/piglet = FALSE
-	herbivore = 1 //if it eats grass of the floor (i.e. goats, cows)
+	herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
@@ -228,7 +228,7 @@
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
 	mob_size = MOB_MEDIUM
-	herbivore = 1 //if it eats grass of the floor (i.e. goats, cows)
+	herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.

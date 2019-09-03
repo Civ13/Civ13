@@ -1003,7 +1003,13 @@
 	var/turf/floor/TB = src
 	if (user.ant && (TB.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
 		if (user.z < 2)
-			user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
+			if (maxz == 1)
+				user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
+				return
+			else
+				var/turf/floor/TO = get_turf(locate(x,y,z+1)
+				for (var/obj/OB in TO)
+					if (istype(OB, /obj/covers) || istype(OB, /obj/structure
 		else
 			var/digging_tunnel_time = 200
 			digging_tunnel_time /= user.getStatCoeff("strength")
