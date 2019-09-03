@@ -118,61 +118,77 @@
 		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user
 		var/obj/item/weapon/shovel/SH = C
+		if (H.a_intent != I_DISARM)
 
-		if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
-			if (T.available_snow >= 1)
-				H.shoveling_snow = TRUE
-				visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
-				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)/SH.usespeed))
-					visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
-					H.shoveling_snow = FALSE
-					H.adaptStat("strength", 1)
-					T.available_snow -= 1
-					new /obj/item/weapon/snowwall(T)
-					if (T.available_snow <= 0)
-						if (istype(T, /turf/floor/winter/grass))
-							T.ChangeTurf(/turf/floor/grass)
-						else if (istype(T, /turf/floor/dirt/winter))
-							T.ChangeTurf(/turf/floor/dirt)
+			if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
+				if (T.available_snow >= 1)
+					H.shoveling_snow = TRUE
+					visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)/SH.usespeed))
+						visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
+						H.shoveling_snow = FALSE
+						H.adaptStat("strength", 1)
+						T.available_snow -= 1
+						new /obj/item/weapon/snowwall(T)
+						if (T.available_snow <= 0)
+							if (istype(T, /turf/floor/winter/grass))
+								T.ChangeTurf(/turf/floor/grass)
+							else if (istype(T, /turf/floor/dirt/winter))
+								T.ChangeTurf(/turf/floor/dirt)
 
+					else
+						H.shoveling_snow = FALSE
 				else
-					H.shoveling_snow = FALSE
+					user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
+
+			else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
+				if (T.available_dirt >= 1)
+					H.shoveling_dirt = TRUE
+					visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)/SH.usespeed))
+						visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
+						H.shoveling_dirt = FALSE
+						H.adaptStat("strength", 1)
+						T.available_dirt -= 1
+						new /obj/item/weapon/sandbag(T)
+					else
+						H.shoveling_dirt = FALSE
+				else
+					user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
+			else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling_sand)
+				if (T.available_sand >= 1)
+					H.shoveling_sand = TRUE
+					visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)/SH.usespeed))
+						visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
+						H.shoveling_sand = FALSE
+						H.adaptStat("strength", 1)
+						T.available_sand -= 1
+						new /obj/item/stack/ore/glass(T)
+					else
+						H.shoveling_sand = FALSE
+
 			else
-				user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
-
-		else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
-			if (T.available_dirt >= 1)
-				H.shoveling_dirt = TRUE
-				visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
-				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)/SH.usespeed))
-					visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
-					H.shoveling_dirt = FALSE
-					H.adaptStat("strength", 1)
-					T.available_dirt -= 1
-					new /obj/item/weapon/sandbag(T)
-				else
-					H.shoveling_dirt = FALSE
-			else
-				user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
-		else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling_sand)
-			if (T.available_sand >= 1)
-				H.shoveling_sand = TRUE
-				visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
-				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)/SH.usespeed))
-					visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
-					H.shoveling_sand = FALSE
-					H.adaptStat("strength", 1)
-					T.available_sand -= 1
-					new /obj/item/stack/ore/glass(T)
-				else
-					H.shoveling_sand = FALSE
-
+				return ..(C, user)
 		else
-			return ..(C, user)
-
+			if (radiation >= 1 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
+				visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (do_after(user, 150/SH.usespeed))
+					visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
+					H.adaptStat("strength", 1)
+					radiation *= 0.1
+					if (istype(src, /turf/floor/grass/jungle))
+						src.ChangeTurf(/turf/floor/dirt/jungledirt)
+					else
+						src.ChangeTurf(/turf/floor/dirt)
+					rad_act(0.01)
+					update_icon()
+			else
+				return ..(C, user)
 	else if (istype(C, /obj/item/weapon/poster/religious) && istype(get_turf(src), /turf/floor/dirt/underground))
 		user << "You start placing the [C] on the [src]..."
 		if (do_after(user, 70, src))
