@@ -1054,11 +1054,3 @@
 	..()
 	storage.attackby(W, user)
 	update_icon()
-
-// for legacy purposes
-/obj/structure/shopping_cart/mine
-	name = "mining cart"
-	desc = "A wooden mining cart, for underground rails."
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "miningcaropen"
-	max_storage = 8
