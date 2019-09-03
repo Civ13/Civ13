@@ -141,7 +141,7 @@ var/global/datum/controller/occupations/job_master
 	if (map && map.subfaction_is_main_faction)
 		announce = FALSE
 
-	if (!is_side_locked(INDIANS) && map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY))
+	if (map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY))
 		if (map)
 			if (announce)
 				world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
@@ -531,26 +531,6 @@ var/global/datum/controller/occupations/job_master
 			keychain.keys += key
 			keychain.update_icon_state()
 
-/datum/controller/occupations/proc/is_side_locked(side)
-	if (!ticker)
-		return TRUE
-	if (side == PIRATES)
-		if (pirates_forceEnabled)
-			return FALSE
-		if (side_is_hardlocked(side))
-			return 2
-		return !ticker.can_latejoin_ruforce
-	else if (side == BRITISH)
-		if (british_forceEnabled)
-			return FALSE
-		if (side_is_hardlocked(side))
-			return 2
-		return !ticker.can_latejoin_geforce
-	else if (side == CIVILIAN)
-		if (civilians_forceEnabled)
-			return FALSE
-		return map.game_really_started()
-	return FALSE
 
 // this is a solution to 5 british and 1 pirates on lowpop.
 /datum/controller/occupations/proc/side_is_hardlocked(side)
@@ -647,7 +627,7 @@ var/global/datum/controller/occupations/job_master
 		if (map.faction_distribution_coeffs.Find(VIETNAMESE))
 			max_vietnamese = ceil(relevant_clients * map.faction_distribution_coeffs[VIETNAMESE])
 		if (map.faction_distribution_coeffs.Find(CHINESE))
-			max_vietnamese = ceil(relevant_clients * map.faction_distribution_coeffs[CHINESE])
+			max_chinese = ceil(relevant_clients * map.faction_distribution_coeffs[CHINESE])
 	switch (side)
 		if (CIVILIAN)
 			if (civilians_forceEnabled)

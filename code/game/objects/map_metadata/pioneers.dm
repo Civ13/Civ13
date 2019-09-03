@@ -26,11 +26,12 @@
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Pioneer Building RP"
 	is_singlefaction = TRUE
+
 /obj/map_metadata/pioneers/New()
 	..()
 	spawn(18000)
 		seasons()
-
+	civilians_forceEnabled = TRUE
 /obj/map_metadata/pioneers/proc/seasons()
 	if (season == "WINTER")
 		season = "SPRING"

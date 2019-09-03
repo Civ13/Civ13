@@ -9,9 +9,95 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 	layer = 2.5
+	var/switched = "forward"
+	var/turn_dir = null
 
 /obj/structure/rails/end
 	icon_state = "rails_end"
+
+
+/obj/structure/rails/split
+	icon_state = "rails_split"
+
+/obj/structure/rails/turn/right
+	icon_state = "rails_turn_right"
+	New()
+		..()
+		switch(dir)
+			if (1)
+				turn_dir = get_step(src, 8)
+			if (2)
+				turn_dir = get_step(src, 4)
+			if (4)
+				turn_dir = get_step(src, 2)
+			if (8)
+				turn_dir = get_step(src, 1)
+
+/obj/structure/rails/turn/left
+	icon_state = "rails_turn_left"
+	New()
+		..()
+		switch(dir)
+			if (1)
+				turn_dir = get_step(src, 4)
+			if (2)
+				turn_dir = get_step(src, 8)
+			if (4)
+				turn_dir = get_step(src, 1)
+			if (8)
+				turn_dir = get_step(src, 2)
+
+/obj/structure/rails/split/switcher
+	icon_state = "rails_split_f"
+	name = "rail switcher"
+	desc = "used to switch between two train tracks. It is set to go forward."
+	switched = "forward"
+
+/obj/structure/rails/split/switcher/update_icon()
+	if (switched == "forward")
+		icon_state = "rails_split_f"
+	else
+		icon_state = "rails_split_s"
+
+/////////////////////////////////////////////////////////////////////////////////
+/obj/structure/train_lever
+	name = "rail switch level"
+	desc = "A lever used to switch between tracks."
+	icon = 'icons/obj/train_lever.dmi'
+	icon_state = "lever_none"
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	var/switched = "forward"
+
+/obj/structure/train_lever/update_icon()
+	if (switched == "forward")
+		icon_state = "lever_none"
+	else
+		icon_state = "lever_pulled"
+
+/obj/structure/train_lever/attack_hand(mob/living/user as mob)
+	if (istype(user, /mob/living))
+		if (switched == "forward")
+			switched = "split"
+			for (var/obj/structure/rails/split/switcher/S in range(2,src))
+				S.switched = "split"
+			visible_message("<span class = 'notice'>[user] moves the lever into the splitting position!</span>", "<span class = 'notice'>You move the lever into the splitting position!</span>")
+			update_icon()
+			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+			return
+		else
+			switched = "forward"
+			for (var/obj/structure/rails/split/switcher/S in range(2,src))
+				S.switched = "forward"
+			visible_message("<span class = 'notice'>[user] moves the lever into the forward position!</span>", "<span class = 'notice'>You move the lever into the forward position!</span>")
+			update_icon()
+			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+			return
+
+/////////////////////////////////////////////////////////////////////////////////
 
 /obj/structure/trains
 	icon = 'icons/obj/trains.dmi'
@@ -23,7 +109,6 @@
 	density = TRUE
 	opacity = FALSE
 	var/automovement = FALSE
-	var/list/linked = list()
 	var/health = 100
 	var/train_speed = 6 //deciseconds of delay, so lower is better
 
@@ -34,21 +119,6 @@
 	if (rail_canmove(AM.dir))
 		src.forceMove(tgt)
 		return TRUE
-
-/obj/structure/trains/verb/linking()
-	set category = null
-	set name = "Link"
-	set desc = "Link with the carriage in front."
-
-	set src in range(1)
-	if (!istype(usr, /mob/living/carbon/human))
-		return
-	for (var/obj/structure/trains/TR in get_step(src,dir))
-		if (!TR.linked.len && !linked.len)
-			visible_message("[usr] links the two carriages together.","You link the two carriages together.")
-			TR.linked += src
-			return
-	return
 
 /obj/structure/trains/proc/rail_movement()
 	if (!automovement)
@@ -71,10 +141,26 @@
 	if (automovement)
 		var/turf/tgtt = get_step(src,dir)
 		var/turf/curr = get_turf(src)
+		var/turf/behind = get_step(src,OPPOSITE_DIR(dir))
 		if (!curr || !tgtt)
 			automovement = FALSE
 			return FALSE
 		if (rail_canmove(dir))
+			var/obj/structure/rails/RT = null
+			for (var/obj/structure/rails/RTT in loc)
+				RT = RTT
+			if (RT && istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split")
+				switch(RT.dir)
+					if (1)
+						tgtt = get_step(RT, 8)
+					if (2)
+						tgtt = get_step(RT, 4)
+					if (4)
+						tgtt = get_step(RT, 1)
+					if (8)
+						tgtt = get_step(RT, 2)
+			else if (RT && istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
+				tgtt = get_step(RT, RT.turn_dir)
 			//push (or hit) wtv is in front...
 			for (var/obj/structure/trains/TF in tgtt)
 				if (TF.rail_canmove(dir))
@@ -103,13 +189,13 @@
 					return FALSE
 			// move this train...
 			src.forceMove(tgtt)
-			//...and drag wtv is linked
-			for (var/obj/structure/trains/T in linked)
-				if (T.rail_canmove(dir))
-					T.forceMove(curr)
-				else
-					linked -= T
-		return TRUE
+			//...and drag wtv is behind
+			if (behind)
+				for (var/obj/structure/trains/T in behind)
+					if (T.rail_canmove(dir))
+						T.dir = dir
+						T.forceMove(curr)
+			return TRUE
 	return FALSE
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
 	var/turf/tgtt = get_step(src,mdir)
