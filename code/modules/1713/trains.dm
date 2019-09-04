@@ -244,9 +244,15 @@
 			if (RT.turn_dir == dir)
 				dir = RT.dir
 				tgtt = get_step(RT, RT.dir)
+			else if (RT.turn_dir == OPPOSITE_DIR(dir))
+				dir = OPPOSITE_DIR(RT.dir)
+				tgtt = get_step(RT, OPPOSITE_DIR(RT.dir))
 			else if (RT.dir == dir)
 				dir = RT.turn_dir
 				tgtt = get_step(RT, RT.turn_dir)
+			else if (RT.dir == OPPOSITE_DIR(dir))
+				dir = OPPOSITE_DIR(RT.turn_dir)
+				tgtt = get_step(RT, OPPOSITE_DIR(RT.turn_dir))
 		if (!rail_canmove(dir))
 			automovement = FALSE
 			return FALSE
