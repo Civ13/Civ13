@@ -1,6 +1,6 @@
 /obj/structure/rails
 	name = "rails"
-	desc = "A bunch of rails used by trains."
+	desc = "Rails used by trains."
 	icon = 'icons/obj/trains.dmi'
 	icon_state = "rails"
 	anchored = TRUE
@@ -123,15 +123,16 @@
 	density = TRUE
 	opacity = FALSE
 	var/automovement = FALSE
-	var/health = 100
+	var/health = 1000
 	var/train_speed = 6 //deciseconds of delay, so lower is better
 	var/locomotive = FALSE
+
 /obj/structure/trains/Bumped(atom/AM)
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
 		return FALSE
 	if (rail_canmove(AM.dir))
-		src.forceMove(tgt)
+		src.Move(tgt)
 		return TRUE
 
 /obj/structure/trains/proc/rail_movement()
@@ -220,13 +221,13 @@
 				L.adjustBruteLoss(65)
 				return FALSE
 		// move this train...
-		src.forceMove(tgtt)
+		src.Move(tgtt)
 		//...and drag wtv is behind
 		if (behind)
 			for (var/obj/structure/trains/T in behind)
 				if (T.rail_canmove(dir))
 					T.dir = dir
-					T.forceMove(curr)
+					T.Move(curr)
 		return TRUE
 	return FALSE
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
@@ -282,12 +283,94 @@
 	desc = "A wooden mining cart, for underground rails."
 	icon_state = "miningcar"
 
-
-/obj/structure/trains/flatbed
+//////////////////////////////////////////////////////////////////////////////////
+/obj/structure/trains/transport
 	name = "flatbed cart"
 	icon_state = "flatbed"
+	can_buckle = TRUE
+	buckle_lying = FALSE
+/obj/structure/trains/transport/MouseDrop_T(mob/living/M, mob/living/user)
+	if (!istype(user, /mob/living) || !istype(M, /mob/living))
+		return
+	if (M.loc == src.loc)
+		buckle_mob(M)
+		if (user == M)
+			user << "You buckle yourself to \the [src]."
+		else
+			visible_message("[user] buckles [M] to \the [src].","You buckle [M] to \the [src].")
+		return
+	else
+		if (user == M)
+			user << "You start climbing into \the [src]..."
+		else
+			visible_message("[user] starts dragging [M] into \the [src]...", "You start dragging [M] into \the [src]...")
+		if (do_after(user, 50, src))
+			if (user == M)
+				user << "You climb into \the [src]."
+			else
+				visible_message("[user] drags [M] into \the [src].", "You drag [M] into \the [src].")
+			M.forceMove(src.loc)
+		return
+/obj/structure/trains/transport/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/grab))
+		var/obj/item/weapon/grab/G = W
+		var/mob/living/affecting = G.affecting
+		user.visible_message("<span class='notice'>[user] attempts to buckle [affecting] into \the [src]!</span>")
+		if (do_after(user, 20, src))
+			affecting.loc = loc
+			spawn(0)
+				if (buckle_mob(affecting))
+					affecting.visible_message(\
+						"<span class='danger'>[affecting.name] is buckled to [src] by [user.name]!</span>",\
+						"<span class='danger'>You are buckled to [src] by [user.name]!</span>",\
+						"<span class='notice'>You hear metal clanking.</span>")
+			qdel(W)
+	else
+		if (istype(W, /obj/item/weapon))
+			switch(W.damtype)
+				if ("fire")
+					health -= W.force * TRUE
+				if ("brute")
+					health -= W.force * 0.75
+		else
+			..()
+/obj/structure/trains/transport/Move(var/turf/newloc)
+
+	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
+		return FALSE
+
+	..(newloc)
+
+	if (buckled_mob)
+		if (buckled_mob.buckled == src)
+			buckled_mob.loc = loc
+		else
+			buckled_mob = null
+
+	return TRUE
 
 
+/obj/structure/trains/transport/user_unbuckle_mob(mob/user)
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		for(var/turf/floor/F in range(1,src))
+			for(var/obj/O in F)
+				if (!O.density && !F.density)
+					M.forceMove(F)
+					return M
+	return M
+/////////////////////////////////////////////////////////////////////////////////////////////
 /obj/structure/trains/locomotive
 	name = "locomotive"
 	icon_state = "tractor"
