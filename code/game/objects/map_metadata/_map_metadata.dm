@@ -175,7 +175,7 @@ var/civmax_research = list(230,230,230)
 	var/list/wolfman = list()
 	var/list/crab = list()
 
-	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"))
+	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"), list("zelenyy","neutral","water"), list("marron","neutral","water"), list("corcairghorm","neutral","water"))
 
 /obj/map_metadata/New()
 	..()
@@ -245,6 +245,21 @@ var/civmax_research = list(230,230,230)
 			var/turf/floor/grass/G = pick(grass_turf_list)
 			if (G.isemptyfloor())
 				new/obj/structure/wild/berrybush/narco(G)
+				v++
+		for (var/v=1, v<=amt_to_create)
+			var/turf/floor/grass/G = pick(grass_turf_list)
+			if (G.isemptyfloor())
+				new/obj/structure/wild/berrybush/zelenyy(G)
+				v++
+		for (var/v=1, v<=amt_to_create)
+			var/turf/floor/grass/G = pick(grass_turf_list)
+			if (G.isemptyfloor())
+				new/obj/structure/wild/berrybush/marron(G)
+				v++
+		for (var/v=1, v<=amt_to_create)
+			var/turf/floor/grass/G = pick(grass_turf_list)
+			if (G.isemptyfloor())
+				new/obj/structure/wild/berrybush/corcairghorm(G)
 				v++
 
 /obj/map_metadata/proc/religious_timer()
