@@ -112,6 +112,8 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 /obj/structure/trains
+	name = "carriage"
+	desc = "A carriage meant to be used on rails."
 	icon = 'icons/obj/trains.dmi'
 	icon_state = "miningcar"
 	flammable = FALSE
@@ -123,7 +125,7 @@
 	var/automovement = FALSE
 	var/health = 100
 	var/train_speed = 6 //deciseconds of delay, so lower is better
-
+	var/locomotive = FALSE
 /obj/structure/trains/Bumped(atom/AM)
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
@@ -279,3 +281,41 @@
 	name = "mining cart"
 	desc = "A wooden mining cart, for underground rails."
 	icon_state = "miningcar"
+
+
+/obj/structure/trains/flatbed
+	name = "flatbed cart"
+	icon_state = "flatbed"
+
+
+/obj/structure/trains/locomotive
+	name = "locomotive"
+	icon_state = "tractor"
+	train_speed = 8 //deciseconds of delay, so lower is better
+	locomotive = TRUE
+	var/on = FALSE
+/obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
+	if (!istype(user, /mob/living))
+		return
+	if (on)
+		on = FALSE
+		visible_message("[user] turns off \the [src].", "You turn off \the [src].")
+		automovement = FALSE
+		update_icon()
+		return
+	else
+		on = TRUE
+		visible_message("[user] turns on \the [src].", "You turn on \the [src].")
+		locomotive()
+		update_icon()
+		return
+	..()
+
+/obj/structure/trains/locomotive/proc/locomotive()
+	if (!on)
+		return
+	if (!automovement)
+		automovement = TRUE
+		playsound(src.loc, 'sound/machines/train/moving.ogg', 100, TRUE)
+		rail_movement()
+		return
