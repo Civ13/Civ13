@@ -146,7 +146,7 @@
 	var/health = 1000
 	var/train_speed = 6 //deciseconds of delay, so lower is better
 	var/locomotive = FALSE
-
+	var/list/transporting = list()
 /obj/structure/trains/Bumped(atom/AM)
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
@@ -180,10 +180,16 @@
 			buckled_mob = null
 	for (var/mob/living/L in oldloc)
 		L.loc = loc
+	for (var/obj/O in oldloc)
+		if (O.anchored && O in transporting)
+			O.loc = loc
 	if (behind && pullbehind)
 		for (var/obj/structure/trains/T in behind)
 			if (T.dir == dir)
 				T.Move(oldloc)
+	for (var/obj/O in transporting)
+		if (get_dist(O, src) >= 2)
+			transporting -= O
 	return TRUE
 
 /obj/structure/trains/proc/rail_movement()
@@ -339,9 +345,20 @@
 	can_buckle = TRUE
 	buckle_lying = FALSE
 
-/obj/structure/trains/transport/MouseDrop_T(mob/living/M, mob/living/user)
-	if (!istype(user, /mob/living) || !istype(M, /mob/living))
+/obj/structure/trains/transport/MouseDrop_T(atom/movable/M, mob/living/user)
+	if (!istype(user, /mob/living))
 		return
+	if  (!istype(M, /mob/living))
+		if (istype(M, /obj/item))
+			var/obj/AM = M
+			if (!AM.anchored)
+				visible_message("[user] starts dragging \the [AM] into \the [src]...", "You start dragging \the [AM] into \the [src]...")
+				if (do_after(user, 50, src))
+					visible_message("[user] drags \the [AM] into \the [src].", "You drag \the [AM] into \the [src].")
+					AM.forceMove(src.loc)
+					AM.anchored = TRUE
+					transporting += AM
+					return
 	if (M.loc == src.loc)
 		buckle_mob(M)
 		if (user == M)
