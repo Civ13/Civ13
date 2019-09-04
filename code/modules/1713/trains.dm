@@ -157,6 +157,7 @@
 			if (istype(src, /obj/structure/trains/transport))
 				ML.forceMove(loc)
 				return FALSE
+			return FALSE
 		if (ML.mob_size < MOB_MEDIUM)
 			return FALSE
 		for (var/obj/structure/trains/TR in tgt)
