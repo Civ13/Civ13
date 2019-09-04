@@ -70,6 +70,26 @@
 	else
 		icon_state = "rails_split_s_[sw_direction]"
 
+/obj/structure/rails/rotate
+	name = "rotating rail"
+	desc = "A rotating platform that allows carriages to switch direction."
+	icon_state = "rails_rotate"
+
+/obj/structure/rails/rotate/attack_hand(mob/living/user as mob)
+	switch(dir)
+		if (1)
+			dir = 8
+		if (2)
+			dir = 4
+		if (4)
+			dir = 1
+		if (8)
+			dir = 2
+	for (var/obj/structure/trains/TR in loc)
+		TR.dir = dir
+	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+	user << "You rotate the platform."
+	return
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
 	name = "rail switch level"
