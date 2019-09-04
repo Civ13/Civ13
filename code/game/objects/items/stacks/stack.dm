@@ -42,6 +42,33 @@
 		usr << browse(null, "window=stack")
 	return ..()
 
+//NEW
+/obj/item/stack/AltClick(mob/living/user)
+	if(zero_amount())
+		return
+	var/max = get_amount()
+	var/stackmaterial = round(input(user,"How many to take out of the stack? (Maximum  [max])") as null|num)
+	max = get_amount()
+	stackmaterial = min(max, stackmaterial)
+	if(stackmaterial == null || stackmaterial <= 0)
+		return
+	else
+		change_stack(user, stackmaterial)
+		to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack</span>")
+
+/obj/item/stack/proc/change_stack(mob/user, amount)
+	var/obj/item/stack/F = split(amount)
+	if (F)
+		user.put_in_hands(F)
+		add_fingerprint(user)
+		F.add_fingerprint(user)
+		spawn(0)
+			if (src && usr.using_object == src)
+				interact(usr)
+	else
+		..()
+	return
+
 /obj/item/stack/examine(mob/user)
 	if (..(user, TRUE))
 		if (!uses_charge)
