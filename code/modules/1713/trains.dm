@@ -217,6 +217,7 @@
 		//push (or hit) wtv is in front...
 		for (var/obj/structure/trains/TF in tgtt)
 			if (TF.rail_canmove(dir))
+				TF.dir = dir
 				TF.Bumped(src)
 			else
 				visible_message("\The [src] hits \the [TF]!")
@@ -231,15 +232,19 @@
 				automovement = FALSE
 				return FALSE
 		for (var/mob/living/L in tgtt)
-			if (L.mob_size <= 42)
-				visible_message("\The [src] crushes \the [L]!")
-				L.crush()
-			else
-				visible_message("\The [src] hits \the [L]!")
-				health -= 8
-				automovement = FALSE
-				L.adjustBruteLoss(65)
-				return FALSE
+			var/found = FALSE
+			for (var/obj/structure/trains/TT in tgtt)
+				found = TRUE
+			if (!found)
+				if (L.mob_size <= 42)
+					visible_message("\The [src] crushes \the [L]!")
+					L.crush()
+				else
+					visible_message("\The [src] hits \the [L]!")
+					health -= 8
+					automovement = FALSE
+					L.adjustBruteLoss(65)
+					return FALSE
 		// move this train...
 		src.Move(tgtt)
 		//...and drag wtv is behind
@@ -359,6 +364,7 @@
 	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
 
+	var/turf/oldloc = loc
 	..(newloc)
 
 	if (buckled_mob)
@@ -366,7 +372,8 @@
 			buckled_mob.loc = loc
 		else
 			buckled_mob = null
-
+	for (var/mob/living/L in oldloc)
+		L.loc = loc
 	return TRUE
 
 
