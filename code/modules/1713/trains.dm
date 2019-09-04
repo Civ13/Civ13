@@ -27,9 +27,9 @@
 		..()
 		switch(dir)
 			if (1)
-				turn_dir = 8
-			if (2)
 				turn_dir = 4
+			if (2)
+				turn_dir = 8
 			if (4)
 				turn_dir = 2
 			if (8)
@@ -42,9 +42,9 @@
 		..()
 		switch(dir)
 			if (1)
-				turn_dir = 4
-			if (2)
 				turn_dir = 8
+			if (2)
+				turn_dir = 4
 			if (4)
 				turn_dir = 1
 			if (8)
@@ -157,73 +157,75 @@
 		if (!curr || !tgtt)
 			automovement = FALSE
 			return FALSE
-		if (rail_canmove(dir))
-			var/obj/structure/rails/RT = null
-			for (var/obj/structure/rails/RTT in loc)
-				RT = RTT
-			if (RT && istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split" && RT.dir == dir)
-				if (RT.sw_direction == "left")
-					switch(RT.dir)
-						if (1)
-							tgtt = get_step(RT, 8)
-						if (2)
-							tgtt = get_step(RT, 4)
-						if (4)
-							tgtt = get_step(RT, 1)
-						if (8)
-							tgtt = get_step(RT, 2)
-				else if (RT.sw_direction == "right")
-					switch(RT.dir)
-						if (1)
-							tgtt = get_step(RT, 4)
-						if (2)
-							tgtt = get_step(RT, 8)
-						if (4)
-							tgtt = get_step(RT, 2)
-						if (8)
-							tgtt = get_step(RT, 1)
-			else if (RT && istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
-				if (RT.turn_dir == dir)
-					dir = RT.dir
-					tgtt = get_step(RT, RT.dir)
-				else
-					dir = RT.turn_dir
-					tgtt = get_step(RT, RT.turn_dir)
-			//push (or hit) wtv is in front...
-			for (var/obj/structure/trains/TF in tgtt)
-				if (TF.rail_canmove(dir))
-					TF.Bumped(src)
-				else
-					visible_message("\The [src] hits \the [TF]!")
-					automovement = FALSE
-					health -= 5
-					return FALSE
-			for (var/obj/O in tgtt)
-				if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails))
-					visible_message("\The [src] hits \the [O]!")
-					O.ex_act(1.0)
-					health -= 15*O.w_class
-					automovement = FALSE
-					return FALSE
-			for (var/mob/living/L in tgtt)
-				if (L.mob_size <= 42)
-					visible_message("\The [src] crushes \the [L]!")
-					L.crush()
-				else
-					visible_message("\The [src] hits \the [L]!")
-					health -= 8
-					automovement = FALSE
-					L.adjustBruteLoss(65)
-					return FALSE
-			// move this train...
-			src.forceMove(tgtt)
-			//...and drag wtv is behind
-			if (behind)
-				for (var/obj/structure/trains/T in behind)
-					if (T.rail_canmove(dir))
-						T.dir = dir
-						T.forceMove(curr)
-			return TRUE
+		var/obj/structure/rails/RT = null
+		for (var/obj/structure/rails/RTT in loc)
+			RT = RTT
+		if (RT && istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split" && RT.dir == dir && rail_canmove(dir))
+			if (RT.sw_direction == "left")
+				switch(RT.dir)
+					if (1)
+						tgtt = get_step(RT, 8)
+					if (2)
+						tgtt = get_step(RT, 4)
+					if (4)
+						tgtt = get_step(RT, 1)
+					if (8)
+						tgtt = get_step(RT, 2)
+			else if (RT.sw_direction == "right")
+				switch(RT.dir)
+					if (1)
+						tgtt = get_step(RT, 4)
+					if (2)
+						tgtt = get_step(RT, 8)
+					if (4)
+						tgtt = get_step(RT, 2)
+					if (8)
+						tgtt = get_step(RT, 1)
+		else if (RT && istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
+			if (RT.turn_dir == dir)
+				dir = RT.dir
+				tgtt = get_step(RT, RT.dir)
+			else if (RT.dir == dir)
+				dir = RT.turn_dir
+				tgtt = get_step(RT, RT.turn_dir)
+		if (!rail_canmove(dir))
+			automovement = FALSE
+			return FALSE
+		//push (or hit) wtv is in front...
+		for (var/obj/structure/trains/TF in tgtt)
+			if (TF.rail_canmove(dir))
+				TF.Bumped(src)
+			else
+				visible_message("\The [src] hits \the [TF]!")
+				automovement = FALSE
+				health -= 5
+				return FALSE
+		for (var/obj/O in tgtt)
+			if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails))
+				visible_message("\The [src] hits \the [O]!")
+				O.ex_act(1.0)
+				health -= 15*O.w_class
+				automovement = FALSE
+				return FALSE
+		for (var/mob/living/L in tgtt)
+			if (L.mob_size <= 42)
+				visible_message("\The [src] crushes \the [L]!")
+				L.crush()
+			else
+				visible_message("\The [src] hits \the [L]!")
+				health -= 8
+				automovement = FALSE
+				L.adjustBruteLoss(65)
+				return FALSE
+		// move this train...
+		src.forceMove(tgtt)
+		//...and drag wtv is behind
+		if (behind)
+			for (var/obj/structure/trains/T in behind)
+				if (T.rail_canmove(dir))
+					T.dir = dir
+					T.forceMove(curr)
+		return TRUE
 	return FALSE
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
 	var/turf/tgtt = get_step(src,mdir)
