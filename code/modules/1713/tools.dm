@@ -121,6 +121,20 @@
 	name = "prybar"
 	icon_state = "prybar"
 
+/obj/item/weapon/berriesgatherer
+	name = "berries gatherer"
+	desc = "A simple berry gatherer. Use it on berry bushes to efficiently gather berries."
+	icon = 'icons/obj/flora/berries.dmi'
+	icon_state = "berriesgatherer"
+	force = 2.0
+	throwforce = 1.0
+	item_state = "berriesgatherer"
+	w_class = 1.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	flammable = TRUE
+
 
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
