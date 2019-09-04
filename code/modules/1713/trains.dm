@@ -11,6 +11,7 @@
 	layer = 2.5
 	var/switched = "forward"
 	var/turn_dir = null
+	var/sw_direction = "forward"
 
 /obj/structure/rails/end
 	icon_state = "rails_end"
@@ -21,43 +22,53 @@
 
 /obj/structure/rails/turn/right
 	icon_state = "rails_turn_right"
+	sw_direction = "right"
 	New()
 		..()
 		switch(dir)
 			if (1)
-				turn_dir = get_step(src, 8)
+				turn_dir = 8
 			if (2)
-				turn_dir = get_step(src, 4)
+				turn_dir = 4
 			if (4)
-				turn_dir = get_step(src, 2)
+				turn_dir = 2
 			if (8)
-				turn_dir = get_step(src, 1)
+				turn_dir = 1
 
-/obj/structure/rails/turn/left
+/obj/structure/rails/turn
 	icon_state = "rails_turn_left"
+	sw_direction = "left"
 	New()
 		..()
 		switch(dir)
 			if (1)
-				turn_dir = get_step(src, 4)
+				turn_dir = 4
 			if (2)
-				turn_dir = get_step(src, 8)
+				turn_dir = 8
 			if (4)
-				turn_dir = get_step(src, 1)
+				turn_dir = 1
 			if (8)
-				turn_dir = get_step(src, 2)
+				turn_dir = 2
 
 /obj/structure/rails/split/switcher
-	icon_state = "rails_split_f"
+	icon_state = "rails_split_f_left"
 	name = "rail switcher"
 	desc = "used to switch between two train tracks. It is set to go forward."
 	switched = "forward"
+	sw_direction = "left"
+
+/obj/structure/rails/split/switcher/right
+	icon_state = "rails_split_f_right"
+	name = "rail switcher"
+	desc = "used to switch between two train tracks. It is set to go forward."
+	switched = "forward"
+	sw_direction = "right"
 
 /obj/structure/rails/split/switcher/update_icon()
 	if (switched == "forward")
-		icon_state = "rails_split_f"
+		icon_state = "rails_split_f_[sw_direction]"
 	else
-		icon_state = "rails_split_s"
+		icon_state = "rails_split_s_[sw_direction]"
 
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
@@ -84,14 +95,15 @@
 			switched = "split"
 			for (var/obj/structure/rails/split/switcher/S in range(2,src))
 				S.switched = "split"
+				S.update_icon()
 			visible_message("<span class = 'notice'>[user] moves the lever into the splitting position!</span>", "<span class = 'notice'>You move the lever into the splitting position!</span>")
-			update_icon()
 			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 			return
 		else
 			switched = "forward"
 			for (var/obj/structure/rails/split/switcher/S in range(2,src))
 				S.switched = "forward"
+				S.update_icon()
 			visible_message("<span class = 'notice'>[user] moves the lever into the forward position!</span>", "<span class = 'notice'>You move the lever into the forward position!</span>")
 			update_icon()
 			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
@@ -149,18 +161,34 @@
 			var/obj/structure/rails/RT = null
 			for (var/obj/structure/rails/RTT in loc)
 				RT = RTT
-			if (RT && istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split")
-				switch(RT.dir)
-					if (1)
-						tgtt = get_step(RT, 8)
-					if (2)
-						tgtt = get_step(RT, 4)
-					if (4)
-						tgtt = get_step(RT, 1)
-					if (8)
-						tgtt = get_step(RT, 2)
+			if (RT && istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split" && RT.dir == dir)
+				if (RT.sw_direction == "left")
+					switch(RT.dir)
+						if (1)
+							tgtt = get_step(RT, 8)
+						if (2)
+							tgtt = get_step(RT, 4)
+						if (4)
+							tgtt = get_step(RT, 1)
+						if (8)
+							tgtt = get_step(RT, 2)
+				else if (RT.sw_direction == "right")
+					switch(RT.dir)
+						if (1)
+							tgtt = get_step(RT, 4)
+						if (2)
+							tgtt = get_step(RT, 8)
+						if (4)
+							tgtt = get_step(RT, 2)
+						if (8)
+							tgtt = get_step(RT, 1)
 			else if (RT && istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
-				tgtt = get_step(RT, RT.turn_dir)
+				if (RT.turn_dir == dir)
+					dir = RT.dir
+					tgtt = get_step(RT, RT.dir)
+				else
+					dir = RT.turn_dir
+					tgtt = get_step(RT, RT.turn_dir)
 			//push (or hit) wtv is in front...
 			for (var/obj/structure/trains/TF in tgtt)
 				if (TF.rail_canmove(dir))
