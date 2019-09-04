@@ -151,9 +151,39 @@
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
 		return FALSE
+	if (isliving(AM))
+		var/mob/living/ML = AM
+		for (var/obj/structure/trains/TR in AM.loc)
+			if (istype(src, /obj/structure/trains/transport))
+				ML.forceMove(loc)
+				return FALSE
+		if (ML.mob_size < MOB_MEDIUM)
+			return FALSE
+		for (var/obj/structure/trains/TR in tgt)
+			return FALSE
 	if (rail_canmove(AM.dir))
-		src.Move(tgt)
+		src.Move(tgt, FALSE)
 		return TRUE
+/obj/structure/trains/Move(var/turf/newloc, var/pullbehind = TRUE)
+
+	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
+		return FALSE
+	var/turf/behind = get_step(src,OPPOSITE_DIR(dir))
+	var/turf/oldloc = loc
+	..(newloc)
+
+	if (buckled_mob)
+		if (buckled_mob.buckled == src)
+			buckled_mob.loc = loc
+		else
+			buckled_mob = null
+	for (var/mob/living/L in oldloc)
+		L.loc = loc
+	if (behind && pullbehind)
+		for (var/obj/structure/trains/T in behind)
+			if (T.dir == dir)
+				T.Move(oldloc)
+	return TRUE
 
 /obj/structure/trains/proc/rail_movement()
 	if (!automovement)
@@ -176,7 +206,6 @@
 	if (automovement)
 		var/turf/tgtt = get_step(src,dir)
 		var/turf/curr = get_turf(src)
-		var/turf/behind = get_step(src,OPPOSITE_DIR(dir))
 		if (!curr || !tgtt)
 			automovement = FALSE
 			return FALSE
@@ -245,14 +274,8 @@
 					automovement = FALSE
 					L.adjustBruteLoss(65)
 					return FALSE
-		// move this train...
+		// ... and move this train
 		src.Move(tgtt)
-		//...and drag wtv is behind
-		if (behind)
-			for (var/obj/structure/trains/T in behind)
-				if (T.rail_canmove(dir))
-					T.dir = dir
-					T.Move(curr)
 		return TRUE
 	return FALSE
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
@@ -314,6 +337,7 @@
 	icon_state = "flatbed"
 	can_buckle = TRUE
 	buckle_lying = FALSE
+
 /obj/structure/trains/transport/MouseDrop_T(mob/living/M, mob/living/user)
 	if (!istype(user, /mob/living) || !istype(M, /mob/living))
 		return
@@ -359,22 +383,6 @@
 					health -= W.force * 0.75
 		else
 			..()
-/obj/structure/trains/transport/Move(var/turf/newloc)
-
-	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
-		return FALSE
-
-	var/turf/oldloc = loc
-	..(newloc)
-
-	if (buckled_mob)
-		if (buckled_mob.buckled == src)
-			buckled_mob.loc = loc
-		else
-			buckled_mob = null
-	for (var/mob/living/L in oldloc)
-		L.loc = loc
-	return TRUE
 
 
 /obj/structure/trains/transport/user_unbuckle_mob(mob/user)
