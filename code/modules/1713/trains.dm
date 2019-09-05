@@ -241,16 +241,24 @@
 					if (8)
 						tgtt = get_step(RT, 1)
 		else if (RT && istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
+//			world.log << "d: [dir]"
+//			world.log << "od: [OPPOSITE_DIR(dir)]"
+//			world.log << "rd: [RT.dir]"
+//			world.log << "td: [RT.turn_dir]"
 			if (RT.turn_dir == dir)
+//				world.log << "a"
 				dir = RT.dir
 				tgtt = get_step(RT, RT.dir)
 			else if (RT.turn_dir == OPPOSITE_DIR(dir))
+//				world.log << "b"
 				dir = OPPOSITE_DIR(RT.dir)
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.dir))
 			else if (RT.dir == dir)
+//				world.log << "c"
 				dir = RT.turn_dir
 				tgtt = get_step(RT, RT.turn_dir)
 			else if (RT.dir == OPPOSITE_DIR(dir))
+//				world.log << "d"
 				dir = OPPOSITE_DIR(RT.turn_dir)
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.turn_dir))
 		if (!rail_canmove(dir))
@@ -299,8 +307,12 @@
 		if (mdir == 1 || mdir == 2)
 			if (R.dir == 1 || R.dir == 2)
 				return TRUE
+			if (R.turn_dir == 1 || R.turn_dir == 2)
+				return TRUE
 		else if (mdir == 4 || mdir == 8)
 			if (R.dir == 4 || R.dir == 4)
+				return TRUE
+			if (R.turn_dir == 4 || R.turn_dir == 8)
 				return TRUE
 			return TRUE
 	return FALSE
