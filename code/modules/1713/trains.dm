@@ -165,12 +165,13 @@
 	if (rail_canmove(AM.dir))
 		src.Move(tgt, FALSE)
 		return TRUE
-/obj/structure/trains/Move(var/turf/newloc, var/pullbehind = TRUE)
+/obj/structure/trains/Move(var/turf/newloc, var/pullbehind = TRUE, var/fdir = dir)
 
 	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
 	var/turf/behind = get_step(src,OPPOSITE_DIR(dir))
 	var/turf/oldloc = loc
+	dir = fdir
 	..(newloc)
 
 	if (buckled_mob)
@@ -210,12 +211,20 @@
 			playsound(src.loc, 'sound/machines/train/moving.ogg', 100, TRUE)
 
 /obj/structure/trains/proc/process_rail_movement()
+	var/fdir = dir
 	if (automovement)
 		var/turf/tgtt = get_step(src,dir)
 		var/turf/curr = get_turf(src)
 		if (!curr || !tgtt)
 			automovement = FALSE
 			return FALSE
+		if (istype(src, /obj/structure/trains/locomotive))
+			var/obj/structure/trains/locomotive/L = src
+			if (L.fuel <= 0 && L.on)
+				automovement = FALSE
+				return FALSE
+			else if (L.on)
+				L.fuel--
 		var/obj/structure/rails/RT = null
 		for (var/obj/structure/rails/RTT in loc)
 			RT = RTT
@@ -247,19 +256,19 @@
 //			world.log << "td: [RT.turn_dir]"
 			if (RT.turn_dir == dir)
 //				world.log << "a"
-				dir = RT.dir
+				fdir = RT.dir
 				tgtt = get_step(RT, RT.dir)
 			else if (RT.turn_dir == OPPOSITE_DIR(dir))
 //				world.log << "b"
-				dir = OPPOSITE_DIR(RT.dir)
+				fdir = OPPOSITE_DIR(RT.dir)
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.dir))
 			else if (RT.dir == dir)
 //				world.log << "c"
-				dir = RT.turn_dir
+				fdir = RT.turn_dir
 				tgtt = get_step(RT, RT.turn_dir)
 			else if (RT.dir == OPPOSITE_DIR(dir))
 //				world.log << "d"
-				dir = OPPOSITE_DIR(RT.turn_dir)
+				fdir = OPPOSITE_DIR(RT.turn_dir)
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.turn_dir))
 		if (!rail_canmove(dir))
 			automovement = FALSE
@@ -296,7 +305,7 @@
 					L.adjustBruteLoss(65)
 					return FALSE
 		// ... and move this train
-		src.Move(tgtt)
+		src.Move(tgtt, TRUE, fdir)
 		return TRUE
 	return FALSE
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
@@ -448,6 +457,8 @@
 	train_speed = 8 //deciseconds of delay, so lower is better
 	locomotive = TRUE
 	var/on = FALSE
+	var/fuel = FALSE
+
 /obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
 	if (!istype(user, /mob/living))
 		return
@@ -473,3 +484,24 @@
 		playsound(src.loc, 'sound/machines/train/moving.ogg', 100, TRUE)
 		rail_movement()
 		return
+
+/obj/structure/trains/locomotive/coal
+	name = "coal locomotive"
+	desc = "a coal powered locomotive."
+	icon_state = "locomotive"
+
+/obj/structure/trains/locomotive/coal/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/S = W
+		if (istype(S, /obj/item/stack/ore/coal))
+			fuel+= S.amount*3
+			qdel(W)
+			user << "You refuel \the [src]."
+			return
+		else if (istype(S, /obj/item/stack/material/wood))
+			fuel+= S.amount
+			qdel(W)
+			user << "You refuel \the [src]."
+			return
+	else
+		..()
