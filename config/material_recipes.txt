@@ -476,15 +476,15 @@ RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,none,55,0,0,8,nul
 RECIPE: /material/glass/,shower,/obj/structure/shower,10,190,1,1,none,115,0,0,8,null
 RECIPE: /material/glass/,chemical dispenser,/obj/structure/chemical_dispenser,12,180,1,1,none,90,0,0,8,null
 
-RECIPE: /material/gold/,[display_name] hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,gold
-RECIPE: /material/gold/,[display_name]-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,8,gold
+RECIPE: /material/gold/,gold hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,gold
+RECIPE: /material/gold/,gold-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,8,gold
 RECIPE: /material/gold/,gold coins,/obj/item/stack/money/goldcoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,135,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/armbangle/gold,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none,0,0,0,8,null
 
-RECIPE: /material/silver/,[display_name] hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,silver
-RECIPE: /material/silver/,[display_name]-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,8,silver
+RECIPE: /material/silver/,silver hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,silver
+RECIPE: /material/silver/,silver-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,8,silver
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver crown,/obj/item/clothing/head/helmet/silver_crown,3,135,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver arm bangles,/obj/item/clothing/accessory/armband/armbangle/silver,2,95,0,1,none,0,0,0,8,null
@@ -497,10 +497,10 @@ RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95
 RECIPE: /material/copper/,telegraph,/obj/structure/telegraph,12,90,1,1,none,105,0,0,8,null
 RECIPE: /material/copper/,teleprinter,/obj/structure/teleprinter,12,120,1,1,none,105,0,0,8,null
 RECIPE: /material/copper/,electronic circuits,/obj/item/stack/material/electronics,1,80,0,1,none,130,0,0,8,null
-RECIPE: /material/copper/,[display_name] hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,8,8,0,8,copper
-RECIPE: /material/copper/,[display_name]-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,8,8,0,8,copper
+RECIPE: /material/copper/,copper hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,8,8,0,8,copper
+RECIPE: /material/copper/,copper-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,8,8,0,8,copper
 RECIPE: /material/copper/,copper coins,/obj/item/stack/money/coppercoin,1,35,0,1,none,0,0,0,8,null
-RECIPE: /material/copper/,[display_name] small sword,/obj/item/weapon/material/sword/smallsword/copper,10,70,0,1,none,18,34,0,8,copper
+RECIPE: /material/copper/,copper small sword,/obj/item/weapon/material/sword/smallsword/copper,10,70,0,1,none,18,34,0,8,copper
 RECIPE: /material/copper/,copper lamp,/obj/item/flashlight/lantern/copper,3,55,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,small copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,3,90,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,large copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,5,120,0,1,none,0,0,0,8,null
@@ -523,11 +523,11 @@ RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,
 
 RECIPE: /material/steel/,steel floor,/obj/covers/steelplating,1,15,1,1,walls & floors,96,0,0,8,null
 RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,none,96,0,0,8,null
-RECIPE: /material/steel/,[display_name] hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,50,44,0,8,steel
-RECIPE: /material/steel/,[display_name]-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,8,steel
+RECIPE: /material/steel/,steel hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,50,44,0,8,steel
+RECIPE: /material/steel/,steel-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,8,steel
 RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,8,null
 RECIPE: /material/steel/,throwing axe,/obj/item/weapon/material/throwing_axe,3,20,0,1,weapons,50,44,0,8,null
-RECIPE: /material/steel/,[display_name] throwing knife,/obj/item/weapon/material/throwing_knife,2,20,0,1,weapons,50,44,0,8,steel
+RECIPE: /material/steel/,steel throwing knife,/obj/item/weapon/material/throwing_knife,2,20,0,1,weapons,50,44,0,8,steel
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,none,75,0,0,8,null
 RECIPE: /material/steel/,jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,none,75,0,0,8,null
 RECIPE: /material/steel/,cannon,/obj/structure/cannon,35,600,1,1,none,71,79,0,4,null
@@ -557,13 +557,13 @@ RECIPE: /material/steel/,steel sledgehammer,/obj/item/weapon/sledgehammer/steel/
 RECIPE: /material/steel/,refrigerator,/obj/structure/closet/fridge,15,230,1,1,none,150,0,178,8,null
 
 RECIPE: /material/bronze/,bronze sledgehammer,/obj/item/weapon/sledgehammer/bronze/sledgehammer,12,140,1,1,tools,20,0,0,8,null
-RECIPE: /material/bronze/,[display_name] hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
-RECIPE: /material/bronze/,[display_name]-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,8,bronze
+RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
+RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,8,null
 RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,8,null
 RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,8,null
-RECIPE: /material/bronze/,[display_name] small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,27,34,0,8,bronze
-RECIPE: /material/bronze/,[display_name] arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,27,42,0,8,bronze
+RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,27,34,0,8,bronze
+RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,27,42,0,8,bronze
 RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,34,21,0,8,bronze
 RECIPE: /material/bronze/,bronze retractor,/obj/item/weapon/surgery/retractor/bronze,2,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze hemostat,/obj/item/weapon/surgery/hemostat/bronze,2,50,0,1,healthcare,18,0,26,8,null
