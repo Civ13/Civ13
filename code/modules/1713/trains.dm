@@ -145,8 +145,11 @@
 	var/automovement = FALSE
 	var/health = 1000
 	var/train_speed = 6 //deciseconds of delay, so lower is better
+	var/max_train_speed = 6
 	var/locomotive = FALSE
 	var/list/transporting = list()
+	var/on = FALSE
+
 /obj/structure/trains/Bumped(atom/AM)
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
@@ -171,6 +174,7 @@
 		return FALSE
 	var/turf/behind = get_step(src,OPPOSITE_DIR(dir))
 	var/turf/oldloc = loc
+	var/olddir = dir
 	dir = fdir
 	..(newloc)
 
@@ -186,7 +190,8 @@
 			O.loc = loc
 	if (behind && pullbehind)
 		for (var/obj/structure/trains/T in behind)
-			if (T.dir == dir)
+			if (T.dir == olddir)
+				T.dir = dir
 				T.Move(oldloc)
 	for (var/obj/O in transporting)
 		if (get_dist(O, src) >= 2)
@@ -196,10 +201,12 @@
 /obj/structure/trains/proc/rail_movement()
 	if (!automovement)
 		playsound(src.loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
+		on = FALSE
 		return FALSE
 	spawn(train_speed)
 		if (!automovement)
 			playsound(src.loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
+			on = FALSE
 			return FALSE
 		process_rail_movement()
 		rail_movement()
@@ -222,9 +229,11 @@
 			var/obj/structure/trains/locomotive/L = src
 			if (L.fuel <= 0 && L.on)
 				automovement = FALSE
+				visible_message("\The [src]'s engine stalls.")
 				return FALSE
 			else if (L.on)
 				L.fuel--
+				L.set_speed()
 		var/obj/structure/rails/RT = null
 		for (var/obj/structure/rails/RTT in loc)
 			RT = RTT
@@ -270,12 +279,12 @@
 //				world.log << "d"
 				fdir = OPPOSITE_DIR(RT.turn_dir)
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.turn_dir))
-		if (!rail_canmove(dir))
+		if (!rail_canmove(fdir))
 			automovement = FALSE
 			return FALSE
 		//push (or hit) wtv is in front...
 		for (var/obj/structure/trains/TF in tgtt)
-			if (TF.rail_canmove(dir))
+			if (TF.rail_canmove(fdir))
 				TF.dir = dir
 				TF.Bumped(src)
 			else
@@ -375,6 +384,8 @@
 /obj/structure/trains/transport/MouseDrop_T(atom/movable/M, mob/living/user)
 	if (!istype(user, /mob/living))
 		return
+	if (!istype(M, /obj) && !istype(M, /mob/living))
+		return
 	if  (!istype(M, /mob/living))
 		if (istype(M, /obj/item))
 			var/obj/AM = M
@@ -456,8 +467,13 @@
 	icon_state = "tractor"
 	train_speed = 8 //deciseconds of delay, so lower is better
 	locomotive = TRUE
-	var/on = FALSE
+	on = FALSE
 	var/fuel = FALSE
+	var/max_fuel = FALSE
+	New()
+		..()
+		max_fuel = 100
+		max_train_speed = 8
 
 /obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
 	if (!istype(user, /mob/living))
@@ -485,23 +501,71 @@
 		rail_movement()
 		return
 
+/obj/structure/trains/locomotive/proc/set_speed()
+	var/aprfuel = fuel/max_fuel
+	if (aprfuel >= 0.8)
+		train_speed = max_train_speed
+		return train_speed
+	else if (fuel < 0.8 && fuel >= 0.6)
+		train_speed = ceil(max_train_speed/0.8)
+		return train_speed
+	else if (fuel < 0.6 && fuel >= 0.4)
+		train_speed = ceil(max_train_speed/0.6)
+		return train_speed
+	else if (fuel < 0.4 && fuel >= 0.2)
+		train_speed = ceil(max_train_speed/0.4)
+		return train_speed
+	else
+		train_speed = ceil(max_train_speed/0.2)
+		return train_speed
+
 /obj/structure/trains/locomotive/coal
 	name = "coal locomotive"
-	desc = "a coal powered locomotive."
+	desc = "A coal powered locomotive."
 	icon_state = "locomotive"
+	train_speed = 6
+	max_fuel = 100
+	max_train_speed = 5
+
+/obj/structure/trains/locomotive/examine(mob/user)
+	var/aprfuel = fuel/max_fuel
+	if (aprfuel >= 0.8)
+		user << "The combustion chamber seems full!"
+	else if (fuel < 0.8 && fuel >= 0.6)
+		user << "The combustion chamber seems to be suficiently fueled."
+	else if (fuel < 0.6 && fuel >= 0.4)
+		user << "The combustion chamber seems to be stable."
+	else if (fuel < 0.4 && fuel >= 0.2)
+		user << "The combustion chamber seems to be emptying."
+	else
+		user << "The combustion chamber seems to be almost empty!"
+	return TRUE
 
 /obj/structure/trains/locomotive/coal/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack))
 		var/obj/item/stack/S = W
 		if (istype(S, /obj/item/stack/ore/coal))
-			fuel+= S.amount*3
+			if (fuel>=max_fuel)
+				user << "<span class = 'notice'>The combustion chamber is full!</span>"
+				return
+			else if ((S.amount*15)+fuel>max_fuel)
+				user << "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>"
+				return
+			fuel+= S.amount*15
 			qdel(W)
 			user << "You refuel \the [src]."
 			return
 		else if (istype(S, /obj/item/stack/material/wood))
-			fuel+= S.amount
+			if (fuel>=max_fuel)
+				user << "<span class = 'notice'>The combustion chamber is full!</span>"
+				return
+			else if ((S.amount*3)+fuel>max_fuel)
+				user << "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>"
+				return
+			fuel+= S.amount*3
 			qdel(W)
 			user << "You refuel \the [src]."
 			return
 	else
 		..()
+
