@@ -252,6 +252,19 @@
 					numtocheck = copytext(customcolor,i,0)
 				if (!(numtocheck in listallowed))
 					return
+	if (recipe.result_type == /obj/structure/researchdesk)
+		if (map && !map.resourceresearch)
+			user << "\The [recipe.title] can only be built during the <b>Resource Research</b> gamemode."
+			return
+
+	if (recipe.result_type == /obj/structure/oil_deposits)
+		if (map && map.gamemode != "Oil Rush")
+			user << "\The [recipe.title] can only be built during the <b>Oil Rush</b> gamemode."
+			return
+	if (recipe.result_type == /obj/item/weapon/researchkit)
+		if (map && !map.research_active)
+			user << "\The [recipe.title] can only be built during the <b>Clasic Research</b> gamemode."
+			return
 
 	if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
