@@ -49,3 +49,20 @@
 		admin_notice("<span class='danger'>Failed to load whitelist!</span>", R_DEBUG)
 	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
 	sleep(-1)
+
+	admin_notice("<span class='danger'>Initializing crafting recipes...</span>", R_DEBUG)
+	sleep(-1)
+	var/F3 = file("config/material_recipes.txt")
+	if (fexists(F3))
+		var/list/craftlist_temp = file2list(F3,"\n")
+		for (var/i in craftlist_temp)
+			if (findtext(i, ","))
+				var/tmpi = replacetext(i, "RECIPE: ", "")
+				var/list/current = splittext(tmpi, ",")
+				craftlist_list += list(current)
+				if (current.len != 13)
+					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+	else
+		admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
+	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
+	sleep(-1)
