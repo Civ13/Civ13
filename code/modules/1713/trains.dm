@@ -72,7 +72,7 @@
 
 /obj/structure/rails/rotate
 	name = "rotating rail"
-	desc = "A rotating platform that allows carriages to switch direction."
+	desc = "A rotating platform that allows wagons to switch direction."
 	icon_state = "rails_rotate"
 
 /obj/structure/rails/rotate/attack_hand(mob/living/user as mob)
@@ -132,8 +132,8 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 /obj/structure/trains
-	name = "carriage"
-	desc = "A carriage meant to be used on rails."
+	name = "wagon"
+	desc = "A wagon meant to be used on rails."
 	icon = 'icons/obj/trains.dmi'
 	icon_state = "miningcar"
 	flammable = FALSE
@@ -234,6 +234,7 @@
 			else if (L.on)
 				L.fuel--
 				L.set_speed()
+//				world.log << "[L.train_speed]"
 		var/obj/structure/rails/RT = null
 		for (var/obj/structure/rails/RTT in loc)
 			RT = RTT
@@ -288,13 +289,13 @@
 				TF.dir = dir
 				TF.Bumped(src)
 			else
-				visible_message("\The [src] hits \the [TF]!")
+				visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
 				automovement = FALSE
 				health -= 5
 				return FALSE
 		for (var/obj/O in tgtt)
 			if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails))
-				visible_message("\The [src] hits \the [O]!")
+				visible_message("<span class = 'warning'>\The [src] hits \the [O]!</span>")
 				O.ex_act(1.0)
 				health -= 15*O.w_class
 				automovement = FALSE
@@ -305,10 +306,10 @@
 				found = TRUE
 			if (!found)
 				if (L.mob_size <= 42)
-					visible_message("\The [src] crushes \the [L]!")
+					visible_message("<span class = 'warning'>\The [src] crushes \the [L]!</span>")
 					L.crush()
 				else
-					visible_message("\The [src] hits \the [L]!")
+					visible_message("<span class = 'warning'>\The [src] hits \the [L]!</span>")
 					health -= 8
 					automovement = FALSE
 					L.adjustBruteLoss(65)
@@ -470,10 +471,8 @@
 	on = FALSE
 	var/fuel = FALSE
 	var/max_fuel = FALSE
-	New()
-		..()
-		max_fuel = 100
-		max_train_speed = 8
+	max_fuel = 100
+	max_train_speed = 8
 
 /obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
 	if (!istype(user, /mob/living))
@@ -506,36 +505,37 @@
 	if (aprfuel >= 0.8)
 		train_speed = max_train_speed
 		return train_speed
-	else if (fuel < 0.8 && fuel >= 0.6)
-		train_speed = ceil(max_train_speed/0.8)
+	else if (aprfuel < 0.8 && aprfuel >= 0.6)
+		train_speed = round(max_train_speed/0.9)
 		return train_speed
-	else if (fuel < 0.6 && fuel >= 0.4)
-		train_speed = ceil(max_train_speed/0.6)
+	else if (aprfuel < 0.6 && aprfuel >= 0.4)
+		train_speed = round(max_train_speed/0.8)
 		return train_speed
-	else if (fuel < 0.4 && fuel >= 0.2)
-		train_speed = ceil(max_train_speed/0.4)
+	else if (aprfuel < 0.4 && aprfuel >= 0.2)
+		train_speed = round(max_train_speed/0.7)
 		return train_speed
 	else
-		train_speed = ceil(max_train_speed/0.2)
+		train_speed = round(max_train_speed/0.6)
 		return train_speed
 
 /obj/structure/trains/locomotive/coal
-	name = "coal locomotive"
-	desc = "A coal powered locomotive."
+	name = "steam locomotive"
+	desc = "A steam-powered locomotive. Works with coal, wood, and so on."
 	icon_state = "locomotive"
-	train_speed = 6
+	train_speed = 5
 	max_fuel = 100
 	max_train_speed = 5
 
 /obj/structure/trains/locomotive/examine(mob/user)
+	..()
 	var/aprfuel = fuel/max_fuel
 	if (aprfuel >= 0.8)
 		user << "The combustion chamber seems full!"
-	else if (fuel < 0.8 && fuel >= 0.6)
+	else if (aprfuel < 0.8 && aprfuel >= 0.6)
 		user << "The combustion chamber seems to be suficiently fueled."
-	else if (fuel < 0.6 && fuel >= 0.4)
+	else if (aprfuel < 0.6 && aprfuel >= 0.4)
 		user << "The combustion chamber seems to be stable."
-	else if (fuel < 0.4 && fuel >= 0.2)
+	else if (aprfuel < 0.4 && aprfuel >= 0.2)
 		user << "The combustion chamber seems to be emptying."
 	else
 		user << "The combustion chamber seems to be almost empty!"
