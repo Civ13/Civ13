@@ -1,0 +1,522 @@
+RECIPE: /material/clay/,"unfired clay roofing",/obj/item/weapon/clay/roofing,2,25,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired clay vase",/obj/item/weapon/clay/vase,3,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired clay wine cup",/obj/item/weapon/clay/winecup,1,30,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired clay blocks",/obj/item/weapon/clay/claybricks,1,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired clay bowl",/obj/item/weapon/clay/claybowl,1,30,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired clay jug",/obj/item/weapon/clay/clayjug,2,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired clay cup",/obj/item/weapon/clay/claycup,1,30,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired very small clay pot",/obj/item/weapon/clay/verysmallclaypot,1,20,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired small clay pot",/obj/item/weapon/clay/smallclaypot,1,30,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired medium clay pot",/obj/item/weapon/clay/claypot,2,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired large clay pot",/obj/item/weapon/clay/bigclaypot,3,60,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired clay pitcher",/obj/item/weapon/clay/claypitcher,2,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired large clay pitcher",/obj/item/weapon/clay/largeclaypitcher,3,60,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/clay/,"unfired clay bricks",/obj/item/weapon/clay/advclaybricks,1,50,FALSE,TRUE,"none",82,0,0,0
+RECIPE: /material/clay/,"unfired cement bricks",/obj/item/weapon/clay/advclaybricks/cement,1,50,FALSE,TRUE,"none",82,0,0,8
+RECIPE: /material/clay/,"concrete floor",/obj/covers/concretefloor,1,15,TRUE,TRUE,"none",103,0,0,8
+
+RECIPE: /material/leather/,"sling",/obj/item/weapon/gun/projectile/bow/sling,3,60,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"comfy chair",/obj/structure/bed/chair/comfy/brown,6,100,TRUE,TRUE,"none",25,0,25,8
+RECIPE: /material/leather/,"bug swatter",/obj/item/weapon/swatter,3,90,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"quiver",/obj/item/weapon/storage/backpack/quiver,3,60,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"leather satchel",/obj/item/weapon/storage/belt/leather,3,60,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"leather bedroll",/obj/item/weapon/bedroll,4,100,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"leather waterskin",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin,3,90,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"ore collector",/obj/item/weapon/storage/ore_collector,5,100,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"seed collector",/obj/item/weapon/storage/seed_collector,5,100,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"leather bandages",/obj/item/stack/medical/bruise_pack/bint/leather,1,75,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"foldable canopy",/obj/item/weapon/tent,5,75,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"leather loincloth",/obj/item/clothing/under/loinleather,2,50,FALSE,TRUE,"none",0,0,0,0
+RECIPE: /material/leather/,"small customizable loincloth",/obj/item/clothing/under/custom/spartan,3,50,FALSE,TRUE,"none",0,0,0,1
+RECIPE: /material/leather/,"coin pouch",/obj/item/clothing/accessory/storage/coinpouch,2,60,FALSE,TRUE,"none",18,0,0,8
+RECIPE: /material/leather/,"leather backpack",/obj/item/weapon/storage/backpack,6,100,FALSE,TRUE,"none",18,0,0,8
+RECIPE: /material/leather/,"wallet",/obj/item/clothing/accessory/storage/coinpouch/wallet,2,60,FALSE,TRUE,"none",87,0,0,8
+RECIPE: /material/leather/,"roman-style sandals",/obj/item/clothing/shoes/roman,2,60,FALSE,TRUE,"none",0,19,0,1
+RECIPE: /material/leather/,"long celtic braccae",/obj/item/clothing/under/celtic_long_braccae,3,55,FALSE,TRUE,"none",0,19,0,1
+RECIPE: /material/leather/,"short celtic braccae",/obj/item/clothing/under/celtic_short_braccae,2,55,FALSE,TRUE,"none",0,19,0,1
+RECIPE: /material/leather/,"medieval shoes",/obj/item/clothing/shoes/medieval,3,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"arabic-style shoes",/obj/item/clothing/shoes/medieval/arab,2,60,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"samurai armor",/obj/item/clothing/suit/armor/samurai,20,100,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"red samurai armor",/obj/item/clothing/suit/armor/samurai/red,20,100,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"blue samurai armor",/obj/item/clothing/suit/armor/samurai/blue,20,100,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"black samurai armor",/obj/item/clothing/suit/armor/samurai/black,20,100,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"samurai helmet",/obj/item/clothing/head/helmet/samurai/guard,10,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"red samurai helmet",/obj/item/clothing/head/helmet/samurai/guard/red,10,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"blue samurai helmet",/obj/item/clothing/head/helmet/samurai/guard/blue,10,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"black samurai helmet",/obj/item/clothing/head/helmet/samurai/guard/black,10,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"sword sheath",/obj/item/clothing/accessory/storage/sheath,3,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"longer sword sheath",/obj/item/clothing/accessory/storage/sheath/longer,3,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"longsword sheath",/obj/item/clothing/accessory/storage/sheath/longsword,4,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"katana sheath",/obj/item/clothing/accessory/storage/sheath/katana,3,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"daisho sheath",/obj/item/clothing/accessory/storage/sheath/daisho,6,80,FALSE,TRUE,"none",0,39,0,2
+RECIPE: /material/leather/,"gunpowder pouch",/obj/item/weapon/reagent_containers/food/drinks/gunpowder,2,60,FALSE,TRUE,"none",0,54,0,8
+RECIPE: /material/leather/,"bandolier",/obj/item/clothing/accessory/storage/webbing,3,70,FALSE,TRUE,"none",0,54,0,8
+RECIPE: /material/leather/,"sword sheath",/obj/item/clothing/accessory/storage/sheath,3,80,FALSE,TRUE,"none",0,54,0,8
+RECIPE: /material/leather/,"longer sword sheath",/obj/item/clothing/accessory/storage/sheath/longer,3,80,FALSE,TRUE,"none",0,54,0,8
+RECIPE: /material/leather/,"longsword sheath",/obj/item/clothing/accessory/storage/sheath/longsword,4,80,FALSE,TRUE,"none",0,54,0,8
+RECIPE: /material/leather/,"katana sheath",/obj/item/clothing/accessory/storage/sheath/katana,3,80,FALSE,TRUE,"none",0,54,0,8
+RECIPE: /material/leather/,"daisho sheath",/obj/item/clothing/accessory/storage/sheath/daisho,6,80,FALSE,TRUE,"none",0,54,0,8
+RECIPE: /material/leather/,"suspenders",/obj/item/clothing/accessory/armband/suspenders1,1,60,FALSE,TRUE,"none",0,0,85,8
+RECIPE: /material/leather/,"dark suspenders",/obj/item/clothing/accessory/armband/suspenders2,1,70,FALSE,TRUE,"none",0,0,85,8
+RECIPE: /material/leather/,"bullet pouch",/obj/item/ammo_magazine/emptypouch,3,70,FALSE,TRUE,"none",0,0,85,8
+RECIPE: /material/leather/,"hip holster",/obj/item/clothing/accessory/holster/hip,2,50,FALSE,TRUE,"none",0,0,85,8
+RECIPE: /material/leather/,"double hip holster",/obj/item/clothing/accessory/holster/hip/double,3,70,FALSE,TRUE,"none",0,0,85,8
+RECIPE: /material/leather/,"khaki webbing",/obj/item/clothing/accessory/storage/webbing/khaki_webbing,2,60,FALSE,TRUE,"none",0,0,99,8
+RECIPE: /material/leather/,"green webbing",/obj/item/clothing/accessory/storage/webbing/green_webbing,2,60,FALSE,TRUE,"none",0,0,99,8
+RECIPE: /material/leather/,"light webbing",/obj/item/clothing/accessory/storage/webbing/light,1,50,FALSE,TRUE,"none",0,0,99,8
+RECIPE: /material/leather/,"leather armor",/obj/item/clothing/suit/armor/medieval/leather,6,130,FALSE,TRUE,"none",0,15,72,5
+RECIPE: /material/leather/,"leather helmet",/obj/item/clothing/head/helmet/leather,3,90,FALSE,TRUE,"none",0,15,72,4
+RECIPE: /material/leather/,"leather roundcap",/obj/item/clothing/head/roundcap,2,100,FALSE,TRUE,"none",65,0,0,4
+RECIPE: /material/leather/,"custom flag maker",/obj/item/flagmaker,4,100,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/leather/,"customizable armband",/obj/item/clothing/accessory/custom/armband,1,30,FALSE,TRUE,"accessories",0,0,0,8
+RECIPE: /material/leather/,"pilot goggles",/obj/item/clothing/glasses/pilot,2,60,FALSE,TRUE,"none",0,0,107,8
+RECIPE: /material/leather/,"black riding boots",/obj/item/clothing/shoes/riding1,3,50,FALSE,TRUE,"foot wear",0,0,98,4
+RECIPE: /material/leather/,"riding boots",/obj/item/clothing/shoes/riding2,3,50,FALSE,TRUE,"foot wear",0,0,98,4
+RECIPE: /material/leather/,"black leather shoes",/obj/item/clothing/shoes/soldiershoes,2,60,FALSE,TRUE,"foot wear",55,0,25,8
+RECIPE: /material/leather/,"black leather boots",/obj/item/clothing/shoes/blackboots1,3,80,FALSE,TRUE,"foot wear",55,0,25,8
+RECIPE: /material/leather/,"leather boots",/obj/item/clothing/shoes/leatherboots1,3,80,FALSE,TRUE,"foot wear",55,0,25,8
+RECIPE: /material/leather/,"whip",/obj/item/weapon/melee/classic_baton/whip,4,100,FALSE,TRUE,"none",0,38,0,8
+
+RECIPE: /material/electronics/,"pill maker",/obj/structure/chem_master,20,120,TRUE,TRUE,"none",80,0,0,8
+RECIPE: /material/electronics/,"telephone",/obj/structure/telephone,2,120,TRUE,TRUE,"none",80,0,0,8
+RECIPE: /material/electronics/,"radio transmitter",/obj/structure/radio/transmitter,6,150,TRUE,TRUE,"none",100,0,0,8
+RECIPE: /material/electronics/,"radio receiver",/obj/structure/radio,3,80,TRUE,TRUE,"none",100,0,0,8
+RECIPE: /material/electronics/,"television",/obj/structure/TV,3,80,TRUE,TRUE,"none",160,0,0,8
+RECIPE: /material/electronics/,"geiger counter",/obj/item/weapon/geiger_counter,5,120,FALSE,TRUE,"none",110,0,0,8
+RECIPE: /material/electronics/,"2-way radio",/obj/structure/radio/transmitter_receiver,10,150,TRUE,TRUE,"none",137,0,0,8
+RECIPE: /material/electronics/,"portable radio",/obj/item/weapon/radio,12,100,FALSE,TRUE,"none",141,0,0,8
+RECIPE: /material/electronics/,"walkie-talkie radio",/obj/item/weapon/radio/walkietalkie,16,100,FALSE,TRUE,"none",178,0,0,8
+RECIPE: /material/electronics/,"component analyser",/obj/item/weapon/analyser,18,100,FALSE,TRUE,"none",218,0,0,8
+
+RECIPE: /material/woolcloth/,"wool coat",/obj/item/clothing/suit/storage/coat/fur/white,6,150,FALSE,TRUE,"jackets & vests",0,0,0,8
+RECIPE: /material/woolcloth/,"wool boots",/obj/item/clothing/shoes/fur/white,3,80,FALSE,TRUE,"foot wear",0,0,0,8
+RECIPE: /material/woolcloth/,"wool gloves",/obj/item/clothing/gloves/thick/leather/white,3,80,FALSE,TRUE,"gloves",0,0,0,8
+
+RECIPE: /material/woolcloth/,"red beret",/obj/item/clothing/head/red_beret,2,55,FALSE,TRUE,"hats & masks",0,0,18,4
+RECIPE: /material/woolcloth/, "blue beret",/obj/item/clothing/head/blue_beret,2,55,FALSE,TRUE,"hats & masks",0,0,18,4
+RECIPE: /material/woolcloth/, "colored turban",/obj/item/clothing/head/turban,2,55,FALSE,TRUE,"hats & masks",0,0,18,8
+RECIPE: /material/woolcloth/, "white turban",/obj/item/clothing/head/turban/imam,2,55,FALSE,TRUE,"hats & masks",0,18,0,8
+RECIPE: /material/woolcloth/, "shemagh",/obj/item/clothing/mask/shemagh,2,55,FALSE,TRUE,"hats & masks",0,0,38,8
+RECIPE: /material/woolcloth/, "bandana",/obj/item/clothing/head/piratebandana1,2,55,FALSE,TRUE,"hats & masks",0,0,62,3
+RECIPE: /material/woolcloth/, "artisan hat",/obj/item/clothing/head/artisan,2,55,FALSE,TRUE,"hats & masks",0,0,52,3
+RECIPE: /material/woolcloth/, "red kerchief",/obj/item/clothing/mask/shemagh/redkerchief,2,45,FALSE,TRUE,"hats & masks",0,0,98,8
+RECIPE: /material/woolcloth/, "grey kerchief",/obj/item/clothing/mask/shemagh/greykerchief,2,45,FALSE,TRUE,"hats & masks",0,0,98,8
+RECIPE: /material/woolcloth/, "brown flatcap",/obj/item/clothing/head/flatcap1,2,55,FALSE,TRUE,"hats & masks",0,0,109,8
+RECIPE: /material/woolcloth/, "blue flatcap",/obj/item/clothing/head/flatcap2,2,55,FALSE,TRUE,"hats & masks",0,0,109,8
+RECIPE: /material/woolcloth/, "grey flatcap",/obj/item/clothing/head/flatcap3,2,55,FALSE,TRUE,"hats & masks",0,0,109,8
+RECIPE: /material/woolcloth/, "custom officer cap",/obj/item/clothing/head/custom_off_cap,4,95,FALSE,TRUE,"hats & masks",0,0,109,8
+RECIPE: /material/woolcloth/, "custom field cap",/obj/item/clothing/head/custom/fieldcap,3,70,FALSE,TRUE,"hats & masks",0,0,109,8
+
+RECIPE: /material/woolcloth/, "light hanfu",/obj/item/clothing/under/hanfu/light,3,100,FALSE,TRUE,"clothing",0,0,15,6
+RECIPE: /material/woolcloth/, "dark hanfu",/obj/item/clothing/under/hanfu,3,100,FALSE,TRUE,"clothing",0,0,15,6
+RECIPE: /material/woolcloth/, "green hanfu",/obj/item/clothing/under/hanfu/green,3,100,FALSE,TRUE,"clothing",0,0,15,6
+RECIPE: /material/woolcloth/, "customizable dress",/obj/item/clothing/under/customdress,4,85,FALSE,TRUE,"clothing",0,0,38,8
+RECIPE: /material/woolcloth/, "customizable buttoned dress",/obj/item/clothing/under/customdress2,4,85,FALSE,TRUE,"clothing",0,0,38,8
+RECIPE: /material/woolcloth/, "artisan clothing",/obj/item/clothing/under/artisan,3,100,FALSE,TRUE,"clothing",0,0,38,3
+RECIPE: /material/woolcloth/, "dark artisan clothing",/obj/item/clothing/under/artisan/dark,3,100,FALSE,TRUE,"clothing",0,0,38,3
+RECIPE: /material/woolcloth/, "light artisan clothing",/obj/item/clothing/under/artisan/light,3,100,FALSE,TRUE,"clothing",0,0,38,3
+RECIPE: /material/woolcloth/, "customizable renaissance clothing",/obj/item/clothing/under/customren,6,105,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/woolcloth/, "baggy renaissance clothing",/obj/item/clothing/under/renaissance,6,105,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/woolcloth/, "pontifical renaissance clothing",/obj/item/clothing/under/renaissance_pontifical,6,105,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/woolcloth/, "custom uniform",/obj/item/clothing/under/customuniform,3,75,FALSE,TRUE,"clothing",0,0,98,8
+
+RECIPE: /material/woolcloth/, "black jacket",/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,FALSE,TRUE,"jackets & vests",0,0,57,3
+RECIPE: /material/woolcloth/, "fancy brown jacket",/obj/item/clothing/suit/storage/jacket/piratejacket2,10,180,FALSE,TRUE,"jackets & vests",0,0,57,3
+RECIPE: /material/woolcloth/, "fancy red jacket",/obj/item/clothing/suit/storage/jacket/piratejacket5,10,180,FALSE,TRUE,"jackets & vests",0,0,57,3
+RECIPE: /material/woolcloth/, "blue vest",/obj/item/clothing/suit/storage/jacket/piratejacket3,4,75,FALSE,TRUE,"jackets & vests",0,0,57,8
+RECIPE: /material/woolcloth/, "black vest",/obj/item/clothing/suit/storage/jacket/piratejacket4,4,75,FALSE,TRUE,"jackets & vests",0,0,57,8
+RECIPE: /material/woolcloth/, "leather overcoat",/obj/item/clothing/suit/storage/jacket/leatherovercoat1,6,120,FALSE,TRUE,"jackets & vests",0,0,89,5
+RECIPE: /material/woolcloth/, "black leather overcoat",/obj/item/clothing/suit/storage/jacket/leatherovercoat2,6,120,FALSE,TRUE,"jackets & vests",0,0,89,5
+RECIPE: /material/woolcloth/, "olive vest",/obj/item/clothing/suit/storage/jacket/olivevest,4,80,FALSE,TRUE,"jackets & vests",0,0,89,8
+RECIPE: /material/woolcloth/, "brown winter coat",/obj/item/clothing/suit/storage/coat/japcoat2/brown,10,200,FALSE,TRUE,"jackets & vests",0,0,89,8
+RECIPE: /material/woolcloth/, "grey winter coat",/obj/item/clothing/suit/storage/coat/ruscoat/grey,10,200,FALSE,TRUE,"jackets & vests",0,0,89,8
+RECIPE: /material/woolcloth/, "charcoal suit",/obj/item/clothing/suit/storage/jacket/charcoal_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/woolcloth/, "black suit",/obj/item/clothing/suit/storage/jacket/black_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/woolcloth/, "dark black suit",/obj/item/clothing/suit/storage/jacket/really_black_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/woolcloth/, "burgundy suit",/obj/item/clothing/suit/storage/jacket/burgundy_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/woolcloth/, "checkered suit",/obj/item/clothing/suit/storage/jacket/checkered_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/woolcloth/, "navy suit",/obj/item/clothing/suit/storage/jacket/navy_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/woolcloth/, "grey parka",/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,FALSE,TRUE,"jackets & vests",0,0,112,8
+
+RECIPE: /material/woolcloth/, "customizable armband",/obj/item/clothing/accessory/custom/armband,1,30,FALSE,TRUE,"accessories",0,0,0,8
+RECIPE: /material/woolcloth/, "customizable sash",/obj/item/clothing/accessory/custom/sash,1,30,FALSE,TRUE,"accessories",0,0,0,8
+RECIPE: /material/woolcloth/, "customizable cape",/obj/item/clothing/accessory/custom/cape,2,30,FALSE,TRUE,"accessories",0,0,0,3
+RECIPE: /material/woolcloth/, "customizable tabard",/obj/item/clothing/accessory/custom/tabard,2,30,FALSE,TRUE,"accessories",0,0,0,3
+RECIPE: /material/woolcloth/, "customizable apron",/obj/item/clothing/accessory/custom/apron,2,30,FALSE,TRUE,"accessories",0,0,0,8
+RECIPE: /material/woolcloth/, "customizable scarf",/obj/item/clothing/accessory/custom/scarf,2,30,FALSE,TRUE,"accessories",0,0,70,8
+RECIPE: /material/woolcloth/, "customizable tie",/obj/item/clothing/accessory/custom/tie,2,50,FALSE,TRUE,"accessories",0,0,95,8
+RECIPE: /material/woolcloth/, "customizable bowtie",/obj/item/clothing/accessory/custom/bowtie,2,50,FALSE,TRUE,"accessories",0,0,95,8
+
+RECIPE: /material/woolcloth/, "white bedsheet",/obj/item/weapon/bedsheet,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/woolcloth/, "medical bedsheet",/obj/item/weapon/bedsheet/medical,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/woolcloth/, "brown bedsheet",/obj/item/weapon/bedsheet/brown,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/woolcloth/, "blue bedsheet",/obj/item/weapon/bedsheet/blue,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/woolcloth/, "yellow bedsheet",/obj/item/weapon/bedsheet/blue,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/woolcloth/, "red bedsheet",/obj/item/weapon/bedsheet/red,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+
+RECIPE: /material/cloth/,"customizable armband",/obj/item/clothing/accessory/custom/armband,1,30,FALSE,TRUE,"accessories",0,0,0,8
+RECIPE: /material/cloth/,"customizable sash",/obj/item/clothing/accessory/custom/sash,1,30,FALSE,TRUE,"accessories",0,0,0,8
+RECIPE: /material/cloth/,"customizable cape",/obj/item/clothing/accessory/custom/cape,2,30,FALSE,TRUE,"accessories",0,0,0,3
+RECIPE: /material/cloth/,"customizable tabard",/obj/item/clothing/accessory/custom/tabard,2,30,FALSE,TRUE,"accessories",0,0,0,3
+RECIPE: /material/cloth/,"customizable apron",/obj/item/clothing/accessory/custom/apron,2,30,FALSE,TRUE,"accessories",0,0,0,8
+RECIPE: /material/cloth/,"customizable scarf",/obj/item/clothing/accessory/custom/scarf,2,30,FALSE,TRUE,"accessories",0,0,70,8
+RECIPE: /material/cloth/,"customizable tie",/obj/item/clothing/accessory/custom/tie,2,50,FALSE,TRUE,"accessories",0,0,95,8
+RECIPE: /material/cloth/,"customizable bowtie",/obj/item/clothing/accessory/custom/bowtie,2,50,FALSE,TRUE,"accessories",0,0,95,8
+
+RECIPE: /material/cloth/,"white bedsheet",/obj/item/weapon/bedsheet,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/cloth/,"medical bedsheet",/obj/item/weapon/bedsheet/medical,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/cloth/,"brown bedsheet",/obj/item/weapon/bedsheet/brown,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/cloth/,"blue bedsheet",/obj/item/weapon/bedsheet/blue,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/cloth/,"yellow bedsheet",/obj/item/weapon/bedsheet/blue,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+RECIPE: /material/cloth/,"red bedsheet",/obj/item/weapon/bedsheet/red,2,75,FALSE,TRUE,"bedsheets",0,0,28,8
+
+RECIPE: /material/cloth/,"custom flag maker",/obj/item/flagmaker,4,100,FALSE,TRUE,"banners & flags",0,0,21,8
+RECIPE: /material/cloth/,"faction banner (square)",/obj/structure/banner/faction/banner_a,3,65,TRUE,TRUE,"banners & flags",0,0,21,8
+RECIPE: /material/cloth/,"faction banner (gonfalon)",/obj/structure/banner/faction/banner_b,3,65,TRUE,TRUE,"banners & flags",0,0,21,8
+RECIPE: /material/cloth/,"religious banner",/obj/structure/banner/religious,3,65,TRUE,TRUE,"banners & flags",0,0,21,8
+
+RECIPE: /material/cloth/,"surgery kit",/obj/item/weapon/storage/firstaid/surgery_empty,6,90,FALSE,TRUE,"healthcare",18,0,26,8
+RECIPE: /material/cloth/,"cigarette pack",/obj/item/weapon/storage/fancy/cigarettes,1,20,FALSE,TRUE,"none",90,0,0,8
+RECIPE: /material/cloth/,"cloth curtain",/obj/structure/curtain,1,80,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/cloth/,"pink carpet",/obj/covers/carpet/pinkcarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+RECIPE: /material/cloth/,"red carpet",/obj/covers/carpet/redcarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+RECIPE: /material/cloth/,"orange carpet",/obj/covers/carpet/orangecarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+RECIPE: /material/cloth/,"purple carpet",/obj/covers/carpet/purplecarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+RECIPE: /material/cloth/,"blue carpet",/obj/covers/carpet/bluecarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+RECIPE: /material/cloth/,"teal carpet",/obj/covers/carpet/tealcarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+RECIPE: /material/cloth/,"green carpet",/obj/covers/carpet/greencarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+RECIPE: /material/cloth/,"black carpet",/obj/covers/carpet/blackcarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+RECIPE: /material/cloth/,"white carpet",/obj/covers/carpet/whitecarpet,1,20,FALSE,TRUE,"carpeting",45,0,0,8
+
+RECIPE: /material/cloth/,"small sail",/obj/item/sail,15,125,FALSE,TRUE,"none",0,0,22,8
+RECIPE: /material/cloth/,"bandages",/obj/item/stack/medical/bruise_pack/bint,1,75,FALSE,TRUE,"healthcare",0,0,19,8
+RECIPE: /material/cloth/,"foldable canopy",/obj/item/weapon/tent,4,75,FALSE,TRUE,"none",0,0,19,8
+RECIPE: /material/cloth/,"sandbag",/obj/item/weapon/sandbag/sandbag/empty,1,105,FALSE,TRUE,"none",0,0,90,8
+RECIPE: /material/cloth/,"trauma kit",/obj/item/stack/medical/advanced/bruise_pack,2,105,FALSE,TRUE,"healthcare",0,0,56,8
+RECIPE: /material/cloth/,"burn kit",/obj/item/stack/medical/advanced/ointment,1,90,FALSE,TRUE,"healthcare",0,0,43,8
+RECIPE: /material/cloth/,"custom camo uniform",/obj/item/clothing/under/customuniform_modern,4,100,FALSE,TRUE,"military clothes",0,0,130,8
+RECIPE: /material/cloth/,"sofa (left)",/obj/structure/bed/sofa/left,8,140,TRUE,TRUE,"none",0,0,93,8
+RECIPE: /material/cloth/,"sofa (centre)",/obj/structure/bed/sofa,8,140,TRUE,TRUE,"none",0,0,93,8
+RECIPE: /material/cloth/,"sofa (right)",/obj/structure/bed/sofa/right,8,140,TRUE,TRUE,"none",0,0,93,8
+
+RECIPE: /material/cloth/,"custom colonial jacket",/obj/item/clothing/suit/storage/jacket/customcolonial,5,90,FALSE,TRUE,"jackets & vests",0,0,57,3
+RECIPE: /material/cloth/,"custom colonial coat",/obj/item/clothing/suit/storage/jacket/customcolonialcoat,7,120,FALSE,TRUE,"jackets & vests",0,0,57,3
+RECIPE: /material/cloth/,"black jacket",/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,FALSE,TRUE,"jackets & vests",0,0,57,4
+RECIPE: /material/cloth/,"fancy brown jacket",/obj/item/clothing/suit/storage/jacket/piratejacket2,10,180,FALSE,TRUE,"jackets & vests",0,0,57,3
+RECIPE: /material/cloth/,"fancy red jacket",/obj/item/clothing/suit/storage/jacket/piratejacket5,10,180,FALSE,TRUE,"jackets & vests",0,0,57,3
+RECIPE: /material/cloth/,"blue vest",/obj/item/clothing/suit/storage/jacket/piratejacket3,4,75,FALSE,TRUE,"jackets & vests",0,0,57,8
+RECIPE: /material/cloth/,"black vest",/obj/item/clothing/suit/storage/jacket/piratejacket4,4,75,FALSE,TRUE,"jackets & vests",0,0,57,8
+RECIPE: /material/cloth/,"customizable poncho",/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,FALSE,TRUE,"jackets & vests",0,0,57,8
+RECIPE: /material/cloth/,"leather overcoat",/obj/item/clothing/suit/storage/jacket/leatherovercoat1,6,120,FALSE,TRUE,"jackets & vests",0,0,89,5
+RECIPE: /material/cloth/,"black leather overcoat",/obj/item/clothing/suit/storage/jacket/leatherovercoat2,6,120,FALSE,TRUE,"jackets & vests",0,0,89,5
+RECIPE: /material/cloth/,"black vest",/obj/item/clothing/suit/storage/jacket/blackvest,4,80,FALSE,TRUE,"jackets & vests",0,0,0,8
+RECIPE: /material/cloth/,"blue vest",/obj/item/clothing/suit/storage/jacket/bluevest,4,80,FALSE,TRUE,"jackets & vests",0,0,0,8
+RECIPE: /material/cloth/,"olive vest",/obj/item/clothing/suit/storage/jacket/olivevest,4,80,FALSE,TRUE,"jackets & vests",0,0,0,8
+RECIPE: /material/cloth/,"brown winter coat",/obj/item/clothing/suit/storage/coat/japcoat2/brown,10,200,FALSE,TRUE,"jackets & vests",0,0,0,8
+RECIPE: /material/cloth/,"grey winter coat",/obj/item/clothing/suit/storage/coat/ruscoat/grey,10,200,FALSE,TRUE,"jackets & vests",0,0,0,8
+RECIPE: /material/cloth/,"charcoal suit",/obj/item/clothing/suit/storage/jacket/charcoal_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/cloth/,"black suit",/obj/item/clothing/suit/storage/jacket/black_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/cloth/,"dark black suit",/obj/item/clothing/suit/storage/jacket/really_black_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/cloth/,"burgundy suit",/obj/item/clothing/suit/storage/jacket/burgundy_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/cloth/,"checkered suit",/obj/item/clothing/suit/storage/jacket/checkered_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/cloth/,"navy suit",/obj/item/clothing/suit/storage/jacket/navy_suit,15,200,FALSE,TRUE,"jackets & vests",0,0,112,8
+RECIPE: /material/cloth/,"olive drab NBC suit",/obj/item/clothing/suit/nbc/olive,12,200,FALSE,TRUE,"jackets & vests",0,0,145,8
+RECIPE: /material/cloth/,"olive drab NBC hood",/obj/item/clothing/head/nbc/olive,3,100,FALSE,TRUE,"jackets & vests",0,0,145,8
+RECIPE: /material/cloth/,"yellow NBC suit",/obj/item/clothing/suit/nbc,12,200,FALSE,TRUE,"jackets & vests",0,0,145,8
+RECIPE: /material/cloth/,"yellow NBC hood",/obj/item/clothing/head/nbc,3,100,FALSE,TRUE,"jackets & vests",0,0,145,8
+RECIPE: /material/cloth/,"grey parka",/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,FALSE,TRUE,"jackets & vests",0,0,145,8
+
+RECIPE: /material/cloth/,"mayan headdress",/obj/item/clothing/head/mayan_headdress,4,55,FALSE,TRUE,"hats & masks",0,0,18,3
+RECIPE: /material/cloth/,"nemes headdress",/obj/item/clothing/head/nemes,6,55,FALSE,TRUE,"hats & masks",0,0,18,1
+RECIPE: /material/cloth/,"double crown",/obj/item/clothing/head/doublecrown,5,65,FALSE,TRUE,"hats & masks",0,0,18,1
+RECIPE: /material/cloth/,"eyepatch",/obj/item/clothing/glasses/eyepatch,2,55,FALSE,TRUE,"hats & masks",0,0,18,8
+RECIPE: /material/cloth/,"blindfold",/obj/item/clothing/glasses/sunglasses/blindfold,2,55,FALSE,TRUE,"hats & masks",0,0,18,8
+RECIPE: /material/cloth/,"straw hat",/obj/item/clothing/head/strawhat,3,55,FALSE,TRUE,"hats & masks",0,0,18,8
+RECIPE: /material/cloth/,"red beret",/obj/item/clothing/head/red_beret,2,55,FALSE,TRUE,"hats & masks",0,0,38,4
+RECIPE: /material/cloth/,"blue beret",/obj/item/clothing/head/blue_beret,2,55,FALSE,TRUE,"hats & masks",0,0,38,4
+RECIPE: /material/cloth/,"colored turban",/obj/item/clothing/head/turban,2,55,FALSE,TRUE,"hats & masks",0,0,38,8
+RECIPE: /material/cloth/,"white turban",/obj/item/clothing/head/turban/imam,2,55,FALSE,TRUE,"hats & masks",0,0,38,8
+RECIPE: /material/cloth/,"shemagh",/obj/item/clothing/mask/shemagh,2,55,FALSE,TRUE,"hats & masks",0,0,38,8
+RECIPE: /material/cloth/,"kerchief",/obj/item/clothing/head/kerchief,2,75,FALSE,TRUE,"hats & masks",0,0,38,8
+RECIPE: /material/cloth/,"custom noble hat",/obj/item/clothing/head/custom/customnoblehat,4,55,FALSE,TRUE,"hats & masks",0,0,38,3
+RECIPE: /material/cloth/,"black bicorne",/obj/item/clothing/head/bicorne_british_soldier,2,95,FALSE,TRUE,"hats & masks",0,0,52,4
+RECIPE: /material/cloth/,"black tricorne",/obj/item/clothing/head/tricorne_black,3,75,FALSE,TRUE,"hats & masks",0,0,52,4
+RECIPE: /material/cloth/,"tarred hat",/obj/item/clothing/head/tarred_hat,3,75,FALSE,TRUE,"hats & masks",0,0,52,5
+RECIPE: /material/cloth/,"rice hat",/obj/item/clothing/head/rice_hat,3,75,FALSE,TRUE,"hats & masks",0,0,52,8
+RECIPE: /material/cloth/,"bandana",/obj/item/clothing/head/piratebandana1,2,55,FALSE,TRUE,"hats & masks",0,0,52,8
+RECIPE: /material/cloth/,"gat hat",/obj/item/clothing/head/gat,2,55,FALSE,TRUE,"hats & masks",0,0,52,8
+RECIPE: /material/cloth/,"artisan hat",/obj/item/clothing/head/artisan,2,55,FALSE,TRUE,"hats & masks",0,0,52,3
+RECIPE: /material/cloth/,"feathered hat",/obj/item/clothing/head/feathered_hat,3,55,FALSE,TRUE,"hats & masks",0,0,52,8
+RECIPE: /material/cloth/,"custom beret",/obj/item/clothing/head/custom/customberet,2,55,FALSE,TRUE,"hats & masks",0,0,52,8
+RECIPE: /material/cloth/,"custom bandana",/obj/item/clothing/head/custom/custombandana,2,55,FALSE,TRUE,"hats & masks",0,0,52,8
+RECIPE: /material/cloth/,"custom feather cap",/obj/item/clothing/head/custom_feathered_hat,4,55,FALSE,TRUE,"hats & masks",0,0,52,8
+RECIPE: /material/cloth/,"cowboy hat",/obj/item/clothing/head/cowboyhat,3,55,FALSE,TRUE,"hats & masks",0,0,98,8
+RECIPE: /material/cloth/,"dark cowboy hat",/obj/item/clothing/head/cowboyhat2,3,55,FALSE,TRUE,"hats & masks",0,0,98,8
+RECIPE: /material/cloth/,"bowler hat",/obj/item/clothing/head/bowler_hat,2,55,FALSE,TRUE,"hats & masks",0,0,98,5
+RECIPE: /material/cloth/,"sombrero",/obj/item/clothing/head/sombrero,4,75,FALSE,TRUE,"hats & masks",0,0,98,8
+RECIPE: /material/cloth/,"red kerchief",/obj/item/clothing/mask/shemagh/redkerchief,2,45,FALSE,TRUE,"hats & masks",0,0,98,8
+RECIPE: /material/cloth/,"grey kerchief",/obj/item/clothing/mask/shemagh/greykerchief,2,45,FALSE,TRUE,"hats & masks",0,0,98,8
+RECIPE: /material/cloth/,"tophat",/obj/item/clothing/head/top_hat,5,95,FALSE,TRUE,"hats & masks",0,0,109,5
+RECIPE: /material/cloth/,"brown flatcap",/obj/item/clothing/head/flatcap1,2,55,FALSE,TRUE,"hats & masks",0,0,109,8
+RECIPE: /material/cloth/,"blue flatcap",/obj/item/clothing/head/flatcap2,2,55,FALSE,TRUE,"hats & masks",0,0,109,8
+RECIPE: /material/cloth/,"grey flatcap",/obj/item/clothing/head/flatcap3,2,55,FALSE,TRUE,"hats & masks",0,0,109,8
+RECIPE: /material/cloth/,"custom officer cap",/obj/item/clothing/head/custom_off_cap,4,95,FALSE,TRUE,"hats & masks",0,0,109,8
+RECIPE: /material/cloth/,"custom field cap",/obj/item/clothing/head/custom/fieldcap,3,70,FALSE,TRUE,"hats & masks",0,0,109,8
+
+RECIPE: /material/cloth/,"cotton loincloth",/obj/item/clothing/under/loincotton,2,45,FALSE,TRUE,"clothing",0,0,0,0
+RECIPE: /material/cloth/,"mayan loincloth",/obj/item/clothing/under/mayan_loincloth,2,55,FALSE,TRUE,"clothing",0,0,0,3
+RECIPE: /material/cloth/,"fancy shendyt",/obj/item/clothing/under/pharaoh,8,145,FALSE,TRUE,"clothing",15,0,0,2
+RECIPE: /material/cloth/,"great shendyt",/obj/item/clothing/under/pharaoh2,10,185,FALSE,TRUE,"clothing",15,0,0,2
+RECIPE: /material/cloth/,"mayan loincloth",/obj/item/clothing/under/mayan_loincloth,2,55,FALSE,TRUE,"clothing",15,0,0,3
+RECIPE: /material/cloth/,"huipil",/obj/item/clothing/under/huipil,3,55,FALSE,TRUE,"clothing",15,0,0,4
+RECIPE: /material/cloth/,"half huipil",/obj/item/clothing/under/halfhuipil,2,45,FALSE,TRUE,"clothing",15,0,0,4
+RECIPE: /material/cloth/,"customizable tunic",/obj/item/clothing/under/custom/roman,4,85,FALSE,TRUE,"clothing",15,0,0,8
+RECIPE: /material/cloth/,"customizable toga",/obj/item/clothing/under/custom/toga,3,65,FALSE,TRUE,"clothing",15,0,0,2
+RECIPE: /material/cloth/,"customizable shendyt",/obj/item/clothing/under/custom/shendyt,2,45,FALSE,TRUE,"clothing",15,0,0,2
+RECIPE: /material/cloth/,"customizable celtic trousers",/obj/item/clothing/under/custom/celtic,2,55,FALSE,TRUE,"clothing",15,0,0,1
+RECIPE: /material/cloth/,"customizable tribal robe",/obj/item/clothing/under/customtribalrobe,3,100,FALSE,TRUE,"clothing",15,0,0,8
+RECIPE: /material/cloth/,"customizable dress",/obj/item/clothing/under/customdress,4,85,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"customizable buttoned dress",/obj/item/clothing/under/customdress2,4,85,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"customizable tunic",/obj/item/clothing/under/custom/tunic,4,85,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"customizable arabic tunic",/obj/item/clothing/under/custom/arabictunic,4,85,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"light brown arabic tunic",/obj/item/clothing/under/medieval/arab1,3,85,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"light white arabic tunic",/obj/item/clothing/under/medieval/arab2,3,85,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"light hanfu",/obj/item/clothing/under/hanfu/light,3,100,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"dark hanfu",/obj/item/clothing/under/hanfu,3,100,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"green hanfu",/obj/item/clothing/under/hanfu/green,3,100,FALSE,TRUE,"clothing",38,0,0,8
+RECIPE: /material/cloth/,"linothorax armor",/obj/item/clothing/suit/armor/ancient/linen,8,100,FALSE,TRUE,"clothing",38,0,0,3
+RECIPE: /material/cloth/,"customizable renaissance clothing",/obj/item/clothing/under/customren,6,105,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/cloth/,"customizable pontificial clothing",/obj/item/clothing/under/custompontificial,6,105,FALSE,TRUE,"clothing",0,0,59,8
+RECIPE: /material/cloth/,"baggy renaissance clothing",/obj/item/clothing/under/renaissance,6,105,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/cloth/,"pontifical renaissance clothing",/obj/item/clothing/under/renaissance_pontifical,6,105,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/cloth/,"artisan clothing",/obj/item/clothing/under/artisan,3,100,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/cloth/,"dark artisan clothing",/obj/item/clothing/under/artisan/dark,3,100,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/cloth/,"light artisan clothing",/obj/item/clothing/under/artisan/light,3,100,FALSE,TRUE,"clothing",0,0,59,3
+RECIPE: /material/cloth/,"blue colonial clothing",/obj/item/clothing/under/civ1,3,75,FALSE,TRUE,"clothing",79,0,0,4
+RECIPE: /material/cloth/,"white colonial clothing",/obj/item/clothing/under/civ2,3,75,FALSE,TRUE,"clothing",79,0,0,4
+RECIPE: /material/cloth/,"short-sleeved colonial clothing",/obj/item/clothing/under/civ3,2,55,FALSE,TRUE,"clothing",79,0,0,4
+RECIPE: /material/cloth/,"fancy colonial clothing",/obj/item/clothing/under/civ4,5,105,FALSE,TRUE,"clothing",79,0,0,4
+RECIPE: /material/cloth/,"green colonial clothing",/obj/item/clothing/under/civ5,3,75,FALSE,TRUE,"clothing",79,0,0,4
+RECIPE: /material/cloth/,"pink colonial clothing",/obj/item/clothing/under/civ6,3,75,FALSE,TRUE,"clothing",79,0,0,4
+RECIPE: /material/cloth/,"black stripes clothing",/obj/item/clothing/under/pirate1,3,75,FALSE,TRUE,"clothing",79,0,0,3
+RECIPE: /material/cloth/,"red stripes clothing",/obj/item/clothing/under/pirate2,3,75,FALSE,TRUE,"clothing",79,0,0,3
+RECIPE: /material/cloth/,"blue stripes clothing",/obj/item/clothing/under/pirate3,3,75,FALSE,TRUE,"clothing",79,0,0,3
+RECIPE: /material/cloth/,"customizable pyjamas",/obj/item/clothing/under/custompyjamas,3,100,FALSE,TRUE,"clothing",79,0,0,8
+RECIPE: /material/cloth/,"pioneer outfit",/obj/item/clothing/under/industrial1,3,75,FALSE,TRUE,"clothing",98,0,0,5
+RECIPE: /material/cloth/,"rancher outfit",/obj/item/clothing/under/industrial2,3,75,FALSE,TRUE,"clothing",98,0,0,6
+RECIPE: /material/cloth/,"cowboy outfit",/obj/item/clothing/under/industrial3,3,75,FALSE,TRUE,"clothing",98,0,0,8
+RECIPE: /material/cloth/,"checkered outfit",/obj/item/clothing/under/industrial4,3,75,FALSE,TRUE,"clothing",98,0,0,8
+RECIPE: /material/cloth/,"worker outfit",/obj/item/clothing/under/industrial5,3,75,FALSE,TRUE,"clothing",98,0,0,6
+RECIPE: /material/cloth/,"custom uniform",/obj/item/clothing/under/customuniform,3,75,FALSE,TRUE,"clothing",98,0,0,8
+RECIPE: /material/cloth/,"customizable pyjamas",/obj/item/clothing/under/custompyjamas,3,100,FALSE,TRUE,"clothing",98,0,0,8
+RECIPE: /material/cloth/,"light brown outfit",/obj/item/clothing/under/modern1,4,75,FALSE,TRUE,"clothing",112,0,0,8
+RECIPE: /material/cloth/,"black outfit",/obj/item/clothing/under/modern2,4,75,FALSE,TRUE,"clothing",112,0,0,8
+RECIPE: /material/cloth/,"grey outfit",/obj/item/clothing/under/modern3,4,75,FALSE,TRUE,"clothing",112,0,0,8
+RECIPE: /material/cloth/,"brown outfit",/obj/item/clothing/under/modern4,4,75,FALSE,TRUE,"clothing",112,0,0,8
+RECIPE: /material/cloth/,"farmer outfit",/obj/item/clothing/under/farmer_outfit,4,75,FALSE,TRUE,"clothing",112,0,0,8
+RECIPE: /material/cloth/,"mechanic outfit",/obj/item/clothing/under/mechanic_outfit,4,75,FALSE,TRUE,"clothing",112,0,0,8
+
+RECIPE: /material/barbedwire/,"barbwire",/obj/structure/barbwire,20,"none",0,0,0,8
+
+RECIPE: /material/lead/,"lead sledgehammer",/obj/item/weapon/sledgehammer/lead/sledgehammer,12,140,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/lead/,"lead safe",/obj/structure/closet/crate/lead,3,100,TRUE,TRUE,"none",0,0,65,8
+
+RECIPE: /material/plastic/,"filing cabinet",/obj/structure/filingcabinet,6,95,TRUE,TRUE, "none",0,0,0,8
+RECIPE: /material/plastic/,"large filing cabinet",/obj/structure/filingcabinet/filingcabinet,6,95,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/plastic/,"chest drawer",/obj/structure/filingcabinet/chestdrawer,6,95,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/plastic/,"blood pack",/obj/item/weapon/reagent_containers/blood/empty,2,40,FALSE,TRUE,"none",0,0,95,8
+RECIPE: /material/plastic/,"lighter",/obj/item/weapon/flame/lighter/random,3,95,FALSE,TRUE,"none",150,0,0,8
+RECIPE: /material/plastic/,"trash bag",/obj/item/weapon/storage/bag/trash,1,95,FALSE,TRUE,"none",150,0,0,8
+RECIPE: /material/plastic/,"plastic bag",/obj/item/weapon/storage/bag/plasticbag,0.75,95,FALSE,TRUE,"none",150,0,0,8
+RECIPE: /material/plastic/,"german gas mask",/obj/item/clothing/mask/gas/german,8,70,FALSE,TRUE,"gas masks",0,0,102,8
+RECIPE: /material/plastic/,"british gas mask",/obj/item/clothing/mask/gas/british,8,70,FALSE,TRUE,"gas masks",0,0,102,8
+RECIPE: /material/plastic/,"modern gas mask (single sided)",/obj/item/clothing/mask/gas/modern,8,70,FALSE,TRUE,"gas masks",0,0,132,8
+RECIPE: /material/plastic/,"modern gas mask (double sized)",/obj/item/clothing/mask/gas/modern2,8,70,FALSE,TRUE,"gas masks",0,0,132,8
+RECIPE: /material/plastic/,"traffic cone",/obj/structure/sign/traffic/cone,1,35,FALSE,TRUE,"signs",125,0,0,8
+RECIPE: /material/plastic/,"do not enter sign",/obj/structure/sign/traffic/noentry,2,75,FALSE,TRUE,"signs",125,0,0,8
+RECIPE: /material/plastic/,"stop sign",/obj/structure/sign/traffic/stop,2,75,FALSE,TRUE,"signs",125,0,0,8
+RECIPE: /material/plastic/,"yeld sign",/obj/structure/sign/traffic/yeld,2,75,FALSE,TRUE,"signs",125,0,0,8
+RECIPE: /material/plastic/,"radiation sign",/obj/structure/sign/radiation,2,75,FALSE,TRUE,"signs",125,0,0,8
+RECIPE: /material/plastic/,"pedestrian crossing sign",/obj/structure/sign/traffic/crossing,2,75,FALSE,TRUE,"signs",125,0,0,8
+
+RECIPE: /material/chitin/,"chitin mask",/obj/item/clothing/mask/chitinmask,4,65,FALSE,TRUE,"none",0,0,0,0
+RECIPE: /material/chitin/,"chitin helmet",/obj/item/clothing/head/helmet/chitin,7,115,FALSE,TRUE,"none",0,0,0,0
+
+RECIPE: /material/bearpelt/brown/,"furcap",/obj/item/clothing/head/furcap,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/bearpelt/brown/,"furhat",/obj/item/clothing/head/furhat,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/bearpelt/brown/,"fur coat",/obj/item/clothing/suit/storage/coat/fur/brown,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/brown/,"fur boots",/obj/item/clothing/shoes/fur/brown,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/brown/,"fur gloves",/obj/item/clothing/gloves/thick/leather/brown,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/brown/,"bear pelt headcover",/obj/item/clothing/head/bearpelt/brown,4,150,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/bearpelt/white/,"furcap",/obj/item/clothing/head/furcap,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/bearpelt/white/,"furhat",/obj/item/clothing/head/furhat,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/bearpelt/white/,"fur coat",/obj/item/clothing/suit/storage/coat/fur/white,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/white/,"fur boots",/obj/item/clothing/shoes/fur/white,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/white/,"fur gloves",/obj/item/clothing/gloves/thick/leather/white,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/white/,"bear pelt headcover",/obj/item/clothing/head/bearpelt/white,4,150,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/bearpelt/black/,"furcap",/obj/item/clothing/head/furcap,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/bearpelt/black/,"furhat",/obj/item/clothing/head/furhat,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/bearpelt/black/,"fur coat",/obj/item/clothing/suit/storage/coat/fur/black,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/black/,"fur boots",/obj/item/clothing/shoes/fur/black,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/black/,"fur gloves",/obj/item/clothing/gloves/thick/leather/black,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bearpelt/black/,"bear pelt headcover",/obj/item/clothing/head/bearpelt/black,4,150,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/wolfpelt/,"furcap",/obj/item/clothing/head/furcap,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/wolfpelt/,"furhat",/obj/item/clothing/head/furhat,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/wolfpelt/,"fur coat",/obj/item/clothing/suit/storage/coat/fur/grey,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/wolfpelt/,"fur boots",/obj/item/clothing/shoes/fur/grey,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/wolfpelt/,"fur gloves",/obj/item/clothing/gloves/thick/leather/grey,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/wolfpelt/,"wolf pelt headcover",/obj/item/clothing/head/wolfpelt,4,150,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/catpelt/,"furcap",/obj/item/clothing/head/furcap,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/catpelt/,"furhat",/obj/item/clothing/head/furhat,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/catpelt/,"fur coat",/obj/item/clothing/suit/storage/coat/fur,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/catpelt/,"fur boots",/obj/item/clothing/shoes/fur,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/catpelt/,"fur gloves",/obj/item/clothing/gloves/thick/leather,3,80,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/monkeypelt/,"furcap",/obj/item/clothing/head/furcap,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/monkeypelt/,"furhat",/obj/item/clothing/head/furhat,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/monkeypelt/,"fur coat",/obj/item/clothing/suit/storage/coat/fur/brown,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/monkeypelt/,"fur boots",/obj/item/clothing/shoes/fur/brown,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/monkeypelt/,"fur gloves",/obj/item/clothing/gloves/thick/leather/brown,3,80,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/orcpelt/,"fur coat",/obj/item/clothing/suit/storage/coat/fur/orc,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/orcpelt/,"fur boots",/obj/item/clothing/shoes/fur/orc,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/orcpelt/,"fur gloves",/obj/item/clothing/gloves/thick/leather/orc,3,80,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/gorillapelt/,"furcap",/obj/item/clothing/head/furcap,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/gorillapelt/,"furhat",/obj/item/clothing/head/furhat,2,100,FALSE,TRUE,"none",0,0,89,8
+RECIPE: /material/gorillapelt/,"fur coat",/obj/item/clothing/suit/storage/coat/fur/black,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/gorillapelt/,"fur boots",/obj/item/clothing/shoes/fur/black,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/gorillapelt/,"fur gloves",/obj/item/clothing/gloves/thick/leather/black,3,80,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/humanpelt/,"skin coat",/obj/item/clothing/suit/storage/coat/fur/pink,6,150,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/humanpelt/,"skin boots",/obj/item/clothing/shoes/fur/pink,3,80,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/humanpelt/,"skin gloves",/obj/item/clothing/gloves/thick/leather/pink,3,80,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/tobacco/,"cigar",/obj/item/clothing/mask/smokable/cigarette/cigar,3,75,FALSE,TRUE,"none",0,0,23,8
+RECIPE: /material/tobacco/,"cuban cigar",/obj/item/clothing/mask/smokable/cigarette/cigar/havana,5,100,FALSE,TRUE,"none",0,0,57,8
+RECIPE: /material/tobacco/,"cigarette",/obj/item/clothing/mask/smokable/cigarette,2,60,FALSE,TRUE,"none",0,0,80,8
+
+RECIPE: /material/coca/,"cocaine",/obj/item/weapon/reagent_containers/pill/cocaine,10,55,FALSE,TRUE,"none",0,0,93,8
+
+RECIPE: /material/poppy/,"opium",/obj/item/weapon/reagent_containers/pill/opium,3,50,FALSE,TRUE,"none",0,0,29,8
+
+RECIPE: /material/bone/,"bone talisman",/obj/item/clothing/accessory/armband/talisman,2,75,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bone/,"skull mask",/obj/item/clothing/mask/skullmask,5,100,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bone/,"bone helmet",/obj/item/clothing/head/helmet/bone,10,100,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bone/,"bone armor",/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bone/,"bone hatchet",/obj/item/weapon/material/hatchet/tribal,2,35,FALSE,TRUE,"none",0,0,0,8,"bone"
+RECIPE: /material/bone/,"battle axe",/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,FALSE,TRUE,"none",0,0,0,8,"bone"
+RECIPE: /material/bone/,"bone knife",/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bone/,"bone pickaxe",/obj/item/weapon/pickaxe/bone,2,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bone/,"bone shovel",/obj/item/weapon/shovel/bone,2,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bone/,"blowing horn",/obj/item/weapon/horn,4,110,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bone/,"dice",/obj/item/weapon/dice,2,90,FALSE,TRUE,"none",15,0,0,8
+RECIPE: /material/bone/,"tomahawk",/obj/item/weapon/material/tomahawk,4,30,FALSE,TRUE,"none",25,0,0,8
+
+RECIPE: /material/stone/,"stone sledgehammer",/obj/item/weapon/sledgehammer/stone/sledgehammer,12,140,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"stone pillar",/obj/structure/mine_support/stone,2,130,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"stone brazier",/obj/structure/brazier/stone,3,100,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"research kit",/obj/item/weapon/researchkit,10,190,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"scientific rock slate",/obj/item/weapon/book/research,4,110,FALSE,TRUE,"none",0,0,0,0
+RECIPE: /material/stone/,"stone hatchet",/obj/item/weapon/material/hatchet/tribal,2,35,FALSE,TRUE,"none",0,0,0,8,"stone"
+RECIPE: /material/stone/,"cobblestone floor",/obj/covers/cobblestone,1,25,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"road",/obj/covers/road,1,25,TRUE,TRUE,"none",100,0,0,8
+RECIPE: /material/stone/,"stone stairs",/obj/covers/cobblestone/stairs,2,45,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"stone altar",/obj/structure/altar/stone,15,200,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"marble altar",/obj/structure/altar/marble,20,200,TRUE,TRUE,"none",28,0,0,8
+RECIPE: /material/stone/,"gravestone",/obj/structure/religious/gravestone,3,60,TRUE,TRUE,"none",43,0,0,8
+RECIPE: /material/stone/,"totem",/obj/structure/religious/totem,8,150,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"stone wall",/obj/covers/stone_wall,8,140,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"rock barrier wall",/obj/structure/window/sandbag/rock,3,70,TRUE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/stone/,"furnace",/obj/structure/furnace/,10,150,TRUE,TRUE,"none",26,0,0,8
+RECIPE: /material/stone/,"well",/obj/structure/sink/well,7,250,TRUE,TRUE,"none",21,0,0,8
+RECIPE: /material/stone/,"catapult projectile",/obj/item/catapult_ball,5,75,FALSE,TRUE,"none",24,33,0,4
+RECIPE: /material/stone/,"sling projectile (x5)",/obj/item/ammo_casing/stone,1,25,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/stone/,"stone projectile (x2)",/obj/item/stack/ammopart/stoneball,1,25,FALSE,TRUE,"projectiles",24,49,0,8
+RECIPE: /material/stone/,"fortified wall (horizontal)",/obj/structure/barricade/stone_h,5,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"fortified wall (vertical)",/obj/structure/barricade/stone_v,5,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"fortified crenelated wall (horizontal)",/obj/structure/barricade/stone_h/crenelated,5,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"fortified crenelated wall (vertical)",/obj/structure/barricade/stone_v/crenelated,5,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"stone shingled wall (vertical center)",/obj/structure/barricade/jap_v,4,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"stone shingled wall (vertical top)",/obj/structure/barricade/jap_v_t,4,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"stone shingled wall (vertical bottom)",/obj/structure/barricade/jap_v_b,4,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"stone shingled wall (horizontal center)",/obj/structure/barricade/jap_h,4,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"stone shingled wall (horizontal left)",/obj/structure/barricade/jap_h_l,4,80,TRUE,TRUE,"fortifications",29,0,0,8
+RECIPE: /material/stone/,"stone shingled wall (horizontal right)",/obj/structure/barricade/jap_h_r,4,80,TRUE,TRUE,"fortifications",29,0,0,8
+
+RECIPE: /material/rope/,"noose",/obj/structure/noose,1,20,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/rope/,"rope handcuffs",/obj/item/weapon/handcuffs/rope,1,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/rope/,"fishing net",/obj/item/weapon/fishing/net,4,100,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/rope/,"leash",/obj/item/weapon/leash,1,20,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/rope/,"garrote",/obj/item/garrote,3,120,FALSE,TRUE,"none",0,43,0,8
+
+RECIPE: /material/glass/,"drinking glass",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,FALSE,TRUE,"none",22,0,0,8
+RECIPE: /material/glass/,"small glass bottle",/obj/item/weapon/reagent_containers/food/drinks/bottle/small,2,40,FALSE,TRUE,"none",22,0,0,8
+RECIPE: /material/glass/,"teapot",/obj/item/weapon/reagent_containers/food/drinks/teapot,4,70,FALSE,TRUE,"none",49,0,24,8
+RECIPE: /material/glass/,"teacup",/obj/item/weapon/reagent_containers/food/drinks/tea/empty,2,50,FALSE,TRUE,"none",49,0,24,8
+RECIPE: /material/glass/,"wine glass",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,FALSE,TRUE,"none",49,0,0,8
+RECIPE: /material/glass/,"tribal pot",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot,2,40,FALSE,TRUE,"none",0,0,0,3
+RECIPE: /material/glass/,"fermentation jar",/obj/item/weapon/starterjar,3,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/glass/,"small lightbulb frame",/obj/structure/lamp/lamp_small,2,35,FALSE,TRUE,"electrical",115,0,0,8
+RECIPE: /material/glass/,"light tube frame",/obj/structure/lamp/lamp_big,3,55,FALSE,TRUE,"electrical",115,0,0,8
+RECIPE: /material/glass/,"light tube",/obj/item/lightbulb/tube,1,55,FALSE,TRUE,"electrical",115,0,0,8
+RECIPE: /material/glass/,"lightbulb",/obj/item/lightbulb,2,55,FALSE,TRUE,"none","electrical",115,0,0,8
+RECIPE: /material/glass/,"dropper",/obj/item/weapon/reagent_containers/dropper,1,40,FALSE,TRUE,"chemistry",90,0,0,8
+RECIPE: /material/glass/,"vial",/obj/item/weapon/reagent_containers/glass/beaker/vial,1,40,FALSE,TRUE,"chemistry",90,0,0,8
+RECIPE: /material/glass/,"beaker",/obj/item/weapon/reagent_containers/glass/beaker,2,40,FALSE,TRUE,"none","chemistry",105,0,0,8
+RECIPE: /material/glass/,"large beaker",/obj/item/weapon/reagent_containers/glass/beaker/large,3,40,FALSE,TRUE,"none","chemistry",105,0,0,8
+RECIPE: /material/glass/,"laboratory distiller",/obj/structure/lab_distillery,10,140,TRUE,TRUE,"none","chemistry",105,0,0,8
+RECIPE: /material/glass/,"toilet",/obj/structure/toilet,4,80,TRUE,TRUE,"none",95,0,0,8
+RECIPE: /material/glass/,"mirror",/obj/structure/mirror,3,80,TRUE,TRUE,"none",55,0,0,8
+RECIPE: /material/glass/,"shower",/obj/structure/shower,10,190,TRUE,TRUE,"none",115,0,0,8
+RECIPE: /material/glass/,"chemical dispenser",/obj/structure/chemical_dispenser,12,180,TRUE,TRUE,"none",90,0,0,8
+
+RECIPE: /material/gold/,"[display_name] hatchet",/obj/item/weapon/material/hatchet,2,35,FALSE,TRUE,"none",17,16,0,8,"gold"
+RECIPE: /material/gold/,"[display_name]-tipped spear",/obj/item/weapon/material/spear,1,35,FALSE,TRUE,"none",17,16,0,8,"gold"
+RECIPE: /material/gold/,"gold coins",/obj/item/stack/money/goldcoin,1,35,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/gold/,"gold crown",/obj/item/clothing/head/helmet/gold_crown,3,135,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/gold/,"gold arm bangles",/obj/item/clothing/accessory/armband/armbangle/gold,2,95,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/gold/,"gold sceptre",/obj/item/weapon/goldsceptre,3,105,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/silver/,"[display_name] hatchet",/obj/item/weapon/material/hatchet,2,35,FALSE,TRUE,"none",17,16,0,8,"silver"
+RECIPE: /material/silver/,"[display_name]-tipped spear",/obj/item/weapon/material/spear,1,35,FALSE,TRUE,"none",17,16,0,8,"silver"
+RECIPE: /material/silver/,"silver coins",/obj/item/stack/money/silvercoin,1,35,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/silver/,"silver crown",/obj/item/clothing/head/helmet/silver_crown,3,135,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/silver/,"silver arm bangles",/obj/item/clothing/accessory/armband/armbangle/silver,2,95,FALSE,TRUE,"none",0,0,0,8
+
+RECIPE: /material/tin/,"small tin pot",/obj/item/weapon/reagent_containers/glass/small_pot,3,120,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/tin/,"small tin can (x3)",/obj/item/weapon/can/small,1,50,FALSE,TRUE,"none",95,0,0,8
+RECIPE: /material/tin/,"tin can (x2)",/obj/item/weapon/can,1,50,FALSE,TRUE,"none",95,0,0,8
+RECIPE: /material/tin/,"large tin can",/obj/item/weapon/can/large,1,50,FALSE,TRUE,"none",95,0,0,8
+
+RECIPE: /material/copper/,"telegraph",/obj/structure/telegraph,12,90,TRUE,TRUE,"none",105,0,0,8
+RECIPE: /material/copper/,"teleprinter",/obj/structure/teleprinter,12,120,TRUE,TRUE,"none",105,0,0,8
+RECIPE: /material/copper/,"electronic circuits",/obj/item/stack/material/electronics,1,80,FALSE,TRUE,"none",130,0,0,8
+RECIPE: /material/copper/,"[display_name] hatchet",/obj/item/weapon/material/hatchet,2,35,FALSE,TRUE,"none",8,8,0,8,"copper")
+RECIPE: /material/copper/,"[display_name]-tipped spear",/obj/item/weapon/material/spear,1,35,FALSE,TRUE,"none",8,8,0,8,"copper")
+RECIPE: /material/copper/,"copper coins",/obj/item/stack/money/coppercoin,1,35,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/copper/,"[display_name] small sword",/obj/item/weapon/material/sword/smallsword/copper,10,70,FALSE,TRUE,"none",18,34,0,8,"copper")
+RECIPE: /material/copper/,"copper lamp",/obj/item/flashlight/lantern/copper,3,55,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/copper/,"small copper pot",/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,3,90,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/copper/,"large copper pot",/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,5,120,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/copper/,"copper arm bangles",/obj/item/clothing/accessory/armband/armbangle/copper,2,95,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/copper/,"trombone",/obj/item/trombone,6,155,FALSE,TRUE,"none",83,0,0,8
+RECIPE: /material/copper/,"rifle casing (x3)",/obj/item/stack/ammopart/casing/rifle,1,25,FALSE,TRUE,"ammunition",105,0,0,8
+RECIPE: /material/copper/,"pistol casing (x3)",/obj/item/stack/ammopart/casing/pistol,1,25,FALSE,TRUE,"ammunition",105,0,0,8
+RECIPE: /material/copper/,"artillery casing",/obj/item/stack/ammopart/casing/artillery,2,35,FALSE,TRUE,"ammunition",105,0,0,8
+RECIPE: /material/copper/,"ammo clip (5)",/obj/item/ammo_magazine/emptyclip,1,30,FALSE,TRUE,"ammunition",105,0,0,8
+RECIPE: /material/copper/,"ammo belt (100)",/obj/item/ammo_magazine/emptybelt,7,25,FALSE,TRUE,"ammunition",125,0,0,8
+RECIPE: /material/copper/,"grenade casing",/obj/item/stack/ammopart/casing/grenade,2,35,FALSE,TRUE,"ammunition",115,0,0,8
+RECIPE: /material/copper/,"white cable coil (10m)",/obj/item/stack/cable_coil/white,1,35,FALSE,TRUE,"electrical",105,0,0,8
+RECIPE: /material/copper/,"red cable coil (10m)",/obj/item/stack/cable_coil/red,1,35,FALSE,TRUE,"electrical",105,0,0,8
+RECIPE: /material/copper/,"blue cable coil (10m)",/obj/item/stack/cable_coil/blue,1,35,FALSE,TRUE,"electrical",105,0,0,8
+RECIPE: /material/copper/,"yellow cable coil (10m)",/obj/item/stack/cable_coil/yellow,1,35,FALSE,TRUE,"electrical",105,0,0,8
+RECIPE: /material/copper/,"green cable coil (10m)",/obj/item/stack/cable_coil/green,1,35,FALSE,TRUE,"electrical",105,0,0,8
+RECIPE: /material/copper/,"orange cable coil (10m)",/obj/item/stack/cable_coil/orange,1,35,FALSE,TRUE,"electrical",105,0,0,8
+RECIPE: /material/copper/,"cyan cable coil (10m)",/obj/item/stack/cable_coil/cyan,1,35,FALSE,TRUE,"electrical",105,0,0,8
+RECIPE: /material/copper/,"pink cable coil (10m)",/obj/item/stack/cable_coil/pink,1,35,FALSE,TRUE,"electrical",105,0,0,8

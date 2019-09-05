@@ -1,0 +1,502 @@
+/material/iron/generate_recipes_civs(var/list/current_res = list(0,0,0)
+
+RECIPE: /material/iron/,"iron sledgehammer",/obj/item/weapon/sledgehammer/iron/sledgehammer,12,140,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 33)
+	RECIPE: /material/iron/,"extraction kit",/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 33)
+	RECIPE: /material/iron/,"table",/obj/structure/table,4,80,TRUE,TRUE,"none",_supplied_material = "[name]")
+	RECIPE: /material/iron/,"cooking pot",/obj/structure/pot,8,180,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/iron/,"oven",/obj/structure/oven,8,150,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/iron/," brazier",/obj/structure/brazier,4,90,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[2] >= 32)
+	RECIPE: /material/iron/,"mechanical trap",/obj/item/weapon/beartrap,5,140,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[2] >= 61)
+	RECIPE: /material/iron/,"handcuffs",/obj/item/weapon/handcuffs,50)
+	RECIPE: /material/iron/,"monocle",/obj/item/clothing/glasses/monocle,3,110,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[2] >= 46)
+	RECIPE: /material/iron/,"telescope",/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 28)
+	RECIPE: /material/iron/,"lantern",/obj/item/flashlight/lantern,4,140,FALSE,TRUE,"none",0,0,0,8
+	RECIPE: /material/iron/,"unlocked door",/obj/structure/simple_door/key_door/anyone,5,50,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/iron/,"locked door",/obj/structure/simple_door/key_door/custom,5,50,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/iron/,"key",/obj/item/weapon/key,2,35,FALSE,TRUE,"none",0,0,0,8
+	RECIPE: /material/iron/,"keychain",/obj/item/weapon/storage/belt/keychain,1,30,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 50)
+	RECIPE: /material/iron/,"iron fence",/obj/structure/grille/ironfence,2,80,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 25)
+	RECIPE: /material/iron/,"anvil",/obj/structure/anvil,25,150,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/iron/,"circumcision knife",/obj/item/weapon/material/kitchen/utensil/knife/circumcision,2,60,FALSE,TRUE,"none",0,0,0,8
+
+	if (current_res[1] >= 27 && current_res[2] >= 16)
+	RECIPE: /material/iron/,"iron-tipped spear",/obj/item/weapon/material/spear,2,50,FALSE,TRUE,"none",_supplied_material = "[name]")
+
+	RECIPE: /material/iron/,"battle axe",/obj/item/weapon/material/hatchet/battleaxe,8,70,FALSE,TRUE,"none",_supplied_material = "[name]")
+	RECIPE: /material/iron/,"iron shield",/obj/item/weapon/shield/iron,4,85,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 33 && current_res[2] >= 39)
+	RECIPE: /material/iron/,"halberd",/obj/item/weapon/material/halberd,2,60,FALSE,TRUE,"none",_supplied_material = "[name]")
+	RECIPE: /material/iron/,"pike",/obj/item/weapon/material/pike,3,75,FALSE,TRUE,"none",_supplied_material = "[name]")
+		recipes += new/datum/stack_recipe_list("tools",list(
+			RECIPE: "hatchet",/obj/item/weapon/material/hatchet,2,35,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "shovel",/obj/item/weapon/shovel,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wrench",/obj/item/weapon/wrench,4,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "butcher's cleaver",/obj/item/weapon/material/knife/butcher,3,40,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "razor blade",/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "pickaxe",/obj/item/weapon/pickaxe,3,80,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "shears",/obj/item/weapon/shears,2,40,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 39 && map.ordinal_age <= 2)
+		recipes += new/datum/stack_recipe_list("throwing weapons",list(
+			RECIPE: "shuriken",/obj/item/weapon/material/star,2,15,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "kunai",/obj/item/weapon/material/kunai_normal,3,20,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "throwing knife",/obj/item/weapon/material/throwing_knife,4,20,FALSE,TRUE,"none",_supplied_material = "[name]"),)
+	if (current_res[1] >= 39 && current_res[2] >= 40 && map.ordinal_age <= 2)
+	RECIPE: /material/iron/,"naginata",/obj/item/weapon/material/naginata,12,60,FALSE,TRUE,"none",_supplied_material = "[name]")
+	if (current_res[2] >= 80 && map.ordinal_age < 4)
+		recipes += new/datum/stack_recipe_list("bullets",list(
+			RECIPE: "musket ball (x2)",/obj/item/stack/ammopart/musketball,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "small musket ball (x3)",/obj/item/stack/ammopart/musketball_pistol,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "blunderbuss ball (x2)",/obj/item/stack/ammopart/blunderbuss,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "cannon ball",/obj/item/cannon_ball,5,40,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[2] >= 82 && map.ordinal_age >= 4)
+		recipes += new/datum/stack_recipe_list("bullets",list(
+			RECIPE: "musket ball (x2)",/obj/item/stack/ammopart/musketball,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "small musket ball (x3)",/obj/item/stack/ammopart/musketball_pistol,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "blunderbuss ball (x2)",/obj/item/stack/ammopart/blunderbuss,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "iron bullet (x3)",/obj/item/stack/ammopart/bullet,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "cannon ball",/obj/item/cannon_ball,5,40,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[2] >= 110 && map.ordinal_age == 5)
+		recipes += new/datum/stack_recipe_list("magazines",list(
+			RECIPE: "pistol magazine (8)",/obj/item/ammo_magazine/emptymagazine/pistol/a45,2,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "pistol magazine (15)",/obj/item/ammo_magazine/emptymagazine/pistol,4,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "revolver speedloader (6)",/obj/item/ammo_magazine/emptyspeedloader,1,45,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[2] >= 110 && map.ordinal_age >= 6 && map.ordinal_age <= 7)
+		recipes += new/datum/stack_recipe_list("magazines",list(
+			RECIPE: "pistol magazine (8)",/obj/item/ammo_magazine/emptymagazine/pistol/a45,2,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "pistol magazine (15)",/obj/item/ammo_magazine/emptymagazine/pistol,3,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "magazine (30)",/obj/item/ammo_magazine/emptymagazine/small,4,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "drum magazine (65)",/obj/item/ammo_magazine/emptymagazine,7,45,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[2] >= 115 && map.ordinal_age >= 8)
+		recipes += new/datum/stack_recipe_list("magazines",list(
+			RECIPE: "pistol magazine (8)",/obj/item/ammo_magazine/emptymagazine/pistol/a45,2,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "pistol magazine (15)",/obj/item/ammo_magazine/emptymagazine/pistol,3,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "magazine (30)",/obj/item/ammo_magazine/emptymagazine/small,4,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "drum magazine (65)",/obj/item/ammo_magazine/emptymagazine,7,45,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 95)
+	RECIPE: /material/iron/,"canner",/obj/structure/canner,7,120,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 115 && map.ordinal_age >= 5)
+	RECIPE: /material/iron/,"engine maker",/obj/item/weapon/enginemaker,5,80,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[2] >= 90 && map.ordinal_age >= 4)
+	RECIPE: /material/iron/,"trench shovel",/obj/item/weapon/shovel/trench,2,50,FALSE,TRUE,"none",0,0,0,8
+	RECIPE: /material/iron/,"bayonet",/obj/item/weapon/attachment/bayonet,2,30,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[2] >= 87)
+	RECIPE: /material/iron/,"iron furnace",/obj/structure/heatsource,15,140,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/iron/,"iron altar",/obj/structure/altar/iron,12,200,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/iron/,"iron arm bangles",/obj/item/clothing/accessory/armband/armbangle,2,95,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 35 && current_res[3]>= 44)
+	RECIPE: /material/iron/,"splints",/obj/item/stack/medical/splint,2,75,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 35 && current_res[3]>= 110)
+		recipes += new/datum/stack_recipe_list("medical tools",list(
+			RECIPE: "retractor",/obj/item/weapon/surgery/retractor,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "hemostat",/obj/item/weapon/surgery/hemostat,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "cautery",/obj/item/weapon/surgery/cautery,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bone saw",/obj/item/weapon/surgery/bone_saw,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bone setter",/obj/item/weapon/surgery/bonesetter,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "scalpel",/obj/item/weapon/surgery/scalpel,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "surgical drill",/obj/item/weapon/surgery/surgicaldrill,2,50,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[1] >= 35 && current_res[3]>= 67)
+		recipes += new/datum/stack_recipe_list("medical tools",list(
+			RECIPE: "retractor",/obj/item/weapon/surgery/retractor,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "hemostat",/obj/item/weapon/surgery/hemostat,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "cautery",/obj/item/weapon/surgery/cautery,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bone saw",/obj/item/weapon/surgery/bone_saw,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bone setter",/obj/item/weapon/surgery/bonesetter,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "scalpel",/obj/item/weapon/surgery/scalpel,2,50,FALSE,TRUE,"none",0,0,0,8
+
+	else if (current_res[1] >= 35 && current_res[3]>= 55)
+		recipes += new/datum/stack_recipe_list("medical tools",list(
+			RECIPE: "retractor",/obj/item/weapon/surgery/retractor,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bone saw",/obj/item/weapon/surgery/bone_saw,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bone setter",/obj/item/weapon/surgery/bonesetter,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "scalpel",/obj/item/weapon/surgery/scalpel,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "syringe",/obj/item/weapon/reagent_containers/syringe,1,25,FALSE,TRUE,"none",0,0,0,8
+
+
+	if (current_res[2] >= 70)
+		recipes += new/datum/stack_recipe_list("firearms",list(
+			RECIPE: "fire lance",/obj/item/weapon/gun/projectile/ancient/firelance,6,90,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "hand cannon",/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "arquebus",/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "matchlock musket",/obj/item/weapon/gun/projectile/ancient/matchlock,18,140,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[2] >= 62 && current_res[2] < 70)
+		recipes += new/datum/stack_recipe_list("firearms",list(
+			RECIPE: "fire lance",/obj/item/weapon/gun/projectile/ancient/firelance,6,90,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "hand cannon",/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "arquebus",/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[2] >= 56 && current_res[2] < 62)
+		recipes += new/datum/stack_recipe_list("firearms",list(
+			RECIPE: "fire lance",/obj/item/weapon/gun/projectile/ancient/firelance,6,90,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "hand cannon",/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[2] >= 49 && current_res[2] < 56)
+		recipes += new/datum/stack_recipe_list("firearms",list(
+			RECIPE: "fire lance",/obj/item/weapon/gun/projectile/ancient/firelance,6,50,FALSE,TRUE,"none",0,0,0,8
+
+/material/wood/generate_recipes_civs(var/list/current_res = list(0,0,0)
+	..()
+	if (map && map.ordinal_age >= 5)
+	RECIPE: /material/wood/,"gunsmithing bench",/obj/structure/gunbench,13,180,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 22)
+	RECIPE: /material/wood/,"raft",/obj/structure/vehicle/raft,10,180,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 22)
+	RECIPE: /material/wood/,"boat frame",/obj/item/vehicleparts/frame/boat,22,200,FALSE,TRUE,"none",0,0,0,8
+	if (map && map.resourceresearch == TRUE
+	RECIPE: /material/wood/,"research desk",/obj/structure/researchdesk,8,250,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 96)
+	RECIPE: /material/wood/,"global exchange",/obj/structure/marketplace,10,140,TRUE,TRUE,"none",0,0,0,8
+	if (map && map.ordinal_age >= 4)
+	RECIPE: /material/wood/,"communications pole",/obj/structure/phoneline,2,50,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 105 || map.gamemode == "Oil Rush")
+	RECIPE: /material/wood/,"oil well",/obj/structure/oilwell,40,270,TRUE,TRUE,"none",0,0,0,8
+	if (map.gamemode == "Oil Rush")
+	RECIPE: /material/wood/,"oil deposit",/obj/structure/oil_deposits,6,100,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/wood/,"roof support",/obj/structure/roof_support,2,30,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/wood/,"mine support",/obj/structure/mine_support,2,30,TRUE,TRUE,"none",0,0,0,8
+RECIPE: /material/wood/,"roof builder",/obj/item/weapon/roofbuilder,1,20,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 33 && current_res[3]>= 48)
+	RECIPE: /material/wood/,"doctor handbook",/obj/item/weapon/doctor_handbook,12,210,FALSE,TRUE,"none",0,0,0,8
+//	if (current_res[1] >= 25 && current_res[3]>= 51)
+//	RECIPE: /material/wood/,"operating table",/obj/structure/optable,9,190,FALSE,TRUE,"none",0,0,0,8
+	if (map && map.ordinal_age > 0 && map.research_active == TRUE
+	RECIPE: /material/wood/,"research kit",/obj/item/weapon/researchkit,10,190,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 18)
+
+		recipes += new/datum/stack_recipe_list("walls,doors & floors",list(
+			RECIPE: "door",/obj/structure/simple_door/key_door/anyone/wood,5,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "rustic door",/obj/structure/simple_door/key_door/anyone/rustic,4,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "floor tile",/obj/covers/wood,1,25,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wood stairs",/obj/covers/wood/stairs,2,35,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "window",/obj/structure/window_frame,5,80,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "soft wood wall",/obj/covers/wood_wall,8,170,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "log wall",/obj/covers/wood_wall/log,7,90,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "log wall corner",/obj/covers/wood_wall/log/corner,7,90,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "straw wall",/obj/covers/straw_wall,4,90,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "custom sign",/obj/structure/sign/custom,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "floor cover",/obj/item/weapon/covers,2,30,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood jail bars",/obj/covers/jail/woodjail,8,30,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wood jail door",/obj/structure/simple_door/key_door/custom/jail/woodjail,12,30,TRUE,TRUE,"none",0,0,0,8
+
+	else
+		recipes += new/datum/stack_recipe_list("walls,doors & floors",list(
+			RECIPE: "straw wall",/obj/covers/straw_wall,5,90,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "custom sign",/obj/structure/sign/custom,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "floor cover",/obj/item/weapon/covers,2,30,FALSE,TRUE,"none",0,0,0,8
+
+	recipes += new/datum/stack_recipe_list("barricades",list(
+		RECIPE: "horizontal wood barrier",/obj/structure/barricade/horizontal,5,35,TRUE,TRUE,"none",0,0,0,8
+		RECIPE: "vertical wood barrier",/obj/structure/barricade/vertical,5,35,TRUE,TRUE,"none",0,0,0,8
+		RECIPE: "wood palisade",/obj/structure/grille/logfence,6,80,TRUE,TRUE,"none",0,0,0,8
+		RECIPE: "wood fence",/obj/structure/grille/fence,3,60,TRUE,TRUE,"none",0,0,0,8
+		RECIPE: "wood fence door",/obj/structure/simple_door/fence,3,60,TRUE,TRUE,"none",0,0,0,8
+		RECIPE: "wood structure",/obj/structure/barricade,5,35,TRUE,TRUE,"none",),)
+	if (map.ordinal_age >= 3)
+		recipes += new/datum/stack_recipe_list("hygiene",list(
+			RECIPE: "outhouse",/obj/structure/toilet/outhouse,35,600,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "male outhouse",/obj/structure/toilet/outhouse/male,35,600,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "female outhouse",/obj/structure/toilet/outhouse/female,35,600,TRUE,TRUE,"none",0,0,0,8
+
+	if (current_res[2] >= 95)
+		recipes += new/datum/stack_recipe_list("weapons",list(
+			RECIPE: "arrow",/obj/item/ammo_casing/arrow,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bow",/obj/item/weapon/gun/projectile/bow,8,120,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "quarterstaff",/obj/item/weapon/material/quarterstaff,2,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "punji sticks trap",/obj/item/weapon/punji_sticks,4,70,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood spear",/obj/item/weapon/material/spear,3,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "police baton",/obj/item/weapon/melee/classic_baton,4,90,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[2] >= 21 && current_res[2] < 95)
+		recipes += new/datum/stack_recipe_list("weapons",list(
+			RECIPE: "arrow",/obj/item/ammo_casing/arrow,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bow",/obj/item/weapon/gun/projectile/bow,8,120,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "quarterstaff",/obj/item/weapon/material/quarterstaff,2,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "punji sticks trap",/obj/item/weapon/punji_sticks,4,70,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood spear",/obj/item/weapon/material/spear,3,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood dory",/obj/item/weapon/material/spear/dory,4,70,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood sarissa",/obj/item/weapon/material/spear/sarissa,4,90,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood shield",/obj/item/weapon/shield,8,180,FALSE,TRUE,"none",0,0,0,8
+
+	else if (current_res[2] >= 14 && current_res[2] < 21)
+		recipes += new/datum/stack_recipe_list("weapons",list(
+			RECIPE: "arrow",/obj/item/ammo_casing/arrow,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bow",/obj/item/weapon/gun/projectile/bow,8,120,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "punji sticks trap",/obj/item/weapon/punji_sticks,4,70,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "quarterstaff",/obj/item/weapon/material/quarterstaff,2,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood spear",/obj/item/weapon/material/spear,3,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood shield",/obj/item/weapon/shield,8,180,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[1] >= 14 && current_res[2] < 14)
+		recipes += new/datum/stack_recipe_list("weapons",list(
+			RECIPE: "arrow",/obj/item/ammo_casing/arrow,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bow",/obj/item/weapon/gun/projectile/bow,8,120,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "punji sticks trap",/obj/item/weapon/punji_sticks,4,70,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "quarterstaff",/obj/item/weapon/material/quarterstaff,2,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood spear",/obj/item/weapon/material/spear,3,50,FALSE,TRUE,"none",_supplied_material = "[name]"),)
+
+	else
+		recipes += new/datum/stack_recipe_list("weapons",list(
+			RECIPE: "punji sticks trap",/obj/item/weapon/punji_sticks,4,70,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "quarterstaff",/obj/item/weapon/material/quarterstaff,2,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood spear",/obj/item/weapon/material/spear,3,50,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood club",/obj/item/weapon/melee/classic_baton/club,3,50,FALSE,TRUE,"none",_supplied_material = "[name]"),)
+
+	if (current_res[1] >= 22)
+		recipes += new/datum/stack_recipe_list("tools",list(
+			RECIPE: "wood handle",/obj/item/weapon/material/handle,1,35,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood cane",/obj/item/weapon/cane,2,35,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bucket",/obj/item/weapon/reagent_containers/glass/bucket,2,60,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "plough",/obj/item/weapon/plough,4,120,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "berries gatherer",/obj/item/weapon/berriesgatherer,4,80,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "fishing pole",/obj/item/weapon/fishing,3,120,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "hammer",/obj/item/weapon/hammer,5,75,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "rollingpin",/obj/item/weapon/material/kitchen/rollingpin,1,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "mop",/obj/item/weapon/mop,2,55,FALSE,TRUE,"none",0,0,0,8
+	else
+		recipes += new/datum/stack_recipe_list("tools",list(
+			RECIPE: "wood handle",/obj/item/weapon/material/handle,1,35,FALSE,TRUE,"none",_supplied_material = "[name]"),
+			RECIPE: "wood cane",/obj/item/weapon/cane,2,35,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bucket",/obj/item/weapon/reagent_containers/glass/bucket,2,60,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "plough",/obj/item/weapon/plough,4,120,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "berries gatherer",/obj/item/weapon/berriesgatherer,4,80,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "fishing pole",/obj/item/weapon/fishing,3,120,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "hammer",/obj/item/weapon/hammer,5,75,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 41)
+		recipes += new/datum/stack_recipe_list("furniture",list(
+			RECIPE: "chair",/obj/structure/bed/chair/wood,4,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wood chest",/obj/structure/closet/crate/chest,7,75,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "bed",/obj/structure/bed/wood,4,60,_one_per_turf = TRUE,TRUE,"none",),
+			RECIPE: "wood crate",/obj/structure/closet/crate/empty,5,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "bookcase",/obj/structure/bookcase,6,80,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "target practice dummy",/obj/structure/target_practice,7,120,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "table",/obj/structure/table/wood,4,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "coffin",/obj/structure/closet/coffin,4,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "gallows",/obj/structure/gallows,3,60,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wardrobe",/obj/structure/closet/cabinet,5,80,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "cabinet",/obj/structure/closet/cabinet/ceiling,4,60,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wood pole",/obj/structure/barricade/wood_pole,2,50,TRUE,TRUE,"none",0,0,0,8
+	else if (current_res[1] >= 14)
+		recipes += new/datum/stack_recipe_list("furniture",list(
+			RECIPE: "chair",/obj/structure/bed/chair/wood,4,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wood chest",/obj/structure/closet/crate/chest,7,75,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "bed",/obj/structure/bed/wood,4,60,_one_per_turf = TRUE,TRUE,"none",),
+			RECIPE: "wood crate",/obj/structure/closet/crate/empty,5,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "bookcase",/obj/structure/bookcase,6,80,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "target practice dummy",/obj/structure/target_practice,7,120,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "table",/obj/structure/table/wood,4,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "gallows",/obj/structure/gallows,3,60,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wood pole",/obj/structure/barricade/wood_pole,2,50,TRUE,TRUE,"none",0,0,0,8
+	else
+		recipes += new/datum/stack_recipe_list("furniture",list(
+			RECIPE: "bed",/obj/structure/bed/wood,4,60,_one_per_turf = TRUE,TRUE,"none",),
+			RECIPE: "wood crate",/obj/structure/closet/crate/empty,5,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "table",/obj/structure/table/wood,4,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "gallows",/obj/structure/gallows,3,60,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wood pole",/obj/structure/barricade/wood_pole,2,50,TRUE,TRUE,"none",0,0,0,8
+
+	if (current_res[1] < 47)
+		recipes += new/datum/stack_recipe_list("religious & decoration",list(
+			RECIPE: "wood altar",/obj/structure/altar/wood,20,200,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "decorative wood mask",/obj/structure/religious/tribalmask,2,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "wearable wood mask",/obj/item/clothing/mask/wooden,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "impaled skull",/obj/structure/religious/impaledskull,2,50,TRUE,TRUE,"none",0,0,0,8
+	else
+		recipes += new/datum/stack_recipe_list("religious & decoration",list(
+			RECIPE: "wood altar",/obj/structure/altar/wood,20,200,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "impaled skull",/obj/structure/religious/impaledskull,2,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "small cross",/obj/structure/religious/woodcross1,2,50,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "cross",/obj/structure/religious/woodcross2,4,80,TRUE,TRUE,"none",0,0,0,8
+
+	if (current_res[1] < 19)
+		recipes += new/datum/stack_recipe_list("kitchen & other",list(
+			RECIPE: "sandals",/obj/item/clothing/shoes/sandal,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "campfire",/obj/structure/oven/fireplace,4,140,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "torch",/obj/item/flashlight/torch,2,60,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood bowl",/obj/item/kitchen/wood_bowl,1,40,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[1] >= 19 && current_res[1] <= 45)
+		recipes += new/datum/stack_recipe_list("kitchen & other",list(
+			RECIPE: "loom",/obj/structure/loom,8,150,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "sandals",/obj/item/clothing/shoes/sandal,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "campfire",/obj/structure/oven/fireplace,4,140,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "torch",/obj/item/flashlight/torch,2,60,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood pipe",/obj/item/clothing/mask/smokable/pipe,2,100,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood bowl",/obj/item/kitchen/wood_bowl,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "small mill",/obj/structure/mill,4,90,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty,5,75,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "dehydrator",/obj/structure/dehydrator,5,110,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "matches",/obj/item/weapon/storage/box/matches,5,80,TRUE,TRUE,"none",0,0,0,8
+	else
+		recipes += new/datum/stack_recipe_list("kitchen & other",list(
+			RECIPE: "loom",/obj/structure/loom,8,150,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "sandals",/obj/item/clothing/shoes/sandal,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "campfire",/obj/structure/oven/fireplace,4,140,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "torch",/obj/item/flashlight/torch,2,60,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood pipe",/obj/item/clothing/mask/smokable/pipe,2,100,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wood bowl",/obj/item/kitchen/wood_bowl,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "small mill",/obj/structure/mill,4,90,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty,5,75,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "violin",/obj/item/violin,10,135,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "piano",/obj/structure/piano,18,195,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "dehydrator",/obj/structure/dehydrator,5,110,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "matches",/obj/item/weapon/storage/box/matches,5,80,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "cigar case",/obj/item/weapon/storage/fancy/cigar,2,80,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] < 19)
+		recipes += new/datum/stack_recipe_list("paper & printing",list(
+			RECIPE: "scientific literature",/obj/item/weapon/book/research,4,110,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "holy book",/obj/item/weapon/book/holybook,15,240,TRUE,TRUE,"none",0,0,0,8
+	else if (current_res[1] >= 19 && current_res[1] <= 45)
+		recipes += new/datum/stack_recipe_list("paper & printing",list(
+			RECIPE: "passport",/obj/item/clothing/accessory/storage/passport,3,150,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "visa (empty)",/obj/item/weapon/visa,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "scientific literature",/obj/item/weapon/book/research,4,110,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "holy book",/obj/item/weapon/book/holybook,15,240,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "pen",/obj/item/weapon/pen,1,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "paper sheet",/obj/item/weapon/paper,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "religious poster",/obj/item/weapon/poster/religious,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "military propaganda poster (flag)",/obj/item/weapon/poster/faction/mil1,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "military propaganda poster (armed)",/obj/item/weapon/poster/faction/mil2,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "work propaganda poster",/obj/item/weapon/poster/faction/work,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "leader propaganda poster",/obj/item/weapon/poster/faction/lead,1,25,FALSE,TRUE,"none",0,0,0,8
+	else if (current_res[1] > 45 && current_res[1] < 52)
+		recipes += new/datum/stack_recipe_list("paper & printing",list(
+			RECIPE: "passport",/obj/item/clothing/accessory/storage/passport,3,150,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "visa (empty)",/obj/item/weapon/visa,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "scientific literature",/obj/item/weapon/book/research,4,110,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "holy book",/obj/item/weapon/book/holybook,15,240,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "pen",/obj/item/weapon/pen,1,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "paper sheet",/obj/item/weapon/paper,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "book",/obj/item/weapon/book,4,75,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "religious poster",/obj/item/weapon/poster/religious,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "military propaganda poster (flag)",/obj/item/weapon/poster/faction/mil1,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "military propaganda poster (armed)",/obj/item/weapon/poster/faction/mil2,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "work propaganda poster",/obj/item/weapon/poster/faction/work,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "leader propaganda poster",/obj/item/weapon/poster/faction/lead,1,25,FALSE,TRUE,"none",0,0,0,8
+	else
+		recipes += new/datum/stack_recipe_list("paper & printing",list(
+			RECIPE: "printing press",/obj/structure/printingpress,12,120,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "passport",/obj/item/clothing/accessory/storage/passport,3,150,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "visa (empty)",/obj/item/weapon/visa,1,40,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "scientific literature",/obj/item/weapon/book/research,4,110,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "holy book",/obj/item/weapon/book/holybook,15,240,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "pen",/obj/item/weapon/pen,1,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "paper sheet",/obj/item/weapon/paper,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "book",/obj/item/weapon/book,4,75,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "religious poster",/obj/item/weapon/poster/religious,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "military propaganda poster (flag)",/obj/item/weapon/poster/faction/mil1,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "military propaganda poster (armed)",/obj/item/weapon/poster/faction/mil2,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "work propaganda poster",/obj/item/weapon/poster/faction/work,1,25,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "leader propaganda poster",/obj/item/weapon/poster/faction/lead,1,25,FALSE,TRUE,"none",0,0,0,8
+
+	if (current_res[1] >= 24 && current_res[2] >= 33)
+		recipes += new/datum/stack_recipe_list("siege weapons",list(
+			RECIPE: "catapult",/obj/structure/catapult,50,450,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "siege ladder",/obj/item/weapon/siegeladder,8,100,FALSE,TRUE,"none",0,0,0,8
+
+	if (current_res[3] >= 18)
+		recipes += new/datum/stack_recipe_list("prosthetics",list(
+			RECIPE: "wooden foot",/obj/item/weapon/prosthesis/woodfoot,3,80,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "wooden pegleg",/obj/item/weapon/prosthesis/pegleg,5,110,FALSE,TRUE,"none",0,0,0,8
+
+	if (current_res[1] >= 65)
+		recipes += new/datum/stack_recipe_list("paintings",list(
+			RECIPE: "stormy sea",/obj/structure/sign/painting1,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "city street",/obj/structure/sign/painting2,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "sea sunset",/obj/structure/sign/painting3,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "valley",/obj/structure/sign/painting4,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "still life",/obj/structure/sign/painting5,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "bird and blossom",/obj/structure/sign/painting6,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "pine on the shore",/obj/structure/sign/painting7,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "temple by the river",/obj/structure/sign/painting8,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "desert camp",/obj/structure/sign/painting9,3,40,TRUE,TRUE,"none",0,0,0,8
+			RECIPE: "barque at sea",/obj/structure/sign/painting10,3,40,TRUE,TRUE,"none",0,0,0,8
+
+/material/bronze/generate_recipes_civs(var/list/current_res = list(0,0,0)
+	..()
+RECIPE: /material/bronze/,"bronze sledgehammer",/obj/item/weapon/sledgehammer/bronze/sledgehammer,12,140,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 21 && current_res[2] >= 16)
+	RECIPE: /material/bronze/,"[display_name] hatchet",/obj/item/weapon/material/hatchet,2,35,FALSE,TRUE,"none",_supplied_material = "[name]")
+	RECIPE: /material/bronze/,"[display_name]-tipped spear",/obj/item/weapon/material/spear,1,35,FALSE,TRUE,"none",_supplied_material = "[name]")
+	RECIPE: /material/bronze/,"bronze shield",/obj/item/weapon/shield/bronze,4,85,FALSE,TRUE,"none",0,0,0,8
+	RECIPE: /material/bronze/,"aspis shield",/obj/item/weapon/shield/aspis,5,95,FALSE,TRUE,"none",0,0,0,8
+	RECIPE: /material/bronze/,"roman shield",/obj/item/weapon/shield/roman,6,105,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 27 && current_res[2] >= 34)
+	RECIPE: /material/bronze/,"[display_name] small sword",/obj/item/weapon/material/sword/smallsword/bronze,10,80,FALSE,TRUE,"none",_supplied_material = "[name]")
+	if (current_res[1] >= 27 && current_res[2] >= 42)
+	RECIPE: /material/bronze/,"[display_name] arming sword",/obj/item/weapon/material/sword/armingsword/bronze,15,125,FALSE,TRUE,"none",_supplied_material = "[name]")
+	if (current_res[1] >= 34 && current_res[2] >= 21)
+	RECIPE: /material/bronze/,"bronze chestplate",/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,FALSE,TRUE,"none",_supplied_material = "[name]")
+	if (current_res[1] >= 18 && current_res[3]>= 26)
+		recipes += new/datum/stack_recipe_list("bronze medical tools",list(
+			RECIPE: "bronze retractor",/obj/item/weapon/surgery/retractor/bronze,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bronze hemostat",/obj/item/weapon/surgery/hemostat/bronze,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bronze cautery",/obj/item/weapon/surgery/cautery/bronze,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bronze bone saw",/obj/item/weapon/surgery/bone_saw/bronze,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bronze bone setter",/obj/item/weapon/surgery/bonesetter/bronze,2,50,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "bronze scalpel",/obj/item/weapon/surgery/scalpel/bronze,2,50,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bronze/,"bronze etsy lamp",/obj/item/flashlight/lantern/bronze,4,60,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bronze/,"bronze arm bangles",/obj/item/clothing/accessory/armband/armbangle/bronze,2,95,FALSE,TRUE,"none",0,0,0,8
+RECIPE: /material/bronze/,"razor blade",/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,FALSE,TRUE,"none",_supplied_material = "[name]")
+RECIPE: /material/bronze/,"shears",/obj/item/weapon/shears,2,40,FALSE,TRUE,"none",0,0,0,8
+
+
+
+
+
+/material/steel/generate_recipes_civs(var/list/current_res = list(0,0,0)
+	..()
+RECIPE: /material/steel/,"steel sledgehammer",/obj/item/weapon/sledgehammer/steel/sledgehammer,12,140,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 96)
+	RECIPE: /material/steel/,"steel floor",/obj/covers/steelplating,1,15,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"white floor",/obj/covers/steelplating/white,1,15,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 50 && current_res[2] >= 44)
+	RECIPE: /material/steel/,"[display_name] hatchet",/obj/item/weapon/material/hatchet,2,35,FALSE,TRUE,"none",_supplied_material = "[name]")
+	RECIPE: /material/steel/,"[display_name]-tipped spear",/obj/item/weapon/material/spear,1,35,FALSE,TRUE,"none",_supplied_material = "[name]")
+	RECIPE: /material/steel/,"steel shield",/obj/item/weapon/shield/steel,4,85,FALSE,TRUE,"none",0,0,0,8
+		recipes += new/datum/stack_recipe_list("throwing",list(
+			RECIPE: "throwing axe",/obj/item/weapon/material/throwing_axe,3,20,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "[display_name] throwing knife",/obj/item/weapon/material/throwing_knife,2,20,FALSE,TRUE,"none",_supplied_material = "[name]"),)
+	RECIPE: /material/steel/,"jail bars",/obj/covers/jail/steeljail,8,30,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"jail door",/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,TRUE,TRUE,"none",0,0,0,8
+
+	if (current_res[1] >= 71 && current_res[2] >= 79)
+	RECIPE: /material/steel/,"cannon",/obj/structure/cannon,35,600,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 95 && current_res[2] >= 109)
+	RECIPE: /material/steel/,"artillery cannon",/obj/structure/cannon/modern,40,600,TRUE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 90)
+	RECIPE: /material/steel/,"bakelizer",/obj/structure/bakelizer,18,300,TRUE,TRUE,"none",0,0,0,8
+	if (map && map.ordinal_age >= 4)
+	RECIPE: /material/steel/,"petroleum refinery",/obj/structure/refinery,22,230,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"biofuel refinery",/obj/structure/refinery/biofuel,18,200,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"steam engine",/obj/structure/engine/external/steam,15,250,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"wood stove",/obj/structure/oven/woodstove,8,250,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"IV drip",/obj/structure/iv_drip,6,140,FALSE,TRUE,"none",0,0,0,8
+	if (current_res[1] >= 95 && current_res[3] >= 98)
+	RECIPE: /material/steel/,"wheelchair",/obj/structure/bed/chair/wheelchair,6,140,FALSE,TRUE,"none",0,0,0,8
+
+	if (map && map.ordinal_age >= 5)
+	RECIPE: /material/steel/,"zippo lighter",/obj/item/weapon/flame/lighter/zippo,4,95,FALSE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"steel barrel",/obj/item/weapon/reagent_containers/glass/barrel/modern,1,75,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"fuel pump (star)",/obj/structure/fuelpump/star,15,120,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"fuel pump (small)",/obj/structure/fuelpump/small,15,120,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"fuel pump (N)",/obj/structure/fuelpump/n,15,120,TRUE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"fuel pump (S)",/obj/structure/fuelpump/s,15,120,TRUE,TRUE,"none",0,0,0,8
+		recipes += new/datum/stack_recipe_list("vehicle parts",list(
+			RECIPE: "motorcycle frame",/obj/item/vehicleparts/frame/bike,12,200,FALSE,TRUE,"none",0,0,0,8
+		recipes += new/datum/stack_recipe_list("fuel tanks",list(
+			RECIPE: "25u bike fuel tank",/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25,2,45,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "50u bike fuel tank",/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike,4,65,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "75u bike fuel tank",/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike75,6,85,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "120u small fuel tank",/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small,10,125,FALSE,TRUE,"none",0,0,0,8
+			RECIPE: "250u large fuel tank",/obj/item/weapon/reagent_containers/glass/barrel/fueltank,20,185,FALSE,TRUE,"none",0,0,0,8
+
+		recipes += new/datum/stack_recipe_list("electrical",list(
+			RECIPE: "street lamp",/obj/structure/lamp/lamppost_small,3,35,FALSE,TRUE,"none",0,0,0,8
+	if (map && map.ordinal_age >= 7)
+	RECIPE: /material/steel/,"jackhammer",/obj/item/weapon/pickaxe/jackhammer,24,60,FALSE,TRUE,"none",0,0,0,8
+	RECIPE: /material/steel/,"refrigerator",/obj/structure/closet/fridge,15,230,TRUE,TRUE,"none",0,0,0,8
