@@ -76,4 +76,13 @@
 			var/supmat = i[13]
 			if (supmat == "null")
 				supmat = null
-			recipes += new/datum/stack_recipe(i[2], text2path(i[3]), text2num(i[4]),  _time = text2num(i[5]), _one_per_turf = text2num(i[6]), _on_floor = text2num(i[7]), _supplied_material = supmat)
+			if (i[8] == "none")
+				recipes += new/datum/stack_recipe(i[2], text2path(i[3]), text2num(i[4]),  _time = text2num(i[5]), _one_per_turf = text2num(i[6]), _on_floor = text2num(i[7]), _supplied_material = supmat)
+			else
+				var/exists = FALSE
+				for (var/datum/stack_recipe_list/A in recipes)
+					if (A.title == i[8])
+						exists = TRUE
+						A.recipes += new/datum/stack_recipe(i[2], text2path(i[3]), text2num(i[4]),  _time = text2num(i[5]), _one_per_turf = text2num(i[6]), _on_floor = text2num(i[7]), _supplied_material = supmat)
+				if (!exists)
+					recipes += new/datum/stack_recipe_list(i[8], list(new/datum/stack_recipe(i[2], text2path(i[3]), text2num(i[4]),  _time = text2num(i[5]), _one_per_turf = text2num(i[6]), _on_floor = text2num(i[7]), _supplied_material = supmat)))

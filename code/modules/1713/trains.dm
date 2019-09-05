@@ -335,7 +335,7 @@
 				return TRUE
 			return TRUE
 	return FALSE
-
+//////////////////////////////////////////////////////////////////////////
 /obj/structure/trains/storage
 	var/max_storage = 7
 	var/obj/item/weapon/storage/internal/storage
@@ -375,6 +375,14 @@
 	desc = "A wooden mining cart, for underground rails."
 	icon_state = "miningcar"
 
+/obj/structure/trains/storage/tender
+	name = "tender wagon"
+	desc = "A wagon made to carry fuel for the engine."
+	icon_state = "coal_wagon"
+	max_storage = 10
+	New()
+		..()
+		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood)
 //////////////////////////////////////////////////////////////////////////////////
 /obj/structure/trains/transport
 	name = "flatbed cart"
@@ -462,6 +470,22 @@
 					M.forceMove(F)
 					return M
 	return M
+
+/obj/structure/trains/transport/flatbed
+	name = "flatbed wagon"
+	desc = "A wooden floor flatbed wagon, used to transport a variety of things."
+	icon_state = "flatbed_wagon"
+
+/obj/structure/trains/transport/cabin
+	name = "train cabin"
+	desc = "A windowed train cabin, made for the conductor."
+	icon_state = "cabinfloor"
+	var/image/ovl
+	New()
+		..()
+		ovl = image(icon, "cabinroof", layer = 4.5)
+		overlays += ovl
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 /obj/structure/trains/locomotive
 	name = "locomotive"
