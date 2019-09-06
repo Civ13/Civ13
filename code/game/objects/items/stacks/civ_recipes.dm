@@ -86,3 +86,40 @@
 						A.recipes += new/datum/stack_recipe(i[2], text2path(i[3]), text2num(i[4]),  _time = text2num(i[5]), _one_per_turf = text2num(i[6]), _on_floor = text2num(i[7]), _supplied_material = supmat)
 				if (!exists)
 					recipes += new/datum/stack_recipe_list(i[8], list(new/datum/stack_recipe(i[2], text2path(i[3]), text2num(i[4]),  _time = text2num(i[5]), _one_per_turf = text2num(i[6]), _on_floor = text2num(i[7]), _supplied_material = supmat)))
+
+datum/admins/proc/print_crafting_recipes()
+	set category = "Debug"
+	set desc="Print all the ingame crafting recipes into a text file."
+	set name="Print Crafting Recipes"
+	var/recipe_list = file("recipes.txt")
+	if (fexists(recipe_list))
+		fdel(recipe_list)
+	for (var/i in craftlist_list)
+		var/matname = replacetext(i[1], "/material/", "")
+		matname = replacetext(matname, "/", "")
+		var/subcategory = ""
+		if (i[8] != "none")
+			subcategory = ", subcategory [i[8]]"
+		var/av_age = "the Modern Age"
+		switch(i[12])
+			if ("0")
+				av_age = "the Stone Age"
+			if ("1")
+				av_age = "the Bronze Age"
+			if ("2")
+				av_age = "the Middle Ages"
+			if ("3")
+				av_age = "the Imperial Age"
+			if ("4")
+				av_age = "the Industrial Age"
+			if ("5")
+				av_age = "the Early Modern Age"
+			if ("6")
+				av_age = "the 2nd World War"
+			if ("7")
+				av_age = "the Cold War"
+			if ("8")
+				av_age = "the Modern Age"
+		var/chemical_reactions_print_var = "- [i[2]]: made from [i[4]] [matname][subcategory]. Requires [i[9]] Industrial, [i[10]] Military, [i[11]] Medical points. Available until [av_age]."
+		recipe_list << chemical_reactions_print_var
+	world.log << "Finished saving all crafting recipes into \"recipes.txt\"."

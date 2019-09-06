@@ -47,7 +47,6 @@
 				whitelist_list += current[1]
 	else
 		admin_notice("<span class='danger'>Failed to load whitelist!</span>", R_DEBUG)
-	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
 	sleep(-1)
 
 	admin_notice("<span class='danger'>Initializing crafting recipes...</span>", R_DEBUG)

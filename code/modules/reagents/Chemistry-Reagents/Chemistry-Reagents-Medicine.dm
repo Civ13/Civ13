@@ -387,9 +387,9 @@
 	M.make_dizzy(6)
 
 /datum/reagent/pervitin
-	name = "Pervitin"
-	id = "pervitin"
-	description = "Pervitine is a highly effective stimulant. Addictive!"
+	name = "Methamphetamine"
+	id = "methamphetamine"
+	description = "Methamphetamine is a highly effective stimulant. Addictive!"
 	taste_description = "sweetness"
 	reagent_state = LIQUID
 	color = "#FF3300"
