@@ -783,6 +783,7 @@
 					var/namt = amt-2
 					if (namt <= 0)
 						namt = 1
+					visible_message("<span class='notice'>\The [src] rips \the [ML] apart!</span>"
 					if (!istype(ML, /mob/living/simple_animal/crab))
 						if (istype(ML, /mob/living/simple_animal/hostile/zombie))
 							for (var/i=0, i<=namt, i++)
