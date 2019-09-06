@@ -77,7 +77,7 @@
 		if (name == "campfire")
 			set_light(5)
 		else if (name == "wood stove")
-			set_light(1)
+			set_light(2)
 		else
 			set_light(2)
 		spawn (50)
@@ -94,7 +94,10 @@
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
 					I.reagents.del_reagent("cholera")
-					return
+			if (fuel <= 0)
+				visible_message("<span class = 'warning'>\The [src] burns out.</span>")
+				new/obj/item/stack/ore/charcoal(loc)
+				qdel(src)
 	else
 		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
 

@@ -132,10 +132,6 @@
 /obj/structure/window/sandbag/attackby(obj/O as obj, mob/user as mob)
 	return FALSE
 
-/obj/structure/window/sandbag/examine(mob/user)
-	user << "That's a dirt wall."
-	return TRUE
-
 /obj/structure/window/sandbag/take_damage(var/damage = FALSE, var/sound_effect = TRUE)
 	return FALSE
 

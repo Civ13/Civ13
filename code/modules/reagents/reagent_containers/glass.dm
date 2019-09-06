@@ -28,6 +28,7 @@
 		/mob/living/simple_animal/cow,
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
+		/mob/living/simple_animal/pig_gilt,
 		/obj/structure/oil_spring,
 		/obj/structure/refinery,
 		/obj/structure/oilwell,

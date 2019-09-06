@@ -162,6 +162,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/randomly_modify_weather,
 	/client/proc/change_colour_filter,
 	/datum/admins/proc/print_chemical_reactions,
+	/datum/admins/proc/print_crafting_recipes,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(

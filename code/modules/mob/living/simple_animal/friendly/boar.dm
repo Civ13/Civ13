@@ -20,7 +20,7 @@
 	attacktext = "kicked"
 	health = 40
 	mob_size = MOB_MEDIUM
-	herbivore = 1
+	granivore = 1
 	carnivore = 1
 /mob/living/simple_animal/boar/female
 	name = "boar"

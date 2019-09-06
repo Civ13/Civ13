@@ -531,15 +531,6 @@
 					usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
 			return FALSE
 
-	if (job_master.is_side_locked(job.base_type_flag()))
-		if (!nomsg)
-			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
-			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
-				abandon_mob()
-				spawn(10)
-					src << "<span class = 'red'>Currently this side is locked for joining.</span>"
-		return
-
 	if (job.is_deathmatch)
 		if (map && map.faction1_can_cross_blocks())
 			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
@@ -678,9 +669,6 @@
 		//	unavailable_message = " <span class = 'color: rgb(255,215,0);'>{WHITELISTED}</span> "
 
 		if (job_master.side_is_hardlocked(job.base_type_flag()))
-			job_is_available = FALSE
-
-		if (job_master.is_side_locked(job.base_type_flag()))
 			job_is_available = FALSE
 
 		if (map && !map.job_enabled_specialcheck(job))

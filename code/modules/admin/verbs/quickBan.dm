@@ -421,7 +421,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (fields == FALSE)
 		return
 
-	if (!fields[2] == "nil")
+	if (fields[2] && !fields[2] == "nil")
 		return FALSE
 
 	var/reason = fields[2]
