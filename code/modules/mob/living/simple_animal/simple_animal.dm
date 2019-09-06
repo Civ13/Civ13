@@ -745,7 +745,15 @@
 							if (prob(30))
 								qdel(ML)
 						return
-
+		for(var/obj/item/weapon/reagent_containers/food/snacks/meat/M in range(2,src))
+			if (prob(33))
+				visible_message("\The [src] bites some of \the [M].")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
+				simplehunger += 400
+				adjustBruteLoss(-4)
+				qdel(M)
+				return
 
 	if (scavenger)
 		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
@@ -755,7 +763,7 @@
 					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 400
 				adjustBruteLoss(-4)
-				if (prob(30))
+				if (prob(60))
 					qdel(FD)
 					return
 
@@ -784,6 +792,7 @@
 					if (namt <= 0)
 						namt = 1
 					visible_message("<span class='notice'>\The [src] rips \the [ML] apart!</span>")
+					simplehunger += 400
 					if (!istype(ML, /mob/living/simple_animal/crab))
 						if (istype(ML, /mob/living/simple_animal/hostile/zombie))
 							for (var/i=0, i<=namt, i++)
