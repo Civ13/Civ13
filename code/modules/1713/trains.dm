@@ -161,7 +161,7 @@
 				ML.forceMove(loc)
 				return FALSE
 			return FALSE
-		if (ML.mob_size < MOB_MEDIUM)
+		if (ML.mob_size < MOB_MEDIUM || (ML.dir != dir && ML.dir != OPPOSITE_DIR(dir)))
 			return FALSE
 		for (var/obj/structure/trains/TR in tgt)
 			return FALSE
