@@ -42,7 +42,6 @@
 		usr << browse(null, "window=stack")
 	return ..()
 
-//NEW
 /obj/item/stack/AltClick(mob/living/user)
 	if(zero_amount())
 		return
@@ -60,6 +59,8 @@
 	var/obj/item/stack/F = split(amount)
 	if (F)
 		user.put_in_hands(F)
+		F.update_icon()
+		src.update_icon()
 		add_fingerprint(user)
 		F.add_fingerprint(user)
 		spawn(0)
@@ -954,6 +955,7 @@
 			var/obj/item/stack/S = O
 			S.amount = produced
 			S.add_to_stacks(user)
+			S.update_icon()
 		else if (istype(O, /obj/item/ammo_casing/stone))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
@@ -1107,16 +1109,21 @@
 		var/transfer = transfer_to(item)
 		if (transfer)
 			user << "<span class='notice'>You add a new [item.singular_name] to the stack. It now contains [item.amount] [item.singular_name]\s.</span>"
+			item.update_icon()
+			src.update_icon() //funcionou
 		if (!amount)
 			break
 
 /obj/item/stack/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
 		var/obj/item/stack/F = split(1)
+		F.update_icon()
+		src.update_icon()
 		if (F)
 			user.put_in_hands(F)
 			add_fingerprint(user)
 			F.add_fingerprint(user)
+			src.update_icon()
 			spawn(0)
 				if (src && usr.using_object == src)
 					interact(usr)
@@ -1129,8 +1136,14 @@
 		var/obj/item/stack/S = W
 		if (user.get_inactive_hand()==src)
 			transfer_to(S, TRUE)
+			W.update_icon()
+			S.update_icon()
+			src.update_icon()
 		else
 			transfer_to(S)
+			W.update_icon()
+			S.update_icon()
+			src.update_icon()
 
 		spawn(0) //give the stacks a chance to delete themselves if necessary
 			if (S && usr.using_object == S)
