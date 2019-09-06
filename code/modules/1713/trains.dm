@@ -92,7 +92,7 @@
 	return
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
-	name = "rail switch level"
+	name = "rail switch lever"
 	desc = "A lever used to switch between tracks."
 	icon = 'icons/obj/train_lever.dmi'
 	icon_state = "lever_none"
