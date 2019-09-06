@@ -24,6 +24,8 @@
 	melee_damage_lower = 12
 	melee_damage_upper = 23
 	mob_size = MOB_MEDIUM
+	predatory_carnivore = 1
+	carnivore = 1
 
 	var/stance_step = FALSE
 	var/btype = ""

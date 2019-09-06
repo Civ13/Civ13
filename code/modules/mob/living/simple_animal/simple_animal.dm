@@ -351,18 +351,18 @@
 						if (istype(src, /mob/living/simple_animal/hostile/zombie))
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-								meat.name = "rotten [name] meatsteak"
+								meat.name = "rotten zombie meat"
 								meat.radiation = radiation/2
 								meat.icon_state = "rottenmeat"
 								if (meat.reagents)
 									meat.reagents.remove_reagent("protein", 2)
 									meat.reagents.add_reagent("food_poisoning", 1)
 								meat.rotten = TRUE
-								meat.satisfaction = -10
+								meat.satisfaction = -30
 						else
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-								meat.name = "[name] meatsteak"
+								meat.name = "[name] meat"
 								meat.radiation = radiation/2
 					else
 						for (var/i=0, i<=namt, i++)
@@ -652,12 +652,14 @@
 	if (predatory_carnivore)
 		if (prob(100/totalcount))
 			for(var/mob/living/ML in range(2,src))
-				walk_towards(src,0)
-				eat()
-				return
+				if (ML.mob_size <= mob_size && !istype(ML, type))
+					walk_towards(src,0)
+					eat()
+					return
 			for(var/mob/living/ML in range(9,src))
-				walk_towards(src, ML, turns_per_move)
-				return
+				if (ML.mob_size <= mob_size && !istype(ML, type))
+					walk_towards(src, ML, turns_per_move)
+					return
 
 	if (scavenger)
 		if (prob(100/totalcount))
@@ -730,9 +732,9 @@
 		for(var/mob/living/ML in range(2,src))
 			if (ML.stat == DEAD)
 				if (prob(33))
+					if (mob_size >= MOB_MEDIUM)
+						new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 					visible_message("\The [src] bites some meat of \the [ML].")
-				if (mob_size >= MOB_MEDIUM)
-					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 					simplehunger += 400
 					adjustBruteLoss(-4)
 					if (istype(ML, /mob/living/simple_animal))
@@ -760,7 +762,56 @@
 
 	if (predatory_carnivore)
 		for(var/mob/living/ML in range(2,src))
-			return
+			if (ML.mob_size <= mob_size && !istype(ML, type) && istype(src, /mob/living/simple_animal/hostile))
+				var/mob/living/simple_animal/hostile/HS = src
+				HS.target_mob = ML
+				HS.stance = HOSTILE_STANCE_ATTACK
+				if (ML.stat == DEAD)
+					var/amt = 0
+					if (ML.mob_size == MOB_MINISCULE)
+						amt = 1
+					if (ML.mob_size == MOB_TINY)
+						amt = 2
+					if (ML.mob_size == MOB_SMALL)
+						amt = 3
+					if (ML.mob_size == MOB_MEDIUM)
+						amt = 4
+					if (ML.mob_size == MOB_LARGE)
+						amt = 5
+					if (ML.mob_size == MOB_HUGE)
+						amt = 8
+					var/namt = amt-2
+					if (namt <= 0)
+						namt = 1
+					if (!istype(ML, /mob/living/simple_animal/crab))
+						if (istype(ML, /mob/living/simple_animal/hostile/zombie))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "rotten zombie meat"
+								meat.radiation = radiation/2
+								meat.icon_state = "rottenmeat"
+								if (meat.reagents)
+									meat.reagents.remove_reagent("protein", 2)
+									meat.reagents.add_reagent("food_poisoning", 1)
+								meat.rotten = TRUE
+								meat.satisfaction = -30
+						else
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meat"
+								meat.radiation = radiation/2
+					else
+						for (var/i=0, i<=namt, i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
+							meat.radiation = radiation/2
+
+					if ((amt-2) >= 1)
+						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+						bone.name = "[name] bone"
+						bone.amount = (amt-2)
+					ML.crush()
+					qdel(ML)
+		return
 
 /mob/living/simple_animal/handle_mutations_and_radiation()
 	if (z == world.maxz)

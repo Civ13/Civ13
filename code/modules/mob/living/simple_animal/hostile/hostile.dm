@@ -124,7 +124,8 @@
 		return FALSE
 	if (client)
 		return FALSE
-
+	if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
+		check_food() // animals will search for crops, grass, and so on
 /mob/living/simple_animal/hostile/proc/OpenFire(target_mob)
 	var/target = target_mob
 	visible_message("<span class = 'red'><b>[src]</b> fires at [target]!</span>", TRUE)
