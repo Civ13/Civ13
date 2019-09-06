@@ -348,14 +348,26 @@
 					if (namt <= 0)
 						namt = 1
 					if (!istype(src, /mob/living/simple_animal/crab))
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-						meat.name = "[name] meatsteak"
-						meat.amount = namt
-						meat.radiation = radiation/2
+						if (istype(src, /mob/living/simple_animal/hostile/zombie))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "rotten [name] meatsteak"
+								meat.radiation = radiation/2
+								meat.icon_state = "rottenmeat"
+								if (meat.reagents)
+									meat.reagents.remove_reagent("protein", 2)
+									meat.reagents.add_reagent("food_poisoning", 1)
+								meat.rotten = TRUE
+								meat.satisfaction = -10
+						else
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meatsteak"
+								meat.radiation = radiation/2
 					else
-						var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
-						meat.amount = namt
-						meat.radiation = radiation/2
+						for (var/i=0, i<=namt, i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
+							meat.radiation = radiation/2
 
 					if ((amt-2) >= 1)
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
