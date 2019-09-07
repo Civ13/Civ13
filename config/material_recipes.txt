@@ -433,7 +433,7 @@ RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,none,0,0
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,none,0,0,0,8,null
 
-RECIPE: /material/stone/,furnace,/obj/structure/furnace/,10,150,1,1,none,26,0,0,8,null
+RECIPE: /material/stone/,furnace,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,none,24,33,0,4,null
 RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,none,0,0,0,8,null
