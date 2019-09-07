@@ -12,6 +12,7 @@
 	var/fuel = 0
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	var/consume_itself = FALSE
 
 /obj/structure/oven/update_icon()
 	if (on)
@@ -94,7 +95,7 @@
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
 					I.reagents.del_reagent("cholera")
-			if (fuel <= 0)
+			if (fuel <= 0 && consume_itself == TRUE)
 				visible_message("<span class = 'warning'>\The [src] burns out.</span>")
 				new/obj/item/stack/ore/charcoal(loc)
 				qdel(src)
@@ -227,6 +228,7 @@
 	on = FALSE
 	max_space = 5
 	fuel = 4
+	consume_itself = TRUE
 
 /obj/structure/oven/fireplace/proc/smoke_signals()
 	for (var/mob/living/carbon/human/HH in range(25,src))
