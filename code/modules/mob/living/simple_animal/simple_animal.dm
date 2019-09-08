@@ -61,7 +61,7 @@
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
-	var/simplehunger = 2000
+	var/simplehunger = 1000
 
 /mob/living/simple_animal/New()
 	..()
@@ -103,8 +103,8 @@
 
 	if (herbivore || carnivore || predatory_carnivore || granivore)
 		simplehunger-=1
-		if (simplehunger > 2000)
-			simplehunger = 2000
+		if (simplehunger > 1000)
+			simplehunger = 1000
 
 		if (simplehunger <= 0)
 			visible_message("\The [src] is starving!")
