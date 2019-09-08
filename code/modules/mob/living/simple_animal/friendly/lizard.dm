@@ -28,7 +28,7 @@
 		adjustBruteLoss(-1)
 	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
 		visible_message("\The [src] eats \the [C]!")
-		qdel(F)
+		qdel(C)
 		adjustBruteLoss(-1)
 	..()
 
