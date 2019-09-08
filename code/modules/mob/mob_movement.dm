@@ -538,6 +538,8 @@
 				if (world.time >= mob.next_mud_message)
 					mob << "<span class = 'warning'>The mud slows you down.</span>"
 					mob.next_mud_message = world.time+100
+			if (!H.crab)
+				move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))
 				standing_on_snow = rand(2,3)
 				mob.next_mud_message = world.time+100
@@ -614,16 +616,6 @@
 					if (mob.HUDneed["mov_intent"])
 						var/obj/screen/intent/I = mob.HUDneed["mov_intent"]
 						I.update_icon()
-
-		if (!mob_is_observer && F_is_valid_floor)
-			if (istype(src, /mob/living/carbon/human))
-				var/mob/living/carbon/human/HH = src
-				if (isnull(HH.riding_mob))
-					if (HH.crab)
-						if (!istype(F, /turf/floor/beach))
-							move_delay += F.get_move_delay()
-			else
-				move_delay += F.get_move_delay()
 
 		var/tickcomp = FALSE //moved this out here so we can use it for vehicles
 		if (config.Tickcomp)

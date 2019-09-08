@@ -692,6 +692,7 @@
 #include "code\modules\mob\living\simple_animal\hostile\aligator.dm"
 #include "code\modules\mob\living\simple_animal\hostile\bear.dm"
 #include "code\modules\mob\living\simple_animal\hostile\british.dm"
+#include "code\modules\mob\living\simple_animal\hostile\buffalo.dm"
 #include "code\modules\mob\living\simple_animal\hostile\dino.dm"
 #include "code\modules\mob\living\simple_animal\hostile\hostile.dm"
 #include "code\modules\mob\living\simple_animal\hostile\mammoth.dm"
@@ -871,5 +872,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_wasteland.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE

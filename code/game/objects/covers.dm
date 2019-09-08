@@ -311,7 +311,7 @@
 
 
 /obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
-	if (!isghost(M))
+	if (!isghost(M) && M.mob_size >= MOB_MEDIUM)
 		visible_message("[M] pushes \the [src].","You push \the [src]")
 		icon_state = "saloon_opening"
 		update_icon()
@@ -787,7 +787,7 @@
 		var/turf/floor/T = get_turf(loc)
 		T.iscovered = origin_covered
 		T.water_level = origin_water_level
-		T.move_delay = T.get_move_delay()
+		T.move_delay = initial(T.move_delay)
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount

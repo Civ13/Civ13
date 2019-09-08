@@ -42,6 +42,34 @@
 		usr << browse(null, "window=stack")
 	return ..()
 
+/obj/item/stack/AltClick(mob/living/user)
+	if(zero_amount())
+		return
+	var/max = get_amount()
+	var/stackmaterial = round(input(user,"How many to take out of the stack? (Maximum  [max])") as null|num)
+	max = get_amount()
+	stackmaterial = min(max, stackmaterial)
+	if(stackmaterial == null || stackmaterial <= 0)
+		return
+	else
+		change_stack(user, stackmaterial)
+		to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack</span>")
+
+/obj/item/stack/proc/change_stack(mob/user, amount)
+	var/obj/item/stack/F = split(amount)
+	if (F)
+		user.put_in_hands(F)
+		F.update_icon()
+		src.update_icon()
+		add_fingerprint(user)
+		F.add_fingerprint(user)
+		spawn(0)
+			if (src && usr.using_object == src)
+				interact(usr)
+	else
+		..()
+	return
+
 /obj/item/stack/examine(mob/user)
 	if (..(user, TRUE))
 		if (!uses_charge)
@@ -225,6 +253,19 @@
 					numtocheck = copytext(customcolor,i,0)
 				if (!(numtocheck in listallowed))
 					return
+	if (recipe.result_type == /obj/structure/researchdesk)
+		if (map && !map.resourceresearch)
+			user << "\The [recipe.title] can only be built during the <b>Resource Research</b> gamemode."
+			return
+
+	if (recipe.result_type == /obj/structure/oil_deposits)
+		if (map && map.gamemode != "Oil Rush")
+			user << "\The [recipe.title] can only be built during the <b>Oil Rush</b> gamemode."
+			return
+	if (recipe.result_type == /obj/item/weapon/researchkit)
+		if (map && !map.research_active)
+			user << "\The [recipe.title] can only be built during the <b>Clasic Research</b> gamemode."
+			return
 
 	if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
@@ -914,6 +955,7 @@
 			var/obj/item/stack/S = O
 			S.amount = produced
 			S.add_to_stacks(user)
+			S.update_icon()
 		else if (istype(O, /obj/item/ammo_casing/stone))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
@@ -1067,16 +1109,21 @@
 		var/transfer = transfer_to(item)
 		if (transfer)
 			user << "<span class='notice'>You add a new [item.singular_name] to the stack. It now contains [item.amount] [item.singular_name]\s.</span>"
+			item.update_icon()
+			src.update_icon() //funcionou
 		if (!amount)
 			break
 
 /obj/item/stack/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
 		var/obj/item/stack/F = split(1)
+		F.update_icon()
+		src.update_icon()
 		if (F)
 			user.put_in_hands(F)
 			add_fingerprint(user)
 			F.add_fingerprint(user)
+			src.update_icon()
 			spawn(0)
 				if (src && usr.using_object == src)
 					interact(usr)
@@ -1089,8 +1136,14 @@
 		var/obj/item/stack/S = W
 		if (user.get_inactive_hand()==src)
 			transfer_to(S, TRUE)
+			W.update_icon()
+			S.update_icon()
+			src.update_icon()
 		else
 			transfer_to(S)
+			W.update_icon()
+			S.update_icon()
+			src.update_icon()
 
 		spawn(0) //give the stacks a chance to delete themselves if necessary
 			if (S && usr.using_object == S)

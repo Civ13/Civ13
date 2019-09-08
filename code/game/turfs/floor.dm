@@ -32,14 +32,6 @@
 	var/watertile = FALSE
 	plane = FLOOR_PLANE
 
-/turf/floor/proc/get_move_delay()
-	if (water_level != 0)
-		for (var/obj/covers/C in loc)
-			water_level = 0
-			return 0
-		return 2
-	else
-		return 0
 /turf/floor/is_plating()
 	return !flooring
 
@@ -106,38 +98,3 @@
 	for (var/obj/O in src)
 		O.hide(O.hides_under_flooring() && flooring)
 
-
-//water flowing between floor tiles.
-//there is also a proc for water flowing from holes/rivers/seas to floor tiles.
-/*
-/turf/floor/proc/flood_into()
-	if (water_level > 1)
-		var/turf/floor/TW = locate(x+1,y,z)
-		var/turf/floor/TN = locate(x,y+1,z)
-		var/turf/floor/TE = locate(x-1,y,z)
-		var/turf/floor/TS = locate(x,y-1,z)
-		if ((TW.water_level < water_level) && istype(TW, /turf/floor))
-			water_level -= 1
-			TW.water_level +=1
-			get_move_delay()
-			TW.get_move_delay()
-		if ((TN.water_level < water_level) && istype(TN, /turf/floor))
-			water_level -= 1
-			TN.water_level +=1
-			get_move_delay()
-			TW.get_move_delay()
-		if ((TE.water_level < water_level) && istype(TE, /turf/floor))
-			water_level -= 1
-			TE.water_level +=1
-			get_move_delay()
-			TW.get_move_delay()
-		if ((TS.water_level < water_level) && istype(TS, /turf/floor))
-			water_level -= 1
-			TS.water_level +=1
-			get_move_delay()
-			TW.get_move_delay()
-	spawn(80)
-		call(/turf/floor/proc/flood_into)
-
-
-*/

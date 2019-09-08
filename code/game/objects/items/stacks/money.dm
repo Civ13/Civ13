@@ -1,4 +1,17 @@
 //spanish money was the world currency in the early 18th century. 1 doubloon = 2 escudos = 4 spanish dollars = 32 reales
+/obj/item/stack/money/update_icon()
+	if(novariants)
+		return ..()
+	if(amount >= 2)
+		if (map.ordinal_age >= 4)
+			if(icon_state != "silvercoin_pile")
+				icon_state = "[initial(icon_state)]_2"
+
+	else
+		if (map.ordinal_age >= 4)
+			icon_state = initial(icon_state)
+	..()
+
 
 /obj/item/stack/money
 	name = "gold coins"
@@ -17,6 +30,7 @@
 	w_class = 2.0 // fits in pockets
 	value = 1
 	real_value = 1
+	var/novariants = TRUE
 
 /obj/item/stack/money/cents
 	name = "Dollar Cents"
@@ -30,7 +44,7 @@
 	name = "spanish reales"
 	desc = "A small silver coin."
 	singular_name = "real"
-	icon_state = "silvercoin_pile"
+	icon_state = "dollar" //Damn jerry rig
 	amount = 50
 	value = 1
 /obj/item/stack/money/real/New()
@@ -38,11 +52,13 @@
 		name = "Dollar Bills"
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "Dollar Bill"
-		icon_state = "money"
-		amount = 12  //Starting money
+		icon_state = "dollar"
+		amount = 12
 		value = 4
+		novariants = FALSE
+		update_icon()
 		return ..()
-	else if (map.ordinal_age == 0)
+	else if (map.ordinal_age < 4)
 		name = "spanish reales"
 		desc = "A small silver coin."
 		singular_name = "real"
@@ -55,7 +71,7 @@
 	name = "spanish dollars"
 	desc = "A silver coin, also called piece of eight, worth 8 reales."
 	singular_name = "dollar"
-	icon_state = "silvercoin_pile"
+	icon_state = "5dollar"
 	amount = 1
 	value = 8
 /obj/item/stack/money/dollar/New()
@@ -63,11 +79,13 @@
 		name = "5 Dollar Bills"
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "5 Dollar Bill"
-		icon_state = "money"
+		icon_state = "5dollar"
 		amount = 1
 		value = 20
+		novariants = FALSE
+		update_icon()
 		return ..()
-	else if (map.ordinal_age == 0)
+	else if (map.ordinal_age < 4)
 		name = "spanish dollars"
 		desc = "A silver coin, also called piece of eight, worth 8 reales."
 		singular_name = "dollar"
@@ -80,7 +98,7 @@
 	name = "spanish escudos"
 	desc = "A gold coin. Worth 16 reales."
 	singular_name = "escudo"
-	icon_state = "goldcoin_pile"
+	icon_state = "20dollar"
 	amount = 1
 	value = 16
 /obj/item/stack/money/escudo/New()
@@ -88,11 +106,13 @@
 		name = "20 Dollar Bills"
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "20 Dollar Bill"
-		icon_state = "money"
+		icon_state = "20dollar"
 		amount = 1
 		value = 80
+		novariants = FALSE
+		update_icon()
 		return ..()
-	else if (map.ordinal_age == 0)
+	else if (map.ordinal_age < 4)
 		name = "spanish escudos"
 		desc = "A gold coin. Worth 16 reales."
 		singular_name = "escudo"
@@ -105,7 +125,7 @@
 	name = "spanish doubloons"
 	desc = "A large gold coin, the largest in circulation. Worth 32 reales."
 	singular_name = "doubloon"
-	icon_state = "goldcoin_pile"
+	icon_state = "50dollar"
 	amount = 1
 	value = 32
 /obj/item/stack/money/doubloon/New()
@@ -113,11 +133,13 @@
 		name = "50 Dollar Bills"
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "50 Dollar Bill"
-		icon_state = "money"
+		icon_state = "50dollar"
 		amount = 1
 		value = 200
+		novariants = FALSE
+		update_icon()
 		return ..()
-	else if (map.ordinal_age == 0)
+	else if (map.ordinal_age < 4)
 		name = "spanish doubloons"
 		desc = "A large gold coin, the largest in circulation. Worth 32 reales."
 		singular_name = "doubloon"
@@ -358,4 +380,3 @@
 	icon_state = "goldcoin_pile"
 	amount = 1
 	value = 0.4
-

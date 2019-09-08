@@ -63,6 +63,8 @@
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		if (!powersource)
+			return
 		powersource.connections += src
 		var/opdir1 = 0
 		var/opdir2 = 0
@@ -1054,10 +1056,3 @@
 	..()
 	storage.attackby(W, user)
 	update_icon()
-
-/obj/structure/shopping_cart/mine
-	name = "mining cart"
-	desc = "A wooden mining cart, for underground rails."
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "miningcaropen"
-	max_storage = 8

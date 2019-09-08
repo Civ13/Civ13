@@ -24,7 +24,7 @@
 	faction1 = CIVILIAN
 	availablefactions_run = TRUE
 	songs = list(
-		"Empire Earth Intro:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	default_research = 48
 	gamemode = "Two Kingdoms"
 	ordinal_age = 2
