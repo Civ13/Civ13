@@ -652,12 +652,12 @@
 	if (predatory_carnivore)
 		if (prob(100/totalcount))
 			for(var/mob/living/ML in range(2,src))
-				if (ML.mob_size <= mob_size && !istype(ML, type))
+				if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type))
 					walk_towards(src,0)
 					eat()
 					return
 			for(var/mob/living/ML in range(9,src))
-				if (ML.mob_size <= mob_size && !istype(ML, type))
+				if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type))
 					walk_towards(src, ML, turns_per_move)
 					return
 
@@ -770,7 +770,7 @@
 
 	if (predatory_carnivore)
 		for(var/mob/living/ML in range(2,src))
-			if (ML.mob_size <= mob_size && !istype(ML, type) && istype(src, /mob/living/simple_animal/hostile))
+			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && istype(src, /mob/living/simple_animal/hostile))
 				var/mob/living/simple_animal/hostile/HS = src
 				HS.target_mob = ML
 				HS.stance = HOSTILE_STANCE_ATTACK
