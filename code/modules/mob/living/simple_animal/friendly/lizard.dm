@@ -17,6 +17,21 @@
 	mob_size = MOB_MINISCULE
 	possession_candidate = TRUE
 
+/mob/living/simple_animal/lizard/Life()
+	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		visible_message("\The [src] eats \the [M]!")
+		qdel(M)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		visible_message("\The [src] eats \the [F]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
+		visible_message("\The [src] eats \the [C]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	..()
+
 /mob/living/simple_animal/frog
 	name = "frog"
 	desc = "A cute tiny frog."
@@ -36,6 +51,16 @@
 	mob_size = MOB_MINISCULE
 	possession_candidate = TRUE
 
+/mob/living/simple_animal/frog/Life()
+	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		visible_message("\The [src] eats \the [M]!")
+		qdel(M)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		visible_message("\The [src] eats \the [F]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	..()
 /mob/living/simple_animal/frog/poisonous
 	name = "poisonous frog"
 	desc = "A tiny, colorful frog. Poisonous!"
