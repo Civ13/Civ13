@@ -450,7 +450,7 @@
 	..()
 	M.add_chemical_effect(CE_PULSE, TRUE)
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
-	M.mood += removed*8
+	M.mood += removed*16
 
 
 /datum/reagent/toxin/bleach
