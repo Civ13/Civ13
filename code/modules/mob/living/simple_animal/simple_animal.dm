@@ -677,23 +677,24 @@
 		return
 
 	if (herbivore)
-		for(var/turf/floor/grass/GT in range(2,src))
-			if (prob(33))
+		if (prob(33))
+			var/fed = FALSE
+			for(var/turf/floor/grass/GT in range(1,src))
+				GT.grassamt -= 1
+				if (GT.grassamt <= 0)
+					if (istype(GT, (/turf/floor/grass/jungle)))
+						GT.ChangeTurf(/turf/floor/dirt/jungledirt)
+					else
+						GT.ChangeTurf(/turf/floor/dirt)
+				fed = TRUE
+			if (fed == TRUE)
 				visible_message("\The [src] eats some grass.")
 				if (mob_size >= MOB_MEDIUM)
 					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 550
 				adjustBruteLoss(-4)
-				GT.grassamt -= 1
-				if (GT.grassamt <= 0)
-					if (istype(GT, (/turf/floor/grass/jungle)))
-						GT.ChangeTurf(/turf/floor/dirt/jungledirt)
-						return
-					else
-						GT.ChangeTurf(/turf/floor/dirt)
-						return
-				else
-					return
+				return
+
 		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
 			if (prob(30))
 				visible_message("\The [src] eats some of the wheat.")

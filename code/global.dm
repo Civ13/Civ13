@@ -42,6 +42,8 @@ var/goat_count = 0
 var/sheep_count = 0
 var/pig_count = 0
 var/deer_count = 0
+var/wolf_count = 0
+var/bear_count = 0
 
 /proc/get_weather()
 	. = get_weather_default(weather)
