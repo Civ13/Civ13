@@ -2,10 +2,10 @@
 /mob/living/simple_animal/hostile/bear
 	name = "black bear boar"
 	desc = "Rawr Rawr!!"
-	icon_state = "bear"
-	icon_living = "bear"
-	icon_dead = "bear_dead"
-	icon_gib = "bear_gib"
+	icon_state = "blackbear"
+	icon_living = "blackbear"
+	icon_dead = "blackbear_dead"
+	icon_gib = "blackbear_gib"
 	speak = list("RAWR!","Rawr!","GRR!","Growl!")
 	speak_emote = list("growls", "roars")
 	emote_hear = list("rawrs","grumbles","grawls")
