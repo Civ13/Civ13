@@ -207,6 +207,7 @@
 				name = "[btype] bear sow"
 			else
 				name = "[btype] bear boar"
+			icon_state = "[btype]bear"
 
 /mob/living/simple_animal/hostile/bear/brown
 	name = "brown bear"
