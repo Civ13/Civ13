@@ -12,7 +12,51 @@
 	var/switched = "forward"
 	var/turn_dir = null
 	var/sw_direction = "forward"
-
+	New()
+		..()
+		spawn(5)
+			update_icon()
+/obj/structure/rails/regular/update_icon()
+	..()
+	if (dir == NORTH || dir == SOUTH)
+		for (var/obj/structure/rails/R in get_step(src, WEST))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == SOUTH)
+					icon_state = "rails_split1"
+					dir = R.dir
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == NORTH)
+					icon_state = "rails_split1"
+					dir = R.dir
+		for (var/obj/structure/rails/R in get_step(src, EAST))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == NORTH)
+					icon_state = "rails_split2"
+					dir = R.dir
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == SOUTH)
+					icon_state = "rails_split2"
+					dir = R.dir
+	else if (dir == EAST || dir == WEST)
+		for (var/obj/structure/rails/R in get_step(src, SOUTH))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == EAST)
+					icon_state = "rails_split2"
+					dir = OPPOSITE_DIR(R.dir)
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == WEST)
+					icon_state = "rails_split2"
+					dir = OPPOSITE_DIR(R.dir)
+		for (var/obj/structure/rails/R in get_step(src, NORTH))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == WEST)
+					icon_state = "rails_split1"
+					dir = OPPOSITE_DIR(R.dir)
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == EAST)
+					icon_state = "rails_split1"
+					dir = OPPOSITE_DIR(R.dir)
+	update_icon()
 /obj/structure/rails/end
 	icon_state = "rails_end"
 
