@@ -754,3 +754,16 @@ RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient
 RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
 RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
 RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null
+RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,mining cart,/obj/structure/trains/storage/miningcart,8,250,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null

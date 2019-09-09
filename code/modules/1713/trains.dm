@@ -18,6 +18,7 @@
 			update_icon()
 /obj/structure/rails/regular/update_icon()
 	..()
+	dir = 1
 	if (dir == NORTH || dir == SOUTH)
 		for (var/obj/structure/rails/R in get_step(src, WEST))
 			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
@@ -57,9 +58,12 @@
 					icon_state = "rails_split1"
 					dir = OPPOSITE_DIR(R.dir)
 	update_icon()
+
+/obj/structure/rails/regular/horizontal/New()
+	dir = 4
+	..()
 /obj/structure/rails/end
 	icon_state = "rails_end"
-
 
 /obj/structure/rails/split
 	icon_state = "rails_split"
@@ -427,6 +431,12 @@
 	New()
 		..()
 		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood)
+
+/obj/structure/trains/storage/closed
+	name = "transport wagon"
+	desc = "A covered wagon with lots of internal space."
+	icon_state = "closed_wagon"
+	max_storage = 8
 //////////////////////////////////////////////////////////////////////////////////
 /obj/structure/trains/transport
 	name = "flatbed cart"
