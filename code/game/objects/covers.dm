@@ -787,7 +787,7 @@
 		var/turf/floor/T = get_turf(loc)
 		T.iscovered = origin_covered
 		T.water_level = origin_water_level
-		T.move_delay = T.get_move_delay()
+		T.move_delay = initial(T.move_delay)
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount
