@@ -42,7 +42,7 @@
 
 /mob/living/simple_animal/hostile/bear/Destroy()
 	..()
-	bear_count -= 1
+	wolf_count -= 1
 
 /mob/living/simple_animal/hostile/wolf/New()
 	wolf_count += 1
