@@ -85,6 +85,7 @@
 			user << "You fertilize the ploughed field around this plot."
 			for (var/obj/structure/farming/plant/P in range(1,src))
 				P.fertilized = TRUE
+			qdel(C)
 			if (ishuman(user))
 				H.adaptStat("farming", 1)
 			return

@@ -60,8 +60,8 @@
 	update_icon()
 
 /obj/structure/rails/regular/horizontal/New()
-	dir = 4
 	..()
+	dir = 4
 /obj/structure/rails/end
 	icon_state = "rails_end"
 
