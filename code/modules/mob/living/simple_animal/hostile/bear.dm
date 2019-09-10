@@ -54,7 +54,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && bear_count < 8)
+	if (!pregnant && bear_count < 12)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/hostile/bear/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !M.female)
