@@ -61,7 +61,7 @@
 			new /mob/living/simple_animal/chicken(loc)
 			qdel(src)
 
-/mob/living/simple_animal/chick/death()
+/mob/living/simple_animal/chick/Destroy()
 	..()
 	chicken_count -= 1
 
@@ -104,7 +104,7 @@
 	pixel_y = rand(0, 10)
 	chicken_count += 1
 
-/mob/living/simple_animal/chicken/death()
+/mob/living/simple_animal/chicken/Destroy()
 	..()
 	chicken_count -= 1
 
@@ -215,7 +215,7 @@
 	pixel_y = rand(0, 10)
 	chicken_count += 1
 
-/mob/living/simple_animal/rooster/death()
+/mob/living/simple_animal/rooster/Destroy()
 	..()
 	chicken_count -= 1
 ////////////////////////////////////////TURKEYS//////////////////////
@@ -340,18 +340,18 @@
 	..()
 	turkey_count += 1
 
-/mob/living/simple_animal/turkey_m/death()
+/mob/living/simple_animal/turkey_m/Destroy()
 	..()
 	turkey_count -= 1
 /mob/living/simple_animal/turkey_f/New()
 	..()
 	turkey_count += 1
 
-/mob/living/simple_animal/turkey_f/death()
+/mob/living/simple_animal/turkey_f/Destroy()
 	..()
 	turkey_count -= 1
 
-/mob/living/simple_animal/turkeychick/death()
+/mob/living/simple_animal/turkeychick/Destroy()
 	..()
 	turkey_count -= 1
 

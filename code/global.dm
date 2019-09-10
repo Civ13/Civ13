@@ -36,7 +36,6 @@ var/season = "SPRING"
 
 var/chicken_count = 0
 var/turkey_count = 0
-
 var/cow_count = 0
 var/goat_count = 0
 var/sheep_count = 0

@@ -664,12 +664,14 @@
 	if (scavenger)
 		if (prob(100/totalcount))
 			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
-				walk_towards(src,0)
-				eat()
-				return
+				if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
+					walk_towards(src,0)
+					eat()
+					return
 			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
-				walk_towards(src, FD, turns_per_move)
-				return
+				if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
+					walk_towards(src, FD, turns_per_move)
+					return
 
 /mob/living/simple_animal/proc/eat()
 	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore+scavenger
@@ -758,7 +760,7 @@
 
 	if (scavenger)
 		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
-			if (prob(33))
+			if (prob(33) && !istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
 				visible_message("\The [src] bites some of \the [FD].")
 				if (mob_size >= MOB_MEDIUM)
 					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
