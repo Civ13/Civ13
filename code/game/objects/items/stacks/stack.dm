@@ -171,6 +171,8 @@
 	build_override_firelance.desc = "A simple firelance."
 	var/obj/structure/religious/gravestone/build_override_gravestone = new/obj/structure/religious/gravestone
 	build_override_gravestone.desc = "A gravestone."
+
+	var/turn_dir = 0
 	var/mob/living/carbon/human/H = user
 
 	if (istype(get_turf(H), /turf/floor/beach/water/deep))
@@ -232,7 +234,21 @@
 				if (!(numtocheck in listallowed))
 					customcolor2 = "#FFFFFF"
 
-
+	if (recipe.result_type == /obj/structure/rails/turn)
+		var/list/choicelist = list("Cancel", "West", "East", "North", "South")
+		var/fromdir = WWinput(user, "Choose the direction to turn from:", "Railway Builder", "Cancel", choicelist)
+		if (fromdir == "Cancel")
+			return
+		else
+			dir = text2dir(fromdir)
+		var/todir = WWinput(user, "Choose the direction to turn into:", "Railway Builder", "Cancel", choicelist)
+		if (todir == "Cancel")
+			return
+		else if (todir == fromdir)
+			user << "The to and from directions can't be the same!"
+			return
+		else
+			turn_dir = todir
 	if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
@@ -879,7 +895,9 @@
 			build_override_gravestone.add_fingerprint(user)
 			qdel(O)
 			return
-
+		if (istype(O, /obj/structure/rails/turn))
+			var/obj/structure/rails/turn/RT = O
+			RT.turn_dir = turn_dir
 		O.set_dir(user.dir)
 		O.add_fingerprint(user)
 		if (istype(O, /obj/item/clothing/accessory/armband/talisman))

@@ -123,6 +123,31 @@
 	desc = "A rotating platform that allows wagons to switch direction."
 	icon_state = "rails_rotate"
 
+/obj/structure/rails/rotate/verb/rotate()
+	set category = null
+	set name = "Rotate"
+	set desc = "Rotate the platform"
+
+	set src in view(1)
+
+	if (!istype(usr, /mob/living/carbon/human))
+		return
+
+	switch(dir)
+		if (1)
+			dir = 8
+		if (2)
+			dir = 4
+		if (4)
+			dir = 1
+		if (8)
+			dir = 2
+	for (var/obj/structure/trains/TR in loc)
+		TR.dir = dir
+	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+	usr << "You rotate the platform to the [dir2text(dir)]."
+	return
+
 /obj/structure/rails/rotate/attack_hand(mob/living/user as mob)
 	switch(dir)
 		if (1)
@@ -136,7 +161,7 @@
 	for (var/obj/structure/trains/TR in loc)
 		TR.dir = dir
 	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	user << "You rotate the platform."
+	user << "You rotate the platform to the [dir2text(dir)]."
 	return
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
