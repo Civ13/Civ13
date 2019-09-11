@@ -18,7 +18,6 @@
 			update_icon()
 /obj/structure/rails/regular/update_icon()
 	..()
-	dir = 1
 	if (dir == NORTH || dir == SOUTH)
 		for (var/obj/structure/rails/R in get_step(src, WEST))
 			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")

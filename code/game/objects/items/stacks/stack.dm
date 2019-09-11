@@ -248,7 +248,8 @@
 			user << "The to and from directions can't be the same!"
 			return
 		else
-			turn_dir = todir
+			turn_dir = text2dir(todir)
+
 	if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
