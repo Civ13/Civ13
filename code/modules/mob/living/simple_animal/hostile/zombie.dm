@@ -63,7 +63,7 @@
 	limb_updates()
 	update_icons()
 
-/mob/living/simple_animal/zombie/handle_mutations_and_radiation()
+/mob/living/simple_animal/hostile/zombie/handle_mutations_and_radiation()
 	return
 
 /mob/living/simple_animal/hostile/zombie/update_icons()
