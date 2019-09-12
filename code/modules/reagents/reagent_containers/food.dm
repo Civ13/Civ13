@@ -32,7 +32,7 @@
 			return
 		if (istype(loc, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = loc
-			if (F.powered)
+			if (F.powersource && F.powersource.powered)
 				decaytimer += 100 //much slower
 			else
 				decaytimer += 300

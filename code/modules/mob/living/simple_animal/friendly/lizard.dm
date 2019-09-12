@@ -17,6 +17,21 @@
 	mob_size = MOB_MINISCULE
 	possession_candidate = TRUE
 
+/mob/living/simple_animal/lizard/Life()
+	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		visible_message("\The [src] eats \the [M]!")
+		qdel(M)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		visible_message("\The [src] eats \the [F]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
+		visible_message("\The [src] eats \the [C]!")
+		qdel(C)
+		adjustBruteLoss(-1)
+	..()
+
 /mob/living/simple_animal/frog
 	name = "frog"
 	desc = "A cute tiny frog."
@@ -36,6 +51,23 @@
 	mob_size = MOB_MINISCULE
 	possession_candidate = TRUE
 
+/mob/living/simple_animal/frog/Life()
+	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		visible_message("\The [src] eats \the [M]!")
+		qdel(M)
+		adjustBruteLoss(-1)
+	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		visible_message("\The [src] eats \the [F]!")
+		qdel(F)
+		adjustBruteLoss(-1)
+	if (prob(1) && prob(17)) //roughly every 10 mins
+		if (isturf(loc) || istype(loc, /turf/floor/beach/water))
+			var/frogCount = 0
+			for(var/mob/living/simple_animal/frog/M in range(6,src))
+				frogCount++
+			if (frogCount <= 2)
+				new/obj/item/weapon/reagent_containers/food/snacks/frogegg(src.loc)
+	..()
 /mob/living/simple_animal/frog/poisonous
 	name = "poisonous frog"
 	desc = "A tiny, colorful frog. Poisonous!"
@@ -54,3 +86,49 @@
 	response_harm   = "stomps on"
 	mob_size = MOB_MINISCULE
 	possession_candidate = TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/frogegg
+	name = "frog eggs"
+	desc = "A bunch of small frog eggs"
+	icon_state = "amphibianeggs_1"
+	icon = 'icons/mob/animal.dmi'
+	nutriment_amt = 1
+	nutriment_desc = list("slime" = 1)
+	decay = 25*600
+	var/amount_grown = 0
+	var/growing = FALSE
+	satisfaction = -5
+	non_vegetarian = TRUE
+
+
+/obj/item/weapon/reagent_containers/food/snacks/frogegg/New()
+	..()
+	spawn(50)
+		process()
+	icon_state = "amphibianeggs_[rand(1,3)]"
+	var/nearbyObjects = range(5,src) //5x5 area around
+	var/frogCount = 0
+
+	for(var/mob/living/simple_animal/frog/M in nearbyObjects)
+		frogCount++
+
+	if (frogCount <= 2 && growing == FALSE) // max 2 in a 5x5 area for eggs to start hatching
+		growing = TRUE
+		grow()
+
+/obj/item/weapon/reagent_containers/food/snacks/frogegg/proc/grow()
+	if (isturf(loc) || istype(loc, /turf/floor/beach/water))
+		amount_grown += 1
+		if (amount_grown >= 400)
+			new /mob/living/simple_animal/frog(get_turf(src))
+			processing_objects -= src
+			qdel(src)
+			return
+		else
+			spawn(40)
+				grow()
+
+	else
+		processing_objects -= src
+		growing = FALSE
+		return

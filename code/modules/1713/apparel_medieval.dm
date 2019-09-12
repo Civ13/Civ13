@@ -156,6 +156,7 @@
 	icon_state = "arabw_tunic"
 	item_state = "arabw_tunic"
 	worn_state = "arabw_tunic"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/suit/storage/jacket/arabic_robe
 	name = "arabic robe"
@@ -163,6 +164,7 @@
 	icon_state = "arabw_robe"
 	item_state = "arabw_robe"
 	worn_state = "arabw_robe"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/medieval/lighttunic
 	name = "light brown tunic"
@@ -170,12 +172,15 @@
 	icon_state = "arab1"
 	item_state = "arab1"
 	worn_state = "arab1"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
 /obj/item/clothing/under/medieval/arab1
 	name = "light brown arabic tunic"
 	desc = "A light, loose fitting arabic tunic."
 	icon_state = "arab1"
 	item_state = "arab1"
 	worn_state = "arab1"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/medieval/arab2
 	name = "light white arabic tunic"
@@ -183,6 +188,7 @@
 	icon_state = "arab2"
 	item_state = "arab2"
 	worn_state = "arab2"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/medieval/arab3
 	name = "white arabic tunic"
@@ -190,6 +196,8 @@
 	icon_state = "arab3"
 	item_state = "arab3"
 	worn_state = "arab3"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
 /obj/item/clothing/head/helmet/sauronhelm
 	name = "Sauron's Helmet"
 	desc = "The helmet to the armor of Sauron"
@@ -569,6 +577,7 @@
 	icon_state = "turban1"
 	item_state = "turban1"
 	worn_state = "turban1"
+	heat_protection = HEAD
 
 /obj/item/clothing/head/turban/imam
 	name = "white turban"

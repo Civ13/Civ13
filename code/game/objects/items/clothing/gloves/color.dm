@@ -1,3 +1,7 @@
+/obj/item/clothing/gloves
+	heat_protection = HANDS
+
+
 // COLOR GLOVES
 /obj/item/clothing/gloves/color
 	name = "gloves"

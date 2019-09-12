@@ -26,6 +26,8 @@
 	bound_x = 64
 	bound_height = 96
 	bound_width = 96
+	herbivore = 1
+	granivore = 1
 
 /mob/living/simple_animal/hostile/mammoth/FindTarget()
 	var/atom/T = null

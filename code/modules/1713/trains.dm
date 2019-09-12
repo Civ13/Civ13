@@ -12,10 +12,57 @@
 	var/switched = "forward"
 	var/turn_dir = null
 	var/sw_direction = "forward"
+	New()
+		..()
+		spawn(5)
+			update_icon()
+/obj/structure/rails/regular/update_icon()
+	..()
+	if (dir == NORTH || dir == SOUTH)
+		for (var/obj/structure/rails/R in get_step(src, WEST))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == SOUTH)
+					icon_state = "rails_split1"
+					dir = R.dir
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == NORTH)
+					icon_state = "rails_split1"
+					dir = R.dir
+		for (var/obj/structure/rails/R in get_step(src, EAST))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == NORTH)
+					icon_state = "rails_split2"
+					dir = R.dir
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == SOUTH)
+					icon_state = "rails_split2"
+					dir = R.dir
+	else if (dir == EAST || dir == WEST)
+		for (var/obj/structure/rails/R in get_step(src, SOUTH))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == EAST)
+					icon_state = "rails_split2"
+					dir = OPPOSITE_DIR(R.dir)
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == WEST)
+					icon_state = "rails_split2"
+					dir = OPPOSITE_DIR(R.dir)
+		for (var/obj/structure/rails/R in get_step(src, NORTH))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == WEST)
+					icon_state = "rails_split1"
+					dir = OPPOSITE_DIR(R.dir)
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == EAST)
+					icon_state = "rails_split1"
+					dir = OPPOSITE_DIR(R.dir)
+	update_icon()
 
+/obj/structure/rails/regular/horizontal/New()
+	..()
+	dir = 4
 /obj/structure/rails/end
 	icon_state = "rails_end"
-
 
 /obj/structure/rails/split
 	icon_state = "rails_split"
@@ -75,6 +122,31 @@
 	desc = "A rotating platform that allows wagons to switch direction."
 	icon_state = "rails_rotate"
 
+/obj/structure/rails/rotate/verb/rotate()
+	set category = null
+	set name = "Rotate"
+	set desc = "Rotate the platform"
+
+	set src in view(1)
+
+	if (!istype(usr, /mob/living/carbon/human))
+		return
+
+	switch(dir)
+		if (1)
+			dir = 8
+		if (2)
+			dir = 4
+		if (4)
+			dir = 1
+		if (8)
+			dir = 2
+	for (var/obj/structure/trains/TR in loc)
+		TR.dir = dir
+	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+	usr << "You rotate the platform to the [dir2text(dir)]."
+	return
+
 /obj/structure/rails/rotate/attack_hand(mob/living/user as mob)
 	switch(dir)
 		if (1)
@@ -88,11 +160,11 @@
 	for (var/obj/structure/trains/TR in loc)
 		TR.dir = dir
 	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	user << "You rotate the platform."
+	user << "You rotate the platform to the [dir2text(dir)]."
 	return
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
-	name = "rail switch level"
+	name = "rail switch lever"
 	desc = "A lever used to switch between tracks."
 	icon = 'icons/obj/train_lever.dmi'
 	icon_state = "lever_none"
@@ -161,7 +233,7 @@
 				ML.forceMove(loc)
 				return FALSE
 			return FALSE
-		if (ML.mob_size < MOB_MEDIUM)
+		if (ML.mob_size < MOB_MEDIUM || (ML.dir != dir && ML.dir != OPPOSITE_DIR(dir)))
 			return FALSE
 		for (var/obj/structure/trains/TR in tgt)
 			return FALSE
@@ -383,6 +455,12 @@
 	New()
 		..()
 		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood)
+
+/obj/structure/trains/storage/closed
+	name = "transport wagon"
+	desc = "A covered wagon with lots of internal space."
+	icon_state = "closed_wagon"
+	max_storage = 8
 //////////////////////////////////////////////////////////////////////////////////
 /obj/structure/trains/transport
 	name = "flatbed cart"

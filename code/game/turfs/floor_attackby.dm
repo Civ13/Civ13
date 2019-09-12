@@ -85,6 +85,7 @@
 			user << "You fertilize the ploughed field around this plot."
 			for (var/obj/structure/farming/plant/P in range(1,src))
 				P.fertilized = TRUE
+			qdel(C)
 			if (ishuman(user))
 				H.adaptStat("farming", 1)
 			return
@@ -763,6 +764,7 @@
 	if (prob(25))
 		if (map.ordinal_age <= 1)
 			var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+			mineral.amount = rand(6,8)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			H << "<span class='danger'>You found some coal!</span>"
@@ -777,7 +779,7 @@
 			var/pickperc = pick(1,2,3,4)
 			if (pickperc == 1)
 				var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
-				mineral.amount = 2
+				mineral.amount = rand(6,8)
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
 				H << "<span class='danger'>You found some coal!</span>"

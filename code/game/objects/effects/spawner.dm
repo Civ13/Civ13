@@ -118,6 +118,14 @@
 	if (emptyTurf)
 		var/mob/living/simple_animal/spawnedMob = new create_path(emptyTurf)
 		spawnedMob.origin = src
+		if (istype(spawnedMob, /mob/living/simple_animal/hostile/bear))
+			var/mob/living/simple_animal/hostile/bear/B = spawnedMob
+			if (prob(50))
+				B.female = TRUE
+		else if (istype(spawnedMob, /mob/living/simple_animal/hostile/wolf))
+			var/mob/living/simple_animal/hostile/wolf/W = spawnedMob
+			if (prob(50))
+				W.female = TRUE
 		current_number++
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
@@ -166,7 +174,7 @@
 
 
 /obj/effect/spawner/mobspawner/bears
-	name = "bear spawner"
+	name = "black bear spawner"
 	hostile = TRUE
 	max_number = 2
 	max_range = 10
@@ -187,14 +195,6 @@
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/bear/polar
-	timer = 3000
-
-/obj/effect/spawner/mobspawner/bears/brown
-	name = "brown bear spawner"
-	hostile = TRUE
-	max_number = 2
-	max_range = 10
-	create_path = /mob/living/simple_animal/hostile/bear/brown
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/groundsloth
