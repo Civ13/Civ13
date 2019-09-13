@@ -316,7 +316,7 @@
 	for (var/obj/O in transporting)
 		if (get_dist(O, src) >= 2)
 			transporting -= O
-	for (var/obj/item/I in transported)
+	for (var/obj/item/I in transporting)
 		I.update_light()
 	return TRUE
 
@@ -612,7 +612,7 @@
 
 	if (!istype(usr, /mob/living))
 		return
-	for (var/atom/AM in transporting)
+	for (var/obj/AM in transporting)
 		visible_message("[usr] unsecures \the [AM] from \the [src].")
 		AM.anchored = FALSE
 		transporting -= AM
