@@ -20,7 +20,144 @@
 	var/maxpower = 50
 	var/list/speedlist = list(1=6,2=5,3=4,4=3,5=2)
 	powerneeded = 0
+	var/obj/structure/engine/internal/engine = null
+	var/moving = FALSE
+	var/vehicle_m_delay = 1
+	var/obj/item/vehicleparts/wheel/modular/wheel = null
+	var/reverse = FALSE
+	var/list/transporting = list()
 
+////////MOVEMENT LOOP/////////
+/obj/structure/vehicleparts/axis/proc/startmovementloop()
+	moving = TRUE
+	movementloop()
+
+/obj/structure/vehicleparts/axis/proc/movementloop()
+	if (moving == TRUE)
+		if (do_vehicle_check() && currentspeed > 0)
+			do_move()
+		else
+			currentspeed = 0
+		spawn(vehicle_m_delay+1)
+			movementloop()
+			return
+	else
+		return
+
+/obj/structure/vehicleparts/axis/proc/stopmovementloop()
+	moving = FALSE
+	return
+
+/obj/structure/vehicleparts/axis/proc/do_vehicle_check()
+	if (check_engine())
+		var/turf/T = get_turf(get_step(src,dir))
+		if (!T)
+			moving = FALSE
+			stopmovementloop()
+			return FALSE
+		for(var/obj/structure/O in get_turf(get_step(src,dir)))
+			if (O.density == TRUE)
+				visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+		if (get_turf(get_step(src,dir)).density == TRUE)
+			visible_message("<span class='warning'>\the [src] hits \the [get_turf(get_step(src,dir))]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,dir))]!</span>")
+		for(var/obj/covers/CV in get_turf(get_step(src,dir)))
+			if (CV.density == TRUE)
+				visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+		for(var/mob/living/L in get_turf(get_step(src,dir)))
+			if (ishuman(L))
+				var/mob/living/carbon/human/HH = L
+				HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
+				HH.Weaken(rand(2,5))
+				visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
+			else if (istype(L,/mob/living/simple_animal))
+				var/mob/living/simple_animal/SA = L
+				SA.health -= rand(7,16)*abs(currentspeed)
+				if (SA.mob_size >= 30)
+					visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
+				else
+					visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+			currentspeed = 0
+			stopmovementloop()
+			return FALSE
+		var/canpass = FALSE
+		for(var/obj/covers/CVV in get_turf(get_step(src,dir)))
+			if (CVV.density == FALSE)
+				canpass = TRUE
+		if ((!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,dir)).density == FALSE  || istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded))
+		else
+			moving = FALSE
+			stopmovementloop()
+			return FALSE
+	else
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
+
+/obj/structure/vehicleparts/axis/proc/check_engine()
+
+	if (!engine || !engine.fueltank)
+		return FALSE
+	else
+		if (engine.fueltank.reagents.total_volume <= 0)
+			engine.fueltank.reagents.total_volume = 0
+			return FALSE
+		else
+			if (engine.on)
+				return TRUE
+			else
+				return FALSE
+		return FALSE
+
+	return TRUE
+
+/obj/structure/vehicleparts/axis/proc/do_move()
+	check_transporting()
+	var/m_dir = dir
+	if (currentspeed < 0)
+		m_dir = OPPOSITE_DIR(dir)
+	for (var/atom/movable/M in transporting)
+		if (istype(M, /obj/structure) || istype(M, /obj/item))
+			var/obj/MO = M
+			MO.forceMove(get_step(src, m_dir))
+			MO.dir = dir
+			MO.update_icon()
+		if (istype(M, /mob/living))
+			var/mob/living/ML = M
+			ML.forceMove(get_step(src, m_dir))
+	return
+
+/obj/structure/vehicleparts/axis/proc/check_transporting()
+	for (var/atom/movable/M in transporting)
+		if (!M)
+			transporting -= M
+		var/found = FALSE
+		for(var/obj/structure/vehicleparts/frame/F in M.loc)
+			if (F.axis == src)
+				found = TRUE
+				break
+		if (!found)
+			transporting -= M
+	return transporting.len
+
+/obj/structure/vehicleparts/axis/proc/add_transporting()
+	check_transporting()
+	for (var/obj/structure/vehicleparts/frame/F in transporting)
+		for (var/atom/movable/M in F.loc)
+			if (!M in transporting)
+				transporting += M
+	return transporting.len
+
+/obj/structure/vehicleparts/axis/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
+	if (istype(VP, /obj/structure/vehicleparts/frame) && !VP.axis)
+		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+		usr << "You connect \the [src] to \the [VP]."
+		VP.axis = src
+		VP.anchored = TRUE
+		if (!VP in transporting)
+			transporting += VP
+		VP.name = "central [VP.name]"
+		loc = VP
+		return
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
@@ -35,14 +172,34 @@
 	maxpower = 40
 	speedlist = list(1=8,2=6,3=4)
 
+/obj/structure/vehicleparts/axis/heavy
+	name = "heavy vehicle axis"
+	desc = "A heavy and slow vehicle axis."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 3
+	maxpower = 250
+	speedlist = list(-1=12,1=12,2=10,3=8)
+	reverse = TRUE
+
+/obj/structure/vehicleparts/axis/car
+	name = "car axis"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 70
+	speedlist = list(-1=8,1=8,2=6,3=4,4=3,5=2)
+	reverse = TRUE
+
 /obj/structure/vehicleparts/axis/proc/get_speed()
-	if (currentspeed <= 0)
+	if (currentspeed == 0)
 		currentspeed = 0
 		powerneeded = 0
 		return 0
 	else
 		var/spd = (currentspeed/speeds)*maxpower
-		powerneeded = spd
+		powerneeded = abs(spd)
 		return speedlist[currentspeed]
 
 /obj/structure/vehicleparts/axis/proc/check_enginepower(var/esize = 0)
@@ -102,6 +259,8 @@
 		return
 	if (!H.driver_vehicle.sails)
 		return
+	if (!(H.driver_vehicle in range(3,loc)))
+		return
 	if (H.driver_vehicle.sails)
 		if (!H.driver_vehicle.sails_on)
 			if (world.time > spamtimer)
@@ -120,6 +279,8 @@
 	if(!H.driver_vehicle)
 		return
 	if(!H.driver_vehicle.engine)
+		return
+	if (!(H.driver_vehicle in range(3,loc)))
 		return
 	if (!H.driver_vehicle.engine.on && H.driver_vehicle.fueltank.reagents.total_volume > 0)
 		H.driver_vehicle.engine.turn_on(H)
@@ -349,20 +510,57 @@
 	powerneeded = 0
 	flammable = FALSE
 	var/resistance = 150
-	var/list/connections = list()
+	var/obj/structure/vehicleparts/axis/axis = null
 	var/w_front = null
 	var/w_back = null
 	var/w_left = null
 	var/w_right = null
+	var/image/roof
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 	New()
 		..()
 		update_icon()
+		roof = image(icon=icon, loc=src.loc, icon_state="roof_steel", layer=8)
 	relaymove(var/mob/mob, direction)
 		..()
 		update_icon()
 	Move(newloc, direct)
 		..()
 		update_icon()
+
+/obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
+	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)
+		for(var/obj/structure/vehicleparts/frame/FR in range(1,src))
+			if (FR != src && FR.axis == VP.axis)
+				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+				usr << "You connect \the [src] to \the [VP.axis]."
+				axis = VP.axis
+				if (!src in axis.transporting)
+					axis.transporting += src
+				anchored = TRUE
+				VP.dir = dir
+				return
+/obj/structure/vehicleparts/frame/MouseDrop_T(var/obj/structure/VP, var/mob/living/user)
+	if (istype(VP, /obj/structure/engine/internal) && axis && !axis.engine && !VP.anchored)
+		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+		usr << "You connect \the [VP] to \the [axis]."
+		axis.engine = VP
+		VP.forceMove(loc)
+		VP.anchored = TRUE
+		return
+	else if (istype(VP, /obj/structure/bed/chair/drivers) && axis && !VP.anchored && !axis.wheel)
+		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+		usr << "You place \the [VP] in \the [axis]."
+		VP.forceMove(loc)
+		VP.anchored = TRUE
+		VP.dir = dir
+		var/obj/structure/bed/chair/drivers/VPP = VP
+		axis.wheel = VPP.wheel
+		axis.wheel.control = src
+		return
+
 /obj/structure/vehicleparts/frame/wood
 	name = "wood frame"
 	desc = "a wood vehicle frame."
@@ -447,6 +645,7 @@
 /obj/structure/vehicleparts/frame/lf
 	w_left = "c_wall"
 	w_front = "c_windshield"
+
 ///////////////////////EXTRA STUFF//////////////////////
 
 /obj/item/sail
@@ -457,3 +656,115 @@
 	anchored = FALSE
 	flammable = TRUE
 	w_class = 4.0
+
+/obj/item/vehicleparts/wheel/modular
+	name = "vehicle wheel"
+	desc = "Used to steer a vehicle."
+	icon_state = "wheel_b"
+	var/obj/structure/bed/chair/drivers/drivingchair = null
+	var/obj/structure/vehicleparts/frame/control = null
+/obj/item/vehicleparts/wheel/modular/attack_self(mob/living/carbon/human/H)
+	if(!control)
+		return
+	if(!control.axis)
+		return
+	if (!(control.loc in range(1,loc)))
+		H.remove_from_mob(src)
+		src.forceMove(drivingchair)
+		return
+	if (!control.axis.engine.on && control.axis.engine.fueltank.reagents.total_volume > 0)
+		control.axis.engine.turn_on(H)
+		playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 2)
+		spawn(40)
+			if (control.axis.engine && control.axis.engine.on)
+				control.axis.engine.running_sound()
+		return
+	else if (control.axis.engine.fueltank.reagents.total_volume <= 0)
+		H << "There is not enough fuel!"
+		return
+	var/min = 0
+	if (control.axis.reverse)
+		min = -1
+	if (control.axis.currentspeed <= min)
+		control.axis.currentspeed = min
+		var/spd = control.axis.get_speed()
+		control.axis.vehicle_m_delay = spd
+		spawn(1)
+			if (control.axis.currentspeed == 1)
+				control.axis.moving = TRUE
+				control.axis.startmovementloop()
+				H << "You put on the first gear."
+				control.axis.add_transporting()
+		return
+	else if (control.axis.currentspeed<=control.axis.speeds)
+		control.axis.currentspeed++
+		if (control.axis.currentspeed>control.axis.speeds)
+			control.axis.currentspeed = control.axis.speeds
+		var/spd = control.axis.get_speed()
+		control.axis.vehicle_m_delay = spd
+		H << "You increase the speed."
+		playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+		return
+	else
+		return
+
+/obj/item/vehicleparts/wheel/modular/secondary_attack_self(mob/living/carbon/human/user)
+	if (!control || !control.axis)
+		return
+	var/min = 0
+	if (control.axis.reverse)
+		min = -1
+	if (control.axis.currentspeed <= min || !control.axis.engine.on || control.axis.engine.fueltank.reagents.total_volume <= 0)
+		return
+	else
+		control.axis.currentspeed--
+		var/spd = control.axis.get_speed()
+		if (spd <= 0 || control.axis.currentspeed == 0)
+			control.axis.moving = FALSE
+			user << "You stop \the [control.axis.engine]."
+			control.axis.add_transporting()
+			return
+		else if (control.axis.currentspeed == -1)
+			user << "You switch into reverse."
+			control.axis.add_transporting()
+			playsound(loc, 'sound/effects/lever.ogg',65, TRUE)
+		else
+			control.axis.vehicle_m_delay = spd
+			user << "You reduce the speed."
+			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+			return
+
+/obj/structure/bed/chair/drivers
+	name = "driver's seat"
+	desc = "Where you drive the vehicle."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "driver_car"
+	anchored = FALSE
+	var/obj/item/vehicleparts/wheel/modular/wheel = null
+	New()
+		..()
+		wheel = new/obj/item/vehicleparts/wheel/modular(src)
+		wheel.drivingchair = src
+
+/obj/structure/bed/chair/drivers/update_icon()
+	return
+
+/obj/structure/bed/chair/drivers/post_buckle_mob()
+	if (buckled_mob && istype(buckled_mob, /mob/living/carbon/human) && buckled_mob.put_in_active_hand(wheel) == FALSE)
+		buckled_mob << "Your hands are full!"
+		return
+
+/obj/structure/bed/chair/drivers/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (buckled_mob && H == buckled_mob && istype(I, /obj/item/vehicleparts/wheel/modular))
+		H.remove_from_mob(I)
+		I.forceMove(src)
+		return
+	else
+		..()
+/obj/structure/bed/chair/drivers/attack_hand( var/mob/living/carbon/human/H)
+	if (buckled_mob && H == buckled_mob && wheel.loc != H)
+		if (buckled_mob.put_in_active_hand(wheel))
+			H << "You grab the wheel."
+			return
+	else
+		..()
