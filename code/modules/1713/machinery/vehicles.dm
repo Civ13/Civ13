@@ -350,15 +350,103 @@
 	flammable = FALSE
 	var/resistance = 150
 	var/list/connections = list()
+	var/w_front = null
+	var/w_back = null
+	var/w_left = null
+	var/w_right = null
+	New()
+		..()
+		update_icon()
+	relaymove(var/mob/mob, direction)
+		..()
+		update_icon()
+	Move(newloc, direct)
+		..()
+		update_icon()
 /obj/structure/vehicleparts/frame/wood
 	name = "wood frame"
 	desc = "a wood vehicle frame."
-	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "frame_wood"
-	powerneeded = 0
 	flammable = TRUE
 	resistance = 90
 
+/obj/structure/vehicleparts/frame/update_icon()
+	..()
+	overlays.Cut()
+	switch (dir)
+		if (NORTH)
+			if (w_left)
+				var/image/tmpimg3 = image(icon=icon, icon_state=w_left, layer=4.5, dir=WEST)
+				overlays += tmpimg3
+			if (w_right)
+				var/image/tmpimg4 = image(icon=icon, icon_state=w_right, layer=4.5, dir=EAST)
+				overlays += tmpimg4
+			if (w_front)
+				var/image/tmpimg1 = image(icon=icon, icon_state=w_front, layer=4.5, dir=NORTH)
+				overlays += tmpimg1
+			if (w_back)
+				var/image/tmpimg2 = image(icon=icon, icon_state=w_back, layer=4.5, dir=SOUTH)
+				overlays += tmpimg2
+		if (SOUTH)
+			if (w_left)
+				var/image/tmpimg3 = image(icon=icon, icon_state=w_left, layer=4.5, dir=EAST)
+				overlays += tmpimg3
+			if (w_right)
+				var/image/tmpimg4 = image(icon=icon, icon_state=w_right, layer=4.5, dir=WEST)
+				overlays += tmpimg4
+			if (w_front)
+				var/image/tmpimg1 = image(icon=icon, icon_state=w_front, layer=4.5, dir=SOUTH)
+				overlays += tmpimg1
+			if (w_back)
+				var/image/tmpimg2 = image(icon=icon, icon_state=w_back, layer=4.5, dir=NORTH)
+				overlays += tmpimg2
+		if (EAST)
+			if (w_left)
+				var/image/tmpimg3 = image(icon=icon, icon_state=w_left, layer=4.5, dir=NORTH)
+				overlays += tmpimg3
+			if (w_right)
+				var/image/tmpimg4 = image(icon=icon, icon_state=w_right, layer=4.5, dir=SOUTH)
+				overlays += tmpimg4
+			if (w_front)
+				var/image/tmpimg1 = image(icon=icon, icon_state=w_front, layer=4.5, dir=EAST)
+				overlays += tmpimg1
+			if (w_back)
+				var/image/tmpimg2 = image(icon=icon, icon_state=w_back, layer=4.5, dir=WEST)
+				overlays += tmpimg2
+		if (WEST)
+			if (w_left)
+				var/image/tmpimg3 = image(icon=icon, icon_state=w_left, layer=4.5, dir=SOUTH)
+				overlays += tmpimg3
+			if (w_right)
+				var/image/tmpimg4 = image(icon=icon, icon_state=w_right, layer=4.5, dir=NORTH)
+				overlays += tmpimg4
+			if (w_front)
+				var/image/tmpimg1 = image(icon=icon, icon_state=w_front, layer=4.5, dir=WEST)
+				overlays += tmpimg1
+			if (w_back)
+				var/image/tmpimg2 = image(icon=icon, icon_state=w_back, layer=4.5, dir=EAST)
+				overlays += tmpimg2
+/obj/structure/vehicleparts/frame/basicsmall
+	w_front = "c_windshield"
+	w_back = "c_wall"
+	w_left = "c_wall"
+	w_right = "c_wall"
+/obj/structure/vehicleparts/frame/lwall
+	w_left = "c_indow"
+/obj/structure/vehicleparts/frame/rwall
+	w_right = "c_window"
+/obj/structure/vehicleparts/frame/rb
+	w_right = "c_wall"
+	w_back = "c_wall"
+/obj/structure/vehicleparts/frame/lb
+	w_left = "c_wall"
+	w_back = "c_wall"
+/obj/structure/vehicleparts/frame/rf
+	w_right = "c_wall"
+	w_front = "c_windshield"
+/obj/structure/vehicleparts/frame/lf
+	w_left = "c_wall"
+	w_front = "c_windshield"
 ///////////////////////EXTRA STUFF//////////////////////
 
 /obj/item/sail
