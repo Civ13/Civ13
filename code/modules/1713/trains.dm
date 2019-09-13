@@ -499,7 +499,7 @@
 	name = "tender wagon"
 	desc = "A wagon made to carry fuel for the engine."
 	icon_state = "coal_wagon"
-	max_storage = 10
+	max_storage = 15
 	New()
 		..()
 		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood)
