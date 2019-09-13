@@ -432,7 +432,7 @@
 	w_left = "c_wall"
 	w_right = "c_wall"
 /obj/structure/vehicleparts/frame/lwall
-	w_left = "c_indow"
+	w_left = "c_window"
 /obj/structure/vehicleparts/frame/rwall
 	w_right = "c_window"
 /obj/structure/vehicleparts/frame/rb
