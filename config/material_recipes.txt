@@ -736,7 +736,7 @@ RECIPE: /material/iron/,magazine (30),/obj/item/ammo_magazine/emptymagazine/smal
 RECIPE: /material/iron/,drum magazine (65),/obj/item/ammo_magazine/emptymagazine,7,45,0,1,magazines,135,0,0,8,null
 RECIPE: /material/iron/,canner,/obj/structure/canner,7,120,1,1,production,95,0,0,8,null
 RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null
-RECIPE: /material/iron/,trench shovel,/obj/item/weapon/shovel/trench,2,50,0,1,tools,45,45,0,8,null
+RECIPE: /material/iron/,trench shovel,/obj/item/weapon/shovel/trench,2,50,0,1,tools,14,0,0,8,null
 RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,weapons,0,90,0,8,null
 RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
 RECIPE: /material/iron/,iron altar,/obj/structure/altar/iron,12,200,1,1,furniture,0,0,0,8,null
