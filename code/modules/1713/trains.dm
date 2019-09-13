@@ -221,8 +221,44 @@
 	var/locomotive = FALSE
 	var/list/transporting = list()
 	var/on = FALSE
+	var/obj/structure/trains/connected = null
 
+/obj/structure/trains/verb/hitch()
+	set category = null
+	set name = "Hitch"
+	set desc = "Hitch or unhitch to the wagon ahead."
+
+	set src in view(1)
+
+	if (!istype(usr, /mob/living/carbon/human))
+		return
+
+
+	for (var/obj/structure/trains/TR in get_step(src, dir))
+		if (TR.connected && TR.connected == src)
+			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+			usr << "You unhitch \the [src] from \the [connected]."
+			connected = null
+			return TRUE
+		else if (!TR.connected)
+			if (dir == TR.dir || dir == OPPOSITE_DIR(TR.dir))
+				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+				usr << "You hitch \the [src] to \the [TR]."
+				TR.connected = src
+				return TRUE
+	usr << "There is no wagon to hitch \the [src] to."
+	return FALSE
+
+/obj/structure/trains/proc/check_connections()
+	if (!connected)
+		return FALSE
+	if (connected in range(2,src))
+		return TRUE
+	else
+		connected = null
+		return FALSE
 /obj/structure/trains/Bumped(atom/AM)
+	check_connections()
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
 		return FALSE
@@ -238,18 +274,32 @@
 		for (var/obj/structure/trains/TR in tgt)
 			return FALSE
 	if (rail_canmove(AM.dir))
-		src.Move(tgt, FALSE)
+		src.Move(tgt)
 		return TRUE
-/obj/structure/trains/Move(var/turf/newloc, var/pullbehind = TRUE, var/fdir = dir)
-
+/obj/structure/trains/Move(var/turf/newloc, var/fdir = dir)
+	check_connections()
 	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
+/*
 	var/turf/behind = get_step(src,OPPOSITE_DIR(dir))
 	var/turf/oldloc = loc
-	var/olddir = dir
 	dir = fdir
-	..(newloc)
 
+	for (var/obj/structure/rails/turn/TR in oldloc)
+		if (dir != TR.turn_dir && dir == TR.dir)
+			behind = get_step(src,OPPOSITE_DIR(TR.turn_dir))
+
+		else if (dir != TR.dir && dir == TR.turn_dir)
+			behind = get_step(src,OPPOSITE_DIR(TR.dir))
+
+	for (var/obj/structure/trains/T in behind)
+		T.Move(oldloc, dir)
+*/
+
+	var/turf/oldloc = loc
+
+	..(newloc)
+	dir = fdir
 	if (buckled_mob)
 		if (buckled_mob.buckled == src)
 			buckled_mob.loc = loc
@@ -260,11 +310,9 @@
 	for (var/obj/O in oldloc)
 		if (O.anchored && O in transporting)
 			O.loc = loc
-	if (behind && pullbehind)
-		for (var/obj/structure/trains/T in behind)
-			if (T.dir == olddir)
-				T.dir = dir
-				T.Move(oldloc)
+	if (connected)
+		connected.Move(oldloc, dir)
+
 	for (var/obj/O in transporting)
 		if (get_dist(O, src) >= 2)
 			transporting -= O
@@ -387,7 +435,7 @@
 					L.adjustBruteLoss(65)
 					return FALSE
 		// ... and move this train
-		src.Move(tgtt, TRUE, fdir)
+		src.Move(tgtt, fdir)
 		return TRUE
 	return FALSE
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
