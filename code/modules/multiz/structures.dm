@@ -122,6 +122,8 @@
 			M.z = M.z-1
 			M.x = src.x
 			M.y = src.y
+			for (var/obj/item/I in M)
+				I.update_light()
 			return
 		else
 			if (M.pulling != null)
@@ -131,6 +133,8 @@
 			M.z = M.z+1
 			M.x = src.x
 			M.y = src.y
+			for (var/obj/item/I in M)
+				I.update_light()
 			return
 		M.visible_message(
 			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
