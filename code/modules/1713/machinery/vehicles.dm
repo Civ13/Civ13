@@ -50,20 +50,20 @@
 
 /obj/structure/vehicleparts/axis/proc/do_vehicle_check()
 	if (check_engine())
-		var/turf/T = get_turf(get_step(src,dir))
+		var/turf/T = get_turf(get_step(loc,dir))
 		if (!T)
 			moving = FALSE
 			stopmovementloop()
 			return FALSE
-		for(var/obj/structure/O in get_turf(get_step(src,dir)))
+		for(var/obj/structure/O in T)
 			if (O.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
-		if (get_turf(get_step(src,dir)).density == TRUE)
-			visible_message("<span class='warning'>\the [src] hits \the [get_turf(get_step(src,dir))]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,dir))]!</span>")
-		for(var/obj/covers/CV in get_turf(get_step(src,dir)))
+		if (T.density == TRUE)
+			visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
+		for(var/obj/covers/CV in T)
 			if (CV.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-		for(var/mob/living/L in get_turf(get_step(src,dir)))
+		for(var/mob/living/L in T)
 			if (ishuman(L))
 				var/mob/living/carbon/human/HH = L
 				HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
@@ -80,10 +80,10 @@
 			stopmovementloop()
 			return FALSE
 		var/canpass = FALSE
-		for(var/obj/covers/CVV in get_turf(get_step(src,dir)))
+		for(var/obj/covers/CVV in T)
 			if (CVV.density == FALSE)
 				canpass = TRUE
-		if ((!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,dir)).density == FALSE  || istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded))
+		if ((!istype(T, /turf/floor/beach/water/deep) ||  istype(T, /turf/floor/beach/water/deep) && canpass == TRUE)&& T.density == FALSE  || istype(T, /turf/floor/trench/flooded))
 		else
 			moving = FALSE
 			stopmovementloop()
@@ -96,10 +96,12 @@
 /obj/structure/vehicleparts/axis/proc/check_engine()
 
 	if (!engine || !engine.fueltank)
+		engine.on = FALSE
 		return FALSE
 	else
 		if (engine.fueltank.reagents.total_volume <= 0)
 			engine.fueltank.reagents.total_volume = 0
+			engine.on = FALSE
 			return FALSE
 		else
 			if (engine.on)
@@ -112,38 +114,39 @@
 
 /obj/structure/vehicleparts/axis/proc/do_move()
 	check_transporting()
-	var/m_dir = dir
-	if (currentspeed < 0)
+	var/m_dir = loc.dir
+	if (reverse)
 		m_dir = OPPOSITE_DIR(dir)
 	for (var/atom/movable/M in transporting)
 		if (istype(M, /obj/structure) || istype(M, /obj/item))
 			var/obj/MO = M
-			MO.forceMove(get_step(src, m_dir))
+			MO.forceMove(get_step(MO.loc, m_dir))
 			MO.dir = dir
 			MO.update_icon()
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
-			ML.forceMove(get_step(src, m_dir))
+			ML.forceMove(get_step(ML.loc, m_dir))
 	return
 
 /obj/structure/vehicleparts/axis/proc/check_transporting()
 	for (var/atom/movable/M in transporting)
 		if (!M)
 			transporting -= M
-		var/found = FALSE
-		for(var/obj/structure/vehicleparts/frame/F in M.loc)
-			if (F.axis == src)
-				found = TRUE
-				break
-		if (!found)
-			transporting -= M
+		var/turf/T = get_turf(M)
+		for(var/obj/structure/vehicleparts/frame/F in T)
+			if (!F.axis || F.axis != src)
+				transporting -= M
 	return transporting.len
 
 /obj/structure/vehicleparts/axis/proc/add_transporting()
-	check_transporting()
+	transporting = list()
+	for (var/obj/structure/vehicleparts/frame/FR in range(7,src))
+		if (FR.axis == src)
+			transporting += FR
 	for (var/obj/structure/vehicleparts/frame/F in transporting)
-		for (var/atom/movable/M in F.loc)
-			if (!M in transporting)
+		var/turf/T = get_turf(F)
+		for (var/atom/movable/M in T)
+			if (istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item))
 				transporting += M
 	return transporting.len
 
@@ -153,8 +156,7 @@
 		usr << "You connect \the [src] to \the [VP]."
 		VP.axis = src
 		VP.anchored = TRUE
-		if (!VP in transporting)
-			transporting += VP
+		transporting += VP
 		VP.name = "central [VP.name]"
 		loc = VP
 		return
@@ -179,8 +181,7 @@
 	icon_state = "axis_powered"
 	speeds = 3
 	maxpower = 250
-	speedlist = list(-1=12,1=12,2=10,3=8)
-	reverse = TRUE
+	speedlist = list(1=12,2=10,3=8)
 
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"
@@ -189,17 +190,16 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 70
-	speedlist = list(-1=8,1=8,2=6,3=4,4=3,5=2)
-	reverse = TRUE
+	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 
 /obj/structure/vehicleparts/axis/proc/get_speed()
-	if (currentspeed == 0)
+	if (currentspeed <= 0)
 		currentspeed = 0
 		powerneeded = 0
 		return 0
 	else
 		var/spd = (currentspeed/speeds)*maxpower
-		powerneeded = abs(spd)
+		powerneeded = spd
 		return speedlist[currentspeed]
 
 /obj/structure/vehicleparts/axis/proc/check_enginepower(var/esize = 0)
@@ -285,7 +285,7 @@
 	if (!H.driver_vehicle.engine.on && H.driver_vehicle.fueltank.reagents.total_volume > 0)
 		H.driver_vehicle.engine.turn_on(H)
 		H.driver_vehicle.set_light(3)
-		playsound(loc, 'sound/machines/diesel_starting.ogg', 65, FALSE, 2)
+		playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 2)
 		spawn(40)
 			if (H.driver_vehicle && H.driver_vehicle.engine && H.driver_vehicle.engine.on)
 				H.driver_vehicle.running_sound()
@@ -537,7 +537,11 @@
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 				usr << "You connect \the [src] to \the [VP.axis]."
 				axis = VP.axis
-				if (!src in axis.transporting)
+				var/found = FALSE
+				for (var/obj/structure/vehicleparts/frame/F in axis.transporting)
+					if (F == src)
+						found = TRUE
+				if (!found)
 					axis.transporting += src
 				anchored = TRUE
 				VP.dir = dir
@@ -682,28 +686,33 @@
 	else if (control.axis.engine.fueltank.reagents.total_volume <= 0)
 		H << "There is not enough fuel!"
 		return
-	var/min = 0
-	if (control.axis.reverse)
-		min = -1
-	if (control.axis.currentspeed <= min)
-		control.axis.currentspeed = min
+	if (control.axis.currentspeed < 0)
+		control.axis.currentspeed = 0
 		var/spd = control.axis.get_speed()
 		control.axis.vehicle_m_delay = spd
-		spawn(1)
-			if (control.axis.currentspeed == 1)
-				control.axis.moving = TRUE
-				control.axis.startmovementloop()
-				H << "You put on the first gear."
-				control.axis.add_transporting()
-		return
-	else if (control.axis.currentspeed<=control.axis.speeds)
+	if (control.axis.currentspeed<control.axis.speeds)
+		if (control.axis.currentspeed == 0 && control.axis.reverse)
+			control.axis.moving = FALSE
+			H << "You stop \the [control.axis.engine]."
+			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+			control.axis.reverse = FALSE
+			return
 		control.axis.currentspeed++
 		if (control.axis.currentspeed>control.axis.speeds)
 			control.axis.currentspeed = control.axis.speeds
 		var/spd = control.axis.get_speed()
 		control.axis.vehicle_m_delay = spd
-		H << "You increase the speed."
-		playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+		if (control.axis.currentspeed == 1)
+			control.axis.moving = TRUE
+			control.axis.reverse = FALSE
+			H << "You put on the first gear."
+			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+			control.axis.add_transporting()
+			control.axis.startmovementloop()
+		else
+			H << "You increase the speed."
+			control.axis.reverse = FALSE
+			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 		return
 	else
 		return
@@ -711,28 +720,32 @@
 /obj/item/vehicleparts/wheel/modular/secondary_attack_self(mob/living/carbon/human/user)
 	if (!control || !control.axis)
 		return
-	var/min = 0
-	if (control.axis.reverse)
-		min = -1
-	if (control.axis.currentspeed <= min || !control.axis.engine.on || control.axis.engine.fueltank.reagents.total_volume <= 0)
+	if (control.axis.currentspeed <= 0 || !control.axis.engine.on || control.axis.engine.fueltank.reagents.total_volume <= 0)
 		return
 	else
-		control.axis.currentspeed--
 		var/spd = control.axis.get_speed()
-		if (spd <= 0 || control.axis.currentspeed == 0)
-			control.axis.moving = FALSE
-			user << "You stop \the [control.axis.engine]."
-			control.axis.add_transporting()
-			return
-		else if (control.axis.currentspeed == -1)
+		if ((spd <= 0 || control.axis.currentspeed == 0) && !control.axis.reverse)
 			user << "You switch into reverse."
+			control.axis.reverse = TRUE
 			control.axis.add_transporting()
+			control.axis.moving = TRUE
+			control.axis.startmovementloop()
 			playsound(loc, 'sound/effects/lever.ogg',65, TRUE)
 		else
-			control.axis.vehicle_m_delay = spd
-			user << "You reduce the speed."
-			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
-			return
+			control.axis.currentspeed--
+			spd = control.axis.get_speed()
+			if (spd <= 0 || control.axis.currentspeed == 0)
+				control.axis.moving = FALSE
+				user << "You stop \the [control.axis.engine]."
+				control.axis.reverse = FALSE
+				return
+
+			else
+				control.axis.vehicle_m_delay = spd
+				control.axis.reverse = FALSE
+				user << "You reduce the speed."
+				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+				return
 
 /obj/structure/bed/chair/drivers
 	name = "driver's seat"
