@@ -84,6 +84,7 @@
 			if (CVV.density == FALSE)
 				canpass = TRUE
 		if ((!istype(T, /turf/floor/beach/water/deep) ||  istype(T, /turf/floor/beach/water/deep) && canpass == TRUE)&& T.density == FALSE  || istype(T, /turf/floor/trench/flooded))
+			return TRUE
 		else
 			moving = FALSE
 			stopmovementloop()
