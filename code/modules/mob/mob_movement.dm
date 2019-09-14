@@ -904,6 +904,9 @@
 /client/verb/startmovingup()
 	set name = ".startmovingup"
 	set instant = TRUE
+	if (spampreventer >= world.realtime)
+		return
+	spampreventer = world.realtime
 	if (mob)
 		mob.movement_northsouth = NORTH
 		try
@@ -936,6 +939,9 @@
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
 	set instant = TRUE
+	if (spampreventer >= world.realtime)
+		return
+	spampreventer = world.realtime
 	if (mob)
 		mob.movement_northsouth = SOUTH
 		try
@@ -966,6 +972,9 @@
 /client/verb/startmovingright()
 	set name = ".startmovingright"
 	set instant = TRUE
+	if (spampreventer >= world.realtime)
+		return
+	spampreventer = world.realtime
 	if (mob)
 		mob.movement_eastwest = EAST
 		try
@@ -996,6 +1005,9 @@
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
 	set instant = TRUE
+	if (spampreventer >= world.realtime)
+		return
+	spampreventer = world.realtime
 	if (mob)
 		mob.movement_eastwest = WEST
 		try
@@ -1026,23 +1038,35 @@
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"
 	set instant = TRUE
+	if (spampreventer >= world.realtime)
+		return
+	spampreventer = world.realtime
 	if (mob && mob.movement_northsouth == NORTH)
 		mob.movement_northsouth = null
 
 /client/verb/stopmovingdown()
 	set name = ".stopmovingdown"
 	set instant = TRUE
+	if (spampreventer >= world.realtime)
+		return
+	spampreventer = world.realtime
 	if (mob && mob.movement_northsouth == SOUTH)
 		mob.movement_northsouth = null
 
 /client/verb/stopmovingright()
 	set name = ".stopmovingright"
 	set instant = TRUE
+	if (spampreventer >= world.realtime)
+		return
+	spampreventer = world.realtime
 	if (mob && mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
 
 /client/verb/stopmovingleft()
 	set name = ".stopmovingleft"
 	set instant = TRUE
+	if (spampreventer >= world.realtime)
+		return
+	spampreventer = world.realtime
 	if (mob && mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
