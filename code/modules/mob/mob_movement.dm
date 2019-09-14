@@ -983,6 +983,8 @@
 			pass(E)
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
+			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
+				MW.turndir("right")
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
@@ -1016,6 +1018,8 @@
 			pass(E)
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
+			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
+				MW.turndir("left")
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST

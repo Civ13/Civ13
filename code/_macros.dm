@@ -116,3 +116,5 @@
 #define ADD_SORTED(list, A, cmp_proc) if(!list.len) {list.Add(A)} else {list.Insert(FindElementIndex(A, list, cmp_proc), A)}
 
 #define OPPOSITE_DIR(D) turn(D, 180)
+#define TURN_LEFT(D) turn(D, 90)
+#define TURN_RIGHT(D) turn(D, -90)

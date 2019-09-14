@@ -463,6 +463,12 @@
 	name = "huge fueltank"
 	icon_state = "fueltank_large_tank"
 	volume = 450
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled
+	New()
+		..()
+		reagents.add_reagent("diesel",450)
+
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank
 	name = "medium fueltank"
 	icon_state = "fueltank_small_tank"
