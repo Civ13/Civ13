@@ -34,6 +34,22 @@
 	maxsway = 10
 	firedelay = 30
 	maxrange = 80
+
+/obj/structure/cannon/modern/tank
+	name = "tank cannon"
+	desc = "a barebones cannon made to be carried by vehicles."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "tank_cannon"
+	ammotype = /obj/item/cannon_ball/shell
+	layer = MOB_LAYER + 1 //just above mobs
+	spritemod = FALSE
+	maxsway = 12
+	firedelay = 15
+	maxrange = 25
+	anchored = FALSE
+	bound_height = 32
+	bound_width = 32
+	density = TRUE
 /obj/structure/cannon/mortar
 	name = "mortar"
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -396,78 +412,79 @@
 	set category = null
 	set name = "Rotate left"
 	set src in range(2, usr)
-	if (anchored)
-		user << "<span class='notice'>You need to unsecure \the [src] first!</span>"
-	else
-		switch(dir)
-			if (EAST)
-				dir = SOUTH
-				if (spritemod)
-					bound_height = 64
-					bound_width = 32
-					icon = 'icons/obj/cannon_v.dmi'
-					icon_state = "cannon"
-			if (WEST)
-				dir = NORTH
-				if (spritemod)
-					bound_height = 64
-					bound_width = 32
-					icon = 'icons/obj/cannon_v.dmi'
-					icon_state = "cannon"
-			if (NORTH)
-				dir = EAST
-				if (spritemod)
-					bound_height = 32
-					bound_width = 64
-					icon = 'icons/obj/cannon_h.dmi'
-					icon_state = "cannon"
-			if (SOUTH)
-				dir = WEST
-				if (spritemod)
-					bound_height = 32
-					bound_width = 64
-					icon = 'icons/obj/cannon_h.dmi'
-					icon_state = "cannon"
+
+	if (!istype(usr, /mob/living))
+		return
+
+	switch(dir)
+		if (EAST)
+			dir = SOUTH
+			if (spritemod)
+				bound_height = 64
+				bound_width = 32
+				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
+		if (WEST)
+			dir = NORTH
+			if (spritemod)
+				bound_height = 64
+				bound_width = 32
+				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
+		if (NORTH)
+			dir = EAST
+			if (spritemod)
+				bound_height = 32
+				bound_width = 64
+				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
+		if (SOUTH)
+			dir = WEST
+			if (spritemod)
+				bound_height = 32
+				bound_width = 64
+				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
 	return
 
 /obj/structure/cannon/verb/rotate_right()
 	set category = null
 	set name = "Rotate right"
 	set src in range(2, usr)
-	if (anchored)
-		user << "<span class='notice'>You need to unsecure \the [src] first!</span>"
-	else
-		switch(dir)
-			if (EAST)
-				dir = SOUTH
-				if (spritemod)
-					bound_height = 64
-					bound_width = 32
-					icon = 'icons/obj/cannon_v.dmi'
-					icon_state = "cannon"
-			if (WEST)
-				dir = NORTH
-				if (spritemod)
-					bound_height = 64
-					bound_width = 32
-					icon = 'icons/obj/cannon_v.dmi'
-					icon_state = "cannon"
-			if (NORTH)
-				dir = EAST
-				if (spritemod)
-					bound_height = 32
-					bound_width = 64
-					icon = 'icons/obj/cannon_h.dmi'
-					icon_state = "cannon"
-			if (SOUTH)
-				dir = WEST
-				if (spritemod)
-					bound_height = 32
-					bound_width = 64
-					icon = 'icons/obj/cannon_h.dmi'
-					icon_state = "cannon"
-	return
 
+	if (!istype(usr, /mob/living))
+		return
+
+	switch(dir)
+		if (EAST)
+			dir = SOUTH
+			if (spritemod)
+				bound_height = 64
+				bound_width = 32
+				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
+		if (WEST)
+			dir = NORTH
+			if (spritemod)
+				bound_height = 64
+				bound_width = 32
+				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
+		if (NORTH)
+			dir = EAST
+			if (spritemod)
+				bound_height = 32
+				bound_width = 64
+				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
+		if (SOUTH)
+			dir = WEST
+			if (spritemod)
+				bound_height = 32
+				bound_width = 64
+				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
+	return
 /obj/structure/cannon/relaymove(var/mob/mob, direction)
 	if (direction)
 		// prevents going over the invisible wall
