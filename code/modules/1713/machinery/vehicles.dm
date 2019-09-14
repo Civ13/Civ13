@@ -157,7 +157,7 @@
 		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && !istype(M, /obj/structure/wild))
 			var/obj/MO = M
 			MO.forceMove(get_step(MO.loc, m_dir))
-			if (!istype(M, /obj/structure/cannon))
+			if (!istype(M, /obj/structure/cannon) && !istype(M, /obj/structure/bed/chair))
 				MO.dir = dir
 				MO.update_icon()
 			if (istype(M, /obj/structure/vehicleparts/movement))
@@ -820,6 +820,9 @@
 		wheel = new/obj/item/vehicleparts/wheel/modular(src)
 		wheel.drivingchair = src
 
+/obj/structure/bed/chair/drivers/tank
+	name = "tank driver's seat"
+	icon_state = "driver_tank"
 /obj/structure/bed/chair/drivers/update_icon()
 	return
 

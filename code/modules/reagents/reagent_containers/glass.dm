@@ -458,6 +458,16 @@
 	name = "75u motorcycle fueltank"
 	icon_state = "fueltank_bike"
 	volume = 75
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank
+	name = "huge fueltank"
+	icon_state = "fueltank_large_tank"
+	volume = 450
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank
+	name = "medium fueltank"
+	icon_state = "fueltank_small_tank"
+	volume = 180
+
 /obj/item/weapon/reagent_containers/glass/barrel/modern/water
 	name = "water barrel"
 	desc = "A steel barrel, filled with drinking water."
