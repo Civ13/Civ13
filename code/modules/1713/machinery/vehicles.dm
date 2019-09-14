@@ -32,6 +32,14 @@
 /obj/structure/vehicleparts/axis/proc/startmovementloop()
 	moving = TRUE
 	movementloop()
+	movementsound()
+
+/obj/structure/vehicleparts/axis/proc/movementsound()
+	if (!moving)
+		return
+	playsound(loc, 'sound/machines/tank_moving.ogg',100, TRUE)
+	spawn(30)
+		movementsound()
 
 /obj/structure/vehicleparts/axis/proc/movementloop()
 	if (moving == TRUE)
@@ -39,8 +47,14 @@
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			current_weight += FR.total_weight
 		if (do_vehicle_check() && currentspeed > 0)
+			for (var/obj/structure/vehicleparts/movement/W in wheels)
+				W.icon_state = W.movement_icon
+				W.update_icon()
 			do_move()
 		else
+			for (var/obj/structure/vehicleparts/movement/W in wheels)
+				W.icon_state = W.base_icon
+				W.update_icon()
 			currentspeed = 0
 			moving = FALSE
 			stopmovementloop()
@@ -66,10 +80,13 @@
 				if (O.density == TRUE && !(O in transporting))
 					if (current_weight >= 55)
 						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
-						qdel(O)
+						O.Destroy()
 					else
 						visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 						return FALSE
+				else if (O.density == FALSE && !(O in transporting))
+					visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+					O.Destroy()
 			if (T.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
 				return FALSE
@@ -90,7 +107,7 @@
 						L.forceMove(get_turf(get_step(T,dir)))
 					else if (istype(L,/mob/living/simple_animal))
 						var/mob/living/simple_animal/SA = L
-						SA.health -= rand(7,16)*abs(currentspeed)
+						SA.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 						if (SA.mob_size >= 30)
 							visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
 							L.forceMove(get_turf(get_step(T,dir)))
@@ -143,6 +160,10 @@
 			if (!istype(M, /obj/structure/cannon))
 				MO.dir = dir
 				MO.update_icon()
+			if (istype(M, /obj/structure/vehicleparts/movement))
+				var/obj/structure/vehicleparts/movement/MV = M
+				if (MV.reversed)
+					MV.dir = OPPOSITE_DIR(dir)
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
 			ML.forceMove(get_step(ML.loc, m_dir))
@@ -162,6 +183,8 @@
 		for (var/atom/movable/M in T)
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				transporting += M
+	for (var/obj/structure/vehicleparts/movement/MV in wheels)
+		transporting += MV
 	return transporting.len
 
 /obj/structure/vehicleparts/axis/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
@@ -523,6 +546,7 @@
 	icon_state = "frame_steel"
 	powerneeded = 0
 	flammable = FALSE
+	layer = 2.98
 	var/resistance = 150
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/w_front = null
@@ -668,6 +692,25 @@
 	w_left = "c_wall"
 	w_front = "c_windshield"
 
+////////////////////////WHEELS AND TRACKS///////////////////
+/obj/structure/vehicleparts/movement
+	name = "wheel"
+	icon_state = "wheel"
+	var/base_icon = "wheel"
+	var/movement_icon = "wheel_m"
+	layer = 4
+	var/reversed = FALSE
+/obj/structure/vehicleparts/movement/tracks
+	name = "armored tracks"
+	icon_state = "tracks_end"
+	base_icon = "tracks_end"
+	movement_icon = "tracks_end_m"
+/obj/structure/vehicleparts/movement/tracks/reversed
+	reversed = TRUE
+/obj/structure/vehicleparts/movement/tracks/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
+	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis)
+		VP.axis.wheels += src
+		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
 ///////////////////////EXTRA STUFF//////////////////////
 
 /obj/item/sail
