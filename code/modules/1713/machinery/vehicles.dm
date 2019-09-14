@@ -754,9 +754,13 @@
 	if (control.axis.currentspeed<control.axis.speeds)
 		if (control.axis.currentspeed == 0 && control.axis.reverse)
 			control.axis.moving = FALSE
-			H << "You stop \the [control.axis.engine]."
+			H << "You stop the [control.axis.engine]."
 			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+			for (var/obj/structure/vehicleparts/movement/W in control.axis.wheels)
+				W.icon_state = W.base_icon
+				W.update_icon()
 			control.axis.reverse = FALSE
+
 			return
 		control.axis.currentspeed++
 		if (control.axis.currentspeed>control.axis.speeds)
@@ -823,6 +827,26 @@
 /obj/structure/bed/chair/drivers/tank
 	name = "tank driver's seat"
 	icon_state = "driver_tank"
+
+/obj/structure/bed/chair/drivers/user_unbuckle_mob(mob/user)
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		for(var/obj/item/vehicleparts/wheel/modular/MW in M)
+			M.remove_from_mob(MW)
+			MW.forceMove(src)
+	return M
+
 /obj/structure/bed/chair/drivers/update_icon()
 	return
 
@@ -835,6 +859,7 @@
 	if (buckled_mob && H == buckled_mob && istype(I, /obj/item/vehicleparts/wheel/modular))
 		H.remove_from_mob(I)
 		I.forceMove(src)
+		user_unbuckle_mob(H)
 		return
 	else
 		..()
