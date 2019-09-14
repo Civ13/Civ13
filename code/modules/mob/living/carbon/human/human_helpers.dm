@@ -230,3 +230,22 @@
 
 	if (wear_mask && wear_mask.radiation>0)
 		rad_act(wear_mask.radiation/10/1500)
+
+
+/mob/living/carbon/human/proc/process_roofs()
+	return
+/*
+	if (!client)
+		return
+	var/obj/structure/vehicleparts/frame/found = null
+	for (var/obj/structure/vehicleparts/frame/FRL in loc)
+		found = FRL
+		break
+	if (found)
+		for (var/obj/structure/vehicleparts/frame/FR in view(7, src))
+			if (FR.axis != found.axis && FR != found)
+				client.images += FR.roof
+	else
+		for (var/obj/structure/vehicleparts/frame/FR in view(7, src))
+			client.images += FR.roof
+*/

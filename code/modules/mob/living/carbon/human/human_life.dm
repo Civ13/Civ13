@@ -463,6 +463,7 @@
 
 		if (!client)
 			species.handle_npc(src)
+	process_roofs()
 
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.

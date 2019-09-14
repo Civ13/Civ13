@@ -91,7 +91,7 @@
 
 /obj/structure/engine/proc/running_sound()
 	if (on)
-		playsound(loc, 'sound/machines/diesel_loop.ogg', 100, FALSE, 2)
+		playsound(loc, 'sound/machines/diesel_loop.ogg', 35, FALSE, 2)
 	spawn(27)
 		running_sound()
 
@@ -100,7 +100,7 @@
 	if (on)
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
-		playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
+		playsound(loc, 'sound/machines/diesel_ending.ogg', 35, FALSE, 3)
 		power_off_connections()
 		currentspeed = 0
 		currentpower = 0

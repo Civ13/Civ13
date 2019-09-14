@@ -60,7 +60,7 @@
 				on = TRUE
 				if (user)
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")
-				playsound(loc, 'sound/machines/diesel_starting.ogg', 100, FALSE, 3)
+				playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 3)
 				update_icon()
 				running()
 				for (var/obj/structure/cable/CB in connections)

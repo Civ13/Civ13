@@ -316,6 +316,8 @@
 	for (var/obj/O in transporting)
 		if (get_dist(O, src) >= 2)
 			transporting -= O
+	for (var/obj/item/I in transporting)
+		I.update_light()
 	return TRUE
 
 /obj/structure/trains/proc/rail_movement()
@@ -344,12 +346,14 @@
 		var/turf/curr = get_turf(src)
 		if (!curr || !tgtt)
 			automovement = FALSE
+			set_light(0)
 			return FALSE
 		if (istype(src, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = src
 			if (L.fuel <= 0 && L.on)
 				automovement = FALSE
 				visible_message("\The [src]'s engine stalls.")
+				set_light(0)
 				return FALSE
 			else if (L.on)
 				L.fuel--
@@ -402,6 +406,7 @@
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.turn_dir))
 		if (!rail_canmove(fdir))
 			automovement = FALSE
+			set_light(0)
 			return FALSE
 		//push (or hit) wtv is in front...
 		for (var/obj/structure/trains/TF in tgtt)
@@ -436,6 +441,7 @@
 					return FALSE
 		// ... and move this train
 		src.Move(tgtt, fdir)
+		set_light(2)
 		return TRUE
 	return FALSE
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
@@ -499,7 +505,7 @@
 	name = "tender wagon"
 	desc = "A wagon made to carry fuel for the engine."
 	icon_state = "coal_wagon"
-	max_storage = 10
+	max_storage = 15
 	New()
 		..()
 		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood)
@@ -522,8 +528,8 @@
 	if (!istype(M, /obj) && !istype(M, /mob/living))
 		return
 	if  (!istype(M, /mob/living))
-		if (istype(M, /obj/item))
-			var/obj/AM = M
+		var/obj/AM = M
+		if (istype(AM, /obj/item) || istype(AM, /obj/structure))
 			if (!AM.anchored)
 				visible_message("[user] starts dragging \the [AM] into \the [src]...", "You start dragging \the [AM] into \the [src]...")
 				if (do_after(user, 50, src))
@@ -597,6 +603,20 @@
 					return M
 	return M
 
+/obj/structure/trains/transport/verb/unsecure()
+	set category = null
+	set name = "Unsecure"
+	set desc = "Unsecure whatever is on top of the wagon."
+
+	set src in view(1)
+
+	if (!istype(usr, /mob/living))
+		return
+	for (var/obj/AM in transporting)
+		visible_message("[usr] unsecures \the [AM] from \the [src].")
+		AM.anchored = FALSE
+		transporting -= AM
+	return
 /obj/structure/trains/transport/flatbed
 	name = "flatbed wagon"
 	desc = "A wooden floor flatbed wagon, used to transport a variety of things."
