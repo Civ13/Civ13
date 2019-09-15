@@ -915,6 +915,12 @@
 			pass(E)
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
+			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
+				if (MW.control.axis.reverse)
+					H << "You switch into forward."
+					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
+					MW.control.axis.currentspeed = 1
+					MW.control.axis.reverse = FALSE
 			if (H.driver && H.driver_vehicle)
 				H.dir = NORTH
 				H.driver_vehicle.dir = NORTH
@@ -950,6 +956,12 @@
 			pass(E)
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
+			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
+				if (!MW.control.axis.reverse)
+					H << "You switch into reverse."
+					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
+					MW.control.axis.currentspeed = 1
+					MW.control.axis.reverse = TRUE
 			if (H.driver && H.driver_vehicle)
 				H.dir = SOUTH
 				H.driver_vehicle.dir = SOUTH

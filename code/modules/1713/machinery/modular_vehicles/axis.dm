@@ -1,6 +1,10 @@
 ////////AXIS: MOVEMENT LOOP/////////
 
 /obj/structure/vehicleparts/axis/proc/startmovementloop()
+	if (isemptylist(corners))
+		check_corners()
+	if (isemptylist(matrix))
+		check_matrix()
 	moving = TRUE
 	movementloop()
 	movementsound()
@@ -186,11 +190,66 @@
 		loc = VP
 		return
 
-/obj/structure/vehicleparts/axis/proc/do_matrix()
+//basically, a matrix works like this:
+//matrix_l gives the horizontal length, matrix_h gives the vertical height, assuming its facing NORTH.
+//so if we have a 3x4 vehicle, the matrix will look like this:
+//
+//|	1,1	|	1,2	|	1,3	|	1,4	|
+//|	2,1	|	2,2	|	2,3	|	2,4	|
+//|	3,1	|	3,2	|	3,3	|	3,4	|
+//|	4,1	|	4,2	|	4,3	|	4,4	|
+//
+//the matrix always has to be a square with the sides being the value of largest between the length and height.
+//in this case, 1,1 is the FL, 1,3 is the FR, 4,1 is the BL, 4,3 is the BR.
+//so if we turn LEFT: we will be facing EAST, and it will change to:
+
+/obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0)
+	if (olddir == 0 || newdir == 0)
+		return
 	if (isemptylist(corners))
 		check_corners()
+	if (isemptylist(matrix))
+		check_matrix()
 
+	return
 
+/obj/structure/vehicleparts/axis/proc/check_matrix()
+	if (corners[1] == null || corners[2] == null || corners[3] == null || corners[4] == null)
+		world.log << "ERROR BUILDING MATRIX! (Incomplete Corner List)"
+		return FALSE
+	if (dir == NORTH || dir == SOUTH)
+		matrix_l = abs(corners[2].x-corners[1].x)+1
+		matrix_h = abs(corners[4].y-corners[2].y)+1
+	else if (dir == WEST || dir == EAST)
+		matrix_l = abs(corners[2].y-corners[1].y)+1
+		matrix_h = abs(corners[4].x-corners[2].x)+1
+	var/mside = max(matrix_l, matrix_h)
+	if (mside == 0)
+		world.log << "ERROR BUILDING MATRIX! (No Size)"
+		return FALSE
+	else if (mside < 0)
+		mside = abs(mside)
+	var/msize = mside*mside
+	var/locx = 1
+	var/locy = 1
+	for (locx in 1 to mside)
+		for (locy in 1 to mside)
+			matrix += list("[locx],[locy]" = list(null))
+			locy++
+		locx++
+	if (matrix.len != msize)
+		world.log << "ERROR BUILDING MATRIX! (Wrong Size: msize [msize], matrix.len [matrix.len])"
+		return FALSE
+	var/obj/structure/vehicleparts/frame/FFL = corners[2]
+	if (!istype(FFL, /obj/structure/vehicleparts/frame))
+		world.log << "ERROR BUILDING MATRIX! (Front-Left is not a Frame)"
+		return FALSE
+	if (FFL.dir == SOUTH)
+		for (var/obj/structure/vehicleparts/frame/FM in components)
+			var/disx = abs(FM.y-FFL.y)
+			var/disy = abs(FM.x-FFL.x)
+			matrix["[disx+1],[disy+1]"] = list(FM)
+	return TRUE
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 	for (var/obj/structure/vehicleparts/frame/F in components)
@@ -201,7 +260,6 @@
 			for (var/obj/structure/vehicleparts/frame/FF in T1)
 				if (FF.axis == F.axis)
 					sides = "[sides][i]"
-		world.log << "[length(sides)]"
 		if (length(sides) == 2)
 			if (findtext(sides,"1") && findtext(sides,"4") && corners[1] == null) //SW corner
 				if (dir == SOUTH) //FR
@@ -230,7 +288,7 @@
 					corners[1] = F
 				else if (dir == EAST) // BL
 					corners[4] = F
-			if (findtext(sides,"2") && findtext(sides,"4") && corners[4] == null) //NE corner
+			if (findtext(sides,"2") && findtext(sides,"8") && corners[4] == null) //NE corner
 				if (dir == SOUTH) //BL
 					corners[4] = F
 				else if (dir == NORTH) //FR
@@ -242,5 +300,5 @@
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
 	else
-		world.log << "ERROR BUILDING MATRIX!"
+		world.log << "ERROR BUILDING CORNER LIST!"
 		return FALSE

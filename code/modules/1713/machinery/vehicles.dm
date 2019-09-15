@@ -28,7 +28,12 @@
 	var/list/transporting = list()
 	var/list/components = list()
 	var/current_weight = 5
+
+	//matrix/turning stuff
 	var/list/corners = list()
+	var/list/matrix = list()
+	var/matrix_l = 0
+	var/matrix_h = 0
 
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"

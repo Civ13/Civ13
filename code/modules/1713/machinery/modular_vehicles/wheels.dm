@@ -8,15 +8,16 @@
 	var/obj/structure/vehicleparts/frame/control = null
 	var/lastdirchange = 0
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/newdir = "left")
-	control.axis.do_matrix()
 	if (world.time <= lastdirchange)
 		return FALSE
 	if (newdir == "left")
 		control.axis.dir = TURN_LEFT(control.axis.dir)
+		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir))
 		lastdirchange = world.time+15
 		return TRUE
 	else if (newdir == "right")
-		control.axis.dir = TURN_RIGHT(control.axis.dir)
+		control.axis.dir = TURN_LEFT(control.axis.dir)
+		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir))
 		lastdirchange = world.time+15
 		return TRUE
 /obj/item/vehicleparts/wheel/modular/attack_self(mob/living/carbon/human/H)
@@ -30,6 +31,10 @@
 		return
 	if (!control.axis.engine.on && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume > 0)
 		control.axis.engine.turn_on(H)
+		if (isemptylist(control.axis.corners))
+			control.axis.check_corners()
+		if (isemptylist(control.axis.matrix))
+			control.axis.check_matrix()
 		playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 2)
 		spawn(40)
 			if (control.axis.engine && control.axis.engine.on)
@@ -40,68 +45,57 @@
 		return
 	if (control.axis.currentspeed < 0)
 		control.axis.currentspeed = 0
-		var/spd = control.axis.get_speed()
-		control.axis.vehicle_m_delay = spd
-	if (control.axis.currentspeed<control.axis.speeds)
-		if (control.axis.currentspeed == 0 && control.axis.reverse)
-			control.axis.moving = FALSE
-			H << "You stop the [control.axis.engine]."
-			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
-			for (var/obj/structure/vehicleparts/movement/W in control.axis.wheels)
-				W.icon_state = W.base_icon
-				W.update_icon()
-			control.axis.reverse = FALSE
+	control.axis.currentspeed++
+	if (control.axis.currentspeed>control.axis.speeds)
+		control.axis.currentspeed = control.axis.speeds
 
-			return
-		control.axis.currentspeed++
-		if (control.axis.currentspeed>control.axis.speeds)
-			control.axis.currentspeed = control.axis.speeds
+	else
 		var/spd = control.axis.get_speed()
 		control.axis.vehicle_m_delay = spd
 		if (control.axis.currentspeed == 1)
 			control.axis.moving = TRUE
-			control.axis.reverse = FALSE
 			H << "You put on the first gear."
 			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 			control.axis.add_transporting()
 			control.axis.startmovementloop()
+		if (spd <= 0)
+			return
 		else
 			H << "You increase the speed."
-			control.axis.reverse = FALSE
 			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
-		return
-	else
-		return
+			control.axis.vehicle_m_delay = spd
+			return
+
 
 /obj/item/vehicleparts/wheel/modular/secondary_attack_self(mob/living/carbon/human/user)
 	if (!control || !control.axis)
 		return
-	if (control.axis.currentspeed <= 0 || !control.axis.engine.on || control.axis.engine.fueltank.reagents.total_volume <= 0)
+	if (control.axis.currentspeed <= 0 || control.axis.engine.fueltank.reagents.total_volume <= 0)
+		if (control.axis.engine.on)
+			user << "You turn off the [control.axis.engine]."
+			control.axis.engine.on = FALSE
+			control.axis.moving = FALSE
+			control.axis.currentspeed = 0
+			control.axis.engine.update_icon()
+			return
+
 		return
 	else
 		var/spd = control.axis.get_speed()
-		if ((spd <= 0 || control.axis.currentspeed == 0) && !control.axis.reverse)
-			user << "You switch into reverse."
-			control.axis.reverse = TRUE
-			control.axis.add_transporting()
-			control.axis.moving = TRUE
-			control.axis.startmovementloop()
-			playsound(loc, 'sound/effects/lever.ogg',65, TRUE)
+		control.axis.currentspeed--
+		spd = control.axis.get_speed()
+		if (spd <= 0 || control.axis.currentspeed == 0)
+			control.axis.moving = FALSE
+			user << "You stop the [control.axis]."
+			for (var/obj/structure/vehicleparts/movement/W in control.axis.wheels)
+				W.icon_state = W.base_icon
+				W.update_icon()
+			return
 		else
-			control.axis.currentspeed--
-			spd = control.axis.get_speed()
-			if (spd <= 0 || control.axis.currentspeed == 0)
-				control.axis.moving = FALSE
-				user << "You stop \the [control.axis.engine]."
-				control.axis.reverse = FALSE
-				return
-
-			else
-				control.axis.vehicle_m_delay = spd
-				control.axis.reverse = FALSE
-				user << "You reduce the speed."
-				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
-				return
+			control.axis.vehicle_m_delay = spd
+			user << "You reduce the speed."
+			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+			return
 
 /obj/structure/bed/chair/drivers
 	name = "driver's seat"
@@ -136,6 +130,14 @@
 		for(var/obj/item/vehicleparts/wheel/modular/MW in M)
 			M.remove_from_mob(MW)
 			MW.forceMove(src)
+			if (wheel.control.axis.engine.on)
+				wheel.control.axis.engine.on = FALSE
+				wheel.control.axis.moving = FALSE
+				wheel.control.axis.engine.update_icon()
+				user << "You stop the [wheel.control.axis]."
+				for (var/obj/structure/vehicleparts/movement/W in wheel.control.axis.wheels)
+					W.icon_state = W.base_icon
+					W.update_icon()
 	return M
 
 /obj/structure/bed/chair/drivers/update_icon()
