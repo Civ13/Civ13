@@ -22,7 +22,7 @@
 
 	New()
 		..()
-		roof = image(icon=icon, loc=src, icon_state="roof_steel", layer=8)
+		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,2)]", layer=8)
 		roof.override = TRUE
 		spawn(1)
 			update_icon()
@@ -85,6 +85,13 @@
 	for(var/obj/structure/cannon/C in T)
 		for (var/obj/structure/vehicleparts/frame/F in get_turf(locate(x-1,y-1,z)))
 			roof = image(icon='icons/obj/vehicles96x96.dmi',loc=F, icon_state="tank_turret_g", layer=11, dir=C.dir)
+	for (var/obj/structure/CC in T)
+		if (istype(CC, /obj/structure/bed/chair/drivers))
+			roof.icon_state = "roof_steel_hatch_driver"
+		else if (istype(CC, /obj/structure/bed/chair))
+			roof.icon_state = "roof_steel_hatch"
+		else if (istype(CC, /obj/structure/engine))
+			roof.icon_state = "roof_steel_closedhatch"
 	var/comp = ""
 	switch (dir)
 		if (NORTH)
