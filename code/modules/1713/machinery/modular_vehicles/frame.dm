@@ -81,6 +81,7 @@
 /obj/structure/vehicleparts/frame/update_icon()
 	..()
 	overlays.Cut()
+	roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,3)]", layer=8)
 	var/turf/T = get_turf(src)
 	for(var/obj/structure/cannon/C in T)
 		for (var/obj/structure/vehicleparts/frame/F in get_turf(locate(x-1,y-1,z)))
