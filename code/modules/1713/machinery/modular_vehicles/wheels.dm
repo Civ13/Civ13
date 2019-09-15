@@ -8,6 +8,7 @@
 	var/obj/structure/vehicleparts/frame/control = null
 	var/lastdirchange = 0
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/newdir = "left")
+	control.axis.do_matrix()
 	if (world.time <= lastdirchange)
 		return FALSE
 	if (newdir == "left")

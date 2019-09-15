@@ -185,3 +185,62 @@
 		VP.name = "central [VP.name]"
 		loc = VP
 		return
+
+/obj/structure/vehicleparts/axis/proc/do_matrix()
+	if (isemptylist(corners))
+		check_corners()
+
+
+/obj/structure/vehicleparts/axis/proc/check_corners()
+	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
+	for (var/obj/structure/vehicleparts/frame/F in components)
+		var/sides = ""
+		var/turf/T1 = get_turf(get_step(F,NORTH))
+		for (var/i in list(NORTH,SOUTH,EAST,WEST))
+			T1 =  get_turf(get_step(F,i))
+			for (var/obj/structure/vehicleparts/frame/FF in T1)
+				if (FF.axis == F.axis)
+					sides = "[sides][i]"
+		world.log << "[length(sides)]"
+		if (length(sides) == 2)
+			if (findtext(sides,"1") && findtext(sides,"4") && corners[1] == null) //SW corner
+				if (dir == SOUTH) //FR
+					corners[1] = F
+				else if (dir == NORTH) //BL
+					corners[4] = F
+				else if  (dir == WEST) //FL
+					corners[2] = F
+				else if (dir == EAST) // BR
+					corners[3] = F
+			if (findtext(sides,"1") && findtext(sides,"8") && corners[2] == null) //SE corner
+				if (dir == SOUTH) //FL
+					corners[2] = F
+				else if (dir == NORTH) //BR
+					corners[3] = F
+				else if  (dir == WEST) //BL
+					corners[4] = F
+				else if (dir == EAST) // FR
+					corners[1] = F
+			if (findtext(sides,"2") && findtext(sides,"4") && corners[3] == null) //NW corner
+				if (dir == SOUTH) //BR
+					corners[3] = F
+				else if (dir == NORTH) //FL
+					corners[2] = F
+				else if  (dir == WEST) //FR
+					corners[1] = F
+				else if (dir == EAST) // BL
+					corners[4] = F
+			if (findtext(sides,"2") && findtext(sides,"4") && corners[4] == null) //NE corner
+				if (dir == SOUTH) //BL
+					corners[4] = F
+				else if (dir == NORTH) //FR
+					corners[1] = F
+				else if  (dir == WEST) //BR
+					corners[3] = F
+				else if (dir == EAST) // FL
+					corners[2] = F
+	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
+		return TRUE
+	else
+		world.log << "ERROR BUILDING MATRIX!"
+		return FALSE

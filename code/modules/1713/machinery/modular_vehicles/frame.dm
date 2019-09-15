@@ -82,10 +82,17 @@
 	..()
 	overlays.Cut()
 	roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,3)]", layer=8)
+	roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	for(var/obj/structure/cannon/C in T)
-		for (var/obj/structure/vehicleparts/frame/F in get_turf(locate(x-1,y-1,z)))
-			roof = image(icon='icons/obj/vehicles96x96.dmi',loc=F, icon_state="tank_turret_g", layer=11, dir=C.dir)
+		var/image/roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret_g", layer=11, dir=C.dir)
+		if (dir == NORTH || dir == SOUTH)
+			roof_turret.pixel_y = -48
+			roof_turret.pixel_x = -30
+		else if (dir == WEST || dir == EAST)
+			roof_turret.pixel_x = -48
+			roof_turret.pixel_y = -30
+		roof.overlays += roof_turret
 	for (var/obj/CC in T)
 		if (istype(CC, /obj/structure/bed/chair/drivers))
 			roof.icon_state = "roof_steel_hatch_driver"
@@ -254,6 +261,112 @@
 					if ("w_back")
 						w_back = vehicle_walls[ntype]
 	update_icon()
+
+
+/obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf)
+	if (istype(O) && O.checkpass(PASSGLASS))
+		return TRUE
+	if (get_dir(O.loc, target) == dir)
+		return FALSE
+	return TRUE
+
+/obj/structure/vehicleparts/frame/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+
+	if (istype(mover, /obj/effect/effect/smoke))
+		return FALSE
+
+	else if (!istype(mover, /obj/item))
+		if (get_dir(loc, target) & dir)
+			return FALSE
+		else
+			return TRUE
+	else
+		if (istype(mover, /obj/item/projectile))
+			var/obj/item/projectile/proj = mover
+			proj.throw_source = proj.starting
+
+		if (!mover.throw_source)
+			world.log << "OOPS! NO DIR"
+			if (get_dir(loc, target) & dir)
+				return FALSE
+			else
+				return TRUE
+		else
+			world.log << "dir: [dir]"
+			switch(dir)
+				if (NORTH)
+					world.log << "NORTH__D:[get_dir(mover.throw_source, get_turf(src))]"
+					switch (get_dir(mover.throw_source, get_turf(src)))
+						if (NORTH)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+				if (SOUTH)
+					world.log << "SOUTH__D:[get_dir(mover.throw_source, get_turf(src))]"
+					switch (get_dir(mover.throw_source, get_turf(src)))
+						if (NORTH)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								world.log << "1"
+								return TRUE
+						if (SOUTH)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								world.log << "2"
+								return TRUE
+						if (EAST)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								world.log << "3"
+								return TRUE
+						if (WEST)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								world.log << "4"
+								return TRUE
+				if (WEST)
+					world.log << "WEST__D:[get_dir(mover.throw_source, get_turf(src))]"
+					switch (get_dir(mover.throw_source, get_turf(src)))
+						if (NORTH)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+				if (EAST)
+					world.log << "EAST__D:[get_dir(mover.throw_source, get_turf(src))]"
+					switch (get_dir(mover.throw_source, get_turf(src)))
+						if (NORTH)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+			visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
+			if (istype(mover, /obj/item/projectile))
+				var/obj/item/projectile/B = mover
+				B.damage = 0 // make sure we can't hurt people after hitting the armor
+				B.invisibility = 101
+				B.loc = null
+				qdel(B) // because somehow we were still passing the armor
+			return FALSE
+
 //types of walls/borders
 //format: type of wall, opacity, density, armor, current health, can open/close, is open?
 var/global/list/vehicle_walls = list( \

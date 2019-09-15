@@ -28,6 +28,7 @@
 	var/list/transporting = list()
 	var/list/components = list()
 	var/current_weight = 5
+	var/list/corners = list()
 
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
