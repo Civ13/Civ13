@@ -904,6 +904,9 @@
 /client/verb/startmovingup()
 	set name = ".startmovingup"
 	set instant = TRUE
+	if (spampreventer >= world.time)
+		return
+	spampreventer = world.time
 	if (mob)
 		mob.movement_northsouth = NORTH
 		try
@@ -936,6 +939,9 @@
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
 	set instant = TRUE
+	if (spampreventer >= world.time)
+		return
+	spampreventer = world.time
 	if (mob)
 		mob.movement_northsouth = SOUTH
 		try
@@ -966,6 +972,9 @@
 /client/verb/startmovingright()
 	set name = ".startmovingright"
 	set instant = TRUE
+	if (spampreventer >= world.time)
+		return
+	spampreventer = world.time
 	if (mob)
 		mob.movement_eastwest = EAST
 		try
@@ -974,6 +983,8 @@
 			pass(E)
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
+			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
+				MW.turndir("right")
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
@@ -996,6 +1007,9 @@
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
 	set instant = TRUE
+	if (spampreventer >= world.time)
+		return
+	spampreventer = world.time
 	if (mob)
 		mob.movement_eastwest = WEST
 		try
@@ -1004,6 +1018,8 @@
 			pass(E)
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
+			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
+				MW.turndir("left")
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST
@@ -1026,23 +1042,35 @@
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"
 	set instant = TRUE
+	if (spampreventer >= world.time)
+		return
+	spampreventer = world.time
 	if (mob && mob.movement_northsouth == NORTH)
 		mob.movement_northsouth = null
 
 /client/verb/stopmovingdown()
 	set name = ".stopmovingdown"
 	set instant = TRUE
+	if (spampreventer >= world.time)
+		return
+	spampreventer = world.time
 	if (mob && mob.movement_northsouth == SOUTH)
 		mob.movement_northsouth = null
 
 /client/verb/stopmovingright()
 	set name = ".stopmovingright"
 	set instant = TRUE
+	if (spampreventer >= world.time)
+		return
+	spampreventer = world.time
 	if (mob && mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
 
 /client/verb/stopmovingleft()
 	set name = ".stopmovingleft"
 	set instant = TRUE
+	if (spampreventer >= world.time)
+		return
+	spampreventer = world.time
 	if (mob && mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null

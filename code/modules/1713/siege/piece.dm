@@ -44,7 +44,7 @@
 	layer = MOB_LAYER + 1 //just above mobs
 	spritemod = FALSE
 	maxsway = 12
-	firedelay = 15
+	firedelay = 3
 	maxrange = 25
 	anchored = FALSE
 	bound_height = 32
