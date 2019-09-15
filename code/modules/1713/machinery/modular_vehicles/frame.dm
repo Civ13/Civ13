@@ -22,7 +22,7 @@
 
 	New()
 		..()
-		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,2)]", layer=8)
+		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,3)]", layer=8)
 		roof.override = TRUE
 		spawn(1)
 			update_icon()
@@ -91,6 +91,8 @@
 		else if (istype(CC, /obj/structure/bed/chair))
 			roof.icon_state = "roof_steel_hatch"
 		else if (istype(CC, /obj/structure/engine))
+			roof.icon_state = "roof_steel_exhaust"
+		else if (istype(CC, /obj/item/weapon/reagent_containers/glass/barrel/fueltank))
 			roof.icon_state = "roof_steel_closedhatch"
 	var/comp = ""
 	switch (dir)
