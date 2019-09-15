@@ -22,17 +22,10 @@
 
 	New()
 		..()
-		if (!islist(w_front))
-			w_front = vehicle_walls[w_front]
-		if (!islist(w_back))
-			w_back = vehicle_walls[w_back]
-		if (!islist(w_left))
-			w_left = vehicle_walls[w_left]
-		if (!islist(w_right))
-			w_right = vehicle_walls[w_right]
-
-		update_icon()
-		roof = image(icon=icon, loc=src.loc, icon_state="roof_steel", layer=8)
+		roof = image(icon=icon, loc=src, icon_state="roof_steel", layer=8)
+		roof.override = TRUE
+		spawn(1)
+			update_icon()
 	relaymove(var/mob/mob, direction)
 		..()
 		update_icon()
@@ -88,59 +81,96 @@
 /obj/structure/vehicleparts/frame/update_icon()
 	..()
 	overlays.Cut()
+	var/turf/T = get_turf(src)
+	for(var/obj/structure/cannon/C in T)
+		for (var/obj/structure/vehicleparts/frame/F in get_turf(locate(x-1,y-1,z)))
+			roof = image(icon='icons/obj/vehicles96x96.dmi',loc=F, icon_state="tank_turret_g", layer=11, dir=C.dir)
+	var/comp = ""
 	switch (dir)
 		if (NORTH)
-			if (w_left)
-				var/image/tmpimg3 = image(icon=icon, icon_state=w_left[1], layer=4.5, dir=WEST)
+			if (w_left[1] != "")
+				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=WEST)
 				overlays += tmpimg3
-			if (w_right)
-				var/image/tmpimg4 = image(icon=icon, icon_state=w_right[1], layer=4.5, dir=EAST)
+				comp = "[comp]l"
+				roof.overlays += tmpimg3
+			if (w_right[1] != "")
+				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=EAST)
 				overlays += tmpimg4
-			if (w_front)
-				var/image/tmpimg1 = image(icon=icon, icon_state=w_front[1], layer=4.5, dir=NORTH)
+				comp = "[comp]r"
+				roof.overlays += tmpimg4
+			if (w_front[1] != "")
+				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=NORTH)
 				overlays += tmpimg1
-			if (w_back)
-				var/image/tmpimg2 = image(icon=icon, icon_state=w_back[1], layer=4.5, dir=SOUTH)
+				comp = "[comp]f"
+				roof.overlays += tmpimg1
+			if (w_back[1] != "")
+				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=SOUTH)
 				overlays += tmpimg2
+				comp = "[comp]b"
+				roof.overlays += tmpimg2
 		if (SOUTH)
-			if (w_left)
-				var/image/tmpimg3 = image(icon=icon, icon_state=w_left[1], layer=4.5, dir=EAST)
+			if (w_left[1] != "")
+				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=EAST)
 				overlays += tmpimg3
-			if (w_right)
-				var/image/tmpimg4 = image(icon=icon, icon_state=w_right[1], layer=4.5, dir=WEST)
+				comp = "[comp]l"
+				roof.overlays += tmpimg3
+			if (w_right[1] != "")
+				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=WEST)
 				overlays += tmpimg4
-			if (w_front)
-				var/image/tmpimg1 = image(icon=icon, icon_state=w_front[1], layer=4.5, dir=SOUTH)
+				comp = "[comp]r"
+				roof.overlays += tmpimg4
+			if (w_front[1] != "")
+				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=SOUTH)
 				overlays += tmpimg1
-			if (w_back)
-				var/image/tmpimg2 = image(icon=icon, icon_state=w_back[1], layer=4.5, dir=NORTH)
+				comp = "[comp]f"
+				roof.overlays += tmpimg1
+			if (w_back[1] != "")
+				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=NORTH)
 				overlays += tmpimg2
+				comp = "[comp]b"
+				roof.overlays += tmpimg2
 		if (EAST)
-			if (w_left)
-				var/image/tmpimg3 = image(icon=icon, icon_state=w_left[1], layer=4.5, dir=NORTH)
+			if (w_left[1] != "")
+				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=NORTH)
 				overlays += tmpimg3
-			if (w_right)
-				var/image/tmpimg4 = image(icon=icon, icon_state=w_right[1], layer=4.5, dir=SOUTH)
+				comp = "[comp]l"
+				roof.overlays += tmpimg3
+			if (w_right[1] != "")
+				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=SOUTH)
 				overlays += tmpimg4
-			if (w_front)
-				var/image/tmpimg1 = image(icon=icon, icon_state=w_front[1], layer=4.5, dir=EAST)
+				comp = "[comp]r"
+				roof.overlays += tmpimg4
+			if (w_front[1] != "")
+				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=EAST)
 				overlays += tmpimg1
-			if (w_back)
-				var/image/tmpimg2 = image(icon=icon, icon_state=w_back[1], layer=4.5, dir=WEST)
+				comp = "[comp]f"
+				roof.overlays += tmpimg1
+			if (w_back[1] != "")
+				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=WEST)
 				overlays += tmpimg2
+				comp = "[comp]b"
+				roof.overlays += tmpimg2
 		if (WEST)
-			if (w_left)
-				var/image/tmpimg3 = image(icon=icon, icon_state=w_left[1], layer=4.5, dir=SOUTH)
+			if (w_left[1] != "")
+				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=SOUTH)
 				overlays += tmpimg3
-			if (w_right)
-				var/image/tmpimg4 = image(icon=icon, icon_state=w_right[1], layer=4.5, dir=NORTH)
+				comp = "[comp]l"
+				roof.overlays += tmpimg3
+			if (w_right[1] != "")
+				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=NORTH)
 				overlays += tmpimg4
-			if (w_front)
-				var/image/tmpimg1 = image(icon=icon, icon_state=w_front[1], layer=4.5, dir=WEST)
+				comp = "[comp]r"
+				roof.overlays += tmpimg4
+			if (w_front[1] != "")
+				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=WEST)
 				overlays += tmpimg1
-			if (w_back)
-				var/image/tmpimg2 = image(icon=icon, icon_state=w_back[1], layer=4.5, dir=EAST)
+				comp = "[comp]f"
+				roof.overlays += tmpimg1
+			if (w_back[1] != "")
+				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=EAST)
 				overlays += tmpimg2
+				comp = "[comp]b"
+				roof.overlays += tmpimg2
 
 /obj/structure/vehicleparts/frame/lwall
 	w_left = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)

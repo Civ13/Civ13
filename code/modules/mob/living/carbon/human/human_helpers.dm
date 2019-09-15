@@ -233,19 +233,17 @@
 
 
 /mob/living/carbon/human/proc/process_roofs()
-	return
-/*
 	if (!client)
 		return
 	var/obj/structure/vehicleparts/frame/found = null
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
-		break
 	if (found)
 		for (var/obj/structure/vehicleparts/frame/FR in view(7, src))
 			if (FR.axis != found.axis && FR != found)
 				client.images += FR.roof
+			else
+				client.images -= FR.roof
 	else
 		for (var/obj/structure/vehicleparts/frame/FR in view(7, src))
 			client.images += FR.roof
-*/
