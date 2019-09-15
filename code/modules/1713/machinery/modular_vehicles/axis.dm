@@ -97,6 +97,8 @@
 				if (CV.density == TRUE)
 					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
 					return FALSE
+			for(var/obj/item/I in T && !(I in transporting))
+				qdel(I)
 			var/canpass = FALSE
 			for(var/obj/covers/CVV in T)
 				if (CVV.density == FALSE)
