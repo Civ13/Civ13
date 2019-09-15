@@ -50,18 +50,46 @@
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
+			var/turf/TT = get_turf(get_step(T, dir))
+			for(var/mob/living/L in TT)
+				var/protec = FALSE
+				for (var/obj/structure/vehicleparts/frame/FRR in L.loc)
+					if (FRR.axis == FR.axis)
+						protec = TRUE
+				if (!protec)
+					if (current_weight >= 45)
+						visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
+						L.crush()
+						if (L)
+							qdel(L)
+					else
+						if (ishuman(L))
+							var/mob/living/carbon/human/HH = L
+							HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
+							HH.Weaken(rand(2,5))
+							visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
+							L.forceMove(get_turf(get_step(TT,dir)))
+						else if (istype(L,/mob/living/simple_animal))
+							var/mob/living/simple_animal/SA = L
+							SA.adjustBruteLoss(rand(7,16)*abs(currentspeed))
+							if (SA.mob_size >= 30)
+								visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
+								L.forceMove(get_turf(get_step(TT,dir)))
+							else
+								visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+								SA.crush()
 			for(var/obj/structure/O in T)
 				if (O.density == TRUE && !(O in transporting))
 					if (current_weight >= 55)
 						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
-						O.Destroy()
+						qdel(O)
 					else
 						visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 						return FALSE
 				else if (O.density == FALSE && !(O in transporting))
-					if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central))
+					if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/rails))
 						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
-						O.Destroy()
+						qdel(O)
 			if (T.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
 				return FALSE
@@ -69,26 +97,6 @@
 				if (CV.density == TRUE)
 					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
 					return FALSE
-			for(var/mob/living/L in T && !(L in transporting))
-				if (current_weight >= 45)
-					visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
-					L.crush()
-				else
-					if (ishuman(L))
-						var/mob/living/carbon/human/HH = L
-						HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
-						HH.Weaken(rand(2,5))
-						visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
-						L.forceMove(get_turf(get_step(T,dir)))
-					else if (istype(L,/mob/living/simple_animal))
-						var/mob/living/simple_animal/SA = L
-						SA.adjustBruteLoss(rand(7,16)*abs(currentspeed))
-						if (SA.mob_size >= 30)
-							visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
-							L.forceMove(get_turf(get_step(T,dir)))
-						else
-							visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
-							SA.crush()
 			var/canpass = FALSE
 			for(var/obj/covers/CVV in T)
 				if (CVV.density == FALSE)
