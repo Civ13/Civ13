@@ -310,10 +310,10 @@
 	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/rf
 	w_right = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-	w_front = list("c_wall",FALSE,TRUE,6,35,FALSE,FALSE)
+	w_front = list("c_wall",FALSE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/lf
 	w_left = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-	w_front = list("c_wall",FALSE,TRUE,6,35,FALSE,FALSE)
+	w_front = list("c_wall",FALSE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/rb/armored
 	w_right = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
 	w_back = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
@@ -425,132 +425,64 @@
 	if (istype(mover, /obj/effect/effect/smoke))
 		return FALSE
 	else
-		if (istype(mover, /obj/item/projectile))
-			var/obj/item/projectile/proj = mover
-			proj.throw_source = proj.starting
-			switch(get_dir(proj,target))
-				if (NORTH)
-					switch(dir)
-						if (NORTH)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-						if (SOUTH)
 							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-				if (SOUTH)
-					switch(dir)
-						if (NORTH)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-				if (WEST)
-					switch(dir)
-						if (NORTH)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-				if (EAST)
-					switch(dir)
-						if (NORTH)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-			visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
-			if (istype(mover, /obj/item/projectile))
-				var/obj/item/projectile/B = mover
-				B.damage = 0 // make sure we can't hurt people after hitting the armor
-				B.invisibility = 101
-				B.loc = null
-				qdel(B) // because somehow we were still passing the armor
-			return FALSE
-		else
-			switch(mover.dir)
-				if (NORTH)
-					switch(dir)
-						if (NORTH)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-				if (SOUTH)
-					switch(dir)
-						if (NORTH)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-				if (WEST)
-					switch(dir)
-						if (NORTH)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-				if (EAST)
-					switch(dir)
-						if (NORTH)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
+		switch(mover.dir)
+			if (NORTH)
+				switch(dir)
+					if (NORTH)
+						if (w_back[1] == "" || w_back[7] == TRUE)
+							return TRUE
+					if (SOUTH)
+						if (w_front[1] == "" || w_front[7] == TRUE)
+							return TRUE
+					if (WEST)
+						if (w_left[1] == "" || w_left[7] == TRUE)
+							return TRUE
+					if (EAST)
+						if (w_right[1] == "" || w_right[7] == TRUE)
+							return TRUE
+			if (SOUTH)
+				switch(dir)
+					if (NORTH)
+						if (w_front[1] == "" || w_front[7] == TRUE)
+							return TRUE
+					if (SOUTH)
+						if (w_back[1] == "" || w_back[7] == TRUE)
+							return TRUE
+					if (WEST)
+						if (w_right[1] == "" || w_right[7] == TRUE)
+							return TRUE
+					if (EAST)
+						if (w_left[1] == "" || w_left[7] == TRUE)
+							return TRUE
+			if (WEST)
+				switch(dir)
+					if (NORTH)
+						if (w_right[1] == "" || w_right[7] == TRUE)
+							return TRUE
+					if (SOUTH)
+						if (w_left[1] == "" || w_left[7] == TRUE)
+							return TRUE
+					if (WEST)
+						if (w_back[1] == "" || w_back[7] == TRUE)
+							return TRUE
+					if (EAST)
+						if (w_front[1] == "" || w_front[7] == TRUE)
+							return TRUE
+			if (EAST)
+				switch(dir)
+					if (NORTH)
+						if (w_left[1] == "" || w_left[7] == TRUE)
+							return TRUE
+					if (SOUTH)
+						if (w_right[1] == "" || w_right[7] == TRUE)
+							return TRUE
+					if (WEST)
+						if (w_front[1] == "" || w_front[7] == TRUE)
+							return TRUE
+					if (EAST)
+						if (w_back[1] == "" || w_back[7] == TRUE)
+							return TRUE
 	return FALSE
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/mover)
 	CanPass(mover)
@@ -590,9 +522,106 @@
 			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	else
 		..()
+/obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/projectile/proj)
+	proj.throw_source = proj.starting
+	switch(get_dir(proj.throw_source, get_turf(src)))
+		if (NORTH)
+			switch(dir)
+				if (NORTH)
+					return w_back
+				if (SOUTH)
+					return w_front
+				if (WEST)
+					return w_left
+				if (EAST)
+					return w_right
+		if (SOUTH)
+			switch(dir)
+				if (NORTH)
+					return w_front
+				if (SOUTH)
+					return w_back
+				if (WEST)
+					return w_right
+				if (EAST)
+					return w_left
+		if (WEST)
+			switch(dir)
+				if (NORTH)
+					return w_right
+				if (SOUTH)
+					return w_left
+				if (WEST)
+					return w_back
+				if (EAST)
+					return w_front
+		if (EAST)
+			switch(dir)
+				if (NORTH)
+					return w_left
+				if (SOUTH)
+					return w_right
+				if (WEST)
+					return w_front
+				if (EAST)
+					return w_back
+	return list()
+
+/obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/list/penloc = list())
+	if (!penloc || !islist(penloc) || penloc.len < 7)
+		return FALSE
+	proj.throw_source = proj.starting
+	if (proj.heavy_armor_penetration > penloc[4])
+		return TRUE
+	else
+		return FALSE
+	return FALSE
+
+/obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/list/penloc = list())
+	if (penloc && islist(penloc) && penloc.len >= 5)
+		penloc[5] -= proj.damage * 0.01
+		visible_message("<span class = 'warning'>\The [src] hits \the [src]!</span>")
+		try_destroy()
+		return
+	else
+		..()
+
+/obj/structure/vehicleparts/frame/proc/try_destroy()
+	if (w_left[5] <= 0)
+		w_left = list("",FALSE,FALSE,0,40,FALSE,FALSE)
+		visible_message("<span class='danger'>The wall gets wrecked!</span>")
+	if (w_right[5] <= 0)
+		w_right = list("",FALSE,FALSE,0,40,FALSE,FALSE)
+		visible_message("<span class='danger'>The wall gets wrecked!</span>")
+	if (w_front[5] <= 0)
+		w_front = list("",FALSE,FALSE,0,40,FALSE,FALSE)
+		visible_message("<span class='danger'>The wall gets wrecked!</span>")
+	if (w_back[5] <= 0)
+		w_back = list("",FALSE,FALSE,0,40,FALSE,FALSE)
+		visible_message("<span class='danger'>The wall gets wrecked!</span>")
+
+/obj/structure/vehicleparts/frame/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			w_left[5]-=rand(17,22)
+			w_right[5]-=rand(17,22)
+			w_front[5]-=rand(17,22)
+			w_back[5]-=rand(17,22)
+			try_destroy()
+			return
+		if (2.0)
+			w_left[5]-=rand(7,12)
+			w_right[5]-=rand(7,12)
+			w_front[5]-=rand(7,12)
+			w_back[5]-=rand(7,12)
+			try_destroy()
+			return
+		if (3.0)
+			return
 //types of walls/borders
 //format: type of wall, opacity, density, armor, current health, can open/close, is open?
 var/global/list/vehicle_walls = list( \
+	"" = list("",FALSE,FALSE,0,40,FALSE,FALSE), \
 	"c_wall" = list("c_window",FALSE,TRUE,20,50,FALSE,FALSE), \
 	"c_window" = list("c_wall",TRUE,TRUE,10,40,FALSE,FALSE), \
 	"c_windshield" = list("c_windshield",FALSE,TRUE,6,35,FALSE,FALSE), \
