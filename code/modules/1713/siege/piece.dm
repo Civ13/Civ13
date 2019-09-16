@@ -237,8 +237,8 @@
 			user << "<span class = 'danger'>There's nothing in \the [src].</span>"
 			return
 
-
-		if (do_after(user, firedelay, src))
+		var/istank = istype(src, /obj/structure/cannon/modern/tank)
+		if (do_after(user, firedelay, src, can_move = istank))
 
 			// firing code
 

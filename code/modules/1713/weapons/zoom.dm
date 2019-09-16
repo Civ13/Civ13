@@ -66,6 +66,20 @@ Parts of code courtesy of Super3222
 	attachable = FALSE
 	value = 15
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope
+	name = "periscope"
+	desc = "A solid metal periscope."
+	icon_state = "periscope"
+	max_zoom = ZOOM_CONSTANT*3
+	attachable = FALSE
+	value = 15
+	var/obj/structure/bed/chair/commander/commanderchair = null
+	anchored = FALSE
+	flammable = FALSE
+	nothrow = TRUE
+	nodrop = TRUE
+	w_class = 5
+
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"
 	set category = null
@@ -131,10 +145,15 @@ Parts of code courtesy of Super3222
 	if (user.stat || !ishuman(user))
 		if (!silent) user << "You are unable to focus through \the [src]."
 		return FALSE
+	if (!istype(src, /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
+		for (var/obj/structure/vehicleparts/frame/FR in user.loc)
+			if (FR.axis)
+				user << "You can't use \the [src] while inside a vehicle!"
+				return FALSE
 	if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))
 		var/obj/item/clothing/mask/currmask = H.wear_mask
 		if (currmask.blocks_scope)
-			if (!silent) user << "You can't use the [src] while wearing \the [currmask]!"
+			if (!silent) user << "You can't use \the [src] while wearing \the [currmask]!"
 			return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
 		if (!silent) user << "Your visor gets in the way of looking through \the [src]."

@@ -171,10 +171,67 @@
 	desc = "a seat next to the gun trigger."
 	icon_state = "officechair_white"
 	anchored = FALSE
-
+/obj/structure/bed/chair/gunner/update_icon()
+	return
 /obj/structure/bed/chair/loader
 	name = "loader's seat"
 	desc = "A seat at the gun loader's position."
 	icon_state = "officechair_white"
 	anchored = FALSE
+/obj/structure/bed/chair/gunner/update_icon()
+	return
 //////////COMMANDER CHAIR/////////////
+/obj/structure/bed/chair/commander
+	name = "commander's seat"
+	desc = "The vehicle commander's seat, with a perisope."
+	anchored = FALSE
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+	var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/periscope = null
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
+		periscope.commanderchair = src
+
+/obj/structure/bed/chair/commander/user_unbuckle_mob(mob/user)
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		for(var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/PS in M)
+			M.remove_from_mob(PS)
+			PS.forceMove(src)
+	return M
+
+/obj/structure/bed/chair/commander/update_icon()
+	return
+
+/obj/structure/bed/chair/commander/post_buckle_mob()
+	if (buckled_mob && istype(buckled_mob, /mob/living/carbon/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
+		buckled_mob << "Your hands are full!"
+		return
+
+/obj/structure/bed/chair/commander/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (buckled_mob && H == buckled_mob && istype(I, /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
+		H.remove_from_mob(I)
+		I.forceMove(src)
+		user_unbuckle_mob(H)
+		return
+	else
+		..()
+/obj/structure/bed/chair/commander/attack_hand( var/mob/living/carbon/human/H)
+	if (buckled_mob && H == buckled_mob && periscope.loc != H)
+		if (buckled_mob.put_in_active_hand(periscope))
+			H << "You look through the periscope."
+			return
+	else
+		..()
