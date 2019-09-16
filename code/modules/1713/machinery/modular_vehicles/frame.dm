@@ -336,81 +336,67 @@
 
 	if (istype(mover, /obj/effect/effect/smoke))
 		return FALSE
-
-	else if (!istype(mover, /obj/item))
-		if (get_dir(loc, target) & dir)
-			return FALSE
-		else
-			return TRUE
 	else
 		if (istype(mover, /obj/item/projectile))
 			var/obj/item/projectile/proj = mover
 			proj.throw_source = proj.starting
-
-		if (!mover.throw_source)
-			if (get_dir(loc, target) & dir)
-				return FALSE
-			else
-				return TRUE
-		else
-			for(var/obj/structure/vehicleparts/frame/F in target)
-				switch(mover.dir)
-					if (NORTH)
-						switch(F.dir)
-							if (NORTH)
-								if (F.w_back[1] == "" || F.w_back[7] == TRUE)
-									return FALSE
-							if (SOUTH)
-								if (F.w_front[1] == "" || F.w_front[7] == TRUE)
-									return FALSE
-							if (WEST)
-								if (F.w_left[1] == "" || F.w_left[7] == TRUE)
-									return FALSE
-							if (EAST)
-								if (F.w_right[1] == "" || F.w_right[7] == TRUE)
-									return FALSE
-					if (SOUTH)
-						switch(F.dir)
-							if (NORTH)
-								if (F.w_front[1] == "" || F.w_front[7] == TRUE)
-									return FALSE
-							if (SOUTH)
-								if (F.w_back[1] == "" || F.w_back[7] == TRUE)
-									return FALSE
-							if (WEST)
-								if (F.w_right[1] == "" || F.w_right[7] == TRUE)
-									return FALSE
-							if (EAST)
-								if (F.w_left[1] == "" || F.w_left[7] == TRUE)
-									return FALSE
-					if (WEST)
-						switch(F.dir)
-							if (NORTH)
-								if (F.w_right[1] == "" || F.w_right[7] == TRUE)
-									return FALSE
-							if (SOUTH)
-								if (F.w_left[1] == "" || F.w_left[7] == TRUE)
-									return FALSE
-							if (WEST)
-								if (F.w_back[1] == "" || F.w_back[7] == TRUE)
-									return FALSE
-							if (EAST)
-								if (F.w_front[1] == "" || F.w_front[7] == TRUE)
-									return FALSE
-					if (EAST)
-						switch(F.dir)
-							if (NORTH)
-								if (F.w_left[1] == "" || F.w_left[7] == TRUE)
-									return FALSE
-							if (SOUTH)
-								if (F.w_right[1] == "" || F.w_right[7] == TRUE)
-									return FALSE
-							if (WEST)
-								if (F.w_front[1] == "" || F.w_front[7] == TRUE)
-									return FALSE
-							if (EAST)
-								if (F.w_back[1] == "" || F.w_back[7] == TRUE)
-									return FALSE
+			switch(mover.dir)
+				if (NORTH)
+					switch(dir)
+						if (NORTH)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+				if (SOUTH)
+					switch(dir)
+						if (NORTH)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+				if (WEST)
+					switch(dir)
+						if (NORTH)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+				if (EAST)
+					switch(dir)
+						if (NORTH)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
 			visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 			if (istype(mover, /obj/item/projectile))
 				var/obj/item/projectile/B = mover
@@ -418,40 +404,98 @@
 				B.invisibility = 101
 				B.loc = null
 				qdel(B) // because somehow we were still passing the armor
-			return TRUE
-
+			return FALSE
+		else
+			switch(mover.dir)
+				if (NORTH)
+					switch(dir)
+						if (NORTH)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+				if (SOUTH)
+					switch(dir)
+						if (NORTH)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+				if (WEST)
+					switch(dir)
+						if (NORTH)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+				if (EAST)
+					switch(dir)
+						if (NORTH)
+							if (w_left[1] == "" || w_left[7] == TRUE)
+								return TRUE
+						if (SOUTH)
+							if (w_right[1] == "" || w_right[7] == TRUE)
+								return TRUE
+						if (WEST)
+							if (w_front[1] == "" || w_front[7] == TRUE)
+								return TRUE
+						if (EAST)
+							if (w_back[1] == "" || w_back[7] == TRUE)
+								return TRUE
+	return FALSE
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (istype(I,/obj/item/weapon/key))
 		if (w_front[6])
 			if (w_front[7])
-				visible_message("[H] closes the door.")
+				visible_message("[H] locks the door.")
 				w_front[7] = FALSE
 			else
-				visible_message("[H] opens the door.")
+				visible_message("[H] unlocks the door.")
 				w_front[7] = TRUE
 			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (w_back[6])
 			if (w_back[7])
-				visible_message("[H] closes the door.")
+				visible_message("[H] locks the door.")
 				w_back[7] = FALSE
 			else
-				visible_message("[H] opens the door.")
+				visible_message("[H] unlocks the door.")
 				w_back[7] = TRUE
 			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (w_left[6])
 			if (w_left[7])
-				visible_message("[H] closes the door.")
+				visible_message("[H] locks the door.")
 				w_left[7] = FALSE
 			else
-				visible_message("[H] opens the door.")
+				visible_message("[H] unlocks the door.")
 				w_left[7] = TRUE
 			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (w_right[6])
 			if (w_right[7])
-				visible_message("[H] closes the door.")
+				visible_message("[H] locks the door.")
 				w_right[7] = FALSE
 			else
-				visible_message("[H] opens the door.")
+				visible_message("[H] unlocks the door.")
 				w_right[7] = TRUE
 			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	else
