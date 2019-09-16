@@ -461,7 +461,7 @@
 
 	if (istype(get_turf(firer), /turf/floor/trench) && firer.prone)
 		if (!istype(T,/turf/floor/trench) && get_dist(T, firer)>2)
-			world << "<span class = 'warning'>The [name] hits \the trench wall!</span>"
+			world << "<span class = 'warning'>The [name] hits the trench wall!</span>"
 			qdel(src)
 			return
 	if(can_hit_in_trench == 1)
@@ -470,16 +470,33 @@
 				can_hit_in_trench = 0
 			else
 				can_hit_in_trench = -1
-	for (var/obj/structure/vehicleparts/frame/FR in T.loc)
-		FR.CanPass(src, T)
 	if (T.density || (can_hit_in_trench == -1 && !istype(T, /turf/floor/trench)))
 		passthrough = FALSE
 	else
 		if(!istype(T, /turf/floor/trench) || can_hit_in_trench)
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
+				if (istype(O, /obj/structure/vehicleparts/frame))
+					var/obj/structure/vehicleparts/frame/NO = O
+					var/list/penloc = NO.CheckPenLoc(src)
+					if (!isemptylist(penloc))
+						if (!NO.CheckPen(src,penloc))
+							passthrough = FALSE
+							NO.bullet_act(src,penloc)
+							bumped = TRUE
+							loc = null
+							qdel(src)
+							return FALSE
+						else
+							if (prob(50))
+								NO.bullet_act(src,penloc)
+								bumped = TRUE
+								passthrough = FALSE
+								loc = null
+								qdel(src)
+								return FALSE
+				var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 				if (O == original)
-					var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
 						hitchance = 50
 					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.

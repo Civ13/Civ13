@@ -425,7 +425,6 @@
 	if (istype(mover, /obj/effect/effect/smoke))
 		return FALSE
 	else
-							if (w_front[1] == "" || w_front[7] == TRUE)
 		switch(mover.dir)
 			if (NORTH)
 				switch(dir)
