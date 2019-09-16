@@ -12,12 +12,12 @@
 		return FALSE
 	if (newdir == "left")
 		control.axis.dir = TURN_LEFT(control.axis.dir)
-		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir))
+		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), "left")
 		lastdirchange = world.time+15
 		return TRUE
 	else if (newdir == "right")
 		control.axis.dir = TURN_LEFT(control.axis.dir)
-		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir))
+		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), "right")
 		lastdirchange = world.time+15
 		return TRUE
 /obj/item/vehicleparts/wheel/modular/attack_self(mob/living/carbon/human/H)

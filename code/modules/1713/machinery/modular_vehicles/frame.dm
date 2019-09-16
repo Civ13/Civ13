@@ -197,6 +197,14 @@
 	w_front = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/bwall
 	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/ldoor
+	w_left = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
+/obj/structure/vehicleparts/frame/rdoor
+	w_right = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
+/obj/structure/vehicleparts/frame/fdoor
+	w_front = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
+/obj/structure/vehicleparts/frame/bdoor
+	w_back = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
 /obj/structure/vehicleparts/frame/lwall/armored
 	w_left = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/rwall/armored
@@ -264,11 +272,65 @@
 
 
 /obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf)
-	if (istype(O) && O.checkpass(PASSGLASS))
-		return TRUE
-	if (get_dir(O.loc, target) == dir)
-		return FALSE
-	return TRUE
+	var/chdir = get_dir(O.loc, target)
+	switch(chdir)
+		if (NORTH,NORTHEAST,NORTHWEST)
+			switch(dir)
+				if (NORTH)
+					if (w_front[1] == "" || w_front[7] == TRUE)
+						return TRUE
+				if (SOUTH)
+					if (w_back[1] == "" || w_back[7] == TRUE)
+						return TRUE
+				if (WEST)
+					if (w_right[1] == "" || w_right[7] == TRUE)
+						return TRUE
+				if (EAST)
+					if (w_left[1] == "" || w_left[7] == TRUE)
+						return TRUE
+		if (SOUTH,SOUTHEAST,SOUTHWEST)
+			switch(dir)
+				if (NORTH)
+					if (w_back[1] == "" || w_back[7] == TRUE)
+						return TRUE
+				if (SOUTH)
+					if (w_front[1] == "" || w_front[7] == TRUE)
+						return TRUE
+				if (WEST)
+					if (w_left[1] == "" || w_left[7] == TRUE)
+						return TRUE
+				if (EAST)
+					if (w_right[1] == "" || w_right[7] == TRUE)
+						return TRUE
+		if (WEST,NORTHWEST,SOUTHWEST)
+			switch(dir)
+				if (NORTH)
+					if (w_left[1] == "" || w_left[7] == TRUE)
+						return TRUE
+				if (SOUTH)
+					if (w_right[1] == "" || w_right[7] == TRUE)
+						return TRUE
+				if (WEST)
+					if (w_front[1] == "" || w_front[7] == TRUE)
+						return TRUE
+				if (EAST)
+					if (w_back[1] == "" || w_back[7] == TRUE)
+						return TRUE
+		if (EAST,NORTHEAST,SOUTHEAST)
+			switch(dir)
+				if (NORTH)
+					if (w_right[1] == "" || w_right[7] == TRUE)
+						return TRUE
+				if (SOUTH)
+					if (w_left[1] == "" || w_left[7] == TRUE)
+						return TRUE
+				if (WEST)
+					if (w_back[1] == "" || w_back[7] == TRUE)
+						return TRUE
+				if (EAST)
+					if (w_front[1] == "" || w_front[7] == TRUE)
+						return TRUE
+	return FALSE
 
 /obj/structure/vehicleparts/frame/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 
@@ -286,78 +348,69 @@
 			proj.throw_source = proj.starting
 
 		if (!mover.throw_source)
-			world.log << "OOPS! NO DIR"
 			if (get_dir(loc, target) & dir)
 				return FALSE
 			else
 				return TRUE
 		else
-			world.log << "dir: [dir]"
-			switch(dir)
-				if (NORTH)
-					world.log << "NORTH__D:[get_dir(mover.throw_source, get_turf(src))]"
-					switch (get_dir(mover.throw_source, get_turf(src)))
-						if (NORTH)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-				if (SOUTH)
-					world.log << "SOUTH__D:[get_dir(mover.throw_source, get_turf(src))]"
-					switch (get_dir(mover.throw_source, get_turf(src)))
-						if (NORTH)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								world.log << "1"
-								return TRUE
-						if (SOUTH)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								world.log << "2"
-								return TRUE
-						if (EAST)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								world.log << "3"
-								return TRUE
-						if (WEST)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								world.log << "4"
-								return TRUE
-				if (WEST)
-					world.log << "WEST__D:[get_dir(mover.throw_source, get_turf(src))]"
-					switch (get_dir(mover.throw_source, get_turf(src)))
-						if (NORTH)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-				if (EAST)
-					world.log << "EAST__D:[get_dir(mover.throw_source, get_turf(src))]"
-					switch (get_dir(mover.throw_source, get_turf(src)))
-						if (NORTH)
-							if (w_right[1] == "" || w_right[7] == TRUE)
-								return TRUE
-						if (SOUTH)
-							if (w_left[1] == "" || w_left[7] == TRUE)
-								return TRUE
-						if (EAST)
-							if (w_back[1] == "" || w_back[7] == TRUE)
-								return TRUE
-						if (WEST)
-							if (w_front[1] == "" || w_front[7] == TRUE)
-								return TRUE
+			for(var/obj/structure/vehicleparts/frame/F in target)
+				switch(mover.dir)
+					if (NORTH)
+						switch(F.dir)
+							if (NORTH)
+								if (F.w_back[1] == "" || F.w_back[7] == TRUE)
+									return FALSE
+							if (SOUTH)
+								if (F.w_front[1] == "" || F.w_front[7] == TRUE)
+									return FALSE
+							if (WEST)
+								if (F.w_left[1] == "" || F.w_left[7] == TRUE)
+									return FALSE
+							if (EAST)
+								if (F.w_right[1] == "" || F.w_right[7] == TRUE)
+									return FALSE
+					if (SOUTH)
+						switch(F.dir)
+							if (NORTH)
+								if (F.w_front[1] == "" || F.w_front[7] == TRUE)
+									return FALSE
+							if (SOUTH)
+								if (F.w_back[1] == "" || F.w_back[7] == TRUE)
+									return FALSE
+							if (WEST)
+								if (F.w_right[1] == "" || F.w_right[7] == TRUE)
+									return FALSE
+							if (EAST)
+								if (F.w_left[1] == "" || F.w_left[7] == TRUE)
+									return FALSE
+					if (WEST)
+						switch(F.dir)
+							if (NORTH)
+								if (F.w_right[1] == "" || F.w_right[7] == TRUE)
+									return FALSE
+							if (SOUTH)
+								if (F.w_left[1] == "" || F.w_left[7] == TRUE)
+									return FALSE
+							if (WEST)
+								if (F.w_back[1] == "" || F.w_back[7] == TRUE)
+									return FALSE
+							if (EAST)
+								if (F.w_front[1] == "" || F.w_front[7] == TRUE)
+									return FALSE
+					if (EAST)
+						switch(F.dir)
+							if (NORTH)
+								if (F.w_left[1] == "" || F.w_left[7] == TRUE)
+									return FALSE
+							if (SOUTH)
+								if (F.w_right[1] == "" || F.w_right[7] == TRUE)
+									return FALSE
+							if (WEST)
+								if (F.w_front[1] == "" || F.w_front[7] == TRUE)
+									return FALSE
+							if (EAST)
+								if (F.w_back[1] == "" || F.w_back[7] == TRUE)
+									return FALSE
 			visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 			if (istype(mover, /obj/item/projectile))
 				var/obj/item/projectile/B = mover
@@ -365,8 +418,44 @@
 				B.invisibility = 101
 				B.loc = null
 				qdel(B) // because somehow we were still passing the armor
-			return FALSE
+			return TRUE
 
+/obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (istype(I,/obj/item/weapon/key))
+		if (w_front[6])
+			if (w_front[7])
+				visible_message("[H] closes the door.")
+				w_front[7] = FALSE
+			else
+				visible_message("[H] opens the door.")
+				w_front[7] = TRUE
+			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if (w_back[6])
+			if (w_back[7])
+				visible_message("[H] closes the door.")
+				w_back[7] = FALSE
+			else
+				visible_message("[H] opens the door.")
+				w_back[7] = TRUE
+			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if (w_left[6])
+			if (w_left[7])
+				visible_message("[H] closes the door.")
+				w_left[7] = FALSE
+			else
+				visible_message("[H] opens the door.")
+				w_left[7] = TRUE
+			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if (w_right[6])
+			if (w_right[7])
+				visible_message("[H] closes the door.")
+				w_right[7] = FALSE
+			else
+				visible_message("[H] opens the door.")
+				w_right[7] = TRUE
+			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	else
+		..()
 //types of walls/borders
 //format: type of wall, opacity, density, armor, current health, can open/close, is open?
 var/global/list/vehicle_walls = list( \

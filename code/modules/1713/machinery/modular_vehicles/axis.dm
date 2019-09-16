@@ -203,16 +203,6 @@
 //in this case, 1,1 is the FL, 1,3 is the FR, 4,1 is the BL, 4,3 is the BR.
 //so if we turn LEFT: we will be facing EAST, and it will change to:
 
-/obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0)
-	if (olddir == 0 || newdir == 0)
-		return
-	if (isemptylist(corners))
-		check_corners()
-	if (isemptylist(matrix))
-		check_matrix()
-
-	return
-
 /obj/structure/vehicleparts/axis/proc/check_matrix()
 	if (corners[1] == null || corners[2] == null || corners[3] == null || corners[4] == null)
 		world.log << "ERROR BUILDING MATRIX! (Incomplete Corner List)"
@@ -234,13 +224,13 @@
 	var/locy = 1
 	for (locx in 1 to mside)
 		for (locy in 1 to mside)
-			matrix += list("[locx],[locy]" = list(null))
+			matrix += list("[locx],[locy]" = list(null,0,0, "[locx],[locy]"))
 			locy++
 		locx++
 	if (matrix.len != msize)
 		world.log << "ERROR BUILDING MATRIX! (Wrong Size: msize [msize], matrix.len [matrix.len])"
 		return FALSE
-	var/obj/structure/vehicleparts/frame/FFL = corners[2]
+	var/obj/structure/vehicleparts/frame/FFL = corners[1]
 	if (!istype(FFL, /obj/structure/vehicleparts/frame))
 		world.log << "ERROR BUILDING MATRIX! (Front-Left is not a Frame)"
 		return FALSE
@@ -248,7 +238,7 @@
 		for (var/obj/structure/vehicleparts/frame/FM in components)
 			var/disx = abs(FM.y-FFL.y)
 			var/disy = abs(FM.x-FFL.x)
-			matrix["[disx+1],[disy+1]"] = list(FM)
+			matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
 	return TRUE
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
@@ -302,3 +292,98 @@
 	else
 		world.log << "ERROR BUILDING CORNER LIST!"
 		return FALSE
+
+//Basically the do_move() proc but allows a destination to be defined, i.e., it doesnt just force move in a dir like the other proc.
+//Reverts to do_move() if no destination or origin is specified.
+
+/obj/structure/vehicleparts/axis/proc/do_move_dest(var/turf/ORIG = null, var/turf/DEST = null)
+	if(!DEST || !ORIG)
+		do_move()
+		return
+	else
+		for (var/atom/movable/M in ORIG)
+			if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/wild))
+				var/obj/MO = M
+				MO.forceMove(DEST)
+				if (!istype(M, /obj/structure/cannon) && !istype(M, /obj/structure/bed/chair))
+					MO.dir = dir
+					MO.update_icon()
+				if (istype(M, /obj/structure/bed/chair/drivers))
+					MO.dir = dir
+					MO.update_icon()
+				if (istype(M, /obj/structure/vehicleparts/movement))
+					var/obj/structure/vehicleparts/movement/MV = M
+					if (MV.reversed)
+						MV.dir = OPPOSITE_DIR(dir)
+			if (istype(M, /mob/living))
+				var/mob/living/ML = M
+				ML.forceMove(DEST)
+		return
+
+
+/obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none")
+	if (olddir == 0 || newdir == 0 || tdir == "none")
+		return
+	if (isemptylist(corners))
+		check_corners()
+	if (isemptylist(matrix))
+		check_matrix()
+
+	//first we need to generate the matrix of the new locations, based on our frame matrix.
+	var/turf/baset = get_turf(matrix["1,1"][1])
+
+	if (tdir == "right")
+		switch (newdir)
+			if (WEST)
+				for (var/i=1, i<=matrix_l, i++)
+					for (var/j=1, j<= matrix_h, j++)
+						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
+						if (FM)
+							var/ox = text2num(matrix["[i],[j]"][2])
+							var/oy = text2num(matrix["[i],[j]"][3])
+							var/tx = matrix_h-oy-1
+							var/ty = ox
+							var/turf/oturf = get_turf(FM)
+							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
+							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
+							do_move_dest(oturf,nturf)
+			if (NORTH)
+				for (var/i=1, i<=matrix_l, i++)
+					for (var/j=1, j<= matrix_h, j++)
+						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
+						if (FM)
+							var/ox = text2num(matrix["[i],[j]"][2])
+							var/oy = text2num(matrix["[i],[j]"][3])
+							var/tx = matrix_h-oy-1
+							var/ty = ox
+							var/turf/oturf = get_turf(FM)
+							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
+							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
+							do_move_dest(oturf,nturf)
+			if (WEST)
+				for (var/i=1, i<=matrix_l, i++)
+					for (var/j=1, j<= matrix_h, j++)
+						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
+						if (FM)
+							var/ox = text2num(matrix["[i],[j]"][2])
+							var/oy = text2num(matrix["[i],[j]"][3])
+							var/tx = matrix_h-oy-1
+							var/ty = ox
+							var/turf/oturf = get_turf(FM)
+							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
+							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
+							do_move_dest(oturf,nturf)
+			if (SOUTH)
+				for (var/i=1, i<=matrix_l, i++)
+					for (var/j=1, j<= matrix_h, j++)
+						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
+						if (FM)
+							var/ox = text2num(matrix["[i],[j]"][2])
+							var/oy = text2num(matrix["[i],[j]"][3])
+							var/tx = matrix_h-oy-1
+							var/ty = ox
+							var/turf/oturf = get_turf(FM)
+							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
+							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
+							do_move_dest(oturf,nturf)
+
