@@ -340,7 +340,7 @@
 		if (istype(mover, /obj/item/projectile))
 			var/obj/item/projectile/proj = mover
 			proj.throw_source = proj.starting
-			switch(mover.dir)
+			switch(get_dir(proj,target))
 				if (NORTH)
 					switch(dir)
 						if (NORTH)
@@ -464,6 +464,8 @@
 							if (w_back[1] == "" || w_back[7] == TRUE)
 								return TRUE
 	return FALSE
+/obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/mover)
+	CanPass(mover)
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (istype(I,/obj/item/weapon/key))
 		if (w_front[6])

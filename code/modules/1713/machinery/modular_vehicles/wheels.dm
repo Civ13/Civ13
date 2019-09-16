@@ -163,3 +163,18 @@
 			return
 	else
 		..()
+
+////////GUNNER/LOADER CHAIR////////////
+
+/obj/structure/bed/chair/gunner
+	name = "gunner's seat"
+	desc = "a seat next to the gun trigger."
+	icon_state = "officechair_white"
+	anchored = FALSE
+
+/obj/structure/bed/chair/loader
+	name = "loader's seat"
+	desc = "A seat at the gun loader's position."
+	icon_state = "officechair_white"
+	anchored = FALSE
+//////////COMMANDER CHAIR/////////////

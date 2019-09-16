@@ -25,6 +25,7 @@
 	var/maxsway = 3
 	var/sway = 0
 	var/firedelay = 20
+	var/caliber = 75
 /obj/structure/cannon/modern
 	name = "field cannon"
 	icon = 'icons/obj/cannon.dmi'
@@ -50,6 +51,28 @@
 	bound_height = 32
 	bound_width = 32
 	density = TRUE
+
+/obj/structure/cannon/modern/tank/attackby(obj/item/W as obj, mob/M as mob)
+	if (istype(W, ammotype))
+		if (loaded)
+			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+			return
+		// load first and only slot
+		if (!M.buckled || !istype(M.buckled,/obj/structure/bed/chair/gunner))
+			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
+			return FALSE
+		if (do_after(M, caliber/2, src, can_move = TRUE))
+			if (M && (locate(M) in range(1,src)) && M.buckled && istype(M.buckled,/obj/structure/bed/chair/gunner))
+				M.remove_from_mob(W)
+				W.loc = src
+				loaded = W
+				if (M == user)
+					do_html(M)
+	else if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+
 /obj/structure/cannon/mortar
 	name = "mortar"
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -122,18 +145,19 @@
 /obj/structure/cannon/attack_hand(var/mob/attacker)
 	interact(attacker)
 
-// todo: loading artillery. This will regenerate the shrapnel and affect our explosion
 /obj/structure/cannon/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
 		if (loaded)
 			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
 			return
 		// load first and only slot
-		M.remove_from_mob(W)
-		W.loc = src
-		loaded = W
-		if (M == user)
-			do_html(M)
+		if (do_after(M, 45, src, can_move = TRUE))
+			if (M && (locate(M) in range(1,src)))
+				M.remove_from_mob(W)
+				W.loc = src
+				loaded = W
+				if (M == user)
+					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
@@ -178,6 +202,10 @@
 
 	if (!user.can_use_hands())
 		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		return FALSE
+
+	if (istype(src, /obj/structure/cannon/modern/tank) && (!H.buckled || !istype(H.buckled,/obj/structure/bed/chair/gunner)))
+		H << "<span class = 'warning'>You need to be at the gunner's position to fire \the [src].</span>"
 		return FALSE
 
 	if (!anchored)
