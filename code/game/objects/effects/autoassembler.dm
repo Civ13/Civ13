@@ -88,6 +88,13 @@
 			M.MouseDrop(central)
 			count++
 		world.log << "Added [count] wheels/tracks."
+		sleep(2)
+		if (isemptylist(central.axis.corners))
+			central.axis.check_corners()
+		if (isemptylist(central.axis.matrix))
+			central.axis.check_matrix()
+		for (var/obj/structure/vehicleparts/VP in range(7,src))
+			VP.update_icon()
 		world.log << "Assembly complete."
 		qdel(src)
 		return TRUE

@@ -245,6 +245,7 @@
 #include "code\game\objects\items\weapons\storage\medkit.dm"
 #include "code\game\objects\items\weapons\storage\misc.dm"
 #include "code\game\objects\items\weapons\storage\storage.dm"
+#include "code\game\objects\items\weapons\storage\toolbox.dm"
 #include "code\game\objects\map_metadata\_map_metadata.dm"
 #include "code\game\objects\map_metadata\arab_town.dm"
 #include "code\game\objects\map_metadata\battleroyale.dm"

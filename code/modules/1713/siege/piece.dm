@@ -58,14 +58,16 @@
 			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
 			return
 		// load first and only slot
-		if (!M.buckled || !istype(M.buckled,/obj/structure/bed/chair/gunner))
+		if (!M.buckled || !istype(M.buckled,/obj/structure/bed/chair/loader))
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
 		if (do_after(M, caliber/2, src, can_move = TRUE))
-			if (M && (locate(M) in range(1,src)) && M.buckled && istype(M.buckled,/obj/structure/bed/chair/gunner))
+			if (M && (locate(M) in range(1,src)) && M.buckled && istype(M.buckled,/obj/structure/bed/chair/loader))
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
+				M << "You load \the [src]"
+				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 				if (M == user)
 					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
@@ -204,7 +206,7 @@
 		user << "<span class = 'danger'>You have no hands to use this with.</span>"
 		return FALSE
 
-	if (istype(src, /obj/structure/cannon/modern/tank) && (!H.buckled || !istype(H.buckled,/obj/structure/bed/chair/gunner)))
+	if (istype(src, /obj/structure/cannon/modern/tank) && !istype(H.buckled,/obj/structure/bed/chair/gunner))
 		H << "<span class = 'warning'>You need to be at the gunner's position to fire \the [src].</span>"
 		return FALSE
 

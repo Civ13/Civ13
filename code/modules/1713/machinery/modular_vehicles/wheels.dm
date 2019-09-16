@@ -178,7 +178,7 @@
 	desc = "A seat at the gun loader's position."
 	icon_state = "officechair_white"
 	anchored = FALSE
-/obj/structure/bed/chair/gunner/update_icon()
+/obj/structure/bed/chair/loader/update_icon()
 	return
 //////////COMMANDER CHAIR/////////////
 /obj/structure/bed/chair/commander

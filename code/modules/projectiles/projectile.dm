@@ -470,7 +470,8 @@
 				can_hit_in_trench = 0
 			else
 				can_hit_in_trench = -1
-
+	for (var/obj/structure/vehicleparts/frame/FR in T.loc)
+		FR.CanPass(src, T)
 	if (T.density || (can_hit_in_trench == -1 && !istype(T, /turf/floor/trench)))
 		passthrough = FALSE
 	else
