@@ -1,5 +1,24 @@
 ////////AXIS: MOVEMENT LOOP/////////
 
+/obj/structure/vehicleparts/axis/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			Destroy()
+			return
+		if (2.0)
+			if (prob(10))
+				Destroy()
+				return
+		if (3.0)
+			return
+
+/obj/structure/vehicleparts/axis/Destroy()
+	for(var/obj/structure/vehicleparts/frame/F in components)
+		F.axis -= src
+	wheel = null
+	visible_message("<span class='danger'>The [name] axis gets wrecked!</span>")
+	qdel(src)
+
 /obj/structure/vehicleparts/axis/proc/startmovementloop()
 	if (isemptylist(corners))
 		check_corners()
@@ -18,9 +37,7 @@
 
 /obj/structure/vehicleparts/axis/proc/movementloop()
 	if (moving == TRUE)
-		current_weight = 5
-		for(var/obj/structure/vehicleparts/frame/FR in components)
-			current_weight += FR.total_weight
+		get_weight()
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
 				W.icon_state = W.movement_icon
@@ -46,8 +63,24 @@
 		W.update_icon()
 	return
 
+/obj/structure/vehicleparts/axis/proc/get_weight()
+	current_weight = 5
+	for(var/obj/structure/vehicleparts/frame/FR in components)
+		current_weight += FR.total_weight()
+	return current_weight
+
 /obj/structure/vehicleparts/axis/proc/do_vehicle_check()
 	if (check_engine())
+		if (wheels.len < 4)
+			moving = FALSE
+			stopmovementloop()
+			return FALSE
+		for(var/obj/structure/vehicleparts/movement/MV in wheels)
+			if (MV.broken)
+				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] is broken!</span>")
+				moving = FALSE
+				stopmovementloop()
+				return FALSE
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
 			if (!T)
@@ -122,6 +155,9 @@
 
 	if (!engine || !engine.fueltank)
 		engine.on = FALSE
+		return FALSE
+	else if (get_weight() > engine.maxpower)
+		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
 		return FALSE
 	else
 		if (engine.fueltank.reagents.total_volume <= 0)

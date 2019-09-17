@@ -20,6 +20,27 @@
 		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), "right")
 		lastdirchange = world.time+15
 		return TRUE
+
+/obj/structure/bed/chair/drivers/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			if (prob(40))
+				Destroy()
+				return
+		if (2.0)
+			if (prob(10))
+				Destroy()
+				return
+		if (3.0)
+			return
+
+/obj/structure/bed/chair/drivers/Destroy()
+	if (wheel)
+		wheel.control.axis.wheel = null
+		qdel(wheel)
+	visible_message("<span class='danger'>The [name] gets destroyed!</span>")
+	qdel(src)
+
 /obj/item/vehicleparts/wheel/modular/attack_self(mob/living/carbon/human/H)
 	if(!control)
 		return

@@ -7,6 +7,7 @@
 	powerneeded = 0
 	flammable = FALSE
 	layer = 2.98
+	density = TRUE
 	var/resistance = 150
 	var/obj/structure/vehicleparts/axis/axis = null
 	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
@@ -19,7 +20,6 @@
 	var/image/roof
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	var/total_weight = 10
 
 	New()
 		..()
@@ -33,6 +33,14 @@
 	Move(newloc, direct)
 		..()
 		update_icon()
+
+/obj/structure/vehicleparts/frame/proc/total_weight()
+	var/tmpsum = 10
+	for (var/obj/O in loc)
+		tmpsum+=O.w_class*2
+	for(var/mob/living/L in loc)
+		tmpsum += L.mob_size*2
+	return tmpsum
 
 /obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)
@@ -592,7 +600,7 @@
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/list/penloc = list())
 	if (penloc && islist(penloc) && penloc.len >= 5)
 		penloc[5] -= proj.damage * 0.01
-		visible_message("<span class = 'warning'>\The [src] hits \the [src]!</span>")
+		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
 		try_destroy()
 		return
 	else
@@ -611,7 +619,14 @@
 	if (w_back[5] <= 0)
 		w_back = list("",FALSE,FALSE,0,40,FALSE,FALSE)
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
+	if (w_left[5]+w_right[5]+w_back[5]+w_front[5] <= 0)
+		Destroy()
 
+/obj/structure/vehicleparts/frame/Destroy()
+	visible_message("<span class='danger'>The frame gets wrecked!</span>")
+	if (axis)
+		axis.Destroy()
+	qdel(src)
 /obj/structure/vehicleparts/frame/ex_act(severity)
 	switch(severity)
 		if (1.0)

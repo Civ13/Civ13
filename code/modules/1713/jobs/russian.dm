@@ -1117,7 +1117,7 @@
 	return TRUE
 
 /datum/job/russian/tank_crew_leader
-	title = "Kommandir Tanka"
+	title = "Komandir Tanka"
 	en_meaning = "Armored Squad Leader"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
