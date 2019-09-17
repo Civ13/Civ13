@@ -354,8 +354,8 @@
 						if (FM)
 							var/ox = text2num(matrix["[i],[j]"][2])
 							var/oy = text2num(matrix["[i],[j]"][3])
-							var/tx = matrix_h-oy-1
-							var/ty = ox
+							var/tx = matrix_l-ox-1
+							var/ty = matrix_h-oy-1
 							var/turf/oturf = get_turf(FM)
 							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
 							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
@@ -367,8 +367,8 @@
 						if (FM)
 							var/ox = text2num(matrix["[i],[j]"][2])
 							var/oy = text2num(matrix["[i],[j]"][3])
-							var/tx = matrix_h-oy-1
-							var/ty = ox
+							var/tx = matrix_l-ox-1
+							var/ty = matrix_h-oy-1
 							var/turf/oturf = get_turf(FM)
 							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
 							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
@@ -381,9 +381,62 @@
 							var/ox = text2num(matrix["[i],[j]"][2])
 							var/oy = text2num(matrix["[i],[j]"][3])
 							var/tx = matrix_h-oy-1
-							var/ty = ox
+							var/ty = matrix_l-ox-1
 							var/turf/oturf = get_turf(FM)
 							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
 							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
 							do_move_dest(oturf,nturf)
-
+	else if (tdir == "left")
+		switch (newdir)
+			if (EAST)
+				for (var/i=1, i<=matrix_l, i++)
+					for (var/j=1, j<= matrix_h, j++)
+						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
+						if (FM)
+							var/ox = text2num(matrix["[i],[j]"][2])
+							var/oy = text2num(matrix["[i],[j]"][3])
+							var/tx = matrix_h-oy-1
+							var/ty = matrix_l-ox-1
+							var/turf/oturf = get_turf(FM)
+							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
+							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
+							do_move_dest(oturf,nturf)
+			if (NORTH)
+				for (var/i=1, i<=matrix_l, i++)
+					for (var/j=1, j<= matrix_h, j++)
+						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
+						if (FM)
+							var/ox = text2num(matrix["[i],[j]"][2])
+							var/oy = text2num(matrix["[i],[j]"][3])
+							var/tx = matrix_h-oy-1
+							var/ty = matrix_l-ox-1
+							var/turf/oturf = get_turf(FM)
+							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
+							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
+							do_move_dest(oturf,nturf)
+			if (WEST)
+				for (var/i=1, i<=matrix_l, i++)
+					for (var/j=1, j<= matrix_h, j++)
+						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
+						if (FM)
+							var/ox = text2num(matrix["[i],[j]"][2])
+							var/oy = text2num(matrix["[i],[j]"][3])
+							var/tx = matrix_h-oy-1
+							var/ty = matrix_l-ox-1
+							var/turf/oturf = get_turf(FM)
+							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
+							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
+							do_move_dest(oturf,nturf)
+			if (SOUTH)
+				for (var/i=1, i<=matrix_l, i++)
+					for (var/j=1, j<= matrix_h, j++)
+						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
+						if (FM)
+							var/ox = text2num(matrix["[i],[j]"][2])
+							var/oy = text2num(matrix["[i],[j]"][3])
+							var/tx = matrix_h-oy-1
+							var/ty = matrix_l-ox-1
+							var/turf/oturf = get_turf(FM)
+							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
+							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
+							do_move_dest(oturf,nturf)

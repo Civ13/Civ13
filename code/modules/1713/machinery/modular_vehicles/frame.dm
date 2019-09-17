@@ -87,7 +87,7 @@
 	for(var/obj/structure/cannon/C in T)
 		var/image/roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret_g", layer=11.1, dir=C.dir)
 		if (dir == NORTH)
-			roof_turret.pixel_y = 16
+			roof_turret.pixel_y = 0
 			roof_turret.pixel_x = -32
 		else if (dir == SOUTH)
 			roof_turret.pixel_y = -48
@@ -96,7 +96,7 @@
 			roof_turret.pixel_x = -48
 			roof_turret.pixel_y = -32
 		else if (dir == EAST)
-			roof_turret.pixel_x = 16
+			roof_turret.pixel_x = 0
 			roof_turret.pixel_y = -32
 		roof.overlays += roof_turret
 	for (var/obj/CC in T)
