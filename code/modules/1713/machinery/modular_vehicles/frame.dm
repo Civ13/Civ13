@@ -529,6 +529,9 @@
 					w_right[7] = TRUE
 				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
+		else
+			H << "This key does not match this lock!"
+			return
 	else
 		..()
 /obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/projectile/proj)
