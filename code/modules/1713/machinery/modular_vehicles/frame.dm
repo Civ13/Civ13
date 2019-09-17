@@ -15,6 +15,7 @@
 	var/list/w_left = list("",FALSE,FALSE,0,40,FALSE,FALSE)
 	var/list/w_right = list("",FALSE,FALSE,0,40,FALSE,FALSE)
 
+	var/doorcode = 0 //if it has a door on it, what the key code is
 	var/image/roof
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -493,38 +494,41 @@
 	CanPass(mover)
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (istype(I,/obj/item/weapon/key))
-		if (w_front[6])
-			if (w_front[7])
-				visible_message("[H] locks the door.")
-				w_front[7] = FALSE
-			else
-				visible_message("[H] unlocks the door.")
-				w_front[7] = TRUE
-			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		if (w_back[6])
-			if (w_back[7])
-				visible_message("[H] locks the door.")
-				w_back[7] = FALSE
-			else
-				visible_message("[H] unlocks the door.")
-				w_back[7] = TRUE
-			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		if (w_left[6])
-			if (w_left[7])
-				visible_message("[H] locks the door.")
-				w_left[7] = FALSE
-			else
-				visible_message("[H] unlocks the door.")
-				w_left[7] = TRUE
-			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		if (w_right[6])
-			if (w_right[7])
-				visible_message("[H] locks the door.")
-				w_right[7] = FALSE
-			else
-				visible_message("[H] unlocks the door.")
-				w_right[7] = TRUE
-			H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		var/obj/item/weapon/key/K = I
+		if (K.code == doorcode)
+			if (w_front[6])
+				if (w_front[7])
+					visible_message("[H] locks the door.")
+					w_front[7] = FALSE
+				else
+					visible_message("[H] unlocks the door.")
+					w_front[7] = TRUE
+				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+			if (w_back[6])
+				if (w_back[7])
+					visible_message("[H] locks the door.")
+					w_back[7] = FALSE
+				else
+					visible_message("[H] unlocks the door.")
+					w_back[7] = TRUE
+				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+			if (w_left[6])
+				if (w_left[7])
+					visible_message("[H] locks the door.")
+					w_left[7] = FALSE
+				else
+					visible_message("[H] unlocks the door.")
+					w_left[7] = TRUE
+				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+			if (w_right[6])
+				if (w_right[7])
+					visible_message("[H] locks the door.")
+					w_right[7] = FALSE
+				else
+					visible_message("[H] unlocks the door.")
+					w_right[7] = TRUE
+				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+			playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 	else
 		..()
 /obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/projectile/proj)

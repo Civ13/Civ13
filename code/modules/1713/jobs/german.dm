@@ -930,9 +930,10 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_tanker(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_belt)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hip = new /obj/item/clothing/accessory/holster/hip(null)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
 	uniform.attackby(hip, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of an armored vehicle crew. Get your role assigned and follow your Commander!")
@@ -947,7 +948,7 @@
 	return TRUE
 
 /datum/job/german/tank_crew_leader
-	title = "Panzer Unteroffizier"
+	title = "Panzerführer"
 	en_meaning = "Armored Squad Leader"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -974,7 +975,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the commander of a tank. Assemble your crew and lead your tank to victory!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
