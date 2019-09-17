@@ -79,7 +79,21 @@ Parts of code courtesy of Super3222
 	nothrow = TRUE
 	nodrop = TRUE
 	w_class = 5
+	var/checking = FALSE
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/proc/rangecheck(var/mob/living/carbon/human/H, var/atom/target)
+	if (checking)
+		return
+
+	checking = TRUE
+	var/dist1 = abs(get_dist(H.loc,target.loc))
+	world.log << "[target]"
+	H << "You start checking the range..."
+	if (do_after(H, 25, src, can_move = TRUE))
+		H << "<big><b><font color='#ADD8E6'>Range: about [round(max(0,dist1+(rand(-1,1)*(dist1/10))))] meters.</font></b></big>"
+		checking = FALSE
+	else
+		checking = FALSE
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"
 	set category = null
