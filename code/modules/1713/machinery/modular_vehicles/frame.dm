@@ -20,10 +20,10 @@
 	var/image/roof
 	not_movable = TRUE
 	not_disassemblable = TRUE
-
+	var/color_code = ""
 	New()
 		..()
-		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=8)
+		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=8)
 		roof.override = TRUE
 		spawn(1)
 			update_icon()
@@ -52,6 +52,7 @@
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 				usr << "You connect \the [src] to \the [VP.axis]."
 				axis = VP.axis
+				color_code = VP.color_code
 				var/found = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in axis.components)
 					if (F == src)
@@ -94,7 +95,7 @@
 	roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	for(var/obj/structure/cannon/C in T)
-		var/image/roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret_g", layer=11.1, dir=C.dir)
+		var/image/roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret[color_code]", layer=11.1, dir=C.dir)
 		if (dir == NORTH)
 			roof_turret.pixel_y = 0
 			roof_turret.pixel_x = -32
@@ -110,35 +111,35 @@
 		roof.overlays += roof_turret
 	for (var/obj/CC in T)
 		if (istype(CC, /obj/structure/bed/chair/drivers))
-			roof.icon_state = "roof_steel_hatch_driver"
+			roof.icon_state = "roof_steel_hatch_driver[color_code]"
 		else if (istype(CC, /obj/structure/bed/chair))
-			roof.icon_state = "roof_steel_hatch"
+			roof.icon_state = "roof_steel_hatch[color_code]"
 		else if (istype(CC, /obj/structure/engine))
-			roof.icon_state = "roof_steel_exhaust"
+			roof.icon_state = "roof_steel_exhaust[color_code]"
 		else if (istype(CC, /obj/item/weapon/reagent_containers/glass/barrel/fueltank))
-			roof.icon_state = "roof_steel_closedhatch"
+			roof.icon_state = "roof_steel_closedhatch[color_code]"
 
 	switch (dir)
 		if (NORTH)
 			if (w_left[1] != "")
-				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=WEST)
+				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]][color_code]", layer=10, dir=WEST)
 				overlays += tmpimg3
 				var/image/doub = tmpimg3
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_right[1] != "")
-				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=EAST)
+				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg4
 				var/image/doub = tmpimg4
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_front[1] != "")
-				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=NORTH)
+				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg1
-				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=NORTH)
+				var/image/doub = image(icon=icon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 			if (w_back[1] != "")
-				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=SOUTH)
+				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]][color_code]", layer=10, dir=SOUTH)
 				overlays += tmpimg2
 				var/image/doub = tmpimg2
 				doub.layer = 11.01
@@ -147,85 +148,85 @@
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			if (axis && axis.corners.len >= 4)
 				if (axis.corners[1] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=NORTH)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=WEST)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=SOUTH)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=EAST)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
 					overlays += corn
 					roof.overlays += corn
 
 		if (SOUTH)
 			if (w_left[1] != "")
-				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=EAST)
+				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg3
 				var/image/doub = tmpimg3
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_right[1] != "")
-				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=WEST)
+				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]][color_code]", layer=10, dir=WEST)
 				overlays += tmpimg4
 				var/image/doub = tmpimg4
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_front[1] != "")
-				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=SOUTH)
+				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]][color_code]", layer=10, dir=SOUTH)
 				overlays += tmpimg1
 				var/image/doub = tmpimg1
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_back[1] != "")
-				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=NORTH)
+				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg2
-				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=NORTH)
+				var/image/doub = image(icon=icon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			if (axis && axis.corners.len >= 4)
 				if (axis.corners[1] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=EAST)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=SOUTH)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=WEST)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=NORTH)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
 					overlays += corn
 					roof.overlays += corn
 		if (EAST)
 			if (w_left[1] != "")
-				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=NORTH)
+				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg3
 				var/image/doub = tmpimg3
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_right[1] != "")
-				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=SOUTH)
+				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]][color_code]", layer=10, dir=SOUTH)
 				overlays += tmpimg4
-				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=NORTH)
+				var/image/doub = image(icon=icon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 			if (w_front[1] != "")
-				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=EAST)
+				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg1
 				var/image/doub = tmpimg1
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_back[1] != "")
-				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=WEST)
+				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]][color_code]", layer=10, dir=WEST)
 				overlays += tmpimg2
 				var/image/doub = tmpimg2
 				doub.layer = 11.01
@@ -234,41 +235,41 @@
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			if (axis && axis.corners.len >= 4)
 				if (axis.corners[1] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=SOUTH)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=NORTH)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=WEST)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=EAST)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
 					overlays += corn
 					roof.overlays += corn
 		if (WEST)
 			if (w_left[1] != "")
-				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=SOUTH)
+				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]][color_code]", layer=10, dir=SOUTH)
 				overlays += tmpimg3
-				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=NORTH)
+				var/image/doub = image(icon=icon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 			if (w_right[1] != "")
-				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=NORTH)
+				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg4
 				var/image/doub = tmpimg4
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_front[1] != "")
-				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=WEST)
+				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]][color_code]", layer=10, dir=WEST)
 				overlays += tmpimg1
 				var/image/doub = tmpimg1
 				doub.layer = 11.01
 				roof.overlays += doub
 			if (w_back[1] != "")
-				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=EAST)
+				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg2
 				var/image/doub = tmpimg2
 				doub.layer = 11.01
@@ -277,19 +278,19 @@
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			if (axis && axis.corners.len >= 4)
 				if (axis.corners[1] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=WEST)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=EAST)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=NORTH)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=icon, icon_state="corner_g", layer=11.02, dir=SOUTH)
+					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
 					overlays += corn
 					roof.overlays += corn
 

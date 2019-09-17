@@ -26,6 +26,7 @@
 	var/sway = 0
 	var/firedelay = 20
 	var/caliber = 75
+	w_class = 20
 /obj/structure/cannon/modern
 	name = "field cannon"
 	icon = 'icons/obj/cannon.dmi'
@@ -35,6 +36,7 @@
 	maxsway = 10
 	firedelay = 30
 	maxrange = 80
+	w_class = 35
 
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
@@ -93,7 +95,7 @@
 	maxrange = 23
 	maxsway = 7
 	firedelay = 12
-
+	w_class = 8
 /obj/structure/cannon/davycrockett
 	name = "M29 Davy Crockett"
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -115,7 +117,7 @@
 	maxrange = 40
 	maxsway = 8
 	firedelay = 24
-
+	w_class = 8
 /obj/structure/cannon/davycrockett/attackby(obj/item/W as obj, mob/M as mob)
 	if (loaded)
 		icon_state = "m29_davy_crockett_loaded"

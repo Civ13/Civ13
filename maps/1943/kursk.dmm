@@ -21,7 +21,7 @@
 "au" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/forest)
 "av" = (/obj/structure/vehicleparts/frame/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/dirt,/area/caribbean/forest)
 "aw" = (/obj/structure/vehicleparts/frame/rdoor{doorcode = 11940},/turf/floor/dirt,/area/caribbean/forest)
-"ax" = (/obj/structure/engine/internal/diesel{enginesize = 8000},/obj/structure/vehicleparts/frame/bwall{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"ax" = (/obj/structure/vehicleparts/frame/bwall,/obj/structure/engine/internal/gasoline{enginesize = 12000},/turf/floor/dirt,/area/caribbean/forest)
 "ay" = (/obj/structure/vehicleparts/axis/heavy{name = "Panzer IV"},/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/fwall,/obj/structure/radio/transmitter_receiver/nopower/faction1{anchored = 1},/turf/floor/dirt,/area/caribbean/forest)
 "az" = (/obj/structure/vehicleparts/axis/heavy{dir = 1; name = "T-34"},/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/fwall{icon_state = "frame_steel"; dir = 1},/obj/structure/radio/transmitter_receiver/nopower/faction2{anchored = 1},/turf/floor/dirt,/area/caribbean/forest)
 "aA" = (/obj/structure/vehicleparts/frame/ldoor{doorcode = 11940},/obj/item/weapon/storage/toolbox/emergency,/turf/floor/dirt,/area/caribbean/forest)
@@ -34,7 +34,7 @@
 "aH" = (/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "aI" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt,/area/caribbean/forest)
 "aJ" = (/obj/structure/table/rack{density = 0; layer = 3},/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/structure/vehicleparts/frame/rb,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/turf/floor/dirt,/area/caribbean/forest)
-"aK" = (/obj/structure/vehicleparts/frame/bwall,/obj/structure/engine/internal/gasoline{enginesize = 5000},/turf/floor/dirt,/area/caribbean/forest)
+"aK" = (/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/frame/bwall{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "aL" = (/obj/effect/landmark{name = "JoinLateGE"},/turf/floor/dirt,/area/caribbean/forest)
 "aM" = (/obj/structure/wild/tallgrass,/obj/effect/landmark{name = "JoinLateGE"},/turf/floor/grass,/area/caribbean/forest)
 "aN" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/ldoor{dir = 1; doorcode = 4975; icon_state = "frame_steel"},/turf/floor/dirt,/area/caribbean/forest)
@@ -65,7 +65,7 @@
 (1,1,1) = {"
 aaaaaaaaaaabababacababadababadababababababababababaeababababafaaabababababababababacacababababababababababababagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
 aaaaaaaaaaabababababababababaaabaiabababaiabababaeaeacadababaGamaaaHaaaHaaabababababababababacababababaiabababababagagababababacabababaaabaeaeabaiabaaacabafabaaabababababababababababahabababababababab
-aaaaaaaaaaababababababababababababababaaabababaaaeaeabababbsbsaIaIaJaKavabacabadabababababababababababababababababagagagagagababababababaeaeabababababababababagabababahababagabababacabaiabababadababac
+aaaaaaaaaaababababababababababababababaaabababaaaeaeabababbsbsaIaIaJaxavabacabadabababababababababababababababababagagagagagababababababaeaeabababababababababagabababahababagabababacabaiabababadababac
 aaaaaaaaaaababababaaaaaaaaabababababababababaiaaaeaeaaadaaabaaaaaaawaOaAaaababafababababadababacabababafababababababagagacabagagababaeaeaeaeaaaaaeababacadabagagagagabababacabababababababababababababab
 aaaaaaaaaaabababababaaaaaaaaababababababababababaeaeabababaLaLaLaaaQaRaSafabafababababababababababababababacabababacabababababababaaabaeaeaeaaaaaeajababababababagagabababababadafababafabababababababab
 abababafababababababababababababadabababababababakaeabababaMaLaLaaaUayaWaaabafababaaabaiabababababababababadababababababababababababaaaaaaaeaeaeaeaaaaababafafabababababaiabababacabababababababababadab
@@ -158,7 +158,7 @@ abababababacabababababababababadababababababababadabaeaeaaajababababaaabaaaTaaaV
 ababababababababababababababaiababacabadababababababaeaeaaabababaaaYaYaYaaaZazbaababacabababababababadabababababababafabababababababababaeabababarabababababababaiabababababababababababafababababababad
 abababadabababababababababadababababababababababaaaeaeagacababababaYaYaYaabbbqbcaaafababadababababababadabababababababadabababababadabaeaeaaajababababababababababababababadabababababababadabababababab
 ababababababababababababababababababababababababaaaeaeabababaCabaaaYaYaYaaaNbkaPaaababababababababababababababababababababababababababaeaeaaabababababababababadabababababababababababababababababababab
-ababacafabababaiababababacafabababaiababababaaababaeaeaaabaeaeabamaabsaaaabmaxbrabaaabababaaabafacadabafabababaiababababaaabafacabaaaeaeagacababababababaiabaiababacababacafabababaiababababaaabafacadab
+ababacafabababaiababababacafabababaiababababaaababaeaeaaabaeaeabamaabsaaaabmaKbrabaaabababaaabafacadabafabababaiababababaaabafacabaaaeaeagacababababababaiabaiababacababacafabababaiababababaaabafacadab
 abafabababababababababafababababababababababacababaaaeaeabaeaeaeabaabsaaafbpaabpabababababacacadafabababababababababababacacadafabaaaeaeabababababababababababababababafababababababababababacacadafabab
 ababababababadabababababababababadababababababababacaaaeaeaeaeaeababaaaaaaabababaaabaaabababababababababababadabababababababababababaeabaaababababababadababacabababababababababadababababababababababab
 abababababaiababacababababababaiababacabadabababababababaeaeaeaeababbebeababaiababacabadabababababababababaiababacabadabababababababaaaeaealaaafababaiababacabababababababababaiababacabadababababababab

@@ -35,6 +35,7 @@
 	var/matrix_l = 0
 	var/matrix_h = 0
 
+	var/color_code = ""
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0

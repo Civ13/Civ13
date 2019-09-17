@@ -40,12 +40,12 @@
 		get_weight()
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
-				W.icon_state = W.movement_icon
+				W.icon_state = "[W.movement_icon][color_code]"
 				W.update_icon()
 			do_move()
 		else
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
-				W.icon_state = W.base_icon
+				W.icon_state = "[W.base_icon][color_code]"
 				W.update_icon()
 			currentspeed = 0
 			moving = FALSE
@@ -223,6 +223,7 @@
 		VP.anchored = TRUE
 		components += VP
 		VP.name = "central [VP.name]"
+		VP.color_code = color_code
 		loc = VP
 		return
 
