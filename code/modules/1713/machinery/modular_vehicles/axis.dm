@@ -251,7 +251,7 @@
 				if (FF.axis == F.axis)
 					sides = "[sides][i]"
 		if (length(sides) == 2)
-			if (findtext(sides,"1") && findtext(sides,"4") && corners[1] == null) //SW corner
+			if (findtext(sides,"1") && findtext(sides,"4")) //SW corner
 				if (dir == SOUTH) //FR
 					corners[1] = F
 				else if (dir == NORTH) //BL
@@ -260,7 +260,7 @@
 					corners[2] = F
 				else if (dir == EAST) // BR
 					corners[3] = F
-			if (findtext(sides,"1") && findtext(sides,"8") && corners[2] == null) //SE corner
+			if (findtext(sides,"1") && findtext(sides,"8")) //SE corner
 				if (dir == SOUTH) //FL
 					corners[2] = F
 				else if (dir == NORTH) //BR
@@ -269,7 +269,7 @@
 					corners[4] = F
 				else if (dir == EAST) // FR
 					corners[1] = F
-			if (findtext(sides,"2") && findtext(sides,"4") && corners[3] == null) //NW corner
+			if (findtext(sides,"2") && findtext(sides,"4")) //NW corner
 				if (dir == SOUTH) //BR
 					corners[3] = F
 				else if (dir == NORTH) //FL
@@ -278,7 +278,7 @@
 					corners[1] = F
 				else if (dir == EAST) // BL
 					corners[4] = F
-			if (findtext(sides,"2") && findtext(sides,"8") && corners[4] == null) //NE corner
+			if (findtext(sides,"2") && findtext(sides,"8")) //NE corner
 				if (dir == SOUTH) //BL
 					corners[4] = F
 				else if (dir == NORTH) //FR
@@ -334,7 +334,7 @@
 
 	if (tdir == "right")
 		switch (newdir)
-			if (WEST)
+			if (EAST)
 				for (var/i=1, i<=matrix_l, i++)
 					for (var/j=1, j<= matrix_h, j++)
 						var/obj/structure/vehicleparts/frame/FM = matrix["[i],[j]"][1]
@@ -342,7 +342,7 @@
 							var/ox = text2num(matrix["[i],[j]"][2])
 							var/oy = text2num(matrix["[i],[j]"][3])
 							var/tx = matrix_h-oy-1
-							var/ty = ox
+							var/ty = matrix_l-ox-1
 							var/turf/oturf = get_turf(FM)
 							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
 							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"

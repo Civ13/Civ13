@@ -476,7 +476,7 @@
 		if(!istype(T, /turf/floor/trench) || can_hit_in_trench)
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
-				if (istype(O, /obj/structure/vehicleparts/frame))
+				if (istype(O, /obj/structure/vehicleparts/frame) && firer.loc != O.loc)
 					var/obj/structure/vehicleparts/frame/NO = O
 					var/list/penloc = NO.CheckPenLoc(src)
 					if (!isemptylist(penloc))

@@ -86,11 +86,17 @@
 	var/turf/T = get_turf(src)
 	for(var/obj/structure/cannon/C in T)
 		var/image/roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret_g", layer=11.1, dir=C.dir)
-		if (dir == NORTH || dir == SOUTH)
+		if (dir == NORTH)
+			roof_turret.pixel_y = 16
+			roof_turret.pixel_x = -32
+		else if (dir == SOUTH)
 			roof_turret.pixel_y = -48
 			roof_turret.pixel_x = -32
-		else if (dir == WEST || dir == EAST)
+		else if (dir == WEST)
 			roof_turret.pixel_x = -48
+			roof_turret.pixel_y = -32
+		else if (dir == EAST)
+			roof_turret.pixel_x = 16
 			roof_turret.pixel_y = -32
 		roof.overlays += roof_turret
 	for (var/obj/CC in T)
@@ -120,7 +126,7 @@
 			if (w_front[1] != "")
 				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=NORTH)
 				overlays += tmpimg1
-				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=SOUTH)
+				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 			if (w_back[1] != "")
 				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]]_g", layer=10, dir=SOUTH)
@@ -201,7 +207,7 @@
 			if (w_right[1] != "")
 				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=SOUTH)
 				overlays += tmpimg4
-				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=SOUTH)
+				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 			if (w_front[1] != "")
 				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]]_g", layer=10, dir=EAST)
@@ -238,7 +244,7 @@
 			if (w_left[1] != "")
 				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]]_g", layer=10, dir=SOUTH)
 				overlays += tmpimg3
-				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=SOUTH)
+				var/image/doub = image(icon=icon, icon_state="c_lim_g", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 			if (w_right[1] != "")
 				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]]_g", layer=10, dir=NORTH)
@@ -310,10 +316,10 @@
 	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/rf
 	w_right = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-	w_front = list("c_wall",FALSE,TRUE,20,50,FALSE,FALSE)
+	w_front = list("c_armoredfront",FALSE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/lf
 	w_left = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-	w_front = list("c_wall",FALSE,TRUE,20,50,FALSE,FALSE)
+	w_front = list("c_armoredfront",FALSE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/rb/armored
 	w_right = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
 	w_back = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
