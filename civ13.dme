@@ -265,6 +265,7 @@
 #include "code\game\objects\map_metadata\jungle_colony.dm"
 #include "code\game\objects\map_metadata\karak.dm"
 #include "code\game\objects\map_metadata\khalkhyn_gol.dm"
+#include "code\game\objects\map_metadata\kursk.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
 #include "code\game\objects\map_metadata\nanjing.dm"
@@ -879,5 +880,6 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
+#include "maps\1943\kursk.dmm"
 #include "maps\special\nomads_wasteland.dmm"
 // END_INCLUDE
