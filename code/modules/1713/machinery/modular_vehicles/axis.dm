@@ -59,7 +59,7 @@
 /obj/structure/vehicleparts/axis/proc/stopmovementloop()
 	moving = FALSE
 	for (var/obj/structure/vehicleparts/movement/W in wheels)
-		W.icon_state = W.base_icon
+		W.icon_state = "[W.base_icon][color_code]"
 		W.update_icon()
 	return
 
