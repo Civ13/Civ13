@@ -12,8 +12,8 @@
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(RUSSIAN) = /area/caribbean/russian/land/inside/command,
-		list(GERMAN) = /area/caribbean/german/land/inside/command,
+		list(RUSSIAN) = /area/caribbean/russian/,
+		list(GERMAN) = /area/caribbean/german/,
 		)
 	age = "1943"
 	ordinal_age = 6
