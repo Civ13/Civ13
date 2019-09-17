@@ -192,7 +192,7 @@
 		return
 
 	user.face_atom(src)
-
+	var/istank = istype(src, /obj/structure/cannon/modern/tank)
 	var/mob/living/carbon/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
@@ -216,7 +216,7 @@
 
 	if (href_list["load"])
 		var/obj/item/cannon_ball/M = user.get_active_hand()
-		if (M && istype(M) && do_after(user, 10, src))
+		if (M && istype(M) && do_after(user, caliber/2, src, canmove = istank))
 			user.remove_from_mob(M)
 			M.loc = src
 			loaded = M
@@ -239,7 +239,6 @@
 			user << "<span class = 'danger'>There's nothing in \the [src].</span>"
 			return
 
-		var/istank = istype(src, /obj/structure/cannon/modern/tank)
 		if (do_after(user, firedelay, src, can_move = istank))
 
 			// firing code
@@ -628,24 +627,3 @@
 				bound_width = 64
 				icon = 'icons/obj/cannon_h.dmi'
 				icon_state = "cannon"
-/*
-/obj/structure/cannon/verb/fix()
-	set category = null
-	set name = "Lock in place"
-	set src in range(1, usr)
-	if (anchored)
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << "<span class='notice'>Now unsecuring the cannon...</span>"
-		if (do_after(user, 20, src))
-			if (!src) return
-			user << "<span class='notice'>You unsecured the cannon.</span>"
-			anchored = FALSE
-	else if (!anchored)
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << "<span class='notice'>Now securing the cannon...</span>"
-		if (do_after(user, 20, src))
-			if (!src) return
-			user << "<span class='notice'>You secured the cannon.</span>"
-			anchored = TRUE
-	return
-*/
