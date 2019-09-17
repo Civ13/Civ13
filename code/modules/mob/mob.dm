@@ -16,28 +16,12 @@
 	..()
 
 /mob/proc/remove_screen_obj_references()//FIX THIS SHIT
-//	flash = null
-//	blind = null
+
 	hands = null
 	pullin = null
 	purged = null
-//	internals = null
-//	oxygen = null
 	i_select = null
 	m_select = null
-//	toxin = null
-//	fire = null
-//	bodytemp = null
-//	healths = null
-//	throw_icon = null
-//	nutrition_icon = null
-//	pressure = null
-//	damageoverlay = null
-//	pain = null
-//	item_use_icon = null
-//	gun_move_icon = null
-//	gun_setting_icon = null
-//	spell_masters = null
 	zone_sel = null
 
 // /mob/new_player doesn't callback to this, it needs to - Kachnov
