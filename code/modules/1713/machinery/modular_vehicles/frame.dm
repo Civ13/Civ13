@@ -44,6 +44,10 @@
 
 /obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)
+		for(var/obj/structure/vehicleparts/frame/FRT in VP.axis.components)
+			if (abs(FRT.y-y) > 5 || abs(FRT.x-x) > 5)
+				usr << "<span class='notice'>Vehicles can't be more than 5 tiles long or wide!</span>"
+				return
 		for(var/obj/structure/vehicleparts/frame/FR in range(1,src))
 			if (VP.axis.components.len > 25)
 				usr << "<span class='notice'>The vehicle is too big already!</span>"
@@ -91,7 +95,7 @@
 /obj/structure/vehicleparts/frame/update_icon()
 	..()
 	overlays.Cut()
-	roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=11)
+	roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=11)
 	roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	for(var/obj/structure/cannon/C in T)
@@ -592,7 +596,7 @@
 	if (!penloc || !islist(penloc) || penloc.len < 7)
 		return FALSE
 	proj.throw_source = proj.starting
-	if (proj.heavy_armor_penetration > penloc[4])
+	if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > penloc[4])
 		return TRUE
 	else
 		return FALSE

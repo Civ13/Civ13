@@ -87,10 +87,9 @@ Parts of code courtesy of Super3222
 
 	checking = TRUE
 	var/dist1 = abs(get_dist(H.loc,target.loc))
-	world.log << "[target]"
 	H << "You start checking the range..."
 	if (do_after(H, 25, src, can_move = TRUE))
-		H << "<big><b><font color='#ADD8E6'>Range: about [round(max(0,dist1+(rand(-1,1)*(dist1/10))))] meters.</font></b></big>"
+		H << "<big><b><font color='#ADD8E6'>Range: about [max(0,dist1+rand(-1,1))] meters.</font></b></big>"
 		checking = FALSE
 	else
 		checking = FALSE

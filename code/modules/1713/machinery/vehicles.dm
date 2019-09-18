@@ -34,6 +34,7 @@
 	var/list/matrix = list()
 	var/matrix_l = 0
 	var/matrix_h = 0
+	var/list/matrix_current_locs = list()
 
 	var/color_code = ""
 /obj/structure/vehicleparts/axis/bike

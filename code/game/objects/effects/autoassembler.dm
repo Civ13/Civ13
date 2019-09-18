@@ -26,18 +26,15 @@
 						A.MouseDrop(F)
 						done1 = TRUE
 						central = F
-		if (central)
-			world.log << "Assigned the axis to the central frame."
-		else
-			world.log << "Axis error!"
+//		if (central)
+//			world.log << "Assigned the axis to the central frame."
+		if (!central)
+			world.log << "<b>Axis error!</b>"
 			return FALSE
 		//now connect all the frames
-		var/count = 0
 		for (var/obj/structure/vehicleparts/frame/A in rangeto)
 			if (!A.axis)
 				A.MouseDrop(central)
-				count++
-		world.log << "Added [count] frames."
 		//then the engine
 		var/done2 = FALSE
 		for (var/obj/structure/engine/internal/E in rangeto)
@@ -47,10 +44,10 @@
 						central.axis.engine = E
 						E.anchored = TRUE
 						done2 = TRUE
-		if (done2)
-			world.log << "Added the engine."
-		else
-			world.log << "Engine error!"
+//		if (done2)
+//			world.log << "Added the engine."
+		if (!done2)
+			world.log << "<b>Engine error!</b>"
 			return FALSE
 		//then the fueltank
 		var/done3 = FALSE
@@ -61,10 +58,10 @@
 						I.fueltank = E
 						E.anchored = TRUE
 						done3 = TRUE
-		if (done3)
-			world.log << "Added fueltank."
-		else
-			world.log << "Fueltank error!"
+//		if (done3)
+//			world.log << "Added fueltank."
+		if (!done3)
+			world.log << "<b>Fueltank error!</b>"
 			return FALSE
 		//finally, the drivers seat
 		var/done4 = FALSE
@@ -77,17 +74,14 @@
 						central.axis.wheel = D.wheel
 						central.axis.wheel.control = F
 						done4 = TRUE
-		if (done4)
-			world.log << "Added driver's seat."
-		else
-			world.log << "Driver's Seat error!"
+//		if (done4)
+//			world.log << "Added driver's seat."
+		if (!done4)
+			world.log << "<b>Driver's Seat error!</b>"
 			return FALSE
 		//and the tracks
-		count = 0
 		for (var/obj/structure/vehicleparts/movement/M in rangeto)
 			M.MouseDrop(central)
-			count++
-		world.log << "Added [count] wheels/tracks."
 		sleep(2)
 		if (isemptylist(central.axis.corners))
 			central.axis.check_corners()
@@ -95,6 +89,6 @@
 			central.axis.check_matrix()
 		for (var/obj/structure/vehicleparts/VP in range(7,src))
 			VP.update_icon()
-		world.log << "[central.axis] assembly complete."
+//		world.log << "[central.axis] assembly complete."
 		qdel(src)
 		return TRUE
