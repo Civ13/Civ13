@@ -233,7 +233,7 @@
 			return
 	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HURT)
 		if (!opened)
-			user << "You need to empty the crate first."
+			user << "You need to open the crate first."
 		else
 			visible_message("<span class='danger'>[user] begins to deconstruct the [src]!</span>")
 			playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)

@@ -95,6 +95,6 @@
 			central.axis.check_matrix()
 		for (var/obj/structure/vehicleparts/VP in range(7,src))
 			VP.update_icon()
-		world.log << "Assembly complete."
+		world.log << "[central.axis] assembly complete."
 		qdel(src)
 		return TRUE

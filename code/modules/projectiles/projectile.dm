@@ -559,7 +559,7 @@
 										passthrough = FALSE
 						//				log_debug("ignored [S] (1)")
 									else if (S.density)
-										if (!S.climbable)
+										if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
 											passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
 	//		else
 		//		log_debug("ignored [AM] (2)")
