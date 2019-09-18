@@ -267,7 +267,7 @@
 	if (matrix.len != msize)
 		world.log << "ERROR BUILDING MATRIX! (Wrong Size: msize [msize], matrix.len [matrix.len])"
 		return FALSE
-	var/obj/structure/vehicleparts/frame/FFL = corners[1]
+	var/obj/structure/vehicleparts/frame/FFL = corners[2]
 	if (!istype(FFL, /obj/structure/vehicleparts/frame))
 		world.log << "ERROR BUILDING MATRIX! (Front-Left is not a Frame)"
 		return FALSE
@@ -378,8 +378,8 @@
 						if (FM)
 							var/ox = text2num(matrix["[i],[j]"][2])
 							var/oy = text2num(matrix["[i],[j]"][3])
-							var/tx = matrix_h-oy-1
-							var/ty = matrix_l-ox-1
+							var/tx = matrix_h-oy
+							var/ty = matrix_l-ox
 							var/turf/oturf = get_turf(FM)
 							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
 							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
@@ -404,8 +404,8 @@
 						if (FM)
 							var/ox = text2num(matrix["[i],[j]"][2])
 							var/oy = text2num(matrix["[i],[j]"][3])
-							var/tx = matrix_l-ox-1
-							var/ty = matrix_h-oy-1
+							var/tx = matrix_l-ox
+							var/ty = matrix_h-oy
 							var/turf/oturf = get_turf(FM)
 							var/turf/nturf = get_turf(locate(baset.x+tx, baset.y+ty, baset.z))
 							world.log << "[nturf]: [nturf.x], [nturf.y], [nturf.z]"
