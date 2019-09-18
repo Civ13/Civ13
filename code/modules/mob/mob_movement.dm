@@ -916,7 +916,7 @@
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
-				if (MW && MW.control && MW.control.axis && MW.control.axis.reverse)
+				if (MW && MW.control && MW.control.axis && MW.control.axis.reverse && MW.control.axis.currentspeed == 0)
 					H << "You switch into forward."
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
 					MW.control.axis.currentspeed = 1
@@ -957,7 +957,7 @@
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
-				if (MW && MW.control && MW.control.axis && !MW.control.axis.reverse)
+				if (MW && MW.control && MW.control.axis && !MW.control.axis.reverse && MW.control.axis.currentspeed == 0)
 					H << "You switch into reverse."
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
 					MW.control.axis.currentspeed = 1

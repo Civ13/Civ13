@@ -24,7 +24,7 @@
 "ax" = (/obj/structure/vehicleparts/frame/lb{name = "41"},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/dirt,/area/caribbean/forest)
 "ay" = (/obj/structure/vehicleparts/frame/rdoor{doorcode = 11940; name = "33"},/turf/floor/dirt,/area/caribbean/forest)
 "az" = (/obj/structure/vehicleparts/frame{name = "22"},/obj/structure/cannon/modern/tank/german75{anchored = 1},/turf/floor/dirt,/area/caribbean/forest)
-"aA" = (/obj/structure/vehicleparts/frame{name = "32"},/obj/structure/bed/chair/loader,/turf/floor/dirt,/area/caribbean/forest)
+"aA" = (/obj/structure/table/rack{density = 0; layer = 3},/obj/structure/vehicleparts/frame/rb{name = "frame"},/turf/floor/dirt,/area/caribbean/forest)
 "aB" = (/obj/structure/closet/hideout/pine,/turf/floor/grass,/area/caribbean/forest)
 "aC" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
 "aD" = (/obj/structure/wild/jungle/medpine,/turf/floor/dirt/dust,/area/caribbean/forest)
@@ -38,10 +38,10 @@
 "aL" = (/obj/effect/landmark{name = "JoinLateGE"},/turf/floor/dirt,/area/caribbean/forest)
 "aM" = (/obj/structure/wild/tallgrass,/obj/effect/landmark{name = "JoinLateGE"},/turf/floor/grass,/area/caribbean/forest)
 "aN" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/ldoor{dir = 1; doorcode = 4975; icon_state = "frame_steel"},/turf/floor/dirt,/area/caribbean/forest)
-"aO" = (/obj/structure/vehicleparts/frame/rwall{name = "23"},/obj/structure/bed/chair/commander,/turf/floor/dirt,/area/caribbean/forest)
+"aO" = (/obj/structure/vehicleparts/frame/bwall{name = "frame"},/obj/structure/engine/internal/gasoline{enginesize = 12000},/turf/floor/dirt,/area/caribbean/forest)
 "aP" = (/obj/structure/vehicleparts/frame/rdoor{dir = 1; doorcode = 4975; icon_state = "frame_steel"},/turf/floor/dirt,/area/caribbean/forest)
-"aQ" = (/obj/structure/vehicleparts/axis/heavy{name = "Panzer IV"},/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/fwall{name = "12"},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/turf/floor/dirt,/area/caribbean/forest)
-"aR" = (/obj/structure/vehicleparts/frame/lwall{name = "21"},/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/dirt,/area/caribbean/forest)
+"aQ" = (/obj/structure/vehicleparts/frame/lb{name = "frame"},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/dirt,/area/caribbean/forest)
+"aR" = (/obj/structure/vehicleparts/frame/rdoor{doorcode = 11940; name = "frame"},/turf/floor/dirt,/area/caribbean/forest)
 "aS" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 1; layer = 4},/obj/structure/vehicleparts/frame/rf{name = "13"},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/turf/floor/dirt,/area/caribbean/forest)
 "aT" = (/obj/structure/vehicleparts/movement/tracks{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "aU" = (/obj/structure/vehicleparts/axis/heavy{color_code = "_g"; dir = 1; name = "T-34"},/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/fwall{icon_state = "frame_steel"; dir = 1},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/dirt,/area/caribbean/forest)
@@ -53,7 +53,9 @@
 "ba" = (/obj/structure/bed/chair/drivers/tank{icon_state = "driver_tank"; dir = 1},/obj/structure/vehicleparts/frame/rf{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bb" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 4},/obj/structure/vehicleparts/frame/lwall{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bc" = (/obj/structure/bed/chair/commander{icon_state = "commanders_seat"; dir = 1},/obj/structure/vehicleparts/frame/rwall{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"bd" = (/obj/structure/vehicleparts/frame/bwall{name = "42"},/turf/floor/dirt,/area/caribbean/forest)
 "be" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt,/area/caribbean/forest)
+"bf" = (/obj/structure/vehicleparts/frame{name = "22"},/turf/floor/dirt,/area/caribbean/forest)
 "bg" = (/obj/structure/vehicleparts/movement/tracks/reversed/left{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bh" = (/obj/structure/vehicleparts/movement/tracks/left,/turf/floor/dirt,/area/caribbean/forest)
 "bi" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
@@ -83,15 +85,31 @@
 "bG" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/grass,/area/caribbean/forest)
 "bH" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/dirt,/area/caribbean/forest)
 "bI" = (/obj/structure/closet/crate/ww2/artillery_shells/APCR76,/turf/floor/grass,/area/caribbean/forest)
+"bJ" = (/obj/structure/vehicleparts/frame/lwall{name = "21"},/turf/floor/dirt,/area/caribbean/forest)
+"bK" = (/obj/structure/vehicleparts/frame/rwall{name = "23"},/turf/floor/dirt,/area/caribbean/forest)
+"bL" = (/obj/structure/vehicleparts/frame{name = "22"},/obj/structure/bed/chair/commander,/turf/floor/dirt,/area/caribbean/forest)
+"bM" = (/obj/structure/vehicleparts/frame{name = "22"},/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/dirt,/area/caribbean/forest)
+"bN" = (/obj/structure/vehicleparts/frame/fwall{name = "12"},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/turf/floor/dirt,/area/caribbean/forest)
+"bO" = (/obj/structure/vehicleparts/frame/fwall{name = "12"},/turf/floor/dirt,/area/caribbean/forest)
+"bP" = (/obj/structure/vehicleparts/frame{name = "32"},/obj/structure/bed/chair/loader,/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean/forest)
+"bQ" = (/obj/structure/vehicleparts/axis/heavy{name = "Panzer IV"},/obj/structure/vehicleparts/frame/fwall{name = "12"},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/turf/floor/dirt,/area/caribbean/forest)
+"bR" = (/obj/structure/vehicleparts/frame{name = "frame"},/obj/structure/bed/chair/loader,/turf/floor/dirt,/area/caribbean/forest)
+"bS" = (/obj/structure/vehicleparts/frame/ldoor{doorcode = 11940; name = "frame"},/obj/item/weapon/storage/toolbox/emergency,/turf/floor/dirt,/area/caribbean/forest)
+"bT" = (/obj/structure/vehicleparts/frame/rwall{name = "frame"},/obj/structure/bed/chair/commander,/turf/floor/dirt,/area/caribbean/forest)
+"bU" = (/obj/structure/vehicleparts/frame{name = "frame"},/obj/structure/cannon/modern/tank/german75{anchored = 1},/turf/floor/dirt,/area/caribbean/forest)
+"bV" = (/obj/structure/vehicleparts/frame/lwall{name = "frame"},/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/dirt,/area/caribbean/forest)
+"bW" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 1; layer = 4},/obj/structure/vehicleparts/frame/rf{name = "frame"},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/turf/floor/dirt,/area/caribbean/forest)
+"bX" = (/obj/structure/vehicleparts/axis/heavy{name = "Panzer IV"},/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/fwall{name = "frame"},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/turf/floor/dirt,/area/caribbean/forest)
+"bY" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/lf{name = "frame"},/turf/floor/dirt,/area/caribbean/forest)
 
 (1,1,1) = {"
-aaaaaaaaaaabababacababadababadababababababababababaeababababafaaabababababababababacacababababababababababababagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
-aaaaaaaaaaabababababababababaaabaiabababaiabababaeaeacadababaGamaaaabgaaaHaaaaabababababababacababababaiabababababagagababababacabababaaabaeaeabaiabaaacabafabaaabababababababababababahabababababababab
-aaaaaaaaaaababababababababababababababaaabababaaaeaeabababbAaaaIaIaaavawaxaaabababababababababababababababababababagagagagagababababababaeaeabababababababababagabababahababagabababacabaiabababadababac
-aaaaaaaaaaababababaaaaaaaaabababababababababaiaaaeaeaaadaabBaaaaaaaaayaAaJaaaaabababababadababacabababafababababababagagacabagagababaeaeaeaeaaaaaeababacadabagagagagabababacabababababababababababababab
-aaaaaaaaaaabababababaaaaaaaaababababababababababaeaeabababaLaLaLaaaaaOazaRaaafafabababababababababababababacabababacabababababababaaabaeaeaeaaaaaeajababababababagagabababababadafababafabababababababab
-abababafababababababababababababadabababababababakaeabababaMaLaLaaaaaSaQaWaaaaafabaaabaiabababababababababadababababababababababababaaaaaaaeaeaeaeaaaaababafafabababababaiabababacabababababababababadab
-abababababababababababacababababacababababababababaealababbnaLaLaaaaaXaabhaaabababafabababababababababababababababababababababadacababaaaaaaaeaeamaaaaababababababacabababababababababacafababababababab
+aaaaaaaaaaabababacababadababadabababbgaaaaabaHababaeababababafaaabababababababababacacababababababababababababagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
+aaaaaaaaaaabababababababababaaabaiabavbdbdawaxabaeaeacadababaGamaaaabgaaaHaaaaabababababababacababababaiabababababagagababababacabababaaabaeaeabaiabaaacabafabaaabababababababababababahabababababababab
+aaaaaaaaaaabababababababababababababaybfbfbfbJaaaeaeabababbAaaaIaIaaaAaOaQaaabababababababababababababababababababagagagagagababababababaeaeabababababababababagabababahababagabababacabaiabababadababac
+aaaaaaaaaaababababaaaaaaaaabababababaybfbPbfaJaaaeaeaaadaabBaaaaaaaaaRbRbSaaaaabababababadababacabababafababababababagagacabagagababaeaeaeaeaaaaaeababacadabagagagagabababacabababababababababababababab
+aaaaaaaaaaabababababaaaaaaaaababababbKbLazbMbJabaeaeabababaLaLaLaaaabTbUbVaaafafabababababababababababababacabababacabababababababaaabaeaeaeaaaaaeajababababababagagabababababadafababafabababababababab
+abababafababababababababababababadabaSbNbQbOaWabakaeabababaMaLaLaaaabWbXbYaaaaafabaaabaiabababababababababadababababababababababababaaaaaaaeaeaeaeaaaaababafafabababababaiabababacabababababababababadab
+abababababababababababacababababacabaXaaaaaabhababaealababbnaLaLaaaaaXaabhaaabababafabababababababababababababababababababababadacababaaaaaaaeaeamaaaaababababababacabababababababababacafababababababab
 abababaiabababababababababadababababababaiababababaeaeaiabbCabbDabaaaaabababababababababababadabababababababababaiababababacabababadabababaaaeaeanabababacabababababababaiabababababababafababafabafabaa
 adababababababaiabababababababababababababababafadaeaeaeacbCabbEabababacabababababababababadababababacabababababababababababababababababababaeaeaeaoababadabababacababababababadabababababababaaabababaa
 abababacabababababababababababababababababababababababaeaeabafababababaaaaaaadababababababaaabaaababababababababababababadaaabaeaeaeaaamaaaaaeaeadaaabababababababababababababababadababacababababababab

@@ -11,13 +11,13 @@
 	if (world.time <= lastdirchange)
 		return FALSE
 	if (newdir == "left")
-		control.axis.dir = TURN_LEFT(control.axis.dir)
-		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), "left")
+		if (control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), "left"))
+			control.axis.dir = TURN_LEFT(control.axis.dir)
 		lastdirchange = world.time+15
 		return TRUE
 	else if (newdir == "right")
-		control.axis.dir = TURN_LEFT(control.axis.dir)
-		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), "right")
+		if (control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), "right"))
+			control.axis.dir = TURN_LEFT(control.axis.dir)
 		lastdirchange = world.time+15
 		return TRUE
 

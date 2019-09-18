@@ -35,6 +35,9 @@
 		for (var/obj/structure/vehicleparts/frame/A in rangeto)
 			if (!A.axis)
 				A.MouseDrop(central)
+		for (var/obj/structure/vehicleparts/frame/AA in loc)
+			if (!AA.axis)
+				AA.MouseDrop(central)
 		//then the engine
 		var/done2 = FALSE
 		for (var/obj/structure/engine/internal/E in rangeto)

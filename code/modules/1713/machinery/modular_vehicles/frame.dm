@@ -44,14 +44,13 @@
 
 /obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)
-		for(var/obj/structure/vehicleparts/frame/FRT in VP.axis.components)
-			if (abs(FRT.y-y) > 5 || abs(FRT.x-x) > 5)
-				usr << "<span class='notice'>Vehicles can't be more than 5 tiles long or wide!</span>"
-				return
-		for(var/obj/structure/vehicleparts/frame/FR in range(1,src))
+		if (abs(VP.y-y) > 5 || abs(VP.x-x) > 5)
+			usr << "<span class='notice'>Vehicles can't be more than 5 tiles long or wide!</span>"
+			return
 			if (VP.axis.components.len > 25)
 				usr << "<span class='notice'>The vehicle is too big already!</span>"
 				return
+		for(var/obj/structure/vehicleparts/frame/FR in range(1,src))
 			if (FR != src && FR.axis == VP.axis)
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 				usr << "You connect \the [src] to \the [VP.axis]."

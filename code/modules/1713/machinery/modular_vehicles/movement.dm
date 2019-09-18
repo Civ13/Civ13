@@ -111,7 +111,7 @@
 
 
 var/global/list/rotation_matrixes = list(
-	"left" = list(
+	"right" = list(
 		"1,1" = list("1,5"),
 		"1,2" = list("2,5"),
 		"1,3" = list("3,5"),
@@ -142,7 +142,7 @@ var/global/list/rotation_matrixes = list(
 		"5,4" = list("4,1"),
 		"5,5" = list("5,1"),),
 
-	"right" = list(
+	"left" = list(
 		"1,1" = list("5,1"),
 		"1,2" = list("4,1"),
 		"1,3" = list("3,1"),
@@ -155,7 +155,7 @@ var/global/list/rotation_matrixes = list(
 		"2,4" = list("2,2"),
 		"2,5" = list("1,2"),
 
-		"3,1" = list("5,2"),
+		"3,1" = list("5,3"),
 		"3,2" = list("4,3"),
 		"3,3" = list("3,3"),
 		"3,4" = list("2,3"),

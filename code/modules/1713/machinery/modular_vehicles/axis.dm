@@ -182,11 +182,9 @@
 		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && !istype(M, /obj/structure/wild))
 			var/obj/MO = M
 			MO.forceMove(get_step(MO.loc, m_dir))
-			if (!istype(M, /obj/structure/cannon) && !istype(M, /obj/structure/bed/chair))
+			if (!istype(M, /obj/structure/cannon))
 				MO.dir = dir
 				MO.update_icon()
-			if (istype(M, /obj/structure/bed/chair/drivers))
-				MO.dir = dir
 				MO.update_icon()
 			if (istype(M, /obj/structure/vehicleparts/movement))
 				var/obj/structure/vehicleparts/movement/MV = M
@@ -326,46 +324,17 @@
 		world.log << "ERROR BUILDING CORNER LIST!"
 		return FALSE
 
-//Basically the do_move() proc but allows a destination to be defined, i.e., it doesnt just force move in a dir like the other proc.
-//Reverts to do_move() if no destination or origin is specified.
-//DEPRECATED FOR NOW
-
-/obj/structure/vehicleparts/axis/proc/do_move_dest(var/turf/ORIG = null, var/turf/DEST = null)
-	if(!DEST || !ORIG)
-		do_move()
-		return
-	else
-		for (var/atom/movable/M in ORIG)
-			if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/wild))
-				var/obj/MO = M
-				MO.forceMove(DEST)
-				if (!istype(M, /obj/structure/cannon) && !istype(M, /obj/structure/bed/chair))
-					MO.dir = dir
-					MO.update_icon()
-				if (istype(M, /obj/structure/bed/chair/drivers))
-					MO.dir = dir
-					MO.update_icon()
-				if (istype(M, /obj/structure/vehicleparts/movement))
-					var/obj/structure/vehicleparts/movement/MV = M
-					if (MV.reversed)
-						MV.dir = OPPOSITE_DIR(dir)
-			if (istype(M, /mob/living))
-				var/mob/living/ML = M
-				ML.forceMove(DEST)
-		return
-
-
 /obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none")
 	if (olddir == 0 || newdir == 0 || tdir == "none")
-		return
+		return FALSE
 	if (isemptylist(corners))
 		check_corners()
 	if (isemptylist(matrix))
 		check_matrix()
 	matrix_current_locs = list()
 	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
-	for (var/locx in 1 to 5)
-		for (var/locy in 1 to 5)
+	for (var/locx=1; locx<=5; locx++)
+		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
 			if (matrix[loc2textv][1])
 				var/turf/currloc = get_turf(matrix[loc2textv][1])
@@ -376,13 +345,35 @@
 				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
 			else
 				var/list/reloc = splittext(matrix[loc2textv][4],",")
-				matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(corners[2].x+text2num(reloc[1]),corners[1].y+text2num(reloc[2]), corners[1].z)),list(),matrix[loc2textv][4]))
+				var/obj/structure/vehicleparts/frame/one_one = corners[2]
+				var/xdif = text2num(reloc[1])-1
+				var/ydif = text2num(reloc[2])-1
+				switch(olddir)
+					if (NORTH)
+						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.x+ydif, one_one.y-xdif, one_one.z)),list(),matrix[loc2textv][4]))
+
+					if (SOUTH)
+						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.x-ydif, one_one.y+xdif, one_one.z)),list(),matrix[loc2textv][4]))
+
+					if (EAST)
+						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.y+xdif, one_one.x+ydif, one_one.z)),list(),matrix[loc2textv][4]))
+
+					if (WEST)
+						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.y-xdif, one_one.x-ydif, one_one.z)),list(),matrix[loc2textv][4]))
 
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
 			var/dlocfind = rotation_matrixes[tdir][loc2textv][1]
+			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfind][1])
+				return FALSE
 			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
 			if (islist(matrix_current_locs[loc2textv][2]))
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
 					M.forceMove(matrix_current_locs[dlocfind][1])
+					if (istype(M, /obj))
+						var/obj/O = M
+						if (!istype(O, /obj/structure/cannon))
+							O.dir = dir
+						O.update_icon()
+	return TRUE
