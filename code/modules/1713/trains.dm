@@ -636,13 +636,13 @@
 /obj/structure/trains/locomotive
 	name = "locomotive"
 	icon_state = "tractor"
-	train_speed = 8 //deciseconds of delay, so lower is better
+	train_speed = 4 //deciseconds of delay, so lower is better
 	locomotive = TRUE
 	on = FALSE
 	var/fuel = FALSE
 	var/max_fuel = FALSE
 	max_fuel = 100
-	max_train_speed = 8
+	max_train_speed = 4
 
 /obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
 	if (!istype(user, /mob/living))
