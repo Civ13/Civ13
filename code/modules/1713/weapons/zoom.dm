@@ -86,10 +86,13 @@ Parts of code courtesy of Super3222
 		return
 
 	checking = TRUE
-	var/dist1 = abs(get_dist(H.loc,target.loc))
+	var/dist1 = abs(H.x-target.x)
+	var/dist2 = abs(H.y-target.y)
+	var/distcon = max(dist1,dist2)
+	var/gdir = get_dir(H, target)
 	H << "You start checking the range..."
 	if (do_after(H, 25, src, can_move = TRUE))
-		H << "<big><b><font color='#ADD8E6'>Range: about [max(0,dist1+rand(-1,1))] meters.</font></b></big>"
+		H << "<big><b><font color='#ADD8E6'>Range: about [max(0,distcon+rand(-1,1))] meters [dir2text(gdir)].</font></b></big>"
 		checking = FALSE
 	else
 		checking = FALSE
