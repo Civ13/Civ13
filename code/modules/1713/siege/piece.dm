@@ -43,7 +43,7 @@
 	desc = "a barebones cannon made to be carried by vehicles."
 	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "tank_cannon"
-	ammotype = /obj/item/cannon_ball/shell
+	ammotype = /obj/item/cannon_ball/shell/tank
 	layer = MOB_LAYER + 1 //just above mobs
 	spritemod = FALSE
 	maxsway = 12
@@ -53,9 +53,31 @@
 	bound_height = 32
 	bound_width = 32
 	density = TRUE
+	caliber = 75
+
+
+/obj/structure/cannon/modern/tank/german75
+	name = "7.5 cm KwK 40"
+	desc = "a 75 mm german tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 12
+	maxrange = 25
+	caliber = 75
+
+/obj/structure/cannon/modern/tank/russian76
+	name = "76 mm M1940 F-34"
+	desc = "a 76.2 mm german tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 12
+	maxrange = 27
+	caliber = 76.2
 
 /obj/structure/cannon/modern/tank/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
+		var/obj/item/cannon_ball/shell/tank/TS = W
+		if (caliber != TS.caliber)
+			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
+			return
 		if (loaded)
 			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
 			return

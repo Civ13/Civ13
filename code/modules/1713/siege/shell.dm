@@ -12,6 +12,51 @@
 	icon_state = "shell"
 	w_class = 4.0
 	value = 20
+	var/caliber = 75
+
+/obj/item/cannon_ball/shell/tank
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "cannon shell"
+	icon_state = "shellHE"
+	var/atype = "HE"
+	w_class = 5.0
+	value = 20
+	caliber = 75
+	heavy_armor_penetration = 15
+	New()
+		..()
+		name = "[caliber]mm artillery shell"
+		icon_state = "shell[atype]"
+
+/obj/item/cannon_ball/shell/tank/HE75
+	atype = "HE"
+	caliber = 75
+	heavy_armor_penetration = 15
+
+/obj/item/cannon_ball/shell/tank/AP75
+	atype = "AP"
+	caliber = 75
+	heavy_armor_penetration = 52
+
+/obj/item/cannon_ball/shell/tank/APCR75
+	atype = "APCR"
+	caliber = 75
+	heavy_armor_penetration = 75
+
+/obj/item/cannon_ball/shell/tank/HE76
+	atype = "HE"
+	caliber = 76.2
+	heavy_armor_penetration = 16
+
+/obj/item/cannon_ball/shell/tank/AP76
+	atype = "AP"
+	caliber = 76.2
+	heavy_armor_penetration = 55
+
+/obj/item/cannon_ball/shell/tank/APCR76
+	atype = "APCR"
+	caliber = 76.2
+	heavy_armor_penetration = 80
 
 /obj/item/cannon_ball/mortar_shell
 	icon = 'icons/obj/cannon_ball.dmi'

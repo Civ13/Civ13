@@ -501,6 +501,30 @@ obj/structure/closet/crate/ww2/artillery_shells
 	name = "HE artillery shells"
 	paths = list(/obj/item/cannon_ball/shell = 10)
 
+obj/structure/closet/crate/ww2/artillery_shells/HE75
+	name = "75 mm HE shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/HE75 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/AP75
+	name = "75 mm AP shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/AP75 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/APCR75
+	name = "75 mm APCR shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/APCR75 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/HE76
+	name = "76.2 mm HE shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/HE76 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/AP76
+	name = "76.2 mm AP shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/AP76 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/APCR76
+	name = "76.2 mm APCR shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/APCR76 = 10)
+
 obj/structure/closet/crate/airdrops
 	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
