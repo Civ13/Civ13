@@ -108,7 +108,7 @@
 				MAP_REICHSTAG = 0,
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
-				MAP_NANJING = 20,
+//				MAP_NANJING = 20,
 			)
 
 		if (epoch == "Early Modern Era (1896-1933)")
