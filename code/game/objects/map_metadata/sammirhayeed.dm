@@ -1,7 +1,7 @@
 #define NO_WINNER "The fighting is still going on."
 /obj/map_metadata/sammirhayeed
 	ID = MAP_SAMMIRHAYEED
-	title = "SAMMIR HAYEED (80x80x1)"
+	title = "Sammir Hayeed (80x80x1)"
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
