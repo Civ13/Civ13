@@ -400,11 +400,11 @@
 	return TRUE
 
 /obj/effect/pseudovehicle
-	name = "a"
-	desc = "a"
+	name = ""
+	desc = ""
 	icon = 'icons/mob/screen/effects.dmi'
-	icon_state = "black"
-	invisibility = 0
+	icon_state = "blank"
+	invisibility = 101
 	layer = 1.8
 	anchored = TRUE
 	density = FALSE
