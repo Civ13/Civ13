@@ -5,6 +5,9 @@
 	w_class = 4.0
 	value = 15
 	var/reagent_payload = null
+	var/damage = 100
+	var/caliber = 75
+	var/atype = "HE"
 
 /obj/item/cannon_ball/shell
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -12,13 +15,11 @@
 	icon_state = "shell"
 	w_class = 4.0
 	value = 20
-	var/caliber = 75
 
 /obj/item/cannon_ball/shell/tank
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "cannon shell"
 	icon_state = "shellHE"
-	var/atype = "HE"
 	w_class = 5.0
 	value = 20
 	caliber = 75
@@ -32,31 +33,37 @@
 	atype = "HE"
 	caliber = 75
 	heavy_armor_penetration = 15
+	damage = 250
 
 /obj/item/cannon_ball/shell/tank/AP75
 	atype = "AP"
 	caliber = 75
 	heavy_armor_penetration = 52
+	damage = 100
 
 /obj/item/cannon_ball/shell/tank/APCR75
 	atype = "APCR"
 	caliber = 75
 	heavy_armor_penetration = 75
+	damage = 125
 
 /obj/item/cannon_ball/shell/tank/HE76
 	atype = "HE"
 	caliber = 76.2
 	heavy_armor_penetration = 16
+	damage = 250
 
 /obj/item/cannon_ball/shell/tank/AP76
 	atype = "AP"
 	caliber = 76.2
 	heavy_armor_penetration = 55
+	damage = 100
 
 /obj/item/cannon_ball/shell/tank/APCR76
 	atype = "APCR"
 	caliber = 76.2
 	heavy_armor_penetration = 80
+	damage = 125
 
 /obj/item/cannon_ball/mortar_shell
 	icon = 'icons/obj/cannon_ball.dmi'

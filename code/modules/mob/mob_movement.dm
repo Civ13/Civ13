@@ -297,8 +297,6 @@
 		if (!map.special_relocate(mob))
 			if (job_master)
 				job_master.relocate(mob)
-			else
-				mob.gib()
 		return
 
 	for (var/obj/structure/noose/N in get_turf(mob))

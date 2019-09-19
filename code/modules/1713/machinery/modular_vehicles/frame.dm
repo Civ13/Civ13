@@ -502,8 +502,6 @@
 						if (w_back[1] == "" || w_back[7] == TRUE)
 							return TRUE
 	return FALSE
-/obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/mover)
-	CanPass(mover)
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (istype(I,/obj/item/weapon/key))
 		var/obj/item/weapon/key/K = I
@@ -592,6 +590,7 @@
 	return list()
 
 /obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/list/penloc = list())
+	world.log << "[Get_Angle(proj.starting,src)]"
 	if (!penloc || !islist(penloc) || penloc.len < 7)
 		return FALSE
 	proj.throw_source = proj.starting
@@ -603,7 +602,19 @@
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/list/penloc = list())
 	if (penloc && islist(penloc) && penloc.len >= 5)
-		penloc[5] -= proj.damage * 0.01
+		if (istype(proj, /obj/item/projectile/shell))
+			var/obj/item/projectile/shell/PS = proj
+			switch (PS.atype)
+				if ("HE")
+					for (var/mob/M in axis.transporting)
+						shake_camera(M, 3, 3)
+					penloc[5] -= proj.damage * 0.03
+				if ("APCR")
+					penloc[5] -= proj.damage * 0.12
+				if ("AP")
+					penloc[5] -= proj.damage * 0.1
+		else
+			penloc[5] -= proj.damage * 0.01
 		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
 		try_destroy()
 		return

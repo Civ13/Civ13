@@ -305,6 +305,10 @@
 	if (!usr.canmove || usr.stat || usr.restrained())
 		return
 
+	if (locked)
+		usr << "<span class='warning'>\The [src]is locked!</span>"
+		return
+
 	if (ishuman(usr))
 		add_fingerprint(usr)
 		toggle(usr)

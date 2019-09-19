@@ -117,7 +117,7 @@
 								SA.crush()
 			for(var/obj/structure/O in T)
 				if (O.density == TRUE && !(O in transporting))
-					if (current_weight >= 55)
+					if (current_weight >= 55 && !istype(O, /obj/structure/barricade/antitank))
 						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 						qdel(O)
 					else
@@ -364,24 +364,7 @@
 					if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
 						tmplist += MV
 				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
-/*
-			else
-				var/obj/structure/vehicleparts/frame/one_one = corners[2]
-				var/xdif = locx-1
-				var/ydif = locy-1
-				switch(olddir)
-					if (NORTH)
-						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.x+ydif, one_one.y-xdif, one_one.z)),list(),matrix[loc2textv][4]))
 
-					if (SOUTH)
-						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.x-ydif, one_one.y+xdif, one_one.z)),list(),matrix[loc2textv][4]))
-
-					if (EAST)
-						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.y-xdif, one_one.x-ydif, one_one.z)),list(),matrix[loc2textv][4]))
-
-					if (WEST)
-						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.y+xdif, one_one.x+ydif, one_one.z)),list(),matrix[loc2textv][4]))
-*/
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
