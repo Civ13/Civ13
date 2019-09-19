@@ -384,8 +384,6 @@
 						if (!istype(O, /obj/structure/cannon))
 							O.dir = dir
 						O.update_icon()
-	for (var/obj/OB in components)
-		OB.update_icon()
 	return TRUE
 
 /obj/effect/pseudovehicle

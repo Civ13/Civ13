@@ -28,7 +28,7 @@
 
 /obj/map_metadata/kursk/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE)
+	if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
 		. = TRUE
 	else
 		. = FALSE
