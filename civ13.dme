@@ -287,6 +287,7 @@
 #include "code\game\objects\map_metadata\reichstag.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
+#include "code\game\objects\map_metadata\sammirhayeed.dm"
 #include "code\game\objects\map_metadata\siege.dm"
 #include "code\game\objects\map_metadata\supply_raid.dm"
 #include "code\game\objects\map_metadata\tribes.dm"

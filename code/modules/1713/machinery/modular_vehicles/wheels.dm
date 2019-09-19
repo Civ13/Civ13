@@ -14,11 +14,29 @@
 		if (control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), "left"))
 			control.axis.dir = TURN_LEFT(control.axis.dir)
 		lastdirchange = world.time+15
+		for (var/obj/OB in control.axis.components)
+			OB.update_icon()
+		for (var/obj/structure/vehicleparts/movement/OB in control.axis.wheels)
+			if (OB.reversed)
+				OB.dir = OPPOSITE_DIR(control.axis.dir)
+			else
+				OB.dir = control.axis.dir
+			OB.update_icon()
 		return TRUE
 	else if (newdir == "right")
 		if (control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), "right"))
 			control.axis.dir = TURN_LEFT(control.axis.dir)
 		lastdirchange = world.time+15
+		for (var/obj/OB in control.axis.components)
+			if (!istype(OB, /obj/structure/cannon))
+				OB.dir = control.axis.dir
+			OB.update_icon()
+		for (var/obj/structure/vehicleparts/movement/OB in control.axis.wheels)
+			if (OB.reversed)
+				OB.dir = OPPOSITE_DIR(control.axis.dir)
+			else
+				OB.dir = control.axis.dir
+			OB.update_icon()
 		return TRUE
 
 /obj/structure/bed/chair/drivers/ex_act(severity)

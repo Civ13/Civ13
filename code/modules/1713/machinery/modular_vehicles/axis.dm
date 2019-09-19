@@ -375,7 +375,7 @@
 			var/dlocfind = rotation_matrixes[tdir][loc2textv][1]
 			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfind][1])
 				return FALSE
-			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
+//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
 			if (islist(matrix_current_locs[loc2textv][2]))
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
 					M.forceMove(matrix_current_locs[dlocfind][1])

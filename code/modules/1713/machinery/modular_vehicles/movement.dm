@@ -19,9 +19,6 @@
 	ntype = "track"
 	var/left = FALSE
 
-/obj/structure/vehicleparts/movement/tracks/left
-	left = TRUE
-
 /obj/structure/vehicleparts/movement/tracks/middle
 	icon_state = "tracks_cover"
 	base_icon = "tracks_cover"
@@ -30,8 +27,6 @@
 /obj/structure/vehicleparts/movement/tracks/reversed
 	reversed = TRUE
 
-/obj/structure/vehicleparts/movement/tracks/reversed/left
-	left = TRUE
 
 /obj/structure/vehicleparts/movement/tracks/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis)
@@ -41,26 +36,91 @@
 
 /obj/structure/vehicleparts/movement/tracks/update_icon()
 	..()
-	if (!left)
-		switch(dir)
-			if(NORTH)
-				pixel_x =-21
-			if(SOUTH)
-				pixel_x =21
-			if(WEST)
-				pixel_y =21
-			if(EAST)
-				pixel_y =-21
-	else
-		switch(dir)
-			if(NORTH)
-				pixel_x =21
-			if(SOUTH)
-				pixel_x =-21
-			if(WEST)
-				pixel_y =-21
-			if(EAST)
-				pixel_y =21
+	switch(axis.dir)
+		if (NORTH)
+			if (reversed)
+				switch(dir)
+					if(NORTH)
+						pixel_y =-32
+					if(SOUTH)
+						pixel_y =32
+					if(WEST)
+						pixel_x =32
+					if(EAST)
+						pixel_x =-32
+			else
+				switch(dir)
+					if(NORTH)
+						pixel_y =32
+					if(SOUTH)
+						pixel_y =-32
+					if(WEST)
+						pixel_x =-32
+					if(EAST)
+						pixel_x =32
+		if (SOUTH)
+			if (reversed)
+				switch(dir)
+					if(NORTH)
+						pixel_y =-32
+					if(SOUTH)
+						pixel_y =32
+					if(WEST)
+						pixel_x =32
+					if(EAST)
+						pixel_x =-32
+			else
+				switch(dir)
+					if(NORTH)
+						pixel_y =32
+					if(SOUTH)
+						pixel_y =-32
+					if(WEST)
+						pixel_x =-32
+					if(EAST)
+						pixel_x =32
+		if (EAST)
+			if (reversed)
+				switch(dir)
+					if(NORTH)
+						pixel_y =-32
+					if(SOUTH)
+						pixel_y =32
+					if(WEST)
+						pixel_x =32
+					if(EAST)
+						pixel_x =-32
+			else
+				switch(dir)
+					if(NORTH)
+						pixel_y =32
+					if(SOUTH)
+						pixel_y =-32
+					if(WEST)
+						pixel_x =-32
+					if(EAST)
+						pixel_x =32
+		if (WEST)
+			if (reversed)
+				switch(dir)
+					if(NORTH)
+						pixel_y =-32
+					if(SOUTH)
+						pixel_y =32
+					if(WEST)
+						pixel_x =32
+					if(EAST)
+						pixel_x =-32
+			else
+				switch(dir)
+					if(NORTH)
+						pixel_y =32
+					if(SOUTH)
+						pixel_y =-32
+					if(WEST)
+						pixel_x =-32
+					if(EAST)
+						pixel_x =32
 /obj/structure/vehicleparts/movement/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (broken && istype(I, /obj/item/weapon/wrench))
 		visible_message("[H] starts repairing \the [ntype]...")
