@@ -112,7 +112,7 @@
 			world.log << "<b>Driver's Seat error!</b>"
 			return FALSE
 		//and the tracks
-		for (var/obj/structure/vehicleparts/movement/M in rangeto)
+		for (var/obj/structure/vehicleparts/movement/M in range(7,src))
 			M.MouseDrop(central)
 		sleep(2)
 		if (isemptylist(central.axis.corners))
