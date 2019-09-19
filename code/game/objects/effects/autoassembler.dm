@@ -34,10 +34,39 @@
 		//now connect all the frames
 		for (var/obj/structure/vehicleparts/frame/A in rangeto)
 			if (!A.axis)
-				A.MouseDrop(central)
+				A.axis = central.axis
+				A.color_code = central.color_code
+				var/found = FALSE
+				for (var/obj/structure/vehicleparts/frame/F in central.axis.components)
+					if (F == src)
+						found = TRUE
+				if (!found)
+					central.axis.components += A
+				A.anchored = TRUE
+				A.dir = central.axis.components
 		for (var/obj/structure/vehicleparts/frame/AA in loc)
 			if (!AA.axis)
-				AA.MouseDrop(central)
+				AA.axis = central.axis
+				AA.color_code = central.color_code
+				var/found = FALSE
+				for (var/obj/structure/vehicleparts/frame/F in central.axis.components)
+					if (F == src)
+						found = TRUE
+				if (!found)
+					central.axis.components += AA
+				AA.anchored = TRUE
+				AA.dir = central.axis.components
+		sleep(1)
+		for(var/turf/T in range(2,src))
+			var/doneps = FALSE
+			for (var/obj/structure/vehicleparts/frame/FRE in T)
+				if (FRE.axis)
+					doneps = TRUE
+			if (!doneps)
+				var/obj/effect/pseudovehicle/PV = new/obj/effect/pseudovehicle(T)
+				PV.link = central.axis
+				PV.dir = central.axis.dir
+				central.axis.components += PV
 		//then the engine
 		var/done2 = FALSE
 		for (var/obj/structure/engine/internal/E in rangeto)

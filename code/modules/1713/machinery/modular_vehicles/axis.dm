@@ -193,7 +193,7 @@
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
 			ML.forceMove(get_step(ML.loc, m_dir))
-	for (var/obj/structure/vehicleparts/frame/F in components)
+	for (var/obj/F in components)
 		F.dir = dir
 		F.forceMove(get_step(F.loc, m_dir))
 		F.update_icon()
@@ -265,11 +265,32 @@
 	if (!istype(FFL, /obj/structure/vehicleparts/frame))
 		world.log << "ERROR BUILDING MATRIX! (Front-Left is not a Frame)"
 		return FALSE
-	if (FFL.dir == SOUTH)
-		for (var/obj/structure/vehicleparts/frame/FM in components)
-			var/disx = abs(FM.y-FFL.y)
-			var/disy = abs(FM.x-FFL.x)
-			matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
+	for (var/obj/structure/vehicleparts/frame/FM in components)
+		var/disx = abs(FM.y-FFL.y)
+		var/disy = abs(FM.x-FFL.x)
+		switch(FFL.dir)
+			if (SOUTH)
+				matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
+			//TODO: Directions below
+			if (NORTH)
+				matrix["[disx-1],[disy-1]"] = list(FM, disx-1, disy-1,"[disx-1],[disy-1]")
+			if (EAST)
+				matrix["[disx+1],[disy-1]"] = list(FM, disx+1, disy-1,"[disx+1],[disy-1]")
+			if (WEST)
+				matrix["[disx-1],[disy+1]"] = list(FM, disx-1, disy+1,"[disx-1],[disy+1]")
+	for (var/obj/effect/pseudovehicle/PV in components)
+		var/disx = abs(PV.y-FFL.y)
+		var/disy = abs(PV.x-FFL.x)
+		switch(PV.dir)
+			if (SOUTH)
+				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
+			//TODO: Directions below
+			if (NORTH)
+				matrix["[disx-1],[disy-1]"] = list(PV, disx-1, disy-1,"[disx-1],[disy-1]")
+			if (EAST)
+				matrix["[disx+1],[disy-1]"] = list(PV, disx+1, disy-1,"[disx+1],[disy-1]")
+			if (WEST)
+				matrix["[disx-1],[disy+1]"] = list(PV, disx-1, disy+1,"[disx-1],[disy+1]")
 	return TRUE
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
@@ -340,14 +361,14 @@
 				var/turf/currloc = get_turf(matrix[loc2textv][1])
 				var/list/tmplist = list()
 				for (var/atom/movable/MV in currloc)
-					if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item)))
+					if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
 						tmplist += MV
 				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
+/*
 			else
-				var/list/reloc = splittext(matrix[loc2textv][4],",")
 				var/obj/structure/vehicleparts/frame/one_one = corners[2]
-				var/xdif = text2num(reloc[1])-1
-				var/ydif = text2num(reloc[2])-1
+				var/xdif = locx-1
+				var/ydif = locy-1
 				switch(olddir)
 					if (NORTH)
 						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.x+ydif, one_one.y-xdif, one_one.z)),list(),matrix[loc2textv][4]))
@@ -356,11 +377,11 @@
 						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.x-ydif, one_one.y+xdif, one_one.z)),list(),matrix[loc2textv][4]))
 
 					if (EAST)
-						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.y+xdif, one_one.x+ydif, one_one.z)),list(),matrix[loc2textv][4]))
-
-					if (WEST)
 						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.y-xdif, one_one.x-ydif, one_one.z)),list(),matrix[loc2textv][4]))
 
+					if (WEST)
+						matrix_current_locs += list(matrix[loc2textv][4] = list(get_turf(locate(one_one.y+xdif, one_one.x+ydif, one_one.z)),list(),matrix[loc2textv][4]))
+*/
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
@@ -377,3 +398,15 @@
 							O.dir = dir
 						O.update_icon()
 	return TRUE
+
+/obj/effect/pseudovehicle
+	name = "a"
+	desc = "a"
+	icon = 'icons/mob/screen/effects.dmi'
+	icon_state = "black"
+	invisibility = 0
+	layer = 1.8
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	var/obj/structure/vehicleparts/axis/link = null
