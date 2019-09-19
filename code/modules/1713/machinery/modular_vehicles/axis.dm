@@ -83,11 +83,15 @@
 				return FALSE
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
+			if (reverse)
+				T = get_turf(get_step(FR.loc,OPPOSITE_DIR(dir)))
 			if (!T)
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
 			var/turf/TT = get_turf(get_step(T, dir))
+			if (reverse)
+				TT = get_turf(get_step(T,OPPOSITE_DIR(dir)))
 			for(var/mob/living/L in TT)
 				var/protec = FALSE
 				for (var/obj/structure/vehicleparts/frame/FRR in L.loc)
@@ -273,11 +277,11 @@
 				matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
 			//TODO: Directions below
 			if (NORTH)
-				matrix["[disx-1],[disy-1]"] = list(FM, disx-1, disy-1,"[disx-1],[disy-1]")
+				matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
 			if (EAST)
-				matrix["[disx+1],[disy-1]"] = list(FM, disx+1, disy-1,"[disx+1],[disy-1]")
+				matrix["[disx+1],[disy-1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
 			if (WEST)
-				matrix["[disx-1],[disy+1]"] = list(FM, disx-1, disy+1,"[disx-1],[disy+1]")
+				matrix["[disx-1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
 	for (var/obj/effect/pseudovehicle/PV in components)
 		var/disx = abs(PV.y-FFL.y)
 		var/disy = abs(PV.x-FFL.x)
@@ -286,11 +290,11 @@
 				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
 			//TODO: Directions below
 			if (NORTH)
-				matrix["[disx-1],[disy-1]"] = list(PV, disx-1, disy-1,"[disx-1],[disy-1]")
+				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
 			if (EAST)
-				matrix["[disx+1],[disy-1]"] = list(PV, disx+1, disy-1,"[disx+1],[disy-1]")
+				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy-1]")
 			if (WEST)
-				matrix["[disx-1],[disy+1]"] = list(PV, disx-1, disy+1,"[disx-1],[disy+1]")
+				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
 	return TRUE
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
