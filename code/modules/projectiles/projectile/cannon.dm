@@ -40,7 +40,6 @@
 	impact_effect(effect_transform)		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
 	if (istype(A, /turf))
-		world.log << "impact [A.x] [A.y]"
 		var/turf/T = A
 		if (atype == "HE")
 			if (!istype(T, /turf/floor/beach))

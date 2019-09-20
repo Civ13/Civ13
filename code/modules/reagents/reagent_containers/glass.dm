@@ -439,6 +439,51 @@
 	volume = 250
 	density = TRUE
 
+/obj/item/weapon/reagent_containers/glass/bullet_act(var/obj/item/projectile/proj)
+	var/can_explode = FALSE
+	if (reagents.has_reagent("gasoline",10) || reagents.has_reagent("diesel",30) || reagents.has_reagent("biodiesel",30) || reagents.has_reagent("ethanol",10) || reagents.has_reagent("petroleum",40) || reagents.has_reagent("gunpowder",30))
+		can_explode = TRUE
+	if (!can_explode)
+		return
+	if (istype(proj, /obj/item/projectile/shell))
+		var/obj/item/projectile/shell/S = proj
+		if (S.atype == "HE")
+			if (prob(90))
+				visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+				explosion(loc, 2, 3, 2, 0)
+				qdel(src)
+			else
+				visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
+				new/obj/effect/decal/cleanable/blood/oil(loc)
+				var/part = 15 / reagents.total_volume
+				for (var/datum/reagent/current in reagents.reagent_list)
+					var/amount_to_transfer = current.volume * part
+					reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
+		else
+			if (prob(20))
+				visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+				explosion(loc, 1, 1, 2, 0)
+				qdel(src)
+			else if (prob(75))
+				visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
+				new/obj/effect/decal/cleanable/blood/oil(loc)
+				var/part = 25 / reagents.total_volume
+				for (var/datum/reagent/current in reagents.reagent_list)
+					var/amount_to_transfer = current.volume * part
+					reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
+	else
+		if (prob(12))
+			visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+			explosion(loc, 1, 2, 2, 0)
+			qdel(src)
+		else if (prob(30))
+			visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
+			new/obj/effect/decal/cleanable/blood/oil(loc)
+			var/part = 15 / reagents.total_volume
+			for (var/datum/reagent/current in reagents.reagent_list)
+				var/amount_to_transfer = current.volume * part
+				reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
+
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
 	name = "small fueltank"
 	icon_state = "fueltank_small"

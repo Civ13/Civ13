@@ -71,7 +71,7 @@
 					pixel_x =-32
 					pixel_y = 0
 /obj/structure/vehicleparts/movement/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
-	if (broken && istype(I, /obj/item/weapon/wrench))
+	if (broken && istype(I, /obj/item/weapon/weldingtool))
 		visible_message("[H] starts repairing \the [ntype]...")
 		if (do_after(H, 200, src))
 			visible_message("[H] sucessfully repairs \the [ntype].")

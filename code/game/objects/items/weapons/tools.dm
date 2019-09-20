@@ -283,3 +283,21 @@
 	w_class = 2.0
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+
+/obj/item/weapon/weldingtool
+	name = "welding tool"
+	desc = "used to weld metals together"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "ww2_welder_off"
+	var/on_state = "ww2_welder_on"
+	var/off_state = "ww2_welder_off"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+
+	//Amount of OUCH when it's thrown
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	throw_speed = TRUE
+	throw_range = 5
+	w_class = 3.0
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")

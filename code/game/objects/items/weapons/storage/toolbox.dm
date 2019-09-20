@@ -24,7 +24,7 @@
 		new /obj/item/weapon/wrench(src)
 		new /obj/item/weapon/fire_extinguisher(src)
 		new /obj/item/flashlight/flashlight(src)
-		new /obj/item/weapon/crowbar/prybar(src)
+		new /obj/item/weapon/weldingtool(src)
 		new /obj/item/weapon/shovel/trench(src)
 
 /obj/item/weapon/storage/toolbox/mechanical
@@ -36,6 +36,7 @@
 		..()
 		new /obj/item/weapon/wrench(src)
 		new /obj/item/weapon/crowbar/prybar(src)
+		new /obj/item/weapon/weldingtool(src)
 		new /obj/item/weapon/wirecutters/boltcutters(src)
 		new /obj/item/weapon/hammer(src)
 

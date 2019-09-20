@@ -72,6 +72,18 @@
 	maxrange = 27
 	caliber = 76.2
 
+/obj/structure/cannon/bullet_act(var/obj/item/projectile/proj)
+	if (istype(proj, /obj/item/projectile/shell))
+		var/obj/item/projectile/shell/S = proj
+		if (S.atype == "HE")
+			if (prob(90))
+				visible_message("<span class = 'warning'>\The [src] blows up!</span>")
+				qdel(src)
+		else
+			if (prob(25))
+				visible_message("<span class = 'warning'>\The [src] blows up!</span>")
+				qdel(src)
+
 /obj/structure/cannon/modern/tank/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
 		var/obj/item/cannon_ball/shell/tank/TS = W

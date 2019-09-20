@@ -608,11 +608,8 @@
 	return FALSE
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
-	world << "0"
 	if (penloc)
-		world << "1"
 		if (istype(proj, /obj/item/projectile/shell))
-			world << "2"
 			var/obj/item/projectile/shell/PS = proj
 			if (mwheel && prob(60))
 				switch (PS.atype)
@@ -667,7 +664,6 @@
 		playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
 		new/obj/effect/effect/smoke/small/fast(loc)
 		try_destroy()
-		world << "4"
 		return
 	else
 		..()
@@ -687,7 +683,7 @@
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
 	if (w_left[5]+w_right[5]+w_back[5]+w_front[5] <= 0)
 		Destroy()
-
+	update_icon()
 /obj/structure/vehicleparts/frame/Destroy()
 	visible_message("<span class='danger'>The frame gets wrecked!</span>")
 	if (axis)

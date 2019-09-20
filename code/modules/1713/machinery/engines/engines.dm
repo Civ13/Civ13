@@ -24,6 +24,7 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	layer = 3.98
+	var/broken = FALSE
 
 	var/weight = 20 //how much the engine weights (duh). For ICEs, this value is per liter (1000 cc)
 
@@ -131,6 +132,12 @@
 	return
 
 /obj/structure/engine/attackby(obj/item/W as obj, mob/user as mob)
+	if (broken && istype(W, /obj/item/weapon/weldingtool))
+		visible_message("[user] starts repairing \the [src]...")
+		if (do_after(user, 200, src))
+			visible_message("[user] sucessfully repairs \the [src].")
+			broken = FALSE
+			return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
 			user << "<span class='notice'>Fix the engine in place with a wrench first.</span>"
