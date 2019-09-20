@@ -347,6 +347,14 @@
 	w_left = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,55,90,FALSE,FALSE)
 
+/obj/structure/vehicleparts/frame/lf/truck
+	w_left = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
+	w_front = list("c_windshield",FALSE,TRUE,6,35,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/rf/truck
+	w_right = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
+	w_front = list("c_windshield",FALSE,TRUE,6,35,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/verb/add_walls()
 	set category = null
 	set name = "Add walls"

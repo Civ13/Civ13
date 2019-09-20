@@ -354,26 +354,26 @@
 					corners[3] = F
 				else if (dir == EAST) // FL
 					corners[2] = F
-	for(var/obj/structure/vehicleparts/movement/MV in range(1,corners[1]))
-		if (!MV.axis && locate(MV) in wheels)
+	for(var/obj/structure/vehicleparts/movement/MV in corners[1].loc)
+		if (!MV.axis)
 			MV.axis = src
 			corners[1].mwheel = MV
 			MV.connected = corners[1]
 			break
-	for(var/obj/structure/vehicleparts/movement/MV in range(1,corners[2]))
-		if (!MV.axis && locate(MV) in wheels)
+	for(var/obj/structure/vehicleparts/movement/MV in corners[2].loc)
+		if (!MV.axis)
 			MV.axis = src
 			corners[2].mwheel = MV
 			MV.connected = corners[2]
 			break
-	for(var/obj/structure/vehicleparts/movement/MV in range(1,corners[3]))
-		if (!MV.axis && locate(MV) in wheels)
+	for(var/obj/structure/vehicleparts/movement/MV in corners[3].loc)
+		if (!MV.axis)
 			MV.axis = src
 			corners[3].mwheel = MV
 			MV.connected = corners[3]
 			break
-	for(var/obj/structure/vehicleparts/movement/MV in range(1,corners[4]))
-		if (!MV.axis && locate(MV) in wheels)
+	for(var/obj/structure/vehicleparts/movement/MV in corners[4].loc)
+		if (!MV.axis)
 			MV.axis = src
 			corners[4].mwheel = MV
 			MV.connected = corners[4]
