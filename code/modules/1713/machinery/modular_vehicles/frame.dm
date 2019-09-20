@@ -19,6 +19,7 @@
 
 	var/doorcode = 0 //if it has a door on it, what the key code is
 	var/image/roof
+	var/noroof = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/color_code = ""
@@ -95,8 +96,12 @@
 /obj/structure/vehicleparts/frame/update_icon()
 	..()
 	overlays.Cut()
-	roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=11)
-	roof.overlays.Cut()
+	if (!noroof)
+		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=11)
+		roof.overlays.Cut()
+	else
+		roof = image(icon=icon, loc=src, icon_state="", layer=1)
+		roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	for(var/obj/structure/cannon/C in T)
 		var/image/roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret[color_code]", layer=11.1, dir=C.dir)
@@ -348,11 +353,11 @@
 	w_front = list("c_armoredfront",TRUE,TRUE,55,90,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/lf/truck
-	w_left = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
-	w_front = list("c_windshield",FALSE,TRUE,6,35,FALSE,FALSE)
+	w_left = list("c_door",TRUE,TRUE,20,15,TRUE,TRUE)
+	w_front = list("c_windshield",FALSE,TRUE,6,15,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/rf/truck
-	w_right = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
-	w_front = list("c_windshield",FALSE,TRUE,6,35,FALSE,FALSE)
+	w_right = list("c_door",TRUE,TRUE,20,15,TRUE,TRUE)
+	w_front = list("c_windshield",FALSE,TRUE,6,15,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/verb/add_walls()
 	set category = null
 	set name = "Add walls"

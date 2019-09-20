@@ -444,6 +444,12 @@
 	if (reagents.has_reagent("gasoline",10) || reagents.has_reagent("diesel",30) || reagents.has_reagent("biodiesel",30) || reagents.has_reagent("ethanol",10) || reagents.has_reagent("petroleum",40) || reagents.has_reagent("gunpowder",30))
 		can_explode = TRUE
 	if (!can_explode)
+		if (prob(30))
+			visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
+			var/part = 15 / reagents.total_volume
+			for (var/datum/reagent/current in reagents.reagent_list)
+				var/amount_to_transfer = current.volume * part
+				reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
 		return
 	if (istype(proj, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = proj
@@ -478,7 +484,6 @@
 			qdel(src)
 		else if (prob(30))
 			visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
-			new/obj/effect/decal/cleanable/blood/oil(loc)
 			var/part = 15 / reagents.total_volume
 			for (var/datum/reagent/current in reagents.reagent_list)
 				var/amount_to_transfer = current.volume * part
