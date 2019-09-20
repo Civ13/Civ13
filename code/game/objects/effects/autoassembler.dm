@@ -10,7 +10,7 @@
 	anchored = TRUE
 	density = TRUE
 	opacity = FALSE
-	var/rangef = 3
+	var/rangef = 5
 
 /obj/effect/autoassembler/New()
 	..()
@@ -57,7 +57,7 @@
 				AA.anchored = TRUE
 				AA.dir = central.axis.components
 		sleep(1)
-		for(var/turf/T in range(2,src))
+		for(var/turf/T in rangef)
 			var/doneps = FALSE
 			for (var/obj/structure/vehicleparts/frame/FRE in T)
 				if (FRE.axis)
@@ -85,7 +85,7 @@
 		var/done3 = FALSE
 		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)
 			if (!done3)
-				for (var/obj/structure/engine/internal/I in range(1,E))
+				for (var/obj/structure/engine/internal/I in range(2,E))
 					if (!done3)
 						I.fueltank = E
 						E.anchored = TRUE
@@ -112,8 +112,9 @@
 			world.log << "<b>Driver's Seat error!</b>"
 			return FALSE
 		//and the tracks
-		for (var/obj/structure/vehicleparts/movement/M in range(3,src))
-			M.MouseDrop(central)
+		for (var/obj/structure/vehicleparts/movement/M in rangef)
+			for (var/obj/structure/vehicleparts/frame/F in M.loc)
+				M.MouseDrop(F)
 		sleep(2)
 		if (isemptylist(central.axis.corners))
 			central.axis.check_corners()

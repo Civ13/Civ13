@@ -75,7 +75,7 @@
 "bw" = (/obj/structure/wild/tallgrass,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "bx" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "by" = (/obj/structure/vehicleparts/frame{icon_state = "frame_steel"; dir = 1},/obj/structure/cannon/modern/tank/russian76{anchored = 1; dir = 1; icon_state = "tank_cannon"},/turf/floor/dirt,/area/caribbean/forest)
-"bz" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/lf{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/turf/floor/grass,/area/caribbean/forest)
+"bz" = (/obj/structure/vehicleparts/frame/lf{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/forest)
 "bA" = (/obj/structure/closet/crate/ww2/artillery_shells/HE75,/turf/floor/dirt,/area/caribbean/forest)
 "bB" = (/obj/structure/closet/crate/ww2/artillery_shells/HE75,/turf/floor/grass,/area/caribbean/forest)
 "bC" = (/obj/structure/closet/crate/ww2/artillery_shells/AP75,/turf/floor/grass,/area/caribbean/forest)
@@ -85,9 +85,9 @@
 "bG" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/grass,/area/caribbean/forest)
 "bH" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/dirt,/area/caribbean/forest)
 "bI" = (/obj/structure/closet/crate/ww2/artillery_shells/APCR76,/turf/floor/grass,/area/caribbean/forest)
+"bJ" = (/obj/structure/engine/internal/gasoline{enginesize = 8000},/obj/structure/vehicleparts/frame/lf,/obj/structure/vehicleparts/movement/tracks,/turf/floor/grass,/area/caribbean/forest)
 "bL" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/rf/truck,/turf/floor/grass,/area/caribbean/forest)
 "bM" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/frame/rf,/obj/structure/vehicleparts/movement/tracks,/turf/floor/grass,/area/caribbean/forest)
-"bN" = (/obj/structure/engine/internal/gasoline{enginesize = 8000},/obj/structure/vehicleparts/frame/lf,/obj/structure/vehicleparts/movement/tracks,/turf/floor/grass,/area/caribbean/forest)
 "bO" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/lf/truck,/obj/structure/vehicleparts/axis/car,/turf/floor/grass,/area/caribbean/forest)
 "bR" = (/obj/structure/vehicleparts/frame{name = "frame"},/obj/structure/bed/chair/loader,/turf/floor/dirt,/area/caribbean/forest)
 "bS" = (/obj/structure/vehicleparts/frame/ldoor{doorcode = 11940; name = "frame"},/obj/item/weapon/storage/toolbox/emergency,/turf/floor/dirt,/area/caribbean/forest)
@@ -112,7 +112,7 @@ abacabababababababarabafabababapapabababababababagabababaeaeaeaeababagabababaabh
 adababababaiababababababababababababacabababababagagagagabaeaeaeacacabadabaaabbhbmaiabaaaaapapaaababababababababababadabababacababaaaaaaaeaeamaaababadabababacabagababafabababababababadabababababababaf
 abababafabababababababababababababababaiababababababagagabafaeababababababaaaabpbzabababaaaaaaaaabababababababababababababagabadabababaaaeaeanababababababababagabababadacababaiabababacabababadacabafab
 abababababababababababacabababaaabaaabababababababagabagagagaeaeabababababababbLbOabababababaaabababasababababababababacabagababababababaeaeaeaoaaamababagagagagababagababaaababababababafababababababab
-abababaiabababababababababaaaaaaaaaaabababafacababababababacaeaeaaacababacababbMbNababaaabababababababababababaiabababababagagagababadacabaeaeaeaeaaabababagabababatagabababababababababababaaababababab
+abababaiabababababababababaaaaaaaaaaabababafacababababababacaeaeaaacababacababbMbJababaaabababababababababababaiabababababagagagababadacabaeaeaeaeaaabababagabababatagabababababababababababaaababababab
 abababafababababababaiabababababaaaaaaaaaaaaaaaaabadabababaaabaeaeaaababababababacababaiababaqacabababaiababababafabababagababagagababababaaaeaeaeaaaaababababadabababababacababafababababababababababab
 abababababababababababacababadabababababaaaaaaaaaaaiabababababaeaeababadababaaabababababababaaababababababababababababababacabababacabababababaeaaaaaaabababagababacabababababaaakabacababababababacabab
 abababaiababababababababababababababaiabababakaaaaabababaiababaeaeabafababababababababababababababakababababababacababababababababababababadabaeaeaaajababababababadabadafaaaaaaaaababababababababababab

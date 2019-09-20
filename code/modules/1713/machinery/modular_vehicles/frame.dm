@@ -601,15 +601,25 @@
 					return "back"
 	return "front"
 
-/obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/list/penloc = list())
-	if (!penloc || !islist(penloc) || penloc.len < 7)
+/obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/penloc = "front")
+	if (!penloc)
 		return FALSE
 	proj.throw_source = proj.starting
-	if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > penloc[4])
-		playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg'),100, TRUE)
-		return TRUE
-	else
-		return FALSE
+	switch(penloc)
+		if ("front")
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4])
+				return TRUE
+		if ("back")
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4])
+				return TRUE
+		if ("left")
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
+				return TRUE
+		if ("right")
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
+				return TRUE
+
+	playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 	return FALSE
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
