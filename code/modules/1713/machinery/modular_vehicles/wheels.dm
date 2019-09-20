@@ -10,6 +10,10 @@
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
+	for(var/obj/effect/pseudovehicle/O in control.axis.components)
+		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
+			if (VP.axis != control.axis)
+				return FALSE
 	if (newdir == "left")
 		if (control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), "left"))
 			control.axis.dir = TURN_LEFT(control.axis.dir)

@@ -15,6 +15,7 @@
 	var/list/w_back = list("",FALSE,FALSE,0,40,FALSE,FALSE)
 	var/list/w_left = list("",FALSE,FALSE,0,40,FALSE,FALSE)
 	var/list/w_right = list("",FALSE,FALSE,0,40,FALSE,FALSE)
+	var/obj/structure/vehicleparts/movement/mwheel = null
 
 	var/doorcode = 0 //if it has a door on it, what the key code is
 	var/image/roof

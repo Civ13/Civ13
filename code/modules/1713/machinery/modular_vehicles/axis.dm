@@ -81,6 +81,11 @@
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
+			var/turf/TF = get_turf(MV)
+			if (istype(TF, /turf/floor/grass/jungle))
+				TF.ChangeTurf (/turf/floor/dirt/jungledirt)
+			else if (istype(TF, /turf/floor/grass))
+				TF.ChangeTurf (/turf/floor/dirt)
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
 			if (reverse)
@@ -121,7 +126,7 @@
 								SA.crush()
 			for(var/obj/structure/O in T)
 				if (O.density == TRUE && !(O in transporting))
-					if (current_weight >= 55 && !istype(O, /obj/structure/barricade/antitank))
+					if (current_weight >= 55 && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement))
 						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 						qdel(O)
 					else
@@ -194,12 +199,18 @@
 				var/obj/structure/vehicleparts/movement/MV = M
 				if (MV.reversed)
 					MV.dir = OPPOSITE_DIR(dir)
+				else
+					MV.dir = dir
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
 			ML.forceMove(get_step(ML.loc, m_dir))
 	for (var/obj/F in components)
 		F.dir = dir
 		F.forceMove(get_step(F.loc, m_dir))
+		if (istype(F, /obj/structure/vehicleparts/frame))
+			var/obj/structure/vehicleparts/frame/FR = F
+			if (FR.mwheel)
+				FR.mwheel.forceMove(FR.loc)
 		F.update_icon()
 
 	return
@@ -343,6 +354,30 @@
 					corners[3] = F
 				else if (dir == EAST) // FL
 					corners[2] = F
+	for(var/obj/structure/vehicleparts/movement/MV in range(1,corners[1]))
+		if (!MV.axis && locate(MV) in wheels)
+			MV.axis = src
+			corners[1].mwheel = MV
+			MV.connected = corners[1]
+			break
+	for(var/obj/structure/vehicleparts/movement/MV in range(1,corners[2]))
+		if (!MV.axis && locate(MV) in wheels)
+			MV.axis = src
+			corners[2].mwheel = MV
+			MV.connected = corners[2]
+			break
+	for(var/obj/structure/vehicleparts/movement/MV in range(1,corners[3]))
+		if (!MV.axis && locate(MV) in wheels)
+			MV.axis = src
+			corners[3].mwheel = MV
+			MV.connected = corners[3]
+			break
+	for(var/obj/structure/vehicleparts/movement/MV in range(1,corners[4]))
+		if (!MV.axis && locate(MV) in wheels)
+			MV.axis = src
+			corners[4].mwheel = MV
+			MV.connected = corners[4]
+			break
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
 	else
@@ -383,6 +418,10 @@
 						var/obj/O = M
 						if (!istype(O, /obj/structure/cannon))
 							O.dir = dir
+						if (istype(O, /obj/structure/vehicleparts/frame))
+							var/obj/structure/vehicleparts/frame/FR = O
+							if (FR.mwheel)
+								FR.mwheel.forceMove(matrix_current_locs[dlocfind][1])
 						O.update_icon()
 	return TRUE
 
