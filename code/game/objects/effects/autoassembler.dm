@@ -10,7 +10,7 @@
 	anchored = TRUE
 	density = TRUE
 	opacity = FALSE
-	var/rangef = 5
+	var/rangef = 3
 
 /obj/effect/autoassembler/New()
 	..()
@@ -112,7 +112,7 @@
 			world.log << "<b>Driver's Seat error!</b>"
 			return FALSE
 		//and the tracks
-		for (var/obj/structure/vehicleparts/movement/M in range(7,src))
+		for (var/obj/structure/vehicleparts/movement/M in range(3,src))
 			M.MouseDrop(central)
 		sleep(2)
 		if (isemptylist(central.axis.corners))

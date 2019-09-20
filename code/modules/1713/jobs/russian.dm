@@ -1164,7 +1164,7 @@
 
 
 /datum/job/russian/guards_mechanized_squad_leader
-	title = "Gvardeyskiy Mekhanizirovany Kommandir"
+	title = "Gvardii Serjant"
 	en_meaning = "Guards Mechanized Squad Leader"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1207,7 +1207,7 @@
 	return TRUE
 
 /datum/job/russian/guards_mechanized_infantry
-	title = "Gvardeyskiy Mekhanizirovany Strelok"
+	title = "Gvardii Krasnoarmeyets"
 	en_meaning = "Guards Mechanized Infantry"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"

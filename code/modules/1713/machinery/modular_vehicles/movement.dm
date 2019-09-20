@@ -32,6 +32,7 @@
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis)
 		VP.axis.wheels += src
 		axis = VP.axis
+		forceMove(VP)
 		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
 
 /obj/structure/vehicleparts/movement/tracks/update_icon()

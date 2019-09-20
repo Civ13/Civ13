@@ -350,11 +350,9 @@
 /obj/structure/vehicleparts/frame/lf/truck
 	w_left = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
 	w_front = list("c_windshield",FALSE,TRUE,6,35,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/rf/truck
 	w_right = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
 	w_front = list("c_windshield",FALSE,TRUE,6,35,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/verb/add_walls()
 	set category = null
 	set name = "Add walls"
@@ -599,9 +597,9 @@
 	return list()
 
 /obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/list/penloc = list())
-	world.log << "[Get_Angle(proj.starting,src)]"
 	if (!penloc || !islist(penloc) || penloc.len < 7)
 		return FALSE
+	playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg'),100, TRUE)
 	proj.throw_source = proj.starting
 	if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > penloc[4])
 		return TRUE
@@ -613,18 +611,40 @@
 	if (penloc && islist(penloc) && penloc.len >= 5)
 		if (istype(proj, /obj/item/projectile/shell))
 			var/obj/item/projectile/shell/PS = proj
-			switch (PS.atype)
-				if ("HE")
-					for (var/mob/M in axis.transporting)
-						shake_camera(M, 3, 3)
-					penloc[5] -= proj.damage * 0.03
-				if ("APCR")
-					penloc[5] -= proj.damage * 0.12
-				if ("AP")
-					penloc[5] -= proj.damage * 0.1
+			if (mwheel && prob(60))
+				switch (PS.atype)
+					if ("HE")
+						for (var/mob/M in axis.transporting)
+							shake_camera(M, 3, 3)
+						if (!mwheel.broken && prob(80))
+							mwheel.broken = TRUE
+							visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+							new/obj/effect/effect/smoke/small(loc)
+					if ("APCR")
+						if (!mwheel.broken && prob(60))
+							mwheel.broken = TRUE
+							visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+							new/obj/effect/effect/smoke/small(loc)
+					if ("AP")
+						if (!mwheel.broken && prob(70))
+							mwheel.broken = TRUE
+							visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+							new/obj/effect/effect/smoke/small(loc)
+			else
+				switch (PS.atype)
+					if ("HE")
+						for (var/mob/M in axis.transporting)
+							shake_camera(M, 3, 3)
+						penloc[5] -= proj.damage * 0.08
+					if ("APCR")
+						penloc[5] -= proj.damage * 0.35
+					if ("AP")
+						penloc[5] -= proj.damage * 0.3
 		else
 			penloc[5] -= proj.damage * 0.01
 		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
+		playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
+		new/obj/effect/effect/smoke/small/fast(loc)
 		try_destroy()
 		return
 	else
