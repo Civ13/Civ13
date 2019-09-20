@@ -23,11 +23,6 @@
 		return damage/2
 	return FALSE
 
-/obj/item/projectile/shell/on_hit(var/atom/target, var/blocked = FALSE)
-	if (..(target, blocked))
-		var/mob/living/L = target
-		shake_camera(L, 3, 2)
-
 /obj/item/projectile/shell/attack_mob(var/mob/living/target_mob)
 	if (prob(80))
 		mob_passthrough_check = TRUE
@@ -41,26 +36,20 @@
 		return FALSE
 	return ..()
 
-/obj/item/projectile/shell/check_penetrate(var/atom/A)
-	if (!A || !A.density) return TRUE //if whatever it was got destroyed when we hit it, then I guess we can just keep going
-
-	else if (ismob(A))
-		if (!mob_passthrough_check)
-			return FALSE
-		return TRUE
-
-	return TRUE
-
-
 /obj/item/projectile/shell/on_impact(var/atom/A)
 	impact_effect(effect_transform)		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
 	if (istype(A, /turf))
+		world.log << "impact [A.x] [A.y]"
 		var/turf/T = A
 		if (atype == "HE")
 			if (!istype(T, /turf/floor/beach))
 				T.ChangeTurf(/turf/floor/dirt/burned)
 			explosion(T, 1, 2, 2, 3)
+		else
+			if (!istype(T, /turf/floor/beach))
+				T.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 0, 0, 1, 3)
 	spawn(25)
 		if (src)
 			qdel(src)
@@ -68,7 +57,6 @@
 
 
 /obj/item/projectile/shell/launch(atom/target, mob/user, obj/structure/cannon/modern/tank/launcher, var/x_offset=0, var/y_offset=0)
-
 	var/turf/curloc = null
 
 	switch(launcher.dir)

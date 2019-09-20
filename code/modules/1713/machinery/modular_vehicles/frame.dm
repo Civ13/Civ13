@@ -557,59 +557,62 @@
 		if (NORTH)
 			switch(dir)
 				if (NORTH)
-					return w_back
+					return "back"
 				if (SOUTH)
-					return w_front
+					return "front"
 				if (WEST)
-					return w_left
+					return "left"
 				if (EAST)
-					return w_right
+					return "right"
 		if (SOUTH)
 			switch(dir)
 				if (NORTH)
-					return w_front
+					return "front"
 				if (SOUTH)
-					return w_back
+					return "back"
 				if (WEST)
-					return w_right
+					return "right"
 				if (EAST)
-					return w_left
+					return "left"
 		if (WEST)
 			switch(dir)
 				if (NORTH)
-					return w_right
+					return "right"
 				if (SOUTH)
-					return w_left
+					return "left"
 				if (WEST)
-					return w_back
+					return "back"
 				if (EAST)
-					return w_front
+					return "front"
 		if (EAST)
 			switch(dir)
 				if (NORTH)
-					return w_left
+					return "left"
 				if (SOUTH)
-					return w_right
+					return "right"
 				if (WEST)
-					return w_front
+					return "front"
 				if (EAST)
-					return w_back
-	return list()
+					return "back"
+	return "front"
 
 /obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/list/penloc = list())
 	if (!penloc || !islist(penloc) || penloc.len < 7)
 		return FALSE
-	playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg'),100, TRUE)
 	proj.throw_source = proj.starting
 	if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > penloc[4])
+		playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg'),100, TRUE)
 		return TRUE
 	else
 		return FALSE
 	return FALSE
 
-/obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/list/penloc = list())
-	if (penloc && islist(penloc) && penloc.len >= 5)
+/obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
+	world << "0"
+	if (penloc)
+		world << "1"
 		if (istype(proj, /obj/item/projectile/shell))
+			world << "2"
 			var/obj/item/projectile/shell/PS = proj
 			if (mwheel && prob(60))
 				switch (PS.atype)
@@ -631,21 +634,40 @@
 							visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
 							new/obj/effect/effect/smoke/small(loc)
 			else
+				var/adjdam = 0
 				switch (PS.atype)
 					if ("HE")
 						for (var/mob/M in axis.transporting)
 							shake_camera(M, 3, 3)
-						penloc[5] -= proj.damage * 0.08
+						adjdam = proj.damage * 0.08
 					if ("APCR")
-						penloc[5] -= proj.damage * 0.35
+						adjdam = proj.damage * 0.35
 					if ("AP")
-						penloc[5] -= proj.damage * 0.3
+						adjdam = proj.damage * 0.3
+				switch(penloc)
+					if ("left")
+						w_left[5] -= adjdam
+					if ("right")
+						w_right[5] -= adjdam
+					if ("front")
+						w_front[5] -= adjdam
+					if ("back")
+						w_back[5] -= adjdam
 		else
-			penloc[5] -= proj.damage * 0.01
+			switch(penloc)
+				if ("left")
+					w_left[5] -= proj.damage * 0.01
+				if ("right")
+					w_right[5] -= proj.damage * 0.01
+				if ("front")
+					w_front[5] -= proj.damage * 0.01
+				if ("back")
+					w_back[5] -= proj.damage * 0.01
 		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
 		playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
 		new/obj/effect/effect/smoke/small/fast(loc)
 		try_destroy()
+		world << "4"
 		return
 	else
 		..()

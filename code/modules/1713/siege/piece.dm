@@ -82,11 +82,20 @@
 			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
 			return
 		// load first and only slot
-		if (!M.buckled || !istype(M.buckled,/obj/structure/bed/chair/loader))
+		var/found_loader = FALSE
+		for (var/obj/structure/bed/chair/loader/L in M.loc)
+			found_loader = TRUE
+		if (found_loader == FALSE)
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
 		if (do_after(M, caliber/2, src, can_move = TRUE))
-			if (M && (locate(M) in range(1,src)) && M.buckled && istype(M.buckled,/obj/structure/bed/chair/loader))
+			if (M && (locate(M) in range(1,src)))
+				found_loader = FALSE
+				for (var/obj/structure/bed/chair/loader/L in M.loc)
+					found_loader = TRUE
+				if (found_loader == FALSE)
+					M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
+					return FALSE
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
@@ -194,7 +203,10 @@
 		if (get_dist(src, user) > 1)
 			user = null
 	restart
-	if (!istype(m.buckled, /obj/structure/bed/chair/gunner))
+	var/found_gunner = FALSE
+	for (var/obj/structure/bed/chair/gunner/G in m.loc)
+		found_gunner = TRUE
+	if (found_gunner == FALSE)
 		user << "<span class = 'warning'>You need to be at the gunner's position to fire.</span>"
 		user = null
 		return
@@ -233,9 +245,13 @@
 		user << "<span class = 'danger'>You have no hands to use this with.</span>"
 		return FALSE
 
-	if (istype(src, /obj/structure/cannon/modern/tank) && !istype(H.buckled,/obj/structure/bed/chair/gunner))
-		H << "<span class = 'warning'>You need to be at the gunner's position to fire \the [src].</span>"
-		return FALSE
+	if (istype(src, /obj/structure/cannon/modern/tank))
+		var/found_gunner = FALSE
+		for (var/obj/structure/bed/chair/gunner/G in user.loc)
+			found_gunner = TRUE
+		if (found_gunner == FALSE)
+			user << "<span class = 'warning'>You need to be at the gunner's position to fire \the [src].</span>"
+			return FALSE
 
 	if (!anchored)
 		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"

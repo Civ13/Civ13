@@ -26,7 +26,7 @@
 	heavy_armor_penetration = 15
 	New()
 		..()
-		name = "[caliber]mm artillery shell"
+		name = "[caliber]mm [atype] shell"
 		icon_state = "shell[atype]"
 
 /obj/item/cannon_ball/shell/tank/HE75
