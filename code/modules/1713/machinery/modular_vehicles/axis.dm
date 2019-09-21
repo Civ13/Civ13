@@ -194,7 +194,6 @@
 			if (!istype(M, /obj/structure/cannon))
 				MO.dir = dir
 				MO.update_icon()
-				MO.update_icon()
 			if (istype(M, /obj/structure/vehicleparts/movement))
 				var/obj/structure/vehicleparts/movement/MV = M
 				if (MV.reversed)
@@ -207,10 +206,6 @@
 	for (var/obj/F in components)
 		F.dir = dir
 		F.forceMove(get_step(F.loc, m_dir))
-		if (istype(F, /obj/structure/vehicleparts/frame))
-			var/obj/structure/vehicleparts/frame/FR = F
-			if (FR.mwheel)
-				FR.mwheel.forceMove(FR.loc)
 		F.update_icon()
 
 	return
@@ -357,26 +352,26 @@
 	for(var/obj/structure/vehicleparts/movement/MV in corners[1].loc)
 		if (!MV.axis)
 			MV.axis = src
-			corners[1].mwheel = MV
 			MV.connected = corners[1]
+			MV.connected.mwheel = MV
 			break
 	for(var/obj/structure/vehicleparts/movement/MV in corners[2].loc)
 		if (!MV.axis)
 			MV.axis = src
-			corners[2].mwheel = MV
 			MV.connected = corners[2]
+			MV.connected.mwheel = MV
 			break
 	for(var/obj/structure/vehicleparts/movement/MV in corners[3].loc)
 		if (!MV.axis)
 			MV.axis = src
-			corners[3].mwheel = MV
 			MV.connected = corners[3]
+			MV.connected.mwheel = MV
 			break
 	for(var/obj/structure/vehicleparts/movement/MV in corners[4].loc)
 		if (!MV.axis)
 			MV.axis = src
-			corners[4].mwheel = MV
 			MV.connected = corners[4]
+			MV.connected.mwheel = MV
 			break
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
@@ -418,10 +413,10 @@
 						var/obj/O = M
 						if (!istype(O, /obj/structure/cannon))
 							O.dir = dir
-						if (istype(O, /obj/structure/vehicleparts/frame))
-							var/obj/structure/vehicleparts/frame/FR = O
-							if (FR.mwheel)
-								FR.mwheel.forceMove(matrix_current_locs[dlocfind][1])
+//						if (istype(O, /obj/structure/vehicleparts/frame))
+//							var/obj/structure/vehicleparts/frame/FR = O
+//							if (FR.mwheel)
+//								FR.mwheel.forceMove(matrix_current_locs[dlocfind][1])
 						O.update_icon()
 	return TRUE
 
@@ -436,3 +431,9 @@
 	density = FALSE
 	opacity = FALSE
 	var/obj/structure/vehicleparts/axis/link = null
+
+	New()
+		..()
+		spawn(1200)
+			if (!link)
+				qdel(src)
