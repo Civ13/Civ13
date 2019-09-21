@@ -494,6 +494,15 @@
 							loc = null
 							qdel(src)
 							return FALSE
+						else
+							passthrough = TRUE
+							passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
+							//move ourselves onto T so we can continue on our way.
+							forceMove(T)
+							permutated += T
+							if (passthrough_message)
+								T.visible_message(passthrough_message)
+							return TRUE
 				var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 				if (O == original)
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))

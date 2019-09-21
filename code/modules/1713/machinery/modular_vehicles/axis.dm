@@ -395,7 +395,7 @@
 						if (!istype(O, /obj/structure/cannon))
 							O.dir = dir
 						if (istype(O, /obj/structure/vehicleparts/frame))
-/							var/obj/structure/vehicleparts/frame/FR = O
+							var/obj/structure/vehicleparts/frame/FR = O
 							if (FR.mwheel)
 								FR.mwheel.update_icon()
 						O.update_icon()
