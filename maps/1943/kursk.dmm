@@ -53,7 +53,7 @@
 "ba" = (/obj/structure/vehicleparts/frame/rf{icon_state = "frame_steel"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks{dir = 1; icon_state = "tracks_end"; invisibility = 0},/turf/floor/grass,/area/caribbean/forest)
 "bb" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 4},/obj/structure/vehicleparts/frame/lwall{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bc" = (/obj/structure/bed/chair/commander{icon_state = "commanders_seat"; dir = 1},/obj/structure/vehicleparts/frame/rwall{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
-"bd" = (/obj/structure/vehicleparts/frame/bwall{icon_state = "frame_steel"; dir = 1},/obj/structure/shellrack,/turf/floor/dirt/dust,/area/caribbean/forest)
+"bd" = (/obj/structure/vehicleparts/frame/bwall{name = "frame"},/obj/structure/shellrack/full75,/turf/floor/dirt,/area/caribbean/forest)
 "be" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt,/area/caribbean/forest)
 "bf" = (/obj/structure/vehicleparts/frame/rb{icon_state = "frame_steel"; dir = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/diesel{enginesize = 20000},/turf/floor/dirt,/area/caribbean/forest)
 "bg" = (/obj/structure/vehicleparts/frame/lf/truck{dir = 1},/obj/structure/bed/chair/drivers{dir = 1},/turf/floor/grass,/area/caribbean/forest)
@@ -102,11 +102,12 @@
 "bX" = (/obj/structure/vehicleparts/frame/rdoor{dir = 1; doorcode = 4975; icon_state = "frame_steel"},/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean/forest)
 "bY" = (/obj/structure/vehicleparts/frame/rwall{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bZ" = (/obj/structure/vehicleparts/frame/lwall{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/turf/floor/grass,/area/caribbean/forest)
+"ca" = (/obj/structure/vehicleparts/frame/bwall{icon_state = "frame_steel"; dir = 1},/obj/structure/shellrack/full76,/turf/floor/dirt/dust,/area/caribbean/forest)
 
 (1,1,1) = {"
 aaaaaaaaaaabababacababadababadababababaaaaababababaeababababafaaabababababababababacacababababababababababababagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
 aaaaaaaaaaababababababababababaaabaaababababababaeaeacadababaGamaaaaaaaaaaaaaaabaaaaaaaaaaaaacababababaiabababababagagababababacabababaaabaeaeabaiabaaacabafabaaabababababababababababahabababababababab
-aaaaaaaaaaababababababababaaaaaaaaaaabababafacaaaeaeabababbAaaaIaaaaavaOawaaabababaaaaaaaaavaOawabababababababababagagagagagababababababaeaeabababababababababagabababahababagabababacabaiabababadababac
+aaaaaaaaaaababababababababaaaaaaaaaaabababafacaaaeaeabababbAaaaIaaaaavbdawaaabababaaaaaaaaavbdawabababababababababagagagagagababababababaeaeabababababababababagabababahababagabababacabaiabababadababac
 aaaaaaaaaaababababaaaaaaaaabababaaaaaaaaaaavaOawaeaeaaadaabBaaaaaaaaaxbRbSaaaaabaaaaaaaaaaaxbRbSabababafababababababagagacabagagababaeaeaeaeaaaaaeababacadabagagagagabababacabababababababababababababab
 aaaaaaaaaaabababababaaaaaaabadababababaaaaaxbRbSaeaeabababaLaLaLaaaaaPbUbVaaafafababaaaaaaaPbUbVabababababacabababacabababababababaaabaeaeaeaaaaaeajababababababagagabababababadafababafabababababababab
 abababafababababababababababababababaiaaaaaPbUbVakaeabababaMaLaLaaaaaAaRaKaaaaafaaabaaaaaaaAaRaKabababababadababababababababababababaaaaaaaeaeaeaeaaaaababafafabababababaiabababacabababababababababadab
@@ -199,7 +200,7 @@ abababababacabababababababababadababababababababadabaeaeaeaaabababaJaSaJaaaaaaaa
 ababababababababababababababaiababacabaWaUaVaaabababaeaeaeabababaaaYaYaYaaaWaUaVaaabacabababaaaWaUaVaaabababababababafabababababababababaeabababarabababababababaiabababababababababababafababababababad
 abababadabababababababababadabababababbbbybcaaafaaaeaeaeaeababababaYaYaYaabbbybcaaafababafafaabbbybcaaafabababababababadabababababadabaeaeaaajababababababababababababababadabababababababadabababababab
 abababababababababababababababababababaNbkbXaaabaaaeaeaeaaaaaCabbFbFaYaYaaaNbkbXaaababababacaaaNbkbXaaababababababababababababababababaeaeaaabababababababababadabababababababababababababababababababab
-ababacafabababaiababababacafabababaiabaQbdbfabaaabaeaeaeaeaaaeabamaaaaaaaaaQbdbfabaaababaaaaaaaQbdbfabaaabababaiababababaaabafacabaaaeaeagacababababababaiabaiababacababacafabababaiababababaaabafacadab
+ababacafabababaiababababacafabababaiabaQcabfabaaabaeaeaeaeaaaeabamaaaaaaaaaQcabfabaaababaaaaaaaQcabfabaaabababaiababababaaabafacabaaaeaeagacababababababaiabaiababacababacafabababaiababababaaabafacadab
 abafabababababababababafabababababababaaaaaaabababaaaeaeaeaaaeaebGbHaaaaafaaaaaaababababaaafaaaaaaaaababababababababababacacadafabaaaeaeabababababababababababababababafababababababababababacacadafabab
 ababababababadabababababababababadababababababababacaaaeaeaeaeaeababaaaaaaabababaaabaaabababababababababababadabababababababababababaeabaaababababababadababacabababababababababadababababababababababab
 abababababaiababacababababababaiababacabadabababababababaeaeaeaebIbIbebeababaiababacabadabababababababababaiababacabadabababababababaaaeaealaaafababaiababacabababababababababaiababacabadababababababab

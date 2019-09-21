@@ -194,3 +194,38 @@
 /obj/structure/shellrack/update_icon()
 	..()
 	icon_state = "shellrack[storage.contents.len]"
+/obj/structure/shellrack/full75/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	update_icon()
+
+/obj/structure/shellrack/full76/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	update_icon()
