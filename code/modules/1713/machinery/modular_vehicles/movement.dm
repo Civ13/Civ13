@@ -2,15 +2,18 @@
 
 /obj/structure/vehicleparts/movement
 	name = "wheel"
-	icon_state = "wheel"
-	var/base_icon = "wheel"
-	var/movement_icon = "wheel_m"
+	icon_state = "wheel_t_dark"
+	var/base_icon = "wheel_t_dark"
+	var/movement_icon = "wheel_t_dark_m"
 	layer = 2.97
 	var/reversed = FALSE
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/structure/vehicleparts/frame/connected = null
 	var/broken = FALSE
 	var/ntype = "wheel"
+
+/obj/structure/vehicleparts/movement/reversed
+	reversed = TRUE
 
 /obj/structure/vehicleparts/movement/tracks
 	name = "armored tracks"
@@ -28,7 +31,7 @@
 /obj/structure/vehicleparts/movement/tracks/reversed
 	reversed = TRUE
 
-/obj/structure/vehicleparts/movement/tracks/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
+/obj/structure/vehicleparts/movement/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis)
 		VP.axis.wheels += src
 		axis = VP.axis

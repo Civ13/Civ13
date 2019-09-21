@@ -506,28 +506,28 @@
 
 	switch(dir)
 		if (EAST)
-			dir = SOUTH
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
-				icon_state = "cannon"
-		if (WEST)
 			dir = NORTH
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
 				icon = 'icons/obj/cannon_v.dmi'
 				icon_state = "cannon"
+		if (WEST)
+			dir = SOUTH
+			if (spritemod)
+				bound_height = 64
+				bound_width = 32
+				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
 		if (NORTH)
-			dir = EAST
+			dir = WEST
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
 				icon = 'icons/obj/cannon_h.dmi'
 				icon_state = "cannon"
 		if (SOUTH)
-			dir = WEST
+			dir = EAST
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64

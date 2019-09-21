@@ -526,7 +526,10 @@
 	name = "medium fueltank"
 	icon_state = "fueltank_small_tank"
 	volume = 180
-
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline
+	New()
+		..()
+		reagents.add_reagent("gasoline",180)
 /obj/item/weapon/reagent_containers/glass/barrel/modern/water
 	name = "water barrel"
 	desc = "A steel barrel, filled with drinking water."

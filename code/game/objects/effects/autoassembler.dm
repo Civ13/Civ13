@@ -44,6 +44,7 @@
 					central.axis.components += A
 				A.anchored = TRUE
 				A.dir = central.axis.components
+				A.name = central.axis.name
 		for (var/obj/structure/vehicleparts/frame/AA in loc)
 			if (!AA.axis)
 				AA.axis = central.axis
@@ -56,6 +57,7 @@
 					central.axis.components += AA
 				AA.anchored = TRUE
 				AA.dir = central.axis.components
+				AA.name = central.axis.name
 		for (var/turf/T in rangeto)
 			var/doneps = FALSE
 			for (var/obj/structure/vehicleparts/frame/FRE in T)
