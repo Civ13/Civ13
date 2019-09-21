@@ -548,7 +548,13 @@
 							return TRUE
 	return FALSE
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
-	if (istype(I,/obj/item/weapon/key))
+	if (mwheel && mwheel.broken && istype(I, /obj/item/weapon/weldingtool))
+		visible_message("[H] starts repairing \the [mwheel.ntype]...")
+		if (do_after(H, 200, src))
+			visible_message("[H] sucessfully repairs \the [mwheel.ntype].")
+			mwheel.broken = FALSE
+			return
+	else if (istype(I,/obj/item/weapon/key))
 		var/obj/item/weapon/key/K = I
 		if (K.code == doorcode)
 			if (w_front[6])

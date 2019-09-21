@@ -40,12 +40,21 @@
 		get_weight()
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
-				W.icon_state = "[W.movement_icon][color_code]"
+				if (W.broken)
+					W.icon_state = "[W.base_icon][color_code]_broken"
+					moving = FALSE
+					stopmovementloop()
+					return
+				else
+					W.icon_state = "[W.movement_icon][color_code]"
 				W.update_icon()
 			do_move()
 		else
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
-				W.icon_state = "[W.base_icon][color_code]"
+				if (W.broken)
+					W.icon_state = "[W.base_icon][color_code]_broken"
+				else
+					W.icon_state = "[W.base_icon][color_code]"
 				W.update_icon()
 			currentspeed = 0
 			moving = FALSE
@@ -59,7 +68,10 @@
 /obj/structure/vehicleparts/axis/proc/stopmovementloop()
 	moving = FALSE
 	for (var/obj/structure/vehicleparts/movement/W in wheels)
-		W.icon_state = "[W.base_icon][color_code]"
+		if (W.broken)
+			W.icon_state = "[W.base_icon][color_code]_broken"
+		else
+			W.icon_state = "[W.base_icon][color_code]"
 		W.update_icon()
 	return
 
