@@ -58,7 +58,7 @@
 	icon_state = "axis_powered"
 	speeds = 3
 	maxpower = 250
-	speedlist = list(1=12,2=10,3=8)
+	speedlist = list(1=12,2=8,3=6)
 
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"

@@ -80,7 +80,7 @@
 	var/can_hit_in_trench = 1
 
 	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
-	var/atype = "AP"
+	var/atype = "normal"
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
@@ -480,7 +480,7 @@
 					var/obj/structure/vehicleparts/frame/NO = O
 					for (var/obj/structure/vehicleparts/frame/FM in firer.loc)
 						if (FM.axis != NO.axis)
-							var/list/penloc = NO.CheckPenLoc(src)
+							var/penloc = NO.CheckPenLoc(src)
 							if (!NO.CheckPen(src,penloc))
 								passthrough = FALSE
 								NO.bullet_act(src,penloc)
@@ -489,7 +489,7 @@
 								qdel(src)
 								return FALSE
 							else
-								if (prob(50) || (prob(75) && src.atype=="APCR"))
+								if ((prob(75) && atype=="APCR") || (prob(50) && atype=="AP"))
 									NO.bullet_act(src,penloc)
 									bumped = TRUE
 									passthrough = FALSE

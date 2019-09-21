@@ -608,6 +608,14 @@
 					return "left"
 				if (EAST)
 					return "right"
+				if (NORTHWEST)
+					return "frontleft"
+				if (SOUTHWEST)
+					return "backleft"
+				if (NORTHEAST)
+					return "frontright"
+				if (SOUTHEAST)
+					return "backright"
 		if (SOUTH)
 			switch(dir)
 				if (NORTH)
@@ -618,6 +626,14 @@
 					return "right"
 				if (EAST)
 					return "left"
+				if (NORTHWEST)
+					return "backright"
+				if (SOUTHWEST)
+					return "frontright"
+				if (NORTHEAST)
+					return "backleft"
+				if (SOUTHEAST)
+					return "frontleft"
 		if (WEST)
 			switch(dir)
 				if (NORTH)
@@ -628,6 +644,14 @@
 					return "back"
 				if (EAST)
 					return "front"
+				if (NORTHWEST)
+					return "frontright"
+				if (SOUTHWEST)
+					return "frontleft"
+				if (NORTHEAST)
+					return "backright"
+				if (SOUTHEAST)
+					return "backleft"
 		if (EAST)
 			switch(dir)
 				if (NORTH)
@@ -638,6 +662,14 @@
 					return "front"
 				if (EAST)
 					return "back"
+				if (NORTHWEST)
+					return "backleft"
+				if (SOUTHWEST)
+					return "backright"
+				if (NORTHEAST)
+					return "frontleft"
+				if (SOUTHEAST)
+					return "frontright"
 	return "front"
 
 /obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/penloc = "front")
@@ -657,7 +689,18 @@
 		if ("right")
 			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
 				return TRUE
-
+		if ("frontleft")
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
+				return TRUE
+		if ("backleft")
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
+				return TRUE
+		if ("frontright")
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
+				return TRUE
+		if ("backright")
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
+				return TRUE
 	playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 	return FALSE
 
@@ -707,6 +750,26 @@
 						w_front[5] -= adjdam
 					if ("back")
 						w_back[5] -= adjdam
+					if ("frontleft")
+						if (w_left[4] > w_front[4] && w_left[5]>0)
+							w_left[5] -= adjdam
+						else
+							w_front[5] -= adjdam
+					if ("frontright")
+						if (w_right[4] > w_front[4] && w_right[5]>0)
+							w_right[5] -= adjdam
+						else
+							w_front[5] -= adjdam
+					if ("backleft")
+						if (w_left[4] > w_back[4] && w_left[5]>0)
+							w_left[5] -= adjdam
+						else
+							w_back[5] -= adjdam
+					if ("backright")
+						if (w_right[4] > w_back[4] && w_right[5]>0)
+							w_right[5] -= adjdam
+						else
+							w_back[5] -= adjdam
 		else
 			switch(penloc)
 				if ("left")
