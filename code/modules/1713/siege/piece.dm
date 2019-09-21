@@ -97,7 +97,7 @@
 		var/found_loader = FALSE
 		for (var/obj/structure/bed/chair/loader/L in M.loc)
 			found_loader = TRUE
-		if (found_loader == FALSE)
+		if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank))
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
 		if (do_after(M, caliber/2, src, can_move = TRUE))
@@ -105,7 +105,7 @@
 				found_loader = FALSE
 				for (var/obj/structure/bed/chair/loader/L in M.loc)
 					found_loader = TRUE
-				if (found_loader == FALSE)
+				if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank))
 					M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 					return FALSE
 				M.remove_from_mob(W)
@@ -218,7 +218,7 @@
 	var/found_gunner = FALSE
 	for (var/obj/structure/bed/chair/gunner/G in m.loc)
 		found_gunner = TRUE
-	if (found_gunner == FALSE)
+	if (found_gunner == FALSE && istype(src, /obj/structure/cannon/modern/tank))
 		user << "<span class = 'warning'>You need to be at the gunner's position to fire.</span>"
 		user = null
 		return
