@@ -18,6 +18,31 @@
 	var/fuelefficiency = 0 //fuel consumption on max power. Lower is better. The default value is per 1000 cc (liter)
 	var/enginesize = 1000 //in cubic centimeters (cc)
 
+
+/obj/structure/engine/internal/bullet_act(var/obj/item/projectile/proj)
+	if (istype(proj, /obj/item/projectile/shell))
+		var/obj/item/projectile/shell/S = proj
+		if (S.atype == "HE")
+			if (prob(90))
+				visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+				explosion(loc, 1, 2, 2, 0)
+				qdel(src)
+			else
+				visible_message("<span class = 'warning'>\The [src] breaks down!</span>")
+				broken = TRUE
+				on = FALSE
+				new/obj/effect/decal/cleanable/blood/oil(loc)
+		else
+			if (prob(20))
+				visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+				explosion(loc, 1, 1, 2, 0)
+				qdel(src)
+			else if (prob(75))
+				visible_message("<span class = 'warning'>\The [src] breaks down!</span>")
+				broken = TRUE
+				on = FALSE
+				new/obj/effect/decal/cleanable/blood/oil(loc)
+
 /obj/structure/engine/internal/New()
 	..()
 	weight = 20*(enginesize/1000)
@@ -53,6 +78,8 @@
 		return
 
 /obj/structure/engine/internal/turn_on(var/mob/user = null)
+	if (broken)
+		user << "\The [src] is broken, you can't turn it on!"
 	if (fueltank != null)
 		var/done = FALSE
 		for (var/F in fuels)
@@ -81,7 +108,13 @@
 				//add polution to global meter
 				map.pollutionmeter += fuelconsumption
 				done = TRUE
-
+		if (broken)
+			on = FALSE
+			power_off_connections()
+			currentspeed = 0
+			currentpower = 0
+			update_icon()
+			return
 		if (!done)
 			visible_message("The engine stalls.")
 			playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)

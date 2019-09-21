@@ -24,6 +24,8 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+	var/custom_code = 0
+	var/locked = 0
 /obj/structure/closet/initialize()
 	..()
 	if (!opened)		// if closed, any item at the crate's loc is put in the contents
@@ -202,9 +204,36 @@
 	return
 
 /obj/structure/closet/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/key) && !opened && !istype(src, /obj/structure/closet/hideout) && !istype(src, /obj/structure/closet/coffin))
+		var/obj/item/weapon/key/K = W
+		if (custom_code == 0 && K.code != 0)
+			var/choice = WWinput(user, "Are you sure you want to assign this key to \the [src]?", "Lock", "No", list("Yes","No"))
+			if (choice == "No")
+				return
+			else
+				locked = TRUE
+				opened = FALSE
+				custom_code = K.code
+				visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+
+		if (K.code == custom_code)
+			locked = !locked
+			if (locked == 1)
+				visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+			else if (locked == 0)
+				visible_message("<span class = 'notice'>[user] unlocks \the [src].</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+		if (W.code != custom_code)
+			user << "This key does not match this lock!"
+			return
 	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HURT)
 		if (!opened)
-			user << "You need to empty the crate first."
+			user << "You need to open the crate first."
 		else
 			visible_message("<span class='danger'>[user] begins to deconstruct the [src]!</span>")
 			playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
@@ -262,20 +291,22 @@
 
 /obj/structure/closet/attack_hand(mob/user as mob)
 	add_fingerprint(user)
-	toggle(user)
-/*
-// tk grab then use on self
-/obj/structure/closet/attack_self_tk(mob/user as mob)
-	add_fingerprint(user)
-	if (!toggle())
-		usr << "<span class='notice'>It won't budge!</span>"
-*/
+	if (locked && !opened)
+		user << "<span class='notice'>\The [src] is locked.</span>"
+		return
+	else
+		toggle(user)
+
 /obj/structure/closet/verb/verb_toggleopen()
 	set src in oview(1)
 	set category = null
 	set name = "Toggle Open"
 
 	if (!usr.canmove || usr.stat || usr.restrained())
+		return
+
+	if (locked)
+		usr << "<span class='warning'>\The [src]is locked!</span>"
 		return
 
 	if (ishuman(usr))

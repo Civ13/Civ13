@@ -65,6 +65,23 @@
 		spawn(1200)// 2 minutes
 			qdel(src)
 
+/obj/effect/decal/cleanable/foam
+	name = "foam"
+	desc = "White foam from a fire extinguisher."
+	gender = PLURAL
+	density = FALSE
+	anchored = TRUE
+	layer = 2
+	light_range = TRUE
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "foam"
+
+	New()
+		..()
+		spawn(2400)// 4 minutes
+			qdel(src)
+
+
 /obj/effect/decal/cleanable/cobweb
 	name = "cobweb"
 	desc = "Somebody should remove that."

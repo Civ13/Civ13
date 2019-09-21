@@ -24,6 +24,7 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	layer = 3.98
+	var/broken = FALSE
 
 	var/weight = 20 //how much the engine weights (duh). For ICEs, this value is per liter (1000 cc)
 
@@ -131,6 +132,12 @@
 	return
 
 /obj/structure/engine/attackby(obj/item/W as obj, mob/user as mob)
+	if (broken && istype(W, /obj/item/weapon/weldingtool))
+		visible_message("[user] starts repairing \the [src]...")
+		if (do_after(user, 200, src))
+			visible_message("[user] sucessfully repairs \the [src].")
+			broken = FALSE
+			return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
 			user << "<span class='notice'>Fix the engine in place with a wrench first.</span>"
@@ -205,8 +212,8 @@
 		if (choice == "Cancel")
 			return
 		else if (choice == "Hot Bulb Engine (66 sheets per 1000 cc)")
-			enginesize = input(H, "Choose the engine size, in cc: (minimum 200, maximum 8000)") as num
-			enginesize = Clamp(enginesize, 200, 8000)
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 200, maximum 45000)") as num
+			enginesize = Clamp(enginesize, 200, 45000)
 			if ((enginesize/1000)*66 > steelamt)
 				H << "You don't have enough steel. You need [(enginesize/1000)*66] and you have [steelamt]. Try building a smaller engine."
 				return
@@ -232,8 +239,8 @@
 					done = FALSE
 					return
 		else if (choice == "Turbine Engine (136 sheets per 1000 cc)")
-			enginesize = input(H, "Choose the engine size, in cc: (minimum 250, maximum 5000)") as num
-			enginesize = Clamp(enginesize, 250, 5000)
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 250, maximum 18000)") as num
+			enginesize = Clamp(enginesize, 250, 18000)
 			if ((enginesize/1000)*136 > steelamt)
 				H << "You don't have enough steel. You need [(enginesize/1000)*136] and you have [steelamt]. Try building a smaller engine."
 				return
@@ -286,8 +293,8 @@
 					done = FALSE
 					return
 		else if (choice == "4-Stroke Gasoline Engine (100 sheets per 1000 cc)")
-			enginesize = input(H, "Choose the engine size, in cc: (minimum 80, maximum 5000)") as num
-			enginesize = Clamp(enginesize, 80, 5000)
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 80, maximum 30000)") as num
+			enginesize = Clamp(enginesize, 80, 30000)
 			if ((enginesize/1000)*100 > steelamt)
 				H << "You don't have enough steel. You need [(enginesize/1000)*100] and you have [steelamt]. Try building a smaller engine."
 				return
@@ -313,8 +320,8 @@
 					done = FALSE
 					return
 		else if (choice == "4-Stroke Ethanol-Gasoline Engine (120 sheets per 1000 cc)")
-			enginesize = input(H, "Choose the engine size, in cc: (minimum 80, maximum 5000)") as num
-			enginesize = Clamp(enginesize, 80, 5000)
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 80, maximum 30000)") as num
+			enginesize = Clamp(enginesize, 80, 30000)
 			if ((enginesize/1000)*120 > steelamt)
 				H << "You don't have enough steel. You need [(enginesize/1000)*120] and you have [steelamt]. Try building a smaller engine."
 				return
@@ -340,8 +347,8 @@
 					done = FALSE
 					return
 		else if (choice == "Diesel Engine (80 sheets per 1000 cc)")
-			enginesize = input(H, "Choose the engine size, in cc: (minimum 300, maximum 7000)") as num
-			enginesize = Clamp(enginesize, 300, 7000)
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 300, maximum 45000)") as num
+			enginesize = Clamp(enginesize, 300, 45000)
 			if ((enginesize/1000)*80 > steelamt)
 				H << "You don't have enough steel. You need [(enginesize/1000)*80] and you have [steelamt]. Try building a smaller engine."
 				return
@@ -367,8 +374,8 @@
 					done = FALSE
 					return
 		else if (choice == "Biodiesel Engine (90 sheets per 1000 cc)")
-			enginesize = input(H, "Choose the engine size, in cc: (minimum 300, maximum 7000)") as num
-			enginesize = Clamp(enginesize, 300, 7000)
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 300, maximum 45000)") as num
+			enginesize = Clamp(enginesize, 300, 45000)
 			if ((enginesize/1000)*80 > steelamt)
 				H << "You don't have enough steel. You need [(enginesize/1000)*90] and you have [steelamt]. Try building a smaller engine."
 				return
@@ -394,8 +401,8 @@
 					done = FALSE
 					return
 		else if (choice == "Hesselman Engine (86 sheets per 1000 cc)")
-			enginesize = input(H, "Choose the engine size, in cc: (minimum 200, maximum 5000)") as num
-			enginesize = Clamp(enginesize, 200, 5000)
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 200, maximum 55000)") as num
+			enginesize = Clamp(enginesize, 200, 55000)
 			if ((enginesize/1000)*86 > steelamt)
 				H << "You don't have enough steel. You need [(enginesize/1000)*86] and you have [steelamt]. Try building a smaller engine."
 				return

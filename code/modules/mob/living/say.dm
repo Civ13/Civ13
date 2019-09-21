@@ -246,8 +246,8 @@ proc/get_radio_key_from_channel(var/channel)
 				if (howl)
 					verb = "howls"
 				O.hear_talk(src, message, verb, speaking)
-
-	log_say("[name]/[key] : [message]")
+	if (!client)
+		log_say("[name]/[key] : [message]")
 	return TRUE
 
 /mob/living/proc/say_signlang(var/message, var/verb="gestures", var/datum/language/language)

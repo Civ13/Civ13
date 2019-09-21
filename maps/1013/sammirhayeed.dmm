@@ -318,6 +318,7 @@
 "gf" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean)
 "gg" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
 "gh" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean)
+"gi" = (/obj/map_metadata/sammirhayeed,/turf/floor/beach/sand/desert,/area/caribbean)
 
 (1,1,1) = {"
 akakakakakakakakakakarararararararaTaTaNaTaTaTaTaTaTaTaTaTaNaTaTaTakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakak
@@ -439,5 +440,5 @@ aaababdCabababababdGabababdCbBbBbBaoaobBbBbBaaaadFdFdHdQabababababababdCababdGab
 ababababababababdCabababababbBbBbBaoaobBbBaaaaaaaaaaaaaaaaaaababdGdGabababdGecababdHbBdPbBbBbpbpbpbCbCbCbCbCbCbCcscscscscscscscscs
 abababababdOababababaaaaabdPdPbBaoaobBbBbBaaaaaadHaaaaaadHaaaaaaabdGabdDabdGabdGabbBbBbBbBbpbpbpbpbCbCbCbCbCbCcscscscscscscscscscs
 aaababababababaaaaaadOabdGdPbBaoaobBbBbBaaaaaadBaaaadHdHdHaaaaaaaadGdGababababababbBbBbBbpbpbpbCbCbCbCbCbCbCbCcscscscscscscscscscs
-aaabababababaaaaababababbBbBaoaobBbBbBaaaaaaaaaaaaaadHaaaaaaaadFaaabababababababbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscscscscscscscscscs
+giabababababaaaaababababbBbBaoaobBbBbBaaaaaaaaaaaaaadHaaaaaaaadFaaabababababababbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscscscscscscscscscs
 "}

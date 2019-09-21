@@ -297,8 +297,6 @@
 		if (!map.special_relocate(mob))
 			if (job_master)
 				job_master.relocate(mob)
-			else
-				mob.gib()
 		return
 
 	for (var/obj/structure/noose/N in get_turf(mob))
@@ -915,6 +913,15 @@
 			pass(E)
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
+			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
+				if (MW && MW.control && MW.control.axis && MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
+					H << "You switch into forward."
+					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
+					MW.control.axis.currentspeed = 1
+					MW.control.axis.reverse = FALSE
+					MW.control.axis.moving = TRUE
+					MW.control.axis.add_transporting()
+					MW.control.axis.startmovementloop()
 			if (H.driver && H.driver_vehicle)
 				H.dir = NORTH
 				H.driver_vehicle.dir = NORTH
@@ -950,6 +957,15 @@
 			pass(E)
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
+			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
+				if (MW && MW.control && MW.control.axis && !MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
+					H << "You switch into reverse."
+					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
+					MW.control.axis.currentspeed = 1
+					MW.control.axis.reverse = TRUE
+					MW.control.axis.moving = TRUE
+					MW.control.axis.add_transporting()
+					MW.control.axis.startmovementloop()
 			if (H.driver && H.driver_vehicle)
 				H.dir = SOUTH
 				H.driver_vehicle.dir = SOUTH

@@ -563,6 +563,15 @@
 				user.Weaken(2)
 				user.setClickCooldown(22)
 				return
+			if (istype(O, /obj/structure/vehicleparts/frame))
+				var/obj/structure/vehicleparts/frame/F = O
+				if (!F.CanPass())
+					user << "<span class='danger'>You hit the [F.axis]!</span>"
+					user.adjustBruteLoss(rand(2,7))
+					user.Weaken(2)
+					user.setClickCooldown(22)
+					return
+
 		for(var/turf/T in range(1,user))
 			if ((get_dir(user,T) in nearbydirections(dir_to_tgt)) && T.density == TRUE)
 				user << "<span class='danger'>You hit the [T]!</span>"

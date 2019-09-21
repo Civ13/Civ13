@@ -29,6 +29,14 @@
 	var/list/components = list()
 	var/current_weight = 5
 
+	//matrix/turning stuff
+	var/list/corners = list()
+	var/list/matrix = list()
+	var/matrix_l = 0
+	var/matrix_h = 0
+	var/list/matrix_current_locs = list()
+
+	var/color_code = ""
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
@@ -50,7 +58,7 @@
 	icon_state = "axis_powered"
 	speeds = 3
 	maxpower = 250
-	speedlist = list(1=12,2=10,3=8)
+	speedlist = list(1=12,2=8,3=6)
 
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"

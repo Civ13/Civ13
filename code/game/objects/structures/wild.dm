@@ -129,7 +129,9 @@
 	if (proj.damage > 100 && prob(33)) // makes shrapnel unable to take down trees
 		visible_message("<span class = 'danger'>[src] collapses!</span>")
 		qdel(src)
-
+	else if (istype(proj, /obj/item/projectile/shell))
+		visible_message("<span class = 'danger'>[src] is blown up!</span>")
+		qdel(src)
 /obj/structure/wild/tree
 	name = "small tree"
 	icon_state = "tree"

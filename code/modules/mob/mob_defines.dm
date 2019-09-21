@@ -19,32 +19,13 @@
 
 	var/stat = FALSE //Whether a mob is alive or dead. TODO: Move this to living - Nodrak
 
-//	var/obj/screen/flash = null
-//	var/obj/screen/blind = null
+
 	var/obj/screen/hands = null
 	var/obj/screen/pullin = null
 	var/obj/screen/purged = null
-//	var/obj/screen/internals = null
-//	var/obj/screen/oxygen = null
+
 	var/obj/screen/i_select = null
 	var/obj/screen/m_select = null
-//	var/obj/screen/toxin = null
-//	var/obj/screen/fire = null
-/*	var/obj/screen/bodytemp = null
-	var/obj/screen/healths = null
-	var/obj/screen/throw_icon = null
-	var/obj/screen/nutrition_icon = null
-	var/obj/screen/pressure = null
-	//var/obj/screen/damageoverlay = null
-	var/obj/screen/pain = null
-	var/obj/screen/gun/item/item_use_icon = null
-	var/obj/screen/gun/radio/radio_use_icon = null
-	var/obj/screen/gun/move/gun_move_icon = null
-	var/obj/screen/gun/run/gun_run_icon = null
-	var/obj/screen/gun/mode/gun_setting_icon = null*/
-
-	//spells hud icons - this interacts with add_spell and remove_spell
-	var/list/obj/screen/movable/spell_master/spell_masters = null
 
 	/*A bunch of this stuff really needs to go under their own defines instead of being globally attached to mob.
 	A variable should only be globally attached to turfs/objects/whatever, when it is in fact needed as such.
@@ -57,7 +38,6 @@
 	var/use_me = TRUE //Allows all mobs to use the me verb by default, will have to manually specify they cannot
 	var/damageoverlaytemp = FALSE
 	var/atom/movable/using_object = null
-//	var/obj/machinery/machine = null
 	var/poll_answer = 0.0
 	var/sdisabilities = FALSE	//Carbon
 	var/disabilities = FALSE	//Carbon

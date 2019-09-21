@@ -30,10 +30,10 @@
 	for (var/obj/O in T.contents)
 		if (O == src)
 			continue
-		if (istype(O,/obj/structure))
+		if (istype(O,/obj/structure) && !istype(O, /obj/structure/vehicleparts))
 			var/obj/structure/S = O
 			if (S.climbable) continue
-		if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
+		if (O && O.density && !(O.flags & ON_BORDER) && !istype(O, /obj/structure/vehicleparts)) //ON_BORDER structures are handled by the Adjacent() check.
 			return O
 	return FALSE
 

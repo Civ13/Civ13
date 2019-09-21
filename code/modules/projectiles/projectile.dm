@@ -80,7 +80,7 @@
 	var/can_hit_in_trench = 1
 
 	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
-
+	var/atype = "normal"
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
@@ -461,7 +461,7 @@
 
 	if (istype(get_turf(firer), /turf/floor/trench) && firer.prone)
 		if (!istype(T,/turf/floor/trench) && get_dist(T, firer)>2)
-			world << "<span class = 'warning'>The [name] hits \the trench wall!</span>"
+			world << "<span class = 'warning'>The [name] hits the trench wall!</span>"
 			qdel(src)
 			return
 	if(can_hit_in_trench == 1)
@@ -470,15 +470,45 @@
 				can_hit_in_trench = 0
 			else
 				can_hit_in_trench = -1
-
 	if (T.density || (can_hit_in_trench == -1 && !istype(T, /turf/floor/trench)))
 		passthrough = FALSE
 	else
 		if(!istype(T, /turf/floor/trench) || can_hit_in_trench)
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
+				if (istype(O, /obj/structure/vehicleparts/frame) && firer.loc != O.loc)
+					var/obj/structure/vehicleparts/frame/NO = O
+					for (var/obj/structure/vehicleparts/frame/FM in firer.loc)
+						if (FM.axis != NO.axis)
+							var/penloc = NO.CheckPenLoc(src)
+							if (!NO.CheckPen(src,penloc))
+								passthrough = FALSE
+								NO.bullet_act(src,penloc)
+								bumped = TRUE
+								loc = null
+								qdel(src)
+								return FALSE
+							else
+								if ((prob(75) && atype=="APCR") || (prob(50) && atype=="AP"))
+									NO.bullet_act(src,penloc)
+									bumped = TRUE
+									passthrough = FALSE
+									loc = null
+									qdel(src)
+									return FALSE
+								else
+									NO.bullet_act(src,penloc)
+									passthrough = TRUE
+									damage /= 2
+									passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
+									//move ourselves onto T so we can continue on our way.
+									forceMove(T)
+									permutated += T
+									if (passthrough_message)
+										T.visible_message(passthrough_message)
+									return TRUE
+				var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 				if (O == original)
-					var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
 						hitchance = 50
 					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
@@ -541,7 +571,7 @@
 										passthrough = FALSE
 						//				log_debug("ignored [S] (1)")
 									else if (S.density)
-										if (!S.climbable)
+										if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
 											passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
 	//		else
 		//		log_debug("ignored [AM] (2)")
