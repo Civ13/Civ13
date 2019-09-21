@@ -15,7 +15,7 @@
 	armor_penetration = 80
 	heavy_armor_penetration = 25
 	var/caliber = 75
-	var/atype = "HE"
+	atype = "HE"
 	muzzle_type = /obj/effect/projectile/bullet/muzzle
 
 /obj/item/projectile/shell/get_structure_damage()

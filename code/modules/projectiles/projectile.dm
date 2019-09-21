@@ -80,7 +80,7 @@
 	var/can_hit_in_trench = 1
 
 	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
-
+	var/atype = "AP"
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
@@ -487,7 +487,7 @@
 						qdel(src)
 						return FALSE
 					else
-						if (prob(50))
+						if (prob(50) || (prob(75) && src.atype=="APCR"))
 							NO.bullet_act(src,penloc)
 							bumped = TRUE
 							passthrough = FALSE
@@ -495,7 +495,9 @@
 							qdel(src)
 							return FALSE
 						else
+							NO.bullet_act(src,penloc)
 							passthrough = TRUE
+							damage /= 2
 							passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
 							//move ourselves onto T so we can continue on our way.
 							forceMove(T)
