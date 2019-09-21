@@ -10,7 +10,7 @@
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
-	if (control.axis.components.moving == FALSE || control.axis.components.currentspeed == 0)
+	if (control.axis.moving == FALSE || control.axis.currentspeed == 0)
 		return FALSE
 	for(var/obj/effect/pseudovehicle/O in control.axis.components)
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
