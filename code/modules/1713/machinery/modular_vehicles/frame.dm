@@ -662,6 +662,9 @@
 	return FALSE
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
+	for (var/obj/structure/vehicleparts/frame/F in proj.firer.loc)
+		if (F.axis == axis)
+			return
 	if (penloc)
 		if (istype(proj, /obj/item/projectile/shell))
 			var/obj/item/projectile/shell/PS = proj
@@ -715,7 +718,8 @@
 				if ("back")
 					w_back[5] -= proj.damage * 0.01
 		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
-		playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
+		if (istype(proj, /obj/item/projectile/shell))
+			playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
 		new/obj/effect/effect/smoke/small/fast(loc)
 		try_destroy()
 		return
