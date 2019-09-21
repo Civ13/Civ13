@@ -690,16 +690,16 @@
 			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
 				return TRUE
 		if ("frontleft")
-			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
 				return TRUE
 		if ("backleft")
-			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
 				return TRUE
 		if ("frontright")
-			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
 				return TRUE
 		if ("backright")
-			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
 				return TRUE
 	playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 	return FALSE
