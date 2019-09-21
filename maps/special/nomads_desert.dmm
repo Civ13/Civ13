@@ -139,7 +139,7 @@
 "cI" = (/obj/item/stack/farming/seeds/potato{amount = 5},/turf/floor/dirt/dust,/area/caribbean/nomads/desert)
 "cJ" = (/obj/structure/wild/tree/cactus{icon_state = "cactus"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "cK" = (/obj/structure/wild/tallgrass2,/mob/living/simple_animal/frog,/turf/floor/beach/sand,/area/caribbean/nomads/desert)
-"cL" = (/turf/wall/indestructable/black,/area/caribbean/admin)
+"cL" = (/turf/wall/indestructable/black{layer = 6},/area/caribbean/admin)
 "cM" = (/obj/effect/spawner/mobspawner/sheep_m,/turf/floor/dirt/dust,/area/caribbean/nomads/desert)
 "cN" = (/obj/structure/religious/impaledskull,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "cQ" = (/obj/structure/religious/remains,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)

@@ -10,7 +10,7 @@
 "aj" = (/mob/living/simple_animal/leech,/turf/floor/grass,/area/caribbean/nomads/forest)
 "ak" = (/turf/floor/dirt/dust,/area/caribbean/void/caves)
 "al" = (/obj/effect/spawner/mobspawner/bears{max_range = 5},/turf/floor/dirt,/area/caribbean/void/caves)
-"am" = (/turf/wall/indestructable/black,/area/caribbean/admin)
+"am" = (/turf/wall/indestructable/black{layer = 6},/area/caribbean/admin)
 "an" = (/turf/wall/indestructable/black,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "ao" = (/turf/floor/dirt,/area/caribbean/admin)
 "ap" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/nomads/forest)
