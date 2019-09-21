@@ -73,7 +73,11 @@ bullet_act
 /mob/living/carbon/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
 		return // fix for strange bug
-
+	if (istype(P, /obj/item/projectile/shell))
+		visible_message("<span class = 'danger'>[src] gets blown up by \the [P]!</span>")
+		gib()
+		spawn (0.01)
+			qdel(P)
 	if (def_zone == "mouth")
 		if (wear_mask && istype(wear_mask, /obj/item/weapon/grenade))
 			var/obj/item/weapon/grenade/G = wear_mask
