@@ -33,43 +33,10 @@
 		VP.axis.wheels += src
 		axis = VP.axis
 		connected = VP
-		forceMove(VP.loc)
+		VP.mwheel = src
+		forceMove(VP)
 		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
-/*
-/obj/structure/vehicleparts/movement/tracks/update_icon()
-	..()
-	if (axis && connected)
-		//Front-Right, Front-Left, Back-Right, Back-Left; FR, FL, BR, BL
-		if (connected == axis.corners[1] || connected == axis.corners[2])
-			switch(dir)
-				if(NORTH)
-					pixel_y =32
-					pixel_x = 0
-				if(SOUTH)
-					pixel_y =-32
-					pixel_x = 0
-				if(WEST)
-					pixel_x =-32
-					pixel_y = 0
-				if(EAST)
-					pixel_x =32
-					pixel_y = 0
 
-		else if (connected == axis.corners[3] || connected == axis.corners[4])
-			switch(dir)
-				if(NORTH)
-					pixel_y =-32
-					pixel_x = 0
-				if(SOUTH)
-					pixel_y =32
-					pixel_x = 0
-				if(WEST)
-					pixel_x =32
-					pixel_y = 0
-				if(EAST)
-					pixel_x =-32
-					pixel_y = 0
-*/
 /obj/structure/vehicleparts/movement/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (broken && istype(I, /obj/item/weapon/weldingtool))
 		visible_message("[H] starts repairing \the [ntype]...")

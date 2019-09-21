@@ -19,6 +19,7 @@
 
 	var/doorcode = 0 //if it has a door on it, what the key code is
 	var/image/roof
+	var/image/movemento
 	var/noroof = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -58,6 +59,7 @@
 				usr << "You connect \the [src] to \the [VP.axis]."
 				axis = VP.axis
 				color_code = VP.color_code
+				name = axis.name
 				var/found = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in axis.components)
 					if (F == src)
@@ -96,6 +98,37 @@
 /obj/structure/vehicleparts/frame/update_icon()
 	..()
 	overlays.Cut()
+	if (axis && mwheel)
+		movemento = image(icon=mwheel.icon, loc=src, icon_state=mwheel.icon_state, layer=11, dir=mwheel.dir)
+		if (axis.corners[1] == src || axis.corners[2] == src)
+			switch(dir)
+				if (NORTH)
+					movemento.pixel_x = 0
+					movemento.pixel_y = 32
+				if (SOUTH)
+					movemento.pixel_x = 0
+					movemento.pixel_y = -32
+				if (WEST)
+					movemento.pixel_x = -32
+					movemento.pixel_y = 0
+				if (EAST)
+					movemento.pixel_x = 32
+					movemento.pixel_y = 0
+		else if (axis.corners[3] == src || axis.corners[4] == src)
+			switch(dir)
+				if (NORTH)
+					movemento.pixel_x = 0
+					movemento.pixel_y = -32
+				if (SOUTH)
+					movemento.pixel_x = 0
+					movemento.pixel_y = 32
+				if (WEST)
+					movemento.pixel_x = 32
+					movemento.pixel_y = 0
+				if (EAST)
+					movemento.pixel_x = -32
+					movemento.pixel_y = 0
+		overlays += movemento
 	if (!noroof)
 		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=11)
 		roof.overlays.Cut()

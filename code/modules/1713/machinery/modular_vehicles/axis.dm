@@ -188,18 +188,19 @@
 	if (reverse)
 		m_dir = OPPOSITE_DIR(dir)
 	for (var/atom/movable/M in transporting)
-		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && !istype(M, /obj/structure/wild))
+		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && !istype(M, /obj/structure/vehicleparts/movement) && !istype(M, /obj/structure/wild))
 			var/obj/MO = M
 			MO.forceMove(get_step(MO.loc, m_dir))
 			if (!istype(M, /obj/structure/cannon))
 				MO.dir = dir
 				MO.update_icon()
-			if (istype(M, /obj/structure/vehicleparts/movement))
-				var/obj/structure/vehicleparts/movement/MV = M
-				if (MV.reversed)
-					MV.dir = OPPOSITE_DIR(dir)
-				else
-					MV.dir = dir
+		if (istype(M, /obj/structure/vehicleparts/movement))
+			var/obj/structure/vehicleparts/movement/MV = M
+			if (MV.reversed)
+				MV.dir = OPPOSITE_DIR(dir)
+			else
+				MV.dir = dir
+			MV.forceMove(get_step(MV.loc, MV.dir))
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
 			ML.forceMove(get_step(ML.loc, m_dir))
@@ -219,8 +220,6 @@
 		for (var/atom/movable/M in T)
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				transporting += M
-	for (var/obj/structure/vehicleparts/movement/MV in wheels)
-		transporting += MV
 	return transporting.len
 
 /obj/structure/vehicleparts/axis/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
@@ -230,7 +229,7 @@
 		VP.axis = src
 		VP.anchored = TRUE
 		components += VP
-		VP.name = "central [VP.name]"
+		VP.name = "[name] axis"
 		VP.color_code = color_code
 		loc = VP
 		return
@@ -349,30 +348,12 @@
 					corners[3] = F
 				else if (dir == EAST) // FL
 					corners[2] = F
-	for(var/obj/structure/vehicleparts/movement/MV in corners[1].loc)
-		if (!MV.axis)
-			MV.axis = src
-			MV.connected = corners[1]
-			MV.connected.mwheel = MV
-			break
-	for(var/obj/structure/vehicleparts/movement/MV in corners[2].loc)
-		if (!MV.axis)
-			MV.axis = src
-			MV.connected = corners[2]
-			MV.connected.mwheel = MV
-			break
-	for(var/obj/structure/vehicleparts/movement/MV in corners[3].loc)
-		if (!MV.axis)
-			MV.axis = src
-			MV.connected = corners[3]
-			MV.connected.mwheel = MV
-			break
-	for(var/obj/structure/vehicleparts/movement/MV in corners[4].loc)
-		if (!MV.axis)
-			MV.axis = src
-			MV.connected = corners[4]
-			MV.connected.mwheel = MV
-			break
+	for(var/obj/structure/vehicleparts/frame/FM in components)
+		for(var/obj/structure/vehicleparts/movement/MV in wheels)
+			if (!MV.axis && MV.x == FM.x && MV.y == FM.y && MV.z == FM.z)
+				MV.axis = src
+				MV.connected = FM
+				FM.mwheel = MV
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
 	else
@@ -413,10 +394,10 @@
 						var/obj/O = M
 						if (!istype(O, /obj/structure/cannon))
 							O.dir = dir
-//						if (istype(O, /obj/structure/vehicleparts/frame))
-//							var/obj/structure/vehicleparts/frame/FR = O
-//							if (FR.mwheel)
-//								FR.mwheel.forceMove(matrix_current_locs[dlocfind][1])
+						if (istype(O, /obj/structure/vehicleparts/frame))
+/							var/obj/structure/vehicleparts/frame/FR = O
+							if (FR.mwheel)
+								FR.mwheel.update_icon()
 						O.update_icon()
 	return TRUE
 
