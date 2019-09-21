@@ -150,3 +150,47 @@
 	icon_state = "shell_nuclear"
 	w_class = 4.0
 	value = 50
+
+
+////////////////////////////////////////////////////////
+/obj/structure/shellrack
+	icon = 'icons/obj/structures.dmi'
+	name = "shell rack"
+	icon_state = "shellrack0"
+	w_class = 10.0
+	var/obj/item/weapon/storage/internal/storage
+
+
+/obj/structure/shellrack/New()
+	..()
+	storage = new/obj/item/weapon/storage/internal(src)
+	storage.storage_slots = 16
+	storage.max_w_class = 10
+	storage.max_storage_space = 600
+	storage.can_hold = list(/obj/item/cannon_ball/shell)
+	update_icon()
+
+/obj/structure/shellrack/Destroy()
+	qdel(storage)
+	storage = null
+	..()
+
+/obj/structure/shellrack/attack_hand(mob/user as mob)
+	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+		storage.open(user)
+		update_icon()
+	else
+		return
+/obj/structure/shellrack/MouseDrop(obj/over_object as obj)
+	if (storage.handle_mousedrop(usr, over_object))
+		..(over_object)
+		update_icon()
+
+/obj/structure/shellrack/attackby(obj/item/W as obj, mob/user as mob)
+	..()
+	storage.attackby(W, user)
+	update_icon()
+
+/obj/structure/shellrack/update_icon()
+	..()
+	icon_state = "shellrack[storage.contents.len]"

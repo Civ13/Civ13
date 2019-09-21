@@ -37,39 +37,40 @@
 
 /obj/structure/vehicleparts/movement/tracks/update_icon()
 	..()
-	switch(axis.dir)
-		if (NORTH)
-			switch(dir)
-				if(NORTH)
-					pixel_y =-32
-					pixel_x = 0
-				if(SOUTH)
-					pixel_y =32
-					pixel_x = 0
-		if (SOUTH)
-			switch(dir)
-				if(NORTH)
-					pixel_y =32
-					pixel_x = 0
-				if(SOUTH)
-					pixel_y =-32
-					pixel_x = 0
-		if (EAST)
-			switch(dir)
-				if(WEST)
-					pixel_x =-32
-					pixel_y = 0
-				if(EAST)
-					pixel_x =32
-					pixel_y = 0
-		if (WEST)
-			switch(dir)
-				if(WEST)
-					pixel_x =32
-					pixel_y = 0
-				if(EAST)
-					pixel_x =-32
-					pixel_y = 0
+	if (axis)
+		switch(axis.dir)
+			if (NORTH)
+				switch(dir)
+					if(NORTH)
+						pixel_y =-32
+						pixel_x = 0
+					if(SOUTH)
+						pixel_y =32
+						pixel_x = 0
+			if (SOUTH)
+				switch(dir)
+					if(NORTH)
+						pixel_y =32
+						pixel_x = 0
+					if(SOUTH)
+						pixel_y =-32
+						pixel_x = 0
+			if (EAST)
+				switch(dir)
+					if(WEST)
+						pixel_x =-32
+						pixel_y = 0
+					if(EAST)
+						pixel_x =32
+						pixel_y = 0
+			if (WEST)
+				switch(dir)
+					if(WEST)
+						pixel_x =32
+						pixel_y = 0
+					if(EAST)
+						pixel_x =-32
+						pixel_y = 0
 /obj/structure/vehicleparts/movement/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (broken && istype(I, /obj/item/weapon/weldingtool))
 		visible_message("[H] starts repairing \the [ntype]...")

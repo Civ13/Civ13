@@ -429,9 +429,9 @@
 	name = ""
 	desc = ""
 	icon = 'icons/mob/screen/effects.dmi'
-	icon_state = "blank"
+	icon_state = "black"
 	invisibility = 101
-	layer = 1.8
+	layer = 2
 	anchored = TRUE
 	density = FALSE
 	opacity = FALSE

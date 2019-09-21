@@ -58,15 +58,11 @@
 				AA.dir = central.axis.components
 		sleep(1)
 		for(var/turf/T in rangef)
-			var/doneps = FALSE
-			for (var/obj/structure/vehicleparts/frame/FRE in T)
-				if (FRE.axis)
-					doneps = TRUE
-			if (!doneps)
-				var/obj/effect/pseudovehicle/PV = new/obj/effect/pseudovehicle(T)
-				PV.link = central.axis
-				PV.dir = central.axis.dir
-				central.axis.components += PV
+			for (var/obj/effect/pseudovehicle/PV in T)
+				if (!PV.link)
+					PV.link = central.axis
+					PV.dir = central.axis.dir
+					central.axis.components += PV
 		//then the engine
 		var/done2 = FALSE
 		for (var/obj/structure/engine/internal/E in rangeto)
