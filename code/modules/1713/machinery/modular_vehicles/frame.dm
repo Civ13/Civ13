@@ -546,58 +546,58 @@
 			if (NORTH)
 				switch(dir)
 					if (NORTH)
-						if (w_back[1] == "" || w_back[7] == TRUE)
+						if (w_back[1] == "")
 							return TRUE
 					if (SOUTH)
-						if (w_front[1] == "" || w_front[7] == TRUE)
+						if (w_front[1] == "")
 							return TRUE
 					if (WEST)
-						if (w_left[1] == "" || w_left[7] == TRUE)
+						if (w_left[1] == "")
 							return TRUE
 					if (EAST)
-						if (w_right[1] == "" || w_right[7] == TRUE)
+						if (w_right[1] == "")
 							return TRUE
 			if (SOUTH)
 				switch(dir)
 					if (NORTH)
-						if (w_front[1] == "" || w_front[7] == TRUE)
+						if (w_front[1] == "")
 							return TRUE
 					if (SOUTH)
-						if (w_back[1] == "" || w_back[7] == TRUE)
+						if (w_back[1] == "")
 							return TRUE
 					if (WEST)
-						if (w_right[1] == "" || w_right[7] == TRUE)
+						if (w_right[1] == "")
 							return TRUE
 					if (EAST)
-						if (w_left[1] == "" || w_left[7] == TRUE)
+						if (w_left[1] == "")
 							return TRUE
 			if (WEST)
 				switch(dir)
 					if (NORTH)
-						if (w_right[1] == "" || w_right[7] == TRUE)
+						if (w_right[1] == "")
 							return TRUE
 					if (SOUTH)
-						if (w_left[1] == "" || w_left[7] == TRUE)
+						if (w_left[1] == "")
 							return TRUE
 					if (WEST)
-						if (w_back[1] == "" || w_back[7] == TRUE)
+						if (w_back[1] == "")
 							return TRUE
 					if (EAST)
-						if (w_front[1] == "" || w_front[7] == TRUE)
+						if (w_front[1] == "")
 							return TRUE
 			if (EAST)
 				switch(dir)
 					if (NORTH)
-						if (w_left[1] == "" || w_left[7] == TRUE)
+						if (w_left[1] == "")
 							return TRUE
 					if (SOUTH)
-						if (w_right[1] == "" || w_right[7] == TRUE)
+						if (w_right[1] == "")
 							return TRUE
 					if (WEST)
-						if (w_front[1] == "" || w_front[7] == TRUE)
+						if (w_front[1] == "")
 							return TRUE
 					if (EAST)
-						if (w_back[1] == "" || w_back[7] == TRUE)
+						if (w_back[1] == "")
 							return TRUE
 	return FALSE
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
