@@ -24,7 +24,7 @@
 "ax" = (/obj/structure/vehicleparts/frame/rdoor{doorcode = 11940; name = "frame"},/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean/forest)
 "ay" = (/obj/effect/landmark{name = "JoinLateGECap"},/turf/floor/grass,/area/caribbean/forest)
 "az" = (/obj/effect/landmark{name = "JoinLateGEDoc"},/turf/floor/grass,/area/caribbean/forest)
-"aA" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 1; layer = 4},/obj/structure/vehicleparts/frame/rf{name = "frame"},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/obj/structure/vehicleparts/movement/tracks,/turf/floor/dirt,/area/caribbean/forest)
+"aA" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 0; layer = 4},/obj/structure/vehicleparts/frame/rf{name = "frame"},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/obj/structure/vehicleparts/movement/tracks,/turf/floor/dirt,/area/caribbean/forest)
 "aB" = (/obj/structure/closet/hideout/pine,/turf/floor/grass,/area/caribbean/forest)
 "aC" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
 "aD" = (/obj/structure/wild/jungle/medpine,/turf/floor/dirt/dust,/area/caribbean/forest)

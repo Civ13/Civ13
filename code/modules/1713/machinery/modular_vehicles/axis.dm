@@ -112,8 +112,7 @@
 			for(var/mob/living/L in TT)
 				var/protec = FALSE
 				for (var/obj/structure/vehicleparts/frame/FRR in L.loc)
-					if (FRR.axis == FR.axis)
-						protec = TRUE
+					protec = TRUE
 				if (!protec)
 					if (current_weight >= 45)
 						visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
