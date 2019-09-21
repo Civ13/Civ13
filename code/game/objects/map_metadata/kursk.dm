@@ -3,7 +3,7 @@
 	ID = MAP_KURSK
 	title = "Kursk (100x100x1)"
 	lobby_icon_state = "ww2"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200
 	squad_spawn_locations = FALSE
 	faction_organization = list(

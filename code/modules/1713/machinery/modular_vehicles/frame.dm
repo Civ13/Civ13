@@ -701,7 +701,10 @@
 		if ("backright")
 			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
 				return TRUE
-	playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+	if (istype(proj, /obj/item/projectile/shell))
+		playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+	else
+		playsound(loc, "ric_sound", 50, TRUE)
 	return FALSE
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
@@ -783,7 +786,7 @@
 		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
 		if (istype(proj, /obj/item/projectile/shell))
 			playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
-		new/obj/effect/effect/smoke/small/fast(loc)
+			new/obj/effect/effect/smoke/small/fast(loc)
 		try_destroy()
 		return
 	else
