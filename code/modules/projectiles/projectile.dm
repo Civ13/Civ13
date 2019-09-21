@@ -507,6 +507,33 @@
 									if (passthrough_message)
 										T.visible_message(passthrough_message)
 									return TRUE
+					var/penloc = NO.CheckPenLoc(src)
+					if (!NO.CheckPen(src,penloc))
+						passthrough = FALSE
+						NO.bullet_act(src,penloc)
+						bumped = TRUE
+						loc = null
+						qdel(src)
+						return FALSE
+					else
+						if ((prob(75) && atype=="APCR") || (prob(50) && atype=="AP"))
+							NO.bullet_act(src,penloc)
+							bumped = TRUE
+							passthrough = FALSE
+							loc = null
+							qdel(src)
+							return FALSE
+						else
+							NO.bullet_act(src,penloc)
+							passthrough = TRUE
+							damage /= 2
+							passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
+							//move ourselves onto T so we can continue on our way.
+							forceMove(T)
+							permutated += T
+							if (passthrough_message)
+								T.visible_message(passthrough_message)
+							return TRUE
 				var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 				if (O == original)
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
