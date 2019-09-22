@@ -4,7 +4,7 @@
 /area
 	var/datum/turf_initializer/turf_initializer = null
 
-/area/initialize()
+/area/proc/initialize()
 	..()
 	for (var/turf/T in src)
 		T.initialize()
