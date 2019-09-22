@@ -183,6 +183,17 @@
 			update_inv_r_hand(0)
 		return TRUE
 
+	for(var/obj/structure/vehicleparts/frame/F in src.loc)
+		var/found = FALSE
+		for(var/obj/structure/vehicleparts/frame/FR in get_turf(A))
+			if (FR.axis != F.axis && FR != F)
+				if (!F.CanPass(src, get_turf(A)) || !F.CheckExit(src, get_turf(A)))
+					return
+			if (FR.axis == F.axis)
+				found = TRUE
+		if (!found)
+			return
+
 	//Atoms on your person
 	// A is your location but is not a turf; or is on you (backpack); or is on something on you (box in backpack); sdepth is needed here because contents depth does not equate inventory storage depth.
 	var/sdepth = A.storage_depth(src)
@@ -230,7 +241,6 @@
 
 
 		//	setMoveCooldown(5)
-
 			if (W)
 				// Return TRUE in attackby() to prevent afterattack() effects (when safely moving items for example)
 				var/resolved = W.resolve_attackby(A,src)
