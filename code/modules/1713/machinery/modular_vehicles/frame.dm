@@ -71,11 +71,15 @@
 				return
 /obj/structure/vehicleparts/frame/MouseDrop_T(var/obj/structure/VP, var/mob/living/user)
 	if (istype(VP, /obj/structure/engine/internal) && axis && !axis.engine && !VP.anchored)
+		var/obj/structure/engine/internal/E = VP
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		usr << "You connect \the [VP] to \the [axis]."
 		axis.engine = VP
 		VP.forceMove(loc)
 		VP.anchored = TRUE
+		E.icon = 'icons/obj/vehicleparts.dmi'
+		E.engineclass = "engine"
+		E.update_icon()
 		return
 	else if (istype(VP, /obj/structure/bed/chair/drivers) && axis && !VP.anchored && !axis.wheel)
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
@@ -87,6 +91,10 @@
 		axis.wheel = VPP.wheel
 		axis.wheel.control = src
 		return
+	else if (istype(VP, /obj/structure/lamp/lamp_small/tank) && !VP.anchored)
+		var/obj/structure/lamp/lamp_small/tank/TL = VP
+		TL.connection = src
+		usr << "You place \the [VP] in \the [axis]."
 
 /obj/structure/vehicleparts/frame/wood
 	name = "wood frame"
@@ -603,11 +611,15 @@
 	return FALSE
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (mwheel && mwheel.broken && istype(I, /obj/item/weapon/weldingtool))
-		visible_message("[H] starts repairing \the [mwheel.ntype]...")
-		if (do_after(H, 200, src))
-			visible_message("[H] sucessfully repairs \the [mwheel.ntype].")
-			mwheel.broken = FALSE
-			return
+		var/cantdo = FALSE
+		for (var/obj/structure/vehicleparts/frame/FM in H.loc)
+			cantdo = TRUE
+		if (!cantdo)
+			visible_message("[H] starts repairing \the [mwheel.ntype]...")
+			if (do_after(H, 200, src))
+				visible_message("[H] sucessfully repairs \the [mwheel.ntype].")
+				mwheel.broken = FALSE
+				return
 	else if (istype(I,/obj/item/weapon/key))
 		var/obj/item/weapon/key/K = I
 		if (K.code == doorcode)

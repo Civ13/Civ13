@@ -76,6 +76,9 @@
 					if (!done2)
 						central.axis.engine = E
 						E.anchored = TRUE
+						E.icon = 'icons/obj/vehicleparts.dmi'
+						E.engineclass = "engine"
+						E.update_icon()
 						done2 = TRUE
 //		if (done2)
 //			world.log << "Added the engine."
@@ -116,6 +119,9 @@
 		for (var/obj/structure/vehicleparts/movement/M in rangeto)
 			for (var/obj/structure/vehicleparts/frame/F in M.loc)
 				M.MouseDrop(F)
+		for (var/obj/structure/lamp/lamp_small/tank/TL in rangeto)
+			for (var/obj/structure/vehicleparts/frame/F in TL.loc)
+				TL.connection = central.axis.engine
 		sleep(2)
 		if (isemptylist(central.axis.corners))
 			central.axis.check_corners()
