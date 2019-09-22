@@ -41,21 +41,13 @@
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
 				if (W.broken)
-					W.icon_state = "[W.base_icon][color_code]_broken"
 					moving = FALSE
 					stopmovementloop()
 					return
 				else
-					W.icon_state = "[W.movement_icon][color_code]"
-				W.update_icon()
+					W.update_icon()
 			do_move()
 		else
-			for (var/obj/structure/vehicleparts/movement/W in wheels)
-				if (W.broken)
-					W.icon_state = "[W.base_icon][color_code]_broken"
-				else
-					W.icon_state = "[W.base_icon][color_code]"
-				W.update_icon()
 			currentspeed = 0
 			moving = FALSE
 			stopmovementloop()
@@ -70,10 +62,6 @@
 	moving = FALSE
 	currentspeed = 0
 	for (var/obj/structure/vehicleparts/movement/W in wheels)
-		if (W.broken)
-			W.icon_state = "[W.base_icon][color_code]_broken"
-		else
-			W.icon_state = "[W.base_icon][color_code]"
 		W.update_icon()
 	return
 
@@ -221,6 +209,7 @@
 			else
 				MV.dir = dir
 			MV.forceMove(get_step(MV.loc, MV.dir))
+			MV.update_icon()
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
 			ML.forceMove(get_step(ML.loc, m_dir))

@@ -133,10 +133,6 @@
 			control.axis.moving = FALSE
 			user << "You stop the [control.axis]."
 			for (var/obj/structure/vehicleparts/movement/W in control.axis.wheels)
-				if (W.broken)
-					W.icon_state = "[W.base_icon][control.axis.color_code]_broken"
-				else
-					W.icon_state = "[W.base_icon][control.axis.color_code]"
 				W.update_icon()
 			return
 		else
@@ -184,11 +180,7 @@
 				wheel.control.axis.engine.update_icon()
 				user << "You stop the [wheel.control.axis]."
 				for (var/obj/structure/vehicleparts/movement/W in wheel.control.axis.wheels)
-					if (W.broken)
-						W.icon_state = "[W.base_icon][wheel.control.axis.color_code]_broken"
-					else
-						W.icon_state = "[W.base_icon][wheel.control.axis.color_code]"
-						W.update_icon()
+					W.update_icon()
 	return M
 
 /obj/structure/bed/chair/drivers/update_icon()
