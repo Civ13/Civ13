@@ -111,7 +111,7 @@
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
-				M << "You load \the [src]"
+				M << "You load the [src]."
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 				return
 	else if (istype(W,/obj/item/weapon/wrench))

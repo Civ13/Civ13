@@ -507,6 +507,8 @@
 									if (passthrough_message)
 										T.visible_message(passthrough_message)
 									return TRUE
+						if (FM.axis == NO.axis)
+							break
 					var/penloc = NO.CheckPenLoc(src)
 					if (!NO.CheckPen(src,penloc))
 						passthrough = FALSE

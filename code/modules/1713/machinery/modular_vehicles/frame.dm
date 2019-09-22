@@ -444,6 +444,7 @@
 /obj/structure/vehicleparts/frame/ifv/lf
 	w_left = list("c_wall",TRUE,TRUE,12,30,FALSE,FALSE)
 	w_front = list("c_wall",TRUE,TRUE,12,30,FALSE,FALSE)
+/*
 /obj/structure/vehicleparts/frame/verb/add_walls()
 	set category = null
 	set name = "Add walls"
@@ -476,7 +477,7 @@
 						w_back = vehicle_walls[ntype]
 	update_icon()
 
-
+*/
 /obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf)
 	var/chdir = get_dir(O.loc, target)
 	switch(chdir)
