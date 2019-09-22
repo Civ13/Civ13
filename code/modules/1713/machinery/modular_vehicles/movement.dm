@@ -31,6 +31,8 @@
 /obj/structure/vehicleparts/movement/tracks/reversed
 	reversed = TRUE
 
+/obj/structure/vehicleparts/movement/update_icon()
+	return
 /obj/structure/vehicleparts/movement/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis)
 		VP.axis.wheels += src
