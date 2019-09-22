@@ -34,13 +34,14 @@
 /obj/structure/vehicleparts/movement/update_icon()
 	if (broken)
 		icon_state = "[base_icon][axis.color_code]_broken"
-		return
 	else
 		if (axis.moving && axis.currentspeed > 0)
 			icon_state = "[movement_icon][axis.color_code]"
 		else
 			icon_state = "[base_icon][axis.color_code]"
-	return
+	if (connected)
+		connected.update_icon()
+		return
 /obj/structure/vehicleparts/movement/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis)
 		VP.axis.wheels += src
