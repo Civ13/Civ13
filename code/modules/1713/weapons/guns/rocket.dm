@@ -38,6 +38,9 @@
 	projectile.loc = get_turf(user)
 	projectile.throw_at(target, throw_distance, release_force, user)
 	projectile.dir = get_dir(src.loc, target.loc)
+	if (istype(projectile, /obj/item/missile))
+		var/obj/item/missile/M = projectile
+		M.startingturf = get_turf(user)
 	update_icon(projectile)
 	return 1
 
@@ -208,34 +211,82 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "missile"
 	var/primed = null
+	var/turf/startingturf = null
 	throwforce = 15
+	heavy_armor_penetration = 12
 	allow_spin = FALSE
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
+			handle_vehicle_hit(hit_atom)
 			qdel(src)
 		else
 			..()
 		return
+/obj/item/missile/proc/handle_vehicle_hit(hit_atom)
+	for(var/obj/structure/vehicleparts/frame/F in range(1,hit_atom))
+		world.log << "found!"
+		for (var/mob/M in F.axis.transporting)
+			shake_camera(M, 3, 3)
+		var/penloc = F.CheckPenLoc(src)
+		switch(penloc)
+			if ("left")
+				F.w_left[5] -= heavy_armor_penetration
+			if ("right")
+				F.w_right[5] -= heavy_armor_penetration
+			if ("front")
+				F.w_front[5] -= heavy_armor_penetration
+			if ("back")
+				F.w_back[5] -= heavy_armor_penetration
+			if ("frontleft")
+				if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
+					F.w_left[5] -= heavy_armor_penetration
+				else
+					F.w_front[5] -= heavy_armor_penetration
+			if ("frontright")
+				if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
+					F.w_right[5] -= heavy_armor_penetration
+				else
+					F.w_front[5] -= heavy_armor_penetration
+			if ("backleft")
+				if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
+					F.w_left[5] -= heavy_armor_penetration
+				else
+					F.w_back[5] -= heavy_armor_penetration
+			if ("backright")
+				if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
+					F.w_right[5] -= heavy_armor_penetration
+				else
+					F.w_back[5] -= heavy_armor_penetration
+		F.try_destroy()
+		for(var/obj/structure/vehicleparts/movement/MV in F)
+			MV.broken = TRUE
+			MV.update_icon()
+		F.update_icon()
 
 /obj/item/missile/explosive
+	heavy_armor_penetration = 50
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
+			handle_vehicle_hit(hit_atom)
 			qdel(src)
 		else
 			..()
 		return
 /obj/item/missile/explosive/panzerfaust
+	heavy_armor_penetration = 35
 	icon_state = "panzerfaust_missile"
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 3)
+			handle_vehicle_hit(hit_atom)
 			qdel(src)
 		else
 			..()
 		return
 /obj/item/missile/fragmentation
+	heavy_armor_penetration = 6
 	var/num_fragments = 30
 	var/spread_range = 6
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
@@ -244,6 +295,7 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom,0,1,3,1)
+			handle_vehicle_hit(hit_atom)
 			var/turf/T = get_turf(hit_atom)
 			if(!T) return
 			var/list/target_turfs = getcircle(T, spread_range)
@@ -354,6 +406,7 @@
 /obj/item/missile/grenade
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "g40mm"
+	heavy_armor_penetration = 6
 	primed = null
 	throwforce = 12
 	allow_spin = TRUE

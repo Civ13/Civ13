@@ -661,9 +661,17 @@
 			return
 	else
 		..()
-/obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/projectile/proj)
-	proj.throw_source = proj.starting
-	switch(get_dir(proj.throw_source, get_turf(src)))
+/obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/proj)
+	var/turf/startingturf = null
+	if (istype(proj, /obj/item/projectile))
+		var/obj/item/projectile/pj = proj
+		pj.throw_source = pj.starting
+	else if (istype(proj, /obj/item/missile))
+		var/obj/item/missile/miss = proj
+		startingturf = miss.startingturf
+	if (!startingturf)
+		return "front"
+	switch(get_dir(startingturf, get_turf(src)))
 		if (NORTH)
 			switch(dir)
 				if (NORTH)
@@ -891,6 +899,7 @@
 	update_icon()
 /obj/structure/vehicleparts/frame/Destroy()
 	visible_message("<span class='danger'>The frame gets wrecked!</span>")
+	update_icon()
 	if (axis)
 		axis.Destroy()
 	qdel(src)
