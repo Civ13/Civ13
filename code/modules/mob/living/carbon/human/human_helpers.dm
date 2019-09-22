@@ -236,6 +236,9 @@
 	if (!client)
 		return
 	var/obj/structure/vehicleparts/frame/found = null
+	for (var/image/tmpimg in client.images)
+		if (tmpimg.icon == 'icons/obj/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles96x96.dmi')
+		 client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
 	if (found)
@@ -245,5 +248,8 @@
 			else
 				client.images -= FR.roof
 	else
-		for (var/obj/structure/vehicleparts/frame/FR in view(7, src))
-			client.images += FR.roof
+		for (var/obj/structure/vehicleparts/frame/FR in range(10, src))
+			if (locate(FR) in view(7,src))
+				client.images += FR.roof
+			else
+				client.images -= FR.roof

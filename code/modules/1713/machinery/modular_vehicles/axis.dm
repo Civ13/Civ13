@@ -59,6 +59,7 @@
 			currentspeed = 0
 			moving = FALSE
 			stopmovementloop()
+			return
 		spawn(vehicle_m_delay+1)
 			movementloop()
 			return
@@ -67,6 +68,7 @@
 
 /obj/structure/vehicleparts/axis/proc/stopmovementloop()
 	moving = FALSE
+	currentspeed = 0
 	for (var/obj/structure/vehicleparts/movement/W in wheels)
 		if (W.broken)
 			W.icon_state = "[W.base_icon][color_code]_broken"
