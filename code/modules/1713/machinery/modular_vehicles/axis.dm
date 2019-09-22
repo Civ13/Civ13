@@ -116,7 +116,7 @@
 				for (var/obj/structure/vehicleparts/frame/FRR in L.loc)
 					protec = TRUE
 				if (!protec)
-					if (current_weight >= 45)
+					if (current_weight >= 800)
 						visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
 						L.crush()
 						if (L)
@@ -138,17 +138,24 @@
 								visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
 								SA.crush()
 			for(var/obj/structure/O in T)
-				if (O.density == TRUE && !(O in transporting))
-					if (current_weight >= 55 && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement))
-						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
-						qdel(O)
-					else
+				var/done = FALSE
+				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
+					done = TRUE
+					if (FM.axis != src)
 						visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 						return FALSE
-				else if (O.density == FALSE && !(O in transporting))
-					if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/rails))
-						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
-						qdel(O)
+				if (!done)
+					if (O.density == TRUE && !(O in transporting))
+						if (current_weight >= 400 && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement))
+							visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+							qdel(O)
+						else
+							visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+							return FALSE
+					else if (O.density == FALSE && !(O in transporting))
+						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/rails))
+	//						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+							qdel(O)
 			if (T.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
 				return FALSE
@@ -373,7 +380,7 @@
 		world.log << "ERROR BUILDING CORNER LIST!"
 		return FALSE
 
-/obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none")
+/obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none", var/mob/user = null)
 	if (olddir == 0 || newdir == 0 || tdir == "none")
 		return FALSE
 	if (isemptylist(corners))
@@ -381,6 +388,8 @@
 	if (isemptylist(matrix))
 		check_matrix()
 	matrix_current_locs = list()
+
+
 	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
@@ -392,6 +401,34 @@
 					if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
 						tmplist += MV
 				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
+
+	//check if there are no other vehicles/obstacles in the destination areas
+	for (var/locx=1; locx<=5; locx++)
+		for (var/locy=1; locy<=5; locy++)
+			var/loc2textv = "[locx],[locy]"
+			var/dlocfinding = rotation_matrixes[tdir][loc2textv][1]
+			var/turf/T = matrix_current_locs[dlocfinding][1]
+			var/list/todestroy = list()
+			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfinding][1])
+				if (user)
+					user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+				return FALSE
+				if (!T || T.density)
+					if (user)
+						user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+					return FALSE
+			for (var/obj/O in T)
+				if ((!locate(O) in transporting) && (!locate(O) in components) && (!locate(O) in wheels))
+					if (istype(O, /obj/structure/vehicleparts/frame))
+						var/obj/structure/vehicleparts/frame/FRM = O
+						if (FRM.axis != src)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+							return FALSE
+					else
+						todestroy += O
+			for(var/obj/OM in todestroy)
+				qdel(OM)
 
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
