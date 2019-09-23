@@ -74,6 +74,8 @@
 		H.remove_from_mob(src)
 		src.forceMove(drivingchair)
 		return
+	if (!control.axis.engine || !control.axis.engine.fueltank)
+		return
 	if (!control.axis.engine.on && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume > 0)
 		control.axis.engine.turn_on(H)
 		if (isemptylist(control.axis.corners))
@@ -84,8 +86,6 @@
 		spawn(40)
 			if (control.axis.engine && control.axis.engine.on)
 				control.axis.engine.running_sound()
-		return
-	else if (!control.axis.engine || !control.axis.engine.fueltank)
 		return
 	else if (control.axis && control.axis.engine && control.axis.engine.fueltank.reagents.total_volume <= 0)
 		H << "There is not enough fuel!"
