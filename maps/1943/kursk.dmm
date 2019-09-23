@@ -23,15 +23,15 @@
 "aw" = (/obj/structure/vehicleparts/frame/lb{name = "frame"},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "ax" = (/obj/structure/vehicleparts/frame/rdoor{doorcode = 11940; name = "frame"},/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean/forest)
 "ay" = (/obj/effect/landmark{name = "JoinLateGECap"},/turf/floor/grass,/area/caribbean/forest)
-"az" = (/obj/effect/landmark{name = "JoinLateGEDoc"},/turf/floor/grass,/area/caribbean/forest)
+"az" = (/obj/structure/sign/flag/medical,/obj/structure/barricade,/turf/floor/dirt,/area/caribbean/forest)
 "aA" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 0; layer = 4},/obj/structure/vehicleparts/frame/rf{name = "frame"},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/turf/floor/dirt,/area/caribbean/forest)
 "aB" = (/obj/structure/closet/hideout/pine,/turf/floor/grass,/area/caribbean/forest)
 "aC" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
-"aD" = (/obj/structure/wild/jungle/medpine,/turf/floor/dirt/dust,/area/caribbean/forest)
+"aD" = (/obj/structure/wild/tallgrass2,/obj/structure/barricade/horizontal,/turf/floor/dirt,/area/caribbean/forest)
 "aE" = (/obj/structure/wild/jungle/medpine,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
 "aF" = (/obj/map_metadata/kursk,/turf/floor/grass,/area/caribbean/forest)
 "aG" = (/obj/structure/wild/burnedbush,/turf/floor/dirt,/area/caribbean/forest)
-"aH" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/grass,/area/caribbean/forest)
+"aH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/forest)
 "aI" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt,/area/caribbean/forest)
 "aJ" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/grass,/area/caribbean/forest)
 "aK" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/lf{name = "frame"},/obj/structure/vehicleparts/movement/tracks,/turf/floor/dirt,/area/caribbean/forest)
@@ -47,7 +47,7 @@
 "aU" = (/obj/structure/vehicleparts/frame/lf{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/lamp/lamp_small/tank/red,/turf/floor/grass,/area/caribbean/forest)
 "aV" = (/obj/structure/bed/chair/drivers/tank{icon_state = "driver_tank"; dir = 1},/obj/structure/vehicleparts/frame/rf{icon_state = "frame_steel"; dir = 1},/obj/structure/vehicleparts/movement/tracks{dir = 1; icon_state = "tracks_end"; invisibility = 0},/turf/floor/dirt,/area/caribbean/forest)
 "aW" = (/obj/structure/vehicleparts/frame/bwall{name = "frame"},/obj/structure/shellrack/full75,/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
-"aX" = (/obj/structure/vehicleparts/frame/rf{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"aX" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/dust,/area/caribbean/forest)
 "aY" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/dirt,/area/caribbean/forest)
 "aZ" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/frame/rf,/obj/structure/vehicleparts/movement,/turf/floor/grass,/area/caribbean/forest)
 "ba" = (/obj/structure/engine/internal/gasoline{enginesize = 8000},/obj/structure/vehicleparts/frame/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
@@ -56,7 +56,7 @@
 "bd" = (/obj/structure/vehicleparts/frame/rf{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/lamp/lamp_small/tank/red,/turf/floor/dirt,/area/caribbean/forest)
 "be" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt,/area/caribbean/forest)
 "bf" = (/obj/structure/vehicleparts/frame/rb{icon_state = "frame_steel"; dir = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/diesel{enginesize = 20000},/turf/floor/dirt,/area/caribbean/forest)
-"bg" = (/obj/structure/vehicleparts/frame/lf/truck{dir = 1},/obj/structure/bed/chair/drivers{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"bg" = (/obj/structure/barricade/horizontal,/turf/floor/dirt,/area/caribbean/forest)
 "bh" = (/obj/structure/vehicleparts/frame/rwall{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bi" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "bj" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
@@ -65,7 +65,7 @@
 "bm" = (/obj/structure/vehicleparts/frame/lwall{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
 "bn" = (/obj/effect/landmark{name = "JoinLateGE"},/turf/floor/grass,/area/caribbean/forest)
 "bo" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
-"bp" = (/obj/structure/vehicleparts/frame/lf{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"bp" = (/obj/structure/barricade/vertical,/turf/floor/dirt/dust,/area/caribbean/forest)
 "bq" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "br" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "bs" = (/obj/structure/closet/hideout/pine,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
@@ -75,7 +75,7 @@
 "bw" = (/obj/structure/wild/tallgrass,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "bx" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "by" = (/obj/structure/vehicleparts/frame{icon_state = "frame_steel"; dir = 1},/obj/structure/cannon/modern/tank/russian76{anchored = 1; dir = 1; icon_state = "tank_cannon"},/turf/floor/dirt,/area/caribbean/forest)
-"bz" = (/obj/structure/vehicleparts/frame/rf/truck{dir = 1},/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"bz" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/turf/floor/trench,/area/caribbean/forest)
 "bA" = (/obj/structure/closet/crate/ww2/artillery_shells/HE75,/turf/floor/dirt,/area/caribbean/forest)
 "bB" = (/obj/structure/closet/crate/ww2/artillery_shells/HE75,/turf/floor/grass,/area/caribbean/forest)
 "bC" = (/obj/structure/closet/crate/ww2/artillery_shells/AP75,/turf/floor/grass,/area/caribbean/forest)
@@ -85,23 +85,24 @@
 "bG" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/grass,/area/caribbean/forest)
 "bH" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/dirt,/area/caribbean/forest)
 "bI" = (/obj/structure/closet/crate/ww2/artillery_shells/APCR76,/turf/floor/grass,/area/caribbean/forest)
-"bJ" = (/obj/structure/vehicleparts/axis/car{color_code = "_g"; dir = 1; name = "soviet halftrack"},/obj/structure/vehicleparts/frame/lf{dir = 1},/obj/structure/engine/internal/diesel{enginesize = 9000},/obj/structure/vehicleparts/movement/reversed,/turf/floor/grass,/area/caribbean/forest)
+"bJ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/forest)
 "bK" = (/obj/structure/vehicleparts/frame/bwall{icon_state = "frame_steel"; dir = 1},/obj/structure/shellrack/full76,/obj/structure/lamp/lamp_small/tank/red,/turf/floor/dirt/dust,/area/caribbean/forest)
 "bL" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/rf/truck,/turf/floor/grass,/area/caribbean/forest)
-"bM" = (/obj/structure/vehicleparts/frame/rf{icon_state = "frame_steel"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"bM" = (/obj/structure/table/wood,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/trench,/area/caribbean/forest)
 "bN" = (/obj/structure/vehicleparts/axis/heavy{color_code = "_g"; dir = 1; name = "T-34"},/obj/structure/vehicleparts/frame/fwall{icon_state = "frame_steel"; dir = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bO" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/lf/truck,/obj/structure/vehicleparts/axis/car{name = "Sd.Kfz. 221"},/turf/floor/grass,/area/caribbean/forest)
-"bP" = (/obj/structure/vehicleparts/frame/lwall{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/turf/floor/grass,/area/caribbean/forest)
-"bQ" = (/obj/structure/vehicleparts/frame/rwall{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/turf/floor/grass,/area/caribbean/forest)
+"bP" = (/obj/structure/closet/cabinet,/obj/item/clothing/mask/gas/german,/obj/item/clothing/mask/gas/german,/obj/item/clothing/mask/gas/german,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/adv,/turf/floor/trench,/area/caribbean/forest)
+"bQ" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/turf/floor/trench,/area/caribbean/forest)
 "bR" = (/obj/structure/vehicleparts/frame{name = "frame"},/obj/structure/bed/chair/loader,/turf/floor/dirt,/area/caribbean/forest)
 "bS" = (/obj/structure/vehicleparts/frame/ldoor{doorcode = 11940; name = "frame"},/obj/item/weapon/storage/toolbox/emergency,/turf/floor/dirt,/area/caribbean/forest)
-"bT" = (/obj/structure/vehicleparts/frame/lwall{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/turf/floor/grass,/area/caribbean/forest)
+"bT" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/turf/floor/trench,/area/caribbean/forest)
 "bU" = (/obj/structure/vehicleparts/frame{name = "frame"},/obj/structure/cannon/modern/tank/german75{anchored = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bV" = (/obj/structure/vehicleparts/frame/lwall{name = "frame"},/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/dirt,/area/caribbean/forest)
-"bW" = (/obj/structure/vehicleparts/frame/rwall{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/turf/floor/grass,/area/caribbean/forest)
+"bW" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/trench,/area/caribbean/forest)
 "bX" = (/obj/structure/vehicleparts/frame/rdoor{dir = 1; doorcode = 4975; icon_state = "frame_steel"},/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean/forest)
 "bY" = (/obj/structure/vehicleparts/frame/rwall{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "bZ" = (/obj/structure/vehicleparts/frame/lwall{icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/turf/floor/grass,/area/caribbean/forest)
+"ca" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/turf/floor/trench,/area/caribbean/forest)
 "cb" = (/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/forest)
 "cc" = (/obj/structure/vehicleparts/frame/ifv/rb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement,/turf/floor/grass,/area/caribbean/forest)
 "cd" = (/obj/structure/vehicleparts/frame/ifv/lb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
@@ -110,29 +111,81 @@
 "cg" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/ifv/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
 "ch" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{name = "Kubelwagen"},/obj/structure/vehicleparts/frame/lf/truck{noroof = 1},/turf/floor/grass,/area/caribbean/forest)
 "ci" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color_code = "_g"; name = "GAZ-67"},/obj/structure/vehicleparts/frame/lf/truck{noroof = 1},/turf/floor/grass,/area/caribbean/forest)
+"cj" = (/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/structure/table/wood,/turf/floor/trench,/area/caribbean/forest)
+"ck" = (/obj/structure/barricade/vertical,/turf/floor/dirt/burned,/area/caribbean/forest)
+"cl" = (/obj/effect/landmark{name = "JoinLateGEDoc"},/turf/floor/trench,/area/caribbean/forest)
+"cm" = (/obj/structure/closet/crate/ww2/panzerfaust,/turf/floor/grass,/area/caribbean/forest)
+"cn" = (/obj/structure/barricade/vertical,/turf/floor/dirt,/area/caribbean/forest)
+"co" = (/obj/structure/bed/roller,/turf/floor/trench,/area/caribbean/forest)
+"cp" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/trench,/area/caribbean/forest)
+"cq" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/burned,/area/caribbean/forest)
+"cr" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "allied radio"},/turf/floor/trench,/area/caribbean/forest)
+"cs" = (/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/forest)
+"ct" = (/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/forest)
+"cu" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cv" = (/obj/structure/vehicleparts/axis/car{color_code = "_g"; dir = 1; name = "soviet halftrack"},/obj/structure/vehicleparts/frame/lf{dir = 1},/obj/structure/engine/internal/diesel{enginesize = 9000},/obj/structure/vehicleparts/movement/reversed,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cw" = (/obj/structure/vehicleparts/frame/rf{icon_state = "frame_steel"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cx" = (/obj/structure/vehicleparts/frame/lf/truck{dir = 1},/obj/structure/bed/chair/drivers{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cy" = (/obj/structure/vehicleparts/frame/rf/truck{dir = 1},/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cz" = (/obj/structure/vehicleparts/frame/lf{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cA" = (/obj/structure/vehicleparts/frame/rf{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cB" = (/obj/effect/autoassembler,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cC" = (/obj/structure/vehicleparts/frame/lwall{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cD" = (/obj/structure/vehicleparts/frame/rwall{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cE" = (/obj/structure/vehicleparts/frame/lwall{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cF" = (/obj/structure/vehicleparts/frame/rwall{dir = 1; icon_state = "frame_wood"; name = "wood frame"; noroof = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cG" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "soviet radio"},/turf/floor/trench,/area/caribbean/forest)
+"cH" = (/obj/structure/closet/crate/ww2/rpg40,/turf/floor/grass,/area/caribbean/forest)
+"cI" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/trench,/area/caribbean/forest)
+"cJ" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/forest)
+"cK" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/trench,/area/caribbean/forest)
+"cL" = (/obj/structure/closet/crate/sandbags,/turf/floor/grass,/area/caribbean/forest)
+"cM" = (/obj/item/weapon/storage/toolbox,/turf/floor/dirt,/area/caribbean/forest)
+"cN" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/turf/floor/trench,/area/caribbean/forest)
+"cO" = (/obj/structure/window/sandbag/sandbag,/turf/floor/trench,/area/caribbean/forest)
+"cP" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/forest)
+"cQ" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/forest)
+"cR" = (/obj/structure/window/sandbag/sandbag,/turf/floor/grass,/area/caribbean/forest)
+"cS" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/forest)
+"cT" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cU" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"cV" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/forest)
+"cW" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cX" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cY" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
+"cZ" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate)
+"da" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate)
+"db" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate)
+"dc" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/forest)
+"dd" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/forest)
+"de" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "soviet radio"},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/forest)
+"df" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/forest)
+"dg" = (/obj/structure/wild/smallbush,/turf/floor/trench,/area/caribbean/forest)
+"dh" = (/obj/structure/vehicleparts/frame/ifv/rb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement,/turf/floor/dirt,/area/caribbean/forest)
+"di" = (/obj/structure/vehicleparts/frame/ifv/lb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 
 (1,1,1) = {"
-aaaaaaaaaaabababacababadababadababababaaaaababababaeababababafaaabababababababababacacababababababababababababagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
-aaaaaaaaaaababababababababababaaabaaababababababaeaeacadababaGamaaaaaaaaaaaaaaabaaaaaaaaaaaaacababababaiabababababagagababababacabababaaabaeaeabaiabaaacabafabaaabababababababababababahabababababababab
-aaaaaaaaaaababababababababaaaaaaaaaaabababafacaaaeaeabababbAaaaIaaaaavaWawaaabababaaaaaaaaavaWawabababababababababagagagagagababababababaeaeabababababababababagabababahababagabababacabaiabababadababac
-aaaaaaaaaaababababaaaaaaaaabababaaaaaaaaaaavaWawaeaeaaadaabBaaaaaaaaaxbRbSaaaaabaaaaaaaaaaaxbRbSabababafabababadababagagacabagagababaeaeaeaeaaaaaeababacadabagagagagabababacabababababababababababababab
-aaaaaaaaaaabababababaaaaaaabadababababaaaaaxbRbSaeaeabababaLaLaLaaaaaPbUbVaaafafababaaaaaaaPbUbVabababababababababacabababababababaaabaeaeaeaaaaaeajababababababagagabababababadafababafabababababababab
-abababafababababababababababababababaiaaaaaPbUbVakaeabababaMaLaLaaaaaAaOaKaaaaafaaabaaaaaaaAaOaKababababababababababababababababababaaaaaaaeaeaeaeaaaaababafafabababababaiabababacabababababababababadab
-abababababababababababacababababafabacaaaaaAaOaKaaaealababbnaLaLaaaaaaaaaaaaabababaaaaaaaaaaaaaaabababababababababababababababadacababaaaaaaaeaeamaaaaababababababacabababababababababacafababababababab
-abababaiabababababababababababababababaaaaaaaaaaabaeaeaiabbCabbDabaaaaabababababababababababadabababababacabababababadababacabababadabababaaaeaeanabababacabababababababaiabababababababafababafabafabaa
-adababababababaiabababababababaiabababababaaaaaaadaeaeaeacbCabbEayababacabaaababaaababababadababababacabaaabababababababababababababababababaeaeaeaoababadabababacababababababadabababababababaaabababaa
-abababacabababababababababababababababababababababababaeaeabafabazayabaaaaaaaaaaabababababaaabaaabababababadababaaabababadaaabaeaeaeaaamaaaaaeaeadaaabababababababababababababababadababacababababababab
-abababababacabababababababababapapababafababaiabababaaaeaeababazazayaaababaaaaaaabafababaaaaaaaaababaqadababaaadaaababababababaaaeaeaeaeaaaaaeajaaaaabababacabababababadabababababababababababababababab
-abacabababababababarabafabababapapababababababaaaaabaaabaeaeaeaeababaaabababaabYbmabababaaapapaaaaabababababaaaaaaabababababababaaaaaaaeaeaeaeaaababababababababababagababababacabababababababababababab
-adababababaiababababababababababababacabababababaaaaaaaaabaeaeaeacacabadabaaabbhbZaiabaaaaapapaaababababababababababadabababacababaaaaaaaeaeamaaababadabababacabagababafabababababababadabababababababaf
-abababafabababababababababababababababaiababababababaaaaaaafaeababababababaaaTbdaUabababaaaaaaaaababababababababadababababagabadabababaaaeaeanababababababababagabababadacababaiabababacabababadacabafab
-abababababababababababacabababaaabaaababababababababaaababaaaeaeabababababababbLbOabababababaaabababasababababababababacabagababababababaeaeaeaoaaamababagagagagababagababaaababababababafababababababab
-abababaiabababababababababaaaaaaaaaaabababafacababcbcccdabacaeaeaaacababacababaZbaababaaabababababababababababaiabababababagagagababadacabaeaeaeaeaaabababagabababatagabababababababababababaaababababab
-abababafababababababaiabababababaaaaaaaaaaaaaaaaababcechabaaabaeaeaaababababababacababaiababaqacabababaiababababafabababagababagagababababaaaeaeaeaaaaababababadabababababacababafababababababababababab
-abababababababababababacababadabababababaaaaaaaaaaaccfcgabababaeaeababadababaaabababababababaaababababababababababababababacabababacabababababaeaaaaaaabababagababacabababababaaakabacababababababacabab
-abababaiababababababababababababababaiabababakaaaaabababaiababaeaeabafababababababababababababababakababababababacababababababababababababadabaeaeaaajababababababadabadafaaaaaaaaababababababababababab
-adababababababaiababababababababababacabababababaaabaaabababaeaeaeabafacababababababababababababababababababaaabababababababaiafababaiababababaeaeaaababababababakabababaaaaapapaaabaaaiababadababacabab
-abababacababababababababababababababababababababaaabababadabaeaeabababababadaiababababacabababacabababacabababababababababababafabababacabaaaeaeagacababababababababacababaaapapaaaaabababababababababab
+aaaaaaaaaaabababacababadababadababababaaaaabaHapabaeababababafaaababazaDaXbgbgbgbgbgbgaDaDazapbJcsababaaaaabaaagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
+aaaaaaaaaaababababababababababaaabaaabababcsaHapaeaeacadababaGamaaaabpbzcrcKbMbPbQbTbWcacjckapbJabajabaaaaabaaababagagababababacabababaaabaeaeabaiabaaacabafabaaabababababababababababahabababababababab
+aaaaaaaaaaabababababababaaaaaaaaaaaaabababafaHapaeaeabababaaaaaaaaaaapapclclclclclclclclapapapbJcsaaaaaaababaaababagagagagagababababababaeaeabababababababababagabababahababagabababacabaiabababadababac
+aaaaaaaaaaababababaaaaaaaaaaaaabaaaaaaaaaactaHapaeaeaaadaacmabcmaaaacnapcoapcoapcoapcoapcockapbJaaaaaaahabaaaaadababagagacabagagababaeaeaeaeaaaaaeababacadabagagagagabababacabababababababababababababab
+aaaaaaaaaaabababababaaaaaaaaaaababababaaaaaaaHapaeaecLababaLaLaLaaaacncpcoapcocpcoapcocpcocnapbJctaaababaaaaabaaabacabababababababaaabaeaeaeaaaaaeajababababababagagabababababadafababafabababababababab
+abababafababababababababababababababaiaaaactaHapakaeabababaMaLaLaaaaazaDbgbgbgcqaXaXaXbgaDazapbJaaababaaaaaaabaaaaabababababababababaaaaaaaeaeaeaeaaaaababafafabababababaiabababacabababababababababadab
+abababababababababababacababababafabacaaaaaaaHapaaaealababbnaLaLaaaaaaaaaaaaaaaaaaaaaacMaaaaapbJctabaaaaaaabababaaababababababadacababaaaaaaaeaeamaaaaababababababacabababababababababacafababababababab
+abababaiabababababababababababababababaaaactaHapapapaeaiabayaaayabaaaaaaaaaaaaaaaaaaaaaaaaaaapbJaaaaaaaaamababababaaadababacabababadabababaaaeaeanabababacabababababababaiabababababababafababafabafabaa
+adababababababaiabababababababaiababaaababaacNcOapapaeaeacaaaaaaaaababacabaaababaaaaaaaaaaaaapbJctaaaaabaaaaabababaaababababababababababababaeaeaeaoababadabababacababababababadabababababababaaabababaa
+abababacabababababababababaaaaaaaaaaabababcsabcsaHapabaeaeabafababaaabaaaaaaaaaaaaaaabaaaaaaapbJabaaaaababaaababaaaaaaabadaaabaeaeaeaaamaaaaaeaeadaaabababababababababababababababadababacababababababab
+abababababacababababababababaaapapaaabafababaiabaHapctaecuababcsabcsaaababaaaaaaabafaaabaaaaapbJctaaaaadababaaabaaaaaaababababaaaeaeaeaeaaaaaeajaaaaabababacabababababadabababababababababababababababab
+abacabababababababarabahababaaapapaaaTdhdiababctaHapapbTbJaeaeaHapapapapapapapapapapapapapapapbJaaaaaaabababaaaaaaabaaabababababaaaaaaaeaeaeaeaaababababababababababagababababacabababababababababababab
+adababababaiababababababababaaaaaaaaabcechaaababcPcOcOcOcQaeaecPcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcQcsaaabababababaaaaabaaabababacababaaaaaaaeaeamaaababadabababacabagababafabababababababadabababababababaf
+abababafababababababababababababababaccfcgaaababcsabctaactafaecsabcsabcsaacsabctaactabcsaactaactabaaababababababavaWawababagabadabababaaaeaeanababababababababagabababadacababaiabababacabababadacabafab
+abababababababababababacababaaaaaaaaaaaaaaabababababaaabcRcScTcTababaaabaaabaaaaaaabababababaaababaaasababaaaaabaxbRbSaaabagababababababaeaeaeaoaaamababagagagagababagababaaababababababafababababababab
+abababaiabababababababababaaaaaaaaaaaaaaaaafacababaaaactcUcVcWcXaaacababavaWawaaabaaabaabAaaaaavaWawabababbCaIaiaPbUbVaaaaaaagagababadacabaeaeaeaeaaabababagabababatagabababababababababababaaababababab
+abababafababababababaiabababaaaaaaaaaaaaaaaaaaaaaabYbmaactaacsaecuaaababaxbRbSaaaabCabbEbBaaaaaxbRbSabaiabaabDabaAaOaKaaaaaaabagagababababaaaeaeaeaaaaababababadabababababacababafababababababababababab
+abababababababababababacabababaaaaaaaaaaaaaaaaaaabbhbZaaafafabaeaeababadaPbUbVaaafafaIabaaaaaaaPbUbVabababababaaaaaaaaaaaaaaabababacabababababaeaaaaaaabababagababacabababababaaakabacababababababacabab
+abababaiababababababababababaaaaaaabaiabababakaaaTbdaUaaaaababaeaeabafabaAaOaKaaaaafaaaIaaaaaaaAaOaKababababababaaaaaaaaaaaaabababababababadabaeaeaaajababababababadabadafaaaaaaaaababababababababababab
+adababababababaiababababababaaaaababaaababababababbLbOaaaaaaaeaeaeabafacababababababababababababababababababaaaaababababababaiafababaiababababaeaeaaababababababakabababaaaaapapaaabaaaiababadababacabab
+abababacabababababababababababababababababababababaZbaabadabaeaeabababababadaiababababacabababacabababacabababababababababababafabababacabaaaeaeagacababababababababacababaaapapaaaaabababababababababab
 abababababacababababababababababababababadababaaaaaaafababaeaeaaababababababababababababababababababababababababagagabababababababababababaaaeaeabababababababababababababaaaaaaaaabacababababababababab
 abacabababababababarabafaiababababababababababababaaaaababaeaeababacababababababababadabababababababababaiabababagabacabaaababababababadababaeabaaabababababababacabababagabaaaaababababaaababacaiababab
 adababababaiabababababababababababacabababaiabacababaaaeaeaeabababababababafabababafababababababafababababababagagabababaiababaqacababakababaaaeaealaaafabaiababagababafafababababababababababababababab
@@ -150,30 +203,30 @@ acababababababacababababababaiabababababafacadabababababaeaeaaadabababababadabab
 abababababafababababababafabababababababadafababafabababaeaeabababababababacabaaabababababababadababababacabababababafababaiabababababacabaaababababababaaababaeaeaeacababababababababababababababababab
 ababababababadababababababadabababababababababababacababakaeabababababababababababababababababacabaaababababaaabaiababababababababababababababababaiababababababaealaeabaiadabababababababadabababababab
 ababababababababababababababababababaiababababababababababaealababababababababababababababababababababababaiabababababababababababababababababababababababababaeaeaeaiababababababababababababababababab
-ababaiababababababaiababababaaababababababababadabababababaeaeaiababacabaiababababadabababababababababababababababababadababababacabaiababababadababababacababaeaeaeaeacabababacababababababababaaababab
-ababababababababababababababacacabadababababababababababaeaeaeaeacabababababababababababacabaiababababadababababababadababababababababababababababababababadabaeaeababababababababababababababababababab
-abadababababababadabababababababaiababacababacafabababaeaeaeaeaaabababaiabababababaaaaabababababababababababababababacabaaababababababaaababababababababafadaeaeaeacababababababababaaabafacadababacabab
-abaiababababababaiababababababababababababafababababababaeauaeabaaaaabababababababababafafabaaabababaaabababababababababababababaiababababababababababacabababaeaeabababababababababacacadafabababababab
-ababababababababababababababababacabababababababababadabaeaaaeababababacababababababababababababababamababababababababababababababababababababababababababababaeaeababababababababababababababababacabab
-afababababababafabababababababababababababababababaiabababaeaeaaabababababababababababafadabababababaiababababacabaiababababadababababacababababababababababababaeabafabaiabababadababababababababababab
-aaaaaaaaaaababababaaababababababababababababadabababababababaeaeabababababababaiababababababababababababababababababababababababababababadabababababababadababaeaeababababababababababababababadabababab
+ababaiababababababaiababababaaababababababababadabababababaeaeaiababacabaiababababadabababababababababababababababababadababababacabaiabababaaadababababacababaeaeaeaeacabababacababababababababaaababab
+ababababababababababababababacacabadababababababababababaeaeaeaeacabababababaaaaababababacabaiababababadababababababadababababababababababaaaaaaaaaaaaababadabaeaeababababababababababababababababababab
+abadababababababadabababababababaiababacababacafabababaeaeaeaeaaabababaiabaaaaaaaaaaaaabababababababababababababababacabaaababababababaaabaaapapapapaaabafadaeaeaeacababababababababaaabafacadababacabab
+abaiababababababaiababababababababababababafababababababaeauaeabaaaaabababaaapapapapaaafafabaaabababaaabababababababababababababaiabababaaaaapapapapaaamabababaeaeabababababababababacacadafabababababab
+ababababababababababababababababacabababababababababadabaeaaaeababababacabaaapapapapaaaaababababababamababababababababababababababababababaaaaaaaaaaaaababababaeaeababababababababababababababababacabab
+afababababababafabababababababababababababababababaiabababaeaeaaabababababaaaaaaaaaaaaafadabababababaiababababacabaiababababadababababacababaaabaaabababababababaeabafabaiabababadababababababababababab
+aaaaaaaaaaababababaaababababababababababababadabababababababaeaeababababababaaajababababababababababababababababababababababababababababadabababababababadababaeaeababababababababababababababadabababab
 bibjbibibibibibibibibiblbobibibibibjbibibibibibibiblbibibibibqbjbiblblbjbobibibibibibibibibibibjbibibibibibibibibibibibibrbibibibibibibibibibibibsbibibibibibibqbqbqbibibibrbrbibibibibibibibibtbibibibi
-bibibibibibibibtbibibibibibibibibibibibibibibjbibtbibiblblbrbqbibiblboblbibiblbibibibibibibibibibibibibibjbibobibibrbrbibibjbobibibibibibibibobibibibibibibibibqbqbjbibibibibibibibiblbjbobibibibibibibi
-bibiblblbobibibibibibibibibibibjbibtbibibibobibibibibiboblbrbqbqbibibibibibibibjbibibibibibibtbibibibobibibibibibibibibiblbibibibibibibibibibibibibibibibobibqbrbqbibibtbibjbibibibiboblbibiblbibibibibi
-bibibibibibiblbibibibibibibibibibibubibibibibibibibvbvbvbibibqbqbibwbibibibibibibibibibiblbibibibibibibjbibibibibibibibibibibibibibobibibibibibibtbibibibibqbqbqbibibibibibibibibibibibibibibibjbibibibi
-biblbibibibibibjbibibibibibibtbibibibibibibibjbvbvbvbvbvbvbvbibqbibibibibibobibibibibibibibobibibibibibibibiblbibibibibrbjbibjbibibibibibibibibibibibiblbobqbqbqbjbibibibibibibibtbibibibibibibibibibibi
-bibibibibibibibibibibibiblbibibibibibibibrbibibvbvbvbibibibibqbqbibibibibibibibibibibibibibibibibibibibtbjbibibibibibibibibibibibibibibibibibibibibibjbibqbibqbqbibibibibibibibibibibibibibibibrbibrbibr
+bibibibibibibibtbibibibibibibibibibibibibibibjcYcZcZcZcZcYbrbqbibiblboblbibiblbibibibibibibibibibibibibibjbibobibibrbrbibibjbobibibibibibibibobibibibibibibibibqbqbjbibibibibibibibiblbjbobibibibibibibi
+bibiblblbobibibibibicYcZcZcZcZcYbibtbibibibobibibibibiboblbrbqbqbibibibibibibibjbibibibibibibtbibibibobibibibibibibibibiblbibibibibibibibibibibibibibibibobibqbrbqbibibtbibjbibibibiboblbicYcZcZcZcYbibi
+bibibibibibiblbibibibibibibibibibibubibibibibibibibvbvbvbibibqbqbibwbibibibibibibibibibiblbibibibibibibjbibibibibibibibibibibibibibobicYcZcZcZcYbtbibibibibqbqbqbibibibibibibibibibibibibibibibjbibibibi
+biblbibibibibibjbibibibibibibtbibibibibibibibjbvbvbvbvbvbvbvbibqbibibibibibobibibibibibibibobibibibibibibicYcZcZcZcZcZdacZcZcZcYbibibibibibibibibibibiblbobqbqbqbjbibibibibibibibtbibibibibibibibibibibi
+bibibibibibibibibibibibiblbibibibibibibibrbibibvbvbvbibibibibqbqbibibibibibibibibibibibibibibibibibibibtbjbibibibibibibibibibibibibibibibibibibibibibjbibqbibqbqbibibibicYcZcZcZcZcZcZcZcZcZcYbrbibrbibr
 bibibibibibibibibiblbobibibibibibibibibibibibvbvbibobjbibibibqbibibtbibibjblbibibibtbibibibibrbibibibobobibibibibibiblblbibibibjbibibibibtbibibibibibibibibibqbqbqbibibibibibibibibrbibibtbibibibrbrblbi
-bibibibibibtbibibibibibibibibibibobibibobibibibibibibibibibibqbibibibiblbibibibibibibibibibibjbjbibibibibibibibibibibibibibibibibibibibibibibibibibibibibibibibqbiblbibtbibibiblbibibibibibibrbrbxbrbibi
-blbjbobibibibibibibibibibibjbrbibibibibrbibtbibibibtbibibibqbqbjbobibibibibibibibobibibibibibibibibibibjbibibibibtbibibibibibibtbibibibibibibibibibibibobibibqbqbibibibibibibibibrbrbibibibibibibxbibibi
+bibibibibibtbibibibibibibibibibibobibibobibibibibibibibibibibqbibibibiblbicYcZcZcZcZcZcZcZcZcZcYbibibibibibibibibibibibibibibibibibibibibibibibibibibibibibibibqbiblbibtbibibiblbibibibibibibrbrbxbrbibi
+blbjbobibibibicYcZcZcZcZcZcZdacZcZcZcZdbbibtbibibibtbibibibqbqbjbobibibibibibibibobibibibibibibibibibibjbibibibibtbibibibibibibtbibibibibibibibicYcZcZcZcZcYbqbqbibibibibibibibibrbrbibibibibibibxbibibi
 boblbibiblbibibibibibibibibibjbjbibibibibibibibibrbibibibrbqbqbibibibibibibibibtbibibjbibobibibibibibibibibibibibibibibibibibibibibibibibibibibsbibibibibibibqbqbqbibibibrbrbibibibibibibibibibjbibtbibi
 bibibibibibjbibibibibibibtbibibibrbrbibibibibibibibibibtbrbqbqbrbobibibibibibobibibibibibibibibibibobibibjbibibiblbibibibjbobibibibibibibibobibibibibibibibibqbqbjbibibibibibibobibobibibibibibibibibibi
 ababababababababababafabababababaaaaaaababababababababababaeaeabababababababababababababafabababababababababababababacababababababababababababababababadababaaaeababaiabacabababababababababababafababab
-abababadabababababababadababababacababababadabababababababakaeabababacabababababababababababaaabaiabababababababababadabababababacabababababababababababababaeaeababababagagabagagababababababababababab
-abababababababababababababababababababababacababababababababaealabababababaiaaabababaiababababababababababababababababababababababababababababababababababaCaeabagabagagababababagabababacabababacafabab
-ababacafabababaiababababaaabababababadababababababaiababababaeaeaiababababababababababababababababababadabababababababababababaiabababafababababacabadabaeaeaeabacababababaCabababafabababababababafabab
-abafababababababababababacacabacababababababababababababafadaeaeaeacababababababacabababababababababadababababacabababababafababababababadabababababaeaeaeaeaeababababababababababababababababababababab
-ababababababadababababababababababababababababababababacabababaeaeabababababababababababababababababacabaaababababababaaababacababababababababababaeaeaeadababababababafabababadabacababababacababababac
+abababadabababababababadababababacababababadabababababababakaeabababacababababababababaaaaabaaaaaiabababababababababadabababababacabababababababababababababaeaeababababagagabagagababababababababababab
+abababababababababababababababababababababacababababababababaealabababababaiaaabababajaaaaaaaaaaaaababababababababababababababababababababababababababababaCaeabagabagagababababagabababacabababacafabab
+ababacafabababaiababababaaabababababadababababababaiababababaeaeaiabababababababababaaapapapapapaaababadabababababababababababaiabababafababababacabadabaeaeaeabacababababaCabababafabababababababafabab
+abafababababababababababacacabacababababababababababababafadaeaeaeacababababababacabaaapapapapapaaabcJababababacabababababafababababababadabababababaeaeaeaeaeababababababababababababababababababababab
+ababababababadababababababababababababababababababababacabababaeaeabababababababababaaaaaaaaaaaaaaabamabaaababababababaaababacababababababababababaeaeaeadababababababafabababadabacababababacababababac
 ababababababababacabadabababababacababababaiabababaaabababababaeaeabababababababababaaababaiababababababababababaiabababababababababababababadababaeaeaeacababababadabababababababababababababababababab
 ababababaBabababababababababababababababababababababababababababaeabafabaiabababafababababababababababababababababababababababababaiababababababaaaeaeaaabababaiabacabababadababacabababababababababafac
 ababadabababababaBabababababababaiabababababababababababadababaeaeababababababababaaaaababababacabaiababababadababababacabababababababababaaabadaaaeaeaeabababababababababababababaaabadabababaiabababab
@@ -187,29 +240,29 @@ ababaiababababababaaapapaaabafababababababadabababaaabababaeaeaeabababababababab
 abababababababadabaaaaaaaaaaabadababababababaiabababababaeaeaeaaababababababababababaiabababababababababababababagagabababababafabababababaCaeabagabagababababababadababababababaaabarabaaapapaaabababab
 abadabababababababaaababababaaabababababababababababababaeaeaeabaiababababababadababababababaiabababababababababababaiababarababababadabaeaeaeabacabababababababababababababababababababaaaaaaababababac
 aiababacababacafabababaiababababaaabafacadababababababababaeaeacababababaiabababababacabababababababababaaaaaaaaabacabababababababaBababaeaeaeababababababaiababababaaabafacadababacabababababababababab
-abababababafababababababababababacacadafababababaiabadababauaeabababababababababababababacabababababababaaapapaaabakabababababakabababaeaeaeaaabababababababababababacacadafabababababababababababababab
-acabababababababababadabababababababababababababababababababaeabababarabacabababacabababababababarabafabaaapapaaabababababababababababaeaeaeabaiababababadababababababababababababacababababacababababab
-abababababababababaiababacabadabababababababababababababababaeaDabababababababadababababaiabababababababaaaaaaaaabababaiababababaEabababaeaeacababababaiababacabadababababababababababababababafabadabab
-ababababababababadababababababababababababadacakababadababaeaeababababababaiabababababababababababababababababababababababababacababababauaeabababababababababababababababababadabababababababababababab
-abababababaiabababababababababababaiabababadabababababababaeaeaeababadababababababababababacabababababababababababababababababababababababaeabababarabafababacababababababababaiabababababababababababab
-afacadababababababababababacadabababababababababafababababaeaeacababababaaabababababababababacababababababababaiababababababababababadababaeaeabababababacabababababafacadababababababababababacabababab
-adafababafabababababababababababababafadababababababadababaaaeababaiabafabacbJbMababababaiabababababafacadababababababababababacabababababaeaeaeababababababababababadafababafababababababababababababab
-abababababacababababababababaiababababababababababababababaeaeabababababababbgbzababafabababababababadafababafababababababababababababababaeaeacababadababababababababababababacababababababaiabababafab
-abababababababababafacadababababababababcbcccdabababababaCaeabaaabaaabaaababbpaXaTababadabababababababababababacababababababaiabababadababaaaeababaiababababababaiabababababababababababafababababababad
-abababadabababababadafababafabababababababceciababadabaeaeaeabacababababababbPbQababababababababaiabababababababababababafababababababababaeaeabababafababababababababababadabababababababadabababababab
-ababababababababababababababacabababababaccfcgababababaeaeaeababababababadabbTbWababababaaababababababababadabababababababadababababababaCaeabagabagabababababadabababababababababababababababababababab
-ababacafabababaiabababababababababababafababababababaeaeaeaaababababababababababababababacacabadabababababababababababababababababadabaeaeaeabacabababababadaiababacababacafabababaiababababaaabafacadab
-abafababababababababababadabababababababadabababababaeaeaeabaiabababababababadabababababababaiababacababacafabababaiababababaaabafababaeaeaeababababababaiababababababafababababababababababacacadafabab
-ababababababadababababababababababababababababababababaeaeacababaaabababababaiababaaabababababababababafababababababababababacacadabaeaeaeaaabababababadababacabababababababababadababababababababababab
-abababababaiababacababacafabababaiababababaaabafacababauaeabababababacadababababababababababacabababababababababadabababababababababaeaeaeabaiababababababababababababababababaiababacabadababababababab
-ababababadabababababafababababababababababacacadafabababaeabababarabafaHaHafaaaaabababacaaababaaaaababababababaiababacabadababababababaeaeacababababababababababababababababadababababababababababababad
-abababababacabababababababababadababababababababadabaeaeaeaaabababaJaSaJaaaaaaaaaaafafabababaaaaaaaaaaabababadababababababababababababauaeabababababacababaaabababababababababacababababababaiabababafab
-ababababababababababababababaiababacabaRbNaVaaabababaeaeaeabababaaaYaYaYaaaRbNaVaaabacabababaaaRbNaVaaabababababababafabababababababababaeabababarabababababababaiabababababababababababafababababababad
-abababadabababababababababadabababababbbbybcaaafaaaeaeaeaeababababaYaYaYaabbbybcaaafababafafaabbbybcaaafabababababababadabababababadabaeaeaaajababababababababababababababadabababababababadabababababab
-abababababababababababababababababababaNbkbXaaabaaaeaeaeaaaaaCabbFbFaYaYaaaNbkbXaaababababacaaaNbkbXaaababababababababababababababababaeaeaaabababababababababadabababababababababababababababababababab
-ababacafabababaiababababacafabababaiabaQbKbfabaaabaeaeaeaeaaaeabamaaaaaaaaaQbKbfabaaababaaaaaaaQbKbfabaaabababaiababababaaabafacabaaaeaeagacababababababaiabaiababacababacafabababaiababababaaabafacadab
-abafabababababababababafabababababababaaaaaaabababaaaeaeaeaaaeaebGbHaaaaafaaaaaaababababaaafaaaaaaaaababababababababababacacadafabaaaeaeabababababababababababababababafababababababababababacacadafabab
-ababababababadabababababababababadababababababababacaaaeaeaeaeaeababaaaaaaabababaaabaaabababababababababababadabababababababababababaeabaaababababababadababacabababababababababadababababababababababab
-abababababaiababacababababababaiababacabadabababababababaeaeaeaebIbIbebeababaiababacabadabababababababababaiababacabadabababababababaaaeaealaaafababaiababacabababababababababaiababacabadababababababab
-aFabababadabababababababababadababababababababababaaabadabaeaeababababababadababababababababababababadabadabababababababababababababacaaaeaeaeaeabadababababababababababababadababababababababababababad
+abababababafababababababababababacacadafababababaiabadababaeaeabababababababababababababacabababababababaaapapaaabakabababababakabababaeaeaeaaabababababababababababacacadafabababababababababababababab
+acabababababababababadababababababababababababababababababcvcwabababarabacabababacabababababababarabafabaaapapaaabababababababababababaeaeaeabaiababababadababababababababababababacababababacababababab
+abababababababababaiababacabadababababababababababababababcxcyababababababababadababababaiabababababababaaaaaaaaabababaiababababaEabababaeaeacababababaiababacabadababababababababababababababafabadabab
+ababababababababadababababababababababababadacakababadababczcAcBabababababaiabababababababababababababababababababababababababacababababauaeabababababababababababababababababadabababababababababababab
+abababababaiabababababababababababaiabababadabababababababcCcDaeababadababababababababababacabababababababababababababababababababababababaeabababarabafababacababababababababaiabababababababababababab
+afacadababababababababababacadababababababcbcccdafababababcEcFabababababaaabaaaaaaabababababacabababababababaiaiababababababababababadababaeaeabababababacabababababafacadababababababababababacabababab
+adafababafabababababababababababababafadababceciababadababaaaeababaiabafabaRbNaVaaabababaiabababababafacadababababaaabababababacabababababaeaeaeababababababababababadafababafababababababababababababab
+abababababacababababababababaiababababababaccfcgabababababaeaeababababababbbbybcaaaaafafaaaaabaaaaaaaaafababafabaaababababababababababababaeaeacababadababababababababababababacababababababaiabababafab
+abababababababababafacadabababababababababaaaaabababababaCaeabaaabaaabaaabaNbkbXaaabbebeababaaaRbNaVababababacabaRbNaVabababaiabababadababaaaeababaiababababababaiabababababababababababafababababababad
+abababadabababababadafababafababababababababcsabcsadcsaeaecuabcsabcsabcsabaQbKbfaaafababbIafaabbbybcaaafbeababacbbbybcafafababababababababaeaeabababafababababababababababadabababababababadabababababab
+ababababababababababababababacabababababaactdcddddddddaeaedddddddddddeabadaaaaaaaaabaaaaabacaaaNbkbXabbGaaababacaNbkbXaaabadababababababaCaeabagabagabababababadabababababababababababababababababababab
+ababacafabababaiabababababababababababafababaHapapapapaeaeapapapapapbJcsabctaactabaaababbHaaaaaQbKbfabbIabababaaaQbKbfababababababadabaeaeaeabacabababababadaiababacababacafabababaiababababaaabafacadab
+abafababababababababababadabababababababadcsaHapcsabcuaeaecsaicsabapapdddddddddfctababbFbFaaahaaaaaaaaabacafaaaaaaajaaaaababaaabafababaeaeaeababababababaiababababababafababababababababababacacadafabab
+ababababababadabababababababababababababababaHapabababaeaeacababaaapapapapapapbJaactabcsaactaactabctaactaactaaaaababaaaaababacacadabaeaeaeaaabababababadababacabababababababababadababababababababababab
+abababababaiababacababacafabababaiababababctaHdgacababauaeabababcsabcsafcsaaapapdddddddddddddddddddddddddddfcsabaaabaaabababababababaeaeaeabaiababababababababababababababababaiababacabadababababababab
+ababababadabababababafababababababababababacaHapababababaeabababarabafababahapapapapapapapapapapapapapapapbJabaaabaaamabadababababababaeaeacababababababababababababababababadababababababababababababad
+abababababacabababababababababadabababababcsaHapadabaeaeaeaaabababaJaSaJaJaaaaapazaDaXbgbgbgbgbgbgaDaDazapbJctaaaaaaabababababababababauaeabababababacababaaabababababababababacababababababaiabababafab
+ababababababababababababababaiababacabaaaaabaHapaaabaeaeaeabababaaaYaYaYaJaaaaapbpbzcGcKbMbPbQbTbWcacjckapbJaaabababafabababababadabababaeabababarabababababababaiabababababababababababafababababababad
+abababadabababababababababadabababababadaacsaHapaaaeaeaeaeababababaYaYaYaaaaaaapapapcIcIcIcIcIcIcIcIapapapbJcsababababadabababababadabaeaeaaajababababababababababababababadabababababababadabababababab
+abababababababababababababababababababaaadaaaHapaaaeaeaeaaaaaCabaaaaaYaYaaaaaaaacnapcoapcoapcoapcoapcockapbJababababcJababababababababaeaeaaabababababababababadabababababababababababababababababababab
+ababacafabababaiababababacafabababaiabaaaactaHapaaaeaeaeaeaaaeabamaaaaaaaaaaaaaacncpcoapcocpcoapcocpcocnapbJcsaiababababaaabafacabaaaeaeagacababababababaiabaiababacababacafabababaiababababaaabafacadab
+abafabababababababababafabababababababaaaaaaaHapabaaaeaeaeaaaeaecHcHaaaaafcMcMaaazaDbgbgbgcqaXaXaXbgaDazapbJababababababacacadafabaaaeaeabababababababababababababababafababababababababababacacadafabab
+ababababababadabababababababababadababababctaHapabacaaaeaeaeaeaeababaaaaaaabababaaabaaabababababababababapbJcsabababababababababababaeabaaababababababadababacabababababababababadababababababababababab
+abababababaiababacababababababaiababacabadabaHapababababaeaeaeaeaaaaaaaaababaiababacabadababababababababapbJababacabadabababababababaaaeaealaaafababaiababacabababababababababaiababacabadababababababab
+aFabababadabababababababababadababababababcsaHapabaaabadabaeaeabababababaaadababababababababababababadabapbJcsabababababababababababacaaaeaeaeaeabadababababababababababababadababababababababababababad
 "}

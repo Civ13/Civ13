@@ -493,6 +493,18 @@ obj/structure/closet/crate/ww2/mk2
 	name = "Mk2 grenade crate"
 	paths = list(/obj/item/weapon/grenade/ww2/mk2 = 10)
 
+obj/structure/closet/crate/ww2/panzerfaust
+	name = "Panzerfaust crate"
+	paths = list(/obj/item/weapon/gun/launcher/rocket/panzerfaust = 6)
+
+obj/structure/closet/crate/ww2/atmines
+	name = "anti-tank mines crate"
+	paths = list(/obj/item/mine/at = 5)
+
+obj/structure/closet/crate/ww2/rpg40
+	name = "RPG-40 AT greande crate"
+	paths = list(/obj/item/weapon/grenade/antitank/rpg40 = 6)
+
 obj/structure/closet/crate/coldwar/m26
 	name = "M26 grenade crate"
 	paths = list(/obj/item/weapon/grenade/coldwar/m26 = 10)

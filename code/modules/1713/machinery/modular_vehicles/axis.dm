@@ -83,11 +83,12 @@
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
-			var/turf/TF = get_turf(MV)
-			if (istype(TF, /turf/floor/grass/jungle))
-				TF.ChangeTurf (/turf/floor/dirt/jungledirt)
-			else if (istype(TF, /turf/floor/grass))
-				TF.ChangeTurf (/turf/floor/dirt)
+			if (MV.ntype == "track")
+				var/turf/TF = get_turf(MV)
+				if (istype(TF, /turf/floor/grass/jungle))
+					TF.ChangeTurf (/turf/floor/dirt/jungledirt)
+				else if (istype(TF, /turf/floor/grass))
+					TF.ChangeTurf (/turf/floor/dirt)
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
 			if (reverse)

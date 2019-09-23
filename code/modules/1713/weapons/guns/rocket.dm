@@ -225,7 +225,6 @@
 		return
 /obj/item/missile/proc/handle_vehicle_hit(hit_atom)
 	for(var/obj/structure/vehicleparts/frame/F in range(1,hit_atom))
-		world.log << "found!"
 		for (var/mob/M in F.axis.transporting)
 			shake_camera(M, 3, 3)
 		var/penloc = F.CheckPenLoc(src)

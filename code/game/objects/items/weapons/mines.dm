@@ -128,10 +128,6 @@
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")
 		explosion(get_turf(src),2,2,6)
-		spawn(3)
-			explosion(get_turf(src),2,2,6)
-		spawn(6)
-			explosion(get_turf(src),2,2,6)
 		spawn(9)
 			if (src)
 				qdel(src)
@@ -159,6 +155,67 @@
 	anchored = TRUE
 	layer = TURF_LAYER + 0.01
 	icon_state = "mine_armed"
+
+/obj/item/mine/at
+	name = "anti-tank mine"
+	desc = "Useful for setting traps or for area denial."
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "mine"
+	force = 12.0
+	w_class = 5.0
+	throwforce = 2.0
+	throw_range = 3
+	throw_speed = 3
+	anchored = FALSE
+
+/obj/item/mine/at/armed
+	anchored = TRUE
+	layer = TURF_LAYER + 0.01
+	icon_state = "mine_armed"
+
+/obj/item/mine/at/Crossed(AM as mob|obj)
+	if (isobserver(AM)) return
+	if (istype(AM, /obj/item/projectile)) return
+	if (istype(AM, /obj/structure/vehicleparts/frame))
+		trigger(AM)
+
+
+/obj/item/mine/at/Bumped(AM as obj)
+	if (isobserver(AM)) return
+	if (!anchored) return //If armed
+	if (triggered) return
+	if (istype(AM, /obj/structure/vehicleparts/frame))
+		trigger(AM)
+
+/obj/item/mine/at/trigger(atom/movable/AM)
+	if (world.time < nextCanExplode)
+		return
+		for (var/mob/O in viewers(7, loc))
+			O << "<font color='red'>[AM] triggered the [src]!</font>"
+		triggered = TRUE
+		visible_message("<span class = 'red'><b>Click!</b></span>")
+		explosion(get_turf(src),3,3,6)
+		for(var/obj/structure/vehicleparts/frame/F in range(1,src))
+			for (var/mob/M in F.axis.transporting)
+				shake_camera(M, 4, 4)
+
+			F.w_left[5] -= 15
+			F.w_right[5] -= 15
+			F.w_front[5] -= 15
+			F.w_back[5] -= 15
+			F.try_destroy()
+
+			for(var/obj/structure/vehicleparts/movement/MV in F)
+				MV.broken = TRUE
+				MV.update_icon()
+			F.update_icon()
+		spawn(3)
+			explosion(get_turf(src),2,2,4)
+		spawn(6)
+			explosion(get_turf(src),1,1,2)
+		spawn(9)
+			if (src)
+				qdel(src)
 
 /obj/item/mine/boobytrap
 	name = "booby trap"
