@@ -207,6 +207,12 @@
 		for (var/obj/covers/CV in GR)
 			if (CV.flammable == 0)
 				blocked = 1
+		for (var/obj/structure/vehicleparts/frame/F in GR)
+			var/found = FALSE
+			for (var/obj/structure/vehicleparts/frame/F2 in src.loc)
+				found = TRUE
+			if (!found)
+				blocked = 1
 		if (prob(10) && !blocked)
 			new/obj/effect/burning_oil(GR)
 
