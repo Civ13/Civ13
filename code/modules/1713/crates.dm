@@ -493,6 +493,20 @@ obj/structure/closet/crate/ww2/mk2
 	name = "Mk2 grenade crate"
 	paths = list(/obj/item/weapon/grenade/ww2/mk2 = 10)
 
+obj/structure/closet/crate/ww2/rgd33
+	name = "RGD33 grenade crate"
+	paths = list(/obj/item/weapon/grenade/ww2/rgd33 = 10)
+
+obj/structure/closet/crate/ww2/stg1924
+	name = "stg 1924 grenade crate"
+	paths = list(/obj/item/weapon/grenade/ww2/stg1924 = 10)
+
+obj/structure/closet/crate/ww2/ammo_mg34
+	name = "MG34 belts crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_magazine/mg34belt = 3)
 obj/structure/closet/crate/ww2/panzerfaust
 	name = "Panzerfaust crate"
 	paths = list(/obj/item/weapon/gun/launcher/rocket/panzerfaust = 6)
@@ -502,8 +516,32 @@ obj/structure/closet/crate/ww2/atmines
 	paths = list(/obj/item/mine/at = 5)
 
 obj/structure/closet/crate/ww2/rpg40
-	name = "RPG-40 AT greande crate"
+	name = "RPG-40 AT grenade crate"
 	paths = list(/obj/item/weapon/grenade/antitank/rpg40 = 6)
+
+obj/structure/closet/crate/ww2/g43
+	name = "G43 ammunition crate"
+	paths = list(/obj/item/ammo_magazine/g43 = 10)
+
+obj/structure/closet/crate/ww2/mp40
+	name = "MP40 ammunition crate"
+	paths = list(/obj/item/ammo_magazine/mp40 = 8)
+
+obj/structure/closet/crate/ww2/stg
+	name = "StG44 ammunition crate"
+	paths = list(/obj/item/ammo_magazine/stg = 8)
+
+obj/structure/closet/crate/ww2/svt
+	name = "SVT-40 ammunition crate"
+	paths = list(/obj/item/ammo_magazine/svt = 10)
+
+obj/structure/closet/crate/ww2/ppsh
+	name = "PPSH ammunition crate"
+	paths = list(/obj/item/ammo_magazine/c762x25_ppsh = 8)
+
+obj/structure/closet/crate/ww2/pps
+	name = "PPS ammunition crate"
+	paths = list(/obj/item/ammo_magazine/c762x25_pps = 8)
 
 obj/structure/closet/crate/coldwar/m26
 	name = "M26 grenade crate"
