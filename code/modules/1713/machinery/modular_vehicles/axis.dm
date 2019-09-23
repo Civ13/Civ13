@@ -231,6 +231,10 @@
 			components -= F
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
+			if (istype(M, /obj/item/mine/at))
+				var/obj/item/mine/at/MAT = M
+				if (MAT.anchored)
+					MAT.trigger(F)
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				transporting += M
 	return transporting.len

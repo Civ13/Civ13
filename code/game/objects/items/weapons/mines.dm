@@ -188,35 +188,29 @@
 		trigger(AM)
 
 /obj/item/mine/at/trigger(atom/movable/AM)
-	if (world.time < nextCanExplode)
-		return
-		for (var/mob/O in viewers(7, loc))
-			O << "<font color='red'>[AM] triggered the [src]!</font>"
-		triggered = TRUE
-		visible_message("<span class = 'red'><b>Click!</b></span>")
-		explosion(get_turf(src),3,3,6)
-		for(var/obj/structure/vehicleparts/frame/F in range(1,src))
-			for (var/mob/M in F.axis.transporting)
-				shake_camera(M, 4, 4)
+	for (var/mob/O in viewers(7, loc))
+		O << "<font color='red'>[AM] triggered the [src]!</font>"
+	triggered = TRUE
+	visible_message("<span class = 'red'><b>Click!</b></span>")
+	for(var/obj/structure/vehicleparts/frame/F in range(1,src))
+		for (var/mob/M in F.axis.transporting)
+			shake_camera(M, 4, 4)
 
-			F.w_left[5] -= 15
-			F.w_right[5] -= 15
-			F.w_front[5] -= 15
-			F.w_back[5] -= 15
-			F.try_destroy()
+		F.w_left[5] -= 25
+		F.w_right[5] -= 25
+		F.w_front[5] -= 25
+		F.w_back[5] -= 25
+		F.try_destroy()
 
-			for(var/obj/structure/vehicleparts/movement/MV in F)
-				MV.broken = TRUE
-				MV.update_icon()
-			F.update_icon()
-		spawn(3)
-			explosion(get_turf(src),2,2,4)
-		spawn(6)
-			explosion(get_turf(src),1,1,2)
-		spawn(9)
-			if (src)
-				qdel(src)
-
+		for(var/obj/structure/vehicleparts/movement/MV in F)
+			MV.broken = TRUE
+			MV.update_icon()
+		F.update_icon()
+	explosion(get_turf(src),0,0,1,3) // its light since damage is processed separately
+	spawn(3)
+		if (src)
+			qdel(src)
+			return TRUE
 /obj/item/mine/boobytrap
 	name = "booby trap"
 	desc = "Useful for setting traps or for area denial."
