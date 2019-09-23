@@ -14,7 +14,7 @@
 
 /obj/structure/vehicleparts/axis/Destroy()
 	for(var/obj/structure/vehicleparts/frame/F in components)
-		F.axis -= src
+		F.axis = null
 	wheel = null
 	visible_message("<span class='danger'>The [name] axis gets wrecked!</span>")
 	qdel(src)
@@ -88,6 +88,10 @@
 				if (istype(TF, /turf/floor/grass/jungle))
 					TF.ChangeTurf (/turf/floor/dirt/jungledirt)
 				else if (istype(TF, /turf/floor/grass))
+					TF.ChangeTurf (/turf/floor/dirt)
+				else if (istype(TF, /turf/floor/dirt/ploughed/flooded))
+					TF.ChangeTurf (/turf/floor/dirt/flooded)
+				else if (istype(TF, /turf/floor/dirt/ploughed))
 					TF.ChangeTurf (/turf/floor/dirt)
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))

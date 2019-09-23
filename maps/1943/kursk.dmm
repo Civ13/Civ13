@@ -124,7 +124,7 @@
 "ct" = (/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/forest)
 "cu" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/forest)
 "cv" = (/obj/effect/landmark{name = "JoinLateGE"},/turf/floor/grass,/area/caribbean/german)
-"cw" = (/obj/item/weapon/storage/toolbox,/turf/floor/dirt,/area/caribbean/german)
+"cw" = (/obj/item/weapon/storage/toolbox/emergency,/turf/floor/dirt,/area/caribbean/german)
 "cx" = (/obj/structure/wild/jungle/medpine,/turf/floor/grass,/area/caribbean/german)
 "cy" = (/obj/effect/landmark{name = "JoinLateGECap"},/turf/floor/grass,/area/caribbean/german)
 "cz" = (/obj/structure/closet/crate/ww2/mp40,/turf/floor/dirt,/area/caribbean/german)
@@ -135,7 +135,7 @@
 "cE" = (/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/german)
 "cF" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/german)
 "cG" = (/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/german)
-"cH" = (/obj/structure/farming/plant/wheat{icon_state = "wheat-harvest"; stage = 7; vstatic = 1},/turf/floor/dirt/ploughed,/area/caribbean/forest)
+"cH" = (/obj/structure/farming/plant/wheat{icon_state = "wheat-harvest-prop"; layer = 4.01; stage = 7; vstatic = 1},/turf/floor/dirt/ploughed,/area/caribbean/forest)
 "cI" = (/obj/covers/wood_wall/log/corner,/turf/floor/wood/ship,/area/caribbean/houses)
 "cJ" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/forest)
 "cK" = (/obj/covers/wood_wall/log{icon_state = "log_wall"; dir = 4},/turf/floor/wood/ship,/area/caribbean/houses)
@@ -189,12 +189,13 @@
 "dG" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/fork,/turf/floor/wood/ship,/area/caribbean/houses)
 "dH" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood/ship,/area/caribbean/houses)
 "dI" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/wood/ship,/area/caribbean/houses)
-"dJ" = (/obj/structure/farming/plant/wheat{icon_state = "wheat-harvest"; stage = 7; vstatic = 1},/turf/floor/dirt/ploughed,/area/caribbean/no_mans_land/invisible_wall/temperate)
+"dJ" = (/obj/structure/farming/plant/wheat{icon_state = "wheat-harvest-prop"; layer = 4.01; stage = 7; vstatic = 1},/turf/floor/dirt/ploughed,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "dK" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/wood/ship,/area/caribbean/houses)
 "dL" = (/obj/structure/wallclock,/turf/floor/wood/ship,/area/caribbean/houses)
 "dM" = (/obj/structure/window/sandbag/sandbag,/turf/floor/wood/ship,/area/caribbean/houses)
 "dN" = (/obj/structure/window/classic,/obj/structure/curtain/open{color = "#00003c"},/turf/floor/wood/ship,/area/caribbean/houses)
 "dO" = (/obj/structure/simple_door/key_door/anyone/rustic,/turf/floor/dirt/dust,/area/caribbean/houses)
+"dP" = (/obj/item/weapon/storage/toolbox/emergency,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
 "ea" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate)
 "ed" = (/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
 "ee" = (/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
@@ -245,7 +246,6 @@
 "eX" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/trench,/area/caribbean/russian{name = "Russian Base"})
 "eY" = (/obj/structure/closet/crate/ww2/rgd33,/turf/floor/dirt/dust,/area/caribbean/russian{name = "Russian Base"})
 "eZ" = (/obj/structure/closet/crate/ww2/rpg40,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
-"fa" = (/obj/item/weapon/storage/toolbox,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
 "fb" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/burned,/area/caribbean/russian{name = "Russian Base"})
 "fc" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
 "fd" = (/obj/structure/closet/crate/sandbags,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
@@ -259,7 +259,7 @@ aaaaaaaaaaabababababababaaaaaaaaaaaaabababafaHapazazbQayayaGaGaGaGaGbWbWbYbYbYbY
 aaaaaaaaaaababababaaaaaaaaaaaaabaaaaaaaaaactaHapazazaGaXaGbZcabZaGaGcjbWckbWckbWckbWckbWckbPapbJaaaaaaahabaaaaadababagagacabagagababaeaeaeaeaaaaaeababacadabagagagagabababacabababababababababababababab
 aaaaaaaaaaabababababaaaaaaaaaaababababaaaaaaaHapazazclayaycmcmcmaGaGcjcnckbWckcnckbWckcnckcjapbJctaaababaaaaabaaabacabababababababaaabaeaeaeaaaaaeajababababababagagabababababadafababafabababababababab
 abababafababababababababababababababaiaaaactaHapcoazayayaycpcmcmaGaGaJaLaSaSaScqaMaMaMaSaLaJapbJaaababaaaaaaabaaaaabababababababababaaaaaaaeaeaeaeaaaaababafafabababababaiabababacabababababababababadab
-abababababababababababacababababafabacaaaaaaaHapaGazcrayaycvcmcmaGaGaGaGaGaGaGaGaGaGaGcwaGaGapbJctabaaaaaaabababaaababababababadacababaaaaaaaeaeamaaaaababababababacabababababababababacafababababababab
+abababababababababababacababababafabacaaaaaaaHapaGazcrayaycvcmcmaGaGaGaGaGaGaGaGaGaGcwcwaGaGapbJctabaaaaaaabababaaababababababadacababaaaaaaaeaeamaaaaababababababacabababababababababacafababababababab
 abababaiabababababababababababababababaaaactaHapapapazcxaycyaGcyayaGczczcAcAcBcBaGcCaGcCaGaGapbJaaaaaaaaamababababaaadababacabababadabababaaaeaeanabababacabababababababaiabababababababafababafabafabaa
 adababababababaiabababababababaiababaaababaacNcOapapazazcDaGaGaGaGayaycDayaGayayaGaGaGaGaGaGapbJctaaaaabaaaaabababaaababababababababababababaeaeaeaoababadabababacababababababadabababababababaaabababaa
 abababacabababababababababaaaaaaaaaaabababcsabcsaHapayazazayaDayayaGayaGaGaGaGaGaGaGayaGaGaGapbJabaaaaababaaababaaaaaaabadaaabaeaeaeaaamaaaaaeaeadaaabababababababababababababababadababacababababababab
@@ -349,7 +349,7 @@ ababababababababababababababaiababacabaaaaabaHapeleeegegegeDeueveleEeEeEeweleley
 abababadabababababababababadabababababadaacsaHapelegegegegeeeeeeeeeEeEeEeleleleyeyeyeReReReReReReReReyeyapbJcsababaaabadabaaabababadabaeaeaaajababababababababababababababadabababababababadabababababab
 abababababababababababababababababababaaadaaaHapelegegegeleleSeeeleleEeEeleleleleTeyeUeyeUeyeUeyeUeyeUeQapbJabababaacJababaaaaababababaeaeaaabababababababababadabababababababababababababababababababab
 ababacafabababaiababababacafabababaiabaaaactaHapelegegegegelegeeeVeleleleleWeWeleTeXeUeyeUeXeUeyeUeXeUeTapbJcsaiabaaaaabaaaaafacabaaaeaeagacababababababaiabaiababacababacafabababaiababababaaabafacadab
-abafabababababababababafabababababababaaaaaaaHapeeelegegegelegeYeZeZelelepfafaelezeAeCeCeCfbeBeBeBeCeAezapbJabababaaaaabacamadafabaaaeaeabababababababababababababababafababababababababababacacadafabab
+abafabababababababababafabababababababaaaaaaaHapeeelegegegelegeYeZeZelelepdPdPelezeAeCeCeCfbeBeBeBeCeAezapbJabababaaaaabacamadafabaaaeaeabababababababababababababababafababababababababababacacadafabab
 ababababababadabababababababababadababababctaHapeeemelegegegegegeeeeelelfceeeeeeeleeeleeeeeeeeeeeeeeeeeeapbJcsabababaaababaaababababaeabaaababababababadababacabababababababababadababababababababababab
 abababababaiababacababababababaiababacabadabaHapeeeefdeeegegegeYfefeelelffeeeheeeeemeeeseeeeeeeeeeeeeeeeapbJababacabcJabaaaaababaaabaaaeaealaaafababaiababacabababababababababaiababacabadababababababab
 aFabababadabababababababababadababababababcsaHapeeeleeeseeegegeeeeeeeeeeeleseeeeeeeeeeeeeeeeeeeeeeeeeseeapbJcsabaaabaaababaaababababacaaaeaeaeaeabadababababababababababababadababababababababababababad

@@ -31,7 +31,7 @@
 		return TRUE
 	else if (newdir == "right")
 		if (control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), "right"))
-			control.axis.dir = TURN_LEFT(control.axis.dir)
+			control.axis.dir = TURN_RIGHT(control.axis.dir)
 		lastdirchange = world.time+15
 		for (var/obj/OB in control.axis.components)
 			if (!istype(OB, /obj/structure/cannon))
