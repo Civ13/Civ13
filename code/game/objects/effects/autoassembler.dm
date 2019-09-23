@@ -29,7 +29,7 @@
 //		if (central)
 //			world.log << "Assigned the axis to the central frame."
 		if (!central)
-			world.log << "<b>Axis error!</b>"
+			world.log << "<b>Axis error! ([x],[y])</b>"
 			return FALSE
 		//now connect all the frames
 		for (var/obj/structure/vehicleparts/frame/A in rangeto)
@@ -83,7 +83,7 @@
 //		if (done2)
 //			world.log << "Added the engine."
 		if (!done2)
-			world.log << "<b>Engine error!</b>"
+			world.log << "<b>Engine error! ([x],[y])</b>"
 			return FALSE
 		//then the fueltank
 		var/done3 = FALSE
@@ -97,7 +97,7 @@
 //		if (done3)
 //			world.log << "Added fueltank."
 		if (!done3)
-			world.log << "<b>Fueltank error!</b>"
+			world.log << "<b>Fueltank error! ([x],[y])</b>"
 			return FALSE
 		//finally, the drivers seat
 		var/done4 = FALSE
@@ -113,7 +113,7 @@
 //		if (done4)
 //			world.log << "Added driver's seat."
 		if (!done4)
-			world.log << "<b>Driver's Seat error!</b>"
+			world.log << "<b>Driver's Seat error! ([x],[y])</b>"
 			return FALSE
 		//and the tracks
 		for (var/obj/structure/vehicleparts/movement/M in rangeto)

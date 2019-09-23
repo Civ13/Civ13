@@ -26,6 +26,7 @@
 	var/sway = 0
 	var/firedelay = 20
 	var/caliber = 75
+	var/broken = FALSE
 	w_class = 20
 /obj/structure/cannon/modern
 	name = "field cannon"
@@ -85,6 +86,12 @@
 				qdel(src)
 
 /obj/structure/cannon/modern/tank/attackby(obj/item/W as obj, mob/M as mob)
+	if (broken && istype(W, /obj/item/weapon/weldingtool))
+		visible_message("[M] starts repairing the [src]...")
+		if (do_after(M, 200, src))
+			visible_message("[M] sucessfully repairs the [src].")
+			broken = FALSE
+			return
 	if (istype(W, ammotype))
 		var/obj/item/cannon_ball/shell/tank/TS = W
 		if (caliber != TS.caliber)

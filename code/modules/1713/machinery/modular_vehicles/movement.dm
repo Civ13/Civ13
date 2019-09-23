@@ -286,3 +286,16 @@ var/global/list/rotation_matrixes = list(
 		"5,4" = list(5,4),
 		"5,5" = list(5,5),),)
 */
+
+/obj/structure/vehicleparts/frame/proc/convertdirs(var/dire)
+	if (!dire)
+		return NORTH
+	switch (dir)
+		if (NORTH)
+			return dire
+		if (SOUTH)
+			return OPPOSITE_DIR(dire)
+		if (WEST)
+			return TURN_LEFT(dire)
+		if (EAST)
+			return TURN_RIGHT(dire)

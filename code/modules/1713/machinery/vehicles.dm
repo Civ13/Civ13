@@ -8,6 +8,8 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	flammable = FALSE
+	var/broken_icon = 'icons/obj/vehicleparts_damaged.dmi'
+	var/normal_icon = 'icons/obj/vehicleparts.dmi'
 /////////////////////////////////AXIS/////////////////////////////////////
 /obj/structure/vehicleparts/axis
 	name = "vehicle axis"
