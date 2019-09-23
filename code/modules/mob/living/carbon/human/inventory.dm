@@ -57,7 +57,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	for(var/obj/O in mob.loc)
 		if (!O.buckled_mob && !mob.buckled)
-			O.user_buckle_mob(mob)
+			O.user_buckle_mob(mob, mob)
 			return
 		else if (O.buckled_mob == mob && mob.buckled == O)
 			O.user_unbuckle_mob(mob, mob)

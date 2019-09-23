@@ -117,6 +117,7 @@
 	nodrop = TRUE
 	w_class = 5
 	secondary_action = TRUE
+	var/obj/structure/vehicle/origin = null
 
 /obj/item/vehicleparts/wheel/handle
 	name = "motorcycle handles"
