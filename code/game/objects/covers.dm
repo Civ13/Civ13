@@ -405,6 +405,60 @@
 	explosion_resistance = 10
 	material = "Stone"
 
+/obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
+	var/mob/living/carbon/human/H = user
+	if(istype(W, /obj/item/weapon/chisel))
+		var design = "smooth"
+		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
+			return
+		else
+			var/display = list("Smooth", "Cave", "Brick", "Cobbled", "Tiled", "Cancel")
+			var/input =  WWinput(user, "What design do you want to carve?", "Carving", "Cancel", display)
+			if (input == "Cancel")
+				return
+			else if  (input == "Smooth")
+				user << "<span class='notice'>You will now carve the smooth design!</span>"
+				design = "smooth"
+			else if  (input == "Cave")
+				user << "<span class='notice'>You will now carve the cave design!</span>"
+				design = "cave"
+			else if  (input == "Brick")
+				user << "<span class='notice'>You will now carve the brick design!</span>"
+				design = "brick"
+			else if  (input == "Cobbled")
+				user << "<span class='notice'>You will now carve the cobbled design!</span>"
+				design = "cobbled"
+			else if  (input == "Tiled")
+				user << "<span class='notice'>You will now carve the tiled design!</span>"
+				design = "tiled"
+			visible_message("<span class='danger'>[user] starts to chisel a design!</span>", "<span class='danger'>You start chiseling a design.</span>")
+			playsound(src,'sound/effects/pickaxe.ogg',60,1)
+			if (do_after(user, 60, src))
+			//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+				if(design == "smooth")
+					src.icon_state = "b_stone_wall"
+					src.name = "stone wall"
+					src.desc = "A stone wall."
+				else if(design == "cave")
+					src.icon_state = "rocky"
+					src.name = "cave stone wall"
+					src.desc = "A stone wall carved to look like cave rocks."
+				else if(design == "brick")
+					src.icon_state = "b_brick_stone_wall"
+					src.name = "stone brick wall"
+					src.desc = "A stone wall carved to look like its made of bricks."
+				else if(design == "cobbled")
+					src.icon_state = "b_cobbled_stone_wall"
+					src.name = "cobbled stone wall"
+					src.desc = "A stone wall carved to look like piled up stones."
+				else if(design == "tiled")
+					src.icon_state = "b_tiled_stone_wall"
+					src.name = "tiled stone wall"
+					src.desc = "A stone wall carved to have a tiled pattern."
+				else
+	..()
+
 /obj/covers/sandstone_wall
 	name = "sandstone wall"
 	desc = "A sandstone wall."
