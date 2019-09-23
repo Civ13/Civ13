@@ -97,6 +97,9 @@
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
+			for (var/obj/item/mine/at/MAT in T)
+				if (MAT.anchored)
+					MAT.trigger(FR)
 			var/turf/TT = get_turf(get_step(T, dir))
 			if (reverse)
 				TT = get_turf(get_step(T,OPPOSITE_DIR(dir)))
