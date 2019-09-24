@@ -614,17 +614,36 @@
 		..()
 
 /obj/structure/vehicleparts/frame/proc/try_destroy()
+	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
+	var/isnowopen = FALSE
+
 	if (w_left[5] <= 0)
-		w_left = list(w_left[1],FALSE,FALSE,0,0,FALSE,TRUE)
+		if (w_left[6])
+			isnowopen = TRUE
+		else
+			isnowopen = FALSE
+		w_left = list(w_left[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
 	if (w_right[5] <= 0)
-		w_right = list(w_right[1],FALSE,FALSE,0,0,FALSE,TRUE)
+		if (w_right[6])
+			isnowopen = TRUE
+		else
+			isnowopen = FALSE
+		w_right = list(w_right[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
 	if (w_front[5] <= 0)
-		w_front = list(w_front[1],FALSE,FALSE,0,0,FALSE,TRUE)
+		if (w_front[6])
+			isnowopen = TRUE
+		else
+			isnowopen = FALSE
+		w_front = list(w_front[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
 	if (w_back[5] <= 0)
-		w_back = list(w_back[1],FALSE,FALSE,0,0,FALSE,TRUE)
+		if (w_back[6])
+			isnowopen = TRUE
+		else
+			isnowopen = FALSE
+		w_back = list(w_back[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
 	if (w_left[5]+w_right[5]+w_back[5]+w_front[5] <= 0)
 		broken = TRUE

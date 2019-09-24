@@ -95,6 +95,13 @@
 					TF.ChangeTurf (/turf/floor/dirt)
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
+			var/area/A = get_area(T)
+			if (map && map.caribbean_blocking_area_types.Find(A.type))
+				if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
+					visible_message("<span class = 'danger'>You cross the grace wall yet!</span>")
+					moving = FALSE
+					stopmovementloop()
+					return FALSE
 			if (reverse)
 				T = get_turf(get_step(FR.loc,OPPOSITE_DIR(dir)))
 			if (!T)
