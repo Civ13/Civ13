@@ -148,28 +148,34 @@
 		else if (dist < heavy_impact_range)	dist = 2
 		else if (dist < light_impact_range)	dist = 3
 		else								continue
-
-		T.ex_act(dist)
-		if (T && !data.objects_with_immunity.Find(T))
-			for (var/something in T.contents)	//bypass type checking since only atom/movable can be contained by turfs anyway
-				var/atom/movable/AM = something
-				if (data.objects_with_immunity.Find(AM))
-					continue
-				if (AM && AM.simulated)	AM.ex_act(dist)
-				if (istype(AM, /mob/living/carbon/human))
-					var/mob/living/carbon/human/H = AM
-					switch(dist)
-						if (1)
-							H.maim()
-							H.maim()
-							H.adjustFireLoss(rand(35,70))
-						if (2)
-							if (prob(50))
+		var/found_epicenter = FALSE
+		var/found_target = FALSE
+		for (var/obj/structure/vehicleparts/frame/FE in epicenter)
+			found_epicenter = TRUE
+		for (var/obj/structure/vehicleparts/frame/FT in T)
+			found_target = TRUE
+		if (found_target == found_epicenter)
+			T.ex_act(dist)
+			if (T && !data.objects_with_immunity.Find(T))
+				for (var/something in T.contents)	//bypass type checking since only atom/movable can be contained by turfs anyway
+					var/atom/movable/AM = something
+					if (data.objects_with_immunity.Find(AM))
+						continue
+					if (AM && AM.simulated)	AM.ex_act(dist)
+					if (istype(AM, /mob/living/carbon/human))
+						var/mob/living/carbon/human/H = AM
+						switch(dist)
+							if (1)
 								H.maim()
-							H.adjustFireLoss(rand(25,35))
-						if (3)
-							if (prob(50))
-								H.adjustFireLoss(rand(15,20))
+								H.maim()
+								H.adjustFireLoss(rand(35,70))
+							if (2)
+								if (prob(50))
+									H.maim()
+								H.adjustFireLoss(rand(25,35))
+							if (3)
+								if (prob(50))
+									H.adjustFireLoss(rand(15,20))
 	if (prob(25))
 		new/obj/effect/burning_oil(epicenter)
 	var/took = (world.timeofday-start)/10
