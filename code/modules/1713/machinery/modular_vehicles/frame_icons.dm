@@ -203,9 +203,6 @@
 					ticon = normal_icon
 				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=WEST)
 				overlays += tmpimg3
-				var/image/doub = tmpimg3
-				doub.layer = 11.01
-				roof.overlays += doub
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
@@ -213,9 +210,6 @@
 					ticon = normal_icon
 				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg4
-				var/image/doub = tmpimg4
-				doub.layer = 11.01
-				roof.overlays += doub
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon
@@ -232,9 +226,6 @@
 					ticon = normal_icon
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=SOUTH)
 				overlays += tmpimg2
-				var/image/doub = tmpimg2
-				doub.layer = 11.01
-				roof.overlays += doub
 
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			ticon = normal_icon
@@ -264,9 +255,6 @@
 					ticon = normal_icon
 				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg3
-				var/image/doub = tmpimg3
-				doub.layer = 11.01
-				roof.overlays += doub
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
@@ -274,9 +262,6 @@
 					ticon = normal_icon
 				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=WEST)
 				overlays += tmpimg4
-				var/image/doub = tmpimg4
-				doub.layer = 11.01
-				roof.overlays += doub
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon
@@ -284,9 +269,6 @@
 					ticon = normal_icon
 				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]][color_code]", layer=10, dir=SOUTH)
 				overlays += tmpimg1
-				var/image/doub = tmpimg1
-				doub.layer = 11.01
-				roof.overlays += doub
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
@@ -324,8 +306,7 @@
 					ticon = normal_icon
 				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg3
-				var/image/doub = tmpimg3
-				doub.layer = 11.01
+				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
@@ -334,8 +315,6 @@
 					ticon = normal_icon
 				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=SOUTH)
 				overlays += tmpimg4
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon
@@ -343,9 +322,6 @@
 					ticon = normal_icon
 				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg1
-				var/image/doub = tmpimg1
-				doub.layer = 11.01
-				roof.overlays += doub
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
@@ -353,9 +329,6 @@
 					ticon = normal_icon
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=WEST)
 				overlays += tmpimg2
-				var/image/doub = tmpimg2
-				doub.layer = 11.01
-				roof.overlays += doub
 
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			ticon = normal_icon
@@ -369,11 +342,11 @@
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
+					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
 					overlays += corn
 					roof.overlays += corn
 				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
+					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
 					overlays += corn
 					roof.overlays += corn
 		if (WEST)
@@ -384,8 +357,6 @@
 					ticon = normal_icon
 				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=SOUTH)
 				overlays += tmpimg3
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
@@ -393,8 +364,7 @@
 					ticon = normal_icon
 				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg4
-				var/image/doub = tmpimg4
-				doub.layer = 11.01
+				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
 				roof.overlays += doub
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
@@ -403,9 +373,6 @@
 					ticon = normal_icon
 				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]][color_code]", layer=10, dir=WEST)
 				overlays += tmpimg1
-				var/image/doub = tmpimg1
-				doub.layer = 11.01
-				roof.overlays += doub
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
@@ -413,9 +380,6 @@
 					ticon = normal_icon
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg2
-				var/image/doub = tmpimg2
-				doub.layer = 11.01
-				roof.overlays += doub
 
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			ticon = normal_icon

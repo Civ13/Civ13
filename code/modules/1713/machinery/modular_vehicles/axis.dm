@@ -450,6 +450,8 @@
 							if (FR.mwheel)
 								FR.mwheel.update_icon()
 						O.update_icon()
+	for(var/obj/structure/vehicleparts/VP in components)
+		VP.update_icon()
 	return TRUE
 
 /obj/effect/pseudovehicle
