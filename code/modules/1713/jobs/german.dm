@@ -1352,3 +1352,48 @@
 	H.setStat("mg", STAT_MEDIUM_HIGH)
 
 	return TRUE
+
+/datum/job/german/ss_pionier
+	title = "Waffen-SS Pionier"
+	en_meaning = "Waffen-SS Sapper"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateGESap"
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+	is_tanker = TRUE
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 12
+
+/datum/job/german/ss_pionier/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/ss(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/pilot(H), slot_eyes)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/sapper(H), slot_back)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/german/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
+	uniform.attackby(webbing, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a sapper of the Waffen-SS. Place mines, sandbags, barbed wire, and help repair the vehicles!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_VERY_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_NORMAL)
+
+	return TRUE

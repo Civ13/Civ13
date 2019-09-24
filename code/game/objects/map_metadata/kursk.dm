@@ -30,6 +30,8 @@
 	..()
 	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
 		. = TRUE
+	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
+		. = TRUE
 	else
 		. = FALSE
 
