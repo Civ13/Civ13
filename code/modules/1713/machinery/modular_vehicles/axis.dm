@@ -98,7 +98,7 @@
 			var/area/A = get_area(T)
 			if (map && map.caribbean_blocking_area_types.Find(A.type))
 				if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
-					visible_message("<span class = 'danger'>You cross the grace wall yet!</span>")
+					visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
 					moving = FALSE
 					stopmovementloop()
 					return FALSE
@@ -146,6 +146,8 @@
 					done = TRUE
 					if (FM.axis != src)
 						visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+						moving = FALSE
+						stopmovementloop()
 						return FALSE
 				if (!done)
 					if (O.density == TRUE && !(O in transporting))
@@ -161,10 +163,14 @@
 							qdel(O)
 			if (T.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
+				moving = FALSE
+				stopmovementloop()
 				return FALSE
 			for(var/obj/covers/CV in T && !(CV in transporting))
-				if (CV.density == TRUE)
+				if (CV.density || CV.wall)
 					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+					moving = FALSE
+					stopmovementloop()
 					return FALSE
 			for(var/obj/item/I in T && !(I in transporting))
 				qdel(I)

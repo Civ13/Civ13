@@ -994,8 +994,19 @@
 		try_destroy()
 	else
 		if (wall)
-			health -= proj.damage * 0.1
-			try_destroy()
+			if (istype(proj, /obj/item/projectile/shell))
+				var/obj/item/projectile/shell/S = proj
+				if (S.atype == "HE")
+					visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
+					qdel(src)
+					return
+				else
+					if (prob(60))
+						visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
+						qdel(src)
+			else
+				health -= proj.damage * 0.1
+				try_destroy()
 			return
 		else
 			return
