@@ -32,6 +32,7 @@
 				broken = TRUE
 				on = FALSE
 				new/obj/effect/decal/cleanable/blood/oil(loc)
+				update_icon()
 		else
 			if (prob(20))
 				visible_message("<span class = 'warning'>\The [src] explodes!</span>")
@@ -42,7 +43,7 @@
 				broken = TRUE
 				on = FALSE
 				new/obj/effect/decal/cleanable/blood/oil(loc)
-
+				update_icon()
 /obj/structure/engine/internal/New()
 	..()
 	weight = 20*(enginesize/1000)

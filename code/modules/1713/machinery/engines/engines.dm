@@ -116,6 +116,9 @@
 
 /obj/structure/engine/update_icon()
 	..()
+	if (broken)
+		icon_state = "engine_broken"
+		return
 	if (on)
 		icon_state = "[engineclass]_on"
 	else
