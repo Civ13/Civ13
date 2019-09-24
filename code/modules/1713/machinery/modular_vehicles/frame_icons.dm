@@ -73,19 +73,59 @@
 		roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	for(var/obj/structure/cannon/C in T)
-		var/image/roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret[color_code][broken]", layer=11.1, dir=C.dir)
-		if (dir == NORTH)
-			roof_turret.pixel_y = 0
-			roof_turret.pixel_x = -32
-		else if (dir == SOUTH)
-			roof_turret.pixel_y = -48
-			roof_turret.pixel_x = -32
-		else if (dir == WEST)
-			roof_turret.pixel_x = -48
-			roof_turret.pixel_y = -32
-		else if (dir == EAST)
-			roof_turret.pixel_x = 0
-			roof_turret.pixel_y = -32
+		roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret[color_code][broken]", layer=11.1, dir=C.dir)
+		if (C.dir == NORTH)
+			if (dir == NORTH)
+				roof_turret.pixel_y = 0
+				roof_turret.pixel_x = -32
+			else if (dir == SOUTH)
+				roof_turret.pixel_y = -16
+				roof_turret.pixel_x = -32
+			else if (dir == WEST)
+				roof_turret.pixel_x = -48
+				roof_turret.pixel_y = -48
+			else if (dir == EAST)
+				roof_turret.pixel_x = -32
+				roof_turret.pixel_y = 0
+		else if (C.dir == SOUTH)
+			if (dir == NORTH)
+				roof_turret.pixel_y = -32
+				roof_turret.pixel_x = -32
+			else if (dir == SOUTH)
+				roof_turret.pixel_y = -64
+				roof_turret.pixel_x = -32
+			else if (dir == WEST)
+				roof_turret.pixel_x = -48
+				roof_turret.pixel_y = -48
+			else if (dir == EAST)
+				roof_turret.pixel_x = -32
+				roof_turret.pixel_y = -48
+		else if (C.dir == WEST)
+			if (dir == NORTH)
+				roof_turret.pixel_y = -16
+				roof_turret.pixel_x = -64
+			else if (dir == SOUTH)
+				roof_turret.pixel_y = -32
+				roof_turret.pixel_x = -64
+			else if (dir == WEST)
+				roof_turret.pixel_x = -32
+				roof_turret.pixel_y = -32
+			else if (dir == EAST)
+				roof_turret.pixel_x = -64
+				roof_turret.pixel_y = -16
+		else if (C.dir == EAST)
+			if (dir == NORTH)
+				roof_turret.pixel_y = -16
+				roof_turret.pixel_x = 0
+			else if (dir == SOUTH)
+				roof_turret.pixel_y = -32
+				roof_turret.pixel_x = 0
+			else if (dir == WEST)
+				roof_turret.pixel_x = 0
+				roof_turret.pixel_y = -16
+			else if (dir == EAST)
+				roof_turret.pixel_x = -16
+				roof_turret.pixel_y = -16
 		roof.overlays += roof_turret
 	for (var/obj/CC in T)
 		if (istype(CC, /obj/structure/bed/chair/drivers) && istype(axis, /obj/structure/vehicleparts/axis/heavy))

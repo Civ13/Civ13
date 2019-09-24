@@ -19,6 +19,7 @@
 
 	var/doorcode = 0 //if it has a door on it, what the key code is
 	var/image/roof
+	var/image/roof_turret
 	var/image/movemento
 	var/noroof = FALSE
 	not_movable = TRUE
