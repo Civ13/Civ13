@@ -1144,14 +1144,7 @@ var/list/rank_prefix = list(\
 	..()
 	if (update_hud)
 		handle_regular_hud_updates()
-/*
-/mob/living/carbon/human/MouseDrop(var/atom/over_object)
-	var/mob/living/carbon/human/H = over_object
-	if (holder_type && istype(H) && H.a_intent == I_HELP && !H.lying && !issmall(H) && Adjacent(H))
-		get_scooped(H, (usr == src))
-		return
-	return ..()
-*/
+
 //Puts the item into our active hand if possible. returns TRUE on success.
 /mob/living/carbon/human/put_in_active_hand(var/obj/item/W)
 	return (hand ? put_in_l_hand(W) : put_in_r_hand(W))

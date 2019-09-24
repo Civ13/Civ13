@@ -54,10 +54,10 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	if (!istype(mob,/mob/living/carbon/human))
 		return
-
-	for(var/obj/O in mob.loc)
+	for(var/obj/structure/bed/O in mob.loc)
 		if (!O.buckled_mob && !mob.buckled)
-			O.user_buckle_mob(mob, mob)
+			mob.MouseDrop(O)
+			//O.user_buckle_mob(mob, mob)
 			return
 		else if (O.buckled_mob == mob && mob.buckled == O)
 			O.user_unbuckle_mob(mob, mob)
