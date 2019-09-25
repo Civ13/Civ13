@@ -568,32 +568,44 @@
 				switch(penloc)
 					if ("left")
 						w_left[5] -= adjdam
+						visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
 					if ("right")
 						w_right[5] -= adjdam
+						visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 					if ("front")
 						w_front[5] -= adjdam
+						visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
 					if ("back")
 						w_back[5] -= adjdam
+						visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
 					if ("frontleft")
 						if (w_left[4] > w_front[4] && w_left[5]>0)
 							w_left[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
 						else
 							w_front[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
 					if ("frontright")
 						if (w_right[4] > w_front[4] && w_right[5]>0)
 							w_right[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 						else
 							w_front[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
 					if ("backleft")
 						if (w_left[4] > w_back[4] && w_left[5]>0)
 							w_left[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
 						else
 							w_back[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
 					if ("backright")
 						if (w_right[4] > w_back[4] && w_right[5]>0)
 							w_right[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 						else
 							w_back[5] -= adjdam
+							visible_message("<span class = 'danger'><bigThe rear hull is damaged!</big></span>")
 		else
 			switch(penloc)
 				if ("left")
@@ -617,28 +629,28 @@
 	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
 	var/isnowopen = FALSE
 
-	if (w_left[5] <= 0)
+	if (w_left[5] < 0)
 		if (w_left[6])
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_left = list(w_left[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
-	if (w_right[5] <= 0)
+	if (w_right[5] < 0)
 		if (w_right[6])
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_right = list(w_right[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
-	if (w_front[5] <= 0)
+	if (w_front[5] < 0)
 		if (w_front[6])
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_front = list(w_front[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 		visible_message("<span class='danger'>The wall gets wrecked!</span>")
-	if (w_back[5] <= 0)
+	if (w_back[5] < 0)
 		if (w_back[6])
 			isnowopen = TRUE
 		else
