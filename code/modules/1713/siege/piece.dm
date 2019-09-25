@@ -107,7 +107,7 @@
 		if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank))
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
-		if (do_after(M, caliber/2, src, can_move = TRUE))
+		if (do_after(M, caliber/2, M, can_move = TRUE))
 			if (M && (locate(M) in range(1,src)))
 				found_loader = FALSE
 				for (var/obj/structure/bed/chair/loader/L in M.loc)
