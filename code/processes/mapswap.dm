@@ -108,6 +108,7 @@
 				MAP_REICHSTAG = 0,
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
+				MAP_KURSK = 10,
 //				MAP_NANJING = 20,
 			)
 
