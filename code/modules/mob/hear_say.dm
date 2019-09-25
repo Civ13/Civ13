@@ -39,7 +39,17 @@
 			speaker_name = H.rank_prefix_name(H.GetVoice())
 		else
 			speaker_name = "[H.GetVoice()] (N/A)"
-
+		for(var/obj/structure/vehicleparts/frame/F1 in speaker.loc)
+			for(var/obj/structure/vehicleparts/frame/F2 in src.loc)
+				if (F1.axis == F2.axis)
+					for (var/obj/structure/bed/chair/commander/D in speaker.loc)
+						speaker_name = "<span color='yellow'>[speaker_name] (COMMANDER)</span>"
+					for (var/obj/structure/bed/chair/drivers/D in speaker.loc)
+						speaker_name = "<span color='yellow'>[speaker_name] (DRIVER)</span>"
+					for (var/obj/structure/bed/chair/gunner/D in speaker.loc)
+						speaker_name = "<span color='yellow'>[speaker_name] (GUNNER)</span>"
+					for (var/obj/structure/bed/chair/loader/D in speaker.loc)
+						speaker_name = "<span color='yellow'>[speaker_name] (LOADER)</span>"
 	if (italics)
 		message = "<i>[message]</i>"
 	if (animal)

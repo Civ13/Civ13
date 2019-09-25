@@ -562,12 +562,37 @@
 				var/adjdam = 0
 				switch (PS.atype)
 					if ("HE")
-						for (var/mob/M in axis.transporting)
+						for (var/mob/living/M in axis.transporting)
 							shake_camera(M, 3, 3)
+							if (M.loc == loc)
+								var/tprob = 80
+								if (M.lying || M.prone)
+									tprob = 35
+								if (prob(tprob))
+									M.adjustBruteLoss(PS.damage)
+									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.08
 					if ("APCR")
+						for (var/mob/living/M in axis.transporting)
+							shake_camera(M, 1, 1)
+							if (M.loc == loc)
+								var/tprob = 80
+								if (M.lying || M.prone)
+									tprob = 35
+								if (prob(tprob))
+									M.adjustBruteLoss(PS.damage)
+									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.35
 					if ("AP")
+						for (var/mob/living/M in axis.transporting)
+							shake_camera(M, 1, 1)
+							if (M.loc == loc)
+								var/tprob = 80
+								if (M.lying || M.prone)
+									tprob = 35
+								if (prob(tprob))
+									M.adjustBruteLoss(PS.damage)
+									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.3
 				switch(penloc)
 					if ("left")
@@ -583,28 +608,28 @@
 						w_back[5] -= adjdam
 						visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
 					if ("frontleft")
-						if (w_left[4] > w_front[4] && w_left[5]>0)
+						if (w_left[4] > w_front[4] && w_left[5]>0 && w_front[5]>0)
 							w_left[5] -= adjdam
 							visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
 						else
 							w_front[5] -= adjdam
 							visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
 					if ("frontright")
-						if (w_right[4] > w_front[4] && w_right[5]>0)
+						if (w_right[4] > w_front[4] && w_right[5]>0 && w_front[5]>0)
 							w_right[5] -= adjdam
 							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 						else
 							w_front[5] -= adjdam
 							visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
 					if ("backleft")
-						if (w_left[4] > w_back[4] && w_left[5]>0)
+						if (w_left[4] > w_back[4] && w_left[5]>0 && w_back[5]>0)
 							w_left[5] -= adjdam
 							visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
 						else
 							w_back[5] -= adjdam
 							visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
 					if ("backright")
-						if (w_right[4] > w_back[4] && w_right[5]>0)
+						if (w_right[4] > w_back[4] && w_right[5]>0 && w_back[5]>0)
 							w_right[5] -= adjdam
 							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 						else
