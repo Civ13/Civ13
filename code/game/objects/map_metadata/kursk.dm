@@ -41,6 +41,28 @@
 /obj/map_metadata/kursk/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
+/obj/map_metadata/kursk/roundend_condition_def2name(define)
+	..()
+	switch (define)
+		if (GERMAN)
+			return "German"
+		if (RUSSIAN)
+			return "Soviet"
+/obj/map_metadata/kursk/roundend_condition_def2army(define)
+	..()
+	switch (define)
+		if (GERMAN)
+			return "Germans"
+		if (RUSSIAN)
+			return "Soviets"
+
+/obj/map_metadata/kursk/army2name(army)
+	..()
+	switch (army)
+		if ("Germans")
+			return "German"
+		if ("Soviets")
+			return "Soviet"
 
 /obj/map_metadata/kursk/cross_message(faction)
 	if (faction == RUSSIAN)
