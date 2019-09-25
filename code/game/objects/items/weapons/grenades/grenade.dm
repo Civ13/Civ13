@@ -589,32 +589,44 @@
 		switch(penloc)
 			if ("left")
 				F.w_left[5] -= heavy_armor_penetration
+				visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
 			if ("right")
 				F.w_right[5] -= heavy_armor_penetration
+				visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
 			if ("front")
 				F.w_front[5] -= heavy_armor_penetration
+				visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
 			if ("back")
 				F.w_back[5] -= heavy_armor_penetration
+				visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
 			if ("frontleft")
 				if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
 					F.w_left[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
 				else
 					F.w_front[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
 			if ("frontright")
 				if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
 					F.w_right[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
 				else
 					F.w_front[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
 			if ("backleft")
 				if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
 					F.w_left[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
 				else
 					F.w_back[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
 			if ("backright")
 				if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
 					F.w_right[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
 				else
 					F.w_back[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
 		F.try_destroy()
 		for(var/obj/structure/vehicleparts/movement/MV in F)
 			MV.broken = TRUE
