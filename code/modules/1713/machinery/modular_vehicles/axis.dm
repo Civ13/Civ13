@@ -115,9 +115,11 @@
 			if (reverse)
 				TT = get_turf(get_step(T,OPPOSITE_DIR(dir)))
 			for (var/obj/item/weapon/grenade/G in TT)
-				G.prime()
+				if (G.active)
+					G.prime()
 			for (var/obj/item/weapon/grenade/GG in T)
-				GG.prime()
+				if (GG.active)
+					GG.prime()
 			for(var/mob/living/L in TT)
 				var/protec = FALSE
 				for (var/obj/structure/vehicleparts/frame/FRR in L.loc)
