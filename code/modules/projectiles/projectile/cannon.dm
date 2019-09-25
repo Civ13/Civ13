@@ -66,8 +66,7 @@
 		if (WEST)
 			curloc = locate(launcher.x-5, launcher.y, launcher.z)
 		if (EAST)
-			curloc = locate(launcher.x, launcher.y+5, launcher.z)
-
+			curloc = locate(launcher.x+5, launcher.y, launcher.z)
 	var/turf/targloc = get_turf(target)
 
 	if (!istype(targloc) || !istype(curloc))

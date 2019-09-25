@@ -395,12 +395,16 @@
 		..()
 /obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/proj)
 	var/turf/startingturf = null
+
 	if (istype(proj, /obj/item/projectile))
 		var/obj/item/projectile/pj = proj
 		pj.throw_source = pj.starting
+		startingturf = pj.starting
 	else if (istype(proj, /obj/item/missile))
 		var/obj/item/missile/miss = proj
 		startingturf = miss.startingturf
+	else if (istype(proj, /obj/item/weapon/grenade))
+		startingturf = get_turf(proj)
 	if (!startingturf)
 		return "front"
 	switch(get_dir(startingturf, get_turf(src)))

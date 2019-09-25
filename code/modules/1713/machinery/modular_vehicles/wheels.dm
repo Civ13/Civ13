@@ -179,6 +179,7 @@
 			if (wheel.control.axis.engine.on)
 				wheel.control.axis.engine.on = FALSE
 				wheel.control.axis.moving = FALSE
+				wheel.control.axis.currentspeed = 0
 				wheel.control.axis.engine.update_icon()
 				user << "You stop the [wheel.control.axis]."
 				for (var/obj/structure/vehicleparts/movement/W in wheel.control.axis.wheels)

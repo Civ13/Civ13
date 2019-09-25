@@ -717,6 +717,7 @@
 	S.caliber = loaded.caliber
 	S.heavy_armor_penetration = loaded.heavy_armor_penetration
 	S.name = loaded.name
+	S.starting = get_turf(src)
 
 	loaded = null
 
