@@ -486,6 +486,7 @@
 							var/penloc = NO.CheckPenLoc(src)
 							if (!NO.CheckPen(src,penloc))
 								passthrough = FALSE
+								damage /= 7
 								NO.bullet_act(src,penloc)
 								bumped = TRUE
 								loc = null
