@@ -9,6 +9,8 @@
 //rotary (Wankel)
 //Turbine
 
+#define FUEL_CONSUMPTION_MODIFIER 2
+
 /obj/structure/engine/internal
 	name = "internal combustion engine"
 	desc = "A basic engine."
@@ -102,7 +104,7 @@
 /obj/structure/engine/internal/running()
 	if (on)
 		var/done = FALSE
-		var/fuelconsumption = fuelefficiency*(min(currentpower, maxpower)/maxpower) //fuelconsumption is based on current load
+		var/fuelconsumption = fuelefficiency*(min(currentpower, maxpower)/maxpower)*FUEL_CONSUMPTION_MODIFIER //fuelconsumption is based on current load
 		for (var/F in fuels)
 			if (fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
@@ -252,3 +254,5 @@
 	torque = 1.08
 	fuelefficiency = 0.22
 	fuels = list("diesel","biodiesel","gasoline")
+
+#undefine FUEL_CONSUMPTION_MODIFIER
