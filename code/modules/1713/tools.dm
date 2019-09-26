@@ -171,6 +171,20 @@
 		user << "<span class='notice'>You will now carve the tiled design!</span>"
 		design = "tiled"
 
+/obj/item/weapon/chisel/metal
+	name = "iron chisel"
+	desc = "A iron chisel, for carving stone walls."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "chisel_metal"
+	force = 2.25
+	throwforce = 1.25
+	w_class = 1.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	flammable = FALSE
+	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+	design = "smooth"
 
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)

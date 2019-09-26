@@ -331,6 +331,7 @@ RECIPE: /material/plastic/,plastic bag,/obj/item/weapon/storage/bag/plasticbag,0
 RECIPE: /material/plastic/,german gas mask,/obj/item/clothing/mask/gas/german,8,70,0,1,gas masks,0,0,102,8,null
 RECIPE: /material/plastic/,british gas mask,/obj/item/clothing/mask/gas/british,8,70,0,1,gas masks,0,0,102,8,null
 RECIPE: /material/plastic/,modern gas mask (single sided),/obj/item/clothing/mask/gas/modern,8,70,0,1,gas masks,0,0,132,8,null
+RECIPE: /material/plastic/,bug swatter,/obj/item/weapon/swatter/modern,8,70,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,modern gas mask (double sized),/obj/item/clothing/mask/gas/modern2,8,70,0,1,gas masks,0,0,132,8,null
 RECIPE: /material/plastic/,traffic cone,/obj/structure/sign/traffic/cone,1,35,0,1,signs,125,0,0,8,null
 RECIPE: /material/plastic/,do not enter sign,/obj/structure/sign/traffic/noentry,2,75,0,1,signs,125,0,0,8,null
@@ -423,6 +424,7 @@ RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,no
 RECIPE: /material/stone/,research kit,/obj/item/weapon/researchkit,10,190,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,scientific rock slate,/obj/item/weapon/book/research,4,110,0,1,none,0,0,0,0,null
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,stone
+RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,stone
 RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,none,100,0,0,8,null
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,none,0,0,0,8,null
@@ -716,8 +718,11 @@ RECIPE: /material/iron/,pike,/obj/item/weapon/material/pike,3,75,0,1,weapons,33,
 RECIPE: /material/iron/,hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,shovel,/obj/item/weapon/shovel,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,4,50,0,1,tools,18,0,0,8,null
+RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,4,50,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing_modern,4,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,butcher's cleaver,/obj/item/weapon/material/knife/butcher,3,40,0,1,tools,20,0,25,8,iron
 RECIPE: /material/iron/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,iron
+RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,pickaxe,/obj/item/weapon/pickaxe,3,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/star,2,15,0,1,weapons,0,39,0,8,iron

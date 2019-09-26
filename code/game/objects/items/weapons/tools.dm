@@ -84,6 +84,23 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 75)
 	attack_verb = list("bludgeoned", "hit")
 	flammable = TRUE
+
+/obj/item/weapon/hammer/modern
+	name = "clawhammer"
+	desc = "Tear stuff apart with this."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "hammer_modern"
+	item_state = "hammer_modern"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_NORMAL + 6
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 6
+	throw_range = 5
+	matter = list(DEFAULT_WALL_MATERIAL = 75)
+	attack_verb = list("bludgeoned", "hit")
+	flammable = FALSE
 /*
  * Wirecutters
  */
@@ -253,6 +270,19 @@
 	throwforce = WEAPON_FORCE_WEAK
 	slot_flags = null
 	attack_verb = list("slapped")
+	flammable = TRUE
+
+/obj/item/weapon/fishing/modern
+	name = "fishing rod"
+	desc = "A modern fishing pole."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "fishing_modern"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = 3.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "whacked")
 	flammable = TRUE
 
 /obj/item/weapon/goldsceptre
