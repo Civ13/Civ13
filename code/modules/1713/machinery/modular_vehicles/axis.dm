@@ -114,6 +114,9 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			var/turf/TT = get_turf(get_step(T, dir))
 			if (reverse)
 				TT = get_turf(get_step(T,OPPOSITE_DIR(dir)))
+			if (!TT)
+				moving = FALSE
+				stopmovementloop()
 			for (var/obj/item/weapon/grenade/G in TT)
 				if (G.active)
 					G.prime()
