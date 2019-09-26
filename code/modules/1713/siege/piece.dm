@@ -132,6 +132,7 @@
 				if (gunner_chair.buckled_mob)
 					gunner_chair.unbuckle_mob(buckled_mob)
 				gunner_chair.forceMove(src)
+			icon_state = "feldkanone18"
 			update_icon()
 	else
 		visible_message("[usr] starts assembling \the [src]...")
@@ -148,6 +149,7 @@
 					loader_chair.forceMove(locate(x-1,y,z))
 				else if (dir==WEST)
 					loader_chair.forceMove(locate(x+1,y,z))
+				loader_chair.dir = dir
 				loader_chair.anchored = TRUE
 			if (gunner_chair)
 				if (dir==NORTH)
@@ -158,7 +160,9 @@
 					gunner_chair.forceMove(locate(x,y-1,z))
 				else if (dir==WEST)
 					gunner_chair.forceMove(locate(x,y+1,z))
+				gunner_chair.dir = dir
 				gunner_chair.anchored = TRUE
+			icon_state = "feldkanone18_assembled"
 			update_icon()
 			return
 
