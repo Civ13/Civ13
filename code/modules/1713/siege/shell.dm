@@ -56,14 +56,32 @@
 /obj/item/cannon_ball/shell/tank/AP88
 	atype = "AP"
 	caliber = 88
-	heavy_armor_penetration = 100
+	heavy_armor_penetration = 110
 	damage = 145
 
 /obj/item/cannon_ball/shell/tank/APCR88
 	atype = "APCR"
 	caliber = 88
-	heavy_armor_penetration = 120
+	heavy_armor_penetration = 130
 	damage = 175
+
+/obj/item/cannon_ball/shell/tank/HE85
+	atype = "HE"
+	caliber = 85
+	heavy_armor_penetration = 20
+	damage = 330
+
+/obj/item/cannon_ball/shell/tank/AP85
+	atype = "AP"
+	caliber = 85
+	heavy_armor_penetration = 110
+	damage = 140
+
+/obj/item/cannon_ball/shell/tank/APCR85
+	atype = "APCR"
+	caliber = 85
+	heavy_armor_penetration = 130
+	damage = 170
 
 /obj/item/cannon_ball/shell/tank/HE76
 	atype = "HE"

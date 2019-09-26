@@ -255,4 +255,4 @@
 	fuelefficiency = 0.22
 	fuels = list("diesel","biodiesel","gasoline")
 
-#undefine FUEL_CONSUMPTION_MODIFIER
+#undef FUEL_CONSUMPTION_MODIFIER

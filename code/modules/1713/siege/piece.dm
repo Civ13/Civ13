@@ -28,6 +28,10 @@
 	var/caliber = 75
 	var/broken = FALSE
 	w_class = 20
+	var/can_assemble = FALSE
+	var/assembled = TRUE
+	var/obj/structure/bed/chair/loader/loader_chair = null
+	var/obj/structure/bed/chair/gunner/gunner_chair = null
 /obj/structure/cannon/modern
 	name = "field cannon"
 	icon = 'icons/obj/cannon.dmi'
@@ -75,11 +79,88 @@
 
 /obj/structure/cannon/modern/tank/russian76
 	name = "76 mm M1940 F-34"
-	desc = "a 76.2 mm german tank-based cannon."
+	desc = "a 76.2 mm russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
 	maxrange = 27
 	caliber = 76.2
+
+/obj/structure/cannon/modern/tank/russian85
+	name = "85 mm M1939 D5-T"
+	desc = "a 85 mm russian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 33
+	caliber = 85
+
+/obj/structure/cannon/modern/tank/russian85/field
+	name = "85 mm M1939 52-K cannon"
+	desc = "a 85 mm russian anti-air cannon converted for anti-tank use."
+	icon_state = "feldkanone18"
+	icon = 'icons/obj/cannon.dmi'
+	maxsway = 18
+	maxrange = 38
+	assembled = FALSE
+	can_assemble = TRUE
+	New()
+		..()
+		loader_chair = new /obj/structure/bed/chair/loader(src)
+		gunner_chair = new /obj/structure/bed/chair/gunner(src)
+
+/obj/structure/cannon/verb/assemble()
+	set category = null
+	set name = "Assemble"
+	set src in range(2, usr)
+
+	if (!istype(usr, /mob/living))
+		return
+
+	if (!can_assemble)
+		return
+
+	if (assembled)
+		visible_message("[usr] starts disassembling \the [src]...")
+		if (do_after(usr, 70, src, can_move = FALSE))
+			visible_message("[usr] finishes disassembling \the [src].")
+			assembled = FALSE
+			anchored = FALSE
+			if (loader_chair && (loader_chair in range(3,src)))
+				if (loader_chair.buckled_mob)
+					loader_chair.unbuckle_mob(buckled_mob)
+				loader_chair.forceMove(src)
+			if (gunner_chair && (gunner_chair in range(3,src)))
+				if (gunner_chair.buckled_mob)
+					gunner_chair.unbuckle_mob(buckled_mob)
+				gunner_chair.forceMove(src)
+			update_icon()
+	else
+		visible_message("[usr] starts assembling \the [src]...")
+		if (do_after(usr, 70, src, can_move = FALSE))
+			visible_message("[usr] finishes assembling \the [src].")
+			assembled = TRUE
+			anchored = TRUE
+			if (loader_chair)
+				if (dir==NORTH)
+					loader_chair.forceMove(locate(x,y-1,z))
+				else if (dir==SOUTH)
+					loader_chair.forceMove(locate(x,y+1,z))
+				else if (dir==EAST)
+					loader_chair.forceMove(locate(x-1,y,z))
+				else if (dir==WEST)
+					loader_chair.forceMove(locate(x+1,y,z))
+				loader_chair.anchored = TRUE
+			if (gunner_chair)
+				if (dir==NORTH)
+					gunner_chair.forceMove(locate(x+1,y,z))
+				else if (dir==SOUTH)
+					gunner_chair.forceMove(locate(x-1,y,z))
+				else if (dir==EAST)
+					gunner_chair.forceMove(locate(x,y-1,z))
+				else if (dir==WEST)
+					gunner_chair.forceMove(locate(x,y+1,z))
+				gunner_chair.anchored = TRUE
+			update_icon()
+			return
 
 /obj/structure/cannon/bullet_act(var/obj/item/projectile/proj)
 	if (istype(proj, /obj/item/projectile/shell))
@@ -129,11 +210,19 @@
 				M << "You load the [src]."
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 				return
-	else if (istype(W,/obj/item/weapon/wrench))
+	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
-
+	else if (can_assemble && assembled)
+		if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
+			M.remove_from_mob(W)
+			gunner_chair = W
+			W.anchored = TRUE
+		else if (!loader_chair && istype(W, /obj/structure/bed/chair/loader))
+			M.remove_from_mob(W)
+			loader_chair = W
+			W.anchored = TRUE
 /obj/structure/cannon/mortar
 	name = "mortar"
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -204,7 +293,11 @@
 
 
 /obj/structure/cannon/attack_hand(var/mob/attacker)
-	interact(attacker)
+	if (can_assemble && !assembled)
+		attacker << "<span class = 'warning'>Assemble the cannon first.</span>"
+		return
+	else
+		interact(attacker)
 
 /obj/structure/cannon/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
