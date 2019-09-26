@@ -39,6 +39,7 @@
 	var/list/matrix_current_locs = list()
 
 	var/color_code = ""
+	var/turret_type = "tank_turret"
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
@@ -66,17 +67,31 @@
 	name = "T-34"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,3=5)
-
+	color_code = "_g"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
 /obj/structure/vehicleparts/axis/heavy/panzeriv
 	name = "Panzer IV"
 	speeds = 3
 	speedlist = list(1=12,2=8,3=6)
-
+	New()
+		..()
+		var/pickedname = pick(tank_names_german)
+		tank_names_german -= pickedname
+		name = "[name] \'[pickedname]\'"
 /obj/structure/vehicleparts/axis/heavy/panzervi
-	name = "Panzer VI \'Tiger\'"
+	name = "Panzer VI Tiger"
 	speeds = 4
 	speedlist = list(1=14,2=11,3=9,4=7)
-
+	turret_type = "tiger_tank"
+	New()
+		..()
+		var/pickedname = pick(tank_names_german)
+		tank_names_german -= pickedname
+		name = "[name] \'[pickedname]\'"
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"
 	desc = "A powered axis from a car."

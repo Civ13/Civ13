@@ -1,3 +1,6 @@
+var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte")
+var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom")
+
 ////////AXIS: MOVEMENT LOOP/////////
 
 /obj/structure/vehicleparts/axis/ex_act(severity)

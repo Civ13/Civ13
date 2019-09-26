@@ -467,6 +467,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\axis.dm"
 #include "code\modules\1713\machinery\modular_vehicles\frame.dm"
 #include "code\modules\1713\machinery\modular_vehicles\frame_icons.dm"
+#include "code\modules\1713\machinery\modular_vehicles\frame_parts.dm"
 #include "code\modules\1713\machinery\modular_vehicles\movement.dm"
 #include "code\modules\1713\machinery\modular_vehicles\wheels.dm"
 #include "code\modules\1713\siege\boiling_oil.dm"

@@ -73,7 +73,8 @@
 		roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	for(var/obj/structure/cannon/C in T)
-		roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret[color_code][broken]", layer=11.1, dir=C.dir)
+		if (axis)
+			roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="[axis.turret_type][color_code][broken]", layer=11.1, dir=C.dir)
 		if (C.dir == NORTH)
 			if (dir == NORTH)
 				roof_turret.pixel_y = 0
