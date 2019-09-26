@@ -38,7 +38,7 @@
 "aL" = (/obj/structure/wild/tallgrass2,/obj/structure/barricade/horizontal,/turf/floor/dirt,/area/caribbean/german)
 "aM" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/dust,/area/caribbean/german)
 "aN" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/ldoor{dir = 1; doorcode = 4975; icon_state = "frame_steel"},/turf/floor/dirt,/area/caribbean/forest)
-"aO" = (/obj/structure/vehicleparts/axis/heavy{name = "Panzer IV"},/obj/structure/vehicleparts/frame/fwall{name = "frame"},/obj/structure/lamp/lamp_small/tank/red,/turf/floor/dirt,/area/caribbean/forest)
+"aO" = (/obj/structure/vehicleparts/axis/heavy{name = "Panzer IV 'Vergissmeinnicht'"},/obj/structure/vehicleparts/frame/fwall{name = "frame"},/obj/structure/lamp/lamp_small/tank/red,/turf/floor/dirt,/area/caribbean/forest)
 "aP" = (/obj/structure/vehicleparts/frame/rwall{name = "frame"},/obj/structure/bed/chair/commander,/turf/floor/dirt,/area/caribbean/forest)
 "aQ" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/frame/lb{icon_state = "frame_steel"; dir = 1},/obj/structure/vehicleparts/movement/tracks/reversed,/turf/floor/dirt/dust,/area/caribbean/forest)
 "aR" = (/obj/structure/vehicleparts/frame/lf{icon_state = "frame_steel"; dir = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{icon_state = "maxim_ww2"; dir = 1},/obj/structure/vehicleparts/movement/tracks{dir = 1; icon_state = "tracks_end"; invisibility = 0},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/dirt,/area/caribbean/forest)
@@ -89,7 +89,7 @@
 "bK" = (/obj/structure/vehicleparts/frame/bwall{icon_state = "frame_steel"; dir = 1},/obj/structure/shellrack/full76,/obj/structure/lamp/lamp_small/tank/red,/turf/floor/dirt/dust,/area/caribbean/forest)
 "bL" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/trench,/area/caribbean/german)
 "bM" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/tramadol,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/turf/floor/trench,/area/caribbean/german)
-"bN" = (/obj/structure/vehicleparts/axis/heavy{color_code = "_g"; dir = 1; name = "T-34"},/obj/structure/vehicleparts/frame/fwall{icon_state = "frame_steel"; dir = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"bN" = (/obj/structure/vehicleparts/axis/heavy{name = "Panzer IV 'Greta'"},/obj/structure/vehicleparts/frame/fwall{name = "frame"},/obj/structure/lamp/lamp_small/tank/red,/turf/floor/dirt,/area/caribbean/forest)
 "bO" = (/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/obj/structure/table/wood,/turf/floor/trench,/area/caribbean/german)
 "bP" = (/obj/structure/barricade/vertical,/turf/floor/dirt/burned,/area/caribbean/german)
 "bQ" = (/obj/structure/closet/crate/ww2/ammo_mg34,/turf/floor/grass,/area/caribbean/german)
@@ -363,6 +363,10 @@
 "gY" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass,/area/caribbean/forest)
 "gZ" = (/obj/effect/landmark{name = "JoinLateGESap"},/turf/floor/plating/road,/area/caribbean/houses)
 "ha" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/plating/road,/area/caribbean/houses)
+"hb" = (/obj/structure/vehicleparts/axis/heavy{name = "Panzer IV 'Lute'"},/obj/structure/vehicleparts/frame/fwall{name = "frame"},/obj/structure/lamp/lamp_small/tank/red,/turf/floor/dirt,/area/caribbean/forest)
+"hc" = (/obj/structure/vehicleparts/axis/heavy{color_code = "_g"; dir = 1; name = "T-34 'Katya'"},/obj/structure/vehicleparts/frame/fwall{icon_state = "frame_steel"; dir = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"hd" = (/obj/structure/vehicleparts/axis/heavy{color_code = "_g"; dir = 1; name = "T-34 'Slavianka'"},/obj/structure/vehicleparts/frame/fwall{icon_state = "frame_steel"; dir = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"he" = (/obj/structure/vehicleparts/axis/heavy{color_code = "_g"; dir = 1; name = "T-34 'Rodina'"},/obj/structure/vehicleparts/frame/fwall{icon_state = "frame_steel"; dir = 1},/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 
 (1,1,1) = {"
 aaaaaaaaaaabababacababadababadababababaaaaabaHapayazayayayayaDaGaybWaJaLaMaSaSaSaSaSaSaLaLaJapbJcsababaaaaabaaagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
@@ -383,7 +387,7 @@ abababababababababababacababaaaaabaaaaabaaabababababaaabcRcScTcTababaaabaaabaaaa
 abababaiabababababababababaaaaaaaaababaaaaafaaaTdhdiaactcUcVcWcXaaacababavaWawaaabaaabaabAaaaaavaWawabababbCaIabavaWawaaaaaaagagababadacabaeaeaeaeaaabababagabababatagabababababababababababaaababababab
 abababafababababababaiabababafababaaaaaaaaaaaaabcechaaaactaacsaecuaaababaxbRbSaaaabCabbEbBaaaaaxbRbSabaiabaabDabaxbRbSaaaaaaabagagababababaaaeaeaeaaaaababababadabababababacababafababababababababababab
 abababababababababababacabababaaaaababaaaaaaabaccfcgabaaafafabaeaeababafaPbUbVaaafafaIabaaabaaaPbUbVabababababaaaPbUbVaaaaababababacabababababaeaaaaaaabababagababacabababababaaakabacababababababacabab
-abababaiababababababababababaaabaaabaiabababaaaaaaaaabaaaaababaeaeabafabaAaOaKaaaaafaaaIababaaaAaOaKababababababaAaOaKabaaaaabababababababadabaeaeaaajababababababadabadafaaaaaaaaababababababababababab
+abababaiababababababababababaaabaaabaiabababaaaaaaaaabaaaaababaeaeabafabaAaOaKaaaaafaaaIababaaaAbNaKababababababaAhbaKabaaaaabababababababadabaeaeaaajababababababadabadafaaaaaaaaababababababababababab
 adababababababaiababababababaaaaababaaababababababababaaaaaaaeaeaeabafacababababababababababababababababababaaaaababababababaiafababaiababababaeaeaaababababababakabababaaaaapapaaabaaaiababadababacabab
 abababacabababababababababababababababababababababadababadabaeaeabababababadaiababababacabababacabababacabababababababababababafabababacabaaaeaeagacababababababababacababaaapapaaaaabababababababababab
 abababababacabababababababababadababababadababaaamaaafababaeaeaaababababababababaiabababababababaiabababababababafababababababababababababaaaeaeabababababababababababababaaaaaaaaabacababababababababab
@@ -495,10 +499,10 @@ acabababababababababadabababababababababababababababababababaeaeababarabacababab
 abababababababababaiababacabadababababababababababababababaeaeababababababababadababababaiabababababababaaaaaaaaabababaiababababaEabababaeaeacababababaiababacabadababababababababababababababafabadabab
 ababababababababadababababababababababababadacakababadababaeaeaeabababababaiabababababababababababababababababababababababababacababababauaeabababababababababababababababababadababababadababababababab
 abababababaiabababababababababababaiabababadababababababababaeaeababadababababababababababacabababababababababababababababababababababababaeabababarabafababacababababababababaiabababababababababababab
-afacadababababababababababacadababababababcbcccdafababababaeaeabababababaaaRbNaVaaabababababacabababababababaiaiababababababababababadababaeaeabababababacabababababafacadababababababababababacabababab
+afacadababababababababababacadababababababcbcccdafababababaeaeabababababaaaRhcaVaaabababababacabababababababaiaiababababababababababadababaeaeabababababacabababababafacadababababababababababacabababab
 adafababafabababababababababababababafadababfwciababadababaaaeababaiabafabbbbybcaaabababaiabababababafacadababababaaabababababacabababababaeaeaeababababababababababadafababcHcHcHcHcHcHcHcHabababababab
 abababababacababababababababaiababababababaccfcgabababababaeaeababababababaNbkbXaaaaafafaaaaabaaaaaaaaafababafabaaababababababababababababaeaeacababadababaeababababababababcHcHcHcHcHcHcHcHaiabababafab
-abababababababababafacadabababababababababaaaaabababababaCaeabaaabaaabaaabaQbKbfaaabbebeababaaaRbNaVababababacabaaaRbNaVababaiabababadababaaaeababaiaeaeaeaeababaiabababababcHcHcHcHcHcHcHcHabababababad
+abababababababababafacadabababababababababaaaaabababababaCaeabaaabaaabaaabaQbKbfaaabbebeababaaaRhdaVababababacabaaaRheaVababaiabababadababaaaeababaiaeaeaeaeababaiabababababcHcHcHcHcHcHcHcHabababababad
 abababadabababababadafababafababababababababcsabcsadcsaeaecuabcsabcsabcsabaaaaaaaaafababbIafaabbbybcaaafbeababacaabbbybcafababababababababaeaeaeaeaeaeaeaeaeaeaeaeaeabababadcHcHcHcHcHcHcHcHabababababab
 ababababababababababababababacabababababaactdcddddddddaeaedddddddddddeabadaaaaaaaaabaaaaabacaaaNbkbXabbGaaababacaaaNbkbXabadababababababaCaeabagabagabaeabababadabaeaeaeababcHcHcHcHcHcHcHcHabababababab
 ababacafabababaiabababababababababababafababaHapapapapaeaeapapapapapbJcsabctaactabaaababbHaaaaaQbKbfabbIabababaaaaaQbKbfabababababadabaeaeaeabacabababababadaiababacabaeaeaeaeaeaeaeaeaeaeaeaaabafacadab
