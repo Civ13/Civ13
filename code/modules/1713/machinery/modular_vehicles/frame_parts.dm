@@ -111,6 +111,7 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/panzervi/back/door
 	w_back = list("c_door",TRUE,TRUE,45,50,TRUE,TRUE)
+	doorcode = 11940
 /obj/structure/vehicleparts/frame/panzervi/rb
 	w_right = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,50,70,FALSE,FALSE)
@@ -136,8 +137,10 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_wall",TRUE,TRUE,30,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/panzeriv/left/door
 	w_left = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
+	doorcode = 11940
 /obj/structure/vehicleparts/frame/panzeriv/right/door
 	w_right = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
+	doorcode = 11940
 /obj/structure/vehicleparts/frame/panzeriv/rb
 	w_right = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
@@ -163,8 +166,10 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t34/left/door
 	w_left = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
+	doorcode = 4975
 /obj/structure/vehicleparts/frame/t34/right/door
 	w_right = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
+	doorcode = 4975
 /obj/structure/vehicleparts/frame/t34/rb
 	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
