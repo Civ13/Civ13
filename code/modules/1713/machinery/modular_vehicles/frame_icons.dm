@@ -75,6 +75,8 @@
 	for(var/obj/structure/cannon/C in T)
 		if (axis)
 			roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="[axis.turret_type][color_code][broken]", layer=11.1, dir=C.dir)
+		else
+			roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="", layer=11.1, dir=C.dir)
 		if (C.dir == NORTH)
 			if (dir == NORTH)
 				roof_turret.pixel_y = 0
