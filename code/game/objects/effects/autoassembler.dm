@@ -89,7 +89,7 @@
 		var/done3 = FALSE
 		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)
 			if (!done3)
-				for (var/obj/structure/engine/internal/I in range(2,E))
+				for (var/obj/structure/engine/internal/I in range(3,E))
 					if (!done3)
 						I.fueltank = E
 						E.anchored = TRUE

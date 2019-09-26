@@ -65,6 +65,14 @@
 	maxrange = 25
 	caliber = 75
 
+/obj/structure/cannon/modern/tank/german88
+	name = "8.8 cm KwK 36"
+	desc = "an 88 mm german tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 88
+
 /obj/structure/cannon/modern/tank/russian76
 	name = "76 mm M1940 F-34"
 	desc = "a 76.2 mm german tank-based cannon."

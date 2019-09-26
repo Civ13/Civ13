@@ -47,6 +47,24 @@
 	heavy_armor_penetration = 75
 	damage = 125
 
+/obj/item/cannon_ball/shell/tank/HE88
+	atype = "HE"
+	caliber = 88
+	heavy_armor_penetration = 22
+	damage = 350
+
+/obj/item/cannon_ball/shell/tank/AP88
+	atype = "AP"
+	caliber = 88
+	heavy_armor_penetration = 100
+	damage = 145
+
+/obj/item/cannon_ball/shell/tank/APCR88
+	atype = "APCR"
+	caliber = 88
+	heavy_armor_penetration = 120
+	damage = 175
+
 /obj/item/cannon_ball/shell/tank/HE76
 	atype = "HE"
 	caliber = 76.2
@@ -159,7 +177,8 @@
 	icon_state = "shellrack0"
 	w_class = 10.0
 	var/obj/item/weapon/storage/internal/storage
-
+	density = FALSE
+	opacity = FALSE
 
 /obj/structure/shellrack/New()
 	..()
@@ -210,6 +229,24 @@
 	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	update_icon()
+
+/obj/structure/shellrack/full88/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE88(storage)
+	new /obj/item/cannon_ball/shell/tank/HE88(storage)
+	new /obj/item/cannon_ball/shell/tank/HE88(storage)
+	new /obj/item/cannon_ball/shell/tank/HE88(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP88(storage)
+	new /obj/item/cannon_ball/shell/tank/AP88(storage)
+	new /obj/item/cannon_ball/shell/tank/AP88(storage)
+	new /obj/item/cannon_ball/shell/tank/AP88(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR88(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR88(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR88(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR88(storage)
 	update_icon()
 
 /obj/structure/shellrack/full76/New()

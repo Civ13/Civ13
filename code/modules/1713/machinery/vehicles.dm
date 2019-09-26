@@ -62,6 +62,21 @@
 	maxpower = 250
 	speedlist = list(1=12,2=8,3=6)
 
+/obj/structure/vehicleparts/axis/heavy/t34
+	name = "T-34"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,3=5)
+
+/obj/structure/vehicleparts/axis/heavy/panzeriv
+	name = "Panzer IV"
+	speeds = 3
+	speedlist = list(1=12,2=8,3=6)
+
+/obj/structure/vehicleparts/axis/heavy/panzervi
+	name = "Panzer VI \'Tiger\'"
+	speeds = 4
+	speedlist = list(1=14,2=11,3=9,4=7)
+
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"
 	desc = "A powered axis from a car."

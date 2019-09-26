@@ -167,7 +167,6 @@
 	w_right = list("c_wall",TRUE,TRUE,12,30,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,12,30,FALSE,FALSE)
 	w_front = list("c_armoredfront",FALSE,TRUE,12,30,FALSE,FALSE)
-
 /obj/structure/vehicleparts/frame/ifv/back
 	w_right = list("c_wall",TRUE,TRUE,12,30,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,12,30,FALSE,FALSE)
@@ -184,6 +183,31 @@
 /obj/structure/vehicleparts/frame/ifv/lf
 	w_left = list("c_wall",TRUE,TRUE,12,30,FALSE,FALSE)
 	w_front = list("c_wall",TRUE,TRUE,12,30,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/panzervi
+
+/obj/structure/vehicleparts/frame/panzervi/front
+	w_front = list("c_armoredwall",FALSE,TRUE,102,130,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/panzervi/back
+	w_back = list("c_wall",TRUE,TRUE,50,70,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/panzervi/left
+	w_left = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/panzervi/right
+	w_right = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/panzervi/back/door
+	w_back = list("c_door",TRUE,TRUE,45,50,TRUE,TRUE)
+/obj/structure/vehicleparts/frame/panzervi/rb
+	w_right = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,50,70,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/panzervi/lb
+	w_left = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,50,70,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/panzervi/rf
+	w_right = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
+	w_front = list("c_armoredfront2",FALSE,TRUE,102,130,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/panzervi/lf
+	w_left = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
+	w_front = list("c_armoredfront2",FALSE,TRUE,102,130,FALSE,FALSE)
 /*
 /obj/structure/vehicleparts/frame/verb/add_walls()
 	set category = null
