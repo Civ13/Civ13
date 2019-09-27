@@ -24,9 +24,10 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		check_corners()
 	if (isemptylist(matrix))
 		check_matrix()
-	moving = TRUE
-	movementloop()
-	movementsound()
+	if (!moving)
+		moving = TRUE
+		movementloop()
+		movementsound()
 
 /obj/structure/vehicleparts/axis/proc/movementsound()
 	if (!moving)
