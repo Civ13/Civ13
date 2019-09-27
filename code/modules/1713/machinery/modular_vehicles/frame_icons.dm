@@ -403,3 +403,7 @@
 					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
 					overlays += corn
 					roof.overlays += corn
+	if (axis)
+		roof.color = axis.color
+		for (var/image/I in roof.overlays)
+			I.color = axis.color

@@ -19,8 +19,8 @@
 				if (mob)
 					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
 				return FALSE
-		for(var/obj/effect/pseudovehicle\PV in O.loc)
-			if (VP.link != control.axis)
+		for(var/obj/effect/pseudovehicle/PV in O.loc)
+			if (PV.link != control.axis)
 				if (mob)
 					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
 				return FALSE

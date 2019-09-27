@@ -20,6 +20,9 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	qdel(src)
 */
 /obj/structure/vehicleparts/axis/proc/startmovementloop()
+	if (world.time <= lastmovementloop)
+		return FALSE
+	lastmovementloop = world.time+15
 	if (isemptylist(corners))
 		check_corners()
 	if (isemptylist(matrix))
@@ -175,12 +178,15 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
-			for(var/obj/covers/CV in T && !(CV in transporting))
-				if (CV.density || CV.wall)
-					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-					moving = FALSE
-					stopmovementloop()
-					return FALSE
+			for(var/obj/covers/CV in TT && !(CV in transporting))
+				if (current_weight < 600)
+					if (CV.density || CV.wall)
+						visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+						moving = FALSE
+						stopmovementloop()
+						return FALSE
+				else
+					CV.Destroy()
 			for(var/obj/item/I in TT && !(I in transporting))
 				qdel(I)
 			for(var/obj/effect/burning_oil/BO in T && !(BO in transporting))
@@ -467,6 +473,14 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 				return FALSE
 //			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
 			if (islist(matrix_current_locs[loc2textv][2]))
+				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
+					var/turf/toget = matrix_current_locs[dlocfind][1]
+					for (var/mob/living/ML in toget)
+						if (!locate(ML) in transporting)
+							ML.crush()
+					for (var/obj/structure/ST in toget)
+						if (!ST.density)
+							ST.Destroy()
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
 					M.forceMove(matrix_current_locs[dlocfind][1])
 					if (istype(M, /obj))

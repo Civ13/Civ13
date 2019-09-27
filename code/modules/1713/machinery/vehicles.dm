@@ -30,6 +30,7 @@
 	var/list/transporting = list()
 	var/list/components = list()
 	var/current_weight = 5
+	var/lastmovementloop = 0
 
 	//matrix/turning stuff
 	var/list/corners = list()
@@ -67,7 +68,8 @@
 	name = "T-34"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,3=5)
-	color_code = "_g"
+	color_code = ""
+	color = "#3d5931"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -77,6 +79,7 @@
 	name = "Panzer IV"
 	speeds = 3
 	speedlist = list(1=12,2=8,3=6)
+	color = "#585A5C"
 	New()
 		..()
 		var/pickedname = pick(tank_names_german)
@@ -87,6 +90,7 @@
 	speeds = 4
 	speedlist = list(1=14,2=11,3=9,4=7)
 	turret_type = "tiger_tank"
+	color = "#3B3F41"
 	New()
 		..()
 		var/pickedname = pick(tank_names_german)
