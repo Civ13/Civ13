@@ -27,11 +27,11 @@
 	flammable = TRUE
 
 /obj/structure/chemical_dispenser/full
-	dispensable_reagents = list(list("lithium", 100), list("carbon", 100), list("ammonia", 100), list("acetone", 100), list("sodium", 100), list("aluminum", 100), list("silicon", 100), list("phosphorus", 100), list("sulfur", 100), list("hclacid", 100), list("potassium", 100), list("iron", 100), list("copper", 100), list("mercury", 100), list("radium", 100), list("water", 100), list("ethanol", 100), list("sugar", 100), list("sacid", 100), list("tungsten", 100), list("charcoal", 100))
-
 	New()
 		..()
-		dispensable_reagents = sortList(dispensable_reagents)
+		var/list/elements = list("hydrogen", "helium", "lithium", "nitrogen", "oxygen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,100))
 
 /obj/structure/chemical_dispenser/ex_act(severity)
 	switch(severity)
@@ -82,9 +82,10 @@
 
 	var chemicals[0]
 	for (var/list/re in dispensable_reagents)
-		var/datum/reagent/temp = chemical_reagents_list[re[1]]
-		if (temp)
-			chemicals.Add(list(list("title" = "[temp.name] ([re[2]])", "id" = temp.id, "commands" = list("dispense" = temp.id)))) // list in a list because Byond merges the first list...
+		if (re[2] > 0)
+			var/datum/reagent/temp = chemical_reagents_list[re[1]]
+			if (temp)
+				chemicals.Add(list(list("title" = "[temp.name] ([re[2]])", "id" = temp.id, "commands" = list("dispense" = temp.id)))) // list in a list because Byond merges the first list...
 	data["chemicals"] = chemicals
 
 	// update the ui if it exists, returns null if no ui is passed/found
@@ -119,6 +120,7 @@
 					var/added_amount = min(min(amount, space),l[2])
 					l[2] -= added_amount
 					R.add_reagent(href_list["dispense"], added_amount)
+					sanitize_reagents()
 	if (href_list["ejectBeaker"])
 		if (beaker)
 			var/obj/item/weapon/reagent_containers/B = beaker
@@ -126,9 +128,6 @@
 			beaker = null
 
 	add_fingerprint(usr)
-	for (var/list/r in dispensable_reagents)
-		if (r[2] <= 0)
-			dispensable_reagents -= r
 	return TRUE // update UIs attached to this object
 
 /obj/structure/chemical_dispenser/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/user as mob)
@@ -149,6 +148,7 @@
 				if (!done)
 					dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
 			B.reagents.clear_reagents()
+			sanitize_reagents()
 			return
 		else
 			user << "A beaker is already placed in the dispenser."
@@ -164,7 +164,17 @@
 		return
 
 /obj/structure/chemical_dispenser/attack_hand(mob/user as mob)
+	sanitize_reagents()
 	ui_interact(user)
+
+/obj/structure/chemical_dispenser/proc/sanitize_reagents()
+	var/list/temp_dr = list()
+	for (var/list/r in dispensable_reagents)
+		if (r[2] > 0)
+			temp_dr += list(list(r[1],r[2]))
+	dispensable_reagents = temp_dr
+	return
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -85,6 +85,7 @@
 			user << "You fertilize the ploughed field around this plot."
 			for (var/obj/structure/farming/plant/P in range(1,src))
 				P.fertilized = TRUE
+			qdel(C)
 			if (ishuman(user))
 				H.adaptStat("farming", 1)
 			return
@@ -118,61 +119,77 @@
 		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user
 		var/obj/item/weapon/shovel/SH = C
+		if (H.a_intent != I_DISARM)
 
-		if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
-			if (T.available_snow >= 1)
-				H.shoveling_snow = TRUE
-				visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
-				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)/SH.usespeed))
-					visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
-					H.shoveling_snow = FALSE
-					H.adaptStat("strength", 1)
-					T.available_snow -= 1
-					new /obj/item/weapon/snowwall(T)
-					if (T.available_snow <= 0)
-						if (istype(T, /turf/floor/winter/grass))
-							T.ChangeTurf(/turf/floor/grass)
-						else if (istype(T, /turf/floor/dirt/winter))
-							T.ChangeTurf(/turf/floor/dirt)
+			if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
+				if (T.available_snow >= 1)
+					H.shoveling_snow = TRUE
+					visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)/SH.usespeed))
+						visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
+						H.shoveling_snow = FALSE
+						H.adaptStat("strength", 1)
+						T.available_snow -= 1
+						new /obj/item/weapon/snowwall(T)
+						if (T.available_snow <= 0)
+							if (istype(T, /turf/floor/winter/grass))
+								T.ChangeTurf(/turf/floor/grass)
+							else if (istype(T, /turf/floor/dirt/winter))
+								T.ChangeTurf(/turf/floor/dirt)
 
+					else
+						H.shoveling_snow = FALSE
 				else
-					H.shoveling_snow = FALSE
+					user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
+
+			else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
+				if (T.available_dirt >= 1)
+					H.shoveling_dirt = TRUE
+					visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)/SH.usespeed))
+						visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
+						H.shoveling_dirt = FALSE
+						H.adaptStat("strength", 1)
+						T.available_dirt -= 1
+						new /obj/item/weapon/sandbag(T)
+					else
+						H.shoveling_dirt = FALSE
+				else
+					user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
+			else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling_sand)
+				if (T.available_sand >= 1)
+					H.shoveling_sand = TRUE
+					visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)/SH.usespeed))
+						visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
+						H.shoveling_sand = FALSE
+						H.adaptStat("strength", 1)
+						T.available_sand -= 1
+						new /obj/item/stack/ore/glass(T)
+					else
+						H.shoveling_sand = FALSE
+
 			else
-				user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
-
-		else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
-			if (T.available_dirt >= 1)
-				H.shoveling_dirt = TRUE
-				visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
-				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)/SH.usespeed))
-					visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
-					H.shoveling_dirt = FALSE
-					H.adaptStat("strength", 1)
-					T.available_dirt -= 1
-					new /obj/item/weapon/sandbag(T)
-				else
-					H.shoveling_dirt = FALSE
-			else
-				user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
-		else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling_sand)
-			if (T.available_sand >= 1)
-				H.shoveling_sand = TRUE
-				visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
-				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, rand(45,60)/SH.usespeed))
-					visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
-					H.shoveling_sand = FALSE
-					H.adaptStat("strength", 1)
-					T.available_sand -= 1
-					new /obj/item/stack/ore/glass(T)
-				else
-					H.shoveling_sand = FALSE
-
+				return ..(C, user)
 		else
-			return ..(C, user)
-
+			if (radiation >= 1 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
+				visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (do_after(user, 150/SH.usespeed))
+					visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
+					H.adaptStat("strength", 1)
+					radiation *= 0.1
+					if (istype(src, /turf/floor/grass/jungle))
+						src.ChangeTurf(/turf/floor/dirt/jungledirt)
+					else
+						src.ChangeTurf(/turf/floor/dirt)
+					rad_act(0.01)
+					update_icon()
+			else
+				return ..(C, user)
 	else if (istype(C, /obj/item/weapon/poster/religious) && istype(get_turf(src), /turf/floor/dirt/underground))
 		user << "You start placing the [C] on the [src]..."
 		if (do_after(user, 70, src))
@@ -747,6 +764,7 @@
 	if (prob(25))
 		if (map.ordinal_age <= 1)
 			var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+			mineral.amount = rand(6,8)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			H << "<span class='danger'>You found some coal!</span>"
@@ -761,7 +779,7 @@
 			var/pickperc = pick(1,2,3,4)
 			if (pickperc == 1)
 				var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
-				mineral.amount = 2
+				mineral.amount = rand(6,8)
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
 				H << "<span class='danger'>You found some coal!</span>"
@@ -984,17 +1002,42 @@
 		user = usr
 	else
 		return
-	var/turf/floor/TB = src
-	if (user.ant && (TB.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
-		if (user.z < 2)
-			user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
-		else
-			var/digging_tunnel_time = 200
+	var/turf/floor/TO = get_turf(src)
+	if (TO && user.ant && (TO.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
+		if (user.z == 1)
+			var/turf/TB = locate(user.x,user.y,user.z+1)
+			for (var/obj/OB in TB)
+				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
+					user << "<span class='notice'>You can't dig up here, there is something blocking the way!</span>"
+					return
+			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
+				user << "<span class='notice'>You can't dig up on that type of floor!</span>"
+				return
+			var/digging_tunnel_time = 400
 			digging_tunnel_time /= user.getStatCoeff("strength")
 			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
 			visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
 			if (do_after(user, digging_tunnel_time, user.loc))
 				if (!TB.is_diggable)
+					return
+				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
+				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
+				visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
+				if (ishuman(user))
+					var/mob/living/carbon/human/H = user
+					H.adaptStat("crafting", 1)
+					H.adaptStat("strength", 1)
+			return
+		else
+			if (user.z <= 1)
+				user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
+				return
+			var/digging_tunnel_time = 200
+			digging_tunnel_time /= user.getStatCoeff("strength")
+			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
+			visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+			if (do_after(user, digging_tunnel_time, user.loc))
+				if (!TO.is_diggable)
 					return
 				new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
@@ -1010,6 +1053,6 @@
 	else if (locate(/obj/structure/multiz/) in user.loc)
 		user << "<span class='warning'>There already is something here.</span>"
 		return
-	else if (!TB.is_diggable)
+	else if (!TO.is_diggable)
 		user << "<span class='warning'>You cannot dig a hole here!</span>"
 		return

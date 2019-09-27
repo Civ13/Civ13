@@ -121,6 +121,70 @@
 	name = "prybar"
 	icon_state = "prybar"
 
+/obj/item/weapon/berriesgatherer
+	name = "berries gatherer"
+	desc = "A simple berry gatherer. Use it on berry bushes to efficiently gather berries."
+	icon = 'icons/obj/flora/berries.dmi'
+	icon_state = "berriesgatherer"
+	force = 2.0
+	throwforce = 1.0
+	item_state = "berriesgatherer"
+	w_class = 1.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	flammable = TRUE
+
+/obj/item/weapon/chisel
+	name = "stone chisel"
+	desc = "A stone chisel, for carving stone walls."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "chisel"
+	force = 2.0
+	throwforce = 1.0
+	w_class = 1.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	flammable = FALSE
+	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+	var design = "smooth"
+
+/obj/item/weapon/chisel/attack_self(mob/user)
+	var/display = list("Smooth", "Cave", "Brick", "Cobbled", "Tiled", "Cancel")
+	var/input =  WWinput(user, "What design do you want to carve?", "Carving", "Cancel", display)
+	if (input == "Cancel")
+		return
+	else if  (input == "Smooth")
+		user << "<span class='notice'>You will now carve the smooth design!</span>"
+		design = "smooth"
+	else if  (input == "Cave")
+		user << "<span class='notice'>You will now carve the cave design!</span>"
+		design = "cave"
+	else if  (input == "Brick")
+		user << "<span class='notice'>You will now carve the brick design!</span>"
+		design = "brick"
+	else if  (input == "Cobbled")
+		user << "<span class='notice'>You will now carve the cobbled design!</span>"
+		design = "cobbled"
+	else if  (input == "Tiled")
+		user << "<span class='notice'>You will now carve the tiled design!</span>"
+		design = "tiled"
+
+/obj/item/weapon/chisel/metal
+	name = "iron chisel"
+	desc = "A iron chisel, for carving stone walls."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "chisel_metal"
+	force = 2.25
+	throwforce = 1.25
+	w_class = 1.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	flammable = FALSE
+	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+	design = "smooth"
 
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
@@ -132,9 +196,36 @@
 		/*if (!(locate(/obj/roof/, (user.x,user.y,user.z-1)))
 			user << "<span class='notice'>You try to dig, but something hard is underneath!</span>"
 			return*/ //TO DO TO STOP PEOPLE FROM DIGGING ITNO BUNKERS LATER, TAISLIN PLZ FIX K THX!
+		if (!(locate(/obj/structure/multiz/) in user.loc) && user.z == 1)
+			TB = locate(user.x,user.y,user.z+1)
+			for (var/obj/OB in TB)
+				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
+					user << "<span class='notice'>You can't dig up here, there is something blocking the way!</span>"
+					return
+			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
+				user << "<span class='notice'>You can't dig up on that type of floor!</span>"
+				return
+			var/digging_tunnel_time = 400
+			if (ishuman(user))
+				var/mob/living/carbon/human/H = user
+				digging_tunnel_time /= H.getStatCoeff("strength")
+				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+			visible_message("<span class='danger'>[user] starts digging up!</span>", "<span class='danger'>You start digging up.</span>")
+			if (do_after(user, digging_tunnel_time, user.loc))
+				if (!TB.is_diggable)
+					return
+				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
+				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
+				visible_message("<span class='danger'>[user] finishes digging up.</span>")
+				if (ishuman(user))
+					var/mob/living/carbon/human/H = user
+					H.adaptStat("crafting", 1)
+					H.adaptStat("strength", 1)
+			return
 		if ((TB.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
-			if (user.z < 2)
+			if (user.z <= 1)
 				user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
+				return
 			else
 				var/digging_tunnel_time = 200
 				if (ishuman(user))

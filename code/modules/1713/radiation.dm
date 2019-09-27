@@ -291,6 +291,13 @@
 		global_colour_matrix = list(0.8, 0.1, 0.1,\
 						0.1, 0.8, 0.1,\
 						0.1, 0.1, 0.8)
+	spawn(50)
+		for (var/obj/structure/wild/W)
+			W.rad_act(22)
+	spawn(65)
+		for (var/obj/structure/farming/F)
+			F.rad_act(22)
+
 	if (log)
 		log_game("<font color='red'>Nuke detonated in the map!</font>")
 

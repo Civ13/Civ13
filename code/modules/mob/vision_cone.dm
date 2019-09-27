@@ -8,10 +8,6 @@
 // - Honker
 
 
-
-//Defines.
-#define OPPOSITE_DIR(D) turn(D, 180)
-
 client/
 	var/list/hidden_atoms = list()
 	var/list/hidden_mobs = list()

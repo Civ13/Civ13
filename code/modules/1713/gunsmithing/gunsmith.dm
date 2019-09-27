@@ -259,7 +259,7 @@
 	else if (choice_caliber == "5.5mm intermediate rifle")
 		current_gun.caliber = "smallintermediumrifle"
 		current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
-	if (choice_caliber != "Cancel" && choice_stock != "Cancel" && choice_barrel != "Cancel" && choice_receiver != "Cancel" && choice_feeding != "Cancel")
+	if (choice_caliber && choice_stock && choice_barrel && choice_receiver && choice_feeding)
 		var/named = input(user, "Choose a name for this gun (max 15 characters):", "Gunsmithing", "gun")
 		if (named && named != "")
 			named = sanitize(named,15)

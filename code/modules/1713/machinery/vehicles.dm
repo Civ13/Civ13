@@ -8,6 +8,8 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	flammable = FALSE
+	var/broken_icon = 'icons/obj/vehicleparts_damaged.dmi'
+	var/normal_icon = 'icons/obj/vehicleparts.dmi'
 /////////////////////////////////AXIS/////////////////////////////////////
 /obj/structure/vehicleparts/axis
 	name = "vehicle axis"
@@ -20,7 +22,24 @@
 	var/maxpower = 50
 	var/list/speedlist = list(1=6,2=5,3=4,4=3,5=2)
 	powerneeded = 0
+	var/obj/structure/engine/internal/engine = null
+	var/moving = FALSE
+	var/vehicle_m_delay = 1
+	var/obj/item/vehicleparts/wheel/modular/wheel = null
+	var/reverse = FALSE
+	var/list/transporting = list()
+	var/list/components = list()
+	var/current_weight = 5
 
+	//matrix/turning stuff
+	var/list/corners = list()
+	var/list/matrix = list()
+	var/matrix_l = 0
+	var/matrix_h = 0
+	var/list/matrix_current_locs = list()
+
+	var/color_code = ""
+	var/turret_type = "tank_turret"
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
@@ -35,6 +54,53 @@
 	maxpower = 40
 	speedlist = list(1=8,2=6,3=4)
 
+/obj/structure/vehicleparts/axis/heavy
+	name = "heavy vehicle axis"
+	desc = "A heavy and slow vehicle axis."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 3
+	maxpower = 250
+	speedlist = list(1=12,2=8,3=6)
+
+/obj/structure/vehicleparts/axis/heavy/t34
+	name = "T-34"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,3=5)
+	color_code = "_g"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+/obj/structure/vehicleparts/axis/heavy/panzeriv
+	name = "Panzer IV"
+	speeds = 3
+	speedlist = list(1=12,2=8,3=6)
+	New()
+		..()
+		var/pickedname = pick(tank_names_german)
+		tank_names_german -= pickedname
+		name = "[name] \'[pickedname]\'"
+/obj/structure/vehicleparts/axis/heavy/panzervi
+	name = "Panzer VI Tiger"
+	speeds = 4
+	speedlist = list(1=14,2=11,3=9,4=7)
+	turret_type = "tiger_tank"
+	New()
+		..()
+		var/pickedname = pick(tank_names_german)
+		tank_names_german -= pickedname
+		name = "[name] \'[pickedname]\'"
+/obj/structure/vehicleparts/axis/car
+	name = "car axis"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 70
+	speedlist = list(1=8,2=6,3=4,4=3,5=2)
+
 /obj/structure/vehicleparts/axis/proc/get_speed()
 	if (currentspeed <= 0)
 		currentspeed = 0
@@ -43,6 +109,8 @@
 	else
 		var/spd = (currentspeed/speeds)*maxpower
 		powerneeded = spd
+		if (currentspeed > speeds)
+			currentspeed = speeds
 		return speedlist[currentspeed]
 
 /obj/structure/vehicleparts/axis/proc/check_enginepower(var/esize = 0)
@@ -81,6 +149,7 @@
 	nodrop = TRUE
 	w_class = 5
 	secondary_action = TRUE
+	var/obj/structure/vehicle/origin = null
 
 /obj/item/vehicleparts/wheel/handle
 	name = "motorcycle handles"
@@ -102,6 +171,8 @@
 		return
 	if (!H.driver_vehicle.sails)
 		return
+	if (!(H.driver_vehicle in range(3,loc)))
+		return
 	if (H.driver_vehicle.sails)
 		if (!H.driver_vehicle.sails_on)
 			if (world.time > spamtimer)
@@ -121,10 +192,12 @@
 		return
 	if(!H.driver_vehicle.engine)
 		return
+	if (!(H.driver_vehicle in range(3,loc)))
+		return
 	if (!H.driver_vehicle.engine.on && H.driver_vehicle.fueltank.reagents.total_volume > 0)
 		H.driver_vehicle.engine.turn_on(H)
 		H.driver_vehicle.set_light(3)
-		playsound(loc, 'sound/machines/diesel_starting.ogg', 65, FALSE, 2)
+		playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 2)
 		spawn(40)
 			if (H.driver_vehicle && H.driver_vehicle.engine && H.driver_vehicle.engine.on)
 				H.driver_vehicle.running_sound()
@@ -340,24 +413,6 @@
 				qdel(src)
 				return
 		return
-////////////////////////FRAMES//////////////////////
-/obj/structure/vehicleparts/frame
-	name = "steel frame"
-	desc = "a steel vehicle frame."
-	icon = 'icons/obj/vehicleparts.dmi'
-	icon_state = "frame_steel"
-	powerneeded = 0
-	flammable = FALSE
-	var/resistance = 150
-	var/list/connections = list()
-/obj/structure/vehicleparts/frame/wood
-	name = "wood frame"
-	desc = "a wood vehicle frame."
-	icon = 'icons/obj/vehicleparts.dmi'
-	icon_state = "frame_wood"
-	powerneeded = 0
-	flammable = TRUE
-	resistance = 90
 
 ///////////////////////EXTRA STUFF//////////////////////
 

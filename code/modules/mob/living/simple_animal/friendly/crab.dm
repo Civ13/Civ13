@@ -43,3 +43,13 @@
 				Move(get_step(src,pick(4,8)))
 				turns_since_move = FALSE
 	regenerate_icons()
+
+/mob/living/simple_animal/crab/small/crab_san
+	name = "crab-san"
+	desc = "A hard-shelled crustacean soldier. it seems to look around for enemies to kill, being a soldier of the imperial army and all."
+	icon_state = "crab_san"
+	icon_living = "crab_san"
+	icon_dead = "crab_san_dead"
+	mob_size = MOB_MINISCULE
+	maxHealth = 40
+	health = 40

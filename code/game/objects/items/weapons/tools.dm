@@ -27,6 +27,43 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
+/*
+ * Fire Extinguisher
+ */
+/obj/item/weapon/fire_extinguisher
+	name = "fire extinguisher"
+	desc = "A red fire extinguisher filled with foam."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "fire_extinguisher"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_NORMAL+5
+	throwforce = WEAPON_FORCE_NORMAL+5
+	w_class = 3.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+	var/cap = 25
+	New()
+		..()
+		desc = "A red fire extinguisher filled with foam. Has [cap] units left."
+
+/obj/item/weapon/fire_extinguisher/attack_self(mob/living/carbon/human/user as mob)
+	if (!ishuman(user))
+		return
+	if (cap >= 1)
+		visible_message("<span class='notice'>[user] sprays the fire extinguisher!</span>", "<span class='notice'>You spray the fire extinguisher!</span>")
+		cap--
+		desc = "A red fire extinguisher filled with foam. Has [cap] units left."
+		var/turf/dest = get_turf(get_step(user, user.dir))
+		if (dest)
+			for (var/obj/effect/burning_oil/BO in dest)
+				qdel(BO)
+			new/obj/effect/decal/cleanable/foam(dest)
+			playsound(dest, 'sound/effects/extinguish.ogg', 100, FALSE)
+			return
+	else
+		user << "<span class='warning'>The fire extinguisher is empty.</span>"
+		return
 
 /*
  * Screwdriver
@@ -47,6 +84,23 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 75)
 	attack_verb = list("bludgeoned", "hit")
 	flammable = TRUE
+
+/obj/item/weapon/hammer/modern
+	name = "clawhammer"
+	desc = "Tear stuff apart with this."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "hammer_modern"
+	item_state = "hammer_modern"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_NORMAL + 6
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 6
+	throw_range = 5
+	matter = list(DEFAULT_WALL_MATERIAL = 75)
+	attack_verb = list("bludgeoned", "hit")
+	flammable = FALSE
 /*
  * Wirecutters
  */
@@ -218,6 +272,19 @@
 	attack_verb = list("slapped")
 	flammable = TRUE
 
+/obj/item/weapon/fishing/modern
+	name = "fishing rod"
+	desc = "A modern fishing pole."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "fishing_modern"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = 3.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "whacked")
+	flammable = TRUE
+
 /obj/item/weapon/goldsceptre
 	name = "gold sceptre"
 	desc = "A sceptre made of gold."
@@ -245,4 +312,22 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+
+/obj/item/weapon/weldingtool
+	name = "welding tool"
+	desc = "used to weld metals together"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "ww2_welder_off"
+	var/on_state = "ww2_welder_on"
+	var/off_state = "ww2_welder_off"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+
+	//Amount of OUCH when it's thrown
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	throw_speed = TRUE
+	throw_range = 5
+	w_class = 3.0
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")

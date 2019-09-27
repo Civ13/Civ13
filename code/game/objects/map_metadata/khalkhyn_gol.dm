@@ -28,7 +28,7 @@
 
 /obj/map_metadata/khalkhyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE)
+	if (J.is_ww2 == TRUE && J.is_tanker == FALSE)
 		. = TRUE
 	else
 		. = FALSE

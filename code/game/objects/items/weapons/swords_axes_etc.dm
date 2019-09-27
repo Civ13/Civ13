@@ -24,7 +24,7 @@
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK+1
-	weakens = 1
+	weakens = 3
 	flammable = TRUE
 
 /obj/item/weapon/melee/classic_baton/club

@@ -101,12 +101,14 @@
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
+/*
 	var/area/currentarea = get_area(src)
 	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
 		if (faction_text == map.faction1 && !map.faction1_can_cross_blocks())
 			gib()
 		else if (faction_text == map.faction2 && !map.faction2_can_cross_blocks())
 			gib()
+*/
 	if (mood > 100)
 		mood = 100
 	else if (mood < 0)
@@ -463,6 +465,7 @@
 
 		if (!client)
 			species.handle_npc(src)
+	process_roofs()
 
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
@@ -1445,6 +1448,8 @@
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
 					holder2.icon_state = "vc_basic"
+				if (CHINESE)
+					holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
 					if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"

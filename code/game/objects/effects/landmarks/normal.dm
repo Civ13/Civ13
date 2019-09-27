@@ -623,8 +623,14 @@
 			latejoin_turfs[name] += loc
 			qdel(src)
 			return
+		if ("JoinLateRUSap")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 /////////////////
-////russian/////
+////german/////
 		if ("JoinLateGECap")
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()
@@ -640,6 +646,12 @@
 			return
 
 		if ("JoinLateGEDoc")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("JoinLateGESap")
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()
 			latejoin_turfs[name] += loc

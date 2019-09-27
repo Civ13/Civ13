@@ -93,22 +93,3 @@
 				return FALSE
 			else
 				return TRUE
-/*
-/obj/structure/window/sandbag/CheckExit(atom/movable/O as mob|obj, target as turf)
-
-	if (get_dir(O.loc, target) == dir)
-		if (istype(O, /obj/item/projectile))
-			var/obj/item/projectile/P = O
-			if (get_turf(src) == P.starting)
-				return TRUE
-			else
-				if (prob(bullet_deflection_chance(P)))
-					visible_message("<span class = 'warning'>[P] hits the sandbag!</span>")
-					return FALSE
-				else
-					return TRUE
-		else
-			if (!O.throw_source)
-				return FALSE
-	return TRUE
-	*/

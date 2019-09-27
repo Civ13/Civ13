@@ -324,6 +324,9 @@
 	bound_height = 64
 	mobcapacity = 2
 	storagecapacity = 1
+	New()
+		..()
+		dwheel.origin = src
 
 /obj/structure/vehicle/boat/b400
 	name = "diesel outrigger"
@@ -341,6 +344,7 @@
 
 	New()
 		..()
+		dwheel.origin = src
 		cover_overlay = image(icon, "sail0")
 		cover_overlay.layer = MOB_LAYER + 2.11
 		cover_overlay_c = image(icon, "sail")
@@ -612,7 +616,37 @@
 			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
 		return
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
-	if (istype(W, /obj/item/vehicleparts/wheel))
+	if (istype(W, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/GC = W
+		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
+			var/found = FALSE
+			for (var/i in engine.fuels)
+				if (GC.reagents.has_reagent(i))
+					found = TRUE
+			if (!found)
+				user << "\The [W] has no acceptable fuel in it."
+				update_customdesc()
+				return
+			for (var/i in engine.fuels)
+				if (GC.reagents.has_reagent(i))
+					if (GC.reagents.get_reagent_amount(i)<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
+						fueltank.reagents.add_reagent(i,GC.reagents.get_reagent_amount(i))
+						GC.reagents.del_reagent(i)
+						user << "You empty \the [W] into the fueltank."
+						update_customdesc()
+						return
+					else
+						var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
+						fueltank.reagents.add_reagent(i,amttransf)
+						GC.reagents.remove_reagent(i,amttransf)
+						user << "You fill the fueltank completly with \the [W]."
+						update_customdesc()
+						return
+		else
+			user << "The fueltank is full already."
+			update_customdesc()
+			return
+	else if (istype(W, /obj/item/vehicleparts/wheel))
 		if ((user in ontop))
 			if (user == driver && engine)
 				if (engine.on)
@@ -694,40 +728,6 @@
 	else
 		overlays -= cover_overlay_c
 
-/obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers/glass))
-		var/obj/item/weapon/reagent_containers/glass/GC = W
-		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
-			var/found = FALSE
-			for (var/i in engine.fuels)
-				if (GC.reagents.has_reagent(i))
-					found = TRUE
-			if (!found)
-				user << "\The [W] has no acceptable fuel in it."
-				update_customdesc()
-				return
-			for (var/i in engine.fuels)
-				if (GC.reagents.has_reagent(i))
-					if (GC.reagents.get_reagent_amount(i)<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
-						fueltank.reagents.add_reagent(i,GC.reagents.get_reagent_amount(i))
-						GC.reagents.del_reagent(i)
-						user << "You empty \the [W] into the fueltank."
-						update_customdesc()
-						return
-					else
-						var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
-						fueltank.reagents.add_reagent(i,amttransf)
-						GC.reagents.remove_reagent(i,amttransf)
-						user << "You fill the fueltank completly with \the [W]."
-						update_customdesc()
-						return
-		else
-			user << "The fueltank is full already."
-			update_customdesc()
-			return
-	else
-		..()
-
 ///////////////////////////////////////////////////////
 /obj/structure/vehicle/motorcycle
 	name = "motorcycle"
@@ -747,8 +747,10 @@
 	axis = new/obj/structure/vehicleparts/axis/bike
 	wheeled = TRUE
 	dwheel = new/obj/item/vehicleparts/wheel/handle
-
 	light_color = "#e2ac53"
+	New()
+		..()
+		dwheel.origin = src
 /obj/structure/vehicle/motorcycle/m125
 	name = "125cc motorcycle"
 	desc = "A 125cc, 4-stroke gasoline motorcycle."

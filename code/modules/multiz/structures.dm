@@ -122,6 +122,8 @@
 			M.z = M.z-1
 			M.x = src.x
 			M.y = src.y
+			for (var/obj/item/I in M)
+				I.update_light()
 			return
 		else
 			if (M.pulling != null)
@@ -131,6 +133,8 @@
 			M.z = M.z+1
 			M.x = src.x
 			M.y = src.y
+			for (var/obj/item/I in M)
+				I.update_light()
 			return
 		M.visible_message(
 			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
@@ -228,6 +232,7 @@
 	desc = "A hole dug in the floor, leads to an underground tunnel."
 	icon_state = "hole_top"
 	istop = TRUE
+	var/filled = 0
 
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong
 	icon_state = "pine_closed"
@@ -332,6 +337,18 @@
 	ladder_id = "5"
 
 
+/obj/structure/multiz/ladder/ww2/tunneltop/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, /obj/item/weapon/sandbag))
+		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
+		filled++
+		qdel(I)
+		if (filled >= 4)
+			visible_message("The hole gets covered.")
+			for (var/obj/structure/multiz/ladder/ww2/tunnelbottom/TB in locate(src.x, src.y, src.z-1))
+				qdel(TB)
+			qdel(src)
+	else
+		..()
 /obj/structure/multiz/stairs
 	name = "Stairs"
 	icon_state = "rampup"

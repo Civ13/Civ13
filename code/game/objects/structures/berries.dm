@@ -38,7 +38,24 @@
 			user << "You stop foraging."
 	else
 		..()
-
+/obj/structure/wild/berrybush/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	var/mob/living/carbon/human/H = user
+	if(istype(W, /obj/item/weapon/berriesgatherer))
+		if (ishuman(user) && berries > 0)
+			//var/mob/living/carbon/human/H = user
+			H << "You start gathering some berries..."
+			if (do_after(user, 80, src))
+				if (src && berries >= 1)
+					new btype(get_turf(src))
+					new btype(get_turf(src))
+					berries--
+					berryproc()
+				else
+					user << "There are no berries to harvest here."
+			else
+				user << "You stop gathering berries."
+	else
+		..()
 
 /obj/structure/wild/berrybush/tinto
 	name = "tinto berry bush"
@@ -70,6 +87,24 @@
 	berries = 1
 	btype = /obj/item/weapon/reagent_containers/food/snacks/grown/berries/narco
 
+/obj/structure/wild/berrybush/zelenyy
+	name = "zelenyy berry bush"
+	icon_state = "zelenyybush_1"
+	berries = 1
+	btype = /obj/item/weapon/reagent_containers/food/snacks/grown/berries/zelenyy
+
+/obj/structure/wild/berrybush/marron
+	name = "marron berry bush"
+	icon_state = "marronbush_1"
+	berries = 1
+	btype = /obj/item/weapon/reagent_containers/food/snacks/grown/berries/marron
+
+/obj/structure/wild/berrybush/corcairghorm
+	name = "corcairghorm berry bush"
+	icon_state = "corcairghormbush_1"
+	berries = 1
+	btype = /obj/item/weapon/reagent_containers/food/snacks/grown/berries/corcairghorm
+
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries
 	name = "berries"
@@ -77,7 +112,23 @@
 	icon_state = "tintoberry"
 	satisfaction = 3
 	var/randeffect = "neutral"
-
+	nutriment_desc = list("fruit" = 1)
+	nutriment_amt = 1
+	decay = 18*600
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/New()
+	..()
+	for (var/list/i in map.berryeffects)
+		if (i[1] == randeffect)
+			switch (i[2])
+				if ("drug","poisonous","healing")
+					reagents.add_reagent(i[3],5)
+					nutriment_desc = list("bitterness" = 1)
+				if ("tasty")
+					satisfaction = 6
+					nutriment_desc = list("sweetness" = 1)
+				if ("disgusting")
+					satisfaction = -6
+					nutriment_desc = list("disgusting food" = 1)
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries/tinto
 	name = "tinto berries"
 	icon_state = "tintoberry"
@@ -103,3 +154,17 @@
 	icon_state = "narcoberry"
 	randeffect = "narco"
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/zelenyy
+	name = "zelenyy berries"
+	icon_state = "zelenyyberry"
+	randeffect = "zelenyy"
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/marron
+	name = "marron berries"
+	icon_state = "marronberry"
+	randeffect = "marron"
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/corcairghorm
+	name = "corcairghorm berries"
+	icon_state = "corcairghormberry"
+	randeffect = "corcairghorm"

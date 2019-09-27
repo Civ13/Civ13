@@ -60,17 +60,6 @@
 			picked = pick(/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/banana,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/peyote,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/coca,)
 		return picked
 
-/obj/structure/wild/New()
-	..()
-	check_rads()
-
-/obj/structure/wild/proc/check_rads()
-	rad_act(world_radiation/10000)
-	if (radiation > 60)
-		return
-	else
-		spawn(100)
-			check_rads()
 /obj/structure/wild/Destroy()
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
@@ -140,7 +129,9 @@
 	if (proj.damage > 100 && prob(33)) // makes shrapnel unable to take down trees
 		visible_message("<span class = 'danger'>[src] collapses!</span>")
 		qdel(src)
-
+	else if (istype(proj, /obj/item/projectile/shell))
+		visible_message("<span class = 'danger'>[src] is blown up!</span>")
+		qdel(src)
 /obj/structure/wild/tree
 	name = "small tree"
 	icon_state = "tree"

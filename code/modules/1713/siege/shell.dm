@@ -5,6 +5,9 @@
 	w_class = 4.0
 	value = 15
 	var/reagent_payload = null
+	var/damage = 100
+	var/caliber = 75
+	var/atype = "HE"
 
 /obj/item/cannon_ball/shell
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -12,6 +15,91 @@
 	icon_state = "shell"
 	w_class = 4.0
 	value = 20
+
+/obj/item/cannon_ball/shell/tank
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "cannon shell"
+	icon_state = "shellHE"
+	w_class = 5.0
+	value = 20
+	caliber = 75
+	heavy_armor_penetration = 15
+	New()
+		..()
+		name = "[caliber]mm [atype] shell"
+		icon_state = "shell[atype]"
+
+/obj/item/cannon_ball/shell/tank/HE75
+	atype = "HE"
+	caliber = 75
+	heavy_armor_penetration = 15
+	damage = 250
+
+/obj/item/cannon_ball/shell/tank/AP75
+	atype = "AP"
+	caliber = 75
+	heavy_armor_penetration = 52
+	damage = 100
+
+/obj/item/cannon_ball/shell/tank/APCR75
+	atype = "APCR"
+	caliber = 75
+	heavy_armor_penetration = 75
+	damage = 125
+
+/obj/item/cannon_ball/shell/tank/HE88
+	atype = "HE"
+	caliber = 88
+	heavy_armor_penetration = 22
+	damage = 350
+
+/obj/item/cannon_ball/shell/tank/AP88
+	atype = "AP"
+	caliber = 88
+	heavy_armor_penetration = 110
+	damage = 145
+
+/obj/item/cannon_ball/shell/tank/APCR88
+	atype = "APCR"
+	caliber = 88
+	heavy_armor_penetration = 130
+	damage = 175
+
+/obj/item/cannon_ball/shell/tank/HE85
+	atype = "HE"
+	caliber = 85
+	heavy_armor_penetration = 20
+	damage = 330
+
+/obj/item/cannon_ball/shell/tank/AP85
+	atype = "AP"
+	caliber = 85
+	heavy_armor_penetration = 110
+	damage = 140
+
+/obj/item/cannon_ball/shell/tank/APCR85
+	atype = "APCR"
+	caliber = 85
+	heavy_armor_penetration = 130
+	damage = 170
+
+/obj/item/cannon_ball/shell/tank/HE76
+	atype = "HE"
+	caliber = 76.2
+	heavy_armor_penetration = 16
+	damage = 250
+
+/obj/item/cannon_ball/shell/tank/AP76
+	atype = "AP"
+	caliber = 76.2
+	heavy_armor_penetration = 55
+	damage = 100
+
+/obj/item/cannon_ball/shell/tank/APCR76
+	atype = "APCR"
+	caliber = 76.2
+	heavy_armor_penetration = 80
+	damage = 125
 
 /obj/item/cannon_ball/mortar_shell
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -98,3 +186,101 @@
 	icon_state = "shell_nuclear"
 	w_class = 4.0
 	value = 50
+
+
+////////////////////////////////////////////////////////
+/obj/structure/shellrack
+	icon = 'icons/obj/structures.dmi'
+	name = "shell rack"
+	icon_state = "shellrack0"
+	w_class = 10.0
+	var/obj/item/weapon/storage/internal/storage
+	density = FALSE
+	opacity = FALSE
+
+/obj/structure/shellrack/New()
+	..()
+	storage = new/obj/item/weapon/storage/internal(src)
+	storage.storage_slots = 16
+	storage.max_w_class = 10
+	storage.max_storage_space = 600
+	storage.can_hold = list(/obj/item/cannon_ball/shell)
+	update_icon()
+
+/obj/structure/shellrack/Destroy()
+	qdel(storage)
+	storage = null
+	..()
+
+/obj/structure/shellrack/attack_hand(mob/user as mob)
+	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+		storage.open(user)
+		update_icon()
+	else
+		return
+/obj/structure/shellrack/MouseDrop(obj/over_object as obj)
+	if (storage.handle_mousedrop(usr, over_object))
+		..(over_object)
+		update_icon()
+
+/obj/structure/shellrack/attackby(obj/item/W as obj, mob/user as mob)
+	..()
+	storage.attackby(W, user)
+	update_icon()
+
+/obj/structure/shellrack/update_icon()
+	..()
+	icon_state = "shellrack[storage.contents.len]"
+/obj/structure/shellrack/full75/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	update_icon()
+
+/obj/structure/shellrack/full88/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE88(storage)
+	new /obj/item/cannon_ball/shell/tank/HE88(storage)
+	new /obj/item/cannon_ball/shell/tank/HE88(storage)
+	new /obj/item/cannon_ball/shell/tank/HE88(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP88(storage)
+	new /obj/item/cannon_ball/shell/tank/AP88(storage)
+	new /obj/item/cannon_ball/shell/tank/AP88(storage)
+	new /obj/item/cannon_ball/shell/tank/AP88(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR88(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR88(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR88(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR88(storage)
+	update_icon()
+
+/obj/structure/shellrack/full76/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	update_icon()

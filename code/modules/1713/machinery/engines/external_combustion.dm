@@ -18,7 +18,7 @@
 	if (pwd && hts)
 		if(!on)
 			visible_message("[user] turns \the [src] on.","You turn \the [src] on.")
-			playsound(loc, 'sound/machines/diesel_starting.ogg', 100, FALSE, 3)
+			playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 3)
 			on = TRUE
 			update_icon()
 			running()

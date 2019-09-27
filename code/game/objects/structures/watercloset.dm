@@ -131,7 +131,6 @@
 /obj/structure/toilet/pit_latrine/AltClick(var/mob/living/user)
 	return
 
-<<<<<<< master
 /obj/structure/toilet/outhouse
 	name = "outhouse"
 	desc = "An outhouse, more privacy than a pit latrine!"
@@ -216,8 +215,6 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
-=======
->>>>>>> master
 /obj/structure/shower
 	name = "shower"
 	desc = "A basic, hot-and-cold shower system."

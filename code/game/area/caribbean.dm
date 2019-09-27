@@ -1,5 +1,4 @@
 /area/caribbean
-	requires_power = FALSE
 	has_gravity = TRUE
 	no_air = FALSE
 	base_turf = /turf/floor/dirt //The base turf type of the area, which can be used to override the z-level's base turf

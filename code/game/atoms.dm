@@ -112,6 +112,8 @@
 
 /atom/proc/bullet_act(var/obj/item/projectile/P, def_zone)
 	P.on_hit(src, FALSE, def_zone)
+	if (istype(P, /obj/item/projectile/shell) && istype (src, /obj/structure))
+		ex_act(3.0)
 	. = FALSE
 
 /atom/proc/in_contents_of(container)//can take class or object instance as argument
@@ -563,6 +565,15 @@
 				user.Weaken(2)
 				user.setClickCooldown(22)
 				return
+			if (istype(O, /obj/structure/vehicleparts/frame))
+				var/obj/structure/vehicleparts/frame/F = O
+				if (!F.CanPass())
+					user << "<span class='danger'>You hit the [F.axis]!</span>"
+					user.adjustBruteLoss(rand(2,7))
+					user.Weaken(2)
+					user.setClickCooldown(22)
+					return
+
 		for(var/turf/T in range(1,user))
 			if ((get_dir(user,T) in nearbydirections(dir_to_tgt)) && T.density == TRUE)
 				user << "<span class='danger'>You hit the [T]!</span>"
