@@ -99,7 +99,7 @@
 	else
 		var/spd = control.axis.get_speed()
 		control.axis.vehicle_m_delay = spd
-		if (control.axis.currentspeed == 1)
+		if (control.axis.currentspeed == 1 && !control.axis.moving)
 			control.axis.moving = TRUE
 			H << "You put on the first gear."
 			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
