@@ -181,7 +181,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 					moving = FALSE
 					stopmovementloop()
 					return FALSE
-			for(var/obj/item/I in T && !(I in transporting))
+			for(var/obj/item/I in TT && !(I in transporting))
 				qdel(I)
 			for(var/obj/effect/burning_oil/BO in T && !(BO in transporting))
 				qdel(BO)
