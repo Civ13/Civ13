@@ -384,9 +384,6 @@
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg2
 	if (axis)
-		roof.color = axis.color
-		for (var/image/I in roof.overlays)
-			I.color = axis.color
 		color = axis.color
 		for (var/image/II in overlays)
 			II.color = axis.color

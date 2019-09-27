@@ -519,8 +519,8 @@
 					var/found = FALSE
 					for (var/i in whitelist_list)
 						var/temp_ckey = lowertext(i)
-						temp_ckey = replacettext(temp_ckey," ", "")
-						temp_ckey = replacettext(temp_ckey,"_", "")
+						temp_ckey = replacetext(temp_ckey," ", "")
+						temp_ckey = replacetext(temp_ckey,"_", "")
 						if (temp_ckey == client.ckey)
 							found = TRUE
 					if (found)
