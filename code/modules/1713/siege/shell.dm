@@ -103,7 +103,9 @@
 
 /obj/item/cannon_ball/shell/tank/nuclear/HAYMAKER
 	atype = "NUCLEAR"
-	caliber = null
+	name = "HAYMAKER Multicaliber Nuclear Shell"
+	icon_state = "shell_nuclear"
+	caliber = 0
 	heavy_armor_penetration = 225
 	damage = 500
 
