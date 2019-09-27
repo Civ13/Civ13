@@ -407,3 +407,5 @@
 		roof.color = axis.color
 		for (var/image/I in roof.overlays)
 			I.color = axis.color
+		for (var/image/II in overlays)
+			II.color = axis.color
