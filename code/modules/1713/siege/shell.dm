@@ -101,6 +101,12 @@
 	heavy_armor_penetration = 80
 	damage = 125
 
+/obj/item/cannon_ball/shell/tank/nuclear/HAYMAKER
+	atype = "NUCLEAR"
+	caliber = null
+	heavy_armor_penetration = 225
+	damage = 500
+
 /obj/item/cannon_ball/mortar_shell
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "mortar shell"
