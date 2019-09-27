@@ -7,7 +7,7 @@
 	var/obj/structure/bed/chair/drivers/drivingchair = null
 	var/obj/structure/vehicleparts/frame/control = null
 	var/lastdirchange = 0
-/obj/item/vehicleparts/wheel/modular/proc/turndir(var/newdir = "left")
+/obj/item/vehicleparts/wheel/modular/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
 	lastdirchange = world.time+15
@@ -16,6 +16,13 @@
 	for(var/obj/effect/pseudovehicle/O in control.axis.components)
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
 			if (VP.axis != control.axis)
+				if (mob)
+					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
+				return FALSE
+		for(var/obj/effect/pseudovehicle\PV in O.loc)
+			if (VP.link != control.axis)
+				if (mob)
+					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
 				return FALSE
 	if (newdir == "left")
 		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), newdir)
