@@ -24,7 +24,7 @@
 "ax" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/vehicleparts/frame/panzeriv/lb,/turf/floor/dirt,/area/caribbean/forest)
 "ay" = (/turf/floor/grass,/area/caribbean/german)
 "az" = (/turf/floor/dirt/dust,/area/caribbean/german)
-"aA" = (/obj/effect/autoassembler,/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/panzervi,/turf/floor/dirt,/area/caribbean/forest)
+"aA" = (/obj/structure/vehicleparts/frame/panzervi/right,/obj/structure/shellrack/full88,/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean/forest)
 "aB" = (/obj/structure/closet/hideout/pine,/turf/floor/grass,/area/caribbean/forest)
 "aC" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
 "aD" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/german)
@@ -162,7 +162,7 @@
 "df" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/forest)
 "dg" = (/obj/structure/wild/smallbush,/turf/floor/trench,/area/caribbean/forest)
 "dh" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/vehicleparts/frame/panzervi/lb,/turf/floor/dirt,/area/caribbean/forest)
-"di" = (/obj/structure/vehicleparts/frame/panzervi/right,/obj/structure/shellrack/full88,/turf/floor/dirt,/area/caribbean/forest)
+"di" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/panzervi,/turf/floor/dirt,/area/caribbean/forest)
 "dj" = (/obj/structure/window/classic,/turf/floor/wood/ship,/area/caribbean/houses)
 "dk" = (/obj/structure/window/classic,/obj/structure/curtain/open{color = "#DDDDDD"},/turf/floor/wood/ship,/area/caribbean/houses)
 "dl" = (/obj/structure/simple_door/key_door/anyone/rustic,/turf/floor/wood/ship,/area/caribbean/houses)
@@ -387,7 +387,7 @@ adababababaiababababababababaaaaaaaaaaaaaaaaababgDcOcOcOcQaeaecPcOcOcOcOcOcOcOcO
 abababafabababababababababababababaaabaaaaabababcsabctaactafaecsabcsabcsaacsabctaactabcsaactaactabaaababababababaaaaaaababagabadabababaaaeaeanababababababababagabababadacababaiabababacabababadacabafab
 abababababababababababacababaaaaabaaaahgaaabaaaaababaaabcRcScTcTababaaabaaabaaaaaaabababababaaababaaasababaaaaabaaaaaaaaabagababababababaeaeaeaoaaamababagagagagababagababaaababababababafababababababab
 abababaiabababababababababaaaaaaaaababhhaIafaaaTaKdhaactcUcVcWcXaaacababavawaxaaabbCabbEbAaaaaavawaxabababbCaIabavawaxaaaaaaagagababadacabaeaeaeaeaaabababagabababatagabababababababababababaaababababab
-abababafababababababaiabababafababaaaahiaIaaaadiaAaRaaaactaacsaecuaaababaNaOaPaaaabCabbEbBaaaaaNaOaPabaiabbCbDabaNaOaPaaaaaaabagagababababaaaeaeaeaaaaababababadabababababacababafababababababababababab
+abababafababababababaiabababafababaaaahiaIaaaaaAdiaRaaaactaacsaecuaaababaNaOaPaaaabCabbEbBaaaaaNaOaPabaiabbCbDabaNaOaPaaaaaaabagagababababaaaeaeaeaaaaababababadabababababacababafababababababababababab
 abababababababababababacabababaaaaababaaaaaaaaceaQchabaaafafabaeaeababafaVaWbbaaafafaIabbBabaaaVaWbbabababbCabaaaVaWbbaaaaababababacabababababaeaaaaaaabababagababacabababababaaakabacababababababacabab
 abababaiababababababababababaaabaaabaiabababaafYfjfXabaaaaababaeaeabafabbcbfbkaaaaafaaaIababaabcbfbkababababababbcbfbkabaaaaabababababababadabaeaeaaajababababababadabadafaaaaaaaaababababababababababab
 adababababababaiababababababaaaaababaaababababaaabababaaaaaaaeaeaeabafacababababababababababababababababababaaaaababababababaiafababaiababababaeaeaaababababababakabababaaaaapapaaabaaaiababadababacabab
