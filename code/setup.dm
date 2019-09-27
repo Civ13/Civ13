@@ -45,6 +45,7 @@
 			if (findtext(i, "="))
 				var/list/current = splittext(i, "=")
 				whitelist_list += current[1]
+				world.log << "[current[1]]"
 	else
 		admin_notice("<span class='danger'>Failed to load whitelist!</span>", R_DEBUG)
 	sleep(-1)

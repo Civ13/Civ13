@@ -383,29 +383,10 @@
 					ticon = normal_icon
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg2
-
-		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-			ticon = normal_icon
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
 	if (axis)
 		roof.color = axis.color
 		for (var/image/I in roof.overlays)
 			I.color = axis.color
+		color = axis.color
 		for (var/image/II in overlays)
 			II.color = axis.color
