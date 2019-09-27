@@ -10,6 +10,7 @@
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
+	lastdirchange = world.time+15
 	if (control.axis.moving == FALSE || control.axis.currentspeed == 0)
 		return FALSE
 	for(var/obj/effect/pseudovehicle/O in control.axis.components)
@@ -17,33 +18,10 @@
 			if (VP.axis != control.axis)
 				return FALSE
 	if (newdir == "left")
-		if (control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), "left"))
-			control.axis.dir = TURN_LEFT(control.axis.dir)
-		lastdirchange = world.time+15
-		for (var/obj/OB in control.axis.components)
-			OB.update_icon()
-		for (var/obj/structure/vehicleparts/movement/OBB in control.axis.wheels)
-			if (OBB.reversed)
-				OBB.dir = OPPOSITE_DIR(control.axis.dir)
-			else
-				OBB.dir = control.axis.dir
-			OBB.update_icon()
-		return TRUE
-	else if (newdir == "right")
-		if (control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), "right"))
-			control.axis.dir = TURN_RIGHT(control.axis.dir)
-		lastdirchange = world.time+15
-		for (var/obj/OB in control.axis.components)
-			if (!istype(OB, /obj/structure/cannon))
-				OB.dir = control.axis.dir
-			OB.update_icon()
-		for (var/obj/structure/vehicleparts/movement/OBB in control.axis.wheels)
-			if (OBB.reversed)
-				OBB.dir = OPPOSITE_DIR(control.axis.dir)
-			else
-				OBB.dir = control.axis.dir
-			OBB.update_icon()
-		return TRUE
+		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), newdir)
+	else
+		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), newdir)
+	return TRUE
 
 /obj/structure/bed/chair/drivers/ex_act(severity)
 	switch(severity)

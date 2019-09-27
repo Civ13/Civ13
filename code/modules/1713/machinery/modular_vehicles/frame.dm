@@ -570,8 +570,6 @@
 /obj/structure/vehicleparts/frame/Destroy()
 	visible_message("<span class='danger'>The frame gets wrecked!</span>")
 	update_icon()
-	if (axis)
-		axis.Destroy()
 	qdel(src)
 /obj/structure/vehicleparts/frame/ex_act(severity)
 	switch(severity)

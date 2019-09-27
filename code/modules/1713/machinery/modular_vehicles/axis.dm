@@ -11,14 +11,14 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			return
 		if (3.0)
 			return
-
+/*
 /obj/structure/vehicleparts/axis/Destroy()
 	for(var/obj/structure/vehicleparts/frame/F in components)
 		F.axis = null
 	wheel = null
 	visible_message("<span class='danger'>The [name] axis gets wrecked!</span>")
 	qdel(src)
-
+*/
 /obj/structure/vehicleparts/axis/proc/startmovementloop()
 	if (isemptylist(corners))
 		check_corners()
@@ -414,7 +414,6 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		check_matrix()
 	matrix_current_locs = list()
 
-
 	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
@@ -454,7 +453,12 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 						todestroy += O
 			for(var/obj/OM in todestroy)
 				qdel(OM)
-
+	dir = newdir
+	for (var/obj/structure/vehicleparts/movement/OBB in wheels)
+		if (OBB.reversed)
+			OBB.dir = OPPOSITE_DIR(dir)
+		else
+			OBB.dir = dir
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
@@ -474,7 +478,9 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 							if (FR.mwheel)
 								FR.mwheel.update_icon()
 						O.update_icon()
+
 	for(var/obj/structure/vehicleparts/VP in components)
+		VP.dir = dir
 		VP.update_icon()
 	return TRUE
 
