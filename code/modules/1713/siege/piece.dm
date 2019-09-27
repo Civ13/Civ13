@@ -187,7 +187,7 @@
 			return
 	if (istype(W, ammotype))
 		var/obj/item/cannon_ball/shell/tank/TS = W
-		if (caliber != TS.caliber && caliber != null)
+		if (caliber != TS.caliber && caliber != null && caliber != 0)
 			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
 			return
 		if (loaded)
