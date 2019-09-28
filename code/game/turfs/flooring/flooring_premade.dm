@@ -112,7 +112,7 @@
 	icon_state = "rocky"
 	initial_flooring = null
 
-/obj/covers/dirt/underground/attackby(obj/item/W as obj, mob/user as mob)
+/turf/floor/dirt/underground/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
 	if(istype(W, /obj/item/weapon/chisel))
 		var design = "smooth"
