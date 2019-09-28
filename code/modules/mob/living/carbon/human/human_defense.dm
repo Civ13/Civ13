@@ -226,41 +226,7 @@ bullet_act
 		gib()
 	else if (P.crushes)
 		crush()
-	if (istype(P, /obj/item/projectile/arrow/arrow/poisonous))
-		//yeah, he is fucked
-		apply_damage(15, BRUTE, def_zone)
-		spawn(350)
-			apply_damage(30, TOX, def_zone)
-			eye_blurry += 20
-			src << "<span class='danger'><big>You start to feel numb...</big></span>"
-			spawn(300)
-				eye_blurry += 20
-				adjustOxyLoss(10)
-				adjustBrainLoss(10)
-				src << "<span class='danger'><big>You feel numb... You can barely feel your legs and arms!</big></span>"
-				spawn(300)
-					Weaken(30)
-					adjustOxyLoss(20)
-					adjustBrainLoss(20)
-					eye_blurry += 30
-					src << "<span class='danger'><big>You start losing control of your muscles...</big></span>"
-					spawn(300)
-						Paralyse(60)
-					spawn(500)
-						adjustBrainLoss(40)
-						adjustOxyLoss(40)
-						Paralyse(60)
-						eye_blurry += 50
-						src << "<span class='danger'><big>You fade out...</big></span>"
 
-	if (istype(P, /obj/item/projectile/arrow/arrow/fire))
-		if (prob(5))
-			fire_stacks += 1
-		IgniteMob()
-	..(P, def_zone)
-	instadeath_check()
-	spawn (0.01)
-		qdel(P)
 
 /mob/living/carbon/human/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone)
 	var/obj/item/organ/external/affected = get_organ(check_zone(def_zone))

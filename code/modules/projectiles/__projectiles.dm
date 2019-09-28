@@ -22,31 +22,101 @@
 /obj/item/projectile/arrow
 	embed = TRUE
 	sharp = TRUE
+
 /obj/item/projectile/arrow/stone
 	damage = DAMAGE_MEDIUM-10
 	penetrating = 1
 	armor_penetration = 10
 	icon_state = "stone"
+	embed = FALSE
+	sharp = FALSE
+
 
 /obj/item/projectile/arrow/arrow
-	damage = DAMAGE_MEDIUM-2
-	penetrating = 1
-	armor_penetration = 10
+	damage = DAMAGE_LOW-8
+	penetrating = 0
+	armor_penetration = 0
 	icon_state = "arrow"
-
-/obj/item/projectile/arrow/arrow/poisonous
-	damage = DAMAGE_MEDIUM-2
-	penetrating = 1
-	armor_penetration = 10
-	icon_state = "arrow"
-	damage_type = TOX
+	embed = FALSE
+	sharp = FALSE
+	var/volume = 5
 
 /obj/item/projectile/arrow/arrow/fire
-	damage = DAMAGE_MEDIUM-3
-	penetrating = 1
+	damage = DAMAGE_LOW
+	penetrating = 0
 	armor_penetration = 10
 	icon_state = "arrow"
 	damage_type = BURN
+
+/obj/item/projectile/arrow/arrow/fire/gods
+	damage = DAMAGE_OH_GOD
+	penetrating = 100
+	armor_penetration = 1000
+	icon_state = "arrow_god"
+	damage_type = BURN
+
+/obj/item/projectile/arrow/arrow/stone
+	damage = DAMAGE_MEDIUM-6
+	penetrating = 1
+	armor_penetration = 2
+	icon_state = "arrow_copper"
+
+/obj/item/projectile/arrow/arrow/copper
+	damage = DAMAGE_MEDIUM-4
+	penetrating = 1
+	armor_penetration = 2
+	icon_state = "arrow_copper"
+
+/obj/item/projectile/arrow/arrow/iron
+	damage = DAMAGE_MEDIUM-2
+	penetrating = 1
+	armor_penetration = 4
+	icon_state = "arrow_iron"
+
+/obj/item/projectile/arrow/arrow/bronze
+	damage = DAMAGE_MEDIUM
+	penetrating = 1
+	armor_penetration = 6
+	icon_state = "arrow_bronze"
+
+/obj/item/projectile/arrow/arrow/steel
+	damage = DAMAGE_MEDIUM+2
+	penetrating = 1
+	armor_penetration = 8
+	icon_state = "arrow_steel"
+
+/obj/item/projectile/arrow/arrow/modern
+	damage = DAMAGE_MEDIUM+4
+	penetrating = 1
+	armor_penetration = 8
+	icon_state = "arrow_modern"
+
+/obj/item/projectile/arrow/arrow/vial
+	damage = DAMAGE_MEDIUM-4
+	penetrating = 1
+	armor_penetration = 10
+	icon_state = "arrow_vial"
+	volume = 15
+
+/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/human/M as mob)
+	if (prob(5))
+		M.fire_stacks += 1
+	M.IgniteMob()
+	M.instadeath_check()
+	spawn (0.01)
+		qdel(src)
+	..()
+
+/obj/item/projectile/arrow/arrow/attackby(obj/item/W as obj, mob/user as mob)
+	..()
+	if (!istype(user.l_hand, /obj/item/weapon/reagent_containers) && !istype(user.r_hand, /obj/item/weapon/reagent_containers))
+		return //do nothing if not reagent container
+	else
+		if(volume < src.reagents)
+			W.reagents.trans_to_obj(src, volume - src.reagents)
+
+/obj/item/projectile/arrow/arrow/on_impact(mob/living/carbon/human/M as mob)
+	src.reagents.trans_to(M, volume)
 
 /obj/item/projectile/grenade/smoke
 	name = "smoke grenade"
