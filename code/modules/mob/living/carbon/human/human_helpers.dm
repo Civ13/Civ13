@@ -103,6 +103,7 @@
 					lastz = usr.z
 					usr.sleeping = 20 //Short nap
 					if (buckled)
+						var/obj/structure/B = buckled
 						if (istype(B, /obj/structure/bed/bedroll))
 							B.forceMove(locate(1,1,1))
 						else
