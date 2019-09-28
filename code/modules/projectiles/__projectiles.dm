@@ -22,6 +22,7 @@
 /obj/item/projectile/arrow
 	embed = TRUE
 	sharp = TRUE
+	var/volume = 5
 
 /obj/item/projectile/arrow/stone
 	damage = DAMAGE_MEDIUM-10
@@ -39,7 +40,6 @@
 	icon_state = "arrow"
 	embed = FALSE
 	sharp = FALSE
-	var/volume = 5
 
 /obj/item/projectile/arrow/arrow/fire
 	damage = DAMAGE_LOW
@@ -106,14 +106,6 @@
 	spawn (0.01)
 		qdel(src)
 	..()
-
-/obj/item/projectile/arrow/arrow/attackby(obj/item/W as obj, mob/user as mob)
-	..()
-	if (!istype(user.l_hand, /obj/item/weapon/reagent_containers) && !istype(user.r_hand, /obj/item/weapon/reagent_containers))
-		return //do nothing if not reagent container
-	else
-		if(volume < src.reagents)
-			W.reagents.trans_to_obj(src, volume - src.reagents)
 
 /obj/item/projectile/arrow/arrow/on_impact(mob/living/carbon/human/M as mob)
 	src.reagents.trans_to(M, volume)
