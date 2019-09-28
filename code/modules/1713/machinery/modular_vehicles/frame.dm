@@ -549,25 +549,25 @@
 	var/isnowopen = FALSE
 
 	if (w_left[5] < 0)
-		if (w_left[6])
+		if (w_left[6] || w_left[1] == "c_door" || w_left[1] == "c_windoweddoor")
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_left = list(w_left[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 	if (w_right[5] < 0)
-		if (w_right[6])
+		if (w_right[6] || w_right[1] == "c_door" || w_right[1] == "c_windoweddoor")
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_right = list(w_right[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 	if (w_front[5] < 0)
-		if (w_front[6])
+		if (w_front[6] || w_front[1] == "c_door" || w_front[1] == "c_windoweddoor")
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_front = list(w_front[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 	if (w_back[5] < 0)
-		if (w_back[6])
+		if (w_back[6] || w_back[1] == "c_door" || w_back[1] == "c_windoweddoor")
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
