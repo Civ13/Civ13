@@ -3,6 +3,10 @@
 	name = "Magic Sword"
 	desc = "Shiny"
 	icon = 'icons/obj/magicweapons.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand_magic.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_magic.dmi',
+		)
 	icon_state = "ark_of_disease"
 	item_state = "ark_of_disease"
 	slot_flags = SLOT_BELT
@@ -68,13 +72,26 @@
 	icon_state = "ark_of_disease"
 	item_state = "ark_of_disease"
 	desc = "It pulses ominously, you feel sick just by looking at it."
-	force_divisor = 0.55 // 42 when wielded with hardnes 60 (steel)
-	thrown_force_divisor = 0.65 // 10 when thrown with weight 20 (steel)
+	force_divisor = 0.50 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	sharpness = 35
 	block_chance = 35
 	toxics = 25
 	toxicpower = 15
 	reagent1 = "food_poisoning"
 	reagent2 = "cholera"
-	reagent1amount = 2
-	reagent2amount = 1
+	reagent1amount = 10
+	reagent2amount = 5
+
+
+/obj/item/weapon/material/sword/magic/crimsonedge
+	name = "Crimson Edge"
+	icon_state = "crimson_edge"
+	item_state = "crimson_edge"
+	desc = "It looks like it is bleeding.."
+	force_divisor = 0.60 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
+	sharpness = 40
+	block_chance = 38
+	leeches = 20
+	leechpower = 20
