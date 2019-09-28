@@ -38,7 +38,7 @@
 
 /obj/item/weapon/melee/classic_baton/whip
 	name = "whip"
-	desc = "A leather wip. To keep your slaves in order."
+	desc = "A leather whip. To keep your slaves in order."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "whip"
 	item_state = "whip"
