@@ -413,7 +413,7 @@
 			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
 			return
 		else
-			var/display = list("Smooth", "Cave", "Brick", "Cobbled", "Tiled", "Cancel")
+			var/display = list("Smooth", "Cave", "Underground Cave", "Brick", "Cobbled", "Tiled", "Cancel")
 			var/input =  WWinput(user, "What design do you want to carve?", "Carving", "Cancel", display)
 			if (input == "Cancel")
 				return
@@ -423,6 +423,9 @@
 			else if  (input == "Cave")
 				user << "<span class='notice'>You will now carve the cave design!</span>"
 				design = "cave"
+			else if  (input == "Underground Cave")
+				user << "<span class='notice'>You will now carve the cave design!</span>"
+				design = "undercave"
 			else if  (input == "Brick")
 				user << "<span class='notice'>You will now carve the brick design!</span>"
 				design = "brick"
@@ -439,23 +442,27 @@
 				if(design == "smooth")
 					src.icon_state = "b_stone_wall"
 					src.name = "stone wall"
-					src.desc = "A stone wall."
+					src.desc = "A cave wall carved smooth."
 				else if(design == "cave")
 					src.icon_state = "rocky"
-					src.name = "cave stone wall"
-					src.desc = "A stone wall carved to look like cave rocks."
+					src.name = "underground cave wall"
+					src.desc = "A cave wall."
+				else if(design == "undercave")
+					src.icon_state = "rock"
+					src.name = "cave wall"
+					src.desc = "A cave wall."
 				else if(design == "brick")
 					src.icon_state = "b_brick_stone_wall"
 					src.name = "stone brick wall"
-					src.desc = "A stone wall carved to look like its made of bricks."
+					src.desc = "A cave wall carved to look like its made of stone bricks."
 				else if(design == "cobbled")
 					src.icon_state = "b_cobbled_stone_wall"
 					src.name = "cobbled stone wall"
-					src.desc = "A stone wall carved to look like piled up stones."
+					src.desc = "A cave wall carved to look like piled up stones."
 				else if(design == "tiled")
 					src.icon_state = "b_tiled_stone_wall"
 					src.name = "tiled stone wall"
-					src.desc = "A stone wall carved to have a tiled pattern."
+					src.desc = "A cave wall carved to have a tiled stone pattern."
 				else
 	..()
 
