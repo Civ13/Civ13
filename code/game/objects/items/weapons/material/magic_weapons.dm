@@ -65,8 +65,10 @@
 
 /obj/item/weapon/material/sword/magic/arkofdisease
 	name = "Ark of Disease"
+	icon_state = "ark_of_disease"
+	item_state = "ark_of_disease"
 	desc = "It pulses ominously, you feel sick just by looking at it."
-	force_divisor = 0.85 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.55 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.65 // 10 when thrown with weight 20 (steel)
 	sharpness = 35
 	block_chance = 35
