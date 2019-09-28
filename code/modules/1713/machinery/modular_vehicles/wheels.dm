@@ -62,6 +62,7 @@
 	if (!control.axis.engine || !control.axis.engine.fueltank)
 		return
 	if (!control.axis.engine.on && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume > 0)
+		control.axis.currentspeed = 0
 		control.axis.engine.turn_on(H)
 		if (isemptylist(control.axis.corners))
 			control.axis.check_corners()

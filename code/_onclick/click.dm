@@ -327,8 +327,9 @@
 	A.ShiftMiddleClick(src)
 	return
 
-/atom/proc/ShiftMiddleClick(var/mob/user)
-	user.pointed(src)
+/atom/proc/ShiftMiddleClick(var/mob/living/user)
+	if (istype(user, /mob/living))
+		user.pointed(src)
 
 
 // In case of use break glass
