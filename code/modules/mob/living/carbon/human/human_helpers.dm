@@ -102,6 +102,12 @@
 					lasty = usr.y
 					lastz = usr.z
 					usr.sleeping = 20 //Short nap
+					if (buckled)
+						var/obj/structure/B = buckled
+						if (istype(B, /obj/structure/bed/bedroll))
+							B.forceMove(locate(1,1,1))
+						else
+							B.unbuckle_mob()
 					inducedSSD = TRUE
 					sleep_update()
 					usr.forceMove(locate(1,1,1))
@@ -119,6 +125,12 @@
 			usr.sleeping = 0 //Short nap
 			inducedSSD = FALSE
 			usr.forceMove(locate(lastx,lasty,lastz))
+			if (buckled)
+				var/obj/structure/B = buckled
+				if (istype(B, /obj/structure/bed/bedroll))
+					B.forceMove(locate(lastx,lasty,lastz))
+				else
+					B.unbuckle_mob()
 			return
 //to keep the character sleeping
 /mob/living/carbon/human/proc/sleep_update()

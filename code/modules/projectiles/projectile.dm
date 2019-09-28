@@ -485,6 +485,7 @@
 					if (!found || found != NO.axis)
 						if (found != NO.axis)
 							var/penloc = NO.CheckPenLoc(src)
+							world.log << "[src] [penloc]"
 							if (!NO.CheckPen(src,penloc))
 								passthrough = FALSE
 								damage /= 7

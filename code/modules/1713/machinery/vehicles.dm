@@ -113,8 +113,8 @@
 	else
 		var/spd = (currentspeed/speeds)*maxpower
 		powerneeded = spd
-		if (currentspeed > speeds)
-			currentspeed = speeds
+		if (currentspeed > speedlist.len)
+			currentspeed = speedlist.len
 		return speedlist[currentspeed]
 
 /obj/structure/vehicleparts/axis/proc/check_enginepower(var/esize = 0)
