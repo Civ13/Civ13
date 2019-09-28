@@ -93,5 +93,5 @@
 	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
 	sharpness = 40
 	block_chance = 38
-	leeches = 20
+	leechs = 20
 	leechpower = 20
