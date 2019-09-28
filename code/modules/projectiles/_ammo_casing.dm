@@ -36,8 +36,8 @@
 	value = 3
 
 /obj/item/ammo_casing/arrow
-	name = "arrow"
-	desc = "Use a bow to fire it."
+	name = "arrow shaft"
+	desc = "Use a bow to fire it, not very effective."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "arrow"
 	spent_icon = null
