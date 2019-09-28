@@ -1264,7 +1264,7 @@
 /datum/job/german/ss_panzergrenadier_squad_leader
 	title = "Waffen-SS Unterscharführer Panzergrenadier"
 	en_meaning = "Waffen-SS Mechanized Infantry"
-	rank_abbreviation = ""
+	rank_abbreviation = "Uscha."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
 	SL_check_independent = TRUE
