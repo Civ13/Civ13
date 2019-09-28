@@ -452,7 +452,7 @@
 									M.adjustBruteLoss(PS.damage)
 									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.08
-					if ("APCR")
+					else if ("APCR")
 						for (var/mob/living/M in axis.transporting)
 							shake_camera(M, 1, 1)
 							if (M.loc == loc)
@@ -463,7 +463,7 @@
 									M.adjustBruteLoss(PS.damage)
 									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.35
-					if ("AP")
+					else if ("AP")
 						for (var/mob/living/M in axis.transporting)
 							shake_camera(M, 1, 1)
 							if (M.loc == loc)
@@ -474,6 +474,16 @@
 									M.adjustBruteLoss(PS.damage)
 									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.3
+					else
+						for (var/mob/living/M in axis.transporting)
+							if (M.loc == loc)
+								var/tprob = 50
+								if (M.lying || M.prone)
+									tprob = 25
+								if (prob(tprob))
+									M.adjustBruteLoss(PS.damage)
+									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
+						adjdam = proj.damage * 0.05
 				switch(penloc)
 					if ("left")
 						w_left[5] -= adjdam

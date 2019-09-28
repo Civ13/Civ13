@@ -216,7 +216,6 @@
 "eh" = (/obj/structure/wild/jungle/medpine,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
 "ei" = (/obj/structure/window/sandbag/sandbag,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
 "ej" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/dust,/area/caribbean/russian{name = "Russian Base"})
-"ek" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag/sandbag,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
 "el" = (/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
 "em" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
 "en" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
@@ -509,7 +508,7 @@ abababadabababababadafababafababababababababcsabcsabcsaeaecuhkcsabcsabcsabaaaaaa
 ababababababababababababababacabababababaactdcddddddddaeaedddddddddddeabadaaaaaaaaabaaaaabacaabVbXecabbGaaababacaabVbXecabadababababababaCaeabagabagabaeabababadabaeaeaeababcHcHcHcHcHcHcHcHabababababab
 ababacafabababaiabababababababababababafababaHapapapapaeaeapapapapapbJcsabctaactabaabFbFbHaaaafafifWabbIbIbIabaaaafafifWabababababadabaeaeaeabacabababababadaiababacabaeaeaeaeaeaeaeaeaeaeaeaaabafacadab
 abafababababababababababadabababababababadcsaHapedeeefegegedeeedeeapapdddddddddfctababbFbFaaahaaaaaaaaabacafaaaaaaaaaaaaababaaabafababaeaeaeababababababaiababababababafabaecHcHcHcHcHcHcHcHacacadafabab
-ababababababadabababababababababababababababaHapeeeeeiejejekeeeeelapapapapapapbJaactabcsaactaactabctaactaactaaaaaaabaaaaaaabacacadabaeaeaeaaabababababadababacababababababaecHcHcHcHcHcHcHcHabababababab
+ababababababadabababababababababababababababaHapeeeeeiejejeieeeeelapapapapapapbJaactabcsaactaactabctaactaactaaaaaaabaaaaaaabacacadabaeaeaeaaabababababadababacababababababaecHcHcHcHcHcHcHcHabababababab
 abababababaiababacababacafabababaiababababctaHdgemeeeneoeoeneeeeedeeedepedelapapdddddddddddddddddddddddddddfcsabaaaaaaaaababababacabaeaeaeabaiababababababababababababababaecHcHcHcHcHcHcHcHabababababab
 ababababadabababababafababababababababababacaHapeeeeeeeeegeeeeeeeqeeepeeeeerapapapapapapapapapapapapapapapbJabaaabaaamaaadababababababaeaeacababababababababababababababaeaecHcHcHcHcHcHcHcHabababababad
 abababababacabababababababababadabababababcsaHapeseeegegegeteueveeewexeweweleleyezeAeBeCeCeCgVeCeCeAeAezapbJctaaaactaaaaaaaaaactacabababaeabaeabababacababaaabababababababaecHcHcHcHcHcHcHcHaiabababafab
