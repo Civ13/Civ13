@@ -90,6 +90,7 @@ var/global/list/vehicle_walls = list( \
 	icon_state = "frame_wood"
 	flammable = TRUE
 	resistance = 90
+	noroof = TRUE
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/right
 	name = "wood frame"
@@ -97,6 +98,7 @@ var/global/list/vehicle_walls = list( \
 	icon_state = "frame_wood"
 	flammable = TRUE
 	resistance = 90
+	noroof = TRUE
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/rb
 	w_right = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,TRUE)
