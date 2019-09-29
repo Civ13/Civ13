@@ -50,7 +50,8 @@
 /obj/structure/vehicleparts/frame/examine(mob/user)
 	..()
 	if (axis)
-		user << "<span class='notice'>Current Weight: <b>[axis.get_weight()]</b>.</span>"
+		if (user in range(1,src))
+			user << "<span class='notice'>Current Weight: <b>[axis.get_weight()]</b>.</span>"
 
 /obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)

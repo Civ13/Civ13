@@ -40,6 +40,11 @@
 	var/list/connections = list() // what this engine is connected to. cam be an axis, oil well, etc.
 	var/on = FALSE
 
+/obj/structure/engine/examine(mob/user)
+	..()
+	if (user in range(1,src))
+		user << "<span class='notice'>Max Power: <b>[maxpower]</b>.</span>"
+
 /obj/structure/engine/proc/turn_on()
 	return
 
@@ -262,7 +267,6 @@
 						NEN.name = "[NEN.enginesize]cc turbine engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
-						NEN.desc = "[desc] Total Power: [NEN.maxpower]"
 						H << "You finish building the engine."
 						done = FALSE
 						return
@@ -289,7 +293,6 @@
 						NEN.weight = 20*(NEN.enginesize/1000)
 						NEN.name = "[NEN.enginesize]cc 2-S gasoline engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
-						NEN.desc = "[desc] Total Power: [NEN.maxpower]"
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
 						H << "You finish building the engine."
 						done = FALSE
@@ -317,7 +320,6 @@
 						NEN.weight = 20*(NEN.enginesize/1000)
 						NEN.name = "[NEN.enginesize]cc 4-S gasoline engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
-						NEN.desc = "[desc] Total Power: [NEN.maxpower]"
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
 						H << "You finish building the engine."
 						done = FALSE
@@ -345,7 +347,6 @@
 						NEN.weight = 20*(NEN.enginesize/1000)
 						NEN.name = "[NEN.enginesize]cc 4-S ethanol-gasoline engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
-						NEN.desc = "[desc] Total Power: [NEN.maxpower]"
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
 						H << "You finish building the engine."
 						done = FALSE
@@ -373,7 +374,6 @@
 						NEN.weight = 20*(NEN.enginesize/1000)
 						NEN.name = "[NEN.enginesize]cc diesel engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
-						NEN.desc = "[desc] Total Power: [NEN.maxpower]"
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
 						H << "You finish building the engine."
 						done = FALSE
@@ -401,7 +401,6 @@
 						NEN.weight = 20*(NEN.enginesize/1000)
 						NEN.name = "[NEN.enginesize]cc biodiesel engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
-						NEN.desc = "[desc] Total Power: [NEN.maxpower]"
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
 						H << "You finish building the engine."
 						done = FALSE
@@ -429,7 +428,6 @@
 						NEN.weight = 20*(NEN.enginesize/1000)
 						NEN.name = "[NEN.enginesize]cc hesselman engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
-						NEN.desc = "[desc] Total Power: [NEN.maxpower]"
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
 						H << "You finish building the engine."
 						done = FALSE
