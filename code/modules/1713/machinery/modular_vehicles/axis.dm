@@ -521,6 +521,9 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	if (!ishuman(H))
 		return
 	var/found = FALSE
+	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here?", "Vehicle Assembly", "No", list("No", "Yes"))
+	if (inp == "No")
+		return
 	for(var/obj/structure/vehicleparts/frame/F in H.loc)
 		found = TRUE
 		var/customname = input(H, "What do you want to name this vehicle?") as text
@@ -528,16 +531,37 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			name = "[H]'s vehicle"
 		else
 			name = customname
+		var/choosecolor1 = input(H, "Choose this vehicle's hex color (without the #):", "Color" , "a9a9a9")
+		if (choosecolor1 == null || choosecolor1 == "")
+			return
+		else
+			choosecolor1 = uppertext(choosecolor1)
+			if (lentext(choosecolor1) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(choosecolor1,i,i+1)
+				else
+					numtocheck = copytext(choosecolor1,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			color = addtext("#",choosecolor1)
+		var/direct = WWinput(H, "What direction is it facing right now?", "Vehicle Assembly", "South", list("North", "South", "East", "West"))
+		dir = text2dir(direct)
 		H.remove_from_mob(src)
 		var/turf/aloc = null
-		var/tx = H.x
-		var/ty = H.y
-		for(var/obj/structure/vehicleparts/frame/F2 in range(2,H))
-			if (F2.x > H.x)
+		var/tx = x
+		var/ty = y
+		for(var/obj/structure/vehicleparts/frame/F2 in range(4,src))
+			if (F2.x > tx)
 				tx = F2.x
-			if (F2.y < H.y)
+			if (F2.y < tx)
 				ty = F2.y
-		aloc = get_turf(locate(tx,ty,H.z))
+		world.log << "[tx], [ty]"
+		aloc = get_turf(locate(tx-2,ty+2,H.z))
+		world.log << "[aloc.x], [aloc.y]"
 		if (aloc)
 			new/obj/effect/autoassembler(aloc)
 			H << "<span class='warning'>Vehicle assembled.</span>"

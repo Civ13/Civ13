@@ -47,6 +47,11 @@
 		tmpsum += L.mob_size*2
 	return tmpsum
 
+/obj/structure/vehicleparts/frame/examine(mob/user)
+	..()
+	if (axis)
+		user << "<span class='notice'>Current Weight: <b>[axis.get_weight()]</b>.</span>"
+
 /obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)
 		if (abs(VP.y-y) > 5 || abs(VP.x-x) > 5)
