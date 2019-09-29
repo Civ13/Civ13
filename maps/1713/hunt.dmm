@@ -275,7 +275,7 @@
 "fo" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/pirates{name = "Shipwreck"})
 "fp" = (/turf/floor/dirt,/area/caribbean/pirates{name = "Shipwreck"})
 "fq" = (/obj/structure/closet/crate/muskets,/turf/floor/dirt,/area/caribbean/pirates{name = "Shipwreck"})
-"fr" = (/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/turf/floor/dirt,/area/caribbean/indians/camp)
+"fr" = (/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog,/obj/item/ammo_casing/arrow/stone,/obj/item/ammo_casing/arrow/stone,/obj/item/ammo_casing/arrow/stone,/turf/floor/dirt,/area/caribbean/indians/camp)
 "fs" = (/obj/effect/spawner/mobspawner/mouse,/turf/floor/grass,/area/caribbean/island)
 "ft" = (/turf/floor/wood_broken,/area/caribbean/sea/shallow)
 "fu" = (/obj/effect/spawner/mobspawner{max_number = 7; timer = 600},/turf/floor/grass,/area/caribbean/island)
