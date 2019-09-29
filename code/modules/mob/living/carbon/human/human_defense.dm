@@ -246,7 +246,16 @@ bullet_act
 		gib()
 	else if (P.crushes)
 		crush()
+	if (istype(P, /obj/item/projectile/arrow/arrow/fire))
+		if (prob(5))
+			fire_stacks += 1
+		IgniteMob()
 
+	..(P, def_zone)
+	instadeath_check()
+
+	spawn (0.01)
+		qdel(P)
 
 /mob/living/carbon/human/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone)
 	var/obj/item/organ/external/affected = get_organ(check_zone(def_zone))
