@@ -60,4 +60,5 @@
 		/obj/item/weapon/material/sword/scimitar,
 		/obj/item/weapon/material/sword/saif,
 		/obj/item/weapon/material/sword/sabre,
-		/obj/item/weapon/material/sword/rapier)
+		/obj/item/weapon/material/sword/rapier,
+		/obj/item/weapon/material/sword/armingsword)

@@ -170,9 +170,15 @@
 	load_delay = 8
 	projtype = "arrow"
 
-/obj/item/weapon/gun/projectile/bow/update_icon()
-	//VISUALIZATION OF AMMO HERE
-	//loaded
+/obj/item/weapon/gun/projectile/bow/proc/remove_arrow_overlay()
+	src.overlays = null
+
+/obj/item/weapon/gun/projectile/bow/proc/load_arrow_overlay(var/obj/item/ammo_casing/arrow/A as obj)
+	//remove all overlays
+	remove_arrow_overlay()
+	//add arrow overlay
+	src.overlays += icon(A.icon,A.icon_state)
+
 
 /obj/item/weapon/gun/projectile/bow/sling
 	name = "sling"
@@ -239,6 +245,7 @@
 		loaded.Insert(1, C) //add to the head of the list
 		user.visible_message("[user] inserts \a [C] into the [src].", "<span class='notice'>You insert \a [C] into the [src].</span>")
 		icon_state = "[icotype]1"
+		load_arrow_overlay(C)
 		if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 
 /obj/item/weapon/gun/projectile/bow/unload_ammo(mob/user, var/allow_dump=1)
@@ -255,6 +262,7 @@
 			user.put_in_hands(C)
 			user.visible_message("[user] removes \a [C] from the [src].", "<span class='notice'>You remove \a [C] from the [src].</span>")
 			icon_state = "[icotype]0"
+			remove_arrow_overlay()
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
 		user << "<span class='warning'>[src] is empty.</span>"
