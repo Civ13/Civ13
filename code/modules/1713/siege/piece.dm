@@ -59,6 +59,9 @@
 	bound_width = 32
 	density = TRUE
 	caliber = 75
+	New()
+		..()
+		w_class = caliber/2
 
 
 /obj/structure/cannon/modern/tank/german75

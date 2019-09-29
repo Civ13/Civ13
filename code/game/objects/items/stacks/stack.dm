@@ -234,8 +234,7 @@
 				if (!(numtocheck in listallowed))
 					customcolor2 = "#FFFFFF"
 
-	if (recipe.result_type == /obj/structure/rails/turn)
-
+	else if(recipe.result_type == /obj/structure/rails/turn)
 		var/list/choicelist = list("Cancel", "Left", "Right")
 		var/todir = WWinput(user, "Choose the direction to turn into:", "Railway Builder", "Cancel", choicelist)
 		if (todir == "Cancel")
@@ -246,7 +245,7 @@
 			else if (todir == "Left")
 				turn_dir = TURN_LEFT(user.dir)
 
-	if (findtext(recipe.title, "cigarette pack"))
+	else if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
 			customname = "cigarette pack"
@@ -266,21 +265,21 @@
 					numtocheck = copytext(customcolor,i,0)
 				if (!(numtocheck in listallowed))
 					return
-	if (recipe.result_type == /obj/structure/researchdesk)
+	else if (recipe.result_type == /obj/structure/researchdesk)
 		if (map && !map.resourceresearch)
 			user << "\The [recipe.title] can only be built during the <b>Resource Research</b> gamemode."
 			return
 
-	if (recipe.result_type == /obj/structure/oil_deposits)
+	else if (recipe.result_type == /obj/structure/oil_deposits)
 		if (map && map.gamemode != "Oil Rush")
 			user << "\The [recipe.title] can only be built during the <b>Oil Rush</b> gamemode."
 			return
-	if (recipe.result_type == /obj/item/weapon/researchkit)
+	else if (recipe.result_type == /obj/item/weapon/researchkit)
 		if (map && !map.research_active)
 			user << "\The [recipe.title] can only be built during the <b>Clasic Research</b> gamemode."
 			return
 
-	if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
+	else if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -304,12 +303,12 @@
 				if (!(numtocheck in listallowed))
 					return
 
-	if (findtext(recipe.title, "locomotive"))
+	else if (findtext(recipe.title, "locomotive"))
 		if (H.getStatCoeff("crafting") < 1.9)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 
-	if (findtext(recipe.title, "fuel pump"))
+	else if (findtext(recipe.title, "fuel pump"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -340,7 +339,7 @@
 					numtocheck = copytext(customcolor,i,0)
 				if (!(numtocheck in listallowed))
 					return
-	if (findtext(recipe.title, "oil deposit"))
+	else if (findtext(recipe.title, "oil deposit"))
 		if (H.civilization == null || H.civilization == "none")
 			user << "You need to be part of a faction to build this!"
 			return
@@ -348,48 +347,48 @@
 			user << "You are too close to an existing deposit!"
 			return
 
-	if (findtext(recipe.title, "passport"))
+	else if (findtext(recipe.title, "passport"))
 		if (H.civilization == null || H.civilization == "none")
 			user << "You need to be part of a faction to craft a passport!"
 			return
 
-	if (findtext(recipe.title, "holy book"))
+	else if (findtext(recipe.title, "holy book"))
 		if (H.getStatCoeff("philosophy") < 2.4 || H.religion == "none" || (H.religious_leader == FALSE && H.religious_leader != "Clerics"))
 			H << "<span class = 'danger'>You can't make a holy book.</span>"
 			return
 		customname = input(user, "Choose a title for the holy book:", "Holy Book Name" , "[H.religion]'s Holy Book")
 
-	if (findtext(recipe.title, "altar"))
+	else if (findtext(recipe.title, "altar"))
 		if (H.religious_leader == FALSE)
 			if (H.religious_clergy == 0)
 				H << "<span class = 'danger'>You can't make an altar as you are not part of the clergy.</span>"
 				return
 
-	if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar") || findtext(recipe.title, "religious banner"))
+	else if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar") || findtext(recipe.title, "religious banner"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
 			return
-	if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner"))
+	else if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner"))
 		if (H.civilization == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>"
 			return
-	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
+	else if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "arquebus") || findtext(recipe.title, "matchlock musket"))
+	else if (findtext(recipe.title, "arquebus") || findtext(recipe.title, "matchlock musket"))
 		if (H.getStatCoeff("crafting") < 1.55)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "fire lance"))
+	else if (findtext(recipe.title, "fire lance"))
 		if (H.getStatCoeff("crafting") < 1.25)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "hand cannon"))
+	else if (findtext(recipe.title, "hand cannon"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "fire lance"))
+	else if (findtext(recipe.title, "fire lance"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/spear) && !istype(H.r_hand, /obj/item/weapon/material/spear))
 			user << "<span class = 'warning'>You need to have a spear in one of your hands in order to make this.</span>"
 			return
@@ -416,7 +415,7 @@
 				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 					qdelHandReturn(H.r_hand, H)
 
-	if (findtext(recipe.title, "raft"))
+	else if (findtext(recipe.title, "raft"))
 		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
 			user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
 			return
@@ -440,7 +439,7 @@
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
 					return
 
-	if (recipe.result_type == /obj/item/stack/material/electronics)
+	else if (recipe.result_type == /obj/item/stack/material/electronics)
 		if (H.getStatCoeff("crafting") < 2.2)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -458,7 +457,7 @@
 			if (NR.amount <= 0)
 				qdelHandReturn(H.r_hand, H)
 
-	if (recipe.result_type == /obj/structure/religious/totem)
+	else if (recipe.result_type == /obj/structure/religious/totem)
 		if (H.original_job_title == "Red Goose Tribesman")
 			newtotem.name = "Stone Goose Totem"
 			newtotem.icon_state = "goose"
@@ -489,7 +488,7 @@
 			newtotem.desc = "A stone totem, dedicated to the [H.religion] religion."
 			newtotem.religion = H.religion
 
-	if (recipe.result_type == /obj/structure/religious/impaledskull)
+	else if (recipe.result_type == /obj/structure/religious/impaledskull)
 		if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
 			user << "<span class = 'warning'>You need to have a human head in one of your hands in order to make this.</span>"
 			return
@@ -507,7 +506,7 @@
 				newskull.name = targetskull
 				qdelHandReturn(H.r_hand, H)
 
-	if (findtext(recipe.title, "custom sign"))
+	else if (findtext(recipe.title, "custom sign"))
 		var/customname = input(user, "Choose a name for this sign:") as text|null
 		if (customname == null)
 			customname = "Sign"
@@ -517,7 +516,7 @@
 		build_override_sign.name = customname
 		build_override_sign.desc = customdesc
 
-	if (findtext(recipe.title, "copper coins"))
+	else if (findtext(recipe.title, "copper coins"))
 		var/customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
@@ -531,7 +530,7 @@
 			build_override_coins_copper.name = "copper [customname]"
 			build_override_coins_copper.desc = "copper coins, minted by [H]."
 
-	if (findtext(recipe.title, "silver coins"))
+	else if (findtext(recipe.title, "silver coins"))
 		var/customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
@@ -545,7 +544,7 @@
 			build_override_coins_silver.name = "silver [customname]"
 			build_override_coins_silver.desc = "silver coins, minted by [H]."
 
-	if (findtext(recipe.title, "gold coins"))
+	else if (findtext(recipe.title, "gold coins"))
 		var/customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
@@ -559,7 +558,7 @@
 			build_override_coins_gold.name = "gold [customname]"
 			build_override_coins_gold.desc = "gold coins, minted by [H]."
 
-	if (findtext(recipe.title, "gravestone"))
+	else if (findtext(recipe.title, "gravestone"))
 		var/customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
 		if (customname == "" || customname == null)
 			customname = "gravestone"
@@ -569,34 +568,34 @@
 		build_override_gravestone.name = customname
 		build_override_gravestone.desc = customdesc
 
-	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
+	else if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "arquebus") || findtext(recipe.title, "matchlock musket"))
+	else if (findtext(recipe.title, "arquebus") || findtext(recipe.title, "matchlock musket"))
 		if (H.getStatCoeff("crafting") < 1.55)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "fire lance"))
+	else if (findtext(recipe.title, "fire lance"))
 		if (H.getStatCoeff("crafting") < 1.25)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "hand cannon"))
+	else if (findtext(recipe.title, "hand cannon"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "well") && !findtext(recipe.title, "oil well"))
+	else if (findtext(recipe.title, "well") && !findtext(recipe.title, "oil well"))
 		var/puddly = FALSE
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			puddly = TRUE
 		if (puddly == FALSE)
 			H << "<span class = 'danger'>You need to build this over a puddle.</span>"
 			return
-	if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "arming sword") || findtext(recipe.title, "small sword"))
+	else if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "arming sword") || findtext(recipe.title, "small sword"))
 		if (H.getStatCoeff("crafting") < 1.8 && !findtext(recipe.title, "catapult projectile"))
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "stormy sea") || findtext(recipe.title, "city street") || findtext(recipe.title, "sea sunset") || findtext(recipe.title, "valley") || findtext(recipe.title, "still life") || findtext(recipe.title, "bird and blossom") || findtext(recipe.title, "pine on the shore") || findtext(recipe.title, "temple by the river") || findtext(recipe.title, "desert camp") || findtext(recipe.title, "barque at sea"))
+	else if (findtext(recipe.title, "stormy sea") || findtext(recipe.title, "city street") || findtext(recipe.title, "sea sunset") || findtext(recipe.title, "valley") || findtext(recipe.title, "still life") || findtext(recipe.title, "bird and blossom") || findtext(recipe.title, "pine on the shore") || findtext(recipe.title, "temple by the river") || findtext(recipe.title, "desert camp") || findtext(recipe.title, "barque at sea"))
 		if (H.getStatCoeff("crafting") < 2)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -624,7 +623,7 @@
 					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
 					return
 
-	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
+	else if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -680,7 +679,7 @@
 				if (recipe.title != "mine support")
 					H << "<span class = 'danger'>You can't build a structure here.</span>"
 					return
-	if (recipe.result_type == /obj/item/weapon/key)
+	else if (recipe.result_type == /obj/item/weapon/key)
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
@@ -693,7 +692,7 @@
 			build_override_key.name = keyname
 			build_override_key.code = keycode
 
-	if (recipe.result_type == /obj/structure/noose)
+	else if (recipe.result_type == /obj/structure/noose)
 		var/structurecheck = 0
 
 		for (var/obj/structure/structure in get_turf(H))
@@ -751,49 +750,79 @@
 
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
-	if (findtext(recipe.title, "coil"))
+	else if (findtext(recipe.title, "coil"))
 		produced = 10
 
-	if (recipe.result_type == /obj/item/weapon/can)
+	else if (recipe.result_type == /obj/item/weapon/can)
 		produced = 2
-	if (recipe.result_type == /obj/item/weapon/can/small)
+	else if (recipe.result_type == /obj/item/weapon/can/small)
 		produced = 3
-	if (recipe.result_type == /obj/item/weapon/can/large)
+	else if (recipe.result_type == /obj/item/weapon/can/large)
 		produced = 1
 
-	if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
+	else if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
 		produced = 2
-	if (recipe.result_type == /obj/item/stack/ammopart/bullet)
+	else if (recipe.result_type == /obj/item/stack/ammopart/bullet)
 		produced = 3
-	if (recipe.result_type == /obj/item/stack/ammopart/casing/rifle)
+	else if (recipe.result_type == /obj/item/stack/ammopart/casing/rifle)
 		produced = 3
-	if (recipe.result_type == /obj/item/stack/ammopart/casing/pistol)
+	else if (recipe.result_type == /obj/item/stack/ammopart/casing/pistol)
 		produced = 3
-	if (recipe.result_type == /obj/item/stack/ammopart/musketball)
+	else if (recipe.result_type == /obj/item/stack/ammopart/musketball)
 		produced = 2
-	if (recipe.result_type == /obj/item/stack/ammopart/musketball_pistol)
+	else if (recipe.result_type == /obj/item/stack/ammopart/musketball_pistol)
 		produced = 3
-	if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
+	else if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
 		produced = 2
-	if (recipe.result_type == /obj/item/stack/money/silvercoin)
+	else if (recipe.result_type == /obj/item/stack/money/silvercoin)
 		produced = 200
-	if (recipe.result_type == /obj/item/stack/money/goldcoin)
+	else if (recipe.result_type == /obj/item/stack/money/goldcoin)
 		produced = 100
-	if (recipe.result_type == /obj/item/stack/money/coppercoin)
+	else if (recipe.result_type == /obj/item/stack/money/coppercoin)
 		produced = 100
-	if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
+	else if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
 		produced = 2
-	if (recipe.result_type == /obj/item/ammo_casing/stone)
+	else if (recipe.result_type == /obj/item/ammo_casing/stone)
 		produced = 5
-	if (recipe.result_type == /obj/structure/sink/well)
+	else if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
+	var/inpt = 50
+	if (recipe.result_type == /obj/structure/cannon/modern/tank)
+		inpt = input(user,"Choose the gun's caliber: (50mm-150mm, cost 40 steel per 75mm)") as num
+		if (!isnum(inpt))
+			return
+		if (inpt < 50)
+			inpt = 50
+		else if (inpt > 150)
+			inpt = 150
+		required = 40*(inpt/75)
+	else if (recipe.result_type == /obj/item/stack/ammopart/casing/tank)
+		inpt = input(user,"Choose the casing's caliber: (50mm-150mm, cost 2 copper per 75mm)") as num
+		if (!isnum(inpt))
+			return
+		if (inpt < 50)
+			inpt = 50
+		else if (inpt > 150)
+			inpt = 150
+		required = 2*(inpt/75)
 	if (use(required,H))
 		var/atom/O
 		if (recipe.use_material)
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
+
+		if(istype(O, /obj/structure/cannon/modern/tank))
+			var/obj/structure/cannon/modern/tank/T = O
+			T.caliber = inpt
+			T.name = "[T.caliber]mm tank cannon"
+			T.w_class = T.caliber/2
+
+		if(istype(O, /obj/item/stack/ammopart/casing/tank))
+			var/obj/item/stack/ammopart/casing/tank/T = O
+			T.caliber = inpt
+			T.name = "[T.caliber]mm cannon casing"
 
 		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))
 			var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
