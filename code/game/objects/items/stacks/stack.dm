@@ -172,7 +172,7 @@
 	var/obj/structure/religious/gravestone/build_override_gravestone = new/obj/structure/religious/gravestone
 	build_override_gravestone.desc = "A gravestone."
 
-//	var/turn_dir = 0
+	var/turn_dir = 0
 	var/mob/living/carbon/human/H = user
 
 	if (istype(get_turf(H), /turf/floor/beach/water/deep))
@@ -234,17 +234,17 @@
 				if (!(numtocheck in listallowed))
 					customcolor2 = "#FFFFFF"
 
-//	if (recipe.result_type == /obj/structure/rails/turn)
+	if (recipe.result_type == /obj/structure/rails/turn)
 
 		var/list/choicelist = list("Cancel", "Left", "Right")
 		var/todir = WWinput(user, "Choose the direction to turn into:", "Railway Builder", "Cancel", choicelist)
 		if (todir == "Cancel")
 			return
-//		else
-//			if (todir == "Right")
-//				turn_dir = TURN_RIGHT(user.dir)
-//			else if (todir == "Left")
-//				turn_dir = TURN_LEFT(user.dir)
+		else
+			if (todir == "Right")
+				turn_dir = TURN_RIGHT(user.dir)
+			else if (todir == "Left")
+				turn_dir = TURN_LEFT(user.dir)
 
 	if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
@@ -304,10 +304,10 @@
 				if (!(numtocheck in listallowed))
 					return
 
-//	if (findtext(recipe.title, "locomotive"))
-//		if (H.getStatCoeff("crafting") < 1.9)
-//			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
-//			return
+	if (findtext(recipe.title, "locomotive"))
+		if (H.getStatCoeff("crafting") < 1.9)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
 
 	if (findtext(recipe.title, "fuel pump"))
 		if (H.getStatCoeff("crafting") < 1.35)
@@ -892,11 +892,11 @@
 			build_override_gravestone.add_fingerprint(user)
 			qdel(O)
 			return
-//		if (istype(O, /obj/structure/rails/turn))
-//			var/obj/structure/rails/turn/RT = O
-//			RT.turn_dir = turn_dir
-//		O.set_dir(user.dir)
-//		O.add_fingerprint(user)
+		if (istype(O, /obj/structure/rails/turn))
+			var/obj/structure/rails/turn/RT = O
+			RT.turn_dir = turn_dir
+		O.set_dir(user.dir)
+		O.add_fingerprint(user)
 		if (istype(O, /obj/item/clothing/accessory/armband/talisman))
 			var/obj/item/clothing/accessory/armband/talisman/TM = O
 			TM.name = "[H.religion] bone talisman"
