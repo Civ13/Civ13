@@ -421,7 +421,6 @@ RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,research kit,/obj/item/weapon/researchkit,10,190,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,scientific rock slate,/obj/item/weapon/book/research,4,110,0,1,none,0,0,0,0,null
-RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,stone
 RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,stone
 RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,none,100,0,0,8,null
@@ -433,10 +432,13 @@ RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,none,0,0
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,none,0,0,0,8,null
 
+RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,stone
+RECIPE: /material/stone/,stone arrowhead,/obj/item/stack/arrowhead/stone,1,10,0,1,projectiles,0,14,0,8,null
+
 RECIPE: /material/stone/,furnace,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
-RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,none,24,33,0,4,null
-RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,none,0,0,0,8,null
+RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,null
+RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,null
 RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
 RECIPE: /material/stone/,fortified wall (horizontal),/obj/structure/barricade/stone_h,5,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,fortified wall (vertical),/obj/structure/barricade/stone_v,5,80,1,1,fortifications,29,0,0,8,null
@@ -497,6 +499,7 @@ RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95
 RECIPE: /material/copper/,telegraph,/obj/structure/telegraph,12,90,1,1,none,105,0,0,8,null
 RECIPE: /material/copper/,teleprinter,/obj/structure/teleprinter,12,120,1,1,none,105,0,0,8,null
 RECIPE: /material/copper/,electronic circuits,/obj/item/stack/material/electronics,1,80,0,1,none,130,0,0,8,null
+RECIPE: /material/copper/,copper arrowhead,/obj/item/stack/arrowhead/copper,1,10,0,1,ammunition,0,16,0,8,null
 RECIPE: /material/copper/,copper hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,8,8,0,8,copper
 RECIPE: /material/copper/,copper-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,8,8,0,8,copper
 RECIPE: /material/copper/,copper coins,/obj/item/stack/money/coppercoin,1,35,0,1,none,0,0,0,8,null
@@ -554,7 +557,9 @@ RECIPE: /material/steel/,250u large fuel tank,/obj/item/weapon/reagent_container
 RECIPE: /material/steel/,street lamp,/obj/structure/lamp/lamppost_small,3,35,0,1,electrical,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/pickaxe/jackhammer,24,60,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,refrigerator,/obj/structure/closet/fridge,15,230,1,1,none,150,0,178,8,null
+RECIPE: /material/steel/,steel arrowhead,/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
 
+RECIPE: /material/bronze/,bronze arrowhead,/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,8,null
@@ -573,6 +578,7 @@ RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4
 RECIPE: /material/bronze/,bronze arm bangles,/obj/item/clothing/accessory/armband/armbangle/bronze,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/bronze/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,bronze
 RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
+
 RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 RECIPE: /material/wood/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,none,118,0,0,8,null
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,none,22,0,0,8,null
@@ -613,8 +619,11 @@ RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,4,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,4,90,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,14,0,3,null
-RECIPE: /material/wood/,arrow,/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null
-RECIPE: /material/wood/,bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,8,null
+RECIPE: /material/wood/,arrow shaft,/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null
+RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,2,null
+RECIPE: /material/wood/,shortbow,/obj/item/weapon/gun/projectile/bow/shortbow,8,140,0,1,weapons,0,30,0,7,null
+RECIPE: /material/wood/,longbow,/obj/item/weapon/gun/projectile/bow/longbow,12,160,0,1,weapons,0,30,0,7,null
+RECIPE: /material/wood/,compound bow,/obj/item/weapon/gun/projectile/bow/compoundbow,8,170,0,1,weapons,0,175,0,8,null
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,8,wood
@@ -724,11 +733,12 @@ RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/star,2,15,0,1,weapons
 RECIPE: /material/iron/,kunai,/obj/item/weapon/material/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,throwing knife,/obj/item/weapon/material/throwing_knife,4,20,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,naginata,/obj/item/weapon/material/naginata,12,60,0,1,weapons,39,40,0,3,iron
-RECIPE: /material/iron/,musket ball (x2),/obj/item/stack/ammopart/musketball,1,25,0,1,bullets,0,0,80,8,null
-RECIPE: /material/iron/,small musket ball (x3),/obj/item/stack/ammopart/musketball_pistol,1,25,0,1,bullets,0,80,0,8,null
-RECIPE: /material/iron/,blunderbuss ball (x2),/obj/item/stack/ammopart/blunderbuss,1,25,0,1,bullets,0,80,0,8,null
-RECIPE: /material/iron/,iron bullet (x3),/obj/item/stack/ammopart/bullet,1,25,0,1,bullets,0,92,0,8,null
-RECIPE: /material/iron/,cannon ball,/obj/item/cannon_ball,5,40,0,1,bullets,0,80,0,5,null
+RECIPE: /material/iron/,musket ball (x2),/obj/item/stack/ammopart/musketball,1,25,0,1,projectiles,0,0,80,8,null
+RECIPE: /material/iron/,small musket ball (x3),/obj/item/stack/ammopart/musketball_pistol,1,25,0,1,projectiles,0,80,0,8,null
+RECIPE: /material/iron/,blunderbuss ball (x2),/obj/item/stack/ammopart/blunderbuss,1,25,0,1,projectiles,0,80,0,8,null
+RECIPE: /material/iron/,iron bullet (x3),/obj/item/stack/ammopart/bullet,1,25,0,1,projectiles,0,92,0,8,null
+RECIPE: /material/iron/,iron arrowhead,/obj/item/stack/arrowhead/iron,1,10,0,1,projectiles,0,30,0,8,null
+RECIPE: /material/iron/,cannon ball,/obj/item/cannon_ball,5,40,0,1,projectiles,0,80,0,5,null
 RECIPE: /material/iron/,revolver speedloader (6),/obj/item/ammo_magazine/emptyspeedloader,1,45,0,1,magazines,100,0,0,8,null
 RECIPE: /material/iron/,pistol magazine (8),/obj/item/ammo_magazine/emptymagazine/pistol/a45,2,45,0,1,magazines,105,0,0,8,null
 RECIPE: /material/iron/,pistol magazine (15),/obj/item/ammo_magazine/emptymagazine/pistol,3,45,0,1,magazines,105,0,0,8,null
