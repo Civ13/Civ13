@@ -47,7 +47,7 @@
 	caliber = "arrow"
 	slot_flags = SLOT_BELT
 	value = 2
-
+	var/volume = 5
 /obj/item/ammo_casing/arrow/gods
 	name = "gods finger"
 	desc = "A arrow that radiates holy wrath."
@@ -103,6 +103,7 @@
 	icon_state = "arrow_vial"
 	projectile_type = /obj/item/projectile/arrow/arrow/vial
 	weight = 0.18
+	volume = 15
 
  //Sling
 /obj/item/ammo_casing/stone
@@ -118,8 +119,7 @@
 
 //ARROWHEADS
 
-/obj/item/projectile/arrow/arrow/attackby(obj/item/W as obj, mob/user as mob)
-	..()
+/obj/item/ammo_casing/arrow/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/stack/arrowhead))
 		if(istype(W, /obj/item/stack/arrowhead/stone))
 			new/obj/item/ammo_casing/arrow/stone(user.loc)
@@ -136,9 +136,16 @@
 		else
 			new/obj/item/ammo_casing/arrow/gods(user.loc)
 		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-		user << "<span>You attach the [W] to the [src]</span>"
+		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
 		qdel(W)
 		qdel(src)
+	if (istype(W, /obj/item/weapon/reagent_containers))
+		return //do nothing if not reagent container
+	else
+		if(volume < src.reagents)
+			user << "<span class = 'notice'>You dip the [W] into the [src]</span>"
+			W.reagents.trans_to_obj(src, volume - src.reagents)
+	..()
 
 /obj/item/stack/arrowhead
 	name = "god's finger"

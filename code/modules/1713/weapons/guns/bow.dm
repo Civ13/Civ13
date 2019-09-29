@@ -1,5 +1,5 @@
 /obj/item/weapon/gun/projectile/bow
-	name = "primative bow"
+	name = "primitive bow"
 	desc = "A simple and crude bow."
 	icon_state = "bow0"
 	item_state = "bow0"
