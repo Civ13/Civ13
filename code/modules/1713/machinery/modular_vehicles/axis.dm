@@ -515,3 +515,36 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		spawn(1200)
 			if (!link)
 				qdel(src)
+
+
+/obj/structure/vehicleparts/axis/attack_hand(var/mob/living/carbon/human/H)
+	if (!ishuman(H))
+		return
+	var/found = FALSE
+	for(var/obj/structure/vehicleparts/frame/F in H.loc)
+		found = TRUE
+		var/customname = input(H, "What do you want to name this vehicle?") as text
+		if (!customname || customname == "")
+			name = "[H]'s vehicle"
+		else
+			name = customname
+		H.remove_from_mob(src)
+		var/turf/aloc = null
+		var/tx = H.x
+		var/ty = H.y
+		for(var/obj/structure/vehicleparts/frame/F2 in range(2,H))
+			if (F2.x > H.x)
+				tx = F2.x
+			if (F2.y < H.y)
+				ty = F2.y
+		aloc = get_turf(locate(tx,ty,H.z))
+		if (aloc)
+			new/obj/effect/autoassembler(aloc)
+			H << "<span class='warning'>Vehicle assembled.</span>"
+			return
+		else
+			H << "<span class='warning'>Error assembling vehicle!</span>"
+			return
+	if (!found)
+		H << "<span class='warning'>No vehicle found in this area!</span>"
+		return
