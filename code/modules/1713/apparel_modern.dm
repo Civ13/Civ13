@@ -310,7 +310,7 @@
 	icon_state = "black_shemagh"
 	item_state = "black_shemagh"
 	body_parts_covered = HEAD
-
+	heat_protection = HEAD|FACE|EYES
 /obj/item/weapon/material/sword/arabsword
 	name = "arabic sword"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."

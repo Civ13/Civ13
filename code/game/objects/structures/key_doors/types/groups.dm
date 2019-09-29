@@ -332,6 +332,8 @@
 	unique_door_name = "Dutch locked"
 #undef NL_CODE
 
+
+
 #define JP_CODE 995 * 6
 /datum/keyslot/japanese
 	code = JP_CODE
@@ -344,6 +346,19 @@
 	keyslot_type = /datum/keyslot/japanese
 	unique_door_name = "Japanese locked"
 #undef JP_CODE
+
+#define DE_CODE 995 * 12
+/datum/keyslot/german
+	code = DE_CODE
+
+/obj/item/weapon/key/german
+	code = DE_CODE
+	name = "German key"
+
+/obj/structure/simple_door/key_door/german
+	keyslot_type = /datum/keyslot/german
+	unique_door_name = "German locked"
+#undef DE_CODE
 
 #define VC_CODE 995 * 8
 /datum/keyslot/vietnamese

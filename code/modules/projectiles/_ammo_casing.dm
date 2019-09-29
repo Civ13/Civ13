@@ -34,10 +34,11 @@
 	weight = 0.035
 	caliber = "blunderbuss"
 	value = 3
+//arrows
 
 /obj/item/ammo_casing/arrow
-	name = "arrow"
-	desc = "Use a bow to fire it."
+	name = "arrow shaft"
+	desc = "A headless arrow, not very effective."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "arrow"
 	spent_icon = null
@@ -46,7 +47,66 @@
 	caliber = "arrow"
 	slot_flags = SLOT_BELT
 	value = 2
+	var/volume = 5
+/obj/item/ammo_casing/arrow/gods
+	name = "gods finger"
+	desc = "A arrow that radiates holy wrath."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "arrow_god"
+	projectile_type = /obj/item/projectile/arrow/arrow/fire/gods
+	weight = 0.18
 
+/obj/item/ammo_casing/arrow/stone
+	name = "stone arrow"
+	desc = "An arrow with a stone tip."
+	icon_state = "arrow_stone"
+	projectile_type = /obj/item/projectile/arrow/arrow/stone
+	weight = 0.17
+
+/obj/item/ammo_casing/arrow/copper
+	name = "copper arrow"
+	desc = "An arrow with a copper tip."
+	icon_state = "arrow_copper"
+	projectile_type = /obj/item/projectile/arrow/arrow/copper
+	weight = 0.16
+
+/obj/item/ammo_casing/arrow/iron
+	name = "iron arrow"
+	desc = "An arrow with a iron tip."
+	icon_state = "arrow_iron"
+	projectile_type = /obj/item/projectile/arrow/arrow/iron
+	weight = 0.16
+
+/obj/item/ammo_casing/arrow/bronze
+	name = "bronze arrow"
+	desc = "An arrow with a bronze tip."
+	icon_state = "arrow_bronze"
+	projectile_type = /obj/item/projectile/arrow/arrow/bronze
+	weight = 0.16
+
+/obj/item/ammo_casing/arrow/steel
+	name = "steel arrow"
+	desc = "An arrow with a steel tip."
+	icon_state = "arrow_steel"
+	projectile_type = /obj/item/projectile/arrow/arrow/steel
+	weight = 0.17
+
+/obj/item/ammo_casing/arrow/modern
+	name = "fiberglass arrow"
+	desc = "A modern, high-velocity arrow."
+	icon_state = "arrow_modern"
+	projectile_type = /obj/item/projectile/arrow/arrow/modern
+	weight = 0.15
+
+/obj/item/ammo_casing/arrow/vial
+	name = "vial arrow"
+	desc = "An iron-tipped arrow with a glass vial attached to the tip."
+	icon_state = "arrow_vial"
+	projectile_type = /obj/item/projectile/arrow/arrow/vial
+	weight = 0.18
+	volume = 15
+
+ //Sling
 /obj/item/ammo_casing/stone
 	name = "rock"
 	desc = "Use a sling to launch it."
@@ -58,7 +118,73 @@
 	caliber = "stone"
 	value = 1
 
-///////TO MAKE AMMO WITH GUNPOWDER
+//ARROWHEADS
+
+/obj/item/ammo_casing/arrow/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/stack/arrowhead))
+		if(istype(W, /obj/item/stack/arrowhead/stone))
+			new/obj/item/ammo_casing/arrow/stone(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/copper))
+			new/obj/item/ammo_casing/arrow/copper(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/iron))
+			new/obj/item/ammo_casing/arrow/iron(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/bronze))
+			new/obj/item/ammo_casing/arrow/bronze(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/steel))
+			new/obj/item/ammo_casing/arrow/steel(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/vial))
+			new/obj/item/ammo_casing/arrow/vial(user.loc)
+		else
+			new/obj/item/ammo_casing/arrow/gods(user.loc)
+		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
+		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
+		qdel(W)
+		qdel(src)
+	if (istype(W, /obj/item/weapon/reagent_containers))
+		return //do nothing if not reagent container
+	else
+		if(volume < src.reagents)
+			user << "<span class = 'notice'>You dip the [W] into the [src]</span>"
+			W.reagents.trans_to_obj(src, volume - src.reagents)
+	..()
+
+/obj/item/stack/arrowhead
+	name = "god's finger"
+	desc = "Radiates holy wrath, attach it to an arrow shaft."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "gods_arrowhead"
+
+/obj/item/stack/arrowhead/stone
+	name = "stone arrowhead"
+	desc = "Attach it to a arrow shaft."
+	icon_state = "stone_arrowhead"
+
+/obj/item/stack/arrowhead/copper
+	name = "copper arrowhead"
+	desc = "Attach it to a arrow shaft."
+	icon_state = "copper_arrowhead"
+
+/obj/item/stack/arrowhead/iron
+	name = "iron arrowhead"
+	desc = "Attach it to a arrow shaft."
+	icon_state = "iron_arrowhead"
+
+/obj/item/stack/arrowhead/bronze
+	name = "bronze arrowhead"
+	desc = "Attach it to a arrow shaft."
+	icon_state = "bronze_arrowhead"
+
+/obj/item/stack/arrowhead/steel
+	name = "steel arrowhead"
+	desc = "Attach it to a arrow shaft."
+	icon_state = "steel_arrowhead"
+
+/obj/item/stack/arrowhead/vial
+	name = "vial arrowhead"
+	desc = "Attach it to a arrow shaft."
+	icon_state = "vial_arrowhead"
+
+//AMMO WITH GUNPOWDER
 /obj/item/stack/ammopart
 	var/resultpath = /obj/item/ammo_casing/musketball
 	amount = 1

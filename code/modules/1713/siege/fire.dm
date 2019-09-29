@@ -25,7 +25,14 @@
 /obj/structure/brazier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (user.a_intent == I_HELP)
 		if (istype(W, /obj/item/weapon/wrench) || (istype(W, /obj/item/weapon/hammer)))
-			if (istype(W, /obj/item/weapon/wrench))
+			if (istype(W, /obj/item/weapon/hammer/modern))
+				visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+				if (do_after(user,30,src))
+					visible_message("<span class='warning'>[user] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+					anchored = !anchored
+					return
+			else if (istype(W, /obj/item/weapon/wrench))
 				visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(user,50,src))

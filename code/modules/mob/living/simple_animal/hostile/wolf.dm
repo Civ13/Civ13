@@ -40,9 +40,9 @@
 	name = "female wolf"
 	female = TRUE
 
-/mob/living/simple_animal/hostile/bear/death()
+/mob/living/simple_animal/hostile/bear/Destroy()
 	..()
-	bear_count -= 1
+	wolf_count -= 1
 
 /mob/living/simple_animal/hostile/wolf/New()
 	wolf_count += 1
@@ -82,7 +82,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && wolf_count < 8)
+	if (!pregnant && wolf_count < 12)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/hostile/wolf/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !M.female)

@@ -244,6 +244,28 @@
 /obj/structure/lamp/lamp_small/alwayson/red
 	brightness_color = "#da0205"
 
+/obj/structure/lamp/lamp_small/tank
+	powerneeded = 1
+	var/obj/structure/engine/connection = null
+	on = FALSE
+
+/obj/structure/lamp/lamp_small/tank/check_power()
+	if (!connection || powerneeded == 0)
+		return FALSE
+	else
+		if (connection.on)
+			if (!on)
+				on = TRUE
+			return TRUE
+		else
+			if (on)
+				on = FALSE
+			return FALSE
+
+/obj/structure/lamp/lamp_small/tank/red
+	brightness_color = "#da0205"
+
+
 /obj/structure/lamp/lamp_big
 	name = "light tube"
 	desc = "A light tube."

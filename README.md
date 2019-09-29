@@ -18,7 +18,7 @@ Civ13 (formerly 1713) is a game based on Space Station 13 code, which features s
 
 
 ## Official Website
-https://1713.eu/
+https://civ13.com/
 
 
 ## Trello

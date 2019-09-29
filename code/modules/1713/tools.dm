@@ -135,6 +135,56 @@
 	edge = FALSE
 	flammable = TRUE
 
+/obj/item/weapon/chisel
+	name = "stone chisel"
+	desc = "A stone chisel, for carving stone walls."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "chisel"
+	force = 2.0
+	throwforce = 1.0
+	w_class = 1.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	flammable = FALSE
+	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+	var design = "smooth"
+
+/obj/item/weapon/chisel/attack_self(mob/user)
+	var/display = list("Smooth", "Cave", "Brick", "Cobbled", "Tiled", "Cancel")
+	var/input =  WWinput(user, "What design do you want to carve?", "Carving", "Cancel", display)
+	if (input == "Cancel")
+		return
+	else if  (input == "Smooth")
+		user << "<span class='notice'>You will now carve the smooth design!</span>"
+		design = "smooth"
+	else if  (input == "Cave")
+		user << "<span class='notice'>You will now carve the cave design!</span>"
+		design = "cave"
+	else if  (input == "Brick")
+		user << "<span class='notice'>You will now carve the brick design!</span>"
+		design = "brick"
+	else if  (input == "Cobbled")
+		user << "<span class='notice'>You will now carve the cobbled design!</span>"
+		design = "cobbled"
+	else if  (input == "Tiled")
+		user << "<span class='notice'>You will now carve the tiled design!</span>"
+		design = "tiled"
+
+/obj/item/weapon/chisel/metal
+	name = "iron chisel"
+	desc = "A iron chisel, for carving stone walls."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "chisel_metal"
+	force = 2.25
+	throwforce = 1.25
+	w_class = 1.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	flammable = FALSE
+	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+	design = "smooth"
 
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)

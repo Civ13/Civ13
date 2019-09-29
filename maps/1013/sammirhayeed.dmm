@@ -150,8 +150,8 @@
 "cT" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
 "cU" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "cV" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean)
-"cW" = (/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/turf/floor/beach/sand/desert,/area/caribbean)
-"cX" = (/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/turf/floor/beach/sand/desert,/area/caribbean)
+"cW" = (/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/turf/floor/beach/sand/desert,/area/caribbean)
+"cX" = (/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 1},/obj/covers/sandstone,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/turf/floor/beach/sand/desert,/area/caribbean)
 "cY" = (/obj/structure/catapult,/turf/floor/beach/sand/desert,/area/caribbean)
 "cZ" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/beach/sand/desert,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
 "da" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/carpet/redcarpet,/area/caribbean/arab/sand{location = 0; name = "Arab Camp Buildings"})
@@ -308,7 +308,7 @@
 "fV" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall)
 "fW" = (/obj/structure/wild/burnedtree,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
 "fX" = (/obj/structure/wild/palm,/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall)
-"fY" = (/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/turf/floor/beach/sand/desert,/area/caribbean)
+"fY" = (/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/obj/item/ammo_casing/arrow/bronze,/turf/floor/beach/sand/desert,/area/caribbean)
 "fZ" = (/obj/structure/window/sandbag/railing,/obj/structure/gatecontrol{code = 4412},/turf/floor/beach/sand/dark,/area/caribbean)
 "ga" = (/obj/structure/gate/sandstone{code = 4412},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "gb" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand,/area/caribbean)
@@ -318,6 +318,7 @@
 "gf" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand,/area/caribbean)
 "gg" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/desert,/area/caribbean)
 "gh" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean)
+"gi" = (/obj/map_metadata/sammirhayeed,/turf/floor/beach/sand/desert,/area/caribbean)
 
 (1,1,1) = {"
 akakakakakakakakakakarararararararaTaTaNaTaTaTaTaTaTaTaTaTaNaTaTaTakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakak
@@ -439,5 +440,5 @@ aaababdCabababababdGabababdCbBbBbBaoaobBbBbBaaaadFdFdHdQabababababababdCababdGab
 ababababababababdCabababababbBbBbBaoaobBbBaaaaaaaaaaaaaaaaaaababdGdGabababdGecababdHbBdPbBbBbpbpbpbCbCbCbCbCbCbCcscscscscscscscscs
 abababababdOababababaaaaabdPdPbBaoaobBbBbBaaaaaadHaaaaaadHaaaaaaabdGabdDabdGabdGabbBbBbBbBbpbpbpbpbCbCbCbCbCbCcscscscscscscscscscs
 aaababababababaaaaaadOabdGdPbBaoaobBbBbBaaaaaadBaaaadHdHdHaaaaaaaadGdGababababababbBbBbBbpbpbpbCbCbCbCbCbCbCbCcscscscscscscscscscs
-aaabababababaaaaababababbBbBaoaobBbBbBaaaaaaaaaaaaaadHaaaaaaaadFaaabababababababbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscscscscscscscscscs
+giabababababaaaaababababbBbBaoaobBbBbBaaaaaaaaaaaaaadHaaaaaaaadFaaabababababababbBbBbBbBbpbpbCbCbCbCbCbCbCcscscscscscscscscscscscs
 "}

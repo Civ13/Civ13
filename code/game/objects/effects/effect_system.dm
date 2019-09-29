@@ -201,6 +201,15 @@ steam.start() -- spawns the effect
 /obj/effect/effect/smoke/fast
 	..()
 	time_to_live = 30
+
+/obj/effect/effect/smoke/small
+
+	icon = 'icons/effects/effects.dmi'
+	pixel_x = 0
+	pixel_y = 0
+/obj/effect/effect/smoke/small/fast
+	..()
+	time_to_live = 30
 /////////////////////////////////////////////
 // Illumination
 /////////////////////////////////////////////

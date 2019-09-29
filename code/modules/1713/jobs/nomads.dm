@@ -518,7 +518,10 @@
 				if (!isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
 					var/found = FALSE
 					for (var/i in whitelist_list)
-						if (i == client.ckey)
+						var/temp_ckey = lowertext(i)
+						temp_ckey = replacetext(temp_ckey," ", "")
+						temp_ckey = replacetext(temp_ckey,"_", "")
+						if (temp_ckey == client.ckey)
 							found = TRUE
 					if (found)
 						var/datum/language/currlg

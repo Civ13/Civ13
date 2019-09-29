@@ -84,7 +84,7 @@ obj/map_metadata/karak/job_enabled_specialcheck(var/datum/job/J)
 
 
 
-var/no_loop_kar = FALSE
+var/no_loop_sm = FALSE
 
 /obj/map_metadata/karak/update_win_condition()
 	if (!win_condition_specialcheck())
@@ -98,13 +98,13 @@ var/no_loop_kar = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_kar == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_sm == FALSE)
 		ticker.finished = TRUE
 		var/message = "The Arabic Caliphate has captured the fortress! The remaining Crusaders have surrendered!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		no_loop_kar = TRUE
+		no_loop_sm = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))

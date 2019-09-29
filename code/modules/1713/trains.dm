@@ -12,10 +12,57 @@
 	var/switched = "forward"
 	var/turn_dir = null
 	var/sw_direction = "forward"
+	New()
+		..()
+		spawn(5)
+			update_icon()
+/obj/structure/rails/regular/update_icon()
+	..()
+	if (dir == NORTH || dir == SOUTH)
+		for (var/obj/structure/rails/R in get_step(src, WEST))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == SOUTH)
+					icon_state = "rails_split1"
+					dir = R.dir
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == NORTH)
+					icon_state = "rails_split1"
+					dir = R.dir
+		for (var/obj/structure/rails/R in get_step(src, EAST))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == NORTH)
+					icon_state = "rails_split2"
+					dir = R.dir
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == SOUTH)
+					icon_state = "rails_split2"
+					dir = R.dir
+	else if (dir == EAST || dir == WEST)
+		for (var/obj/structure/rails/R in get_step(src, SOUTH))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == EAST)
+					icon_state = "rails_split2"
+					dir = OPPOSITE_DIR(R.dir)
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == WEST)
+					icon_state = "rails_split2"
+					dir = OPPOSITE_DIR(R.dir)
+		for (var/obj/structure/rails/R in get_step(src, NORTH))
+			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
+				if (R.dir == WEST)
+					icon_state = "rails_split1"
+					dir = OPPOSITE_DIR(R.dir)
+			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
+				if (R.dir == EAST)
+					icon_state = "rails_split1"
+					dir = OPPOSITE_DIR(R.dir)
+	update_icon()
 
+/obj/structure/rails/regular/horizontal/New()
+	..()
+	dir = 4
 /obj/structure/rails/end
 	icon_state = "rails_end"
-
 
 /obj/structure/rails/split
 	icon_state = "rails_split"
@@ -75,6 +122,31 @@
 	desc = "A rotating platform that allows wagons to switch direction."
 	icon_state = "rails_rotate"
 
+/obj/structure/rails/rotate/verb/rotate()
+	set category = null
+	set name = "Rotate"
+	set desc = "Rotate the platform"
+
+	set src in view(1)
+
+	if (!istype(usr, /mob/living/carbon/human))
+		return
+
+	switch(dir)
+		if (1)
+			dir = 8
+		if (2)
+			dir = 4
+		if (4)
+			dir = 1
+		if (8)
+			dir = 2
+	for (var/obj/structure/trains/TR in loc)
+		TR.dir = dir
+	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+	usr << "You rotate the platform to the [dir2text(dir)]."
+	return
+
 /obj/structure/rails/rotate/attack_hand(mob/living/user as mob)
 	switch(dir)
 		if (1)
@@ -88,7 +160,7 @@
 	for (var/obj/structure/trains/TR in loc)
 		TR.dir = dir
 	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	user << "You rotate the platform."
+	user << "You rotate the platform to the [dir2text(dir)]."
 	return
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
@@ -149,8 +221,44 @@
 	var/locomotive = FALSE
 	var/list/transporting = list()
 	var/on = FALSE
+	var/obj/structure/trains/connected = null
 
+/obj/structure/trains/verb/hitch()
+	set category = null
+	set name = "Hitch"
+	set desc = "Hitch or unhitch to the wagon ahead."
+
+	set src in view(1)
+
+	if (!istype(usr, /mob/living/carbon/human))
+		return
+
+
+	for (var/obj/structure/trains/TR in get_step(src, dir))
+		if (TR.connected && TR.connected == src)
+			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+			usr << "You unhitch \the [src] from \the [connected]."
+			connected = null
+			return TRUE
+		else if (!TR.connected)
+			if (dir == TR.dir || dir == OPPOSITE_DIR(TR.dir))
+				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+				usr << "You hitch \the [src] to \the [TR]."
+				TR.connected = src
+				return TRUE
+	usr << "There is no wagon to hitch \the [src] to."
+	return FALSE
+
+/obj/structure/trains/proc/check_connections()
+	if (!connected)
+		return FALSE
+	if (connected in range(2,src))
+		return TRUE
+	else
+		connected = null
+		return FALSE
 /obj/structure/trains/Bumped(atom/AM)
+	check_connections()
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
 		return FALSE
@@ -166,18 +274,32 @@
 		for (var/obj/structure/trains/TR in tgt)
 			return FALSE
 	if (rail_canmove(AM.dir))
-		src.Move(tgt, FALSE)
+		src.Move(tgt)
 		return TRUE
-/obj/structure/trains/Move(var/turf/newloc, var/pullbehind = TRUE, var/fdir = dir)
-
+/obj/structure/trains/Move(var/turf/newloc, var/fdir = dir)
+	check_connections()
 	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
+/*
 	var/turf/behind = get_step(src,OPPOSITE_DIR(dir))
 	var/turf/oldloc = loc
-	var/olddir = dir
 	dir = fdir
-	..(newloc)
 
+	for (var/obj/structure/rails/turn/TR in oldloc)
+		if (dir != TR.turn_dir && dir == TR.dir)
+			behind = get_step(src,OPPOSITE_DIR(TR.turn_dir))
+
+		else if (dir != TR.dir && dir == TR.turn_dir)
+			behind = get_step(src,OPPOSITE_DIR(TR.dir))
+
+	for (var/obj/structure/trains/T in behind)
+		T.Move(oldloc, dir)
+*/
+
+	var/turf/oldloc = loc
+
+	..(newloc)
+	dir = fdir
 	if (buckled_mob)
 		if (buckled_mob.buckled == src)
 			buckled_mob.loc = loc
@@ -188,14 +310,14 @@
 	for (var/obj/O in oldloc)
 		if (O.anchored && O in transporting)
 			O.loc = loc
-	if (behind && pullbehind)
-		for (var/obj/structure/trains/T in behind)
-			if (T.dir == olddir)
-				T.dir = dir
-				T.Move(oldloc)
+	if (connected)
+		connected.Move(oldloc, dir)
+
 	for (var/obj/O in transporting)
 		if (get_dist(O, src) >= 2)
 			transporting -= O
+	for (var/obj/item/I in transporting)
+		I.update_light()
 	return TRUE
 
 /obj/structure/trains/proc/rail_movement()
@@ -224,12 +346,14 @@
 		var/turf/curr = get_turf(src)
 		if (!curr || !tgtt)
 			automovement = FALSE
+			set_light(0)
 			return FALSE
 		if (istype(src, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = src
 			if (L.fuel <= 0 && L.on)
 				automovement = FALSE
 				visible_message("\The [src]'s engine stalls.")
+				set_light(0)
 				return FALSE
 			else if (L.on)
 				L.fuel--
@@ -282,6 +406,7 @@
 				tgtt = get_step(RT, OPPOSITE_DIR(RT.turn_dir))
 		if (!rail_canmove(fdir))
 			automovement = FALSE
+			set_light(0)
 			return FALSE
 		//push (or hit) wtv is in front...
 		for (var/obj/structure/trains/TF in tgtt)
@@ -315,7 +440,8 @@
 					L.adjustBruteLoss(65)
 					return FALSE
 		// ... and move this train
-		src.Move(tgtt, TRUE, fdir)
+		src.Move(tgtt, fdir)
+		set_light(2)
 		return TRUE
 	return FALSE
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
@@ -379,10 +505,16 @@
 	name = "tender wagon"
 	desc = "A wagon made to carry fuel for the engine."
 	icon_state = "coal_wagon"
-	max_storage = 10
+	max_storage = 15
 	New()
 		..()
 		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood)
+
+/obj/structure/trains/storage/closed
+	name = "transport wagon"
+	desc = "A covered wagon with lots of internal space."
+	icon_state = "closed_wagon"
+	max_storage = 8
 //////////////////////////////////////////////////////////////////////////////////
 /obj/structure/trains/transport
 	name = "flatbed cart"
@@ -396,8 +528,8 @@
 	if (!istype(M, /obj) && !istype(M, /mob/living))
 		return
 	if  (!istype(M, /mob/living))
-		if (istype(M, /obj/item))
-			var/obj/AM = M
+		var/obj/AM = M
+		if (istype(AM, /obj/item) || istype(AM, /obj/structure))
 			if (!AM.anchored)
 				visible_message("[user] starts dragging \the [AM] into \the [src]...", "You start dragging \the [AM] into \the [src]...")
 				if (do_after(user, 50, src))
@@ -471,6 +603,20 @@
 					return M
 	return M
 
+/obj/structure/trains/transport/verb/unsecure()
+	set category = null
+	set name = "Unsecure"
+	set desc = "Unsecure whatever is on top of the wagon."
+
+	set src in view(1)
+
+	if (!istype(usr, /mob/living))
+		return
+	for (var/obj/AM in transporting)
+		visible_message("[usr] unsecures \the [AM] from \the [src].")
+		AM.anchored = FALSE
+		transporting -= AM
+	return
 /obj/structure/trains/transport/flatbed
 	name = "flatbed wagon"
 	desc = "A wooden floor flatbed wagon, used to transport a variety of things."
@@ -490,13 +636,13 @@
 /obj/structure/trains/locomotive
 	name = "locomotive"
 	icon_state = "tractor"
-	train_speed = 8 //deciseconds of delay, so lower is better
+	train_speed = 4 //deciseconds of delay, so lower is better
 	locomotive = TRUE
 	on = FALSE
 	var/fuel = FALSE
 	var/max_fuel = FALSE
 	max_fuel = 100
-	max_train_speed = 8
+	max_train_speed = 4
 
 /obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
 	if (!istype(user, /mob/living))

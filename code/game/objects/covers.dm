@@ -405,6 +405,67 @@
 	explosion_resistance = 10
 	material = "Stone"
 
+/obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
+	var/mob/living/carbon/human/H = user
+	if(istype(W, /obj/item/weapon/chisel))
+		var design = "smooth"
+		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
+			return
+		else
+			var/display = list("Smooth", "Cave", "Underground Cave", "Brick", "Cobbled", "Tiled", "Cancel")
+			var/input =  WWinput(user, "What design do you want to carve?", "Carving", "Cancel", display)
+			if (input == "Cancel")
+				return
+			else if  (input == "Smooth")
+				user << "<span class='notice'>You will now carve the smooth design!</span>"
+				design = "smooth"
+			else if  (input == "Cave")
+				user << "<span class='notice'>You will now carve the cave design!</span>"
+				design = "cave"
+			else if  (input == "Underground Cave")
+				user << "<span class='notice'>You will now carve the cave design!</span>"
+				design = "undercave"
+			else if  (input == "Brick")
+				user << "<span class='notice'>You will now carve the brick design!</span>"
+				design = "brick"
+			else if  (input == "Cobbled")
+				user << "<span class='notice'>You will now carve the cobbled design!</span>"
+				design = "cobbled"
+			else if  (input == "Tiled")
+				user << "<span class='notice'>You will now carve the tiled design!</span>"
+				design = "tiled"
+			visible_message("<span class='danger'>[user] starts to chisel a design!</span>", "<span class='danger'>You start chiseling a design.</span>")
+			playsound(src,'sound/effects/pickaxe.ogg',60,1)
+			if (do_after(user, 60, src))
+			//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+				if(design == "smooth")
+					src.icon_state = "b_stone_wall"
+					src.name = "stone wall"
+					src.desc = "A cave wall carved smooth."
+				else if(design == "cave")
+					src.icon_state = "rocky"
+					src.name = "underground cave wall"
+					src.desc = "A cave wall."
+				else if(design == "undercave")
+					src.icon_state = "rock"
+					src.name = "cave wall"
+					src.desc = "A cave wall."
+				else if(design == "brick")
+					src.icon_state = "b_brick_stone_wall"
+					src.name = "stone brick wall"
+					src.desc = "A cave wall carved to look like its made of stone bricks."
+				else if(design == "cobbled")
+					src.icon_state = "b_cobbled_stone_wall"
+					src.name = "cobbled stone wall"
+					src.desc = "A cave wall carved to look like piled up stones."
+				else if(design == "tiled")
+					src.icon_state = "b_tiled_stone_wall"
+					src.name = "tiled stone wall"
+					src.desc = "A cave wall carved to have a tiled stone pattern."
+				else
+	..()
+
 /obj/covers/sandstone_wall
 	name = "sandstone wall"
 	desc = "A sandstone wall."
@@ -940,8 +1001,19 @@
 		try_destroy()
 	else
 		if (wall)
-			health -= proj.damage * 0.1
-			try_destroy()
+			if (istype(proj, /obj/item/projectile/shell))
+				var/obj/item/projectile/shell/S = proj
+				if (S.atype == "HE")
+					visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
+					qdel(src)
+					return
+				else
+					if (prob(60))
+						visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
+						qdel(src)
+			else
+				health -= proj.damage * 0.1
+				try_destroy()
 			return
 		else
 			return

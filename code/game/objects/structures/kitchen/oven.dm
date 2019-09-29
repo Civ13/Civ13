@@ -293,8 +293,10 @@
 /obj/structure/furnace/update_icon()
 	if (on)
 		icon_state = "[base_state]_on"
+		set_light(4)
 	else
 		icon_state = base_state
+		set_light(0)
 
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))

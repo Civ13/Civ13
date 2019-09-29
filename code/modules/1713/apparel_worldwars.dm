@@ -847,6 +847,13 @@ obj/item/clothing/head/ww2/ger_officercap
 	item_state = "ger_officercap"
 	worn_state = "ger_officercap"
 
+obj/item/clothing/head/ww2/ger_officercap_tanker
+	name = "german panzer officer cap"
+	desc = "A cap and worn by german officers the tank corps of the Wehrmacht."
+	icon_state = "ger_officercap_tanker"
+	item_state = "ger_officercap_tanker"
+	worn_state = "ger_officercap_tanker"
+
 obj/item/clothing/head/ww2/sov_officercap
 	name = "soviet officer cap"
 	desc = "A cap and worn by soviet officers the red army."
