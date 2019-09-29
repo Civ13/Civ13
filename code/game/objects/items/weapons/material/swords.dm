@@ -136,7 +136,9 @@ obj/item/weapon/material/sword/wakazashi
 		suicide = FALSE
 		return
 	else
-		user.apply_damage(src.force_divisor*2.5, "brute", "groin")
+		user << "<span class = 'notice'>Ow...</span>"
+		user.apply_effect(110,AGONY,0)
+		user.apply_damage(src.sharpness*2.5, "brute", "groin")
 		user.death()
 		user.visible_message("<span class = 'warning'>[user] cuts themselves open.</span>")
 		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."

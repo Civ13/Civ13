@@ -51,6 +51,7 @@
 /obj/item/ammo_casing/arrow/gods
 	name = "gods finger"
 	desc = "A arrow that radiates holy wrath."
+	icon = 'icons/obj/weapons.dmi'
 	icon_state = "arrow_god"
 	projectile_type = /obj/item/projectile/arrow/arrow/fire/gods
 	weight = 0.18
