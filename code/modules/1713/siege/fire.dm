@@ -114,6 +114,11 @@
 	desc = "Where you keep warm or light arrows on fire."
 	icon_state = "s_brazier0"
 
+/obj/structure/brazier/sandstone
+	name = "sandstone brazier"
+	desc = "Where you keep warm or light arrows on fire."
+	icon_state = "sandstone_brazier0"
+
 /obj/structure/brazier/stone/do_light()
 	if (on)
 		fuel = (fuel-1)
@@ -136,4 +141,28 @@
 		on = FALSE
 		set_light(0)
 		icon_state = "s_brazier0"
+		return
+
+/obj/structure/brazier/sandstone/do_light()
+	if (on)
+		fuel = (fuel-1)
+		if (fuel <= 0)
+			on = FALSE
+			set_light(0)
+			icon_state = "sandstone_brazier0"
+	spawn(10)
+		do_light()
+
+/obj/structure/brazier/sandstone/attack_hand(mob/user as mob)
+	if (!on && fuel > 0)
+		user << "You light the stone brazier."
+		on = TRUE
+		set_light(5)
+		icon_state = "sandstone_brazier1"
+		return
+	else
+		user << "You put out the stone brazier."
+		on = FALSE
+		set_light(0)
+		icon_state = "sandstone_brazier0"
 		return

@@ -161,6 +161,12 @@
 	explosion_resistance = 2
 	material = "Stone"
 
+/obj/covers/sandstone/stairs
+	name = "sandstone stairs"
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "sandstone_stairs"
+	material = "Stone"
+
 /obj/covers/wood_ship
 	name = "wood floor"
 	icon_state = "wood_ship"
@@ -466,8 +472,26 @@
 				else
 	..()
 
-/obj/covers/sandstone_wall
+/obj/covers/sandstone_smooth_wall
 	name = "sandstone wall"
+	desc = "A sandstone wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_smooth"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 400
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 8
+	material = "Stone"
+
+/obj/covers/sandstone_wall
+	name = "sandstone brick wall"
 	desc = "A sandstone wall."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "sandstone_brick"

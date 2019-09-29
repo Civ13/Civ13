@@ -717,7 +717,7 @@
 		E.reagents.add_reagent(randreg,5)
 		E.update_icon()
 
-/turf/proc/mining_proc(var/mob/living/carbon/human/H)
+/turf/proc/mining_proc(var/mob/living/carbon/human/H, var/ROCKTYPE)
 	if (!H || !src)
 		return
 	var/turf/T = get_turf(src)
@@ -896,11 +896,26 @@
 		T.is_mineable = FALSE
 		H.adaptStat("strength", 1)
 		return
-	var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-	mineral.amount = rand(4,8)
-	if (istype(get_area(src), /area/caribbean/void/caves/special))
-		mineral.amount *= 2
-	H << "<span class='danger'>You found some usable stone blocks!</span>"
+	//Switch rock material
+	if(ROCKTYPE == "sand")
+		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
+		mineral.amount = rand(3,10)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		H << "<span class='danger'>You found some sandstone rocks!</span>"
+	else if(ROCKTYPE == "ice")
+		//TODO ADD ICE STUFF AND FOSSILS
+		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+		mineral.amount = rand(4,8)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		H << "<span class='danger'>You found some usable stone rocks!</span>"
+	else
+		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+		mineral.amount = rand(4,8)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		H << "<span class='danger'>You found some usable stone rocks!</span>"
 	if(map.ID == MAP_NOMADS_DESERT)
 		T.ChangeTurf(/turf/floor/dirt/dust)
 	else if (map.ID == MAP_NOMADS_JUNGLE)

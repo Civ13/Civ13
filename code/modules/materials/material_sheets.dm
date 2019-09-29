@@ -131,7 +131,7 @@
 	value = 3
 
 /obj/item/stack/material/sandstone
-	name = "sandstone brick"
+	name = "sandstone"
 	icon_state = "sheet-sandstone"
 	default_type = "sandstone"
 	value = 2
