@@ -585,3 +585,10 @@
 	icon_state = "laurelcrown"
 	item_state = "laurelcrown"
 	body_parts_covered = FALSE
+
+/obj/item/clothing/under/towl
+	name = "white towl"
+	desc = "A simple towl to wrap around yourself."
+	icon_state = "towl"
+	item_state = "towl"
+	worn_state = "towl"

@@ -93,7 +93,7 @@ RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/
 RECIPE: /material/woolcloth/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
 
-RECIPE: /material/woolcloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,18,4,null
+RECIPE: /material/woolcloth/, red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,18,4,null
 RECIPE: /material/woolcloth/, blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,18,4,null
 RECIPE: /material/woolcloth/, colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,18,8,null
 RECIPE: /material/woolcloth/, white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats & masks,0,18,0,8,null
@@ -155,6 +155,12 @@ RECIPE: /material/woolcloth/, blue bedsheet,/obj/item/weapon/bedsheet/blue,2,75,
 RECIPE: /material/woolcloth/, yellow bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
 RECIPE: /material/woolcloth/, red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bedsheets,0,0,28,8,null
 
+RECIPE: /material/woolcloth/, brown bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown,4,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/, black bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack,4,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/, service jacket,/obj/item/clothing/suit/storage/coat/ww2/servicejacket,3,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/, modern coat,/obj/item/clothing/suit/storage/coat/ww2/moderncoat,4,70,0,1,jackets & vests,0,0,109,8,null
+
+
 RECIPE: /material/cloth/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
 RECIPE: /material/cloth/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
 RECIPE: /material/cloth/,customizable cape,/obj/item/clothing/accessory/custom/cape,2,30,0,1,accessories,0,0,0,3,null
@@ -200,6 +206,7 @@ RECIPE: /material/cloth/,sofa (left),/obj/structure/bed/sofa/left,8,140,1,1,none
 RECIPE: /material/cloth/,sofa (centre),/obj/structure/bed/sofa,8,140,1,1,none,0,0,93,8,null
 RECIPE: /material/cloth/,sofa (right),/obj/structure/bed/sofa/right,8,140,1,1,none,0,0,93,8,null
 
+RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,jackets & vests,0,0,28,8,null
 RECIPE: /material/cloth/,custom colonial jacket,/obj/item/clothing/suit/storage/jacket/customcolonial,5,90,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,custom colonial coat,/obj/item/clothing/suit/storage/jacket/customcolonialcoat,7,120,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,4,null

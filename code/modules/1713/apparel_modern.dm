@@ -410,3 +410,42 @@
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 60
+
+/obj/item/clothing/accessory/armor/nomads/pcarriertan
+	name = "tan carrier vest"
+	desc = "A kevlar vest with pouches, it is tan."
+	icon_state = "pcarrier_tan"
+	item_state = "pcarrier_tan"
+	worn_state = "pcarrier_tan"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.35
+	w_class = 4
+	weight = 3.8
+
+/obj/item/clothing/accessory/armor/nomads/pcarrierblack
+	name = "black carrier vest"
+	desc = "A kevlar vest with pouches, it is black."
+	icon_state = "pcarrier_black"
+	item_state = "pcarrier_black"
+	worn_state = "pcarrier_black"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.35
+	w_class = 4
+	weight = 3.8
+
+/obj/item/clothing/accessory/armor/nomads/civiliankevlar
+	name = "civilian kevlar vest"
+	desc = "A black kevlar vest for commercial use."
+	icon_state = "civilianvest"
+	item_state = "civilianvest"
+	worn_state = "civilianvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 60, arrow = 90, gun = 68, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.30
+	w_class = 4
+	weight = 3.6
