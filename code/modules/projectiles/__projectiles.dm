@@ -47,6 +47,8 @@
 	armor_penetration = 10
 	icon_state = "arrow"
 	damage_type = BURN
+	embed = FALSE
+	sharp = FALSE
 
 /obj/item/projectile/arrow/arrow/fire/gods
 	damage = DAMAGE_OH_GOD

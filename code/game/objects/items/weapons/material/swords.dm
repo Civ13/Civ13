@@ -126,6 +126,7 @@ obj/item/weapon/material/sword/wakazashi
 	var/suicide = FALSE //To
 
 /obj/item/weapon/material/knife/tanto/proc/handle_suicide(mob/living/user)
+	..()
 	if (!ishuman(user))
 		return
 	var/mob/living/carbon/human/M = user
@@ -145,19 +146,21 @@ obj/item/weapon/material/sword/wakazashi
 		suicide = FALSE
 
 /obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, def_zone)
+	..()
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
-		user << "<span class = 'danger'>You have no idea how to do this.</span>"
-		return
-	if (A == user)
-		var/tgt = user.targeted_organ
-		if (user.targeted_organ == "random")
-			tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-		if (tgt == "groin" && !suicide)
-			handle_suicide(user)
-		else if (user.a_intent == I_HURT && do_after(user, 2, get_turf(user)))
-			attackby(user)
-		return
+	if(istype(A, H))
+		if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+			user << "<span class = 'danger'>You have no idea how to do this.</span>"
+			return
+		if (A == user)
+			var/tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			if (tgt == "groin" && !suicide)
+				handle_suicide(user)
+			else if (user.a_intent == I_HURT && do_after(user, 2, get_turf(user)))
+				attackby(user)
+			return
 /obj/item/weapon/material/sword/katana/iron
 	default_material = "iron"
 
