@@ -664,6 +664,13 @@
 	max_volume = 750
 	volume = 750
 
+/obj/structure/sink/well/sandstone
+	name = "sandstone well"
+	icon_state = "sandstone_well1"
+	sound = 'sound/effects/watersplash.ogg'
+	max_volume = 750
+	volume = 750
+
 /obj/structure/sink/well/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/hammer) || istype(O, /obj/item/weapon/wrench))
 		return
@@ -695,6 +702,11 @@
 			icon_state = "well_dry"
 		else
 			icon_state = "well1"
+	else if  (istype(src, /obj/structure/sink/well/sandstone))
+		if (dry || volume <= 0)
+			icon_state = "sandstone_well_dry"
+		else
+			icon_state = "sandstone_well1"
 
 /obj/structure/sink/New()
 	..()

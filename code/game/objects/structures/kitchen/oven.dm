@@ -290,6 +290,44 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
+/obj/structure/furnace/sandstone
+	name = "sandstone furnace"
+	desc = "An industrial furnace, used to smelter minerals."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "sandstone_brick_furnace"
+	layer = 2.9
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "sandstone_brick_furnace"
+	on = FALSE
+	max_space = 6
+	fuel = 0
+	iron = 0
+	copper = 0
+	tin = 0
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
+/obj/structure/furnace/clay
+	name = "clay furnace"
+	desc = "An industrial furnace, used to smelter minerals."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "clay_brick_furnace"
+	layer = 2.9
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "clay_brick_furnace"
+	on = FALSE
+	max_space = 6
+	fuel = 0
+	iron = 0
+	copper = 0
+	tin = 0
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
 /obj/structure/furnace/update_icon()
 	if (on)
 		icon_state = "[base_state]_on"

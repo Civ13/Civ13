@@ -219,6 +219,14 @@
 	climbable = TRUE
 	health = 30
 
+/obj/structure/window/sandbag/sandstone
+	name = "sandstone wall"
+	icon_state = "sandstone_barricade"
+	layer = MOB_LAYER + 0.01 //just above mobs
+	anchored = TRUE
+	climbable = TRUE
+	health = 30
+
 /obj/item/weapon/sandbag/sandbag //:agony:
 	name = "sandbag"
 	icon_state = "sandbag_new"
