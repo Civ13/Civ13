@@ -108,7 +108,8 @@
 	..()
 
 /obj/item/projectile/arrow/arrow/on_impact(mob/living/carbon/human/M as mob)
-	src.reagents.trans_to(M, volume)
+	//TO DO TRANSFER REAGENTS REAGENTS HURT MY BRAIN
+	//src.reagents.trans_to(M, volume)
 
 /obj/item/projectile/grenade/smoke
 	name = "smoke grenade"
