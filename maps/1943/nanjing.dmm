@@ -562,29 +562,29 @@
 "kP" = (/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "kQ" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "kR" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/curtain/open/shower,/obj/structure/shower{icon_state = "shower"; dir = 8},/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
-"kS" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"kT" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/bed/wood,/obj/structure/bed/bedroll,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"kU" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/bedroll,/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"kV" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"kS" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"kT" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"kU" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/bed/wood,/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"kV" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/bedroll,/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "kW" = (/obj/item/weapon/soap,/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "kX" = (/obj/structure/curtain/open/shower,/obj/structure/shower{icon_state = "shower"; dir = 8},/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
-"kY" = (/obj/structure/bed/wood,/obj/structure/bed/bedroll,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"kZ" = (/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"la" = (/obj/structure/bed/bedroll,/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"kY" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"kZ" = (/obj/structure/bed/wood,/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"la" = (/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lb" = (/obj/structure/sink{icon_state = "sink"; dir = 8},/turf/floor/plating/steel,/area/caribbean/russian/land/inside)
 "lc" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "ld" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/russian/land/inside)
-"le" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/wood,/obj/structure/bed/bedroll,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"le" = (/obj/structure/bed/bedroll,/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lf" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lg" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lh" = (/obj/covers/brick_wall,/turf/floor/grass,/area/caribbean/russian/land/inside/command)
 "li" = (/obj/covers/brick_wall,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "lj" = (/obj/covers/brick_wall,/obj/structure/sign/flag/chinese,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
-"lk" = (/obj/structure/bed/wood,/obj/item/weapon/bedroll,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"lk" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/wood,/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "ll" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/item/weapon/radio/faction1,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "lm" = (/obj/item/weapon/radio/faction1,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "ln" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/item/weapon/radio/faction1,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
-"lo" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"lo" = (/obj/structure/bed/wood,/obj/item/weapon/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lp" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/sink/kitchen{icon_state = "sink_alt"; dir = 8},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lq" = (/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "lr" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/wood,/area/caribbean/russian/land/inside)
@@ -592,7 +592,7 @@
 "lt" = (/obj/structure/simple_door/key_door/chinese,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "lu" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lv" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
-"lw" = (/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
+"lw" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/chair,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lx" = (/obj/structure/closet/crate/rations/biscuits,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "ly" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lz" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/key/chinese,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
@@ -600,7 +600,7 @@
 "lB" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "lC" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "lD" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/pot,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"lE" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/bed/wood,/obj/item/weapon/bedroll,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"lE" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "lF" = (/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/structure/closet/crate/ww2,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "lG" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "lH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean)
@@ -632,6 +632,9 @@
 "mh" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
 "mi" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
 "mj" = (/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall)
+"mk" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 1},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"ml" = (/obj/structure/bed/chair,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/wood,/area/caribbean/russian/land/inside/command)
+"mm" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/bed/wood,/obj/item/weapon/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "mr" = (/obj/structure/barricade/steel,/obj/structure/window/sandbag/sandbag,/turf/floor/grass,/area/caribbean/japanese/land/outside)
 "ms" = (/obj/structure/barricade/steel,/turf/floor/grass,/area/caribbean/japanese/land/outside)
 "mv" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/japanese/land/outside)
@@ -914,7 +917,7 @@ nQagagagagagagagagagagagagagagagagagagagagagagagaiaiaiaiaiaiaiaiagagagagagagagag
 (1,1,2) = {"
 acacacacacacacacacacabacacacacacacacacacacacacadcNdtadacacbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKacacadcNdtadacacacacacacacacacacacacacacacacacacac
 acacababababababacabacabacabababababababacacacadcNdtadacacbKbLbMbNbObPbQbRbSbTbUbVcccdcechcncocpcochcnchcocpcocnchbKcqcrcscrcscrcscqbKctcvcwcxczcwcxchcAcwcxchcncecBcKcMcOcPcPcPcQchcRcPcUcVbKacacadcNdtadacacacacabababababababababababababacac
-acababgWabababababacabacababababgWababababacacadadadadacacbKchchchchchchbRchchchchchchcechcYddcpdddechcYddcpdddechbKchchchchchchchchbKchchcwchchcwchchchcwchchchcechchchchchchchcQchchchchchbKacacadadadadacacacababababgWabababababgWababababac
+acababgWabababababacabacababababgWababababacacadadadadacacbKchchchchchchbRchchchchchchcechcYddcpdddechcYddcpdddechbKchchchchchchchchbKchchcwchchcwchchchcwchchchcechchchchkSkSkScQchchchchchbKacacadadadadacacacababababgWabababababgWababababac
 acabababababgWabababacacabgWabgWababgWababacacadadadadacacbKdhchchchchdibRdjchchchchdkcechcodljudlcochcodljudlcochbKchchchchchchchchbKjCchcwchcvcwcvchchcwcvchjEcechchchchchchchcQchchchchchbKacacadadadadacacacacgWabababababgWababababababacac
 acacabgWababababacacacacacabababababababacacacadcNdtadacacbKjGchchchchjLjMjNchchchchjOcechchchcnchchchchchcnchchchbKchchchchchchchchbKcwjPcwjPcwcwcwjPcwcwcwjPcwjSchchchchchchchcQcQcQcQcQcQbKacacadcNdtadacacacacacacacacacacacacacacacacacacac
 acacacacacacacacacacacacacacacacacacacacacacacadcNdtadacacbKchchchchchchcnchchchchchchjVchchchchchchchchchchchchchjVchchcokvchcochchjVchchchchchchchchchchchchchjVchchchchchchchchchchchchchbKacacadcNdtadacacabaeabaeaeababaeaeaeaeaeaeacacacac
@@ -923,22 +926,22 @@ bYaFaFaFaFcaaFabcaacabacbYcbaFaFaFaFaFababbYacadadadadacacbKchchchchchchchchchch
 bYcbaFaFaFaFaFcaaFabacacbYcbaFaFaFaFcaaFcfbYacadcNdtadacacbKchchchchchchchchchchchchchcechcYddcpdddechcYddcpdddechbKchchchchchchchchbKchchcochkLchcochchchchchchcechchchchchchchchchchchchchbKacacadcNdtadacacaeahahahahahahahahahabahaeacacacac
 bYaFaFaFaFcacaahabacacacbYaFaFaFaFcaahahabbYacadcNdtadacacbKkHchchchchchchchchchchchkHcechkHcocpcochkHchcocpcokHchbKkHchchchchchchkHbKkHchchchchchchchcscscrcrkMcekKchkKchkKchchchkKchkKchkKbKacacadcNdtadacacahabahahahahahahahahahahabacacacac
 bYaFaFaFcaahaFcabYacacacbYaFaFcaaFaFaFabaFbYacadadadadacacbKcececececekJjVkJcececececebKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKkIjVjVkIbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKcececececekJjVkJcececececebKacacadadadadacacaeahabahahahahahahahahabaeacacacac
-bYaFaFcaahaFabaFahacacacbYciaFaFaFaFabaFahahacadfyadadacacbKkNkOkPkPcechchchcekQkPkPkRbKacacacacacacacacacacacacacafgHgHgHgHgHgHgHgHafacacacacacacacacacacacacacbKkSchchkTcechchchcekUchchkVbKacacadadadadacacaeabahahahahahahahahahahaeacacacac
+bYaFaFcaahaFabaFahacacacbYciaFaFaFaFabaFahahacadfyadadacacbKkNkOkPkPcechchchcekQkPkPkRbKacacacacacacacacacacacacacafgHgHgHgHgHgHgHgHafacacacacacacacacacacacacacbKkTchchkUcechchchcekVchchkYbKacacadadadadacacaeabahahahahahahahahahahaeacacacac
 bYcaabaFcaabaFahbYacacacbYaFcaaFaFcaaFcaaFbYacadcNdtadacacbKcecekQkPcechchchcekPkPkWkPbKacabababababababababababacgIgHgHgHgHgHgHgHgHgJacabababababababababababacbKcxchchcxcechchchcecxchchcxbKacacadcNdtadacacabababahahahahahabahababaeacacacac
-bYahaFabaFahaFabbYacacacbYabahaFaFahaFaFaFbYacadcNdtadacacbKkNkOkPkPcechchchcekPkPkPkXbKacgWababababgWabababababacgIgHgHgHgHgHgHgHgHgJacgWababababgWabababcuabacbKkYchchkZcechchchcekZchchlabKacacadcNdtadacacababahababahahabahahabahaeacacacac
+bYahaFabaFahaFabbYacacacbYabahaFaFahaFaFaFbYacadcNdtadacacbKkNkOkPkPcechchchcekPkPkPkXbKacgWababababgWabababababacgIgHgHgHgHgHgHgHgHgJacgWababababgWabababcuabacbKkZchchlacechchchcelachchlebKacacadcNdtadacacababahababahahabahahabahaeacacacac
 bYciabahcaaFabaFabacacababahcaahaFahcaaFcfbYacadadadadacacbKcecekQkPcechchchcekPkPkPkPbKacabababgWabababababababacgIgHgHgHgHgHgHgHgHgJacabababgWabababababababacbKcxchchchjVchchchjVchchchcxbKacacadadadadacacabababaeaeaeaeaeaeaeahabahacacacac
-bYabaFabaFcaaFababacacacabababcaaFaFaFaFaFbYacadadadadacacbKkQkPkPkPkOchchchkOkPkPkPkRbKacababababababababgWababacgIgHgHgHgHgHgHgHgHgJacabgWabababababababababacbKkZchchkYcechchchcekZchchlabKacacadadadadacacacacacacacacacacacacacacacacacacac
+bYabaFabaFcaaFababacacacabababcaaFaFaFaFaFbYacadadadadacacbKkQkPkPkPkOchchchkOkPkPkPkRbKacababababababababgWababacgIgHgHgHgHgHgHgHgHgJacabgWabababababababababacbKlachchkZcechchchcelachchlebKacacadadadadacacacacacacacacacacacacacacacacacacac
 ababbYabbYbYbYababacacabababbYbYbYbYbYbYbYbYacadcNdtadacacbKlbkPkPkPcelcchldcekPkPkPkPbKacabababgWabababababababacgIgHgHgHgHgHgHgHgHgJacabababababgWabgWabababacbKcxchchcxcechchchcecxchchcxbKacacadcNdtadacacbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYacac
-acacacacabacacacabacacacacabacacacacabacacacacadcNdtadacacbKlbkPkPkPcechchchcekPkPkPkXbKacabababababababababacacacdOacacacacacacacacdOacacacabababababababababacbKlechchkVcechchchcekUchchkVbKacacadcNdtadacacbYaGaFaFaGbYaFaFbYaGaFaFaFaGbYacac
+acacacacabacacacabacacacacabacacacacabacacacacadcNdtadacacbKlbkPkPkPcechchchcekPkPkPkXbKacabababababababababacacacdOacacacacacacacacdOacacacabababababababababacbKlkchchkYcechchchcekVchchkYbKacacadcNdtadacacbYaGaFaFaGbYaFaFbYaGaFaFaFaGbYacac
 acacacacacacacacacacacacacacabacacacacacacabacadadadadacacbKlbkPkPkPcechchchcekPkWkPkPbKacabgWabababacacacacacacacacadadadadadadadadacacacacacacacacabababgWabacbKcecececekJlcchldkJcecececebKacacadadadadacacbYaFaFaFaFaFaFaFaFaFaFaFaFaFbYacac
 aeaeaeaeaeaeaeaeaebsbYbYbYbYbYbYbYabbYabababacadadadadacacbKkQkPkPkPcechchchcekQkPkPkRbKacabacacacacacacacacacadadhXhYadadadadadadhXhYadadacacacacacacacacacabacbKlfchchlgcechchchcelfchchlgbKacacadadadadacacbYaFaFaFaFaFaFaFaFaFaFaFaFaFbYacac
-aeaTaebkaWaEaDbeaeacbYcCaGaFbYaFcDbYabaFgQcaacadcNdtadacaclhlililililjchchchkJcecececebKacabacacacacacadadadadadadhXhYadadadcEadadhXhYadadadadadadacacacacacabacbKkYchchlkcechchchcekYchchlkbKacacadcNdtadacacbYbZaFaFbZbYaFaFbYbZaFaFaFbZbYacac
-aeaHaeaEaEaEaEaEaeaccLbhaFaFbYaFaFcaaFabaFabacadcNdtadacaclhlllmlmlnlichchchcelochchlpbKacabacacadadadadadadadadadhXihiiiiiiiiiiiiijhYadadadfyadadadadadacacabacbKcxchchcxcechchchcecxchchcxbKacacadcNdtadacacbYbYbYbYbYbYaFaFbYbYbYbYbYbYbYacac
-aebraEaEbraEaEbraeacbYcSaFaFcTaFaFcTaFbXgRbYacadadadadacaclhlqlqlqlqlichchchcelrchchlsbKacabacacadadadadadadadadadadimimininininimimadadadadadadadadadadacacabacbKkYchchlkcechchchcelkchchkYbKacacadadadadacacbYaFaFaFaFaGaFaFaGaFaFaFaFaFbYacac
-aeaeaeaeaeaeaHaeaeaccLbhaFaFbYaFaFbYaIcWcXabacadadadadacaclhlqlqlqlqlilcchldcekLchchcobKacacacacadadadadadadadadadacacacacacacacacacacadfyadadadadadadadacacabacbKcxchchchjVchchchjVchchchcxbKacacadadadadacacabcaahaFaFaFaFaFaFaFaFahaFabbYacac
-acacacacacacacacacacbYcCbZaFbYcbcfbYbYbYbYabacdudududuacaclhlqlqlqlqltchchchjVchchchlubKacacacadadadadadadacacacacacacacacasatacacacacacacacacadadadadadacacabacbKlkchchkYcechchchcekYchchlkbKacacdudududuacacbYaFcaahaFaFaFaFaFaFahcaaFahabacac
-acbibibibibibibibiacbYbYcZbYbYaFaFdadbaIdcbYacdudududuacaclhlvlwlqlqlichchchcelxchchlybKacacacadadadadadadacacacacacayazaAaBaBaAazaCacacacacacadadadadadacacacacbKcxchchcxcechchchcecxchchcxbKacacdudududuacacbYabahaFabahaFahcaahcaaFahaFahacac
-acbibibibibibibibiacbYdfcldgbYaFaFaFaFaFaFbYacadadadadacaclhlzlvlAlBlichchchcelCchchlDbKacacacadadadadacacacacayazazabacaBaBaBaBacabazazaCacacacacadadadadacacacbKlechchlEcechchchcelechchkTbKacacadadadadacaccaahcaahcaabaFaFapcaahcacaahbYacac
+aeaTaebkaWaEaDbeaeacbYcCaGaFbYaFcDbYabaFgQcaacadcNdtadacaclhlililililjchchchkJcecececebKacabacacacacacadadadadadadhXhYadadadcEadadhXhYadadadadadadacacacacacabacbKkZchchlocechchchcekZchchlobKacacadcNdtadacacbYbZaFaFbZbYaFaFbYbZaFaFaFbZbYacac
+aeaHaeaEaEaEaEaEaeaccLbhaFaFbYaFaFcaaFabaFabacadcNdtadacaclhlllmlmlnlichchchcelwchchlpbKacabacacadadadadadadadadadhXihiiiiiiiiiiiiijhYadadadfyadadadadadacacabacbKcxchchcxcechchchcecxchchcxbKacacadcNdtadacacbYbYbYbYbYbYaFaFbYbYbYbYbYbYbYacac
+aebraEaEbraEaEbraeacbYcSaFaFcTaFaFcTaFbXgRbYacadadadadacaclhlqlqlqlqlichchchcelrchchlsbKacabacacadadadadadadadadadadimimininininimimadadadadadadadadadadacacabacbKkZchchlocechchchcelochchkZbKacacadadadadacacbYaFaFaFaFaGaFaFaGaFaFaFaFaFbYacac
+aeaeaeaeaeaeaHaeaeaccLbhaFaFbYaFaFbYaIcWcXabacadadadadacaclhlElqlElqlilcchldcemkchchcobKacacacacadadadadadadadadadacacacacacacacacacacadfyadadadadadadadacacabacbKcxchchchjVchchchjVchchchcxbKacacadadadadacacabcaahaFaFaFaFaFaFaFaFahaFabbYacac
+acacacacacacacacacacbYcCbZaFbYcbcfbYbYbYbYabacdudududuacaclhlqlqlqlqltchchchjVchchchlubKacacacadadadadadadacacacacacacacacasatacacacacacacacacadadadadadacacabacbKlochchkZcechchchcekZchchlobKacacdudududuacacbYaFcaahaFaFaFaFaFaFahcaaFahabacac
+acbibibibibibibibiacbYbYcZbYbYaFaFdadbaIdcbYacdudududuacaclhlvmllqlqlichchchcelxchchlybKacacacadadadadadadacacacacacayazaAaBaBaAazaCacacacacacadadadadadacacacacbKcxchchcxcechchchcecxchchcxbKacacdudududuacacbYabahaFabahaFahcaahcaaFahaFahacac
+acbibibibibibibibiacbYdfcldgbYaFaFaFaFaFaFbYacadadadadacaclhlzlvlAlBlichchchcelCchchlDbKacacacadadadadacacacacayazazabacaBaBaBaBacabazazaCacacacacadadadadacacacbKlkchchmmcechchchcelkchchkUbKacacadadadadacaccaahcaahcaabaFaFapcaahcacaahbYacac
 acbibibibibibibibiacbYdmclcldnaFaFbEaIbGbZbYacadadadadacaclhlhlhlhlhlhbKbKbKbKbKbKbKbKbKacacacadadadadacacacacaKababacaBaBacacaBaBacababaLacacacacadadadadacaciubKbKbKbKbKbKbKbKbKbKbKbKbKbKbKacacadadadadacacabcabYbYbYbYahaFbYbYbYbYabbYbYacac
 bsbsbsbsbsbsbibibsbsbYbYbYbYbYcTbYbYcLbYbYbYacadcNdtadacacacacacacfXfYfHfZgaacacacacacacacacadadadadadacacayazababacaBaBacacacacaBaBacababazaCacacadadadadadaciuivacacacacacacacacacacacacacacacacadcNfzadacacacacacacacacacacacacacacacacacacac
 acacacacacacbibiacacacacacacacacacacacacacaccFadcNdtadcFacacacacacfXfYfHfZgaacacacacacacaccFadadadadcFacacaKababacaBaBacacaMaNacacaBaBacababaLacaccFadadadadcFiuivacacacacacacacacacacacacacacaccFadcNdtadcFacacacacacacacacacacacacacacacacacac
