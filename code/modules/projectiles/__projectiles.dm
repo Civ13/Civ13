@@ -58,53 +58,52 @@
 	crushes = TRUE
 
 /obj/item/projectile/arrow/arrow/stone
-	damage = DAMAGE_MEDIUM-6
+	damage = DAMAGE_MEDIUM
 	penetrating = 0
 	armor_penetration = 2
 	icon_state = "arrow_copper"
 
 /obj/item/projectile/arrow/arrow/copper
-	damage = DAMAGE_MEDIUM-4
+	damage = DAMAGE_MEDIUM+1
 	penetrating = 0
 	armor_penetration = 2
 	icon_state = "arrow_copper"
 
 /obj/item/projectile/arrow/arrow/iron
-	damage = DAMAGE_MEDIUM-2
+	damage = DAMAGE_MEDIUM+2
 	penetrating = 1
 	armor_penetration = 4
 	icon_state = "arrow_iron"
 
 /obj/item/projectile/arrow/arrow/bronze
-	damage = DAMAGE_MEDIUM
+	damage = DAMAGE_MEDIUM+3
 	penetrating = 1
 	armor_penetration = 6
 	icon_state = "arrow_bronze"
 
 /obj/item/projectile/arrow/arrow/steel
-	damage = DAMAGE_MEDIUM+2
+	damage = DAMAGE_MEDIUM+4
 	penetrating = 1
 	armor_penetration = 8
 	icon_state = "arrow_steel"
 
 /obj/item/projectile/arrow/arrow/modern
-	damage = DAMAGE_MEDIUM+4
+	damage = DAMAGE_MEDIUM+5
 	penetrating = 1
 	armor_penetration = 8
 	icon_state = "arrow_modern"
 
 /obj/item/projectile/arrow/arrow/vial
-	damage = DAMAGE_MEDIUM-4
+	damage = DAMAGE_MEDIUM
 	penetrating = 1
 	armor_penetration = 10
 	icon_state = "arrow_vial"
 	volume = 15
 
-/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/human/M as mob)
-	if (prob(5))
+/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/M as mob)
+	if (prob(10))
 		M.fire_stacks += 1
 	M.IgniteMob()
-	M.instadeath_check()
 	spawn (0.01)
 		qdel(src)
 	..()

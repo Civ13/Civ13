@@ -58,16 +58,27 @@
 			cooloff = world.time+flamepower
 	if(prob(ices))
 		M.adjustFireLoss(icepower)
+		playsound(loc, 'sound/effects/bubbles.ogg', 75, TRUE)
 	if(prob(toxics))
 		M.reagents.add_reagent(reagent1, (prob(toxicpower) + reagent1amount))
 		M.reagents.add_reagent(reagent2, (prob(toxicpower) + reagent2amount))
+		playsound(loc, 'sound/effects/Splash_Small_01_mono.ogg', 75, TRUE)
 	if(prob(leechs))
 		user.health += prob(leechpower)
 		user.updatehealth()
 		M.health -= prob(leechpower)
 		M.updatehealth()
+		playsound(loc, 'sound/effects/refill.ogg', 75, TRUE)
 	if(prob(shocks))
 		M.electrocute_act(shockpower, src, 1.0)
+		if(prob(25))
+			playsound(loc, 'sound/effects/sparks1.ogg', 75, TRUE)
+		else if(prob(25))
+			playsound(loc, 'sound/effects/sparks2.ogg', 75, TRUE)
+		else if(prob(25))
+			playsound(loc, 'sound/effects/sparks3.ogg', 75, TRUE)
+		else
+			playsound(loc, 'sound/effects/sparks4.ogg', 75, TRUE)
 //Swords
 
 /obj/item/weapon/material/sword/magic/arkofdisease
@@ -77,7 +88,7 @@
 	desc = "It pulses ominously, you feel sick just by looking at it."
 	force_divisor = 0.50 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
-	sharpness = 35
+	sharpness = 25
 	block_chance = 35
 	toxics = 25
 	toxicpower = 15
@@ -94,7 +105,19 @@
 	desc = "It looks like it is bleeding.."
 	force_divisor = 0.60 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
-	sharpness = 40
+	sharpness = 35
 	block_chance = 38
 	leechs = 20
 	leechpower = 20
+
+/obj/item/weapon/material/sword/magic/swordsmansflame
+	name = "Swordsman's Flame"
+	icon_state = "swordsmans_flame"
+	item_state = "swordsmans_flame"
+	desc = "The blade feels cool but looks like it's red hot."
+	force_divisor = 0.65 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
+	sharpness = 40
+	block_chance = 40
+	flames = 35
+	flamepower = 50
