@@ -150,7 +150,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 				if (istype(src, /turf/floor/dirt/underground/empty))
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H)
+					mining_proc(H, U.rocktype)
 				return TRUE
 	if (world.time >= user.next_push)
 		if (ismob(user.pulling))

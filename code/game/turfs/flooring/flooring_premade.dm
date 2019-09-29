@@ -111,6 +111,22 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "rocky"
 	initial_flooring = null
+	var/rocktype = "default" //Default, Sand, and Ice.
+	New()
+		..()
+		update_rock_type()
+
+/turf/floor/dirt/underground/proc/update_rock_type()
+	if(src.z < 2) //if Underground.
+		var/area/A=locate(/area/) in locate(src.x, src.y, src.z + 1)
+		//Check if it is desert area, if so make it sandy
+		if(istype(A, /area/caribbean/arab/desert))
+			rocktype = "sand"
+			icon_state = "rockysandy"
+		//if in snow, make it icy colored
+		if(istype(A, /area/caribbean/nomads/snow))
+			rocktype = "ice"
+			icon_state = "rockyicy"
 
 /turf/floor/dirt/underground/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
@@ -133,6 +149,7 @@
 			else if  (input == "Underground Cave")
 				user << "<span class='notice'>You will now carve the cave design!</span>"
 				design = "undercave"
+				update_rock_type()
 			else if  (input == "Brick")
 				user << "<span class='notice'>You will now carve the brick design!</span>"
 				design = "brick"

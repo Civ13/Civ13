@@ -179,6 +179,9 @@
 	//add arrow overlay
 	src.overlays += icon(A.icon,A.icon_state)
 
+obj/item/weapon/gun/projectile/bow/Fire()
+	..()
+	remove_arrow_overlay()
 
 /obj/item/weapon/gun/projectile/bow/sling
 	name = "sling"
