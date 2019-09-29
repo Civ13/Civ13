@@ -128,6 +128,18 @@
 	may_become_muddy = TRUE
 	initial_flooring = null
 
+/turf/floor/grass/edge
+	name = "grass edge"
+	icon_state = "grass_edges"
+	is_diggable = FALSE
+	may_become_muddy = FALSE
+
+/turf/floor/grass/edge/dead
+	name = "dead grass edge"
+	icon_state = "dead_grass_edges"
+	is_diggable = FALSE
+	may_become_muddy = FALSE
+
 /turf/floor/grass/jungle/savanna
 	name = "dry grass"
 	icon_state = "grass_dry"
@@ -189,6 +201,13 @@
 	icon_state = "sand"
 	is_diggable = TRUE
 	available_sand = 22
+	initial_flooring = /decl/flooring/sand_beach
+
+/turf/floor/beach/sand/edges
+	name = "sand"
+	icon_state = "sand_edges"
+	is_diggable = TRUE
+	available_sand = 11
 	initial_flooring = /decl/flooring/sand_beach
 
 /turf/floor/beach/sand/dark
