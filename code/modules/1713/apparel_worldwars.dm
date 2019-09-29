@@ -1060,3 +1060,47 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	desc = "A red, white and black armband of the Volkssturm"
 	icon_state = "volkssturm"
 	slot = "armband"
+
+/obj/item/clothing/suit/storage/coat/ww2/moderncoat
+	name = "modern coat"
+	desc = "A standard coat made from wool."
+	icon_state = "moderncoat"
+	item_state = "moderncoat"
+	worn_state = "moderncoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ww2/servicejacket
+	name = "servace jacket"
+	desc = "A standard military jacket."
+	icon_state = "servicejacket"
+	item_state = "servicejacket"
+	worn_state = "servicejacket"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 10, bomb = 5, bio = 15, rad = 15)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown
+	name = "brown bomber's jacket"
+	desc = "A brown jacket meant for high-alitude temperatures."
+	icon_state = "bomberjacket"
+	item_state = "bomberjacket"
+	worn_state = "bomberjacket"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack
+	name = "black bomber's jacket"
+	desc = "A black jacket meant for high-alitude temperatures."
+	icon_state = "blackbomberjacket"
+	item_state = "blackbomberjacket"
+	worn_state = "blackbomberjacket"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
