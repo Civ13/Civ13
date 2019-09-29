@@ -904,6 +904,51 @@
 
 	return TRUE
 
+
+/datum/job/german/tank_crew_leader
+	title = "Panzerführer"
+	en_meaning = "Armored Squad Leader"
+	rank_abbreviation = "Pzf."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateGE"
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+	is_reichstag = FALSE
+	is_tanker = TRUE
+	whitelisted = TRUE
+	is_squad_leader = TRUE
+	is_officer = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 8
+
+/datum/job/german/tank_crew_leader/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_tanker(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap_tanker(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the commander of a tank. Assemble your crew and lead your tank to victory!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
 /datum/job/german/tank_crew
 	title = "Panzerschütze"
 	en_meaning = "Armored Crewman"
@@ -947,49 +992,6 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/german/tank_crew_leader
-	title = "Panzerführer"
-	en_meaning = "Armored Squad Leader"
-	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
-	is_ww2 = TRUE
-	is_reichstag = FALSE
-	is_tanker = TRUE
-	whitelisted = TRUE
-	is_squad_leader = TRUE
-	is_officer = TRUE
-	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 8
-
-/datum/job/german/tank_crew_leader/equip(var/mob/living/carbon/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_tanker(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ger_officercap_tanker(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/german(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, the commander of a tank. Assemble your crew and lead your tank to victory!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	return TRUE
 /datum/job/german/machine_gunner
 	title = "Machinengewehr Schütze"
 	en_meaning = "Machine Gunner"
@@ -1262,7 +1264,7 @@
 /datum/job/german/ss_panzergrenadier_squad_leader
 	title = "Waffen-SS Unterscharführer Panzergrenadier"
 	en_meaning = "Waffen-SS Mechanized Infantry"
-	rank_abbreviation = ""
+	rank_abbreviation = "Uscha."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
 	SL_check_independent = TRUE

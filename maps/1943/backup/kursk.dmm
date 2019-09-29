@@ -104,13 +104,13 @@
 "bZ" = (/obj/structure/closet/crate/ww2/panzerfaust,/turf/floor/grass,/area/caribbean/german)
 "ca" = (/obj/structure/closet/crate/ww2/stg1924,/turf/floor/grass,/area/caribbean/german)
 "cb" = (/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/forest)
-"cc" = (/obj/structure/vehicleparts/frame/car/rb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement,/turf/floor/grass,/area/caribbean/forest)
-"cd" = (/obj/structure/vehicleparts/frame/car/lb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"cc" = (/obj/structure/vehicleparts/frame/ifv/rb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement,/turf/floor/grass,/area/caribbean/forest)
+"cd" = (/obj/structure/vehicleparts/frame/ifv/lb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
 "ce" = (/obj/structure/vehicleparts/frame/panzervi/right,/obj/structure/bed/chair/commander,/turf/floor/dirt,/area/caribbean/forest)
-"cf" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/turf/floor/grass,/area/caribbean/forest)
-"cg" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"cf" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/ifv/rf,/obj/structure/vehicleparts/movement,/turf/floor/grass,/area/caribbean/forest)
+"cg" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/ifv/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
 "ch" = (/obj/structure/vehicleparts/frame/panzervi/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/dirt,/area/caribbean/forest)
-"ci" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#3d5931"; color_code = ""; name = "GAZ-67"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 1},/turf/floor/grass,/area/caribbean/forest)
+"ci" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#3d5931"; color_code = ""; name = "GAZ-67"},/obj/structure/vehicleparts/frame/lf/truck{noroof = 1},/turf/floor/grass,/area/caribbean/forest)
 "cj" = (/obj/structure/barricade/vertical,/turf/floor/dirt,/area/caribbean/german)
 "ck" = (/obj/structure/bed/roller,/turf/floor/trench,/area/caribbean/german)
 "cl" = (/obj/structure/closet/crate/sandbags,/turf/floor/grass,/area/caribbean/german)
@@ -280,7 +280,7 @@
 "ft" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/plating/road,/area/caribbean/houses)
 "fu" = (/obj/structure/barricade/tires,/turf/floor/plating/road,/area/caribbean/houses)
 "fv" = (/obj/structure/barricade,/obj/structure/sign/custom{desc = "Vehicle repair and refit."; name = "Garage"},/turf/floor/dirt,/area/caribbean/houses)
-"fw" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/turf/floor/grass,/area/caribbean/forest)
+"fw" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/rf/truck{noroof = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/turf/floor/grass,/area/caribbean/forest)
 "fx" = (/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/storage/fancy/cigarettes/randompack,/turf/floor/plating/road,/area/caribbean/houses)
 "fy" = (/obj/item/weapon/stool/wood,/turf/floor/plating/road,/area/caribbean/houses)
 "fz" = (/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/obj/structure/table/wood,/turf/floor/plating/road,/area/caribbean/houses)
@@ -309,9 +309,9 @@
 "fW" = (/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/frame/t34/rb{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "fX" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 0; layer = 4},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/structure/vehicleparts/frame/panzervi/lf,/turf/floor/dirt,/area/caribbean/forest)
 "fY" = (/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/panzervi/rf,/turf/floor/dirt,/area/caribbean/forest)
-"fZ" = (/obj/structure/vehicleparts/frame/car/right,/turf/floor/grass,/area/caribbean/forest)
-"ga" = (/obj/structure/vehicleparts/frame/car/right,/obj/structure/vehicleparts/movement,/turf/floor/grass,/area/caribbean/forest)
-"gb" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 0},/turf/floor/dirt,/area/caribbean/forest)
+"fZ" = (/obj/structure/vehicleparts/frame/ifv/rb{noroof = 1},/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement,/turf/floor/dirt,/area/caribbean/forest)
+"ga" = (/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"gb" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/rf/truck{noroof = 1},/turf/floor/dirt,/area/caribbean/forest)
 "gc" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt,/area/caribbean/forest)
 "gd" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/forest)
 "ge" = (/turf/floor/beach/water,/area/caribbean/forest)
@@ -363,11 +363,9 @@
 "gY" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass,/area/caribbean/forest)
 "gZ" = (/obj/effect/landmark{name = "JoinLateGESap"},/turf/floor/plating/road,/area/caribbean/houses)
 "ha" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/plating/road,/area/caribbean/houses)
-"hb" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Opel Blitz"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/dirt,/area/caribbean/forest)
-"hc" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/turf/floor/dirt,/area/caribbean/forest)
-"hd" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
-"he" = (/obj/structure/vehicleparts/frame/car/left,/turf/floor/dirt,/area/caribbean/forest)
-"hf" = (/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"hb" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Opel Blitz"},/obj/structure/vehicleparts/frame/lf/truck{noroof = 1},/turf/floor/dirt,/area/caribbean/forest)
+"hc" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/ifv/rf,/obj/structure/vehicleparts/movement,/turf/floor/dirt,/area/caribbean/forest)
+"hd" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/ifv/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 "hg" = (/obj/structure/closet/crate/ww2/artillery_shells/AP88,/turf/floor/grass,/area/caribbean/forest)
 "hh" = (/obj/structure/closet/crate/ww2/artillery_shells/APCR88,/turf/floor/dirt,/area/caribbean/forest)
 "hi" = (/obj/structure/closet/crate/ww2/artillery_shells/HE88,/turf/floor/dirt,/area/caribbean/forest)
@@ -377,8 +375,6 @@
 "hm" = (/obj/structure/closet/crate/ww2/artillery_shells/HE85,/turf/floor/dirt/dust,/area/caribbean/russian{name = "Russian Base"})
 "hn" = (/obj/structure/closet/crate/ww2/artillery_shells/AP85,/turf/floor/dirt/dust,/area/caribbean/russian{name = "Russian Base"})
 "ho" = (/obj/structure/closet/crate/ww2/artillery_shells/APCR85,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
-"hp" = (/obj/structure/vehicleparts/frame/car/right,/obj/structure/vehicleparts/movement,/turf/floor/dirt,/area/caribbean/forest)
-"hq" = (/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/reversed{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
 
 (1,1,1) = {"
 aaaaaaaaaaabababacababadababadababababaaaaabaHapayazayayayayaDaGaybWaJaLaMaSaSaSaSaSaSaLaLaJapbJcsababaaaaabaaagagagabadafabababaaabaaabababaeaeaeabaaababababababababababaaaaaaabaaaaahaaababaaaaaaafaa
@@ -388,9 +384,9 @@ aaaaaaaaaaababababaaaaaaaaaaaaabaaaaaaaaaactaHapazazaGaXaGbZcabZaGbWcjbWckbWckbW
 aaaaaaaaaaabababababaaaaaaaaaaababababaaaaaaaHapazazclayaycmcmcmaGbWcjcnckbWckcnckbWckcnckcjapbJfQcScRdRdXdYdZdUebdQabaaaaaaacababaaabaeaeaeaaaaaeajababababababagagabababababadafababafabababababababab
 abababafababababababababababababababaiaaaactaHapcoazayayaycpcmcmaGbWaJaLaSaSaScqaMaMaMaSaLaJapapapapapdRfgfRdTdTfhdRabaaaaadababababaaaaaaaeaeaeaeaaaaababafafabababababaiabababacabababababababababadab
 abababababababababababacababababafabacaaaaaaaHapaGazcrayaycvcmcmaGaGaGaGaGaGaGaGaGaGcwcwaGaGapbJfSapcUdRfkflfmfndTdQabaaaaabababacababaaaaaaaeaeamaaaaabababfLfMfLfNababababfLfMfLfNfLfNafababababababab
-abababaiababababababababababababgahfabaaaactaHapapapazcxaycyaGcyayaGczczcAcAcBcBaGcCaGcCaGaGapbJaaaaaadRfogZfyfzfpdRadababacabababadabababaaaeaeanabababacabfLfLfLfLababaiabfLfLfLfLfLfLafababafabafabaa
-adababababababaiababababababababfZheaaababaacNcOapapazazcDaGaGaGaGayaycDayaGayayaGaGclclaGaGapbJctaaaadRfqgZgZfyfrdRabababababaaaeaaabaaababaeaeaeaoababadabfLfLfNfLababababfLfLfNfLfMfLabababaaabababaa
-abababacabababababababababaaaaekhphqabababcsabcsaHapayazazayaDayayaGayaGaGaGaGaGaGaGayaGaGaGapbJabaaaafsftfngZgZfufvaaabadaaabaeaeaeaaamaaaaaeaeadaaababababfLfNfLfLababababfLfLfMfLfNfLacababababababab
+abababaiabababababababababababababababaaaactaHapapapazcxaycyaGcyayaGczczcAcAcBcBaGcCaGcCaGaGapbJaaaaaadRfogZfyfzfpdRadababacabababadabababaaaeaeanabababacabfLfLfLfLababaiabfLfLfLfLfLfLafababafabafabaa
+adababababababaiabababababababaiabaaaaababaacNcOapapazazcDaGaGaGaGayaycDayaGayayaGaGclclaGaGapbJctaaaadRfqgZgZfyfrdRabababababaaaeaaabaaababaeaeaeaoababadabfLfLfNfLababababfLfLfNfLfMfLabababaaabababaa
+abababacabababababababababaaaaekfZgaabababcsabcsaHapayazazayaDayayaGayaGaGaGaGaGaGaGayaGaGaGapbJabaaaafsftfngZgZfufvaaabadaaabaeaeaeaaamaaaaaeaeadaaababababfLfNfLfLababababfLfLfMfLfNfLacababababababab
 abababababacababababababababaaaagbhbabafababaiabaHapcEazcFayaycGaycGaGayayaGaGaGayaDaGayaGaGapbJctaaaacsababaaabaactaaababababaaaeaeaeaeaaaaaeajaaaaabababacfLfLfLfMabadababfMfLfLfLfLfLabababababababab
 abacabababababababarabahababaaaahchdaaabaaababctaHapapbTbJaeaeaHapapapapapapapapapapapapapapapbJaaaaaaabacabaaaaaaabaaacababababaaaaaaaeaeaeaeaaababababababababababagababababacabababababababababababab
 adababababaiababababababababaaaaaaaaaaaaaaaaababgDcOcOcOcQaeaecPcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOgEcsaaabababacabaaaaacaaabababacababaaaaaaaeaeamaaababadabababacabagababafabababababababadabababababababaf

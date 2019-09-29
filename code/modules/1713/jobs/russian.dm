@@ -1075,7 +1075,7 @@
 /datum/job/russian/tank_crew_leader
 	title = "Komandir Tanka"
 	en_meaning = "Armored Squad Leader"
-	rank_abbreviation = ""
+	rank_abbreviation = "Kom."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	SL_check_independent = TRUE
@@ -1166,7 +1166,7 @@
 /datum/job/russian/guards_mechanized_squad_leader
 	title = "Gvardii Serjant"
 	en_meaning = "Guards Mechanized Squad Leader"
-	rank_abbreviation = ""
+	rank_abbreviation = "Srj."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	SL_check_independent = TRUE

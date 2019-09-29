@@ -24,8 +24,9 @@
 	if (span_class)
 		message = "<span class = '[span_class]'>[message]</span>"
 
-	if (message && client)
-		log_emote("[name]/[key] : [message]")
+	if (message)
+		if (client)
+			log_emote("[name]/[key] : [message]")
 
  //Hearing gasp and such every five seconds is not good emotes were not global for a reason.
  // Maybe some people are okay with that.

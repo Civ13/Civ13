@@ -390,6 +390,7 @@
 			if (mwheel && II.icon==mwheel.icon)
 				II.color = axis.color
 				overtracks = image(icon=mwheel.icon, loc=src, icon_state="[mwheel.icon_state]_u", layer=6, dir=mwheel.dir)
+				overtracks.color = ""
 			else
 				II.color = axis.color
 		if (overtracks)
