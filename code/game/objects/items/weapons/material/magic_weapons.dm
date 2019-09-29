@@ -28,6 +28,7 @@
 	var/ices = 0
 	var/toxics = 0
 	var/leechs = 0
+	var/shocks = 0
 	//other
 	var/reagent1 = ""
 	var/reagent2 = ""
@@ -37,6 +38,7 @@
 	var/icepower = 0
 	var/toxicpower = 0
 	var/leechpower = 0
+	var/shockpower = 0
 	//cooloff
 	var/reagent1amount = 0
 	var/reagent2amount = 0
@@ -64,7 +66,8 @@
 		user.updatehealth()
 		M.health -= prob(leechpower)
 		M.updatehealth()
-
+	if(prob(shocks))
+		M.electrocute_act(shockpower, src, 1.0)
 //Swords
 
 /obj/item/weapon/material/sword/magic/arkofdisease

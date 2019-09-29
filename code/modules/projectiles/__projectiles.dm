@@ -34,7 +34,7 @@
 
 
 /obj/item/projectile/arrow/arrow
-	damage = DAMAGE_LOW-8
+	damage = DAMAGE_LOW-24
 	penetrating = 0
 	armor_penetration = 0
 	icon_state = "arrow"
@@ -54,16 +54,18 @@
 	armor_penetration = 1000
 	icon_state = "arrow_god"
 	damage_type = BURN
+	gibs = TRUE
+	crushes = TRUE
 
 /obj/item/projectile/arrow/arrow/stone
 	damage = DAMAGE_MEDIUM-6
-	penetrating = 1
+	penetrating = 0
 	armor_penetration = 2
 	icon_state = "arrow_copper"
 
 /obj/item/projectile/arrow/arrow/copper
 	damage = DAMAGE_MEDIUM-4
-	penetrating = 1
+	penetrating = 0
 	armor_penetration = 2
 	icon_state = "arrow_copper"
 
