@@ -211,7 +211,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	if (!engine || !engine.fueltank)
 		engine.on = FALSE
 		return FALSE
-	else if (get_weight() > engine.maxpower)
+	else if (get_weight() > engine.maxpower || get_weight() > maxpower)
 		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
 		return FALSE
 	else

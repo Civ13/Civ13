@@ -61,7 +61,7 @@
 	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
-	maxpower = 250
+	maxpower = 2500
 	speedlist = list(1=12,2=8,3=6)
 
 /obj/structure/vehicleparts/axis/heavy/t34
@@ -102,7 +102,7 @@
 	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 70
+	maxpower = 800
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 
 /obj/structure/vehicleparts/axis/proc/get_speed()
