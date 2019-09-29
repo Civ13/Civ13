@@ -123,21 +123,25 @@ obj/item/weapon/material/sword/wakazashi
 	slot_flags = SLOT_BELT
 	value = 60
 	cooldownw = 6
-/obj/item/weapon/material/knife/tanto/var/suicide = FALSE //To
+	var/suicide = FALSE //To
+
 /obj/item/weapon/material/knife/tanto/proc/handle_suicide(mob/living/user)
 	if (!ishuman(user))
 		return
 	var/mob/living/carbon/human/M = user
 	suicide = TRUE
-	// realistic WW2 suicide, no hesitation - Kachnov
 	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] gut.</span>")
-	if (!do_after(user, 40))
+	if (!do_after(user, 60))
 		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
 		suicide = FALSE
 		return
+	else
+		user.apply_damage(src.force_divisor*2.5, "brute", "groin")
+		user.death()
+		user.visible_message("<span class = 'warning'>[user] cuts themselves open.</span>")
+		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."
+		suicide = FALSE
 
-		user.visible_message("<span class = 'warning'>[user] pulls the trigger.</span>")
-		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves(tried to commit suicide)"
 /obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/carbon/human/H = user
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
