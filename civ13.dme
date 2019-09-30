@@ -485,6 +485,7 @@
 #include "code\modules\1713\weapons\guns\ancientguns.dm"
 #include "code\modules\1713\weapons\guns\bolt-action.dm"
 #include "code\modules\1713\weapons\guns\bow.dm"
+#include "code\modules\1713\weapons\guns\crossbow.dm"
 #include "code\modules\1713\weapons\guns\flintlock.dm"
 #include "code\modules\1713\weapons\guns\lever_action.dm"
 #include "code\modules\1713\weapons\guns\pistols.dm"
