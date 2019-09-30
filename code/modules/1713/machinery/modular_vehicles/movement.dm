@@ -5,7 +5,7 @@
 	icon_state = "wheel_t_dark"
 	var/base_icon = "wheel_t_dark"
 	var/movement_icon = "wheel_t_dark_m"
-	layer = 2.97
+	layer = 2.99
 	var/reversed = FALSE
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/structure/vehicleparts/frame/connected = null
@@ -58,12 +58,12 @@
 				if (ntype == "wheel")
 					reversed = FALSE
 				else
-					reversed = FALSE
+					reversed = TRUE
 			else if (VP == VP.axis.corners[4])
 				if (ntype == "wheel")
 					reversed = TRUE
 				else
-					reversed = FALSE
+					reversed = TRUE
 			else
 				return
 

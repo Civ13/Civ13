@@ -26,8 +26,6 @@
 						A.MouseDrop(F)
 						done1 = TRUE
 						central = F
-//		if (central)
-//			world.log << "Assigned the axis to the central frame."
 		if (!central)
 			world.log << "<b>Axis error! ([x],[y])</b>"
 			return FALSE
@@ -82,7 +80,7 @@
 						done2 = TRUE
 //		if (!done2)
 //			world.log << "<b>Engine error! ([x],[y])</b>"
-			return FALSE
+//			return FALSE
 		//then the fueltank
 		var/done3 = FALSE
 		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)

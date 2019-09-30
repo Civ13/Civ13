@@ -211,7 +211,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	if (!engine || !engine.fueltank)
 		engine.on = FALSE
 		return FALSE
-	else if (get_weight() > engine.maxpower || get_weight() > maxpower)
+	else if (get_weight() > engine.maxpower*2 || get_weight() > maxpower)
 		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
 		return FALSE
 	else
@@ -405,6 +405,32 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 				MV.axis = src
 				MV.connected = FM
 				FM.mwheel = MV
+	for(var/obj/structure/vehicleparts/movement/MV in wheels)
+		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
+		if (MV.connected == corners[1])
+			MV.reversed = FALSE
+		else if (MV.connected == corners[2])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
+			else
+				MV.reversed = FALSE
+		else if (MV.connected == corners[3])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
+			else
+				MV.reversed = FALSE
+		else if (MV.connected == corners[4])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
+			else
+				MV.reversed = TRUE
+		else
+			return
+
+		if (MV.reversed)
+			MV.dir = OPPOSITE_DIR(dir)
+		else
+			MV.dir = dir
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
 	else
@@ -520,14 +546,13 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 /obj/structure/vehicleparts/axis/attack_hand(var/mob/living/carbon/human/H)
 	if (!ishuman(H))
 		return
-	var/found = FALSE
 	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here?", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
 		return
+	dir = 1
 	for(var/obj/structure/vehicleparts/frame/F in loc)
 		if (F.axis && F.axis != src)
 			return
-		found = TRUE
 		var/customname = input(H, "What do you want to name this vehicle?") as text
 		if (!customname || customname == "")
 			name = "[H]'s vehicle"
@@ -548,22 +573,9 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			for (var/i in vehiclecolors)
 				if (i[1] == choosecolor1)
 					color = i[2]
-		var/turf/aloc = null
-		var/tx = x
-		var/ty = y
-		for(var/obj/structure/vehicleparts/frame/F2 in range(4,src))
-			if (F2.x < tx)
-				tx = F2.x
-			if (F2.y > tx)
-				ty = F2.y
-		aloc = get_turf(locate(tx+2,ty-2,H.z))
-		if (aloc)
-			new/obj/effect/autoassembler(aloc)
-			H << "<span class='warning'>Vehicle assembled.</span>"
-			return
-		else
-			H << "<span class='warning'>Error assembling vehicle!</span>"
-			return
-	if (!found)
-		H << "<span class='warning'>No vehicle found in this area!</span>"
+
+		new/obj/effect/autoassembler(loc)
+		H << "<span class='warning'>Vehicle assembled.</span>"
+		for (var/obj/O in components)
+			O.update_icon()
 		return
