@@ -283,7 +283,6 @@
 				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 		else if (doorcode == 0)
-			var/obj/item/weapon/key/K = I
 			doorcode = K.code
 			H << "You assign this key to the lock."
 			return
