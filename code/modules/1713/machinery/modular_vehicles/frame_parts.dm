@@ -269,7 +269,7 @@ var/global/list/vehicle_walls = list( \
 				w_back = list("c_door",TRUE,TRUE,choice2,choice2,TRUE,TRUE)
 			else
 				w_back = list("c_[choice3]",TRUE,TRUE,choice2,choice2*1.5,FALSE,FALSE)
-
+	update_icon()
 /*
 /obj/structure/vehicleparts/frame/verb/add_walls()
 	set category = null

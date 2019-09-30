@@ -238,6 +238,14 @@
 				visible_message("[H] sucessfully repairs \the [mwheel.ntype].")
 				mwheel.broken = FALSE
 				return
+	else if (istype(I,/obj/item/weapon/wrench) && !axis)
+		anchored = !anchored
+		if (anchored)
+			H << "You fix the frame in place."
+			return
+		else
+			H << "You release the frame."
+			return
 	else if (istype(I,/obj/item/weapon/key))
 		var/obj/item/weapon/key/K = I
 		if (K.code == doorcode)
