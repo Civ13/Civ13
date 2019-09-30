@@ -66,12 +66,17 @@
 					reversed = FALSE
 			else
 				return
-		VP.axis.wheels += src
-		axis = VP.axis
-		connected = VP
-		VP.mwheel = src
-		forceMove(VP)
-		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
+
+			if (reversed)
+				dir = OPPOSITE_DIR(VP.axis.dir)
+			else
+				dir = VP.axis.dir
+			VP.axis.wheels += src
+			axis = VP.axis
+			connected = VP
+			VP.mwheel = src
+			forceMove(VP)
+			playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
 /obj/structure/vehicleparts/movement/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (broken && istype(I, /obj/item/weapon/weldingtool))
 		visible_message("[H] starts repairing \the [ntype]...")

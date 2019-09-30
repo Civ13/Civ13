@@ -19,7 +19,7 @@
 		//first we assign the axis
 		var/done1 = FALSE
 		var/obj/structure/vehicleparts/frame/central = null
-		for (var/obj/structure/vehicleparts/axis/A in rangeto)
+		for (var/obj/structure/vehicleparts/axis/A in range(4,src))
 			if (!done1)
 				for (var/obj/structure/vehicleparts/frame/F in A.loc)
 					if (!done1)
@@ -80,10 +80,8 @@
 						E.engineclass = "engine"
 						E.update_icon()
 						done2 = TRUE
-//		if (done2)
-//			world.log << "Added the engine."
-		if (!done2)
-			world.log << "<b>Engine error! ([x],[y])</b>"
+//		if (!done2)
+//			world.log << "<b>Engine error! ([x],[y])</b>"
 			return FALSE
 		//then the fueltank
 		var/done3 = FALSE
@@ -94,11 +92,9 @@
 						I.fueltank = E
 						E.anchored = TRUE
 						done3 = TRUE
-//		if (done3)
-//			world.log << "Added fueltank."
-		if (!done3)
-			world.log << "<b>Fueltank error! ([x],[y])</b>"
-			return FALSE
+//		if (!done3)
+//			world.log << "<b>Fueltank error! ([x],[y])</b>"
+//			return FALSE
 		//finally, the drivers seat
 		var/done4 = FALSE
 		for (var/obj/structure/bed/chair/drivers/D in rangeto)
@@ -110,11 +106,14 @@
 						central.axis.wheel = D.wheel
 						central.axis.wheel.control = F
 						done4 = TRUE
-//		if (done4)
-//			world.log << "Added driver's seat."
-		if (!done4)
-			world.log << "<b>Driver's Seat error! ([x],[y])</b>"
-			return FALSE
+//		if (!done4)
+//			world.log << "<b>Driver's Seat error! ([x],[y])</b>"
+//			return FALSE
+		sleep(2)
+		if (isemptylist(central.axis.corners))
+			central.axis.check_corners()
+		if (isemptylist(central.axis.matrix))
+			central.axis.check_matrix()
 		//and the tracks
 		for (var/obj/structure/vehicleparts/movement/M in rangeto)
 			for (var/obj/structure/vehicleparts/frame/F in M.loc)
@@ -122,11 +121,6 @@
 		for (var/obj/structure/lamp/lamp_small/tank/TL in rangeto)
 			for (var/obj/structure/vehicleparts/frame/F in TL.loc)
 				TL.connection = central.axis.engine
-		sleep(2)
-		if (isemptylist(central.axis.corners))
-			central.axis.check_corners()
-		if (isemptylist(central.axis.matrix))
-			central.axis.check_matrix()
 		for (var/obj/structure/vehicleparts/VP in range(7,src))
 			VP.update_icon()
 //		world.log << "[central.axis] assembly complete."

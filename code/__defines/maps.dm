@@ -1,3 +1,5 @@
+#define MAP_TESTING "TESTING"
+
 #define MAP_NAVAL "NAVAL"
 #define MAP_VOYAGE "VOYAGE"
 #define MAP_ISLAND "ISLAND"

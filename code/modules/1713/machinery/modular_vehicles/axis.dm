@@ -524,7 +524,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here?", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
 		return
-	for(var/obj/structure/vehicleparts/frame/F in H.loc)
+	for(var/obj/structure/vehicleparts/frame/F in loc)
 		if (F.axis && F.axis != src)
 			return
 		found = TRUE
@@ -552,11 +552,11 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		var/tx = x
 		var/ty = y
 		for(var/obj/structure/vehicleparts/frame/F2 in range(4,src))
-			if (F2.x > tx)
+			if (F2.x < tx)
 				tx = F2.x
-			if (F2.y < tx)
+			if (F2.y > tx)
 				ty = F2.y
-		aloc = get_turf(locate(tx-2,ty+2,H.z))
+		aloc = get_turf(locate(tx+2,ty-2,H.z))
 		if (aloc)
 			new/obj/effect/autoassembler(aloc)
 			H << "<span class='warning'>Vehicle assembled.</span>"
