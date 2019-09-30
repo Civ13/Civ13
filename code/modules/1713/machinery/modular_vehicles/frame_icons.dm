@@ -2,7 +2,7 @@
 	..()
 	overlays.Cut()
 	if (!axis)
-		dir = 2
+		dir = 1
 	if (axis && mwheel)
 		if (broken)
 			icon = broken_icon

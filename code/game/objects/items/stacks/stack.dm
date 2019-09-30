@@ -925,6 +925,8 @@
 			var/obj/structure/rails/turn/RT = O
 			RT.turn_dir = turn_dir
 		O.set_dir(user.dir)
+		if (istype(O, /obj/structure/vehicleparts/frame))
+			O.dir = 1
 		O.add_fingerprint(user)
 		if (istype(O, /obj/item/clothing/accessory/armband/talisman))
 			var/obj/item/clothing/accessory/armband/talisman/TM = O

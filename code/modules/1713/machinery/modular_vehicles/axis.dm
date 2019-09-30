@@ -556,9 +556,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 				tx = F2.x
 			if (F2.y < tx)
 				ty = F2.y
-		world.log << "[tx], [ty]"
 		aloc = get_turf(locate(tx-2,ty+2,H.z))
-		world.log << "[aloc.x], [aloc.y]"
 		if (aloc)
 			new/obj/effect/autoassembler(aloc)
 			H << "<span class='warning'>Vehicle assembled.</span>"
