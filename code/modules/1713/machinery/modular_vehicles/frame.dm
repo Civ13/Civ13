@@ -248,7 +248,7 @@
 			return
 	else if (istype(I,/obj/item/weapon/key))
 		var/obj/item/weapon/key/K = I
-		if (K.code == doorcode)
+		if (K.code == doorcode && doorcode != 0)
 			if (w_front[6])
 				if (w_front[7])
 					visible_message("[H] locks the door.")
@@ -282,6 +282,12 @@
 					w_right[7] = TRUE
 				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
+		else if (doorcode == 0)
+			var/obj/item/weapon/key/K = I
+			doorcode = K.code
+			H << "You assign this key to the lock."
+			return
+
 		else
 			H << "This key does not match this lock!"
 			return
