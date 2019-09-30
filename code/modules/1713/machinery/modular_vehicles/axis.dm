@@ -573,8 +573,16 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			for (var/i in vehiclecolors)
 				if (i[1] == choosecolor1)
 					color = i[2]
-
-		new/obj/effect/autoassembler(loc)
+		var/tx = x
+		var/ty = y
+//		world.log << "[tx] [ty]"
+		for (var/obj/structure/vehicleparts/frame/FR in range(4,src))
+			if (FR.x < x)
+				tx = FR.x
+			if (FR.y > y)
+				ty = FR.y
+//		world.log << "[tx] [ty]"
+		new/obj/effect/autoassembler(locate(tx+2,ty-2,z))
 		H << "<span class='warning'>Vehicle assembled.</span>"
 		for (var/obj/O in components)
 			O.update_icon()

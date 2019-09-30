@@ -83,13 +83,11 @@
 //			return FALSE
 		//then the fueltank
 		var/done3 = FALSE
-		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)
+		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in range(4,src))
 			if (!done3)
-				for (var/obj/structure/engine/internal/I in range(3,E))
-					if (!done3)
-						I.fueltank = E
-						E.anchored = TRUE
-						done3 = TRUE
+				central.axis.engine.fueltank = E
+				E.anchored = TRUE
+				done3 = TRUE
 //		if (!done3)
 //			world.log << "<b>Fueltank error! ([x],[y])</b>"
 //			return FALSE
