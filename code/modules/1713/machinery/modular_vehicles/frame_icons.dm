@@ -65,7 +65,7 @@
 						movemento.pixel_x = 0
 						movemento.pixel_y = -22
 						overlays += movemento
-	if (!noroof)
+	if (!noroof && axis)
 		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=11)
 		roof.overlays.Cut()
 	else

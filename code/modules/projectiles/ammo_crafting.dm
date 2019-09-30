@@ -382,11 +382,11 @@
 		return
 	if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
 		if (!user.l_hand.reagents.has_reagent("gunpowder",1))
-			user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
+			user << "<span class = 'warning'>You need to have a gunpowder container in your hands to make a cartridge.</span>"
 			return
 		else if (user.l_hand.reagents.has_reagent("gunpowder",1))
 			user.l_hand.reagents.remove_reagent("gunpowder",1)
-			user << "You make a paper cartridge with the gunpowder and projectile."
+			user << "You make a cartridge with the gunpowder and projectile."
 			if (user.r_hand.amount>1)
 				user.r_hand.amount -= 1
 			else
@@ -396,11 +396,11 @@
 
 	else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
 		if (!user.r_hand.reagents.has_reagent("gunpowder",1))
-			user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
+			user << "<span class = 'warning'>You need to have a gunpowder container in your hands to make a cartridge.</span>"
 			return
 		else if (user.r_hand.reagents.has_reagent("gunpowder",1))
 			user.r_hand.reagents.remove_reagent("gunpowder",1)
-			user << "You make a paper cartridge with the gunpowder and projectile."
+			user << "You make a cartridge with the gunpowder and projectile."
 			if (user.l_hand.amount>1)
 				user.l_hand.amount -= 1
 			else
@@ -409,7 +409,7 @@
 			return
 
 	else
-		user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
+		user << "<span class = 'warning'>You need to have a gunpowder container in your hands to make a cartridge.</span>"
 		return
 
 
@@ -448,4 +448,38 @@
 				qdel(W)
 	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
 		attack_self(user)
+		return
+
+/obj/item/stack/ammopart/casing/tank/attack_self(mob/user)
+	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		for(var/i=1;i<=amount;i++)
+			var/calibt = WWinput(user, "Which type of shell do you want to craft?", "Shell Crafting", "HE", list("HE", "AP", "APCR"))
+			switch(calibt)
+				if ("HE")
+					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
+					TS.atype = "HE"
+					TS.caliber = caliber
+					TS.heavy_armor_penetration = 15*(caliber/75)
+					TS.damage = 250*(caliber/75)
+					TS.icon_state = "shellHE"
+				else if ("AP")
+					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
+					TS.atype = "AP"
+					TS.caliber = caliber
+					TS.heavy_armor_penetration = 52*(caliber/75)
+					TS.damage = 100*(caliber/75)
+					TS.icon_state = "shellAP"
+				else if ("APCR")
+					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
+					TS.atype = "APCR"
+					TS.caliber = caliber
+					TS.heavy_armor_penetration = 75*(caliber/75)
+					TS.damage = 75*(caliber/75)
+					TS.icon_state = "shellAPCR"
+
+		user << "You produce [caliber]mm shells."
+		qdel(src)
+		return
+	else
+		user << "<span class = 'notice'>The casing is not complete yet.</span>"
 		return
