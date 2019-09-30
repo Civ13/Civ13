@@ -546,10 +546,9 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 /obj/structure/vehicleparts/axis/attack_hand(var/mob/living/carbon/human/H)
 	if (!ishuman(H))
 		return
-	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here?", "Vehicle Assembly", "No", list("No", "Yes"))
+	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
 		return
-	dir = 1
 	for(var/obj/structure/vehicleparts/frame/F in loc)
 		if (F.axis && F.axis != src)
 			return
@@ -573,16 +572,8 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			for (var/i in vehiclecolors)
 				if (i[1] == choosecolor1)
 					color = i[2]
-		var/tx = x
-		var/ty = y
-//		world.log << "[tx] [ty]"
-		for (var/obj/structure/vehicleparts/frame/FR in range(4,src))
-			if (FR.x < x)
-				tx = FR.x
-			if (FR.y > y)
-				ty = FR.y
-//		world.log << "[tx] [ty]"
-		new/obj/effect/autoassembler(locate(tx+2,ty-2,z))
+		dir = 1
+		new/obj/effect/autoassembler(locate(x+2,y-2,z))
 		H << "<span class='warning'>Vehicle assembled.</span>"
 		for (var/obj/O in components)
 			O.update_icon()

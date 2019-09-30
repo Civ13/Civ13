@@ -19,7 +19,7 @@
 		//first we assign the axis
 		var/done1 = FALSE
 		var/obj/structure/vehicleparts/frame/central = null
-		for (var/obj/structure/vehicleparts/axis/A in range(4,src))
+		for (var/obj/structure/vehicleparts/axis/A in rangeto)
 			if (!done1)
 				for (var/obj/structure/vehicleparts/frame/F in A.loc)
 					if (!done1)
@@ -83,7 +83,7 @@
 //			return FALSE
 		//then the fueltank
 		var/done3 = FALSE
-		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in range(4,src))
+		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)
 			if (!done3)
 				central.axis.engine.fueltank = E
 				E.anchored = TRUE

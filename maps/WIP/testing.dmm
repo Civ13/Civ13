@@ -5,7 +5,7 @@
 "e" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 5},/turf/floor/plating/road,/area/caribbean)
 "f" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "g" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4; icon_state = "warning_dust"; layer = 3},/turf/floor/plating/road,/area/caribbean)
-"h" = (/obj/structure/sign/custom{name = "4th: Make an axis and move it to one of the frames. Click on it to finish the vehicle."},/turf/floor/dirt,/area/caribbean)
+"h" = (/obj/structure/sign/custom{name = "4th: Make an axis and move it to the TOP LEFT frame. Click on it to finish the vehicle."},/turf/floor/dirt,/area/caribbean)
 "i" = (/obj/structure/sign/custom{name = "5th: Test the vehicle. If it doesnt work, try manually assemblying any mising parts: drag and drop them to a connected frame."},/turf/floor/dirt,/area/caribbean)
 "j" = (/obj/structure/engine/internal/gasoline{enginesize = 5000},/turf/floor/dirt,/area/caribbean)
 "k" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/turf/floor/dirt,/area/caribbean)
@@ -23,6 +23,11 @@
 "w" = (/obj/item/stack/material/copper{amount = 100},/obj/item/stack/material/copper{amount = 100},/obj/item/stack/material/copper{amount = 100},/turf/floor/dirt,/area/caribbean)
 "x" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/dirt,/area/caribbean)
 "y" = (/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/turf/floor/dirt,/area/caribbean)
+"z" = (/obj/structure/vehicleparts/frame,/turf/floor/plating/road,/area/caribbean)
+"A" = (/obj/structure/vehicleparts/frame,/obj/structure/bed/chair/drivers,/turf/floor/plating/road,/area/caribbean)
+"B" = (/obj/structure/vehicleparts/frame,/obj/structure/vehicleparts/axis/heavy,/turf/floor/plating/road,/area/caribbean)
+"C" = (/obj/structure/vehicleparts/frame,/obj/structure/engine/internal/gasoline{enginesize = 5000},/turf/floor/plating/road,/area/caribbean)
+"D" = (/obj/structure/vehicleparts/frame,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/plating/road,/area/caribbean)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -65,9 +70,9 @@ abbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaaa
 abbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaaa
 abbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaaa
 rcdddearcdddearcdddearcdddearcdddearcdddearcdddearcdddearcdddeaaa
-sfbbbgasfbbbgasfbbbgasfbbbgasfbbbgasfbbbgasfbbbgasfbbbgasfbbbgaaa
-tfbbbgatfbbbgatfbbbgatfbbbgatfbbbgatfbbbgatfbbbgatfbbbgatfbbbgaaa
-hfbbbgahfbbbgahfbbbgahfbbbgahfbbbgahfbbbgahfbbbgahfbbbgahfbbbgaaa
+sfbbbgasfbbbgasfbbbgasfzAzgasfbbbgasfbbbgasfbbbgasfbbbgasfbbbgaaa
+tfbbbgatfbbbgatfbbbgatfzBzgatfbbbgatfbbbgatfbbbgatfbbbgatfbbbgaaa
+hfbbbgahfbbbgahfbbbgahfCzDgahfbbbgahfbbbgahfbbbgahfbbbgahfbbbgaaa
 imnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaaa
 avjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaaa
 aawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaa
