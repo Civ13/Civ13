@@ -260,7 +260,7 @@ var/global/list/vehicle_walls = list( \
 			if (choice3 == "door")
 				w_front = list("c_door",TRUE,TRUE,choice2,choice2,TRUE,TRUE)
 			else
-				w_back = list("c_[choice3]",TRUE,TRUE,choice2,choice2*1.5,FALSE,FALSE)
+				w_front = list("c_[choice3]",TRUE,TRUE,choice2,choice2*1.5,FALSE,FALSE)
 		else if (choice1 == "back")
 			S.amount -= choice2/10
 			if (S.amount <= 0)
