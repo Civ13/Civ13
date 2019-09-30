@@ -548,10 +548,6 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			for (var/i in vehiclecolors)
 				if (i[1] == choosecolor1)
 					color = i[2]
-
-		var/direct = WWinput(H, "What direction is it facing right now?", "Vehicle Assembly", "South", list("North", "South", "East", "West"))
-		dir = text2dir(direct)
-		H.remove_from_mob(src)
 		var/turf/aloc = null
 		var/tx = x
 		var/ty = y
