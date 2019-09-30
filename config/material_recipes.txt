@@ -561,8 +561,9 @@ RECIPE: /material/steel/,fuel pump (S),/obj/structure/fuelpump/s,15,120,1,1,none
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,driver's seat,/obj/structure/bed/chair/drivers,8,40,0,1,vehicle parts,126,0,0,8,null
-RECIPE: /material/steel/,loaders's seat,/obj/structure/bed/chair/loader,8,40,0,1,vehicle parts,126,125,0,8,null
-RECIPE: /material/steel/,gunner's seat,/obj/structure/bed/chair/gunner,8,40,0,1,vehicle parts,126,125,0,8,null
+RECIPE: /material/steel/,loaders's seat,/obj/structure/bed/chair/loader,6,40,0,1,vehicle parts,126,125,0,8,null
+RECIPE: /material/steel/,gunner's seat,/obj/structure/bed/chair/gunner,6,40,0,1,vehicle parts,126,125,0,8,null
+RECIPE: /material/steel/,commander's seat,/obj/structure/bed/chair/commander,10,40,0,1,vehicle parts,126,125,0,8,null
 RECIPE: /material/steel/,light axis (800 weight),/obj/structure/vehicleparts/axis/car,10,80,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,rubber wheel,/obj/structure/vehicleparts/movement,1,20,0,1,vehicle parts,115,0,0,8,null
