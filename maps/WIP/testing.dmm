@@ -20,12 +20,9 @@
 "t" = (/obj/structure/sign/custom{name = "3rd: Create 4 wheels/tracks and place each one on top of each corner."},/turf/floor/dirt,/area/caribbean)
 "u" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 6},/turf/floor/plating/road,/area/caribbean)
 "v" = (/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/storage/toolbox,/turf/floor/dirt,/area/caribbean)
-"w" = (/obj/structure/vehicleparts/frame,/obj/structure/vehicleparts/movement/tracks,/turf/floor/plating/road,/area/caribbean)
-"x" = (/obj/structure/vehicleparts/frame,/obj/structure/bed/chair/drivers,/turf/floor/plating/road,/area/caribbean)
-"y" = (/obj/structure/vehicleparts/frame,/turf/floor/plating/road,/area/caribbean)
-"z" = (/obj/structure/vehicleparts/frame,/obj/structure/vehicleparts/axis/car,/turf/floor/plating/road,/area/caribbean)
-"A" = (/obj/structure/vehicleparts/frame,/obj/structure/vehicleparts/movement/tracks,/obj/structure/engine/internal/gasoline{enginesize = 5000},/turf/floor/plating/road,/area/caribbean)
-"B" = (/obj/structure/vehicleparts/frame,/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/turf/floor/plating/road,/area/caribbean)
+"w" = (/obj/item/stack/material/copper{amount = 100},/obj/item/stack/material/copper{amount = 100},/obj/item/stack/material/copper{amount = 100},/turf/floor/dirt,/area/caribbean)
+"x" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/dirt,/area/caribbean)
+"y" = (/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/turf/floor/dirt,/area/caribbean)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -68,12 +65,12 @@ abbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbaaaaaa
 abbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbaaaaaa
 abbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbabbbbbaaaaaa
 rcdddercdddercdddercdddercdddercdddercdddercdddercdddeaaaaaa
-sfbbbgsfbbbgsfwxwgsfbbbgsfbbbgsfbbbgsfbbbgsfbbbgsfbbbgaaaaaa
-tfbbbgtfbbbgtfyzygtfbbbgtfbbbgtfbbbgtfbbbgtfbbbgtfbbbgaaaaaa
-hfbbbghfbbbghfAyBghfbbbghfbbbghfbbbghfbbbghfbbbghfbbbgaaaaaa
+sfbbbgsfbbbgsfbbbgsfbbbgsfbbbgsfbbbgsfbbbgsfbbbgsfbbbgaaaaaa
+tfbbbgtfbbbgtfbbbgtfbbbgtfbbbgtfbbbgtfbbbgtfbbbgtfbbbgaaaaaa
+hfbbbghfbbbghfbbbghfbbbghfbbbghfbbbghfbbbghfbbbghfbbbgaaaaaa
 imnnnuimnnnuimnnnuimnnnuimnnnuimnnnuimnnnuimnnnuimnnnuaaaaaa
 avjlkoavjlkoavjlkoavjlkoavjlkoavjlkoavjlkoavjlkoavjlkoaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aawxyaaawxyaaawxyaaawxyaaawxyaaawxyaaawxyaaawxyaaawxyaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
