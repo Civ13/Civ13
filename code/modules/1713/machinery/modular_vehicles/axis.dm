@@ -525,6 +525,8 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	if (inp == "No")
 		return
 	for(var/obj/structure/vehicleparts/frame/F in H.loc)
+		if (F.axis && F.axis != src)
+			return
 		found = TRUE
 		var/customname = input(H, "What do you want to name this vehicle?") as text
 		if (!customname || customname == "")

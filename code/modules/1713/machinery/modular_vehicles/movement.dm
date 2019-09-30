@@ -45,13 +45,32 @@
 		return
 /obj/structure/vehicleparts/movement/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis)
+		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
+		if (VP == VP.axis.corners[1])
+			reversed = FALSE
+		else if (VP == VP.axis.corners[2])
+			if (ntype == "wheel")
+				reversed = TRUE
+			else
+				reversed = FALSE
+		else if (VP == VP.axis.corners[3])
+			if (ntype == "wheel")
+				reversed = FALSE
+			else
+				reversed = FALSE
+		else if (VP == VP.axis.corners[4])
+			if (ntype == "wheel")
+				reversed = TRUE
+			else
+				reversed = FALSE
+		else
+			return
 		VP.axis.wheels += src
 		axis = VP.axis
 		connected = VP
 		VP.mwheel = src
 		forceMove(VP)
 		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
-
 /obj/structure/vehicleparts/movement/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (broken && istype(I, /obj/item/weapon/weldingtool))
 		visible_message("[H] starts repairing \the [ntype]...")
