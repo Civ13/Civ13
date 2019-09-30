@@ -46,25 +46,26 @@
 /obj/structure/vehicleparts/movement/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis)
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-		if (VP == VP.axis.corners[1])
-			reversed = FALSE
-		else if (VP == VP.axis.corners[2])
-			if (ntype == "wheel")
-				reversed = TRUE
+		if (!isemptylist(VP.axis.corners))
+			if (VP == VP.axis.corners[1])
+				reversed = FALSE
+			else if (VP == VP.axis.corners[2])
+				if (ntype == "wheel")
+					reversed = TRUE
+				else
+					reversed = FALSE
+			else if (VP == VP.axis.corners[3])
+				if (ntype == "wheel")
+					reversed = FALSE
+				else
+					reversed = FALSE
+			else if (VP == VP.axis.corners[4])
+				if (ntype == "wheel")
+					reversed = TRUE
+				else
+					reversed = FALSE
 			else
-				reversed = FALSE
-		else if (VP == VP.axis.corners[3])
-			if (ntype == "wheel")
-				reversed = FALSE
-			else
-				reversed = FALSE
-		else if (VP == VP.axis.corners[4])
-			if (ntype == "wheel")
-				reversed = TRUE
-			else
-				reversed = FALSE
-		else
-			return
+				return
 		VP.axis.wheels += src
 		axis = VP.axis
 		connected = VP

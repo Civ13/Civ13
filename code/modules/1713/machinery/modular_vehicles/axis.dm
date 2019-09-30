@@ -533,23 +533,22 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			name = "[H]'s vehicle"
 		else
 			name = customname
-		var/choosecolor1 = input(H, "Choose this vehicle's hex color (without the #):", "Color" , "a9a9a9")
-		if (choosecolor1 == null || choosecolor1 == "")
-			return
-		else
-			choosecolor1 = uppertext(choosecolor1)
-			if (lentext(choosecolor1) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor1,i,i+1)
-				else
-					numtocheck = copytext(choosecolor1,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			color = addtext("#",choosecolor1)
+		var/list/vehiclecolors = list(
+			list("light gray","#A9A9A9"),
+			list("medium gray","#585A5C"),
+			list("dark gray","#3B3F41"),
+			list("green","#3d5931"),
+			list("pale green","#636351"),
+			list("Feldgrau (WW1)","#5D5D3D"),
+			list("Feldgrau (WW2)","#4D5D53"),
+			list("light khaki","#F0E68C"),
+			list("dark khaki","#BDB76B"),
+			list("olive drab","#555346"),)
+		var/choosecolor1 = WWinput(H, "Choose this vehicle's color:", "Vehicle Color", "medium gray", list("light gray", "medium gray", "dark gray", "green", "pale green", "Feldgrau (WW1)", "Feldgrau (WW2)", "light khaki", "dark khaki", "olive drab"))
+			for (var/i in vehiclecolors)
+				if (i[1] == choosecolor1)
+					color = i[2]
+
 		var/direct = WWinput(H, "What direction is it facing right now?", "Vehicle Assembly", "South", list("North", "South", "East", "West"))
 		dir = text2dir(direct)
 		H.remove_from_mob(src)
