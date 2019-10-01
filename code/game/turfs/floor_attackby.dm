@@ -1,3 +1,6 @@
+/turf/floor
+	var/busy = FALSE
+
 /turf/floor/proc/collapse_check()
 	if (get_area(src).location == AREA_INSIDE)
 		//check for supports
@@ -77,6 +80,26 @@
 					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
 					user.setClickCooldown(5)
 				return
+		if (istype(C, /obj/item/clothing) && !busy)
+			var/obj/item/clothing/CL = C
+			usr << "<span class='notice'>You start washing \the [C].</span>"
+			var/turf/location = user.loc
+
+			busy = TRUE
+			sleep(40)
+			busy = FALSE
+
+			if (user.loc != location) return				//User has moved
+			if (!C) return 								//Item's been destroyed while washing
+			if (user.get_active_hand() != C) return		//Person has switched hands or the item in their hands
+
+			CL.clean_blood()
+			CL.radiation = 0
+			CL.dirtyness = 0
+			CL.fleas = FALSE
+			user.visible_message( \
+				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
+				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 
 	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal))
 		user << "You start fertilizing the ploughed field..."
