@@ -1,6 +1,6 @@
 /mob/var/velocity = 0
 /mob/var/velocity_lastdir = -1 // turning makes you lose TRUE or 2 velocity
-/mob/var/run_delay_maximum = 2.2
+/mob/var/run_delay_maximum = 1.9
 
 /mob/var/ghost_velocity = 0
 /mob/proc/movement_delay()
