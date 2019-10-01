@@ -197,6 +197,47 @@
 			if (findtext(recipe.title, "wall") || findtext(recipe.title, "door"))
 				H << "<span class = 'danger'>You don't know how to make this.</span>"
 				return
+	if (findtext(recipe.title, "custom sign"))
+		var/customname = input(user, "Choose a name for this sign:") as text|null
+		if (customname == null)
+			customname = "Sign"
+		var/customdesc = input(user, "Choose a description for this sign:") as text|null
+		if (customdesc == null)
+			customdesc = "An empty sign."
+		build_override_sign.name = customname
+		build_override_sign.desc = customdesc
+
+	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
+		if (H.getStatCoeff("crafting") < 1)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
+		if (!ishuman(user))
+			return
+
+		if (H.faction_text == INDIANS)
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
+
+
+			return
+		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
+			user << "<span class = 'warning'>You need to have a key in one of your hands to make a locked door.</span>"
+			return
+
+		var/obj/item/weapon/key/key = H.l_hand
+		if (!key || !istype(key))
+			key = H.r_hand
+		if (!key || !istype(key))
+			return // should never happen
+
+		if (key)
+			var/keyname = input(user, "Choose a name for the door:") as text|null
+			if (keyname == null)
+				keyname = "Locked"
+			build_override_door.name = keyname
+			build_override_door.custom_code = key.code
+
 	if (findtext(recipe.title, "tin can"))
 		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
 		if (customname == "" || customname == null)
@@ -506,16 +547,6 @@
 				newskull.name = targetskull
 				qdelHandReturn(H.r_hand, H)
 
-	else if (findtext(recipe.title, "custom sign"))
-		var/customname = input(user, "Choose a name for this sign:") as text|null
-		if (customname == null)
-			customname = "Sign"
-		var/customdesc = input(user, "Choose a description for this sign:") as text|null
-		if (customdesc == null)
-			customdesc = "An empty sign."
-		build_override_sign.name = customname
-		build_override_sign.desc = customdesc
-
 	else if (findtext(recipe.title, "copper coins"))
 		var/customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
@@ -623,38 +654,6 @@
 					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
-		if (H.getStatCoeff("crafting") < 1)
-			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
-			return
-
-
-		if (!ishuman(user))
-			return
-
-		if (H.faction_text == INDIANS)
-			H << "<span class = 'danger'>You don't know how to make this.</span>"
-			return
-
-
-			return
-		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
-			user << "<span class = 'warning'>You need to have a key in one of your hands to make a locked door.</span>"
-			return
-
-		var/obj/item/weapon/key/key = H.l_hand
-		if (!key || !istype(key))
-			key = H.r_hand
-		if (!key || !istype(key))
-			return // should never happen
-
-		if (key)
-			var/keyname = input(user, "Choose a name for the door") as text|null
-			if (keyname == null)
-				keyname = "Locked"
-			build_override_door.name = keyname
-			build_override_door.custom_code = key.code
-
 	if (!can_use(required))
 		if (produced>1)
 			user << "<span class='warning'>You haven't got enough [src] to build \the [produced] [recipe.title]\s!</span>"
@@ -684,9 +683,9 @@
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
 		else
-			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999)") as num
+			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999):") as num
 			keycode = Clamp(keycode, 1000, 9999)
-			var/keyname = input(user, "Choose a name for the key") as text|null
+			var/keyname = input(user, "Choose a name for the key:") as text|null
 			if (keyname == null)
 				keyname = "Key"
 			build_override_key.name = keyname
