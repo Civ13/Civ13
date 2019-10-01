@@ -248,47 +248,47 @@
 			return
 	else if (istype(I,/obj/item/weapon/key))
 		var/obj/item/weapon/key/K = I
-		if (K.code == doorcode && doorcode != 0)
-			if (w_front[6])
-				if (w_front[7])
-					visible_message("[H] locks the door.")
-					w_front[7] = FALSE
-				else
-					visible_message("[H] unlocks the door.")
-					w_front[7] = TRUE
-				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (w_back[6])
-				if (w_back[7])
-					visible_message("[H] locks the door.")
-					w_back[7] = FALSE
-				else
-					visible_message("[H] unlocks the door.")
-					w_back[7] = TRUE
-				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (w_left[6])
-				if (w_left[7])
-					visible_message("[H] locks the door.")
-					w_left[7] = FALSE
-				else
-					visible_message("[H] unlocks the door.")
-					w_left[7] = TRUE
-				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (w_right[6])
-				if (w_right[7])
-					visible_message("[H] locks the door.")
-					w_right[7] = FALSE
-				else
-					visible_message("[H] unlocks the door.")
-					w_right[7] = TRUE
-				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-		else if (doorcode == 0 && K.code != 0)
+		if (doorcode)
+			if (K.code == doorcode)
+				if (w_front[6])
+					if (w_front[7])
+						visible_message("[H] locks the door.")
+						w_front[7] = FALSE
+					else
+						visible_message("[H] unlocks the door.")
+						w_front[7] = TRUE
+					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+				if (w_back[6])
+					if (w_back[7])
+						visible_message("[H] locks the door.")
+						w_back[7] = FALSE
+					else
+						visible_message("[H] unlocks the door.")
+						w_back[7] = TRUE
+					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+				if (w_left[6])
+					if (w_left[7])
+						visible_message("[H] locks the door.")
+						w_left[7] = FALSE
+					else
+						visible_message("[H] unlocks the door.")
+						w_left[7] = TRUE
+					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+				if (w_right[6])
+					if (w_right[7])
+						visible_message("[H] locks the door.")
+						w_right[7] = FALSE
+					else
+						visible_message("[H] unlocks the door.")
+						w_right[7] = TRUE
+					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+				playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
+			else
+				H << "This key does not match this lock!"
+				return
+		else
 			doorcode = K.code
 			H << "You assign this key to the lock."
-			return
-
-		else
-			H << "This key does not match this lock!"
 			return
 	else
 		..()
