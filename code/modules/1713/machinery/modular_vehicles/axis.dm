@@ -546,6 +546,12 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 /obj/structure/vehicleparts/axis/attack_hand(var/mob/living/carbon/human/H)
 	if (!ishuman(H))
 		return
+	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))
+		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
+		return
+	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
+		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
+		return
 	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
 		return
