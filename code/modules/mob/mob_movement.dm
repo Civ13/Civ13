@@ -1,6 +1,6 @@
 /mob/var/velocity = 0
 /mob/var/velocity_lastdir = -1 // turning makes you lose TRUE or 2 velocity
-/mob/var/run_delay_maximum = 3
+/mob/var/run_delay_maximum = 2.5
 
 /mob/var/ghost_velocity = 0
 /mob/proc/movement_delay()
@@ -26,7 +26,7 @@
 	return .
 
 /mob/proc/get_walk_delay()
-	return get_run_delay() * 1.4
+	return get_run_delay() * 1.33
 
 /mob/proc/get_stealth_delay()
 	return get_run_delay() * 3
