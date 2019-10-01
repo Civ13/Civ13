@@ -340,6 +340,10 @@
 						water -= 12
 						vomit()
 			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 312.15 && prob(2))
+				if (!disease_treatment && prob(20))
+					var/obj/item/organ/external/E = get_organ("groin")
+					var/datum/wound/W = new /datum/wound/internal_bleeding(35, internal_organs_by_name["liver"])
+					E.wounds += W
 				src << "You feel your fever going down."
 				emote(pick("cough"))
 				bodytemperature = 310.055

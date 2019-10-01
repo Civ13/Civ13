@@ -137,6 +137,12 @@
 		var/image/fleas = image('icons/effects/effects.dmi', "fleas")
 		overlays_standing[27] = fleas
 		mood -= 0.02
+		if (prob(0.2) && !disease && !inducedSSD)
+			disease = TRUE
+			disease_type = "typhus"
+			disease_progression = 0
+			disease_treatment = 0
+
 /mob/living/carbon/human/proc/adjust_hygiene(var/amount)
 	var/old_hygiene = hygiene
 	if(amount>0)
