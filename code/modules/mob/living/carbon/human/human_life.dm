@@ -293,6 +293,66 @@
 				if (prob(25))
 					disease_immunity += "flu"
 
+		else if (disease_type == "typhus")
+			mood -= 0.2
+			if (!disease_treatment)
+				disease_progression += 0.5
+			else
+				disease_progression += 5
+			// first 2 minutes
+			if (disease_progression == 25)
+				src << "You feel a little feverish."
+				disease_treatment = 0
+				apply_effect(10, DROWSY, FALSE)
+				bodytemperature = 311.35
+			//4 more minutes
+			if (prob(1))
+				if (prob(50))
+					emote("cough")
+					apply_effect(5, DROWSY, FALSE)
+				else
+					src << "Your muscles ache!"
+					apply_effect(5, AGONY, FALSE)
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 312.15 && prob(4))
+				src << "You feel like your fever is getting worse!"
+				apply_effect(5, AGONY, FALSE)
+				apply_effect(5, DROWSY, FALSE)
+				emote(pick("cough"))
+				bodytemperature = 312.15
+				adjustBrainLoss(1)
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 313.15 && prob(1))
+				src << "You feel very nauseous!"
+				apply_effect(8, AGONY, FALSE)
+				spawn(200)
+					water -= 35
+					vomit()
+			// 2 more minutes
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 313.15 && prob(8))
+				if (prob(50))
+					src << "You feel your fever going down."
+					apply_effect(5, DROWSY, FALSE)
+					emote(pick("cough"))
+					bodytemperature = 312.35
+				else
+					src << "You feel nauseous!"
+					apply_effect(5, AGONY, FALSE)
+					spawn(200)
+						water -= 12
+						vomit()
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 312.15 && prob(2))
+				src << "You feel your fever going down."
+				emote(pick("cough"))
+				bodytemperature = 310.055
+			else if (disease_progression >= 240 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+				if (prob(25))
+					disease_immunity += "typhus"
+
 		else if (disease_type == "malaria")
 			mood -= 0.17
 			if (!disease_treatment)
