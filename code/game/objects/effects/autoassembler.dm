@@ -118,6 +118,7 @@
 			for (var/obj/structure/vehicleparts/frame/F in TL.loc)
 				TL.connection = central.axis.engine
 		for (var/obj/structure/vehicleparts/VP in range(7,src))
+			VP.dir = VP.axis.dir
 			VP.update_icon()
 //		world.log << "[central.axis] assembly complete."
 		qdel(src)
