@@ -15,6 +15,9 @@
 	flammable = TRUE
 	var/restricts_view = 0 //If it restricts the viewing cone - check hide.dmi: 0 means "combat". 1 means "helmet". 2 means "narrow"
 
+	var/dirtyness = 0
+	var/fleas = FALSE
+
 //Updates the icons of the mob wearing the clothing item, if any.
 /obj/item/clothing/proc/update_clothing_icon()
 	return
@@ -33,6 +36,20 @@
 		qdel(src)
 		return TRUE
 	return FALSE
+
+/obj/item/clothing/examine(mob/user)
+	..(user)
+	switch (dirtyness)
+		if (-100 to 29)
+			user << "Looks clean."
+		if (30 to 49)
+			user << "Looks a bit dirty."
+		if (50 to 70)
+			user << "Looks very dirty!"
+		if (71 to 200)
+			user << "Looks extremely dirty!"
+	if (fleas)
+		user << "<b>\The [src] is infested with fleas!</b>"
 ///////////////////////////////////////////////////////////////////////
 /obj/item/clothing/head/helmet
 	restricts_view = 1

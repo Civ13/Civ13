@@ -629,7 +629,10 @@
 
 	O.clean_blood()
 	if (istype(O, /obj/item/clothing))
-		O.radiation = 0
+		var/obj/item/clothing/C = O
+		C.radiation = 0
+		C.dirtyness = 0
+		C.fleas = FALSE
 	user.visible_message( \
 		"<span class='notice'>[user] washes \a [I] using \the [src].</span>", \
 		"<span class='notice'>You wash \a [I] using \the [src].</span>")
