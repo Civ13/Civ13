@@ -821,14 +821,19 @@ obj/item/clothing/under/ww2/us_shirtless
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2
 	name = "soviet winter coat"
 	desc = "A traditional Soviet coat, in light blue."
-	icon_state = "gulagprisoner"
-	item_state = "gulagprisoner"
-	worn_state = "gulagprisoner"
+	icon_state = "gulagprisoner1"
+	item_state = "gulagprisoner1"
+	worn_state = "gulagprisoner1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	New()
+		..()
+		icon_state = "gulagprisoner[rand(1,2)]"
+		item_state = icon_state
+		worn_state = icon_state
 
 /obj/item/clothing/suit/storage/coat/ww2/soviet_officer
 	name = "soviet officer coat"

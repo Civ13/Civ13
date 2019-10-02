@@ -174,8 +174,9 @@
 	spawn_location = "JoinLateCiv"
 	selection_color = "#2d2d63"
 	rank_abbreviation = ""
+	title = "DO NOT USE"
 
-/datum/job/russian/prisoner/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/prisoner/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -200,7 +201,7 @@
 	give_nationality(H)
 	return TRUE
 
-/datum/job/russian/prisoner/proc/give_nationality(var/mob/living/carbon/human/H)
+/datum/job/civilian/prisoner/proc/give_nationality(var/mob/living/carbon/human/H)
 	give_random_name(H)
 	H.add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
 
