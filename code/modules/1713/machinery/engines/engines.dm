@@ -43,7 +43,7 @@
 /obj/structure/engine/examine(mob/user)
 	..()
 	if (user in range(1,src))
-		user << "<span class='notice'>Max Power: <b>[maxpower]</b>.</span>"
+		user << "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>"
 
 /obj/structure/engine/proc/turn_on()
 	return

@@ -237,6 +237,8 @@
 			if (do_after(H, 200, src))
 				visible_message("[H] sucessfully repairs \the [mwheel.ntype].")
 				mwheel.broken = FALSE
+				mwheel.update_icon()
+				update_icon()
 				return
 	else if (istype(I,/obj/item/weapon/wrench) && !axis)
 		anchored = !anchored
