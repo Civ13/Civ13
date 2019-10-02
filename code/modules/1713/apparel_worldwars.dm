@@ -798,6 +798,31 @@ obj/item/clothing/under/ww2/us_shirtless
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 
+
+/obj/item/clothing/suit/storage/coat/ww2/sovcoat
+	name = "soviet winter coat"
+	desc = "A traditional Soviet coat, in dark yellow."
+	icon_state = "gulagguard"
+	item_state = "gulagguard"
+	worn_state = "gulagguard"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/suit/storage/coat/ww2/sovcoat2
+	name = "soviet winter coat"
+	desc = "A traditional Soviet coat, in light blue."
+	icon_state = "gulagprisoner"
+	item_state = "gulagprisoner"
+	worn_state = "gulagprisoner"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
 /obj/item/clothing/suit/storage/coat/ww2/soviet_officer
 	name = "soviet officer coat"
 	desc = "A soviet trenchcoat, worn by officers in the red army."

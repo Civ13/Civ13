@@ -258,6 +258,7 @@
 #include "code\game\objects\map_metadata\fields.dm"
 #include "code\game\objects\map_metadata\four_colonies.dm"
 #include "code\game\objects\map_metadata\gladiators.dm"
+#include "code\game\objects\map_metadata\gulag13.dm"
 #include "code\game\objects\map_metadata\heraclea.dm"
 #include "code\game\objects\map_metadata\hill203.dm"
 #include "code\game\objects\map_metadata\hostages.dm"
@@ -890,5 +891,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\testing.dmm"
+#include "maps\1943\gulag13.dmm"
 // END_INCLUDE

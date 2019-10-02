@@ -40,7 +40,7 @@
 		else
 			. = TRUE
 	if (istype(J, /datum/job/russian))
-		if (J.is_ww2 || J.is_rcw)
+		if (J.is_ww2 || J.is_rcw || J.is_prison)
 			. = FALSE
 		else
 			. = TRUE

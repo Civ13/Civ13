@@ -317,6 +317,26 @@
 /obj/structure/simple_door/key_door/russian
 	keyslot_type = /datum/keyslot/russian
 	unique_door_name = "Russian locked"
+
+/datum/keyslot/soviet
+	code = RU_CODE
+
+/obj/item/weapon/key/soviet
+	code = RU_CODE
+	name = "Soviet key"
+
+/obj/item/weapon/key/soviet/guard
+	code = RU_CODE
+	name = "GULAG guard key"
+
+/obj/structure/simple_door/key_door/soviet
+	keyslot_type = /datum/keyslot/soviet
+	unique_door_name = "Soviet locked"
+
+/obj/structure/simple_door/key_door/soviet/guard
+	keyslot_type = /datum/keyslot/soviet
+	unique_door_name = "GULAG locked"
+
 #undef RU_CODE
 
 #define NL_CODE 995 * 6
