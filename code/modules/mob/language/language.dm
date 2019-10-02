@@ -112,6 +112,26 @@
 	var/full_name = "Victor Reznof"
 	return full_name
 
+/datum/language/proc/get_random_polish_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_polish)) + " " + capitalize(pick(last_names_polish))
+		else
+			return capitalize(pick(first_names_male_polish)) + " " + capitalize(pick(last_names_polish))
+
+	var/full_name = "Mikolaj Gudowicz"
+	return full_name
+
+/datum/language/proc/get_random_ukrainian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_ukrainian)) + " " + capitalize(pick(last_names_ukrainian))
+		else
+			return capitalize(pick(first_names_male_ukrainian)) + " " + capitalize(pick(last_names_ukrainian))
+
+	var/full_name = "Yuri Davidenko"
+	return full_name
+
 /datum/language/proc/get_random_carib_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -355,6 +375,10 @@
 				cname_check = FALSE
 			else if (istype(l, /datum/language/chinese))
 				cname_check = FALSE
+			else if (istype(l, /datum/language/polish))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/ukrainian))
+				cname_check = FALSE
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
 			if (ishuman(src))
@@ -451,7 +475,21 @@
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
+		if (istype(new_language, /datum/language/polish))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_polish_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
 
+		if (istype(new_language, /datum/language/ukrainian))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_ukrainian_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
 	if (!istype(new_language) || (new_language in languages))
 		return FALSE
 

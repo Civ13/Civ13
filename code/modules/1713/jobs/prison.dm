@@ -202,8 +202,46 @@
 	return TRUE
 
 /datum/job/civilian/prisoner/proc/give_nationality(var/mob/living/carbon/human/H)
-	give_random_name(H)
-	H.add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
+	var/randpick = rand(1,4)
+	switch(randpick)
+		if (1)
+			H.add_language("Polish",TRUE)
+			H.add_language("Russian",TRUE)
+			H.remove_language("English")
+			for (var/datum/language/polish/A in H.languages)
+				H.default_language = A
+			H.name = H.species.get_random_polish_name(H.gender)
+			H.real_name = H.name
+			H.add_note("Group", "You are a Polish anti-communist prisoner. You are part of the <b>Polish</b> faction. Try to escape and/or keep your faction powerful!")
+
+		if (2)
+			H.add_language("Ukrainian",TRUE)
+			H.add_language("Russian",TRUE)
+			H.remove_language("English")
+			for (var/datum/language/ukrainian/A in H.languages)
+				H.default_language = A
+			H.name = H.species.get_random_ukrainian_name(H.gender)
+			H.real_name = H.name
+			H.add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian/b> faction. Try to escape and/or keep your faction powerful!")
+
+		if (3)
+			H.add_language("Russian",TRUE)
+			H.remove_language("English")
+			for (var/datum/language/russian/A in H.languages)
+				H.default_language = A
+			H.name = H.species.get_random_russian_name(H.gender)
+			H.real_name = H.name
+			H.add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
+
+		if (4)
+			H.add_language("German",TRUE)
+			H.add_language("Russian",TRUE)
+			H.remove_language("English")
+			for (var/datum/language/german/A in H.languages)
+				H.default_language = A
+			H.name = H.species.get_random_german_name(H.gender)
+			H.real_name = H.name
+			H.add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
 
 /datum/job/civilian/prisoner/janitor
 	title = "Janitor"
@@ -214,6 +252,13 @@
 	max_positions = 20
 	equip(var/mob/living/carbon/human/H)
 		..()
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
+		armband.color = "#906AD1"
+		armband.setd = TRUE
+		armband.uncolored = FALSE
+		armband.name = "[title] armband"
+		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Janitor</b>. Your job is to keep the camp area clean. Make sure its spotless or you'll get beaten!")
 
 /datum/job/civilian/prisoner/miner
@@ -225,6 +270,13 @@
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
 		..()
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
+		armband.color = "#A5682A"
+		armband.setd = TRUE
+		armband.uncolored = FALSE
+		armband.name = "[title] armband"
+		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Miner</b>. Your job is to get to the mines and collect minerals for the guards.")
 
 /datum/job/civilian/prisoner/logger
@@ -236,6 +288,13 @@
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
 		..()
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
+		armband.color = "#5AB300"
+		armband.setd = TRUE
+		armband.uncolored = FALSE
+		armband.name = "[title] armband"
+		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Logger</b>. Your job is to collect wood from the nearby forest, as instructed by the guards.")
 
 /datum/job/civilian/prisoner/builder
@@ -247,6 +306,13 @@
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
 		..()
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
+		armband.color = "#000000"
+		armband.setd = TRUE
+		armband.uncolored = FALSE
+		armband.name = "[title] armband"
+		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Builder</b>. Your job is to build roads and railroads nearby, as instructed by the guards.")
 
 /datum/job/civilian/prisoner/nurse
@@ -258,6 +324,13 @@
 	max_positions = 30
 	equip(var/mob/living/carbon/human/H)
 		..()
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
+		armband.color = "#FFFFFF"
+		armband.setd = TRUE
+		armband.uncolored = FALSE
+		armband.name = "[title] armband"
+		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Nurse Helper</b>. Keep other prisoners alive with the sparse supplies you have...")
 
 /datum/job/civilian/prisoner/kitchen
@@ -269,6 +342,13 @@
 	max_positions = 25
 	equip(var/mob/living/carbon/human/H)
 		..()
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
+		armband.color = "#990000"
+		armband.setd = TRUE
+		armband.uncolored = FALSE
+		armband.name = "[title] armband"
+		uniform.attackby(armband, H)
 		H.add_note("Role", "You are on <b>Kitchen Duty</b>. Your job is to manage the prisoner's stock of food (if the guards actually deliver it...) and keep everyone fed.")
 
 /datum/job/civilian/prisoner/collaborator
@@ -280,4 +360,25 @@
 	max_positions = 12
 	equip(var/mob/living/carbon/human/H)
 		..()
-		H.add_note("Role", "You are a <b>Collaborator</b>. Your job is to get information and pass it to the guards. Be careful, your fellow prisoners might not like it if they find it out...")
+		var/randrole = pick("Janitor", "Kitchen Duty", "Miner", "Nurse Helper", "Builder", "Logger")
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
+		switch(randrole)
+			if ("Janitor")
+				armband.color = "#906AD1"
+			if ("Kitchen Duty")
+				armband.color = "#990000"
+			if ("Miner")
+				armband.color = "#A5682A"
+			if ("Nurse Helper")
+				armband.color = "#FFFFFF"
+			if ("Builder")
+				armband.color = "#000000"
+			if ("Logger")
+				armband.color = "#5AB300"
+
+		armband.setd = TRUE
+		armband.uncolored = FALSE
+		armband.name = "[randrole] armband"
+		uniform.attackby(armband, H)
+		H.add_note("Primary Role", "You are a <b>Collaborator</b>. Your job is to get information and pass it to the guards. Be careful, your fellow prisoners might not like it if they find it out... Try to act like your assigned role, <b>[randrole]</b>.")

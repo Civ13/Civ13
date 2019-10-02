@@ -106,10 +106,12 @@
 	var/uncolored = FALSE
 	var/icon/customoverlay = null
 	color = "#FFFFFF"
+	var/setd = FALSE
 	New()
 		..()
 		spawn(5)
-			uncolored = TRUE
+			if (!setd)
+				uncolored = TRUE
 
 /obj/item/clothing/accessory/custom/scarf
 	name = "scarf"
