@@ -233,7 +233,7 @@ var/global/list/vehicle_walls = list( \
 				H << "<span class='warning'>Not enough steel!</span>"
 				return
 
-		var/choice3 = WWinput(H, "Which type of wall?", "Wall Creation", "Cancel", list("Cancel","wall","door", "armoredfront"))
+		var/choice3 = WWinput(H, "Which type of wall?", "Wall Creation", "Cancel", list("Cancel","wall","door","armoredfront","window","windshield"))
 		if (choice3 == "Cancel")
 			return
 
