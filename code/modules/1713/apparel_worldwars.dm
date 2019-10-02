@@ -108,6 +108,14 @@
 	item_state = "biker"
 	worn_state = "biker"
 	restricts_view = 1
+
+/obj/item/clothing/under/ww2/gulag_prisoner
+	name = "GULAG prisoner clothing"
+	desc = "A worn out GULAG prisoner outfit."
+	icon_state = "gulagprisoner"
+	item_state = "gulagprisoner"
+	worn_state = "gulagprisoner"
+
 ////////////////////////////////////////////////////////////////////////
 ///////////////////////////////WW2 JAPS/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -189,7 +197,6 @@
 			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
 	update_clothing_icon()
-
 
 /obj/item/clothing/head/ww2/japoffcap
 	name = "japanese officer cap"

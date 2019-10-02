@@ -440,67 +440,25 @@ var/list/coefflist = list()
 	onclose(user, "mob[name]")
 	return
 
-// Get rank from ID, ID inside PDA, PDA, ID in wallet, etc.
-/mob/living/carbon/human/proc/get_authentification_rank(var/if_no_id = "No id", var/if_no_job = "No job")
-	return if_no_id
-
-
-//gets name from ID or ID inside PDA or PDA itself
-//Useful when player do something with computers
-/mob/living/carbon/human/proc/get_authentification_name(var/if_no_id = "Unknown")
-	return if_no_id
-
-//Trust me I'm an engineer
-//I think we'll put this shit right here
-var/list/rank_prefix = list(\
-	"Ironhammer Operative" = "Operative",\
-	"Inspector" = "Inspector",\
-	"Gunnery Sergeant" = "Sergeant",\
-	"Ironhammer Commander" = "Lieutenant",\
-	"Captain" = "Captain",\
-	)
-
-/mob/living/carbon/human/proc/rank_prefix_name(name)
-	if (get_natural_rank())
-		if (findtext(name, " "))
-			name = copytext(name, findtext(name, " "))
-		name = get_natural_rank() + " " + name
-	return name
-
 //repurposed proc. Now it combines get_id_name() and get_face_name() to determine a mob's name variable. Made into a seperate proc as it'll be useful elsewhere
 /mob/living/carbon/human/proc/get_visible_name()
 	if ((wear_mask && (wear_mask.flags_inv&HIDEFACE)) || (head && (head.flags_inv&HIDEFACE)) || (werewolf && body_build.name != "Default"))	//Wearing a mask which hides our face, use id-name if possible	//Likewise for hats
-		return rank_prefix_name(get_id_name())
-
-	var/face_name = get_face_name()
+		return get_id_name()
+	if (original_job.is_prison && istype(original_job, /datum/job/civilian))
+		return get_id_name()
+	var/face_name = real_name
 	var/id_name = get_id_name("")
 	if (id_name)
 		if (id_name != face_name)
-			return "[face_name] (as [rank_prefix_name(id_name)])"
+			return "[face_name] (as [id_name])"
 		else
-			return rank_prefix_name(id_name)
+			return id_name
 	return face_name
-
-//Returns "Unknown" if facially disfigured and real_name if not. Useful for setting name when polyacided or when updating a human's name variable
-/mob/living/carbon/human/proc/get_face_name()
-	return real_name
 
 //gets name from ID or PDA itself, ID inside PDA doesn't matter
 //Useful when player is being seen by other mobs
 /mob/living/carbon/human/proc/get_id_name(var/if_no_id = "Unknown")
 	return if_no_id
-
-/mob/living/carbon/human/proc/get_id_rank()
-	return ""
-
-/mob/living/carbon/human/proc/get_natural_rank()
-	return ""
-
-/*
-//gets ID card object from special clothes slot or null.
-/mob/living/carbon/human/proc/get_idcard()
-	if (wear_id)
-		return wear_id.GetID()*/
 
 //Removed the horrible safety parameter. It was only being used by ninja code anyways.
 //Now checks siemens_coefficient of the affected area by default

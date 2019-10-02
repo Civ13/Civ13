@@ -456,6 +456,7 @@
 #include "code\modules\1713\jobs\nomads.dm"
 #include "code\modules\1713\jobs\pirates.dm"
 #include "code\modules\1713\jobs\portuguese.dm"
+#include "code\modules\1713\jobs\prison.dm"
 #include "code\modules\1713\jobs\russian.dm"
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"

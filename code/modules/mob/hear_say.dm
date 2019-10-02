@@ -36,7 +36,7 @@
 	if (istype(speaker, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = speaker
 		if (H.special_job_title != null)
-			speaker_name = H.rank_prefix_name(H.GetVoice())
+			speaker_name = H.GetVoice()
 		else
 			speaker_name = "[H.GetVoice()] (N/A)"
 		for(var/obj/structure/vehicleparts/frame/F1 in speaker.loc)
