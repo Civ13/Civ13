@@ -462,7 +462,7 @@
 					TS.heavy_armor_penetration = 15*(caliber/75)
 					TS.damage = 250*(caliber/75)
 					TS.icon_state = "shellHE"
-					TS.name = "[caliber]mm [atype] shell"
+					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
 				else if ("AP")
 					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
@@ -471,7 +471,7 @@
 					TS.heavy_armor_penetration = 52*(caliber/75)
 					TS.damage = 100*(caliber/75)
 					TS.icon_state = "shellAP"
-					TS.name = "[caliber]mm [atype] shell"
+					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
 				else if ("APCR")
 					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
@@ -480,7 +480,7 @@
 					TS.heavy_armor_penetration = 75*(caliber/75)
 					TS.damage = 75*(caliber/75)
 					TS.icon_state = "shellAPCR"
-					TS.name = "[caliber]mm [atype] shell"
+					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
 
 		user << "You produce [caliber]mm shells."
