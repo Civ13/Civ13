@@ -13,7 +13,9 @@
 		"World War II (1934-1957)" = 0,
 		"Cold War Era (1958-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
-		"Civilization 13 (Nomads & RP)" = 0,
+		"Civilization 13 (Nomads)" = 0,
+		"Civilization 13 (Colony & Pioneers)" = 6,
+		"Civilization 13 (Others)" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -155,7 +157,7 @@
 			maps = list(
 				MAP_TRIBES = 0,
 			)
-		if (epoch == "Civilization 13 (Nomads & RP)")
+		if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
 //				MAP_CIVILIZATIONS = 0,
 				MAP_NOMADS = 0,
@@ -166,12 +168,18 @@
 				MAP_NOMADS_CONTINENTAL = 20,
 				MAP_NOMADS_PANGEA = 10,
 				MAP_NOMADS_WASTELAND = 0,
-				MAP_TRIBES = 8,
+			)
+		if (epoch == "Civilization 13 (Colony & Pioneers)")
+			maps = list(
 				MAP_COLONY = 6,
 				MAP_JUNGLE_COLONY = 6,
 				MAP_PIONEERS = 10,
-				MAP_HUNT = 0,
 				MAP_FOUR_COLONIES = 35,
+			)
+		if (epoch == "Civilization 13 (Others)")
+			maps = list(
+				MAP_TRIBES = 8,
+				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
 			)
 
