@@ -110,3 +110,58 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	return
 
 #undef NO_WINNER
+
+/obj/item/weapon/prisoner_passport
+	name = "Prisoner's Documents"
+	desc = "The identification papers of a prisoner."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "passport"
+	item_state = "paper"
+	throwforce = FALSE
+	w_class = TRUE
+	throw_range = TRUE
+	throw_speed = TRUE
+	attack_verb = list("bapped")
+	flammable = TRUE
+	var/mob/living/carbon/human/owner = null
+	var/document_name = ""
+	var/list/document_details = list()
+	var/list/guardnotes = list()
+	New()
+		..()
+		spawn(20)
+			if (ishuman(loc))
+				var/mob/living/carbon/human/H = loc
+				document_name = H.real_name
+				owner = H
+				name = "[document_name] prisoner documents"
+				desc = "The identification papers of <b>[document_name]</b>."
+				var/crimereason = "Criminal Behaviour"
+				if (istype(H.original_job, /datum/job/civilian/prisoner))
+					var/datum/job/civilian/prisoner/P = H.original_job
+					switch(P.nationality)
+						if ("Vory")
+							crimereason = pick("Attempted murder.","Damage to people's property.","Theft of communal goods.")
+						if ("German")
+							crimereason = "Fought for the Fascist invaders during the Great Patriotic War."
+						if ("Ukrainian")
+							crimereason = "Supporting the Banderovitsi in [pick("Lvov","Tarnopol", "Lutsk", "Chelm")]."
+						if ("Polish")
+							crimereason = "Fighting for the Armia Krajowa in [pick("Grodno","Wroclaw", "Lodz", "Lvov")]."
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.title)
+/obj/item/weapon/prisoner_passport/examine(mob/user)
+	user << "<span class='info'>*---------*</span>"
+	..(user)
+	if (document_details.len >= 9)
+		user << "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>"
+		if (document_details[6] == "male")
+			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
+		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
+		user << "<b><span class='info'>Detained for:</b> [document_details[5]]</span>"
+		user << "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>"
+		user << "<b><span class='info'>Assigned Job:</b> [document_details[9]]</span>"
+	user << "<span class='info'>*---------*</span>"
+	if (guardnotes.len)
+		for(var/i in guardnotes)
+			user << "NOTE: [i]"
+	user << "<span class='info'>*---------*</span>"
