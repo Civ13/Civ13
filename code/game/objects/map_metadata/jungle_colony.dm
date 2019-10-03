@@ -44,6 +44,8 @@ obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		if (J.is_pioneer == TRUE)
 			. = FALSE
+		if (J.is_prison == TRUE)
+			. = FALSE
 	else if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
 	else if (J.is_medieval == TRUE)
