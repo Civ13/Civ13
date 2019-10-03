@@ -1,7 +1,6 @@
 RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,2,25,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay vase,/obj/item/weapon/clay/vase,3,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay wine cup,/obj/item/weapon/clay/winecup,1,30,0,1,kitchen,0,0,0,8,null
-RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,1,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay bowl,/obj/item/weapon/clay/claybowl,1,30,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay jug,/obj/item/weapon/clay/clayjug,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay cup,/obj/item/weapon/clay/claycup,1,30,0,1,kitchen,0,0,0,8,null
@@ -11,6 +10,8 @@ RECIPE: /material/clay/,unfired medium clay pot,/obj/item/weapon/clay/claypot,2,
 RECIPE: /material/clay/,unfired large clay pot,/obj/item/weapon/clay/bigclaypot,3,60,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
+
+RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,1,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,1,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
@@ -270,6 +271,7 @@ RECIPE: /material/cloth/,blue flatcap,/obj/item/clothing/head/flatcap2,2,55,0,1,
 RECIPE: /material/cloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,custom officer cap,/obj/item/clothing/head/custom_off_cap,4,95,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130,0,1,hats & masks,0,0,109,8,null
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
 RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,0,3,null
@@ -579,6 +581,7 @@ RECIPE: /material/steel/,street lamp,/obj/structure/lamp/lamppost_small,3,35,0,1
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/pickaxe/jackhammer,24,60,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,refrigerator,/obj/structure/closet/fridge,15,230,1,1,none,150,0,178,8,null
 RECIPE: /material/steel/,steel arrowhead,/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
+RECIPE: /material/steel/, ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
 
 RECIPE: /material/bronze/,bronze arrowhead,/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
@@ -705,7 +708,7 @@ RECIPE: /material/wood/,work propaganda poster,/obj/item/weapon/poster/faction/w
 RECIPE: /material/wood/,leader propaganda poster,/obj/item/weapon/poster/faction/lead,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,book,/obj/item/weapon/book,4,75,0,1,paper & printing,45,0,0,8,null
 RECIPE: /material/wood/,printing press,/obj/structure/printingpress,12,120,1,1,paper & printing,52,0,0,8,null
-RECIPE: /material/wood/,catapult,/obj/structure/catapult,50,450,1,1,siege weapons,24,33,0,8,null
+RECIPE: /material/wood/,catapult,/obj/structure/catapult,50,450,1,1,siege weapons,24,33,0,4,null
 RECIPE: /material/wood/,siege ladder,/obj/item/weapon/siegeladder,8,100,0,1,siege weapons,24,33,0,8,null
 RECIPE: /material/wood/,wooden foot,/obj/item/weapon/prosthesis/woodfoot,3,80,0,1,prosthetics,0,0,18,8,null
 RECIPE: /material/wood/,wooden pegleg,/obj/item/weapon/prosthesis/pegleg,5,110,0,1,prosthetics,0,0,18,8,null
@@ -787,6 +790,7 @@ RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient
 RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
 RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
 RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null
+RECIPE: /material/iron/, ladder,/obj/item/weapon/siegeladder/metal,8,125,0,1,none,24,33,0,8,iron
 
 RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,2,25,1,1,walls doors and floors,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,2,25,1,1,walls doors and floors,0,0,0,8,null
@@ -798,5 +802,5 @@ RECIPE: /material/sandstone/,furnace,/obj/structure/furnace/sandstone,10,150,1,1
 RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,3,100,1,1,structures,0,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandbag/sandstone,3,70,1,1,fortifications,0,0,0,8,null
-RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated/,5,80,1,1,fortifications,0,0,0,8,null
-RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/barricade/sandstone_v/crenelated/,5,80,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/barricade/sandstone_v/crenelated,5,80,1,1,fortifications,0,0,0,8,null
