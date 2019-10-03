@@ -3,7 +3,7 @@
 	ID = MAP_GULAG13
 	title = "GULAG 13 (120x100x1)"
 	lobby_icon_state = "ww2"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 600
 	squad_spawn_locations = FALSE
 	faction_organization = list(
@@ -149,6 +149,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 							crimereason = "Supporting the Banderovitsi in [pick("Lvov","Tarnopol", "Lutsk", "Chelm")]."
 						if ("Polish")
 							crimereason = "Fighting for the Armia Krajowa in [pick("Grodno","Wroclaw", "Lodz", "Lvov")]."
+
 					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.title)
 /obj/item/weapon/prisoner_passport/examine(mob/user)
 	user << "<span class='info'>*---------*</span>"
