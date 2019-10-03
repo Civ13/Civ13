@@ -831,7 +831,7 @@ obj/item/clothing/under/ww2/us_shirtless
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	New()
 		..()
-		icon_state = "gulagprisoner[rand(1,2)]"
+		icon_state = "gulagprisoner[rand(1,3)]"
 		item_state = icon_state
 		worn_state = icon_state
 
@@ -908,6 +908,12 @@ obj/item/clothing/head/ww2/sov_pilotka
 obj/item/clothing/head/ww2/sov_ushanka
 	name = "soviet ushanka"
 	desc = "A soviet ushanka, used by soldiers in the red army."
+	icon_state = "ushanka_up"
+	item_state = "ushanka_up"
+	worn_state = "ushanka_up"
+	flags_inv = BLOCKHAIR
+
+obj/item/clothing/head/ww2/sov_ushanka/down
 	icon_state = "ushanka"
 	item_state = "ushanka"
 	worn_state = "ushanka"
@@ -915,9 +921,11 @@ obj/item/clothing/head/ww2/sov_ushanka
 obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
 	if (icon_state == "ushanka")
 		icon_state = "ushanka_up"
+		item_state = "ushanka_up"
 		user << "You raise the ear flaps on the ushanka."
 	else
 		icon_state = "ushanka"
+		item_state = "ushanka"
 		user << "You lower the ear flaps on the ushanka."
 
 obj/item/clothing/head/ww2/nkvd_cap

@@ -182,7 +182,7 @@
 	title = "DO NOT USE"
 	var/nationality = "none"
 	default_language = "Russian"
-
+	var/randrole = "none"
 	var/original_eyes = "Black"
 	var/original_facial = "Shaved"
 	var/original_hair = "Short Hair"
@@ -194,7 +194,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/gulag_prisoner(H), slot_w_uniform)
 //head
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
+
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
 
@@ -295,6 +299,7 @@
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Janitor</b>. Your job is to keep the camp area clean. Make sure its spotless or you'll get beaten!")
+		randrole = title
 
 /datum/job/civilian/prisoner/miner
 	title = "Miner"
@@ -313,6 +318,7 @@
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Miner</b>. Your job is to get to the mines and collect minerals for the guards.")
+		randrole = title
 
 /datum/job/civilian/prisoner/logger
 	title = "Logger"
@@ -331,6 +337,7 @@
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Logger</b>. Your job is to collect wood from the nearby forest, as instructed by the guards.")
+		randrole = title
 
 /datum/job/civilian/prisoner/builder
 	title = "Builder"
@@ -349,6 +356,7 @@
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Builder</b>. Your job is to build roads and railroads nearby, as instructed by the guards.")
+		randrole = title
 
 /datum/job/civilian/prisoner/nurse
 	title = "Nurse Helper"
@@ -367,6 +375,7 @@
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Nurse Helper</b>. Keep other prisoners alive with the sparse supplies you have...")
+		randrole = title
 
 /datum/job/civilian/prisoner/kitchen
 	title = "Kitchen Duty"
@@ -385,6 +394,7 @@
 		armband.name = "[title] armband"
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are on <b>Kitchen Duty</b>. Your job is to manage the prisoner's stock of food (if the guards actually deliver it...) and keep everyone fed.")
+		randrole = title
 
 /datum/job/civilian/prisoner/collaborator
 	title = "Collaborator"
@@ -395,7 +405,7 @@
 	max_positions = 12
 	equip(var/mob/living/carbon/human/H)
 		..()
-		var/randrole = pick("Janitor", "Kitchen Duty", "Miner", "Nurse Helper", "Builder", "Logger")
+		randrole = pick("Janitor", "Kitchen Duty", "Miner", "Nurse Helper", "Builder", "Logger")
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
 		switch(randrole)

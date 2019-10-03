@@ -150,7 +150,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 						if ("Polish")
 							crimereason = "Fighting for the Armia Krajowa in [pick("Grodno","Wroclaw", "Lodz", "Lvov")]."
 
-					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.title)
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
 /obj/item/weapon/prisoner_passport/examine(mob/user)
 	user << "<span class='info'>*---------*</span>"
 	..(user)
