@@ -67,7 +67,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet/guard(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -149,7 +149,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet/guard(H), slot_l_store)
 
 	give_random_name(H)
