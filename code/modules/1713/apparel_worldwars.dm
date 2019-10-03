@@ -1169,7 +1169,7 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 /obj/item/weapon/storage/belt/gulagguard/filled/New()
 	..()
 	new /obj/item/weapon/melee/classic_baton(src)
-	new /obj/item/stack/medical/bruise_pack(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)

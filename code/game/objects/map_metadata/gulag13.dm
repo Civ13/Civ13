@@ -127,6 +127,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	var/document_name = ""
 	var/list/document_details = list()
 	var/list/guardnotes = list()
+	secondary_action = TRUE
 	New()
 		..()
 		spawn(20)
@@ -179,3 +180,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			texttoadd = "<i>[texttoadd] - <b>[H.real_name]</b></i>"
 			guardnotes += texttoadd
 			return
+
+/obj/item/weapon/prisoner_passport/secondary_attack_self(mob/living/carbon/human/user)
+	showoff(user)
+	return

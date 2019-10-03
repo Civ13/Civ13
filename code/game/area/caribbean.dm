@@ -190,6 +190,12 @@
 	icon_state = "blue1"
 	climate = "tundra"
 
+/area/caribbean/prison
+	name = "Prisoner camp"
+	base_turf = /turf/floor/dirt/winter
+	icon_state = "blue2"
+	climate = "tundra"
+
 /area/caribbean/island
 	name = "Island"
 	base_turf = /turf/floor/beach/sand
@@ -594,6 +600,8 @@
 
 /area/caribbean/russian/land/outside
 	icon_state = "red3"
+/area/caribbean/russian/land/outside/tundra
+	climate = "tundra"
 
 /area/caribbean/british
 	icon_state = "blue1"

@@ -58,6 +58,13 @@
 		if (map.civilizations == TRUE)
 			nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
 			water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
+		else if (map.ID == MAP_GULAG13)
+			if (istype(original_job, /datum/job/civilian/prisoner))
+				nutrition = max_nutrition*0.1
+				water = max_water*0.2
+			else
+				nutrition = max_nutrition
+				water = max_water
 	else
 		nutrition = max_nutrition
 		water = max_water
