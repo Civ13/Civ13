@@ -178,6 +178,9 @@
 	var/nationality = "none"
 	default_language = "Russian"
 
+	var/original_eyes = "Black"
+	var/original_facial = "Shaved"
+	var/original_hair = "Short Hair"
 /datum/job/civilian/prisoner/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -191,6 +194,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_l_store)
 
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
@@ -245,7 +249,28 @@
 					real_name = name
 					add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "German"
+			PJ.original_hair = pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")
+			PJ.original_facial = PJ.original_hair
+			var/hex_hair = hair_colors[PJ.original_hair]
+			var/red = hex2num(copytext(hex_hair, 2, 4))
+			var/green = hex2num(copytext(hex_hair, 4, 6))
+			var/blue = hex2num(copytext(hex_hair, 6, 8))
+			r_hair = red
+			g_hair = green
+			b_hair = blue
+			r_facial = red
+			g_facial = green
+			b_facial = blue
+			PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
+			var/hex_eyes = eye_colors[PJ.original_eyes]
+			red = hex2num(copytext(hex_eyes, 2, 4))
+			green = hex2num(copytext(hex_eyes, 4, 6))
+			blue = hex2num(copytext(hex_eyes, 6, 8))
 
+			r_eyes = red
+			g_eyes = green
+			b_eyes = blue
+			update_body()
 /datum/job/civilian/prisoner/janitor
 	title = "Janitor"
 	en_meaning = ""
