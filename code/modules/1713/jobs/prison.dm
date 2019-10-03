@@ -266,10 +266,12 @@
 			red = hex2num(copytext(hex_eyes, 2, 4))
 			green = hex2num(copytext(hex_eyes, 4, 6))
 			blue = hex2num(copytext(hex_eyes, 6, 8))
-
 			r_eyes = red
 			g_eyes = green
 			b_eyes = blue
+
+			h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+			f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
 			update_body()
 /datum/job/civilian/prisoner/janitor
 	title = "Janitor"
