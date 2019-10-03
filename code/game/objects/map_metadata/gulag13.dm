@@ -33,7 +33,7 @@
 		list("Polish",0),
 		list("Ukrainians",0),
 	)
-
+	var/siren = FALSE
 obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian/fantasy))
@@ -184,3 +184,54 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 /obj/item/weapon/prisoner_passport/secondary_attack_self(mob/living/carbon/human/user)
 	showoff(user)
 	return
+
+/mob/living/carbon/human/proc/Sound_Alarm()
+	set name = "Sound the Siren"
+	set category = "Officer"
+	if (!map || map.ID != MAP_GULAG13)
+		usr << "You cannot use this in this map."
+		return
+	if (!original_job || !(istype(original_job, /datum/job/russian)))
+		usr << "You cannot use this."
+		return
+	if (istype(map, /obj/map_metadata/gulag13))
+		var/obj/map_metadata/gulag13/G13 = map
+		if (!G13.siren)
+			world << "<font size=3 color='red'><center><b>ALARM</b><br>The siren has been activated, all prisoners must stop what they are doing and lay on the floor until the alarm is lifted!</center></font>"
+			var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			for (var/mob/M in player_list)
+				M.client << warning_sound
+			G13.siren = TRUE
+			spawn(285)
+				if (G13.siren)
+					G13.alarm_proc()
+				return
+/mob/living/carbon/human/proc/Stop_Alarm()
+	set name = "Stop the Siren"
+	set category = "Officer"
+	if (!map || map.ID != MAP_GULAG13)
+		usr << "You cannot use this in this map."
+		return
+	if (!original_job || !(istype(original_job, /datum/job/russian)))
+		usr << "You cannot use this."
+		return
+	if (istype(map, /obj/map_metadata/gulag13))
+		var/obj/map_metadata/gulag13/G13 = map
+		if (G13.siren)
+			world << "<font size=3 color='green'><center><b>ALARM LIFTED</b><br>The siren has been stopped, prisoners can get back up.</center></font>"
+			var/warning_sound = sound(null, channel = 777)
+			for (var/mob/M in player_list)
+				M.client << warning_sound
+			G13.siren = FALSE
+
+/obj/map_metadata/gulag13/proc/alarm_proc()
+	if (siren)
+		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		for (var/mob/M in player_list)
+			M.client << warning_sound
+		world << "<font size=3 color='red'><center><b>ALARM</b><br>The alarm is still on!</center></font>"
+
+		spawn(285)
+			if (siren)
+				alarm_proc()
+			return

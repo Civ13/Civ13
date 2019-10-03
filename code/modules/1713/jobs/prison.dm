@@ -40,6 +40,8 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.verbs += /mob/living/carbon/human/proc/Sound_Alarm
+	H.verbs += /mob/living/carbon/human/proc/Stop_Alarm
 	return TRUE
 
 /datum/job/russian/nkvd_gulag_officer
@@ -82,6 +84,9 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.verbs += /mob/living/carbon/human/proc/Sound_Alarm
+	H.verbs += /mob/living/carbon/human/proc/Stop_Alarm
+
 	return TRUE
 
 /datum/job/russian/nkvd_gulag_medic

@@ -370,8 +370,8 @@ obj/item/projectile/bullet/rifle/a556x45
 	name = "beanbag"
 	check_armor = "melee"
 	armor_penetration = 0
-	damage = DAMAGE_LOW/2
-	agony = DAMAGE_MEDIUM_HIGH
+	damage = 10
+	agony = 60
 	embed = FALSE
 	sharp = FALSE
 
