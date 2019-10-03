@@ -165,3 +165,17 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		for(var/i in guardnotes)
 			user << "NOTE: [i]"
 	user << "<span class='info'>*---------*</span>"
+
+/obj/item/weapon/prisoner_passport/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (!ishuman(H))
+		return
+	if (istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/russian))
+		var/confirm = WWinput(H, "Do you want to add a note to these documents?", "Prisoner Documents", "No", list("No","Yes"))
+		if (confirm == "No")
+			return
+		else
+			var/texttoadd = input(H, "What do you want to write? Up to 150 characters", "Notes", "") as text
+			texttoadd = sanitize(texttoadd, 150, FALSE)
+			texttoadd = "<i>[texttoadd] - <b>[H.real_name]</b></i>"
+			guardnotes += texttoadd
+			return

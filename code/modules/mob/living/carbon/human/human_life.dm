@@ -512,7 +512,7 @@
 
 		if (!inducedSSD)
 			handle_excrement()
-			if (map.civilizations)
+			if (map.civilizations || map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY || map.ID == MAP_GULAG13)
 				handle_hygiene()
 			handle_mood()
 			handle_ptsd()
