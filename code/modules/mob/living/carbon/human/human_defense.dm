@@ -233,6 +233,8 @@ bullet_act
 				shake_camera(src, rand(2,3), rand(2,3))
 		if (istype(P, /obj/item/projectile/bullet/shotgun/beanbag))
 			Weaken(8)
+			if (prob(50))
+				Paralyse(5)
 			stats["stamina"][1] = max(stats["stamina"][1] - 70, 0)
 			if (client)
 				shake_camera(src, rand(2,3), rand(2,3))
