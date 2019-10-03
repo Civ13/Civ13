@@ -26,6 +26,14 @@
 	songs = list(
 		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
 	gamemode = "Prison Simulation"
+	var/list/points = list(
+		list("Guards",0),
+		list("Vory",0),
+		list("Germans",0),
+		list("Polish",0),
+		list("Ukrainians",0),
+	)
+
 obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian/fantasy))
@@ -87,5 +95,18 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		return "<font size = 4>The grace wall is up!</font>"
 	else
 		return ""
+/obj/map_metadata/gulag13/New()
+	..()
+	spawn(3000)
+		check_points_msg()
+
+/obj/map_metadata/gulag13/proc/check_points_msg()
+	spawn(1)
+		world << "<font size = 4><span class = 'notice'><b>Current Score:</b></font></span>"
+		for (var/i=1,i<=points.len,i++)
+			world << "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]]</b></span></font>"
+	spawn(3000)
+		check_points_msg()
+	return
 
 #undef NO_WINNER

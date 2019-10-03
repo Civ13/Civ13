@@ -156,9 +156,9 @@
 
 /datum/language/polish
 	name = "Polish"
-	desc = "Uraa!"
-	key = "p"
-	colour = "Ukrainian"
+	desc = "Smierc dla ciemiezców!"
+	key = "o"
+	colour = "Polish"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = POLISH_SYLLABLES
 	mutual_intelligibility = list(/datum/language/russian = 10, /datum/language/ukrainian = 20)

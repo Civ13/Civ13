@@ -273,7 +273,7 @@
 		if ( findtext(pose,".",lentext(pose)) == FALSE && findtext(pose,"!",lentext(pose)) == FALSE && findtext(pose,"?",lentext(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
-	if (!map.civilizations && !map.ID == MAP_LITTLE_CREEK)
+	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13)
 		if (original_job)
 			if (ishuman(user) && user != src)
 				var/mob/living/carbon/human/H = user
@@ -295,6 +295,18 @@
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
 				else if (H.original_job_title == original_job_title && original_job_title == "West Side Gang")
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
+
+	else if (map.ID == MAP_GULAG13)
+		if (ishuman(user) && user != src)
+			var/mob/living/carbon/human/H = user
+			if (istype(H.original_job, /datum/job/civilian/prisoner) && istype(original_job, /datum/job/civilian/prisoner))
+				msg += "<br><i>You recognize [T.him] as a prisoner named <b>[real_name]</b>.</i>"
+				var/datum/job/civilian/prisoner/PT = original_job
+				var/datum/job/civilian/prisoner/PO = H.original_job
+				if (PO.nationality == PT.nationality)
+					msg += "<br><i>You recognize [T.him] as a fellow <b>[PO.nationality] member</b>!</i>"
+				if (H.original_job_title == "Collaborator" && original_job_title == H.original_job_title)
+					msg += "<br><i>You recognize [T.him] as a fellow <b>collaborator</b>!</i>"
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user

@@ -175,6 +175,8 @@
 	selection_color = "#2d2d63"
 	rank_abbreviation = ""
 	title = "DO NOT USE"
+	var/nationality = "none"
+	default_language = "Russian"
 
 /datum/job/civilian/prisoner/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -198,50 +200,51 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	give_nationality(H)
+	H.give_nationality()
 	return TRUE
 
-/datum/job/civilian/prisoner/proc/give_nationality(var/mob/living/carbon/human/H)
-	var/randpick = rand(1,4)
-	switch(randpick)
-		if (1)
-			H.add_language("Polish",TRUE)
-			H.add_language("Russian",TRUE)
-			H.remove_language("English")
-			for (var/datum/language/polish/A in H.languages)
-				H.default_language = A
-			H.name = H.species.get_random_polish_name(H.gender)
-			H.real_name = H.name
-			H.add_note("Group", "You are a Polish anti-communist prisoner. You are part of the <b>Polish</b> faction. Try to escape and/or keep your faction powerful!")
+/mob/living/carbon/human/proc/give_nationality()
+	if (istype(original_job, /datum/job/civilian/prisoner))
+		var/datum/job/civilian/prisoner/PJ = original_job
+		var/randpick = rand(1,4)
+		spawn(1)
+			switch(randpick)
+				if (1)
+					add_language("Polish",FALSE)
+					add_note("Known Languages", "Polish")
+					remove_language("English")
+					for (var/datum/language/polish/A in languages)
+						default_language = A
+					name = species.get_random_polish_name(gender)
+					real_name = name
+					add_note("Group", "You are a Polish anti-communist prisoner. You are part of the <b>Polish</b> faction. Try to escape and/or keep your faction powerful!")
+					PJ.nationality = "Polish"
 
-		if (2)
-			H.add_language("Ukrainian",TRUE)
-			H.add_language("Russian",TRUE)
-			H.remove_language("English")
-			for (var/datum/language/ukrainian/A in H.languages)
-				H.default_language = A
-			H.name = H.species.get_random_ukrainian_name(H.gender)
-			H.real_name = H.name
-			H.add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian/b> faction. Try to escape and/or keep your faction powerful!")
+				if (2)
+					add_language("Ukrainian",FALSE)
+					add_note("Known Languages", "Ukrainian")
+					for (var/datum/language/ukrainian/A in languages)
+						default_language = A
+					name = species.get_random_ukrainian_name(gender)
+					real_name = name
+					add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian</b> faction. Try to escape and/or keep your faction powerful!")
+					PJ.nationality = "Ukrainian"
 
-		if (3)
-			H.add_language("Russian",TRUE)
-			H.remove_language("English")
-			for (var/datum/language/russian/A in H.languages)
-				H.default_language = A
-			H.name = H.species.get_random_russian_name(H.gender)
-			H.real_name = H.name
-			H.add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
+				if (3)
+					name = species.get_random_russian_name(gender)
+					real_name = name
+					add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
+					PJ.nationality = "Vory"
 
-		if (4)
-			H.add_language("German",TRUE)
-			H.add_language("Russian",TRUE)
-			H.remove_language("English")
-			for (var/datum/language/german/A in H.languages)
-				H.default_language = A
-			H.name = H.species.get_random_german_name(H.gender)
-			H.real_name = H.name
-			H.add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
+				if (4)
+					add_language("German",FALSE)
+					add_note("Known Languages", "German")
+					for (var/datum/language/german/A in languages)
+						default_language = A
+					name = species.get_random_german_name(gender)
+					real_name = name
+					add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
+					PJ.nationality = "German"
 
 /datum/job/civilian/prisoner/janitor
 	title = "Janitor"
