@@ -34,7 +34,7 @@
 
 
 /obj/item/projectile/arrow/arrow
-	damage = DAMAGE_LOW-24
+	damage = DAMAGE_LOW-28
 	penetrating = 0
 	armor_penetration = 0
 	icon_state = "arrow"
