@@ -334,3 +334,13 @@
 	name = "Windowed"
 /obj/structure/simple_door/resin/New(var/newloc,var/material_name)
 	..(newloc, "resin")
+
+/obj/structure/simple_door/key_door/custom/jail/woodjail/New(var/newloc,var/material_name)
+	..(newloc, "wood")
+	basic_icon = "woodcell"
+	icon_state = "woodcell"
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/New(var/newloc,var/material_name)
+	..(newloc, "steel")
+	basic_icon = "cell"
+	icon_state = "cell"
