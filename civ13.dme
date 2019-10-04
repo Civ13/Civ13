@@ -388,6 +388,7 @@
 #include "code\modules\1713\armor.dm"
 #include "code\modules\1713\barbwire.dm"
 #include "code\modules\1713\battlereport_variables.dm"
+#include "code\modules\1713\betting.dm"
 #include "code\modules\1713\book.dm"
 #include "code\modules\1713\books.dm"
 #include "code\modules\1713\cane.dm"
