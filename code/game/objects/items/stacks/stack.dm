@@ -749,7 +749,7 @@
 
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
-	else if (findtext(recipe.title, "coil"))
+	if (findtext(recipe.title, "coil"))
 		produced = 10
 
 	else if (recipe.result_type == /obj/item/weapon/can)
@@ -783,7 +783,7 @@
 		produced = 2
 	else if (recipe.result_type == /obj/item/ammo_casing/stone)
 		produced = 5
-	else if (recipe.result_type == /obj/structure/sink/well)
+	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
 	var/inpt = 50
