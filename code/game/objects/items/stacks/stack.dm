@@ -589,7 +589,7 @@
 			build_override_coins_gold.name = "gold [customname]"
 			build_override_coins_gold.desc = "gold coins, minted by [H]."
 
-	else if (findtext(recipe.title, "gravestone"))
+	if (findtext(recipe.title, "gravestone"))
 		var/customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
 		if (customname == "" || customname == null)
 			customname = "gravestone"
