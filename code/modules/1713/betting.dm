@@ -158,7 +158,7 @@
 					match_running = FALSE
 					for (var/obj/structure/betting_box/BB in range(5,src))
 						BB.match_running = FALSE
-						BB.process_result("blue")
+						BB.process_results("blue")
 					if (istype(map, /obj/map_metadata/gulag13))
 						var/obj/map_metadata/gulag13/G = map
 						G.gracedown1 = TRUE
