@@ -40,6 +40,3 @@ print("Finished updating all directories in {} seconds".format(t2))
 
 print("Started server on port 1714.")
 os.system("sudo DreamDaemon /home/1713/civ13/civ13.dmb 1714 -trusted -logself -webclient &")
-
-	except IOError:
-		continue
