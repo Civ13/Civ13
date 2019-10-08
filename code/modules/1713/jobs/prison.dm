@@ -203,7 +203,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_wear_id)
+	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
+	RUB.amount = 25
+	H.equip_to_slot_or_del(RUB, slot_r_store)
 
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)

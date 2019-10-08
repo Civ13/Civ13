@@ -134,6 +134,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	item_state = "paper"
 	throwforce = FALSE
 	w_class = TRUE
+	slot_flags = SLOT_ID | SLOT_POCKET
 	throw_range = TRUE
 	throw_speed = TRUE
 	attack_verb = list("bapped")
