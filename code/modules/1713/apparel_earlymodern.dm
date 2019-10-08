@@ -676,3 +676,17 @@
 /obj/item/weapon/storage/belt/smallpouches/green/bint/New()
 	..()
 	new/obj/item/stack/medical/bruise_pack/bint(src)
+
+/obj/item/clothing/under/blue_shorts
+	name = "blue shorts"
+	desc = "Basic blue shorts."
+	icon_state = "shorts_blue"
+	item_state = "shorts_blue"
+	worn_state = "shorts_blue"
+
+/obj/item/clothing/under/red_shorts
+	name = "red shorts"
+	desc = "Basic red shorts"
+	icon_state = "shorts_red"
+	item_state = "shorts_red"
+	worn_state = "shorts_red"

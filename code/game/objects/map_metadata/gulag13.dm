@@ -33,6 +33,7 @@
 		list("Polish",0),
 		list("Ukrainians",0),
 	)
+	var/gracedown1 = TRUE
 	var/siren = FALSE
 obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -108,6 +109,20 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	spawn(3000)
 		check_points_msg()
 	return
+
+/obj/map_metadata/gulag13/check_caribbean_block(var/mob/living/carbon/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (caribbean_blocking_area_types.Find(A.type))
+		if (A.name == "I grace wall")
+			if (!gracedown1)
+				return TRUE
+			else
+				return FALSE
+		else
+			return (faction1_can_cross_blocks() || faction2_can_cross_blocks())
+	return FALSE
 
 #undef NO_WINNER
 
