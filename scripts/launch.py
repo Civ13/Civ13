@@ -38,18 +38,8 @@ t2 = time.time() - t1
 
 print("Finished updating all directories in {} seconds".format(t2))
 
-print("Checking for existing servers...")
-pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
-
-for pid in pids:
-	try:
-		name = open(os.path.join('/proc', pid, 'cmdline'), 'r').read()
-		if not "civ13.dmb" in name:
-			if not "1714" in name:
-				print("Started server on port 1714.")
-				os.system("sudo DreamDaemon /home/1713/civ13/civ13.dmb 1714 -trusted -logself -webclient &")
-		else:
-			print("Server already running!")
+print("Started server on port 1714.")
+os.system("sudo DreamDaemon /home/1713/civ13/civ13.dmb 1714 -trusted -logself -webclient &")
 
 	except IOError:
 		continue
