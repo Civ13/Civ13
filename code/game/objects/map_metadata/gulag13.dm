@@ -2,7 +2,7 @@
 /obj/map_metadata/gulag13
 	ID = MAP_GULAG13
 	title = "GULAG 13 (120x100x1)"
-	lobby_icon_state = "ww2"
+	lobby_icon_state = "camp"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 600
 	squad_spawn_locations = FALSE
@@ -98,9 +98,23 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		return ""
 /obj/map_metadata/gulag13/New()
 	..()
+	spawn(100)
+		load_new_recipes()
 	spawn(3000)
 		check_points_msg()
 
+/obj/map_metadata/gulag13/proc/load_new_recipes()
+	var/F3 = file("config/material_recipes_camp.txt")
+	if (fexists(F3))
+		craftlist_list = list()
+		var/list/craftlist_temp = file2list(F3,"\n")
+		for (var/i in craftlist_temp)
+			if (findtext(i, ","))
+				var/tmpi = replacetext(i, "RECIPE: ", "")
+				var/list/current = splittext(tmpi, ",")
+				craftlist_list += list(current)
+				if (current.len != 13)
+					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 /obj/map_metadata/gulag13/proc/check_points()
 	for(var/i in points)
 		if (i[1] != "Guards")
