@@ -233,8 +233,6 @@
 					add_language("Polish",FALSE)
 					add_note("Known Languages", "Polish")
 					remove_language("English")
-					for (var/datum/language/polish/A in languages)
-						default_language = A
 					name = species.get_random_polish_name(gender)
 					real_name = name
 					add_note("Group", "You are a Polish anti-communist prisoner. You are part of the <b>Polish</b> faction. Try to escape and/or keep your faction powerful!")
@@ -243,14 +241,14 @@
 				if (2)
 					add_language("Ukrainian",FALSE)
 					add_note("Known Languages", "Ukrainian")
-					for (var/datum/language/ukrainian/A in languages)
-						default_language = A
+					remove_language("English")
 					name = species.get_random_ukrainian_name(gender)
 					real_name = name
 					add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "Ukrainian"
 
 				if (3)
+					remove_language("English")
 					name = species.get_random_russian_name(gender)
 					real_name = name
 					add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
@@ -259,8 +257,7 @@
 				if (4)
 					add_language("German",FALSE)
 					add_note("Known Languages", "German")
-					for (var/datum/language/german/A in languages)
-						default_language = A
+					remove_language("English")
 					name = species.get_random_german_name(gender)
 					real_name = name
 					add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
