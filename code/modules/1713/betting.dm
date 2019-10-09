@@ -67,11 +67,11 @@
 	if (!ishuman(H))
 		return
 	for(var/i in payvalues)
-		if (i[1] == H)
+		if (i[1] == H && i[2]>0)
 			var/obj/item/stack/money/rubles/RB = new /obj/item/stack/money/rubles(H)
-			RB.amount = i[2]/RB.value
+			RB.amount = i[2]
 			H.put_in_active_hand(RB)
-			payvalues -= i
+			i[2]=0
 			H << "You withdraw [RB] rubles."
 			return
 /obj/structure/betting_box/attackby(var/obj/item/I,var/mob/living/carbon/human/H)
@@ -140,7 +140,7 @@
 		return
 
 /obj/effect/bet_processor/proc/start_match()
-	visible_message("<big>A combat is starting between [red_player.real_name] (red) and [blue_player.real_name] (blue)!</big>")
+	blue_player.visible_message("<big>A combat is starting between [red_player.real_name] (red) and [blue_player.real_name] (blue)!</big>")
 	for (var/obj/structure/betting_box/BB in range(5,src))
 		BB.match_running = TRUE
 	if (istype(map, /obj/map_metadata/gulag13))
@@ -154,7 +154,7 @@
 		for(var/mob/living/carbon/human/H in curr_area)
 			if (H.stat != CONSCIOUS || H.surrendered)
 				if (H == red_player)
-					visible_message("<big>The <font color='blue'>Blue Player</font> ([blue_player.real_name]) wins!</big>")
+					H.visible_message("<big>The <font color='blue'>Blue Player</font> ([blue_player.real_name]) wins!</big>")
 					match_running = FALSE
 					for (var/obj/structure/betting_box/BB in range(5,src))
 						BB.match_running = FALSE
@@ -164,7 +164,7 @@
 						G.gracedown1 = TRUE
 					return
 				else if (H == blue_player)
-					visible_message("<big>The <font color='red'>Red Player</font> ([red_player.real_name]) wins!</big>")
+					H.visible_message("<big>The <font color='red'>Red Player</font> ([red_player.real_name]) wins!</big>")
 					match_running = FALSE
 					for (var/obj/structure/betting_box/BB in range(5,src))
 						BB.match_running = FALSE
