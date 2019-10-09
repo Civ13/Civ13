@@ -455,7 +455,7 @@ var/list/coefflist = list()
 	if (original_job.is_prison && istype(original_job, /datum/job/civilian))
 		return get_id_name()
 	var/face_name = real_name
-	var/id_name = get_id_name("")
+	var/id_name = get_id_name("Unknown")
 	if (id_name)
 		if (id_name != face_name)
 			return "[face_name] (as [id_name])"
@@ -466,7 +466,10 @@ var/list/coefflist = list()
 //gets name from ID or PDA itself, ID inside PDA doesn't matter
 //Useful when player is being seen by other mobs
 /mob/living/carbon/human/proc/get_id_name(var/if_no_id = "Unknown")
-	return if_no_id
+	if (map && map.ID == MAP_GULAG13 && istype(original_job, /datum/job/civilian/prisoner))
+		return if_no_id
+	else
+		return real_name
 
 //Removed the horrible safety parameter. It was only being used by ninja code anyways.
 //Now checks siemens_coefficient of the affected area by default
