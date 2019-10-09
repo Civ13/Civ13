@@ -27,11 +27,11 @@
 		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
 	gamemode = "Prison Simulation"
 	var/list/points = list(
-		list("Guards",0),
-		list("Vory",0),
-		list("German",0),
-		list("Polish",0),
-		list("Ukrainian",0),
+		list("Guards",0,0),
+		list("Vory",0,0),
+		list("German",0,0),
+		list("Polish",0,0),
+		list("Ukrainian",0,0),
 	)
 	var/gracedown1 = TRUE
 	var/siren = FALSE
@@ -106,9 +106,16 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		if (i[1] != "Guards")
 			i[2]=0
 	for (var/mob/living/carbon/human/H in player_list)
-		if (H.original_job && istype(H.original_job, /datum/job/civilian/prisoner))
+		if (H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner))
 			var/datum/job/civilian/prisoner/PJ = H.original_job
 			var/curval = 0
+			var/area/A = get_area(H)
+			if (istype(A, /area/caribbean/nomads/ice/target))
+				for(var/i in points)
+					if (i[1]==PJ.nationality)
+						i[3]+=4
+					else if (i[1]!="Guards")
+						i[3]+=2
 			for(var/obj/item/stack/money/rubles/R in H)
 				curval += R.amount
 			if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/storage))
@@ -125,8 +132,16 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	spawn(1)
 		world << "<font size = 4><span class = 'notice'><b>Current Score:</b></font></span>"
 		for (var/i=1,i<=points.len,i++)
-			world << "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]]</b></span></font>"
-	spawn(3000)
+			world << "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]+points[i][3]]</b></span></font>"
+		var/donecheck = FALSE
+		for(var/mob/living/carbon/human/H in player_list)
+			if(H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner) && !donecheck)
+				var/area/A = get_area(H)
+				if (istype(A, /area/caribbean/nomads/ice/target))
+					world << "<br><font size = 3><span class = 'warning'>Thre are prisoners currently escaping!</span></font>"
+					donecheck = TRUE
+
+	spawn(2400)
 		check_points_msg()
 	return
 

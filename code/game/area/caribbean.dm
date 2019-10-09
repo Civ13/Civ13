@@ -190,6 +190,12 @@
 	icon_state = "blue1"
 	climate = "tundra"
 
+/area/caribbean/nomads/ice/target
+	name = "Ice"
+	base_turf = /turf/floor/beach/water/ice
+	icon_state = "green1"
+	climate = "tundra"
+
 /area/caribbean/prison
 	name = "Prisoner camp"
 	base_turf = /turf/floor/dirt/winter
