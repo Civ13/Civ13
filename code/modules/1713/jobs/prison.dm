@@ -207,7 +207,11 @@
 	var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(H)
 	RUB.amount = 25
 	H.equip_to_slot_or_del(RUB, slot_r_store)
-
+	if (prob(5))
+		if (prob(70))
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank(H), slot_r_store)
+		else
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank/glass(H), slot_r_store)
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
