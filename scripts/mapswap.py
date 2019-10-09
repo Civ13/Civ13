@@ -123,6 +123,8 @@ elif map == "PIONEERS":
 	dmms.append("#include \"maps\\1873\\pioneers.dmm\"")
 elif map == "KURSK":
 	dmms.append("#include \"maps\\1943\\kursk.dmm\"")
+elif map == "GULAG13":
+	dmms.append("#include \"maps\\1943\\gulag13.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()

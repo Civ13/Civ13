@@ -113,6 +113,7 @@
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
+				MAP_GULAG = 15,
 //				MAP_NANJING = 20,
 			)
 
@@ -393,7 +394,7 @@
 		return
 
 	else if (vote.voted_gamemode == "Early Modern Age (No Research)")
-		world << "<big>Starting <b>Early Modern Age</b> mode. Game Epoch is the Earçy Modern Age, research inactive.</big>"
+		world << "<big>Starting <b>Early Modern Age</b> mode. Game Epoch is the EarLy Modern Age, research inactive.</big>"
 		map.ordinal_age = 5
 		map.age = "1903"
 		map.age1_done = TRUE
