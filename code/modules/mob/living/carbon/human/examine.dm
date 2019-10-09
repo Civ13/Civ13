@@ -305,7 +305,7 @@
 				var/datum/job/civilian/prisoner/PO = H.original_job
 				if (PO.nationality == PT.nationality)
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[PO.nationality]</b>!</i>"
-				if (H.original_job_title == "Collaborator" && original_job_title == H.original_job_title)
+				if (H.original_job_title == "Collaborator" && (original_job_title == H.original_job_title || faction_text=="RUSSIAN"))
 					msg += "<br><i>You recognize [T.him] as a fellow <b>collaborator</b>!</i>"
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)
