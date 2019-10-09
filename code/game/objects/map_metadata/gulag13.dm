@@ -29,9 +29,9 @@
 	var/list/points = list(
 		list("Guards",0),
 		list("Vory",0),
-		list("Germans",0),
+		list("German",0),
 		list("Polish",0),
-		list("Ukrainians",0),
+		list("Ukrainian",0),
 	)
 	var/gracedown1 = TRUE
 	var/siren = FALSE
@@ -101,7 +101,27 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	spawn(3000)
 		check_points_msg()
 
+/obj/map_metadata/gulag13/proc/check_points()
+	for(var/i in points)
+		if (i[1] != "Guards")
+			i[2]=0
+	for (var/mob/living/carbon/human/H in player_list)
+		if (H.original_job && istype(H.original_job, /datum/job/civilian/prisoner))
+			var/datum/job/civilian/prisoner/PJ = H.original_job
+			var/curval = 0
+			for(var/obj/item/stack/money/rubles/R in H)
+				curval += R.amount
+			if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/storage))
+				var/obj/item/clothing/suit/storage/ST = H.wear_suit
+				for(var/obj/item/stack/money/rubles/R in ST.pockets)
+					curval += R.amount
+			for(var/i in points)
+				if (i[1]==PJ.nationality)
+					i[2]+=curval
+	return
+
 /obj/map_metadata/gulag13/proc/check_points_msg()
+	check_points()
 	spawn(1)
 		world << "<font size = 4><span class = 'notice'><b>Current Score:</b></font></span>"
 		for (var/i=1,i<=points.len,i++)
@@ -121,7 +141,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			else
 				return FALSE
 		else
-			return (faction1_can_cross_blocks() || faction2_can_cross_blocks())
+			return (!faction1_can_cross_blocks() || !faction2_can_cross_blocks())
 	return FALSE
 
 #undef NO_WINNER
@@ -252,3 +272,28 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			if (siren)
 				alarm_proc()
 			return
+
+
+/obj/structure/camp_exportbook
+	name = "camp exports"
+	desc = "Use this to export products from the camp and gain points for the guards."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "supplybook2"
+	density = TRUE
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/camp_exportbook/attackby(var/obj/item/stack/S, var/mob/living/carbon/human/H)
+	var/obj/map_metadata/gulag13/G = null
+	if (!istype(map, /obj/map_metadata/gulag13))
+		return
+	else
+		G = map
+	if (istype(S, /obj/item/stack/ore) || istype(S, /obj/item/stack/material/wood))
+		for(var/i in G.points)
+			if (i[1]=="Guards")
+				i[2]+=S.amount*S.value
+				H << "You export \the [S]."
+				qdel(S)
+				return
