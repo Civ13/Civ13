@@ -27,7 +27,7 @@
 		return
 
 	if (name != GetVoice())
-		alt_name = "(as [get_id_name("Unknown")])"
+		alt_name = get_id_name("Unknown")
 
 	//parse the language code and consume it
 	var/datum/language/speaking = parse_language(message)
