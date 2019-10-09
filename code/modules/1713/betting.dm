@@ -103,7 +103,7 @@
 	icon_state = "x"
 	invisibility = 101
 	anchored = TRUE
-	density = TRUE
+	density = FALSE
 	opacity = FALSE
 	var/match_running = FALSE
 	var/area/curr_area = null
