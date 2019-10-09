@@ -4,7 +4,7 @@
 	title = "GULAG 13 (120x100x1)"
 	lobby_icon_state = "camp"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
-	respawn_delay = 600
+	respawn_delay = 1800
 	squad_spawn_locations = FALSE
 	faction_organization = list(
 		RUSSIAN,
