@@ -451,25 +451,11 @@ var/list/coefflist = list()
 //repurposed proc. Now it combines get_id_name() and get_face_name() to determine a mob's name variable. Made into a seperate proc as it'll be useful elsewhere
 /mob/living/carbon/human/proc/get_visible_name()
 	if ((wear_mask && (wear_mask.flags_inv&HIDEFACE)) || (head && (head.flags_inv&HIDEFACE)) || (werewolf && body_build.name != "Default"))	//Wearing a mask which hides our face, use id-name if possible	//Likewise for hats
-		return get_id_name()
+		return "Unknown"
 	if (original_job.is_prison && istype(original_job, /datum/job/civilian))
-		return get_id_name()
-	var/face_name = real_name
-	var/id_name = get_id_name("Unknown")
-	if (id_name)
-		if (id_name != face_name)
-			return "[face_name] (as [id_name])"
-		else
-			return id_name
-	return face_name
+		return "Unknown"
+	return real_name
 
-//gets name from ID or PDA itself, ID inside PDA doesn't matter
-//Useful when player is being seen by other mobs
-/mob/living/carbon/human/proc/get_id_name(var/if_no_id = "Unknown")
-	if (map && map.ID == MAP_GULAG13 && istype(original_job, /datum/job/civilian/prisoner))
-		return if_no_id
-	else
-		return real_name
 
 //Removed the horrible safety parameter. It was only being used by ninja code anyways.
 //Now checks siemens_coefficient of the affected area by default

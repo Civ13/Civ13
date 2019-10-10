@@ -17,7 +17,7 @@
 		)
 	age = "1946"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(RUSSIAN = 0.2, CIVILIAN = 0.8)
+	faction_distribution_coeffs = list(RUSSIAN = 0.25, CIVILIAN = 0.75)
 	battle_name = "Gulag nr. 13"
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the grace wall is removed.<br>The <b>NKVD</b> must keep the prisoners contained, and make them serve the Soviet Union with forced labor. The <b>Prisoners</b> must try to survive, increase their faction power, and if possible, escape.</font>"
 	faction1 = RUSSIAN

@@ -52,6 +52,8 @@
 						speaker_name = "<font color='yellow'>[speaker_name] (LOADER)</font>"
 	if (italics)
 		message = "<i>[message]</i>"
+	if (alt_name == "")
+		alt_name = speaker.name
 	if (animal)
 		language = null
 	var/track = null
