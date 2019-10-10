@@ -15,6 +15,7 @@
 		"Modern Era (1985-2020)" = 0,
 		"Civilization 13 (Nomads)" = 0,
 		"Civilization 13 (Colony & Pioneers)" = 6,
+		"Civilization 13 (Prison Camps)" = 15,
 		"Civilization 13 (Others)" = 0,
 	)
 	var/ready = TRUE
@@ -49,6 +50,7 @@
 		else if (config.allowedgamemodes == "RP")
 			epochs = list("Civilization 13 (Nomads)" = 0,
 				"Civilization 13 (Colony & Pioneers)" = 6,
+//				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
@@ -113,7 +115,7 @@
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
-				MAP_GULAG = 15,
+//				MAP_GULAG = 15,
 //				MAP_NANJING = 20,
 			)
 
@@ -178,6 +180,10 @@
 				MAP_JUNGLE_COLONY = 6,
 				MAP_PIONEERS = 10,
 				MAP_FOUR_COLONIES = 35,
+			)
+		if (epoch == "Civilization 13 (Prison Camps)")
+			maps = list(
+				MAP_GULAG = 15,
 			)
 		if (epoch == "Civilization 13 (Others)")
 			maps = list(
