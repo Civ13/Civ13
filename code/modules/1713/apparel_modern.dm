@@ -368,8 +368,8 @@
 	icon_state = "kevlarvest"
 	item_state = "kevlarvest"
 	worn_state = "kevlarvest"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	armor = list(melee = 74, arrow = 95, gun = 80, energy = 30, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.3
 	w_class = 4
@@ -382,7 +382,7 @@
 	item_state = "kevlarhelmet"
 	worn_state = "kevlarhelmet"
 	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 90
@@ -449,3 +449,16 @@
 	slowdown = 0.30
 	w_class = 4
 	weight = 3.6
+
+/obj/item/clothing/accessory/armor/nomads/thickcarrier
+	name = "heavy carrier vest"
+	desc = "A tan carrier vest for holding various items."
+	icon_state = "thickcarrier"
+	item_state = "thickcarrier"
+	worn_state = "thickcarrier"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 30, gun = 78, energy = 16, bomb = 30, bio = 15, rad = FALSE)
+	value = 90
+	slowdown = 0.10
+	w_class = 3
+	weight = 3.0
