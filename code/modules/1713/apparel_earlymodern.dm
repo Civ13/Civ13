@@ -445,6 +445,13 @@
 	item_state = "modern4"
 	worn_state = "modern4"
 
+/obj/item/clothing/under/modern7
+	name = "modern outfit"
+	desc = "An outfit composed of a white shirt and black cargo pants."
+	icon_state = "modern7"
+	item_state = "modern7"
+	worn_state = "modern7"
+
 /obj/item/clothing/under/farmer_outfit
 	name = "farmer outfit"
 	desc = "An outfit composed of a checkered shirt and a denim bib."
