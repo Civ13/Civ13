@@ -791,3 +791,24 @@
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/boltaction/avtomat
+	name = "fedorov avtomat"
+	desc = "Russian automatic rifle, used in ww1."
+	icon_state = "avtomat"
+	item_state = "arisaka35"
+	base_icon = "avtomat"
+	caliber = "a762x54"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a762x54
+	bolt_safety = FALSE
+	effectiveness_mod = 1.4
+	value = 130
+	slot_flags = SLOT_SHOULDER
+	recoil = 1
+	force = 10
+	throwforce = 16
+	load_method = MAGAZINE
+	magazine_type = /obj/item/ammo_magazine/avtomat
+	equiptimer = 10
