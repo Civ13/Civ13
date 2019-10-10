@@ -11,7 +11,7 @@
 	item_state = "cowboy"
 /obj/item/clothing/head/cowboyhat2
 	name = "dark cowboy hat"
-	desc = "a dark, curved leather hat."
+	desc = "a grayish, curved leather hat."
 	icon_state = "cowboy2"
 	item_state = "cowboy2"
 /obj/item/clothing/head/unionhat
