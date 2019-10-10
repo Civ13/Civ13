@@ -433,3 +433,20 @@
 	name = "gambling table"
 	desc = "A seedy table for seedy dealings in seedy places."
 	icon_state = "pokertable"
+
+/obj/structure/table/modern/table
+	name = "wooden table"
+	desc = "Do not apply fire to this. Rumour says it burns easily."
+	icon_state = "woodtable"
+	frame = /obj/structure/table_frame/wood
+	framestack = /obj/item/stack/material/wood
+	buildstack = /obj/item/stack/material/wood
+	flammable = TRUE
+
+/obj/structure/table/modern/retable
+	name = "reinforced table"
+	desc = "A very hard table."
+	icon_state = "reinftable"
+	frame = /obj/structure/table_frame
+	framestack = /obj/item/stack/material/steel
+	buildstack = /obj/item/stack/material/steel
