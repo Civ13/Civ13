@@ -102,6 +102,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		load_new_recipes()
 	spawn(3000)
 		check_points_msg()
+		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/gulag13/proc/load_new_recipes()
 	var/F3 = file("config/material_recipes_camp.txt")
