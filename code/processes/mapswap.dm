@@ -115,7 +115,7 @@
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
-//				MAP_GULAG = 15,
+				MAP_GULAG13 = 15,
 //				MAP_NANJING = 20,
 			)
 
@@ -183,7 +183,7 @@
 			)
 		if (epoch == "Civilization 13 (Prison Camps)")
 			maps = list(
-				MAP_GULAG = 15,
+				MAP_GULAG13 = 15,
 			)
 		if (epoch == "Civilization 13 (Others)")
 			maps = list(
