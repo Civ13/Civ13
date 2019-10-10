@@ -137,7 +137,7 @@
 	desc = "Russian automatic rifle, used in ww1."
 	icon_state = "avtomat"
 	item_state = "svt"
-	base_icon = "avtomat"
+	base_icon = "svt"
 	w_class = 4
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 25
