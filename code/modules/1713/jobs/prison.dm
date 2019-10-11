@@ -224,6 +224,8 @@
 /mob/living/carbon/human/proc/give_nationality()
 	if (istype(original_job, /datum/job/civilian/prisoner))
 		var/datum/job/civilian/prisoner/PJ = original_job
+		if (PJ.nationality != "none")
+			return
 		var/randpick = rand(1,4)
 		spawn(1)
 			switch(randpick)
