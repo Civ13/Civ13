@@ -91,7 +91,7 @@ RECIPE: /material/iron/,iron shank,/obj/item/weapon/material/kitchen/utensil/kni
 
 RECIPE: /material/bronze/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,bronze
 
-RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,null
+RECIPE: /material/wood/,mine support,/obj/structure/mine_support,2,100,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,7,90,1,1,none,18,0,0,8,null
 RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,7,90,1,1,none,18,0,0,8,null
 RECIPE: /material/wood/,custom sign,/obj/structure/sign/custom,3,40,1,1,none,0,0,0,8,null
