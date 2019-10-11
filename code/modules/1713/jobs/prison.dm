@@ -138,7 +138,6 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	SL_check_independent = TRUE
-	whitelisted = TRUE
 	is_prison = TRUE
 	// AUTOBALANCE
 	min_positions = 10
