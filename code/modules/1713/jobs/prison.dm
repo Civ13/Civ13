@@ -112,7 +112,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha/white(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/advsmall(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet/guard(H), slot_r_store)
@@ -138,7 +137,6 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	SL_check_independent = TRUE
-	whitelisted = TRUE
 	is_prison = TRUE
 	// AUTOBALANCE
 	min_positions = 10
@@ -154,7 +152,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha/white(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet/guard(H), slot_l_store)
 
