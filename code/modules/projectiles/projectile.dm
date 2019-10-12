@@ -501,11 +501,16 @@
 					else if (!isitem(O) && isnonstructureobj(O))
 						if (!istype(O, /obj/covers/jail))
 							hitchance = 100
+							world.log << "A"
 						else
 							if (firer in range(1,O))
 								hitchance = 0
+
+								world.log << "B"
 							else
 								hitchance = 55
+
+								world.log << "C"
 					else if (isitem(O)) // any item
 						var/obj/item/I = O
 						hitchance = 9 * I.w_class // a pistol would be 50%

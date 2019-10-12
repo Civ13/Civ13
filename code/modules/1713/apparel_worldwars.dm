@@ -338,6 +338,7 @@ obj/item/clothing/accessory/harness
 	icon_state = "jap_harn"
 	item_state = "jap_harn"
 	worn_state = "jap_harn"
+	ripable = FALSE
 
 /obj/item/clothing/suit/storage/coat/ww2/japcoat
 	name = "japanese coat"
