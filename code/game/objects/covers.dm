@@ -341,6 +341,34 @@
 	explosion_resistance = 5
 	material = "Wood"
 
+/obj/covers/wood_wall/medieval
+	name = "medieval wall"
+	desc = "A dark-ages wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "medieval_wall"
+	health = 180
+
+/obj/covers/wood_wall/medieval/x
+	name = "medieval wall crossbeam"
+	desc = "A dark-ages wall with an x shaped support."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "medieval_wall_x"
+	health = 185
+
+/obj/covers/wood_wall/medieval/y/r
+	name = "medieval wall crossbeam"
+	desc = "A dark-ages wall with an slanted support."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "medieval_wall_y2"
+	health = 185
+
+/obj/covers/wood_wall/medieval/y/l
+	name = "medieval wall crossbeam"
+	desc = "A dark-ages wall with an slanted support."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "medieval_wall_y1"
+	health = 185
+
 /obj/covers/wood_wall/shoji
 	name = "shoji wall"
 	desc = "A shoji paper wall."
@@ -848,6 +876,9 @@
 			qdel(src)
 			return
 	return TRUE
+
+/obj/covers/jail/bullet_act(var/obj/item/projectile/P)
+	return PROJECTILE_CONTINUE
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))

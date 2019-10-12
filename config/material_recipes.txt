@@ -625,9 +625,10 @@ RECIPE: /material/wood/,floor tile,/obj/covers/wood,1,25,1,1,construction,18,0,0
 RECIPE: /material/wood/,wood stairs,/obj/covers/wood/stairs,2,35,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,soft wood wall,/obj/covers/wood_wall,8,170,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/,wall frame,/obj/structure/wallframe,1,180,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,7,90,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,7,90,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,0,0,0,3,null
 RECIPE: /material/wood/,custom sign,/obj/structure/sign/custom,3,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wood jail bars,/obj/covers/jail/woodjail,8,30,1,1,construction,55,0,0,8,null
@@ -653,7 +654,7 @@ RECIPE: /material/wood/,compound bow,/obj/item/weapon/gun/projectile/bow/compoun
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
-RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,8,wood
+RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,3,wood
 RECIPE: /material/wood/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/,mop,/obj/item/weapon/mop,2,55,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/,wood handle,/obj/item/weapon/material/handle,1,35,0,1,tools,0,0,0,8,wood
@@ -805,5 +806,8 @@ RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,
 RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandbag/sandstone,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/barricade/sandstone_v/crenelated,5,80,1,1,fortifications,0,0,0,8,null
+
+RECIPE: /material/sandstone/,totem,/obj/structure/religious/totem/sandstone,8,150,1,1,none,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone altar,/obj/structure/altar/sandstone,20,200,1,1,none,28,0,0,8,null
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,1,30,1,1,none,0,0,0,8,null

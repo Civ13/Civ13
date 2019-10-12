@@ -187,3 +187,4 @@
 		hitsound = hitsound_off
 		drawsound = drawsound_off
 		state = "OFF"
+	..()
