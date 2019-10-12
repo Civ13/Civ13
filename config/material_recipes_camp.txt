@@ -99,5 +99,6 @@ RECIPE: /material/wood/,floor cover,/obj/item/weapon/covers,2,30,0,1,none,0,0,0,
 RECIPE: /material/wood/,horizontal wood barrier,/obj/structure/barricade/horizontal,5,35,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,vertical wood barrier,/obj/structure/barricade/vertical,5,35,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,bucket,/obj/item/weapon/reagent_containers/glass/bucket,2,60,0,1,none,0,0,0,8,null
+RECIPE: /material/wood/,campfire,/obj/structure/oven/fireplace,4,140,1,1,none,0,0,0,8,null
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,1,30,1,1,none,0,0,0,8,null
