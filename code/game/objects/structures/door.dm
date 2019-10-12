@@ -301,6 +301,9 @@
 		attack_hand(user)//keys!
 	return TRUE // for key_doors
 
+/obj/structure/simple_door/key_door/custom/jail/bullet_act(var/obj/item/projectile/P)
+	return PROJECTILE_CONTINUE
+
 /obj/structure/simple_door/iron/New(var/newloc,var/material_name)
 	..(newloc, "iron")
 	basic_icon = "cell"

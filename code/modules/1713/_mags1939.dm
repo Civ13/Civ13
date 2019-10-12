@@ -138,6 +138,17 @@ obj/item/ammo_magazine/dp
 	weight = 0.32
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/avtomat
+	name = "avtomat magazine (7.62x54mm)"
+	icon_state = "g43"
+	caliber = "a762x54"
+	mag_type = MAGAZINE
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a762x54
+	max_ammo = 25
+	weight = 0.44
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/svt
 	name = "SVT-40 magazine (7.62x54mm)"
 	icon_state = "svt"

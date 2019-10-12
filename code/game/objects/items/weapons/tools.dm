@@ -173,7 +173,7 @@
 		return
 
 /obj/item/weapon/whistle
-	name = "trench whistle"
+	name = "whistle"
 	desc = "Good for ordering the troops to go over the top."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "whistle"
@@ -189,7 +189,7 @@
 
 /obj/item/weapon/whistle/attack_self(mob/user as mob)
 	if (cooldown_whistle == FALSE)
-		playsound(loc, 'sound/effects/whistle.ogg', 100, FALSE)
+		playsound(loc, 'sound/effects/whistle.ogg', 100, FALSE, 5)
 		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
 		cooldown_whistle = TRUE
 		spawn(100)

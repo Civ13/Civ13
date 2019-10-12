@@ -751,7 +751,7 @@
 	set_dir(ndir)
 	if (buckled && buckled.buckle_movable)
 		buckled.set_dir(ndir)
-	client.move_delay += movement_delay()
+	client.move_delay = world.time + movement_delay()
 	update_vision_cone()
 	return TRUE
 

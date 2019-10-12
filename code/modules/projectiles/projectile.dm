@@ -110,17 +110,7 @@
 /obj/item/projectile/proc/on_impact(var/atom/A)
 	impact_effect(effect_transform)		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
-	if (istype(src, /obj/item/projectile/bullet))
-		if (istype(A, /turf))
-			var/turf/T = A
-			if (prob(25) && T.bullethole_count < 10 && T.density == TRUE)
-				T.overlays += image('icons/turf/walls.dmi', "bullethole[rand(1,15)]")
-				T.bullethole_count++
-		else if (istype(A, /obj/covers))
-			var/obj/covers/C = A
-			if (prob(25) && C.bullethole_count < 10 && C.density == TRUE)
-				C.overlays += image('icons/turf/walls.dmi', "bullethole[rand(1,15)]")
-				C.bullethole_count++
+
 	spawn(25)
 		if (src)
 			qdel(src)
@@ -508,8 +498,19 @@
 				if (O == original)
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
 						hitchance = 50
-					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
-						hitchance = 100
+					else if (!isitem(O) && isnonstructureobj(O))
+						if (!istype(O, /obj/covers/jail))
+							hitchance = 100
+							world.log << "A"
+						else
+							if (firer in range(1,O))
+								hitchance = 0
+
+								world.log << "B"
+							else
+								hitchance = 55
+
+								world.log << "C"
 					else if (isitem(O)) // any item
 						var/obj/item/I = O
 						hitchance = 9 * I.w_class // a pistol would be 50%

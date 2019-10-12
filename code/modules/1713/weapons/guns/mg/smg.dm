@@ -195,6 +195,7 @@
 	item_state = "ppsh"
 	base_icon = "ppsh"
 	caliber = "a762x25"
+	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	weight = 3.63
 	equiptimer = 14

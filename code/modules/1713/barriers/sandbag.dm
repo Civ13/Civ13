@@ -20,10 +20,12 @@
 
 /obj/structure/window/sandbag/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
-		if (WWinput(user, "Dismantle this dirt wall?", "Dismantle dirt wall", "Yes", list("Yes", "No")) == "Yes")
-			visible_message("<span class='danger'>[user] starts dismantling the dirt wall.</span>", "<span class='danger'>You start dismantling the dirt wall.</span>")
+		if (istype(src, /obj/structure/window/sandbag/railing) || istype(src, /obj/structure/window/sandbag/jersey) || istype(src, /obj/structure/window/sandbag/sandstone))
+			return
+		if (WWinput(user, "Dismantle this [src]?", "Dismantle [src]", "Yes", list("Yes", "No")) == "Yes")
+			visible_message("<span class='danger'>[user] starts dismantling the [src].</span>", "<span class='danger'>You start dismantling the [src].</span>")
 			if (do_after(user, 200, src))
-				visible_message("<span class='danger'>[user] finishes dismantling the dirt wall.</span>", "<span class='danger'>You finish dismantling the dirt wall.</span>")
+				visible_message("<span class='danger'>[user] finishes dismantling the [src].</span>", "<span class='danger'>You finish dismantling the [src].</span>")
 				var/turf = get_turf(src)
 
 				if (!istype(src, /obj/structure/window/sandbag/incomplete))

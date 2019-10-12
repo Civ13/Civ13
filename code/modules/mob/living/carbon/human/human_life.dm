@@ -512,7 +512,7 @@
 
 		if (!inducedSSD)
 			handle_excrement()
-			if (map.civilizations)
+			if (map.civilizations || map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY || map.ID == MAP_GULAG13)
 				handle_hygiene()
 			handle_mood()
 			handle_ptsd()
@@ -762,7 +762,7 @@
 			loc_temp = (max(22,loc_temp-40))
 		else if (loc_temp < 18)
 			loc_temp = (min(18,loc_temp+40))
-	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && map.civilizations && mob_area.location == AREA_INSIDE)
+	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13) && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)

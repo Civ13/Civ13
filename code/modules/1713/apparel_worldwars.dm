@@ -108,6 +108,14 @@
 	item_state = "biker"
 	worn_state = "biker"
 	restricts_view = 1
+
+/obj/item/clothing/under/ww2/gulag_prisoner
+	name = "GULAG prisoner clothing"
+	desc = "A worn out GULAG prisoner outfit."
+	icon_state = "gulagprisoner"
+	item_state = "gulagprisoner"
+	worn_state = "gulagprisoner"
+
 ////////////////////////////////////////////////////////////////////////
 ///////////////////////////////WW2 JAPS/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -189,7 +197,6 @@
 			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
 	update_clothing_icon()
-
 
 /obj/item/clothing/head/ww2/japoffcap
 	name = "japanese officer cap"
@@ -331,6 +338,7 @@ obj/item/clothing/accessory/harness
 	icon_state = "jap_harn"
 	item_state = "jap_harn"
 	worn_state = "jap_harn"
+	ripable = FALSE
 
 /obj/item/clothing/suit/storage/coat/ww2/japcoat
 	name = "japanese coat"
@@ -814,14 +822,19 @@ obj/item/clothing/under/ww2/us_shirtless
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2
 	name = "soviet winter coat"
 	desc = "A traditional Soviet coat, in light blue."
-	icon_state = "gulagprisoner"
-	item_state = "gulagprisoner"
-	worn_state = "gulagprisoner"
+	icon_state = "gulagprisoner1"
+	item_state = "gulagprisoner1"
+	worn_state = "gulagprisoner1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	New()
+		..()
+		icon_state = "gulagprisoner[rand(1,3)]"
+		item_state = icon_state
+		worn_state = icon_state
 
 /obj/item/clothing/suit/storage/coat/ww2/soviet_officer
 	name = "soviet officer coat"
@@ -896,6 +909,12 @@ obj/item/clothing/head/ww2/sov_pilotka
 obj/item/clothing/head/ww2/sov_ushanka
 	name = "soviet ushanka"
 	desc = "A soviet ushanka, used by soldiers in the red army."
+	icon_state = "ushanka_up"
+	item_state = "ushanka_up"
+	worn_state = "ushanka_up"
+	flags_inv = BLOCKHAIR
+
+obj/item/clothing/head/ww2/sov_ushanka/down
 	icon_state = "ushanka"
 	item_state = "ushanka"
 	worn_state = "ushanka"
@@ -903,9 +922,11 @@ obj/item/clothing/head/ww2/sov_ushanka
 obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
 	if (icon_state == "ushanka")
 		icon_state = "ushanka_up"
+		item_state = "ushanka_up"
 		user << "You raise the ear flaps on the ushanka."
 	else
 		icon_state = "ushanka"
+		item_state = "ushanka"
 		user << "You lower the ear flaps on the ushanka."
 
 obj/item/clothing/head/ww2/nkvd_cap
@@ -1129,3 +1150,38 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
+
+/obj/item/weapon/storage/belt/gulagguard
+	name = "GULAG guard belt"
+	desc = "A belt that can hold the standard issue gear of GULAG guards."
+	icon_state = "japbelt"
+	item_state = "japbelt"
+	storage_slots = 10
+	max_w_class = 3
+	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		)
+
+/obj/item/weapon/storage/belt/gulagguard/filled/New()
+	..()
+	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/weapon/pen(src)

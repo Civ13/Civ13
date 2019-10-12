@@ -52,6 +52,7 @@
 /obj/item/stack/ore/silver
 	name = "silver ore"
 	icon_state = "ore_silver"
+	value = 5
 	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
@@ -71,6 +72,7 @@
 			..()
 /obj/item/stack/ore/gold
 	name = "gold ore"
+	value = 10
 	icon_state = "ore_gold"
 	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
@@ -132,13 +134,14 @@
 /obj/item/stack/ore/diamond
 	name = "diamonds"
 	icon_state = "ore_diamond"
-
+	value = 10
 /obj/item/stack/ore/uranium
 	name = "uranium ore"
 	icon_state = "ore_uranium"
 	radioactive = TRUE
 	radioactive_amt = 7
 	flammable = FALSE
+	value = 5
 	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W

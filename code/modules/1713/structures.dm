@@ -104,6 +104,14 @@
 	health = 50
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
+/obj/structure/grille/chainlinkfence
+	name = "chain-link fence"
+	desc = "A woven steel fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "chainlinkfence"
+	health = 80
+	hitsound = 'sound/weapons/blade_parry1.ogg'
+
 /obj/structure/wallclock
 	name = "wall clock"
 	desc = "A classic wall clock."

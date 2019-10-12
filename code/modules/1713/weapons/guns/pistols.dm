@@ -7,6 +7,7 @@
 	equiptimer = 5
 	gun_safety = TRUE
 	gun_type = GUN_TYPE_PISTOL
+	handle_casings = EJECT_CASINGS
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(
@@ -147,7 +148,7 @@
 	else
 		icon_state = "waltherp380"
 	return
-	
+
 /obj/item/weapon/gun/projectile/pistol/glock17
 	name = "Glock 17"
 	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."

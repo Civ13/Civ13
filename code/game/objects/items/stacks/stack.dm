@@ -589,7 +589,7 @@
 			build_override_coins_gold.name = "gold [customname]"
 			build_override_coins_gold.desc = "gold coins, minted by [H]."
 
-	else if (findtext(recipe.title, "gravestone"))
+	if (findtext(recipe.title, "gravestone"))
 		var/customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
 		if (customname == "" || customname == null)
 			customname = "gravestone"
@@ -615,7 +615,7 @@
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	else if (findtext(recipe.title, "well") && !findtext(recipe.title, "oil well"))
+	if (findtext(recipe.title, "well") && !findtext(recipe.title, "oil well"))
 		var/puddly = FALSE
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			puddly = TRUE
@@ -749,7 +749,7 @@
 
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
-	else if (findtext(recipe.title, "coil"))
+	if (findtext(recipe.title, "coil"))
 		produced = 10
 
 	else if (recipe.result_type == /obj/item/weapon/can)
@@ -783,7 +783,7 @@
 		produced = 2
 	else if (recipe.result_type == /obj/item/ammo_casing/stone)
 		produced = 5
-	else if (recipe.result_type == /obj/structure/sink/well)
+	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
 	var/inpt = 50

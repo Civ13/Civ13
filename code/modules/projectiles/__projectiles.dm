@@ -195,9 +195,13 @@
 	penetrating = 1
 	armor_penetration = 9
 
+/obj/item/projectile/bullet/pistol/a32
+	damage = DAMAGE_MEDIUM+1
+	penetrating = 1
+	armor_penetration = 7
 
 /obj/item/projectile/bullet/pistol/a41
-	damage = DAMAGE_MEDIUM+1
+	damage = DAMAGE_MEDIUM+2
 	penetrating = 1
 	armor_penetration = 11
 
@@ -370,8 +374,8 @@ obj/item/projectile/bullet/rifle/a556x45
 	name = "beanbag"
 	check_armor = "melee"
 	armor_penetration = 0
-	damage = DAMAGE_LOW/2
-	agony = DAMAGE_MEDIUM_HIGH
+	damage = 10
+	agony = 60
 	embed = FALSE
 	sharp = FALSE
 

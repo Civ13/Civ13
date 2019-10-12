@@ -67,6 +67,7 @@
 	worn_state = "bearpelt"
 	flags_inv = BLOCKHAIR
 	siemens_coefficient = 0.7
+	ripable = FALSE
 
 /obj/item/clothing/head/bearpelt/black
 	name = "black bear pelt hat"

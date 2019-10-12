@@ -51,9 +51,29 @@ var/global/FREQ2 = rand(201,250)
 /obj/structure/radio/transmitter_receiver/nopower/faction1/New()
 	..()
 	freq = FREQ1
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/structure/radio/transmitter_receiver/nopower/faction2/New()
 	..()
 	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
+/obj/structure/radio/receiver/loudspeaker
+	name = "loudspeaker"
+	icon_state = "loudspeaker"
+	transmitter = FALSE
+	receiver = TRUE
+	receiver_on = TRUE
+	transmitter_on = FALSE
+	powerneeded = 0
+
+/obj/structure/radio/receiver/loudspeaker/faction1/New()
+	..()
+	freq = FREQ1
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/structure/radio/receiver/loudspeaker/faction2/New()
+	..()
+	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/structure/radio/attackby(obj/item/W as obj, mob/user as mob)
 	if (!anchored && !istype(W, /obj/item/weapon/wrench))
 		user << "<span class='notice'>Fix the radio in place with a wrench first.</span>"
@@ -400,9 +420,11 @@ var/global/FREQ2 = rand(201,250)
 /obj/item/weapon/radio/faction1/New()
 	..()
 	freq = FREQ1
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/item/weapon/radio/faction2/New()
 	..()
 	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
 /obj/item/weapon/radio/attack_self(mob/user)
 	interact(user)
@@ -568,6 +590,8 @@ var/global/FREQ2 = rand(201,250)
 /obj/item/weapon/radio/walkietalkie/faction1/New()
 	..()
 	freq = FREQ1
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/item/weapon/radio/walkietalkie/faction2/New()
 	..()
 	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."

@@ -36,7 +36,7 @@
 	if (istype(speaker, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = speaker
 		if (H.special_job_title != null)
-			speaker_name = H.rank_prefix_name(H.GetVoice())
+			speaker_name = H.GetVoice()
 		else
 			speaker_name = "[H.GetVoice()] (N/A)"
 		for(var/obj/structure/vehicleparts/frame/F1 in speaker.loc)
@@ -52,6 +52,8 @@
 						speaker_name = "<font color='yellow'>[speaker_name] (LOADER)</font>"
 	if (italics)
 		message = "<i>[message]</i>"
+	if (alt_name == "")
+		alt_name = speaker.name
 	if (animal)
 		language = null
 	var/track = null
@@ -69,12 +71,12 @@
 			if (speaker == src)
 				src << "<span class='warning'>You cannot hear yourself speak!</span>"
 			else
-				src << "<span class='name'>[speaker_name]</span>[alt_name] talks but you cannot hear."
+				src << "<span class='name'>[alt_name]</span> talks but you cannot hear."
 	else
 		if (language)
-			on_hear_say("<span class='name'>[speaker_name] <span class = 'small_message'>([language.name])</span> </span>[alt_name] [track][language.format_message(message, verb)]")
+			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]")
 		else
-			on_hear_say("<span class='name'>[speaker_name]</span>[alt_name] [track][verb], \"[message]\"")
+			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"")
 		if (speech_sound && (get_dist(speaker, src) <= 7 && z == speaker.z))
 			var/turf/source = speaker? get_turf(speaker) : get_turf(src)
 			playsound_local(source, speech_sound, sound_vol, TRUE)

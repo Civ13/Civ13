@@ -13,7 +13,10 @@
 		"World War II (1934-1957)" = 0,
 		"Cold War Era (1958-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
-		"Civilization 13 (Nomads & RP)" = 0,
+		"Civilization 13 (Nomads)" = 0,
+		"Civilization 13 (Colony & Pioneers)" = 6,
+		"Civilization 13 (Prison Camps)" = 15,
+		"Civilization 13 (Others)" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -45,7 +48,10 @@
 				"Modern Era (1985-2020)" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
-			epochs = list("Civilization 13 (Nomads & RP)" = 0,)
+			epochs = list("Civilization 13 (Nomads)" = 0,
+				"Civilization 13 (Colony & Pioneers)" = 6,
+//				"Civilization 13 (Prison Camps)" = 15,
+				"Civilization 13 (Others)" = 0,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
 
@@ -109,6 +115,7 @@
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
+				MAP_GULAG13 = 15,
 //				MAP_NANJING = 20,
 			)
 
@@ -155,7 +162,7 @@
 			maps = list(
 				MAP_TRIBES = 0,
 			)
-		if (epoch == "Civilization 13 (Nomads & RP)")
+		if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
 //				MAP_CIVILIZATIONS = 0,
 				MAP_NOMADS = 0,
@@ -166,12 +173,22 @@
 				MAP_NOMADS_CONTINENTAL = 20,
 				MAP_NOMADS_PANGEA = 10,
 				MAP_NOMADS_WASTELAND = 0,
-				MAP_TRIBES = 8,
+			)
+		if (epoch == "Civilization 13 (Colony & Pioneers)")
+			maps = list(
 				MAP_COLONY = 6,
 				MAP_JUNGLE_COLONY = 6,
 				MAP_PIONEERS = 10,
-				MAP_HUNT = 0,
 				MAP_FOUR_COLONIES = 35,
+			)
+		if (epoch == "Civilization 13 (Prison Camps)")
+			maps = list(
+				MAP_GULAG13 = 15,
+			)
+		if (epoch == "Civilization 13 (Others)")
+			maps = list(
+				MAP_TRIBES = 8,
+				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
 			)
 
@@ -383,7 +400,7 @@
 		return
 
 	else if (vote.voted_gamemode == "Early Modern Age (No Research)")
-		world << "<big>Starting <b>Early Modern Age</b> mode. Game Epoch is the Earçy Modern Age, research inactive.</big>"
+		world << "<big>Starting <b>Early Modern Age</b> mode. Game Epoch is the EarLy Modern Age, research inactive.</big>"
 		map.ordinal_age = 5
 		map.age = "1903"
 		map.age1_done = TRUE

@@ -289,6 +289,60 @@
 		qdel(src)
 		return
 
+
+/obj/structure/wild/tree/live_tree/pine
+	name = "pinetree"
+	icon = 'icons/obj/flora/pinetrees.dmi'
+	icon_state = "pine_1"
+	deadicon = 'icons/obj/flora/pinetrees_dead.dmi'
+	deadicon_state = "pine_1"
+	opacity = TRUE
+	density = TRUE
+	sways = FALSE
+	amount = 5
+	edible = TRUE
+	leaves = 2
+	max_leaves = 2
+	current_icon = 'icons/obj/flora/pinetrees.dmi'
+
+/obj/structure/wild/tree/live_tree/pine/snow
+	name = "pinetree"
+	icon = 'icons/obj/flora/pinetrees_snow.dmi'
+	icon_state = "pine_1"
+	opacity = TRUE
+	density = TRUE
+	sways = FALSE
+	amount = 5
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
+	current_icon = 'icons/obj/flora/pinetrees_snow.dmi'
+
+/obj/structure/wild/tree/live_tree/pine/New()
+	..()
+	icon_state = "pine_[rand(1,3)]"
+
+/obj/structure/wild/tree/live_tree/pine/update_icon()
+	..()
+	if (radiation >= 15)
+		icon = deadicon
+		return
+	else
+		icon = current_icon
+
+/obj/structure/wild/tree/live_tree/pine/change_season()
+	..()
+	if (radiation >= 15)
+		icon = deadicon
+		return
+	else
+		if (season == "WINTER")
+			current_icon = 'icons/obj/flora/pinetrees_snow.dmi'
+		else if (season in list("SUMMER","Wet Season"))
+			current_icon = 'icons/obj/flora/pinetrees.dmi'
+		else if (season in list("FALL","SPRING","Dry Season"))
+			current_icon = 'icons/obj/flora/pinetrees.dmi'
+
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")

@@ -508,7 +508,7 @@ var/list/name_to_material
 	melting_point = T0C+300
 	ignition_point = T0C+288
 
-/material/cloth //todo
+/material/cloth
 	name = "cloth"
 	hardness = 10
 
@@ -517,7 +517,7 @@ var/list/name_to_material
 	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
-/material/woolcloth //todo
+/material/woolcloth
 	name = "woolcloth"
 	hardness = 10
 
@@ -525,6 +525,15 @@ var/list/name_to_material
 	ignition_point = T0C+232
 	melting_point = T0C+300
 	flags = MATERIAL_PADDING
+
+
+/material/rags
+	name = "rags"
+	icon_colour = "#EBEFFF"
+	stack_type = /obj/item/stack/material/rags
+	hardness = 7
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
 
 /material/electronics
 	name = "electronic"

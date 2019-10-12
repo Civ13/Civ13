@@ -340,7 +340,6 @@ var/global/datum/controller/occupations/job_master
 		names_used[H.real_name] = TRUE
 
 		if (job.rank_abbreviation)
-			job.rank_abbreviation = capitalize(lowertext(job.rank_abbreviation))
 			H.real_name = "[job.rank_abbreviation] [H.real_name]"
 			H.name = H.real_name
 
@@ -486,10 +485,8 @@ var/global/datum/controller/occupations/job_master
 			spawn (50)
 				if (H)
 					H.stopDumbDamage = FALSE
-			if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
-				spawn(12)
-					H.memory()
-			else
+
+			spawn(12)
 				H.memory()
 
 			return H

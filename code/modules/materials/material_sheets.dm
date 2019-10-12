@@ -276,6 +276,16 @@
 	w_class = 2.0
 	flammable = TRUE
 
+/obj/item/stack/material/rags
+	name = "rags"
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "rag"
+	default_type = "rags"
+	value = 0.5
+	w_class = 1.0
+	flammable = TRUE
+
+
 /obj/item/stack/material/wool
 	name = "wool pile"
 	icon_state = "woolpile"
