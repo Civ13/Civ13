@@ -101,6 +101,24 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 75)
 	attack_verb = list("bludgeoned", "hit")
 	flammable = FALSE
+
+/obj/item/weapon/dildo
+	name = "copper dildo"
+	desc = "Tear stuff apart with this. (Use it at your own safety)."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "dildo"
+	item_state = "dildo"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_HIGH + 10
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_HIGH
+	throw_speed = 10
+	throw_range = 10
+	matter = list(DEFAULT_WALL_MATERIAL = 75)
+	attack_verb = list("bludgeoned", "hit")
+	flammable = TRUE
+
 /*
  * Wirecutters
  */
