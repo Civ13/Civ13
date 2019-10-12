@@ -25,7 +25,7 @@
 /obj/item/clothing/secondary_attack_self(mob/living/carbon/human/user)
 	if (secondary_action && ripable && rag_amt > 0)
 		user << "You start ripping apart \the [src]..."
-		if (do_after(user, 100, user.loc, canmove = TRUE))
+		if (do_after(user, 100, get_turf(user)))
 			playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
 			user << "You rip \the [src] apart into rags."
 			var/obj/item/stack/material/rags/R = new/obj/item/stack/material/rags(user.loc)
