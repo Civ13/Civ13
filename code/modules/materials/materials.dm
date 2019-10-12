@@ -532,8 +532,8 @@ var/list/name_to_material
 	icon_colour = "#EBEFFF"
 	stack_type = /obj/item/stack/material/rags
 	hardness = 7
-	sheet_singular_name = "rag"
-	sheet_plural_name = "rags"
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
 
 /material/electronics
 	name = "electronic"
