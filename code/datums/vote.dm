@@ -16,7 +16,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	var/list/current_votes = list()
 	var/list/additional_text = list()
 	var/auto_muted = FALSE
-	var/win_threshold = 0.00
+	var/win_threshold = 0.65
 	var/list/callback = null
 	var/list/disabled[10]
 	var/voted_epoch = "1713"
