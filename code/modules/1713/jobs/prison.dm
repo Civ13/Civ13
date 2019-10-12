@@ -224,12 +224,10 @@
 /mob/living/carbon/human/proc/give_nationality()
 	if (istype(original_job, /datum/job/civilian/prisoner))
 		var/datum/job/civilian/prisoner/PJ = original_job
-		if (PJ.nationality != "none")
-			return
 		var/randpick = rand(1,4)
-		spawn(1)
-			switch(randpick)
-				if (1)
+		switch(randpick)
+			if (1)
+				if (PJ.nationality == "none")
 					add_language("Polish",FALSE)
 					add_note("Known Languages", "Polish")
 					remove_language("English")
@@ -238,7 +236,8 @@
 					add_note("Group", "You are a Polish anti-communist prisoner. You are part of the <b>Polish</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "Polish"
 
-				if (2)
+			if (2)
+				if (PJ.nationality == "none")
 					add_language("Ukrainian",FALSE)
 					add_note("Known Languages", "Ukrainian")
 					remove_language("English")
@@ -247,14 +246,16 @@
 					add_note("Group", "You are a Ukrainian political prisoner. You are part of the <b>Ukrainian</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "Ukrainian"
 
-				if (3)
+			if (3)
+				if (PJ.nationality == "none")
 					remove_language("English")
 					name = species.get_random_russian_name(gender)
 					real_name = name
 					add_note("Group", "You are a Vor, a Soviet criminal. You are part of the <b>Vory</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "Vory"
 
-				if (4)
+			if (4)
+				if (PJ.nationality == "none")
 					add_language("German",FALSE)
 					add_note("Known Languages", "German")
 					remove_language("English")
@@ -262,30 +263,30 @@
 					real_name = name
 					add_note("Group", "You are a Wehrmacht prisoner of war. You are part of the <b>German</b> faction. Try to escape and/or keep your faction powerful!")
 					PJ.nationality = "German"
-			PJ.original_hair = pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")
-			PJ.original_facial = PJ.original_hair
-			var/hex_hair = hair_colors[PJ.original_hair]
-			var/red = hex2num(copytext(hex_hair, 2, 4))
-			var/green = hex2num(copytext(hex_hair, 4, 6))
-			var/blue = hex2num(copytext(hex_hair, 6, 8))
-			r_hair = red
-			g_hair = green
-			b_hair = blue
-			r_facial = red
-			g_facial = green
-			b_facial = blue
-			PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
-			var/hex_eyes = eye_colors[PJ.original_eyes]
-			red = hex2num(copytext(hex_eyes, 2, 4))
-			green = hex2num(copytext(hex_eyes, 4, 6))
-			blue = hex2num(copytext(hex_eyes, 6, 8))
-			r_eyes = red
-			g_eyes = green
-			b_eyes = blue
+		PJ.original_hair = pick("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")
+		PJ.original_facial = PJ.original_hair
+		var/hex_hair = hair_colors[PJ.original_hair]
+		var/red = hex2num(copytext(hex_hair, 2, 4))
+		var/green = hex2num(copytext(hex_hair, 4, 6))
+		var/blue = hex2num(copytext(hex_hair, 6, 8))
+		r_hair = red
+		g_hair = green
+		b_hair = blue
+		r_facial = red
+		g_facial = green
+		b_facial = blue
+		PJ.original_eyes = pick("Black", "Brown", "Dark Brown", "Green", "Blue")
+		var/hex_eyes = eye_colors[PJ.original_eyes]
+		red = hex2num(copytext(hex_eyes, 2, 4))
+		green = hex2num(copytext(hex_eyes, 4, 6))
+		blue = hex2num(copytext(hex_eyes, 6, 8))
+		r_eyes = red
+		g_eyes = green
+		b_eyes = blue
 
-			h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
-			f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
-			update_body()
+		h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Parted","Bedhead","Shoulder-length Hair")
+		f_style = pick("Shaved","Chinstrap","Medium Beard","Long Beard","Full Beard","Very Long Beard")
+		update_body()
 /datum/job/civilian/prisoner/janitor
 	title = "Janitor"
 	en_meaning = ""
