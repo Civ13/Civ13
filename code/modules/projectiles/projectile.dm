@@ -450,7 +450,7 @@
 	var/passthrough = TRUE //if the projectile should continue flying
 	var/passthrough_message = null
 
-	if (istype(get_turf(firer), /turf/floor/trench) && firer.prone)
+	if (ismob(firer) && (istype(get_turf(firer), /turf/floor/trench) && firer.prone))
 		if (!istype(T,/turf/floor/trench) && get_dist(T, firer)>2)
 			world << "<span class = 'warning'>The [name] hits the trench wall!</span>"
 			qdel(src)
@@ -654,7 +654,7 @@
 
 		var/list/_untouchable = list()
 		var/src_loc = get_turf(src)
-		if (!firer.prone && !firer.lying)
+		if (ismob(firer) && (!firer.prone && !firer.lying))
 			if (firstmove)
 				for (var/obj/structure/window/sandbag/S in src_loc)
 					_untouchable += S

@@ -359,9 +359,11 @@
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard/open
 	starts_open = TRUE
 	locked = FALSE
-	density = FALSE
-	icon_state = "cellopen"
 	custom_code = RU_CODE
+	New()
+		..()
+		icon_state = "cellopen"
+		density = FALSE
 
 #undef RU_CODE
 

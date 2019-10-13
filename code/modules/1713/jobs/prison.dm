@@ -334,7 +334,7 @@
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Miner</b>. Your job is to get to the mines and collect minerals for the guards.")
 		randrole = title
-
+/*
 /datum/job/civilian/prisoner/logger
 	title = "Logger"
 	en_meaning = ""
@@ -353,7 +353,7 @@
 		uniform.attackby(armband, H)
 		H.add_note("Role", "You are a <b>Logger</b>. Your job is to collect wood from the nearby forest, as instructed by the guards.")
 		randrole = title
-/*
+
 /datum/job/civilian/prisoner/builder
 	title = "Builder"
 	en_meaning = ""
@@ -420,7 +420,7 @@
 	max_positions = 12
 	equip(var/mob/living/carbon/human/H)
 		..()
-		randrole = pick("Janitor", "Kitchen Duty", "Miner", "Nurse Helper",/* "Builder",*/ "Logger")
+		randrole = pick("Janitor", "Kitchen Duty", "Miner", "Nurse Helper",/* "Builder", "Logger"*/)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
 		switch(randrole)
