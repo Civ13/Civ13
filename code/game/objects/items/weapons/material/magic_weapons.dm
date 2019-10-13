@@ -82,6 +82,7 @@
 //Swords
 
 /obj/item/weapon/material/sword/magic/New(var/newloc, var/material_key)
+	..()
 	material = ""
 
 /obj/item/weapon/material/sword/magic/arkofdisease

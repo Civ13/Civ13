@@ -627,7 +627,7 @@
 					W.amount -= 6
 		else
 			H << "<span class='notice'>That does not exist!</span>"
-	else if(istype(W, /material/paper))
+	else if(istype(W, /obj/item/weapon/paper))
 		var/input
 		var/display = list("Shoji Door - 1", "Shoji Wall - 1", "Shoji Divider - 1", "Shoji Window - 1", "Cancel")
 		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
