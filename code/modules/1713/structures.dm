@@ -535,7 +535,7 @@
 	if (roped)
 		visible_message("<span class = 'danger'>[H] starts to free [hanging] from the noose...</span>")
 		if (do_after(H, 100, src))
-			if (src)
+			if (src && hanging)
 				visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 				hanging.pixel_x = 0
 				hanging.pixel_y = 0

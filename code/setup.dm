@@ -55,7 +55,7 @@
 	if (fexists(F3))
 		var/list/craftlist_temp = file2list(F3,"\n")
 		for (var/i in craftlist_temp)
-			if (findtext(i, ","))
+			if (findtext(i, ",") && findtext(i,"RECIPE: "))
 				var/tmpi = replacetext(i, "RECIPE: ", "")
 				var/list/current = splittext(tmpi, ",")
 				craftlist_list += list(current)

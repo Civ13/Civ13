@@ -191,8 +191,9 @@ var/global/processScheduler/processScheduler
 /processScheduler/proc/relayProcess(var/process/p, var/list/queue)
 	set waitfor = FALSE
 	if (p.process() != PROCESS_TICK_CHECK_RETURNED_EARLY)
-		p.reset_current_list()
-		queue -= p
+		if (p)
+			p.reset_current_list()
+			queue -= p
 
 /processScheduler/proc/addProcess(var/process/process)
 

@@ -42,6 +42,7 @@
 		for(var/obj/structure/vehicleparts/frame/F1 in speaker.loc)
 			for(var/obj/structure/vehicleparts/frame/F2 in src.loc)
 				if (F1.axis == F2.axis)
+					speaker_name = "<font color='yellow'>[speaker_name] (CREW)</font>"
 					for (var/obj/structure/bed/chair/commander/D in speaker.loc)
 						speaker_name = "<big><font color='yellow'>[speaker_name] (COMMANDER)</font></big>"
 					for (var/obj/structure/bed/chair/drivers/D in speaker.loc)
@@ -52,8 +53,12 @@
 						speaker_name = "<font color='yellow'>[speaker_name] (LOADER)</font>"
 	if (italics)
 		message = "<i>[message]</i>"
-	if (alt_name == "")
-		alt_name = speaker.name
+	alt_name = speaker_name
+	if (ishuman(speaker))
+		var/mob/living/carbon/human/H = speaker
+		if (istype(H.original_job, /datum/job/civilian/prisoner))
+			alt_name = speaker.name
+
 	if (animal)
 		language = null
 	var/track = null
