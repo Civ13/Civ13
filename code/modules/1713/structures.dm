@@ -645,7 +645,7 @@
 				if (do_after(H, 40, src))
 					new/obj/covers/wood_wall/shoji(src.loc)
 					qdel(src)
-					W.amount -= 1
+					qdel(W)
 		else if(input == "Shoji Divider - 1")
 			if(W.amount >= 1)
 				if (do_after(H, 40, src))

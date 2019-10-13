@@ -804,7 +804,6 @@
 	material = "Wood"
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 
