@@ -343,7 +343,8 @@
 /obj/structure/simple_door/key_door/soviet/guard
 	keyslot_type = /datum/keyslot/soviet
 	unique_door_name = "GULAG locked"
-
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard
+	unique_door_name = "GULAG locked"
 #undef RU_CODE
 
 #define NL_CODE 995 * 6
