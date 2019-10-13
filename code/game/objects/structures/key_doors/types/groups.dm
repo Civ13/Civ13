@@ -353,6 +353,10 @@
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard
 	unique_door_name = "GULAG locked"
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/open
+	starts_open = TRUE
+
 #undef RU_CODE
 
 #define NL_CODE 995 * 6
