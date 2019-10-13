@@ -452,6 +452,20 @@
 	item_state = "modern7"
 	worn_state = "modern7"
 
+/obj/item/clothing/under/clown
+	name = "clown outfit"
+	desc = "An outfit used by clowns."
+	icon_state = "clown"
+	item_state = "clown"
+	worn_state = "clown"
+
+/obj/item/clothing/under/jester
+	name = "jester outfit"
+	desc = "A jester outfit. WHERE IS ME FUN HAHA."
+	icon_state = "jester"
+	item_state = "jester"
+	worn_state = "jester"
+
 /obj/item/clothing/under/farmer_outfit
 	name = "farmer outfit"
 	desc = "An outfit composed of a checkered shirt and a denim bib."
