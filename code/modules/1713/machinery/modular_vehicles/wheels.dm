@@ -73,7 +73,7 @@
 			if (control.axis.engine && control.axis.engine.on)
 				control.axis.engine.running_sound()
 		return
-	else if (control.axis && control.axis.engine && control.axis.engine.fueltank.reagents.total_volume <= 0)
+	else if (control.axis && control.axis.engine && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume <= 0)
 		H << "There is not enough fuel!"
 		return
 	if (control.axis.currentspeed < 0)
@@ -103,7 +103,7 @@
 /obj/item/vehicleparts/wheel/modular/secondary_attack_self(mob/living/carbon/human/user)
 	if (!control || !control.axis)
 		return
-	if (control.axis.currentspeed <= 0 || control.axis.engine.fueltank.reagents.total_volume <= 0)
+	if (control && control.axis && control.axis.engine && control.axis.engine.fueltank && (control.axis.currentspeed <= 0 || control.axis.engine.fueltank.reagents.total_volume <= 0))
 		if (control.axis.engine.on)
 			user << "You turn off the [control.axis.engine]."
 			control.axis.engine.on = FALSE
@@ -162,7 +162,7 @@
 		for(var/obj/item/vehicleparts/wheel/modular/MW in M)
 			M.remove_from_mob(MW)
 			MW.forceMove(src)
-			if (wheel.control.axis.engine.on)
+			if (wheel && wheel.control && wheel.control.axis && wheel.control.axis.engine && wheel.control.axis.engine.on)
 				wheel.control.axis.engine.on = FALSE
 				wheel.control.axis.moving = FALSE
 				wheel.control.axis.currentspeed = 0

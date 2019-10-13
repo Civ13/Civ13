@@ -317,7 +317,7 @@
 
 
 /obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
-	if (!isghost(M) && M.mob_size >= MOB_MEDIUM)
+	if (ismob(M) && !isghost(M) && M.mob_size >= MOB_MEDIUM)
 		visible_message("[M] pushes \the [src].","You push \the [src]")
 		icon_state = "saloon_opening"
 		update_icon()

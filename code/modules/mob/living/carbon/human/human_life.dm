@@ -619,7 +619,8 @@
 	var/loc_temp = 20
 	var/area/mob_area = get_area(src)
 
-
+	if (!mob_area)
+		return
 	switch (season)
 		if ("WINTER")
 			switch (mob_area.climate)
