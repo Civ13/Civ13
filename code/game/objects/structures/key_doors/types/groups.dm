@@ -354,14 +354,14 @@
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard
 	unique_door_name = "GULAG locked"
 	locked = TRUE
-	custom_code = RU_CODE+2
+	custom_code = RU_CODE
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard/open
 	starts_open = TRUE
 	locked = FALSE
 	density = FALSE
 	icon_state = "cellopen"
-	custom_code = RU_CODE+2
+	custom_code = RU_CODE
 
 #undef RU_CODE
 
