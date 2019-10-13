@@ -67,6 +67,14 @@
 		value = 1
 		return ..()
 
+/obj/item/stack/money/rubles
+	name = "soviet ruble"
+	desc = "A Soviet 1 ruble banknote."
+	singular_name = "ruble"
+	icon_state = "ruble" //Damn jerry rig
+	amount = 1
+	value = 1
+
 /obj/item/stack/money/dollar
 	name = "spanish dollars"
 	desc = "A silver coin, also called piece of eight, worth 8 reales."

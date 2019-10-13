@@ -11,18 +11,20 @@
 	var/resistance = 150
 	var/obj/structure/vehicleparts/axis/axis = null
 	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
-	var/list/w_front = list("",FALSE,FALSE,0,40,FALSE,FALSE)
-	var/list/w_back = list("",FALSE,FALSE,0,40,FALSE,FALSE)
-	var/list/w_left = list("",FALSE,FALSE,0,40,FALSE,FALSE)
-	var/list/w_right = list("",FALSE,FALSE,0,40,FALSE,FALSE)
+	var/list/w_front = list("",FALSE,FALSE,0,0,FALSE,FALSE)
+	var/list/w_back = list("",FALSE,FALSE,0,0,FALSE,FALSE)
+	var/list/w_left = list("",FALSE,FALSE,0,0,FALSE,FALSE)
+	var/list/w_right = list("",FALSE,FALSE,0,0,FALSE,FALSE)
 	var/obj/structure/vehicleparts/movement/mwheel = null
 
 	var/doorcode = 0 //if it has a door on it, what the key code is
 	var/image/roof
+	var/image/roof_turret
 	var/image/movemento
 	var/noroof = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	var/broken = FALSE
 	var/color_code = ""
 	New()
 		..()
@@ -45,6 +47,12 @@
 		tmpsum += L.mob_size*2
 	return tmpsum
 
+/obj/structure/vehicleparts/frame/examine(mob/user)
+	..()
+	if (axis)
+		if (user in range(1,src))
+			user << "<span class='notice'>Current Weight: <b>[axis.get_weight()]</b>.</span>"
+
 /obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)
 		if (abs(VP.y-y) > 5 || abs(VP.x-x) > 5)
@@ -59,7 +67,7 @@
 				usr << "You connect \the [src] to \the [VP.axis]."
 				axis = VP.axis
 				color_code = VP.color_code
-				name = axis.name
+				name = VP.axis.name
 				var/found = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in axis.components)
 					if (F == src)
@@ -71,11 +79,15 @@
 				return
 /obj/structure/vehicleparts/frame/MouseDrop_T(var/obj/structure/VP, var/mob/living/user)
 	if (istype(VP, /obj/structure/engine/internal) && axis && !axis.engine && !VP.anchored)
+		var/obj/structure/engine/internal/E = VP
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		usr << "You connect \the [VP] to \the [axis]."
 		axis.engine = VP
 		VP.forceMove(loc)
 		VP.anchored = TRUE
+		E.icon = 'icons/obj/vehicleparts.dmi'
+		E.engineclass = "engine"
+		E.update_icon()
 		return
 	else if (istype(VP, /obj/structure/bed/chair/drivers) && axis && !VP.anchored && !axis.wheel)
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
@@ -87,342 +99,10 @@
 		axis.wheel = VPP.wheel
 		axis.wheel.control = src
 		return
-
-/obj/structure/vehicleparts/frame/wood
-	name = "wood frame"
-	desc = "a wood vehicle frame."
-	icon_state = "frame_wood"
-	flammable = TRUE
-	resistance = 90
-
-/obj/structure/vehicleparts/frame/update_icon()
-	..()
-	overlays.Cut()
-	if (axis && mwheel)
-		movemento = image(icon=mwheel.icon, loc=src, icon_state=mwheel.icon_state, layer=11, dir=mwheel.dir)
-		if (axis.corners[1] == src || axis.corners[2] == src)
-			switch(dir)
-				if (NORTH)
-					movemento.pixel_x = 0
-					movemento.pixel_y = 32
-				if (SOUTH)
-					movemento.pixel_x = 0
-					movemento.pixel_y = -32
-				if (WEST)
-					movemento.pixel_x = -32
-					movemento.pixel_y = 0
-				if (EAST)
-					movemento.pixel_x = 32
-					movemento.pixel_y = 0
-		else if (axis.corners[3] == src || axis.corners[4] == src)
-			switch(dir)
-				if (NORTH)
-					movemento.pixel_x = 0
-					movemento.pixel_y = -32
-				if (SOUTH)
-					movemento.pixel_x = 0
-					movemento.pixel_y = 32
-				if (WEST)
-					movemento.pixel_x = 32
-					movemento.pixel_y = 0
-				if (EAST)
-					movemento.pixel_x = -32
-					movemento.pixel_y = 0
-		overlays += movemento
-	if (!noroof)
-		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=11)
-		roof.overlays.Cut()
-	else
-		roof = image(icon=icon, loc=src, icon_state="", layer=1)
-		roof.overlays.Cut()
-	var/turf/T = get_turf(src)
-	for(var/obj/structure/cannon/C in T)
-		var/image/roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="tank_turret[color_code]", layer=11.1, dir=C.dir)
-		if (dir == NORTH)
-			roof_turret.pixel_y = 0
-			roof_turret.pixel_x = -32
-		else if (dir == SOUTH)
-			roof_turret.pixel_y = -48
-			roof_turret.pixel_x = -32
-		else if (dir == WEST)
-			roof_turret.pixel_x = -48
-			roof_turret.pixel_y = -32
-		else if (dir == EAST)
-			roof_turret.pixel_x = 0
-			roof_turret.pixel_y = -32
-		roof.overlays += roof_turret
-	for (var/obj/CC in T)
-		if (istype(CC, /obj/structure/bed/chair/drivers))
-			roof.icon_state = "roof_steel_hatch_driver[color_code]"
-		else if (istype(CC, /obj/structure/bed/chair))
-			roof.icon_state = "roof_steel_hatch[color_code]"
-		else if (istype(CC, /obj/structure/engine))
-			roof.icon_state = "roof_steel_exhaust[color_code]"
-		else if (istype(CC, /obj/item/weapon/reagent_containers/glass/barrel/fueltank))
-			roof.icon_state = "roof_steel_closedhatch[color_code]"
-
-	switch (dir)
-		if (NORTH)
-			if (w_left[1] != "")
-				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]][color_code]", layer=10, dir=WEST)
-				overlays += tmpimg3
-				var/image/doub = tmpimg3
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_right[1] != "")
-				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]][color_code]", layer=10, dir=EAST)
-				overlays += tmpimg4
-				var/image/doub = tmpimg4
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_front[1] != "")
-				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]][color_code]", layer=10, dir=NORTH)
-				overlays += tmpimg1
-				var/image/doub = image(icon=icon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
-			if (w_back[1] != "")
-				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]][color_code]", layer=10, dir=SOUTH)
-				overlays += tmpimg2
-				var/image/doub = tmpimg2
-				doub.layer = 11.01
-				roof.overlays += doub
-
-		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-
-		if (SOUTH)
-			if (w_left[1] != "")
-				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]][color_code]", layer=10, dir=EAST)
-				overlays += tmpimg3
-				var/image/doub = tmpimg3
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_right[1] != "")
-				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]][color_code]", layer=10, dir=WEST)
-				overlays += tmpimg4
-				var/image/doub = tmpimg4
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_front[1] != "")
-				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]][color_code]", layer=10, dir=SOUTH)
-				overlays += tmpimg1
-				var/image/doub = tmpimg1
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_back[1] != "")
-				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]][color_code]", layer=10, dir=NORTH)
-				overlays += tmpimg2
-				var/image/doub = image(icon=icon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
-
-		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-		if (EAST)
-			if (w_left[1] != "")
-				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]][color_code]", layer=10, dir=NORTH)
-				overlays += tmpimg3
-				var/image/doub = tmpimg3
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_right[1] != "")
-				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]][color_code]", layer=10, dir=SOUTH)
-				overlays += tmpimg4
-				var/image/doub = image(icon=icon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
-			if (w_front[1] != "")
-				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]][color_code]", layer=10, dir=EAST)
-				overlays += tmpimg1
-				var/image/doub = tmpimg1
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_back[1] != "")
-				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]][color_code]", layer=10, dir=WEST)
-				overlays += tmpimg2
-				var/image/doub = tmpimg2
-				doub.layer = 11.01
-				roof.overlays += doub
-
-		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-		if (WEST)
-			if (w_left[1] != "")
-				var/image/tmpimg3 = image(icon=icon, icon_state="[w_left[1]][color_code]", layer=10, dir=SOUTH)
-				overlays += tmpimg3
-				var/image/doub = image(icon=icon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
-			if (w_right[1] != "")
-				var/image/tmpimg4 = image(icon=icon, icon_state="[w_right[1]][color_code]", layer=10, dir=NORTH)
-				overlays += tmpimg4
-				var/image/doub = tmpimg4
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_front[1] != "")
-				var/image/tmpimg1 = image(icon=icon, icon_state="[w_front[1]][color_code]", layer=10, dir=WEST)
-				overlays += tmpimg1
-				var/image/doub = tmpimg1
-				doub.layer = 11.01
-				roof.overlays += doub
-			if (w_back[1] != "")
-				var/image/tmpimg2 = image(icon=icon, icon_state="[w_back[1]][color_code]", layer=10, dir=EAST)
-				overlays += tmpimg2
-				var/image/doub = tmpimg2
-				doub.layer = 11.01
-				roof.overlays += doub
-
-		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=icon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-
-/obj/structure/vehicleparts/frame/lwall
-	w_left = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/rwall
-	w_right = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/fwall
-	w_front = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/bwall
-	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/ldoor
-	w_left = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
-/obj/structure/vehicleparts/frame/rdoor
-	w_right = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
-/obj/structure/vehicleparts/frame/fdoor
-	w_front = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
-/obj/structure/vehicleparts/frame/bdoor
-	w_back = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE)
-/obj/structure/vehicleparts/frame/lwall/armored
-	w_left = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/rwall/armored
-	w_right = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/fwall/armored
-	w_front = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/bwall/armored
-	w_back = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/rb
-	w_right = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/lb
-	w_left = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/rf
-	w_right = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",FALSE,TRUE,20,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/lf
-	w_left = list("c_wall",TRUE,TRUE,20,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",FALSE,TRUE,20,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/rb/armored
-	w_right = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-	w_back = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/lb/armored
-	w_left = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-	w_back = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/rf/armored
-	w_right = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,55,90,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/lf/armored
-	w_left = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,55,90,FALSE,FALSE)
-
-/obj/structure/vehicleparts/frame/lf/truck
-	w_left = list("c_door",TRUE,TRUE,20,15,TRUE,TRUE)
-	w_front = list("c_windshield",FALSE,TRUE,6,15,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/rf/truck
-	w_right = list("c_door",TRUE,TRUE,20,15,TRUE,TRUE)
-	w_front = list("c_windshield",FALSE,TRUE,6,15,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/verb/add_walls()
-	set category = null
-	set name = "Add walls"
-	set src in range(1, usr)
-
-	var/ndir = WWinput(usr, "Which dir to set first?", "Wall Placer", "Cancel", list("North","South","East","West", "Cancel"))
-	if (ndir == "Cancel")
-		return
-	else
-		dir = text2dir(ndir)
-		var/position = WWinput(usr, "Which position?", "Wall Placer", "Cancel", list("left","right","front","back", "Cancel"))
-		if (position == "Cancel")
-			return
-		else
-			position = "w_[position]"
-			var/ntype = WWinput(usr, "Which type?", "Wall Placer", "Cancel", list("wall","windshield","window", "armored front", "armoredwall", "door", "windowed door", "Cancel"))
-			if (ntype == "Cancel")
-				return
-			else
-				ntype = "c_[type]"
-				ntype = replacetext(ntype, " ", "")
-				switch(position)
-					if ("w_left")
-						w_left = vehicle_walls[ntype]
-					if ("w_right")
-						w_right = vehicle_walls[ntype]
-					if ("w_front")
-						w_front = vehicle_walls[ntype]
-					if ("w_back")
-						w_back = vehicle_walls[ntype]
-	update_icon()
-
+	else if (istype(VP, /obj/structure/lamp/lamp_small/tank) && !VP.anchored)
+		var/obj/structure/lamp/lamp_small/tank/TL = VP
+		TL.connection = src
+		usr << "You place \the [VP] in \the [axis]."
 
 /obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf)
 	var/chdir = get_dir(O.loc, target)
@@ -549,55 +229,86 @@
 	return FALSE
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (mwheel && mwheel.broken && istype(I, /obj/item/weapon/weldingtool))
-		visible_message("[H] starts repairing \the [mwheel.ntype]...")
-		if (do_after(H, 200, src))
-			visible_message("[H] sucessfully repairs \the [mwheel.ntype].")
-			mwheel.broken = FALSE
+		var/cantdo = FALSE
+		for (var/obj/structure/vehicleparts/frame/FM in H.loc)
+			cantdo = TRUE
+		if (!cantdo)
+			visible_message("[H] starts repairing \the [mwheel.ntype]...")
+			if (do_after(H, 200, src))
+				visible_message("[H] sucessfully repairs \the [mwheel.ntype].")
+				mwheel.broken = FALSE
+				mwheel.update_icon()
+				update_icon()
+				return
+	else if (istype(I,/obj/item/weapon/wrench) && !axis)
+		anchored = !anchored
+		if (anchored)
+			H << "You fix the frame in place."
+			return
+		else
+			H << "You release the frame."
 			return
 	else if (istype(I,/obj/item/weapon/key))
 		var/obj/item/weapon/key/K = I
-		if (K.code == doorcode)
-			if (w_front[6])
-				if (w_front[7])
-					visible_message("[H] locks the door.")
-					w_front[7] = FALSE
-				else
-					visible_message("[H] unlocks the door.")
-					w_front[7] = TRUE
-				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (w_back[6])
-				if (w_back[7])
-					visible_message("[H] locks the door.")
-					w_back[7] = FALSE
-				else
-					visible_message("[H] unlocks the door.")
-					w_back[7] = TRUE
-				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (w_left[6])
-				if (w_left[7])
-					visible_message("[H] locks the door.")
-					w_left[7] = FALSE
-				else
-					visible_message("[H] unlocks the door.")
-					w_left[7] = TRUE
-				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (w_right[6])
-				if (w_right[7])
-					visible_message("[H] locks the door.")
-					w_right[7] = FALSE
-				else
-					visible_message("[H] unlocks the door.")
-					w_right[7] = TRUE
-				H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
+		if (doorcode)
+			if (K.code == doorcode)
+				if (w_front[6])
+					if (w_front[7])
+						visible_message("[H] locks the door.")
+						w_front[7] = FALSE
+					else
+						visible_message("[H] unlocks the door.")
+						w_front[7] = TRUE
+					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+				if (w_back[6])
+					if (w_back[7])
+						visible_message("[H] locks the door.")
+						w_back[7] = FALSE
+					else
+						visible_message("[H] unlocks the door.")
+						w_back[7] = TRUE
+					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+				if (w_left[6])
+					if (w_left[7])
+						visible_message("[H] locks the door.")
+						w_left[7] = FALSE
+					else
+						visible_message("[H] unlocks the door.")
+						w_left[7] = TRUE
+					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+				if (w_right[6])
+					if (w_right[7])
+						visible_message("[H] locks the door.")
+						w_right[7] = FALSE
+					else
+						visible_message("[H] unlocks the door.")
+						w_right[7] = TRUE
+					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+				playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
+			else
+				H << "This key does not match this lock!"
+				return
 		else
-			H << "This key does not match this lock!"
+			doorcode = K.code
+			H << "You assign this key to the lock."
 			return
 	else
 		..()
-/obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/projectile/proj)
-	proj.throw_source = proj.starting
-	switch(get_dir(proj.throw_source, get_turf(src)))
+/obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/proj)
+	var/turf/startingturf = null
+
+	if (istype(proj, /obj/item/projectile))
+		var/obj/item/projectile/pj = proj
+		pj.throw_source = pj.starting
+		startingturf = pj.starting
+	else if (istype(proj, /obj/item/missile))
+		var/obj/item/missile/miss = proj
+		startingturf = miss.startingturf
+	else if (istype(proj, /obj/item/weapon/grenade))
+		startingturf = get_turf(proj)
+	if (!startingturf)
+		return "front"
+	switch(get_dir(startingturf, get_turf(src)))
 		if (NORTH)
 			switch(dir)
 				if (NORTH)
@@ -690,86 +401,151 @@
 			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
 				return TRUE
 		if ("frontleft")
-			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
 				return TRUE
 		if ("backleft")
-			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_left[4])
 				return TRUE
 		if ("frontright")
-			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_front[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
 				return TRUE
 		if ("backright")
-			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] && proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
+			if (proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_back[4] || proj.heavy_armor_penetration-get_dist(src.loc,proj.starting) > w_right[4])
 				return TRUE
-	playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+	if (istype(proj, /obj/item/projectile/shell))
+		playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+	else
+		playsound(loc, "ric_sound", 50, TRUE)
 	return FALSE
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
 	for (var/obj/structure/vehicleparts/frame/F in proj.firer.loc)
 		if (F.axis == axis)
 			return
+	if (mwheel && prob(30))
+		if (mwheel.ntype == "wheel")
+			mwheel.broken = TRUE
+			visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+			new/obj/effect/effect/smoke/small(loc)
+			update_icon()
 	if (penloc)
 		if (istype(proj, /obj/item/projectile/shell))
 			var/obj/item/projectile/shell/PS = proj
 			if (mwheel && prob(60))
-				switch (PS.atype)
-					if ("HE")
-						for (var/mob/M in axis.transporting)
-							shake_camera(M, 3, 3)
-						if (!mwheel.broken && prob(80))
-							mwheel.broken = TRUE
-							visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
-							new/obj/effect/effect/smoke/small(loc)
-					if ("APCR")
-						if (!mwheel.broken && prob(60))
-							mwheel.broken = TRUE
-							visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
-							new/obj/effect/effect/smoke/small(loc)
-					if ("AP")
-						if (!mwheel.broken && prob(70))
-							mwheel.broken = TRUE
-							visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
-							new/obj/effect/effect/smoke/small(loc)
+				if (mwheel.ntype == "wheel")
+					mwheel.broken = TRUE
+					visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+					new/obj/effect/effect/smoke/small(loc)
+					update_icon()
+				else if (mwheel.ntype == "track")
+					switch (PS.atype)
+						if ("HE")
+							for (var/mob/M in axis.transporting)
+								shake_camera(M, 3, 3)
+							if (!mwheel.broken && prob(80))
+								mwheel.broken = TRUE
+								visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+								new/obj/effect/effect/smoke/small(loc)
+								update_icon()
+						if ("APCR")
+							if (!mwheel.broken && prob(60))
+								mwheel.broken = TRUE
+								visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+								new/obj/effect/effect/smoke/small(loc)
+								update_icon()
+						if ("AP")
+							if (!mwheel.broken && prob(70))
+								mwheel.broken = TRUE
+								visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+								new/obj/effect/effect/smoke/small(loc)
+								update_icon()
 			else
 				var/adjdam = 0
 				switch (PS.atype)
 					if ("HE")
-						for (var/mob/M in axis.transporting)
+						for (var/mob/living/M in axis.transporting)
 							shake_camera(M, 3, 3)
+							if (M.loc == loc)
+								var/tprob = 80
+								if (M.lying || M.prone)
+									tprob = 35
+								if (prob(tprob))
+									M.adjustBruteLoss(PS.damage)
+									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.08
-					if ("APCR")
+					else if ("APCR")
+						for (var/mob/living/M in axis.transporting)
+							shake_camera(M, 1, 1)
+							if (M.loc == loc)
+								var/tprob = 80
+								if (M.lying || M.prone)
+									tprob = 35
+								if (prob(tprob))
+									M.adjustBruteLoss(PS.damage)
+									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.35
-					if ("AP")
+					else if ("AP")
+						for (var/mob/living/M in axis.transporting)
+							shake_camera(M, 1, 1)
+							if (M.loc == loc)
+								var/tprob = 80
+								if (M.lying || M.prone)
+									tprob = 35
+								if (prob(tprob))
+									M.adjustBruteLoss(PS.damage)
+									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
 						adjdam = proj.damage * 0.3
+					else
+						for (var/mob/living/M in axis.transporting)
+							if (M.loc == loc)
+								var/tprob = 50
+								if (M.lying || M.prone)
+									tprob = 25
+								if (prob(tprob))
+									M.adjustBruteLoss(PS.damage)
+									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
+						adjdam = proj.damage * 0.05
 				switch(penloc)
 					if ("left")
 						w_left[5] -= adjdam
+						visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
 					if ("right")
 						w_right[5] -= adjdam
+						visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 					if ("front")
 						w_front[5] -= adjdam
+						visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
 					if ("back")
 						w_back[5] -= adjdam
+						visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
 					if ("frontleft")
-						if (w_left[4] > w_front[4] && w_left[5]>0)
+						if (w_left[4] > w_front[4] && w_left[5]>0 && w_front[5]>0)
 							w_left[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
 						else
 							w_front[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
 					if ("frontright")
-						if (w_right[4] > w_front[4] && w_right[5]>0)
+						if (w_right[4] > w_front[4] && w_right[5]>0 && w_front[5]>0)
 							w_right[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 						else
 							w_front[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
 					if ("backleft")
-						if (w_left[4] > w_back[4] && w_left[5]>0)
+						if (w_left[4] > w_back[4] && w_left[5]>0 && w_back[5]>0)
 							w_left[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
 						else
 							w_back[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
 					if ("backright")
-						if (w_right[4] > w_back[4] && w_right[5]>0)
+						if (w_right[4] > w_back[4] && w_right[5]>0 && w_back[5]>0)
 							w_right[5] -= adjdam
+							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 						else
 							w_back[5] -= adjdam
+							visible_message("<span class = 'danger'><bigThe rear hull is damaged!</big></span>")
 		else
 			switch(penloc)
 				if ("left")
@@ -783,32 +559,48 @@
 		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
 		if (istype(proj, /obj/item/projectile/shell))
 			playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
-		new/obj/effect/effect/smoke/small/fast(loc)
+			new/obj/effect/effect/smoke/small/fast(loc)
 		try_destroy()
 		return
 	else
 		..()
 
 /obj/structure/vehicleparts/frame/proc/try_destroy()
-	if (w_left[5] <= 0)
-		w_left = list("",FALSE,FALSE,0,40,FALSE,FALSE)
-		visible_message("<span class='danger'>The wall gets wrecked!</span>")
-	if (w_right[5] <= 0)
-		w_right = list("",FALSE,FALSE,0,40,FALSE,FALSE)
-		visible_message("<span class='danger'>The wall gets wrecked!</span>")
-	if (w_front[5] <= 0)
-		w_front = list("",FALSE,FALSE,0,40,FALSE,FALSE)
-		visible_message("<span class='danger'>The wall gets wrecked!</span>")
-	if (w_back[5] <= 0)
-		w_back = list("",FALSE,FALSE,0,40,FALSE,FALSE)
-		visible_message("<span class='danger'>The wall gets wrecked!</span>")
+	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
+	var/isnowopen = FALSE
+
+	if (w_left[5] < 0)
+		if (w_left[6] || w_left[1] == "c_door" || w_left[1] == "c_windoweddoor")
+			isnowopen = TRUE
+		else
+			isnowopen = FALSE
+		w_left = list(w_left[1],FALSE,FALSE,0,0,FALSE,isnowopen)
+	if (w_right[5] < 0)
+		if (w_right[6] || w_right[1] == "c_door" || w_right[1] == "c_windoweddoor")
+			isnowopen = TRUE
+		else
+			isnowopen = FALSE
+		w_right = list(w_right[1],FALSE,FALSE,0,0,FALSE,isnowopen)
+	if (w_front[5] < 0)
+		if (w_front[6] || w_front[1] == "c_door" || w_front[1] == "c_windoweddoor")
+			isnowopen = TRUE
+		else
+			isnowopen = FALSE
+		w_front = list(w_front[1],FALSE,FALSE,0,0,FALSE,isnowopen)
+	if (w_back[5] < 0)
+		if (w_back[6] || w_back[1] == "c_door" || w_back[1] == "c_windoweddoor")
+			isnowopen = TRUE
+		else
+			isnowopen = FALSE
+		w_back = list(w_back[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 	if (w_left[5]+w_right[5]+w_back[5]+w_front[5] <= 0)
-		Destroy()
+		broken = TRUE
+		if (prob(10))
+			Destroy()
 	update_icon()
 /obj/structure/vehicleparts/frame/Destroy()
 	visible_message("<span class='danger'>The frame gets wrecked!</span>")
-	if (axis)
-		axis.Destroy()
+	update_icon()
 	qdel(src)
 /obj/structure/vehicleparts/frame/ex_act(severity)
 	switch(severity)
@@ -828,16 +620,3 @@
 			return
 		if (3.0)
 			return
-//types of walls/borders
-//format: type of wall, opacity, density, armor, current health, can open/close, is open?
-var/global/list/vehicle_walls = list( \
-	"" = list("",FALSE,FALSE,0,40,FALSE,FALSE), \
-	"c_wall" = list("c_window",FALSE,TRUE,20,50,FALSE,FALSE), \
-	"c_window" = list("c_wall",TRUE,TRUE,10,40,FALSE,FALSE), \
-	"c_windshield" = list("c_windshield",FALSE,TRUE,6,35,FALSE,FALSE), \
-	"c_armoredfront" = list("c_armoredfront",FALSE,TRUE,45,80,FALSE,FALSE), \
-	"c_armoredwall" = list("c_armoredwall",TRUE,TRUE,55,90,FALSE,FALSE), \
-	"c_door" = list("c_door",TRUE,TRUE,20,45,TRUE,TRUE), \
-	"c_windowdoor" = list("c_windowdoor",FALSE,TRUE,28,60,TRUE,TRUE), \
-	 \
-)

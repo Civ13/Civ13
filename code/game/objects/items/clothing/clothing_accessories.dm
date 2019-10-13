@@ -34,6 +34,50 @@
 			A.attackby(I, user)
 		return
 
+	if (istype(I, /obj/item/stack/material/rags))
+		var/obj/item/stack/material/rags/R = I
+		if (secondary_action && ripable && R.amount >= 1 && health < initial(health)*4)
+
+			user << "You start patching \the [src]..."
+			if (do_after(user, 100, user.loc))
+				playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
+				user << "You finish patching \the [src]."
+				health += 5
+				if (R.amount > 1)
+					R.amount--
+				else
+					qdel(R)
+				return
+	else if (istype(I, /obj/item/stack/material/cloth))
+		var/obj/item/stack/material/cloth/R = I
+		if (secondary_action && ripable && R.amount >= 1 && health < initial(health)*4)
+
+			user << "You start patching \the [src]..."
+			if (do_after(user, 100, user.loc))
+				playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
+				user << "You finish patching \the [src]."
+				health += 10
+				if (R.amount > 1)
+					R.amount--
+				else
+					qdel(R)
+				return
+	else if (istype(I, /obj/item/stack/material/woolcloth))
+		var/obj/item/stack/material/woolcloth/R = I
+		if (secondary_action && ripable && R.amount >= 1 && health < initial(health)*4)
+
+			user << "You start patching \the [src]..."
+			if (do_after(user, 100, user.loc))
+				playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
+				user << "You finish patching \the [src]."
+				health += 12
+				if (R.amount > 1)
+					R.amount--
+				else
+					qdel(R)
+				return
+	else
+		return
 	..()
 
 /obj/item/clothing/attack_hand(var/mob/user)

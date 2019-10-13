@@ -8,9 +8,6 @@
 	name = "NICE NAME" 				(not required but makes things really nice)
 	icon = "ICON FILENAME" 			(defaults to areas.dmi)
 	icon_state = "NAME OF ICON" 	(defaults to "unknown" (blank))
-	requires_power = FALSE 				(defaults to TRUE)
-
-NOTE: there are two lists of areas in the end of this file: centcom and map itself. Please maintain these lists valid. --rastaf0
 
 */
 
@@ -26,20 +23,8 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	layer = 10
 	mouse_opacity = FALSE
 	plane = LIGHTING_PLANE
-	var/lightswitch = TRUE
-
-	var/eject = null
 
 	var/debug = FALSE
-	var/requires_power = TRUE
-	var/always_unpowered = FALSE	//this gets overriden to TRUE for space in area/New()
-
-	var/power_equip = TRUE
-	var/power_light = TRUE
-	var/power_environ = TRUE
-	var/used_equip = FALSE
-	var/used_light = FALSE
-	var/used_environ = FALSE
 
 	var/has_gravity = TRUE
 //	var/obj/machinery/power/apc/apc = null
@@ -54,8 +39,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	var/weather = WEATHER_NONE
 	var/weather_intensity = 1.0
 
-	var/list/snowfall_valid_turfs = list()
-
 	var/is_void_area = FALSE
 
 	var/capturable = TRUE
@@ -69,7 +52,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 /area
 	var/global/global_uid = FALSE
 	var/uid
-	var/tmp/camera_id = FALSE // For automatic c_tag setting
 	var/artillery_integrity = 100
 
 /area/New()
@@ -78,10 +60,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	layer = 10
 	uid = ++global_uid
 
-	power_light = FALSE
-	power_equip = FALSE
-	power_environ = FALSE
-
 	..()
 
 	spawn (100)
@@ -89,11 +67,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 			parent_area = locate(parent_area_type)
 
 	area_list |= src
-
-/area/proc/initialize()
-	power_light = FALSE
-	power_equip = FALSE
-	power_environ = FALSE
 
 /area/proc/get_contents()
 	return contents
@@ -112,82 +85,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	. = get_contents():Copy()
 	. -= typesof(/turf)
 	. -= typesof(/mob)
-
-// due to the efficient way that this works, lift masters cannot be added runtime
-
-/area/proc/get_camera_tag(var/obj/machinery/camera/C)
-	return "[name] [camera_id++]"
-
-
-/area/proc/readyalert()
-	if (!eject)
-		eject = TRUE
-	return
-
-/area/proc/readyreset()
-	if (eject)
-		eject = FALSE
-	return
-
-/*
-#define EQUIP TRUE
-#define LIGHT 2
-#define ENVIRON 3
-*/
-
-/area/proc/powered(var/chan)		// return true if the area has power to given channel
-
-	if (!requires_power)
-		return TRUE
-	if (always_unpowered)
-		return FALSE
-	switch(chan)
-		if (EQUIP)
-			return power_equip
-		if (LIGHT)
-			return power_light
-		if (ENVIRON)
-			return power_environ
-
-	return FALSE
-
-// called when power status changes
-/*
-/area/proc/power_change()
-	for (var/obj/machinery/M in src)	// for each machine in the area
-		M.power_change()			// reverify power status (to update icons etc.)
-	if (fire || eject)
-		updateicon()*/
-
-/area/proc/usage(var/chan)
-	var/used = FALSE
-	switch(chan)
-		if (LIGHT)
-			used += used_light
-		if (EQUIP)
-			used += used_equip
-		if (ENVIRON)
-			used += used_environ
-		if (TOTAL)
-			used += used_light + used_equip + used_environ
-	return used
-
-/area/proc/clear_usage()
-	used_equip = FALSE
-	used_light = FALSE
-	used_environ = FALSE
-
-/area/proc/use_power(var/amount, var/chan)
-	switch(chan)
-		if (EQUIP)
-			used_equip += amount
-		if (LIGHT)
-			used_light += amount
-		if (ENVIRON)
-			used_environ += amount
-
-
-var/list/mob/living/forced_ambiance_list = new
 
 /area/Entered(A)
 	if (!istype(A,/mob/living))	return
@@ -231,27 +128,6 @@ var/list/mob/living/forced_ambiance_list = new
 
 	if (!CL)
 		return
-/*
-	if (CL.ambience_playing && !override) // If any ambience already playing
-		if (forced_ambience && forced_ambience.len)
-			if (CL.ambience_playing in forced_ambience)
-				return TRUE
-			else
-				var/new_ambience = pick(pick(forced_ambience))
-				CL.ambience_playing = new_ambience
-				L << sound(new_ambience, repeat = TRUE, wait = FALSE, volume = 30, channel = SOUND_CHANNEL_AMBIENCE)
-				return TRUE
-		if (CL.ambience_playing in ambience)
-			return TRUE
-
-	if (ambience.len && prob(35))
-		if (world.time >= L.client.played + 600)
-			var/sound = pick(ambience)
-			CL.ambience_playing = sound
-			L << sound(sound, repeat = FALSE, wait = FALSE, volume = 10, channel = SOUND_CHANNEL_AMBIENCE)
-			L.client.played = world.time
-			return TRUE
-	else */
 
 	var/lastsound = CL.ambience_playing
 	var/sound = (map && map.ambience.len) ? pick(map.ambience) : null

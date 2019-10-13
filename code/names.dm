@@ -39,6 +39,10 @@ var/list/first_names_male_ukrainian = file2list("config/names/first_male_ukraini
 var/list/first_names_female_ukrainian = file2list("config/names/first_female_ukrainian.txt")
 var/list/last_names_ukrainian = file2list("config/names/last_ukrainian.txt")
 
+var/list/first_names_male_polish = file2list("config/names/first_male_polish.txt")
+var/list/first_names_female_polish = file2list("config/names/first_female_polish.txt")
+var/list/last_names_polish = file2list("config/names/last_polish.txt")
+
 var/list/first_names_male_chinese = file2list("config/names/first_male_chinese.txt")
 var/list/first_names_female_chinese = file2list("config/names/first_female_chinese.txt")
 var/list/last_names_chinese = file2list("config/names/last_chinese.txt")

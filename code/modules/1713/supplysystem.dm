@@ -136,9 +136,9 @@
 	var/done = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	/obj/structure/exportbook/New()
-		src.export_tax_rate = global.global_export_tax
-		return ..()
+/obj/structure/exportbook/New()
+	src.export_tax_rate = global.global_export_tax
+	return ..()
 
 /obj/structure/supplybook/craftable
 	faction_treasury = "craftable"
@@ -665,7 +665,7 @@
 /obj/structure/exportbook/proc/change_export_tax(N as num)
 	global.global_export_tax = N
 	return
-	
+
 /obj/structure/supplybook/proc/change_import_tax(N as num)
 	global.global_import_tax = N
 	return

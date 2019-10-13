@@ -1,19 +1,21 @@
 RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,2,25,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired clay vase,/obj/item/weapon/clay/vase,3,50,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired clay wine cup,/obj/item/weapon/clay/winecup,1,30,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,1,50,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired clay bowl,/obj/item/weapon/clay/claybowl,1,30,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired clay jug,/obj/item/weapon/clay/clayjug,2,50,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired clay cup,/obj/item/weapon/clay/claycup,1,30,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay vase,/obj/item/weapon/clay/vase,3,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay wine cup,/obj/item/weapon/clay/winecup,1,30,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay bowl,/obj/item/weapon/clay/claybowl,1,30,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay jug,/obj/item/weapon/clay/clayjug,2,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay cup,/obj/item/weapon/clay/claycup,1,30,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired very small clay pot,/obj/item/weapon/clay/verysmallclaypot,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired small clay pot,/obj/item/weapon/clay/smallclaypot,1,30,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired medium clay pot,/obj/item/weapon/clay/claypot,2,50,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired large clay pot,/obj/item/weapon/clay/bigclaypot,3,60,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2,50,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired medium clay pot,/obj/item/weapon/clay/claypot,2,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired large clay pot,/obj/item/weapon/clay/bigclaypot,3,60,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
+
+RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,1,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,1,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
+RECIPE: /material/clay/,furnace,/obj/structure/furnace/clay,10,150,1,1,none,26,0,0,8,null
 
 RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,comfy chair,/obj/structure/bed/chair/comfy/brown,6,100,1,1,none,25,0,25,8,null
@@ -76,6 +78,7 @@ RECIPE: /material/leather/,black leather shoes,/obj/item/clothing/shoes/soldiers
 RECIPE: /material/leather/,black leather boots,/obj/item/clothing/shoes/blackboots1,3,80,0,1,foot wear,55,0,25,8,null
 RECIPE: /material/leather/,leather boots,/obj/item/clothing/shoes/leatherboots1,3,80,0,1,foot wear,55,0,25,8,null
 RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,0,1,none,0,38,0,8,null
+RECIPE: /material/leather/,leather curtain,/obj/structure/curtain/leather,1,80,1,1,none,0,0,0,8,null
 
 RECIPE: /material/electronics/,pill maker,/obj/structure/chem_master,20,120,1,1,none,80,0,0,8,null
 RECIPE: /material/electronics/,telephone,/obj/structure/telephone,2,120,1,1,none,80,0,0,8,null
@@ -92,7 +95,7 @@ RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/
 RECIPE: /material/woolcloth/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
 
-RECIPE: /material/woolcloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,18,4,null
+RECIPE: /material/woolcloth/, red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,18,4,null
 RECIPE: /material/woolcloth/, blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,18,4,null
 RECIPE: /material/woolcloth/, colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,18,8,null
 RECIPE: /material/woolcloth/, white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats & masks,0,18,0,8,null
@@ -154,6 +157,12 @@ RECIPE: /material/woolcloth/, blue bedsheet,/obj/item/weapon/bedsheet/blue,2,75,
 RECIPE: /material/woolcloth/, yellow bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
 RECIPE: /material/woolcloth/, red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bedsheets,0,0,28,8,null
 
+RECIPE: /material/woolcloth/, brown bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown,4,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/, black bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack,4,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/, service jacket,/obj/item/clothing/suit/storage/coat/ww2/servicejacket,3,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/, modern coat,/obj/item/clothing/suit/storage/coat/ww2/moderncoat,4,70,0,1,jackets & vests,0,0,109,8,null
+
+
 RECIPE: /material/cloth/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
 RECIPE: /material/cloth/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
 RECIPE: /material/cloth/,customizable cape,/obj/item/clothing/accessory/custom/cape,2,30,0,1,accessories,0,0,0,3,null
@@ -199,6 +208,7 @@ RECIPE: /material/cloth/,sofa (left),/obj/structure/bed/sofa/left,8,140,1,1,none
 RECIPE: /material/cloth/,sofa (centre),/obj/structure/bed/sofa,8,140,1,1,none,0,0,93,8,null
 RECIPE: /material/cloth/,sofa (right),/obj/structure/bed/sofa/right,8,140,1,1,none,0,0,93,8,null
 
+RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,jackets & vests,0,0,28,8,null
 RECIPE: /material/cloth/,custom colonial jacket,/obj/item/clothing/suit/storage/jacket/customcolonial,5,90,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,custom colonial coat,/obj/item/clothing/suit/storage/jacket/customcolonialcoat,7,120,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,4,null
@@ -231,7 +241,7 @@ RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,
 RECIPE: /material/cloth/,double crown,/obj/item/clothing/head/doublecrown,5,65,0,1,hats & masks,0,0,18,1,null
 RECIPE: /material/cloth/,eyepatch,/obj/item/clothing/glasses/eyepatch,2,55,0,1,hats & masks,0,0,18,8,null
 RECIPE: /material/cloth/,blindfold,/obj/item/clothing/glasses/sunglasses/blindfold,2,55,0,1,hats & masks,0,0,18,8,null
-RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats & masks,0,0,18,8,null
+RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats & masks,0,0,18,3,null
 RECIPE: /material/cloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,38,4,null
 RECIPE: /material/cloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,38,4,null
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,38,8,null
@@ -262,6 +272,7 @@ RECIPE: /material/cloth/,blue flatcap,/obj/item/clothing/head/flatcap2,2,55,0,1,
 RECIPE: /material/cloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,custom officer cap,/obj/item/clothing/head/custom_off_cap,4,95,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130,0,1,hats & masks,0,0,109,8,null
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
 RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,0,3,null
@@ -318,7 +329,6 @@ RECIPE: /material/cloth/,mechanic outfit,/obj/item/clothing/under/mechanic_outfi
 
 RECIPE: /material/barbedwire/,barbwire,/obj/structure/barbwire,1,20,0,1,none,0,0,0,8,null
 
-RECIPE: /material/lead/,lead sledgehammer,/obj/item/weapon/sledgehammer/lead/sledgehammer,12,140,1,1,none,0,0,0,8,null
 RECIPE: /material/lead/,lead safe,/obj/structure/closet/crate/lead,3,100,1,1,none,0,0,65,8,null
 
 RECIPE: /material/plastic/,filing cabinet,/obj/structure/filingcabinet,6,95,1,1, none,0,0,0,8,null
@@ -331,6 +341,7 @@ RECIPE: /material/plastic/,plastic bag,/obj/item/weapon/storage/bag/plasticbag,0
 RECIPE: /material/plastic/,german gas mask,/obj/item/clothing/mask/gas/german,8,70,0,1,gas masks,0,0,102,8,null
 RECIPE: /material/plastic/,british gas mask,/obj/item/clothing/mask/gas/british,8,70,0,1,gas masks,0,0,102,8,null
 RECIPE: /material/plastic/,modern gas mask (single sided),/obj/item/clothing/mask/gas/modern,8,70,0,1,gas masks,0,0,132,8,null
+RECIPE: /material/plastic/,bug swatter,/obj/item/weapon/swatter/modern,8,70,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,modern gas mask (double sized),/obj/item/clothing/mask/gas/modern2,8,70,0,1,gas masks,0,0,132,8,null
 RECIPE: /material/plastic/,traffic cone,/obj/structure/sign/traffic/cone,1,35,0,1,signs,125,0,0,8,null
 RECIPE: /material/plastic/,do not enter sign,/obj/structure/sign/traffic/noentry,2,75,0,1,signs,125,0,0,8,null
@@ -405,24 +416,23 @@ RECIPE: /material/coca/,cocaine,/obj/item/weapon/reagent_containers/pill/cocaine
 RECIPE: /material/poppy/,opium,/obj/item/weapon/reagent_containers/pill/opium,3,50,0,1,none,0,0,29,8,null
 
 RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talisman,2,75,0,1,none,0,0,0,8,null
-RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,8,null
-RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,8,null
-RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,1,null
+RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,1,null
+RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,1,none,0,0,0,1,null
 RECIPE: /material/bone/,bone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,bone
-RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,0,1,none,0,0,0,8,bone
+RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,0,1,none,0,0,0,3,bone
 RECIPE: /material/bone/,bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone pickaxe,/obj/item/weapon/pickaxe/bone,2,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone shovel,/obj/item/weapon/shovel/bone,2,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,dice,/obj/item/weapon/dice,2,90,0,1,none,15,0,0,8,null
-RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/tomahawk,4,30,0,1,none,25,0,0,8,null
+RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/tomahawk,4,30,0,1,none,25,0,0,4,null
 
-RECIPE: /material/stone/,stone sledgehammer,/obj/item/weapon/sledgehammer/stone/sledgehammer,12,140,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,research kit,/obj/item/weapon/researchkit,10,190,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,scientific rock slate,/obj/item/weapon/book/research,4,110,0,1,none,0,0,0,0,null
-RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,stone
+RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,stone
 RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,none,100,0,0,8,null
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,none,0,0,0,8,null
@@ -433,10 +443,13 @@ RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,none,0,0
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,none,0,0,0,8,null
 
+RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,stone
+RECIPE: /material/stone/,stone arrowhead,/obj/item/stack/arrowhead/stone,1,10,0,1,projectiles,0,14,0,8,null
+
 RECIPE: /material/stone/,furnace,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
-RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,none,24,33,0,4,null
-RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,none,0,0,0,8,null
+RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,null
+RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,null
 RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
 RECIPE: /material/stone/,fortified wall (horizontal),/obj/structure/barricade/stone_h,5,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,fortified wall (vertical),/obj/structure/barricade/stone_v,5,80,1,1,fortifications,29,0,0,8,null
@@ -474,17 +487,73 @@ RECIPE: /material/glass/,laboratory distiller,/obj/structure/lab_distillery,10,1
 RECIPE: /material/glass/,toilet,/obj/structure/toilet,4,80,1,1,none,95,0,0,8,null
 RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,none,55,0,0,8,null
 RECIPE: /material/glass/,shower,/obj/structure/shower,10,190,1,1,none,115,0,0,8,null
+//**************************************************************
+//************************ROBERTS FACTORIES*********************
+//***********************COINSMELTER****************************
+*************************MID BRONZE AGE*************************
+RECIPE: /material/steel/,coin smelter,/obj/structure/machinery/factory/coinsmelter,10,190,1,1,none,25,0,0,8,null
+//**************************************************************
+//*************************ROBERTS BATHTUBS*********************
+//**************************************************************
+
+//  STONE AGE //
+RECIPE: /material/wood/,bathtub,/obj/structure/shower/bathtub/wooden,50,190,1,1,hygiene,10,0,5,8,null
+//STONE AGE //
+
+// EARLY COPPER AGE //
+RECIPE: /material/stone/,stone bathtub,/obj/structure/shower/bathtub/stone,50,220,1,1,hygiene,15,0,10,8,null
+//EARLY COPPER AGE //
+
+// LATE COPPER AGE //
+RECIPE: /material/copper/,copper bathtub,/obj/structure/shower/bathtub/copper,50,280,1,1,hygiene,25,0,15,8,null
+//LATE COPPER AGE //
+
+// LATE BRONZE AGE //
+RECIPE: /material/bronze/,bronze bathtub,/obj/structure/shower/bathtub/bronze,50,320,1,1,hygiene,30,0,20,8,null
+//LATE BRONZE AGE //
+
+// WW2 AGE //
+RECIPE: /material/steel/,steel bathtub,/obj/structure/shower/bathtub/steel,50,420,1,1,hygiene,150,0,40,8,null
+//WW2 AGE //
+
+//**************************************************************
+//************************PUBLIC BATHTUBS***********************
+//**************************************************************
+
+//DARK AGES//
+RECIPE: /material/wood/,wooden public bathtub,/obj/structure/shower/bathtub/big/wooden,100,440,1,1,hygiene,45,0,30,8,null
+//DARK AGES//
+
+//MIDDLE AGES//
+RECIPE: /material/stone/,stone public bathtub,/obj/structure/shower/bathtub/big/stone,50,450,1,1,hygiene,55,0,40,8,null
+//MIDDLE AGES//
+
+//RENAISSANCE AGES//
+RECIPE: /material/copper/,copper public bathtub,/obj/structure/shower/bathtub/big/copper,50,500,1,1,hygiene,70,0,50,8,null
+//RENAISSANCE AGES//
+
+//IMPERIAL AGES//
+RECIPE: /material/bronze/,bronze public bathtub,/obj/structure/shower/bathtub/big/bronze,50,550,1,1,hygiene,85,0,60,8,null
+//IMPERIAL AGES//
+
+//COLD WAR//
+RECIPE: /material/steel/,steel public bathtub,/obj/structure/shower/bathtub/big/steel,50,620,1,1,hygiene,175,0,80,8,null
+//COLD WAR//
+
+//**************************************************************
+//*************************ROBERTS BATHTUBS*********************
+//**************************************************************
 RECIPE: /material/glass/,chemical dispenser,/obj/structure/chemical_dispenser,12,180,1,1,none,90,0,0,8,null
 
 RECIPE: /material/gold/,gold hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,gold
-RECIPE: /material/gold/,gold-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,8,gold
+RECIPE: /material/gold/,gold-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,3,gold
 RECIPE: /material/gold/,gold coins,/obj/item/stack/money/goldcoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,135,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/armbangle/gold,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none,0,0,0,8,null
 
 RECIPE: /material/silver/,silver hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,silver
-RECIPE: /material/silver/,silver-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,8,silver
+RECIPE: /material/silver/,silver-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,3,silver
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver crown,/obj/item/clothing/head/helmet/silver_crown,3,135,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver arm bangles,/obj/item/clothing/accessory/armband/armbangle/silver,2,95,0,1,none,0,0,0,8,null
@@ -497,8 +566,9 @@ RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95
 RECIPE: /material/copper/,telegraph,/obj/structure/telegraph,12,90,1,1,none,105,0,0,8,null
 RECIPE: /material/copper/,teleprinter,/obj/structure/teleprinter,12,120,1,1,none,105,0,0,8,null
 RECIPE: /material/copper/,electronic circuits,/obj/item/stack/material/electronics,1,80,0,1,none,130,0,0,8,null
+RECIPE: /material/copper/,copper arrowhead,/obj/item/stack/arrowhead/copper,1,10,0,1,ammunition,0,16,0,8,null
 RECIPE: /material/copper/,copper hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,8,8,0,8,copper
-RECIPE: /material/copper/,copper-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,8,8,0,8,copper
+RECIPE: /material/copper/,copper-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,8,8,0,3,copper
 RECIPE: /material/copper/,copper coins,/obj/item/stack/money/coppercoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,copper small sword,/obj/item/weapon/material/sword/smallsword/copper,10,70,0,1,none,18,34,0,8,copper
 RECIPE: /material/copper/,copper lamp,/obj/item/flashlight/lantern/copper,3,55,0,1,none,0,0,0,8,null
@@ -509,6 +579,7 @@ RECIPE: /material/copper/,trombone,/obj/item/trombone,6,155,0,1,none,83,0,0,8,nu
 RECIPE: /material/copper/,rifle casing (x3),/obj/item/stack/ammopart/casing/rifle,1,25,0,1,ammunition,105,0,0,8,null
 RECIPE: /material/copper/,pistol casing (x3),/obj/item/stack/ammopart/casing/pistol,1,25,0,1,ammunition,105,0,0,8,null
 RECIPE: /material/copper/,artillery casing,/obj/item/stack/ammopart/casing/artillery,2,35,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/copper/,field cannon casing,/obj/item/stack/ammopart/casing/tank,2,35,0,1,ammunition,105,0,0,8,null
 RECIPE: /material/copper/,ammo clip (5),/obj/item/ammo_magazine/emptyclip,1,30,0,1,ammunition,105,0,0,8,null
 RECIPE: /material/copper/,ammo belt (100),/obj/item/ammo_magazine/emptybelt,7,25,0,1,ammunition,125,0,0,8,null
 RECIPE: /material/copper/,grenade casing,/obj/item/stack/ammopart/casing/grenade,2,35,0,1,ammunition,115,0,0,8,null
@@ -524,7 +595,7 @@ RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,
 RECIPE: /material/steel/,steel floor,/obj/covers/steelplating,1,15,1,1,walls & floors,96,0,0,8,null
 RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,none,96,0,0,8,null
 RECIPE: /material/steel/,steel hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,50,44,0,8,steel
-RECIPE: /material/steel/,steel-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,8,steel
+RECIPE: /material/steel/,steel-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,3,steel
 RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,8,null
 RECIPE: /material/steel/,throwing axe,/obj/item/weapon/material/throwing_axe,3,20,0,1,weapons,50,44,0,8,null
 RECIPE: /material/steel/,steel throwing knife,/obj/item/weapon/material/throwing_knife,2,20,0,1,weapons,50,44,0,8,steel
@@ -532,6 +603,7 @@ RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,none,75,0
 RECIPE: /material/steel/,jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,none,75,0,0,8,null
 RECIPE: /material/steel/,cannon,/obj/structure/cannon,35,600,1,1,none,71,79,0,4,null
 RECIPE: /material/steel/,artillery cannon,/obj/structure/cannon/modern,40,600,1,1,none,95,109,0,8,null
+RECIPE: /material/steel/,tank cannon,/obj/structure/cannon/modern/tank,40,600,1,1,none,115,125,0,8,null
 RECIPE: /material/steel/,bakelizer,/obj/structure/bakelizer,18,300,1,1,none,90,0,0,8,null
 RECIPE: /material/steel/,petroleum refinery,/obj/structure/refinery,22,230,1,1,none,110,0,0,8,null
 RECIPE: /material/steel/,biofuel refinery,/obj/structure/refinery/biofuel,18,200,1,1,none,115,0,0,8,null
@@ -545,26 +617,38 @@ RECIPE: /material/steel/,fuel pump (star),/obj/structure/fuelpump/star,15,120,1,
 RECIPE: /material/steel/,fuel pump (small),/obj/structure/fuelpump/small,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (N),/obj/structure/fuelpump/n,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (S),/obj/structure/fuelpump/s,15,120,1,1,none,120,0,0,8,null
-RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,0,0,0,8,null
-RECIPE: /material/steel/,25u bike fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25,2,45,0,1,vehicle parts,0,0,0,8,null
-RECIPE: /material/steel/,50u bike fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike,4,65,0,1,vehicle parts,0,0,0,8,null
-RECIPE: /material/steel/,75u bike fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike75,6,85,0,1,vehicle parts,0,0,0,8,null
-RECIPE: /material/steel/,120u small fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small,10,125,0,1,vehicle parts,0,0,0,8,null
-RECIPE: /material/steel/,250u large fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank,20,185,0,1,vehicle parts,0,0,0,8,null
-RECIPE: /material/steel/,street lamp,/obj/structure/lamp/lamppost_small,3,35,0,1,electrical,0,0,0,8,null
+RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,steel frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,driver's seat,/obj/structure/bed/chair/drivers,8,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,loaders's seat,/obj/structure/bed/chair/loader,6,40,0,1,vehicle parts,126,125,0,8,null
+RECIPE: /material/steel/,gunner's seat,/obj/structure/bed/chair/gunner,6,40,0,1,vehicle parts,126,125,0,8,null
+RECIPE: /material/steel/,commander's seat,/obj/structure/bed/chair/commander,10,40,0,1,vehicle parts,126,125,0,8,null
+RECIPE: /material/steel/,light axis (800 weight),/obj/structure/vehicleparts/axis/car,10,80,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,rubber wheel,/obj/structure/vehicleparts/movement,1,20,0,1,vehicle parts,115,0,0,8,null
+RECIPE: /material/steel/,tank track,/obj/structure/vehicleparts/movement/tracks,4,60,0,1,vehicle parts,135,0,0,8,null
+RECIPE: /material/steel/,25u bike fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25,2,45,0,1,fuel tanks,120,0,0,8,null
+RECIPE: /material/steel/,50u bike fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike,4,65,0,1,fuel tanks,120,0,0,8,null
+RECIPE: /material/steel/,75u bike fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike75,6,85,0,1,fuel tanks,120,0,0,8,null
+RECIPE: /material/steel/,120u small fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small,10,125,0,1,fuel tanks,120,0,0,8,null
+RECIPE: /material/steel/,180u medium fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,15,185,0,1,fuel tanks,120,0,0,8,null
+RECIPE: /material/steel/,250u large fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank,20,185,0,1,fuel tanks,120,0,0,8,null
+RECIPE: /material/steel/,450u huge fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank,36,185,0,1,fuel tanks,120,0,0,8,null
+RECIPE: /material/steel/,street lamp,/obj/structure/lamp/lamppost_small,3,35,0,1,electrical,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/pickaxe/jackhammer,24,60,0,1,tools,178,0,0,8,null
-RECIPE: /material/steel/,steel sledgehammer,/obj/item/weapon/sledgehammer/steel/sledgehammer,12,140,1,1,tools,85,0,0,8,null
 RECIPE: /material/steel/,refrigerator,/obj/structure/closet/fridge,15,230,1,1,none,150,0,178,8,null
+RECIPE: /material/steel/,steel arrowhead,/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
+RECIPE: /material/steel/, ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
 
-RECIPE: /material/bronze/,bronze sledgehammer,/obj/item/weapon/sledgehammer/bronze/sledgehammer,12,140,1,1,tools,20,0,0,8,null
+RECIPE: /material/bronze/,bronze arrowhead,/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
-RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,8,bronze
+RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,3,bronze
 RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,8,null
 RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,8,null
 RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,8,null
 RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,27,34,0,8,bronze
 RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,27,42,0,8,bronze
-RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,34,21,0,8,bronze
+RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,34,21,0,4,bronze
 RECIPE: /material/bronze/,bronze retractor,/obj/item/weapon/surgery/retractor/bronze,2,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze hemostat,/obj/item/weapon/surgery/hemostat/bronze,2,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze cautery,/obj/item/weapon/surgery/cautery/bronze,2,50,0,1,healthcare,18,0,26,8,null
@@ -575,10 +659,12 @@ RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4
 RECIPE: /material/bronze/,bronze arm bangles,/obj/item/clothing/accessory/armband/armbangle/bronze,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/bronze/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,bronze
 RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
+
 RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 RECIPE: /material/wood/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,none,118,0,0,8,null
-RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,none,22,0,0,8,null
-RECIPE: /material/wood/,boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,none,22,0,0,8,null
+RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
+RECIPE: /material/wood/,boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
+RECIPE: /material/wood/,wood frame,/obj/structure/vehicleparts/frame/wood,2,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/wood/,research desk,/obj/structure/researchdesk,8,250,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,global exchange,/obj/structure/marketplace,10,140,1,1,none,96,0,0,8,null
 RECIPE: /material/wood/,communications pole,/obj/structure/phoneline,2,50,1,1,none,100,0,0,8,null
@@ -615,11 +701,14 @@ RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,4,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,4,90,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,14,0,3,null
-RECIPE: /material/wood/,arrow,/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null
-RECIPE: /material/wood/,bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,8,null
+RECIPE: /material/wood/,arrow shaft,/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null
+RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,2,null
+RECIPE: /material/wood/,shortbow,/obj/item/weapon/gun/projectile/bow/shortbow,8,140,0,1,weapons,0,30,0,7,null
+RECIPE: /material/wood/,longbow,/obj/item/weapon/gun/projectile/bow/longbow,12,160,0,1,weapons,0,30,0,7,null
+RECIPE: /material/wood/,compound bow,/obj/item/weapon/gun/projectile/bow/compoundbow,8,170,0,1,weapons,0,175,0,8,null
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
-RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,8,wood
+RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/,mop,/obj/item/weapon/mop,2,55,0,1,tools,22,0,0,8,null
@@ -636,6 +725,7 @@ RECIPE: /material/wood/,cabinet,/obj/structure/closet/cabinet/ceiling,4,60,1,1,f
 RECIPE: /material/wood/,chair,/obj/structure/bed/chair/wood,4,50,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,bookcase,/obj/structure/bookcase,6,80,1,1,furniture,14,0,0,8,null
+RECIPE: /material/wood/,shell rack,/obj/structure/shellrack,6,90,1,1,furniture,80,105,0,8,null
 RECIPE: /material/wood/,target practice dummy,/obj/structure/target_practice,7,120,1,1,furniture,18,0,0,8,null
 RECIPE: /material/wood/,bed,/obj/structure/bed/wood,4,60,_one_per_turf = 1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
@@ -675,7 +765,7 @@ RECIPE: /material/wood/,work propaganda poster,/obj/item/weapon/poster/faction/w
 RECIPE: /material/wood/,leader propaganda poster,/obj/item/weapon/poster/faction/lead,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,book,/obj/item/weapon/book,4,75,0,1,paper & printing,45,0,0,8,null
 RECIPE: /material/wood/,printing press,/obj/structure/printingpress,12,120,1,1,paper & printing,52,0,0,8,null
-RECIPE: /material/wood/,catapult,/obj/structure/catapult,50,450,1,1,siege weapons,24,33,0,8,null
+RECIPE: /material/wood/,catapult,/obj/structure/catapult,50,450,1,1,siege weapons,24,33,0,4,null
 RECIPE: /material/wood/,siege ladder,/obj/item/weapon/siegeladder,8,100,0,1,siege weapons,24,33,0,8,null
 RECIPE: /material/wood/,wooden foot,/obj/item/weapon/prosthesis/woodfoot,3,80,0,1,prosthetics,0,0,18,8,null
 RECIPE: /material/wood/,wooden pegleg,/obj/item/weapon/prosthesis/pegleg,5,110,0,1,prosthetics,0,0,18,8,null
@@ -690,7 +780,6 @@ RECIPE: /material/wood/,temple by the river,/obj/structure/sign/painting8,3,40,1
 RECIPE: /material/wood/,desert camp,/obj/structure/sign/painting9,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,paintings,65,0,0,8,null
 
-RECIPE: /material/iron/,iron sledgehammer,/obj/item/weapon/sledgehammer/iron/sledgehammer,12,140,1,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
 RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
 RECIPE: /material/iron/,cooking pot,/obj/structure/pot,8,180,1,1,production,33,0,0,8,null
@@ -708,7 +797,7 @@ RECIPE: /material/iron/,keychain,/obj/item/weapon/storage/belt/keychain,1,30,0,1
 RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,none,50,0,0,8,null
 RECIPE: /material/iron/,anvil,/obj/structure/anvil,25,150,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,circumcision knife,/obj/item/weapon/material/kitchen/utensil/knife/circumcision,2,60,0,1,tools,25,0,0,8,null
-RECIPE: /material/iron/,iron-tipped spear,/obj/item/weapon/material/spear,2,50,0,1,weapons,27,16,0,8,iron
+RECIPE: /material/iron/,iron-tipped spear,/obj/item/weapon/material/spear,2,50,0,1,weapons,27,16,0,3,iron
 RECIPE: /material/iron/,battle axe,/obj/item/weapon/material/hatchet/battleaxe,8,70,0,1,weapons,27,16,0,8,iron
 RECIPE: /material/iron/,iron shield,/obj/item/weapon/shield/iron,4,85,0,1,weapons,27,27,0,4,null
 RECIPE: /material/iron/,halberd,/obj/item/weapon/material/halberd,2,60,0,1,weapons,33,39,0,8,iron
@@ -716,19 +805,23 @@ RECIPE: /material/iron/,pike,/obj/item/weapon/material/pike,3,75,0,1,weapons,33,
 RECIPE: /material/iron/,hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,shovel,/obj/item/weapon/shovel,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,4,50,0,1,tools,18,0,0,8,null
+RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,4,50,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing_modern,4,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,butcher's cleaver,/obj/item/weapon/material/knife/butcher,3,40,0,1,tools,20,0,25,8,iron
 RECIPE: /material/iron/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,iron
+RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,pickaxe,/obj/item/weapon/pickaxe,3,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/star,2,15,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,kunai,/obj/item/weapon/material/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,throwing knife,/obj/item/weapon/material/throwing_knife,4,20,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,naginata,/obj/item/weapon/material/naginata,12,60,0,1,weapons,39,40,0,3,iron
-RECIPE: /material/iron/,musket ball (x2),/obj/item/stack/ammopart/musketball,1,25,0,1,bullets,0,0,80,8,null
-RECIPE: /material/iron/,small musket ball (x3),/obj/item/stack/ammopart/musketball_pistol,1,25,0,1,bullets,0,80,0,8,null
-RECIPE: /material/iron/,blunderbuss ball (x2),/obj/item/stack/ammopart/blunderbuss,1,25,0,1,bullets,0,80,0,8,null
-RECIPE: /material/iron/,iron bullet (x3),/obj/item/stack/ammopart/bullet,1,25,0,1,bullets,0,92,0,8,null
-RECIPE: /material/iron/,cannon ball,/obj/item/cannon_ball,5,40,0,1,bullets,0,80,0,5,null
+RECIPE: /material/iron/,musket ball (x2),/obj/item/stack/ammopart/musketball,1,25,0,1,projectiles,0,0,80,8,null
+RECIPE: /material/iron/,small musket ball (x3),/obj/item/stack/ammopart/musketball_pistol,1,25,0,1,projectiles,0,80,0,8,null
+RECIPE: /material/iron/,blunderbuss ball (x2),/obj/item/stack/ammopart/blunderbuss,1,25,0,1,projectiles,0,80,0,8,null
+RECIPE: /material/iron/,iron bullet (x3),/obj/item/stack/ammopart/bullet,1,25,0,1,projectiles,0,92,0,8,null
+RECIPE: /material/iron/,iron arrowhead,/obj/item/stack/arrowhead/iron,1,10,0,1,projectiles,0,30,0,8,null
+RECIPE: /material/iron/,cannon ball,/obj/item/cannon_ball,5,40,0,1,projectiles,0,80,0,5,null
 RECIPE: /material/iron/,revolver speedloader (6),/obj/item/ammo_magazine/emptyspeedloader,1,45,0,1,magazines,100,0,0,8,null
 RECIPE: /material/iron/,pistol magazine (8),/obj/item/ammo_magazine/emptymagazine/pistol/a45,2,45,0,1,magazines,105,0,0,8,null
 RECIPE: /material/iron/,pistol magazine (15),/obj/item/ammo_magazine/emptymagazine/pistol,3,45,0,1,magazines,105,0,0,8,null
@@ -754,15 +847,19 @@ RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient
 RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
 RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
 RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null
-RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail (turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null
-RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1,1,trains,101,0,0,8,null
-RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
-RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
-RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/, ladder,/obj/item/weapon/siegeladder/metal,8,125,0,1,none,24,33,0,8,iron
+
+RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,2,25,1,1,walls doors and floors,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,2,25,1,1,walls doors and floors,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,2,25,1,1,walls doors and floors,0,0,0,8,
+RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,2,45,1,1,none,0,0,0,8,null
+
+RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7,250,1,1,structures,21,0,0,8,null
+RECIPE: /material/sandstone/,furnace,/obj/structure/furnace/sandstone,10,150,1,1,structures,26,0,0,8,null
+RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,3,100,1,1,structures,0,0,0,8,null
+
+RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandbag/sandstone,3,70,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/barricade/sandstone_v/crenelated,5,80,1,1,fortifications,0,0,0,8,null
+
+RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,1,30,1,1,none,0,0,0,8,null

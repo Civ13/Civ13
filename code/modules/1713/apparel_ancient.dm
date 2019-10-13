@@ -131,7 +131,7 @@
 	worn_state = "greatshendyt"
 /obj/item/clothing/suit/armor
 	health = 40
-
+	ripable = FALSE
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "scale armor"
 	desc = "A thick, expensive scaled iron armor, covering the torso."
@@ -585,3 +585,10 @@
 	icon_state = "laurelcrown"
 	item_state = "laurelcrown"
 	body_parts_covered = FALSE
+
+/obj/item/clothing/suit/towel
+	name = "white towel"
+	desc = "A simple towel to wrap around yourself."
+	icon_state = "towel"
+	item_state = "towel"
+	worn_state = "towel"

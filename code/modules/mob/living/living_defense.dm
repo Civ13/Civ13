@@ -77,11 +77,11 @@
 			damage /= H.getStatCoeff("strength")
 		var/instadeath = 0
 		if (def_zone == "eyes")
-			instadeath = 20
-		else if (def_zone == "mouth")
-			instadeath = 20
-		else if (def_zone == "head")
 			instadeath = 10
+		else if (def_zone == "mouth")
+			instadeath = 10
+		else if (def_zone == "head")
+			instadeath = 5
 		if (instadeath > 0)
 			if (prob(instadeath))
 				death()

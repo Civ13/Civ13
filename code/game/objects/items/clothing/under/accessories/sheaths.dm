@@ -5,6 +5,7 @@
 	item_state = "short_sheath"
 	slots = 1
 	slot = "utility"
+	ripable = FALSE
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/sword/smallsword,
@@ -60,4 +61,5 @@
 		/obj/item/weapon/material/sword/scimitar,
 		/obj/item/weapon/material/sword/saif,
 		/obj/item/weapon/material/sword/sabre,
-		/obj/item/weapon/material/sword/rapier)
+		/obj/item/weapon/material/sword/rapier,
+		/obj/item/weapon/material/sword/armingsword)

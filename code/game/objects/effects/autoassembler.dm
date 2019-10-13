@@ -14,7 +14,7 @@
 
 /obj/effect/autoassembler/New()
 	..()
-	spawn(50)
+	spawn(10)
 		var/rangeto = range(rangef,loc)
 		//first we assign the axis
 		var/done1 = FALSE
@@ -26,10 +26,8 @@
 						A.MouseDrop(F)
 						done1 = TRUE
 						central = F
-//		if (central)
-//			world.log << "Assigned the axis to the central frame."
 		if (!central)
-			world.log << "<b>Axis error!</b>"
+			world.log << "<b>Axis error! ([x],[y])</b>"
 			return FALSE
 		//now connect all the frames
 		for (var/obj/structure/vehicleparts/frame/A in rangeto)
@@ -44,6 +42,7 @@
 					central.axis.components += A
 				A.anchored = TRUE
 				A.dir = central.axis.components
+				A.name = central.axis.name
 		for (var/obj/structure/vehicleparts/frame/AA in loc)
 			if (!AA.axis)
 				AA.axis = central.axis
@@ -56,6 +55,7 @@
 					central.axis.components += AA
 				AA.anchored = TRUE
 				AA.dir = central.axis.components
+				AA.name = central.axis.name
 		for (var/turf/T in rangeto)
 			var/doneps = FALSE
 			for (var/obj/structure/vehicleparts/frame/FRE in T)
@@ -74,26 +74,23 @@
 					if (!done2)
 						central.axis.engine = E
 						E.anchored = TRUE
+						E.icon = 'icons/obj/vehicleparts.dmi'
+						E.engineclass = "engine"
+						E.update_icon()
 						done2 = TRUE
-//		if (done2)
-//			world.log << "Added the engine."
-		if (!done2)
-			world.log << "<b>Engine error!</b>"
-			return FALSE
+//		if (!done2)
+//			world.log << "<b>Engine error! ([x],[y])</b>"
+//			return FALSE
 		//then the fueltank
 		var/done3 = FALSE
 		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)
 			if (!done3)
-				for (var/obj/structure/engine/internal/I in range(2,E))
-					if (!done3)
-						I.fueltank = E
-						E.anchored = TRUE
-						done3 = TRUE
-//		if (done3)
-//			world.log << "Added fueltank."
-		if (!done3)
-			world.log << "<b>Fueltank error!</b>"
-			return FALSE
+				central.axis.engine.fueltank = E
+				E.anchored = TRUE
+				done3 = TRUE
+//		if (!done3)
+//			world.log << "<b>Fueltank error! ([x],[y])</b>"
+//			return FALSE
 		//finally, the drivers seat
 		var/done4 = FALSE
 		for (var/obj/structure/bed/chair/drivers/D in rangeto)
@@ -105,21 +102,23 @@
 						central.axis.wheel = D.wheel
 						central.axis.wheel.control = F
 						done4 = TRUE
-//		if (done4)
-//			world.log << "Added driver's seat."
-		if (!done4)
-			world.log << "<b>Driver's Seat error!</b>"
-			return FALSE
-		//and the tracks
-		for (var/obj/structure/vehicleparts/movement/M in rangeto)
-			for (var/obj/structure/vehicleparts/frame/F in M.loc)
-				M.MouseDrop(F)
+//		if (!done4)
+//			world.log << "<b>Driver's Seat error! ([x],[y])</b>"
+//			return FALSE
 		sleep(2)
 		if (isemptylist(central.axis.corners))
 			central.axis.check_corners()
 		if (isemptylist(central.axis.matrix))
 			central.axis.check_matrix()
+		//and the tracks
+		for (var/obj/structure/vehicleparts/movement/M in rangeto)
+			for (var/obj/structure/vehicleparts/frame/F in M.loc)
+				M.MouseDrop(F)
+		for (var/obj/structure/lamp/lamp_small/tank/TL in rangeto)
+			for (var/obj/structure/vehicleparts/frame/F in TL.loc)
+				TL.connection = central.axis.engine
 		for (var/obj/structure/vehicleparts/VP in range(7,src))
+			VP.dir = central.axis.dir
 			VP.update_icon()
 //		world.log << "[central.axis] assembly complete."
 		qdel(src)

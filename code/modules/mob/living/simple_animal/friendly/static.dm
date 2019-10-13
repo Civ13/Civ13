@@ -20,22 +20,38 @@
 /obj/structure/fish/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/fishing) && counter > 0)
 		H.visible_message("[H] starts fishing.")
-		if (do_after(H, 150, src))
-			if (prob(30))
-				H << "You got a fish!"
-				counter = (counter-1)
-				if (species == "salmon")
-					new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
+		if (istype(W, /obj/item/weapon/fishing/modern))
+			if (do_after(H, 120, src))
+				if (prob(40))
+					H << "You got a fish!"
+					counter = (counter-1)
+					if (species == "salmon")
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
+					else
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)
+					if (counter <= 0)
+						invisibility = 101
+					get_fish()
+					return
 				else
-					new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)
-				if (counter <= 0)
-					invisibility = 101
-				get_fish()
-				return
-			else
-				H << "You can't seem to get anything to bite..."
-				return
-
+					H << "You can't seem to get anything to bite..."
+					return
+		else
+			if (do_after(H, 150, src))
+				if (prob(30))
+					H << "You got a fish!"
+					counter = (counter-1)
+					if (species == "salmon")
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
+					else
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)
+					if (counter <= 0)
+						invisibility = 101
+					get_fish()
+					return
+				else
+					H << "You can't seem to get anything to bite..."
+					return
 /obj/structure/fish/proc/get_fish()
 	if (counter < 2)
 		spawn(rand(3000,3600))

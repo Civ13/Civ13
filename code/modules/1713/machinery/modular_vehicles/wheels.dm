@@ -7,41 +7,28 @@
 	var/obj/structure/bed/chair/drivers/drivingchair = null
 	var/obj/structure/vehicleparts/frame/control = null
 	var/lastdirchange = 0
-/obj/item/vehicleparts/wheel/modular/proc/turndir(var/newdir = "left")
+/obj/item/vehicleparts/wheel/modular/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (world.time <= lastdirchange)
+		return FALSE
+	lastdirchange = world.time+15
+	if (control.axis.moving == FALSE || control.axis.currentspeed == 0)
 		return FALSE
 	for(var/obj/effect/pseudovehicle/O in control.axis.components)
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
 			if (VP.axis != control.axis)
+				if (mob)
+					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
+				return FALSE
+		for(var/obj/effect/pseudovehicle/PV in O.loc)
+			if (PV.link != control.axis)
+				if (mob)
+					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
 				return FALSE
 	if (newdir == "left")
-		if (control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), "left"))
-			control.axis.dir = TURN_LEFT(control.axis.dir)
-		lastdirchange = world.time+15
-		for (var/obj/OB in control.axis.components)
-			OB.update_icon()
-		for (var/obj/structure/vehicleparts/movement/OB in control.axis.wheels)
-			if (OB.reversed)
-				OB.dir = OPPOSITE_DIR(control.axis.dir)
-			else
-				OB.dir = control.axis.dir
-			OB.update_icon()
-		return TRUE
-	else if (newdir == "right")
-		if (control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), "right"))
-			control.axis.dir = TURN_LEFT(control.axis.dir)
-		lastdirchange = world.time+15
-		for (var/obj/OB in control.axis.components)
-			if (!istype(OB, /obj/structure/cannon))
-				OB.dir = control.axis.dir
-			OB.update_icon()
-		for (var/obj/structure/vehicleparts/movement/OB in control.axis.wheels)
-			if (OB.reversed)
-				OB.dir = OPPOSITE_DIR(control.axis.dir)
-			else
-				OB.dir = control.axis.dir
-			OB.update_icon()
-		return TRUE
+		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), newdir)
+	else
+		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), newdir)
+	return TRUE
 
 /obj/structure/bed/chair/drivers/ex_act(severity)
 	switch(severity)
@@ -72,7 +59,10 @@
 		H.remove_from_mob(src)
 		src.forceMove(drivingchair)
 		return
+	if (!control.axis.engine || !control.axis.engine.fueltank)
+		return
 	if (!control.axis.engine.on && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume > 0)
+		control.axis.currentspeed = 0
 		control.axis.engine.turn_on(H)
 		if (isemptylist(control.axis.corners))
 			control.axis.check_corners()
@@ -83,7 +73,7 @@
 			if (control.axis.engine && control.axis.engine.on)
 				control.axis.engine.running_sound()
 		return
-	else if (control.axis.engine.fueltank.reagents.total_volume <= 0)
+	else if (control.axis && control.axis.engine && control.axis.engine.fueltank.reagents.total_volume <= 0)
 		H << "There is not enough fuel!"
 		return
 	if (control.axis.currentspeed < 0)
@@ -95,7 +85,7 @@
 	else
 		var/spd = control.axis.get_speed()
 		control.axis.vehicle_m_delay = spd
-		if (control.axis.currentspeed == 1)
+		if (control.axis.currentspeed == 1 && !control.axis.moving)
 			control.axis.moving = TRUE
 			H << "You put on the first gear."
 			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
@@ -131,10 +121,6 @@
 			control.axis.moving = FALSE
 			user << "You stop the [control.axis]."
 			for (var/obj/structure/vehicleparts/movement/W in control.axis.wheels)
-				if (W.broken)
-					W.icon_state = "[W.base_icon][control.axis.color_code]_broken"
-				else
-					W.icon_state = "[W.base_icon][control.axis.color_code]"
 				W.update_icon()
 			return
 		else
@@ -179,14 +165,11 @@
 			if (wheel.control.axis.engine.on)
 				wheel.control.axis.engine.on = FALSE
 				wheel.control.axis.moving = FALSE
+				wheel.control.axis.currentspeed = 0
 				wheel.control.axis.engine.update_icon()
 				user << "You stop the [wheel.control.axis]."
 				for (var/obj/structure/vehicleparts/movement/W in wheel.control.axis.wheels)
-					if (W.broken)
-						W.icon_state = "[W.base_icon][wheel.control.axis.color_code]_broken"
-					else
-						W.icon_state = "[W.base_icon][wheel.control.axis.color_code]"
-						W.update_icon()
+					W.update_icon()
 	return M
 
 /obj/structure/bed/chair/drivers/update_icon()

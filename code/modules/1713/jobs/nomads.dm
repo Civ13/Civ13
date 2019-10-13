@@ -145,7 +145,7 @@
 		else if (map.ordinal_age == 8)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/under/modern7(src), slot_w_uniform)
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
@@ -518,7 +518,10 @@
 				if (!isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
 					var/found = FALSE
 					for (var/i in whitelist_list)
-						if (i == client.ckey)
+						var/temp_ckey = lowertext(i)
+						temp_ckey = replacetext(temp_ckey," ", "")
+						temp_ckey = replacetext(temp_ckey,"_", "")
+						if (temp_ckey == client.ckey)
 							found = TRUE
 					if (found)
 						var/datum/language/currlg

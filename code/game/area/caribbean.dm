@@ -1,5 +1,4 @@
 /area/caribbean
-	requires_power = FALSE
 	has_gravity = TRUE
 	no_air = FALSE
 	base_turf = /turf/floor/dirt //The base turf type of the area, which can be used to override the z-level's base turf
@@ -189,6 +188,18 @@
 	name = "Ice"
 	base_turf = /turf/floor/beach/water/ice
 	icon_state = "blue1"
+	climate = "tundra"
+
+/area/caribbean/nomads/ice/target
+	name = "Ice"
+	base_turf = /turf/floor/beach/water/ice
+	icon_state = "green1"
+	climate = "tundra"
+
+/area/caribbean/prison
+	name = "Prisoner camp"
+	base_turf = /turf/floor/dirt/winter
+	icon_state = "blue2"
 	climate = "tundra"
 
 /area/caribbean/island
@@ -595,6 +606,8 @@
 
 /area/caribbean/russian/land/outside
 	icon_state = "red3"
+/area/caribbean/russian/land/outside/tundra
+	climate = "tundra"
 
 /area/caribbean/british
 	icon_state = "blue1"

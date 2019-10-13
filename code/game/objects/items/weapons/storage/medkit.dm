@@ -52,6 +52,20 @@
 	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
 	return
 
+/obj/item/weapon/storage/firstaid/advsmall
+	name = "first-aid kit"
+	desc = "Contains basic first-aid medicine."
+	icon_state = "medical_satchel"
+	item_state = "medical_satchel"
+
+/obj/item/weapon/storage/firstaid/advsmall/New()
+	..()
+	if (empty) return
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/splint(src)
+	return
+
 /obj/item/weapon/storage/firstaid/combat/modern
 	name = "combat medicine kit"
 	desc = "Contains drugs and antiseptics used in combat situations."

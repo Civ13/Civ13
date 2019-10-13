@@ -246,7 +246,7 @@ proc/get_radio_key_from_channel(var/channel)
 				if (howl)
 					verb = "howls"
 				O.hear_talk(src, message, verb, speaking)
-	if (!client)
+	if (client)
 		log_say("[name]/[key] : [message]")
 	return TRUE
 

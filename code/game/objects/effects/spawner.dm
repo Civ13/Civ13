@@ -506,6 +506,14 @@
 	create_path = /obj/structure/wild/tree/live_tree
 	timer = 6000
 
+/obj/effect/spawner/objspawner/pine
+	name = "pinetree spawner"
+	icon_state = "x1"
+	max_number = 35
+	max_range = 13
+	create_path = /obj/structure/wild/tree/live_tree/pine
+	timer = 6000
+
 /obj/effect/spawner/objspawner/palm
 	name = "palm spawner"
 	icon_state = "x1"

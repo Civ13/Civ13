@@ -123,35 +123,44 @@ obj/item/weapon/material/sword/wakazashi
 	slot_flags = SLOT_BELT
 	value = 60
 	cooldownw = 6
-/obj/item/weapon/material/knife/tanto/var/suicide = FALSE //To
+	var/suicide = FALSE //To
+
 /obj/item/weapon/material/knife/tanto/proc/handle_suicide(mob/living/user)
+	..()
 	if (!ishuman(user))
 		return
 	var/mob/living/carbon/human/M = user
 	suicide = TRUE
-	// realistic WW2 suicide, no hesitation - Kachnov
 	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] gut.</span>")
-	if (!do_after(user, 40))
+	if (!do_after(user, 60))
 		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
 		suicide = FALSE
 		return
+	else
+		user << "<span class = 'notice'>Ow...</span>"
+		user.apply_effect(110,AGONY,0)
+		user.apply_damage(src.sharpness*2.5, "brute", "groin")
+		user.death()
+		user.visible_message("<span class = 'warning'>[user] cuts themselves open.</span>")
+		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."
+		suicide = FALSE
 
-		user.visible_message("<span class = 'warning'>[user] pulls the trigger.</span>")
-		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves(tried to commit suicide)"
 /obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, def_zone)
+	..()
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
-		user << "<span class = 'danger'>You have no idea how to do this.</span>"
-		return
-	if (A == user)
-		var/tgt = user.targeted_organ
-		if (user.targeted_organ == "random")
-			tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-		if (tgt == "groin" && !suicide)
-			handle_suicide(user)
-		else if (user.a_intent == I_HURT && do_after(user, 2, get_turf(user)))
-			attackby(user)
-		return
+	if(istype(A, H))
+		if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+			user << "<span class = 'danger'>You have no idea how to do this.</span>"
+			return
+		if (A == user)
+			var/tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			if (tgt == "groin" && !suicide)
+				handle_suicide(user)
+			else if (user.a_intent == I_HURT && do_after(user, 2, get_turf(user)))
+				attackby(user)
+			return
 /obj/item/weapon/material/sword/katana/iron
 	default_material = "iron"
 

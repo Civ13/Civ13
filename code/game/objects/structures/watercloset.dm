@@ -228,6 +228,7 @@
 	var/ismist = FALSE				//needs a var so we can make it linger~
 	var/watertemp = "normal"	//freezing, normal, or boiling
 	var/is_washing = FALSE
+	var/cleanliness = 100
 	var/list/temperature_settings = list("normal" = 310, "boiling" = T0C+100, "freezing" = T0C)
 	not_movable = TRUE
 	not_disassemblable = FALSE
@@ -253,11 +254,188 @@
 		if (3.0)
 			return
 
+//ROBERTS BATHTUBS
+
+//BATHTUB FRAMEWORK V1//
+/obj/structure/shower/bathtub
+	name = "Wooden bathtub"
+	desc = "A crude wooden bathtub, it stinks."
+	icon = 'icons/obj/bathtub.dmi'
+	icon_state = "w_bathtub"
+	can_buckle = TRUE
+	buckle_dir = WEST
+	buckle_lying = TRUE
+	cleanliness = 80
+
+/obj/structure/shower/bathtub/update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
+	overlays.Cut()					//once it's been on for a while, in addition to handling the water overlay.
+	if (mymist)
+		qdel(mymist)
+		mymist = null
+
+	if (on)
+		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2_2", MOB_LAYER - 1, dir)
+		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2", MOB_LAYER + 1, dir)
+		if (temperature_settings[watertemp] < T20C)
+			return //no mist for cold water
+		if (!ismist)
+			spawn(50)
+				if (src && on)
+					ismist = TRUE
+					mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
+		else
+			ismist = TRUE
+			mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
+	else if (ismist)
+		ismist = TRUE
+		mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
+		spawn(250)
+			if (src && !on)
+				qdel(mymist)
+				mymist = null
+				ismist = FALSE
+					//BATHTUB FRAMEWORK V1//
+
+				//STONE AGE WOODEN BATHTUB//
+/obj/structure/shower/bathtub/wooden
+	name = "Wooden bathtub"
+	desc = "A crude wooden bathtub, it stinks."
+	icon = 'icons/obj/bathtub.dmi'
+	icon_state = "w_bathtub"
+	cleanliness = 6.
+
+	            //STONE AGE WOODEN BATHTUB//
+
+			// EARLY COPPER AGE
+/obj/structure/shower/bathtub/stone
+	name = "stone bathtub"
+	desc = "A rudimentary stone bathtub, it's covered un moss."
+	icon = 'icons/obj/bathtub.dmi'
+	icon_state = "s_bathtub"
+	cleanliness = 80
+			// EARLY COPPER AGE
+			// LATE COPPER AGE
+/obj/structure/shower/bathtub/copper
+	name = "copper bathtub"
+	desc = "An acceptable copper bathtub, it's a little flimsy."
+	icon = 'icons/obj/bathtub.dmi'
+	icon_state = "c_bathtub"
+	cleanliness = 110
+			// LATE COPPER AGE
+			// LATE BRONZE  AGE
+/obj/structure/shower/bathtub/bronze
+	name = "bronze bathtub"
+	desc = "A fine copper bathtub, it's confortable."
+	icon = 'icons/obj/bathtub.dmi'
+	icon_state = "b_bathtub"
+	cleanliness = 140
+			// LATE BRONZE AGE
+
+
+			//BIG BATHTUB FRAMEWORK 1
+/obj/structure/shower/bathtub/big
+	name = "wooden public bathtub"
+	desc = "A crude wooden bathtub, it's huge, it stinks."
+	icon = 'icons/obj/bathtub_big.dmi'
+	icon_state = "w_bathtub_b"
+	cleanliness = 80
+
+/obj/structure/shower/bathtub/big/update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
+	overlays.Cut()					//once it's been on for a while, in addition to handling the water overlay.
+	if (mymist)
+		qdel(mymist)
+		mymist = null
+
+	if (on)
+		overlays += image('icons/obj/bathtub_big.dmi', src, "full_bathtub_overlay_2_2_b", MOB_LAYER + 1, dir)
+
+		if (temperature_settings[watertemp] < T20C)
+			return //no mist for cold water
+		if (!ismist)
+			spawn(50)
+				if (src && on)
+					ismist = TRUE
+					mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
+		else
+			ismist = TRUE
+			mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
+	else if (ismist)
+		ismist = TRUE
+		mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
+		spawn(250)
+			if (src && !on)
+				qdel(mymist)
+				mymist = null
+				ismist = FALSE
+
+			//BIG BATHTUB FRAMEWORK 1
+			// LATE DARK AGE
+/obj/structure/shower/bathtub/big/wooden
+	name = "wooden public bathtub"
+	desc = "A crude wooden bathtub, it's huge, it stinks."
+	icon = 'icons/obj/bathtub_big.dmi'
+	icon_state = "w_bathtub_b"
+	cleanliness = 80
+			// LATE DARK  AGE
+			// LATE MIDDLE AGE
+/obj/structure/shower/bathtub/big/stone
+	name = "stone public bathtub"
+	desc = "A rudimentary stone bathtub, it's covered in moss."
+	icon = 'icons/obj/bathtub_big.dmi'
+	icon_state = "s_bathtub_b"
+	cleanliness = 130
+			// LATE MIDDLE  AGE
+			// LATE RENAISSANCE AGE
+/obj/structure/shower/bathtub/big/copper
+	name = "copper public bathtub"
+	desc = "An acceptable copper bathtub, it's confortable."
+	icon = 'icons/obj/bathtub_big.dmi'
+	icon_state = "c_bathtub_b"
+	cleanliness = 140
+			// LATE RENAISSANCE  AGE
+			// LATE IMPERIAL AGE
+/obj/structure/shower/bathtub/big/bronze
+	name = "bronze public bathtub"
+	desc = "An fine bronze bathtub, it's confortable and clean."
+	icon = 'icons/obj/bathtub_big.dmi'
+	icon_state = "b_bathtub_b"
+	cleanliness = 160
+			// LATE IMPERIAL  AGE
+			// LATE MODERN AGE
+/obj/structure/shower/bathtub/steel
+	name = "steel bathtub"
+	desc = "A modern steel bathtub, it's confortable, clean and cool."
+	icon = 'icons/obj/bathtub.dmi'
+	icon_state = "st_bathtub"
+	cleanliness = 210
+			// LATE MODERN  AGE
+			// LATE COLDWAR  AGE
+/obj/structure/shower/bathtub/big/steel
+	name = "steel public bathtub"
+	desc = "An modern bronze bathtub, it's confortable, clean and cool."
+	icon = 'icons/obj/bathtub_big.dmi'
+	icon_state = "st_bathtub_b"
+	cleanliness = 250
+			// LATE COLDWAR  AGE
+
+//ROBERTS BATHTUBS
+
+
 //add heat controls? when emagged, you can freeze to death in it?
 
 /obj/effect/mist
 	name = "mist"
 	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "mist"
+	layer = MOB_LAYER + 1
+	anchored = TRUE
+	mouse_opacity = FALSE
+
+//ROBERT BATHTUB MYST
+
+/obj/effect/mist/bathtub
+	name = "mist"
+	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "mist"
 	layer = MOB_LAYER + 1
 	anchored = TRUE
@@ -351,7 +529,7 @@
 			var/washears = TRUE
 
 			if(H.is_nude())//Don't get clean showering with you clothes on.
-				H.set_hygiene(HYGIENE_LEVEL_CLEAN)
+				H.set_hygiene(src.cleanliness)
 
 			if (H.wear_suit)
 				washgloves = !(H.wear_suit.flags_inv & HIDEGLOVES)
@@ -629,7 +807,10 @@
 
 	O.clean_blood()
 	if (istype(O, /obj/item/clothing))
-		O.radiation = 0
+		var/obj/item/clothing/C = O
+		C.radiation = 0
+		C.dirtyness = 0
+		C.fleas = FALSE
 	user.visible_message( \
 		"<span class='notice'>[user] washes \a [I] using \the [src].</span>", \
 		"<span class='notice'>You wash \a [I] using \the [src].</span>")
@@ -660,6 +841,13 @@
 /obj/structure/sink/well
 	name = "well"
 	icon_state = "well1"
+	sound = 'sound/effects/watersplash.ogg'
+	max_volume = 750
+	volume = 750
+
+/obj/structure/sink/well/sandstone
+	name = "sandstone well"
+	icon_state = "sandstone_well1"
 	sound = 'sound/effects/watersplash.ogg'
 	max_volume = 750
 	volume = 750
@@ -695,6 +883,11 @@
 			icon_state = "well_dry"
 		else
 			icon_state = "well1"
+	else if  (istype(src, /obj/structure/sink/well/sandstone))
+		if (dry || volume <= 0)
+			icon_state = "sandstone_well_dry"
+		else
+			icon_state = "sandstone_well1"
 
 /obj/structure/sink/New()
 	..()

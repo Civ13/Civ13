@@ -1,5 +1,5 @@
 /obj/item/weapon/gun/projectile/bow
-	name = "bow"
+	name = "primitive bow"
 	desc = "A simple and crude bow."
 	icon_state = "bow0"
 	item_state = "bow0"
@@ -81,6 +81,108 @@
 
 	load_delay = 30
 	aim_miss_chance_divider = 3.00
+
+/obj/item/weapon/gun/projectile/bow/shortbow
+	name = "shortbow"
+	desc = "A short bow with a light draw weight."
+	icon_state = "shortbow0"
+	item_state = "shortbow0"
+	icotype = "shortbow"
+	w_class = 1
+	throw_range = 6
+	throw_speed = 2
+	force = 6
+	throwforce = 6
+	max_shells = 1 //duh
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	caliber = "arrow"
+	ammo_type = /obj/item/ammo_casing/arrow
+	accuracy = TRUE
+	gun_type = GUN_TYPE_BOW
+	attachment_slots = null
+	accuracy_increase_mod = 1.00
+	accuracy_decrease_mod = 1.00
+	stat = "bow"
+	move_delay = 5
+	fire_delay = 8
+	muzzle_flash = FALSE
+	value = 15
+	flammable = TRUE
+	load_delay = 10
+	projtype = "arrow"
+
+
+/obj/item/weapon/gun/projectile/bow/longbow
+	name = "longbow"
+	desc = "A long bow with a heavy draw weight."
+	icon_state = "longbow0"
+	item_state = "longbow0"
+	icotype = "longbow"
+	w_class = 1
+	throw_range = 6
+	throw_speed = 2
+	force = 8
+	throwforce = 6
+	max_shells = 1 //duh
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	caliber = "arrow"
+	ammo_type = /obj/item/ammo_casing/arrow
+	accuracy = TRUE
+	gun_type = GUN_TYPE_BOW
+	attachment_slots = null
+	accuracy_increase_mod = 1.25
+	accuracy_decrease_mod = 1.00
+	stat = "bow"
+	move_delay = 7
+	fire_delay = 10
+	muzzle_flash = FALSE
+	value = 15
+	flammable = TRUE
+	load_delay = 12
+	projtype = "arrow"
+
+/obj/item/weapon/gun/projectile/bow/compoundbow
+	name = "compound bow"
+	desc = "A compound bow with a decent draw weight."
+	icon_state = "compoundbow0"
+	item_state = "compoundbow0"
+	icotype = "compoundbow"
+	w_class = 1
+	throw_range = 6
+	throw_speed = 2
+	force = 12
+	throwforce = 6
+	max_shells = 1 //duh
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	caliber = "arrow"
+	ammo_type = /obj/item/ammo_casing/arrow
+	accuracy = TRUE
+	gun_type = GUN_TYPE_BOW
+	attachment_slots = null
+	accuracy_increase_mod = 1.35
+	accuracy_decrease_mod = 0.85
+	stat = "bow"
+	move_delay = 5
+	fire_delay = 7
+	muzzle_flash = FALSE
+	value = 15
+	flammable = TRUE
+	load_delay = 8
+	projtype = "arrow"
+
+/obj/item/weapon/gun/projectile/bow/proc/remove_arrow_overlay()
+	src.overlays = null
+
+/obj/item/weapon/gun/projectile/bow/proc/load_arrow_overlay(var/obj/item/ammo_casing/arrow/A as obj)
+	//remove all overlays
+	remove_arrow_overlay()
+	//add arrow overlay
+	src.overlays += icon(A.icon,A.icon_state)
+
+obj/item/weapon/gun/projectile/bow/Fire()
+	..()
+	remove_arrow_overlay()
+
 /obj/item/weapon/gun/projectile/bow/sling
 	name = "sling"
 	desc = "A simple leather sling."
@@ -146,6 +248,7 @@
 		loaded.Insert(1, C) //add to the head of the list
 		user.visible_message("[user] inserts \a [C] into the [src].", "<span class='notice'>You insert \a [C] into the [src].</span>")
 		icon_state = "[icotype]1"
+		load_arrow_overlay(C)
 		if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 
 /obj/item/weapon/gun/projectile/bow/unload_ammo(mob/user, var/allow_dump=1)
@@ -162,6 +265,7 @@
 			user.put_in_hands(C)
 			user.visible_message("[user] removes \a [C] from the [src].", "<span class='notice'>You remove \a [C] from the [src].</span>")
 			icon_state = "[icotype]0"
+			remove_arrow_overlay()
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
 		user << "<span class='warning'>[src] is empty.</span>"

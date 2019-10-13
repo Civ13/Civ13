@@ -584,7 +584,7 @@ var/list/global/slot_flags_enumeration = list(
 
 /mob/living/carbon/verb/showoff()
 	set name = "Show Held Item"
-	set category = null
+	set category = "IC"
 
 	var/obj/item/I = get_active_hand()
 	if (I && !I.abstract)

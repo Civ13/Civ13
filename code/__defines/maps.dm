@@ -1,3 +1,5 @@
+#define MAP_TESTING "TESTING"
+
 #define MAP_NAVAL "NAVAL"
 #define MAP_VOYAGE "VOYAGE"
 #define MAP_ISLAND "ISLAND"
@@ -49,6 +51,7 @@
 #define MAP_OMAHA "OMAHA"
 #define MAP_NANJING "NANJING"
 #define MAP_KURSK "KURSK"
+#define MAP_GULAG13 "GULAG13"
 
 #define MAP_COMPOUND "COMPOUND"
 #define MAP_ROAD_TO_DAK_TO "ROAD_TO_DAK_TO"

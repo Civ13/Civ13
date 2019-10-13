@@ -16,7 +16,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	var/list/current_votes = list()
 	var/list/additional_text = list()
 	var/auto_muted = FALSE
-	var/win_threshold = 0.00
+	var/win_threshold = 0.65
 	var/list/callback = null
 	var/list/disabled[10]
 	var/voted_epoch = "1713"
@@ -54,7 +54,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						C << browse(vote.interface(C),"window=vote")
 
 	proc/autogamemode()
-		if (map.ID == MAP_NOMADS_EXTENDED || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_NOMADS_WASTELAND)
+		if (map.ID == MAP_NOMADS_EXTENDED || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_NOMADS_WASTELAND || map.ID == MAP_TESTING)
 			return
 		if (map.civilizations && autogamemode_triggered == FALSE)
 			initiate_vote("gamemode","the server", TRUE)
@@ -184,7 +184,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			switch(vote_type)
 				if ("restart")
 					choices.Add("Restart Round","Continue Playing")
-					win_threshold = 0.75
+					win_threshold = 0.65
 				if ("epoch")
 					for (var/epoch in processes.epochswap.epochs)
 						if (!default)
@@ -311,7 +311,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if ("restart")
 				if (config.allow_vote_restart || usr.client.holder)
 					if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
-						usr << "You cann't start restart votes if you are not playing."
+						usr << "You can't start restart votes if you are not playing."
 						return FALSE
 					initiate_vote("restart",usr.key)
 			if ("custom")

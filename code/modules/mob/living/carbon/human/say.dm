@@ -8,8 +8,8 @@
 		return
 	var/alt_name = ""
 
-	if (name != rank_prefix_name(GetVoice()))
-		alt_name = "(as [rank_prefix_name(get_id_name())])"
+	if (name != GetVoice())
+		alt_name = get_visible_name()
 	var/animalistic = FALSE
 	if ((werewolf || gorillaman) && body_build.name != "Default")
 		if (werewolf)

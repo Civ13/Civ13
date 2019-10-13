@@ -1,6 +1,44 @@
 // snowflake code - Kachnov
 /obj/item/weapon/gun/projectile/automatic/stationary/var/climbers = list()
 
+/obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_left()
+	set category = null
+	set name = "Rotate left"
+	set src in range(2, usr)
+
+	if (!istype(usr, /mob/living))
+		return
+
+	switch(dir)
+		if (EAST)
+			dir = NORTH
+		if (WEST)
+			dir = SOUTH
+		if (NORTH)
+			dir = WEST
+		if (SOUTH)
+			dir = EAST
+	return
+
+/obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_right()
+	set category = null
+	set name = "Rotate right"
+	set src in range(2, usr)
+
+	if (!istype(usr, /mob/living))
+		return
+
+	switch(dir)
+		if (EAST)
+			dir = SOUTH
+		if (WEST)
+			dir = NORTH
+		if (NORTH)
+			dir = EAST
+		if (SOUTH)
+			dir = WEST
+	return
+
 /obj/item/weapon/gun/projectile/automatic/stationary/MouseDrop_T(mob/target, mob/user)
 
 	var/mob/living/H = user
@@ -75,7 +113,7 @@
 		if (S.density)
 			return
 
-	usr.forceMove(target)
+	usr.loc = target.loc
 
 	if (get_turf(user) == get_turf(src))
 		usr.visible_message("<span class='warning'>[user] climbs onto \the [src]!</span>")

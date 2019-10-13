@@ -60,7 +60,6 @@
 		return
 	if (M == buckled_mob)
 		return
-
 	add_fingerprint(user)
 	unbuckle_mob()
 

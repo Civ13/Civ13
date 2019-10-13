@@ -147,16 +147,29 @@
 	else
 		return ..()
 
-/obj/item/weapon/material/kitchen/utensil/knife/makeshift_knife
-	name = "boot knife"
-	desc = "A small self made knife used a lot in jail."
+/obj/item/weapon/material/kitchen/utensil/knife/shank
+	name = "shank"
+	desc = "A small self-made knife used a lot in jail."
 	icon = 'icons/obj/weapons.dmi'
-	icon_state = "makeshift_knife"
+	icon_state = "steelshank"
 	item_state = "knife"
 	applies_material_colour = FALSE
-	unbreakable = TRUE
+	unbreakable = FALSE
 	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
+	force_divisor = 0.4
+	default_material = "steel"
+
+/obj/item/weapon/material/kitchen/utensil/knife/shank/glass
+	name = "shank"
+	icon_state = "glassshank"
+	force_divisor = 0.45
+	default_material = "glass"
+
+/obj/item/weapon/material/kitchen/utensil/knife/shank/iron
+	name = "shank"
+	icon_state = "ironshank"
+	force_divisor = 0.4
+	default_material = "iron"
 
 /obj/item/weapon/material/kitchen/utensil/knife/bowie
 	name = "bowie knife"
