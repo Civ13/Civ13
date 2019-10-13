@@ -263,6 +263,8 @@
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "w_bathtub"
 	can_buckle = TRUE
+	buckle_dir = SOUTH
+	buckle_lying = TRUE
 	cleanliness = 80
 
 /obj/structure/shower/bathtub/update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
