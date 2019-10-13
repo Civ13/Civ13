@@ -86,7 +86,7 @@
 	if (fueltank != null)
 		var/done = FALSE
 		for (var/F in fuels)
-			if (fueltank.reagents.has_reagent(F, fuelefficiency*5) && done == FALSE)
+			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelefficiency*5) && done == FALSE)
 				on = TRUE
 				if (user)
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")
@@ -106,7 +106,7 @@
 		var/done = FALSE
 		var/fuelconsumption = fuelefficiency*(min(currentpower, maxpower)/maxpower)*FUEL_CONSUMPTION_MODIFIER //fuelconsumption is based on current load
 		for (var/F in fuels)
-			if (fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
+			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
 				//add polution to global meter
 				map.pollutionmeter += fuelconsumption

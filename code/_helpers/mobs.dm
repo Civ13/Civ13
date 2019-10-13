@@ -415,8 +415,8 @@ Proc for attack log creation, because really why not
 			if (user.get_active_hand() != holding)
 				. = FALSE
 				break
-
-	user.may_do_after = TRUE
+	if (user)
+		user.may_do_after = TRUE
 
 	if (progbar)
 		qdel(progbar)

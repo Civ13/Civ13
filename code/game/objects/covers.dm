@@ -317,7 +317,7 @@
 
 
 /obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
-	if (!isghost(M) && M.mob_size >= MOB_MEDIUM)
+	if (ismob(M) && !isghost(M) && M.mob_size >= MOB_MEDIUM)
 		visible_message("[M] pushes \the [src].","You push \the [src]")
 		icon_state = "saloon_opening"
 		update_icon()
@@ -804,7 +804,6 @@
 	material = "Wood"
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 

@@ -535,7 +535,7 @@
 	if (roped)
 		visible_message("<span class = 'danger'>[H] starts to free [hanging] from the noose...</span>")
 		if (do_after(H, 100, src))
-			if (src)
+			if (src && hanging)
 				visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 				hanging.pixel_x = 0
 				hanging.pixel_y = 0
@@ -645,7 +645,7 @@
 				if (do_after(H, 40, src))
 					new/obj/covers/wood_wall/shoji(src.loc)
 					qdel(src)
-					W.amount -= 1
+					qdel(W)
 		else if(input == "Shoji Divider - 1")
 			if(W.amount >= 1)
 				if (do_after(H, 40, src))

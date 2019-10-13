@@ -46,28 +46,21 @@
 	unique_door_name = "Private"
 #undef CV_CUSTOM
 
-#define CV_CUSTOM_JAILWOOD 999
+#define CV_CUSTOM_WOODJAIL 999
 /obj/structure/simple_door/key_door/custom/jail/woodjail
 	custom = TRUE
 	custom_code = 999
 	unique_door_name = "Private"
 	opacity = 0
-#undef CV_CUSTOM_JAILWOOD
+#undef CV_CUSTOM_WOODJAIL
 
-#define CV_CUSTOM_JAILSTEEL 999
+#define CV_CUSTOM_STEELJAIL 999
 /obj/structure/simple_door/key_door/custom/jail/steeljail
 	custom = TRUE
 	custom_code = 999
 	unique_door_name = "Private"
 	opacity = 0
-#undef CV_CUSTOM_JAILSTEEL
-
-/obj/structure/simple_door/key_door/custom/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (istype(mover, /obj/effect/effect/smoke))
-		return TRUE
-	else if (istype(mover, /obj/item/projectile))
-		return TRUE
-	..()
+#undef CV_CUSTOM_STEELJAIL
 
 #define CV_CODE 1000
 /datum/keyslot/civ
@@ -328,6 +321,12 @@
 /datum/keyslot/soviet
 	code = RU_CODE
 
+/datum/keyslot/soviet/guard
+	code = RU_CODE
+
+/datum/keyslot/soviet/guard/max
+	code = RU_CODE+2
+
 /obj/item/weapon/key/soviet
 	code = RU_CODE
 	name = "Soviet key"
@@ -336,13 +335,35 @@
 	code = RU_CODE
 	name = "GULAG guard key"
 
+/obj/item/weapon/key/soviet/guard/max
+	code = RU_CODE+2
+	name = "Maximum Security guard key"
+
 /obj/structure/simple_door/key_door/soviet
 	keyslot_type = /datum/keyslot/soviet
 	unique_door_name = "Soviet locked"
 
 /obj/structure/simple_door/key_door/soviet/guard
-	keyslot_type = /datum/keyslot/soviet
+	keyslot_type = /datum/keyslot/soviet/guard
 	unique_door_name = "GULAG locked"
+
+/obj/structure/simple_door/key_door/soviet/guard/max
+	keyslot_type = /datum/keyslot/soviet/guard/max
+	unique_door_name = "Maximum Security locked"
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard
+	unique_door_name = "GULAG locked"
+	locked = TRUE
+	custom_code = RU_CODE
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/open
+	starts_open = TRUE
+	locked = FALSE
+	custom_code = RU_CODE
+	New()
+		..()
+		icon_state = "cellopen"
+		density = FALSE
 
 #undef RU_CODE
 
