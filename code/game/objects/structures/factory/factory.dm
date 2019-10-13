@@ -191,11 +191,11 @@
 	max_space = 6
 	fuel = 0
 	gold = 0
-	var/goldcoin = 0
-	var/coppercoin = 0
-	var/silvercoin
 	copper = 0
 	silver = 0
+	var/goldcoin = 0
+	var/coppercoin = 0
+	var/silvercoin = 0
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -241,7 +241,7 @@
 				qdel(I)
 				return                  //INPUT 1                                   //OUTPUT1
 			else if (istype(I, /obj/item/stack/money/goldcoin) || istype(I, /obj/item/stack/material/gold))
-				iron += I.amount
+				gold += I.amount
 				qdel(I)
 				return                  //INPUT 2                                  //OUTPUT 2
 			else if (istype(I, /obj/item/stack/money/coppercoin) || istype(I, /obj/item/stack/material/copper))
@@ -249,7 +249,7 @@
 				qdel(I)
 				return                   //INPUT 3                                   //OUTPUT3
 			else if (istype(I, /obj/item/stack/money/silvercoin) || istype(I, /obj/item/stack/material/silver))
-				tin += I.amount
+				silver += I.amount
 				qdel(I)
 				return
 			else
