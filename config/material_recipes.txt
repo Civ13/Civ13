@@ -487,7 +487,11 @@ RECIPE: /material/glass/,laboratory distiller,/obj/structure/lab_distillery,10,1
 RECIPE: /material/glass/,toilet,/obj/structure/toilet,4,80,1,1,none,95,0,0,8,null
 RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,none,55,0,0,8,null
 RECIPE: /material/glass/,shower,/obj/structure/shower,10,190,1,1,none,115,0,0,8,null
-
+//**************************************************************
+//************************ROBERTS FACTORIES*********************
+//***********************COINSMELTER****************************
+*************************MID BRONZE AGE*************************
+RECIPE: /material/steel/,coin smelter,/obj/structure/machinery/factory/coinsmelter,10,190,1,1,none,25,0,0,8,null
 //**************************************************************
 //*************************ROBERTS BATHTUBS*********************
 //**************************************************************
