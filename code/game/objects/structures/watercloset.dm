@@ -263,7 +263,7 @@
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "w_bathtub"
 	can_buckle = TRUE
-	buckle_dir = SOUTH
+	buckle_dir = WEST
 	buckle_lying = TRUE
 	cleanliness = 80
 
