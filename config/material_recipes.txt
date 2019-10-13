@@ -600,7 +600,7 @@ RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,wea
 RECIPE: /material/steel/,throwing axe,/obj/item/weapon/material/throwing_axe,3,20,0,1,weapons,50,44,0,8,null
 RECIPE: /material/steel/,steel throwing knife,/obj/item/weapon/material/throwing_knife,2,20,0,1,weapons,50,44,0,8,steel
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,none,75,0,0,8,null
-RECIPE: /material/steel/,jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,none,75,0,0,8,null
+RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,none,75,0,0,8,null
 RECIPE: /material/steel/,cannon,/obj/structure/cannon,35,600,1,1,none,71,79,0,4,null
 RECIPE: /material/steel/,artillery cannon,/obj/structure/cannon/modern,40,600,1,1,none,95,109,0,8,null
 RECIPE: /material/steel/,tank cannon,/obj/structure/cannon/modern/tank,40,600,1,1,none,115,125,0,8,null
@@ -687,7 +687,7 @@ RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,
 RECIPE: /material/wood/,custom sign,/obj/structure/sign/custom,3,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wood jail bars,/obj/covers/jail/woodjail,8,30,1,1,construction,55,0,0,8,null
-RECIPE: /material/wood/,wood jail door,/obj/structure/simple_door/key_door/custom/jail/woodjail,12,30,1,1,construction,55,0,0,8,null
+RECIPE: /material/wood/,locked wood jail door,/obj/structure/simple_door/key_door/custom/jail/woodjail,12,30,1,1,construction,55,0,0,8,null
 RECIPE: /material/wood/,horizontal wood barrier,/obj/structure/barricade/horizontal,5,35,1,1,barricades,0,0,0,8,null
 RECIPE: /material/wood/,vertical wood barrier,/obj/structure/barricade/vertical,5,35,1,1,barricades,0,0,0,8,null
 RECIPE: /material/wood/,wood palisade,/obj/structure/grille/logfence,6,80,1,1,barricades,0,0,0,8,null
