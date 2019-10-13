@@ -118,7 +118,7 @@
 
 /turf/floor/dirt/underground/proc/update_rock_type()
 	if(src.z < 2) //if Underground.
-		var/area/A=locate(/turf/) in locate(src.x, src.y, src.z + 1)
+		var/turf/A=locate(/turf/) in locate(src.x, src.y, src.z + 1)
 		//Check if it is desert area, if so make it sandy
 		if(A && istype(A.loc, /area/caribbean/arab/desert))
 			rocktype = "sand"
