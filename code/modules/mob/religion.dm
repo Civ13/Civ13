@@ -487,6 +487,12 @@ obj/structure/altar/stone
 	flammable = FALSE
 	health = 160
 
+obj/structure/altar/sandstone
+	name = "sandstone altar"
+	icon_state = "sandstone_altar"
+	flammable = FALSE
+	health = 160
+
 obj/structure/altar/marble
 	name = "marble altar"
 	icon_state = "marble_altar"

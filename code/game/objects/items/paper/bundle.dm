@@ -98,7 +98,7 @@
 /obj/item/weapon/paper_bundle/proc/show_content(mob/user as mob)
 	var/dat
 	var/obj/item/weapon/W
-	if (pages[page])
+	if (page <= pages.len && pages[page])
 		W = pages[page]
 	else
 		return

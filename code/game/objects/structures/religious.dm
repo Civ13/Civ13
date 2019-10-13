@@ -36,6 +36,22 @@
 			if (map.custom_religions[religion][7] == "Shamans")
 				map.custom_religions[religion][3] += 25
 
+/obj/structure/religious/totem/sandstone
+	name = "sandstone totem"
+	desc = "A sandstone statue, representing a spirit animal of this tribe."
+	icon = 'icons/obj/cross.dmi'
+	icon_state = "sandstone_snake"
+
+/obj/structure/religious/totem/sandstone/New()
+	..()
+	spawn(10)
+		if (religion != "none")
+			name = "[religion]'s stone totem"
+			desc = "A stone totem dedicated to the [religion] religion."
+			icon_state = pick("sandstone_snake","sandstone_alligator","sandstone_ram","sandstone_eue")
+			if (map.custom_religions[religion][7] == "Shamans")
+				map.custom_religions[religion][3] += 25
+
 /obj/structure/religious/animal_statue
 	name = "statue"
 	desc = "A stone statue."
@@ -48,6 +64,18 @@
 /obj/structure/religious/animal_statue/New()
 	..()
 	var/randimg = pick("bear","mouse","goose","wolf","turkey","monkey")
+	icon_state = randimg
+	name = "[randimg] statue"
+
+/obj/structure/religious/animal_statue/sandstone
+	name = "sandstone statue"
+	desc = "A sandstone statue."
+	icon = 'icons/obj/cross.dmi'
+	icon_state = "sandstone_snake"
+
+/obj/structure/religious/animal_statue/sandstone/New()
+	..()
+	var/randimg = pick("sandstone_snake","sandstone_alligator","sandstone_ram","sandstone_eue")
 	icon_state = randimg
 	name = "[randimg] statue"
 

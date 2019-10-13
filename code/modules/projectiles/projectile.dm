@@ -467,7 +467,7 @@
 		if(!istype(T, /turf/floor/trench) || can_hit_in_trench)
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
-				if (istype(O, /obj/structure/vehicleparts/frame) && firer.loc != O.loc)
+				if (istype(O, /obj/structure/vehicleparts/frame) && ((firer && firer.loc != O.loc) || (!firer && loc != O.loc)))
 					var/obj/structure/vehicleparts/frame/NO = O
 					var/obj/structure/vehicleparts/axis/found = null
 					for (var/obj/structure/vehicleparts/frame/FM in firer.loc)
@@ -501,16 +501,13 @@
 					else if (!isitem(O) && isnonstructureobj(O))
 						if (!istype(O, /obj/covers/jail))
 							hitchance = 100
-							world.log << "A"
 						else
 							if (firer in range(1,O))
 								hitchance = 0
 
-								world.log << "B"
 							else
 								hitchance = 55
 
-								world.log << "C"
 					else if (isitem(O)) // any item
 						var/obj/item/I = O
 						hitchance = 9 * I.w_class // a pistol would be 50%
@@ -657,15 +654,15 @@
 
 		var/list/_untouchable = list()
 		var/src_loc = get_turf(src)
-
-		if (firstmove)
-			for (var/obj/structure/window/sandbag/S in src_loc)
-				_untouchable += S
-		else
-			if (firer)
-				for (var/obj/structure/barricade/B in src_loc)
-					if (get_dist(firer, B) == 1)
-						_untouchable += B
+		if (!firer.prone && !firer.lying)
+			if (firstmove)
+				for (var/obj/structure/window/sandbag/S in src_loc)
+					_untouchable += S
+			else
+				if (firer)
+					for (var/obj/structure/barricade/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
 
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()

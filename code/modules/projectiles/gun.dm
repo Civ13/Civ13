@@ -429,7 +429,7 @@
 	mouthshoot = TRUE
 	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] mouth.</span>")
 	if (!do_after(user, 3))
-		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
+		visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
 		mouthshoot = FALSE
 		return
 	var/obj/item/projectile/in_chamber = consume_next_projectile()

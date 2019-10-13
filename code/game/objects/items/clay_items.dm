@@ -328,6 +328,56 @@
 	volume = 130
 	w_class = 2.0
 
+/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (istype(I, /obj/item/stack/material))
+		var/obj/item/stack/material/S = I
+		if (istype(I, /obj/item/stack/material/gold))
+			if (S.amount >= 1)
+				if (S.amount > 1)
+					S.amount--
+				else if (S.amount == 1)
+					qdel(S)
+				new/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/gold(H.loc)
+				qdel(src)
+				return
+			else
+				return
+		else if (istype(I, /obj/item/stack/material/silver))
+			if (S.amount >= 1)
+				if (S.amount > 1)
+					S.amount--
+				else if (S.amount == 1)
+					qdel(S)
+				new/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/silver(H.loc)
+				qdel(src)
+				return
+			else
+				return
+		else if (istype(I, /obj/item/stack/material/diamond))
+			if (S.amount >= 1)
+				if (S.amount > 1)
+					S.amount--
+				else if (S.amount == 1)
+					qdel(S)
+				new/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/diamond(H.loc)
+				qdel(src)
+				return
+			else
+				return
+	..()
+
+/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/gold
+	name = "golden clay pitcher"
+	icon_state = "pitcher_gold"
+	quality = 10
+/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/silver
+	name = "silver clay pitcher"
+	icon_state = "pitcher_silver"
+	quality = 5
+/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/diamond
+	name = "diamond incrusted clay pitcher"
+	icon_state = "pitcher_diamond"
+	quality = 20
 
 /obj/item/weapon/clayshards
 	name = "clay shards"
