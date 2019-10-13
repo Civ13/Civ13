@@ -51,6 +51,13 @@
 				GD.gladiator_stats[i][4] = 1
 				GD.save_gladiators()
 		src << "<big><b>[name]'s life fades away into history...</b></big>"
+	else if (map && map.ID == MAP_GULAG13 && client)
+		var/obj/map_metadata/gulag13/GD = map
+		if (original_job && istype(original_job, /datum/job/civilian/prisoner))
+			var/datum/job/civilian/prisoner/PJ = original_job
+			for(var/i in GD.points)
+				if (i[1]==PJ.nationality)
+					i[3]-=50
 	src << browse(null, "window=memory")
 
 	if (client)

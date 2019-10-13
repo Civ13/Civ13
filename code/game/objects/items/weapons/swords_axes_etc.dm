@@ -24,7 +24,7 @@
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK+1
-	weakens = 3
+	weakens = 5
 	flammable = TRUE
 
 /obj/item/weapon/melee/classic_baton/club
@@ -38,7 +38,7 @@
 
 /obj/item/weapon/melee/classic_baton/whip
 	name = "whip"
-	desc = "A leather wip. To keep your slaves in order."
+	desc = "A leather whip. To keep your slaves in order."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "whip"
 	item_state = "whip"
@@ -58,7 +58,7 @@
 	user.a_intent = I_HURT // so we actually hit people right
 
 	..(M, user)
-	if (weakens)
+	if (weakens && prob(40))
 		M.Weaken(weakens) // decent
 
 	user.a_intent = user_last_intent
@@ -87,7 +87,8 @@
 
 	..(M, user)
 
-	M.Weaken(weakens) // decent
+	if (weakens && prob(40))
+		M.Weaken(weakens) // decent
 
 	user.a_intent = user_last_intent
 

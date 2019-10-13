@@ -8,6 +8,8 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	flammable = FALSE
+	var/broken_icon = 'icons/obj/vehicleparts_damaged.dmi'
+	var/normal_icon = 'icons/obj/vehicleparts.dmi'
 /////////////////////////////////AXIS/////////////////////////////////////
 /obj/structure/vehicleparts/axis
 	name = "vehicle axis"
@@ -28,6 +30,7 @@
 	var/list/transporting = list()
 	var/list/components = list()
 	var/current_weight = 5
+	var/lastmovementloop = 0
 
 	//matrix/turning stuff
 	var/list/corners = list()
@@ -37,6 +40,7 @@
 	var/list/matrix_current_locs = list()
 
 	var/color_code = ""
+	var/turret_type = "tank_turret"
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
@@ -57,16 +61,48 @@
 	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
-	maxpower = 250
+	maxpower = 2500
 	speedlist = list(1=12,2=8,3=6)
 
+/obj/structure/vehicleparts/axis/heavy/t34
+	name = "T-34"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,3=5)
+	color_code = ""
+	color = "#3d5931"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+/obj/structure/vehicleparts/axis/heavy/panzeriv
+	name = "Panzer IV"
+	speeds = 3
+	speedlist = list(1=12,2=8,3=6)
+	color = "#585A5C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_german)
+		tank_names_german -= pickedname
+		name = "[name] \'[pickedname]\'"
+/obj/structure/vehicleparts/axis/heavy/panzervi
+	name = "Panzer VI Tiger"
+	speeds = 4
+	speedlist = list(1=14,2=11,3=9,4=7)
+	turret_type = "tiger_tank"
+	color = "#3B3F41"
+	New()
+		..()
+		var/pickedname = pick(tank_names_german)
+		tank_names_german -= pickedname
+		name = "[name] \'[pickedname]\'"
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"
 	desc = "A powered axis from a car."
 	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 70
+	maxpower = 800
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 
 /obj/structure/vehicleparts/axis/proc/get_speed()
@@ -77,6 +113,8 @@
 	else
 		var/spd = (currentspeed/speeds)*maxpower
 		powerneeded = spd
+		if (currentspeed > speedlist.len)
+			currentspeed = speedlist.len
 		return speedlist[currentspeed]
 
 /obj/structure/vehicleparts/axis/proc/check_enginepower(var/esize = 0)
@@ -115,6 +153,7 @@
 	nodrop = TRUE
 	w_class = 5
 	secondary_action = TRUE
+	var/obj/structure/vehicle/origin = null
 
 /obj/item/vehicleparts/wheel/handle
 	name = "motorcycle handles"

@@ -84,6 +84,24 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 75)
 	attack_verb = list("bludgeoned", "hit")
 	flammable = TRUE
+
+/obj/item/weapon/hammer/modern
+	name = "clawhammer"
+	desc = "Tear stuff apart with this."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "hammer_modern"
+	item_state = "hammer_modern"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_NORMAL + 6
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 6
+	throw_range = 5
+	matter = list(DEFAULT_WALL_MATERIAL = 75)
+	attack_verb = list("bludgeoned", "hit")
+	flammable = FALSE
+
 /*
  * Wirecutters
  */
@@ -156,7 +174,7 @@
 		return
 
 /obj/item/weapon/whistle
-	name = "trench whistle"
+	name = "whistle"
 	desc = "Good for ordering the troops to go over the top."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "whistle"
@@ -172,7 +190,7 @@
 
 /obj/item/weapon/whistle/attack_self(mob/user as mob)
 	if (cooldown_whistle == FALSE)
-		playsound(loc, 'sound/effects/whistle.ogg', 100, FALSE)
+		playsound(loc, 'sound/effects/whistle.ogg', 100, FALSE, 5)
 		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
 		cooldown_whistle = TRUE
 		spawn(100)
@@ -193,6 +211,25 @@
 	var/deployed = FALSE
 	nothrow = TRUE
 	flammable = TRUE
+	var/depicon = "siege_ladder_dep"
+	var/handicon = "siege_ladder"
+
+/obj/item/weapon/siegeladder/metal
+	name = "ladder"
+	desc = "A metal ladder, good for climbing things."
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "metal_ladder"
+	flags = CONDUCT
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	w_class = 4.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+	deployed = FALSE
+	nothrow = TRUE
+	flammable = TRUE
+	depicon = "metal_ladder_dep"
+	handicon = "metal_ladder"
 
 /obj/item/weapon/siegeladder/attackby(obj/item/weapon/O as obj, mob/user as mob)
 	if (deployed)
@@ -205,7 +242,7 @@
 				"<span class='danger'>You have removed \the [src]!</span>")
 			anchored = FALSE
 			deployed = FALSE
-			icon_state = "siege_ladder"
+			icon_state = handicon
 			for (var/obj/structure/barricade/ST in src.loc)
 				ST.climbable = FALSE
 	else
@@ -225,7 +262,7 @@
 			ANCH.anchored = TRUE
 			src.climbable = TRUE
 			ANCH.deployed = TRUE
-			ANCH.icon_state = "siege_ladder_dep"
+			ANCH.icon_state = ANCH.depicon
 			ANCH.dir = src.dir
 			return
 	else
@@ -253,6 +290,19 @@
 	throwforce = WEAPON_FORCE_WEAK
 	slot_flags = null
 	attack_verb = list("slapped")
+	flammable = TRUE
+
+/obj/item/weapon/fishing/modern
+	name = "fishing rod"
+	desc = "A modern fishing pole."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "fishing_modern"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = 3.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "whacked")
 	flammable = TRUE
 
 /obj/item/weapon/goldsceptre

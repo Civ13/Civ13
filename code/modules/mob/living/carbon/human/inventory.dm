@@ -44,6 +44,25 @@ This saves us from having to call add_fingerprint() any time something is put in
 	I.secondary_attack_self(mob)
 	return
 
+//secondary Activate-Held-Object, when an object has more than a action possible (i.e. vehicle controls)
+/client/verb/try_to_buckle()
+	set name = "try_to_buckle"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	for(var/obj/structure/bed/O in mob.loc)
+		if (!O.buckled_mob && !mob.buckled)
+			mob.MouseDrop(O)
+			//O.user_buckle_mob(mob, mob)
+			return
+		else if (O.buckled_mob == mob && mob.buckled == O)
+			O.user_unbuckle_mob(mob, mob)
+			return
+
 //NUMPAD 8
 /client/verb/zone_sel_head()
 	set name = "zone_sel_head"

@@ -132,6 +132,32 @@
 	effectiveness_mod = 1.03
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/semiautomatic/avtomat
+	name = "fedorov avtomat"
+	desc = "Russian automatic rifle, used in ww1."
+	icon_state = "avtomat"
+	item_state = "svt"
+	base_icon = "avtomat"
+	w_class = 4
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	max_shells = 25
+	caliber = "a762x54"
+	ammo_type = /obj/item/ammo_casing/a762x54
+	slot_flags = SLOT_SHOULDER
+	magazine_type = /obj/item/ammo_magazine/avtomat
+	weight = 3.85
+	load_delay = 8
+	firemodes = list(
+		list(name="single shot",	burst=1, burst_delay=0.8, recoil=0.1, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0.2, 0.3)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=1.0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.2, 1.3)),
+		)
+
+	gun_type = GUN_TYPE_RIFLE
+	force = 10
+	throwforce = 20
+	effectiveness_mod = 1.80
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+
 /obj/item/weapon/gun/projectile/semiautomatic/sks
 	name = "SKS"
 	desc = "Soviet semi-automatic rifle chambered in 7.62x54mmR."

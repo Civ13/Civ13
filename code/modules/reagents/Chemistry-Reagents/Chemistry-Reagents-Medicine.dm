@@ -236,6 +236,12 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
+/datum/reagent/penicillin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	if (istype(M, /mob/living/carbon/human))
+		var/mob/living/carbon/human/HH = M
+		if (HH.disease == 1 && HH.disease_type == "typhus")
+			HH.disease_treatment = TRUE
+
 /datum/reagent/prontosil
 	name = "Prontosil"
 	id = "prontosil"

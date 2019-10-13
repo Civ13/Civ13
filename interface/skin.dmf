@@ -214,6 +214,9 @@ macro "hotkeymode"
 	elem 
 		name = "A+UP"
 		command = ".stopmovingleft"
+	elem 
+		name = "B"
+		command = "try_to_buckle"
 	elem "secondaryactivation"
 		name = "C"
 		command = "secondary_activation"

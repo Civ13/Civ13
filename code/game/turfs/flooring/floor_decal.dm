@@ -1002,7 +1002,7 @@ var/list/floor_decals = list()
 	icon_state = "techfloor_hole_right"
 
 
-//Grass for ship garden
+//Grass for lands scapes
 
 /obj/effect/floor_decal/grass_edge
 	name = "grass edge"
@@ -1011,3 +1011,11 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/grass_edge/corner
 	name = "grass edge"
 	icon_state = "grass_edge_corner"
+
+/obj/effect/floor_decal/grass_edge/dead
+	name = "dead grass edge"
+	icon_state = "dead_grass_edge"
+
+/obj/effect/floor_decal/grass_edge/corner/dead
+	name = "dead grass edge"
+	icon_state = "dead_grass_edge_corner"

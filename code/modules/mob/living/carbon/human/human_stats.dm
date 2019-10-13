@@ -33,8 +33,8 @@
 			else
 				statval += pick(round(15/stats.len), ceil(15/stats.len))
 
-	// crafting, medical: more age benefits you
-	if (list("crafting", "medical").Find(statname))
+	// crafting, medical, philosophy: more age benefits you
+	if (list("crafting", "medical", "philosophy").Find(statname))
 		switch (age)
 			if (0 to 15) // how did you even get here?
 				statval -= 3
@@ -54,8 +54,8 @@
 				statval += 6
 			if (56 to INFINITY)
 				statval += 7
-	// all other stats: more age hurts
-	else
+	// dexterity, strength: more age hurts
+	else if (list("dexterity", "strength").Find(statname))
 		switch (age)
 			if (0 to 15) // how did you even get here?
 				statval -= rand(8,10)

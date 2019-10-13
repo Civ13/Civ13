@@ -62,6 +62,13 @@
 	opacity = 0
 #undef CV_CUSTOM_JAILSTEEL
 
+/obj/structure/simple_door/key_door/custom/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (istype(mover, /obj/effect/effect/smoke))
+		return TRUE
+	else if (istype(mover, /obj/item/projectile))
+		return TRUE
+	..()
+
 #define CV_CODE 1000
 /datum/keyslot/civ
 	code = CV_CODE
@@ -317,6 +324,26 @@
 /obj/structure/simple_door/key_door/russian
 	keyslot_type = /datum/keyslot/russian
 	unique_door_name = "Russian locked"
+
+/datum/keyslot/soviet
+	code = RU_CODE
+
+/obj/item/weapon/key/soviet
+	code = RU_CODE
+	name = "Soviet key"
+
+/obj/item/weapon/key/soviet/guard
+	code = RU_CODE
+	name = "GULAG guard key"
+
+/obj/structure/simple_door/key_door/soviet
+	keyslot_type = /datum/keyslot/soviet
+	unique_door_name = "Soviet locked"
+
+/obj/structure/simple_door/key_door/soviet/guard
+	keyslot_type = /datum/keyslot/soviet
+	unique_door_name = "GULAG locked"
+
 #undef RU_CODE
 
 #define NL_CODE 995 * 6

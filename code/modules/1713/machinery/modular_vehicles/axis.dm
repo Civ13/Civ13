@@ -1,25 +1,28 @@
+var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte")
+var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom")
+
 ////////AXIS: MOVEMENT LOOP/////////
 
 /obj/structure/vehicleparts/axis/ex_act(severity)
 	switch(severity)
 		if (1.0)
-			Destroy()
 			return
 		if (2.0)
-			if (prob(10))
-				Destroy()
-				return
+			return
 		if (3.0)
 			return
-
+/*
 /obj/structure/vehicleparts/axis/Destroy()
 	for(var/obj/structure/vehicleparts/frame/F in components)
-		F.axis -= src
+		F.axis = null
 	wheel = null
 	visible_message("<span class='danger'>The [name] axis gets wrecked!</span>")
 	qdel(src)
-
+*/
 /obj/structure/vehicleparts/axis/proc/startmovementloop()
+	if (world.time <= lastmovementloop)
+		return FALSE
+	lastmovementloop = world.time+15
 	if (isemptylist(corners))
 		check_corners()
 	if (isemptylist(matrix))
@@ -41,24 +44,17 @@
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
 				if (W.broken)
-					W.icon_state = "[W.base_icon][color_code]_broken"
 					moving = FALSE
 					stopmovementloop()
 					return
 				else
-					W.icon_state = "[W.movement_icon][color_code]"
-				W.update_icon()
+					W.update_icon()
 			do_move()
 		else
-			for (var/obj/structure/vehicleparts/movement/W in wheels)
-				if (W.broken)
-					W.icon_state = "[W.base_icon][color_code]_broken"
-				else
-					W.icon_state = "[W.base_icon][color_code]"
-				W.update_icon()
 			currentspeed = 0
 			moving = FALSE
 			stopmovementloop()
+			return
 		spawn(vehicle_m_delay+1)
 			movementloop()
 			return
@@ -67,11 +63,8 @@
 
 /obj/structure/vehicleparts/axis/proc/stopmovementloop()
 	moving = FALSE
+	currentspeed = 0
 	for (var/obj/structure/vehicleparts/movement/W in wheels)
-		if (W.broken)
-			W.icon_state = "[W.base_icon][color_code]_broken"
-		else
-			W.icon_state = "[W.base_icon][color_code]"
 		W.update_icon()
 	return
 
@@ -93,29 +86,52 @@
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
-			var/turf/TF = get_turf(MV)
-			if (istype(TF, /turf/floor/grass/jungle))
-				TF.ChangeTurf (/turf/floor/dirt/jungledirt)
-			else if (istype(TF, /turf/floor/grass))
-				TF.ChangeTurf (/turf/floor/dirt)
+			if (MV.ntype == "track")
+				var/turf/TF = get_turf(MV)
+				if (istype(TF, /turf/floor/grass/jungle))
+					TF.ChangeTurf (/turf/floor/dirt/jungledirt)
+				else if (istype(TF, /turf/floor/grass))
+					TF.ChangeTurf (/turf/floor/dirt)
+				else if (istype(TF, /turf/floor/dirt/ploughed/flooded))
+					TF.ChangeTurf (/turf/floor/dirt/flooded)
+				else if (istype(TF, /turf/floor/dirt/ploughed))
+					TF.ChangeTurf (/turf/floor/dirt)
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
+			var/area/A = get_area(T)
+			if (map && map.caribbean_blocking_area_types.Find(A.type))
+				if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
+					visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
+					moving = FALSE
+					stopmovementloop()
+					return FALSE
 			if (reverse)
 				T = get_turf(get_step(FR.loc,OPPOSITE_DIR(dir)))
 			if (!T)
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
+			for (var/obj/item/mine/at/MAT in T)
+				if (MAT.anchored)
+					MAT.trigger(FR)
 			var/turf/TT = get_turf(get_step(T, dir))
 			if (reverse)
 				TT = get_turf(get_step(T,OPPOSITE_DIR(dir)))
+			if (!TT)
+				moving = FALSE
+				stopmovementloop()
+			for (var/obj/item/weapon/grenade/G in TT)
+				if (G.active)
+					G.prime()
+			for (var/obj/item/weapon/grenade/GG in T)
+				if (GG.active)
+					GG.prime()
 			for(var/mob/living/L in TT)
 				var/protec = FALSE
 				for (var/obj/structure/vehicleparts/frame/FRR in L.loc)
-					if (FRR.axis == FR.axis)
-						protec = TRUE
+					protec = TRUE
 				if (!protec)
-					if (current_weight >= 45)
+					if (current_weight >= 800)
 						visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
 						L.crush()
 						if (L)
@@ -137,26 +153,44 @@
 								visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
 								SA.crush()
 			for(var/obj/structure/O in T)
-				if (O.density == TRUE && !(O in transporting))
-					if (current_weight >= 55 && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement))
-						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
-						qdel(O)
-					else
+				var/done = FALSE
+				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
+					done = TRUE
+					if (FM.axis != src)
 						visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+						moving = FALSE
+						stopmovementloop()
 						return FALSE
-				else if (O.density == FALSE && !(O in transporting))
-					if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/rails))
-						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
-						qdel(O)
+				if (!done)
+					if (O.density == TRUE && !(O in transporting))
+						if (current_weight >= 400 && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement))
+							visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+							qdel(O)
+						else
+							visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+							return FALSE
+					else if (O.density == FALSE && !(O in transporting))
+						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/rails))
+	//						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+							qdel(O)
 			if (T.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
+				moving = FALSE
+				stopmovementloop()
 				return FALSE
-			for(var/obj/covers/CV in T && !(CV in transporting))
-				if (CV.density == TRUE)
-					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-					return FALSE
-			for(var/obj/item/I in T && !(I in transporting))
+			for(var/obj/covers/CV in TT && !(CV in transporting))
+				if (current_weight < 600)
+					if (CV.density || CV.wall)
+						visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+						moving = FALSE
+						stopmovementloop()
+						return FALSE
+				else
+					CV.Destroy()
+			for(var/obj/item/I in TT && !(I in transporting))
 				qdel(I)
+			for(var/obj/effect/burning_oil/BO in T && !(BO in transporting))
+				qdel(BO)
 			var/canpass = FALSE
 			for(var/obj/covers/CVV in T)
 				if (CVV.density == FALSE)
@@ -177,7 +211,7 @@
 	if (!engine || !engine.fueltank)
 		engine.on = FALSE
 		return FALSE
-	else if (get_weight() > engine.maxpower)
+	else if (get_weight() > engine.maxpower*2 || get_weight() > maxpower)
 		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
 		return FALSE
 	else
@@ -213,6 +247,7 @@
 			else
 				MV.dir = dir
 			MV.forceMove(get_step(MV.loc, MV.dir))
+			MV.update_icon()
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
 			ML.forceMove(get_step(ML.loc, m_dir))
@@ -230,6 +265,10 @@
 			components -= F
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
+			if (istype(M, /obj/item/mine/at))
+				var/obj/item/mine/at/MAT = M
+				if (MAT.anchored)
+					MAT.trigger(F)
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				transporting += M
 	return transporting.len
@@ -366,13 +405,39 @@
 				MV.axis = src
 				MV.connected = FM
 				FM.mwheel = MV
+	for(var/obj/structure/vehicleparts/movement/MV in wheels)
+		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
+		if (MV.connected == corners[1])
+			MV.reversed = FALSE
+		else if (MV.connected == corners[2])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
+			else
+				MV.reversed = FALSE
+		else if (MV.connected == corners[3])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
+			else
+				MV.reversed = FALSE
+		else if (MV.connected == corners[4])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
+			else
+				MV.reversed = TRUE
+		else
+			return
+
+		if (MV.reversed)
+			MV.dir = OPPOSITE_DIR(dir)
+		else
+			MV.dir = dir
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
 	else
 		world.log << "ERROR BUILDING CORNER LIST!"
 		return FALSE
 
-/obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none")
+/obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none", var/mob/user = null)
 	if (olddir == 0 || newdir == 0 || tdir == "none")
 		return FALSE
 	if (isemptylist(corners))
@@ -380,6 +445,7 @@
 	if (isemptylist(matrix))
 		check_matrix()
 	matrix_current_locs = list()
+
 	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
@@ -392,6 +458,39 @@
 						tmplist += MV
 				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
 
+	//check if there are no other vehicles/obstacles in the destination areas
+	for (var/locx=1; locx<=5; locx++)
+		for (var/locy=1; locy<=5; locy++)
+			var/loc2textv = "[locx],[locy]"
+			var/dlocfinding = rotation_matrixes[tdir][loc2textv][1]
+			var/turf/T = matrix_current_locs[dlocfinding][1]
+			var/list/todestroy = list()
+			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfinding][1])
+				if (user)
+					user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+				return FALSE
+				if (!T || T.density)
+					if (user)
+						user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+					return FALSE
+			for (var/obj/O in T)
+				if ((!locate(O) in transporting) && (!locate(O) in components) && (!locate(O) in wheels))
+					if (istype(O, /obj/structure/vehicleparts/frame))
+						var/obj/structure/vehicleparts/frame/FRM = O
+						if (FRM.axis != src)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+							return FALSE
+					else
+						todestroy += O
+			for(var/obj/OM in todestroy)
+				qdel(OM)
+	dir = newdir
+	for (var/obj/structure/vehicleparts/movement/OBB in wheels)
+		if (OBB.reversed)
+			OBB.dir = OPPOSITE_DIR(dir)
+		else
+			OBB.dir = dir
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
@@ -400,6 +499,14 @@
 				return FALSE
 //			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
 			if (islist(matrix_current_locs[loc2textv][2]))
+				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
+					var/turf/toget = matrix_current_locs[dlocfind][1]
+					for (var/mob/living/ML in toget)
+						if (!locate(ML) in transporting)
+							ML.crush()
+					for (var/obj/structure/ST in toget)
+						if (!ST.density)
+							ST.Destroy()
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
 					M.forceMove(matrix_current_locs[dlocfind][1])
 					if (istype(M, /obj))
@@ -411,6 +518,10 @@
 							if (FR.mwheel)
 								FR.mwheel.update_icon()
 						O.update_icon()
+
+	for(var/obj/structure/vehicleparts/VP in components)
+		VP.dir = dir
+		VP.update_icon()
 	return TRUE
 
 /obj/effect/pseudovehicle
@@ -430,3 +541,46 @@
 		spawn(1200)
 			if (!link)
 				qdel(src)
+
+
+/obj/structure/vehicleparts/axis/attack_hand(var/mob/living/carbon/human/H)
+	if (!ishuman(H))
+		return
+	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))
+		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
+		return
+	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
+		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
+		return
+	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
+	if (inp == "No")
+		return
+	for(var/obj/structure/vehicleparts/frame/F in loc)
+		if (F.axis && F.axis != src)
+			return
+		var/customname = input(H, "What do you want to name this vehicle?") as text
+		if (!customname || customname == "")
+			name = "[H]'s vehicle"
+		else
+			name = customname
+		var/list/vehiclecolors = list(
+			list("light gray","#A9A9A9"),
+			list("medium gray","#585A5C"),
+			list("dark gray","#3B3F41"),
+			list("green","#3d5931"),
+			list("pale green","#636351"),
+			list("Feldgrau (WW1)","#5D5D3D"),
+			list("Feldgrau (WW2)","#4D5D53"),
+			list("light khaki","#F0E68C"),
+			list("dark khaki","#BDB76B"),
+			list("olive drab","#555346"),)
+		var/choosecolor1 = WWinput(H, "Choose this vehicle's color:", "Vehicle Color", "medium gray", list("light gray", "medium gray", "dark gray", "green", "pale green", "Feldgrau (WW1)", "Feldgrau (WW2)", "light khaki", "dark khaki", "olive drab"))
+			for (var/i in vehiclecolors)
+				if (i[1] == choosecolor1)
+					color = i[2]
+		dir = 1
+		new/obj/effect/autoassembler(locate(x+2,y-2,z))
+		H << "<span class='warning'>Vehicle assembled.</span>"
+		for (var/obj/O in components)
+			O.update_icon()
+		return

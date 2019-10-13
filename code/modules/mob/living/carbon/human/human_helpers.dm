@@ -102,6 +102,12 @@
 					lasty = usr.y
 					lastz = usr.z
 					usr.sleeping = 20 //Short nap
+					if (buckled)
+						var/obj/structure/B = buckled
+						if (istype(B, /obj/structure/bed/bedroll))
+							B.forceMove(locate(1,1,1))
+						else
+							B.unbuckle_mob()
 					inducedSSD = TRUE
 					sleep_update()
 					usr.forceMove(locate(1,1,1))
@@ -119,6 +125,12 @@
 			usr.sleeping = 0 //Short nap
 			inducedSSD = FALSE
 			usr.forceMove(locate(lastx,lasty,lastz))
+			if (buckled)
+				var/obj/structure/B = buckled
+				if (istype(B, /obj/structure/bed/bedroll))
+					B.forceMove(locate(lastx,lasty,lastz))
+				else
+					B.unbuckle_mob()
 			return
 //to keep the character sleeping
 /mob/living/carbon/human/proc/sleep_update()
@@ -236,14 +248,20 @@
 	if (!client)
 		return
 	var/obj/structure/vehicleparts/frame/found = null
+	for (var/image/tmpimg in client.images)
+		if (tmpimg.icon == 'icons/obj/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles96x96.dmi')
+		 client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
 	if (found)
-		for (var/obj/structure/vehicleparts/frame/FR in view(7, src))
+		for (var/obj/structure/vehicleparts/frame/FR in view(client))
 			if (FR.axis != found.axis && FR != found)
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
 	else
-		for (var/obj/structure/vehicleparts/frame/FR in view(7, src))
-			client.images += FR.roof
+		for (var/obj/structure/vehicleparts/frame/FR in view(client))
+			if (locate(FR) in view(client))
+				client.images += FR.roof
+			else
+				client.images -= FR.roof

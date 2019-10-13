@@ -2,3 +2,4 @@
 /home/1713/civ13-git/config/motd.txt
 /home/1713/civ13-git/config/admin_ranks.txt
 /home/1713/civ13-git/config/material_recipes.txt
+/home/1713/civ13-git/config/material_recipes_camp.txt

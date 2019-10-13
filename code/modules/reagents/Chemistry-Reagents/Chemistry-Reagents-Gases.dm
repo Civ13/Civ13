@@ -147,6 +147,9 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 	if (istype(L))
 		if (mask_check(L)) return
 		L.eye_blurry += (amount/10)
+		L.Weaken(10)
+		if (prob(10))
+			L.emote("cough")
 
 
 /datum/reagent/toxin/mustard_gas

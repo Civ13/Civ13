@@ -110,17 +110,7 @@
 /obj/item/projectile/proc/on_impact(var/atom/A)
 	impact_effect(effect_transform)		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
-	if (istype(src, /obj/item/projectile/bullet))
-		if (istype(A, /turf))
-			var/turf/T = A
-			if (prob(25) && T.bullethole_count < 10 && T.density == TRUE)
-				T.overlays += image('icons/turf/walls.dmi', "bullethole[rand(1,15)]")
-				T.bullethole_count++
-		else if (istype(A, /obj/covers))
-			var/obj/covers/C = A
-			if (prob(25) && C.bullethole_count < 10 && C.density == TRUE)
-				C.overlays += image('icons/turf/walls.dmi', "bullethole[rand(1,15)]")
-				C.bullethole_count++
+
 	spawn(25)
 		if (src)
 			qdel(src)
@@ -449,7 +439,8 @@
 	return TRUE
 
 /obj/item/projectile/proc/handleTurf(var/turf/T, forced=0, var/list/untouchable = list())
-
+	if(atype =="NUCLEAR")
+		radiation_pulse(T, damage / 100, damage / 10, damage / 25, 0)
 	if (!T || !istype(T))
 		return FALSE
 
@@ -478,41 +469,48 @@
 			for (var/obj/O in T.contents)
 				if (istype(O, /obj/structure/vehicleparts/frame) && firer.loc != O.loc)
 					var/obj/structure/vehicleparts/frame/NO = O
+					var/obj/structure/vehicleparts/axis/found = null
 					for (var/obj/structure/vehicleparts/frame/FM in firer.loc)
-						if (FM.axis != NO.axis)
+						found = FM.axis
+					if (!found || found != NO.axis)
+						if (found != NO.axis)
 							var/penloc = NO.CheckPenLoc(src)
 							if (!NO.CheckPen(src,penloc))
 								passthrough = FALSE
+								damage /= 7
 								NO.bullet_act(src,penloc)
 								bumped = TRUE
 								loc = null
 								qdel(src)
 								return FALSE
 							else
-								if ((prob(75) && atype=="APCR") || (prob(50) && atype=="AP"))
-									NO.bullet_act(src,penloc)
-									bumped = TRUE
-									passthrough = FALSE
-									loc = null
-									qdel(src)
-									return FALSE
-								else
-									NO.bullet_act(src,penloc)
-									passthrough = TRUE
-									damage /= 2
-									passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
-									//move ourselves onto T so we can continue on our way.
-									forceMove(T)
-									permutated += T
-									if (passthrough_message)
-										T.visible_message(passthrough_message)
-									return TRUE
+								NO.bullet_act(src,penloc)
+								passthrough = TRUE
+								damage /= 2
+								passthrough_message = "<span class = 'warning'>The projectile penetrates the hull!</span>"
+								//move ourselves onto T so we can continue on our way.
+								forceMove(T)
+								permutated += T
+								if (passthrough_message)
+									T.visible_message(passthrough_message)
+
 				var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 				if (O == original)
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
 						hitchance = 50
-					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
-						hitchance = 100
+					else if (!isitem(O) && isnonstructureobj(O))
+						if (!istype(O, /obj/covers/jail))
+							hitchance = 100
+							world.log << "A"
+						else
+							if (firer in range(1,O))
+								hitchance = 0
+
+								world.log << "B"
+							else
+								hitchance = 55
+
+								world.log << "C"
 					else if (isitem(O)) // any item
 						var/obj/item/I = O
 						hitchance = 9 * I.w_class // a pistol would be 50%
@@ -534,7 +532,12 @@
 			if (!untouchable.Find(AM))
 				if (isliving(AM) && AM != firer)
 					var/mob/living/L = AM
-					if (!L.lying || T == get_turf(original) || execution)
+					var/skip = FALSE
+					for (var/obj/structure/vehicleparts/frame/VP1 in L.loc)
+						for (var/obj/structure/vehicleparts/frame/VP2 in firer.loc)
+							if (VP1.axis == VP2.axis && istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
+								skip = TRUE
+					if ((!skip) && (!L.lying || T == get_turf(original) || execution))
 						// if they have a neck grab on someone, that person gets hit instead
 						var/obj/item/weapon/grab/G = locate() in L
 						if (G && G.state >= GRAB_NECK && G.affecting.stat < UNCONSCIOUS)
@@ -559,20 +562,21 @@
 										passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM
-					if (O.density || istype(O, /obj/structure/window/classic)) // hack
-						O.pre_bullet_act(src)
-						if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
-							if (O && !O.gcDestroyed)
-								if (O.density && !istype(O, /obj/structure))
-									passthrough = FALSE
-								else if (istype(O, /obj/structure))
-									var/obj/structure/S = O
-									if (!S.CanPass(src, original))
+					if (!(istype(O, /obj/structure/vehicleparts/frame) && O.loc == src.loc))
+						if (O.density || istype(O, /obj/structure/window/classic)) // hack
+							O.pre_bullet_act(src)
+							if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
+								if (O && !O.gcDestroyed)
+									if (O.density && !istype(O, /obj/structure))
 										passthrough = FALSE
-						//				log_debug("ignored [S] (1)")
-									else if (S.density)
-										if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
-											passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
+									else if (istype(O, /obj/structure))
+										var/obj/structure/S = O
+										if (!S.CanPass(src, original))
+											passthrough = FALSE
+							//				log_debug("ignored [S] (1)")
+										else if (S.density)
+											if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
+												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
 	//		else
 		//		log_debug("ignored [AM] (2)")
 
@@ -653,15 +657,15 @@
 
 		var/list/_untouchable = list()
 		var/src_loc = get_turf(src)
-
-		if (firstmove)
-			for (var/obj/structure/window/sandbag/S in src_loc)
-				_untouchable += S
-		else
-			if (firer)
-				for (var/obj/structure/barricade/B in src_loc)
-					if (get_dist(firer, B) == 1)
-						_untouchable += B
+		if (!firer.prone && !firer.lying)
+			if (firstmove)
+				for (var/obj/structure/window/sandbag/S in src_loc)
+					_untouchable += S
+			else
+				if (firer)
+					for (var/obj/structure/barricade/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
 
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()

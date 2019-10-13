@@ -66,6 +66,5 @@
 
 	var/fullscreen = FALSE
 
-	var/spampreventer = 0
 
 /client/authenticate = FALSE

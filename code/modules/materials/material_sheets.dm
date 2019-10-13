@@ -131,7 +131,7 @@
 	value = 3
 
 /obj/item/stack/material/sandstone
-	name = "sandstone brick"
+	name = "sandstone"
 	icon_state = "sheet-sandstone"
 	default_type = "sandstone"
 	value = 2
@@ -248,7 +248,7 @@
 	icon_state = "sheet-metal"
 	default_type = DEFAULT_WALL_MATERIAL
 	value = 5
-	max_amount = 500
+	max_amount = 2000
 
 /obj/item/stack/material/steel/twentyfive
 	amount = 25
@@ -275,6 +275,16 @@
 	value = 3
 	w_class = 2.0
 	flammable = TRUE
+
+/obj/item/stack/material/rags
+	name = "rags"
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "rag"
+	default_type = "rags"
+	value = 0.5
+	w_class = 1.0
+	flammable = TRUE
+
 
 /obj/item/stack/material/wool
 	name = "wool pile"

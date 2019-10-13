@@ -1,3 +1,6 @@
+/turf/floor
+	var/busy = FALSE
+
 /turf/floor/proc/collapse_check()
 	if (get_area(src).location == AREA_INSIDE)
 		//check for supports
@@ -77,6 +80,26 @@
 					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
 					user.setClickCooldown(5)
 				return
+		if (istype(C, /obj/item/clothing) && !busy)
+			var/obj/item/clothing/CL = C
+			usr << "<span class='notice'>You start washing \the [C].</span>"
+			var/turf/location = user.loc
+
+			busy = TRUE
+			sleep(40)
+			busy = FALSE
+
+			if (user.loc != location) return				//User has moved
+			if (!C) return 								//Item's been destroyed while washing
+			if (user.get_active_hand() != C) return		//Person has switched hands or the item in their hands
+
+			CL.clean_blood()
+			CL.radiation = 0
+			CL.dirtyness = 0
+			CL.fleas = FALSE
+			user.visible_message( \
+				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
+				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 
 	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal))
 		user << "You start fertilizing the ploughed field..."
@@ -717,7 +740,7 @@
 		E.reagents.add_reagent(randreg,5)
 		E.update_icon()
 
-/turf/proc/mining_proc(var/mob/living/carbon/human/H)
+/turf/proc/mining_proc(var/mob/living/carbon/human/H, var/ROCKTYPE)
 	if (!H || !src)
 		return
 	var/turf/T = get_turf(src)
@@ -896,11 +919,26 @@
 		T.is_mineable = FALSE
 		H.adaptStat("strength", 1)
 		return
-	var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-	mineral.amount = rand(4,8)
-	if (istype(get_area(src), /area/caribbean/void/caves/special))
-		mineral.amount *= 2
-	H << "<span class='danger'>You found some usable stone blocks!</span>"
+	//Switch rock material
+	if(ROCKTYPE == "sand")
+		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
+		mineral.amount = rand(3,10)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		H << "<span class='danger'>You found some sandstone rocks!</span>"
+	else if(ROCKTYPE == "ice")
+		//TODO ADD ICE STUFF AND FOSSILS
+		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+		mineral.amount = rand(4,8)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		H << "<span class='danger'>You found some usable stone rocks!</span>"
+	else
+		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+		mineral.amount = rand(4,8)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		H << "<span class='danger'>You found some usable stone rocks!</span>"
 	if(map.ID == MAP_NOMADS_DESERT)
 		T.ChangeTurf(/turf/floor/dirt/dust)
 	else if (map.ID == MAP_NOMADS_JUNGLE)

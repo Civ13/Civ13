@@ -15,6 +15,25 @@
 	flammable = TRUE
 	var/restricts_view = 0 //If it restricts the viewing cone - check hide.dmi: 0 means "combat". 1 means "helmet". 2 means "narrow"
 
+	var/dirtyness = 0
+	var/fleas = FALSE
+
+	var/ripable = FALSE
+	var/rag_amt = 1
+	secondary_action = TRUE
+
+/obj/item/clothing/secondary_attack_self(mob/living/carbon/human/user)
+	if (secondary_action && ripable && rag_amt > 0)
+		user << "You start ripping apart \the [src]..."
+		if (do_after(user, 100, get_turf(user)))
+			playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
+			user << "You rip \the [src] apart into rags."
+			var/obj/item/stack/material/rags/R = new/obj/item/stack/material/rags(user.loc)
+			R.amount = rag_amt
+			qdel(src)
+			return
+	else
+		return
 //Updates the icons of the mob wearing the clothing item, if any.
 /obj/item/clothing/proc/update_clothing_icon()
 	return
@@ -27,17 +46,46 @@
 /obj/item/clothing/proc/check_health()
 	if (health <= 0)
 		visible_message("\The [src] falls apart!")
+		if (ripable && rag_amt > 0)
+			new/obj/item/stack/material/rags(get_turf(src))
 		if (istype(loc, /mob/living))
 			var/mob/living/M = loc
 			M.drop_from_inventory(src)
 		qdel(src)
 		return TRUE
 	return FALSE
+
+/obj/item/clothing/examine(mob/user)
+	..(user)
+	var/healthp = (health/initial(health))*100
+	switch (healthp)
+		if (-100 to 30)
+			user << "It is almost falling apart!"
+		if (31 to 55)
+			user << "Seems to be in a very bad condition."
+		if (56 to 75)
+			user << "Seems to be damaged."
+		if (76 to 90)
+			user << "Seems to be in decent condition."
+		if (91 to 1000)
+			user << "Seems to be in very good condition!"
+	switch (dirtyness)
+		if (-100 to 29)
+			user << "Looks clean."
+		if (30 to 49)
+			user << "Looks a bit dirty."
+		if (50 to 70)
+			user << "Looks very dirty!"
+		if (71 to 200)
+			user << "Looks extremely dirty!"
+	if (fleas)
+		user << "<b>\The [src] is infested with fleas!</b>"
 ///////////////////////////////////////////////////////////////////////
 /obj/item/clothing/head/helmet
 	restricts_view = 1
 	health = 35
 // Ears: headsets, earmuffs and tiny objects
+	ripable = FALSE
 /obj/item/clothing/ears
 	name = "ears"
 	w_class = 1.0
@@ -125,7 +173,7 @@ BLIND     // can't see anything
 	var/darkness_view = FALSE//Base human is 2
 	var/see_invisible = -1
 	var/obj/screen/overlay = null
-
+	ripable = FALSE
 /obj/item/clothing/glasses/update_clothing_icon()
 	if (ismob(loc))
 		var/mob/M = loc
@@ -147,7 +195,7 @@ BLIND     // can't see anything
 	body_parts_covered = HANDS
 	slot_flags = SLOT_GLOVES
 	attack_verb = list("challenged")
-
+	ripable = FALSE
 /obj/item/clothing/gloves/update_clothing_icon()
 	if (ismob(loc))
 		var/mob/M = loc
@@ -185,7 +233,7 @@ BLIND     // can't see anything
 	slot_flags = SLOT_HEAD
 	flags_inv = BLOCKHEADHAIR
 	w_class = 2.0
-
+	ripable = TRUE
 	var/light_overlay = "helmet_light"
 	var/light_applied
 	var/brightness_on
@@ -254,7 +302,7 @@ BLIND     // can't see anything
 	body_parts_covered = HEAD
 	slot_flags = SLOT_MASK
 	body_parts_covered = FACE|EYES
-
+	ripable = FALSE
 	var/voicechange = FALSE
 	var/list/say_messages
 	var/list/say_verbs
@@ -279,6 +327,7 @@ BLIND     // can't see anything
 	body_parts_covered = FEET
 	slot_flags = SLOT_FEET
 
+	ripable = FALSE
 	var/can_hold_knife = TRUE
 	var/obj/item/holding
 
@@ -358,7 +407,8 @@ BLIND     // can't see anything
 	var/blood_overlay_type = "suit"
 	siemens_coefficient = 0.9
 	w_class = 3
-
+	ripable = TRUE
+	rag_amt = 4
 /obj/item/clothing/suit/update_clothing_icon()
 	if (ismob(loc))
 		var/mob/M = loc
@@ -378,6 +428,8 @@ BLIND     // can't see anything
 	slot_flags = SLOT_ICLOTHING
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 	w_class = 3
+	ripable = TRUE
+	rag_amt = 3
 	//var/has_sensor = TRUE //For the crew computer 2 = unable to change mode
 //	var/sensor_mode = FALSE
 		/*

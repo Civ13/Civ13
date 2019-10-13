@@ -104,6 +104,14 @@
 	health = 50
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
+/obj/structure/grille/chainlinkfence
+	name = "chain-link fence"
+	desc = "A woven steel fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "chainlinkfence"
+	health = 80
+	hitsound = 'sound/weapons/blade_parry1.ogg'
+
 /obj/structure/wallclock
 	name = "wall clock"
 	desc = "A classic wall clock."
@@ -113,6 +121,7 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	anchored = TRUE
+
 /obj/structure/props/junk
 	name = "junk"
 	desc = "A pile of junk."
@@ -563,5 +572,93 @@
 		else
 			H << "There already is a noose here."
 			return
+	else
+		..()
+
+/obj/structure/wallframe
+	name = "wall frame"
+	desc = "A wooden wall frame, add something like paper or wood to it."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "wall_frame"
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+
+/obj/structure/wallframe/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+	if(istype(W, /obj/item/stack/material/wood))
+		var/input
+		var/display = list("Medieval Window - 4", "Medieval Wall - 6", "Medieval Crossbraced Wall (X) - 6", "Medieval Braced Wall (\\) - 6", "Medieval Braced Wall (/) - 6", "Cancel")
+		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
+		playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
+		if (input == "Cancel")
+			return
+		else if(input == "Medieval Window - 4")
+			if(W.amount >= 4)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/medieval(src.loc)
+					qdel(src)
+					W.amount -= 4
+		else if(input == "Medieval Wall - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 41, src))
+					new/obj/covers/wood_wall/medieval(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Medieval Crossbraced Wall (X) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 43, src))
+					new/obj/covers/wood_wall/medieval/x(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Medieval Braced Wall (\\) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/medieval/y/r(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Medieval Braced Wall (/) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/medieval/y/l(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+	else if(istype(W, /obj/item/weapon/paper))
+		var/input
+		var/display = list("Shoji Door - 1", "Shoji Wall - 1", "Shoji Divider - 1", "Shoji Window - 1", "Cancel")
+		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
+		playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		if (input == "Cancel")
+			return
+		else if(input == "Shoji Door - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/structure/simple_door/key_door/anyone/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else if(input == "Shoji Wall - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/shoji(src.loc)
+					qdel(src)
+					W.amount -= 1
+		else if(input == "Shoji Divider - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/shoji_divider(src.loc)
+					qdel(src)
+					qdel(W)
+		else if(input == "Shoji Window - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else
+			H << "<span class='notice'>That does not exist!</span>"
 	else
 		..()

@@ -218,7 +218,7 @@ Parts of code courtesy of Super3222
 			return
 		else
 			user.dizzycheck = TRUE
-			if (do_after(user, 5, user, TRUE))//Scope delay
+			if (do_after(user, 5, user, TRUE, can_move = TRUE))//Scope delay
 				var/_x = 0
 				var/_y = 0
 				switch(user.dir)

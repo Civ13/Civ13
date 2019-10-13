@@ -1,3 +1,6 @@
+/obj/item/clothing/accessory/medal
+	ripable = FALSE
+
 /obj/item/clothing/accessory/medal/bronze
 	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "bronze"

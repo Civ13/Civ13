@@ -112,6 +112,8 @@
 
 /atom/proc/bullet_act(var/obj/item/projectile/P, def_zone)
 	P.on_hit(src, FALSE, def_zone)
+	if (istype(P, /obj/item/projectile/shell) && istype (src, /obj/structure))
+		ex_act(3.0)
 	. = FALSE
 
 /atom/proc/in_contents_of(container)//can take class or object instance as argument

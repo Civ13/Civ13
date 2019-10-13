@@ -121,6 +121,10 @@ elif map == "NANJING":
 	dmms.append("#include \"maps\\1943\\nanjing.dmm\"")
 elif map == "PIONEERS":
 	dmms.append("#include \"maps\\1873\\pioneers.dmm\"")
+elif map == "KURSK":
+	dmms.append("#include \"maps\\1943\\kursk.dmm\"")
+elif map == "GULAG13":
+	dmms.append("#include \"maps\\1943\\gulag13.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()
@@ -156,7 +160,7 @@ os.system("DreamMaker /home/1713/civ13-git/civ13.dme")
 
 print("Copying configuration settings...")
 
-os.system("sudo python3.6 /home/1713/civ13-rp/scripts/copyconfigfiles.py")
+os.system("sudo python3 /home/1713/civ13/scripts/copyconfigfiles.py")
 
 t2 = time.time() - t1
 
@@ -174,7 +178,7 @@ for pid in pids:
 		# due to BUGS we need to make sure the file we use as a reference is newer than the other
 		# todo: add test server support
 		may_restart_server = []
-		may_restart_server.append("1713")
+		may_restart_server.append("1714")
 
 		if len(may_restart_server) == 0:
 			may_restart_server.append("notathing")
@@ -186,8 +190,8 @@ for pid in pids:
 				# main server logic: for some reason I could get a valid string/int for port so we're just using "in"
 
 				# civ13 is the active server; restart civ13
-				if "1713" in name and may_restart_server[0] == "1713":
-					if os.path.isfile("/home/1713/civ13-rp/serverdata.txt"):
+				if "1714" in name and may_restart_server[0] == "1714":
+					if os.path.isfile("/home/1713/civ13/serverdata.txt"):
 						process = psutil.Process(int(pid))
 						if process is not None:
 							print("Killing the server...")
@@ -195,12 +199,12 @@ for pid in pids:
 							print("Copying binaries...")
 							dmb = os.path.join('/home/1713/civ13-git/civ13.dmb')
 							rsc = os.path.join('/home/1713/civ13-git/civ13.rsc')
-							shutil.copyfile(dmb, '/home/1713/civ13-rp/civ13.dmb')
-							shutil.copyfile(rsc, '/home/1713/civ13-rp/civ13.rsc')
+							shutil.copyfile(dmb, '/home/1713/civ13/civ13.dmb')
+							shutil.copyfile(rsc, '/home/1713/civ13/civ13.rsc')
 							time.sleep(8)
 							print("Rebooting the server...")
-							os.system('sudo DreamDaemon /home/1713/civ13-rp/civ13.dmb 1713 -trusted -webclient -logself &')
-							print("Restarted main server on port 1713.")
+							os.system('sudo DreamDaemon /home/1713/civ13/civ13.dmb 1714 -trusted -webclient -logself &')
+							print("Restarted main server on port 1714.")
 
 	except IOError:
 		continue
