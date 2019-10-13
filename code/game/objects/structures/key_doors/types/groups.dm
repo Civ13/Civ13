@@ -321,6 +321,12 @@
 /datum/keyslot/soviet
 	code = RU_CODE
 
+/datum/keyslot/soviet/guard
+	code = RU_CODE
+
+/datum/keyslot/soviet/guard/max
+	code = RU_CODE+2
+
 /obj/item/weapon/key/soviet
 	code = RU_CODE
 	name = "Soviet key"
@@ -329,13 +335,22 @@
 	code = RU_CODE
 	name = "GULAG guard key"
 
+/obj/item/weapon/key/soviet/guard/max
+	code = RU_CODE+2
+	name = "Maximum Security guard key"
+
 /obj/structure/simple_door/key_door/soviet
 	keyslot_type = /datum/keyslot/soviet
 	unique_door_name = "Soviet locked"
 
 /obj/structure/simple_door/key_door/soviet/guard
-	keyslot_type = /datum/keyslot/soviet
+	keyslot_type = /datum/keyslot/soviet/guard
 	unique_door_name = "GULAG locked"
+
+/obj/structure/simple_door/key_door/soviet/guard/max
+	keyslot_type = /datum/keyslot/soviet/guard/max
+	unique_door_name = "Maximum Security locked"
+
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard
 	unique_door_name = "GULAG locked"
 #undef RU_CODE
