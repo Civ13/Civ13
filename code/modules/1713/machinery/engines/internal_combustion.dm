@@ -86,7 +86,7 @@
 	if (fueltank != null)
 		var/done = FALSE
 		for (var/F in fuels)
-			if (fueltank.reagents.has_reagent(F, fuelefficiency*5) && done == FALSE)
+			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelefficiency*5) && done == FALSE)
 				on = TRUE
 				if (user)
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")

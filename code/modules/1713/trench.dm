@@ -19,7 +19,7 @@ var/list/global/floor_cache = list()
 
 	..()
 	spawn(4)
-		if (src)
+		if (src && istype(src, /turf/floor/trench))
 			update_icon()
 			if (istype(src, /turf/floor/trench/flooded))
 				for (var/turf/floor/trench/TF in range(1, src))

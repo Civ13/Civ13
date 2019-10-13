@@ -441,6 +441,8 @@
 
 /obj/item/weapon/reagent_containers/glass/bullet_act(var/obj/item/projectile/proj)
 	var/can_explode = FALSE
+	if (!reagents)
+		return
 	if (reagents.has_reagent("gasoline",10) || reagents.has_reagent("diesel",30) || reagents.has_reagent("biodiesel",30) || reagents.has_reagent("ethanol",10) || reagents.has_reagent("petroleum",40) || reagents.has_reagent("gunpowder",30))
 		can_explode = TRUE
 	if (!can_explode)

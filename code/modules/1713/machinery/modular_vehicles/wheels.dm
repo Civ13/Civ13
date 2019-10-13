@@ -11,7 +11,7 @@
 	if (world.time <= lastdirchange)
 		return FALSE
 	lastdirchange = world.time+15
-	if (control.axis.moving == FALSE || control.axis.currentspeed == 0)
+	if (control && control.axis && (control.axis.moving == FALSE || control.axis.currentspeed == 0))
 		return FALSE
 	for(var/obj/effect/pseudovehicle/O in control.axis.components)
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
