@@ -60,7 +60,7 @@
 			var/obj/item/projectile/proj = mover
 			proj.throw_source = proj.starting
 
-			if (proj.firer.lying || proj.firer.prone)
+			if (ishuman(proj.firer) && (proj.firer.lying || proj.firer.prone))
 				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 				if (istype(mover, /obj/item/projectile))
 					var/obj/item/projectile/B = mover
