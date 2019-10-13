@@ -657,15 +657,15 @@
 
 		var/list/_untouchable = list()
 		var/src_loc = get_turf(src)
-
-		if (firstmove)
-			for (var/obj/structure/window/sandbag/S in src_loc)
-				_untouchable += S
-		else
-			if (firer)
-				for (var/obj/structure/barricade/B in src_loc)
-					if (get_dist(firer, B) == 1)
-						_untouchable += B
+		if (!firer.prone && !firer.lying)
+			if (firstmove)
+				for (var/obj/structure/window/sandbag/S in src_loc)
+					_untouchable += S
+			else
+				if (firer)
+					for (var/obj/structure/barricade/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
 
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()
