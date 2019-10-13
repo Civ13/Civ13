@@ -262,6 +262,7 @@
 	desc = "A crude wooden bathtub, it stinks."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "w_bathtub"
+	can_buckle = TRUE
 	cleanliness = 80
 
 /obj/structure/shower/bathtub/update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
@@ -324,9 +325,11 @@
 	name = "bronze bathtub"
 	desc = "A fine copper bathtub, it's confortable."
 	icon = 'icons/obj/bathtub.dmi'
-	icon_state = "c_bathtub"
+	icon_state = "b_bathtub"
 	cleanliness = 140
 			// LATE BRONZE AGE
+
+
 			//BIG BATHTUB FRAMEWORK 1
 /obj/structure/shower/bathtub/big
 	name = "wooden public bathtub"
@@ -342,7 +345,7 @@
 		mymist = null
 
 	if (on)
-		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2_2_b", MOB_LAYER + 1, dir)
+		overlays += image('icons/obj/bathtub_big.dmi', src, "full_bathtub_overlay_2_2_b", MOB_LAYER + 1, dir)
 
 		if (temperature_settings[watertemp] < T20C)
 			return //no mist for cold water
