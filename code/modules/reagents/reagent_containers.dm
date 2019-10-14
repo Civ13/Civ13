@@ -16,6 +16,8 @@
 	var/list/tastes = list() //descriptor = strength
 	var/list/out = list()
 	var/total_taste = FALSE
+	if (!reagents)
+		return
 	for (var/datum/reagent/R in reagents.reagent_list)
 		var/desc
 		if (!R.taste_mult)

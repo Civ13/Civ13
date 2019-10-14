@@ -25,11 +25,11 @@
 
 /obj/item/weapon/pen/New()
 	..()
-	if (map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil))
+	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil))
 		icon_state = "pennew"
 /obj/item/weapon/pen/update_icon()
 	..()
-	if (map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil))
+	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil))
 		icon_state = "pennew"
 
 /obj/item/weapon/pen/pencil

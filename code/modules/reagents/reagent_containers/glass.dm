@@ -332,7 +332,7 @@
 
 /obj/item/weapon/reagent_containers/glass/bucket/update_icon()
 	overlays.Cut()
-	if (reagents.total_volume >= 1)
+	if (reagents && reagents.total_volume >= 1)
 		overlays += "water_bucket"
 	if (!is_open_container())
 		var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
@@ -441,15 +441,18 @@
 
 /obj/item/weapon/reagent_containers/glass/bullet_act(var/obj/item/projectile/proj)
 	var/can_explode = FALSE
+	if (!reagents)
+		return
 	if (reagents.has_reagent("gasoline",10) || reagents.has_reagent("diesel",30) || reagents.has_reagent("biodiesel",30) || reagents.has_reagent("ethanol",10) || reagents.has_reagent("petroleum",40) || reagents.has_reagent("gunpowder",30))
 		can_explode = TRUE
 	if (!can_explode)
 		if (prob(30))
 			visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
-			var/part = 15 / reagents.total_volume
-			for (var/datum/reagent/current in reagents.reagent_list)
-				var/amount_to_transfer = current.volume * part
-				reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
+			if (reagents && reagents.total_volume > 0)
+				var/part = 15 / reagents.total_volume
+				for (var/datum/reagent/current in reagents.reagent_list)
+					var/amount_to_transfer = current.volume * part
+					reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
 		return
 	if (istype(proj, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = proj

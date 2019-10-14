@@ -207,15 +207,16 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		stopmovementloop()
 		return FALSE
 /obj/structure/vehicleparts/axis/proc/check_engine()
-
-	if (!engine || !engine.fueltank)
+	if (!engine)
+		return FALSE
+	if (engine && !engine.fueltank)
 		engine.on = FALSE
 		return FALSE
 	else if (get_weight() > engine.maxpower*2 || get_weight() > maxpower)
 		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
 		return FALSE
 	else
-		if (engine.fueltank.reagents.total_volume <= 0)
+		if (engine && engine.fueltank && engine.fueltank.reagents.total_volume <= 0)
 			engine.fueltank.reagents.total_volume = 0
 			engine.on = FALSE
 			return FALSE

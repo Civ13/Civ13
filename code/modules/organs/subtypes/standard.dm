@@ -140,7 +140,8 @@
 		owner.u_equip(owner.r_ear)
 		owner.u_equip(owner.wear_mask)
 		spawn(1)
-			owner.update_hair()
+			if (owner)
+				owner.update_hair()
 	..()
 
 /obj/item/organ/external/head/take_damage(brute, burn, sharp, edge, used_weapon = null, list/forbidden_limbs = list())

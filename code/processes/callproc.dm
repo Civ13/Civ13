@@ -49,13 +49,14 @@
 	var/function = function_as_list[function_as_list.len]
 
 	// get a callproc_helper and assign it to this function
-	var/callproc_helper/C = helpers[1]
-	C.object = object
-	C.function = function
-	C.args = args
-	C.time = world.time + time
-	helpers -= C
-	queue += C
+	if (helpers)
+		var/callproc_helper/C = helpers[1]
+		C.object = object
+		C.function = function
+		C.args = args
+		C.time = world.time + time
+		helpers -= C
+		queue += C
 
 /* remove all callproc_helpers for an object to ensure they don't get piled up and called later
  * can be very expensive - Kachnov */

@@ -367,12 +367,15 @@
 	..()
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/gold
+	name = "golden clay pitcher"
 	icon_state = "pitcher_gold"
 	quality = 10
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/silver
+	name = "silver clay pitcher"
 	icon_state = "pitcher_silver"
 	quality = 5
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/diamond
+	name = "diamond incrusted clay pitcher"
 	icon_state = "pitcher_diamond"
 	quality = 20
 
