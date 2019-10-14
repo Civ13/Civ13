@@ -1,7 +1,7 @@
 /obj/covers
 
 	name = "floor covers"
-	desc = "A floor cover."
+	desc = ""
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship"
 	var/passable = TRUE
