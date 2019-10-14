@@ -113,7 +113,7 @@
 	spawn(1)
 		var/list/sideslist = list()
 		for (var/direction in list(1,2,4,8,5,6,9,10))
-			for(var/obj/covers/road/R in get_step(src,direction))
+			for(var/obj/covers/roads/R in get_step(src,direction))
 				sideslist += direction
 				continue
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
@@ -167,13 +167,14 @@
 					return
 /obj/covers/roads/New()
 	..()
-	if (vertical)
-		dir = 1
-	else
-		dir = 4
-	for(var/obj/covers/road/R in orange(1,src))
-		R.update_icon()
-	update_icon()
+	spawn(2)
+		if (vertical)
+			dir = 1
+		else
+			dir = 4
+		for(var/obj/covers/roads/R in range(1,src))
+			R.update_icon()
+		update_icon()
 
 /obj/covers/cobblestone/stairs
 	name = "stone stairs"

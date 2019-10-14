@@ -584,9 +584,11 @@
 					if (user.dir == NORTH || user.dir == SOUTH)
 						DR.vertical = TRUE
 						DR.dir = 1
+						DR.icon_state = "s_roadvr"
 					else
 						DR.vertical = FALSE
 						DR.dir = 4
+						DR.icon_state = "s_roadhr"
 					return
 		else
 			if (istype(T, /turf/floor/grass/jungle))
