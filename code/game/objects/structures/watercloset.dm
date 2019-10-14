@@ -274,8 +274,8 @@
 		mymist = null
 
 	if (on)
-		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2_2", MOB_LAYER - 1, dir)
-		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2", MOB_LAYER + 1, dir)
+		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2_2", MOB_LAYER + 1, dir)
+		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2", MOB_LAYER - 1, dir)
 		if (temperature_settings[watertemp] < T20C)
 			return //no mist for cold water
 		if (!ismist)
