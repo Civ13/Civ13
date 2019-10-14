@@ -118,12 +118,22 @@
 
 
 /obj/item/weapon/clay/claybricks/fired/attack_self(mob/user)
-	user << "You start building the clay wall..."
-	if (do_after(user, 25, src))
-		user << "You finish the placement of the clay block wall foundation."
-		new /obj/covers/clay_wall/incomplete(user.loc)
-		qdel(src)
-		return
+	var/choice = WWinput(user, "What time of clay wall do you want to build?","Clay Walls","Clay Blocks",list("Clay Blocks","Sumerian Clay"))
+	if (choice == "Clay Blocks")
+		user << "You start building the clay wall..."
+		if (do_after(user, 25, src))
+			user << "You finish the placement of the clay block wall foundation."
+			new /obj/covers/clay_wall/incomplete(user.loc)
+			qdel(src)
+			return
+
+	else if (choice == "Sumerian Clay")
+		user << "You start building the sumerian clay wall..."
+		if (do_after(user, 25, src))
+			user << "You finish the placement of the sumerian clay wall foundation."
+			new /obj/covers/clay_wall/sumerian/incomplete(user.loc)
+			qdel(src)
+			return
 
 /obj/item/weapon/clay/advclaybricks/fired/attack_self(mob/user)
 	user << "You start building the brick wall..."
