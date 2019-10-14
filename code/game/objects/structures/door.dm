@@ -217,7 +217,7 @@
 	var/buildstackamount = 0//How much mats it takes to make it.
 	var/buildstack = /obj/item/stack/rods //the item it is made with.
 
-/obj/structure/simple_door/key_door/custom/jail/jailwood/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/simple_door/key_door/custom/jail/woodjail/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
 		if (W.code == custom_code)
 			locked = !locked

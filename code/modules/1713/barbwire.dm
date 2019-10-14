@@ -50,7 +50,7 @@
 			else if (prob (33))
 				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
-				if (affecting.take_damage(10, FALSE))
+				if (affecting && affecting.take_damage(10, FALSE))
 					H.UpdateDamageIcon()
 				H.updatehealth()
 				if (!(H.species && (H.species.flags)))

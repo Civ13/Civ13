@@ -208,7 +208,7 @@
 			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 			return
 
-		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+		if (client && client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/10)
 			if (check_rights(R_ADMIN, FALSE, src))
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more seconds to respawn. Do you want to bypass this?", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
@@ -868,7 +868,7 @@
 		mind.active = FALSE					//we wish to transfer the key manually
 		mind.original = new_character
 		mind.transfer_to(new_character)					//won't transfer key since the mind is not active
-	if (client.prefs.be_random_body)
+	if (client && client.prefs.be_random_body)
 		client.prefs.randomize_appearance_for (new_character)
 	new_character.original_job = original_job
 	new_character.name = real_name

@@ -117,7 +117,8 @@
 	if (user.client)
 		user.client.canmove = FALSE
 		spawn (20)
-			user.client.canmove = TRUE
+			if (user && user.client)
+				user.client.canmove = TRUE
 
 	for (var/datum/action/A in actions)
 		if (istype(A, /datum/action/toggle_scope))

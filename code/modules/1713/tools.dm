@@ -16,6 +16,11 @@
 	slot_flags = SLOT_BELT
 	flammable = TRUE
 
+/obj/item/weapon/plough/attack_self(var/mob/living/L)
+	var/turf/T = get_turf(L)
+	T.attackby(src,L)
+	return
+
 /obj/item/weapon/shovel
 	name = "shovel"
 	desc = "A large tool for digging and moving dirt."

@@ -160,7 +160,8 @@
 				if (do_surgery(H,user,src))
 					return
 			else
-				user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
+				if (affecting)
+					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
 
 		var/mob/living/carbon/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))

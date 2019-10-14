@@ -11,7 +11,7 @@
 		var/near_rainy_area = FALSE
 		var/rdist = 100
 		var/area/A = get_area(src)
-		if (A.weather == WEATHER_RAIN)
+		if (A && A.weather == WEATHER_RAIN)
 			near_rainy_area = TRUE
 			rdist = 0
 		else

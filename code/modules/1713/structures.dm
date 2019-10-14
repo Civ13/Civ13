@@ -535,7 +535,7 @@
 	if (roped)
 		visible_message("<span class = 'danger'>[H] starts to free [hanging] from the noose...</span>")
 		if (do_after(H, 100, src))
-			if (src)
+			if (src && hanging)
 				visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 				hanging.pixel_x = 0
 				hanging.pixel_y = 0
@@ -627,7 +627,7 @@
 					W.amount -= 6
 		else
 			H << "<span class='notice'>That does not exist!</span>"
-	else if(istype(W, /material/paper))
+	else if(istype(W, /obj/item/weapon/paper))
 		var/input
 		var/display = list("Shoji Door - 1", "Shoji Wall - 1", "Shoji Divider - 1", "Shoji Window - 1", "Cancel")
 		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
@@ -645,7 +645,7 @@
 				if (do_after(H, 40, src))
 					new/obj/covers/wood_wall/shoji(src.loc)
 					qdel(src)
-					W.amount -= 1
+					qdel(W)
 		else if(input == "Shoji Divider - 1")
 			if(W.amount >= 1)
 				if (do_after(H, 40, src))

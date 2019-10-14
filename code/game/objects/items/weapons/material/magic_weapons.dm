@@ -82,7 +82,9 @@
 //Swords
 
 /obj/item/weapon/material/sword/magic/New(var/newloc, var/material_key)
-	material = ""
+	material = null
+	..()
+	material = null
 
 /obj/item/weapon/material/sword/magic/arkofdisease
 	name = "Ark of Disease"
@@ -147,7 +149,7 @@
 	var/new_force_divisor = 0.25 // 42 when wielded with hardnes 60 (steel)
 	var/new_thrown_force_divisor = 0.25 // 10 when thrown with weight 20 (steel)
 	var/new_block_chance = 95
-	var/new_sharpness = 1000
+	var/new_sharpness = 100
 
 	var/hitsound_off = 'sound/weapons/punch1.ogg' //default
 	var/drawsound_off = 'sound/weapons/punch1.ogg' //temp

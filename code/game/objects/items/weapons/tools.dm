@@ -101,6 +101,7 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 75)
 	attack_verb = list("bludgeoned", "hit")
 	flammable = FALSE
+
 /*
  * Wirecutters
  */
