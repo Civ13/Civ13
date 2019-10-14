@@ -338,7 +338,7 @@
 /obj/item/weapon/key/soviet/guard/max
 	code = RU_CODE+2
 	name = "Maximum Security guard key"
-
+	health = 2000
 /obj/structure/simple_door/key_door/soviet
 	keyslot_type = /datum/keyslot/soviet
 	unique_door_name = "Soviet locked"
