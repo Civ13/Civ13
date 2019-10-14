@@ -94,7 +94,7 @@
 /obj/covers/roads
 	name = "dirt road"
 	icon = 'icons/turf/roads.dmi'
-	icon_state = "s_roadvr"
+	icon_state = "d_roadvr"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -117,53 +117,53 @@
 				sideslist += direction
 				continue
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
-			icon_state = "s_roadtswe" //T, SOUTH EAST WEST
+			icon_state = "d_roadtswe" //T, SOUTH EAST WEST
 			return
 		if (vertical)
 			if (WEST in sideslist)
 				if (!(NORTH in sideslist))
 					if (EAST in sideslist)
-						icon_state = "s_roadtswe" //T, SOUTH EAST WEST
+						icon_state = "d_roadtswe" //T, SOUTH EAST WEST
 						return
 					else
-						icon_state = "s_roadtvsw" //Turn, SOUTH-WEST
+						icon_state = "d_roadtsw" //Turn, SOUTH-WEST
 						return
 				else if (!(SOUTH in sideslist))
 					if (EAST in sideslist)
-						icon_state = "s_roadtnwe" //T, NORTH EAST WEST
+						icon_state = "d_roadtnwe" //T, NORTH EAST WEST
 						return
 					else
-						icon_state = "s_roadtvnw" //Turn, NORTH-WEST
+						icon_state = "d_roadtnw" //Turn, NORTH-WEST
 						return
 			else if (EAST in sideslist)
 				if (!(NORTH in sideslist))
-					icon_state = "s_roadtvse" //Turn, SOUTH-EAST
+					icon_state = "d_roadtse" //Turn, SOUTH-EAST
 					return
 				else if (!(SOUTH in sideslist))
-					icon_state = "s_roadtvne" //T, NORTH-EAST
+					icon_state = "d_roadtne" //T, NORTH-EAST
 					return
 		else
 			if (NORTH in sideslist)
 				if (!(EAST in sideslist))
 					if (SOUTH in sideslist)
-						icon_state = "s_roadtnsw" //T, NORTH SOUTH WEST
+						icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
 						return
 					else
-						icon_state = "s_roadtvnw" //Turn, NORTH-WEST
+						icon_state = "d_roadtnw" //Turn, NORTH-WEST
 						return
 				else if (!(WEST in sideslist))
 					if (SOUTH in sideslist)
-						icon_state = "s_roadtnse" //T, NORTH SOUTH EAST
+						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
 						return
 					else
-						icon_state = "s_roadtvne" //Turn, NORTH-EAST
+						icon_state = "d_roadtne" //Turn, NORTH-EAST
 						return
 			else if (SOUTH in sideslist)
 				if (!(EAST in sideslist))
-					icon_state = "s_roadtvsw" //Turn, SOUTH-WEST
+					icon_state = "d_roadtsw" //Turn, SOUTH-WEST
 					return
 				else if (!(WEST in sideslist))
-					icon_state = "s_roadtvse" //T, SOUTH-EAST
+					icon_state = "d_roadtse" //T, SOUTH-EAST
 					return
 /obj/covers/roads/New()
 	..()
