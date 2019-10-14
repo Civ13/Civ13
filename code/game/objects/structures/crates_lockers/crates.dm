@@ -134,7 +134,7 @@
 	icon_state= "w_cart_o"
 	icon_opened ="w_cart_o"
 	icon_closed = "w_cart_c"
-	//STONE AGE-COPPER AGE WOODEN //
+	//COPPER AGE WOODEN CART//
 /obj/structure/closet/crate/cart/wooden
 	name ="wooden cart"
 	desc = " A wooden cart, it's small and flimsy"
@@ -142,8 +142,8 @@
 	icon_opened ="w_cart_o"
 	icon_closed = "w_cart_c"
 	storagecap = 20
-	//STONE AGE-COPPER AGE WOODEN//
-	//BRONZE AGE-DARK AGE STONE//
+	//COPPER AGE WOODEN CART//
+	//DARK AGE STONE CART//
 /obj/structure/closet/crate/cart/stone
 	name ="stone cart"
 	desc = " A stone cart, it's small, some stone components make it sturdier than a wooden cart"
@@ -151,8 +151,8 @@
 	icon_opened ="s_cart_o"
 	icon_closed = "s_cart_c"
 	storagecap = 30
-	//BRONZE AGE-DARK AGE STONE//
-	//MIDDLE AGES-RENAISSANCE COPPER//
+	//DARK AGE STONE CART//
+	//RENAISSANCE AGE COPPER CART//
 /obj/structure/closet/crate/cart/copper
 	name ="copper cart"
 	desc = " A copper cart, it's small, some copper components make it sturdier than a stone cart"
@@ -160,8 +160,8 @@
 	icon_opened ="c_cart_o"
 	icon_closed = "c_cart_c"
 	storagecap = 40
-	//MIDDEL AGES RENAISSANCE COPPER//
-	//IMPERIAL AGE- NAPOLEONIC AGE BRONZE//
+	//RENAISSANCE AGE COPPER CART//
+	//NAPOLEONIC AGE BRONZE CART//
 /obj/structure/closet/crate/cart/bronze
 	name ="bronze cart"
 	desc = " A bronze cart, it's medium sized, some bronze components make it sturdier than a stone cart"
@@ -169,8 +169,8 @@
 	icon_opened ="b_cart_o"
 	icon_closed = "b_cart_c"
 	storagecap = 50
-	//IMPERIAL AGE- NAPOLEONIC AGE BRONZE//
-	//INDUSTRIAL AGE- EARLY MODERN ERA STEEL//
+	//NAPOLEONIC AGE BRONZE CART//
+	//EARLY MODERN AGE STEEL CART//
 /obj/structure/closet/crate/cart/steel
 	name ="shopping cart"
 	desc = " A shopping cart, it's medium sized, it's steel frame make it sturdy and light"
@@ -178,5 +178,5 @@
 	icon_opened ="st_cart_o"
 	icon_closed = "st_cart_c"
 	storagecap = 60
-	//INDUSTRIAL AGE- EARLY MODERN ERA STEEL//
+	//EARLY MODERN AGE STEEL CART//
 	//ROBERT'S CARTS//
