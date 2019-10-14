@@ -514,7 +514,7 @@ bullet_act
 				//Harder to score a stun but if you do it lasts a bit longer
 				if (prob(effective_force/8))
 					visible_message("<span class='danger'>[src] [species.knockout_message]</span>")
-					apply_effect(7, PARALYZE, blocked)
+					Paralyse(7/(blocked+1))
 			else
 				//Easier to score a stun but lasts less time
 				if (prob(effective_force/5))

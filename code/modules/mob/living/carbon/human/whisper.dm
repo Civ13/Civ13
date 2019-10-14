@@ -34,11 +34,11 @@
 	if (speaking)
 		message = copytext(message,2+length(speaking.key))
 
-	whisper_say(message, speaking, alt_name)
+	whisper_say(message, speaking, alt_name, speaker=src)
 
 
 //This is used by both the whisper verb and human/say() to handle whispering
-/mob/living/carbon/human/proc/whisper_say(var/message, var/datum/language/speaking = null, var/alt_name="", var/verb="whispers")
+/mob/living/carbon/human/proc/whisper_say(var/message, var/datum/language/speaking = null, var/alt_name="", var/verb="whispers", var/mob/speaker = null)
 
 	if (istype(wear_mask, /obj/item/clothing/mask/muzzle) || istype(wear_mask, /obj/item/weapon/grenade))
 		src << "<span class='danger'>You're muzzled and cannot speak!</span>"
@@ -84,6 +84,23 @@
 	for (var/obj/item/gear in list(wear_mask,wear_suit,head))
 		if (!gear)
 			continue
+
+	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
+	if (speaking && (speaking.flags & NONVERBAL))
+		if (!speaker || (sdisabilities & BLIND || blinded) || !(speaker in view(src)))
+			message = stars(message)
+	if (speaker)
+		if (!(speaking && (speaking.flags & INNATE))) // skip understanding checks for INNATE languages
+			if (!say_understands(speaker,speaking))
+				if (istype(speaker,/mob/living/simple_animal))
+					var/mob/living/simple_animal/S = speaker
+					if (S && S.speak.len)
+						message = pick(S.speak)
+				else
+					if (speaking)
+						message = speaking.scramble(message, src)
+					else
+						message = stars(message)
 
 	if (voice_sub == "Unknown")
 		if (copytext(message, TRUE, 2) != "*")
