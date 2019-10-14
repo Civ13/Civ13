@@ -488,10 +488,40 @@ RECIPE: /material/glass/,toilet,/obj/structure/toilet,4,80,1,1,none,95,0,0,8,nul
 RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,none,55,0,0,8,null
 RECIPE: /material/glass/,shower,/obj/structure/shower,10,190,1,1,none,115,0,0,8,null
 //**************************************************************
+//************************ROBERTS CARTS*************************
+//**************************************************************
+
+//COPPER AGE WOODEN CART//
+RECIPE: /material/wood/,wooden cart/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,2,null
+//COPPER AGE WOODEN CART//
+
+//DARK AGE STONE CART//
+RECIPE: /material/stone/,stone cart/obj/structure/closet/crate/cart/stone,50,190,1,1,logistics,45,0,0,4,null
+//DARK AGE STONE CART//
+
+//RENAISSANCE AGE COPPER CART//
+RECIPE: /material/copper/,copper cart/obj/structure/closet/crate/cart/copper,30,190,1,1,logistics,80,0,0,6,null
+//RENAISSANCE AGE COPPER CART//
+
+//NAPOLEONIC AGE BRONZE CART//
+RECIPE: /material/bronze/,bronze cart/obj/structure/closet/crate/cart/bronze,30,190,1,1,logistics,100,0,0,8,null
+//NAPOLEONIC AGE BRONZE CART//
+
+//EARLY MODERN AGE STEEL CART//
+RECIPE: /material/steel/,steel cart/obj/structure/closet/crate/cart/steel,30,190,1,1,logistics,147,0,0,10,null
+//EARLY MODERN AGE STEEL CART//
+//**************************************************************
+//************************ROBERTS CARTS*************************
+//**************************************************************
+//
+//**************************************************************
 //************************ROBERTS FACTORIES*********************
 //***********************COINSMELTER****************************
-//*************************MID BRONZE AGE*************************
-RECIPE: /material/steel/,coin smelter,/obj/structure/machinery/factory/coinsmelter,10,190,1,1,none,25,0,0,3,null
+
+//MID BRONZE AGE//
+RECIPE: /material/steel/,coin smelter,/obj/structure/machinery/factory/coinsmelter,50,190,1,1,none,25,0,0,3,null
+//MID BRONZE AGE//
+
 //**************************************************************
 //*************************ROBERTS BATHTUBS*********************
 //**************************************************************
