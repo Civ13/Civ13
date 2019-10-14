@@ -810,6 +810,19 @@ RECIPE: /material/wood/,temple by the river,/obj/structure/sign/painting8,3,40,1
 RECIPE: /material/wood/,desert camp,/obj/structure/sign/painting9,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,paintings,65,0,0,8,null
 
+RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null	
+RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null	
+RECIPE: /material/iron/,rail (turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null	
+RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null	
+RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null	
+RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null	
+RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null	
+RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null	
+RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1,1,trains,101,0,0,8,null	
+RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null	
+RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null	
+RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
+
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
 RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
 RECIPE: /material/iron/,cooking pot,/obj/structure/pot,8,180,1,1,production,33,0,0,8,null
