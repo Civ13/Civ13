@@ -1,3 +1,5 @@
+//ROBERTS FACTORY FRAMEWORK
+
 /obj/structure/machinery/factory
 	name = "furnace"
 	desc = "An industrial furnace, used to smelter minerals."
@@ -174,6 +176,7 @@
 		emptyedtin.amount = tin
 		tin = 0
 
+//ROBERTS FACTORY FRAMEWORK
 
 //COINSMELTER
 
@@ -340,3 +343,6 @@
 		var/obj/item/stack/money/silvercoin/emptyedsilvercoin = new/obj/item/stack/money/silvercoin(src.loc)
 		emptyedsilvercoin.amount = silvercoin
 		silvercoin = 0
+
+
+		//COINSMELTER

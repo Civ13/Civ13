@@ -490,30 +490,30 @@ RECIPE: /material/glass/,shower,/obj/structure/shower,10,190,1,1,none,115,0,0,8,
 //**************************************************************
 //************************ROBERTS FACTORIES*********************
 //***********************COINSMELTER****************************
-*************************MID BRONZE AGE*************************
-RECIPE: /material/steel/,coin smelter,/obj/structure/machinery/factory/coinsmelter,10,190,1,1,none,25,0,0,8,null
+//*************************MID BRONZE AGE*************************
+RECIPE: /material/steel/,coin smelter,/obj/structure/machinery/factory/coinsmelter,10,190,1,1,none,25,0,0,3,null
 //**************************************************************
 //*************************ROBERTS BATHTUBS*********************
 //**************************************************************
 
 //  STONE AGE //
-RECIPE: /material/wood/,bathtub,/obj/structure/shower/bathtub/wooden,50,190,1,1,hygiene,10,0,5,8,null
+RECIPE: /material/wood/,bathtub,/obj/structure/shower/bathtub/wooden,50,190,1,1,hygiene,10,0,5,1,null
 //STONE AGE //
 
 // EARLY COPPER AGE //
-RECIPE: /material/stone/,stone bathtub,/obj/structure/shower/bathtub/stone,50,220,1,1,hygiene,15,0,10,8,null
+RECIPE: /material/stone/,stone bathtub,/obj/structure/shower/bathtub/stone,50,220,1,1,hygiene,15,0,10,2,null
 //EARLY COPPER AGE //
 
 // LATE COPPER AGE //
-RECIPE: /material/copper/,copper bathtub,/obj/structure/shower/bathtub/copper,50,280,1,1,hygiene,25,0,15,8,null
+RECIPE: /material/copper/,copper bathtub,/obj/structure/shower/bathtub/copper,50,280,1,1,hygiene,25,0,15,2,null
 //LATE COPPER AGE //
 
 // LATE BRONZE AGE //
-RECIPE: /material/bronze/,bronze bathtub,/obj/structure/shower/bathtub/bronze,50,320,1,1,hygiene,30,0,20,8,null
+RECIPE: /material/bronze/,bronze bathtub,/obj/structure/shower/bathtub/bronze,50,320,1,1,hygiene,30,0,20,3,null
 //LATE BRONZE AGE //
 
 // WW2 AGE //
-RECIPE: /material/steel/,steel bathtub,/obj/structure/shower/bathtub/steel,50,420,1,1,hygiene,150,0,40,8,null
+RECIPE: /material/steel/,steel bathtub,/obj/structure/shower/bathtub/steel,50,420,1,1,hygiene,150,0,40,11,null
 //WW2 AGE //
 
 //**************************************************************
@@ -521,23 +521,23 @@ RECIPE: /material/steel/,steel bathtub,/obj/structure/shower/bathtub/steel,50,42
 //**************************************************************
 
 //DARK AGES//
-RECIPE: /material/wood/,wooden public bathtub,/obj/structure/shower/bathtub/big/wooden,100,440,1,1,hygiene,45,0,30,8,null
+RECIPE: /material/wood/,wooden public bathtub,/obj/structure/shower/bathtub/big/wooden,100,440,1,1,hygiene,45,0,30,4,null
 //DARK AGES//
 
 //MIDDLE AGES//
-RECIPE: /material/stone/,stone public bathtub,/obj/structure/shower/bathtub/big/stone,50,450,1,1,hygiene,55,0,40,8,null
+RECIPE: /material/stone/,stone public bathtub,/obj/structure/shower/bathtub/big/stone,50,450,1,1,hygiene,55,0,40,5,null
 //MIDDLE AGES//
 
 //RENAISSANCE AGES//
-RECIPE: /material/copper/,copper public bathtub,/obj/structure/shower/bathtub/big/copper,50,500,1,1,hygiene,70,0,50,8,null
+RECIPE: /material/copper/,copper public bathtub,/obj/structure/shower/bathtub/big/copper,50,500,1,1,hygiene,70,0,50,6,null
 //RENAISSANCE AGES//
 
 //IMPERIAL AGES//
-RECIPE: /material/bronze/,bronze public bathtub,/obj/structure/shower/bathtub/big/bronze,50,550,1,1,hygiene,85,0,60,8,null
+RECIPE: /material/bronze/,bronze public bathtub,/obj/structure/shower/bathtub/big/bronze,50,550,1,1,hygiene,85,0,60,7,null
 //IMPERIAL AGES//
 
 //COLD WAR//
-RECIPE: /material/steel/,steel public bathtub,/obj/structure/shower/bathtub/big/steel,50,620,1,1,hygiene,175,0,80,8,null
+RECIPE: /material/steel/,steel public bathtub,/obj/structure/shower/bathtub/big/steel,50,620,1,1,hygiene,175,0,80,12,null
 //COLD WAR//
 
 //**************************************************************
