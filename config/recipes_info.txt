@@ -16,3 +16,14 @@
 
 format:
 material, name, path, cost, building time, only one per turf?, on the floor?, category, research 1 needed, research 2 needed, research 3 needed, max ordinal age (inclusive), material name (optional - use null if not necessary)
+
+// HERES THE GODDAMN ORDINAL AGES//
+0 stone age
+1 bronze
+2 medieval
+3 imperial
+4 industrial
+5 ww1
+6 ww2
+7 cold war
+8 modern
