@@ -121,6 +121,28 @@
 				if (HM != src && !HM.orc)
 					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
 					HM.mood -= 3
+	var/fleas_found = FALSE
+	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
+		if (C)
+			if (C.blood_DNA)
+				C.dirtyness += 0.08
+			else
+				C.dirtyness += 0.05
+			if (C.dirtyness > 100)
+				C.dirtyness = 100
+			if (C.dirtyness > 90)
+				C.fleas = TRUE
+				fleas_found = TRUE
+	if (fleas_found)
+		var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
+		overlays_standing[27] = fleas
+		mood -= 0.02
+		if (prob(0.2) && !disease && !inducedSSD)
+			disease = TRUE
+			disease_type = "typhus"
+			disease_progression = 0
+			disease_treatment = 0
+
 /mob/living/carbon/human/proc/adjust_hygiene(var/amount)
 	var/old_hygiene = hygiene
 	if(amount>0)

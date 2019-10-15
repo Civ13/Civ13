@@ -53,7 +53,23 @@
 
 		if (client.handle_spam_prevention(message,MUTE_DEADCHAT))
 			return
-
+		if (!client.holder)
+			if (!config.ooc_allowed)
+				src << "<span class='danger'>OOC is globally muted.</span>"
+				return
+			if (!config.dooc_allowed && (stat == DEAD))
+				usr << "<span class='danger'>OOC for dead mobs has been turned off.</span>"
+				return
+			if (client.prefs.muted & MUTE_OOC)
+				src << "<span class='danger'>You cannot use OOC (muted).</span>"
+				return
+			if (client.handle_spam_prevention(message,MUTE_OOC))
+				return
+			if (findtext(message, "byond://"))
+				src << "<b>Advertising other servers is not allowed.</b>"
+				log_admin("[key_name(client)] has attempted to advertise in OOC: [message]")
+				message_admins("[key_name_admin(client)] has attempted to advertise in OOC: [message]")
+				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
 			new_player << "<span class = 'ping'><small>["\["]LOBBY["\]"]</small></span> <span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]"
@@ -208,7 +224,7 @@
 			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 			return
 
-		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+		if (client && client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/10)
 			if (check_rights(R_ADMIN, FALSE, src))
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more seconds to respawn. Do you want to bypass this?", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
@@ -392,7 +408,10 @@
 		if (actual_job.whitelisted && !isemptylist(whitelist_list) && config.use_job_whitelist)
 			var/found = FALSE
 			for (var/i in whitelist_list)
-				if (i == client.ckey)
+				var/temp_ckey = lowertext(i)
+				temp_ckey = replacetext(temp_ckey," ", "")
+				temp_ckey = replacetext(temp_ckey,"_", "")
+				if (temp_ckey == client.ckey)
 					found = TRUE
 			if (!found)
 				usr << "<span class = 'notice'><font size = 4><b>You need to be whitelisted to play this job. Apply in the Discord.</b></font></span>"
@@ -530,15 +549,6 @@
 				spawn(10)
 					usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
 			return FALSE
-
-	if (job_master.is_side_locked(job.base_type_flag()))
-		if (!nomsg)
-			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
-			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
-				abandon_mob()
-				spawn(10)
-					src << "<span class = 'red'>Currently this side is locked for joining.</span>"
-		return
 
 	if (job.is_deathmatch)
 		if (map && map.faction1_can_cross_blocks())
@@ -678,9 +688,6 @@
 		//	unavailable_message = " <span class = 'color: rgb(255,215,0);'>{WHITELISTED}</span> "
 
 		if (job_master.side_is_hardlocked(job.base_type_flag()))
-			job_is_available = FALSE
-
-		if (job_master.is_side_locked(job.base_type_flag()))
 			job_is_available = FALSE
 
 		if (map && !map.job_enabled_specialcheck(job))
@@ -877,7 +884,7 @@
 		mind.active = FALSE					//we wish to transfer the key manually
 		mind.original = new_character
 		mind.transfer_to(new_character)					//won't transfer key since the mind is not active
-	if (client.prefs.be_random_body)
+	if (client && client.prefs.be_random_body)
 		client.prefs.randomize_appearance_for (new_character)
 	new_character.original_job = original_job
 	new_character.name = real_name

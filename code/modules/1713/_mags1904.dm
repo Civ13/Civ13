@@ -115,6 +115,19 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
+
+/obj/item/ammo_magazine/mauser1893box
+	name = "magazine box (7x53mm)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a7x57"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a7x57
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/sharps
 	name = "ammo box (.45-70 Government)"
 	icon_state = "oldbox"
@@ -359,6 +372,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c32
+	name = "bullet pouch (.33 long)"
+	desc = "a pouch of 26 .32 bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a32
+	caliber = "a32"
+	max_ammo = 26
+	weight = 0.9
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
 /obj/item/ammo_magazine/c45
 	name = "bullet pouch (.45 Colt)"
 	desc = "a pouch of 11.43xmmR bullets."
@@ -496,7 +521,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	desc = "A pouch containing 18 .44 pistol rounds."
 
 /obj/item/ammo_magazine/shellbox
-	name = "shotgun buckshot box (.12 guage)"
+	name = "shotgun buckshot box (.12 gauge)"
 	icon_state = "shellbox"
 //	origin_tech = "combat=2"
 	mag_type = MAGAZINE
@@ -509,11 +534,11 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	is_box = TRUE
 
 /obj/item/ammo_magazine/shellbox/slug
-	name = "shotgun slugshot box (.12 guage)"
+	name = "shotgun slugshot box (.12 gauge)"
 	icon_state = "slugbox"
 	ammo_type = /obj/item/ammo_casing/shotgun/slug
 
 /obj/item/ammo_magazine/shellbox/beanbag
-	name = "shotgun beanbag box (.12 guage)"
+	name = "shotgun beanbag box (.12 gauge)"
 	icon_state = "beanbox"
 	ammo_type = /obj/item/ammo_casing/shotgun/beanbag

@@ -12,7 +12,8 @@
 	var/image/mob_overlay = null
 	var/overlay_state = null
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
-
+	ripable = TRUE
+	rag_amt = 1
 /obj/item/clothing/accessory/Destroy()
 	if (has_suit)
 		on_removed()

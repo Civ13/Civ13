@@ -436,6 +436,8 @@
 			if (do_after(user, 50, src))
 				if (istype(src, /obj/structure/window_frame/shoji))
 					new/obj/structure/window/classic/shoji(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/medieval))
+					new/obj/structure/window/classic/medieval(get_turf(src))
 				else
 					new/obj/structure/window/classic(get_turf(src))
 				visible_message("<span class = 'notice'>[user] adds glass to the window frame.</span>")
@@ -477,6 +479,11 @@
 	maximal_heat = T0C + 1600
 	damage_per_fire_tick = 1.0
 	maxhealth = 80.0
+
+/obj/structure/window_frame/medieval
+	icon_state = "medieval_window"
+	name = "medieval window"
+	desc = "A dark ages window."
 
 /obj/structure/window/classic/reinforced
 	reinf = TRUE
@@ -535,7 +542,11 @@
 	name = "shoji window"
 	desc = "A good old window, only Japanese-style."
 
-
+/obj/structure/window/classic/medieval
+	icon_state = "medieval_windownew"
+	basestate = "medieval_windownew"
+	name = "medieval window"
+	desc = "A dark ages window."
 
 /obj/structure/window/New(Loc, constructed=0)
 	..()

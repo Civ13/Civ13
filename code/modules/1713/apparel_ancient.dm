@@ -131,7 +131,7 @@
 	worn_state = "greatshendyt"
 /obj/item/clothing/suit/armor
 	health = 40
-
+	ripable = FALSE
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "scale armor"
 	desc = "A thick, expensive scaled iron armor, covering the torso."
@@ -511,6 +511,7 @@
 	w_class = 2
 	var/toggled = FALSE
 	restricts_view = 1
+	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/mask/shemagh/redkerchief
 	name = "red kerchief"
@@ -523,6 +524,7 @@
 	partscovered = FACE
 	flags_inv = 0
 	w_class = 2
+
 /obj/item/clothing/mask/shemagh/greykerchief
 	name = "grey kerchief"
 	desc = "A piece of light cloth, worn around the neck."
@@ -583,3 +585,10 @@
 	icon_state = "laurelcrown"
 	item_state = "laurelcrown"
 	body_parts_covered = FALSE
+
+/obj/item/clothing/suit/towel
+	name = "white towel"
+	desc = "A simple towel to wrap around yourself."
+	icon_state = "towel"
+	item_state = "towel"
+	worn_state = "towel"

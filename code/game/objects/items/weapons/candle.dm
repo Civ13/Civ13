@@ -13,6 +13,11 @@
 	wax = rand(800, 1000) // Enough for 27-33 minutes. 30 minutes on average.
 	..()
 
+/obj/item/weapon/flame/candle/on
+	New()
+		..()
+		light()
+
 /obj/item/weapon/flame/candle/update_icon()
 	var/i
 	if (wax > 1500)

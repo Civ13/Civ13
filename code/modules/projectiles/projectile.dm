@@ -80,7 +80,7 @@
 	var/can_hit_in_trench = 1
 
 	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
-
+	var/atype = "normal"
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
@@ -110,17 +110,7 @@
 /obj/item/projectile/proc/on_impact(var/atom/A)
 	impact_effect(effect_transform)		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
-	if (istype(src, /obj/item/projectile/bullet))
-		if (istype(A, /turf))
-			var/turf/T = A
-			if (prob(25) && T.bullethole_count < 10 && T.density == TRUE)
-				T.overlays += image('icons/turf/walls.dmi', "bullethole[rand(1,15)]")
-				T.bullethole_count++
-		else if (istype(A, /obj/covers))
-			var/obj/covers/C = A
-			if (prob(25) && C.bullethole_count < 10 && C.density == TRUE)
-				C.overlays += image('icons/turf/walls.dmi', "bullethole[rand(1,15)]")
-				C.bullethole_count++
+
 	spawn(25)
 		if (src)
 			qdel(src)
@@ -426,7 +416,9 @@
 			target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>"
 		else
 			visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
-
+		if (istype(target_mob, /mob/living/simple_animal/hostile/zombie))
+			var/mob/living/simple_animal/hostile/zombie/Z = target_mob
+			Z.limb_hit(hit_zone)
 	//admin logs
 	if (!no_attack_log)
 		if (istype(firer, /mob))
@@ -447,7 +439,8 @@
 	return TRUE
 
 /obj/item/projectile/proc/handleTurf(var/turf/T, forced=0, var/list/untouchable = list())
-
+	if(atype =="NUCLEAR")
+		radiation_pulse(T, damage / 100, damage / 10, damage / 25, 0)
 	if (!T || !istype(T))
 		return FALSE
 
@@ -457,9 +450,9 @@
 	var/passthrough = TRUE //if the projectile should continue flying
 	var/passthrough_message = null
 
-	if (istype(get_turf(firer), /turf/floor/trench) && firer.prone)
+	if (ismob(firer) && (istype(get_turf(firer), /turf/floor/trench) && firer.prone))
 		if (!istype(T,/turf/floor/trench) && get_dist(T, firer)>2)
-			world << "<span class = 'warning'>The [name] hits \the trench wall!</span>"
+			world << "<span class = 'warning'>The [name] hits the trench wall!</span>"
 			qdel(src)
 			return
 	if(can_hit_in_trench == 1)
@@ -468,19 +461,53 @@
 				can_hit_in_trench = 0
 			else
 				can_hit_in_trench = -1
-
 	if (T.density || (can_hit_in_trench == -1 && !istype(T, /turf/floor/trench)))
 		passthrough = FALSE
 	else
 		if(!istype(T, /turf/floor/trench) || can_hit_in_trench)
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
+				if (istype(O, /obj/structure/vehicleparts/frame) && ((firer && firer.loc != O.loc) || (!firer && loc != O.loc)))
+					var/obj/structure/vehicleparts/frame/NO = O
+					var/obj/structure/vehicleparts/axis/found = null
+					for (var/obj/structure/vehicleparts/frame/FM in firer.loc)
+						found = FM.axis
+					if (!found || found != NO.axis)
+						if (found != NO.axis)
+							var/penloc = NO.CheckPenLoc(src)
+							if (!NO.CheckPen(src,penloc))
+								passthrough = FALSE
+								damage /= 7
+								NO.bullet_act(src,penloc)
+								bumped = TRUE
+								loc = null
+								qdel(src)
+								return FALSE
+							else
+								NO.bullet_act(src,penloc)
+								passthrough = TRUE
+								damage /= 2
+								passthrough_message = "<span class = 'warning'>The projectile penetrates the hull!</span>"
+								//move ourselves onto T so we can continue on our way.
+								forceMove(T)
+								permutated += T
+								if (passthrough_message)
+									T.visible_message(passthrough_message)
+
+				var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 				if (O == original)
-					var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
 						hitchance = 50
-					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
-						hitchance = 100
+					else if (!isitem(O) && isnonstructureobj(O))
+						if (!istype(O, /obj/covers/jail))
+							hitchance = 100
+						else
+							if (firer in range(1,O))
+								hitchance = 0
+
+							else
+								hitchance = 55
+
 					else if (isitem(O)) // any item
 						var/obj/item/I = O
 						hitchance = 9 * I.w_class // a pistol would be 50%
@@ -502,7 +529,13 @@
 			if (!untouchable.Find(AM))
 				if (isliving(AM) && AM != firer)
 					var/mob/living/L = AM
-					if (!L.lying || T == get_turf(original) || execution)
+					var/skip = FALSE
+					if (firer)
+						for (var/obj/structure/vehicleparts/frame/VP1 in L.loc)
+							for (var/obj/structure/vehicleparts/frame/VP2 in firer.loc)
+								if (VP1.axis == VP2.axis && istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
+									skip = TRUE
+					if ((!skip) && (!L.lying || T == get_turf(original) || execution))
 						// if they have a neck grab on someone, that person gets hit instead
 						var/obj/item/weapon/grab/G = locate() in L
 						if (G && G.state >= GRAB_NECK && G.affecting.stat < UNCONSCIOUS)
@@ -527,20 +560,21 @@
 										passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM
-					if (O.density || istype(O, /obj/structure/window/classic)) // hack
-						O.pre_bullet_act(src)
-						if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
-							if (O && !O.gcDestroyed)
-								if (O.density && !istype(O, /obj/structure))
-									passthrough = FALSE
-								else if (istype(O, /obj/structure))
-									var/obj/structure/S = O
-									if (!S.CanPass(src, original))
+					if (!(istype(O, /obj/structure/vehicleparts/frame) && O.loc == src.loc))
+						if (O.density || istype(O, /obj/structure/window/classic)) // hack
+							O.pre_bullet_act(src)
+							if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
+								if (O && !O.gcDestroyed)
+									if (O.density && !istype(O, /obj/structure))
 										passthrough = FALSE
-						//				log_debug("ignored [S] (1)")
-									else if (S.density)
-										if (!S.climbable)
-											passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
+									else if (istype(O, /obj/structure))
+										var/obj/structure/S = O
+										if (!S.CanPass(src, original))
+											passthrough = FALSE
+							//				log_debug("ignored [S] (1)")
+										else if (S.density)
+											if (!S.climbable && !istype(S, /obj/structure/vehicleparts/frame))
+												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [S]!</span>"
 	//		else
 		//		log_debug("ignored [AM] (2)")
 
@@ -621,15 +655,15 @@
 
 		var/list/_untouchable = list()
 		var/src_loc = get_turf(src)
-
-		if (firstmove)
-			for (var/obj/structure/window/sandbag/S in src_loc)
-				_untouchable += S
-		else
-			if (firer)
-				for (var/obj/structure/barricade/B in src_loc)
-					if (get_dist(firer, B) == 1)
-						_untouchable += B
+		if (ismob(firer) && (!firer.prone && !firer.lying))
+			if (firstmove)
+				for (var/obj/structure/window/sandbag/S in src_loc)
+					_untouchable += S
+			else
+				if (firer)
+					for (var/obj/structure/barricade/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
 
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()

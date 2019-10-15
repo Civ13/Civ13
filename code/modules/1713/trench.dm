@@ -11,6 +11,7 @@ var/list/global/floor_cache = list()
 	var/trench_filling = 0
 	var/flooded = FALSE
 	var/salty = FALSE
+	var/message_cooldown = 0
 
 /turf/floor/trench/New()
 	if (!icon_state)
@@ -18,7 +19,7 @@ var/list/global/floor_cache = list()
 
 	..()
 	spawn(4)
-		if (src)
+		if (src && istype(src, /turf/floor/trench))
 			update_icon()
 			if (istype(src, /turf/floor/trench/flooded))
 				for (var/turf/floor/trench/TF in range(1, src))
@@ -116,7 +117,9 @@ var/list/global/floor_cache = list()
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
 	if(isliving(O))
 		var/mob/living/L = O
-		var/message_cooldown
+		if (L.mob_size <= MOB_SMALL)
+			L.forceMove(src)
+			return 1
 		if(!istype(oldloc, /turf/floor/trench))
 			if(L.grabbed_by && L.grabbed_by.len)
 				var/mob/living/L2 = L.grabbed_by[1].assailant
@@ -143,7 +146,11 @@ var/list/global/floor_cache = list()
 /turf/floor/trench/Exit(atom/movable/O, atom/newloc)
 	if(isliving(O))
 		var/mob/living/L = O
-		var/message_cooldown
+		if (L.mob_size <= MOB_SMALL)
+			var/turf/T = newloc
+			if(T.Enter(O, src))
+				L.forceMove(newloc)
+			return TRUE
 		if(!istype(newloc, /turf/floor/trench))
 			if(L.grabbed_by && L.grabbed_by.len)
 				var/mob/living/L2 = L.grabbed_by[1].assailant
@@ -202,16 +209,17 @@ var/list/global/floor_cache = list()
 		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
 		if (!do_after(user, (10 - S.dig_speed)*10, src))
 			return
-		trench_stage++
-		switch(trench_stage)
-			if(1)
-				//icon_state = ""
-				visible_message("<span class = 'notice'>[user] digs.</span>")
-				user << ("<span class = 'notice'>You need to dig this tile one more time to make a trench.</span>")
-				return
-			if(2)
-				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-				ChangeTurf(/turf/floor/trench)
+		if (istype(src, /turf/floor/beach/sand))
+			trench_stage++
+			switch(trench_stage)
+				if(1)
+					//icon_state = ""
+					visible_message("<span class = 'notice'>[user] digs.</span>")
+					user << ("<span class = 'notice'>You need to dig this tile one more time to make a trench.</span>")
+					return
+				if(2)
+					visible_message("<span class = 'notice'>[user] makes a trench.</span>")
+					ChangeTurf(/turf/floor/trench)
 		return
 	..()
 

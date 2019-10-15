@@ -180,6 +180,24 @@ var/list/slot_equipment_priority = list( \
 // If canremove or other conditions need to be checked then use unEquip instead.
 /mob/proc/drop_from_inventory(var/obj/item/W, var/atom/Target = null, var/ignore_nodrop = FALSE)
 	if (W)
+		if (istype(W, /obj/item/vehicleparts/wheel/modular))
+			var/obj/item/vehicleparts/wheel/modular/MD = W
+			remove_from_mob(W)
+			W.forceMove(MD.drivingchair)
+			return TRUE
+		else if (istype(W, /obj/item/vehicleparts/wheel))
+			var/obj/item/vehicleparts/wheel/MD = W
+			if (!locate(MD.origin) in range(1,src))
+				if ((src in MD.origin.ontop) && src == MD.origin.driver && MD.origin.engine && MD.origin.engine.on)
+					MD.origin.engine.on = FALSE
+					MD.origin.engine.power_off_connections()
+					MD.origin.engine.currentspeed = 0
+					MD.origin.engine.currentpower = 0
+					src << "You turn off the engine."
+					MD.origin.set_light(0)
+					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
+					MD.origin.attackby(MD,src)
+					return TRUE
 		if (W.nodrop || W.nodrop_special_check() || ignore_nodrop)
 			return FALSE
 

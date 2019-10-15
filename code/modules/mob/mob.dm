@@ -16,28 +16,12 @@
 	..()
 
 /mob/proc/remove_screen_obj_references()//FIX THIS SHIT
-//	flash = null
-//	blind = null
+
 	hands = null
 	pullin = null
 	purged = null
-//	internals = null
-//	oxygen = null
 	i_select = null
 	m_select = null
-//	toxin = null
-//	fire = null
-//	bodytemp = null
-//	healths = null
-//	throw_icon = null
-//	nutrition_icon = null
-//	pressure = null
-//	damageoverlay = null
-//	pain = null
-//	item_use_icon = null
-//	gun_move_icon = null
-//	gun_setting_icon = null
-//	spell_masters = null
 	zone_sel = null
 
 // /mob/new_player doesn't callback to this, it needs to - Kachnov
@@ -217,27 +201,6 @@
 		face_atom(A)
 	//A.visible_message("<small>[A] looks at [src].</small>")//Doesn't work for everything yet.
 	A.examine(src)
-/mob/verb/pointed(atom/A as mob|obj|turf in view())
-	set name = "Point To"
-	set category = "Object"
-
-	if(!src || !isturf(src.loc) || !(A in view(src.loc)))
-		return 0
-	if(istype(A, /obj/effect/decal/point))
-		return 0
-
-	var/tile = get_turf(A)
-	if (!tile)
-		return 0
-
-	var/obj/P = new /obj/effect/decal/point(tile)
-	P.invisibility = invisibility
-	spawn (20)
-		if(P)
-			qdel(P)	// qdel
-
-	face_atom(A)
-	return 1
 
 /mob/proc/ret_grab(obj/effect/list_container/mobl/L as obj, flag)
 	if ((!( istype(l_hand, /obj/item/weapon/grab) ) && !( istype(r_hand, /obj/item/weapon/grab) )))
@@ -788,7 +751,7 @@
 	set_dir(ndir)
 	if (buckled && buckled.buckle_movable)
 		buckled.set_dir(ndir)
-	client.move_delay += movement_delay()
+	client.move_delay = world.time + movement_delay()
 	update_vision_cone()
 	return TRUE
 

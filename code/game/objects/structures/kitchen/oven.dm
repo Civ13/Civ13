@@ -12,6 +12,7 @@
 	var/fuel = 0
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	var/consume_itself = FALSE
 
 /obj/structure/oven/update_icon()
 	if (on)
@@ -77,7 +78,7 @@
 		if (name == "campfire")
 			set_light(5)
 		else if (name == "wood stove")
-			set_light(1)
+			set_light(2)
 		else
 			set_light(2)
 		spawn (50)
@@ -94,7 +95,10 @@
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
 					I.reagents.del_reagent("cholera")
-					return
+			if (fuel <= 0 && consume_itself == TRUE)
+				visible_message("<span class = 'warning'>\The [src] burns out.</span>")
+				new/obj/item/stack/ore/charcoal(loc)
+				qdel(src)
 	else
 		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
 
@@ -224,6 +228,7 @@
 	on = FALSE
 	max_space = 5
 	fuel = 4
+	consume_itself = TRUE
 
 /obj/structure/oven/fireplace/proc/smoke_signals()
 	for (var/mob/living/carbon/human/HH in range(25,src))
@@ -285,11 +290,51 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
+/obj/structure/furnace/sandstone
+	name = "sandstone furnace"
+	desc = "An industrial furnace, used to smelter minerals."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "sandstone_brick_furnace"
+	layer = 2.9
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "sandstone_brick_furnace"
+	on = FALSE
+	max_space = 6
+	fuel = 0
+	iron = 0
+	copper = 0
+	tin = 0
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
+/obj/structure/furnace/clay
+	name = "clay furnace"
+	desc = "An industrial furnace, used to smelter minerals."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "clay_brick_furnace"
+	layer = 2.9
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "clay_brick_furnace"
+	on = FALSE
+	max_space = 6
+	fuel = 0
+	iron = 0
+	copper = 0
+	tin = 0
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
 /obj/structure/furnace/update_icon()
 	if (on)
 		icon_state = "[base_state]_on"
+		set_light(4)
 	else
 		icon_state = base_state
+		set_light(0)
 
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))

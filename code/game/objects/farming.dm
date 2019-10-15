@@ -436,8 +436,7 @@
 						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA))
 							stage += 1
 					growth()
-	else
-		icon_state = "[plant]-harvest"
+
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		if (stage < readyStageMin) // destroy

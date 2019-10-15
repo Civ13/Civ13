@@ -9,16 +9,16 @@
 "ai" = (/obj/structure/wild/rock,/turf/floor/winter,/area/caribbean/nomads/snow)
 "aj" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/nomads/snow)
 "ak" = (/obj/structure/wild/burnedbush,/turf/floor/winter,/area/caribbean/nomads/snow)
-"al" = (/obj/structure/wild/tree/live_tree,/turf/floor/winter,/area/caribbean/nomads/snow)
+"al" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter,/area/caribbean/nomads/snow)
 "am" = (/turf/floor/dirt/underground,/area/caribbean/void/caves)
 "an" = (/obj/structure/wild/rock,/turf/floor/winter/grass,/area/caribbean/nomads/snow)
-"ao" = (/obj/structure/wild/tree/live_tree,/turf/floor/winter/grass,/area/caribbean/nomads/snow)
+"ao" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter/grass,/area/caribbean/nomads/snow)
 "ap" = (/obj/effect/spawner/mobspawner/goats_m,/turf/floor/winter,/area/caribbean/nomads/snow)
 "aq" = (/turf/floor/winter,/area/caribbean/nomads/ice)
 "ar" = (/obj/effect/spawner/mobspawner/reindeer_m,/turf/floor/winter,/area/caribbean/nomads/snow)
 "as" = (/turf/floor/beach/water/ice,/area/caribbean/nomads/ice)
 "at" = (/obj/structure/sink/puddle,/turf/floor/winter,/area/caribbean/nomads/snow)
-"au" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/winter,/area/caribbean/nomads/snow)
+"au" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/dirt/winter,/area/caribbean/nomads/snow)
 "av" = (/obj/structure/wild/burnedtree,/turf/floor/winter,/area/caribbean/nomads/snow)
 "aw" = (/obj/structure/wild/rock,/turf/floor/dirt/winter,/area/caribbean/nomads/snow)
 "ax" = (/obj/structure/wild/burnedbush,/turf/floor/winter/grass,/area/caribbean/nomads/snow)
@@ -42,11 +42,11 @@
 "aP" = (/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
 "aQ" = (/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "aR" = (/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
-"aS" = (/obj/structure/wild/tree/live_tree,/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
+"aS" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
 "aT" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
-"aU" = (/obj/structure/wild/tree/live_tree,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
+"aU" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "aV" = (/obj/structure/wild/burnedbush,/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
-"aW" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
+"aW" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
 "aX" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
 "aY" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "aZ" = (/obj/structure/wild/smallbush/winter,/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
@@ -103,6 +103,7 @@
 "bY" = (/turf/wall/rockwall,/area/caribbean/nomads/snow)
 "bZ" = (/turf/wall/indestructable/black{layer = 6},/area/caribbean/nomads/snow)
 "ca" = (/turf/floor/dirt/underground,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
+"cb" = (/turf/wall/iron,/area/caribbean/void/caves)
 
 (1,1,1) = {"
 cacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
@@ -403,8 +404,8 @@ amamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
 amamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
 amamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
 amamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
-amamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
-amamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
+cbcbamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
+cbcbamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamam
 "}
 
 (1,1,2) = {"

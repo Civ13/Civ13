@@ -101,12 +101,14 @@
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
+/*
 	var/area/currentarea = get_area(src)
 	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
 		if (faction_text == map.faction1 && !map.faction1_can_cross_blocks())
 			gib()
 		else if (faction_text == map.faction2 && !map.faction2_can_cross_blocks())
 			gib()
+*/
 	if (mood > 100)
 		mood = 100
 	else if (mood < 0)
@@ -291,6 +293,70 @@
 				if (prob(25))
 					disease_immunity += "flu"
 
+		else if (disease_type == "typhus")
+			mood -= 0.2
+			if (!disease_treatment)
+				disease_progression += 0.5
+			else
+				disease_progression += 5
+			// first 2 minutes
+			if (disease_progression == 25)
+				src << "You feel a little feverish."
+				disease_treatment = 0
+				apply_effect(10, DROWSY, FALSE)
+				bodytemperature = 311.35
+			//4 more minutes
+			if (prob(1))
+				if (prob(50))
+					emote("cough")
+					apply_effect(5, DROWSY, FALSE)
+				else
+					src << "Your muscles ache!"
+					apply_effect(5, AGONY, FALSE)
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 312.15 && prob(4))
+				src << "You feel like your fever is getting worse!"
+				apply_effect(5, AGONY, FALSE)
+				apply_effect(5, DROWSY, FALSE)
+				emote(pick("cough"))
+				bodytemperature = 312.15
+				adjustBrainLoss(1)
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 313.15 && prob(1))
+				src << "You feel very nauseous!"
+				apply_effect(8, AGONY, FALSE)
+				spawn(200)
+					water -= 35
+					vomit()
+			// 2 more minutes
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 313.15 && prob(8))
+				if (prob(50))
+					src << "You feel your fever going down."
+					apply_effect(5, DROWSY, FALSE)
+					emote(pick("cough"))
+					bodytemperature = 312.35
+				else
+					src << "You feel nauseous!"
+					apply_effect(5, AGONY, FALSE)
+					spawn(200)
+						water -= 12
+						vomit()
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 312.15 && prob(2))
+				if (!disease_treatment && prob(20))
+					var/obj/item/organ/external/E = get_organ("groin")
+					var/datum/wound/W = new /datum/wound/internal_bleeding(35, internal_organs_by_name["liver"])
+					E.wounds += W
+				src << "You feel your fever going down."
+				emote(pick("cough"))
+				bodytemperature = 310.055
+			else if (disease_progression >= 240 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+				if (prob(25))
+					disease_immunity += "typhus"
+
 		else if (disease_type == "malaria")
 			mood -= 0.17
 			if (!disease_treatment)
@@ -404,15 +470,15 @@
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
-/*
+
 		if (disease == FALSE)
 			if (prob(1) && map.civilizations)
-				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_NORMAL && !("flu" in disease_immunity))
+				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
-*/
+
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
 		if (grab_list[1] == null)
@@ -446,7 +512,7 @@
 
 		if (!inducedSSD)
 			handle_excrement()
-			if (map.civilizations)
+			if (map.civilizations || map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY || map.ID == MAP_GULAG13)
 				handle_hygiene()
 			handle_mood()
 			handle_ptsd()
@@ -463,6 +529,7 @@
 
 		if (!client)
 			species.handle_npc(src)
+	process_roofs()
 
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
@@ -552,7 +619,8 @@
 	var/loc_temp = 20
 	var/area/mob_area = get_area(src)
 
-
+	if (!mob_area)
+		return
 	switch (season)
 		if ("WINTER")
 			switch (mob_area.climate)
@@ -695,7 +763,7 @@
 			loc_temp = (max(22,loc_temp-40))
 		else if (loc_temp < 18)
 			loc_temp = (min(18,loc_temp+40))
-	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && map.civilizations && mob_area.location == AREA_INSIDE)
+	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13) && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)
@@ -1445,6 +1513,8 @@
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
 					holder2.icon_state = "vc_basic"
+				if (CHINESE)
+					holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
 					if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"

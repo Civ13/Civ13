@@ -38,6 +38,9 @@
 	projectile.loc = get_turf(user)
 	projectile.throw_at(target, throw_distance, release_force, user)
 	projectile.dir = get_dir(src.loc, target.loc)
+	if (istype(projectile, /obj/item/missile))
+		var/obj/item/missile/M = projectile
+		M.startingturf = get_turf(user)
 	update_icon(projectile)
 	return 1
 
@@ -90,7 +93,7 @@
 /obj/item/weapon/gun/launcher/rocket/consume_next_projectile()
 	if(rockets.len)
 		var/obj/item/ammo_casing/rocket/I = rockets[1]
-		var/obj/item/missile/M = new (src)
+		var/obj/item/missile/M = new I.projectile_type(src)
 		if (ishuman(src.loc))
 			M.dir = src.loc.dir
 		M.primed = 1
@@ -208,34 +211,93 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "missile"
 	var/primed = null
+	var/turf/startingturf = null
 	throwforce = 15
+	heavy_armor_penetration = 12
 	allow_spin = FALSE
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
+			handle_vehicle_hit(hit_atom)
 			qdel(src)
 		else
 			..()
 		return
+/obj/item/missile/proc/handle_vehicle_hit(hit_atom)
+	for(var/obj/structure/vehicleparts/frame/F in range(1,hit_atom))
+		for (var/mob/M in F.axis.transporting)
+			shake_camera(M, 3, 3)
+		var/penloc = F.CheckPenLoc(src)
+		switch(penloc)
+			if ("left")
+				F.w_left[5] -= heavy_armor_penetration
+				visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+			if ("right")
+				F.w_right[5] -= heavy_armor_penetration
+				visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+			if ("front")
+				F.w_front[5] -= heavy_armor_penetration
+				visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("back")
+				F.w_back[5] -= heavy_armor_penetration
+				visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+			if ("frontleft")
+				if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
+					F.w_left[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+				else
+					F.w_front[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("frontright")
+				if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
+					F.w_right[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+				else
+					F.w_front[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("backleft")
+				if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
+					F.w_left[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+				else
+					F.w_back[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+			if ("backright")
+				if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
+					F.w_right[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+				else
+					F.w_back[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+		F.try_destroy()
+		for(var/obj/structure/vehicleparts/movement/MV in F)
+			MV.broken = TRUE
+			MV.update_icon()
+		F.update_icon()
 
 /obj/item/missile/explosive
+	heavy_armor_penetration = 50
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
+			handle_vehicle_hit(hit_atom)
 			qdel(src)
 		else
 			..()
 		return
 /obj/item/missile/explosive/panzerfaust
+	heavy_armor_penetration = 35
 	icon_state = "panzerfaust_missile"
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 3)
+			handle_vehicle_hit(hit_atom)
 			qdel(src)
 		else
 			..()
 		return
 /obj/item/missile/fragmentation
+	heavy_armor_penetration = 6
 	var/num_fragments = 30
 	var/spread_range = 6
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
@@ -244,6 +306,7 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom,0,1,3,1)
+			handle_vehicle_hit(hit_atom)
 			var/turf/T = get_turf(hit_atom)
 			if(!T) return
 			var/list/target_turfs = getcircle(T, spread_range)
@@ -354,6 +417,7 @@
 /obj/item/missile/grenade
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "g40mm"
+	heavy_armor_penetration = 6
 	primed = null
 	throwforce = 12
 	allow_spin = TRUE

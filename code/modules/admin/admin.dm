@@ -351,8 +351,9 @@ proc/admin_notice(var/message, var/rights)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
-		world << "<big><span class=notice><b>[usr.client.holder.fakekey ? "Administrator" : usr.key] Announces:</b></big><p style='text-indent: 50px'>[message]</p></span>"
-		log_admin("Announce: [key_name(usr)] : [message]")
+		if (usr && usr.client)
+			world << "<big><span class=notice><b>[usr.client.holder.fakekey ? "Administrator" : usr.key] Announces:</b></big><p style='text-indent: 50px'>[message]</p></span>"
+			log_admin("Announce: [key_name(usr)] : [message]")
 
 /datum/admins/proc/ic_announce()
 	set category = "Special"
@@ -1045,12 +1046,21 @@ var/list/atom_types = null
 //Radiation/Pollution stuff
 /datum/admins/proc/get_world_values()
 	set category = "Debug"
-	set desc="Display how Irradiated/Polluted the world is."
+	set desc="Display some of the global vars."
 	set name="Display Worldvars"
 
 	src << "World Variables:"
 	src << "Radiation: [get_global_radiation()]"
 	src << "Pollution: [get_global_pollution()]"
+	src << "Chickens: [chicken_count]"
+	src << "Turkeys: [turkey_count]"
+	src << "Cows: [cow_count]"
+	src << "Goats: [goat_count]"
+	src << "Sheep: [sheep_count]"
+	src << "Pigs: [pig_count]"
+	src << "Deer: [deer_count]"
+	src << "Wolves: [wolf_count]"
+	src << "Bears: [bear_count]"
 
 /datum/admins/proc/set_world_radiation()
 	set category = "Debug"

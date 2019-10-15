@@ -134,9 +134,6 @@
 
 	..()
 
-/mob/living/carbon/human/Paralyse(amount)
-	..()
-
 // Defined here solely to take species flags into account without having to recast at mob/living level.
 /mob/living/carbon/human/getOxyLoss()
 	if (species.flags & NO_BREATHE)

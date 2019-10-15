@@ -9,8 +9,8 @@
 	var/edge = FALSE		// whether this object is more likely to dismember
 	var/in_use = FALSE // If we have a user using us, this will be set on. We will check if the user has stopped using us, and thus stop updating and LAGGING EVERYTHING!
 	var/damtype = "brute"
-	var/armor_penetration = FALSE
-//	var/corporation = null
+	var/armor_penetration = FALSE //probability of penetrating body armor
+	var/heavy_armor_penetration = FALSE //how many mm of steel armor will this penetrate
 	var/special_id = FALSE
 	var/scoped_invisible = FALSE
 	var/is_teleporter = FALSE
@@ -24,6 +24,7 @@
 	var/powerneeded = 0 //how much power it draws from a nearby engine. 0 means no power needed.
 	var/obj/structure/cable/powersource = null
 	var/powered = FALSE
+	var/quality = 0
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)

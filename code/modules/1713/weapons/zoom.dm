@@ -66,6 +66,36 @@ Parts of code courtesy of Super3222
 	attachable = FALSE
 	value = 15
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope
+	name = "periscope"
+	desc = "A solid metal periscope."
+	icon_state = "periscope"
+	max_zoom = ZOOM_CONSTANT*3
+	attachable = FALSE
+	value = 15
+	var/obj/structure/bed/chair/commander/commanderchair = null
+	anchored = FALSE
+	flammable = FALSE
+	nothrow = TRUE
+	nodrop = TRUE
+	w_class = 5
+	var/checking = FALSE
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/proc/rangecheck(var/mob/living/carbon/human/H, var/atom/target)
+	if (checking)
+		return
+
+	checking = TRUE
+	var/dist1 = abs(H.x-target.x)
+	var/dist2 = abs(H.y-target.y)
+	var/distcon = max(dist1,dist2)
+	var/gdir = get_dir(H, target)
+	H << "You start checking the range..."
+	if (do_after(H, 25, src, can_move = TRUE))
+		H << "<big><b><font color='#ADD8E6'>Range: about [max(0,distcon+rand(-1,1))] meters [dir2text(gdir)].</font></b></big>"
+		checking = FALSE
+	else
+		checking = FALSE
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"
 	set category = null
@@ -131,10 +161,15 @@ Parts of code courtesy of Super3222
 	if (user.stat || !ishuman(user))
 		if (!silent) user << "You are unable to focus through \the [src]."
 		return FALSE
+	if (!istype(src, /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
+		for (var/obj/structure/vehicleparts/frame/FR in user.loc)
+			if (FR.axis)
+				user << "You can't use \the [src] while inside a vehicle!"
+				return FALSE
 	if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))
 		var/obj/item/clothing/mask/currmask = H.wear_mask
 		if (currmask.blocks_scope)
-			if (!silent) user << "You can't use the [src] while wearing \the [currmask]!"
+			if (!silent) user << "You can't use \the [src] while wearing \the [currmask]!"
 			return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
 		if (!silent) user << "Your visor gets in the way of looking through \the [src]."
@@ -183,7 +218,7 @@ Parts of code courtesy of Super3222
 			return
 		else
 			user.dizzycheck = TRUE
-			if (do_after(user, 5, user, TRUE))//Scope delay
+			if (do_after(user, 5, user, TRUE, can_move = TRUE))//Scope delay
 				var/_x = 0
 				var/_y = 0
 				switch(user.dir)

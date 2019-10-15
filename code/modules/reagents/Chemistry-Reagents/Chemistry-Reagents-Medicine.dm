@@ -17,7 +17,7 @@
 	M.add_chemical_effect(CE_PULSE, 1)
 	M.traumatic_shock = max(0,M.traumatic_shock-removed)
 	M.shock_stage = max(0,M.shock_stage-removed/2)
-	M.mood += removed*4
+	M.mood += removed*10
 	M.SetParalysis(0)
 	M.SetWeakened(0)
 
@@ -95,7 +95,7 @@
 
 /datum/reagent/tramadol/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 80)
-	M.mood += removed*3
+	M.mood += removed*6
 /datum/reagent/tramadol/overdose(var/mob/living/carbon/M, var/alien)
 	..()
 	M.hallucination = max(M.hallucination, 2)
@@ -223,7 +223,7 @@
 	scannable = TRUE
 
 /datum/reagent/potassium_iodide/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.radiation = max(M.radiation - 15 * removed, FALSE)
+	M.radiation -= 15 * removed
 
 /datum/reagent/penicillin
 	name = "penicillin"
@@ -235,6 +235,12 @@
 	metabolism = REM * 0.05
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
+
+/datum/reagent/penicillin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	if (istype(M, /mob/living/carbon/human))
+		var/mob/living/carbon/human/HH = M
+		if (HH.disease == 1 && HH.disease_type == "typhus")
+			HH.disease_treatment = TRUE
 
 /datum/reagent/prontosil
 	name = "Prontosil"
@@ -345,7 +351,7 @@
 			else
 				M << "<span class='warning'>Your mind breaks apart...</span>"
 				M.hallucination += 200
-	M.mood += removed*30
+	M.mood += removed*50
 
 /datum/reagent/opium
 	name = "Opium"
@@ -360,7 +366,7 @@
 /datum/reagent/opium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 100)
 	M.addictions["opium"] += 0.1
-	M.mood += removed*20
+	M.mood += removed*30
 /datum/reagent/opium/overdose(var/mob/living/carbon/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
@@ -381,15 +387,15 @@
 	M.addictions["cocaine"] += 0.12
 	M.add_chemical_effect(CE_SPEEDBOOST, 2)
 	M.add_chemical_effect(CE_PULSE, 4)
-	M.mood += removed*10
+	M.mood += removed*30
 /datum/reagent/opium/overdose(var/mob/living/carbon/M, var/alien)
 	..()
 	M.make_dizzy(6)
 
 /datum/reagent/pervitin
-	name = "Pervitin"
-	id = "pervitin"
-	description = "Pervitine is a highly effective stimulant. Addictive!"
+	name = "Methamphetamine"
+	id = "methamphetamine"
+	description = "Methamphetamine is a highly effective stimulant. Addictive!"
 	taste_description = "sweetness"
 	reagent_state = LIQUID
 	color = "#FF3300"
@@ -401,7 +407,7 @@
 		M.emote(pick("twitch", "blink_r", "shiver"))
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
 	M.add_chemical_effect(CE_PULSE, 2)
-	M.mood += removed*10
+	M.mood += removed*20
 
 /datum/reagent/morphine
 	name = "Morphine"
@@ -415,7 +421,7 @@
 
 /datum/reagent/morphine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 200)
-	M.mood += removed*16
+	M.mood += removed*30
 /datum/reagent/morphine/overdose(var/mob/living/carbon/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)

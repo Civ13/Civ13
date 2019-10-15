@@ -46,21 +46,21 @@
 	unique_door_name = "Private"
 #undef CV_CUSTOM
 
-#define CV_CUSTOM_JAILWOOD 999
+#define CV_CUSTOM_WOODJAIL 999
 /obj/structure/simple_door/key_door/custom/jail/woodjail
 	custom = TRUE
 	custom_code = 999
 	unique_door_name = "Private"
 	opacity = 0
-#undef CV_CUSTOM_JAILWOOD
+#undef CV_CUSTOM_WOODJAIL
 
-#define CV_CUSTOM_JAILSTEEL 999
+#define CV_CUSTOM_STEELJAIL 999
 /obj/structure/simple_door/key_door/custom/jail/steeljail
 	custom = TRUE
 	custom_code = 999
 	unique_door_name = "Private"
 	opacity = 0
-#undef CV_CUSTOM_JAILSTEEL
+#undef CV_CUSTOM_STEELJAIL
 
 #define CV_CODE 1000
 /datum/keyslot/civ
@@ -317,6 +317,54 @@
 /obj/structure/simple_door/key_door/russian
 	keyslot_type = /datum/keyslot/russian
 	unique_door_name = "Russian locked"
+
+/datum/keyslot/soviet
+	code = RU_CODE
+
+/datum/keyslot/soviet/guard
+	code = RU_CODE
+
+/datum/keyslot/soviet/guard/max
+	code = RU_CODE+2
+
+/obj/item/weapon/key/soviet
+	code = RU_CODE
+	name = "Soviet key"
+
+/obj/item/weapon/key/soviet/guard
+	code = RU_CODE
+	name = "GULAG guard key"
+
+/obj/item/weapon/key/soviet/guard/max
+	code = RU_CODE+2
+	name = "Maximum Security guard key"
+	health = 2000
+/obj/structure/simple_door/key_door/soviet
+	keyslot_type = /datum/keyslot/soviet
+	unique_door_name = "Soviet locked"
+
+/obj/structure/simple_door/key_door/soviet/guard
+	keyslot_type = /datum/keyslot/soviet/guard
+	unique_door_name = "GULAG locked"
+
+/obj/structure/simple_door/key_door/soviet/guard/max
+	keyslot_type = /datum/keyslot/soviet/guard/max
+	unique_door_name = "Maximum Security locked"
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard
+	unique_door_name = "GULAG locked"
+	locked = TRUE
+	custom_code = RU_CODE
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/guard/open
+	starts_open = TRUE
+	locked = FALSE
+	custom_code = RU_CODE
+	New()
+		..()
+		icon_state = "cellopen"
+		density = FALSE
+
 #undef RU_CODE
 
 #define NL_CODE 995 * 6
@@ -332,6 +380,8 @@
 	unique_door_name = "Dutch locked"
 #undef NL_CODE
 
+
+
 #define JP_CODE 995 * 6
 /datum/keyslot/japanese
 	code = JP_CODE
@@ -344,6 +394,19 @@
 	keyslot_type = /datum/keyslot/japanese
 	unique_door_name = "Japanese locked"
 #undef JP_CODE
+
+#define DE_CODE 995 * 12
+/datum/keyslot/german
+	code = DE_CODE
+
+/obj/item/weapon/key/german
+	code = DE_CODE
+	name = "German key"
+
+/obj/structure/simple_door/key_door/german
+	keyslot_type = /datum/keyslot/german
+	unique_door_name = "German locked"
+#undef DE_CODE
 
 #define VC_CODE 995 * 8
 /datum/keyslot/vietnamese

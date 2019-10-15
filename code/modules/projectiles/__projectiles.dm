@@ -22,31 +22,97 @@
 /obj/item/projectile/arrow
 	embed = TRUE
 	sharp = TRUE
+	var/volume = 5
+
 /obj/item/projectile/arrow/stone
 	damage = DAMAGE_MEDIUM-10
 	penetrating = 1
 	armor_penetration = 10
 	icon_state = "stone"
+	embed = FALSE
+	sharp = FALSE
+
 
 /obj/item/projectile/arrow/arrow
-	damage = DAMAGE_MEDIUM-2
-	penetrating = 1
-	armor_penetration = 10
+	damage = DAMAGE_LOW-28
+	penetrating = 0
+	armor_penetration = 0
 	icon_state = "arrow"
-
-/obj/item/projectile/arrow/arrow/poisonous
-	damage = DAMAGE_MEDIUM-2
-	penetrating = 1
-	armor_penetration = 10
-	icon_state = "arrow"
-	damage_type = TOX
+	embed = FALSE
+	sharp = FALSE
 
 /obj/item/projectile/arrow/arrow/fire
-	damage = DAMAGE_MEDIUM-3
-	penetrating = 1
+	damage = DAMAGE_LOW
+	penetrating = 0
 	armor_penetration = 10
 	icon_state = "arrow"
 	damage_type = BURN
+	embed = FALSE
+	sharp = FALSE
+
+/obj/item/projectile/arrow/arrow/fire/gods
+	damage = DAMAGE_OH_GOD
+	penetrating = 100
+	armor_penetration = 1000
+	icon_state = "arrow_god"
+	damage_type = BURN
+	gibs = TRUE
+	crushes = TRUE
+
+/obj/item/projectile/arrow/arrow/stone
+	damage = DAMAGE_MEDIUM
+	penetrating = 0
+	armor_penetration = 2
+	icon_state = "arrow_copper"
+
+/obj/item/projectile/arrow/arrow/copper
+	damage = DAMAGE_MEDIUM+1
+	penetrating = 0
+	armor_penetration = 2
+	icon_state = "arrow_copper"
+
+/obj/item/projectile/arrow/arrow/iron
+	damage = DAMAGE_MEDIUM+2
+	penetrating = 1
+	armor_penetration = 4
+	icon_state = "arrow_iron"
+
+/obj/item/projectile/arrow/arrow/bronze
+	damage = DAMAGE_MEDIUM+3
+	penetrating = 1
+	armor_penetration = 6
+	icon_state = "arrow_bronze"
+
+/obj/item/projectile/arrow/arrow/steel
+	damage = DAMAGE_MEDIUM+4
+	penetrating = 1
+	armor_penetration = 8
+	icon_state = "arrow_steel"
+
+/obj/item/projectile/arrow/arrow/modern
+	damage = DAMAGE_MEDIUM+5
+	penetrating = 1
+	armor_penetration = 8
+	icon_state = "arrow_modern"
+
+/obj/item/projectile/arrow/arrow/vial
+	damage = DAMAGE_MEDIUM
+	penetrating = 1
+	armor_penetration = 10
+	icon_state = "arrow_vial"
+	volume = 15
+
+/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/M as mob)
+	if (prob(10))
+		M.fire_stacks += 1
+	M.IgniteMob()
+	spawn (0.01)
+		qdel(src)
+	..()
+
+/obj/item/projectile/arrow/arrow/on_impact(mob/living/carbon/human/M as mob)
+	//TO DO TRANSFER REAGENTS REAGENTS HURT MY BRAIN
+	//src.reagents.trans_to(M, volume)
 
 /obj/item/projectile/grenade/smoke
 	name = "smoke grenade"
@@ -129,9 +195,13 @@
 	penetrating = 1
 	armor_penetration = 9
 
+/obj/item/projectile/bullet/pistol/a32
+	damage = DAMAGE_MEDIUM+1
+	penetrating = 1
+	armor_penetration = 7
 
 /obj/item/projectile/bullet/pistol/a41
-	damage = DAMAGE_MEDIUM+1
+	damage = DAMAGE_MEDIUM+2
 	penetrating = 1
 	armor_penetration = 11
 
@@ -304,8 +374,8 @@ obj/item/projectile/bullet/rifle/a556x45
 	name = "beanbag"
 	check_armor = "melee"
 	armor_penetration = 0
-	damage = DAMAGE_LOW/2
-	agony = DAMAGE_MEDIUM_HIGH
+	damage = 10
+	agony = 60
 	embed = FALSE
 	sharp = FALSE
 

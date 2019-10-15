@@ -76,3 +76,8 @@
 		return
 	else
 		return
+
+/obj/structure/target_practice/ex_act()
+	visible_message("\The [src] blows up!")
+	qdel(src)
+	return

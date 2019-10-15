@@ -62,3 +62,15 @@ obj/item/weapon/storage/backpack/ww2/american
 	icon_state = "uspack"
 	item_state = "uspack"
 	worn_state = "uspack"
+
+/obj/item/weapon/storage/backpack/sapper
+	New()
+		..()
+		new /obj/item/weapon/storage/toolbox/emergency(src)
+		new /obj/item/weapon/storage/toolbox/mechanical(src)
+
+/obj/item/weapon/storage/backpack/scavpack
+	name = "scavenger pack"
+	desc = "A makeshift backpack made of a mix of materials."
+	icon_state = "scavpack"
+	item_state = "scavpack"

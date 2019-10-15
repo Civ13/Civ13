@@ -12,6 +12,8 @@
 var/global/datum/global_init/init = new ()
 var/global/list/approved_list = list()
 var/global/list/whitelist_list = list()
+var/global/list/craftlist_list = list()
+var/global/list/dictionary_list = list()
 /*
 	Pre-map initialization stuff should go here.
 */

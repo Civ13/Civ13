@@ -59,9 +59,16 @@
 		if (istype(mover, /obj/item/projectile))
 			var/obj/item/projectile/proj = mover
 			proj.throw_source = proj.starting
-/*			if (proj.throw_source == get_turf(src) || get_step(proj.throw_source, proj.dir) == get_turf(src) || proj.firer && (get_step(proj.firer, proj.firer.dir) == get_turf(src) || proj.firer.loc == get_turf(src)))
-				return TRUE*/
 
+			if (ishuman(proj.firer) && (proj.firer.lying || proj.firer.prone))
+				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
+				if (istype(mover, /obj/item/projectile))
+					var/obj/item/projectile/B = mover
+					B.damage = 0 // make sure we can't hurt people after hitting a sandbag
+					B.invisibility = 101
+					B.loc = null
+					qdel(B) // because somehow we were still passing the sandbag
+				return FALSE
 		if (!mover.throw_source)
 			if (get_dir(loc, target) & dir)
 				return FALSE
@@ -93,22 +100,3 @@
 				return FALSE
 			else
 				return TRUE
-/*
-/obj/structure/window/sandbag/CheckExit(atom/movable/O as mob|obj, target as turf)
-
-	if (get_dir(O.loc, target) == dir)
-		if (istype(O, /obj/item/projectile))
-			var/obj/item/projectile/P = O
-			if (get_turf(src) == P.starting)
-				return TRUE
-			else
-				if (prob(bullet_deflection_chance(P)))
-					visible_message("<span class = 'warning'>[P] hits the sandbag!</span>")
-					return FALSE
-				else
-					return TRUE
-		else
-			if (!O.throw_source)
-				return FALSE
-	return TRUE
-	*/

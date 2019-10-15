@@ -28,6 +28,7 @@
 		/mob/living/simple_animal/cow,
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
+		/mob/living/simple_animal/pig_gilt,
 		/obj/structure/oil_spring,
 		/obj/structure/refinery,
 		/obj/structure/oilwell,
@@ -331,7 +332,7 @@
 
 /obj/item/weapon/reagent_containers/glass/bucket/update_icon()
 	overlays.Cut()
-	if (reagents.total_volume >= 1)
+	if (reagents && reagents.total_volume >= 1)
 		overlays += "water_bucket"
 	if (!is_open_container())
 		var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
@@ -438,6 +439,59 @@
 	volume = 250
 	density = TRUE
 
+/obj/item/weapon/reagent_containers/glass/bullet_act(var/obj/item/projectile/proj)
+	var/can_explode = FALSE
+	if (!reagents)
+		return
+	if (reagents.has_reagent("gasoline",10) || reagents.has_reagent("diesel",30) || reagents.has_reagent("biodiesel",30) || reagents.has_reagent("ethanol",10) || reagents.has_reagent("petroleum",40) || reagents.has_reagent("gunpowder",30))
+		can_explode = TRUE
+	if (!can_explode)
+		if (prob(30))
+			visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
+			if (reagents && reagents.total_volume > 0)
+				var/part = 15 / reagents.total_volume
+				for (var/datum/reagent/current in reagents.reagent_list)
+					var/amount_to_transfer = current.volume * part
+					reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
+		return
+	if (istype(proj, /obj/item/projectile/shell))
+		var/obj/item/projectile/shell/S = proj
+		if (S.atype == "HE")
+			if (prob(90))
+				visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+				explosion(loc, 2, 3, 2, 0)
+				qdel(src)
+			else
+				visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
+				new/obj/effect/decal/cleanable/blood/oil(loc)
+				var/part = 15 / reagents.total_volume
+				for (var/datum/reagent/current in reagents.reagent_list)
+					var/amount_to_transfer = current.volume * part
+					reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
+		else
+			if (prob(20))
+				visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+				explosion(loc, 1, 1, 2, 0)
+				qdel(src)
+			else if (prob(75))
+				visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
+				new/obj/effect/decal/cleanable/blood/oil(loc)
+				var/part = 25 / reagents.total_volume
+				for (var/datum/reagent/current in reagents.reagent_list)
+					var/amount_to_transfer = current.volume * part
+					reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
+	else
+		if (prob(12))
+			visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+			explosion(loc, 1, 2, 2, 0)
+			qdel(src)
+		else if (prob(30))
+			visible_message("<span class = 'warning'>\The [src] gets pierced!</span>")
+			var/part = 15 / reagents.total_volume
+			for (var/datum/reagent/current in reagents.reagent_list)
+				var/amount_to_transfer = current.volume * part
+				reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
+
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
 	name = "small fueltank"
 	icon_state = "fueltank_small"
@@ -457,6 +511,28 @@
 	name = "75u motorcycle fueltank"
 	icon_state = "fueltank_bike"
 	volume = 75
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank
+	name = "huge fueltank"
+	icon_state = "fueltank_large_tank"
+	volume = 450
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled
+	New()
+		..()
+		reagents.add_reagent("diesel",450)
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline
+	New()
+		..()
+		reagents.add_reagent("gasoline",450)
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank
+	name = "medium fueltank"
+	icon_state = "fueltank_small_tank"
+	volume = 180
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline
+	New()
+		..()
+		reagents.add_reagent("gasoline",180)
 /obj/item/weapon/reagent_containers/glass/barrel/modern/water
 	name = "water barrel"
 	desc = "A steel barrel, filled with drinking water."
@@ -465,14 +541,14 @@
 		reagents.add_reagent("water",350)
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/oil
-	name = "steel barrel"
+	name = "oil barrel"
 	desc = "A steel barrel, filled with crude oil."
 	New()
 		..()
 		reagents.add_reagent("petroleum",350)
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline
-	name = "steel barrel"
+	name = "gasoline barrel"
 	desc = "A steel barrel, filled with gasoline."
 	New()
 		..()

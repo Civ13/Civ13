@@ -23,6 +23,15 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 10)
 	var/colour = "black"	//what colour the ink is!
 
+/obj/item/weapon/pen/New()
+	..()
+	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil))
+		icon_state = "pennew"
+/obj/item/weapon/pen/update_icon()
+	..()
+	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil))
+		icon_state = "pennew"
+
 /obj/item/weapon/pen/pencil
 	name = "pencil"
 	desc = "a normal graphite pencil."

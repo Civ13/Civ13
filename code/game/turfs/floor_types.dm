@@ -128,6 +128,18 @@
 	may_become_muddy = TRUE
 	initial_flooring = null
 
+/turf/floor/grass/edge
+	name = "grass edge"
+	icon_state = "grass_edges"
+	is_diggable = FALSE
+	may_become_muddy = FALSE
+
+/turf/floor/grass/edge/dead
+	name = "dead grass edge"
+	icon_state = "dead_grass_edges"
+	is_diggable = FALSE
+	may_become_muddy = FALSE
+
 /turf/floor/grass/jungle/savanna
 	name = "dry grass"
 	icon_state = "grass_dry"
@@ -191,6 +203,13 @@
 	available_sand = 22
 	initial_flooring = /decl/flooring/sand_beach
 
+/turf/floor/beach/sand/edges
+	name = "sand"
+	icon_state = "sand_edges"
+	is_diggable = TRUE
+	available_sand = 11
+	initial_flooring = /decl/flooring/sand_beach
+
 /turf/floor/beach/sand/dark
 	name = "dark sand"
 	icon = 'icons/turf/floors.dmi'
@@ -216,11 +235,15 @@
 	var/sickness = 1 //amount of toxins, from 0 to 3
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
-
+	var/image/water_overlay = null
 
 /turf/floor/beach/water/New()
 	..()
 	water_turf_list += src
+	spawn(1)
+		water_overlay = image(icon='icons/misc/beach.dmi')
+		water_overlay.icon_state= "[icon_state]_ov"
+		water_overlay.layer= 10
 
 /turf/floor/beach/water/coastwater
 	name = "coast water"
@@ -312,11 +335,6 @@
 
 /turf/floor/beach/water/ex_act(severity)
 	return
-
-/turf/floor/beach/water/New()
-	..()
-//	if (!istype(src, /turf/floor/beach/water/ice))
-//		overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.09)
 
 /turf/floor/beach/water/ice
 	name = "ice"

@@ -808,9 +808,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 			stump.update_damages()
 
 	spawn(1)
-		victim.updatehealth()
-		victim.UpdateDamageIcon()
-		victim.regenerate_icons()
+		if (victim)
+			victim.updatehealth()
+			victim.UpdateDamageIcon()
+			victim.regenerate_icons()
 		dir = 2
 	victim.instadeath_check()
 	switch(disintegrate)
@@ -1266,7 +1267,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 		owner.u_equip(owner.r_ear)
 		owner.u_equip(owner.wear_mask)
 		spawn(1)
-			owner.update_hair()
+			if (owner)
+				owner.update_hair()
 	..()
 
 /obj/item/organ/external/head/take_damage(brute, burn, sharp, edge, used_weapon = null, list/forbidden_limbs = list())

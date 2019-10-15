@@ -10,6 +10,8 @@
 		return
 
 	message = sanitize(message)
+	for (var/i in dictionary_list)
+		message = replacetext(message,i[1],i[2])
 	log_whisper("[name]/[key] : [message]")
 
 	if (client)
@@ -27,12 +29,15 @@
 		return
 
 	if (name != GetVoice())
-		alt_name = "(as [get_id_name("Unknown")])"
+		alt_name = get_visible_name()
 
 	//parse the language code and consume it
 	var/datum/language/speaking = parse_language(message)
+
 	if (speaking)
 		message = copytext(message,2+length(speaking.key))
+	else
+		speaking = get_default_language()
 
 	whisper_say(message, speaking, alt_name)
 

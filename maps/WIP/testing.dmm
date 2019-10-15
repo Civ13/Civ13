@@ -1,0 +1,83 @@
+"a" = (/turf/floor/dirt,/area/caribbean)
+"b" = (/turf/floor/plating/road,/area/caribbean)
+"c" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 9},/turf/floor/plating/road,/area/caribbean)
+"d" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"e" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 5},/turf/floor/plating/road,/area/caribbean)
+"f" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"g" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4; icon_state = "warning_dust"; layer = 3},/turf/floor/plating/road,/area/caribbean)
+"h" = (/obj/structure/sign/custom{name = "4th: Make an axis and move it to the TOP LEFT frame. Click on it to finish the vehicle."},/turf/floor/dirt,/area/caribbean)
+"i" = (/obj/structure/sign/custom{name = "5th: Test the vehicle. If it doesnt work, try manually assemblying any mising parts: drag and drop them to a connected frame."},/turf/floor/dirt,/area/caribbean)
+"j" = (/obj/structure/engine/internal/gasoline{enginesize = 5000},/turf/floor/dirt,/area/caribbean)
+"k" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/turf/floor/dirt,/area/caribbean)
+"l" = (/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/turf/floor/dirt,/area/caribbean)
+"m" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 10},/turf/floor/plating/road,/area/caribbean)
+"n" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/road,/area/caribbean)
+"o" = (/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/turf/floor/dirt,/area/caribbean)
+"p" = (/obj/map_metadata/testing,/turf/floor/dirt,/area/caribbean)
+"q" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/dirt,/area/caribbean)
+"r" = (/obj/structure/sign/custom{name = "1st: Build the frames. Maximum 5x5, keep it square or rectangular. If you want to add the walls during this step, you should fix the frames in place with a wrench first."},/turf/floor/dirt,/area/caribbean)
+"s" = (/obj/structure/sign/custom{name = "2nd: Place the drivers chair, engine, fueltank"},/turf/floor/dirt,/area/caribbean)
+"t" = (/obj/structure/sign/custom{name = "3rd: Create 4 wheels/tracks and place each one on top of each corner."},/turf/floor/dirt,/area/caribbean)
+"u" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 6},/turf/floor/plating/road,/area/caribbean)
+"v" = (/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/storage/toolbox,/turf/floor/dirt,/area/caribbean)
+"w" = (/obj/item/stack/material/copper{amount = 100},/obj/item/stack/material/copper{amount = 100},/obj/item/stack/material/copper{amount = 100},/turf/floor/dirt,/area/caribbean)
+"x" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/dirt,/area/caribbean)
+"y" = (/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/turf/floor/dirt,/area/caribbean)
+"z" = (/obj/structure/vehicleparts/frame,/turf/floor/plating/road,/area/caribbean)
+"A" = (/obj/structure/vehicleparts/frame,/obj/structure/bed/chair/drivers,/turf/floor/plating/road,/area/caribbean)
+"B" = (/obj/structure/vehicleparts/frame,/obj/structure/vehicleparts/axis/heavy,/turf/floor/plating/road,/area/caribbean)
+"C" = (/obj/structure/vehicleparts/frame,/obj/structure/engine/internal/gasoline{enginesize = 5000},/turf/floor/plating/road,/area/caribbean)
+"D" = (/obj/structure/vehicleparts/frame,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/plating/road,/area/caribbean)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+aaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+aaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+aaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+aaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+aaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaaaabbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaaabbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaaabbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aaabbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+aabbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+abbbbbbbbbbaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+abbbbbbbbbaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+abbbbbbbbaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaaaa
+abbbbbbbaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+abbbbbbaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+abbbbbaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+abbbbbaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+abbbbbaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa
+abbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa
+abbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaaa
+abbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaaa
+abbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaaa
+abbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaabbbbbaaa
+rcdddearcdddearcdddearcdddearcdddearcdddearcdddearcdddearcdddeaaa
+sfbbbgasfbbbgasfbbbgasfzAzgasfbbbgasfbbbgasfbbbgasfbbbgasfbbbgaaa
+tfbbbgatfbbbgatfbbbgatfzBzgatfbbbgatfbbbgatfbbbgatfbbbgatfbbbgaaa
+hfbbbgahfbbbgahfbbbgahfCzDgahfbbbgahfbbbgahfbbbgahfbbbgahfbbbgaaa
+imnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaimnnnuaaa
+avjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaavjlkoaaa
+aawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaawxyaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+paaaaaaaqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqaaaaaaaaaaaaaaaaaaaaa
+"}

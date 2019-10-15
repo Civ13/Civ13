@@ -16,6 +16,8 @@
 /datum/job/var/is_governor = FALSE
 /datum/job/var/is_merchant = FALSE
 /datum/job/var/is_religious = FALSE
+/datum/job/var/is_pioneer = FALSE
+/datum/job/var/is_1713 = FALSE
 /datum/job/var/is_RP = FALSE //to enable civilian jobs per faction
 /datum/job/var/is_army = FALSE //land troops
 /datum/job/var/is_marooned = FALSE //marooned pirate
@@ -33,6 +35,9 @@
 /datum/job/var/is_specops = FALSE
 /datum/job/var/is_modernday = FALSE
 /datum/job/var/is_rcw = FALSE
+/datum/job/var/is_tanker = FALSE
+/datum/job/var/is_prison = FALSE
+
 /datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold

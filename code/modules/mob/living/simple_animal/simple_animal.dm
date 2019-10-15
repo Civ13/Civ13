@@ -61,7 +61,7 @@
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
-	var/simplehunger = 2000
+	var/simplehunger = 1000
 
 /mob/living/simple_animal/New()
 	..()
@@ -103,8 +103,8 @@
 
 	if (herbivore || carnivore || predatory_carnivore || granivore)
 		simplehunger-=1
-		if (simplehunger > 2000)
-			simplehunger = 2000
+		if (simplehunger > 1000)
+			simplehunger = 1000
 
 		if (simplehunger <= 0)
 			visible_message("\The [src] is starving!")
@@ -348,14 +348,26 @@
 					if (namt <= 0)
 						namt = 1
 					if (!istype(src, /mob/living/simple_animal/crab))
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-						meat.name = "[name] meatsteak"
-						meat.amount = namt
-						meat.radiation = radiation/2
+						if (istype(src, /mob/living/simple_animal/hostile/zombie))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "rotten zombie meat"
+								meat.radiation = radiation/2
+								meat.icon_state = "rottenmeat"
+								if (meat.reagents)
+									meat.reagents.remove_reagent("protein", 2)
+									meat.reagents.add_reagent("food_poisoning", 1)
+								meat.rotten = TRUE
+								meat.satisfaction = -30
+						else
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meat"
+								meat.radiation = radiation/2
 					else
-						var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
-						meat.amount = namt
-						meat.radiation = radiation/2
+						for (var/i=0, i<=namt, i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
+							meat.radiation = radiation/2
 
 					if ((amt-2) >= 1)
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
@@ -640,22 +652,26 @@
 	if (predatory_carnivore)
 		if (prob(100/totalcount))
 			for(var/mob/living/ML in range(2,src))
-				walk_towards(src,0)
-				eat()
-				return
+				if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
+					walk_towards(src,0)
+					eat()
+					return
 			for(var/mob/living/ML in range(9,src))
-				walk_towards(src, ML, turns_per_move)
-				return
+				if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
+					walk_towards(src, ML, turns_per_move)
+					return
 
 	if (scavenger)
 		if (prob(100/totalcount))
 			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
-				walk_towards(src,0)
-				eat()
-				return
+				if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
+					walk_towards(src,0)
+					eat()
+					return
 			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
-				walk_towards(src, FD, turns_per_move)
-				return
+				if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
+					walk_towards(src, FD, turns_per_move)
+					return
 
 /mob/living/simple_animal/proc/eat()
 	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore+scavenger
@@ -663,23 +679,24 @@
 		return
 
 	if (herbivore)
-		for(var/turf/floor/grass/GT in range(2,src))
-			if (prob(33))
+		if (prob(33))
+			var/fed = FALSE
+			for(var/turf/floor/grass/GT in range(1,src))
+				GT.grassamt -= 1
+				if (GT.grassamt <= 0)
+					if (istype(GT, (/turf/floor/grass/jungle)))
+						GT.ChangeTurf(/turf/floor/dirt/jungledirt)
+					else
+						GT.ChangeTurf(/turf/floor/dirt)
+				fed = TRUE
+			if (fed == TRUE)
 				visible_message("\The [src] eats some grass.")
 				if (mob_size >= MOB_MEDIUM)
 					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 550
 				adjustBruteLoss(-4)
-				GT.grassamt -= 1
-				if (GT.grassamt <= 0)
-					if (istype(GT, (/turf/floor/grass/jungle)))
-						GT.ChangeTurf(/turf/floor/dirt/jungledirt)
-						return
-					else
-						GT.ChangeTurf(/turf/floor/dirt)
-						return
-				else
-					return
+				return
+
 		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
 			if (prob(30))
 				visible_message("\The [src] eats some of the wheat.")
@@ -718,9 +735,9 @@
 		for(var/mob/living/ML in range(2,src))
 			if (ML.stat == DEAD)
 				if (prob(33))
+					if (mob_size >= MOB_MEDIUM)
+						new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 					visible_message("\The [src] bites some meat of \the [ML].")
-				if (mob_size >= MOB_MEDIUM)
-					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 					simplehunger += 400
 					adjustBruteLoss(-4)
 					if (istype(ML, /mob/living/simple_animal))
@@ -731,32 +748,96 @@
 							if (prob(30))
 								qdel(ML)
 						return
-
+		for(var/obj/item/weapon/reagent_containers/food/snacks/meat/M in range(2,src))
+			if (prob(33))
+				visible_message("\The [src] bites some of \the [M].")
+				if (mob_size >= MOB_MEDIUM)
+					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
+				simplehunger += 400
+				adjustBruteLoss(-4)
+				qdel(M)
+				return
 
 	if (scavenger)
 		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
-			if (prob(33))
+			if (prob(33) && !istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
 				visible_message("\The [src] bites some of \the [FD].")
 				if (mob_size >= MOB_MEDIUM)
 					new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 				simplehunger += 400
 				adjustBruteLoss(-4)
-				if (prob(30))
+				if (prob(60))
 					qdel(FD)
 					return
 
 
 	if (predatory_carnivore)
 		for(var/mob/living/ML in range(2,src))
-			return
+			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type) && istype(src, /mob/living/simple_animal/hostile))
+				var/mob/living/simple_animal/hostile/HS = src
+				HS.target_mob = ML
+				HS.stance = HOSTILE_STANCE_ATTACK
+				if (ML.stat == DEAD)
+					var/amt = 0
+					if (ML.mob_size == MOB_MINISCULE)
+						amt = 1
+					if (ML.mob_size == MOB_TINY)
+						amt = 2
+					if (ML.mob_size == MOB_SMALL)
+						amt = 3
+					if (ML.mob_size == MOB_MEDIUM)
+						amt = 4
+					if (ML.mob_size == MOB_LARGE)
+						amt = 5
+					if (ML.mob_size == MOB_HUGE)
+						amt = 8
+					var/namt = amt-2
+					if (namt <= 0)
+						namt = 1
+					visible_message("<span class='notice'>\The [src] rips \the [ML] apart!</span>")
+					simplehunger += 400
+					if (!istype(ML, /mob/living/simple_animal/crab))
+						if (istype(ML, /mob/living/simple_animal/hostile/zombie))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "rotten zombie meat"
+								meat.radiation = radiation/2
+								meat.icon_state = "rottenmeat"
+								if (meat.reagents)
+									meat.reagents.remove_reagent("protein", 2)
+									meat.reagents.add_reagent("food_poisoning", 1)
+								meat.rotten = TRUE
+								meat.satisfaction = -30
+						else
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meat"
+								meat.radiation = radiation/2
+					else
+						for (var/i=0, i<=namt, i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
+							meat.radiation = radiation/2
+
+					if ((amt-2) >= 1)
+						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+						bone.name = "[name] bone"
+						bone.amount = (amt-2)
+					ML.crush()
+					qdel(ML)
+		return
 
 /mob/living/simple_animal/handle_mutations_and_radiation()
-	if(radiation)
+	if (z == world.maxz)
+		rad_act((world_radiation/1000))
+	if (radiation < 0)
+		radiation = 0
+	if(radiation > 0)
 		radiation -= 0.05
 		switch(radiation)
 			if(100 to INFINITY)
 				adjustFireLoss(radiation*0.002)
 				updatehealth()
 
-		radiation = Clamp(radiation, 0, 750)
+		if (radiation > 80)
+			death()
 		return

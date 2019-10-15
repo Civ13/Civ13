@@ -73,7 +73,13 @@
 			if (ismob(A) || (A.loc && istype(A.loc, /turf)))
 				if (!istype(A, /obj/structure/bed))
 					return
-
+		if (istype(H.buckled, /obj/structure/bed/chair/commander))
+			if (istype(H.r_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
+				var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P = H.r_hand
+				P.rangecheck(H,A)
+			else if (istype(H.l_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
+				var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P = H.l_hand
+				P.rangecheck(H,A)
 	// can't click on anything when we're hanged
 	for (var/obj/structure/noose/N in get_turf(src))
 		if (N.hanging == src)
@@ -177,6 +183,17 @@
 			update_inv_r_hand(0)
 		return TRUE
 
+	for(var/obj/structure/vehicleparts/frame/F in src.loc)
+		var/found = FALSE
+		for(var/obj/structure/vehicleparts/frame/FR in get_turf(A))
+			if (FR.axis != F.axis && FR != F)
+				if (!F.CanPass(src, get_turf(A)) || !F.CheckExit(src, get_turf(A)))
+					return
+			if (FR.axis == F.axis)
+				found = TRUE
+		if (!found)
+			return
+
 	//Atoms on your person
 	// A is your location but is not a turf; or is on you (backpack); or is on something on you (box in backpack); sdepth is needed here because contents depth does not equate inventory storage depth.
 	var/sdepth = A.storage_depth(src)
@@ -224,7 +241,6 @@
 
 
 		//	setMoveCooldown(5)
-
 			if (W)
 				// Return TRUE in attackby() to prevent afterattack() effects (when safely moving items for example)
 				var/resolved = W.resolve_attackby(A,src)
@@ -311,8 +327,9 @@
 	A.ShiftMiddleClick(src)
 	return
 
-/atom/proc/ShiftMiddleClick(var/mob/user)
-	user.pointed(src)
+/atom/proc/ShiftMiddleClick(var/mob/living/user)
+	if (istype(user, /mob/living))
+		user.pointed(src)
 
 
 // In case of use break glass

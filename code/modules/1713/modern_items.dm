@@ -63,6 +63,8 @@
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		if (!powersource)
+			return
 		powersource.connections += src
 		var/opdir1 = 0
 		var/opdir2 = 0
@@ -241,6 +243,28 @@
 	on = TRUE
 /obj/structure/lamp/lamp_small/alwayson/red
 	brightness_color = "#da0205"
+
+/obj/structure/lamp/lamp_small/tank
+	powerneeded = 1
+	var/obj/structure/engine/connection = null
+	on = FALSE
+
+/obj/structure/lamp/lamp_small/tank/check_power()
+	if (!connection || powerneeded == 0)
+		return FALSE
+	else
+		if (connection.on)
+			if (!on)
+				on = TRUE
+			return TRUE
+		else
+			if (on)
+				on = FALSE
+			return FALSE
+
+/obj/structure/lamp/lamp_small/tank/red
+	brightness_color = "#da0205"
+
 
 /obj/structure/lamp/lamp_big
 	name = "light tube"
@@ -666,6 +690,22 @@
 	var/keycode = "0000"
 	var/customcolor = 0
 
+/obj/structure/fuelpump/premade
+	name = "UngOil fuel pump"
+	price = 0.3
+
+/obj/structure/fuelpump/premade/New()
+	..()
+	icon_state = "oilpump3"
+	customcolor = "#3cb44b"
+	keycode = "1000"
+	fueltype = pick("gasoline","diesel","biodiesel","ethanol","petroleum")
+	vol = rand(140,290)
+	do_color()
+	name = "UngOil [fueltype] pump"
+	price = rand(0.25,0.45)
+	updatedesc()
+
 /obj/structure/fuelpump/n
 	icon_state = "oilpump3"
 
@@ -702,6 +742,9 @@
 			unlocked = 0
 			unlockedvol = 0
 			return
+	else
+		user << "Put money on the pump to use it."
+		return
 
 /obj/structure/fuelpump/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
@@ -997,7 +1040,7 @@
 	density = TRUE
 	opacity = FALSE
 	var/obj/item/weapon/storage/internal/storage
-
+	var/max_storage = 6
 /obj/structure/shopping_cart/update_icon()
 	overlays.Cut()
 	for (var/obj/item/I in storage)
@@ -1011,9 +1054,9 @@
 /obj/structure/shopping_cart/New()
 	..()
 	storage = new/obj/item/weapon/storage/internal(src)
-	storage.storage_slots = 5	//two slots
-	storage.max_w_class = 5		//fit only pocket sized items
-	storage.max_storage_space = 25
+	storage.storage_slots = max_storage
+	storage.max_w_class = 5
+	storage.max_storage_space = max_storage*5
 	update_icon()
 /obj/structure/shopping_cart/Destroy()
 	qdel(storage)
