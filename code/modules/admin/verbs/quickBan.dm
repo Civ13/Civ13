@@ -421,10 +421,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (isemptylist(fields))
 		return
 
-	if (fields[2] && fields[2] != "nil")
-		return FALSE
-
-	var/reason = fields[2]
+	var/reason = fields[4]
 	var/date = fields[6]
 	var/expire_info = fields[8]
 
