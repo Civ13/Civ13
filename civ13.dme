@@ -485,6 +485,7 @@
 #include "code\modules\1713\siege\shell.dm"
 #include "code\modules\1713\transporter\lever.dm"
 #include "code\modules\1713\weapons\attachment.dm"
+#include "code\modules\1713\weapons\flamethrower.dm"
 #include "code\modules\1713\weapons\zoom.dm"
 #include "code\modules\1713\weapons\guns\__readme.dm"
 #include "code\modules\1713\weapons\guns\_gun.dm"

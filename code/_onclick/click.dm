@@ -73,6 +73,12 @@
 			if (ismob(A) || (A.loc && istype(A.loc, /turf)))
 				if (!istype(A, /obj/structure/bed))
 					return
+
+		if (istype(H.get_active_hand(),/obj/item/weapon/flamethrower))
+			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
+			var/cdir = get_dir(H,A)
+			FL.fire(H,cdir)
+
 		if (istype(H.buckled, /obj/structure/bed/chair/commander))
 			if (istype(H.r_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
 				var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P = H.r_hand
@@ -80,6 +86,7 @@
 			else if (istype(H.l_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
 				var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P = H.l_hand
 				P.rangecheck(H,A)
+
 	// can't click on anything when we're hanged
 	for (var/obj/structure/noose/N in get_turf(src))
 		if (N.hanging == src)
