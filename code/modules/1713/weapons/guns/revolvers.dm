@@ -227,7 +227,6 @@
 	name = "Colt new police 32"
 	desc = "Officialy the M1873 Colt Single Action Army Revolver."
 	icon_state = "coltnewpolice"
-	base_icon = "coltnewpolice"
 	w_class = 2
 	caliber = "a32"
 	load_method = SINGLE_CASING
