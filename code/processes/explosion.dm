@@ -178,7 +178,7 @@
 									if (prob(50))
 										H.adjustFireLoss(rand(15,20))
 	if (prob(25))
-		new/obj/effect/burning_oil(epicenter)
+		new/obj/effect/fire(epicenter)
 	var/took = (world.timeofday-start)/10
 	//You need to press the DebugGame verb to see these now....they were getting annoying and we've collected a fair bit of data. Just -test- changes  to explosion code using this please so we can compare
 	if (Debug2)	world.log << "## DEBUG: Explosion([x0],[y0],[z0])(d[devastation_range],h[heavy_impact_range],l[light_impact_range]): Took [took] seconds."

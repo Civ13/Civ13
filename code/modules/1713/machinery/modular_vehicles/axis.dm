@@ -189,7 +189,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 					CV.Destroy()
 			for(var/obj/item/I in TT && !(I in transporting))
 				qdel(I)
-			for(var/obj/effect/burning_oil/BO in T && !(BO in transporting))
+			for(var/obj/effect/fire/BO in T && !(BO in transporting))
 				qdel(BO)
 			var/canpass = FALSE
 			for(var/obj/covers/CVV in T)

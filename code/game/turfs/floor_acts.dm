@@ -10,11 +10,11 @@
 				make_grass()
 			else
 				break_tile()
-				hotspot_expose(1000,CELL_VOLUME)
+				new/obj/effect/fire(src)
 		if (3.0)
 			if (prob(50))
 				break_tile()
-				hotspot_expose(1000,CELL_VOLUME)
+				new/obj/effect/fire(src)
 	return
 
 /turf/floor/fire_act(temperature)

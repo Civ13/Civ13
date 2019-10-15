@@ -124,8 +124,7 @@
 					for (var/obj/structure/S in T)
 						if (S.density && !S.low)
 							continue mainloop
-					var/obj/fire/F = T.create_fire(temp = max(375, ceil(alcohol_power/5)))
-					F.time_limit = pick(50, 60, 70)
+					new/obj/effect/fire(T)
 					for (var/mob/living/L in T)
 						if (L.on_fire)
 							continue

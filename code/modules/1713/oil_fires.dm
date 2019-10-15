@@ -63,59 +63,59 @@
 		LS1.adjustFireLoss(35)
 		LS1.fire_stacks += rand(8,10)
 		LS1.IgniteMob()
-	new/obj/effect/burning_oil(locate(x,y,z))
+	new/obj/effect/fire(locate(x,y,z))
 
 	for (var/mob/living/LS2 in locate(x-1,y,z))
 		LS2.adjustFireLoss(35)
 		LS2.fire_stacks += rand(5,7)
 		LS2.IgniteMob()
-	new/obj/effect/burning_oil(locate(x-1,y,z))
+	new/obj/effect/fire(locate(x-1,y,z))
 
 	for (var/mob/living/LS3 in locate(x+1,y,z))
 		LS3.adjustFireLoss(35)
 		LS3.fire_stacks += rand(5,7)
 		LS3.IgniteMob()
-	new/obj/effect/burning_oil(locate(x+1,y,z))
+	new/obj/effect/fire(locate(x+1,y,z))
 
 	for (var/mob/living/LS21 in locate(x,y+1,z))
 		LS21.adjustFireLoss(35)
 		LS21.fire_stacks += rand(8,10)
 		LS21.IgniteMob()
-	new/obj/effect/burning_oil(locate(x,y+1,z))
+	new/obj/effect/fire(locate(x,y+1,z))
 
 	for (var/mob/living/LS22 in locate(x-1,y+1,z))
 		LS22.adjustFireLoss(35)
 		LS22.fire_stacks += rand(5,7)
 		LS22.IgniteMob()
-	new/obj/effect/burning_oil(locate(x-1,y+1,z))
+	new/obj/effect/fire(locate(x-1,y+1,z))
 
 	for (var/mob/living/LS23 in locate(x+1,y+1,z))
 		LS23.adjustFireLoss(35)
 		LS23.fire_stacks += rand(5,7)
 		LS23.IgniteMob()
-	new/obj/effect/burning_oil(locate(x+1,y+1,z))
+	new/obj/effect/fire(locate(x+1,y+1,z))
 
 	for (var/mob/living/LS31 in locate(x,y-1,z))
 		LS31.adjustFireLoss(35)
 		LS31.fire_stacks += rand(8,10)
 		LS31.IgniteMob()
-	new/obj/effect/burning_oil(locate(x,y-1,z))
+	new/obj/effect/fire(locate(x,y-1,z))
 
 	for (var/mob/living/LS32 in locate(x-1,y-1,z))
 		LS32.adjustFireLoss(35)
 		LS32.fire_stacks += rand(5,7)
 		LS32.IgniteMob()
-	new/obj/effect/burning_oil(locate(x-1,y-1,z))
+	new/obj/effect/fire(locate(x-1,y-1,z))
 
 	for (var/mob/living/LS33 in locate(x+1,y-1,z))
 		LS33.adjustFireLoss(35)
 		LS33.fire_stacks += rand(5,7)
 		LS33.IgniteMob()
-	new/obj/effect/burning_oil(locate(x+1,y-1,z))
+	new/obj/effect/fire(locate(x+1,y-1,z))
 	return
 
 
-/obj/effect/burning_oil
+/obj/effect/fire
 	name = "fire"
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "burning_fire2"
@@ -124,7 +124,7 @@
 	density = FALSE
 	var/timer = 180
 	var/runonce = FALSE
-/obj/effect/burning_oil/New()
+/obj/effect/fire/New()
 	..()
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "burning_fire2"
@@ -138,7 +138,7 @@
 		set_light(0)
 		qdel(src)
 
-/obj/effect/burning_oil/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/effect/fire/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/CT = W
 		for (var/datum/reagent/R in CT.reagents.reagent_list)
@@ -149,7 +149,7 @@
 					visible_message("The fire is put out!")
 				CT.reagents.clear_reagents()
 
-/obj/effect/burning_oil/proc/burningproc()
+/obj/effect/fire/proc/burningproc()
 //this tile
 	if (prob(3))
 		new/obj/effect/effect/smoke(loc)
@@ -176,7 +176,7 @@
 		if (prob(35) && !istype(OB, /obj/effect/decal/cleanable/blood) && OB.flammable)
 			OB.fire_act(1200)
 
-	for (var/obj/effect/burning_oil/OTH in src.loc)
+	for (var/obj/effect/fire/OTH in src.loc)
 		if (OTH != src)
 			qdel(OTH)
 
@@ -197,10 +197,10 @@
 	for (var/obj/effect/decal/cleanable/blood/OL in orange(1, src))
 		if (istype(OL, /obj/effect/decal/cleanable/blood/oil))
 			if (prob(35))
-				new/obj/effect/burning_oil(OL.loc)
+				new/obj/effect/fire(OL.loc)
 		if (istype(OL, /obj/effect/decal/cleanable/blood/tracks) && OL.color == "#030303")
 			if (prob(35))
-				new/obj/effect/burning_oil(OL.loc)
+				new/obj/effect/fire(OL.loc)
 
 	for (var/turf/floor/grass/GR in orange(1, src))
 		var/blocked = 0
@@ -214,14 +214,14 @@
 			if (!found)
 				blocked = 1
 		if (prob(10) && !blocked)
-			new/obj/effect/burning_oil(GR)
+			new/obj/effect/fire(GR)
 
 	for (var/turf/floor/wood/WF in orange(1, src))
 		if (prob(21))
-			new/obj/effect/burning_oil(WF)
+			new/obj/effect/fire(WF)
 
 //remove duplicates
-	for (var/obj/effect/burning_oil/OTH in src.loc)
+	for (var/obj/effect/fire/OTH in src.loc)
 		if (OTH != src)
 			qdel(OTH)
 	spawn(50)
@@ -238,7 +238,7 @@
 		var/obj/item/flashlight/OO = W
 		if (OO.on)
 			visible_message("[user] sets the [src] on fire!","You set the [src] on fire!")
-			new/obj/effect/burning_oil(src.loc)
+			new/obj/effect/fire(src.loc)
 			return
 /obj/effect/decal/cleanable/blood/oil/dry()
 	return

@@ -845,9 +845,6 @@
 	for (var/obj/S in mob.loc)
 		if (istype(S,/obj/effect/step_trigger))
 			S.Crossed(mob)
-		if (istype(S,/obj/fire))
-			var/obj/fire/fire = S
-			fire.Burn(mob)
 
 	var/area/A = get_area_master(mob)
 	if (A)

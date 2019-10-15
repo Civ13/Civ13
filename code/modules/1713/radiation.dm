@@ -251,7 +251,7 @@
 					TF.ChangeTurf(/turf/floor/dirt/burned)
 				else
 					if (prob(50))
-						new/obj/effect/burning_oil(TF)
+						new/obj/effect/fire(TF)
 			TF.radiation = 20
 	spawn(14)
 		for (var/mob/m in player_list)

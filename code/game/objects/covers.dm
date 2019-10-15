@@ -1256,15 +1256,10 @@
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)
-		var/obj/small_fire/NF = new/obj/small_fire(src.loc)
-		NF.set_light(3)
-		NF.origin = src
+		var/obj/effect/fire/NF = new/obj/effect/fire(src.loc)
 		start_fire_dmg(NF)
-		spawn(400)
-			NF.icon_state = "fire_big"
-			NF.set_light(4)
 
-/obj/covers/proc/start_fire_dmg(var/obj/small_fire/SF)
+/obj/covers/proc/start_fire_dmg(var/obj/effect/fire/SF)
 	spawn(80)
 		if (health > 0)
 			health -= 10

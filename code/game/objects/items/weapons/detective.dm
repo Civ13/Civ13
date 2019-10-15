@@ -216,8 +216,6 @@
 		M.IgniteMob()
 
 	var/turf/location = get_turf(src)
-	if (location)
-		location.hotspot_expose(700, 5)
 
 	if (burn_time <= 0)
 		processing_objects -= src
