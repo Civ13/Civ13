@@ -15,7 +15,7 @@
 	w_class = 3
 	slot_flags = SLOT_BELT
 	var/active = FALSE
-
+	var/lastfire = 0
 /obj/item/weapon/flamethrower/update_icon()
 	if (active)
 		icon_state = "[base_icon]_on"
@@ -30,11 +30,15 @@
 	else
 		active=TRUE
 		update_icon()
-		L << "<span class='danger'>You light \the [src].</span>)"
+		L << "<span class='danger'>You light \the [src].</span>"
 
-/obj/item/weapon/flamethrower/proc/fire(var/mob/living/carbon/human/L,var/cdir)
-	if (!active)
+/obj/item/weapon/flamethrower/proc/fire(var/mob/living/carbon/human/L,var/cdir=null)
+	if (!active || !L)
 		return
+	if (world.time<=lastfire)
+		return
+	if (!cdir)
+		cdir = L.dir
 	var/obj/item/weapon/reagent_containers/glass/flamethrower/FM = null
 	if (!L.back || !istype(L.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
 		L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
@@ -51,47 +55,59 @@
 		L << "<span class='warning'>The fuel tank doesn't have enough fuel to operate the flamethrower!</span>"
 		return
 
-/obj/item/weapon/flamethrower/proc/process_fire(var/mob/living/carbon/human/L,var/obj/item/weapon/reagent_containers/glass/flamethrower/FM,var/cdir)
+/obj/item/weapon/flamethrower/proc/process_fire(var/mob/living/carbon/human/L,var/obj/item/weapon/reagent_containers/glass/flamethrower/FM,var/cdir = null)
+	if (!cdir || !(cdir in list(NORTH,SOUTH,EAST,WEST)))
+		cdir = L.dir
 	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 2)
 		FM.reagents.remove_reagent("gasoline",2)
+		lastfire = world.time+30
 		playsound(get_turf(loc), 'sound/weapons/flamethrower.ogg', 100, TRUE)
-		var/list/targetturfs = list(null, null, null, null, null, null, null)
+		var/turf/t1 = null
+		var/turf/t2 = null
+		var/turf/t3 = null
+		var/turf/t4 = null
+		var/turf/t5 = null
+		var/turf/t6 = null
+		var/turf/t7 = null
+		var/list/targetturfs = list(t1,t2,t3,t4,t5,t6,t7)
 		switch(cdir)
 			if(NORTH)
-				targetturfs[1] = locate(x,y+1,z)
-				targetturfs[2] = locate(x-1,y+2,z)
-				targetturfs[3] = locate(x,y+2,z)
-				targetturfs[4] = locate(x+1,y+2,z)
-				targetturfs[5] = locate(x-1,y+3,z)
-				targetturfs[6] = locate(x,y+3,z)
-				targetturfs[7] = locate(x+1,y+3,z)
+				targetturfs[1] = get_turf(locate(x,y+1,z))
+				world<< "[targetturfs[1]]"
+				targetturfs[2] = get_turf(locate(x-1,y+2,z))
+				targetturfs[3] = get_turf(locate(x,y+2,z))
+				targetturfs[4] = get_turf(locate(x+1,y+2,z))
+				targetturfs[5] = get_turf(locate(x-1,y+3,z))
+				targetturfs[6] = get_turf(locate(x,y+3,z))
+				targetturfs[7] = get_turf(locate(x+1,y+3,z))
 			if(SOUTH)
-				targetturfs[1] = locate(x,y-1,z)
-				targetturfs[2] = locate(x+1,y-2,z)
-				targetturfs[3] = locate(x,y-2,z)
-				targetturfs[4] = locate(x-1,y-2,z)
-				targetturfs[5] = locate(x+1,y-3,z)
-				targetturfs[6] = locate(x,y-3,z)
-				targetturfs[7] = locate(x-1,y-3,z)
+				targetturfs[1] = get_turf(locate(x,y-1,z))
+				targetturfs[2] = get_turf(locate(x+1,y-2,z))
+				targetturfs[3] = get_turf(locate(x,y-2,z))
+				targetturfs[4] = get_turf(locate(x-1,y-2,z))
+				targetturfs[5] = get_turf(locate(x+1,y-3,z))
+				targetturfs[6] = get_turf(locate(x,y-3,z))
+				targetturfs[7] = get_turf(locate(x-1,y-3,z))
 			if(EAST)
-				targetturfs[1] = locate(x+1,y,z)
-				targetturfs[2] = locate(x+2,y-1,z)
-				targetturfs[3] = locate(x+2,y,z)
-				targetturfs[4] = locate(x+2,y+1,z)
-				targetturfs[5] = locate(x+3,y-1,z)
-				targetturfs[6] = locate(x+3,y,z)
-				targetturfs[7] = locate(x+3,y+1,z)
+				targetturfs[1] = get_turf(locate(x+1,y,z))
+				targetturfs[2] = get_turf(locate(x+2,y-1,z))
+				targetturfs[3] = get_turf(locate(x+2,y,z))
+				targetturfs[4] = get_turf(locate(x+2,y+1,z))
+				targetturfs[5] = get_turf(locate(x+3,y-1,z))
+				targetturfs[6] = get_turf(locate(x+3,y,z))
+				targetturfs[7] = get_turf(locate(x+3,y+1,z))
 			if(WEST)
-				targetturfs[1] = locate(x-1,y,z)
-				targetturfs[2] = locate(x-2,y-1,z)
-				targetturfs[3] = locate(x-2,y,z)
-				targetturfs[4] = locate(x-2,y+1,z)
-				targetturfs[5] = locate(x-3,y-1,z)
-				targetturfs[6] = locate(x-3,y,z)
-				targetturfs[7] = locate(x-3,y+1,z)
+				targetturfs[1] = get_turf(locate(x-1,y,z))
+				targetturfs[2] = get_turf(locate(x-2,y-1,z))
+				targetturfs[3] = get_turf(locate(x-2,y,z))
+				targetturfs[4] = get_turf(locate(x-2,y+1,z))
+				targetturfs[5] = get_turf(locate(x-3,y-1,z))
+				targetturfs[6] = get_turf(locate(x-3,y,z))
+				targetturfs[7] = get_turf(locate(x-3,y+1,z))
 		for (var/i=1, i<=7, i++)
 			if (targetturfs[i])
 				new/obj/effect/fire(targetturfs[i])
+				world<< "[targetturfs[i]]"
 				for (var/mob/living/HM in targetturfs[i])
 					HM.adjustFireLoss(35)
 					HM.fire_stacks += rand(4,5)

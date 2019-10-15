@@ -133,7 +133,7 @@
 		if (runonce == 0)
 			burningproc()
 			runonce = 1
-	set_light(2)
+	set_light(3)
 	spawn(timer)
 		set_light(0)
 		qdel(src)
