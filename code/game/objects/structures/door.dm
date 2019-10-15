@@ -23,6 +23,14 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
+	//KEYPAD AND LOCKS
+	var/locktype = "NONE" //NONE, KEYPAD, DNA, and LOCK.
+	var/haslock = FALSE
+	var/lockicon = "" //File
+	var/lockstate = "" //Icon_state
+	var/lock
+	var/keycode
+
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)
 	if (temperature >= 380)
@@ -131,7 +139,9 @@
 
 /obj/structure/simple_door/proc/Open()
 	isSwitchingStates = TRUE
-	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+	if(haslock)
+		//NO AUDIO, HANDLED IN ATTACKBY
+	else if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 		playsound(loc, 'sound/machines/shoji_door_open.ogg', 100, TRUE)
 	else
 		playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
@@ -148,7 +158,9 @@
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
-	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+	if(haslock)
+		//NO AUDIO, HANDLED IN ATTACKBY
+	else if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 		playsound(loc, 'sound/machines/shoji_door_close.ogg', 100, TRUE)
 	else
 		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
@@ -175,13 +187,58 @@
 		icon_state = basic_icon
 
 /obj/structure/simple_door/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon)) //not sure, can't not just weapons get passed to this proc?
+	//KEYPAD AND LOCKSAASDASD
+	if (istype(W,/obj/item/weapon/keypad))
+		if(haslock)
+			user << "This door already has a lock!"
+		else
+			user << "You attach the " + W.name + " to the door!"
+			src.name = name + "("+W.name+")"
+			//LATER WE WILL ADD A SWITCH TO CHECK FOR EACH LOCKTYPE APPROPRIATELY
+			src.locktype = "KEYPAD"
+			src.lockicon = "icons/obj/doors/locks.dmi"
+			src.lockstate = "keypad_door_overlay"
+			lock = icon(src.lockicon,src.lockstate)
+			var/input_code = input(src, "Input a code, only the first four characters will be used.","Keypad Code", keycode) as text
+			keycode = sanitizeName(input_code, 4, FALSE)
+			user << "<span class='notice'> Code set to: " + keycode + "!</span>"
+			update_lock_overlay()
+			playsound(src, 'sound/machines/click.ogg', 60)
+	//If the door has a lock.
+	else if (haslock)
+		if(locktype == "KEYPAD")
+			if(state) //If it is open, close it, lock it, and overlay
+				Close()
+				locked = 1
+				update_lock_overlay()
+				playsound(src, 'sound/effects/insert.ogg', 30)
+			else //It is closed
+				var/input_query = input(src, "Input the Passcode.","Keypad Code", keycode) as text//Get input
+				var/answer = sanitizeName(input_query, 4, FALSE)
+				if(answer == keycode)//if it matches, unlock, open, and overlay
+					locked = 0
+					Open()
+					update_lock_overlay()
+					playsound(src, 'sound/machines/ping.ogg', 60)
+				else
+					playsound(src, 'sound/machines/geiger/ext1.ogg', 60)//temp error noise
+
+
+	else if (istype(W,/obj/item/weapon)) //not sure, can't not just weapons get passed to this proc?
 		hardness -= W.force/100
 		user << "You hit the [name] with your [W.name]!"
 		CheckHardness()
 	else
 		attack_hand(user)
 	return TRUE // for key_doors
+
+//MOAR KEYPAD
+/obj/structure/simple_door/proc/update_lock_overlay()
+	if(haslock)
+		if (state) //if open
+			src.overlays -= lock
+		else //if closed
+			src.overlays += lock
 
 /obj/structure/simple_door/proc/CheckHardness()
 	if (hardness <= 0)
