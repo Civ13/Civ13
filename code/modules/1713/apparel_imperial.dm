@@ -692,6 +692,12 @@
 	icon_state = "redberet"
 	item_state = "redberet"
 
+/obj/item/clothing/head/blackberet
+	name = "black beret"
+	desc = "A black military beret."
+	icon_state = "blackberret"
+	item_state = "blackberret"
+
 /obj/item/clothing/head/blue_beret
 	name = "blue sailor beret"
 	desc = "A blue beret."
