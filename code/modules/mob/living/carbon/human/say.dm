@@ -20,6 +20,10 @@
 				message = pick("uh uh uh!","UH UH", "OOGA", "BOOGA")
 				animalistic = TRUE
 	message = capitalize_cp1251(sanitize(message))
+
+	for (var/i in dictionary_list)
+		message = replacetext(message,i[1],i[2])
+
 	var/message_without_html = message
 
 	if (dd_hassuffix(message, "!") && !dd_hassuffix(message, "!!"))
