@@ -52,8 +52,8 @@
 
 	if (istype(head, /obj/item/clothing/head))
 		add_clothing_protection(head)
-	if (istype(wear_mask, /obj/item/clothing/glasses))
-		var/obj/item/clothing/glasses/GL = wear_mask
+	if (istype(eyes, /obj/item/clothing/glasses))
+		var/obj/item/clothing/glasses/GL = eyes
 		process_glasses(GL)
 	if (istype(wear_mask, /obj/item/clothing/mask))
 		add_clothing_protection(wear_mask)
