@@ -33,6 +33,8 @@
 		L << "<span class='danger'>You light \the [src].</span>)"
 
 /obj/item/weapon/flamethrower/proc/fire(var/mob/living/carbon/human/L,var/cdir)
+	if (!active)
+		return
 	var/obj/item/weapon/reagent_containers/glass/flamethrower/FM = null
 	if (!L.back || !istype(L.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
 		L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
