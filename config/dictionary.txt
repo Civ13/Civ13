@@ -28,7 +28,6 @@ oof,ouch
 roblox,game
 Minecraft,game
 Fortnite,game
-yo,hey
 admin pm,pray to the gods
 soyboy,weakling
 boi,boy
