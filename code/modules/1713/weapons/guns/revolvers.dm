@@ -223,7 +223,7 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
-/obj/item/weapon/gun/projectile/revolver/peacemaker
+/obj/item/weapon/gun/projectile/revolver/coltnewpolice
 	name = "Colt new police 32"
 	desc = "Officialy the M1873 Colt Single Action Army Revolver."
 	icon_state = "coltnewpolice"

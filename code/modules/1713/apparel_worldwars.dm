@@ -1118,6 +1118,28 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
 
+/obj/item/clothing/suit/storage/coat/ww2/fancycoat
+	name = "black coat"
+	desc = "A fancy coat made from wool."
+	icon_state = "woolcoat"
+	item_state = "woolcoat"
+	worn_state = "woolcoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ww2/expensivecoat
+	name = "fancy  coat"
+	desc = "A expensive coat made from wool and leather."
+	icon_state = "expensivecoat"
+	item_state = "expensivecoat"
+	worn_state = "expensivecoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
 /obj/item/clothing/suit/storage/coat/ww2/servicejacket
 	name = "servace jacket"
 	desc = "A standard military jacket."

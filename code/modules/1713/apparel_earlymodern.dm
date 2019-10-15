@@ -452,6 +452,41 @@
 	item_state = "modern7"
 	worn_state = "modern7"
 
+/obj/item/clothing/under/modern8
+	name = "modern skirt"
+	desc = "An outfit composed of a black skirt and white shirt."
+	icon_state = "modern8"
+	item_state = "modern8"
+	worn_state = "modern8"
+
+/obj/item/clothing/under/oldmansuit
+	name = "modern skirt"
+	desc = "An outfit worn by fancy men in the 1800s."
+	icon_state = "oldmansuit"
+	item_state = "oldmansuit"
+	worn_state = "oldmansuit"
+
+/obj/item/clothing/under/peakyblinder
+	name = "modern skirt"
+	desc = "An outfit used by scum."
+	icon_state = "peakyblinder"
+	item_state = "peakyblinder"
+	worn_state = "peakyblinder"
+
+/obj/item/clothing/under/oldfirefighter
+	name = "fire fighter uniform"
+	desc = "An outfit used by fire fighters. Damn hot."
+	icon_state = "oldfirefighter"
+	item_state = "oldfirefighter"
+	worn_state = "oldfirefighter"
+
+/obj/item/clothing/under/blacktango
+	name = "black dress"
+	desc = "An dress used by fancy woman."
+	icon_state = "black_tango_alt_s"
+	item_state = "black_tango_alt_s"
+	worn_state = "black_tango_alt_s"
+
 /obj/item/clothing/under/clown
 	name = "clown outfit"
 	desc = "An outfit used by clowns."
