@@ -78,7 +78,7 @@
 	icon_state = "luxglove"
 	item_state = "luxglove"
 
-/obj/item/clothing/gloves/color/luxglove
+/obj/item/clothing/gloves/color/luxglovepurple
 	name = "pink colored gloves"
 	initial_name = "red leather gloves"
 	desc = "A pair of gloves, They look fancy."

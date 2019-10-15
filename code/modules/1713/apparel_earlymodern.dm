@@ -460,14 +460,14 @@
 	worn_state = "modern8"
 
 /obj/item/clothing/under/oldmansuit
-	name = "modern skirt"
+	name = "old man suit"
 	desc = "An outfit worn by fancy men in the 1800s."
 	icon_state = "oldmansuit"
 	item_state = "oldmansuit"
 	worn_state = "oldmansuit"
 
 /obj/item/clothing/under/peakyblinder
-	name = "modern skirt"
+	name = "fancy suit"
 	desc = "An outfit used by scum."
 	icon_state = "peakyblinder"
 	item_state = "peakyblinder"
