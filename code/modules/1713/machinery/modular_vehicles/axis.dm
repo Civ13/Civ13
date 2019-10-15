@@ -99,7 +99,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
 			var/area/A = get_area(T)
-			if (map && map.caribbean_blocking_area_types.Find(A.type))
+			if (map && A && map.caribbean_blocking_area_types.Find(A.type))
 				if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
 					visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
 					moving = FALSE
@@ -216,7 +216,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
 		return FALSE
 	else
-		if (engine && engine.fueltank && engine.fueltank.reagents.total_volume <= 0)
+		if (engine && engine.fueltank && engine.fueltank.reagents && engine.fueltank.reagents.total_volume <= 0)
 			engine.fueltank.reagents.total_volume = 0
 			engine.on = FALSE
 			return FALSE

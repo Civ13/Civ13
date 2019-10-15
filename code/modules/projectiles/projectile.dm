@@ -530,10 +530,11 @@
 				if (isliving(AM) && AM != firer)
 					var/mob/living/L = AM
 					var/skip = FALSE
-					for (var/obj/structure/vehicleparts/frame/VP1 in L.loc)
-						for (var/obj/structure/vehicleparts/frame/VP2 in firer.loc)
-							if (VP1.axis == VP2.axis && istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
-								skip = TRUE
+					if (firer)
+						for (var/obj/structure/vehicleparts/frame/VP1 in L.loc)
+							for (var/obj/structure/vehicleparts/frame/VP2 in firer.loc)
+								if (VP1.axis == VP2.axis && istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
+									skip = TRUE
 					if ((!skip) && (!L.lying || T == get_turf(original) || execution))
 						// if they have a neck grab on someone, that person gets hit instead
 						var/obj/item/weapon/grab/G = locate() in L

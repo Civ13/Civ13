@@ -204,7 +204,7 @@
 
 					var/highcheck = high
 					var/area/target_area = get_area(target)
-					if (target_area.location == AREA_INSIDE)
+					if (target && target_area.location == AREA_INSIDE)
 						highcheck = FALSE
 
 					if (v >= max_distance)
