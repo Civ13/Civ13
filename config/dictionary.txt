@@ -1,7 +1,6 @@
 gamer,brother
 lol,hahaha
 lmao,hahaha
-ik,I know
 idc,I don't care
 idgaf,I don't give a fuck
 idk,I don't know

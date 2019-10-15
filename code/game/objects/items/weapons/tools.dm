@@ -58,6 +58,9 @@
 		if (dest)
 			for (var/obj/effect/burning_oil/BO in dest)
 				qdel(BO)
+			for (var/mob/living/carbon/human/H in dest)
+				if (H.fire_stacks > 0)
+					H.fire_stacks = 0
 			new/obj/effect/decal/cleanable/foam(dest)
 			playsound(dest, 'sound/effects/extinguish.ogg', 100, FALSE)
 			return
