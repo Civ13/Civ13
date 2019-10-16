@@ -310,6 +310,25 @@
 			data = world.time
 			M << "<span class='notice'>Your mind feels focused and undivided.</span>"
 
+/datum/reagent/ketamine
+	name = "Ketamine"
+	id = "ketamine"
+	description = "Cures depressant vibes."
+	taste_description = "biterness"
+	reagent_state = LIQUID
+	color = "#BF80BF"
+	metabolism = 0.01
+	data = FALSE
+
+/datum/reagent/ketamine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	if (volume <= 0.1 && data != -1)
+		data = -1
+		M << "<span class='warning'>You lose focus...</span>"
+	else
+		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
+			data = world.time
+			M << "<span class='notice'>Your mind feels happy and free.</span>"
+
 /datum/reagent/citalopram
 	name = "Citalopram"
 	id = "citalopram"

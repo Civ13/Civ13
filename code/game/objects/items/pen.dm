@@ -37,6 +37,11 @@
 	desc = "a normal graphite pencil."
 	icon_state = "pencil"
 
+/obj/item/weapon/pen/fancy
+	name = "expensive pen"
+	desc = "a pen used by the boss."
+	icon_state = "fancypen"
+
 /obj/item/weapon/pen/blue
 	desc = "It's a normal blue ink pen."
 	icon_state = "pen"
