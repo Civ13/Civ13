@@ -7,5 +7,4 @@
 	flags = CONDUCT
 	throwforce = WEAPON_FORCE_HARMLESS
 	w_class = 3.0
-//	origin_tech = list(TECH_MATERIAL = TRUE)
 	var/breakouttime = 300	//Deciseconds = 30s = 0.5 minute

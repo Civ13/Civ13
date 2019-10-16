@@ -433,7 +433,6 @@
 	icon_state = "revolver"
 	item_state = "revolver"
 	caliber = "a45"
-//	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	slot_flags = SLOT_BELT|SLOT_POCKET
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -616,7 +615,6 @@
 	icon_state = "revolver"
 	item_state = "revolver"
 	caliber = "musketball_pistol"
-//	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	ammo_type = /obj/item/ammo_casing/musketball_pistol

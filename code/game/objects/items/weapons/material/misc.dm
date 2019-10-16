@@ -172,7 +172,6 @@
 	sharp = TRUE
 	edge = TRUE
 	material = "iron"
-//	origin_tech = "materials=2;combat=1"
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = FALSE
 	value = 15
@@ -203,7 +202,6 @@
 	w_class = 2
 	sharp = TRUE
 	edge = TRUE
-//	origin_tech = "materials=2;combat=1"
 	attack_verb = list("chopped", "torn", "cut")
 	slot_flags = SLOT_BELT
 	applies_material_colour = FALSE
@@ -235,7 +233,6 @@
 	throw_range = 3
 	w_class = 4
 	slot_flags = SLOT_SHOULDER
-//	origin_tech = "materials=2;combat=2"
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
 	cooldownw = 5
 
@@ -523,7 +520,6 @@
 	w_class = 3
 	sharp = TRUE
 	edge = TRUE
-//	origin_tech = "materials=2;combat=1"
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = TRUE
 	value = 20
@@ -543,7 +539,6 @@
 	w_class = 3
 	sharp = TRUE
 	edge = TRUE
-//	origin_tech = "materials=2;combat=1"
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = TRUE
 	value = 20
