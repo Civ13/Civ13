@@ -48,7 +48,7 @@
 	if (!FM)
 		L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
 		return
-	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 2)
+	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 5)
 		process_fire(L,FM,cdir)
 		return
 	else
@@ -58,8 +58,8 @@
 /obj/item/weapon/flamethrower/proc/process_fire(var/mob/living/carbon/human/L,var/obj/item/weapon/reagent_containers/glass/flamethrower/FM,var/cdir = null)
 	if (!cdir || !(cdir in list(NORTH,SOUTH,EAST,WEST)))
 		cdir = L.dir
-	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 2)
-		FM.reagents.remove_reagent("gasoline",2)
+	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 5)
+		FM.reagents.remove_reagent("gasoline",5)
 		lastfire = world.time+30
 		playsound(get_turf(loc), 'sound/weapons/flamethrower.ogg', 100, TRUE)
 		var/turf/t1 = null
@@ -209,7 +209,7 @@
 	item_state = "flammenwerfer"
 	base_icon = "flammenwerfer"
 
-/obj/item/weapon/flamethrower/flammenwerfer/filled/New()
+/obj/item/weapon/reagent_containers/glass/flamethrower/flammenwerfer/filled/New()
 	..()
 	reagents.add_reagent("gasoline",100)
 
