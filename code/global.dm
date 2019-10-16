@@ -33,6 +33,7 @@ var/join_motd = null
 var/datum/nanomanager/nanomanager		= new() // NanoManager, the manager for Nano UIs.
 
 var/season = "SPRING"
+var/game_hour = 0
 
 var/chicken_count = 0
 var/turkey_count = 0
