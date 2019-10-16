@@ -33,6 +33,21 @@
 	heat_protection = FEET
 	max_heat_protection_temperature = SHOE_MAX_HEAT_PROTECTION_TEMPERATURE
 
+/obj/item/clothing/shoes/iogboots
+	name = "IOG boots"
+	desc = "When you REALLY want to turn up the heat."
+	icon_state = "iogboot"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 80, arrow = 70, gun = 50, energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	body_parts_covered = FEET
+
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	heat_protection = FEET
+	max_heat_protection_temperature = SHOE_MAX_HEAT_PROTECTION_TEMPERATURE
+
 /obj/item/clothing/shoes/sandal
 	desc = "A pair of rather plain, wooden sandals."
 	name = "sandals"

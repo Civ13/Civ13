@@ -371,9 +371,22 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	armor = list(melee = 74, arrow = 95, gun = 80, energy = 30, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
-	slowdown = 0.3
+	slowdown = 0.4
 	w_class = 4
 	weight = 3.8
+
+/obj/item/clothing/accessory/armor/nomads/iogsuit
+	name = "IOG heavy vest B-7"
+	desc = "A heavy suit made of strong materials."
+	icon_state = "iogsuit"
+	item_state = "iogsuit"
+	worn_state = "iogsuit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	armor = list(melee = 110, arrow = 100, gun = 130, energy = 50, bomb = 90, bio = 100, rad = FALSE)
+	value = 160
+	slowdown = 0.2
+	w_class = 4
+	weight = 3.4
 
 /obj/item/clothing/head/helmet/kevlarhelmet
 	name = "black kevlar helmet"
@@ -381,11 +394,23 @@
 	icon_state = "kevlarhelmet"
 	item_state = "kevlarhelmet"
 	worn_state = "kevlarhelmet"
-	body_parts_covered = HEAD|FACE|EYES
+	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 90
+
+/obj/item/clothing/head/helmet/ioghelmet
+	name = "IOG helmet"
+	desc = "A strong helmet."
+	icon_state = "ioghelmet"
+	item_state = "ioghelmet"
+	worn_state = "ioghelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 95, arrow = 100, gun = 110, energy = 50, bomb = 90, bio = 45, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 1
+	health = 200
 
 /obj/item/clothing/suit/armor/scrap
 	name = "scrap plate armor"
@@ -405,7 +430,7 @@
 	icon_state = "scraphelmet"
 	item_state = "scraphelmet"
 	worn_state = "scraphelmet"
-	body_parts_covered = HEAD|FACE|EYES
+	body_parts_covered = HEAD|FACE
 	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
