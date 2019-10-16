@@ -172,6 +172,29 @@
 		icon_state = "glock170"
 	return
 
+/obj/item/weapon/gun/projectile/pistol/iogb7
+	name = "IOQ B-72"
+	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
+	icon_state = "iogb7"
+	fire_delay = 1.1
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/glock17
+	weight = 0.594
+	max_shells = 17 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.6
+/obj/item/weapon/gun/projectile/pistol/iogb7/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "iogb7"
+	else
+		icon_state = "iogb7-open"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/mauser
 	name = "Mauser c96"
 	desc = "A Mauser c96 chambered in 9x19mm parabellum, german design."
