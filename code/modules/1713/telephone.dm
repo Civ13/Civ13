@@ -143,7 +143,60 @@ var/list/global/phone_numbers = list()
 	throwforce = WEAPON_FORCE_WEAK
 	wireless = TRUE
 	maxrange = 20
+	var/list/contacts = list()
 
+/obj/item/weapon/telephone/mobile/attack_self(var/mob/user as mob)
+	if (!connected && !ringing)
+		var/choice1 = WWinput(user, "What do you want to do?", "Mobile Phone", "Cancel", list("Call Number", "Call Contact", "Add Contact"))
+		if (choice1 == "Cancel")
+			return
+		else if (choice1 == "Call Number")
+			..()
+		else if (choice1 == "Add Contact")
+			var/input1 = input(user, "Choose the number to add: (4 digits, no decimals)") as num
+			if (!input1)
+				return
+			if (input1 == phonenumber)
+				user << "<span class='notice'>You can't add your own number!</span>"
+				return
+			var/addnum = 0
+			addnum = sanitize_integer(input1, min=1000, max=9999, default=0) //0 as a first digit doesnt really work
+			if (addnum == 0)
+				return
+			var/input2 = input(user, "Choose the name to assign to this number: (up to 15 characters)") as text
+			if (!input2 || input2 == "")
+				return
+			input2 = sanitize(input2, 15)
+			contacts += list(list(input2,input1))
+		else if (choice1 == "Call Contact")
+			var/list/clist = list("Cancel")
+			for (var/list/i in contacts)
+				clist += list(i[1])
+			var/choice2 = WWinput(user, "Which contact do you want to call?", "Mobile Phone", "Cancel", clist)
+			if (choice2 == "Cancel")
+				return
+			else
+				var/callnum = 0
+				for(var/list/j in contacts)
+					if (j[1] == choice2)
+						callnum = j[2]
+				if (!callnum)
+					return
+				var/tgtnum = callnum
+				var/found_tower = FALSE
+				for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
+					found_tower = TRUE
+					CT.ring_phone(tgtnum,phonenumber, src)
+					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Ringing [tgtnum]..."
+					spawn(200)
+						if (!connected)
+							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Nobody picked up the phone at [tgtnum]."
+							return
+				if (!found_tower)
+					user << "<font size=2 color=#FFAE19>No signal.</font>"
+					return
+	else
+		..()
 /////////////////////////////CELLPHONE TOWER/////////////////////////////////////
 /obj/structure/cell_tower
 	name = "cell tower"
