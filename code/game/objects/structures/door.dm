@@ -198,8 +198,8 @@
 			src.locktype = "KEYPAD"
 			src.lockicon = "icons/obj/doors/locks.dmi"
 			src.lockstate = "keypad_door_overlay"
-			lock = icon(src.lockicon,src.lockstate)
-			var/input_code = input(src, "Input a code, only the first four characters will be used.","Keypad Code", keycode) as text
+			lock = icon(lockicon,lockstate)
+			var/input_code = input(user, "Input a code, only the first four characters will be used.","Keypad Code", keycode) as text
 			keycode = sanitizeName(input_code, 4, FALSE)
 			user << "<span class='notice'> Code set to: " + keycode + "!</span>"
 			update_lock_overlay()
@@ -213,7 +213,7 @@
 				update_lock_overlay()
 				playsound(src, 'sound/effects/insert.ogg', 30)
 			else //It is closed
-				var/input_query = input(src, "Input the Passcode.","Keypad Code", keycode) as text//Get input
+				var/input_query = input(user, "Input the Passcode.","Keypad Code", keycode) as text//Get input
 				var/answer = sanitizeName(input_query, 4, FALSE)
 				if(answer == keycode)//if it matches, unlock, open, and overlay
 					locked = 0
