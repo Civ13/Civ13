@@ -209,6 +209,11 @@
 	desc = "The white and blue flag of Israel, with the 6 pointed star in the middle."
 	icon_state = "flag_israel"
 
+/obj/structure/sign/flag/un
+	name = "UN flag"
+	desc = "The peace flag."
+	icon_state = "un_flag"
+
 /obj/structure/sign/flag/hezbollah
 	name = "Hezbollah flag"
 	desc = "The yellow and green flag of the Shia Hezbollah organization."
