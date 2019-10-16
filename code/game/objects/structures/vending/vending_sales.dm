@@ -19,7 +19,7 @@
 /obj/structure/vending/ex_act(severity)
 	return
 
-/obj/structure/vending/sales/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/vending/sales/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/money))
 		var/obj/item/stack/money/M = W
 		moneyin += M.amount*M.value
@@ -27,7 +27,7 @@
 		qdel(W)
 		return
 	if (istype(W, /obj/item/weapon/wrench))
-		if (owner && (locate(user) in map.custom_company[owner]))
+		if (owner != "Global" && find_company_member(user,owner))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			if (anchored)
 				user.visible_message("[user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
@@ -41,12 +41,11 @@
 			return
 
 	else
-		if (owner && (locate(user) in map.custom_company[owner]))
+		if (owner != "Global" && find_company_member(user,owner))
 			for (var/datum/data/vending_product/R in product_records)
 				if (istype(W, R.product_path))
 					stock(W, R, user)
 					return TRUE
-		..()
 
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user)
 	vend_ready = FALSE //One thing at a time!!
@@ -143,6 +142,8 @@
 					status_error = FALSE
 				else
 					moneyin -= R.price
+					if (owner != "Global")
+						map.custom_company_value[owner] += R.price
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 					GC.amount = moneyin/0.4
 					moneyin = 0
@@ -155,6 +156,7 @@
 		else if (href_list["remove_money"])
 			var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 			GC.amount = moneyin/0.4
+			moneyin = 0
 			nanomanager.update_uis(src)
 			return
 

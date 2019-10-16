@@ -131,3 +131,14 @@
 	else
 		usr << "<span class='danger'>You cannot transfer company ownership on this map.</span>"
 		return
+
+//searches company members for a player
+/proc/find_company_member(var/mob/living/carbon/human/H, var/company)
+	if (!map || !H || !company)
+		return FALSE
+
+	for(var/i=1,i<=map.custom_company[company].len,i++)
+		if (map.custom_company[company][i][1] == H)
+			return TRUE
+
+	return FALSE

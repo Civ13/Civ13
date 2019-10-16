@@ -374,7 +374,6 @@
 #include "code\js\byjax.dm"
 #include "code\js\menus.dm"
 #include "code\modules\1713\__rations.dm"
-#include "code\modules\1713\_mags.dm"
 #include "code\modules\1713\_mags1904.dm"
 #include "code\modules\1713\_mags1939.dm"
 #include "code\modules\1713\_magsmodern.dm"

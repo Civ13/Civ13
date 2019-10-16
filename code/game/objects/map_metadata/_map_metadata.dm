@@ -89,6 +89,7 @@ var/civmax_research = list(230,230,230)
 	var/list/custom_religion_nr = list()
 	var/list/custom_company = list()
 	var/list/custom_company_nr = list()
+	var/list/custom_company_value = list()
 	var/is_singlefaction = FALSE
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical), 4th value: leader. 5th value: victory points
 	var/civa_research = list(0,0,0,null,0)
