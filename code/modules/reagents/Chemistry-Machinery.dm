@@ -43,6 +43,13 @@
 				qdel(src)
 				return
 
+/obj/structure/chemical_dispenser/drugs
+	New()
+		..()
+		var/list/elements = list("thc", "ketamine", "pervitin", "cocaine", "oxygen")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,100))
+
 
  /**
   * The ui_interact proc is used to open and update Nano UIs
