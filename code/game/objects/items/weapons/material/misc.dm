@@ -73,69 +73,48 @@
 
 /obj/item/weapon/material/spear/attack(atom/A, mob/living/user, def_zone)
 	..()
-	if (ismob(A) && prob(33))
-		for (var/mob/living/TARGETMOB in get_step(loc, user.dir))
-			for (var/obj/structure/noose/N in get_turf(TARGETMOB))
-				if (N.hanging == TARGETMOB)
-					return
+	if (isliving(A) && prob(33))
+		var/mob/living/TARGETMOB = A
+		visible_message("<span class = 'danger'>[TARGETMOB] is pushed back!")
+		for (var/obj/structure/noose/N in get_turf(TARGETMOB))
+			if (N.hanging == TARGETMOB)
+				return
 
-			for (var/obj/structure/bed/B in get_turf(TARGETMOB))
-				if (B.buckled_mob == TARGETMOB)
-					return
-			if (prob(60))
-				var/turf/behind = get_turf(get_step(TARGETMOB, user.dir))
-				if (behind)
-					if (behind.density || locate(/obj/structure) in behind)
-						var/turf/slammed_into = behind
-						if (!slammed_into.density)
-							for (var/obj/structure/S in slammed_into.contents)
-								if (S.density)
-									slammed_into = S
-									break
-						if (slammed_into.density)
-							visible_message("<span class = 'danger'>[TARGETMOB] is pushed back into \the [slammed_into]!</span>")
-							TARGETMOB.adjustBruteLoss(rand(3,6))
-							for (var/obj/structure/window/W in get_turf(slammed_into))
-								W.shatter()
-					else
-						if (!map || !map.check_caribbean_block(TARGETMOB, behind))
-							TARGETMOB.forceMove(behind)
-
-		for (var/mob/living/TARGETMOB in get_step(get_step(loc, user.dir),user.dir))
-			for (var/obj/structure/ST in get_step(loc, user.dir))
-				if (ST.density == TRUE)
-					return
-			for (var/obj/covers/CV in get_step(loc, user.dir))
-				if (CV.density == TRUE)
-					return
-			for (var/turf/wall/TS in get_step(loc, user.dir))
-				if (TS.density == TRUE)
-					return
-			for (var/obj/structure/noose/N in get_turf(TARGETMOB))
-				if (N.hanging == TARGETMOB)
-					return
-			for (var/obj/structure/bed/B in get_turf(TARGETMOB))
-				if (B.buckled_mob == TARGETMOB)
-					return
-			if (prob(80))
-				var/turf/behind = get_turf(get_step(TARGETMOB, user.dir))
-				if (behind)
-					if (behind.density || locate(/obj/structure) in behind)
-						var/turf/slammed_into = behind
-						if (!slammed_into.density)
-							for (var/obj/structure/S in slammed_into.contents)
-								if (S.density)
-									slammed_into = S
-									break
-						if (slammed_into.density)
-							visible_message("<span class = 'danger'>[TARGETMOB] is pushed back into \the [slammed_into]!</span>")
-							TARGETMOB.adjustBruteLoss(rand(3,6))
-							for (var/obj/structure/window/W in get_turf(slammed_into))
-								W.shatter()
-					else
-						if (!map || !map.check_caribbean_block(TARGETMOB, behind))
-							TARGETMOB.forceMove(behind)
-							TARGETMOB.adjustBruteLoss(rand(2,4))
+		for (var/obj/structure/bed/B in get_turf(TARGETMOB))
+			if (B.buckled_mob == TARGETMOB)
+				return
+		var/turf/behind = get_turf(get_step(TARGETMOB, user.dir))
+		if (behind)
+			if (behind.density || locate(/obj/structure) in behind)
+				var/turf/slammed_into = behind
+				if (!slammed_into.density)
+					for (var/obj/structure/S in slammed_into.contents)
+						if (S.density)
+							slammed_into = S
+							break
+				if (slammed_into.density)
+					visible_message("<span class = 'danger'>[TARGETMOB] is pushed back into \the [slammed_into]!</span>")
+					TARGETMOB.adjustBruteLoss(rand(3,6))
+					for (var/obj/structure/window/W in get_turf(slammed_into))
+						W.shatter()
+			else
+				if (!map || !map.check_caribbean_block(TARGETMOB, behind))
+					TARGETMOB.forceMove(behind)
+		for (var/obj/structure/ST in get_step(loc, user.dir))
+			if (ST.density == TRUE)
+				return
+		for (var/obj/covers/CV in get_step(loc, user.dir))
+			if (CV.density == TRUE)
+				return
+		for (var/turf/wall/TS in get_step(loc, user.dir))
+			if (TS.density == TRUE)
+				return
+		for (var/obj/structure/noose/N in get_turf(TARGETMOB))
+			if (N.hanging == TARGETMOB)
+				return
+		for (var/obj/structure/bed/B in get_turf(TARGETMOB))
+			if (B.buckled_mob == TARGETMOB)
+				return
 
 /obj/item/weapon/material/quarterstaff
 	name = "quarterstaff"
