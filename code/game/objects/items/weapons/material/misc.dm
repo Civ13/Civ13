@@ -72,6 +72,7 @@
 	cooldownw = 9
 
 /obj/item/weapon/material/spear/attack(atom/A, mob/living/user, def_zone)
+	..()
 	if (ismob(A) && prob(33))
 		for (var/mob/living/TARGETMOB in get_step(loc, user.dir))
 			for (var/obj/structure/noose/N in get_turf(TARGETMOB))
