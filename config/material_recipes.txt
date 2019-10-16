@@ -81,7 +81,7 @@ RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,
 RECIPE: /material/leather/,leather curtain,/obj/structure/curtain/leather,1,80,1,1,none,0,0,0,8,null
 
 RECIPE: /material/electronics/,pill maker,/obj/structure/chem_master,20,120,1,1,none,80,0,0,8,null
-RECIPE: /material/electronics/,telephone,/obj/structure/telephone,2,120,1,1,none,80,0,0,8,null
+RECIPE: /material/electronics/,telephone,/obj/item/weapon/telephone,2,120,1,1,none,80,0,0,8,null
 RECIPE: /material/electronics/,radio transmitter,/obj/structure/radio/transmitter,6,150,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,radio receiver,/obj/structure/radio,3,80,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,television,/obj/structure/TV,3,80,1,1,none,160,0,0,8,null
@@ -89,6 +89,7 @@ RECIPE: /material/electronics/,geiger counter,/obj/item/weapon/geiger_counter,5,
 RECIPE: /material/electronics/,2-way radio,/obj/structure/radio/transmitter_receiver,10,150,1,1,none,137,0,0,8,null
 RECIPE: /material/electronics/,portable radio,/obj/item/weapon/radio,12,100,0,1,none,141,0,0,8,null
 RECIPE: /material/electronics/,walkie-talkie radio,/obj/item/weapon/radio/walkietalkie,16,100,0,1,none,178,0,0,8,null
+RECIPE: /material/electronics/,mobile phone,/obj/item/weapon/telephone/mobile,20,100,0,1,none,212,0,0,8,null
 RECIPE: /material/electronics/,component analyser,/obj/item/weapon/analyser,18,100,0,1,none,218,0,0,8,null
 
 RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,jackets & vests,0,0,0,8,null
@@ -622,8 +623,9 @@ RECIPE: /material/copper/,orange cable coil (10m),/obj/item/stack/cable_coil/ora
 RECIPE: /material/copper/,cyan cable coil (10m),/obj/item/stack/cable_coil/cyan,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,1,35,0,1,electrical,105,0,0,8,null
 
+RECIPE: /material/steel/,cell tower,/obj/structure/cell_tower,15,180,1,1,none,212,0,0,8,null
 RECIPE: /material/steel/,steel floor,/obj/covers/steelplating,1,15,1,1,walls & floors,96,0,0,8,null
-RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,none,96,0,0,8,null
+RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,walls & floors,96,0,0,8,null
 RECIPE: /material/steel/,steel hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,50,44,0,8,steel
 RECIPE: /material/steel/,steel-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,3,steel
 RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,8,null

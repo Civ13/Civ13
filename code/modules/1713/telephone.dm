@@ -142,7 +142,7 @@ var/list/global/phone_numbers = list()
 	force = WEAPON_FORCE_WEAK+3
 	throwforce = WEAPON_FORCE_WEAK
 	wireless = TRUE
-	maxrange = 30
+	maxrange = 20
 
 /////////////////////////////CELLPHONE TOWER/////////////////////////////////////
 /obj/structure/cell_tower
@@ -157,6 +157,7 @@ var/list/global/phone_numbers = list()
 	opacity = FALSE
 	var/maxrange = 30
 	var/lastproc = 0
+	anchored = TRUE
 
 /obj/structure/cell_tower/proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone)
 	if (!origin || !target)
