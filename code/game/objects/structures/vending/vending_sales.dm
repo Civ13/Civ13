@@ -5,7 +5,7 @@
 	name = "Vending Machine"
 	desc = "A generic vending machine."
 	icon = 'icons/obj/vending.dmi'
-	icon_state = "apparel_british"
+	icon_state = "snack"
 	layer = 2.9
 	anchored = TRUE
 	density = TRUE
@@ -14,7 +14,7 @@
 	not_disassemblable = TRUE
 
 	var/moneyin = 0
-	var/owner = null
+	var/owner = "Global"
 
 /obj/structure/vending/ex_act(severity)
 	return
@@ -77,3 +77,98 @@
 	R.add_product(W)
 
 	nanomanager.update_uis(src)
+
+
+/obj/structure/vending/sales/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	user.set_using_object(src)
+
+	var/list/data = list()
+	if (currently_vending)
+		data["mode"] = TRUE
+		data["company"] = owner
+		data["product"] = currently_vending.product_name
+		data["price"] = currently_vending.price
+		data["message_err"] = FALSE
+		data["message"] = status_message
+		data["message_err"] = status_error
+		data["moneyin"] = moneyin
+	else
+		data["mode"] = FALSE
+		data["company"] = owner
+		data["moneyin"] = moneyin
+		var/list/listed_products = list()
+
+		for (var/key = TRUE to product_records.len)
+			var/datum/data/vending_product/I = product_records[key]
+
+			listed_products.Add(list(list(
+				"key" = key,
+				"name" = I.product_name,
+				"price" = I.price,
+				"color" = I.display_color,
+				"amount" = I.get_amount())))
+
+		data["products"] = listed_products
+
+	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	if (!ui)
+		ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
+		ui.set_initial_data(data)
+		ui.open()
+
+/obj/structure/vending/sales/Topic(href, href_list)
+	if (stat & BROKEN)
+		return
+
+	if (isliving(usr))
+		if (usr.stat || usr.restrained())
+			return
+	else if (isobserver(usr))
+		if (!check_rights(R_MOD))
+			return
+
+	if ((usr.contents.Find(src) || (in_range(src, usr) && istype(loc, /turf))))
+		if ((href_list["vend"]) && (vend_ready) && (!currently_vending))
+
+			var/key = text2num(href_list["vend"])
+			var/datum/data/vending_product/R = product_records[key]
+
+			if (R.price <= 0)
+				vend(R, usr)
+
+			else
+				currently_vending = R
+				if (moneyin < R.price)
+					status_message = "Please insert money to pay for the item."
+					status_error = FALSE
+				else
+					moneyin -= R.price
+					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+					GC.amount = moneyin/0.4
+					moneyin = 0
+					vend(R, usr)
+					nanomanager.update_uis(src)
+
+		else if (href_list["cancelpurchase"])
+			currently_vending = null
+
+		else if (href_list["remove_money"])
+			var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+			GC.amount = moneyin/0.4
+			nanomanager.update_uis(src)
+			return
+
+		add_fingerprint(usr)
+		playsound(usr.loc, 'sound/machines/button.ogg', 100, TRUE)
+		nanomanager.update_uis(src)
+
+/obj/structure/vending/sales/food
+	name = "Food stall"
+	desc = "Basic food products."
+	icon_state = "nutrimat"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 15,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 1.5,
+	)
