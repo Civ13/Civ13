@@ -125,11 +125,9 @@
 							map.custom_company[compchoice][l][2] = currb+compchoice_amt
 							return
 					map.custom_company[compchoice] += list(list(CM,compchoice_amt))
-					H << "Transfered [compchoice_amt]% of [compchoice] to [CM]."
-					CM << "You received [compchoice_amt]% of [compchoice] from [H]."
+					H << "<big>Transfered [compchoice_amt]% of [compchoice] to [CM].</big>"
+					CM << "<big>You received [compchoice_amt]% of [compchoice] from [H].</big>"
 					return
-
-
 	else
 		usr << "<span class='danger'>You cannot transfer company ownership on this map.</span>"
 		return

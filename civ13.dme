@@ -424,6 +424,7 @@
 #include "code\modules\1713\structures.dm"
 #include "code\modules\1713\supplysystem.dm"
 #include "code\modules\1713\telegraph.dm"
+#include "code\modules\1713\telephone.dm"
 #include "code\modules\1713\tools.dm"
 #include "code\modules\1713\trains.dm"
 #include "code\modules\1713\trench.dm"
@@ -898,5 +899,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\gulag13.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE

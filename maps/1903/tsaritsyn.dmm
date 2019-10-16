@@ -517,7 +517,7 @@
 "jX" = (/obj/item/weapon/stool/wood,/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "jY" = (/obj/item/weapon/broken_bottle,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "jZ" = (/obj/structure/window/sandbag/railing/stone{icon_state = "stone"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
-"ka" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/table/wood,/obj/structure/telephone,/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"ka" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/table/wood,/obj/item/weapon/telephone,/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "kb" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/window/sandbag/railing/stone{icon_state = "stone"; dir = 4},/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "kc" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/covers/carpet/redcarpet,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "kd" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/storage/fancy/cigarettes{icon_state = "pachka_papiros"},/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
