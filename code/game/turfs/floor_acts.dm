@@ -5,16 +5,15 @@
 	switch(severity)
 		if (1.0)
 			make_grass()
+			new/obj/effect/fire(src)
 		if (2.0)
 			if (prob(75))
 				make_grass()
 			else
 				break_tile()
-				new/obj/effect/fire(src)
 		if (3.0)
 			if (prob(50))
 				break_tile()
-				new/obj/effect/fire(src)
 	return
 
 /turf/floor/fire_act(temperature)
