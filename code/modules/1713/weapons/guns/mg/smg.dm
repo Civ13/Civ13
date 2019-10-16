@@ -14,49 +14,49 @@
 
 		// small body parts: head, hand, feet
 		"small" = list(
-			SHORT_RANGE_STILL = 49,
-			SHORT_RANGE_MOVING = 39,
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 55,
 
-			MEDIUM_RANGE_STILL = 39,
-			MEDIUM_RANGE_MOVING = 31,
+			MEDIUM_RANGE_STILL = 44,
+			MEDIUM_RANGE_MOVING = 39,
 
-			LONG_RANGE_STILL = 14,
-			LONG_RANGE_MOVING = 11,
+			LONG_RANGE_STILL = 22,
+			LONG_RANGE_MOVING = 15,
 
 			VERY_LONG_RANGE_STILL = 7,
 			VERY_LONG_RANGE_MOVING = 6),
 
 		// medium body parts: limbs
 		"medium" = list(
-			SHORT_RANGE_STILL = 59,
-			SHORT_RANGE_MOVING = 47,
+			SHORT_RANGE_STILL = 72,
+			SHORT_RANGE_MOVING = 62,
 
-			MEDIUM_RANGE_STILL = 39,
-			MEDIUM_RANGE_MOVING = 31,
+			MEDIUM_RANGE_STILL = 54,
+			MEDIUM_RANGE_MOVING = 45,
 
-			LONG_RANGE_STILL = 16,
-			LONG_RANGE_MOVING = 13,
+			LONG_RANGE_STILL = 34,
+			LONG_RANGE_MOVING = 21,
 
 			VERY_LONG_RANGE_STILL = 9,
 			VERY_LONG_RANGE_MOVING = 7),
 
 		// large body parts: chest, groin
 		"large" = list(
-			SHORT_RANGE_STILL = 79,
-			SHORT_RANGE_MOVING = 63,
+			SHORT_RANGE_STILL = 91,
+			SHORT_RANGE_MOVING = 81,
 
-			MEDIUM_RANGE_STILL = 59,
-			MEDIUM_RANGE_MOVING = 47,
+			MEDIUM_RANGE_STILL = 66,
+			MEDIUM_RANGE_MOVING = 57,
 
-			LONG_RANGE_STILL = 39,
-			LONG_RANGE_MOVING = 31,
+			LONG_RANGE_STILL = 45,
+			LONG_RANGE_MOVING = 33,
 
 			VERY_LONG_RANGE_STILL = 16,
 			VERY_LONG_RANGE_MOVING = 13),
 	)
 
 	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 2.00
+	accuracy_decrease_mod = 1.50
 	KD_chance = KD_CHANCE_MEDIUM
 	stat = "mg"
 	w_class = 3

@@ -141,6 +141,14 @@
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 25, arrow = 10, gun = 0, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
+/obj/item/clothing/mask/iogplate
+	name = "face plate"
+	desc = "A bulletproof face plate. Used to protect your pretty face."
+	icon_state = "iogplate"
+	item_state = "iogplate"
+	body_parts_covered = FACE|EYES
+	armor = list(melee = 80, arrow = 70, gun = 90, energy = 20, bomb = 40, bio = 25, rad = FALSE)
+
 /obj/item/clothing/head/helmet/bone
 	name = "bone helmet"
 	desc = "A helmet made of bones."
