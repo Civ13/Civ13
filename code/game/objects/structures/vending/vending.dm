@@ -151,21 +151,15 @@
  */
 /obj/structure/vending/proc/build_inventory()
 
-	for (var/current_list in products)
+	for (var/entry in products)
+		var/datum/data/vending_product/product = new/datum/data/vending_product(src, entry)
 
-		for (var/entry in current_list[1])
-			var/datum/data/vending_product/product = new/datum/data/vending_product(src, entry)
+		product.price = (entry in prices) ? prices[entry] : FALSE
+		product.amount = (products[entry]) ? products[entry] : TRUE
 
-			product.price = (entry in prices) ? prices[entry] : FALSE
-			product.amount = (current_list[1][entry]) ? current_list[1][entry] : TRUE
-
-			product_records.Add(product)
+		product_records.Add(product)
 
 /obj/structure/vending/Destroy()
-//	qdel(wires)
-//	wires = null
-//	qdel(coin)
-//	coin = null
 	for (var/datum/data/vending_product/R in product_records)
 		qdel(R)
 	product_records.Cut()

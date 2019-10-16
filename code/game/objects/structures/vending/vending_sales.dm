@@ -13,13 +13,19 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 
+	var/moneyin = 0
 	var/owner = null
 
 /obj/structure/vending/ex_act(severity)
 	return
 
-
 /obj/structure/vending/sales/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/stack/money))
+		var/obj/item/stack/money/M = W
+		moneyin += M.amount*M.value
+		user << "You put \the [W] in the [src]."
+		qdel(W)
+		return
 	if (istype(W, /obj/item/weapon/wrench))
 		if (owner && (locate(user) in map.custom_company[owner]))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
@@ -41,12 +47,6 @@
 					stock(W, R, user)
 					return TRUE
 		..()
-
-/**
- *  Receive payment with cashmoney.
- */
-/obj/structure/vending/sales/proc/pay_with_cash(var/obj/item/weapon/stack/money)
-	return
 
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user)
 	vend_ready = FALSE //One thing at a time!!
