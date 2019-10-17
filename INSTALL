@@ -7,5 +7,5 @@ sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt upgrade
 sudo apt install python3 wget
-sudo wget https://github.com/Civ13-SS13/Civ13/blob/new_scripts/INSTALL.py
+sudo wget https://raw.githubusercontent.com/Civ13-SS13/Civ13/new_scripts/INSTALL.py
 sudo python3 INSTALL.py
