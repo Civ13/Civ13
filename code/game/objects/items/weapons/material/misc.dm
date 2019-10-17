@@ -135,6 +135,25 @@
 	block_chance = 20
 	cooldownw = 6
 
+/obj/item/weapon/material/fancycane
+	name = "black cane"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A fancy cane used to walk with. This one looks quite expensive."
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	icon_state = "fancycane"
+	item_state = "woodcane1"
+	throw_speed = 6
+	throw_range = 10
+	allow_spin = TRUE
+	force_divisor = 0.5 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	attack_verb = list("bashed","poked","beaten")
+	value = 6
+	block_chance = 27
+	cooldownw = 6
+	applies_material_colour = FALSE
+
 /obj/item/weapon/material/naginata
 	name = "naginata"
 	sharp = TRUE
