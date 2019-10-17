@@ -21,6 +21,7 @@ exists = os.path.isfile(os.path.join(byond_version_major,'.',byond_version_minor
 if not exists:
 	os.system("sudo wget http://www.byond.com/download/build/{}/{}.{}_byond_linux.zip".format(byond_version_major,byond_version_major,byond_version_minor))
 os.system("unzip {}.{}_byond_linux.zip".format(byond_version_major,byond_version_minor))
+os.system("sudo mkdir /usr/share/man/man6")
 os.system("make install -C byond")
 print("Cloning the github...")
 os.system("sudo git clone https://github.com/civ13-ss13/civ13 --branch new_scripts civ13-git")
