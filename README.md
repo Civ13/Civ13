@@ -40,19 +40,10 @@ You will need a windows machine or a virtual machine running it from another OS.
 
 
 ## Setting up a Server
-1. You will need a windows or linux machine with the following apps installed:
- - Python 3.6 or above
- - Byond (latest version)
- - Git
+1. You will need a linux machine for the automated install, preferably Ubuntu. Open the command line.
  
- 2. Navigate to the master folder where you want the game to be.
+ 2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13-SS13/Civ13/new_scripts/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install*** wget first.
  
- 3. Create a git-linked folder (on Linux, use ***sudo git clone https://github.com/Civ13-SS13/Civ13 civ13-git***).
+ 3. Use **bash INSTALL** and it should install everything you need.
  
- 4. Use DreamMaker to create the DMB file (on Linux, go inside the civ13-git folder and use ***sudo DreamMaker civ13.dme***)
- 
- 5. Create another folder named **civ13** and manually copy the **UI**, **config** and **scripts** folders and the **civ13.dmb** and **civ13.rsc** files inside.
- 
- 6. Go inside the civ13 folder and run DreamDaemon (on Linux, run ***sudo DreamDaemon civ13.dmb [port] -trusted -logself -webclient***. Replace "port" with whatever port you want to use.
- 
- 7. You're all set! The server will be up and running.
+ 7. You're all set! Run the **launch.py** file inside the **scripts/** folder. Use ***python3 launch.py***.
