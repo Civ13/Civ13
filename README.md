@@ -42,7 +42,7 @@ You will need a windows machine or a virtual machine running it from another OS.
 ## Setting up a Server
 1. You will need a linux machine for the automated install, preferably Ubuntu. Open the command line.
  
- 2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13-SS13/Civ13/new_scripts/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install*** wget first.
+ 2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13-SS13/Civ13/master/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install*** wget first.
  
  3. Use **sudo bash INSTALL** and it should install everything you need.
  
