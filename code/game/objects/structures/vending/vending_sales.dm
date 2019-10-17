@@ -232,7 +232,7 @@
 	icon_state = "custom2"
 	var/image/overlay_primary = null
 	var/image/overlay_secondary = null
-	max_capacity = 10
+	max_products = 10
 
 /obj/structure/vending/sales/vending/New()
 	..()

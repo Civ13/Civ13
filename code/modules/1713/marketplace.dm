@@ -100,7 +100,6 @@
 			choicelist += "[currlist[k][2]]"
 		choicelist += "Cancel"
 		var/choice2 =  WWinput(user, "Choose a order:", "Global Exchange", "Cancel", choicelist)
-
 		if (choice2 == "Cancel")
 			return
 		else
@@ -158,10 +157,10 @@
 	flammable = FALSE
 	not_movable = FALSE
 
-	var/list/sale_registry = list()
+	var/list/sales_registry = list()
 
 /obj/structure/stockmarket/attack_hand(var/mob/living/carbon/human/user as mob)
-	var/choice1 = WWinput(user, "What do you want to do?", "Stock Market", "Check Companies", list("Check Companies","Buy Stock","Sell Stock","Cancel"))
+	var/choice1 = WWinput(user, "What do you want to do?", "Stock Market", "Check Companies", list("Check Companies","Buy Stock","Sell Stock","Manage Company","Cancel"))
 	if (choice1 == "Cancel")
 		return
 	else if (choice1 == "Check Companies")
@@ -174,10 +173,84 @@
 		"}
 
 		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+
+	else if (choice1 == "Manage Company")
+		var/choice4 = WWinput(user, "What do you want to do?", "Stock Market", "View Members", list("View Members", "Distribute Profits", "Withdraw Profits","Cancel"))
+		if (choice4 == "Cancel")
+			return
+		var/list/poss_list = list()
+		for(var/cmp in map.custom_company_nr)
+			if (find_company_member(user,cmp))
+				poss_list += cmp
+		if (isemptylist(poss_list))
+			user << "<span class='notice'>You do not own any stocks!</span>"
+			return
+		poss_list += "Cancel"
+		var/custom_company = WWinput(user, "Which company do you want to manage?", "Stock Market", "Cancel", poss_list)
+		if (custom_company == "Cancel")
+			return
+		if (choice4 == "View Members")
+			var/body = "<html><head><title>[custom_company]</title></head><b>STOCK MARKET</b><br><br>"
+				for(var/list/i in map.custom_company[custom_company])
+					body += "<b>[map.custom_company[custom_company][i][1]]</b> owns [map.custom_company[custom_company][i][2]]%.</br>"
+			body += {"<br>
+				</body></html>
+			"}
+
+			usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+		else if (choice4 == "Distribute Profits")
+			if (map.custom_company_value[custom_company]>0)
+				var/tprof = map.custom_company_value[custom_company]
+				map.custom_company_value[custom_company] = 0
+				for (var/i in map.custom_company[custom_company])
+					i[3]+=i[2]*tprof
+				user << "<span class='notice'>You distribute the profits of [custom_company].</span>"
+				return
+			else
+				user << "<span class='notice'>There are no profits to distribute from [custom_company].</span>"
+				return
+		else if (choice4 == "Withdraw Profits")
+			for (var/j in map.custom_company[custom_company])
+				if (j[1]==user && j[3]>0)
+					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+					GC.amount = j[3]/0.4
+					j[3] = 0
+					user << "<span class='notice'>You withdraw some profits.</span>"
+		return
+
 	else if (choice1 == "Buy Stock")
-		if (isemptylist(sale_registry))
+		if (isemptylist(sales_registry))
 			user << "<span class='notice'>There are no stocks for sale!</span>"
 			return
+		else
+			var/list/tempbuylist = list("Cancel")
+			var/sum=1
+			for(var/list/i in sales_registry)
+				tempbuylist += "[sum]: [i[2]]% of [i[1]], at [i[3]*10] sc"
+			var/choice3 = WWinput(user, "Which stock do you want to buy?", "Stock Market", "Cancel", tempbuylist)
+			if (choice3 == "Cancel")
+				return
+			else
+				var/ord = splittext(choice3,":")[1]
+				if (istype(user.get_inactive_hand(), /obj/item/stack/money))
+					var/obj/item/stack/money/M = user.get_inactive_hand()
+					world.log << "[sales_registry[ord][1]]"
+					if (sales_registry[ord][4])
+						if (M.amount*M.value >= sales_registry[ord][3])
+							var/tma = M.amount*M.value
+							var/tmb = sales_registry[ord][3]
+							var/tmc = (tma - tmb)/0.4
+							qdel(M)
+							var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+							GC.amount = tmc
+							var/mob/living/carbon/human/SELLER = sales_registry[ord][4]
+							SELLER.transfer_stock_proc(sales_registry[ord][1],sales_registry[ord][2],user)
+						else
+							user << "<span class='notice'>You do not have enough money. You need [sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
+							return
+				else
+					user << "<span class='notice'>You need to have money in your hands in order to buy stocks!</span>"
+					return
 	else if (choice1 == "Sell Stock")
 		var/list/poss_list = list()
 		for(var/cmp in map.custom_company_nr)
@@ -199,10 +272,10 @@
 						compchoice_amt = i[2]
 					else if (compchoice_amt <= 0)
 						return
-					var/saleprice = input(user, "At what price do you want to sell the [i[2]]% of [choice2]?") as num|null
+					var/saleprice = input(user, "At what price do you want to sell the [i[2]]% of [choice2]? In silver coins.") as num|null
 					if (saleprice <=0)
 						return
 					else
-						sale_registry += list(list(choice2,saleprice,user))
+						sales_registry += list(list(choice2,i[2],saleprice/10,user))
 						user << "<span class='notice'>You sucessfully put up [i[2]]% of [choice2] at [saleprice].</span>"
 						return

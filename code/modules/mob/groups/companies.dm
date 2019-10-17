@@ -143,3 +143,23 @@
 			return TRUE
 
 	return FALSE
+
+//for automated transfers e.g. stock market
+/mob/living/carbon/human/proc/transfer_stock_proc(var/companyname, var/stock, var/mob/living/carbon/human/target)
+	if (!companyname || !stock || !target)
+		return
+
+	for(var/l=1, l <= map.custom_company[companyname].len, l++)
+		if (map.custom_company[companyname][l][1] == src)
+			var/currb = map.custom_company[companyname][l][2]
+			map.custom_company[companyname][l][2] = currb-stock
+
+	for(var/l=1,  l <= map.custom_company[companyname].len, l++)
+		if (map.custom_company[companyname][l][1] == target)
+			var/currb = map.custom_company[companyname][l][2]
+			map.custom_company[companyname][l][2] = currb+stock
+			return
+	map.custom_company[companyname] += list(list(target,stock,0))
+	src << "<big>Transfered [stock]% of [companyname] to [target].</big>"
+	target << "<big>You received [stock]% of [companyname] from [src].</big>"
+	return
