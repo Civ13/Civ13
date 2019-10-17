@@ -13,7 +13,7 @@ byond_version_minor = "1488"
 ####
 
 print("Installing dependencies...")
-os.system("sudo apt install make git unzip python3 lib32z1 lib32ncurses5 libc6-i386 lib32stdc++6")
+os.system("sudo apt install make git unzip python3 python3-pip lib32z1 lib32ncurses5 libc6-i386 lib32stdc++6")
 os.system("sudo apt autoremove")
 os.system("sudo apt autoclean")
 print("Installing BYOND...")
@@ -29,7 +29,7 @@ os.system("sudo git clone https://github.com/civ13-ss13/civ13 --branch new_scrip
 print("Building binaries...")
 
 os.system("DreamMaker civ13-git/civ13.dme")
-
+os.system("sudo pip3 install psutil")
 print("Copying files and folders...")
 os.system("mkdir {}".format(cdir))
 dmb = os.path.join(mdir,'civ13-git/civ13.dmb')
@@ -51,9 +51,9 @@ with open(os.path.join(mdir,cdir,"scripts/paths.txt"), 'r') as file :
 
 filedata = filedata.replace("/home/1713", mdir)
 
-# Write the file out again
 with open(os.path.join(mdir,cdir,"scripts/paths.txt"), 'w') as file:
   file.write(filedata)
 t2 = time.time() - t1
 
 print("Finished creating everything in {} seconds".format(t2))
+print("Run sudo python3 {}scripts/launch.py to start the server!".format(cdir))
