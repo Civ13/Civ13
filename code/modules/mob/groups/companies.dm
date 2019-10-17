@@ -68,6 +68,7 @@
 		map.custom_company_nr += newname
 		var/list/newnamev = list("[newname]" = list(list(H,100,0)))
 		map.custom_company += newnamev
+		map.custom_company_colors += list("[newname]" = list(choosecolor1,choosecolor2))
 		usr << "<big>You now own <b>100%</b> of the new company [newname].</big>"
 		return
 	else

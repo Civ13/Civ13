@@ -47,7 +47,7 @@
 					stock(W, R, user)
 					return TRUE
 			//if it isnt in the list yet
-			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name)
+			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state)
 			var/inputp = input(user, "What price do you want to set for \the [W]? (in silver coins)") as num
 			if (!inputp)
 				inputp = 0
@@ -58,6 +58,8 @@
 				var/obj/item/stack/S = W
 				product.amount = S.amount
 			product_records.Add(product)
+			qdel(W)
+			update_icon()
 			return TRUE
 
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user)
@@ -73,6 +75,7 @@
 		status_error = FALSE
 		vend_ready = TRUE
 		currently_vending = null
+		update_icon()
 		nanomanager.update_uis(src)
 
 /**
@@ -168,8 +171,10 @@
 		playsound(usr.loc, 'sound/machines/button.ogg', 100, TRUE)
 		nanomanager.update_uis(src)
 
+
+//STALLS AND MACHINES
 /obj/structure/vending/sales/food
-	name = "Food stall"
+	name = "food vending machine"
 	desc = "Basic food products."
 	icon_state = "nutrimat"
 	products = list(
@@ -178,3 +183,41 @@
 	prices = list(
 		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
 	)
+
+/obj/structure/vending/sales/market_stall
+	name = "market stall"
+	desc = "A market stall selling an assortment of goods."
+	icon_state = "market_stall"
+	var/image/overlay_primary = null
+	var/image/overlay_secondary = null
+
+/obj/structure/vending/sales/market_stall/New()
+	..()
+	invisibility = 101
+	spawn(10)
+		overlay_primary = image(icon = icon, icon_state = "[icon_state]_overlay_primary")
+		overlay_primary.color = "#[map.custom_company_colors[owner][1]]"
+		overlay_secondary = image(icon = icon, icon_state = "[icon_state]_overlay_secondary")
+		overlay_secondary.color = "#[map.custom_company_colors[owner][2]]"
+		update_icon()
+		invisibility = 0
+
+/obj/structure/vending/sales/market_stall/update_icon()
+	overlays.Cut()
+	if (overlay_primary && overlay_secondary)
+		overlay_primary.color = "#[map.custom_company_colors[owner][1]]"
+		overlay_secondary.color = "#[map.custom_company_colors[owner][2]]"
+		overlays += overlay_primary
+		overlays += overlay_secondary
+	var/ct1 = 0
+	for(var/datum/data/vending_product/VP in product_records)
+		if (VP.product_image)
+			var/image/NI = new VP.product_image
+			NI.layer = layer+0.01
+			var/matrix/M = matrix()
+			M.Scale(0.5)
+			NI.transform = M
+			NI.pixel_x = -10+ct1
+			NI.pixel_y = -6
+			overlays += NI
+			ct1++
