@@ -1,6 +1,6 @@
-/home/1713/civ13-git/config/tips.txt
-/home/1713/civ13-git/config/motd.txt
-/home/1713/civ13-git/config/admin_ranks.txt
-/home/1713/civ13-git/config/material_recipes.txt
-/home/1713/civ13-git/config/material_recipes_camp.txt
-/home/1713/civ13-git/config/dictionary.txt
+config/tips.txt
+config/motd.txt
+config/admin_ranks.txt
+config/material_recipes.txt
+config/material_recipes_camp.txt
+config/dictionary.txt

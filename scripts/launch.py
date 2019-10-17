@@ -33,8 +33,8 @@ os.system("sudo python3 {}{}scripts/copyconfigfiles.py".format(mdir,cdir))
 
 print("Copying binaries...")
 
-dmb = os.path.join(mdir,cdir,'/home/1713/civ13-git/civ13.dmb')
-rsc = os.path.join(mdir,cdir,'/home/1713/civ13-git/civ13.rsc')
+dmb = os.path.join(mdir,'civ13-git/civ13.dmb')
+rsc = os.path.join(mdir,'civ13-git/civ13.rsc')
 
 shutil.copyfile(dmb, '{}{}civ13.dmb'.format(mdir,cdir))
 
