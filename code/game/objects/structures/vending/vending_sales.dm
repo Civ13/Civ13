@@ -194,7 +194,7 @@
 /obj/structure/vending/sales/market_stall/New()
 	..()
 	invisibility = 101
-	spawn(10)
+	spawn(3)
 		overlay_primary = image(icon = icon, icon_state = "[icon_state]_overlay_primary")
 		overlay_primary.color = "#[map.custom_company_colors[owner][1]]"
 		overlay_secondary = image(icon = icon, icon_state = "[icon_state]_overlay_secondary")
@@ -212,7 +212,7 @@
 	var/ct1 = 0
 	for(var/datum/data/vending_product/VP in product_records)
 		if (VP.product_image)
-			var/image/NI = new VP.product_image
+			var/image/NI = VP
 			NI.layer = layer+0.01
 			var/matrix/M = matrix()
 			M.Scale(0.5)
