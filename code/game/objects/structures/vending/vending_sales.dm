@@ -15,6 +15,7 @@
 
 	var/moneyin = 0
 	var/owner = "Global"
+	var/max_products = 5
 
 /obj/structure/vending/ex_act(severity)
 	return
@@ -47,6 +48,9 @@
 					stock(W, R, user)
 					return TRUE
 			//if it isnt in the list yet
+			if (product_records.len >= max_products)
+				user << "<span class='notice'>This [src] has too many different products already!</span>"
+				return FALSE
 			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state)
 			var/inputp = input(user, "What price do you want to set for \the [W]? (in silver coins)") as num
 			if (!inputp)
@@ -196,28 +200,56 @@
 	invisibility = 101
 	spawn(3)
 		overlay_primary = image(icon = icon, icon_state = "[icon_state]_overlay_primary")
-		overlay_primary.color = "#[map.custom_company_colors[owner][1]]"
+		overlay_primary.color = map.custom_company_colors[owner][1]
 		overlay_secondary = image(icon = icon, icon_state = "[icon_state]_overlay_secondary")
-		overlay_secondary.color = "#[map.custom_company_colors[owner][2]]"
+		overlay_secondary.color = map.custom_company_colors[owner][2]
 		update_icon()
 		invisibility = 0
 
 /obj/structure/vending/sales/market_stall/update_icon()
 	overlays.Cut()
 	if (overlay_primary && overlay_secondary)
-		overlay_primary.color = "#[map.custom_company_colors[owner][1]]"
-		overlay_secondary.color = "#[map.custom_company_colors[owner][2]]"
+		overlay_primary.color = map.custom_company_colors[owner][1]
+		overlay_secondary.color = map.custom_company_colors[owner][2]
 		overlays += overlay_primary
 		overlays += overlay_secondary
 	var/ct1 = 0
 	for(var/datum/data/vending_product/VP in product_records)
 		if (VP.product_image)
-			var/image/NI = VP
+			var/image/NI = VP.product_image
 			NI.layer = layer+0.01
 			var/matrix/M = matrix()
 			M.Scale(0.5)
 			NI.transform = M
 			NI.pixel_x = -10+ct1
-			NI.pixel_y = -6
+			NI.pixel_y = -4
 			overlays += NI
-			ct1++
+			ct1+=4
+
+/obj/structure/vending/sales/vending
+	name = "vending machine"
+	desc = "A vending machine selling an assortment of goods."
+	icon_state = "custom2"
+	var/image/overlay_primary = null
+	var/image/overlay_secondary = null
+	max_capacity = 10
+
+/obj/structure/vending/sales/vending/New()
+	..()
+	invisibility = 101
+	spawn(3)
+		overlay_primary = image(icon = icon, icon_state = "[icon_state]_overlay_primary")
+		overlay_primary.color = map.custom_company_colors[owner][1]
+		overlay_secondary = image(icon = icon, icon_state = "[icon_state]_overlay_secondary")
+		overlay_secondary.color = map.custom_company_colors[owner][2]
+		update_icon()
+		invisibility = 0
+
+/obj/structure/vending/sales/vending/update_icon()
+	overlays.Cut()
+	if (overlay_primary && overlay_secondary)
+		overlay_primary.color = map.custom_company_colors[owner][1]
+		overlay_secondary.color = map.custom_company_colors[owner][2]
+		overlays += overlay_primary
+		overlays += overlay_secondary
+		overlays += image(icon = icon, icon_state = "[icon_state]_base")
