@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo WELCOME TO CIV13!
+echo -----------------
+echo Prepairing the system...
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt upgrade
+sudo apt install python3 wget
+sudo wget https://github.com/Civ13-SS13/Civ13/blob/new_scripts/INSTALL.py
+sudo python3 INSTALL.py
