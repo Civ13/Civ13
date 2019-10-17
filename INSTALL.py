@@ -9,8 +9,13 @@ cdir = "civ13"
 
 print("WELCOME TO CIV13!")
 print("-----------------")
+print("Installing dependencies...")
+os.system("sudo apt update")
+os.system("sudo apt upgrade")
+os.system("sudo apt install git wget unzip python3 libc6-i386 lib32stdc++6")
+os.system("sudo apt autoclean")
 print("Cloning the github...")
-os.system("sudo git clone https://github.com/civ13-ss13/civ13 civ13-git")
+os.system("sudo git clone https://github.com/civ13-ss13/civ13 --branch new_scripts civ13-git")
 
 print("Building binaries...")
 
