@@ -741,7 +741,7 @@ RECIPE: /material/wood/,compound bow,/obj/item/weapon/gun/projectile/bow/compoun
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
-RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,8,wood
+RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
 RECIPE: /material/wood/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/,mop,/obj/item/weapon/mop,2,55,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/,wood handle,/obj/item/weapon/material/handle,1,35,0,1,tools,0,0,0,8,wood
