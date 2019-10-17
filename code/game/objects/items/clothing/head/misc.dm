@@ -22,7 +22,7 @@
 /obj/item/clothing/head/peakyblinder
 	name = "flat cap"
 	desc = "It's an common cap."
-	icon_state = "peakyblinder"
+	icon_state = "peakyblindercap"
 	item_state = "peakyblindercap"
 	siemens_coefficient = 2.0
 	body_parts_covered = FALSE
@@ -30,7 +30,7 @@
 /obj/item/clothing/head/peakyblinderblade
 	name = "flat cap"
 	desc = "It's an common cap. Has razor blades in it."
-	icon_state = "peakyblinder"
+	icon_state = "peakyblindercap"
 	item_state = "peakyblindercap"
 	siemens_coefficient = 2.0
 	body_parts_covered = FALSE

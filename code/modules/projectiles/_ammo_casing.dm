@@ -660,6 +660,16 @@
 	caliber = "a545x39"
 	value = 2
 
+/obj/item/ammo_casing/a32acp
+	name = ".32 ACP bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.03
+	projectile_type = /obj/item/projectile/bullet/pistol/a32acp
+	caliber = "a32acp"
+	value = 2
+
 /obj/item/ammo_casing/a556x45
 	name = "5.56x45mm bullet"
 	desc = "A brass casing."

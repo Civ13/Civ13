@@ -466,6 +466,13 @@
 	item_state = "oldmansuit"
 	worn_state = "oldmansuit"
 
+/obj/item/clothing/under/cozyoldy
+	name = "fancy outfit"
+	desc = "An outfit worn by fancy men in the 1800s."
+	icon_state = "cozyoldy"
+	item_state = "cozyoldy"
+	worn_state = "cozyoldy"
+
 /obj/item/clothing/under/peakyblinder
 	name = "fancy suit"
 	desc = "An outfit used by scum."

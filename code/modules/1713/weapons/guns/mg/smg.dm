@@ -169,6 +169,26 @@
 	sel_mode = 1
 	effectiveness_mod = 1.06
 
+/obj/item/weapon/gun/projectile/submachinegun/tommy
+	name = "Tommy Gun"
+	desc = "An american SMG."
+	icon_state = "tommygun"
+	item_state = "thompson"
+	base_icon = "tommygun"
+	weight = 3.6
+	caliber = "a45acp"
+	fire_sound = 'sound/weapons/mp40.ogg'
+	magazine_type = /obj/item/ammo_magazine/tommy
+	full_auto = TRUE
+	slot_flags = SLOT_BELT
+	equiptimer = 8
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=0.4, recoil=1, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		)
+
+	sel_mode = 1
+	effectiveness_mod = 3.03
+
 /obj/item/weapon/gun/projectile/submachinegun/type100
 	name = "Type-100"
 	desc = "A japanese submachinegun chambered in 8x22mm Nambu, with a 30 round magazine. The first japanese submachinegun produced."
