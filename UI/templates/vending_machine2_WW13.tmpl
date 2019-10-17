@@ -6,8 +6,8 @@
 {{if data.mode == 0}} <!-- Listing -->
 <h2>Money</h2>
 <div class='item'>
-	<div class='itemLabel'>Money deposited:</div> 
-	<div class='itemContent'>{{:helper.link(data.moneyin, 'eject', {'remove_money' : 1})}}</div>
+	<div class='itemLabel'>Money deposited (silver coins):</div> 
+	<div class='itemContent'>{{:helper.link(data.moneyin + ' sc', 'eject', {'remove_money' : 1})}}</div>
 </div>
 <h2>Items available</h2>
 <div class='item'>
@@ -15,7 +15,7 @@
 	<div class='item'>
 			<div style='float'>
 				{{if value.price > 0}}
-					{{:helper.link('Buy (' + value.price + ')', 'cart', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
+					{{:helper.link('Buy (' + value.price + ' sc)', 'cart', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
 				{{else}}
 					{{:helper.link('Vend', 'circle-arrow-s', { "vend" : value.key }, value.amount > 0 ? null : 'disabled')}}
 				{{/if}}
