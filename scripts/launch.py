@@ -5,12 +5,19 @@ import psutil
 import signal
 import shutil
 import time
-
+with open('paths.txt') as lines:
+	for line in lines:
+		if "mdir:" in line:
+			mdir = line.replace("\n", "")
+			mdir = mdir.replace("mdir:", "")
+		if "cdir:" in line:
+			cdir = line.replace("\n", "")
+			cdir = cdir.replace("cdir:", "")
 t1 = time.time()
 
 print("Updating git...")
 
-os.chdir("/home/1713/civ13-git")
+os.chdir("{}civ13-git".format(mdir))
 os.system("sudo git pull")
 os.system("sudo git reset --hard origin/master")
 
@@ -22,21 +29,21 @@ os.system("cd")
 
 print("Copying configuration settings...")
 
-os.system("sudo python3 /home/1713/civ13/scripts/copyconfigfiles.py")
+os.system("sudo python3 {}{}scripts/copyconfigfiles.py".format(mdir,cdir))
 
 print("Copying binaries...")
 
-dmb = os.path.join('/home/1713/civ13-git/civ13.dmb')
-rsc = os.path.join('/home/1713/civ13-git/civ13.rsc')
+dmb = os.path.join(mdir,cdir,'/home/1713/civ13-git/civ13.dmb')
+rsc = os.path.join(mdir,cdir,'/home/1713/civ13-git/civ13.rsc')
 
-shutil.copyfile(dmb, '/home/1713/civ13/civ13.dmb')
+shutil.copyfile(dmb, '{}{}civ13.dmb'.format(mdir,cdir))
 
 
-shutil.copyfile(rsc, '/home/1713/civ13/civ13.rsc')
+shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir,cdir))
 
 t2 = time.time() - t1
 
 print("Finished updating all directories in {} seconds".format(t2))
 
 print("Started server on port 1714.")
-os.system("sudo DreamDaemon /home/1713/civ13/civ13.dmb 1714 -trusted -logself -webclient &")
+os.system("sudo DreamDaemon {}{}civ13.dmb 1714 -trusted -logself -webclient &".format(mdir,cdir))

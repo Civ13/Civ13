@@ -5,7 +5,14 @@ import os
 import psutil
 import signal
 import time
-
+with open('paths.txt') as lines:
+	for line in lines:
+		if "mdir:" in line:
+			mdir = line.replace("\n", "")
+			mdir = mdir.replace("mdir:", "")
+		if "cdir:" in line:
+			cdir = line.replace("\n", "")
+			cdir = cdir.replace("cdir:", "")
 pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 
 for pid in pids:
@@ -27,13 +34,13 @@ for pid in pids:
 
 				# 1714-1 is the active server; restart 1714-1
 				if "1714" in name and may_restart_server[0] == "1714":
-					if os.path.isfile("/home/1713/civ13/serverdata.txt"):
+					if os.path.isfile("{}{}serverdata.txt".format(mdir,cdir)):
 						process = psutil.Process(int(pid))
 						if process is not None:
 							os.kill(int(pid), signal.SIGKILL)
 							# for some reason I have to do this now
 							time.sleep(5)
-							os.system('sudo DreamDaemon /home/1713/civ13/civ13.dmb 1714 -trusted -webclient -logself &')
+							os.system('sudo DreamDaemon {}{}civ13.dmb 1714 -trusted -webclient -logself &'.format(mdir,cdir))
 							print("Restarted main server on port civ13.")
 	except IOError:
 		continue
