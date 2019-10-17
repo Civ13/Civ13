@@ -1,0 +1,2 @@
+/home/1713/civ13-git/UI
+/home/1713/civ13-git/scripts
