@@ -20,7 +20,7 @@ print("Updating git...")
 
 os.chdir("{}civ13-git")
 os.system("sudo git pull")
-os.system("sudo git reset --hard origin/master")
+os.system("sudo git reset --hard origin/new_scripts")
 
 print("Rebuilding binaries...")
 

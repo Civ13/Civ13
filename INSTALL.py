@@ -17,7 +17,7 @@ os.system("sudo apt install make git unzip python3 lib32z1 lib32ncurses5 libc6-i
 os.system("sudo apt autoremove")
 os.system("sudo apt autoclean")
 print("Installing BYOND...")
-exists = os.path.isfile(os.path.join(byond_version_major,'.',byond_version_minor,'_byond_linux.zip'))
+exists = os.path.isfile(os.path.join(byond_version_major,'.',byond_version_minor,"_byond_linux.zip"))
 if not exists:
 	os.system("sudo wget http://www.byond.com/download/build/{}/{}.{}_byond_linux.zip".format(byond_version_major,byond_version_major,byond_version_minor))
 os.system("unzip {}.{}_byond_linux.zip".format(byond_version_major,byond_version_minor))
@@ -48,7 +48,7 @@ print("Updating the config...")
 with open(os.path.join(mdir,cdir,"scripts/paths.txt"), 'r') as file :
   filedata = file.read()
 
-filedata = filedata.replace('/home/1713/', mdir)
+filedata = filedata.replace("/home/1713", mdir)
 
 # Write the file out again
 with open(os.path.join(mdir,cdir,"scripts/paths.txt"), 'w') as file:
