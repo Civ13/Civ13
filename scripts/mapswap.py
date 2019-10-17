@@ -10,7 +10,7 @@ if len(sys.argv) == 1:
 	sys.exit()
 	
 currdir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(currdir,"/paths.txt")) as lines:
+with open(os.path.join(currdir,"paths.txt")) as lines:
 	for line in lines:
 		if "mdir:" in line:
 			mdir = line.replace("\n", "")
