@@ -261,4 +261,4 @@
 	icon_state = "dragonpowder"
 	New()
 		..()
-		reagents.add_reagent("penicillin", 15)
+		reagents.add_reagent("dragon_powder", 10)

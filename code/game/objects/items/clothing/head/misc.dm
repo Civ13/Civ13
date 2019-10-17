@@ -19,6 +19,22 @@
 	siemens_coefficient = 0.9
 	body_parts_covered = FALSE
 
+/obj/item/clothing/head/peakyblinder
+	name = "flat cap"
+	desc = "It's an common cap."
+	icon_state = "peakyblinder"
+	item_state = "peakyblindercap"
+	siemens_coefficient = 2.0
+	body_parts_covered = FALSE
+
+/obj/item/clothing/head/peakyblinderblade
+	name = "flat cap"
+	desc = "It's an common cap. Has razor blades in it."
+	icon_state = "peakyblinder"
+	item_state = "peakyblindercap"
+	siemens_coefficient = 2.0
+	body_parts_covered = FALSE
+	force = WEAPON_FORCE_PAINFUL
 
 /obj/item/clothing/head/plaguedoctorhat
 	name = "plague doctor's hat"
