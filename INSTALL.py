@@ -7,8 +7,8 @@ t1 = time.time()
 ## if you want to change the installation directories, edit the mdir and cdir variables. mdir is the folder to install path, cdir is the civ13 game path to create.
 mdir = os.path.dirname(os.path.abspath(__file__))
 cdir = "civ13"
-byond_version_major = "512"
-byond_version_minor = "1488"
+byond_version_major = sys.argv[1]
+byond_version_minor = sys.argv[2]
 ####
 ####
 
