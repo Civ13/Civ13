@@ -46,6 +46,19 @@
 				if (istype(W, R.product_path))
 					stock(W, R, user)
 					return TRUE
+			//if it isnt in the list yet
+			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name)
+			var/inputp = input(user, "What price do you want to set for \the [W]?") as num
+			if (!inputp)
+				inputp = 0
+			if (inputp < 0)
+				inputp = 0
+			product.price = inputp
+			if (istype(W, /obj/item/stack))
+				var/obj/item/stack/S = W
+				product.amount = S.amount
+			product_records.Add(product)
+			return TRUE
 
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user)
 	vend_ready = FALSE //One thing at a time!!
@@ -68,15 +81,6 @@
  * Checks if item is vendable in this machine should be performed before
  * calling. W is the item being inserted, R is the associated vending_product entry.
  */
-/obj/structure/vending/sales/stock(obj/item/weapon/W, var/datum/data/vending_product/R, var/mob/user)
-	if (!user.unEquip(W))
-		return
-
-	user << "<span class='notice'>You insert \the [W] in the rack.</span>"
-	R.add_product(W)
-
-	nanomanager.update_uis(src)
-
 
 /obj/structure/vending/sales/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	user.set_using_object(src)
@@ -105,7 +109,7 @@
 				"name" = I.product_name,
 				"price" = I.price,
 				"color" = I.display_color,
-				"amount" = I.get_amount())))
+				"amount" = I.amount)))
 
 		data["products"] = listed_products
 

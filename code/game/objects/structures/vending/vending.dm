@@ -5,7 +5,6 @@
 	var/product_name = "generic" // Display name for the product
 	var/product_path = null
 	var/amount = 0            // The original amount held in the vending machine
-	var/list/instances
 	var/price = 0              // Price to buy one
 	var/display_color = null   // Display color for vending machine listing
 	var/vending_machine        // The vending machine we belong to
@@ -29,40 +28,21 @@
 
 /datum/data/vending_product/Destroy()
 	vending_machine = null
-	if (instances)
-		for (var/product in instances)
-			qdel(product)
-		instances.Cut()
 	. = ..()
-
-/datum/data/vending_product/proc/get_amount()
-	return instances ? instances.len : amount
 
 /datum/data/vending_product/proc/add_product(var/atom/movable/product)
 	if (product.type != product_path)
 		return FALSE
-	init_products()
-	product.forceMove(vending_machine)
-	instances += product
-
+	amount++
 /datum/data/vending_product/proc/get_product(var/product_location)
-	if (!get_amount() || !product_location)
+	if (amount < 1 || !product_location)
 		return
-	init_products()
 
-	var/atom/movable/product = instances[instances.len]	// Remove the last added product
-	instances -= product
+	var/atom/movable/product = new product_path
 	if (product)
 		product.forceMove(product_location)
+		amount--
 	return product
-
-/datum/data/vending_product/proc/init_products()
-	if (instances)
-		return
-	instances = list()
-	for (var/i = TRUE to amount)
-		var/new_product = new product_path(vending_machine)
-		instances += new_product
 
 /**
  *  A vending machine
@@ -241,7 +221,7 @@
 				"name" = I.product_name,
 				"price" = I.price,
 				"color" = I.display_color,
-				"amount" = I.get_amount())))
+				"amount" = I.amount)))
 
 		data["products"] = listed_products
 
@@ -308,8 +288,9 @@
 	if (!user.unEquip(W))
 		return
 
-	user << "<span class='notice'>You insert \the [W] in the rack.</span>"
+	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
 	R.add_product(W)
+	qdel(W)
 
 	nanomanager.update_uis(src)
 
