@@ -12,27 +12,35 @@ print("-----------------")
 print("Installing dependencies...")
 os.system("sudo apt update")
 os.system("sudo apt upgrade")
-os.system("sudo apt install git wget unzip python3 libc6-i386 lib32stdc++6")
+os.system("sudo apt install make git wget unzip python3 libc6-i386 lib32stdc++6")
 os.system("sudo apt autoclean")
+print("Installing BYOND...")
+os.system("sudo wget http://www.byond.com/download/build/512/512.1488_byond_linux.zip")
+os.system("unzip 512.1488_byond_linux.zip")
+os.system("cd byond/")
+os.system("make install -C byond")
+os.system("cd -")
 print("Cloning the github...")
 os.system("sudo git clone https://github.com/civ13-ss13/civ13 --branch new_scripts civ13-git")
 
 print("Building binaries...")
 
-os.system("sudo DreamMaker civ13.dme")
-
-os.system("cd")
+os.system("sudo DreamMaker civ13-git/civ13.dme")
 
 print("Copying files and folders...")
-
+os.system("mkdir {}".format(cdir))
 dmb = os.path.join(mdir,'civ13-git/civ13.dmb')
 rsc = os.path.join(mdir,'civ13-git/civ13.rsc')
 
-shutil.copyfile(dmb, os.path.join(mdir,cdir,'civ13.dmb'))
-shutil.copyfile(rsc, os.path.join(mdir,cdir,'civ13/civ13.rsc'))
-shutil.copytree('civ13-git/UI', os.path.join(mdir,cdir,'UI'))
-shutil.copytree('civ13-git/scripts', os.path.join(mdir,cdir,'scripts'))
-shutil.copytree('civ13-git/config', os.path.join(mdir,cdir,'config'))
+shutil.copy(dmb, os.path.join(mdir,cdir))
+shutil.copy(rsc, os.path.join(mdir,cdir))
+uip = os.path.join(mdir,cdir,'UI')
+scriptsp = os.path.join(mdir,cdir,'scripts')
+configp = os.path.join(mdir,cdir,'config')
+
+shutil.copytree('civ13-git/UI', uip)
+shutil.copytree('civ13-git/scripts', scriptsp)
+shutil.copytree('civ13-git/config', configp)
 t2 = time.time() - t1
 
 print("Finished creating everything in {} seconds".format(t2))
