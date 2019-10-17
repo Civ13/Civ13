@@ -7,7 +7,8 @@ import time
 
 t1 = time.time()
 
-with open('paths.txt') as lines:
+currdir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(currdir"/paths.txt")) as lines:
 	for line in lines:
 		if "mdir:" in line:
 			mdir = line.replace("\n", "")

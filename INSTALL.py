@@ -18,7 +18,7 @@ os.system("sudo apt install make git unzip python3 python3-pip lib32z1 lib32ncur
 os.system("sudo apt autoremove")
 os.system("sudo apt autoclean")
 print("Installing BYOND...")
-exists = os.path.isfile(os.path.join(mdir,cdir,byond_version_major,'.',byond_version_minor,"_byond_linux.zip"))
+exists = os.path.isfile(os.path.join(mdir,cdir,byond_version_major,".",byond_version_minor,"_byond_linux.zip"))
 if not exists:
 	os.system("sudo wget http://www.byond.com/download/build/{}/{}.{}_byond_linux.zip".format(byond_version_major,byond_version_major,byond_version_minor))
 os.system("unzip {}.{}_byond_linux.zip".format(byond_version_major,byond_version_minor))
@@ -57,4 +57,4 @@ with open(os.path.join(mdir,cdir,"scripts/paths.txt"), 'w') as file:
 t2 = time.time() - t1
 
 print("Finished creating everything in {} seconds".format(t2))
-print("Run sudo python3 {}scripts/launch.py to start the server!".format(cdir))
+print("Run sudo python3 {}/scripts/launch.py to start the server!".format(cdir))
