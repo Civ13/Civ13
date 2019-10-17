@@ -12,12 +12,12 @@ with open('paths.txt') as lines:
 with open(os.path.join(mdir,cdir,"scripts/copiedconfigpaths.txt")) as lines:
 	for line in lines:
 		path = line.replace("\n", "")
-		shutil.copyfile(os.path.join(path), path.replace("civ13-git", "civ13"))
+		shutil.copyfile(os.path.join(mdir,"civ13-git",path), os.path.join(mdir,cdir,path))
 
 with open(os.path.join(mdir,cdir,'scripts/copiedfolderpaths.txt')) as lines:
 	for line in lines:
 		path = line.replace("\n", "")
-		shutil.copytree(os.path.join(path), path.replace("civ13-git", "civ13"))
+		shutil.copytree(os.path.join(mdir,"civ13-git",path), os.path.join(mdir,cdir,path))
 
 shutil.rmtree(os.path.join(mdir,cdir,"config/names"))
 
