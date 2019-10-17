@@ -254,3 +254,11 @@
 	New()
 		..()
 		reagents.add_reagent("ketamine", REAGENTS_OVERDOSE*0.45) // slightly less than an OD
+
+/obj/item/weapon/reagent_containers/pill/dragonpowder
+	name = "dragon powder pill"
+	desc = "A shiny purple pill."
+	icon_state = "dragonpowder"
+	New()
+		..()
+		reagents.add_reagent("penicillin", 15)
