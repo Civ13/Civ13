@@ -25,7 +25,7 @@ os.system("unzip {}.{}_byond_linux.zip".format(byond_version_major,byond_version
 os.system("sudo mkdir /usr/share/man/man6")
 os.system("make install -C byond")
 print("Cloning the github...")
-os.system("sudo git clone https://github.com/civ13-ss13/civ13 --branch new_scripts civ13-git")
+os.system("sudo git clone https://github.com/civ13-ss13/civ13 civ13-git")
 
 print("Building binaries...")
 

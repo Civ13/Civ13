@@ -18,6 +18,7 @@ with open(os.path.join(mdir,cdir,"scripts/copiedconfigpaths.txt")) as lines:
 with open(os.path.join(mdir,cdir,'scripts/copiedfolderpaths.txt')) as lines:
 	for line in lines:
 		path = line.replace("\n", "")
+		shutil.rmtree(os.path.join(mdir,cdir,path))
 		shutil.copytree(os.path.join(mdir,"civ13-git",path), os.path.join(mdir,cdir,path))
 
 shutil.rmtree(os.path.join(mdir,cdir,"config/names"))

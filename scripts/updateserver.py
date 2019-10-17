@@ -16,7 +16,7 @@ with open(os.path.join(currdir,"paths.txt")) as lines:
 			cdir = cdir.replace("cdir:", "")
 os.chdir(os.path.join(mdir,"civ13-git"))
 os.system("sudo git pull")
-os.system("sudo git reset --hard origin/new_scripts")
+os.system("sudo git reset --hard origin/master")
 
 print("Rebuilding binaries...")
 
