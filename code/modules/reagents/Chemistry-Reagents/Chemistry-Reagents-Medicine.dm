@@ -497,7 +497,7 @@
 	reagent_state = SOLID
 	color = "#faeff1"
 	metabolism = REM * 1.0
-	overdose = 20
+	overdose = 15
 
 /datum/reagent/dragonpowder/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 100)

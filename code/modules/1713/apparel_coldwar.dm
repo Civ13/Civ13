@@ -88,6 +88,13 @@
 	worn_state = "us_jacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/suit/storage/fbi
+	name = "FBI jacket"
+	desc = "A secret FBI jacket perhaps."
+	icon_state = "fbi2"
+	item_state = "fbi2"
+	worn_state = "fbi2"
+
 /obj/item/clothing/under/vietcong
 	name = "Vietcong uniform"
 	desc = "A black uniform of the Vietcong."
