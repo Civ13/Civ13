@@ -4,20 +4,25 @@
 		verbs += /mob/living/carbon/human/proc/abandon_faction
 		verbs += /mob/living/carbon/human/proc/transfer_faction
 		verbs += /mob/living/carbon/human/proc/become_leader
-		verbs += /mob/living/carbon/human/proc/faction_list
-		verbs += /mob/living/carbon/human/proc/religion_list
+		verbs += /mob/proc/faction_list
+		verbs += /mob/proc/religion_list
 		verbs += /mob/living/carbon/human/proc/create_company
 		verbs += /mob/living/carbon/human/proc/transfer_company_stock
 
 /mob/living/carbon/human/proc/make_tribesman()
 	verbs += /mob/living/carbon/human/proc/transfer_faction
 	verbs += /mob/living/carbon/human/proc/become_leader
-	verbs += /mob/living/carbon/human/proc/faction_list
-	verbs += /mob/living/carbon/human/proc/religion_list
+	verbs += /mob/proc/faction_list
+	verbs += /mob/proc/religion_list
 	verbs += /mob/living/carbon/human/proc/create_religion
 	verbs += /mob/living/carbon/human/proc/abandon_religion
 	verbs += /mob/living/carbon/human/proc/clergy
 
+/mob/New()
+	..()
+	if (map && map.nomads)
+		verbs += /mob/proc/faction_list
+		verbs += /mob/proc/religion_list
 /////////////FACTIONS////////////////////////////
 /mob/living/carbon/human/proc/create_faction()
 	set name = "Create Faction"
@@ -402,7 +407,7 @@
 	else
 		..()
 
-/mob/living/carbon/human/proc/faction_list()
+/mob/proc/faction_list()
 	set name = "Check Faction List"
 	set category = "Faction"
 	if (map && map.civilizations)

@@ -66,7 +66,7 @@
 					return
 			choosecolor2 = addtext("#",choosecolor2)
 		map.custom_company_nr += newname
-		var/list/newnamev = list("[newname]" = list(list(H,100)))
+		var/list/newnamev = list("[newname]" = list(list(H,100,0)))
 		map.custom_company += newnamev
 		usr << "<big>You now own <b>100%</b> of the new company [newname].</big>"
 		return
@@ -124,7 +124,7 @@
 							var/currb = map.custom_company[compchoice][l][2]
 							map.custom_company[compchoice][l][2] = currb+compchoice_amt
 							return
-					map.custom_company[compchoice] += list(list(CM,compchoice_amt))
+					map.custom_company[compchoice] += list(list(CM,compchoice_amt,0))
 					H << "<big>Transfered [compchoice_amt]% of [compchoice] to [CM].</big>"
 					CM << "<big>You received [compchoice_amt]% of [compchoice] from [H].</big>"
 					return

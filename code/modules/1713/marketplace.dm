@@ -145,3 +145,17 @@
 				ST.forceMove(locate(0,0,0))
 				user << "You place \the [ST] for sale."
 				return
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+/obj/structure/stockmarket
+	name = "stock market"
+	desc = "Use this to buy, sell and check company shares. You can also manage your companies here."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "supplybook"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = FALSE
+
+/obj/structure/stockmarket/attack_hand(var/mob/living/carbon/human/user as mob)
