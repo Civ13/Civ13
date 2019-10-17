@@ -35,7 +35,7 @@ rsc = os.path.join(mdir,'civ13-git/civ13.rsc')
 shutil.copyfile(dmb, os.path.join(mdir,cdir,'civ13.dmb'))
 
 
-shutil.copyfile(rsc, os.path.join(mdir,cdir,'civ13/civ13.rsc'))
+shutil.copyfile(rsc, os.path.join(mdir,cdir,'civ13.rsc'))
 
 t2 = time.time() - t1
 

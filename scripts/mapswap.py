@@ -207,12 +207,12 @@ for pid in pids:
 							os.kill(int(pid), signal.SIGKILL)
 							print("Copying binaries...")
 							dmb = os.path.join('{}civ13-git/civ13.dmb'.format(mdir))
-							rsc = os.path.join('{}civ13-git/civ13.rsc'.format(mdir)
-							shutil.copyfile(dmb, '{}{}civ13.dmb'.format(mdir,cdir)
-							shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir,cdir)
+							rsc = os.path.join('{}civ13-git/civ13.rsc'.format(mdir))
+							shutil.copyfile(dmb, '{}{}civ13.dmb'.format(mdir,cdir))
+							shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir,cdir))
 							time.sleep(8)
 							print("Rebooting the server...")
-							os.system('sudo DreamDaemon {}{}civ13.dmb 1714 -trusted -webclient -logself &'.format(mdir,cdir)
+							os.system('sudo DreamDaemon {}{}civ13.dmb 1714 -trusted -webclient -logself &'.format(mdir,cdir))
 							print("Restarted main server on port 1714.")
 
 	except IOError:
