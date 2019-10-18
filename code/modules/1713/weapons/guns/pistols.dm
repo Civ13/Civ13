@@ -254,9 +254,9 @@
 /obj/item/weapon/gun/projectile/pistol/colthammerless/update_icon()
 	..()
 	if (ammo_magazine)
-		icon_state = "colthammerless"
+		icon_state = "coltpockethammerless"
 	else
-		icon_state = "colthammerless_open"
+		icon_state = "coltpockethammerless_open"
 	return
 
 
