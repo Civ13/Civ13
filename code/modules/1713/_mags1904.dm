@@ -432,6 +432,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c44magnum
+	name = "bullet pouch (.44 magnum)"
+	desc = "a pouch of .44 magnum bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a44magnum
+	caliber = "a44magnum"
+	max_ammo = 30
+	weight = 1.1
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
 /obj/item/ammo_magazine/c8x50
 	name = "bullet pouch (8x50mmR Lebel)"
 	desc = "a pouch of 8x50mmR Lebel bullets."
