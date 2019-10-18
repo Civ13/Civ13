@@ -354,3 +354,19 @@
 	throw_range = 5
 	w_class = 3.0
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+
+/obj/item/weapon/gongmallet
+	name = "gong mallet"
+	desc = "A wooden mallet used to hit a gong."
+	icon_state = "gongmallet"
+	item_state = "gongmallet"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_NORMAL + 2
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 5
+	throw_range = 5
+	matter = list(DEFAULT_WALL_MATERIAL = 75)
+	attack_verb = list("jabbed", "hit", "bashed")
+	flammable = TRUE
