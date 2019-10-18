@@ -783,6 +783,8 @@ RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,kitchen &
 RECIPE: /material/wood/,matches,/obj/item/weapon/storage/box/matches,5,80,1,1,kitchen & other,67,0,0,8,null
 RECIPE: /material/wood/,violin,/obj/item/violin,10,135,0,1,kitchen & other,50,0,0,8,null
 RECIPE: /material/wood/,piano,/obj/structure/piano,18,195,1,1,kitchen & other,45,0,0,8,null
+RECIPE: /material/wood/,gong,/obj/structure/gong,5,100,1,1,kitchen & other,26,0,0,8,null
+RECIPE: /material/wood/,gong mallet,/obj/item/weapon/gongmallet,3,50,0,1,kitchen & other,26,0,0,8,null
 RECIPE: /material/wood/,cigar case,/obj/item/weapon/storage/fancy/cigar,2,80,1,1,kitchen & other,65,0,0,8,null
 RECIPE: /material/wood/,scientific literature,/obj/item/weapon/book/research,4,110,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/,holy book,/obj/item/weapon/book/holybook,15,240,1,1,paper & printing,0,0,0,8,null
