@@ -765,13 +765,6 @@
 	if (findtext(recipe.title, "coil"))
 		produced = 10
 
-	else if (recipe.result_type == /obj/item/weapon/can)
-		produced = 2
-	else if (recipe.result_type == /obj/item/weapon/can/small)
-		produced = 3
-	else if (recipe.result_type == /obj/item/weapon/can/large)
-		produced = 1
-
 	else if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/ammopart/bullet)
@@ -796,6 +789,8 @@
 		produced = 2
 	else if (recipe.result_type == /obj/item/ammo_casing/stone)
 		produced = 5
+	else if (recipe.result_type == /obj/item/stack/material/barbwire)
+		produced = 2
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
@@ -1022,6 +1017,26 @@
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
+		else if (istype(O, /obj/item/weapon/can))
+			var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
+			C1.customcolor1 = addtext("#",customcolor1)
+			C1.customcolor2 = addtext("#",customcolor2)
+			C1.brand = "[customname] "
+			C1.name = "empty [C1.brand]can"
+			C1.do_color()
+		else if (istype(O, /obj/item/weapon/can/small))
+			var/obj/item/weapon/can/small/C1 = new/obj/item/weapon/can/small(get_turf(O))
+			C1.customcolor1 = addtext("#",customcolor1)
+			C1.customcolor2 = addtext("#",customcolor2)
+			C1.brand = "[customname] "
+			C1.name = "empty [C1.brand]can"
+			C1.do_color()
+			var/obj/item/weapon/can/small/C2 = new/obj/item/weapon/can/small(get_turf(O))
+			C2.customcolor1 = addtext("#",customcolor1)
+			C2.customcolor2 = addtext("#",customcolor2)
+			C2.brand = "[customname] "
+			C2.name = "empty [C2.brand]can"
+			C2.do_color()
 		else if (istype(O, /obj/item/clothing/accessory/storage/passport))
 			var/obj/item/clothing/accessory/storage/passport/PP = O
 			PP.owner = H

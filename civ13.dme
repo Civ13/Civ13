@@ -901,5 +901,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads.dmm"
+#include "maps\special\nomads_continental.dmm"
 // END_INCLUDE
