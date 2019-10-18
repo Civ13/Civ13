@@ -157,8 +157,6 @@
 	flammable = FALSE
 	not_movable = FALSE
 
-	var/list/sales_registry = list()
-
 /obj/structure/stockmarket/attack_hand(var/mob/living/carbon/human/user as mob)
 	var/choice1 = WWinput(user, "What do you want to do?", "Stock Market", "Check Companies", list("Check Companies","Buy Stock","Sell Stock","Manage Company","Cancel"))
 	if (choice1 == "Cancel")
@@ -192,7 +190,7 @@
 		if (choice4 == "View Members")
 			var/body = "<html><head><title>[custom_company]</title></head><b>STOCK MARKET</b><br><br>"
 				for(var/list/i in map.custom_company[custom_company])
-					body += "<b>[map.custom_company[custom_company][i][1]]</b> owns [map.custom_company[custom_company][i][2]]%.</br>"
+					body += "<b>[i[1]]</b> owns [i[2]]%.</br>"
 			body += {"<br>
 				</body></html>
 			"}
@@ -219,35 +217,45 @@
 		return
 
 	else if (choice1 == "Buy Stock")
-		if (isemptylist(sales_registry))
+		if (isemptylist(map.sales_registry))
 			user << "<span class='notice'>There are no stocks for sale!</span>"
 			return
 		else
 			var/list/tempbuylist = list("Cancel")
-			var/sum=1
-			for(var/list/i in sales_registry)
-				tempbuylist += "[sum]: [i[2]]% of [i[1]], at [i[3]*10] sc"
+			for(var/list/i in map.sales_registry)
+				tempbuylist += "[i[2]]% of [i[1]], at [i[3]*10] sc"
 			var/choice3 = WWinput(user, "Which stock do you want to buy?", "Stock Market", "Cancel", tempbuylist)
 			if (choice3 == "Cancel")
 				return
 			else
-				var/ord = splittext(choice3,":")[1]
+				var/ord_perc = splittext(choice3,"% of ")[1]
+				var/ord = splittext(choice3,"% of ")[2]
+				var/ord_price = splittext(ord,", at ")[2]
+				ord = splittext(ord,", at ")[1]
+				ord_price = replacetext(ord_price, " sc", "")
+				ord_price = text2num(ord_price)/10
+				ord_perc = text2num(ord_perc)
 				if (istype(user.get_inactive_hand(), /obj/item/stack/money))
 					var/obj/item/stack/money/M = user.get_inactive_hand()
-					world.log << "[sales_registry[ord][1]]"
-					if (sales_registry[ord][4])
-						if (M.amount*M.value >= sales_registry[ord][3])
-							var/tma = M.amount*M.value
-							var/tmb = sales_registry[ord][3]
-							var/tmc = (tma - tmb)/0.4
-							qdel(M)
-							var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-							GC.amount = tmc
-							var/mob/living/carbon/human/SELLER = sales_registry[ord][4]
-							SELLER.transfer_stock_proc(sales_registry[ord][1],sales_registry[ord][2],user)
-						else
-							user << "<span class='notice'>You do not have enough money. You need [sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
-							return
+					for(var/list/L in map.sales_registry)
+						if (L[1] == ord && text2num(L[2]) == ord_perc && text2num(L[3]) == ord_price)
+							if (L[4])
+								if (M.amount*M.value >= ord_price)
+									var/tma = M.amount*M.value
+									var/tmb = ord_price
+									var/tmc = (tma - tmb)/0.4
+									qdel(M)
+									var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+									GC.amount = tmc
+									var/mob/living/carbon/human/SELLER = L[4]
+									SELLER.transfer_stock_proc(ord,ord_perc,user)
+									map.sales_registry -= L
+									for(var/list/LL in map.sales_registry)
+										if (LL[1] == ord && LL[4]==SELLER)
+											map.sales_registry -= LL
+								else
+									user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
+									return
 				else
 					user << "<span class='notice'>You need to have money in your hands in order to buy stocks!</span>"
 					return
@@ -272,10 +280,10 @@
 						compchoice_amt = i[2]
 					else if (compchoice_amt <= 0)
 						return
-					var/saleprice = input(user, "At what price do you want to sell the [i[2]]% of [choice2]? In silver coins.") as num|null
+					var/saleprice = input(user, "At what price do you want to sell the [compchoice_amt]% of [choice2]? In silver coins.") as num|null
 					if (saleprice <=0)
 						return
 					else
-						sales_registry += list(list(choice2,i[2],saleprice/10,user))
-						user << "<span class='notice'>You sucessfully put up [i[2]]% of [choice2] at [saleprice].</span>"
+						map.sales_registry += list(list(choice2,compchoice_amt,saleprice/10,user))
+						user << "<span class='notice'>You sucessfully put up [compchoice_amt]% of [choice2] at [saleprice].</span>"
 						return
