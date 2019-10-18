@@ -666,6 +666,29 @@
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
 					return
+	else if (findtext(recipe.title, "gong"))
+		if (!istype(H.l_hand, /obj/item/stack/material/bronze) && !istype(H.r_hand, /obj/item/stack/material/bronze))
+			user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/bronze))
+				var/obj/item/stack/material/cloth/NB = H.l_hand
+				if (NB.amount >= 5)
+					NB.amount -= 5
+					if (NB.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/bronze))
+				var/obj/item/stack/material/cloth/NB = H.r_hand
+				if (NB.amount >= 5)
+					NB.amount -= 5
+					if (NB.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
+					return
 
 	if (!can_use(required))
 		if (produced>1)
