@@ -144,7 +144,7 @@
 
 /datum/language/proc/get_random_greek_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
 	if (!syllables || !syllables.len)
-		return capitalize(pick(first_names_male_greek))
+		return capitalize(pick(first_names_male_greek)) + " " + capitalize(pick(last_names_greek))
 
 	var/full_name = "Philokrates"
 	return full_name

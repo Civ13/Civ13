@@ -321,7 +321,7 @@
 /datum/species/proc/get_random_greek_name(var/gender, var/jew)
 	if (!name_language)
 
-		return capitalize(pick(first_names_male_greek))
+		return capitalize(pick(first_names_male_greek)) + " " + capitalize(pick(last_names_greek))
 
 /datum/species/proc/get_random_roman_name(var/gender, var/jew)
 	if (!name_language)
