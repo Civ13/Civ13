@@ -672,7 +672,7 @@
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/bronze))
-				var/obj/item/stack/material/cloth/NB = H.l_hand
+				var/obj/item/stack/material/bronze/NB = H.l_hand
 				if (NB.amount >= 5)
 					NB.amount -= 5
 					if (NB.amount <= 0)
@@ -681,7 +681,7 @@
 					user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/bronze))
-				var/obj/item/stack/material/cloth/NB = H.r_hand
+				var/obj/item/stack/material/bronze/NB = H.r_hand
 				if (NB.amount >= 5)
 					NB.amount -= 5
 					if (NB.amount <= 0)
