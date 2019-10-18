@@ -1,2 +1,3 @@
 import os
-print(os.path.getmtime("/home/1713/civ13/serverdata.txt"))
+os.system("cd")
+print(os.path.getmtime("serverdata.txt"))

@@ -223,17 +223,46 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
-/obj/item/weapon/gun/projectile/revolver/peacemaker
+/obj/item/weapon/gun/projectile/revolver/coltnewpolice
 	name = "Colt new police 32"
-	desc = "Officialy the M1873 Colt Single Action Army Revolver."
+	desc = "Common revolver used by police."
 	icon_state = "coltnewpolice"
-	base_icon = "coltnewpolice"
 	w_class = 2
 	caliber = "a32"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c32
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/coltnewpolice
+	name = "Colt new police 32"
+	desc = "Common revolver used by police."
+	icon_state = "coltnewpolice"
+	w_class = 2
+	caliber = "a32"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c32
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/enfieldno2
+	name = "Enfield No. 2"
+	desc = "British revolver made with love."
+	icon_state = "Enfield02"
+	w_class = 2
+	caliber = "a41"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c41
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -250,6 +279,22 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/graysonfito12
+	name = "Grayson Fito 12"
+	desc = "A expensive revolver made by Grayson."
+	icon_state = "graysonfito"
+	base_icon = "graysonfito"
+	w_class = 2
+	caliber = "a44magnum"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c44magnum
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -434,7 +479,6 @@
 	icon_state = "revolver"
 	item_state = "revolver"
 	caliber = "a45"
-//	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	slot_flags = SLOT_BELT|SLOT_POCKET
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -617,7 +661,6 @@
 	icon_state = "revolver"
 	item_state = "revolver"
 	caliber = "musketball_pistol"
-//	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	ammo_type = /obj/item/ammo_casing/musketball_pistol

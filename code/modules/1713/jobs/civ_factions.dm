@@ -317,6 +317,8 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.make_businessman()
+
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
 	return TRUE
 /datum/job/british/civilian/priest
@@ -1190,6 +1192,7 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
+	H.make_businessman()
 	return TRUE
 
 /datum/job/spanish/civilian/farmer
@@ -1869,6 +1872,7 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
+	H.make_businessman()
 	return TRUE
 /datum/job/portuguese/civilian/priest
 	title = "Padre"
@@ -1966,6 +1970,7 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
+	H.make_businessman()
 	return TRUE
 
 /datum/job/portuguese/civilian/farmer
@@ -2645,6 +2650,7 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
+	H.make_businessman()
 	return TRUE
 /datum/job/french/civilian/priest
 	title = "Prêtre"
@@ -2742,6 +2748,7 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H),  slot_wear_id)
+	H.make_businessman()
 	return TRUE
 
 /datum/job/french/civilian/farmer

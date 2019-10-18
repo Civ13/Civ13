@@ -156,7 +156,7 @@
 			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font></b><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		on_hear_radio(destination, full_message)
 
-/mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/telephone/source, var/obj/structure/telephone/destination)
+/mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/source, var/obj/item/weapon/telephone/destination)
 
 	if (!client || !message)
 		return
@@ -221,7 +221,7 @@
 /mob/proc/on_hear_radio(var/obj/structure/radio/destination, var/fullmessage)
 	src << "\icon[getFlatIcon(destination)] [fullmessage]"
 
-/mob/proc/on_hear_phone(var/obj/structure/telephone/destination, var/fullmessage)
+/mob/proc/on_hear_phone(var/obj/item/weapon/telephone/destination, var/fullmessage)
 	src << "\icon[getFlatIcon(destination)] [fullmessage]"
 
 /mob/observer/ghost/on_hear_radio(var/obj/structure/radio/destination, var/fullmessage)

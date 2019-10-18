@@ -459,6 +459,16 @@
 	caliber = "a44"
 	value = 8
 
+/obj/item/ammo_casing/a44magnum
+	name = ".44 magnum bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a44magnum
+	caliber = "a44magnum"
+	value = 8
+
 /obj/item/ammo_casing/a4570
 	name = ".45-70 Government bullet"
 	desc = "A brass casing."
@@ -658,6 +668,16 @@
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/rifle/a545x39
 	caliber = "a545x39"
+	value = 2
+
+/obj/item/ammo_casing/a32acp
+	name = ".32 ACP bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.03
+	projectile_type = /obj/item/projectile/bullet/pistol/a32acp
+	caliber = "a32acp"
 	value = 2
 
 /obj/item/ammo_casing/a556x45

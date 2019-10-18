@@ -516,6 +516,13 @@ obj/item/clothing/head/ww2/chicap2
 	item_state = "ww1_british"
 	worn_state = "ww1_british"
 
+/obj/item/clothing/under/ww1/trenchsuit
+	name = "british uniform"
+	desc = "A british khaki uniform, used by the army."
+	icon_state = "trenchsuit"
+	item_state = "trenchsuit"
+	worn_state = "trenchsuit"
+
 /obj/item/clothing/under/ww1/french
 	name = "french uniform"
 	desc = "A french light blue uniform, used by the French Army."
@@ -1118,6 +1125,39 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
 
+/obj/item/clothing/suit/storage/coat/ww2/fancycoat
+	name = "black coat"
+	desc = "A fancy coat made from wool."
+	icon_state = "woolcoat"
+	item_state = "woolcoat"
+	worn_state = "woolcoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ww1/royalcoat
+	name = "royal coat"
+	desc = "A royal coat used for royal people."
+	icon_state = "royalcoat"
+	item_state = "royalcoat"
+	worn_state = "royalcoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ww2/expensivecoat
+	name = "fancy  coat"
+	desc = "A expensive coat made from wool and leather."
+	icon_state = "expensivecoat"
+	item_state = "expensivecoat"
+	worn_state = "expensivecoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
 /obj/item/clothing/suit/storage/coat/ww2/servicejacket
 	name = "servace jacket"
 	desc = "A standard military jacket."
@@ -1146,6 +1186,17 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	icon_state = "blackbomberjacket"
 	item_state = "blackbomberjacket"
 	worn_state = "blackbomberjacket"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/oldyjacket
+	name = "red jacket"
+	desc = "A red jacket from the 80s."
+	icon_state = "jacket80s"
+	item_state = "jacket80s"
+	worn_state = "jacket80s"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)

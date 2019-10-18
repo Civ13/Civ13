@@ -10,7 +10,7 @@
 	var/list/accessories = list()
 	var/list/valid_accessory_slots
 	var/list/restricted_accessory_slots
-	health = 18
+	health = 32
 	dropsound = 'sound/effects/drop_clothing.ogg'
 	flammable = TRUE
 	var/restricts_view = 0 //If it restricts the viewing cone - check hide.dmi: 0 means "combat". 1 means "helmet". 2 means "narrow"

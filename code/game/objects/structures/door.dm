@@ -28,7 +28,6 @@
 	var/haslock = FALSE
 	var/lockicon = "" //File
 	var/lockstate = "" //Icon_state
-	var/lock
 	var/keycode
 
 /obj/structure/simple_door/fire_act(temperature)
@@ -158,9 +157,7 @@
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
-	if(haslock)
-		//NO AUDIO, HANDLED IN ATTACKBY
-	else if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 		playsound(loc, 'sound/machines/shoji_door_close.ogg', 100, TRUE)
 	else
 		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
@@ -198,9 +195,8 @@
 			src.locktype = "KEYPAD"
 			src.lockicon = "icons/obj/doors/locks.dmi"
 			src.lockstate = "keypad_door_overlay"
-			lock = icon(src.lockicon,src.lockstate)
-			var/input_code = input(src, "Input a code, only the first four characters will be used.","Keypad Code", keycode) as text
-			keycode = sanitizeName(input_code, 4, FALSE)
+			var/input_code = input(user, "Input a code, only the first four characters will be used.","Keypad Code", keycode) as text
+			keycode = sanitizeName(input_code, 4, TRUE)
 			user << "<span class='notice'> Code set to: " + keycode + "!</span>"
 			update_lock_overlay()
 			playsound(src, 'sound/machines/click.ogg', 60)
@@ -213,8 +209,8 @@
 				update_lock_overlay()
 				playsound(src, 'sound/effects/insert.ogg', 30)
 			else //It is closed
-				var/input_query = input(src, "Input the Passcode.","Keypad Code", keycode) as text//Get input
-				var/answer = sanitizeName(input_query, 4, FALSE)
+				var/input_query = input(user, "Input the Passcode.","Keypad Code", keycode) as text//Get input
+				var/answer = sanitizeName(input_query, 4, TRUE)
 				if(answer == keycode)//if it matches, unlock, open, and overlay
 					locked = 0
 					Open()
@@ -231,14 +227,14 @@
 	else
 		attack_hand(user)
 	return TRUE // for key_doors
-
+	..()
 //MOAR KEYPAD
 /obj/structure/simple_door/proc/update_lock_overlay()
 	if(haslock)
 		if (state) //if open
-			src.overlays -= lock
+			src.overlays = null
 		else //if closed
-			src.overlays += lock
+			src.overlays += icon(lockicon,lockstate)
 
 /obj/structure/simple_door/proc/CheckHardness()
 	if (hardness <= 0)

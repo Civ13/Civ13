@@ -156,7 +156,7 @@ var/global/list/image/fluidtrack_cache=list()
 		var/obj/item/flashlight/OO = W
 		if (OO.on)
 			visible_message("[user] sets the [src] on fire!","You set the [src] on fire!")
-			new/obj/effect/burning_oil(src.loc)
+			new/obj/effect/fire(src.loc)
 			return
 
 /obj/effect/decal/cleanable/blood/tracks/footprints

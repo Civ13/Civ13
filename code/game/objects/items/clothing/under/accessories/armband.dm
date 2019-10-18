@@ -177,6 +177,22 @@
 	worn_state = "custom_bowtie"
 	slot = "tie"
 
+/obj/item/clothing/accessory/patch/marksman
+	name = "marksman patch"
+	desc = "A patch with a marksman logo on it. Usually worn by skilled shooters."
+	icon_state = "patch_marksman"
+	item_state = "patch_marksman"
+	worn_state = "patch_marksman"
+	slot = "armband"
+
+/obj/item/clothing/accessory/patch/specialforce
+	name = "special forces patch"
+	desc = "A patch used by special forces."
+	icon_state = "patch_specialforces"
+	item_state = "patch_specialforces"
+	worn_state = "patch_specialforces"
+	slot = "armband"
+
 
 /obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
 	if (uncolored)

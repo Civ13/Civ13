@@ -123,14 +123,14 @@
 			if (WEST in sideslist)
 				if (!(NORTH in sideslist))
 					if (EAST in sideslist)
-						icon_state = "d_roadswe" //T, SOUTH EAST WEST
+						icon_state = "d_roadtswe" //T, SOUTH EAST WEST
 						return
 					else
 						icon_state = "d_roadsw" //Turn, SOUTH-WEST
 						return
 				else if (!(SOUTH in sideslist))
 					if (EAST in sideslist)
-						icon_state = "d_roadnwe" //T, NORTH EAST WEST
+						icon_state = "d_roadtnwe" //T, NORTH EAST WEST
 						return
 					else
 						icon_state = "d_roadnw" //Turn, NORTH-WEST
@@ -140,20 +140,20 @@
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
 					return
 				else if (!(SOUTH in sideslist))
-					icon_state = "d_roadne" //T, NORTH-EAST
+					icon_state = "d_roadne" //Turn, NORTH-EAST
 					return
 		else
 			if (NORTH in sideslist)
 				if (!(EAST in sideslist))
 					if (SOUTH in sideslist)
-						icon_state = "d_roadnsw" //T, NORTH SOUTH WEST
+						icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
 						return
 					else
 						icon_state = "d_roadnw" //Turn, NORTH-WEST
 						return
 				else if (!(WEST in sideslist))
 					if (SOUTH in sideslist)
-						icon_state = "d_roadnse" //T, NORTH SOUTH EAST
+						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
 						return
 					else
 						icon_state = "d_roadne" //Turn, NORTH-EAST
@@ -1256,15 +1256,10 @@
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)
-		var/obj/small_fire/NF = new/obj/small_fire(src.loc)
-		NF.set_light(3)
-		NF.origin = src
+		var/obj/effect/fire/NF = new/obj/effect/fire(src.loc)
 		start_fire_dmg(NF)
-		spawn(400)
-			NF.icon_state = "fire_big"
-			NF.set_light(4)
 
-/obj/covers/proc/start_fire_dmg(var/obj/small_fire/SF)
+/obj/covers/proc/start_fire_dmg(var/obj/effect/fire/SF)
 	spawn(80)
 		if (health > 0)
 			health -= 10

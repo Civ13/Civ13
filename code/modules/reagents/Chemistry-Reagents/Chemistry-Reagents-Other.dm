@@ -167,7 +167,7 @@
 	color = "#664B63"
 
 /datum/reagent/space_cleaner
-	name = "Space cleaner"
+	name = "cleaner"
 	id = "cleaner"
 	description = "A compound used to clean things. Now with 50% more sodium hypochlorite!"
 	taste_description = "sourness"

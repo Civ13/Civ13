@@ -24,7 +24,7 @@
 		return
 	var/mob/living/carbon/human/H = src
 	for(var/i = 1, i <= map.custom_faction_nr.len, i++)
-		if (map.custom_company_nr[i] == newname)
+		if (map.custom_company_nr[i] == newname || newname == "Global")
 			usr << "<span class='danger'>That company already exists. Choose another name.</span>"
 			return
 	if (newname != null && newname != "none")
@@ -66,8 +66,9 @@
 					return
 			choosecolor2 = addtext("#",choosecolor2)
 		map.custom_company_nr += newname
-		var/list/newnamev = list("[newname]" = list(list(H,100)))
+		var/list/newnamev = list("[newname]" = list(list(H,100,0)))
 		map.custom_company += newnamev
+		map.custom_company_colors += list("[newname]" = list(choosecolor1,choosecolor2))
 		usr << "<big>You now own <b>100%</b> of the new company [newname].</big>"
 		return
 	else
@@ -124,12 +125,41 @@
 							var/currb = map.custom_company[compchoice][l][2]
 							map.custom_company[compchoice][l][2] = currb+compchoice_amt
 							return
-					map.custom_company[compchoice] += list(list(CM,compchoice_amt))
-					H << "Transfered [compchoice_amt]% of [compchoice] to [CM]."
-					CM << "You received [compchoice_amt]% of [compchoice] from [H]."
+					map.custom_company[compchoice] += list(list(CM,compchoice_amt,0))
+					H << "<big>Transfered [compchoice_amt]% of [compchoice] to [CM].</big>"
+					CM << "<big>You received [compchoice_amt]% of [compchoice] from [H].</big>"
 					return
-
-
 	else
 		usr << "<span class='danger'>You cannot transfer company ownership on this map.</span>"
 		return
+
+//searches company members for a player
+/proc/find_company_member(var/mob/living/carbon/human/H, var/company)
+	if (!map || !H || !company)
+		return FALSE
+
+	for(var/i=1,i<=map.custom_company[company].len,i++)
+		if (map.custom_company[company][i][1] == H)
+			return TRUE
+
+	return FALSE
+
+//for automated transfers e.g. stock market
+/mob/living/carbon/human/proc/transfer_stock_proc(var/companyname, var/stock, var/mob/living/carbon/human/target)
+	if (!companyname || !stock || !target)
+		return
+
+	for(var/l=1, l <= map.custom_company[companyname].len, l++)
+		if (map.custom_company[companyname][l][1] == src)
+			var/currb = map.custom_company[companyname][l][2]
+			map.custom_company[companyname][l][2] = currb-stock
+
+	for(var/l=1,  l <= map.custom_company[companyname].len, l++)
+		if (map.custom_company[companyname][l][1] == target)
+			var/currb = map.custom_company[companyname][l][2]
+			map.custom_company[companyname][l][2] = currb+stock
+			return
+	map.custom_company[companyname] += list(list(target,stock,0))
+	src << "<big>Transfered [stock]% of [companyname] to [target].</big>"
+	target << "<big>You received [stock]% of [companyname] from [src].</big>"
+	return

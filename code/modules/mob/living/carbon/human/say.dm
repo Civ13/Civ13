@@ -63,7 +63,7 @@
 				else
 					PRD.broadcast(message_without_html, src)
 
-		for (var/obj/structure/telephone/TL in range(2,src))
+		for (var/obj/item/weapon/telephone/TL in range(2,src))
 			if (TL.connected)
 				TL.broadcast(message_without_html, src)
 

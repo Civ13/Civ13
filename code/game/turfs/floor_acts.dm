@@ -5,16 +5,15 @@
 	switch(severity)
 		if (1.0)
 			make_grass()
+			new/obj/effect/fire(src)
 		if (2.0)
 			if (prob(75))
 				make_grass()
 			else
 				break_tile()
-				hotspot_expose(1000,CELL_VOLUME)
 		if (3.0)
 			if (prob(50))
 				break_tile()
-				hotspot_expose(1000,CELL_VOLUME)
 	return
 
 /turf/floor/fire_act(temperature)

@@ -246,3 +246,19 @@
 	New()
 		..()
 		reagents.add_reagent("methamphetamine", REAGENTS_OVERDOSE*0.45) // slightly less than an OD
+
+/obj/item/weapon/reagent_containers/pill/ketamine
+	name = "ketamine pill"
+	desc = "You are not sure you should swallow this.. Ah why not."
+	icon_state = "pill16"
+	New()
+		..()
+		reagents.add_reagent("ketamine", REAGENTS_OVERDOSE*0.45) // slightly less than an OD
+
+/obj/item/weapon/reagent_containers/pill/dragonpowder
+	name = "dragon powder pill"
+	desc = "A shiny purple pill."
+	icon_state = "dragonpowder"
+	New()
+		..()
+		reagents.add_reagent("dragon_powder", 10)

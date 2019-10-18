@@ -56,7 +56,7 @@
 		desc = "A red fire extinguisher filled with foam. Has [cap] units left."
 		var/turf/dest = get_turf(get_step(user, user.dir))
 		if (dest)
-			for (var/obj/effect/burning_oil/BO in dest)
+			for (var/obj/effect/fire/BO in dest)
 				qdel(BO)
 			for (var/mob/living/carbon/human/H in dest)
 				if (H.fire_stacks > 0)

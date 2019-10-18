@@ -163,7 +163,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	H.make_businessman()
 
 	return TRUE
 
@@ -225,6 +225,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.make_businessman()
 
 	return TRUE
 
@@ -452,6 +453,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.make_businessman()
 
 	return TRUE
 /datum/job/civilian/priest
@@ -1177,7 +1179,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	H.make_businessman()
 
 	return TRUE
 
@@ -1236,6 +1238,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.make_businessman()
 
 	return TRUE
 
@@ -1494,6 +1497,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.make_businessman()
 
 	return TRUE
 /datum/job/civilian/priest_pioneer
@@ -1588,6 +1592,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.make_businessman()
 
 	return TRUE
 
@@ -1645,6 +1650,7 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
 	H.setStat("farming", STAT_VERY_HIGH)
+	H.make_businessman()
 
 	return TRUE
 /datum/job/civilian/carpenter_pioneer

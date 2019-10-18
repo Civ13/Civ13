@@ -81,7 +81,7 @@ RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,
 RECIPE: /material/leather/,leather curtain,/obj/structure/curtain/leather,1,80,1,1,none,0,0,0,8,null
 
 RECIPE: /material/electronics/,pill maker,/obj/structure/chem_master,20,120,1,1,none,80,0,0,8,null
-RECIPE: /material/electronics/,telephone,/obj/structure/telephone,2,120,1,1,none,80,0,0,8,null
+RECIPE: /material/electronics/,telephone,/obj/item/weapon/telephone,2,120,1,1,none,80,0,0,8,null
 RECIPE: /material/electronics/,radio transmitter,/obj/structure/radio/transmitter,6,150,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,radio receiver,/obj/structure/radio,3,80,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,television,/obj/structure/TV,3,80,1,1,none,160,0,0,8,null
@@ -89,6 +89,7 @@ RECIPE: /material/electronics/,geiger counter,/obj/item/weapon/geiger_counter,5,
 RECIPE: /material/electronics/,2-way radio,/obj/structure/radio/transmitter_receiver,10,150,1,1,none,137,0,0,8,null
 RECIPE: /material/electronics/,portable radio,/obj/item/weapon/radio,12,100,0,1,none,141,0,0,8,null
 RECIPE: /material/electronics/,walkie-talkie radio,/obj/item/weapon/radio/walkietalkie,16,100,0,1,none,178,0,0,8,null
+RECIPE: /material/electronics/,mobile phone,/obj/item/weapon/telephone/mobile,20,100,0,1,none,212,0,0,8,null
 RECIPE: /material/electronics/,component analyser,/obj/item/weapon/analyser,18,100,0,1,none,218,0,0,8,null
 
 RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,jackets & vests,0,0,0,8,null
@@ -219,11 +220,11 @@ RECIPE: /material/cloth/,black vest,/obj/item/clothing/suit/storage/jacket/pirat
 RECIPE: /material/cloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/cloth/,leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat1,6,120,0,1,jackets & vests,0,0,89,5,null
 RECIPE: /material/cloth/,black leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat2,6,120,0,1,jackets & vests,0,0,89,5,null
-RECIPE: /material/cloth/,black vest,/obj/item/clothing/suit/storage/jacket/blackvest,4,80,0,1,jackets & vests,0,0,0,8,null
-RECIPE: /material/cloth/,blue vest,/obj/item/clothing/suit/storage/jacket/bluevest,4,80,0,1,jackets & vests,0,0,0,8,null
-RECIPE: /material/cloth/,olive vest,/obj/item/clothing/suit/storage/jacket/olivevest,4,80,0,1,jackets & vests,0,0,0,8,null
-RECIPE: /material/cloth/,brown winter coat,/obj/item/clothing/suit/storage/coat/japcoat2/brown,10,200,0,1,jackets & vests,0,0,0,8,null
-RECIPE: /material/cloth/,grey winter coat,/obj/item/clothing/suit/storage/coat/ruscoat/grey,10,200,0,1,jackets & vests,0,0,0,8,null
+RECIPE: /material/cloth/,black vest,/obj/item/clothing/suit/storage/jacket/blackvest,4,80,0,1,jackets & vests,0,0,89,8,null
+RECIPE: /material/cloth/,blue vest,/obj/item/clothing/suit/storage/jacket/bluevest,4,80,0,1,jackets & vests,0,0,89,8,null
+RECIPE: /material/cloth/,olive vest,/obj/item/clothing/suit/storage/jacket/olivevest,4,80,0,1,jackets & vests,0,0,89,8,null
+RECIPE: /material/cloth/,brown winter coat,/obj/item/clothing/suit/storage/coat/japcoat2/brown,10,200,0,1,jackets & vests,0,0,99,8,null
+RECIPE: /material/cloth/,grey winter coat,/obj/item/clothing/suit/storage/coat/ruscoat/grey,10,200,0,1,jackets & vests,0,0,99,8,null
 RECIPE: /material/cloth/,charcoal suit,/obj/item/clothing/suit/storage/jacket/charcoal_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,black suit,/obj/item/clothing/suit/storage/jacket/black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,dark black suit,/obj/item/clothing/suit/storage/jacket/really_black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
@@ -492,23 +493,23 @@ RECIPE: /material/glass/,shower,/obj/structure/shower,10,190,1,1,none,115,0,0,8,
 //**************************************************************
 
 //COPPER AGE WOODEN CART//
-RECIPE: /material/wood/,wooden cart/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,1,null
+RECIPE: /material/wood/,wooden cart,/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,1,null
 //COPPER AGE WOODEN CART//
 
 //DARK AGE STONE CART//
-RECIPE: /material/stone/,stone cart/obj/structure/closet/crate/cart/stone,50,190,1,1,logistics,45,0,0,2,null
+RECIPE: /material/stone/,stone cart,/obj/structure/closet/crate/cart/stone,50,190,1,1,logistics,45,0,0,2,null
 //DARK AGE STONE CART//
 
 //RENAISSANCE AGE COPPER CART//
-RECIPE: /material/copper/,copper cart/obj/structure/closet/crate/cart/copper,30,190,1,1,logistics,80,0,0,3,null
+RECIPE: /material/copper/,copper cart,/obj/structure/closet/crate/cart/copper,30,190,1,1,logistics,80,0,0,3,null
 //RENAISSANCE AGE COPPER CART//
 
 //NAPOLEONIC AGE BRONZE CART//
-RECIPE: /material/bronze/,bronze cart/obj/structure/closet/crate/cart/bronze,30,190,1,1,logistics,100,0,0,4,null
+RECIPE: /material/bronze/,bronze cart,/obj/structure/closet/crate/cart/bronze,30,190,1,1,logistics,100,0,0,4,null
 //NAPOLEONIC AGE BRONZE CART//
 
 //EARLY MODERN AGE STEEL CART//
-RECIPE: /material/steel/,steel cart/obj/structure/closet/crate/cart/steel,30,190,1,1,logistics,147,0,0,9,null
+RECIPE: /material/steel/,steel cart,/obj/structure/closet/crate/cart/steel,30,190,1,1,logistics,147,0,0,9,null
 //EARLY MODERN AGE STEEL CART//
 //**************************************************************
 //************************ROBERTS CARTS*************************
@@ -622,8 +623,9 @@ RECIPE: /material/copper/,orange cable coil (10m),/obj/item/stack/cable_coil/ora
 RECIPE: /material/copper/,cyan cable coil (10m),/obj/item/stack/cable_coil/cyan,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,1,35,0,1,electrical,105,0,0,8,null
 
+RECIPE: /material/steel/,cell tower,/obj/structure/cell_tower,15,180,1,1,none,212,0,0,8,null
 RECIPE: /material/steel/,steel floor,/obj/covers/steelplating,1,15,1,1,walls & floors,96,0,0,8,null
-RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,none,96,0,0,8,null
+RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,walls & floors,96,0,0,8,null
 RECIPE: /material/steel/,steel hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,50,44,0,8,steel
 RECIPE: /material/steel/,steel-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,3,steel
 RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,8,null
@@ -739,7 +741,7 @@ RECIPE: /material/wood/,compound bow,/obj/item/weapon/gun/projectile/bow/compoun
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
-RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,8,wood
+RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
 RECIPE: /material/wood/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/,mop,/obj/item/weapon/mop,2,55,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/,wood handle,/obj/item/weapon/material/handle,1,35,0,1,tools,0,0,0,8,wood
@@ -810,17 +812,21 @@ RECIPE: /material/wood/,temple by the river,/obj/structure/sign/painting8,3,40,1
 RECIPE: /material/wood/,desert camp,/obj/structure/sign/painting9,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,paintings,65,0,0,8,null
 
-RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null	
-RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null	
-RECIPE: /material/iron/,rail (turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null	
-RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null	
-RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null	
-RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null	
-RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null	
-RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null	
-RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1,1,trains,101,0,0,8,null	
-RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null	
-RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null	
+RECIPE: /material/wood/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,none,24,0,0,8,null
+RECIPE: /material/wood/,stock market,/obj/structure/stock_market,25,150,1,1,none,80,0,0,8,null
+RECIPE: /material/steel/,vending machine,/obj/structure/vending/sales/vending,20,150,1,1,none,200,0,0,8,null
+
+RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
 
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
@@ -833,11 +839,13 @@ RECIPE: /material/iron/,handcuffs,/obj/item/weapon/handcuffs,1,50,0,1,tools,0,61
 RECIPE: /material/iron/,monocle,/obj/item/clothing/glasses/monocle,3,110,0,1,none,0,61,0,8,null
 RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,0,1,tools,0,46,0,8,null
 RECIPE: /material/iron/,lantern,/obj/item/flashlight/lantern,4,140,0,1,none,28,0,0,8,null
-RECIPE: /material/iron/,unlocked door,/obj/structure/simple_door/key_door/anyone,5,50,1,1,none,28,0,0,8,null
-RECIPE: /material/iron/,locked door,/obj/structure/simple_door/key_door/custom,5,50,1,1,none,28,0,0,8,null
+RECIPE: /material/iron/,unlocked door,/obj/structure/simple_door/key_door/anyone,5,50,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,locked door,/obj/structure/simple_door/key_door/custom,5,50,1,1,construction,28,0,0,8,null
 RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 RECIPE: /material/iron/,keychain,/obj/item/weapon/storage/belt/keychain,1,30,0,1,none,28,0,0,8,null
-RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,none,50,0,0,8,null
+RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,construction,50,0,0,8,null
+RECIPE: /material/iron/,chainlink fence,/obj/structure/grille/chainlinkfence,3,80,1,1,construction,120,0,0,8,null
+RECIPE: /material/iron/,barbwire,/obj/item/stack/material/barbwire,1,30,1,1,construction,120,0,0,8,null
 RECIPE: /material/iron/,anvil,/obj/structure/anvil,25,150,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,circumcision knife,/obj/item/weapon/material/kitchen/utensil/knife/circumcision,2,60,0,1,tools,25,0,0,8,null
 RECIPE: /material/iron/,iron-tipped spear,/obj/item/weapon/material/spear,2,50,0,1,weapons,27,16,0,3,iron

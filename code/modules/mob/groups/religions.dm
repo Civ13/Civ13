@@ -547,7 +547,7 @@ obj/structure/altar/iron
 	else
 		..()
 
-/mob/living/carbon/human/proc/religion_list()
+/mob/proc/religion_list()
 	set name = "Check Religion List"
 	set category = "Faction"
 	if (map && map.civilizations)
