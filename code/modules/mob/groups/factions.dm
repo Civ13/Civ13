@@ -18,6 +18,10 @@
 	verbs += /mob/living/carbon/human/proc/abandon_religion
 	verbs += /mob/living/carbon/human/proc/clergy
 
+/mob/living/carbon/human/proc/make_businessman()
+	verbs += /mob/living/carbon/human/proc/create_company
+	verbs += /mob/living/carbon/human/proc/transfer_company_stock
+
 /mob/New()
 	..()
 	if (map && map.nomads)
