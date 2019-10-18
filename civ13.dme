@@ -349,6 +349,7 @@
 #include "code\game\objects\structures\stool_bed_chair_nest\chairs.dm"
 #include "code\game\objects\structures\stool_bed_chair_nest\stools.dm"
 #include "code\game\objects\structures\stool_bed_chair_nest\wheelchair.dm"
+#include "code\game\objects\structures\vending\fuel_pump.dm"
 #include "code\game\objects\structures\vending\vending.dm"
 #include "code\game\objects\structures\vending\vending_product.dm"
 #include "code\game\objects\structures\vending\vending_sales.dm"

@@ -152,7 +152,6 @@
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
 	var/customname = ""
-	var/customcode = null
 	var/customvar = ""
 	var/customvar2 = ""
 	var/customdesc = ""
@@ -349,14 +348,17 @@
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-
-		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
-			H << "<span class = 'notice'>You need a key in one of your hands in order to craft this.</span>"
+		var/list/clist = list()
+		for(var/i in map.custom_company_nr)
+			for(var/list/L in map.custom_company[i])
+				if (L[1]==H)
+					clist += i
+		if (isemptylist(clist))
+			H << "You are not part of any companies!"
 			return
-		if (istype(H.l_hand, /obj/item/weapon/key))
-			customcode = H.l_hand.code
-		if (istype(H.r_hand, /obj/item/weapon/key))
-			customcode = H.r_hand.code
+		clist += "Cancel"
+		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
+
 		customname = input(user, "Choose a name for this pump:", "Fuel Pump Name" , "fuel pump")
 		if (customname == "" || customname == null)
 			customname = "fuel pump"
@@ -977,7 +979,7 @@
 		else if (istype(O, /obj/structure/fuelpump))
 			var/obj/structure/fuelpump/FP = O
 			FP.customcolor = addtext("#",customcolor)
-			FP.keycode = customcode
+			FP.owner = customvar
 			FP.name = customname
 			FP.do_color()
 		else if (istype(O, /obj/item/vehicleparts/frame))
