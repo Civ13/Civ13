@@ -686,7 +686,7 @@
 
 /datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-//	H.give_languages()
+	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Orc Host"
 
@@ -719,7 +719,7 @@
 
 /datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-//	H.give_languages()
+	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Ant Colony"
 
@@ -753,7 +753,7 @@
 
 /datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-//	H.give_languages()
+	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Gorilla Tribe"
 
@@ -786,7 +786,7 @@
 
 /datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-//	H.give_languages()
+	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Human Kingdom"
 
@@ -818,7 +818,7 @@
 
 /datum/job/civilian/fantasy/wolf/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-//	H.give_languages()
+	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Wolfpack"
 
@@ -851,7 +851,7 @@
 
 /datum/job/civilian/fantasy/lizard/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-//	H.give_languages()
+	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Lizard Clan"
 
@@ -882,7 +882,7 @@
 
 /datum/job/civilian/fantasy/crab/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-//	H.give_languages()
+	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Crustacean Union"
 
