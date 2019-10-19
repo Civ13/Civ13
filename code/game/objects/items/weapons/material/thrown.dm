@@ -1,8 +1,8 @@
-/obj/item/weapon/material/star
+/obj/item/weapon/material/thrown/star
 	name = "shuriken"
 	desc = "A sharp, perfectly weighted piece of metal."
 	icon_state = "star"
-	throwforce = 18
+	throwforce = 28
 	force_divisor = 0.1 // 6 with hardness 60 (steel)
 	thrown_force_divisor = 0.8 // 15 with weight 20 (steel)
 	throw_speed = 10
@@ -11,16 +11,16 @@
 	edge =  TRUE
 	w_class = 1
 
-/obj/item/weapon/material/star/New()
+/obj/item/weapon/material/thrown/star/New()
 	..()
 	pixel_x = rand(-12, 12)
 	pixel_y = rand(-12, 12)
 
-/obj/item/weapon/material/kunai_normal
+/obj/item/weapon/material/thrown/kunai_normal
 	name = "Kunai"
 	desc = "Tool of some ninjas."
 	icon_state = "kunai_white"
-	throwforce = 20
+	throwforce = 30
 	force_divisor = 0.18 // 10? when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8
 	throw_speed = 9
@@ -29,16 +29,16 @@
 	edge =  TRUE
 	w_class = 1
 
-/obj/item/weapon/material/kunai_normal/New()
+/obj/item/weapon/material/thrown/kunai_normal/New()
 	..()
 	pixel_x = rand(-8, 8)
 	pixel_y = rand(-8, 8)
 
-/obj/item/weapon/material/throwing_knife
+/obj/item/weapon/material/thrown/throwing_knife
 	name = "Throwing knife"
 	desc = "A balanced knife for throwing."
 	icon_state = "throwing_knife"
-	throwforce = 24
+	throwforce = 34
 	force_divisor = 0.30 // 15 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8
 	throw_speed = 8
@@ -47,16 +47,16 @@
 	edge =  TRUE
 	w_class = 1
 
-/obj/item/weapon/material/throwing_knife/New()
+/obj/item/weapon/material/thrown/throwing_knife/New()
 	..()
 	pixel_x = rand(-8, 8)
 	pixel_y = rand(-8, 8)
 
-/obj/item/weapon/material/tomahawk
+/obj/item/weapon/material/thrown/tomahawk
 	name = "Tomahawk"
 	desc = "An axe made to be thrown!"
 	icon_state = "tomahawk"
-	throwforce = 28
+	throwforce = 36
 	force_divisor = 0.25 // 15 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8
 	throw_speed = 6
@@ -65,16 +65,16 @@
 	edge =  TRUE
 	w_class = 1
 
-/obj/item/weapon/material/tomahawk/New()
+/obj/item/weapon/material/thrown/tomahawk/New()
 	..()
 	pixel_x = rand(-4, 4)
 	pixel_y = rand(-4, 4)
 
-/obj/item/weapon/material/throwing_axe
+/obj/item/weapon/material/thrown/throwing_axe
 	name = "Throwing axe"
 	desc = "A modern version of a tomahawk."
 	icon_state = "throwing_axe"
-	throwforce = 30
+	throwforce = 40
 	force_divisor = 0.30 // 15 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8
 	throw_speed = 6
@@ -82,7 +82,7 @@
 	sharp = TRUE
 	edge =  TRUE
 	w_class = 1
-/obj/item/weapon/material/throwing_axe/New()
+/obj/item/weapon/material/thrown/throwing_axe/New()
 	..()
 	pixel_x = rand(-4, 4)
 	pixel_y = rand(-4, 4)

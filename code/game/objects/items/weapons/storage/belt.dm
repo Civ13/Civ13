@@ -72,10 +72,10 @@
 		/obj/item/flashlight,
 		/obj/item/weapon/material/minihoe,
 		/obj/item/weapon/material/hatchet,
-		/obj/item/weapon/material/kunai_normal,
-		/obj/item/weapon/material/throwing_knife,
-		/obj/item/weapon/material/tomahawk,
-		/obj/item/weapon/material/throwing_axe,
+		/obj/item/weapon/material/thrown/kunai_normal,
+		/obj/item/weapon/material/thrown/throwing_knife,
+		/obj/item/weapon/material/thrown/tomahawk,
+		/obj/item/weapon/material/thrown/throwing_axe,
 		)
 
 
@@ -120,25 +120,25 @@
 	max_w_class = 1
 	can_hold = list(
 		/obj/item/weapon/material/hatchet,
-		/obj/item/weapon/material/kunai_normal,
-		/obj/item/weapon/material/throwing_knife,
-		/obj/item/weapon/material/tomahawk,
-		/obj/item/weapon/material/throwing_axe,
+		/obj/item/weapon/material/thrown/kunai_normal,
+		/obj/item/weapon/material/thrown/throwing_knife,
+		/obj/item/weapon/material/thrown/tomahawk,
+		/obj/item/weapon/material/thrown/throwing_axe,
 		)
 
 /obj/item/weapon/storage/belt/leather/ninja
 	..()
 /obj/item/weapon/storage/belt/throwing/ninja/New()
 	..()
-	new /obj/item/weapon/material/star(src)
-	new /obj/item/weapon/material/star(src)
-	new /obj/item/weapon/material/star(src)
-	new /obj/item/weapon/material/star(src)
-	new /obj/item/weapon/material/star(src)
-	new /obj/item/weapon/material/star(src)
-	new /obj/item/weapon/material/kunai_normal(src)
-	new /obj/item/weapon/material/kunai_normal(src)
-	new /obj/item/weapon/material/kunai_normal(src)
-	new /obj/item/weapon/material/kunai_normal(src)
-	new /obj/item/weapon/material/kunai_normal(src)
-	new /obj/item/weapon/material/kunai_normal(src)
+	new /obj/item/weapon/material/thrown/star(src)
+	new /obj/item/weapon/material/thrown/star(src)
+	new /obj/item/weapon/material/thrown/star(src)
+	new /obj/item/weapon/material/thrown/star(src)
+	new /obj/item/weapon/material/thrown/star(src)
+	new /obj/item/weapon/material/thrown/star(src)
+	new /obj/item/weapon/material/thrown/kunai_normal(src)
+	new /obj/item/weapon/material/thrown/kunai_normal(src)
+	new /obj/item/weapon/material/thrown/kunai_normal(src)
+	new /obj/item/weapon/material/thrown/kunai_normal(src)
+	new /obj/item/weapon/material/thrown/kunai_normal(src)
+	new /obj/item/weapon/material/thrown/kunai_normal(src)
