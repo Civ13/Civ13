@@ -217,6 +217,7 @@
 	default_material = null
 	var/magic_state = "Spark" //this switches according to spell.
 	var/magic_state_stage //stage of state.
+	var/magic_spell_amount = 4 //How many spells are in the wand.
 	var/low_spell_list = list("Spark", "Flare", "Root", "Ice Shard") //Magic stat 0-75
 	var/med_spell_list = list("Shock Bolt", "Fire Bolt", "Vine Shot", "Ice Blast") //Magic stat 75 - 125
 	var/hig_spell_list = list("Lightning Strike", "Fire Ball", "Ensnare", "Frozen Rain") //Magic stat 125 - 200
@@ -234,21 +235,14 @@
 		default_material = null
 
 //Utility
-/obj/item/weapon/material/magic/wand/proc/list_items_as_text(list/X)
-   var/ry = ""
-   for(var/a in X)
-      ry += "[X],"
-   ry = copytext(ry,1,length(ry))
-   return ry
-
 /obj/item/weapon/material/magic/wand/examine(mob/user as mob)
 	var/mob/living/carbon/human/H = user
 	user << "<span class='notice'>[desc]</span>"
 	user << "<span class='notice'>The currently active spell is [magic_state]</span>"
 	if(H.getStat("magic") <= 100)
-		user << "<span class='notice'>The wand seems to have about [list_items_as_text(active_spell_list)] active spells.</span>"
+		user << "<span class='notice'>You cannot detect anything about the wands spells.</span>"
 	else
-		user << "<span class='notice'>The wand has the spells [list_items_as_text(active_spell_list)] active spells.</span>"
+		user << "<span class='notice'>The wand has the spells [active_spell_list] active spells.</span>"
 	//How many uses are left.
 	if(H.getStat("magic") <= 100)
 		if(charges >= maxcharges / 1.5)
@@ -282,8 +276,14 @@
 		user << "<span class='notice'>The wand has <font color=#9fe6f5>[charges] charges left!</font>!</span>"
 	else
 		user << "<span class='notice'>The wand has <font color=#9fe6f5>[charges]</font> out of <font color=#9fe6f5>[maxcharges] charges left!</font>!</span>"
+
 /obj/item/weapon/material/magic/wand/attackby(obj/item/W as obj, mob/user as mob)
 	//Switch spell
+	magic_state_stage++
+	if(magic_state_stage > magic_spell_amount)
+		magic_state_stage = 1
+	user << "<span class='notice'>Spell set to [active_spell_list[magic_state_stage]]!</span>"
+	magic_state = active_spell_list[magic_state_stage]
 
 /obj/item/weapon/material/magic/wand/attack(obj/item/W as obj, mob/user as mob)
 	//if charges > 0, casting = true spawn(castdelay), CASTING = false, shoot projectile.

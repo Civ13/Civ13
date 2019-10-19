@@ -140,7 +140,8 @@
 		"machinegun" = list(100,100),
 		"farming" = list(100,100),
 		"stamina" = list(100,100),
-		"magic" = list(100,100))
+		"throwing" = list(100,100),
+		"magic" = list(0,100))
 
 	var/has_hunger_and_thirst = TRUE
 
