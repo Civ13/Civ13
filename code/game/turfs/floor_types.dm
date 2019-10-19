@@ -213,7 +213,7 @@
 /turf/floor/beach/sand/dark
 	name = "dark sand"
 	icon = 'icons/turf/floors.dmi'
-	icon_state = "dust"
+	icon_state = "darksand"
 	is_diggable = TRUE
 	available_sand = 4
 	initial_flooring = null
