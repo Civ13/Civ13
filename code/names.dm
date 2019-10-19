@@ -71,6 +71,7 @@ var/list/verbs = file2list("config/names/verbs.txt")
 var/list/adjectives = file2list("config/names/adjectives.txt")
 
 var/list/first_names_male_greek = file2list("config/names/first_male_greek.txt")
+var/list/last_names_greek = file2list("config/names/last_greek.txt")
 
 var/list/first_names_male_arab = file2list("config/names/first_male_arab.txt")
 var/list/first_names_female_arab = file2list("config/names/first_female_arab.txt")

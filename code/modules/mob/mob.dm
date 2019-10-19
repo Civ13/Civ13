@@ -321,6 +321,11 @@
 		return
 	return mind.add_note(section, note)
 
+/mob/proc/remove_note(section, note)
+	if (!mind)
+		return
+	return mind.remove_note(section, note)
+
 /mob/proc/wipe_notes()
 	if (!mind)
 		return
