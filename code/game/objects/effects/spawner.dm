@@ -8,13 +8,17 @@
 	var/create_path = /obj/item/ammo_casing/arrow
 	var/max_amt = 1
 
-/obj/effect/spawner/ammospawner/arrow
-	name = "arrow spawner"
-	create_path = /obj/item/ammo_casing/arrow
+/obj/effect/spawner/ammospawner/arrow/bronze
+	name = "bronze arrow spawner"
+	create_path = /obj/item/ammo_casing/arrow/bronze
 
 /obj/effect/spawner/ammospawner/stone
 	name = "stone projectile spawner"
 	create_path = /obj/item/ammo_casing/stone
+
+/obj/effect/spawner/ammospawner/tomahawk
+	name = "tomahawk spawner"
+	create_path = /obj/item/weapon/material/thrown/tomahawk
 
 /obj/effect/spawner/ammospawner/New()
 	..()
