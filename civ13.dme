@@ -280,6 +280,7 @@
 #include "code\game\objects\map_metadata\nomads_jungle.dm"
 #include "code\game\objects\map_metadata\nomads_karafuta.dm"
 #include "code\game\objects\map_metadata\nomads_mountain.dm"
+#include "code\game\objects\map_metadata\nomads_new_world.dm"
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
 #include "code\game\objects\map_metadata\omaha.dm"

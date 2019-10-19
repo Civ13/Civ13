@@ -56,6 +56,7 @@
 	color = "#000000"
 	density = TRUE
 	opacity = TRUE
+	layer = 10
 /turf/wall/indestructable/New(var/newloc)
 	icon_state = initial(icon_state)
 	..(newloc,"indestructable")
