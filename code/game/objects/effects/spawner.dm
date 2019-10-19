@@ -266,6 +266,30 @@
 	create_path = /mob/living/simple_animal/hostile/poison/snake
 	timer = 5000
 
+/obj/effect/spawner/mobspawner/snake/cobra
+	name = "cobra spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/poison/snake/cobra
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/snake/boa
+	name = "boa constrictor spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/poison/snake/constrictor
+	timer = 8000
+
+/obj/effect/spawner/mobspawner/snake/python
+	name = "python constrictor spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/poison/snake/constrictor/python
+	timer = 7000
+
 /obj/effect/spawner/mobspawner/crab
 	name = "crab spawner"
 	max_number = 2
