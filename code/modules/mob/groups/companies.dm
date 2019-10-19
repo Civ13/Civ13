@@ -23,7 +23,7 @@
 	if (!ishuman(src))
 		return
 	var/mob/living/carbon/human/H = src
-	for(var/i = 1, i <= map.custom_faction_nr.len, i++)
+	for(var/i = 1, i <= map.custom_company_nr.len, i++)
 		if (map.custom_company_nr[i] == newname || newname == "Global")
 			usr << "<span class='danger'>That company already exists. Choose another name.</span>"
 			return
