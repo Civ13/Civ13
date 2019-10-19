@@ -816,7 +816,7 @@ RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,pa
 
 RECIPE: /material/wood/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,none,24,0,0,8,null
 RECIPE: /material/wood/,stock market,/obj/structure/stock_market,25,150,1,1,none,80,0,0,8,null
-RECIPE: /material/steel/,vending machine,/obj/structure/vending/sales/vending,20,150,1,1,none,200,0,0,8,null
+RECIPE: /material/steel/,vending machine,/obj/structure/vending/sales/vending,12,150,1,1,none,200,0,0,8,null
 
 RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
