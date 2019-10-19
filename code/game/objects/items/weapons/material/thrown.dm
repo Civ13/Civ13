@@ -2,8 +2,9 @@
 	name = "shuriken"
 	desc = "A sharp, perfectly weighted piece of metal."
 	icon_state = "star"
+	throwforce = 18
 	force_divisor = 0.1 // 6 with hardness 60 (steel)
-	thrown_force_divisor = 0.65 // 15 with weight 20 (steel)
+	thrown_force_divisor = 0.8 // 15 with weight 20 (steel)
 	throw_speed = 10
 	throw_range = 15
 	sharp = TRUE
@@ -19,8 +20,9 @@
 	name = "Kunai"
 	desc = "Tool of some ninjas."
 	icon_state = "kunai_white"
+	throwforce = 20
 	force_divisor = 0.18 // 10? when wielded with hardness 60 (steel)
-	thrown_force_divisor = 0.70
+	thrown_force_divisor = 0.8
 	throw_speed = 9
 	throw_range = 13
 	sharp = TRUE
@@ -36,8 +38,9 @@
 	name = "Throwing knife"
 	desc = "A balanced knife for throwing."
 	icon_state = "throwing_knife"
+	throwforce = 24
 	force_divisor = 0.30 // 15 when wielded with hardness 60 (steel)
-	thrown_force_divisor = 0.75
+	thrown_force_divisor = 0.8
 	throw_speed = 8
 	throw_range = 12
 	sharp = TRUE
@@ -53,8 +56,9 @@
 	name = "Tomahawk"
 	desc = "An axe made to be thrown!"
 	icon_state = "tomahawk"
+	throwforce = 28
 	force_divisor = 0.25 // 15 when wielded with hardness 60 (steel)
-	thrown_force_divisor = 0.75
+	thrown_force_divisor = 0.8
 	throw_speed = 6
 	throw_range = 8
 	sharp = TRUE
@@ -70,8 +74,9 @@
 	name = "Throwing axe"
 	desc = "A modern version of a tomahawk."
 	icon_state = "throwing_axe"
+	throwforce = 30
 	force_divisor = 0.30 // 15 when wielded with hardness 60 (steel)
-	thrown_force_divisor = 0.80
+	thrown_force_divisor = 0.8
 	throw_speed = 6
 	throw_range = 9
 	sharp = TRUE
