@@ -21,6 +21,7 @@
 	drawsound = 'sound/items/unholster_sword01.ogg'
 	sharpness = 50
 	stat = "swords"
+	default_material = null
 	cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
 	//ability vars
 	var/weakens = 0
@@ -43,6 +44,10 @@
 	var/reagent1amount = 0
 	var/reagent2amount = 0
 	var/cooloff = 0
+
+/obj/item/weapon/material/sword/magic/New()
+	..()
+	default_material = null
 
 /obj/item/weapon/material/sword/magic/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
 	..()
