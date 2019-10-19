@@ -300,6 +300,22 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
+/obj/item/weapon/gun/projectile/revolver/smithwesson
+	name = "Smith Wesson 32"
+	desc = "A smith 'n Wesson revolver, chambered in (.32)."
+	icon_state = "smithwesson32"
+	base_icon = "smithwesson32"
+	w_class = 1
+	caliber = "a32"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c32
+	weight = 1.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
 /obj/item/weapon/gun/projectile/revolver/t26_revolver
 	name = "Type 26 revolver"
 	desc = "Japanese officer's revolver."

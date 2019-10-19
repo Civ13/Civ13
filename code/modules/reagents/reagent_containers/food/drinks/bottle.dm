@@ -314,6 +314,15 @@
 		..()
 		reagents.add_reagent("vodka", 100)
 
+/obj/item/weapon/reagent_containers/food/drinks/bottle/bluegoose
+	name = "Blue Goose Vodka"
+	desc = "A expensive vodka which is only for flexing."
+	icon_state = "bluegoose"
+	center_of_mass = list("x"=17, "y"=3)
+	New()
+		..()
+		reagents.add_reagent("vodka", 100)
+
 /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka/empty
 	name = "Tunguska Triple Distilled"
 	desc = "Aah, vodka. Prime choice of drink AND fuel by Russians worldwide."
@@ -511,6 +520,26 @@
 	desc = "One sip of this and you just know you're gonna have a good time."
 	icon_state = "absinthebottle"
 	center_of_mass = list("x"=16, "y"=6)
+	New()
+		..()
+		reagents.del_reagents()
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/expensivewine
+	name = "Expensive Wine (La spetia)"
+	desc = "A faint aura of unease and asspainery surrounds the bottle.."
+	icon_state = "expensivewine"
+	center_of_mass = list("x"=16, "y"=4)
+	value = 16
+	New()
+		..()
+		reagents.add_reagent("wine", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/wine/expensivewine
+	name = "Expensive Wine (La spetia)"
+	desc = "A faint aura of unease and asspainery surrounds the bottle."
+	icon_state = "expensivewine_empty"
+	center_of_mass = list("x"=16, "y"=4)
+	value = 1
 	New()
 		..()
 		reagents.del_reagents()

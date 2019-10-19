@@ -224,6 +224,16 @@
 /obj/structure/lamp/lamppost_small/alwayson
 	powerneeded = 0
 	on = TRUE
+
+/obj/structure/lamp/lamppost_small
+	name = "small lamp post"
+	desc = "A small lamp post, good for outdoor illumination."
+	icon_state = "lamppost_small"
+	powerneeded = 2
+	light_amt = 6
+/obj/structure/lamp/lamppost_small/alwayson
+	powerneeded = 0
+	on = TRUE
 /obj/structure/lamp/lamp_small
 	name = "small lightbulb"
 	desc = "A small lightbulb."
