@@ -157,6 +157,8 @@
 						map.custom_company_value[owner] += R.price
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 					GC.amount = moneyin/0.4
+					if (GC.amount == 0)
+						qdel(GC)
 					moneyin = 0
 					vend(R, usr)
 					nanomanager.update_uis(src)
@@ -167,6 +169,8 @@
 		else if (href_list["remove_money"])
 			var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 			GC.amount = moneyin/0.4
+			if (GC.amount == 0)
+				qdel(GC)
 			moneyin = 0
 			nanomanager.update_uis(src)
 			return
