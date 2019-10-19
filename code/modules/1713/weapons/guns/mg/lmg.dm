@@ -56,7 +56,7 @@
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_MEDIUM
-	stat = "mg"
+	stat = "machinegun"
 	w_class = 5
 	heavy = TRUE
 	load_method = MAGAZINE
