@@ -445,6 +445,69 @@
 	item_state = "modern4"
 	worn_state = "modern4"
 
+/obj/item/clothing/under/modern7
+	name = "modern outfit"
+	desc = "An outfit composed of a white shirt and black cargo pants."
+	icon_state = "modern7"
+	item_state = "modern7"
+	worn_state = "modern7"
+
+/obj/item/clothing/under/modern8
+	name = "modern skirt"
+	desc = "An outfit composed of a black skirt and white shirt."
+	icon_state = "modern8"
+	item_state = "modern8"
+	worn_state = "modern8"
+
+/obj/item/clothing/under/oldmansuit
+	name = "old man suit"
+	desc = "An outfit worn by fancy men in the 1800s."
+	icon_state = "oldmansuit"
+	item_state = "oldmansuit"
+	worn_state = "oldmansuit"
+
+/obj/item/clothing/under/cozyoldy
+	name = "fancy outfit"
+	desc = "An outfit worn by fancy men in the 1800s."
+	icon_state = "cozyoldy"
+	item_state = "cozyoldy"
+	worn_state = "cozyoldy"
+
+/obj/item/clothing/under/peakyblinder
+	name = "fancy suit"
+	desc = "An outfit used by scum."
+	icon_state = "peakyblinder"
+	item_state = "peakyblinder"
+	worn_state = "peakyblinder"
+
+/obj/item/clothing/under/oldfirefighter
+	name = "fire fighter uniform"
+	desc = "An outfit used by fire fighters. Damn hot."
+	icon_state = "oldfirefighter"
+	item_state = "oldfirefighter"
+	worn_state = "oldfirefighter"
+
+/obj/item/clothing/under/blacktango
+	name = "black dress"
+	desc = "An dress used by fancy woman."
+	icon_state = "black_tango_alt_s"
+	item_state = "black_tango_alt_s"
+	worn_state = "black_tango_alt_s"
+
+/obj/item/clothing/under/clown
+	name = "clown outfit"
+	desc = "An outfit used by clowns."
+	icon_state = "clown"
+	item_state = "clown"
+	worn_state = "clown"
+
+/obj/item/clothing/under/jester
+	name = "jester outfit"
+	desc = "A jester outfit. WHERE IS ME FUN HAHA."
+	icon_state = "jester"
+	item_state = "jester"
+	worn_state = "jester"
+
 /obj/item/clothing/under/farmer_outfit
 	name = "farmer outfit"
 	desc = "An outfit composed of a checkered shirt and a denim bib."

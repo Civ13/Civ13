@@ -13,6 +13,11 @@
 	wax = rand(800, 1000) // Enough for 27-33 minutes. 30 minutes on average.
 	..()
 
+/obj/item/weapon/flame/candle/on
+	New()
+		..()
+		light()
+
 /obj/item/weapon/flame/candle/update_icon()
 	var/i
 	if (wax > 1500)
@@ -59,9 +64,6 @@
 			dropped()
 		qdel(src)
 	update_icon()
-	if (istype(loc, /turf)) //start a fire if possible
-		var/turf/T = loc
-		T.hotspot_expose(700, 5)
 
 /obj/item/weapon/flame/candle/attack_self(mob/user as mob)
 	if (lit)

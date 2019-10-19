@@ -102,6 +102,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		load_new_recipes()
 	spawn(3000)
 		check_points_msg()
+		config.no_respawn_delays = FALSE
 
 /obj/map_metadata/gulag13/proc/load_new_recipes()
 	var/F3 = file("config/material_recipes_camp.txt")
@@ -152,7 +153,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			if(H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner) && !donecheck)
 				var/area/A = get_area(H)
 				if (istype(A, /area/caribbean/nomads/ice/target))
-					world << "<br><font size = 3><span class = 'warning'>Thre are prisoners currently escaping!</span></font>"
+					world << "<br><font size = 3><span class = 'warning'>There are prisoners currently escaping!</span></font>"
 					donecheck = TRUE
 
 	spawn(2400)

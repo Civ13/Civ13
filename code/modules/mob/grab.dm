@@ -137,7 +137,7 @@
 			else
 				affecting.Weaken(2)
 
-	if (state >= GRAB_NECK)
+	if (state >= GRAB_NECK && affecting)
 		affecting.Stun(2)
 		if (isliving(affecting))
 			var/mob/living/L = affecting
@@ -341,7 +341,8 @@
 
 /obj/item/weapon/grab/proc/reset_kill_state()
 	if (state == GRAB_KILL)
-		assailant.visible_message("<span class='warning'>[assailant] lost \his tight grip on [affecting]'s neck!</span>")
+		if (assailant)
+			assailant.visible_message("<span class='warning'>[assailant] lost \his tight grip on [affecting]'s neck!</span>")
 		hud.icon_state = "kill"
 		state = GRAB_NECK
 

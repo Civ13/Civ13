@@ -246,7 +246,7 @@
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (160/(H.getStatCoeff("strength"))/SH.usespeed)))
+			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
 					return
@@ -572,39 +572,58 @@
 			return
 	else if (istype(C, /obj/item/weapon/plough))
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/grass/jungle))
-			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
-			return
-		else if (istype(T, /turf/floor/dirt/burned))
-			user << "<span class='danger'>This floor is burned! Wait for it to recover first.</span>"
-			return
-		else if (istype(T, /turf/floor/dirt/jungledirt))
-			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
-			return
-		else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
-			if (do_after(user, 50, user.loc))
-				ChangeTurf(/turf/floor/dirt)
-				return
-		else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
-			var/mob/living/carbon/human/H = user
-			if (do_after(user, 70/H.getStatCoeff("farming"), user.loc))
-				if (istype(T, /turf/floor/dirt/flooded))
-					ChangeTurf(/turf/floor/dirt/ploughed/flooded)
-					if (ishuman(user))
-						H.adaptStat("farming", 2)
+		if (user.a_intent == I_DISARM)
+			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach))
+				for(var/obj/covers/CV in T)
+					user << "<span class='danger'>You can't make a dirt road here.</span>"
 					return
-				else if (istype(T, /turf/floor/dirt/underground))
-					user << "<span class='danger'>You can't plough this type of terrain.</span>"
+				user << "You start making a dirt road..."
+				if (do_after(user, 50, user.loc))
+					user << "You finish the dirt road."
+					var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)
+					if (user.dir == NORTH || user.dir == SOUTH)
+						DR.vertical = TRUE
+						DR.dir = 1
+						DR.icon_state = "d_roadvr"
+					else
+						DR.vertical = FALSE
+						DR.dir = 4
+						DR.icon_state = "d_roadhr"
 					return
-				else
-					ChangeTurf(/turf/floor/dirt/ploughed)
-					if (ishuman(user))
-						H.adaptStat("farming", 2)
-					return
-
 		else
-			user << "<span class='danger'>You can't plough this type of terrain.</span>"
-			return
+			if (istype(T, /turf/floor/grass/jungle))
+				user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
+				return
+			else if (istype(T, /turf/floor/dirt/burned))
+				user << "<span class='danger'>This floor is burned! Wait for it to recover first.</span>"
+				return
+			else if (istype(T, /turf/floor/dirt/jungledirt))
+				user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
+				return
+			else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
+				if (do_after(user, 50, user.loc))
+					ChangeTurf(/turf/floor/dirt)
+					return
+			else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
+				var/mob/living/carbon/human/H = user
+				if (do_after(user, 70/H.getStatCoeff("farming"), user.loc))
+					if (istype(T, /turf/floor/dirt/flooded))
+						ChangeTurf(/turf/floor/dirt/ploughed/flooded)
+						if (ishuman(user))
+							H.adaptStat("farming", 2)
+						return
+					else if (istype(T, /turf/floor/dirt/underground))
+						user << "<span class='danger'>You can't plough this type of terrain.</span>"
+						return
+					else
+						ChangeTurf(/turf/floor/dirt/ploughed)
+						if (ishuman(user))
+							H.adaptStat("farming", 2)
+						return
+
+			else
+				user << "<span class='danger'>You can't plough this type of terrain.</span>"
+				return
 
 	else if (istype(C, /obj/item/weapon/covers) && !istype(src, /turf/floor/beach/water/deep/saltwater))
 
@@ -711,7 +730,7 @@
 		if (istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rocky floor with the [C.name].</span>", "<span class = 'notice'>You start to break the rocky floor with the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			var/timera = 110/(H.getStatCoeff("strength"))
+			var/timera = 320/(H.getStatCoeff("strength"))
 			if (do_after(user, timera))
 				mining_proc(H)
 		else
@@ -747,7 +766,7 @@
 	if (prob(25))
 		if (prob(60))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
-			mineral.amount = rand(2,6)
+			mineral.amount = rand(8,12)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			H << "<span class='danger'>You found some copper ore!</span>"
@@ -760,7 +779,7 @@
 			return
 		else
 			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
-			mineral.amount = rand(2,6)
+			mineral.amount = rand(8,12)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			H << "<span class='danger'>You found some tin ore!</span>"
@@ -773,7 +792,7 @@
 			return
 	if (prob(40) && map.ordinal_age >= 1)
 		var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
-		mineral.amount = rand(2,6)
+		mineral.amount = rand(8,12)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some iron ore!</span>"
@@ -787,7 +806,7 @@
 	if (prob(25))
 		if (map.ordinal_age <= 1)
 			var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
-			mineral.amount = rand(6,8)
+			mineral.amount = rand(12,16)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			H << "<span class='danger'>You found some coal!</span>"
@@ -802,7 +821,7 @@
 			var/pickperc = pick(1,2,3,4)
 			if (pickperc == 1)
 				var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
-				mineral.amount = rand(6,8)
+				mineral.amount = rand(12,16)
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
 				H << "<span class='danger'>You found some coal!</span>"
@@ -815,7 +834,7 @@
 				return
 			else if (pickperc == 2)
 				var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
-				mineral.amount = 2
+				mineral.amount = 4
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
 				H << "<span class='danger'>You found some saltpeter!</span>"
@@ -828,7 +847,7 @@
 				return
 			else if (pickperc == 3)
 				var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
-				mineral.amount = 2
+				mineral.amount = 4
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
 				H << "<span class='danger'>You found some sulphur!</span>"
@@ -842,7 +861,7 @@
 			else if (pickperc == 4)
 				if (prob(50))
 					var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
-					mineral.amount = 2
+					mineral.amount = 4
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					H << "<span class='danger'>You found some lead!</span>"
@@ -856,7 +875,7 @@
 				else
 					if (prob(40))
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
-						mineral.amount = 2
+						mineral.amount = 4
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
 						H << "<span class='danger'>You found some uranium!</span>"
@@ -869,7 +888,7 @@
 						return
 					else
 						var/obj/item/stack/ore/mercury/mineral = new/obj/item/stack/ore/mercury(src)
-						mineral.amount = 2
+						mineral.amount = 4
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
 						H << "<span class='danger'>You found some mercury!</span>"
@@ -882,7 +901,7 @@
 						return
 	if (prob(5))
 		var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
-		mineral.amount = 2
+		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some silver ore!</span>"
@@ -895,7 +914,7 @@
 		return
 	if (prob(2))
 		var/obj/item/stack/ore/gold/mineral = new/obj/item/stack/ore/gold(src)
-		mineral.amount = 2
+		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some gold ore!</span>"
@@ -908,7 +927,7 @@
 		return
 	if (prob(1))
 		var/obj/item/stack/ore/diamond/mineral = new/obj/item/stack/ore/diamond(src)
-		mineral.amount = 2
+		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some raw diamonds!</span>"
@@ -922,20 +941,20 @@
 	//Switch rock material
 	if(ROCKTYPE == "sand")
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
-		mineral.amount = rand(3,10)
+		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some sandstone rocks!</span>"
 	else if(ROCKTYPE == "ice")
 		//TODO ADD ICE STUFF AND FOSSILS
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-		mineral.amount = rand(4,8)
+		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some usable stone rocks!</span>"
 	else
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-		mineral.amount = rand(4,8)
+		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some usable stone rocks!</span>"
@@ -956,7 +975,7 @@
 		if (H.ant && H.a_intent == I_GRAB)
 			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
+			if (do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
 				U.collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
 					return TRUE

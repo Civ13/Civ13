@@ -29,7 +29,7 @@
 		if (data[i])
 			totalFlavor += data[data[i]]
 	for (var/i in 1 to data.len) //cull the tasteless
-		if (data[i])
+		if (i <= data.len && data[i])
 			if (data[data[i]]/totalFlavor * 100 < 10)
 				data[data[i]] = null
 				data -= data[i]
@@ -160,10 +160,6 @@
 /datum/reagent/nutriment/cornoil/touch_turf(var/turf/T)
 	if (!istype(T))
 		return
-
-	var/hotspot = (locate(/obj/fire) in T)
-	if (hotspot)
-		qdel(hotspot)
 
 	if (volume >= 3)
 		T.wet_floor()

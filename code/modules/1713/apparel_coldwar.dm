@@ -88,6 +88,13 @@
 	worn_state = "us_jacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/suit/storage/fbi
+	name = "FBI jacket"
+	desc = "A secret FBI jacket perhaps."
+	icon_state = "fbi2"
+	item_state = "fbi2"
+	worn_state = "fbi2"
+
 /obj/item/clothing/under/vietcong
 	name = "Vietcong uniform"
 	desc = "A black uniform of the Vietcong."
@@ -214,6 +221,7 @@
 
 /obj/item/clothing/accessory/armor
 	health = 20
+	ripable = FALSE
 /obj/item/clothing/accessory/armor/coldwar
 	icon = 'icons/obj/clothing/ties.dmi'
 /obj/item/clothing/accessory/armor/coldwar/get_mob_overlay()
@@ -331,7 +339,7 @@
 	worn_state = "nbc"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 25, bomb = 10, bio = 100, rad = 80)
-
+	ripable = FALSE
 /obj/item/clothing/head/nbc/olive
 	name = "olive drab NBC hood"
 	desc = "An olive drab coloured NBC hood, made protect against biological, chemical and nuclear threats."
@@ -352,3 +360,4 @@
 	worn_state = "hazmat_suit"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS|HEAD
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 100)
+	ripable = FALSE

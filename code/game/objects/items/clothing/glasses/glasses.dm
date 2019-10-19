@@ -12,7 +12,7 @@
 		if(active)
 			active = 0
 			icon_state = off_state
-			user.update_inv_wear_mask()
+			user.update_inv_eyes()
 			flash_protection = FLASH_PROTECTION_NONE
 			tint = TINT_NONE
 			usr << "You deactivate the optics on the [src]."
@@ -26,10 +26,10 @@
 				restricts_view = 0
 				blocks_scope = FALSE
 				user.handle_vision()
-		else if (src == user.wear_mask)
+		else if (src == user.eyes)
 			active = 1
 			icon_state = on_state
-			user.update_inv_wear_mask()
+			user.update_inv_eyes()
 			flash_protection = initial(flash_protection)
 			tint = initial(tint)
 			usr << "You activate the optics on the [src]."
@@ -46,7 +46,7 @@
 		else
 			active = 0
 			icon_state = off_state
-			user.update_inv_wear_mask()
+			user.update_inv_eyes()
 			flash_protection = FLASH_PROTECTION_NONE
 			tint = TINT_NONE
 			if (overtype == "nvg")

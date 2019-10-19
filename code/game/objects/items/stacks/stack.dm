@@ -151,16 +151,18 @@
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
+	var/customname = ""
+	var/customvar = ""
+	var/customvar2 = ""
+	var/customdesc = ""
+	var/turn_dir = 0
+	var/mob/living/carbon/human/H = user
 	var/obj/structure/religious/totem/newtotem = new/obj/structure/religious/totem
 	newtotem.desc = "none"
-	var/obj/structure/religious/impaledskull/newskull = new/obj/structure/religious/impaledskull
-	newskull.name = "none"
 	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
 	build_override_door.custom_code = -1
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
 	build_override_key.code = -1
-	var/obj/structure/sign/custom/build_override_sign = new/obj/structure/sign/custom
-	build_override_sign.desc = "A sign."
 	var/obj/item/stack/money/coppercoin/build_override_coins_copper = new/obj/item/stack/money/coppercoin
 	build_override_coins_copper.desc = "Some coins."
 	var/obj/item/stack/money/silvercoin/build_override_coins_silver = new/obj/item/stack/money/silvercoin
@@ -169,12 +171,8 @@
 	build_override_coins_gold.desc = "Some coins."
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = new/obj/item/weapon/gun/projectile/ancient/firelance
 	build_override_firelance.desc = "A simple firelance."
-	var/obj/structure/religious/gravestone/build_override_gravestone = new/obj/structure/religious/gravestone
-	build_override_gravestone.desc = "A gravestone."
-
-	var/turn_dir = 0
-	var/mob/living/carbon/human/H = user
-
+	var/obj/structure/vending/sales/build_override_vending = new/obj/structure/vending/sales
+	build_override_vending.name = ""
 	if (istype(get_turf(H), /turf/floor/beach/water/deep))
 		H << "<span class = 'danger'>You can't build here!</span>"
 		return
@@ -198,15 +196,12 @@
 				H << "<span class = 'danger'>You don't know how to make this.</span>"
 				return
 	if (findtext(recipe.title, "custom sign"))
-		var/customname = input(user, "Choose a name for this sign:") as text|null
+		customname = input(user, "Choose a name for this sign:") as text|null
 		if (customname == null)
 			customname = "Sign"
-		var/customdesc = input(user, "Choose a description for this sign:") as text|null
+		customdesc = input(user, "Choose a description for this sign:") as text|null
 		if (customdesc == null)
 			customdesc = "An empty sign."
-		build_override_sign.name = customname
-		build_override_sign.desc = customdesc
-
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -353,14 +348,17 @@
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-
-		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
-			H << "<span class = 'notice'>You need a key in one of your hands in order to craft this.</span>"
+		var/list/clist = list()
+		for(var/i in map.custom_company_nr)
+			for(var/list/L in map.custom_company[i])
+				if (L[1]==H)
+					clist += i
+		if (isemptylist(clist))
+			H << "You are not part of any companies!"
 			return
-		if (istype(H.l_hand, /obj/item/weapon/key))
-			customcode = H.l_hand.code
-		if (istype(H.r_hand, /obj/item/weapon/key))
-			customcode = H.r_hand.code
+		clist += "Cancel"
+		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
+
 		customname = input(user, "Choose a name for this pump:", "Fuel Pump Name" , "fuel pump")
 		if (customname == "" || customname == null)
 			customname = "fuel pump"
@@ -500,7 +498,7 @@
 
 	else if (recipe.result_type == /obj/structure/religious/totem)
 		if (H.original_job_title == "Red Goose Tribesman")
-			newtotem.name = "Stone Goose Totem"
+			customname = "Stone Goose Totem"
 			newtotem.icon_state = "goose"
 			newtotem.desc = "A stone goose totem."
 		else if (H.original_job_title == "Blue Turkey Tribesman")
@@ -538,23 +536,23 @@
 				var/targetskull = H.l_hand.name
 				targetskull = replacetext(targetskull, " head", "")
 				targetskull = "impaled [targetskull] skull"
-				newskull.name = targetskull
+				customname = targetskull
 				qdelHandReturn(H.l_hand, H)
 			else if (istype(H.r_hand, /obj/item/organ/external/head))
 				var/targetskull = H.r_hand.name
 				targetskull = replacetext(targetskull, " head", "")
 				targetskull = "impaled [targetskull] skull"
-				newskull.name = targetskull
+				customname = targetskull
 				qdelHandReturn(H.r_hand, H)
 
 	else if (findtext(recipe.title, "copper coins"))
-		var/customname = input(user, "Choose a name for these coins:") as text|null
+		customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
 				customname = "[H.civilization]'s copper coins"
 			else
 				customname = "[H.civilization]'s copper [customname]"
-			var/customdesc = "copper coins, minted by the [H.civilization]."
+			customdesc = "copper coins, minted by the [H.civilization]."
 			build_override_coins_copper.name = customname
 			build_override_coins_copper.desc = customdesc
 		else
@@ -562,13 +560,13 @@
 			build_override_coins_copper.desc = "copper coins, minted by [H]."
 
 	else if (findtext(recipe.title, "silver coins"))
-		var/customname = input(user, "Choose a name for these coins:") as text|null
+		customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
 				customname = "[H.civilization]'s silver coins"
 			else
 				customname = "[H.civilization]'s silver [customname]"
-			var/customdesc = "silver coins, minted by the [H.civilization]."
+			customdesc = "silver coins, minted by the [H.civilization]."
 			build_override_coins_silver.name = customname
 			build_override_coins_silver.desc = customdesc
 		else
@@ -576,13 +574,13 @@
 			build_override_coins_silver.desc = "silver coins, minted by [H]."
 
 	else if (findtext(recipe.title, "gold coins"))
-		var/customname = input(user, "Choose a name for these coins:") as text|null
+		customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
 				customname = "[H.civilization]'s gold coins"
 			else
 				customname = "[H.civilization]'s gold [customname]"
-			var/customdesc = "gold coins, minted by the [H.civilization]."
+			customdesc = "gold coins, minted by the [H.civilization]."
 			build_override_coins_gold.name = customname
 			build_override_coins_gold.desc = customdesc
 		else
@@ -590,15 +588,30 @@
 			build_override_coins_gold.desc = "gold coins, minted by [H]."
 
 	if (findtext(recipe.title, "gravestone"))
-		var/customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
+		customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
 		if (customname == "" || customname == null)
 			customname = "gravestone"
-		var/customdesc = input(user, "Choose an epitaph to inscribe on this gravestone:") as text|null
+		customdesc = input(user, "Choose an epitaph to inscribe on this gravestone:") as text|null
 		if (customdesc == "" || customdesc == null)
 			customdesc = "A gravestone made with polished stone."
-		build_override_gravestone.name = customname
-		build_override_gravestone.desc = customdesc
 
+	else if (findtext(recipe.title, "market stall") || findtext(recipe.title, "vending machine"))
+		customname = input(user, "Choose a name for this [recipe.title]:") as text|null
+		if (customname == "" || customname == null)
+			customname = recipe.title
+		var/list/clist = list()
+		for(var/i in map.custom_company_nr)
+			for(var/list/L in map.custom_company[i])
+				if (L[1]==H)
+					clist += i
+		if (isemptylist(clist))
+			H << "You are not part of any companies!"
+			return
+		customvar2 = recipe.title
+		clist += "Cancel"
+		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
+		build_override_vending.name = customname
+		build_override_vending.owner = customvar
 	else if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -652,6 +665,29 @@
 						qdelHandReturn(H.r_hand, H)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
+					return
+	else if (findtext(recipe.title, "suspended gong"))
+		if (!istype(H.l_hand, /obj/item/stack/material/bronze) && !istype(H.r_hand, /obj/item/stack/material/bronze))
+			user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/bronze))
+				var/obj/item/stack/material/bronze/NB = H.l_hand
+				if (NB.amount >= 5)
+					NB.amount -= 5
+					if (NB.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/bronze))
+				var/obj/item/stack/material/bronze/NB = H.r_hand
+				if (NB.amount >= 5)
+					NB.amount -= 5
+					if (NB.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
 					return
 
 	if (!can_use(required))
@@ -752,13 +788,6 @@
 	if (findtext(recipe.title, "coil"))
 		produced = 10
 
-	else if (recipe.result_type == /obj/item/weapon/can)
-		produced = 2
-	else if (recipe.result_type == /obj/item/weapon/can/small)
-		produced = 3
-	else if (recipe.result_type == /obj/item/weapon/can/large)
-		produced = 1
-
 	else if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/ammopart/bullet)
@@ -783,6 +812,8 @@
 		produced = 2
 	else if (recipe.result_type == /obj/item/ammo_casing/stone)
 		produced = 5
+	else if (recipe.result_type == /obj/item/stack/material/barbwire)
+		produced = 2
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
@@ -855,12 +886,6 @@
 			qdel(O)
 			return
 
-		if (build_override_sign.desc != "A sign.")
-			build_override_sign.loc = get_turf(O)
-			build_override_sign.set_dir(user.dir)
-			build_override_sign.add_fingerprint(user)
-			qdel(O)
-			return
 
 		if (build_override_coins_copper.desc != "Some coins.")
 			build_override_coins_copper.loc = get_turf(O)
@@ -893,33 +918,24 @@
 			qdel(O)
 			return
 
-		if (build_override_door.custom_code != -1)
-			build_override_door.loc = get_turf(O)
-			build_override_door.set_dir(user.dir)
-			build_override_door.add_fingerprint(user)
-			qdel(O)
-			return
-
 		if (newtotem.desc != "none")
 			newtotem.loc = get_turf(O)
 			newtotem.set_dir(user.dir)
 			newtotem.add_fingerprint(user)
 			qdel(O)
 			return
-
-		if (newskull.name != "none")
-			newskull.loc = get_turf(O)
-			newskull.set_dir(user.dir)
-			newskull.add_fingerprint(user)
+		if (build_override_door.custom_code != -1)
+			build_override_door.loc = get_turf(O)
+			build_override_door.set_dir(user.dir)
+			build_override_door.add_fingerprint(user)
 			qdel(O)
 			return
+		if (customname != "")
+			O.name = customname
 
-		if (build_override_gravestone.desc != "A gravestone.")
-			build_override_gravestone.loc = get_turf(O)
-			build_override_gravestone.set_dir(user.dir)
-			build_override_gravestone.add_fingerprint(user)
-			qdel(O)
-			return
+		if (customdesc != "")
+			O.desc = customdesc
+
 		if (istype(O, /obj/structure/rails/turn))
 			var/obj/structure/rails/turn/RT = O
 			RT.turn_dir = turn_dir
@@ -981,7 +997,7 @@
 		else if (istype(O, /obj/structure/fuelpump))
 			var/obj/structure/fuelpump/FP = O
 			FP.customcolor = addtext("#",customcolor)
-			FP.keycode = customcode
+			FP.owner = customvar
 			FP.name = customname
 			FP.do_color()
 		else if (istype(O, /obj/item/vehicleparts/frame))
@@ -1001,6 +1017,19 @@
 			C.brand = "[customname] "
 			C.name = "empty [C.brand]can"
 			C.do_color()
+
+		else if (build_override_vending.owner != "Global")
+			if (customvar2 == "market stall")
+				build_override_vending = new /obj/structure/vending/sales/market_stall
+			else
+				build_override_vending = new /obj/structure/vending/sales/vending
+			build_override_vending.owner = customvar
+			build_override_vending.name = customname
+			build_override_vending.desc = "A [customvar2], property of [customvar]."
+			build_override_vending.loc = get_turf(O)
+			build_override_vending.add_fingerprint(user)
+			qdel(O)
+			return
 		else if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O
 			S.amount = produced
@@ -1011,6 +1040,26 @@
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
+		else if (istype(O, /obj/item/weapon/can))
+			var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
+			C1.customcolor1 = addtext("#",customcolor1)
+			C1.customcolor2 = addtext("#",customcolor2)
+			C1.brand = "[customname] "
+			C1.name = "empty [C1.brand]can"
+			C1.do_color()
+		else if (istype(O, /obj/item/weapon/can/small))
+			var/obj/item/weapon/can/small/C1 = new/obj/item/weapon/can/small(get_turf(O))
+			C1.customcolor1 = addtext("#",customcolor1)
+			C1.customcolor2 = addtext("#",customcolor2)
+			C1.brand = "[customname] "
+			C1.name = "empty [C1.brand]can"
+			C1.do_color()
+			var/obj/item/weapon/can/small/C2 = new/obj/item/weapon/can/small(get_turf(O))
+			C2.customcolor1 = addtext("#",customcolor1)
+			C2.customcolor2 = addtext("#",customcolor2)
+			C2.brand = "[customname] "
+			C2.name = "empty [C2.brand]can"
+			C2.do_color()
 		else if (istype(O, /obj/item/clothing/accessory/storage/passport))
 			var/obj/item/clothing/accessory/storage/passport/PP = O
 			PP.owner = H

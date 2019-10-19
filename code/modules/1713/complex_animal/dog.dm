@@ -142,6 +142,12 @@
 	race = "samoyed"
 	tameminimum = 125
 
+/mob/living/simple_animal/complex_animal/dog/samoyed/russian
+	faction = RUSSIAN
+	tamed = 200
+	name = "Samoyed guard dog"
+
+
 /mob/living/simple_animal/complex_animal/dog/wolf
 	name = "Wild Wolf"
 	faction = null

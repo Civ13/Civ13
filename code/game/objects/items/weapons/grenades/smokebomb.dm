@@ -72,7 +72,7 @@
 				LS1.adjustFireLoss(35)
 				LS1.fire_stacks += rand(8,10)
 				LS1.IgniteMob()
-			new/obj/effect/burning_oil(T)
+			new/obj/effect/fire(T)
 		sleep(50)
 		qdel(src)
 		return
@@ -145,7 +145,7 @@
 	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/white_phosphorus_gas
 
 /obj/item/weapon/grenade/chemical/xylyl_bromide
-	name = "xylil bromide gas grenade"
+	name = "xylyl bromide gas grenade"
 	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/xylyl_bromide
 
 /obj/item/weapon/grenade/chemical/zyklon_b

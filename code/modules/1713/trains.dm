@@ -430,15 +430,11 @@
 			for (var/obj/structure/trains/TT in tgtt)
 				found = TRUE
 			if (!found)
-				if (L.mob_size <= 42)
-					visible_message("<span class = 'warning'>\The [src] crushes \the [L]!</span>")
-					L.crush()
-				else
-					visible_message("<span class = 'warning'>\The [src] hits \the [L]!</span>")
-					health -= 8
-					automovement = FALSE
-					L.adjustBruteLoss(65)
-					return FALSE
+				visible_message("<span class = 'warning'>\The [src] hits \the [L]!</span>")
+				health -= 8
+				automovement = FALSE
+				L.adjustBruteLoss(100)
+				return FALSE
 		// ... and move this train
 		src.Move(tgtt, fdir)
 		set_light(2)

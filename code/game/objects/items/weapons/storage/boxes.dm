@@ -4,7 +4,7 @@
 	icon_state = "box"
 	item_state = "syringe_kit"
 
-// BubbleWrap - A box can be folded up to make card
+// BubbleWrap - A box can be folded up to make cardboard
 /obj/item/weapon/storage/box/attack_self(mob/user as mob)
 	if (..()) return
 

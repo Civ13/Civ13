@@ -7,7 +7,6 @@
 /obj/item/weapon/material/kitchen/utensil
 	w_class = TRUE
 	thrown_force_divisor = TRUE
-//	origin_tech = "materials=1"
 	attack_verb = list("attacked", "stabbed", "poked")
 	sharp = TRUE
 	edge = TRUE
@@ -148,7 +147,7 @@
 		return ..()
 
 /obj/item/weapon/material/kitchen/utensil/knife/shank
-	name = "steel shank"
+	name = "shank"
 	desc = "A small self-made knife used a lot in jail."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "steelshank"
@@ -160,13 +159,13 @@
 	default_material = "steel"
 
 /obj/item/weapon/material/kitchen/utensil/knife/shank/glass
-	name = "glass shank"
+	name = "shank"
 	icon_state = "glassshank"
 	force_divisor = 0.45
 	default_material = "glass"
 
 /obj/item/weapon/material/kitchen/utensil/knife/shank/iron
-	name = "iron shank"
+	name = "shank"
 	icon_state = "ironshank"
 	force_divisor = 0.4
 	default_material = "iron"
@@ -181,6 +180,17 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.6
+
+/obj/item/weapon/material/kitchen/utensil/knife/trench
+	name = "trench knife"
+	desc = "A rather large knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "trenchknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.7
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone
 	name = "bone knife"

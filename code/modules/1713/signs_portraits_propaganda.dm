@@ -23,3 +23,7 @@
 /obj/structure/sign/portrait/hirohito
 	name = "Portrait of Hirohito"
 	icon_state = "hirohito"
+
+/obj/structure/sign/portrait/kinggeorge
+	name = "Portrait of King George V "
+	icon_state = "kinggeorgev"

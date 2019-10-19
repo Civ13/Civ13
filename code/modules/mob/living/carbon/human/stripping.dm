@@ -75,7 +75,7 @@
 		unEquip(target_slot)
 	else if (user.unEquip(held))
 		equip_to_slot_if_possible(held, text2num(slot_to_strip), FALSE, TRUE, TRUE)
-		if (held.loc != src)
+		if (held && held.loc != src)
 			user.put_in_hands(held)
 
 // Empty out everything in the target's pockets.

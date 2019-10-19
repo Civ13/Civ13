@@ -145,7 +145,7 @@
 	weight = 0.045
 	multiple_sprites = TRUE
 	clip = TRUE
-	
+
 /obj/item/ammo_magazine/glock17
 	name = "G17 Glock (9x19mm)"
 	icon_state = "glock17"
@@ -153,5 +153,25 @@
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/tommy
+	name = "thompson (.45 ACP)"
+	icon_state = "tommydrum"
+	mag_type = MAGAZINE
+	caliber = "a45acp"
+	ammo_type = /obj/item/ammo_casing/a45acp
+	max_ammo = 100
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/colthammerless
+	name = "Colt Hammerless (9x19mm)"
+	icon_state = "glock17"
+	mag_type = MAGAZINE
+	caliber = "a32acp"
+	ammo_type = /obj/item/ammo_casing/a32acp
+	max_ammo = 8
 	weight = 0.33
 	multiple_sprites = TRUE

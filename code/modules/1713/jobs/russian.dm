@@ -538,7 +538,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 
 	return TRUE
 
@@ -1203,7 +1203,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 
 	return TRUE
 
@@ -1252,7 +1252,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 
 	return TRUE
 
@@ -1298,6 +1298,6 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
 
 	return TRUE

@@ -491,6 +491,7 @@
 "jw" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/turf/floor/wood,/area/caribbean/houses)
 "jx" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses)
 "jy" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/forest)
+"jz" = (/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/plating/road,/area/caribbean/forest)
 "jA" = (/obj/structure/window/classic/reinforced,/obj/structure/grille/ironfence,/turf/floor/wood,/area/caribbean/houses)
 "jB" = (/turf/wall/brick,/area/caribbean/houses)
 "jC" = (/obj/structure/window/classic/reinforced,/obj/structure/grille/ironfence,/obj/structure/curtain/leather,/turf/floor/wood,/area/caribbean/houses)
@@ -556,7 +557,6 @@
 "kK" = (/obj/item/mine/boobytrap,/obj/structure/wild/tallgrass,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
 "kL" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
 "kM" = (/obj/structure/vehicleparts/frame/car/left,/turf/floor/plating/road,/area/caribbean/forest)
-"kN" = (/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/reversed{dir = 1},/turf/floor/plating/road,/area/caribbean/forest)
 "kO" = (/obj/structure/wild/burnedbush,/turf/floor/dirt,/area/caribbean/forest)
 "kP" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire,/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/forest)
 "kQ" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/houses)
@@ -788,8 +788,8 @@ aaaaaaaaaaaaaaaaaaaafYaaaaaaaaaaaaaaaNpApApApApAaNaaaaaaaaaaaaaaaaaaaaaafYaaaaaa
 aaaraaaaaaaraaaaaaaaaaaaaraaaafYaaaaaNpApApApApAaNaNaNaNaNaNaNaaaraaaahnaaaaaaaaaaaahnaaaaaaaaaaaraaaaaaaaaahnaahnaraaaa
 aaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaWaYaYaYaYaYaYaYaYaYaYaYaWaaaaaaaaaaaaaaaaaraaaaaaaaaaaaaaaaaaaaaaaahnaaaaaaaaaaaaaa
 hnaafYaaaaaaaaaaaaaahnaaaaaaaaaraaaaaNaYaYaYaYaYaYaYaYaYaYaYaNaaaaaaaaaaabaafYaaaaaaaaaraaaafYaaaaaaaaaaaaaaaaabaaaaaaaa
-aaabaaaaaaaaaaaraaaaaaaaaaaaaaaaaaaaaNaYaYaYaYaYaYaYaYkbkMaYaNaaaraaaaaaaahnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafYaaaraa
-aaaaaaaaaaaraaaaaaaaaaaahnaafYaaaaaaaNaYaYaYaYaYaYaYfGaQkNaYaNaaaaaaaaaaaaaaaahnaaaaaaaaaaaaabaaaafYaaaaaraaaaaaaaaaaaaa
+aaabaaaaaaaaaaaraaaaaaaaaaaaaaaaaaaaaNaYaYaYaYaYaYaYaYaQjzaYaNaaaraaaaaaaahnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafYaaaraa
+aaaaaaaaaaaraaaaaaaaaaaahnaafYaaaaaaaNaYaYaYaYaYaYaYfGkbkMaYaNaaaaaaaaaaaaaaaahnaaaaaaaaaaaaabaaaafYaaaaaraaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaafYaaaaaaaaaaaaaaaraaaNaYaYaYaYaYaYaYaYldleaYaNaaaaaaaafYaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaraaaaaaaaaaaaaahnfYaaaaaaaaaaaaaaaWaNaNaNaNaNaWaYaYgIiWaYaWaaaaaahnaaaaaraaaaaaabfYaaaaaaaaaaaraaaaaaaaaafYaaaaaaaaaa
 aaaaaaaaaraaaaaaaahnaaaaaaabaaaraaaaaaaaaaaaaaaaaNaYaYaYaYaYaNaaaaabaaaaaaaaaaaaaaaaaaaraaaaaahnaaaaaafYaaabhnaaaaaraaaa

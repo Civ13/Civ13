@@ -487,6 +487,12 @@ obj/structure/altar/stone
 	flammable = FALSE
 	health = 160
 
+obj/structure/altar/sandstone
+	name = "sandstone altar"
+	icon_state = "sandstone_altar"
+	flammable = FALSE
+	health = 160
+
 obj/structure/altar/marble
 	name = "marble altar"
 	icon_state = "marble_altar"
@@ -540,3 +546,19 @@ obj/structure/altar/iron
 			qdel(src)
 	else
 		..()
+
+/mob/proc/religion_list()
+	set name = "Check Religion List"
+	set category = "Faction"
+	if (map && map.civilizations)
+
+		var/body = "<html><head><title>Religion List</title></head><b>RELIGION LIST</b><br><br>"
+		for (var/rel in map.custom_religions)
+			body += "<b>[rel]</b>: [map.custom_religions[rel][3]] points.</br>"
+		body += {"<br>
+			</body></html>
+		"}
+
+		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+	else
+		return

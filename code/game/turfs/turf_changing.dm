@@ -5,7 +5,6 @@
 
 	// This makes sure that turfs are not changed to space when one side is part of a zone
 	overlays.Cut()
-	var/obj/fire/old_fire = fire
 	var/old_opacity = opacity
 	var/old_dynamic_lighting = dynamic_lighting
 	var/list/old_affecting_lights = affecting_lights
@@ -13,9 +12,6 @@
 	var/list/old_lighting_corners = corners
 	var/old_radiation = radiation
 	var/turf/W = new N( locate(x, y, z) )
-
-	if (old_fire)
-		old_fire.RemoveFire()
 
 	W.levelupdate()
 	. =  W

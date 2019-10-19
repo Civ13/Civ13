@@ -53,7 +53,23 @@
 
 		if (client.handle_spam_prevention(message,MUTE_DEADCHAT))
 			return
-
+		if (!client.holder)
+			if (!config.ooc_allowed)
+				src << "<span class='danger'>OOC is globally muted.</span>"
+				return
+			if (!config.dooc_allowed && (stat == DEAD))
+				usr << "<span class='danger'>OOC for dead mobs has been turned off.</span>"
+				return
+			if (client.prefs.muted & MUTE_OOC)
+				src << "<span class='danger'>You cannot use OOC (muted).</span>"
+				return
+			if (client.handle_spam_prevention(message,MUTE_OOC))
+				return
+			if (findtext(message, "byond://"))
+				src << "<b>Advertising other servers is not allowed.</b>"
+				log_admin("[key_name(client)] has attempted to advertise in OOC: [message]")
+				message_admins("[key_name_admin(client)] has attempted to advertise in OOC: [message]")
+				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
 			new_player << "<span class = 'ping'><small>["\["]LOBBY["\]"]</small></span> <span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]"
@@ -208,7 +224,7 @@
 			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 			return
 
-		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+		if (client && client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/10)
 			if (check_rights(R_ADMIN, FALSE, src))
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more seconds to respawn. Do you want to bypass this?", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
@@ -868,7 +884,7 @@
 		mind.active = FALSE					//we wish to transfer the key manually
 		mind.original = new_character
 		mind.transfer_to(new_character)					//won't transfer key since the mind is not active
-	if (client.prefs.be_random_body)
+	if (client && client.prefs.be_random_body)
 		client.prefs.randomize_appearance_for (new_character)
 	new_character.original_job = original_job
 	new_character.name = real_name

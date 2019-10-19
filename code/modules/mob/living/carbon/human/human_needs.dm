@@ -134,7 +134,7 @@
 				C.fleas = TRUE
 				fleas_found = TRUE
 	if (fleas_found)
-		var/image/fleas = image('icons/effects/effects.dmi', "fleas")
+		var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
 		overlays_standing[27] = fleas
 		mood -= 0.02
 		if (prob(0.2) && !disease && !inducedSSD)

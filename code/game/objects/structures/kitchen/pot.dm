@@ -181,10 +181,11 @@
 						F.desc = replacetext(F.desc, "raw", "boiled")
 						F.name = "boiled [F.name]"
 						F.color = "#f0f0f0"
-						F.reagents.multiply_reagent("nutriment", 4)
-						F.reagents.multiply_reagent("protein", 2)
-						F.reagents.del_reagent("food_poisoning")
-						F.reagents.del_reagent("cholera")
+						if (F.reagents)
+							F.reagents.multiply_reagent("nutriment", 4)
+							F.reagents.multiply_reagent("protein", 2)
+							F.reagents.del_reagent("food_poisoning")
+							F.reagents.del_reagent("cholera")
 						F.boiled = TRUE
 						F.raw = FALSE
 				else

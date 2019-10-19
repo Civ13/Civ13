@@ -229,12 +229,13 @@
 
 /obj/structure/shellrack/attack_hand(mob/user as mob)
 	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
-		storage.open(user)
+		if (storage)
+			storage.open(user)
 		update_icon()
 	else
 		return
 /obj/structure/shellrack/MouseDrop(obj/over_object as obj)
-	if (storage.handle_mousedrop(usr, over_object))
+	if (storage && storage.handle_mousedrop(usr, over_object))
 		..(over_object)
 		update_icon()
 
@@ -245,7 +246,8 @@
 
 /obj/structure/shellrack/update_icon()
 	..()
-	icon_state = "shellrack[storage.contents.len]"
+	if (storage)
+		icon_state = "shellrack[storage.contents.len]"
 /obj/structure/shellrack/full75/New()
 	..()
 	new /obj/item/cannon_ball/shell/tank/HE75(storage)

@@ -245,6 +245,7 @@
 "eK" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/forest/Jungle)
 "eL" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/nomads/forest/Jungle)
 "eM" = (/obj/item/stack/farming/seeds/tomato,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"eN" = (/obj/map_metadata/nomads_continental{invisibility = 0; name = "control"},/turf/wall/indestructable/black{layer = 10},/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "eO" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "eP" = (/obj/structure/wild/largejungle,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest/Jungle)
 "eQ" = (/obj/structure/wild/palm,/turf/floor/grass,/area/caribbean/nomads/desert)
@@ -421,7 +422,6 @@
 "ig" = (/obj/effect/spawner/mobspawner/mouse,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "ih" = (/obj/effect/spawner/mobspawner/velociraptor,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "ii" = (/obj/structure/sink/well,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"ij" = (/obj/map_metadata/nomads_continental{invisibility = 0; name = "control"},/turf/wall/indestructable/black{layer = 6},/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 
 (1,1,1) = {"
 hzhzhzhzhzhzhzhzhzhzhzhzhzhzhAhAhAhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhAhAhAhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhzhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhA
@@ -923,7 +923,7 @@ bebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaa
 bebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebe
 bebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabebebebeaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaabebebebebebebebebeaabeaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebe
 cBcBbebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaabebebeaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebe
-ijcBbebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebe
+eNcBbebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebe
 "}
 
 (1,1,2) = {"

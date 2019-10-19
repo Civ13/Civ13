@@ -176,7 +176,6 @@ var/list/nonbreaking_types = list(
 				playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 			else
 				playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
-			update_damage(-10)
 
 		next_attack_hand = world.time + 10
 

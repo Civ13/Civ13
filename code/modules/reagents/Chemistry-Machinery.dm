@@ -43,6 +43,19 @@
 				qdel(src)
 				return
 
+/obj/structure/chemical_dispenser/drugs
+	New()
+		..()
+		var/list/elements = list("thc", "ketamine", "pervitin", "cocaine", "oxygen")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,100))
+
+/obj/structure/chemical_dispenser/debug
+	New()
+		..()
+		var/list/elements = list("thc", "ketamine", "pervitin", "cocaine", "hydrogen", "helium", "lithium", "nitrogen", "oxygen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine", "blood", "phosgene_gas", "zyklon_b", "Chlorine Gas", "White Phosphorus Gas", "mustard_gas", "Xylyl Bromide", "plasticide", "amatoxin", "carpotoxin", "plasma", "cyanide", "cholera", "potassium_chloride", "potassium_chlorophoride", "zombiepowder", "fertilizer", "eznutrient", "left4zed", "robustharvest", "pacid", "lexorin", "stoxin", "chloralhydrate", "peyote", "serotrotium", "cryptobiolin", "impedrezene", "mindbreaker", "psilocybin", "nicotine", "bleach", "solanine", "nitroglycerin", "gunpowder", "lube", "biodiesel", "diesel", "gasoline", "petroleum", "luminol", "glue", "cleaner", "adminordrazine", "adrenaline", "anti_toxin", "charcoal", "tricordrazine", "paracetamol", "tramadol", "oxycodone", "synaptizine", "alkysine", "imidazoline", "peridaxon", "hyperzine", "potassium_iodide", "penicillin", "prontosil", "opium", "methamphetamine", "paroxetine", "citalopram", "methylphenidate", "morphine", "pen_acid", "sal_acid")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,1000))
 
  /**
   * The ui_interact proc is used to open and update Nano UIs

@@ -160,7 +160,8 @@
 				if (do_surgery(H,user,src))
 					return
 			else
-				user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
+				if (affecting)
+					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
 
 		var/mob/living/carbon/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
@@ -281,16 +282,18 @@
 	if (istype(M, /mob/living/carbon/human) && user.targeted_organ != "random")
 		var/mob/living/carbon/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
-		var/limb = affecting.name
-		if (!(affecting.limb_name in list("chest", "head", "groin", "l_arm","r_arm","l_leg","r_leg", "l_hand", "r_hand", "l_foot", "r_foot")))
-			user << "<span class='danger'>You can't apply a splint there!</span>"
-			return
-		else if (affecting.status & ORGAN_SPLINTED)
-			user << "<span class='danger'>[M]'s [limb] is already splinted!</span>"
-			return
-		else if (affecting.status == 0)
-			user << "<span class='danger'>[M]'s [limb] does not need splinting.</span>"
-			return
+		var/limb = "chest"
+		if (affecting)
+			limb = affecting.name
+			if (!(affecting.limb_name in list("chest", "head", "groin", "l_arm","r_arm","l_leg","r_leg", "l_hand", "r_hand", "l_foot", "r_foot")))
+				user << "<span class='danger'>You can't apply a splint there!</span>"
+				return
+			else if (affecting.status & ORGAN_SPLINTED)
+				user << "<span class='danger'>[M]'s [limb] is already splinted!</span>"
+				return
+			else if (affecting.status == 0)
+				user << "<span class='danger'>[M]'s [limb] does not need splinting.</span>"
+				return
 		if (M != user)
 			user.visible_message("<span class='danger'>[user] starts to apply \the [src] to [M]'s [limb].</span>", "<span class='danger'>You start to apply \the [src] to [M]'s [limb].</span>", "<span class='danger'>You hear something being wrapped.</span>")
 		else

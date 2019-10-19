@@ -88,7 +88,6 @@
 	icon_state = "shortbow0"
 	item_state = "shortbow0"
 	icotype = "shortbow"
-	w_class = 1
 	throw_range = 6
 	throw_speed = 2
 	force = 6
@@ -118,7 +117,6 @@
 	icon_state = "longbow0"
 	item_state = "longbow0"
 	icotype = "longbow"
-	w_class = 1
 	throw_range = 6
 	throw_speed = 2
 	force = 8
@@ -147,7 +145,6 @@
 	icon_state = "compoundbow0"
 	item_state = "compoundbow0"
 	icotype = "compoundbow"
-	w_class = 1
 	throw_range = 6
 	throw_speed = 2
 	force = 12

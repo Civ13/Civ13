@@ -280,12 +280,14 @@
 				var/obj/item/projectile/P = projectile
 				P.KD_chance = 100
 			process_point_blank(projectile, user, target)
-		var/tgt = user.targeted_organ
-		if (user.targeted_organ == "random")
-			tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-		if (process_projectile(projectile, user, target, tgt, clickparams))
-			handle_post_fire(user, target, pointblank, reflex)
-			update_icon()
+		var/tgt = "chest"
+		if (user)
+			tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			if (process_projectile(projectile, user, target, tgt, clickparams))
+				handle_post_fire(user, target, pointblank, reflex)
+				update_icon()
 
 		if (i < _burst)
 			sleep(_burst_delay)
@@ -429,7 +431,7 @@
 	mouthshoot = TRUE
 	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] mouth.</span>")
 	if (!do_after(user, 3))
-		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
+		visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
 		mouthshoot = FALSE
 		return
 	var/obj/item/projectile/in_chamber = consume_next_projectile()

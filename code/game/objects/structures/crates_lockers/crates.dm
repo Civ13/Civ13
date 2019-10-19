@@ -10,6 +10,7 @@
 	climbable = TRUE
 	mouse_drop_zone = TRUE
 	var/rigged = FALSE
+	var/storagecap = 10
 
 // climbing crates - Kachnov
 /obj/structure/closet/crate/MouseDrop_T(mob/target, mob/user)
@@ -53,7 +54,7 @@
 	playsound(loc, 'sound/machines/click.ogg', 15, TRUE, -3)
 	var/itemcount = FALSE
 	for (var/obj/O in get_turf(src))
-		if (itemcount >= storage_capacity)
+		if (itemcount >= storagecap)
 			break
 		if (O.density || O.anchored)
 			continue
@@ -124,3 +125,58 @@
 	icon_state = "largermetal"
 	icon_opened = "largermetal"
 	icon_closed = "largermetal"
+
+	//ROBERT'S CARTS//
+/obj/structure/closet/crate/cart
+	name = "cart"
+	desc = " A large crate, good for transporting large amounts of objects"
+	icon = 'icons/obj/carts.dmi'
+	icon_state= "w_cart_o"
+	icon_opened ="w_cart_o"
+	icon_closed = "w_cart_c"
+	//COPPER AGE WOODEN CART//
+/obj/structure/closet/crate/cart/wooden
+	name ="wooden cart"
+	desc = " A wooden cart, it's small and flimsy"
+	icon_state= "w_cart_o"
+	icon_opened ="w_cart_o"
+	icon_closed = "w_cart_c"
+	storagecap = 20
+	//COPPER AGE WOODEN CART//
+	//DARK AGE STONE CART//
+/obj/structure/closet/crate/cart/stone
+	name ="stone cart"
+	desc = " A stone cart, it's small, some stone components make it sturdier than a wooden cart"
+	icon_state= "s_cart_o"
+	icon_opened ="s_cart_o"
+	icon_closed = "s_cart_c"
+	storagecap = 30
+	//DARK AGE STONE CART//
+	//RENAISSANCE AGE COPPER CART//
+/obj/structure/closet/crate/cart/copper
+	name ="copper cart"
+	desc = " A copper cart, it's small, some copper components make it sturdier than a stone cart"
+	icon_state= "c_cart_o"
+	icon_opened ="c_cart_o"
+	icon_closed = "c_cart_c"
+	storagecap = 40
+	//RENAISSANCE AGE COPPER CART//
+	//NAPOLEONIC AGE BRONZE CART//
+/obj/structure/closet/crate/cart/bronze
+	name ="bronze cart"
+	desc = " A bronze cart, it's medium sized, some bronze components make it sturdier than a stone cart"
+	icon_state= "b_cart_o"
+	icon_opened ="b_cart_o"
+	icon_closed = "b_cart_c"
+	storagecap = 50
+	//NAPOLEONIC AGE BRONZE CART//
+	//EARLY MODERN AGE STEEL CART//
+/obj/structure/closet/crate/cart/steel
+	name ="shopping cart"
+	desc = " A shopping cart, it's medium sized, it's steel frame make it sturdy and light"
+	icon_state= "st_cart_o"
+	icon_opened ="st_cart_o"
+	icon_closed = "st_cart_c"
+	storagecap = 60
+	//EARLY MODERN AGE STEEL CART//
+	//ROBERT'S CARTS//

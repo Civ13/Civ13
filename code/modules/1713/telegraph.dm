@@ -166,7 +166,7 @@
 			if (TLG != TL)
 				TLG.receive(msg,stripmsg)
 	lastproc = world.time+3
-/obj/structure/phoneline/proc/ring_phone(var/target, var/origin, var/obj/structure/telephone/originphone)
+/obj/structure/phoneline/proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone)
 	if (!origin || !target)
 		return
 	if (world.time <= lastproc)
@@ -197,7 +197,7 @@
 			if (PL != origin && PL != src)
 				PL.ring_phone(target,origin, originphone)
 
-		for (var/obj/structure/telephone/TLG in range(2,src))
+		for (var/obj/item/weapon/telephone/TLG in range(2,src))
 			if (TLG.phonenumber == target && TLG.phonenumber != origin)
 				if (!TLG.ringing)
 					TLG.ringproc(origin, originphone)
@@ -243,124 +243,6 @@
 	for (var/obj/structure/phoneline/PL in get_turf(locate(x,y-3,z)))
 		if (!PL.v_cable)
 			new/obj/structure/phonecable/vertical/v2(get_turf(locate(x,y-2,z)))
-
-/////////////////////////////PHONE/////////////////////////////////////
-/obj/structure/telephone
-	name = "telephone"
-	desc = "Used to communicate with other telephones. No number."
-	icon = 'icons/obj/modern_structures.dmi'
-	icon_state = "telephone"
-	flammable = FALSE
-	not_movable = FALSE
-	not_disassemblable = TRUE
-	density = FALSE
-	opacity = FALSE
-	var/phonenumber = 0
-	var/ringing = FALSE
-	var/ringingnum = FALSE
-	var/obj/structure/telephone/origincall = null
-	var/connected = FALSE
-
-var/list/global/phone_numbers = list()
-
-/obj/structure/telephone/New()
-	..()
-	if (phonenumber == 0)
-		new_phonenumber()
-
-/obj/structure/telephone/proc/new_phonenumber()
-	var/tempnum = 0
-	tempnum = rand(1000,9999)
-	if (tempnum in phone_numbers)
-		new_phonenumber()
-		return
-	else
-		phonenumber = tempnum
-		phone_numbers += tempnum
-		desc = "Used to communicate with other telephones. Number: [phonenumber]."
-		return
-
-/obj/structure/telephone/proc/ringproc(var/origin,var/obj/structure/telephone/ocall)
-	ringing = TRUE
-	ringingnum = origin
-	origincall = ocall
-	spawn(0)
-		if (ringing)
-			ring(origin)
-	spawn(40)
-		if (ringing)
-			ring(origin)
-	spawn(80)
-		if (ringing)
-			ring(origin)
-	spawn(120)
-		if (ringing)
-			ring(origin)
-	spawn(160)
-		if (ringing)
-			ring(origin)
-	spawn(200)
-		ringing = FALSE
-		ringingnum = FALSE
-		if (!connected)
-			origincall = null
-	return
-/obj/structure/telephone/proc/ring()
-	if (ringing)
-		playsound(loc, 'sound/machines/telephone.ogg', 65)
-		visible_message("\The [src] rings!")
-	else
-		return
-
-/obj/structure/telephone/proc/broadcast(var/msg, var/mob/living/carbon/human/speaker)
-
-	// ignore emotes.
-	if (dd_hasprefix(msg, "*"))
-		return
-
-	var/list/tried_mobs = list()
-
-	for (var/mob/living/carbon/human/hearer in human_mob_list)
-		if (tried_mobs.Find(hearer))
-			continue
-		tried_mobs += hearer
-		if (hearer.stat == CONSCIOUS)
-			for (var/obj/structure/telephone/phone in view(7, hearer))
-				if (src == phone.origincall)
-					hearer.hear_phone(msg, speaker.default_language, speaker, src, phone)
-
-/obj/structure/telephone/attack_hand(var/mob/user as mob)
-	if (!connected && !ringing)
-		var/input = input(user, "Choose the number to call: (4 digits, no decimals)") as num
-		if (!input)
-			return
-		var/tgtnum = 0
-		tgtnum = sanitize_integer(input, min=1000, max=9999, default=0) //0 as a first digit doesnt really work
-		if (tgtnum == 0)
-			return
-		for (var/obj/structure/phoneline/PL in range(2,src))
-			PL.ring_phone(tgtnum,phonenumber, src)
-			visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Ringing [tgtnum]...")
-			spawn(200)
-				if (!connected)
-					visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Nobody picked up the phone at [tgtnum].")
-					return
-	if (connected)
-		connected = FALSE
-		origincall.connected = FALSE
-		origincall.origincall = null
-		origincall = null
-		user << "You hang up the phone."
-
-	if (ringing && ringingnum)
-		ringing = FALSE
-		connected = ringingnum
-		if (origincall)
-			origincall.connected = phonenumber
-			origincall.ringing = FALSE
-			origincall.origincall = src
-		user << "You pick up the phone."
-
 
 //////////////////////////RADIO RECORDER////////////////////
 // basically this enables you to schedule regular broadcasts.

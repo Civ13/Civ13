@@ -42,6 +42,7 @@
 		for(var/obj/structure/vehicleparts/frame/F1 in speaker.loc)
 			for(var/obj/structure/vehicleparts/frame/F2 in src.loc)
 				if (F1.axis == F2.axis)
+					speaker_name = "<font color='yellow'>[speaker_name] (CREW)</font>"
 					for (var/obj/structure/bed/chair/commander/D in speaker.loc)
 						speaker_name = "<big><font color='yellow'>[speaker_name] (COMMANDER)</font></big>"
 					for (var/obj/structure/bed/chair/drivers/D in speaker.loc)
@@ -52,8 +53,12 @@
 						speaker_name = "<font color='yellow'>[speaker_name] (LOADER)</font>"
 	if (italics)
 		message = "<i>[message]</i>"
-	if (alt_name == "")
-		alt_name = speaker.name
+	alt_name = speaker_name
+	if (ishuman(speaker))
+		var/mob/living/carbon/human/H = speaker
+		if (istype(H.original_job, /datum/job/civilian/prisoner))
+			alt_name = speaker.name
+
 	if (animal)
 		language = null
 	var/track = null
@@ -151,7 +156,7 @@
 			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font></b><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		on_hear_radio(destination, full_message)
 
-/mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/telephone/source, var/obj/structure/telephone/destination)
+/mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/source, var/obj/item/weapon/telephone/destination)
 
 	if (!client || !message)
 		return
@@ -216,7 +221,7 @@
 /mob/proc/on_hear_radio(var/obj/structure/radio/destination, var/fullmessage)
 	src << "\icon[getFlatIcon(destination)] [fullmessage]"
 
-/mob/proc/on_hear_phone(var/obj/structure/telephone/destination, var/fullmessage)
+/mob/proc/on_hear_phone(var/obj/item/weapon/telephone/destination, var/fullmessage)
 	src << "\icon[getFlatIcon(destination)] [fullmessage]"
 
 /mob/observer/ghost/on_hear_radio(var/obj/structure/radio/destination, var/fullmessage)

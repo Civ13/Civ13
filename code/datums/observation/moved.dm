@@ -27,7 +27,7 @@ var/decl/observ/moved/moved_event = new()
 
 /atom/Entered(var/atom/movable/am, var/atom/old_loc)
 	. = ..()
-	if (. != CANCEL_MOVE_EVENT && !isarea(src))
+	if (. != CANCEL_MOVE_EVENT && !isarea(src) && am)
 		moved_event.raise_event(am, old_loc, am.loc)
 
 /atom/movable/Entered(var/atom/movable/am, atom/old_loc)

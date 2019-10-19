@@ -99,7 +99,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
 			var/area/A = get_area(T)
-			if (map && map.caribbean_blocking_area_types.Find(A.type))
+			if (map && A && map.caribbean_blocking_area_types.Find(A.type))
 				if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
 					visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
 					moving = FALSE
@@ -189,7 +189,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 					CV.Destroy()
 			for(var/obj/item/I in TT && !(I in transporting))
 				qdel(I)
-			for(var/obj/effect/burning_oil/BO in T && !(BO in transporting))
+			for(var/obj/effect/fire/BO in T && !(BO in transporting))
 				qdel(BO)
 			var/canpass = FALSE
 			for(var/obj/covers/CVV in T)
@@ -207,15 +207,16 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		stopmovementloop()
 		return FALSE
 /obj/structure/vehicleparts/axis/proc/check_engine()
-
-	if (!engine || !engine.fueltank)
+	if (!engine)
+		return FALSE
+	if (engine && !engine.fueltank)
 		engine.on = FALSE
 		return FALSE
 	else if (get_weight() > engine.maxpower*2 || get_weight() > maxpower)
 		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
 		return FALSE
 	else
-		if (engine.fueltank.reagents.total_volume <= 0)
+		if (engine && engine.fueltank && engine.fueltank.reagents && engine.fueltank.reagents.total_volume <= 0)
 			engine.fueltank.reagents.total_volume = 0
 			engine.on = FALSE
 			return FALSE

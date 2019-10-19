@@ -1,7 +1,7 @@
 /obj/covers
 
 	name = "floor covers"
-	desc = "A floor cover."
+	desc = ""
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship"
 	var/passable = TRUE
@@ -90,6 +90,91 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+
+/obj/covers/roads
+	name = "dirt road"
+	icon = 'icons/turf/roads.dmi'
+	icon_state = "d_roadvr"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.98
+	flammable = FALSE
+	explosion_resistance = 10
+	material = "Stone"
+	var/vertical = FALSE
+
+/obj/covers/roads/dirt
+	name = "dirt road"
+
+/obj/covers/roads/update_icon()
+	..()
+	spawn(1)
+		var/list/sideslist = list()
+		for (var/direction in list(1,2,4,8,5,6,9,10))
+			for(var/obj/covers/roads/R in get_step(src,direction))
+				sideslist += direction
+				continue
+		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
+			icon_state = "d_road+" //4 sides
+			return
+		if (vertical)
+			if (WEST in sideslist)
+				if (!(NORTH in sideslist))
+					if (EAST in sideslist)
+						icon_state = "d_roadtswe" //T, SOUTH EAST WEST
+						return
+					else
+						icon_state = "d_roadsw" //Turn, SOUTH-WEST
+						return
+				else if (!(SOUTH in sideslist))
+					if (EAST in sideslist)
+						icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+						return
+					else
+						icon_state = "d_roadnw" //Turn, NORTH-WEST
+						return
+			else if (EAST in sideslist)
+				if (!(NORTH in sideslist))
+					icon_state = "d_roadse" //Turn, SOUTH-EAST
+					return
+				else if (!(SOUTH in sideslist))
+					icon_state = "d_roadne" //Turn, NORTH-EAST
+					return
+		else
+			if (NORTH in sideslist)
+				if (!(EAST in sideslist))
+					if (SOUTH in sideslist)
+						icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
+						return
+					else
+						icon_state = "d_roadnw" //Turn, NORTH-WEST
+						return
+				else if (!(WEST in sideslist))
+					if (SOUTH in sideslist)
+						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+						return
+					else
+						icon_state = "d_roadne" //Turn, NORTH-EAST
+						return
+			else if (SOUTH in sideslist)
+				if (!(EAST in sideslist))
+					icon_state = "d_roadsw" //Turn, SOUTH-WEST
+					return
+				else if (!(WEST in sideslist))
+					icon_state = "d_roadse" //Turn, SOUTH-EAST
+					return
+/obj/covers/roads/New()
+	..()
+	spawn(2)
+		if (vertical)
+			dir = 1
+		else
+			dir = 4
+		for(var/obj/covers/roads/R in range(1,src))
+			R.update_icon()
+		update_icon()
 
 /obj/covers/cobblestone/stairs
 	name = "stone stairs"
@@ -317,7 +402,7 @@
 
 
 /obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
-	if (!isghost(M) && M.mob_size >= MOB_MEDIUM)
+	if (ismob(M) && !isghost(M) && M.mob_size >= MOB_MEDIUM)
 		visible_message("[M] pushes \the [src].","You push \the [src]")
 		icon_state = "saloon_opening"
 		update_icon()
@@ -340,6 +425,34 @@
 	wall = TRUE
 	explosion_resistance = 5
 	material = "Wood"
+
+/obj/covers/wood_wall/medieval
+	name = "medieval wall"
+	desc = "A dark-ages wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "medieval_wall"
+	health = 180
+
+/obj/covers/wood_wall/medieval/x
+	name = "medieval wall crossbeam"
+	desc = "A dark-ages wall with an x shaped support."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "medieval_wall_x"
+	health = 185
+
+/obj/covers/wood_wall/medieval/y/r
+	name = "medieval wall crossbeam"
+	desc = "A dark-ages wall with an slanted support."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "medieval_wall_y2"
+	health = 185
+
+/obj/covers/wood_wall/medieval/y/l
+	name = "medieval wall crossbeam"
+	desc = "A dark-ages wall with an slanted support."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "medieval_wall_y1"
+	health = 185
 
 /obj/covers/wood_wall/shoji
 	name = "shoji wall"
@@ -656,8 +769,87 @@
 				qdel(W)
 				return
 	..()
+/obj/covers/clay_wall/sumerian
+	name = "sumerian clay wall"
+	desc = "A sumerian style clay wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "sumerian-wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 150
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 6
+	material = "Stone"
 
+/obj/covers/clay_wall/sumerian/incomplete
+	name = "sumerian clay wall"
+	desc = "A sumerian style clay wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "sumerian-wall_inc1"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = FALSE
+	incomplete = TRUE
+	amount = 0
+	layer = 3
+	health = 40
+	var/stage = 1
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	material = "Stone"
 
+/obj/covers/clay_wall/sumerian/incomplete/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
+		if (stage >= 2)
+			user << "You start adding clay to the wall..."
+			if (do_after(user, 20, src))
+				user << "You finish adding clay to the wall, completing it."
+				qdel(W)
+				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
+				qdel(src)
+				var/choice = WWinput(user, "What time of wall?","Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
+				if (choice == "Normal")
+					return
+				else if (choice == "Doorway")
+					S.icon_state = "sumerian-door"
+					S.name = "sumerian clay door"
+					S.density = FALSE
+					S.opacity = FALSE
+				else if (choice == "Window")
+					S.icon_state = "sumerian-window"
+					S.name = "sumerian clay window"
+					S.density = TRUE
+					S.opacity = FALSE
+				else if (choice == "Corner")
+					S.icon_state = "sumerian-corner1"
+					var/choice1 = WWinput(user, "Which corner?","Clay Walls","North-West",list("North-West","North-East","South-West","South-East"))
+					if (choice1 == "North-West")
+						S.dir = SOUTH
+					else if (choice1 == "North-East")
+						S.dir = EAST
+					else if (choice1 == "South-West")
+						S.dir = NORTH
+					else if (choice1 == "South-East")
+						S.dir = WEST
+				return
+		else if (stage <= 1)
+			user << "You start adding clay blocks to the wall..."
+			if (do_after(user, 20, src))
+				user << "You finish adding clay to the wall."
+				stage += 1
+				icon_state = "sumerian-wall_inc[stage]"
+				health = (30*stage)
+				qdel(W)
+				return
+	..()
 /obj/covers/brick_wall
 	name = "brick wall"
 	desc = "A clay brick wall."
@@ -776,7 +968,6 @@
 	material = "Wood"
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 
@@ -848,6 +1039,9 @@
 			qdel(src)
 			return
 	return TRUE
+
+/obj/covers/jail/bullet_act(var/obj/item/projectile/P)
+	return PROJECTILE_CONTINUE
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))
@@ -1062,15 +1256,10 @@
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)
-		var/obj/small_fire/NF = new/obj/small_fire(src.loc)
-		NF.set_light(3)
-		NF.origin = src
+		var/obj/effect/fire/NF = new/obj/effect/fire(src.loc)
 		start_fire_dmg(NF)
-		spawn(400)
-			NF.icon_state = "fire_big"
-			NF.set_light(4)
 
-/obj/covers/proc/start_fire_dmg(var/obj/small_fire/SF)
+/obj/covers/proc/start_fire_dmg(var/obj/effect/fire/SF)
 	spawn(80)
 		if (health > 0)
 			health -= 10

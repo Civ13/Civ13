@@ -55,12 +55,7 @@
 	activate()
 
 /obj/item/weapon/grenade/proc/prime()
-	if (active)
-	//	playsound(loc, 'sound/items/Welder2.ogg', 25, TRUE)
-		var/turf/T = get_turf(src)
-		if (T)
-			T.hotspot_expose(700,125)
-
+	return
 
 /obj/item/weapon/grenade/attack_hand()
 	walk(src, null, null)
@@ -468,8 +463,6 @@
 /obj/item/weapon/grenade/suicide_vest/prime()
 	if (active)
 		var/turf/T = get_turf(src)
-		if (T)
-			T.hotspot_expose(700,125)
 		if(!T) return
 		var/original_mobs = list()
 		var/original_objs = list()
@@ -566,7 +559,7 @@
 	icon_state = "rpg40"
 	det_time = 50
 	throw_range = 5
-	heavy_armor_penetration = 15
+	heavy_armor_penetration = 22
 
 /obj/item/weapon/grenade/antitank/rpg40
 	name = "RPG-40"

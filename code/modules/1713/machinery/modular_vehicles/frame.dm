@@ -419,7 +419,12 @@
 	return FALSE
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
-	for (var/obj/structure/vehicleparts/frame/F in proj.firer.loc)
+	var/turf/tloc = null
+	if (proj.firer)
+		tloc = proj.firer.loc
+	else
+		tloc = get_turf(src)
+	for (var/obj/structure/vehicleparts/frame/F in tloc)
 		if (F.axis == axis)
 			return
 	if (mwheel && prob(30))
@@ -599,9 +604,12 @@
 			Destroy()
 	update_icon()
 /obj/structure/vehicleparts/frame/Destroy()
-	visible_message("<span class='danger'>The frame gets wrecked!</span>")
-	update_icon()
-	qdel(src)
+	if (!broken)
+		visible_message("<span class='danger'>The frame gets wrecked!</span>")
+		update_icon()
+		broken = TRUE
+	else if (!axis)
+		qdel(src)
 /obj/structure/vehicleparts/frame/ex_act(severity)
 	switch(severity)
 		if (1.0)
