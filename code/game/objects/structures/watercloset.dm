@@ -894,6 +894,9 @@
 
 	if (map && map.ID == MAP_HUNT)
 		mosquito_proc()
+	if (map && map.ID == MAP_NOMADS_NEW_WORLD)
+		if (src.x < 256)
+			mosquito_proc()
 
 	spawn(2000)
 		if (map.chad_mode)
