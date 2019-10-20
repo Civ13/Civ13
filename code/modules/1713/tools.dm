@@ -30,7 +30,7 @@
 	item_state = "iplough"
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = TRUE
-	var/usespeed = 1.7
+	usespeed = 1.3
 
 /obj/item/weapon/shovel
 	name = "shovel"
