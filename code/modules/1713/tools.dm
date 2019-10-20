@@ -107,6 +107,7 @@
 	name = "stone pickaxe"
 	usespeed = 1.1
 	icon_state = "spick"
+	item_state = "spick1"
 /obj/item/weapon/shovel/spade
 	name = "spade"
 	desc = "A small tool for digging and moving dirt."
