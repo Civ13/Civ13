@@ -4,8 +4,8 @@
 	name = "wood mast"
 	icon = 'icons/obj/vehicleparts64x64.dmi'
 	icon_state = "sail0"
-	base_icon = "sail0"
-	movement_icon = "sail1"
+	base_icon = "sail1"
+	movement_icon = "sail2"
 	layer = 2.99
 	broken = FALSE
 	var/obj/item/sail/sails = null
@@ -13,41 +13,23 @@
 	var/sails_on = FALSE
 
 /obj/structure/vehicleparts/movement/sails/update_icon()
-	if (sails && sails_on)
-		icon_state = movement_icon
+	if (sails)
+		if (sails_on)
+			icon_state = movement_icon
+		else
+			icon_state = base_icon
 	else
-		icon_state = base_icon
+		icon_state = "sail0"
 
 /obj/structure/vehicleparts/movement/sails/MouseDrop(var/obj/structure/vehicleparts/frame/ship/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame/ship) && VP.axis)
-		if (!isemptylist(VP.axis.corners))
-			if (VP == VP.axis.corners[1])
-				reversed = FALSE
-			else if (VP == VP.axis.corners[2])
-				if (ntype == "wheel")
-					reversed = TRUE
-				else
-					reversed = FALSE
-			else if (VP == VP.axis.corners[3])
-				if (ntype == "wheel")
-					reversed = FALSE
-				else
-					reversed = TRUE
-			else if (VP == VP.axis.corners[4])
-				if (ntype == "wheel")
-					reversed = TRUE
-				else
-					reversed = TRUE
-			else
-				return
-
-			dir = VP.axis.dir
-			VP.axis.masts += src
-			axis = VP.axis
-			connected = VP
-			VP.mwheel = src
-			forceMove(VP)
-			playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
+		dir = VP.axis.dir
+		VP.axis.masts += src
+		axis = VP.axis
+		connected = VP
+		VP.mwheel = src
+		forceMove(VP)
+		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
 
 /obj/structure/vehicleparts/movement/sails/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (istype(I, /obj/item/weapon/weldingtool))
@@ -58,6 +40,7 @@
 			H.drop_from_inventory(I)
 			I.forceMove(src)
 			H << "You add the sail to the mast."
+			update_icon()
 		else
 			..()
 

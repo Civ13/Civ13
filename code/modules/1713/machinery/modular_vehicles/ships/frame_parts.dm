@@ -21,14 +21,14 @@
 		if (choice1 == "Cancel")
 			return
 		else
-			choice2 = input(H, "How thick should the armor be? 1 wood = 10mm. 0 to 200mm.") as num
+			choice2 = input(H, "How thick should the armor be? 1 wood = 5mm. 0 to 50mm.") as num
 			if (!isnum(choice2))
 				return
 			else if (choice2 <= 0)
 				return
-			else if (choice2 > 200)
+			else if (choice2 > 50)
 				return
-			else if (choice2/10 > S.amount)
+			else if (choice2/5 > S.amount)
 				H << "<span class='warning'>Not enough wood!</span>"
 				return
 
@@ -37,7 +37,7 @@
 			return
 
 		if (choice1 == "left")
-			S.amount -= choice2/10
+			S.amount -= choice2/5
 			if (S.amount <= 0)
 				qdel(S)
 			if (choice3 == "crenelated wall")
@@ -79,3 +79,39 @@
 		update_icon()
 	else
 		..()
+
+/obj/structure/vehicleparts/frame/ship/lwall
+	w_left = list("boat_port2",TRUE,TRUE,20,15,FALSE,TRUE)
+
+/obj/structure/vehicleparts/frame/ship/rwall
+	w_right = list("boat_port2",TRUE,TRUE,20,15,FALSE,TRUE)
+
+/obj/structure/vehicleparts/frame/ship/front
+	w_front = list("boat_port1",TRUE,TRUE,20,20,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/ship/bow
+	w_front = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+	w_left = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+	w_right = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/ship/stern
+	w_back = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+	w_left = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+	w_right = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/ship/back
+	w_back = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/ship/bl
+	w_back = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+	w_left = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/ship/br
+	w_back = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+	w_right = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/ship/fl
+	w_front = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+	w_left = list("boat_port2",TRUE,TRUE,20,15,FALSE,TRUE)
+/obj/structure/vehicleparts/frame/ship/fr
+	w_front = list("boat_port0",TRUE,TRUE,20,30,FALSE,FALSE)
+	w_right = list("boat_port2",TRUE,TRUE,20,15,FALSE,TRUE)

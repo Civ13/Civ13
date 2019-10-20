@@ -29,11 +29,8 @@
 	if (moving == TRUE)
 		get_weight()
 		if (masts.len)
-			world.log << "MS"
 			check_sails()
-			world.log << "ONE"
 		if (do_vehicle_check() && currentspeed > 0)
-			world.log << "TWO"
 			for (var/obj/structure/vehicleparts/movement/sails/S in wheels)
 				if (!S.sails || S.broken)
 					moving = FALSE
@@ -46,10 +43,8 @@
 			currentspeed = 0
 			moving = FALSE
 			stopmovementloop()
-			world.log << "NML"
 			return
 		spawn(vehicle_m_delay+1)
-			world.log << "ML"
 			movementloop()
 			return
 	else
@@ -65,10 +60,6 @@
 
 /obj/structure/vehicleparts/axis/ship/do_vehicle_check()
 	if (check_engine())
-		if (wheels.len < 4)
-			moving = FALSE
-			stopmovementloop()
-			return FALSE
 		for(var/obj/structure/vehicleparts/movement/sails/MV in masts)
 			if (MV.broken)
 				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] is broken!</span>")
@@ -343,9 +334,11 @@
 	var/inp = WWinput(H, "Are you sure you wan't to assemble a ship here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
 		return
+	var/found_base=FALSE
 	for(var/obj/structure/vehicleparts/frame/F in loc)
 		if (F.axis && F.axis != src)
 			return
+		found_base=TRUE
 		var/customname = input(H, "What do you want to name this ship?") as text
 		if (!customname || customname == "")
 			name = "[H]'s ship"
@@ -357,6 +350,23 @@
 		for (var/obj/O in components)
 			O.update_icon()
 		return
+	if (!found_base)
+
+		for(var/obj/structure/vehicleparts/frame/F in locate(x+1,y-1,z))
+			if (F.axis && F.axis != src)
+				return
+			var/customname = input(H, "What do you want to name this ship?") as text
+			if (!customname || customname == "")
+				name = "[H]'s ship"
+			else
+				name = customname
+			dir = 1
+			forceMove(F.loc)
+			new/obj/effect/autoassembler(locate(x+2,y-2,z))
+			H << "<span class='warning'>Vehicle assembled.</span>"
+			for (var/obj/O in components)
+				O.update_icon()
+			return
 
 /obj/structure/vehicleparts/axis/ship/proc/check_sails()
 	var/timer = 15

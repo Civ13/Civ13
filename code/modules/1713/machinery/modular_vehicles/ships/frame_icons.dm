@@ -39,8 +39,6 @@
 					ticon = normal_icon
 				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10, dir=NORTH)
 				overlays += tmpimg1
-				var/image/doub = image(icon=ticon, icon_state="roof_lim", layer=11.01, dir=NORTH)
-				roof.overlays += doub
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
@@ -48,26 +46,6 @@
 					ticon = normal_icon
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=SOUTH)
 				overlays += tmpimg2
-
-		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-			ticon = normal_icon
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
 
 		if (SOUTH)
 			if (w_left[1] != "")
@@ -98,28 +76,7 @@
 					ticon = normal_icon
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=NORTH)
 				overlays += tmpimg2
-				var/image/doub = image(icon=ticon, icon_state="roof_lim", layer=11.01, dir=NORTH)
-				roof.overlays += doub
 
-		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-			ticon = normal_icon
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
 		if (EAST)
 			if (w_left[1] != "")
 				if (w_left[5]<=0)
@@ -128,8 +85,6 @@
 					ticon = normal_icon
 				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]]", layer=10, dir=NORTH)
 				overlays += tmpimg3
-				var/image/doub = image(icon=ticon, icon_state="roof_lim", layer=11.01, dir=NORTH)
-				roof.overlays += doub
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
@@ -152,25 +107,6 @@
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=WEST)
 				overlays += tmpimg2
 
-		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-			ticon = normal_icon
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
 		if (WEST)
 			if (w_left[1] != "")
 				if (w_left[5]<=0)
@@ -186,8 +122,6 @@
 					ticon = normal_icon
 				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]]", layer=10, dir=NORTH)
 				overlays += tmpimg4
-				var/image/doub = image(icon=ticon, icon_state="roof_lim", layer=11.01, dir=NORTH)
-				roof.overlays += doub
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon

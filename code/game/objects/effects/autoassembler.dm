@@ -82,6 +82,7 @@
 			for (var/obj/structure/vehicleparts/frame/ship/F in S.loc)
 				central.axis.masts += S
 				S.anchored = TRUE
+				S.dir = central.axis.dir
 				S.update_icon()
 //		if (!done2)
 //			world.log << "<b>Engine error! ([x],[y])</b>"

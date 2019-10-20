@@ -322,9 +322,10 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			matrix += list("[locx],[locy]" = list(null,0,0, "[locx],[locy]"))
 			locy++
 		locx++
-	var/obj/structure/vehicleparts/frame/FFL = corners[2]
-	if (!istype(FFL, /obj/structure/vehicleparts/frame))
-		world.log << "ERROR BUILDING MATRIX! (Front-Left is not a Frame)"
+	var/obj/FFL = corners[2]
+	if (!istype(corners[2], /obj/structure/vehicleparts/frame) && !istype(corners[2], /obj/effect/pseudovehicle))
+
+		world.log << "ERROR BUILDING MATRIX! (Front-Left doesnt exist)"
 		return FALSE
 	for (var/obj/structure/vehicleparts/frame/FM in components)
 		var/disx = abs(FM.y-FFL.y)
@@ -435,7 +436,21 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
 	else
-		world.log << "ERROR BUILDING CORNER LIST!"
+		if (!istype(src,/obj/structure/vehicleparts/axis/ship))
+			world.log << "ERROR BUILDING CORNER LIST!"
+		else
+			if (!corners[1])
+				for(var/obj/effect/pseudovehicle/PVV in locate(loc.x-1,loc.y+1))
+					corners[1] = PVV
+			if (!corners[2])
+				for(var/obj/effect/pseudovehicle/PVV in locate(loc.x+3,loc.y+1))
+					corners[1] = PVV
+			if (!corners[3])
+				for(var/obj/effect/pseudovehicle/PVV in locate(loc.x+3,loc.y-3))
+					corners[1] = PVV
+			if (!corners[4])
+				for(var/obj/effect/pseudovehicle/PVV in locate(loc.x-1,loc.y-3))
+					corners[1] = PVV
 		return FALSE
 
 /obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none", var/mob/user = null)
