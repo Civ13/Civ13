@@ -224,15 +224,15 @@
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/coltnewpolice
-	name = "Colt new police 32"
+	name = "Colt new police"
 	desc = "Common revolver used by police."
 	icon_state = "coltnewpolice"
 	w_class = 2
-	caliber = "a32"
+	caliber = "a38"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c32
+	magazine_type = /obj/item/ammo_magazine/c38
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -268,6 +268,21 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
+/obj/item/weapon/gun/projectile/revolver/webly4
+	name = "Webly Mk IV"
+	desc = "British revolver chambered in (.445)."
+	icon_state = "webly4"
+	w_class = 2
+	caliber = "a41"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c455
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
 /obj/item/weapon/gun/projectile/revolver/frontier
 	name = "Colt Frontier"
 	desc = "Officialy the M1873 Colt Single Action Army Revolver. This one uses .44 Winchester ammuniton."
@@ -289,6 +304,22 @@
 	desc = "A expensive revolver made by Grayson."
 	icon_state = "graysonfito"
 	base_icon = "graysonfito"
+	w_class = 2
+	caliber = "a44magnum"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c44magnum
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/magnum44
+	name = "Magnum 44"
+	desc = "A heavy revolver chambered in (magnum .44)."
+	icon_state = "magnum58"
+	base_icon = "magnum58"
 	w_class = 2
 	caliber = "a44magnum"
 	load_method = SINGLE_CASING

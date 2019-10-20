@@ -296,6 +296,11 @@
 	name = "USA Flag"
 	desc = "The US flag."
 
+/obj/structure/flag/german
+	icon_state = "german"
+	name = "German Flag"
+	desc = "The German flag."
+
 /obj/structure/flag/confed
 	icon_state = "confed"
 	name = "Confederate flag"
