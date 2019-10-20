@@ -437,7 +437,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	desc = "a pouch of .445 webly."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/webly445
-	caliber = "awebly445"
+	caliber = "webly445"
 	max_ammo = 10
 	weight = 0.1
 	multiple_sprites = TRUE

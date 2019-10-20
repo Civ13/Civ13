@@ -738,8 +738,8 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.03
-	projectile_type = /obj/item/projectile/bullet/pistol/awebly445
-	caliber = "awebly445"
+	projectile_type = /obj/item/projectile/bullet/pistol/webly445
+	caliber = "webly445"
 	value = 2
 
 /obj/item/ammo_casing/a556x45

@@ -236,7 +236,7 @@
 	penetrating = 2
 	armor_penetration = 6
 
-/obj/item/projectile/bullet/pistol/awebly445
+/obj/item/projectile/bullet/pistol/webly445
 	damage = DAMAGE_MEDIUM+7
 	penetrating = 2
 	armor_penetration = 7
