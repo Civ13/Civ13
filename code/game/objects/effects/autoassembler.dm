@@ -108,6 +108,14 @@
 						central.axis.wheel = D.wheel
 						central.axis.wheel.control = F
 						done4 = TRUE
+		for (var/obj/structure/vehicleparts/shipwheel/D in rangeto)
+			if (!done4)
+				for (var/obj/structure/vehicleparts/frame/ship/F in D.loc)
+					if (!done4)
+						D.anchored = TRUE
+						D.dir = dir
+						D.ship = central.axis
+						done4 = TRUE
 //		if (!done4)
 //			world.log << "<b>Driver's Seat error! ([x],[y])</b>"
 //			return FALSE

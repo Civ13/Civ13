@@ -1,90 +1,157 @@
-/obj/item/vehicleparts/wheel/ship
-	icon_state = "rudder"
-	name = "boat rudder and sail control"
-	desc = "Used to steer a boat and control the sails."
+////////////WIP ship wheel////////////////////
+/obj/structure/vehicleparts/shipwheel
+	name = "ship wheel"
+	icon = 'icons/obj/vehicleparts_boats.dmi'
+	icon_state = "ship_wheel"
+	layer = 2.99
+	var/obj/structure/vehicleparts/axis/ship = null
 	var/spamtimer = 0
-	var/obj/structure/vehicleparts/axis/axis_control = null
-	secondary_action = TRUE
-	nodrop = FALSE
 	var/lastdirchange = 0
 	var/sails_on = FALSE
-/obj/item/vehicleparts/wheel/ship/attack_self(mob/living/carbon/human/H)
-	if (world.time <= spamtimer)
-		return
-	if (!axis_control)
-		var/found = FALSE
-		for (var/obj/structure/vehicleparts/frame/ship/S in H.loc)
-			if (S.axis && S.axis.masts)
-				found = TRUE
-				axis_control = S.axis
-		if (!found || !axis_control || !(axis_control.loc in range(5,H)))
-			axis_control = null
-			return
-	for (var/obj/structure/vehicleparts/movement/sails/M in axis_control.masts)
-		if (world.time > spamtimer)
-			if (!sails_on)
-				M.sails_on = TRUE
-			else
-				M.sails_on = FALSE
-			M.update_icon()
-	if (!sails_on)
-		H << "You hoist the sails on the [axis_control]."
-	else
-		H << "You retract the sails on the [axis_control]."
-	spamtimer = world.time + 20
-	sails_on = !sails_on
-	return
-/obj/item/vehicleparts/wheel/ship/secondary_attack_self(mob/living/carbon/human/user)
-	if (world.time <= spamtimer)
-		return
-	if (!axis_control)
-		var/found = FALSE
-		for (var/obj/structure/vehicleparts/frame/ship/S in user.loc)
-			if (S.axis && S.axis.masts)
-				found = TRUE
-				axis_control = S.axis
-		if (!found || !axis_control || !(axis_control.loc in range(5,user)))
-			axis_control = null
-			return
+	var/mob/living/user = null
 
-	if (world.time > spamtimer)
-		if (axis_control)
-			if (axis_control.anchor)
-				axis_control.anchor = FALSE
-				user << "You lift the anchor on the [axis_control]."
-				axis_control.moving = TRUE
-				axis_control.add_transporting()
-				axis_control.startmovementloop()
-				spamtimer = world.time + 20
-				return
+/obj/structure/vehicleparts/shipwheel/proc/do_html(var/mob/m)
+
+	if (m && ship)
+
+		m << browse({"
+
+		<br>
+		<html>
+
+		<head>
+		<style>
+		[common_browser_style]
+		</style>
+		</head>
+
+		<body>
+
+		<script language="javascript">
+
+		function set(input) {
+		  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
+		}
+
+		</script>
+
+		<center>
+		<big><b>[ship] wheel</b></big><br><br>
+		</center>
+		<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+		Heading: <b>[dir2text(ship.dir)]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
+		Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
+		Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
+		<br>
+		<center>
+		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
+		</center>
+
+		</body>
+		</html>
+		<br>
+		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
+
+/obj/structure/vehicleparts/shipwheel/interact(var/mob/m)
+	if (user)
+		if (get_dist(src, user) > 1)
+			user = null
+	restart
+	if (!anchored)
+		user << "<span class = 'danger'>You need to fix it to the floor before using.</span>"
+		user = null
+	if (user && user != m)
+		if (user.client)
+			return
+		else
+			user = null
+			goto restart
+	else
+		user = m
+		do_html(user)
+
+/obj/structure/vehicleparts/shipwheel/Topic(href, href_list, hsrc)
+
+	var/mob/user = usr
+
+	if (!user || user.lying)
+		return
+
+	user.face_atom(src)
+
+	if (!locate(user) in range(1,src))
+		user << "<span class = 'danger'>Get behind the wheel to use it.</span>"
+		return FALSE
+
+	if (!user.can_use_hands())
+		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		return FALSE
+
+	if (!anchored)
+		user << "<span class = 'danger'>You need to fix it to the floor before using.</span>"
+		return FALSE
+
+	if (href_list["set_anchor"])
+		if (ship)
+			ship.anchor = !ship.anchor
+			if (ship.anchor)
+				visible_message("[ship]'s anchor is dropped!")
 			else
-				axis_control.anchor = TRUE
-				axis_control.moving = FALSE
-				axis_control.stopmovementloop()
-				user << "You drop the anchor on the [axis_control]."
-				spamtimer = world.time + 20
-				return
-/obj/item/vehicleparts/wheel/ship/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
+				visible_message("[ship]'s anchor is raised!")
+			spamtimer = world.time + 20
+	if (href_list["set_sails"])
+		if (ship)
+			for (var/obj/structure/vehicleparts/movement/sails/M in ship.masts)
+				if (world.time > spamtimer)
+					if (!sails_on)
+						M.sails_on = TRUE
+					else
+						M.sails_on = FALSE
+					M.update_icon()
+			if (!sails_on)
+				user << "You hoist the sails on the [ship]."
+			else
+				user << "You retract the sails on the [ship]."
+			spamtimer = world.time + 20
+			sails_on = !sails_on
+
+	if (href_list["set_heading_left"])
+		user << "You turn the ship to the left."
+		turndir(user,"left")
+		spamtimer = world.time + 20
+	if (href_list["set_heading_right"])
+		turndir(user,"right")
+		user << "You turn the ship to the right."
+		spamtimer = world.time + 20
+	sleep(0.5)
+	do_html(user)
+
+/obj/structure/vehicleparts/shipwheel/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
-	lastdirchange = world.time+15
-	if (!axis_control)
+	lastdirchange = world.time+30
+	if (!ship)
 		return
-	if (axis_control.moving == FALSE || axis_control.currentspeed == 0)
+	if (ship.moving == FALSE || ship.currentspeed == 0)
 		return FALSE
-	for(var/obj/effect/pseudovehicle/O in axis_control.components)
+	for(var/obj/effect/pseudovehicle/O in ship.components)
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
-			if (VP.axis != axis_control)
+			if (VP.axis != ship)
 				if (mob)
 					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
 				return FALSE
 		for(var/obj/effect/pseudovehicle/PV in O.loc)
-			if (PV.link != axis_control)
+			if (PV.link != ship)
 				if (mob)
 					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
 				return FALSE
+		var/turf/TF = get_turf(O)
+		if (!istype(TF, /turf/floor/beach/water) && !istype(TF, /turf/floor/trench/flooded))
+			mob << "<span class='warning'>You can't turn, the ship will get stock!</span>"
+			return FALSE
 	if (newdir == "left")
-		axis_control.do_matrix(dir,TURN_LEFT(axis_control.dir), newdir)
+		ship.do_matrix(dir,TURN_LEFT(ship.dir), newdir)
 	else
-		axis_control.do_matrix(dir,TURN_RIGHT(axis_control.dir), newdir)
+		ship.do_matrix(dir,TURN_RIGHT(ship.dir), newdir)
 	return TRUE

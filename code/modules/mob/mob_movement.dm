@@ -989,8 +989,6 @@
 			var/mob/living/carbon/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"right")
-			for(var/obj/item/vehicleparts/wheel/ship/SP in H)
-				SP.turndir(mob,"right")
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
@@ -1023,8 +1021,6 @@
 			var/mob/living/carbon/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir("left")
-			for(var/obj/item/vehicleparts/wheel/ship/SP in H)
-				SP.turndir(mob,"left")
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST

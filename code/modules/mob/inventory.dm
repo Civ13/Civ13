@@ -185,7 +185,7 @@ var/list/slot_equipment_priority = list( \
 			remove_from_mob(W)
 			W.forceMove(MD.drivingchair)
 			return TRUE
-		else if (istype(W, /obj/item/vehicleparts/wheel) && !istype(W, /obj/item/vehicleparts/wheel/ship))
+		else if (istype(W, /obj/item/vehicleparts/wheel))
 			var/obj/item/vehicleparts/wheel/MD = W
 			if (!locate(MD.origin) in range(1,src))
 				if ((src in MD.origin.ontop) && src == MD.origin.driver && MD.origin.engine && MD.origin.engine.on)
