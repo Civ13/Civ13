@@ -283,11 +283,6 @@
 			for(var/obj/OM in todestroy)
 				qdel(OM)
 	dir = newdir
-	for (var/obj/structure/vehicleparts/movement/OBB in masts)
-		if (OBB.reversed)
-			OBB.dir = OPPOSITE_DIR(dir)
-		else
-			OBB.dir = dir
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
@@ -370,7 +365,7 @@
 
 /obj/structure/vehicleparts/axis/ship/proc/check_sails()
 	var/timer = 15
-	if (!masts.len)
+	if (!masts.len || !moving)
 		return
 	if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water) && !istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded))
 		visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
@@ -423,7 +418,5 @@
 				if (dir == WEST)
 					timer /= 0.1
 	currentspeed = timer
+	vehicle_m_delay = currentspeed
 	speedlist[1] = timer
-	world.log << "[timer]"
-	spawn(timer)
-		check_sails()

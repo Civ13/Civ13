@@ -1,7 +1,7 @@
 /obj/structure/vehicleparts/frame/ship/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!I || !H)
 		return
-	if (istype (I, /obj/item/stack/material/wood))
+	if (istype (I, /obj/item/stack/material/wood) && !axis)
 		var/obj/item/stack/material/wood/S = I
 		var/list/optlist = list("Cancel")
 		if (w_left[1] == "")

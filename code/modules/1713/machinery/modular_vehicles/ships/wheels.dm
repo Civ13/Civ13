@@ -5,8 +5,12 @@
 	var/spamtimer = 0
 	var/obj/structure/vehicleparts/axis/axis_control = null
 	secondary_action = TRUE
+	nodrop = FALSE
 	var/lastdirchange = 0
+	var/sails_on = FALSE
 /obj/item/vehicleparts/wheel/ship/attack_self(mob/living/carbon/human/H)
+	if (world.time <= spamtimer)
+		return
 	if (!axis_control)
 		var/found = FALSE
 		for (var/obj/structure/vehicleparts/frame/ship/S in H.loc)
@@ -18,15 +22,21 @@
 			return
 	for (var/obj/structure/vehicleparts/movement/sails/M in axis_control.masts)
 		if (world.time > spamtimer)
-			if (!M.sails_on)
-				H << "You hoist the sails on the [axis_control]."
+			if (!sails_on)
 				M.sails_on = TRUE
-				spamtimer = world.time + 20
 			else
-				H << "You retract the sails on the [axis_control]."
 				M.sails_on = FALSE
+			M.update_icon()
+	if (!sails_on)
+		H << "You hoist the sails on the [axis_control]."
+	else
+		H << "You retract the sails on the [axis_control]."
+	spamtimer = world.time + 20
+	sails_on = !sails_on
 	return
 /obj/item/vehicleparts/wheel/ship/secondary_attack_self(mob/living/carbon/human/user)
+	if (world.time <= spamtimer)
+		return
 	if (!axis_control)
 		var/found = FALSE
 		for (var/obj/structure/vehicleparts/frame/ship/S in user.loc)
@@ -45,17 +55,21 @@
 				axis_control.moving = TRUE
 				axis_control.add_transporting()
 				axis_control.startmovementloop()
+				spamtimer = world.time + 20
 				return
 			else
 				axis_control.anchor = TRUE
 				axis_control.moving = FALSE
 				axis_control.stopmovementloop()
 				user << "You drop the anchor on the [axis_control]."
+				spamtimer = world.time + 20
 				return
 /obj/item/vehicleparts/wheel/ship/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
 	lastdirchange = world.time+15
+	if (!axis_control)
+		return
 	if (axis_control.moving == FALSE || axis_control.currentspeed == 0)
 		return FALSE
 	for(var/obj/effect/pseudovehicle/O in axis_control.components)
