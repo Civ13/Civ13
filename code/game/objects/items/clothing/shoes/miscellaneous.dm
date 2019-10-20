@@ -1,3 +1,6 @@
+/obj/item/clothing/shoes/
+	force = 1
+
 /obj/item/clothing/shoes/black
 	name = "black shoes"
 	icon_state = "black"
