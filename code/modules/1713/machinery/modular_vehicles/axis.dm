@@ -553,6 +553,11 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
 		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
 		return
+	for(var/obj/structure/vehicleparts/frame/ship/SH in range(4,src))
+		var/turf/TT = get_turf(SH)
+		if (!istype(TT, /turf/floor/beach/water) && !istype(TT, /turf/floor/trench/flooded))
+			H << "<span class='notice'>All ship parts must be in a water tile.</span>"
+			return
 	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
 		return

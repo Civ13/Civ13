@@ -1,22 +1,22 @@
 ////////AXIS: MOVEMENT LOOP/////////
 /obj/structure/vehicleparts/axis
 	var/list/masts = list()
-
+	var/anchor = TRUE
 /obj/structure/vehicleparts/axis/ship
 	name = "ship rudder control"
 	desc = "An axis connecting the rudder to the ship's wheel."
 	currentspeed = 0
-	speeds = 3
+	speeds = 1
 	maxpower = 1200
-	speedlist = list(1=8,2=6,3=4)
+	speedlist = list(1=8)
 	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "axis_powered"
 
 /obj/structure/vehicleparts/axis/ship/heavy
 	name = "heavy rudder control"
-	speeds = 3
+	speeds = 1
 	maxpower = 2500
-	speedlist = list(1=12,2=8,3=6)
+	speedlist = list(1=12)
 
 /obj/structure/vehicleparts/axis/ship/movementsound()
 	if (!moving)
@@ -28,6 +28,8 @@
 /obj/structure/vehicleparts/axis/ship/movementloop()
 	if (moving == TRUE)
 		get_weight()
+		if (masts.len)
+			check_sails()
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/sails/S in wheels)
 				if (!S.sails || S.broken)
@@ -69,11 +71,20 @@
 				stopmovementloop()
 				return FALSE
 			else if (!MV.sails)
-				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] has no sail!</span>")
+				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] has no mast!</span>")
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
-
+			else if (!MV.sails_on)
+				visible_message("<span class = 'warning'>\The [name] can't move, the sails are down!</span>")
+				moving = FALSE
+				stopmovementloop()
+				return FALSE
+			else if (anchor)
+				visible_message("<span class = 'warning'>\The [name] can't move, the anchor is down!</span>")
+				moving = FALSE
+				stopmovementloop()
+				return FALSE
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
 			var/area/A = get_area(T)
@@ -339,3 +350,62 @@
 		for (var/obj/O in components)
 			O.update_icon()
 		return
+
+/obj/structure/vehicleparts/axis/ship/proc/check_sails()
+	var/timer = 15
+	if (!masts.len)
+		return
+	if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water) && !istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded))
+		visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
+		moving = FALSE
+		stopmovementloop()
+		return
+	var/found = FALSE
+	for(var/obj/structure/vehicleparts/movement/sails/SL in masts)
+		found = TRUE
+		break
+	if (found)
+		switch(map.windspeedvar)
+			if (0)
+				timer = 40
+			if (1)
+				timer = 15
+			if (2)
+				timer = 11
+			if (3)
+				timer = 7
+			if (4)
+				timer = 4
+		switch(map.winddirection)
+			if ("North")
+				if (dir == SOUTH)
+					timer /= 1
+				if  (dir == WEST || dir == EAST)
+					timer /= 0.4
+				if (dir == NORTH)
+					timer /= 0.1
+			if ("South")
+				if (dir == NORTH)
+					timer /= 1
+				if  (dir == WEST || dir == EAST)
+					timer /= 0.4
+				if (dir == SOUTH)
+					timer /= 0.1
+			if ("East")
+				if (dir == WEST)
+					timer /= 1
+				if  (dir == NORTH || dir == SOUTH)
+					timer /= 0.4
+				if (dir == EAST)
+					timer /= 0.1
+			if ("West")
+				if (dir == EAST)
+					timer /= 1
+				if  (dir == NORTH || dir == SOUTH)
+					timer /= 0.4
+				if (dir == WEST)
+					timer /= 0.1
+	currentspeed = timer
+	speedlist[1] = timer
+	spawn(timer)
+		check_sails()
