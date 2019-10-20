@@ -462,7 +462,7 @@ RECIPE: /material/stone/,stone shingled wall (vertical bottom),/obj/structure/ba
 RECIPE: /material/stone/,stone shingled wall (horizontal center),/obj/structure/barricade/jap_h,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal left),/obj/structure/barricade/jap_h_l,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal right),/obj/structure/barricade/jap_h_r,4,80,1,1,fortifications,29,0,0,8,null
-
+RECIPE: /material/stone/,jersey barrier,/obj/structure/window/sandbag/jersey,3,70,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,fishing net,/obj/item/weapon/fishing/net,4,100,0,1,none,0,0,0,8,null
