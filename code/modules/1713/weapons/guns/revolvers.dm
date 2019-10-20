@@ -273,11 +273,11 @@
 	desc = "British revolver chambered in (.445)."
 	icon_state = "webly4"
 	w_class = 2
-	caliber = "a41"
+	caliber = "webly445"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c455
+	magazine_type = /obj/item/ammo_magazine/webly445
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
