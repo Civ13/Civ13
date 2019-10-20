@@ -162,7 +162,7 @@
 	name = "remington 11"
 	desc = "American semi-automatic shotgun."
 	icon_state = "remington11"
-	item_state = "g43"
+	item_state = "remington11"
 	base_icon = "remington11"
 	w_class = 4
 	load_method = SINGLE_CASING
