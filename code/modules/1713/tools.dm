@@ -15,6 +15,7 @@
 	edge = FALSE
 	slot_flags = SLOT_BELT
 	flammable = TRUE
+	var/usespeed = 1
 
 /obj/item/weapon/plough/attack_self(var/mob/living/L)
 	var/turf/T = get_turf(L)
