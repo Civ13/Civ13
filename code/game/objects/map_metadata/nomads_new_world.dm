@@ -56,7 +56,8 @@
 	return (ordinal_age >= 2)
 
 /obj/map_metadata/nomads_new_world/cross_message(faction)
-	return "<big>As the world technological level advances, new shipbuilding techniquesmake us at last be able to navigate the oceans...</big>"
+	if (faction == CIVILIAN)
+		return "<big>As the world technological level advances, new shipbuilding techniques make us at last be able to navigate the oceans...</big>"
 
 /obj/map_metadata/nomads_new_world/proc/seasons()
 	if (season == "FALL")
