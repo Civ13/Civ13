@@ -441,8 +441,8 @@ RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,none,
 RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,none,28,0,0,8,null
 RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,none,43,0,0,8,null
 RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,none,0,0,0,8,null
-RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,none,0,0,0,8,null
-RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,none,0,0,0,8,null
+RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,fortifications,0,0,0,8,null
 
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,stone
 RECIPE: /material/stone/,stone arrowhead,/obj/item/stack/arrowhead/stone,1,10,0,1,projectiles,0,14,0,8,null
