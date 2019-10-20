@@ -155,3 +155,10 @@
 	else
 		ship.do_matrix(dir,TURN_RIGHT(ship.dir), newdir)
 	return TRUE
+
+/obj/structure/vehicleparts/shipwheel/attack_hand(var/mob/attacker)
+	if (!anchored || !ship)
+		attacker << "<span class = 'warning'>Fix the wheel in place first.</span>"
+		return
+	else
+		interact(attacker)

@@ -35,7 +35,7 @@
 	if (istype(I, /obj/item/weapon/weldingtool))
 		return
 	else
-		if (istype(I, /obj/item/sail))
+		if (istype(I, /obj/item/sail) && !sails)
 			sails = I
 			H.drop_from_inventory(I)
 			I.forceMove(src)
