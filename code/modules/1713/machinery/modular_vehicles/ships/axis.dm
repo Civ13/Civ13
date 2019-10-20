@@ -29,8 +29,11 @@
 	if (moving == TRUE)
 		get_weight()
 		if (masts.len)
+			world.log << "MS"
 			check_sails()
+			world.log << "ONE"
 		if (do_vehicle_check() && currentspeed > 0)
+			world.log << "TWO"
 			for (var/obj/structure/vehicleparts/movement/sails/S in wheels)
 				if (!S.sails || S.broken)
 					moving = FALSE
@@ -43,8 +46,10 @@
 			currentspeed = 0
 			moving = FALSE
 			stopmovementloop()
+			world.log << "NML"
 			return
 		spawn(vehicle_m_delay+1)
+			world.log << "ML"
 			movementloop()
 			return
 	else

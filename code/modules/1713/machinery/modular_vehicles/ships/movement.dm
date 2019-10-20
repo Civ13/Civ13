@@ -13,7 +13,10 @@
 	var/sails_on = FALSE
 
 /obj/structure/vehicleparts/movement/sails/update_icon()
-		return
+	if (sails && sails_on)
+		icon_state = movement_icon
+	else
+		icon_state = base_icon
 
 /obj/structure/vehicleparts/movement/sails/MouseDrop(var/obj/structure/vehicleparts/frame/ship/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame/ship) && VP.axis)
@@ -50,7 +53,13 @@
 	if (istype(I, /obj/item/weapon/weldingtool))
 		return
 	else
-		..()
+		if (istype(I, /obj/item/sail))
+			sails = I
+			H.drop_from_inventory(I)
+			I.forceMove(src)
+			H << "You add the sail to the mast."
+		else
+			..()
 
 
 /obj/structure/vehicleparts/movement/sails/ex_act(severity)

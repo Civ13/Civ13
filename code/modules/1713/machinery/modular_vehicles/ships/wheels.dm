@@ -19,12 +19,12 @@
 	for (var/obj/structure/vehicleparts/movement/sails/M in axis_control.masts)
 		if (world.time > spamtimer)
 			if (!M.sails_on)
-				H << "You hoist the sails."
+				H << "You hoist the sails on the [axis_control]."
 				M.sails_on = TRUE
 				spamtimer = world.time + 20
 				return
 			else
-				H << "You retract the sails."
+				H << "You retract the sails on the [axis_control]."
 				M.sails_on = FALSE
 				return
 
@@ -43,7 +43,7 @@
 		if (axis_control)
 			if (axis_control.anchor)
 				axis_control.anchor = FALSE
-				user << "You lift the anchor."
+				user << "You lift the anchor on the [axis_control]."
 				axis_control.moving = TRUE
 				axis_control.add_transporting()
 				axis_control.startmovementloop()
@@ -52,5 +52,5 @@
 				axis_control.anchor = TRUE
 				axis_control.moving = FALSE
 				axis_control.stopmovementloop()
-				user << "You drop the anchor."
+				user << "You drop the anchor on the [axis_control]."
 				return
