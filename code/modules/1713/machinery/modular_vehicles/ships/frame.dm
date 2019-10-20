@@ -2,7 +2,7 @@
 	name = "ship frame"
 	desc = "a wood ship frame."
 	icon = 'icons/obj/vehicleparts_boats.dmi'
-	icon_state = "boat_flooe1"
+	icon_state = "boat_floor1"
 	normal_icon = 'icons/obj/vehicleparts_boats.dmi'
 	broken_icon = 'icons/obj/vehicleparts_boats.dmi'
 	noroof = TRUE

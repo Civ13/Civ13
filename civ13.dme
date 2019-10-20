@@ -683,6 +683,7 @@
 #include "code\modules\mob\living\carbon\human\logout.dm"
 #include "code\modules\mob\living\carbon\human\matt_combat.dm"
 #include "code\modules\mob\living\carbon\human\MedicalSideEffects.dm"
+#include "code\modules\mob\living\carbon\human\nomads_spawn.dm"
 #include "code\modules\mob\living\carbon\human\say.dm"
 #include "code\modules\mob\living\carbon\human\screaming.dm"
 #include "code\modules\mob\living\carbon\human\shit_piss.dm"
