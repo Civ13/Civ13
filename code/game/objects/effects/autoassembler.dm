@@ -78,6 +78,11 @@
 						E.engineclass = "engine"
 						E.update_icon()
 						done2 = TRUE
+		for (var/obj/structure/vehicleparts/movement/sails/S in rangeto)
+			for (var/obj/structure/vehicleparts/frame/ship/F in S.loc)
+				central.axis.masts += S
+				S.anchored = TRUE
+				S.update_icon()
 //		if (!done2)
 //			world.log << "<b>Engine error! ([x],[y])</b>"
 //			return FALSE

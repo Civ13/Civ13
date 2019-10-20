@@ -182,6 +182,8 @@
 /obj/structure/vehicleparts/axis/ship/check_engine()
 	if (!engine && masts.len <= 0)
 		return FALSE
+	else if (!engine && masts.len >= 1)
+		return TRUE
 	if (engine && !engine.fueltank)
 		engine.on = FALSE
 		return FALSE
@@ -197,9 +199,9 @@
 			engine.on = FALSE
 			return FALSE
 		else
-			if (engine.on)
+			if (engine && engine.on)
 				return TRUE
-			else
+			else if (engine && !engine.on)
 				return FALSE
 		return FALSE
 
