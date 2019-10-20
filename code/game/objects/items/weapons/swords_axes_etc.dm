@@ -65,7 +65,24 @@
 
 	force = initial(force)
 
+/obj/item/weapon/melee/classic_baton/club/attack(mob/M as mob, mob/living/user as mob)
 
+	switch (user.a_intent)
+		if (I_HURT)
+			force*=1.2
+		if (I_HELP, I_GRAB, I_DISARM)
+			force/=3
+
+	var/user_last_intent = user.a_intent
+	user.a_intent = I_HURT
+
+	..(M, user)
+	if (weakens && prob(20))
+		M.Weaken(weakens) // decent
+
+	user.a_intent = user_last_intent
+
+	force = initial(force)
 /obj/item/weapon/melee/classic_baton/big_club
 	name = "big wood club"
 	desc = "This looks huge!"
