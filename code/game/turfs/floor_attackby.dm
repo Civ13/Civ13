@@ -571,6 +571,7 @@
 			user << "<span class='danger'>You can't plant here. Find a ploughed plot.</span>"
 			return
 	else if (istype(C, /obj/item/weapon/plough))
+		var/obj/item/weapon/plough/PL = C
 		var/turf/T = get_turf(src)
 		if (user.a_intent == I_DISARM)
 			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach) || istype(T, /turf/floor/winter))
@@ -578,7 +579,7 @@
 					user << "<span class='danger'>You can't make a dirt road here.</span>"
 					return
 				user << "You start making a dirt road..."
-				if (do_after(user, 50/SH.usespeed, user.loc))
+				if (do_after(user, 50/PL.usespeed, user.loc))
 					user << "You finish the dirt road."
 					var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)
 					if (user.dir == NORTH || user.dir == SOUTH)
@@ -601,12 +602,12 @@
 				user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 				return
 			else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
-				if (do_after(user, 50/SH.usespeed, user.loc))
+				if (do_after(user, 50/PL.usespeed, user.loc))
 					ChangeTurf(/turf/floor/dirt)
 					return
 			else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 				var/mob/living/carbon/human/H = user
-				if (do_after(user, (70/H.getStatCoeff("farming"))/SH.usespeed, user.loc))
+				if (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))
 					if (istype(T, /turf/floor/dirt/flooded))
 						ChangeTurf(/turf/floor/dirt/ploughed/flooded)
 						if (ishuman(user))
