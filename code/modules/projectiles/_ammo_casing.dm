@@ -461,6 +461,16 @@
 	caliber = "a32"
 	value = 5
 
+/obj/item/ammo_casing/a38
+	name = ".38 bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/a38
+	caliber = "a38"
+	value = 5
+
 /obj/item/ammo_casing/a45
 	name = ".45 Colt bullet"
 	desc = "A brass casing."
@@ -720,6 +730,16 @@
 	weight = 0.03
 	projectile_type = /obj/item/projectile/bullet/pistol/a32acp
 	caliber = "a32acp"
+	value = 2
+
+/obj/item/ammo_casing/webly445
+	name = ".455 webly bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.03
+	projectile_type = /obj/item/projectile/bullet/pistol/awebly445
+	caliber = "awebly445"
 	value = 2
 
 /obj/item/ammo_casing/a556x45
