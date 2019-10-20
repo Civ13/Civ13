@@ -90,7 +90,7 @@
 			var/area/mob_area = get_area(src)
 			var/new_hair = "Black"
 			var/new_eyes = "Black"
-			var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Biome Appropriate",list(!"Biome Appopriate","Randomize","Customize"))
+			var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Biome Appropriate",list("Biome Appopriate","Randomize","Customize"))
 			if (choices == "Customize")
 //				var/choice_race = WWinput(src, "Which race do you want to be?","Character Customization","Randomize",list("Randomize","Human","Ant","Lizard","Crustacean","Orc","Gorilla"))
 //				if (choice_race == "Randomize")
