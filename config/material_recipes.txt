@@ -441,8 +441,8 @@ RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,none,
 RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,none,28,0,0,8,null
 RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,none,43,0,0,8,null
 RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,none,0,0,0,8,null
-RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,fortifications,0,0,0,8,null
-RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,none,0,0,0,8,null
+RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,none,0,0,0,8,null
 
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,stone
 RECIPE: /material/stone/,stone arrowhead,/obj/item/stack/arrowhead/stone,1,10,0,1,projectiles,0,14,0,8,null
@@ -462,7 +462,6 @@ RECIPE: /material/stone/,stone shingled wall (vertical bottom),/obj/structure/ba
 RECIPE: /material/stone/,stone shingled wall (horizontal center),/obj/structure/barricade/jap_h,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal left),/obj/structure/barricade/jap_h_l,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal right),/obj/structure/barricade/jap_h_r,4,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,jersey barrier,/obj/structure/window/sandbag/jersey,3,70,1,1,fortifications,29,0,0,8,null
 
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
@@ -831,6 +830,7 @@ RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1
 RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
 RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
