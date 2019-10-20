@@ -118,8 +118,9 @@
 			central.axis.check_matrix()
 		//and the tracks
 		for (var/obj/structure/vehicleparts/movement/M in rangeto)
-			for (var/obj/structure/vehicleparts/frame/F in M.loc)
-				M.MouseDrop(F)
+			if (!istype(M, /obj/structure/vehicleparts/movement/sails))
+				for (var/obj/structure/vehicleparts/frame/F in M.loc)
+					M.MouseDrop(F)
 		for (var/obj/structure/lamp/lamp_small/tank/TL in rangeto)
 			for (var/obj/structure/vehicleparts/frame/F in TL.loc)
 				TL.connection = central.axis.engine

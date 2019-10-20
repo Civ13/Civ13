@@ -31,7 +31,7 @@
 		if (masts.len)
 			check_sails()
 		if (do_vehicle_check() && currentspeed > 0)
-			for (var/obj/structure/vehicleparts/movement/sails/S in wheels)
+			for (var/obj/structure/vehicleparts/movement/sails/S in masts)
 				if (!S.sails || S.broken)
 					moving = FALSE
 					stopmovementloop()
@@ -67,7 +67,7 @@
 				stopmovementloop()
 				return FALSE
 			else if (!MV.sails)
-				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] has no mast!</span>")
+				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] has no sail!</span>")
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
@@ -424,5 +424,6 @@
 					timer /= 0.1
 	currentspeed = timer
 	speedlist[1] = timer
+	world.log << "[timer]"
 	spawn(timer)
 		check_sails()
