@@ -21,6 +21,16 @@
 	T.attackby(src,L)
 	return
 
+/obj/item/weapon/plough/iron
+	name = "iron plough"
+	desc = "A sturdy iron plough, use it on dirt to plough the land."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "iplough"
+	item_state = "iplough"
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = TRUE
+	var/usespeed = 1.7
+
 /obj/item/weapon/shovel
 	name = "shovel"
 	desc = "A large tool for digging and moving dirt."
