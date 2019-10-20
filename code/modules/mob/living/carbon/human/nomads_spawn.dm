@@ -452,14 +452,14 @@
 				s_tone = -40
 				new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond")
 				new_eyes = pick("Green", "Blue")
-				force_update_limbs()
-				update_body()
+
+
 			if ("temperate")
 				s_tone = -35
 				new_hair = "Black"
 				new_eyes = pick("Dark Brown", "Black")
-				force_update_limbs()
-				update_body()
+
+
 		var/hex_hair = hair_colors[new_hair]
 		r_hair = hex2num(copytext(hex_hair, 2, 4))
 		g_hair = hex2num(copytext(hex_hair, 4, 6))
@@ -472,17 +472,87 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+
+	else if (map && (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA))
+		var/new_hair = "Black"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(-10,-60)
+		var/area/mob_area = get_area(src)
+		switch (mob_area.climate)
+			if ("tundra","taiga")
+				add_language("Russian",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/russian/A in languages)
+					default_language = A
+				name = species.get_random_russian_name(gender)
+				real_name = name
+				add_note("Known Languages", "Russian")
+				possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-10,-28)
+			if ("temperate")
+				add_language("German",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/german/A in languages)
+					default_language = A
+				name = species.get_random_german_name(gender)
+				real_name = name
+				add_note("Known Languages", "German")
+				possible_h_list = list("Light Brown","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-15,-30)
+			if ("semiarid","sea")
+				add_language("Latin",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/latin/A in languages)
+					default_language = A
+				name = species.get_random_roman_name(gender)
+				real_name = name
+				add_note("Known Languages", "Latin")
+				possible_h_list = list("Light Brown","Dark Brown")
+				possible_e_list = list("Green","Brown","Black")
+				possible_s_list = list(-45,-65)
+			if ("desert")
+				add_language("Hebrew",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/hebrew/A in languages)
+					default_language = A
+				name = species.get_random_hebrew_name(gender)
+				real_name = name
+				add_note("Known Languages", "Hebrew")
+				possible_h_list = list("Dark Brown","Black")
+				possible_e_list = list("Brown","Black")
+				possible_s_list = list(-75,-100)
+			if ("jungle","savanna")
+				add_language("Japanese",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/japanese/A in languages)
+					default_language = A
+				name = species.get_random_japanese_name(gender)
+				real_name = name
+				add_note("Known Languages", "Japanese")
+				possible_h_list = list("Dark Brown","Black")
+				possible_e_list = list("Brown","Black")
+				possible_s_list = list(-35,-55)
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
 	else
 		if (faction_text == ARAB)
 			s_tone = -90
-			force_update_limbs()
-			update_body()
+
 		else if (faction_text == INDIANS)
 			s_tone = -115
-			force_update_limbs()
-			update_body()
+
 		else if (s_tone < -65)
 			s_tone = -65
-			force_update_limbs()
-			update_body()
-	else if (map && (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA))
+
+	force_update_limbs()
+	update_body()
