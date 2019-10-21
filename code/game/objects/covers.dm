@@ -78,6 +78,24 @@
 	icon_state = "wood2_stairs"
 	material = "Wood"
 
+/obj/covers/slate
+    name = "slatestone wall"
+    desc = "A slate wall."
+    icon = 'icons/obj/structures.dmi'
+    icon_state = "slate"
+    passable = TRUE
+    not_movable = TRUE
+    density = TRUE
+    opacity = TRUE
+    amount = 0
+    layer = 3
+    health = 500
+    wood = FALSE
+    wall = TRUE
+    flammable = FALSE
+    explosion_resistance = 10
+    material = "Stone"
+
 /obj/covers/cobblestone
 	name = "cobblestone floor"
 	icon = 'icons/turf/floors.dmi'
