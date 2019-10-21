@@ -23,4 +23,4 @@ with open(os.path.join(mdir,cdir,'scripts/copiedfolderpaths.txt')) as lines:
 
 shutil.rmtree(os.path.join(mdir,cdir,"config/names"))
 
-shutil.copytree(os.path.join(mdir,cdir,"config/names"), os.path.join(mdir,cdir,"config/names"), symlinks=False, ignore=None)
+shutil.copytree(os.path.join(mdir"civ13-git/config/names"), os.path.join(mdir,cdir,"config/names"), symlinks=False, ignore=None)
