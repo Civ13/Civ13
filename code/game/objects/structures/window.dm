@@ -472,6 +472,18 @@
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
 
+/obj/structure/window/clean
+	desc = "A good old window."
+	icon_state = "window_clear"
+	basestate = "window_clear"
+	glasstype = /obj/item/stack/material/glass
+	maximal_heat = T0C + 100
+	damage_per_fire_tick = 5.0
+	maxhealth = 20.0
+	layer = MOB_LAYER + 0.02
+	density = FALSE // so we can touch curtains from any direction
+	flammable = TRUE
+
 /obj/structure/window/classic/metal
 	icon_state = "windowmetal"
 	basestate = "windowmetal"
