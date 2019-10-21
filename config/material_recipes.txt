@@ -416,16 +416,16 @@ RECIPE: /material/coca/,cocaine,/obj/item/weapon/reagent_containers/pill/cocaine
 
 RECIPE: /material/poppy/,opium,/obj/item/weapon/reagent_containers/pill/opium,3,50,0,1,none,0,0,29,8,null
 
-RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talisman,2,75,0,1,none,0,0,0,8,null
-RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,1,null
-RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,1,null
-RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,1,none,0,0,0,1,null
+RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talisman,2,75,0,1,none,0,0,0,3,null
+RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,2,null
+RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,2,null
+RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,1,null
 RECIPE: /material/bone/,bone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,bone
-RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,0,1,none,0,0,0,3,bone
-RECIPE: /material/bone/,bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,0,1,none,0,0,0,4,bone
+RECIPE: /material/bone/,bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,4,null
 RECIPE: /material/bone/,bone pickaxe,/obj/item/weapon/pickaxe/bone,2,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone shovel,/obj/item/weapon/shovel/bone,2,50,0,1,none,0,0,0,8,null
-RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,4,null
 RECIPE: /material/bone/,dice,/obj/item/weapon/dice,2,90,0,1,none,15,0,0,8,null
 RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/tomahawk,4,30,0,1,none,25,0,0,4,null
 
@@ -696,6 +696,7 @@ RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,
 
 RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 RECIPE: /material/wood/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,none,118,0,0,8,null
+RECIPE: /material/wood/,wall frame,/obj/structure/wallframe,1,150,1,1,production,25,0,0,8,null
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,wood frame,/obj/structure/vehicleparts/frame/wood,2,40,0,1,vehicle parts,126,0,0,8,null
@@ -861,9 +862,9 @@ RECIPE: /material/iron/,halberd,/obj/item/weapon/material/halberd,2,60,0,1,weapo
 RECIPE: /material/iron/,pike,/obj/item/weapon/material/pike,3,75,0,1,weapons,33,39,0,8,iron
 RECIPE: /material/iron/,hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,shovel,/obj/item/weapon/shovel,2,50,0,1,tools,0,0,0,8,null
-RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,4,50,0,1,tools,18,0,0,8,null
-RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,4,50,0,1,tools,0,0,0,8,null
-RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing_modern,4,50,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,null
+RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,110,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing_modern,5,110,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,butcher's cleaver,/obj/item/weapon/material/knife/butcher,3,40,0,1,tools,20,0,25,8,iron
 RECIPE: /material/iron/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
