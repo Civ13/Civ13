@@ -616,6 +616,42 @@
 	health = 20
 	maxhealth = 20
 
+/obj/structure/wild/flower1
+	name = "flowers"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "flower1"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "flower1"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+	health = 1
+	maxhealth = 1
+
+/obj/structure/wild/flower2
+	name = "flowers"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "flower2"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "flower2"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+	health = 1
+	maxhealth = 1
+
+/obj/structure/wild/flower3
+	name = "flowers"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "flower3"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "flower3"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+	health = 1
+	maxhealth = 1
+
 /obj/structure/wild/tallgrass/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
