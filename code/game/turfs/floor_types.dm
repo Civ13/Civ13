@@ -304,7 +304,7 @@
 	else
 		return ..()
 
-/turf/floor/beach/water/proc/iscovered()
+/turf/proc/iscovered()
 	for(var/obj/covers/C in src)
 		return TRUE
 	for (var/obj/structure/vehicleparts/frame/ship/S in src)

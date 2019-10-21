@@ -273,12 +273,14 @@
 	var/turf/T = get_turf(src)
 	if (!istype(T, /turf/floor/beach/water/deep))
 		drowning = FALSE
-		if ((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded))
+		if (((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered())
 			water_overlay = TRUE
 			update_fire(1)
 			return
 		else
 			water_overlay = FALSE
+			if (plane == FLOOR_PLANE)
+				plane = GAME_PLANE
 			if (!on_fire)
 				overlays_standing[25] = null
 			return
