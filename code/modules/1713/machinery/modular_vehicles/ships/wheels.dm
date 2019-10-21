@@ -9,6 +9,7 @@
 	var/lastdirchange = 0
 	var/sails_on = FALSE
 	var/mob/living/user = null
+	var/reversed = FALSE
 
 /obj/structure/vehicleparts/shipwheel/proc/do_html(var/mob/m)
 
@@ -38,18 +39,14 @@
 		<center>
 		<big><b>[ship] wheel</b></big><br><br>
 		</center>
+		<font size='3'>
 		<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
-		Heading: <b>[dir2text(ship.dir)]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
+		Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
 		Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
 		Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
-		<br>
-		<center>
-		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
-		</center>
-
+		</font>
 		</body>
 		</html>
-		<br>
 		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
 
@@ -96,9 +93,14 @@
 		if (ship)
 			ship.anchor = !ship.anchor
 			if (ship.anchor)
-				visible_message("[ship]'s anchor is dropped!")
+				visible_message("<b>[ship]</b>'s anchor is dropped!")
+				ship.moving = FALSE
+				ship.stopmovementloop()
 			else
-				visible_message("[ship]'s anchor is raised!")
+				visible_message("<b>[ship]'s</b> anchor is raised!")
+				ship.moving = TRUE
+				ship.add_transporting()
+				ship.startmovementloop()
 			spamtimer = world.time + 20
 	if (href_list["set_sails"])
 		if (ship)
@@ -117,13 +119,25 @@
 			sails_on = !sails_on
 
 	if (href_list["set_heading_left"])
-		user << "You turn the ship to the left."
-		turndir(user,"left")
-		spamtimer = world.time + 20
+		if (turndir(user,"left"))
+			user << "You turn the ship to the left."
+			spamtimer = world.time + 20
 	if (href_list["set_heading_right"])
-		turndir(user,"right")
-		user << "You turn the ship to the right."
-		spamtimer = world.time + 20
+		if (turndir(user,"right"))
+			user << "You turn the ship to the right."
+			spamtimer = world.time + 20
+	if (href_list["set_reversed"])
+		if (!reversed)
+			user << "You reverse the [ship]."
+			spamtimer = world.time + 20
+			reversed = TRUE
+			ship.reverse = TRUE
+		else
+			user << "You return the [ship] to the heading."
+			spamtimer = world.time + 20
+			reversed = FALSE
+			ship.reverse = FALSE
+		return
 	sleep(0.5)
 	do_html(user)
 
@@ -148,7 +162,7 @@
 				return FALSE
 		var/turf/TF = get_turf(O)
 		if (!istype(TF, /turf/floor/beach/water) && !istype(TF, /turf/floor/trench/flooded))
-			mob << "<span class='warning'>You can't turn, the ship will get stock!</span>"
+			mob << "<span class='warning'>You can't turn, the ship will get stuck!</span>"
 			return FALSE
 	if (newdir == "left")
 		ship.do_matrix(dir,TURN_LEFT(ship.dir), newdir)

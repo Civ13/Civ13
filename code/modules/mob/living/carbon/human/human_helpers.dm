@@ -265,3 +265,24 @@
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
+
+/mob/living/carbon/human
+	var/image/drowning_o = null
+
+/mob/living/carbon/human/proc/handle_drowning()
+	var/turf/T = get_turf(src)
+	if (!istype(T, /turf/floor/beach/water/deep))
+		if (overlays_standing[27] == drowning_o)
+			overlays_standing[27] = null
+		return
+	else
+		var/turf/floor/beach/water/deep/D = T
+		if (D.iscovered())
+			if (overlays_standing[27] == drowning_o)
+				overlays_standing[27] = null
+			return
+		else
+			drowning_o = image(icon='icons/misc/beach.dmi', icon_state="[D.icon_state]_ov", layer=8)
+			overlays_standing[27] = drowning_o
+			src << "<font size='2'><span class='warning'>You are drowning!</span></font>"
+			adjustOxyLoss(10)

@@ -97,6 +97,7 @@
 				riding_mob.update_icons()
 				riding_mob.stop_automated_movement = FALSE
 
+	handle_drowning()
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov

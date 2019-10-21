@@ -271,7 +271,6 @@
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
 	density = FALSE
-	iscovered = FALSE
 	initial_flooring = /decl/flooring/water_deep
 
 /turf/floor/beach/water/deep/jungle
@@ -280,7 +279,6 @@
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
 	density = FALSE
-	iscovered = FALSE
 	initial_flooring = /decl/flooring/water_jungle3
 
 /turf/floor/beach/water/deep/swamp
@@ -289,7 +287,6 @@
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
 	density = FALSE
-	iscovered = FALSE
 	initial_flooring = /decl/flooring/water_swamp
 
 /turf/floor/beach/water/deep/saltwater
@@ -302,11 +299,17 @@
 		return TRUE
 	else if (istype(mover, /obj/item/projectile))
 		return TRUE
-	else if ((istype(mover, /mob)) && !iscovered)
+	else if (istype(mover, /mob) && !iscovered())
 		return FALSE
 	else
 		return ..()
 
+/turf/floor/beach/water/proc/iscovered()
+	for(var/obj/covers/C in src)
+		return TRUE
+	for (var/obj/structure/vehicleparts/frame/ship/S in src)
+		return TRUE
+	return FALSE
 /turf/floor/beach/water/swamp
 	name = "swamp"
 	move_delay = 3

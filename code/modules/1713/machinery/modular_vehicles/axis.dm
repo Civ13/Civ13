@@ -235,13 +235,13 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	if (reverse)
 		m_dir = OPPOSITE_DIR(dir)
 	for (var/atom/movable/M in transporting)
-		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && !istype(M, /obj/structure/vehicleparts/movement) && !istype(M, /obj/structure/wild))
+		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && (!istype(M, /obj/structure/vehicleparts/movement) || istype(M, /obj/structure/vehicleparts/movement/sails)) && !istype(M, /obj/structure/wild))
 			var/obj/MO = M
 			MO.forceMove(get_step(MO.loc, m_dir))
 			if (!istype(M, /obj/structure/cannon))
 				MO.dir = dir
 				MO.update_icon()
-		if (istype(M, /obj/structure/vehicleparts/movement))
+		if (istype(M, /obj/structure/vehicleparts/movement) && !istype(M, /obj/structure/vehicleparts/movement/sails))
 			var/obj/structure/vehicleparts/movement/MV = M
 			if (MV.reversed)
 				MV.dir = OPPOSITE_DIR(dir)

@@ -1070,8 +1070,6 @@
 	origin_water_level = T.water_level
 	T.water_level = 0
 	T.move_delay = 0
-	origin_covered = T.iscovered
-	T.iscovered = TRUE
 	return TRUE
 
 
@@ -1082,7 +1080,6 @@
 			new current_area_type(get_turf(src))
 			visible_message("The roof collapses!")
 		var/turf/floor/T = get_turf(loc)
-		T.iscovered = origin_covered
 		T.water_level = origin_water_level
 		T.move_delay = initial(T.move_delay)
 	if (amount > 0)
