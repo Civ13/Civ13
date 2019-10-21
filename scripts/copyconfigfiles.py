@@ -10,6 +10,7 @@ with open(os.path.join(currdir,"paths.txt")) as lines:
 		if "cdir:" in line:
 			cdir = line.replace("\n", "")
 			cdir = cdir.replace("cdir:", "")
+print("mdir: {} cdir: {}".format(mdir,cdir))
 with open(os.path.join(mdir,cdir,"scripts/copiedconfigpaths.txt")) as lines:
 	for line in lines:
 		path = line.replace("\n", "")
