@@ -18,6 +18,9 @@ with open(os.path.join(currdir,"paths.txt")) as lines:
 		if "cdir:" in line:
 			cdir = line.replace("\n", "")
 			cdir = cdir.replace("cdir:", "")
+		if "port:" in line:
+			port = line.replace("\n", "")
+			port = cdir.replace("port:", "")
 			
 print("Updating git...")
 
@@ -190,7 +193,7 @@ for pid in pids:
 		# due to BUGS we need to make sure the file we use as a reference is newer than the other
 		# todo: add test server support
 		may_restart_server = []
-		may_restart_server.append("1714")
+		may_restart_server.append(port)
 
 		if len(may_restart_server) == 0:
 			may_restart_server.append("notathing")
@@ -202,7 +205,7 @@ for pid in pids:
 				# main server logic: for some reason I could get a valid string/int for port so we're just using "in"
 
 				# civ13 is the active server; restart civ13
-				if "1714" in name and may_restart_server[0] == "1714":
+				if "1714" in name and may_restart_server[0] == port:
 					if os.path.isfile("{}{}serverdata.txt".format(mdir,cdir)):
 						process = psutil.Process(int(pid))
 						if process is not None:
@@ -215,8 +218,8 @@ for pid in pids:
 							shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir,cdir))
 							time.sleep(8)
 							print("Rebooting the server...")
-							os.system('sudo DreamDaemon {}{}civ13.dmb 1714 -trusted -webclient -logself &'.format(mdir,cdir))
-							print("Restarted main server on port 1714.")
+							os.system('sudo DreamDaemon {}{}civ13.dmb {} -trusted -webclient -logself &'.format(mdir,cdir,port))
+							print("Restarted main server on port {}.".format(port))
 
 	except IOError:
 		continue

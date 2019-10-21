@@ -12,6 +12,10 @@ with open(os.path.join(currdir,"paths.txt")) as lines:
 		if "cdir:" in line:
 			cdir = line.replace("\n", "")
 			cdir = cdir.replace("cdir:", "")
+		if "port:" in line:
+			port = line.replace("\n", "")
+			port = cdir.replace("port:", "")
+			
 t1 = time.time()
 
 print("Updating git...")
@@ -45,4 +49,4 @@ t2 = time.time() - t1
 print("Finished updating all directories in {} seconds".format(t2))
 
 print("Started server on port 1714.")
-os.system("sudo DreamDaemon {}{}civ13.dmb 1714 -trusted -logself -webclient &".format(mdir,cdir))
+os.system("sudo DreamDaemon {}{}civ13.dmb {} -trusted -logself -webclient &".format(mdir,cdir,port))
