@@ -369,8 +369,12 @@ var/const/enterloopsanity = 100
 
 
 		if (istype(M, /mob/living/carbon/human))
-			var/footstepsound
 			var/mob/living/carbon/human/H = M
+			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
+				if (H.overlays_standing[25])
+					H.overlays_standing[25] = null
+					H.update_fire(1)
+			var/footstepsound
 			// Tracking blood
 			var/list/bloodDNA = null
 			var/bloodcolor=""
