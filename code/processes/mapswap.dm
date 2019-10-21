@@ -173,6 +173,7 @@
 				MAP_NOMADS_CONTINENTAL = 20,
 				MAP_NOMADS_PANGEA = 10,
 				MAP_NOMADS_WASTELAND = 0,
+				MAP_NOMADS_NEW_WORLD = 10,
 			)
 		if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(
