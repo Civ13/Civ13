@@ -13,6 +13,7 @@
 	var/abstract = FALSE
 	var/r_speed = 1.0
 	var/health = null
+	var/maxhealth
 	var/burn_point = null
 	var/burning = null
 	var/hitsound = null
@@ -76,6 +77,11 @@
 	var/list/basematerials = list()
 
 	var/equiptimer = 0 //if it takes some time to equip to a active hand (e.g. guns)
+
+/obj/item/New()
+	..()
+	maxhealth = health
+
 /obj/item/equipped()
 	..()
 	var/mob/M = loc

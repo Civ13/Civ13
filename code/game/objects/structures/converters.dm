@@ -8,45 +8,75 @@
 	density = FALSE
 	anchored = TRUE
 	var/delay = 120 //Time to wait for the conversion to complete.
-	var/input = "/obj/item/stack/material/lead" //Input material
+	var/input = /obj/item/stack/material/lead //Input material
 	var/inputamount = 1 //How much material is required
-	var/output = "/obj/item/stack/material/gold" //Finished material
+	var/output = /obj/item/stack/material/gold //Finished material
 	var/outputamount = 1 //How much material is produced.
 	var/actiontext = "magicify"
 	var/activesound = null
 	var/endsound = null
 	var/filled = FALSE
+	var/overlayed = FALSE //if it should display the item on the thing.
 	not_movable = TRUE
 	not_disassemblable = FALSE
-	/* Broke plz fix i am too tired rn.
+
+
 /obj/structure/converter/attackby(obj/item/M as obj, mob/user as mob)
 	if(!filled)
-		if(M.health < M.maxhealth)
-			if(istype(M, input))
-				if(M.amount >= inputamount)
-					M.amount -= inputamount
-					if(M.amount <= 0)
-						qdel(M)
-					user << "<span class='notice'>You insert [inputamount] [M.name] into the [name]!</span>"
-					user << "<span class='notice'>The [name] starts to [actiontext] the [M.name].</span>"
-					icon_state = activesprite
-					playsound(src,activesound,60,1)
-					filled = TRUE
-					spawn(delay)
-						visible_message("<span class='alert'>The [name] finishes.</span>")
-						var/result = output(src.loc)
-						result.amount = inputamount
-						icon_state = idlesprite
-						filled = FALSE
-						playsound(src,endsound,60,1)
-
-				else
-					user << "<span class='alert'> You need to insert [inputamount] of the object! </span>"
+		if(istype(M, input))
+			if(M.amount >= inputamount)
+				M.amount -= inputamount
+				if(M.amount <= 0)
+					qdel(M)
+				user << "<span class='notice'>You insert [inputamount] [M.name] into the [name]!</span>"
+				visible_message("<span class='notice'>The [M.name] starts to [actiontext].</span>")
+				icon_state = activesprite
+				playsound(src,activesound,60,1)
+				if(overlayed)
+					load_overlay(M)
+				filled = TRUE
+				spawn(delay)
+					visible_message("<span class='alert'>The [name] finishes [actiontext]ing.</span>")
+					for(outputamount)
+						new output(src.loc)
+					icon_state = idlesprite
+					if(overlayed)
+						remove_overlay(M)
+					playsound(src,endsound,60,1)
+					filled = FALSE
+			else
+				user << "<span class='alert'> You need to insert [inputamount] [M.name]! </span>"
 		else
-			user << "<span class='alert'> That object is [actiontext]ed enough! </span>"
+			user << "<span class='alert'> You need to insert [inputamount] [M.name]! </span>"
 	else
 		user << "<span class='alert'> You empty the [name]. </span>"
-		var/result = new/input(src.loc)
-		result.amount = inputamount
+		for(outputamount)
+			new input(src.loc)
+		icon_state = idlesprite
+		if(overlayed)
+			remove_overlay(M)
 		filled = FALSE
-		*/
+
+/obj/structure/converter/proc/remove_overlay()
+	src.overlays = null
+
+/obj/structure/converter/proc/load_overlay(var/obj/A as obj)
+	//remove all overlays
+	remove_overlay()
+	//add overlay
+	src.overlays += icon(A.icon,A.icon_state)
+
+/obj/structure/converter/tanning
+	name = "tanning rack"
+	desc = "Turns hide into leather"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "tanning_rack"
+	idlesprite = "tanning_rack" //Icon when not full.
+	activesprite = "tanning_rack" //Icon when full.
+	delay = 300 //Time to wait for the conversion to complete.
+	input = /obj/item/stack/material/hairlesshide //Input material
+	inputamount = 1 //How much material is required
+	output = /obj/item/stack/material/leather //Finished material
+	outputamount = 6 //How much material is produced.
+	actiontext = "tan"
+	overlayed = TRUE
