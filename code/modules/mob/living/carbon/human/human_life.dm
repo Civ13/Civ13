@@ -97,7 +97,6 @@
 				riding_mob.update_icons()
 				riding_mob.stop_automated_movement = FALSE
 
-	handle_drowning()
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
@@ -502,9 +501,10 @@
 				E.wounds.Cut()
 				bad_external_organs -= E
 
+		handle_drowning()
+
 		handle_blood()
 
-//		adjust_body_temperature()
 		stabilize_body_temperature()
 
 		handle_shock()

@@ -309,6 +309,10 @@
 		return TRUE
 	for (var/obj/structure/vehicleparts/frame/ship/S in src)
 		return TRUE
+	for (var/obj/structure/vehicle/boat/B in src)
+		return TRUE
+	for (var/obj/structure/vehicle/raft/R in src)
+		return TRUE
 	return FALSE
 /turf/floor/beach/water/swamp
 	name = "swamp"

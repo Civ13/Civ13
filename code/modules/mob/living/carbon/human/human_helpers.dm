@@ -267,22 +267,30 @@
 				client.images -= FR.roof
 
 /mob/living/carbon/human
-	var/image/drowning_o = null
-
+	var/drowning = FALSE
+	var/water_overlay = FALSE
 /mob/living/carbon/human/proc/handle_drowning()
 	var/turf/T = get_turf(src)
 	if (!istype(T, /turf/floor/beach/water/deep))
-		if (overlays_standing[27] == drowning_o)
-			overlays_standing[27] = null
-		return
+		drowning = FALSE
+		if ((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded))
+			water_overlay = TRUE
+			update_fire(1)
+			return
+		else
+			water_overlay = FALSE
+			if (!on_fire)
+				overlays_standing[25] = null
+			return
 	else
 		var/turf/floor/beach/water/deep/D = T
 		if (D.iscovered())
-			if (overlays_standing[27] == drowning_o)
-				overlays_standing[27] = null
+			drowning = FALSE
 			return
 		else
-			drowning_o = image(icon='icons/misc/beach.dmi', icon_state="[D.icon_state]_ov", layer=8)
-			overlays_standing[27] = drowning_o
+			drowning = TRUE
 			src << "<font size='2'><span class='warning'>You are drowning!</span></font>"
+			update_fire(1)
 			adjustOxyLoss(10)
+			return
+	return
