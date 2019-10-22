@@ -26,7 +26,7 @@ os.system("cd")
 
 print("Copying configuration settings...")
 
-os.system("sudo python3 scripts/copyconfigfiles.py")
+os.system("sudo python3 {}{}scripts/copyconfigfiles.py".format(mdir,cdir))
 
 print("Copying binaries...")
 
