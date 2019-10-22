@@ -6,15 +6,15 @@ import time
 currdir = os.path.dirname(os.path.abspath(__file__))
 lines = open(os.path.join(currdir,"paths.txt"))
 all_lines = lines.readlines()
-mdir = all_lines[2]
+mdir = all_lines[1]
 mdir = mdir.replace("\n", "")
 mdir = mdir.replace("mdir:", "")
-cdir = all_lines[3]
+cdir = all_lines[2]
 cdir = cdir.replace("\n", "")
 cdir = cdir.replace("cdir:", "")
-port = all_lines[4]
+port = all_lines[3]
 port = port.replace("\n", "")
-port = cdir.replace("port:", "")
+port = port.replace("port:", "")
 print(port)
 t1 = time.time()
 
