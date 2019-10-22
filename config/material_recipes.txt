@@ -462,7 +462,7 @@ RECIPE: /material/stone/,stone shingled wall (vertical bottom),/obj/structure/ba
 RECIPE: /material/stone/,stone shingled wall (horizontal center),/obj/structure/barricade/jap_h,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal left),/obj/structure/barricade/jap_h_l,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal right),/obj/structure/barricade/jap_h_r,4,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,jersey barrier,/obj/structure/window/sandbag/jersey,3,70,1,1,fortifications,29,0,0,8,null
+RECIPE: /material/stone/,jersey barrier,/obj/structure/window/sandbag/jersey,3,70,1,1,fortifications,215,0,0,8,null
 
 RECIPE: /material/stone/,stone pickaxe,/obj/item/weapon/pickaxe/stone,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
@@ -703,7 +703,7 @@ RECIPE: /material/wood/,wood vehicle frame,/obj/structure/vehicleparts/frame/woo
 RECIPE: /material/wood/,wood ship frame,/obj/structure/vehicleparts/frame/ship,4,40,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,ship rudder axis (2500 weight),/obj/structure/vehicleparts/axis/ship/heavy,45,300,0,1,vehicle parts,55,0,0,8,null
 RECIPE: /material/wood/,light ship rudder axis (1200 weight),/obj/structure/vehicleparts/axis/ship,25,200,0,1,vehicle parts,41,0,0,8,null
-RECIPE: /material/wood/,ship rudder control,/obj/item/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/,ship rudder control,/obj/structure/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sails,15,140,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,research desk,/obj/structure/researchdesk,8,250,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,global exchange,/obj/structure/marketplace,10,140,1,1,none,96,0,0,8,null
