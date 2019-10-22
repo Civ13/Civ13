@@ -427,7 +427,7 @@ RECIPE: /material/bone/,bone pickaxe,/obj/item/weapon/pickaxe/bone,2,50,0,1,none
 RECIPE: /material/bone/,bone shovel,/obj/item/weapon/shovel/bone,2,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,4,null
 RECIPE: /material/bone/,dice,/obj/item/weapon/dice,2,90,0,1,none,15,0,0,8,null
-RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/tomahawk,4,30,0,1,none,25,0,0,4,null
+RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/thrown/tomahawk,4,30,0,1,none,25,0,0,4,null
 
 RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
@@ -875,9 +875,9 @@ RECIPE: /material/iron/,razor blade,/obj/item/weapon/material/kitchen/utensil/kn
 RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,pickaxe,/obj/item/weapon/pickaxe,3,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
-RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/star,2,15,0,1,weapons,0,39,0,8,iron
-RECIPE: /material/iron/,kunai,/obj/item/weapon/material/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
-RECIPE: /material/iron/,throwing knife,/obj/item/weapon/material/throwing_knife,4,20,0,1,weapons,0,39,0,8,iron
+RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
+RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
+RECIPE: /material/iron/,throwing knife,/obj/item/weapon/material/thrown/throwing_knife,4,20,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,naginata,/obj/item/weapon/material/naginata,12,60,0,1,weapons,39,40,0,3,iron
 RECIPE: /material/iron/,musket ball (x2),/obj/item/stack/ammopart/musketball,1,25,0,1,projectiles,0,0,80,8,null
 RECIPE: /material/iron/,small musket ball (x3),/obj/item/stack/ammopart/musketball_pistol,1,25,0,1,projectiles,0,80,0,8,null
