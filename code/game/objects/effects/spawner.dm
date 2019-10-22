@@ -176,6 +176,13 @@
 	create_path = /mob/living/simple_animal/hostile/panther/jaguar
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/buffalo
+	name = "buffalo spawner"
+	hostile = TRUE
+	max_number = 4
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/buffalo
+	timer = 3000
 
 /obj/effect/spawner/mobspawner/bears
 	name = "black bear spawner"
