@@ -15,7 +15,7 @@ with open(os.path.join(currdir,"paths.txt")) as lines:
 		if "port:" in line:
 			port = line.replace("\n", "")
 			port = cdir.replace("port:", "")
-			
+print(port)
 t1 = time.time()
 
 print("Updating git...")
