@@ -465,6 +465,8 @@ RECIPE: /material/stone/,stone shingled wall (horizontal right),/obj/structure/b
 RECIPE: /material/stone/,jersey barrier,/obj/structure/window/sandbag/jersey,3,70,1,1,fortifications,29,0,0,8,null
 
 RECIPE: /material/stone/,stone pickaxe,/obj/item/weapon/pickaxe/stone,2,50,0,1,tools,0,0,0,8,null
+RECIPE: /material/stone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,null
+
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,fishing net,/obj/item/weapon/fishing/net,4,100,0,1,none,0,0,0,8,null
@@ -696,14 +698,14 @@ RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,
 
 RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 RECIPE: /material/wood/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,none,118,0,0,8,null
-RECIPE: /material/wood/,wall frame,/obj/structure/wallframe,1,150,1,1,construction,25,0,0,8,null
+RECIPE: /material/wood/,wall frame,/obj/structure/wallframe,1,150,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,outrigger boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,wood vehicle frame,/obj/structure/vehicleparts/frame/wood,2,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/wood/,wood ship frame,/obj/structure/vehicleparts/frame/ship,4,40,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,ship rudder axis (2500 weight),/obj/structure/vehicleparts/axis/ship/heavy,45,300,0,1,vehicle parts,55,0,0,8,null
 RECIPE: /material/wood/,light ship rudder axis (1200 weight),/obj/structure/vehicleparts/axis/ship,25,200,0,1,vehicle parts,41,0,0,8,null
-RECIPE: /material/wood/,ship rudder control,/obj/item/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/,ship rudder control,/obj/structure/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sails,15,140,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,research desk,/obj/structure/researchdesk,8,250,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,global exchange,/obj/structure/marketplace,10,140,1,1,none,96,0,0,8,null
@@ -744,7 +746,7 @@ RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,
 RECIPE: /material/wood/,arrow shaft,/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null
 RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,2,null
 RECIPE: /material/wood/,shortbow,/obj/item/weapon/gun/projectile/bow/shortbow,8,140,0,1,weapons,0,30,0,7,null
-RECIPE: /material/wood/,longbow,/obj/item/weapon/gun/projectile/bow/longbow,12,160,0,1,weapons,0,30,0,7,null
+RECIPE: /material/wood/,longbow,/obj/item/weapon/gun/projectile/bow/longbow,12,160,0,1,weapons,0,35,0,7,null
 RECIPE: /material/wood/,compound bow,/obj/item/weapon/gun/projectile/bow/compoundbow,8,170,0,1,weapons,0,175,0,8,null
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
@@ -788,6 +790,7 @@ RECIPE: /material/wood/,wood pipe,/obj/item/clothing/mask/smokable/pipe,2,100,0,
 RECIPE: /material/wood/,small mill,/obj/structure/mill,4,90,1,1,kitchen & other,19,0,0,8,null
 RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel/empty,5,75,1,1,kitchen & other,19,0,0,8,null
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,kitchen & other,19,0,0,8,null
+RECIPE: /material/wood/,tanning rack,/obj/structure/converter/tanning,8,80,1,1,tools,16,0,0,8,null
 RECIPE: /material/wood/,matches,/obj/item/weapon/storage/box/matches,5,80,1,1,kitchen & other,67,0,0,8,null
 RECIPE: /material/wood/,violin,/obj/item/violin,10,135,0,1,kitchen & other,50,0,0,8,null
 RECIPE: /material/wood/,piano,/obj/structure/piano,18,195,1,1,kitchen & other,45,0,0,8,null
@@ -821,7 +824,7 @@ RECIPE: /material/wood/,pine on the shore,/obj/structure/sign/painting7,3,40,1,1
 RECIPE: /material/wood/,temple by the river,/obj/structure/sign/painting8,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,desert camp,/obj/structure/sign/painting9,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/,barque at sea,/obj/structure/sign/painting10,3,40,1,1,paintings,65,0,0,8,null
-RECIPE: /material/wood/,produce basket,/obj/item/weapon/storage/produce_basket,5,100,0,1,none,0,0,0,8,null
+RECIPE: /material/wood/,produce basket,/obj/item/weapon/storage/produce_basket,5,100,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/wood/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,none,24,0,0,8,null
 RECIPE: /material/wood/,stock market,/obj/structure/stock_market,25,150,1,1,none,80,0,0,8,null
@@ -868,8 +871,8 @@ RECIPE: /material/iron/,pike,/obj/item/weapon/material/pike,3,75,0,1,weapons,33,
 RECIPE: /material/iron/,hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,shovel,/obj/item/weapon/shovel,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,null
-RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,110,0,1,tools,0,0,0,8,null
-RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing_modern,5,110,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,40,0,1,tools,110,0,0,8,null
+RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing/modern,5,60,0,1,tools,120,0,0,8,null
 RECIPE: /material/iron/,butcher's cleaver,/obj/item/weapon/material/knife/butcher,3,40,0,1,tools,20,0,25,8,iron
 RECIPE: /material/iron/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
@@ -910,7 +913,10 @@ RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient
 RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
 RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
 RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null
-RECIPE: /material/iron/, ladder,/obj/item/weapon/siegeladder/metal,8,125,0,1,none,24,33,0,8,iron
+RECIPE: /material/iron/, ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,24,120,0,8,iron
+RECIPE: /material/iron/,armor workbench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
+RECIPE: /material/iron/,Firearm Maintenance Bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
+
 
 RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,2,25,1,1,walls doors and floors,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,2,25,1,1,walls doors and floors,0,0,0,8,null

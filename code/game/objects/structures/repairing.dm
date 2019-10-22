@@ -26,13 +26,23 @@
 	var/itemtype3 = null
 	var/itemtype4 = null
 	var/actiontext = "repair" //Plural, flavortext
+	var/skill1 = "strength" //Skill related to thing you are repairing.
+	var/skill2 = "crafting"
+	var/skill3 = "dexterity"
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
 /obj/structure/repair/gun
-	name = "Gun Matenence Bench"
-	desc = "Repair guns! NOT FINISHED."
-
+	name = "Firearm Maintenance Bench"
+	desc = "A bench with several tools for cleaning and repairing firearms." //Noise to do when doing the action.
+	repairamount = 25
+	damageamount = 1
+	itemtype1 = null
+	itemtype2 = null
+	itemtype3 = null
+	itemtype4 = null
+	actiontext = "clean/repair"
+	delay = 180
 /obj/structure/repair/attackby(obj/item/M as obj, mob/user as mob)
 	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4))
 		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]</span>")
@@ -54,7 +64,8 @@
 		else
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name]</span>")
 			icon_state = idlesprite
-
+	else
+		user << ("<span class='notice'>You cannot repair this with a [src.name]!</span>")
 /obj/structure/repair/grindstone
 	name = "Grindstone"
 	desc = "for sharpening blades."
@@ -63,8 +74,11 @@
 	activesprite = "grindstone_on"
 	itemtype1 = /obj/item/weapon/material/sword
 	itemtype2 = /obj/item/weapon/melee
+	itemtype3 = /obj/item/weapon/material/kitchen/utensil/knife
+	itemtype4 = /obj/item/weapon/material/hatchet
 	repairamount = 8 //0 is full repair, any other number adds until it hits max.
 	damageamount = 2 //How much max durability to take away.
+	delay = 100
 
 /obj/structure/repair/workbench
 	name = "workbench"
@@ -78,3 +92,4 @@
 	repairamount = 5 //0 is full repair, any other number adds until it hits max.
 	damageamount = 1 //How much max durability to take away.
 	noise = 'sound/effects/clang.ogg'
+	delay = 140

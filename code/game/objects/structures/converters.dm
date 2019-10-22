@@ -70,9 +70,9 @@
 	name = "tanning rack"
 	desc = "Turns hide into leather"
 	icon = 'icons/obj/structures.dmi'
-	icon_state = "tanning_rack"
-	idlesprite = "tanning_rack" //Icon when not full.
-	activesprite = "tanning_rack" //Icon when full.
+	icon_state = "drying_rack_empty"
+	idlesprite = "drying_rack_empty" //Icon when not full.
+	activesprite = "drying_rack_full" //Icon when full.
 	delay = 300 //Time to wait for the conversion to complete.
 	input = /obj/item/stack/material/hairlesshide //Input material
 	inputamount = 1 //How much material is required
