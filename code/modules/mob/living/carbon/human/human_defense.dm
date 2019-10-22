@@ -675,6 +675,7 @@ bullet_act
 				if (I.w_class <= 2.0)
 					affecting.embed(I)
 		if (istype(O, /obj/item/weapon/snowball))
+			O.layer = layer+2
 			O.icon_state = "snowball_hit"
 			O.update_icon()
 			spawn(6)

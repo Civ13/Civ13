@@ -182,6 +182,7 @@
 			new/obj/item/weapon/snowball(user.loc)
 			new/obj/item/weapon/snowball(user.loc)
 			new/obj/item/weapon/snowball(user.loc)
+			qdel(src)
 	else
 		..()
 
