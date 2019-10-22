@@ -52,11 +52,12 @@
 /turf/wall/indestructable
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "black" // so we look better on the map
+	layer=10
 /turf/wall/indestructable/black
 	color = "#000000"
 	density = TRUE
 	opacity = TRUE
-	layer = 10
+	layer=10
 /turf/wall/indestructable/New(var/newloc)
 	icon_state = initial(icon_state)
 	..(newloc,"indestructable")
