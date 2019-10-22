@@ -12,6 +12,7 @@
 	var/image/optics_ico
 	var/image/under_ico
 	..New()
+		maxhealth = health
 		..()
 		maxhealth = health
 /obj/item/weapon/Bump(mob/M as mob)
