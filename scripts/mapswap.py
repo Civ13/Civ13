@@ -29,7 +29,7 @@ os.system("git reset --hard origin/master")
 
 map = sys.argv[1]
 dmms = []
-if map:
+if map == "ISLAND":
 	dmms.append("#include \"maps\\1713\\island.dmm\"")
 
 elif map == "NAVAL":
