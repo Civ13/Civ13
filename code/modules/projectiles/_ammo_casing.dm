@@ -241,7 +241,7 @@
 	icon_state = "stoneball"
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_WEAK
-	resultpath = null
+	resultpath = /obj/item/ammo_casing/stoneball
 	value = 1
 	weight = 0.15
 	max_amount = 5
