@@ -297,6 +297,14 @@
 					//BATHTUB FRAMEWORK V1//
 
 				//STONE AGE WOODEN BATHTUB//
+
+/obj/structure/shower/bathtub/attack_hand(var/mob/living/user)
+	if (!isliving(user))
+		return
+	if (user.buckled && user.buckled == src)
+		unbuckle_mob()
+	else
+		..()
 /obj/structure/shower/bathtub/wooden
 	name = "Wooden bathtub"
 	desc = "A crude wooden bathtub, it stinks."
