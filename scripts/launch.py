@@ -4,17 +4,17 @@ import signal
 import shutil
 import time
 currdir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(currdir,"paths.txt")) as lines:
-	for line in lines:
-		if "mdir:" in line:
-			mdir = line.replace("\n", "")
-			mdir = mdir.replace("mdir:", "")
-		if "cdir:" in line:
-			cdir = line.replace("\n", "")
-			cdir = cdir.replace("cdir:", "")
-		if "port:" in line:
-			port = line.replace("\n", "")
-			port = cdir.replace("port:", "")
+lines = open(os.path.join(currdir,"paths.txt"))
+all_lines = lines.readlines()
+mdir = all_lines[2]
+mdir = mdir.replace("\n", "")
+mdir = mdir.replace("mdir:", "")
+cdir = all_lines[3]
+cdir = cdir.replace("\n", "")
+cdir = cdir.replace("cdir:", "")
+port = all_lines[4]
+port = port.replace("\n", "")
+port = cdir.replace("port:", "")
 print(port)
 t1 = time.time()
 
