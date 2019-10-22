@@ -48,5 +48,5 @@ t2 = time.time() - t1
 
 print("Finished updating all directories in {} seconds".format(t2))
 
-print("Started server on port 1714.")
+print("Started server on port {}.".format(port))
 os.system("sudo DreamDaemon {}{}civ13.dmb {} -trusted -logself -webclient &".format(mdir,cdir,port))
