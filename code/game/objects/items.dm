@@ -79,6 +79,7 @@
 	var/equiptimer = 0 //if it takes some time to equip to a active hand (e.g. guns)
 
 /obj/item/New()
+	maxhealth = health
 	..()
 	maxhealth = health
 

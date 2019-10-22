@@ -7,7 +7,7 @@
 	var/activesprite = "impaledskull" //Icon when full.
 	density = FALSE
 	anchored = TRUE
-	var/delay = 120 //Time to wait for the conversion to complete.
+	var/delay = 10 //Time to wait for the conversion to complete.
 	var/input = /obj/item/stack/material/lead //Input material
 	var/inputamount = 1 //How much material is required
 	var/output = /obj/item/stack/material/gold //Finished material
