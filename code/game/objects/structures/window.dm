@@ -424,6 +424,12 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	var/windowglass
+
+/obj/structure/window_frame/shoji
+	icon_state = "shoji_windownewframe"
+	name = "shoji window frame"
+	desc = "A good old window frame, only Japanese-style."
 
 /obj/structure/window_frame/metal
 	icon_state = "windowmetal_frame"
@@ -431,7 +437,7 @@
 	flammable = FALSE
 
 /obj/structure/window_frame/medieval
-	icon_state = "medieval_window"
+	icon_state = "medieval_windownew_frame"
 	name = "medieval window frame"
 	desc = "A dark ages window, minus the window."
 
@@ -457,6 +463,13 @@
 	health = 250
 	flammable = FALSE
 
+/obj/structure/window_frame/sumerian
+	icon_state = "sumerian_windownew_frame"
+	name = "sumerian window frame"
+	desc = "Made of clay, can hold glass."
+	health = 150
+	flammable = FALSE
+
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/material/glass))
 		var/obj/item/stack/S = W
@@ -475,6 +488,8 @@
 					new/obj/structure/window/classic/brick(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/metal))
 					new/obj/structure/window/classic/metal(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/sumerian))
+					new/obj/structure/window/classic/sumerian(get_turf(src))
 				else
 					new/obj/structure/window/classic(get_turf(src))
 				visible_message("<span class = 'notice'>[user] adds glass to the window frame.</span>")
@@ -491,11 +506,6 @@
 		visible_message("<span class = 'notice'>The window is broken by [user]!</span>")
 		qdel(src)
 		return
-
-/obj/structure/window_frame/shoji
-	icon_state = "shoji_windownewframe"
-	name = "shoji window frame"
-	desc = "A good old window frame, only Japanese-style."
 
 /obj/structure/window/classic
 	desc = "A good old window."
@@ -521,6 +531,18 @@
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
 
+/obj/structure/window/classic/shoji
+	icon_state = "shoji_windownew"
+	basestate = "shoji_windownew"
+	name = "shoji window"
+	desc = "A good old window, only Japanese-style."
+
+/obj/structure/window/classic/medieval
+	icon_state = "medieval_windownew"
+	basestate = "medieval_windownew"
+	name = "medieval window"
+	desc = "A dark ages window."
+
 /obj/structure/window/classic/metal
 	icon_state = "windowmetal"
 	basestate = "windowmetal"
@@ -540,8 +562,8 @@
 
 /obj/structure/window/classic/stone
 	icon_state = "stone_windownew"
-	name = "stone window frame"
-	desc = "Stone window glass-covered holes."
+	name = "stone window"
+	desc = "Stone window with glass-covered holes."
 	maximal_heat = T0C + 1600
 	damage_per_fire_tick = 1.0
 	health = 250
@@ -549,12 +571,21 @@
 
 /obj/structure/window/classic/sandstone
 	icon_state = "sandstone_windownew"
-	name = "sandstone window frame"
+	name = "sandstone window"
 	desc = "Sandstone with glass windows."
 	maximal_heat = T0C + 1600
 	damage_per_fire_tick = 1.0
 	health = 250
 	flammable = FALSE
+
+/obj/structure/window/classic/sumerian
+	icon_state = "sumerian_windownew"
+	name = "sumerian window"
+	desc = "Clay wall with some glass in it."
+	flammable = FALSE
+	maximal_heat = T0C + 1400
+	damage_per_fire_tick = 1.0
+	maxhealth = 200.0
 
 /obj/structure/window/classic/reinforced
 	reinf = TRUE
@@ -600,6 +631,8 @@
 			new/obj/structure/window_frame/sandstone
 		else if (istype(src, /obj/structure/window/classic/metal))
 			new/obj/structure/window_frame/metal
+		else if (istype(src, /obj/structure/window/classic/sumerian))
+			new/obj/structure/window_frame/sumerian
 		else
 			new/obj/structure/window_frame(myturf)
 	..(display_message)
@@ -616,18 +649,6 @@
 	spawn (1)
 		new/obj/structure/window_frame/metal(myturf)
 	..(display_message)
-
-/obj/structure/window/classic/shoji
-	icon_state = "shoji_windownew"
-	basestate = "shoji_windownew"
-	name = "shoji window"
-	desc = "A good old window, only Japanese-style."
-
-/obj/structure/window/classic/medieval
-	icon_state = "medieval_windownew"
-	basestate = "medieval_windownew"
-	name = "medieval window"
-	desc = "A dark ages window."
 
 /obj/structure/window/New(Loc, constructed=0)
 	..()
