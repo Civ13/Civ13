@@ -1,7 +1,7 @@
 /obj/structure/window
 	name = "window"
 	desc = "A window."
-	icon = 'icons/obj/structures.dmi'
+	icon = 'icons/obj/windows.dmi'
 	density = TRUE
 	w_class = 3
 
@@ -427,6 +427,35 @@
 
 /obj/structure/window_frame/metal
 	icon_state = "windowmetal_frame"
+	health = 500
+	flammable = FALSE
+
+/obj/structure/window_frame/medieval
+	icon_state = "medieval_window"
+	name = "medieval window frame"
+	desc = "A dark ages window, minus the window."
+
+
+/obj/structure/window_frame/brick
+	icon_state = "brick_windownew_frame"
+	name = "brick window frame"
+	desc = "A frame for a window, made of bricks."
+	health = 200
+	flammable = FALSE
+
+/obj/structure/window_frame/stone
+	icon_state = "stone_windownew_frame"
+	name = "stone window frame"
+	desc = "Stone carved to support a few panes of glass."
+	health = 250
+	flammable = FALSE
+
+/obj/structure/window_frame/sandstone
+	icon_state = "sandstone_windownew_frame"
+	name = "sandstone window frame"
+	desc = "Sandstone carved to support some glass.."
+	health = 250
+	flammable = FALSE
 
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/material/glass))
@@ -438,6 +467,14 @@
 					new/obj/structure/window/classic/shoji(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/medieval))
 					new/obj/structure/window/classic/medieval(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/stone))
+					new/obj/structure/window/classic/stone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/sandstone))
+					new/obj/structure/window/classic/sandstone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/brick))
+					new/obj/structure/window/classic/brick(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/metal))
+					new/obj/structure/window/classic/metal(get_turf(src))
 				else
 					new/obj/structure/window/classic(get_turf(src))
 				visible_message("<span class = 'notice'>[user] adds glass to the window frame.</span>")
@@ -490,12 +527,34 @@
 	flammable = FALSE
 	maximal_heat = T0C + 1600
 	damage_per_fire_tick = 1.0
-	maxhealth = 80.0
+	maxhealth = 300.0
 
-/obj/structure/window_frame/medieval
-	icon_state = "medieval_window"
-	name = "medieval window"
-	desc = "A dark ages window."
+/obj/structure/window/classic/brick
+	icon_state = "brick_windownew"
+	name = "brick window"
+	desc = "A brick window, made of bricks."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 200
+	flammable = FALSE
+
+/obj/structure/window/classic/stone
+	icon_state = "stone_windownew"
+	name = "stone window frame"
+	desc = "Stone window glass-covered holes."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
+/obj/structure/window/classic/sandstone
+	icon_state = "sandstone_windownew"
+	name = "sandstone window frame"
+	desc = "Sandstone with glass windows."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
 
 /obj/structure/window/classic/reinforced
 	reinf = TRUE
@@ -531,6 +590,16 @@
 	spawn (1)
 		if (istype(src, /obj/structure/window/classic/shoji))
 			new/obj/structure/window_frame/shoji(myturf)
+		else if (istype(src, /obj/structure/window/classic/medieval))
+			new/obj/structure/window_frame/medieval
+		else if (istype(src, /obj/structure/window/classic/brick))
+			new/obj/structure/window_frame/brick
+		else if (istype(src, /obj/structure/window/classic/stone))
+			new/obj/structure/window_frame/stone
+		else if (istype(src, /obj/structure/window/classic/sandstone))
+			new/obj/structure/window_frame/sandstone
+		else if (istype(src, /obj/structure/window/classic/metal))
+			new/obj/structure/window_frame/metal
 		else
 			new/obj/structure/window_frame(myturf)
 	..(display_message)

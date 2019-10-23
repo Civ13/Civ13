@@ -442,6 +442,7 @@ RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,non
 RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,none,43,0,0,8,null
 RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/stone/,stone window,/obj/structure/window_frame/stone,5,140,1,1,construction,18,0,0,8,null
 RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,fortifications,0,0,0,8,null
 
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,none,0,0,0,8,stone
@@ -918,10 +919,11 @@ RECIPE: /material/iron/,armor workbench,/obj/structure/repair/workbench,16,180,1
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
 
 
-RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,2,25,1,1,walls doors and floors,0,0,0,8,null
-RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,2,25,1,1,walls doors and floors,0,0,0,8,null
-RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,2,25,1,1,walls doors and floors,0,0,0,8,
-RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,2,45,1,1,none,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,2,25,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,2,25,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,2,25,1,1,construction,0,0,0,8,
+RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,2,45,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7,250,1,1,structures,21,0,0,8,null
 RECIPE: /material/sandstone/,furnace,/obj/structure/furnace/sandstone,10,150,1,1,structures,26,0,0,8,null
