@@ -26,9 +26,6 @@
 	var/itemtype3 = null
 	var/itemtype4 = null
 	var/actiontext = "repair" //Plural, flavortext
-	var/skill1 = "strength" //Skill related to thing you are repairing.
-	var/skill2 = "crafting"
-	var/skill3 = "dexterity"
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -37,12 +34,14 @@
 	desc = "A bench with several tools for cleaning and repairing firearms." //Noise to do when doing the action.
 	repairamount = 25
 	damageamount = 1
-	itemtype1 = null
+	itemtype1 = /obj/item/weapon/gun
 	itemtype2 = null
 	itemtype3 = null
 	itemtype4 = null
-	actiontext = "clean/repair"
+	actiontext = "repair"
 	delay = 180
+	noise = 'sound/effects/woodfile.ogg'
+
 /obj/structure/repair/attackby(obj/item/M as obj, mob/user as mob)
 	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4))
 		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]</span>")
@@ -65,7 +64,7 @@
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name]</span>")
 			icon_state = idlesprite
 	else
-		user << ("<span class='notice'>You cannot repair this with a [src.name]!</span>")
+		user << "<span class='notice'>You cannot repair this with a [src.name]!</span>"
 /obj/structure/repair/grindstone
 	name = "Grindstone"
 	desc = "for sharpening blades."
