@@ -429,7 +429,7 @@
 	icon = 'icons/obj/windows.dmi'
 
 /obj/structure/window_frame/shoji
-	icon_state = "shoji_windownewframe"
+	icon_state = "shoji_windownew_frame"
 	name = "shoji window frame"
 	desc = "A good old window frame, only Japanese-style."
 
