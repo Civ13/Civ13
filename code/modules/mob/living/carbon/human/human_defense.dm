@@ -107,7 +107,7 @@ bullet_act
 				if (GUN_TYPE_BOW)
 					H.adaptStat("bows", 1)
 				if (GUN_TYPE_MG)
-					H.adaptStat("mg", 1)
+					H.adaptStat("machinegun", 1)
 
 	def_zone = check_zone(def_zone)
 
@@ -675,6 +675,7 @@ bullet_act
 				if (I.w_class <= 2.0)
 					affecting.embed(I)
 		if (istype(O, /obj/item/weapon/snowball))
+			O.layer = layer+2
 			O.icon_state = "snowball_hit"
 			O.update_icon()
 			spawn(6)

@@ -142,7 +142,7 @@
 		//		MAP_BATTLEROYALE = 20,
 				MAP_SUPPLY_RAID = 8,
 				MAP_RECIFE = 10,
-//				MAP_FIELDS = 10,
+				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
 			)
 		if (epoch == "Bronze Age (500 B.C.-400 A.D.)")
@@ -173,6 +173,7 @@
 				MAP_NOMADS_CONTINENTAL = 20,
 				MAP_NOMADS_PANGEA = 10,
 				MAP_NOMADS_WASTELAND = 0,
+				MAP_NOMADS_NEW_WORLD = 10,
 			)
 		if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(

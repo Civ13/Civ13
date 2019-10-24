@@ -63,7 +63,7 @@
 	damage = DAMAGE_MEDIUM
 	penetrating = 0
 	armor_penetration = 2
-	icon_state = "arrow_copper"
+	icon_state = "arrow_stone"
 
 /obj/item/projectile/arrow/arrow/copper
 	damage = DAMAGE_MEDIUM+1
@@ -109,6 +109,37 @@
 	spawn (0.01)
 		qdel(src)
 	..()
+
+//BOLTS
+/obj/item/projectile/arrow/bolt/
+	damage = DAMAGE_LOW-20
+	penetrating = 1
+	armor_penetration = 6
+	icon_state = "bolt_iron"
+
+/obj/item/projectile/arrow/bolt/iron
+	damage = DAMAGE_MEDIUM+5
+	penetrating = 1
+	armor_penetration = 6
+	icon_state = "bolt_iron"
+
+/obj/item/projectile/arrow/bolt/bronze
+	damage = DAMAGE_MEDIUM+8
+	penetrating = 1
+	armor_penetration = 8
+	icon_state = "bolt_bronze"
+
+/obj/item/projectile/arrow/bolt/steel
+	damage = DAMAGE_MEDIUM+11
+	penetrating = 1
+	armor_penetration = 10
+	icon_state = "bolt_steel"
+
+/obj/item/projectile/arrow/bolt/modern
+	damage = DAMAGE_MEDIUM+11
+	penetrating = 1
+	armor_penetration = 10
+	icon_state = "bolt_modern"
 
 /obj/item/projectile/arrow/arrow/on_impact(mob/living/carbon/human/M as mob)
 	//TO DO TRANSFER REAGENTS REAGENTS HURT MY BRAIN
@@ -198,12 +229,22 @@
 /obj/item/projectile/bullet/pistol/a32
 	damage = DAMAGE_MEDIUM+1
 	penetrating = 1
-	armor_penetration = 7
+	armor_penetration = 5
 
 /obj/item/projectile/bullet/pistol/a32acp
 	damage = DAMAGE_MEDIUM+3
 	penetrating = 2
-	armor_penetration = 4
+	armor_penetration = 6
+
+/obj/item/projectile/bullet/pistol/webly445
+	damage = DAMAGE_MEDIUM+7
+	penetrating = 2
+	armor_penetration = 7
+
+/obj/item/projectile/bullet/pistol/a38
+	damage = DAMAGE_MEDIUM+4
+	penetrating = 1
+	armor_penetration = 6
 
 /obj/item/projectile/bullet/pistol/a41
 	damage = DAMAGE_MEDIUM+2

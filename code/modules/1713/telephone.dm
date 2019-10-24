@@ -10,6 +10,7 @@
 	opacity = FALSE
 	force = WEAPON_FORCE_WEAK+3
 	throwforce = WEAPON_FORCE_WEAK
+	w_class = 4
 	var/phonenumber = 0
 	var/ringing = FALSE
 	var/ringingnum = FALSE
@@ -143,6 +144,7 @@ var/list/global/phone_numbers = list()
 	throwforce = WEAPON_FORCE_WEAK
 	wireless = TRUE
 	maxrange = 20
+	w_class = 2
 	var/list/contacts = list()
 
 /obj/item/weapon/telephone/mobile/attack_self(var/mob/user as mob)

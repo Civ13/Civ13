@@ -105,6 +105,48 @@
 	projectile_type = /obj/item/projectile/arrow/arrow/vial
 	weight = 0.18
 	volume = 15
+//Crossbow
+
+/obj/item/ammo_casing/bolt
+	name = "bolt shaft"
+	desc = "A tipless crossbow bolt, not very effective."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "bolt"
+	spent_icon = null
+	projectile_type = /obj/item/projectile/arrow/bolt
+	weight = 0.17
+	caliber = "bolt"
+	slot_flags = SLOT_BELT
+	value = 2
+	var/volume = 5
+
+/obj/item/ammo_casing/bolt/iron
+	name = "iron bolt"
+	desc = "A crossbow bolt with a iron tip."
+	icon_state = "arrow_iron"
+	projectile_type = /obj/item/projectile/arrow/bolt/iron
+	weight = 0.17
+
+/obj/item/ammo_casing/bolt/bronze
+	name = "bronze bolt"
+	desc = "A crossbow bolt with a bronze tip."
+	icon_state = "arrow_bronze"
+	projectile_type = /obj/item/projectile/arrow/bolt/bronze
+	weight = 0.17
+
+/obj/item/ammo_casing/bolt/steel
+	name = "steel bolt"
+	desc = "A crossbow bolt with a steel tip."
+	icon_state = "arrow_steel"
+	projectile_type = /obj/item/projectile/arrow/bolt/steel
+	weight = 0.18
+
+/obj/item/ammo_casing/bolt/modern
+	name = "fiberglass bolt"
+	desc = "A modern, high-velocity crossbow bolt."
+	icon_state = "arrow_modern"
+	projectile_type = /obj/item/projectile/arrow/bolt/modern
+	weight = 0.16
 
  //Sling
 /obj/item/ammo_casing/stone
@@ -419,6 +461,16 @@
 	caliber = "a32"
 	value = 5
 
+/obj/item/ammo_casing/a38
+	name = ".38 bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/a38
+	caliber = "a38"
+	value = 5
+
 /obj/item/ammo_casing/a45
 	name = ".45 Colt bullet"
 	desc = "A brass casing."
@@ -678,6 +730,16 @@
 	weight = 0.03
 	projectile_type = /obj/item/projectile/bullet/pistol/a32acp
 	caliber = "a32acp"
+	value = 2
+
+/obj/item/ammo_casing/webly445
+	name = ".455 webly bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.03
+	projectile_type = /obj/item/projectile/bullet/pistol/webly445
+	caliber = "webly445"
 	value = 2
 
 /obj/item/ammo_casing/a556x45

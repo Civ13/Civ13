@@ -27,11 +27,14 @@
 
 	// realism + balancing
 	if (gender == FEMALE)
-		switch (statname)
-			if ("strength")
-				statval -= 15
-			else
-				statval += pick(round(15/stats.len), ceil(15/stats.len))
+		if (statname == "strength")
+			statval -= 15
+		else
+			statval += pick(round(15/stats.len), ceil(15/stats.len))
+		if (statname == "dexterity")
+			statval += 15
+		else
+			statval += pick(round(15/stats.len), ceil(15/stats.len))
 
 	// crafting, medical, philosophy: more age benefits you
 	if (list("crafting", "medical", "philosophy").Find(statname))
@@ -89,7 +92,7 @@
 		stats[statname][1] *= (1 + round(multiplier/100, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/100, increase_multiple))
 
-	else if (list("rifle", "pistol", "bows", "mg" ).Find(statname))
+	else if (list("rifle", "pistol", "bows", "machinegun" ).Find(statname))
 		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
 
@@ -108,6 +111,11 @@
 	else if (statname == "farming")
 		stats[statname][1] *= (1 + round(multiplier/200, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/200, increase_multiple))
+
+	else if (statname == "magic")
+		stats[statname][1] *= (1 + round(multiplier/100, increase_multiple))
+		stats[statname][2] *= (1 + round(multiplier/100, increase_multiple))
+
 	else
 		stats[statname][1] *= (1 + round(multiplier/100, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/100, increase_multiple))

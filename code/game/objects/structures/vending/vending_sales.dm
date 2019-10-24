@@ -47,6 +47,9 @@
 				if (istype(W, R.product_path))
 					stock(W, R, user)
 					return TRUE
+			//TODO: Fix this
+			if (istype(W, /obj/item/weapon/can) || istype(W,/obj/item/weapon/reagent_containers/glass) || W.contents)
+				user << "<span class='notice'>You can't sell this.</span>"
 			//if it isnt in the list yet
 			if (product_records.len >= max_products)
 				user << "<span class='notice'>This [src] has too many different products already!</span>"
@@ -157,6 +160,8 @@
 						map.custom_company_value[owner] += R.price
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 					GC.amount = moneyin/0.4
+					if (GC.amount == 0)
+						qdel(GC)
 					moneyin = 0
 					vend(R, usr)
 					nanomanager.update_uis(src)
@@ -167,6 +172,8 @@
 		else if (href_list["remove_money"])
 			var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 			GC.amount = moneyin/0.4
+			if (GC.amount == 0)
+				qdel(GC)
 			moneyin = 0
 			nanomanager.update_uis(src)
 			return

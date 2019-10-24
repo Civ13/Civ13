@@ -29,7 +29,7 @@
 	if (!A)
 		return
 	var/picked = pick(/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/banana,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/peyote,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/coca,)
-	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL)
+	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD)
 		return picked
 	else
 		if (A.climate == "sea")
@@ -615,6 +615,42 @@
 	layer = 5.1
 	health = 20
 	maxhealth = 20
+
+/obj/structure/wild/flower2
+	name = "flowers"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "flower1"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "flower2"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+	health = 5
+	maxhealth = 5
+
+/obj/structure/wild/flower1
+	name = "flowers"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "flower1"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "flower1"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+	health = 5
+	maxhealth = 5
+
+/obj/structure/wild/flower3
+	name = "flowers"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "flower3"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "flower3"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+	health = 5
+	maxhealth = 5
 
 /obj/structure/wild/tallgrass/fire_act(temperature)
 	if (prob(55 * (temperature/500)))

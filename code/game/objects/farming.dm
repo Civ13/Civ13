@@ -433,7 +433,7 @@
 								for (var/k in seasons)
 									if (season == k)
 										count++
-						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA))
+						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_NEW_WORLD))
 							stage += 1
 					growth()
 

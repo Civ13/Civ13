@@ -297,6 +297,14 @@
 					//BATHTUB FRAMEWORK V1//
 
 				//STONE AGE WOODEN BATHTUB//
+
+/obj/structure/shower/bathtub/attack_hand(var/mob/living/user)
+	if (!isliving(user))
+		return
+	if (user.buckled && user.buckled == src)
+		unbuckle_mob()
+	else
+		..()
 /obj/structure/shower/bathtub/wooden
 	name = "Wooden bathtub"
 	desc = "A crude wooden bathtub, it stinks."
@@ -894,6 +902,9 @@
 
 	if (map && map.ID == MAP_HUNT)
 		mosquito_proc()
+	if (map && map.ID == MAP_NOMADS_NEW_WORLD)
+		if (src.x < 256)
+			mosquito_proc()
 
 	spawn(2000)
 		if (map.chad_mode)

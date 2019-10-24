@@ -37,7 +37,7 @@
 	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
 
 /datum/job/american/lieutenant_ww2
@@ -79,7 +79,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/sergeant_ww2
@@ -123,7 +123,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
 
 /datum/job/american/medic_ww2
@@ -166,7 +166,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/doctor_ww2
@@ -210,7 +210,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/sniper_ww2
@@ -249,7 +249,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/machine_gunner_ww2
@@ -290,7 +290,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_VERY_HIGH)
+	H.setStat("machinegun", STAT_VERY_HIGH)
 	return TRUE
 
 /datum/job/american/soldier_ww2
@@ -327,7 +327,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/mp_ww2
@@ -363,7 +363,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/chef_ww2
@@ -395,5 +395,5 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE

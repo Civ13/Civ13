@@ -10,15 +10,17 @@ if len(sys.argv) == 1:
 	sys.exit()
 	
 currdir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(currdir,"paths.txt")) as lines:
-	for line in lines:
-		if "mdir:" in line:
-			mdir = line.replace("\n", "")
-			mdir = mdir.replace("mdir:", "")
-		if "cdir:" in line:
-			cdir = line.replace("\n", "")
-			cdir = cdir.replace("cdir:", "")
-			
+lines = open(os.path.join(currdir,"paths.txt"))
+all_lines = lines.readlines()
+mdir = all_lines[1]
+mdir = mdir.replace("\n", "")
+mdir = mdir.replace("mdir:", "")
+cdir = all_lines[2]
+cdir = cdir.replace("\n", "")
+cdir = cdir.replace("cdir:", "")
+port = all_lines[3]
+port = port.replace("\n", "")
+port = port.replace("port:", "")
 print("Updating git...")
 
 os.chdir("{}civ13-git".format(mdir))
@@ -27,7 +29,7 @@ os.system("git reset --hard origin/master")
 
 map = sys.argv[1]
 dmms = []
-if map:
+if map == "ISLAND":
 	dmms.append("#include \"maps\\1713\\island.dmm\"")
 
 elif map == "NAVAL":
@@ -135,6 +137,8 @@ elif map == "KURSK":
 	dmms.append("#include \"maps\\1943\\kursk.dmm\"")
 elif map == "GULAG13":
 	dmms.append("#include \"maps\\1943\\gulag13.dmm\"")
+elif map == "NOMADS_NEW_WORLD":
+	dmms.append("#include \"maps\\special\\nomads_new_world.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()
@@ -188,7 +192,7 @@ for pid in pids:
 		# due to BUGS we need to make sure the file we use as a reference is newer than the other
 		# todo: add test server support
 		may_restart_server = []
-		may_restart_server.append("1714")
+		may_restart_server.append(port)
 
 		if len(may_restart_server) == 0:
 			may_restart_server.append("notathing")
@@ -200,7 +204,7 @@ for pid in pids:
 				# main server logic: for some reason I could get a valid string/int for port so we're just using "in"
 
 				# civ13 is the active server; restart civ13
-				if "1714" in name and may_restart_server[0] == "1714":
+				if "1714" in name and may_restart_server[0] == port:
 					if os.path.isfile("{}{}serverdata.txt".format(mdir,cdir)):
 						process = psutil.Process(int(pid))
 						if process is not None:
@@ -213,8 +217,8 @@ for pid in pids:
 							shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir,cdir))
 							time.sleep(8)
 							print("Rebooting the server...")
-							os.system('sudo DreamDaemon {}{}civ13.dmb 1714 -trusted -webclient -logself &'.format(mdir,cdir))
-							print("Restarted main server on port 1714.")
+							os.system('sudo DreamDaemon {}{}civ13.dmb {} -trusted -webclient -logself &'.format(mdir,cdir,port))
+							print("Restarted main server on port {}.".format(port))
 
 	except IOError:
 		continue

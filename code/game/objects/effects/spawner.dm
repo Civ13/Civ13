@@ -8,13 +8,17 @@
 	var/create_path = /obj/item/ammo_casing/arrow
 	var/max_amt = 1
 
-/obj/effect/spawner/ammospawner/arrow
-	name = "arrow spawner"
-	create_path = /obj/item/ammo_casing/arrow
+/obj/effect/spawner/ammospawner/arrow/bronze
+	name = "bronze arrow spawner"
+	create_path = /obj/item/ammo_casing/arrow/bronze
 
 /obj/effect/spawner/ammospawner/stone
 	name = "stone projectile spawner"
 	create_path = /obj/item/ammo_casing/stone
+
+/obj/effect/spawner/ammospawner/tomahawk
+	name = "tomahawk spawner"
+	create_path = /obj/item/weapon/material/thrown/tomahawk
 
 /obj/effect/spawner/ammospawner/New()
 	..()
@@ -172,6 +176,13 @@
 	create_path = /mob/living/simple_animal/hostile/panther/jaguar
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/buffalo
+	name = "buffalo spawner"
+	hostile = TRUE
+	max_number = 4
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/buffalo
+	timer = 3000
 
 /obj/effect/spawner/mobspawner/bears
 	name = "black bear spawner"
@@ -261,6 +272,30 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/hostile/poison/snake
 	timer = 5000
+
+/obj/effect/spawner/mobspawner/snake/cobra
+	name = "cobra spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/poison/snake/cobra
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/snake/boa
+	name = "boa constrictor spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/poison/snake/constrictor
+	timer = 8000
+
+/obj/effect/spawner/mobspawner/snake/python
+	name = "python constrictor spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/poison/snake/constrictor/python
+	timer = 7000
 
 /obj/effect/spawner/mobspawner/crab
 	name = "crab spawner"

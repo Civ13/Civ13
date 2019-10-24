@@ -13,6 +13,8 @@
 	var/perunit = SHEET_MATERIAL_AMOUNT
 	var/apply_colour //temp pending icon rewrite
 
+	icon = 'icons/obj/materials.dmi'
+
 /obj/item/stack/material/New()
 	..()
 	pixel_x = rand(0,4)-4
@@ -77,7 +79,7 @@
 	if (istype(W, /obj/item/stack/rods))
 		material.build_rod_product(user, W, src)
 		return
-	return ..()
+	..()
 
 /obj/item/stack/material/iron
 	name = "iron"
@@ -457,6 +459,20 @@
 	var/mob/living/carbon/human/U = user
 	recipes = material.get_recipes_civs(U.original_job_title, U)
 	..()
+
+/obj/item/stack/material/fossil
+	name = "fossil"
+	icon_state = "fossil_1"
+	default_type = "stone"
+	dropsound = 'sound/effects/drop_wood.ogg'
+	w_class = 3.0
+	value = 10
+	max_amount = 1
+	singular_name = "fossil"
+	..New()
+		icon_state = "fossil_[rand(1, 10)]"
+		value = rand(10, 18)
+		..()
 /*
 /obj/item/stack/material/steelrods
 	name = "steel rods"

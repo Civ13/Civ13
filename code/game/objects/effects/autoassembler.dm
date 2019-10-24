@@ -78,6 +78,12 @@
 						E.engineclass = "engine"
 						E.update_icon()
 						done2 = TRUE
+		for (var/obj/structure/vehicleparts/movement/sails/S in rangeto)
+			for (var/obj/structure/vehicleparts/frame/ship/F in S.loc)
+				central.axis.masts += S
+				S.anchored = TRUE
+				S.dir = central.axis.dir
+				S.update_icon()
 //		if (!done2)
 //			world.log << "<b>Engine error! ([x],[y])</b>"
 //			return FALSE
@@ -102,6 +108,14 @@
 						central.axis.wheel = D.wheel
 						central.axis.wheel.control = F
 						done4 = TRUE
+		for (var/obj/structure/vehicleparts/shipwheel/D in rangeto)
+			if (!done4)
+				for (var/obj/structure/vehicleparts/frame/ship/F in D.loc)
+					if (!done4)
+						D.anchored = TRUE
+						D.dir = dir
+						D.ship = central.axis
+						done4 = TRUE
 //		if (!done4)
 //			world.log << "<b>Driver's Seat error! ([x],[y])</b>"
 //			return FALSE
@@ -112,8 +126,9 @@
 			central.axis.check_matrix()
 		//and the tracks
 		for (var/obj/structure/vehicleparts/movement/M in rangeto)
-			for (var/obj/structure/vehicleparts/frame/F in M.loc)
-				M.MouseDrop(F)
+			if (!istype(M, /obj/structure/vehicleparts/movement/sails))
+				for (var/obj/structure/vehicleparts/frame/F in M.loc)
+					M.MouseDrop(F)
 		for (var/obj/structure/lamp/lamp_small/tank/TL in rangeto)
 			for (var/obj/structure/vehicleparts/frame/F in TL.loc)
 				TL.connection = central.axis.engine

@@ -501,9 +501,10 @@
 				E.wounds.Cut()
 				bad_external_organs -= E
 
+		handle_drowning()
+
 		handle_blood()
 
-//		adjust_body_temperature()
 		stabilize_body_temperature()
 
 		handle_shock()

@@ -1788,7 +1788,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft weapons and guns. However, you probably should follow the <b>Governor's</b> orders!")
 	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("crafting", 200)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_HIGH)

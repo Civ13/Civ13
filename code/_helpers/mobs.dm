@@ -186,9 +186,9 @@ proc/random_greek_name(gender, species = "Human")
 
 	if (!current_species || current_species.name_language == null)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_male_greek))
+			return capitalize(pick(first_names_male_greek)) + " " + capitalize(pick(last_names_greek))
 		else
-			return capitalize(pick(first_names_male_greek))
+			return capitalize(pick(first_names_male_greek)) + " " + capitalize(pick(last_names_greek))
 	else
 		return current_species.get_random_greek_name(gender)
 

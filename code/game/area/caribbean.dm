@@ -291,6 +291,9 @@
 /area/caribbean/no_mans_land/invisible_wall/jungle
 	climate = "jungle"
 	base_turf = /turf/floor/dirt/jungledirt
+/area/caribbean/no_mans_land/invisible_wall/sea
+	climate = "sea"
+	base_turf = /turf/floor/beach/water/deep/saltwater
 
 /area/caribbean/no_mans_land/invisible_wall/one
 	icon_state = "green1"
