@@ -21,6 +21,7 @@
 	var/silicate = FALSE // number of units of silicate
 	not_movable = FALSE
 	not_disassemblable = FALSE
+
 /obj/structure/window/examine(mob/user)
 	. = ..(user)
 
@@ -425,6 +426,7 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/windowglass
+	icon = 'icons/obj/windows.dmi'
 
 /obj/structure/window_frame/shoji
 	icon_state = "shoji_windownewframe"
