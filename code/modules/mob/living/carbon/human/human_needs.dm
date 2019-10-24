@@ -124,7 +124,7 @@
 					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
 					HM.mood -= 3
 	var/fleas_found = FALSE
-	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
+	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C)
 			if (C.blood_DNA)
 				C.dirtyness += 0.08
