@@ -4,6 +4,7 @@
 /mob/living/carbon/human/var/crouching = FALSE
 
 /obj/structure/window/sandbag
+	icon = 'icons/obj/structures.dmi'
 	name = "dirt wall"
 	icon_state = "dirt_wall"
 	icon = 'icons/obj/structures.dmi'

@@ -842,8 +842,8 @@
 					S.density = FALSE
 					S.opacity = FALSE
 				else if (choice == "Window")
-					qdel(src)
 					new /obj/structure/window_frame/sumerian(loc)
+					qdel(src)
 				else if (choice == "Corner")
 					S.icon_state = "sumerian-corner1"
 					var/choice1 = WWinput(user, "Which corner?","Clay Walls","North-West",list("North-West","North-East","South-West","South-East"))
