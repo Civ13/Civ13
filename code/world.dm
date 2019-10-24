@@ -299,6 +299,21 @@ var/world_topic_spam_protect_time = world.timeofday
 			fdel(F)
 		F << get_packaged_server_status_data()
 		sleep (100)
+
+/proc/start_messaging_loop()
+	spawn while (1)
+		var/F = file("SQL/discord2ooc.txt")
+		if (fexists(F))
+			var/list/messages_read = splittext(file2text(F), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+					//world << "<b><font color='#792964'>[tempmsg[1]]</font><i>(Discord)</i>:</b> [tempmsg[2]]"
+					world << "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]"
+			fdel(F)
+			F << ""
+		sleep (100)
+
 /proc/start_serverswap_loop()
 	spawn while (1)
 
