@@ -204,7 +204,7 @@ for pid in pids:
 				# main server logic: for some reason I could get a valid string/int for port so we're just using "in"
 
 				# civ13 is the active server; restart civ13
-				if "1714" in name and may_restart_server[0] == port:
+				if port in name and may_restart_server[0] == port:
 					if os.path.isfile("{}{}serverdata.txt".format(mdir,cdir)):
 						process = psutil.Process(int(pid))
 						if process is not None:
