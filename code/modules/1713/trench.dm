@@ -72,6 +72,8 @@ var/list/global/floor_cache = list()
 /turf/floor/trench/flooded/proc/check_bridge()
 	if(locate(/obj/covers/repairedfloor) in contents)
 		move_delay = 0
+	if(locate(/obj/structure/vehicleparts/frame) in contents)
+		move_delay = 0
 	return
 
 /turf/floor/trench/flooded/salty
@@ -129,6 +131,9 @@ var/list/global/floor_cache = list()
 			if(locate(/obj/covers/repairedfloor) in contents)
 				L.forceMove(src)
 				return 1
+			if(locate(/obj/structure/vehicleparts/frame) in contents)
+				L.forceMove(src)
+				return 1
 			if(L.grabbed_by && L.grabbed_by.len)
 				var/mob/living/L2 = L.grabbed_by[1].assailant
 				visible_message("<span class = 'notice'>[L2] starts pulling [L] out of trench.</span>")
@@ -159,6 +164,17 @@ var/list/global/floor_cache = list()
 					visible_message("<span class = 'notice'>[L] climbs down from a bridge.</span>")
 					L.forceMove(src)
 					return TRUE
+		if(istype(oldloc, /turf/floor/trench) && locate(/obj/structure/vehicleparts/frame, usr.loc))
+			if(!locate(/obj/structure/vehicleparts/frame) in contents)
+				if(world.time > message_cooldown + 30)
+					visible_message("<span class = 'notice'>[L] starts to climb down.</span>")
+					message_cooldown = world.time
+				if (!do_after(L, 5, src, needhand = FALSE))
+					return FALSE
+				if(..())
+					visible_message("<span class = 'notice'>[L] climbs down.</span>")
+					L.forceMove(src)
+					return TRUE
 
 	return ..()
 
@@ -172,6 +188,11 @@ var/list/global/floor_cache = list()
 			return TRUE
 		if(!istype(newloc, /turf/floor/trench))
 			if(locate(/obj/covers/repairedfloor) in contents)
+				var/turf/T = newloc
+				if(T.Enter(O, src))
+					L.forceMove(newloc)
+				return TRUE
+			if(locate(/obj/structure/vehicleparts/frame) in contents)
 				var/turf/T = newloc
 				if(T.Enter(O, src))
 					L.forceMove(newloc)
@@ -215,7 +236,18 @@ var/list/global/floor_cache = list()
 				if(T.Enter(O, src))
 					L.forceMove(newloc)
 				return TRUE
-
+		if(istype(newloc, /turf/floor/trench) && locate(/obj/structure/vehicleparts/frame, newloc) && !locate(/obj/structure/vehicleparts/frame, usr.loc))
+			if(world.time > message_cooldown + 30)
+				visible_message("<span class = 'notice'>[L] starts to climb on a frame.</span>")
+				message_cooldown = world.time
+			if (!do_after(L, 20, src, needhand = FALSE))
+				return FALSE
+			if(..())
+				visible_message("<span class = 'notice'>[L] climbs on a frame.</span>")
+				var/turf/T = newloc
+				if(T.Enter(O, src))
+					L.forceMove(newloc)
+				return TRUE
 	return ..()
 
 /turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
