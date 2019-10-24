@@ -833,7 +833,7 @@
 				qdel(W)
 				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
 				qdel(src)
-				var/choice = WWinput(user, "What time of wall?","Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
+				var/choice = WWinput(user, "What type of wall?","Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
 				if (choice == "Normal")
 					return
 				else if (choice == "Doorway")
@@ -842,10 +842,8 @@
 					S.density = FALSE
 					S.opacity = FALSE
 				else if (choice == "Window")
-					S.icon_state = "sumerian-window"
-					S.name = "sumerian clay window"
-					S.density = TRUE
-					S.opacity = FALSE
+					qdel(src)
+					new /obj/structure/window_frame/sumerian(loc)
 				else if (choice == "Corner")
 					S.icon_state = "sumerian-corner1"
 					var/choice1 = WWinput(user, "Which corner?","Clay Walls","North-West",list("North-West","North-East","South-West","South-East"))
@@ -979,9 +977,14 @@
 		if (do_after(user, 20, src))
 			user << "You finish adding bricks to the wall, completing it."
 			qdel(W)
-			new /obj/covers/brick_wall(loc)
+			var WALL = new /obj/covers/brick_wall(loc)
 			qdel(src)
-			return
+			var/choice = WWinput(user, "What type of wall?","Brick Walls","Normal",list("Wall","Window"))
+			if (choice == "Wall")
+				return
+			else if (choice == "Window")
+				new /obj/structure/window_frame/brick(loc)
+				qdel(WALL)
 			return
 	..()
 

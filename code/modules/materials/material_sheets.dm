@@ -77,7 +77,7 @@
 	if (istype(W, /obj/item/stack/rods))
 		material.build_rod_product(user, W, src)
 		return
-	return ..()
+	..()
 
 /obj/item/stack/material/iron
 	name = "iron"
