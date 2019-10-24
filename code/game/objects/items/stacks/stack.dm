@@ -666,7 +666,7 @@
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
 					return
-	else if (findtext(recipe.title, "suspended gong"))
+	else if (findtext(recipe.title, "gong") && !findtext(recipe.title, "gong mallet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/bronze) && !istype(H.r_hand, /obj/item/stack/material/bronze))
 			user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
 			return
