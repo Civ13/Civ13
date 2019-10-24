@@ -123,7 +123,6 @@
 #include "code\game\jobs\job_controller.dm"
 #include "code\game\jobs\jobs.dm"
 #include "code\game\objects\buckling.dm"
-#include "code\game\objects\clay_objs.dm"
 #include "code\game\objects\controls.dm"
 #include "code\game\objects\covers.dm"
 #include "code\game\objects\explosion.dm"
