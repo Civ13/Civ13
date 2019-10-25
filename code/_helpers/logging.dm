@@ -44,6 +44,10 @@
 	var/admindiary = file("admin.log")
 	admindiary << "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]"
 
+/proc/discord_admin_ban(banner,banned,duration,reason)
+	var/admindiary = file("admin.log")
+	admindiary << "__**\[[time_stamp()]] ([map.ID])** [banner] **HAS BANNED** [banned] for [duration], with the reason \"[reason]\""
+
 /proc/attack_log(category, text)
 	attack_log << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
 
@@ -56,9 +60,9 @@
 	if (config.log_admin)
 		game_log("DISCORD", text)
 
-/proc/log_discord_ahelp(text)
+/proc/log_discord_asay(text)
 	if (config.log_admin)
-		game_log("DISCORD-AHELP", text)
+		game_log("DISCORD-ASAY", text)
 
 /proc/log_debug(text)
 	if (config.log_debug)

@@ -530,4 +530,4 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	quickBan_ban(fields, src)
 
-	return "successfully banned [gckey]."
+	return "successful."

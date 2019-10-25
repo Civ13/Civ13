@@ -325,7 +325,7 @@ var/world_topic_spam_protect_time = world.timeofday
 					for (var/client/C in admins)
 						if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
 							C << "<span class='admin_channel'>" + create_text_tag("admin", "ADMIN:", C) + " <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>"
-					log_discord_ahelp(msg)
+					log_discord_asay(msg)
 			fdel(G)
 			G << ""
 
@@ -350,8 +350,12 @@ var/world_topic_spam_protect_time = world.timeofday
 			for(var/msg in messages_read)
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 4)
+					var/temp_ckey = lowertext(tempmsg[2])
+					temp_ckey = replacetext(temp_ckey," ", "")
+					temp_ckey = replacetext(temp_ckey,"_", "")
 					//ckey to ban, duration, ban reason, who banned
-					quickBan_discord(tempmsg.len[2], tempmsg.len[3], tempmsg.len[4], tempmsg[1])
+					if (quickBan_discord(temp_ckey, tempmsg.len[3], tempmsg.len[4], tempmsg[1]) == "successful.")
+						discord_admin_ban(tempmsg[1],temp_ckey,tempmsg.len[3],tempmsg.len[4])
 			fdel(I)
 			I << ""
 		sleep (100)
