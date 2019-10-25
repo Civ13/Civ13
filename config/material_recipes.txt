@@ -584,7 +584,8 @@ RECIPE: /material/glass/,chemical dispenser,/obj/structure/chemical_dispenser,12
 RECIPE: /material/gold/,gold hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,gold
 RECIPE: /material/gold/,gold-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,3,gold
 RECIPE: /material/gold/,gold coins,/obj/item/stack/money/goldcoin,1,35,0,1,none,0,0,0,8,null
-RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,135,0,1,none,0,0,0,8,null
+RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,135,0,1,none,25,0,0,8,null
+RECIPE: /material/gold/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,2,110,0,1,none,25,0,0,8,null
 RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/armbangle/gold,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none,0,0,0,8,null
 

@@ -469,7 +469,7 @@
 	value = 10
 	max_amount = 1
 	singular_name = "fossil"
-	..New()
+	New()
 		icon_state = "fossil_[rand(1, 10)]"
 		value = rand(10, 18)
 		..()
