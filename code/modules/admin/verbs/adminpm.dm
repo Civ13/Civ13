@@ -123,7 +123,7 @@
 
 	//get message text, limit it's length.and clean/escape html
 	if (!msg)
-		msg = input(src,"Message:", "Private message to [sender_name]") as text|null
+		msg = input(src,"Message:", "Private message to [C.ckey]") as text|null
 
 		if (!msg)	return
 		if (!C)	return
@@ -134,7 +134,7 @@
 	if (C.adminhelped)
 		C << "<span class='pm'><span class='howto'><b>-- Click the Admins's name to reply --</b></span></span>\n"
 		C.adminhelped = FALSE
-	C << "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[Admin PM\]</b> <span class='name'></span>: <span class='message'>[msg]</span></span></span>"
+	C << "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[Admin PM\]</b> <span class='name'>[sender_name] (discord)</span>: <span class='message'>[msg]</span></span></span>"
 
 	discord_adminpm_log(sender_name,msg,key_name(C))
 

@@ -41,7 +41,7 @@
 		return
 
 	if (href_list["priv_msg_discord"])
-		var/sender = locate(href_list["priv_msg_discord"])
+		var/sender = href_list["priv_msg_discord"]
 		var/txtinput = input("Write your reply to [sender]:") as text
 		cmd_admin_pm_todiscord(sender,txtinput)
 		return

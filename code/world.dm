@@ -335,11 +335,25 @@ var/world_topic_spam_protect_time = world.timeofday
 			for(var/msg in messages_read)
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 3)
+					var/temp_ckey = lowertext(tempmsg[2])
+					temp_ckey = replacetext(temp_ckey," ", "")
+					temp_ckey = replacetext(temp_ckey,"_", "")
 					for(var/client/C in clients)
-						if (C.ckey == tempmsg[2])
+						if (C.ckey == temp_ckey)
 							cmd_admin_pm_fromdiscord(C, tempmsg[3], tempmsg[1])
 			fdel(H)
 			H << ""
+
+		var/I = file("SQL/discord2ban.txt")
+		if (fexists(I))
+			var/list/messages_read = splittext(file2text(I), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 4)
+					//ckey to ban, duration, ban reason, who banned
+					quickBan_discord(tempmsg.len[2], tempmsg.len[3], tempmsg.len[4], tempmsg[1])
+			fdel(I)
+			I << ""
 		sleep (100)
 
 /proc/start_serverswap_loop()
