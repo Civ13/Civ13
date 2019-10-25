@@ -308,7 +308,7 @@ var/world_topic_spam_protect_time = world.timeofday
 			for(var/msg in messages_read)
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 2)
-					var/dmsg = "<b><font color='#792964'>[tempmsg[1]]</font><i>(Discord)</i>:</b> [tempmsg[2]]"
+					var/dmsg =  create_text_tag("discord", "Discord") + "<b><font color='#31A8DE'>[tempmsg[1]]</font>:</b> [tempmsg[2]]"
 					world << dmsg
 					log_discord(dmsg)
 					//world << "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]"
