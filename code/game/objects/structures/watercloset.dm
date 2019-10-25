@@ -914,12 +914,13 @@
 	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
 		if (mosquito_count < mosquito_limit && mosquito_limit != 0)
 			var/mob/living/simple_animal/mosquito/NM = new/mob/living/simple_animal/mosquito(src.loc)
-			NM.origin = src
-			mosquito_count++
-			spawn(2000)
-				mosquito_proc()
-		else
-			spawn(2000)
-				mosquito_proc()
+			if(NM != null)//Fix for mosquito weather death.
+				NM.origin = src
+				mosquito_count++
+				spawn(2000)
+					mosquito_proc()
+			else
+				spawn(2000)
+					mosquito_proc()
 	else
 		return

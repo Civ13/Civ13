@@ -28,16 +28,16 @@
 	layer = 4.1
 
 /mob/living/simple_animal/mosquito/New()
-	if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM || season == "WINTER")
-		qdel(src)
 	..()
 
 
 /mob/living/simple_animal/mosquito/Life()
 	..()
 	if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM || season == "WINTER")
-		visible_message("The [src] freezes to death!")
-		qdel(src)
+		spawn(1000)//Wait a bit
+			if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM || season == "WINTER")//If still weather
+				visible_message("The [src] freezes to death!")
+				qdel(src)
 	if (stat != DEAD)
 		if (prob(70))
 			var/done = FALSE
