@@ -320,7 +320,7 @@
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
-					var/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/P  = new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/P = new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
 					P.radiation = radiation/2
 					if (istype(user, /mob/living/carbon/human))
 						var/mob/living/carbon/human/HM = user
