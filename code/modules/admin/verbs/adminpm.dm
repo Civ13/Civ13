@@ -119,8 +119,14 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///when the sender is at the discord (and thus not a client):
-/proc/cmd_admin_pm_fromdiscord(var/client/C, var/msg = null, var/sender_name = "admins")
 
+datum/pm_handler
+datum/pm_handler/Topic(href,href_list[])
+	..()
+	var/sender = href_list["sender"]
+var/datum/pm_handler/pm_handler = null
+/proc/cmd_admin_pm_fromdiscord(var/client/C, var/msg = null, var/sender_name = "admins")
+	pm_handler = new
 	//get message text, limit it's length.and clean/escape html
 	if (!msg)
 		msg = input(src,"Message:", "Private message to [C.ckey]") as text|null
@@ -134,7 +140,7 @@
 	if (C.adminhelped)
 		C << "<span class='pm'><span class='howto'><b>-- Click the Admins's name to reply --</b></span></span>\n"
 		C.adminhelped = FALSE
-	C << "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[Admin PM\]</b> <a href='?priv_msg_discord=ref\'[sender_name];sender=[sender_name]'>[sender_name] (discord)</span>: <span class='message'>[msg]</span></span></span>"
+	C << "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[Admin PM\]</b> <a href='?priv_msg_discord=ref\'[pm_handler];sender=[sender_name]'>[sender_name] (discord)</span>: <span class='message'>[msg]</span></span></span>"
 
 	discord_adminpm_log(sender_name,msg,key_name(C))
 
@@ -151,7 +157,7 @@
 		//check client/X is an admin and isn't the sender or recipient
 
 		if ((X.holder.rights & R_ADMIN|R_MOD|R_MENTOR))
-			X << "<span class='pm'><span class='other'>" + create_text_tag("pm_other", "PM:", X) + " <span class='name'><a href='?priv_msg_discord=ref\'[sender_name];sender=[sender_name]'>[sender_name] (discord)</span> to <span class='name'>[key_name(C, X, FALSE)]</span>: <span class='message'>[msg]</span></span></span>"
+			X << "<span class='pm'><span class='other'>" + create_text_tag("pm_other", "PM:", X) + " <span class='name'><a href='?priv_msg_discord=ref\'[pm_handler];sender=[sender_name]'>[sender_name] (discord)</span> to <span class='name'>[key_name(C, X, FALSE)]</span>: <span class='message'>[msg]</span></span></span>"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///when the receiver is an admin in the discord:
