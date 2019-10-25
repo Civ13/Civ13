@@ -41,9 +41,8 @@
 		return
 
 	if (href_list["priv_msg_discord"])
-		var/sender = href_list["sender"]
-		var/txtinput = input("Write your reply to [sender]:") as text
-		cmd_admin_pm_todiscord(sender,txtinput)
+		var/txtinput = input("Write your reply to [pm_sender]:") as text
+		cmd_admin_pm_todiscord(pm_sender,txtinput)
 		return
 
 	// see quickBan.dm
