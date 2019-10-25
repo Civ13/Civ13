@@ -126,7 +126,6 @@
 	 * so stats will remain the same over the entire round. */
 
 	/* All stat names (here) MUST be lowercase. */
-
 	var/list/stats = list(
 		"strength" = list(100,100),
 		"crafting" = list(100,100),

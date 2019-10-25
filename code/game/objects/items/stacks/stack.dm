@@ -302,8 +302,8 @@
 				if (!(numtocheck in listallowed))
 					return
 	else if (recipe.result_type == /obj/structure/researchdesk)
-		if (map && !map.resourceresearch)
-			user << "\The [recipe.title] can only be built during the <b>Resource Research</b> gamemode."
+		if (map && !map.resourceresearch && !map.chad_mode_plus)
+			user << "\The [recipe.title] can only be built during <b>Research</b> gamemodes."
 			return
 
 	else if (recipe.result_type == /obj/structure/oil_deposits)
@@ -312,7 +312,7 @@
 			return
 	else if (recipe.result_type == /obj/item/weapon/researchkit)
 		if (map && !map.research_active)
-			user << "\The [recipe.title] can only be built during the <b>Clasic Research</b> gamemode."
+			user << "\The [recipe.title] can only be built during the <b>Classic Research</b> gamemode."
 			return
 
 	else if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
@@ -814,6 +814,10 @@
 		produced = 5
 	else if (recipe.result_type == /obj/item/stack/material/barbwire)
 		produced = 2
+	else if (recipe.result_type == /obj/item/ammo_casing/arrow)
+		produced = 3
+	else if (recipe.result_type == /obj/item/stack/arrowhead)
+		produced = 4
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
