@@ -308,7 +308,7 @@ var/world_topic_spam_protect_time = world.timeofday
 			for(var/msg in messages_read)
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 2)
-					var/dmsg =  create_text_tag("discord", "Discord") + "<b><font color='#31A8DE'>[tempmsg[1]]</font>:</b> [tempmsg[2]]"
+					var/dmsg =  "<IMG src='\ref[text_tag_icons.icon]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[tempmsg[1]]</font>:</b> [tempmsg[2]]"
 					world << dmsg
 					log_discord(dmsg)
 					//world << "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]"
@@ -354,8 +354,8 @@ var/world_topic_spam_protect_time = world.timeofday
 					temp_ckey = replacetext(temp_ckey," ", "")
 					temp_ckey = replacetext(temp_ckey,"_", "")
 					//ckey to ban, duration, ban reason, who banned
-					if (quickBan_discord(temp_ckey, tempmsg.len[3], tempmsg.len[4], tempmsg[1]) == "successful.")
-						discord_admin_ban(tempmsg[1],temp_ckey,tempmsg.len[3],tempmsg.len[4])
+					if (quickBan_discord(temp_ckey, tempmsg[3], tempmsg[4], tempmsg[1]) == "successful.")
+						discord_admin_ban(tempmsg[1],temp_ckey,tempmsg[3],tempmsg[4])
 			fdel(I)
 			I << ""
 		sleep (100)
