@@ -138,7 +138,7 @@
 	if (C.adminhelped)
 		C << "<span class='pm'><span class='howto'><b>-- Click the Admins's name to reply --</b></span></span>\n"
 		C.adminhelped = FALSE
-	C << "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[Admin PM\]</b> <a href='?priv_msg_discord='[sender_name]'>[sender_name] (discord)</span></a>: <span class='message'>[msg]</span></span></span>"
+	C << "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[Admin PM\]</b> <a href='?priv_msg_discord=[sender_name]'>[sender_name] (discord)</span></a>: <span class='message'>[msg]</span></span></span>"
 
 	discord_adminpm_log(sender_name,msg,key_name(C))
 
@@ -156,7 +156,7 @@
 
 		if ((X.holder.rights & R_ADMIN|R_MOD|R_MENTOR))
 			X.pm_sender = sender_name
-			X << "<span class='pm'><span class='other'>" + create_text_tag("pm_other", "PM:", X) + " <span class='name'><a href='?priv_msg_discord='[sender_name]'>[sender_name] (discord)</span></a> to <span class='name'>[key_name(C, X, FALSE)]</span>: <span class='message'>[msg]</span></span></span>"
+			X << "<span class='pm'><span class='other'>" + create_text_tag("pm_other", "PM:", X) + " <span class='name'><a href='?priv_msg_discord=[sender_name]'>[sender_name] (discord)</span></a> to <span class='name'>[key_name(C, X, FALSE)]</span>: <span class='message'>[msg]</span></span></span>"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///when the receiver is an admin in the discord:
