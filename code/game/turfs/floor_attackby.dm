@@ -851,7 +851,8 @@
 				mineral.amount = 4
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
-				H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>sulphur</font></b>!</span>"
+				if (mineral && mineral.get_material())
+					H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>sulphur</font></b>!</span>"
 				if(map.ID == MAP_NOMADS_DESERT)
 					T.ChangeTurf(/turf/floor/dirt/dust)
 				else

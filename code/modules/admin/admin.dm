@@ -880,7 +880,7 @@ var/list/atom_types = null
 		M = whom
 		C = M.client
 	else
-		return "<b>(*not an mob*)</b>"
+		return "<b>(*not a mob*)</b>"
 	switch(detail)
 		if (0)
 			return "<b>[key_name(C, link, name, highlight_special)]</b>"
