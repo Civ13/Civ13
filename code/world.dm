@@ -308,10 +308,38 @@ var/world_topic_spam_protect_time = world.timeofday
 			for(var/msg in messages_read)
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 2)
-					//world << "<b><font color='#792964'>[tempmsg[1]]</font><i>(Discord)</i>:</b> [tempmsg[2]]"
-					world << "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]"
+					var/dmsg = "<b><font color='#792964'>[tempmsg[1]]</font><i>(Discord)</i>:</b> [tempmsg[2]]"
+					world << dmsg
+					log_discord(dmsg)
+					//world << "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]"
 			fdel(F)
 			F << ""
+
+		var/G = file("SQL/discord2admin.txt")
+		if (fexists(G))
+			var/list/messages_read = splittext(file2text(G), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+
+					for (var/client/C in admins)
+						if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
+							C << "<span class='admin_channel'>" + create_text_tag("admin", "ADMIN:", C) + " <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>"
+					log_discord_ahelp(msg)
+			fdel(G)
+			G << ""
+
+		var/H = file("SQL/discord2dm.txt")
+		if (fexists(H))
+			var/list/messages_read = splittext(file2text(H), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 3)
+					for(var/client/C in clients)
+						if (C.ckey == tempmsg[2])
+							cmd_admin_pm_fromdiscord(C, tempmsg[3], tempmsg[1])
+			fdel(H)
+			H << ""
 		sleep (100)
 
 /proc/start_serverswap_loop()
