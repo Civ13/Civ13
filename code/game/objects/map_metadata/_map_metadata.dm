@@ -104,6 +104,7 @@ var/civmax_research = list(230,230,230)
 	var/list/facl = list()
 
 	var/chad_mode = FALSE //Virgins BTFO
+	var/chad_mode_plus = FALSE //SUPER CHAD
 	var/gamemode = "Team Deathmatch"
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level

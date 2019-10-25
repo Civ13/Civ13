@@ -462,14 +462,14 @@
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall_y2"
+	icon_state = "medieval_wall_y1"
 	health = 185
 
 /obj/covers/wood_wall/medieval/y/l
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall_y1"
+	icon_state = "medieval_wall_y2"
 	health = 185
 
 /obj/covers/wood_wall/shoji

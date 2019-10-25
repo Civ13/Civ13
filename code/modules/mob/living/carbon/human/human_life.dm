@@ -42,7 +42,6 @@
 	var/healing_stage = 0 //for beds
 /mob/living/carbon/human/Life()
 
-
 	handle_zoom_stuff()
 
 	if (transforming)

@@ -143,7 +143,6 @@
 	amount = 5
 	layer = 5.11
 
-
 /obj/structure/wild/tree/cactus
 	name = "cactus"
 	icon = 'icons/obj/flora/bigtrees.dmi'
