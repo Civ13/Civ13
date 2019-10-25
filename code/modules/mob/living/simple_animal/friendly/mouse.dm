@@ -153,14 +153,16 @@
 	return
 
 //Here temporarally until animals act as reagent containers.
-/obj/item/weapon/reagent_containers/food/snacks/attack_generic(var/obj/O)
+/obj/item/weapon/reagent_containers/food/snacks/attack_generic(var/mob/living/user)
 	..()
-	if(istype(O, /obj/item/weapon/reagent_containers/food/snacks))
-		var/obj/item/weapon/reagent_containers/food/snacks/S = O
-		if(plaguemouse)
-			S.reagents.add_reagent("plague", 0.25)
-	else if(istype(O, /mob/living/carbon/human))
-		var/mob/living/carbon/human/M = O
-		if(plaguemouse)
-			M.reagents.add_reagent("plague", 0.25)
+	if(istype(user, /mob/living/simple_animal/mouse))
+		var/mob/living/simple_animal/mouse/PM = src
+		if(istype(src, /obj/item/weapon/reagent_containers/food/snacks))
+			var/obj/item/weapon/reagent_containers/food/snacks/S = src
+			if(PM.plaguemouse)
+				S.reagents.add_reagent("plague", 0.25)
+		else if(istype(src, /mob/living/carbon/human))
+			var/mob/living/carbon/human/M = src
+			if(PM.plaguemouse)
+				M.reagents.add_reagent("plague", 0.25)
 	..()
