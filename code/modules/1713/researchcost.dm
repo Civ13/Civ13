@@ -78,7 +78,8 @@
 			if(map.chad_mode_plus)
 				var/obj/item/weapon/grab/G = W
 				var/mob/living/carbon/human/affecting = G.affecting
-				map.custom_civs[affecting.civilization][1] = map.default_research
+				if(affecting.civilization != "none")
+					map.custom_civs[affecting.civilization][1] = map.default_research
 				affecting.gib()
 			else
 				qdel(W)
@@ -89,7 +90,8 @@
 			if(map.chad_mode_plus)
 				var/obj/item/weapon/grab/G = W
 				var/mob/living/carbon/human/affecting = G.affecting
-				map.custom_civs[affecting.civilization][2] = map.default_research
+				if(affecting.civilization != "none")
+					map.custom_civs[affecting.civilization][2] = map.default_research
 				affecting.gib()
 			else
 				qdel(W)
@@ -100,7 +102,8 @@
 			if(map.chad_mode_plus)
 				var/obj/item/weapon/grab/G = W
 				var/mob/living/carbon/human/affecting = G.affecting
-				map.custom_civs[affecting.civilization][3] = map.default_research
+				if(affecting.civilization != "none")
+					map.custom_civs[affecting.civilization][2] = map.default_research
 				affecting.gib()
 			else
 				qdel(W)

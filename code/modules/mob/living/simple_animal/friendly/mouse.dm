@@ -30,6 +30,7 @@
 //	holder_type = /obj/item/weapon/holder/mouse
 	mob_size = MOB_MINISCULE
 	possession_candidate = TRUE
+	var/plaguemouse = FALSE
 
 	can_pull_size = TRUE
 	can_pull_mobs = MOB_PULL_NONE
@@ -46,6 +47,21 @@
 	icon_living = "mouse_[body_color]"
 	icon_dead = "mouse_[body_color]_dead"
 	desc = "It's a small [body_color] rodent, often seen hiding in the ship's hull and making a nuisance of itself."
+
+	if(body_color == "black")
+		if(map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
+			if(prob(4))
+				plaguemouse = TRUE
+		else
+			if(prob(2))
+				plaguemouse = TRUE
+	else
+		if(map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
+			if(prob(2))
+				plaguemouse = TRUE
+		else
+			if(prob(1))
+				plaguemouse = TRUE
 
 /mob/living/simple_animal/mouse/proc/splat()
 	health = FALSE
@@ -67,9 +83,17 @@
 /mob/living/simple_animal/mouse/Crossed(AM as mob|obj)
 	if ( ishuman(AM) )
 		if (!stat)
-			var/mob/M = AM
+			var/mob/living/carbon/human/M = AM
 			M << "<span class = 'notice'>\icon[src] Squeek!</span>"
 			M << 'sound/effects/mousesqueek.ogg'
+			if(plaguemouse && prob(1))
+				M.reagents.add_reagent("plague", 0.15)
+			else if((plaguemouse && prob(1)) && map.ordinal_age == 2 || map.ordinal_age == 3) //2 percent chance because of if-else logic,
+				M.reagents.add_reagent("plague", 0.15)
+			else if(plaguemouse && body_color == "black" && prob(1)) //prob is 3 percent.
+				M.reagents.add_reagent("plague", 0.25)
+			else if((plaguemouse && body_color == "black" && prob(1)) && map.ordinal_age == 2 || map.ordinal_age == 3) //four percent chance kinda
+				M.reagents.add_reagent("plague", 0.25)
 	..()
 
 /mob/living/simple_animal/mouse/death()
@@ -88,6 +112,8 @@
 			var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 			meat.name = "[name] meatsteak"
 			meat.radiation = radiation/2
+			if(plaguemouse)
+				meat.reagents.add_reagent("plague", 3)
 			if (istype(user, /mob/living/carbon/human))
 				var/mob/living/carbon/human/HM = user
 				HM.adaptStat("medical", 0.3)
@@ -125,3 +151,16 @@
 
 /mob/living/simple_animal/mouse/cannot_use_vents()
 	return
+
+//Here temporarally until animals act as reagent containers.
+/obj/item/weapon/reagent_containers/food/snacks/attack_generic(var/obj/O)
+	..()
+	if(istype(O, /obj/item/weapon/reagent_containers/food/snacks))
+		var/obj/item/weapon/reagent_containers/food/snacks/S = O
+		if(plaguemouse)
+			S.reagents.add_reagent("plague", 0.25)
+	else if(istype(O, /mob/living/carbon/human))
+		var/mob/living/carbon/human/M = O
+		if(plaguemouse)
+			M.reagents.add_reagent("plague", 0.25)
+	..()
