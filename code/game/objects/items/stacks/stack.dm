@@ -307,7 +307,7 @@
 			return
 
 	else if (recipe.result_type == /obj/structure/researchdesk/chad)
-		if (map && !map.chad_mode_plus)
+		if (!map.chad_mode_plus)
 			user << "\The [recipe.title] can only be built during <b>Chad Mode +</b>."
 			return
 

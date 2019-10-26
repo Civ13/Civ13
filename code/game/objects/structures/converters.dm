@@ -47,7 +47,7 @@
 			else
 				user << "<span class='alert'> You need to insert [inputamount] [M.name]! </span>"
 		else
-			user << "<span class='alert'> That is not a [input]! </span>"
+			user << "<span class='alert'> That is not the right resource! </span>"
 	else
 		user << "<span class='alert'> You empty the [name]. </span>"
 		for(outputamount)

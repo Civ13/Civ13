@@ -760,7 +760,7 @@
 		E.reagents.add_reagent(randreg,5)
 		E.update_icon()
 
-/turf/proc/mining_proc(var/mob/living/carbon/human/H, var/ROCKTYPE)
+/turf/proc/mining_proc(var/mob/living/carbon/human/H)
 	if (!H || !src)
 		return
 	var/turf/T = get_turf(src)
@@ -940,7 +940,7 @@
 		T.is_mineable = FALSE
 		H.adaptStat("strength", 1)
 		return
-	if (istype(src, /turf/floor/dirt/underground/icy))
+	if (istype(T, /turf/floor/dirt/underground/icy))
 		if (prob(3))
 			var/obj/item/stack/material/fossil/mineral = new/obj/item/stack/material/fossil(src)
 			mineral.amount = 1
@@ -968,14 +968,14 @@
 				T.is_mineable = FALSE
 				H.adaptStat("strength", 1)
 				return
-	if(istype(src, /turf/floor/dirt/underground/sandy))
+	if(istype(T, /turf/floor/dirt/underground/sandy))
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
 		T.ChangeTurf(/turf/floor/dirt/dust)
-	else if(istype(src, /turf/floor/dirt/underground/icy))
+	else if(istype(T, /turf/floor/dirt/underground/icy))
 		//TODO ADD ICE AND FOSSILS
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)

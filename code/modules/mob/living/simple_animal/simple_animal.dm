@@ -417,22 +417,22 @@
 					bone.name = "[name] bone"
 					bone.amount = amt
 				if (istype(src, /mob/living/simple_animal/hostile/bear))
-					var/obj/item/stack/material/bearpelt/black/NP = new/obj/item/stack/material/bearpelt/black(get_turf(src))
+					var/obj/item/stack/material/pelt/bearpelt/black/NP = new/obj/item/stack/material/pelt/bearpelt/black(get_turf(src))
 					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/bear/polar))
-					var/obj/item/stack/material/bearpelt/white/NP = new/obj/item/stack/material/bearpelt/white(get_turf(src))
+					var/obj/item/stack/material/pelt/bearpelt/white/NP = new/obj/item/stack/material/pelt/bearpelt/white(get_turf(src))
 					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/bear/brown))
-					var/obj/item/stack/material/bearpelt/brown/NP = new/obj/item/stack/material/bearpelt/brown(get_turf(src))
+					var/obj/item/stack/material/pelt/bearpelt/brown/NP = new/obj/item/stack/material/pelt/bearpelt/brown(get_turf(src))
 					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/wolf))
-					var/obj/item/stack/material/wolfpelt/NP = new/obj/item/stack/material/wolfpelt(get_turf(src))
+					var/obj/item/stack/material/pelt/wolfpelt/NP = new/obj/item/stack/material/pelt/wolfpelt(get_turf(src))
 					NP.amount = 4
 				else if (istype(src, /mob/living/simple_animal/monkey))
-					var/obj/item/stack/material/monkeypelt/NP = new/obj/item/stack/material/monkeypelt(get_turf(src))
+					var/obj/item/stack/material/pelt/monkeypelt/NP = new/obj/item/stack/material/pelt/monkeypelt(get_turf(src))
 					NP.amount = 3
 				else if (istype(src, /mob/living/simple_animal/cat))
-					var/obj/item/stack/material/catpelt/NP = new/obj/item/stack/material/catpelt(get_turf(src))
+					var/obj/item/stack/material/pelt/catpelt/NP = new/obj/item/stack/material/pelt/catpelt(get_turf(src))
 					NP.amount = 2
 				if (istype(user, /mob/living/carbon/human))
 					var/mob/living/carbon/human/HM = user

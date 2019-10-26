@@ -36,7 +36,7 @@
 	var/drying_threshold_temperature = 500 //Kelvin to start drying
 	flammable = TRUE
 //Step one - dehairing.
-/obj/item/stack/material/animalhide/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/item/stack/material/pelt/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(	istype(W, /obj/item/weapon/material/knife) || \
 		istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || \
 		istype(W, /obj/item/weapon/material/hatchet) )
@@ -44,7 +44,7 @@
 		//visible message on mobs is defined as visible_message(var/message, var/self_message, var/blind_message)
 		usr.visible_message("<span class='notice'>\The [usr] starts cutting hair off \the [src]</span>", "<span class='notice'>You start cutting the hair off \the [src]</span>", "You hear the sound of a knife rubbing against flesh")
 		if(do_after(user,50))
-			usr << "<span class='notice'>You cut the hair from this [singular_name]</span>"
+			usr << "<span class='notice'>You cut the hair from the [singular_name]</span>"
 			//Try locating an exisitng stack on the tile and add to there if possible
 			for(var/obj/item/stack/material/hairlesshide/HS in usr.loc)
 				if(HS.amount < 50)
@@ -58,7 +58,7 @@
 	else
 		..()
 
-
+/* THIS IS TOO COMPLEX FOR UNGAS.
 //Step two - washing..... it's actually in washing machine code.
 
 //Step three - drying
@@ -79,3 +79,4 @@
 			HS.amount = TRUE
 			wetness = initial(wetness)
 			use(1)
+*/

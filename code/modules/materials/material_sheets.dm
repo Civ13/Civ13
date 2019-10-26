@@ -323,7 +323,7 @@
 	w_class = 2.0
 	flammable = TRUE
 
-/obj/item/stack/material/bearpelt/black
+/obj/item/stack/material/pelt/bearpelt/black
 	name = "black bear pelt"
 	desc = "A pelt from a skinned bear."
 	icon_state = "sheet-bearpelt"
@@ -332,19 +332,19 @@
 	w_class = 2.0
 	flammable = TRUE
 
-/obj/item/stack/material/bearpelt/brown
+/obj/item/stack/material/pelt/bearpelt/brown
 	name = "brown bear pelt"
 	desc = "A pelt from a skinned bear."
 	icon_state = "sheet-brownbearpelt"
 	default_type = "brownbearpelt"
 	value = 3
-/obj/item/stack/material/bearpelt/white
+/obj/item/stack/material/pelt/bearpelt/white
 	name = "white bear pelt"
 	desc = "A pelt from a skinned bear."
 	icon_state = "sheet-whitebearpelt"
 	default_type = "whitebearpelt"
 	value = 3
-/obj/item/stack/material/wolfpelt
+/obj/item/stack/material/pelt/wolfpelt
 	name = "wolf pelt"
 	desc = "A pelt from a skinned wolf."
 	icon_state = "sheet-wolfpelt"
@@ -352,7 +352,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
-/obj/item/stack/material/catpelt
+/obj/item/stack/material/pelt/catpelt
 	name = "cat pelt"
 	desc = "A pelt from a skinned cat."
 	icon_state = "sheet-catpelt"
@@ -360,7 +360,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
-/obj/item/stack/material/monkeypelt
+/obj/item/stack/material/pelt/monkeypelt
 	name = "monkey pelt"
 	desc = "A pelt from a skinned monkey."
 	icon_state = "sheet-monkeypelt"
@@ -368,7 +368,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
-/obj/item/stack/material/orcpelt
+/obj/item/stack/material/pelt/orcpelt
 	name = "Orc Pelt"
 	desc = "The skin of an Orc"
 	icon_state = "sheet-orcpelt"
@@ -377,7 +377,7 @@
 	w_class = 2.0
 	flammable = TRUE
 
-/obj/item/stack/material/humanpelt
+/obj/item/stack/material/pelt/humanpelt
 	name = "human pelt"
 	desc = "A skin from a dead person."
 	icon_state = "sheet-humanpelt"
@@ -386,13 +386,13 @@
 	w_class = 2.0
 	flammable = TRUE
 
-/obj/item/stack/material/humanpelt/New()
+/obj/item/stack/material/pelt/humanpelt/New()
 	..()
 	if (map && !map.civilizations)
 		qdel(src)
 		return
 
-/obj/item/stack/material/antpelt
+/obj/item/stack/material/pelt/antpelt
 	name = "ant pelt"
 	desc = "The skin from a dead ant."
 	icon_state = "sheet-antpelt"
@@ -411,7 +411,7 @@
 	w_class = 2.0
 
 
-/obj/item/stack/material/orcpelt
+/obj/item/stack/material/pelt/orcpelt
 	name = "orc skin"
 	desc = "A rough skin, it'l like a flexible rock..."
 	icon_state = "sheet-orcpelt"
@@ -420,7 +420,7 @@
 	value = 0
 	w_class = 2.0
 
-/obj/item/stack/material/gorillapelt
+/obj/item/stack/material/pelt/gorillapelt
 	name = "gorilla pelt"
 	desc = "The skin from a dead gorilla."
 	icon_state = "sheet-gorillapelt"
