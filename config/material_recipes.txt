@@ -736,8 +736,10 @@ RECIPE: /material/wood/,locked wood jail door,/obj/structure/simple_door/key_doo
 RECIPE: /material/wood/,horizontal wood barrier,/obj/structure/barricade/horizontal,5,35,1,1,barricades,0,0,0,8,null
 RECIPE: /material/wood/,vertical wood barrier,/obj/structure/barricade/vertical,5,35,1,1,barricades,0,0,0,8,null
 RECIPE: /material/wood/,wood palisade,/obj/structure/grille/logfence,6,80,1,1,barricades,0,0,0,8,null
-RECIPE: /material/wood/,wood fence,/obj/structure/grille/fence,3,60,1,1,barricades,10,0,0,8,null
-RECIPE: /material/wood/,wood fence door,/obj/structure/simple_door/fence,3,60,1,1,barricades,10,0,0,8,null
+RECIPE: /material/wood/,primitive wood fence,/obj/structure/grille/fence,3,60,1,1,barricades,10,0,0,2,null
+RECIPE: /material/wood/,primitive wood fence door,/obj/structure/simple_door/fence,3,60,1,1,barricades,10,0,0,2,null
+RECIPE: /material/wood/,picket wood fence,/obj/structure/grille/fence/picket,3,60,1,1,barricades,10,0,0,2,null
+RECIPE: /material/wood/,picket wood fence door,/obj/structure/simple_door/fence/picket,3,60,1,1,barricades,10,0,0,2,null
 RECIPE: /material/wood/,wood structure,/obj/structure/barricade,5,35,1,1,barricades,0,0,0,8,null
 RECIPE: /material/wood/,outhouse,/obj/structure/toilet/outhouse,35,600,1,1,hygiene,0,0,45,8,null
 RECIPE: /material/wood/,male outhouse,/obj/structure/toilet/outhouse/male,35,600,1,1,hygiene,0,0,45,8,null

@@ -177,7 +177,7 @@
 /turf/floor/dirt/underground/sandy
 	name = "sandy underground rock"
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "rockysandy"
+	icon_state = "sandyrocky"
 	desc = "This space is blocked off by soft earth and sandy stones. Can be mined."
 	New()
 		..()
@@ -189,7 +189,7 @@
 /turf/floor/dirt/underground/icy
 	name = "icy underground rock"
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "rockyicy"
+	icon_state = "icyrocky"
 	desc = "This space is blocked off by frozen earth and rocks. Can be mined."
 	New()
 		..()

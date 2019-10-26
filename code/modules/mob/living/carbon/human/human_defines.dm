@@ -193,5 +193,5 @@
 
 /mob/living/carbon/human/New()
 	if(map.ID == MAP_TRIBES)
-		stats.Add("magic" = list(0,100))
+		stats.add("magic" = list(0,100))
 	..()
