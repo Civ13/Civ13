@@ -190,8 +190,8 @@
 	var/obj/structure/vehicle/driver_vehicle = null
 	var/riding = FALSE // if riding a horse
 	var/mob/living/simple_animal/riding_mob = null
-
+/*
 /mob/living/carbon/human/New()
 	if(map.ID == MAP_TRIBES)
-		stats.add("magic" = list(0,100))
-	..()
+		stats.Add("magic" = list(0,100))
+	..()*/

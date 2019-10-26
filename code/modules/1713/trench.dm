@@ -81,7 +81,7 @@ var/list/global/floor_cache = list()
 	salty = TRUE
 
 
-/turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
+/turf/floor/trench/flooded/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
 		if (choice == "Yes")
@@ -92,8 +92,39 @@ var/list/global/floor_cache = list()
 			return
 		else
 			return
+	else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+		var/obj/item/weapon/reagent_containers/RG = C
+		if (istype(RG) && RG.is_open_container())
+			if (do_after(user, 15, src, check_for_repeats = FALSE))
+				var/sumex = 0
+				if (src.salty)
+					RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
+					sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
+				RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
+				user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
+				playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
+				user.setClickCooldown(5)
+			return
+		if (istype(C, /obj/item/clothing) && !busy)
+			var/obj/item/clothing/CL = C
+			usr << "<span class='notice'>You start washing \the [C].</span>"
+			var/turf/location = user.loc
 
-	else
+			busy = TRUE
+			sleep(40)
+			busy = FALSE
+
+			if (user.loc != location) return				//User has moved
+			if (!C) return 								//Item's been destroyed while washing
+			if (user.get_active_hand() != C) return		//Person has switched hands or the item in their hands
+
+			CL.clean_blood()
+			CL.radiation = 0
+			CL.dirtyness = 0
+			CL.fleas = FALSE
+			user.visible_message( \
+				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
+				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 		..()
 
 /turf/floor/trench/proc/check_filling()
