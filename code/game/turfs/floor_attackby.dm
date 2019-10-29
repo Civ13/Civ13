@@ -375,7 +375,7 @@
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3)
 				return
-	else if (istype(C, /obj/item/stack/farming/seeds))
+	else if (istype(C, /obj/item/stack/farming/seeds)) //Note - I hate this so much a single list of seeds to reference the plants result would be better, follows the ordering of structure/wild.dm for consistency.
 		var/mob/living/carbon/human/H = user
 		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
 			if (locate(/obj/structure/farming/plant) in src)
@@ -560,6 +560,62 @@
 			else if (istype(C, /obj/item/stack/farming/seeds/coca))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/coca(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/lime))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/lime(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/lemon))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/lemon(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/melon))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/melon(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/pumpkin))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/pumpkin(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/cherry))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/cherry(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/apricot))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/apricot(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/coconut))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/coconut(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else
