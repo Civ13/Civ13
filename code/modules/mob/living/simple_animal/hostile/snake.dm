@@ -184,8 +184,8 @@
 		icon_state = icon_dead
 	else
 		if (constricting)
-			icon = 'icons/mob/animal.dmi'
-			icon_state = "[icon_living]_overlay"
+			icon = 'icons/mob/animal_big.dmi'
+			icon_state = "boa_overlay"
 		else
 			icon = 'icons/mob/animal_big.dmi'
 			icon_state = icon_living
@@ -202,11 +202,14 @@
 /mob/living/simple_animal/hostile/poison/snake/constrictor/python/update_icons()
 	..()
 	if (stat == DEAD)
+		icon = 'icons/mob/animal.dmi'
 		icon_state = icon_dead
 	else
 		if (constricting)
-			icon_state = "[icon_living]_overlay"
+			icon = 'icons/mob/animal.dmi'
+			icon_state = "python_overlay"
 		else
+			icon = 'icons/mob/animal.dmi'
 			icon_state = icon_living
 
 /mob/living/simple_animal/hostile/poison/snake/constrictor/proc/start_constricting(var/mob/living/L)
@@ -226,7 +229,7 @@
 	Paralyse(100)
 	L.adjustOxyLoss(25)
 	L.adjustBrainLoss(5)
-	L << "<span class='danger'>Tou can't breathe!</span>"
+	L << "<span class='danger'>You can't breathe!</span>"
 	if (L.stat == DEAD)
 		constricting = FALSE
 		stop_automated_movement = FALSE
