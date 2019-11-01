@@ -356,6 +356,7 @@ obj/item/clothing/under/confederate_uniform/New()
 	w_class = 1
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_HARMLESS
+	icon_override = TRUE
 
 /obj/item/weapon/watch/pocket/attack_self(var/mob/living/L)
 	L << "<big>It is now [clock_time()].</big>"

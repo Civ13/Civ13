@@ -75,14 +75,13 @@
 			user << "You refuel the lantern with olive oil."
 			return
 /obj/item/flashlight/lantern/attack_hand(mob/user as mob)
-	if (anchored)
-		if (on)
-			on = FALSE
-		else if (!on && fuel > 0)
-			on = TRUE
-		else
-			on = FALSE
+	if (on)
+		on = FALSE
+	else if (!on && fuel > 0)
+		on = TRUE
 	else
+		on = FALSE
+	if (!anchored)
 		..()
 
 /obj/item/flashlight/lantern/on

@@ -315,6 +315,21 @@
 				user << "You collect the stone."
 
 
+/////////PRODUCE BASKET (PRODUCE COLLECTOR)////////////
+/obj/item/weapon/storage/produce_basket
+	name = "produce basket"
+	icon = 'icons/obj/storage.dmi'
+	desc = "A woven basket, used to collect fruits and vegitables."
+	icon_state = "produce_basket"
+	item_state = "produce_basket"
+	var/active = FALSE
+	w_class = 4
+	max_w_class = 3
+	max_storage_space = 30 //lots of fruits and veggies
+	can_hold = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown,
+		)
+	flammable = TRUE
 
 ////////////////////OIL/WELL///////////////////////////
 /obj/structure/oilwell

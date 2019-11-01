@@ -7,7 +7,7 @@
 /datum/language
 	var/name = "an unknown language"  // Fluff name of language if any.
 	var/desc = "A language."          // Short description for 'Check Languages'.
-	var/difficulty = 250              // Difficulty of a language. If you wanted Japanese to be harder than English, for example
+	var/difficulty = 175              // Difficulty of a language. If you wanted Japanese to be harder than English, for example
 	var/speech_verb = "says"          // 'says', 'hisses', 'farts'.
 	var/ask_verb = "asks"             // Used when sentence ends in a ?
 	var/exclaim_verb = "exclaims"     // Used when sentence ends in a !

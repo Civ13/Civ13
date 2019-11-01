@@ -725,6 +725,13 @@
 			else
 				qdel(I)
 			return
+		else if (istype(I, /obj/item/stack/ore/charcoal))
+			reagents.add_reagent("carbon",3)
+			if (I.amount>1)
+				I.amount -= 1
+			else
+				qdel(I)
+			return
 	else
 		user << "The [src] is full!"
 	..()

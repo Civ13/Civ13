@@ -303,7 +303,12 @@
 					return
 	else if (recipe.result_type == /obj/structure/researchdesk)
 		if (map && !map.resourceresearch)
-			user << "\The [recipe.title] can only be built during the <b>Resource Research</b> gamemode."
+			user << "\The [recipe.title] can only be built during <b>Research</b> gamemodes."
+			return
+
+	else if (recipe.result_type == /obj/structure/researchdesk/chad)
+		if (!map.chad_mode_plus)
+			user << "\The [recipe.title] can only be built during <b>Chad Mode +</b>."
 			return
 
 	else if (recipe.result_type == /obj/structure/oil_deposits)
@@ -312,7 +317,7 @@
 			return
 	else if (recipe.result_type == /obj/item/weapon/researchkit)
 		if (map && !map.research_active)
-			user << "\The [recipe.title] can only be built during the <b>Clasic Research</b> gamemode."
+			user << "\The [recipe.title] can only be built during the <b>Classic Research</b> gamemode."
 			return
 
 	else if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
@@ -666,7 +671,7 @@
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
 					return
-	else if (findtext(recipe.title, "suspended gong"))
+	else if (findtext(recipe.title, "gong") && !findtext(recipe.title, "gong mallet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/bronze) && !istype(H.r_hand, /obj/item/stack/material/bronze))
 			user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
 			return
@@ -814,6 +819,10 @@
 		produced = 5
 	else if (recipe.result_type == /obj/item/stack/material/barbwire)
 		produced = 2
+	else if (recipe.result_type == /obj/item/ammo_casing/arrow)
+		produced = 3
+	else if (recipe.result_type == /obj/item/stack/arrowhead)
+		produced = 4
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)

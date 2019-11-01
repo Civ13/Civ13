@@ -1174,6 +1174,20 @@ var/global/list/damage_icon_parts = list()
 	if (on_fire)
 		overlays_standing[FIRE_LAYER] = image("icon"='icons/mob/OnFire.dmi', "icon_state"="Standing", "layer"=FIRE_LAYER)
 
+	if (drowning || water_overlay)
+		var/turf/D = get_turf(src)
+		var/image/I = image("icon"='icons/misc/beach.dmi', "icon_state"="[D.icon_state]_ov", "layer"=8)
+		if (lying || prone)
+			var/matrix/M = matrix()
+			M.Scale(size_multiplier)
+			M.Translate(0, 16*(size_multiplier-1))
+			I.transform = M
+		plane = FLOOR_PLANE
+		I.plane = FLOOR_PLANE
+		overlays_standing[FIRE_LAYER] = I
+	else
+		if (plane==FLOOR_PLANE)
+			plane=GAME_PLANE
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/proc/update_surgery(var/update_icons=1)

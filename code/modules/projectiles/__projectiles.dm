@@ -229,12 +229,22 @@
 /obj/item/projectile/bullet/pistol/a32
 	damage = DAMAGE_MEDIUM+1
 	penetrating = 1
-	armor_penetration = 7
+	armor_penetration = 5
 
 /obj/item/projectile/bullet/pistol/a32acp
 	damage = DAMAGE_MEDIUM+3
 	penetrating = 2
-	armor_penetration = 4
+	armor_penetration = 6
+
+/obj/item/projectile/bullet/pistol/webly445
+	damage = DAMAGE_MEDIUM+7
+	penetrating = 2
+	armor_penetration = 7
+
+/obj/item/projectile/bullet/pistol/a38
+	damage = DAMAGE_MEDIUM+4
+	penetrating = 1
+	armor_penetration = 6
 
 /obj/item/projectile/bullet/pistol/a41
 	damage = DAMAGE_MEDIUM+2

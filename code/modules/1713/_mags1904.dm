@@ -384,6 +384,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c38
+	name = "bullet pouch (.38 long)"
+	desc = "a pouch of 26 .38 bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a38
+	caliber = "a38"
+	max_ammo = 26
+	weight = 0.9
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
 /obj/item/ammo_magazine/c45
 	name = "bullet pouch (.45 Colt)"
 	desc = "a pouch of 11.43xmmR bullets."
@@ -401,7 +413,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	desc = "a pouch of .455 Webley bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a455
-	caliber = "a455"
+	caliber = "awebly455"
 	max_ammo = 24
 	weight = 0.95
 	multiple_sprites = TRUE
@@ -414,6 +426,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a41
 	caliber = "a41"
+	max_ammo = 10
+	weight = 0.1
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
+/obj/item/ammo_magazine/webly445
+	name = "bullet pouch (.445 webly)"
+	desc = "a pouch of .445 webly."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/webly445
+	caliber = "webly445"
 	max_ammo = 10
 	weight = 0.1
 	multiple_sprites = TRUE

@@ -50,7 +50,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/is_diggable = FALSE //can be digged with a shovel?
 	var/is_plowed = FALSE // ready to be farmed?
 	var/is_mineable = FALSE //can be mined with a pickaxe?
-	var/iscovered = FALSE //covered with wood? (water passable)
 	//Mining resources (for the large drills).
 //	var/has_resources
 //	var/list/resources
@@ -370,8 +369,12 @@ var/const/enterloopsanity = 100
 
 
 		if (istype(M, /mob/living/carbon/human))
-			var/footstepsound
 			var/mob/living/carbon/human/H = M
+			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
+				if (H.overlays_standing[25])
+					H.overlays_standing[25] = null
+					H.update_fire(1)
+			var/footstepsound
 			// Tracking blood
 			var/list/bloodDNA = null
 			var/bloodcolor=""

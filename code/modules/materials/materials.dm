@@ -27,7 +27,6 @@
 
 // Assoc list containing all material datums indexed by name.
 var/list/name_to_material
-
 //Returns the material the object is made of, if applicable.
 //Will we ever need to return more than one value here? Or should we just return the "dominant" material.
 /obj/proc/get_material()
@@ -574,7 +573,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/bearpelt/black
+	stack_type = /obj/item/stack/material/pelt/bearpelt/black
 
 /material/bearpelt/white
 	name = "whitebearpelt"
@@ -585,7 +584,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/bearpelt/white
+	stack_type = /obj/item/stack/material/pelt/bearpelt/white
 
 /material/bearpelt/brown
 	name = "brownbearpelt"
@@ -596,7 +595,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/bearpelt/brown
+	stack_type = /obj/item/stack/material/pelt/bearpelt/brown
 
 /material/wolfpelt
 	name = "wolfpelt"
@@ -607,7 +606,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/wolfpelt
+	stack_type = /obj/item/stack/material/pelt/wolfpelt
 
 /material/catpelt
 	name = "catpelt"
@@ -618,7 +617,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/catpelt
+	stack_type = /obj/item/stack/material/pelt/catpelt
 
 /material/monkeypelt
 	name = "monkeypelt"
@@ -629,7 +628,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/monkeypelt
+	stack_type = /obj/item/stack/material/pelt/monkeypelt
 
 /material/humanpelt
 	name = "humanpelt"
@@ -640,7 +639,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "skin"
 	sheet_plural_name = "skins"
-	stack_type = /obj/item/stack/material/humanpelt
+	stack_type = /obj/item/stack/material/pelt/humanpelt
 
 /material/antpelt
 	name = "antpelt"
@@ -651,7 +650,7 @@ var/list/name_to_material
 	hardness = 50
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/antpelt
+	stack_type = /obj/item/stack/material/pelt/antpelt
 
 /material/chitin
 	name = "chitin"
@@ -673,7 +672,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/gorillapelt
+	stack_type = /obj/item/stack/material/pelt/gorillapelt
 
 /material/orcpelt
 	name = "orcnpelt"
@@ -684,7 +683,7 @@ var/list/name_to_material
 	hardness = 45
 	sheet_singular_name = "skin"
 	sheet_plural_name = "skins"
-	stack_type = /obj/item/stack/material/orcpelt
+	stack_type = /obj/item/stack/material/pelt/orcpelt
 
 /material/carpet
 	name = "carpet"
