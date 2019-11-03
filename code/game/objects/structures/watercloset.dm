@@ -228,7 +228,7 @@
 	var/ismist = FALSE				//needs a var so we can make it linger~
 	var/watertemp = "normal"	//freezing, normal, or boiling
 	var/is_washing = FALSE
-	var/cleanliness = 100
+	var/cleanliness = 250
 	var/list/temperature_settings = list("normal" = 310, "boiling" = T0C+100, "freezing" = T0C)
 	not_movable = TRUE
 	not_disassemblable = FALSE
@@ -259,7 +259,7 @@
 //BATHTUB FRAMEWORK V1//
 /obj/structure/shower/bathtub
 	name = "Wooden bathtub"
-	desc = "A crude wooden bathtub, it stinks."
+	desc = "A crude wooden bathtub. It stinks."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "w_bathtub"
 	can_buckle = TRUE
@@ -307,43 +307,43 @@
 		..()
 /obj/structure/shower/bathtub/wooden
 	name = "Wooden bathtub"
-	desc = "A crude wooden bathtub, it stinks."
+	desc = "A crude wooden bathtub. It stinks."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "w_bathtub"
-	cleanliness = 70
+	cleanliness = 100
 
 	            //STONE AGE WOODEN BATHTUB//
 
 			// EARLY COPPER AGE
 /obj/structure/shower/bathtub/stone
 	name = "stone bathtub"
-	desc = "A rudimentary stone bathtub, it's covered un moss."
+	desc = "A rudimentary stone bathtub, covered in moss."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "s_bathtub"
-	cleanliness = 80
+	cleanliness = 130
 			// EARLY COPPER AGE
 			// LATE COPPER AGE
 /obj/structure/shower/bathtub/copper
 	name = "copper bathtub"
-	desc = "An acceptable copper bathtub, it's a little flimsy."
+	desc = "An acceptable copper bathtub. It's a little flimsy."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "c_bathtub"
-	cleanliness = 110
+	cleanliness = 160
 			// LATE COPPER AGE
 			// LATE BRONZE  AGE
 /obj/structure/shower/bathtub/bronze
 	name = "bronze bathtub"
-	desc = "A fine copper bathtub, it's confortable."
+	desc = "A fine copper bathtub. It's comfortable."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "b_bathtub"
-	cleanliness = 140
+	cleanliness = 190
 			// LATE BRONZE AGE
 
 
 			//BIG BATHTUB FRAMEWORK 1
 /obj/structure/shower/bathtub/big
 	name = "wooden public bathtub"
-	desc = "A crude wooden bathtub, it's huge, it stinks."
+	desc = "A crude wooden bathtub. It's huge and stinky."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "w_bathtub_b"
 	cleanliness = 80
@@ -380,15 +380,15 @@
 			// LATE DARK AGE
 /obj/structure/shower/bathtub/big/wooden
 	name = "wooden public bathtub"
-	desc = "A crude wooden bathtub, it's huge, it stinks."
+	desc = "A crude wooden bathtub. It's huge and stinky"
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "w_bathtub_b"
-	cleanliness = 80
+	cleanliness = 100
 			// LATE DARK  AGE
 			// LATE MIDDLE AGE
 /obj/structure/shower/bathtub/big/stone
 	name = "stone public bathtub"
-	desc = "A rudimentary stone bathtub, it's covered in moss."
+	desc = "A rudimentary stone bathtub, covered in moss."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "s_bathtub_b"
 	cleanliness = 130
@@ -396,31 +396,31 @@
 			// LATE RENAISSANCE AGE
 /obj/structure/shower/bathtub/big/copper
 	name = "copper public bathtub"
-	desc = "An acceptable copper bathtub, it's confortable."
+	desc = "An acceptable copper bathtub. It's comfortable."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "c_bathtub_b"
-	cleanliness = 140
+	cleanliness = 160
 			// LATE RENAISSANCE  AGE
 			// LATE IMPERIAL AGE
 /obj/structure/shower/bathtub/big/bronze
 	name = "bronze public bathtub"
-	desc = "An fine bronze bathtub, it's confortable and clean."
+	desc = "A fine bronze bathtub, comfortable and clean."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "b_bathtub_b"
-	cleanliness = 160
+	cleanliness = 190
 			// LATE IMPERIAL  AGE
 			// LATE MODERN AGE
 /obj/structure/shower/bathtub/steel
 	name = "steel bathtub"
-	desc = "A modern steel bathtub, it's confortable, clean and cool."
+	desc = "A modern steel bathtub, comfortable, clean and cool."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "st_bathtub"
-	cleanliness = 210
+	cleanliness = 230
 			// LATE MODERN  AGE
 			// LATE COLDWAR  AGE
 /obj/structure/shower/bathtub/big/steel
 	name = "steel public bathtub"
-	desc = "An modern bronze bathtub, it's confortable, clean and cool."
+	desc = "A modern bronze bathtub, comfortable, clean and cool."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "st_bathtub_b"
 	cleanliness = 250
