@@ -63,6 +63,12 @@
 	satisfaction = 4
 	color = "#f08080"
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin
+	name = "pumpkin"
+	icon_state = "pumpkin"
+	satisfaction = 4
+//	color = "#f08080"
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/lemon
 	name = "lemon"
 	icon_state = "lemon"
@@ -72,7 +78,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/grown/lime
 	name = "lime"
 	icon_state = "lime"
-	satisfaction = -2
+	satisfaction = 1
 //	color = "#32cd32"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/orange
@@ -86,15 +92,33 @@
 	icon_state = "apple"
 	satisfaction = 3
 //	color = "#ff0000"
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/banana
 	name = "banana"
 	icon_state = "banana"
 	satisfaction = 6
 	decay = 15*600
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/apricot
+	name = "apricot"
+	icon_state = "apricot"
+	satisfaction = 6
+	decay = 15*600
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/cherry
+	name = "cherry"
+	icon_state = "cherry"
+	satisfaction = 6
+	decay = 15*600
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/coconut
 	name = "coconut"
 	icon_state = "coconut"
 	satisfaction = 3
+	New()
+		..()
+		reagents.add_reagent("water", 15)
+
 // misc crops
 /obj/item/weapon/reagent_containers/food/snacks/grown/rice
 	name = "rice stalk"

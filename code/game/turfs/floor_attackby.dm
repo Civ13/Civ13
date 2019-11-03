@@ -375,7 +375,7 @@
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3)
 				return
-	else if (istype(C, /obj/item/stack/farming/seeds))
+	else if (istype(C, /obj/item/stack/farming/seeds)) //Note - I hate this so much a single list of seeds to reference the plants result would be better, follows the ordering of structure/wild.dm for consistency.
 		var/mob/living/carbon/human/H = user
 		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
 			if (locate(/obj/structure/farming/plant) in src)
@@ -560,6 +560,62 @@
 			else if (istype(C, /obj/item/stack/farming/seeds/coca))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/coca(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/lime))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/lime(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/lemon))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/lemon(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/melon))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/melon(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/pumpkin))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/pumpkin(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/cherry))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/cherry(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/apricot))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/apricot(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/coconut))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/coconut(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else
@@ -760,7 +816,7 @@
 		E.reagents.add_reagent(randreg,5)
 		E.update_icon()
 
-/turf/proc/mining_proc(var/mob/living/carbon/human/H, var/ROCKTYPE)
+/turf/proc/mining_proc(var/mob/living/carbon/human/H)
 	if (!H || !src)
 		return
 	var/turf/T = get_turf(src)
@@ -770,7 +826,7 @@
 			mineral.amount = rand(8,12)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
-			H << "<span class='danger'>You found some copper ore!</span>"
+			H << "<span class='danger'>You found some <font color=[get_material_by_name("copper").icon_colour]><b>copper</font></b> ore!</span>"
 			if(map.ID == MAP_NOMADS_DESERT)
 				T.ChangeTurf(/turf/floor/dirt/dust)
 			else
@@ -783,7 +839,7 @@
 			mineral.amount = rand(8,12)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
-			H << "<span class='danger'>You found some tin ore!</span>"
+			H << "<span class='danger'>You found some <font color=[get_material_by_name("tin").icon_colour]><b>tin</font></b> ore!</span>"
 			if(map.ID == MAP_NOMADS_DESERT)
 				T.ChangeTurf(/turf/floor/dirt/dust)
 			else
@@ -796,7 +852,7 @@
 		mineral.amount = rand(8,12)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
-		H << "<span class='danger'>You found some iron ore!</span>"
+		H << "<span class='danger'>You found some <font color=[get_material_by_name("iron").icon_colour]><b>iron</font></b> ore!</span>"
 		if(map.ID == MAP_NOMADS_DESERT)
 			T.ChangeTurf(/turf/floor/dirt/dust)
 		else
@@ -810,7 +866,7 @@
 			mineral.amount = rand(12,16)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
-			H << "<span class='danger'>You found some coal!</span>"
+			H << "<span class='danger'>You found some <font color=#A9A9A9><b>coal</font></b>!</span>"// no material.
 			if(map.ID == MAP_NOMADS_DESERT)
 				T.ChangeTurf(/turf/floor/dirt/dust)
 			else
@@ -825,7 +881,7 @@
 				mineral.amount = rand(12,16)
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
-				H << "<span class='danger'>You found some coal!</span>"
+				H << "<span class='danger'>You found some <font color=#A9A9A9><b>coal</font></b>!</span>" // no material
 				if(map.ID == MAP_NOMADS_DESERT)
 					T.ChangeTurf(/turf/floor/dirt/dust)
 				else
@@ -838,7 +894,7 @@
 				mineral.amount = 4
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
-				H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>saltpeter</font></b></span>"
+				H << "<span class='danger'>You found some <font color=#f3e781]><b>saltpeter</font></b>!</span>" // no material
 				if(map.ID == MAP_NOMADS_DESERT)
 					T.ChangeTurf(/turf/floor/dirt/dust)
 				else
@@ -851,7 +907,8 @@
 				mineral.amount = 4
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					mineral.amount *= 2
-				H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>sulphur</font></b>!</span>"
+				if (mineral && mineral.get_material())
+					H << "<span class='danger'>You found some <font color=#fffa78><b>sulphur</font></b>!</span>" // no material
 				if(map.ID == MAP_NOMADS_DESERT)
 					T.ChangeTurf(/turf/floor/dirt/dust)
 				else
@@ -865,7 +922,7 @@
 					mineral.amount = 4
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
-					H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>lead</font> ore</b>!</span>"
+					H << "<span class='danger'>You found some <font color=[get_material_by_name("lead").icon_colour]><b>lead</font> ore</b>!</span>"
 					if(map.ID == MAP_NOMADS_DESERT)
 						T.ChangeTurf(/turf/floor/dirt/dust)
 					else
@@ -879,7 +936,7 @@
 						mineral.amount = 4
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
-						H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>uranium</font></b>!</span>"
+						H << "<span class='danger'>You found some <font color=#A5A500><b>uranium</font></b>!</span>" // no material
 						if(map.ID == MAP_NOMADS_DESERT)
 							T.ChangeTurf(/turf/floor/dirt/dust)
 						else
@@ -892,7 +949,7 @@
 						mineral.amount = 4
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
-						H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>mercury</font></b>!</span>"
+						H << "<span class='danger'>You found some <font color=#882c1d><b>mercury</font></b>!</span>" // no material
 						if(map.ID == MAP_NOMADS_DESERT)
 							T.ChangeTurf(/turf/floor/dirt/dust)
 						else
@@ -905,7 +962,7 @@
 		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
-		H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>silver</font> ore</b>!</span>"
+		H << "<span class='danger'>You found some <font color=[get_material_by_name("silver").icon_colour]><b>silver</font> ore</b>!</span>"
 		if(map.ID == MAP_NOMADS_DESERT)
 			T.ChangeTurf(/turf/floor/dirt/dust)
 		else
@@ -918,7 +975,7 @@
 		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
-		H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>gold</font> ore</b>!</span>"
+		H << "<span class='danger'>You found some <font color=[get_material_by_name("gold").icon_colour]><b>gold</font> ore</b>!</span>"
 		if(map.ID == MAP_NOMADS_DESERT)
 			T.ChangeTurf(/turf/floor/dirt/dust)
 		else
@@ -931,7 +988,7 @@
 		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
-		H << "<span class='danger'>You found some raw <font color=[mineral.get_material().icon_colour]><b>diamonds</b></font>!</span>"
+		H << "<span class='danger'>You found some raw <font color=[get_material_by_name("diamond").icon_colour]><b>diamonds</b></font>!</span>"
 		if(map.ID == MAP_NOMADS_DESERT)
 			T.ChangeTurf(/turf/floor/dirt/dust)
 		else
@@ -939,13 +996,13 @@
 		T.is_mineable = FALSE
 		H.adaptStat("strength", 1)
 		return
-	if (istype(src, /turf/floor/dirt/underground/icy))
+	if (istype(T, /turf/floor/dirt/underground/icy))
 		if (prob(3))
 			var/obj/item/stack/material/fossil/mineral = new/obj/item/stack/material/fossil(src)
 			mineral.amount = 1
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				new/obj/item/stack/material/fossil(src)
-			H << "<span class='danger'>You found a <font color=[mineral.get_material().icon_colour]><b>fossil</font></b>!</span>"
+			H << "<span class='danger'>You found a <font color=[get_material_by_name("bone").icon_colour]><b>fossil</font></b>!</span>"
 			if(map.ID == MAP_NOMADS_DESERT)
 				T.ChangeTurf(/turf/floor/dirt/dust)
 			else
@@ -959,7 +1016,7 @@
 				mineral.amount = 1
 				if (istype(get_area(src), /area/caribbean/void/caves/special))
 					new/obj/item/stack/material/fossil(src)
-				H << "<span class='danger'>You found a <font color=[mineral.get_material().icon_colour]><b>fossil</font></b>!</span>"
+				H << "<span class='danger'>You found a <font color=[get_material_by_name("bone").icon_colour]><b>fossil</font></b>!</span>"
 				if(map.ID == MAP_NOMADS_DESERT)
 					T.ChangeTurf(/turf/floor/dirt/dust)
 				else
@@ -967,27 +1024,27 @@
 				T.is_mineable = FALSE
 				H.adaptStat("strength", 1)
 				return
-	if(istype(src, /turf/floor/dirt/underground/sandy))
+	if(istype(T, /turf/floor/dirt/underground/sandy))
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
-		H << "<span class='danger'>You found some <font color=[mineral.get_material().icon_colour]><b>sandstone</font> rocks</b>!</span>"
+		H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
 		T.ChangeTurf(/turf/floor/dirt/dust)
-	else if(istype(src, /turf/floor/dirt/underground/icy))
+	else if(istype(T, /turf/floor/dirt/underground/icy))
 		//TODO ADD ICE AND FOSSILS
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
-		H << "<span class='danger'>You found some usable <font color=[mineral.get_material().icon_colour]><b>stone</font> rocks</b>!</span>"
+		H << "<span class='danger'>You found some usable <font color=[get_material_by_name("stone").icon_colour]><b>stone</font> rocks</b>!</span>"
 		T.ChangeTurf(/turf/floor/dirt/dust)
 	else
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
-		H << "<span class='danger'>You found some usable <font color=[mineral.get_material().icon_colour]><b>stone</font> rocks</b>!</span>"
+		H << "<span class='danger'>You found some usable <font color=[get_material_by_name("stone").icon_colour]><b>stone</font> rocks</b>!</span>"
 	if(map.ID == MAP_NOMADS_DESERT)
 		T.ChangeTurf(/turf/floor/dirt/dust)
 	else if (map.ID == MAP_NOMADS_JUNGLE)

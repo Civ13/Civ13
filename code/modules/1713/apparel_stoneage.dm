@@ -188,6 +188,7 @@
 	item_state = "chitin_helmet"
 	worn_state = "chitin_helmet"
 	armor = list(melee = 30, arrow = 19, gun = 12, energy = 18, bomb = 18, bio = 19, rad = FALSE)
+
 /obj/item/clothing/head/chief_hat
 	name = "Chief hat"
 	desc = "A hat made with withe feathers. Worn by tribal leaders."

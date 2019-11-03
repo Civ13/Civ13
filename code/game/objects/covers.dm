@@ -72,6 +72,15 @@
 	layer = 1.99
 	material = "Wood"
 
+/obj/covers/fancywood
+	name = "wood floor"
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "fancywood"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Wood"
+
 /obj/covers/wood/stairs
 	name = "wood stairs"
 	icon = 'icons/obj/stairs.dmi'
@@ -100,6 +109,32 @@
 	name = "cobblestone floor"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "cobble_vertical_dark"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
+/obj/covers/slatefloor
+	name = "slate floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "slatefloor"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
+/obj/covers/marblefloor
+	name = "marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "marblefloor"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -462,14 +497,14 @@
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall_y2"
+	icon_state = "medieval_wall_y1"
 	health = 185
 
 /obj/covers/wood_wall/medieval/y/l
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall_y1"
+	icon_state = "medieval_wall_y2"
 	health = 185
 
 /obj/covers/wood_wall/shoji
@@ -842,8 +877,8 @@
 					S.density = FALSE
 					S.opacity = FALSE
 				else if (choice == "Window")
-					qdel(src)
 					new /obj/structure/window_frame/sumerian(loc)
+					qdel(src)
 				else if (choice == "Corner")
 					S.icon_state = "sumerian-corner1"
 					var/choice1 = WWinput(user, "Which corner?","Clay Walls","North-West",list("North-West","North-East","South-West","South-East"))

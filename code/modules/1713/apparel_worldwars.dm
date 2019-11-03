@@ -1159,7 +1159,7 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	value = 100
 
 /obj/item/clothing/suit/storage/coat/ww2/servicejacket
-	name = "servace jacket"
+	name = "service jacket"
 	desc = "A standard military jacket."
 	icon_state = "servicejacket"
 	item_state = "servicejacket"
@@ -1171,7 +1171,7 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 
 /obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown
 	name = "brown bomber's jacket"
-	desc = "A brown jacket meant for high-alitude temperatures."
+	desc = "A brown jacket meant for high-alititude temperatures."
 	icon_state = "bomberjacket"
 	item_state = "bomberjacket"
 	worn_state = "bomberjacket"
@@ -1182,7 +1182,7 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 
 /obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack
 	name = "black bomber's jacket"
-	desc = "A black jacket meant for high-alitude temperatures."
+	desc = "A black jacket meant for high-alititude temperatures."
 	icon_state = "blackbomberjacket"
 	item_state = "blackbomberjacket"
 	worn_state = "blackbomberjacket"
