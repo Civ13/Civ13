@@ -837,7 +837,7 @@ RECIPE: /material/steel/,vending machine,/obj/structure/vending/sales/vending,12
 
 RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail (turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rail (left turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
