@@ -270,17 +270,6 @@
 				if (!(numtocheck in listallowed))
 					customcolor2 = "#FFFFFF"
 
-	else if(recipe.result_type == /obj/structure/rails/turn)
-		var/list/choicelist = list("Cancel", "Left", "Right")
-		var/todir = WWinput(user, "Choose the direction to turn into:", "Railway Builder", "Cancel", choicelist)
-		if (todir == "Cancel")
-			return
-		else
-			if (todir == "Right")
-				turn_dir = TURN_RIGHT(user.dir)
-			else if (todir == "Left")
-				turn_dir = TURN_LEFT(user.dir)
-
 	else if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
