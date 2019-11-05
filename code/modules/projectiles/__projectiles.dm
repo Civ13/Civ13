@@ -32,7 +32,6 @@
 	embed = FALSE
 	sharp = FALSE
 
-
 /obj/item/projectile/arrow/arrow
 	damage = DAMAGE_LOW-28
 	penetrating = 0
@@ -64,6 +63,12 @@
 	penetrating = 0
 	armor_penetration = 2
 	icon_state = "arrow_stone"
+
+/obj/item/projectile/arrow/arrow/sandstone
+	damage = DAMAGE_MEDIUM
+	penetrating = 0
+	armor_penetration = 2
+	icon_state = "arrow_sandstone"
 
 /obj/item/projectile/arrow/arrow/copper
 	damage = DAMAGE_MEDIUM+1

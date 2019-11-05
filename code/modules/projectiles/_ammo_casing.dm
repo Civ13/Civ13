@@ -63,6 +63,13 @@
 	projectile_type = /obj/item/projectile/arrow/arrow/stone
 	weight = 0.17
 
+/obj/item/ammo_casing/arrow/sandstone
+	name = "sandstone arrow"
+	desc = "An arrow with a sandstone tip."
+	icon_state = "arrow_sandstone"
+	projectile_type = /obj/item/projectile/arrow/arrow/sandstone
+	weight = 0.17
+
 /obj/item/ammo_casing/arrow/copper
 	name = "copper arrow"
 	desc = "An arrow with a copper tip."

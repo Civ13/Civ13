@@ -931,10 +931,28 @@ RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandst
 RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7,250,1,1,structures,21,0,0,8,null
 RECIPE: /material/sandstone/,furnace,/obj/structure/furnace/sandstone,10,150,1,1,structures,26,0,0,8,null
 RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,3,100,1,1,structures,0,0,0,8,null
+RECIPE: /material/sandstone/,pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,sandstone
+
+RECIPE: /material/sandstone/,sandstone totem,/obj/structure/religious/totem/sandstone,8,150,1,1,religion,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone altar,/obj/structure/altar/sandstone,15,200,1,1,religion,0,0,0,8,null
+RECIPE: /material/sandstone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religion,43,0,0,8,sandstone
 
 RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandbag/sandstone,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/barricade/sandstone_v/crenelated,5,80,1,1,fortifications,0,0,0,8,null
+
+RECIPE: /material/sandstone/,sandstone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,sandstone
+RECIPE: /material/sandstone/, research kit,/obj/item/weapon/researchkit,10,190,0,1,tools,0,0,0,8,sandstone
+RECIPE: /material/sandstone/, scientific slate,/obj/item/weapon/book/research,4,110,0,1,tools,0,0,0,0,sandstone
+RECIPE: /material/sandstone/, chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,sandstone
+
+RECIPE: /material/sandstone/, catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,sandstone
+RECIPE: /material/sandstone/, sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,sandstone
+RECIPE: /material/sandstone/, projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,sandstone
+RECIPE: /material/sandstone/,sandstone arrowhead (x4),/obj/item/stack/arrowhead/sandstone,1,10,0,1,projectiles,0,14,0,8,null
+
+RECIPE: /material/sandstone/,pickaxe,/obj/item/weapon/pickaxe/stone,2,50,0,1,tools,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,sandstone
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,1,30,0,1,none,0,0,0,8,null
 

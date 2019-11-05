@@ -802,7 +802,15 @@
 		produced = 2
 	else if (recipe.result_type == /obj/item/ammo_casing/arrow)
 		produced = 3
-	else if (recipe.result_type == /obj/item/stack/arrowhead)
+	else if (recipe.result_type == /obj/item/stack/arrowhead/stone)
+		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/copper)
+		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/bronze)
+		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/iron)
+		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/steel)
 		produced = 4
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
