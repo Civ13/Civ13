@@ -88,7 +88,7 @@
 	update_icon()
 	return
 
-/obj/obj/structure/sink/rad_act(amount)
+/obj/structure/sink/rad_act(amount)
 	if(amount <= 0)
 		return
 	radiation += amount
