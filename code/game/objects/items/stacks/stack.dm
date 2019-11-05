@@ -17,9 +17,6 @@
 	var/max_amount //also see stack recipes initialisation, param "max_res_amount" must be equal to this max_amount
 	var/stacktype //determines whether different stack types can merge
 	var/build_type = null //used when directly applied to a turf
-	var/uses_charge = FALSE
-	var/list/charge_costs = null
-	var/list/datum/matter_synth/synths = null
 	var/real_value = 1
 	value = 1
 	var/customcolor = "FFFFFF"
@@ -36,8 +33,6 @@
 	return
 
 /obj/item/stack/Destroy()
-	if (uses_charge)
-		return TRUE
 	if (src && usr && usr.using_object == src)
 		usr << browse(null, "window=stack")
 	return ..()
@@ -53,7 +48,7 @@
 		return
 	else
 		change_stack(user, stackmaterial)
-		to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack</span>")
+		to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
 
 /obj/item/stack/proc/change_stack(mob/user, amount)
 	var/obj/item/stack/F = split(amount)
@@ -72,10 +67,7 @@
 
 /obj/item/stack/examine(mob/user)
 	if (..(user, TRUE))
-		if (!uses_charge)
-			user << "There [amount == TRUE ? "is" : "are"] [amount] [singular_name]\s in the stack."
-		else
-			user << "There is enough charge for [get_amount()]."
+		user << "There [amount == TRUE ? "is" : "are"] [amount] [singular_name]\s in the stack."
 
 /obj/item/stack/attack_self(mob/user as mob)
 	list_recipes(user)
@@ -1113,39 +1105,35 @@
 /obj/item/stack/proc/use(var/used,var/mob/living/carbon/human/H = null)
 	if (!can_use(used))
 		return FALSE
-	if (!uses_charge)
-		if (H)
-			if (H.religion_check() == "Production")
-				if (used < 4)
-					amount -= used
-				else if (used >= 4 && used < 10)
-					amount -= (used-1)
-				else if (used >= 10)
-					amount -= (used-2)
-				else
-					amount -= used
+	if (H)
+		if (H.religion_check() == "Production")
+			if (used < 4)
+				amount -= used
+			else if (used >= 4 && used < 10)
+				amount -= (used-1)
+			else if (used >= 10)
+				amount -= (used-2)
 			else
 				amount -= used
 		else
 			amount -= used
-		if (amount <= 0)
-			if (usr)
-				usr.remove_from_mob(src)
-			qdel(src) //should be safe to qdel immediately since if someone is still using this stack it will persist for a little while longer
-		return TRUE
 	else
-		if (get_amount() < used)
-			return FALSE
+		amount -= used
+	if (amount <= 0)
+		if (usr)
+			usr.remove_from_mob(src)
+		qdel(src) //should be safe to qdel immediately since if someone is still using this stack it will persist for a little while longer
+	return TRUE
+
 
 	return FALSE
 
 /obj/item/stack/proc/add(var/extra)
-	if (!uses_charge)
-		if (amount + extra > get_max_amount())
-			return FALSE
-		else
-			amount += extra
-		return TRUE
+	if (amount + extra > get_max_amount())
+		return FALSE
+	else
+		amount += extra
+	return TRUE
 /*
 	The transfer and split procs work differently than use() and add().
 	Whereas those procs take no action if the desired amount cannot be added or removed these procs will try to transfer whatever they can.
@@ -1177,8 +1165,6 @@
 /obj/item/stack/proc/split(var/tamount)
 	if (!amount)
 		return null
-	if (uses_charge)
-		return null
 
 	var/transfer = max(min(tamount, amount, initial(max_amount)), FALSE)
 
@@ -1186,6 +1172,7 @@
 	if (transfer && use(transfer))
 		var/obj/item/stack/newstack = new type(loc, transfer)
 		newstack.color = color
+		newstack.amount = transfer
 		if (prob(transfer/orig_amount * 100))
 			transfer_fingerprints_to(newstack)
 			if (blood_DNA)
