@@ -77,6 +77,6 @@
 	input = /obj/item/stack/material/hairlesshide
 	inputamount = 1
 	output = /obj/item/stack/material/leather
-	outputamount = 6
+	outputamount = 3
 	actiontext = "tan"
 	overlayed = TRUE
