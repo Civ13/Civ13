@@ -2,8 +2,8 @@
 /datum/admins/proc/export()
 	set category = "Server"
 	set desc="Export Variables"
-	set name="Export"
-	var/confirm = WWinput(usr, "Are you sure you want to save the world? SERVER MIGHT FREEZE FOR UP TO 2 MINUTES!", "Confirmation Required", "No", list("Yes", "No"))
+	set name="Export Savegame"
+	var/confirm = WWinput(usr, "Are you sure you want to save the world? SERVER MIGHT FREEZE FOR A WHILE!", "Confirmation Required", "No", list("Yes", "No"))
 	if (confirm == "No")
 		return
 	else
