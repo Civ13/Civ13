@@ -31,7 +31,7 @@
 			if (fexists(F2))
 				fdel(F2)
 			for (var/obj/O in world)
-				if (!istype(O, /obj/effect/decal))
+				if (!istype(O, /obj/effect/decal) && !istype(O, /obj/screen))
 					var/txtexport = list2text_assoc(O)
 					text2file(txtexport,F2)
 			world.log << "Finished exporting objs to [F2]."

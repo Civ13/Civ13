@@ -802,6 +802,7 @@
 #include "code\modules\organs\internal\lungs.dm"
 #include "code\modules\organs\subtypes\standard.dm"
 #include "code\modules\organs\subtypes\unbreakable.dm"
+#include "code\modules\persistence\loading.dm"
 #include "code\modules\persistence\saving.dm"
 #include "code\modules\projectiles\__projectiles.dm"
 #include "code\modules\projectiles\_ammo_casing.dm"

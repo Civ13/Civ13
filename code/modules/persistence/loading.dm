@@ -5,7 +5,7 @@
 	set name="Import Savegame"
 
 	//dont want this to be used for now
-	return
+//	return
 	//
 	var/confirm = WWinput(usr, "Are you sure you want to load the world? SERVER MIGHT FREEZE FOR A WHILE!", "Confirmation Required", "No", list("Yes", "No"))
 	if (confirm == "No")
@@ -15,12 +15,12 @@
 		var/F = file("SQL/saves/turfs.txt")
 		if (fexists(F))
 			var/tmpturfs = file2text(F)
-			var/list/impturfs = splittext(F, "\n")
-			for (var/i in impmturfs)
+			var/list/impturfs = splittext(tmpturfs, "\n")
+			for (var/i in impturfs)
 				var/list/impturfs2 = splittext(i, ";")
 				if (impturfs[1] == "TURF")
 					var/resultp = text2path(impturfs2[5])
-					var/turf/newturf = new resultp(locate(impturfs2[2],impturfs2[3],impturfs2[4]))
+					new resultp(locate(impturfs2[2],impturfs2[3],impturfs2[4]))
 		world.log << "Imported all turfs."
 		sleep(1)
 		world.log << "Clearing mobs..."
@@ -31,7 +31,7 @@
 		var/F2 = file("SQL/saves/mobs.txt")
 		if (fexists(F2))
 			var/tmpmobs = file2text(F2)
-			var/list/impmobs = splittext(F2, "\n")
+			var/list/impmobs = splittext(tmpmobs, "\n")
 			for (var/i in impmobs)
 				var/list/impmobs2 = splittext(i, ";")
 				if (impmobs2[1] == "MOB" && impmobs2[5] != "/mob/new_player")
@@ -50,7 +50,7 @@
 		var/F3 = file("SQL/saves/objs.txt")
 		if (fexists(F3))
 			var/tmpobjs = file2text(F3)
-			var/list/impobjs = splittext(F3, "\n")
+			var/list/impobjs = splittext(tmpobjs, "\n")
 			for (var/i in impobjs)
 				var/list/impobjs2 = splittext(i, ";")
 				if (impobjs2[1] == "SIMPLE_OBJ" && !findtext(impobjs2[5],"/obj/map_metadata"))
@@ -58,10 +58,26 @@
 					var/mob/newmob = new resultp(locate(impobjs2[2],impobjs2[3],impobjs2[4]))
 					newmob.stat = impobjs2[6]
 				else if (impobjs2[1] == "OBJECT")
-					if (findtext(impobjs2[5],"/obj/map_metadata"))
-						return
+					if (!findtext(impobjs2[5],"/obj/map_metadata"))
+						var/resultp = text2path(impobjs2[5])
+						var/obj/newobj = new resultp(locate(impobjs2[2],impobjs2[3],impobjs2[4]))
+						for (var/j=6, j<=impobjs2.len, j++)
+							var/list/tempvars = splittext(impobjs2[j], "=")
+							if (isnum(newobj.vars[tempvars[1]]))
+								newobj.vars[tempvars[1]] = text2num(tempvars[2])
+							else
+								if (tempvars[2] == "EMPTYLIST")
+									newobj.vars[tempvars[1]] = list()
+								else
+									if (findtext(tempvars[2], "{{"))
+										tempvars[2] = replacetext(tempvars[2], "{{", "")
+										tempvars[2] = replacetext(tempvars[2], "|}}", "")
+										var/list/tempvarslist = splittext(tempvars[2], "|")
+										newobj.vars[tempvars[1]] = tempvarslist
+									else
+										newobj.vars[tempvars[1]] = tempvars[2]
 					else
-						return
+
 		world.log << "Imported all objects."
 		world.log << "Importing global settings..."
 		world.log << "Finished all imports."
