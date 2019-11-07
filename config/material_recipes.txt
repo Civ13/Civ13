@@ -941,6 +941,7 @@ RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandba
 RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/barricade/sandstone_v/crenelated,5,80,1,1,fortifications,0,0,0,8,null
 
+
 RECIPE: /material/sandstone/,sandstone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,sandstone
 RECIPE: /material/sandstone/, research kit,/obj/item/weapon/researchkit,10,190,0,1,tools,0,0,0,8,sandstone
 RECIPE: /material/sandstone/, scientific slate,/obj/item/weapon/book/research,4,110,0,1,tools,0,0,0,0,sandstone
@@ -954,7 +955,8 @@ RECIPE: /material/sandstone/,sandstone arrowhead (x4),/obj/item/stack/arrowhead/
 RECIPE: /material/sandstone/,pickaxe,/obj/item/weapon/pickaxe/stone,2,50,0,1,tools,0,0,0,8,sandstone
 RECIPE: /material/sandstone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,sandstone
 
-RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,1,30,0,1,none,0,0,0,8,null
+RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,2,30,0,1,none,0,0,0,8,null
+
 
 RECIPE: /material/fossil/,bones (10x),/obj/item/stack/material/bone,1,10,0,1,none,0,0,0,8,null
 RECIPE: /material/fossil/,stone (8x),/obj/item/stack/material/stone,1,10,0,1,none,0,0,0,8,null

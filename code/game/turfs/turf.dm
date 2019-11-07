@@ -79,6 +79,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 		spawn( FALSE )
 			Entered(AM)
 			return
+	if (ticker && ticker.current_state == GAME_STATE_PLAYING)
+		new_turfs |= src
 	turfs |= src
 
 

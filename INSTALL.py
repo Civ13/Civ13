@@ -14,7 +14,7 @@ byond_version_minor = sys.argv[2]
 ####
 
 print("Installing dependencies...")
-os.system("sudo apt install make git unzip python3 python3-pip lib32z1 lib32ncurses5 libc6-i386 lib32stdc++6")
+os.system("sudo apt install make git unzip python3 python3-pip lib32z1 lib32ncurses6 libc6-i386 lib32stdc++6")
 os.system("sudo apt autoremove")
 os.system("sudo apt autoclean")
 print("Installing BYOND...")

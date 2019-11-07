@@ -17,8 +17,6 @@ var/global/list/observer_mob_list = list()			//List of all observers, excluding 
 var/global/list/human_clients_mob_list = list()     //List of all human mobs with clients
 var/global/list/new_player_mob_list = list()	//List of all new_players, excludes clientless by definition
 
-var/global/list/fallschirm_landmarks = list()
-
 var/global/list/burning_obj_list = list()
 var/global/list/burning_turf_list = list()
 
@@ -28,10 +26,8 @@ var/global/list/chemical_reagents_list				//list of all /datum/reagent datums in
 var/global/list/landmarks_list = list()				//list of all landmarks created
 var/global/list/surgery_steps = list()				//list of all surgery steps  |BS12
 var/global/list/side_effects = list()				//list of all medical sideeffects types by their names |BS12
-var/global/list/mechas_list = list()				//list of all mechs. Used by hostile mobs target tracking.
 var/global/list/joblist = list()					//list of all jobstypes, minus borg and AI
 
-var/global/list/global_corporations = list()
 var/global/list/HUDdatums = list()
 
 var/global/list/area_list = list()
@@ -43,8 +39,6 @@ var/global/list/thrown_list = list()
 var/global/list/cleanables = list()
 
 var/global/list/crate_list = list()
-
-var/global/list/artillery_list = list()
 
 var/global/list/cannon_piece_list = list()
 
@@ -93,6 +87,7 @@ var/global/list/alphabet_uppercase = list("A","B","C","D","E","F","G","H","I","J
 #define all_genders_define_list list(MALE,FEMALE,PLURAL,NEUTER)
 
 var/global/list/turfs = list()						//list of all turfs
+var/global/list/new_turfs = list()						//list of all non-default turfs
 var/global/list/grass_turf_list = list() // list of all /turf/floor/grass
 var/global/list/water_turf_list = list() // list of all /turf/floor/grass
 //Languages/species/whitelist.

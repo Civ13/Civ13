@@ -20,7 +20,6 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
-
 /obj/structure/converter/attackby(obj/item/M as obj, mob/user as mob)
 	if(!filled)
 		if(istype(M, input))
@@ -50,7 +49,7 @@
 			user << "<span class='alert'> That is not the right resource! </span>"
 	else
 		user << "<span class='alert'> You empty the [name]. </span>"
-		for(outputamount)
+		for(var/i=0,i<=outputamount,i++)
 			new input(src.loc)
 		icon_state = idlesprite
 		if(overlayed)
@@ -77,6 +76,6 @@
 	input = /obj/item/stack/material/hairlesshide
 	inputamount = 1
 	output = /obj/item/stack/material/leather
-	outputamount = 6
+	outputamount = 3
 	actiontext = "tan"
 	overlayed = TRUE
