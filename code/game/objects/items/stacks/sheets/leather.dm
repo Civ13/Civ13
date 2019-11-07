@@ -6,15 +6,7 @@
 	default_type = "hairlesshide"
 	flammable = TRUE
 	value = 0
-/obj/item/stack/material/wetleather
-	name = "wet leather"
-	desc = "This leather has been cleaned but still needs to be dried."
-	singular_name = "wet leather piece"
-	icon_state = "sheet-wetleather"
-	value = 0
-	var/wetness = 30 //Reduced when exposed to high temperautres
-	var/drying_threshold_temperature = 500 //Kelvin to start drying
-	flammable = TRUE
+
 //Step one - dehairing.
 /obj/item/stack/material/pelt/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(	istype(W, /obj/item/weapon/material/knife) || \
