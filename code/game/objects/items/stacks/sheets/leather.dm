@@ -2,6 +2,7 @@
 	name = "hairless hide"
 	desc = "This hide was stripped of it's hair, but still needs tanning."
 	singular_name = "hairless hide piece"
+	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-hairlesshide"
 	default_type = "hairlesshide"
 	flammable = TRUE

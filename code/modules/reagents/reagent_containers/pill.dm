@@ -126,7 +126,7 @@
 /obj/item/weapon/reagent_containers/pill/opium
 	name = "opium ball"
 	desc = "A ball of dried opium. A great painkiller."
-	icon = 'icons/obj/items.dmi'
+	icon = 'icons/obj/materials.dmi'
 	icon_state = "opium_extracted"
 	value = 17
 	New()
