@@ -84,6 +84,7 @@
 				var/txtexport = list2text_assoc(O)
 				text2file(txtexport,F2)
 		world.log << "Finished exporting objs to [F2]."
-	world.log << "Finished saving at [world.realtime]."
-	world << "<i><b>Finished saving.</b></i>"
+	spawn(1)
+		world.log << "Finished saving at [world.realtime]."
+		world << "<i><b>Finished saving.</b></i>"
 	return
