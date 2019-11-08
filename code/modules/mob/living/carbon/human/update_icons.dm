@@ -1228,7 +1228,7 @@ var/global/list/damage_icon_parts = list()
 		if (O.wounds.len == 0)
 			continue
 		for (var/datum/wound/W in O.wounds)
-			if (W.bandaged || W.clamped || W.salved)
+			if (W.bandaged && W.created+4800 >= world.time)
 				DD.overlays += image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="[O.limb_name]b")
 				continue
 	overlays_standing[BANDAGES_LAYER] = DD

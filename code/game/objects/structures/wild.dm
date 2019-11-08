@@ -719,7 +719,7 @@
 		if (healthamount == 1)
 			if (prob(25) && radiation < 15)
 				user << "You harvest some medicinal leaves."
-				new /obj/item/stack/medical/advanced/bruise_pack/herbs(get_turf(user))
+				new /obj/item/stack/medical/advanced/herbs(get_turf(user))
 				healthamount = 0
 			else
 				user << "You couldn't find any good leaves in this plant."

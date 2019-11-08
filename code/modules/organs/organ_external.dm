@@ -646,12 +646,15 @@ Note that amputating the affected organ does in fact remove the infection from t
 		if (W.can_autoheal() && W.wound_damage() < 50)
 			heal_amt += 0.5
 
+		//salved wounds heal faster
+		if (W.salved)
+			heal_amt *= 1.2
 		//we only update wounds once in [wound_update_accuracy] ticks so have to emulate realtime
-		heal_amt = heal_amt * wound_update_accuracy
+		heal_amt *= wound_update_accuracy
 		//configurable regen speed woo, no-regen hardcore or instaheal hugbox, choose your destiny
-		heal_amt = heal_amt * config.organ_regeneration_multiplier
+		heal_amt *= config.organ_regeneration_multiplier
 		// amount of healing is spread over all the wounds
-		heal_amt = heal_amt / (wounds.len + 1)
+		heal_amt /= (wounds.len + 1)
 		// making it look prettier on scanners
 		heal_amt = round(heal_amt,0.1)
 		W.heal_damage(heal_amt)
@@ -920,8 +923,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/salve()
 	var/rval = FALSE
 	for (var/datum/wound/W in wounds)
+		if (W.internal) continue
 		rval |= !W.salved
 		W.salved = TRUE
+		W.germ_level *= 0.5
 	return rval
 
 /obj/item/organ/external/proc/disinfect()

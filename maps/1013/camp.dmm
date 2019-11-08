@@ -375,7 +375,7 @@
 "hw" = (/obj/structure/oven/fireplace,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
 "hx" = (/obj/structure/table/wood,/obj/item/trash/candle,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/turf/floor/wood,/area/caribbean/island{base_turf = /turf/floor/dirt; location = 0; name = "Castle"})
 "hy" = (/obj/structure/closet/crate/chest,/obj/item/weapon/material/sword/sabre/iron,/obj/item/weapon/material/sword/longsword,/obj/item/weapon/shield/iron/semioval/templar,/obj/item/clothing/suit/armor/medieval/chainmail,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
-"hz" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack/herbs,/turf/floor/wood,/area/caribbean/island{base_turf = /turf/floor/dirt; location = 0; name = "Castle"})
+"hz" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/herbs,/turf/floor/wood,/area/caribbean/island{base_turf = /turf/floor/dirt; location = 0; name = "Castle"})
 "hA" = (/obj/item/weapon/siegeladder,/obj/item/weapon/siegeladder,/obj/item/weapon/siegeladder,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "hB" = (/obj/structure/wild/burnedbush,/obj/item/weapon/siegeladder,/obj/item/weapon/siegeladder,/obj/item/weapon/siegeladder,/turf/floor/grass,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "hC" = (/obj/structure/barricade/stone_h,/obj/covers/cobblestone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt,/area/caribbean/forest)
