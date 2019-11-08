@@ -462,6 +462,7 @@
 
 /obj/item/stack/material/fossil
 	name = "fossil"
+	icon = 'icons/obj/materials.dmi'
 	icon_state = "fossil_1"
 	default_type = "stone"
 	dropsound = 'sound/effects/drop_wood.ogg'

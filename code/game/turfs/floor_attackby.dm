@@ -1030,16 +1030,14 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
-		T.ChangeTurf(/turf/floor/dirt/dust)
-	else if(istype(T, /turf/floor/dirt/underground/icy))
+	if(istype(T, /turf/floor/dirt/underground/icy))
 		//TODO ADD ICE AND FOSSILS
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some usable <font color=[get_material_by_name("stone").icon_colour]><b>stone</font> rocks</b>!</span>"
-		T.ChangeTurf(/turf/floor/dirt/dust)
-	else
+	if(!istype(T, /turf/floor/dirt/underground/sandy) && !istype(T, /turf/floor/dirt/underground/icy))
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
