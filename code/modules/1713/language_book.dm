@@ -2,7 +2,7 @@
 	name = "language book"
 	desc = "A book that allows translation between two languages. Nothing is written in it."
 	icon = 'icons/obj/library.dmi'
-	icon_state = "book" // temporary someone fix this aa
+	icon_state = "book2" // temporary someone fix this aa
 	throw_speed = TRUE
 	throw_range = 5
 	w_class = 3
