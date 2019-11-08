@@ -7,6 +7,12 @@
 	//dont want this to be used for now
 //	return
 	//
+	var/mapfile = file("SQL/saves/map.txt")
+	if (!fexists(mapfile))
+		return
+	var/loaded_metadata = file2text(mapfile)
+	var/list/parsed_metadata = splittext(loaded_metadata, "\n")
+
 	var/confirm = WWinput(usr, "Are you sure you want to load the world? SERVER MIGHT FREEZE FOR A WHILE!", "Confirmation Required", "No", list("Yes", "No"))
 	if (confirm == "No")
 		return
