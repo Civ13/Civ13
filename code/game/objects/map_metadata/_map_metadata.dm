@@ -190,7 +190,8 @@ var/civmax_research = list(230,230,230)
 	initial_faction_organization = faction_organization.Copy()
 
 	//export game data (WIP persistence stuff)
-	savegame()
+	if (civilizations || nomads)
+		savegame()
 
 	// get a subfaction, just one, for this round
 	var/subfaction = null
