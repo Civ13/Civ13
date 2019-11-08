@@ -673,10 +673,11 @@ RECIPE: /material/steel/,180u medium fuel tank,/obj/item/weapon/reagent_containe
 RECIPE: /material/steel/,250u large fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank,20,185,0,1,fuel tanks,120,0,0,8,null
 RECIPE: /material/steel/,450u huge fuel tank,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank,36,185,0,1,fuel tanks,120,0,0,8,null
 RECIPE: /material/steel/,street lamp,/obj/structure/lamp/lamppost_small,3,35,0,1,electrical,99,0,0,8,null
-RECIPE: /material/steel/,jackhammer,/obj/item/weapon/pickaxe/jackhammer,24,60,0,1,tools,178,0,0,8,null
+RECIPE: /material/steel/,jackhammer,/obj/item/weapon/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
+RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,refrigerator,/obj/structure/closet/fridge,15,230,1,1,none,150,0,178,8,null
 RECIPE: /material/steel/,steel arrowhead (x4),/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
-RECIPE: /material/steel/, ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
+RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
 
 RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
