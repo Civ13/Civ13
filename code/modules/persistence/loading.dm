@@ -7,13 +7,15 @@
 	//dont want this to be used for now
 //	return
 	//
-	/*
 	var/mapfile = file("SQL/saves/map.txt")
 	if (!fexists(mapfile))
+		usr << "The savefile does not exist or is corrupted!"
 		return
 	var/loaded_metadata = file2text(mapfile)
 	var/list/parsed_metadata = splittext(loaded_metadata, "\n")
-	*/
+	if (map.ID != parsed_metadata[1])
+		usr << "Different maps! Start a round in the right map first, then load."
+		return
 	var/confirm = WWinput(usr, "Are you sure you want to load the world? SERVER MIGHT FREEZE FOR A WHILE!", "Confirmation Required", "No", list("Yes", "No"))
 	if (confirm == "No")
 		return
@@ -45,8 +47,8 @@
 					var/resultp = text2path(impmobs2[5])
 					var/mob/newmob = new resultp(locate(impmobs2[2],impmobs2[3],impmobs2[4]))
 					newmob.stat = impmobs2[6]
-				else if (impmobs2[1] == "HUMAN")
-					return
+//				else if (impmobs2[1] == "HUMAN")
+//					return
 		world.log << "Imported all mobs."
 		sleep(1)
 		world.log << "Clearing objects..."
@@ -83,8 +85,20 @@
 										newobj.vars[tempvars[1]] = tempvarslist
 									else
 										newobj.vars[tempvars[1]] = tempvars[2]
-					else
-
+		world.log << "Importing metadata..."
+		var/F4 = file("SQL/saves/map.txt")
+		if (fexists(F4))
+			var/tmpmeta = file2text(F4)
+			var/list/tmpmeta_list = splittext(tmpmeta,"\n")
+			map.age = tmpmeta_list[2]
+			map.ordinal_age = text2num(tmpmeta_list[3])
+			map.default_research = text2num(tmpmeta_list[4])
+			map.autoresearch = text2num(tmpmeta_list[5])
+			map.autoresearch_mult = text2num(tmpmeta_list[6])
+			map.chad_mode = text2num(tmpmeta_list[7])
+			map.chad_mode_plus = text2num(tmpmeta_list[8])
+			map.gamemode = tmpmeta_list[8]
+		world.log << "Imported metadata."
 		world.log << "Imported all objects."
 		world.log << "Importing global settings..."
 		world.log << "Finished all imports."

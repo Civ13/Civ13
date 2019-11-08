@@ -58,6 +58,19 @@
 	world << "<i><b>Saving the game... Might lag for a few seconds.</b></i>"
 	world.log << "Started saving at [world.realtime]."
 	spawn(10)
+		world.log << "Exporting metadata..."
+		var/F0 = file("SQL/saves/map.txt")
+		if (fexists(F0))
+			fdel(F0)
+		text2file(map.ID,F0)
+		text2file(map.age,F0)
+		text2file(map.ordinal_age,F0)
+		text2file(map.default_research,F0)
+		text2file(map.autoresearch,F0)
+		text2file(map.autoresearch_mult,F0)
+		text2file(map.chad_mode,F0)
+		text2file(map.chad_mode_plus,F0)
+		text2file(map.gamemode,F0)
 		world.log << "Exporting mobs..."
 		var/F = file("SQL/saves/mobs.txt")
 		if (fexists(F))
@@ -65,7 +78,6 @@
 		for (var/mob/M in mob_list)
 			var/txtexport = list2text_assoc_mob(M)
 			text2file(txtexport,F)
-		world.log << "Finished exporting mobs to [F]."
 		sleep(0)
 		world.log << "Exporting turfs..."
 		var/F1 = file("SQL/saves/turfs.txt")
@@ -73,7 +85,6 @@
 			fdel(F1)
 		for (var/turf/T in new_turfs)
 			text2file("TURF;[T.x];[T.y];[T.z];[T.type]",F1)
-		world.log << "Finished exporting turfs to [F1]."
 		sleep(0)
 		world.log << "Exporting objs..."
 		var/F2 = file("SQL/saves/objs.txt")
@@ -83,7 +94,6 @@
 			if (!istype(O, /obj/effect/decal) && !istype(O, /obj/screen))
 				var/txtexport = list2text_assoc(O)
 				text2file(txtexport,F2)
-		world.log << "Finished exporting objs to [F2]."
 	spawn(1)
 		world.log << "Finished saving at [world.realtime]."
 		world << "<i><b>Finished saving.</b></i>"
