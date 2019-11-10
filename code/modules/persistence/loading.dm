@@ -46,7 +46,7 @@
 				var/list/impmobs2 = splittext(i, ";")
 				if (impmobs2.len >= 5 && impmobs2[1] == "MOB" && impmobs2[5] != "/mob/new_player")
 					var/resultp = text2path(impmobs2[5])
-					var/mob/newmob = new resultp(locate(impmobs2[2],impmobs2[3],impmobs2[4]))
+					var/mob/newmob = new resultp(get_turf(locate(impmobs2[2],impmobs2[3],impmobs2[4])))
 					newmob.stat = impmobs2[6]
 //				else if (impmobs2[1] == "HUMAN")
 //					return
@@ -64,9 +64,9 @@
 			for (var/i in impobjs)
 				i = replacetext(i, "|;","|")
 				var/list/impobjs2 = splittext(i, ";")
-				if (impobjs2.len >= 6 && /*impobjs2[1] == "SIMPLE_OBJ" &&*/ !findtext(impobjs2[5],"/obj/map_metadata"))
+				if (impobjs2.len >= 5 && /*impobjs2[1] == "SIMPLE_OBJ" &&*/ !findtext(impobjs2[5],"/obj/map_metadata"))
 					var/resultp = text2path(impobjs2[5])
-					new resultp(locate(impobjs2[2],impobjs2[3],impobjs2[4]))
+					new resultp(get_turf(locate(impobjs2[2],impobjs2[3],impobjs2[4])))
 /*
 				else if (impobjs2[1] == "OBJECT")
 					if (!findtext(impobjs2[5],"/obj/map_metadata"))
