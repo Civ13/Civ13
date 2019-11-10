@@ -608,7 +608,7 @@
 	if (active)
 		var/turf/T = get_turf(src)
 		if (T)
-			T.hotspot_expose(700,125)
+	//		T.hotspot_expose(700,125)
 		if(!T) return
 		var/original_mobs = list()
 		var/original_objs = list()
