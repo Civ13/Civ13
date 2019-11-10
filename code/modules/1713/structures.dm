@@ -47,6 +47,20 @@
 	else
 		..()
 
+/obj/structure/grille/fence/picket
+	name = "picket fence"
+	desc = "A traditional wooden fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "p1"
+	health = 30
+	hitsound = 'sound/effects/wooddoorhit.ogg'
+	flammable = TRUE
+
+/obj/structure/grille/fence/picket/New()
+	..()
+	icon_state = "p[rand(1,3)]"
+	color = "#c8c8c8"
+
 /obj/structure/barricade/wood_pole/attackby(obj/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/leash))
 		var/obj/item/weapon/leash/L = O
@@ -296,6 +310,11 @@
 	name = "USA Flag"
 	desc = "The US flag."
 
+/obj/structure/flag/german
+	icon_state = "german"
+	name = "German Flag"
+	desc = "The German flag."
+
 /obj/structure/flag/confed
 	icon_state = "confed"
 	name = "Confederate flag"
@@ -409,7 +428,7 @@
 
 	visible_message("<span class = 'danger'>[H] starts to free [hanging] from the noose...</span>")
 	if (do_after(H, 75, src))
-		if (src)
+		if (src && hanging)
 			visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 			hanging.pixel_x = 0
 			hanging.pixel_y = 0

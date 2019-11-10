@@ -69,12 +69,19 @@ var/list/global/floor_cache = list()
 	salty = FALSE
 	move_delay = 4
 
+/turf/floor/trench/flooded/proc/check_bridge()
+	if(locate(/obj/covers/repairedfloor) in contents)
+		move_delay = 0
+	if(locate(/obj/structure/vehicleparts/frame) in contents)
+		move_delay = 0
+	return
+
 /turf/floor/trench/flooded/salty
 	name = "flooded saltwater trench"
 	salty = TRUE
 
 
-/turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
+/turf/floor/trench/flooded/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
 		if (choice == "Yes")
@@ -85,8 +92,39 @@ var/list/global/floor_cache = list()
 			return
 		else
 			return
+	else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+		var/obj/item/weapon/reagent_containers/RG = C
+		if (istype(RG) && RG.is_open_container())
+			if (do_after(user, 15, src, check_for_repeats = FALSE))
+				var/sumex = 0
+				if (src.salty)
+					RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
+					sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
+				RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
+				user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
+				playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
+				user.setClickCooldown(5)
+			return
+		if (istype(C, /obj/item/clothing) && !busy)
+			var/obj/item/clothing/CL = C
+			usr << "<span class='notice'>You start washing \the [C].</span>"
+			var/turf/location = user.loc
 
-	else
+			busy = TRUE
+			sleep(40)
+			busy = FALSE
+
+			if (user.loc != location) return				//User has moved
+			if (!C) return 								//Item's been destroyed while washing
+			if (user.get_active_hand() != C) return		//Person has switched hands or the item in their hands
+
+			CL.clean_blood()
+			CL.radiation = 0
+			CL.dirtyness = 0
+			CL.fleas = FALSE
+			user.visible_message( \
+				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
+				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 		..()
 
 /turf/floor/trench/proc/check_filling()
@@ -121,6 +159,12 @@ var/list/global/floor_cache = list()
 			L.forceMove(src)
 			return 1
 		if(!istype(oldloc, /turf/floor/trench))
+			if(locate(/obj/covers/repairedfloor) in contents)
+				L.forceMove(src)
+				return 1
+			if(locate(/obj/structure/vehicleparts/frame) in contents)
+				L.forceMove(src)
+				return 1
 			if(L.grabbed_by && L.grabbed_by.len)
 				var/mob/living/L2 = L.grabbed_by[1].assailant
 				visible_message("<span class = 'notice'>[L2] starts pulling [L] out of trench.</span>")
@@ -140,6 +184,28 @@ var/list/global/floor_cache = list()
 				visible_message("<span class = 'notice'>[L] enters a trench.</span>")
 				L.forceMove(src)
 				return 1
+		if(istype(oldloc, /turf/floor/trench) && locate(/obj/covers/repairedfloor, usr.loc))
+			if(!locate(/obj/covers/repairedfloor) in contents)
+				if(world.time > message_cooldown + 30)
+					visible_message("<span class = 'notice'>[L] starts to climb down from a bridge.</span>")
+					message_cooldown = world.time
+				if (!do_after(L, 5, src, needhand = FALSE))
+					return FALSE
+				if(..())
+					visible_message("<span class = 'notice'>[L] climbs down from a bridge.</span>")
+					L.forceMove(src)
+					return TRUE
+		if(istype(oldloc, /turf/floor/trench) && locate(/obj/structure/vehicleparts/frame, usr.loc))
+			if(!locate(/obj/structure/vehicleparts/frame) in contents)
+				if(world.time > message_cooldown + 30)
+					visible_message("<span class = 'notice'>[L] starts to climb down.</span>")
+					message_cooldown = world.time
+				if (!do_after(L, 5, src, needhand = FALSE))
+					return FALSE
+				if(..())
+					visible_message("<span class = 'notice'>[L] climbs down.</span>")
+					L.forceMove(src)
+					return TRUE
 
 	return ..()
 
@@ -152,6 +218,16 @@ var/list/global/floor_cache = list()
 				L.forceMove(newloc)
 			return TRUE
 		if(!istype(newloc, /turf/floor/trench))
+			if(locate(/obj/covers/repairedfloor) in contents)
+				var/turf/T = newloc
+				if(T.Enter(O, src))
+					L.forceMove(newloc)
+				return TRUE
+			if(locate(/obj/structure/vehicleparts/frame) in contents)
+				var/turf/T = newloc
+				if(T.Enter(O, src))
+					L.forceMove(newloc)
+				return TRUE
 			if(L.grabbed_by && L.grabbed_by.len)
 				var/mob/living/L2 = L.grabbed_by[1].assailant
 				visible_message("<span class = 'notice'>[L2] starts pulling [L] out of trench.</span>")
@@ -179,7 +255,30 @@ var/list/global/floor_cache = list()
 				if(T.Enter(O, src))
 					L.forceMove(newloc)
 				return TRUE
-
+		if(istype(newloc, /turf/floor/trench) && locate(/obj/covers/repairedfloor, newloc) && !locate(/obj/covers/repairedfloor, usr.loc))
+			if(world.time > message_cooldown + 30)
+				visible_message("<span class = 'notice'>[L] starts to climb on a bridge.</span>")
+				message_cooldown = world.time
+			if (!do_after(L, 20, src, needhand = FALSE))
+				return FALSE
+			if(..())
+				visible_message("<span class = 'notice'>[L] climbs on a bridge.</span>")
+				var/turf/T = newloc
+				if(T.Enter(O, src))
+					L.forceMove(newloc)
+				return TRUE
+		if(istype(newloc, /turf/floor/trench) && locate(/obj/structure/vehicleparts/frame, newloc) && !locate(/obj/structure/vehicleparts/frame, usr.loc))
+			if(world.time > message_cooldown + 30)
+				visible_message("<span class = 'notice'>[L] starts to climb on a frame.</span>")
+				message_cooldown = world.time
+			if (!do_after(L, 20, src, needhand = FALSE))
+				return FALSE
+			if(..())
+				visible_message("<span class = 'notice'>[L] climbs on a frame.</span>")
+				var/turf/T = newloc
+				if(T.Enter(O, src))
+					L.forceMove(newloc)
+				return TRUE
 	return ..()
 
 /turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)

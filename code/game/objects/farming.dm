@@ -1,7 +1,7 @@
 /obj/item/stack/farming/seeds
 	name = "seeds"
 	desc = "Some seeds."
-	icon = 'icons/farming/plants.dmi'
+	icon = 'icons/farming/seeds.dmi'
 	icon_state = "seeds"
 	w_class = 1
 	value = 1
@@ -13,6 +13,8 @@
 	var/list/biomes = list("tundra", "temperate", "sea", "desert", "jungle","savanna","taiga","semiarid")
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
+/* cash crop & plant seeds */
+
 /obj/item/stack/farming/seeds/mushroom
 	name = "mushroom spores"
 	plant = "mushroom"
@@ -21,67 +23,83 @@
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
 
-/obj/item/stack/farming/seeds/tomato
-	name = "tomato seeds"
-	plant = "tomato"
-	color = "#fba032"
-	biomes = list("temperate", "sea","semiarid", "desert", "jungle","savanna")
-	seasons = list("SUMMER", "SPRING", "Wet Season", "Dry Season")
-
 /obj/item/stack/farming/seeds/tobacco
 	name = "tobacco seeds"
 	plant = "tobacco"
-	color = "#d88046"
+	color = "#d88046" //orange brown
 	biomes = list("desert", "jungle","savanna","semiarid")
 
 /obj/item/stack/farming/seeds/sugarcane
 	name = "sugarcane seeds"
 	plant = "sugarcane"
-	color = "#f8ed8b"
+	color = "#f8ed8b" //sugary yellow? pale.
 	biomes = list("jungle","savanna","sea")
-
-/obj/item/stack/farming/seeds/wheat
-	name = "wheat seeds"
-	plant = "wheat"
-	color = "#fdb14e"
-	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
-	biomes = list("temperate", "tundra", "taiga", "sea")
-/obj/item/stack/farming/seeds/apple
-	name = "apple seeds"
-	plant = "apple"
-	color = "#b14b0b"
-	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
-
-/obj/item/stack/farming/seeds/orange
-	name = "orange seeds"
-	plant = "orange"
-	color = "#fbe151"
-	biomes = list("temperate", "tundra", "taiga", "desert", "sea","semiarid")
-
-/obj/item/stack/farming/seeds/cabbage
-	name = "cabbage seeds"
-	plant = "cabbage"
-	color = "#682a03"
-	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
 
 /obj/item/stack/farming/seeds/hemp
 	name = "hemp seeds"
 	plant = "hemp"
-	color = "#b7542a"
+	color = "#7cfc00"  //lawn green, just like the t-shirts.
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
 /obj/item/stack/farming/seeds/tea
 	name = "tea seeds"
 	plant = "tea"
-	color = "#995b0b"
+	color = "#008080" //tea(l)
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 	biomes = list("jungle","savanna","sea","semiarid")
 
-/obj/item/stack/farming/seeds/banana
-	name = "banana seeds"
-	plant = "banana"
-	color = "#ffe135"
+/obj/item/stack/farming/seeds/peyote
+	name = "peyote seeds"
+	plant = "peyote"
+	color = "#26241d" //black-blue
+	biomes = list("desert")
+
+/obj/item/stack/farming/seeds/poppy
+	name = "poppy seeds"
+	desc = "Seeds of the opium poppy."
+	plant = "poppy"
+	color = "#5f5c54" //grey
+	biomes = list("jungle","savanna", "desert")
+
+/obj/item/stack/farming/seeds/coffee
+	name = "coffee seeds"
+	plant = "coffee"
+	color = "#713b09" //coffee-brown
+	biomes = list("jungle","savanna", "desert","semiarid")
+
+/obj/item/stack/farming/seeds/tree
+	name = "tree seeds"
+	plant = "tree"
+	color = "#c86d1e" //orange-brown
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+
+/obj/item/stack/farming/seeds/cotton
+	name = "cotton seeds"
+	plant = "cotton"
+	color = "#e4e0dc" //creamy grey
+	biomes = list("temperate", "desert", "sea","semiarid")
+	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+
+/obj/item/stack/farming/seeds/coca
+	name = "coca seeds"
+	plant = "coca"
+	color = "#90ee90" //light green
 	biomes = list("jungle","savanna")
+
+/* vegtable seeds */
+
+/obj/item/stack/farming/seeds/tomato
+	name = "tomato seeds"
+	plant = "tomato"
+	color = "#cd5c5c" //indian red
+	biomes = list("temperate", "sea","semiarid", "desert", "jungle","savanna")
+	seasons = list("SUMMER", "SPRING", "Wet Season", "Dry Season")
+
+/obj/item/stack/farming/seeds/cabbage
+	name = "cabbage seeds"
+	plant = "cabbage"
+	color = "#8fbc8f" //dark sea green
+	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
 
 /obj/item/stack/farming/seeds/potato
 	name = "seed potato"
@@ -89,11 +107,48 @@
 	plant = "potato"
 	icon_state = "potato"
 	color = null
+	biomes = list("temperate","taiga","semiarid")
+
+/*/obj/item/stack/farming/seeds/sweetpotato
+	name = "seed sweet potato"
+	plant = "sweetpotato"
+	icon_state = "potato"
+	color = null
+	biomes = list("jungle","savanna", "sea")
+	seasons = list("SUMMER", "SPRING", "Wet Season", "Dry Season")*/
 
 /obj/item/stack/farming/seeds/carrot
 	name = "carrot seeds"
 	plant = "carrot"
 	color = "#c13100"
+
+/obj/item/stack/farming/seeds/corn
+	name = "corn seeds"
+	plant = "corn"
+	color = "#ffff00" //yellow
+	biomes = list("temperate", "jungle","savanna", "desert", "sea", "semiarid", "taiga")
+	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+
+/*/obj/item/stack/farming/seeds/beans
+	name = "bean seeds"
+	plant = "beans"
+	color = "#bc8f8f" //rosy brown
+	biomes = list("temperate","savanna", "desert", "sea", "semiarid", "taiga")*/
+
+/* Grains */
+
+/obj/item/stack/farming/seeds/wheat
+	name = "wheat seeds"
+	plant = "wheat"
+	color = "#b87333" //copper
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("temperate", "tundra", "taiga", "sea", "desert", "semi-arid") //you can't drink wine in these regions without the last 2 on some maps
+
+/*/obj/item/stack/farming/seeds/oat
+	name = "oat seeds"
+	plant = "oat"
+	color = "#26241d"
+	biomes = list("temperate", "tundra", "taiga")*/
 
 /obj/item/stack/farming/seeds/rice
 	name = "rice seeds"
@@ -103,63 +158,81 @@
 	color = null
 	biomes = list("jungle","savanna","sea")
 
-/obj/item/stack/farming/seeds/corn
-	name = "corn seeds"
-	plant = "corn"
-	color = "#eec41b"
-	biomes = list("temperate", "jungle","savanna", "desert", "sea", "semiarid", "taiga")
-	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+/* Fruit */
 
-/obj/item/stack/farming/seeds/poppy
-	name = "poppy seeds"
-	desc = "Seeds of the opium poppy."
-	plant = "poppy"
-	color = "#5f5c54"
-	biomes = list("jungle","savanna", "desert")
+/obj/item/stack/farming/seeds/apple
+	name = "apple seeds"
+	plant = "apple"
+	color = "#adff2f" //green yellow
+	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
 
-/obj/item/stack/farming/seeds/peyote
-	name = "peyote seeds"
-	plant = "peyote"
-	color = "#26241d"
-	biomes = list("desert")
+/obj/item/stack/farming/seeds/orange
+	name = "orange seeds"
+	plant = "orange"
+	color = "#ff8c00" //dark orange
+	biomes = list("temperate", "desert", "sea","semiarid", "jungle")
 
-/obj/item/stack/farming/seeds/coffee
-	name = "coffee seeds"
-	plant = "coffee"
-	color = "#713b09"
-	biomes = list("jungle","savanna", "desert","semiarid")
+/obj/item/stack/farming/seeds/lime
+	name = "lime seeds"
+	plant = "lime"
+	color = "#00ff00" //lime(color)
+	biomes = list("temperate", "desert", "sea","semiarid", "jungle")
 
-/obj/item/stack/farming/seeds/tree
-	name = "tree seeds"
-	plant = "tree"
-	color = "#c86d1e"
-	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+/obj/item/stack/farming/seeds/lemon
+	name = "lemon seeds"
+	plant = "lemon"
+	color = "#ffff00" //yellow
+	biomes = list("temperate", "desert", "sea","semiarid", "jungle")
 
-/obj/item/stack/farming/seeds/cotton
-	name = "cotton seeds"
-	plant = "cotton"
-	color = "#e4e0dc"
-	biomes = list("temperate", "desert", "sea","semiarid")
-	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+/obj/item/stack/farming/seeds/melon
+	name = "melon seeds"
+	plant = "melon"
+	color = "#26241d" //black
+	biomes = list("desert", "semiarid","jungle")
+
+/obj/item/stack/farming/seeds/pumpkin
+	name = "pumpkin seeds"
+	plant = "pumpkin"
+	color = "#fbe151" //cinnamon
+	biomes = list("temperate", "taiga","tundra")
+
+/obj/item/stack/farming/seeds/banana
+	name = "banana seeds"
+	plant = "banana"
+	color = "#ffe135" //banana yellow
+	biomes = list("jungle","savanna")
+
+/obj/item/stack/farming/seeds/cherry
+	name = "cherry seeds"
+	plant = "cherry"
+	color = "#23232d" //black
+	biomes = list("jungle", "temperate", "desert", "savanna")
+
+/obj/item/stack/farming/seeds/apricot
+	name = "apricot seeds"
+	plant = "apricot"
+	color = "#b59a00" //murky yellow
+	biomes = list("jungle", "temperate", "desert", "savanna")
 
 /obj/item/stack/farming/seeds/grapes
 	name = "grape seeds"
 	plant = "grapes"
-	color = "#23232d"
+	color = "#9370db" //medium purple
 	biomes = list("temperate", "desert", "sea","semiarid")
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
 /obj/item/stack/farming/seeds/olives
 	name = "olive seeds"
 	plant = "olives"
-	color = "#343400"
+	color = "#6b8e23" //olive drab
 	biomes = list("temperate", "desert", "sea","semiarid")
 
-/obj/item/stack/farming/seeds/coca
-	name = "coca seeds"
-	plant = "coca"
-	color = "#8b0000"
-	biomes = list("jungle","savanna")
+/obj/item/stack/farming/seeds/coconut
+	name = "coconut seeds"
+	plant = "coconut"
+	icon_state = "coconut"
+	color = null
+	biomes = list("sea")
 
 /obj/structure/farming/plant
 	name = "plant"
@@ -189,54 +262,7 @@
 	..()
 	water = max_water
 
-/obj/structure/farming/plant/tomato
-	name = "tomato plant"
-	desc = "a tomato plant."
-	icon_state = "tomato-grow1"
-	plant = "tomato"
-	biomes = list("temperate", "sea","semiarid", "desert", "jungle","savanna")
-	seasons = list("SUMMER", "SPRING", "Wet Season", "Dry Season")
-	max_water = 55
-
-/obj/structure/farming/plant/hemp
-	name = "hemp plant"
-	desc = "a hemp plant. Good to make ropes and uh, other things."
-	icon_state = "hemp-grow1"
-	plant = "hemp"
-	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
-	max_water = 60
-
-/obj/structure/farming/plant/corn
-	name = "corn plant"
-	desc = "a corn plant."
-	icon_state = "corn-grow1"
-	plant = "corn"
-	biomes = list("temperate", "jungle","savanna", "desert", "sea","semiarid", "taiga")
-	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
-	max_water = 70
-
-/obj/structure/farming/plant/wheat
-	name = "wheat plant"
-	desc = "a wheat plant."
-	icon_state = "wheat-grow1"
-	plant = "wheat"
-	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
-	biomes = list("temperate", "tundra", "taiga", "sea")
-	max_water = 50
-
-/obj/structure/farming/plant/potato
-	name = "potato plant"
-	desc = "a potato plant."
-	icon_state = "potato-grow1"
-	plant = "potato"
-	max_water = 75
-
-/obj/structure/farming/plant/carrot
-	name = "carrot plant"
-	desc = "a carrot plant."
-	icon_state = "carrot-grow1"
-	plant = "carrot"
-	max_water = 75
+/* cash crop & misc plants */
 
 /obj/structure/farming/plant/poppy
 	name = "poppy plant"
@@ -246,30 +272,6 @@
 	biomes = list("jungle","savanna", "desert")
 	max_water = 75
 
-/obj/structure/farming/plant/cabbage
-	name = "cabbage plant"
-	desc = "a cabbage plant."
-	icon_state = "cabbage-grow1"
-	plant = "cabbage"
-	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
-	max_water = 70
-
-/obj/structure/farming/plant/apple
-	name = "apple tree"
-	desc = "an apple tree."
-	icon_state = "orange-grow1"
-	plant = "apple"
-	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
-	max_water = 75
-
-/obj/structure/farming/plant/orange
-	name = "orange tree"
-	desc = "an orange tree."
-	icon_state = "orange-grow1"
-	plant = "orange"
-	biomes = list("temperate", "tundra", "taiga", "desert", "sea","semiarid")
-	max_water = 75
-
 /obj/structure/farming/plant/tobacco
 	name = "tobacco plant"
 	desc = "a tobacco plant."
@@ -277,6 +279,14 @@
 	plant = "tobacco"
 	biomes = list("desert", "jungle","savanna", "semiarid")
 	max_water = 55
+
+/obj/structure/farming/plant/hemp
+	name = "hemp plant"
+	desc = "a hemp plant. Good to make ropes and uh, other things."
+	icon_state = "hemp-grow1"
+	plant = "hemp"
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	max_water = 60
 
 /obj/structure/farming/plant/sugarcane
 	name = "sugarcane"
@@ -320,14 +330,6 @@
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
 	max_water = 50
 
-/obj/structure/farming/plant/grapes
-	name = "grapes"
-	desc = "a grape vine plant."
-	icon_state = "grapes-grow1"
-	plant = "grapes"
-	biomes = list("temperate", "desert", "sea","semiarid")
-	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
-	max_water = 65
 /obj/structure/farming/plant/tree
 	name = "tree"
 	desc = "a tree, grown for wood."
@@ -336,23 +338,6 @@
 	harvest_verb = "cut some logs from"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 	max_water = 80
-
-/obj/structure/farming/plant/rice
-	name = "rice"
-	desc = "a rice plant."
-	icon_state = "rice-grow1"
-	plant = "rice"
-	harvest_verb = "harvest"
-	biomes = list("jungle","savanna","sea")
-	max_water = 30
-
-/obj/structure/farming/plant/banana
-	name = "banana"
-	desc = "a banana plant."
-	icon_state = "banana-grow1"
-	plant = "banana"
-	biomes = list("jungle","savanna")
-	max_water = 45
 
 /obj/structure/farming/plant/coca
 	name = "coca"
@@ -371,13 +356,215 @@
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
 	max_water = 55
+
+/* grain plants */
+
+/obj/structure/farming/plant/wheat
+	name = "wheat plant"
+	desc = "a wheat plant."
+	icon_state = "wheat-grow1"
+	plant = "wheat"
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("temperate", "tundra", "taiga", "sea", "desert", "semi-arid")
+	max_water = 50
+
+/*/obj/structure/farming/plant/oat
+	name = "oat plant"
+	desc = "a oat plant."
+	icon_state = "oat-grow1"
+	plant = "oat"
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("temperate", "tundra", "taiga")
+	max_water = 50*/
+
+/obj/structure/farming/plant/rice
+	name = "rice"
+	desc = "a rice plant."
+	icon_state = "rice-grow1"
+	plant = "rice"
+	harvest_verb = "harvest"
+	biomes = list("jungle","savanna","sea")
+	max_water = 30
+
+
+/* vegtables */
+
+/obj/structure/farming/plant/potato
+	name = "potato plant"
+	desc = "a potato plant."
+	icon = 'icons/farming/vegetables.dmi'
+	icon_state = "potato-grow1"
+	plant = "potato"
+	biomes = list("temperate","taiga","semiarid")
+	max_water = 75
+
+/*/obj/structure/farming/plant/sweetpotato
+	name = "sweet-potato plant"
+	desc = "a sweet-potato plant."
+	icon = 'icons/farming/vegetables.dmi'
+	icon_state = "sweetpotato-grow1"
+	plant = "sweetpotato"
+	biomes = list("jungle","savanna", "sea")
+	seasons = list("SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 75*/
+
+/obj/structure/farming/plant/carrot
+	name = "carrot plant"
+	desc = "a carrot plant."
+	icon = 'icons/farming/vegetables.dmi'
+	icon_state = "carrot-grow1"
+	plant = "carrot"
+	max_water = 75
+
+/obj/structure/farming/plant/cabbage
+	name = "cabbage plant"
+	desc = "a cabbage plant."
+	icon = 'icons/farming/vegetables.dmi'
+	icon_state = "cabbage-grow1"
+	plant = "cabbage"
+	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
+	max_water = 70
+
+/obj/structure/farming/plant/tomato
+	name = "tomato plant"
+	desc = "a tomato plant."
+	icon = 'icons/farming/vegetables.dmi'
+	icon_state = "tomato-grow1"
+	plant = "tomato"
+	biomes = list("temperate", "sea","semiarid", "desert", "jungle","savanna")
+	seasons = list("SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 55
+
+/obj/structure/farming/plant/corn
+	name = "corn plant"
+	desc = "a corn plant."
+	icon = 'icons/farming/vegetables.dmi'
+	icon_state = "corn-grow1"
+	plant = "corn"
+	biomes = list("temperate", "jungle","savanna", "desert", "sea","semiarid", "taiga")
+	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
+	max_water = 70
+
+/*/obj/structure/farming/plant/beans
+	name = "bean plant"
+	desc = "a bean plant."
+	icon = 'icons/farming/vegetables.dmi'
+	icon_state = "beans-grow1"
+	plant = "beans"
+	biomes = list("temperate","savanna", "desert", "sea","semiarid", "taiga")
+	max_water = 50*/
+
+/* fruit plants */
+
+/obj/structure/farming/plant/apple
+	name = "apple tree"
+	desc = "an apple tree."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "orange-grow1"
+	plant = "apple"
+	biomes = list("temperate", "tundra", "taiga", "sea","semiarid")
+	max_water = 75
+
+/obj/structure/farming/plant/orange
+	name = "orange tree"
+	desc = "an orange tree."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "orange-grow1"
+	plant = "orange"
+	biomes = list("temperate", "desert", "sea","semiarid","jungle")
+	max_water = 75
+
+/obj/structure/farming/plant/lime
+	name = "lime tree"
+	desc = "an lime tree."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "lime-grow1"
+	plant = "lime"
+	biomes = list("temperate", "desert", "sea","semiarid","jungle")
+	max_water = 75
+
+/obj/structure/farming/plant/lemon
+	name = "lemon tree"
+	desc = "an lemon tree."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "lemon-grow1"
+	plant = "lemon"
+	biomes = list("temperate", "desert", "sea","semiarid", "jungle")
+	max_water = 75
+
+/obj/structure/farming/plant/melon
+	name = "melon vine"
+	desc = "an melon vine."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "melon-grow1"
+	plant = "melon"
+	biomes = list("desert", "semiarid","jungle")
+	seasons = list( "SUMMER", "SPRING", "Wet Season")
+	max_water = 90
+
+/obj/structure/farming/plant/pumpkin
+	name = "pumpkin vine"
+	desc = "an pumpkin vine."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "pumpkin-grow1"
+	plant = "pumpkin"
+	biomes = list("temperate", "taiga","tundra")
+	max_water = 90
+
+/obj/structure/farming/plant/grapes
+	name = "grapes"
+	desc = "a grape vine plant."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "grapes-grow1"
+	plant = "grapes"
+	biomes = list("temperate", "desert", "sea","semiarid")
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	max_water = 65
+
+/obj/structure/farming/plant/banana
+	name = "banana"
+	desc = "a banana plant."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "banana-grow1"
+	plant = "banana"
+	biomes = list("jungle","savanna")
+	max_water = 45
+
 /obj/structure/farming/plant/olives
 	name = "olive"
 	desc = "an olive tree."
+	icon = 'icons/farming/fruits.dmi'
 	icon_state = "olives-grow1"
 	plant = "olives"
 	biomes = list("temperate", "desert", "sea","semiarid")
 	max_water = 70
+
+/obj/structure/farming/plant/cherry
+	name = "cherry"
+	desc = "an cherry tree."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "cherry-grow1"
+	plant = "cherry"
+	biomes = list("jungle", "temperate", "desert","savanna")
+	max_water = 40
+
+/obj/structure/farming/plant/apricot
+	name = "apricot"
+	desc = "an apricot tree."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "apricot-grow1"
+	plant = "apricot"
+	biomes = list("jungle", "temperate", "desert","savanna")
+	max_water = 40
+
+/obj/structure/farming/plant/coconut
+	name = "coconut"
+	desc = "an coconut tree."
+	icon = 'icons/farming/fruits.dmi'
+	icon_state = "coconut-grow1"
+	plant = "coconut"
+	biomes = list("sea") //coconuts don't grow inland, find water or drink wine, this is a islander lifeline.
+	max_water = 100
 
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()
@@ -433,7 +620,7 @@
 								for (var/k in seasons)
 									if (season == k)
 										count++
-						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA))
+						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_NEW_WORLD))
 							stage += 1
 					growth()
 

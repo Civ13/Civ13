@@ -495,7 +495,7 @@
 "jA" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/plating/tiled/dark,/area/caribbean/russian/land/inside)
 "jB" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/plating/tiled/dark,/area/caribbean/russian/land/inside)
 "jC" = (/obj/structure/bed/chair/wood/red{icon_state = "wooden_chair_red"; dir = 4},/turf/floor/plating/tiled/dark,/area/caribbean/russian/land/inside)
-"jD" = (/obj/structure/table/wood,/obj/structure/telephone,/turf/floor/plating/tiled/dark,/area/caribbean/russian/land/inside)
+"jD" = (/obj/structure/table/wood,/obj/item/weapon/telephone,/turf/floor/plating/tiled/dark,/area/caribbean/russian/land/inside)
 "jE" = (/obj/covers/brick_wall,/obj/structure/sign/flag/sov,/turf/floor/dirt,/area/caribbean/russian/land/inside)
 "jF" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/plating/tiled/dark,/area/caribbean/russian/land/inside)
 "jG" = (/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/plating/tiled/dark,/area/caribbean/russian/land/inside)

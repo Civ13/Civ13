@@ -87,8 +87,11 @@ var/civmax_research = list(230,230,230)
 	var/list/custom_civs = list()
 	var/list/custom_religions = list()
 	var/list/custom_religion_nr = list()
-	var/list/custom_company = list()
+	var/list/custom_company = list() //name; percentage; realized (withdrawable) profits
 	var/list/custom_company_nr = list()
+	var/list/custom_company_value = list()
+	var/list/sales_registry = list()
+	var/list/custom_company_colors = list("Global" = list("#000000","#FFFFFF")) //1st color, 2nd color
 	var/is_singlefaction = FALSE
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical), 4th value: leader. 5th value: victory points
 	var/civa_research = list(0,0,0,null,0)
@@ -101,6 +104,7 @@ var/civmax_research = list(230,230,230)
 	var/list/facl = list()
 
 	var/chad_mode = FALSE //Virgins BTFO
+	var/chad_mode_plus = FALSE //SUPER CHAD
 	var/gamemode = "Team Deathmatch"
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level
@@ -184,6 +188,10 @@ var/civmax_research = list(230,230,230)
 	icon_state = null
 	human = faction_organization.Copy()
 	initial_faction_organization = faction_organization.Copy()
+
+	//export game data (WIP persistence stuff)
+	if (civilizations || nomads)
+		savegame()
 
 	// get a subfaction, just one, for this round
 	var/subfaction = null

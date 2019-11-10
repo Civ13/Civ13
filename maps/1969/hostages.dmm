@@ -305,7 +305,7 @@
 "fS" = (/obj/structure/bed/chair/wood/red{icon_state = "wooden_chair_red"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "fT" = (/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/dirt,/area/caribbean/arab/caves)
 "fU" = (/obj/structure/bed/chair/wood/red,/turf/floor/dirt,/area/caribbean/arab/caves)
-"fV" = (/obj/structure/table/wood,/obj/structure/telephone,/turf/floor/dirt,/area/caribbean/arab/caves)
+"fV" = (/obj/structure/table/wood,/obj/item/weapon/telephone,/turf/floor/dirt,/area/caribbean/arab/caves)
 "fW" = (/obj/structure/bed/chair/wood/red{icon_state = "wooden_chair_red"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "fX" = (/obj/structure/table,/obj/item/weapon/paper,/turf/floor/dirt,/area/caribbean/arab/caves)
 "fY" = (/obj/structure/table,/obj/item/weapon/book,/turf/floor/dirt,/area/caribbean/arab/caves)

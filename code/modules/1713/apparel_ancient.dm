@@ -586,6 +586,13 @@
 	item_state = "laurelcrown"
 	body_parts_covered = FALSE
 
+/obj/item/clothing/head/laurelcrown/gold
+	name = "gold laurel crown"
+	desc = "a crown made of gold, imitating a laurel crown."
+	icon_state = "laurelcrown_gold"
+	item_state = "laurelcrown_gold"
+	body_parts_covered = FALSE
+
 /obj/item/clothing/suit/towel
 	name = "white towel"
 	desc = "A simple towel to wrap around yourself."

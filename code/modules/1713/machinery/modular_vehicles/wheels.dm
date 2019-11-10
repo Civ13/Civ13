@@ -61,7 +61,7 @@
 		return
 	if (!control.axis.engine || !control.axis.engine.fueltank)
 		return
-	if (!control.axis.engine.on && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume > 0)
+	if (!control.axis.engine.on && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents && control.axis.engine.fueltank.reagents.total_volume > 0)
 		control.axis.currentspeed = 0
 		control.axis.engine.turn_on(H)
 		if (isemptylist(control.axis.corners))
@@ -189,7 +189,7 @@
 	else
 		..()
 /obj/structure/bed/chair/drivers/attack_hand( var/mob/living/carbon/human/H)
-	if (buckled_mob && H == buckled_mob && wheel.loc != H)
+	if (wheel && buckled_mob && H == buckled_mob && wheel.loc != H)
 		if (buckled_mob.put_in_active_hand(wheel))
 			H << "You grab the wheel."
 			return

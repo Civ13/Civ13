@@ -16,9 +16,11 @@ var/TOD_may_automatically_change = FALSE
 	if (!roundstart_time || (map && map.times_of_day.len == 1))
 		return
 	try
+		game_hour+=2
 		TOD_ticks += schedule_interval/10
 		if (TOD_ticks >= time_of_day2ticks[time_of_day])
 			TOD_ticks = 0
+			game_hour = 0
 			TOD_may_automatically_change = TRUE // not sure how else to do this without breaking the process
 
 	catch(var/exception/e)

@@ -114,6 +114,25 @@
 /datum/reagent/toxin/cholera/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	return
 
+/datum/reagent/toxin/plague
+	name = "Plague"
+	id = "plague"
+	description = "Deadly virus."
+	taste_mult = FALSE
+	reagent_state = LIQUID
+	color = "#202020"
+	strength = 100
+	taste_description = "death"
+	metabolism = REM
+
+/datum/reagent/toxin/plague/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	if (ishuman(M))
+		var/mob/living/carbon/human/H = M
+		if(H.disease_type != "plague") //force plague.
+			H.disease_type = "plague"
+			H.disease = 1
+	return
+
 /datum/reagent/toxin/potassium_chloride
 	name = "Potassium Chloride"
 	id = "potassium_chloride"
@@ -344,6 +363,28 @@
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 15)
 	M.adjustBrainLoss(-0.5 * removed)
+
+/datum/reagent/thc
+	name = "THC"
+	id = "thc"
+	description = "THC is the principal psychoactive constituent of cannabis."
+	taste_description = "nothing"
+	taste_mult = 0.4
+	reagent_state = LIQUID
+	color = "#6AAF6A"
+	metabolism = REM * 0.5
+	overdose = REAGENTS_OVERDOSE
+
+/datum/reagent/thc/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.druggy = max(M.druggy, 30)
+	if (prob(25) && isturf(M.loc) && M.canmove && !M.restrained())
+		step(M, pick(cardinal))
+	if (prob(7))
+		M.emote(pick("twitch", "drool", "moan", "giggle"))
+	M.add_chemical_effect(CE_PULSE, -2)
+	M.add_chemical_effect(CE_STABLE)
+	M.add_chemical_effect(CE_PAINKILLER, 25)
+	M.adjustBrainLoss(-0.1 * removed)
 /datum/reagent/serotrotium
 	name = "Serotrotium"
 	id = "serotrotium"

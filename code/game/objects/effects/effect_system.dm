@@ -103,26 +103,16 @@ steam.start() -- spawns the effect
 /obj/effect/sparks/New()
 	..()
 	playsound(loc, "sparks", 100, TRUE)
-	var/turf/T = loc
-	if (istype(T, /turf))
-		T.hotspot_expose(1000,100)
 
 /obj/effect/sparks/initialize()
 	..()
 	schedule_task_in(10 SECONDS, /proc/qdel, list(src))
 
 /obj/effect/sparks/Destroy()
-	var/turf/T = loc
-	if (istype(T, /turf))
-		T.hotspot_expose(1000,100)
 	return ..()
 
 /obj/effect/sparks/Move()
 	..()
-	var/turf/T = loc
-	if (istype(T, /turf))
-		T.hotspot_expose(1000,100)
-
 /datum/effect/effect/system/spark_spread
 	var/total_sparks = FALSE // To stop it being spammed and lagging!
 

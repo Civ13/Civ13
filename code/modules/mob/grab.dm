@@ -137,7 +137,7 @@
 			else
 				affecting.Weaken(2)
 
-	if (state >= GRAB_NECK)
+	if (state >= GRAB_NECK && affecting)
 		affecting.Stun(2)
 		if (isliving(affecting))
 			var/mob/living/L = affecting

@@ -126,7 +126,6 @@
 	 * so stats will remain the same over the entire round. */
 
 	/* All stat names (here) MUST be lowercase. */
-
 	var/list/stats = list(
 		"strength" = list(100,100),
 		"crafting" = list(100,100),
@@ -137,9 +136,10 @@
 		"bows" = list(100,100),
 		"medical" = list(100,100),
 		"philosophy" = list(100,100),
-		"mg" = list(100,100),
+		"machinegun" = list(100,100),
 		"farming" = list(100,100),
-		"stamina" = list(100,100))
+		"stamina" = list(100,100),
+		"throwing" = list(100,100))
 
 	var/has_hunger_and_thirst = TRUE
 
@@ -190,3 +190,8 @@
 	var/obj/structure/vehicle/driver_vehicle = null
 	var/riding = FALSE // if riding a horse
 	var/mob/living/simple_animal/riding_mob = null
+/*
+/mob/living/carbon/human/New()
+	if(map.ID == MAP_TRIBES)
+		stats.Add("magic" = list(0,100))
+	..()*/

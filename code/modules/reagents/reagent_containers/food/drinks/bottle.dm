@@ -124,8 +124,7 @@
 					for (var/obj/structure/S in T)
 						if (S.density && !S.low)
 							continue mainloop
-					var/obj/fire/F = T.create_fire(temp = max(375, ceil(alcohol_power/5)))
-					F.time_limit = pick(50, 60, 70)
+					new/obj/effect/fire(T)
 					for (var/mob/living/L in T)
 						if (L.on_fire)
 							continue
@@ -310,6 +309,15 @@
 	name = "Tunguska Triple Distilled"
 	desc = "Aah, vodka. Prime choice of drink AND fuel by Russians worldwide."
 	icon_state = "vodkabottle"
+	center_of_mass = list("x"=17, "y"=3)
+	New()
+		..()
+		reagents.add_reagent("vodka", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/bluegoose
+	name = "Blue Goose Vodka"
+	desc = "A expensive vodka which is only for flexing."
+	icon_state = "bluegoose"
 	center_of_mass = list("x"=17, "y"=3)
 	New()
 		..()
@@ -512,6 +520,26 @@
 	desc = "One sip of this and you just know you're gonna have a good time."
 	icon_state = "absinthebottle"
 	center_of_mass = list("x"=16, "y"=6)
+	New()
+		..()
+		reagents.del_reagents()
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/expensivewine
+	name = "Expensive Wine (La spetia)"
+	desc = "A faint aura of unease and asspainery surrounds the bottle.."
+	icon_state = "expensivewine"
+	center_of_mass = list("x"=16, "y"=4)
+	value = 16
+	New()
+		..()
+		reagents.add_reagent("wine", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/wine/expensivewine
+	name = "Expensive Wine (La spetia)"
+	desc = "A faint aura of unease and asspainery surrounds the bottle."
+	icon_state = "expensivewine_empty"
+	center_of_mass = list("x"=16, "y"=4)
+	value = 1
 	New()
 		..()
 		reagents.del_reagents()

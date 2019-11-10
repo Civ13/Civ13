@@ -377,3 +377,23 @@
 	else
 		icon_state = "single_use3_empty"
 		used = TRUE
+
+/obj/item/weapon/reagent_containers/syringe/thc
+	name = "THC syringe"
+	desc = "Injector containing THC from cannabis."
+	icon_state = "single_use2"
+	w_class = 1
+	volume = 20
+	amount_per_transfer_from_this = 10
+	single_use = TRUE
+/obj/item/weapon/reagent_containers/syringe/thc/New()
+	..()
+	reagents.add_reagent("thc", 20)
+	mode = SYRINGE_INJECT
+
+/obj/item/weapon/reagent_containers/syringe/thc/update_icon()
+	if (reagents.total_volume > 0)
+		icon_state = "single_use2"
+	else
+		icon_state = "single_use2_empty"
+		used = TRUE

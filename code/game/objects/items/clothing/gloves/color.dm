@@ -70,3 +70,24 @@
 	initial_name = "brown gloves"
 	icon_state = "brown"
 	item_state = "browngloves"
+
+/obj/item/clothing/gloves/color/luxglove
+	name = "red leather gloves"
+	initial_name = "red leather gloves"
+	desc = "A pair of gloves, They look fancy and expensive."
+	icon_state = "luxglove"
+	item_state = "luxglove"
+
+/obj/item/clothing/gloves/color/luxglovepurple
+	name = "pink colored gloves"
+	initial_name = "red leather gloves"
+	desc = "A pair of gloves, They look fancy."
+	icon_state = "luxglove1"
+	item_state = "luxglove1"
+
+/obj/item/clothing/gloves/rings/silver
+	name = "silver ring"
+	initial_name = "silver ring"
+	desc = "A shiny silver ring. Looks expensive."
+	icon_state = "silver_ring"
+	item_state = "silver_ring"

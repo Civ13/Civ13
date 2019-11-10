@@ -193,6 +193,12 @@
 	icon_state = "wooden_chair"
 	applies_material_colour = FALSE
 
+/obj/structure/bed/modern/chair
+	name = "steel chair"
+	desc = "A cold boring chair."
+	icon_state = "wooden_chair"
+	applies_material_colour = FALSE
+
 /obj/structure/bed/chair/wood/bleacher
 	name = "wood bleacher"
 	desc = "A long bench like seat for a church."
@@ -217,6 +223,13 @@
 	icon_state = "wooden_chair"
 	material = "stone"
 	applies_material_colour = TRUE
+
+/obj/structure/bed/modern/steel
+	name = "steel chair"
+	desc = "cold boring chair."
+	icon_state = "steelchair"
+	material = "steel"
+	applies_material_colour = FALSE
 
 /obj/structure/bed/chair/wood/update_icon()
 	return

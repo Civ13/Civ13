@@ -61,12 +61,18 @@
 		qdel(F)
 		adjustBruteLoss(-1)
 	if (prob(1) && prob(17)) //roughly every 10 mins
-		if (isturf(loc) || istype(loc, /turf/floor/beach/water))
-			var/frogCount = 0
-			for(var/mob/living/simple_animal/frog/M in range(6,src))
-				frogCount++
-			if (frogCount <= 2)
+		var/frogCount = 0
+		for(var/mob/living/simple_animal/frog/M in range(6,src))
+			frogCount++
+		if (frogCount <= 2)
+			if (isturf(loc) || istype(loc, /turf/floor/beach/water))
 				new/obj/item/weapon/reagent_containers/food/snacks/frogegg(src.loc)
+			else if (isturf(loc) && !istype(loc, /turf/floor/beach/water))
+				for(var/turf/floor/beach/water/WT in range(6,src))
+					walk_towards(src, WT, turns_per_move)
+					spawn(10)
+						new/obj/item/weapon/reagent_containers/food/snacks/frogegg(WT)
+					break
 	..()
 /mob/living/simple_animal/frog/poisonous
 	name = "poisonous frog"

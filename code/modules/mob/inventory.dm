@@ -214,7 +214,7 @@ var/list/slot_equipment_priority = list( \
 			if(G.toggleable && G.active)
 				G.active = 0
 				G.icon_state = G.off_state
-				user.update_inv_wear_mask()
+				user.update_inv_eyes()
 				user.flash_protection = FLASH_PROTECTION_NONE
 				G.tint = TINT_NONE
 				if (G.overtype == "nvg")

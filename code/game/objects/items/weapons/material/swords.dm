@@ -397,3 +397,17 @@ obj/item/weapon/material/sword/rapier/iron
 	block_chance = 28
 	cooldownw = 7
 	value = 40
+
+/obj/item/weapon/material/sword/broadsword
+	name = "broadsword"
+	desc = "A sword with a long thick blade. Commonly used in the medieval era."
+	icon_state = "broadsword"
+	item_state = "longsword"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 2.2 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 20
+	cooldownw = 15
+	value = 60

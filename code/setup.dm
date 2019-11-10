@@ -47,7 +47,6 @@
 				whitelist_list += current[1]
 	else
 		admin_notice("<span class='danger'>Failed to load whitelist!</span>", R_DEBUG)
-	sleep(-1)
 
 	admin_notice("<span class='danger'>Initializing crafting recipes...</span>", R_DEBUG)
 	sleep(-1)
@@ -63,5 +62,20 @@
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 	else
 		admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
+
+	admin_notice("<span class='danger'>Initializing dictionary...</span>", R_DEBUG)
+	sleep(-1)
+	var/F4 = file("config/dictionary.txt")
+	if (fexists(F4))
+		var/list/dictionary_temp = file2list(F4,"\n")
+		for (var/i in dictionary_temp)
+			if (findtext(i, ","))
+				var/list/current = splittext(i, ",")
+				dictionary_list += list(current)
+				if (current.len != 2)
+					world.log << "Error! Dictionary entry [current[1]] has a length of [current.len] (should be 2)."
+	else
+		admin_notice("<span class='danger'>Failed to load the dictionary!</span>", R_DEBUG)
+
 	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
 	sleep(-1)

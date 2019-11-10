@@ -7,7 +7,6 @@
 /obj/item/weapon/material/kitchen/utensil
 	w_class = TRUE
 	thrown_force_divisor = TRUE
-//	origin_tech = "materials=1"
 	attack_verb = list("attacked", "stabbed", "poked")
 	sharp = TRUE
 	edge = TRUE
@@ -181,6 +180,17 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.6
+
+/obj/item/weapon/material/kitchen/utensil/knife/trench
+	name = "trench knife"
+	desc = "A rather large knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "trenchknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.7
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone
 	name = "bone knife"

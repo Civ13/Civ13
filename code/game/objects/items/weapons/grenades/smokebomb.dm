@@ -72,7 +72,7 @@
 				LS1.adjustFireLoss(35)
 				LS1.fire_stacks += rand(8,10)
 				LS1.IgniteMob()
-			new/obj/effect/burning_oil(T)
+			new/obj/effect/fire(T)
 		sleep(50)
 		qdel(src)
 		return

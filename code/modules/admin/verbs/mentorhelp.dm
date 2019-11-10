@@ -36,7 +36,9 @@
 
 	src << "<font color=green>PM to-<b>Mentors </b>: [msg]</font>"
 	if (config.discordurl)
-		src << "<i>If no mentors are online, please ping @Mentor Team <a href = '[config.discordurl]'>in the discord</a>.</i>"
+		src << "<i>If no mentors are online, please ping @Mentor <a href = '[config.discordurl]'>in the discord</a>.</i>"
+
+	discord_mentorhelp_log(key_name(src),msg)
 
 	var/mentormsg = "<b><font color=green>Request for Help:</font>[get_options_bar(mob, 4, FALSE, TRUE, FALSE)]:</b> [msg]</font>"
 	var/adminmsg = "(MENTORHELP) [mentormsg]"

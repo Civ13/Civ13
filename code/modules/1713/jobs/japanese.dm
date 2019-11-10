@@ -776,7 +776,7 @@ datum/job/japanese/ija_medic
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("MG", STAT_HIGH)
+	H.setStat("machinegun", STAT_HIGH)
 
 
 	return TRUE

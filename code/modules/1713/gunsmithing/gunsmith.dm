@@ -647,7 +647,7 @@
 				)
 		if ("Open-Bolt (small)")
 			item_state = "greasegun"
-			stat = "mg"
+			stat = "machinegun"
 			w_class = 3
 			slot_flags = SLOT_SHOULDER|SLOT_BELT
 			sel_mode = 1
@@ -711,7 +711,7 @@
 			attachment_slots = ATTACH_IRONSIGHTS
 		if ("Open-Bolt (large)")
 			item_state = "negev"
-			stat = "mg"
+			stat = "machinegun"
 			w_class = 5
 			heavy = TRUE
 			attachment_slots = ATTACH_IRONSIGHTS

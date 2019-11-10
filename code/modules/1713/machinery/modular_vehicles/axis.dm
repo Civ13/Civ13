@@ -99,7 +99,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		for(var/obj/structure/vehicleparts/frame/FR in components)
 			var/turf/T = get_turf(get_step(FR.loc,dir))
 			var/area/A = get_area(T)
-			if (map && map.caribbean_blocking_area_types.Find(A.type))
+			if (map && A && map.caribbean_blocking_area_types.Find(A.type))
 				if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
 					visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
 					moving = FALSE
@@ -189,7 +189,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 					CV.Destroy()
 			for(var/obj/item/I in TT && !(I in transporting))
 				qdel(I)
-			for(var/obj/effect/burning_oil/BO in T && !(BO in transporting))
+			for(var/obj/effect/fire/BO in T && !(BO in transporting))
 				qdel(BO)
 			var/canpass = FALSE
 			for(var/obj/covers/CVV in T)
@@ -216,7 +216,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
 		return FALSE
 	else
-		if (engine && engine.fueltank && engine.fueltank.reagents.total_volume <= 0)
+		if (engine && engine.fueltank && engine.fueltank.reagents && engine.fueltank.reagents.total_volume <= 0)
 			engine.fueltank.reagents.total_volume = 0
 			engine.on = FALSE
 			return FALSE
@@ -235,13 +235,13 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	if (reverse)
 		m_dir = OPPOSITE_DIR(dir)
 	for (var/atom/movable/M in transporting)
-		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && !istype(M, /obj/structure/vehicleparts/movement) && !istype(M, /obj/structure/wild))
+		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && (!istype(M, /obj/structure/vehicleparts/movement) || istype(M, /obj/structure/vehicleparts/movement/sails)) && !istype(M, /obj/structure/wild))
 			var/obj/MO = M
 			MO.forceMove(get_step(MO.loc, m_dir))
 			if (!istype(M, /obj/structure/cannon))
 				MO.dir = dir
 				MO.update_icon()
-		if (istype(M, /obj/structure/vehicleparts/movement))
+		if (istype(M, /obj/structure/vehicleparts/movement) && !istype(M, /obj/structure/vehicleparts/movement/sails))
 			var/obj/structure/vehicleparts/movement/MV = M
 			if (MV.reversed)
 				MV.dir = OPPOSITE_DIR(dir)
@@ -322,9 +322,10 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			matrix += list("[locx],[locy]" = list(null,0,0, "[locx],[locy]"))
 			locy++
 		locx++
-	var/obj/structure/vehicleparts/frame/FFL = corners[2]
-	if (!istype(FFL, /obj/structure/vehicleparts/frame))
-		world.log << "ERROR BUILDING MATRIX! (Front-Left is not a Frame)"
+	var/obj/FFL = corners[2]
+	if (!istype(corners[2], /obj/structure/vehicleparts/frame) && !istype(corners[2], /obj/effect/pseudovehicle))
+
+		world.log << "ERROR BUILDING MATRIX! (Front-Left doesnt exist)"
 		return FALSE
 	for (var/obj/structure/vehicleparts/frame/FM in components)
 		var/disx = abs(FM.y-FFL.y)
@@ -435,7 +436,21 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
 	else
-		world.log << "ERROR BUILDING CORNER LIST!"
+		if (!istype(src,/obj/structure/vehicleparts/axis/ship))
+			world.log << "ERROR BUILDING CORNER LIST!"
+		else
+			if (!corners[1])
+				for(var/obj/effect/pseudovehicle/PVV in locate(loc.x-1,loc.y+1))
+					corners[1] = PVV
+			if (!corners[2])
+				for(var/obj/effect/pseudovehicle/PVV in locate(loc.x+3,loc.y+1))
+					corners[1] = PVV
+			if (!corners[3])
+				for(var/obj/effect/pseudovehicle/PVV in locate(loc.x+3,loc.y-3))
+					corners[1] = PVV
+			if (!corners[4])
+				for(var/obj/effect/pseudovehicle/PVV in locate(loc.x-1,loc.y-3))
+					corners[1] = PVV
 		return FALSE
 
 /obj/structure/vehicleparts/axis/proc/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none", var/mob/user = null)
@@ -553,6 +568,11 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
 		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
 		return
+	for(var/obj/structure/vehicleparts/frame/ship/SH in range(4,src))
+		var/turf/TT = get_turf(SH)
+		if (!istype(TT, /turf/floor/beach/water) && !istype(TT, /turf/floor/trench/flooded))
+			H << "<span class='notice'>All ship parts must be in a water tile.</span>"
+			return
 	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
 		return

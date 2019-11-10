@@ -7,7 +7,7 @@
 /datum/language
 	var/name = "an unknown language"  // Fluff name of language if any.
 	var/desc = "A language."          // Short description for 'Check Languages'.
-	var/difficulty = 250              // Difficulty of a language. If you wanted Japanese to be harder than English, for example
+	var/difficulty = 175              // Difficulty of a language. If you wanted Japanese to be harder than English, for example
 	var/speech_verb = "says"          // 'says', 'hisses', 'farts'.
 	var/ask_verb = "asks"             // Used when sentence ends in a ?
 	var/exclaim_verb = "exclaims"     // Used when sentence ends in a !
@@ -144,7 +144,7 @@
 
 /datum/language/proc/get_random_greek_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
 	if (!syllables || !syllables.len)
-		return capitalize(pick(first_names_male_greek))
+		return capitalize(pick(first_names_male_greek)) + " " + capitalize(pick(last_names_greek))
 
 	var/full_name = "Philokrates"
 	return full_name

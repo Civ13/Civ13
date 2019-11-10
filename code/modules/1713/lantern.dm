@@ -75,14 +75,13 @@
 			user << "You refuel the lantern with olive oil."
 			return
 /obj/item/flashlight/lantern/attack_hand(mob/user as mob)
-	if (anchored)
-		if (on)
-			on = FALSE
-		else if (!on && fuel > 0)
-			on = TRUE
-		else
-			on = FALSE
+	if (on)
+		on = FALSE
+	else if (!on && fuel > 0)
+		on = TRUE
 	else
+		on = FALSE
+	if (!anchored)
 		..()
 
 /obj/item/flashlight/lantern/on
@@ -101,6 +100,21 @@
 	anchored = TRUE
 	unlimited = TRUE
 	fuel = 10
+
+/obj/item/flashlight/lamp/oldlamp
+	on_state = "oldlamp-on"
+	off_state = "oldlamp"
+	icon_state = "oldlamp"
+	anchored = FALSE
+	unlimited = TRUE
+	fuel = 100000
+
+/obj/item/flashlight/lamp/littlelamp
+	on_state = "littlelamp-on"
+	off_state = "littlelamp"
+	icon_state = "littlelamp"
+	unlimited = TRUE
+	fuel = 100000
 
 /obj/item/flashlight/lantern/on/anchored
 	on_state = "lantern-on_a"

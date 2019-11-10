@@ -43,7 +43,7 @@
 						var/statlist = "1,1,1,1,1,1,1,1,1,1"
 						for(var/mob/living/carbon/human/GLAD1 in world)
 							if (GLAD1.original_job_title == "Gladiator" && GLAD1.stat != DEAD && GLAD1.client && GLAD1.name==splitdata[1] && GLAD1.client.ckey==splitdata[2])
-								statlist = "[GLAD1.stats["strength"][1]],[GLAD1.stats["crafting"][1]],[GLAD1.stats["rifle"][1]],[GLAD1.stats["dexterity"][1]],[GLAD1.stats["swords"][1]],[GLAD1.stats["pistol"][1]],[GLAD1.stats["bows"][1]],[GLAD1.stats["medical"][1]],[GLAD1.stats["philosophy"][1]],[GLAD1.stats["mg"][1]],[GLAD1.stats["stamina"][1]]"
+								statlist = "[GLAD1.stats["strength"][1]],[GLAD1.stats["crafting"][1]],[GLAD1.stats["rifle"][1]],[GLAD1.stats["dexterity"][1]],[GLAD1.stats["swords"][1]],[GLAD1.stats["pistol"][1]],[GLAD1.stats["bows"][1]],[GLAD1.stats["medical"][1]],[GLAD1.stats["philosophy"][1]],[GLAD1.stats["machinegun"][1]],[GLAD1.stats["stamina"][1]]"
 						GD.gladiator_stats += list(list(splitdata[2],splitdata[1],statlist,0,1,1))
 					timer = world.time + 600
 					world << "<big>[splitdata[1]] ([splitdata[2]]) was victorious!</big>"
@@ -312,7 +312,7 @@
 				done = TRUE
 				continue
 		if (!done && WINNER.client)
-			var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["mg"][1]],[WINNER.stats["stamina"][1]]"
+			var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["machinegun"][1]],[WINNER.stats["stamina"][1]]"
 			GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
 
 		GD.save_gladiators()
@@ -352,7 +352,7 @@
 						done = TRUE
 						continue
 				if (!done && k.client)
-					var/statlist = "[k.stats["strength"][1]],[k.stats["crafting"][1]],[k.stats["rifle"][1]],[k.stats["dexterity"][1]],[k.stats["swords"][1]],[k.stats["pistol"][1]],[k.stats["bows"][1]],[k.stats["medical"][1]],[k.stats["philosophy"][1]],[k.stats["mg"][1]],[k.stats["stamina"][1]]"
+					var/statlist = "[k.stats["strength"][1]],[k.stats["crafting"][1]],[k.stats["rifle"][1]],[k.stats["dexterity"][1]],[k.stats["swords"][1]],[k.stats["pistol"][1]],[k.stats["bows"][1]],[k.stats["medical"][1]],[k.stats["philosophy"][1]],[k.stats["machinegun"][1]],[k.stats["stamina"][1]]"
 					GD.gladiator_stats += list(list(k.client.ckey,k.name,statlist,0,1,1))
 			GD.save_gladiators()
 
@@ -471,7 +471,7 @@
 					done = TRUE
 					continue
 			if (!done && WINNER.client)
-				var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["mg"][1]],[WINNER.stats["stamina"][1]]"
+				var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["machinegun"][1]],[WINNER.stats["stamina"][1]]"
 				GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
 
 			GD.save_gladiators()
@@ -596,7 +596,7 @@
 					done = TRUE
 					continue
 			if (!done && WINNER.client)
-				var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["mg"][1]],[WINNER.stats["stamina"][1]]"
+				var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["machinegun"][1]],[WINNER.stats["stamina"][1]]"
 				GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
 
 			GD.save_gladiators()
@@ -723,8 +723,8 @@
 		if (!GD)
 			return
 		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-			if (user.client && GD.gladiator_stats[1][1] == user.client.ckey && GD.gladiator_stats[1][2] == user.name && !done)
-				var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
+			if (user && user.client && GD.gladiator_stats[1][1] == user.client.ckey && GD.gladiator_stats[1][2] == user.name && !done)
+				var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["machinegun"][1]],[user.stats["stamina"][1]]"
 				GD.gladiator_stats[1][3] = statlist
 				done = TRUE
 				GD.save_gladiators()
@@ -732,7 +732,7 @@
 				user << "Saved sucessfully."
 				return
 		if (done == FALSE && user.client)
-			var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
+			var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["machinegun"][1]],[user.stats["stamina"][1]]"
 			GD.gladiator_stats += list(list(user.client.ckey, user.name, statlist, 0,0,0))
 			GD.save_gladiators()
 			qdel(user)
@@ -781,8 +781,8 @@
 							stats["medical"][2] = text2num(statsplit[8])
 							stats["philosophy"][1] = text2num(statsplit[9])
 							stats["philosophy"][2] = text2num(statsplit[9])
-							stats["mg"][1] = text2num(statsplit[10])
-							stats["mg"][2] = text2num(statsplit[10])
+							stats["machinegun"][1] = text2num(statsplit[10])
+							stats["machinegun"][2] = text2num(statsplit[10])
 							src << "<font size=2><b>Successfully loaded <b>[name]</b>.</font>"
 							return
 			if (done == FALSE)
@@ -790,7 +790,7 @@
 				if (input_msg == "No")
 					var/obj/map_metadata/gladiators/G = map
 					var/statlist = "1,1,1,1,1,1,1,1,1,1"
-					statlist = "[stats["strength"][1]],[stats["crafting"][1]],[stats["rifle"][1]],[stats["dexterity"][1]],[stats["swords"][1]],[stats["pistol"][1]],[stats["bows"][1]],[stats["medical"][1]],[stats["philosophy"][1]],[stats["mg"][1]],[stats["stamina"][1]]"
+					statlist = "[stats["strength"][1]],[stats["crafting"][1]],[stats["rifle"][1]],[stats["dexterity"][1]],[stats["swords"][1]],[stats["pistol"][1]],[stats["bows"][1]],[stats["medical"][1]],[stats["philosophy"][1]],[stats["machinegun"][1]],[stats["stamina"][1]]"
 					G.gladiator_stats += list(list(client.ckey,name,statlist,0,0,0))
 					return
 				else
@@ -804,6 +804,6 @@
 						real_name = name
 					var/obj/map_metadata/gladiators/G = map
 					var/statlist = "1,1,1,1,1,1,1,1,1,1"
-					statlist = "[stats["strength"][1]],[stats["crafting"][1]],[stats["rifle"][1]],[stats["dexterity"][1]],[stats["swords"][1]],[stats["pistol"][1]],[stats["bows"][1]],[stats["medical"][1]],[stats["philosophy"][1]],[stats["mg"][1]],[stats["stamina"][1]]"
+					statlist = "[stats["strength"][1]],[stats["crafting"][1]],[stats["rifle"][1]],[stats["dexterity"][1]],[stats["swords"][1]],[stats["pistol"][1]],[stats["bows"][1]],[stats["medical"][1]],[stats["philosophy"][1]],[stats["machinegun"][1]],[stats["stamina"][1]]"
 					G.gladiator_stats += list(list(client.ckey,name,statlist,0,0,0))
 					return

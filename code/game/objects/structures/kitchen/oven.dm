@@ -58,6 +58,10 @@
 		fuel += I.amount*3
 		qdel(I)
 		return
+	else if (istype(I, /obj/item/stack/ore/charcoal))
+		fuel += I.amount*1
+		qdel(I)
+		return
 	var/space = max_space
 	for (var/obj/item/II in contents)
 		space -= II.w_class
@@ -367,6 +371,10 @@
 				return
 			else if (istype(I, /obj/item/stack/ore/coal))
 				fuel += I.amount*3
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/ore/charcoal))
+				fuel += I.amount*1
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))

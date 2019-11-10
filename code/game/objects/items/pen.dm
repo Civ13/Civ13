@@ -37,6 +37,11 @@
 	desc = "a normal graphite pencil."
 	icon_state = "pencil"
 
+/obj/item/weapon/pen/fancy
+	name = "expensive pen"
+	desc = "a pen used by the boss."
+	icon_state = "fancypen"
+
 /obj/item/weapon/pen/blue
 	desc = "It's a normal blue ink pen."
 	icon_state = "pen"
@@ -88,7 +93,6 @@
 /obj/item/weapon/pen/reagent
 	flags = OPENCONTAINER
 	slot_flags = SLOT_BELT
-//	origin_tech = list(TECH_MATERIAL = 2, TECH_ILLEGAL = 5)
 
 /obj/item/weapon/pen/reagent/New()
 	..()
@@ -113,7 +117,6 @@
  */
 /obj/item/weapon/pen/reagent/sleepy
 	desc = "It's a black ink pen with a sharp point and a carefully engraved \"Waffle Co.\""
-//	origin_tech = list(TECH_MATERIAL = 2, TECH_ILLEGAL = 5)
 
 /obj/item/weapon/pen/reagent/sleepy/New()
 	..()
@@ -124,7 +127,6 @@
  * Parapens
  */
 /obj/item/weapon/pen/reagent/paralysis
-//	origin_tech = "materials=2;syndicate=5"
 
 /obj/item/weapon/pen/reagent/paralysis/New()
 	..()

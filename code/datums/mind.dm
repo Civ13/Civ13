@@ -88,6 +88,12 @@
 		notes[section] = list()
 	notes[section] += note
 
+
+/datum/mind/proc/remove_note(section, note)
+	if (!notes.Find(section))
+		notes[section] = list()
+	notes[section] -= note
+
 /datum/mind/proc/wipe_notes()
 	for (var/title in notes)
 		qdel_list(notes[title])
