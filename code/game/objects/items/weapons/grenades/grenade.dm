@@ -604,32 +604,12 @@
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/prime()
 	set waitfor = 0
-	..()
-	if (active)
-		var/turf/T = get_turf(src)
-		if(!T) return
-		var/original_mobs = list()
-		var/original_objs = list()
 
+	var/turf/T = get_turf(src.loc)
+	if(!T) return
+
+	if (active)
 		explosion(T,3,3,3,3)
-		for (var/mob/living/L in T.contents)
-			original_mobs += L
-			if (L.client)
-				L.canmove = FALSE
-				L.gib()
-		for (var/obj/O in T.contents)
-			original_objs += O
-		playsound(T, "explosion", 100, TRUE)
-		spawn (1)
-			for (var/mob/living/L in range(1,T))
-				if (L)
-					L.maim()
-					if (L)
-						L.canmove = TRUE
-			for (var/obj/O in original_objs)
-				if (O)
-					O.ex_act(1.0)
-			T.ex_act(1.0)
 		for(var/obj/structure/vehicleparts/frame/F in range(1,T))
 			for (var/mob/M in F.axis.transporting)
 				shake_camera(M, 3, 3)

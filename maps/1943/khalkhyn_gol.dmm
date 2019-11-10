@@ -181,7 +181,6 @@
 "dy" = (/obj/structure/closet/cabinet,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/antitox,/obj/item/weapon/storage/pill_bottle/antitox,/obj/item/weapon/storage/pill_bottle/pervitin,/obj/item/weapon/storage/pill_bottle/pervitin,/obj/item/weapon/storage/pill_bottle/pervitin,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "dz" = (/obj/structure/iv_drip,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "dA" = (/obj/structure/bed/chair/wheelchair,/obj/structure/bed/chair/wheelchair,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
-"dB" = (/obj/structure/vehicleparts/frame/t34/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/grass,/area/caribbean/russian/land/outside)
 "dC" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/dirt,/area/caribbean/japanese/land/outside)
 "dD" = (/turf/wall/rockwall,/area/caribbean/japanese/land/inside/command)
 "dE" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
@@ -235,7 +234,7 @@
 "eA" = (/obj/structure/wild/jungle/medpine/dead,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "eB" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/russian/land/outside)
 "eC" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/russian/land/outside)
-"eD" = (/obj/structure/vehicleparts/frame/t34/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/dirt,/area/caribbean/russian/land/outside)
+"eD" = (/obj/structure/vehicleparts/frame/t34/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/vehicleparts/axis/heavy/t34,/turf/floor/dirt,/area/caribbean/russian/land/outside)
 "eE" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/russian/land/outside)
 "eF" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/russian/land/outside)
 "eG" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean/russian/land/outside)
@@ -296,7 +295,6 @@
 "fJ" = (/obj/structure/bed/chair/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt,/area/caribbean/japanese/land/inside/command)
 "fK" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/japanese/land/inside/command)
 "fL" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
-"fM" = (/obj/structure/vehicleparts/frame/t34/right/door,/obj/structure/vehicleparts/frame/t34,/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "fN" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPDoc"},/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "fO" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/underground,/area/caribbean)
 "fP" = (/obj/structure/vehicleparts/frame/t34,/obj/structure/bed/chair/loader,/turf/floor/grass,/area/caribbean/russian/land/outside)
@@ -433,17 +431,14 @@
 "iq" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean)
 "ir" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "is" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/russian/land/inside)
-"it" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/dirt,/area/caribbean/russian/land/outside)
 "iu" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean)
 "iv" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iw" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{icon_state = "maxim_ww2"; dir = 8},/turf/floor/dirt,/area/caribbean/russian/land/outside)
 "ix" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iy" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iz" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/russian/land/outside)
-"iA" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34,/turf/floor/grass,/area/caribbean/russian/land/outside)
+"iA" = (/obj/structure/vehicleparts/frame/t34/front,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iB" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks,/turf/floor/grass,/area/caribbean/russian/land/outside)
-"iC" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/turf/floor/grass,/area/caribbean/russian/land/outside)
-"iD" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iE" = (/obj/structure/closet/crate/ww2/atmines,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "iS" = (/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 
@@ -464,10 +459,10 @@ aaaaaaaaagaaaaaaaaaaanaaaaaaaaaaaaaaagaaaaaaaaagaaaaaaacbYbYaeaaaaaaaaaaakakakak
 aaaaaaacaaaaaeaaacaaaabJaaaaeXaaaaaaaaaiaaaaaaaaaaaaaaaabYacaaaaaaaaaaaaakakakakakakeGeGeGeGakakakakaMakeueCckckckeEevakakakakakakesakakakakaMaMeueBckckckeEevaMaMakakakakaaaaacaiac
 aaaaaaaaaaaaaaaaaaagaaaaaaaaaaaiaaaaaaaaaaaaaebJaaaaaabYbYacaaaaagaaaaaaakakakakakakakakakakakakakakakakakeGeGeMeGeGaMaMakakakakakakakakakakaMakakeGeGeGeGeGaMaMakakaMakaMaaaaaaaaaa
 aaaaaaaaaabJaaaaaaaaaaaeaaaaaaaaacacaaaaaaaaaaacaaagaabYbYaaaaaaaaaaaaaaakakakakakakakakakakakakesesakakakakakakakakakakaMakakakakakakakakakaMaMaMaMaMakakakakakakakakakakaaaaaaaaac
-aaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaacacacaaaaaaaaaaaaacbYbYaaaaaaaaaaaaaaakakakakakakakakakakakakakaKaMakdBeieyakakaKakakeDeieyakaMakakesakakakakakakakakakesaMakakakakakakbJagaaaaaa
-aaaaaaaaaaaaadaaaabJaaaaacaaaaacaabJaaagaaaaaaaeaaaaacbYchaaaaaeaaaaaaaiakakakakakakakaMivakakakaMfzaMakfMfPikakakilakakimfPikakakakakakakaMakakakakakakizakakakakakakakakacaaaaacaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaabJaaaaacaabJacacbYbYaaaaacacacacakakakakakakakakakaMakakakakakakinipitakakakaMakinipixakakakaMakakakakakakakakakakaMakakakakakakakaaaaaaacaa
-aaacaaaaaaaaaaaaacaeaaaaagaaaaaaaaaaaaacacaaaaaaaaaaaeaabYbYacacacaaaaaaakakakakakakakakakakakakakakakakiyiAiBakakakakakiCiAiDakakakakakakakakakakakakakakakakakakakaMakaMaaaaaaacaa
+aaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaacacacaaaaaaaaaaaaacbYbYaaaaaaaaaaaaaaakakakakakakakakakakakakakaKaMakeDeieyakakaKakakeDeieyakaMakakesakakakakakakakakakesaMakakakakakakbJagaaaaaa
+aaaaaaaaaaaaadaaaabJaaaaacaaaaacaabJaaagaaaaaaaeaaaaacbYchaaaaaeaaaaaaaiakakakakakakakaMivakakakaMfzaMakimfPikakakilakakimfPikakakakakakakaMakakakakakakizakakakakakakakakacaaaaacaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaabJaaaaacaabJacacbYbYaaaaacacacacakakakakakakakakakaMakakakakakakinipixakakakaMakinipixakakakaMakakakakakakakakakakaMakakakakakakakaaaaaaacaa
+aaacaaaaaaaaaaaaacaeaaaaagaaaaaaaaaaaaacacaaaaaaaaaaaeaabYbYacacacaaaaaaakakakakakakakakakakakakakakakakiyiAiBakakakakakiyiAiBakakakakakakakakakakakakakakakakakakakaMakaMaaaaaaacaa
 aaaaaaagaaaaacacbMaaaaaaacaeaaaaaaaaaaaaaaaaaaaaaaacaaaabYbYaeaaaaagaaaaakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakaaaaacaaaa
 aaaaaaaaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaagaaaebYbYbYaaaaaaaaaaaaaeakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakacacaeaaaa
 aaaaaaaaacacaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaaaaaabJbJbYbYbYbJaaaaaaaaaaaaaaaaacaaaaaaaaacaaaaacaaaaaaaaaaacaaaaacaaaaacaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaaagaaaaaaaaaaaaaaaaaaaaaaaa
