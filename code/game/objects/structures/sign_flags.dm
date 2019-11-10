@@ -79,6 +79,12 @@
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
+/obj/structure/sign/wide/stalingrad
+	name = "Stalingrad sign"
+	desc = "A worn-out sign displaying Stalingrad in cyrilic."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "stalingrad"
+
 /obj/structure/sign
 	anchored = TRUE
 
