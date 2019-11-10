@@ -1,5 +1,5 @@
 ////WORK IN PROGRESS - PERSISTENCE STUFF////
-/datum/admins/proc/export()
+/datum/admins/proc/export_savegame()
 	set category = "Server"
 	set desc="Export Variables"
 	set name="Export Savegame"
