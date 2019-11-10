@@ -53,7 +53,23 @@
 
 		if (client.handle_spam_prevention(message,MUTE_DEADCHAT))
 			return
-
+		if (!client.holder)
+			if (!config.ooc_allowed)
+				src << "<span class='danger'>OOC is globally muted.</span>"
+				return
+			if (!config.dooc_allowed && (stat == DEAD))
+				usr << "<span class='danger'>OOC for dead mobs has been turned off.</span>"
+				return
+			if (client.prefs.muted & MUTE_OOC)
+				src << "<span class='danger'>You cannot use OOC (muted).</span>"
+				return
+			if (client.handle_spam_prevention(message,MUTE_OOC))
+				return
+			if (findtext(message, "byond://"))
+				src << "<b>Advertising other servers is not allowed.</b>"
+				log_admin("[key_name(client)] has attempted to advertise in OOC: [message]")
+				message_admins("[key_name_admin(client)] has attempted to advertise in OOC: [message]")
+				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
 			new_player << "<span class = 'ping'><small>["\["]LOBBY["\]"]</small></span> <span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]"

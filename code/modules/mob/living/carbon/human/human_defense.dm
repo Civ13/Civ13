@@ -44,19 +44,19 @@ bullet_act
 							var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 							meat.radiation = radiation/10
 					if (orc)
-						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
+						var/obj/item/stack/material/pelt/orcpelt/HP = new/obj/item/stack/material/pelt/orcpelt(get_turf(src))
 						HP.amount = 3
 					else if (gorillaman)
-						var/obj/item/stack/material/gorillapelt/HP = new/obj/item/stack/material/gorillapelt(get_turf(src))
+						var/obj/item/stack/material/pelt/gorillapelt/HP = new/obj/item/stack/material/pelt/gorillapelt(get_turf(src))
 						HP.amount = 3
 					else if (ant || crab)
 						var/obj/item/stack/material/chitin/HP = new/obj/item/stack/material/chitin(get_turf(src))
 						HP.amount = 2
 					else if (wolfman)
-						var/obj/item/stack/material/wolfpelt/HP = new/obj/item/stack/material/wolfpelt(get_turf(src))
+						var/obj/item/stack/material/pelt/wolfpelt/HP = new/obj/item/stack/material/pelt/wolfpelt(get_turf(src))
 						HP.amount = 3
 					else
-						var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
+						var/obj/item/stack/material/pelt/humanpelt/HP = new/obj/item/stack/material/pelt/humanpelt(get_turf(src))
 						HP.amount = 3
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
@@ -78,6 +78,15 @@ bullet_act
 		gib()
 		spawn (0.01)
 			qdel(P)
+	if (def_zone == "chest" && prob(25))
+		if (back && istype(back, /obj/item/weapon/reagent_containers/glass/flamethrower))
+			var/obj/item/weapon/reagent_containers/glass/flamethrower/FM = back
+			if (FM.reagents.get_reagent_amount("gasoline")>10)
+				explosion(loc, 1, 2, 2, 3)
+				qdel(FM)
+				adjustFireLoss(100)
+				for(var/turf/T in range(2,src))
+					new/obj/effect/fire(T)
 	if (def_zone == "mouth")
 		if (wear_mask && istype(wear_mask, /obj/item/weapon/grenade))
 			var/obj/item/weapon/grenade/G = wear_mask
@@ -98,7 +107,7 @@ bullet_act
 				if (GUN_TYPE_BOW)
 					H.adaptStat("bows", 1)
 				if (GUN_TYPE_MG)
-					H.adaptStat("mg", 1)
+					H.adaptStat("machinegun", 1)
 
 	def_zone = check_zone(def_zone)
 
@@ -514,7 +523,7 @@ bullet_act
 				//Harder to score a stun but if you do it lasts a bit longer
 				if (prob(effective_force/8))
 					visible_message("<span class='danger'>[src] [species.knockout_message]</span>")
-					apply_effect(7, PARALYZE, blocked)
+					Paralyse(7/(blocked+1))
 			else
 				//Easier to score a stun but lasts less time
 				if (prob(effective_force/5))
@@ -666,6 +675,7 @@ bullet_act
 				if (I.w_class <= 2.0)
 					affecting.embed(I)
 		if (istype(O, /obj/item/weapon/snowball))
+			O.layer = layer+2
 			O.icon_state = "snowball_hit"
 			O.update_icon()
 			spawn(6)

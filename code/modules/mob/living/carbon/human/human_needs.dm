@@ -105,15 +105,17 @@
 		hygiene = HYGIENE_LEVEL_CLEAN
 	if (hygiene < 0)
 		hygiene = 0
+	var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
 	var/image/smell = image('icons/effects/effects.dmi', "smell")//This is a hack, there has got to be a safer way to do this but I don't know it at the moment.
+	var/image/img_nasties = image('icons/effects/effects.dmi', "nothing")
 	switch(hygiene)
 		if(HYGIENE_LEVEL_NORMAL to INFINITY)
-			overlays_standing[27] = null
+//			img_nasties.overlays += null
 		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
-			overlays_standing[27] = null
+//			overlays_standing[27] = null
 			mood -= 0.02
 		if(0 to HYGIENE_LEVEL_DIRTY)
-			overlays_standing[27] = smell
+			img_nasties.overlays += smell
 			mood -= 0.04
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
 		if (prob(3))
@@ -122,7 +124,7 @@
 					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
 					HM.mood -= 3
 	var/fleas_found = FALSE
-	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
+	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C)
 			if (C.blood_DNA)
 				C.dirtyness += 0.08
@@ -134,15 +136,14 @@
 				C.fleas = TRUE
 				fleas_found = TRUE
 	if (fleas_found)
-		var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
-		overlays_standing[27] = fleas
+		img_nasties.overlays += fleas
 		mood -= 0.02
 		if (prob(0.2) && !disease && !inducedSSD)
 			disease = TRUE
 			disease_type = "typhus"
 			disease_progression = 0
 			disease_treatment = 0
-
+	overlays_standing[27] = img_nasties
 /mob/living/carbon/human/proc/adjust_hygiene(var/amount)
 	var/old_hygiene = hygiene
 	if(amount>0)

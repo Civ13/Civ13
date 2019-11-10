@@ -13,6 +13,7 @@
 	var/abstract = FALSE
 	var/r_speed = 1.0
 	var/health = null
+	var/maxhealth
 	var/burn_point = null
 	var/burning = null
 	var/hitsound = null
@@ -20,9 +21,7 @@
 	var/slot_flags = 0		//This is used to determine on which slots an item can fit.
 	var/no_attack_log = FALSE			//If it's an item we don't want to log attack_logs with, set this to TRUE
 	pass_flags = PASSTABLE
-//	causeerrorheresoifixthis
 	var/obj/item/master = null
-	//var/list/origin_tech = null	//Used by R&D to determine what research bonuses it grants.
 	var/list/attack_verb = list() //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
 	var/force = FALSE
 	var/amount = TRUE
@@ -78,6 +77,12 @@
 	var/list/basematerials = list()
 
 	var/equiptimer = 0 //if it takes some time to equip to a active hand (e.g. guns)
+
+/obj/item/New()
+	maxhealth = health
+	..()
+	maxhealth = health
+
 /obj/item/equipped()
 	..()
 	var/mob/M = loc

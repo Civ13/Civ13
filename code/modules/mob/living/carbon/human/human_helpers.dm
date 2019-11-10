@@ -52,8 +52,8 @@
 
 	if (istype(head, /obj/item/clothing/head))
 		add_clothing_protection(head)
-	if (istype(wear_mask, /obj/item/clothing/glasses))
-		var/obj/item/clothing/glasses/GL = wear_mask
+	if (istype(eyes, /obj/item/clothing/glasses))
+		var/obj/item/clothing/glasses/GL = eyes
 		process_glasses(GL)
 	if (istype(wear_mask, /obj/item/clothing/mask))
 		add_clothing_protection(wear_mask)
@@ -265,3 +265,34 @@
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
+
+/mob/living/carbon/human
+	var/drowning = FALSE
+	var/water_overlay = FALSE
+/mob/living/carbon/human/proc/handle_drowning()
+	var/turf/T = get_turf(src)
+	if (!istype(T, /turf/floor/beach/water/deep))
+		drowning = FALSE
+		if (((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered())
+			water_overlay = TRUE
+			update_fire(1)
+			return
+		else
+			water_overlay = FALSE
+			if (plane == FLOOR_PLANE)
+				plane = GAME_PLANE
+			if (!on_fire)
+				overlays_standing[25] = null
+			return
+	else
+		var/turf/floor/beach/water/deep/D = T
+		if (D.iscovered())
+			drowning = FALSE
+			return
+		else
+			drowning = TRUE
+			src << "<font size='2'><span class='warning'>You are drowning!</span></font>"
+			update_fire(1)
+			adjustOxyLoss(10)
+			return
+	return

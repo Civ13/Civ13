@@ -344,6 +344,9 @@
 	atomic_nr = 33
 	chemical_symbol = "As"
 
+/datum/reagent/arsenic/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.adjustToxLoss(20 * removed)
+
 /datum/reagent/selenium
 	name = "Selenium"
 	id = "selenium"

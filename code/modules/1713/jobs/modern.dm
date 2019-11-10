@@ -43,7 +43,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/usmc_sergeant
@@ -91,7 +91,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/usmc_medic
@@ -138,7 +138,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/usmc_marksman
@@ -182,7 +182,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/usmc_lmg
@@ -232,7 +232,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
 /datum/job/american/usmc_soldier
 	title = "USMC Rifleman"
@@ -278,7 +278,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 
@@ -337,7 +337,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/idf/sergeant
@@ -388,7 +388,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/idf/medic
@@ -436,7 +436,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/idf/marksman
@@ -481,7 +481,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/idf/lmg
@@ -529,7 +529,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
 /datum/job/american/idf/soldier
 	title = "Turai"
@@ -574,7 +574,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
 
@@ -638,7 +638,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
 
@@ -704,7 +704,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
 
@@ -767,7 +767,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
 /datum/job/arab/hezbollah/soldier
@@ -833,6 +833,6 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE

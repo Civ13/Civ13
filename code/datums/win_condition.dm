@@ -11,7 +11,7 @@
 
 	for (var/human in human_mob_list)
 		var/mob/living/carbon/human/H = human
-		if (H.original_job && H.client && H.stat == CONSCIOUS && !H.lying && !H.restrained() && !iscloset(H.loc))
+		if (H && H.original_job && H.client && H.stat == CONSCIOUS && !H.lying && !H.restrained() && !iscloset(H.loc))
 			var/area/H_area = get_area(H)
 			if (H_area && area_check(H_area, areas))
 				if (attackers.Find(H.original_job.base_type_flag()))

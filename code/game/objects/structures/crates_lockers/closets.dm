@@ -204,30 +204,42 @@
 	return
 
 /obj/structure/closet/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/key) && !opened && !istype(src, /obj/structure/closet/hideout) && !istype(src, /obj/structure/closet/coffin))
-		var/obj/item/weapon/key/K = W
-		if (custom_code == 0 && K.code != 0)
-			var/choice = WWinput(user, "Are you sure you want to assign this key to \the [src]?", "Lock", "No", list("Yes","No"))
-			if (choice == "No")
-				return
-			else
-				locked = TRUE
-				opened = FALSE
-				custom_code = K.code
-				visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
-
-		if (K.code == custom_code)
-			locked = !locked
-			if (locked == 1)
-				visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
-			else if (locked == 0)
-				visible_message("<span class = 'notice'>[user] unlocks \the [src].</span>")
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
+	if (!opened && !istype(src, /obj/structure/closet/hideout) && !istype(src, /obj/structure/closet/coffin))
+		if (istype(W, /obj/item/weapon/key))
+			var/obj/item/weapon/key/K = W
+			if (custom_code == 0 && K.code != 0)
+				var/choice = WWinput(user, "Are you sure you want to assign this key to \the [src]?", "Lock", "No", list("Yes","No"))
+				if (choice == "No")
+					return
+				else
+					locked = TRUE
+					opened = FALSE
+					custom_code = K.code
+					visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+			if (K.code == custom_code)
+				locked = !locked
+				if (locked == 1)
+					visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+				else if (locked == 0)
+					visible_message("<span class = 'notice'>[user] unlocks \the [src].</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+		else if (istype(W, /obj/item/weapon/storage/belt/keychain) && custom_code != 0)
+			for (var/obj/item/weapon/key/KK in W.contents)
+				if (KK.code == custom_code)
+					locked = !locked
+					if (locked == 1)
+						visible_message("<span class = 'notice'>[user] locks the door.</span>")
+						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+						return
+					else if (locked == 0)
+						visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+						return
 		if (W.code != custom_code)
 			user << "This key does not match this lock!"
 			return

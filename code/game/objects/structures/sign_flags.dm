@@ -79,6 +79,12 @@
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
+/obj/structure/sign/wide/stalingrad
+	name = "Stalingrad sign"
+	desc = "A worn-out sign displaying Stalingrad in cyrilic."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "stalingrad"
+
 /obj/structure/sign
 	anchored = TRUE
 
@@ -208,6 +214,11 @@
 	name = "Israel flag"
 	desc = "The white and blue flag of Israel, with the 6 pointed star in the middle."
 	icon_state = "flag_israel"
+
+/obj/structure/sign/flag/un
+	name = "UN flag"
+	desc = "The peace flag."
+	icon_state = "un_flag"
 
 /obj/structure/sign/flag/hezbollah
 	name = "Hezbollah flag"

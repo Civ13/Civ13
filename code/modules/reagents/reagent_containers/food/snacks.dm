@@ -1198,6 +1198,14 @@
 		reagents.add_reagent("water", 15)
 		bitesize = 2
 
+/obj/item/weapon/reagent_containers/food/snacks/gyro
+	name = "gyro"
+	desc = "Greek delicacy."
+	icon_state = "gyro"
+	bitesize = 3
+	satisfaction = 10
+	nutriment_desc = list("lamb" = 4, "bread" = 2, "tzatziki" = 1)
+
 /obj/item/weapon/reagent_containers/food/snacks/tossedsalad
 	name = "tossed salad"
 	desc = "A proper salad, basic and simple, with little bits of carrot, tomato and apple intermingled. Vegan!"

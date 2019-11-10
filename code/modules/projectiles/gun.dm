@@ -83,8 +83,11 @@
 	var/gibs = FALSE
 	var/crushes = FALSE
 
+	health = 200 //guns are stronk, rarely exploded.
+
 /obj/item/weapon/gun/New()
 	..()
+	maxhealth = health
 	if (!istype(src, /obj/item/weapon/gun/projectile/custom))
 		if (!firemodes.len)
 			firemodes += new firemode_type
@@ -162,6 +165,8 @@
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/carbon/human/H = user
+	health_check()
+	health -= rand(0,1)
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return
@@ -280,12 +285,14 @@
 				var/obj/item/projectile/P = projectile
 				P.KD_chance = 100
 			process_point_blank(projectile, user, target)
-		var/tgt = user.targeted_organ
-		if (user.targeted_organ == "random")
-			tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-		if (process_projectile(projectile, user, target, tgt, clickparams))
-			handle_post_fire(user, target, pointblank, reflex)
-			update_icon()
+		var/tgt = "chest"
+		if (user)
+			tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			if (process_projectile(projectile, user, target, tgt, clickparams))
+				handle_post_fire(user, target, pointblank, reflex)
+				update_icon()
 
 		if (i < _burst)
 			sleep(_burst_delay)
@@ -640,3 +647,15 @@
 	if (ammo_magazine)
 		.+= ammo_magazine.get_weight()
 	return .
+
+//health stuff
+/obj/item/weapon/gun/proc/health_check(mob/living/user)
+	//var/mob/living/carbon/human/H = user
+	if(health <= 0 || maxhealth <= 0)
+		playsound(src, "shatter", 70, TRUE)
+		visible_message("<span class='danger'>\The [src.name] shatters!</span>")
+		qdel(src)
+		/*var/hurthand = H.get_active_hand()
+		if(prob(25))
+			H.bloody_hands(H,0)*/
+

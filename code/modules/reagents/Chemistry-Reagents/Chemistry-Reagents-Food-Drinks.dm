@@ -161,10 +161,6 @@
 	if (!istype(T))
 		return
 
-	var/hotspot = (locate(/obj/fire) in T)
-	if (hotspot)
-		qdel(hotspot)
-
 	if (volume >= 3)
 		T.wet_floor()
 

@@ -2,7 +2,7 @@
 	name = "language book"
 	desc = "A book that allows translation between two languages. Nothing is written in it."
 	icon = 'icons/obj/library.dmi'
-	icon_state = "book" // temporary someone fix this aa
+	icon_state = "book2" // temporary someone fix this aa
 	throw_speed = TRUE
 	throw_range = 5
 	w_class = 3
@@ -14,19 +14,26 @@
 
 /obj/item/weapon/language_book/attack_self(var/mob/user as mob)
 	var/mob/living/carbon/human/H = user
-	if(src.written)
+	if(src.written && lang1 && lang2)
 		var/choice = WWinput(user, "Do you want to learn a language from [src]?", "Learn a Language", "Yes", list("Yes", "No"))
 		if (choice == "No")
 			return
 		else
-			if(!lang1 in H.languages && !lang2 in H.languages)
+			var/known1 = FALSE
+			var/known2 = FALSE
+			for (var/datum/language/i in H.languages)
+				if (i == lang1)
+					known1 = TRUE
+				if (i == lang2)
+					known2 = TRUE
+			if(!known1 && !known2)
 				user << "<span class = 'warning'>You can't read a language book without knowing one of the languages!</span>"
 				return
-			if(lang1 in H.languages && lang2 in H.languages)
+			if(known1 && known2)
 				user << "<span class = 'warning'>You can't read a language book if you already know both languages!</span>"
 				return
 			var/datum/language/langtolearn = lang1
-			if (lang1 in H.languages)
+			if (known1)
 				langtolearn = lang2
 			H.visible_message("<span class='notice'>[user] begins to read the [src].</span>", "<span class='notice'>You begin reading translations for [langtolearn.name] in the [src]. This will take around 2 minutes, and you need to stand or sit still.</span>")
 			if(do_after(user, 1200, src))

@@ -394,7 +394,7 @@
 "hD" = (/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/grass,/area/caribbean/indians/camp)
 "hE" = (/obj/structure/oven/fireplace,/turf/floor/grass,/area/caribbean/indians/camp)
 "hF" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/indians/camp)
-"hG" = (/obj/item/stack/medical/advanced/bruise_pack/herbs,/obj/item/stack/medical/advanced/bruise_pack/herbs,/turf/floor/grass,/area/caribbean/indians/camp)
+"hG" = (/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/turf/floor/grass,/area/caribbean/indians/camp)
 "hH" = (/obj/structure/window/sandbag{dir = 1},/obj/structure/window/sandbag{dir = 8},/turf/floor/grass,/area/caribbean/indians/camp)
 "hI" = (/obj/structure/table/wood,/obj/item/weapon/material/knife/butcher,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/turf/floor/dirt,/area/caribbean/british/land/outside)
 "hJ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/snacks/caldoverde,/turf/floor/dirt,/area/caribbean/british/land/outside)

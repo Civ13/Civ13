@@ -880,7 +880,7 @@ var/list/atom_types = null
 		M = whom
 		C = M.client
 	else
-		return "<b>(*not an mob*)</b>"
+		return "<b>(*not a mob*)</b>"
 	switch(detail)
 		if (0)
 			return "<b>[key_name(C, link, name, highlight_special)]</b>"
@@ -974,53 +974,6 @@ var/list/atom_types = null
 
 	message_admins("[key_name(usr)] manually reloaded admins")
 	load_admins(1)
-
-////WORK IN PROGRESS - PERSISTENCE STUFF////
-/datum/admins/proc/export()
-	set category = "Server"
-	set desc="Export Variables"
-	set name="Export"
-	var/confirm = WWinput(usr, "Are you sure you want to save the world? SERVER MIGHT FREEZE FOR UP TO 2 MINUTES!", "Confirmation Required", "No", list("Yes", "No"))
-	if (confirm == "No")
-		return
-	else
-		world << "<big>SAVING THE WORLD IN 10 SECONDS. GAME WILL FREEZE!</big>"
-		spawn(100)
-			world.log << "Exporting mobs..."
-			var/F = file("SQL/saves/mobs.txt")
-			if (fexists(F))
-				fdel(F)
-			for (var/mob/M in world)
-				var/txtexport = list2text_assoc(M)
-				text2file(txtexport,F)
-			world.log << "Finished exporting mobs to [F]."
-
-			world.log << "Exporting turfs..."
-			var/F1 = file("SQL/saves/turfs.txt")
-			if (fexists(F1))
-				fdel(F1)
-			for (var/turf/T in world)
-				text2file("[T.type];[T.loc];[T.x];[T.y];[T.z]",F1)
-			world.log << "Finished exporting turfs to [F1]."
-
-			world.log << "Exporting objs..."
-			var/F2 = file("SQL/saves/objs.txt")
-			if (fexists(F2))
-				fdel(F2)
-			for (var/obj/O in world)
-				var/txtexport = list2text_assoc(O)
-				text2file(txtexport,F2)
-			world.log << "Finished exporting objs to [F2]."
-
-			world.log << "Exporting areas..."
-			var/F3 = file("SQL/saves/areas.txt")
-			if (fexists(F3))
-				fdel(F3)
-			for (var/area/A in world)
-				text2file("[A.name];[A.type]",F3)
-			world.log << "Finished exporting areas to [F3]."
-			world << "<big>SAVING FINISHED SUCCESSFULLY</big>"
-			return
 
 /datum/admins/proc/toggle_ores()
 	set category = "Special"

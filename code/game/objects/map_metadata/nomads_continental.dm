@@ -61,7 +61,7 @@
 			D.ChangeTurf(/turf/floor/beach/water/flooded)
 		for (var/turf/floor/dirt/ploughed/flooded/D in get_area_turfs(/area/caribbean/nomads/forest/Jungle))
 			for(var/obj/OB in src.loc)
-				if ( istype(OB, /obj/item) || istype(OB, /obj/structure) || istype(OB, /obj/effect) || istype(OB, /obj/small_fire) )
+				if ( istype(OB, /obj/item) || istype(OB, /obj/structure) || istype(OB, /obj/effect) || istype(OB, /obj/effect/fire) )
 					qdel(OB)
 			D.ChangeTurf(/turf/floor/beach/water/flooded)
 		for(var/obj/structure/sink/S)

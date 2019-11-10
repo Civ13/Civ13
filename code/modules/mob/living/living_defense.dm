@@ -151,8 +151,9 @@
 		var/obj/O = AM
 		var/dtype = O.damtype
 		var/throw_damage = O.throwforce*(speed/THROWFORCE_SPEED_DIVISOR)
+		var/mob/living/carbon/human/M = O.thrower
 
-		var/miss_chance = 15
+		var/miss_chance = 15 - M.getStat("throwing")/100
 		if (O.throw_source)
 			var/distance = get_dist(O.throw_source, loc)
 			miss_chance = max(15*(distance-2), FALSE)
@@ -171,7 +172,6 @@
 		O.throwing = FALSE		//it hit, so stop moving
 
 		if (ismob(O.thrower))
-			var/mob/M = O.thrower
 			var/client/assailant = M.client
 			if (assailant)
 				attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been hit with a [O], thrown by [M.name] ([assailant.ckey])</font>")

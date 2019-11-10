@@ -1,7 +1,7 @@
 /obj/covers
 
 	name = "floor covers"
-	desc = "A floor cover."
+	desc = ""
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship"
 	var/passable = TRUE
@@ -72,11 +72,38 @@
 	layer = 1.99
 	material = "Wood"
 
+/obj/covers/fancywood
+	name = "wood floor"
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "fancywood"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Wood"
+
 /obj/covers/wood/stairs
 	name = "wood stairs"
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "wood2_stairs"
 	material = "Wood"
+
+/obj/covers/slate
+    name = "slatestone wall"
+    desc = "A slate wall."
+    icon = 'icons/obj/structures.dmi'
+    icon_state = "slate"
+    passable = TRUE
+    not_movable = TRUE
+    density = TRUE
+    opacity = TRUE
+    amount = 0
+    layer = 3
+    health = 500
+    wood = FALSE
+    wall = TRUE
+    flammable = FALSE
+    explosion_resistance = 10
+    material = "Stone"
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -91,10 +118,36 @@
 	explosion_resistance = 2
 	material = "Stone"
 
+/obj/covers/slatefloor
+	name = "slate floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "slatefloor"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
+/obj/covers/marblefloor
+	name = "marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "marblefloor"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
 /obj/covers/roads
 	name = "dirt road"
 	icon = 'icons/turf/roads.dmi'
-	icon_state = "s_roadvr"
+	icon_state = "d_roadvr"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -113,67 +166,68 @@
 	spawn(1)
 		var/list/sideslist = list()
 		for (var/direction in list(1,2,4,8,5,6,9,10))
-			for(var/obj/covers/road/R in get_step(src,direction))
+			for(var/obj/covers/roads/R in get_step(src,direction))
 				sideslist += direction
 				continue
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
-			icon_state = "s_roadtswe" //T, SOUTH EAST WEST
+			icon_state = "d_road+" //4 sides
 			return
 		if (vertical)
 			if (WEST in sideslist)
 				if (!(NORTH in sideslist))
 					if (EAST in sideslist)
-						icon_state = "s_roadtswe" //T, SOUTH EAST WEST
+						icon_state = "d_roadtswe" //T, SOUTH EAST WEST
 						return
 					else
-						icon_state = "s_roadtvsw" //Turn, SOUTH-WEST
+						icon_state = "d_roadsw" //Turn, SOUTH-WEST
 						return
 				else if (!(SOUTH in sideslist))
 					if (EAST in sideslist)
-						icon_state = "s_roadtnwe" //T, NORTH EAST WEST
+						icon_state = "d_roadtnwe" //T, NORTH EAST WEST
 						return
 					else
-						icon_state = "s_roadtvnw" //Turn, NORTH-WEST
+						icon_state = "d_roadnw" //Turn, NORTH-WEST
 						return
 			else if (EAST in sideslist)
 				if (!(NORTH in sideslist))
-					icon_state = "s_roadtvse" //Turn, SOUTH-EAST
+					icon_state = "d_roadse" //Turn, SOUTH-EAST
 					return
 				else if (!(SOUTH in sideslist))
-					icon_state = "s_roadtvne" //T, NORTH-EAST
+					icon_state = "d_roadne" //Turn, NORTH-EAST
 					return
 		else
 			if (NORTH in sideslist)
 				if (!(EAST in sideslist))
 					if (SOUTH in sideslist)
-						icon_state = "s_roadtnsw" //T, NORTH SOUTH WEST
+						icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
 						return
 					else
-						icon_state = "s_roadtvnw" //Turn, NORTH-WEST
+						icon_state = "d_roadnw" //Turn, NORTH-WEST
 						return
 				else if (!(WEST in sideslist))
 					if (SOUTH in sideslist)
-						icon_state = "s_roadtnse" //T, NORTH SOUTH EAST
+						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
 						return
 					else
-						icon_state = "s_roadtvne" //Turn, NORTH-EAST
+						icon_state = "d_roadne" //Turn, NORTH-EAST
 						return
 			else if (SOUTH in sideslist)
 				if (!(EAST in sideslist))
-					icon_state = "s_roadtvsw" //Turn, SOUTH-WEST
+					icon_state = "d_roadsw" //Turn, SOUTH-WEST
 					return
 				else if (!(WEST in sideslist))
-					icon_state = "s_roadtvse" //T, SOUTH-EAST
+					icon_state = "d_roadse" //Turn, SOUTH-EAST
 					return
 /obj/covers/roads/New()
 	..()
-	if (vertical)
-		dir = 1
-	else
-		dir = 4
-	for(var/obj/covers/road/R in orange(1,src))
-		R.update_icon()
-	update_icon()
+	spawn(2)
+		if (vertical)
+			dir = 1
+		else
+			dir = 4
+		for(var/obj/covers/roads/R in range(1,src))
+			R.update_icon()
+		update_icon()
 
 /obj/covers/cobblestone/stairs
 	name = "stone stairs"
@@ -443,14 +497,14 @@
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall_y2"
+	icon_state = "medieval_wall_y1"
 	health = 185
 
 /obj/covers/wood_wall/medieval/y/l
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall_y1"
+	icon_state = "medieval_wall_y2"
 	health = 185
 
 /obj/covers/wood_wall/shoji
@@ -814,7 +868,7 @@
 				qdel(W)
 				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
 				qdel(src)
-				var/choice = WWinput(user, "What time of wall?","Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
+				var/choice = WWinput(user, "What type of wall?","Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
 				if (choice == "Normal")
 					return
 				else if (choice == "Doorway")
@@ -823,10 +877,8 @@
 					S.density = FALSE
 					S.opacity = FALSE
 				else if (choice == "Window")
-					S.icon_state = "sumerian-window"
-					S.name = "sumerian clay window"
-					S.density = TRUE
-					S.opacity = FALSE
+					new /obj/structure/window_frame/sumerian(loc)
+					qdel(src)
 				else if (choice == "Corner")
 					S.icon_state = "sumerian-corner1"
 					var/choice1 = WWinput(user, "Which corner?","Clay Walls","North-West",list("North-West","North-East","South-West","South-East"))
@@ -885,6 +937,24 @@
 	explosion_resistance = 7
 	material = "Stone"
 
+/obj/covers/slate
+    name = "slatestone wall"
+    desc = "A slate wall."
+    icon = 'icons/obj/structures.dmi'
+    icon_state = "slate"
+    passable = TRUE
+    not_movable = TRUE
+    density = TRUE
+    opacity = TRUE
+    amount = 0
+    layer = 3
+    health = 500
+    wood = FALSE
+    wall = TRUE
+    flammable = FALSE
+    explosion_resistance = 10
+    material = "Stone"
+
 /obj/covers/cement_wall/incomplete
 	name = "cement wall"
 	desc = "A cement brick wall."
@@ -942,9 +1012,14 @@
 		if (do_after(user, 20, src))
 			user << "You finish adding bricks to the wall, completing it."
 			qdel(W)
-			new /obj/covers/brick_wall(loc)
+			var WALL = new /obj/covers/brick_wall(loc)
 			qdel(src)
-			return
+			var/choice = WWinput(user, "What type of wall?","Brick Walls","Normal",list("Wall","Window"))
+			if (choice == "Wall")
+				return
+			else if (choice == "Window")
+				new /obj/structure/window_frame/brick(loc)
+				qdel(WALL)
 			return
 	..()
 
@@ -1069,8 +1144,6 @@
 	origin_water_level = T.water_level
 	T.water_level = 0
 	T.move_delay = 0
-	origin_covered = T.iscovered
-	T.iscovered = TRUE
 	return TRUE
 
 
@@ -1081,7 +1154,6 @@
 			new current_area_type(get_turf(src))
 			visible_message("The roof collapses!")
 		var/turf/floor/T = get_turf(loc)
-		T.iscovered = origin_covered
 		T.water_level = origin_water_level
 		T.move_delay = initial(T.move_delay)
 	if (amount > 0)
@@ -1255,15 +1327,10 @@
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)
-		var/obj/small_fire/NF = new/obj/small_fire(src.loc)
-		NF.set_light(3)
-		NF.origin = src
+		var/obj/effect/fire/NF = new/obj/effect/fire(src.loc)
 		start_fire_dmg(NF)
-		spawn(400)
-			NF.icon_state = "fire_big"
-			NF.set_light(4)
 
-/obj/covers/proc/start_fire_dmg(var/obj/small_fire/SF)
+/obj/covers/proc/start_fire_dmg(var/obj/effect/fire/SF)
 	spawn(80)
 		if (health > 0)
 			health -= 10

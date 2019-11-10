@@ -163,7 +163,7 @@ Parts of code courtesy of Super3222
 		return FALSE
 	if (!istype(src, /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
 		for (var/obj/structure/vehicleparts/frame/FR in user.loc)
-			if (FR.axis)
+			if (FR.axis && !istype(FR, /obj/structure/vehicleparts/frame/ship))
 				user << "You can't use \the [src] while inside a vehicle!"
 				return FALSE
 	if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))

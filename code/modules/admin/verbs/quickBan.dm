@@ -98,7 +98,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 		html += possibility
 
 	src << browse(html, "window=quick_bans_search;")
-/client/proc/find_cID(var/current = "ckey", var/currentvar = null)
+/proc/find_cID(var/current = "ckey", var/currentvar = null)
 	if (currentvar == null)
 		return FALSE
 	var/full_logs = file2text("SQL/playerlogs.txt")
@@ -113,7 +113,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 				return full_logs_split_two[3]
 	return FALSE
 
-/client/proc/find_ip(var/current = "ckey", var/currentvar = null)
+/proc/find_ip(var/current = "ckey", var/currentvar = null)
 	if (currentvar == null)
 		return FALSE
 	var/full_logs = file2text("SQL/playerlogs.txt")
@@ -128,7 +128,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 				return full_logs_split_two[2]
 	return FALSE
 
-/client/proc/find_ckey(var/current = "ip", var/currentvar = null)
+/proc/find_ckey(var/current = "ip", var/currentvar = null)
 	if (currentvar == null)
 		return FALSE
 	var/full_logs = file2text("SQL/playerlogs.txt")
@@ -421,10 +421,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (isemptylist(fields))
 		return
 
-	if (fields[2] && fields[2] != "nil")
-		return FALSE
-
-	var/reason = fields[2]
+	var/reason = fields[4]
 	var/date = fields[6]
 	var/expire_info = fields[8]
 
@@ -454,3 +451,83 @@ var/datum/quickBan_handler/quickBan_handler = null
 					src << "<span class = 'danger'>You can't ban admins!</span>"
 					return TRUE
 	return FALSE
+
+
+
+/proc/quickBan_discord(var/gckey = null, var/duration = 0, var/ban_reason = "No reason provided. Appeal in the Discord.", var/banner = "Unknown")
+	if (!gckey)
+		return "no ckey provided"
+	if (!duration)
+		return "no duration provided"
+	var/list/fields = list() // as much storage as we need
+	fields["ckey"] = gckey
+	if (!fields["ckey"])
+		return "no ckey found"
+	else
+		// we have one or more field, use connection logs to find the others
+		if (fields["ckey"])
+			if (!fields["cID"])
+				fields["cID"] = find_cID("ckey", fields["ckey"])
+			if (!fields["ip"])
+				fields["ip"] = find_ip("ckey", fields["ckey"])
+
+		// as a fallback, search for mobs in the world and use their lastKnownX variables instead
+
+		if (fields["ckey"])
+			if (!fields["cID"])
+				for (var/mob/M in mob_list)
+					if (M.lastKnownCkey == fields["ckey"])
+						if (M.lastKnownCID)
+							fields["cID"] = M.lastKnownCID
+			if (!fields["ip"])
+				for (var/mob/M in mob_list)
+					if (M.lastKnownCkey == fields["ckey"])
+						if (M.lastKnownIP)
+							fields["ip"] = M.lastKnownIP
+
+	fields["type"] = replacetext("Server Ban", " Ban", "")
+
+	var/duration_in_x_units = duration
+	var/duration_in_days = text2num(ckey(splittext(duration_in_x_units, " ")[1]))
+	duration_in_days = max(0,min(duration_in_days,10000))
+	if (!isnum(duration_in_days))
+		return "duration not a number"
+	if (findtext(duration_in_x_units, "year"))
+		duration_in_days *= 365
+	else if (findtext(duration_in_x_units, "month"))
+		duration_in_days *= 30
+	else if (findtext(duration_in_x_units, "week"))
+		duration_in_days *= 7
+	else if (findtext(duration_in_x_units, "hour"))
+		duration_in_days /= 24
+	else if (findtext(duration_in_x_units, "minute"))
+		duration_in_days /= 1440
+	else if (findtext(duration_in_x_units, "second"))
+		duration_in_days /= 86400
+	else if (!findtext(duration_in_x_units, "day"))
+		return "wrong duration variable"
+
+	var/duration_in_deciseconds = duration_in_days * 86400 * 10
+	fields["expire_realtime"] = num2text(world.realtime + duration_in_deciseconds, 20)
+
+	switch (duration_in_days)
+		if (0 to 0.99) // count in hours
+			fields["expire_info"] = "Expires in [duration_in_days*24] hour(s)"
+		if (0.99 to 6.99) // count in days
+			fields["expire_info"] = "Expires in [duration_in_days] day(s)"
+		if (6.99 to 29.99) // count in weeks
+			fields["expire_info"] = "Expires in [duration_in_days/7] week(s)"
+		if (29.99 to 364.99) // count in months
+			fields["expire_info"] = "Expires in [duration_in_days/30] month(s)"
+		if (364.99 to INFINITY) // count in years
+			fields["expire_info"] = "Expires in [duration_in_days/365] year(s)"
+
+	fields["ban_date"] = replacetext(time2text(world.realtime, "DDD MMM DD hh:mm:ss YYYY"), ":", ".")
+
+	fields["reason"] = ban_reason
+
+	fields["banned_by"] = banner
+
+	quickBan_ban(fields, src)
+
+	return "successful."

@@ -18,7 +18,7 @@ var/list/time_of_day2ticks = list(
 	"Afternoon" = 20*60,
 	"Midday" = 20*60,
 	"Evening" = 20*60,
-	"Night" = 25*60,)
+	"Night" = 20*60,)
 
 /proc/isDarkOutside()
 	if (list("Evening", "Night").Find(time_of_day))
@@ -68,5 +68,45 @@ var/list/time_of_day2ticks = list(
 			progress_time_of_day()
 		sleep (100)
 
+/proc/clock_time()
+	var/hr = Floor(game_hour/60)
+	var/min = game_hour-hr
+	var/ampm = "AM"
+	switch(time_of_day)
+		if ("Early Morning") //03-07
+			hr+=3
+			ampm = "AM"
+		if ("Morning") //07-11
+			hr+=7
+			ampm = "AM"
+		if ("Midday") //11-15
+			if (hr<1)
+				ampm = "AM"
+			else
+				ampm = "PM"
+			if (hr<2)
+				hr+=11
+			else
+				hr-=2
+		if ("Afternoon") //15-19
+			ampm = "PM"
+		if ("Evening") //19-23
+			ampm = "PM"
+		if ("Night") //23-03
+			if (hr<1)
+				ampm = "PM"
+			else
+				ampm = "AM"
+			if (hr<=1)
+				hr+=11
+			else
+				hr-=1
+	var/str_min = "[min]"
+	var/str_hr = "[hr]"
+	if (min < 10)
+		str_min = "0[min]"
+	if (hr < 10)
+		str_hr = "0[hr]"
+	return "[str_hr]:[str_min] [ampm]"
 #undef MAX_LIGHT_AMOUNT
 #undef BASIC_LIGHT_AMOUNT

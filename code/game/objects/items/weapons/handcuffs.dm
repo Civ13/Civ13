@@ -10,7 +10,6 @@
 	w_class = 2.0
 	throw_speed = 2
 	throw_range = 5
-//	origin_tech = list(TECH_MATERIAL = TRUE)
 	matter = list(DEFAULT_WALL_MATERIAL = 500)
 	var/elastic
 	var/dispenser = FALSE
