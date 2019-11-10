@@ -29,8 +29,7 @@
 				var/list/impturfs2 = splittext(i, ";")
 				if (impturfs[1] == "TURF")
 					var/resultp = text2path(impturfs2[5])
-					var/turf/T = get_turf(locate(impturfs2[2],impturfs2[3],impturfs2[4]))
-					T.ChangeTurf(resultp)
+					new resultp(get_turf(locate(text2num(impturfs2[2]),text2num(impturfs2[3]),text2num(impturfs2[4]))))
 		world.log << "Imported all turfs."
 		sleep(1)
 		world.log << "Clearing mobs..."
@@ -46,8 +45,8 @@
 				var/list/impmobs2 = splittext(i, ";")
 				if (impmobs2.len >= 5 && impmobs2[1] == "MOB" && impmobs2[5] != "/mob/new_player")
 					var/resultp = text2path(impmobs2[5])
-					var/mob/newmob = new resultp(get_turf(locate(impmobs2[2],impmobs2[3],impmobs2[4])))
-					newmob.stat = impmobs2[6]
+					var/mob/newmob = new resultp(get_turf(locate(text2num(impmobs2[2]),text2num(impmobs2[3]),text2num(impmobs2[4]))))
+					newmob.stat = text2num(impmobs2[6])
 //				else if (impmobs2[1] == "HUMAN")
 //					return
 		world.log << "Imported all mobs."
@@ -62,11 +61,21 @@
 			var/tmpobjs = file2text(F3)
 			var/list/impobjs = splittext(tmpobjs, "\n")
 			for (var/i in impobjs)
-				i = replacetext(i, "|;","|")
+//				i = replacetext(i, "|;","|")
 				var/list/impobjs2 = splittext(i, ";")
 				if (impobjs2.len >= 5 && /*impobjs2[1] == "SIMPLE_OBJ" &&*/ !findtext(impobjs2[5],"/obj/map_metadata"))
 					var/resultp = text2path(impobjs2[5])
-					new resultp(get_turf(locate(impobjs2[2],impobjs2[3],impobjs2[4])))
+					var/obj/tmpobj = new resultp(get_turf(locate(text2num(impobjs2[2]),text2num(impobjs2[3]),text2num(impobjs2[4]))))
+					if (impobjs2[1] == "OBJECT")
+						for (var/j=6, j<=impobjs2.len, j++)
+							var/list/tempvars = splittext(impobjs2[j], "=")
+							if (tempvars.len == 2)
+								if (tempvars[1] == "name")
+									tmpobj.name = tempvars[2]
+								else if (tempvars[1] == "desc")
+									tmpobj.desc = tempvars[2]
+								else if (tempvars[1] == "dir")
+									tmpobj.dir = text2num(tempvars[2])
 /*
 				else if (impobjs2[1] == "OBJECT")
 					if (!findtext(impobjs2[5],"/obj/map_metadata"))
