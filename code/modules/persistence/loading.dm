@@ -29,7 +29,8 @@
 				var/list/impturfs2 = splittext(i, ";")
 				if (impturfs[1] == "TURF")
 					var/resultp = text2path(impturfs2[5])
-					new resultp(get_turf(locate(text2num(impturfs2[2]),text2num(impturfs2[3]),text2num(impturfs2[4]))))
+					var/turf/T = get_turf(locate(text2num(impturfs2[2]),text2num(impturfs2[3]),text2num(impturfs2[4])))
+					T.ChangeTurf(resultp)
 		world.log << "Imported all turfs."
 		sleep(1)
 		world.log << "Clearing mobs..."
