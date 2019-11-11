@@ -181,7 +181,7 @@ var/no_loop_arab = FALSE
 	valid_artillery = list("Explosive")
 /obj/map_metadata/arab_town_2/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_modernday && istype(J, /datum/job/american))
+	if (J.is_modernday && istype(J, /datum/job/american) && !istype(J, /datum/job/american/idf))
 		. = TRUE
 	else if (J.is_specops && istype(J, /datum/job/arab))
 		. = TRUE
