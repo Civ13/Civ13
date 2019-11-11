@@ -477,5 +477,6 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/plastique/c4 = 6,
 		/obj/item/ammo_magazine/m16 = 50,
 		/obj/item/ammo_magazine/m14 = 50,
+		/obj/item/ammo_magazine/m249 = 15,
 		/obj/item/ammo_magazine/m9beretta = 50,
 	)
