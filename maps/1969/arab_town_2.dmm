@@ -572,6 +572,7 @@
 "kZ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean/desert)
 "la" = (/obj/structure/wild/palm,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean/desert)
 "lb" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean/desert)
+"lc" = (/obj/covers/roads/dirt{dir = 4; icon_state = "d_roadhr"},/turf/floor/grass,/area/caribbean/desert)
 
 (1,1,1) = {"
 frfsfsfsfsfsftafaaaaafabababababababababafafabababababdDacbjdidvdwdvdvdwdxdydzdCdCdEdCdCdGdGdGdGdGdHacababababaecaaeadaXabababababababababab
@@ -611,7 +612,7 @@ afaparatarauapavatapafaOaaaBaDaDfyadfyadadadaDbRadadadbxbyadadaDadfyadadadbRadaD
 afaqatatatataqatataqafaQaaaBaDaXadadadadbzadadadamadbRadbyadadbAadadfybdadadadadaXadadaBaaaaaaaaaaaaafafafafafafafafafafafcQafafcQbdaXaecaae
 afapapapaqapapatatapafaUaUaBadadaEadbRadadbBadfyadadadaXbybBadbFbFbIbFadamadbRamadbJaDaBaaaaaJaKaaaaafcXcPeCcPcPcPcPeCcPcPafafafaDaDadaecaca
 afawatatatatapaxaxapggaaaOaBadaXbRadadamadbRadadadadbJadbyadbKcQcQcQcQivadaXbOadadbRadaBasaaaaaaaaaaafcPeQeRiYeShIcPjiaFcPafababaDadaXaeaeca
-afapbabbbcbhapcbccapifihaQaBfyadadfybFbFbFbFbFbIbUbybWbWbWaDbKcQkXkYcQbZbFbFbFadadadadcuaoaoaJaKaaaaafeteveveveveveteveveCababafaDadaXaecaca
+afapbabbbcbhapcbccapifihaQaBfyadadfybFbFbFbFbFbIbUbylclcbWaDbKcQkXkYcQbZbFbFbFadadadadcuaoaoaJaKaaaaafeteveveveveveteveveCababafaDadaXaecaca
 afapapapapapapapapapiTjnjnjCjKjCjCjLcQcQcQcQcQcQcQckadaDadadamadaXbKcQclcQcQcQcpadfyaDcvaaaaaaaaasaodWcPevevhHevevcPeveTcPababaDadaeaecaaeca
 afafafafafafafafafafafaajOjPjOcococicQkZkZkZkZkZcQckbBadadaXadadbBadkZlakZlbcQivadadaDaBaaaaaJcwaoaodJcPeWidcxcyevcPeveXcPabafabaDadaebeaeca
 ababababababababaDabafaaaaaaaaaaaaaBaDcsadamadbxadbyadadfyadadbRadadadadadcMadbBadadadaBaaaaaaaaaaaaafcPcPeCcPcPcPcPeCcPcPafafafaDaDaebeaeca
