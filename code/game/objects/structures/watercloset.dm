@@ -700,6 +700,9 @@
 		thing.update_icon()
 
 /obj/structure/sink/attack_hand(mob/user as mob)
+
+	if (!Adjacent(user))
+		return
 	if (ishuman(user))
 		var/mob/living/carbon/human/H = user
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
@@ -708,10 +711,29 @@
 		if (temp && !temp.is_usable())
 			user << "<span class='notice'>You try to move your [temp.name], but cannot!</span>"
 			return
-
-	if (!Adjacent(user))
-		return
-
+		if (H.a_intent == I_GRAB)
+			H << "You start drinking some water from \the [src]..."
+			if (do_after(H,50,src))
+				var/watertype = "water"
+				if (radiation>0)
+					watertype = "irradiated_water"
+				if (watertype == "irradiated_water")
+					H.rad_act(5)
+				else
+					if (!istype(src, /obj/structure/sink/well))
+						if (prob(15) && !H.orc && !H.crab)
+							if (H.disease == 0)
+								H.disease_progression = 0
+								H.disease_type ="cholera"
+								H.disease = 1
+				if (H.water < 0)
+					H.water += rand(40,50)
+				H.water += 75
+				H << "You drink some water from \the [src]."
+				playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+				return
+			else
+				return
 	if (busy && busy != user)
 		user << "<span class='warning'>Someone's already washing here.</span>"
 		return

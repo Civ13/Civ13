@@ -363,3 +363,34 @@ var/list/global/floor_cache = list()
 		ChangeTurf(/turf/floor/dirt)
 		return
 	..()
+
+/turf/floor/trench/flooded/attack_hand(var/mob/living/carbon/human/H)
+	if (!ishuman(H))
+		return
+	if (H.a_intent == I_GRAB)
+		if (salty)
+			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			return
+		H << "You start drinking some water from the flooded trench..."
+		if (do_after(H,50,src))
+			var/watertype = "water"
+			if (radiation>0)
+				watertype = "irradiated_water"
+			if (watertype == "irradiated_water")
+				H.rad_act(5)
+			else
+				if (prob(25) && !H.orc && !H.crab)
+					if (H.disease == 0)
+						H.disease_progression = 0
+						H.disease_type ="cholera"
+						H.disease = 1
+			if (H.water < 0)
+				H.water += rand(40,50)
+			H.water += 75
+			H << "You drink some water."
+			playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+			return
+		else
+			return
+	else
+		..()
