@@ -937,6 +937,24 @@
 	explosion_resistance = 7
 	material = "Stone"
 
+/obj/covers/vault
+	name = "vault wall"
+	desc = "A very strong wall of concrete wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "vault"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 800
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 10
+	material = "Stone"
+
 /obj/covers/slate
     name = "slatestone wall"
     desc = "A slate wall."
