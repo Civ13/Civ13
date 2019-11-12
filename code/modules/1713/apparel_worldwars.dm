@@ -601,9 +601,9 @@ obj/item/clothing/head/ww2/chicap2
 /obj/item/clothing/under/ww2/german/New()
 	..()
 	if (map && map.ID == MAP_STALINGRAD)
-		icon_state = "geruni_winter"
-		item_state = "geruni_winter"
-		worn_state = "geruni_winter"
+		icon_state = "geruni_ww2_winter"
+		item_state = "geruni_ww2_winter"
+		worn_state = "geruni_ww2_winter"
 		item_state_slots["slot_w_uniform"] = "geruni_winter"
 
 /obj/item/clothing/under/ww2/german/verb/roll_sleeves()
