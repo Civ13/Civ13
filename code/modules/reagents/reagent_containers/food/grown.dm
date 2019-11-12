@@ -61,7 +61,7 @@
 	name = "melon"
 	icon_state = "melon"
 	satisfaction = 4
-	color = "#f08080"
+	//color = "#f08080"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin
 	name = "pumpkin"
