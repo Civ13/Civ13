@@ -527,6 +527,18 @@ obj/structure/closet/crate/ww2/mp40
 	name = "MP40 ammunition crate"
 	paths = list(/obj/item/ammo_magazine/mp40 = 8)
 
+obj/structure/closet/crate/ww2/mosin_ammo
+	name = "Mosin ammunition crate"
+	paths = list(/obj/item/ammo_magazine/mosin = 25)
+
+obj/structure/closet/crate/ww2/mosin
+	name = "Mosin 1891/30 crate"
+	paths = list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 20)
+
+obj/structure/closet/crate/ww2/mosin_old
+	name = "Mosin 1891 crate"
+	paths = list(/obj/item/weapon/gun/projectile/boltaction/mosin = 20)
+
 obj/structure/closet/crate/ww2/stg
 	name = "StG44 ammunition crate"
 	paths = list(/obj/item/ammo_magazine/stg = 8)
