@@ -170,6 +170,11 @@
 	desc = "A flag with the tricolour french flag."
 	icon_state = "flag_france"
 
+/obj/structure/sign/flag/denmark
+	name = "Danish flag"
+	desc = "A flag with the red and white dannebrog."
+	icon_state = "flag_france"
+
 /obj/structure/sign/flag/german
 	name = "German Empire flag"
 	desc = "A horizontal tricolour flag of the German Empire."

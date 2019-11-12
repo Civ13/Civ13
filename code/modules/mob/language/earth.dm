@@ -20,6 +20,7 @@
 #define GORILLA_SYLLABLES list("ugh", "bo", "ah", "unga", "'ga", "bunga", "agha", "ah-ah", "ho", "gru", "egh", "gah", "gu", "gch", "ba", "bu", "-cah", "ah", "ouh", "tcha", "ugga", "uk", "uck", "-gogh", "au", "tah", "boh", "teh", "oog", "u'uk", "gra", "na")
 #define WOLF_SYLLABLES list("woo", "aaf", "wof", "woof", "'wa", "wu", "we", "wi", "ai", "aw", "ae", "af", "aw", "ew")
 #define CRAB_SYLLABLES list("clac","click","clock","cleck","tap","clic","tac")
+#define DANISH_SYLLABLES list("ja","ga","et","de","ka","vi","ik","bli","ve","ke","ste","der","dej","mi","eg","end","ere","ers","ese","gen","hen","ich","ige","ine","ist","lic","lle","men","mit","nde","nen","nge","ike","sto","ren","sch","sei","jep")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -30,6 +31,15 @@
 	syllables = PORTUGUESE_SYLLABLES
 	mutual_intelligibility = list(/datum/language/spanish = 75,
 		/datum/language/french = 35)
+
+/datum/language/danish
+	name = "Danish"
+	desc = "OH LO LO OH LO LO."
+	key = "v"
+	colour = "danish"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = DANISH_SYLLABLES
+	mutual_intelligibility = list(/datum/language/french = 10,/datum/language/german = 10,/datum/language/dutch = 10,/datum/language/english = 10)
 
 /datum/language/spanish
 	name = "Spanish"
