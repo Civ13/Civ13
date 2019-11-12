@@ -33,7 +33,8 @@
 	var/a3_control = "none"
 obj/map_metadata/stalingrad/New()
 	..()
-	points_check()
+	spawn(3000)
+		points_check()
 
 obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
 	..()
