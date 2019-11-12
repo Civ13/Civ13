@@ -19,7 +19,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.3, RUSSIAN = 0.7)
 	battle_name = "battle of Stalingrad"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><font size=3>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>100</b> points wins!</font>"
+	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><font size=3>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>50</b> points wins!</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_SNOW, WEATHER_BLIZZARD)
@@ -94,17 +94,16 @@ obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
 
 obj/map_metadata/stalingrad/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 6000)
-		world << "<big><b>Current Points:</big></b>"
-		world << "<big>Germans: [ger_points]</big>"
-		world << "<big>Soviets: [sov_points]</big>"
 		var/c1 = 0
 		var/c2 = 0
 		var/prev_control = a1_control
-		for (var/mob/living/carbon/human/H in get_area_turfs(/area/caribbean/no_mans_land/capturable/one))
-			if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
-				c1++
-			else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
-				c2++
+		for (var/mob/living/carbon/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
+				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
 		if (c1+c2<=0 || c1 == c2)
 			a1_control = "none"
 		else if (c1 > c2)
@@ -121,11 +120,13 @@ obj/map_metadata/stalingrad/proc/points_check()
 		c1 = 0
 		c2 = 0
 		prev_control = a2_control
-		for (var/mob/living/carbon/human/H in get_area_turfs(/area/caribbean/no_mans_land/capturable/two))
-			if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
-				c1++
-			else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
-				c2++
+		for (var/mob/living/carbon/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
+				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
 		if (c1+c2<=0 || c1 == c2)
 			a2_control = "none"
 		else if (c1 > c2)
@@ -142,11 +143,13 @@ obj/map_metadata/stalingrad/proc/points_check()
 		c1 = 0
 		c2 = 0
 		prev_control = a3_control
-		for (var/mob/living/carbon/human/H in get_area_turfs(/area/caribbean/no_mans_land/capturable/three))
-			if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
-				c1++
-			else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
-				c2++
+		for (var/mob/living/carbon/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
+				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
 		if (c1+c2<=0 || c1 == c2)
 			a3_control = "none"
 		else if (c1 > c2)
@@ -160,14 +163,17 @@ obj/map_metadata/stalingrad/proc/points_check()
 				world << "<font size=3>The [prev_control] have lost the <b>City Hall!</b><font>"
 			else
 				world << "<font size=3>The [a3_control] have captured the <b>City Hall!</b><font>"
+	world << "<big><b>Current Points:</big></b>"
+	world << "<big>Germans: [ger_points]</big>"
+	world << "<big>Soviets: [sov_points]</big>"
 	spawn(600)
 		points_check()
 
 /obj/map_metadata/stalingrad/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 6000)
-		if (sov_points < 100 && ger_points < 100)
+		if (sov_points < 50 && ger_points < 50)
 			return TRUE
-		if (sov_points >= 100 && sov_points > ger_points)
+		if (sov_points >= 50 && sov_points > ger_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE
@@ -176,7 +182,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
-		if (ger_points >= 100 && ger_points > sov_points)
+		if (ger_points >= 50 && ger_points > sov_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE

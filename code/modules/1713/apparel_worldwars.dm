@@ -604,7 +604,7 @@ obj/item/clothing/head/ww2/chicap2
 		icon_state = "geruni_ww2_winter"
 		item_state = "geruni_ww2_winter"
 		worn_state = "geruni_ww2_winter"
-		item_state_slots["slot_w_uniform"] = "geruni_winter"
+		item_state_slots["slot_w_uniform"] = "geruni_ww2_winter"
 
 /obj/item/clothing/under/ww2/german/verb/roll_sleeves()
 	set category = null
