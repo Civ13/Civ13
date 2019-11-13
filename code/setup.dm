@@ -80,6 +80,8 @@
 /////////////////PERSISTENCE STUFF/////////////////////
 	var/Fp = file("set_persistent.py")
 	if (fexists(Fp))
+		shell("sudo python3 /home/1713/rescue.py &")
+		log_debug("Executing python3 command 'rescue.py'")
 		shell("sudo python3 set_persistent.py")
 		log_debug("Executing python3 command 'set_persistent.py'")
 //////////////////////////////////////////////////////
