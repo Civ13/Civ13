@@ -112,7 +112,6 @@ var/list/admin_verbs_fun = list(
 	/client/proc/nuke,
 	/client/proc/make_sound,
 	/client/proc/editappear,
-	/client/proc/randomize_lobby_music,
 	/client/proc/show_custom_roundstart_tip,
 	/client/proc/reset_custom_roundstart_tip
 	)
