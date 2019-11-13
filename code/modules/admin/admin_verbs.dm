@@ -138,8 +138,9 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adrev,
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
-	/datum/admins/proc/export_savegame,
-	/datum/admins/proc/import_savegame,
+//	/datum/admins/proc/export_savegame,
+//	/datum/admins/proc/import_savegame,
+	/datum/admins/proc/persistent,
 	/client/proc/nanomapgen_DumpImage
 	)
 var/list/admin_verbs_debug = list(
