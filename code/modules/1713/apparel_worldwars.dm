@@ -597,7 +597,7 @@ obj/item/clothing/head/ww2/chicap2
 	item_state = "geruni_ww2"
 	worn_state = "geruni_ww2"
 	var/rolled = FALSE
-
+/*
 /obj/item/clothing/under/ww2/german/New()
 	..()
 	if (map && map.ID == MAP_STALINGRAD)
@@ -605,13 +605,14 @@ obj/item/clothing/head/ww2/chicap2
 		item_state = "geruni_ww2_winter"
 		worn_state = "geruni_ww2_winter"
 		item_state_slots["slot_w_uniform"] = "geruni_ww2_winter"
-
+*/
 /obj/item/clothing/under/ww2/german/verb/roll_sleeves()
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/under/ww2/german)
 		return
 	else
+/*
 		if (map && map.ID == MAP_STALINGRAD)
 			if (rolled)
 				item_state = "geruni_ww2_winter"
@@ -626,18 +627,19 @@ obj/item/clothing/head/ww2/chicap2
 				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 				rolled = TRUE
 		else
-			if (rolled)
-				item_state = "geruni_ww2"
-				worn_state = "geruni_ww2"
-				item_state_slots["slot_w_uniform"] = "geruni_ww2"
-				usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
-				rolled = FALSE
-			else if (!rolled)
-				item_state = "geruni_ww2_rolled"
-				worn_state = "geruni_ww2_rolled"
-				item_state_slots["slot_w_uniform"] = "geruni_ww2_rolled"
-				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
-				rolled = TRUE
+*/
+		if (rolled)
+			item_state = "geruni_ww2"
+			worn_state = "geruni_ww2"
+			item_state_slots["slot_w_uniform"] = "geruni_ww2"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "geruni_ww2_rolled"
+			worn_state = "geruni_ww2_rolled"
+			item_state_slots["slot_w_uniform"] = "geruni_ww2_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
 	update_clothing_icon()
 
 /obj/item/clothing/under/ww2/german_doctor
@@ -819,7 +821,7 @@ obj/item/clothing/under/ww2/us_shirtless
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
-
+/*
 /obj/item/clothing/suit/storage/coat/ww2/german/New()
 	..()
 	if (map && map.ID == MAP_STALINGRAD)
@@ -831,7 +833,7 @@ obj/item/clothing/under/ww2/us_shirtless
 		desc = "A german coat, worn by soldaten in the Wehrmacht."
 		body_parts_covered = UPPER_TORSO||ARMS
 		cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT|LOWER_TORSO
-
+*/
 /obj/item/clothing/suit/storage/coat/ww2/german/civ
 	name = "grey parka"
 	desc = "A grey parka, good for warmth in the winters."
@@ -1099,6 +1101,14 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+/obj/item/clothing/head/helmet/ww2/soviet/New()
+	..()
+	if (map && map.ID == MAP_STALINGRAD)
+		icon_state = "sovhelm_winter"
+		item_state = "sovhelm_winter"
+		worn_state = "sovhelm_winter"
+		item_state_slots["sovhelm_winter"] = "sovhelm_winter"
+
 
 /obj/item/clothing/head/helmet/ww2/us
 	name = "american helmet"

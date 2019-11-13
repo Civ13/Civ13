@@ -17,7 +17,7 @@
 		)
 	age = "1942"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(GERMAN = 0.3, RUSSIAN = 0.7)
+	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Stalingrad"
 	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><font size=3>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>50</b> points wins!</font>"
 	faction1 = GERMAN
