@@ -550,7 +550,6 @@
 #include "code\modules\admin\verbs\debug_verbs.dm"
 #include "code\modules\admin\verbs\gameticker.dm"
 #include "code\modules\admin\verbs\getlogs.dm"
-#include "code\modules\admin\verbs\lobby.dm"
 #include "code\modules\admin\verbs\massmodvar.dm"
 #include "code\modules\admin\verbs\mentorhelp.dm"
 #include "code\modules\admin\verbs\modifyvariables.dm"

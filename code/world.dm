@@ -299,23 +299,17 @@ var/world_topic_spam_protect_time = world.timeofday
 			fdel(F)
 		F << get_packaged_server_status_data()
 		sleep (100)
-/*
-var/global/previousstatus = "playing"
+
 /proc/start_persistence_loop()
 	spawn while (1)
 		if (map && map.persistence)
 			var/F1 = file("serverstate.txt")
 			if (fexists(F1))
-				fdel(F1)
-			shell("sudo wget 10.0.2.2/civ13/serverstate.txt")
-			F1 = file("serverstate.txt")
-			if (fexists(F1))
-				var/newstatus = file2text(F1)
-				if (newstatus != previousstatus && newstatus != "playing")
-					world << "<big><b>Attention - Round will be saved in the next 5 minutes. Game might lag up to 30 seconds.</b></big>"
-					previousstatus = newstatus
-		sleep(600)
-*/
+				var/newstatus = text2num(file2text(F1))
+				if (newstatus >= 3480)
+					world << "<big><b>Attention - Round will be saved in the next 2 minutes. Game might lag up to 30 seconds.</b></big>"
+		sleep(300)
+
 /proc/start_messaging_loop()
 	spawn while (1)
 		var/F = file("SQL/discord2ooc.txt")
