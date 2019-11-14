@@ -230,3 +230,8 @@
 	desc = "A double handgun holster slung low on the hip."
 	icon_state = "holster_hip2"
 	capacity = 2
+
+/obj/item/clothing/accessory/holster/tactical
+	name = "hip holster"
+	desc = "A handgun holster slung low on the hip."
+	icon_state = "tactical_holster"

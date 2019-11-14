@@ -389,6 +389,30 @@
 	slowdown = 0.6
 	health = 50
 
+/obj/item/clothing/accessory/armor/ubacblack
+	name = "ubac black"
+	desc = "Wearable thin shirt."
+	icon_state = "ubacblack"
+	item_state = "ubacblack"
+	worn_state = "ubacblack"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 10, arrow = 0, gun = 0, energy = 0, bomb = 0, bio = 20, rad = 10)
+	value = 30
+	slowdown = 0.6
+	health = 50
+
+/obj/item/clothing/accessory/armor/ubacblack
+	name = "ubac black"
+	desc = "Wearable thin shirt."
+	icon_state = "ubactan"
+	item_state = "ubactan"
+	worn_state = "ubactan"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 10, arrow = 0, gun = 0, energy = 0, bomb = 0, bio = 20, rad = 10)
+	value = 30
+	slowdown = 0.6
+	health = 50
+
 /obj/item/clothing/suit/armor/medieval/hauberk
 	name = "hauberk"
 	desc = "A longer version of the chainmail, worn as a coat. Offers greater protection."

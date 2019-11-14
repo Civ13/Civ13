@@ -185,6 +185,14 @@
 	worn_state = "patch_marksman"
 	slot = "armband"
 
+/obj/item/clothing/accessory/patch/police
+	name = "police band"
+	desc = "A law enforcement band, used around the world."
+	icon_state = "police"
+	item_state = "police"
+	worn_state = "police"
+	slot = "armband"
+
 /obj/item/clothing/accessory/patch/specialforce
 	name = "special forces patch"
 	desc = "A patch used by special forces."
