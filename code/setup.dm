@@ -76,7 +76,7 @@
 					world.log << "Error! Dictionary entry [current[1]] has a length of [current.len] (should be 2)."
 	else
 		admin_notice("<span class='danger'>Failed to load the dictionary!</span>", R_DEBUG)
-
+	sleep(-1)
 /////////////////PERSISTENCE STUFF/////////////////////
 	var/Fp = file("set_persistent.py")
 	if (fexists(Fp))
@@ -84,6 +84,19 @@
 		log_debug("Executing python3 command 'rescue.py'")
 		shell("sudo python3 set_persistent.py")
 		log_debug("Executing python3 command 'set_persistent.py'")
-//////////////////////////////////////////////////////
+		spawn(150)
+			map.persistence = TRUE
+			map.research_active = FALSE
+			if (!map.autoresearch)
+				map.autoresearch = TRUE
+				spawn(100)
+					map.autoresearch_proc()
+			map.autoresearch_mult = 0.0006
+			if (map.default_research < 19)
+				map.default_research = 19
+			map.gamemode = "Persistent (Auto-Research)"
+			config.allow_vote_restart = FALSE
+			world << "<big><b>The current round has been set as a Persistent Round.</b></big>"
+	//////////////////////////////////////////////////////
 	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
 	sleep(-1)
