@@ -10,7 +10,7 @@
 			map.autoresearch = TRUE
 			spawn(100)
 				map.autoresearch_proc()
-		map.autoresearch_mult = 0.0006
+		map.autoresearch_mult = 0.006
 		if (map.default_research < 19)
 			map.default_research = 19
 		map.gamemode = "Persistent (Auto-Research)"

@@ -147,6 +147,7 @@
 				make_title_changer()
 			if ("Recruitment")
 				faction_perms[4] = 1
+				leader = 1
 			else
 				return
 	else if (answer == "Remove")
