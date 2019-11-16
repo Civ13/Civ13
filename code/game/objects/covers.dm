@@ -72,16 +72,69 @@
 	layer = 1.99
 	material = "Wood"
 
+/obj/covers/fancywood
+	name = "wood floor"
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "fancywood"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Wood"
+
 /obj/covers/wood/stairs
 	name = "wood stairs"
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "wood2_stairs"
 	material = "Wood"
 
+/obj/covers/slate
+    name = "slatestone wall"
+    desc = "A slate wall."
+    icon = 'icons/obj/structures.dmi'
+    icon_state = "slate"
+    passable = TRUE
+    not_movable = TRUE
+    density = TRUE
+    opacity = TRUE
+    amount = 0
+    layer = 3
+    health = 500
+    wood = FALSE
+    wall = TRUE
+    flammable = FALSE
+    explosion_resistance = 10
+    material = "Stone"
+
 /obj/covers/cobblestone
 	name = "cobblestone floor"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "cobble_vertical_dark"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
+/obj/covers/slatefloor
+	name = "slate floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "slatefloor"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
+/obj/covers/marblefloor
+	name = "marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "marblefloor"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -444,14 +497,14 @@
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall_y2"
+	icon_state = "medieval_wall_y1"
 	health = 185
 
 /obj/covers/wood_wall/medieval/y/l
 	name = "medieval wall crossbeam"
 	desc = "A dark-ages wall with an slanted support."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall_y1"
+	icon_state = "medieval_wall_y2"
 	health = 185
 
 /obj/covers/wood_wall/shoji
@@ -815,7 +868,7 @@
 				qdel(W)
 				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
 				qdel(src)
-				var/choice = WWinput(user, "What time of wall?","Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
+				var/choice = WWinput(user, "What type of wall?","Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
 				if (choice == "Normal")
 					return
 				else if (choice == "Doorway")
@@ -824,10 +877,8 @@
 					S.density = FALSE
 					S.opacity = FALSE
 				else if (choice == "Window")
-					S.icon_state = "sumerian-window"
-					S.name = "sumerian clay window"
-					S.density = TRUE
-					S.opacity = FALSE
+					new /obj/structure/window_frame/sumerian(loc)
+					qdel(src)
 				else if (choice == "Corner")
 					S.icon_state = "sumerian-corner1"
 					var/choice1 = WWinput(user, "Which corner?","Clay Walls","North-West",list("North-West","North-East","South-West","South-East"))
@@ -886,6 +937,42 @@
 	explosion_resistance = 7
 	material = "Stone"
 
+/obj/covers/vault
+	name = "vault wall"
+	desc = "A very strong wall of concrete wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "vault"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 800
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 10
+	material = "Stone"
+
+/obj/covers/slate
+    name = "slatestone wall"
+    desc = "A slate wall."
+    icon = 'icons/obj/structures.dmi'
+    icon_state = "slate"
+    passable = TRUE
+    not_movable = TRUE
+    density = TRUE
+    opacity = TRUE
+    amount = 0
+    layer = 3
+    health = 500
+    wood = FALSE
+    wall = TRUE
+    flammable = FALSE
+    explosion_resistance = 10
+    material = "Stone"
+
 /obj/covers/cement_wall/incomplete
 	name = "cement wall"
 	desc = "A cement brick wall."
@@ -943,9 +1030,14 @@
 		if (do_after(user, 20, src))
 			user << "You finish adding bricks to the wall, completing it."
 			qdel(W)
-			new /obj/covers/brick_wall(loc)
+			var WALL = new /obj/covers/brick_wall(loc)
 			qdel(src)
-			return
+			var/choice = WWinput(user, "What type of wall?","Brick Walls","Normal",list("Wall","Window"))
+			if (choice == "Wall")
+				return
+			else if (choice == "Window")
+				new /obj/structure/window_frame/brick(loc)
+				qdel(WALL)
 			return
 	..()
 
@@ -1070,8 +1162,6 @@
 	origin_water_level = T.water_level
 	T.water_level = 0
 	T.move_delay = 0
-	origin_covered = T.iscovered
-	T.iscovered = TRUE
 	return TRUE
 
 
@@ -1082,7 +1172,6 @@
 			new current_area_type(get_turf(src))
 			visible_message("The roof collapses!")
 		var/turf/floor/T = get_turf(loc)
-		T.iscovered = origin_covered
 		T.water_level = origin_water_level
 		T.move_delay = initial(T.move_delay)
 	if (amount > 0)

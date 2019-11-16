@@ -4,6 +4,7 @@
 /obj/structure/window/snowwall
 	name = "snow barricade"
 	icon_state = "snow_wall"
+	icon = 'icons/obj/structures.dmi'
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
@@ -174,6 +175,17 @@
 		qdel(src)
 		return
 
+/obj/item/weapon/snowwall/attack_hand(mob/user)
+	if (user.a_intent == I_GRAB)
+		user << "You start moulding the snow into some snowballs..."
+		if (do_after(user,40,user.loc))
+			user << "You finish the snowballs."
+			new/obj/item/weapon/snowball(user.loc)
+			new/obj/item/weapon/snowball(user.loc)
+			new/obj/item/weapon/snowball(user.loc)
+			qdel(src)
+	else
+		..()
 
 /obj/covers/snow_wall/blocks
 	name = "snow blocks wall"

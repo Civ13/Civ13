@@ -4,14 +4,18 @@ import signal
 import shutil
 import time
 currdir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(currdir,"paths.txt")) as lines:
-	for line in lines:
-		if "mdir:" in line:
-			mdir = line.replace("\n", "")
-			mdir = mdir.replace("mdir:", "")
-		if "cdir:" in line:
-			cdir = line.replace("\n", "")
-			cdir = cdir.replace("cdir:", "")
+lines = open(os.path.join(currdir,"paths.txt"))
+all_lines = lines.readlines()
+mdir = all_lines[1]
+mdir = mdir.replace("\n", "")
+mdir = mdir.replace("mdir:", "")
+cdir = all_lines[2]
+cdir = cdir.replace("\n", "")
+cdir = cdir.replace("cdir:", "")
+port = all_lines[3]
+port = port.replace("\n", "")
+port = port.replace("port:", "")
+print(port)
 t1 = time.time()
 
 print("Updating git...")
@@ -44,5 +48,5 @@ t2 = time.time() - t1
 
 print("Finished updating all directories in {} seconds".format(t2))
 
-print("Started server on port 1714.")
-os.system("sudo DreamDaemon {}{}civ13.dmb 1714 -trusted -logself -webclient &".format(mdir,cdir))
+print("Started server on port {}.".format(port))
+os.system("sudo DreamDaemon {}{}civ13.dmb {} -trusted -logself -webclient &".format(mdir,cdir,port))

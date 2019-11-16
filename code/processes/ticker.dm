@@ -21,7 +21,8 @@
 			ticker.pregame()
 		start_serverswap_loop()
 		start_serverdata_loop()
-
+		start_messaging_loop()
+		start_persistence_loop()
 	processes.ticker = src
 
 /process/ticker/fire()

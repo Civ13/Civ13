@@ -47,6 +47,20 @@
 	else
 		..()
 
+/obj/structure/grille/fence/picket
+	name = "picket fence"
+	desc = "A traditional wooden fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "p1"
+	health = 30
+	hitsound = 'sound/effects/wooddoorhit.ogg'
+	flammable = TRUE
+
+/obj/structure/grille/fence/picket/New()
+	..()
+	icon_state = "p[rand(1,3)]"
+	color = "#c8c8c8"
+
 /obj/structure/barricade/wood_pole/attackby(obj/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/leash))
 		var/obj/item/weapon/leash/L = O
@@ -295,6 +309,11 @@
 	icon_state = "us"
 	name = "USA Flag"
 	desc = "The US flag."
+
+/obj/structure/flag/german
+	icon_state = "german"
+	name = "German Flag"
+	desc = "The German flag."
 
 /obj/structure/flag/confed
 	icon_state = "confed"

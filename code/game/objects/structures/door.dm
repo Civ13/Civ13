@@ -365,8 +365,13 @@
 	..(newloc, "wood")
 	basic_icon = "fence"
 	icon_state = "fence"
-	name = "Fence Door"
+	name = "Fence Gate"
 	opacity = FALSE
+/obj/structure/simple_door/fence/picket/New(var/newloc,var/material_name)
+	..(newloc, "wood")
+	basic_icon = "picketfence"
+	icon_state = "picketfence"
+	name = "Picket Fence Gate"
 /obj/structure/simple_door/cell/New(var/newloc,var/material_name)
 	..(newloc, "iron")
 /obj/structure/simple_door/stone/New(var/newloc,var/material_name)

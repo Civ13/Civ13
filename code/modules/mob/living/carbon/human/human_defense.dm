@@ -44,19 +44,19 @@ bullet_act
 							var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 							meat.radiation = radiation/10
 					if (orc)
-						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
+						var/obj/item/stack/material/pelt/orcpelt/HP = new/obj/item/stack/material/pelt/orcpelt(get_turf(src))
 						HP.amount = 3
 					else if (gorillaman)
-						var/obj/item/stack/material/gorillapelt/HP = new/obj/item/stack/material/gorillapelt(get_turf(src))
+						var/obj/item/stack/material/pelt/gorillapelt/HP = new/obj/item/stack/material/pelt/gorillapelt(get_turf(src))
 						HP.amount = 3
 					else if (ant || crab)
 						var/obj/item/stack/material/chitin/HP = new/obj/item/stack/material/chitin(get_turf(src))
 						HP.amount = 2
 					else if (wolfman)
-						var/obj/item/stack/material/wolfpelt/HP = new/obj/item/stack/material/wolfpelt(get_turf(src))
+						var/obj/item/stack/material/pelt/wolfpelt/HP = new/obj/item/stack/material/pelt/wolfpelt(get_turf(src))
 						HP.amount = 3
 					else
-						var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
+						var/obj/item/stack/material/pelt/humanpelt/HP = new/obj/item/stack/material/pelt/humanpelt(get_turf(src))
 						HP.amount = 3
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
@@ -675,6 +675,7 @@ bullet_act
 				if (I.w_class <= 2.0)
 					affecting.embed(I)
 		if (istype(O, /obj/item/weapon/snowball))
+			O.layer = layer+2
 			O.icon_state = "snowball_hit"
 			O.update_icon()
 			spawn(6)

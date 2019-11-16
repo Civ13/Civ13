@@ -63,6 +63,7 @@
 	else
 		name = "[material.display_name] [initial(name)]"
 		health = round(material.integrity/10)
+		maxhealth = health
 		if (applies_material_colour)
 			color = material.icon_colour
 		if (material.products_need_process())
@@ -83,7 +84,7 @@
 		check_health()
 
 /obj/item/weapon/material/proc/check_health(var/consumed)
-	if (health<=0)
+	if (health<=0 || maxhealth <=0)
 		shatter(consumed)
 
 /obj/item/weapon/material/proc/shatter(var/consumed)

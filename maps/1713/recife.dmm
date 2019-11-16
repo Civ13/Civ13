@@ -430,7 +430,7 @@
 "in" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/flintlock/pistol,/turf/floor/wood,/area/caribbean/houses/nml_four{name = "Tavern"})
 "io" = (/obj/structure/bed/chair/wood/wings{dir = 8},/turf/floor/wood,/area/caribbean/houses/nml_four{name = "Tavern"})
 "ip" = (/turf/floor/wood,/area/caribbean/houses/nml_four{name = "Tavern"})
-"iq" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/rum{step_x = 0; step_y = 0},/obj/item/weapon/material/star,/turf/floor/wood,/area/caribbean/houses/nml_four{name = "Tavern"})
+"iq" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/rum{step_x = 0; step_y = 0},/obj/item/weapon/material/thrown/star,/turf/floor/wood,/area/caribbean/houses/nml_four{name = "Tavern"})
 "ir" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 1},/turf/floor/wood,/area/caribbean/houses/nml_four{name = "Tavern"})
 "is" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood,/area/caribbean/houses/nml_four{name = "Tavern"})
 "it" = (/turf/wall/stone,/area/caribbean/colonies/portuguese{name = "Portuguese Fort"})

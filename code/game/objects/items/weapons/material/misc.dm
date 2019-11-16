@@ -37,6 +37,25 @@
 	block_chance = 10
 	cooldownw = 7
 
+/obj/item/weapon/material/handle/stick
+	name = "stick"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A stick, could work as a handle.."
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	icon_state = "stick"
+	item_state = "spear"
+	default_material = "wood"
+	throw_speed = 7
+	throw_range = 7
+	allow_spin = FALSE
+	force_divisor = 0.1 // 12 with hardness 60 (steel)
+	thrown_force_divisor = 0.2 // 8 with weight 20 (steel)
+	attack_verb = list("jabbed","hit","bashed")
+	value = 1
+	block_chance = 8
+	cooldownw = 6
+
 /obj/item/weapon/material/pitchfork
 	name = "pitchfork"
 	desc = "It's used for removing weeds or scratching your back."

@@ -72,7 +72,7 @@
 	..()
 	invisibility = 101
 
-/obj/structure/piranha/Crossed(mob/M as mob)
+/obj/structure/piranha/Crossed(M as mob|obj)
 	for (var/obj/covers/CV in src.loc)
 		if (CV.is_cover == TRUE)
 			return
@@ -114,6 +114,13 @@
 			spawn(300)
 				invisibility = 101
 			return
+	else if (istype(M, /obj/item/weapon/reagent_containers/food/snacks/meat))
+		invisibility = 0
+		visible_message("<span class='notice'>The piranhas devour the [M]!</span>")
+		qdel(M)
+		spawn(300)
+			invisibility = 101
+		return
 	else
 		return
 

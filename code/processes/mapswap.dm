@@ -101,6 +101,7 @@
 			maps = list(
 				MAP_HOSTAGES = 0,
 				MAP_ARAB_TOWN = 0,
+				MAP_ARAB_TOWN_2 = 0,
 			)
 		if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM
@@ -142,7 +143,7 @@
 		//		MAP_BATTLEROYALE = 20,
 				MAP_SUPPLY_RAID = 8,
 				MAP_RECIFE = 10,
-//				MAP_FIELDS = 10,
+				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
 			)
 		if (epoch == "Bronze Age (500 B.C.-400 A.D.)")
@@ -173,6 +174,7 @@
 				MAP_NOMADS_CONTINENTAL = 20,
 				MAP_NOMADS_PANGEA = 10,
 				MAP_NOMADS_WASTELAND = 0,
+				MAP_NOMADS_NEW_WORLD = 10,
 			)
 		if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(
@@ -256,7 +258,7 @@
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
+		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)",  "Chad Mode", "Chad Mode +")
 
 	map.gamemode = vote.voted_gamemode
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")
@@ -269,6 +271,43 @@
 		map.ordinal_age = 0
 		map.research_active = FALSE
 		map.chad_mode = TRUE
+		for (var/obj/effect/spawner/mobspawner/MS)
+			MS.buff()
+		for (var/obj/structure/wild/tree/T)
+			T.amount *= 0.5
+			T.amount = round(T.amount)
+		for (var/obj/structure/wild/jungle/J)
+			J.amount *= 0.5
+			J.amount = round(J.amount)
+		for (var/obj/structure/wild/palm/P)
+			P.amount *= 0.5
+			P.amount = round(P.amount)
+		for (var/obj/structure/wild/junglebush/V)
+			if (prob(75) && !istype(V,/obj/structure/wild/junglebush/chinchona))
+				qdel(V)
+		spawn(10)
+			if (map.ID == MAP_NOMADS_ICE_AGE)
+				for (var/turf/floor/dirt/winter/W)
+					if (prob(40))
+						W.ChangeTurf(/turf/floor/winter)
+				for (var/turf/floor/winter/grass/WW)
+					if (prob(40))
+						WW.ChangeTurf(/turf/floor/winter)
+			else if (map.ID == MAP_NOMADS_JUNGLE)
+				for (var/turf/floor/dirt/winter/W)
+					if (prob(40))
+						W.ChangeTurf(/turf/floor/winter)
+				for (var/turf/floor/winter/grass/WW)
+					if (prob(40))
+						WW.ChangeTurf(/turf/floor/winter)
+		return
+
+	if (vote.voted_gamemode == "Chad Mode +")
+		world << "<font color=#CECE00><big>Starting <b>Chad Mode +</b>. Starting epoch is the Stone Age, research is done by sacrificing players. Reduced starting items and more hostile conditions.</big></font>"
+		map.ordinal_age = 0
+		map.research_active = TRUE
+		map.chad_mode = TRUE
+		map.chad_mode_plus = TRUE
 		for (var/obj/effect/spawner/mobspawner/MS)
 			MS.buff()
 		for (var/obj/structure/wild/tree/T)

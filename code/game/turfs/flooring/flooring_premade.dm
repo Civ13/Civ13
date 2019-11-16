@@ -100,6 +100,7 @@
 	name = "underground rock"
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "rocky"
+	desc = "This space is blocked off by soft earth and rocks. Can be mined."
 	uses_winter_overlay = FALSE
 	may_become_muddy = TRUE
 	available_dirt = 0
@@ -107,26 +108,10 @@
 	is_mineable = TRUE
 	opacity = TRUE
 	density = TRUE
-	desc = "This space is blocked off by soft earth and rocks. Can be digged."
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "rocky"
 	initial_flooring = null
 	var/rocktype = "default" //Default, Sand, and Ice.
 	New()
 		..()
-		update_rock_type()
-
-/turf/floor/dirt/underground/proc/update_rock_type()
-	if(src.z < 2) //if Underground.
-		var/turf/A=locate(/turf/) in locate(src.x, src.y, src.z + 1)
-		//Check if it is desert area, if so make it sandy
-		if(A && istype(A.loc, /area/caribbean/arab/desert))
-			rocktype = "sand"
-			icon_state = "rockysandy"
-		//if in snow, make it icy colored
-		if(A && istype(A.loc, /area/caribbean/nomads/snow))
-			rocktype = "ice"
-			icon_state = "rockyicy"
 
 /turf/floor/dirt/underground/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
@@ -149,7 +134,6 @@
 			else if  (input == "Underground Cave")
 				user << "<span class='notice'>You will now carve the cave design!</span>"
 				design = "undercave"
-				update_rock_type()
 			else if  (input == "Brick")
 				user << "<span class='notice'>You will now carve the brick design!</span>"
 				design = "brick"
@@ -188,6 +172,31 @@
 					src.name = "tiled stone wall"
 					src.desc = "A cave wall carved to have a tiled stone pattern."
 				else
+	..()
+
+/turf/floor/dirt/underground/sandy
+	name = "sandy underground rock"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandyrocky"
+	desc = "This space is blocked off by soft earth and sandy stones. Can be mined."
+	New()
+		..()
+/turf/floor/dirt/underground/sandy/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/chisel))
+		user << "The sandy rock is too brittle to carve!"
+		return//Temp until I feel like improving chisel system.
+	..()
+/turf/floor/dirt/underground/icy
+	name = "icy underground rock"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "icyrocky"
+	desc = "This space is blocked off by frozen earth and rocks. Can be mined."
+	New()
+		..()
+/turf/floor/dirt/underground/icy/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/chisel))
+		user << "The frozen rock is too hard to carve!"
+		return //Temp until I feel like improving chisel system.
 	..()
 
 /turf/floor/dirt/underground/empty

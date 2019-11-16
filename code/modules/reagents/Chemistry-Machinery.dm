@@ -175,6 +175,7 @@
 		user << "You place [B] in the dispenser."
 		nanomanager.update_uis(src) // update all UIs attached to src
 		return
+	..()
 
 /obj/structure/chemical_dispenser/attack_hand(mob/user as mob)
 	sanitize_reagents()

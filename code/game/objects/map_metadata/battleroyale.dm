@@ -56,19 +56,7 @@
 
 /obj/map_metadata/battleroyale/cross_message(faction)
 	return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
-/*
-/obj/map_metadata/robusta/win_condition_specialcheck()
-	if (alive_n_of_side(PIRATES) <= 1 && processes.ticker.playtime_elapsed >= 1200)
-		for (var/mob/living/carbon/human/H in player_list)
-			if (H.original_job && H.stat != DEAD)
-				if (H.original_job.base_type_flag() == PIRATES)
-					winner_name =  H.name
-					winner_ckey = H.ckey
-					message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
-		return FALSE
-	else
-		return TRUE
-*/
+
 /obj/map_metadata/battleroyale/update_win_condition()
 	if (world.time >= 36000)
 		if (win_condition_spam_check)
@@ -79,7 +67,7 @@
 		win_condition_spam_check = TRUE
 		return FALSE
 	if (processes.ticker.playtime_elapsed >= 1200)
-		if (alive_n_of_side(PIRATES) <= 1)
+		if (alive_n_of_side(PIRATES) <= 1 && !win_condition_spam_check)
 			for (var/mob/living/carbon/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
 					if (H.original_job.base_type_flag() == PIRATES)

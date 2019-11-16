@@ -24,7 +24,7 @@
 	if (nutriment_amt)
 		reagents.add_reagent("nutriment",nutriment_amt,nutriment_desc)
 	spawn (1)
-		if (reagents.total_volume)
+		if (reagents && reagents.total_volume)
 			bitesize = max(bitesize, ceil(reagents.total_volume/5))
 		else
 			bitesize = 2
@@ -1197,6 +1197,14 @@
 		reagents.add_reagent("protein", 4)
 		reagents.add_reagent("water", 15)
 		bitesize = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/gyro
+	name = "gyro"
+	desc = "Greek delicacy."
+	icon_state = "gyro"
+	bitesize = 3
+	satisfaction = 10
+	nutriment_desc = list("lamb" = 4, "bread" = 2, "tzatziki" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/tossedsalad
 	name = "tossed salad"

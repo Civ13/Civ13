@@ -72,8 +72,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/bruise_pack/herbs(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/bruise_pack/herbs(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_r_store)
 	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Shaman</b>, the healer and religious leader of your tribe. Keep your fellow tribesmen healthy and motivated!")
@@ -165,7 +165,7 @@
 	var/obj/item/clothing/accessory/armband/indianr_a = new /obj/item/clothing/accessory/armband/indianr(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianr_a, H)
-
+	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Red Goose</b> tribe. You should wear red clothes.")
@@ -206,7 +206,7 @@ datum/job/indians/tribes/blue
 	var/obj/item/clothing/accessory/armband/indianb_a = new /obj/item/clothing/accessory/armband/indianb(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianb_a, H)
-
+	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Blue Turkey</b> tribe. You should wear blue clothes.")
@@ -247,7 +247,7 @@ datum/job/indians/tribes/green
 	var/obj/item/clothing/accessory/armband/indiang_a = new /obj/item/clothing/accessory/armband/indiang(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indiang_a, H)
-
+	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Green Monkey</b> tribe. You should wear green clothes.")
@@ -288,7 +288,7 @@ datum/job/indians/tribes/yellow
 	var/obj/item/clothing/accessory/armband/indiany_a = new /obj/item/clothing/accessory/armband/indiany(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indiany_a, H)
-
+	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Yellow Mouse</b> tribe. You should wear yellow clothes.")
@@ -329,7 +329,7 @@ datum/job/indians/tribes/white
 	var/obj/item/clothing/accessory/armband/indianw_a = new /obj/item/clothing/accessory/armband/indianw(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianw_a, H)
-
+	give_random_name(H)
 	if (H.h_style == "Bald")
 		H.h_style = "Skinhead"
 	H.f_style = "Shaved"
@@ -372,7 +372,7 @@ datum/job/indians/tribes/black
 	var/obj/item/clothing/accessory/armband/indianbl_a = new /obj/item/clothing/accessory/armband/indianbl(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianbl_a, H)
-
+	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Black Bear</b> tribe. You should wear black clothes.")

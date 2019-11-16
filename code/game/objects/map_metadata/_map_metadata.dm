@@ -104,6 +104,7 @@ var/civmax_research = list(230,230,230)
 	var/list/facl = list()
 
 	var/chad_mode = FALSE //Virgins BTFO
+	var/chad_mode_plus = FALSE //SUPER CHAD
 	var/gamemode = "Team Deathmatch"
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level
@@ -180,6 +181,8 @@ var/civmax_research = list(230,230,230)
 
 	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"), list("zelenyy","neutral","water"), list("marron","neutral","water"), list("corcairghorm","neutral","water"))
 
+	var/persistence = FALSE
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -187,7 +190,11 @@ var/civmax_research = list(230,230,230)
 	icon_state = null
 	human = faction_organization.Copy()
 	initial_faction_organization = faction_organization.Copy()
-
+/*
+	//export game data (WIP persistence stuff)
+	if (civilizations || nomads)
+		savegame()
+*/
 	// get a subfaction, just one, for this round
 	var/subfaction = null
 	for (var/faction in available_subfactions)

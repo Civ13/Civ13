@@ -164,7 +164,6 @@
 "dh" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "di" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "dj" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/ricepudding,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
-"dk" = (/obj/covers/wood_ship,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "dl" = (/obj/structure/table/rack,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 "dm" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "dn" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
@@ -277,7 +276,7 @@
 "fq" = (/obj/item/weapon/material/hatchet,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
 "fr" = (/obj/covers/wood_ship,/obj/item/weapon/material/hatchet,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "fs" = (/obj/structure/wild/jungle,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"ft" = (/obj/covers/wood_ship,/obj/item/stack/material/catpelt{desc = "A pelt from a skinned cat. You monster."},/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"ft" = (/obj/covers/wood_ship,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "fu" = (/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "fv" = (/turf/floor/beach,/area/caribbean/void/caves)
 "fw" = (/turf/floor/beach/water/ice,/area/caribbean/void/caves)
@@ -556,8 +555,8 @@ aqatauabababababanaLaLaLaLarbpababaneSfnaEaEaBaDaDaDaDaDhkaBfpaBfnaEakabbpababab
 aqaqauababafabababavababavababadabaneSaEaEaBaBaDaDaDaDaDhmaBaBaBaEaEabafabababab
 aqaqauajabababcucucDcNcucDcucuadabaneSaEaEaEaBaBaDaDaDaDaBaBfqaBaEaEamamabajabab
 aqaqauauabagabcucOdjftdwfrdxdyadafanfbaEaEaEaBaBaDaDaDaDaBaBaBaEaEbiamamamababab
-awaqamauamababdzdAdBeIdkeJdkcDadabaneSaEaEaEaBaBaDaDaDaDaBaBaBaEaHaEaxamamabafab
-awaqaqamayabacdDdkdkdkeIdCdxcuababanfcbibjbkbkbkbxemaDemenbkbkbkbjbjaxamambpabab
+awaqamauamababdzdAdBeIfteJftcDadabaneSaEaEaEaBaBaDaDaDaDaBaBaBaEaHaEaxamamabafab
+awaqaqamayabacdDftftfteIdCdxcuababanfcbibjbkbkbkbxemaDemenbkbkbkbjbjaxamambpabab
 awaqaqamamababdDcDcudEdEcucDcuabaqaqazavaAbjbjbxenaDaDaDaDeneneoabamamamamabbnad
 awawaqaCambnabaFamaGaGaGaGaGaGaGamamaqababaEeoaBaBaDaDaDaDaBaBaEamamamamabbnbnad
 awawaqaCamamamaGaKaGaGaGamamaKaGaGaGamadajaEaEaEaBaBaDaDaDaBaBaBamamamababbnabab

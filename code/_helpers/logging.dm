@@ -28,6 +28,26 @@
 	var/oocdiary = file("ooc.log")
 	oocdiary << "__**\[[time_stamp()]] ([map.ID]) OOC:**__ **[name]** [text]"
 
+/proc/discord_admin_log(name,text)
+	var/admindiary = file("admin.log")
+	admindiary << "__**\[[time_stamp()]] ([map.ID]) ASAY:**__ **[name]** [text]"
+
+/proc/discord_ahelp_log(name,text)
+	var/admindiary = file("admin.log")
+	admindiary << "__**\[[time_stamp()]] ([map.ID]) AHELP:**__ **[name]** [text]"
+
+/proc/discord_mentorhelp_log(name,text)
+	var/admindiary = file("admin.log")
+	admindiary << "__**\[[time_stamp()]] ([map.ID]) MENTORHELP:**__ **[name]** [text]"
+
+/proc/discord_adminpm_log(name,text,aname)
+	var/admindiary = file("admin.log")
+	admindiary << "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]"
+
+/proc/discord_admin_ban(banner,banned,duration,reason)
+	var/admindiary = file("admin.log")
+	admindiary << "__**\[[time_stamp()]] ([map.ID])** [banner] **HAS BANNED** [banned] for [duration], with the reason \"[reason]\""
+
 /proc/attack_log(category, text)
 	attack_log << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
 
@@ -35,6 +55,14 @@
 	admin_log.Add(text)
 	if (config.log_admin)
 		game_log("ADMIN", text)
+
+/proc/log_discord(text)
+	if (config.log_admin)
+		game_log("DISCORD", text)
+
+/proc/log_discord_asay(text)
+	if (config.log_admin)
+		game_log("DISCORD-ASAY", text)
 
 /proc/log_debug(text)
 	if (config.log_debug)
@@ -75,10 +103,6 @@
 /proc/log_attack(text)
 	if (config.log_attack)
 		attack_log("ATTACK", text)
-
-/proc/log_adminsay(text)
-	if (config.log_adminchat)
-		game_log("ADMINSAY", text)
 
 /proc/log_adminwarn(text)
 	if (config.log_adminwarn)
