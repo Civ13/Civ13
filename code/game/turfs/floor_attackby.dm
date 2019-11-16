@@ -822,7 +822,7 @@
 	if (!H || !src)
 		return
 	var/turf/T = get_turf(src)
-	if (prob(10))
+	if (prob(12))
 		if (prob(50))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 			mineral.amount = rand(8,12)
