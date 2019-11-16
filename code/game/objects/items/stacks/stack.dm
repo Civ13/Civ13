@@ -301,7 +301,7 @@
 			user << "\The [recipe.title] can only be built during the <b>Classic Research</b> gamemode."
 			return
 
-	else if (recipe.result_type == /obj/item/weapon/language_book)
+	else if (recipe.result_type == /obj/item/weapon/book/language_book)
 		if (H.getStatCoeff("philosophy") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
