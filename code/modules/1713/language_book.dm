@@ -11,7 +11,7 @@
 	var/written = FALSE // has this book been written in yet?
 	var/datum/language/lang1 = null // 1st language of translation
 	var/datum/language/lang2 = null // 2nd language of translation
-
+	unique = TRUE
 /obj/item/weapon/book/language_book/attack_self(var/mob/user as mob)
 	var/mob/living/carbon/human/H = user
 	if(src.written && lang1 && lang2)

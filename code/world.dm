@@ -305,7 +305,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
 		var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
 		if (minsleft <= 2)
-			world << "<big><b>Attention - Round will be saved in <b>[minsleft] minutes</b> and <b>[secsleft] seconds</b>. Game might lag up to 30 seconds.</b></big>"
+			world << "<big><b>Attention - Round will be saved in <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to 30 seconds.</b></big>"
 		sleep(300)
 
 /proc/start_messaging_loop()
