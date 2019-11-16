@@ -759,14 +759,15 @@
 		E.reagents.add_reagent(randreg,5)
 		E.update_icon()
 
+//This is where the mining probabilitys are
 /turf/proc/mining_proc(var/mob/living/carbon/human/H, var/ROCKTYPE)
 	if (!H || !src)
 		return
 	var/turf/T = get_turf(src)
-	if (prob(25))
-		if (prob(60))
+	if (prob(10))
+		if (prob(50))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
-			mineral.amount = rand(8,12)
+			mineral.amount = rand(10,12)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			H << "<span class='danger'>You found some copper ore!</span>"
@@ -779,7 +780,7 @@
 			return
 		else
 			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
-			mineral.amount = rand(8,12)
+			mineral.amount = rand(10,12)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			H << "<span class='danger'>You found some tin ore!</span>"
@@ -803,7 +804,7 @@
 		T.is_mineable = FALSE
 		H.adaptStat("strength", 1)
 		return
-	if (prob(25))
+	if (prob(40))
 		if (map.ordinal_age <= 1)
 			var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
 			mineral.amount = rand(12,16)
