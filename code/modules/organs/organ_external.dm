@@ -1258,8 +1258,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "jaw"
 	amputation_point = "neck"
 	artery_name = "carotid artery"
-//	gendered_icon = TRUE
-	var/list/teeth_list() = list()
+	var/list/teeth_list = list()
 	var/max_teeth = 32
 	var/eye_icon = "eyes_s"
 	var/eye_icon_location = 'icons/mob/human_face.dmi'

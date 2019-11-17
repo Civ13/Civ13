@@ -167,7 +167,7 @@
 	edge = FALSE
 	flammable = FALSE
 	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
-	var design = "smooth"
+	var/design = "smooth"
 
 /obj/item/weapon/chisel/attack_self(mob/user)
 	var/display = list("Smooth", "Cave", "Brick", "Cobbled", "Tiled", "Cancel")
