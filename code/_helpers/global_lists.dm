@@ -26,7 +26,7 @@ var/global/list/chemical_reagents_list				//list of all /datum/reagent datums in
 var/global/list/landmarks_list = list()				//list of all landmarks created
 var/global/list/surgery_steps = list()				//list of all surgery steps  |BS12
 var/global/list/side_effects = list()				//list of all medical sideeffects types by their names |BS12
-var/global/list/joblist = list()					//list of all jobstypes, minus borg and AI
+var/global/list/joblist = list()					//list of all jobstypes
 
 var/global/list/HUDdatums = list()
 

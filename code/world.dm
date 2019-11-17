@@ -234,7 +234,6 @@ var/world_topic_spam_protect_time = world.timeofday
 		..(reason)
 
 #define COLOR_LIGHT_SEPIA "#D4C6B8"
-#undef COLOR_SEPIA
 
 /hook/startup/proc/loadMOTD()
 	world.load_motd()

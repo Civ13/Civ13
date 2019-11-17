@@ -1243,7 +1243,6 @@ var/global/list/damage_icon_parts = list()
 #undef GLOVES_LAYER
 #undef EARS_LAYER
 #undef SUIT_LAYER
-#undef TAIL_LAYER
 #undef GLASSES_LAYER
 #undef FACEMASK_LAYER
 #undef BELT_LAYER

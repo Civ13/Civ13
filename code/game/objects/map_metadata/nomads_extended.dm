@@ -1,8 +1,9 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/nomads_extended
 	ID = MAP_NOMADS_EXTENDED
 	title = "Nomads: Oil Rush (225x225x2)"
 	lobby_icon_state = "civ13"
+	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // q0 minutes!
 	squad_spawn_locations = FALSE
@@ -199,4 +200,3 @@
 			win_condition_spam_check = TRUE
 			ticker.finished = TRUE
 			return TRUE
-#undef NO_WINNER

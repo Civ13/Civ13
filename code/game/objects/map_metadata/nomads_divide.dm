@@ -1,8 +1,9 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/nomads_divide
 	ID = MAP_NOMADS_DIVIDE
 	title = "Nomads (Jungle-Desert) (250x250x2)"
 	lobby_icon_state = "civ13"
+	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	squad_spawn_locations = FALSE
@@ -69,7 +70,7 @@
 	if (real_season == "dry")
 		season = "Wet Season"
 		world << "<big>The <b>Wet Season</b> has started.</big>"
-			change_weather_somehow()
+		change_weather_somehow()
 		for (var/turf/floor/dirt/flooded/D)
 			D.ChangeTurf(/turf/floor/beach/water/flooded)
 		for (var/turf/floor/dirt/ploughed/flooded/D)
@@ -98,7 +99,7 @@
 	else
 		season = "Dry Season"
 		world << "<big>The <b>Dry Season</b> has started.</big>"
-			change_weather_somehow()
+		change_weather_somehow()
 		real_season = "dry"
 		for(var/obj/structure/sink/S in get_area_turfs(/area/caribbean/nomads/desert))
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
@@ -122,4 +123,3 @@
 		. = TRUE
 	else
 		. = FALSE
-#undef NO_WINNER

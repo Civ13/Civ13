@@ -1,7 +1,8 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/gulag13
 	ID = MAP_GULAG13
 	title = "GULAG 13 (120x100x1)"
+	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "camp"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 3600
@@ -174,7 +175,6 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			return (!faction1_can_cross_blocks() || !faction2_can_cross_blocks())
 	return FALSE
 
-#undef NO_WINNER
 
 /obj/item/weapon/prisoner_passport
 	name = "Prisoner's Documents"

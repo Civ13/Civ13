@@ -1,8 +1,9 @@
-#define NO_WINNER "The battle for the city is still going on."
+
 /obj/map_metadata/stalingrad
 	ID = MAP_STALINGRAD
 	title = "Stalingrad (90x250x2)"
 	lobby_icon_state = "ww2"
+	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
@@ -192,4 +193,3 @@ obj/map_metadata/stalingrad/proc/points_check()
 			win_condition_spam_check = TRUE
 			return FALSE
 	return TRUE
-#undef NO_WINNER

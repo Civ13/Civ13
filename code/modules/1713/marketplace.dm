@@ -189,8 +189,8 @@
 			return
 		if (choice4 == "View Members")
 			var/body = "<html><head><title>[custom_company]</title></head><b>STOCK MARKET</b><br><br>"
-				for(var/list/i in map.custom_company[custom_company])
-					body += "<b>[i[1]]</b> owns [i[2]]%.</br>"
+			for(var/list/i in map.custom_company[custom_company])
+				body += "<b>[i[1]]</b> owns [i[2]]%.</br>"
 			body += {"<br>
 				</body></html>
 			"}

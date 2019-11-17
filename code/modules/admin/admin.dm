@@ -346,7 +346,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc="Announce your desires to the world"
 	if (!check_rights(0))	return
 
-	var/message = russian_to_cp1251(input("Global message to send:", "Admin Announce", null, null))  as message
+	var/message = russian_to_cp1251(input("Global message to send:", "Admin Announce", null, null))
 	if (message)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)
@@ -360,8 +360,8 @@ proc/admin_notice(var/message, var/rights)
 	set name = "IC Announcement"
 	set desc="Announce events"
 	if (!check_rights(0))	return
-	var/messaget = russian_to_cp1251(input("Message Title:", "IC Announcement", null, null))  as message
-	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))  as message
+	var/messaget = russian_to_cp1251(input("Message Title:", "IC Announcement", null, null))
+	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))
 	if (message)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)

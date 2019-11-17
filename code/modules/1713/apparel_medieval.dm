@@ -323,18 +323,15 @@
 	slowdown = 0.8
 	health = 52
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/red
-	..()
 	icon_state = "iron_chestplater"
 	item_state = "iron_chestplater"
 	worn_state = "iron_chestplater"
 
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader
-	..()
 	icon_state = "iron_chestplatec"
 	item_state = "iron_chestplatec"
 	worn_state = "iron_chestplatec"
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/blue
-	..()
 	icon_state = "iron_chestplateb"
 	item_state = "iron_chestplateb"
 	worn_state = "iron_chestplateb"

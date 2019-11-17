@@ -1,10 +1,10 @@
-#define NO_WINNER "The operation is still underway."
 /obj/map_metadata/arab_town
 	ID = MAP_ARAB_TOWN
 	title = "Arab Town (100x100x1)"
 	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
+	no_winner = "The operation is still underway."
 	squad_spawn_locations = FALSE
 	faction_organization = list(
 		AMERICAN,
@@ -141,12 +141,12 @@ var/no_loop_arab = FALSE
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
-		if (current_win_condition != NO_WINNER && current_winner && current_loser)
+		if (current_win_condition != no_winner && current_winner && current_loser)
 			world << "<font size = 3>The Hezbollah has recaptured their HQ!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
-		current_win_condition = NO_WINNER
+		current_win_condition = no_winner
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
@@ -229,4 +229,3 @@ var/no_loop_arab = FALSE
 	else
 		return ""
 
-	#undef NO_WINNER

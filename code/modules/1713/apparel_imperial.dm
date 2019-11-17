@@ -239,8 +239,6 @@
 		..()
 		can_hold = list(/obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow)
 
-/obj/item/weapon/storage/backpack/quiver/full
-	..()
 /obj/item/weapon/storage/backpack/quiver/full/New()
 	..()
 	can_hold = list(/obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow)

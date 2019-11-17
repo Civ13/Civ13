@@ -102,9 +102,6 @@
 	storage_slots = 9
 	max_w_class = 2
 
-/obj/item/weapon/storage/belt/leather/farmer
-	..()
-
 /obj/item/weapon/storage/belt/leather/farmer/New()
 	..()
 	new /obj/item/stack/farming/seeds/tomato(src)
@@ -126,8 +123,6 @@
 		/obj/item/weapon/material/thrown/throwing_axe,
 		)
 
-/obj/item/weapon/storage/belt/leather/ninja
-	..()
 /obj/item/weapon/storage/belt/throwing/ninja/New()
 	..()
 	new /obj/item/weapon/material/thrown/star(src)

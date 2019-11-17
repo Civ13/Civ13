@@ -1,5 +1,3 @@
-#define NO_WINNER "Neither side has captured the other side's base."
-
 var/global/obj/map_metadata/map = null
 //Max levels showing players how far to advance, appears on the Character tab
 var/civmax_research = list(230,230,230)
@@ -12,6 +10,7 @@ var/civmax_research = list(230,230,230)
 	simulated = FALSE
 	invisibility = 101
 	var/ID = null // MUST be text, or aspects will break
+	var/no_winner = "Neither side has captured the other side's base."
 	var/title = null
 	var/lobby_icon_state = "civ13"
 	var/list/caribbean_blocking_area_types = list()
@@ -53,7 +52,7 @@ var/civmax_research = list(230,230,230)
 
 	// win conditions 3.0 - Kachnov
 	var/datum/win_condition/win_condition = null
-	var/current_win_condition = NO_WINNER
+	var/current_win_condition = "Neither side has captured the other side's base."
 	var/last_win_condition = null // this is a hash
 	var/current_winner = null
 	var/current_loser = null
@@ -628,12 +627,12 @@ var/civmax_research = list(230,230,230)
 					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 		else
-			if (current_win_condition != NO_WINNER && current_winner && current_loser)
+			if (current_win_condition != no_winner && current_winner && current_loser)
 				world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>"
 				current_winner = null
 				current_loser = null
 			next_win = -1
-			current_win_condition = NO_WINNER
+			current_win_condition = no_winner
 			win_condition.hash = 0
 		last_win_condition = win_condition.hash
 		return TRUE
@@ -641,7 +640,7 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/has_occupied_base(side)
 
 	// hack
-	if (current_win_condition == NO_WINNER)
+	if (current_win_condition == no_winner)
 		return FALSE
 
 	var/list/soldiers = list(
@@ -846,4 +845,3 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 
-#undef NO_WINNER

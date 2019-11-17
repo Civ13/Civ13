@@ -1,8 +1,9 @@
-#define NO_WINNER "The fighting for the town is still going on."
+
 /obj/map_metadata/little_creek_tdm
 	ID = MAP_LITTLE_CREEK_TDM
 	title = "Big Trouble in Little Creek (TDM) (100x100x2)"
 	lobby_icon_state = "wildwest"
+	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 600
 	squad_spawn_locations = FALSE
@@ -62,4 +63,3 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return TRUE
-#undef NO_WINNER

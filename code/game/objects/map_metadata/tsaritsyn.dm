@@ -1,8 +1,9 @@
-#define NO_WINNER "The church is under Soviet control."
+
 /obj/map_metadata/tsaritsyn
 	ID = MAP_TSARITSYN
 	title = "Tsaritsyn (120x100x1)"
 	lobby_icon_state = "ww1"
+	no_winner ="The church is under Soviet control."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 600
 	squad_spawn_locations = FALSE
@@ -149,13 +150,12 @@ var/no_loop_t = FALSE
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
-		if (current_win_condition != NO_WINNER && current_winner && current_loser)
+		if (current_win_condition != no_winner && current_winner && current_loser)
 			world << "<font size = 3>The <b>Soviets</b> have recaptured the church!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
-		current_win_condition = NO_WINNER
+		current_win_condition = no_winner
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
-#undef NO_WINNER

@@ -1,4 +1,3 @@
-#define NO_WINNER "The fighting for the town is still going on."
 /obj/map_metadata/fields
 	ID = MAP_FIELDS
 	title = "Fields (140x60x1)"
@@ -38,4 +37,3 @@ obj/map_metadata/fields/job_enabled_specialcheck(var/datum/job/J)
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 
-	#undef NO_WINNER

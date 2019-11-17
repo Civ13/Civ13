@@ -1,4 +1,4 @@
-#define NO_WINNER "The operation is still underway."
+
 /obj/map_metadata/hostages
 	ID = MAP_HOSTAGES
 	title = "Hostage Rescue (100x100x1)"
@@ -7,6 +7,7 @@
 	respawn_delay = 1200
 	squad_spawn_locations = FALSE
 	min_autobalance_players = 100
+	no_winner ="The operation is still underway."
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
@@ -212,4 +213,3 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 		world << "<font size = 4><span class = 'notice'><b>Current Status:</b></font><br><font size = 3>Hostages Rescued: [rescued_hostages]/[total_hostages]<br>Hostages Held: [held_hostages]/[total_hostages]<br>Hostages Dead: [dead_hostages]/[total_hostages]<br>U.S. SOF Points: [faction1_points] - Insurgent Points: [faction2_points]</span></font>"
 	spawn(3000)
 		hostage_msg()
-#undef NO_WINNER

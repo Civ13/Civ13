@@ -1,4 +1,3 @@
-#define NO_WINNER "The fighting is still going."
 /obj/map_metadata/battleroyale
 	ID = MAP_ROBUSTA
 	title = "Isla Robusta Battle Royale (125x125x1)"
@@ -6,6 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
+	no_winner ="The fighting is still going."
 //	min_autobalance_players = 90
 	faction_organization = list(
 		PIRATES)
@@ -79,4 +79,3 @@
 			ticker.finished = TRUE
 			return FALSE
 
-#undef NO_WINNER

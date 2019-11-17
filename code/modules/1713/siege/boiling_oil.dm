@@ -216,16 +216,12 @@ obj/structure/boiling_oil/attackby(obj/item/weapon/oilbarrel/W as obj, mob/user 
 	var/full = 3
 	flammable = TRUE
 obj/structure/boiling_oil/west
-	..()
 	direction = WEST
 obj/structure/boiling_oil/east
-	..()
 	direction = EAST
 obj/structure/boiling_oil/north
-	..()
 	direction = NORTH
 obj/structure/boiling_oil/south
-	..()
 	direction = SOUTH
 
 /obj/effect/oil

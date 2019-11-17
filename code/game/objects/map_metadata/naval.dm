@@ -1,8 +1,9 @@
-#define NO_WINNER "No ship has been captured."
+
 /obj/map_metadata/naval
 	ID = MAP_NAVAL
 	title = "Naval Battle (75x75x4)"
 	lobby_icon_state = "imperial"
+	no_winner ="No ship has been captured."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 	squad_spawn_locations = FALSE
@@ -54,4 +55,3 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/naval/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
-#undef NO_WINNER
