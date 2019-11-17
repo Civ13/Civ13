@@ -587,8 +587,6 @@
 
 #define list_cmp(l1, l2) (length(l1 & l2) > 0)
 
-#define USE_OPENSPACE TRUE
-
 #define ZOOM_CONSTANT 7
 
 // Admin permissions.

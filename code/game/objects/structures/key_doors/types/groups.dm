@@ -239,7 +239,6 @@
 /obj/structure/simple_door/key_door/civ/sherif
 	keyslot_type = /datum/keyslot/civ/sheriff
 	unique_door_name = "Sheriff Office Key"
-#undef CV_BANK
 
 #define PI_CODE 995
 /datum/keyslot/pirates
