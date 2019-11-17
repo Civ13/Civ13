@@ -223,8 +223,6 @@
 /datum/reagent/lube/touch_turf(var/turf/T)
 	if (!istype(T))
 		return
-	if (volume >= 1)
-		T.wet_floor(2)
 
 /datum/reagent/silicate
 	name = "Silicate"

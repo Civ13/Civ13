@@ -73,11 +73,6 @@
 /datum/reagent/water/touch_turf(var/turf/T)
 	if (!istype(T))
 		return
-	if (volume >= 10)
-		T.wet_floor(1)
-
-/datum/reagent/water/touch_obj(var/obj/O)
-
 
 /datum/reagent/water/touch_mob(var/mob/living/L, var/amount)
 	if (istype(L))
