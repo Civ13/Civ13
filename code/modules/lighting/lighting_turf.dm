@@ -61,7 +61,8 @@
 
 // make this turf have a darkness level based on the time of day
 /turf/proc/adjust_lighting_overlay_to_daylight()
-	fix_corners_and_lighting_overlay()
+	if (istype(src, /turf/floor/beach/water/ice))
+		fix_corners_and_lighting_overlay()
 	if (lighting_overlay)
 		lighting_overlay.update_overlay()
 
@@ -74,15 +75,14 @@
 		reconsider_lights()
 
 /turf/proc/fix_corners_and_lighting_overlay() // workaround for broken ice corners
-	if (istype(src, /turf/floor/beach/water/ice))
-		for (var/i = 1 to 4)
-			if (corners[i]) // Already have a corner on this direction.
-				continue
+	for (var/i = 1 to 4)
+		if (corners[i]) // Already have a corner on this direction.
+			continue
 
-			corners[i] = new/datum/lighting_corner(src, LIGHTING_CORNER_DIAGONAL[i])
-		for (var/atom/movable/lighting_overlay/LO in contents)
-			lighting_overlay = LO
-			break
+		corners[i] = new/datum/lighting_corner(src, LIGHTING_CORNER_DIAGONAL[i])
+	for (var/atom/movable/lighting_overlay/LO in contents)
+		lighting_overlay = LO
+		break
 /*
 // make this turf have NO darkness. Used exclusively for trains (for now)
 /turf/proc/adjust_lighting_overlay_to_train_light()

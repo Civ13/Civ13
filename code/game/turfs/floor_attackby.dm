@@ -2,57 +2,58 @@
 	var/busy = FALSE
 
 /turf/floor/proc/collapse_check()
-	if (get_area(src).location == AREA_INSIDE)
-		//check for supports
-		var/supportfound = FALSE
-		var/supportcount = 0
+	spawn(50)
+		if (get_area(src).location == AREA_INSIDE)
+			//check for supports
+			var/supportfound = FALSE
+			var/supportcount = 0
 
-		for (var/obj/structure/mine_support/RS in range(2))
-			supportfound = TRUE
-
-		for (var/turf/wall/W in range(1))
-			supportfound = TRUE
-
-		for (var/turf/TT in range(1))
-			if (get_area(TT).location == AREA_OUTSIDE)
+			for (var/obj/structure/mine_support/RS in range(2))
 				supportfound = TRUE
 
-		for (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))
-			supportcount++
-		for (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))
-			supportcount++
-		for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))
-			supportcount++
-		for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))
-			supportcount++
-		if (supportcount >= 3 && !supportfound)
-			supportfound = TRUE
+			for (var/turf/wall/W in range(1))
+				supportfound = TRUE
 
-		//if no support >> cave starts to fall
-		if (!supportfound)
-			if (prob(80))
-				visible_message("The mine is unstable! Some rocks get loose and fall around!")
-				playsound(src,'sound/effects/rocksfalling.ogg',75,0,2)
-				for (var/mob/living/carbon/human/M in range(1, src))
-					M.adjustBruteLoss(rand(9,21))
-					M.Weaken(12)
-				var/turf/floor/dirt/underground/DT = get_turf(src)
-				DT.ChangeTurf(/turf/floor/dirt/underground/empty)
-			else
-				visible_message("The mine starts to cave in!")
-				playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
-				for (var/mob/living/carbon/human/M in range(2, src))
-					M.adjustBruteLoss(rand(28,39))
-					M.Weaken(23)
-				for (var/turf/floor/UT in range (1))
-					if (!istype(UT, /turf/floor/dirt/underground))
-						UT.ChangeTurf(/turf/floor/dirt/underground/empty)
-				new/obj/effect/effect/smoke(src)
-		if (supportfound)
-			if(map.ID == MAP_NOMADS_DESERT)
-				ChangeTurf(/turf/floor/dirt/dust)
-			else
-				ChangeTurf(/turf/floor/dirt)
+			for (var/turf/TT in range(1))
+				if (get_area(TT).location == AREA_OUTSIDE)
+					supportfound = TRUE
+
+			for (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))
+				supportcount++
+			for (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))
+				supportcount++
+			for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))
+				supportcount++
+			for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))
+				supportcount++
+			if (supportcount >= 3 && !supportfound)
+				supportfound = TRUE
+
+			//if no support >> cave starts to fall
+			if (!supportfound)
+				if (prob(80))
+					visible_message("The mine is unstable! Some rocks get loose and fall around!")
+					playsound(src,'sound/effects/rocksfalling.ogg',75,0,2)
+					for (var/mob/living/carbon/human/M in range(1, src))
+						M.adjustBruteLoss(rand(9,21))
+						M.Weaken(12)
+					var/turf/floor/dirt/underground/DT = get_turf(src)
+					DT.ChangeTurf(/turf/floor/dirt/underground/empty)
+				else
+					visible_message("The mine starts to cave in!")
+					playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
+					for (var/mob/living/carbon/human/M in range(2, src))
+						M.adjustBruteLoss(rand(28,39))
+						M.Weaken(23)
+					for (var/turf/floor/UT in range (1))
+						if (!istype(UT, /turf/floor/dirt/underground))
+							UT.ChangeTurf(/turf/floor/dirt/underground/empty)
+					new/obj/effect/effect/smoke(src)
+			if (supportfound)
+				if(map.ID == MAP_NOMADS_DESERT)
+					ChangeTurf(/turf/floor/dirt/dust)
+				else
+					ChangeTurf(/turf/floor/dirt)
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
