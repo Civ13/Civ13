@@ -312,6 +312,7 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 	vehicle_m_delay = 12
+	layer = 2.95
 	health = 90
 	axis = new/obj/structure/vehicleparts/axis/boat
 	wheeled = TRUE

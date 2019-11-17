@@ -810,6 +810,7 @@ RECIPE: /material/wood/,passport,/obj/item/clothing/accessory/storage/passport,3
 RECIPE: /material/wood/,visa (empty),/obj/item/weapon/visa,1,40,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,notice board,/obj/structure/noticeboard,12,145,1,1,paper & printing,50,0,0,8,null
 RECIPE: /material/wood/,religious poster,/obj/item/weapon/poster/religious,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,military propaganda poster (flag),/obj/item/weapon/poster/faction/mil1,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,military propaganda poster (armed),/obj/item/weapon/poster/faction/mil2,1,25,0,1,paper & printing,19,0,0,8,null
