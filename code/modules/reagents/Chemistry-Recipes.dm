@@ -512,6 +512,22 @@ datum/admins/proc/print_chemical_reactions()
 	result_amount = 3
 	log_is_important = TRUE
 
+/datum/chemical_reaction/saltpeter_urine
+	name = "Saltpeter"
+	id = "potassium"
+	result = "potassium"
+	required_reagents = list("poo" = 2, "urine" = 1)
+	result_amount = 1
+	log_is_important = TRUE
+
+/datum/chemical_reaction/saltpeter_fertilizer
+	name = "Saltpeter"
+	id = "potassium"
+	result = "potassium"
+	required_reagents = list("fertilizer" = 2, "urine" = 1)
+	result_amount = 1
+	log_is_important = TRUE
+
 /datum/chemical_reaction/ngunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/exloc = get_turf(holder.my_atom)
 	var/datum/effect/effect/system/reagents_explosion/e = new()

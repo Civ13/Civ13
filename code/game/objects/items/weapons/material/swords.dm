@@ -1,7 +1,3 @@
-#define SLASH 1
-#define STAB 2
-#define BASH 3
-
 /obj/item/weapon/material/sword
 	name = "claymore"
 	desc = "What are you standing around staring at this for? Get to killing!"

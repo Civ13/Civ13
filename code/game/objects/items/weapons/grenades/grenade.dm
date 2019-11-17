@@ -539,6 +539,137 @@
 		prime()
 		return
 
+/obj/item/weapon/grenade/suicide_vest/kamikaze
+	name = "kamikaze vest"
+	desc = "An Antitank Mine Suicide Vest, deadly!"
+	icon_state = "kamikaze_vest"
+	nothrow = TRUE
+	throw_speed = 1
+	throw_range = 2
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	det_time = 1
+	heavy_armor_penetration = 22
+	var/armed1 = "disarmed"
+
+/obj/item/weapon/grenade/suicide_vest/kamikaze/examine(mob/user)
+	..()
+	user << "\The [src] is <b>[armed]</b>."
+	return
+
+/obj/item/weapon/grenade/suicide_vest/kamikaze/attack_self(mob/user as mob)
+	if (!active && armed1 == "armed")
+		user << "<span class='warning'>You switch \the [name]!</span>"
+		activate(user)
+		add_fingerprint(user)
+
+/obj/item/weapon/grenade/suicide_vest/kamikaze/attack_hand(mob/user as mob)
+	if (!active && armed1 == "armed" && loc == user)
+		user << "<span class='warning'>You switch \the [name]!</span>"
+		activate(user)
+		add_fingerprint(user)
+	else
+		..()
+
+/obj/item/weapon/grenade/suicide_vest/kamikaze/verb/arm1()
+	set category = null
+	set name = "Arm/Disarm"
+	set src in range(1, usr)
+
+	if (armed1 == "armed")
+		usr << "You disarm \the [src]."
+		armed1 = "disarmed"
+		return
+	else
+		usr << "<span class='warning'>You arm \the [src]!</span>"
+		armed1 = "armed"
+		return
+
+/obj/item/weapon/grenade/suicide_vest/kamikaze/activate(mob/living/carbon/human/user as mob)
+	if (active)
+		return
+
+	if (user)
+		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+
+	if (user && user.faction_text == JAPANESE)
+		user.emote("charge")
+	active = TRUE
+	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+
+	spawn(det_time)
+		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		prime()
+		return
+
+/obj/item/weapon/grenade/suicide_vest/kamikaze/prime()
+	set waitfor = 0
+
+	var/turf/T = get_turf(src.loc)
+	if(!T) return
+
+	if (active)
+		explosion(T,3,3,3,3)
+		for(var/obj/structure/vehicleparts/frame/F in range(1,T))
+			for (var/mob/M in F.axis.transporting)
+				shake_camera(M, 3, 3)
+			var/penloc = F.CheckPenLoc(src)
+			switch(penloc)
+				if ("left")
+					if (F.w_left[5] > 0)
+						F.w_left[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+				if ("right")
+					if (F.w_right[5] > 0)
+						F.w_right[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+				if ("front")
+					if (F.w_front[5] > 0)
+						F.w_front[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+				if ("back")
+					if (F.w_back[5] > 0)
+						F.w_back[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+				if ("frontleft")
+					if (F.w_left[5] > 0 && F.w_front[5] > 0)
+						if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
+							F.w_left[5] -= heavy_armor_penetration
+							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+						else
+							F.w_front[5] -= heavy_armor_penetration
+							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+				if ("frontright")
+					if (F.w_right[5] > 0 && F.w_front[5] > 0)
+						if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
+							F.w_right[5] -= heavy_armor_penetration
+							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+						else
+							F.w_front[5] -= heavy_armor_penetration
+							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+				if ("backleft")
+					if (F.w_left[5] > 0 && F.w_back[5] > 0)
+						if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
+							F.w_left[5] -= heavy_armor_penetration
+							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+						else
+							F.w_back[5] -= heavy_armor_penetration
+							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+				if ("backright")
+					if (F.w_right[5] > 0 && F.w_back[5] > 0)
+						if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
+							F.w_right[5] -= heavy_armor_penetration
+							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+						else
+							F.w_back[5] -= heavy_armor_penetration
+							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+			F.try_destroy()
+			for(var/obj/structure/vehicleparts/movement/MV in F)
+				MV.broken = TRUE
+				MV.update_icon()
+			F.update_icon()
+		qdel(src)
+
 /obj/item/weapon/grenade/coldwar/nonfrag/custom
 	name = "explosive grenade"
 	desc = "An explosive grenade with no shrapnel."

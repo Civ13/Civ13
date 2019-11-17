@@ -6,7 +6,7 @@ echo Prepairing the system...
 sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt upgrade
-sudo apt install python3 wget
+sudo apt install python3 wget git unzip make sudo
 sudo rm INSTALL.py
 sudo wget https://raw.githubusercontent.com/Civ13-SS13/Civ13/master/INSTALL.py
 sudo python3 INSTALL.py 512 1488

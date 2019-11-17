@@ -1,4 +1,4 @@
-#define NO_WINNER "The reichstag is under German control."
+
 /obj/map_metadata/reichstag
 	ID = MAP_REICHSTAG
 	title = "Reichstag (100x100x1)"
@@ -6,6 +6,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 	squad_spawn_locations = FALSE
+	no_winner ="The reichstag is under German control."
 	faction_organization = list(
 		GERMAN,
 		RUSSIAN)
@@ -146,13 +147,12 @@ var/no_loop_r = FALSE
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
-		if (current_win_condition != NO_WINNER && current_winner && current_loser)
+		if (current_win_condition != no_winner && current_winner && current_loser)
 			world << "<font size = 3>The <b>Germans</b> have recaptured the Reichstag!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
-		current_win_condition = NO_WINNER
+		current_win_condition = no_winner
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
-#undef NO_WINNER

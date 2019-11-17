@@ -33,7 +33,7 @@
 	else if (prob(prob_of_weather_change))
 		if (world.realtime >= next_can_change_weather)
 			change_weather_somehow()
-			next_can_change_weather = world.realtime + minimum_change_weather_delay
+		next_can_change_weather = world.realtime + minimum_change_weather_delay
 	if ((season == "WINTER" && map.triggered_blizzard) && !map.blizzard)
 		if (prob(1) || map.triggered_blizzard)
 			if(prob(50) || map.triggered_blizzard)

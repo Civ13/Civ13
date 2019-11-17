@@ -17,9 +17,6 @@
 	var/max_amount //also see stack recipes initialisation, param "max_res_amount" must be equal to this max_amount
 	var/stacktype //determines whether different stack types can merge
 	var/build_type = null //used when directly applied to a turf
-	var/uses_charge = FALSE
-	var/list/charge_costs = null
-	var/list/datum/matter_synth/synths = null
 	var/real_value = 1
 	value = 1
 	var/customcolor = "FFFFFF"
@@ -36,8 +33,6 @@
 	return
 
 /obj/item/stack/Destroy()
-	if (uses_charge)
-		return TRUE
 	if (src && usr && usr.using_object == src)
 		usr << browse(null, "window=stack")
 	return ..()
@@ -53,7 +48,7 @@
 		return
 	else
 		change_stack(user, stackmaterial)
-		to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack</span>")
+		to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
 
 /obj/item/stack/proc/change_stack(mob/user, amount)
 	var/obj/item/stack/F = split(amount)
@@ -72,10 +67,7 @@
 
 /obj/item/stack/examine(mob/user)
 	if (..(user, TRUE))
-		if (!uses_charge)
-			user << "There [amount == TRUE ? "is" : "are"] [amount] [singular_name]\s in the stack."
-		else
-			user << "There is enough charge for [get_amount()]."
+		user << "There [amount == TRUE ? "is" : "are"] [amount] [singular_name]\s in the stack."
 
 /obj/item/stack/attack_self(mob/user as mob)
 	list_recipes(user)
@@ -107,7 +99,7 @@
 		if (istype(E, /datum/stack_recipe))
 			var/datum/stack_recipe/R = E
 			var/max_multiplier = round(get_amount() / R.req_amount)
-			var/title as text
+			var/title
 			var/can_build = TRUE
 			can_build = can_build && (max_multiplier>0)
 			if (R.res_amount>1)
@@ -270,17 +262,6 @@
 				if (!(numtocheck in listallowed))
 					customcolor2 = "#FFFFFF"
 
-	else if(recipe.result_type == /obj/structure/rails/turn)
-		var/list/choicelist = list("Cancel", "Left", "Right")
-		var/todir = WWinput(user, "Choose the direction to turn into:", "Railway Builder", "Cancel", choicelist)
-		if (todir == "Cancel")
-			return
-		else
-			if (todir == "Right")
-				turn_dir = TURN_RIGHT(user.dir)
-			else if (todir == "Left")
-				turn_dir = TURN_LEFT(user.dir)
-
 	else if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
@@ -303,7 +284,12 @@
 					return
 	else if (recipe.result_type == /obj/structure/researchdesk)
 		if (map && !map.resourceresearch)
-			user << "\The [recipe.title] can only be built during the <b>Resource Research</b> gamemode."
+			user << "\The [recipe.title] can only be built during <b>Research</b> gamemodes."
+			return
+
+	else if (recipe.result_type == /obj/structure/researchdesk/chad)
+		if (!map.chad_mode_plus)
+			user << "\The [recipe.title] can only be built during <b>Chad Mode +</b>."
 			return
 
 	else if (recipe.result_type == /obj/structure/oil_deposits)
@@ -312,7 +298,12 @@
 			return
 	else if (recipe.result_type == /obj/item/weapon/researchkit)
 		if (map && !map.research_active)
-			user << "\The [recipe.title] can only be built during the <b>Clasic Research</b> gamemode."
+			user << "\The [recipe.title] can only be built during the <b>Classic Research</b> gamemode."
+			return
+
+	else if (recipe.result_type == /obj/item/weapon/book/language_book)
+		if (H.getStatCoeff("philosophy") < 1.35)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 
 	else if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
@@ -666,7 +657,7 @@
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
 					return
-	else if (findtext(recipe.title, "suspended gong"))
+	else if (findtext(recipe.title, "gong") && !findtext(recipe.title, "gong mallet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/bronze) && !istype(H.r_hand, /obj/item/stack/material/bronze))
 			user << "<span class = 'warning'>You need a stack of at least 5 ingots of bronze in one of your hands in order to make this.</span>"
 			return
@@ -814,6 +805,18 @@
 		produced = 5
 	else if (recipe.result_type == /obj/item/stack/material/barbwire)
 		produced = 2
+	else if (recipe.result_type == /obj/item/ammo_casing/arrow)
+		produced = 3
+	else if (recipe.result_type == /obj/item/stack/arrowhead/stone)
+		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/copper)
+		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/bronze)
+		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/iron)
+		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/steel)
+		produced = 4
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
@@ -1115,39 +1118,35 @@
 /obj/item/stack/proc/use(var/used,var/mob/living/carbon/human/H = null)
 	if (!can_use(used))
 		return FALSE
-	if (!uses_charge)
-		if (H)
-			if (H.religion_check() == "Production")
-				if (used < 4)
-					amount -= used
-				else if (used >= 4 && used < 10)
-					amount -= (used-1)
-				else if (used >= 10)
-					amount -= (used-2)
-				else
-					amount -= used
+	if (H)
+		if (H.religion_check() == "Production")
+			if (used < 4)
+				amount -= used
+			else if (used >= 4 && used < 10)
+				amount -= (used-1)
+			else if (used >= 10)
+				amount -= (used-2)
 			else
 				amount -= used
 		else
 			amount -= used
-		if (amount <= 0)
-			if (usr)
-				usr.remove_from_mob(src)
-			qdel(src) //should be safe to qdel immediately since if someone is still using this stack it will persist for a little while longer
-		return TRUE
 	else
-		if (get_amount() < used)
-			return FALSE
+		amount -= used
+	if (amount <= 0)
+		if (usr)
+			usr.remove_from_mob(src)
+		qdel(src) //should be safe to qdel immediately since if someone is still using this stack it will persist for a little while longer
+	return TRUE
+
 
 	return FALSE
 
 /obj/item/stack/proc/add(var/extra)
-	if (!uses_charge)
-		if (amount + extra > get_max_amount())
-			return FALSE
-		else
-			amount += extra
-		return TRUE
+	if (amount + extra > get_max_amount())
+		return FALSE
+	else
+		amount += extra
+	return TRUE
 /*
 	The transfer and split procs work differently than use() and add().
 	Whereas those procs take no action if the desired amount cannot be added or removed these procs will try to transfer whatever they can.
@@ -1179,8 +1178,6 @@
 /obj/item/stack/proc/split(var/tamount)
 	if (!amount)
 		return null
-	if (uses_charge)
-		return null
 
 	var/transfer = max(min(tamount, amount, initial(max_amount)), FALSE)
 
@@ -1188,6 +1185,7 @@
 	if (transfer && use(transfer))
 		var/obj/item/stack/newstack = new type(loc, transfer)
 		newstack.color = color
+		newstack.amount = transfer
 		if (prob(transfer/orig_amount * 100))
 			transfer_fingerprints_to(newstack)
 			if (blood_DNA)

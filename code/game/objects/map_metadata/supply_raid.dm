@@ -1,4 +1,4 @@
-#define NO_WINNER "The fighting is still going."
+
 /obj/map_metadata/supply_raid
 	ID = MAP_SUPPLY_RAID
 	title = "Supply Raid (100x75x1)"
@@ -50,4 +50,3 @@ obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/supply_raid/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
-#undef NO_WINNER

@@ -304,6 +304,8 @@
 	else if (istype(proj, /obj/item/missile))
 		var/obj/item/missile/miss = proj
 		startingturf = miss.startingturf
+	else if (istype(proj, /obj/item/weapon/grenade/suicide_vest))
+		startingturf = get_turf(proj.loc)
 	else if (istype(proj, /obj/item/weapon/grenade))
 		startingturf = get_turf(proj)
 	if (!startingturf)

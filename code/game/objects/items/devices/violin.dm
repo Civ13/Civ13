@@ -1,8 +1,3 @@
-//copy pasta of the space piano, don't hurt me -Pete
-
-#define MAX_CHARS_PER_LINE 200
-#define MAX_CHARS_TOTAL 20000
-
 /obj/item/violin
 	name = "Violin"
 	desc = "A classic violin. "

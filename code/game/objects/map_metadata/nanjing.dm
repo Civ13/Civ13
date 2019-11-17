@@ -1,4 +1,4 @@
-#define NO_WINNER "The battle is still going on."
+
 /obj/map_metadata/nanjing
 	ID = MAP_NANJING
 	title = "Nanjing (120x200x2)"
@@ -135,13 +135,12 @@ var/no_loop_n = FALSE
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
-		if (current_win_condition != NO_WINNER && current_winner && current_loser)
+		if (current_win_condition != no_winner && current_winner && current_loser)
 			world << "<font size = 3>The <b>Chinese</b> have recaptured the Nanjing Command!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
-		current_win_condition = NO_WINNER
+		current_win_condition = no_winner
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
-#undef NO_WINNER

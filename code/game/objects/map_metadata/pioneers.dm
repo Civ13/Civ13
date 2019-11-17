@@ -1,4 +1,4 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/pioneers
 	ID = MAP_PIONEERS
 	title = "Pioneers (200x200x2)"
@@ -6,6 +6,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	squad_spawn_locations = FALSE
+	no_winner ="The round is proceeding normally."
 	faction_organization = list(
 		CIVILIAN,
 		INDIANS)
@@ -167,4 +168,3 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 	return ""
 
 
-#undef NO_WINNER

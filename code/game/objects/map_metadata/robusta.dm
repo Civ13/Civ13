@@ -1,4 +1,4 @@
-#define NO_WINNER "The fighting is still going."
+
 /obj/map_metadata/robusta
 	ID = MAP_ROBUSTA
 	title = "Isla Robusta (125x125x1)"
@@ -51,4 +51,3 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/robusta/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
-#undef NO_WINNER

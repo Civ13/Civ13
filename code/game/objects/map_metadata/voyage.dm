@@ -1,7 +1,8 @@
-#define NO_WINNER "The ship is on the way."
+
 /obj/map_metadata/voyage
 	ID = MAP_VOYAGE
 	title = "Voyage (75x75x4)"
+	no_winner ="The ship is on the way."
 //	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
@@ -92,4 +93,3 @@
 	do_fourth_event = do_third_event  + rand(5000,8000)
 	do_fifth_event = do_fourth_event  + rand(4000,7000)
 
-#undef NO_WINNER

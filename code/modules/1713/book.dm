@@ -69,7 +69,7 @@
 						qdel(B)
 	if (istype(W, /obj/item/weapon/pen))
 		if (unique)
-			user << "These pages don't seem to take the ink well. Looks like you can't modify it."
+			user << "Looks like you can't modify it."
 			return
 		var/choice = input("What would you like to change?") in list("Title", "Contents", "Author", "Cancel")
 		switch(choice)

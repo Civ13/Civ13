@@ -1,10 +1,11 @@
-#define NO_WINNER "No base has been captured."
+
 /obj/map_metadata/compound
 	ID = MAP_COMPOUND
 	title = "Compound (100x100x2)"
 	lobby_icon_state = "coldwar"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
+	no_winner ="No base has been captured."
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
@@ -44,4 +45,3 @@ obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/compound/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
-#undef NO_WINNER

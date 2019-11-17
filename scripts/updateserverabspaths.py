@@ -8,18 +8,19 @@ import time
 t1 = time.time()
 
 currdir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(currdir,"paths.txt")) as lines:
-	for line in lines:
-		if "mdir:" in line:
-			mdir = line.replace("\n", "")
-			mdir = mdir.replace("mdir:", "")
-		if "cdir:" in line:
-			cdir = line.replace("\n", "")
-			cdir = cdir.replace("cdir:", "")
+currdir = os.path.dirname(os.path.abspath(__file__))
+lines = open(os.path.join(currdir,"paths.txt"))
+all_lines = lines.readlines()
+mdir = all_lines[1]
+mdir = mdir.replace("\n", "")
+mdir = mdir.replace("mdir:", "")
+cdir = all_lines[2]
+cdir = cdir.replace("\n", "")
+cdir = cdir.replace("cdir:", "")
 			
 print("Updating git...")
 
-os.chdir("{}civ13-git")
+os.chdir("{}civ13-git".format(mdir))
 os.system("sudo git pull")
 os.system("sudo git reset --hard origin/master")
 

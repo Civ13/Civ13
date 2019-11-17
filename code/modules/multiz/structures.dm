@@ -217,6 +217,14 @@
 	icon_state = "ladderup"
 	istop = FALSE
 
+/obj/structure/multiz/ladder/ww2/up/manhole
+	icon_state = "ladderup"
+	istop = FALSE
+
+/obj/structure/multiz/ladder/ww2/manhole
+	icon_state = "manhole"
+	istop = TRUE
+
 /obj/structure/multiz/ladder/ww2/stairsup
 	icon_state = "rampup"
 	name = "stairs"

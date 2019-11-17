@@ -5,6 +5,7 @@
 	icon_state = "rack"
 	flipped = -1
 	low = TRUE
+	fixedsprite = TRUE
 
 /obj/structure/table/rack/New()
 	..()
@@ -27,3 +28,4 @@
 	icon_state = "fancytable"
 	flipped = -1
 	low = TRUE
+	fixedsprite = TRUE

@@ -15,6 +15,7 @@
 	edge = FALSE
 	slot_flags = SLOT_BELT
 	flammable = TRUE
+	var/usespeed = 1
 
 /obj/item/weapon/plough/attack_self(var/mob/living/L)
 	var/turf/T = get_turf(L)
@@ -29,7 +30,7 @@
 	item_state = "iplough"
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = TRUE
-	var/usespeed = 1.7
+	usespeed = 1.3
 
 /obj/item/weapon/shovel
 	name = "shovel"
@@ -103,7 +104,10 @@
 	name = "bone pickaxe"
 	icon_state = "pickaxe_bone"
 	usespeed = 1
-
+/obj/item/weapon/pickaxe/stone
+	name = "stone pickaxe"
+	usespeed = 1.1
+	icon_state = "spick"
 /obj/item/weapon/shovel/spade
 	name = "spade"
 	desc = "A small tool for digging and moving dirt."
@@ -163,7 +167,7 @@
 	edge = FALSE
 	flammable = FALSE
 	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
-	var design = "smooth"
+	var/design = "smooth"
 
 /obj/item/weapon/chisel/attack_self(mob/user)
 	var/display = list("Smooth", "Cave", "Brick", "Cobbled", "Tiled", "Cancel")

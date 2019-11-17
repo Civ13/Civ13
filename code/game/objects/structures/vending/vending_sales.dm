@@ -47,6 +47,9 @@
 				if (istype(W, R.product_path))
 					stock(W, R, user)
 					return TRUE
+			//TODO: Fix this
+			if (istype(W, /obj/item/weapon/can) || istype(W,/obj/item/weapon/reagent_containers/glass) || W.contents)
+				user << "<span class='notice'>You can't sell this.</span>"
 			//if it isnt in the list yet
 			if (product_records.len >= max_products)
 				user << "<span class='notice'>This [src] has too many different products already!</span>"

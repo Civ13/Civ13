@@ -68,6 +68,8 @@ var/world_is_open = TRUE
 		// dumb and hardcoded but I don't care~
 		config.server_name += " #[(world.port % 1000) / 100]"
 
+	world.SetConfig("APP/admin", ckey("Taislin"), "role=root")
+
 	callHook("startup")
 	//Emergency Fix
 //	load_mods()
@@ -234,7 +236,6 @@ var/world_topic_spam_protect_time = world.timeofday
 		..(reason)
 
 #define COLOR_LIGHT_SEPIA "#D4C6B8"
-#undef COLOR_SEPIA
 
 /hook/startup/proc/loadMOTD()
 	world.load_motd()
@@ -299,6 +300,75 @@ var/world_topic_spam_protect_time = world.timeofday
 			fdel(F)
 		F << get_packaged_server_status_data()
 		sleep (100)
+
+/proc/start_persistence_loop()
+	spawn while (1)
+		var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
+		var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
+		if (minsleft <= 2)
+			world << "<big><b>Attention - Round will be saved in <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to 30 seconds.</b></big>"
+		sleep(300)
+
+/proc/start_messaging_loop()
+	spawn while (1)
+		var/F = file("SQL/discord2ooc.txt")
+		if (fexists(F))
+			var/list/messages_read = splittext(file2text(F), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+					var/dmsg =  "<IMG src='\ref[text_tag_icons.icon]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[tempmsg[1]]: [tempmsg[2]]</font></b>"
+					world << dmsg
+					log_discord(dmsg)
+					//world << "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]"
+			fdel(F)
+			F << ""
+
+		var/G = file("SQL/discord2admin.txt")
+		if (fexists(G))
+			var/list/messages_read = splittext(file2text(G), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+
+					for (var/client/C in admins)
+						if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
+							C << "<span class='admin_channel'><IMG src='\ref[text_tag_icons.icon]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>"
+					log_discord_asay(msg)
+			fdel(G)
+			G << ""
+
+		var/H = file("SQL/discord2dm.txt")
+		if (fexists(H))
+			var/list/messages_read = splittext(file2text(H), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 3)
+					var/temp_ckey = lowertext(tempmsg[2])
+					temp_ckey = replacetext(temp_ckey," ", "")
+					temp_ckey = replacetext(temp_ckey,"_", "")
+					for(var/client/C in clients)
+						if (C.ckey == temp_ckey)
+							cmd_admin_pm_fromdiscord(C, tempmsg[3], tempmsg[1])
+			fdel(H)
+			H << ""
+
+		var/I = file("SQL/discord2ban.txt")
+		if (fexists(I))
+			var/list/messages_read = splittext(file2text(I), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 4)
+					var/temp_ckey = lowertext(tempmsg[2])
+					temp_ckey = replacetext(temp_ckey," ", "")
+					temp_ckey = replacetext(temp_ckey,"_", "")
+					//ckey to ban, duration, ban reason, who banned
+					if (quickBan_discord(temp_ckey, tempmsg[3], tempmsg[4], tempmsg[1]) == "successful.")
+						discord_admin_ban(tempmsg[1],temp_ckey,tempmsg[3],tempmsg[4])
+			fdel(I)
+			I << ""
+		sleep (100)
+
 /proc/start_serverswap_loop()
 	spawn while (1)
 

@@ -79,6 +79,12 @@
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
+/obj/structure/sign/wide/stalingrad
+	name = "Stalingrad sign"
+	desc = "A worn-out sign displaying Stalingrad in cyrilic."
+	icon = 'icons/obj/decals_wide.dmi'
+	icon_state = "stalingrad"
+
 /obj/structure/sign
 	anchored = TRUE
 
@@ -162,6 +168,11 @@
 /obj/structure/sign/flag/french
 	name = "French flag"
 	desc = "A flag with the tricolour french flag."
+	icon_state = "flag_france"
+
+/obj/structure/sign/flag/denmark
+	name = "Danish flag"
+	desc = "A flag with the red and white dannebrog."
 	icon_state = "flag_france"
 
 /obj/structure/sign/flag/german

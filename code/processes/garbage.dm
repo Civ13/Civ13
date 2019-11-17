@@ -89,9 +89,7 @@ var/list/delayed_garbage = list()
 		destroyed.Cut(1, 2)
 		PROCESS_TICK_CHECK
 
-#undef GC_FORCE_DEL_PER_TICK
 #undef GC_COLLECTION_TIMEOUT
-#undef GC_COLLECTIONS_PER_TICK
 
 // this process does not use current_list, which will be == null
 /process/garbage/reset_current_list()

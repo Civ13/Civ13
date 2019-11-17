@@ -40,14 +40,9 @@
 		cmd_admin_pm(C,null)
 		return
 
-	if (href_list["irc_msg"])
-		if (!holder && received_irc_pm < world.time - 6000) //Worse they can do is spam IRC for 10 minutes
-			usr << "<span class='warning'>You are no longer able to use this, it's been more then 10 minutes since an admin on IRC has responded to you</span>"
-			return
-		if (mute_irc)
-			usr << "<span class='warning'You cannot use this as your client has been muted from sending messages to the admins on IRC</span>"
-			return
-		cmd_admin_irc_pm(href_list["irc_msg"])
+	if (href_list["priv_msg_discord"])
+		var/txtinput = input("Write your reply to [pm_sender]:") as text
+		cmd_admin_pm_todiscord(pm_sender,txtinput)
 		return
 
 	// see quickBan.dm
@@ -343,9 +338,7 @@
 		if (directory[ckey])
 			A.associate(directory[ckey])
 
-#undef TOPIC_SPAM_DELAY
 #undef UPLOAD_LIMIT
-#undef MIN_CLIENT_VERSION
 
 //checks if a client is afk
 //3000 frames = 5 minutes

@@ -8,6 +8,6 @@
 	siemens_coefficient = 0.6
 	flammable = FALSE
 /obj/item/clothing/suit/armor/block_check(var/obj/item/projectile/proj)
-	if (!proj || proj.nodamage || proj.is_shrapnel)
+	if (!proj || proj.nodamage || proj.is_shrapnel || istype(proj, /obj/item/projectile/arrow))
 		return prob(95)
 	return FALSE

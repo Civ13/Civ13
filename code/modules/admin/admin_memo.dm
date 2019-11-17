@@ -49,6 +49,4 @@
 		if (_ckey)
 			F.dir.Remove(_ckey)
 			src << "<b>Removed Memo created by [_ckey].</b>"
-
-#undef MEMOFILE
 #undef ENABLE_MEMOS

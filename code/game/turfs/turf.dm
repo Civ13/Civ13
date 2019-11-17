@@ -50,7 +50,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/is_diggable = FALSE //can be digged with a shovel?
 	var/is_plowed = FALSE // ready to be farmed?
 	var/is_mineable = FALSE //can be mined with a pickaxe?
-	var/iscovered = FALSE //covered with wood? (water passable)
 	//Mining resources (for the large drills).
 //	var/has_resources
 //	var/list/resources
@@ -59,7 +58,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/max_fire_temperature_sustained = FALSE //The max temperature of the fire which it was subjected to
 	var/dirt = FALSE
 
-	var/datum/scheduled_task/unwet_task
 //	var/datum/scheduled_task/flooding_task
 	var/interior = TRUE
 	var/stepsound = null
@@ -80,6 +78,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 		spawn( FALSE )
 			Entered(AM)
 			return
+	if (ticker && ticker.current_state == GAME_STATE_PLAYING)
+		new_turfs |= src
 	turfs |= src
 
 
@@ -306,34 +306,6 @@ var/const/enterloopsanity = 100
 
 /turf/proc/update_blood_overlays()
 	return
-.
-/turf/proc/wet_floor(var/wet_val = TRUE)
-	if (wet_val < wet)
-		return
-
-	if (!wet)
-		wet = wet_val
-		overlays += wet_overlay
-
-	if (unwet_task)
-		unwet_task.trigger_task_in(8 SECONDS)
-	else
-		unwet_task = schedule_task_in(8 SECONDS)
-		task_triggered_event.register(unwet_task, src, /turf/proc/task_unwet_floor)
-
-/turf/proc/task_unwet_floor(var/triggered_task)
-	if (triggered_task == unwet_task)
-		unwet_task = null
-		unwet_floor(TRUE)
-
-/turf/proc/unwet_floor(var/check_very_wet)
-	if (check_very_wet && wet >= 2)
-		return
-
-	wet = FALSE
-	if (wet_overlay)
-		overlays -= wet_overlay
-		wet_overlay = null
 
 /turf/clean_blood()
 	for (var/obj/effect/decal/cleanable/blood/B in contents)
@@ -344,10 +316,6 @@ var/const/enterloopsanity = 100
 	..()
 	levelupdate()
 
-/turf/Destroy()
-	qdel(unwet_task)
-	unwet_task = null
-	return ..()
 
 /turf/proc/initialize()
 	return
@@ -370,8 +338,12 @@ var/const/enterloopsanity = 100
 
 
 		if (istype(M, /mob/living/carbon/human))
-			var/footstepsound
 			var/mob/living/carbon/human/H = M
+			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
+				if (H.overlays_standing[25])
+					H.overlays_standing[25] = null
+					H.update_fire(1)
+			var/footstepsound
 			// Tracking blood
 			var/list/bloodDNA = null
 			var/bloodcolor=""

@@ -189,7 +189,6 @@ steam.start() -- spawns the effect
 	return TRUE
 
 /obj/effect/effect/smoke/fast
-	..()
 	time_to_live = 30
 
 /obj/effect/effect/smoke/small
@@ -198,7 +197,6 @@ steam.start() -- spawns the effect
 	pixel_x = 0
 	pixel_y = 0
 /obj/effect/effect/smoke/small/fast
-	..()
 	time_to_live = 30
 /////////////////////////////////////////////
 // Illumination

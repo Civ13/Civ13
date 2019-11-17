@@ -1,4 +1,3 @@
-#define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/hunt
 	ID = MAP_HUNT
 	title = "Hunt (175x175x2)"
@@ -6,6 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	squad_spawn_locations = FALSE
+	no_winner ="The round is proceeding normally."
 	faction_organization = list(
 		INDIANS,
 		PIRATES)
@@ -56,4 +56,3 @@ obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 	return "The gracewall is now removed."
 
 
-#undef NO_WINNER

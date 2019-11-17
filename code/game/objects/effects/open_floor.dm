@@ -49,12 +49,10 @@ var/process/open_floor/OS2_controller = null
 		floorbelowz = locate(x, y, z-1)
 	else
 		floorbelowz = locate(x, y, 1)
-//	var/mob/shadow/shadowcover = new/mob/shadow(src)
+
 	spawn(5)
 		update_icon()
-/*		var/obj/effect/overlay/overfloor/OF
-		if (!(OF in src.loc))
-			new/obj/effect/overlay/overfloor(src)*/
+
 	for(var/atom/movable/AM in src.contents)
 		Entered(AM)
 
@@ -63,8 +61,6 @@ var/process/open_floor/OS2_controller = null
 	if (!A || !A.loc)
 		return
 	if (isobserver(A))
-		return
-	if (istype(A, /mob/shadow))
 		return
 	for (var/obj/covers/C in src)
 		if (istype(C, /obj/covers))

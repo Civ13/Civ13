@@ -63,6 +63,13 @@
 	projectile_type = /obj/item/projectile/arrow/arrow/stone
 	weight = 0.17
 
+/obj/item/ammo_casing/arrow/sandstone
+	name = "sandstone arrow"
+	desc = "An arrow with a sandstone tip."
+	icon_state = "arrow_sandstone"
+	projectile_type = /obj/item/projectile/arrow/arrow/sandstone
+	weight = 0.17
+
 /obj/item/ammo_casing/arrow/copper
 	name = "copper arrow"
 	desc = "An arrow with a copper tip."
@@ -461,6 +468,16 @@
 	caliber = "a32"
 	value = 5
 
+/obj/item/ammo_casing/a38
+	name = ".38 bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/a38
+	caliber = "a38"
+	value = 5
+
 /obj/item/ammo_casing/a45
 	name = ".45 Colt bullet"
 	desc = "A brass casing."
@@ -720,6 +737,16 @@
 	weight = 0.03
 	projectile_type = /obj/item/projectile/bullet/pistol/a32acp
 	caliber = "a32acp"
+	value = 2
+
+/obj/item/ammo_casing/webly445
+	name = ".455 webly bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.03
+	projectile_type = /obj/item/projectile/bullet/pistol/webly445
+	caliber = "webly445"
 	value = 2
 
 /obj/item/ammo_casing/a556x45

@@ -216,7 +216,7 @@
 	item_state = "sauronarmor"
 	worn_state = "sauronarmor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 80, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
+	armor = list(melee = 95, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
 	value = 70
 	slowdown = 1
 	health = 90
@@ -227,10 +227,47 @@
 	item_state = "knight_simple"
 	worn_state = "knight_simple"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 85, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/darkplate
+	name = "plated armor"
+	desc = "A cheap dark iron armor."
+	icon_state = "ork_plate_elite"
+	item_state = "ork_plate_elite"
+	worn_state = "ork_plate_elite"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
 	value = 50
 	slowdown = 1.5
 	health = 60
+
+/obj/item/clothing/suit/armor/darkplateelite
+	name = "plated armor"
+	desc = "A cheap dark iron armor."
+	icon_state = "ork_plate_commander"
+	item_state = "ork_plate_commander"
+	worn_state = "ork_plate_commander"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 80, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
+	value = 50
+	slowdown = 1.5
+	health = 60
+
+/obj/item/clothing/suit/armor/royal
+	name = "royal plated armor"
+	desc = "A thick, expensive iron armor, covering most of the body."
+	icon_state = "royalplate"
+	item_state = "royalplate"
+	worn_state = "royalplate"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 85, arrow = 100, gun = 20, energy = 15, bomb = 65, bio = 20, rad = 45)
+	value = 65
+	slowdown = 1.2
+	health = 90
+
 /obj/item/clothing/suit/armor/medieval/blue
 	name = "blue plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
@@ -286,18 +323,15 @@
 	slowdown = 0.8
 	health = 52
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/red
-	..()
 	icon_state = "iron_chestplater"
 	item_state = "iron_chestplater"
 	worn_state = "iron_chestplater"
 
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader
-	..()
 	icon_state = "iron_chestplatec"
 	item_state = "iron_chestplatec"
 	worn_state = "iron_chestplatec"
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/blue
-	..()
 	icon_state = "iron_chestplateb"
 	item_state = "iron_chestplateb"
 	worn_state = "iron_chestplateb"
@@ -829,6 +863,27 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = HEAD|FACE|EYES
 	force = WEAPON_FORCE_PAINFUL
 	armor = list(melee = 70, arrow = 80, gun = FALSE, energy = FALSE, bomb = 50, bio = 20, rad = 10)
+
+/obj/item/clothing/head/helmet/eliteorc
+	name = "iron helmet"
+	desc = "A helmet with front plate, made of dark iron."
+	icon_state = "ork_elite_helmet_2"
+	item_state = "ork_elite_helmet_2"
+	worn_state = "ork_elite_helmet_2"
+	body_parts_covered = HEAD|FACE|EYES
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 80, arrow = 90, gun = FALSE, energy = FALSE, bomb = 50, bio = 20, rad = 10)
+
+/obj/item/clothing/head/helmet/eliteorc2
+	name = "iron helmet"
+	desc = "A helmet made of dark iron."
+	icon_state = "ork_elite_helmet"
+	item_state = "ork_elite_helmet"
+	worn_state = "ork_elite_helmet"
+	body_parts_covered = HEAD
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 70, arrow = 70, gun = FALSE, energy = FALSE, bomb = 50, bio = 20, rad = 10)
+
 /obj/item/clothing/head/helmet/orc_spearman
 	name = "Orc spearman Helm"
 	desc = "Orc make good helmet!"

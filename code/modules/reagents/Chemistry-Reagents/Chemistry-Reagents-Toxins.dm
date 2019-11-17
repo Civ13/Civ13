@@ -114,6 +114,25 @@
 /datum/reagent/toxin/cholera/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	return
 
+/datum/reagent/toxin/plague
+	name = "Plague"
+	id = "plague"
+	description = "Deadly virus."
+	taste_mult = FALSE
+	reagent_state = LIQUID
+	color = "#202020"
+	strength = 100
+	taste_description = "death"
+	metabolism = REM
+
+/datum/reagent/toxin/plague/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	if (ishuman(M))
+		var/mob/living/carbon/human/H = M
+		if(H.disease_type != "plague") //force plague.
+			H.disease_type = "plague"
+			H.disease = 1
+	return
+
 /datum/reagent/toxin/potassium_chloride
 	name = "Potassium Chloride"
 	id = "potassium_chloride"

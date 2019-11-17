@@ -158,6 +158,26 @@
 	effectiveness_mod = 1.80
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/semiautomatic/remington11
+	name = "remington 11"
+	desc = "American semi-automatic shotgun."
+	icon_state = "remington11"
+	item_state = "remington11"
+	base_icon = "remington11"
+	w_class = 4
+	load_method = SINGLE_CASING
+	max_shells = 5
+	caliber = "12gauge"
+	ammo_type = /obj/item/ammo_casing/shotgun
+	slot_flags = SLOT_SHOULDER
+	weight = 3.85
+	load_delay = 4
+
+	gun_type = GUN_TYPE_RIFLE
+	force = 10
+	throwforce = 20
+	effectiveness_mod = 1.80
+
 /obj/item/weapon/gun/projectile/semiautomatic/sks
 	name = "SKS"
 	desc = "Soviet semi-automatic rifle chambered in 7.62x54mmR."

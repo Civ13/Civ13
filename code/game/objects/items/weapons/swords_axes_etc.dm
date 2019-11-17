@@ -35,6 +35,7 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_WEAK
 	flammable = TRUE
+	weakens = FALSE
 
 /obj/item/weapon/melee/classic_baton/whip
 	name = "whip"
