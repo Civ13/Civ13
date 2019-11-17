@@ -1170,8 +1170,9 @@
 			new current_area_type(get_turf(src))
 			visible_message("The roof collapses!")
 		var/turf/floor/T = get_turf(loc)
-		T.water_level = origin_water_level
-		T.move_delay = initial(T.move_delay)
+		if (T)
+			T.water_level = origin_water_level
+			T.move_delay = initial(T.move_delay)
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount

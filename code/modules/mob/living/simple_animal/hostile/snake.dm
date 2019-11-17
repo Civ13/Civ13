@@ -222,7 +222,7 @@
 /mob/living/simple_animal/hostile/poison/snake/constrictor/proc/do_constricting(var/mob/living/L)
 	if (L && L.client)
 		L.client.canmove = FALSE
-	if (loc != L.loc)
+	if (L && loc != L.loc)
 		forceMove(L.loc)
 		update_icons()
 	cons_target = L

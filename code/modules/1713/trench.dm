@@ -86,10 +86,11 @@ var/list/global/floor_cache = list()
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
 		if (choice == "Yes")
 			user << "You shove some dirt into the trench."
-			trench_filling++
-			qdel(C)
-			check_filling()
-			return
+			if (istype(src, /turf/floor/trench))
+				trench_filling++
+				qdel(C)
+				check_filling()
+				return
 		else
 			return
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
