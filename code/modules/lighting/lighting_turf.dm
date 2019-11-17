@@ -161,7 +161,7 @@
 	if (src_area && src_area.location == AREA_INSIDE)
 		window_coeff = 0
 
-		if ((iswall(src) && type != /turf/wall/rockwall) || locate_type(contents, /obj/structure/window/classic) || locate_dense_type(contents, /obj/structure))
+		if ((iswall(src) && type != /turf/wall/rockwall) || locate_type(contents, /obj/structure/window/classic))
 			var/counted = 0
 			for (var/turf/T in orange(1, src))
 				temp_area = T.loc

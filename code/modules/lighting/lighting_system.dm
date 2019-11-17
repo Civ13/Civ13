@@ -44,7 +44,7 @@
 			continue
 
 		var/area/T_area = get_area(T)
-		if (T_area.is_void_area && (istype(T, /turf/wall/rockwall) || istype(T, /turf/wall/indestructable)))
+		if (T_area.is_void_area || istype(T, /turf/wall/rockwall) || istype(T, /turf/wall/indestructable))
 			continue
 
 		for (var/i = 1 to 4)
