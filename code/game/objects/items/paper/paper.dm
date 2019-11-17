@@ -446,7 +446,6 @@
 		stamps += (stamps=="" ? "<HR>" : "<BR>") + "<i>This paper is marked with the [P.name].</i>"
 
 		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
-		var/{x; y;}
 		x = rand(-2, 2)
 		y = rand(-3, 2)
 		offset_x += x
