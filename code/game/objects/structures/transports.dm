@@ -345,9 +345,9 @@
 	New()
 		..()
 		dwheel.origin = src
-		cover_overlay = image(icon, "sail0")
+		cover_overlay = image(icon, "sail1")
 		cover_overlay.layer = MOB_LAYER + 2.11
-		cover_overlay_c = image(icon, "sail")
+		cover_overlay_c = image(icon, "sail2")
 		cover_overlay_c.layer = MOB_LAYER + 2.12
 		add_overlay(cover_overlay)
 		update_overlay()
