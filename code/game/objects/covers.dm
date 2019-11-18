@@ -1157,9 +1157,10 @@
 /obj/covers/updateturf()
 	..()
 	var/turf/T = get_turf(src)
-	origin_water_level = T.water_level
-	T.water_level = 0
-	T.move_delay = 0
+	if (T)
+		origin_water_level = T.water_level
+		T.water_level = 0
+		T.move_delay = 0
 	return TRUE
 
 

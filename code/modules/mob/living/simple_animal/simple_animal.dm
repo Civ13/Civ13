@@ -516,6 +516,8 @@
 				bone.name = "[name] bone"
 				bone.amount = amt
 			qdel(src)
+			return
+		return
 /mob/living/simple_animal/ex_act(severity)
 	if (!blinded)
 		if (HUDtech.Find("flash"))

@@ -226,20 +226,22 @@
 		forceMove(L.loc)
 		update_icons()
 	cons_target = L
-	Paralyse(100)
-	L.adjustOxyLoss(25)
-	L.adjustBrainLoss(5)
-	L << "<span class='danger'>You can't breathe!</span>"
-	if (L.stat == DEAD)
-		constricting = FALSE
-		stop_automated_movement = FALSE
-		paralysis = 0
-		update_icons()
-		if (L && L.client)
-			L.client.canmove = TRUE
-		return
-	spawn(22)
-		do_constricting(L)
+	if (L)
+		Paralyse(100)
+		L.adjustOxyLoss(25)
+		L.adjustBrainLoss(5)
+		L << "<span class='danger'>You can't breathe!</span>"
+		if (L.stat == DEAD)
+			constricting = FALSE
+			stop_automated_movement = FALSE
+			paralysis = 0
+			update_icons()
+			if (L && L.client)
+				L.client.canmove = TRUE
+			return
+		spawn(22)
+			if (L)
+				do_constricting(L)
 
 /mob/living/simple_animal/hostile/poison/snake/constrictor/AttackingTarget()
 	if (!Adjacent(target_mob))

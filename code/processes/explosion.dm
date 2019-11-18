@@ -58,7 +58,6 @@
 		explosion_rec(epicenter, power)
 		return
 
-	var/start = world.timeofday
 	epicenter = get_turf(epicenter)
 	if (!epicenter) return
 
@@ -139,7 +138,6 @@
 
 	var/x0 = epicenter.x
 	var/y0 = epicenter.y
-	var/z0 = epicenter.z
 
 	for (var/turf/T in trange(max_range, epicenter))
 		var/dist = sqrt((T.x - x0)**2 + (T.y - y0)**2)
@@ -179,9 +177,6 @@
 										H.adjustFireLoss(rand(15,20))
 	if (prob(25))
 		new/obj/effect/fire(epicenter)
-	var/took = (world.timeofday-start)/10
-	//You need to press the DebugGame verb to see these now....they were getting annoying and we've collected a fair bit of data. Just -test- changes  to explosion code using this please so we can compare
-	if (Debug2)	world.log << "## DEBUG: Explosion([x0],[y0],[z0])(d[devastation_range],h[heavy_impact_range],l[light_impact_range]): Took [took] seconds."
 
 /process/explosion/proc/explosion_rec(turf/epicenter, power)
 	if (power <= 0) return
