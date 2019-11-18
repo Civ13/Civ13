@@ -44,17 +44,27 @@
 	else
 		if (owner != "Global" && find_company_member(user,owner))
 			for (var/datum/data/vending_product/R in product_records)
-				if (istype(W, R.product_path))
-					stock(W, R, user)
-					return TRUE
-			//TODO: Fix this
-			if (istype(W, /obj/item/weapon/can) || istype(W,/obj/item/weapon/reagent_containers/glass) || W.contents)
-				user << "<span class='notice'>You can't sell this.</span>"
+				if (istype(W, R.product_path) && W.name == R.product_name)
+					if (istype(W, /obj/item/stack))
+						R.amount += W.amount
+						qdel(W)
+						return TRUE
+					else
+						stock(W, R, user)
+						return TRUE
 			//if it isnt in the list yet
 			if (product_records.len >= max_products)
-				user << "<span class='notice'>This [src] has too many different products already!</span>"
-				return FALSE
-			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state)
+				var/datum/data/vending_product/free = null
+				for (var/datum/data/vending_product/R in product_records)
+					if (R.amount <= 0)
+						free=R
+				if (!free)
+					user << "<span class='notice'>This [src] has too many different products already!</span>"
+					return FALSE
+				else
+					product_records -= free
+			user.unEquip(W)
+			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
 			var/inputp = input(user, "What price do you want to set for \the [W]? (in silver coins)") as num
 			if (!inputp)
 				inputp = 0
@@ -64,8 +74,10 @@
 			if (istype(W, /obj/item/stack))
 				var/obj/item/stack/S = W
 				product.amount = S.amount
+				qdel(W)
+			else
+				W.forceMove(src)
 			product_records.Add(product)
-			qdel(W)
 			update_icon()
 			return TRUE
 
@@ -268,3 +280,27 @@
 		overlays += overlay_primary
 		overlays += overlay_secondary
 		overlays += image(icon = icon, icon_state = "[icon_state]_base")
+
+/obj/structure/vending/sales/stock(obj/item/W, var/datum/data/vending_product/R, var/mob/user)
+	if (!user.unEquip(W))
+		return
+
+	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
+	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/S = W
+		R.amount += S.amount
+		qdel(W)
+	else
+		W.forceMove(src)
+		R.product_item += W
+		R.amount++
+	nanomanager.update_uis(src)
+
+/obj/structure/vending/process()
+	if (stat & (BROKEN|NOPOWER))
+		return
+
+	if (!active)
+		return
+
+	return
