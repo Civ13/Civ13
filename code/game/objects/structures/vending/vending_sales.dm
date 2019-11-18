@@ -69,14 +69,14 @@
 			update_icon()
 			return TRUE
 
-/obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user)
+/obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user, var/p_amount=1)
 	vend_ready = FALSE //One thing at a time!!
 	status_message = "Vending..."
 	status_error = FALSE
 	nanomanager.update_uis(src)
 
 	spawn(vend_delay)
-		R.get_product(get_turf(src))
+		R.get_product(get_turf(src),p_amount)
 		playsound(loc, 'sound/machines/vending_drop.ogg', 100, TRUE)
 		status_message = ""
 		status_error = FALSE
@@ -146,8 +146,16 @@
 			var/key = text2num(href_list["vend"])
 			var/datum/data/vending_product/R = product_records[key]
 
+			var/inp = 1
+			if (R.amount > 1)
+				inp = input(usr, "How many do you want to buy? (1 to [R.amount])",1) as num
+				if (inp>R.amount)
+					inp = R.amount
+				else if (inp<=1)
+					inp = 1
+
 			if (R.price <= 0)
-				vend(R, usr)
+				vend(R, usr, inp)
 
 			else
 				currently_vending = R
@@ -163,7 +171,7 @@
 					if (GC.amount == 0)
 						qdel(GC)
 					moneyin = 0
-					vend(R, usr)
+					vend(R, usr, inp)
 					nanomanager.update_uis(src)
 
 		else if (href_list["cancelpurchase"])

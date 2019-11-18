@@ -42,12 +42,19 @@
 	if (product.type != product_path)
 		return FALSE
 	amount++
-/datum/data/vending_product/proc/get_product(var/product_location)
-	if (amount < 1 || !product_location)
+/datum/data/vending_product/proc/get_product(var/product_location, var/p_amount=1)
+	if (amount < p_amount || !product_location)
 		return
-
-	var/atom/movable/product = new product_path
-	if (product)
-		product.forceMove(product_location)
-		amount--
-	return product
+	if (findtext("[product_path]","obj/item/stack"))
+		var/obj/item/stack/product = new product_path
+		if (product)
+			product.amount = p_amount
+			product.forceMove(product_location)
+			amount -= p_amount
+	else
+		for(var/i=1, i<=p_amount, i++)
+			var/atom/movable/product = new product_path
+			if (product)
+				product.forceMove(product_location)
+				amount--
+	return TRUE
