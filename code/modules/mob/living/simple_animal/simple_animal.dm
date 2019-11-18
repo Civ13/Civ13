@@ -492,32 +492,8 @@
 
 	walk_to(src,0) // stops movement
 	unregisterSpawner()
-	decay()
 	return ..(gibbed,deathmessage)
 
-/mob/living/simple_animal/proc/decay()
-	spawn(7200)
-		if (stat == DEAD)
-			var/amt = 0
-			if (mob_size == MOB_MINISCULE)
-				amt = 0
-			if (mob_size == MOB_TINY)
-				amt = 0
-			if (mob_size == MOB_SMALL)
-				amt = 1
-			if (mob_size == MOB_MEDIUM)
-				amt = 2
-			if (mob_size == MOB_LARGE)
-				amt = 3
-			if (mob_size == MOB_HUGE)
-				amt = 6
-			if (amt >= 1)
-				var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
-				bone.name = "[name] bone"
-				bone.amount = amt
-			qdel(src)
-			return
-		return
 /mob/living/simple_animal/ex_act(severity)
 	if (!blinded)
 		if (HUDtech.Find("flash"))

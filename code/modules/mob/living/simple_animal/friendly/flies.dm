@@ -29,31 +29,13 @@
 	scavenger = 1
 /mob/living/simple_animal/fly/New()
 	..()
-
+	spawn(6000)
+		Destroy()
 
 /mob/living/simple_animal/fly/Life()
 	..()
 	if (stat != DEAD)
-		if (prob(40))
-			var/done = FALSE
-			for (var/obj/item/weapon/reagent_containers/food/snacks/meat in range(6, src))
-				if (done == FALSE)
-					walk_towards(src, meat, 3)
-					done = TRUE
-			if (done == FALSE)
-				walk_rand(src,4)
-		else
-			walk_rand(src,4)
-		if (prob(90))
-			var/done = FALSE
-			for (var/obj/item/weapon/reagent_containers/food/snacks/poo in range(6, src))
-				if (done == FALSE)
-					walk_towards(src, poo, 3)
-					done = TRUE
-			if (done == FALSE)
-				walk_rand(src,4)
-		else
-			walk_rand(src,4)
+		walk_rand(src,4)
 
 /mob/living/simple_animal/fly/bullet_act(var/obj/item/projectile/Proj)
 	return
