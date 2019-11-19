@@ -350,7 +350,11 @@ var/list/global/floor_cache = list()
 		if (!do_after(user, (10 - S.dig_speed)*10, src))
 			return
 		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
-		ChangeTurf(/turf/floor/dirt)
+		var/area/A = get_area(src)
+		if (A.climate == "jungle" || A.climate == "savanna")
+			ChangeTurf(/turf/floor/dirt/jungledirt)
+		else
+			ChangeTurf(/turf/floor/dirt)
 		return
 	..()
 
