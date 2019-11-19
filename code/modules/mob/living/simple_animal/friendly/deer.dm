@@ -35,13 +35,11 @@
 	var/overpopulationCountdown = 0
 
 /mob/living/simple_animal/deer/female/Destroy()
-	..()
 	deer_count -= 1
-
+	..()
 /mob/living/simple_animal/deer/male/Destroy()
-	..()
 	deer_count -= 1
-
+	..()
 /mob/living/simple_animal/deer/male/New()
 	deer_count += 1
 	..()

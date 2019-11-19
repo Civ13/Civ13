@@ -174,7 +174,7 @@ var/list/delayed_garbage = list()
 			var/atom/movable/AT = A
 			AT.invisibility = 101
 			AT.loc = null
-			spawn(10)
+			spawn(2)
 				if (AT)
 					sec_qdel(AT)
 	return
