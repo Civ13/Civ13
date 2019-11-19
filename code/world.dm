@@ -400,3 +400,11 @@ var/world_topic_spam_protect_time = world.timeofday
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")
 
 		sleep(10)
+
+/proc/start_gc_helper()
+	spawn(18000)
+		world.log << "Garbage Helper running..."
+		for(var/atom/movable/AM)
+			if (AM.loc==null)
+				del(AM)
+		start_gc_helper()

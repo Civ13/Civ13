@@ -174,14 +174,12 @@ var/list/delayed_garbage = list()
 		. = !A.Destroy()
 		if (. && A)
 			A.finalize_qdel()
-	if (A && isatom(A))
-		var/atom/AT = A
+	if (A && ismovable(A))
+		var/atom/movable/AT = A
 		AT.invisibility = 101
 		AT.icon = null
 		AT.icon_state = null
-		if (ismovable(A))
-			var/atom/movable/AM = A
-			AM.loc = null // maybe fixes projectiles, hopefully doesn't break anything - Kachnov
+		AT.loc = null
 
 /proc/qdel_list(var/list/L)
 	if (!L)
@@ -213,10 +211,10 @@ var/list/delayed_garbage = list()
 	if (IsPooled(src))
 		PlaceInPool(src)
 	else
-		if (processes.garbage)
-			processes.garbage.AddTrash(src)
-		else
-			delayed_garbage |= src
+		del(src)
+
+/atom/movable/finalize_qdel()
+	loc = null
 
 /icon/finalize_qdel()
 	del(src)
@@ -225,6 +223,9 @@ var/list/delayed_garbage = list()
 	del(src)
 
 /mob/finalize_qdel()
+	loc = null
+
+/mob/living/carbon/human/finalize_qdel()
 	del(src)
 
 /turf/finalize_qdel()
@@ -301,12 +302,4 @@ var/list/delayed_garbage = list()
 				del(o)
 				garbage.dels++
 			garbage.destroyed.Cut(1, 2)
-#endif
-
-#ifdef GC_DEBUG
-#undef GC_DEBUG
-#endif
-
-#ifdef GC_FINDREF
-#undef GC_FINDREF
 #endif

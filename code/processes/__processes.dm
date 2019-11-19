@@ -39,7 +39,6 @@ var/datum/process_list/processes = new
 	var/process/zoom_scopes/zoom_scopes = null
 	var/process/zoom_mobs/zoom_mobs = null
 	var/process/supply/supply = null
-//	var/process/supplydrop/supplydrop = null
 	var/process/python/python = null
 	var/process/self_cleaning/self_cleaning = null
 	var/process/job_data/job_data = null
