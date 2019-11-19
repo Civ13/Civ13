@@ -172,7 +172,7 @@
 		else if (U.religious_leader || U.religious_clergy != FALSE)
 			usr << "<span class='danger'>You are already part of the clergy!</span>"
 			return
-		else
+		else if (WWinput(src, "Are you sure you want to join the clergy? The membership is for life.", "", "Cancel", list("Join the clergy", "Cancel")) == "Join the clergy")				
 			switch(map.custom_religions[U.religion][7])
 
 				if ("Shamans")

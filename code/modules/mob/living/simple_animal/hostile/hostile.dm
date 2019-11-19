@@ -109,7 +109,7 @@
 
 
 /mob/living/simple_animal/hostile/proc/ListTargets(var/dist = 7)
-	var/list/L = hearers(src, dist)
+	var/list/L = hearers(dist,src)
 	return L
 
 /mob/living/simple_animal/hostile/death()
