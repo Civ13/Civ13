@@ -169,17 +169,25 @@ var/list/delayed_garbage = list()
 		if (processes.garbage)
 			processes.garbage.total_dels++
 			processes.garbage.hard_dels++
-	else if (!A.gcDestroyed)
+	else
+		if (A && ismovable(A))
+			var/atom/movable/AT = A
+			AT.invisibility = 101
+			AT.loc = null
+			spawn(10)
+				if (AT)
+					sec_qdel(AT)
+	return
+/proc/sec_qdel(var/atom/movable/A)
+	if (!A)
+		return
+	if (A && !A.gcDestroyed)
 		// Let our friend know they're about to get collected
 		. = !A.Destroy()
 		if (. && A)
 			A.finalize_qdel()
-	if (A && ismovable(A))
-		var/atom/movable/AT = A
-		AT.invisibility = 101
-		AT.icon = null
-		AT.icon_state = null
-		AT.loc = null
+	return
+
 
 /proc/qdel_list(var/list/L)
 	if (!L)
@@ -217,7 +225,7 @@ var/list/delayed_garbage = list()
 			delayed_garbage |= src
 
 /atom/movable/finalize_qdel()
-	loc = null
+	del(src)
 
 /icon/finalize_qdel()
 	del(src)
@@ -226,7 +234,7 @@ var/list/delayed_garbage = list()
 	del(src)
 
 /mob/finalize_qdel()
-	loc = null
+	del(src)
 
 /mob/living/carbon/human/finalize_qdel()
 	del(src)
