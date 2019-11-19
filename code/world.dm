@@ -401,7 +401,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 		sleep(10)
 
-var/global/gc_helper_on = TRUE
+var/global/gc_helper_on = FALSE
 
 /proc/start_gc_helper()
 	spawn(18000)
@@ -423,3 +423,7 @@ var/global/gc_helper_on = TRUE
 	message_admins("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
 	log_admin("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
 	gc_helper_on = !gc_helper_on
+	if (gc_helper_on)
+		gc_helper()
+		start_gc_helper()
+
