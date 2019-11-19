@@ -123,7 +123,7 @@
 	if (axis)
 		axis.wheels -= src
 	visible_message("<span class='danger'>\The [name] gets destroyed!</span>")
-	qdel(src)
+	..()
 
 
 var/global/list/rotation_matrixes = list(

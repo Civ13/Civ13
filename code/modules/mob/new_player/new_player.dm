@@ -35,8 +35,8 @@
 			movementMachine_clients -= client
 
 /mob/new_player/Destroy()
-	..()
 	new_player_mob_list -= src
+	..()
 
 /mob/new_player/say(var/message)
 	message = sanitize(message)

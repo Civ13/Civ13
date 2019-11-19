@@ -210,7 +210,7 @@
 /obj/structure/roof_support/Destroy()
 	for(var/obj/roof/R in range(3,get_turf(src)))
 		R.collapse_check()
-	qdel(src)
+	..()
 
 /obj/structure/mine_support/Destroy()
 	if (istype(get_turf(src), /turf/floor))

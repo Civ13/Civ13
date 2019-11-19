@@ -63,6 +63,7 @@
 		opacity = FALSE
 		T.recalc_atom_opacity()
 		T.reconsider_lights()
+	loc = null
 	return ..()
 
 // Should always be used to change the opacity of an atom.

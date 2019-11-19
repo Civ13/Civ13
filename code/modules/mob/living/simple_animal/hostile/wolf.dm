@@ -40,9 +40,9 @@
 	name = "female wolf"
 	female = TRUE
 
-/mob/living/simple_animal/hostile/bear/Destroy()
-	..()
+/mob/living/simple_animal/hostile/wolf/Destroy()
 	wolf_count -= 1
+	..()
 
 /mob/living/simple_animal/hostile/wolf/New()
 	wolf_count += 1

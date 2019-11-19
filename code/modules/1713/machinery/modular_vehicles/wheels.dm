@@ -7,6 +7,12 @@
 	var/obj/structure/bed/chair/drivers/drivingchair = null
 	var/obj/structure/vehicleparts/frame/control = null
 	var/lastdirchange = 0
+
+/obj/item/vehicleparts/wheel/modular/Destroy()
+	drivingchair = null
+	control = null
+	..()
+
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
@@ -46,9 +52,10 @@
 /obj/structure/bed/chair/drivers/Destroy()
 	if (wheel)
 		wheel.control.axis.wheel = null
-		qdel(wheel)
+		wheel.Destroy()
+		wheel = null
 	visible_message("<span class='danger'>The [name] gets destroyed!</span>")
-	qdel(src)
+	..()
 
 /obj/item/vehicleparts/wheel/modular/attack_self(mob/living/carbon/human/H)
 	if(!control)

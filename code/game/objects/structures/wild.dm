@@ -67,6 +67,7 @@
 	for (var/obj/o in get_turf(src))
 		if (o.special_id == "seasons")
 			qdel(o)
+	..()
 
 /obj/structure/wild/fire_act(temperature)
 	if (prob(35 * (temperature/500)))
@@ -215,27 +216,6 @@
 /obj/structure/wild/tree/live_tree/snow/update_icon()
 	..()
 	icon = 'icons/obj/flora/bigtrees_winter.dmi'
-
-/obj/structure/wild/tree/Destroy()
-	var/nearbyObjects = range(2,src)
-	var/list/turf/emptyTurfs = list()
-	var/newtreetype = type
-	spawn(18000)
-		for(var/turf/floor/T in nearbyObjects)
-			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
-				var/found = 0
-				for(var/obj/covers/CV in T)
-					found++
-				for(var/obj/structure/ST in T)
-					found++
-				if (!found)
-					emptyTurfs += T
-		if (emptyTurfs.len)
-			var/chosenturf = pick(emptyTurfs)
-			if (chosenturf)
-				new newtreetype(chosenturf)
-				return
-	..()
 
 /obj/structure/wild/tree/live_tree/New()
 	..()
@@ -441,26 +421,6 @@
 	deadicon = 'icons/misc/beach2.dmi'
 	deadicon_state = "dead_[icon_state]"
 
-/obj/structure/wild/palm/Destroy()
-	var/nearbyObjects = range(2,src)
-	var/list/turf/emptyTurfs = list()
-	var/newtreetype = type
-	spawn(18000)
-		for(var/turf/floor/T in nearbyObjects)
-			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
-				var/found = 0
-				for(var/obj/covers/CV in T)
-					found++
-				for(var/obj/structure/ST in T)
-					found++
-				if (!found)
-					emptyTurfs += T
-		if (emptyTurfs.len)
-			var/chosenturf = pick(emptyTurfs)
-			if (chosenturf)
-				new newtreetype(chosenturf)
-				return
-	..()
 /obj/structure/wild/bush
 	name = "bush"
 	icon_state = "small_bush"
@@ -827,28 +787,6 @@
 		dropwood.amount = 7
 		qdel(src)
 		return
-
-/obj/structure/wild/jungle/Destroy()
-	var/nearbyObjects = range(2,src)
-	var/list/turf/emptyTurfs = list()
-	var/newtreetype = type
-	spawn(18000)
-		for(var/turf/floor/T in nearbyObjects)
-			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
-				var/found = 0
-				for(var/obj/covers/CV in T)
-					found++
-				for(var/obj/structure/ST in T)
-					found++
-				if (!found)
-					emptyTurfs += T
-		if (emptyTurfs.len)
-			var/chosenturf = pick(emptyTurfs)
-			if (chosenturf)
-				new newtreetype(chosenturf)
-				return
-
-	..()
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))

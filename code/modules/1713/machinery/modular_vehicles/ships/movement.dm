@@ -64,5 +64,6 @@
 /obj/structure/vehicleparts/movement/sails/Destroy()
 	if (axis)
 		axis.wheels -= src
+	sails = null
 	visible_message("<span class='danger'>\The [name] gets destroyed!</span>")
-	qdel(src)
+	..()

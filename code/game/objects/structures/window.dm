@@ -346,11 +346,7 @@
 /obj/structure/window/Destroy()
 	density = FALSE
 	update_nearby_tiles()
-	var/turf/location = loc
 	loc = null
-	for (var/obj/structure/window/W in orange(location, TRUE))
-		W.update_icon()
-	loc = location
 	..()
 
 
