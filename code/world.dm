@@ -411,10 +411,13 @@ var/global/gc_helper_on = FALSE
 
 /proc/gc_helper()
 	world.log << "Garbage Helper running..."
-	for(var/atom/movable/AM)
+	for(var/obj/AM)
 		if (AM.loc==null)
-			del(AM)
-
+			if (istype(AM, /obj/covers) || istype(AM, /obj/item) || istype(AM, /obj/structure) || istype(AM, /obj/roof))
+				del(AM)
+	for(var/mob/living/AL)
+		if (AL.loc==null)
+			del(AL)
 /client/proc/toggle_gc_helper()
 	set category = "Debug"
 	set name = "Toggle GC Helper"
