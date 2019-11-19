@@ -205,7 +205,10 @@ var/list/delayed_garbage = list()
 	if (IsPooled(src))
 		PlaceInPool(src)
 	else
-		del(src)
+		if (processes.garbage)
+			processes.garbage.AddTrash(src)
+		else
+			delayed_garbage |= src
 
 /atom/finalize_qdel()
 	if (IsPooled(src))
