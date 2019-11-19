@@ -169,24 +169,20 @@ var/list/delayed_garbage = list()
 		if (processes.garbage)
 			processes.garbage.total_dels++
 			processes.garbage.hard_dels++
-	else
-		if (A && ismovable(A))
-			var/atom/movable/AT = A
-			AT.invisibility = 101
-			AT.loc = null
-			spawn(2)
-				if (AT)
-					sec_qdel(AT)
-	return
-/proc/sec_qdel(var/atom/movable/A)
-	if (!A)
-		return
-	if (A && !A.gcDestroyed)
+	else if (!A.gcDestroyed)
 		// Let our friend know they're about to get collected
 		. = !A.Destroy()
 		if (. && A)
 			A.finalize_qdel()
-	return
+
+	if (A && isatom(A))
+		var/atom/AT = A
+		AT.invisibility = 101
+		AT.icon = null
+		AT.icon_state = null
+		if (ismovable(A))
+			var/atom/movable/AM = A
+			AM.loc = null
 
 
 /proc/qdel_list(var/list/L)
