@@ -50,15 +50,14 @@
 	else if (!locate(using_MG) in range(1, src) || stop_using)
 		use_MG(null)
 
-/mob/Move()
-	. = ..()
+/mob/living/carbon/human/Move()
 	handle_MG_operation()
+	..()
 
-/mob/update_canmove()
-	. = ..()
+/mob/living/carbon/human/update_canmove()
 	if (lying || stat)
 		handle_MG_operation(stop_using = TRUE)
-
+	..()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/update_icon()
 	if (ammo_magazine)
