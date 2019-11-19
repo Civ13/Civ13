@@ -726,9 +726,9 @@ RECIPE: /material/wood/,rustic door,/obj/structure/simple_door/key_door/anyone/r
 RECIPE: /material/wood/,floor tile,/obj/covers/wood,1,25,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,wood stairs,/obj/covers/wood/stairs,2,35,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/,soft wood wall,/obj/covers/wood_wall,8,170,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,7,90,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,7,90,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/,soft wood wall,/obj/covers/wood_wall,8,170,1,1,construction,35,0,0,8,null
+RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,7,90,1,1,construction,25,0,0,8,null
+RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,7,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,custom sign,/obj/structure/sign/custom,3,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
