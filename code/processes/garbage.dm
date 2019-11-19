@@ -224,9 +224,6 @@ var/list/delayed_garbage = list()
 		else
 			delayed_garbage |= src
 
-/atom/movable/finalize_qdel()
-	del(src)
-
 /icon/finalize_qdel()
 	del(src)
 
@@ -234,9 +231,6 @@ var/list/delayed_garbage = list()
 	del(src)
 
 /mob/finalize_qdel()
-	del(src)
-
-/mob/living/carbon/human/finalize_qdel()
 	del(src)
 
 /turf/finalize_qdel()

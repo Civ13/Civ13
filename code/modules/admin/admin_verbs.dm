@@ -146,6 +146,8 @@ var/list/admin_verbs_debug = list(
 	/client/proc/cmd_admin_list_open_jobs,
 	/client/proc/Debug2,
 	/client/proc/toggle_gc_helper,
+	/client/proc/run_gc_helper,
+	/client/proc/check_null_atoms,
 	/client/proc/debug_controller,
 	/client/proc/cmd_admin_delete,
 	/client/proc/cmd_debug_del_all,
@@ -927,3 +929,76 @@ var/global/list/global_colour_matrix = null
 		nuke_map(epicenter, 200, 180, 0)
 		message_admins("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
 		log_game("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
+
+
+///////////////////////GC STUFF////////////////////////////////
+
+var/global/gc_helper_on = FALSE
+
+/proc/start_gc_helper()
+	spawn(18000)
+		if (gc_helper_on)
+			gc_helper()
+		start_gc_helper()
+
+/proc/check_null_atoms_proc()
+	var/list/tmplist = list()
+	for(var/obj/AM)
+		if (AM.loc==null)
+			if (istype(AM, /obj/covers) || istype(AM, /obj/item) || istype(AM, /obj/structure) || istype(AM, /obj/roof))
+				tmplist += AM
+	for(var/mob/living/AL)
+		if (AL.loc==null)
+			tmplist += AL
+	return tmplist
+
+/proc/gc_helper(var/list/origin = list())
+	world.log << "Garbage Helper running..."
+	var/numb = 0
+	if (isemptylist(origin))
+		for(var/obj/AM)
+			if (AM.loc==null)
+				if (istype(AM, /obj/covers) || istype(AM, /obj/item) || istype(AM, /obj/structure) || istype(AM, /obj/roof))
+					del(AM)
+					numb++
+		for(var/mob/living/AL)
+			if (AL.loc==null)
+				del(AL)
+				numb++
+	else
+		for(var/atom/movable/M in origin)
+			del(M)
+			numb++
+	world.log << "Garbage Helper done. Deleted [numb] atoms."
+	return
+
+/client/proc/toggle_gc_helper()
+	set category = "Debug"
+	set name = "Toggle GC Helper"
+	if (!check_rights(R_DEBUG))	return
+
+	message_admins("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
+	log_admin("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
+	gc_helper_on = !gc_helper_on
+	if (gc_helper_on)
+		gc_helper()
+		start_gc_helper()
+
+/client/proc/run_gc_helper()
+	set category = "Debug"
+	set name = "Run GC Helper"
+	if (!check_rights(R_DEBUG))	return
+
+	gc_helper()
+
+/client/proc/check_null_atoms()
+	set category = "Debug"
+	set name = "Check null Atoms"
+	if (!check_rights(R_DEBUG))	return
+
+	var/list/result = check_null_atoms_proc()
+	var/resp = WWinput(src, "Found [result.len] deletable atoms at null. Remove them?", "Atoms at null", "No", list("Yes","No"))
+	if (resp == "No")
+		return
+	else
+		gc_helper(result)

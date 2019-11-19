@@ -400,33 +400,3 @@ var/world_topic_spam_protect_time = world.timeofday
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")
 
 		sleep(10)
-
-var/global/gc_helper_on = FALSE
-
-/proc/start_gc_helper()
-	spawn(18000)
-		if (gc_helper_on)
-			gc_helper()
-		start_gc_helper()
-
-/proc/gc_helper()
-	world.log << "Garbage Helper running..."
-	for(var/obj/AM)
-		if (AM.loc==null)
-			if (istype(AM, /obj/covers) || istype(AM, /obj/item) || istype(AM, /obj/structure) || istype(AM, /obj/roof))
-				del(AM)
-	for(var/mob/living/AL)
-		if (AL.loc==null)
-			del(AL)
-/client/proc/toggle_gc_helper()
-	set category = "Debug"
-	set name = "Toggle GC Helper"
-	if (!check_rights(R_DEBUG))	return
-
-	message_admins("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
-	log_admin("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
-	gc_helper_on = !gc_helper_on
-	if (gc_helper_on)
-		gc_helper()
-		start_gc_helper()
-
