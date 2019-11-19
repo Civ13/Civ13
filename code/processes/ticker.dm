@@ -23,8 +23,6 @@
 		start_serverdata_loop()
 		start_messaging_loop()
 		start_persistence_loop()
-		spawn(3000)
-			start_gc_helper()
 	processes.ticker = src
 
 /process/ticker/fire()

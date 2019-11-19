@@ -302,12 +302,12 @@ var/world_topic_spam_protect_time = world.timeofday
 		sleep (100)
 
 /proc/start_persistence_loop()
-	spawn while (1)
+	spawn(300)
 		var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
 		var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
 		if (minsleft <= 2)
-			world << "<big><b>Attention - Round will be saved in <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to 30 seconds.</b></big>"
-		sleep(300)
+			world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
+		start_persistence_loop()
 
 /proc/start_messaging_loop()
 	spawn while (1)
@@ -401,10 +401,29 @@ var/world_topic_spam_protect_time = world.timeofday
 
 		sleep(10)
 
+var/global/gc_helper_on = FALSE
+
 /proc/start_gc_helper()
 	spawn(18000)
-		world.log << "Garbage Helper running..."
-		for(var/atom/movable/AM)
-			if (AM.loc==null)
-				del(AM)
+		if (gc_helper_on)
+			gc_helper()
 		start_gc_helper()
+
+/proc/gc_helper()
+	world.log << "Garbage Helper running..."
+	for(var/atom/movable/AM)
+		if (AM.loc==null)
+			del(AM)
+
+/client/proc/toggle_gc_helper()
+	set category = "Debug"
+	set name = "Toggle GC Helper"
+	if (!check_rights(R_DEBUG))	return
+
+	message_admins("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
+	log_admin("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
+	gc_helper_on = !gc_helper_on
+	if (gc_helper_on)
+		gc_helper()
+		start_gc_helper()
+
