@@ -1,6 +1,7 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/nomads_karafuta
 	ID = MAP_NOMADS_KARAFUTA
+	no_winner ="The round is proceeding normally."
 	title = "Nomads (Karafuta-Sakhalinsk) (300x450x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
@@ -162,4 +163,3 @@
 		. = TRUE
 	else
 		. = FALSE
-#undef NO_WINNER

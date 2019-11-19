@@ -229,13 +229,6 @@ var/global/datum/controller/occupations/job_master
 		occupations += job
 	return TRUE
 
-
-/datum/controller/occupations/proc/Debug(var/text)
-	if (!Debug2)	return FALSE
-	job_debug.Add(text)
-	return TRUE
-
-
 /datum/controller/occupations/proc/GetJob(var/rank)
 	if (!rank)	return null
 	for (var/datum/job/J in occupations)
@@ -247,14 +240,12 @@ var/global/datum/controller/occupations/job_master
 	return player.original_job.title
 
 /datum/controller/occupations/proc/AssignRole(var/mob/new_player/player, var/rank, var/latejoin = FALSE)
-	Debug("Running AR, Player: [player], Rank: [rank], LJ: [latejoin]")
 	if (player && rank)
 		var/datum/job/job = GetJob(rank)
 		if (!job)	return FALSE
 		if (!job.player_old_enough(player.client)) return FALSE
 		var/position_limit = job.total_positions
 		if ((job.current_positions < position_limit) || position_limit == -1)
-			Debug("Player: [player] is now Rank: [rank], JCP:[job.current_positions], JPL:[position_limit]")
 			if (player.mind)
 				player.mind.assigned_role = rank
 				player.mind.assigned_job = job
@@ -265,7 +256,6 @@ var/global/datum/controller/occupations/job_master
 			unassigned -= player
 			job.current_positions++
 			return TRUE
-	Debug("AR has failed, Player: [player], Rank: [rank]")
 	return FALSE
 
 /datum/controller/occupations/proc/FreeRole(var/rank)	//making additional slot on the fly

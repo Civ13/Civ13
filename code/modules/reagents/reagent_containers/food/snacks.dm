@@ -24,7 +24,7 @@
 	if (nutriment_amt)
 		reagents.add_reagent("nutriment",nutriment_amt,nutriment_desc)
 	spawn (1)
-		if (reagents.total_volume)
+		if (reagents && reagents.total_volume)
 			bitesize = max(bitesize, ceil(reagents.total_volume/5))
 		else
 			bitesize = 2

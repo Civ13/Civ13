@@ -20,7 +20,6 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
-
 /obj/structure/converter/attackby(obj/item/M as obj, mob/user as mob)
 	if(!filled)
 		if(istype(M, input))
@@ -29,7 +28,7 @@
 				if(M.amount <= 0)
 					qdel(M)
 				user << "<span class='notice'>You insert [inputamount] [M.name] into the [name]!</span>"
-				visible_message("<span class='notice'>The [M.name] starts to [actiontext].</span>")
+				visible_message("<span class='notice'>The [M.name] starts [actiontext]ing.</span>")
 				icon_state = activesprite
 				playsound(src,activesound,60,1)
 				if(overlayed)
@@ -37,7 +36,7 @@
 				filled = TRUE
 				spawn(delay)
 					visible_message("<span class='alert'>The [name] finishes [actiontext]ing.</span>")
-					for(outputamount)
+					for(var/i=0,i<=outputamount,i++)
 						new output(src.loc)
 					icon_state = idlesprite
 					if(overlayed)
@@ -48,19 +47,19 @@
 				user << "<span class='alert'> You need to insert [inputamount] [M.name]! </span>"
 		else
 			user << "<span class='alert'> That is not the right resource! </span>"
-	else
+	/*else
 		user << "<span class='alert'> You empty the [name]. </span>"
-		for(outputamount)
+		for(var/i=0,i<=inputamount,i++)
 			new input(src.loc)
 		icon_state = idlesprite
 		if(overlayed)
 			remove_overlay(M)
-		filled = FALSE
+		filled = FALSE*/
 
 /obj/structure/converter/proc/remove_overlay()
 	src.overlays = null
 
-/obj/structure/converter/proc/load_overlay(var/obj/A as obj)
+/obj/structure/converter/proc/load_overlay(var/obj/item/stack/material/A as obj)
 	//remove all overlays
 	remove_overlay()
 	//add overlay
@@ -77,6 +76,6 @@
 	input = /obj/item/stack/material/hairlesshide
 	inputamount = 1
 	output = /obj/item/stack/material/leather
-	outputamount = 6
-	actiontext = "tan"
-	overlayed = TRUE
+	outputamount = 3
+	actiontext = "tann"
+	overlayed = FALSE

@@ -177,47 +177,45 @@
 				if (!(NORTH in sideslist))
 					if (EAST in sideslist)
 						icon_state = "d_roadtswe" //T, SOUTH EAST WEST
-						return
 					else
 						icon_state = "d_roadsw" //Turn, SOUTH-WEST
-						return
 				else if (!(SOUTH in sideslist))
 					if (EAST in sideslist)
 						icon_state = "d_roadtnwe" //T, NORTH EAST WEST
-						return
 					else
 						icon_state = "d_roadnw" //Turn, NORTH-WEST
-						return
 			else if (EAST in sideslist)
 				if (!(NORTH in sideslist))
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
 					return
 				else if (!(SOUTH in sideslist))
 					icon_state = "d_roadne" //Turn, NORTH-EAST
-					return
 		else
 			if (NORTH in sideslist)
 				if (!(EAST in sideslist))
 					if (SOUTH in sideslist)
 						icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
-						return
 					else
 						icon_state = "d_roadnw" //Turn, NORTH-WEST
-						return
 				else if (!(WEST in sideslist))
 					if (SOUTH in sideslist)
 						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
-						return
 					else
 						icon_state = "d_roadne" //Turn, NORTH-EAST
-						return
 			else if (SOUTH in sideslist)
 				if (!(EAST in sideslist))
 					icon_state = "d_roadsw" //Turn, SOUTH-WEST
-					return
 				else if (!(WEST in sideslist))
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
-					return
+		if (WEST in sideslist && NORTH in sideslist && SOUTH in sideslist)
+			icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
+		if (WEST in sideslist && NORTH in sideslist && EAST in sideslist)
+			icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+		if (WEST in sideslist && EAST in sideslist && SOUTH in sideslist)
+			icon_state = "d_roadtswe" //T, SOUTH EAST WEST
+		if (EAST in sideslist && NORTH in sideslist && SOUTH in sideslist)
+			icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+
 /obj/covers/roads/New()
 	..()
 	spawn(2)
@@ -937,6 +935,24 @@
 	explosion_resistance = 7
 	material = "Stone"
 
+/obj/covers/vault
+	name = "vault wall"
+	desc = "A very strong wall of concrete wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "vault"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 800
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 10
+	material = "Stone"
+
 /obj/covers/slate
     name = "slatestone wall"
     desc = "A slate wall."
@@ -1141,9 +1157,10 @@
 /obj/covers/updateturf()
 	..()
 	var/turf/T = get_turf(src)
-	origin_water_level = T.water_level
-	T.water_level = 0
-	T.move_delay = 0
+	if (T)
+		origin_water_level = T.water_level
+		T.water_level = 0
+		T.move_delay = 0
 	return TRUE
 
 
@@ -1154,8 +1171,9 @@
 			new current_area_type(get_turf(src))
 			visible_message("The roof collapses!")
 		var/turf/floor/T = get_turf(loc)
-		T.water_level = origin_water_level
-		T.move_delay = initial(T.move_delay)
+		if (T)
+			T.water_level = origin_water_level
+			T.move_delay = initial(T.move_delay)
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount

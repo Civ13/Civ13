@@ -11,7 +11,7 @@
 	var/image/bayonet_ico
 	var/image/optics_ico
 	var/image/under_ico
-	..New()
+	New()
 		maxhealth = health
 		..()
 		maxhealth = health

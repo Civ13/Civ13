@@ -247,6 +247,7 @@
 	var/religion = "none"
 	var/religion_type = "none"
 	flammable = TRUE
+	unique = TRUE
 
 /obj/item/weapon/book/holybook/New()
 	..()

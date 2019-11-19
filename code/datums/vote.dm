@@ -56,6 +56,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	proc/autogamemode()
 		if (map.ID == MAP_NOMADS_EXTENDED || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_NOMADS_WASTELAND || map.ID == MAP_TESTING)
 			return
+		if (map.persistence)
+			return
 		if (map.civilizations && autogamemode_triggered == FALSE)
 			initiate_vote("gamemode","the server", TRUE)
 			log_debug("The server has called a gamemode vote.")

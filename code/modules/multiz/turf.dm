@@ -21,14 +21,13 @@
 		return
 	if (isobserver(mover))
 		return
+	if (istype(mover,/obj/effect/expl_particles))
+		return
 	if (istype(mover, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = mover
 		if (H.stopDumbDamage)
 			return
-#ifdef USE_OPENSPACE
-	if (istype(mover, /mob/shadow))
-		return
-#endif USE_OPENSPACE
+
 	// only fall down in defined areas (read: areas with artificial gravitiy)
 	if (!istype(below)) //make sure that there is actually something below
 		below = GetBelow(src)

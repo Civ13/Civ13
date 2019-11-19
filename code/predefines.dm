@@ -67,15 +67,6 @@
 #define         LOW_PRESSURE_DAMAGE 2 // The amount of damage someone takes when in a low pressure area. (The pressure threshold is so low that it doesn't make sense to do any calculations, so it just applies this flat value).
 
 #define HUNGER_FACTOR              0.05 // Factor of how fast mob nutrition decreases
-#define REM 0.2 // Means 'Reagent Effect Multiplier'. This is how many units of reagent are consumed per tick
-#define CHEM_TOUCH TRUE
-#define CHEM_INGEST 2
-#define CHEM_BLOOD 3
-#define MINIMUM_CHEMICAL_VOLUME 0.01
-#define SOLID TRUE
-#define LIQUID 2
-#define GAS 3
-#define REAGENTS_OVERDOSE 30
 
 #define MINIMUM_TEMPERATURE_RATIO_TO_SUSPEND      0.012        // Minimum temperature difference before group processing is suspended.
 #define MINIMUM_TEMPERATURE_DELTA_TO_SUSPEND      4
@@ -106,25 +97,7 @@
 #define NORMPIPERATE             30   // Pipe-insulation rate divisor.
 #define HEATPIPERATE             8    // Heat-exchange pipe insulation.
 #define FLOWFRAC                 0.99 // Fraction of gas transfered per process.
-#define SHOES_SLOWDOWN          -1.0  // How much shoes slow you down by default. Negative values speed you up.
-
-// Item inventory slot bitmasks.
-#define SLOT_OCLOTHING  TRUE
-#define SLOT_ICLOTHING  2
-#define SLOT_GLOVES     4
-#define SLOT_EYES       8
-#define SLOT_EARS       16
-#define SLOT_MASK       32
-#define SLOT_HEAD       64
-#define SLOT_FEET       128
-#define SLOT_ID         256
-#define SLOT_BELT       512
-#define SLOT_BACK       1024
-#define SLOT_POCKET     2048  // This is to allow items with a w_class of 3 or 4 to fit in pockets.
-#define SLOT_ACCESSORY  4096
-#define SLOT_TWOEARS    8192
-#define SLOT_SHOULDER   16384
-#define SLOT_HOLSTER	32768 //16th bit
+#define SHOES_SLOWDOWN          -0.2  // How much shoes slow you down by default. Negative values speed you up.
 
 // Flags bitmasks.
 #define STOPPRESSUREDAMAGE TRUE // This flag is used on the flags variable for SUIT and HEAD items which stop pressure damage. Note that the flag TRUE was previous used as ONBACK, so it is possible for some code to use (flags & TRUE) when checking if something can be put on your back. Replace this code with (inv_flags & SLOT_BACK) if you see it anywhere
@@ -218,6 +191,8 @@
 #define slot_w_uniform_str	"w_uniform"
 #define slot_shoulder_str		"slot_shoulder"
 #define icon_head		"slot_head"
+#define slot_head_str		"slot_head"
+#define slot_wear_suit_str	"slot_suit"
 
 // Bitflags for clothing parts.
 #define HEAD        TRUE
@@ -354,28 +329,6 @@
 
 #define TRANSITIONEDGE 7 // Distance from edge to move to another z-level.
 
-// A set of constants used to determine which type of mute an admin wishes to apply.
-// Please read and understand the muting/automuting stuff before changing these. MUTE_IC_AUTO, etc. = (MUTE_IC << 1)
-// Therefore there needs to be a gap between the flags for the automute flags.
-#define MUTE_IC        TRUE
-#define MUTE_OOC       2
-#define MUTE_PRAY      4
-#define MUTE_ADMINHELP 8
-#define MUTE_DEADCHAT  16
-#define MUTE_MENTORHELP 32
-#define MUTE_ALL       33
-
-// Number of identical messages required to get the spam-prevention auto-mute thing to trigger warnings and automutes.
-#define SPAM_TRIGGER_WARNING  5
-#define SPAM_TRIGGER_AUTOMUTE 10
-
-// Some constants for DB_Ban
-#define BANTYPE_PERMA       TRUE
-#define BANTYPE_TEMP        2
-#define BANTYPE_JOB_PERMA   3
-#define BANTYPE_JOB_TEMP    4
-#define BANTYPE_ANY_FULLBAN 5 // Used to locate stuff to unban.
-
 // Invisibility constants.
 #define INVISIBILITY_LIGHTING             20
 #define INVISIBILITY_LEVEL_ONE            35
@@ -397,10 +350,6 @@
 
 //Some mob defines below
 #define AI_CAMERA_LUMINOSITY 6
-
-#define BORGMESON TRUE
-#define BORGTHERM 2
-#define BORGXRAY  4
 
 // Some arbitrary defines to be used by self-pruning global lists. (see master_controller)
 #define PROCESS_KILL 26 // Used to trigger removal from a processing list.
@@ -425,26 +374,7 @@
 #define ORGAN_DEAD       1024
 #define ORGAN_MUTATED    2048
 #define ORGAN_ASSISTED   4096
-
-// Admin permissions. Please don't edit these values without speaking to Errorage first. ~Carn
-#define R_BUILDMODE     TRUE
-#define R_ADMIN         2
-#define R_TRIALADMIN   4
-#define R_FUN           8
-#define R_SERVER        16
-#define R_DEBUG         32
-#define R_POSSESS       64
-#define R_PERMISSIONS   128
-#define R_STEALTH       256
-#define R_REJUVINATE    512
-#define R_VAREDIT       1024
-#define R_SOUNDS        2048
-#define R_SPAWN         4096
-#define R_MOD           8192
-#define R_MENTOR        16384
-#define R_HOST          32768
-
-#define R_MAXPERMISSION 32768 // This holds the maximum value for a permission. It is used in iteration, so keep it updated.
+#define ORGAN_ARTERY_CUT 8192
 
 // Preference toggles: these are no longer bitflags, but list items
 #define SOUND_ADMINHELP TRUE
@@ -504,7 +434,7 @@
 #define HAS_SKIN_COLOR    128   // Skin colour selectable in chargen. (RGB)
 #define HAS_LIPS          256   // Lips are drawn onto the mob icon. (lipstick)
 #define HAS_UNDERWEAR     512   // Underwear is drawn onto the mob icon.
-#define IS_PLANT          1024  // Is a treeperson.
+#define HAS_HAIR_COLOR    1024   // Hair colour selectable in chargen. (RGB)
 #define IS_WHITELISTED    2048  // Must be whitelisted to play.
 #define IS_SYNTHETIC      4096  // Is a machine race.
 #define HAS_EYE_COLOR     8192  // Eye colour selectable in chargen. (RGB)
@@ -516,17 +446,6 @@
 #define ZONE_ACTIVE   TRUE
 #define ZONE_SLEEPING FALSE
 
-//some colors
-#define COLOR_RED    "#FF0000"
-#define COLOR_GREEN  "#00FF00"
-#define COLOR_BLUE   "#0000FF"
-#define COLOR_CYAN   "#00FFFF"
-#define COLOR_PINK   "#FF00FF"
-#define COLOR_YELLOW "#FFFF00"
-#define COLOR_ORANGE "#FF9900"
-#define COLOR_WHITE  "#FFFFFF"
-#define COLOR_BLACK  "#000000"
-#define COLOR_LIGHT_BLUE "#4242F0"
 
 /*
  *	Germs and infections.
@@ -574,8 +493,6 @@
 //General-purpose life speed define for plants.
 #define HYDRO_SPEED_MULTIPLIER TRUE
 
-#define DEFAULT_JOB_TYPE /datum/job/civilian
-
 // Appearance change flags
 #define APPEARANCE_UPDATE_DNA TRUE
 #define APPEARANCE_RACE	(2|APPEARANCE_UPDATE_DNA)
@@ -611,9 +528,8 @@
 #define HUMAN TRUE
 #define MONKEY 2
 #define SIMPLE_ANIMAL 4
-
-
-#define ALLMOBS (HUMAN|MONKEY|SIMPLE_ANIMAL)
+#define HEAVY 8
+#define ALLMOBS (HUMAN|MONKEY|SIMPLE_ANIMAL|HEAVY)
 
 #define NEXT_MOVE_DELAY 8
 
@@ -629,8 +545,8 @@
 
 //#define CLAMP01(x) 		(Clamp(x, 0, 1))
 
-#define DEFAULT_WALL_MATERIAL "steel"
-#define DEFAULT_TABLE_MATERIAL "plastic"
+#define DEFAULT_WALL_MATERIAL "wood"
+#define DEFAULT_TABLE_MATERIAL "wood"
 
 // Convoluted setup so defines can be supplied by Bay12 main server compile script.
 // Should still work fine for people jamming the icons into their repo.
@@ -671,6 +587,41 @@
 
 #define list_cmp(l1, l2) (length(l1 & l2) > 0)
 
-#define USE_OPENSPACE TRUE
-
 #define ZOOM_CONSTANT 7
+
+// Admin permissions.
+#define R_BUILDMODE     0x1
+#define R_ADMIN         0x2
+#define R_TRIALADMIN   0x4
+#define R_FUN           0x8
+#define R_SERVER        0x10
+#define R_DEBUG         0x20
+#define R_POSSESS       0x40
+#define R_PERMISSIONS   0x80
+#define R_STEALTH       0x100
+#define R_REJUVINATE    0x200
+#define R_VAREDIT       0x400
+#define R_SOUNDS        0x800
+#define R_SPAWN         0x1000
+#define R_MOD           0x2000
+#define R_MENTOR        0x4000
+#define R_HOST          0x8000 //higher than this will overflow
+
+#define R_MAXPERMISSION 0x8000 // This holds the maximum value for a permission. It is used in iteration, so keep it updated.
+
+#define SHORT_RANGE_STILL "short_range_still"
+#define SHORT_RANGE_MOVING "short_range_moving"
+
+#define MEDIUM_RANGE_STILL "medium_range_still"
+#define MEDIUM_RANGE_MOVING "medium_range_moving"
+
+#define LONG_RANGE_STILL "long_range_still"
+#define LONG_RANGE_MOVING "long_range_moving"
+
+#define VERY_LONG_RANGE_STILL "very_long_range_still"
+#define VERY_LONG_RANGE_MOVING "very_long_range_moving"
+
+#define KD_CHANCE_VERY_LOW 20
+#define KD_CHANCE_LOW 40
+#define KD_CHANCE_MEDIUM 60
+#define KD_CHANCE_HIGH 80

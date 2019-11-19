@@ -44,7 +44,6 @@ proc/iscuffed(A)
 		if (C.handcuffed)
 			return TRUE
 	return FALSE
-/
 
 /proc/is_admin(var/mob/user)
 	return check_rights(R_ADMIN, FALSE, user) != FALSE

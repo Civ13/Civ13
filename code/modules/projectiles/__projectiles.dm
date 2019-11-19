@@ -32,7 +32,6 @@
 	embed = FALSE
 	sharp = FALSE
 
-
 /obj/item/projectile/arrow/arrow
 	damage = DAMAGE_LOW-28
 	penetrating = 0
@@ -64,6 +63,12 @@
 	penetrating = 0
 	armor_penetration = 2
 	icon_state = "arrow_stone"
+
+/obj/item/projectile/arrow/arrow/sandstone
+	damage = DAMAGE_MEDIUM
+	penetrating = 0
+	armor_penetration = 2
+	icon_state = "arrow_sandstone"
 
 /obj/item/projectile/arrow/arrow/copper
 	damage = DAMAGE_MEDIUM+1
@@ -206,7 +211,7 @@
 	armor_penetration = 19
 
 /obj/item/projectile/bullet/rifle/a762x54
-	damage = DAMAGE_HIGH+1
+	damage = DAMAGE_HIGH+2
 	penetrating = 2
 	armor_penetration = 18
 
@@ -217,7 +222,7 @@
 	armor_penetration = 18
 
 /obj/item/projectile/bullet/pistol/a762x38
-	damage = DAMAGE_MEDIUM
+	damage = DAMAGE_MEDIUM+1
 	penetrating = 2
 	armor_penetration = 12
 
@@ -277,7 +282,7 @@
 	armor_penetration = 20
 
 /obj/item/projectile/bullet/rifle/a792x57
-	damage = DAMAGE_HIGH+2
+	damage = DAMAGE_HIGH+4
 	penetrating = 2
 	armor_penetration = 20
 
@@ -288,7 +293,7 @@
 	armor_penetration = 20
 
 /obj/item/projectile/bullet/rifle/a765x53
-	damage = DAMAGE_HIGH+1
+	damage = DAMAGE_HIGH+3
 	penetrating = 2
 	armor_penetration = 17
 
@@ -386,7 +391,7 @@ obj/item/projectile/bullet/rifle/a545x39
 	armor_penetration = 20
 
 obj/item/projectile/bullet/rifle/a556x45
-	damage = DAMAGE_MEDIUM+4
+	damage = DAMAGE_MEDIUM+8
 	penetrating = 1
 	armor_penetration = 12
 

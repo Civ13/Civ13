@@ -448,3 +448,35 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/grenade/coldwar/m26= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 	)
+
+/obj/structure/vending/usa_apparel_modern
+	name = "USMC apparel rack"
+	desc = "Basic wear for soldiers of the USMC."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/us_uni/us_camo_dcu = 15,
+		/obj/item/clothing/head/helmet/modern/pasgt/desert = 15,
+		/obj/item/clothing/glasses/tactical_goggles = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+	)
+
+/obj/structure/vending/usa_equipment_modern
+	name = "USMC ammunition"
+	desc = "Ammunition and explosives for USMC forces."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/weapon/grenade/smokebomb/m18smoke = 15,
+		/obj/item/weapon/grenade/coldwar/m67 = 15,
+		/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 15,
+		/obj/item/weapon/grenade/flashbang/m84 = 15,
+		/obj/item/weapon/grenade/incendiary/anm14 = 15,
+		/obj/item/weapon/plastique/c4 = 6,
+		/obj/item/ammo_magazine/m16 = 50,
+		/obj/item/ammo_magazine/m14 = 50,
+		/obj/item/ammo_magazine/m249 = 15,
+		/obj/item/ammo_magazine/m9beretta = 50,
+	)

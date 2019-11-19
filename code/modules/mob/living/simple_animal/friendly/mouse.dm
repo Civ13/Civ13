@@ -50,17 +50,17 @@
 
 	if(body_color == "black")
 		if(map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
-			if(prob(0.50))
+			if(prob(50))
 				plaguemouse = TRUE
 		else
-			if(prob(0.25))
+			if(prob(25))
 				plaguemouse = TRUE
 	else
 		if(map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
-			if(prob(0.10))
+			if(prob(10))
 				plaguemouse = TRUE
 		else
-			if(prob(0.05))
+			if(prob(5))
 				plaguemouse = TRUE
 
 /mob/living/simple_animal/mouse/proc/splat()
@@ -86,13 +86,13 @@
 			var/mob/living/carbon/human/M = AM
 			M << "<span class = 'notice'>\icon[src] Squeek!</span>"
 			M << 'sound/effects/mousesqueek.ogg'
-			if(plaguemouse && prob(0.02))
+			if(plaguemouse && prob(2))
 				M.reagents.add_reagent("plague", 0.15)
 			else if((plaguemouse && prob(0.03)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //2 percent chance because of if-else logic,
 				M.reagents.add_reagent("plague", 0.15)
-			else if(plaguemouse && body_color == "black" && prob(0.04)) //prob is 3 percent.
+			else if(plaguemouse && body_color == "black" && prob(4)) //prob is 3 percent.
 				M.reagents.add_reagent("plague", 0.25)
-			else if((plaguemouse && body_color == "black" && prob(0.05)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //four percent chance kinda
+			else if((plaguemouse && body_color == "black" && prob(5)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //four percent chance kinda
 				M.reagents.add_reagent("plague", 0.25)
 	..()
 
@@ -138,6 +138,9 @@
 /mob/living/simple_animal/mouse/black
 	body_color = "black"
 	icon_state = "mouse_black"
+
+/mob/living/simple_animal/mouse/black/plague
+	plaguemouse = TRUE
 
 //TOM IS ALIVE! SQUEEEEEEEE~K :)
 /mob/living/simple_animal/mouse/brown/Tom

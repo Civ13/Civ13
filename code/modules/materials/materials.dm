@@ -630,6 +630,17 @@ var/list/name_to_material
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/monkeypelt
 
+/material/hairlesshide
+	name = "hairlesshide"
+	use_name = "hairless hide"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/hairlesshide
+
 /material/humanpelt
 	name = "humanpelt"
 	use_name = "human"

@@ -3,14 +3,10 @@
 	set name = "Debug-Game"
 	if (!check_rights(R_DEBUG))	return
 
-	if (Debug2)
-		Debug2 = FALSE
-		message_admins("[key_name(src)] toggled debugging off.")
-		log_admin("[key_name(src)] toggled debugging off.")
-	else
-		Debug2 = TRUE
-		message_admins("[key_name(src)] toggled debugging on.")
-		log_admin("[key_name(src)] toggled debugging on.")
+	spawn(2)
+		winset(src, null, "command=.command") //spawn so a window doesn't overlap it
+		message_admins("[key_name(src)] started debugging a command.")
+		log_admin("[key_name(src)] started debugging a command.")
 
 // callproc moved to code/modules/admin/callproc
 

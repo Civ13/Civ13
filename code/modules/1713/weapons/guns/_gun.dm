@@ -1,19 +1,3 @@
-#define SHORT_RANGE_STILL "short_range_still"
-#define SHORT_RANGE_MOVING "short_range_moving"
-
-#define MEDIUM_RANGE_STILL "medium_range_still"
-#define MEDIUM_RANGE_MOVING "medium_range_moving"
-
-#define LONG_RANGE_STILL "long_range_still"
-#define LONG_RANGE_MOVING "long_range_moving"
-
-#define VERY_LONG_RANGE_STILL "very_long_range_still"
-#define VERY_LONG_RANGE_MOVING "very_long_range_moving"
-
-#define KD_CHANCE_VERY_LOW 20
-#define KD_CHANCE_LOW 40
-#define KD_CHANCE_MEDIUM 60
-#define KD_CHANCE_HIGH 80
 /obj/item/weapon/gun
 	var/gun_safety = FALSE
 	var/safetyon = FALSE

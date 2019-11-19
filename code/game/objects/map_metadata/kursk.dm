@@ -1,4 +1,4 @@
-#define NO_WINNER "The battle is still going on."
+
 /obj/map_metadata/kursk
 	ID = MAP_KURSK
 	title = "Kursk (100x150x1)"
@@ -76,4 +76,3 @@
 	else if (faction == GERMAN)
 		return "<span class = 'userdanger'>The Germans may no longer cross the invisible wall!</span>"
 
-	#undef NO_WINNER

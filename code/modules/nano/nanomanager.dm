@@ -211,7 +211,7 @@
 		return FALSE // wasn't open
 
 	processing_uis.Remove(ui)
-	if (ui.user)	// Sanity check in case a user has been deleted (say a blown up borg watching the alarm interface)
+	if (ui.user)	// Sanity check in case a user has been deleted
 		ui.user.open_uis.Remove(ui)
 	var/list/uis = open_uis[src_object_key][ui.ui_key]
 	uis.Remove(ui)

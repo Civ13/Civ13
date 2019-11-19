@@ -101,6 +101,7 @@
 			maps = list(
 				MAP_HOSTAGES = 0,
 				MAP_ARAB_TOWN = 0,
+				MAP_ARAB_TOWN_2 = 0,
 			)
 		if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM

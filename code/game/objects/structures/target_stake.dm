@@ -9,6 +9,14 @@
 	var/health = 100
 	not_movable = FALSE
 	not_disassemblable = FALSE
+
+/obj/structure/target_practice/indestructible
+
+/obj/structure/target_practice/indestructible/check_health()
+	return
+
+/obj/structure/target_practice/indestructible/ex_act()
+	return
 /obj/structure/target_practice/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
 
 	if (istype(W, /obj/item/weapon/material))

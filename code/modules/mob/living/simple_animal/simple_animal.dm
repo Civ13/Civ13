@@ -49,9 +49,6 @@
 	var/friendly = "nuzzles"
 	var/environment_smash = FALSE
 	var/resistance		  = FALSE	// Damage reduction
-	//Null rod stuff
-	var/supernatural = FALSE
-	var/purge = FALSE
 	var/obj/origin = null
 	var/mob/living/following_mob = null
 
@@ -98,7 +95,6 @@
 	handle_stunned()
 	handle_weakened()
 	handle_paralysed()
-	handle_supernatural()
 	handle_mutations_and_radiation()
 
 	if (herbivore || carnivore || predatory_carnivore || granivore)
@@ -191,10 +187,6 @@
 		fire_alert = FALSE
 	return TRUE
 
-
-/mob/living/simple_animal/proc/handle_supernatural()
-	if (purge)
-		purge -= 1
 
 /mob/living/simple_animal/gib()
 	..(icon_gib,1)
@@ -466,10 +458,6 @@
 	var/tally = FALSE //Incase I need to add stuff other than "speed" later
 
 	tally = speed
-	if (purge)//Purged creatures will move more slowly. The more time before their purge stops, the slower they'll move.
-		if (tally <= 0)
-			tally = 1.0
-		tally *= purge
 
 	return tally
 
@@ -504,30 +492,8 @@
 
 	walk_to(src,0) // stops movement
 	unregisterSpawner()
-	decay()
 	return ..(gibbed,deathmessage)
 
-/mob/living/simple_animal/proc/decay()
-	spawn(7200)
-		if (stat == DEAD)
-			var/amt = 0
-			if (mob_size == MOB_MINISCULE)
-				amt = 0
-			if (mob_size == MOB_TINY)
-				amt = 0
-			if (mob_size == MOB_SMALL)
-				amt = 1
-			if (mob_size == MOB_MEDIUM)
-				amt = 2
-			if (mob_size == MOB_LARGE)
-				amt = 3
-			if (mob_size == MOB_HUGE)
-				amt = 6
-			if (amt >= 1)
-				var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
-				bone.name = "[name] bone"
-				bone.amount = amt
-			qdel(src)
 /mob/living/simple_animal/ex_act(severity)
 	if (!blinded)
 		if (HUDtech.Find("flash"))

@@ -34,8 +34,7 @@
 //		A.climate = oldclimate
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
-	spawn(50)
-		collapse_check()
+	collapse_check()
 /obj/roof/Destroy()
 	new current_area_type(get_turf(src))
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
@@ -43,8 +42,8 @@
 	..()
 
 /obj/roof/proc/collapse_check()
-	var/supportfound = FALSE
 	spawn(50)
+		var/supportfound = FALSE
 		for (var/obj/structure/roof_support/RS in range(2, src))
 			supportfound = TRUE
 		for (var/obj/structure/mine_support/stone/SS in range(2, src))
@@ -63,8 +62,6 @@
 				M << "The roof collapses!"
 			Destroy()
 			qdel(src)
-		else
-			collapse_check()
 
 /obj/item/weapon/roofbuilder
 	name = "roof builder"
@@ -210,9 +207,13 @@
 		Destroy()
 		return
 
+/obj/structure/roof_support/Destroy()
+	for(var/obj/roof/R in range(3,get_turf(src)))
+		R.collapse_check()
+	qdel(src)
 
 /obj/structure/mine_support/Destroy()
 	if (istype(get_turf(src), /turf/floor))
-		var/turf/floor/T = get_turf(src)
-		T.collapse_check()
+		for(var/turf/floor/T in range(3,get_turf(src)))
+			T.collapse_check()
 	..()

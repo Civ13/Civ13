@@ -16,9 +16,9 @@
 		if(world.realtime > last+300)
 			for (var/argument in args)
 				command = "[command] [argument]"
-			log_debug("Executing python3.6 command '[command]'")
+			log_debug("Executing python3 command '[command]'")
 			last = world.realtime
-			return shell("sudo python3.6 [getScriptDir()]/[command]")
+			return shell("sudo python3 [getScriptDir()]/[command]")
 		else
 			log_debug("python mapswap already running!")
 			return FALSE

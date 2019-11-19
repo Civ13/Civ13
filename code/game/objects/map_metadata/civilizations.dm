@@ -1,4 +1,3 @@
-#define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/civilizations
 	ID = MAP_CIVILIZATIONS
 	title = "Two Kingdoms (300x100x2)"
@@ -15,6 +14,7 @@
 		list(CIVILIAN) = /area/caribbean/british
 		)
 	age = "1013"
+	no_winner = "The round is proceeding normally."
 	civilizations = TRUE
 	var/tribes_nr = 2
 	faction_distribution_coeffs = list(CIVILIAN = 1)
@@ -182,4 +182,3 @@
 	spawn(18000)
 		seasons()
 
-#undef NO_WINNER

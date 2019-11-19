@@ -1,7 +1,8 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/tribes
 	ID = MAP_TRIBES
 	title = "Tribes (225x225x2)"
+	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 3600 // 6 minutes!
@@ -186,4 +187,3 @@
 /obj/map_metadata/tribes/cross_message(faction)
 	return ""
 
-#undef NO_WINNER

@@ -1,7 +1,8 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/nomads_new_world
 	ID = MAP_NOMADS_NEW_WORLD
 	title = "Nomads (New World) (500x200x2)"
+	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/sea)
 	respawn_delay = 6000 // 10 minutes!
@@ -63,7 +64,7 @@
 	if (season == "FALL")
 		season = "WINTER"
 		world << "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>"
-			change_weather_somehow()
+		change_weather_somehow()
 		for (var/turf/floor/dirt/flooded/D)
 			D.ChangeTurf(/turf/floor/beach/water/flooded)
 		for (var/turf/floor/dirt/ploughed/flooded/D in get_area_turfs(/area/caribbean/nomads/forest/Jungle))
@@ -115,7 +116,7 @@
 	else if (season == "SPRING")
 		season = "SUMMER"
 		world << "<big>The <b>Summer</b> has started. In the hot climates, the dry season has started.</big>"
-			change_weather_somehow()
+		change_weather_somehow()
 		for(var/obj/structure/sink/S in get_area_turfs(/area/caribbean/nomads/desert))
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 				S.dry = TRUE
@@ -219,5 +220,4 @@
 		. = TRUE
 	else
 		. = FALSE
-#undef NO_WINNER
 

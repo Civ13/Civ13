@@ -527,6 +527,18 @@ obj/structure/closet/crate/ww2/mp40
 	name = "MP40 ammunition crate"
 	paths = list(/obj/item/ammo_magazine/mp40 = 8)
 
+obj/structure/closet/crate/ww2/mosin_ammo
+	name = "Mosin ammunition crate"
+	paths = list(/obj/item/ammo_magazine/mosin = 25)
+
+obj/structure/closet/crate/ww2/mosin
+	name = "Mosin 1891/30 crate"
+	paths = list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 20)
+
+obj/structure/closet/crate/ww2/mosin_old
+	name = "Mosin 1891 crate"
+	paths = list(/obj/item/weapon/gun/projectile/boltaction/mosin = 20)
+
 obj/structure/closet/crate/ww2/stg
 	name = "StG44 ammunition crate"
 	paths = list(/obj/item/ammo_magazine/stg = 8)
@@ -629,4 +641,52 @@ obj/structure/closet/crate/airdrops/medicine
 				/obj/item/weapon/storage/firstaid/adv = 1,
 				/obj/item/weapon/storage/pill_bottle/potassium_iodide = 1,)
 
+/obj/structure/closet/crate/arrows
+	name = "arrow crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/arrow = 20)
+
+/obj/structure/closet/crate/arrows/bronze
+	name = "bronze arrow crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/arrow/bronze = 20)
+
+/obj/structure/closet/crate/arrows/copper
+	name = "copper arrow crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/arrow/copper = 20)
+
+/obj/structure/closet/crate/arrows/iron
+	name = "iron arrow crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/arrow/iron = 20)
+
+/obj/structure/closet/crate/arrows/modern
+	name = "modern arrow crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/arrow/modern = 20)
+
+/obj/structure/closet/crate/arrows/steel
+	name = "steel arrow crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/arrow/steel = 20)
+
+/obj/structure/closet/crate/arrows/stone
+	name = "stone arrow crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/arrow/stone = 20)
 #undef DYNAMIC_AMT

@@ -1,4 +1,4 @@
-#define NO_WINNER "No base has been captured."
+
 /obj/map_metadata/road_to_dak_to
 	ID = MAP_ROAD_TO_DAK_TO
 	title = "Road to Dak To (40x150x2)"
@@ -44,4 +44,3 @@ obj/map_metadata/road_to_dak_to/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/road_to_dak_to/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
-#undef NO_WINNER

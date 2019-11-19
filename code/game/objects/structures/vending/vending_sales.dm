@@ -44,17 +44,27 @@
 	else
 		if (owner != "Global" && find_company_member(user,owner))
 			for (var/datum/data/vending_product/R in product_records)
-				if (istype(W, R.product_path))
-					stock(W, R, user)
-					return TRUE
-			//TODO: Fix this
-			if (istype(W, /obj/item/weapon/can) || istype(W,/obj/item/weapon/reagent_containers/glass) || W.contents)
-				user << "<span class='notice'>You can't sell this.</span>"
+				if (istype(W, R.product_path) && W.name == R.product_name)
+					if (istype(W, /obj/item/stack))
+						R.amount += W.amount
+						qdel(W)
+						return TRUE
+					else
+						stock(W, R, user)
+						return TRUE
 			//if it isnt in the list yet
 			if (product_records.len >= max_products)
-				user << "<span class='notice'>This [src] has too many different products already!</span>"
-				return FALSE
-			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state)
+				var/datum/data/vending_product/free = null
+				for (var/datum/data/vending_product/R in product_records)
+					if (R.amount <= 0)
+						free=R
+				if (!free)
+					user << "<span class='notice'>This [src] has too many different products already!</span>"
+					return FALSE
+				else
+					product_records -= free
+			user.unEquip(W)
+			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
 			var/inputp = input(user, "What price do you want to set for \the [W]? (in silver coins)") as num
 			if (!inputp)
 				inputp = 0
@@ -64,19 +74,21 @@
 			if (istype(W, /obj/item/stack))
 				var/obj/item/stack/S = W
 				product.amount = S.amount
+				qdel(W)
+			else
+				W.forceMove(src)
 			product_records.Add(product)
-			qdel(W)
 			update_icon()
 			return TRUE
 
-/obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user)
+/obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user, var/p_amount=1)
 	vend_ready = FALSE //One thing at a time!!
 	status_message = "Vending..."
 	status_error = FALSE
 	nanomanager.update_uis(src)
 
 	spawn(vend_delay)
-		R.get_product(get_turf(src))
+		R.get_product(get_turf(src),p_amount)
 		playsound(loc, 'sound/machines/vending_drop.ogg', 100, TRUE)
 		status_message = ""
 		status_error = FALSE
@@ -146,8 +158,16 @@
 			var/key = text2num(href_list["vend"])
 			var/datum/data/vending_product/R = product_records[key]
 
+			var/inp = 1
+			if (R.amount > 1)
+				inp = input(usr, "How many do you want to buy? (1 to [R.amount])",1) as num
+				if (inp>R.amount)
+					inp = R.amount
+				else if (inp<=1)
+					inp = 1
+
 			if (R.price <= 0)
-				vend(R, usr)
+				vend(R, usr, inp)
 
 			else
 				currently_vending = R
@@ -163,7 +183,7 @@
 					if (GC.amount == 0)
 						qdel(GC)
 					moneyin = 0
-					vend(R, usr)
+					vend(R, usr, inp)
 					nanomanager.update_uis(src)
 
 		else if (href_list["cancelpurchase"])
@@ -260,3 +280,27 @@
 		overlays += overlay_primary
 		overlays += overlay_secondary
 		overlays += image(icon = icon, icon_state = "[icon_state]_base")
+
+/obj/structure/vending/sales/stock(obj/item/W, var/datum/data/vending_product/R, var/mob/user)
+	if (!user.unEquip(W))
+		return
+
+	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
+	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/S = W
+		R.amount += S.amount
+		qdel(W)
+	else
+		W.forceMove(src)
+		R.product_item += W
+		R.amount++
+	nanomanager.update_uis(src)
+
+/obj/structure/vending/process()
+	if (stat & (BROKEN|NOPOWER))
+		return
+
+	if (!active)
+		return
+
+	return

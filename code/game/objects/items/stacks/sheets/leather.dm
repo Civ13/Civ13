@@ -1,40 +1,13 @@
-/obj/item/stack/material/animalhide/human
-	name = "human skin"
-	desc = "The by-product of human farming."
-	singular_name = "human skin piece"
-	icon_state = "sheet-hide"
-	flammable = TRUE
-	value = 0
-/obj/item/stack/material/animalhide/cat
-	name = "cat hide"
-	desc = "The by-product of cat farming."
-	singular_name = "cat hide piece"
-	icon_state = "sheet-cat"
-	flammable = TRUE
-	value = 0
-/obj/item/stack/material/animalhide/monkey
-	name = "monkey hide"
-	desc = "The by-product of monkey farming."
-	singular_name = "monkey hide piece"
-	icon_state = "sheet-monkey"
-	flammable = TRUE
-	value = 0
 /obj/item/stack/material/hairlesshide
 	name = "hairless hide"
 	desc = "This hide was stripped of it's hair, but still needs tanning."
 	singular_name = "hairless hide piece"
+	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-hairlesshide"
+	default_type = "hairlesshide"
 	flammable = TRUE
 	value = 0
-/obj/item/stack/material/wetleather
-	name = "wet leather"
-	desc = "This leather has been cleaned but still needs to be dried."
-	singular_name = "wet leather piece"
-	icon_state = "sheet-wetleather"
-	value = 0
-	var/wetness = 30 //Reduced when exposed to high temperautres
-	var/drying_threshold_temperature = 500 //Kelvin to start drying
-	flammable = TRUE
+
 //Step one - dehairing.
 /obj/item/stack/material/pelt/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(	istype(W, /obj/item/weapon/material/knife) || \
@@ -42,9 +15,9 @@
 		istype(W, /obj/item/weapon/material/hatchet) )
 
 		//visible message on mobs is defined as visible_message(var/message, var/self_message, var/blind_message)
-		usr.visible_message("<span class='notice'>\The [usr] starts cutting hair off \the [src]</span>", "<span class='notice'>You start cutting the hair off \the [src]</span>", "You hear the sound of a knife rubbing against flesh")
+		usr.visible_message("<span class='notice'>\The [usr] starts cutting hair off \the [src]...</span>", "<span class='notice'>You start cutting the hair off \the [src]...</span>", "You hear the sound of a knife rubbing against flesh.")
 		if(do_after(user,50))
-			usr << "<span class='notice'>You cut the hair from the [singular_name]</span>"
+			usr << "<span class='notice'>You cut the hair from the [singular_name].</span>"
 			//Try locating an exisitng stack on the tile and add to there if possible
 			for(var/obj/item/stack/material/hairlesshide/HS in usr.loc)
 				if(HS.amount < 50)

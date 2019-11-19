@@ -29,6 +29,7 @@
 	var/sum_c = 0
 	var/monk = FALSE //if the book was authored by a monk
 	var/religion = "none"
+	unique = TRUE
 /obj/item/weapon/book/research/New()
 	..()
 	if (map.ordinal_age >= 3)

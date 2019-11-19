@@ -9,9 +9,9 @@
 //				if (choice_race == "Randomize")
 //					choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla")
 
-			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","German","Greek","Japanese","Chinese","Portuguese","Hebrew","Latin"))
+			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin"))
 			if (choice1 == "Randomize")
-				choice1 = pick("Russian","German","Greek","Japanese","Chinese","Portuguese","Hebrew","Latin")
+				choice1 = pick("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
 			else
 				var/list/possible_h_list = list("Black")
 				var/list/possible_e_list = list("Black")
@@ -158,7 +158,7 @@
 				else if (s_tone < abs(possible_s_list[1]))
 					s_tone = abs(possible_s_list[1])
 				s_tone = -s_tone
-				var/list/sec_lang_list = list("Randomize","Russian","German","Greek","Japanese","Chinese","Portuguese","Hebrew","Latin")
+				var/list/sec_lang_list = list("Randomize","Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
 				sec_lang_list -= choice1
 				var/sec_lang = WWinput(src, "Choose your secondary language:","Character Customization","Randomize",sec_lang_list)
 				if (sec_lang == "Randomize")
@@ -254,18 +254,18 @@
 						choices = "Greek"
 				if ("desert","jungle","savanna")
 					if (prob(50))
-						add_language("Hebrew",TRUE)
+						add_language("Arabic",TRUE)
 						remove_language("English")
 						remove_note("Known Languages","English")
-						for (var/datum/language/hebrew/A in languages)
+						for (var/datum/language/arab/A in languages)
 							default_language = A
-						name = species.get_random_hebrew_name(gender)
+						name = species.get_random_arab_name(gender)
 						real_name = name
-						add_note("Known Languages", "Hebrew")
+						add_note("Known Languages", "Arabic")
 						possible_h_list = list("Dark Brown","Black")
 						possible_e_list = list("Brown","Black")
 						possible_s_list = list(75,100)
-						choices = "Hebrew"
+						choices = "Arabic"
 					else
 						add_language("Chinese",TRUE)
 						remove_language("English")
@@ -282,7 +282,7 @@
 			new_hair = pick(possible_h_list)
 			new_eyes = pick(possible_e_list)
 			s_tone = -rand(possible_s_list[1],possible_s_list[2])
-			var/list/sec_lang_list = list("Russian","German","Greek","Japanese","Chinese","Portuguese","Hebrew","Latin")
+			var/list/sec_lang_list = list("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
 			sec_lang_list -= choices
 			var/sec_lang = pick(sec_lang_list)
 			add_language(sec_lang,TRUE)
@@ -292,7 +292,7 @@
 			var/list/possible_h_list = list("Black")
 			var/list/possible_e_list = list("Black")
 			var/list/possible_s_list = list(10,60)
-			var/choice1 = pick("Russian","German","Greek","Japanese","Chinese","Portuguese","Hebrew","Latin")
+			var/choice1 = pick("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
 			switch(choice1)
 				if ("Russian")
 					add_language("Russian",TRUE)
@@ -422,7 +422,7 @@
 			new_hair = pick(possible_h_list)
 			new_eyes = pick(possible_e_list)
 			s_tone = -rand(possible_s_list[1],possible_s_list[2])
-			var/list/sec_lang_list = list("Russian","German","Greek","Japanese","Chinese","Portuguese","Hebrew","Latin")
+			var/list/sec_lang_list = list("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
 			sec_lang_list -= choices
 			var/sec_lang = pick(sec_lang_list)
 			add_language(sec_lang,TRUE)
@@ -518,14 +518,14 @@
 				possible_e_list = list("Green","Brown","Black")
 				possible_s_list = list(-45,-65)
 			if ("desert")
-				add_language("Hebrew",TRUE)
+				add_language("Arabic",TRUE)
 				remove_language("English")
 				remove_note("Known Languages","English")
-				for (var/datum/language/hebrew/A in languages)
+				for (var/datum/language/arab/A in languages)
 					default_language = A
-				name = species.get_random_hebrew_name(gender)
+				name = species.get_random_arab_name(gender)
 				real_name = name
-				add_note("Known Languages", "Hebrew")
+				add_note("Known Languages", "Arabic")
 				possible_h_list = list("Dark Brown","Black")
 				possible_e_list = list("Brown","Black")
 				possible_s_list = list(-75,-100)

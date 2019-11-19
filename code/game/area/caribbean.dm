@@ -239,6 +239,21 @@
 	name = "No Man's Land"
 	icon_state = "purple1"
 	base_turf = /turf/floor/dirt
+
+/area/caribbean/no_mans_land/capturable
+	base_turf = /turf/floor/dirt/burned
+	icon_state = "red4"
+	location = AREA_INSIDE
+
+/area/caribbean/no_mans_land/capturable/one
+	name = "Telephone Central"
+
+/area/caribbean/no_mans_land/capturable/two
+	name = "Train Station"
+
+/area/caribbean/no_mans_land/capturable/three
+	name = "City Hall"
+
 /area/caribbean/no_mans_land/tundra
 	name = "No Man's Land"
 	icon_state = "purple1"

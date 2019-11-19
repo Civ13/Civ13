@@ -1,10 +1,10 @@
-#define NO_WINNER "The operation is still underway."
 /obj/map_metadata/arab_town
 	ID = MAP_ARAB_TOWN
 	title = "Arab Town (100x100x1)"
 	lobby_icon_state = "modern"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
+	no_winner = "The operation is still underway."
 	squad_spawn_locations = FALSE
 	faction_organization = list(
 		AMERICAN,
@@ -141,14 +141,91 @@ var/no_loop_arab = FALSE
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
-		if (current_win_condition != NO_WINNER && current_winner && current_loser)
+		if (current_win_condition != no_winner && current_winner && current_loser)
 			world << "<font size = 3>The Hezbollah has recaptured their HQ!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
-		current_win_condition = NO_WINNER
+		current_win_condition = no_winner
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
 
-	#undef NO_WINNER
+/obj/map_metadata/arab_town_2
+	ID = MAP_ARAB_TOWN_2
+	title = "Arab Town II (70x90x1)"
+	lobby_icon_state = "modern"
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
+	respawn_delay = 1200
+	squad_spawn_locations = FALSE
+	faction_organization = list(
+		AMERICAN,
+		ARAB)
+	available_subfactions = list(
+		)
+	roundend_condition_sides = list(
+		list(AMERICAN) = /area/caribbean/british,
+		list(ARAB) = /area/caribbean/arab
+		)
+	age = "2006"
+	ordinal_age = 8
+	faction_distribution_coeffs = list(AMERICAN = 0.5, ARAB = 0.5)
+	battle_name = "battle for the town"
+	mission_start_message = "<font size=4>Capture most of the town and hold the enemy base! The grace wall will go down in <b>6 minutes</b>.</font>"
+	faction1 = AMERICAN
+	faction2 = ARAB
+	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
+	songs = list(
+		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
+	artillery_count = 3
+	valid_artillery = list("Explosive")
+/obj/map_metadata/arab_town_2/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if (J.is_modernday && istype(J, /datum/job/american) && !istype(J, /datum/job/american/idf))
+		. = TRUE
+	else if (J.is_specops && istype(J, /datum/job/arab))
+		. = TRUE
+	else
+		. = FALSE
+
+/obj/map_metadata/arab_town_2/faction2_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/arab_town_2/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+
+
+/obj/map_metadata/arab_town_2/roundend_condition_def2name(define)
+	..()
+	switch (define)
+		if (ARAB)
+			return "Hezbollah"
+/obj/map_metadata/arab_town/roundend_condition_def2army(define)
+	..()
+	switch (define)
+		if (ARAB)
+			return "Hezbollah"
+
+/obj/map_metadata/arab_town/army2name(army)
+	..()
+	switch (army)
+		if ("Hezbollah")
+			return "Hezbollah"
+
+
+/obj/map_metadata/arab_town/cross_message(faction)
+	if (faction == AMERICAN)
+		return "<font size = 4>Both factions may now cross the invisible wall!</font>"
+	else if (faction == ARAB)
+		return ""
+	else
+		return ""
+
+/obj/map_metadata/arab_town/reverse_cross_message(faction)
+	if (faction == AMERICAN)
+		return "<span class = 'userdanger'>Both factions may no longer cross the invisible wall!</span>"
+	else if (faction == ARAB)
+		return ""
+	else
+		return ""
+

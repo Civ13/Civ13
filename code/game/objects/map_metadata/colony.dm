@@ -1,8 +1,9 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/colony
 	ID = MAP_COLONY
 	title = "Colony (155x225x2)"
 	lobby_icon_state = "imperial"
+	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	squad_spawn_locations = FALSE
@@ -201,4 +202,3 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	return ""
 
 
-#undef NO_WINNER

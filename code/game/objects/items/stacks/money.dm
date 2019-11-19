@@ -373,6 +373,9 @@
 	amount = 1
 	value = 0.01
 
+/obj/item/stack/money/coppercoin/hundred
+	amount = 100
+
 /obj/item/stack/money/silvercoin
 	name = "silver coins"
 	desc = "A small silver coin. Worth 1/4th of a gold coin."

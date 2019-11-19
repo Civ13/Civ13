@@ -1,7 +1,3 @@
-#define SOLID TRUE
-#define LIQUID 2
-#define GAS 3
-
 #define BOTTLE_SPRITES list("bottle-1", "bottle-2", "bottle-3", "bottle-4") //list of available bottle sprites
 #define REAGENTS_PER_SHEET 20
 
@@ -175,6 +171,7 @@
 		user << "You place [B] in the dispenser."
 		nanomanager.update_uis(src) // update all UIs attached to src
 		return
+	..()
 
 /obj/structure/chemical_dispenser/attack_hand(mob/user as mob)
 	sanitize_reagents()
