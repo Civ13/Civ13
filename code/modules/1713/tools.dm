@@ -9,7 +9,7 @@
 	throwforce = 3.0
 	item_state = "plough"
 	w_class = 3.0
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE
@@ -42,7 +42,7 @@
 	throwforce = 4.0
 	item_state = "shovel"
 	w_class = 3.0
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
 	sharp = FALSE
 	edge = TRUE

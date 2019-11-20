@@ -98,7 +98,7 @@
 	opacity = FALSE
 	force = 8.0
 	throwforce = 6.0
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = TRUE
@@ -116,7 +116,7 @@
 	force = 6.0
 	throwforce = 3.0
 	slot = "leg_armor"
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	body_parts_covered = LEGS
 	armor = list(melee = 75, arrow = 50, gun = 15, energy = 25, bomb = 55, bio = 20, rad = FALSE)
@@ -137,7 +137,7 @@
 	force = 6.0
 	throwforce = 3.0
 	slot = "arm_armor"
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	body_parts_covered = ARMS
 	armor = list(melee = 65, arrow = 45, gun = 15, energy = 25, bomb = 55, bio = 20, rad = FALSE)
