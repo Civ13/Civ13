@@ -3,7 +3,6 @@
 	desc = "A gun that fires bullets."
 	icon_state = "musket"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 1000)
 	recoil = 1
 
 	var/caliber = "musketball"		//determines which casings will fit

@@ -119,7 +119,6 @@
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 1440)
 	ammo_type = /obj/item/ammo_casing/a556x45
 	max_ammo = 150
 	multiple_sprites = TRUE

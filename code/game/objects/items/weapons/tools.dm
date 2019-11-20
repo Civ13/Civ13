@@ -119,7 +119,6 @@
 	throw_speed = 2
 	throw_range = 9
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 80)
 	attack_verb = list("pinched", "nipped")
 	sharp = TRUE
 	edge = TRUE
@@ -318,7 +317,6 @@
 	force = WEAPON_FORCE_NORMAL+4
 	throwforce = WEAPON_FORCE_NORMAL-1
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 250)
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
 /*

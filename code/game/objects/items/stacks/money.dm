@@ -23,7 +23,6 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	throw_speed = 8
 	throw_range = 10
-	matter = list(DEFAULT_WALL_MATERIAL = 1875)
 	amount = 10
 	max_amount = 500
 	attack_verb = list("hit")

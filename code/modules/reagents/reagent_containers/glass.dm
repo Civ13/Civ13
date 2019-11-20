@@ -238,7 +238,6 @@
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "beaker"
 	item_state = "beaker"
-	matter = list("glass" = 500)
 
 	New()
 		..()
@@ -288,7 +287,6 @@
 	name = "large beaker"
 	desc = "A large beaker."
 	icon_state = "beakerlarge"
-	matter = list("glass" = 5000)
 	volume = 120
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25,30,60,120)
@@ -298,7 +296,6 @@
 	name = "vial"
 	desc = "A small glass vial."
 	icon_state = "vial"
-	matter = list("glass" = 250)
 	volume = 30
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25)
@@ -375,7 +372,6 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "copperpot1"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 300)
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
@@ -389,7 +385,6 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "copperpot2"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 300)
 	w_class = 4.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)

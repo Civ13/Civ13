@@ -165,7 +165,6 @@ obj/item/ammo_magazine/dp
 	icon_state = "m1911"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a45acp
-	matter = list(DEFAULT_WALL_MATERIAL = 525) //metal costs are very roughly based around TRUE .45 casing = 75 metal
 	caliber = "a45acp"
 	max_ammo = 7
 	multiple_sprites = TRUE
@@ -178,7 +177,6 @@ obj/item/ammo_magazine/dp
 	icon_state = "m1911"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a765x25
-	matter = list(DEFAULT_WALL_MATERIAL = 525) //metal costs are very roughly based around TRUE .45 casing = 75 metal
 	caliber = "a765x25"
 	max_ammo = 8
 	multiple_sprites = TRUE
@@ -225,7 +223,5 @@ obj/item/ammo_magazine/dp
 	icon_state = "thompson"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a45acp
-	matter = list(DEFAULT_WALL_MATERIAL = 525) //metal costs are very roughly based around TRUE .45 casing = 75 metal
-	caliber = "a45acp"
 	max_ammo = 20
 	multiple_sprites = TRUE
