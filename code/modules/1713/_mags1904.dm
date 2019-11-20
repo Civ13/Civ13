@@ -5,7 +5,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "clip (7.62x54mm)"
 	icon_state = "clip"
 	caliber = "a762x54"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
 	ammo_type = /obj/item/ammo_casing/a762x54
 	max_ammo = 5
 	weight = 0.04
@@ -18,7 +17,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a762x54"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a762x54
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -30,7 +28,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a762x54"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 1440)
 	ammo_type = /obj/item/ammo_casing/a762x54
 	max_ammo = 25
 	multiple_sprites = TRUE
@@ -41,7 +38,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a762x51_weak"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 1440)
 	ammo_type = /obj/item/ammo_casing/a762x51/weak
 	max_ammo = 100
 	multiple_sprites = TRUE
@@ -52,7 +48,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 1440)
 	ammo_type = /obj/item/ammo_casing/a556x45
 	max_ammo = 100
 	multiple_sprites = TRUE
@@ -61,7 +56,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "clip (7.65x53mm)"
 	icon_state = "kclip"
 	caliber = "a765x53"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
 	ammo_type = /obj/item/ammo_casing/a765x53
 	max_ammo = 5
 	weight = 0.04
@@ -75,7 +69,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a765x53"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a765x53
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -85,7 +78,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "clip (7.92x57mm)"
 	icon_state = "kclip"
 	caliber = "a792x57"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
 	ammo_type = /obj/item/ammo_casing/a792x57
 	max_ammo = 5
 	weight = 0.04
@@ -96,7 +88,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "clip (7x53mm)"
 	icon_state = "kclip"
 	caliber = "a7x57"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
 	ammo_type = /obj/item/ammo_casing/a7x57
 	max_ammo = 5
 	weight = 0.038
@@ -109,7 +100,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a792x57"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a792x57
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -122,7 +112,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a7x57"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a7x57
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -134,7 +123,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	caliber = "a4570"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a4570
 	max_ammo = 15
 	multiple_sprites = FALSE
@@ -146,7 +135,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	caliber = "a577"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a577
 	max_ammo = 12
 	multiple_sprites = FALSE
@@ -156,7 +145,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "clip (6.5x50mm)"
 	icon_state = "kclip"
 	caliber = "a65x50"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a65x50
 	max_ammo = 5
 	weight = 0.038
@@ -169,7 +158,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a65x50"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a65x50
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -179,7 +168,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "clip (6.5x52mm)"
 	icon_state = "kclip"
 	caliber = "a65x52"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a65x52
 	max_ammo = 5
 	weight = 0.038
@@ -192,7 +181,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a65x52"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a65x52
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -204,7 +193,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	w_class = 4
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -216,7 +205,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a792x57_weak"
 	w_class = 4
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -228,7 +217,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a303_weak"
 	w_class = 4
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a303/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -240,7 +229,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a8x50_weak"
 	w_class = 4
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a8x50/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -253,7 +242,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a65x50_weak"
 	w_class = 4
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -265,7 +254,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a792x57_weak"
 	w_class = 4
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -328,7 +317,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "Mauser clip (9x19mm)"
 	icon_state = "mauser"
 	caliber = "a9x19"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 10
 	weight = 0.06
@@ -484,7 +473,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "clip (8x53mm)"
 	icon_state = "kclip"
 	caliber = "a8x53"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a8x53
 	max_ammo = 5
 	weight = 0.048
@@ -497,7 +486,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a8x53"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a8x53
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -507,7 +496,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "clip (.303)"
 	icon_state = "clip"
 	caliber = "a303"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a303
 	max_ammo = 5
 	weight = 0.048
@@ -520,7 +509,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "a303"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a303
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -528,7 +517,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 /obj/item/ammo_magazine/c8x50_3clip
 	name = "clip (8x50mmR Lebel, 3u)"
 	icon_state = "clip"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a8x50
 	caliber = "a8x50"
 	max_ammo = 3
@@ -538,7 +527,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 /obj/item/ammo_magazine/c8x50_5clip
 	name = "clip (8x50mmR Lebel, 5u)"
 	icon_state = "clip"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a8x50
 	caliber = "a8x50"
 	max_ammo = 5
@@ -562,7 +551,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = MAGAZINE
 	caliber = "12guage"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/shotgun
 	max_ammo = 12
 	multiple_sprites = TRUE

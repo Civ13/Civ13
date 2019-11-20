@@ -246,9 +246,9 @@
 	value = 20
 
 /obj/item/stack/material/steel
-	name = DEFAULT_WALL_MATERIAL
+	name = "steel"
 	icon_state = "sheet-metal"
-	default_type = DEFAULT_WALL_MATERIAL
+	default_type = "steel"
 	value = 5
 	max_amount = 2000
 

@@ -69,7 +69,6 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	item_state = "syringe_kit"
-	matter = list(DEFAULT_WALL_MATERIAL = 500)
 	throwforce = 5
 	w_class = 2
 	throw_speed = 4

@@ -2,7 +2,7 @@
 	name = "clip (7.7x58mm)"
 	icon_state = "kclip"
 	caliber = "a77x58"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a77x58
 	max_ammo = 5
 	weight = 0.038
@@ -15,7 +15,7 @@
 	mag_type = MAGAZINE
 	caliber = "a77x58"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a77x58
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -47,7 +47,7 @@ obj/item/ammo_magazine/type99
 	mag_type = MAGAZINE
 	caliber = "a77x58_weak"
 	w_class = 4
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a77x58/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -132,7 +132,7 @@ obj/item/ammo_magazine/dp
 	icon_state = "g43"
 	caliber = "a792x57"
 	mag_type = MAGAZINE
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a792x57
 	max_ammo = 10
 	weight = 0.32
@@ -143,7 +143,7 @@ obj/item/ammo_magazine/dp
 	icon_state = "g43"
 	caliber = "a762x54"
 	mag_type = MAGAZINE
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a762x54
 	max_ammo = 25
 	weight = 0.44
@@ -154,7 +154,7 @@ obj/item/ammo_magazine/dp
 	icon_state = "svt"
 	caliber = "a762x54"
 	mag_type = MAGAZINE
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a762x54
 	max_ammo = 10
 	weight = 0.3
@@ -191,7 +191,7 @@ obj/item/ammo_magazine/dp
 	name = "clip (30-06) 8 rounds"
 	icon_state = "clip"
 	caliber = "a3006"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a3006
 	max_ammo = 8
 	weight = 0.038
@@ -202,7 +202,7 @@ obj/item/ammo_magazine/dp
 	name = "clip (30-06)"
 	icon_state = "clip"
 	caliber = "a3006"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a3006
 	max_ammo = 5
 	weight = 0.038
@@ -213,7 +213,7 @@ obj/item/ammo_magazine/dp
 	name = "magazine (30-06)"
 	icon_state = "bar"
 	caliber = "a3006_weak"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a3006/weak
 	max_ammo = 20
 	weight = 0.038

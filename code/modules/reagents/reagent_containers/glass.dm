@@ -310,7 +310,7 @@
 	icon = 'icons/obj/janitor.dmi'
 	icon_state = "bucket"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 200)
+
 	w_class = 3.0
 	amount_per_transfer_from_this = 20
 	possible_transfer_amounts = list(10,20,30,60,120)
@@ -344,7 +344,7 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "small_pot"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 200)
+
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
@@ -358,7 +358,7 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "han_gou_open"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 200)
+
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20,30,80)
@@ -403,7 +403,7 @@
 	icon = 'icons/obj/barrel.dmi'
 	icon_state = "wood_barrel1"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 200)
+
 	w_class = 4.0
 	amount_per_transfer_from_this = 20
 	possible_transfer_amounts = list(10,20,30,60,120)

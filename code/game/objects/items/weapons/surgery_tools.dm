@@ -15,7 +15,6 @@
 	desc = "Retracts stuff."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "retractor"
-	matter = list(DEFAULT_WALL_MATERIAL = 10000, "glass" = 5000)
 	flags = CONDUCT
 	w_class = 2.0
 
@@ -24,7 +23,6 @@
 	desc = "Retracts stuff."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bronze_retractor"
-	matter = list(DEFAULT_WALL_MATERIAL = 10000, "glass" = 5000)
 	flags = CONDUCT
 	w_class = 2.0
 /*
@@ -35,7 +33,6 @@
 	desc = "Pinches veins. Prevents bleeding."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "hemostat"
-	matter = list(DEFAULT_WALL_MATERIAL = 5000, "glass" = 2500)
 	flags = CONDUCT
 	w_class = 2.0
 	attack_verb = list("attacked", "pinched")
@@ -45,7 +42,6 @@
 	desc = "Pinches veins. Prevents bleeding."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bronze_hemostat"
-	matter = list(DEFAULT_WALL_MATERIAL = 5000, "glass" = 2500)
 	flags = CONDUCT
 	w_class = 2.0
 	attack_verb = list("attacked", "pinched")
@@ -57,7 +53,6 @@
 	desc = "A hot iron. Closes wounds and stops bleeding."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "cautery"
-	matter = list(DEFAULT_WALL_MATERIAL = 5000, "glass" = 2500)
 	flags = CONDUCT
 	w_class = 2.0
 	attack_verb = list("burnt")
@@ -67,7 +62,6 @@
 	desc = "A hot bronze clamp. Closes wounds and stops bleeding."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bronze_cautery"
-	matter = list(DEFAULT_WALL_MATERIAL = 5000, "glass" = 2500)
 	flags = CONDUCT
 	w_class = 2.0
 	attack_verb = list("burnt")
@@ -88,7 +82,6 @@
 	throwforce = 5.0
 	throw_speed = WEAPON_FORCE_WEAK
 	throw_range = 5
-	matter = list(DEFAULT_WALL_MATERIAL = 10000, "glass" = 5000)
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 
 /obj/item/weapon/surgery/scalpel/bronze

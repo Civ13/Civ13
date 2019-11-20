@@ -834,6 +834,9 @@
 	if (!H || !src)
 		return
 	var/turf/T = get_turf(src)
+	var/area/area_above = null
+	if (z==1 && world.maxz>=2)
+		area_above = get_area(get_turf(locate(x,y,z+1)))
 	if (prob(25))
 		if (prob(60))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
@@ -977,20 +980,20 @@
 				change_the_turf()
 				H.adaptStat("strength", 1)
 				return
-	if(istype(T, /turf/floor/dirt/underground/sandy))
+	if(istype(T, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert"))
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
-	if(istype(T, /turf/floor/dirt/underground/icy))
+	else if(istype(T, /turf/floor/dirt/underground/icy) || (area_above && area_above.climate == "tundra"))
 		//TODO ADD ICE AND FOSSILS
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some usable <font color=[get_material_by_name("stone").icon_colour]><b>stone</font> rocks</b>!</span>"
-	if(!istype(T, /turf/floor/dirt/underground/sandy) && !istype(T, /turf/floor/dirt/underground/icy))
+	else
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
