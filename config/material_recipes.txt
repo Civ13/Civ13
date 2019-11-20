@@ -925,10 +925,10 @@ RECIPE: /material/iron/, ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none
 RECIPE: /material/iron/,armor workbench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
 
-RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,2,25,1,1,construction,0,0,0,8,null
-RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,2,25,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,25,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,2,25,1,1,construction,0,0,0,8,
-RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,2,45,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,3,45,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7,250,1,1,structures,21,0,0,8,null
