@@ -492,6 +492,7 @@
 
 	walk_to(src,0) // stops movement
 	unregisterSpawner()
+	delayed_decay(src,3000)
 	return ..(gibbed,deathmessage)
 
 /mob/living/simple_animal/ex_act(severity)
@@ -807,3 +808,4 @@
 		if (radiation > 80)
 			death()
 		return
+

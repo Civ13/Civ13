@@ -261,10 +261,10 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 		var/obj/item/flashlight/FL = W
 		if (gunpowder && bullet && !lighted && FL.on)
 			lighted = TRUE
-			var/target = 0
-			var/dirpick = pick(1,2,3,4,5,6)
+			var/turf/target = null
+			var/dirpick = 6
 			if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
-				dirpick = pick(1,2,3)
+				dirpick = 4
 			if (W.dir == NORTH)
 				target = locate(user.x,user.y+dirpick,user.z)
 			else if (W.dir == SOUTH)
