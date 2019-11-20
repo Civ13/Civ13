@@ -33,6 +33,8 @@
 
 proc/delayed_decay(var/mob/living/L,var/timer=3000)
 	spawn(timer)
-		if (L)
-			L.loc = null
-		return
+		if (L && L.stat == DEAD)
+			L.Destroy()
+			return
+		else
+			return
