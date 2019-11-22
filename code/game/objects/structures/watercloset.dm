@@ -909,16 +909,16 @@
 			icon_state = "puddle_dry"
 		else
 			icon_state = "puddle"
-	else if  (istype(src, /obj/structure/sink/well))
-		if (dry || volume <= 0)
-			icon_state = "well_dry"
-		else
-			icon_state = "well1"
 	else if  (istype(src, /obj/structure/sink/well/sandstone))
 		if (dry || volume <= 0)
 			icon_state = "sandstone_well_dry"
 		else
 			icon_state = "sandstone_well1"
+	else if  (istype(src, /obj/structure/sink/well))
+		if (dry || volume <= 0)
+			icon_state = "well_dry"
+		else
+			icon_state = "well1"
 
 /obj/structure/sink/New()
 	..()
