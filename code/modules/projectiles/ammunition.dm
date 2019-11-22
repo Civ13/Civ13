@@ -35,6 +35,7 @@
 
 /obj/item/ammo_casing/Destroy()
 	bullet_casings -= src
+	BB = null
 	..()
 /obj/item/ammo_casing/proc/randomrotation()
 	transform = matrixangle(rand(1,360))

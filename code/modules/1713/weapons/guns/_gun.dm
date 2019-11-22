@@ -3,6 +3,12 @@
 	var/safetyon = FALSE
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/specialoptics = null
 	var/obj/item/weapon/attachment/under/under = null
+
+/obj/item/weapon/gun/Destroy()
+	attachments = null
+	contents = null
+	..()
+
 /obj/item/weapon/gun/attackby(obj/item/I, mob/user)
 	if (istype(I, /obj/item/weapon/attachment))
 		var/obj/item/weapon/attachment/A = I

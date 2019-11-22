@@ -163,6 +163,7 @@
 	build_override_coins_gold.desc = "Some coins."
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = new/obj/item/weapon/gun/projectile/ancient/firelance
 	build_override_firelance.desc = "A simple firelance."
+	build_override_firelance.force = 0
 	var/obj/structure/vending/sales/build_override_vending = new/obj/structure/vending/sales
 	build_override_vending.name = ""
 	if (istype(get_turf(H), /turf/floor/beach/water/deep))
@@ -870,7 +871,7 @@
 						return
 				O.color = addtext("#",input)
 				return
-		if (build_override_firelance.desc != "A simple firelance.")
+		if (build_override_firelance.force != 0)
 			build_override_firelance.loc = get_turf(O)
 			build_override_firelance.set_dir(user.dir)
 			build_override_firelance.add_fingerprint(user)
