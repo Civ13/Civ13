@@ -252,15 +252,15 @@
 				qdel(I)
 				return                  //INPUT 1                                    //OUTPUT1
 			else if (istype(I, /obj/item/stack/money/goldcoin) || istype(I, /obj/item/stack/material/gold))
-				gold += I.amount
+				gold += I.amount*I.value
 				qdel(I)
 				return                  //INPUT 2                                  //OUTPUT 2
 			else if (istype(I, /obj/item/stack/money/coppercoin) || istype(I, /obj/item/stack/material/copper))
-				copper += I.amount
+				copper += I.amount*I.value
 				qdel(I)
 				return                   //INPUT 3                                   //OUTPUT3
 			else if (istype(I, /obj/item/stack/money/silvercoin) || istype(I, /obj/item/stack/material/silver))
-				silver += I.amount
+				silver += I.amount*I.value
 				qdel(I)
 				return
 			else
