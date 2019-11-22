@@ -2,13 +2,14 @@
 	var/dynamic_lighting = TRUE
 	luminosity           = TRUE
 
+	var/window_coeff = 0.25
+
 	var/list/affecting_lights       // List of light sources affecting this turf.
 	var/tmp/atom/movable/lighting_overlay/lighting_overlay // Our lighting overlay.
 	var/tmp/list/datum/lighting_corner/corners[4]
 	var/tmp/has_opaque_atom = FALSE // Not to be confused with opacity, this will be TRUE if there's any opaque atom on the tile.
 
 	// misc
-	var/window_coeff = 0.0
 	var/next_calculate_window_coeff = -1
 
 /turf/New()
@@ -20,6 +21,7 @@
 		var/area/A = get_area(src)
 		if (A.dynamic_lighting)
 			lighting_build_overlay()
+
 // Causes any affecting light sources to be queued for a visibility update, for example a door got opened.
 /turf/proc/reconsider_lights()
 	for (var/A in affecting_lights)
