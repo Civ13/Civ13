@@ -16,8 +16,10 @@
 
 	if (opacity)
 		has_opaque_atom = TRUE
-
-
+	spawn(5)
+		var/area/A = get_area(src)
+		if (A.dynamic_lighting)
+			lighting_build_overlay()
 // Causes any affecting light sources to be queued for a visibility update, for example a door got opened.
 /turf/proc/reconsider_lights()
 	for (var/A in affecting_lights)
@@ -83,23 +85,6 @@
 	for (var/atom/movable/lighting_overlay/LO in contents)
 		lighting_overlay = LO
 		break
-/*
-// make this turf have NO darkness. Used exclusively for trains (for now)
-/turf/proc/adjust_lighting_overlay_to_train_light()
-
-	var/changed = FALSE
-	for (var/datum/lighting_corner/corner in corners)
-		if (corner.TOD_lum_r)
-			corner.lum_r = 1.0
-			corner.lum_g = 1.0
-			corner.lum_b = 1.0
-			corner.TOD_lum_r = 1.0
-			corner.TOD_lum_g = 1.0
-			corner.TOD_lum_b = 1.0
-			changed = TRUE
-
-	if (changed)
-		lighting_overlay.update_overlay()*/
 
 // Used to get a scaled lumcount.
 /turf/proc/get_lumcount(var/minlum = 0, var/maxlum = 1)
@@ -156,75 +141,15 @@
 
 /turf/proc/calculate_window_coeff()
 	var/area/src_area = get_area(src)
-	var/area/temp_area
-	window_coeff = 1
-	if (src_area && src_area.location == AREA_INSIDE)
-		window_coeff = 0
+	window_coeff = 0.5
+	if (src_area && src_area.location == AREA_OUTSIDE)
+		window_coeff = 1.0
 
-		if ((iswall(src) && type != /turf/wall/rockwall) || locate_type(contents, /obj/structure/window/classic))
-			var/counted = 0
-			for (var/turf/T in orange(1, src))
-				temp_area = T.loc
-				if ((temp_area.location == AREA_OUTSIDE) || (temp_area.type == /area/caribbean/void))
-					window_coeff += 0.25
-				counted++
-
-			window_coeff += ((8-counted) * 0.25) // count null turfs as outside
-
-		if (type != /turf/wall/rockwall)
-			window_coeff = max(window_coeff, 0.25) // more natural than pure darkness - only lag-free solution
-
-		window_coeff = min(window_coeff, 1)
+	window_coeff = min(window_coeff, 1)
 
 	for (var/datum/lighting_corner/C in corners)
 		C.window_coeff = window_coeff
 
-/*
-	// 100% daylight if we're outside
-	if (src_area.location == AREA_OUTSIDE)
-		window_coeff = 1.0
-		return window_coeff
-
-	var/min_coeff = 0
-
-	// 100% daylight if we border an outside turf
-	var/turfcount = 0
-	var/turfcount2 = 0
-	for (var/turf/T in orange(1, src))
-		++turfcount
-		var/area/T_area = get_area(T)
-		if (T_area.is_void_area) // counts as nullspace
-			--turfcount
-		if (T_area.location == AREA_OUTSIDE)
-			window_coeff = 1.0
-			return window_coeff
-		if (T.window_coeff)
-			min_coeff += (T.window_coeff * 0.60)
-			++turfcount2
-
-	min_coeff *= 8/turfcount2
-
-	// 100% daylight if we border nullspace and we're a wall
-	if (iswall(src) && turfcount != 8)
-		window_coeff = 1.0
-		return window_coeff
-
-	. = 0
-
-	// objects that let in light: typechecks about 500 objects, need to optimize this
-	for (var/turf/T in view(7*3, src))
-		if (!T.density && !locate_opaque_type(T.contents, /atom))
-			var/area/T_area = get_area(T)
-			if (T_area.location == AREA_OUTSIDE)
-				. += (1/abs_dist_no_rounding(src, T))
-
-	// so there aren't very dark areas next to very bright areas
-	. = max(., min_coeff)
-
-	// dividing '.' by 7 returns a more reasonable number - Kachnov
-	window_coeff = max(min(1.0, (.)/7), 0.0)
-	return window_coeff
-*/
 
 // don't put this proc anywhere other than where it already is, because it checks for the lack of lighting overlays - Kachnov
 /turf/proc/supports_lighting_overlays()
