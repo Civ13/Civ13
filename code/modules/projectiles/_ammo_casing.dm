@@ -171,6 +171,7 @@
 
 /obj/item/ammo_casing/arrow/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/stack/arrowhead))
+		var/obj/item/stack/arrowhead/AH = W
 		if(istype(W, /obj/item/stack/arrowhead/stone))
 			new/obj/item/ammo_casing/arrow/stone(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/copper))
@@ -185,9 +186,11 @@
 			new/obj/item/ammo_casing/arrow/vial(user.loc)
 		else
 			new/obj/item/ammo_casing/arrow/gods(user.loc)
+		AH.amount--
+		if (AH.amount<1)
+			qdel(AH)
 		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
 		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
-		qdel(W)
 		qdel(src)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		return //do nothing if not reagent container

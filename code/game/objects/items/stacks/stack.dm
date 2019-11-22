@@ -778,7 +778,7 @@
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
-
+//this only works for stacks!!
 	else if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/ammopart/bullet)
@@ -799,14 +799,8 @@
 		produced = 100
 	else if (recipe.result_type == /obj/item/stack/money/coppercoin)
 		produced = 100
-	else if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
-		produced = 2
-	else if (recipe.result_type == /obj/item/ammo_casing/stone)
-		produced = 5
 	else if (recipe.result_type == /obj/item/stack/material/barbwire)
 		produced = 2
-	else if (recipe.result_type == /obj/item/ammo_casing/arrow)
-		produced = 3
 	else if (recipe.result_type == /obj/item/stack/arrowhead/stone)
 		produced = 4
 	else if (recipe.result_type == /obj/item/stack/arrowhead/copper)
@@ -1038,11 +1032,17 @@
 			S.amount = produced
 			S.add_to_stacks(user)
 			S.update_icon()
+		else if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
+			new/obj/item/weapon/clay/verysmallclaypot(get_turf(O))
 		else if (istype(O, /obj/item/ammo_casing/stone))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
+		else if (istype(O, /obj/item/ammo_casing/arrow))
+			new/obj/item/ammo_casing/arrow(get_turf(O))
+			new/obj/item/ammo_casing/arrow(get_turf(O))
+			new/obj/item/ammo_casing/arrow(get_turf(O))
 		else if (istype(O, /obj/item/weapon/can))
 			var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
 			C1.customcolor1 = addtext("#",customcolor1)
