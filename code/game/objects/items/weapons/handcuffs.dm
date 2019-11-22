@@ -86,7 +86,7 @@ var/last_chew = FALSE
 
 	var/mob/living/carbon/human/H = A
 	if (!H.handcuffed) return
-	if (H.a_intent != I_HURT) return
+	if (H.a_intent != I_HARM) return
 	if (H.targeted_organ != "mouth") return
 	if (H.wear_mask) return
 	var/obj/item/organ/external/O = H.organs_by_name[H.hand?"l_hand":"r_hand"]

@@ -56,16 +56,12 @@
 		update_space(info)
 		updateinfolinks()
 
-	paper_list += src
 	if (map)
 		if (map.ordinal_age <= 1)
 			name = "papyrus"
 			icon_state = "scrollpaper"
 			desc = "A blank parchement scroll."
 
-/obj/item/weapon/paper/Destroy()
-	paper_list -= src
-	..()
 
 /obj/item/weapon/paper/update_icon()
 	if (map.ordinal_age <= 1)
@@ -121,7 +117,7 @@
 	return
 
 /obj/item/weapon/paper/attack_self(mob/living/user as mob)
-	if (user.a_intent == I_HURT)
+	if (user.a_intent == I_HARM)
 		if (icon_state == "scrap")
 			user.show_message("<span class='warning'>\The [src] is already crumpled.</span>")
 			return

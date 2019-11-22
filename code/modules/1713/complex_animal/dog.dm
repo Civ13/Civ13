@@ -425,7 +425,7 @@ s
 /mob/living/simple_animal/complex_animal/dog/onTouchedBy(var/mob/living/carbon/human/H, var/intent = I_HELP)
 	if (..(H, intent) && stat == CONSCIOUS && !resting)
 		switch (intent)
-			if (I_HURT)
+			if (I_HARM)
 
 				enemies |= H
 

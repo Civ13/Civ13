@@ -9,7 +9,6 @@ var/list/directory = list()							//list of all ckeys with associated client
 var/global/list/player_list = list()				//List of all mobs **with clients attached**.
 var/global/list/mob_list = list()					//List of all mobs, including clientless
 var/global/list/human_mob_list = list()				//List of all human mobs and sub-types, including clientless
-//var/global/list/silicon_mob_list = list()			//List of all silicon mobs, including clientless
 var/global/list/living_mob_list = list()			//List of all alive mobs, including clientless. Excludes /mob/new_player
 var/global/list/dog_mob_list = list()				//List of all dogs
 var/global/list/dead_mob_list = list()				//List of all dead mobs, including clientless. Excludes /mob/new_player
@@ -17,15 +16,10 @@ var/global/list/observer_mob_list = list()			//List of all observers, excluding 
 var/global/list/human_clients_mob_list = list()     //List of all human mobs with clients
 var/global/list/new_player_mob_list = list()	//List of all new_players, excludes clientless by definition
 
-var/global/list/burning_obj_list = list()
-var/global/list/burning_turf_list = list()
-
-var/global/list/cable_list = list()					//Index for all cables, so that powernets don't have to look through the entire world all the time
 var/global/list/chemical_reactions_list				//list of all /datum/chemical_reaction datums. Used during chemical reactions
 var/global/list/chemical_reagents_list				//list of all /datum/reagent datums indexed by reagent id. Used by chemistry stuff
 var/global/list/landmarks_list = list()				//list of all landmarks created
 var/global/list/surgery_steps = list()				//list of all surgery steps  |BS12
-var/global/list/side_effects = list()				//list of all medical sideeffects types by their names |BS12
 var/global/list/joblist = list()					//list of all jobstypes
 
 var/global/list/HUDdatums = list()
@@ -51,16 +45,10 @@ var/global/list/vending_machine_list = list()
 
 /* because different levers are currently snowflake types that aren't actually related (train levers, lift levers, etc)
  * this list needs typechecking always - Kachnov */
-var/global/list/lift_list = list()
-var/global/list/lever_list = list()
 
 var/global/list/organ_list = list()
 
-var/global/list/tank_list = list()
-
 var/global/list/ladder_list = list()
-
-var/global/list/paper_list = list()
 
 var/global/list/lighting_update_lights = list()  // List of lighting sources queued for update.
 
@@ -71,8 +59,6 @@ var/global/list/processing_objects = list()
 var/global/list/zoom_scopes_list = list()
 
 var/global/list/zoom_processing_mobs = list()
-
-var/global/list/menacing_atoms = list()
 
 var/global/list/faction_hud_users = list()
 
@@ -97,13 +83,6 @@ var/global/list/language_keys[0]					// Table of say codes for all languages
 var/global/list/whitelisted_species = list("Human") // Species that require a whitelist check.
 var/global/list/playable_species = list("Human")    // A list of ALL playable species, whitelisted, latejoin or otherwise.
 
-var/global/list/main_radios = list()
-// Posters
-var/global/list/poster_designs = list()
-
-// Uplinks
-var/list/obj/item/uplink/world_uplinks = list()
-
 //Preferences stuff
 	//Bodybuilds
 var/global/list/male_body_builds = list()
@@ -117,21 +96,11 @@ var/global/list/facial_hair_styles_male_list = list()
 var/global/list/facial_hair_styles_female_list = list()
 var/global/list/skin_styles_female_list = list()		//unused
 
-
 var/global/list/exclude_jobs = list()
-
-// Visual nets
-//var/list/datum/visualnet/visual_nets = list()
-//var/datum/visualnet/cult/cultnet = new()
 
 //spawn
 var/global/list/latejoin_turfs = list()
 var/global/list/supplydrop_turfs = list()
-// Runes
-var/global/list/rune_list = new()
-var/global/list/escape_list = list()
-var/global/list/endgame_exits = list()
-var/global/list/endgame_safespawns = list()
 
 // for mass deletion
 var/global/list/bullet_casings = list()

@@ -27,5 +27,5 @@
 
 /mob/living/simple_animal/hostile/commanded/bear/attack_hand(mob/living/carbon/human/M as mob)
 	..()
-	if (M.a_intent == I_HURT)
+	if (M.a_intent == I_HARM)
 		emote("roars in rage!")

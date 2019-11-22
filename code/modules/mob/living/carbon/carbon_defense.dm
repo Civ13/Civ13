@@ -23,7 +23,7 @@
 
 // Attacking someone with a weapon while they are neck-grabbed = throat slitting
 /mob/living/carbon/proc/check_attack_throat(obj/item/W, mob/user)
-	if (user.a_intent == I_HURT)
+	if (user.a_intent == I_HARM)
 		for (var/obj/item/weapon/grab/G in grabbed_by)
 			if (G.assailant == user && G.state >= GRAB_NECK)
 				if (attack_throat(W, G, user))

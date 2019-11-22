@@ -274,6 +274,7 @@
 	can_hold = list(
 		/obj/item/stack/ore,
 		/obj/item/stack/material/stone,
+		/obj/item/stack/material/sandstone,
 		)
 	flammable = TRUE
 

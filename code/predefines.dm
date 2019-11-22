@@ -517,7 +517,7 @@
 #define I_HELP		"help"
 #define I_DISARM	"disarm"
 #define I_GRAB		"grab"
-#define I_HURT		"hurt"
+#define I_HARM		"harm"
 #define I_DODGE		"dodge"
 #define I_PARRY		"parry"
 

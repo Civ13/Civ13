@@ -170,7 +170,7 @@
 /obj/structure/window/attack_hand(mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
-	if (usr.a_intent == I_HURT)
+	if (usr.a_intent == I_HARM)
 
 		if (istype(usr,/mob/living/carbon/human))
 			var/mob/living/carbon/human/H = usr

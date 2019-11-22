@@ -66,7 +66,7 @@
 			user << "<span class='warning'>This syringe is broken!</span>"
 			return
 
-	/*	if (user.a_intent == I_HURT && ismob(target))
+	/*	if (user.a_intent == I_HARM && ismob(target))
 			if ((CLUMSY in user.mutations) && prob(50))
 				target = user
 			syringestab(target, user)

@@ -30,6 +30,15 @@
 	spawn(600)
 		if (decay == 0)
 			return
+		if (istype(loc, /obj/structure/vending))
+			food_decay()
+			return
+		//temp until I put a continuing proc somewhere else like by the potatoes but i cant figure it right now because i have other stuff to do k thx bye.
+		if(istype(src, /obj/item/weapon/reagent_containers/food/snacks/grown/potato))
+			if(prob(10))
+				new/obj/item/weapon/reagent_containers/food/snacks/grown/greenpotato(src.loc)
+				qdel(src)
+				return
 		if (istype(loc, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = loc
 			if (F.powersource && F.powersource.powered)
@@ -50,11 +59,6 @@
 		else
 			food_decay()
 			return
-		//temp until I put a continuing proc somewhere else like by the potatoes but i cant figure it right now because i have other stuff to do k thx bye.
-		if(istype(src, /obj/item/weapon/reagent_containers/food/snacks/grown/potato))
-			if(prob(10))
-				new/obj/item/weapon/reagent_containers/food/snacks/grown/greenpotato(src.loc)
-				qdel(src)
 
 /obj/item/weapon/reagent_containers/food/afterattack(atom/A, mob/user, proximity, params)
 	if (center_of_mass.len && proximity && params && istype(A, /obj/structure/table))

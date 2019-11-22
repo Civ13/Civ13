@@ -5,7 +5,6 @@ var/datum/process_list/processes = new
 	var/process/battle_report/battle_report = null
 	var/process/burning_objs/burning_objs = null
 	var/process/burning_turfs/burning_turfs = null
-	var/process/burning_sounds/burning_sounds = null
 	var/process/callproc/callproc = null
 	var/process/chemistry/chemistry = null
 	var/process/client/client = null

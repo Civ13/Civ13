@@ -858,7 +858,7 @@
 	icon_state = "chinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
-	if(user.a_intent == I_HURT && map.chad_mode)
+	if(user.a_intent == I_HARM && map.chad_mode)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		visible_message("[user] punches \the [src]!")
 		health -= 5

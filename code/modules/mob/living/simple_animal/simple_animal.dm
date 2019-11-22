@@ -260,7 +260,7 @@
 			M.visible_message("<span class = 'red'>[M] has grabbed [src] passively!</span>")
 			M.do_attack_animation(src)
 
-		if (I_HURT)
+		if (I_HARM)
 			adjustBruteLoss(harm_intent_damage*M.getStatCoeff("strength"))
 			M.visible_message("<span class = 'red'>[M] [response_harm] \the [src].</span>")
 			M.do_attack_animation(src)
@@ -307,7 +307,7 @@
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			O.attack(src, user, tgt)
 	else if (O.sharp && !istype(src, /mob/living/simple_animal/hostage))
-		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && stat == DEAD)
+		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && stat == DEAD)
 			if (istype(src, /mob/living/simple_animal/frog/poisonous))
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))

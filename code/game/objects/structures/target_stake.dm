@@ -37,7 +37,7 @@
 	else
 		..()
 /obj/structure/target_practice/attack_hand(mob/living/carbon/human/user as mob)
-	if (user.a_intent == I_HURT)
+	if (user.a_intent == I_HARM)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (prob(67))
 			visible_message("<span class='notice'>[user] punches the training dummy!</span>","<span class='notice'>You punch the training dummy!</span>")

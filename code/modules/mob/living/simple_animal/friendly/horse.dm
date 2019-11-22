@@ -21,5 +21,5 @@
 	health = 120
 	mob_size = MOB_LARGE
 	layer = 3.99
-	a_intent = I_HURT
+	a_intent = I_HARM
 	can_ride = TRUE
