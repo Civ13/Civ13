@@ -837,7 +837,7 @@
 	var/area/area_above = null
 	if (z==1 && world.maxz>=2)
 		area_above = get_area(get_turf(locate(x,y,z+1)))
-	if (prob(25))
+	if (prob(20))
 		if (prob(60))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 			mineral.amount = rand(8,12)

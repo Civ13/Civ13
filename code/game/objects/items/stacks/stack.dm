@@ -794,11 +794,11 @@
 	else if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/money/silvercoin)
-		produced = 200
+		produced = 100
 	else if (recipe.result_type == /obj/item/stack/money/goldcoin)
-		produced = 100
+		produced = 50
 	else if (recipe.result_type == /obj/item/stack/money/coppercoin)
-		produced = 100
+		produced = 50
 	else if (recipe.result_type == /obj/item/stack/material/barbwire)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/arrowhead/stone)
