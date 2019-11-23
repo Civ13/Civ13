@@ -951,7 +951,7 @@ var/global/gc_helper_on = FALSE
 		if (AL.loc==null)
 			tmplist += AL
 	for(var/atom/movable/M in tmplist)
-		text2file(M.name,"nullobj.txt")
+		text2file(M.type,"nullobj.txt")
 	return tmplist
 
 /proc/gc_helper(var/list/origin = list())
