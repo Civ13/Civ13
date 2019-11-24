@@ -88,11 +88,11 @@
 	if (!H.languages.len)
 		H.add_language(default_language, FALSE)
 		if (!notes.Find(default_language))
-			if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
+			if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_MEDITERRANEAN)
 				H.add_note("Known Languages", default_language)
 	else if (H.languages[1] != default_language)
 		H.add_language(default_language, FALSE)
-		if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
+		if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_MEDITERRANEAN)
 			if (!notes.Find(default_language))
 				H.add_note("Known Languages", default_language)
 

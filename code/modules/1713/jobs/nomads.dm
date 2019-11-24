@@ -303,7 +303,51 @@
 						real_name = name
 						add_note("Known Languages", "Latin")
 						return
-
+		else if (map.ID == MAP_NOMADS_MEDITERRANEAN)
+			spawn(5)
+				//SOUTH
+				if (y<100)
+					//SOUTH-WEST
+					if (x<100)
+						add_language("Arabic",TRUE)
+						remove_language("English")
+						for (var/datum/language/arab/A in languages)
+							default_language = A
+						name = species.get_random_arab_name(gender)
+						real_name = name
+						add_note("Known Languages", "Arabic")
+						return
+					//SOUTH-EAST
+					else
+						add_language("Hebrew",TRUE)
+						remove_language("English")
+						for (var/datum/language/hebrew/A in languages)
+							default_language = A
+						name = species.get_random_hebrew_name(gender)
+						real_name = name
+						add_note("Known Languages", "Hebrew")
+						return
+					//NORTH-WEST
+				else
+					if (x<100)
+						add_language("Latin",TRUE)
+						remove_language("English")
+						for (var/datum/language/latin/A in languages)
+							default_language = A
+						name = species.get_random_roman_name(gender)
+						real_name = name
+						add_note("Known Languages", "Latin")
+						return
+					//NORTH-EAST
+					else
+						add_language("Greek",TRUE)
+						remove_language("English")
+						for (var/datum/language/greek/A in languages)
+							default_language = A
+						name = species.get_random_greek_name(gender)
+						real_name = name
+						add_note("Known Languages", "Greek")
+						return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
