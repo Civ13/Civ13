@@ -98,8 +98,6 @@
 
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
-	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
-
 /*
 	var/area/currentarea = get_area(src)
 	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
@@ -112,7 +110,7 @@
 		mood = 100
 	else if (mood < 0)
 		mood = 0
-	#define HUNGER_THIRST_MULTIPLIER 0.32
+	#define HUNGER_THIRST_MULTIPLIER 0.64 //was 0.32, doubled due to demand
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE

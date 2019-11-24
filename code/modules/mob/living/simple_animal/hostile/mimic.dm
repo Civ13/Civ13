@@ -128,12 +128,9 @@
 		var/mob/living/L = target_mob
 		L.adjustBruteLoss(damage)
 		return L
-	//else if (istype(target_mob,/obj/mecha))
-		//var/obj/mecha/M = target_mob
-		//M.attack_animal(src)
-		//return M
 
 
 /mob/living/simple_animal/hostile/mimic/death()
 	new/obj/structure/closet/crate/loottreasurechest(src.loc)
+	..()
 	qdel(src)

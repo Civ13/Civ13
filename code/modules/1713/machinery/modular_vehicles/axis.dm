@@ -596,9 +596,9 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 			list("dark khaki","#BDB76B"),
 			list("olive drab","#555346"),)
 		var/choosecolor1 = WWinput(H, "Choose this vehicle's color:", "Vehicle Color", "medium gray", list("light gray", "medium gray", "dark gray", "green", "pale green", "Feldgrau (WW1)", "Feldgrau (WW2)", "light khaki", "dark khaki", "olive drab"))
-			for (var/i in vehiclecolors)
-				if (i[1] == choosecolor1)
-					color = i[2]
+		for (var/i in vehiclecolors)
+			if (i[1] == choosecolor1)
+				color = i[2]
 		dir = 1
 		new/obj/effect/autoassembler(locate(x+2,y-2,z))
 		H << "<span class='warning'>Vehicle assembled.</span>"

@@ -176,6 +176,17 @@
 	value = 65
 	var/colorn = 1
 
+/obj/item/clothing/suit/storage/coat/priest
+	name = "priest sleev"
+	desc = "A holy coat worn by a priest."
+	icon_state = "priestwhite"
+	item_state = "priestwhite"
+	worn_state = "priestwhite"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+	var/colorn = 1
 
 /obj/item/clothing/suit/storage/coat/japcoat2
 	name = "Japanese Coat"

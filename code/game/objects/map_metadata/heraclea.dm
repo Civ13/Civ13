@@ -1,4 +1,3 @@
-#define NO_WINNER "The fighting is still going on."
 /obj/map_metadata/heraclea
 	ID = MAP_HERACLEA
 	title = "Heraclea (150x75x1)"
@@ -42,4 +41,3 @@ obj/map_metadata/heraclea/job_enabled_specialcheck(var/datum/job/J)
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 
-	#undef NO_WINNER

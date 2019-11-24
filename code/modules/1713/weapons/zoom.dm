@@ -15,6 +15,10 @@ Parts of code courtesy of Super3222
 	slot_flags = SLOT_POCKET|SLOT_BELT
 	value = 15
 
+/obj/item/weapon/attachment/scope/Destroy()
+	azoom = null
+	..()
+
 /obj/item/weapon/attachment/scope/New()
 	..()
 	build_zooming()

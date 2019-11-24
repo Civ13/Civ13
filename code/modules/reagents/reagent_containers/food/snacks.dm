@@ -24,7 +24,7 @@
 	if (nutriment_amt)
 		reagents.add_reagent("nutriment",nutriment_amt,nutriment_desc)
 	spawn (1)
-		if (reagents.total_volume)
+		if (reagents && reagents.total_volume)
 			bitesize = max(bitesize, ceil(reagents.total_volume/5))
 		else
 			bitesize = 2
@@ -156,7 +156,7 @@
 		user << "<span class='notice'>\The [src] was bitten multiple times!</span>"
 
 /obj/item/weapon/reagent_containers/food/snacks/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon/storage) && user.a_intent != I_HURT)
+	if (istype(W,/obj/item/weapon/storage) && user.a_intent != I_HARM)
 		..() // -> item/attackby()
 		return
 

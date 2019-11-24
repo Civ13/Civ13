@@ -177,10 +177,11 @@ default behaviour is:
 	set desc = "Succumb to death."
 	set category = "IC"
 	if (map.civilizations || getTotalDmg() > 90)
-		adjustBrainLoss(300)
-		death()
-		src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
-		return
+		if (WWinput(src, "Are you sure you want to succumb? You only live once.", "", "Cancel", list("Succumb", "Cancel")) == "Succumb")	
+			adjustBrainLoss(300)
+			death()
+			src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
+			return
 	else
 		src << "<span class = 'notice'>You cannot succumb in this map unless you have very high damage!</span>"
 		return

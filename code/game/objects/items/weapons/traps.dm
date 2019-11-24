@@ -8,7 +8,6 @@
 	desc = "A mechanically activated leg trap. Low-tech, but reliable. Looks like it could really hurt if you set it off."
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 18750)
 	var/deployed = FALSE
 
 /obj/item/weapon/beartrap/armed
@@ -129,7 +128,6 @@
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = 3
 	flammable = TRUE
-	matter = list(DEFAULT_WALL_MATERIAL = 18750)
 	var/deployed = FALSE
 
 /obj/item/weapon/punji_sticks/proc/can_use(mob/user)

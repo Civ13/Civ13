@@ -92,8 +92,16 @@
 
 	New()
 		..()
-		for (var/i=1; i <= 10; i++)
-			new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
+		new /obj/item/weapon/flame/match(src)
 
 	attackby(obj/item/weapon/flame/match/W as obj, mob/user as mob)
 		if (istype(W) && !W.lit && !W.burnt)

@@ -1,12 +1,8 @@
 //#define TESTING
-#if DM_VERSION < 506
+#if DM_VERSION < 512
 #warn This compiler is out of date. You may experience issues with projectile animations.
 #endif
 
-//var/list/init_lights = list()
-
-
-//var/global/list/global_map = null
 
 				//For single Mayor/Governor maps
 var/global_export_tax = 0	//Global Export Tax

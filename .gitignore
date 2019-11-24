@@ -22,3 +22,6 @@ recipes.txt
 config/host.txt
 config/host.txt
 config/host.txt
+.vscode/launch.json
+cfg/admin.txt
+nullobj.txt

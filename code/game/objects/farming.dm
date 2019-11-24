@@ -232,7 +232,7 @@
 	plant = "coconut"
 	icon_state = "coconut"
 	color = null
-	biomes = list("sea")
+	biomes = list("sea","jungle")
 
 /obj/structure/farming/plant
 	name = "plant"

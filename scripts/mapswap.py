@@ -121,6 +121,8 @@ elif map == "KHALKHYN_GOL":
 	dmms.append("#include \"maps\\1943\\khalkhyn_gol.dmm\"")
 elif map == "ARAB_TOWN":
 	dmms.append("#include \"maps\\1969\\arab_town.dmm\"")
+elif map == "ARAB_TOWN_2":
+	dmms.append("#include \"maps\\1969\\arab_town_2.dmm\"")
 elif map == "GLADIATORS":
 	dmms.append("#include \"maps\\313bc\\gladiators.dmm\"")
 elif map == "OMAHA":
@@ -139,6 +141,8 @@ elif map == "GULAG13":
 	dmms.append("#include \"maps\\1943\\gulag13.dmm\"")
 elif map == "NOMADS_NEW_WORLD":
 	dmms.append("#include \"maps\\special\\nomads_new_world.dmm\"")
+elif map == "STALINGRAD":
+	dmms.append("#include \"maps\\WIP\\Stalingrad.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()

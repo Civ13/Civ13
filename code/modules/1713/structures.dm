@@ -88,7 +88,6 @@
 		..()
 
 /obj/structure/barricade/wood_pole/Destroy()
-	..()
 	if (attached_ob != null)
 		if (istype(attached_ob, /obj/item/flashlight/lantern))
 			var/obj/item/flashlight/lantern/LT = attached_ob
@@ -99,7 +98,7 @@
 			LT.off_state = "lantern"
 			LT.update_icon()
 			attached_ob = null
-
+	..()
 /obj/structure/grille/logfence
 	name = "palisade"
 	desc = "A wooden palisade."

@@ -99,7 +99,7 @@
 		if (istype(E, /datum/stack_recipe))
 			var/datum/stack_recipe/R = E
 			var/max_multiplier = round(get_amount() / R.req_amount)
-			var/title as text
+			var/title
 			var/can_build = TRUE
 			can_build = can_build && (max_multiplier>0)
 			if (R.res_amount>1)
@@ -149,22 +149,14 @@
 	var/customdesc = ""
 	var/turn_dir = 0
 	var/mob/living/carbon/human/H = user
-	var/obj/structure/religious/totem/newtotem = new/obj/structure/religious/totem
-	newtotem.desc = "none"
-	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
-	build_override_door.custom_code = -1
-	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
-	build_override_key.code = -1
-	var/obj/item/stack/money/coppercoin/build_override_coins_copper = new/obj/item/stack/money/coppercoin
-	build_override_coins_copper.desc = "Some coins."
-	var/obj/item/stack/money/silvercoin/build_override_coins_silver = new/obj/item/stack/money/silvercoin
-	build_override_coins_silver.desc = "Some coins."
-	var/obj/item/stack/money/goldcoin/build_override_coins_gold = new/obj/item/stack/money/goldcoin
-	build_override_coins_gold.desc = "Some coins."
-	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = new/obj/item/weapon/gun/projectile/ancient/firelance
-	build_override_firelance.desc = "A simple firelance."
-	var/obj/structure/vending/sales/build_override_vending = new/obj/structure/vending/sales
-	build_override_vending.name = ""
+	var/obj/structure/religious/totem/newtotem = null
+	var/obj/structure/simple_door/key_door/custom/build_override_door = null
+	var/obj/item/weapon/key/civ/build_override_key = null
+	var/obj/item/stack/money/coppercoin/build_override_coins_copper = null
+	var/obj/item/stack/money/silvercoin/build_override_coins_silver = null
+	var/obj/item/stack/money/goldcoin/build_override_coins_gold = null
+	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = null
+	var/obj/structure/vending/sales/build_override_vending = null
 	if (istype(get_turf(H), /turf/floor/beach/water/deep))
 		H << "<span class = 'danger'>You can't build here!</span>"
 		return
@@ -222,6 +214,7 @@
 			var/keyname = input(user, "Choose a name for the door:") as text|null
 			if (keyname == null)
 				keyname = "Locked"
+			build_override_door = new /obj/structure/simple_door/key_door/custom
 			build_override_door.name = keyname
 			build_override_door.custom_code = key.code
 
@@ -301,7 +294,7 @@
 			user << "\The [recipe.title] can only be built during the <b>Classic Research</b> gamemode."
 			return
 
-	else if (recipe.result_type == /obj/item/weapon/language_book)
+	else if (recipe.result_type == /obj/item/weapon/book/language_book)
 		if (H.getStatCoeff("philosophy") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -424,11 +417,13 @@
 			return
 		else
 			if (istype(H.l_hand, /obj/item/weapon/material/spear))
+				build_override_firelance = new /obj/item/weapon/gun/projectile/ancient/firelance
 				build_override_firelance.desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
 				build_override_firelance.force = round(H.l_hand.force*0.9)
 				build_override_firelance.throwforce = round(H.l_hand.throwforce*0.65)
 				qdelHandReturn(H.l_hand, H)
 			else if (istype(H.r_hand, /obj/item/weapon/material/spear))
+				build_override_firelance = new /obj/item/weapon/gun/projectile/ancient/firelance
 				build_override_firelance.desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
 				build_override_firelance.force = round(H.r_hand.force*0.9)
 				build_override_firelance.throwforce = round(H.r_hand.throwforce*0.65)
@@ -488,6 +483,7 @@
 				qdelHandReturn(H.r_hand, H)
 
 	else if (recipe.result_type == /obj/structure/religious/totem)
+		newtotem = new /obj/structure/religious/totem
 		if (H.original_job_title == "Red Goose Tribesman")
 			customname = "Stone Goose Totem"
 			newtotem.icon_state = "goose"
@@ -537,6 +533,7 @@
 				qdelHandReturn(H.r_hand, H)
 
 	else if (findtext(recipe.title, "copper coins"))
+		build_override_coins_copper = new /obj/item/stack/money/coppercoin
 		customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
@@ -551,6 +548,7 @@
 			build_override_coins_copper.desc = "copper coins, minted by [H]."
 
 	else if (findtext(recipe.title, "silver coins"))
+		build_override_coins_silver = new /obj/item/stack/money/silvercoin
 		customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
@@ -565,6 +563,7 @@
 			build_override_coins_silver.desc = "silver coins, minted by [H]."
 
 	else if (findtext(recipe.title, "gold coins"))
+		build_override_coins_gold = new /obj/item/stack/money/goldcoin
 		customname = input(user, "Choose a name for these coins:") as text|null
 		if (H.civilization != "none")
 			if (customname == null)
@@ -601,8 +600,8 @@
 		customvar2 = recipe.title
 		clist += "Cancel"
 		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
-		build_override_vending.name = customname
-		build_override_vending.owner = customvar
+		if (customvar == "Cancel")
+			return
 	else if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -715,6 +714,7 @@
 			var/keyname = input(user, "Choose a name for the key:") as text|null
 			if (keyname == null)
 				keyname = "Key"
+			build_override_key = new /obj/item/weapon/key/civ
 			build_override_key.name = keyname
 			build_override_key.code = keycode
 
@@ -778,7 +778,7 @@
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
-
+//this only works for stacks!!
 	else if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/ammopart/bullet)
@@ -794,19 +794,13 @@
 	else if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
 		produced = 2
 	else if (recipe.result_type == /obj/item/stack/money/silvercoin)
-		produced = 200
+		produced = 100
 	else if (recipe.result_type == /obj/item/stack/money/goldcoin)
-		produced = 100
+		produced = 50
 	else if (recipe.result_type == /obj/item/stack/money/coppercoin)
-		produced = 100
-	else if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
-		produced = 2
-	else if (recipe.result_type == /obj/item/ammo_casing/stone)
-		produced = 5
+		produced = 50
 	else if (recipe.result_type == /obj/item/stack/material/barbwire)
 		produced = 2
-	else if (recipe.result_type == /obj/item/ammo_casing/arrow)
-		produced = 3
 	else if (recipe.result_type == /obj/item/stack/arrowhead/stone)
 		produced = 4
 	else if (recipe.result_type == /obj/item/stack/arrowhead/copper)
@@ -876,13 +870,13 @@
 						return
 				O.color = addtext("#",input)
 				return
-		if (build_override_firelance.desc != "A simple firelance.")
+		if (build_override_firelance)
 			build_override_firelance.loc = get_turf(O)
 			build_override_firelance.set_dir(user.dir)
 			build_override_firelance.add_fingerprint(user)
 			qdel(O)
 			return
-		if (build_override_key.code != -1)
+		if (build_override_key)
 			build_override_key.loc = get_turf(O)
 			build_override_key.set_dir(user.dir)
 			build_override_key.add_fingerprint(user)
@@ -890,7 +884,7 @@
 			return
 
 
-		if (build_override_coins_copper.desc != "Some coins.")
+		if (build_override_coins_copper)
 			build_override_coins_copper.loc = get_turf(O)
 			build_override_coins_copper.set_dir(user.dir)
 			build_override_coins_copper.add_fingerprint(user)
@@ -898,7 +892,7 @@
 			qdel(O)
 			return
 
-		if (build_override_coins_silver.desc != "Some coins.")
+		if (build_override_coins_silver)
 			build_override_coins_silver.loc = get_turf(O)
 			build_override_coins_silver.set_dir(user.dir)
 			build_override_coins_silver.add_fingerprint(user)
@@ -906,7 +900,7 @@
 			qdel(O)
 			return
 
-		if (build_override_coins_gold.desc != "Some coins.")
+		if (build_override_coins_gold)
 			build_override_coins_gold.loc = get_turf(O)
 			build_override_coins_gold.set_dir(user.dir)
 			build_override_coins_gold.add_fingerprint(user)
@@ -921,13 +915,13 @@
 			qdel(O)
 			return
 
-		if (newtotem.desc != "none")
+		if (newtotem)
 			newtotem.loc = get_turf(O)
 			newtotem.set_dir(user.dir)
 			newtotem.add_fingerprint(user)
 			qdel(O)
 			return
-		if (build_override_door.custom_code != -1)
+		if (build_override_door)
 			build_override_door.loc = get_turf(O)
 			build_override_door.set_dir(user.dir)
 			build_override_door.add_fingerprint(user)
@@ -1021,7 +1015,7 @@
 			C.name = "empty [C.brand]can"
 			C.do_color()
 
-		else if (build_override_vending.owner != "Global")
+		else if (build_override_vending)
 			if (customvar2 == "market stall")
 				build_override_vending = new /obj/structure/vending/sales/market_stall
 			else
@@ -1038,11 +1032,17 @@
 			S.amount = produced
 			S.add_to_stacks(user)
 			S.update_icon()
+		else if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
+			new/obj/item/weapon/clay/verysmallclaypot(get_turf(O))
 		else if (istype(O, /obj/item/ammo_casing/stone))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
+		else if (istype(O, /obj/item/ammo_casing/arrow))
+			new/obj/item/ammo_casing/arrow(get_turf(O))
+			new/obj/item/ammo_casing/arrow(get_turf(O))
+			new/obj/item/ammo_casing/arrow(get_turf(O))
 		else if (istype(O, /obj/item/weapon/can))
 			var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
 			C1.customcolor1 = addtext("#",customcolor1)
@@ -1214,9 +1214,9 @@
 /obj/item/stack/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
 		var/obj/item/stack/F = split(1)
-		F.update_icon()
-		src.update_icon()
 		if (F)
+			F.update_icon()
+			src.update_icon()
 			user.put_in_hands(F)
 			add_fingerprint(user)
 			F.add_fingerprint(user)

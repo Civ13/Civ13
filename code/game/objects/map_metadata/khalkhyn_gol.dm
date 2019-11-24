@@ -1,4 +1,4 @@
-#define NO_WINNER "The battle is still going on."
+
 /obj/map_metadata/khalkhyn
 	ID = MAP_KHALKHYN_GOL
 	title = "Khalkhyn Gol (90x200x1)"
@@ -76,4 +76,3 @@
 	else if (faction == JAPANESE)
 		return "<span class = 'userdanger'>The Japanese may no longer cross the invisible wall!</span>"
 
-	#undef NO_WINNER

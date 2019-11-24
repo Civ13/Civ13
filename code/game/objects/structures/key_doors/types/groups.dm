@@ -148,7 +148,7 @@
 /obj/structure/simple_door/key_door/civ/room4
 	keyslot_type = /datum/keyslot/civ/room4
 	unique_door_name = "Room #4"
-#undef CV_ROOM5
+#undef CV_ROOM4
 
 #define CV_ROOM5 52355
 /datum/keyslot/civ/room5
@@ -239,7 +239,6 @@
 /obj/structure/simple_door/key_door/civ/sherif
 	keyslot_type = /datum/keyslot/civ/sheriff
 	unique_door_name = "Sheriff Office Key"
-#undef CV_BANK
 
 #define PI_CODE 995
 /datum/keyslot/pirates

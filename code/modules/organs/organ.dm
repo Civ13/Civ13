@@ -109,13 +109,6 @@ var/list/organ_cache = list()
 	//dead already, no need for more processing
 	if (status & ORGAN_DEAD)
 		return
-	// Don't process if we're in a freezer, an MMI or a stasis bag.or a freezer or something I dunno
-//	if (istype(loc,/obj/item/mmi))
-	//	return
-	//Process infections
-	if (owner && owner.species && (owner.species.flags & IS_PLANT))
-		germ_level = FALSE
-		return
 
 	if (!owner)
 		var/datum/reagent/blood/B = locate(/datum/reagent/blood) in reagents.reagent_list

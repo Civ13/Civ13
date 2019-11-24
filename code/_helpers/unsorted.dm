@@ -267,7 +267,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 			if (t == get_turf(start) || t == get_turf(target))
 				continue
 
-			if (locate(get_turf(start) in range(1, t)))
+			if (locate(get_turf(start)) in range(1, t))
 				continue
 
 		if (horizontal_dir_2_target == EAST && t.x > start.x && t.x <= target.x)

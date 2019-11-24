@@ -23,7 +23,6 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	throw_speed = 8
 	throw_range = 10
-	matter = list(DEFAULT_WALL_MATERIAL = 1875)
 	amount = 10
 	max_amount = 500
 	attack_verb = list("hit")
@@ -372,6 +371,9 @@
 	icon_state = "coppercoin_pile"
 	amount = 1
 	value = 0.01
+
+/obj/item/stack/money/coppercoin/fifty
+	amount = 50
 
 /obj/item/stack/money/silvercoin
 	name = "silver coins"

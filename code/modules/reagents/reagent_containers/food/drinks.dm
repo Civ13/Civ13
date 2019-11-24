@@ -23,7 +23,7 @@
 		flags |= OPENCONTAINER
 
 	attack(mob/M as mob, mob/user as mob, def_zone)
-		if (force && !(flags & NOBLUDGEON) && user.a_intent == I_HURT)
+		if (force && !(flags & NOBLUDGEON) && user.a_intent == I_HARM)
 			return ..()
 
 		if (istype(M) && standard_feed_mob(user, M))

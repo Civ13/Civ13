@@ -265,7 +265,7 @@
 	vehicle_m_delay = 12
 	health = 50
 /obj/structure/vehicle/raft/do_vehicle_check()
-	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
+	if (driver && istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
 		if (driver in get_turf(src))
 			return TRUE
 		else
@@ -312,6 +312,7 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 	vehicle_m_delay = 12
+	layer = 2.95
 	health = 90
 	axis = new/obj/structure/vehicleparts/axis/boat
 	wheeled = TRUE
@@ -345,9 +346,9 @@
 	New()
 		..()
 		dwheel.origin = src
-		cover_overlay = image(icon, "sail0")
+		cover_overlay = image(icon, "sail1")
 		cover_overlay.layer = MOB_LAYER + 2.11
-		cover_overlay_c = image(icon, "sail")
+		cover_overlay_c = image(icon, "sail2")
 		cover_overlay_c.layer = MOB_LAYER + 2.12
 		add_overlay(cover_overlay)
 		update_overlay()
@@ -618,7 +619,7 @@
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/GC = W
-		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
+		if (fueltank && fueltank.reagents && fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
 			var/found = FALSE
 			for (var/i in engine.fuels)
 				if (GC.reagents.has_reagent(i))

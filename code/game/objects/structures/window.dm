@@ -170,7 +170,7 @@
 /obj/structure/window/attack_hand(mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
-	if (usr.a_intent == I_HURT)
+	if (usr.a_intent == I_HARM)
 
 		if (istype(usr,/mob/living/carbon/human))
 			var/mob/living/carbon/human/H = usr
@@ -346,11 +346,7 @@
 /obj/structure/window/Destroy()
 	density = FALSE
 	update_nearby_tiles()
-	var/turf/location = loc
 	loc = null
-	for (var/obj/structure/window/W in orange(location, TRUE))
-		W.update_icon()
-	loc = location
 	..()
 
 

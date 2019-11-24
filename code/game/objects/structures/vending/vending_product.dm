@@ -9,8 +9,9 @@
 	var/display_color = null   // Display color for vending machine listing
 	var/vending_machine        // The vending machine we belong to
 	var/image/product_image			//an image to be used as an overlay in the vending machine
-
-/datum/data/vending_product/New(var/_vending_machine, var/path, var/name = null, var/_amount = 1, var/_price = 0, var/_color = null, var/_icon = null, var/_icon_state = null, var/_color = null)
+	var/list/product_item = list()	//the actual objects
+	var/is_stack = FALSE
+/datum/data/vending_product/New(var/_vending_machine, var/path, var/name = null, var/_amount = 1, var/_price = 0, var/_color = null, var/_icon = null, var/_icon_state = null, var/_color = null, var/atom/movable/M = null)
 	..()
 
 	product_path = path
@@ -25,6 +26,12 @@
 	price = _price
 	display_color = _color
 	vending_machine = _vending_machine
+	if (M && !istype(M, /obj/item/stack))
+		product_item += M
+		M.forceMove(vending_machine)
+	else if (M && vending_machine && istype(M, /obj/item/stack) && istype(vending_machine, /obj/structure/vending/sales))
+		is_stack = TRUE
+		qdel(M)
 	if (_icon && _icon_state)
 		product_image = image(icon=_icon, icon_state = _icon_state)
 		product_image.color = _color
@@ -38,16 +45,36 @@
 	vending_machine = null
 	. = ..()
 
-/datum/data/vending_product/proc/add_product(var/atom/movable/product)
-	if (product.type != product_path)
-		return FALSE
-	amount++
-/datum/data/vending_product/proc/get_product(var/product_location)
-	if (amount < 1 || !product_location)
-		return
-
-	var/atom/movable/product = new product_path
-	if (product)
-		product.forceMove(product_location)
-		amount--
-	return product
+/datum/data/vending_product/proc/get_product(var/product_location, var/p_amount=1)
+	if (istype(vending_machine, /obj/structure/vending/sales))
+		if (amount <= 0 || amount < p_amount || !product_location)
+			return
+		if (is_stack)
+			var/obj/item/stack/product = new product_path
+			if (product)
+				product.amount = p_amount
+				product.forceMove(product_location)
+				amount -= p_amount
+		else
+			if (product_item.len)
+				for(var/i=1, i<=p_amount, i++)
+					var/atom/movable/product = pick(product_item)
+					if (product)
+						product.forceMove(product_location)
+						amount--
+			else
+				for(var/i=1, i<=p_amount, i++)
+					var/atom/movable/product = new product_path
+					if (product)
+						product.forceMove(product_location)
+						amount--
+		return TRUE
+	else
+		if (amount <= 0 || amount < p_amount || !product_location)
+			return
+		for(var/i=1, i<=p_amount, i++)
+			var/atom/movable/product = new product_path
+			if (product)
+				product.forceMove(product_location)
+				amount--
+		return TRUE

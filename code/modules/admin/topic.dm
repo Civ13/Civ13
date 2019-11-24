@@ -427,8 +427,9 @@
 		if (!check_rights(R_ADMIN))	return
 
 		if (WWinput(usr, "Confirm?", "Message", "Yes", list("Yes", "No")) != "Yes")	return
-		var/mob/M = locate(href_list["getmob"])
-		usr.client.Getmob(M)
+		if (usr && usr.client)
+			var/mob/M = locate(href_list["getmob"])
+			usr.client.Getmob(M)
 
 	else if (href_list["sendmob"])
 		if (!check_rights(R_ADMIN))	return

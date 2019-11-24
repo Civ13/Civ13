@@ -161,9 +161,6 @@
 	if (!istype(T))
 		return
 
-	if (volume >= 3)
-		T.wet_floor()
-
 
 /datum/reagent/nutriment/mint
 	name = "Mint"

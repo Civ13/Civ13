@@ -110,7 +110,6 @@ By design, d1 is the smallest direction and d2 is the highest
 	d1 = text2num( copytext( icon_state, 1, dash ) )
 	d2 = text2num( copytext( icon_state, dash+1 ) )
 
-	cable_list += src //add it to the global cable list
 
 	if(d1)
 		stored = new/obj/item/stack/cable_coil(null,2,cable_color)
@@ -125,7 +124,6 @@ By design, d1 is the smallest direction and d2 is the highest
 /obj/structure/cable/Destroy()					// called when a cable is deleted
 	if (!isemptylist(connections))
 		disconnect()
-	cable_list -= src							//remove it from global cable list
 	return ..()									// then go ahead and delete the cable
 
 

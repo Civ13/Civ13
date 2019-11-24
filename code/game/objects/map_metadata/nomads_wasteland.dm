@@ -1,8 +1,9 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/nomads_wasteland
 	ID = MAP_NOMADS_WASTELAND
 	title = "Nomads (Wasteland) (235x235x2)"
 	lobby_icon_state = "civ13"
+	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	squad_spawn_locations = FALSE
@@ -224,4 +225,3 @@
 		. = TRUE
 	else
 		. = FALSE
-#undef NO_WINNER

@@ -212,7 +212,7 @@
 			return
 	M.clean_blood()
 
-/datum/reagent/lube // TODO: spraying on borgs speeds them up
+/datum/reagent/lube // TODO: spraying on speeds them up
 	name = "Space Lube"
 	id = "lube"
 	description = "Lubricant is a substance introduced between two moving surfaces to reduce the friction and wear between them. giggity."
@@ -223,8 +223,6 @@
 /datum/reagent/lube/touch_turf(var/turf/T)
 	if (!istype(T))
 		return
-	if (volume >= 1)
-		T.wet_floor(2)
 
 /datum/reagent/silicate
 	name = "Silicate"

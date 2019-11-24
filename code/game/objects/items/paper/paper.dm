@@ -56,16 +56,12 @@
 		update_space(info)
 		updateinfolinks()
 
-	paper_list += src
 	if (map)
 		if (map.ordinal_age <= 1)
 			name = "papyrus"
 			icon_state = "scrollpaper"
 			desc = "A blank parchement scroll."
 
-/obj/item/weapon/paper/Destroy()
-	paper_list -= src
-	..()
 
 /obj/item/weapon/paper/update_icon()
 	if (map.ordinal_age <= 1)
@@ -121,7 +117,7 @@
 	return
 
 /obj/item/weapon/paper/attack_self(mob/living/user as mob)
-	if (user.a_intent == I_HURT)
+	if (user.a_intent == I_HARM)
 		if (icon_state == "scrap")
 			user.show_message("<span class='warning'>\The [src] is already crumpled.</span>")
 			return
@@ -386,12 +382,6 @@
 /obj/item/weapon/paper/attackby(obj/item/weapon/P as obj, mob/user as mob)
 	..()
 	if (istype(P, /obj/item/weapon/paper))
-		if (istype(P, /obj/item/weapon/paper/carbon))
-			var/obj/item/weapon/paper/carbon/C = P
-			if (!C.iscopy && !C.copied)
-				user << "<span class='notice'>Take off the carbon copy first.</span>"
-				add_fingerprint(user)
-				return
 		var/obj/item/weapon/paper_bundle/B = new(loc)
 		if (name != "paper")
 			B.name = name
@@ -452,7 +442,6 @@
 		stamps += (stamps=="" ? "<HR>" : "<BR>") + "<i>This paper is marked with the [P.name].</i>"
 
 		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
-		var/{x; y;}
 		x = rand(-2, 2)
 		y = rand(-3, 2)
 		offset_x += x

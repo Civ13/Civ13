@@ -89,9 +89,7 @@ var/list/delayed_garbage = list()
 		destroyed.Cut(1, 2)
 		PROCESS_TICK_CHECK
 
-#undef GC_FORCE_DEL_PER_TICK
 #undef GC_COLLECTION_TIMEOUT
-#undef GC_COLLECTIONS_PER_TICK
 
 // this process does not use current_list, which will be == null
 /process/garbage/reset_current_list()
@@ -176,6 +174,7 @@ var/list/delayed_garbage = list()
 		. = !A.Destroy()
 		if (. && A)
 			A.finalize_qdel()
+
 	if (A && isatom(A))
 		var/atom/AT = A
 		AT.invisibility = 101
@@ -183,7 +182,8 @@ var/list/delayed_garbage = list()
 		AT.icon_state = null
 		if (ismovable(A))
 			var/atom/movable/AM = A
-			AM.loc = null // maybe fixes projectiles, hopefully doesn't break anything - Kachnov
+			AM.loc = null
+
 
 /proc/qdel_list(var/list/L)
 	if (!L)
@@ -303,12 +303,4 @@ var/list/delayed_garbage = list()
 				del(o)
 				garbage.dels++
 			garbage.destroyed.Cut(1, 2)
-#endif
-
-#ifdef GC_DEBUG
-#undef GC_DEBUG
-#endif
-
-#ifdef GC_FINDREF
-#undef GC_FINDREF
 #endif

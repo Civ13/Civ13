@@ -11,7 +11,6 @@
 	icon = 'icons/obj/syringe.dmi'
 	item_state = "syringe_0"
 	icon_state = "0"
-	matter = list("glass" = 150)
 	amount_per_transfer_from_this = 5
 	possible_transfer_amounts = null
 	volume = 15
@@ -67,7 +66,7 @@
 			user << "<span class='warning'>This syringe is broken!</span>"
 			return
 
-	/*	if (user.a_intent == I_HURT && ismob(target))
+	/*	if (user.a_intent == I_HARM && ismob(target))
 			if ((CLUMSY in user.mutations) && prob(50))
 				target = user
 			syringestab(target, user)

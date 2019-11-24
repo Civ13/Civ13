@@ -39,13 +39,6 @@
 		if (temp && !temp.is_usable())
 			user << "<span class='notice'>You try to move your [temp.name], but cannot!</span>"
 			return
-	var/response = ""
-	if (!papers.len > 0)
-		// todo: remove
-		response = WWinput(user, "Do you take regular paper, or Carbon copy paper?", "Paper type request", "Regular", list("Regular", "Carbon-Copy", "Cancel"))
-		if (response != "Regular" && response != "Carbon-Copy")
-			add_fingerprint(user)
-			return
 	if (amount >= 1)
 		amount--
 		if (amount==0)
@@ -56,10 +49,8 @@
 			P = papers[papers.len]
 			papers.Remove(P)
 		else
-			if (response == "Regular")
-				P = new /obj/item/weapon/paper
-			else if (response == "Carbon-Copy")
-				P = new /obj/item/weapon/paper/carbon
+			P = new /obj/item/weapon/paper
+
 
 		P.loc = user.loc
 		user.put_in_hands(P)

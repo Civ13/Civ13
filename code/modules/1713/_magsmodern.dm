@@ -74,7 +74,7 @@
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	w_class = 4
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -87,7 +87,7 @@
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 100
 	multiple_sprites = TRUE
@@ -119,7 +119,6 @@
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 1440)
 	ammo_type = /obj/item/ammo_casing/a556x45
 	max_ammo = 150
 	multiple_sprites = TRUE
@@ -127,7 +126,7 @@
 /obj/item/ammo_magazine/m24
 	name = "clip (7.62x51mm)"
 	icon_state = "clip"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a762x51
 	caliber = "a762x51"
 	max_ammo = 5
@@ -138,7 +137,7 @@
 /obj/item/ammo_magazine/p90
 	name = "P90 Magazine (a57x28mm)"
 	icon_state = "clip"
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+
 	ammo_type = /obj/item/ammo_casing/a57x28
 	caliber = "a57x28"
 	max_ammo = 50

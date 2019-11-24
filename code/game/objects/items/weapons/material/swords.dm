@@ -1,7 +1,3 @@
-#define SLASH 1
-#define STAB 2
-#define BASH 3
-
 /obj/item/weapon/material/sword
 	name = "claymore"
 	desc = "What are you standing around staring at this for? Get to killing!"
@@ -158,7 +154,7 @@ obj/item/weapon/material/sword/wakazashi
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			if (tgt == "groin" && !suicide)
 				handle_suicide(user)
-			else if (user.a_intent == I_HURT && do_after(user, 2, get_turf(user)))
+			else if (user.a_intent == I_HARM && do_after(user, 2, get_turf(user)))
 				attackby(user)
 			return
 /obj/item/weapon/material/sword/katana/iron

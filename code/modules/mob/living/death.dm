@@ -30,3 +30,12 @@
 		if (!NB.orc)
 			NB.mood -= 10
 			NB.ptsd += 1
+
+proc/delayed_decay(var/mob/living/L,var/timer=3000)
+	spawn(timer)
+		if (L && L.stat == DEAD)
+			dead_mob_list -= L
+			L.Destroy()
+			return
+		else
+			return

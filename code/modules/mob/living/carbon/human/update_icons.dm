@@ -659,10 +659,10 @@ var/global/list/damage_icon_parts = list()
 			glasses.screen_loc = new_screen_loc	*/
 		eyes.screen_loc = find_inv_position(slot_eyes)
 		if (eyes.icon_override)
-			overlays_standing[GLASSES_LAYER] = image(icon = eyes.icon_override,   icon_state = eyes.icon_state)
+			overlays_standing[EYES_LAYER] = image(icon = eyes.icon_override,   icon_state = eyes.icon_state)
 
 		else
-			overlays_standing[GLASSES_LAYER] = image(icon = body_build.eyes_icon, icon_state = eyes.icon_state)
+			overlays_standing[EYES_LAYER] = image(icon = body_build.eyes_icon, icon_state = eyes.icon_state)
 
 	else
 		overlays_standing[EYES_LAYER]	= null
@@ -1243,7 +1243,6 @@ var/global/list/damage_icon_parts = list()
 #undef GLOVES_LAYER
 #undef EARS_LAYER
 #undef SUIT_LAYER
-#undef TAIL_LAYER
 #undef GLASSES_LAYER
 #undef FACEMASK_LAYER
 #undef BELT_LAYER

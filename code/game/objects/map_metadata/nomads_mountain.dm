@@ -1,5 +1,6 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/nomads_mountain
+	no_winner ="The round is proceeding normally."
 	ID = MAP_NOMADS_MOUNTAIN
 	title = "Nomads (Mountain) (120x120x8)"
 	lobby_icon_state = "civ13"
@@ -50,14 +51,14 @@
 	if (real_season == "dry")
 		season = "Wet Season"
 		world << "<big>The <b>Wet Season</b> has started.</big>"
-			change_weather_somehow()
+		change_weather_somehow()
 		for (var/turf/floor/beach/drywater/D)
 			D.ChangeTurf(/turf/floor/beach/water/swamp)
 		real_season = "wet"
 	else
 		season = "Dry Season"
 		world << "<big>The <b>Dry Season</b> has started.</big>"
-			change_weather_somehow()
+		change_weather_somehow()
 		for (var/turf/floor/beach/water/swamp/D)
 			D.ChangeTurf(/turf/floor/beach/drywater)
 		real_season = "dry"
@@ -71,4 +72,3 @@
 		. = TRUE
 	else
 		. = FALSE
-#undef NO_WINNER

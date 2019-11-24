@@ -1,4 +1,4 @@
-/obj/item/weapon/language_book
+/obj/item/weapon/book/language_book
 	name = "language book"
 	desc = "A book that allows translation between two languages. Nothing is written in it."
 	icon = 'icons/obj/library.dmi'
@@ -11,8 +11,8 @@
 	var/written = FALSE // has this book been written in yet?
 	var/datum/language/lang1 = null // 1st language of translation
 	var/datum/language/lang2 = null // 2nd language of translation
-
-/obj/item/weapon/language_book/attack_self(var/mob/user as mob)
+	unique = TRUE
+/obj/item/weapon/book/language_book/attack_self(var/mob/user as mob)
 	var/mob/living/carbon/human/H = user
 	if(src.written && lang1 && lang2)
 		var/choice = WWinput(user, "Do you want to learn a language from [src]?", "Learn a Language", "Yes", list("Yes", "No"))
@@ -43,7 +43,7 @@
 	else
 		user << "<span class = 'warning'>You can't read a language book with nothing in it!</span>"
 
-/obj/item/weapon/language_book/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+/obj/item/weapon/book/language_book/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
 	if(istype(W, /obj/item/weapon/pen))
 		if(user.languages.len < 2)
 			user << "<span class = 'warning'>You can't write a language book if you only know one language!</span>"

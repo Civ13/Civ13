@@ -1,7 +1,8 @@
-#define NO_WINNER "The round is proceeding normally."
+
 /obj/map_metadata/nomads_new_world
 	ID = MAP_NOMADS_NEW_WORLD
 	title = "Nomads (New World) (500x200x2)"
+	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/sea)
 	respawn_delay = 6000 // 10 minutes!
@@ -63,7 +64,7 @@
 	if (season == "FALL")
 		season = "WINTER"
 		world << "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>"
-			change_weather_somehow()
+		change_weather_somehow()
 		for (var/turf/floor/dirt/flooded/D)
 			D.ChangeTurf(/turf/floor/beach/water/flooded)
 		for (var/turf/floor/dirt/ploughed/flooded/D in get_area_turfs(/area/caribbean/nomads/forest/Jungle))
@@ -115,7 +116,7 @@
 	else if (season == "SPRING")
 		season = "SUMMER"
 		world << "<big>The <b>Summer</b> has started. In the hot climates, the dry season has started.</big>"
-			change_weather_somehow()
+		change_weather_somehow()
 		for(var/obj/structure/sink/S in get_area_turfs(/area/caribbean/nomads/desert))
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 				S.dry = TRUE
@@ -153,16 +154,16 @@
 					G.ChangeTurf(/turf/floor/grass)
 		spawn(150)
 			change_weather(WEATHER_NONE)
-			for (var/obj/structure/window/snowwall/SW1 in get_area_turfs(/area/caribbean/nomads/forest))
-				if (get_area(get_turf(SW1)).climate == "temperate")
+			for (var/obj/structure/window/snowwall/SW1 in world)
+				if (get_area(get_turf(SW1)).climate != "tundra" && get_area(get_turf(SW1)).climate != "taiga")
 					if (prob(60))
 						qdel(SW1)
-			for (var/obj/covers/snow_wall/SW2 in get_area_turfs(/area/caribbean/nomads/forest))
-				if (get_area(get_turf(SW2)).climate == "temperate")
+			for (var/obj/covers/snow_wall/SW2 in world)
+				if (get_area(get_turf(SW2)).climate != "tundra" && get_area(get_turf(SW2)).climate != "taiga")
 					if (prob(60))
 						qdel(SW2)
-			for (var/obj/item/weapon/snowwall/SW3 in get_area_turfs(/area/caribbean/nomads/forest))
-				if (get_area(get_turf(SW3)).climate == "temperate")
+			for (var/obj/item/weapon/snowwall/SW3 in world)
+				if (get_area(get_turf(SW3)).climate != "tundra" && get_area(get_turf(SW3)).climate != "taiga")
 					if (prob(60))
 						qdel(SW3)
 		spawn(3000)
@@ -172,14 +173,14 @@
 			for (var/turf/floor/winter/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
 				if (get_area(G).climate == "temperate")
 					G.ChangeTurf(/turf/floor/grass)
-			for (var/obj/structure/window/snowwall/SW1 in get_area_turfs(/area/caribbean/nomads/forest))
-				if (get_area(get_turf(SW1)).climate == "temperate")
+			for (var/obj/structure/window/snowwall/SW1 in world)
+				if (get_area(get_turf(SW1)).climate != "tundra" && get_area(get_turf(SW1)).climate != "taiga")
 					qdel(SW1)
-			for (var/obj/covers/snow_wall/SW2 in get_area_turfs(/area/caribbean/nomads/forest))
-				if (get_area(get_turf(SW2)).climate == "temperate")
+			for (var/obj/covers/snow_wall/SW2 in world)
+				if (get_area(get_turf(SW2)).climate != "tundra" && get_area(get_turf(SW2)).climate != "taiga")
 					qdel(SW2)
-			for (var/obj/item/weapon/snowwall/SW3 in get_area_turfs(/area/caribbean/nomads/forest))
-				if (get_area(get_turf(SW3)).climate == "temperate")
+			for (var/obj/item/weapon/snowwall/SW3 in world)
+				if (get_area(get_turf(SW3)).climate != "tundra" && get_area(get_turf(SW3)).climate != "taiga")
 					qdel(SW3)
 	else if (season == "SUMMER")
 		season = "FALL"
@@ -219,5 +220,4 @@
 		. = TRUE
 	else
 		. = FALSE
-#undef NO_WINNER
 

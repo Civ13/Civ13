@@ -657,12 +657,6 @@
 			latejoin_turfs[name] += loc
 			qdel(src)
 			return
-//////////////////////////////////////////////
-
-		if ("endgame_exit")
-			endgame_safespawns += loc
-			qdel(src)
-			return
 
 	landmarks_list += src
 	return TRUE

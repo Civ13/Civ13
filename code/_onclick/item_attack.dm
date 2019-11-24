@@ -64,7 +64,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 /obj/item/proc/attack(mob/living/M, mob/living/user, var/target_zone)
 	if (!force || (flags & NOBLUDGEON))
 		return FALSE
-	if (M == user && user.a_intent != I_HURT)
+	if (M == user && user.a_intent != I_HARM)
 		return FALSE
 
 	/////////////////////////

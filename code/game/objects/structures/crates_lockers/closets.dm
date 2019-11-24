@@ -243,7 +243,7 @@
 		if (W.code != custom_code)
 			user << "This key does not match this lock!"
 			return
-	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HURT)
+	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HARM)
 		if (!opened)
 			user << "You need to open the crate first."
 		else

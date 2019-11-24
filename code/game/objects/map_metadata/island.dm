@@ -1,4 +1,4 @@
-#define NO_WINNER "No faction has captured the enemy's base."
+
 /obj/map_metadata/island
 	ID = MAP_ISLAND
 	title = "Skull Island (125x125x2)"
@@ -6,6 +6,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 600
 	squad_spawn_locations = FALSE
+	no_winner ="No faction has captured the enemy's base."
 	var/do_once_activations = TRUE
 //	min_autobalance_players = 90
 	faction_organization = list(
@@ -58,4 +59,3 @@ obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
 			AT.Activated()
 		do_once_activations = FALSE
 
-#undef NO_WINNER
