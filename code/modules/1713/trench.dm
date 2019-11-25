@@ -81,6 +81,18 @@ var/list/global/floor_cache = list()
 	salty = TRUE
 
 
+/turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
+		if (choice == "Yes")
+			user << "You shove some dirt into the trench."
+			if (istype(src, /turf/floor/trench))
+				trench_filling++
+				qdel(C)
+				check_filling()
+				return
+	..()
+
 /turf/floor/trench/flooded/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
