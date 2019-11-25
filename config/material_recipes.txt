@@ -286,13 +286,13 @@ RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/roma
 RECIPE: /material/cloth/,customizable toga,/obj/item/clothing/under/custom/toga,3,65,0,1,clothing,15,0,0,2,null
 RECIPE: /material/cloth/,customizable shendyt,/obj/item/clothing/under/custom/shendyt,2,45,0,1,clothing,15,0,0,2,null
 RECIPE: /material/cloth/,customizable celtic trousers,/obj/item/clothing/under/custom/celtic,2,55,0,1,clothing,15,0,0,1,null
-RECIPE: /material/cloth/,customizable tribal robe,/obj/item/clothing/under/customtribalrobe,3,100,0,1,clothing,15,0,0,8,null
+RECIPE: /material/cloth/,customizable tribal robe,/obj/item/clothing/under/customtribalrobe,3,100,0,1,clothing,15,0,0,3,null
 RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,38,0,0,8,null
-RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/tunic,4,85,0,1,clothing,38,0,0,8,null
-RECIPE: /material/cloth/,customizable arabic tunic,/obj/item/clothing/under/custom/arabictunic,4,85,0,1,clothing,38,0,0,8,null
-RECIPE: /material/cloth/,light brown arabic tunic,/obj/item/clothing/under/medieval/arab1,3,85,0,1,clothing,38,0,0,8,null
-RECIPE: /material/cloth/,light white arabic tunic,/obj/item/clothing/under/medieval/arab2,3,85,0,1,clothing,38,0,0,8,null
+RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/tunic,4,85,0,1,clothing,38,0,0,5,null
+RECIPE: /material/cloth/,customizable arabic tunic,/obj/item/clothing/under/custom/arabictunic,4,85,0,1,clothing,38,0,0,5,null
+RECIPE: /material/cloth/,light brown arabic tunic,/obj/item/clothing/under/medieval/arab1,3,85,0,1,clothing,38,0,0,5,null
+RECIPE: /material/cloth/,light white arabic tunic,/obj/item/clothing/under/medieval/arab2,3,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,38,0,0,8,null

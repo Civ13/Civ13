@@ -1026,18 +1026,18 @@
 			RB.name = customname
 			RB.desc = customdesc
 			var/list/possible_clothes = list("none", "toga")
-			if (map && map.ordinal_age >= 1)
+			if (map && map.ordinal_age == 1)
 				possible_clothes += "tunic"
-			else if (map && map.ordinal_age >= 2)
+			else if (map && map.ordinal_age == 2)
 				possible_clothes += "tunic"
 				possible_clothes += "medieval"
 				possible_clothes += "king"
-			else if (map && map.ordinal_age >= 3)
+			else if (map && map.ordinal_age == 3)
 				possible_clothes += "tunic"
 				possible_clothes += "medieval"
 				possible_clothes += "king"
 				possible_clothes += "colonial"
-			else if (map && map.ordinal_age >= 4)
+			else if (map && map.ordinal_age == 4)
 				possible_clothes += "tunic"
 				possible_clothes += "medieval"
 				possible_clothes += "king"
@@ -1052,10 +1052,10 @@
 				possible_clothes += "modern military"
 			var/inpc = WWinput(user, "What clothing to add?", "Statue", "none", possible_clothes)
 			var/list/possible_objects = list("none", "spear")
-			if (map && map.ordinal_age >= 1)
+			if (map && map.ordinal_age == 1)
 				possible_objects += "spear and roman shield"
 				possible_objects += "spear and oval shield"
-			else if (map && map.ordinal_age >= 2)
+			else if (map && map.ordinal_age == 2)
 				possible_objects += "spear and roman shield"
 				possible_objects += "spear and oval shield"
 				possible_objects += "spear and semioval shield"
@@ -1063,7 +1063,7 @@
 				possible_objects += "sword and oval shield"
 				possible_objects += "sword and semioval shield"
 				possible_objects += "flag"
-			else if (map && map.ordinal_age >= 3)
+			else if (map && map.ordinal_age == 3)
 				possible_objects += "spear and roman shield"
 				possible_objects += "spear and oval shield"
 				possible_objects += "spear and semioval shield"
@@ -1072,7 +1072,7 @@
 				possible_objects += "sword and semioval shield"
 				possible_objects += "flag"
 				possible_objects += "rifle"
-			else if (map && map.ordinal_age >= 4)
+			else if (map && map.ordinal_age >= 4 && map.ordinal_age < 7)
 				possible_objects += "spear and roman shield"
 				possible_objects += "spear and oval shield"
 				possible_objects += "spear and semioval shield"
