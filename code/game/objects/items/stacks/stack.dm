@@ -275,6 +275,11 @@
 					numtocheck = copytext(customcolor,i,0)
 				if (!(numtocheck in listallowed))
 					return
+
+	else if (recipe.result_type == /obj/structure/religious/statue)
+		customname = input("What name to give to the statue?", "Statue", "[recipe.use_material] statue") as text
+		customdesc = input("What description to add to the statue?", "Statue", "A [recipe.use_material] statue.") as text
+
 	else if (recipe.result_type == /obj/structure/researchdesk)
 		if (map && !map.resourceresearch)
 			user << "\The [recipe.title] can only be built during <b>Research</b> gamemodes."
@@ -1014,6 +1019,99 @@
 			C.brand = "[customname] "
 			C.name = "empty [C.brand]can"
 			C.do_color()
+
+		else if (istype(O, /obj/structure/religious/statue))
+			var/obj/structure/religious/statue/RB = O
+			RB.statue_material = recipe.use_material
+			RB.name = customname
+			RB.desc = customdesc
+			var/list/possible_clothes = list("none", "toga")
+			if (map && map.ordinal_age >= 1)
+				possible_clothes += "tunic"
+			else if (map && map.ordinal_age >= 2)
+				possible_clothes += "tunic"
+				possible_clothes += "medieval"
+				possible_clothes += "king"
+			else if (map && map.ordinal_age >= 3)
+				possible_clothes += "tunic"
+				possible_clothes += "medieval"
+				possible_clothes += "king"
+				possible_clothes += "colonial"
+			else if (map && map.ordinal_age >= 4)
+				possible_clothes += "tunic"
+				possible_clothes += "medieval"
+				possible_clothes += "king"
+				possible_clothes += "colonial"
+				possible_clothes += "modern civilian"
+			else if (map && map.ordinal_age >= 5)
+				possible_clothes += "tunic"
+				possible_clothes += "medieval"
+				possible_clothes += "king"
+				possible_clothes += "colonial"
+				possible_clothes += "modern civilian"
+				possible_clothes += "modern military"
+			var/inpc = WWinput(user, "What clothing to add?", "Statue", "none", possible_clothes)
+			var/list/possible_objects = list("none", "spear")
+			if (map && map.ordinal_age >= 1)
+				possible_objects += "spear and roman shield"
+				possible_objects += "spear and oval shield"
+			else if (map && map.ordinal_age >= 2)
+				possible_objects += "spear and roman shield"
+				possible_objects += "spear and oval shield"
+				possible_objects += "spear and semioval shield"
+				possible_objects += "sword and roman shield"
+				possible_objects += "sword and oval shield"
+				possible_objects += "sword and semioval shield"
+				possible_objects += "flag"
+			else if (map && map.ordinal_age >= 3)
+				possible_objects += "spear and roman shield"
+				possible_objects += "spear and oval shield"
+				possible_objects += "spear and semioval shield"
+				possible_objects += "sword and roman shield"
+				possible_objects += "sword and oval shield"
+				possible_objects += "sword and semioval shield"
+				possible_objects += "flag"
+				possible_objects += "rifle"
+			else if (map && map.ordinal_age >= 4)
+				possible_objects += "spear and roman shield"
+				possible_objects += "spear and oval shield"
+				possible_objects += "spear and semioval shield"
+				possible_objects += "sword and roman shield"
+				possible_objects += "sword and oval shield"
+				possible_objects += "sword and semioval shield"
+				possible_objects += "flag"
+				possible_objects += "rifle"
+				possible_objects += "pistol"
+			else if (map && map.ordinal_age >= 7)
+				possible_objects += "spear and roman shield"
+				possible_objects += "spear and oval shield"
+				possible_objects += "spear and semioval shield"
+				possible_objects += "sword and roman shield"
+				possible_objects += "sword and oval shield"
+				possible_objects += "sword and semioval shield"
+				possible_objects += "flag"
+				possible_objects += "rifle"
+				possible_objects += "assault rifle"
+
+			var/inpo = WWinput(user, "What object or objects to add?", "Statue", "none", possible_objects)
+			if (inpc != "none")
+				RB.statue_layers += "cl_[inpc]"
+			if (inpo != "none")
+				if (findtext(inpo, " and "))
+					if (findtext(inpo, "spear"))
+						RB.statue_layers += "obj_spear"
+					else if (findtext(inpo, "sword"))
+						RB.statue_layers += "obj_sword"
+
+					if (findtext(inpo, "roman shield"))
+						RB.statue_layers += "obj_shield1"
+					else if (findtext(inpo, "oval shield"))
+						RB.statue_layers += "obj_shield3"
+					else if (findtext(inpo, "semioval shield"))
+						RB.statue_layers += "obj_shield2"
+				else
+					RB.statue_layers += "obj_[inpo]"
+			RB.update_icon()
 
 		else if (build_override_vending)
 			if (customvar2 == "market stall")

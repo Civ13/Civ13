@@ -437,10 +437,11 @@ RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,
 RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,none,100,0,0,8,null
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,none,0,0,0,8,null
-RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,none,0,0,0,8,null
-RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,none,28,0,0,8,null
-RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,none,43,0,0,8,null
-RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,none,0,0,0,8,null
+RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,religious & decoration,28,0,0,8,null
+RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,43,0,0,8,null
+RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,stone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,stone
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/stone/,stone window,/obj/structure/window_frame/stone,5,140,1,1,construction,18,0,0,8,null
 RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,fortifications,0,0,0,8,null
@@ -588,12 +589,14 @@ RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,1
 RECIPE: /material/gold/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,2,110,0,1,none,25,0,0,8,null
 RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/armbangle/gold,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none,0,0,0,8,null
+RECIPE: /material/gold/,gold statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,gold
 
 RECIPE: /material/silver/,silver hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,silver
 RECIPE: /material/silver/,silver-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,3,silver
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver crown,/obj/item/clothing/head/helmet/silver_crown,3,135,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver arm bangles,/obj/item/clothing/accessory/armband/armbangle/silver,2,95,0,1,none,0,0,0,8,null
+RECIPE: /material/gold/,silver statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,silver
 
 RECIPE: /material/tin/,small tin pot,/obj/item/weapon/reagent_containers/glass/small_pot,3,120,0,1,none,0,0,0,8,null
 RECIPE: /material/tin/,small tin can (x3),/obj/item/weapon/can/small,1,50,0,1,none,95,0,0,8,null
@@ -678,6 +681,7 @@ RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools
 RECIPE: /material/steel/,refrigerator,/obj/structure/closet/fridge,15,230,1,1,none,150,0,178,8,null
 RECIPE: /material/steel/,steel arrowhead (x4),/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
+RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
 
 RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
@@ -698,6 +702,7 @@ RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4
 RECIPE: /material/bronze/,bronze arm bangles,/obj/item/clothing/accessory/armband/armbangle/bronze,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/bronze/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,bronze
 RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
+RECIPE: /material/bronze/,bronze statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,bronze
 
 RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 RECIPE: /material/wood/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,none,118,0,0,8,null
@@ -926,6 +931,7 @@ RECIPE: /material/iron/,armor workbench,/obj/structure/repair/workbench,16,180,1
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
 
 RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,25,1,1,construction,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone
 RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,2,25,1,1,construction,0,0,0,8,
 RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,3,45,1,1,construction,0,0,0,8,null
@@ -936,9 +942,9 @@ RECIPE: /material/sandstone/,furnace,/obj/structure/furnace/sandstone,10,150,1,1
 RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,3,100,1,1,structures,0,0,0,8,null
 RECIPE: /material/sandstone/,pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,sandstone
 
-RECIPE: /material/sandstone/,sandstone totem,/obj/structure/religious/totem/sandstone,8,150,1,1,religion,0,0,0,8,null
-RECIPE: /material/sandstone/,sandstone altar,/obj/structure/altar/sandstone,15,200,1,1,religion,0,0,0,8,null
-RECIPE: /material/sandstone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religion,43,0,0,8,sandstone
+RECIPE: /material/sandstone/,sandstone totem,/obj/structure/religious/totem/sandstone,8,150,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone altar,/obj/structure/altar/sandstone,15,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/sandstone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,43,0,0,8,sandstone
 
 RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandbag/sandstone,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
@@ -946,14 +952,14 @@ RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/b
 
 
 RECIPE: /material/sandstone/,sandstone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,sandstone
-RECIPE: /material/sandstone/, research kit,/obj/item/weapon/researchkit,10,190,0,1,tools,0,0,0,8,sandstone
-RECIPE: /material/sandstone/, scientific slate,/obj/item/weapon/book/research,4,110,0,1,tools,0,0,0,0,sandstone
-RECIPE: /material/sandstone/, chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,research kit,/obj/item/weapon/researchkit,10,190,0,1,tools,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,scientific slate,/obj/item/weapon/book/research,4,110,0,1,tools,0,0,0,0,sandstone
+RECIPE: /material/sandstone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,sandstone
 
-RECIPE: /material/sandstone/, catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,sandstone
-RECIPE: /material/sandstone/, sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,sandstone
-RECIPE: /material/sandstone/, projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,sandstone
-RECIPE: /material/sandstone/,sandstone arrowhead (x4),/obj/item/stack/arrowhead/sandstone,1,10,0,1,projectiles,0,14,0,8,null
+RECIPE: /material/sandstone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,sandstone
+RECIPE: /material/sandstone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,sandstone
+RECIPE: /material/sandstone/,sandstone arrowhead (x4),/obj/item/stack/arrowhead/sandstone,1,10,0,1,projectiles,0,14,0,8,sandstone
 
 RECIPE: /material/sandstone/,pickaxe,/obj/item/weapon/pickaxe/stone,2,50,0,1,tools,0,0,0,8,sandstone
 RECIPE: /material/sandstone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,sandstone
