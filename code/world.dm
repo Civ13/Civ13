@@ -303,10 +303,11 @@ var/world_topic_spam_protect_time = world.timeofday
 
 /proc/start_persistence_loop()
 	spawn(300)
-		var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
-		var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
-		if (minsleft <= 2)
-			world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
+		if (map && map.persistence)
+			var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
+			var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
+			if (minsleft <= 2)
+				world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
 		start_persistence_loop()
 
 /proc/start_messaging_loop()

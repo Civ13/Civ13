@@ -2,6 +2,9 @@
 	var/busy = FALSE
 
 /turf/floor/proc/collapse_check()
+	return
+
+/turf/floor/dirt/underground/collapse_check()
 	spawn(50)
 		if (get_area(src).location == AREA_INSIDE)
 			//check for supports
