@@ -21,3 +21,7 @@
 	mob_size = MOB_MEDIUM
 	possession_candidate = TRUE
 	granivore = 1
+
+/mob/living/simple_animal/monkey/kostas
+	name = "Kostas the Monkey"
+	desc = "A species of greek monkey."
