@@ -942,6 +942,8 @@ var/global/gc_helper_on = FALSE
 		start_gc_helper()
 
 /proc/check_null_atoms_proc()
+	if (fexists("nullobj.txt"))
+		fdel("nullobj.txt")
 	var/list/tmplist = list()
 	for(var/obj/AM)
 		if (AM.loc==null)

@@ -727,6 +727,11 @@
 			else
 				qdel(I)
 			return
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
+			var/obj/item/weapon/reagent_containers/food/snacks/poo/P = I
+			P.reagents.trans_to(src, 10, 1, FALSE)
+			qdel(I)
+			return
 	else
 		user << "The [src] is full!"
 	..()
