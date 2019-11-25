@@ -504,9 +504,11 @@
 		if (findtext(i, "obj_"))
 			var/image/timg = image(icon, i)
 			overlays += timg
+	color=get_material_by_name(statue_material).icon_colour
 
 /obj/structure/religious/statue/king
 	statue_layers = list("cl_king", "obj_spear", "obj_shield2")
+	statue_material = "stone"
 	New()
 		..()
 		name = "The King"
@@ -514,7 +516,6 @@
 /obj/structure/religious/statue/king/sandstone
 	statue_layers = list("cl_king", "obj_spear", "obj_shield2")
 	statue_material = "sandstone"
-	color = "#bc9b5c"
 	New()
 		..()
 		name = "The King"
