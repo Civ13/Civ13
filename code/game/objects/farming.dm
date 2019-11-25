@@ -639,14 +639,6 @@
 			qdel(src)
 
 /obj/structure/farming/plant/proc/water_proc()
-	for(var/turf/floor/beach/water/WT in range(2,src))
-		if (!WT.salty)
-			water = max_water //water within 2 tiles means no need to manually water the plants.
-			return
-	for(var/turf/floor/trench/flooded/TR in range(2,src))
-		if (TR.flooded && !TR.salty)
-			water = max_water //water within 2 tiles means no need to manually water the plants.
-			return
 	var/area/A = get_area(loc)
 	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
 		water += 15
@@ -663,6 +655,14 @@
 		desc = "A destroyed [plant] plant."
 		name = "destroyed [plant] plant"
 		return
+	for(var/turf/floor/beach/water/WT in range(2,src))
+		if (!WT.salty)
+			water = max_water //water within 2 tiles means no need to manually water the plants.
+			return
+	for(var/turf/floor/trench/flooded/TR in range(2,src))
+		if (TR.flooded && !TR.salty)
+			water = max_water //water within 2 tiles means no need to manually water the plants.
+			return
 	var/currcl = get_area(get_turf(src)).climate
 	if (currcl == "desert" || currcl == "savanna" || currcl == "semiarid")
 		water -= 25
