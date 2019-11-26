@@ -1113,7 +1113,7 @@
 					RB.statue_layers += "obj_[inpo]"
 			RB.update_icon()
 
-		else if (build_override_vending)
+		else if (istype(O, /obj/structure/vending/sales))
 			if (customvar2 == "market stall")
 				build_override_vending = new /obj/structure/vending/sales/market_stall
 			else
