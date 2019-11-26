@@ -211,7 +211,7 @@
 			for (var/j in map.custom_company[custom_company])
 				if (j[1]==user && j[3]>0)
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = j[3]/0.4
+					GC.amount = j[3]*0.4
 					j[3] = 0
 					user << "<span class='notice'>You withdraw some profits.</span>"
 		return
@@ -239,14 +239,16 @@
 					var/obj/item/stack/money/M = user.get_inactive_hand()
 					for(var/list/L in map.sales_registry)
 						if (L[1] == ord && text2num(L[2]) == ord_perc && text2num(L[3]) == ord_price)
-							if (L[4])
-								if (M.amount*M.value >= ord_price)
-									var/tma = M.amount*M.value
-									var/tmb = ord_price
-									var/tmc = (tma - tmb)/0.4
-									qdel(M)
-									var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-									GC.amount = tmc
+							if (M.amount*M.value >= ord_price)
+								var/tma = M.amount*M.value
+								var/tmb = ord_price
+								var/tmc = (tma - tmb)/0.4
+								qdel(M)
+								var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+								GC.amount = tmc
+								if (GC.amount <= 0)
+									qdel(GC)
+								if (L[4])
 									var/mob/living/carbon/human/SELLER = L[4]
 									SELLER.transfer_stock_proc(ord,ord_perc,user)
 									map.sales_registry -= L
@@ -254,8 +256,14 @@
 										if (LL[1] == ord && LL[4]==SELLER)
 											map.sales_registry -= LL
 								else
-									user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
-									return
+									transfer_stock_nomob(ord,ord_perc,user)
+									map.sales_registry -= L
+									for(var/list/LL in map.sales_registry)
+										if (LL[1]==ord && LL[2]==ord_perc && LL[3]==ord_price && LL[4]==null)
+											map.sales_registry -= LL
+							else
+								user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
+								return
 				else
 					user << "<span class='notice'>You need to have money in your hands in order to buy stocks!</span>"
 					return

@@ -163,3 +163,23 @@
 	src << "<big>Transfered [stock]% of [companyname] to [target].</big>"
 	target << "<big>You received [stock]% of [companyname] from [src].</big>"
 	return
+
+//to be used when the seller does not exist (normally if he died and theres no body)
+//the stock is still for sale but "nobody" will receive the cost.
+/proc/transfer_stock_nomob(var/companyname, var/stock, var/mob/living/carbon/human/target)
+	if (!companyname || !stock || !target)
+		return
+
+	for(var/l=1, l <= map.custom_company[companyname].len, l++)
+		if (map.custom_company[companyname][l][1] == null)
+			var/currb = map.custom_company[companyname][l][2]
+			map.custom_company[companyname][l][2] = currb-stock
+
+	for(var/l=1,  l <= map.custom_company[companyname].len, l++)
+		if (map.custom_company[companyname][l][1] == target)
+			var/currb = map.custom_company[companyname][l][2]
+			map.custom_company[companyname][l][2] = currb+stock
+			return
+	map.custom_company[companyname] += list(list(target,stock,0))
+	target << "<big>You received [stock]% of [companyname] from the stock market.</big>"
+	return
