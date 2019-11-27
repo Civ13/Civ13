@@ -122,19 +122,22 @@
 /obj/structure/dehydrator/proc/dry_obj(var/obj_type = null)
 	spawn(1200) //2 minutes
 		if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/rawcutlet)
-			new/obj/item/weapon/reagent_containers/food/snacks/driedmeat(src.loc)
+			if (isturf(src.loc))
+				new/obj/item/weapon/reagent_containers/food/snacks/driedmeat(src.loc)
 			visible_message("The meat finishes drying.")
 			filled -= 1
 			icon_state = "wood_drier[filled]"
 			return
 		else if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/fishfillet)
-			new/obj/item/weapon/reagent_containers/food/snacks/driedfish(src.loc)
+			if (isturf(src.loc))
+				new/obj/item/weapon/reagent_containers/food/snacks/driedfish(src.loc)
 			visible_message("The fish finishes drying.")
 			filled -= 1
 			icon_state = "wood_drier[filled]"
 			return
 		else if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/driedsalmon)
-			new/obj/item/weapon/reagent_containers/food/snacks/driedsalmon(src.loc)
+			if (isturf(src.loc))
+				new/obj/item/weapon/reagent_containers/food/snacks/driedsalmon(src.loc)
 			visible_message("The salmon finishes drying.")
 			filled -= 1
 			icon_state = "wood_drier[filled]"

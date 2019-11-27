@@ -133,7 +133,7 @@ bullet_act
 				SH.health -= 2
 				//ARROW FALL STUFF HERE
 				//50% chance for the arrow not to break.
-				if(prob(50))
+				if(prob(50) && src.loc != null)
 					if(istype(P, /obj/item/projectile/arrow/arrow/stone))
 						new/obj/item/ammo_casing/arrow/stone(src.loc)
 					else if(istype(P, /obj/item/projectile/arrow/arrow/copper))

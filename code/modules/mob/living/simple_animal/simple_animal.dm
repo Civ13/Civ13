@@ -78,7 +78,10 @@
 
 /mob/living/simple_animal/Life()
 	..()
-
+	if (loc == null)
+		spawn(10)
+			if (loc == null)
+				qdel(src)
 	//Health
 	if (stat == DEAD)
 		if (health > 0)

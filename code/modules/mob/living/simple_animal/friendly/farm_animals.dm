@@ -396,6 +396,7 @@
 /mob/living/simple_animal/goat/Destroy()
 	goat_count -= 1
 	..()
+
 /mob/living/simple_animal/goat/female/New()
 	udder = new(50)
 	udder.my_atom = src
