@@ -717,7 +717,6 @@ RECIPE: /material/wood/,ship rudder control,/obj/structure/vehicleparts/shipwhee
 RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sails,15,140,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,research desk,/obj/structure/researchdesk,8,250,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,altar of chad,/obj/structure/researchdesk/chad,8,100,1,1,none,0,0,0,8,null
-RECIPE: /material/wood/,global exchange,/obj/structure/marketplace,10,140,1,1,none,96,0,0,8,null
 RECIPE: /material/wood/,communications pole,/obj/structure/phoneline,2,50,1,1,none,100,0,0,8,null
 RECIPE: /material/wood/,oil well,/obj/structure/oilwell,40,270,1,1,none,105,0,0,8,null
 RECIPE: /material/wood/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,none,105,0,0,8,null
