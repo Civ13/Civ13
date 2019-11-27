@@ -138,6 +138,9 @@
 	if (!map || !H || !company)
 		return FALSE
 
+	if (!map.custom_company[company].len)
+		return FALSE
+
 	for(var/i=1,i<=map.custom_company[company].len,i++)
 		if (map.custom_company[company][i][1] == H)
 			return TRUE

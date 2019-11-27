@@ -1,7 +1,7 @@
 
 /obj/map_metadata/nomads_mediterranean
 	ID = MAP_NOMADS_MEDITERRANEAN
-	title = "Nomads (Mediterranean) (200x500x2)"
+	title = "Nomads (Mediterranean) (250x250x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!

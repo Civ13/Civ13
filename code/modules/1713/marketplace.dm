@@ -205,7 +205,7 @@
 				var/tprof = map.custom_company_value[custom_company]
 				map.custom_company_value[custom_company] = 0
 				for (var/i in map.custom_company[custom_company])
-					i[3]+=i[2]*tprof
+					i[3]+=(i[2]/100)*tprof
 				user << "<span class='notice'>You distribute the profits of [custom_company].</span>"
 				return
 			else
