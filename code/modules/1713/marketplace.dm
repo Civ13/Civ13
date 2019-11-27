@@ -215,7 +215,7 @@
 			for (var/j in map.custom_company[custom_company])
 				if (j[1]==user && j[3]>0)
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = j[3]*0.4
+					GC.amount = j[3]*2.5
 					j[3] = 0
 					user << "<span class='notice'>You withdraw some profits.</span>"
 		return

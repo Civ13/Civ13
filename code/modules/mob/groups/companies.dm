@@ -138,6 +138,9 @@
 	if (!map || !H || !company)
 		return FALSE
 
+	if (company == "Global")
+		return FALSE
+
 	if (!map.custom_company[company].len)
 		return FALSE
 
