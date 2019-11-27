@@ -1012,7 +1012,7 @@ var/global/list/damage_icon_parts = list()
 		if (back.item_state_slots && back.item_state_slots[slot_back_str])
 			overlay_state = back.item_state_slots[slot_back_str]
 		//apply color
-		var/image/standing = image(icon = overlay_icon, icon_state = overlay_state)
+		var/image/standing = image(icon = overlay_icon, icon_state = overlay_state, layer = layer+0.02)
 		standing.color = back.color
 
 		overlays_standing[BACK_LAYER]	= standing
@@ -1042,7 +1042,7 @@ var/global/list/damage_icon_parts = list()
 
 
 		//apply color
-		var/image/standing2 = image(icon = overlay_icon_shoulder, icon_state = overlay_state_shoulder)
+		var/image/standing2 = image(icon = overlay_icon_shoulder, icon_state = overlay_state_shoulder, layer = layer+0.03)
 		standing2.color = shoulder.color
 		//create the image
 		overlays_standing[SHOULDER_LAYER] = standing2
