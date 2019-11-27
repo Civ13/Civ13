@@ -43,10 +43,11 @@
 			return
 		else
 			var/choosename = russian_to_cp1251(input(src, "Choose a name for the faction:") as text|null)
-			create_faction_pr(choosename)
-			make_commander()
-			make_title_changer()
-			return
+			if (choosename != null && choosename != "")
+				create_faction_pr(choosename)
+				make_commander()
+				make_title_changer()
+				return
 	else
 		usr << "<span class='danger'>You cannot create a faction in this map.</span>"
 		return

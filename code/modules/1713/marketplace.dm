@@ -166,7 +166,6 @@
 		var/body = "<html><head><title>Stock Market Companies</title></head><b>STOCK MARKET</b><br><br>"
 		for (var/relf in map.custom_company_nr)
 			var/vm_owned = 0
-//			var/salesprice = 0
 			for(var/obj/structure/vending/sales/S in vending_machine_list)
 				if (S.owner == relf)
 					vm_owned++
