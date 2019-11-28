@@ -307,7 +307,7 @@
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 3, "meat" = 1)
 	non_vegetarian = TRUE
-	decay = 0
+	decay = 180*600
 	New()
 		..()
 		bitesize = 2
@@ -320,7 +320,7 @@
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 3, "fish" = 1)
 	non_vegetarian = TRUE
-	decay = 0
+	decay = 180*600
 	New()
 		..()
 		bitesize = 2
@@ -332,7 +332,7 @@
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 2, "fish" = 2)
-	decay = 0
+	decay = 180*600
 	New()
 		..()
 		bitesize = 2
