@@ -106,7 +106,8 @@
 		H.leader = TRUE
 		H.faction_perms = list(1,1,1,1)
 		map.custom_faction_nr += newname
-		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H,0,choosesymbol,choosecolor1,choosecolor2))
+												//ind						mil					med			leader money	symbol	main color	backcolor, sales tax, business tax
+		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H,0,choosesymbol,choosecolor1,choosecolor2,10,10))
 		map.custom_civs += newnamev
 		usr << "<big>You are now the leader of the <b>[newname]</b> faction.</big>"
 		return

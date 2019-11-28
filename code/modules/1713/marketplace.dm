@@ -214,10 +214,16 @@
 		else if (choice4 == "Withdraw Profits")
 			for (var/j in map.custom_company[custom_company])
 				if (j[1]==user && j[3]>0)
+					var/businesstax = 0
+					var/price_without_tax = j[3]
+					if (user.civilization != "none" && map.custom_civs[user.civilization])
+						businesstax = (map.custom_civs[user.civilization][10]/100)*j[3]
+						price_without_tax = j[3]-businesstax
+						map.custom_civs[user.civilization][5] += businesstax
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = j[3]*2.5
+					GC.amount = price_without_tax*2.5
 					j[3] = 0
-					user << "<span class='notice'>You withdraw some profits.</span>"
+					user << "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax*10] silver coins ([map.custom_civs[user.civilization][10]]%) in Business Tax to your faction.</span>"
 		return
 
 	else if (choice1 == "Buy Stock")

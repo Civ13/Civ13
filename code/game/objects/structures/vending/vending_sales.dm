@@ -228,14 +228,21 @@
 					vend(R, usr, inp)
 
 				else
+					var/mob/living/carbon/human/H = usr
+					var/salestax = 0
+					if (H.civilization != "none")
+						salestax = (map.custom_civs[H.civilization][9]/100)*R.price
+					var/price_with_tax = R.price+salestax
 					currently_vending = R
-					if (moneyin < R.price)
+					if (moneyin < price_with_tax)
 						status_message = "Please insert money to pay for the item."
 						status_error = FALSE
 					else
-						moneyin -= R.price
+						moneyin -= price_with_tax
 						if (owner != "Global")
 							map.custom_company_value[owner] += R.price
+							if (map.custom_civs[H.civilization])
+								map.custom_civs[H.civilization][5] += salestax
 						var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 						GC.amount = moneyin/0.4
 						if (GC.amount == 0)
