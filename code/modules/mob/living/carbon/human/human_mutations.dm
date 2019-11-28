@@ -22,6 +22,8 @@
 		return FALSE
 /mob/living/carbon/human/rad_act()
 	..()
+	if (inducedSSD)
+		return
 	if(radiation >= 300 && checkrace()) //If you are super irradiated, and somehow still alive.
 		if (prob(15))
 			if (prob(15))
