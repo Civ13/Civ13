@@ -58,7 +58,7 @@
 "bf" = (/obj/covers/fancywood,/obj/structure/props/coatrack,/turf/floor/dirt,/area/caribbean)
 "bg" = (/obj/covers/fancywood,/obj/structure/filingcabinet/filingcabinet,/turf/floor/dirt,/area/caribbean)
 "bh" = (/obj/covers/fancywood,/obj/structure/potted_plant,/turf/floor/dirt,/area/caribbean)
-"bi" = (/obj/covers/fancywood,/obj/structure/closet/wardrobe,/turf/floor/dirt,/area/caribbean)
+"bi" = (/obj/covers/fancywood,/obj/structure/closet/wardrobe,/obj/item/clothing/under/ww1/trenchsuit,/obj/item/weapon/material/kitchen/utensil/knife/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/storage/backpack,/obj/item/weapon/gun/projectile/revolver/coltnewpolice,/obj/item/ammo_magazine/c38,/obj/item/weapon/melee/classic_baton,/turf/floor/dirt,/area/caribbean)
 "bj" = (/obj/covers/fancywood,/obj/structure/table/modern/table,/turf/floor/dirt,/area/caribbean)
 "bk" = (/obj/covers/fancywood,/obj/structure/table/fancy,/turf/floor/dirt,/area/caribbean)
 "bl" = (/obj/covers/fancywood,/obj/structure/bed/chair/wood/red,/turf/floor/dirt,/area/caribbean)
