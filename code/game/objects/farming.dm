@@ -23,6 +23,14 @@
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
 
+/obj/item/stack/farming/seeds/mushroompsy
+	name = "Psilocybin mushroom"
+	plant = "mushroompsy"
+	icon_state = "mushroomseeds"
+	color = null
+	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
+
 /obj/item/stack/farming/seeds/tobacco
 	name = "tobacco seeds"
 	plant = "tobacco"
@@ -352,6 +360,16 @@
 	desc = "a bunch of mushrooms. Can be grown inside and underground."
 	icon_state = "mushroom-grow1"
 	plant = "mushroom"
+	harvest_verb = "harvest"
+	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
+	max_water = 55
+
+/obj/structure/farming/plant/mushroompsy
+	name = "Psilocybin mushrooms"
+	desc = "a bunch of mushrooms. Can be grown inside and underground."
+	icon_state = "mushroom-grow1"
+	plant = "mushroompsy"
 	harvest_verb = "harvest"
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
