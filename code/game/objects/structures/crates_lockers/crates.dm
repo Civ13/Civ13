@@ -180,3 +180,12 @@
 	storagecap = 60
 	//EARLY MODERN AGE STEEL CART//
 	//ROBERT'S CARTS//
+
+/obj/structure/closet/crate/dumpster
+	name ="dumpster"
+	desc = " A dumpster for all your trash and bodies."
+	icon_state= "dumpster"
+	icon_opened ="dumpsteropen"
+	icon_closed = "dumpster"
+	storagecap = 200
+	not_movable = TRUE

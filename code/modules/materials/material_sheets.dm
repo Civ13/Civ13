@@ -177,6 +177,13 @@
 	value = 2
 	flammable = TRUE
 
+/obj/item/stack/material/hemp
+	name = "Hemp"
+	icon_state = "hemp"
+	default_type = "hemp"
+	value = 2
+	flammable = TRUE
+
 /obj/item/stack/material/tobacco
 	name = "tobacco leaves"
 	icon_state = "tobacco"
