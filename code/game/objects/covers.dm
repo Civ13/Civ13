@@ -1027,13 +1027,13 @@
 		user << "You start adding bricks to the wall..."
 		if (do_after(user, 20, src))
 			user << "You finish adding bricks to the wall, completing it."
-			qdel(src)
 			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window"))
 			if (choice == "Wall")
 				new /obj/covers/brick_wall(loc)
 			else if (choice == "Window")
 				new /obj/structure/window_frame/brick(loc)
 			qdel(W)
+			qdel(src)
 			return
 	..()
 

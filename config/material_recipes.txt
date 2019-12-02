@@ -332,7 +332,7 @@ RECIPE: /material/barbedwire/,barbwire,/obj/structure/barbwire,1,20,0,1,none,0,0
 
 RECIPE: /material/lead/,lead safe,/obj/structure/closet/crate/lead,3,100,1,1,none,0,0,65,8,null
 
-RECIPE: /material/plastic/,filing cabinet,/obj/structure/filingcabinet,6,95,1,1, none,0,0,0,8,null
+RECIPE: /material/plastic/,filing cabinet,/obj/structure/filingcabinet,6,95,1,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,large filing cabinet,/obj/structure/filingcabinet/filingcabinet,6,95,1,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,chest drawer,/obj/structure/filingcabinet/chestdrawer,6,95,1,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,blood pack,/obj/item/weapon/reagent_containers/blood/empty,2,40,0,1,none,0,0,95,8,null
@@ -932,7 +932,7 @@ RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,1
 RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,25,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone
 RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
-RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,2,25,1,1,construction,0,0,0,8,
+RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,1,25,1,1,construction,0,0,0,8,
 RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,3,45,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
 

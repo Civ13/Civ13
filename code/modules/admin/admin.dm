@@ -972,9 +972,33 @@ var/list/atom_types = null
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually reloaded admins")
+	message_admins("[key_name(usr)] manually reloaded admins.")
 	load_admins(1)
 
+/client/proc/reload_craft_list()
+	set name = "Reload Crafting"
+	set category = "Debug"
+
+	if (!check_rights(R_SERVER))	return
+
+	message_admins("[key_name(usr)] manually reloaded crafting recipes.")
+	load_recipes()
+
+/proc/load_recipes()
+	var/F3 = file("config/material_recipes.txt")
+	if (fexists(F3))
+		var/list/craftlist_temp = file2list(F3,"\n")
+		craftlist_list = list()
+		for (var/i in craftlist_temp)
+			if (findtext(i, ",") && findtext(i,"RECIPE: "))
+				var/tmpi = replacetext(i, "RECIPE: ", "")
+				var/list/current = splittext(tmpi, ",")
+				craftlist_list += list(current)
+				if (current.len != 13)
+					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
+	else
+		admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
+	world.log << "Finished loading recipes."
 /datum/admins/proc/toggle_ores()
 	set category = "Special"
 	set desc="Toggle ore spawners on and off"

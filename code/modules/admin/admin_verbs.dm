@@ -152,6 +152,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/cmd_admin_delete,
 	/client/proc/cmd_debug_del_all,
 	/client/proc/reload_admins,
+	/client/proc/reload_craft_list,
 	/client/proc/restart_controller,
 	/client/proc/callproc,
 	/client/proc/callproc_target,
