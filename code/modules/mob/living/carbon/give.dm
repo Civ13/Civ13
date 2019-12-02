@@ -84,7 +84,9 @@
 	if (answer == "Yes")
 		usr << "[src] accepts your offer. They are now part of [user.civilization]."
 		src << "You accept [usr]'s offer. You are now part of [user.civilization]."
-		src.civilization = user.civilization
+		src.faction_leaving_proc()
+		spawn(1)
+			src.civilization = user.civilization
 		return
 	else if (answer == "No")
 		usr << "[src] has rejected your offer."
