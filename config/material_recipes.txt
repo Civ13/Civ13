@@ -332,7 +332,7 @@ RECIPE: /material/barbedwire/,barbwire,/obj/structure/barbwire,1,20,0,1,none,0,0
 
 RECIPE: /material/lead/,lead safe,/obj/structure/closet/crate/lead,3,100,1,1,none,0,0,65,8,null
 
-RECIPE: /material/plastic/,dumpster./obj/structure/closet/crate/dumpster,5,95,1,1,none,105,0,0,8,null
+RECIPE: /material/plastic/,dumpster,/obj/structure/closet/crate/dumpster,5,95,1,1,none,105,0,0,8,null
 RECIPE: /material/plastic/,filing cabinet,/obj/structure/filingcabinet,6,95,1,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,large filing cabinet,/obj/structure/filingcabinet/filingcabinet,6,95,1,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,chest drawer,/obj/structure/filingcabinet/chestdrawer,6,95,1,1,none,0,0,0,8,null
