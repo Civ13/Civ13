@@ -164,10 +164,10 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
-/obj/structure/mine_support/stone/New()
-	..()
-	icon_state = pick("support_st1","support_st2")
-	update_icon()
+/obj/structure/mine_support/stone/ionic
+	name = "Ionic column"
+	desc = "A Ionic-style column that can support roofs and mine shafts."
+	icon_state = "column_ionic"
 
 /obj/structure/mine_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon))

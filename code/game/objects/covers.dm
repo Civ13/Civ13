@@ -118,6 +118,19 @@
 	explosion_resistance = 2
 	material = "Stone"
 
+/obj/covers/romanroad
+	name = "roman road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "roman_road"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
 /obj/covers/slatefloor
 	name = "slate floor"
 	icon = 'icons/turf/floors.dmi'
