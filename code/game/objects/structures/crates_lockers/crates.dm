@@ -209,7 +209,7 @@
 
 /obj/structure/closet/crate/dumpster/update_icon()
 	..()
-	if (closed)
+	if (!opened)
 		icon_state = "dumpster"
 	else
 		var/content_size = FALSE
@@ -230,7 +230,7 @@
 		user << "<span class='notice'>\The [src] is locked.</span>"
 		return
 	else
-		if (user.a_intent == I_GRAB)
+		if (user.a_intent == I_GRAB && opened)
 			if (!contents.len)
 				user << "<span class='notice'>\The [src] is empty.</span>"
 				return
