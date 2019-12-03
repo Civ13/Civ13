@@ -98,16 +98,19 @@
 /obj/item/weapon/matchbox/examine(mob/user)
 	..(user)
 	user << "It has [currcap] matches out of a maximum of [maxcap]."
+
 /obj/item/weapon/matchbox/attack_hand(mob/living/carbon/human/H)
-	if (currcap>=1)
+	if (currcap>=1 && (src == H.l_hand || src == H.r_hand))
 		H << "You take a match from the matchbox."
 		H.put_in_hands(new/obj/item/weapon/flame/match(H))
 		currcap--
 		return
-	else
+	else if (currcap <= 0)
 		H << "<span class='notice'>The matchbox is empty!</span>"
 		currcap = 0
 		return
+	else
+		..()
 
 /obj/item/weapon/matchbox/attackby(obj/item/weapon/flame/match/W as obj, mob/user as mob)
 	if (istype(W) && !W.lit && !W.burnt)
