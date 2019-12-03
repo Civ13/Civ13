@@ -637,7 +637,39 @@ bullet_act
 		var/hit_area = affecting.name
 		if (!hit_area)
 			return
-		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
+
+		if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/poo))
+			var/obj/structure/pillory/pillory = null
+			for(var/obj/structure/pillory/P in loc)
+				pillory = P
+			if (pillory && pillory.hanging == src)
+				adjust_hygiene(-20)
+				mood -= 15
+				spawn(2)
+					qdel(O)
+				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
+		else if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/egg) || istype(O, /obj/item/weapon/reagent_containers/food/snacks/turkeyegg))
+			var/obj/structure/pillory/pillory = null
+			for(var/obj/structure/pillory/P in loc)
+				pillory = P
+			if (pillory && pillory.hanging == src)
+				adjust_hygiene(-5)
+				mood -= 5
+				spawn(2)
+					qdel(O)
+				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
+		else if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/tomato))
+			var/obj/structure/pillory/pillory = null
+			for(var/obj/structure/pillory/P in loc)
+				pillory = P
+			if (pillory && pillory.hanging == src)
+				adjust_hygiene(-3)
+				mood -= 3
+				spawn(2)
+					qdel(O)
+				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
+		else
+			visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
 		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].", damage_source = AM) //I guess "melee" is the best fit here
 
 		if(armor < 100)

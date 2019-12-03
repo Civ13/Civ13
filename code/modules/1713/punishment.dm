@@ -406,13 +406,11 @@
 /obj/structure/pillory/proc/fire()
 	if (hanging)
 		hanging.forceMove(loc)
-		density = TRUE
 		hanging.lying = 0
 		hanging.dir = SOUTH
 
 	else
 		overlays.Cut()
-		density = FALSE
 		hoverlay = icon(icon=src.icon, icon_state="pillory_handoverlay")
 
 /obj/structure/pillory/MouseDrop_T(var/atom/dropping, var/mob/user as mob)
@@ -465,23 +463,14 @@
 			hanging = null
 			overlays.Cut()
 
-/obj/structure/pillory/hitby(AM as mob|obj)
-	if (hanging)
-		var/mob/living/carbon/human/H = hanging
-		if (istype(AM, /obj/item/weapon/reagent_containers/food/snacks/grown/tomato))
+/obj/item/weapon/reagent_containers/food/snacks/grown/tomato/throw_impact(atom/hit_atom)
+	if (istype(hit_atom, /obj/structure/pillory))
+		var/obj/structure/pillory/pillory = hit_atom
+		if (pillory.hanging)
+			var/mob/living/carbon/human/H = pillory.hanging
+			visible_message("[H] is hit by \the [src]!")
 			H.adjust_hygiene(-3)
 			H.mood -= 3
-			qdel(AM)
-		else if (istype(AM, /obj/item/weapon/reagent_containers/food/snacks/poo))
-			H.adjust_hygiene(-20)
-			H.mood -= 15
-			qdel(AM)
-		else if (istype(AM, /obj/item/weapon/reagent_containers/food/snacks/egg))
-			H.adjust_hygiene(-5)
-			H.mood -= 5
-			qdel(AM)
-		else
-			..()
-		visible_message("[H] is hit by \the [AM]!")
-	else
-		..()
+			qdel(src)
+			return
+	..()
