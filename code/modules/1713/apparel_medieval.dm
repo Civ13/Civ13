@@ -631,6 +631,19 @@
 	item_state = pickcolor
 	worn_state = pickcolor
 
+/obj/item/clothing/head/keffiyeh
+	name = "keffiyeh"
+	desc = "A headdress fashioned from a scarf with a checkered pattern."
+	icon_state = "keffiyeh_black"
+	item_state = "keffiyeh_black"
+	worn_state = "keffiyeh_black"
+	heat_protection = HEAD
+
+/obj/item/clothing/head/keffiyeh/red
+	icon_state = "keffiyeh_red"
+	item_state = "keffiyeh_red"
+	worn_state = "keffiyeh_red"
+
 //mesoamerican stuff
 /obj/item/clothing/head/mayan_headdress
 	name = "mayan headdress"
