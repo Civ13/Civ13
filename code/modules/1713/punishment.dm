@@ -365,3 +365,123 @@
 			hanging.anchored = 0
 			hanging = null
 			overlays.Cut()
+
+//////////////////////////////////////////////////////////////
+////////////////////////STOCK/PILLORY///////////////////////////
+/obj/structure/pillory
+	icon = 'icons/obj/structures.dmi'
+	name = "pillory"
+	desc = "a wood stock with three holes, for both hands and the head. Used to display criminals to the public."
+	icon_state = "pillory"
+	layer = MOB_LAYER - 0.1
+	anchored = TRUE
+	var/mob/living/carbon/human/hanging = null
+	var/image/poverlay
+	var/icon/hoverlay
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	New()
+		..()
+		poverlay = image(icon=src.icon, icon_state="pillory_lower",layer=MOB_LAYER+1)
+		hoverlay = icon(icon=src.icon, icon_state="pillory_handoverlay")
+/obj/structure/pillory/New()
+	..()
+	processing_objects |= src
+
+/obj/structure/pillory/Del()
+	processing_objects -= src
+	..()
+
+/obj/structure/pillory/bullet_act(var/obj/item/projectile/P)
+	if (hanging && prob(30))
+		hanging.bullet_act(P)
+		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+	else
+		..()
+
+/obj/structure/pillory/process()
+	fire()
+
+// call this instead of process() if you want to do direct calls, I think its better - Kachnov
+/obj/structure/pillory/proc/fire()
+	if (hanging)
+		hanging.forceMove(loc)
+		density = TRUE
+		hanging.lying = 0
+		hanging.dir = SOUTH
+
+	else
+		overlays.Cut()
+		density = FALSE
+		hoverlay = icon(icon=src.icon, icon_state="pillory_handoverlay")
+
+/obj/structure/pillory/MouseDrop_T(var/atom/dropping, var/mob/user as mob)
+	if (!ismob(dropping))
+		return
+
+	if (hanging)
+		return
+
+	var/mob/living/carbon/human/target = dropping
+	var/mob/living/carbon/human/hangman = user
+
+	if (!istype(target) || !istype(hangman))
+		return
+	visible_message("<span class = 'danger'>[hangman] starts to place [target == hangman ? "themselves" : target] in the pillory...</span>")
+	if (do_after(hangman, 60, target))
+		if (src)
+			visible_message("<span class = 'danger'>[hangman] places [target == hangman ? "themselves" : target] in the pollory!</span>")
+			hanging = target
+			target.loc = get_turf(src)
+			target.dir = SOUTH
+			spawn(10)
+				target.update_icons()
+				target.anchored = 1
+			overlays += poverlay
+			if (target.s_tone)
+				if (target.s_tone >= 0)
+					hoverlay.Blend(rgb(target.s_tone, target.s_tone, target.s_tone), ICON_ADD)
+				else
+					hoverlay.Blend(rgb(-target.s_tone,  -target.s_tone,  -target.s_tone), ICON_SUBTRACT)
+					overlays += hoverlay
+
+/obj/structure/pillory/attack_hand(var/mob/living/carbon/human/H)
+	if (!istype(H))
+		return
+
+	if (!hanging)
+		return
+
+	if (hanging == H)
+		return
+
+	visible_message("<span class = 'danger'>[H] starts to free [hanging] from the pillory...</span>")
+	if (do_after(H, 60, src))
+		if (src && hanging)
+			visible_message("<span class = 'danger'>[H] frees [hanging] from the pillory!</span>")
+			hanging.pixel_x = 0
+			hanging.pixel_y = 0
+			hanging.anchored = 0
+			hanging = null
+			overlays.Cut()
+
+/obj/structure/pillory/hitby(AM as mob|obj)
+	if (hanging)
+		var/mob/living/carbon/human/H = hanging
+		if (istype(AM, /obj/item/weapon/reagent_containers/food/snacks/grown/tomato))
+			H.adjust_hygiene(-3)
+			H.mood -= 3
+			qdel(AM)
+		else if (istype(AM, /obj/item/weapon/reagent_containers/food/snacks/poo))
+			H.adjust_hygiene(-20)
+			H.mood -= 15
+			qdel(AM)
+		else if (istype(AM, /obj/item/weapon/reagent_containers/food/snacks/egg))
+			H.adjust_hygiene(-5)
+			H.mood -= 5
+			qdel(AM)
+		else
+			..()
+		visible_message("[H] is hit by \the [AM]!")
+	else
+		..()
