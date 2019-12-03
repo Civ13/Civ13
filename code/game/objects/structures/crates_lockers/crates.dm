@@ -245,3 +245,17 @@
 				return
 		else
 			toggle(user)
+
+/obj/structure/closet/crate/dumpster/open()
+	if (opened)
+		return FALSE
+	if (!can_open())
+		return FALSE
+
+	playsound(loc, 'sound/machines/click.ogg', 15, TRUE, -3)
+	opened = TRUE
+	update_icon()
+
+	if (climbable)
+		structure_shaken()
+	return TRUE

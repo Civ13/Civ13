@@ -431,6 +431,7 @@ RECIPE: /material/bone/,dice,/obj/item/weapon/dice,2,90,0,1,none,15,0,0,8,null
 RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/thrown/tomahawk,4,30,0,1,none,25,0,0,4,bone
 
 RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,null
+RECIPE: /material/stone/,ionic column,/obj/structure/mine_support/stone/ionic,2,130,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,research kit,/obj/item/weapon/researchkit,10,190,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,scientific rock slate,/obj/item/weapon/book/research,4,110,0,1,none,0,0,0,0,null

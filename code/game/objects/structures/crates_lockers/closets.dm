@@ -37,12 +37,12 @@
 		var/content_size = FALSE
 		for (I in contents)
 			content_size += ceil(I.w_class/2)
-		if (content_size > storage_capacity-5)
+		if (content_size > 0 && content_size > storage_capacity-5)
 			storage_capacity = content_size + 5
 
 // max w_class/2 * items = enough to fit items amount of items no matter the size
 /obj/structure/closet/proc/update_capacity(items)
-	storage_capacity = ((4/2) * items) + 5
+	storage_capacity = max((2 * items) + 5,storage_capacity)
 
 /obj/structure/closet/examine(mob/user)
 	if (..(user, TRUE) && !opened)
