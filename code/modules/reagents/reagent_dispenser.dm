@@ -9,15 +9,15 @@
 	anchored = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-
-	var/amount_per_transfer_from_this = 10
-	var/possible_transfer_amounts = list(10,25,50,100)
+	var/max_capacity = 1000
+	var/amount_per_transfer_from_this = 20
+	var/possible_transfer_amounts = list(10,20,25,50,100)
 
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
 		return
 
 	New()
-		var/datum/reagents/R = new/datum/reagents(1000)
+		var/datum/reagents/R = new/datum/reagents(max_capacity)
 		reagents = R
 		R.my_atom = src
 		if (!possible_transfer_amounts)
@@ -59,3 +59,8 @@
 					return
 			else
 		return
+
+/obj/structure/reagent_dispensers/largebarrel
+	name = "large barrel"
+	desc = "A large barrel with high capacity."
+	icon_state = "beer_barrel"
