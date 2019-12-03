@@ -72,6 +72,24 @@
 	layer = 1.99
 	material = "Wood"
 
+/obj/covers/thatch
+	name = "thatch floor"
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "thatch1"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Wood"
+
+/obj/covers/thatch2
+	name = "thatch floor"
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "thatch2"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Wood"
+
 /obj/covers/fancywood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
