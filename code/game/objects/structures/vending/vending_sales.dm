@@ -76,7 +76,8 @@
 				product.amount = S.amount
 				qdel(W)
 			else
-				W.forceMove(src)
+				if (W)
+					W.forceMove(src)
 			product_records.Add(product)
 			update_icon()
 			return TRUE

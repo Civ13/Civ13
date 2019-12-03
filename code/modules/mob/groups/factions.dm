@@ -129,9 +129,11 @@
 			usr << "You are not part of any faction."
 			return
 		else
-			if (WWinput(src, "Are you sure you want to leave your faction?", "", "Stay in faction", list("Leave", "Stay in faction")) == "Stay in faction")
+			var/confirmation = WWinput(src, "Are you sure you want to leave your faction?", "", "Stay in faction", list("Leave", "Stay in faction"))
+			if (confirmation == "Stay in faction")
 				return
-			faction_leaving_proc()
+			else
+				faction_leaving_proc()
 	else
 		usr << "<span class='danger'>You cannot leave a faction in this map.</span>"
 		return

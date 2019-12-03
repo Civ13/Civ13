@@ -141,7 +141,7 @@
 	if (company == "Global")
 		return FALSE
 
-	if (!map.custom_company[company].len)
+	if (!map.custom_company[company] || !map.custom_company[company].len)
 		return FALSE
 
 	for(var/i=1,i<=map.custom_company[company].len,i++)

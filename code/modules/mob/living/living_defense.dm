@@ -152,8 +152,9 @@
 		var/dtype = O.damtype
 		var/throw_damage = O.throwforce*(speed/THROWFORCE_SPEED_DIVISOR)
 		var/mob/living/carbon/human/M = O.thrower
-
-		var/miss_chance = 15 - M.getStat("throwing")/100
+		var/miss_chance = 15
+		if (M)
+			miss_chance = 15 - M.getStat("throwing")/100
 		if (O.throw_source)
 			var/distance = get_dist(O.throw_source, loc)
 			miss_chance = max(15*(distance-2), FALSE)

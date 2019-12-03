@@ -1332,12 +1332,10 @@
 		if (user.get_inactive_hand()==src)
 			transfer_to(S, TRUE)
 			W.update_icon()
-			S.update_icon()
 			src.update_icon()
 		else
 			transfer_to(S)
 			W.update_icon()
-			S.update_icon()
 			src.update_icon()
 
 		spawn(0) //give the stacks a chance to delete themselves if necessary

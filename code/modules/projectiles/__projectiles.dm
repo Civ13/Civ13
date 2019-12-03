@@ -110,7 +110,8 @@
 /obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/M as mob)
 	if (prob(10))
 		M.fire_stacks += 1
-	M.IgniteMob()
+	if (M)
+		M.IgniteMob()
 	spawn (0.01)
 		qdel(src)
 	..()

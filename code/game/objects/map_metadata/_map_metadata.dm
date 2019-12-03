@@ -675,7 +675,7 @@ var/civmax_research = list(230,230,230)
 		if (!job)
 			continue
 
-		if (H.stat != DEAD && H.stat != UNCONSCIOUS && !H.restrained() && ((H.weakened+H.stunned) == 0) && H.client)
+		if (H.stat != DEAD && H.stat != UNCONSCIOUS && !H.restrained() && ((H.weakened+H.stunned) == 0) && H.client && roundend_condition_sides.len >= 2)
 			if (job.base_type_flag() in soldiers)
 				var/H_area = get_area(H)
 				if (job.base_type_flag() in roundend_condition_sides[1])
