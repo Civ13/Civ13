@@ -60,6 +60,8 @@
 
 	var/simplehunger = 1000
 
+	var/removed_from_list = FALSE //this is fucking stupid. But I have to do it because the death() proc runs 30 times or some shit. Thx BYOND -Taislin
+
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
