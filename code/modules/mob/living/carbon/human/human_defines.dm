@@ -53,7 +53,6 @@
 	var/obj/item/l_store = null
 
 	var/icon/stand_icon = null
-	var/icon/lying_icon = null
 
 	var/voice = ""	//Instead of new say code calling GetVoice() over and over and over, we're just going to ask this variable, which gets updated in Life()
 	var/sayverb = "says"

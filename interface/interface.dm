@@ -134,7 +134,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 
 	if (ishuman(src))
 		switch(input)
-			if (I_HELP,I_DISARM,I_GRAB,I_HURT)
+			if (I_HELP,I_DISARM,I_GRAB,I_HARM)
 				a_intent = input
 			if ("right")
 				a_intent = intent_numeric((intent_numeric(a_intent)+1) % 4)

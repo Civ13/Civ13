@@ -98,8 +98,6 @@
 
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
-	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
-
 /*
 	var/area/currentarea = get_area(src)
 	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
@@ -112,7 +110,11 @@
 		mood = 100
 	else if (mood < 0)
 		mood = 0
-	#define HUNGER_THIRST_MULTIPLIER 0.32
+	if(istype(buckled, /obj/structure/cross))
+		if (stats["stamina"][1] > 0)
+			stats["stamina"][1]-=3
+
+	#define HUNGER_THIRST_MULTIPLIER 0.64 //was 0.32, doubled due to demand
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
@@ -142,6 +144,9 @@
 			water_m = 2.5
 		if (gorillaman)
 			water_m = 0.2
+		if (istype(buckled, /obj/structure/cross))
+			food_m = 1.5
+			water_m = 5
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
 			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)

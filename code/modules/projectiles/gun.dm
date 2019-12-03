@@ -30,7 +30,6 @@
 	item_state = "gun"
 	flags =  CONDUCT
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
-	matter = list(DEFAULT_WALL_MATERIAL = 2000)
 	w_class = 3
 	throwforce = 5
 	throw_speed = 4
@@ -176,7 +175,7 @@
 			tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 		if (tgt == "mouth" && !mouthshoot)
 			handle_suicide(user)
-		else if (user.a_intent == I_HURT && do_after(user, 2, get_turf(user)))
+		else if (user.a_intent == I_HARM && do_after(user, 2, get_turf(user)))
 			handle_shoot_self(user)
 		return
 

@@ -124,6 +124,16 @@
 	desc = "Where you keep warm or light arrows on fire."
 	icon_state = "sandstone_brazier0"
 
+/obj/structure/brazier/sandstone/do_light()
+	if (on)
+		fuel = (fuel-1)
+		if (fuel <= 0)
+			on = FALSE
+			set_light(0)
+			icon_state = "sandstone_brazier0"
+	spawn(10)
+		do_light()
+
 /obj/structure/brazier/stone/do_light()
 	if (on)
 		fuel = (fuel-1)

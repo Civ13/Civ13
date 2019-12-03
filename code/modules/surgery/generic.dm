@@ -213,7 +213,7 @@
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		if (affected == null)
 			return FALSE
-		if (istype(tool, /obj/item/weapon/material/kitchen/utensil/knife/bone) && user.a_intent != I_HURT)
+		if (istype(tool, /obj/item/weapon/material/kitchen/utensil/knife/bone) && user.a_intent != I_HARM)
 			return FALSE
 		return !affected.cannot_amputate
 

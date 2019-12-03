@@ -81,6 +81,18 @@ var/list/global/floor_cache = list()
 	salty = TRUE
 
 
+/turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
+		if (choice == "Yes")
+			user << "You shove some dirt into the trench."
+			if (istype(src, /turf/floor/trench))
+				trench_filling++
+				qdel(C)
+				check_filling()
+				return
+	..()
+
 /turf/floor/trench/flooded/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
@@ -350,7 +362,11 @@ var/list/global/floor_cache = list()
 		if (!do_after(user, (10 - S.dig_speed)*10, src))
 			return
 		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
-		ChangeTurf(/turf/floor/dirt)
+		var/area/A = get_area(src)
+		if (A.climate == "jungle" || A.climate == "savanna")
+			ChangeTurf(/turf/floor/dirt/jungledirt)
+		else
+			ChangeTurf(/turf/floor/dirt)
 		return
 	..()
 
@@ -388,6 +404,7 @@ var/list/global/floor_cache = list()
 			if (H.water < 0)
 				H.water += rand(40,50)
 			H.water += 75
+			H.bladder += 75
 			H << "You drink some water."
 			playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
 			return

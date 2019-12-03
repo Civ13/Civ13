@@ -7,7 +7,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	item_state = "crowbar"
 	w_class = 3.0
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 	var/limb_type = "none"
 

@@ -610,8 +610,10 @@
 		visible_message("<span class='danger'>The frame gets wrecked!</span>")
 		update_icon()
 		broken = TRUE
-	else if (!axis)
-		qdel(src)
+	else if (!axis in contents)
+		axis = null
+		mwheel = null
+		..()
 /obj/structure/vehicleparts/frame/ex_act(severity)
 	switch(severity)
 		if (1.0)

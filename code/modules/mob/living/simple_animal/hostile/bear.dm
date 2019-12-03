@@ -42,8 +42,8 @@
 	female = TRUE
 
 /mob/living/simple_animal/hostile/bear/Destroy()
-	..()
 	bear_count -= 1
+	..()
 
 /mob/living/simple_animal/hostile/bear/Life()
 	. =..()

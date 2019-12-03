@@ -94,6 +94,7 @@
 		M.r_hand.update_held_icon()
 
 /obj/item/Destroy()
+	actions = list()
 	if (ismob(loc))
 		var/mob/m = loc
 		m.drop_from_inventory(src)

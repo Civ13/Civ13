@@ -176,7 +176,7 @@
 
 /mob/living/simple_animal/hostile/commanded/attack_hand(mob/living/carbon/human/M as mob)
 	..()
-	if (M.a_intent == I_HURT) //assume he wants to hurt us.
+	if (M.a_intent == I_HARM) //assume he wants to hurt us.
 		target_mob = M
 		allowed_targets += M
 		stance = HOSTILE_STANCE_ATTACK

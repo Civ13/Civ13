@@ -165,7 +165,11 @@
 		var/list/tmplistc = sortTim(map.custom_company_value, /proc/cmp_numeric_dsc,TRUE)
 		var/body = "<html><head><title>Stock Market Companies</title></head><b>STOCK MARKET</b><br><br>"
 		for (var/relf in map.custom_company_nr)
-			body += "<b>[relf]</b>: [tmplistc[relf]*10] silver coins</br>"
+			var/vm_owned = 0
+			for(var/obj/structure/vending/sales/S in vending_machine_list)
+				if (S.owner == relf)
+					vm_owned++
+			body += "<b>[relf]</b>: [tmplistc[relf]*10] silver coins. [vm_owned] vending points.</br>"
 		body += {"<br>
 			</body></html>
 		"}
@@ -201,7 +205,7 @@
 				var/tprof = map.custom_company_value[custom_company]
 				map.custom_company_value[custom_company] = 0
 				for (var/i in map.custom_company[custom_company])
-					i[3]+=i[2]*tprof
+					i[3]+=(i[2]/100)*tprof
 				user << "<span class='notice'>You distribute the profits of [custom_company].</span>"
 				return
 			else
@@ -210,10 +214,16 @@
 		else if (choice4 == "Withdraw Profits")
 			for (var/j in map.custom_company[custom_company])
 				if (j[1]==user && j[3]>0)
+					var/businesstax = 0
+					var/price_without_tax = j[3]
+					if (user.civilization != "none" && map.custom_civs[user.civilization])
+						businesstax = (map.custom_civs[user.civilization][10]/100)*j[3]
+						price_without_tax = j[3]-businesstax
+						map.custom_civs[user.civilization][5] += businesstax
 					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = j[3]/0.4
+					GC.amount = price_without_tax*2.5
 					j[3] = 0
-					user << "<span class='notice'>You withdraw some profits.</span>"
+					user << "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax*10] silver coins ([map.custom_civs[user.civilization][10]]%) in Business Tax to your faction.</span>"
 		return
 
 	else if (choice1 == "Buy Stock")
@@ -239,14 +249,16 @@
 					var/obj/item/stack/money/M = user.get_inactive_hand()
 					for(var/list/L in map.sales_registry)
 						if (L[1] == ord && text2num(L[2]) == ord_perc && text2num(L[3]) == ord_price)
-							if (L[4])
-								if (M.amount*M.value >= ord_price)
-									var/tma = M.amount*M.value
-									var/tmb = ord_price
-									var/tmc = (tma - tmb)/0.4
-									qdel(M)
-									var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-									GC.amount = tmc
+							if (M.amount*M.value >= ord_price)
+								var/tma = M.amount*M.value
+								var/tmb = ord_price
+								var/tmc = (tma - tmb)/0.4
+								qdel(M)
+								var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+								GC.amount = tmc
+								if (GC.amount <= 0)
+									qdel(GC)
+								if (L[4])
 									var/mob/living/carbon/human/SELLER = L[4]
 									SELLER.transfer_stock_proc(ord,ord_perc,user)
 									map.sales_registry -= L
@@ -254,8 +266,14 @@
 										if (LL[1] == ord && LL[4]==SELLER)
 											map.sales_registry -= LL
 								else
-									user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
-									return
+									transfer_stock_nomob(ord,ord_perc,user)
+									map.sales_registry -= L
+									for(var/list/LL in map.sales_registry)
+										if (LL[1]==ord && LL[2]==ord_perc && LL[3]==ord_price && LL[4]==null)
+											map.sales_registry -= LL
+							else
+								user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
+								return
 				else
 					user << "<span class='notice'>You need to have money in your hands in order to buy stocks!</span>"
 					return

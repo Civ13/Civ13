@@ -18,7 +18,7 @@
 	var/sev_factor
 
 /obj/item/weapon/doctor_handbook/attack(mob/living/victim as mob, mob/living/user as mob)
-	if (user.a_intent == I_HURT)
+	if (user.a_intent == I_HARM)
 		return ..()
 
 	var/datum/gender/G = gender_datums[victim.gender]

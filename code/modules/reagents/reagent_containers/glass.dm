@@ -110,8 +110,8 @@
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
 		if (istype(W, /obj/item/weapon/pen))
 			var/tmp_label = sanitizeSafe(input(user, "Enter a label for [name]", "Label", label_text), MAX_NAME_LEN)
-			if (length(tmp_label) > 10)
-				user << "<span class='notice'>The label can be at most 10 characters long.</span>"
+			if (length(tmp_label) > 15)
+				user << "<span class='notice'>The label can be at most 15 characters long.</span>"
 			else
 				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
 				label_text = tmp_label
@@ -238,7 +238,6 @@
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "beaker"
 	item_state = "beaker"
-	matter = list("glass" = 500)
 
 	New()
 		..()
@@ -288,7 +287,6 @@
 	name = "large beaker"
 	desc = "A large beaker."
 	icon_state = "beakerlarge"
-	matter = list("glass" = 5000)
 	volume = 120
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25,30,60,120)
@@ -298,7 +296,6 @@
 	name = "vial"
 	desc = "A small glass vial."
 	icon_state = "vial"
-	matter = list("glass" = 250)
 	volume = 30
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25)
@@ -310,7 +307,7 @@
 	icon = 'icons/obj/janitor.dmi'
 	icon_state = "bucket"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 200)
+
 	w_class = 3.0
 	amount_per_transfer_from_this = 20
 	possible_transfer_amounts = list(10,20,30,60,120)
@@ -344,7 +341,7 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "small_pot"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 200)
+
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
@@ -358,7 +355,7 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "han_gou_open"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 200)
+
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20,30,80)
@@ -375,7 +372,6 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "copperpot1"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 300)
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
@@ -389,7 +385,6 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "copperpot2"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 300)
 	w_class = 4.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
@@ -403,7 +398,7 @@
 	icon = 'icons/obj/barrel.dmi'
 	icon_state = "wood_barrel1"
 	item_state = "bucket"
-	matter = list(DEFAULT_WALL_MATERIAL = 200)
+
 	w_class = 4.0
 	amount_per_transfer_from_this = 20
 	possible_transfer_amounts = list(10,20,30,60,120)
@@ -731,6 +726,11 @@
 				I.amount -= 1
 			else
 				qdel(I)
+			return
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
+			var/obj/item/weapon/reagent_containers/food/snacks/poo/P = I
+			P.reagents.trans_to(src, 10, 1, FALSE)
+			qdel(I)
 			return
 	else
 		user << "The [src] is full!"

@@ -681,14 +681,13 @@
 //Updates canmove, lying and icons. Could perhaps do with a rename but I can't think of anything to describe it.
 /mob/proc/update_canmove()
 
-	var/noose = FALSE
 	var/gallows = FALSE
 	for (var/obj/structure/noose/N in get_turf(src))
 		if (N.hanging == src)
 			lying = FALSE
 			canmove = FALSE
 			anchored = TRUE
-			noose = TRUE
+			gallows = TRUE
 			prone = FALSE
 			update_icons()
 	for (var/obj/structure/gallows/G in get_turf(src))
@@ -699,7 +698,23 @@
 			gallows = TRUE
 			prone = FALSE
 			update_icons()
-	if (!noose && !gallows)
+	for (var/obj/structure/cross/G in get_turf(src))
+		if (G.hanging == src)
+			lying = FALSE
+			canmove = FALSE
+			anchored = TRUE
+			gallows = TRUE
+			prone = FALSE
+			update_icons()
+	for (var/obj/structure/pillory/G in get_turf(src))
+		if (G.hanging == src)
+			lying = FALSE
+			canmove = FALSE
+			anchored = TRUE
+			gallows = TRUE
+			prone = FALSE
+			update_icons()
+	if (!gallows)
 		if (buckled)
 			anchored = TRUE
 			canmove = FALSE

@@ -517,7 +517,7 @@
 #define I_HELP		"help"
 #define I_DISARM	"disarm"
 #define I_GRAB		"grab"
-#define I_HURT		"hurt"
+#define I_HARM		"harm"
 #define I_DODGE		"dodge"
 #define I_PARRY		"parry"
 
@@ -533,8 +533,8 @@
 
 #define NEXT_MOVE_DELAY 8
 
-#define DROPLIMB_EDGE TRUE
-#define DROPLIMB_BLUNT TRUE
+#define DROPLIMB_EDGE 0
+#define DROPLIMB_BLUNT 1
 #define DROPLIMB_BURN 2
 
 
@@ -583,7 +583,7 @@
 #define HOLD_CASINGS	0 //do not do anything after firing. Manual action, like pump shotguns, or guns that want to define custom behaviour
 #define EJECT_CASINGS	1 //drop spent casings on the ground after firing
 #define CYCLE_CASINGS 	2 //experimental: cycle casings, like a revolver. Also works for multibarrelled guns
-#define REMOVE_CASINGS	3
+#define REMOVE_CASINGS	3 //deletes casings
 
 #define list_cmp(l1, l2) (length(l1 & l2) > 0)
 

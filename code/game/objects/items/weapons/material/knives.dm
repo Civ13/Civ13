@@ -12,7 +12,6 @@
 	sharp = TRUE
 	edge = TRUE
 	force_divisor = 0.15 // 9 when wielded with hardness 60 (steel)
-	matter = list(DEFAULT_WALL_MATERIAL = 12000)
 	attack_verb = list("slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	unbreakable = TRUE
 	slot_flags = SLOT_BELT|SLOT_POCKET

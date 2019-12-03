@@ -212,7 +212,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/bottle/apply_hit_effect(mob/living/target, mob/living/user, var/hit_zone)
 	var/blocked = ..()
 
-	if (user.a_intent != I_HURT)
+	if (user.a_intent != I_HARM)
 		return
 	if (!shatter_check(1))
 		return //won't always break on the first hit

@@ -399,7 +399,7 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/marble
 
 /material/steel
-	name = DEFAULT_WALL_MATERIAL
+	name = "steel"
 	stack_type = /obj/item/stack/material/steel
 	integrity = 300
 	hardness = 60

@@ -54,13 +54,11 @@
 	herbivore = 1
 
 /mob/living/simple_animal/cow/Destroy()
-	..()
 	cow_count -= 1
-
+	..()
 /mob/living/simple_animal/bull/Destroy()
-	..()
 	cow_count -= 1
-
+	..()
 /mob/living/simple_animal/bull/New()
 	cow_count += 1
 	..()
@@ -234,13 +232,11 @@
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 
 /mob/living/simple_animal/pig_gilt/Destroy()
-	..()
 	pig_count -= 1
-
+	..()
 /mob/living/simple_animal/pig_boar/Destroy()
-	..()
 	pig_count -= 1
-
+	..()
 /mob/living/simple_animal/pig_boar/New()
 	pig_count += 1
 	..()
@@ -398,8 +394,8 @@
 	var/overpopulationCountdown = 0
 
 /mob/living/simple_animal/goat/Destroy()
-	..()
 	goat_count -= 1
+	..()
 
 /mob/living/simple_animal/goat/female/New()
 	udder = new(50)
@@ -539,8 +535,8 @@
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
 /mob/living/simple_animal/sheep/Destroy()
-	..()
 	sheep_count -= 1
+	..()
 /mob/living/simple_animal/sheep/New()
 	sheep_count += 1
 	..()

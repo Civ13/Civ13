@@ -27,7 +27,7 @@ bullet_act
 				visible_message("<span class = 'notice'>[user] successfully circumcises [src].</span>")
 				circumcised = TRUE
 				return
-	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		if (stat == DEAD)
 			var/mob/living/carbon/human/H = user
 			if (istype(H))
@@ -133,7 +133,7 @@ bullet_act
 				SH.health -= 2
 				//ARROW FALL STUFF HERE
 				//50% chance for the arrow not to break.
-				if(prob(50))
+				if(prob(50) && src.loc != null)
 					if(istype(P, /obj/item/projectile/arrow/arrow/stone))
 						new/obj/item/ammo_casing/arrow/stone(src.loc)
 					else if(istype(P, /obj/item/projectile/arrow/arrow/copper))
@@ -637,7 +637,39 @@ bullet_act
 		var/hit_area = affecting.name
 		if (!hit_area)
 			return
-		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
+
+		if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/poo))
+			var/obj/structure/pillory/pillory = null
+			for(var/obj/structure/pillory/P in loc)
+				pillory = P
+			if (pillory && pillory.hanging == src)
+				adjust_hygiene(-20)
+				mood -= 15
+				spawn(2)
+					qdel(O)
+				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
+		else if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/egg) || istype(O, /obj/item/weapon/reagent_containers/food/snacks/turkeyegg))
+			var/obj/structure/pillory/pillory = null
+			for(var/obj/structure/pillory/P in loc)
+				pillory = P
+			if (pillory && pillory.hanging == src)
+				adjust_hygiene(-5)
+				mood -= 5
+				spawn(2)
+					qdel(O)
+				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
+		else if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/tomato))
+			var/obj/structure/pillory/pillory = null
+			for(var/obj/structure/pillory/P in loc)
+				pillory = P
+			if (pillory && pillory.hanging == src)
+				adjust_hygiene(-3)
+				mood -= 3
+				spawn(2)
+					qdel(O)
+				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
+		else
+			visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
 		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].", damage_source = AM) //I guess "melee" is the best fit here
 
 		if(armor < 100)

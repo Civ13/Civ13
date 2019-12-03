@@ -24,7 +24,7 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 150)
+
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
 /*
@@ -40,7 +40,7 @@
 	force = WEAPON_FORCE_NORMAL+5
 	throwforce = WEAPON_FORCE_NORMAL+5
 	w_class = 3.0
-	matter = list(DEFAULT_WALL_MATERIAL = 150)
+
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	var/cap = 25
 	New()
@@ -84,7 +84,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 5
 	throw_range = 5
-	matter = list(DEFAULT_WALL_MATERIAL = 75)
+
 	attack_verb = list("bludgeoned", "hit")
 	flammable = TRUE
 
@@ -101,7 +101,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 6
 	throw_range = 5
-	matter = list(DEFAULT_WALL_MATERIAL = 75)
+
 	attack_verb = list("bludgeoned", "hit")
 	flammable = FALSE
 
@@ -119,7 +119,6 @@
 	throw_speed = 2
 	throw_range = 9
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 80)
 	attack_verb = list("pinched", "nipped")
 	sharp = TRUE
 	edge = TRUE
@@ -149,7 +148,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	item_state = "crowbar"
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 
 /obj/item/weapon/horn
@@ -163,7 +162,7 @@
 	throwforce = WEAPON_FORCE_WEAK
 	item_state = "zippo"
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 	var/cooldown_horn = FALSE
 
@@ -187,7 +186,7 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	item_state = "zippo"
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("attacked", "whacked")
 	var/cooldown_whistle = FALSE
 
@@ -209,7 +208,7 @@
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = 4.0
-	matter = list(DEFAULT_WALL_MATERIAL = 150)
+
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	var/deployed = FALSE
 	nothrow = TRUE
@@ -226,7 +225,7 @@
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = 4.0
-	matter = list(DEFAULT_WALL_MATERIAL = 150)
+
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	deployed = FALSE
 	nothrow = TRUE
@@ -280,7 +279,7 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 3.0
-	matter = list(DEFAULT_WALL_MATERIAL = 150)
+
 	attack_verb = list("bashed", "whacked")
 	flammable = TRUE
 
@@ -304,7 +303,7 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 3.0
-	matter = list(DEFAULT_WALL_MATERIAL = 150)
+
 	attack_verb = list("bashed", "whacked")
 	flammable = TRUE
 
@@ -318,7 +317,6 @@
 	force = WEAPON_FORCE_NORMAL+4
 	throwforce = WEAPON_FORCE_NORMAL-1
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 250)
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
 /*
@@ -334,7 +332,7 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
-	matter = list(DEFAULT_WALL_MATERIAL = 150)
+
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
 /obj/item/weapon/weldingtool
@@ -367,6 +365,6 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 5
 	throw_range = 5
-	matter = list(DEFAULT_WALL_MATERIAL = 75)
+
 	attack_verb = list("jabbed", "hit", "bashed")
 	flammable = TRUE

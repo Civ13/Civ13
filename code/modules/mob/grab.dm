@@ -315,7 +315,7 @@
 				if (I_GRAB)
 					jointlock(affecting, assailant, hit_zone)
 
-				if (I_HURT)
+				if (I_HARM)
 					if (hit_zone == "eyes")
 						attack_eye(affecting, assailant)
 					else if (hit_zone == "head")

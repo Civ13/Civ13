@@ -13,7 +13,7 @@
 	var/break_stuff_probability = 10
 	stop_automated_movement_when_pulled = FALSE
 	var/destroy_surroundings = TRUE
-	a_intent = I_HURT
+	a_intent = I_HARM
 
 	var/enroute = FALSE
 /mob/living/simple_animal/hostile/proc/FindTarget()

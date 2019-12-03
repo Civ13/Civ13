@@ -78,7 +78,10 @@
 
 /mob/living/simple_animal/Life()
 	..()
-
+	if (loc == null)
+		spawn(10)
+			if (loc == null)
+				qdel(src)
 	//Health
 	if (stat == DEAD)
 		if (health > 0)
@@ -260,7 +263,7 @@
 			M.visible_message("<span class = 'red'>[M] has grabbed [src] passively!</span>")
 			M.do_attack_animation(src)
 
-		if (I_HURT)
+		if (I_HARM)
 			adjustBruteLoss(harm_intent_damage*M.getStatCoeff("strength"))
 			M.visible_message("<span class = 'red'>[M] [response_harm] \the [src].</span>")
 			M.do_attack_animation(src)
@@ -307,7 +310,7 @@
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			O.attack(src, user, tgt)
 	else if (O.sharp && !istype(src, /mob/living/simple_animal/hostage))
-		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && stat == DEAD)
+		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && stat == DEAD)
 			if (istype(src, /mob/living/simple_animal/frog/poisonous))
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
@@ -492,6 +495,7 @@
 
 	walk_to(src,0) // stops movement
 	unregisterSpawner()
+	delayed_decay(src,3000)
 	return ..(gibbed,deathmessage)
 
 /mob/living/simple_animal/ex_act(severity)
@@ -807,3 +811,4 @@
 		if (radiation > 80)
 			death()
 		return
+

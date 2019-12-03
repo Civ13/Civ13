@@ -8,7 +8,6 @@
 	w_class = 1.0
 	throw_speed = 7
 	throw_range = 15
-	matter = list(DEFAULT_WALL_MATERIAL = 60)
 	attack_verb = list("stamped")
 
 /obj/item/weapon/stamp/rn

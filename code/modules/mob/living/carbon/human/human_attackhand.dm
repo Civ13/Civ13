@@ -132,7 +132,7 @@
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 			visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>")
 			return TRUE
-		if (I_HURT)
+		if (I_HARM)
 			var/tgtm = M.targeted_organ
 			if (M.targeted_organ == "random")
 				tgtm = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
@@ -168,7 +168,7 @@
 					// We didn't see this coming, so we get the full blow
 					rand_damage = 5
 					accurate = TRUE
-				if (I_HURT, I_GRAB)
+				if (I_HARM, I_GRAB)
 					// We're in a fighting stance, there's a chance we block
 					if (canmove && src!=H && prob(20))
 						block = TRUE

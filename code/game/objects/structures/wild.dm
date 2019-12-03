@@ -29,7 +29,7 @@
 	if (!A)
 		return
 	var/picked = pick(/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/banana,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/peyote,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/coca,/obj/item/stack/farming/seeds/lime,/obj/item/stack/farming/seeds/lemon,/obj/item/stack/farming/seeds/melon,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/cherry,/obj/item/stack/farming/seeds/apricot,/obj/item/stack/farming/seeds/coconut,)
-	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD)
+	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN)
 		return picked
 	else
 		if (A.climate == "sea")
@@ -67,6 +67,7 @@
 	for (var/obj/o in get_turf(src))
 		if (o.special_id == "seasons")
 			qdel(o)
+	..()
 
 /obj/structure/wild/fire_act(temperature)
 	if (prob(35 * (temperature/500)))
@@ -215,27 +216,6 @@
 /obj/structure/wild/tree/live_tree/snow/update_icon()
 	..()
 	icon = 'icons/obj/flora/bigtrees_winter.dmi'
-
-/obj/structure/wild/tree/Destroy()
-	var/nearbyObjects = range(2,src)
-	var/list/turf/emptyTurfs = list()
-	var/newtreetype = type
-	spawn(18000)
-		for(var/turf/floor/T in nearbyObjects)
-			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
-				var/found = 0
-				for(var/obj/covers/CV in T)
-					found++
-				for(var/obj/structure/ST in T)
-					found++
-				if (!found)
-					emptyTurfs += T
-		if (emptyTurfs.len)
-			var/chosenturf = pick(emptyTurfs)
-			if (chosenturf)
-				new newtreetype(chosenturf)
-				return
-	..()
 
 /obj/structure/wild/tree/live_tree/New()
 	..()
@@ -441,26 +421,6 @@
 	deadicon = 'icons/misc/beach2.dmi'
 	deadicon_state = "dead_[icon_state]"
 
-/obj/structure/wild/palm/Destroy()
-	var/nearbyObjects = range(2,src)
-	var/list/turf/emptyTurfs = list()
-	var/newtreetype = type
-	spawn(18000)
-		for(var/turf/floor/T in nearbyObjects)
-			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
-				var/found = 0
-				for(var/obj/covers/CV in T)
-					found++
-				for(var/obj/structure/ST in T)
-					found++
-				if (!found)
-					emptyTurfs += T
-		if (emptyTurfs.len)
-			var/chosenturf = pick(emptyTurfs)
-			if (chosenturf)
-				new newtreetype(chosenturf)
-				return
-	..()
 /obj/structure/wild/bush
 	name = "bush"
 	icon_state = "small_bush"
@@ -828,28 +788,6 @@
 		qdel(src)
 		return
 
-/obj/structure/wild/jungle/Destroy()
-	var/nearbyObjects = range(2,src)
-	var/list/turf/emptyTurfs = list()
-	var/newtreetype = type
-	spawn(18000)
-		for(var/turf/floor/T in nearbyObjects)
-			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
-				var/found = 0
-				for(var/obj/covers/CV in T)
-					found++
-				for(var/obj/structure/ST in T)
-					found++
-				if (!found)
-					emptyTurfs += T
-		if (emptyTurfs.len)
-			var/chosenturf = pick(emptyTurfs)
-			if (chosenturf)
-				new newtreetype(chosenturf)
-				return
-
-	..()
-
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -920,7 +858,7 @@
 	icon_state = "chinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
-	if(user.a_intent == I_HURT && map.chad_mode)
+	if(user.a_intent == I_HARM && map.chad_mode)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		visible_message("[user] punches \the [src]!")
 		health -= 5

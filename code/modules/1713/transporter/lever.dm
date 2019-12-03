@@ -11,14 +11,6 @@
 	var/local = "docked"
 	var/next_activation = -1;
 
-/obj/structure/transport_lever/New()
-	..()
-	lever_list += src
-
-/obj/structure/transport_lever/Destroy()
-	lever_list -= src
-	..()
-
 /obj/structure/transport_lever/attack_hand(var/mob/user as mob)
 //f (user && istype(user, /mob/living/carbon/human))
 //function(user)

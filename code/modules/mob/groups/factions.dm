@@ -43,10 +43,11 @@
 			return
 		else
 			var/choosename = russian_to_cp1251(input(src, "Choose a name for the faction:") as text|null)
-			create_faction_pr(choosename)
-			make_commander()
-			make_title_changer()
-			return
+			if (choosename != null && choosename != "")
+				create_faction_pr(choosename)
+				make_commander()
+				make_title_changer()
+				return
 	else
 		usr << "<span class='danger'>You cannot create a faction in this map.</span>"
 		return
@@ -105,7 +106,8 @@
 		H.leader = TRUE
 		H.faction_perms = list(1,1,1,1)
 		map.custom_faction_nr += newname
-		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H,0,choosesymbol,choosecolor1,choosecolor2))
+												//ind						mil					med			leader money	symbol	main color	backcolor, sales tax, business tax
+		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H,0,choosesymbol,choosecolor1,choosecolor2,10,10))
 		map.custom_civs += newnamev
 		usr << "<big>You are now the leader of the <b>[newname]</b> faction.</big>"
 		return
@@ -129,18 +131,26 @@
 		else
 			if (WWinput(src, "Are you sure you want to leave your faction?", "", "Stay in faction", list("Leave", "Stay in faction")) == "Stay in faction")
 				return
-			if (map.custom_civs[U.civilization][4] != null)
-				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
-					map.custom_civs[U.civilization][4] = null
-			U.civilization = "none"
-			U.leader = FALSE
-			U.faction_perms = list(0,0,0,0)
-			usr << "You left your faction. You are now a Nomad."
-			remove_commander()
+			faction_leaving_proc()
 	else
 		usr << "<span class='danger'>You cannot leave a faction in this map.</span>"
 		return
 
+
+/mob/living/carbon/human/proc/faction_leaving_proc()
+	if (civilization == null || civilization == "none")
+		return FALSE
+	if (map.custom_civs[civilization][4] != null)
+		if (map.custom_civs[civilization][4].real_name == real_name)
+			map.custom_civs[civilization][4] = null
+	civilization = "none"
+	name = replacetext(real_name,"[title] ","")
+	title = ""
+	leader = FALSE
+	faction_perms = list(0,0,0,0)
+	src << "You left your faction. You are now a Nomad."
+	remove_commander()
+	return TRUE
 
 /mob/living/carbon/human/proc/transfer_faction()
 	set name = "Transfer Faction Leadership"
@@ -248,7 +258,7 @@
 							return
 						else
 							U.title = inp
-							U.fully_replace_character_name(U.real_name,"[U.title] [U.name]")
+							U.name = "[U.title] [U.name]"
 							usr << "[src] is now a [U.title]."
 							return
 	else

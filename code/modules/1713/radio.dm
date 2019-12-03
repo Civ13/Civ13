@@ -410,7 +410,7 @@ var/global/FREQ2 = rand(201,250)
 	var/on = FALSE
 	force = 4.0
 	throwforce = 3.0
-	matter = list(DEFAULT_WALL_MATERIAL = 50)
+
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE

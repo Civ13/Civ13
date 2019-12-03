@@ -9,6 +9,8 @@
 	flags = OPENCONTAINER
 	amount_per_transfer_from_this = 5
 	volume = 50
+	var/label_text = ""
+	var/base_name = " "
 
 	on_reagent_change()
 		return
@@ -23,7 +25,7 @@
 		flags |= OPENCONTAINER
 
 	attack(mob/M as mob, mob/user as mob, def_zone)
-		if (force && !(flags & NOBLUDGEON) && user.a_intent == I_HURT)
+		if (force && !(flags & NOBLUDGEON) && user.a_intent == I_HARM)
 			return ..()
 
 		if (istype(M) && standard_feed_mob(user, M))
@@ -43,6 +45,24 @@
 			return
 
 		return ..()
+	attackby(obj/item/weapon/W as obj, mob/user as mob)
+		if (istype(W, /obj/item/weapon/pen))
+			var/tmp_label = sanitizeSafe(input(user, "Enter a label for [name]", "Label", label_text), MAX_NAME_LEN)
+			if (length(tmp_label) > 15)
+				user << "<span class='notice'>The label can be at most 15 characters long.</span>"
+			else
+				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
+				label_text = tmp_label
+				update_name_label()
+		else
+			..()
+
+	proc/update_name_label()
+		playsound(src,'sound/effects/pen.ogg',40,1)
+		if (label_text == "")
+			name = base_name
+		else
+			name = "[base_name] ([label_text])"
 
 	standard_feed_mob(var/mob/user, var/mob/target)
 		if (!is_open_container())
@@ -87,6 +107,7 @@
 
 	New()
 		..()
+		base_name = name
 		spawn (1)
 			if (!istype(src, /obj/item/weapon/reagent_containers/food/drinks/bottle))
 				amount_per_transfer_from_this = max(amount_per_transfer_from_this, ceil(reagents.total_volume/5))

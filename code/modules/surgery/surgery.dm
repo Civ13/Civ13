@@ -89,7 +89,7 @@ proc/spread_germs_to_organ(var/obj/item/organ/external/E, var/mob/living/carbon/
 proc/do_surgery(mob/living/carbon/M, mob/living/carbon/human/user, obj/item/tool)
 	if (!istype(M))
 		return FALSE
-	if (user.a_intent == I_HURT)	//check for Hippocratic Oath
+	if (user.a_intent == I_HARM)	//check for Hippocratic Oath
 		return FALSE
 	var/zone = user.targeted_organ
 	if (user.targeted_organ == "random")

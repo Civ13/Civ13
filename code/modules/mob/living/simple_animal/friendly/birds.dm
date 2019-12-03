@@ -62,9 +62,8 @@
 			qdel(src)
 
 /mob/living/simple_animal/chick/Destroy()
-	..()
 	chicken_count -= 1
-
+	..()
 /mob/living/simple_animal/chicken
 	name = "\improper chicken"
 	desc = "Hopefully the eggs are good this season."
@@ -105,9 +104,8 @@
 	chicken_count += 1
 
 /mob/living/simple_animal/chicken/Destroy()
-	..()
 	chicken_count -= 1
-
+	..()
 /mob/living/simple_animal/chicken/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (stat == CONSCIOUS && istype(O, /obj/item/stack/farming/seeds))
 		var/obj/item/stack/S = O
@@ -216,8 +214,8 @@
 	chicken_count += 1
 
 /mob/living/simple_animal/rooster/Destroy()
-	..()
 	chicken_count -= 1
+	..()
 ////////////////////////////////////////TURKEYS//////////////////////
 /mob/living/simple_animal/turkey_f
 	name = "\improper turkey"
@@ -341,19 +339,20 @@
 	turkey_count += 1
 
 /mob/living/simple_animal/turkey_m/Destroy()
-	..()
 	turkey_count -= 1
+	..()
+
 /mob/living/simple_animal/turkey_f/New()
 	..()
 	turkey_count += 1
 
 /mob/living/simple_animal/turkey_f/Destroy()
-	..()
 	turkey_count -= 1
+	..()
 
 /mob/living/simple_animal/turkeychick/Destroy()
-	..()
 	turkey_count -= 1
+	..()
 
 /mob/living/simple_animal/turkey_f/Life()
 	. =..()

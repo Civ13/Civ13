@@ -132,4 +132,5 @@
 
 /mob/living/simple_animal/hostile/mimic/death()
 	new/obj/structure/closet/crate/loottreasurechest(src.loc)
+	..()
 	qdel(src)

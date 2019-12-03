@@ -19,7 +19,7 @@
 	var/lum_b = 0.0
 
 	// luminosity values based on the time of day
-	var/window_coeff = 0
+	var/window_coeff = 0.25
 
 /datum/lighting_corner/New(var/turf/new_turf, var/diagonal)
 	. = ..()

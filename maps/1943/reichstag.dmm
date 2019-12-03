@@ -585,7 +585,7 @@
 "lm" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/steel,/area/caribbean/german/reichstag/roof)
 "ln" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/steel,/area/caribbean/german/reichstag/roof)
 "lo" = (/obj/item/weapon/storage/backpack,/turf/floor/plating/steel,/area/caribbean/german/reichstag/roof)
-"lp" = (/obj/item/weapon/storage/box/matches,/turf/floor/plating/steel,/area/caribbean/german/reichstag/roof)
+"lp" = (/obj/item/weapon/matchbox,/turf/floor/plating/steel,/area/caribbean/german/reichstag/roof)
 "lq" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/steel,/area/caribbean/german/reichstag/roof)
 "lr" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{icon_state = "mg34hmg"; dir = 1},/turf/floor/plating/steel,/area/caribbean/german/reichstag/roof)
 "ls" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/turf/floor/plating/steel,/area/caribbean/german/reichstag/roof)

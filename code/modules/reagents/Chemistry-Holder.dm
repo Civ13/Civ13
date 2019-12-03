@@ -23,7 +23,6 @@
 			chemical_reagents_list[D.id] = D
 
 /datum/reagents/Destroy()
-	..()
 	if (processes.chemistry)
 		processes.chemistry.active_holders -= src
 
@@ -33,7 +32,7 @@
 	reagent_list = null
 	if (my_atom && my_atom.reagents == src)
 		my_atom.reagents = null
-
+	..()
 /* Internal procs */
 
 /datum/reagents/proc/get_free_space() // Returns free space.

@@ -301,7 +301,7 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 	return FALSE
 
 //converts intent-strings into numbers and back
-var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
+var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HARM)
 /proc/intent_numeric(argument)
 	if (istext(argument))
 		switch(argument)
@@ -314,7 +314,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 			if (0)			return I_HELP
 			if (1)			return I_DISARM
 			if (2)			return I_GRAB
-			else			return I_HURT
+			else			return I_HARM
 
 
 proc/is_blind(A)

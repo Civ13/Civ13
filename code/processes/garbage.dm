@@ -174,6 +174,7 @@ var/list/delayed_garbage = list()
 		. = !A.Destroy()
 		if (. && A)
 			A.finalize_qdel()
+
 	if (A && isatom(A))
 		var/atom/AT = A
 		AT.invisibility = 101
@@ -181,7 +182,8 @@ var/list/delayed_garbage = list()
 		AT.icon_state = null
 		if (ismovable(A))
 			var/atom/movable/AM = A
-			AM.loc = null // maybe fixes projectiles, hopefully doesn't break anything - Kachnov
+			AM.loc = null
+
 
 /proc/qdel_list(var/list/L)
 	if (!L)
@@ -301,12 +303,4 @@ var/list/delayed_garbage = list()
 				del(o)
 				garbage.dels++
 			garbage.destroyed.Cut(1, 2)
-#endif
-
-#ifdef GC_DEBUG
-#undef GC_DEBUG
-#endif
-
-#ifdef GC_FINDREF
-#undef GC_FINDREF
 #endif

@@ -118,6 +118,19 @@
 	explosion_resistance = 2
 	material = "Stone"
 
+/obj/covers/romanroad
+	name = "roman road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "roman_road"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
 /obj/covers/slatefloor
 	name = "slate floor"
 	icon = 'icons/turf/floors.dmi'
@@ -1027,15 +1040,13 @@
 		user << "You start adding bricks to the wall..."
 		if (do_after(user, 20, src))
 			user << "You finish adding bricks to the wall, completing it."
-			qdel(W)
-			var WALL = new /obj/covers/brick_wall(loc)
-			qdel(src)
-			var/choice = WWinput(user, "What type of wall?","Brick Walls","Normal",list("Wall","Window"))
+			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window"))
 			if (choice == "Wall")
-				return
+				new /obj/covers/brick_wall(loc)
 			else if (choice == "Window")
 				new /obj/structure/window_frame/brick(loc)
-				qdel(WALL)
+			qdel(W)
+			qdel(src)
 			return
 	..()
 
