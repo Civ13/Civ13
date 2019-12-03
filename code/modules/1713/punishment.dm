@@ -382,7 +382,7 @@
 	not_disassemblable = FALSE
 	New()
 		..()
-		poverlay = image(icon=src.icon, icon_state="pillory_lower",layer=MOB_LAYER+1)
+		poverlay = image(icon=src.icon, icon_state="pillory_lower0",layer=MOB_LAYER+1)
 		hoverlay = icon(icon=src.icon, icon_state="pillory_handoverlay")
 /obj/structure/pillory/New()
 	..()
@@ -470,9 +470,13 @@
 		if (newtext == null || newtext == "")
 			newtext = "There is nothing on the sign."
 			desc = newtext
+			poverlay.icon_state = "pillory_lower0"
+			updatw_icon()
 			return
 		newtext = sanitize(newtext, 30, FALSE)
 		desc = "It reads: <b>[newtext]</b>"
+		poverlay.icon_state = "pillory_lower1"
+		update_icon()
 		return
 	else
 		..()
