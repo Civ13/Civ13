@@ -471,7 +471,7 @@
 			newtext = "There is nothing on the sign."
 			desc = newtext
 			poverlay.icon_state = "pillory_lower0"
-			updatw_icon()
+			update_icon()
 			return
 		newtext = sanitize(newtext, 30, FALSE)
 		desc = "It reads: <b>[newtext]</b>"

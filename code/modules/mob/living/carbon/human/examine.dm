@@ -81,6 +81,14 @@
 		else
 			msg += "[T.He] [T.has] \icon[back] \a [back] on [T.his] back.\n"
 
+	//shoulder
+	if (shoulder)
+		if (shoulder.blood_DNA)
+			msg += "<span class='warning'>[T.He] [T.has] \icon[shoulder] [shoulder.gender==PLURAL?"some":"a"] [(shoulder.blood_color != "#030303") ? "blood" : "oil"]-stained [shoulder] on [T.his] shoulder.</span>\n"
+		else
+			msg += "[T.He] [T.has] \icon[shoulder] \a [shoulder] on [T.his] shoulder.\n"
+
+
 	//left hand
 	if (l_hand)
 		if (l_hand.blood_DNA)
