@@ -21,24 +21,51 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 
 		if (fexists("SQL/bans/ckey/[ckey].txt"))
 			ckey_file = "SQL/bans/ckey/[ckey].txt"
-		if (fexists("SQL/bans/ip/[ckey].txt"))
-			ip_file = "SQL/bans/ip/[ckey].txt"
-		if (fexists("SQL/bans/cid/[ckey].txt"))
-			cid_file = "SQL/bans/cid/[ckey].txt"
+		if (fexists("SQL/bans/ip/[ip].txt"))
+			ip_file = "SQL/bans/ip/[ip].txt"
+		if (fexists("SQL/bans/cid/[cID].txt"))
+			cid_file = "SQL/bans/cid/[cID].txt"
+
+		if (ckey_file)
+			var/details = file2text(ckey_file)
+			var/list/details_lines = splittext(details, "|||\n")
+			if (details_lines.len)
+				for(var/i=1,i<=details_lines.len,i++)
+					var/list/details2 = splittext(details_lines[i], ";")
+					if (details2[3] == UID)
+						details_lines -= details_lines[i]
+						fdel(ckey_file)
+						for(var/L in details_lines)
+							text2file("[L]|||", ckey_file)
+		if (cid_file)
+			var/details = file2text(cid_file)
+			var/list/details_lines = splittext(details, "|||\n")
+			if (details_lines.len)
+				for(var/i=1,i<=details_lines.len,i++)
+					var/list/details2 = splittext(details_lines[i], ";")
+					if (details2[3] == UID)
+						details_lines -= details_lines[i]
+						fdel(cid_file)
+						for(var/L in details_lines)
+							text2file("[L]|||", cid_file)
+		if (ip_file)
+			var/details = file2text(ip_file)
+			var/list/details_lines = splittext(details, "|||\n")
+			if (details_lines.len)
+				for(var/i=1,i<=details_lines.len,i++)
+					var/list/details2 = splittext(details_lines[i], ";")
+					if (details2[3] == UID)
+						details_lines -= details_lines[i]
+						fdel(ip_file)
+						for(var/L in details_lines)
+							text2file("[L]|||", ip_file)
 
 		if (ckey_file || ip_file || cid_file)
 			log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
 			message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
-			if (ckey_file)
-				fdel(ckey_file)
-			if (cid_file)
-				fdel(cid_file)
-			if (ip_file)
-				fdel(ip_file)
 			for (var/client/C in clients)
 				if (C.ckey == ckey)
 					C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
-
 
 var/datum/quickBan_handler/quickBan_handler = null
 
@@ -346,14 +373,10 @@ var/datum/quickBan_handler/quickBan_handler = null
 	var/expire_info = fields["expire_info"]
 
 	//txt database
-	if (fexists("SQL/bans/ip/[banip].txt"))
-		fdel("SQL/bans/ip/[banip].txt")
 	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/ip/[banip].txt")
-	if (fexists("SQL/bans/ip/[bancID].txt"))
-		fdel("SQL/bans/ip/[bancID].txt")
+
 	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/cid/[bancID].txt")
-	if (fexists("SQL/bans/ip/[banckey].txt"))
-		fdel("SQL/bans/ip/[banckey].txt")
+
 	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/ckey/[banckey].txt")
 
 
@@ -384,19 +407,28 @@ var/datum/quickBan_handler/quickBan_handler = null
 /client/proc/quickBan_isbanned(var/ban_type = "Server", var/type_specific_info = "nil")
 	if (fexists("SQL/bans/ckey/[ckey].txt"))
 		var/details = file2text("SQL/bans/ckey/[ckey].txt")
-		var/list/details2 = splittext(details, ";")
-		if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
-			return TRUE
+		var/list/details_lines = splittext(details, "|||\n")
+		if (details_lines.len)
+			for(var/i=1,i<=details_lines.len,i++)
+				var/list/details2 = splittext(details_lines[i], ";")
+				if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+					return TRUE
 	if (fexists("SQL/bans/cid/[computer_id].txt"))
 		var/details = file2text("SQL/bans/cid/[computer_id].txt")
-		var/list/details2 = splittext(details, ";")
-		if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
-			return TRUE
+		var/list/details_lines = splittext(details, "|||\n")
+		if (details_lines.len)
+			for(var/i=1,i<=details_lines.len,i++)
+				var/list/details2 = splittext(details_lines[i], ";")
+				if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+					return TRUE
 	if (fexists("SQL/bans/ip/[address].txt"))
 		var/details = file2text("SQL/bans/ip/[address].txt")
-		var/list/details2 = splittext(details, ";")
-		if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
-			return TRUE
+		var/list/details_lines = splittext(details, "|||\n")
+		if (details_lines.len)
+			for(var/i=1,i<=details_lines.len,i++)
+				var/list/details2 = splittext(details_lines[i], ";")
+				if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+					return TRUE
 	return FALSE
 /* check if we're banned and tell us why we're banned */
 /client/proc/quickBan_rejected(var/bantype = "Server")
@@ -405,19 +437,25 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	if (fexists("SQL/bans/ckey/[ckey].txt"))
 		var/details = file2text("SQL/bans/ckey/[ckey].txt")
-		var/list/details2 = splittext(details, ";")
-		if (details2[1] == bantype && text2num(details2[7])>world.realtime)
-			fields = details2
-	else if (fexists("SQL/bans/ckey/[computer_id].txt"))
-		var/details = file2text("SQL/bans/ckey/[ckey].txt")
-		var/list/details2 = splittext(details, ";")
-		if (details2[1] == bantype && text2num(details2[7])>world.realtime)
-			fields = details2
-	else if (fexists("SQL/bans/ckey/[address].txt"))
-		var/details = file2text("SQL/bans/ckey/[ckey].txt")
-		var/list/details2 = splittext(details, ";")
-		if (details2[1] == bantype && text2num(details2[7])>world.realtime)
-			fields = details2
+		var/list/details_lines = splittext(details, "|||\n")
+		for(var/i=1,i<=details_lines.len,i++)
+			var/list/details2 = splittext(details_lines[i], ";")
+			if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+				fields = details2
+	else if (fexists("SQL/bans/cid/[computer_id].txt"))
+		var/details = file2text("SQL/bans/cid/[computer_id].txt")
+		var/list/details_lines = splittext(details, "|||\n")
+		for(var/i=1,i<=details_lines.len,i++)
+			var/list/details2 = splittext(details_lines[i], ";")
+			if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+				fields = details2
+	else if (fexists("SQL/bans/ip/[address].txt"))
+		var/details = file2text("SQL/bans/ip/[address].txt")
+		var/list/details_lines = splittext(details, "|||\n")
+		for(var/i=1,i<=details_lines.len,i++)
+			var/list/details2 = splittext(details_lines[i], ";")
+			if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+				fields = details2
 	if (isemptylist(fields))
 		return
 
