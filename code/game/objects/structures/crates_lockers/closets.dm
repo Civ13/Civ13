@@ -240,7 +240,7 @@
 						visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 						return
-		if (W.code != custom_code)
+		if (istype(W, /obj/item/weapon/key) && W.code != custom_code)
 			user << "This key does not match this lock!"
 			return
 	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HARM)
@@ -258,13 +258,24 @@
 			var/obj/item/weapon/grab/G = W
 			MouseDrop_T(G.affecting, user)      //act like they were dragged onto the closet
 			return FALSE
-/*		if (istype(W,/obj/item/tk_grab))
-			return FALSE*/
 		if (W.loc != user) // This should stop mounted modules ending up outside the module.
 			return
 		usr.drop_item()
 		if (W)
-			W.forceMove(loc)
+			if (istype(src, /obj/structure/closet/crate/dumpster))
+				var/content_size = FALSE
+				for (var/obj/item/I in contents)
+					content_size += ceil(I.w_class/2)
+				if (content_size < storage_capacity)
+					W.forceMove(src)
+					user << "You throw \the [W] into \the [src]."
+					update_icon()
+					return
+				else
+					user << "<span class='warning'>\The [src] is too full!</span>"
+					return
+			else
+				W.forceMove(loc)
 	else
 		attack_hand(user)
 	return
