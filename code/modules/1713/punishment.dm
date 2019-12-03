@@ -262,3 +262,106 @@
 			return
 	else
 		..()
+
+//////////////////////////////////////////////////////////////
+////////////////////////CRUCIFIXION///////////////////////////
+/obj/structure/cross
+	icon = 'icons/obj/obj32x64.dmi'
+	name = "greek cross"
+	desc = "a cross for hanging criminals."
+	icon_state = "greekcross"
+	var/base_icon = "greekcross"
+	layer = MOB_LAYER - 0.1
+	anchored = TRUE
+	var/mob/living/carbon/human/hanging = null
+	var/image/crossoverlay
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	New()
+		..()
+		crossoverlay = image(icon=src.icon, icon_state="[base_icon]_used",layer=MOB_LAYER+0.8)
+
+/obj/structure/cross/tau
+	name = "tau cross"
+	icon_state = "taucross"
+	base_icon = "taucross"
+
+/obj/structure/cross/New()
+	..()
+	processing_objects |= src
+
+/obj/structure/cross/Del()
+	processing_objects -= src
+	..()
+
+/obj/structure/cross/bullet_act(var/obj/item/projectile/P)
+	if (hanging)
+		hanging.bullet_act(P)
+		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+	else
+		..()
+
+/obj/structure/cross/process()
+	fire()
+
+// call this instead of process() if you want to do direct calls, I think its better - Kachnov
+/obj/structure/cross/proc/fire()
+	if (hanging)
+		hanging.forceMove(loc)
+		density = TRUE
+		hanging.lying = 0
+		hanging.dir = SOUTH
+		hanging.pixel_y = 32 // because getting punched resets it
+
+	else
+		overlays.Cut()
+		density = FALSE
+
+/obj/structure/cross/MouseDrop_T(var/atom/dropping, var/mob/user as mob)
+	if (!ismob(dropping))
+		return
+
+	if (hanging)
+		return
+
+	var/mob/living/carbon/human/target = dropping
+	var/mob/living/carbon/human/hangman = user
+
+	if (!istype(target) || !istype(hangman))
+		return
+	visible_message("<span class = 'danger'>[hangman] starts to nail [target == hangman ? "themselves" : target] to the cross...</span>")
+	if (do_after(hangman, 80, target))
+		if (src)
+			visible_message("<span class = 'danger'>[hangman] nails [target == hangman ? "themselves" : target] to the cross!</span>")
+			hanging = target
+			target.loc = get_turf(src)
+			target.dir = SOUTH
+			var/dam_zone = list("l_foot", "r_foot", "l_hand", "r_hand")
+			for (var/organ_p in dam_zone)
+				var/obj/item/organ/external/affecting = target.get_organ(organ_p)
+				target.apply_damage(rand(15,20), BRUTE, affecting, 0, sharp=1, edge=1)
+			fire()
+			spawn(10)
+				target.update_icons()
+				target.anchored = 1
+			overlays += crossoverlay
+
+/obj/structure/cross/attack_hand(var/mob/living/carbon/human/H)
+	if (!istype(H))
+		return
+
+	if (!hanging)
+		return
+
+	if (hanging == H)
+		return
+
+	visible_message("<span class = 'danger'>[H] starts to free [hanging] from the cross...</span>")
+	if (do_after(H, 100, src))
+		if (src && hanging)
+			visible_message("<span class = 'danger'>[H] frees [hanging] from the cross!</span>")
+			hanging.pixel_x = 0
+			hanging.pixel_y = 0
+			hanging.anchored = 0
+			hanging = null
+			overlays.Cut()
