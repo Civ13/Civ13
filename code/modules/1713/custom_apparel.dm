@@ -1106,6 +1106,14 @@
 	item_state = "customnoblehat_hat"
 	worn_state = "customnoblehat_hat"
 
+/obj/item/clothing/head/custom/customhood
+	name = "wool_hood"
+	desc = "A wool hood."
+	icon_state = "wool_hood"
+	item_state = "wool_hood"
+	worn_state = "wool_hood"
+	cold_protection = HEAD
+
 /obj/item/clothing/head/custom_keffiyeh
 	name = "keffiyeh"
 	desc = "A headdress fashioned from a scarf with a checkered pattern."
@@ -1115,8 +1123,6 @@
 	heat_protection = HEAD
 	var/uncolored1 = TRUE
 	var/patterncolor = 0
-
-
 
 /obj/item/clothing/head/custom_keffiyeh/attack_self(mob/user as mob)
 	if (uncolored1)

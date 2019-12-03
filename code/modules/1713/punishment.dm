@@ -462,15 +462,17 @@
 			hanging.anchored = 0
 			hanging = null
 			overlays.Cut()
+			desc = "a wood stock with three holes, for both hands and the head. Used to display criminals to the public."
 
-/obj/item/weapon/reagent_containers/food/snacks/grown/tomato/throw_impact(atom/hit_atom)
-	if (istype(hit_atom, /obj/structure/pillory))
-		var/obj/structure/pillory/pillory = hit_atom
-		if (pillory.hanging)
-			var/mob/living/carbon/human/H = pillory.hanging
-			visible_message("[H] is hit by \the [src]!")
-			H.adjust_hygiene(-3)
-			H.mood -= 3
-			qdel(src)
+/obj/structure/pillory/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/pen) && hanging)
+		var/newtext = input("What do you want to write on the sign? (Up to 30 characters)","Sign", "") as text
+		if (newtext == null || newtext == "")
+			newtext = "There is nothing on the sign."
+			desc = newtext
 			return
-	..()
+		newtext = sanitize(newtext, 30, FALSE)
+		desc = "It reads: <b>[newtext]</b>"
+		return
+	else
+		..()

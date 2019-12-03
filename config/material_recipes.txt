@@ -98,72 +98,73 @@ RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/
 RECIPE: /material/woolcloth/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
 
-RECIPE: /material/woolcloth/, red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,18,4,null
-RECIPE: /material/woolcloth/, blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,18,4,null
-RECIPE: /material/woolcloth/, colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,18,8,null
-RECIPE: /material/woolcloth/, white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats & masks,0,18,0,8,null
-RECIPE: /material/woolcloth/, shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,hats & masks,0,0,38,8,null
-RECIPE: /material/woolcloth/, bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,hats & masks,0,0,62,3,null
-RECIPE: /material/woolcloth/, artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats & masks,0,0,52,3,null
-RECIPE: /material/woolcloth/, red kerchief,/obj/item/clothing/mask/shemagh/redkerchief,2,45,0,1,hats & masks,0,0,98,8,null
-RECIPE: /material/woolcloth/, grey kerchief,/obj/item/clothing/mask/shemagh/greykerchief,2,45,0,1,hats & masks,0,0,98,8,null
-RECIPE: /material/woolcloth/, brown flatcap,/obj/item/clothing/head/flatcap1,2,55,0,1,hats & masks,0,0,109,8,null
-RECIPE: /material/woolcloth/, blue flatcap,/obj/item/clothing/head/flatcap2,2,55,0,1,hats & masks,0,0,109,8,null
-RECIPE: /material/woolcloth/, grey flatcap,/obj/item/clothing/head/flatcap3,2,55,0,1,hats & masks,0,0,109,8,null
-RECIPE: /material/woolcloth/, custom officer cap,/obj/item/clothing/head/custom_off_cap,4,95,0,1,hats & masks,0,0,109,8,null
-RECIPE: /material/woolcloth/, custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/woolcloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,18,4,null
+RECIPE: /material/woolcloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,18,4,null
+RECIPE: /material/woolcloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,18,8,null
+RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats & masks,0,18,0,8,null
+RECIPE: /material/woolcloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,hats & masks,0,0,38,8,null
+RECIPE: /material/woolcloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,hats & masks,0,0,62,3,null
+RECIPE: /material/woolcloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats & masks,0,0,52,3,null
+RECIPE: /material/woolcloth/,red kerchief,/obj/item/clothing/mask/shemagh/redkerchief,2,45,0,1,hats & masks,0,0,98,8,null
+RECIPE: /material/woolcloth/,grey kerchief,/obj/item/clothing/mask/shemagh/greykerchief,2,45,0,1,hats & masks,0,0,98,8,null
+RECIPE: /material/woolcloth/,brown flatcap,/obj/item/clothing/head/flatcap1,2,55,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/woolcloth/,blue flatcap,/obj/item/clothing/head/flatcap2,2,55,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/woolcloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/woolcloth/,custom officer cap,/obj/item/clothing/head/custom_off_cap,4,95,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/woolcloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/customhood,2,40,0,1,hats & masks,0,0,26,8,null
+RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,15,6,null
+RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,15,6,null
+RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,15,6,null
+RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
+RECIPE: /material/woolcloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
+RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
+RECIPE: /material/woolcloth/,dark artisan clothing,/obj/item/clothing/under/artisan/dark,3,100,0,1,clothing,0,0,38,3,null
+RECIPE: /material/woolcloth/,light artisan clothing,/obj/item/clothing/under/artisan/light,3,100,0,1,clothing,0,0,38,3,null
+RECIPE: /material/woolcloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
+RECIPE: /material/woolcloth/,baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
+RECIPE: /material/woolcloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
+RECIPE: /material/woolcloth/,custom uniform,/obj/item/clothing/under/customuniform,3,75,0,1,clothing,0,0,98,8,null
 
-RECIPE: /material/woolcloth/, light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,15,6,null
-RECIPE: /material/woolcloth/, dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,15,6,null
-RECIPE: /material/woolcloth/, green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,15,6,null
-RECIPE: /material/woolcloth/, customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
-RECIPE: /material/woolcloth/, customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
-RECIPE: /material/woolcloth/, artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
-RECIPE: /material/woolcloth/, dark artisan clothing,/obj/item/clothing/under/artisan/dark,3,100,0,1,clothing,0,0,38,3,null
-RECIPE: /material/woolcloth/, light artisan clothing,/obj/item/clothing/under/artisan/light,3,100,0,1,clothing,0,0,38,3,null
-RECIPE: /material/woolcloth/, customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
-RECIPE: /material/woolcloth/, baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
-RECIPE: /material/woolcloth/, pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
-RECIPE: /material/woolcloth/, custom uniform,/obj/item/clothing/under/customuniform,3,75,0,1,clothing,0,0,98,8,null
+RECIPE: /material/woolcloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,3,null
+RECIPE: /material/woolcloth/,fancy brown jacket,/obj/item/clothing/suit/storage/jacket/piratejacket2,10,180,0,1,jackets & vests,0,0,57,3,null
+RECIPE: /material/woolcloth/,fancy red jacket,/obj/item/clothing/suit/storage/jacket/piratejacket5,10,180,0,1,jackets & vests,0,0,57,3,null
+RECIPE: /material/woolcloth/,blue vest,/obj/item/clothing/suit/storage/jacket/piratejacket3,4,75,0,1,jackets & vests,0,0,57,8,null
+RECIPE: /material/woolcloth/,black vest,/obj/item/clothing/suit/storage/jacket/piratejacket4,4,75,0,1,jackets & vests,0,0,57,8,null
+RECIPE: /material/woolcloth/,leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat1,6,120,0,1,jackets & vests,0,0,89,5,null
+RECIPE: /material/woolcloth/,black leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat2,6,120,0,1,jackets & vests,0,0,89,5,null
+RECIPE: /material/woolcloth/,olive vest,/obj/item/clothing/suit/storage/jacket/olivevest,4,80,0,1,jackets & vests,0,0,89,8,null
+RECIPE: /material/woolcloth/,brown winter coat,/obj/item/clothing/suit/storage/coat/japcoat2/brown,10,200,0,1,jackets & vests,0,0,89,8,null
+RECIPE: /material/woolcloth/,grey winter coat,/obj/item/clothing/suit/storage/coat/ruscoat/grey,10,200,0,1,jackets & vests,0,0,89,8,null
+RECIPE: /material/woolcloth/,charcoal suit,/obj/item/clothing/suit/storage/jacket/charcoal_suit,15,200,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/woolcloth/,black suit,/obj/item/clothing/suit/storage/jacket/black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/woolcloth/,dark black suit,/obj/item/clothing/suit/storage/jacket/really_black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/woolcloth/,burgundy suit,/obj/item/clothing/suit/storage/jacket/burgundy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/woolcloth/,checkered suit,/obj/item/clothing/suit/storage/jacket/checkered_suit,15,200,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/woolcloth/,navy suit,/obj/item/clothing/suit/storage/jacket/navy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/woolcloth/,grey parka,/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,0,1,jackets & vests,0,0,112,8,null
 
-RECIPE: /material/woolcloth/, black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,3,null
-RECIPE: /material/woolcloth/, fancy brown jacket,/obj/item/clothing/suit/storage/jacket/piratejacket2,10,180,0,1,jackets & vests,0,0,57,3,null
-RECIPE: /material/woolcloth/, fancy red jacket,/obj/item/clothing/suit/storage/jacket/piratejacket5,10,180,0,1,jackets & vests,0,0,57,3,null
-RECIPE: /material/woolcloth/, blue vest,/obj/item/clothing/suit/storage/jacket/piratejacket3,4,75,0,1,jackets & vests,0,0,57,8,null
-RECIPE: /material/woolcloth/, black vest,/obj/item/clothing/suit/storage/jacket/piratejacket4,4,75,0,1,jackets & vests,0,0,57,8,null
-RECIPE: /material/woolcloth/, leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat1,6,120,0,1,jackets & vests,0,0,89,5,null
-RECIPE: /material/woolcloth/, black leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat2,6,120,0,1,jackets & vests,0,0,89,5,null
-RECIPE: /material/woolcloth/, olive vest,/obj/item/clothing/suit/storage/jacket/olivevest,4,80,0,1,jackets & vests,0,0,89,8,null
-RECIPE: /material/woolcloth/, brown winter coat,/obj/item/clothing/suit/storage/coat/japcoat2/brown,10,200,0,1,jackets & vests,0,0,89,8,null
-RECIPE: /material/woolcloth/, grey winter coat,/obj/item/clothing/suit/storage/coat/ruscoat/grey,10,200,0,1,jackets & vests,0,0,89,8,null
-RECIPE: /material/woolcloth/, charcoal suit,/obj/item/clothing/suit/storage/jacket/charcoal_suit,15,200,0,1,jackets & vests,0,0,112,8,null
-RECIPE: /material/woolcloth/, black suit,/obj/item/clothing/suit/storage/jacket/black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
-RECIPE: /material/woolcloth/, dark black suit,/obj/item/clothing/suit/storage/jacket/really_black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
-RECIPE: /material/woolcloth/, burgundy suit,/obj/item/clothing/suit/storage/jacket/burgundy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
-RECIPE: /material/woolcloth/, checkered suit,/obj/item/clothing/suit/storage/jacket/checkered_suit,15,200,0,1,jackets & vests,0,0,112,8,null
-RECIPE: /material/woolcloth/, navy suit,/obj/item/clothing/suit/storage/jacket/navy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
-RECIPE: /material/woolcloth/, grey parka,/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/woolcloth/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/woolcloth/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/woolcloth/,customizable cape,/obj/item/clothing/accessory/custom/cape,2,30,0,1,accessories,0,0,0,3,null
+RECIPE: /material/woolcloth/,customizable tabard,/obj/item/clothing/accessory/custom/tabard,2,30,0,1,accessories,0,0,0,3,null
+RECIPE: /material/woolcloth/,customizable apron,/obj/item/clothing/accessory/custom/apron,2,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/woolcloth/,customizable scarf,/obj/item/clothing/accessory/custom/scarf,2,30,0,1,accessories,0,0,70,8,null
+RECIPE: /material/woolcloth/,customizable tie,/obj/item/clothing/accessory/custom/tie,2,50,0,1,accessories,0,0,95,8,null
+RECIPE: /material/woolcloth/,customizable bowtie,/obj/item/clothing/accessory/custom/bowtie,2,50,0,1,accessories,0,0,95,8,null
+RECIPE: /material/woolcloth/,customizable priest band,/obj/item/clothing/accessory/custom/priest_band,1.5,50,0,1,accessories,0,0,28,8,null
 
-RECIPE: /material/woolcloth/, customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
-RECIPE: /material/woolcloth/, customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
-RECIPE: /material/woolcloth/, customizable cape,/obj/item/clothing/accessory/custom/cape,2,30,0,1,accessories,0,0,0,3,null
-RECIPE: /material/woolcloth/, customizable tabard,/obj/item/clothing/accessory/custom/tabard,2,30,0,1,accessories,0,0,0,3,null
-RECIPE: /material/woolcloth/, customizable apron,/obj/item/clothing/accessory/custom/apron,2,30,0,1,accessories,0,0,0,8,null
-RECIPE: /material/woolcloth/, customizable scarf,/obj/item/clothing/accessory/custom/scarf,2,30,0,1,accessories,0,0,70,8,null
-RECIPE: /material/woolcloth/, customizable tie,/obj/item/clothing/accessory/custom/tie,2,50,0,1,accessories,0,0,95,8,null
-RECIPE: /material/woolcloth/, customizable bowtie,/obj/item/clothing/accessory/custom/bowtie,2,50,0,1,accessories,0,0,95,8,null
+RECIPE: /material/woolcloth/,white bedsheet,/obj/item/weapon/bedsheet,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,medical bedsheet,/obj/item/weapon/bedsheet/medical,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,brown bedsheet,/obj/item/weapon/bedsheet/brown,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,blue bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,yellow bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
+RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bedsheets,0,0,28,8,null
 
-RECIPE: /material/woolcloth/, white bedsheet,/obj/item/weapon/bedsheet,2,75,0,1,bedsheets,0,0,28,8,null
-RECIPE: /material/woolcloth/, medical bedsheet,/obj/item/weapon/bedsheet/medical,2,75,0,1,bedsheets,0,0,28,8,null
-RECIPE: /material/woolcloth/, brown bedsheet,/obj/item/weapon/bedsheet/brown,2,75,0,1,bedsheets,0,0,28,8,null
-RECIPE: /material/woolcloth/, blue bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
-RECIPE: /material/woolcloth/, yellow bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
-RECIPE: /material/woolcloth/, red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bedsheets,0,0,28,8,null
-
-RECIPE: /material/woolcloth/, brown bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown,4,70,0,1,jackets & vests,0,0,109,8,null
-RECIPE: /material/woolcloth/, black bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack,4,70,0,1,jackets & vests,0,0,109,8,null
-RECIPE: /material/woolcloth/, service jacket,/obj/item/clothing/suit/storage/coat/ww2/servicejacket,3,70,0,1,jackets & vests,0,0,109,8,null
-RECIPE: /material/woolcloth/, modern coat,/obj/item/clothing/suit/storage/coat/ww2/moderncoat,4,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/,brown bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown,4,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/,black bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack,4,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/,service jacket,/obj/item/clothing/suit/storage/coat/ww2/servicejacket,3,70,0,1,jackets & vests,0,0,109,8,null
+RECIPE: /material/woolcloth/,modern coat,/obj/item/clothing/suit/storage/coat/ww2/moderncoat,4,70,0,1,jackets & vests,0,0,109,8,null
 
 
 RECIPE: /material/cloth/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
@@ -174,6 +175,7 @@ RECIPE: /material/cloth/,customizable apron,/obj/item/clothing/accessory/custom/
 RECIPE: /material/cloth/,customizable scarf,/obj/item/clothing/accessory/custom/scarf,2,30,0,1,accessories,0,0,70,8,null
 RECIPE: /material/cloth/,customizable tie,/obj/item/clothing/accessory/custom/tie,2,50,0,1,accessories,0,0,95,8,null
 RECIPE: /material/cloth/,customizable bowtie,/obj/item/clothing/accessory/custom/bowtie,2,50,0,1,accessories,0,0,95,8,null
+RECIPE: /material/cloth/,customizable priest band,/obj/item/clothing/accessory/custom/priest_band,1.5,50,0,1,accessories,0,0,28,8,null
 
 RECIPE: /material/cloth/,white bedsheet,/obj/item/weapon/bedsheet,2,75,0,1,bedsheets,0,0,28,8,null
 RECIPE: /material/cloth/,medical bedsheet,/obj/item/weapon/bedsheet/medical,2,75,0,1,bedsheets,0,0,28,8,null
@@ -796,7 +798,7 @@ RECIPE: /material/wood/,plough,/obj/item/weapon/plough,4,120,0,1,tools,0,0,0,8,n
 RECIPE: /material/wood/,berries gatherer,/obj/item/weapon/berriesgatherer,4,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,fishing pole,/obj/item/weapon/fishing,3,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
-
+RECIPE: /material/wood/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,wardrobe,/obj/structure/closet/cabinet,5,80,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,cabinet,/obj/structure/closet/cabinet/ceiling,4,60,1,1,furniture,41,0,0,8,null
@@ -901,7 +903,7 @@ RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass
 RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
 RECIPE: /material/iron/,cooking pot,/obj/structure/pot,8,180,1,1,production,33,0,0,8,null
 RECIPE: /material/iron/,oven,/obj/structure/oven,8,150,1,1,production,33,0,0,8,null
-RECIPE: /material/iron/, brazier,/obj/structure/brazier,4,90,1,1,production,33,0,0,8,null
+RECIPE: /material/iron/,brazier,/obj/structure/brazier,4,90,1,1,production,33,0,0,8,null
 RECIPE: /material/iron/,mechanical trap,/obj/item/weapon/beartrap,5,140,0,1,weapons,0,32,0,8,null
 RECIPE: /material/iron/,handcuffs,/obj/item/weapon/handcuffs,1,50,0,1,tools,0,61,0,8,null
 RECIPE: /material/iron/,monocle,/obj/item/clothing/glasses/monocle,3,110,0,1,none,0,61,0,8,null
@@ -966,7 +968,7 @@ RECIPE: /material/iron/,matchlock musket,/obj/item/weapon/gun/projectile/ancient
 RECIPE: /material/iron/,arquebus,/obj/item/weapon/gun/projectile/ancient/arquebus,15,110,0,1,firearms,0,62,0,4,null
 RECIPE: /material/iron/,hand cannon,/obj/item/weapon/gun/projectile/ancient/handcannon,14,100,0,1,firearms,0,56,0,4,null
 RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firelance,6,50,0,1,firearms,0,49,0,4,null
-RECIPE: /material/iron/, ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,24,120,0,8,iron
+RECIPE: /material/iron/,ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,24,120,0,8,iron
 RECIPE: /material/iron/,armor workbench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
 

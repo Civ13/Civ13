@@ -153,6 +153,14 @@
 	worn_state = "apron"
 	slot = "overcloth"
 
+/obj/item/clothing/accessory/custom/priest_band
+	name = "priest band"
+	desc = "A priest band."
+	icon_state = "customizable_priest_band"
+	item_state = "customizable_priest_band"
+	worn_state = "customizable_priest_band"
+	slot = "decor"
+
 /obj/item/clothing/accessory/custom/cape
 	name = "cape"
 	desc = "A cloth cape."
@@ -244,3 +252,22 @@
 		NI.color = color
 		return NI
 	return inv_overlay
+
+/obj/item/clothing/accessory/wearable_sign
+	name = "wearable sign"
+	desc = "A wooden sign with a string, wearable over the clothing."
+	icon_state = "wearable_sign"
+	item_state = "wearable_sign"
+	worn_state = "wearable_sign"
+	slot = "overcloth"
+
+/obj/item/clothing/accessory/wearable_sign/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/pen))
+		var/newtext = input("What do you want to write on the sign? (Up to 30 characters)","Sign", "") as text
+		if (newtext == null)
+			newtext = ""
+		newtext = sanitize(newtext, 30, FALSE)
+		name = "wooden sign: [newtext]"
+		return
+	else
+		..()
