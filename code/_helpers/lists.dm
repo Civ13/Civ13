@@ -264,10 +264,11 @@ proc/listclearnulls(list/list)
 		while (Li <= L.len && Ri <= R.len)
 			var/atom/rL = L[Li]
 			var/atom/rR = R[Ri]
-			if (sorttext(rL.name, rR.name) == order)
-				result += L[Li++]
-			else
-				result += R[Ri++]
+			if (rL.name && rR.name)
+				if (sorttext(rL.name, rR.name) == order)
+					result += L[Li++]
+				else
+					result += R[Ri++]
 
 	if (Li <= L.len)
 		return (result + L.Copy(Li, FALSE))

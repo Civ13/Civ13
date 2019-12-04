@@ -181,10 +181,9 @@
 
 			observer.started_as_observer = TRUE
 			close_spawn_windows()
-			var/obj/O = locate("landmark/Observer-Start")
-			if (istype(O))
-				src << "<span class='notice'>Now teleporting.</span>"
-				observer.loc = O.loc
+			var/turf/T = get_turf(round(world.maxx/2),round(world.maxy/2),world.maxz)
+			if (T)
+				observer.loc = T
 			else
 				src << "<span class='danger'>Could not locate an observer spawn point. Use the Teleport verb to jump to another map point.</span>"
 			observer.timeofdeath = world.time // Set the time of death so that the respawn timer works correctly.
@@ -202,8 +201,6 @@
 
 			observer.real_name = capitalize(key)
 			observer.name = observer.real_name
-		//	if (!client.holder && !config.antag_hud_allowed)           // For new ghosts we remove the verb from even showing up if it's not allowed.
-				//observer.verbs -= /mob/observer/ghost/verb/toggle_antagHUD        // Poor guys, don't know what they are missing!
 			observer.key = key
 			observer.overlays += icon('icons/mob/uniform.dmi', "civuni[rand(1,3)]")
 			observer.original_icon = observer.icon
@@ -222,7 +219,7 @@
 
 		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
 			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
-			return
+			return TRUE
 
 		if (client && client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/10)
@@ -291,9 +288,8 @@
 			if (check_rights(R_ADMIN, FALSE, src))
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
-					log_admin(msg)
-					message_admins(msg)
-					LateChoices()
+					close_spawn_windows()
+					AttemptLateSpawn(pick(map.availablefactions))
 					return TRUE
 			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
 			return FALSE
@@ -303,7 +299,6 @@
 			AttemptLateSpawn(pick(map.availablefactions))
 		else
 			return
-		LateChoices()
 		return TRUE
 
 	if (href_list["nomads"])
@@ -327,17 +322,22 @@
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg)
-					LateChoices()
+					close_spawn_windows()
+					AttemptLateSpawn("Nomad")
 					return TRUE
-			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+				else
+					return FALSE
+			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
 		if (map && map.civilizations == TRUE)
 			close_spawn_windows()
 			AttemptLateSpawn("Nomad")
+			return TRUE
 		else
 			return
-		LateChoices()
+		close_spawn_windows()
+		AttemptLateSpawn("Nomad")
 		return TRUE
 
 
@@ -553,22 +553,21 @@
 	if (job.is_deathmatch)
 		if (map && map.faction1_can_cross_blocks())
 			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
-			return
+			return FALSE
 		if (client && client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
-			return
+			return FALSE
 	if (client && client.prefs.gender == FEMALE && (istype(job, /datum/job/american) || istype(job, /datum/job/arab)))
 		usr << "<span class='danger'>You must be male to play as this faction.</span>"
-		return
+		return FALSE
 	if (job.is_ww1)
 		if (client && client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
-			return
+			return FALSE
 	if (map.ordinal_age == 2 && !map.civilizations && !istype(job, /datum/job/civilian))
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
-			return
-			return
+			return FALSE
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
@@ -587,7 +586,7 @@
 		ticker.minds += character.mind
 
 	character.lastarea = get_area(loc)
-
+	qdel(src)
 	return TRUE
 
 /mob/new_player/proc/LateChoices()
