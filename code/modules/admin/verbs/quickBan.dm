@@ -410,25 +410,28 @@ var/datum/quickBan_handler/quickBan_handler = null
 		var/list/details_lines = splittext(details, "|||\n")
 		if (details_lines.len)
 			for(var/i=1,i<=details_lines.len,i++)
-				var/list/details2 = splittext(details_lines[i], ";")
-				if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
-					return TRUE
+				if (findtext(details_lines[i], ";"))
+					var/list/details2 = splittext(details_lines[i], ";")
+					if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+						return TRUE
 	if (fexists("SQL/bans/cid/[computer_id].txt"))
 		var/details = file2text("SQL/bans/cid/[computer_id].txt")
 		var/list/details_lines = splittext(details, "|||\n")
 		if (details_lines.len)
 			for(var/i=1,i<=details_lines.len,i++)
-				var/list/details2 = splittext(details_lines[i], ";")
-				if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
-					return TRUE
+				if (findtext(details_lines[i], ";"))
+					var/list/details2 = splittext(details_lines[i], ";")
+					if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+						return TRUE
 	if (fexists("SQL/bans/ip/[address].txt"))
 		var/details = file2text("SQL/bans/ip/[address].txt")
 		var/list/details_lines = splittext(details, "|||\n")
 		if (details_lines.len)
 			for(var/i=1,i<=details_lines.len,i++)
-				var/list/details2 = splittext(details_lines[i], ";")
-				if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
-					return TRUE
+				if (findtext(details_lines[i], ";"))
+					var/list/details2 = splittext(details_lines[i], ";")
+					if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+						return TRUE
 	return FALSE
 /* check if we're banned and tell us why we're banned */
 /client/proc/quickBan_rejected(var/bantype = "Server")
@@ -439,23 +442,26 @@ var/datum/quickBan_handler/quickBan_handler = null
 		var/details = file2text("SQL/bans/ckey/[ckey].txt")
 		var/list/details_lines = splittext(details, "|||\n")
 		for(var/i=1,i<=details_lines.len,i++)
-			var/list/details2 = splittext(details_lines[i], ";")
-			if (details2[1] == bantype && text2num(details2[7])>world.realtime)
-				fields = details2
+			if (findtext(details_lines[i], ";"))
+				var/list/details2 = splittext(details_lines[i], ";")
+				if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+					fields = details2
 	else if (fexists("SQL/bans/cid/[computer_id].txt"))
 		var/details = file2text("SQL/bans/cid/[computer_id].txt")
 		var/list/details_lines = splittext(details, "|||\n")
 		for(var/i=1,i<=details_lines.len,i++)
-			var/list/details2 = splittext(details_lines[i], ";")
-			if (details2[1] == bantype && text2num(details2[7])>world.realtime)
-				fields = details2
+			if (findtext(details_lines[i], ";"))
+				var/list/details2 = splittext(details_lines[i], ";")
+				if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+					fields = details2
 	else if (fexists("SQL/bans/ip/[address].txt"))
 		var/details = file2text("SQL/bans/ip/[address].txt")
 		var/list/details_lines = splittext(details, "|||\n")
 		for(var/i=1,i<=details_lines.len,i++)
-			var/list/details2 = splittext(details_lines[i], ";")
-			if (details2[1] == bantype && text2num(details2[7])>world.realtime)
-				fields = details2
+			if (findtext(details_lines[i], ";"))
+				var/list/details2 = splittext(details_lines[i], ";")
+				if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+					fields = details2
 	if (isemptylist(fields))
 		return
 
