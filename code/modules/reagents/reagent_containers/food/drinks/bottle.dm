@@ -396,6 +396,23 @@
 		..()
 		reagents.del_reagents()
 
+/obj/item/weapon/reagent_containers/food/drinks/bottle/large
+	name = "large bottle"
+	desc = "A large, 80 unit bottle."
+	icon_state = "oldstyle_rum_empty"
+	value = 2
+	volume = 80
+	center_of_mass = list("x"=16, "y"=8)
+	New()
+		..()
+		reagents.del_reagents()
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/large/update_icon()
+	if (reagents.reagent_list.len)
+		icon_state = "oldstyle_rum"
+	else
+		icon_state = "oldstyle_rum_empty"
+
 /obj/item/weapon/reagent_containers/food/drinks/bottle/holywater
 	name = "Flask of Holy Water"
 	desc = "A flask of the preacher's holy water."
@@ -416,7 +433,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/vermouth/empty
 	name = "Goldeneye Vermouth"
-	desc = "Sweet, sweet dryness~"
+	desc = "Sweet, sweet dryness"
 	icon_state = "vermouthbottle"
 	center_of_mass = list("x"=17, "y"=3)
 	New()
@@ -549,12 +566,20 @@
 
 //Small bottles
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small
-	volume = 30
+	name = "small bottle"
+	desc = "a small, 35 unit bottle."
+	volume = 35
 	shatter_duration = TRUE
 	flags = FALSE //starts closed
 	rag_underlay = "rag_small"
 	icon_state = "oldstyle_beer_empty"
 	item_state = "beer"
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/update_icon()
+	if (reagents.reagent_list.len)
+		icon_state = "oldstyle_beer"
+	else
+		icon_state = "oldstyle_beer_empty"
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer
 	name = "beer"
@@ -597,3 +622,10 @@
 	rag_underlay = "rag_small"
 	icon_state = "sake_empty"
 	item_state = "beer"
+
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake/update_icon()
+	if (reagents.reagent_list.len)
+		icon_state = "sake"
+	else
+		icon_state = "sake_empty"

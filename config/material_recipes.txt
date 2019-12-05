@@ -492,6 +492,7 @@ RECIPE: /material/rope/,garrote,/obj/item/garrote,3,120,0,1,none,0,43,0,8,null
 
 RECIPE: /material/glass/,drinking glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,22,0,0,8,null
 RECIPE: /material/glass/,small glass bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/small,2,40,0,1,drinks,22,0,0,8,null
+RECIPE: /material/glass/,glass bottle,/obj/item/weapon/reagent_containers/food/drinks/bottle/large,4,60,0,1,drinks,22,0,0,8,null
 RECIPE: /material/glass/,teapot,/obj/item/weapon/reagent_containers/food/drinks/teapot,4,70,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,teacup,/obj/item/weapon/reagent_containers/food/drinks/tea/empty,2,50,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,wine glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,49,0,0,8,null

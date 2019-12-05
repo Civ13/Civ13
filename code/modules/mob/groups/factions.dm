@@ -37,6 +37,7 @@
 		U = src
 	else
 		return
+
 	if (map.nomads == TRUE)
 		if (U.civilization != "none")
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
@@ -129,7 +130,7 @@
 			usr << "You are not part of any faction."
 			return
 		else
-			var/confirmation = WWinput(src, "Are you sure you want to leave your faction?", "", "Stay in faction", list("Leave", "Stay in faction"))
+			var/confirmation = WWinput(src, "Are you sure you want to leave your faction? You won't be able to re-join it for 24 hours, and everyone will know you're a former member.", "", "Stay in faction", list("Leave", "Stay in faction"))
 			if (confirmation == "Stay in faction")
 				return
 			else
@@ -142,6 +143,7 @@
 /mob/living/carbon/human/proc/faction_leaving_proc()
 	if (civilization == null || civilization == "none")
 		return FALSE
+	left_factions += list(list(civilization,world.realtime+864000)) //24 hours
 	if (map.custom_civs[civilization][4] != null)
 		if (map.custom_civs[civilization][4].real_name == real_name)
 			map.custom_civs[civilization][4] = null
