@@ -240,22 +240,9 @@ var/list/delayed_garbage = list()
 	tag = null
 	return
 
-#ifdef TESTING
 /client/var/running_find_references
 
-/mob/verb/create_thing()
-	set category = "Debug"
-	set name = "Create Thing"
-
-	var/path = input("Enter path")
-	var/atom/thing = new path(loc)
-	thing.find_references()
-
-/atom/verb/find_references()
-	set category = "Debug"
-	set name = "Find References"
-	set background = TRUE
-	set src in world
+/atom/proc/find_references()
 
 	if (!usr || !usr.client)
 		return
@@ -269,8 +256,8 @@ var/list/delayed_garbage = list()
 		return
 
 	// Remove this object from the list of things to be auto-deleted.
-	if (garbage)
-		garbage.destroyed -= "\ref[src]"
+	if (processes.garbage)
+		processes.garbage.destroyed -= "\ref[src]"
 
 	usr.client.running_find_references = type
 	testing("Beginning search for references to a [type].")
@@ -294,13 +281,14 @@ var/list/delayed_garbage = list()
 	testing("Completed search for references to a [type].")
 	usr.client.running_find_references = null
 
-/client/verb/purge_all_destroyed_objects()
+/client/proc/purge_all_destroyed_objects()
 	set category = "Debug"
-	if (garbage)
-		while (garbage.destroyed.len)
-			var/datum/o = locate(garbage.destroyed[1])
+	set name = "Purge Destroyed Objects"
+	if (processes.garbage)
+		while (processes.garbage.destroyed.len)
+			var/datum/o = locate(processes.garbage.destroyed[1])
 			if (istype(o) && o.gcDestroyed)
 				del(o)
-				garbage.dels++
-			garbage.destroyed.Cut(1, 2)
-#endif
+				processes.garbage.total_dels++
+				processes.garbage.hard_dels++
+			processes.garbage.destroyed.Cut(1, 2)

@@ -154,6 +154,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/reload_admins,
 	/client/proc/reload_craft_list,
 	/client/proc/reload_bans,
+	/client/proc/purge_all_destroyed_objects,
 	/client/proc/start_forcelife,
 	/client/proc/restart_controller,
 	/client/proc/callproc,

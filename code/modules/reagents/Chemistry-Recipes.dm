@@ -524,7 +524,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Nitrocellulose"
 	id = "nitrocellulose"
 	result = "nitrocellulose"
-	required_reagents = list("sulfur" = 1, "cotton" = 1, "potassium" = 1)
+	required_reagents = list("cotton" = 1, "potassium" = 1)
 	result_amount = 2
 	log_is_important = TRUE
 
