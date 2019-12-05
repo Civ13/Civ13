@@ -102,7 +102,7 @@
 	handle_paralysed()
 	handle_mutations_and_radiation()
 
-	if (herbivore || carnivore || predatory_carnivore || granivore)
+	if (herbivore || carnivore || predatory_carnivore || granivore || scavenger)
 		simplehunger-=1
 		if (simplehunger > 1000)
 			simplehunger = 1000
