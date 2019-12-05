@@ -153,7 +153,7 @@ datum/admins/proc/print_crafting_recipes()
 						if (text2num(i[11]) != 0)
 							if (text2num(i[9]) != 0 || text2num(i[10]) != 0 )
 								requirements = "[requirements],"
-							requirements = "[requirements] [i[10]] Medical"
+							requirements = "[requirements] [i[11]] Medical"
 						requirements = "[requirements] research points."
 					var/crafting_print_var = "|- id=\"[i[2]]\"\n! [i[2]]\n| [i[4]]\n| [matname]\n| [subcategory]\n| [requirements]\n| Available until [av_age].\n"
 					recipe_list << crafting_print_var
