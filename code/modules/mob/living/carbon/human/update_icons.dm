@@ -559,8 +559,8 @@ var/global/list/damage_icon_parts = list()
 				shirt.color = CU.stripescolor
 				standing.overlays += pants
 				standing.overlays += shirt
-		if (istype(w_uniform, /obj/item/clothing/under/custompontificial))
-			var/obj/item/clothing/under/custompontificial/CU = w_uniform
+		if (istype(w_uniform, /obj/item/clothing/under/custompontifical))
+			var/obj/item/clothing/under/custompontifical/CU = w_uniform
 			if (!CU.uncolored)
 				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_leggings")
 				pants.color = CU.undercolor

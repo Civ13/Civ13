@@ -303,7 +303,7 @@ RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clo
 RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,clothing,38,0,0,3,null
 RECIPE: /material/cloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
-RECIPE: /material/cloth/,customizable pontificial clothing,/obj/item/clothing/under/custompontificial,6,105,0,1,clothing,0,0,59,8,null
+RECIPE: /material/cloth/,customizable pontifical clothing,/obj/item/clothing/under/custompontifical,6,105,0,1,clothing,0,0,59,8,null
 RECIPE: /material/cloth/,baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/cloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/cloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,59,3,null

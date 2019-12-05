@@ -227,17 +227,17 @@
 	else
 		..()
 
-/obj/item/clothing/under/custompontificial
+/obj/item/clothing/under/custompontifical
 	name = "renaissance outfit"
-	desc = "A renaissance-style pontificial outfit."
+	desc = "A renaissance-style pontifical outfit."
 	var/uncolored = FALSE
 	var/topcolor = 0
 	var/undercolor = 0
 	var/linescolor = 0
 	var/handcolor = 0
-	item_state = "custom_pontificial"
-	icon_state = "custom_pontificial"
-	worn_state = "custom_pontificial"
+	item_state = "custom_pontifical"
+	icon_state = "custom_pontifical"
+	worn_state = "custom_pontifical"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -245,7 +245,7 @@
 			uncolored = TRUE
 
 
-/obj/item/clothing/under/custompontificial/attack_self(mob/user as mob)
+/obj/item/clothing/under/custompontifical/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!topcolor)
 			var/input = input(user, "Top Decore - Choose a hex color (without the #):", "Top Decore Color" , "FFFFFF")

@@ -111,6 +111,7 @@
 			visible_message("\The [src] is starving!")
 			adjustBruteLoss(round(max(1,maxHealth/10)))
 			simplehunger = 60
+			updatehealth()
 
 	if (following_mob)
 		stop_automated_movement = TRUE
