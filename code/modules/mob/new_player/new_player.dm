@@ -258,7 +258,7 @@
 					message_admins(msg)
 					LateChoices()
 					return TRUE
-			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
 		if (map && map.ID == MAP_TRIBES)
@@ -293,7 +293,7 @@
 					close_spawn_windows()
 					AttemptLateSpawn(pick(map.availablefactions))
 					return TRUE
-			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
 		if (map && map.civilizations == TRUE)

@@ -828,7 +828,10 @@ default behaviour is:
 	if (src && stat != DEAD)
 		life_forced = TRUE
 		spawn(10)
-			Life()
+			if (world.realtime>=last_life_tick+9)
+				Life()
 			forcelife()
 	else if (src)
 		life_forced = FALSE
+	else
+		return
