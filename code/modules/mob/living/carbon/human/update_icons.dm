@@ -447,8 +447,8 @@ var/global/list/damage_icon_parts = list()
 	for (var/obj/screen/inventory/HUDinv in HUDinventory)
 		if (HUDinv.slot_id == slot_id)
 			return (HUDinv.invisibility == 101) ? null : HUDinv.screen_loc
-	log_admin("[src] try find_inv_position a [slot_id], but not have that slot!")
-	src << "Some problem has occured, change UI style or notify the devs."
+//	log_admin("[src] try find_inv_position a [slot_id], but not have that slot!")
+//	src << "Some problem has occured, change UI style or notify the devs."
 	return "7,7"
 
 

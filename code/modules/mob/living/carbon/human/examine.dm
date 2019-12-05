@@ -348,7 +348,7 @@
 		if (left_factions.len && ishuman(user))
 			for (var/i in left_factions)
 				if (i[2]>world.realtime)
-					msg += "<br><font color='red'>[T.He] has abandoned [i[1]] recently!</font>"
+					msg += "<br><font color='red'>[T.He] has abandoned <b>[i[1]]</b> recently!</font>"
 	for (var/v in TRUE to embedded.len)
 		msg += "<a href='?src=\ref[user];remove_embedded=[v]'>Remove [embedded[v]]</a>"
 
