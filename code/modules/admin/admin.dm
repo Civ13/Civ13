@@ -984,6 +984,19 @@ var/list/atom_types = null
 	message_admins("[key_name(usr)] manually reloaded bans.")
 	load_bans()
 
+/client/proc/start_forcelife()
+	set name = "Update Bans"
+	set category = "Debug"
+
+	if (!check_rights(R_SERVER))	return
+
+	message_admins("[key_name(usr)] manually set the Life() proc of living mobs.")
+	for(var/mob/living/L in world)
+		L.forcelife()
+		spawn(30)
+			if (!L.life_forced)
+				L.forcelife()
+
 /client/proc/reload_craft_list()
 	set name = "Reload Crafting"
 	set category = "Debug"

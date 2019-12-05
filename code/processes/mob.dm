@@ -25,28 +25,6 @@
 				qdel(M)
 			continue
 
-		// if we're a spawned in, jobless mob: don't handle processing
-		/* todo: these mobs SHOULD process if they have clients.
-			right now, letting jobless mobs with or w/o clients process
-			results in a lot of obscure runtimes, possibly associated
-			with human.Life() calling back to living.Life() - Kachnov */
-
-		/* this will probably be removed soon because the job-vanishing error has gone,
-		 * and soon spawned in mobs will get jobs. */
-
-		else if (ishuman(M))
-			if (!M.original_job)
-				// runtime prevention hackcode
-				if (M.client || M.ckey) // we have, or had, a client
-					if (M.original_job_title)
-						for (var/datum/job/J in job_master.occupations)
-							if (J.title == M.original_job_title)
-								M.original_job = J
-								goto skip1
-				continue
-
-		skip1
-
 		try
 			// since we spent so long getting here we have to do this again
 			if (!M)
