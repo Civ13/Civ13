@@ -307,11 +307,10 @@
 // call this instead of process() if you want to do direct calls, I think its better - Kachnov
 /obj/structure/cross/proc/fire()
 	if (hanging)
-		hanging.forceMove(loc)
+		hanging.forceMove(get_turf(locate(x,y+1,z)))
 		density = TRUE
 		hanging.lying = 0
 		hanging.dir = SOUTH
-		hanging.pixel_y = 32 // because getting punched resets it
 
 	else
 		overlays.Cut()

@@ -779,10 +779,12 @@ RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,4,70,0,1,
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,4,90,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,14,0,3,null
 RECIPE: /material/wood/,arrow shaft (x3),/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null
+RECIPE: /material/wood/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1,weapons,0,45,0,8,null
 RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,2,null
 RECIPE: /material/wood/,shortbow,/obj/item/weapon/gun/projectile/bow/shortbow,8,140,0,1,weapons,0,30,0,7,null
 RECIPE: /material/wood/,longbow,/obj/item/weapon/gun/projectile/bow/longbow,12,160,0,1,weapons,0,35,0,7,null
 RECIPE: /material/wood/,compound bow,/obj/item/weapon/gun/projectile/bow/compoundbow,8,170,0,1,weapons,0,175,0,8,null
+RECIPE: /material/wood/,crossbow,/obj/item/weapon/gun/projectile/crossbow,12,160,0,1,weapons,0,45,0,8,null
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood

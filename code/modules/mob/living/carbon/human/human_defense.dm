@@ -136,6 +136,8 @@ bullet_act
 				if(prob(50) && src.loc != null)
 					if(istype(P, /obj/item/projectile/arrow/arrow/stone))
 						new/obj/item/ammo_casing/arrow/stone(src.loc)
+					if(istype(P, /obj/item/projectile/arrow/arrow/sandstone))
+						new/obj/item/ammo_casing/arrow/sandstone(src.loc)
 					else if(istype(P, /obj/item/projectile/arrow/arrow/copper))
 						new/obj/item/ammo_casing/arrow/copper(src.loc)
 					else if(istype(P, /obj/item/projectile/arrow/arrow/iron))
@@ -152,7 +154,34 @@ bullet_act
 				else
 					visible_message("<span class = 'warning'>The arrow shatters!</span>")
 				return
-
+		else if (istype(P, /obj/item/projectile/arrow/bolt))
+			if (prob(min(SH.base_block_chance,92)))
+				visible_message("<span class = 'warning'>[src] blocks the bolt with the [SH.name]!</span>")
+				P.blockedhit = TRUE
+				SH.health -= 2
+				//ARROW FALL STUFF HERE
+				//50% chance for the arrow not to break.
+				if(prob(50) && src.loc != null)
+					if(istype(P, /obj/item/projectile/arrow/bolt/stone))
+						new/obj/item/ammo_casing/bolt/stone(src.loc)
+					if(istype(P, /obj/item/projectile/arrow/bolt/sandstone))
+						new/obj/item/ammo_casing/bolt/sandstone(src.loc)
+					else if(istype(P, /obj/item/projectile/arrow/bolt/copper))
+						new/obj/item/ammo_casing/bolt/copper(src.loc)
+					else if(istype(P, /obj/item/projectile/arrow/bolt/iron))
+						new/obj/item/ammo_casing/bolt/iron(src.loc)
+					else if(istype(P, /obj/item/projectile/arrow/bolt/bronze))
+						new/obj/item/ammo_casing/bolt/bronze(src.loc)
+					else if(istype(P, /obj/item/projectile/arrow/bolt/steel))
+						new/obj/item/ammo_casing/bolt/steel(src.loc)
+					else if(istype(P, /obj/item/projectile/arrow/bolt/modern))
+						new/obj/item/ammo_casing/bolt/modern(src.loc)
+					else
+						new/obj/item/ammo_casing/bolt(src.loc)
+					visible_message("<span class = 'warning'>The bolt falls to the ground!</span>")
+				else
+					visible_message("<span class = 'warning'>The bolt shatters!</span>")
+				return
 	if (shield_check)
 		if (shield_check < 0)
 			return shield_check

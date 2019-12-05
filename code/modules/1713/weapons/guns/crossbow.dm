@@ -15,7 +15,7 @@
 	fire_sound = 'sound/weapons/arrow_fly.ogg'
 	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
-	ammo_type = /obj/item/ammo_casing/arrow
+	ammo_type = /obj/item/ammo_casing/bolt
 	load_shell_sound = 'sound/weapons/pull_bow.ogg'
 	bulletinsert_sound = 'sound/weapons/pull_bow.ogg'
 	//+2 accuracy over the LWAP because only one shot
@@ -85,7 +85,7 @@
 /obj/item/weapon/gun/projectile/crossbow/proc/remove_arrow_overlay()
 	src.overlays = null
 
-/obj/item/weapon/gun/projectile/crossbow/proc/load_arrow_overlay(var/obj/item/ammo_casing/arrow/A as obj)
+/obj/item/weapon/gun/projectile/crossbow/proc/load_arrow_overlay(var/obj/item/ammo_casing/bolt/A as obj)
 	//remove all overlays
 	remove_arrow_overlay()
 	//add arrow overlay
