@@ -169,21 +169,11 @@
 		set_anchored(FALSE)
 		step(src, get_dir(AM, src))
 	take_damage(tforce)
-/*
-/obj/structure/window/attack_tk(mob/user as mob)
-	user.visible_message("<span class='notice'>Something knocks on [src].</span>")
-	playsound(loc, 'sound/effects/Glasshit.ogg', 50, TRUE)
-*/
+
 /obj/structure/window/attack_hand(mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 	if (usr.a_intent == I_HARM)
-
-		if (istype(usr,/mob/living/carbon/human))
-			var/mob/living/carbon/human/H = usr
-			if (H.species.can_shred(H))
-				attack_generic(H,25)
-				return
 
 		playsound(loc, 'sound/effects/glassknock.ogg', 80, TRUE)
 		user.do_attack_animation(src)

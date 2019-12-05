@@ -652,7 +652,7 @@
 	name = "Omelette Du Fromage"
 	desc = "That's all you can say!"
 	icon_state = "omelette"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FFF9A8"
 	satisfaction = 8
 	non_vegetarian = TRUE
@@ -696,7 +696,7 @@
 	name = "Meat-pie"
 	icon_state = "meatpie"
 	desc = "An old barber recipe, very delicious!"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#948051"
 	center_of_mass = list("x"=16, "y"=13)
 	decay = 20*600
@@ -710,7 +710,7 @@
 	name = "Tofu-pie"
 	icon_state = "meatpie"
 	desc = "A delicious tofu pie."
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FFFEE0"
 	center_of_mass = list("x"=16, "y"=13)
 	nutriment_desc = list("tofu" = 2, "pie" = 8)
@@ -738,7 +738,7 @@
 	name = "Fries"
 	desc = "AKA: French Fries, Freedom Fries, etc."
 	icon_state = "fries"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#EDDD00"
 	center_of_mass = list("x"=16, "y"=11)
 	nutriment_desc = list("fresh fries" = 4)
@@ -797,7 +797,7 @@
 	name = "Meat steak"
 	desc = "A piece of hot spicy meat."
 	icon_state = "meatstake"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#7A3D11"
 	center_of_mass = list("x"=16, "y"=13)
 	decay = 15*600
@@ -875,7 +875,7 @@
 	name = "Sandwich"
 	desc = "A grand creation of meat, cheese, bread, and several leaves of lettuce! Arthur Dent would be proud."
 	icon_state = "sandwich"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#D9BE29"
 	center_of_mass = list("x"=16, "y"=4)
 	nutriment_desc = list("bread" = 3, "cheese" = 3)
@@ -891,7 +891,7 @@
 	name = "Toasted Sandwich"
 	desc = "Now if you only had a pepper bar."
 	icon_state = "toastedsandwich"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#D9BE29"
 	center_of_mass = list("x"=16, "y"=4)
 	nutriment_desc = list("toasted bread" = 3, "cheese" = 3)
@@ -908,7 +908,7 @@
 	name = "Grilled Cheese Sandwich"
 	desc = "Goes great with Tomato soup!"
 	icon_state = "toastedsandwich"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#D9BE29"
 	nutriment_desc = list("toasted bread" = 3, "cheese" = 3)
 	satisfaction = 8
@@ -976,7 +976,7 @@
 	name = "Jellied Toast"
 	desc = "A slice of bread covered with delicious jam."
 	icon_state = "jellytoast"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#B572AB"
 	center_of_mass = list("x"=16, "y"=8)
 	nutriment_desc = list("toasted bread" = 2)
@@ -995,7 +995,7 @@
 	name = "Boiled Spaghetti"
 	desc = "A plain dish of noodles, this sucks."
 	icon_state = "spagettiboiled"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FCEE81"
 	center_of_mass = list("x"=16, "y"=10)
 	nutriment_desc = list("noodles" = 2)
@@ -1046,7 +1046,7 @@
 	name = "Spaghetti"
 	desc = "Spaghetti and crushed tomatoes. Just like your abusive father used to make!"
 	icon_state = "pastatomato"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#DE4545"
 	center_of_mass = list("x"=16, "y"=10)
 	nutriment_desc = list("tomato" = 3, "noodles" = 3)
@@ -1062,7 +1062,7 @@
 	name = "Spaghetti & Meatballs"
 	desc = "Now thats a nic'e meatball!"
 	icon_state = "meatballspagetti"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#DE4545"
 	center_of_mass = list("x"=16, "y"=10)
 	nutriment_desc = list("noodles" = 4)
@@ -1117,7 +1117,7 @@
 	name = "Jelly Sandwich"
 	desc = "You wish you had some peanut butter to go with this..."
 	icon_state = "jellysandwich"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#9E3A78"
 	center_of_mass = list("x"=16, "y"=8)
 	nutriment_desc = list("bread" = 2)
@@ -1224,7 +1224,7 @@
 	name = "golden apple streusel tart"
 	desc = "A tasty dessert that won't make it through a metal detector."
 	icon_state = "gappletart"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FFFF00"
 	center_of_mass = list("x"=16, "y"=18)
 	nutriment_desc = list("apple" = 8)
@@ -1264,7 +1264,7 @@
 	name = "meatbread slice"
 	desc = "A slice of delicious meatbread."
 	icon_state = "meatbreadslice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FF7575"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=13)
@@ -1291,7 +1291,7 @@
 	name = "Banana-nut bread slice"
 	desc = "A slice of delicious banana bread."
 	icon_state = "bananabreadslice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#EDE5AD"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=8)
@@ -1317,7 +1317,7 @@
 	name = "Carrot Cake slice"
 	desc = "Carrotty slice of Carrot Cake, carrots are good for your eyes! Also not a lie."
 	icon_state = "carrotcake_slice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FFD675"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
@@ -1341,7 +1341,7 @@
 	name = "Cheese Cake slice"
 	desc = "Slice of pure cheestisfaction"
 	icon_state = "cheesecake_slice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FAF7AF"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
@@ -1361,7 +1361,7 @@
 	name = "Vanilla Cake slice"
 	desc = "Just a slice of cake, it is enough for everyone."
 	icon_state = "plaincake_slice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#F7EDD5"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
@@ -1381,7 +1381,7 @@
 	name = "Orange Cake slice"
 	desc = "Just a slice of cake, it is enough for everyone."
 	icon_state = "orangecake_slice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FADA8E"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
@@ -1402,7 +1402,7 @@
 	name = "Lime Cake slice"
 	desc = "Just a slice of cake, it is enough for everyone."
 	icon_state = "limecake_slice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#CBFA8E"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
@@ -1423,7 +1423,7 @@
 	name = "Lemon Cake slice"
 	desc = "Just a slice of cake, it is enough for everyone."
 	icon_state = "lemoncake_slice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FAFA8E"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
@@ -1443,7 +1443,7 @@
 	name = "Chocolate Cake slice"
 	desc = "Just a slice of cake, it is enough for everyone."
 	icon_state = "chocolatecake_slice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#805930"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
@@ -1522,7 +1522,7 @@
 	name = "Cream Cheese Bread slice"
 	desc = "A slice of yum!"
 	icon_state = "creamcheesebreadslice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#FFF896"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=13)
@@ -1552,7 +1552,7 @@
 	name = "Apple Cake slice"
 	desc = "A slice of heavenly cake."
 	icon_state = "applecakeslice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#EBF5B8"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
@@ -1572,7 +1572,7 @@
 	name = "Pumpkin Pie slice"
 	desc = "A slice of pumpkin pie, with whipped cream on top. Perfection."
 	icon_state = "pumpkinpieslice"
-	trash = /obj/item/kitchen/plate
+	trash = null
 	filling_color = "#F5B951"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=12)

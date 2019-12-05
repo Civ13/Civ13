@@ -39,14 +39,6 @@
 
 	var/damage_dealt = TRUE
 	var/attack_message = "kicks"
-	if (istype(user,/mob/living/carbon/human))
-		var/mob/living/carbon/human/H = user
-		if (H.species.can_shred(H))
-			attack_message = "mangles"
-			damage_dealt = 5
-
-	/*if (shock(user, 70))
-		return*/
 
 	damage_dealt += 1
 
