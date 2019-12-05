@@ -816,6 +816,8 @@
 		produced = 4
 	else if (recipe.result_type == /obj/item/stack/arrowhead/steel)
 		produced = 4
+	else if (recipe.result_type == /obj/item/stack/arrowhead/vial)
+		produced = 4
 	if (recipe.result_type == /obj/structure/sink/well || recipe.result_type == /obj/structure/sink/well/sandstone)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)

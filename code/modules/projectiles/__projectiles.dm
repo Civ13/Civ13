@@ -107,6 +107,15 @@
 	icon_state = "arrow_vial"
 	volume = 15
 
+/obj/item/projectile/arrow/arrow/vial/poisonous
+	New()
+		..()
+		reagents.add_reagent("batrachotoxin",15)
+
+/obj/item/projectile/arrow/bolt/vial/poisonous
+	New()
+		..()
+		reagents.add_reagent("batrachotoxin",15)
 /obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/M as mob)
 	if (prob(10))
 		M.fire_stacks += 1

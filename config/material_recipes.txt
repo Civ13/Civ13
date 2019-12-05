@@ -497,6 +497,7 @@ RECIPE: /material/glass/,teacup,/obj/item/weapon/reagent_containers/food/drinks/
 RECIPE: /material/glass/,wine glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,49,0,0,8,null
 RECIPE: /material/glass/,tribal pot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot,2,40,0,1,drinks,0,0,0,3,null
 RECIPE: /material/glass/,fermentation jar,/obj/item/weapon/starterjar,3,50,0,1,none,0,0,0,8,null
+RECIPE: /material/glass/,vial arrowhead (x4),/obj/item/stack/arrowhead/vial,1,10,0,1,none,0,26,26,8,null
 RECIPE: /material/glass/,small lightbulb frame,/obj/structure/lamp/lamp_small,2,35,0,1,electrical,115,0,0,8,null
 RECIPE: /material/glass/,light tube frame,/obj/structure/lamp/lamp_big,3,55,0,1,electrical,115,0,0,8,null
 RECIPE: /material/glass/,light tube,/obj/item/lightbulb/tube,1,55,0,1,electrical,115,0,0,8,null
