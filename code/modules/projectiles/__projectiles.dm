@@ -199,9 +199,14 @@
 	icon_state = "bolt_vial"
 	volume = 15
 
-/obj/item/projectile/arrow/on_impact(mob/living/carbon/human/M as mob)
-	//TO DO TRANSFER REAGENTS REAGENTS HURT MY BRAIN
-	//src.reagents.trans_to(M, volume)
+/obj/item/projectile/arrow/on_impact(var/atom/A as mob)
+	if (istype(src, /obj/item/projectile/arrow/bolt/vial) || istype(src, /obj/item/projectile/arrow/arrow/vial))
+		if (ishuman(A))
+			var/mob/living/carbon/human/H = A
+			reagents.trans_to_mob(H, volume, CHEM_BLOOD)
+		else
+			reagents.trans_to(A, volume)
+	..()
 
 /obj/item/projectile/grenade/smoke
 	name = "smoke grenade"
