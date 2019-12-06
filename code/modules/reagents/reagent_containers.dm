@@ -82,7 +82,7 @@
 		return FALSE
 
 	if (target.locked && target.custom_code != 0)
-		user << "<span class='notice'>\The [src] is locked.</span>"
+		user << "<span class='notice'>\The [target] is locked.</span>"
 		return FALSE
 
 	if (target.dmode=="dispense")

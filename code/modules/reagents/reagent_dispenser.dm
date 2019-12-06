@@ -48,7 +48,6 @@
 					return
 				else
 					locked = TRUE
-					opened = FALSE
 					custom_code = K.code
 					visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
