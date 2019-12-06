@@ -80,19 +80,24 @@
 /obj/item/weapon/reagent_containers/proc/standard_dispenser_refill(var/mob/user, var/obj/structure/reagent_dispensers/target) // This goes into afterattack
 	if (!istype(target))
 		return FALSE
+	if (target.dmode=="dispense")
+		if (!target.reagents || !target.reagents.total_volume)
+			user << "<span class='notice'>[target] is empty.</span>"
+			return TRUE
 
-	if (!target.reagents || !target.reagents.total_volume)
-		user << "<span class='notice'>[target] is empty.</span>"
+		if (reagents && !reagents.get_free_space())
+			user << "<span class='notice'>[src] is full.</span>"
+			return TRUE
+
+		var/trans = target.reagents.trans_to_obj(src, target:amount_per_transfer_from_this)
+		user << "<span class='notice'>You fill [src] with [trans] units of the contents of [target].</span>"
+		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 		return TRUE
-
-	if (reagents && !reagents.get_free_space())
-		user << "<span class='notice'>[src] is full.</span>"
+	else
+		var/trans = src.reagents.trans_to_obj(target, target.amount_per_transfer_from_this)
+		user << "<span class='notice'>You fill \the [target] with [trans] units of the contents of [src].</span>"
+		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 		return TRUE
-
-	var/trans = target.reagents.trans_to_obj(src, target:amount_per_transfer_from_this)
-	user << "<span class='notice'>You fill [src] with [trans] units of the contents of [target].</span>"
-	playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-	return TRUE
 
 /obj/item/weapon/reagent_containers/proc/standard_splash_mob(var/mob/user, var/mob/target) // This goes into afterattack
 	if (!istype(target))
