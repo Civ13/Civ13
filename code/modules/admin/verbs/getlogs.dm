@@ -57,16 +57,17 @@
 	set category = "Admin"
 	set name = "Show Server Logs"
 	set desc = "Shows the server logs."
-
-	var/choice = WWinput(src, "Check Error Logs or Server Logs?", "Server Logs", "Cancel", list("Cancel", "Error Logs", "Server Logs"))
+	if (!usr || !usr.client)
+		return
+	var/choice = WWinput(usr, "Check Error Logs or Server Logs?", "Server Logs", "Cancel", list("Cancel", "Error Logs", "Server Logs"))
 	switch(choice)
 		if ("Cancel")
 			return
 		if ("Error Logs")
-			getruntimelog()
+			usr.client.getruntimelog()
 			return
 		if ("Server Logs")
-			getserverlog()
+			usr.client.getserverlog()
 			return
 
 	return
