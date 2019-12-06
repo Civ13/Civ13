@@ -356,6 +356,9 @@ RECIPE: /material/plastic/,stop sign,/obj/structure/sign/traffic/stop,2,75,0,1,s
 RECIPE: /material/plastic/,yeld sign,/obj/structure/sign/traffic/yeld,2,75,0,1,signs,125,0,0,8,null
 RECIPE: /material/plastic/,radiation sign,/obj/structure/sign/radiation,2,75,0,1,signs,125,0,0,8,null
 RECIPE: /material/plastic/,pedestrian crossing sign,/obj/structure/sign/traffic/crossing,2,75,0,1,signs,125,0,0,8,null
+RECIPE: /material/plastic/,fast food cup,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/fastfoodcup,1,15,0,1,drinks,170,0,0,8,null
+RECIPE: /material/plastic/,condiment bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/condiment,0.75,15,0,1,drinks,170,0,0,8,null
+RECIPE: /material/plastic/,plastic bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/cola,1.5,15,0,1,drinks,170,0,0,8,null
 
 RECIPE: /material/chitin/,chitin mask,/obj/item/clothing/mask/chitinmask,4,65,0,1,none,0,0,0,0,null
 RECIPE: /material/chitin/,chitin helmet,/obj/item/clothing/head/helmet/chitin,7,115,0,1,none,0,0,0,0,null
