@@ -1,4 +1,4 @@
-RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,2,25,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,1,25,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay vase,/obj/item/weapon/clay/vase,3,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay wine cup,/obj/item/weapon/clay/winecup,1,30,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay bowl,/obj/item/weapon/clay/claybowl,1,30,0,1,kitchen,0,0,0,8,null

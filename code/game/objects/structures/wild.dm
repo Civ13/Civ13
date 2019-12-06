@@ -94,7 +94,7 @@
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/hatchet))
-		visible_message("<span class='danger'>[user] begins to chop down the [src]!</span>")
+		visible_message("<span class='danger'>[user] begins to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
 		if (do_after(user, 50, user.loc))
@@ -338,7 +338,7 @@
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
-		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
+		visible_message("<span class='danger'>[user] tries to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
 		try_destroy()
@@ -792,7 +792,7 @@
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
-		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
+		visible_message("<span class='danger'>[user] tries to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
 		try_destroy()
