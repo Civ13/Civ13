@@ -62,6 +62,7 @@
 	if (!removed_from_list)
 		removed_from_list=TRUE
 		cow_count -= 1
+	..()
 /mob/living/simple_animal/bull/death()
 	if (!removed_from_list)
 		removed_from_list=TRUE
@@ -71,6 +72,7 @@
 	if (!removed_from_list)
 		removed_from_list=TRUE
 		cow_count -= 1
+	..()
 /mob/living/simple_animal/bull/New()
 	cow_count += 1
 	..()

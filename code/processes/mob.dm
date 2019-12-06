@@ -12,12 +12,13 @@
 	for (current in current_list)
 
 		var/mob/M = current
-		if (!M || !ismob(M))
-			return
+		if (!M || !isliving(M))
+			continue
 
 		if (isDeleted(M))
 			catchBadType(M)
 			mob_list -= M
+			living_mob_list -= M
 			continue
 
 		else if (istype(M, /mob/new_player))
@@ -30,6 +31,7 @@
 			if (!M)
 				catchBadType(M)
 				mob_list -= M
+				living_mob_list -= M
 				continue
 			M.Life()
 			if (!(M == null))
@@ -46,7 +48,7 @@
 		PROCESS_TICK_CHECK
 
 /process/mob/reset_current_list()
-	PROCESS_USE_FASTEST_LIST(mob_list)
+	PROCESS_USE_FASTEST_LIST(living_mob_list)
 
 /process/mob/statProcess()
 	..()

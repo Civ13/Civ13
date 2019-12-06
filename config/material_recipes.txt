@@ -457,7 +457,7 @@ RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,religiou
 RECIPE: /material/stone/,stone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,stone
 RECIPE: /material/stone/,stone window,/obj/structure/window_frame/stone,5,140,1,1,construction,18,0,0,8,null
 
-RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,weapons,0,0,0,8,stone
+RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,stone
 
 RECIPE: /material/stone/,furnace,/obj/structure/furnace,10,150,1,1,production,26,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null

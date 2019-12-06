@@ -91,7 +91,7 @@
 	//add arrow overlay
 	src.overlays += icon(A.icon,A.icon_state)
 
-obj/item/weapon/gun/projectile/bow/Fire()
+obj/item/weapon/gun/projectile/crossbow/Fire()
 	..()
 	remove_arrow_overlay()
 
@@ -174,9 +174,7 @@ obj/item/weapon/gun/projectile/bow/Fire()
 
 
 /obj/item/weapon/gun/projectile/crossbow/special_check(mob/user)
-	/*if (!istype(src, /obj/item/weapon/gun/projectile/crossbow/pistol))
-		if (!(user.has_empty_hand(both = FALSE)))
-			user << "<span class='warning'>You need both hands to fire the [src]!</span>"
-			return FALSE
-	return ..()*/
+	if (!(user.has_empty_hand(both = FALSE)))
+		user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+		return FALSE
 	..()

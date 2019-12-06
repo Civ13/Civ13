@@ -52,6 +52,9 @@
 	health = 55
 	mob_size = MOB_MEDIUM
 
+/mob/living/simple_animal/complex_animal/dog/death()
+	dog_mob_list -= src
+
 /mob/living/simple_animal/complex_animal/dog/New()
 	..()
 	icon_state = "[race]"
