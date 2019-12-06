@@ -58,7 +58,7 @@
 	set name = "Show Server Logs"
 	set desc = "Shows the server logs."
 
-	var/choice == WWinput("Check Error Logs or Server Logs?", "Server Logs", "Cancel", list("Cancel", "Error Logs", "Server Logs"))
+	var/choice = WWinput("Check Error Logs or Server Logs?", "Server Logs", "Cancel", list("Cancel", "Error Logs", "Server Logs"))
 	switch(choice)
 		if ("Cancel")
 			return
