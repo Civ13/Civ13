@@ -22,6 +22,9 @@
 		else
 			name = "[base_name] ([label_text])"
 
+	var/custom_code = 0
+	var/locked = 0
+
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
 		if (istype(W, /obj/item/weapon/pen))
 			var/tmp_label = sanitizeSafe(input(user, "Enter a label for [name]", "Label", label_text), MAX_NAME_LEN)
@@ -31,6 +34,48 @@
 				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
 				label_text = tmp_label
 				update_name_label()
+			return
+		else if (istype(W, /obj/item/weapon/wrench))
+			..()
+		else if (istype(W, /obj/item/weapon/key))
+			var/obj/item/weapon/key/K = W
+			if (W.code != custom_code)
+				user << "This key does not match this lock!"
+				return
+			if (custom_code == 0 && K.code != 0)
+				var/choice = WWinput(user, "Are you sure you want to assign this key to \the [src]?", "Lock", "No", list("Yes","No"))
+				if (choice == "No")
+					return
+				else
+					locked = TRUE
+					opened = FALSE
+					custom_code = K.code
+					visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+			if (K.code == custom_code)
+				locked = !locked
+				if (locked == 1)
+					visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+				else if (locked == 0)
+					visible_message("<span class = 'notice'>[user] unlocks \the [src].</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+		else if (istype(W, /obj/item/weapon/storage/belt/keychain) && custom_code != 0)
+			for (var/obj/item/weapon/key/KK in W.contents)
+				if (KK.code == custom_code)
+					locked = !locked
+					if (locked == 1)
+						visible_message("<span class = 'notice'>[user] locks \the [src].</span>")
+						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+						return
+					else if (locked == 0)
+						visible_message("<span class = 'notice'>[user] unlocks \the [src].</span>")
+						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+						return
+			user << "No key in this keychain matches the lock!"
 			return
 		else
 			return
@@ -90,6 +135,7 @@
 /obj/structure/reagent_dispensers/verb/switch_mode()
 	set name = "Switch Mode"
 	set desc = "Switch between dispensing and refilling"
+	set category = null
 	set src in range(1, usr)
 
 	if (!isliving(usr))

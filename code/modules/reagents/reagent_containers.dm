@@ -80,6 +80,11 @@
 /obj/item/weapon/reagent_containers/proc/standard_dispenser_refill(var/mob/user, var/obj/structure/reagent_dispensers/target) // This goes into afterattack
 	if (!istype(target))
 		return FALSE
+
+	if (target.locked && target.custom_code != 0)
+		user << "<span class='notice'>\The [src] is locked.</span>"
+		return FALSE
+
 	if (target.dmode=="dispense")
 		if (!target.reagents || !target.reagents.total_volume)
 			user << "<span class='notice'>[target] is empty.</span>"
