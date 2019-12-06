@@ -252,18 +252,6 @@ proc/admin_notice(var/message, var/rights)
 
 	dat += "</body></html>"
 	usr << browse(dat, "window=adminplayerinfo;size=480x480")
-/*
-/datum/admins/proc/Jobbans()
-	if (!check_rights(R_MOD))	return
-
-	var/dat = "<b>Job Bans!</b><HR><table>"
-	for (var/t in jobban_keylist)
-		var/r = t
-		if ( findtext(r,"##") )
-			r = copytext( r, TRUE, findtext(r,"##") )//removes the description
-		dat += text("<tr><td>[t] (<A href='?src=\ref[src];removejobban=[r]'>unban</A>)</td></tr>")
-	dat += "</table>"
-	usr << browse(dat, "window=ban;size=400x400")*/
 
 /datum/admins/proc/game_panel()
 	if (!check_rights(R_ADMIN))	return
@@ -296,26 +284,6 @@ proc/admin_notice(var/message, var/rights)
 
 	usr << browse(dat, "window=admin2;size=400x500")
 	return
-
-/datum/admins/proc/Secrets()
-	if (!check_rights(0))	return
-
-	var/dat = "<b>The first rule of adminbuse is: you don't talk about the adminbuse.</b><HR>"
-	for (var/datum/admin_secret_category/category in admin_secrets.categories)
-		if (!category.can_view(usr))
-			continue
-		dat += "<b>[category.name]</b><br>"
-		if (category.desc)
-			dat += "<I>[category.desc]</I><BR>"
-		for (var/datum/admin_secret_item/item in category.items)
-			if (!item.can_view(usr))
-				continue
-			dat += "<A href='?src=\ref[src];admin_secrets=\ref[item]'>[item.name()]</A><BR>"
-		dat += "<BR>"
-	usr << browse(dat, "window=secrets")
-	return
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////admins2.dm merge
 //i.e. buttons/verbs
@@ -432,17 +400,6 @@ proc/admin_notice(var/message, var/rights)
 	log_admin("[key_name(usr)] toggled Dead OOC.")
 	message_admins("[key_name_admin(usr)] toggled Dead OOC.", TRUE)
 
-
-
-/datum/admins/proc/toggletraitorscaling()
-	set category = "Server"
-	set desc="Toggle traitor scaling"
-	set name="Toggle Traitor Scaling"
-	config.traitor_scaling = !config.traitor_scaling
-	log_admin("[key_name(usr)] toggled Traitor Scaling to [config.traitor_scaling].")
-	message_admins("[key_name_admin(usr)] toggled Traitor Scaling [config.traitor_scaling ? "on" : "off"].", TRUE)
-
-
 /datum/admins/proc/startnow()
 	set category = "Server"
 	set desc="Start the round immediately"
@@ -553,8 +510,8 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Activates or Deactivates research."
 	set name="Toggle Research"
-	if (!map.civilizations || map.ID == MAP_TRIBES)
-		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
+	if ((!map.civilizations && !map.nomads) || map.ID == MAP_TRIBES)
+		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	if (!(map.research_active))
 		map.research_active = TRUE
@@ -571,9 +528,8 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes research speed in Auto-Research mode."
 	set name="Set Research Speed"
-	if (!map.civilizations || map.ID == MAP_TRIBES)
-		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
-		return
+	if (!map.civilizations && !map.nomads)
+		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 	if (!(map.autoresearch))
 		usr << "<font color='red'>Error: This is only available within the Auto-Research Gamemode.</font>"
 		return
@@ -592,16 +548,13 @@ proc/admin_notice(var/message, var/rights)
 
 /datum/admins/proc/set_custom_research()
 	set category = "Special"
-	set desc="Changes the starting research."
+	set desc="Changes the research."
 	set name="Set Custom Research"
-	if (!map.civilizations || map.ID == MAP_TRIBES)
-		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
-		return
-	else if (!(ticker.current_state == GAME_STATE_PREGAME))
-		usr << "<font color='red'>Error: The game as already started.</font>"
+	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES)
+		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	else
-		var/customresearch = input("What do you want the starting research to be?", "Custom Research") as num|null
+		var/customresearch = input("What do you want the research to be?", "Custom Research") as num|null
 		if (customresearch == null)
 			return
 		if (customresearch <= 0)
@@ -616,21 +569,18 @@ proc/admin_notice(var/message, var/rights)
 		map.civd_research = list(customresearch,customresearch,customresearch,null)
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
-		world << "<big>The initial research has been set to  <b>[customresearch]</b>.</big>"
-		log_admin("[key_name(usr)] set the initial research to [customresearch].")
+		world << "<big>The research has been set to  <b>[customresearch]</b>.</big>"
+		log_admin("[key_name(usr)] set the research to [customresearch].")
 		return
 /datum/admins/proc/set_custom_age()
 	set category = "Special"
 	set desc="Changes the starting age."
 	set name="Set Custom Age"
-	if (!map.civilizations || map.ID == MAP_TRIBES)
-		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
-		return
-	else if (!(ticker.current_state == GAME_STATE_PREGAME))
-		usr << "<font color='red'>Error: The game as already started.</font>"
+	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES)
+		usr << "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>"
 		return
 	else
-		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "Cancel"))
+		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903","1943","1969","2013", "Cancel"))
 		if (customage == "Cancel")
 			return
 		else if (customage == "5000 B.C.")
@@ -643,6 +593,7 @@ proc/admin_notice(var/message, var/rights)
 			map.ordinal_age = 1
 			map.age = "313 B.C."
 			map.age1_done = TRUE
+			map.default_research = 35
 			world << "<big>The Epoch has been changed to <b>[map.age]</b>.</big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
@@ -651,6 +602,7 @@ proc/admin_notice(var/message, var/rights)
 			map.age = "1013"
 			map.age1_done = TRUE
 			map.age2_done = TRUE
+			map.default_research = 50
 			world << "<big>The Epoch has been changed to <b>[map.age]</b>.</big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
@@ -660,6 +612,7 @@ proc/admin_notice(var/message, var/rights)
 			map.age1_done = TRUE
 			map.age2_done = TRUE
 			map.age3_done = TRUE
+			map.default_research = 90
 			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
@@ -670,6 +623,7 @@ proc/admin_notice(var/message, var/rights)
 			map.age2_done = TRUE
 			map.age3_done = TRUE
 			map.age4_done = TRUE
+			map.default_research = 104
 			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
@@ -681,6 +635,49 @@ proc/admin_notice(var/message, var/rights)
 			map.age3_done = TRUE
 			map.age4_done = TRUE
 			map.age5_done = TRUE
+			map.default_research = 135
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "1943")
+			map.ordinal_age = 6
+			map.age = "1943"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			map.age4_done = TRUE
+			map.age5_done = TRUE
+			map.age6_done = TRUE
+			map.default_research = 152
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "1969")
+			map.ordinal_age = 7
+			map.age = "1969"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			map.age4_done = TRUE
+			map.age5_done = TRUE
+			map.age6_done = TRUE
+			map.age7_done = TRUE
+			map.default_research = 185
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "2013")
+			map.ordinal_age = 8
+			map.age = "2013"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			map.age4_done = TRUE
+			map.age5_done = TRUE
+			map.age6_done = TRUE
+			map.age7_done = TRUE
+			map.age8_done = TRUE
+			map.default_research = 230
 			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
