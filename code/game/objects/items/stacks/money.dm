@@ -372,8 +372,8 @@
 	amount = 1
 	value = 0.01
 
-/obj/item/stack/money/coppercoin/fifty
-	amount = 50
+/obj/item/stack/money/coppercoin/twohundred
+	amount = 200
 
 /obj/item/stack/money/silvercoin
 	name = "silver coins"
