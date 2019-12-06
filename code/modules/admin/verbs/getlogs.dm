@@ -58,15 +58,15 @@
 	set name = "Show Server Logs"
 	set desc = "Shows the server logs."
 
-	var/choice = WWinput(owner, "Check Error Logs or Server Logs?", "Server Logs", "Cancel", list("Cancel", "Error Logs", "Server Logs"))
+	var/choice = WWinput(src, "Check Error Logs or Server Logs?", "Server Logs", "Cancel", list("Cancel", "Error Logs", "Server Logs"))
 	switch(choice)
 		if ("Cancel")
 			return
 		if ("Error Logs")
-			owner.getruntimelog()
+			getruntimelog()
 			return
 		if ("Server Logs")
-			owner.getserverlog()
+			getserverlog()
 			return
 
 	return
