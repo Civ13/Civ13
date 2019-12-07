@@ -490,8 +490,9 @@
 	New()
 		..()
 		spawn(1)
-			name = "[statue_material] statue"
-			update_icon()
+			if (name == "statue")
+				name = "[statue_material] statue"
+				update_icon()
 
 /obj/structure/religious/statue/update_icon()
 	..()

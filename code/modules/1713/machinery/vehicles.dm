@@ -327,7 +327,8 @@
 			user << "<span class = 'notice'>You attach the [W] to the [src].</span>"
 			user.drop_from_inventory(W)
 			qdel(W)
-			new/obj/structure/vehicle/boat/sailboat(get_turf(user))
+			var/obj/structure/vehicle/boat/sailboat/N = new/obj/structure/vehicle/boat/sailboat(get_turf(user))
+			N.name = name
 			qdel(src)
 			return
 
