@@ -26,7 +26,7 @@
 /obj/item/weapon/book/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
 	if (istype(W, /obj/item/weapon/book))
 		var/obj/item/weapon/book/B = W
-		if (!B.author && !B.title && user.religious_clergy == "Monks")
+		if (!B.author && user.religious_clergy == "Monks")
 			if (istype(B, src.type))
 				user << "You start copying [src]..."
 				if (do_after(user, 200, src))
