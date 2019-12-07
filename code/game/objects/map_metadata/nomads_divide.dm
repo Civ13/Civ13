@@ -66,58 +66,6 @@
 /obj/map_metadata/nomads_divide/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_divide/proc/seasons()
-	if (real_season == "dry")
-		season = "Wet Season"
-		world << "<big>The <b>Wet Season</b> has started.</big>"
-		change_weather_somehow()
-		for (var/turf/floor/dirt/flooded/D)
-			D.ChangeTurf(/turf/floor/beach/water/flooded)
-		for (var/turf/floor/dirt/ploughed/flooded/D)
-			for(var/obj/OB in src.loc)
-				if ( istype(OB, /obj/item) || istype(OB, /obj/structure) || istype(OB, /obj/effect) || istype(OB, /obj/effect/fire) )
-					qdel(OB)
-			D.ChangeTurf(/turf/floor/beach/water/flooded)
-		for(var/obj/structure/sink/S)
-			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
-				S.dry = FALSE
-				S.update_icon()
-		for (var/turf/floor/beach/drywater/B)
-			B.ChangeTurf(/turf/floor/beach/water/swamp)
-		for (var/turf/floor/beach/drywater2/C)
-			C.ChangeTurf(/turf/floor/beach/water/deep/swamp)
-		for (var/turf/floor/dirt/jungledirt/JD)
-			if (prob(50))
-				JD.ChangeTurf(/turf/floor/grass/jungle)
-		for (var/turf/floor/dirt/burned/BD in get_area_turfs(/area/caribbean/nomads/desert))
-			if (prob(75))
-				BD.ChangeTurf(/turf/floor/dirt)
-		for (var/turf/floor/dirt/burned/BDD in get_area_turfs(/area/caribbean/nomads/forest))
-			if (prob(75))
-				BDD.ChangeTurf(/turf/floor/dirt/jungledirt)
-		real_season = "wet"
-	else
-		season = "Dry Season"
-		world << "<big>The <b>Dry Season</b> has started.</big>"
-		change_weather_somehow()
-		real_season = "dry"
-		for(var/obj/structure/sink/S in get_area_turfs(/area/caribbean/nomads/desert))
-			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
-				S.dry = TRUE
-				S.update_icon()
-		for (var/turf/floor/beach/water/swamp/D)
-			D.ChangeTurf(/turf/floor/beach/drywater)
-		for (var/turf/floor/beach/water/deep/swamp/DS)
-			DS.ChangeTurf(/turf/floor/beach/drywater2)
-		for (var/turf/floor/beach/water/flooded/DF)
-			DF.ChangeTurf(/turf/floor/dirt/flooded)
-		spawn(12000)
-			world << "<big>The sky starts to get cloudy... The <b>Wet Season</b> is coming in 10 minutes.</big>"
-
-	spawn(20000)
-		seasons()
-
-
 /obj/map_metadata/nomads_divide/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE
