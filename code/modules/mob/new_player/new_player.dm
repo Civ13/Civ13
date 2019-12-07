@@ -903,13 +903,7 @@
 	new_character.key = key		//Manually transfer the key to log them in
 
 	return new_character
-/*
-/mob/new_player/proc/ViewManifest()
-	var/dat = "<html><body>"
-	dat += "<h4>Show Crew Manifest</h4>"
-	dat += data_core.get_manifest(OOC = TRUE)
-	src << browse(dat, "window=manifest;size=370x420;can_close=1")
-*/
+
 /mob/new_player/Move()
 	return FALSE
 

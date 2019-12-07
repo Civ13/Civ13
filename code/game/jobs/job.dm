@@ -7,19 +7,12 @@
 	var/faction = "None"	              // Players will be allowed to spawn in as jobs that are set to "Human"
 
 	var/total_positions = FALSE               // How many players can be this job
-	//var/spawn_positions = FALSE               // How many players can spawn in as this job
 	var/current_positions = FALSE             // How many players have this job
 	var/selection_color = "#ffffff"       // Selection screen color
-	var/list/alt_titles                   // List of alternate titles, if any
-	var/req_admin_notify                  // If this is set to TRUE, a text is printed to the player when jobs are assigned, telling him that he should let admins know that he has to disconnect.
 	var/minimal_player_age = FALSE            // If you have use_age_restriction_for_jobs config option enabled and the database set up, this option will add a requirement for players to be at least minimal_player_age days old. (meaning they first signed in at least that many days before.)
-	var/department = null                 // Does this position have a department tag?
 	var/head_position = FALSE                 // Is this position Command?
 	var/minimum_character_age = FALSE
 	var/ideal_character_age = 30
-	var/account_allowed = TRUE				  // Does this job type come with a station account?
-	var/economic_modifier = 2			  // With how much does this job modify the initial account amount?
-
 	//job equipment
 	var/uniform = /obj/item/clothing/under/pirate1
 	var/shoes = /obj/item/clothing/shoes/black
