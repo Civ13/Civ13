@@ -97,7 +97,7 @@ var/list/global/wall_cache = list()
 					src.icon_state = "b_tiled_stone_wall"
 					src.name = "tiled stone wall"
 					src.desc = "A cave wall carved to have a tiled stone pattern."
-				else
+				return
 	..()
 
 /turf/wall/rockwall/update_icon()
