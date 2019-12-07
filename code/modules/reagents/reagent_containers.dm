@@ -124,12 +124,13 @@
 	if (ishuman(target))
 		var/mob/living/carbon/human/HT = target
 		if (HT.is_nude())
-			if (reagents.has_reagent("water", 30) && reagents.total_volume == reagents.get_reagent_amount("water"))
+			if (reagents.has_reagent("water", 30))
 				HT.hygiene = min(HT.hygiene+(reagents.get_reagent_amount("water")),HYGIENE_LEVEL_CLEAN)
 				washed = TRUE
 			else
-				var/dirtyness = (reagents.total_volume - reagents.get_reagent_amount("water")) / reagents.total_volume
-				HT.hygiene = max(0, HT.hygiene-(dirtyness*100))
+				user.visible_message("<span class='danger'>[target] has been splashed with something by [user]!</span>", "<span class = 'notice'>You splash the solution onto [target].</span>")
+				reagents.splash(target, reagents.total_volume)
+				return TRUE
 	if (washed)
 		if (target == user)
 			user.visible_message("<span class='notice'>[user] washes himself with \the [src]</span>", "<span class = 'notice'>You wash yourself with \the [src].</span>")
