@@ -248,7 +248,7 @@
 				current_icon = 'icons/obj/flora/deadtrees.dmi'
 			else
 				current_icon = 'icons/obj/flora/bigtrees.dmi'
-
+		update_icon()
 /obj/structure/wild/tree/live_tree/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
@@ -321,7 +321,7 @@
 			current_icon = 'icons/obj/flora/pinetrees.dmi'
 		else if (season in list("FALL","SPRING","Dry Season"))
 			current_icon = 'icons/obj/flora/pinetrees.dmi'
-
+		update_icon()
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
