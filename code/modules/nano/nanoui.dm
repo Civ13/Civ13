@@ -468,7 +468,7 @@ nanoui is used to open and update nano browser uis
 	var/params = "\ref[src]"
 
 	spawn(2)
-		winset(user, window_id, "on-close=\"nanoclose [params]\"")
+		winset(user.client, window_id, "on-close=\"nanoclose [params]\"")
 
  /**
   * Push data to an already open UI window

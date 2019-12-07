@@ -23,7 +23,7 @@
 	taste_description = "plastic"
 	reagent_state = LIQUID
 	color = "#CF3600"
-	strength = 5
+	strength = 8
 
 /datum/reagent/toxin/amatoxin
 	name = "Amatoxin"
@@ -32,7 +32,7 @@
 	taste_description = "mushroom"
 	reagent_state = LIQUID
 	color = "#792300"
-	strength = 10
+	strength = 12
 
 /datum/reagent/toxin/carpotoxin
 	name = "Carpotoxin"
@@ -41,7 +41,7 @@
 	taste_description = "fish"
 	reagent_state = LIQUID
 	color = "#003333"
-	strength = 10
+	strength = 13
 
 /datum/reagent/toxin/plasma
 	name = "Plasma"
@@ -75,13 +75,27 @@
 	taste_mult = 0.6
 	reagent_state = LIQUID
 	color = "#CF3600"
-	strength = 20
-	metabolism = REM * 2
+	strength = 17
+	metabolism = REM * 1
 
 /datum/reagent/toxin/cyanide/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.adjustOxyLoss(20 * removed)
-	M.sleeping += 1
+	M.sleeping += 0
+
+/datum/reagent/toxin/batrachotoxin
+	name = "Batrachotoxin"
+	id = "batrachotoxin"
+	description = "A highly toxic chemical, extracted from poisonous frogs."
+	taste_mult = 0.6
+	reagent_state = LIQUID
+	color = "#CF3600"
+	strength = 25
+	metabolism = REM * 1
+
+/datum/reagent/toxin/batrachotoxin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	..()
+	M.adjustBrainLoss(6.5 * removed)
 
 /datum/reagent/toxin/food_poisoning
 	name = "Food Poisoning"

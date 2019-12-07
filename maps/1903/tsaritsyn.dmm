@@ -475,7 +475,7 @@
 "jh" = (/obj/effect/decal/cleanable/generic,/obj/item/weapon/flame/candle,/obj/structure/table/wood,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "ji" = (/obj/item/weapon/bedroll,/turf/floor/plating/tiled/woodv,/area/caribbean/forest/dirt)
 "jj" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/bedroll,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
-"jk" = (/obj/structure/table/wood,/obj/item/weapon/storage/box/matches,/obj/item/weapon/storage/box/matches,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"jk" = (/obj/structure/table/wood,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "jl" = (/obj/structure/phoneline,/turf/floor/dirt,/area/caribbean/forest/dirt)
 "jm" = (/obj/structure/phoneline,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "jn" = (/obj/effect/decal/cleanable/dirt,/turf/floor/trench,/area/caribbean/russian/land/inside{name = "Covered Trenches"})

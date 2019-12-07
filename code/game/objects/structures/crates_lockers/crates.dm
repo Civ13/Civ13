@@ -180,3 +180,82 @@
 	storagecap = 60
 	//EARLY MODERN AGE STEEL CART//
 	//ROBERT'S CARTS//
+
+/obj/structure/closet/crate/dumpster
+	name ="dumpster"
+	desc = " A dumpster for all your trash and bodies."
+	icon_state= "dumpster"
+	icon_opened ="dumpsteropen"
+	icon_closed = "dumpster"
+	storagecap = 50
+	storage_capacity = 100
+	anchored = TRUE
+
+/obj/structure/closet/crate/dumpster/New()
+	..()
+	garbage_collection()
+
+/obj/structure/closet/crate/dumpster/proc/garbage_collection()
+	for(var/obj/item/I in src)
+		contents -= I
+		qdel(I)
+	update_icon()
+	spawn(36000)
+		if (!src || !src.loc)
+			return
+		else
+			garbage_collection()
+			return
+
+/obj/structure/closet/crate/dumpster/update_icon()
+	..()
+	if (!opened)
+		icon_state = "dumpster"
+	else
+		var/content_size = FALSE
+		for (var/obj/item/I in contents)
+			content_size += ceil(I.w_class/2)
+		if (content_size <= storage_capacity*0.25)
+			icon_state = "dumpsteropen"
+		else if (content_size > storage_capacity*0.25 && content_size <= storage_capacity*0.75)
+			icon_state = "dumpsteropen_halffull"
+		else
+			icon_state = "dumpsteropen_full"
+
+/obj/structure/closet/crate/dumpster/attack_hand(mob/living/carbon/human/user as mob)
+	if (!ishuman(user))
+		return
+	add_fingerprint(user)
+	if (locked && !opened)
+		user << "<span class='notice'>\The [src] is locked.</span>"
+		return
+	else
+		if (user.a_intent == I_GRAB && opened)
+			if (!contents.len)
+				user << "<span class='notice'>\The [src] is empty.</span>"
+				return
+			user << "You start rummaging through \the [src]..."
+			if (do_after(user,40,src) && contents.len)
+				var/obj/item/picked = pick(contents)
+				picked.forceMove(user.loc)
+				user << "You take out \the [picked]."
+				update_icon()
+				return
+			else
+				return
+		else
+			toggle(user)
+
+/obj/structure/closet/crate/dumpster/open()
+	if (opened)
+		return FALSE
+	if (!can_open())
+		return FALSE
+
+	playsound(loc, 'sound/machines/click.ogg', 15, TRUE, -3)
+	opened = TRUE
+	update_icon()
+
+	if (climbable)
+		structure_shaken()
+	return TRUE

@@ -1,7 +1,7 @@
 
-/obj/map_metadata/nomads_continental
-	ID = MAP_NOMADS_CONTINENTAL
-	title = "Nomads (Continents) (200x400x2)"
+/obj/map_metadata/nomads_mediterranean
+	ID = MAP_NOMADS_MEDITERRANEAN
+	title = "Nomads (Mediterranean) (250x250x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -31,29 +31,25 @@
 	gamemode = "Classic (Stone Age Start)"
 	var/list/arealist_r = list()
 	var/list/arealist_g = list()
-/obj/map_metadata/nomads_continental/New()
+/obj/map_metadata/nomads_mediterranean/New()
 	..()
 	spawn(2500)
-		for (var/i = 1, i <= 65, i++)
+		for (var/i = 1, i <= 35, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/sea/sea))
 			new/obj/structure/fish(areaspawn)
-	spawn(2500)
-		for (var/i = 1, i <= 30, i++)
-			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
-			new/obj/structure/piranha(areaspawn)
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads_continental/faction2_can_cross_blocks()
+/obj/map_metadata/nomads_mediterranean/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads_continental/faction1_can_cross_blocks()
+/obj/map_metadata/nomads_mediterranean/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads_continental/cross_message(faction)
+/obj/map_metadata/nomads_mediterranean/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_continental/proc/seasons()
+/obj/map_metadata/nomads_mediterranean/proc/seasons()
 	if (season == "FALL")
 		season = "WINTER"
 		world << "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>"
@@ -200,7 +196,7 @@
 		seasons()
 
 
-/obj/map_metadata/nomads_continental/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/nomads_mediterranean/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE
 	else

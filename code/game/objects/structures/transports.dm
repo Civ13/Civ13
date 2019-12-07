@@ -622,7 +622,7 @@
 		if (fueltank && fueltank.reagents && fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
 			var/found = FALSE
 			for (var/i in engine.fuels)
-				if (GC.reagents.has_reagent(i))
+				if (GC && GC.reagents && GC.reagents.has_reagent(i))
 					found = TRUE
 			if (!found)
 				user << "\The [W] has no acceptable fuel in it."

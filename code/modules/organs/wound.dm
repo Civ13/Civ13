@@ -84,6 +84,8 @@
 
 // returns 1 if there's a next stage, 0 otherwise
 /datum/wound/proc/init_stage(var/initial_damage)
+	if (!stages || !src)
+		return 0
 	current_stage = stages.len
 
 	while(src.current_stage > 1 && src.damage_list[current_stage-1] <= initial_damage / src.amount)

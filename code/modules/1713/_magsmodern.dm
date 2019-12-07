@@ -174,3 +174,13 @@
 	max_ammo = 8
 	weight = 0.33
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/bergmann
+	name = "bergmann (9x19mm)"
+	icon_state = "bergmann_ammo"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 5
+	weight = 0.33
+	multiple_sprites = TRUE

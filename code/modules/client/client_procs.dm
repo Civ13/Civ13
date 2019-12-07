@@ -62,33 +62,49 @@
 
 				if (fexists("SQL/bans/ckey/[ckey].txt"))
 					ckey_file = "SQL/bans/ckey/[ckey].txt"
-				if (fexists("SQL/bans/ip/[ckey].txt"))
-					ip_file = "SQL/bans/ip/[ckey].txt"
-				if (fexists("SQL/bans/cid/[ckey].txt"))
-					cid_file = "SQL/bans/cid/[ckey].txt"
-
+				if (fexists("SQL/bans/ip/[ip].txt"))
+					ip_file = "SQL/bans/ip/[ip].txt"
+				if (fexists("SQL/bans/cid/[cID].txt"))
+					cid_file = "SQL/bans/cid/[cID].txt"
+				if (ckey_file)
+					var/details = file2text(ckey_file)
+					var/list/details_lines = splittext(details, "|||\n")
+					if (details_lines.len)
+						for(var/i=1,i<=details_lines.len,i++)
+							var/list/details2 = splittext(details_lines[i], ";")
+							if (details2[3] == UID)
+								details_lines -= details_lines[i]
+								fdel(ckey_file)
+								for(var/L in details_lines)
+									text2file("[L]|||", ckey_file)
+				if (cid_file)
+					var/details = file2text(cid_file)
+					var/list/details_lines = splittext(details, "|||\n")
+					if (details_lines.len)
+						for(var/i=1,i<=details_lines.len,i++)
+							var/list/details2 = splittext(details_lines[i], ";")
+							if (details2[3] == UID)
+								details_lines -= details_lines[i]
+								fdel(cid_file)
+								for(var/L in details_lines)
+									text2file("[L]|||", cid_file)
+				if (ip_file)
+					var/details = file2text(ip_file)
+					var/list/details_lines = splittext(details, "|||\n")
+					if (details_lines.len)
+						for(var/i=1,i<=details_lines.len,i++)
+							var/list/details2 = splittext(details_lines[i], ";")
+							if (details2[3] == UID)
+								details_lines -= details_lines[i]
+								fdel(ip_file)
+								for(var/L in details_lines)
+									text2file("[L]|||", ip_file)
 				if (ckey_file || ip_file || cid_file)
 					log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
 					message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
-					if (ckey_file)
-						fdel(ckey_file)
-					if (cid_file)
-						fdel(cid_file)
-					if (ip_file)
-						fdel(ip_file)
-				var/list/fulllist = list()
-				var/path = "SQL/bans/"
-				var/list/filenames = flist(path)
-				for (var/filename in filenames)
-					if (copytext(filename, length(filename)) != "/") // Ignore directories.
-						if (fexists(path + filename))
-							fulllist += "[path + filename]"
-				for (var/k in fulllist)
-					if (fexists(k))
-						var/list/re = splittext(file2text(k),";")
-						if (re[3] == UID)
-							fdel(k)
-
+					for (var/client/C in clients)
+						if (C.ckey == ckey)
+							C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
 	//Logs all hrefs
 	if (config && config.log_hrefs && href_logfile)
 		href_logfile << "<small>[time2text(world.timeofday,"hh:mm")] [src] (usr:[usr])</small> || [hsrc ? "[hsrc] " : ""][href]<br>"

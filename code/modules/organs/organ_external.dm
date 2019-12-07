@@ -796,7 +796,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	var/mob/living/carbon/human/victim = owner //Keep a reference for post-removed().
 	var/obj/item/organ/external/parent_organ = parent
 
-	if (disintegrate != DROPLIMB_BLUNT || !istype(src, /obj/item/organ/external/head))
+	if (disintegrate != DROPLIMB_BLUNT)
 		removed(null, ignore_children)
 
 		victim.traumatic_shock += 60

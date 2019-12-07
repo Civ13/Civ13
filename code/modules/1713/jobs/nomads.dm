@@ -40,12 +40,12 @@
 		else if (map.ordinal_age == 1)
 			equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/fifty(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
 		else if (map.ordinal_age == 2)
 			if (map && map.ID == MAP_CIVILIZATIONS)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/fifty(src), slot_l_store)
+				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 				spawn(5)
 					if (gender == "male")
 						if (civilization == "West Kingdom")
@@ -94,7 +94,7 @@
 				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/fifty(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (map.ID == MAP_CIVILIZATIONS)
 				spawn(5)
 					make_nomad()
@@ -117,7 +117,7 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 		else if (map.ordinal_age == 4)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/fifty(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(src), slot_w_uniform)
@@ -126,7 +126,7 @@
 				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 		else if (map.ordinal_age == 5)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/fifty(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
@@ -134,7 +134,7 @@
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 		else if (map.ordinal_age == 6)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/fifty(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
@@ -142,7 +142,7 @@
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 		else if (map.ordinal_age == 7)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/fifty(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
@@ -150,7 +150,7 @@
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 		else if (map.ordinal_age == 8)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/fifty(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern7(src), slot_w_uniform)
@@ -303,7 +303,51 @@
 						real_name = name
 						add_note("Known Languages", "Latin")
 						return
-
+		else if (map.ID == MAP_NOMADS_MEDITERRANEAN)
+			spawn(5)
+				//SOUTH
+				if (y<100)
+					//SOUTH-WEST
+					if (x<100)
+						add_language("Arabic",TRUE)
+						remove_language("English")
+						for (var/datum/language/arab/A in languages)
+							default_language = A
+						name = species.get_random_arab_name(gender)
+						real_name = name
+						add_note("Known Languages", "Arabic")
+						return
+					//SOUTH-EAST
+					else
+						add_language("Hebrew",TRUE)
+						remove_language("English")
+						for (var/datum/language/hebrew/A in languages)
+							default_language = A
+						name = species.get_random_hebrew_name(gender)
+						real_name = name
+						add_note("Known Languages", "Hebrew")
+						return
+					//NORTH-WEST
+				else
+					if (x<100)
+						add_language("Latin",TRUE)
+						remove_language("English")
+						for (var/datum/language/latin/A in languages)
+							default_language = A
+						name = species.get_random_roman_name(gender)
+						real_name = name
+						add_note("Known Languages", "Latin")
+						return
+					//NORTH-EAST
+					else
+						add_language("Greek",TRUE)
+						remove_language("English")
+						for (var/datum/language/greek/A in languages)
+							default_language = A
+						name = species.get_random_greek_name(gender)
+						real_name = name
+						add_note("Known Languages", "Greek")
+						return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////

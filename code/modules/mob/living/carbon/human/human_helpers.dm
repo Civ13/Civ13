@@ -84,7 +84,7 @@
 	if (!found)
 		usr << "<span class = 'red'>You need to be over a bed.</span>"
 		return
-	if (WWinput(src, "Are you sure you want to sleep for a while? This will protect you when disconnected, but takes 2 minutes to take effect.", "Sleep", "Yes", list("Yes","No")) == "Yes")
+	if (WWinput(src, "Are you sure you want to sleep for a while? This will protect you when disconnected, but you must stay ingame for 2 minutes for it to take effect.", "Sleep", "Yes", list("Yes","No")) == "Yes")
 		usr << "You will start sleeping in two minutes."
 		spawn(1200)
 			if (usr.sleeping)

@@ -134,10 +134,8 @@
 	switch(handle_casings)
 		if (EJECT_CASINGS) //eject casing onto ground.
 			#ifndef DISABLE_CASINGS
-			var/area/src_area = get_area(src)
-			if (!src_area.lift_master())
-				chambered.loc = get_turf(src)
-				chambered.randomrotation()
+			chambered.loc = get_turf(src)
+			chambered.randomrotation()
 			#endif
 
 			playsound(loc, casing_sound, 50, TRUE)
@@ -147,6 +145,10 @@
 				ammo_magazine.stored_ammo += chambered
 			else
 				loaded += chambered
+
+		if (REMOVE_CASINGS) //deletes the casing (arrows, for example, where the casing is effectively the projectile)
+			qdel(chambered)
+			chambered = null
 
 	if (handle_casings != HOLD_CASINGS)
 		chambered = null

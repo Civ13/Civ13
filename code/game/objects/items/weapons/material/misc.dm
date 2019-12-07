@@ -76,7 +76,7 @@
 	edge = TRUE
 	desc = "A crude, yet effective weapon."
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
-	icon_state = "spear_old"
+	icon_state = "spear"
 	item_state = "spear"
 	worn_state = "spear"
 	default_material = "wood"

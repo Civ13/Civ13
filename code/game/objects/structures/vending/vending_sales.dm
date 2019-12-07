@@ -27,7 +27,7 @@
 		user << "You put \the [W] in the [src]."
 		qdel(W)
 		return
-	if (istype(W, /obj/item/weapon/wrench))
+	else if (istype(W, /obj/item/weapon/wrench))
 		if (owner != "Global" && find_company_member(user,owner))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			if (anchored)
@@ -76,10 +76,63 @@
 				product.amount = S.amount
 				qdel(W)
 			else
-				W.forceMove(src)
+				if (W)
+					W.forceMove(src)
 			product_records.Add(product)
 			update_icon()
 			return TRUE
+/obj/structure/vending/sales/verb/Manage()
+	set category = null
+	set src in range(1, usr)
+
+
+	if (!istype(usr, /mob/living/carbon/human))
+		return
+
+	if (owner != "Global" && find_company_member(usr,owner))
+		var/choice1 = WWinput(usr, "What do you want to do?", "Vendor Management", "Exit", list("Exit", "Change Name", "Change Prices", "Remove Product"))
+		if (choice1 == "Exit")
+			return TRUE
+		else if (choice1 == "Change Name")
+			var/input1 = input("What name do you want to give to this vendor?", "Vendor Name", name) as text
+			if (input1 == null || input1 == "")
+				return FALSE
+			else
+				name = input1
+				return TRUE
+		else if (choice1 == "Change Prices")
+			var/list/choicelist = list("Exit")
+			for(var/datum/data/vending_product/VP in product_records)
+				choicelist += VP.product_name
+			var/choice2 = WWinput(usr, "What product to change the price?", "Vendor Management", "Exit", choicelist)
+			if (choice2 == "Exit")
+				return FALSE
+			else
+				for(var/datum/data/vending_product/VP in product_records)
+					if (VP.product_name == choice2)
+						var/input3 = input("The current price for [VP.product_name] is [VP.price*10] silver coins. What should the new price be?", "Product Price", VP.price*10) as num
+						if (input3 < 0 || input3 == null)
+							return FALSE
+						else
+							VP.price = input3/10
+							return TRUE
+		else if (choice1 == "Remove Product")
+			var/list/choicelist = list("Exit")
+			for(var/datum/data/vending_product/VP in product_records)
+				choicelist += VP.product_name
+			var/choice2 = WWinput(usr, "What product to remove?", "Vendor Management", "Exit", choicelist)
+			if (choice2 == "Exit")
+				return FALSE
+			else
+				for(var/datum/data/vending_product/VP in product_records)
+					if (VP.product_name == choice2)
+						vend(VP, usr, VP.amount)
+						return TRUE
+
+
+	else
+		usr << "You do not have permission to manage this vendor."
+		return FALSE
 
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user, var/p_amount=1)
 	vend_ready = FALSE //One thing at a time!!
@@ -155,36 +208,49 @@
 	if ((usr.contents.Find(src) || (in_range(src, usr) && istype(loc, /turf))))
 		if ((href_list["vend"]) && (vend_ready) && (!currently_vending))
 
-			var/key = text2num(href_list["vend"])
-			var/datum/data/vending_product/R = product_records[key]
-
-			var/inp = 1
-			if (R.amount > 1)
-				inp = input(usr, "How many do you want to buy? (1 to [R.amount])",1) as num
-				if (inp>R.amount)
-					inp = R.amount
-				else if (inp<=1)
-					inp = 1
-
-			if (R.price <= 0)
-				vend(R, usr, inp)
-
+			if (find_company_member(usr,owner))
+				usr << "<span class='warning'>You can't buy from your own company. Remove the product instead.</span>"
+				status_error = FALSE
+				currently_vending = null
 			else
-				currently_vending = R
-				if (moneyin < R.price)
-					status_message = "Please insert money to pay for the item."
-					status_error = FALSE
-				else
-					moneyin -= R.price
-					if (owner != "Global")
-						map.custom_company_value[owner] += R.price
-					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = moneyin/0.4
-					if (GC.amount == 0)
-						qdel(GC)
-					moneyin = 0
+
+				var/key = text2num(href_list["vend"])
+				var/datum/data/vending_product/R = product_records[key]
+
+				var/inp = 1
+				if (R.amount > 1)
+					inp = input(usr, "How many do you want to buy? (1 to [R.amount])",1) as num
+					if (inp>R.amount)
+						inp = R.amount
+					else if (inp<=1)
+						inp = 1
+
+				if (R.price <= 0)
 					vend(R, usr, inp)
-					nanomanager.update_uis(src)
+
+				else
+					var/mob/living/carbon/human/H = usr
+					var/salestax = 0
+					if (H.civilization != "none")
+						salestax = (map.custom_civs[H.civilization][9]/100)*R.price
+					var/price_with_tax = R.price+salestax
+					currently_vending = R
+					if (moneyin < price_with_tax)
+						status_message = "Please insert money to pay for the item."
+						status_error = FALSE
+					else
+						moneyin -= price_with_tax
+						if (owner != "Global")
+							map.custom_company_value[owner] += R.price
+							if (map.custom_civs[H.civilization])
+								map.custom_civs[H.civilization][5] += salestax
+						var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+						GC.amount = moneyin/0.4
+						if (GC.amount == 0)
+							qdel(GC)
+						moneyin = 0
+						vend(R, usr, inp)
+						nanomanager.update_uis(src)
 
 		else if (href_list["cancelpurchase"])
 			currently_vending = null

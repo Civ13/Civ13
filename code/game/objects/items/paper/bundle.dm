@@ -165,7 +165,7 @@
 			update_icon()
 	else
 		usr << "<span class='notice'>You need to hold it in hands!</span>"
-	if (istype(loc, /mob) ||istype(loc.loc, /mob))
+	if (istype(loc, /mob) || istype(loc.loc, /mob))
 		attack_self(usr)
 		updateUsrDialog()
 

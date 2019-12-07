@@ -52,11 +52,22 @@
 	name = "bunch of olives"
 	icon_state = "olives"
 	decay = 35*600
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy
+	name = "Psilocybin mushroom"
+	icon_state = "mushrooms"
+	satisfaction = 10
+	decay = 35*600
+	New()
+		..()
+		reagents.add_reagent("thc", 30)
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/mushroom
 	name = "bunch of mushrooms"
 	icon_state = "mushrooms"
 	satisfaction = 4
 	decay = 15*600
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/melon
 	name = "melon"
 	icon_state = "melon"

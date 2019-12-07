@@ -63,8 +63,12 @@
 		else
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name]</span>")
 			icon_state = idlesprite
+	else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
+		..()
+		return
 	else
 		user << "<span class='notice'>You cannot repair this with a [src.name]!</span>"
+		return
 /obj/structure/repair/grindstone
 	name = "Grindstone"
 	desc = "for sharpening blades."

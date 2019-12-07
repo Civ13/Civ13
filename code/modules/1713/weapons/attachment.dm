@@ -62,12 +62,12 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/gun/dropped(mob/user)
 	..()
-	if (attachments.len)
+	if (attachments && attachments.len)
 		for (var/obj/item/weapon/attachment/A in attachments)
 			A.dropped(user)
 
 /obj/item/weapon/gun/pickup(mob/user)
-	if (attachments.len)
+	if (attachments && attachments.len)
 		for (var/obj/item/weapon/attachment/A in attachments)
 			A.pickup(user)
 

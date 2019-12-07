@@ -30,7 +30,8 @@
 /mob/living/simple_animal/fly/New()
 	..()
 	spawn(6000)
-		Destroy()
+		stat = DEAD
+		qdel(src)
 
 /mob/living/simple_animal/fly/Life()
 	..()

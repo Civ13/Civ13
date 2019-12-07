@@ -353,7 +353,7 @@
 "gO" = (/obj/covers/steelplating/white,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/reagent_containers/food/drinks/bottle/rum,/obj/structure/shelf,/obj/roof,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "gP" = (/obj/covers/cobblestone,/obj/structure/window/sandbag/jersey{icon_state = "jerseybarrier1"; dir = 8},/turf/floor/dirt,/area/caribbean/nomads/forest)
 "gQ" = (/obj/covers/road,/obj/structure/sign/traffic/cone,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"gR" = (/obj/covers/steelplating/white,/obj/structure/shelf,/obj/item/weapon/storage/box/matches,/obj/item/weapon/storage/box/matches,/obj/roof,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"gR" = (/obj/covers/steelplating/white,/obj/structure/shelf,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/obj/roof,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "gS" = (/obj/covers/road,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/barricade/car,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "gT" = (/obj/covers/road,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/cone{icon_state = "cone1"; dir = 8},/turf/floor/dirt,/area/caribbean/nomads/forest)
 "gU" = (/obj/covers/road,/obj/structure/sign/traffic/cone{icon_state = "cone1"; dir = 4},/turf/floor/dirt,/area/caribbean/nomads/forest)

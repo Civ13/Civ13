@@ -21,7 +21,7 @@
 	var/silicate = FALSE // number of units of silicate
 	not_movable = FALSE
 	not_disassemblable = FALSE
-
+	var/glassed = FALSE
 /obj/structure/window/examine(mob/user)
 	. = ..(user)
 
@@ -88,16 +88,23 @@
 	playsound(get_turf(src), "shatter", 70, TRUE)
 	if (display_message)
 		visible_message("<span class = 'warning'>[src] shatters!</span>")
-	if (dir == SOUTHWEST)
-		var/index = null
-		index = FALSE
-		while (index < 2)
-			new shardtype(loc) //todo pooling?
-			if (reinf) PoolOrNew(/obj/item/stack/rods, loc)
-			index++
-	else
-		new shardtype(loc) //todo pooling?
-		if (reinf) PoolOrNew(/obj/item/stack/rods, loc)
+	if (glassed)
+		if (istype(src, /obj/structure/window/classic/shoji))
+			new/obj/structure/window_frame/shoji(loc)
+		else if (istype(src, /obj/structure/window/classic/medieval))
+			new/obj/structure/window_frame/medieval(loc)
+		else if (istype(src, /obj/structure/window/classic/brick))
+			new/obj/structure/window_frame/brick(loc)
+		else if (istype(src, /obj/structure/window/classic/stone))
+			new/obj/structure/window_frame/stone(loc)
+		else if (istype(src, /obj/structure/window/classic/sandstone))
+			new/obj/structure/window_frame/sandstone(loc)
+		else if (istype(src, /obj/structure/window/classic/metal))
+			new/obj/structure/window_frame/metal(loc)
+		else if (istype(src, /obj/structure/window/classic/sumerian))
+			new/obj/structure/window_frame/sumerian(loc)
+		else
+			new/obj/structure/window_frame(loc)
 	qdel(src)
 	return
 
@@ -162,21 +169,11 @@
 		set_anchored(FALSE)
 		step(src, get_dir(AM, src))
 	take_damage(tforce)
-/*
-/obj/structure/window/attack_tk(mob/user as mob)
-	user.visible_message("<span class='notice'>Something knocks on [src].</span>")
-	playsound(loc, 'sound/effects/Glasshit.ogg', 50, TRUE)
-*/
+
 /obj/structure/window/attack_hand(mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 	if (usr.a_intent == I_HARM)
-
-		if (istype(usr,/mob/living/carbon/human))
-			var/mob/living/carbon/human/H = usr
-			if (H.species.can_shred(H))
-				attack_generic(H,25)
-				return
 
 		playsound(loc, 'sound/effects/glassknock.ogg', 80, TRUE)
 		user.do_attack_animation(src)
@@ -516,6 +513,7 @@
 	layer = MOB_LAYER + 0.02
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
+	glassed = TRUE
 
 /obj/structure/window/clean
 	desc = "A good old window."
@@ -613,27 +611,6 @@
 	if (!P || !P.nodamage)
 		shatter()
 		return PROJECTILE_CONTINUE
-
-/obj/structure/window/classic/shatter(var/display_message = TRUE)
-	var/myturf = get_turf(src)
-	spawn (1)
-		if (istype(src, /obj/structure/window/classic/shoji))
-			new/obj/structure/window_frame/shoji(myturf)
-		else if (istype(src, /obj/structure/window/classic/medieval))
-			new/obj/structure/window_frame/medieval
-		else if (istype(src, /obj/structure/window/classic/brick))
-			new/obj/structure/window_frame/brick
-		else if (istype(src, /obj/structure/window/classic/stone))
-			new/obj/structure/window_frame/stone
-		else if (istype(src, /obj/structure/window/classic/sandstone))
-			new/obj/structure/window_frame/sandstone
-		else if (istype(src, /obj/structure/window/classic/metal))
-			new/obj/structure/window_frame/metal
-		else if (istype(src, /obj/structure/window/classic/sumerian))
-			new/obj/structure/window_frame/sumerian
-		else
-			new/obj/structure/window_frame(myturf)
-	..(display_message)
 
 
 /obj/structure/window/classic/update_icon()

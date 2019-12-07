@@ -195,10 +195,12 @@
 	return
 
 /obj/item/weapon/storage/fancy/cigar/remove_from_storage(obj/item/W as obj, atom/new_location)
-		var/obj/item/clothing/mask/smokable/cigarette/cigar/C = W
-		if (!istype(C)) return
+	var/obj/item/clothing/mask/smokable/cigarette/cigar/C = W
+	if (!istype(C))
+		return
+	if (reagents)
 		reagents.trans_to_obj(C, (reagents.total_volume/contents.len))
-		..()
+	..()
 
 
 /*

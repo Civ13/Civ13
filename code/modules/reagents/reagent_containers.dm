@@ -81,18 +81,28 @@
 	if (!istype(target))
 		return FALSE
 
-	if (!target.reagents || !target.reagents.total_volume)
-		user << "<span class='notice'>[target] is empty.</span>"
-		return TRUE
+	if (target.locked && target.custom_code != 0)
+		user << "<span class='notice'>\The [target] is locked.</span>"
+		return FALSE
 
-	if (reagents && !reagents.get_free_space())
-		user << "<span class='notice'>[src] is full.</span>"
-		return TRUE
+	if (target.dmode=="dispense")
+		if (!target.reagents || !target.reagents.total_volume)
+			user << "<span class='notice'>[target] is empty.</span>"
+			return TRUE
 
-	var/trans = target.reagents.trans_to_obj(src, target:amount_per_transfer_from_this)
-	user << "<span class='notice'>You fill [src] with [trans] units of the contents of [target].</span>"
-	playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-	return TRUE
+		if (reagents && !reagents.get_free_space())
+			user << "<span class='notice'>[src] is full.</span>"
+			return TRUE
+
+		var/trans = target.reagents.trans_to_obj(src, target:amount_per_transfer_from_this)
+		user << "<span class='notice'>You fill [src] with [trans] units of the contents of [target].</span>"
+		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+		return TRUE
+	else
+		var/trans = src.reagents.trans_to_obj(target, target.amount_per_transfer_from_this)
+		user << "<span class='notice'>You fill \the [target] with [trans] units of the contents of [src].</span>"
+		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+		return TRUE
 
 /obj/item/weapon/reagent_containers/proc/standard_splash_mob(var/mob/user, var/mob/target) // This goes into afterattack
 	if (!istype(target))

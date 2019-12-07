@@ -127,34 +127,68 @@
 	value = 2
 	var/volume = 5
 
+/obj/item/ammo_casing/bolt/stone
+	name = "stone bolt"
+	desc = "An bolt with a stone tip."
+	icon_state = "bolt_stone"
+	projectile_type = /obj/item/projectile/arrow/bolt/stone
+	weight = 0.17
+
+/obj/item/ammo_casing/bolt/sandstone
+	name = "sandstone bolt"
+	desc = "An bolt with a sandstone tip."
+	icon_state = "bolt_sandstone"
+	projectile_type = /obj/item/projectile/arrow/bolt/sandstone
+	weight = 0.17
+
+/obj/item/ammo_casing/bolt/copper
+	name = "copper bolt"
+	desc = "An bolt with a copper tip."
+	icon_state = "bolt_copper"
+	projectile_type = /obj/item/projectile/arrow/bolt/copper
+	weight = 0.16
+/obj/item/ammo_casing/bolt/gods
+	name = "gods finger"
+	desc = "A bolt that radiates holy wrath."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "bolt_god"
+	projectile_type = /obj/item/projectile/arrow/bolt/fire/gods
+	weight = 0.18
+
 /obj/item/ammo_casing/bolt/iron
 	name = "iron bolt"
 	desc = "A crossbow bolt with a iron tip."
-	icon_state = "arrow_iron"
+	icon_state = "bolt_iron"
 	projectile_type = /obj/item/projectile/arrow/bolt/iron
 	weight = 0.17
 
 /obj/item/ammo_casing/bolt/bronze
 	name = "bronze bolt"
 	desc = "A crossbow bolt with a bronze tip."
-	icon_state = "arrow_bronze"
+	icon_state = "bolt_bronze"
 	projectile_type = /obj/item/projectile/arrow/bolt/bronze
 	weight = 0.17
 
 /obj/item/ammo_casing/bolt/steel
 	name = "steel bolt"
 	desc = "A crossbow bolt with a steel tip."
-	icon_state = "arrow_steel"
+	icon_state = "bolt_steel"
 	projectile_type = /obj/item/projectile/arrow/bolt/steel
 	weight = 0.18
 
 /obj/item/ammo_casing/bolt/modern
 	name = "fiberglass bolt"
 	desc = "A modern, high-velocity crossbow bolt."
-	icon_state = "arrow_modern"
+	icon_state = "bolt_modern"
 	projectile_type = /obj/item/projectile/arrow/bolt/modern
 	weight = 0.16
-
+/obj/item/ammo_casing/bolt/vial
+	name = "vial arrow"
+	desc = "An iron-tipped bolt with a glass vial attached to the tip."
+	icon_state = "bolt_vial"
+	projectile_type = /obj/item/projectile/arrow/bolt/vial
+	weight = 0.18
+	volume = 15
  //Sling
 /obj/item/ammo_casing/stone
 	name = "rock"
@@ -199,6 +233,38 @@
 			user << "<span class = 'notice'>You dip the [W] into the [src]</span>"
 			W.reagents.trans_to_obj(src, volume - src.reagents)
 	..()
+
+/obj/item/ammo_casing/bolt/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/stack/arrowhead))
+		var/obj/item/stack/arrowhead/AH = W
+		if(istype(W, /obj/item/stack/arrowhead/stone))
+			new/obj/item/ammo_casing/bolt/stone(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/copper))
+			new/obj/item/ammo_casing/bolt/copper(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/iron))
+			new/obj/item/ammo_casing/bolt/iron(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/bronze))
+			new/obj/item/ammo_casing/bolt/bronze(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/steel))
+			new/obj/item/ammo_casing/bolt/steel(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/vial))
+			new/obj/item/ammo_casing/bolt/vial(user.loc)
+		else
+			new/obj/item/ammo_casing/bolt/gods(user.loc)
+		AH.amount--
+		if (AH.amount<1)
+			qdel(AH)
+		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
+		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
+		qdel(src)
+	if (istype(W, /obj/item/weapon/reagent_containers))
+		return //do nothing if not reagent container
+	else
+		if(volume < src.reagents)
+			user << "<span class = 'notice'>You dip the [W] into the [src]</span>"
+			W.reagents.trans_to_obj(src, volume - src.reagents)
+	..()
+
 
 /obj/item/stack/arrowhead
 	name = "god's finger"

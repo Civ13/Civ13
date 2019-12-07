@@ -149,6 +149,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if (ishuman(src))
 			var/mob/living/carbon/human/H = src
 			H.handle_zoom_stuff(TRUE)
+			if (human_clients_mob_list.Find(H))
+				human_clients_mob_list -= H
 		announce_ghost_joinleave(ghostize(1))
 	else
 		var/response
@@ -173,6 +175,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if (ishuman(src))
 			var/mob/living/carbon/human/H = src
 			H.handle_zoom_stuff(TRUE)
+			if (human_clients_mob_list.Find(H))
+				human_clients_mob_list -= H
 		if (client)
 			client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
 			client << RESPAWN_MESSAGE

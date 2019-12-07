@@ -80,11 +80,18 @@
 		user << "The target does not seem to respond..."
 		return
 
+	if (left_factions.len)
+		for (var/i in left_factions)
+			if (i[1]==user.civilization && i[2]>world.realtime)
+				user << "You can't recruit [usr] since he has left your faction recently!"
+				return
 	var/answer = WWinput(src, "[usr] wants to recruit you into his faction, [user.civilization]. Will you accept?", null, "Yes", list("Yes","No"))
 	if (answer == "Yes")
 		usr << "[src] accepts your offer. They are now part of [user.civilization]."
 		src << "You accept [usr]'s offer. You are now part of [user.civilization]."
-		src.civilization = user.civilization
+		src.faction_leaving_proc()
+		spawn(1)
+			src.civilization = user.civilization
 		return
 	else if (answer == "No")
 		usr << "[src] has rejected your offer."

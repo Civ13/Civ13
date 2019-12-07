@@ -108,3 +108,10 @@ var/last_chew = FALSE
 	icon = 'icons/obj/items.dmi'
 	icon_state = "ropecuffs"
 	flammable = TRUE
+
+/obj/item/weapon/handcuffs/old
+	name = "iron handcuffs"
+	desc = "Use this to keep prisoners in line."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "oldcuff"
+	flammable = TRUE

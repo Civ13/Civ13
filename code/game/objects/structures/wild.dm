@@ -29,7 +29,7 @@
 	if (!A)
 		return
 	var/picked = pick(/obj/item/stack/farming/seeds/carrot,/obj/item/stack/farming/seeds/mushroom,/obj/item/stack/farming/seeds/tomato,/obj/item/stack/farming/seeds/tobacco,/obj/item/stack/farming/seeds/sugarcane,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/apple,/obj/item/stack/farming/seeds/orange,/obj/item/stack/farming/seeds/cabbage,/obj/item/stack/farming/seeds/hemp,/obj/item/stack/farming/seeds/tea,/obj/item/stack/farming/seeds/banana,/obj/item/stack/farming/seeds/potato,/obj/item/stack/farming/seeds/rice,/obj/item/stack/farming/seeds/corn,/obj/item/stack/farming/seeds/poppy,/obj/item/stack/farming/seeds/peyote,/obj/item/stack/farming/seeds/coffee,/obj/item/stack/farming/seeds/tree,/obj/item/stack/farming/seeds/cotton,/obj/item/stack/farming/seeds/grapes,/obj/item/stack/farming/seeds/olives,/obj/item/stack/farming/seeds/coca,/obj/item/stack/farming/seeds/lime,/obj/item/stack/farming/seeds/lemon,/obj/item/stack/farming/seeds/melon,/obj/item/stack/farming/seeds/pumpkin,/obj/item/stack/farming/seeds/cherry,/obj/item/stack/farming/seeds/apricot,/obj/item/stack/farming/seeds/coconut,)
-	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD)
+	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN)
 		return picked
 	else
 		if (A.climate == "sea")
@@ -94,7 +94,7 @@
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/hatchet))
-		visible_message("<span class='danger'>[user] begins to chop down the [src]!</span>")
+		visible_message("<span class='danger'>[user] begins to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
 		if (do_after(user, 50, user.loc))
@@ -338,7 +338,7 @@
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
-		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
+		visible_message("<span class='danger'>[user] tries to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
 		try_destroy()
@@ -792,7 +792,7 @@
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
-		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
+		visible_message("<span class='danger'>[user] tries to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
 		try_destroy()

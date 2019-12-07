@@ -23,6 +23,14 @@
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
 
+/obj/item/stack/farming/seeds/mushroompsy
+	name = "Psilocybin mushroom"
+	plant = "mushroompsy"
+	icon_state = "mushroomseeds"
+	color = null
+	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
+
 /obj/item/stack/farming/seeds/tobacco
 	name = "tobacco seeds"
 	plant = "tobacco"
@@ -357,6 +365,16 @@
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
 	max_water = 55
 
+/obj/structure/farming/plant/mushroompsy
+	name = "Psilocybin mushrooms"
+	desc = "a bunch of mushrooms. Can be grown inside and underground."
+	icon_state = "mushroom-grow1"
+	plant = "mushroompsy"
+	harvest_verb = "harvest"
+	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("temperate", "sea", "tundra", "taiga", "jungle","savanna")
+	max_water = 55
+
 /* grain plants */
 
 /obj/structure/farming/plant/wheat
@@ -620,7 +638,7 @@
 								for (var/k in seasons)
 									if (season == k)
 										count++
-						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_NEW_WORLD))
+						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN))
 							stage += 1
 					growth()
 
@@ -639,14 +657,6 @@
 			qdel(src)
 
 /obj/structure/farming/plant/proc/water_proc()
-	for(var/turf/floor/beach/water/WT in range(2,src))
-		if (!WT.salty)
-			water = max_water //water within 2 tiles means no need to manually water the plants.
-			return
-	for(var/turf/floor/trench/flooded/TR in range(2,src))
-		if (TR.flooded && !TR.salty)
-			water = max_water //water within 2 tiles means no need to manually water the plants.
-			return
 	var/area/A = get_area(loc)
 	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
 		water += 15
@@ -663,6 +673,14 @@
 		desc = "A destroyed [plant] plant."
 		name = "destroyed [plant] plant"
 		return
+	for(var/turf/floor/beach/water/WT in range(2,src))
+		if (!WT.salty)
+			water = max_water //water within 2 tiles means no need to manually water the plants.
+			return
+	for(var/turf/floor/trench/flooded/TR in range(2,src))
+		if (TR.flooded && !TR.salty)
+			water = max_water //water within 2 tiles means no need to manually water the plants.
+			return
 	var/currcl = get_area(get_turf(src)).climate
 	if (currcl == "desert" || currcl == "savanna" || currcl == "semiarid")
 		water -= 25

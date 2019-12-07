@@ -410,14 +410,10 @@
 			return FALSE
 		//push (or hit) wtv is in front...
 		for (var/obj/structure/trains/TF in tgtt)
-			if (TF.rail_canmove(fdir))
-				TF.dir = dir
-				TF.Bumped(src)
-			else
-				visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
-				automovement = FALSE
-				health -= 5
-				return FALSE
+			visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
+			automovement = FALSE
+			health -= 5
+			return FALSE
 		for (var/obj/O in tgtt)
 			if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails))
 				visible_message("<span class = 'warning'>\The [src] hits \the [O]!</span>")

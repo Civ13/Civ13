@@ -98,7 +98,7 @@
 "cR" = (/obj/structure/bed/chair/wood{dir = 8},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
 "cS" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
 "cT" = (/obj/structure/bed,/obj/item/weapon/bedsheet/blue,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
-"cU" = (/obj/item/weapon/storage/box/matches,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cU" = (/obj/item/weapon/matchbox,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
 "cV" = (/obj/item/weapon/storage/fancy/candle_box,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
 "cW" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
 "cX" = (/obj/structure/bed/chair/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)

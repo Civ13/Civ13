@@ -34,14 +34,20 @@
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
 
-/mob/living/simple_animal/deer/female/Destroy()
-	deer_count -= 1
+/mob/living/simple_animal/deer/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		deer_count -= 1
 	..()
-/mob/living/simple_animal/deer/male/Destroy()
-	deer_count -= 1
+/mob/living/simple_animal/deer/Destroy()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		deer_count -= 1
 	..()
 /mob/living/simple_animal/deer/male/New()
-	deer_count += 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		deer_count += 1
 	..()
 	spawn(1)
 		if (babydeer)
