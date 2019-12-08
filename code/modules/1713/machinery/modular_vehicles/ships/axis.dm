@@ -35,7 +35,7 @@
 				if (!S.sails || S.broken)
 					moving = FALSE
 					stopmovementloop()
-					return
+					return FALSE
 				else
 					S.update_icon()
 			do_move()
@@ -43,12 +43,12 @@
 			currentspeed = 0
 			moving = FALSE
 			stopmovementloop()
-			return
+			return FALSE
 		spawn(vehicle_m_delay+1)
 			movementloop()
-			return
+			return FALSE
 	else
-		return
+		return TRUE
 
 /obj/structure/vehicleparts/axis/ship/stopmovementloop()
 	moving = FALSE

@@ -44,7 +44,7 @@
 			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
 			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
 			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
-			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br>
+			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
 			<a href='?src=\ref[src];decrease_speed=1'>Decrease Speed</a>  <a href='?src=\ref[src];increase_speed=1'>Increase Speed</a><br><br>
 			</font>
 			</body>
@@ -115,7 +115,7 @@
 			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
 			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
 			Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
-			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br>
+			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
 			<a href='?src=\ref[src];decrease_speed=1'>Decrease Speed</a>  <a href='?src=\ref[src];increase_speed=1'>Increase Speed</a><br><br>
 			</font>
 			</body>

@@ -45,8 +45,16 @@
 /obj/structure/engine/examine(mob/user)
 	..()
 	if (user in range(1,src))
-		user << "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>"
-
+		if (istype(src, /obj/structure/engine/external))
+			var/done = FALSE
+			for(var/obj/structure/vehicleparts/frame/ship/S in loc)
+				done = TRUE
+			if (done == FALSE)
+				user << "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>"
+			else
+				user << "<span class='notice'>Max Power: <b>[maxpower*20]</b>.</span>"
+		else
+			user << "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>"
 /obj/structure/engine/proc/turn_on()
 	return
 
