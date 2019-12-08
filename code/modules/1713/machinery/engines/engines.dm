@@ -38,6 +38,8 @@
 
 	var/enginetype = "external" //internal or external. External requires a separate combustion source.
 	var/list/connections = list() // what this engine is connected to. cam be an axis, oil well, etc.
+
+	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank //only used for internal combustion, but needs to be here because its checked by vehicles
 	var/on = FALSE
 
 /obj/structure/engine/examine(mob/user)
