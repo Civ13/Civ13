@@ -248,12 +248,12 @@
 			return
 		else
 			if (ship.engine.on)
-				playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
-				on = FALSE
-				power_off_connections()
-				currentspeed = 0
-				currentpower = 0
-				update_icon()
+				ship.engine.playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
+				ship.engine.on = FALSE
+				ship.engine.power_off_connections()
+				ship.engine.currentspeed = 0
+				ship.engine.currentpower = 0
+				ship.engine.update_icon()
 			else
 				ship.engine.turn_on()
 
