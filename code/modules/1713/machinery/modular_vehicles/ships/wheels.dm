@@ -247,9 +247,16 @@
 		if (!ship || !ship.engine)
 			return
 		else
-			ship.engine.on = !ship.engine.on
+			if (ship.engine.on)
+				playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
+				on = FALSE
+				power_off_connections()
+				currentspeed = 0
+				currentpower = 0
+				update_icon()
+			else
+				ship.engine.turn_on()
 
-		user << "You turn the engine [ship.engine.on ? "on" : "off"]."
 		return
 
 	if (href_list["increase_speed"])
