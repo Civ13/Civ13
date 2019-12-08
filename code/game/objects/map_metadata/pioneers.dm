@@ -33,7 +33,7 @@
 	spawn(18000)
 		seasons()
 	civilians_forceEnabled = TRUE
-/obj/map_metadata/pioneers/proc/seasons()
+/obj/map_metadata/pioneers/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"

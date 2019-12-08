@@ -445,7 +445,7 @@
 				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 					qdelHandReturn(H.r_hand, H)
 
-	else if (findtext(recipe.title, "raft"))
+	if (findtext(recipe.title, "raft"))
 		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
 			user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
 			return
@@ -816,7 +816,9 @@
 		produced = 4
 	else if (recipe.result_type == /obj/item/stack/arrowhead/steel)
 		produced = 4
-	if (recipe.result_type == /obj/structure/sink/well)
+	else if (recipe.result_type == /obj/item/stack/arrowhead/vial)
+		produced = 4
+	if (recipe.result_type == /obj/structure/sink/well || recipe.result_type == /obj/structure/sink/well/sandstone)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
 	var/inpt = 50
@@ -1141,6 +1143,10 @@
 			new/obj/item/ammo_casing/arrow(get_turf(O))
 			new/obj/item/ammo_casing/arrow(get_turf(O))
 			new/obj/item/ammo_casing/arrow(get_turf(O))
+		else if (istype(O, /obj/item/ammo_casing/bolt))
+			new/obj/item/ammo_casing/bolt(get_turf(O))
+			new/obj/item/ammo_casing/bolt(get_turf(O))
+			new/obj/item/ammo_casing/bolt(get_turf(O))
 		else if (istype(O, /obj/item/weapon/can))
 			var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
 			C1.customcolor1 = addtext("#",customcolor1)
@@ -1332,12 +1338,10 @@
 		if (user.get_inactive_hand()==src)
 			transfer_to(S, TRUE)
 			W.update_icon()
-			S.update_icon()
 			src.update_icon()
 		else
 			transfer_to(S)
 			W.update_icon()
-			S.update_icon()
 			src.update_icon()
 
 		spawn(0) //give the stacks a chance to delete themselves if necessary

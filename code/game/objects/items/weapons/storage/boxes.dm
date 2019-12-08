@@ -80,7 +80,7 @@
 		new /obj/item/weapon/storage/pill_bottle( src )
 
 
-/obj/item/weapon/storage/box/matches
+/obj/item/weapon/matchbox
 	name = "matchbox"
 	desc = "A small box of premium matches."
 	icon = 'icons/obj/cigarettes.dmi'
@@ -88,30 +88,39 @@
 	item_state = "zippo"
 	w_class = TRUE
 	slot_flags = SLOT_BELT
-	can_hold = list(/obj/item/weapon/flame/match)
-
+	var/maxcap = 10
+	var/currcap = 10
 	New()
 		..()
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
-		new /obj/item/weapon/flame/match(src)
+		currcap = maxcap
 
-	attackby(obj/item/weapon/flame/match/W as obj, mob/user as mob)
-		if (istype(W) && !W.lit && !W.burnt)
-			if (prob(50))
-				playsound(loc, 'sound/items/matchstick_lit.ogg', 25, FALSE, -1)
-				W.lit = TRUE
-				W.damtype = "burn"
-				W.icon_state = "match_lit"
-				processing_objects.Add(W)
-			else
-				playsound(loc, 'sound/items/matchstick_hit.ogg', 25, FALSE, -1)
-		W.update_icon()
+
+/obj/item/weapon/matchbox/examine(mob/user)
+	..(user)
+	user << "It has [currcap] matches out of a maximum of [maxcap]."
+
+/obj/item/weapon/matchbox/attack_hand(mob/living/carbon/human/H)
+	if (currcap>=1 && (src == H.l_hand || src == H.r_hand))
+		H << "You take a match from the matchbox."
+		H.put_in_hands(new/obj/item/weapon/flame/match(H))
+		currcap--
 		return
+	else if (currcap <= 0)
+		H << "<span class='notice'>The matchbox is empty!</span>"
+		currcap = 0
+		return
+	else
+		..()
+
+/obj/item/weapon/matchbox/attackby(obj/item/weapon/flame/match/W as obj, mob/user as mob)
+	if (istype(W) && !W.lit && !W.burnt)
+		if (prob(50))
+			playsound(loc, 'sound/items/matchstick_lit.ogg', 25, FALSE, -1)
+			W.lit = TRUE
+			W.damtype = "burn"
+			W.icon_state = "match_lit"
+			processing_objects.Add(W)
+		else
+			playsound(loc, 'sound/items/matchstick_hit.ogg', 25, FALSE, -1)
+	W.update_icon()
+	return

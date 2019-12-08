@@ -84,6 +84,8 @@ var/global/FREQ2 = rand(201,250)
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		if (!powersource)
+			return
 		powersource.connections += src
 		var/opdir1 = 0
 		var/opdir2 = 0

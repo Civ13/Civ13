@@ -42,9 +42,6 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 	make_blood()
 
-	if (in_stasis)
-		return
-
 	if (!species.has_organ["heart"])
 		return
 
@@ -79,6 +76,8 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 					bloodloss += W.damage / 1000
 		if (temp.open)
 			++bloodloss  //Yer stomach is cut open
+	if(istype(buckled, /obj/structure/cross))
+		bloodloss = max(1.5,bloodloss*1.2)
 	bloodloss = min(bloodloss, 4)
 
 	if (bloodloss) // we're bleeding

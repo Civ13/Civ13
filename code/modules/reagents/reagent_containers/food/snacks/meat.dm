@@ -69,6 +69,35 @@
 		reagents.add_reagent("food_poisoning", 15)
 		reagents.add_reagent("cyanide", 25)
 
+/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/attack_self(mob/user as mob)
+
+	var/obj/item/ammo_casing/CURRENT = null
+	if (user.l_hand == src && istype(user.r_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
+		CURRENT = user.r_hand
+	else if (user.r_hand == src && istype(user.l_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
+		CURRENT = user.l_hand
+	if (CURRENT)
+		if (istype(CURRENT, /obj/item/ammo_casing/arrow))
+			user << "You dip the arrow into the poisonous frog's skin."
+			CURRENT.name = "poisoned arrow"
+			CURRENT.icon_state = "arrowp"
+			CURRENT.projectile_type = /obj/item/projectile/arrow/arrow/vial
+			CURRENT.damtype = TOX
+			CURRENT.BB = new/obj/item/projectile/arrow/arrow/vial/poisonous(CURRENT)
+			CURRENT.contents = list(CURRENT.BB)
+			uses = (uses - 1)
+		else if (istype(CURRENT, /obj/item/ammo_casing/bolt))
+			user << "You dip the bolt into the poisonous frog's skin."
+			CURRENT.name = "poisoned bolt"
+			CURRENT.icon_state = "boltp"
+			CURRENT.projectile_type = /obj/item/projectile/arrow/bolt/vial
+			CURRENT.damtype = TOX
+			CURRENT.BB = new/obj/item/projectile/arrow/bolt/vial/poisonous(CURRENT)
+			CURRENT.contents = list(CURRENT.BB)
+			uses = (uses - 1)
+		return
+	else
+		return
 /obj/item/weapon/reagent_containers/food/snacks/rawfish
 	name = "raw fish"
 	desc = "A fresh fish. Should probably cook it first."

@@ -286,7 +286,7 @@ Parts of code courtesy of Super3222
 			for (var/obj/screen/movable/action_button/AB in user.client.screen)
 				if (AB.name == "Toggle Sights" && AB != azoom.button && azoom.button.screen_loc)
 					AB.invisibility = 101
-					if (azoom && azoom.button && findtext(azoom.button.screen_loc,":"))
+					if (azoom && azoom.button && findtext(azoom.button.screen_loc,":") && splittext(azoom.button.screen_loc, ":").len>=1 && splittext(splittext(azoom.button.screen_loc, ":")[1], "+").len>=2)
 						var/azoom_button_screenX = text2num(splittext(splittext(azoom.button.screen_loc, ":")[1], "+")[2])
 						var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
 

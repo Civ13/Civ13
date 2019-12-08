@@ -227,17 +227,17 @@
 	else
 		..()
 
-/obj/item/clothing/under/custompontificial
+/obj/item/clothing/under/custompontifical
 	name = "renaissance outfit"
-	desc = "A renaissance-style pontificial outfit."
+	desc = "A renaissance-style pontifical outfit."
 	var/uncolored = FALSE
 	var/topcolor = 0
 	var/undercolor = 0
 	var/linescolor = 0
 	var/handcolor = 0
-	item_state = "custom_pontificial"
-	icon_state = "custom_pontificial"
-	worn_state = "custom_pontificial"
+	item_state = "custom_pontifical"
+	icon_state = "custom_pontifical"
+	worn_state = "custom_pontifical"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -245,7 +245,7 @@
 			uncolored = TRUE
 
 
-/obj/item/clothing/under/custompontificial/attack_self(mob/user as mob)
+/obj/item/clothing/under/custompontifical/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!topcolor)
 			var/input = input(user, "Top Decore - Choose a hex color (without the #):", "Top Decore Color" , "FFFFFF")
@@ -1105,6 +1105,55 @@
 	icon_state = "customnoblehat_hat"
 	item_state = "customnoblehat_hat"
 	worn_state = "customnoblehat_hat"
+
+/obj/item/clothing/head/custom/customhood
+	name = "wool_hood"
+	desc = "A wool hood."
+	icon_state = "wool_hood"
+	item_state = "wool_hood"
+	worn_state = "wool_hood"
+	cold_protection = HEAD
+
+/obj/item/clothing/head/custom_keffiyeh
+	name = "keffiyeh"
+	desc = "A headdress fashioned from a scarf with a checkered pattern."
+	icon_state = "keffiyeh_custom"
+	item_state = "keffiyeh_custom"
+	worn_state = "keffiyeh_custom"
+	heat_protection = HEAD
+	var/uncolored1 = TRUE
+	var/patterncolor = 0
+
+/obj/item/clothing/head/custom_keffiyeh/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!patterncolor)
+			var/input = input(user, "Pattern - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				patterncolor = addtext("#",input)
+	//			user << "Color: [color]"
+
+		if (patterncolor)
+			uncolored1 = FALSE
+			var/image/pattern = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "keffiyeh_custom_color")
+			pattern.color = patterncolor
+			overlays += pattern
+			return
+	else
+		..()
 
 /obj/item/clothing/head/custom_feathered_hat
 	name = "feathered cap"

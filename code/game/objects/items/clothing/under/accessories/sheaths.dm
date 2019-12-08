@@ -12,6 +12,54 @@
 		/obj/item/weapon/material/sword/gladius,
 		/obj/item/weapon/material/sword/xiphos)
 
+/obj/item/clothing/accessory/storage/sheath/on_attached(obj/item/clothing/under/S, mob/user as mob)
+	..()
+	has_suit.verbs += /obj/item/clothing/accessory/storage/sheath/verb/sheathe_verb
+
+/obj/item/clothing/accessory/storage/sheath/on_removed(mob/user as mob)
+	has_suit.verbs -= /obj/item/clothing/accessory/storage/sheath/verb/sheathe_verb
+	..()
+
+/obj/item/clothing/accessory/storage/sheath/verb/sheathe_verb()
+	set name = "Holster"
+	set category = null
+	set src in usr
+	if (!istype(usr, /mob/living)) return
+	if (usr.stat) return
+
+	//can't we just use src here?
+	var/obj/item/clothing/accessory/storage/sheath/H = null
+	if (istype(src, /obj/item/clothing/accessory/storage/sheath))
+		H = src
+	else if (istype(src, /obj/item/clothing/under))
+		var/obj/item/clothing/under/S = src
+		if (S.accessories.len)
+			H = locate() in S.accessories
+
+	if (!H)
+		usr << "<span class='warning'>Something is very wrong.</span>"
+	var/obj/item/weapon/material/sword/currsword = null
+	for(var/obj/item/weapon/material/sword/W in H.hold)
+		currsword = W
+	if (!currsword)
+		var/obj/item/W = usr.get_active_hand()
+		if (!istype(W, /obj/item/weapon/material/sword))
+			usr << "<span class='warning'>You need a sword in your hand to sheathe it.</span>"
+			return FALSE
+		attackby(W, usr)
+		visible_message("[usr] sheathes \the [W].")
+		playsound(usr, 'sound/items/unholster_sword01.ogg', 50, 1)
+		return TRUE
+	else
+		if (istype(usr.get_active_hand(),/obj) && istype(usr.get_inactive_hand(),/obj))
+			usr << "<span class='warning'>You need an empty hand to draw \the [currsword]!</span>"
+			return FALSE
+		else
+			usr.put_in_hands(currsword)
+			visible_message("<span class='danger'>[usr] draws \the [currsword]!</span>")
+			playsound(usr, 'sound/items/unholster_sword02.ogg', 80, 1)
+			return TRUE
+
 /obj/item/clothing/accessory/storage/sheath/longsword
 	name = "longsword sheath"
 	desc = "A sheath for a longsword."

@@ -37,6 +37,7 @@
 		U = src
 	else
 		return
+
 	if (map.nomads == TRUE)
 		if (U.civilization != "none")
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
@@ -129,20 +130,31 @@
 			usr << "You are not part of any faction."
 			return
 		else
-			if (WWinput(src, "Are you sure you want to leave your faction?", "", "Stay in faction", list("Leave", "Stay in faction")) == "Stay in faction")
+			var/confirmation = WWinput(src, "Are you sure you want to leave your faction? You won't be able to re-join it for 24 hours, and everyone will know you're a former member.", "", "Stay in faction", list("Leave", "Stay in faction"))
+			if (confirmation == "Stay in faction")
 				return
-			if (map.custom_civs[U.civilization][4] != null)
-				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
-					map.custom_civs[U.civilization][4] = null
-			U.civilization = "none"
-			U.leader = FALSE
-			U.faction_perms = list(0,0,0,0)
-			usr << "You left your faction. You are now a Nomad."
-			remove_commander()
+			else
+				faction_leaving_proc()
 	else
 		usr << "<span class='danger'>You cannot leave a faction in this map.</span>"
 		return
 
+
+/mob/living/carbon/human/proc/faction_leaving_proc()
+	if (civilization == null || civilization == "none")
+		return FALSE
+	left_factions += list(list(civilization,world.realtime+864000)) //24 hours
+	if (map.custom_civs[civilization][4] != null)
+		if (map.custom_civs[civilization][4].real_name == real_name)
+			map.custom_civs[civilization][4] = null
+	civilization = "none"
+	name = replacetext(real_name,"[title] ","")
+	title = ""
+	leader = FALSE
+	faction_perms = list(0,0,0,0)
+	src << "You left your faction. You are now a Nomad."
+	remove_commander()
+	return TRUE
 
 /mob/living/carbon/human/proc/transfer_faction()
 	set name = "Transfer Faction Leadership"
@@ -250,7 +262,7 @@
 							return
 						else
 							U.title = inp
-							U.fully_replace_character_name(U.real_name,"[U.title] [U.name]")
+							U.name = "[U.title] [U.name]"
 							usr << "[src] is now a [U.title]."
 							return
 	else

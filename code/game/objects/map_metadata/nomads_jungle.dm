@@ -58,39 +58,6 @@
 /obj/map_metadata/nomads_jungle/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_jungle/proc/seasons()
-	if (real_season == "dry")
-		season = "Wet Season"
-		world << "<big>The <b>Wet Season</b> has started.</big>"
-		change_weather_somehow()
-		for (var/turf/floor/dirt/flooded/D)
-			D.ChangeTurf(/turf/floor/beach/water/flooded)
-		for (var/turf/floor/dirt/ploughed/flooded/D)
-			for(var/obj/OB in src.loc)
-				if ( istype(OB, /obj/item) || istype(OB, /obj/structure) || istype(OB, /obj/effect) || istype(OB, /obj/effect/fire) )
-					qdel(OB)
-			D.ChangeTurf(/turf/floor/beach/water/flooded)
-		real_season = "wet"
-		for (var/turf/floor/dirt/jungledirt/JD)
-			if (prob(50))
-				JD.ChangeTurf(/turf/floor/grass/jungle)
-		for (var/turf/floor/dirt/burned/BJ)
-			if (prob(75))
-				BJ.ChangeTurf(/turf/floor/dirt/jungledirt)
-	else
-		season = "Dry Season"
-		world << "<big>The <b>Dry Season</b> has started.</big>"
-		change_weather_somehow()
-		for (var/turf/floor/beach/water/flooded/D)
-			D.ChangeTurf(/turf/floor/dirt/flooded)
-		real_season = "dry"
-		spawn(12000)
-			world << "<big>The sky starts to get cloudy... The <b>Wet Season</b> is coming in 10 minutes.</big>"
-
-	spawn(18000)
-		seasons()
-
-
 /obj/map_metadata/nomads_jungle/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE

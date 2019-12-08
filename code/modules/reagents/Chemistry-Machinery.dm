@@ -141,7 +141,7 @@
 
 /obj/structure/chemical_dispenser/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/user as mob)
 	if (beaker)
-		if (B.reagents.reagent_list.len)
+		if (B && B.reagents && B.reagents.reagent_list.len)
 			user << "You transfer the reagents to the dispenser."
 			for(var/datum/reagent/R in B.reagents.reagent_list)
 				var/done = FALSE

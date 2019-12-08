@@ -60,6 +60,8 @@
 
 	var/simplehunger = 1000
 
+	var/removed_from_list = FALSE //this is fucking stupid. But I have to do it because the death() proc runs 30 times or some shit. Thx BYOND -Taislin
+
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -100,7 +102,7 @@
 	handle_paralysed()
 	handle_mutations_and_radiation()
 
-	if (herbivore || carnivore || predatory_carnivore || granivore)
+	if (herbivore || carnivore || predatory_carnivore || granivore || scavenger)
 		simplehunger-=1
 		if (simplehunger > 1000)
 			simplehunger = 1000
@@ -109,6 +111,7 @@
 			visible_message("\The [src] is starving!")
 			adjustBruteLoss(round(max(1,maxHealth/10)))
 			simplehunger = 60
+			updatehealth()
 
 	if (following_mob)
 		stop_automated_movement = TRUE

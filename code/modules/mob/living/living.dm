@@ -177,7 +177,7 @@ default behaviour is:
 	set desc = "Succumb to death."
 	set category = "IC"
 	if (map.civilizations || getTotalDmg() > 90)
-		if (WWinput(src, "Are you sure you want to succumb? You only live once.", "", "Cancel", list("Succumb", "Cancel")) == "Succumb")	
+		if (WWinput(src, "Are you sure you want to succumb? You only live once.", "", "Cancel", list("Succumb", "Cancel")) == "Succumb")
 			adjustBrainLoss(300)
 			death()
 			src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
@@ -819,3 +819,19 @@ default behaviour is:
 
 /mob/living/receive_damage(atom/A)
 	..()
+
+///This is a horrible hack but might be needed until I figure out whats wrong with the Life proc bug
+/mob/living
+	var/life_forced = FALSE
+
+/mob/living/proc/forcelife()
+	if (src && stat != DEAD)
+		life_forced = TRUE
+		spawn(10)
+			if (world.realtime>=last_life_tick+9)
+				Life()
+			forcelife()
+	else if (src)
+		life_forced = FALSE
+	else
+		return

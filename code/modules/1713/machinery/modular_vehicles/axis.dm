@@ -478,6 +478,8 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
+			if (!matrix_current_locs[loc2textv].len)
+				return
 			var/dlocfinding = rotation_matrixes[tdir][loc2textv][1]
 			var/turf/T = matrix_current_locs[dlocfinding][1]
 			var/list/todestroy = list()

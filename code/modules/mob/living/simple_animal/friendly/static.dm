@@ -82,6 +82,8 @@
 		var/mob/living/carbon/human/H = M
 		if (H.driver_vehicle)
 			return
+		if (H.riding && H.riding_mob)
+			return
 		invisibility = 0
 		visible_message("<span class='notice'>The piranhas swarm [M]!</span>")
 		if (ishuman(H))

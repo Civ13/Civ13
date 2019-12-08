@@ -237,11 +237,11 @@
 
 /obj/item/weapon/storage/backpack/quiver/New()
 		..()
-		can_hold = list(/obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow)
+		can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
 
 /obj/item/weapon/storage/backpack/quiver/full/New()
 	..()
-	can_hold = list(/obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow)
+	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
 	new /obj/item/ammo_casing/arrow/bronze(src)
 	new /obj/item/ammo_casing/arrow/bronze(src)
 	new /obj/item/ammo_casing/arrow/bronze(src)

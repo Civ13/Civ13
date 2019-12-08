@@ -26,30 +26,75 @@ datum/admins/proc/print_chemical_reactions()
 	var/recipe_list = file("recipes.txt")
 	if (fexists(recipe_list))
 		fdel(recipe_list)
-	for (var/path in paths)
-		var/datum/chemical_reaction/D = new path()
-		var/in_reagents = ""
-		var/cat_reagents = ""
-		var/req_reagents = ""
-		for (var/i in D.required_reagents)
-			var/amt = D.required_reagents[i]
-			req_reagents += " [amt]u. [i]"
-		for (var/j in D.catalysts)
-			var/amt = D.catalysts[j]
-			cat_reagents += " [amt]u. [j]"
-		for (var/k in D.inhibitors)
-			var/amt = D.inhibitors[k]
-			in_reagents += " [amt]u. [k]"
-		var/chemical_reactions_print_var = "[D.name]:"
-		if (req_reagents && req_reagents != "")
-			chemical_reactions_print_var = "[chemical_reactions_print_var] Ingredients:[req_reagents],"
-		if (in_reagents && in_reagents != "")
-			chemical_reactions_print_var = "[chemical_reactions_print_var] Inhibitors:[in_reagents],"
-		if (cat_reagents && cat_reagents != "")
-			chemical_reactions_print_var = "[chemical_reactions_print_var] Catalysts:[cat_reagents],"
-		chemical_reactions_print_var = "[chemical_reactions_print_var] Produces: [D.result_amount]. (ID: [D.id])"
-		recipe_list << chemical_reactions_print_var
+	var/choice = WWinput(usr, "Which format to export?", "Chemical Recipe Export", "Plaintext", list("Plaintext", "Wiki"))
+	if (choice == "Wiki")
+		recipe_list <<"{| class=\"wikitable sortable\" style=\"text-align: left"
+		recipe_list <<"! Result"
+		recipe_list <<"! Ingredients"
+		recipe_list <<"! Catalysts"
+		recipe_list <<"! Inhibitors"
+		recipe_list <<"! Produced Amount"
+		recipe_list <<"! ID"
+		recipe_list << " "
+		for (var/path in paths)
+			var/datum/chemical_reaction/D = new path()
+			var/in_reagents = ""
+			var/cat_reagents = ""
+			var/req_reagents = ""
+			for (var/i in D.required_reagents)
+				var/amt = D.required_reagents[i]
+				req_reagents += " [amt]u. [i]"
+			for (var/j in D.catalysts)
+				var/amt = D.catalysts[j]
+				cat_reagents += " [amt]u. [j]"
+			for (var/k in D.inhibitors)
+				var/amt = D.inhibitors[k]
+				in_reagents += " [amt]u. [k]"
+			var/chemical_reactions_print_var = "|- id=\"[D.id]\"\n! [D.name]"
+			if (req_reagents && req_reagents != "")
+				chemical_reactions_print_var = "[chemical_reactions_print_var]\n| [req_reagents]"
+			else
+				chemical_reactions_print_var = "[chemical_reactions_print_var]\n| none"
+
+			if (cat_reagents && cat_reagents != "")
+				chemical_reactions_print_var = "[chemical_reactions_print_var]\n| [cat_reagents]"
+			else
+				chemical_reactions_print_var = "[chemical_reactions_print_var]\n| none"
+
+			if (in_reagents && in_reagents != "")
+				chemical_reactions_print_var = "[chemical_reactions_print_var]\n| [in_reagents]"
+			else
+				chemical_reactions_print_var = "[chemical_reactions_print_var]\n| none"
+
+			chemical_reactions_print_var = "[chemical_reactions_print_var]\n| [D.result_amount]"
+			chemical_reactions_print_var = "[chemical_reactions_print_var]\n| [D.id]"
+			recipe_list << chemical_reactions_print_var
+	else
+		for (var/path in paths)
+			var/datum/chemical_reaction/D = new path()
+			var/in_reagents = ""
+			var/cat_reagents = ""
+			var/req_reagents = ""
+			for (var/i in D.required_reagents)
+				var/amt = D.required_reagents[i]
+				req_reagents += " [amt]u. [i]"
+			for (var/j in D.catalysts)
+				var/amt = D.catalysts[j]
+				cat_reagents += " [amt]u. [j]"
+			for (var/k in D.inhibitors)
+				var/amt = D.inhibitors[k]
+				in_reagents += " [amt]u. [k]"
+			var/chemical_reactions_print_var = "[D.name]:"
+			if (req_reagents && req_reagents != "")
+				chemical_reactions_print_var = "[chemical_reactions_print_var] Ingredients:[req_reagents],"
+			if (in_reagents && in_reagents != "")
+				chemical_reactions_print_var = "[chemical_reactions_print_var] Inhibitors:[in_reagents],"
+			if (cat_reagents && cat_reagents != "")
+				chemical_reactions_print_var = "[chemical_reactions_print_var] Catalysts:[cat_reagents],"
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Produces: [D.result_amount]. (ID: [D.id])"
+			recipe_list << chemical_reactions_print_var
 	world.log << "Finished saving all recipes into \"recipes.txt\"."
+	return
 //helper that ensures the reaction rate holds after iterating
 //Ex. REACTION_RATE(0.3) means that 30% of the reagents will react each chemistry tick (~2 seconds by default).
 #define REACTION_RATE(rate) (1.0 - (1.0-rate)**(1.0/PROCESS_REACTION_ITER))
@@ -479,7 +524,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Nitrocellulose"
 	id = "nitrocellulose"
 	result = "nitrocellulose"
-	required_reagents = list("sulfur" = 1, "cotton" = 1, "potassium" = 1)
+	required_reagents = list("cotton" = 1, "potassium" = 1)
 	result_amount = 2
 	log_is_important = TRUE
 

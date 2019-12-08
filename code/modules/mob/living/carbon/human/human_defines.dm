@@ -53,7 +53,6 @@
 	var/obj/item/l_store = null
 
 	var/icon/stand_icon = null
-	var/icon/lying_icon = null
 
 	var/voice = ""	//Instead of new say code calling GetVoice() over and over and over, we're just going to ask this variable, which gets updated in Life()
 	var/sayverb = "says"
@@ -173,8 +172,9 @@
 	//leadership (total control!), announcement, give titles, recruitment
 	var/list/faction_perms = list(0,0,0,0)
 	var/title = ""
+	var/religious_title = ""
 	var/announcement_cooldown = 0
-
+	var/list/left_factions = list() //faction leaving cooldown (to prevent tax avoidance)
 	var/religion = "none" //what religion this person belongs to
 	var/religion_type = "none"
 	var/religion_style = "none"

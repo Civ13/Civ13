@@ -483,18 +483,6 @@
 /datum/species/proc/handle_death(var/mob/living/carbon/human/H) //Handles any species-specific death events (such as dionaea nymph spawns).
 	return
 
-// Only used for alien plasma weeds atm, but could be used for Dionaea later.
-/datum/species/proc/handle_environment_special(var/mob/living/carbon/human/H)
-	return
-
-// Used to update alien icons for aliens.
-/datum/species/proc/handle_login_special(var/mob/living/carbon/human/H)
-	return
-
-// As above.
-/datum/species/proc/handle_logout_special(var/mob/living/carbon/human/H)
-	return
-
 // Builds the HUD using species-specific icons and usable slots.
 /datum/species/proc/build_hud(var/mob/living/carbon/human/H)
 	return
@@ -502,20 +490,6 @@
 //Used by xenos understanding larvae and dionaea understanding nymphs.
 /datum/species/proc/can_understand(var/mob/other)
 	return
-
-// Called when using the shredding behavior.
-/datum/species/proc/can_shred(var/mob/living/carbon/human/H, var/ignore_intent)
-
-	if (!ignore_intent && H.a_intent != I_HARM)
-		return FALSE
-
-	for (var/datum/unarmed_attack/attack in unarmed_attacks)
-		if (!attack.is_usable(H))
-			continue
-		if (attack.shredding)
-			return TRUE
-
-	return FALSE
 
 // Called in life() when the mob has no client.
 /datum/species/proc/handle_npc(var/mob/living/carbon/human/H)

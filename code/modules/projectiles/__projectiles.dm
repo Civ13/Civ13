@@ -107,48 +107,115 @@
 	icon_state = "arrow_vial"
 	volume = 15
 
+/obj/item/projectile/arrow/arrow/vial/poisonous
+	New()
+		..()
+		reagents.add_reagent("batrachotoxin",15)
+
+/obj/item/projectile/arrow/bolt/vial/poisonous
+	New()
+		..()
+		reagents.add_reagent("batrachotoxin",15)
 /obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/M as mob)
 	if (prob(10))
 		M.fire_stacks += 1
-	M.IgniteMob()
+	if (M)
+		M.IgniteMob()
 	spawn (0.01)
 		qdel(src)
 	..()
 
 //BOLTS
-/obj/item/projectile/arrow/bolt/
-	damage = DAMAGE_LOW-20
+/obj/item/projectile/arrow/bolt
+	damage = DAMAGE_LOW-20+5
 	penetrating = 1
-	armor_penetration = 6
+	armor_penetration = 6+10
 	icon_state = "bolt_iron"
 
-/obj/item/projectile/arrow/bolt/iron
+/obj/item/projectile/arrow/bolt/stone
 	damage = DAMAGE_MEDIUM+5
+	penetrating = 0
+	armor_penetration = 2+10
+	icon_state = "bolt_stone"
+
+/obj/item/projectile/arrow/bolt/sandstone
+	damage = DAMAGE_MEDIUM+5
+	penetrating = 0
+	armor_penetration = 2+10
+	icon_state = "bolt_sandstone"
+
+/obj/item/projectile/arrow/bolt/copper
+	damage = DAMAGE_MEDIUM+1+5
+	penetrating = 0
+	armor_penetration = 2+10
+	icon_state = "bolt_copper"
+
+/obj/item/projectile/arrow/bolt/iron
+	damage = DAMAGE_MEDIUM+5+5
 	penetrating = 1
-	armor_penetration = 6
+	armor_penetration = 6+10
 	icon_state = "bolt_iron"
 
 /obj/item/projectile/arrow/bolt/bronze
-	damage = DAMAGE_MEDIUM+8
+	damage = DAMAGE_MEDIUM+8+5
 	penetrating = 1
-	armor_penetration = 8
+	armor_penetration = 8+10
 	icon_state = "bolt_bronze"
 
 /obj/item/projectile/arrow/bolt/steel
-	damage = DAMAGE_MEDIUM+11
+	damage = DAMAGE_MEDIUM+11+5
 	penetrating = 1
-	armor_penetration = 10
+	armor_penetration = 10+10
 	icon_state = "bolt_steel"
 
 /obj/item/projectile/arrow/bolt/modern
-	damage = DAMAGE_MEDIUM+11
+	damage = DAMAGE_MEDIUM+11+5
 	penetrating = 1
-	armor_penetration = 10
+	armor_penetration = 10+10
 	icon_state = "bolt_modern"
 
-/obj/item/projectile/arrow/arrow/on_impact(mob/living/carbon/human/M as mob)
-	//TO DO TRANSFER REAGENTS REAGENTS HURT MY BRAIN
-	//src.reagents.trans_to(M, volume)
+/obj/item/projectile/arrow/bolt/fire
+	damage = DAMAGE_LOW+5
+	penetrating = 0
+	armor_penetration = 10+10
+	icon_state = "bolt"
+	damage_type = BURN
+	embed = FALSE
+	sharp = FALSE
+
+/obj/item/projectile/arrow/bolt/fire/gods
+	damage = DAMAGE_OH_GOD
+	penetrating = 100
+	armor_penetration = 1000
+	icon_state = "bolt_god"
+	damage_type = BURN
+	gibs = TRUE
+	crushes = TRUE
+
+/obj/item/projectile/arrow/bolt/fire/on_impact(mob/living/carbon/M as mob)
+	if (prob(10))
+		M.fire_stacks += 1
+	if (M)
+		M.IgniteMob()
+	spawn (0.01)
+		qdel(src)
+	..()
+
+/obj/item/projectile/arrow/bolt/vial
+	damage = DAMAGE_MEDIUM
+	penetrating = 1
+	armor_penetration = 10
+	icon_state = "bolt_vial"
+	volume = 15
+
+/obj/item/projectile/arrow/on_impact(var/atom/A as mob)
+	if (istype(src, /obj/item/projectile/arrow/bolt/vial) || istype(src, /obj/item/projectile/arrow/arrow/vial))
+		if (ishuman(A))
+			var/mob/living/carbon/human/H = A
+			reagents.trans_to_mob(H, volume, CHEM_BLOOD)
+		else
+			reagents.trans_to(A, volume)
+	..()
 
 /obj/item/projectile/grenade/smoke
 	name = "smoke grenade"

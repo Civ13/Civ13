@@ -72,6 +72,24 @@
 	layer = 1.99
 	material = "Wood"
 
+/obj/covers/thatch
+	name = "thatch floor"
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "thatch1"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Wood"
+
+/obj/covers/thatch2
+	name = "thatch floor"
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "thatch2"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Wood"
+
 /obj/covers/fancywood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
@@ -109,6 +127,19 @@
 	name = "cobblestone floor"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "cobble_vertical_dark"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
+/obj/covers/romanroad
+	name = "roman road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "roman_road"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -633,7 +664,7 @@
 					src.icon_state = "b_tiled_stone_wall"
 					src.name = "tiled stone wall"
 					src.desc = "A cave wall carved to have a tiled stone pattern."
-				else
+				return
 	..()
 
 /obj/covers/sandstone_smooth_wall
@@ -1027,15 +1058,13 @@
 		user << "You start adding bricks to the wall..."
 		if (do_after(user, 20, src))
 			user << "You finish adding bricks to the wall, completing it."
-			qdel(W)
-			var WALL = new /obj/covers/brick_wall(loc)
-			qdel(src)
-			var/choice = WWinput(user, "What type of wall?","Brick Walls","Normal",list("Wall","Window"))
+			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window"))
 			if (choice == "Wall")
-				return
+				new /obj/covers/brick_wall(loc)
 			else if (choice == "Window")
 				new /obj/structure/window_frame/brick(loc)
-				qdel(WALL)
+			qdel(W)
+			qdel(src)
 			return
 	..()
 

@@ -150,7 +150,7 @@
 	plant = "wheat"
 	color = "#b87333" //copper
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
-	biomes = list("temperate", "tundra", "taiga", "sea", "desert", "semi-arid") //you can't drink wine in these regions without the last 2 on some maps
+	biomes = list("temperate", "tundra", "taiga", "sea")
 
 /*/obj/item/stack/farming/seeds/oat
 	name = "oat seeds"

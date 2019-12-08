@@ -41,10 +41,16 @@
 	name = "black bear sow"
 	female = TRUE
 
-/mob/living/simple_animal/hostile/bear/Destroy()
-	bear_count -= 1
+/mob/living/simple_animal/hostile/bear/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		bear_count -= 1
 	..()
-
+/mob/living/simple_animal/hostile/bear/Destroy()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		bear_count -= 1
+	..()
 /mob/living/simple_animal/hostile/bear/Life()
 	. =..()
 	if (!.)

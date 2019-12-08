@@ -11,7 +11,6 @@ var/list/admin_verbs_default = list(
 	/client/proc/see_soldiers,
 	/client/proc/see_world_realtime,
 	/client/proc/see_processes,
-	/client/proc/giveruntimelog,		//allows us to give access to runtime logs to somebody,
 	/client/proc/getserverlog,			//allows us to fetch server logs (diary) for other days,
 	/client/proc/getruntimelog                     // allows us to access runtime logs to somebody,
 	)
@@ -43,7 +42,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/player_memo,
 	/client/proc/dsay,					//talk in deadchat using our ckey/fakekey,
 	/client/proc/investigate_show,		//various admintools for investigation. Such as a singulo grief-log,
-	/client/proc/secrets,
 	/datum/admins/proc/toggleooc,		//toggles ooc on/off for everyone,
 	/datum/admins/proc/togglelooc,		//toggles looc on/off for everyone,
 	/datum/admins/proc/toggleoocdead,	//toggles ooc on/off for everyone who is dead,
@@ -137,7 +135,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adrev,
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
-//	/datum/admins/proc/export_savegame,
+	/datum/admins/proc/export_savegame,
 	/datum/admins/proc/import_savegame,
 	/datum/admins/proc/persistent,
 	/client/proc/nanomapgen_DumpImage
@@ -152,6 +150,10 @@ var/list/admin_verbs_debug = list(
 	/client/proc/cmd_admin_delete,
 	/client/proc/cmd_debug_del_all,
 	/client/proc/reload_admins,
+	/client/proc/reload_craft_list,
+	/client/proc/reload_bans,
+	/client/proc/purge_all_destroyed_objects,
+	/client/proc/start_forcelife,
 	/client/proc/restart_controller,
 	/client/proc/callproc,
 	/client/proc/callproc_target,
@@ -457,15 +459,6 @@ var/list/admin_verbs_host = list(
 	set category = "Admin"
 	if (holder)
 		holder.game_panel()
-
-	return
-
-/client/proc/secrets()
-	set name = "Secrets"
-	set category = "Admin"
-	if (holder)
-		holder.Secrets()
-
 	return
 
 /client/proc/colorooc()

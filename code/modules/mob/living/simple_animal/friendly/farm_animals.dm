@@ -53,11 +53,25 @@
 	mob_size = MOB_LARGE
 	herbivore = 1
 
+/mob/living/simple_animal/cow/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		cow_count -= 1
+	..()
 /mob/living/simple_animal/cow/Destroy()
-	cow_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		cow_count -= 1
+	..()
+/mob/living/simple_animal/bull/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		cow_count -= 1
 	..()
 /mob/living/simple_animal/bull/Destroy()
-	cow_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		cow_count -= 1
 	..()
 /mob/living/simple_animal/bull/New()
 	cow_count += 1
@@ -231,11 +245,25 @@
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 
+/mob/living/simple_animal/pig_gilt/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		pig_count -= 1
+	..()
+/mob/living/simple_animal/pig_boar/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		pig_count -= 1
+	..()
 /mob/living/simple_animal/pig_gilt/Destroy()
-	pig_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		pig_count -= 1
 	..()
 /mob/living/simple_animal/pig_boar/Destroy()
-	pig_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		pig_count -= 1
 	..()
 /mob/living/simple_animal/pig_boar/New()
 	pig_count += 1
@@ -393,10 +421,16 @@
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
 
-/mob/living/simple_animal/goat/Destroy()
-	goat_count -= 1
+/mob/living/simple_animal/goat/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		goat_count -= 1
 	..()
-
+/mob/living/simple_animal/goat/Destroy()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		goat_count -= 1
+	..()
 /mob/living/simple_animal/goat/female/New()
 	udder = new(50)
 	udder.my_atom = src
@@ -534,8 +568,15 @@
 	var/pregnant = FALSE
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
+/mob/living/simple_animal/sheep/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		sheep_count -= 1
+	..()
 /mob/living/simple_animal/sheep/Destroy()
-	sheep_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		sheep_count -= 1
 	..()
 /mob/living/simple_animal/sheep/New()
 	sheep_count += 1

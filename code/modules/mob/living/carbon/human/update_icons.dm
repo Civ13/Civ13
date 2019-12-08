@@ -140,12 +140,16 @@ Please contact me on #coderbus IRC. ~Carn x
 	var/list/overlays_standing[TOTAL_LAYERS]
 	var/previous_damage_appearance // store what the body last looked like, so we only have to update it if something changed
 
+/mob/living/carbon/human/Login()
+	..()
+	update_hud()
+	return
+
 //UPDATES OVERLAYS FROM OVERLAYS_LYING/OVERLAYS_STANDING
 //this proc is messy as I was forced to include some old laggy cloaking code to it so that I don't break cloakers
 //I'll work on removing that stuff by rewriting some of the cloaking stuff at a later date.
 /mob/living/carbon/human/update_icons()
 	lying_prev = lying	//so we don't update overlays for lying/standing unless our stance changes again
-//	update_hud()		//TODO: remove the need for this
 	overlays.Cut()
 
 	if (icon_update)
@@ -443,12 +447,12 @@ var/global/list/damage_icon_parts = list()
 
 /* --------------------------------------- */
 //vvvvvv UPDATE_INV PROCS vvvvvv
-/mob/living/carbon/human/proc/find_inv_position(var/slot_id) //Find HUD position on screen TO:DO ìîãó ëè ÿ óïðîñòèòü???? species_hud?
+/mob/living/carbon/human/proc/find_inv_position(var/slot_id) //Find HUD position on screen.
 	for (var/obj/screen/inventory/HUDinv in HUDinventory)
 		if (HUDinv.slot_id == slot_id)
 			return (HUDinv.invisibility == 101) ? null : HUDinv.screen_loc
-	log_admin("[src] try find_inv_position a [slot_id], but not have that slot!")
-	src << "Some problem hase accure, change UI style pls or call admins."
+//	world.log << "DEBUG: [src] tried to find_inv_position for [slot_id], but does not have that slot!"
+//	src << "Some problem has occured, change UI style or notify the devs."
 	return "7,7"
 
 
@@ -466,9 +470,6 @@ var/global/list/damage_icon_parts = list()
 	var/image/over = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_over")
 
 	if (w_uniform && istype(w_uniform, /obj/item/clothing/under))
-/*		var/new_screen_loc = find_inv_position(slot_w_uniform)
-		if (new_screen_loc)
-			w_uniform.screen_loc = new_screen_loc*/
 		w_uniform.screen_loc = find_inv_position(slot_w_uniform)
 
 		//determine state to use
@@ -559,8 +560,8 @@ var/global/list/damage_icon_parts = list()
 				shirt.color = CU.stripescolor
 				standing.overlays += pants
 				standing.overlays += shirt
-		if (istype(w_uniform, /obj/item/clothing/under/custompontificial))
-			var/obj/item/clothing/under/custompontificial/CU = w_uniform
+		if (istype(w_uniform, /obj/item/clothing/under/custompontifical))
+			var/obj/item/clothing/under/custompontifical/CU = w_uniform
 			if (!CU.uncolored)
 				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_leggings")
 				pants.color = CU.undercolor
@@ -636,9 +637,6 @@ var/global/list/damage_icon_parts = list()
 			var/image/bloodsies	= image("icon" = species.blood_mask, "icon_state" = "bloodyhands")
 			bloodsies.color = gloves.blood_color
 			standing.overlays	+= bloodsies
-/*		var/new_screen_loc = find_inv_position(slot_gloves)
-		if (new_screen_loc)
-			gloves.screen_loc = new_screen_loc*/
 		if (gloves)
 			gloves.screen_loc = find_inv_position(slot_gloves)
 			standing.color = gloves.color
@@ -654,9 +652,7 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_eyes(var/update_icons=1)
 	if (eyes)
-/*		var/new_screen_loc = find_inv_position(slot_eyes)
-		if (new_screen_loc)
-			glasses.screen_loc = new_screen_loc	*/
+
 		eyes.screen_loc = find_inv_position(slot_eyes)
 		if (eyes.icon_override)
 			overlays_standing[EYES_LAYER] = image(icon = eyes.icon_override,   icon_state = eyes.icon_state)
@@ -678,9 +674,7 @@ var/global/list/damage_icon_parts = list()
 
 	if (l_ear || r_ear)
 		if (l_ear)
-			/*var/new_screen_loc = find_inv_position(slot_l_ear)
-			if (new_screen_loc)
-				l_ear.screen_loc = new_screen_loc	*/
+
 			l_ear.screen_loc = find_inv_position(slot_l_ear)
 			var/t_type = l_ear.icon_state
 			if (l_ear.icon_override)
@@ -691,9 +685,6 @@ var/global/list/damage_icon_parts = list()
 				overlays_standing[EARS_LAYER] = image(icon = body_build.ears_icon, icon_state = t_type)
 
 		if (r_ear)
-			/*var/new_screen_loc = find_inv_position(slot_r_ear)
-			if (new_screen_loc)
-				r_ear.screen_loc = new_screen_loc	*/
 			r_ear.screen_loc = find_inv_position(slot_r_ear)
 			var/t_type = r_ear.icon_state
 			if (r_ear.icon_override)
@@ -709,9 +700,7 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_shoes(var/update_icons=1)
 	if (shoes && !(wear_suit && wear_suit.flags_inv & HIDESHOES))
-		/*var/new_screen_loc = find_inv_position(slot_shoes)
-		if (new_screen_loc)
-			shoes.screen_loc = new_screen_loc	*/
+
 		shoes.screen_loc = find_inv_position(slot_shoes)
 		var/image/standing
 		if (shoes.icon_override)
@@ -741,9 +730,7 @@ var/global/list/damage_icon_parts = list()
 	var/image/cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
 	var/image/symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
 	if (head)
-		/*var/new_screen_loc = find_inv_position(slot_head)
-		if (new_screen_loc)
-			head.screen_loc = new_screen_loc		*/
+
 		head.screen_loc = find_inv_position(slot_head)
 
 		//Determine the state to use
@@ -796,6 +783,11 @@ var/global/list/damage_icon_parts = list()
 			cap.color = CU.capcolor
 			standing.overlays += band
 			standing.overlays += cap
+		else if (istype(head, /obj/item/clothing/head/custom_keffiyeh))
+			var/obj/item/clothing/head/custom_keffiyeh/CU = head
+			var/image/pattern = image("icon" = 'icons/mob/head.dmi', "icon_state" = "keffiyeh_custom_color")
+			pattern.color = CU.patterncolor
+			standing.overlays += pattern
 		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
 			var/obj/item/clothing/head/custom/fieldcap/CU = head
 			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "fieldcap_custom", layer = layer+0.01)
@@ -831,9 +823,7 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_belt(var/update_icons=1)
 	if (belt)
-		/*var/new_screen_loc = find_inv_position(slot_belt)
-		if (new_screen_loc)
-			belt.screen_loc = new_screen_loc	*/
+
 		belt.screen_loc = find_inv_position(slot_belt)
 
 		var/t_state = belt.icon_state
@@ -876,9 +866,7 @@ var/global/list/damage_icon_parts = list()
 	var/image/tertiary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_lines")
 	update_surgery(0)
 	if ( wear_suit && istype(wear_suit, /obj/item/) )
-		/*var/new_screen_loc = find_inv_position(slot_wear_suit)
-		if (new_screen_loc)
-			wear_suit.screen_loc = new_screen_loc*/
+
 		wear_suit.screen_loc = find_inv_position(slot_wear_suit)
 
 		var/image/standing
@@ -954,14 +942,10 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_pockets(var/update_icons=1)
 	if (l_store)
-		/*var/new_screen_loc = find_inv_position(slot_l_store)
-		if (new_screen_loc)
-			l_store.screen_loc = new_screen_loc	*/
+
 		l_store.screen_loc = find_inv_position(slot_l_store)
 	if (r_store)
-		/*var/new_screen_loc = find_inv_position(slot_r_store)
-		if (new_screen_loc)
-			r_store.screen_loc = new_screen_loc	*/
+
 		r_store.screen_loc = find_inv_position(slot_r_store)
 	if (update_icons)	update_icons()
 
@@ -969,9 +953,7 @@ var/global/list/damage_icon_parts = list()
 /mob/living/carbon/human/update_inv_wear_mask(var/update_icons=1)
 	if ( wear_mask && ( istype(wear_mask, /obj/item/clothing/mask) || istype(wear_mask, /obj/item/clothing/accessory) || istype(wear_mask, /obj/item/weapon/grenade)) && !(head && head.flags_inv & HIDEMASK))
 
-		/*var/new_screen_loc = find_inv_position(slot_wear_mask)
-		if (new_screen_loc)
-			wear_mask.screen_loc = new_screen_loc	*/
+
 		wear_mask.screen_loc = find_inv_position(slot_wear_mask)
 
 		var/image/standing
@@ -994,9 +976,6 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_back(var/update_icons=1)
 	if (back)
-		/*var/new_screen_loc = find_inv_position(slot_back)
-		if (new_screen_loc)
-			back.screen_loc = new_screen_loc	*/
 		back.screen_loc = find_inv_position(slot_back)
 		//determine the icon to use
 		var/icon/overlay_icon
@@ -1094,9 +1073,6 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_r_hand(var/update_icons=1)
 	if (r_hand)
-		/*var/new_screen_loc = find_inv_position(slot_r_hand)
-		if (new_screen_loc)
-			r_hand.screen_loc = new_screen_loc	*/
 		r_hand.screen_loc = find_inv_position(slot_r_hand)
 		//determine icon state to use
 		var/t_state

@@ -171,7 +171,7 @@
 					src.icon_state = "b_tiled_stone_wall"
 					src.name = "tiled stone wall"
 					src.desc = "A cave wall carved to have a tiled stone pattern."
-				else
+				return
 	..()
 
 /turf/floor/dirt/underground/sandy

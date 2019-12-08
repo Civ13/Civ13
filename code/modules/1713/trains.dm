@@ -216,8 +216,8 @@
 	opacity = FALSE
 	var/automovement = FALSE
 	var/health = 1000
-	var/train_speed = 0 //deciseconds of delay, so lower is better
-	var/max_train_speed = 0
+	var/train_speed = 6 //deciseconds of delay, so lower is better
+	var/max_train_speed = 6
 	var/locomotive = FALSE
 	var/list/transporting = list()
 	var/on = FALSE
@@ -410,14 +410,10 @@
 			return FALSE
 		//push (or hit) wtv is in front...
 		for (var/obj/structure/trains/TF in tgtt)
-			if (TF.rail_canmove(fdir))
-				TF.dir = dir
-				TF.Bumped(src)
-			else
-				visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
-				automovement = FALSE
-				health -= 5
-				return FALSE
+			visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
+			automovement = FALSE
+			health -= 5
+			return FALSE
 		for (var/obj/O in tgtt)
 			if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails))
 				visible_message("<span class = 'warning'>\The [src] hits \the [O]!</span>")
@@ -632,13 +628,13 @@
 /obj/structure/trains/locomotive
 	name = "locomotive"
 	icon_state = "tractor"
-	train_speed = 0 //deciseconds of delay, so lower is better
+	train_speed = 4 //deciseconds of delay, so lower is better
 	locomotive = TRUE
 	on = FALSE
 	var/fuel = FALSE
 	var/max_fuel = FALSE
 	max_fuel = 100
-	max_train_speed = 0
+	max_train_speed = 4
 
 /obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
 	if (!istype(user, /mob/living))
@@ -688,9 +684,9 @@
 	name = "steam locomotive"
 	desc = "A steam-powered locomotive. Works with coal, wood, and so on."
 	icon_state = "locomotive"
-	train_speed = 0
+	train_speed = 5
 	max_fuel = 100
-	max_train_speed = 0
+	max_train_speed = 5
 
 /obj/structure/trains/locomotive/examine(mob/user)
 	..()

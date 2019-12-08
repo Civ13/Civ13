@@ -43,7 +43,7 @@
 /obj/map_metadata/nomads/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads/proc/seasons()
+/obj/map_metadata/nomads/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"

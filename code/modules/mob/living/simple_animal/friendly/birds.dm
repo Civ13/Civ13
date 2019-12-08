@@ -49,7 +49,7 @@
 	..()
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
-	chicken_count++
+	chicken_count+=1
 
 /mob/living/simple_animal/chick/Life()
 	. =..()
@@ -61,8 +61,15 @@
 			new /mob/living/simple_animal/chicken(loc)
 			qdel(src)
 
+/mob/living/simple_animal/chick/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		chicken_count -= 1
+	..()
 /mob/living/simple_animal/chick/Destroy()
-	chicken_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		chicken_count -= 1
 	..()
 /mob/living/simple_animal/chicken
 	name = "\improper chicken"
@@ -103,8 +110,15 @@
 	pixel_y = rand(0, 10)
 	chicken_count += 1
 
+/mob/living/simple_animal/chicken/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		chicken_count -= 1
+	..()
 /mob/living/simple_animal/chicken/Destroy()
-	chicken_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		chicken_count -= 1
 	..()
 /mob/living/simple_animal/chicken/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (stat == CONSCIOUS && istype(O, /obj/item/stack/farming/seeds))
@@ -213,8 +227,15 @@
 	pixel_y = rand(0, 10)
 	chicken_count += 1
 
+/mob/living/simple_animal/rooster/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		chicken_count -= 1
+	..()
 /mob/living/simple_animal/rooster/Destroy()
-	chicken_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		chicken_count -= 1
 	..()
 ////////////////////////////////////////TURKEYS//////////////////////
 /mob/living/simple_animal/turkey_f
@@ -338,22 +359,40 @@
 	..()
 	turkey_count += 1
 
-/mob/living/simple_animal/turkey_m/Destroy()
-	turkey_count -= 1
+/mob/living/simple_animal/turkey_m/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		turkey_count -= 1
 	..()
-
+/mob/living/simple_animal/turkey_m/Destroy()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		turkey_count -= 1
+	..()
 /mob/living/simple_animal/turkey_f/New()
 	..()
 	turkey_count += 1
 
+/mob/living/simple_animal/turkey_f/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		turkey_count -= 1
+	..()
 /mob/living/simple_animal/turkey_f/Destroy()
-	turkey_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		turkey_count -= 1
 	..()
-
+/mob/living/simple_animal/turkeychick/death()
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		turkey_count -= 1
+	..()
 /mob/living/simple_animal/turkeychick/Destroy()
-	turkey_count -= 1
+	if (!removed_from_list)
+		removed_from_list=TRUE
+		turkey_count -= 1
 	..()
-
 /mob/living/simple_animal/turkey_f/Life()
 	. =..()
 	if (!.)
