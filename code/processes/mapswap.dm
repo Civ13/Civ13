@@ -48,9 +48,10 @@
 				"Modern Era (1985-2020)" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
-			epochs = list("Civilization 13 (Nomads)" = 0,
+			epochs = list(
+//				"Civilization 13 (Nomads)" = 0,
 				"Civilization 13 (Colony & Pioneers)" = 6,
-//				"Civilization 13 (Prison Camps)" = 15,
+				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
