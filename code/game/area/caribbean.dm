@@ -210,8 +210,20 @@
 	climate = "sea"
 
 /area/caribbean/island/river
-	base_turf = /turf/floor/beach/water/shallowsaltwater
+	base_turf = /turf/floor/beach/water
 	icon_state = "red1"
+
+/area/caribbean/island/tropical
+	name = "Island"
+	base_turf = /turf/floor/beach/sand
+	icon_state = "red3"
+	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "jungle"
+
+/area/caribbean/island/river/tropical
+	base_turf = /turf/floor/beach/water
+	icon_state = "red1"
+	climate = "jungle"
 
 /area/caribbean/sea
 	name = "Island"
