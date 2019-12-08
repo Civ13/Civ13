@@ -255,7 +255,7 @@
 				ship.engine.currentpower = 0
 				ship.engine.update_icon()
 			else
-				ship.engine.turn_on()
+				ship.engine.turn_on(user)
 
 		return
 
