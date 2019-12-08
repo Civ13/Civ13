@@ -20,6 +20,8 @@
 	if (confirm == "No")
 		return
 	else
+		world << "<big><b>Loading a game, please wait...</b></big>"
+		sleep(1)
 		world.log << "Importing turfs..."
 		var/F = file("SQL/saves/turfs.txt")
 		if (fexists(F))
@@ -27,9 +29,11 @@
 			var/list/impturfs = splittext(tmpturfs, "\n")
 			for (var/i in impturfs)
 				var/list/impturfs2 = splittext(i, ";")
-				if (impturfs[1] == "TURF")
+				if (impturfs2[1] == "TURF")
 					var/resultp = text2path(impturfs2[5])
-					var/turf/T = locate(text2num(impturfs2[2]),text2num(impturfs2[3]),text2num(impturfs2[4]))
+					world.log << "[impturfs2[5]]"
+					var/turf/T
+					T = locate(text2num(impturfs2[2]),text2num(impturfs2[3]),text2num(impturfs2[4]))
 					T.ChangeTurf(resultp)
 		world.log << "Imported all turfs."
 		sleep(1)
