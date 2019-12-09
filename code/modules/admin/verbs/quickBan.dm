@@ -79,44 +79,48 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (!quickBan_handler)
 		quickBan_handler = new
 	var/list/result = list()
-	var/path = "SQL/bans/"
-	var/option = input(src, "Search for a ban?") in list("Yes","Show all ckeys", "Show all IPs", "Show all cIDs","Cancel")
+	var/list/checkedUID = list() //to prevent same ban from showing multiple times
+	var/list/path = list("SQL/bans/ckey/","SQL/bans/ip/","SQL/bans/cid/")
+	var/option = input(src, "Search for a ban?") in list("Yes","Show All","Cancel")
 	if (option == "No")
 		return
-	else if (option == "Yes")
+	for (var/tpath in path)
+		var/list/filenames = flist(tpath)
+		for (var/filename in filenames)
+			if (fexists("[tpath][filename]"))
+				var/list/details_lines = splittext(file2text("[tpath][filename]"), "|||\n")
+				for(var/i=1,i<=details_lines.len,i++)
+					if (findtext(details_lines[i], ";"))
+						var/list/presult = splittext(details_lines[i], ";")
+						var/found = FALSE
+						if (presult && presult.len>=11)
+							for(var/tuid in checkedUID)
+								if (presult[3] == tuid)
+									found = TRUE
+							if (!found && presult.len>=11)
+								checkedUID += presult[3]
+								result += list(presult)
+	if (option == "Yes")
 		var/option2 = input(src, "What to search for?") in list("ckey","cID","ip","Cancel")
+		var/list/result3 = list()
 		if (option2 == "Cancel")
 			return
 		else if (option2 == "ckey")
 			var/_ckey = ckey(input(src, "What ckey will you search for?") as null|text)
-			if (fexists("SQL/bans/ckey/[_ckey].txt"))
-				result += file2text("SQL/bans/ckey/[_ckey].txt")
+			for(var/result2 in result)
+				if (result2[9]==_ckey)
+					result3 += result2
 		else if (option2 == "cID")
 			var/cID = input(src, "What cID will you search for?") as null|text
-			if (fexists("SQL/bans/cid/[cID].txt"))
-				result += file2text("SQL/bans/cid/[cID].txt")
+			for(var/result2 in result)
+				if (result2[11]==cID)
+					result3 += result2
 		else if (option2 == "ip")
 			var/ip = input(src, "What address will you search for?") as null|text
-			if (fexists("SQL/bans/ip/[ip].txt"))
-				result += file2text("SQL/bans/ip/[ip].txt")
-	else if (option == "Show all ckeys")
-		path = "SQL/bans/ckey/"
-		var/list/filenames = flist(path)
-		for (var/filename in filenames)
-			if (fexists("[path][filename]"))
-				result += list(splittext(file2text("[path][filename]"),";"))
-	else if (option == "Show all IPs")
-		path = "SQL/bans/ip/"
-		var/list/filenames = flist(path)
-		for (var/filename in filenames)
-			if (fexists("[path][filename]"))
-				result += list(splittext(file2text("[path][filename]"),";"))
-	else if (option == "Show all cIDs")
-		path = "SQL/bans/cid/"
-		var/list/filenames = flist(path)
-		for (var/filename in filenames)
-			if (fexists("[path][filename]"))
-				result += list(splittext(file2text("[path][filename]"),";"))
+			for(var/result2 in result)
+				if (result2[10]==ip)
+					result3 += result2
+		result = result3
 
 	var/html = "<center><big>List of Quick Bans</big></center>"
 	var/list/possibilities = list()
