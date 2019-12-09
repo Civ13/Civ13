@@ -58,6 +58,8 @@
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
+	var/behaviour = "wander" ///wander: go around randomly. scared: run from humans-predators, default to wander after. hunting: move towards prey areas
+
 	var/simplehunger = 1000
 
 	var/removed_from_list = FALSE //this is fucking stupid. But I have to do it because the death() proc runs 30 times or some shit. Thx BYOND -Taislin

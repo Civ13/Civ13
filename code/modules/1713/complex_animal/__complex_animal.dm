@@ -48,6 +48,7 @@
 	var/list/friendly_mobs = list()
 	var/tameminimum = 100 // minimum friendly value to tame an animal
 	var/tamed = FALSE
+	var/can_be_tamed = FALSE
 	var/starving = FALSE
 // things we do every life tick: by default, wander every few seconds,
 // rest every ~20 minutes. Deplete nutrition over ~30 minutes
