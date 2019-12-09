@@ -1038,35 +1038,29 @@ var/list/atom_types = null
 			return
 
 /proc/load_bans()
-	var/list/paths = list("SQL/bans/cid/","SQL/bans/ip/","SQL/bans/ckey/")
-	var/list/filelist = list()
 	var/removed = 0
 	var/kept = 0
-	for (var/path in paths)
-		var/list/filenames = flist(path)
-		for (var/filename in filenames)
-			if (fexists("[path][filename]"))
-				filelist += "[path][filename]"
-	if (filelist.len)
-		for (var/checkingfile in filelist)
-			var/details = file2text(checkingfile)
-			var/list/details_lines = splittext(details, "|||\n")
-			if (details_lines.len)
-				for(var/i=1,i<=details_lines.len,i++)
-					if (findtext(details_lines[i], ";"))
-						var/list/details2 = splittext(details_lines[i], ";")
-						if (text2num(details2[7])<=world.realtime)
-							details_lines -= details_lines[i]
-							removed++
-			fdel(checkingfile)
-			if (details_lines.len)
-				for(var/L in details_lines)
-					if (L && L != "")
-						text2file("[L]|||", checkingfile)
-						kept++
+	var/checkingfile = "SQL/bans.txt"
+	if (fexists(checkingfile))
+		var/details = file2text(checkingfile)
+		var/list/details_lines = splittext(details, "|||\n")
+		if (details_lines.len)
+			for(var/i=1,i<=details_lines.len,i++)
+				if (findtext(details_lines[i], ";"))
+					var/list/details2 = splittext(details_lines[i], ";")
+					if (text2num(details2[7])<=world.realtime)
+						details_lines -= details_lines[i]
+						removed++
+		fdel(checkingfile)
+		if (details_lines.len)
+			for(var/L in details_lines)
+				if (L && L != "")
+					text2file("[L]|||", checkingfile)
+					kept++
 
 	world.log << "Finished cleaning ban list. [removed] bans removed, [kept] bans kept."
 	return TRUE
+
 //Radiation/Pollution stuff
 /datum/admins/proc/get_world_values()
 	set category = "Debug"
