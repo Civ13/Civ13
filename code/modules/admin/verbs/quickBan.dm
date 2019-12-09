@@ -109,17 +109,17 @@ var/datum/quickBan_handler/quickBan_handler = null
 			var/_ckey = ckey(input(src, "What ckey will you search for?") as null|text)
 			for(var/result2 in result)
 				if (result2[9]==_ckey)
-					result3 += result2
+					result3 += list(result2)
 		else if (option2 == "cID")
 			var/cID = input(src, "What cID will you search for?") as null|text
 			for(var/result2 in result)
 				if (result2[11]==cID)
-					result3 += result2
+					result3 += list(result2)
 		else if (option2 == "ip")
 			var/ip = input(src, "What address will you search for?") as null|text
 			for(var/result2 in result)
 				if (result2[10]==ip)
-					result3 += result2
+					result3 += list(result2)
 		result = result3
 
 	var/html = "<center><big>List of Quick Bans</big></center>"
