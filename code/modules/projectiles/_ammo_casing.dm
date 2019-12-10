@@ -533,7 +533,7 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.04
-	projectile_type = /obj/item/projectile/bullet/pistol/a50cal
+	projectile_type = /obj/item/projectile/bullet/rifle/a50cal
 	caliber = "a50cal"
 	value = 7
 
