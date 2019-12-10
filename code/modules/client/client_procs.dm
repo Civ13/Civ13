@@ -66,7 +66,7 @@
 					if (details_lines.len)
 						for(var/i=1,i<=details_lines.len,i++)
 							var/list/details2 = splittext(details_lines[i], ";")
-							if (details2[3] == UID)
+							if (details2.len>=11 && details2[3] == UID)
 								details_lines -= details_lines[i]
 								fdel(bans_file)
 								for(var/L in details_lines)
