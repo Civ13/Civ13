@@ -527,6 +527,16 @@
 	caliber = "a41"
 	value = 7
 
+/obj/item/ammo_casing/a50cal
+	name = ".50 caliber bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/a50cal
+	caliber = "a50cal"
+	value = 7
+
 /obj/item/ammo_casing/a32
 	name = ".32 bullet"
 	desc = "A brass casing."
