@@ -18,6 +18,16 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/bx7
+	name = "BX-7 (.50 caliber)"
+	icon_state = "bx7"
+	mag_type = MAGAZINE
+	caliber = "a50cal"
+	ammo_type = /obj/item/ammo_casing/a50cal
+	max_ammo = 20
+	weight = 0.5
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ak47/makeshift
 	name = "makeshift AK-47 magazine (7.5mm)"
 	icon_state = "makeshiftak-47"
