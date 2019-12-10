@@ -87,7 +87,7 @@
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
-		bitesize = 1
+		bitesize = 2
 
 /obj/structure/salting_container/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/user as mob)
 	if (salting)
