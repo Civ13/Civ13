@@ -14,7 +14,7 @@
 		"Cold War Era (1958-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
 		"Civilization 13 (Nomads)" = 0,
-		"Civilization 13 (Colony & Pioneers)" = 6,
+		"Civilization 13 (Colony & Pioneers)" = 0,
 		"Civilization 13 (Prison Camps)" = 15,
 		"Civilization 13 (Others)" = 0,
 	)
@@ -50,7 +50,7 @@
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
 //				"Civilization 13 (Nomads)" = 0,
-				"Civilization 13 (Colony & Pioneers)" = 6,
+				"Civilization 13 (Colony & Pioneers)" = 0,
 				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
 		ready = FALSE
@@ -180,8 +180,8 @@
 			)
 		if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(
-				MAP_COLONY = 6,
-				MAP_JUNGLE_COLONY = 6,
+				MAP_COLONY = 0,
+				MAP_JUNGLE_COLONY = 4,
 				MAP_PIONEERS = 10,
 				MAP_FOUR_COLONIES = 35,
 			)
