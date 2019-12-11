@@ -79,11 +79,10 @@ var/loaded_admins = FALSE
 		return
 
 	var/list/admincheck = splittext(file2text(F),"|||\n")
-	fdel(F)
 	if (islist(admincheck) && !isemptylist(admincheck))
 		for(var/i in admincheck)
 			var/list/admincheck_two = splittext(i, ";")
-			if (admincheck_two[2] != "NONE")
+			if (admincheck_two.len >= 3 && admincheck_two[2] != "NONE")
 				var/ckey = lowertext(admincheck_two[1])
 				var/rank = admincheck_two[2]
 				if (rank == "Removed") goto deadminned	//This person was de-adminned. They are only in the admin list for archive purposes.
@@ -96,10 +95,22 @@ var/loaded_admins = FALSE
 					A.associate(directory[ckey])
 					/* moved association code to client/New(), so it works for clients
 					   created at the same time as the world */
-	for(var/i in admin_datums)
-		var/datum/admins/AD = admin_datums[i]
-		if (AD)
-			text2file("[i];[AD.rank];[num2text(AD.rights)]|||",F)
+	//clean the list
+	var/list/admincheck2 = list()
+	for(var/i in admincheck)
+		var/list/admincheck_two = splittext(i, ";")
+		if (admincheck2.len)
+			for(var/list/nc in admincheck2)
+				if (nc[1]==admincheck_two[1] && nc.len >= 3)
+					nc[2]=admincheck_two[2]
+					nc[3]=admincheck_two[3]
+				else
+					admincheck2 += admincheck_two
+		else
+			admincheck2 += admincheck_two
+	fdel(F)
+	for(var/list/nc in admincheck2)
+		text2file("[nc[1]];[nc[2]];[nc[3]]|||",F)
 
 
 	deadminned
