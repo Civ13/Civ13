@@ -95,19 +95,15 @@ var/loaded_admins = FALSE
 					A.associate(directory[ckey])
 					/* moved association code to client/New(), so it works for clients
 					   created at the same time as the world */
-	//clean the list
+
+	//clean the list. Start from the end and skip repeated entries.
 	var/list/admincheck2 = list()
-	for(var/i in admincheck)
-		var/list/admincheck_two = splittext(i, ";")
-		if (admincheck2.len)
-			for(var/list/nc in admincheck2)
-				if (nc[1]==admincheck_two[1] && nc.len >= 3)
-					nc[2]=admincheck_two[2]
-					nc[3]=admincheck_two[3]
-				else
-					admincheck2 += admincheck_two
-		else
-			admincheck2 += admincheck_two
+	var/list/ckeyschecked = list()
+	for(var/i=admincheck.len, i>=1, i--)
+		var/list/admincheck_two = splittext(admincheck[i], ";")
+		if (admincheck_two.len==3 && !(admincheck_two[1] in ckeyschecked))
+			ckeyschecked += list(admincheck_two[1])
+			admincheck2 += list(admincheck_two)
 	fdel(F)
 	for(var/list/nc in admincheck2)
 		text2file("[nc[1]];[nc[2]];[nc[3]]|||",F)

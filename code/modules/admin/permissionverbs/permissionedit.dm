@@ -71,7 +71,7 @@
 		for(var/i in admincheck)
 			var/list/admincheck_two = splittext(i, ";")
 			if (new_rank == "Removed")
-				if (admincheck_two.len>=4 && admincheck_two[1] == "[adm_ckey]")
+				if (admincheck_two.len<=4 || admincheck_two[1] == "[adm_ckey]")
 					admincheck -= i
 		fdel(F)
 		for(var/i in admincheck)
@@ -101,7 +101,7 @@
 			var/list/admincheck_two = splittext(i, ";")
 			if (admincheck_two[1] == "[admin_id]")
 				admincheck -= i
-				admincheck += "[admincheck_two[1]];[new_rank];[num2text(admin_ranks[ckeyEx(new_rank)])]|||"
+				admincheck += list("[admincheck_two[1]];[new_rank];[num2text(admin_ranks[ckeyEx(new_rank)])]|||")
 		fdel(F)
 		for(var/i in admincheck)
 			if (findtext(i, ";"))
@@ -156,7 +156,7 @@
 				var/list/admincheck_two = splittext(i, ";")
 				if (admincheck_two[1] == "[adm_ckey]")
 					admincheck -= i
-					admincheck += "[admincheck_two[1]];[admincheck_two[2]];[admin_rights & ~new_permission]|||"
+					admincheck += list("[admincheck_two[1]];[admincheck_two[2]];[admin_rights & ~new_permission]|||")
 		fdel(F)
 		for(var/i in admincheck)
 			if (findtext(i, ";"))
@@ -170,7 +170,7 @@
 				var/list/admincheck_two = splittext(i, ";")
 				if (admincheck_two[1] == "[adm_ckey]")
 					admincheck -= i
-					admincheck += "[admincheck_two[1]];[admincheck_two[2]];[admin_rights | new_permission]|||"
+					admincheck += list("[admincheck_two[1]];[admincheck_two[2]];[admin_rights | new_permission]|||")
 		fdel(F)
 		for(var/i in admincheck)
 			if (findtext(i, ";"))
