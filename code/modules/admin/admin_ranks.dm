@@ -73,29 +73,34 @@ var/loaded_admins = FALSE
 
 	load_admin_ranks()
 
-	var/F = file("SQL/admins.txt")
+	var/F = "SQL/admins.txt"
 	if (!F)
 		loaded_admins = TRUE
 		return
 
-	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||\n")
+	var/list/admincheck = splittext(file2text(F),"|||\n")
+	fdel(F)
 	if (islist(admincheck) && !isemptylist(admincheck))
-		for(var/i=1;i<admincheck.len;i++)
-			var/list/admincheck_two = splittext(admincheck[i], ";")
-			if (admincheck_two[3] != "NONE")
-				var/ckey = lowertext(admincheck_two[2])
-				var/rank = admincheck_two[3]
+		for(var/i in admincheck)
+			var/list/admincheck_two = splittext(i, ";")
+			if (admincheck_two[2] != "NONE")
+				var/ckey = lowertext(admincheck_two[1])
+				var/rank = admincheck_two[2]
 				if (rank == "Removed") goto deadminned	//This person was de-adminned. They are only in the admin list for archive purposes.
-				var/rights = admincheck_two[4]
+				var/rights = admincheck_two[3]
 				if (istext(rights))
 					rights = text2num(rights)
 				// make our admins datum and put us in admin_datums[]
 				var/datum/admins/A = new/datum/admins(rank, rights, ckey)
 				if (directory[ckey])
 					A.associate(directory[ckey])
+					/* moved association code to client/New(), so it works for clients
+					   created at the same time as the world */
+	for(var/i in admin_datums)
+		var/datum/admins/AD = admin_datums[i]
+		if (AD)
+			text2file("[i];[AD.rank];[num2text(AD.rights)]|||",F)
 
-			/* moved association code to client/New(), so it works for clients
-			   created at the same time as the world */
 
 	deadminned
 	if (!admin_datums)
