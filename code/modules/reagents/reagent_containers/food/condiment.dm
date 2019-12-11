@@ -155,6 +155,14 @@
 		..()
 		reagents.add_reagent("sodiumchloride", 10)
 
+/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty		//Seperate from above since it's a small shaker rather then
+	name = "salt pile"
+	desc = "Salt. From the oceans, presumably."
+	icon = 'icons/obj/food.dmi'
+	icon_state = "salt"
+	possible_transfer_amounts = list(1,10)
+	amount_per_transfer_from_this = 10
+	volume = 10
 
 /obj/item/weapon/reagent_containers/food/condiment/saltshaker		//Seperate from above since it's a small shaker rather then
 	name = "Salt Shaker"											//	a large one.

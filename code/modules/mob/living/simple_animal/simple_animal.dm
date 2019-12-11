@@ -359,6 +359,8 @@
 									meat.reagents.add_reagent("food_poisoning", 1)
 								meat.rotten = TRUE
 								meat.satisfaction = -30
+						else if (istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar))
+							new/obj/item/weapon/pigleg(get_turf(src))
 						else
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))

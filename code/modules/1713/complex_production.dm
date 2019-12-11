@@ -187,7 +187,7 @@
 				return
 
 /obj/structure/drying_rack/proc/dry_obj(var/obj_type = null)
-	spawn(3600) //6 minutes
+	spawn(12000) //20 minutes
 		if (!src || !loc)
 			return
 		if (obj_type == /obj/item/weapon/pigleg)
