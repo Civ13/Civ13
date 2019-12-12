@@ -232,10 +232,6 @@
 			var/variable = pref.vars[varname]
 			if (isdatum(variable) || isclient(variable))
 				continue // prevent infinite loops on VV
-			if (pref_initial_vars[varname] != variable) // variable changed!
-				pref.remember_preference(varname, variable)
-			else if (pref_initial_vars[varname] == variable) // variable set back to default!
-				pref.forget_preference(varname)
 
 		pref.save_preferences()
 

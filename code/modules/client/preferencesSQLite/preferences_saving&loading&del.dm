@@ -1,27 +1,23 @@
 var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
-/datum/preferences/proc/preferences_exist()
+/datum/preferences/proc/preferences_exist(var/list/l_charprefs = list())
+	if (isemptylist(l_charprefs))
+		return FALSE
 	var/F = file("SQL/charprefs.txt")
-	var/fulltext = file2text(F)
-	var/list/charprefs = splittext(fulltext, "|||\n")
-	var/done1 = FALSE
+	var/list/charprefs = splittext(file2text(F), "|||\n")
 	for (var/i=1;i<charprefs.len;i++)
 		var/list/charprefs2 = splittext(charprefs[i], ";")
 		if (charprefs2[1] == client_ckey)
-			done1 = TRUE
-	if (!done1)
-		return FALSE
-	else
-		return TRUE
+			return TRUE
+	return FALSE
 
-/datum/preferences/proc/load_preferences()
+/datum/preferences/proc/load_preferences(var/list/charprefs = list())
 
 	if (!client_ckey)
 		return FALSE
+	if (isemptylist(charprefs))
+		charprefs = splittext(file2text("SQL/charprefs.txt"), "|||\n")
 
-	var/F = file("SQL/charprefs.txt")
-	var/fulltext = file2text(F)
-	var/list/charprefs = splittext(fulltext, "|||\n")
 	var/done1 = FALSE
 	var/table = 0
 	for (var/i=1;i<charprefs.len;i++)
@@ -43,11 +39,9 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 			key_val_pairs -= key_val_pair
 			if (findtext(val, "{"))
 				key_val_pairs[key] = list()
-			//	log_debug("[key] = [val]")
 				var/list = replacetext(replacetext(val, "{", ""), "}", "")
 				list = splittext(list, "|")
 				for (var/something in list)
-			//		log_debug("item: [something]")
 					key_val_pairs[key] += something
 			else
 				key_val_pairs[key] = val
@@ -63,12 +57,14 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 			if (isnum(vars[varname]) || istext(vars[varname]) && !forbidden_pref_save_varnames.Find(varname))
 				vars[varname] = initial(vars[varname])
 
-	internal_table = list(key_val_pairs)
+	for(var/prf in preferences_disabled)
+		preferences_enabled -= prf
+
 	update_setup()
 
 	return TRUE
 
-/datum/preferences/proc/save_preferences()
+/datum/preferences/proc/save_preferences(var/list/charprefs = list())
 
 	if (!client_ckey)
 		return FALSE
@@ -76,24 +72,20 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 	if (real_name == "PLACEHOLDER")
 		real_name = "[capitalize(client.key)]"
 
-	var/name_to_remember = real_name
-	var/list/table = list(internal_table)
-	if (table["real_name"] == real_name)
-		name_to_remember = random_name(gender,species)
+	if (real_name == capitalize(client.key))
+		real_name = random_name(gender,species)
 
-	if (isemptylist(internal_table))
-		internal_table = list()
-	remember_preference("real_name", name_to_remember) // don't save or inf. loop
+	var/list/vars_to_save = list("preferences_disabled", "UI_style", "UI_file", "UI_useborder", "UI_style_color", "UI_style_alpha", "lobby_music_volume", "cursor", "real_name", "be_random_name", "be_random_body", "gender", "age", "b_type", "h_style", "hair_color", "facial_color", "eye_color", "r_hair", "g_hair", "b_hair", "f_style", "r_facial", "g_facial", "b_facial", "s_tone", "r_skin", "g_skin", "b_skin", "r_eyes", "g_eyes", "b_eyes")
 
 	var/params = ""
-	for (var/key in internal_table)
+	for (var/key in vars_to_save)
 		if (!vars.Find(key))
 			continue
-		if (internal_table[key] == initial(vars[key]))
+		var/val = vars[key]
+		if (vars[key] == initial(vars[key]))
 			continue
 		if (params != "")
 			params += "&"
-		var/val = internal_table[key]
 		if (islist(val))
 			params += "[key]={"
 			for (var/x in val)
@@ -110,11 +102,10 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 	if (dd_hassuffix(params, ";"))
 		params = copytext(params, 1, lentext(params))
-
-
 	var/F = file("SQL/charprefs.txt")
-	var/list/charprefs = splittext(file2text(F), "|||\n")
 	var/done1 = FALSE
+	if (isemptylist(charprefs))
+		charprefs = splittext(file2text(F), "|||\n")
 	for (var/i=1;i<charprefs.len;i++)
 		var/list/charprefs2 = splittext(charprefs[i], ";")
 		if (charprefs2[1] == client_ckey)
@@ -127,28 +118,3 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 		for (var/i=1;i<charprefs.len;i++)
 			text2file("[charprefs[i]]|||", F)
 	return
-/datum/preferences/proc/remember_preference(pref, value)
-	if (!vars.Find(pref))
-		return FALSE
-	if (value == initial(vars[pref]))
-		return FALSE
-	if (forbidden_pref_save_varnames.Find(pref))
-		return FALSE
-
-	if (isemptylist(internal_table))
-		internal_table = list()
-	internal_table[pref] = value
-
-	return TRUE
-
-/datum/preferences/proc/forget_preference(pref, var/glob = FALSE)
-	if (!vars.Find(pref))
-		return FALSE
-	if (forbidden_pref_save_varnames.Find(pref))
-		return FALSE
-
-	if (isemptylist(internal_table))
-		internal_table = list()
-	internal_table -= pref
-
-	return TRUE
