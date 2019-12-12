@@ -28,7 +28,7 @@
 	var/activeicon_state = "mimic"
 	var/idleicon = 'icons/obj/storage.dmi'
 	var/idleicon_state = "treasure_chest"
-	var/stance_step = FALSE
+
 	var/btype = ""
 
 	faction = "neutral"
@@ -98,14 +98,6 @@
 		stance_step = 6
 		target_mob = M
 	..()
-
-/mob/living/simple_animal/hostile/mimic/FindTarget()
-	. = ..()
-	if (.)
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/mimic/LoseTarget()
-	..(5)
 
 /mob/living/simple_animal/hostile/mimic/AttackingTarget()
 	if (!Adjacent(target_mob))

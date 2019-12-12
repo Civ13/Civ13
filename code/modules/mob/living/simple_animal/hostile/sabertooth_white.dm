@@ -24,7 +24,7 @@
 	melee_damage_upper = 44
 	mob_size = MOB_MEDIUM
 
-	var/stance_step = FALSE
+
 
 	faction = "hostile"
 
@@ -95,15 +95,6 @@
 		stance_step = 6
 		target_mob = M
 	..()
-
-/mob/living/simple_animal/hostile/sabertooth_white/FindTarget()
-	. = ..()
-	if (.)
-		custom_emote(1,"stares alertly at [.].")
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/sabertooth_white/LoseTarget()
-	..(5)
 
 /mob/living/simple_animal/hostile/sabertooth_white/AttackingTarget()
 	if (!Adjacent(target_mob))

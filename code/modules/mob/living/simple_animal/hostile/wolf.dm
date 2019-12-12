@@ -27,7 +27,7 @@
 	predatory_carnivore = 1
 	carnivore = 1
 
-	var/stance_step = FALSE
+
 	var/btype = "grey"
 	var/cub = FALSE
 	var/female = FALSE
@@ -169,31 +169,6 @@
 				stance_step = FALSE
 				walk(src, FALSE) //This stops the wolf's walking
 				return
-
-
-
-/mob/living/simple_animal/hostile/wolf/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ALERT
-		stance_step = 6
-		target_mob = user
-	..()
-
-/mob/living/simple_animal/hostile/wolf/attack_hand(mob/living/carbon/human/M as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ALERT
-		stance_step = 6
-		target_mob = M
-	..()
-
-/mob/living/simple_animal/hostile/wolf/FindTarget()
-	. = ..()
-	if (.)
-		custom_emote(1,"stares alertly at [.].")
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/wolf/LoseTarget()
-	..(5)
 
 /mob/living/simple_animal/hostile/wolf/AttackingTarget()
 	if (!Adjacent(target_mob))

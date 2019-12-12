@@ -21,29 +21,7 @@
 	faction = list("neutral")
 	mob_size = MOB_LARGE
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
-	var/stance_step = FALSE
 
-/mob/living/simple_animal/hostile/buffalo/FindTarget()
-	var/atom/T = null
-	stop_automated_movement = FALSE
-	for (var/atom/A in ListTargets(7))
-
-		if (A == src)
-			continue
-
-		var/atom/F = Found(A)
-		if (F)
-			T = F
-			break
-
-		if (isliving(A))
-			var/mob/living/L = A
-			if (istype(L, /mob/living/simple_animal/mouse))
-				var/mob/living/simple_animal/mouse/RH = L
-				if (!RH.stat)
-					stance = HOSTILE_STANCE_ALERT
-					T = RH
-	return T
 
 
 /mob/living/simple_animal/hostile/buffalo/Life()
@@ -92,28 +70,6 @@
 				walk(src, FALSE) //This stops the bear's walking
 				return
 
-
-
-/mob/living/simple_animal/hostile/buffalo/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ATTACK
-		stance_step = 0
-		target_mob = user
-	..()
-/mob/living/simple_animal/hostile/buffalo/attack_hand(mob/living/M as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ATTACK
-		stance_step = 0
-		target_mob = M
-	..()
-/mob/living/simple_animal/hostile/buffalo/FindTarget()
-	. = ..()
-	if (.)
-		custom_emote(1,"stares alertly at [.].")
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/buffalo/LoseTarget()
-	..(5)
 
 /mob/living/simple_animal/hostile/buffalo/AttackingTarget()
 	var/damage = pick(melee_damage_lower, melee_damage_upper)

@@ -21,29 +21,6 @@
 	attacktext = "kicked"
 	health = 250
 	mob_size = MOB_HUGE
-	var/stance_step = FALSE
-
-/mob/living/simple_animal/hostile/groundsloth/FindTarget()
-	var/atom/T = null
-	stop_automated_movement = FALSE
-	for (var/atom/A in ListTargets(7))
-
-		if (A == src)
-			continue
-
-		var/atom/F = Found(A)
-		if (F)
-			T = F
-			break
-
-		if (isliving(A))
-			var/mob/living/L = A
-			if (istype(L, /mob/living/simple_animal/mouse))
-				var/mob/living/simple_animal/mouse/RH = L
-				if (!RH.stat)
-					stance = HOSTILE_STANCE_ALERT
-					T = RH
-	return T
 
 
 /mob/living/simple_animal/hostile/groundsloth/Life()
@@ -109,12 +86,3 @@
 		stance_step = 0
 		target_mob = M
 	..()
-
-/mob/living/simple_animal/hostile/groundsloth/FindTarget()
-	. = ..()
-	if (.)
-		custom_emote(1,"stares alertly at [.].")
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/groundsloth/LoseTarget()
-	..(5)

@@ -64,6 +64,18 @@
 
 	var/removed_from_list = FALSE //this is fucking stupid. But I have to do it because the death() proc runs 30 times or some shit. Thx BYOND -Taislin
 
+
+	//hostile mob stuff
+	var/stance = HOSTILE_STANCE_IDLE	//Used to determine behavior
+	var/mob/living/target_mob
+	var/attack_same = FALSE
+	var/move_to_delay = 4 //delay for the automated movement.
+	var/list/friends = list()
+	var/break_stuff_probability = 10
+	var/destroy_surroundings = TRUE
+	var/enroute = FALSE
+	var/stance_step = FALSE
+
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -202,13 +214,13 @@
 		for (var/mob/living/carbon/human/H in range(7, src))
 			if (done == FALSE)
 				var/dirh = get_dir(src,H)
-				if (dirh == WEST)
+				if (dirh == WEST && isturf(locate(x+7,y,z)))
 					walk_to(src, locate(x+7,y,z), TRUE, 3)
-				else if (dirh == EAST)
+				else if (dirh == EAST && isturf(locate(x-7,y,z)))
 					walk_to(src, locate(x-7,y,z), TRUE, 3)
-				else if (dirh == NORTH)
+				else if (dirh == NORTH && isturf(locate(x,y-7,z)))
 					walk_to(src, locate(x,y-7,z), TRUE, 3)
-				else if (dirh == SOUTH)
+				else if (dirh == SOUTH && isturf(locate(x,y+7,z)))
 					walk_to(src, locate(x,y+7,z), TRUE, 3)
 				done = TRUE
 		return "scared"
@@ -221,18 +233,80 @@
 		turns_since_move = FALSE
 		return "wander"
 	else if (t_behaviour == "hunting")
-		var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
-		moving_to = pick(cardinal)
-		set_dir(moving_to)
-		Move(get_step(src,moving_to))
-		turns_since_move = FALSE
+		a_intent = I_HARM
+		if (health <= 0)
+			death()
+			return
+		if (!stat)
+			switch(stance)
+				if (HOSTILE_STANCE_IDLE)
+					target_mob = FindTarget()
+
+				if (HOSTILE_STANCE_ATTACK)
+					if (destroy_surroundings)
+						DestroySurroundings()
+					MoveToTarget()
+
+				if (HOSTILE_STANCE_ATTACKING)
+					if (destroy_surroundings)
+						DestroySurroundings()
+					spawn(10)
+						AttackTarget()
+		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
+			turns_since_move++
+			if (turns_since_move >= turns_per_move)
+				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
+					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
+						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
+							walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
+					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+					moving_to = pick(cardinal)
+					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+					Move(get_step(src,moving_to))
+					turns_since_move = FALSE
 		return "hunting"
 	else if (t_behaviour == "defends")
-		var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
-		moving_to = pick(cardinal)
-		set_dir(moving_to)
-		Move(get_step(src,moving_to))
-		turns_since_move = FALSE
+		a_intent = I_HARM
+		switch(stance)
+
+			if (HOSTILE_STANCE_TIRED)
+				stop_automated_movement = TRUE
+				stance_step++
+				if (stance_step >= 10) //rests for 10 ticks
+					if (target_mob && target_mob in ListTargets(7))
+						stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
+					else
+						stance = HOSTILE_STANCE_IDLE
+
+			if (HOSTILE_STANCE_ALERT)
+				stop_automated_movement = TRUE
+				var/found_mob = FALSE
+				if (target_mob && target_mob in ListTargets(7))
+					if (!(SA_attackable(target_mob)))
+						stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
+						stance_step++
+						found_mob = TRUE
+						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
+
+						if (stance_step in list(1,4,7)) //every 3 ticks
+							var/action = pick( list( "hisses at [target_mob].", "closely watches [target_mob]." ) )
+							if (action)
+								custom_emote(1,action)
+				if (!found_mob)
+					stance_step--
+
+				if (stance_step <= -20) //If we have not found a mob for 20-ish ticks, revert to idle mode
+					stance = HOSTILE_STANCE_IDLE
+				if (stance_step >= 7)   //If we have been staring at a mob for 7 ticks,
+					stance = HOSTILE_STANCE_ATTACK
+
+			if (HOSTILE_STANCE_ATTACKING)
+				if (stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
+					custom_emote(1, "is worn out and needs to rest." )
+					stance = HOSTILE_STANCE_TIRED
+					stance_step = FALSE
+					walk(src, FALSE) //This stops the bear's walking
+					return
 		return "defends"
 /mob/living/simple_animal/gib()
 	..(icon_gib,1)
@@ -857,3 +931,42 @@
 			death()
 		return
 
+
+
+/mob/living/simple_animal/attackby(var/obj/item/O as obj, var/mob/user as mob)
+
+	if (behaviour == "defends")
+		if (user.a_intent != I_HELP)
+			if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+				stance = HOSTILE_STANCE_ATTACK
+				stance_step = 6
+				target_mob = user
+				..()
+	else if (behaviour == "hunt")
+		if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+			stance = HOSTILE_STANCE_ATTACK
+			stance_step = 6
+			target_mob = user
+			..()
+	else
+		do_behaviour("scared")
+		..()
+/mob/living/simple_animal/attack_hand(mob/living/carbon/human/M as mob)
+	if (behaviour == "defends")
+		if (M.a_intent != I_HELP)
+			if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+				stance = HOSTILE_STANCE_ALERT
+				stance_step = 6
+				target_mob = M
+				..()
+	else if (behaviour == "hunt")
+		if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+			stance = HOSTILE_STANCE_ATTACK
+			stance_step = 6
+			target_mob = M
+			..()
+	else if (behaviour == "scared")
+		do_behaviour("scared")
+		..()
+	else
+		..()

@@ -23,29 +23,6 @@
 	density = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
-	var/stance_step = FALSE
-
-/mob/living/simple_animal/hostile/poison/snake/FindTarget()
-	var/atom/T = null
-	stop_automated_movement = FALSE
-	for (var/atom/A in ListTargets(7))
-
-		if (A == src)
-			continue
-
-		var/atom/F = Found(A)
-		if (F)
-			T = F
-			break
-
-		if (isliving(A))
-			var/mob/living/L = A
-			if (istype(L, /mob/living/simple_animal/mouse))
-				var/mob/living/simple_animal/mouse/RH = L
-				if (!RH.stat)
-					stance = HOSTILE_STANCE_ALERT
-					T = RH
-	return T
 
 
 /mob/living/simple_animal/hostile/poison/snake/Life()
@@ -108,15 +85,6 @@
 		stance_step = 0
 		target_mob = M
 	..()
-
-/mob/living/simple_animal/hostile/poison/snake/FindTarget()
-	. = ..()
-	if (.)
-		custom_emote(1,"stares alertly at [.].")
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/poison/snake/LoseTarget()
-	..(5)
 
 /mob/living/simple_animal/hostile/poison/snake/AttackingTarget()
 	var/damage = pick(melee_damage_lower, melee_damage_upper)

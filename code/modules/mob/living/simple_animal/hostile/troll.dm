@@ -25,7 +25,7 @@
 	melee_damage_upper = 40
 	mob_size = MOB_LARGE
 
-	var/stance_step = FALSE
+
 
 	faction = "neutral"
 
@@ -92,12 +92,3 @@
 		stance_step = 6
 		target_mob = M
 	..()
-
-/mob/living/simple_animal/hostile/troll/FindTarget()
-	. = ..()
-	if (.)
-		custom_emote(1,"stares alertly at [.].")
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/troll/LoseTarget()
-	..(5)

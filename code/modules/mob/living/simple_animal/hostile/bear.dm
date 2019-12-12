@@ -29,7 +29,7 @@
 	scavenger = 1
 
 	var/cub = FALSE
-	var/stance_step = FALSE
+
 	var/btype = "black"
 	var/female = FALSE
 	faction = "neutral"
@@ -134,29 +134,6 @@
 				stance_step = FALSE
 				walk(src, FALSE) //This stops the bear's walking
 				return
-
-/mob/living/simple_animal/hostile/bear/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ALERT
-		stance_step = 6
-		target_mob = user
-	..()
-
-/mob/living/simple_animal/hostile/bear/attack_hand(mob/living/carbon/human/M as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ALERT
-		stance_step = 6
-		target_mob = M
-	..()
-
-/mob/living/simple_animal/hostile/bear/FindTarget()
-	. = ..()
-	if (.)
-		custom_emote(1,"stares alertly at [.].")
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/bear/LoseTarget()
-	..(5)
 
 /mob/living/simple_animal/hostile/bear/AttackingTarget()
 	if (!Adjacent(target_mob))

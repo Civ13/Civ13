@@ -28,7 +28,7 @@
 	predatory_carnivore = 1
 	carnivore = 1
 
-	var/stance_step = FALSE
+
 
 	faction = "neutral"
 
@@ -95,15 +95,6 @@
 		stance_step = 6
 		target_mob = M
 	..()
-
-/mob/living/simple_animal/hostile/dinosaur/velociraptor/FindTarget()
-	. = ..()
-	if (.)
-		custom_emote(1,"stares alertly at [.].")
-		stance = HOSTILE_STANCE_ALERT
-
-/mob/living/simple_animal/hostile/dinosaur/velociraptor/LoseTarget()
-	..(5)
 
 /mob/living/simple_animal/hostile/dinosaur/velociraptor/AttackingTarget()
 	if (!Adjacent(target_mob))
