@@ -101,7 +101,7 @@
 					I.reagents.del_reagent("cholera")
 					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
 						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))
-						NSP.reagents.add_reagent("sodiumchloride",reagents.get_reagent_amount("sodiumchloride"))
+						NSP.reagents.add_reagent("sodiumchloride",I.reagents.get_reagent_amount("sodiumchloride"))
 						I.reagents.del_reagent("sodiumchloride")
 						I.reagents.del_reagent("water")
 			if (fuel <= 0 && consume_itself == TRUE)
