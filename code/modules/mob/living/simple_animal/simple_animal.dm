@@ -58,7 +58,7 @@
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
-	var/behaviour = "wander" ///wander: go around randomly. scared: run from humans-predators, default to wander after. hunting: move towards prey areas
+	var/behaviour = "wander" ///wander: go around randomly. scared: run from humans-predators, default to wander after. hunting: move towards prey areas. defends: will attack only if attacked
 
 	var/simplehunger = 1000
 
@@ -144,11 +144,7 @@
 					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
 						check_food() // animals will search for crops, grass, and so on
 					else
-						var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
-						moving_to = pick(cardinal)
-						set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
-						Move(get_step(src,moving_to))
-						turns_since_move = FALSE
+						do_behaviour(behaviour)
 
 	//Speaking
 	if (!client && speak_chance)
@@ -183,6 +179,7 @@
 						visible_emote("[pick(emote_see)].")
 					else
 						audible_emote("[pick(emote_hear)].")
+
 	if (bodytemperature < minbodytemp)
 		fire_alert = 2
 		adjustBruteLoss(cold_damage_per_tick)
@@ -195,7 +192,48 @@
 		fire_alert = FALSE
 	return TRUE
 
+/mob/living/simple_animal/proc/do_behaviour(var/t_behaviour = null)
+	if (stat == DEAD)
+		return FALSE
+	if (!t_behaviour)
+		t_behaviour = behaviour
+	if (t_behaviour == "scared")
+		var/done = FALSE
+		for (var/mob/living/carbon/human/H in range(7, src))
+			if (done == FALSE)
+				var/dirh = get_dir(src,H)
+				if (dirh == WEST)
+					walk_to(src, locate(x+7,y,z), TRUE, 3)
+				else if (dirh == EAST)
+					walk_to(src, locate(x-7,y,z), TRUE, 3)
+				else if (dirh == NORTH)
+					walk_to(src, locate(x,y-7,z), TRUE, 3)
+				else if (dirh == SOUTH)
+					walk_to(src, locate(x,y+7,z), TRUE, 3)
+				done = TRUE
+		return "scared"
 
+	else if (t_behaviour == "wander")
+		var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+		moving_to = pick(cardinal)
+		set_dir(moving_to)
+		Move(get_step(src,moving_to))
+		turns_since_move = FALSE
+		return "wander"
+	else if (t_behaviour == "hunting")
+		var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+		moving_to = pick(cardinal)
+		set_dir(moving_to)
+		Move(get_step(src,moving_to))
+		turns_since_move = FALSE
+		return "hunting"
+	else if (t_behaviour == "defends")
+		var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+		moving_to = pick(cardinal)
+		set_dir(moving_to)
+		Move(get_step(src,moving_to))
+		turns_since_move = FALSE
+		return "defends"
 /mob/living/simple_animal/gib()
 	..(icon_gib,1)
 

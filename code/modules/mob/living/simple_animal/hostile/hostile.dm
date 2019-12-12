@@ -14,7 +14,7 @@
 	stop_automated_movement_when_pulled = FALSE
 	var/destroy_surroundings = TRUE
 	a_intent = I_HARM
-
+	behaviour = "defends"
 	var/enroute = FALSE
 /mob/living/simple_animal/hostile/proc/FindTarget()
 

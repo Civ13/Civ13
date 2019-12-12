@@ -704,7 +704,6 @@
 #include "code\modules\mob\living\simple_animal\friendly\crab.dm"
 #include "code\modules\mob\living\simple_animal\friendly\deer.dm"
 #include "code\modules\mob\living\simple_animal\friendly\dogs.dm"
-#include "code\modules\mob\living\simple_animal\friendly\elk.dm"
 #include "code\modules\mob\living\simple_animal\friendly\farm_animals.dm"
 #include "code\modules\mob\living\simple_animal\friendly\flies.dm"
 #include "code\modules\mob\living\simple_animal\friendly\groundsloth.dm"
