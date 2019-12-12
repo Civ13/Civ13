@@ -76,19 +76,3 @@
 				stance_step = FALSE
 				walk(src, FALSE) //This stops the alligator's walking
 				return
-
-
-
-/mob/living/simple_animal/hostile/troll/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ALERT
-		stance_step = 6
-		target_mob = user
-	..()
-
-/mob/living/simple_animal/hostile/troll/attack_hand(mob/living/carbon/human/M as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ALERT
-		stance_step = 6
-		target_mob = M
-	..()

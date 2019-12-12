@@ -205,7 +205,7 @@
 	return TRUE
 
 /mob/living/simple_animal/proc/do_behaviour(var/t_behaviour = null)
-	if (stat == DEAD)
+	if (stat == DEAD || stat == UNCONSCIOUS)
 		return FALSE
 	if (!t_behaviour)
 		t_behaviour = behaviour
@@ -344,10 +344,17 @@
 /mob/living/simple_animal/attack_hand(mob/living/carbon/human/M as mob)
 	..()
 
+	if (behaviour == "hunt")
+		if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+			stance = HOSTILE_STANCE_ATTACK
+			stance_step = 6
+			target_mob = M
+	else if (behaviour == "scared")
+		do_behaviour("scared")
+
 	switch(M.a_intent)
 
 		if (I_HELP)
-
 			if (health > 0)
 				if (istype(src, /mob/living/simple_animal/dog))
 					if (prob(30))
@@ -358,6 +365,11 @@
 					M.visible_message("<span class = 'notice'>[M] [response_help] \the [src].</span>")
 
 		if (I_DISARM)
+			if (behaviour == "defends")
+				if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+					stance = HOSTILE_STANCE_ALERT
+					stance_step = 6
+					target_mob = M
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
 			M.do_attack_animation(src)
 			playsound(get_turf(M), 'sound/weapons/punchmiss.ogg', 50, TRUE, -1)
@@ -389,7 +401,7 @@
 	return
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
-	if (istype(O, /obj/item/weapon/leash) && !(istype(src, /mob/living/simple_animal/hostile)))
+	if (istype(O, /obj/item/weapon/leash) && behaviour != "defends" && behaviour != "hunt")
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == FALSE)
 			L.S1 = src
@@ -560,6 +572,22 @@
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			O.attack(src, user, tgt)
+	if (behaviour == "defends")
+		if (user.a_intent != I_HELP)
+			if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+				stance = HOSTILE_STANCE_ATTACK
+				stance_step = 6
+				target_mob = user
+				..()
+	else if (behaviour == "hunt")
+		if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+			stance = HOSTILE_STANCE_ATTACK
+			stance_step = 6
+			target_mob = user
+			..()
+	else
+		do_behaviour("scared")
+		..()
 /mob/living/simple_animal/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 
 	visible_message("<span class='danger'>\The [src] has been attacked with \the [O] by [user].</span>")
@@ -930,43 +958,3 @@
 		if (radiation > 80)
 			death()
 		return
-
-
-
-/mob/living/simple_animal/attackby(var/obj/item/O as obj, var/mob/user as mob)
-
-	if (behaviour == "defends")
-		if (user.a_intent != I_HELP)
-			if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-				stance = HOSTILE_STANCE_ATTACK
-				stance_step = 6
-				target_mob = user
-				..()
-	else if (behaviour == "hunt")
-		if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-			stance = HOSTILE_STANCE_ATTACK
-			stance_step = 6
-			target_mob = user
-			..()
-	else
-		do_behaviour("scared")
-		..()
-/mob/living/simple_animal/attack_hand(mob/living/carbon/human/M as mob)
-	if (behaviour == "defends")
-		if (M.a_intent != I_HELP)
-			if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-				stance = HOSTILE_STANCE_ALERT
-				stance_step = 6
-				target_mob = M
-				..()
-	else if (behaviour == "hunt")
-		if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-			stance = HOSTILE_STANCE_ATTACK
-			stance_step = 6
-			target_mob = M
-			..()
-	else if (behaviour == "scared")
-		do_behaviour("scared")
-		..()
-	else
-		..()

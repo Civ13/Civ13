@@ -70,19 +70,3 @@
 				stance_step = FALSE
 				walk(src, FALSE) //This stops the bear's walking
 				return
-
-
-
-/mob/living/simple_animal/hostile/groundsloth/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ATTACK
-		stance_step = 0
-		target_mob = user
-	..()
-
-/mob/living/simple_animal/hostile/groundsloth/attack_hand(mob/living/carbon/human/M as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ATTACK
-		stance_step = 0
-		target_mob = M
-	..()

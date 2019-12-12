@@ -83,20 +83,6 @@
 				walk(src, FALSE) //This stops the bear's walking
 				return
 
-/mob/living/simple_animal/hostile/mammoth/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ATTACK
-		stance_step = 0
-		target_mob = user
-	..()
-
-/mob/living/simple_animal/hostile/mammoth/attack_hand(mob/living/carbon/human/M as mob)
-	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
-		stance = HOSTILE_STANCE_ATTACK
-		stance_step = 0
-		target_mob = M
-	..()
-
 /mob/living/simple_animal/hostile/mammoth/AttackingTarget()
 	var/damage = pick(melee_damage_lower, melee_damage_upper)
 	if (!Adjacent(target_mob))
