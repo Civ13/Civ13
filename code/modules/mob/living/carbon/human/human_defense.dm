@@ -37,7 +37,7 @@ bullet_act
 					if (!crab)
 						for(var/i=1;i<=4;i++)
 							var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-							meat.name = "[src.body_build.name] meat"
+							meat.name = "[src.name] meat"
 							meat.radiation = radiation/10
 					else
 						for(var/i=1;i<=4;i++)
