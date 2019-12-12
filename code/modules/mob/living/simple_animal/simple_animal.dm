@@ -586,7 +586,10 @@
 			target_mob = user
 			..()
 	else
-		do_behaviour("scared")
+		if (behaviour == "scared" || (behaviour == "wander" && mob_size < user.mob_size))
+			do_behaviour("scared")
+		else if (behaviour == "wander")
+			do_behaviour("defends")
 		..()
 /mob/living/simple_animal/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 
