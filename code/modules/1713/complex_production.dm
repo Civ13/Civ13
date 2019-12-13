@@ -134,7 +134,9 @@
 		salting = FALSE
 		icon_state = "salting_container"
 		visible_message("The products in the salting container are ready.")
-		contents = list()
+		saltamount = 0
+		for (var/obj/item/I in contents)
+			qdel(I)
 		if (producttype_name == "ham")
 			for(var/i=1, i<=max_capacity, i++)
 				new/obj/item/weapon/pigleg/salted(loc)
