@@ -24,4 +24,4 @@
 	layer = 3.99
 	a_intent = I_HARM
 	can_ride = TRUE
-
+	behaviour = "defends"

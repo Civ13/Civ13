@@ -153,7 +153,7 @@
 						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
 							walk_towards(src, A.target_loc,6)
-					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
+					if ((stance==HOSTILE_STANCE_IDLE || stance==HOSTILE_STANCE_TIRED) && (prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
 						check_food() // animals will search for crops, grass, and so on
 					else
 						do_behaviour(behaviour)
@@ -250,41 +250,25 @@
 		return "wander"
 	else if (t_behaviour == "hunt" || t_behaviour == "defends")
 		a_intent = I_HARM
-		if (health <= 0)
-			death()
-			return
+
+		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
+			turns_since_move++
+			if (turns_since_move >= turns_per_move)
+				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
+					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
+						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
+							walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
+					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+					moving_to = pick(cardinal)
+					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+					Move(get_step(src,moving_to))
+					turns_since_move = FALSE
 
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
-				target_mob = FindTarget()
-
-			if (HOSTILE_STANCE_ATTACK)
-				if (destroy_surroundings)
-					DestroySurroundings()
-				MoveToTarget()
-
-			if (HOSTILE_STANCE_ATTACKING)
-				if (destroy_surroundings)
-					DestroySurroundings()
-				spawn(10)
-					AttackTarget()
-	if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
-		turns_since_move++
-		if (turns_since_move >= turns_per_move)
-			if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
-				if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
-					if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
-						walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
-				var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
-				moving_to = pick(cardinal)
-				set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
-				Move(get_step(src,moving_to))
-				turns_since_move = FALSE
-
-		switch(stance)
-
+				if (!target_mob || !(target_mob in ListTargets(7)) || target_mob.stat != CONSCIOUS)
+					target_mob = FindTarget()
 			if (HOSTILE_STANCE_TIRED)
-				stop_automated_movement = TRUE
 				stance_step++
 				if (stance_step >= 10) //rests for 10 ticks
 					if (target_mob && target_mob in ListTargets(7))
@@ -293,7 +277,6 @@
 						stance = HOSTILE_STANCE_IDLE
 
 			if (HOSTILE_STANCE_ALERT)
-				stop_automated_movement = TRUE
 				var/found_mob = FALSE
 				if (target_mob && target_mob in ListTargets(7))
 					if (!(SA_attackable(target_mob)))
@@ -303,7 +286,7 @@
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 
 						if (stance_step in list(1,4,7)) //every 3 ticks
-							var/action = pick( list( "hisses at [target_mob].", "closely watches [target_mob]." ) )
+							var/action = pick( list( "stares alertly at [target_mob].", "closely watches [target_mob]." ) )
 							if (action)
 								custom_emote(1,action)
 				if (!found_mob)
@@ -314,13 +297,23 @@
 				if (stance_step >= 7)   //If we have been staring at a mob for 7 ticks,
 					stance = HOSTILE_STANCE_ATTACK
 
+			if (HOSTILE_STANCE_ATTACK)
+				if (destroy_surroundings)
+					DestroySurroundings()
+				MoveToTarget()
+
 			if (HOSTILE_STANCE_ATTACKING)
+
+			if (HOSTILE_STANCE_ATTACKING)
+				if (destroy_surroundings)
+					DestroySurroundings()
+				spawn(10)
+					AttackTarget()
 				if (stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
 					custom_emote(1, "is worn out and needs to rest." )
 					stance = HOSTILE_STANCE_TIRED
 					stance_step = FALSE
 					walk(src, FALSE) //This stops the bear's walking
-					return t_behaviour
 		return t_behaviour
 /mob/living/simple_animal/gib()
 	..(icon_gib,1)
