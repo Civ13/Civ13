@@ -83,29 +83,6 @@
 				walk(src, FALSE) //This stops the bear's walking
 				return
 
-/mob/living/simple_animal/hostile/mimic/AttackingTarget()
-	if (!Adjacent(target_mob))
-		return
-	if(prob(50))
-		playsound(src.loc, 'sound/effects/shieldbash.ogg', 100, TRUE, 2)
-	else
-		playsound(src.loc, 'sound/effects/shieldbash2.ogg', 100, TRUE, 2)
-	custom_emote(1, pick( list("chomps [target_mob]!", "bites [target_mob]!") ) )
-
-	var/damage = pick(melee_damage_lower,melee_damage_upper)
-
-	if (ishuman(target_mob))
-		var/mob/living/carbon/human/H = target_mob
-		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
-		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
-		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
-		return H
-	else if (isliving(target_mob))
-		var/mob/living/L = target_mob
-		L.adjustBruteLoss(damage)
-		return L
-
-
 /mob/living/simple_animal/hostile/mimic/death()
 	new/obj/structure/closet/crate/loottreasurechest(src.loc)
 	..()

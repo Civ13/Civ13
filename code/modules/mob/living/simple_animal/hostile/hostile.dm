@@ -77,11 +77,37 @@
 /mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	if (target_mob.bruteloss<200)
-		var/mob/living/L = target_mob
-		L.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
-		return L
 
+	if(prob(50))
+		playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
+	else
+		playsound(src.loc, 'sound/weapons/bite_2.ogg', 100, TRUE, 2)
+	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
+
+	var/damage = pick(melee_damage_lower,melee_damage_upper)
+
+	if (ishuman(target_mob))
+		var/mob/living/carbon/human/H = target_mob
+		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
+		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
+		if (prob(95) && can_bite_limbs_off)
+			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+		else
+			affecting.droplimb(FALSE, DROPLIMB_EDGE)
+			visible_message("\The [src] bites off [H]'s limb!")
+			for(var/mob/living/carbon/human/NB in view(6,src))
+				NB.mood -= 10
+	else if (isliving(target_mob))
+		var/mob/living/L = target_mob
+		L.adjustBruteLoss(damage)
+		if (istype(target_mob, /mob/living/simple_animal))
+			var/mob/living/simple_animal/SA = target_mob
+			if (SA.behaviour == "defends" || SA.behaviour == "hunt")
+				if (SA.stance != HOSTILE_STANCE_ATTACK && SA.stance != HOSTILE_STANCE_ATTACKING)
+					SA.stance = HOSTILE_STANCE_ATTACK
+					SA.stance_step = 7
+					SA.target_mob = src
+		return L
 /mob/living/simple_animal/proc/LoseTarget()
 	stance = HOSTILE_STANCE_IDLE
 	target_mob = null

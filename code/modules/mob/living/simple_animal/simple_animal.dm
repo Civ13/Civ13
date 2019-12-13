@@ -75,7 +75,7 @@
 	var/destroy_surroundings = TRUE
 	var/enroute = FALSE
 	var/stance_step = FALSE
-
+	var/can_bite_limbs_off = FALSE
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
