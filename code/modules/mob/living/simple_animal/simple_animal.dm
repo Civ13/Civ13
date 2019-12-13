@@ -58,7 +58,7 @@
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
-	var/behaviour = "wander" ///wander: go around randomly. scared: run from humans-predators, default to wander after. hunting: move towards prey areas. defends: will attack only if attacked
+	var/behaviour = "wander" ///wander: go around randomly. scared: run from humans-predators, default to wander after. hunt: move towards prey areas. defends: will attack only if attacked
 
 	var/simplehunger = 1000
 
@@ -140,7 +140,7 @@
 			stop_automated_movement = FALSE
 
 	//Movement
-	if (!client && !stop_automated_movement && wander && !anchored && clients.len > 0 && !istype(src, /mob/living/simple_animal/hostile))
+	if (!client && !stop_automated_movement && wander && !anchored && clients.len > 0)
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
 			if (turns_since_move >= turns_per_move)
@@ -216,13 +216,29 @@
 				var/dirh = get_dir(src,H)
 				if (dirh == WEST && isturf(locate(x+7,y,z)))
 					walk_to(src, locate(x+7,y,z), TRUE, 3)
+					done = TRUE
 				else if (dirh == EAST && isturf(locate(x-7,y,z)))
 					walk_to(src, locate(x-7,y,z), TRUE, 3)
+					done = TRUE
 				else if (dirh == NORTH && isturf(locate(x,y-7,z)))
 					walk_to(src, locate(x,y-7,z), TRUE, 3)
+					done = TRUE
 				else if (dirh == SOUTH && isturf(locate(x,y+7,z)))
 					walk_to(src, locate(x,y+7,z), TRUE, 3)
-				done = TRUE
+					done = TRUE
+				if (!done)
+					if (dirh == EAST && isturf(locate(x+7,y,z)))
+						walk_to(src, locate(x+7,y,z), TRUE, 3)
+						done = TRUE
+					else if (dirh == WEST && isturf(locate(x-7,y,z)))
+						walk_to(src, locate(x-7,y,z), TRUE, 3)
+						done = TRUE
+					else if (dirh == SOUTH && isturf(locate(x,y-7,z)))
+						walk_to(src, locate(x,y-7,z), TRUE, 3)
+						done = TRUE
+					else if (dirh == NORTH && isturf(locate(x,y+7,z)))
+						walk_to(src, locate(x,y+7,z), TRUE, 3)
+						done = TRUE
 		return "scared"
 
 	else if (t_behaviour == "wander")
@@ -232,41 +248,39 @@
 		Move(get_step(src,moving_to))
 		turns_since_move = FALSE
 		return "wander"
-	else if (t_behaviour == "hunting")
+	else if (t_behaviour == "hunt" || t_behaviour == "defends")
 		a_intent = I_HARM
 		if (health <= 0)
 			death()
 			return
-		if (!stat)
-			switch(stance)
-				if (HOSTILE_STANCE_IDLE)
-					target_mob = FindTarget()
 
-				if (HOSTILE_STANCE_ATTACK)
-					if (destroy_surroundings)
-						DestroySurroundings()
-					MoveToTarget()
+		switch(stance)
+			if (HOSTILE_STANCE_IDLE)
+				target_mob = FindTarget()
 
-				if (HOSTILE_STANCE_ATTACKING)
-					if (destroy_surroundings)
-						DestroySurroundings()
-					spawn(10)
-						AttackTarget()
-		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
-			turns_since_move++
-			if (turns_since_move >= turns_per_move)
-				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
-					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
-						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
-							walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
-					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
-					moving_to = pick(cardinal)
-					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
-					Move(get_step(src,moving_to))
-					turns_since_move = FALSE
-		return "hunting"
-	else if (t_behaviour == "defends")
-		a_intent = I_HARM
+			if (HOSTILE_STANCE_ATTACK)
+				if (destroy_surroundings)
+					DestroySurroundings()
+				MoveToTarget()
+
+			if (HOSTILE_STANCE_ATTACKING)
+				if (destroy_surroundings)
+					DestroySurroundings()
+				spawn(10)
+					AttackTarget()
+	if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
+		turns_since_move++
+		if (turns_since_move >= turns_per_move)
+			if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
+				if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
+					if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
+						walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
+				var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+				moving_to = pick(cardinal)
+				set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+				Move(get_step(src,moving_to))
+				turns_since_move = FALSE
+
 		switch(stance)
 
 			if (HOSTILE_STANCE_TIRED)
@@ -306,8 +320,8 @@
 					stance = HOSTILE_STANCE_TIRED
 					stance_step = FALSE
 					walk(src, FALSE) //This stops the bear's walking
-					return
-		return "defends"
+					return t_behaviour
+		return t_behaviour
 /mob/living/simple_animal/gib()
 	..(icon_gib,1)
 
