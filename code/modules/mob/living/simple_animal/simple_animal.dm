@@ -359,7 +359,7 @@
 	..()
 
 	if (behaviour == "hunt")
-		if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+		if (stance == HOSTILE_STANCE_IDLE || target_mob != M)
 			stance = HOSTILE_STANCE_ATTACK
 			stance_step = 6
 			target_mob = M
@@ -380,7 +380,7 @@
 
 		if (I_DISARM)
 			if (behaviour == "defends")
-				if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+				if (stance == HOSTILE_STANCE_IDLE || target_mob != M)
 					stance = HOSTILE_STANCE_ALERT
 					stance_step = 6
 					target_mob = M
@@ -588,13 +588,13 @@
 			O.attack(src, user, tgt)
 	if (behaviour == "defends")
 		if (user.a_intent != I_HELP)
-			if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+			if (stance == HOSTILE_STANCE_IDLE || target_mob != user)
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = user
 				..()
 	else if (behaviour == "hunt")
-		if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
+		if (stance == HOSTILE_STANCE_IDLE || target_mob != user)
 			stance = HOSTILE_STANCE_ATTACK
 			stance_step = 6
 			target_mob = user
@@ -605,6 +605,7 @@
 		else if (behaviour == "wander")
 			do_behaviour("defends")
 		..()
+
 /mob/living/simple_animal/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 
 	visible_message("<span class='danger'>\The [src] has been attacked with \the [O] by [user].</span>")
