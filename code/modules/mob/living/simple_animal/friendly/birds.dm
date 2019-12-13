@@ -1,5 +1,5 @@
 /mob/living/simple_animal/parrot
-	name = "Parrot"
+	name = "parrot"
 	desc = "A parrot. Maybe it can sit on your shoulder?."
 	icon = 'icons/mob/animal.dmi'
 	icon_state = "parrot_sit"
