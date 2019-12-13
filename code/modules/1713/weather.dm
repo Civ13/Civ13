@@ -131,7 +131,7 @@
 				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
-	var/area_icon_state = ""
+
 
 	if (world_radiation < 300)
 		switch (weather)
