@@ -153,7 +153,7 @@
 						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
 							walk_towards(src, A.target_loc,6)
-					if ((stance==HOSTILE_STANCE_IDLE || stance==HOSTILE_STANCE_TIRED) && (prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
+					if (((stance==HOSTILE_STANCE_IDLE || stance==HOSTILE_STANCE_TIRED) && (prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220)) || simplehunger < 180)
 						check_food() // animals will search for crops, grass, and so on
 					else
 						do_behaviour(behaviour)
