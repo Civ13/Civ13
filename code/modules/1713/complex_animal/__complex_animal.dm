@@ -24,7 +24,7 @@
 	var/list/friendly_factions = list()
 
 	// any specific people we like or dislike: overrides everything else
-	var/list/friends = list()
+	friends = list()
 	var/list/enemies = list()
 
 	// icons
