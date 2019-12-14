@@ -75,7 +75,6 @@
 /mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	world.log << "[world.realtime]"
 	if(prob(50))
 		playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
 	else

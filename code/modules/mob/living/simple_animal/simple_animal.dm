@@ -349,10 +349,9 @@
 	..()
 
 	if (behaviour == "hunt")
-		if (stance == HOSTILE_STANCE_IDLE || target_mob != M)
-			stance = HOSTILE_STANCE_ATTACK
-			stance_step = 6
-			target_mob = M
+		stance = HOSTILE_STANCE_ATTACK
+		stance_step = 6
+		target_mob = M
 	else if (behaviour == "scared")
 		do_behaviour("scared")
 
@@ -370,16 +369,19 @@
 
 		if (I_DISARM)
 			if (behaviour == "defends")
-				if (stance == HOSTILE_STANCE_IDLE || target_mob != M)
-					stance = HOSTILE_STANCE_ALERT
-					stance_step = 6
-					target_mob = M
+				stance = HOSTILE_STANCE_ALERT
+				stance_step = 6
+				target_mob = M
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
 			M.do_attack_animation(src)
 			playsound(get_turf(M), 'sound/weapons/punchmiss.ogg', 50, TRUE, -1)
 			//TODO: Push the mob away or something
 
 		if (I_GRAB)
+			if (behaviour == "defends")
+				stance = HOSTILE_STANCE_ALERT
+				stance_step = 6
+				target_mob = M
 			if (M == src)
 				return
 			if (!(status_flags & CANPUSH))
@@ -397,6 +399,10 @@
 			M.do_attack_animation(src)
 
 		if (I_HARM)
+			if (behaviour == "defends")
+				stance = HOSTILE_STANCE_ALERT
+				stance_step = 6
+				target_mob = M
 			adjustBruteLoss(harm_intent_damage*M.getStatCoeff("strength"))
 			M.visible_message("<span class = 'red'>[M] [response_harm] \the [src].</span>")
 			M.do_attack_animation(src)
@@ -569,26 +575,21 @@
 					HM.adaptStat("medical", amt/3)
 				crush()
 				qdel(src)
-		else if (istype(O, /obj/item/weapon/reagent_containers/glass))
-			return
 		else
 			var/tgt = user.targeted_organ
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			O.attack(src, user, tgt)
 	if (behaviour == "defends")
-		if (user.a_intent != I_HELP)
-			if (stance == HOSTILE_STANCE_IDLE || target_mob != user)
-				stance = HOSTILE_STANCE_ATTACK
-				stance_step = 6
-				target_mob = user
-				..()
+		stance = HOSTILE_STANCE_ALERT
+		stance_step = 6
+		target_mob = user
+		..()
 	else if (behaviour == "hunt")
-		if (stance == HOSTILE_STANCE_IDLE || target_mob != user)
-			stance = HOSTILE_STANCE_ATTACK
-			stance_step = 6
-			target_mob = user
-			..()
+		stance = HOSTILE_STANCE_ATTACK
+		stance_step = 6
+		target_mob = user
+		..()
 	else
 		if (behaviour == "scared" || (behaviour == "wander" && mob_size < user.mob_size))
 			do_behaviour("scared")
