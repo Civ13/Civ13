@@ -55,7 +55,6 @@
 	return
 
 /mob/living/simple_animal/proc/MoveToTarget()
-	stop_automated_movement = TRUE
 	if (!target_mob || SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
 	if (target_mob in ListTargets(7))
@@ -63,7 +62,6 @@
 		walk_to(src, target_mob, TRUE, move_to_delay)
 
 /mob/living/simple_animal/proc/AttackTarget()
-	stop_automated_movement = TRUE
 	if (!target_mob || SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
@@ -77,7 +75,7 @@
 /mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-
+	world.log << "[world.realtime]"
 	if(prob(50))
 		playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
 	else
@@ -90,7 +88,7 @@
 		var/mob/living/carbon/human/H = target_mob
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
-		if (prob(95) && can_bite_limbs_off)
+		if (prob(95) || !can_bite_limbs_off)
 			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
 		else
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)
