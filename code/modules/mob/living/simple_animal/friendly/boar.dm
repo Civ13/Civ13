@@ -23,6 +23,8 @@
 	granivore = 1
 	carnivore = 1
 	behaviour = "defends"
+	melee_damage_lower = 8
+	melee_damage_upper = 15
 
 /mob/living/simple_animal/boar/female
 	name = "boar"

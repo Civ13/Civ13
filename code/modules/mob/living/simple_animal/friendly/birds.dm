@@ -18,6 +18,7 @@
 	mob_size = MOB_SMALL
 	possession_candidate = TRUE
 	granivore = 1
+	behaviour = "wander"
 ///////////////////////////////////////CHICKENS////////////////////////
 
 /mob/living/simple_animal/chick
@@ -44,6 +45,7 @@
 	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
 	granivore = 1
+	behaviour = "wander"
 
 /mob/living/simple_animal/chick/New()
 	..()
@@ -97,6 +99,7 @@
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
 	granivore = 1
+	behaviour = "wander"
 
 /mob/living/simple_animal/chicken/New()
 	..()
@@ -214,6 +217,7 @@
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
 	granivore = 1
+	behaviour = "wander"
 
 /mob/living/simple_animal/rooster/New()
 	..()
@@ -262,6 +266,7 @@
 	var/eggsleft = 5
 	var/egg_timer = FALSE
 	granivore = 1
+	behaviour = "wander"
 
 /mob/living/simple_animal/turkey_m
 	name = "\improper turkey"
@@ -286,6 +291,7 @@
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
 	granivore = 1
+	behaviour = "wander"
 
 /mob/living/simple_animal/goose
 	name = "\improper goose"
@@ -310,6 +316,9 @@
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
 	granivore = 1
+	behaviour = "defends"
+	melee_damage_lower = 3
+	melee_damage_upper = 7
 
 /mob/living/simple_animal/turkeychick
 	name = "\improper turkey chick"
@@ -335,6 +344,7 @@
 	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
 	granivore = 1
+	behaviour = "wanders"
 
 /mob/living/simple_animal/turkeychick/New()
 	..()

@@ -28,6 +28,9 @@
 	var/overpopulationCountdown = 0
 	var/female = FALSE
 
+	melee_damage_lower = 6
+	melee_damage_upper = 12
+
 /mob/living/simple_animal/deer/male
 	name = "stag"
 	desc = "Provides some nice meat, if you can catch it."

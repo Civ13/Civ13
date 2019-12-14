@@ -221,6 +221,11 @@
 					HH.disease_progression = 0
 					HH.disease_type ="cholera"
 					HH.disease = 1
+			var/probplague = reagents.get_reagent_amount("plague")
+			if (prob(min(probplague*25,100)))
+				HH.disease_progression = 0
+				HH.disease_type ="plague"
+				HH.disease = 1
 		reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
 		target.bladder += amount_per_transfer_from_this
 		feed_sound(user)

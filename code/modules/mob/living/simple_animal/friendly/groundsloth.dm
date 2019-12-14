@@ -21,3 +21,4 @@
 	attacktext = "kicked"
 	health = 250
 	mob_size = MOB_HUGE
+	behaviour = "defends"
