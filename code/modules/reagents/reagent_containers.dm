@@ -185,7 +185,7 @@
 					HH.disease_type ="cholera"
 					HH.disease = 1
 		reagents.trans_to_mob(user, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
-		user.bladder += amount_per_transfer_from_this
+		user.bladder += amount_per_transfer_from_this/2
 		feed_sound(user)
 		return TRUE
 	else
@@ -222,7 +222,7 @@
 					HH.disease_type ="cholera"
 					HH.disease = 1
 		reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
-		target.bladder += amount_per_transfer_from_this
+		target.bladder += amount_per_transfer_from_this/2
 		feed_sound(user)
 
 		return TRUE
