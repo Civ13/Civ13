@@ -1,4 +1,4 @@
-/mob/living/simple_animal/boar/male
+/mob/living/simple_animal/boar
 	name = "boar"
 	desc = "A male boar."
 	icon_state = "boar_male"
