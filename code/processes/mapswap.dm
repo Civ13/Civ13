@@ -49,7 +49,7 @@
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
-//				"Civilization 13 (Nomads)" = 0,
+				"Civilization 13 (Nomads)" = 0,
 				"Civilization 13 (Colony & Pioneers)" = 0,
 				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
