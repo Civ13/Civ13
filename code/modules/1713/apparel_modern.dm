@@ -412,6 +412,18 @@
 	restricts_view = 1
 	health = 200
 
+/obj/item/clothing/head/helmet/iogmask1
+	name = "IOG helmet"
+	desc = "A strong helmet."
+	icon_state = "iogmask1"
+	item_state = "iogmask1"
+	worn_state = "iogmask1"
+	body_parts_covered = HEAD
+	armor = list(melee = 95, arrow = 100, gun = 100, energy = 50, bomb = 90, bio = 45, rad = 100)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 200
+
 /obj/item/clothing/suit/armor/scrap
 	name = "scrap plate armor"
 	desc = "A ramshackle suit of armor, reminiscence of medieval times."
