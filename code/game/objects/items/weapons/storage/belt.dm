@@ -34,6 +34,14 @@
 	max_w_class = 3
 	max_storage_space = 28
 
+/obj/item/weapon/storage/belt/security
+	name = "security belt"
+	icon_state = "security"
+	item_state = "security"
+	storage_slots = 9
+	max_w_class = 3
+	max_storage_space = 34
+
 /obj/item/weapon/storage/belt/medical
 	name = "medical belt"
 	can_hold = list(
