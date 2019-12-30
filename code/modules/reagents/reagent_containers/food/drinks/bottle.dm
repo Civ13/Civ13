@@ -719,3 +719,14 @@
 	icon_state = "condiment"
 	item_state = "beer"
 	value = 0.5
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/cola
+	name = "Cola"
+	desc = "A bottle of Cola"
+	icon_state = "cola"
+	item_state = "beer"
+	center_of_mass = list("x"=16, "y"=12)
+	value = 5
+	New()
+		..()
+		reagents.add_reagent("cola", 60)
