@@ -119,7 +119,7 @@
 	weight = 3.97
 	caliber = "a762x51"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	magazine_type = /obj/item/ammo_magazine/hk
+	magazine_type = /obj/item/ammo_magazine/mk18
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(

@@ -79,8 +79,8 @@ obj/item/weapon/storage/backpack/ww2/american
 /obj/item/weapon/storage/backpack/rucksack
 	name = "rucksack"
 	desc = "A big backpack made for long walks."
-	icon_state = "racksack"
-	item_state = "racksack"
+	icon_state = "rucksack"
+	item_state = "rucksack"
 	w_class = 4
 	slot_flags = SLOT_BACK
 	max_w_class = 4

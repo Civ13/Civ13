@@ -68,6 +68,16 @@
 	weight = 0.45
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/mk18
+	name = "MK18 magazine (5.56mm NATO)"
+	icon_state = "hk"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	ammo_type = /obj/item/ammo_casing/a556x45
+	max_ammo = 30
+	weight = 0.45
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/scarh
 	name = "SCAR-H magazine (7.62x51mm)"
 	icon_state = "scarh"
