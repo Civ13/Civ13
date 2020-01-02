@@ -24,7 +24,8 @@
 	wander = TRUE
 	density = FALSE
 	layer = 4.1
-
+	melee_damage_lower = 2
+	melee_damage_upper = 5
 /mob/living/simple_animal/vampirebatblack/New()
 	..()
 

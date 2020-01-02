@@ -7,6 +7,7 @@
 	icon_state = null
 	resting_state = null
 	wander = FALSE
+	can_be_tamed = TRUE
 
 	// COMMANDS
 	// format is "word;jobtitle&jobtitle;proc"

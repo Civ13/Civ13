@@ -124,12 +124,13 @@
 	if (ishuman(target))
 		var/mob/living/carbon/human/HT = target
 		if (HT.is_nude())
-			if (reagents.has_reagent("water", 30) && reagents.total_volume == reagents.get_reagent_amount("water"))
+			if (reagents.has_reagent("water", 30))
 				HT.hygiene = min(HT.hygiene+(reagents.get_reagent_amount("water")),HYGIENE_LEVEL_CLEAN)
 				washed = TRUE
 			else
-				var/dirtyness = (reagents.total_volume - reagents.get_reagent_amount("water")) / reagents.total_volume
-				HT.hygiene = max(0, HT.hygiene-(dirtyness*100))
+				user.visible_message("<span class='danger'>[target] has been splashed with something by [user]!</span>", "<span class = 'notice'>You splash the solution onto [target].</span>")
+				reagents.splash(target, reagents.total_volume)
+				return TRUE
 	if (washed)
 		if (target == user)
 			user.visible_message("<span class='notice'>[user] washes himself with \the [src]</span>", "<span class = 'notice'>You wash yourself with \the [src].</span>")
@@ -184,7 +185,7 @@
 					HH.disease_type ="cholera"
 					HH.disease = 1
 		reagents.trans_to_mob(user, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
-		user.bladder += amount_per_transfer_from_this
+		user.bladder += amount_per_transfer_from_this/2
 		feed_sound(user)
 		return TRUE
 	else
@@ -220,8 +221,13 @@
 					HH.disease_progression = 0
 					HH.disease_type ="cholera"
 					HH.disease = 1
+			var/probplague = reagents.get_reagent_amount("plague")
+			if (prob(min(probplague*25,100)))
+				HH.disease_progression = 0
+				HH.disease_type ="plague"
+				HH.disease = 1
 		reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
-		target.bladder += amount_per_transfer_from_this
+		target.bladder += amount_per_transfer_from_this/2
 		feed_sound(user)
 
 		return TRUE

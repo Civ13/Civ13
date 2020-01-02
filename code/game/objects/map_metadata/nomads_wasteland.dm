@@ -98,7 +98,7 @@
 				new/obj/structure/closet/crate/airdrops/medicine(locationt)
 	spawn(rand(36000, 72000))
 		supplydrop_proc()
-/obj/map_metadata/nomads_wasteland/proc/seasons()
+/obj/map_metadata/nomads_wasteland/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"

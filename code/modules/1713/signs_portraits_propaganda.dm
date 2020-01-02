@@ -29,5 +29,9 @@
 	icon_state = "hirohito"
 
 /obj/structure/sign/portrait/kinggeorge
-	name = "Portrait of King George V "
+	name = "Portrait of King George V"
 	icon_state = "kinggeorgev"
+
+/obj/structure/sign/portrait/jackgray
+	name = "Portrait of Jack Grayson"
+	icon_state = "jackgray"

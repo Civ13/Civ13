@@ -539,6 +539,10 @@ var/list/floor_decals = list()
 	name = "loading area"
 	icon_state = "loadingarea"
 
+/obj/effect/floor_decal/safensound
+	name = "SafeNSound"
+	icon_state = "safensound"
+
 /obj/effect/floor_decal/plaque
 	name = "plaque"
 	icon_state = "plaque"

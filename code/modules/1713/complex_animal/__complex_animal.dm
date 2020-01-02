@@ -24,7 +24,7 @@
 	var/list/friendly_factions = list()
 
 	// any specific people we like or dislike: overrides everything else
-	var/list/friends = list()
+	friends = list()
 	var/list/enemies = list()
 
 	// icons
@@ -48,6 +48,7 @@
 	var/list/friendly_mobs = list()
 	var/tameminimum = 100 // minimum friendly value to tame an animal
 	var/tamed = FALSE
+	var/can_be_tamed = FALSE
 	var/starving = FALSE
 // things we do every life tick: by default, wander every few seconds,
 // rest every ~20 minutes. Deplete nutrition over ~30 minutes

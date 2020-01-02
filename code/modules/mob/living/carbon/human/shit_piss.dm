@@ -307,7 +307,7 @@
 				reagents.trans_to(V, rand(1,5))
 
 		playsound(src.loc, 'sound/effects/poo2.ogg', 60, 1)
-		bowels -= rand(60,80)
+		bowels -= rand(120,150)
 
 	else
 		to_chat(src, "You don't have to.")
@@ -364,6 +364,6 @@
 			reagents.trans_to(D, rand(5,10))
 		message = "<B>[src]</B> pisses on the [TT.name]."
 
-	bladder -= 50
+	bladder -= 120
 	visible_message("[message]")
 

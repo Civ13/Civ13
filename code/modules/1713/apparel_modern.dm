@@ -369,11 +369,24 @@
 	item_state = "kevlarvest"
 	worn_state = "kevlarvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
-	armor = list(melee = 74, arrow = 95, gun = 80, energy = 30, bomb = 64, bio = 20, rad = FALSE)
+	armor = list(melee = 80, arrow = 95, gun = 95, energy = 35, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.4
 	w_class = 4
 	weight = 3.8
+
+/obj/item/clothing/accessory/armor/nomads/baily
+	name = "baily vest"
+	desc = "A vest used by baily security units."
+	icon_state = "bailyvest"
+	item_state = "bailyvest"
+	worn_state = "bailyvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	armor = list(melee = 40, arrow = 95, gun = 82, energy = 30, bomb = 35, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.2
+	w_class = 3
+	weight = 2
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit
 	name = "IOG heavy vest B-7"
@@ -410,6 +423,18 @@
 	armor = list(melee = 95, arrow = 100, gun = 110, energy = 50, bomb = 90, bio = 45, rad = FALSE)
 	flags_inv = BLOCKHAIR
 	restricts_view = 1
+	health = 200
+
+/obj/item/clothing/head/helmet/iogmask1
+	name = "IOG helmet"
+	desc = "A strong helmet."
+	icon_state = "iogmask1"
+	item_state = "iogmask1"
+	worn_state = "iogmask1"
+	body_parts_covered = HEAD
+	armor = list(melee = 95, arrow = 100, gun = 100, energy = 50, bomb = 90, bio = 45, rad = 100)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
 	health = 200
 
 /obj/item/clothing/suit/armor/scrap

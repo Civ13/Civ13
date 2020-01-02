@@ -528,7 +528,7 @@
 					mob << "<span class = '[snow_span]'>[snow_message]</span>"
 					mob.next_snow_message = world.time+100
 
-			else if (F.muddy && !H.lizard)
+			else if (F.muddy && !H.lizard && F_area.icon_state != "")
 				if (F_area.weather == WEATHER_STORM)
 					standing_on_snow = rand(4,5)
 				else

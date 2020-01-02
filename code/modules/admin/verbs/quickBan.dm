@@ -15,19 +15,13 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 		var/cID = href_list["quickBan_removeBan_cID"]
 		var/ip = href_list["quickBan_removeBan_ip"]
 
-		var/ckey_file = null
-		var/ip_file = null
-		var/cid_file = null
+		var/bans_file = null
 
-		if (fexists("SQL/bans/ckey/[ckey].txt"))
-			ckey_file = "SQL/bans/ckey/[ckey].txt"
-		if (fexists("SQL/bans/ip/[ip].txt"))
-			ip_file = "SQL/bans/ip/[ip].txt"
-		if (fexists("SQL/bans/cid/[cID].txt"))
-			cid_file = "SQL/bans/cid/[cID].txt"
+		if (fexists("SQL/bans.txt"))
+			bans_file = "SQL/bans.txt"
 
-		if (ckey_file)
-			var/details = file2text(ckey_file)
+		if (bans_file)
+			var/details = file2text(bans_file)
 			var/list/details_lines = splittext(details, "|||\n")
 			if (details_lines.len)
 				for(var/i=1,i<=details_lines.len,i++)
@@ -35,35 +29,10 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 					if (findtext(details_lines[i], ";"))
 						if (details2[3] == UID)
 							details_lines -= details_lines[i]
-							fdel(cid_file)
+							fdel(bans_file)
 							for(var/L in details_lines)
-								text2file("[L]|||", ckey_file)
-		if (cid_file)
-			var/details = file2text(cid_file)
-			var/list/details_lines = splittext(details, "|||\n")
-			if (details_lines.len)
-				for(var/i=1,i<=details_lines.len,i++)
-					var/list/details2 = splittext(details_lines[i], ";")
-					if (findtext(details_lines[i], ";"))
-						if (details2[3] == UID)
-							details_lines -= details_lines[i]
-							fdel(cid_file)
-							for(var/L in details_lines)
-								text2file("[L]|||", cid_file)
-		if (ip_file)
-			var/details = file2text(ip_file)
-			var/list/details_lines = splittext(details, "|||\n")
-			if (details_lines.len)
-				for(var/i=1,i<=details_lines.len,i++)
-					var/list/details2 = splittext(details_lines[i], ";")
-					if (findtext(details_lines[i], ";"))
-						if (details2[3] == UID)
-							details_lines -= details_lines[i]
-							fdel(cid_file)
-							for(var/L in details_lines)
-								text2file("[L]|||", ip_file)
+								text2file("[L]|||", bans_file)
 
-		if (ckey_file || ip_file || cid_file)
 			log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
 			message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
 			for (var/client/C in clients)
@@ -79,44 +48,43 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (!quickBan_handler)
 		quickBan_handler = new
 	var/list/result = list()
-	var/path = "SQL/bans/"
-	var/option = input(src, "Search for a ban?") in list("Yes","Show all ckeys", "Show all IPs", "Show all cIDs","Cancel")
+	var/list/checkedUID = list() //to prevent same ban from showing multiple times
+	var/option = input(src, "Search for a ban?") in list("Yes","Show All","Cancel")
 	if (option == "No")
 		return
-	else if (option == "Yes")
+	var/list/details_lines = splittext(file2text("SQL/bans.txt"), "|||\n")
+	for(var/i=1,i<=details_lines.len,i++)
+		if (findtext(details_lines[i], ";"))
+			var/list/presult = splittext(details_lines[i], ";")
+			var/found = FALSE
+			if (presult && presult.len>=11)
+				for(var/tuid in checkedUID)
+					if (presult[3] == tuid)
+						found = TRUE
+				if (!found && presult.len>=11)
+					checkedUID += presult[3]
+					result += list(presult)
+	if (option == "Yes")
 		var/option2 = input(src, "What to search for?") in list("ckey","cID","ip","Cancel")
+		var/list/result3 = list()
 		if (option2 == "Cancel")
 			return
 		else if (option2 == "ckey")
 			var/_ckey = ckey(input(src, "What ckey will you search for?") as null|text)
-			if (fexists("SQL/bans/ckey/[_ckey].txt"))
-				result += file2text("SQL/bans/ckey/[_ckey].txt")
+			for(var/result2 in result)
+				if (result2[9]==_ckey)
+					result3 += list(result2)
 		else if (option2 == "cID")
 			var/cID = input(src, "What cID will you search for?") as null|text
-			if (fexists("SQL/bans/cid/[cID].txt"))
-				result += file2text("SQL/bans/cid/[cID].txt")
+			for(var/result2 in result)
+				if (result2[11]==cID)
+					result3 += list(result2)
 		else if (option2 == "ip")
 			var/ip = input(src, "What address will you search for?") as null|text
-			if (fexists("SQL/bans/ip/[ip].txt"))
-				result += file2text("SQL/bans/ip/[ip].txt")
-	else if (option == "Show all ckeys")
-		path = "SQL/bans/ckey/"
-		var/list/filenames = flist(path)
-		for (var/filename in filenames)
-			if (fexists("[path][filename]"))
-				result += list(splittext(file2text("[path][filename]"),";"))
-	else if (option == "Show all IPs")
-		path = "SQL/bans/ip/"
-		var/list/filenames = flist(path)
-		for (var/filename in filenames)
-			if (fexists("[path][filename]"))
-				result += list(splittext(file2text("[path][filename]"),";"))
-	else if (option == "Show all cIDs")
-		path = "SQL/bans/cid/"
-		var/list/filenames = flist(path)
-		for (var/filename in filenames)
-			if (fexists("[path][filename]"))
-				result += list(splittext(file2text("[path][filename]"),";"))
+			for(var/result2 in result)
+				if (result2[10]==ip)
+					result3 += list(result2)
+		result = result3
 
 	var/html = "<center><big>List of Quick Bans</big></center>"
 	var/list/possibilities = list()
@@ -376,12 +344,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	var/expire_info = fields["expire_info"]
 
 	//txt database
-	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/ip/[banip].txt")
-
-	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/cid/[bancID].txt")
-
-	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans/ckey/[banckey].txt")
-
+	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans.txt")
 
 	if (banner)
 		banner << "<span class = 'notice'>You have successfully banned [banckey]/[bancID]/[banip]. This ban [lowertext(expire_info)]."
@@ -408,32 +371,14 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 /* checking if we're banned */
 /client/proc/quickBan_isbanned(var/ban_type = "Server", var/type_specific_info = "nil")
-	if (fexists("SQL/bans/ckey/[ckey].txt"))
-		var/details = file2text("SQL/bans/ckey/[ckey].txt")
+	if (fexists("SQL/bans.txt"))
+		var/details = file2text("SQL/bans.txt")
 		var/list/details_lines = splittext(details, "|||\n")
 		if (details_lines.len)
 			for(var/i=1,i<=details_lines.len,i++)
 				if (findtext(details_lines[i], ";"))
 					var/list/details2 = splittext(details_lines[i], ";")
-					if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
-						return TRUE
-	if (fexists("SQL/bans/cid/[computer_id].txt"))
-		var/details = file2text("SQL/bans/cid/[computer_id].txt")
-		var/list/details_lines = splittext(details, "|||\n")
-		if (details_lines.len)
-			for(var/i=1,i<=details_lines.len,i++)
-				if (findtext(details_lines[i], ";"))
-					var/list/details2 = splittext(details_lines[i], ";")
-					if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
-						return TRUE
-	if (fexists("SQL/bans/ip/[address].txt"))
-		var/details = file2text("SQL/bans/ip/[address].txt")
-		var/list/details_lines = splittext(details, "|||\n")
-		if (details_lines.len)
-			for(var/i=1,i<=details_lines.len,i++)
-				if (findtext(details_lines[i], ";"))
-					var/list/details2 = splittext(details_lines[i], ";")
-					if (details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+					if ((ckey == details2[9] || computer_id == details2[11] || address == details2[10]) && details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
 						return TRUE
 	return FALSE
 /* check if we're banned and tell us why we're banned */
@@ -441,32 +386,16 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	var/list/fields = list()
 
-	if (fexists("SQL/bans/ckey/[ckey].txt"))
-		var/details = file2text("SQL/bans/ckey/[ckey].txt")
+	if (fexists("SQL/bans.txt"))
+		var/details = file2text("SQL/bans.txt")
 		var/list/details_lines = splittext(details, "|||\n")
 		for(var/i=1,i<=details_lines.len,i++)
 			if (findtext(details_lines[i], ";"))
 				var/list/details2 = splittext(details_lines[i], ";")
-				if (details2[1] == bantype && text2num(details2[7])>world.realtime)
-					fields = details2
-	else if (fexists("SQL/bans/cid/[computer_id].txt"))
-		var/details = file2text("SQL/bans/cid/[computer_id].txt")
-		var/list/details_lines = splittext(details, "|||\n")
-		for(var/i=1,i<=details_lines.len,i++)
-			if (findtext(details_lines[i], ";"))
-				var/list/details2 = splittext(details_lines[i], ";")
-				if (details2[1] == bantype && text2num(details2[7])>world.realtime)
-					fields = details2
-	else if (fexists("SQL/bans/ip/[address].txt"))
-		var/details = file2text("SQL/bans/ip/[address].txt")
-		var/list/details_lines = splittext(details, "|||\n")
-		for(var/i=1,i<=details_lines.len,i++)
-			if (findtext(details_lines[i], ";"))
-				var/list/details2 = splittext(details_lines[i], ";")
-				if (details2[1] == bantype && text2num(details2[7])>world.realtime)
+				if ((ckey == details2[9] || computer_id == details2[11] || address == details2[10]) && details2[1] == bantype && text2num(details2[7])>world.realtime)
 					fields = details2
 	if (isemptylist(fields))
-		return
+		return FALSE
 
 	var/reason = fields[4]
 	var/date = fields[6]
@@ -488,13 +417,13 @@ var/datum/quickBan_handler/quickBan_handler = null
 /* check if we're an admin trying to quickBan another admin */
 /client/proc/trying_to_quickBan_admin(_ckey, cID, ip)
 	// check to see if we're trying to ban an admin by ckey
-	var/F = file("SQL/admins.txt")
+	var/F = "SQL/admins.txt"
 	if (fexists(F))
-		var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||\n")
+		var/list/admincheck = splittext(file2text(F),"|||\n")
 		if (islist(admincheck) && !isemptylist(admincheck))
-			for(var/i=1;i<admincheck.len;i++)
-				var/list/admincheck_two = splittext(admincheck[i], ";")
-				if (admincheck_two[1] == "[_ckey]" || admincheck_two[2] == "[cID]" || admincheck_two[3] == "[ip]")
+			for(var/i in admincheck)
+				var/list/admincheck_two = splittext(i, ";")
+				if (admincheck_two[1] == "[_ckey]")
 					src << "<span class = 'danger'>You can't ban admins!</span>"
 					return TRUE
 	return FALSE

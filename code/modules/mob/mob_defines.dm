@@ -49,10 +49,6 @@
 	var/hand = null
 	var/real_name = null
 
-	var/bhunger = FALSE			//Carbon
-	var/ajourn = FALSE
-	var/seer = FALSE //for cult//Carbon, probably Human
-
 	var/druggy = FALSE			//Carbon
 	var/confused = FALSE		//Carbon
 	var/sleeping = FALSE		//Carbon

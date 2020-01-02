@@ -202,7 +202,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		return
 
 	stop_following()
-	mind.current.ajourn=0
 	mind.current.key = key
 	mind.current.teleop = null
 

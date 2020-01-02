@@ -47,7 +47,7 @@
 /obj/map_metadata/nomads_mountain/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_mountain/proc/seasons()
+/obj/map_metadata/nomads_mountain/seasons()
 	if (real_season == "dry")
 		season = "Wet Season"
 		world << "<big>The <b>Wet Season</b> has started.</big>"

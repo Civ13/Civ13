@@ -99,6 +99,11 @@
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
 					I.reagents.del_reagent("cholera")
+					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
+						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))
+						NSP.reagents.add_reagent("sodiumchloride",I.reagents.get_reagent_amount("sodiumchloride"))
+						I.reagents.del_reagent("sodiumchloride")
+						I.reagents.del_reagent("water")
 			if (fuel <= 0 && consume_itself == TRUE)
 				visible_message("<span class = 'warning'>\The [src] burns out.</span>")
 				new/obj/item/stack/ore/charcoal(loc)

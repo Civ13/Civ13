@@ -47,34 +47,6 @@
 /obj/map_metadata/nomads_desert/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_desert/proc/seasons()
-	if (real_season == "dry")
-		season = "Wet Season"
-		world << "<big>The <b>Wet Season</b> has started.</big>"
-		change_weather_somehow()
-		for(var/obj/structure/sink/S)
-			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
-				S.dry = FALSE
-				S.update_icon()
-		for (var/turf/floor/beach/drywater/D)
-			D.ChangeTurf(/turf/floor/beach/water/swamp)
-		real_season = "wet"
-	else
-		season = "Dry Season"
-		world << "<big>The <b>Dry Season</b> has started.</big>"
-		change_weather_somehow()
-		for(var/obj/structure/sink/S)
-			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
-				S.dry = TRUE
-				S.update_icon()
-		for (var/turf/floor/beach/water/swamp/D)
-			D.ChangeTurf(/turf/floor/beach/drywater)
-		real_season = "dry"
-
-	spawn(18000)
-		seasons()
-
-
 /obj/map_metadata/nomads_desert/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE

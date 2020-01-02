@@ -246,6 +246,21 @@ obj/structure/closet/crate/empty
 		var/obj/item/stack/S = stack
 		S.amount = 20
 
+/obj/structure/closet/crate/stone
+	name = "stone blocks crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/stack/material/stone = 5)
+	cratevalue = 130 //100 base value from 100 stone blocks
+
+/obj/structure/closet/crate/stone/New()
+	..()
+	for (var/stack in contents)
+		var/obj/item/stack/S = stack
+		S.amount = 20
+
+
 /obj/structure/closet/crate/glass
 	name = "glass sheets crate"
 	icon_state = "wood_crate"
