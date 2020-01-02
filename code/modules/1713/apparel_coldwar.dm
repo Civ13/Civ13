@@ -361,3 +361,14 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS|HEAD
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 100)
 	ripable = FALSE
+
+
+/obj/item/clothing/suit/bx
+	name = "Carbon black suit"
+	desc = "A high tech suit made of comprssed carbon materials."
+	icon_state = "bxsuit"
+	item_state = "bxsuit"
+	worn_state = "bxsuit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	armor = list(melee = 140, arrow = 200, gun = 150, energy = 100, bomb = 100, bio = 100, rad = 80)
+	ripable = FALSE

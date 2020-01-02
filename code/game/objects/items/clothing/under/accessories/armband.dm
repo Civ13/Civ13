@@ -201,6 +201,21 @@
 	worn_state = "patch_specialforces"
 	slot = "armband"
 
+/obj/item/clothing/accessory/patch/police
+	name = "POLICE"
+	desc = "A tag used by police."
+	icon_state = "policetag"
+	item_state = "policetag"
+	worn_state = "policetag"
+	slot = "armband"
+
+/obj/item/clothing/accessory/patch/security
+	name = "SECURITY"
+	desc = "A tag used by security forces."
+	icon_state = "policetag"
+	item_state = "policetag"
+	worn_state = "policetag"
+	slot = "armband"
 
 /obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
 	if (uncolored)

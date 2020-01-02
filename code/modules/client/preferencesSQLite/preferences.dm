@@ -52,7 +52,6 @@ var/list/preferences_datums = list()
 	var/g_eyes = FALSE						//Eye color
 	var/b_eyes = FALSE						//Eye color
 	var/species = "Human"               //Species datum to use.
-	var/species_preview                 //Used for the species selection window.
 
 	//Mob preview
 	var/list/preview_icons = list()
@@ -61,19 +60,11 @@ var/list/preferences_datums = list()
 	var/list/preview_icons_east = list()
 	var/list/preview_icons_west = list()
 
-	var/disabilities = 0
-
 	var/client/client = null
 	var/client_ckey = null
 	var/client_isguest = FALSE
 
-	var/list/internal_table = list()
-
 	var/datum/category_collection/player_setup_collection/player_setup
-
-	var/current_character_type = "N/A"
-
-	var/current_slot = 1
 
 	var/list/preferences_enabled = list("SOUND_MIDI", "SOUND_LOBBY", "SOUND_AMBIENCE",
 		"CHAT_GHOSTEARS", "CHAT_GHOSTSIGHT", "CHAT_GHOSTRADIO", "CHAT_SHOWICONS",
@@ -81,8 +72,6 @@ var/list/preferences_datums = list()
 		"CHAT_DEBUGLOGS", "CHAT_PRAYER", "SOUND_ADMINHELP")
 
 	var/list/preferences_disabled = list()
-
-	var/ready = FALSE
 
 /datum/preferences/New(client/C)
 
@@ -93,17 +82,13 @@ var/list/preferences_datums = list()
 		if (IsGuestKey(client_ckey))
 			client_isguest = TRUE
 
-		// load our first slot, if we have one
-		if (preferences_exist())
-			load_preferences()
+		var/F = file("SQL/charprefs.txt")
+		var/list/charprefs = splittext(file2text(F), "|||\n")
+		if (preferences_exist(charprefs))
+			load_preferences(charprefs)
 		else
 			real_name = random_name(gender, species)
-			save_preferences()
-
-		spawn (1)
-//			loadGlobalPreferences()
-//			loadGlobalSettings()
-			ready = TRUE
+			save_preferences(charprefs)
 
 /datum/preferences/Del()
 	save_preferences()

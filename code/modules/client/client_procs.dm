@@ -56,50 +56,21 @@
 				var/cID = href_list["quickBan_removeBan_cID"]
 				var/ip = href_list["quickBan_removeBan_ip"]
 
-				var/ckey_file = null
-				var/ip_file = null
-				var/cid_file = null
+				var/bans_file = null
 
-				if (fexists("SQL/bans/ckey/[ckey].txt"))
-					ckey_file = "SQL/bans/ckey/[ckey].txt"
-				if (fexists("SQL/bans/ip/[ip].txt"))
-					ip_file = "SQL/bans/ip/[ip].txt"
-				if (fexists("SQL/bans/cid/[cID].txt"))
-					cid_file = "SQL/bans/cid/[cID].txt"
-				if (ckey_file)
-					var/details = file2text(ckey_file)
+				if (fexists("SQL/bans.txt"))
+					bans_file = "SQL/bans.txt"
+				if (bans_file)
+					var/details = file2text(bans_file)
 					var/list/details_lines = splittext(details, "|||\n")
 					if (details_lines.len)
 						for(var/i=1,i<=details_lines.len,i++)
 							var/list/details2 = splittext(details_lines[i], ";")
-							if (details2[3] == UID)
+							if (details2.len>=11 && details2[3] == UID)
 								details_lines -= details_lines[i]
-								fdel(ckey_file)
+								fdel(bans_file)
 								for(var/L in details_lines)
-									text2file("[L]|||", ckey_file)
-				if (cid_file)
-					var/details = file2text(cid_file)
-					var/list/details_lines = splittext(details, "|||\n")
-					if (details_lines.len)
-						for(var/i=1,i<=details_lines.len,i++)
-							var/list/details2 = splittext(details_lines[i], ";")
-							if (details2[3] == UID)
-								details_lines -= details_lines[i]
-								fdel(cid_file)
-								for(var/L in details_lines)
-									text2file("[L]|||", cid_file)
-				if (ip_file)
-					var/details = file2text(ip_file)
-					var/list/details_lines = splittext(details, "|||\n")
-					if (details_lines.len)
-						for(var/i=1,i<=details_lines.len,i++)
-							var/list/details2 = splittext(details_lines[i], ";")
-							if (details2[3] == UID)
-								details_lines -= details_lines[i]
-								fdel(ip_file)
-								for(var/L in details_lines)
-									text2file("[L]|||", ip_file)
-				if (ckey_file || ip_file || cid_file)
+									text2file("[L]|||", bans_file)
 					log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
 					message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
 					for (var/client/C in clients)

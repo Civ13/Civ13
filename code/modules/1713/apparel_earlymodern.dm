@@ -463,6 +463,13 @@
 	item_state = "modern7"
 	worn_state = "modern7"
 
+/obj/item/clothing/under/baily
+	name = "security outfit"
+	desc = "An outfit composed of a green jacket and black pants."
+	icon_state = "baily"
+	item_state = "baily"
+	worn_state = "baily"
+
 /obj/item/clothing/under/modern8
 	name = "modern skirt"
 	desc = "An outfit composed of a black skirt and white shirt."

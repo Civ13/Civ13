@@ -745,3 +745,24 @@
 	effectiveness_mod = 0.85
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/submachinegun/bx7
+	name = "BX-7 Rifle"
+	desc = "A high tech rifle chambered in.50 cal."
+	icon_state = "bx7"
+	item_state = "bx7"
+	base_icon = "bx7"
+	caliber = "a50cal"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/bx7
+	weight = 4.0
+	equiptimer = 10
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		)
+	effectiveness_mod = 1
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL

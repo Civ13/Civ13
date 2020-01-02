@@ -1,8 +1,8 @@
-/mob/living/simple_animal/boar/male
+/mob/living/simple_animal/boar
 	name = "boar"
 	desc = "A male boar."
-	icon_state = "penguin"
-	icon_living = "boar_female"
+	icon_state = "boar_male"
+	icon_living = "boar_male"
 	icon_dead = "boar_male_dead"
 	icon_gib = "boar_male_dead"
 	speak = list("Snort!","Puff!")
@@ -22,6 +22,10 @@
 	mob_size = MOB_MEDIUM
 	granivore = 1
 	carnivore = 1
+	behaviour = "defends"
+	melee_damage_lower = 8
+	melee_damage_upper = 15
+
 /mob/living/simple_animal/boar/female
 	name = "boar"
 	desc = "A female boar."

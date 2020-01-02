@@ -328,28 +328,28 @@
 	name = "elk stag spawner"
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/elk/male
+	create_path = /mob/living/simple_animal/deer/elk/male
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/elk_f
 	name = "elk doe spawner"
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/elk/male
+	create_path = /mob/living/simple_animal/deer/elk/male
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/reindeer_m
 	name = "reindeer stag spawner"
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/reindeer/male
+	create_path = /mob/living/simple_animal/deer/reindeer/male
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/reindeer_f
 	name = "reindeer doe spawner"
 	max_number = 2
 	max_range = 10
-	create_path = /mob/living/simple_animal/reindeer/female
+	create_path = /mob/living/simple_animal/deer/reindeer/female
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/alligator
