@@ -369,11 +369,24 @@
 	item_state = "kevlarvest"
 	worn_state = "kevlarvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
-	armor = list(melee = 74, arrow = 95, gun = 80, energy = 30, bomb = 64, bio = 20, rad = FALSE)
+	armor = list(melee = 80, arrow = 95, gun = 95, energy = 35, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.4
 	w_class = 4
 	weight = 3.8
+
+/obj/item/clothing/accessory/armor/nomads/baily
+	name = "baily vest"
+	desc = "A vest used by baily security units."
+	icon_state = "bailyvest"
+	item_state = "bailyvest"
+	worn_state = "bailyvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	armor = list(melee = 40, arrow = 95, gun = 82, energy = 30, bomb = 35, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.2
+	w_class = 3
+	weight = 2
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit
 	name = "IOG heavy vest B-7"

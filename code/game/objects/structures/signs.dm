@@ -72,6 +72,16 @@
 	desc = "The Intergalactic symbol of Medical institutions. You'll probably get help here."
 	icon_state = "redcross"
 
+/obj/structure/sign/baily
+	name = "Baily post"
+	desc = "Protection service."
+	icon_state = "bailypost"
+
+/obj/structure/sign/baily2
+	name = "Baily post"
+	desc = "Protection service."
+	icon_state = "bailypost2"
+
 /obj/structure/sign/greencross
 	name = "medbay"
 	desc = "The Intergalactic symbol of Medical institutions. You'll probably get help here."
@@ -86,6 +96,11 @@
 	name = "\improper AI developers plaque"
 	desc = "Next to the extremely long list of names and job titles, there is a drawing of a little child. The child appears to be retarded. Beneath the image, someone has scratched the word \"PACKETS\""
 	icon_state = "kiddieplaque"
+
+/obj/structure/sign/armory
+	name = "Armory"
+	desc = "Armory this way."
+	icon_state = "armory1"
 
 /obj/structure/sign/exit
 	name = "Exit"
