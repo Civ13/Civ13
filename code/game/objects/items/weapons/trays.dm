@@ -3,7 +3,7 @@
  */
 /obj/item/weapon/tray
 	name = "tray"
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "tray"
 	desc = "A metal tray to lay food on."
 	force = WEAPON_FORCE_NORMAL

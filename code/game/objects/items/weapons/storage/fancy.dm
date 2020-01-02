@@ -14,7 +14,7 @@
  */
 
 /obj/item/weapon/storage/fancy/
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "donutbox6"
 	name = "donut box"
 	var/icon_type = "donut"
@@ -42,7 +42,7 @@
  */
 
 /obj/item/weapon/storage/fancy/egg_box
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "eggbox"
 	icon_type = "egg"
 	name = "egg box"
@@ -210,7 +210,7 @@
 /obj/item/weapon/storage/fancy/picklejar
 	name = "pickle jar"
 	desc = "a jar filled with pickles and vinegar"
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "picklejar"
 	icon_type = "pickles"
 	throwforce = WEAPON_FORCE_NORMAL
