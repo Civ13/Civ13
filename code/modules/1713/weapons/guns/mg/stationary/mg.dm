@@ -135,9 +135,9 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	desc = "A japanese heavy machinegun. Uses 7.7x58mm Arisaka rounds."
 	icon_state = "type98hmg"
 	base_icon = "type98hmg"
-	caliber = "a77x58_weak"
+	caliber = "a77x58"
 	magazine_type = /obj/item/ammo_magazine/type92
-	ammo_type = /obj/item/ammo_casing/a77x58/weak
+	ammo_type = /obj/item/ammo_casing/a77x58
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"

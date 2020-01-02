@@ -197,6 +197,36 @@ var/global/list/vehicle_walls = list( \
 	w_left = list("c_wall",TRUE,TRUE,40,50,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,50,50,FALSE,FALSE)
 
+
+/obj/structure/vehicleparts/frame/i_go
+
+/obj/structure/vehicleparts/frame/i_go/front
+	w_front = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/i_go/back
+	w_back = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/i_go/left
+	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/i_go/right
+	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/i_go/left/door
+	w_left = list("c_door",TRUE,TRUE,17,50,TRUE,TRUE)
+	doorcode = 1011
+/obj/structure/vehicleparts/frame/i_go/right/door
+	w_right = list("c_door",TRUE,TRUE,17,50,TRUE,TRUE)
+	doorcode = 1011
+/obj/structure/vehicleparts/frame/i_go/rb
+	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/i_go/lb
+	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/i_go/rf
+	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,17,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/i_go/lf
+	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,17,50,FALSE,FALSE)
+
 /obj/structure/vehicleparts/frame/proc/adding_walls()
 
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)

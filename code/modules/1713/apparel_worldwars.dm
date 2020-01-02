@@ -351,6 +351,17 @@ obj/item/clothing/accessory/harness
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 
+/obj/item/clothing/suit/storage/coat/ww2/japcoat_rain
+	name = "japanese rain coat"
+	desc = "A japanese army coat."
+	icon_state = "jap_raincoat"
+	item_state = "jap_raincoat"
+	worn_state = "jap_raincoat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
+	value = 75
+
 /obj/item/clothing/suit/storage/coat/ww2/japcoat_pilot
 	name = "japanese pilot coat"
 	desc = "A japanese air force kamikaze jacket."
@@ -1078,6 +1089,16 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	icon_state = "gerhelm_medic"
 	item_state = "gerhelm_medic"
 	worn_state = "gerhelm_medic"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/gerhelm_mp
+	name = "german stahlhelm"
+	desc = "The typical rounded steel helmet of the Wehrmacht, this one specifically for MP's."
+	icon_state = "gerhelm_mp"
+	item_state = "gerhelm_mp"
+	worn_state = "gerhelm_mp"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)

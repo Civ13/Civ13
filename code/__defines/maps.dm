@@ -1,4 +1,5 @@
 #define MAP_TESTING "TESTING"
+#define MAP_KENOBI "KENOBI"
 
 #define MAP_NAVAL "NAVAL"
 #define MAP_VOYAGE "VOYAGE"

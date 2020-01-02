@@ -379,6 +379,12 @@
 	damage = DAMAGE_HIGH+2
 	penetrating = 2
 	armor_penetration = 17
+
+/obj/item/projectile/bullet/rifle/a77x58_wood
+	damage = 2
+	penetrating = 0
+	armor_penetration = 0
+
 /obj/item/projectile/bullet/rifle/a77x58/weak/New()
 	..()
 	damage = (DAMAGE_HIGH+2)/2

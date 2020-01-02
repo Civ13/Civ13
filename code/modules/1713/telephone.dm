@@ -230,3 +230,12 @@ var/list/global/phone_numbers = list()
 						if (!TLGH.ringing)
 							TLGH.ringproc(origin, originphone)
 	lastproc = world.time+3
+
+/obj/item/weapon/telephone/wireless
+	name = "telephone"
+	desc = "Used to communicate with other telephones. No number."
+	icon_state = "telephone"
+	connected = TRUE
+
+	wireless = TRUE
+	maxrange = 30

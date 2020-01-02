@@ -101,6 +101,72 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
+/mob/living/carbon/human/corpse/japanese_ww2
+	gender = MALE
+
+/mob/living/carbon/human/corpse/japanese_ww2/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Nitohei")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Japanese Soldier"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+/mob/living/carbon/human/corpse/japanese_ww2_antitank
+	gender = MALE
+
+/mob/living/carbon/human/corpse/japanese_ww2_antitank/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Nitohei Taisen-sha")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Japanese Soldier"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+/mob/living/carbon/human/corpse/japanese_ww2_sgt
+	gender = MALE
+
+/mob/living/carbon/human/corpse/japanese_ww2_sgt/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "IJA Gunso")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Japanese Sergeant"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
 /mob/living/carbon/human/corpse/russian
 	gender = MALE
 
@@ -119,6 +185,72 @@ mob/living/carbon/human/corpse/british_sailor
 		dir = pick(NORTH,SOUTH,EAST,WEST)
 		adjustBruteLoss(rand(6,7))
 		name = "Russian Soldier"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+/mob/living/carbon/human/corpse/russian/soviet
+	gender = MALE
+
+/mob/living/carbon/human/corpse/russian/soviet/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "K.A. Soldat")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Russian Soldier"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+/mob/living/carbon/human/corpse/russian/soviet/sgt
+	gender = MALE
+
+/mob/living/carbon/human/corpse/russian/soviet/sgt/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "K.A. Serjant")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Russian Sergeant"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+mob/living/carbon/human/corpse/russian/soviet/tanker
+	gender = MALE
+
+/mob/living/carbon/human/corpse/russian/soviet/tanker/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Tankist")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Russian Tanker"
 		invisibility = 0
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
@@ -199,3 +331,25 @@ mob/living/carbon/human/corpse/british_sailor
 	icon_state = "body_m_giant"
 	spawn (50) // must be here or they won't spawn, it seems - Kachnov
 		death()
+
+/mob/living/carbon/human/corpse/prisoner
+	gender = MALE
+
+/mob/living/carbon/human/corpse/prisoner/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "DO NOT USE")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Escaped Prisoner"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()

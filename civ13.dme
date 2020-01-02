@@ -261,6 +261,7 @@
 #include "code\game\objects\map_metadata\island.dm"
 #include "code\game\objects\map_metadata\jungle_colony.dm"
 #include "code\game\objects\map_metadata\karak.dm"
+#include "code\game\objects\map_metadata\kenobis_weeb_shit.dm"
 #include "code\game\objects\map_metadata\khalkhyn_gol.dm"
 #include "code\game\objects\map_metadata\kursk.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
@@ -904,5 +905,4 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_continental.dmm"
 // END_INCLUDE

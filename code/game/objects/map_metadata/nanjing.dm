@@ -12,8 +12,8 @@
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(CHINESE) = /area/caribbean/russian/land/inside/command,
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
+		list(CHINESE) = /area/caribbean/russian/land/inside/command,
 		)
 	age = "1939"
 	ordinal_age = 6
@@ -61,7 +61,7 @@
 		if ("Japanese")
 			return "Japanese"
 		if ("Chinese")
-			return "People's Liberation Army"
+			return "Chinese"
 
 
 /obj/map_metadata/nanjing/cross_message(faction)

@@ -16,6 +16,10 @@
 	desc = "Our glorious Führer!"
 	icon_state = "hitler"
 
+/obj/structure/sign/portrait/lenin
+	name = "Portrait of Lenin"
+	icon_state = "lenin"
+
 /obj/structure/sign/portrait/stalin
 	name = "Portrait of Stalin"
 	icon_state = "stalin"
