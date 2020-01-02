@@ -72,6 +72,11 @@
 	desc = "The Intergalactic symbol of Medical institutions. You'll probably get help here."
 	icon_state = "redcross"
 
+/obj/structure/sign/bar
+	name = "BAR"
+	desc = "A sign that says bar on it."
+	icon_state = "barsign"
+
 /obj/structure/sign/baily
 	name = "Baily post"
 	desc = "Protection service."
