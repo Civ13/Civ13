@@ -99,6 +99,20 @@ var/list/last_names_wolf = file2list("config/names/last_wolf.txt")
 var/list/first_names_lizard = file2list("config/names/first_lizard.txt")
 var/list/first_names_crab = file2list("config/names/first_crab.txt")
 var/list/last_names_crab = file2list("config/names/last_crab.txt")
+
+var/list/first_names_male_gaelic = file2list("config/names/first_male_gaelic .txt")
+var/list/first_names_female_gaelic  = file2list("config/names/first_female_gaelic .txt")
+var/list/last_names_gaelic  = file2list("config/names/last_gaelic .txt")
+
+var/list/first_names_male_oldnorse = file2list("config/names/first_male_oldnorse .txt")
+var/list/first_names_female_oldnorse  = file2list("config/names/first_female_oldnorse .txt")
+var/list/last_names_oldnorse  = file2list("config/names/last_oldnorse .txt")
+
+var/list/first_names_male_inuit = file2list("config/names/first_male_inuit .txt")
+var/list/first_names_female_inuit  = file2list("config/names/first_female_inuit .txt")
+
+var/list/first_names_male_cherokee = file2list("config/names/first_male_cherokee .txt")
+var/list/first_names_female_cherokee  = file2list("config/names/first_female_cherokee .txt")
 /* NOT USED FOR NOW!
 var/list/country_names = file2list("config/names/countries.txt")
 var/civname_a = pick(country_names)

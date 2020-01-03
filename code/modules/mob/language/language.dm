@@ -132,6 +132,46 @@
 	var/full_name = "Yuri Davidenko"
 	return full_name
 
+datum/language/proc/get_random_gaelic_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_gaelic)) + " " + capitalize(pick(last_names_gaelic))
+		else
+			return capitalize(pick(first_names_male_gaelic)) + " " + capitalize(pick(last_names_gaelic))
+
+	var/full_name = "Sean Mcloughlin"
+	return full_name
+
+datum/language/proc/get_random_oldnorse_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+
+	var/full_name = "Dovahkiin"
+	return full_name
+
+datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_inuit))
+		else
+			return capitalize(pick(first_names_male_inuit))
+
+	var/full_name = "Epawig"
+	return full_name
+
+datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_cherokee))
+		else
+			return capitalize(pick(first_names_male_cherokee))
+
+	var/full_name = "Tatanka"
+	return full_name
+
 /datum/language/proc/get_random_carib_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -379,6 +419,14 @@
 				cname_check = FALSE
 			else if (istype(l, /datum/language/ukrainian))
 				cname_check = FALSE
+			else if (istype(l, /datum/language/gaelic))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/oldnorse))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/inuit))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/cherokee))
+				cname_check = FALSE
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
 			if (ishuman(src))
@@ -490,6 +538,40 @@
 					H.real_name = H.species.get_random_ukrainian_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/gaelic))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_gaelic_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/oldnorse))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_oldnorse_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/inuit))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_inuit_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/cherokee))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_cherokee_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+
 	if (!istype(new_language) || (new_language in languages))
 		return FALSE
 

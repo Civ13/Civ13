@@ -17,7 +17,7 @@
 		)
 	age = "1939"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(JAPANESE = 0.4, CHINESE = 0.6)
+	faction_distribution_coeffs = list(JAPANESE = 0.5, CHINESE = 0.5)
 	battle_name = "battle of Nanjing"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Chinese command</b>. The Chinese will win if they manage to defend their command for <b>30 minutes!</b>.</font>"
 	faction1 = JAPANESE

@@ -418,6 +418,36 @@
 
 		return capitalize(pick(first_names_crab)) + " " + capitalize(pick(last_names_crab))
 
+/datum/species/proc/get_random_gaelic_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_gaelic)) + " " + capitalize(pick(last_names_gaelic))
+		else
+			return capitalize(pick(first_names_male_gaelic)) + " " + capitalize(pick(last_names_gaelic))
+
+/datum/species/proc/get_random_oldnorse_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+		else
+			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
+
+/datum/species/proc/get_random_inuit_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_inuit))
+		else
+			return capitalize(pick(first_names_male_inuit))
+
+/datum/species/proc/get_random_cherokee_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_cherokee))
+		else
+			return capitalize(pick(first_names_male_cherokee))
+
+
+
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)
