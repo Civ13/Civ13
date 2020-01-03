@@ -263,7 +263,7 @@
 "fc" = (/obj/covers/thatch2,/obj/structure/railing,/obj/structure/window/sandbag/sandbag,/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "fd" = (/obj/covers/thatch,/obj/structure/railing,/obj/structure/roof_support,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 1e+009},/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "fe" = (/obj/covers/thatch,/obj/structure/railing,/obj/structure/window/sandbag/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98,/turf/floor/grass,/area/caribbean/japanese/land/inside)
-"ff" = (/obj/covers/wood/stairs,/mob/living/carbon/human/corpse/russian/soviet,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"ff" = (/obj/covers/wood/stairs,/mob/living/carbon/human/corpse/russian_soviet,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fg" = (/obj/covers/wood/stairs,/mob/living/carbon/human/corpse/japanese_ww2,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fh" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/mob/living/carbon/human/corpse/japanese_ww2,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fi" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/mob/living/carbon/human/corpse/japanese_ww2,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
@@ -271,14 +271,14 @@
 "fk" = (/obj/structure/window/sandbag/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fl" = (/obj/structure/multiz/stairs_wood{icon_state = "wood2_stairs"; dir = 5},/turf/floor/grass,/area/caribbean)
 "fm" = (/obj/structure/window/sandbag/sandbag,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
-"fn" = (/mob/living/carbon/human/corpse/russian/soviet,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
-"fo" = (/mob/living/carbon/human/corpse/russian/soviet/sgt,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"fn" = (/mob/living/carbon/human/corpse/russian_soviet,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"fo" = (/mob/living/carbon/human/corpse/russian_soviet_sgt,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fp" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fq" = (/obj/item/weapon/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fr" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 1},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fs" = (/mob/living/carbon/human/corpse/japanese_ww2,/turf/floor/plating/road,/area/caribbean)
-"ft" = (/mob/living/carbon/human/corpse/russian/soviet,/turf/floor/plating/road,/area/caribbean)
-"fu" = (/mob/living/carbon/human/corpse/russian/soviet/sgt,/turf/floor/plating/road,/area/caribbean)
+"ft" = (/mob/living/carbon/human/corpse/russian_soviet,/turf/floor/plating/road,/area/caribbean)
+"fu" = (/mob/living/carbon/human/corpse/russian_soviet_sgt,/turf/floor/plating/road,/area/caribbean)
 "fv" = (/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean)
 "fw" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fx" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
@@ -290,18 +290,18 @@
 "fD" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "fE" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "fF" = (/obj/map_metadata/kenobi_weeb_shit,/turf/floor/dirt,/area/caribbean)
-"fG" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/mob/living/carbon/human/corpse/russian/soviet,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"fG" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/mob/living/carbon/human/corpse/russian_soviet,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "fH" = (/obj/structure/barbwire,/turf/floor/plating/road,/area/caribbean)
 "fI" = (/obj/structure/barbwire,/mob/living/carbon/human/corpse/japanese_ww2,/turf/floor/plating/road,/area/caribbean)
 "fJ" = (/mob/living/carbon/human/corpse/japanese_ww2,/turf/floor/grass,/area/caribbean)
 "fK" = (/mob/living/carbon/human/corpse/japanese_ww2_sgt,/turf/floor/grass,/area/caribbean)
-"fL" = (/mob/living/carbon/human/corpse/russian/soviet/sgt,/turf/floor/dirt,/area/caribbean)
-"fM" = (/mob/living/carbon/human/corpse/russian/soviet,/turf/floor/grass,/area/caribbean)
-"fN" = (/mob/living/carbon/human/corpse/russian/soviet,/turf/floor/dirt,/area/caribbean)
+"fL" = (/mob/living/carbon/human/corpse/russian_soviet_sgt,/turf/floor/dirt,/area/caribbean)
+"fM" = (/mob/living/carbon/human/corpse/russian_soviet,/turf/floor/grass,/area/caribbean)
+"fN" = (/mob/living/carbon/human/corpse/russian_soviet,/turf/floor/dirt,/area/caribbean)
 "fO" = (/mob/living/carbon/human/corpse/japanese_ww2_antitank,/turf/floor/dirt,/area/caribbean)
 "fP" = (/mob/living/carbon/human/corpse/japanese_ww2,/turf/floor/dirt,/area/caribbean)
-"fQ" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 4},/obj/structure/vehicleparts/frame/t34/left{icon_state = "frame_steel"; dir = 1},/mob/living/carbon/human/corpse/russian/soviet/tanker,/turf/floor/dirt,/area/caribbean)
-"fR" = (/obj/structure/bed/chair/commander{icon_state = "commanders_seat"; dir = 1},/obj/structure/vehicleparts/frame/t34/right{icon_state = "frame_steel"; dir = 1},/mob/living/simple_animal/hostile/zombie,/mob/living/carbon/human/corpse/russian/soviet/tanker,/turf/floor/dirt,/area/caribbean)
+"fQ" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 4},/obj/structure/vehicleparts/frame/t34/left{icon_state = "frame_steel"; dir = 1},/mob/living/carbon/human/corpse/russian_soviet_tanker,/turf/floor/dirt,/area/caribbean)
+"fR" = (/obj/structure/bed/chair/commander{icon_state = "commanders_seat"; dir = 1},/obj/structure/vehicleparts/frame/t34/right{icon_state = "frame_steel"; dir = 1},/mob/living/simple_animal/hostile/zombie,/mob/living/carbon/human/corpse/russian_soviet_tanker,/turf/floor/dirt,/area/caribbean)
 "fS" = (/obj/covers/thatch,/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/roof_support,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 1e+009},/turf/floor/grass,/area/caribbean/russian/land/inside)
 "fT" = (/obj/covers/thatch,/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/grass,/area/caribbean/russian/land/inside)
 "fU" = (/obj/covers/wood_wall/shoji,/turf/floor/grass,/area/caribbean/russian/land/inside)
@@ -348,6 +348,7 @@
 "gJ" = (/obj/covers/thatch,/obj/structure/vending/sovietweapons,/turf/floor/grass,/area/caribbean/russian/land/inside)
 "gK" = (/obj/covers/thatch,/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/structure/railing,/obj/structure/roof_support,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 1e+009},/turf/floor/grass,/area/caribbean/russian/land/inside)
 "gL" = (/obj/covers/thatch,/obj/structure/railing,/turf/floor/grass,/area/caribbean/russian/land/inside)
+"gM" = (/turf/wall/cement_wall,/area/caribbean)
 
 (1,1,1) = {"
 abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
@@ -599,7 +600,7 @@ abababababababababababababababababababababababababababababababababababababababab
 abababababababababababababababababababababababababababababababababababaoabababababababababababababababababababababaoababababaoababababababababababababamaqaqaqaqamabababababababababababababababaoababaoabababababababababababababababababababababababababababaoabababababaoababababababaoababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 abababababaoababababababababababababababababababababaoabababababababababababababababababababababaoabababababababababababababababababababaoababababababamaqaqaqaqamabababababaoababababababababababababababababaoabababababababababaoababababaoabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababaeababababababababab
 abababababababababababababababababaoababababababababababababababababababababababababababababababababababababaoababababababababababababababababababaoabamaqaqaqaqamababaoabababababababababaoabababababababababababababababaoabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
-abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababamaqaqaqaqamababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababgMgMamaqaqaqaqamgMgMababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 "}
 
 (1,1,2) = {"

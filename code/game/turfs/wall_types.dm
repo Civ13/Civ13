@@ -35,6 +35,7 @@
 	icon_state = "cement_wall"
 	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
 	material = null
+
 /turf/wall/shoji
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "shoji_wall"
