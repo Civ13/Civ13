@@ -96,6 +96,18 @@
 		var/pickedname = pick(tank_names_german)
 		tank_names_german -= pickedname
 		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/i_go
+	name = "Type 89 I-Go"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,3=4)
+	color_code = ""
+	color = "#b5b073"
+	New()
+		..()
+		var/pickedname = pick(tank_names_japanese)
+		tank_names_japanese -= pickedname
+		name = "[name] \'[pickedname]\'"
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"
 	desc = "A powered axis from a car."

@@ -671,9 +671,15 @@
 	caliber = "a77x58"
 	value = 8
 
-/obj/item/ammo_casing/a77x58/weak
-	projectile_type = /obj/item/projectile/bullet/rifle/a77x58/weak
-	caliber = "a77x58_weak"
+/obj/item/ammo_casing/a77x58_wood
+	name = "7.7x58mm bullet"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.076
+	projectile_type = /obj/item/projectile/bullet/rifle/a77x58_wood
+	caliber = "a77x58_wood"
+	value = 6
 
 /obj/item/ammo_casing/a577
 	name = ".577/450 Martini-Henry bullet"

@@ -394,6 +394,9 @@
 	unique_door_name = "Japanese locked"
 #undef JP_CODE
 
+/obj/item/weapon/key/japanese/german////yeah ik i'm just lazy and already mapped so stfu bish
+	name = "German Officer key"
+
 #define DE_CODE 995 * 12
 /datum/keyslot/german
 	code = DE_CODE

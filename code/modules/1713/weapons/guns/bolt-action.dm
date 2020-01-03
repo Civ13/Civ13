@@ -379,6 +379,29 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
 
+/obj/item/weapon/gun/projectile/boltaction/arisaka99_training
+	name = "Training Arisaka Type 99"
+	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition. This one is a training rifle that shoots wooden bullets."
+	icon_state = "arisaka99"
+	item_state = "arisaka99"
+	base_icon = "arisaka99"
+	caliber = "a77x58_wood"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a77x58_wood
+	magazine_type = /obj/item/ammo_magazine/arisaka99_training
+	bolt_safety = FALSE
+	effectiveness_mod = 1.05
+	value = 100
+	slot_flags = SLOT_SHOULDER
+	recoil = 1
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 18
+
 /obj/item/weapon/gun/projectile/boltaction/gewehr71
 	name = "Gewehr 71"
 	desc = "A german bolt-action rifle chambered in 7.65x53mm Mauser ammunition."

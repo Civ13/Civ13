@@ -190,6 +190,11 @@
 	desc = "A flag of Russsia."
 	icon_state = "flag_russia"
 
+/obj/structure/sign/flag/ukraine
+	name = "Ukrainian flag"
+	desc = "A flag of Ukraine."
+	icon_state = "ukraine"
+
 /obj/structure/sign/flag/vietnam
 	name = "North Vietnam flag"
 	desc = "The North Vietnamese flag."

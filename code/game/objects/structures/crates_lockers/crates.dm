@@ -97,6 +97,7 @@
 	name = "large bin"
 	desc = "A large bin."
 	icon_state = "largebin"
+	icon = 'icons/obj/crate.dmi'
 	icon_opened = "largebinopen"
 	icon_closed = "largebin"
 
