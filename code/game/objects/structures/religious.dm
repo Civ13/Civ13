@@ -26,6 +26,25 @@
 	var/religion = "none"
 	layer = 3.2
 
+/obj/structure/religious/olmec_head
+	name = "large stone head"
+	desc = "A large stone head."
+	icon = 'icons/obj/cross.dmi'
+	icon_state = "olmec_head"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
+
+/obj/structure/religious/totem_pole
+	name = "wood totem pole"
+	desc = "A wood totem pole, with several animals."
+	icon = 'icons/obj/obj32x64.dmi'
+	icon_state = "totem_pole"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
+	flammable = TRUE
+
 /obj/structure/religious/totem/New()
 	..()
 	spawn(10)
