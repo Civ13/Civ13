@@ -856,20 +856,21 @@
 		bitesize = 5
 
 
-/obj/item/weapon/reagent_containers/food/snacks/baguette
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette
 	name = "Baguette"
-	desc = "Bon appetit!"
+	icon_state = "Bon Appetite!."
 	icon_state = "baguette"
-	filling_color = "#E3D796"
-	center_of_mass = list("x"=18, "y"=12)
-	nutriment_desc = list("french bread" = 6)
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/breadslice
+	slices_num = 5
+	filling_color = "#FFE396"
+	center_of_mass = list("x"=16, "y"=9)
+	nutriment_desc = list("stale frenchness" = 6)
 	nutriment_amt = 6
-	decay = 15*600
+	decay = 22*600
+	satisfaction = 4
 	New()
 		..()
-		reagents.add_reagent("blackpepper", 1)
-		reagents.add_reagent("sodiumchloride", 1)
-		bitesize = 3
+		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/sandwich
 	name = "Sandwich"
