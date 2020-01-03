@@ -450,6 +450,7 @@ RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,
 RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,floors,0,0,0,8,null
 RECIPE: /material/stone/,slate floor,/obj/covers/slatefloor,1.2,25,1,1,floors,25,0,0,8,null
 RECIPE: /material/stone/,roman road,/obj/covers/romanroad,1,25,1,1,floors,20,0,0,8,null
+RECIPE: /material/stone/,marble floor,/obj/covers/marblefloor,1,25,1,1,floors,32,0,0,8,null
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,floors,100,0,0,8,null
 
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,construction,0,0,0,8,null
@@ -472,6 +473,7 @@ RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,
 RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
 
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/stone/,roman stone wall,/obj/covers/stone_wall/roman,8,140,1,1,fortifications,28,0,0,8,null
 RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/stone/,fortified wall (horizontal),/obj/structure/barricade/stone_h,5,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,fortified wall (vertical),/obj/structure/barricade/stone_v,5,80,1,1,fortifications,29,0,0,8,null
@@ -762,6 +764,8 @@ RECIPE: /material/wood/,window,/obj/structure/window_frame,5,80,1,1,construction
 RECIPE: /material/wood/,soft wood wall,/obj/covers/wood_wall,8,170,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,7,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,7,90,1,1,construction,25,0,0,8,null
+RECIPE: /material/wood/,nordic wall,/obj/covers/wood_wall/nordic,8,170,1,1,construction,35,0,0,8,null
+RECIPE: /material/wood/,aztec wall,/obj/covers/wood_wall/aztec,8,170,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,custom sign,/obj/structure/sign/custom,3,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null

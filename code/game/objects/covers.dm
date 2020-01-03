@@ -4,6 +4,7 @@
 	desc = ""
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship"
+	var/base_icon_state = "wood_ship"
 	var/passable = TRUE
 	var/origin_covered = FALSE
 	var/origin_water_level = 0
@@ -26,6 +27,7 @@
 	var/bullethole_count = 0
 //	invisibility = 101 //starts invisible
 	var/material = "Wood" //Depending on mat, depending on what harms it.
+	var/adjusts = FALSE //if it adjusts acording to neighbouring sprites
 /*
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
@@ -149,10 +151,10 @@
 	explosion_resistance = 2
 	material = "Stone"
 
-/obj/covers/slatefloor
-	name = "slate floor"
+/obj/covers/marblefloor
+	name = "marble floor"
 	icon = 'icons/turf/floors.dmi'
-	icon_state = "slatefloor"
+	icon_state = "marble"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -162,10 +164,10 @@
 	explosion_resistance = 2
 	material = "Stone"
 
-/obj/covers/marblefloor
-	name = "marble floor"
+/obj/covers/slatefloor
+	name = "slate floor"
 	icon = 'icons/turf/floors.dmi'
-	icon_state = "marblefloor"
+	icon_state = "slatefloor"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -202,50 +204,67 @@
 				continue
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_road+" //4 sides
+			base_icon_state = icon_state
 			return
 		if (vertical)
 			if (WEST in sideslist)
 				if (!(NORTH in sideslist))
 					if (EAST in sideslist)
 						icon_state = "d_roadtswe" //T, SOUTH EAST WEST
+						base_icon_state = icon_state
 					else
 						icon_state = "d_roadsw" //Turn, SOUTH-WEST
+						base_icon_state = icon_state
 				else if (!(SOUTH in sideslist))
 					if (EAST in sideslist)
 						icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+						base_icon_state = icon_state
 					else
 						icon_state = "d_roadnw" //Turn, NORTH-WEST
+						base_icon_state = icon_state
 			else if (EAST in sideslist)
 				if (!(NORTH in sideslist))
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
+					base_icon_state = icon_state
 					return
 				else if (!(SOUTH in sideslist))
 					icon_state = "d_roadne" //Turn, NORTH-EAST
+					base_icon_state = icon_state
 		else
 			if (NORTH in sideslist)
 				if (!(EAST in sideslist))
 					if (SOUTH in sideslist)
 						icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
+						base_icon_state = icon_state
 					else
 						icon_state = "d_roadnw" //Turn, NORTH-WEST
+						base_icon_state = icon_state
 				else if (!(WEST in sideslist))
 					if (SOUTH in sideslist)
 						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+						base_icon_state = icon_state
 					else
 						icon_state = "d_roadne" //Turn, NORTH-EAST
+						base_icon_state = icon_state
 			else if (SOUTH in sideslist)
 				if (!(EAST in sideslist))
 					icon_state = "d_roadsw" //Turn, SOUTH-WEST
+					base_icon_state = icon_state
 				else if (!(WEST in sideslist))
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
+					base_icon_state = icon_state
 		if (WEST in sideslist && NORTH in sideslist && SOUTH in sideslist)
 			icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
+			base_icon_state = icon_state
 		if (WEST in sideslist && NORTH in sideslist && EAST in sideslist)
 			icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+			base_icon_state = icon_state
 		if (WEST in sideslist && EAST in sideslist && SOUTH in sideslist)
 			icon_state = "d_roadtswe" //T, SOUTH EAST WEST
+			base_icon_state = icon_state
 		if (EAST in sideslist && NORTH in sideslist && SOUTH in sideslist)
 			icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+			base_icon_state = icon_state
 
 /obj/covers/roads/New()
 	..()
@@ -280,6 +299,7 @@
 /obj/covers/road/New()
 	..()
 	icon_state = pick("road_1","road_2","road_3")
+	base_icon_state = icon_state
 
 /obj/covers/steelplating
 	name = "steel floor"
@@ -314,6 +334,7 @@
 /obj/covers/concretefloor/New()
 	..()
 	icon_state = pick("concrete6","concrete7")
+	base_icon_state = icon_state
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -642,26 +663,32 @@
 			//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
 				if(design == "smooth")
 					src.icon_state = "b_stone_wall"
+					base_icon_state = icon_state
 					src.name = "stone wall"
 					src.desc = "A cave wall carved smooth."
 				else if(design == "cave")
 					src.icon_state = "rocky"
+					base_icon_state = icon_state
 					src.name = "underground cave wall"
 					src.desc = "A cave wall."
 				else if(design == "undercave")
 					src.icon_state = "rock"
+					base_icon_state = icon_state
 					src.name = "cave wall"
 					src.desc = "A cave wall."
 				else if(design == "brick")
 					src.icon_state = "b_brick_stone_wall"
+					base_icon_state = icon_state
 					src.name = "stone brick wall"
 					src.desc = "A cave wall carved to look like its made of stone bricks."
 				else if(design == "cobbled")
 					src.icon_state = "b_cobbled_stone_wall"
+					base_icon_state = icon_state
 					src.name = "cobbled stone wall"
 					src.desc = "A cave wall carved to look like piled up stones."
 				else if(design == "tiled")
 					src.icon_state = "b_tiled_stone_wall"
+					base_icon_state = icon_state
 					src.name = "tiled stone wall"
 					src.desc = "A cave wall carved to have a tiled stone pattern."
 				return
@@ -788,6 +815,7 @@
 				user << "You finish adding dirt to the wall."
 				stage = (stage+1)
 				icon_state = "drysod_wall_inc[stage]"
+				base_icon_state = icon_state
 				health = (20*stage)
 				qdel(W)
 				return
@@ -847,6 +875,7 @@
 				user << "You finish clay block to the wall."
 				stage += 1
 				icon_state = "claybrickwall_inc[stage]"
+				base_icon_state = icon_state
 				health = (30*stage)
 				qdel(W)
 				return
@@ -902,6 +931,7 @@
 					return
 				else if (choice == "Doorway")
 					S.icon_state = "sumerian-door"
+					base_icon_state = icon_state
 					S.name = "sumerian clay door"
 					S.density = FALSE
 					S.opacity = FALSE
@@ -910,6 +940,7 @@
 					qdel(src)
 				else if (choice == "Corner")
 					S.icon_state = "sumerian-corner1"
+					base_icon_state = icon_state
 					var/choice1 = WWinput(user, "Which corner?","Clay Walls","North-West",list("North-West","North-East","South-West","South-East"))
 					if (choice1 == "North-West")
 						S.dir = SOUTH
@@ -926,6 +957,7 @@
 				user << "You finish adding clay to the wall."
 				stage += 1
 				icon_state = "sumerian-wall_inc[stage]"
+				base_icon_state = icon_state
 				health = (30*stage)
 				qdel(W)
 				return
@@ -1387,3 +1419,63 @@
 			try_destroy()
 			qdel(SF)
 			return
+
+///////////////////////////////COVER WALL BORDERS//////////////////////////////
+/obj/covers/proc/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
+	if (!adjusts)
+		return
+	var/junction
+	if (update_self)
+		junction = FALSE
+	for (var/checkdir in cardinal)
+		var/turf/T = get_step(src, checkdir)
+		for(var/obj/covers/CV in T)
+			if (!can_join_with(CV))
+				continue
+			if (update_self)
+				if (can_join_with(CV))
+					junction |= get_dir(src,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
+	if (!isnull(junction))
+		icon_state = "[base_icon_state][junction]"
+	return
+
+/obj/covers/proc/can_join_with(var/obj/covers/W)
+	if (istype(W,src))
+		return TRUE
+	return FALSE
+
+/obj/covers/update_icon()
+	..()
+	check_relatives(1,1)
+
+/obj/covers/New()
+	..()
+	check_relatives(1,1)
+
+/obj/covers/Destroy()
+	check_relatives(0,1)
+	..()
+////////////////////////////////////////////////////////////
+
+/obj/covers/wood_wall/aztec
+	name = "aztec wood wall"
+	desc = "A wood wall, in Aztec style."
+	icon_state = "aztec0"
+	base_icon_state = "aztec"
+	adjusts = TRUE
+
+/obj/covers/wood_wall/nordic
+	name = "nordic wood wall"
+	desc = "A wood wall, in Northern European style."
+	icon_state = "nordic0"
+	base_icon_state = "nordic"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/roman
+	name = "roman stone wall"
+	desc = "A Roman style stone wall."
+	icon_state = "roman0"
+	base_icon_state = "roman"
+	adjusts = TRUE
