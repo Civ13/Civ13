@@ -495,6 +495,8 @@
 								meat.satisfaction = -30
 						else if (istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar))
 							new/obj/item/weapon/pigleg(get_turf(src))
+						else if (istype(src, /mob/living/simple_animal/chicken) || istype(src, /mob/living/simple_animal/rooster))
+							new/obj/item/weapon/chicken_carcass(get_turf(src))
 						else
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
