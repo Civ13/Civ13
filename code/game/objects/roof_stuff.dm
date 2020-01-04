@@ -140,6 +140,11 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
+/obj/structure/roof_support/nordic
+	name = "nordic pillar"
+	desc = "A thick wood beam, in nordic style. Used to support roofs in large buildings."
+	icon_state = "nordic_pillar"
+
 /obj/structure/mine_support
 	name = "mine support"
 	desc = "A set of wood beams placed to support the mine shaft. Prevents cave-ins."
@@ -178,6 +183,11 @@
 	name = "Solomonic column"
 	desc = "A Solomonic-style column that can support roofs and mine shafts."
 	icon_state = "column_solomonic2"
+
+/obj/structure/mine_support/stone/aztec
+	name = "Aztec column"
+	desc = "An Aztec-style column that can support roofs and mine shafts."
+	icon_state = "aztec_pillar"
 
 /obj/structure/mine_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon))
