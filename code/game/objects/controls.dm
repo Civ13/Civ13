@@ -11,6 +11,19 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
+/obj/structure/blastcontrol
+	name = "blast control"
+	desc = "Controls nearby gates."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "blast_control"
+	anchored = TRUE
+	var/open = FALSE
+	var/cooldown = 3
+	var/distance = 5
+	density = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 /obj/structure/gatecontrol/sandstone
 	name = "gate control"
 
@@ -73,6 +86,18 @@
 	density = TRUE
 	var/health = 600
 	var/maxhealth = 600
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/blast
+	name = "blast door"
+	desc = "An thick steel blast door."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "blast0"
+	anchored = TRUE
+	density = TRUE
+	var/health = 1200
+	var/maxhealth = 1200
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
