@@ -284,6 +284,7 @@
 			user << "You roll \the [src] in the flour."
 			satisfaction = -4
 			icon_state = "[icon_state]_crumbed"
+			name = "crumbed [name]"
 			return
 		..()
 /obj/item/weapon/reagent_containers/food/snacks/chicken/wing
@@ -303,6 +304,7 @@
 				F.reagents.remove_reagent("flour", 5)
 			user << "You roll \the [src] in the flour."
 			icon_state = "[icon_state]_crumbed"
+			name = "crumbed [name]"
 			satisfaction = -3
 			return
 		..()
@@ -325,6 +327,7 @@
 			user << "You roll \the [src] in the flour."
 			satisfaction = -3
 			icon_state = "[icon_state]_crumbed"
+			name = "crumbed [name]"
 			return
 		..()
 /obj/item/weapon/reagent_containers/food/snacks/chicken/New()
