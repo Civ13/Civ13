@@ -93,7 +93,7 @@
 	if (salting)
 		user << "<span class=warning>The container is full!</span>"
 		return
-	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len >= max_capacity)
+	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len <= max_capacity && contents.len)
 		if (saltamount < 30)
 			user << "You add salt to the container."
 			saltamount += W.reagents.get_reagent_amount("sodiumchloride")
@@ -114,7 +114,16 @@
 			user << "You add \the [W] to the salting container."
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
-	else if (producttype == W.type && contents.len < max_capacity)
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod))
+			user.drop_from_inventory(W, src, FALSE)
+			W.forceMove(src)
+			max_capacity = 3
+			producttype = W.type
+			producttype_name = "cod"
+			user << "You add \the [W] to the salting container."
+			icon_state = "salting_container_[producttype_name]_[contents.len]"
+			return
+	else if (producttype == W.type && contents.len < max_capacity && !salting)
 		user.drop_from_inventory(W, src, FALSE)
 		W.forceMove(src)
 		user << "You add \the [W] to the salting container."
@@ -140,7 +149,9 @@
 		if (producttype_name == "ham")
 			for(var/i=1, i<=max_capacity, i++)
 				new/obj/item/weapon/pigleg/salted(loc)
-
+		if (producttype_name == "cod")
+			for(var/i=1, i<=max_capacity, i++)
+				new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted(loc)
 ///////////////////////////////LARGE/DEHYDRATOR///////////////////////////////
 /obj/structure/drying_rack
 	name = "drying rack"
@@ -202,3 +213,157 @@
 			else
 				icon_state = "drying_rack"
 			return
+
+/////////////////////////////////////////////////
+//////////////////////CHICKEN////////////////////
+/////////////////////////////////////////////////
+
+/obj/item/weapon/chicken_carcass
+	name = "chicken carcass"
+	desc = "a whole chicken."
+	icon = 'icons/obj/food/chicken.dmi'
+	icon_state = "chicken_carcass"
+	force = WEAPON_FORCE_WEAK
+	throw_range = 2
+	w_class = 3.0
+	flammable = TRUE
+	var/rotten = FALSE
+
+/obj/item/weapon/chicken_carcass/New()
+	..()
+	spawn(3000) //5 minutes
+		icon_state = "rotten_[icon]"
+		name = "rotten [name]"
+		rotten = TRUE
+		spawn(1000)
+			if (isturf(loc) && prob(30))
+				var/scavengerspawn = rand(1,3)
+				if(scavengerspawn ==  1)
+					new/mob/living/simple_animal/mouse(get_turf(src))
+				else if(scavengerspawn ==  2)
+					new/mob/living/simple_animal/cockroach(get_turf(src))
+				else
+					new/mob/living/simple_animal/fly(get_turf(src))
+		spawn(3600)
+			qdel(src)
+
+/obj/item/weapon/chicken_carcass/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) && !rotten)
+		user << "You start separating the chicken parts..."
+		if (do_after(user, 75, src))
+			user << "You finish cutting the chicken."
+			new/obj/item/weapon/reagent_containers/food/snacks/chicken/breast(loc)
+			new/obj/item/weapon/reagent_containers/food/snacks/chicken/wing(loc)
+			new/obj/item/weapon/reagent_containers/food/snacks/chicken/drumstick(loc)
+			qdel(src)
+		return
+	..()
+/obj/item/weapon/reagent_containers/food/snacks/chicken
+	name = "chicken part"
+	icon = 'icons/obj/food/chicken.dmi'
+	desc = "A large chicken breast."
+	icon_state = "chicken_breast"
+	health = 180
+	filling_color = "#E7B7B4"
+	raw = TRUE
+	rotten_icon_state = "rotten_chicken_breast"
+	rots = TRUE
+	non_vegetarian = TRUE
+	decay = 15*600
+	New()
+		..()
+		reagents.add_reagent("protein", 3)
+	bitesize = 3
+	satisfaction = -3
+
+/obj/item/weapon/reagent_containers/food/snacks/chicken/breast
+	name = "chicken breast"
+	desc = "A large chicken breast."
+	icon_state = "chicken_breast"
+	rotten_icon_state = "rotten_chicken_breast"
+
+	attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+		if (istype(W, /obj/item/weapon/hammer) && !findtext(icon_state, "flat") && !rotten)
+			user << "You start flattening the chicken breast..."
+			if (do_after(user, 50, src))
+				user << "You finish flattening the chicken breast."
+				name = "flattened chicken breast"
+				icon_state = "chicken_breast_flat"
+			return
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed") && findtext(icon_state, "flat"))
+			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
+			if (F.reagents.has_reagent("flour", 5))
+				F.reagents.remove_reagent("flour", 5)
+			user << "You roll \the [src] in the flour."
+			satisfaction = -4
+			icon_state = "[icon_state]_crumbed"
+			name = "crumbed [name]"
+			return
+		..()
+/obj/item/weapon/reagent_containers/food/snacks/chicken/wing
+	name = "chicken wing"
+	desc = "A chicken wing."
+	icon_state = "chicken_wing"
+	bitesize = 2
+	satisfaction = -2
+	rotten_icon_state = "rotten_chicken_wing"
+
+	New()
+		..()
+		reagents.remove_reagent("protein", 2)
+	attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+
+		if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed"))
+			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
+			if (F.reagents.has_reagent("flour", 5))
+				F.reagents.remove_reagent("flour", 5)
+			user << "You roll \the [src] in the flour."
+			icon_state = "[icon_state]_crumbed"
+			name = "crumbed [name]"
+			satisfaction = -3
+			return
+		..()
+
+/obj/item/weapon/reagent_containers/food/snacks/chicken/drumstick
+	name = "chicken drumstick"
+	desc = "A chicken drumstick."
+	icon_state = "chicken_drumstick"
+	bitesize = 2
+	satisfaction = -2
+	rotten_icon_state = "rotten_chicken_drumstick"
+	New()
+		..()
+		reagents.remove_reagent("protein", 2)
+
+	attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed"))
+			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
+			if (F.reagents.has_reagent("flour", 5))
+				F.reagents.remove_reagent("flour", 5)
+			user << "You roll \the [src] in the flour."
+			satisfaction = -3
+			icon_state = "[icon_state]_crumbed"
+			name = "crumbed [name]"
+			return
+		..()
+/obj/item/weapon/reagent_containers/food/snacks/chicken/New()
+	..()
+	spawn(3000) //5 minutes
+		icon_state = "rotten_[icon]"
+		name = "rotten [name]"
+		if (reagents)
+			reagents.remove_reagent("protein", 2)
+			reagents.add_reagent("food_poisoning", 1)
+		rotten = TRUE
+		satisfaction = -10
+		spawn(1000)
+			if (isturf(loc) && prob(30))
+				var/scavengerspawn = rand(1,3)
+				if(scavengerspawn ==  1)
+					new/mob/living/simple_animal/mouse(get_turf(src))
+				else if(scavengerspawn ==  2)
+					new/mob/living/simple_animal/cockroach(get_turf(src))
+				else
+					new/mob/living/simple_animal/fly(get_turf(src))
+		spawn(3600)
+			qdel(src)

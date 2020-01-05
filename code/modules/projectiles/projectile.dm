@@ -452,7 +452,7 @@
 
 	if (ismob(firer) && (istype(get_turf(firer), /turf/floor/trench) && firer.prone))
 		if (!istype(T,/turf/floor/trench) && get_dist(T, firer)>2)
-			world << "<span class = 'warning'>The [name] hits the trench wall!</span>"
+			T.visible_message("<span class = 'warning'>The [name] hits the trench wall!</span>")
 			qdel(src)
 			return
 	if(can_hit_in_trench == 1)
@@ -554,7 +554,7 @@
 									attack_mob(L)
 									passthrough = FALSE
 								else if (L.lying || L.prone)
-									if (prob(30) && !istype(T, /turf/floor/trench))
+									if (prob(30))
 										L.pre_bullet_act(src)
 										attack_mob(L)
 										passthrough = FALSE

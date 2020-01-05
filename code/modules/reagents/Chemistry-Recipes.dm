@@ -697,7 +697,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Meatball"
 	id = "meatball"
 	result = null
-	required_reagents = list("protein" = 3, "flour" = 5)
+	required_reagents = list("protein" = 5, "flour" = 5)
 	result_amount = 3
 
 /datum/chemical_reaction/meatball/on_reaction(var/datum/reagents/holder, var/created_volume)

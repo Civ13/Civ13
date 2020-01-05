@@ -17,5 +17,26 @@
 	material = "log"
 	unique_door_name = "rustic"
 
+/obj/structure/simple_door/key_door/anyone/nordic
+	material = "log"
+	name = "nordic"
+	unique_door_name = "nordic"
+	icon_state = "nordic"
+	override_material = TRUE
+
+/obj/structure/simple_door/key_door/anyone/aztec
+	material = "wood"
+	name = "aztec"
+	unique_door_name = "aztec"
+	icon_state = "aztec"
+	override_material = TRUE
+
+/obj/structure/simple_door/key_door/anyone/roman
+	material = "stone"
+	name = "roman"
+	unique_door_name = "roman"
+	icon_state = "roman"
+	override_material = TRUE
+
 #undef ANYONE_CODE
 
