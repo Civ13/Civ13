@@ -93,7 +93,7 @@
 	if (salting)
 		user << "<span class=warning>The container is full!</span>"
 		return
-	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len <= max_capacity)
+	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len <= max_capacity && contents.len)
 		if (saltamount < 30)
 			user << "You add salt to the container."
 			saltamount += W.reagents.get_reagent_amount("sodiumchloride")
