@@ -93,7 +93,7 @@
 	if (salting)
 		user << "<span class=warning>The container is full!</span>"
 		return
-	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len >= max_capacity)
+	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len <= max_capacity)
 		if (saltamount < 30)
 			user << "You add salt to the container."
 			saltamount += W.reagents.get_reagent_amount("sodiumchloride")
@@ -114,7 +114,16 @@
 			user << "You add \the [W] to the salting container."
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
-	else if (producttype == W.type && contents.len < max_capacity)
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod))
+			user.drop_from_inventory(W, src, FALSE)
+			W.forceMove(src)
+			max_capacity = 3
+			producttype = W.type
+			producttype_name = "cod"
+			user << "You add \the [W] to the salting container."
+			icon_state = "salting_container_[producttype_name]_[contents.len]"
+			return
+	else if (producttype == W.type && contents.len < max_capacity && !salting)
 		user.drop_from_inventory(W, src, FALSE)
 		W.forceMove(src)
 		user << "You add \the [W] to the salting container."
@@ -140,7 +149,9 @@
 		if (producttype_name == "ham")
 			for(var/i=1, i<=max_capacity, i++)
 				new/obj/item/weapon/pigleg/salted(loc)
-
+		if (producttype_name == "cod")
+			for(var/i=1, i<=max_capacity, i++)
+				new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted(loc)
 ///////////////////////////////LARGE/DEHYDRATOR///////////////////////////////
 /obj/structure/drying_rack
 	name = "drying rack"

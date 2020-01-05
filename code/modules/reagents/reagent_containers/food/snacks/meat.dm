@@ -118,8 +118,24 @@
 	desc = "A fresh salmon. Should probably cook it first."
 	icon_state = "salmon"
 
+/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
+	name = "raw cod"
+	desc = "A fresh cod salmon. Should probably cook it first."
+	icon_state = "cod"
+	New()
+		..()
+		reagents.add_reagent("protein", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted
+	name = "salted cod"
+	desc = "A piece of salted cod."
+	icon_state = "salted_cod"
+	New()
+		..()
+		reagents.remove_reagent("food_poisoning",1)
+		reagents.add_reagent("sodiumchloride",1)
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
