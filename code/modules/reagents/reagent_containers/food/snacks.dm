@@ -512,7 +512,8 @@
 	icon_state = "fishfillet"
 	filling_color = "#FFDEFE"
 	center_of_mass = list("x"=17, "y"=13)
-	var/rotten = FALSE
+	rotten_icon_state = "rottenfillet"
+	rots = TRUE
 	non_vegetarian = TRUE
 	decay = 12*600
 	satisfaction = 6
@@ -521,29 +522,14 @@
 		reagents.add_reagent("protein", 1)
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 6
-		spawn(2400) //4 minutes
-			icon_state = "rottenfillet"
-			name = "rotten [name]"
-			rotten = TRUE
-			reagents.add_reagent("food_poisoning", 1)
-			spawn(1000)
-				if (isturf(loc) && prob(30))
-					var/scavengerspawn = rand(1,3)
-					if(scavengerspawn == 1)
-						new/mob/living/simple_animal/mouse(get_turf(src))
-					else if(scavengerspawn ==  2)
-						new/mob/living/simple_animal/cockroach(get_turf(src))
-					else
-						new/mob/living/simple_animal/fly(get_turf(src))
-			spawn(3000)
-				qdel(src)
 
 /obj/item/weapon/reagent_containers/food/snacks/salmonfillet
 	name = "salmon fillet"
 	desc = "A fillet of salmon."
 	icon_state = "salmonfillet"
+	rotten_icon_state = "rottensalmonfillet"
+	rots = TRUE
 	center_of_mass = list("x"=17, "y"=13)
-	var/rotten = FALSE
 	decay = 12*600
 	satisfaction = 6
 	non_vegetarian = TRUE
@@ -552,25 +538,6 @@
 		reagents.add_reagent("protein", 1)
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 6
-		spawn(2400) //4 minutes
-			if (!src)
-				return
-			icon_state = "rottensalmonfillet"
-			name = "rotten [name]"
-			rotten = TRUE
-			if (reagents)
-				reagents.add_reagent("food_poisoning", 1)
-			spawn(1000)
-				if (isturf(loc) && prob(30))
-					var/scavengerspawn = rand(1,3)
-					if(scavengerspawn ==  1)
-						new/mob/living/simple_animal/mouse(get_turf(src))
-					else if(scavengerspawn ==  2)
-						new/mob/living/simple_animal/cockroach(get_turf(src))
-					else
-						new/mob/living/simple_animal/fly(get_turf(src))
-			spawn(3000)
-				qdel(src)
 
 /obj/item/weapon/reagent_containers/food/snacks/fishfingers
 	name = "Fish Fingers"
@@ -1714,31 +1681,15 @@
 	bitesize = 1
 	center_of_mass = list("x"=17, "y"=20)
 	raw = TRUE
-	var/rotten = FALSE
+	rotten_icon_state = "rottencutlet"
+	rots = TRUE
 	decay = 15*600
 	satisfaction = -2
 	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 1)
-		spawn(2400) //4 minutes
-			icon_state = "rottencutlet"
-			name = "rotten [name]"
-			rotten = TRUE
-			if (reagents)
-				reagents.remove_reagent("protein", 1)
-				reagents.add_reagent("food_poisoning", 1)
-			spawn(1000)
-				if (isturf(loc) && prob(30))
-					var/scavengerspawn = rand(1,3)
-					if(scavengerspawn ==  1)
-						new/mob/living/simple_animal/mouse(get_turf(src))
-					else if(scavengerspawn ==  2)
-						new/mob/living/simple_animal/cockroach(get_turf(src))
-					else
-						new/mob/living/simple_animal/fly(get_turf(src))
-			spawn(3000)
-				qdel(src)
+
 /obj/item/weapon/reagent_containers/food/snacks/cutlet
 	name = "cutlet"
 	desc = "A tasty meat slice."

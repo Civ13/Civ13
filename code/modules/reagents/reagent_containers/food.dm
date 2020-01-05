@@ -18,6 +18,10 @@
 	var/satisfaction = 0
 	var/disgusting = FALSE
 
+	var/rots = FALSE
+	var/rotten = FALSE
+	var/rotten_icon_state = ""
+
 /obj/item/weapon/reagent_containers/food/New()
 	..()
 	if (decay > 0)
@@ -25,6 +29,27 @@
 	if (center_of_mass.len && !pixel_x && !pixel_y)
 		pixel_x = rand(-6.0, 6) //Randomizes postion
 		pixel_y = rand(-6.0, 6)
+
+/obj/item/weapon/reagent_containers/food/proc/rot()
+	if (rotten || !rots)
+		return
+	icon_state = rotten_icon_state
+	name = "rotten [name]"
+	if (reagents)
+		reagents.remove_reagent("protein", 2)
+		reagents.add_reagent("food_poisoning", 1)
+	rotten = TRUE
+	satisfaction = -10
+	spawn(1000)
+		if (isturf(loc) && prob(30))
+			var/scavengerspawn = rand(1,3)
+			if(scavengerspawn ==  1)
+				new/mob/living/simple_animal/mouse(get_turf(src))
+			else if(scavengerspawn ==  2)
+				new/mob/living/simple_animal/cockroach(get_turf(src))
+			else
+				new/mob/living/simple_animal/fly(get_turf(src))
+
 
 /obj/item/weapon/reagent_containers/food/proc/food_decay()
 	spawn(600)
@@ -55,6 +80,9 @@
 				decaytimer += 300
 		if (decaytimer >= decay)
 			qdel(src)
+			return
+		else if (decaytimer >= decay/2 && !rotten && rots)
+			rot()
 			return
 		else
 			food_decay()

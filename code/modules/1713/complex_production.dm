@@ -266,7 +266,8 @@
 	health = 180
 	filling_color = "#E7B7B4"
 	raw = TRUE
-	var/rotten = FALSE
+	rotten_icon_state = "rotten_chicken_breast"
+	rots = TRUE
 	non_vegetarian = TRUE
 	decay = 15*600
 	New()
@@ -279,6 +280,7 @@
 	name = "chicken breast"
 	desc = "A large chicken breast."
 	icon_state = "chicken_breast"
+	rotten_icon_state = "rotten_chicken_breast"
 
 	attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
 		if (istype(W, /obj/item/weapon/hammer) && !findtext(icon_state, "flat") && !rotten)
@@ -304,6 +306,8 @@
 	icon_state = "chicken_wing"
 	bitesize = 2
 	satisfaction = -2
+	rotten_icon_state = "rotten_chicken_wing"
+
 	New()
 		..()
 		reagents.remove_reagent("protein", 2)
@@ -326,6 +330,7 @@
 	icon_state = "chicken_drumstick"
 	bitesize = 2
 	satisfaction = -2
+	rotten_icon_state = "rotten_chicken_drumstick"
 	New()
 		..()
 		reagents.remove_reagent("protein", 2)
