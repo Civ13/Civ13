@@ -16,7 +16,14 @@
 	counter = 2
 	anchored = TRUE
 	species = "salmon"
-
+/obj/structure/fish/cod
+	name = "codfish"
+	desc = "Seems like theres some cod's around here..."
+	icon = 'icons/mob/fish.dmi'
+	icon_state = "cod"
+	counter = 1
+	anchored = TRUE
+	species = "cod"
 /obj/structure/fish/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/fishing) && counter > 0)
 		H.visible_message("[H] starts fishing.")
@@ -27,6 +34,8 @@
 					counter = (counter-1)
 					if (species == "salmon")
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
+					else if (species == "cod")
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(H.loc)
 					else
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)
 					if (counter <= 0)
@@ -43,6 +52,8 @@
 					counter = (counter-1)
 					if (species == "salmon")
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
+					else if (species == "cod")
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(H.loc)
 					else
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)
 					if (counter <= 0)

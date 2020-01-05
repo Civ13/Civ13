@@ -112,7 +112,7 @@
 		reagents.add_reagent("protein", 4)
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 3
-
+	satisfaction = -4
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
 	name = "raw salmon"
 	desc = "A fresh salmon. Should probably cook it first."
@@ -125,7 +125,7 @@
 	New()
 		..()
 		reagents.add_reagent("protein", 2)
-
+	satisfaction = -6
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted
 	name = "salted cod"
 	desc = "A piece of salted cod."
@@ -134,6 +134,7 @@
 		..()
 		reagents.remove_reagent("food_poisoning",1)
 		reagents.add_reagent("sodiumchloride",1)
+	satisfaction = 4
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
