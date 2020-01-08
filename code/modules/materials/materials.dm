@@ -112,8 +112,6 @@ var/list/name_to_material
 	var/hitsound = 'sound/weapons/genhit.ogg'
 	// Path to resulting stacktype. Todo remove need for this.
 	var/stack_type
-	// Wallrot crumble message.
-	var/rotting_touch_message = "crumbles under your touch"
 
 // Placeholders for light tiles and rglass.
 /material/proc/build_rod_product(var/mob/user, var/obj/item/stack/used_stack, var/obj/item/stack/target_stack)
