@@ -346,24 +346,3 @@
 			name = "crumbed [name]"
 			return
 		..()
-/obj/item/weapon/reagent_containers/food/snacks/chicken/New()
-	..()
-	spawn(3000) //5 minutes
-		icon_state = "rotten_[icon]"
-		name = "rotten [name]"
-		if (reagents)
-			reagents.remove_reagent("protein", 2)
-			reagents.add_reagent("food_poisoning", 1)
-		rotten = TRUE
-		satisfaction = -10
-		spawn(1000)
-			if (isturf(loc) && prob(30))
-				var/scavengerspawn = rand(1,3)
-				if(scavengerspawn ==  1)
-					new/mob/living/simple_animal/mouse(get_turf(src))
-				else if(scavengerspawn ==  2)
-					new/mob/living/simple_animal/cockroach(get_turf(src))
-				else
-					new/mob/living/simple_animal/fly(get_turf(src))
-		spawn(3600)
-			qdel(src)
