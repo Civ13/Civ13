@@ -83,6 +83,7 @@
 			return
 		else if (decaytimer >= decay/2 && !rotten && rots)
 			rot()
+			food_decay()
 			return
 		else
 			food_decay()

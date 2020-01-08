@@ -105,9 +105,6 @@
 			stats["stamina"][1]-=3
 
 	#define HUNGER_THIRST_MULTIPLIER 0.64 //was 0.32, doubled due to demand
-	if (stat == DEAD && start_to_rot == FALSE)
-		do_rotting()
-		start_to_rot = TRUE
 	if (stat != DEAD && !map.civilizations)
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
@@ -1590,27 +1587,28 @@
 /mob/living/carbon/human/proc/do_rotting()
 	if (!map.civilizations)
 		return
-	if (stat == DEAD)
-		spawn(3000)
-			if (stat == DEAD)
-				visible_message("[src]'s body starts to rot.")
-				rotting_stage = 1
-				spawn(3000)
-					if (stat == DEAD)
-						visible_message("[src]'s body is visibly rotten!")
-						rotting_stage = 2
-						spawn(2000)
-							if (stat == DEAD)
-								var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
-								HR.name = "[src]'s remains"
-								qdel(src)
-								return
-							else
-								return
-					else
-						return
-			else
-				return
+	spawn(600)
+		if (stat == DEAD)
+			spawn(3000)
+				if (stat == DEAD)
+					visible_message("[src]'s body starts to rot.")
+					rotting_stage = 1
+					spawn(3000)
+						if (stat == DEAD)
+							visible_message("[src]'s body is visibly rotten!")
+							rotting_stage = 2
+							spawn(2000)
+								if (stat == DEAD)
+									var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+									HR.name = "[src]'s remains"
+									qdel(src)
+									return
+								else
+									return
+						else
+							return
+				else
+					return
 
 /mob/living/carbon/human/proc/ssd_hiding(var/timer = 10)
 	if (!map.civilizations)

@@ -24,36 +24,6 @@
 	can_open = WALL_CAN_OPEN
 	update_icon()
 
-/turf/wall/proc/fail_smash(var/mob/user)
-	user << "<span class='danger'>You smash against the wall!</span>"
-	take_damage(rand(25,75))
-
-/turf/wall/proc/success_smash(var/mob/user)
-	user << "<span class='danger'>You smash through the wall!</span>"
-	user.do_attack_animation(src)
-	spawn(1)
-		dismantle_wall(1)
-
-/turf/wall/proc/try_touch(var/mob/user, var/rotting)
-
-	if (rotting)
-		if (reinf_material)
-			user << "<span class='danger'>\The [reinf_material.display_name] feels porous and crumbly.</span>"
-		else
-			user << "<span class='danger'>\The [material.display_name] crumbles under your touch!</span>"
-			dismantle_wall()
-			return TRUE
-
-	if (..()) return TRUE
-
-	if (!can_open)
-		user << "<span class='notice'>You push the wall, but nothing happens.</span>"
-		playsound(src, hitsound, 25, TRUE)
-	else
-		toggle_open(user)
-	return FALSE
-
-
 /turf/wall/attack_hand(var/mob/user)
 
 	radiate()
@@ -62,22 +32,12 @@
 
 
 /turf/wall/attack_generic(var/mob/user, var/damage, var/attack_message, var/wallbreaker)
-
 	radiate()
 	if (!istype(user))
 		return
 
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if (!damage || !wallbreaker)
-		return
 
-
-	if (reinf_material)
-		if ((wallbreaker == 2) || (damage >= max(material.hardness,reinf_material.hardness)))
-			return success_smash(user)
-	else if (damage >= material.hardness)
-		return success_smash(user)
-	return fail_smash(user)
 
 /turf/wall/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
