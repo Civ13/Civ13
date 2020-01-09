@@ -302,6 +302,12 @@ Current Defines (_defines/attachment.dm)
 	return
 
 
+/obj/item/weapon/attachment/scope/adjustable/sniper_scope/telescopic
+	name = "telescopic sight"
+	icon_state = "kar_scope"
+	desc = "You can attach this to rifles... or use them as binoculars. Amplifies 8x."
+	max_zoom = ZOOM_CONSTANT + 5
+
 /////////////////ADVANCED OPTICS//////////////////////////////
 
 
