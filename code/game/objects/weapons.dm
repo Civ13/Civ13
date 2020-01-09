@@ -33,6 +33,6 @@
 
 /obj/item/weapon/gun/projectile/New()
 	..()
-	bayonet_ico = image("icon" = 'icons/obj/gun.dmi', "icon_state" = "bayonet")
+	bayonet_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "bayonet")
 	optics_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")
 	under_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")
