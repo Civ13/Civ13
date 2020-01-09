@@ -31,9 +31,9 @@
 	..()
 	fueltype = pick("gasoline","diesel","biodiesel","ethanol","petroleum")
 	vol = rand(140,290)
-	do_color()
 	name = "UngOil [fueltype] pump"
-	price = rand(0.25,0.45)
+	price = (rand(25,45))/100
+	do_color()
 	updatedesc()
 
 /obj/structure/fuelpump/n
