@@ -115,6 +115,7 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 
 /obj/item/weapon/gun/projectile/automatic/dp28
