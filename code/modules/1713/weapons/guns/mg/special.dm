@@ -117,7 +117,7 @@
 	item_state = "mk18"
 	base_icon = "mk18"
 	weight = 3.97
-	caliber = "a762x51"
+	caliber = "a556x45"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/mk18
 	full_auto = TRUE

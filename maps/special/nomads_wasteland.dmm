@@ -1115,7 +1115,7 @@
 "vw" = (/obj/covers/steelplating,/obj/effect/floor_decal/industrial/loading{icon_state = "loadingarea"; dir = 4},/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "vx" = (/obj/covers/steelplating,/obj/effect/floor_decal/industrial/outline/blue,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "vy" = (/obj/covers/steelplating,/obj/structure/table/modern/retable,/obj/item/weapon/paper_bin,/obj/item/weapon/pen/fancy,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
-"vz" = (/obj/covers/carpet/redcarpet,/obj/structure/sign/portrait/jackgray{step_x = 31},/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
+"vz" = (/obj/covers/carpet/redcarpet,/obj/structure/sign/portrait/jackgray,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "vA" = (/obj/covers/steelplating,/obj/structure/table/rack,/obj/item/weapon/flame/lighter/random,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/item/weapon/storage/fancy/cigarettes/randompack,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "vB" = (/obj/covers/steelplating,/obj/structure/table/rack,/obj/item/clothing/under/modern8,/obj/item/clothing/under/modern8,/obj/item/clothing/under/modern3,/obj/item/clothing/under/modern3,/obj/item/clothing/under/modern1,/obj/item/clothing/under/cozyoldy,/obj/item/clothing/under/blacktango,/obj/item/clothing/shoes/color/white,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "vC" = (/obj/covers/steelplating,/obj/structure/table/rack,/obj/item/weapon/crowbar,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
@@ -1165,11 +1165,11 @@
 "wu" = (/obj/covers/road,/obj/structure/closet/crate/steel,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "wv" = (/obj/covers/road,/obj/structure/closet/crate/wood,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "ww" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door{code = 455},/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
-"wx" = (/obj/covers/road,/obj/structure/blastcontrol{step_y = 31},/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
+"wx" = (/obj/covers/road,/obj/structure/blastcontrol,/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "wy" = (/obj/structure/curtain/black,/turf/floor/carpet,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "wz" = (/obj/covers/road,/obj/structure/closet,/obj/item/clothing/under/baily,/obj/item/clothing/shoes/blackboots1,/obj/item/clothing/gloves/thick/combat,/obj/item/weapon/radio/walkietalkie,/obj/item/weapon/storage/belt/security,/obj/item/weapon/handcuffs,/obj/item/clothing/accessory/armor/nomads/civiliankevlar,/obj/item/weapon/melee/classic_baton,/obj/item/weapon/gun/projectile/pistol/glock17,/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/glock17,/obj/item/weapon/whistle,/obj/item/clothing/accessory/patch/security,/obj/item/weapon/key{code = 0; name = "Security Key"},/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "wA" = (/obj/covers/road,/obj/structure/simple_door/key_door/custom/jail{custom_code = 0},/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
-"wB" = (/obj/covers/cement_wall,/obj/structure/blastcontrol{step_y = 1},/turf/floor/dirt/underground,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
+"wB" = (/obj/covers/cement_wall,/obj/structure/blastcontrol,/turf/floor/dirt/underground,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadPdPdQdQdPaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
