@@ -138,6 +138,9 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	caliber = "a77x58"
 	magazine_type = /obj/item/ammo_magazine/type92
 	ammo_type = /obj/item/ammo_casing/a77x58
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.3), recoil = 1.0),)
+	attachment_slots = ATTACH_SCOPE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"
