@@ -218,6 +218,8 @@ called after H added to knows_about_mobs() */
 					C.onHumanMovement(P.firer)
 
 /mob/living/simple_animal/complex_animal/death(gibbed, deathmessage = "dies!")
+	if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+		dog_mob_list -= src
 	..(gibbed, deathmessage)
 	walk(src, FALSE)
 	lying = TRUE
