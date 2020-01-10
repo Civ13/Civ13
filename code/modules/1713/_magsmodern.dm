@@ -204,3 +204,13 @@
 	max_ammo = 5
 	weight = 0.33
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/ar15
+	name = "AR15 magazine (5.56x45mm)"
+	icon_state = "m16"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	ammo_type = /obj/item/ammo_casing/a556x45
+	max_ammo = 20
+	weight = 0.5
+	multiple_sprites = TRUE

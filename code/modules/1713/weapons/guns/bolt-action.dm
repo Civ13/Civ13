@@ -379,6 +379,16 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
 
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper
+	name = "Arisaka Type 99"
+	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
+	effectiveness_mod = 1.06
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training
 	name = "Training Arisaka Type 99"
 	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition. This one is a training rifle that shoots wooden bullets."

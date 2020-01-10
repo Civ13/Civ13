@@ -115,7 +115,8 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
-
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	slowdown = 0.4
 
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP28 light machine gun"

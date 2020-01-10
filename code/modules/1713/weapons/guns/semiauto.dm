@@ -294,3 +294,30 @@
 	throwforce = 20
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	effectiveness_mod = 1.05
+
+/obj/item/weapon/gun/projectile/semiautomatic/ar15
+	name = "AR15"
+	desc = "An Assault Rifle chambered in 5.56x45mm ammo."
+	icon_state = "ar15"
+	item_state = "ar15"
+	base_icon = "ar15"
+	w_class = 4
+	load_method = MAGAZINE
+	load_delay = 5
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	slot_flags = SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a556x45
+	magazine_type = /obj/item/ammo_magazine/ar15
+	weight = 4.9
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
+		)
+	force = 10
+	throwforce = 20
+	attachment_slots = ATTACH_SCOPE|ATTACH_BARREL
+	effectiveness_mod = 1.07
+/obj/item/weapon/gun/projectile/semiautomatic/ar15/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+	SP.attached(null,src,TRUE)
