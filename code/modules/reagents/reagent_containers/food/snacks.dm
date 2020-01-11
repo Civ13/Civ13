@@ -1772,9 +1772,41 @@
 	w_class = 1
 	throw_speed = 3
 	throw_range = 7
+	var/decay = 15*600
+	var/decaytimer = 0
+
 	New()
 		..()
 		icon_state = pick("leaves1","leaves2","leaves3")
+		food_decay()
+/obj/item/weapon/leaves/proc/food_decay()
+	spawn(600)
+		if (decay == 0)
+			return
+		if (istype(loc, /obj/structure/vending))
+			food_decay()
+			return
+
+		if (istype(loc, /obj/structure/closet/fridge))
+			var/obj/structure/closet/fridge/F = loc
+			if (F.powersource && F.powersource.powered)
+				decaytimer += 100 //much slower
+			else
+				decaytimer += 300
+		else if (isturf(loc) && !findtext(src.name, "canned")) //if on the floor (i.e. not stored inside something), decay faster
+			decaytimer += 600
+		else if (!istype(loc, /obj/item/weapon/can) && !findtext(src.name, "canned")) //if not canned, since canned food doesn't spoil
+			decaytimer += 300
+		if (istype(loc, /obj/item/weapon/can))
+			var/obj/item/weapon/can/C = loc
+			if (C.open)
+				decaytimer += 300
+		if (decaytimer >= decay)
+			qdel(src)
+			return
+		else
+			food_decay()
+			return
 
 /obj/item/weapon/leaves/attack(mob/living/carbon/human/M as mob, mob/living/carbon/human/user as mob)
 	if (!M || !ishuman(M) || !M.gorillaman)

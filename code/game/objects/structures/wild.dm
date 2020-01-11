@@ -18,7 +18,16 @@
 	var/edible = FALSE
 	var/leaves = 0
 	var/max_leaves = 0
+	var/branches = 0
+	var/max_branches = 0
 
+/obj/structure/wild/proc/grow_branch()
+	if (max_branches <= 0)
+		return
+	spawn(12000)
+		if (src && branches < max_branches)
+			branches = min(branches+1, max_branches)
+		return
 /obj/structure/wild/proc/seedtimer_proc()
 	spawn(6000)
 		seedtimer = 1
@@ -168,6 +177,9 @@
 	density = TRUE
 	sways = FALSE
 	amount = 5
+	branches = 3
+	max_branches = 3
+	leaves = 0
 
 /obj/structure/wild/tree/dead_tree/destroyed
 	name = "destroyed tree"
@@ -179,6 +191,9 @@
 	density = TRUE
 	sways = FALSE
 	amount = 2
+	branches = 0
+	max_branches = 3
+	leaves = 0
 
 /obj/structure/wild/tree/dead_tree/destroyed/New()
 	..()
@@ -197,6 +212,8 @@
 	edible = TRUE
 	leaves = 2
 	max_leaves = 2
+	branches = 3
+	max_branches = 3
 	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
 
 /obj/structure/wild/tree/live_tree/snow
@@ -212,6 +229,8 @@
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
+	branches = 3
+	max_branches = 3
 	current_icon = 'icons/obj/flora/bigtrees_winter.dmi'
 /obj/structure/wild/tree/live_tree/snow/update_icon()
 	..()
@@ -282,6 +301,8 @@
 	edible = TRUE
 	leaves = 2
 	max_leaves = 2
+	branches = 3
+	max_branches = 3
 	current_icon = 'icons/obj/flora/pinetrees.dmi'
 
 /obj/structure/wild/tree/live_tree/pine/snow
@@ -295,6 +316,8 @@
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
+	branches = 3
+	max_branches = 3
 	current_icon = 'icons/obj/flora/pinetrees_snow.dmi'
 
 /obj/structure/wild/tree/live_tree/pine/New()
@@ -360,6 +383,8 @@
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
+	branches = 0
+	max_branches = 0
 
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
@@ -699,6 +724,7 @@
 	icon_state = "rock[rand(1,5)]"
 	deadicon = 'icons/obj/wild.dmi'
 	deadicon_state = "rock[rand(1,5)]"
+
 /obj/structure/wild/jungle
 	name = "jungle tree"
 	icon = 'icons/obj/flora/jungletreesmaller.dmi'
@@ -717,6 +743,8 @@
 	edible = TRUE
 	leaves = 3
 	max_leaves = 3
+	branches = 3
+	max_branches = 3
 
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))
@@ -732,6 +760,8 @@
 	edible = TRUE
 	leaves = 1
 	max_leaves = 1
+	branches = 2
+	max_branches = 2
 /obj/structure/wild/jungle/acacia/dead
 	name = "dead acacia tree"
 	icon_state = "african_acacia_dead"
@@ -739,6 +769,8 @@
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
+	branches = 2
+	max_branches = 2
 /obj/structure/wild/jungle/acacia/New()
 	..()
 	icon_state = "african_acacia"
@@ -762,6 +794,8 @@
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
+	branches = 2
+	max_branches = 2
 /obj/structure/wild/jungle/medpine/dead
 	name = "dead mediterranean pine tree"
 	icon_state = "med_pine_dead"
@@ -770,6 +804,8 @@
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
+	branches = 2
+	max_branches = 2
 /obj/structure/wild/jungle/medpine/New()
 	..()
 	icon_state = "med_pine"
@@ -880,6 +916,22 @@
 					user << "There are no leaves to harvest here."
 			else
 				user << "You stop foraging."
+	else if (user.a_intent == I_HARM && branches >= 1)
+		user << "You start breaking a branch from \the [src]..."
+		if (do_after(user, 80, src))
+			if (src && branches >= 1)
+				user << "You take a branch from the tree."
+				if (icon == 'icons/obj/flora/deadtrees.dmi' || icon == 'icons/obj/flora/deadtrees_winter.dmi' || icon == 'icons/obj/flora/pinetrees_dead.dmi' || findtext(icon_state, "dead"))
+					new /obj/structure/branch/cleared(get_turf(src))
+				else
+					new /obj/structure/branch(get_turf(src))
+				branches--
+				grow_branch()
+				return
+			else
+				user << "There are no useful branches in this tree."
+				return
+		return
 	else
 		..()
 
