@@ -166,7 +166,7 @@
 	else if (firer_stat < 1.00)
 		miss_chance_modifier += ((1.00 - firer_stat) * accuracy_decrease_mod)/5
 	if (firer.prone)
-		effectiveness_mod *= 1.2
+		effectiveness_mod *= 1.1
 	if (specialoptics)
 		if ((specialoptics.scopeonly && specialoptics.zoomed) || !specialoptics.scopeonly)
 			var/effmod2 = effectiveness_mod
