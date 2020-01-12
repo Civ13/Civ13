@@ -48,6 +48,7 @@
 	name = "stick"
 	desc = "A tree branch with all the leaves and small branches picked out."
 	icon_state = "debranched_stick"
+	item_state = "debranched_stick"
 	icon = 'icons/obj/old_weapons.dmi'
 	force = 7
 	attack_verb = list("hit","bashed","poked")
@@ -86,6 +87,7 @@
 	name = "sharpened stick"
 	desc = "A sharpened stick, to be used against bad apes."
 	icon_state = "sharpened_stick"
+	item_state = "sharpened_stick"
 	sharp = TRUE
 	force = 14
 	sharpened = TRUE
