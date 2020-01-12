@@ -547,7 +547,7 @@
 	throw_speed = 1
 	throw_range = 2
 	flags = CONDUCT
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT|SLOT_OCLOTHING
 	det_time = 1
 	heavy_armor_penetration = 22
 	var/armed1 = "disarmed"

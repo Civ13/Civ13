@@ -156,6 +156,19 @@
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
 
+/obj/item/weapon/gun/projectile/flintlock/plexico
+	name = "flintlock musket"
+	desc = "A finer flintlock musket, this one seems to be made out of ebony and steel."
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "musketball"
+	weight = 6.0
+	effectiveness_mod = 1.20
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 110
+	item_state = "plexciomusket"
+	icon_state = "plexciomusket"
+
 /obj/item/weapon/gun/projectile/flintlock/springfield
 	name = "Springfield M1861 Musket"
 	desc = "A simple flintlock musket of the 1860's used commonly in the civil war."
