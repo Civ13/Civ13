@@ -61,6 +61,11 @@
 			user << "You refuel the [src]."
 			qdel(W)
 			return
+		else if (istype(W, /obj/item/weapon/branch))
+			fuel += (60)*W.amount
+			user << "You refuel the [src]."
+			qdel(W)
+			return
 		else if (istype(W, /obj/item/ammo_casing/arrow) && on)
 			var/obj/item/ammo_casing/arrow/WW = W
 			user << "You start lighting the arrow in \the [src]..."

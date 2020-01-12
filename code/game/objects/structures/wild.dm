@@ -579,7 +579,7 @@
 /obj/structure/wild/rock
 	name = "rock"
 	icon_state = "rock1"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/rocks.dmi'
 	deadicon_state = "rock1"
 	opacity = FALSE
 	density = FALSE
