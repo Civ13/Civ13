@@ -576,18 +576,6 @@
 	health = 20
 	maxhealth = 20
 
-/obj/structure/wild/rock
-	name = "rock"
-	icon_state = "rock1"
-	deadicon = 'icons/obj/flora/rocks.dmi'
-	deadicon_state = "rock1"
-	opacity = FALSE
-	density = FALSE
-	flammable = FALSE
-	amount = 0
-	health = 20
-	maxhealth = 20
-
 /obj/structure/wild/tallgrass
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
@@ -718,12 +706,6 @@
 	icon_state = "burnedtree[rand(1,5)]"
 	deadicon = 'icons/obj/wild.dmi'
 	deadicon_state = "burnedtree[rand(1,5)]"
-
-/obj/structure/wild/rock/New()
-	..()
-	icon_state = "rock[rand(1,5)]"
-	deadicon = 'icons/obj/wild.dmi'
-	deadicon_state = "rock[rand(1,5)]"
 
 /obj/structure/wild/jungle
 	name = "jungle tree"

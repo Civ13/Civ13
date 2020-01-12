@@ -53,14 +53,12 @@
 	force = 7
 	attack_verb = list("hit","bashed","poked")
 	item_state = "spear"
-	force = 7
 	sharp = FALSE
 	edge = FALSE
 	slot_flags = SLOT_BELT
 	throw_speed = 7
 	throw_range = 7
 	allow_spin = FALSE
-	attack_verb = list("hit","bashed")
 	value = 1
 	cooldownw = 6
 	flammable = TRUE
