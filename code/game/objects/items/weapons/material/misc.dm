@@ -197,6 +197,7 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 5
+	var/chopping_speed = 1
 
 /obj/item/weapon/material/hatchet/tribal
 	name = "hatchet"
@@ -209,6 +210,18 @@
 	value = 12
 	block_chance = 15
 	cooldownw = 5
+	chopping_speed = 1.35
+/obj/item/weapon/material/hatchet/tribal/bone
+	material = "bone"
+	desc = "A crude hatchet, made with wood and bone."
+	chopping_speed = 1.75
+
+/obj/item/weapon/material/hatchet/tribal/flint
+	material = "flint"
+	desc = "A very crude hatchet, made with wood and flint."
+	icon = 'icons/obj/old_weapons.dmi'
+	icon_state = "flint_axe"
+	chopping_speed = 1.5
 
 /obj/item/weapon/material/boarding_axe
 	name = "boarding axe"

@@ -78,6 +78,17 @@
 				sharpened = TRUE
 				return
 		return
+	else if (sharpened && istype(W, /obj/item/weapon/flint))
+		var/obj/item/weapon/flint/F = W
+		if (F.sharpened)
+			user << "You start attaching the flint to the stick..."
+			if (do_after(user, 100, src))
+				if (src && F && F.sharpened)
+					user << "You finish making the flint axe."
+					new/obj/item/weapon/material/hatchet/tribal/flint(user.loc)
+					qdel(F)
+					qdel(src)
+					return
 	else
 		..()
 
