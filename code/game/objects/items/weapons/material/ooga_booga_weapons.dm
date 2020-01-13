@@ -48,18 +48,17 @@
 	name = "stick"
 	desc = "A tree branch with all the leaves and small branches picked out."
 	icon_state = "debranched_stick"
+	item_state = "debranched_stick"
 	icon = 'icons/obj/old_weapons.dmi'
 	force = 7
 	attack_verb = list("hit","bashed","poked")
 	item_state = "spear"
-	force = 7
 	sharp = FALSE
 	edge = FALSE
 	slot_flags = SLOT_BELT
 	throw_speed = 7
 	throw_range = 7
 	allow_spin = FALSE
-	attack_verb = list("hit","bashed")
 	value = 1
 	cooldownw = 6
 	flammable = TRUE
@@ -79,6 +78,17 @@
 				sharpened = TRUE
 				return
 		return
+	else if (sharpened && istype(W, /obj/item/weapon/flint))
+		var/obj/item/weapon/flint/F = W
+		if (F.sharpened)
+			user << "You start attaching the flint to the stick..."
+			if (do_after(user, 100, src))
+				if (src && F && F.sharpened)
+					user << "You finish making the flint axe."
+					new/obj/item/weapon/material/hatchet/tribal/flint(user.loc)
+					qdel(F)
+					qdel(src)
+					return
 	else
 		..()
 
@@ -86,6 +96,7 @@
 	name = "sharpened stick"
 	desc = "A sharpened stick, to be used against bad apes."
 	icon_state = "sharpened_stick"
+	item_state = "sharpened_stick"
 	sharp = TRUE
 	force = 14
 	sharpened = TRUE

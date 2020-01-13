@@ -375,6 +375,15 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/stone
 	door_icon_base = "stone"
 
+/material/flint
+	name = "flint"
+	hardness = 50
+	weight = 22
+	integrity = 500
+	icon_colour = "#6f6a64"
+	sheet_singular_name = "stone"
+	sheet_plural_name = "stones"
+
 /material/bone
 	name = "bone"
 	hardness = 45

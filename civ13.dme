@@ -320,6 +320,7 @@
 #include "code\game\objects\structures\railing.dm"
 #include "code\game\objects\structures\religious.dm"
 #include "code\game\objects\structures\repairing.dm"
+#include "code\game\objects\structures\rocks.dm"
 #include "code\game\objects\structures\safe.dm"
 #include "code\game\objects\structures\sign_flags.dm"
 #include "code\game\objects\structures\signs.dm"

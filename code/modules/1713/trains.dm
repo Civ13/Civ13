@@ -500,7 +500,7 @@
 	max_storage = 15
 	New()
 		..()
-		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood)
+		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood, /obj/item/weapon/branch)
 
 /obj/structure/trains/storage/closed
 	name = "transport wagon"
@@ -718,6 +718,17 @@
 			user << "You refuel \the [src]."
 			return
 		else if (istype(S, /obj/item/stack/material/wood))
+			if (fuel>=max_fuel)
+				user << "<span class = 'notice'>The combustion chamber is full!</span>"
+				return
+			else if ((S.amount*3)+fuel>max_fuel)
+				user << "<span class = 'notice'>The combustion chamber can't fit that much fuel! Try with a smaller amount.</span>"
+				return
+			fuel+= S.amount*3
+			qdel(W)
+			user << "You refuel \the [src]."
+			return
+		else if (istype(S, /obj/item/weapon/branch))
 			if (fuel>=max_fuel)
 				user << "<span class = 'notice'>The combustion chamber is full!</span>"
 				return

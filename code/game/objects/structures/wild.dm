@@ -103,10 +103,12 @@
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/hatchet))
+		var/obj/item/weapon/material/hatchet/HT = W
+
 		visible_message("<span class='danger'>[user] begins to chop down \the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
-		if (do_after(user, 50, user.loc))
+		if (do_after(user, 50*HT.chopping_speed, user.loc))
 			health = 0
 			try_destroy()
 			if (prob(50))
@@ -576,18 +578,6 @@
 	health = 20
 	maxhealth = 20
 
-/obj/structure/wild/rock
-	name = "rock"
-	icon_state = "rock1"
-	deadicon = 'icons/obj/wild.dmi'
-	deadicon_state = "rock1"
-	opacity = FALSE
-	density = FALSE
-	flammable = FALSE
-	amount = 0
-	health = 20
-	maxhealth = 20
-
 /obj/structure/wild/tallgrass
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
@@ -718,12 +708,6 @@
 	icon_state = "burnedtree[rand(1,5)]"
 	deadicon = 'icons/obj/wild.dmi'
 	deadicon_state = "burnedtree[rand(1,5)]"
-
-/obj/structure/wild/rock/New()
-	..()
-	icon_state = "rock[rand(1,5)]"
-	deadicon = 'icons/obj/wild.dmi'
-	deadicon_state = "rock[rand(1,5)]"
 
 /obj/structure/wild/jungle
 	name = "jungle tree"
