@@ -34,6 +34,20 @@
 	else
 		..()
 
+/obj/structure/wild/rock/attackby(var/obj/item/weapon/W, var/mob/living/carbon/human/H)
+	if (istype(W, /obj/item/weapon/flint))
+		H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		var/obj/item/weapon/flint/F = W
+		if (!F.sharpened)
+			H << "<span class='warning'>You hit the rock with \the [W].</span>"
+			playsound(src,'sound/effects/Stamp.ogg',100,1)
+			if (prob(20))
+				H << "\The [W] chips away, exposing a sharp edge!"
+				F.sharpen()
+		return
+
+	..()
+
 /obj/structure/wild/rock/proc/flint_regen()
 	spawn(18000)
 		if (src && flint_amount < 5)
@@ -57,7 +71,7 @@
 	edge = FALSE
 	w_class = 1.0
 	throw_speed = 7
-	throw_range = 7
+	throw_range = 10
 	allow_spin = TRUE
 	attack_verb = list("hit","bashed")
 	value = 1
@@ -73,3 +87,16 @@
 	sharp = TRUE
 	attack_verb = list("cut","stabbed")
 	sharpened = TRUE
+	force = 12
+
+/obj/item/weapon/flint/proc/sharpen()
+	if (!sharpened)
+		name = "sharpened flint"
+		desc = "A small piece of sharpened flint rock."
+		icon_state = "sharpened_flint"
+		edge = TRUE
+		sharp = TRUE
+		attack_verb = list("cut","stabbed")
+		sharpened = TRUE
+		force = 12
+	return
