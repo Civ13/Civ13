@@ -184,10 +184,24 @@
 	load_delay = 100
 
 
+/obj/item/weapon/gun/projectile/flintlock/springfield1795
+	name = "Springfield 1795 Musket"
+	desc = "The Model 1795 was the first musket to be produced in the United States."
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "musketball"
+	weight = 5.0
+	effectiveness_mod = 1.09
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	item_state = "springfield"
+	icon_state = "springfield1795"
+	load_delay = 100
+
 /obj/item/weapon/gun/projectile/flintlock/musketoon
 	name = "flintlock musketoon"
 	desc = "A smaller version of the flintlock musket, this gun is favored by seamen due to being compact, albeit less accurate."
-	icon_state = "musketoon"
+	icon_state = "compactmusket"
 	item_state = "musketoon"
 	force = 8
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
