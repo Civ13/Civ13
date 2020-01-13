@@ -205,6 +205,7 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalaxe"
 	material = "stone"
+	item_state = "bonehatchet"
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 13 with weight 20 (steel)
 	value = 12
@@ -214,6 +215,8 @@
 /obj/item/weapon/material/hatchet/tribal/bone
 	material = "bone"
 	desc = "A crude hatchet, made with wood and bone."
+	icon_state = "bonehatchet"
+	item_state = "bonehatchet"
 	chopping_speed = 1.75
 
 /obj/item/weapon/material/hatchet/tribal/flint
