@@ -116,6 +116,10 @@ RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/cus
 RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,15,6,null
 RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,15,6,null
 RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,15,6,null
+RECIPE: /material/cloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,24,0,38,6,null
+RECIPE: /material/cloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,24,0,38,6,null
+RECIPE: /material/cloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,24,0,38,6,null
+RECIPE: /material/cloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
@@ -240,6 +244,8 @@ RECIPE: /material/cloth/,olive drab NBC hood,/obj/item/clothing/head/nbc/olive,3
 RECIPE: /material/cloth/,yellow NBC suit,/obj/item/clothing/suit/nbc,12,200,0,1,jackets & vests,0,0,145,8,null
 RECIPE: /material/cloth/,yellow NBC hood,/obj/item/clothing/head/nbc,3,100,0,1,jackets & vests,0,0,145,8,null
 RECIPE: /material/cloth/,grey parka,/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,0,1,jackets & vests,0,0,145,8,null
+RECIPE: /material/cloth/,custom haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
+RECIPE: /material/cloth/,black haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
 
 RECIPE: /material/cloth/,mayan headdress,/obj/item/clothing/head/mayan_headdress,4,55,0,1,hats & masks,0,0,18,3,null
 RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,hats & masks,0,0,18,1,null
@@ -258,7 +264,9 @@ RECIPE: /material/cloth/,custom noble hat,/obj/item/clothing/head/custom/customn
 RECIPE: /material/cloth/,black bicorne,/obj/item/clothing/head/bicorne_british_soldier,2,95,0,1,hats & masks,0,0,52,4,null
 RECIPE: /material/cloth/,black tricorne,/obj/item/clothing/head/tricorne_black,3,75,0,1,hats & masks,0,0,52,4,null
 RECIPE: /material/cloth/,tarred hat,/obj/item/clothing/head/tarred_hat,3,75,0,1,hats & masks,0,0,52,5,null
-RECIPE: /material/cloth/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,hats & masks,0,0,52,8,null
+RECIPE: /material/cloth/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,hats & masks,0,0,38,8,null
+RECIPE: /material/cloth/,kasa hat,/obj/item/clothing/head/helmet/kasa,3,75,0,1,hats & masks,0,0,40,8,null
+RECIPE: /material/cloth/,jingasa hat,/obj/item/clothing/head/helmet/jingasa,5,75,0,1,hats & masks,0,0,40,8,null
 RECIPE: /material/cloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/cloth/,gat hat,/obj/item/clothing/head/gat,2,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/cloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats & masks,0,0,52,3,null
@@ -301,6 +309,10 @@ RECIPE: /material/cloth/,light white arabic tunic,/obj/item/clothing/under/medie
 RECIPE: /material/cloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,38,0,0,8,null
+RECIPE: /material/cloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,24,0,38,8,null
+RECIPE: /material/cloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,24,0,38,8,null
+RECIPE: /material/cloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,24,0,38,8,null
+RECIPE: /material/cloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,24,0,38,8,null
 RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,clothing,38,0,0,3,null
 RECIPE: /material/cloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/cloth/,customizable pontifical clothing,/obj/item/clothing/under/custompontifical,6,105,0,1,clothing,0,0,59,8,null
@@ -841,6 +853,7 @@ RECIPE: /material/wood/,wood totem pole,/obj/structure/religious/totem_pole,10,2
 RECIPE: /material/wood/,cross,/obj/structure/religious/woodcross2,4,80,1,1,religious & decoration,47,0,0,8,null
 
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,kitchen & other,0,0,0,8,null
+RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,kitchen & other,24,0,38,8,null
 RECIPE: /material/wood/,wood mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,1,40,0,1,kitchen & other,0,0,0,8,null
 RECIPE: /material/wood/,campfire,/obj/structure/oven/fireplace,4,140,1,1,kitchen & other,0,0,0,8,null
 RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,kitchen & other,0,0,0,8,null
