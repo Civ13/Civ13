@@ -676,7 +676,7 @@
 	armor = list(melee = 65, arrow = 75, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
 	slowdown = 0.6
-	health = 40
+	health = 35
 
 /obj/item/clothing/suit/armor/samurai/red
 	name = "red samurai armor"
@@ -773,6 +773,60 @@
 	item_state = "artisan3"
 	worn_state = "artisan3"
 
+/obj/item/clothing/under/haori
+	name = "haori"
+	desc = "A light, loose fitting bit of clothes, worn in japan."
+	icon_state = "haori"
+	item_state = "haori"
+	worn_state = "haori"
+
+/obj/item/clothing/under/haori/blue
+	name = "haori"
+	desc = "A light, loose fitting bit of clothes, worn in japan."
+	icon_state = "haori3"
+	item_state = "haori3"
+	worn_state = "haori3"
+
+/obj/item/clothing/under/haori/red
+	name = "haori"
+	desc = "A light, loose fitting bit of clothes, worn in japan."
+	icon_state = "haori2"
+	item_state = "haori2"
+	worn_state = "haori2"
+
+/obj/item/clothing/under/haori/samurai
+	name = "haori"
+	desc = "A light, loose fitting bit of clothes, worn in japan."
+	icon_state = "haori_samurai"
+	item_state = "haori_samurai"
+	worn_state = "haori_samurai"
+
+/obj/item/clothing/under/haori/samurai/blue
+	name = "haori"
+	desc = "A light, loose fitting bit of clothes, worn in japan."
+	icon_state = "haori_samurai2"
+	item_state = "haori_samurai2"
+	worn_state = "haori_samurai2"
+
+/obj/item/clothing/under/haori/samurai/red
+	name = "haori"
+	desc = "A light, loose fitting bit of clothes, worn in japan."
+	icon_state = "haori_samurai3"
+	item_state = "haori_samurai3"
+	worn_state = "haori_samurai3"
+
+/obj/item/clothing/shoes/geta
+	name = "geta sandals"
+	desc = "A pair of simple, wood sandals. Keeps you elevated off he ground slightly."
+	icon_state = "geta"
+	item_state = "geta"
+	worn_state = "geta"
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 5, arrow = 3, gun = FALSE, energy = 5, bomb = 5, bio = 5, rad = 5)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+
+
 /obj/item/clothing/head/helmet/samurai
 	name = "samurai helmet"
 	desc = "A thick leather helmet of japanese origin. Typically worn by feudal lords."
@@ -781,6 +835,47 @@
 	worn_state = "samurai3"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 55, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	health = 55
+
+/obj/item/clothing/head/helmet/jingasa
+	name = "jingasa"
+	desc = "A thick leather and straw hat of japanese origin. Typically worn by ranged combatant samurai."
+	icon_state = "jingasa"
+	item_state = "jingasa"
+	worn_state = "jingasa"
+	body_parts_covered = HEAD
+	armor = list(melee = 30, arrow = 15, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	health = 30
+	var/adjusted = FALSE
+
+/obj/item/clothing/head/helmet/jingasa/verb/adjust_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/jingasa)
+		return
+	else
+		if (adjusted)
+			item_state = "jingasa"
+			worn_state = "jingasa"
+			item_state_slots["slot_head"] = "jingasa"
+			usr << "<span class = 'danger'>You adjust your jingasa's flaps.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "jingasa_flaps"
+			worn_state = "jingasa_flaps"
+			item_state_slots["slot_head"] = "jingasa_flaps"
+			usr << "<span class = 'danger'>You adjust your jingasa's flaps.</span>"
+			adjusted = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/head/helmet/kasa
+	name = "kasa"
+	desc = "A thick straw hat of japanese origin. Typically worn by travelers."
+	icon_state = "kasa"
+	item_state = "kasa"
+	worn_state = "kasa"
+	body_parts_covered = HEAD
+	armor = list(melee = 20, arrow = 15, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 30
 
 /obj/item/clothing/head/helmet/samurai/guard

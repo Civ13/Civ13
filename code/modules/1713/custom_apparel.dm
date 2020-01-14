@@ -145,6 +145,20 @@
 	item_state = "customtunic"
 	worn_state = "customtunic"
 
+/obj/item/clothing/under/custom/haori
+	name = "haori"
+	desc = "A light, loose fitting bit of clothes, worn in japan."
+	icon_state = "haori_custom"
+	item_state = "haori_custom"
+	worn_state = "haori_custom"
+
+/obj/item/clothing/suit/storage/jacket/custom/haori_jacket
+	name = "haori jacket"
+	desc = "A simple jacket worn over a haori outfit."
+	icon_state = "haori_jacket_custom"
+	item_state = "haori_jacket_custom"
+	worn_state = "haori_jacket_custom"
+
 /obj/item/clothing/under/custom/arabictunic
 	name = "arabic tunic"
 	desc = "A light cloth tunic, in arabic style."
