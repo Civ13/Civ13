@@ -253,6 +253,60 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 			VERY_LONG_RANGE_STILL = 63*0.85,
 			VERY_LONG_RANGE_MOVING = 32*0.85),
 	)
+
+obj/item/weapon/gun/projectile/ancient/tanegashima
+	name = "tanegashima"
+	desc = "A musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger. This one being Japanese, introduced to them via the Portuguese."
+	icon_state = "tanegashima"
+	item_state = "tanegashima"
+	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
+	fire_delay = 3
+	recoil = 3
+
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 84*0.9,
+			SHORT_RANGE_MOVING = 43*0.9,
+
+			MEDIUM_RANGE_STILL = 74*0.9,
+			MEDIUM_RANGE_MOVING = 38*0.9,
+
+			LONG_RANGE_STILL = 64*0.9,
+			LONG_RANGE_MOVING = 33*0.9,
+
+			VERY_LONG_RANGE_STILL = 54*0.85,
+			VERY_LONG_RANGE_MOVING = 23*0.85),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 89*0.9,
+			SHORT_RANGE_MOVING = 45*0.9,
+
+			MEDIUM_RANGE_STILL = 79*0.9,
+			MEDIUM_RANGE_MOVING = 40*0.9,
+
+			LONG_RANGE_STILL = 69*0.9,
+			LONG_RANGE_MOVING = 35*0.9,
+
+			VERY_LONG_RANGE_STILL = 59*0.85,
+			VERY_LONG_RANGE_MOVING = 30*0.85),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 94*0.9,
+			SHORT_RANGE_MOVING = 48*0.9,
+
+			MEDIUM_RANGE_STILL = 84*0.9,
+			MEDIUM_RANGE_MOVING = 43*0.9,
+
+			LONG_RANGE_STILL = 74*0.9,
+			LONG_RANGE_MOVING = 38*0.9,
+
+			VERY_LONG_RANGE_STILL = 64*0.85,
+			VERY_LONG_RANGE_MOVING = 33*0.85),
+	)
 /obj/item/weapon/gun/projectile/ancient/attack_self(mob/user)
 	return
 
@@ -290,6 +344,8 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 						icon_state = "firelance1"
 					if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
 						icon_state = "matchlock_cocked"
+					if (istype(src, /obj/item/weapon/gun/projectile/ancient/tanegashima))
+						icon_state = "tanegashima_cocked"
 						lighted = TRUE
 					if (ST.amount == 1)
 						qdel(W)
@@ -332,10 +388,10 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 	if (!bullet)
 		user << "<span class='warning'>You can't fire \the [src] without a projectile!</span>"
 		return FALSE
-	if (!lighted && !istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
+	if (!lighted && !istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock) && (/obj/item/weapon/gun/projectile/ancient/tanegashima))
 		user << "<span class='warning'>You can't fire \the [src] without lighting it!</span>"
 		return FALSE
-	if (!(user.has_empty_hand(both = FALSE)) && istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
+	if (!(user.has_empty_hand(both = FALSE)) && istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock) && (/obj/item/weapon/gun/projectile/ancient/tanegashima))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
 	return ..()
@@ -356,6 +412,8 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 		icon_state = "firelance0"
 	if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
 		icon_state = "matchlock"
+	if (istype(src, /obj/item/weapon/gun/projectile/ancient/tanegashima))
+		icon_state = "tanegashima"
 	spawn (1)
 		new/obj/effect/effect/smoke/chem(get_step(src, dir))
 	spawn (5)
