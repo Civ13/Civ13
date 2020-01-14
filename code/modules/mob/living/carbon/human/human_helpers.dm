@@ -248,24 +248,33 @@
 	if (!client)
 		return
 	var/obj/structure/vehicleparts/frame/found = null
+	var/obj/roof/found2 = null
 	for (var/image/tmpimg in client.images)
-		if (tmpimg.icon == 'icons/obj/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles96x96.dmi')
-		 client.images.Remove(tmpimg)
+		if (tmpimg.icon == 'icons/obj/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles96x96.dmi' || tmpimg.icon == 'icons/turf/roofs.dmi')
+			client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
-	if (found)
-		for (var/obj/structure/vehicleparts/frame/FR in view(client))
+	for (var/obj/structure/vehicleparts/frame/FR in view(client))
+		if (found)
 			if (FR.axis != found.axis && FR != found)
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
-	else
-		for (var/obj/structure/vehicleparts/frame/FR in view(client))
+		else
 			if (locate(FR) in view(client))
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
-
+	for (var/obj/roof/RF in loc)
+		found2 = RF
+	for (var/obj/roof/FR in range(7,src))
+		if (found2)
+			client.images -= FR.roof_overlay
+		else
+			if (locate(FR) in range(7,src))
+				client.images += FR.roof_overlay
+			else
+				client.images -= FR.roof_overlay
 /mob/living/carbon/human
 	var/drowning = FALSE
 	var/water_overlay = FALSE

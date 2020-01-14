@@ -2,8 +2,9 @@
 
 	name = "wood roof"
 	desc = "A wooden roof."
-	icon = 'icons/turf/floors.dmi'
+	icon = 'icons/turf/roofs.dmi'
 	icon_state = "roof"
+	var/overlay_state = "wood"
 	var/passable = TRUE
 	var/origin_density = FALSE
 	var/not_movable = TRUE //if it can be removed by wrenches
@@ -21,9 +22,39 @@
 //	invisibility = 101
 	flammable = TRUE
 	var/current_area_type = /area/caribbean
+	var/image/roof_overlay
+
+/obj/roof/clay
+	name = "clay roof"
+	desc = "A clay tile roof."
+	flammable = FALSE
+	overlay_state = "clay"
+
+/obj/roof/thatch
+	name = "thatch roof"
+	desc = "A tatch roof."
+	overlay_state = "thatch"
+
+/obj/roof/palm
+	name = "palm leaves roof"
+	desc = "a roof made of layered palm leaves."
+	overlay_state = "palm"
+
+/obj/roof/proc/recalculate_borders(var/recalculate_others = FALSE)
+	var/founddir = 0
+	for (var/drr in list(NORTH,SOUTH,EAST,WEST))
+		for (var/obj/roof/RF in get_step(src, drr))
+			founddir+=drr
+	roof_overlay.icon_state = "[overlay_state]_[founddir]"
+	if (recalculate_others)
+		for (var/obj/roof/R in range(1,src))
+			R.recalculate_borders(FALSE)
 
 /obj/roof/New()
 	..()
+	roof_overlay = image(icon='icons/turf/roofs.dmi', loc = src, icon_state=overlay_state,layer=11.1)
+	roof_overlay.plane = ROOF_PLANE
+	recalculate_borders(TRUE)
 	var/area/caribbean/CURRENTAREA = get_area(src)
 //	var/oldclimate = CURRENTAREA.climate
 	if (CURRENTAREA.location == AREA_OUTSIDE)
@@ -39,6 +70,8 @@
 	new current_area_type(get_turf(src))
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
+	for (var/obj/roof/R in range(1,src))
+		R.recalculate_borders(FALSE)
 	..()
 
 /obj/roof/proc/collapse_check()
