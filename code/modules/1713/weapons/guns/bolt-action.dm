@@ -436,6 +436,30 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 19
 
+/obj/item/weapon/gun/projectile/boltaction/madsenm47
+	name = "Madsen M47"
+	desc = "A Danish bolt action."
+	icon_state = "madsenm47"
+	item_state = "gewehr71"
+	base_icon = "gewehr71"
+	caliber = "a765x53"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a762x51
+	magazine_type = /obj/item/ammo_magazine/gewehr71
+	bolt_safety = FALSE
+	effectiveness_mod = 0.85
+	value = 90
+	slot_flags = SLOT_SHOULDER
+	recoil = 1
+	force = 10
+	throwforce = 20
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 20
+
 /obj/item/weapon/gun/projectile/boltaction/mauser1890
 	name = "Mauser M1890"
 	desc = "A german bolt-action rifle commonly known as the \"Ottoman Mauser\", chambered in 7.65x53mm Mauser ammunition."
