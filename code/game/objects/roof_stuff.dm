@@ -53,7 +53,6 @@
 /obj/roof/New()
 	..()
 	roof_overlay = image(icon='icons/turf/roofs.dmi', loc = src, icon_state=overlay_state,layer=11.1)
-	roof_overlay.plane = ROOF_PLANE
 	recalculate_borders(TRUE)
 	var/area/caribbean/CURRENTAREA = get_area(src)
 //	var/oldclimate = CURRENTAREA.climate
