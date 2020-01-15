@@ -580,3 +580,22 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 11
+
+/obj/item/weapon/material/scepter
+	name = "gold scepter"
+	sharp = FALSE
+	edge = FALSE
+	desc = "An old golden staff, doesn't do too much damage but its fast at blocking and hitting"
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	icon_state = "scepter"
+	item_state = "scepter"
+	default_material = "gold"
+	throw_speed = 6
+	throw_range = 10
+	allow_spin = TRUE
+	force_divisor = 0.5 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	attack_verb = list("bashed","poked","beaten")
+	value = 6
+	block_chance = 20
+	cooldownw = 5
