@@ -547,6 +547,10 @@ var/list/floor_decals = list()
 	name = "plaque"
 	icon_state = "plaque"
 
+/obj/effect/floor_decal/washit
+	name = "Wash it"
+	icon_state = "washit"
+
 /obj/effect/floor_decal/dirtwall
 	name = "dirt wall"
 	icon = 'icons/obj/structures.dmi'
