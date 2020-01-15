@@ -217,3 +217,18 @@
 	name = "Flammenwerfer backpack"
 	icon_state = "flammenwerfer_back"
 	item_state = "flammenwerfer"
+
+/obj/item/weapon/flamethrower/type100
+	name = "Type100 Flamethrower hose"
+	icon_state = "type100_flamethrower"
+	item_state = "type100_flamethrower"
+	base_icon = "type100_flamethrower"
+
+/obj/item/weapon/reagent_containers/glass/flamethrower/type100/filled/New()
+	..()
+	reagents.add_reagent("gasoline",100)
+
+/obj/item/weapon/reagent_containers/glass/flamethrower/type100
+	name = "Type100 Flamethrower Canister"
+	icon_state = "type100_flamethrower_back"
+	item_state = "type100_flamethrower"

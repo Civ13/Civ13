@@ -113,13 +113,15 @@ RECIPE: /material/woolcloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,
 RECIPE: /material/woolcloth/,custom officer cap,/obj/item/clothing/head/custom_off_cap,4,95,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/woolcloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/customhood,2,40,0,1,hats & masks,0,0,26,8,null
+RECIPE: /material/woolcloth/,custom hennin,/obj/item/clothing/head/custom_hennin,2,40,0,1,hats & masks,0,0,38,3,null
+RECIPE: /material/woolcloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,15,6,null
 RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,15,6,null
 RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,15,6,null
-RECIPE: /material/cloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,24,0,38,6,null
-RECIPE: /material/cloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,24,0,38,6,null
-RECIPE: /material/cloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,24,0,38,6,null
-RECIPE: /material/cloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
+RECIPE: /material/woolcloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,24,0,38,6,null
+RECIPE: /material/woolcloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,24,0,38,6,null
+RECIPE: /material/woolcloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,24,0,38,6,null
+RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
@@ -278,6 +280,7 @@ RECIPE: /material/cloth/,cowboy hat,/obj/item/clothing/head/cowboyhat,3,55,0,1,h
 RECIPE: /material/cloth/,dark cowboy hat,/obj/item/clothing/head/cowboyhat2,3,55,0,1,hats & masks,0,0,98,8,null
 RECIPE: /material/cloth/,bowler hat,/obj/item/clothing/head/bowler_hat,2,55,0,1,hats & masks,0,0,98,5,null
 RECIPE: /material/cloth/,sombrero,/obj/item/clothing/head/sombrero,4,75,0,1,hats & masks,0,0,98,8,null
+RECIPE: /material/cloth/,customizable hennin,/obj/item/clothing/head/custom_hennin,2,55,0,1,hats & masks,0,0,38,3,null
 RECIPE: /material/cloth/,red kerchief,/obj/item/clothing/mask/shemagh/redkerchief,2,45,0,1,hats & masks,0,0,98,8,null
 RECIPE: /material/cloth/,grey kerchief,/obj/item/clothing/mask/shemagh/greykerchief,2,45,0,1,hats & masks,0,0,98,8,null
 RECIPE: /material/cloth/,tophat,/obj/item/clothing/head/top_hat,5,95,0,1,hats & masks,0,0,109,5,null
@@ -287,6 +290,7 @@ RECIPE: /material/cloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,0,1,
 RECIPE: /material/cloth/,custom officer cap,/obj/item/clothing/head/custom_off_cap,4,95,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/cloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats & masks,0,0,109,8,null
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
 RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,0,3,null
@@ -303,6 +307,7 @@ RECIPE: /material/cloth/,customizable tribal robe,/obj/item/clothing/under/custo
 RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/tunic,4,85,0,1,clothing,38,0,0,5,null
+RECIPE: /material/cloth/,customizable crinoline dress,/obj/item/clothing/under/crinoline_dress,4,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,customizable arabic tunic,/obj/item/clothing/under/custom/arabictunic,4,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light brown arabic tunic,/obj/item/clothing/under/medieval/arab1,3,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light white arabic tunic,/obj/item/clothing/under/medieval/arab2,3,85,0,1,clothing,38,0,0,5,null
