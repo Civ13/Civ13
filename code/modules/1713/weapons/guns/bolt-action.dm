@@ -441,7 +441,7 @@
 	desc = "A Danish bolt action."
 	icon_state = "madsenm47"
 	item_state = "gewehr71"
-	base_icon = "gewehr71"
+	base_icon = "madsenm47"
 	caliber = "a765x53"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
