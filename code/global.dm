@@ -1,4 +1,4 @@
-//#define TESTING
+#define TESTING
 #if DM_VERSION < 512
 #warn This compiler is out of date. You may experience issues with projectile animations.
 #endif
