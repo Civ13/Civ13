@@ -595,7 +595,7 @@ window "mainwindow"
 		background-color = #000000
 		is-default = true
 		saved-params = "pos;size;is-minimized;is-maximized"
-		title = "Civilization 13"
+		title = "Metro13"
 		titlebar = false
 		is-maximized = true
 		keep-aspect = true
@@ -807,7 +807,7 @@ window "rpane"
 		text-color = #e1e1d7
 		background-color = #271a0c
 		saved-params = ""
-		text = "Civilization 13"
+		text = "Metro13"
 
 window "text_editor"
 	elem "text_editor"

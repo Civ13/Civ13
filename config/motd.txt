@@ -1,11 +1,11 @@
-<h2><small><span style = "font-size: 1.20em;">Welcome to <b><span style = "font-size: 1.20em;">Civilization 13<span style = "color: #CD4C6C"> - Beta Edition</span></span></b></span></small></h2>
+<h2><small><span style = "font-size: 1.20em;">Welcome to <b><span style = "font-size: 1.20em;">Metro 13<span style = "color: #CD4C6C"> - PreAlpha Edition</span></span></b></span></small></h2>
 <i>
 The current map is <b>{server_map}</b>.
 <br>
 This server is running {server_version}, and you are running {client_version}.
-<h2>RULES: http://civ13.com/rules</h2>
+<h2>RULES: https://metro13.fandom.com/wiki/Rules</h2>
 
-<h2><small>Github: https://github.com/civ13-SS13/civ13</small></h2>
-<h2><small>Discord: https://discord.gg/hBEtg4x</small></h2>
-<h2><small>Wiki: http://civ13.com/wiki/index.php/Main_Page</small></h2>
+<h2><small>Github: https://github.com/JohnRedneck/Metro-13</small></h2>
+<h2><small>Discord: https://discord.gg/epHWAH9</small></h2>
+<h2><small>Wiki: https://metro13.fandom.com</small></h2>
 </i>
