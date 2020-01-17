@@ -1,15 +1,15 @@
 ## Server name: This appears at the top of the screen in-game and in the BYOND hub. Remove the # infront of SERVERNAME and replace 'tgstation' with the name of your choice.
 ## IMPORTANT: Don't include special characters such as ' in here
-SERVER_NAME Civilization 13
+SERVER_NAME Metro 13
 
 ## Where is the game folder located?
-MASTER_DIRECTORY /home/1713
+MASTER_DIRECTORY C:\Users\windows\Documents\GitHub\Metro-13
 
 ## If this server is running RP maps only, TDM only, or both (RP TDM ALL).
 ALLOWED_GAMEMODES ALL
 
 ## What features do you want to advertise on your hub message?
-HUB_FEATURES From the Stone Age to the Industrial Age
+HUB_FEATURES The Metro 2033 experience in SS13!
 
 ## The main content of your hub message
 HUB_BODY <b>EPOCH, TIME_OF_DAY, WEATHER</b><br>
@@ -30,7 +30,7 @@ HUBTESTING_PORT 11001
 HUB
 
 # Lobby time: This is the amount of time between rounds that players have to setup their characters and be ready.
-LOBBY_COUNTDOWN 90
+LOBBY_COUNTDOWN 15 # For testing purposes, 15 seconds is just enough to select a specific role but not long enough to make mappers/spriters sudoku
 
 # Round End Time: This is the amount of time after the round ends that players have to murder death kill each other.
 ROUND_END_COUNTDOWN 90
@@ -153,30 +153,30 @@ USE_JOB_WHITELIST
 SERVER 192.210.161.174:23999
 
 ## donation address
-DONATIONURL https://www.patreon.com/1713ad
+#DONATIONURL https://www.patreon.com/1713ad
 
 ## rules address
-RULESURL http://civ13.com/wiki/index.php?title=Rules
+RULESURL https://metro13.fandom.com/wiki/Rules
 
 ## discord address
-DISCORDURL https://discord.gg/hBEtg4x
+DISCORDURL https://discord.gg/epHWAH9
 
 ## Wiki address
-WIKIURL http://civ13.com/wiki/index.php/Main_Page
+WIKIURL https://metro13.fandom.com/wiki/
 
 ## Website address
-WEBSITEURL http://civ13.com/
+WEBSITEURL https://github.com/JohnRedneck/Metro-13
 
 ##Github address
-GITHUBURL https://github.com/civ13-SS13/civ13/
+GITHUBURL https://github.com/JohnRedneck/Metro-13
 
 ##Github repo id
 ##This can be found by going to https://api.github.com/users/<user name here>/repos
 ##Or https://api.github.com/orgs/<org name here>/repos if the repo owner is an organization 
-# GITHUBREPOID 3234987
+# GITHUBREPOID 145341254 # Is currently JohnRedneck's ID
 
 ## Ban appeals URL - usually for a forum or wherever people should go to contact your admins.
-# BANAPPEALS https://discord.gg/hBEtg4x
+# BANAPPEALS https://discord.gg/epHWAH9 # Links to the Metro 13 Discord
 
 ## Remove the # to show a popup 'reply to' window to every non-admin that recieves an adminPM.
 ## The intention is to make adminPMs more visible. (although I fnd popups annoying so this defaults to off)
