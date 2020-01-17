@@ -116,7 +116,7 @@
 	set name = "Wake Up"
 	set category = "IC"
 
-	if (!usr.sleeping)
+	if (!usr.sleeping && !inducedSSD)
 		usr << "<span class = 'red'>You are already awake.</span>"
 		return
 	if (WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
