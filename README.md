@@ -19,10 +19,10 @@ https://metro13.fandom.com/wiki/
 
 
 ## Trello
-SOON TO BE LINKED
+https://trello.com/b/s3iubf6J/metro-13-roadmap
 
 
-## Playing the game
+## Playing the game (tutorial stolen from https://github.com/Civ13-SS13/Civ13/blob/master/README.md)
 You will need a windows machine or a virtual machine running it from another OS.
 
 1. Download the latest BYOND distribution from http://www.byond.com/download/
@@ -36,7 +36,7 @@ You will need a windows machine or a virtual machine running it from another OS.
 5. You will start playing in seconds!
 
 
-## Setting up a Server
+## Setting up a Server (tutorial stolen from https://github.com/Civ13-SS13/Civ13/blob/master/README.md)
 1. You will need a linux machine for the automated install, preferably Ubuntu. Open the command line.
  
  2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13-SS13/Civ13/master/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install*** wget first.
