@@ -597,6 +597,13 @@
 	item_state = "french_officer"
 	worn_state = "french_officer"
 
+/obj/item/clothing/under/baycona
+	name = "Baycona outfit"
+	desc = "A set of baycona officer clothes, this seems to be very old."
+	icon_state = "baycona"
+	item_state = "baycona"
+	worn_state = "baycona"
+
 /obj/item/clothing/under/french_sailor1
 	name = "french sailor clothes"
 	desc = "A set of french navy sailor clothes, with light blue shirt and trousers."
