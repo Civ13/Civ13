@@ -498,10 +498,9 @@
 	spawnerproc()
 
 /obj/effect/spawner/objspawner/proc/getEmptyTurf()
-	var/nearbyObjects = range(max_range,src)
 	var/list/turf/emptyTurfs = new
 	var/invalid = FALSE
-	for(var/turf/T in nearbyObjects)
+	for(var/turf/T in range(max_range,src))
 		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
 			invalid = TRUE
 		for(var/obj/structure/OB in T)
