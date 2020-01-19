@@ -87,6 +87,15 @@
 	is_diggable = TRUE
 	initial_flooring = /decl/flooring/snow_dirt
 
+/turf/floor/dirt/dry_lava
+	name = "dried lava"
+	icon_state = "lava_dry"
+	uses_winter_overlay = FALSE
+	may_become_muddy = TRUE
+	available_dirt = 0
+	is_diggable = TRUE
+	initial_flooring = null
+
 /turf/floor/dirt/burned
 	name = "burned ground"
 	icon_state = "burned_dirt"
