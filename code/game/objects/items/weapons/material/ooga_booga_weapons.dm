@@ -64,6 +64,22 @@
 	flammable = TRUE
 	var/sharpened = FALSE
 
+	var/ants = FALSE
+
+/obj/item/weapon/branch/attack_self(mob/living/carbon/human/user as mob)
+	if (ants && user.a_intent == I_HELP)
+		user << "You start licking some ants off the stick..."
+		if (do_after(user, 50, src))
+			if (src && ants)
+				user << "You finish eating some ants."
+				icon_state = "sharpened_stick"
+				ants = FALSE
+				if (!user.gorillaman)
+					user.mood -= 10
+				user.nutrition += 80
+				return
+	else
+		..()
 /obj/item/weapon/branch/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.edge && !sharpened)
 		user << "You start sharpening the stick..."
