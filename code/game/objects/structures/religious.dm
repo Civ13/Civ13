@@ -29,7 +29,7 @@
 /obj/structure/religious/olmec_head
 	name = "large stone head"
 	desc = "A large stone head."
-	icon = 'icons/obj/cross.dmi'
+	icon = 'icons/obj/statue.dmi'
 	icon_state = "olmec_head"
 	density = TRUE
 	anchored = TRUE
