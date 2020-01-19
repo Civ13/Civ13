@@ -52,7 +52,6 @@
 	icon = 'icons/obj/old_weapons.dmi'
 	force = 7
 	attack_verb = list("hit","bashed","poked")
-	item_state = "spear"
 	sharp = FALSE
 	edge = FALSE
 	slot_flags = SLOT_BELT
