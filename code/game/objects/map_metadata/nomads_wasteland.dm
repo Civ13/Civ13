@@ -93,6 +93,10 @@
 				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Weapons and ammunition have been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/weapons(locationt)
 
+			if("military")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>military equipment have been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/military(locationt)
+
 			if("medicine")
 				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Medicine has been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/medicine(locationt)
