@@ -317,7 +317,3 @@
 	throwforce = 20
 	attachment_slots = ATTACH_SCOPE|ATTACH_BARREL
 	effectiveness_mod = 1.07
-/obj/item/weapon/gun/projectile/semiautomatic/ar15/New()
-	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
-	SP.attached(null,src,TRUE)
