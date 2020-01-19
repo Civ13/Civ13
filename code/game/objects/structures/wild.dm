@@ -878,13 +878,7 @@
 	icon_state = "chinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
-	if(user.a_intent == I_HARM && map.chad_mode)
-		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		visible_message("[user] punches \the [src]!")
-		health -= 5
-		try_destroy()
-		return
-	else if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
+	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
 		var/mob/living/carbon/human/H = user
 		if (H.gorillaman)
 			H << "You start foraging for some edible leaves..."

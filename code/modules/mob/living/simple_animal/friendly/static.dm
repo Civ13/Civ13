@@ -180,16 +180,15 @@
 /obj/structure/anthill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/branch))
 		var/obj/item/weapon/branch/B = W
-		if (B.sharpened)
-			H.visible_message("[H] starts poking inside the anthill with the stick.")
-			if (do_after(H, 120, src))
-				if (prob(40))
-					H << "You get some ants on your stick."
-					B.ants = TRUE
-					B.icon_state = "ant_stick"
-				else
-					H << "You can't seem to get any ants to react..."
-					return
+		H.visible_message("[H] starts poking inside the anthill with the stick.")
+		if (do_after(H, 120, src))
+			if (prob(40))
+				H << "You get some ants on your stick."
+				B.ants = TRUE
+				B.icon_state = "ant_stick"
+			else
+				H << "You can't seem to get any ants to react..."
+				return
 
 /obj/structure/ants
 	name = "red ants"

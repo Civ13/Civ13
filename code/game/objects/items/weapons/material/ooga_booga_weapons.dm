@@ -67,14 +67,16 @@
 	var/ants = FALSE
 
 /obj/item/weapon/branch/attack_self(mob/living/carbon/human/user as mob)
-	if (ants && user.a_intent == I_HELP)
+	if (ants)
 		user << "You start licking some ants off the stick..."
 		if (do_after(user, 50, src))
 			if (src && ants)
 				user << "You finish eating some ants."
 				icon_state = "sharpened_stick"
 				ants = FALSE
-				if (!user.gorillaman)
+				if (user.gorillaman)
+					user.mood += 10
+				else
 					user.mood -= 10
 				user.nutrition += 80
 				return
