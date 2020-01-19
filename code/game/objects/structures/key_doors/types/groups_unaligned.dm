@@ -38,5 +38,11 @@
 	icon_state = "roman"
 	override_material = TRUE
 
+/obj/structure/simple_door/key_door/anyone/blast
+	material = "steel"
+	name = "Blast Door"
+	unique_door_name = "Blast door"
+	icon_state = "blast"
+
 #undef ANYONE_CODE
 
