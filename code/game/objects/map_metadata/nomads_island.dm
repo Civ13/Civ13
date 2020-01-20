@@ -71,7 +71,7 @@
 		eruption_check()
 /obj/map_metadata/nomads_island/proc/do_eruption()
 	if (clients.len>5)
-		world.log << "<big><b>The mountain rumbles, while clouds of smoke emerge from the top... An eruption might be coming...</big></b>"
+		world << "<big><b>The mountain rumbles, while clouds of smoke emerge from the top... An eruption might be coming...</big></b>"
 		spawn(rand(4800,6000))
 			if (clients.len>5)
 				volcano_eruption()
