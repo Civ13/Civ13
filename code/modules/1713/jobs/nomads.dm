@@ -23,6 +23,8 @@
 	if (!map.chad_mode)
 
 //knives and other tools/////////////////////////////////////////////////
+//knives removed since flint was introduced
+/*
 		if (map.civilizations && map.ID != MAP_NOMADS_MOUNTAIN)
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_belt)
@@ -32,10 +34,16 @@
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_belt)
 			else if (map.ordinal_age >= 3)
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_belt)
-
+*/
 //clothes/////////////////////////////////////////////////
 		if (map.ordinal_age == 0)
-			equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
+			if (map && map.ID == MAP_NOMADS_ISLAND)
+				if (gender=="male")
+					equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt/long(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
 
 		else if (map.ordinal_age == 1)
 			equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(src), slot_w_uniform)

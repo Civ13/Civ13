@@ -389,11 +389,6 @@
 	satisfaction = 4
 	non_vegetarian = TRUE
 
-/obj/item/weapon/reagent_containers/food/snacks/egg/New()
-	..()
-	spawn(50)
-		process()
-
 /obj/item/weapon/reagent_containers/food/snacks/egg/afterattack(obj/O as obj, mob/user as mob, proximity)
 /*	if (istype(O,/obj/structure/microwave))
 		return ..()*/
@@ -427,10 +422,6 @@
 	non_vegetarian = TRUE
 	decay = 90*600
 	satisfaction = 2
-/obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
-	..()
-	spawn(50)
-		process()
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/afterattack(obj/O as obj, mob/user as mob, proximity)
 	if (istype(O, /obj/structure/pot))

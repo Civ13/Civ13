@@ -1,5 +1,5 @@
 
-/proc/earthquake(severity, duration, var/log=TRUE) //severity from 1 to 10. duration in ms
+/obj/map_metadata/proc/earthquake(severity, duration, var/log=TRUE) //severity from 1 to 10. duration in ms
 	duration = round(duration)
 	if (severity>10)
 		severity=10
@@ -153,3 +153,12 @@
 			T.ChangeTurf(/turf/floor/lava)
 	return
 
+/obj/map_metadata/proc/volcano_eruption()
+	var/list/lavalist = list()
+	for(var/turf/wall/rockwall/lavaspawner/L in world)
+		lavalist += L
+	if (!isemptylist(lavalist))
+		var/turf/wall/rockwall/lavaspawner/T = pick(lavalist)
+		T.start_lava_flow()
+		world << "<font color='red'><big><b>The volcano erupts, with lava flowing down the mountain!</b></big></font>"
+		return TRUE

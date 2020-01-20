@@ -42,7 +42,8 @@
 		for (var/i = 1, i <= 23, i++)
 			var/turf/areaspawn2 = safepick(get_area_turfs(/area/caribbean/nomads/forest))
 			new/obj/structure/anthill(areaspawn2)
-
+	spawn(2000)
+		eruption_check()
 	spawn(1800)
 		if (season == "SPRING") //fixes game setting the season as spring
 			season = "Wet Season"
@@ -63,3 +64,19 @@
 		. = TRUE
 	else
 		. = FALSE
+
+/obj/map_metadata/nomads_island/proc/eruption_check()
+	spawn(rand(72000,126000))
+		do_eruption()
+		eruption_check()
+/obj/map_metadata/nomads_island/proc/do_eruption()
+	if (clients.len>5)
+		world.log << "<big><b>The mountain rumbles, while clouds of smoke emerge from the top... An eruption might be coming...</big></b>"
+		spawn(rand(4800,6000))
+			if (clients.len>5)
+				volcano_eruption()
+				return TRUE
+			else
+				return FALSE
+	else
+		return FALSE

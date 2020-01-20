@@ -477,6 +477,10 @@ RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,rel
 RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,43,0,0,8,null
 RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,large stone head,/obj/structure/religious/olmec_head,12,190,1,1,religious & decoration,0,0,0,2,null
+RECIPE: /material/stone/,aztec statue,/obj/structure/religious/aztec_statue,8,140,1,1,religious & decoration,0,0,0,2,null
+RECIPE: /material/stone/,moai,/obj/structure/religious/moai,20,250,1,1,religious & decoration,0,0,0,2,null
+RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1,religious & decoration,0,0,0,2,null
+
 RECIPE: /material/stone/,stone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,stone
 RECIPE: /material/stone/,stone window,/obj/structure/window_frame/stone,5,140,1,1,construction,18,0,0,8,null
 
@@ -508,6 +512,9 @@ RECIPE: /material/stone/,jersey barrier,/obj/structure/window/sandbag/jersey,3,7
 
 RECIPE: /material/stone/,stone pickaxe,/obj/item/weapon/pickaxe/stone,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/stone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,null
+
+RECIPE: /material/hemp/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
+RECIPE: /material/hemp/,joint,/obj/item/clothing/mask/smokable/cigarette/joint,2,10,0,1,none,0,0,0,8,null
 
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
@@ -849,11 +856,18 @@ RECIPE: /material/wood/,table,/obj/structure/table/wood,4,50,1,1,furniture,0,0,0
 RECIPE: /material/wood/,wood pole,/obj/structure/barricade/wood_pole,2,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,large barrel,/obj/structure/reagent_dispensers/largebarrel,16,100,1,1,furniture,19,0,0,8,null
 
+RECIPE: /material/wood/,small mill,/obj/structure/mill,4,90,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,tanning rack,/obj/structure/converter/tanning,8,80,1,1,economy & production,16,0,0,8,null
+RECIPE: /material/wood/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
+
 RECIPE: /material/wood/,wood altar,/obj/structure/altar/wood,20,200,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/wood/,decorative wood mask,/obj/structure/religious/tribalmask,2,50,1,1,religious & decoration,0,0,0,2,null
 RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,religious & decoration,0,0,0,2,null
 RECIPE: /material/wood/,impaled skull,/obj/structure/religious/impaledskull,2,50,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/wood/,small cross,/obj/structure/religious/woodcross1,2,50,1,1,religious & decoration,47,0,0,8,null
+RECIPE: /material/wood/,tiki statue,/obj/structure/religious/tiki_statue,10,150,1,1,religious & decoration,0,0,0,4,null
+RECIPE: /material/wood/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,4,null
 RECIPE: /material/wood/,wood totem pole,/obj/structure/religious/totem_pole,10,250,1,1,religious & decoration,0,0,0,2,null
 RECIPE: /material/wood/,cross,/obj/structure/religious/woodcross2,4,80,1,1,religious & decoration,47,0,0,8,null
 
@@ -862,13 +876,10 @@ RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,kitc
 RECIPE: /material/wood/,wood mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,1,40,0,1,kitchen & other,0,0,0,8,null
 RECIPE: /material/wood/,campfire,/obj/structure/oven/fireplace,4,140,1,1,kitchen & other,0,0,0,8,null
 RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,kitchen & other,0,0,0,8,null
+RECIPE: /material/wood/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,kitchen & other,0,0,0,8,null
 RECIPE: /material/wood/,wood bowl,/obj/item/kitchen/wood_bowl,1,40,0,1,kitchen & other,0,0,0,8,null
-RECIPE: /material/wood/,loom,/obj/structure/loom,8,150,1,1,kitchen & other,19,0,0,8,null
 RECIPE: /material/wood/,wood pipe,/obj/item/clothing/mask/smokable/pipe,2,100,0,1,kitchen & other,19,0,0,8,null
-RECIPE: /material/wood/,small mill,/obj/structure/mill,4,90,1,1,kitchen & other,19,0,0,8,null
 RECIPE: /material/wood/,barrel,/obj/item/weapon/reagent_containers/glass/barrel/empty,5,75,1,1,kitchen & other,19,0,0,8,null
-RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,kitchen & other,19,0,0,8,null
-RECIPE: /material/wood/,tanning rack,/obj/structure/converter/tanning,8,80,1,1,tools,16,0,0,8,null
 RECIPE: /material/wood/,matches (x10),/obj/item/weapon/matchbox,2,80,1,1,kitchen & other,67,0,0,8,null
 RECIPE: /material/wood/,gong,/obj/structure/gong,5,100,1,1,kitchen & other,26,0,0,8,null
 RECIPE: /material/wood/,gong mallet,/obj/item/weapon/gongmallet,3,50,0,1,kitchen & other,26,0,0,8,null
