@@ -167,7 +167,8 @@
 	item_state = "torch"
 	value = 10
 	fuel = 600 // 10 mins
-	anchored = TRUE
+	anchored = FALSE
+	flammable = TRUE
 
 /obj/item/flashlight/tiki_torch/update_icon()
 	..()
@@ -197,7 +198,7 @@
 			do_torch()
 		else if (fuel <= 0 && on)
 			visible_message("\The [src] goes off.")
-			if (istype(src, /obj/item/flashlight/torch))
+			if (istype(src, /obj/item/flashlight/torch) || istype(src, /obj/item/flashlight/tiki_torch))
 				qdel(src)
 				return
 			else
