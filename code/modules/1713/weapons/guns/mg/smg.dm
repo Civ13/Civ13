@@ -535,6 +535,25 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/submachinegun/servicerifle
+	name = "Service Rifle M16"
+	desc = "An american assault rifle, chambered in 5.56x45mm."
+	icon_state = "servicerifle16"
+	item_state = "m16"
+	base_icon = "m16"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/m16
+	weight = 3.07
+	equiptimer = 15
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		)
+	effectiveness_mod = 1.12
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando
 	name = "XM177 Colt Commando"
 	desc = "A carbine version of the AR-15/M16, chambered in 5.56x45mm."

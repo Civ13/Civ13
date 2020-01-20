@@ -1318,6 +1318,17 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
 
+/obj/item/clothing/suit/storage/coat/ww2/biker
+	name = "biker jacket"
+	desc = "A black jacket meant for high-alititude temperatures."
+	icon_state = "biker"
+	item_state = "biker"
+	worn_state = "biker"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
 /obj/item/clothing/suit/storage/coat/oldyjacket
 	name = "red jacket"
 	desc = "A red jacket from the 80s."
