@@ -278,9 +278,9 @@
 	armor_penetration = 19
 
 /obj/item/projectile/bullet/rifle/a762x54
-	damage = DAMAGE_HIGH+2
-	penetrating = 2
-	armor_penetration = 18
+	damage = DAMAGE_HIGH+20
+	penetrating = 6
+	armor_penetration = 24
 
 /obj/item/projectile/bullet/rifle/a762x54/weak/New()
 	..()

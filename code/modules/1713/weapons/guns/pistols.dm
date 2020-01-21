@@ -172,6 +172,29 @@
 		icon_state = "glock170"
 	return
 
+/obj/item/weapon/gun/projectile/pistol/p220
+	name = "SIG Sauer P220"
+	desc = "The SIG Sauer P220 is a semi-automatic pistol. Designed in 1975."
+	icon_state = "p220"
+	fire_delay = 3.7
+	w_class = 2
+	caliber = "a45"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/p220
+	weight = 0.594
+	max_shells = 7
+	ammo_type = /obj/item/ammo_casing/a45
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.40
+/obj/item/weapon/gun/projectile/pistol/p220/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "p220"
+	else
+		icon_state = "p220_open"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/iogb7
 	name = "IOQ B-72"
 	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."

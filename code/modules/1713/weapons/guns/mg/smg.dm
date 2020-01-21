@@ -704,6 +704,28 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
 
+/obj/item/weapon/gun/projectile/submachinegun/ar12
+	name = "AR-12"
+	icon_state = "ar12"
+	item_state = "m16old"
+	base_icon = "ar12"
+	desc = "A american rifle, used by special forces, chambered in (7.62x51mm)."
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/scarh
+	weight = 3.5
+	equiptimer = 11
+	effectiveness_mod = 1.46
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
+		)
+	effectiveness_mod = 1.60
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
 /obj/item/weapon/gun/projectile/submachinegun/hk417
 	name = "HK417"
 	desc = "A german assault rifle based on the G36 and M16, chambered in 7.62x51mm."
@@ -783,5 +805,25 @@
 		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
 	effectiveness_mod = 1
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/submachinegun/vz58
+	name = "VZ-58"
+	desc = "Czechoslovakia assault rifle chambered in 7.62x39mm."
+	icon_state = "az58"
+	item_state = "vz58"
+	base_icon = "az58"
+	caliber = "a762x39"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/ak47
+	weight = 2.93
+	equiptimer = 12
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		)
+	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL

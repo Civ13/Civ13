@@ -195,3 +195,18 @@
 	value = 150
 	blackpowder = TRUE
 	load_delay = 4
+
+/obj/item/weapon/gun/projectile/leveraction/goldchester
+	name = "Golden Winchester M1873"
+	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
+	force = 9
+	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
+	icon_state = "goldwinchester"
+	caliber = "a44"
+	max_shells = 15
+	weight = 5.0
+	effectiveness_mod = 0.96
+	ammo_type = /obj/item/ammo_casing/a44
+	value = 150
+	blackpowder = TRUE
+	load_delay = 4

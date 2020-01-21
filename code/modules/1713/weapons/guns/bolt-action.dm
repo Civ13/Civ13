@@ -845,6 +845,34 @@
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
 
+/obj/item/weapon/gun/projectile/boltaction/svd
+	name = "SVD"
+	desc = "A russian sniper rifle."
+	icon_state = "svd"
+	item_state = "m24"
+	base_icon = "svd"
+	caliber = "a762x54"
+	weight = 4
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a762x54
+	magazine_type = /obj/item/ammo_magazine/svd
+	bolt_safety = FALSE
+	effectiveness_mod = 3.90
+	value = 130
+	slot_flags = SLOT_SHOULDER
+	recoil = 2.8
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 22
+
+/obj/item/weapon/gun/projectile/boltaction/svd/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/boltaction/springfield
 	name = "M1903 Springfield"
 	desc = "A bolt-action rifle made in 1903, chambered in .30-06 with a 5 round internal magazine."
