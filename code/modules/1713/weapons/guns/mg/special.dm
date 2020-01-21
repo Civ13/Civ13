@@ -79,7 +79,7 @@
 
 /obj/item/weapon/gun/projectile/special/handle_post_fire()
 	..()
-	var/reverse_health_percentage = 1-(health/maxhealth)+0.25
+	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else

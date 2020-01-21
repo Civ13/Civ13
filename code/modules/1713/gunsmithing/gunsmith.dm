@@ -1184,7 +1184,7 @@
 
 /obj/item/weapon/gun/projectile/custom/handle_post_fire()
 	..()
-	var/reverse_health_percentage = 1-(health/maxhealth)+0.25
+	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
 	if (receiver_type == "Semi-Auto (large)" || receiver_type == "Semi-Auto (small)" )
 		if (world.time - last_fire > 50)
 			jamcheck = 0

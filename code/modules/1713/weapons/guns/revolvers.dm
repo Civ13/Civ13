@@ -20,6 +20,7 @@
 	var/base_icon = null
 	equiptimer = 5
 	gun_type = GUN_TYPE_PISTOL
+	maxhealth = 55
 
 	accuracy_list = list(
 		// small body parts: head, hand, feet
@@ -554,6 +555,7 @@
 	magazine_based = FALSE
 	var/single_action = FALSE
 	var/cocked = FALSE
+	maxhealth = 45
 
 	accuracy_list = list(
 

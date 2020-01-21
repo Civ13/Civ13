@@ -32,6 +32,7 @@
 	fire_delay = 2
 	equiptimer = 15
 	gun_safety = TRUE
+	maxhealth = 20
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 
@@ -151,7 +152,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/handle_post_fire()
 	..()
-	var/reverse_health_percentage = 1-(health/maxhealth)+0.25
+	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
 
 	if (last_fire != -1)
 		if (world.time - last_fire <= 7)

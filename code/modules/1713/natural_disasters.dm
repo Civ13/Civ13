@@ -46,13 +46,14 @@
 		spawn(5)
 			for (var/atom/movable/M in src)
 				Entered(M)
-		spawn(20)
-			var/area/A = get_area(src)
-			for(var/turf/T in range(1,src))
-				var/area/B = get_area(T)
-				if (istype(B, A.type) && !istype(T,/turf/floor/lava))
-					T.ChangeTurf(/turf/floor/lava)
-		new/obj/effect/fire(src)
+		if (spreads)
+			spawn(20)
+				var/area/A = get_area(src)
+				for(var/turf/T in range(1,src))
+					var/area/B = get_area(T)
+					if (istype(B, A.type) && !istype(T,/turf/floor/lava))
+						T.ChangeTurf(/turf/floor/lava)
+			new/obj/effect/fire(src)
 /turf/floor/lava/permanent
 	dries = FALSE
 	spreads = FALSE
@@ -148,8 +149,7 @@
 					qdel(O)
 	return
 /turf/wall/rockwall/lavaspawner/proc/start_lava_flow()
-	if (!spreads)
-		return
+
 	for(var/turf/T in range(1,src))
 		if (istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_east) || istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_west) || istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_south))
 			T.ChangeTurf(/turf/floor/lava)
