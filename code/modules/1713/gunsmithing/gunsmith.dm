@@ -34,7 +34,93 @@
 			qdel(P)
 		return
 
+	else if (istype(P, /obj/item/weapon/gun/projectile))
+		if (!istype(P, /obj/item/weapon/gun/projectile/ancient) && !istype(P, /obj/item/weapon/gun/projectile/bow) && !istype(P, /obj/item/weapon/gun/projectile/capnball) && !istype(P, /obj/item/weapon/gun/projectile/flintlock))
+			rechamber_gun(P, user)
 
+/obj/item/weapon/gun/projectile
+	var/rechambered = FALSE
+
+/obj/structure/gunbench/proc/rechamber_gun(var/obj/item/weapon/gun/projectile/P, var/mob/living/carbon/human/H)
+	var/list/caliber_options = list("Cancel")
+	//custom guns:
+	if (istype(P, /obj/item/weapon/gun/projectile/custom))
+		var/obj/item/weapon/gun/projectile/custom/PC = P
+		switch (PC.receiver_type)
+			if ("Pump-Action")
+				caliber_options = list("shotgun","Cancel")
+
+			if ("Bolt-Action","Semi-Auto (large)")
+				caliber_options = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+
+			if ("Open-Bolt (large)")
+				caliber_options = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+
+			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+				caliber_options = list("9mm pistol",".45 pistol","Cancel")
+
+			if ("Dual Selective Fire", "Triple Selective Fire")
+				caliber_options = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+
+		if (PC.feeding_type == "Internal Magazine (Removable)")
+			caliber_options = list("9mm pistol",".45 pistol","Cancel")
+	//others
+	else if (istype(P, /obj/item/weapon/gun/projectile/automatic))
+		caliber_options = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+	else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
+		caliber_options = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+	else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
+		caliber_options = list("6.5mm small rifle","5.5mm intermediate rifle","Cancel")
+	else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
+		caliber_options = list("9mm pistol",".45 pistol","Cancel")
+	else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
+		caliber_options = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+	else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
+		caliber_options = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+	else
+		caliber_options = list("Cancel")
+
+	var/choice = WWinput(H, "Which caliber do you want to convert \the [P] into? Be aware that this will permanently reduce accuracy by around 10%!", "Firearm Rechambering", "Cancel", caliber_options)
+	if (choice == "Cancel")
+		return
+	else
+		H << "You start converting \the [P] into [choice]..."
+		if (do_after(H, 100, src))
+			H << "You successfully convert \the [P]."
+			P.caliber = null
+
+			if (choice == "8mm large rifle")
+				P.caliber = "largerifle"
+				P.ammo_type = /obj/item/ammo_casing/largerifle
+
+			else if (choice == "6.5mm small rifle")
+				P.caliber = "smallrifle"
+				P.ammo_type = /obj/item/ammo_casing/smallrifle
+
+			else if (choice == ".45 pistol")
+				P.caliber = "pistol45"
+				P.ammo_type = /obj/item/ammo_casing/pistol45
+
+			else if (choice == "9mm pistol")
+				P.caliber = "pistol9"
+				P.ammo_type = /obj/item/ammo_casing/pistol9
+
+			else if (choice == "7.5mm intermediate rifle")
+				P.caliber = "intermediumrifle"
+				P.ammo_type = /obj/item/ammo_casing/intermediumrifle
+
+			else if (choice == "5.5mm intermediate rifle")
+				P.caliber = "smallintermediumrifle"
+				P.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
+
+			P.effectiveness_mod *= 0.9
+			if (!findtext(P.name,"(rechambered)"))
+				P.name = "[P.name] (rechambered)"
+			if (!findtext(P.desc,". Rechambered into"))
+				P.desc = "[P.desc]. Rechambered into [choice]."
+			else
+				var/list/split_desc = splittext(P.desc, ". Rechambered into")
+				P.desc = "[split_desc[1]]. Rechambered into [choice]."
 /obj/structure/gunbench/attack_hand(var/mob/user as mob)
 	var/mob/living/carbon/human/H = user
 	if (H.getStatCoeff("crafting") < 1.9 && map.civilizations)

@@ -44,7 +44,7 @@
 
 /obj/structure/repair/attackby(obj/item/M as obj, mob/user as mob)
 	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4))
-		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]</span>")
+		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]...</span>")
 		icon_state = activesprite
 		playsound(src,noise,40,1)
 		if (do_after(user, delay, src))
@@ -55,13 +55,13 @@
 			else
 				M.health += repairamount
 				icon_state = idlesprite
-			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name]</span>")
+			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name].</span>")
 			if(M.maxhealth <= 0 || M.health <= 0)
 				qdel(M)
 				playsound(src, "shatter", 70, TRUE)
 				visible_message("<span class='alert'>The [M.name] breaks from strain!</span>")
 		else
-			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name]</span>")
+			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
 			icon_state = idlesprite
 	else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
 		..()
