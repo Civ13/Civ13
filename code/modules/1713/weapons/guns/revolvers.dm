@@ -327,7 +327,7 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
 	weight = 2.3
-	single_action = FALSE
+	single_action = TRUE
 	blackpowder = TRUE
 	cocked = FALSE
 
