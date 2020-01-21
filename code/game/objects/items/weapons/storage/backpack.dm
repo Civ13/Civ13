@@ -85,3 +85,15 @@ obj/item/weapon/storage/backpack/ww2/american
 	slot_flags = SLOT_BACK
 	max_w_class = 4
 	max_storage_space = 36
+
+
+
+/obj/item/weapon/storage/backpack/civbag
+	name = "Backpack"
+	desc = "A big backpack made for long walks."
+	icon_state = "civback"
+	item_state = "civback"
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 5
+	max_storage_space = 42

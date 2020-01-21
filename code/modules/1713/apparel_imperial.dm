@@ -604,6 +604,20 @@
 	item_state = "baycona"
 	worn_state = "baycona"
 
+/obj/item/clothing/under/scavfit
+	name = "Ripped outfit"
+	desc = "A set of blue jeans and brown hoodie."
+	icon_state = "scavfit"
+	item_state = "scavfit"
+	worn_state = "scavfit"
+
+/obj/item/clothing/under/wastelander
+	name = "outfit"
+	desc = "A set of tan pants and a brown coat."
+	icon_state = "wastelander"
+	item_state = "wastelander"
+	worn_state = "wastelander"
+
 /obj/item/clothing/under/french_sailor1
 	name = "french sailor clothes"
 	desc = "A set of french navy sailor clothes, with light blue shirt and trousers."
