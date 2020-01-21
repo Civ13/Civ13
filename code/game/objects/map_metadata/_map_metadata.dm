@@ -985,7 +985,7 @@ var/civmax_research = list(230,230,230)
 			for (var/obj/structure/wild/tree/live_tree/TREES in world)
 				TREES.change_season()
 		for (var/turf/floor/dirt/burned/BD)
-			if ((BD in get_area_turfs(/area/caribbean/nomads/forest/Jungle)) || (BD in get_area_turfs(/area/caribbean/nomads/forest/savanna))
+			if ((BD in get_area_turfs(/area/caribbean/nomads/forest/Jungle)) || (BD in get_area_turfs(/area/caribbean/nomads/forest/savanna)))
 				BD.ChangeTurf(/turf/floor/dirt/jungledirt)
 			else
 				BD.ChangeTurf(/turf/floor/dirt)
