@@ -202,6 +202,35 @@
 	effectiveness_mod = 1.03
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/semiautomatic/svd
+	name = "SVD"
+	desc = "A russian sniper rifle. chambered in 7.62x54mmR."
+	icon_state = "svd"
+	item_state = "svd"
+	base_icon = "svd"
+	w_class = 4
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	max_shells = 10
+	caliber = "a762x54"
+	ammo_type = /obj/item/ammo_casing/a762x54
+	slot_flags = SLOT_SHOULDER
+	magazine_type = /obj/item/ammo_magazine/svd
+	weight = 3.85
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=2, fire_delay=8)
+		)
+
+	gun_type = GUN_TYPE_RIFLE
+	force = 10
+	throwforce = 20
+	effectiveness_mod = 1.03
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/semiautomatic/svd/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/semiautomatic/g41
 	name = "Gewehr 41"
 	desc = "German semi-automatic rifle using 7.92x57mm Mauser ammunition in a 10 round non-detachable magazine."

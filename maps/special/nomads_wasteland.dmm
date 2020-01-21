@@ -1492,7 +1492,7 @@
 "CJ" = (/obj/structure/table/glass,/obj/structure/radiorecorder,/turf/floor/plating/road,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "CK" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/road,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "CL" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/nomads/forest)
-"CM" = (/obj/structure/closet/cabinet,/obj/roof,/obj/item/weapon/gun/projectile/boltaction/svd,/obj/item/ammo_magazine/svd,/turf/floor/wood,/area/caribbean/nomads/forest)
+"CM" = (/obj/structure/closet/cabinet,/obj/roof,/obj/item/weapon/gun/projectile/semiautomatic/svd,/obj/item/ammo_magazine/svd,/turf/floor/wood,/area/caribbean/nomads/forest)
 "CN" = (/obj/structure/barricade,/turf/floor/dirt,/area/caribbean/void/caves)
 "CO" = (/obj/structure/barricade,/obj/structure/sign/custom{desc = "This site is property of the government."; name = "UNDER CONSTRUCTION"},/turf/floor/dirt,/area/caribbean/void/caves)
 "CP" = (/obj/structure/multiz/ladder/ww2,/obj/covers/concretefloor,/obj/roof,/turf/floor/dirt,/area/caribbean/void/caves)
