@@ -1,7 +1,7 @@
 /obj/effect/spawner
 	name = "object spawner"
 	icon = 'icons/mob/screen/effects.dmi'
-
+	var/max_range = 10
 /obj/effect/spawner/ammospawner
 	name = "ammo spawner"
 	icon_state = "x3"
@@ -66,7 +66,6 @@
 	var/activated = 1
 	var/current_number = 0
 	var/max_number = 10
-	var/max_range = 10
 	var/create_path = /mob/living/simple_animal/hostile/skeleton
 	var/timer = 400
 	var/scalable = 0 // when 1, it will only get active above x players
@@ -484,7 +483,7 @@
 	icon_state = "x1"
 	var/activated = 1
 	var/max_number = 35
-	var/max_range = 7
+	max_range = 7
 	var/create_path = /obj/structure/wild/tree/live_tree
 	var/timer = 6000
 	var/spawning = FALSE
