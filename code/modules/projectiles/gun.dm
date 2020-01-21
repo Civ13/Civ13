@@ -164,8 +164,6 @@
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/carbon/human/H = user
-	health_check(H)
-	health -= rand(0,1)
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return
@@ -266,6 +264,9 @@
 		if (!projectile)
 			handle_click_empty(user)
 			break
+
+		health_check(user)
+		health -= 0.2
 
 		var/acc = 0 // calculated in projectile code
 		var/disp = firemode.dispersion[min(i, firemode.dispersion.len)]
