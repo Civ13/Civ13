@@ -175,6 +175,16 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/p220
+	name = "P220 (.45)"
+	icon_state = "p220"
+	mag_type = MAGAZINE
+	caliber = "a45"
+	ammo_type = /obj/item/ammo_casing/a45
+	max_ammo = 7
+	weight = 0.33
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/tommy
 	name = "thompson (.45 ACP)"
 	icon_state = "tommydrum"

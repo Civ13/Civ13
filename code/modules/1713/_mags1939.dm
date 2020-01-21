@@ -149,6 +149,17 @@ obj/item/ammo_magazine/dp
 	weight = 0.32
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/svd
+	name = "SVD magazine (7.92x54mm)"
+	icon_state = "g43"
+	caliber = "a792x54"
+	mag_type = MAGAZINE
+
+	ammo_type = /obj/item/ammo_casing/a792x57
+	max_ammo = 10
+	weight = 0.32
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/avtomat
 	name = "avtomat magazine (7.62x54mm)"
 	icon_state = "g43"

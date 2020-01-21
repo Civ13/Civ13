@@ -423,6 +423,18 @@
 	restricts_view = 2
 	health = 90
 
+/obj/item/clothing/head/helmet/tactical
+	name = "tactical helmet"
+	desc = "A standard bulletproof helmet, made of polyethylene."
+	icon_state = "tacticalhelmet"
+	item_state = "tacticalhelmet"
+	worn_state = "tacticalhelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
+
 /obj/item/clothing/head/helmet/ioghelmet
 	name = "IOG helmet"
 	desc = "A strong helmet."

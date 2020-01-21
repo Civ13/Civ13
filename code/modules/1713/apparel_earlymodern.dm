@@ -470,6 +470,13 @@
 	item_state = "baily"
 	worn_state = "baily"
 
+/obj/item/clothing/under/tactical1
+	name = "tactical outfit"
+	desc = "An outfit composed of a camo cargo pants and tan ubac."
+	icon_state = "tactical1"
+	item_state = "tactical1"
+	worn_state = "tactical1"
+
 /obj/item/clothing/under/modern8
 	name = "modern skirt"
 	desc = "An outfit composed of a black skirt and white shirt."

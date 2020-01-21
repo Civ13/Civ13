@@ -315,6 +315,22 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
+/obj/item/weapon/gun/projectile/revolver/black
+	name = "Salamon 47"
+	desc = "A gold plated revolver chambered in (.44 magnum)."
+	icon_state = "salamonblack"
+	base_icon = "salamonblack"
+	w_class = 3
+	caliber = "a44magnum"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c44magnum
+	weight = 2.3
+	single_action = FALSE
+	blackpowder = TRUE
+	cocked = FALSE
+
 /obj/item/weapon/gun/projectile/revolver/magnum44
 	name = "Magnum 44"
 	desc = "A heavy revolver chambered in (magnum .44)."
