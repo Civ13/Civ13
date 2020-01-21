@@ -372,3 +372,14 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
 	armor = list(melee = 140, arrow = 200, gun = 150, energy = 100, bomb = 100, bio = 100, rad = 80)
 	ripable = FALSE
+
+
+/obj/item/clothing/suit/b3
+	name = "B3A1 Vest"
+	desc = "A russian bulletproof vest, made with glory."
+	icon_state = "b3vest"
+	item_state = "b3vest"
+	worn_state = "b3vest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
+	ripable = FALSE
