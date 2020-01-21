@@ -85,6 +85,7 @@
 		return
 	else
 		H << "You start converting \the [P] into [choice]..."
+		playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 		if (do_after(H, 100, src))
 			H << "You successfully convert \the [P]."
 			P.caliber = null
@@ -1183,7 +1184,7 @@
 
 /obj/item/weapon/gun/projectile/custom/handle_post_fire()
 	..()
-
+	var/reverse_health_percentage = 1-(health/maxhealth)+0.25
 	if (receiver_type == "Semi-Auto (large)" || receiver_type == "Semi-Auto (small)" )
 		if (world.time - last_fire > 50)
 			jamcheck = 0
@@ -1193,7 +1194,7 @@
 			else
 				jamcheck += 0.6
 
-		if (prob(jamcheck))
+		if (prob(jamcheck*reverse_health_percentage))
 			jammed_until = max(world.time + (jamcheck * 4), 40)
 			jamcheck = 0
 
@@ -1218,7 +1219,7 @@
 		else
 			++jamcheck
 
-		if (prob(jamcheck))
+		if (prob(jamcheck*reverse_health_percentage))
 			jammed_until = max(world.time + (jamcheck * 5), 50)
 			jamcheck = 0
 		if (blackpowder)
@@ -1237,7 +1238,7 @@
 			else
 				jamcheck += 0.3
 
-		if (prob(jamcheck))
+		if (prob(jamcheck*reverse_health_percentage))
 			jammed_until = max(world.time + (jamcheck * 4), 45)
 			jamcheck = 0
 
@@ -1251,7 +1252,7 @@
 			else
 				jamcheck += 0.6
 
-		if (prob(jamcheck))
+		if (prob(jamcheck*reverse_health_percentage))
 			jammed_until = max(world.time + (jamcheck * 5), 50)
 			jamcheck = 0
 

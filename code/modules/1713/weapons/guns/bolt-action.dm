@@ -151,6 +151,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/handle_post_fire()
 	..()
+	var/reverse_health_percentage = 1-(health/maxhealth)+0.25
 
 	if (last_fire != -1)
 		if (world.time - last_fire <= 7)
@@ -170,7 +171,7 @@
 	else
 		++jamcheck
 
-	if (prob(jamcheck))
+	if (prob(jamcheck*reverse_health_percentage))
 		jammed_until = max(world.time + (jamcheck * 5), 50)
 		jamcheck = 0
 	if (blackpowder)
