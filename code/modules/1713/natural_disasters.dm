@@ -38,7 +38,7 @@
 	interior = FALSE
 	var/stage = 0
 	var/dries = TRUE
-
+	var/spreads = TRUE
 	New()
 		..()
 		if (dries)
@@ -55,7 +55,7 @@
 		new/obj/effect/fire(src)
 /turf/floor/lava/permanent
 	dries = FALSE
-
+	spreads = FALSE
 /turf/floor/lava/proc/dryproc()
 	if (stage>=2)
 		src.ChangeTurf(/turf/floor/dirt/dry_lava)
@@ -148,6 +148,8 @@
 					qdel(O)
 	return
 /turf/wall/rockwall/lavaspawner/proc/start_lava_flow()
+	if (!spreads)
+		return
 	for(var/turf/T in range(1,src))
 		if (istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_east) || istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_west) || istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_south))
 			T.ChangeTurf(/turf/floor/lava)
