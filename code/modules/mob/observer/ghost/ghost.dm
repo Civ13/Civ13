@@ -222,141 +222,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	return TRUE
 
-/mob/observer/ghost/verb/follow(input in getfitmobs()+"Cancel")
-	set category = "Ghost"
-	set name = "Follow" // "Haunt"
-	set desc = "Follow and haunt a mob."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs()
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
-/mob/observer/ghost/verb/follow_pirates(input in getfitmobs(PIRATES)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Pirate"
-	set desc = "Follow and haunt a living Pirate."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(PIRATES)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
-/mob/observer/ghost/verb/follow_british(input in getfitmobs(BRITISH)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a British"
-	set desc = "Follow and haunt a living British."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(BRITISH)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
-/mob/observer/ghost/verb/follow_civilian(input in getfitmobs(CIVILIAN)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Civilian"
-	set desc = "Follow and haunt a living Civilian."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(CIVILIAN)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
-/mob/observer/ghost/verb/follow_portuguese(input in getfitmobs(PORTUGUESE)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Portuguese"
-	set desc = "Follow and haunt a living Portuguese."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(PORTUGUESE)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
-/mob/observer/ghost/verb/follow_spanish(input in getfitmobs(SPANISH)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Spanish"
-	set desc = "Follow and haunt a living Spanish."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(SPANISH)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-/mob/observer/ghost/verb/follow_french(input in getfitmobs(FRENCH)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a French"
-	set desc = "Follow and haunt a living French."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(FRENCH)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
-/mob/observer/ghost/verb/follow_dutch(input in getfitmobs(DUTCH)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Dutch"
-	set desc = "Follow and haunt a living Dutch."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(DUTCH)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-/mob/observer/ghost/verb/follow_indians(input in getfitmobs(INDIANS)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Native"
-	set desc = "Follow and haunt a living Native."
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(INDIANS)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-/mob/observer/ghost/verb/follow_roman(input in getfitmobs(ROMAN)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Roman"
-	set desc = "Follow and haunt a living Roman."
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(ROMAN)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-/mob/observer/ghost/verb/follow_greek(input in getfitmobs(GREEK)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Greek"
-	set desc = "Follow and haunt a living Greek."
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(GREEK)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-/mob/observer/ghost/verb/follow_german(input in getfitmobs(GERMAN)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a German"
-	set desc = "Follow and haunt a living German."
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(GERMAN)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-/mob/observer/ghost/verb/follow_american(input in getfitmobs(AMERICAN)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow an American"
-	set desc = "Follow and haunt a living American."
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(AMERICAN)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-/mob/observer/ghost/verb/follow_vietnamese(input in getfitmobs(VIETNAMESE)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Vietnamese"
-	set desc = "Follow and haunt a living Vietnamese."
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(VIETNAMESE)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-/mob/observer/ghost/verb/follow_arab(input in getfitmobs(ARAB)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow an Arab"
-	set desc = "Follow and haunt a living Arab."
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(ARAB)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
 /mob/observer/ghost/verb/toggle_visibility()
 	set category = "Ghost"
 	set name = "Toggle Visibility"
@@ -407,27 +272,31 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		return FALSE
 	return FALSE
 
-/mob/observer/ghost/verb/jumptomob(target in getfitmobs() + "Cancel") //Moves the ghost instead of just changing the ghosts's eye -Nodrak
+/mob/observer/ghost/verb/follow_mob(var/mob/target = null) //Moves the ghost instead of just changing the ghosts's eye -Nodrak
 	set category = "Ghost"
-	set name = "Jump to Mob"
-	set desc = "Teleport to a mob"
+	set name = "Follow a Mob"
+	set desc = "Teleport to a mob and follow it"
 
-	if (target == "Cancel") // also prevents sending the observer to nullspace when there are no mobs
-		return
+	var/turf/T = get_turf(src)
 
 	if (isghost(usr)) //Make sure they're an observer!
-
-		if (!target)//Make sure we actually have a target
+		var/mob/selection = null
+		if (target)
+			selection = target
+		else
+			var/list/m_list = mob_list
+			m_list += "Cancel"
+			selection = WWinput("Please, select a mob:", "Ghost Jumping", "Cancel",m_list)
+		if (!ismob(selection))
+			src << "No mob found."
 			return
 		else
-			var/mob/M = getfitmobs()[target] //Destination mob
-			var/turf/T = get_turf(M) //Turf of the destination mob
-
-		//	if (T && isturf(T))	//Make sure the turf exists, then move the source to that destination.
-			stop_following()
-			forceMove(T)
-		//	else
-		//		src << "This mob is not located in the game world."
+			T = get_turf(selection)
+			if (T && isturf(T))
+				stop_following()
+				forceMove(T)
+				ManualFollow(selection)
+			return
 
 /mob/observer/ghost/memory()
 	set hidden = TRUE

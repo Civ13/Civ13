@@ -253,17 +253,16 @@
 	light_power = 0.75
 	light_color = "#E38F46"
 
-	var/last_fire_loop = 0
 /obj/structure/oven/fireplace/proc/keep_fire_on()
 	if (on && looping && fuel > 0)
 		set_light(5)
 		update_icon()
-		if(world.realtime > last_fire_loop)
-			fire_loop()
-			last_fire_loop = world.realtime+500
-			spawn(600)
-				keep_fire_on()
+		fire_loop()
+		spawn(600)
+			keep_fire_on()
 	else
+		on = FALSE
+		set_light(0)
 		return
 /obj/structure/oven/fireplace/attack_hand(var/mob/living/carbon/human/H)
 	if (!on && fuel > 0)
