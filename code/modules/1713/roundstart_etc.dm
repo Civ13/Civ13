@@ -33,27 +33,11 @@ var/GRACE_PERIOD_LENGTH = 7
 // this is roundstart because we need to wait for objs to be created
 /hook/roundstart/proc/nature()
 
-	if (map.meme)
-		return TRUE
-
-	var/nature_chance = 100
-
-	if (season == "WINTER")
-		nature_chance = 70
-
-	// create wild grasses in "clumps"
 	spawn (1)
-//		world << "<span class = 'notice'>Setting up wild grasses.</span>"
+//		world << "<span class = 'notice'>Setting up vegetation and ambience.</span>"
 
-	for (var/grass in grass_turf_list)
-		var/turf/floor/grass/G = grass
-		if (!G || G.z > 1)
-			continue
-
-		if (prob(nature_chance))
-			G.plant()
-
-	return TRUE
+	for (var/turf/floor/F in world)
+		F.plant()
 
 // ditto
 /hook/roundstart/proc/do_seasonal_stuff()

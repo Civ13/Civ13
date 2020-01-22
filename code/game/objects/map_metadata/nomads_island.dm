@@ -32,6 +32,8 @@
 	var/list/arealist_r = list()
 	var/list/arealist_g = list()
 	var/real_season = "wet"
+
+	var/eruptions_enabled = FALSE
 /obj/map_metadata/nomads_island/New()
 	..()
 	spawn(1200)
@@ -67,16 +69,20 @@
 
 /obj/map_metadata/nomads_island/proc/eruption_check()
 	spawn(rand(72000,126000))
-		do_eruption()
+		if (eruptions_enabled)
+			do_eruption()
 		eruption_check()
 /obj/map_metadata/nomads_island/proc/do_eruption()
-	if (clients.len>5)
-		world << "<big><b>The mountain rumbles, while clouds of smoke emerge from the top... An eruption might be coming...</big></b>"
-		spawn(rand(4800,6000))
-			if (clients.len>5)
-				volcano_eruption()
-				return TRUE
-			else
-				return FALSE
+	if (eruptions_enabled)
+		if (clients.len>5)
+			world << "<big><b>The mountain rumbles, while clouds of smoke emerge from the top... An eruption might be coming...</big></b>"
+			spawn(rand(4800,6000))
+				if (clients.len>5)
+					volcano_eruption()
+					return TRUE
+				else
+					return FALSE
+		else
+			return FALSE
 	else
 		return FALSE

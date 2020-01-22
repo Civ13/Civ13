@@ -3,7 +3,7 @@ var/global/obj/map_metadata/map = null
 var/civmax_research = list(230,230,230)
 
 /obj/map_metadata
-	name = ""
+	name = "control"
 	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
 	anchored = TRUE
