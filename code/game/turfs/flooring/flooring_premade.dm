@@ -34,6 +34,8 @@
 /turf/floor/beach/sand/desert/plant()
 	if (locate(/obj/structure) in src)
 		return
+	if (locate(/obj/cover) in src)
+		return
 	if (locate(/obj/item) in src)
 		return
 
@@ -54,6 +56,8 @@
 	if (istype(src, /turf/floor/dirt/burned) || istype(src, /turf/floor/dirt/dry_lava) || istype(src, /turf/floor/dirt/flooded) || istype(src, /turf/floor/dirt/ploughed) || istype(src, /turf/floor/dirt/underground))
 		return
 	if (locate(/obj/structure) in src)
+		return
+	if (locate(/obj/cover) in src)
 		return
 	if (locate(/obj/item) in src)
 		return
@@ -116,6 +120,8 @@
 /turf/floor/winter/grass/plant()
 	if (locate(/obj/structure) in src)
 		return
+	if (locate(/obj/cover) in src)
+		return
 	if (locate(/obj/item) in src)
 		return
 	var/area/A = get_area(src)
@@ -147,6 +153,8 @@
 
 /turf/floor/grass/plant()
 	if (locate(/obj/structure) in src)
+		return
+	if (locate(/obj/cover) in src)
 		return
 	if (locate(/obj/item) in src)
 		return
