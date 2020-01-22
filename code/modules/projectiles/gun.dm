@@ -543,15 +543,15 @@
 		var/health_percentage = (health/maxhealth)*100
 		switch (health_percentage)
 			if (-100 to 21)
-				user << "<span class='notice'>Is pratically falling apart!</span>"
+				user << "<font color='#7f0000'>Is pratically falling apart!</font>"
 			if (22 to 49)
-				user << "Seems to be in very bad condition."
+				user << "<font color='#a74510'>Seems to be in very bad condition.</font>"
 			if (50 to 69)
-				user << "Seems to be in a rough condition."
+				user << "<font color='#cccc00'>Seems to be in a rough condition.</font>"
 			if (70 to 84)
-				user << "Seems to be in a somewhat decent condition"
+				user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
 			if (85 to 200)
-				user << "Seems to be in very good condition."
+				user << "<font color='#245319'>Seems to be in very good condition.</font>"
 
 	if (firemodes.len > 1)
 		var/datum/firemode/current_mode = firemodes[sel_mode]

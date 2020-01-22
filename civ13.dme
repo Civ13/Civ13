@@ -909,5 +909,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\isles.dmm"
+#include "maps\special\smolpop.dmm"
 // END_INCLUDE

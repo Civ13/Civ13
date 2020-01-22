@@ -979,6 +979,7 @@ RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,n
 RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,40,0,1,tools,110,0,0,8,null
 RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing/modern,5,60,0,1,tools,120,0,0,8,null
 RECIPE: /material/iron/,butcher's cleaver,/obj/item/weapon/material/knife/butcher,3,40,0,1,tools,20,0,25,8,iron
+RECIPE: /material/iron/,firearm cleaning kit,/obj/item/weapon/gun_cleaning_kit,5,80,0,1,tools,0,90,0,null
 RECIPE: /material/iron/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,pickaxe,/obj/item/weapon/pickaxe,3,80,0,1,tools,0,0,0,8,null
