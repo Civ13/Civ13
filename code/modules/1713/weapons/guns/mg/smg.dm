@@ -263,6 +263,27 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/submachinegun/makeshiftaksniper
+	name = "Makeshift AKD"
+	desc = "Soviet assault rifle chambered in 7.62x39mm."
+	icon_state = "ak47"
+	item_state = "ak47"
+	base_icon = "ak47"
+	caliber = "a762x39"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/ak47
+	weight = 3.47
+	equiptimer = 15
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		)
+	effectiveness_mod = 1
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms
 	name = "AKMS"
 	desc = "Soviet assault rifle chambered in 7.62x39mm. This is the modernized version with folding stock."
@@ -759,6 +780,27 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
 	weight = 2.3
 	equiptimer = 8
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0.6, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0.8, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.0, recoil=1.0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
+		)
+	effectiveness_mod = 1.15
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/victor
+	name = "Kriss Vector"
+	desc = "A compact but powerful firearm, chambered in 9x19mm."
+	icon_state = "victor"
+	item_state = "victor"
+	base_icon = "victor"
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/glock17
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
+	weight = 3
+	equiptimer = 4
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0.6, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
