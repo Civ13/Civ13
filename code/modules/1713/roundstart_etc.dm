@@ -35,9 +35,9 @@ var/GRACE_PERIOD_LENGTH = 7
 
 	spawn (1)
 //		world << "<span class = 'notice'>Setting up vegetation and ambience.</span>"
-
-	for (var/turf/floor/F in world)
-		F.plant()
+	if (map && map.nomads && !map.override_mapgen)
+		for (var/turf/floor/F in world)
+			F.plant()
 
 // ditto
 /hook/roundstart/proc/do_seasonal_stuff()
