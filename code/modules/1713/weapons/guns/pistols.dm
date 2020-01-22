@@ -173,6 +173,29 @@
 		icon_state = "glock170"
 	return
 
+/obj/item/weapon/gun/projectile/pistol/tarus
+	name = "Tarus G3"
+	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
+	icon_state = "tarusg3"
+	fire_delay = 2.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/glock17
+	weight = 0.594
+	max_shells = 17 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/glock17/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "glock17"
+	else
+		icon_state = "glock170"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/p220
 	name = "SIG Sauer P220"
 	desc = "The SIG Sauer P220 is a semi-automatic pistol. Designed in 1975."
@@ -308,6 +331,20 @@
 	name = "Colt M1911"
 	desc = "The standard issue pistol of the US Army. Chambered in .45 ACP."
 	icon_state = "colt"
+	w_class = 2
+	caliber = "a45acp"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/m1911
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a45acp
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.02
+
+/obj/item/weapon/gun/projectile/pistol/blackm1911
+	name = "Black M1911"
+	desc = "The standard issue pistol of the US Army. Chambered in .45 ACP."
+	icon_state = "black1911"
 	w_class = 2
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
