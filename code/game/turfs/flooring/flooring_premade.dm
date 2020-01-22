@@ -34,7 +34,7 @@
 /turf/floor/beach/sand/desert/plant()
 	if (locate(/obj/structure) in src)
 		return
-	if (locate(/obj/cover) in src)
+	if (locate(/obj/covers) in src)
 		return
 	if (locate(/obj/item) in src)
 		return
@@ -57,7 +57,7 @@
 		return
 	if (locate(/obj/structure) in src)
 		return
-	if (locate(/obj/cover) in src)
+	if (locate(/obj/covers) in src)
 		return
 	if (locate(/obj/item) in src)
 		return
@@ -120,7 +120,7 @@
 /turf/floor/winter/grass/plant()
 	if (locate(/obj/structure) in src)
 		return
-	if (locate(/obj/cover) in src)
+	if (locate(/obj/covers) in src)
 		return
 	if (locate(/obj/item) in src)
 		return
@@ -154,7 +154,7 @@
 /turf/floor/grass/plant()
 	if (locate(/obj/structure) in src)
 		return
-	if (locate(/obj/cover) in src)
+	if (locate(/obj/covers) in src)
 		return
 	if (locate(/obj/item) in src)
 		return
