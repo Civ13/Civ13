@@ -48,7 +48,7 @@ var/GRACE_PERIOD_LENGTH = 7
 			else if (istype(F, /turf/floor/beach/water/jungle))
 				jungleriverturfs += F
 				riverturfs += F
-			else if (istype(F, /turf/floor/beach/water)) && !istype(F, /turf/floor/beach/water/ice) && !istype(F, /turf/floor/beach/water/swamp) && !istype(F, /turf/floor/beach/water/flooded))
+			else if (istype(F, /turf/floor/beach/water) && !istype(F, /turf/floor/beach/water/ice) && !istype(F, /turf/floor/beach/water/swamp) && !istype(F, /turf/floor/beach/water/flooded))
 				riverturfs += F
 	//gets the total number of tiles in the world, to dinamically distribute fauna and flora
 	spawn(200)
