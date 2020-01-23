@@ -201,6 +201,9 @@
 /obj/structure/ants/New()
 	..()
 	check_food()
+	spawn(600)
+		if (src)
+			qdel(src)
 
 
 /obj/structure/ants/proc/check_food()

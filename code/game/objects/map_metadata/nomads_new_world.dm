@@ -33,20 +33,7 @@
 	var/list/arealist_g = list()
 /obj/map_metadata/nomads_new_world/New()
 	..()
-	var/list/totalturfs = get_area_turfs(/area/caribbean/nomads/forest/Jungle)
-	totalturfs += get_area_turfs(/area/caribbean/nomads/forest/savanna)
-	spawn(1200)
-		for (var/i = 1, i <= 100)
-			var/turf/areaspawn = safepick(totalturfs)
-			if (istype(areaspawn,/turf/floor/beach/water/jungle))
-				new/obj/structure/piranha(areaspawn)
-				i++
-	spawn(600)
-		for (var/i = 1, i <= 23)
-			var/turf/areaspawn2 = safepick(totalturfs)
-			if (istype(areaspawn2,/turf/floor/grass) || istype(areaspawn2,/turf/floor/dirt))
-				new/obj/structure/anthill(areaspawn2)
-				i++
+
 	spawn(18000)
 		seasons()
 

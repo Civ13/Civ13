@@ -8,7 +8,7 @@ import signal
 if len(sys.argv) == 1:
 	print("Not enough args provided.")
 	sys.exit()
-	
+
 currdir = os.path.dirname(os.path.abspath(__file__))
 lines = open(os.path.join(currdir,"paths.txt"))
 all_lines = lines.readlines()
@@ -100,6 +100,12 @@ elif map == "NOMADS_PANGEA":
 	dmms.append("#include \"maps\\special\\nomads_pangea.dmm\"")
 elif map == "NOMADS_WASTELAND":
 	dmms.append("#include \"maps\\special\\nomads_wasteland.dmm\"")
+elif map == "NOMADS_NEW_WORLD":
+	dmms.append("#include \"maps\\special\\nomads_new_world.dmm\"")
+elif map == "NOMADS_MEDITERRANEAN":
+	dmms.append("#include \"maps\\special\\nomads_mediterranean.dmm\"")
+elif map == "NOMADS_ISLAND":
+	dmms.append("#include \"maps\\special\\nomads_island.dmm\"")
 
 elif map == "LITTLE_CREEK":
 	dmms.append("#include \"maps\\1873\\little_creek.dmm\"")
@@ -139,8 +145,6 @@ elif map == "KURSK":
 	dmms.append("#include \"maps\\1943\\kursk.dmm\"")
 elif map == "GULAG13":
 	dmms.append("#include \"maps\\1943\\gulag13.dmm\"")
-elif map == "NOMADS_NEW_WORLD":
-	dmms.append("#include \"maps\\special\\nomads_new_world.dmm\"")
 elif map == "STALINGRAD":
 	dmms.append("#include \"maps\\WIP\\Stalingrad.dmm\"")
 else:
