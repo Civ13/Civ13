@@ -49,6 +49,28 @@
 	else
 		WWalert(src, "Admin jumping is disabled", "Admin Jump")
 
+/client/proc/jumptomob(var/mob/M in mob_list)
+	set category = "Admin"
+	set name = "Jump to Mob"
+
+	if (!check_rights(R_ADMIN|R_MOD|R_DEBUG))
+		return
+
+	if (config.allow_admin_jump)
+		log_admin("[key_name(usr)] jumped to [key_name(M)]")
+		message_admins("[key_name_admin(usr)] jumped to [key_name_admin(M)]", TRUE)
+		if (mob)
+			var/mob/A = mob
+			var/turf/T = get_turf(M)
+			if (T && isturf(T))
+
+				A.on_mob_jump()
+				A.loc = T
+			else
+				A << "This mob is not located in the game world."
+	else
+		WWalert(src, "Admin jumping is disabled", "Admin Jump")
+
 /client/proc/jumptocoord(tx as num, ty as num, tz as num)
 	set category = "Admin"
 	set name = "Jump to Coordinate"

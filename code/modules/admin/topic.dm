@@ -316,6 +316,19 @@
 		var/mob/M = locate(href_list["adminplayeropts"])
 		show_player_panel(M)
 
+	else if (href_list["adminplayerobservejump"])
+		if (!check_rights(R_MENTOR|R_MOD|R_ADMIN))	return
+
+		var/mob/M = locate(href_list["adminplayerobservejump"])
+
+		var/client/C = usr.client
+		if (!isghost(usr))	C.admin_ghost()
+		sleep(2)
+		C.jumptomob(M)
+/*
+	else if (href_list["check_antagonist"])
+		check_antagonists()*/
+
 	else if (href_list["adminplayerobservecoodjump"])
 		if (!check_rights(R_ADMIN|R_MOD))	return
 
@@ -404,6 +417,12 @@
 		message_admins("[key_name(H)] got their cookie, spawned by [key_name(owner)]")
 
 		H << "<span class = 'notice'>Your prayers have been answered!! You received the <b>best cookie</b>!</span>"
+
+	else if (href_list["jumpto"])
+		if (!check_rights(R_ADMIN))	return
+
+		var/mob/M = locate(href_list["jumpto"])
+		usr.client.jumptomob(M)
 
 	else if (href_list["getmob"])
 		if (!check_rights(R_ADMIN))	return
