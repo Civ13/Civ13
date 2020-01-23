@@ -505,7 +505,7 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 					else
 						todestroy += O
 			for(var/obj/OM in todestroy)
-				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails))
+				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails)&& !istype(OM, /obj/covers))
 					qdel(OM)
 	dir = newdir
 	for (var/obj/structure/vehicleparts/movement/OBB in wheels)
