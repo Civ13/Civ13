@@ -224,6 +224,22 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
+/obj/item/weapon/gun/projectile/revolver/makeshift
+	name = "Makeshift Revolver"
+	desc = "A cheap makeshift revolver."
+	icon_state = "makeshiftrevolver"
+	base_icon = "makeshiftrevolver"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
 /obj/item/weapon/gun/projectile/revolver/coltnewpolice
 	name = "Colt new police"
 	desc = "Common revolver used by police."
