@@ -140,6 +140,19 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
+/obj/structure/support_admin
+	name = "roof support"
+	desc = "A thick steel beam, used to support roofs in large buildings."
+	icon_state = ""
+	flammable = FALSE
+	anchored = TRUE
+	opacity = FALSE
+	density = FALSE
+	invisibility = 101
+	var/health = 200
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
 /obj/structure/roof_support/nordic
 	name = "nordic pillar"
 	desc = "A thick wood beam, in nordic style. Used to support roofs in large buildings."
