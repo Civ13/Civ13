@@ -188,12 +188,12 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
-/obj/item/weapon/gun/projectile/pistol/glock17/update_icon()
+/obj/item/weapon/gun/projectile/pistol/tarus/update_icon()
 	..()
 	if (ammo_magazine)
-		icon_state = "glock17"
+		icon_state = "tarus"
 	else
-		icon_state = "glock170"
+		icon_state = "tarus_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/p220
