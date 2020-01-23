@@ -335,17 +335,16 @@
 						if (!ST.density)
 							ST.Destroy()
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
-					if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers))
-						M.forceMove(matrix_current_locs[dlocfind][1])
-						if (istype(M, /obj))
-							var/obj/O = M
-							if (!istype(O, /obj/structure/cannon))
-								O.dir = dir
-							if (istype(O, /obj/structure/vehicleparts/frame))
-								var/obj/structure/vehicleparts/frame/FR = O
-								if (FR.mwheel)
-									FR.mwheel.update_icon()
-							O.update_icon()
+					M.forceMove(matrix_current_locs[dlocfind][1])
+					if (istype(M, /obj))
+						var/obj/O = M
+						if (!istype(O, /obj/structure/cannon))
+							O.dir = dir
+						if (istype(O, /obj/structure/vehicleparts/frame))
+							var/obj/structure/vehicleparts/frame/FR = O
+							if (FR.mwheel)
+								FR.mwheel.update_icon()
+						O.update_icon()
 
 	for(var/obj/structure/vehicleparts/VP in components)
 		VP.dir = dir
