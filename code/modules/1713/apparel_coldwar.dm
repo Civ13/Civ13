@@ -303,6 +303,16 @@
 	w_class = 1
 	restricts_view = 2
 
+/obj/item/clothing/mask/sovietbala
+	name = "green balaclava"
+	desc = "A green balaclava, covering the mouth."
+	icon_state = "sovietbala"
+	item_state = "sovietbala"
+	worn_state = "sovietbala"
+	body_parts_covered = FACE|EYES|HEAD
+	w_class = 1
+	restricts_view = 2
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing
 	name = "green chest webbing"
 	desc = "a green chest-level webbing, with three medium sized pouches."
@@ -371,6 +381,16 @@
 	worn_state = "bxsuit"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
 	armor = list(melee = 140, arrow = 200, gun = 150, energy = 100, bomb = 100, bio = 100, rad = 80)
+	ripable = FALSE
+
+/obj/item/clothing/suit/a6B45
+	name = "6B45 heavy vest"
+	desc = "6B45 is a modular bullet-resistant vest. It comprises frontal and rear section and soft-armour shoulder and side protection.."
+	icon_state = "a6b45"
+	item_state = "a6b45"
+	worn_state = "a6b45"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 103, arrow = 110, gun = 110, energy = 67, bomb = 70, bio = 40, rad = 36)
 	ripable = FALSE
 
 

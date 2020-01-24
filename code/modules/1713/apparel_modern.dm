@@ -197,7 +197,17 @@
 	worn_state = "sovietfacehelmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 90, arrow = 95, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+	armor = list(melee = 90, arrow = 110, gun = 96, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/a6b47
+	name = "6B47 helmet"
+	desc = "A russian heavy armoured helmet."
+	icon_state = "a6b47"
+	item_state = "a6b47"
+	worn_state = "a6b47"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
 
 /obj/item/clothing/under/us_uni/us_camo_woodland
 	name = "woodland camouflage uniform"
