@@ -173,6 +173,29 @@
 		icon_state = "glock170"
 	return
 
+/obj/item/weapon/gun/projectile/pistol/mp443
+	name = "MP-443"
+	desc = "A modern pistol, loaded on 9x19mm, made by Russia."
+	icon_state = "mp443"
+	fire_delay = 3.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/mp443
+	weight = 0.594
+	max_shells = 17
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/mp443/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "mp443"
+	else
+		icon_state = "mp443_open"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/tarus
 	name = "Tarus G3"
 	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
@@ -191,9 +214,9 @@
 /obj/item/weapon/gun/projectile/pistol/tarus/update_icon()
 	..()
 	if (ammo_magazine)
-		icon_state = "tarus"
+		icon_state = "tarusg3"
 	else
-		icon_state = "tarus_open"
+		icon_state = "tarusg3_open"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/p220

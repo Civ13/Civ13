@@ -193,6 +193,22 @@
 	worn_state = "patch_marksman"
 	slot = "armband"
 
+/obj/item/clothing/accessory/patch/russia
+	name = "Russia patch"
+	desc = "A patch with the flag of Russia."
+	icon_state = "patch_russia"
+	item_state = "patch_russia"
+	worn_state = "patch_russia"
+	slot = "armband"
+
+/obj/item/clothing/accessory/patch/spetsgruppaa
+	name = "Spetsgruppa A patch"
+	desc = "A special forces patch, this one is of spetsnaz."
+	icon_state = "patch_spets"
+	item_state = "patch_marksman"
+	worn_state = "patch_marksman"
+	slot = "armband"
+
 /obj/item/clothing/accessory/patch/specialforce
 	name = "special forces patch"
 	desc = "A patch used by special forces."

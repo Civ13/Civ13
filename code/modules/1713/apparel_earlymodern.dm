@@ -463,6 +463,13 @@
 	item_state = "modern7"
 	worn_state = "modern7"
 
+/obj/item/clothing/under/milrus2
+	name = "russian military outfit"
+	desc = "An outfit composed of camo pants and shirt."
+	icon_state = "milrus2"
+	item_state = "milrus2"
+	worn_state = "milrus2"
+
 /obj/item/clothing/under/baily
 	name = "security outfit"
 	desc = "An outfit composed of a green jacket and black pants."

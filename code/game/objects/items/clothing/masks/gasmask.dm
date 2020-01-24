@@ -67,6 +67,11 @@
 	item_state = "moderngasmask"
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
+/obj/item/clothing/mask/gas/russia
+	icon_state = "russiamask"
+	item_state = "russiamask"
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
+
 /obj/item/clothing/mask/gas/modern
 	icon_state = "sovietmask"
 	item_state = "sovietmask"
