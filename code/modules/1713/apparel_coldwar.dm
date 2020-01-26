@@ -64,6 +64,30 @@
 	item_state = "commando_bandana"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/accessory/storage/webbing/ubac
+	name = "Tan UBAC"
+	desc = "A flexible, close-fitting shirt with camouflage sleeves designed to be worn under combat equipment. This one is tan."
+	icon_state = "ubac_tan"
+	item_state = "ubac_tan"
+
+/obj/item/clothing/accessory/storage/webbing/ubacgreen
+	name = "Green UBAC"
+	desc = "A flexible, close-fitting shirt with camouflage sleeves designed to be worn under combat equipment. This one is green."
+	icon_state = "ubac_green"
+	item_state = "ubac_green"
+
+/obj/item/clothing/accessory/storage/webbing/ubacblack
+	name = "Black UBAC"
+	desc = "A flexible, close-fitting shirt with camouflage sleeves designed to be worn under combat equipment. This one is black."
+	icon_state = "ubac_black"
+	item_state = "ubac_black"
+
+/obj/item/clothing/accessory/storage/webbing/sweater
+	name = "white sweater"
+	desc = "A sweater to help you be comfy."
+	icon_state = "sweater"
+	item_state = "sweater"
+
 /obj/item/clothing/accessory/storage/webbing/light
 	name = "light webbing"
 	desc = "a light webbing, with lower capacity but permitting fast movement."
@@ -332,6 +356,27 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/pouches
+	name = "black puches"
+	desc = "a set of pouches to store magazines in."
+	slots = 3
+	icon_state = "black_pouches"
+	item_state = "black_pouches"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine)
+
+/obj/item/clothing/accessory/storage/webbing/tanpouches
+	name = "tan puches"
+	desc = "a set of pouches to store magazines in."
+	slots = 3
+	icon_state = "tan_pouches"
+	item_state = "tan_pouches"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine)
+
 
 /obj/item/clothing/head/nbc
 	name = "yellow NBC hood"
