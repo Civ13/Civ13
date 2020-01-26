@@ -134,8 +134,8 @@
 	name = "Tactical AK-74M"
 	desc = "A russian tactical rifle used by the Spetsnaz."
 	icon_state = "ak74mspecial"
-	item_state = "tactical"
-	base_icon = "tactical"
+	item_state = "ak47"
+	base_icon = "ak74mspecial"
 	weight = 3.97
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
