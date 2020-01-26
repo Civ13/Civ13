@@ -125,6 +125,27 @@
 	edge = TRUE
 	w_class = 2.0
 
+/obj/item/clothing/accessory/armor/legguards
+	name = "leg guards"
+	desc = "Used to increase the protection of the legs."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "legguards"
+	item_state = "legguards"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 6.0
+	throwforce = 3.0
+	slot = "leg_armor"
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	body_parts_covered = LEGS
+	armor = list(melee = 75, arrow = 50, gun = 30, energy = 32, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.3
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
 /obj/item/clothing/accessory/armor/elbow_protections
 	name = "elbow protections"
 	desc = "Used to increase the protection of the arms."
@@ -141,6 +162,27 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	body_parts_covered = ARMS
 	armor = list(melee = 65, arrow = 45, gun = 15, energy = 25, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.1
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/clothing/accessory/armor/armguards
+	name = "arm guards"
+	desc = "Used to increase the protection of the arms."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "armguards"
+	item_state = "armguards"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 6.0
+	throwforce = 3.0
+	slot = "arm_armor"
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	body_parts_covered = ARMS
+	armor = list(melee = 75, arrow = 50, gun = 30, energy = 32, bomb = 55, bio = 20, rad = FALSE)
 	slowdown = 0.1
 	sharp = FALSE
 	edge = TRUE

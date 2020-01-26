@@ -552,6 +552,13 @@ obj/item/clothing/head/ww2/chicap2
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/russian
+	name = "Russian"
+	desc = "4 green poly pouches."
+	icon_state = "russian_vest"
+	item_state = "russian_vest"
+	slots = 6
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german
 	name = "german webbing"
 	icon_state = "german_vest"
