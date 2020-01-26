@@ -383,16 +383,38 @@
 	armor = list(melee = 140, arrow = 200, gun = 150, energy = 100, bomb = 100, bio = 100, rad = 80)
 	ripable = FALSE
 
-/obj/item/clothing/suit/a6B45
+/obj/item/clothing/suit/a6b45
 	name = "6B45 heavy vest"
-	desc = "6B45 is a modular bullet-resistant vest. It comprises frontal and rear section and soft-armour shoulder and side protection.."
+	desc = "6B45 is a modular bullet-resistant vest. It comprises frontal and rear section and soft-armour shoulder and side protection."
 	icon_state = "a6b45"
 	item_state = "a6b45"
 	worn_state = "a6b45"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 103, arrow = 110, gun = 110, energy = 67, bomb = 70, bio = 40, rad = 36)
+	var/slots = 4
 	ripable = FALSE
 
+/obj/item/clothing/suit/a6b44
+	name = "6B44 vest"
+	desc = "6B44 is a modular bullet-resistant vest."
+	icon_state = "a6b44"
+	item_state = "a6b44"
+	worn_state = "a6b44"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 80, arrow = 100, gun = 93, energy = 56, bomb = 64, bio = 40, rad = 36)
+	var/slots = 4
+	ripable = FALSE
+
+/obj/item/clothing/suit/a6b28
+	name = "6B28 plate carrier"
+	desc = "6B28 is a level III plate carrier."
+	icon_state = "a6b28"
+	item_state = "a6b28"
+	worn_state = "a6b28"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 74, arrow = 87, gun = 83, energy = 67, bomb = 56, bio = 40, rad = 36)
+	var/slots = 3
+	ripable = FALSE
 
 /obj/item/clothing/suit/b3
 	name = "B3A1 Vest"
