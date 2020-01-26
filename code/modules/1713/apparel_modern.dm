@@ -261,6 +261,16 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 80, arrow = 100, gun = 95, energy = 36, bomb = 76, bio = 30, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/zsh2
+	name = "ZSh-2 helmet"
+	desc = "A russian heavy armoured helmet with a visor."
+	icon_state = "zsh2"
+	item_state = "zsh2"
+	worn_state = "zsh2"
+	body_parts_covered = HEAD|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 84, arrow = 104, gun = 98, energy = 38, bomb = 79, bio = 34, rad = FALSE)
+
 /obj/item/clothing/under/us_uni/us_camo_woodland
 	name = "woodland camouflage uniform"
 	desc = "The standard US Army camo uniform the late 20th century."
