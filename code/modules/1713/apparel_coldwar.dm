@@ -445,7 +445,7 @@
 	icon_state = "a6b44"
 	item_state = "a6b44"
 	worn_state = "a6b44"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 80, arrow = 100, gun = 93, energy = 56, bomb = 64, bio = 40, rad = 36)
 	var/slots = 4
 	ripable = FALSE
@@ -456,7 +456,7 @@
 	icon_state = "a6b28"
 	item_state = "a6b28"
 	worn_state = "a6b28"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 74, arrow = 87, gun = 83, energy = 67, bomb = 56, bio = 40, rad = 36)
 	var/slots = 3
 	ripable = FALSE
