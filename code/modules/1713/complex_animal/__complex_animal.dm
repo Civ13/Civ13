@@ -24,7 +24,7 @@
 	var/list/friendly_factions = list()
 
 	// any specific people we like or dislike: overrides everything else
-	var/list/friends = list()
+	friends = list()
 	var/list/enemies = list()
 
 	// icons
@@ -48,6 +48,7 @@
 	var/list/friendly_mobs = list()
 	var/tameminimum = 100 // minimum friendly value to tame an animal
 	var/tamed = FALSE
+	var/can_be_tamed = FALSE
 	var/starving = FALSE
 // things we do every life tick: by default, wander every few seconds,
 // rest every ~20 minutes. Deplete nutrition over ~30 minutes
@@ -217,6 +218,8 @@ called after H added to knows_about_mobs() */
 					C.onHumanMovement(P.firer)
 
 /mob/living/simple_animal/complex_animal/death(gibbed, deathmessage = "dies!")
+	if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+		dog_mob_list -= src
 	..(gibbed, deathmessage)
 	walk(src, FALSE)
 	lying = TRUE

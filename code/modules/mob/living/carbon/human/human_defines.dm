@@ -172,8 +172,9 @@
 	//leadership (total control!), announcement, give titles, recruitment
 	var/list/faction_perms = list(0,0,0,0)
 	var/title = ""
+	var/religious_title = ""
 	var/announcement_cooldown = 0
-
+	var/list/left_factions = list() //faction leaving cooldown (to prevent tax avoidance)
 	var/religion = "none" //what religion this person belongs to
 	var/religion_type = "none"
 	var/religion_style = "none"

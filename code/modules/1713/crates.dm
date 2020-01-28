@@ -246,6 +246,21 @@ obj/structure/closet/crate/empty
 		var/obj/item/stack/S = stack
 		S.amount = 20
 
+/obj/structure/closet/crate/stone
+	name = "stone blocks crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/stack/material/stone = 5)
+	cratevalue = 130 //100 base value from 100 stone blocks
+
+/obj/structure/closet/crate/stone/New()
+	..()
+	for (var/stack in contents)
+		var/obj/item/stack/S = stack
+		S.amount = 20
+
+
 /obj/structure/closet/crate/glass
 	name = "glass sheets crate"
 	icon_state = "wood_crate"
@@ -631,9 +646,20 @@ obj/structure/closet/crate/airdrops/food
 
 obj/structure/closet/crate/airdrops/weapons
 	name = "weapons crate"
-	paths = list(/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47 = 2,
-				/obj/item/ammo_magazine/ak47/makeshift = 4,
-				/obj/item/weapon/grenade/coldwar/m67 = 3)
+	paths = list(/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47 = 1,
+	            /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt = 1,
+				/obj/item/ammo_magazine/ak47/makeshift = 2,
+				/obj/item/ammo_casing/a762x54 = 10)
+
+obj/structure/closet/crate/airdrops/military
+	name = "military crate"
+	paths = list(/obj/item/weapon/gun/projectile/submachinegun/m16 = 1,
+	            /obj/item/ammo_magazine/m16 = 2,
+				/obj/item/clothing/mask/gas/military = 1,
+				/obj/item/clothing/accessory/armor/nomads/thickcarrier = 1,
+				/obj/item/weapon/grenade/modern/f1 = 1,
+				/obj/item/clothing/head/helmet/modern/lwh = 1,
+				/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 2)
 
 obj/structure/closet/crate/airdrops/medicine
 	name = "medicine crate"

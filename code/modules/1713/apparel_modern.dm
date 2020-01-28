@@ -125,6 +125,27 @@
 	edge = TRUE
 	w_class = 2.0
 
+/obj/item/clothing/accessory/armor/legguards
+	name = "leg guards"
+	desc = "Used to increase the protection of the legs."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "legguards"
+	item_state = "legguards"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 6.0
+	throwforce = 3.0
+	slot = "leg_armor"
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	body_parts_covered = LEGS
+	armor = list(melee = 75, arrow = 50, gun = 30, energy = 32, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.3
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
 /obj/item/clothing/accessory/armor/elbow_protections
 	name = "elbow protections"
 	desc = "Used to increase the protection of the arms."
@@ -141,6 +162,27 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	body_parts_covered = ARMS
 	armor = list(melee = 65, arrow = 45, gun = 15, energy = 25, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.1
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/clothing/accessory/armor/armguards
+	name = "arm guards"
+	desc = "Used to increase the protection of the arms."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "armguards"
+	item_state = "armguards"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 6.0
+	throwforce = 3.0
+	slot = "arm_armor"
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	body_parts_covered = ARMS
+	armor = list(melee = 75, arrow = 50, gun = 30, energy = 32, bomb = 55, bio = 20, rad = FALSE)
 	slowdown = 0.1
 	sharp = FALSE
 	edge = TRUE
@@ -188,6 +230,46 @@
 	icon_state = "lwh_black"
 	item_state = "lwh_black"
 	worn_state = "lwh_black"
+
+/obj/item/clothing/head/helmet/modern/sovietfacehelmet
+	name = "K6 helmet"
+	desc = "A russian heavy armoured helmet."
+	icon_state = "sovietfacehelmet"
+	item_state = "sovietfacehelmet"
+	worn_state = "sovietfacehelmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 90, arrow = 110, gun = 96, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/a6b47
+	name = "6B47 helmet"
+	desc = "A russian heavy armoured helmet."
+	icon_state = "a6b47"
+	item_state = "a6b47"
+	worn_state = "a6b47"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/zsh1
+	name = "ZSh-1 helmet"
+	desc = "A russian heavy armoured helmet."
+	icon_state = "zsh1"
+	item_state = "zsh1"
+	worn_state = "zsh1"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 80, arrow = 100, gun = 95, energy = 36, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/zsh2
+	name = "ZSh-2 helmet"
+	desc = "A russian heavy armoured helmet with a visor."
+	icon_state = "zsh2"
+	item_state = "zsh2"
+	worn_state = "zsh2"
+	body_parts_covered = HEAD|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 84, arrow = 104, gun = 98, energy = 38, bomb = 79, bio = 34, rad = FALSE)
 
 /obj/item/clothing/under/us_uni/us_camo_woodland
 	name = "woodland camouflage uniform"
@@ -369,11 +451,24 @@
 	item_state = "kevlarvest"
 	worn_state = "kevlarvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
-	armor = list(melee = 74, arrow = 95, gun = 80, energy = 30, bomb = 64, bio = 20, rad = FALSE)
+	armor = list(melee = 80, arrow = 95, gun = 95, energy = 35, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.4
 	w_class = 4
 	weight = 3.8
+
+/obj/item/clothing/accessory/armor/nomads/baily
+	name = "baily vest"
+	desc = "A vest used by baily security units."
+	icon_state = "bailyvest"
+	item_state = "bailyvest"
+	worn_state = "bailyvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	armor = list(melee = 40, arrow = 95, gun = 82, energy = 30, bomb = 35, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.2
+	w_class = 3
+	weight = 2
 
 /obj/item/clothing/accessory/armor/nomads/iogsuit
 	name = "IOG heavy vest B-7"
@@ -400,6 +495,18 @@
 	restricts_view = 2
 	health = 90
 
+/obj/item/clothing/head/helmet/tactical
+	name = "tactical helmet"
+	desc = "A standard bulletproof helmet, made of polyethylene."
+	icon_state = "tacticalhelmet"
+	item_state = "tacticalhelmet"
+	worn_state = "tacticalhelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
+
 /obj/item/clothing/head/helmet/ioghelmet
 	name = "IOG helmet"
 	desc = "A strong helmet."
@@ -410,6 +517,18 @@
 	armor = list(melee = 95, arrow = 100, gun = 110, energy = 50, bomb = 90, bio = 45, rad = FALSE)
 	flags_inv = BLOCKHAIR
 	restricts_view = 1
+	health = 200
+
+/obj/item/clothing/head/helmet/iogmask1
+	name = "IOG helmet"
+	desc = "A strong helmet."
+	icon_state = "iogmask1"
+	item_state = "iogmask1"
+	worn_state = "iogmask1"
+	body_parts_covered = HEAD
+	armor = list(melee = 95, arrow = 100, gun = 100, energy = 50, bomb = 90, bio = 45, rad = 100)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
 	health = 200
 
 /obj/item/clothing/suit/armor/scrap

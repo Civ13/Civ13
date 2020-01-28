@@ -8,7 +8,7 @@
 /obj/item/weapon/reagent_containers/food/condiment
 	name = "Condiment Container"
 	desc = "Just your average condiment container."
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "emptycondiment"
 	flags = OPENCONTAINER
 	possible_transfer_amounts = list(1,5,10)
@@ -88,10 +88,8 @@
 					icon_state = "coldsauce"
 					center_of_mass = list("x"=16, "y"=6)
 				if ("sodiumchloride")
-					name = "Salt Shaker"
+					name = "salt pile"
 					desc = "Salt. From the oceans, presumably."
-					icon_state = "saltshaker"
-					center_of_mass = list("x"=16, "y"=10)
 				if ("blackpepper")
 					name = "Pepper Mill"
 					desc = "Often used to flavor food or make people sneeze."
@@ -144,6 +142,28 @@
 	New()
 		..()
 		reagents.add_reagent("sugar", 50)
+
+/obj/item/weapon/reagent_containers/food/condiment/saltpile		//Seperate from above since it's a small shaker rather then
+	name = "salt pile"
+	desc = "Salt. From the oceans, presumably."
+	icon = 'icons/obj/food/food.dmi'
+	icon_state = "salt"
+	possible_transfer_amounts = list(1,10)
+	amount_per_transfer_from_this = 10
+	volume = 10
+	New()
+		..()
+		reagents.add_reagent("sodiumchloride", 10)
+
+/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty		//Seperate from above since it's a small shaker rather then
+	name = "salt pile"
+	desc = "Salt. From the oceans, presumably."
+	icon = 'icons/obj/food/food.dmi'
+	icon_state = "salt"
+	possible_transfer_amounts = list(1,10)
+	amount_per_transfer_from_this = 10
+	volume = 10
+
 /obj/item/weapon/reagent_containers/food/condiment/saltshaker		//Seperate from above since it's a small shaker rather then
 	name = "Salt Shaker"											//	a large one.
 	desc = "Salt. From the oceans, presumably."
@@ -169,7 +189,7 @@
 /obj/item/weapon/reagent_containers/food/condiment/flour
 	name = "flour sack"
 	desc = "A bag of flour. Good for baking!"
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "flour"
 	item_state = "flour"
 	decay = 45*600
@@ -205,7 +225,7 @@
 /obj/item/weapon/reagent_containers/food/condiment/bsugar
 	name = "sugarcane sugar"
 	desc = "a pile of unrefined brown sugar."
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "sugar"
 	item_state = "flour"
 	satisfaction = 8
@@ -218,7 +238,7 @@
 /obj/item/weapon/reagent_containers/food/condiment/tealeaves
 	name = "tea leaves"
 	desc = "some tea leaves. mix with hot water."
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "tea_leaves_dried"
 	item_state = "flour"
 	decay = 80*600

@@ -93,12 +93,16 @@
 				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Weapons and ammunition have been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/weapons(locationt)
 
+			if("military")
+				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>military equipment have been airdropped in the area!</center></font>"
+				new/obj/structure/closet/crate/airdrops/military(locationt)
+
 			if("medicine")
 				world << "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Medicine has been airdropped in the area!</center></font>"
 				new/obj/structure/closet/crate/airdrops/medicine(locationt)
 	spawn(rand(36000, 72000))
 		supplydrop_proc()
-/obj/map_metadata/nomads_wasteland/proc/seasons()
+/obj/map_metadata/nomads_wasteland/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"

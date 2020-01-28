@@ -68,15 +68,16 @@
 				central.axis.components += PV
 		//then the engine
 		var/done2 = FALSE
-		for (var/obj/structure/engine/internal/E in rangeto)
+		for (var/obj/structure/engine/E in rangeto)
 			if (!done2)
 				for (var/obj/structure/vehicleparts/frame/F in E.loc)
 					if (!done2)
 						central.axis.engine = E
 						E.anchored = TRUE
-						E.icon = 'icons/obj/vehicleparts.dmi'
-						E.engineclass = "engine"
-						E.update_icon()
+						if (istype(E, /obj/structure/engine/internal))
+							E.icon = 'icons/obj/vehicleparts.dmi'
+							E.engineclass = "engine"
+							E.update_icon()
 						done2 = TRUE
 		for (var/obj/structure/vehicleparts/movement/sails/S in rangeto)
 			for (var/obj/structure/vehicleparts/frame/ship/F in S.loc)

@@ -61,6 +61,11 @@
 			user << "You refuel the [src]."
 			qdel(W)
 			return
+		else if (istype(W, /obj/item/weapon/branch))
+			fuel += (60)*W.amount
+			user << "You refuel the [src]."
+			qdel(W)
+			return
 		else if (istype(W, /obj/item/ammo_casing/arrow) && on)
 			var/obj/item/ammo_casing/arrow/WW = W
 			user << "You start lighting the arrow in \the [src]..."
@@ -71,6 +76,18 @@
 				WW.projectile_type = /obj/item/projectile/arrow/arrow/fire
 				WW.damtype = BURN
 				WW.BB = new/obj/item/projectile/arrow/arrow/fire(WW)
+				WW.contents = list(WW.BB)
+				return
+		else if (istype(W, /obj/item/ammo_casing/bolt) && on)
+			var/obj/item/ammo_casing/bolt/WW = W
+			user << "You start lighting the bolt in \the [src]..."
+			if (do_after(user, 30, src))
+				user << "You light the bolt in \the [src]."
+				WW.name = "fire bolt"
+				WW.icon_state = "boltf"
+				WW.projectile_type = /obj/item/projectile/arrow/bolt/fire
+				WW.damtype = BURN
+				WW.BB = new/obj/item/projectile/arrow/bolt/fire(WW)
 				WW.contents = list(WW.BB)
 				return
 		else if  (istype(W, /obj/item))

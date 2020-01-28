@@ -15,7 +15,6 @@
 	name = "internal combustion engine"
 	desc = "A basic engine."
 	enginetype = "internal"
-	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank = null
 	var/list/fuels = list() //accepted fuels (can be more than one)
 	var/fuelefficiency = 0 //fuel consumption on max power. Lower is better. The default value is per 1000 cc (liter)
 	var/enginesize = 1000 //in cubic centimeters (cc)

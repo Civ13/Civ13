@@ -12,27 +12,19 @@
 	for (current in current_list)
 
 		var/mob/M = current
-		if (!M || !ismob(M))
-			return
+		if (!M || !isliving(M))
+			continue
 
 		if (isDeleted(M))
 			catchBadType(M)
 			mob_list -= M
+			living_mob_list -= M
 			continue
 
 		else if (istype(M, /mob/new_player))
 			if (!M.client || M.client.mob != M)
 				qdel(M)
 			continue
-
-		// if we're a spawned in, jobless mob: don't handle processing
-		/* todo: these mobs SHOULD process if they have clients.
-			right now, letting jobless mobs with or w/o clients process
-			results in a lot of obscure runtimes, possibly associated
-			with human.Life() calling back to living.Life() - Kachnov */
-
-		/* this will probably be removed soon because the job-vanishing error has gone,
-		 * and soon spawned in mobs will get jobs. */
 
 		else if (ishuman(M))
 			if (!M.original_job)
@@ -52,6 +44,7 @@
 			if (!M)
 				catchBadType(M)
 				mob_list -= M
+				living_mob_list -= M
 				continue
 			M.Life()
 			if (!(M == null))
@@ -68,7 +61,7 @@
 		PROCESS_TICK_CHECK
 
 /process/mob/reset_current_list()
-	PROCESS_USE_FASTEST_LIST(mob_list)
+	PROCESS_USE_FASTEST_LIST(living_mob_list)
 
 /process/mob/statProcess()
 	..()

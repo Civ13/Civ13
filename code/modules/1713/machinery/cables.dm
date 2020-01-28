@@ -43,7 +43,6 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/d1 = 0   // cable direction 1 (see above)
 	var/d2 = 1   // cable direction 2 (see above)
 	var/list/connections = list()
-	var/obj/item/stack/cable_coil/stored
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/lastupdate = 0 //to prevent loops. Can only update once per decisecond. For turning on/off.
@@ -105,17 +104,6 @@ By design, d1 is the smallest direction and d2 is the highest
 /obj/structure/cable/New()
 	..()
 
-	// ensure d1 & d2 reflect the icon_state for entering and exiting cable
-	var/dash = findtext(icon_state, "-")
-	d1 = text2num( copytext( icon_state, 1, dash ) )
-	d2 = text2num( copytext( icon_state, dash+1 ) )
-
-
-	if(d1)
-		stored = new/obj/item/stack/cable_coil(null,2,cable_color)
-	else
-		stored = new/obj/item/stack/cable_coil(null,1,cable_color)
-
 	if (!cable_color)
 		cable_color = pick(cable_colors)
 
@@ -144,7 +132,6 @@ By design, d1 is the smallest direction and d2 is the highest
 	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
 		playsound(loc, usesound, 100, FALSE)
-		stored.add_fingerprint(user)
 		Destroy()
 		return
 /*
@@ -166,11 +153,6 @@ By design, d1 is the smallest direction and d2 is the highest
 */
 //		handlecable(W, user, params)
 		return
-
-/obj/structure/cable/proc/update_stored(length = 1, colorC = "red")
-	stored.amount = length
-	stored.cable_color = colorC
-	stored.update_icon()
 
 //////////////////////////////////////////////
 // Network handling helpers

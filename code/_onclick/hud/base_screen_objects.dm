@@ -80,7 +80,8 @@
 
 /obj/screen/grab/Click()
 	var/obj/item/weapon/grab/G = master
-	G.s_click(src)
+	if (G)
+		G.s_click(src)
 	return TRUE
 
 /obj/screen/grab/attack_hand()

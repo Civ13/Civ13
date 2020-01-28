@@ -351,6 +351,17 @@ obj/item/clothing/accessory/harness
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 
+/obj/item/clothing/suit/storage/coat/ww2/japcoat_rain
+	name = "japanese rain coat"
+	desc = "A japanese army coat."
+	icon_state = "jap_raincoat"
+	item_state = "jap_raincoat"
+	worn_state = "jap_raincoat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
+	value = 75
+
 /obj/item/clothing/suit/storage/coat/ww2/japcoat_pilot
 	name = "japanese pilot coat"
 	desc = "A japanese air force kamikaze jacket."
@@ -540,6 +551,13 @@ obj/item/clothing/head/ww2/chicap2
 	New()
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/russian
+	name = "Russian"
+	desc = "4 green poly pouches."
+	icon_state = "russian_vest"
+	item_state = "russian_vest"
+	slots = 6
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german
 	name = "german webbing"
@@ -1082,6 +1100,16 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/ww2/gerhelm_mp
+	name = "german stahlhelm"
+	desc = "The typical rounded steel helmet of the Wehrmacht, this one specifically for MP's."
+	icon_state = "gerhelm_mp"
+	item_state = "gerhelm_mp"
+	worn_state = "gerhelm_mp"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/helmet/ww2/ss
 	name = "german ss helmet"
 	desc = "The typical rounded steel helmet of the Schutzstaffel."
@@ -1292,6 +1320,17 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	icon_state = "blackbomberjacket"
 	item_state = "blackbomberjacket"
 	worn_state = "blackbomberjacket"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ww2/biker
+	name = "biker jacket"
+	desc = "A black jacket meant for high-alititude temperatures."
+	icon_state = "biker"
+	item_state = "biker"
+	worn_state = "biker"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)

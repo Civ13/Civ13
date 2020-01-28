@@ -33,7 +33,9 @@
 						log_access("Notice: [key_name(src)] has the same [matches] as [key_name(M)] (no longer logged in).")
 */
 /mob/Login()
-	winset(src, null, "mainwindow.title='[customserver_name()]'")
+	if (!client)
+		return
+	winset(client, null, "mainwindow.title='[customserver_name()]'")
 	player_list |= src
 	update_Login_details()
 	world.update_status()
@@ -57,4 +59,4 @@
 			client.perspective = MOB_PERSPECTIVE
 
 	//set macro to normal incase it was overriden.
-	winset(src, null, "mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true input.background-color=#D3B5B5")
+	winset(client, null, "mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true input.background-color=#D3B5B5")

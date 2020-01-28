@@ -6,6 +6,8 @@
 	var/custom_code = 0 //for customized locks in RP
 	var/locked = FALSE //for customized locks in RP
 
+	var/override_material = FALSE
+
 	icon = 'icons/obj/doors/material_doors.dmi'
 	icon_state = "metal"
 
@@ -73,9 +75,12 @@
 		qdel(src)
 		return
 	hardness = max(1,round(material.integrity/10))
-	icon_state = material.door_icon_base
-	basic_icon = material.door_icon_base
-	name = "[material.display_name] door"
+	if (override_material)
+		basic_icon = icon_state
+	else
+		icon_state = material.door_icon_base
+		basic_icon = material.door_icon_base
+		name = "[material.display_name] door"
 	color = material.icon_colour
 	if (material.opacity < 0.5)
 		opacity = FALSE

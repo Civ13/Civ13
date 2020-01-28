@@ -150,7 +150,7 @@
 	plant = "wheat"
 	color = "#b87333" //copper
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
-	biomes = list("temperate", "tundra", "taiga", "sea", "desert", "semi-arid") //you can't drink wine in these regions without the last 2 on some maps
+	biomes = list("temperate", "tundra", "taiga", "sea")
 
 /*/obj/item/stack/farming/seeds/oat
 	name = "oat seeds"
@@ -716,10 +716,10 @@
 
 //some specific, non-food plants
 /obj/structure/farming/plant/hemp/spawnProduce()
-	var/obj/item/stack/material/rope/I = new/obj/item/stack/material/rope(loc)
+	var/obj/item/stack/material/hemp/I = new/obj/item/stack/material/hemp(loc)
 	I.radiation = radiation/2
 	if (fertilized)
-		var/obj/item/stack/material/rope/I2 = new/obj/item/stack/material/rope(loc)
+		var/obj/item/stack/material/hemp/I2 = new/obj/item/stack/material/hemp(loc)
 		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/tobacco/spawnProduce()

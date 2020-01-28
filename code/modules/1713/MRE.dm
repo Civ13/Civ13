@@ -37,7 +37,7 @@
 	trash = /obj/item/weapon/generic_MRE_trash
 
 /obj/item/weapon/generic_MRE_trash
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "mre_food_trash"
 	name = "MRE trash"
 	desc = "The remains of some MRE."

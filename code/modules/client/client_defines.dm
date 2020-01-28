@@ -43,10 +43,7 @@
 		////////////////////////////////////
 		//things that require the database//
 		////////////////////////////////////
-	var/player_age = "Requires database"	//So admins know why it isn't working - Used to determine how old the account is - in days.
-	var/related_accounts_ip = "Requires database"	//So admins know why it isn't working - Used to determine what other accounts previously logged in from this ip
-	var/related_accounts_cid = "Requires database"	//So admins know why it isn't working - Used to determine what other accounts previously logged in from this computer id
-	var/xp_points = "Requires database"
+	var/player_age = 0	//So admins know why it isn't working - Used to determine how old the account is - in days.
 	//preload_rsc = TRUE // This was FALSE, so Bay12 can set it to an URL once the player logs in and have them download the resources from a different server. But we change it.
 	preload_rsc = TRUE
 

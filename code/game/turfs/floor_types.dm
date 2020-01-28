@@ -371,6 +371,19 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "concrete6"
 	interior = FALSE
+
+/turf/floor/plating/metro
+	name = "Metro floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "metro"
+	interior = FALSE
+
+/turf/floor/plating/metroline
+	name = "Metro floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "metroline"
+	interior = FALSE
+
 /turf/floor/plating/tiled
 	name = "tiled floor"
 	icon = 'icons/turf/floors.dmi'

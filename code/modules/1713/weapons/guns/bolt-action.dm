@@ -32,6 +32,7 @@
 	fire_delay = 2
 	equiptimer = 15
 	gun_safety = TRUE
+	maxhealth = 20
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 
@@ -151,6 +152,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/handle_post_fire()
 	..()
+	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
 
 	if (last_fire != -1)
 		if (world.time - last_fire <= 7)
@@ -170,7 +172,7 @@
 	else
 		++jamcheck
 
-	if (prob(jamcheck))
+	if (prob(jamcheck*reverse_health_percentage))
 		jammed_until = max(world.time + (jamcheck * 5), 50)
 		jamcheck = 0
 	if (blackpowder)
@@ -237,6 +239,30 @@
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a577
 	magazine_type = /obj/item/ammo_magazine/c577
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 1
+	load_delay = 7
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt
+	name = "Makeshift Bolt"
+	desc = "A single-shot, makeshift bolt rifle."
+	icon_state ="makeshiftbolt"
+	item_state ="shotgun"
+	base_icon = "makeshiftbolt"
+	force = 13
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a762x54"
+	weight = 5
+	effectiveness_mod = 0.98
+	bolt_safety = FALSE
+	value = 90
+	recoil = 6
+	slot_flags = SLOT_SHOULDER
+	throwforce = 17
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a762x54
+	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 1
 	load_delay = 7
@@ -379,6 +405,39 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
 
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper
+	name = "Arisaka Type 99"
+	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
+	effectiveness_mod = 1.06
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka99_training
+	name = "Training Arisaka Type 99"
+	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition. This one is a training rifle that shoots wooden bullets."
+	icon_state = "arisaka99"
+	item_state = "arisaka99"
+	base_icon = "arisaka99"
+	caliber = "a77x58_wood"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a77x58_wood
+	magazine_type = /obj/item/ammo_magazine/arisaka99_training
+	bolt_safety = FALSE
+	effectiveness_mod = 1.05
+	value = 100
+	slot_flags = SLOT_SHOULDER
+	recoil = 1
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 18
+
 /obj/item/weapon/gun/projectile/boltaction/gewehr71
 	name = "Gewehr 71"
 	desc = "A german bolt-action rifle chambered in 7.65x53mm Mauser ammunition."
@@ -402,6 +461,30 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 19
+
+/obj/item/weapon/gun/projectile/boltaction/madsenm47
+	name = "Madsen M47"
+	desc = "A Danish bolt action."
+	icon_state = "madsenm47"
+	item_state = "gewehr71"
+	base_icon = "madsenm47"
+	caliber = "a765x53"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a762x51
+	magazine_type = /obj/item/ammo_magazine/gewehr71
+	bolt_safety = FALSE
+	effectiveness_mod = 0.85
+	value = 90
+	slot_flags = SLOT_SHOULDER
+	recoil = 1
+	force = 10
+	throwforce = 20
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 20
 
 /obj/item/weapon/gun/projectile/boltaction/mauser1890
 	name = "Mauser M1890"

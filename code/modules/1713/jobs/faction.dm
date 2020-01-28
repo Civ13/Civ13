@@ -228,6 +228,9 @@ var/global/soldiers[17]
 	else if (istype(J, /datum/job/japanese))
 		if ("[type]" == "/datum/faction/japanese")
 			soldiers[JAPANESE]++
+	else if (istype(J, /datum/job/chinese))
+		if ("[type]" == "/datum/faction/chinese")
+			soldiers[CHINESE]++
 	else if (istype(J, /datum/job/russian))
 		if ("[type]" == "/datum/faction/russian")
 			soldiers[RUSSIAN]++

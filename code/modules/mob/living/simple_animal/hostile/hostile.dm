@@ -1,22 +1,10 @@
 /mob/living/simple_animal/hostile
 	faction = "hostile"
-	var/stance = HOSTILE_STANCE_IDLE	//Used to determine behavior
-	var/mob/living/target_mob
-	var/attack_same = FALSE
-	var/ranged = FALSE
-	var/rapid = FALSE
-	var/projectiletype
-	var/projectilesound
-	var/casingtype
-	var/move_to_delay = 4 //delay for the automated movement.
-	var/list/friends = list()
-	var/break_stuff_probability = 10
 	stop_automated_movement_when_pulled = FALSE
-	var/destroy_surroundings = TRUE
 	a_intent = I_HARM
+	behaviour = "hunt"
 
-	var/enroute = FALSE
-/mob/living/simple_animal/hostile/proc/FindTarget()
+/mob/living/simple_animal/proc/FindTarget()
 
 	var/atom/T = null
 	stop_automated_movement = FALSE
@@ -57,29 +45,23 @@
 						stance = HOSTILE_STANCE_ATTACK
 						T = L
 						break
-
+	if (T)
+		custom_emote(1,"stares alertly at [T].")
+		stance = HOSTILE_STANCE_ALERT
 	return T
 
 
-/mob/living/simple_animal/hostile/proc/Found(var/atom/A)
+/mob/living/simple_animal/proc/Found(var/atom/A)
 	return
 
-/mob/living/simple_animal/hostile/proc/MoveToTarget()
-	stop_automated_movement = TRUE
+/mob/living/simple_animal/proc/MoveToTarget()
 	if (!target_mob || SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
 	if (target_mob in ListTargets(7))
-		if (ranged)
-			if (get_dist(src, target_mob) <= 6)
-				OpenFire(target_mob)
-			else
-				walk_to(src, target_mob, TRUE, move_to_delay)
-		else
-			stance = HOSTILE_STANCE_ATTACKING
-			walk_to(src, target_mob, TRUE, move_to_delay)
+		stance = HOSTILE_STANCE_ATTACKING
+		walk_to(src, target_mob, TRUE, move_to_delay)
 
-/mob/living/simple_animal/hostile/proc/AttackTarget()
-	stop_automated_movement = TRUE
+/mob/living/simple_animal/proc/AttackTarget()
 	if (!target_mob || SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
@@ -90,31 +72,52 @@
 		AttackingTarget()
 		return TRUE
 
-/mob/living/simple_animal/hostile/proc/AttackingTarget()
+/mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	if (target_mob.bruteloss<200)
-		var/mob/living/L = target_mob
-		L.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
-		return L
+	if(prob(50))
+		playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
+	else
+		playsound(src.loc, 'sound/weapons/bite_2.ogg', 100, TRUE, 2)
+	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
 
-/mob/living/simple_animal/hostile/proc/LoseTarget()
+	var/damage = pick(melee_damage_lower,melee_damage_upper)
+
+	if (ishuman(target_mob))
+		var/mob/living/carbon/human/H = target_mob
+		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
+		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
+		if (prob(95) || !can_bite_limbs_off)
+			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+		else
+			affecting.droplimb(FALSE, DROPLIMB_EDGE)
+			visible_message("\The [src] bites off [H]'s limb!")
+			for(var/mob/living/carbon/human/NB in view(6,src))
+				NB.mood -= 10
+	else if (isliving(target_mob))
+		var/mob/living/L = target_mob
+		L.adjustBruteLoss(damage)
+		if (istype(target_mob, /mob/living/simple_animal))
+			var/mob/living/simple_animal/SA = target_mob
+			if (SA.behaviour == "defends" || SA.behaviour == "hunt")
+				if (SA.stance != HOSTILE_STANCE_ATTACK && SA.stance != HOSTILE_STANCE_ATTACKING)
+					SA.stance = HOSTILE_STANCE_ATTACK
+					SA.stance_step = 7
+					SA.target_mob = src
+		return L
+/mob/living/simple_animal/proc/LoseTarget()
 	stance = HOSTILE_STANCE_IDLE
 	target_mob = null
 	walk(src, FALSE)
 
-/mob/living/simple_animal/hostile/proc/LostTarget()
+/mob/living/simple_animal/proc/LostTarget()
 	stance = HOSTILE_STANCE_IDLE
 	walk(src, FALSE)
 
 
-/mob/living/simple_animal/hostile/proc/ListTargets(var/dist = 7)
+/mob/living/simple_animal/proc/ListTargets(var/dist = 7)
 	var/list/L = hearers(dist,src)
 	return L
-
-/mob/living/simple_animal/hostile/death()
-	..()
-	walk(src, FALSE)
 
 /mob/living/simple_animal/hostile/Life()
 
@@ -125,38 +128,10 @@
 	if (client)
 		return FALSE
 	if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
+
 		check_food() // animals will search for crops, grass, and so on
-/mob/living/simple_animal/hostile/proc/OpenFire(target_mob)
-	var/target = target_mob
-	visible_message("<span class = 'red'><b>[src]</b> fires at [target]!</span>", TRUE)
 
-	if (rapid)
-		spawn(1)
-			Shoot(target, loc, src)
-		spawn(4)
-			Shoot(target, loc, src)
-		spawn(6)
-			Shoot(target, loc, src)
-	else
-		Shoot(target, loc, src)
-
-	stance = HOSTILE_STANCE_IDLE
-	target_mob = null
-	return
-
-
-/mob/living/simple_animal/hostile/proc/Shoot(var/target, var/start, var/user, var/bullet = FALSE)
-	if (target == start)
-		return
-
-	var/obj/item/projectile/A = new projectiletype(src.loc)
-	playsound(user, projectilesound, 100, TRUE)
-	if (!A)
-		return
-	var/def_zone = get_exposed_defense_zone(target)
-	A.launch(target, def_zone)
-
-/mob/living/simple_animal/hostile/proc/DestroySurroundings()
+/mob/living/simple_animal/proc/DestroySurroundings()
 	if (prob(break_stuff_probability))
 		for (var/dir in cardinal) // North, South, East, West
 			for (var/obj/structure/window/obstacle in get_step(src, dir))
@@ -166,42 +141,3 @@
 			var/obj/structure/obstacle = locate(/obj/structure, get_step(src, dir))
 			if (istype(obstacle, /obj/structure/window) || istype(obstacle, /obj/structure/closet) || istype(obstacle, /obj/structure/table) || istype(obstacle, /obj/structure/grille))
 				obstacle.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
-
-
-/mob/living/simple_animal/hostile/proc/tickproc() //for AI stuff. Life process only runs every 2 seconds
-	spawn(10)
-		if (health <= 0)
-			death()
-			return
-		if (!stat)
-			switch(stance)
-				if (HOSTILE_STANCE_IDLE)
-					target_mob = FindTarget()
-
-				if (HOSTILE_STANCE_ATTACK)
-					if (destroy_surroundings)
-						DestroySurroundings()
-					MoveToTarget()
-
-				if (HOSTILE_STANCE_ATTACKING)
-					if (destroy_surroundings)
-						DestroySurroundings()
-					spawn(10)
-						AttackTarget()
-		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
-			turns_since_move++
-			if (turns_since_move >= turns_per_move)
-				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
-					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
-						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
-							walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
-					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
-					moving_to = pick(cardinal)
-					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
-					Move(get_step(src,moving_to))
-					turns_since_move = FALSE
-		tickproc()
-
-/mob/living/simple_animal/hostile/New()
-	..()
-	tickproc()

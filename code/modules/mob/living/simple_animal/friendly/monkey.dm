@@ -1,5 +1,5 @@
 /mob/living/simple_animal/monkey
-	name = "Monkey"
+	name = "monkey"
 	desc = "A monkey. The meat makes a delicious soup."
 	icon = 'icons/mob/animal.dmi'
 	icon_state = "monkey"
@@ -21,6 +21,7 @@
 	mob_size = MOB_MEDIUM
 	possession_candidate = TRUE
 	granivore = 1
+	behaviour = "wanders"
 
 /mob/living/simple_animal/monkey/kostas
 	name = "Kostas the Monkey"

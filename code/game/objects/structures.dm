@@ -17,12 +17,6 @@
 	..()
 
 /obj/structure/attack_hand(mob/user)
-	if (breakable)
-		if (istype(user,/mob/living/carbon/human))
-			var/mob/living/carbon/human/H = user
-			if (H.species.can_shred(user))
-				attack_generic(user,1,"slices")
-
 	if (climbers.len && !(user in climbers))
 		user.visible_message("<span class='warning'>[user.name] shakes \the [src].</span>", \
 					"<span class='notice'>You shake \the [src].</span>")

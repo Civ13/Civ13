@@ -14,6 +14,19 @@
 	item_state = "leatherloincloth[randcloth]"
 	worn_state = "leatherloincloth[randcloth]"
 
+/obj/item/clothing/under/leaves_skirt
+	name = "leaf skirt"
+	desc = "A wrap of leaves, worn around the waist."
+	icon_state = "leaves_skirt"
+	item_state = "leaves_skirt"
+	worn_state = "leaves_skirt"
+
+/obj/item/clothing/under/leaves_skirt/long
+	name = "long leaf skirt"
+	icon_state = "leaves_skirt_long"
+	item_state = "leaves_skirt_long"
+	worn_state = "leaves_skirt_long"
+
 /obj/item/clothing/under/indian1
 	name = "short leather loincloth"
 	desc = "A wrap of leather cloth, worn around the waist."

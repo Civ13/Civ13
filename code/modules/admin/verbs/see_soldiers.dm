@@ -6,7 +6,7 @@
 		src << "<span class = 'danger'>You don't have the permissions.</span>"
 		return
 
-	var/i2faction[16]
+	var/i2faction[17]
 	i2faction[1] = BRITISH
 	i2faction[2] = PIRATES
 	i2faction[3] = INDIANS

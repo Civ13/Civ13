@@ -19,6 +19,8 @@
 	lastdirchange = world.time+15
 	if (control && control.axis && (control.axis.moving == FALSE || control.axis.currentspeed == 0))
 		return FALSE
+	if (!control || !control.axis)
+		return
 	for(var/obj/effect/pseudovehicle/O in control.axis.components)
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
 			if (VP.axis != control.axis)

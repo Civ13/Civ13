@@ -47,7 +47,7 @@
 /obj/map_metadata/nomads_ice_age/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_ice_age/proc/seasons()
+/obj/map_metadata/nomads_ice_age/seasons()
 	if (real_season == "SUMMER")
 		season = "WINTER"
 		world << "<big>It's getting very cold. <b>Winter</b> has started.</big>"

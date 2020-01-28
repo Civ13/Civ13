@@ -324,6 +324,13 @@ var/list/coefflist = list()
 		return "Unknown"
 	if (original_job.is_prison && istype(original_job, /datum/job/civilian))
 		return "Unknown"
+	if (title && title != "")
+		if (religious_title && religious_title != "")
+			return "[title] [religious_title] [real_name]"
+		else
+			return "[title] [real_name]"
+	if (religious_title && religious_title != "")
+		return "[religious_title] [real_name]"
 	return real_name
 
 

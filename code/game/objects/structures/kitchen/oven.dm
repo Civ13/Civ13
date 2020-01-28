@@ -13,7 +13,8 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/consume_itself = FALSE
-
+	var/looping = FALSE //for campfires
+	var/cooking_time = 50
 /obj/structure/oven/update_icon()
 	if (on)
 		icon_state = "[base_state]_on"
@@ -62,6 +63,10 @@
 		fuel += I.amount*1
 		qdel(I)
 		return
+	else if (istype(I, /obj/item/weapon/branch))
+		fuel += I.amount*1
+		qdel(I)
+		return
 	var/space = max_space
 	for (var/obj/item/II in contents)
 		space -= II.w_class
@@ -77,6 +82,12 @@
 	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
+		fire_loop()
+	else
+		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
+
+/obj/structure/oven/proc/fire_loop()
+	if (on && fuel > 0)
 		fuel -=1
 		update_icon()
 		if (name == "campfire")
@@ -85,26 +96,30 @@
 			set_light(2)
 		else
 			set_light(2)
-		spawn (50)
-			on = FALSE
-			set_light(0)
-			update_icon()
-			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
-			if(prob(15))
-				var byproduct = new/obj/item/stack/ore/charcoal
-				contents += byproduct
+		spawn (cooking_time)
+			if (!looping)
+				on = FALSE
+				set_light(0)
+				update_icon()
+				if(prob(15))
+					var byproduct = new/obj/item/stack/ore/charcoal
+					contents += byproduct
 			process()
 			for (var/obj/item/weapon/reagent_containers/glass/small_pot/I in get_turf(src))
 				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
 					I.reagents.del_reagent("cholera")
+					visible_message("<span class = 'notice'>The [name] finishes boiling.</span>")
+					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
+						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))
+						NSP.reagents.add_reagent("sodiumchloride",I.reagents.get_reagent_amount("sodiumchloride"))
+						I.reagents.del_reagent("sodiumchloride")
+						I.reagents.del_reagent("water")
 			if (fuel <= 0 && consume_itself == TRUE)
 				visible_message("<span class = 'warning'>\The [src] burns out.</span>")
 				new/obj/item/stack/ore/charcoal(loc)
 				qdel(src)
-	else
-		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
 
 /obj/structure/oven/process()
 	for (var/obj/item/I in contents)
@@ -233,6 +248,33 @@
 	max_space = 5
 	fuel = 4
 	consume_itself = TRUE
+	looping = TRUE
+	cooking_time = 300
+	light_power = 0.75
+	light_color = "#E38F46"
+
+/obj/structure/oven/fireplace/proc/keep_fire_on()
+	if (on && looping && fuel > 0)
+		set_light(5)
+		update_icon()
+		fire_loop()
+		spawn(600)
+			keep_fire_on()
+	else
+		on = FALSE
+		set_light(0)
+		return
+/obj/structure/oven/fireplace/attack_hand(var/mob/living/carbon/human/H)
+	if (!on && fuel > 0)
+		visible_message("<span class = 'notice'>[H] lights \the [name].</span>")
+		on = TRUE
+		keep_fire_on()
+	else if (on)
+		visible_message("<span class = 'notice'>[H] puts off \the [name].</span>")
+		on = FALSE
+		set_light(0)
+		update_icon()
+	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 /obj/structure/oven/fireplace/proc/smoke_signals()
 	for (var/mob/living/carbon/human/HH in range(25,src))
@@ -371,6 +413,10 @@
 				return
 			else if (istype(I, /obj/item/stack/ore/coal))
 				fuel += I.amount*3
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/weapon/branch))
+				fuel += I.amount*1
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/charcoal))

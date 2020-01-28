@@ -53,6 +53,13 @@
 		for (var/i in elements)
 			dispensable_reagents += list(list(i,1000))
 
+/obj/structure/chemical_dispenser/drinks
+	New()
+		..()
+		var/list/elements = list("honey", "cola", "mint", "banana", "grapejuice", "grapejuice", "milk", "coffee", "tonic", "milkshake", "cognac", "gin", "kahlua", "melonliquor", "rum", "tequilla", "vodka", "whiskey")
+		for (var/i in elements)
+			dispensable_reagents += list(list(i,400))
+
  /**
   * The ui_interact proc is used to open and update Nano UIs
   * If ui_interact is not used then the UI will not update correctly
@@ -141,7 +148,7 @@
 
 /obj/structure/chemical_dispenser/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/user as mob)
 	if (beaker)
-		if (B.reagents.reagent_list.len)
+		if (B && B.reagents && B.reagents.reagent_list.len)
 			user << "You transfer the reagents to the dispenser."
 			for(var/datum/reagent/R in B.reagents.reagent_list)
 				var/done = FALSE

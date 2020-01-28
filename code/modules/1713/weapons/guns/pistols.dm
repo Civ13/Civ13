@@ -8,6 +8,7 @@
 	gun_safety = TRUE
 	gun_type = GUN_TYPE_PISTOL
 	handle_casings = EJECT_CASINGS
+	maxhealth = 45
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(
@@ -172,6 +173,75 @@
 		icon_state = "glock170"
 	return
 
+/obj/item/weapon/gun/projectile/pistol/mp443
+	name = "MP-443"
+	desc = "A modern pistol, loaded on 9x19mm, made by Russia."
+	icon_state = "mp443"
+	fire_delay = 3.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/mp443
+	weight = 0.594
+	max_shells = 17
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/mp443/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "mp443"
+	else
+		icon_state = "mp443_open"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/tarus
+	name = "Tarus G3"
+	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
+	icon_state = "tarusg3"
+	fire_delay = 2.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/glock17
+	weight = 0.594
+	max_shells = 17 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/tarus/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "tarusg3"
+	else
+		icon_state = "tarusg3_open"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/p220
+	name = "SIG Sauer P220"
+	desc = "The SIG Sauer P220 is a semi-automatic pistol. Designed in 1975."
+	icon_state = "p220"
+	fire_delay = 3.7
+	w_class = 2
+	caliber = "a45"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/p220
+	weight = 0.594
+	max_shells = 7
+	ammo_type = /obj/item/ammo_casing/a45
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.40
+/obj/item/weapon/gun/projectile/pistol/p220/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "p220"
+	else
+		icon_state = "p220_open"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/iogb7
 	name = "IOQ B-72"
 	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
@@ -284,6 +354,20 @@
 	name = "Colt M1911"
 	desc = "The standard issue pistol of the US Army. Chambered in .45 ACP."
 	icon_state = "colt"
+	w_class = 2
+	caliber = "a45acp"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/m1911
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a45acp
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.02
+
+/obj/item/weapon/gun/projectile/pistol/blackm1911
+	name = "Black M1911"
+	desc = "The standard issue pistol of the US Army. Chambered in .45 ACP."
+	icon_state = "black1911"
 	w_class = 2
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'

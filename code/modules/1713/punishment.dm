@@ -307,11 +307,10 @@
 // call this instead of process() if you want to do direct calls, I think its better - Kachnov
 /obj/structure/cross/proc/fire()
 	if (hanging)
-		hanging.forceMove(loc)
+		hanging.forceMove(get_turf(locate(x,y+1,z)))
 		density = TRUE
 		hanging.lying = 0
 		hanging.dir = SOUTH
-		hanging.pixel_y = 32 // because getting punched resets it
 
 	else
 		overlays.Cut()
@@ -382,7 +381,7 @@
 	not_disassemblable = FALSE
 	New()
 		..()
-		poverlay = image(icon=src.icon, icon_state="pillory_lower",layer=MOB_LAYER+1)
+		poverlay = image(icon=src.icon, icon_state="pillory_lower0",layer=MOB_LAYER+1)
 		hoverlay = icon(icon=src.icon, icon_state="pillory_handoverlay")
 /obj/structure/pillory/New()
 	..()
@@ -462,15 +461,21 @@
 			hanging.anchored = 0
 			hanging = null
 			overlays.Cut()
+			desc = "a wood stock with three holes, for both hands and the head. Used to display criminals to the public."
 
-/obj/item/weapon/reagent_containers/food/snacks/grown/tomato/throw_impact(atom/hit_atom)
-	if (istype(hit_atom, /obj/structure/pillory))
-		var/obj/structure/pillory/pillory = hit_atom
-		if (pillory.hanging)
-			var/mob/living/carbon/human/H = pillory.hanging
-			visible_message("[H] is hit by \the [src]!")
-			H.adjust_hygiene(-3)
-			H.mood -= 3
-			qdel(src)
+/obj/structure/pillory/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/pen) && hanging)
+		var/newtext = input("What do you want to write on the sign? (Up to 30 characters)","Sign", "") as text
+		if (newtext == null || newtext == "")
+			newtext = "There is nothing on the sign."
+			desc = newtext
+			poverlay.icon_state = "pillory_lower0"
+			update_icon()
 			return
-	..()
+		newtext = sanitize(newtext, 30, FALSE)
+		desc = "It reads: <b>[newtext]</b>"
+		poverlay.icon_state = "pillory_lower1"
+		update_icon()
+		return
+	else
+		..()

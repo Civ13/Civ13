@@ -37,8 +37,8 @@
 				admin_datums -= adm_ckey
 				D.disassociate()
 
-				message_admins("[key_name_admin(usr)] removed [adm_ckey] from the admins list")
-				log_admin("[key_name(usr)] removed [adm_ckey] from the admins list")
+				message_admins("[key_name_admin(usr)] removed [adm_ckey] from the admins list.")
+				log_admin("[key_name(usr)] removed [adm_ckey] from the admins list.")
 				log_admin_rank_modification(adm_ckey, "Removed")
 
 		else if (task == "rank")
@@ -81,6 +81,7 @@
 
 			message_admins("[key_name_admin(usr)] edited the admin rank of [adm_ckey] to [new_rank].")
 			log_admin("[key_name(usr)] edited the admin rank of [adm_ckey] to [new_rank].")
+			log_admin_rank_modification(adm_ckey, "Removed")
 			log_admin_rank_modification(adm_ckey, new_rank)
 		//	load_admins(1)
 
@@ -429,7 +430,8 @@
 		if (WWinput(usr, "Confirm?", "Message", "Yes", list("Yes", "No")) != "Yes")	return
 		if (usr && usr.client)
 			var/mob/M = locate(href_list["getmob"])
-			usr.client.Getmob(M)
+			if (usr && usr.client)
+				usr.client.Getmob(M)
 
 	else if (href_list["sendmob"])
 		if (!check_rights(R_ADMIN))	return

@@ -6,17 +6,17 @@
 	name = "ship rudder control"
 	desc = "An axis connecting the rudder to the ship's wheel."
 	currentspeed = 0
-	speeds = 1
+	speeds = 3
 	maxpower = 1200
-	speedlist = list(1=8)
+	speedlist = list(1=15,2=11,3=7)
 	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "axis_powered"
 
 /obj/structure/vehicleparts/axis/ship/heavy
 	name = "heavy rudder control"
-	speeds = 1
+	speeds = 3
 	maxpower = 2500
-	speedlist = list(1=12)
+	speedlist = list(1=18,2=14,3=10)
 
 /obj/structure/vehicleparts/axis/ship/movementsound()
 	if (!moving)
@@ -35,7 +35,7 @@
 				if (!S.sails || S.broken)
 					moving = FALSE
 					stopmovementloop()
-					return
+					return FALSE
 				else
 					S.update_icon()
 			do_move()
@@ -43,12 +43,12 @@
 			currentspeed = 0
 			moving = FALSE
 			stopmovementloop()
-			return
+			return FALSE
 		spawn(vehicle_m_delay+1)
 			movementloop()
-			return
+			return FALSE
 	else
-		return
+		return TRUE
 
 /obj/structure/vehicleparts/axis/ship/stopmovementloop()
 	moving = FALSE
@@ -59,22 +59,38 @@
 
 
 /obj/structure/vehicleparts/axis/ship/do_vehicle_check()
-	if (check_engine())
-		for(var/obj/structure/vehicleparts/movement/sails/MV in masts)
-			if (MV.broken)
-				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] is broken!</span>")
-				moving = FALSE
-				stopmovementloop()
-				return FALSE
-			else if (!MV.sails)
-				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] has no sail!</span>")
-				moving = FALSE
-				stopmovementloop()
-				return FALSE
-			else if (!MV.sails_on)
-				visible_message("<span class = 'warning'>\The [name] can't move, the sails are down!</span>")
-				moving = FALSE
-				stopmovementloop()
+	if (anchor)
+		visible_message("<span class = 'warning'>\The [name] can't move, the anchor is down!</span>")
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
+	var/enginestate = check_engine()
+	if (enginestate)
+		if (enginestate == 1) //sails
+			for(var/obj/structure/vehicleparts/movement/sails/MV in masts)
+				if (!engine || (engine && !engine.on))
+					if (MV.broken)
+						visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] is broken!</span>")
+						moving = FALSE
+						stopmovementloop()
+						return FALSE
+					else if (!MV.sails)
+						visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] has no sail!</span>")
+						moving = FALSE
+						stopmovementloop()
+						return FALSE
+					else if (!MV.sails_on)
+						visible_message("<span class = 'warning'>\The [name] can't move, the sails are down!</span>")
+						moving = FALSE
+						stopmovementloop()
+						return FALSE
+					else if (anchor)
+						visible_message("<span class = 'warning'>\The [name] can't move, the anchor is down!</span>")
+						moving = FALSE
+						stopmovementloop()
+						return FALSE
+		else //engine
+			if (!engine || !engine.on)
 				return FALSE
 			else if (anchor)
 				visible_message("<span class = 'warning'>\The [name] can't move, the anchor is down!</span>")
@@ -170,38 +186,57 @@
 				stopmovementloop()
 				return FALSE
 		return TRUE
+	else if (enginestate == 0)
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
 	else
 		moving = FALSE
 		stopmovementloop()
 		return FALSE
 
 /obj/structure/vehicleparts/axis/ship/check_engine()
-	if (!engine && masts.len <= 0)
-		return FALSE
-	else if (!engine && masts.len >= 1)
-		return TRUE
-	if (engine && !engine.fueltank)
-		engine.on = FALSE
-		return FALSE
-	else if (engine && (get_weight() > engine.maxpower*2 || get_weight() > maxpower))
-		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
-		return FALSE
-	else if (!engine && masts.len >= 1 && get_weight() > maxpower)
-		visible_message("<span class='warning'>\The [src] is too overloaded!</span>")
-		return FALSE
-	else
-		if (engine && engine.fueltank && engine.fueltank.reagents && engine.fueltank.reagents.total_volume <= 0)
+	if (!engine)
+		if (masts.len <= 0)
+			return FALSE
+		else if (masts.len >= 1)
+			if (get_weight() > maxpower)
+				visible_message("<span class='warning'>\The [src] is too overloaded!</span>")
+				return FALSE
+			return 1
+
+	else if (engine && engine.on)
+		if (istype(engine, /obj/structure/engine/internal) && !engine.fueltank)
+			engine.on = FALSE
+			return FALSE
+		else if (engine && istype(engine, /obj/structure/engine/internal) && engine.fueltank && engine.fueltank.reagents && engine.fueltank.reagents.total_volume <= 0)
 			engine.fueltank.reagents.total_volume = 0
 			engine.on = FALSE
 			return FALSE
 		else
+			if (istype(engine, /obj/structure/engine/external))
+				if (get_weight() > engine.maxpower*20 || get_weight() > maxpower)
+					visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
+					return FALSE
+			else
+				if (get_weight() > engine.maxpower*2 || get_weight() > maxpower)
+					visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
+					return FALSE
 			if (engine && engine.on)
-				return TRUE
+				return 2
 			else if (engine && !engine.on)
 				return FALSE
-		return FALSE
+			return FALSE
+	else
+		if (masts.len <= 0)
+			return FALSE
+		else if (masts.len >= 1)
+			if (get_weight() > maxpower)
+				visible_message("<span class='warning'>\The [src] is too overloaded!</span>")
+				return FALSE
+			return 1
 
-	return TRUE
+	return 1
 
 /obj/structure/vehicleparts/axis/ship/add_transporting()
 	transporting = list()

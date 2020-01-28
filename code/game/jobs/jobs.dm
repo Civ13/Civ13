@@ -8,13 +8,3 @@
 		occupations += job
 
 	return occupations
-
-/proc/get_alternate_titles(var/job)
-	var/list/jobs = get_job_datums()
-	var/list/titles = list()
-
-	for (var/datum/job/J in jobs)
-		if (J.title == job)
-			titles = J.alt_titles
-
-	return titles

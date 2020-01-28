@@ -14,7 +14,7 @@
  */
 
 /obj/item/weapon/storage/fancy/
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "donutbox6"
 	name = "donut box"
 	var/icon_type = "donut"
@@ -42,7 +42,7 @@
  */
 
 /obj/item/weapon/storage/fancy/egg_box
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "eggbox"
 	icon_type = "egg"
 	name = "egg box"
@@ -195,10 +195,12 @@
 	return
 
 /obj/item/weapon/storage/fancy/cigar/remove_from_storage(obj/item/W as obj, atom/new_location)
-		var/obj/item/clothing/mask/smokable/cigarette/cigar/C = W
-		if (!istype(C)) return
+	var/obj/item/clothing/mask/smokable/cigarette/cigar/C = W
+	if (!istype(C))
+		return
+	if (reagents)
 		reagents.trans_to_obj(C, (reagents.total_volume/contents.len))
-		..()
+	..()
 
 
 /*
@@ -208,7 +210,7 @@
 /obj/item/weapon/storage/fancy/picklejar
 	name = "pickle jar"
 	desc = "a jar filled with pickles and vinegar"
-	icon = 'icons/obj/food.dmi'
+	icon = 'icons/obj/food/food.dmi'
 	icon_state = "picklejar"
 	icon_type = "pickles"
 	throwforce = WEAPON_FORCE_NORMAL

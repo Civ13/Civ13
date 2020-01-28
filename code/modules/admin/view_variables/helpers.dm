@@ -35,9 +35,9 @@
 /mob/get_view_variables_options()
 	return ..() + {"
 		<option value='?_src_=vars;mob_player_panel=\ref[src]'>Show player panel</option>
+		<option value='?_src_=vars;findrefs=\ref[src]'>Find References</option>
 		<option value='?_src_=vars;delall=\ref[src]'>Delete all of type</option>
 		<option>---</option>
-		<option value='?_src_=vars;godmode=\ref[src]'>Toggle Godmode</option>
 
 		<option value='?_src_=vars;direct_control=\ref[src]'>Assume Direct Control</option>
 		<option value='?_src_=vars;drop_everything=\ref[src]'>Drop Everything</option>
@@ -59,7 +59,6 @@
 /mob/living/carbon/human/get_view_variables_options()
 	return ..() + {"
 		<option value='?_src_=vars;setspecies=\ref[src]'>Set Species</option>
-		<option value='?_src_=vars;makemonkey=\ref[src]'>Make monkey</option>
 		"}
 
 /obj/get_view_variables_options()

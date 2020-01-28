@@ -14,42 +14,146 @@
 /obj/structure/vehicleparts/shipwheel/proc/do_html(var/mob/m)
 
 	if (m && ship)
+		if (ship.engine && ship.masts.len<=0)
 
-		m << browse({"
+			m << browse({"
 
-		<br>
-		<html>
+			<br>
+			<html>
 
-		<head>
-		<style>
-		[common_browser_style]
-		</style>
-		</head>
+			<head>
+			<style>
+			[common_browser_style]
+			</style>
+			</head>
 
-		<body>
+			<body>
 
-		<script language="javascript">
+			<script language="javascript">
 
-		function set(input) {
-		  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-		}
+			function set(input) {
+			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
+			}
 
-		</script>
+			</script>
 
-		<center>
-		<big><b>[ship] wheel</b></big><br><br>
-		</center>
-		<font size='3'>
-		<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
-		Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
-		Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
-		Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
-		</font>
-		</body>
-		</html>
-		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
+			<center>
+			<big><b>[ship] wheel</b></big><br><br>
+			</center>
+			<font size='3'>
+			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
+			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
+			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
+			<a href='?src=\ref[src];decrease_speed=1'>Decrease Speed</a>  <a href='?src=\ref[src];increase_speed=1'>Increase Speed</a><br><br>
+			</font>
+			</body>
+			</html>
+			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+		else if (!ship.engine && ship.masts.len>=1)
 
+			m << browse({"
+
+			<br>
+			<html>
+
+			<head>
+			<style>
+			[common_browser_style]
+			</style>
+			</head>
+
+			<body>
+
+			<script language="javascript">
+
+			function set(input) {
+			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
+			}
+
+			</script>
+
+			<center>
+			<big><b>[ship] wheel</b></big><br><br>
+			</center>
+			<font size='3'>
+			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
+			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
+			Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
+			</font>
+			</body>
+			</html>
+			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+		else if (ship.engine && ship.masts.len>=1)
+			m << browse({"
+
+			<br>
+			<html>
+
+			<head>
+			<style>
+			[common_browser_style]
+			</style>
+			</head>
+
+			<body>
+
+			<script language="javascript">
+
+			function set(input) {
+			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
+			}
+
+			</script>
+
+			<center>
+			<big><b>[ship] wheel</b></big><br><br>
+			</center>
+			<font size='3'>
+			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
+			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
+			Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
+			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
+			<a href='?src=\ref[src];decrease_speed=1'>Decrease Speed</a>  <a href='?src=\ref[src];increase_speed=1'>Increase Speed</a><br><br>
+			</font>
+			</body>
+			</html>
+			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+		else
+			m << browse({"
+
+			<br>
+			<html>
+
+			<head>
+			<style>
+			[common_browser_style]
+			</style>
+			</head>
+
+			<body>
+
+			<script language="javascript">
+
+			function set(input) {
+			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
+			}
+
+			</script>
+
+			<center>
+			<big><b>[ship] wheel</b></big><br><br>
+			</center>
+			<font size='3'>
+			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
+			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
+			</font>
+			</body>
+			</html>
+			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 /obj/structure/vehicleparts/shipwheel/interact(var/mob/m)
 	if (user)
 		if (get_dist(src, user) > 1)
@@ -138,9 +242,130 @@
 			reversed = FALSE
 			ship.reverse = FALSE
 		return
+//engine stuff
+	if (href_list["set_engine"])
+		if (!ship || !ship.engine)
+			return
+		else
+			if (ship.engine.on)
+				playsound(ship.engine.loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
+				ship.engine.on = FALSE
+				ship.engine.power_off_connections()
+				ship.engine.currentspeed = 0
+				ship.engine.currentpower = 0
+				ship.engine.update_icon()
+			else
+				ship.engine.turn_on(user)
+
+		return
+
+	if (href_list["increase_speed"])
+		if (!ship || !ship.engine)
+			return
+		if (ship.currentspeed < 0)
+			ship.currentspeed = 0
+		ship.currentspeed++
+		if (ship.currentspeed>ship.speeds)
+			ship.currentspeed = ship.speeds
+
+		else
+			var/spd = ship.get_speed()
+			ship.vehicle_m_delay = spd
+			if (spd <= 0)
+				return
+			var/ahead = "ahead"
+			if (reversed)
+				ahead = "astern"
+			if (ship.currentspeed == 1)
+				ship.moving = TRUE
+				user << "You set the speed to <b>slow [ahead]</b>."
+				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+				ship.vehicle_m_delay = spd
+				ship.add_transporting()
+				ship.startmovementloop()
+			else if (ship.currentspeed == 2)
+				user << "You change the speed to <b>half-speed [ahead]</b>."
+				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+				ship.vehicle_m_delay = spd
+				return
+			else if (ship.currentspeed == 3)
+				user << "You change the speed to <b>full-speed [ahead]</b>."
+				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+				ship.vehicle_m_delay = spd
+				return
+			else
+				return
+
+	if (href_list["decrease_speed"])
+		if (!ship || !ship.engine)
+			return
+		if (ship && ship.engine && ship.currentspeed <= 0)
+			if (ship.engine.on)
+				user << "You turn off the [ship.engine]."
+				ship.engine.on = FALSE
+				ship.moving = FALSE
+				ship.currentspeed = 0
+				ship.engine.update_icon()
+				return
+			return
+		else
+			ship.currentspeed--
+			var/spd = ship.get_speed()
+			if (spd <= 0 || ship.currentspeed == 0)
+				ship.moving = FALSE
+				user << "You stop the ship."
+				for (var/obj/structure/vehicleparts/movement/W in ship.wheels)
+					W.update_icon()
+				return
+			else
+				var/ahead = "ahead"
+				if (reversed)
+					ahead = "astern"
+				if (ship.currentspeed == 1)
+					ship.moving = TRUE
+					user << "You set the speed to <b>slow [ahead]</b>."
+					playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+					ship.vehicle_m_delay = spd
+					ship.add_transporting()
+					ship.startmovementloop()
+				else if (ship.currentspeed == 2)
+					user << "You change the speed to <b>half-speed [ahead]</b>."
+					playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+					ship.vehicle_m_delay = spd
+					return
+				else if (ship.currentspeed == 3)
+					user << "You change the speed to <b>full-speed [ahead]</b>."
+					playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+					ship.vehicle_m_delay = spd
+					return
+				else
+					return
+
+
 	sleep(0.5)
 	do_html(user)
 
+/obj/structure/vehicleparts/shipwheel/proc/speed2text()
+	if (!ship)
+		return ""
+	if (!ship.engine)
+		return "No Engine"
+	if (ship.engine && !ship.engine.on)
+		return "Engine Off"
+	var/ahead = "Ahead"
+	if (reversed)
+		ahead = "Astern"
+
+	if (ship.currentspeed == 1)
+		return "Slow [ahead]"
+	else if (ship.currentspeed == 2)
+		return "Half-Speed [ahead]"
+	else if (ship.currentspeed == 3)
+		return "Full-Speed [ahead]"
+	else if (ship.currentspeed == 0)
+		return "Engine Idle"
+	else
+		return "Engine Off"
 /obj/structure/vehicleparts/shipwheel/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE

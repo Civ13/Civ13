@@ -81,6 +81,14 @@
 		else
 			msg += "[T.He] [T.has] \icon[back] \a [back] on [T.his] back.\n"
 
+	//shoulder
+	if (shoulder)
+		if (shoulder.blood_DNA)
+			msg += "<span class='warning'>[T.He] [T.has] \icon[shoulder] [shoulder.gender==PLURAL?"some":"a"] [(shoulder.blood_color != "#030303") ? "blood" : "oil"]-stained [shoulder] on [T.his] shoulder.</span>\n"
+		else
+			msg += "[T.He] [T.has] \icon[shoulder] \a [shoulder] on [T.his] shoulder.\n"
+
+
 	//left hand
 	if (l_hand)
 		if (l_hand.blood_DNA)
@@ -337,7 +345,10 @@
 				msg += "<br><i>You belong to <b>[H.civilization]</b>.</i>"
 				if (map && map.custom_civs[H.civilization][4] && map.custom_civs[H.civilization][4].real_name == H.real_name)
 					msg += "<br><b>You are the leader of your group.</b>"
-
+		if (left_factions.len && ishuman(user))
+			for (var/i in left_factions)
+				if (i[2]>world.realtime)
+					msg += "<br><font color='red'>[T.He] has abandoned <b>[i[1]]</b> recently!</font>"
 	for (var/v in TRUE to embedded.len)
 		msg += "<a href='?src=\ref[user];remove_embedded=[v]'>Remove [embedded[v]]</a>"
 

@@ -34,7 +34,6 @@
 		on = FALSE
 		return
 
-
 /obj/structure/engine/external/running()
 	var/pwd=0
 	for(var/obj/structure/heatsource/HSI in range(1,src))

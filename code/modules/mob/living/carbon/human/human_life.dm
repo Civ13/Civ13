@@ -26,14 +26,6 @@
 //#define RADIATION_SPEED_COEFFICIENT 0.1
 
 /mob/living/carbon/human
-	var/oxygen_alert = FALSE
-	var/plasma_alert = FALSE
-	var/co2_alert = FALSE
-	var/fire_alert = FALSE
-	var/pressure_alert = FALSE
-	var/temperature_alert = FALSE
-	var/in_stasis = FALSE
-	var/heartbeat = FALSE
 	var/global/list/overlays_cache = null
 	var/heatDamageFromClothingTimer = 0
 	var/start_to_rot = FALSE
@@ -79,8 +71,6 @@
 	else
 		layer = MOB_LAYER
 
-	fire_alert = FALSE //Reset this here, because both breathe() and handle_environment() have a chance to set it.
-
 	//TODO: seperate this out
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
@@ -115,9 +105,6 @@
 			stats["stamina"][1]-=3
 
 	#define HUNGER_THIRST_MULTIPLIER 0.64 //was 0.32, doubled due to demand
-	if (stat == DEAD && start_to_rot == FALSE)
-		do_rotting()
-		start_to_rot = TRUE
 	if (stat != DEAD && !map.civilizations)
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
@@ -494,7 +481,7 @@
 	voice = GetVoice()
 
 	//No need to update all of these procs if the guy is dead.
-	if (stat != DEAD && !in_stasis)
+	if (stat != DEAD)
 		// Organs and blood
 		handle_organs()
 
@@ -590,10 +577,6 @@
 	if (life_tick > 5 && timeofdeath && (timeofdeath < 5 || world.time - timeofdeath > 6000))	//We are long dead, or we're junk mobs spawned
 		return FALSE
 	return TRUE
-
-/mob/living/carbon/human/breathe()
-	if (!in_stasis)
-		..()
 
 /mob/living/carbon/human/handle_disabilities()
 	..()
@@ -756,6 +739,11 @@
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
+	for (var/obj/structure/oven/fireplace/FP in range(1, src))
+		if (FP.on == TRUE)
+			if (loc_temp < 22)
+				loc_temp = 22
+				break
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
 			if (loc_temp < 22)
@@ -767,7 +755,7 @@
 			loc_temp = (max(22,loc_temp-40))
 		else if (loc_temp < 18)
 			loc_temp = (min(18,loc_temp+40))
-	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13) && mob_area.location == AREA_INSIDE)
+	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13 || map.ID == MAP_COLONY) && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)
@@ -809,7 +797,7 @@
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
 	if (bodytemperature >= species.heat_level_1 && !orc)
 		//Body temperature is too hot.
-		fire_alert = max(fire_alert, TRUE)
+
 		if (status_flags & GODMODE)	return TRUE	//godmode
 		var/burn_dam = FALSE
 		switch(bodytemperature)
@@ -820,10 +808,8 @@
 			if (species.heat_level_3 to INFINITY)
 				burn_dam = HEAT_DAMAGE_LEVEL_3
 		take_overall_damage(burn=burn_dam, used_weapon = "High Body Temperature")
-		fire_alert = max(fire_alert, 2)
 
 	else if (bodytemperature <= species.cold_level_1 && !wolfman)
-		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
 
 		var/burn_dam = FALSE
@@ -835,7 +821,7 @@
 			if (species.cold_level_2 to species.cold_level_1)
 				burn_dam = COLD_DAMAGE_LEVEL_1
 		take_overall_damage(burn=burn_dam, used_weapon = "Low Body Temperature")
-		fire_alert = max(fire_alert, TRUE)
+
 
 	// tell src they're dying
 	species.get_environment_discomfort(src)
@@ -913,9 +899,6 @@
 	return min(1,.)
 
 /mob/living/carbon/human/handle_chemicals_in_body()
-	if (in_stasis)
-		return
-
 	if (reagents)
 		chem_effects.Cut()
 		analgesic = FALSE
@@ -1091,8 +1074,6 @@
 	return TRUE
 
 /mob/living/carbon/human/handle_random_events()
-	if (in_stasis)
-		return
 
 	// Puke if toxloss is too high
 	if (!stat)
@@ -1611,27 +1592,28 @@
 /mob/living/carbon/human/proc/do_rotting()
 	if (!map.civilizations)
 		return
-	if (stat == DEAD)
-		spawn(3000)
-			if (stat == DEAD)
-				visible_message("[src]'s body starts to rot.")
-				rotting_stage = 1
-				spawn(3000)
-					if (stat == DEAD)
-						visible_message("[src]'s body is visibly rotten!")
-						rotting_stage = 2
-						spawn(2000)
-							if (stat == DEAD)
-								var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
-								HR.name = "[src]'s remains"
-								qdel(src)
-								return
-							else
-								return
-					else
-						return
-			else
-				return
+	spawn(600)
+		if (stat == DEAD)
+			spawn(3000)
+				if (stat == DEAD)
+					visible_message("[src]'s body starts to rot.")
+					rotting_stage = 1
+					spawn(3000)
+						if (stat == DEAD)
+							visible_message("[src]'s body is visibly rotten!")
+							rotting_stage = 2
+							spawn(2000)
+								if (stat == DEAD)
+									var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+									HR.name = "[src]'s remains"
+									qdel(src)
+									return
+								else
+									return
+						else
+							return
+				else
+					return
 
 /mob/living/carbon/human/proc/ssd_hiding(var/timer = 10)
 	if (!map.civilizations)

@@ -48,6 +48,12 @@
 	else
 		admin_notice("<span class='danger'>Failed to load whitelist!</span>", R_DEBUG)
 
+	admin_notice("<span class='danger'>Initializing ban list...</span>", R_DEBUG)
+	sleep(-1)
+	if (load_bans())
+	else
+		admin_notice("<span class='danger'>Failed to load ban list!</span>", R_DEBUG)
+
 	admin_notice("<span class='danger'>Initializing crafting recipes...</span>", R_DEBUG)
 	sleep(-1)
 	var/F3 = file("config/material_recipes.txt")

@@ -26,6 +26,8 @@
 	mob_size = MOB_SMALL
 	possession_candidate = TRUE
 	carnivore = 1
+	melee_damage_lower = 5
+	melee_damage_upper = 9
 
 /mob/living/simple_animal/cat/Life()
 	//MICE!

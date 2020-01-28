@@ -108,21 +108,20 @@
 		switch(chooseclergy)
 			if ("Shamans")
 				if (H.gender == "male")
-					H.fully_replace_character_name(H.real_name,"Elder Shaman [H.name]")
-				else
-					H.fully_replace_character_name(H.real_name,"Elder Shamaness [H.name]")
+					H.religious_title = "Elder Shaman"
+					H.religious_title = "Elder Shamaness"
 			if ("Priests")
 				if (H.gender == "male")
-					H.fully_replace_character_name(H.real_name,"High Priest [H.name]")
+					H.religious_title = "High Priest"
 				else
-					H.fully_replace_character_name(H.real_name,"High Priestess [H.name]")
+					H.religious_title = "High Priestess"
 			if ("Monks")
 				if (H.gender == "male")
-					H.fully_replace_character_name(H.real_name,"Father [H.name]")
+					H.religious_title = "Father"
 				else
-					H.fully_replace_character_name(H.real_name,"Mother [H.name]")
+					H.religious_title = "Mother"
 			if ("Clerics")
-				H.fully_replace_character_name(H.real_name,"Prophet [H.name]")
+				H.religious_title = "Prophet"
 		return
 	else
 		return
@@ -172,7 +171,7 @@
 		else if (U.religious_leader || U.religious_clergy != FALSE)
 			usr << "<span class='danger'>You are already part of the clergy!</span>"
 			return
-		else if (WWinput(src, "Are you sure you want to join the clergy? The membership is for life.", "", "Cancel", list("Join the clergy", "Cancel")) == "Join the clergy")				
+		else if (WWinput(src, "Are you sure you want to join the clergy? The membership is for life.", "", "Cancel", list("Join the clergy", "Cancel")) == "Join the clergy")
 			switch(map.custom_religions[U.religion][7])
 
 				if ("Shamans")

@@ -29,6 +29,24 @@
 		name = "[caliber]mm [atype] shell"
 		icon_state = "shell[atype]"
 
+/obj/item/cannon_ball/shell/tank/HE57
+	atype = "HE"
+	caliber = 57
+	heavy_armor_penetration = 15
+	damage = 225
+
+/obj/item/cannon_ball/shell/tank/AP57
+	atype = "AP"
+	caliber = 57
+	heavy_armor_penetration = 52
+	damage = 95
+
+/obj/item/cannon_ball/shell/tank/APCR57
+	atype = "APCR"
+	caliber = 57
+	heavy_armor_penetration = 75
+	damage = 115
+
 /obj/item/cannon_ball/shell/tank/HE75
 	atype = "HE"
 	caliber = 75
@@ -238,6 +256,31 @@
 	..()
 	if (storage)
 		icon_state = "shellrack[storage.contents.len]"
+
+/obj/structure/shellrack/full57/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE57(storage)
+	new /obj/item/cannon_ball/shell/tank/HE57(storage)
+	new /obj/item/cannon_ball/shell/tank/HE57(storage)
+	new /obj/item/cannon_ball/shell/tank/HE57(storage)
+	new /obj/item/cannon_ball/shell/tank/HE57(storage)
+	new /obj/item/cannon_ball/shell/tank/HE57(storage)
+
+
+	new /obj/item/cannon_ball/shell/tank/AP57(storage)
+	new /obj/item/cannon_ball/shell/tank/AP57(storage)
+	new /obj/item/cannon_ball/shell/tank/AP57(storage)
+	new /obj/item/cannon_ball/shell/tank/AP57(storage)
+	new /obj/item/cannon_ball/shell/tank/AP57(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR57(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR57(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR57(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR57(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR57(storage)
+	update_icon()
+
+
 /obj/structure/shellrack/full75/New()
 	..()
 	new /obj/item/cannon_ball/shell/tank/HE75(storage)

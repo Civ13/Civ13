@@ -118,6 +118,16 @@
 	nutriment_factor = 2
 	color = "#792300"
 
+/datum/reagent/nutriment/cola
+	name = "cola"
+	id = "cola"
+	description = "A sweet taste of sugar."
+	taste_description = "sweet"
+	taste_mult = 1.1
+	reagent_state = LIQUID
+	nutriment_factor = 3
+	color = "#120b02"
+
 /datum/reagent/nutriment/ketchup
 	name = "Ketchup"
 	id = "ketchup"

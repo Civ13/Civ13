@@ -33,7 +33,8 @@
 		for (var/i = 1, i <= 50, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/island/river))
 			new/obj/structure/piranha(areaspawn)
-
+	spawn(18000)
+		seasons()
 obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/pirates))

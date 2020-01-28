@@ -143,8 +143,8 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	density = TRUE
-	opacity = FALSE
+	density = FALSE
+	opacity = TRUE
 	anchored = TRUE
 /obj/structure/props/junk/New()
 	..()

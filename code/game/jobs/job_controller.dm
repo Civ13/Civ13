@@ -464,9 +464,6 @@ var/global/datum/controller/occupations/job_master
 		world << "[H] ([rank]) GOT TO after spawnID()"
 		#endif
 
-		if (job.req_admin_notify)
-			H << "<b>You are playing a job that is important for Game Progression. If you have to disconnect, please notify the admins via adminhelp.</b>"
-
 		if (!istype(H, /mob/living/carbon/human/corpse))
 			relocate(H)
 			if (H.client)

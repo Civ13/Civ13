@@ -44,7 +44,7 @@ var/list/nonbreaking_types = list(
 		if (unique_door_name && map_door_name == "door")
 			name = "[unique_door_name] door"
 		else if (map_door_name != "door")
-			name = "[map_door_name] Door"
+			name = "[map_door_name] door"
 
 	// should fix doors always being the wrong type
 	spawn (5)

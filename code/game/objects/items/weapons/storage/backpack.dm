@@ -74,3 +74,26 @@ obj/item/weapon/storage/backpack/ww2/american
 	desc = "A makeshift backpack made of a mix of materials."
 	icon_state = "scavpack"
 	item_state = "scavpack"
+
+
+/obj/item/weapon/storage/backpack/rucksack
+	name = "rucksack"
+	desc = "A big backpack made for long walks."
+	icon_state = "rucksack"
+	item_state = "rucksack"
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 4
+	max_storage_space = 36
+
+
+
+/obj/item/weapon/storage/backpack/civbag
+	name = "Backpack"
+	desc = "A big backpack made for long walks."
+	icon_state = "civback"
+	item_state = "civback"
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 5
+	max_storage_space = 42

@@ -1,5 +1,6 @@
 var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte")
 var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom")
+var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go")
 
 ////////AXIS: MOVEMENT LOOP/////////
 
@@ -152,6 +153,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 							else
 								visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
 								SA.crush()
+
 			for(var/obj/structure/O in T)
 				var/done = FALSE
 				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
@@ -173,6 +175,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/rails))
 	//						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
+
 			if (T.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
 				moving = FALSE
@@ -185,8 +188,7 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 						moving = FALSE
 						stopmovementloop()
 						return FALSE
-				else
-					CV.Destroy()
+
 			for(var/obj/item/I in TT && !(I in transporting))
 				qdel(I)
 			for(var/obj/effect/fire/BO in T && !(BO in transporting))
@@ -271,7 +273,8 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 				if (MAT.anchored)
 					MAT.trigger(F)
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
-				transporting += M
+				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails))
+					transporting += M
 	return transporting.len
 
 /obj/structure/vehicleparts/axis/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
@@ -478,6 +481,8 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 	for (var/locx=1; locx<=5; locx++)
 		for (var/locy=1; locy<=5; locy++)
 			var/loc2textv = "[locx],[locy]"
+			if (!matrix_current_locs[loc2textv].len)
+				return
 			var/dlocfinding = rotation_matrixes[tdir][loc2textv][1]
 			var/turf/T = matrix_current_locs[dlocfinding][1]
 			var/list/todestroy = list()
@@ -500,7 +505,8 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 					else
 						todestroy += O
 			for(var/obj/OM in todestroy)
-				qdel(OM)
+				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails)&& !istype(OM, /obj/covers))
+					qdel(OM)
 	dir = newdir
 	for (var/obj/structure/vehicleparts/movement/OBB in wheels)
 		if (OBB.reversed)
@@ -524,16 +530,17 @@ var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi
 						if (!ST.density)
 							ST.Destroy()
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
-					M.forceMove(matrix_current_locs[dlocfind][1])
-					if (istype(M, /obj))
-						var/obj/O = M
-						if (!istype(O, /obj/structure/cannon))
-							O.dir = dir
-						if (istype(O, /obj/structure/vehicleparts/frame))
-							var/obj/structure/vehicleparts/frame/FR = O
-							if (FR.mwheel)
-								FR.mwheel.update_icon()
-						O.update_icon()
+					if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers))
+						M.forceMove(matrix_current_locs[dlocfind][1])
+						if (istype(M, /obj))
+							var/obj/O = M
+							if (!istype(O, /obj/structure/cannon))
+								O.dir = dir
+							if (istype(O, /obj/structure/vehicleparts/frame))
+								var/obj/structure/vehicleparts/frame/FR = O
+								if (FR.mwheel)
+									FR.mwheel.update_icon()
+							O.update_icon()
 
 	for(var/obj/structure/vehicleparts/VP in components)
 		VP.dir = dir

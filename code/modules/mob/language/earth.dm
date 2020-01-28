@@ -21,6 +21,11 @@
 #define WOLF_SYLLABLES list("woo", "aaf", "wof", "woof", "'wa", "wu", "we", "wi", "ai", "aw", "ae", "af", "aw", "ew")
 #define CRAB_SYLLABLES list("clac","click","clock","cleck","tap","clic","tac")
 #define DANISH_SYLLABLES list("ja","ga","et","de","ka","vi","ik","bli","ve","ke","ste","der","dej","mi","eg","end","ere","ers","ese","gen","hen","ich","ige","ine","ist","lic","lle","men","mit","nde","nen","nge","ike","sto","ren","sch","sei","jep")
+#define GAELIC_SYLLABLES list("ba", "be", "bi", "bu", "ca", "ce", "ci", "co", "cu", "da", "de", "di", "do", "du", "d'a", "d'e", "d'i", "d'o", "d'u", "fa", "fe", "fi", "fo", "fu", "ga", "ge", "gi", "go", "gu", "ha", "he", "hi", "ho", "hu", "la", "le", "li", "lo", "lu", "ma", "me", "mi", "mo", "mu", "m'a", "m'e", "m'i", "m'o", "m'u", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "ra", "re", "ri", "ro", "ru", "sa", "se", "si", "so", "su", "ta", "te", "ti", "to", "tu", "ab", "eb", "ib", "ob", "ub", "ac", "ec", "ic", "oc", "uc", "ad", "ed", "id", "od", "ud", "af", "ef", "if", "of", "uf", "ag", "eg", "ig", "og", "ug", "ah", "eh", "ih", "oh", "uh", "al", "el", "il", "ol", "ul", "am", "em", "im", "om", "um", "an", "ep", "ip", "op", "up", "ar", "er", "ir", "or", "ur", "as", "es", "is", "os", "us", "at", "et", "it", "ot", "ut")
+#define INUKTITUT_SYLLABLES list("i", "pi", "ti", "ki", "gi", "mi", "ni", "si", "li", "ji", "vi", "ri", "qi", "ngi", "nngi", "u", "pu", "tu", "ku", "gu", "mu", "nu", "su", "lu", "ju", "vu", "ru", "qu", "ngu", "nngu", "a", "pa", "ta", "ka", "ga", "ma", "na", "sa", "la", "ja", "va", "ra", "qa", "nga", "nnga", "h", "p", "t", "k", "g", "m", "n", "s", "l", "j", "v", "r", "q", "ng", "nng", "li", "lu", "la", "l" )
+#define CHEROKEE_SYLLABLES list("a", "e", "i", "o", "u", "v", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "sa", "s", "da", "ta", "tla", "dla", "tsa", "wa", "ya", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "ti", "tli", "tsi", "wi", "yi", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tlo", "tso", "wo", "yo", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "tsv", "wv", "yv" )
+#define OLDNORSE_SYLLABLES list("a", "be", "ve", "b", "ge", "g", "gh", "gje", "de", "d", "ze", "ss", "he", "h", "i", "je", "ka", "kj", "c", "k", "el", "la","em", "en", "m", "n", "o", "pe", "p", "er", "r", "es", "s", "te", "t", "u", "ef", "f", "ehv", "jer", "ska", "sk", "e", "ju", "ja", "y")
+
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -281,3 +286,40 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CRAB_SYLLABLES
 	mutual_intelligibility = list()
+
+/datum/language/gaelic
+    name = "Gaelic"
+    desc = "Drunken ramblings!"
+    key = "g"
+    colour = "Gaelic"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = GAELIC_SYLLABLES
+    mutual_intelligibility = list()
+
+/datum/language/inuit
+    name = "inuktitut"
+    desc = "Wendigo!"
+    key = "t"
+    colour = "Inuktitut"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = INUKTITUT_SYLLABLES
+    mutual_intelligibility = list()
+
+/datum/language/cherokee
+    name = "Cherokee"
+    desc = "Zah-dah-dah-goh-huhn-yuhn"
+    key = "q"
+    colour = "Cherokee"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = CHEROKEE_SYLLABLES
+    mutual_intelligibility = list()
+
+
+/datum/language/oldnorse
+    name = "Old Norse"
+    desc = "Asgard Awaits!"
+    key = "o"
+    colour = "Old Norse"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = OLDNORSE_SYLLABLES
+    mutual_intelligibility = list()

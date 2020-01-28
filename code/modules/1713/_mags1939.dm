@@ -21,6 +21,17 @@
 	multiple_sprites = FALSE
 	is_box = TRUE
 
+/obj/item/ammo_magazine/arisaka99_training
+	name = "clip (7.7x58mm)"
+	icon_state = "kclip"
+	caliber = "a77x58_wood"
+
+	ammo_type = /obj/item/ammo_casing/a77x58_wood
+	max_ammo = 5
+	weight = 0.038
+	multiple_sprites = TRUE
+	clip = TRUE
+
 obj/item/ammo_magazine/type100
 	name = "Type-100 magazine"
 	icon_state = "madsen"
@@ -45,11 +56,11 @@ obj/item/ammo_magazine/type99
 	name = "Type 92 ammo belt"
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
-	caliber = "a77x58_weak"
+	caliber = "a77x58"
 	w_class = 4
 
-	ammo_type = /obj/item/ammo_casing/a77x58/weak
-	max_ammo = 250
+	ammo_type = /obj/item/ammo_casing/a77x58
+	max_ammo = 30
 	multiple_sprites = TRUE
 	var/slot = "decor"
 	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
@@ -134,6 +145,17 @@ obj/item/ammo_magazine/dp
 	mag_type = MAGAZINE
 
 	ammo_type = /obj/item/ammo_casing/a792x57
+	max_ammo = 10
+	weight = 0.32
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/svd
+	name = "SVD magazine (7.62x54mmR)"
+	icon_state = "g43"
+	caliber = "a762x54"
+	mag_type = MAGAZINE
+
+	ammo_type = /obj/item/ammo_casing/a762x54
 	max_ammo = 10
 	weight = 0.32
 	multiple_sprites = TRUE

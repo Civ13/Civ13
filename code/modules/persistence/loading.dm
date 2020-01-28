@@ -20,6 +20,8 @@
 	if (confirm == "No")
 		return
 	else
+		world << "<big><b>Loading a game, please wait...</b></big>"
+		sleep(1)
 		world.log << "Importing turfs..."
 		var/F = file("SQL/saves/turfs.txt")
 		if (fexists(F))
@@ -27,9 +29,11 @@
 			var/list/impturfs = splittext(tmpturfs, "\n")
 			for (var/i in impturfs)
 				var/list/impturfs2 = splittext(i, ";")
-				if (impturfs[1] == "TURF")
+				if (impturfs2[1] == "TURF")
 					var/resultp = text2path(impturfs2[5])
-					var/turf/T = get_turf(locate(text2num(impturfs2[2]),text2num(impturfs2[3]),text2num(impturfs2[4])))
+					world.log << "[impturfs2[5]]"
+					var/turf/T
+					T = locate(text2num(impturfs2[2]),text2num(impturfs2[3]),text2num(impturfs2[4]))
 					T.ChangeTurf(resultp)
 		world.log << "Imported all turfs."
 		sleep(1)
@@ -44,9 +48,9 @@
 			var/list/impmobs = splittext(tmpmobs, "\n")
 			for (var/i in impmobs)
 				var/list/impmobs2 = splittext(i, ";")
-				if (impmobs2.len >= 5 && impmobs2[1] == "MOB" && impmobs2[5] != "/mob/new_player")
+				if (impmobs2.len >= 5 && impmobs2[1] == "MOB" && impmobs2[5] != "/mob/new_player" && impmobs2[5] != "/mob/observer")
 					var/resultp = text2path(impmobs2[5])
-					var/mob/newmob = new resultp(get_turf(locate(text2num(impmobs2[2]),text2num(impmobs2[3]),text2num(impmobs2[4]))))
+					var/mob/newmob = new resultp(locate(text2num(impmobs2[2]),text2num(impmobs2[3]),text2num(impmobs2[4])))
 					newmob.stat = text2num(impmobs2[6])
 //				else if (impmobs2[1] == "HUMAN")
 //					return
@@ -64,9 +68,9 @@
 			for (var/i in impobjs)
 //				i = replacetext(i, "|;","|")
 				var/list/impobjs2 = splittext(i, ";")
-				if (impobjs2.len >= 5 && /*impobjs2[1] == "SIMPLE_OBJ" &&*/ !findtext(impobjs2[5],"/obj/map_metadata"))
+				if (impobjs2.len >= 5 && /*impobjs2[1] == "SIMPLE_OBJ" &&*/ !findtext(impobjs2[5],"/obj/map_metadata") && !findtext(impobjs2[5],"/obj/effects/lobby_image"))
 					var/resultp = text2path(impobjs2[5])
-					var/obj/tmpobj = new resultp(get_turf(locate(text2num(impobjs2[2]),text2num(impobjs2[3]),text2num(impobjs2[4]))))
+					var/obj/tmpobj = new resultp(locate(text2num(impobjs2[2]),text2num(impobjs2[3]),text2num(impobjs2[4])))
 					if (impobjs2[1] == "OBJECT")
 						for (var/j=6, j<=impobjs2.len, j++)
 							var/list/tempvars = splittext(impobjs2[j], "=")
@@ -77,6 +81,8 @@
 									tmpobj.desc = tempvars[2]
 								else if (tempvars[1] == "dir")
 									tmpobj.dir = text2num(tempvars[2])
+								else if (tempvars[1] == "icon_state")
+									tmpobj.icon_state = tempvars[2]
 /*
 				else if (impobjs2[1] == "OBJECT")
 					if (!findtext(impobjs2[5],"/obj/map_metadata"))
@@ -102,6 +108,7 @@
 										if (!islist(newobj.vars[tempvars[1]]))
 											newobj.vars[tempvars[1]] = tempvars[2]
 */
+		world.log << "Imported all objects."
 		world.log << "Importing metadata..."
 		var/F4 = file("SQL/saves/map.txt")
 		if (fexists(F4))
@@ -116,6 +123,6 @@
 			map.chad_mode_plus = text2num(tmpmeta_list[8])
 			map.gamemode = tmpmeta_list[8]
 		world.log << "Imported metadata."
-		world.log << "Imported all objects."
 		world.log << "Importing global settings..."
+		sleep(1)
 		world.log << "Finished all imports."

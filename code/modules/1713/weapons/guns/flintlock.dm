@@ -32,6 +32,7 @@
 	move_delay = 5
 	fire_delay = 5
 	equiptimer = 20
+	maxhealth = 20
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 
@@ -156,6 +157,19 @@
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
 
+/obj/item/weapon/gun/projectile/flintlock/plexico
+	name = "flintlock musket"
+	desc = "A finer flintlock musket, this one seems to be made out of ebony and steel."
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "musketball"
+	weight = 6.0
+	effectiveness_mod = 1.20
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 110
+	item_state = "plexciomusket"
+	icon_state = "plexciomusket"
+
 /obj/item/weapon/gun/projectile/flintlock/springfield
 	name = "Springfield M1861 Musket"
 	desc = "A simple flintlock musket of the 1860's used commonly in the civil war."
@@ -171,10 +185,24 @@
 	load_delay = 100
 
 
+/obj/item/weapon/gun/projectile/flintlock/springfield1795
+	name = "Springfield 1795 Musket"
+	desc = "The Model 1795 was the first musket to be produced in the United States."
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "musketball"
+	weight = 5.0
+	effectiveness_mod = 1.09
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	item_state = "springfield"
+	icon_state = "springfield1795"
+	load_delay = 100
+
 /obj/item/weapon/gun/projectile/flintlock/musketoon
 	name = "flintlock musketoon"
 	desc = "A smaller version of the flintlock musket, this gun is favored by seamen due to being compact, albeit less accurate."
-	icon_state = "musketoon"
+	icon_state = "compactmusket"
 	item_state = "musketoon"
 	force = 8
 	fire_sound = 'sound/weapons/mosin_shot.ogg'

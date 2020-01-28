@@ -52,7 +52,7 @@
 	spawn(18000)
 		seasons()
 	..()
-/obj/map_metadata/tribes/proc/seasons()
+/obj/map_metadata/tribes/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"

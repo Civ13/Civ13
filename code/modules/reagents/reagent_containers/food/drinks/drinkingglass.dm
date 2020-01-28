@@ -194,8 +194,81 @@
 		visible_message("The palm sap ferments into palm wine.")
 		return
 
-// for /obj/machinery/vending/piratesoda
+
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda
 	New()
 		..()
 		on_reagent_change()
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom
+	var/uncolored = TRUE
+	var/image/color1
+	var/image/color2
+	var/topcolor = "#000000"
+	var/undercolor = "#FFFFFF"
+	New()
+		..()
+		color1 = image(icon, "[icon_state]_label1")
+		color2 = image(icon, "[icon_state]_label2")
+		overlays += color1
+		overlays += color2
+		update_icon()
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/update_icon()
+	..()
+	overlays.Cut()
+	overlays += color1
+	overlays += color2
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/fastfoodcup
+	volume = 40
+	name = "fast food cup"
+	desc = "A plastic fast food cup."
+	icon_state = "fastfoodcup"
+	item_state = "beer"
+	value = 1
+
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/attack_self(mob/user as mob)
+	if (uncolored)
+		var/input = input(user, "Logo Symbol - Choose the logo symbol color (hex code without the #):", "Main Color" , "000000")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (lentext(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			topcolor = addtext("#",input)
+
+		input = input(user, "Background color - Choose the background color (hex code without the #):", "Background Color" , "FFFFFF")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (lentext(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			undercolor = addtext("#",input)
+		uncolored = FALSE
+		color1.color = topcolor
+		color2.color = undercolor
+		update_icon()
+	else
+		..()

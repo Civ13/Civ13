@@ -13,30 +13,6 @@
 	codebase for the entire /TG/station commuity a TONNE easier :3 Thanks for your help!
 */
 
-
-//This proc allows Game Masters to grant a client access to the .getruntimelog verb
-//Permissions expire at the end of each round.
-//Runtimes can be used to meta or spot game-crashing exploits so it's advised to only grant coders that
-//you trust access. Also, it may be wise to ensure that they are not going to play in the current round.
-/client/proc/giveruntimelog()
-	set name = ".giveruntimelog"
-	set desc = "Give somebody access to any session logfiles saved to the /log/runtime/ folder."
-	set category = null
-
-	if (!holder)
-		src << "<font color='red'>Only Admins may use this command.</font>"
-		return
-
-	var/client/target = input(src,"Choose somebody to grant access to the server's runtime logs (permissions expire at the end of each round):","Grant Permissions",null) as null|anything in clients
-	if (!istype(target,/client))
-		src << "<font color='red'>Error: giveruntimelog(): Client not found.</font>"
-		return
-
-	target.verbs |= /client/proc/getruntimelog
-	target << "<font color='red'>You have been granted access to runtime logs. Please use them responsibly or risk being banned.</font>"
-	return
-
-
 //This proc allows download of runtime logs saved within the data/logs/ folder by dreamdeamon.
 //It works similarly to show-server-log.
 /client/proc/getruntimelog()
@@ -47,14 +23,7 @@
 	if (!holder)
 		src << "<font color='red'>Only Admins may use this command.</font>"
 		return
-
-	var/path = browse_files("data/logs/runtime/")
-	if (!path)
-		return
-
-	if (file_spam_check())
-		return
-
+	var/path = "civ13.log"
 	message_admins("[key_name_admin(src)] accessed file: [path]")
 	src << run( file(path) )
 	src << "Attempting to send file, this may take a fair few minutes if the file is very large."
@@ -86,30 +55,19 @@
 //Shows today's server log
 /datum/admins/proc/view_txt_log()
 	set category = "Admin"
-	set name = "Show Server Log"
-	set desc = "Shows today's server log."
-
-	var/path = "data/logs/[time2text(world.realtime,"YYYY/MM-Month/DD-Day")].log"
-	if ( fexists(path) )
-		src << run( file(path) )
-	else
-		src << "<font color='red'>Error: view_txt_log(): File not found/Invalid path([path]).</font>"
+	set name = "Show Server Logs"
+	set desc = "Shows the server logs."
+	if (!usr || !usr.client)
 		return
-
-	return
-
-//Shows today's attack log
-/datum/admins/proc/view_atk_log()
-	set category = "Admin"
-	set name = "Show Server Attack Log"
-	set desc = "Shows today's server attack log."
-
-	var/path = "data/logs/[time2text(world.realtime,"YYYY/MM-Month/DD-Day")] Attack.log"
-	if ( fexists(path) )
-		src << run( file(path) )
-	else
-		src << "<font color='red'>Error: view_atk_log(): File not found/Invalid path([path]).</font>"
-		return
-	usr << run( file(path) )
+	var/choice = WWinput(usr, "Check Error Logs or Server Logs?", "Server Logs", "Cancel", list("Cancel", "Error Logs", "Server Logs"))
+	switch(choice)
+		if ("Cancel")
+			return
+		if ("Error Logs")
+			usr.client.getruntimelog()
+			return
+		if ("Server Logs")
+			usr.client.getserverlog()
+			return
 
 	return

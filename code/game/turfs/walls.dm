@@ -39,6 +39,8 @@ var/list/global/wall_cache = list()
 	layer = TURF_LAYER + 0.02 // above lifts
 	desc = "A massive slab of rock in the shape of a wall."
 
+/turf/wall/rockwall/lavaspawner
+
 /turf/wall/rockwall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
 	if(istype(W, /obj/item/weapon/chisel))
@@ -97,7 +99,7 @@ var/list/global/wall_cache = list()
 					src.icon_state = "b_tiled_stone_wall"
 					src.name = "tiled stone wall"
 					src.desc = "A cave wall carved to have a tiled stone pattern."
-				else
+				return
 	..()
 
 /turf/wall/rockwall/update_icon()

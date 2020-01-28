@@ -42,9 +42,6 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 	make_blood()
 
-	if (in_stasis)
-		return
-
 	if (!species.has_organ["heart"])
 		return
 

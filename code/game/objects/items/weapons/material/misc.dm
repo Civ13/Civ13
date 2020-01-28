@@ -37,25 +37,6 @@
 	block_chance = 10
 	cooldownw = 7
 
-/obj/item/weapon/material/handle/stick
-	name = "stick"
-	sharp = FALSE
-	edge = FALSE
-	desc = "A stick, could work as a handle.."
-	slot_flags = SLOT_SHOULDER | SLOT_BELT
-	icon_state = "stick"
-	item_state = "spear"
-	default_material = "wood"
-	throw_speed = 7
-	throw_range = 7
-	allow_spin = FALSE
-	force_divisor = 0.1 // 12 with hardness 60 (steel)
-	thrown_force_divisor = 0.2 // 8 with weight 20 (steel)
-	attack_verb = list("jabbed","hit","bashed")
-	value = 1
-	block_chance = 8
-	cooldownw = 6
-
 /obj/item/weapon/material/pitchfork
 	name = "pitchfork"
 	desc = "It's used for removing weeds or scratching your back."
@@ -76,7 +57,7 @@
 	edge = TRUE
 	desc = "A crude, yet effective weapon."
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
-	icon_state = "spear_old"
+	icon_state = "spear"
 	item_state = "spear"
 	worn_state = "spear"
 	default_material = "wood"
@@ -216,6 +197,7 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 5
+	var/chopping_speed = 1
 
 /obj/item/weapon/material/hatchet/tribal
 	name = "hatchet"
@@ -223,11 +205,26 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalaxe"
 	material = "stone"
+	item_state = "bonehatchet"
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 13 with weight 20 (steel)
 	value = 12
 	block_chance = 15
 	cooldownw = 5
+	chopping_speed = 1.35
+/obj/item/weapon/material/hatchet/tribal/bone
+	material = "bone"
+	desc = "A crude hatchet, made with wood and bone."
+	icon_state = "bonehatchet"
+	item_state = "bonehatchet"
+	chopping_speed = 1.75
+
+/obj/item/weapon/material/hatchet/tribal/flint
+	material = "flint"
+	desc = "A very crude hatchet, made with wood and flint."
+	icon = 'icons/obj/old_weapons.dmi'
+	icon_state = "flint_axe"
+	chopping_speed = 1.5
 
 /obj/item/weapon/material/boarding_axe
 	name = "boarding axe"
@@ -583,3 +580,22 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 11
+
+/obj/item/weapon/material/scepter
+	name = "gold scepter"
+	sharp = FALSE
+	edge = FALSE
+	desc = "An old golden staff, doesn't do too much damage but its fast at blocking and hitting"
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	icon_state = "scepter"
+	item_state = "scepter"
+	default_material = "gold"
+	throw_speed = 6
+	throw_range = 10
+	allow_spin = TRUE
+	force_divisor = 0.5 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	attack_verb = list("bashed","poked","beaten")
+	value = 6
+	block_chance = 20
+	cooldownw = 5

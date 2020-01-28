@@ -65,6 +65,10 @@
 				fuel += I.amount*1
 				qdel(I)
 				return
+			else if (istype(I, /obj/item/weapon/branch))
+				fuel += I.amount*1
+				qdel(I)
+				return
 			else if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
 				iron += I.amount
 				qdel(I)
@@ -248,6 +252,10 @@
 				qdel(I)
 				return                  //INPUT 1
 			else if (istype(I, /obj/item/stack/ore/charcoal))      //FUEL 3
+				fuel += I.amount*1
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/weapon/branch))
 				fuel += I.amount*1
 				qdel(I)
 				return

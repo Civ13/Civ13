@@ -252,7 +252,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		..()
 		reagents.add_reagent("nicotine",30)
 
-/obj/item/clothing/mask/smokable/cigarette/joint/joint
+/obj/item/clothing/mask/smokable/cigarette/joint
 	name = "joint"
 	desc = "A joint filled with weed."
 	icon_state = "joint"
@@ -263,7 +263,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	value = 28
 	New()
 		..()
-		reagents.add_reagent("thc",60)
+		reagents.add_reagent("thc",30)
 
 /obj/item/clothing/mask/smokable/cigarette/cigar/havana
 	name = "Cuban cigar"

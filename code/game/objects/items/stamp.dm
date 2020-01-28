@@ -29,3 +29,7 @@
 /obj/item/weapon/stamp/nl
 	name = "Dutch Governor seal"
 	icon_state = "stamp-nl"
+
+/obj/item/weapon/stamp/baily
+	name = "Baily approval"
+	icon_state = "stamp-fr"

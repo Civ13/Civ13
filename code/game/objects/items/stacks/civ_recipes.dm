@@ -94,32 +94,99 @@ datum/admins/proc/print_crafting_recipes()
 	var/recipe_list = file("recipes.txt")
 	if (fexists(recipe_list))
 		fdel(recipe_list)
-	for (var/i in craftlist_list)
-		var/matname = replacetext(i[1], "/material/", "")
-		matname = replacetext(matname, "/", "")
-		var/subcategory = ""
-		if (i[8] != "none")
-			subcategory = ", subcategory [i[8]]"
-		var/av_age = "the Modern Age"
-		switch(i[12])
-			if ("0")
-				av_age = "the Stone Age"
-			if ("1")
-				av_age = "the Bronze Age"
-			if ("2")
-				av_age = "the Middle Ages"
-			if ("3")
-				av_age = "the Imperial Age"
-			if ("4")
-				av_age = "the Industrial Age"
-			if ("5")
-				av_age = "the Early Modern Age"
-			if ("6")
-				av_age = "the 2nd World War"
-			if ("7")
-				av_age = "the Cold War"
-			if ("8")
-				av_age = "the Modern Age"
-		var/chemical_reactions_print_var = "- [i[2]]: made from [i[4]] [matname][subcategory]. Requires [i[9]] Industrial, [i[10]] Military, [i[11]] Medical points. Available until [av_age]."
-		recipe_list << chemical_reactions_print_var
-	world.log << "Finished saving all crafting recipes into \"recipes.txt\"."
+	var/choice = WWinput(usr, "Which format to export?", "Crafting Recipe Export", "Plaintext", list("Plaintext", "Wiki"))
+	if (choice == "Wiki")
+		var/list/matlist = list()
+		for (var/k in craftlist_list)
+			var/matname = replacetext(k[1], "/material/", "")
+			matname = replacetext(matname, "/", "")
+			matlist |= matname
+		matlist = sortTim(matlist,/proc/cmp_text_asc,FALSE)
+		for (var/m in matlist)
+			recipe_list <<"===[m]==="
+			recipe_list <<"{| class=\"wikitable sortable\" style=\"text-align: left"
+			recipe_list <<"! Item"
+			recipe_list <<"! Cost"
+			recipe_list <<"! Material"
+			recipe_list <<"! Category"
+			recipe_list <<"! Research Needed"
+			recipe_list <<"! Available Until"
+			recipe_list << " "
+			for (var/i in craftlist_list)
+				var/matname = replacetext(i[1], "/material/", "")
+				matname = replacetext(matname, "/", "")
+				if (matname == m)
+					var/subcategory = "none"
+					if (i[8] != "none")
+						subcategory = "[i[8]]"
+					var/av_age = "the Modern Age"
+					switch(i[12])
+						if ("0")
+							av_age = "the Stone Age"
+						if ("1")
+							av_age = "the Bronze Age"
+						if ("2")
+							av_age = "the Middle Ages"
+						if ("3")
+							av_age = "the Imperial Age"
+						if ("4")
+							av_age = "the Industrial Age"
+						if ("5")
+							av_age = "the Early Modern Age"
+						if ("6")
+							av_age = "the 2nd World War"
+						if ("7")
+							av_age = "the Cold War"
+						if ("8")
+							av_age = "the Modern Age"
+					var/requirements = "Available from the start."
+					if (text2num(i[9]) != 0 || text2num(i[10]) != 0 || text2num(i[11]) != 0)
+						requirements = "Requires "
+						if (text2num(i[9]) != 0)
+							requirements = "[requirements] [i[9]] Industrial"
+
+						if (text2num(i[10]) != 0)
+							if (text2num(i[9]) != 0)
+								requirements = "[requirements],"
+							requirements = "[requirements] [i[10]] Military"
+
+						if (text2num(i[11]) != 0)
+							if (text2num(i[9]) != 0 || text2num(i[10]) != 0 )
+								requirements = "[requirements],"
+							requirements = "[requirements] [i[11]] Medical"
+						requirements = "[requirements] research points."
+					var/crafting_print_var = "|- id=\"[i[2]]\"\n! [i[2]]\n| [i[4]]\n| [matname]\n| [subcategory]\n| [requirements]\n| Available until [av_age].\n"
+					recipe_list << crafting_print_var
+			recipe_list << "|}"
+		world.log << "Finished saving all crafting recipes into \"recipes.txt\" with Wiki format."
+	else
+		for (var/i in craftlist_list)
+			var/matname = replacetext(i[1], "/material/", "")
+			matname = replacetext(matname, "/", "")
+			var/subcategory = ""
+			if (i[8] != "none")
+				subcategory = ", subcategory [i[8]]"
+			var/av_age = "the Modern Age"
+			switch(i[12])
+				if ("0")
+					av_age = "the Stone Age"
+				if ("1")
+					av_age = "the Bronze Age"
+				if ("2")
+					av_age = "the Middle Ages"
+				if ("3")
+					av_age = "the Imperial Age"
+				if ("4")
+					av_age = "the Industrial Age"
+				if ("5")
+					av_age = "the Early Modern Age"
+				if ("6")
+					av_age = "the 2nd World War"
+				if ("7")
+					av_age = "the Cold War"
+				if ("8")
+					av_age = "the Modern Age"
+			var/chemical_reactions_print_var = "- [i[2]]: made from [i[4]] [matname][subcategory]. Requires [i[9]] Industrial, [i[10]] Military, [i[11]] Medical points. Available until [av_age]."
+			recipe_list << chemical_reactions_print_var
+		world.log << "Finished saving all crafting recipes into \"recipes.txt\" with Plaintext format."
+		return

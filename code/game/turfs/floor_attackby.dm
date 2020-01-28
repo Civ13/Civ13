@@ -1175,7 +1175,7 @@
 			if (H.water < 0)
 				H.water += rand(40,50)
 			H.water += 75
-			H.bladder += 75
+			H.bladder += 25
 			H << "You drink some water from."
 			playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
 			return

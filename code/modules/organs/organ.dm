@@ -46,11 +46,25 @@ var/list/organ_cache = list()
 
 	return ..()
 
+/obj/item/organ/proc/organ_check()
+	if (!src)
+		return
+	if (!loc || isturf(loc))
+		spawn(3000)
+			if (src)
+				if (!loc || isturf(loc))
+					qdel(src)
+					return
+	spawn(3000)
+		if (src)
+			organ_check()
+
 /obj/item/organ/proc/update_health()
 	return
 
 /obj/item/organ/New(var/mob/living/carbon/holder, var/internal)
 	..(holder)
+	organ_check()
 	organ_list += src
 	create_reagents(5)
 	if (!max_damage)

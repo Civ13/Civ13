@@ -158,7 +158,11 @@
 	not_movable = FALSE
 
 /obj/structure/stockmarket/attack_hand(var/mob/living/carbon/human/user as mob)
-	var/choice1 = WWinput(user, "What do you want to do?", "Stock Market", "Check Companies", list("Check Companies","Buy Stock","Sell Stock","Manage Company","Cancel"))
+	var/list/optlist = list("Check Companies","Buy Stock","Sell Stock","Manage Company")
+	if (user.leader && user.civilization != "none")
+		optlist += "Faction Treasury"
+	optlist += "Cancel"
+	var/choice1 = WWinput(user, "What do you want to do?", "Stock Market", "Check Companies", optlist)
 	if (choice1 == "Cancel")
 		return
 	else if (choice1 == "Check Companies")
@@ -175,7 +179,43 @@
 		"}
 
 		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
-
+	else if (choice1 == "Faction Treasury")
+		var/choicefac = WWinput(user, "What do you want to do?", "Faction Treasury", "Cancel", list("Set Taxes", "Withdraw Taxes","Cancel"))
+		if (choicefac == "Cancel")
+			return
+		else if (choicefac == "Set Taxes")
+			if (user.leader)
+				var/choiceinput1 = input(user, "What do you want the Sales Tax to be? (0-30%)","Sales Tax",map.custom_civs[user.civilization][9]) as num
+				if (choiceinput1 < 0)
+					choiceinput1 = 0
+				if (choiceinput1 > 30)
+					choiceinput1 = 10
+				var/choiceinput2 = input(user, "What do you want the Business Tax to be? (0-30%)","Business Tax",map.custom_civs[user.civilization][10]) as num
+				if (choiceinput2 < 0)
+					choiceinput2 = 0
+				if (choiceinput2 > 30)
+					choiceinput2 = 10
+				map.custom_civs[user.civilization][9] = choiceinput1
+				map.custom_civs[user.civilization][10] = choiceinput2
+				user << "<b>Sales Tax</b> set to [choiceinput1]%. <b>Business Tax</b> set to [choiceinput2]%."
+				return
+			else
+				user << "<span class='warning'>You do not have the permissions to do that!</span>"
+				return
+		else if (choicefac == "Withdraw Taxes")
+			if (map.custom_civs[user.civilization][4] == user)
+				if (map.custom_civs[user.civilization][5]>0)
+					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+					GC.amount = map.custom_civs[user.civilization][5]*2.5
+					map.custom_civs[user.civilization][5]=0
+					user << "You withdraw [GC.amount] gold coins in faction funds."
+					return
+				else
+					user << "<span class='notice'>There is no money to withdraw.</span>"
+					return
+			else
+				user << "<span class='warning'>You do not have the permissions to do that!</span>"
+				return
 	else if (choice1 == "Manage Company")
 		var/choice4 = WWinput(user, "What do you want to do?", "Stock Market", "View Members", list("View Members", "Distribute Profits", "Withdraw Profits","Cancel"))
 		if (choice4 == "Cancel")

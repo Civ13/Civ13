@@ -1,7 +1,10 @@
 /mob/living/var/next_weather_sound = -1
+/mob/living/var/last_life_tick = 0
 /mob/living/Life()
 
 	..()
+
+	last_life_tick = world.realtime
 
 	if (!loc)
 		return

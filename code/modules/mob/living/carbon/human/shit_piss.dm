@@ -307,7 +307,7 @@
 				reagents.trans_to(V, rand(1,5))
 
 		playsound(src.loc, 'sound/effects/poo2.ogg', 60, 1)
-		bowels -= rand(60,80)
+		bowels -= rand(120,150)
 
 	else
 		to_chat(src, "You don't have to.")
@@ -329,21 +329,21 @@
 	var/obj/item/weapon/reagent_containers/RC = locate() in src.loc
 	if((S) && gender != FEMALE)//In the urinal or sink.
 		message = "<B>[src]</B> urinates into [S]."
-		reagents.remove_any(rand(1,8))
+		reagents.remove_any(rand(5,10))
 
 	else if( (T && T.open) || (T2 && T2.open) )//In the toilet.
 		message = "<B>[src]</B> urinates into [T]."
-		reagents.remove_any(rand(1,8))
+		reagents.remove_any(rand(5,10))
 
 	else if (M.crap_inside) //Into the hole inside the outhouse.
 		message = "<B>[src]</B> urinates into the hole."
-		reagents.remove_any(rand(1,8))
-	
+		reagents.remove_any(rand(5,10))
+
 	else if(RC && (istype(RC,/obj/item/weapon/reagent_containers/food/drinks || istype(RC,/obj/item/weapon/reagent_containers/glass))))
 		if(RC.is_open_container())
 			//Inside a beaker, glass, drink, etc.
 			message = "<B>[src]</B> urinates into [RC]."
-			var/amount = rand(1,8)
+			var/amount = rand(5,10)
 			RC.reagents.add_reagent("urine", amount)
 			if(reagents)
 				reagents.trans_to(RC, amount)
@@ -361,9 +361,9 @@
 		var/turf/TT = src.loc
 		var/obj/effect/decal/cleanable/urine/D = new/obj/effect/decal/cleanable/urine(src.loc)
 		if(reagents)
-			reagents.trans_to(D, rand(1,8))
+			reagents.trans_to(D, rand(5,10))
 		message = "<B>[src]</B> pisses on the [TT.name]."
 
-	bladder -= 50
+	bladder -= 120
 	visible_message("[message]")
 

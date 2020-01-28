@@ -13,7 +13,7 @@
 //used for persistence variable saving. Ignores default values.
 /proc/list2text_assoc(var/atom/A)
 	. = list()
-	if (istype(A, /obj/structure/wild) || (!istype(A, /obj/item) && !istype(A, /obj/structure) && !istype(A, /obj/map_metadata)))
+	if (istype(A, /obj/structure/wild) || (!istype(A, /obj/item) && !istype(A, /obj/structure) && !istype(A, /obj/map_metadata)&& !istype(A, /obj/covers)))
 		return "SIMPLE_OBJ;[A.x];[A.y];[A.z];[A.type]"
 	else
 		for (var/key in A.vars)
@@ -99,7 +99,7 @@
 			if (!istype(O, /obj/effect/decal) && !istype(O, /obj/screen))
 				var/txtexport = list2text_assoc(O)
 				text2file(txtexport,F2)
-	spawn(1)
-		world.log << "Finished saving at [time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]."
-		world << "<i><b>Finished saving.</b></i>"
+	sleep(1)
+	world.log << "Finished saving at [time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]."
+	world << "<i><b>Finished saving.</b></i>"
 	return

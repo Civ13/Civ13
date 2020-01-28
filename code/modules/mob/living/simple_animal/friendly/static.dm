@@ -16,8 +16,15 @@
 	counter = 2
 	anchored = TRUE
 	species = "salmon"
-
-/obj/structure/fish/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/fish/cod
+	name = "codfish"
+	desc = "Seems like theres some cod's around here..."
+	icon = 'icons/mob/fish.dmi'
+	icon_state = "cod"
+	counter = 1
+	anchored = TRUE
+	species = "cod"
+/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/fishing) && counter > 0)
 		H.visible_message("[H] starts fishing.")
 		if (istype(W, /obj/item/weapon/fishing/modern))
@@ -27,6 +34,8 @@
 					counter = (counter-1)
 					if (species == "salmon")
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
+					else if (species == "cod")
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(H.loc)
 					else
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)
 					if (counter <= 0)
@@ -43,6 +52,29 @@
 					counter = (counter-1)
 					if (species == "salmon")
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
+					else if (species == "cod")
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(H.loc)
+					else
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)
+					if (counter <= 0)
+						invisibility = 101
+					get_fish()
+					return
+				else
+					H << "You can't seem to get anything to bite..."
+					return
+	else if (istype(W, /obj/item/weapon/branch) && counter > 0)
+		var/obj/item/weapon/branch/B = W
+		if (B.sharpened)
+			H.visible_message("[H] starts fishing.")
+			if (do_after(H, 120, src))
+				if (prob(20))
+					H << "You got a fish!"
+					counter = (counter-1)
+					if (species == "salmon")
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)
+					else if (species == "cod")
+						new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(H.loc)
 					else
 						new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)
 					if (counter <= 0)
@@ -81,6 +113,8 @@
 	if (istype(M, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M
 		if (H.driver_vehicle)
+			return
+		if (H.riding && H.riding_mob)
 			return
 		invisibility = 0
 		visible_message("<span class='notice'>The piranhas swarm [M]!</span>")
@@ -143,6 +177,18 @@
 			done = TRUE
 	spawn(600)
 		check_food()
+/obj/structure/anthill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+	if (istype(W, /obj/item/weapon/branch))
+		var/obj/item/weapon/branch/B = W
+		H.visible_message("[H] starts poking inside the anthill with the stick.")
+		if (do_after(H, 120, src))
+			if (prob(40))
+				H << "You get some ants on your stick."
+				B.ants = TRUE
+				B.icon_state = "ant_stick"
+			else
+				H << "You can't seem to get any ants to react..."
+				return
 
 /obj/structure/ants
 	name = "red ants"
@@ -155,6 +201,9 @@
 /obj/structure/ants/New()
 	..()
 	check_food()
+	spawn(600)
+		if (src)
+			qdel(src)
 
 
 /obj/structure/ants/proc/check_food()

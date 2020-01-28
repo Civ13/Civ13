@@ -131,338 +131,235 @@
 				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
-	var/area_icon_state = ""
 
-	if (world_radiation < 300)
-		switch (weather)
-			if (WEATHER_SNOW)
-				switch (weather_intensity)
-					if (1.0)
-						area_icon_state = "snow1"
-					if (2.0)
-						area_icon_state = "snow2"
-					if (3.0)
-						area_icon_state = "snow3"
-			if (WEATHER_RAIN)
-				switch (weather_intensity)
-					if (1.0)
-						area_icon_state = "rain1"
-					if (2.0)
-						area_icon_state = "rain2"
-					if (3.0)
-						area_icon_state = "rain3"
-			if (WEATHER_BLIZZARD)
-				switch (weather_intensity)
-					if (1.0)
-						area_icon_state = "snow_storm"
-					if (2.0)
-						area_icon_state = "snow_storm"
-
-					if (3.0)
-						area_icon_state = "snow_storm"
-
-			if (WEATHER_SANDSTORM)
-				switch (weather_intensity)
-					if (1.0)
-						area_icon_state = "sandstorm"
-
-					if (2.0)
-						area_icon_state = "sandstorm"
-
-					if (3.0)
-						area_icon_state = "sandstorm"
-
-			if (WEATHER_STORM)
-				switch (weather_intensity)
-					if (1.0)
-						area_icon_state = "monsoon"
-
-					if (2.0)
-						area_icon_state = "monsoon"
-
-					if (3.0)
-						area_icon_state = "monsoon"
-
-			if (WEATHER_SMOG)
-				area_icon_state = "smog"
-	else
-		switch(weather)
-			if (WEATHER_NONE)
-				area_icon_state = "rad_radioactive_fallout"
-
-			if (WEATHER_RAIN)
-				switch (weather_intensity)
-					if (1.0)
-						area_icon_state = "rad_acidrain1"
-
-					if (2.0)
-						area_icon_state = "rad_acidrain2"
-
-					if (3.0)
-						area_icon_state = "rad_acidrain3"
-
-			if (WEATHER_STORM)
-				switch (weather_intensity)
-					if (1.0)
-						area_icon_state = "rad_acidmonsoon"
-
-					if (2.0)
-						area_icon_state = "rad_acidmonsoon"
-
-					if (3.0)
-						area_icon_state = "rad_acidmonsoon"
-
-			if (WEATHER_SNOW)
-				switch (weather_intensity)
-					if (1.0)
-						area_icon_state = "rad_acidmonsoon"
-
-					if (2.0)
-						area_icon_state = "rad_acidmonsoon"
-
-					if (3.0)
-						area_icon_state = "rad_acidmonsoon"
-
-			if (WEATHER_BLIZZARD)
-				area_icon_state = "rad_nuclear_snow_storm"
-			if (WEATHER_SMOG)
-				area_icon_state = "rad_smog"
-
-	if (map.civilizations)
-		for (var/area/caribbean/A in area_list)
-			if (istype(A) && A.location == AREA_OUTSIDE)
-				if (A.climate == "tundra")
-					if (season == "Wet Season" || season == "WINTER" ||  season == "FALL" || season == "SPRING")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "snow_storm"
-							A.weather = WEATHER_BLIZZARD
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = "snow2"
-							A.weather = WEATHER_SNOW
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season" || season == "SUMMER")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "snow1"
-							A.weather = WEATHER_SNOW
-							A.weather_intensity = weather_intensity
-
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = "snow2"
-							A.weather = WEATHER_SNOW
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-
-				else if (A.climate == "taiga")
-					if (season == "Wet Season" || season == "WINTER" ||  season == "FALL")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "snow_storm"
-							A.weather = WEATHER_BLIZZARD
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = "snow2"
-							A.weather = WEATHER_SNOW
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-
-					else if (season == "Dry Season" || season == "SUMMER" || season == "SPRING")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "snow1"
-							A.weather = WEATHER_SNOW
-							A.weather_intensity = weather_intensity
-
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-
-				else if (A.climate == "jungle")
-					if (season == "Wet Season" || season == "WINTER" || season == "SPRING")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "monsoon"
-							A.weather = WEATHER_STORM
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = "rain3"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season" || season == "SUMMER" ||  season == "FALL")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-
-				else if (A.climate == "savanna")
-					if (season == "Wet Season" || season == "WINTER" || season == "SPRING")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "rain3"
-							A.weather = WEATHER_STORM
-							A.weather_intensity = 3
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = "rain2"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = 2
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season" || season == "SUMMER" ||  season == "FALL")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-
-				else if (A.climate == "desert")
-					if (season == "Dry Season" || season == "SUMMER" ||  season == "FALL")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "sandstorm"
-							A.weather = WEATHER_SANDSTORM
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN || weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-					else if (season == "Wet Season" || season == "WINTER" || season == "SPRING")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = "rain1"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-
-				else if (A.climate == "sea")
-					if (season == "Wet Season" || season == "WINTER" ||  season == "FALL")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "monsoon"
-							A.weather = WEATHER_STORM
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = "rain1"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season" || season == "SUMMER" || season == "SPRING")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "rain2"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
-							A.icon_state = "rain2"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-				else if (A.climate == "semiarid")
-					if (season == "Wet Season" || season == "WINTER" ||  season == "FALL")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "rain3"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = 3
-						else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
-							A.icon_state = "rain1"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season" || season == "SUMMER" || season == "SPRING")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
-							A.icon_state = "rain1"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = 1
-						else
-							A.icon_state = ""
-							A.weather = weather
-							A.weather_intensity = weather_intensity
-				else if (A.climate == "temperate")
-					if (season == "Wet Season" || season == "WINTER")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "snow_storm"
-							A.weather = WEATHER_BLIZZARD
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
-							A.icon_state = "snow2"
-							A.weather = WEATHER_SNOW
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season"|| season == "FALL" || season == "SPRING")
-						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
-							A.icon_state = "rain2"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = weather_intensity
-						else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
-							A.icon_state = "rain2"
-							A.weather = WEATHER_RAIN
-							A.weather_intensity = weather_intensity
-						else
-							A.icon_state = ""
-							A.weather = WEATHER_NONE
-							A.weather_intensity = weather_intensity
-					else if (season == "SUMMER")
+	for (var/area/caribbean/A in area_list)
+		if (istype(A) && A.location == AREA_OUTSIDE)
+			if (A.climate == "tundra")
+				if (season == "Wet Season" || season == "WINTER" ||  season == "FALL" || season == "SPRING")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "snow_storm"
+						A.weather = WEATHER_BLIZZARD
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = "snow2"
+						A.weather = WEATHER_SNOW
+						A.weather_intensity = weather_intensity
+					else
 						A.icon_state = ""
 						A.weather = WEATHER_NONE
 						A.weather_intensity = weather_intensity
-				else
+				else if (season == "Dry Season" || season == "SUMMER")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "snow1"
+						A.weather = WEATHER_SNOW
+						A.weather_intensity = weather_intensity
+
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = "snow2"
+						A.weather = WEATHER_SNOW
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+
+			else if (A.climate == "taiga")
+				if (season == "Wet Season" || season == "WINTER" ||  season == "FALL")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "snow_storm"
+						A.weather = WEATHER_BLIZZARD
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = "snow2"
+						A.weather = WEATHER_SNOW
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+
+				else if (season == "Dry Season" || season == "SUMMER" || season == "SPRING")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "snow1"
+						A.weather = WEATHER_SNOW
+						A.weather_intensity = weather_intensity
+
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+
+			else if (A.climate == "jungle")
+				if (season == "Wet Season" || season == "WINTER" || season == "SPRING")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "monsoon"
+						A.weather = WEATHER_STORM
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = "rain3"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+				else if (season == "Dry Season" || season == "SUMMER" ||  season == "FALL")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+
+			else if (A.climate == "savanna")
+				if (season == "Wet Season" || season == "WINTER" || season == "SPRING")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "rain3"
+						A.weather = WEATHER_STORM
+						A.weather_intensity = 3
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = "rain2"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = 2
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+				else if (season == "Dry Season" || season == "SUMMER" ||  season == "FALL")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+
+			else if (A.climate == "desert")
+				if (season == "Dry Season" || season == "SUMMER" ||  season == "FALL")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "sandstorm"
+						A.weather = WEATHER_SANDSTORM
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN || weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+				else if (season == "Wet Season" || season == "WINTER" || season == "SPRING")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = "rain1"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+
+			else if (A.climate == "sea")
+				if (season == "Wet Season" || season == "WINTER" ||  season == "FALL")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "monsoon"
+						A.weather = WEATHER_STORM
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = "rain1"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+				else if (season == "Dry Season" || season == "SUMMER" || season == "SPRING")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "rain2"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
+						A.icon_state = "rain2"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+			else if (A.climate == "semiarid")
+				if (season == "Wet Season" || season == "WINTER" ||  season == "FALL")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "rain3"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = 3
+					else if (weather == WEATHER_RAIN || weather == WEATHER_SNOW)
+						A.icon_state = "rain1"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+				else if (season == "Dry Season" || season == "SUMMER" || season == "SPRING")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
+						A.icon_state = "rain1"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = 1
+					else
+						A.icon_state = ""
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+			else if (A.climate == "temperate")
+				if (season == "Wet Season" || season == "WINTER")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "snow_storm"
+						A.weather = WEATHER_BLIZZARD
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
+						A.icon_state = "snow2"
+						A.weather = WEATHER_SNOW
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+				else if (season == "Dry Season"|| season == "FALL" || season == "SPRING")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "rain2"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
+						A.icon_state = "rain2"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+				else if (season == "SUMMER")
 					A.icon_state = ""
 					A.weather = WEATHER_NONE
 					A.weather_intensity = weather_intensity
-				if (world_radiation >= 300)
-					A.icon_state = "rad_[A.icon_state]"
-	else
-		for (var/area/caribbean/A in area_list)
-			if (istype(A) && A.location == AREA_OUTSIDE)
-				A.icon_state = area_icon_state
-				A.weather = weather
+			else
+				A.icon_state = ""
+				A.weather = WEATHER_NONE
 				A.weather_intensity = weather_intensity
+			if (world_radiation >= 300)
+				A.icon_state = "rad_[A.icon_state]"
 
 /*
 	if (old_weather != weather)

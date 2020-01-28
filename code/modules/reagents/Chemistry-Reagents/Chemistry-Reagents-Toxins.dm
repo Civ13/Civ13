@@ -83,6 +83,20 @@
 	M.adjustOxyLoss(20 * removed)
 	M.sleeping += 0
 
+/datum/reagent/toxin/batrachotoxin
+	name = "Batrachotoxin"
+	id = "batrachotoxin"
+	description = "A highly toxic chemical, extracted from poisonous frogs."
+	taste_mult = 0.6
+	reagent_state = LIQUID
+	color = "#CF3600"
+	strength = 25
+	metabolism = REM * 1
+
+/datum/reagent/toxin/batrachotoxin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	..()
+	M.adjustBrainLoss(6.5 * removed)
+
 /datum/reagent/toxin/food_poisoning
 	name = "Food Poisoning"
 	id = "food_poisoning"

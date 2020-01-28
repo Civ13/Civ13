@@ -14,7 +14,7 @@
 		"Cold War Era (1958-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
 		"Civilization 13 (Nomads)" = 0,
-		"Civilization 13 (Colony & Pioneers)" = 6,
+		"Civilization 13 (Colony & Pioneers)" = 0,
 		"Civilization 13 (Prison Camps)" = 15,
 		"Civilization 13 (Others)" = 0,
 	)
@@ -48,9 +48,10 @@
 				"Modern Era (1985-2020)" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
-			epochs = list("Civilization 13 (Nomads)" = 0,
-				"Civilization 13 (Colony & Pioneers)" = 6,
-//				"Civilization 13 (Prison Camps)" = 15,
+			epochs = list(
+				"Civilization 13 (Nomads)" = 0,
+				"Civilization 13 (Colony & Pioneers)" = 0,
+				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
@@ -170,17 +171,18 @@
 				MAP_NOMADS_DESERT = 0,
 				MAP_NOMADS_ICE_AGE = 0,
 				MAP_NOMADS_JUNGLE = 0,
-				MAP_NOMADS_DIVIDE = 0,
+				MAP_NOMADS_DIVIDE = 10,
 				MAP_NOMADS_CONTINENTAL = 20,
 				MAP_NOMADS_PANGEA = 10,
 				MAP_NOMADS_WASTELAND = 0,
 				MAP_NOMADS_NEW_WORLD = 10,
-				MAP_NOMADS_NEW_MEDITERRANEAN = 10,
+				MAP_NOMADS_MEDITERRANEAN = 10,
+				MAP_NOMADS_ISLAND = 0,
 			)
 		if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(
-				MAP_COLONY = 6,
-				MAP_JUNGLE_COLONY = 6,
+				MAP_COLONY = 0,
+				MAP_JUNGLE_COLONY = 4,
 				MAP_PIONEERS = 10,
 				MAP_FOUR_COLONIES = 35,
 			)

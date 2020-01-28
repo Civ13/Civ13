@@ -26,47 +26,46 @@
 /obj/item/weapon/book/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
 	if (istype(W, /obj/item/weapon/book))
 		var/obj/item/weapon/book/B = W
-		if (!B.author && !B.title && user.religious_clergy == "Monks")
-			if (istype(B, src.type))
-				user << "You start copying [src]..."
-				if (do_after(user, 200, src))
-					user << "You finish copying [src]."
-					if (istype(src, /obj/item/weapon/book) && !istype(src, /obj/item/weapon/book/holybook) && !istype(src, /obj/item/weapon/book/research))
-						var/obj/item/weapon/book/NC = src
-						var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(user))
-						NB.dat = NC.dat
-						NB.due_date = NC.due_date
-						NB.author = NC.author
-						NB.unique = NC.unique
-						NB.title = NC.title
-						qdel(B)
-					else if (istype(src, /obj/item/weapon/book/holybook))
-						var/obj/item/weapon/book/holybook/NC = src
-						var/obj/item/weapon/book/holybook/NB = new/obj/item/weapon/book/holybook(get_turf(user))
-						NB.author = NC.author
-						NB.title = NC.title
-						NB.name = NC.name
-						NB.desc = NC.desc
-						NB.religion = NC.religion
-						NB.religion_type = NC.religion_type
-						qdel(B)
-					else if (istype(src, /obj/item/weapon/book/research))
-						var/obj/item/weapon/book/research/NC = src
-						var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(get_turf(user))
-						NB.author = NC.author
-						NB.title = NC.title
-						NB.name = NC.name
-						NB.desc = NC.desc
-						NB.completed = NC.completed = 0
-						NB.k_class = NC.k_class = "none"
-						NB.k_level = NC.k_level = 0
-						NB.styleb = NC.styleb = "scroll"
-						NB.sum_a = NC.sum_a = 0
-						NB.sum_b = NC.sum_b = 0
-						NB.sum_c = NC.sum_c = 0
-						NB.monk = NC.monk = FALSE //if the book was authored by a monk
-						NB.religion = NC.religion = "none"
-						qdel(B)
+		if (!B.author && user.religious_clergy == "Monks")
+			user << "You start copying [src]..."
+			if (do_after(user, 200, src))
+				user << "You finish copying [src]."
+				if (istype(src, /obj/item/weapon/book) && !istype(src, /obj/item/weapon/book/holybook) && !istype(src, /obj/item/weapon/book/research))
+					var/obj/item/weapon/book/NC = src
+					var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(user))
+					NB.dat = NC.dat
+					NB.due_date = NC.due_date
+					NB.author = NC.author
+					NB.unique = NC.unique
+					NB.title = NC.title
+					qdel(B)
+				else if (istype(src, /obj/item/weapon/book/holybook))
+					var/obj/item/weapon/book/holybook/NC = src
+					var/obj/item/weapon/book/holybook/NB = new/obj/item/weapon/book/holybook(get_turf(user))
+					NB.author = NC.author
+					NB.title = NC.title
+					NB.name = NC.name
+					NB.desc = NC.desc
+					NB.religion = NC.religion
+					NB.religion_type = NC.religion_type
+					qdel(B)
+				else if (istype(src, /obj/item/weapon/book/research))
+					var/obj/item/weapon/book/research/NC = src
+					var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(get_turf(user))
+					NB.author = NC.author
+					NB.title = NC.title
+					NB.name = NC.name
+					NB.desc = NC.desc
+					NB.completed = NC.completed = 0
+					NB.k_class = NC.k_class = "none"
+					NB.k_level = NC.k_level = 0
+					NB.styleb = NC.styleb = "scroll"
+					NB.sum_a = NC.sum_a = 0
+					NB.sum_b = NC.sum_b = 0
+					NB.sum_c = NC.sum_c = 0
+					NB.monk = NC.monk = FALSE //if the book was authored by a monk
+					NB.religion = NC.religion = "none"
+					qdel(B)
 	if (istype(W, /obj/item/weapon/pen))
 		if (unique)
 			user << "Looks like you can't modify it."

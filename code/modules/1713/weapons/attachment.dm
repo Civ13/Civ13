@@ -62,12 +62,12 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/gun/dropped(mob/user)
 	..()
-	if (attachments.len)
+	if (attachments && attachments.len)
 		for (var/obj/item/weapon/attachment/A in attachments)
 			A.dropped(user)
 
 /obj/item/weapon/gun/pickup(mob/user)
-	if (attachments.len)
+	if (attachments && attachments.len)
 		for (var/obj/item/weapon/attachment/A in attachments)
 			A.pickup(user)
 
@@ -229,6 +229,11 @@ Current Defines (_defines/attachment.dm)
 	attachment_type = ATTACH_IRONSIGHTS
 	zoom_amt = ZOOM_CONSTANT
 
+/obj/item/weapon/attachment/scope/iron_sights/mg
+	name = "iron sights"
+	attachment_type = ATTACH_IRONSIGHTS
+	zoom_amt = ZOOM_CONSTANT + 5
+
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope
 	name = "sniper scope"
 	icon_state = "kar_scope"
@@ -300,7 +305,6 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/iron_sights/removed(mob/user, obj/item/weapon/gun/G)
 	return
-
 
 /////////////////ADVANCED OPTICS//////////////////////////////
 

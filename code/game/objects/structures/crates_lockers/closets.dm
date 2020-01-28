@@ -233,13 +233,15 @@
 				if (KK.code == custom_code)
 					locked = !locked
 					if (locked == 1)
-						visible_message("<span class = 'notice'>[user] locks the door.</span>")
+						visible_message("<span class = 'notice'>[user] locks the [src].</span>")
 						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 						return
 					else if (locked == 0)
-						visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+						visible_message("<span class = 'notice'>[user] unlocks the [src].</span>")
 						playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 						return
+			user << "No key in this keychain matches the lock!"
+			return
 		if (istype(W, /obj/item/weapon/key) && W.code != custom_code)
 			user << "This key does not match this lock!"
 			return

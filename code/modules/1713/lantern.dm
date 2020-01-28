@@ -75,14 +75,17 @@
 			user << "You refuel the lantern with olive oil."
 			return
 /obj/item/flashlight/lantern/attack_hand(mob/user as mob)
-	if (on)
-		on = FALSE
-	else if (!on && fuel > 0)
-		on = TRUE
-	else
-		on = FALSE
-	if (!anchored)
-		..()
+	if (loc != user && anchored)
+		if (on)
+			on = FALSE
+			return
+		else if (!on && fuel > 0)
+			on = TRUE
+			return
+		else
+			on = FALSE
+			return
+	..()
 
 /obj/item/flashlight/lantern/on
 	icon_state = "lantern-on"
@@ -152,6 +155,38 @@
 	unlimited = TRUE
 	anchored = TRUE
 
+
+/obj/item/flashlight/tiki_torch
+	name = "tiki torch"
+	icon_state = "tiki torch"
+	desc = "A tiki style torch."
+	brightness_on = 8			// luminosity when on
+	light_color = rgb(254, 200, 200) // red tint
+	on_state = "tikitorch-on"
+	off_state = "tikitorch"
+	item_state = "torch"
+	value = 10
+	fuel = 600 // 10 mins
+	anchored = FALSE
+	flammable = TRUE
+
+/obj/item/flashlight/tiki_torch/update_icon()
+	..()
+	if (on)
+		item_state = "tikitorch-on"
+	else
+		item_state = "tikitorch"
+
+/obj/item/flashlight/tiki_torch/attack_hand(var/mob/living/carbon/human/user)
+	attack_self(user)
+
+/obj/item/flashlight/tiki_torch/verb_pickup()
+	set src in oview(1)
+	set category = null
+	set name = "Pick up"
+
+	return
+
 /obj/item/flashlight/proc/do_torch()
 	spawn(10)
 		if (fuel == 50 && on)
@@ -163,7 +198,7 @@
 			do_torch()
 		else if (fuel <= 0 && on)
 			visible_message("\The [src] goes off.")
-			if (istype(src, /obj/item/flashlight/torch))
+			if (istype(src, /obj/item/flashlight/torch) || istype(src, /obj/item/flashlight/tiki_torch))
 				qdel(src)
 				return
 			else
