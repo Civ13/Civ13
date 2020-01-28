@@ -112,6 +112,20 @@
 
 	force = initial(force)
 
+/obj/item/weapon/macuahuitl
+	name = "macuahuitl"
+	desc = "A Mesoamerican wooden club with obsidian blades."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "macuahuitl"
+	item_state = "macuahuitl"
+	attack_verb = list("smacked", "hit", "bludgeoned")
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_ROBUST
+	sharp = 1
+	edge = 1
+	sharpness = 15
+	w_class = 3.0
+	flammable = FALSE
 
 ////////////////GARROTE/////////////////////
 /obj/item/garrote

@@ -989,6 +989,12 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
+	else if(prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3)
+		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
+		mineral.amount = rand(8,12)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		H << "<span class='danger'>You found some <font color=#060606><b>obsidian</font> rocks</b>!</span>"
 	else if(istype(T, /turf/floor/dirt/underground/icy) || (area_above && area_above.climate == "tundra"))
 		//TODO ADD ICE AND FOSSILS
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
@@ -1157,7 +1163,7 @@
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			H << "<span class='warning'>ItÂ´s probably not a good idea to drink saltwater.</span>"
 			return
 		H << "You start drinking some water from ground..."
 		if (do_after(H,50,src))
