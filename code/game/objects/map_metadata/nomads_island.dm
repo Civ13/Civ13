@@ -1,7 +1,7 @@
 
-/obj/map_metadata/nomads_divide
-	ID = MAP_NOMADS_DIVIDE
-	title = "Nomads (Jungle-Desert) (250x250x2)"
+/obj/map_metadata/nomads_island
+	ID = MAP_NOMADS_ISLAND
+	title = "Nomads (Island) (200x200x2)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
@@ -32,26 +32,49 @@
 	var/list/arealist_r = list()
 	var/list/arealist_g = list()
 	var/real_season = "wet"
-/obj/map_metadata/nomads_divide/New()
-	..()
 
-	spawn(1200)
+	var/eruptions_enabled = TRUE
+/obj/map_metadata/nomads_island/New()
+	..()
+	spawn(2000)
+		eruption_check()
+	spawn(1800)
 		if (season == "SPRING") //fixes game setting the season as spring
 			season = "Wet Season"
-	spawn(20000)
+	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads_divide/faction2_can_cross_blocks()
+/obj/map_metadata/nomads_island/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads_divide/faction1_can_cross_blocks()
+/obj/map_metadata/nomads_island/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads_divide/cross_message(faction)
+/obj/map_metadata/nomads_island/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_divide/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/nomads_island/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE
 	else
 		. = FALSE
+
+/obj/map_metadata/nomads_island/proc/eruption_check()
+	spawn(rand(72000,126000))
+		if (eruptions_enabled)
+			do_eruption()
+		eruption_check()
+/obj/map_metadata/nomads_island/proc/do_eruption()
+	if (eruptions_enabled)
+		if (clients.len>5)
+			world << "<big><b>The mountain rumbles, while clouds of smoke emerge from the top... An eruption might be coming...</big></b>"
+			spawn(rand(4800,6000))
+				if (clients.len>5)
+					volcano_eruption()
+					return TRUE
+				else
+					return FALSE
+		else
+			return FALSE
+	else
+		return FALSE

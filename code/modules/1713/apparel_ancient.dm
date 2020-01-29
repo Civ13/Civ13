@@ -116,6 +116,23 @@
 	item_state = "mayan_loincloth"
 	worn_state = "mayan_loincloth"
 
+/obj/item/clothing/under/aztec_loincloth
+	name = "aztec loincloth"
+	desc = "A loincloth fit for a ferocious Aztec warrior."
+	icon_state = "aztec_loincloth"
+	item_state = "aztec_loincloth"
+	worn_state = "aztec_loincloth"
+
+/obj/item/clothing/shoes/aztec_sandals
+	name = "aztec sandals"
+	desc = "Basic leather sandals, hailing from the jungles."
+	icon_state = "aztec_sandals"
+	item_state = "aztec_sandals"
+	worn_state = "aztec_sandals"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 10, arrow = 5, gun = FALSE, energy = FALSE, bomb = 1, bio = FALSE, rad = FALSE)
+	siemens_coefficient = 0.6
+
 /obj/item/clothing/under/pharaoh
 	name = "fancy shendyt"
 	desc = "A fancy, decorated shendyt."
@@ -155,6 +172,18 @@
 	value = 40
 	slowdown = 0.2
 	health = 28
+
+/obj/item/clothing/suit/armor/ancient/aztec_harness
+	name = "aztec harness"
+	desc = "A few metal plates on leather strips, covering the torso."
+	icon_state = "aztec_harness"
+	item_state = "aztec_harness"
+	worn_state = "aztec_harness"
+	body_parts_covered = UPPER_TORSO
+	armor = list(melee = 35, arrow = 15, gun = 2, energy = 2, bomb = 2, bio = FALSE, rad = FALSE)
+	value = 40
+	slowdown = 0.2
+	health = 18
 
 /obj/item/clothing/suit/cape
 	name = "red cape"
@@ -291,6 +320,7 @@
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
 	var/colortype = "black"
+
 /obj/item/clothing/head/wolfpelt
 	name = "wolfpelt headcover"
 	desc = "a wolf pelt turned into a headcover."
@@ -300,6 +330,16 @@
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
 	var/colortype = "grey"
+
+/obj/item/clothing/head/pantherpelt
+	name = "pantherpelt headcover"
+	desc = "A panther pelt turned into a headcover."
+	icon_state = "pantherpelt"
+	item_state = "pantherpelt"
+	worn_state = "pantherpelt"
+	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
+	var/colortype = "black"
 
 /obj/item/clothing/head/toxotai
 	name = "toxotai hat"

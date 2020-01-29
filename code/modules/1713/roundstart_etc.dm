@@ -33,28 +33,40 @@ var/GRACE_PERIOD_LENGTH = 7
 // this is roundstart because we need to wait for objs to be created
 /hook/roundstart/proc/nature()
 
-	if (map.meme)
-		return TRUE
+	var/list/jungleriverturfs = list()
+	var/list/seaturfs = list()
+	var/list/riverturfs = list()
+	var/list/jungleturfs = list()
 
-	var/nature_chance = 100
-
-	if (season == "WINTER")
-		nature_chance = 70
-
-	// create wild grasses in "clumps"
-	spawn (1)
-//		world << "<span class = 'notice'>Setting up wild grasses.</span>"
-
-	for (var/grass in grass_turf_list)
-		var/turf/floor/grass/G = grass
-		if (!G || G.z > 1)
-			continue
-
-		if (prob(nature_chance))
-			G.plant()
-
-	return TRUE
-
+	if (map && map.nomads && !map.override_mapgen)
+		for (var/turf/floor/F in world)
+			F.plant()
+			if (istype(F, /turf/floor/dirt/jungledirt))
+				jungleturfs += F
+			else if (istype(F, /turf/floor/beach/water/shallowsaltwater) || istype(F, /turf/floor/beach/water/deep/saltwater))
+				seaturfs += F
+			else if (istype(F, /turf/floor/beach/water/jungle))
+				jungleriverturfs += F
+				riverturfs += F
+			else if (istype(F, /turf/floor/beach/water) && !istype(F, /turf/floor/beach/water/ice) && !istype(F, /turf/floor/beach/water/swamp) && !istype(F, /turf/floor/beach/water/flooded))
+				riverturfs += F
+	//gets the total number of tiles in the world, to dinamically distribute fauna and flora
+	spawn(200)
+		for (var/i = 1, i <= riverturfs.len/800, i++)
+			var/turf/areaspawn = safepick(riverturfs)
+			new/obj/structure/fish/salmon(areaspawn)
+	spawn(300)
+		for (var/i = 1, i <= seaturfs.len/1400, i++)
+			var/turf/areaspawn = safepick(seaturfs)
+			new/obj/structure/fish(areaspawn)
+	spawn(400)
+		for (var/i = 1, i <= jungleriverturfs.len/15, i++)
+			var/turf/areaspawn = safepick(jungleriverturfs)
+			new/obj/structure/piranha(areaspawn)
+	spawn(500)
+		for (var/i = 1, i <= jungleturfs.len/1200, i++)
+			var/turf/areaspawn = safepick(jungleturfs)
+			new/obj/structure/anthill(areaspawn)
 // ditto
 /hook/roundstart/proc/do_seasonal_stuff()
 	spawn (1)

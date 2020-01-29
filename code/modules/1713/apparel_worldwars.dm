@@ -552,6 +552,13 @@ obj/item/clothing/head/ww2/chicap2
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/russian
+	name = "Russian"
+	desc = "4 green poly pouches."
+	icon_state = "russian_vest"
+	item_state = "russian_vest"
+	slots = 6
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german
 	name = "german webbing"
 	icon_state = "german_vest"
@@ -1313,6 +1320,17 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	icon_state = "blackbomberjacket"
 	item_state = "blackbomberjacket"
 	worn_state = "blackbomberjacket"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ww2/biker
+	name = "biker jacket"
+	desc = "A black jacket meant for high-alititude temperatures."
+	icon_state = "biker"
+	item_state = "biker"
+	worn_state = "biker"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)

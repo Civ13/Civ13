@@ -739,6 +739,11 @@
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
+	for (var/obj/structure/oven/fireplace/FP in range(1, src))
+		if (FP.on == TRUE)
+			if (loc_temp < 22)
+				loc_temp = 22
+				break
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
 			if (loc_temp < 22)

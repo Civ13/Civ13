@@ -99,6 +99,13 @@
 		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 		return TRUE
 	else
+		if (!reagents || !reagents.total_volume)
+			user << "<span class='notice'>[src] is empty.</span>"
+			return TRUE
+
+		if (target.reagents && !target.reagents.get_free_space())
+			user << "<span class='notice'>[target] is full.</span>"
+			return TRUE
 		var/trans = src.reagents.trans_to_obj(target, target.amount_per_transfer_from_this)
 		user << "<span class='notice'>You fill \the [target] with [trans] units of the contents of [src].</span>"
 		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)

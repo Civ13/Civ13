@@ -170,6 +170,13 @@
 	value = 40
 	w_class = 1.0
 
+/obj/item/stack/material/obsidian
+	name = "obsidian"
+	icon_state = "sheet-obsidian"
+	default_type = "obsidian"
+	value = 7
+	w_class = 1.0
+
 /obj/item/stack/material/rope
 	name = "Rope"
 	icon_state = "rope"
@@ -364,6 +371,14 @@
 	desc = "A pelt from a skinned cat."
 	icon_state = "sheet-catpelt"
 	default_type = "catpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+/obj/item/stack/material/pelt/pantherpelt
+	name = "panther pelt"
+	desc = "A pelt from a skinned panther."
+	icon_state = "sheet-pantherpelt"
+	default_type = "pantherpelt"
 	w_class = 2.0
 	flammable = TRUE
 	value = 3

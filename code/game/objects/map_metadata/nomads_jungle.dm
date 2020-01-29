@@ -34,15 +34,6 @@
 	var/real_season = "wet"
 /obj/map_metadata/nomads_jungle/New()
 	..()
-	spawn(1200)
-		for (var/i = 1, i <= 180, i++)
-			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/river))
-			new/obj/structure/piranha(areaspawn)
-	spawn(600)
-		for (var/i = 1, i <= 23, i++)
-			var/turf/areaspawn2 = safepick(get_area_turfs(/area/caribbean/nomads/forest))
-			new/obj/structure/anthill(areaspawn2)
-
 	spawn(1800)
 		if (season == "SPRING") //fixes game setting the season as spring
 			season = "Wet Season"

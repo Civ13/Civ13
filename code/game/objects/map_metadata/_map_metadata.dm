@@ -3,7 +3,7 @@ var/global/obj/map_metadata/map = null
 var/civmax_research = list(230,230,230)
 
 /obj/map_metadata
-	name = ""
+	name = "control"
 	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
 	anchored = TRUE
@@ -181,6 +181,8 @@ var/civmax_research = list(230,230,230)
 	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"), list("zelenyy","neutral","water"), list("marron","neutral","water"), list("corcairghorm","neutral","water"))
 
 	var/persistence = FALSE
+
+	var/override_mapgen = FALSE
 
 /obj/map_metadata/New()
 	..()
@@ -871,6 +873,9 @@ var/civmax_research = list(230,230,230)
 		for (var/turf/floor/dirt/jungledirt/JD in get_area_turfs(/area/caribbean/nomads/forest/Jungle))
 			if (prob(50))
 				JD.ChangeTurf(/turf/floor/grass/jungle)
+		for (var/turf/floor/dirt/dry_lava/JD in get_area_turfs(/area/caribbean/nomads/forest/Jungle))
+			if (prob(50))
+				JD.ChangeTurf(/turf/floor/grass/jungle)
 		for (var/turf/floor/dirt/jungledirt/JD2 in get_area_turfs(/area/caribbean/nomads/forest/savanna))
 			if (prob(50))
 				JD2.ChangeTurf(/turf/floor/grass/jungle)
@@ -982,7 +987,10 @@ var/civmax_research = list(230,230,230)
 			for (var/obj/structure/wild/tree/live_tree/TREES in world)
 				TREES.change_season()
 		for (var/turf/floor/dirt/burned/BD)
-			BD.ChangeTurf(/turf/floor/dirt)
+			if ((BD in get_area_turfs(/area/caribbean/nomads/forest/Jungle)) || (BD in get_area_turfs(/area/caribbean/nomads/forest/savanna)))
+				BD.ChangeTurf(/turf/floor/dirt/jungledirt)
+			else
+				BD.ChangeTurf(/turf/floor/dirt)
 		for (var/turf/floor/grass/G)
 			G.update_icon()
 		spawn(100)

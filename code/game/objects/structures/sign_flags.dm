@@ -28,6 +28,12 @@
 	name = "\improper blue banner"
 	desc = "A blue linen banner."
 	icon_state = "blue_banner"
+
+/obj/structure/sign/flag/reich
+	name = "Reich Flag"
+	desc = "A Reich flag for glory."
+	icon_state = "reich"
+
 /obj/structure/sign/flag/blue2
 	name = "\improper blue banner"
 	desc = "A blue linen banner, with golden trims."
@@ -173,7 +179,7 @@
 /obj/structure/sign/flag/denmark
 	name = "Danish flag"
 	desc = "A flag with the red and white dannebrog."
-	icon_state = "flag_france"
+	icon_state = "flag_denmark"
 
 /obj/structure/sign/flag/german
 	name = "German Empire flag"

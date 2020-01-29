@@ -28,32 +28,198 @@
 	grass_turf_list += src
 	icon_state = "grass[rand(0,3)]"
 
-/turf/floor/grass/proc/plant()
-	// 3x3 clumps of grass - original code
-	if (prob(1))
-		if (!locate(/obj/structure/wild/bush) in range(3, src))
-			if (!locate(/obj/item) in range(3, src))
-				for (var/turf/floor/grass/G in range(3, src))
-					if (!locate(/obj/structure) in G)
-						var/dist = get_dist(src, G)
-						if (prob(100-(dist*5)))
-							G.wild = new/obj/structure/wild/bush(G)
-	// huge grassy areas - adapted from Drymouth Gulch
-	else
-		if (locate(/obj/structure) in src)
-			return
-		if (locate(/obj/item) in src)
-			return
-		if (prob(0.1)) // default is 0.1
-			wild = new/obj/structure/wild/bush(src)
-		else
-			var/chance = FALSE
-			for (var/turf/floor/grass/T in range(1,src))
-				if (T.wild)
-					chance += 40 // default is 40
-			if (prob(chance))
-				wild = new/obj/structure/wild/bush(src)
+/turf/floor/proc/plant()
+	return
 
+/turf/floor/beach/sand/desert/plant()
+	if (locate(/obj/structure) in src)
+		return
+	if (locate(/obj/covers) in src)
+		return
+	if (locate(/obj/item) in src)
+		return
+
+	if (prob(3))
+		new/obj/structure/wild/rock(src)
+	else if (prob(1.5))
+		new/obj/structure/wild/rock/basalt(src)
+	else if (prob(1.5))
+		new/obj/structure/wild/palm(src)
+	else if (prob(1))
+		new/obj/structure/wild/tree/dead_tree(src)
+	else if (prob(1))
+		new/obj/structure/wild/tree/cactus(src)
+	else if (prob(1))
+		new/obj/structure/wild/tallgrass2(src)
+
+/turf/floor/dirt/plant()
+	if (istype(src, /turf/floor/dirt/burned) || istype(src, /turf/floor/dirt/dry_lava) || istype(src, /turf/floor/dirt/flooded) || istype(src, /turf/floor/dirt/ploughed) || istype(src, /turf/floor/dirt/underground))
+		return
+	if (locate(/obj/structure) in src)
+		return
+	if (locate(/obj/covers) in src)
+		return
+	if (locate(/obj/item) in src)
+		return
+	var/area/A = get_area(src)
+	if (A.location == AREA_INSIDE)
+		return
+	if (prob(3))
+		new/obj/structure/wild/rock(src)
+	else if (prob(1.5))
+		new/obj/structure/wild/rock/basalt(src)
+	else
+		switch(A.climate)
+			if ("tundra")
+				if(prob(1.5))
+					new/obj/structure/wild/smallbush(src)
+			if ("taiga")
+				if(prob(2))
+					new/obj/structure/wild/smallbush(src)
+			if ("temperate")
+				if(prob(3.5))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(4))
+					new/obj/structure/wild/tallgrass(src)
+				else if(prob(1.5))
+					new/obj/structure/wild/junglebush(src)
+			if ("semiarid")
+				if (prob(1.5))
+					new/obj/structure/wild/jungle/medpine(src)
+				else if(prob(1))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(3))
+					new/obj/structure/wild/tallgrass2(src)
+				else if(prob(1))
+					new/obj/structure/wild/palm(src)
+			if ("jungle")
+				if(prob(2))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(7))
+					new/obj/structure/wild/tallgrass(src)
+				else if(prob(1.5))
+					new/obj/structure/wild/junglebush(src)
+			if ("savanna")
+				if(prob(2))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(7))
+					new/obj/structure/wild/tallgrass(src)
+				else if(prob(1.5))
+					new/obj/structure/wild/junglebush(src)
+			if ("desert")
+				if (prob(3))
+					new/obj/structure/wild/rock(src)
+				else if (prob(1.5))
+					new/obj/structure/wild/rock/basalt(src)
+				else if (prob(1))
+					new/obj/structure/wild/palm(src)
+				else if (prob(0.5))
+					new/obj/structure/wild/tree/dead_tree(src)
+				else if (prob(1.5))
+					new/obj/structure/wild/tallgrass2(src)
+/turf/floor/winter/grass/plant()
+	if (locate(/obj/structure) in src)
+		return
+	if (locate(/obj/covers) in src)
+		return
+	if (locate(/obj/item) in src)
+		return
+	var/area/A = get_area(src)
+	if (prob(1))
+		new/obj/structure/wild/rock(src)
+	else if (prob(0.5))
+		new/obj/structure/wild/rock/basalt(src)
+	else
+		switch(A.climate)
+			if ("tundra")
+				if (prob(3))
+					new/obj/structure/wild/tree/live_tree/pine(src)
+				else if(prob(1.5))
+					new/obj/structure/wild/smallbush(src)
+			if ("taiga")
+				if (prob(9))
+					new/obj/structure/wild/tree/live_tree/pine(src)
+				else if(prob(2))
+					new/obj/structure/wild/smallbush(src)
+			if ("temperate")
+				if (prob(9))
+					new/obj/structure/wild/tree/live_tree(src)
+				else if(prob(2.5))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(1))
+					new/obj/structure/wild/tallgrass(src)
+				else if(prob(0.5))
+					new/obj/structure/wild/junglebush(src)
+
+/turf/floor/grass/plant()
+	if (locate(/obj/structure) in src)
+		return
+	if (locate(/obj/covers) in src)
+		return
+	if (locate(/obj/item) in src)
+		return
+	var/area/A = get_area(src)
+
+	if (prob(1))
+		new/obj/structure/wild/rock(src)
+	else if (prob(0.5))
+		new/obj/structure/wild/rock/basalt(src)
+	else
+		switch(A.climate)
+			if ("tundra")
+				if (prob(3))
+					new/obj/structure/wild/tree/live_tree/pine(src)
+				else if(prob(1.5))
+					new/obj/structure/wild/smallbush(src)
+			if ("taiga")
+				if (prob(9))
+					new/obj/structure/wild/tree/live_tree/pine(src)
+				else if(prob(2))
+					new/obj/structure/wild/smallbush(src)
+			if ("temperate")
+				if (prob(7))
+					new/obj/structure/wild/tree/live_tree(src)
+				else if(prob(5))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(3))
+					new/obj/structure/wild/tallgrass(src)
+				else if(prob(0.5))
+					new/obj/structure/wild/junglebush(src)
+				else if (prob(0.5))
+					new/obj/structure/wild/flowers(src)
+			if ("semiarid")
+				if (prob(7))
+					new/obj/structure/wild/jungle/medpine(src)
+				else if(prob(1))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(3))
+					new/obj/structure/wild/tallgrass2(src)
+				else if(prob(2))
+					new/obj/structure/wild/palm(src)
+			if ("jungle")
+				if (prob(9))
+					new/obj/structure/wild/jungle(src)
+				else if(prob(2))
+					new/obj/structure/wild/palm(src)
+				else if(prob(3))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(5))
+					new/obj/structure/wild/tallgrass(src)
+				else if(prob(0.5))
+					new/obj/structure/wild/junglebush(src)
+				else if(prob(1))
+					new/obj/structure/wild/largejungle(src)
+				else if (prob(1))
+					new/obj/structure/wild/flowers(src)
+			if ("savanna")
+				if (prob(3))
+					new/obj/structure/wild/jungle/acacia(src)
+				else if(prob(3))
+					new/obj/structure/wild/smallbush(src)
+				else if(prob(5))
+					new/obj/structure/wild/tallgrass(src)
+				else if(prob(0.5))
+					new/obj/structure/wild/junglebush(src)
 
 /turf/floor/dirt
 	name = "dirt"
@@ -86,6 +252,15 @@
 	available_dirt = 0
 	is_diggable = TRUE
 	initial_flooring = /decl/flooring/snow_dirt
+
+/turf/floor/dirt/dry_lava
+	name = "dried lava"
+	icon_state = "lava_dry"
+	uses_winter_overlay = FALSE
+	may_become_muddy = TRUE
+	available_dirt = 0
+	is_diggable = TRUE
+	initial_flooring = null
 
 /turf/floor/dirt/burned
 	name = "burned ground"

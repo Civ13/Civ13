@@ -79,13 +79,13 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/handle_post_fire()
 	..()
-
+	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else
 		jamcheck += 0.12
 
-	if (prob(jamcheck))
+	if (prob(jamcheck*reverse_health_percentage))
 		jammed_until = max(world.time + (jamcheck * 4), 45)
 		jamcheck = 0
 
@@ -535,6 +535,25 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/submachinegun/servicerifle
+	name = "Service Rifle M16"
+	desc = "An american assault rifle, chambered in 5.56x45mm."
+	icon_state = "servicerifle16"
+	item_state = "m16"
+	base_icon = "m16"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/m16
+	weight = 3.07
+	equiptimer = 15
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		)
+	effectiveness_mod = 1.12
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando
 	name = "XM177 Colt Commando"
 	desc = "A carbine version of the AR-15/M16, chambered in 5.56x45mm."
@@ -685,6 +704,28 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
 
+/obj/item/weapon/gun/projectile/submachinegun/ar12
+	name = "AR-12"
+	icon_state = "ar12"
+	item_state = "m16old"
+	base_icon = "ar12"
+	desc = "A american rifle, used by special forces, chambered in (7.62x51mm)."
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/scarh
+	weight = 3.5
+	equiptimer = 11
+	effectiveness_mod = 1.46
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
+		)
+	effectiveness_mod = 1.60
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
 /obj/item/weapon/gun/projectile/submachinegun/hk417
 	name = "HK417"
 	desc = "A german assault rifle based on the G36 and M16, chambered in 7.62x51mm."
@@ -718,6 +759,27 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
 	weight = 2.3
 	equiptimer = 8
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0.6, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0.8, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.0, recoil=1.0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
+		)
+	effectiveness_mod = 1.15
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/victor
+	name = "Kriss Vector"
+	desc = "A compact but powerful firearm, chambered in 9x19mm."
+	icon_state = "victor"
+	item_state = "victor"
+	base_icon = "victor"
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/glock17
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
+	weight = 3
+	equiptimer = 4
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0.6, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
@@ -764,5 +826,25 @@
 		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
 	effectiveness_mod = 1
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/submachinegun/vz58
+	name = "VZ-58"
+	desc = "Czechoslovakia assault rifle chambered in 7.62x39mm."
+	icon_state = "az58"
+	item_state = "vz58"
+	base_icon = "az58"
+	caliber = "a762x39"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/ak47
+	weight = 2.93
+	equiptimer = 12
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		)
+	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL

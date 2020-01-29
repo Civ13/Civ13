@@ -30,7 +30,7 @@
 	not_disassemblable = FALSE
 
 /obj/structure/repair/gun
-	name = "Firearm Maintenance Bench"
+	name = "firearm maintenance bench"
 	desc = "A bench with several tools for cleaning and repairing firearms." //Noise to do when doing the action.
 	repairamount = 25
 	damageamount = 1
@@ -44,24 +44,20 @@
 
 /obj/structure/repair/attackby(obj/item/M as obj, mob/user as mob)
 	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4))
-		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]</span>")
+		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]...</span>")
 		icon_state = activesprite
 		playsound(src,noise,40,1)
 		if (do_after(user, delay, src))
 			M.maxhealth -= damageamount
-			if(M.health + repairamount > M.maxhealth)
-				M.health = M.maxhealth
-				icon_state = idlesprite
-			else
-				M.health += repairamount
-				icon_state = idlesprite
-			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name]</span>")
+			M.health = min(M.health + repairamount, M.maxhealth)
+			icon_state = idlesprite
+			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name].</span>")
 			if(M.maxhealth <= 0 || M.health <= 0)
 				qdel(M)
 				playsound(src, "shatter", 70, TRUE)
 				visible_message("<span class='alert'>The [M.name] breaks from strain!</span>")
 		else
-			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name]</span>")
+			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
 			icon_state = idlesprite
 	else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
 		..()
@@ -96,3 +92,31 @@
 	damageamount = 1 //How much max durability to take away.
 	noise = 'sound/effects/clang.ogg'
 	delay = 140
+
+/obj/item/weapon/gun_cleaning_kit
+	name = "gun cleaning kit"
+	desc = "A kit of tools used to clean firearms."
+	icon = 'icons/obj/gun.dmi'
+	icon_state = "guncleaningkit_open"
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = 2.0
+/obj/item/weapon/gun/projectile/attackby(obj/item/M as obj, mob/user as mob)
+	if (istype(M, /obj/item/weapon/gun_cleaning_kit))
+		if (!istype(src, /obj/item/weapon/gun/projectile/bow))
+			if ((health/maxhealth)<0.5)
+				visible_message("<span class='warning'>\The [src.name]is too damaged, you need a specialized firearm repairing bench!</span>")
+			else if ((health/maxhealth)>0.8)
+				visible_message("<span class='warning'>You can't repair \the [src.name] more than this without a specialized firearm repairing bench!</span>")
+
+			visible_message("<span class='notice'>[user] starts to clean the [src.name]...</span>")
+			if (do_after(user, 100, src))
+				health = M.maxhealth*0.8
+				visible_message("<span class='notice'>[user] finishes cleaning the [src.name].</span>")
+				return
+			else
+				visible_message("<span class='notice'>[user] stops cleaning the [src.name].</span>")
+				return
+	else
+		..()

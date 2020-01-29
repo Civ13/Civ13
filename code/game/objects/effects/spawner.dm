@@ -1,7 +1,7 @@
 /obj/effect/spawner
 	name = "object spawner"
 	icon = 'icons/mob/screen/effects.dmi'
-
+	var/max_range = 10
 /obj/effect/spawner/ammospawner
 	name = "ammo spawner"
 	icon_state = "x3"
@@ -66,7 +66,6 @@
 	var/activated = 1
 	var/current_number = 0
 	var/max_number = 10
-	var/max_range = 10
 	var/create_path = /mob/living/simple_animal/hostile/skeleton
 	var/timer = 400
 	var/scalable = 0 // when 1, it will only get active above x players
@@ -101,11 +100,10 @@
 		if (istype(src, /obj/effect/spawner/mobspawner/velociraptor))
 			activated = 1
 
-/obj/effect/spawner/mobspawner/proc/getEmptyTurf()
-	var/nearbyObjects = range(max_range,src)
+/obj/effect/spawner/proc/getEmptyTurf()
 	var/list/turf/emptyTurfs = new
-	var/invalid = FALSE
-	for(var/turf/T in nearbyObjects)
+	for(var/turf/T in range(max_range,src))
+		var/invalid = FALSE
 		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
 			invalid = TRUE
 		for(var/obj/structure/OB in T)
@@ -485,7 +483,7 @@
 	icon_state = "x1"
 	var/activated = 1
 	var/max_number = 35
-	var/max_range = 13
+	max_range = 7
 	var/create_path = /obj/structure/wild/tree/live_tree
 	var/timer = 6000
 	var/spawning = FALSE
@@ -496,22 +494,6 @@
 	invisibility = 101
 	icon_state = "invisible"
 	spawnerproc()
-
-/obj/effect/spawner/objspawner/proc/getEmptyTurf()
-	var/nearbyObjects = range(max_range,src)
-	var/list/turf/emptyTurfs = new
-	var/invalid = FALSE
-	for(var/turf/T in nearbyObjects)
-		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
-			invalid = TRUE
-		for(var/obj/structure/OB in T)
-			invalid = TRUE
-		for(var/obj/covers/OB in T)
-			invalid = TRUE
-		if (!invalid)
-			emptyTurfs += T
-	if (emptyTurfs.len)
-		return pick(emptyTurfs)
 
 /obj/effect/spawner/objspawner/proc/getCurrent()
 	var/count = 0
@@ -542,41 +524,25 @@
 
 /obj/effect/spawner/objspawner/tree
 	name = "tree spawner"
-	icon_state = "x1"
-	max_number = 35
-	max_range = 13
 	create_path = /obj/structure/wild/tree/live_tree
-	timer = 6000
 
 /obj/effect/spawner/objspawner/pine
 	name = "pinetree spawner"
-	icon_state = "x1"
-	max_number = 35
-	max_range = 13
 	create_path = /obj/structure/wild/tree/live_tree/pine
-	timer = 6000
 
 /obj/effect/spawner/objspawner/palm
 	name = "palm spawner"
-	icon_state = "x1"
 	max_number = 13
-	max_range = 13
 	create_path = /obj/structure/wild/palm
-	timer = 6000
 
 /obj/effect/spawner/objspawner/jungle
 	name = "jungle tree spawner"
-	icon_state = "x1"
 	max_number = 26
-	max_range = 13
 	create_path = /obj/structure/wild/jungle
-	timer = 6000
 
 /obj/effect/spawner/objspawner/acacia
 	name = "acacia tree spawner"
-	icon_state = "x1"
 	max_number = 10
-	max_range = 13
 	create_path = /obj/structure/wild/jungle/acacia
 	timer = 7500
 

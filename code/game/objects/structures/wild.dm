@@ -457,6 +457,7 @@
 	density = FALSE
 	health = 40
 	maxhealth = 40
+
 /obj/structure/wild/bush/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
@@ -464,25 +465,8 @@
 			new/obj/structure/wild/burnedbush(src.loc)
 		qdel(src)
 
-/obj/structure/wild/bush/attackby(obj/item/W as obj, mob/user as mob)
-	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
-		user.do_attack_animation(src)
-		if (seedtimer == 1)
-			user << "You harvest some seeds."
-			var/obj/item/stack/farming/seeds/NS = pickseed()
-			new NS(get_turf(user))
-			seedtimer = 0
-			seedtimer_proc()
-		else
-			user << "There are no seeds to collect here."
-	else
-		..()
-/obj/structure/wild/bush/tame
-	name = "cultivated bush"
-
-/obj/structure/wild/bush/tame/big
-	name = "large cultivated bush"
+/obj/structure/wild/bush/big
+	name = "large bush"
 	icon_state = "big_bush"
 	deadicon = 'icons/obj/wild.dmi'
 	deadicon_state = "burnedbush1"
@@ -590,41 +574,20 @@
 	health = 20
 	maxhealth = 20
 
-/obj/structure/wild/flower2
+/obj/structure/wild/flowers
 	name = "flowers"
-	icon = 'icons/obj/wild.dmi'
+	icon = 'icons/obj/flora/ausflora.dmi'
 	icon_state = "flower1"
-	deadicon = 'icons/obj/wild.dmi'
-	deadicon_state = "flower2"
-	opacity = FALSE
-	density = FALSE
-	layer = 5.1
-	health = 5
-	maxhealth = 5
-
-/obj/structure/wild/flower1
-	name = "flowers"
-	icon = 'icons/obj/wild.dmi'
-	icon_state = "flower1"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/ausflora.dmi'
 	deadicon_state = "flower1"
 	opacity = FALSE
 	density = FALSE
 	layer = 5.1
 	health = 5
 	maxhealth = 5
-
-/obj/structure/wild/flower3
-	name = "flowers"
-	icon = 'icons/obj/wild.dmi'
-	icon_state = "flower3"
-	deadicon = 'icons/obj/wild.dmi'
-	deadicon_state = "flower3"
-	opacity = FALSE
-	density = FALSE
-	layer = 5.1
-	health = 5
-	maxhealth = 5
+	New()
+		..()
+		icon_state = "flower[rand(1,14)]"
 
 /obj/structure/wild/tallgrass/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
@@ -634,9 +597,9 @@
 /obj/structure/wild/tallgrass2
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
-	icon_state = "tall_grass_5"
+	icon_state = "tall_grass_6"
 	deadicon = 'icons/obj/wild.dmi'
-	deadicon_state = "tall_grass_5"
+	deadicon_state = "tall_grass_6"
 	opacity = FALSE
 	density = FALSE
 
@@ -647,33 +610,15 @@
 
 /obj/structure/wild/tallgrass/New()
 	..()
-	icon_state = "tall_grass_[rand(1,4)]"
+	icon_state = "tall_grass_[rand(1,5)]"
 	deadicon = 'icons/obj/wild.dmi'
 	deadicon_state = "dead_tall_grass_1"
 
 /obj/structure/wild/tallgrass2/New()
 	..()
-	icon_state = "tall_grass_[rand(5,8)]"
+	icon_state = "tall_grass_[rand(6,9)]"
 	deadicon = 'icons/obj/wild.dmi'
-	deadicon_state = "tall_grass_[rand(5,8)]"
-/obj/structure/wild/bush/New()
-	..()
-
-	if (istype(src, /obj/structure/wild/bush/tame))
-		return
-
-	if (prob(25))
-		icon_state = "grassybush_[rand(1,4)]"
-		deadicon_state = "burnedbush[rand(1,5)]"
-	else if (prob(25))
-		icon_state = "leafybush_[rand(1,3)]"
-		deadicon_state = "burnedbush[rand(1,5)]"
-	else if (prob(25))
-		icon_state = "palebush_[rand(1,4)]"
-		deadicon_state = "burnedbush[rand(1,5)]"
-	else
-		icon_state = "stalkybush_[rand(1,3)]"
-		deadicon_state = "burnedbush[rand(1,5)]"
+	deadicon_state = "tall_grass_[rand(6,9)]"
 
 
 /obj/structure/wild/burnedbush/New()
@@ -878,13 +823,7 @@
 	icon_state = "chinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
-	if(user.a_intent == I_HARM && map.chad_mode)
-		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		visible_message("[user] punches \the [src]!")
-		health -= 5
-		try_destroy()
-		return
-	else if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
+	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
 		var/mob/living/carbon/human/H = user
 		if (H.gorillaman)
 			H << "You start foraging for some edible leaves..."

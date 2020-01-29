@@ -2,7 +2,7 @@
 	force = 10
 	throwforce = 20
 	fire_sound = 'sound/weapons/smg.ogg'
-	var/base_icon = "smg"
+	var/base_icon = "tactical"
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER|SLOT_BELT
@@ -79,13 +79,13 @@
 
 /obj/item/weapon/gun/projectile/special/handle_post_fire()
 	..()
-
+	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else
 		jamcheck += 0.12
 
-	if (prob(jamcheck))
+	if (prob(jamcheck*reverse_health_percentage))
 		jammed_until = max(world.time + (jamcheck * 4), 45)
 		jamcheck = 0
 
@@ -114,7 +114,7 @@
 	name = "MK-18"
 	desc = "An american automatic rifle."
 	icon_state = "mk18"
-	item_state = "mk18"
+	item_state = "tactical"
 	base_icon = "mk18"
 	weight = 3.97
 	caliber = "a556x45"
@@ -127,6 +127,25 @@
 		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
 		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
+	sel_mode = 1
+	effectiveness_mod = 1.40
 
+/obj/item/weapon/gun/projectile/special/ak74mtactical
+	name = "Tactical AK-74M"
+	desc = "A russian tactical rifle used by the Spetsnaz."
+	icon_state = "ak74mspecial"
+	item_state = "ak47"
+	base_icon = "ak74mspecial"
+	weight = 3.97
+	caliber = "a545x39"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/ak74
+	full_auto = TRUE
+	equiptimer = 12
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		)
 	sel_mode = 1
 	effectiveness_mod = 1.40
