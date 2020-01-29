@@ -248,7 +248,7 @@
 	icon_state = "ak47"
 	item_state = "ak47"
 	base_icon = "ak47"
-	caliber = "a762x51"
+	caliber = "a762x39"
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 3.47

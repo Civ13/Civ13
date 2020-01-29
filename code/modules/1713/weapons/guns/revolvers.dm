@@ -332,6 +332,22 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
+/obj/item/weapon/gun/projectile/revolver/taurus
+	name = "Taurus Judge Revolver"
+	desc = "The Taurus Judge is a five shot revolver designed and produced by Taurus International, chambered for (.45 Colt)."
+	icon_state = "biggi"
+	base_icon = "biggi"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
 /obj/item/weapon/gun/projectile/revolver/black
 	name = "Salamon 47"
 	desc = "A gold plated revolver chambered in (.44 magnum)."

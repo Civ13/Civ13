@@ -135,6 +135,27 @@
 	name = "diamonds"
 	icon_state = "ore_diamond"
 	value = 10
+/obj/item/stack/ore/obsidian
+	name = "obsidian"
+	desc = "A sort of volcanic glass."
+	icon_state = "ore_obsidian"
+	value = 3
+	attackby(var/obj/W as obj, mob/user as mob)
+		if (istype(W, /obj/item/weapon/chisel))
+			var/mob/living/carbon/human/H = user
+			if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+				user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
+			else
+				var/obj/item/stack/ore/obsidian/O = src
+				visible_message("<span class='danger'>[user] starts to cut the obsidian!</span>", "<span class='danger'>You start cutting the obsidian.</span>")
+				if (do_after(H, min(O.amount*10, 200), H.loc))
+					visible_message("<span class='danger'>[user] finishes cutting the obsidian!</span>", "<span class='danger'>You finish cutting the obsidian.</span>")
+					var/obj/item/stack/material/obsidian/cut_obsidian = new/obj/item/stack/material/obsidian(O.loc)
+					cut_obsidian.amount = O.amount
+					qdel(O)
+		else
+			..()
+			return
 /obj/item/stack/ore/uranium
 	name = "uranium ore"
 	icon_state = "ore_uranium"

@@ -29,11 +29,13 @@ RECIPE: /material/leather/,seed collector,/obj/item/weapon/storage/seed_collecto
 RECIPE: /material/leather/,leather bandages,/obj/item/stack/medical/bruise_pack/bint/leather,1,75,0,1,medical,0,0,0,8,null
 RECIPE: /material/leather/,foldable canopy,/obj/item/weapon/tent,5,75,0,1,furniture,0,0,0,8,null
 RECIPE: /material/leather/,leather loincloth,/obj/item/clothing/under/loinleather,2,50,0,1,clothing,0,0,0,0,null
+RECIPE: /material/leather/,aztec loincloth,/obj/item/clothing/under/aztec_loincloth,2,50,0,1,clothing,0,0,0,3,null
 RECIPE: /material/leather/,small customizable loincloth,/obj/item/clothing/under/custom/spartan,3,50,0,1,clothing,0,0,0,1,null
 RECIPE: /material/leather/,coin pouch,/obj/item/clothing/accessory/storage/coinpouch,2,60,0,1,accessories,18,0,0,8,null
 RECIPE: /material/leather/,leather backpack,/obj/item/weapon/storage/backpack,6,100,0,1,storage,18,0,0,8,null
 RECIPE: /material/leather/,wallet,/obj/item/clothing/accessory/storage/coinpouch/wallet,2,60,0,1,accessories,87,0,0,8,null
 RECIPE: /material/leather/,roman-style sandals,/obj/item/clothing/shoes/roman,2,60,0,1,foot wear,0,19,0,1,null
+RECIPE: /material/leather/,aztec-style sandals,/obj/item/clothing/shoes/aztec_sandals,2,60,0,1,foot wear,0,19,0,3,null
 RECIPE: /material/leather/,long celtic braccae,/obj/item/clothing/under/celtic_long_braccae,3,55,0,1,clothing,0,19,0,1,null
 RECIPE: /material/leather/,short celtic braccae,/obj/item/clothing/under/celtic_short_braccae,2,55,0,1,clothing,0,19,0,1,null
 RECIPE: /material/leather/,medieval shoes,/obj/item/clothing/shoes/medieval,3,80,0,1,foot wear,0,39,0,2,null
@@ -414,6 +416,8 @@ RECIPE: /material/catpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur,6,1
 RECIPE: /material/catpelt/,fur boots,/obj/item/clothing/shoes/fur,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/catpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather,3,80,0,1,none,0,0,0,8,null
 
+RECIPE: /material/pantherpelt/,panther pelt headcover,/obj/item/clothing/head/pantherpelt,3,150,0,1,none,0,0,0,8,null
+
 RECIPE: /material/monkeypelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/monkeypelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/monkeypelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,0,8,null
@@ -662,6 +666,7 @@ RECIPE: /material/copper/,copper hatchet,/obj/item/weapon/material/hatchet,2,35,
 RECIPE: /material/copper/,copper-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,8,8,0,3,copper
 RECIPE: /material/copper/,copper coins,/obj/item/stack/money/coppercoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,copper small sword,/obj/item/weapon/material/sword/smallsword/copper,10,70,0,1,weapons,18,34,0,8,copper
+RECIPE: /material/copper/,aztec harness,/obj/item/clothing/suit/armor/ancient/aztec_harness,4,80,0,1,armor,0,19,0,3,null
 RECIPE: /material/copper/,copper lamp,/obj/item/flashlight/lantern/copper,3,55,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,small copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,3,90,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,large copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,5,120,0,1,none,0,0,0,8,null
@@ -819,7 +824,9 @@ RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0
 RECIPE: /material/wood/,pilum,/obj/item/weapon/material/spear/pilum,3,50,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,4,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,4,90,0,1,weapons,0,22,0,2,wood
+RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,14,0,3,null
+RECIPE: /material/wood/,chimalli,/obj/item/weapon/shield/chimalli,6,180,0,1,weapons,0,19,0,3,null
 RECIPE: /material/wood/,arrow shaft (x3),/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null
 RECIPE: /material/wood/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1,weapons,0,45,0,8,null
 RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,8,120,0,1,weapons,0,14,0,2,null

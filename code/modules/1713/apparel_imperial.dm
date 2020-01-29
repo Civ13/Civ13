@@ -787,6 +787,19 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
+/obj/item/clothing/shoes/usmc
+	name = "military boots"
+	desc = "Classic tan military boots."
+	icon_state = "usmc"
+	item_state = "usmc"
+	worn_state = "usmc"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 40)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.7
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
 /////Army stuff
 /obj/item/clothing/suit/storage/jacket/dutch_officer_army
 	name = "United Provinces Army jacket"

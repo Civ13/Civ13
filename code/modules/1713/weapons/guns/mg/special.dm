@@ -2,7 +2,7 @@
 	force = 10
 	throwforce = 20
 	fire_sound = 'sound/weapons/smg.ogg'
-	var/base_icon = "smg"
+	var/base_icon = "tactical"
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER|SLOT_BELT
@@ -114,7 +114,7 @@
 	name = "MK-18"
 	desc = "An american automatic rifle."
 	icon_state = "mk18"
-	item_state = "m16old"
+	item_state = "tactical"
 	base_icon = "mk18"
 	weight = 3.97
 	caliber = "a556x45"
@@ -134,7 +134,7 @@
 	name = "Tactical AK-74M"
 	desc = "A russian tactical rifle used by the Spetsnaz."
 	icon_state = "ak74mspecial"
-	item_state = "m16old"
+	item_state = "ak47"
 	base_icon = "ak74mspecial"
 	weight = 3.97
 	caliber = "a545x39"
