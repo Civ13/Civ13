@@ -103,6 +103,8 @@
 			supportfound = TRUE
 		for (var/turf/wall/W in range(1, src))
 			supportfound = TRUE
+		for (var/obj/structure/simple_door/SD in loc)
+			supportfound = TRUE
 		for (var/obj/covers/C in range(1, src))
 			if (C.wall == TRUE)
 				supportfound = TRUE
@@ -218,7 +220,8 @@
 /obj/structure/roof_support/admin
 	name = ""
 	desc = ""
-	icon_state = ""
+	icon = 'icons/turf/roofs.dmi'
+	icon_state = "roof2"
 	flammable = FALSE
 	anchored = TRUE
 	opacity = FALSE
