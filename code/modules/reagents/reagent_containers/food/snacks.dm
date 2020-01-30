@@ -1770,6 +1770,17 @@
 		..()
 		icon_state = pick("leaves1","leaves2","leaves3")
 		food_decay()
+
+/obj/item/weapon/leaves/attack_hand(mob/living/user)
+	if (ishuman(user))
+		user << "You start arranging the leaves into thatch..."
+		if (do_after(user, 70, src))
+			user << "You finish the thatcleaf roofing."
+			var/obj/item/weapon/roofbuilder/leaves/RB = new/obj/item/weapon/roofbuilder/leaves(loc)
+			user.drop_from_inventory(src)
+			user.put_in_hands(RB)
+			qdel(src)
+			return
 /obj/item/weapon/leaves/proc/food_decay()
 	spawn(600)
 		if (decay == 0)

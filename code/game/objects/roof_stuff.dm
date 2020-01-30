@@ -24,6 +24,8 @@
 	var/current_area_type = /area/caribbean
 	var/image/roof_overlay
 
+/obj/roof/wood
+
 /obj/roof/clay
 	name = "clay roof"
 	desc = "A clay tile roof."
@@ -65,12 +67,20 @@
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
 	collapse_check()
+	/*
+	for(var/obj/covers/CV in loc)
+		CV.opacity = FALSE
+	*/
 /obj/roof/Destroy()
 	new current_area_type(get_turf(src))
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
 	for (var/obj/roof/R in range(1,src))
 		R.recalculate_borders(FALSE)
+	/*
+	for(var/obj/covers/CV in loc)
+		CV.opacity = CV.initial_opacity
+	*/
 	..()
 
 /obj/roof/proc/collapse_check()
@@ -98,18 +108,33 @@
 /obj/item/weapon/roofbuilder
 	name = "roof builder"
 	desc = "Use this to build roofs."
-	icon = 'icons/turf/floors.dmi'
+	icon = 'icons/turf/roofs.dmi'
 	icon_state = "roof_builder"
 	w_class = 2.0
 	flammable = TRUE
 	var/done = FALSE
+	var/target_type = /obj/roof/wood
+
 /obj/item/weapon/roofbuilder/clay
 	name = "clay roofing"
 	desc = "Use this to build roofs."
-	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "clayroofing"
-	w_class = 2.0
+	icon_state = "clay_roof_builder"
 	flammable = FALSE
+	target_type = /obj/roof/clay
+
+/obj/item/weapon/roofbuilder/leaves
+	name = "thatch roofing"
+	desc = "Use this to build roofs."
+	icon_state = "thatch_roof_builder"
+	flammable = TRUE
+	target_type = /obj/roof/thatch
+
+/obj/item/weapon/roofbuilder/palm
+	name = "palm roofing"
+	desc = "Use this to build roofs."
+	icon_state = "palm_roof_builder"
+	flammable = TRUE
+	target_type = /obj/roof/palm
 
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
 	var/your_dir = "NORTH"
@@ -152,7 +177,7 @@
 		visible_message("<span class='danger'>[user] starts building the roof.</span>", "<span class='danger'>You start building the roof.</span>")
 		if (do_after(user, covers_time, user.loc) && src && !done)
 			done = TRUE
-			new/obj/roof(get_step(user, user.dir), user)
+			new target_type(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes building the roof.</span>")
 			if (ishuman(user))
 				var/mob/living/carbon/human/H = user
@@ -182,7 +207,7 @@
 	density = FALSE
 	invisibility = 101
 	not_movable = TRUE
-	not_disassemblable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/roof_support/nordic
 	name = "nordic pillar"
