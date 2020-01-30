@@ -33,9 +33,9 @@
 	overlay_state = "clay"
 	icon_state = "clay_dm"
 
-/obj/roof/cement
-	name = "cement roof"
-	desc = "A cement roof."
+/obj/roof/concrete
+	name = "concrete roof"
+	desc = "A concrete roof."
 	flammable = FALSE
 	overlay_state = "cement"
 	icon_state = "cement_dm"
@@ -146,6 +146,13 @@
 	icon_state = "palm_roof_builder"
 	flammable = TRUE
 	target_type = /obj/roof/palm
+
+/obj/item/weapon/roofbuilder/concrete
+	name = "concrete roofing"
+	desc = "Use this to build roofs."
+	icon_state = "concrete_roof_builder"
+	flammable = FALSE
+	target_type = /obj/roof/concrete
 
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
 	var/your_dir = "NORTH"
