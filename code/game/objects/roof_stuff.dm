@@ -218,7 +218,7 @@
 	not_disassemblable = FALSE
 
 /obj/structure/roof_support/admin
-	name = ""
+	name = "roof support"
 	desc = ""
 	icon = 'icons/turf/roofs.dmi'
 	icon_state = "roof2"
@@ -226,9 +226,12 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	invisibility = 101
 	not_movable = TRUE
 	not_disassemblable = TRUE
+
+	New()
+		..()
+		icon_state = "roof"
 
 /obj/structure/roof_support/nordic
 	name = "nordic pillar"
@@ -256,6 +259,18 @@
 	opacity = FALSE
 	density = FALSE
 	health = 180
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/mine_support/stone/concrete
+	name = "concrete pillar"
+	desc = "A concrete pillar that can support roofs and mine shafts."
+	icon_state = "concrete_pillar"
+	flammable = FALSE
+	anchored = TRUE
+	opacity = FALSE
+	density = FALSE
+	health = 220
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
