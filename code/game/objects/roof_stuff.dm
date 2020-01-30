@@ -1,5 +1,4 @@
 /obj/roof
-
 	name = "wood roof"
 	desc = "A wooden roof."
 	icon = 'icons/turf/roofs.dmi'
@@ -25,6 +24,7 @@
 	var/image/roof_overlay
 
 /obj/roof/wood
+	name = "wood roof"
 
 /obj/roof/clay
 	name = "clay roof"
@@ -82,6 +82,8 @@
 	for(var/obj/covers/CV in loc)
 		CV.opacity = FALSE
 	*/
+	roofs_list += roof_overlay
+
 /obj/roof/Destroy()
 	new current_area_type(get_turf(src))
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
@@ -92,6 +94,7 @@
 	for(var/obj/covers/CV in loc)
 		CV.opacity = CV.initial_opacity
 	*/
+	roofs_list -= roof_overlay
 	..()
 
 /obj/roof/proc/collapse_check()

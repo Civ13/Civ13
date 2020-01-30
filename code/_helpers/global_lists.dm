@@ -76,6 +76,9 @@ var/global/list/turfs = list()						//list of all turfs
 var/global/list/new_turfs = list()						//list of all non-default turfs
 var/global/list/grass_turf_list = list() // list of all /turf/floor/grass
 var/global/list/water_turf_list = list() // list of all /turf/floor/grass
+
+var/global/list/roofs_list = list() //list of all the roof IMAGES (not the object!!!)
+
 //Languages/species/whitelist.
 var/global/list/all_species[0]
 var/global/list/all_languages[0]

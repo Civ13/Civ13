@@ -248,9 +248,9 @@
 	if (!client)
 		return
 	var/obj/structure/vehicleparts/frame/found = null
-	var/obj/roof/found2 = null
+
 	for (var/image/tmpimg in client.images)
-		if (tmpimg.icon == 'icons/obj/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles96x96.dmi' || tmpimg.icon == 'icons/turf/roofs.dmi')
+		if (tmpimg.icon == 'icons/obj/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles96x96.dmi')
 			client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
@@ -265,16 +265,26 @@
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
-	for (var/obj/roof/RF in loc)
-		found2 = RF
-	for (var/obj/roof/FR in range(7,src))
-		if (found2)
-			client.images -= FR.roof_overlay
-		else
-			if (locate(FR) in range(7,src))
-				client.images += FR.roof_overlay
-			else
-				client.images -= FR.roof_overlay
+
+/mob/living/carbon/human
+	var/roofs_removed = TRUE
+
+/mob/living/carbon/human/proc/process_static_roofs()
+	var/area/A = get_area(loc)
+	if (A.location == AREA_INSIDE)
+		if (!roofs_removed)
+			client.images = (client.images ^ roofs_list)
+			/*
+			for (var/image/tmpimg in client.images)
+				if (tmpimg.icon == 'icons/turf/roofs.dmi')
+					client.images.Remove(tmpimg)
+			*/
+			roofs_removed = TRUE
+	else
+		if (roofs_removed)
+			client.images |= roofs_list
+			roofs_removed = FALSE
+
 /mob/living/carbon/human
 	var/drowning = FALSE
 	var/water_overlay = FALSE
