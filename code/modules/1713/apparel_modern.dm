@@ -575,7 +575,7 @@
 	item_state = "pcarrier_tan"
 	worn_state = "pcarrier_tan"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.35
 	w_class = 4
@@ -588,7 +588,7 @@
 	item_state = "pcarrier_black"
 	worn_state = "pcarrier_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.35
 	w_class = 4
@@ -601,7 +601,7 @@
 	item_state = "civilianvest"
 	worn_state = "civilianvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 90, gun = 68, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 90, gun = 72, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.30
 	w_class = 4
