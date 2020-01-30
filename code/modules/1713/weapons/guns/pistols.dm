@@ -173,6 +173,22 @@
 		icon_state = "glock170"
 	return
 
+/obj/item/weapon/gun/projectile/pistol/pl14
+	name = "PL-14"
+	desc = "A modern experimental pistol made by Kalashnikov (chambered in 9x19mm)."
+	icon_state = "pl14"
+	fire_delay = 1.8
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/pl14
+	weight = 0.594
+	max_shells = 16 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.15
+
 /obj/item/weapon/gun/projectile/pistol/mp443
 	name = "MP-443"
 	desc = "A modern pistol, loaded on 9x19mm, made by Russia."

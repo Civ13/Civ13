@@ -162,6 +162,14 @@
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 80, arrow = 70, gun = 90, energy = 20, bomb = 40, bio = 25, rad = FALSE)
 
+/obj/item/clothing/mask/salamon
+	name = "gold plated mask"
+	desc = "A mask plated in gold. Looks expensive."
+	icon_state = "salamon"
+	item_state = "salamon"
+	body_parts_covered = FACE|EYES
+	armor = list(melee = 5, arrow = 14, gun = 10, energy = 20, bomb = 10, bio = 10, rad = FALSE)
+
 /obj/item/clothing/head/helmet/bone
 	name = "bone helmet"
 	desc = "A helmet made of bones."

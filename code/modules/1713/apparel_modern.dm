@@ -407,6 +407,19 @@
 	cooldownw = 9
 	value = 60
 
+/obj/item/weapon/material/sword/arabsword2
+	name = "arabic sword"
+	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
+	icon_state = "arabsword2"
+	item_state = "longsword"
+	throw_speed = 4
+	throw_range = 5
+	force_divisor = 0.79 // 45 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 26
+	cooldownw = 10
+	value = 60
 
 /obj/item/clothing/under/idf
 	name = "IDF olive uniform"

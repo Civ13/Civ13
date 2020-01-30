@@ -82,6 +82,20 @@
 	sharp = TRUE
 	edge =  TRUE
 	w_class = 1
+
+/obj/item/weapon/material/thrown/throwing_knife1
+	name = "steel throwing knife"
+	desc = "A steel throwing knife."
+	icon_state = "throwingknife1"
+	throwforce = 40
+	force_divisor = 0.30 // 15 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.8
+	throw_speed = 6
+	throw_range = 9
+	sharp = TRUE
+	edge =  TRUE
+	w_class = 1
+
 /obj/item/weapon/material/thrown/throwing_axe/New()
 	..()
 	pixel_x = rand(-4, 4)

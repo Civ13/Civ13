@@ -203,6 +203,61 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.7
 
+/obj/item/weapon/material/kitchen/utensil/knife/meat
+	name = "meat knife"
+	desc = "A rather medium knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "meatknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.4
+
+/obj/item/weapon/material/kitchen/utensil/knife/shaggers
+	name = "shagger knife"
+	desc = "A makeshift knife made poorly by ghetto folks."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "shagger"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.4
+
+/obj/item/weapon/material/kitchen/utensil/knife/fish
+	name = "fish knife"
+	desc = "A rather medium knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "fishknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.5
+
+/obj/item/weapon/material/kitchen/utensil/knife/tacticalknife
+	name = "tactical knife"
+	desc = "A rather tactical knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "tacticalknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
+/obj/item/weapon/material/kitchen/utensil/knife/blackknife
+	name = "black knife"
+	desc = "A rather large knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "blackknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
 /obj/item/weapon/material/kitchen/utensil/knife/military
 	name = "military knife"
 	desc = "A rather large knife."
@@ -246,6 +301,17 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.2
+
+/obj/item/weapon/material/kitchen/utensil/knife/survival
+	name = "survival knife"
+	desc = "A small compact survival knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "survivalknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.3
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone
 	name = "bone knife"

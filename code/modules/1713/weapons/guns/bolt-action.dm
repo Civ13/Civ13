@@ -26,7 +26,7 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
-	KD_chance = KD_CHANCE_HIGH+6
+	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
 	move_delay = 2
 	fire_delay = 2
