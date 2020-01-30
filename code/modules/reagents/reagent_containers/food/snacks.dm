@@ -1771,7 +1771,7 @@
 		icon_state = pick("leaves1","leaves2","leaves3")
 		food_decay()
 
-/obj/item/weapon/leaves/attack_hand(mob/living/user)
+/obj/item/weapon/leaves/attack_self(mob/living/user)
 	if (ishuman(user))
 		user << "You start arranging the leaves into a thatch roofing..."
 		if (do_after(user, 70, src))
@@ -1830,8 +1830,10 @@
 	force = 0
 	w_class = 3
 	decay = 35*600
-
-/obj/item/weapon/leaves/palm_leaves/attack_hand(mob/living/user)
+	New()
+		..()
+		icon_state = "palm_leaves"
+/obj/item/weapon/leaves/palm_leaves/attack_self(mob/living/user)
 	if (ishuman(user))
 		user << "You start arranging the leaves into a palm roofing..."
 		if (do_after(user, 70, src))
