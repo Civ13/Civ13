@@ -2,8 +2,9 @@
 
 	name = "wood roof"
 	desc = "A wooden roof."
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "roof"
+	icon = 'icons/turf/roofs.dmi'
+	icon_state = "wood_dm"
+	var/overlay_state = "wood"
 	var/passable = TRUE
 	var/origin_density = FALSE
 	var/not_movable = TRUE //if it can be removed by wrenches
@@ -12,7 +13,7 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	layer = 2.1
+	layer = 10.1
 	level = 2
 	var/amount = FALSE
 	var/wall = FALSE
@@ -21,9 +22,51 @@
 //	invisibility = 101
 	flammable = TRUE
 	var/current_area_type = /area/caribbean
+	var/image/roof_overlay
+
+/obj/roof/wood
+
+/obj/roof/clay
+	name = "clay roof"
+	desc = "A clay tile roof."
+	flammable = FALSE
+	overlay_state = "clay"
+	icon_state = "clay_dm"
+
+/obj/roof/concrete
+	name = "concrete roof"
+	desc = "A concrete roof."
+	flammable = FALSE
+	overlay_state = "cement"
+	icon_state = "cement_dm"
+
+/obj/roof/thatch
+	name = "thatch roof"
+	desc = "A tatch roof."
+	overlay_state = "thatch"
+	icon_state = "thatch_dm"
+
+/obj/roof/palm
+	name = "palm leaves roof"
+	desc = "a roof made of layered palm leaves."
+	overlay_state = "palm"
+	icon_state = "palm_dm"
+
+/obj/roof/proc/recalculate_borders(var/recalculate_others = FALSE)
+	var/founddir = 0
+	for (var/drr in list(NORTH,SOUTH,EAST,WEST))
+		for (var/obj/roof/RF in get_step(src, drr))
+			founddir+=drr
+	roof_overlay.icon_state = "[overlay_state]_[founddir]"
+	if (recalculate_others)
+		for (var/obj/roof/R in range(1,src))
+			R.recalculate_borders(FALSE)
 
 /obj/roof/New()
 	..()
+	icon_state = "roof"
+	roof_overlay = image(icon='icons/turf/roofs.dmi', loc = src, icon_state=overlay_state,layer=11.1)
+	recalculate_borders(TRUE)
 	var/area/caribbean/CURRENTAREA = get_area(src)
 //	var/oldclimate = CURRENTAREA.climate
 	if (CURRENTAREA.location == AREA_OUTSIDE)
@@ -35,10 +78,20 @@
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
 	collapse_check()
+	/*
+	for(var/obj/covers/CV in loc)
+		CV.opacity = FALSE
+	*/
 /obj/roof/Destroy()
 	new current_area_type(get_turf(src))
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
+	for (var/obj/roof/R in range(1,src))
+		R.recalculate_borders(FALSE)
+	/*
+	for(var/obj/covers/CV in loc)
+		CV.opacity = CV.initial_opacity
+	*/
 	..()
 
 /obj/roof/proc/collapse_check()
@@ -49,6 +102,8 @@
 		for (var/obj/structure/mine_support/stone/SS in range(2, src))
 			supportfound = TRUE
 		for (var/turf/wall/W in range(1, src))
+			supportfound = TRUE
+		for (var/obj/structure/simple_door/SD in loc)
 			supportfound = TRUE
 		for (var/obj/covers/C in range(1, src))
 			if (C.wall == TRUE)
@@ -66,18 +121,40 @@
 /obj/item/weapon/roofbuilder
 	name = "roof builder"
 	desc = "Use this to build roofs."
-	icon = 'icons/turf/floors.dmi'
+	icon = 'icons/turf/roofs.dmi'
 	icon_state = "roof_builder"
 	w_class = 2.0
 	flammable = TRUE
 	var/done = FALSE
+	var/target_type = /obj/roof/wood
+
 /obj/item/weapon/roofbuilder/clay
 	name = "clay roofing"
 	desc = "Use this to build roofs."
-	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "clayroofing"
-	w_class = 2.0
+	icon_state = "clay_roof_builder"
 	flammable = FALSE
+	target_type = /obj/roof/clay
+
+/obj/item/weapon/roofbuilder/leaves
+	name = "thatch roofing"
+	desc = "Use this to build roofs."
+	icon_state = "thatch_roof_builder"
+	flammable = TRUE
+	target_type = /obj/roof/thatch
+
+/obj/item/weapon/roofbuilder/palm
+	name = "palm roofing"
+	desc = "Use this to build roofs."
+	icon_state = "palm_roof_builder"
+	flammable = TRUE
+	target_type = /obj/roof/palm
+
+/obj/item/weapon/roofbuilder/concrete
+	name = "concrete roofing"
+	desc = "Use this to build roofs."
+	icon_state = "concrete_roof_builder"
+	flammable = FALSE
+	target_type = /obj/roof/concrete
 
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
 	var/your_dir = "NORTH"
@@ -120,7 +197,7 @@
 		visible_message("<span class='danger'>[user] starts building the roof.</span>", "<span class='danger'>You start building the roof.</span>")
 		if (do_after(user, covers_time, user.loc) && src && !done)
 			done = TRUE
-			new/obj/roof(get_step(user, user.dir), user)
+			new target_type(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes building the roof.</span>")
 			if (ishuman(user))
 				var/mob/living/carbon/human/H = user
@@ -141,16 +218,20 @@
 	not_disassemblable = FALSE
 
 /obj/structure/roof_support/admin
-	name = ""
+	name = "roof support"
 	desc = ""
-	icon_state = ""
+	icon = 'icons/turf/roofs.dmi'
+	icon_state = "roof2"
 	flammable = FALSE
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	invisibility = 101
 	not_movable = TRUE
-	not_disassemblable = FALSE
+	not_disassemblable = TRUE
+
+	New()
+		..()
+		icon_state = "roof"
 
 /obj/structure/roof_support/nordic
 	name = "nordic pillar"
@@ -178,6 +259,18 @@
 	opacity = FALSE
 	density = FALSE
 	health = 180
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/mine_support/stone/concrete
+	name = "concrete pillar"
+	desc = "A concrete pillar that can support roofs and mine shafts."
+	icon_state = "concrete_pillar"
+	flammable = FALSE
+	anchored = TRUE
+	opacity = FALSE
+	density = FALSE
+	health = 220
 	not_movable = TRUE
 	not_disassemblable = TRUE
 

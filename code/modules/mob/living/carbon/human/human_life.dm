@@ -1606,6 +1606,7 @@
 								if (stat == DEAD)
 									var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
 									HR.name = "[src]'s remains"
+									strip()
 									qdel(src)
 									return
 								else

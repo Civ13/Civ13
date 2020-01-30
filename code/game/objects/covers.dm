@@ -1204,12 +1204,7 @@
 
 /obj/covers/New()
 	..()
-	if (wall && !incomplete)
-		var/area/caribbean/CURRENTAREA = get_area(src)
-		if (CURRENTAREA.location == AREA_OUTSIDE)
-			current_area_type = CURRENTAREA.type
-			new/obj/roof(get_turf(src))
-
+	initial_opacity = opacity
 	spawn(5)
 		updateturf()
 	return TRUE

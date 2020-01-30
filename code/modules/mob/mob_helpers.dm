@@ -484,13 +484,3 @@ proc/is_blind(A)
 	return threatcount
 
 #undef SAFE_PERP
-/*
-/mob/proc/get_multitool(var/obj/item/multitool/P)
-	if (istype(P))
-		return P
-
-/mob/observer/ghost/get_multitool()
-	return can_admin_interact() && ..(ghost_multitool)
-
-/mob/living/carbon/human/get_multitool()
-	return ..(get_active_hand())*/

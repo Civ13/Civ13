@@ -1770,6 +1770,17 @@
 		..()
 		icon_state = pick("leaves1","leaves2","leaves3")
 		food_decay()
+
+/obj/item/weapon/leaves/attack_self(mob/living/user)
+	if (ishuman(user))
+		user << "You start arranging the leaves into a thatch roofing..."
+		if (do_after(user, 70, src))
+			user << "You finish the thatch roofing."
+			var/obj/item/weapon/roofbuilder/leaves/RB = new/obj/item/weapon/roofbuilder/leaves(loc)
+			user.drop_from_inventory(src)
+			user.put_in_hands(RB)
+			qdel(src)
+			return
 /obj/item/weapon/leaves/proc/food_decay()
 	spawn(600)
 		if (decay == 0)
@@ -1810,3 +1821,25 @@
 		M << "You eat the leaves."
 	M.nutrition = min(M.nutrition+40, M.max_nutrition)
 	qdel(src)
+
+/obj/item/weapon/leaves/palm_leaves
+	name = "palm leaves"
+	desc = "A bunch of palm leaves."
+	icon_state = "palm_leaves"
+	throwforce = 0
+	force = 0
+	w_class = 3
+	decay = 35*600
+	New()
+		..()
+		icon_state = "palm_leaves"
+/obj/item/weapon/leaves/palm_leaves/attack_self(mob/living/user)
+	if (ishuman(user))
+		user << "You start arranging the leaves into a palm roofing..."
+		if (do_after(user, 70, src))
+			user << "You finish the palm roofing."
+			var/obj/item/weapon/roofbuilder/palm/RB = new/obj/item/weapon/roofbuilder/palm(loc)
+			user.drop_from_inventory(src)
+			user.put_in_hands(RB)
+			qdel(src)
+			return

@@ -11,7 +11,6 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	anchored = TRUE	//  don't get pushed around
 	var/can_reenter_corpse
 	var/datum/hud/living/carbon/hud = null // hud
-	var/bootime = FALSE
 	var/started_as_observer //This variable is set to TRUE when you enter the game as an observer.
 							//If you died in the game and are a ghsot - this will remain as null.
 							//Note that this is not a reliable way to determine if admins started as observers, since they change mobs a lot.
@@ -22,7 +21,6 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	var/ghostvision = TRUE //is the ghost able to see things humans can't?
 	var/seedarkness = TRUE
 
-	var/obj/item/multitool/ghost_multitool
 	incorporeal_move = TRUE
 
 	var/original_icon = null
@@ -71,14 +69,10 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		name = capitalize(pick(first_names_male)) + " " + capitalize(pick(last_names))
 	real_name = name
 
-//	ghost_multitool = new(src)
-
 	..()
 
 /mob/observer/ghost/Destroy()
 	stop_following()
-//	qdel(ghost_multitool)
-//	ghost_multitool = null
 	return ..()
 
 /mob/observer/ghost/Topic(href, href_list)
