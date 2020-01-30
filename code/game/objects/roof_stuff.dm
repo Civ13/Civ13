@@ -3,7 +3,7 @@
 	name = "wood roof"
 	desc = "A wooden roof."
 	icon = 'icons/turf/roofs.dmi'
-	icon_state = "roof"
+	icon_state = "wood_dm"
 	var/overlay_state = "wood"
 	var/passable = TRUE
 	var/origin_density = FALSE
@@ -13,7 +13,7 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	layer = 2.1
+	layer = 10.1
 	level = 2
 	var/amount = FALSE
 	var/wall = FALSE
@@ -31,16 +31,26 @@
 	desc = "A clay tile roof."
 	flammable = FALSE
 	overlay_state = "clay"
+	icon_state = "clay_dm"
+
+/obj/roof/cement
+	name = "cement roof"
+	desc = "A cement roof."
+	flammable = FALSE
+	overlay_state = "cement"
+	icon_state = "cement_dm"
 
 /obj/roof/thatch
 	name = "thatch roof"
 	desc = "A tatch roof."
 	overlay_state = "thatch"
+	icon_state = "thatch_dm"
 
 /obj/roof/palm
 	name = "palm leaves roof"
 	desc = "a roof made of layered palm leaves."
 	overlay_state = "palm"
+	icon_state = "palm_dm"
 
 /obj/roof/proc/recalculate_borders(var/recalculate_others = FALSE)
 	var/founddir = 0
@@ -54,6 +64,7 @@
 
 /obj/roof/New()
 	..()
+	icon_state = "roof"
 	roof_overlay = image(icon='icons/turf/roofs.dmi', loc = src, icon_state=overlay_state,layer=11.1)
 	recalculate_borders(TRUE)
 	var/area/caribbean/CURRENTAREA = get_area(src)
