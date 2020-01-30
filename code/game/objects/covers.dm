@@ -1204,7 +1204,7 @@
 
 /obj/covers/New()
 	..()
-
+	initial_opacity = opacity
 	spawn(5)
 		updateturf()
 	return TRUE
