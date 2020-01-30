@@ -41,7 +41,7 @@
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 1.1
-	KD_chance = KD_CHANCE_MEDIUM
+	KD_chance = KD_CHANCE_HIGH
 
 /obj/item/weapon/gun/projectile/automatic/stationary/attack_hand(var/mob/user)
 

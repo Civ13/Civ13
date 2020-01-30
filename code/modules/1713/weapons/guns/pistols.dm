@@ -55,7 +55,7 @@
 
 	accuracy_increase_mod = 1.50
 	accuracy_decrease_mod = 2.00
-	KD_chance = KD_CHANCE_LOW
+	KD_chance = KD_CHANCE_MEDIUM
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
 

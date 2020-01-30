@@ -57,7 +57,7 @@
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 1.50
-	KD_chance = KD_CHANCE_MEDIUM
+	KD_chance = KD_CHANCE_HIGH+3
 	stat = "machinegun"
 	w_class = 3
 	attachment_slots = ATTACH_IRONSIGHTS

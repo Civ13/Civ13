@@ -181,6 +181,17 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.6
 
+/obj/item/weapon/material/kitchen/utensil/knife/fancy
+	name = "fancy knife"
+	desc = "A expensive knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "fancyknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.3
+
 /obj/item/weapon/material/kitchen/utensil/knife/trench
 	name = "trench knife"
 	desc = "A rather large knife."
@@ -203,6 +214,28 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.9
 
+/obj/item/weapon/material/kitchen/utensil/knife/shadowdagger
+	name = "shadow dagger"
+	desc = "A tactical knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "smolknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
+/obj/item/weapon/material/kitchen/utensil/knife/shadowdaggersal
+	name = "shadow dagger"
+	desc = "A tactical knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "salamon"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
 /obj/item/weapon/material/kitchen/utensil/knife/bread
 	name = "bread knife"
 	desc = "A rather large knife."
@@ -223,7 +256,7 @@
 	applies_material_colour = FALSE
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
+	force_divisor = 0.1
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone/New()
 	..()
@@ -238,7 +271,7 @@
 	applies_material_colour = FALSE
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.35
+	force_divisor = 0.1
 
 /obj/item/weapon/material/kitchen/utensil/knife/circumcision/New()
 	..()

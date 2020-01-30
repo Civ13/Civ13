@@ -333,6 +333,20 @@ obj/item/weapon/material/sword/longsword/bronze
 obj/item/weapon/material/sword/longsword/diamond
 	default_material = "diamond"
 
+/obj/item/weapon/material/sword/zweihander
+	name = "Zweihander"
+	desc = "A German sword used by knights."
+	icon_state = "zweihander"
+	item_state = "longsword"
+	throw_speed = 1
+	throw_range = 2
+	force_divisor = 1.90 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 60
+	cooldownw = 30
+	value = 60
+
 /obj/item/weapon/material/sword/urukhaiscimitar
 	name = "uruk-hai scimitar"
 	desc = "A broad sword with a curved tip."
