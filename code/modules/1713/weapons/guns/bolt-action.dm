@@ -358,6 +358,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka38
 	name = "Arisaka Type 38"
@@ -381,6 +382,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99
 	name = "Arisaka Type 99"
@@ -404,11 +406,13 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper
 	name = "Arisaka Type 99"
 	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
 	effectiveness_mod = 1.06
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper/New()
 	..()
@@ -437,6 +441,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr71
 	name = "Gewehr 71"
