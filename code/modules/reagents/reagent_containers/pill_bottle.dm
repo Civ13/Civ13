@@ -44,14 +44,14 @@
 	desc = "An antibiotic. Effective against many microbial diseases."
 
 /obj/item/weapon/storage/pill_bottle/penicillin/New()
-    ..()
-    new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-    new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-    new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-    new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-    new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-    new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-    new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	..()
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
 
 /obj/item/weapon/storage/pill_bottle/tramadol
 	name = "bottle of Tramadol pills"
