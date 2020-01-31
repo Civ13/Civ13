@@ -12,10 +12,10 @@
 
 	var/mob/living/aiming_at   // Who are we currently targeting, if anyone?
 	var/obj/item/aiming_with   // What are we targeting with?
-	var/mob/living/owner       // Who do we belong to?
-	var/locked =    FALSE          // Have we locked on?
-	var/lock_time = FALSE          // When -will- we lock on?
-	var/active =    FALSE          // Is our owner intending to take hostages?
+	var/mob/living/owner	   // Who do we belong to?
+	var/locked =	FALSE		  // Have we locked on?
+	var/lock_time = FALSE		  // When -will- we lock on?
+	var/active =	FALSE		  // Is our owner intending to take hostages?
 	var/target_permissions = FALSE // Permission bitflags.
 
 /obj/aiming_overlay/New(var/newowner)

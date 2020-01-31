@@ -119,8 +119,8 @@
 
 /area/proc/play_ambience(var/mob/living/L, var/override = FALSE)
 
-    // Ambience goes down here -- make sure to list each area seperately for ease of adding things in later, thanks! Note: areas adjacent to each other should have the same sounds to prevent cutoff when possible.- LastyScratch
-//	if (!(L && L.is_preference_enabled(/datum/client_preference/play_ambiance)))    return
+	// Ambience goes down here -- make sure to list each area seperately for ease of adding things in later, thanks! Note: areas adjacent to each other should have the same sounds to prevent cutoff when possible.- LastyScratch
+//	if (!(L && L.is_preference_enabled(/datum/client_preference/play_ambiance)))	return
 	if (!L || !istype(L) || !L.loc)
 		return
 

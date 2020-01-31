@@ -30,7 +30,7 @@ var/list/flooring_types
 	var/apply_thermal_conductivity
 	var/apply_heat_capacity
 
-	var/build_type      // Unbuildable if not set. Must be /obj/item/stack.
+	var/build_type	  // Unbuildable if not set. Must be /obj/item/stack.
 	var/build_cost = TRUE  // Stack units.
 	var/build_time = FALSE  // BYOND ticks.
 

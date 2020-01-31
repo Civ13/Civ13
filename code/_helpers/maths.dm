@@ -41,7 +41,7 @@
 
 	. = list()
 	var/discriminant = b*b - 4*a*c
-	var/bottom       = 2*a
+	var/bottom	   = 2*a
 
 	// Return if the roots are imaginary.
 	if (discriminant < 0)

@@ -23,7 +23,7 @@
 	slot_flags = SLOT_BELT
 
 // -----------------------------
-//          Trash bag
+//		  Trash bag
 // -----------------------------
 /obj/item/weapon/storage/bag/trash
 	name = "trash bag"
@@ -47,7 +47,7 @@
 
 
 // -----------------------------
-//        Plastic Bag
+//		Plastic Bag
 // -----------------------------
 
 /obj/item/weapon/storage/bag/plasticbag
@@ -64,7 +64,7 @@
 	allow_quick_empty = TRUE
 	use_to_pickup = FALSE
 // -----------------------------
-//        Mining Satchel
+//		Mining Satchel
 // -----------------------------
 /*
 /obj/item/weapon/storage/bag/ore
@@ -79,7 +79,7 @@
 	can_hold = list(/obj/item/stack/ore)
 */
 // -----------------------------
-//          Plant bag
+//		  Plant bag
 // -----------------------------
 /*
 /obj/item/weapon/storage/bag/plants
@@ -93,7 +93,7 @@
 */
 
 // -----------------------------
-//        Sheet Snatcher
+//		Sheet Snatcher
 // -----------------------------
 // Because it stacks stacks, this doesn't operate normally.
 // However, making it a storage/bag allows us to reuse existing code in some places. -Sayu
@@ -227,7 +227,7 @@
 		return ..(S,new_location)
 
 // -----------------------------
-//           Cash Bag
+//		   Cash Bag
 // -----------------------------
 
 /obj/item/weapon/storage/bag/cash

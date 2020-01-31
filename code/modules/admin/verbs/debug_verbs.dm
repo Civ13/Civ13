@@ -1,28 +1,28 @@
 
 var/list/debug_verbs = list (
-      //  /client/proc/do_not_use_these
-        ,/client/proc/count_objects_on_z_level
-        ,/client/proc/count_objects_all
-        ,/client/proc/cmd_assume_direct_control
-        ,/client/proc/ticklag
-      //  ,/client/proc/kaboom
-  //      ,/client/proc/cmd_admin_areatest
-        ,/client/proc/cmd_admin_rejuvenate
-//        ,/datum/admins/proc/show_traitor_panel
-      //  ,/client/proc/print_jobban_old
-      //  ,/client/proc/print_jobban_old_filter
-     //   ,/client/proc/break_all_air_groups
-      //  ,/client/proc/regroup_all_air_groups
-      //  ,/client/proc/kill_pipe_processing
-      //  ,/client/proc/kill_air_processing
-        ,/client/proc/disable_communication
-        ,/client/proc/disable_movement
-  //      ,/client/proc/Zone_Info
- //       ,/client/proc/Test_ZAS_Connection
-  //      ,/client/proc/ZoneTick
- //       ,/client/proc/rebootAirMaster
- //       ,/client/proc/testZAScolors
-    //    ,/client/proc/testZAScolors_remove
+	  //  /client/proc/do_not_use_these
+		,/client/proc/count_objects_on_z_level
+		,/client/proc/count_objects_all
+		,/client/proc/cmd_assume_direct_control
+		,/client/proc/ticklag
+	  //  ,/client/proc/kaboom
+  //	  ,/client/proc/cmd_admin_areatest
+		,/client/proc/cmd_admin_rejuvenate
+//		,/datum/admins/proc/show_traitor_panel
+	  //  ,/client/proc/print_jobban_old
+	  //  ,/client/proc/print_jobban_old_filter
+	 //   ,/client/proc/break_all_air_groups
+	  //  ,/client/proc/regroup_all_air_groups
+	  //  ,/client/proc/kill_pipe_processing
+	  //  ,/client/proc/kill_air_processing
+		,/client/proc/disable_communication
+		,/client/proc/disable_movement
+  //	  ,/client/proc/Zone_Info
+ //	   ,/client/proc/Test_ZAS_Connection
+  //	  ,/client/proc/ZoneTick
+ //	   ,/client/proc/rebootAirMaster
+ //	   ,/client/proc/testZAScolors
+	//	,/client/proc/testZAScolors_remove
 	//	,/client/proc/spawn_tanktransferbomb
 	)
 

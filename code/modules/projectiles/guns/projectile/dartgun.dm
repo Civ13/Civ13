@@ -139,7 +139,7 @@
 			dat += "Beaker [i] contains: "
 			if(B.reagents && B.reagents.reagent_list.len)
 				for(var/datum/reagent/R in B.reagents.reagent_list)
-					dat += "<br>    [R.volume] units of [R.name], "
+					dat += "<br>	[R.volume] units of [R.name], "
 				if (check_beaker_mixing(B))
 					dat += text("<A href='?src=\ref[src];stop_mix=[i]'><font color='green'>Mixing</font></A> ")
 				else

@@ -19,19 +19,19 @@
 
 	var/num   = FALSE
 	var/power = TRUE
-	var/i     = length(hex)
+	var/i	 = length(hex)
 
 	while (i)
 		var/char = text2ascii(hex, i)
 		switch(char)
-			if (48)                                  // FALSE -- do nothing
+			if (48)								  // FALSE -- do nothing
 			if (49 to 57) num += (char - 48) * power // TRUE-9
-			if (97,  65)  num += power * 10          // A
-			if (98,  66)  num += power * 11          // B
-			if (99,  67)  num += power * 12          // C
-			if (100, 68)  num += power * 13          // D
-			if (101, 69)  num += power * 14          // E
-			if (102, 70)  num += power * 15          // F
+			if (97,  65)  num += power * 10		  // A
+			if (98,  66)  num += power * 11		  // B
+			if (99,  67)  num += power * 12		  // C
+			if (100, 68)  num += power * 13		  // D
+			if (101, 69)  num += power * 14		  // E
+			if (102, 70)  num += power * 15		  // F
 			else
 				return
 		power *= 16
@@ -89,10 +89,10 @@
 // Turns text into proper directions
 /proc/text2dir(direction)
 	switch (uppertext(direction))
-		if ("NORTH")     return TRUE
-		if ("SOUTH")     return 2
-		if ("EAST")      return 4
-		if ("WEST")      return 8
+		if ("NORTH")	 return TRUE
+		if ("SOUTH")	 return 2
+		if ("EAST")	  return 4
+		if ("WEST")	  return 8
 		if ("NORTHEAST") return 5
 		if ("NORTHWEST") return 9
 		if ("SOUTHEAST") return 6
@@ -113,10 +113,10 @@
 // Returns the north-zero clockwise angle in degrees, given a direction
 /proc/dir2angle(var/D)
 	switch (D)
-		if (NORTH)     return FALSE
-		if (SOUTH)     return 180
-		if (EAST)      return 90
-		if (WEST)      return 270
+		if (NORTH)	 return FALSE
+		if (SOUTH)	 return 180
+		if (EAST)	  return 90
+		if (WEST)	  return 270
 		if (NORTHEAST) return 45
 		if (SOUTHEAST) return 135
 		if (NORTHWEST) return 315
@@ -124,10 +124,10 @@
 
 /proc/nearbydirections(direction)
 	switch (direction)
-		if (NORTH)     return list(NORTHWEST, NORTHEAST, NORTH)
-		if (SOUTH)     return list(SOUTHWEST, SOUTHEAST, SOUTH)
-		if (EAST)      return list(NORTHEAST, SOUTHEAST, EAST)
-		if (WEST)      return list(NORTHWEST, SOUTHWEST, WEST)
+		if (NORTH)	 return list(NORTHWEST, NORTHEAST, NORTH)
+		if (SOUTH)	 return list(SOUTHWEST, SOUTHEAST, SOUTH)
+		if (EAST)	  return list(NORTHEAST, SOUTHEAST, EAST)
+		if (WEST)	  return list(NORTHWEST, SOUTHWEST, WEST)
 		if (NORTHEAST) return list(NORTH, EAST, NORTHEAST)
 		if (SOUTHEAST) return list(SOUTH, EAST, SOUTHEAST)
 		if (NORTHWEST) return list(NORTH, WEST, NORTHWEST)
@@ -141,27 +141,27 @@
 /proc/blendMode2iconMode(blend_mode)
 	switch (blend_mode)
 		if (BLEND_MULTIPLY) return ICON_MULTIPLY
-		if (BLEND_ADD)      return ICON_ADD
+		if (BLEND_ADD)	  return ICON_ADD
 		if (BLEND_SUBTRACT) return ICON_SUBTRACT
-		else                return ICON_OVERLAY
+		else				return ICON_OVERLAY
 
 // Converts a rights bitfield into a string
 /proc/rights2text(rights,seperator="")
 	if (rights & R_BUILDMODE)   . += "[seperator]+BUILDMODE"
-	if (rights & R_ADMIN)       . += "[seperator]+ADMIN"
+	if (rights & R_ADMIN)	   . += "[seperator]+ADMIN"
 	if (rights & R_TRIALADMIN)  . += "[seperator]+TRIALADMIN"
-	if (rights & R_FUN)         . += "[seperator]+FUN"
-	if (rights & R_SERVER)      . += "[seperator]+SERVER"
-	if (rights & R_DEBUG)       . += "[seperator]+DEBUG"
-	if (rights & R_POSSESS)     . += "[seperator]+POSSESS"
+	if (rights & R_FUN)		 . += "[seperator]+FUN"
+	if (rights & R_SERVER)	  . += "[seperator]+SERVER"
+	if (rights & R_DEBUG)	   . += "[seperator]+DEBUG"
+	if (rights & R_POSSESS)	 . += "[seperator]+POSSESS"
 	if (rights & R_PERMISSIONS) . += "[seperator]+PERMISSIONS"
-	if (rights & R_STEALTH)     . += "[seperator]+STEALTH"
+	if (rights & R_STEALTH)	 . += "[seperator]+STEALTH"
 	if (rights & R_REJUVINATE)  . += "[seperator]+REJUVINATE"
-	if (rights & R_VAREDIT)     . += "[seperator]+VAREDIT"
-	if (rights & R_SOUNDS)      . += "[seperator]+SOUND"
-	if (rights & R_SPAWN)       . += "[seperator]+SPAWN"
-	if (rights & R_MOD)         . += "[seperator]+MODERATOR"
-	if (rights & R_MENTOR)      . += "[seperator]+MENTOR"
+	if (rights & R_VAREDIT)	 . += "[seperator]+VAREDIT"
+	if (rights & R_SOUNDS)	  . += "[seperator]+SOUND"
+	if (rights & R_SPAWN)	   . += "[seperator]+SPAWN"
+	if (rights & R_MOD)		 . += "[seperator]+MODERATOR"
+	if (rights & R_MENTOR)	  . += "[seperator]+MENTOR"
 	return .
 
 // heat2color functions. Adapted from: http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/

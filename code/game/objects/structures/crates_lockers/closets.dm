@@ -258,7 +258,7 @@
 	if (opened)
 		if (istype(W, /obj/item/weapon/grab))
 			var/obj/item/weapon/grab/G = W
-			MouseDrop_T(G.affecting, user)      //act like they were dragged onto the closet
+			MouseDrop_T(G.affecting, user)	  //act like they were dragged onto the closet
 			return FALSE
 		if (W.loc != user) // This should stop mounted modules ending up outside the module.
 			return

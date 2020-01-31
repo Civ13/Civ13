@@ -1378,15 +1378,15 @@ obj/screen/tactic
 	var/mob/living/carbon/human/H = parentmob
 	switch (inv_elem.slot_id)
 		if (slot_head)
-			if (H.head)      H.head.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.head)	  H.head.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_shoes)
-			if (H.shoes)     H.shoes.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.shoes)	 H.shoes.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_l_ear)
-			if (H.l_ear)     H.l_ear.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.l_ear)	 H.l_ear.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_r_ear)
-			if (H.r_ear)     H.r_ear.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.r_ear)	 H.r_ear.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_gloves)
-			if (H.gloves)    H.gloves.screen_loc =    (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.gloves)	H.gloves.screen_loc =	(inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_w_uniform)
 			if (H.w_uniform) H.w_uniform.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_wear_suit)
@@ -1394,4 +1394,4 @@ obj/screen/tactic
 		if (slot_wear_mask)
 			if (H.wear_mask) H.wear_mask.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_eyes)
-			if (H.eyes)      H.eyes.screen_loc =      (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.eyes)	  H.eyes.screen_loc =	  (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc

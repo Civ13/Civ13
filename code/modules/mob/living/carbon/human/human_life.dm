@@ -588,11 +588,11 @@
 
 	if (!species.vision_organ) // Presumably if a species has no vision organs, they see via some other means.
 		eye_blind =  0
-		blinded =    0
+		blinded =	0
 		eye_blurry = 0
 	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
 		eye_blind =  1
-		blinded =    1
+		blinded =	1
 		eye_blurry = 1
 
 /mob/living/carbon/human/handle_chemical_smoke(var/datum/gas_mixture/environment)

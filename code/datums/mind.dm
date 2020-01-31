@@ -191,14 +191,14 @@
 
 /datum/mind/proc/reset()
 	assigned_role =   null
-	special_role =    null
+	special_role =	null
 	role_alt_title =  null
-	assigned_job =    null
-	//faction =       null //Uncommenting this causes a compile error due to 'undefined type', fucked if I know.
-//	objectives =      list()
+	assigned_job =	null
+	//faction =	   null //Uncommenting this causes a compile error due to 'undefined type', fucked if I know.
+//	objectives =	  list()
 //	special_verbs =   list()
-	has_been_rev =    FALSE
-	rev_cooldown =    FALSE
+	has_been_rev =	FALSE
+	rev_cooldown =	FALSE
 	brigged_since =   -1
 
 //Antagonist role check
