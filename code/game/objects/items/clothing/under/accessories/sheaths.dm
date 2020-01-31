@@ -111,3 +111,15 @@
 		/obj/item/weapon/material/sword/sabre,
 		/obj/item/weapon/material/sword/rapier,
 		/obj/item/weapon/material/sword/armingsword)
+
+/obj/item/clothing/accessory/storage/sheath/knife
+	name = "knife sheath"
+	desc = "A sheath for knives."
+	icon_state = "knifeholster"
+	item_state = "short_sheath"
+	slots = 1
+	slot = "utility"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil/knife/shaggers,
+		/obj/item/weapon/material/kitchen/utensil/knife/meat, /obj/item/weapon/material/kitchen/utensil/knife/fancy, /obj/item/weapon/material/kitchen/utensil/knife/survival, /obj/item/weapon/material/kitchen/utensil/knife/bone)

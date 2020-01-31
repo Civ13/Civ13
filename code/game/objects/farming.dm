@@ -716,10 +716,10 @@
 
 //some specific, non-food plants
 /obj/structure/farming/plant/hemp/spawnProduce()
-	var/obj/item/stack/material/rope/I = new/obj/item/stack/material/rope(loc)
+	var/obj/item/stack/material/hemp/I = new/obj/item/stack/material/hemp(loc)
 	I.radiation = radiation/2
 	if (fertilized)
-		var/obj/item/stack/material/rope/I2 = new/obj/item/stack/material/rope(loc)
+		var/obj/item/stack/material/hemp/I2 = new/obj/item/stack/material/hemp(loc)
 		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/tobacco/spawnProduce()

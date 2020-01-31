@@ -1,4 +1,5 @@
 /obj/item/weapon/gun/projectile/semiautomatic
+	maxhealth = 60
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	// pistol accuracy, rifle skill & decent KD chance
 	accuracy_list = list(
@@ -95,13 +96,13 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/handle_post_fire()
 	..()
-
+	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else
 		jamcheck += 0.4
 
-	if (prob(jamcheck))
+	if (prob(jamcheck*reverse_health_percentage))
 		jammed_until = max(world.time + (jamcheck * 4), 40)
 		jamcheck = 0
 
@@ -194,6 +195,59 @@
 	weight = 3.85
 	firemodes = list(
 		list(name="single shot",burst=1, move_delay=2, fire_delay=4)
+		)
+
+	gun_type = GUN_TYPE_RIFLE
+	force = 10
+	throwforce = 20
+	effectiveness_mod = 1.03
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/semiautomatic/svd
+	name = "SVD"
+	desc = "A russian sniper rifle. chambered in 7.62x54mmR."
+	icon_state = "svd"
+	item_state = "svd"
+	base_icon = "svd"
+	w_class = 4
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	max_shells = 10
+	caliber = "a762x54"
+	ammo_type = /obj/item/ammo_casing/a762x54
+	slot_flags = SLOT_SHOULDER
+	magazine_type = /obj/item/ammo_magazine/svd
+	weight = 3.85
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=2, fire_delay=8)
+		)
+
+	gun_type = GUN_TYPE_RIFLE
+	force = 10
+	throwforce = 20
+	effectiveness_mod = 1.03
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/semiautomatic/svd/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/semiautomatic/makeshiftaksniper
+	name = "Makeshift AKD"
+	desc = "A makeshift ak. chambered in 7.62x54mmR."
+	icon_state = "makeshiftaksniper"
+	item_state = "svd"
+	base_icon = "makeshiftaksniper"
+	w_class = 4
+	load_method = SINGLE_CASING|SPEEDLOADER
+	max_shells = 5
+	caliber = "a762x54"
+	ammo_type = /obj/item/ammo_casing/a762x54
+	slot_flags = SLOT_SHOULDER
+	magazine_type = /obj/item/ammo_magazine/mosin
+	weight = 3.85
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=2, fire_delay=8)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -317,7 +371,3 @@
 	throwforce = 20
 	attachment_slots = ATTACH_SCOPE|ATTACH_BARREL
 	effectiveness_mod = 1.07
-/obj/item/weapon/gun/projectile/semiautomatic/ar15/New()
-	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
-	SP.attached(null,src,TRUE)

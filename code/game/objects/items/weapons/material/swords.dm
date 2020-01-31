@@ -229,6 +229,20 @@ obj/item/weapon/material/sword/armingsword/copper
 obj/item/weapon/material/sword/armingsword/bronze
 	default_material = "bronze"
 
+/obj/item/weapon/material/sword/mersksword
+	name = "mersks sword"
+	desc = "A very common medieval medium-sized sword."
+	icon_state = "mersksword"
+	item_state = "longsword2"
+	throw_speed = 3
+	throw_range = 3
+	force_divisor = 0.11 // 48 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 40
+	cooldownw = 13
+	value = 50
+
 /obj/item/weapon/material/sword/vangar
 	name = "Vangar's sword"
 	desc = "A special, customized sword with 'Vangar' engraved on the hilt."
@@ -332,6 +346,20 @@ obj/item/weapon/material/sword/longsword/bronze
 
 obj/item/weapon/material/sword/longsword/diamond
 	default_material = "diamond"
+
+/obj/item/weapon/material/sword/zweihander
+	name = "Zweihander"
+	desc = "A German sword used by knights."
+	icon_state = "zweihander"
+	item_state = "longsword"
+	throw_speed = 1
+	throw_range = 2
+	force_divisor = 1.90 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 60
+	cooldownw = 30
+	value = 60
 
 /obj/item/weapon/material/sword/urukhaiscimitar
 	name = "uruk-hai scimitar"

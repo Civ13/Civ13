@@ -1094,7 +1094,7 @@ var/global/list/damage_icon_parts = list()
 			t_icon = INV_R_HAND_DEF_ICON
 
 		//apply color
-		var/image/standing = image(icon = t_icon, icon_state = t_state)
+		var/image/standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.02)
 		standing.color = r_hand.color
 
 		overlays_standing[R_HAND_LAYER] = standing
@@ -1134,7 +1134,7 @@ var/global/list/damage_icon_parts = list()
 			t_icon = INV_L_HAND_DEF_ICON
 
 		//apply color
-		var/image/standing = image(icon = t_icon, icon_state = t_state)
+		var/image/standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.02)
 		standing.color = l_hand.color
 
 		overlays_standing[L_HAND_LAYER] = standing

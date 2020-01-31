@@ -521,6 +521,7 @@
 		if (!client)
 			species.handle_npc(src)
 	process_roofs()
+	process_static_roofs()
 
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
@@ -736,6 +737,11 @@
 				break
 	for (var/obj/structure/heatsource/HS in range(3, src))
 		if (HS.on == TRUE)
+			if (loc_temp < 22)
+				loc_temp = 22
+				break
+	for (var/obj/structure/oven/fireplace/FP in range(1, src))
+		if (FP.on == TRUE)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
@@ -1601,6 +1607,7 @@
 								if (stat == DEAD)
 									var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
 									HR.name = "[src]'s remains"
+									strip()
 									qdel(src)
 									return
 								else

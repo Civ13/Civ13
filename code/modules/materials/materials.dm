@@ -220,6 +220,14 @@ var/list/name_to_material
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
 	hardness = 100
 
+/material/obsidian
+	name = "obsidian"
+	stack_type = /obj/item/stack/material/obsidian
+	icon_colour = "#060606"
+	hardness = 85
+	sheet_singular_name = "cut rock"
+	sheet_plural_name = "cut rocks"
+
 /material/barbedwire
 	name = "barbedwire"
 	stack_type = /obj/item/stack/material/barbwire
@@ -256,6 +264,18 @@ var/list/name_to_material
 	sheet_singular_name = "leave"
 	sheet_plural_name = "leaves"
 
+/material/hemp
+	name = "hemp"
+	stack_type = /obj/item/stack/material/hemp
+	flags = MATERIAL_UNMELTABLE
+	cut_delay = 5
+	icon_colour = "#FFFFFE"
+	shard_type = null
+	tableslam_noise = null
+	hardness = 10
+
+	sheet_singular_name = "leave"
+	sheet_plural_name = "leaves"
 
 /material/coca
 	name = "coca"
@@ -625,6 +645,17 @@ var/list/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/catpelt
+
+/material/pantherpelt
+	name = "pantherpelt"
+	use_name = "panther"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/pantherpelt
 
 /material/monkeypelt
 	name = "monkeypelt"

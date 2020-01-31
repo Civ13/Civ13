@@ -1204,14 +1204,12 @@
 
 /obj/covers/New()
 	..()
-	if (wall && !incomplete)
-		var/area/caribbean/CURRENTAREA = get_area(src)
-		if (CURRENTAREA.location == AREA_OUTSIDE)
-			current_area_type = CURRENTAREA.type
-			new/obj/roof(get_turf(src))
-
+	initial_opacity = opacity
 	spawn(5)
 		updateturf()
+		if (opacity)
+			for(var/obj/roof/R in range(1,src))
+				R.update_transparency(0)
 	return TRUE
 
 
@@ -1242,6 +1240,10 @@
 		for(var/obj/roof/R in range(2,src))
 			R.collapse_check()
 	..()
+	spawn(1)
+		if (opacity)
+			for(var/obj/roof/R in range(1,src))
+				R.update_transparency(0)
 	return TRUE
 
 // the item you can use to repair a hole

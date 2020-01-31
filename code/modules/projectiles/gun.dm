@@ -164,8 +164,6 @@
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/carbon/human/H = user
-	health_check()
-	health -= rand(0,1)
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return
@@ -266,6 +264,9 @@
 		if (!projectile)
 			handle_click_empty(user)
 			break
+
+		health_check(user)
+		health -= 0.2
 
 		var/acc = 0 // calculated in projectile code
 		var/disp = firemode.dispersion[min(i, firemode.dispersion.len)]
@@ -538,11 +539,26 @@
 
 /obj/item/weapon/gun/examine(mob/user)
 	..()
+	if (health > 0 && maxhealth > 0)
+		var/health_percentage = (health/maxhealth)*100
+		switch (health_percentage)
+			if (-100 to 21)
+				user << "<font color='#7f0000'>Is pratically falling apart!</font>"
+			if (22 to 49)
+				user << "<font color='#a74510'>Seems to be in very bad condition.</font>"
+			if (50 to 69)
+				user << "<font color='#cccc00'>Seems to be in a rough condition.</font>"
+			if (70 to 84)
+				user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
+			if (85 to 200)
+				user << "<font color='#245319'>Seems to be in very good condition.</font>"
+
 	if (firemodes.len > 1)
 		var/datum/firemode/current_mode = firemodes[sel_mode]
 		user.visible_message("The fire selector is set to [current_mode.name].")
 	if (safetyon)
 		user << "<span class='notice'><b>The safety is on.</b></span>"
+
 /obj/item/weapon/gun/proc/switch_firemodes(mob/user=null)
 	sel_mode++
 	if (sel_mode > firemodes.len)
@@ -647,14 +663,18 @@
 		.+= ammo_magazine.get_weight()
 	return .
 
-//health stuff
-/obj/item/weapon/gun/proc/health_check(mob/living/user)
-	//var/mob/living/carbon/human/H = user
+//health stuff; if the gun quality is too low, it might blow up in your hands!
+/obj/item/weapon/gun/proc/health_check(mob/living/carbon/human/H)
 	if(health <= 0 || maxhealth <= 0)
 		playsound(src, "shatter", 70, TRUE)
 		visible_message("<span class='danger'>\The [src.name] shatters!</span>")
+		var/hurthand = "r_hand"
+		if (src.loc == H.l_hand)
+			hurthand = "l_hand"
+		var/obj/item/organ/external/affecting = H.get_organ(hurthand)
+		H.apply_damage(25, BRUTE, affecting)
+		H.bloody_hands(H,0)
+		H.emote("painscream")
+		H.drop_from_inventory(src)
+		new /obj/item/weapon/material/shard(H.loc, "steel")
 		qdel(src)
-		/*var/hurthand = H.get_active_hand()
-		if(prob(25))
-			H.bloody_hands(H,0)*/
-

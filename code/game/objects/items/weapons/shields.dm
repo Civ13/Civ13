@@ -115,6 +115,18 @@
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
+
+/obj/item/weapon/shield/chimalli
+	name = "chimalli"
+	desc = "an oval Mesoamerican shield, furnished with feathers."
+	icon_state = "chimalli"
+	item_state = "chimalli"
+	material = "wood"
+	slot_flags = SLOT_BACK
+	health = 20
+	w_class = 2.0
+	base_block_chance = 30
+	slowdown = 0.1
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
 		return FALSE

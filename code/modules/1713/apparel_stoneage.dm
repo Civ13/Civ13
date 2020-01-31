@@ -14,6 +14,19 @@
 	item_state = "leatherloincloth[randcloth]"
 	worn_state = "leatherloincloth[randcloth]"
 
+/obj/item/clothing/under/leaves_skirt
+	name = "leaf skirt"
+	desc = "A wrap of leaves, worn around the waist."
+	icon_state = "leaves_skirt"
+	item_state = "leaves_skirt"
+	worn_state = "leaves_skirt"
+
+/obj/item/clothing/under/leaves_skirt/long
+	name = "long leaf skirt"
+	icon_state = "leaves_skirt_long"
+	item_state = "leaves_skirt_long"
+	worn_state = "leaves_skirt_long"
+
 /obj/item/clothing/under/indian1
 	name = "short leather loincloth"
 	desc = "A wrap of leather cloth, worn around the waist."
@@ -148,6 +161,14 @@
 	item_state = "iogplate"
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 80, arrow = 70, gun = 90, energy = 20, bomb = 40, bio = 25, rad = FALSE)
+
+/obj/item/clothing/mask/salamon
+	name = "gold plated mask"
+	desc = "A mask plated in gold. Looks expensive."
+	icon_state = "salamon"
+	item_state = "salamon"
+	body_parts_covered = FACE|EYES
+	armor = list(melee = 5, arrow = 14, gun = 10, energy = 20, bomb = 10, bio = 10, rad = FALSE)
 
 /obj/item/clothing/head/helmet/bone
 	name = "bone helmet"
