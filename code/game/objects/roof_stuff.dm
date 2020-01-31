@@ -52,6 +52,32 @@
 	overlay_state = "palm"
 	icon_state = "palm_dm"
 
+/obj/roof/proc/update_transparency(var/on = TRUE) //to see through windows and stuff
+	roof_overlay.alpha = 255
+	spawn(1)
+		if (on)
+			var/turf/T = get_turf(src)
+			T.recalc_atom_opacity()
+			if (T.has_opaque_atom)
+				roof_overlay.alpha = 255
+			else
+				roof_overlay.alpha = 127
+		else
+			roof_overlay.alpha = 255
+		/*
+		var/area/AA = get_area(get_turf())
+		if (AA.
+		for(var/turf/T in range(1,src))
+			T.recalc_atom_opacity()
+			if (!T.has_opaque_atom)
+				var/area/A = get_area(T)
+				if (A.location == AREA_INSIDE)
+					roof_overlay.alpha = 127
+					return FALSE
+		roof_overlay.alpha = 255
+		return TRUE
+		*/
+
 /obj/roof/proc/recalculate_borders(var/recalculate_others = FALSE)
 	var/founddir = 0
 	for (var/drr in list(NORTH,SOUTH,EAST,WEST))
@@ -82,6 +108,34 @@
 	for(var/obj/covers/CV in loc)
 		CV.opacity = FALSE
 	*/
+	var/turf/T = loc
+	T.recalc_atom_opacity()
+	if (T.has_opaque_atom)
+		update_transparency(0)
+	else
+		for(var/obj/structure/S in range(1,src))
+			var/turf/TT = get_turf(S)
+			TT.recalc_atom_opacity()
+			if (TT.has_opaque_atom)
+				update_transparency(0)
+			else if (istype(S, /obj/structure/simple_door) || istype(S, /obj/structure/curtain))
+				if (S.opacity)
+					update_transparency(0)
+				else
+					update_transparency(1)
+			else if (istype(S, /obj/structure/window) || istype(S, /obj/structure/window_frame))
+				var/found = FALSE
+				for(var/obj/structure/SS in S.loc)
+					if (istype(SS, /obj/structure/simple_door) || istype(SS, /obj/structure/curtain))
+						if (SS.opacity)
+							update_transparency(0)
+						else
+							update_transparency(1)
+						found = TRUE
+				if (!found)
+					update_transparency(1)
+
+
 	roofs_list += roof_overlay
 
 /obj/roof/Destroy()

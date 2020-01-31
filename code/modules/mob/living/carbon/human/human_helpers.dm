@@ -274,11 +274,6 @@
 	if (A.location == AREA_INSIDE)
 		if (!roofs_removed)
 			client.images = (client.images ^ roofs_list)
-			/*
-			for (var/image/tmpimg in client.images)
-				if (tmpimg.icon == 'icons/turf/roofs.dmi')
-					client.images.Remove(tmpimg)
-			*/
 			roofs_removed = TRUE
 	else
 		if (roofs_removed)
