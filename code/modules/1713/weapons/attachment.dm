@@ -217,6 +217,12 @@ Current Defines (_defines/attachment.dm)
 	else
 		return
 
+/obj/item/weapon/attachment/jap_flag
+	name = "japanese flag"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "jap_flag"
+	item_state = "jap_flag"
+	attachment_type = ATTACH_BARREL
 
 /obj/item/weapon/attachment/bayonet/military
 	force = WEAPON_FORCE_ROBUST
