@@ -63,35 +63,35 @@ var/list/name_to_material
 
 // Material definition and procs follow.
 /material
-	var/name	                          // Unique name for use in indexing the list.
-	var/display_name                      // Prettier name for display.
+	var/name							  // Unique name for use in indexing the list.
+	var/display_name					  // Prettier name for display.
 	var/use_name
-	var/flags = FALSE                         // Various status modifiers.
+	var/flags = FALSE						 // Various status modifiers.
 	var/sheet_singular_name = "sheet"
 	var/sheet_plural_name = "sheets"
 
 	// Shards/tables/structures
-	var/shard_type = SHARD_SHRAPNEL       // Path of debris object.
-	var/shard_icon                        // Related to above.
-	var/shard_can_repair = TRUE              // Can shards be turned into sheets with a welder?
-	var/list/recipes                      // Holder for all recipes usable with a sheet of this material.
+	var/shard_type = SHARD_SHRAPNEL	   // Path of debris object.
+	var/shard_icon						// Related to above.
+	var/shard_can_repair = TRUE			  // Can shards be turned into sheets with a welder?
+	var/list/recipes					  // Holder for all recipes usable with a sheet of this material.
 	var/destruction_desc = "breaks apart" // Fancy string for barricades/tables/objects exploding.
 
 	// Icons
-	var/icon_colour                                      // Colour applied to products of this material.
-	var/icon_base = "metal"                              // Wall and table base icon tag. See header.
-	var/door_icon_base = "metal"                         // Door base icon tag. See header.
-	var/icon_reinf = "reinf_metal"                       // Overlay used
+	var/icon_colour									  // Colour applied to products of this material.
+	var/icon_base = "metal"							  // Wall and table base icon tag. See header.
+	var/door_icon_base = "metal"						 // Door base icon tag. See header.
+	var/icon_reinf = "reinf_metal"					   // Overlay used
 
 	// Attributes
-	var/cut_delay = FALSE            // Delay in ticks when cutting through this wall.
-	var/radioactivity            // Radiation var. Used in wall and object processing to irradiate surroundings.
-	var/ignition_point           // K, point at which the material catches on fire.
-	var/melting_point = 1800     // K, walls will take damage if they're next to a fire hotter than this
-	var/integrity = 150          // General-use HP value for products.
-	var/opacity = TRUE              // Is the material transparent? 0.5< makes transparent walls/doors.
+	var/cut_delay = FALSE			// Delay in ticks when cutting through this wall.
+	var/radioactivity			// Radiation var. Used in wall and object processing to irradiate surroundings.
+	var/ignition_point		   // K, point at which the material catches on fire.
+	var/melting_point = 1800	 // K, walls will take damage if they're next to a fire hotter than this
+	var/integrity = 150		  // General-use HP value for products.
+	var/opacity = TRUE			  // Is the material transparent? 0.5< makes transparent walls/doors.
 	var/explosion_resistance = 5 // Only used by walls currently.
-	var/conductive = TRUE           // Objects with this var add CONDUCTS to flags on spawn.
+	var/conductive = TRUE		   // Objects with this var add CONDUCTS to flags on spawn.
 	var/list/composite_material  // If set, object matter var will be a list containing these values.
 
 	// Placeholder vars for the time being, todo properly integrate windows/light tiles/rods.
@@ -101,8 +101,8 @@ var/list/name_to_material
 //	var/list/window_options = list()
 
 	// Damage values.
-	var/hardness = 60            // Prob of wall destruction by hulk, used for edge damage in weapons.
-	var/weight = 20              // Determines blunt damage/throwforce for weapons.
+	var/hardness = 60			// Prob of wall destruction by hulk, used for edge damage in weapons.
+	var/weight = 20			  // Determines blunt damage/throwforce for weapons.
 
 	// Noise when someone is faceplanted onto a table made of this material.
 	var/tableslam_noise = 'sound/weapons/tablehit1.ogg'

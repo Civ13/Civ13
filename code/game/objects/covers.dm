@@ -28,6 +28,8 @@
 //	invisibility = 101 //starts invisible
 	var/material = "Wood" //Depending on mat, depending on what harms it.
 	var/adjusts = FALSE //if it adjusts acording to neighbouring sprites
+
+	var/hardness = 50 //for projectile penetration
 /*
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
@@ -108,22 +110,23 @@
 	material = "Wood"
 
 /obj/covers/slate
-    name = "slatestone wall"
-    desc = "A slate wall."
-    icon = 'icons/obj/structures.dmi'
-    icon_state = "slate"
-    passable = TRUE
-    not_movable = TRUE
-    density = TRUE
-    opacity = TRUE
-    amount = 0
-    layer = 3
-    health = 500
-    wood = FALSE
-    wall = TRUE
-    flammable = FALSE
-    explosion_resistance = 10
-    material = "Stone"
+	name = "slatestone wall"
+	desc = "A slate wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "slate"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 500
+	hardness = 100
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 10
+	material = "Stone"
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -528,6 +531,7 @@
 	wall = TRUE
 	explosion_resistance = 5
 	material = "Wood"
+	hardness = 75
 
 /obj/covers/wood_wall/medieval
 	name = "medieval wall"
@@ -572,6 +576,7 @@
 	wall = TRUE
 	explosion_resistance = 1
 	material = "Wood"
+	hardness = 30
 
 /obj/covers/wood_wall/shoji_divider
 	name = "shoji dividing wall"
@@ -588,6 +593,7 @@
 	wall = TRUE
 	explosion_resistance = 1
 	material = "Wood"
+	hardness = 20
 
 /obj/covers/wood_wall/log
 	name = "log wall"
@@ -604,6 +610,7 @@
 	wall = TRUE
 	explosion_resistance = 7
 	material = "Wood"
+	hardness = 80
 
 /obj/covers/wood_wall/log/corner
 	icon_state = "log_wall_corner"
@@ -626,6 +633,7 @@
 	flammable = FALSE
 	explosion_resistance = 10
 	material = "Stone"
+	hardness = 95
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
@@ -711,6 +719,7 @@
 	flammable = FALSE
 	explosion_resistance = 8
 	material = "Stone"
+	hardness = 95
 
 /obj/covers/sandstone_wall
 	name = "sandstone brick wall"
@@ -729,6 +738,7 @@
 	flammable = FALSE
 	explosion_resistance = 8
 	material = "Stone"
+	hardness = 95
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -746,6 +756,7 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 3
+	hardness = 65
 
 /obj/covers/straw_wall
 	name = "straw wall"
@@ -763,6 +774,7 @@
 	wall = TRUE
 	explosion_resistance = 2
 	material = "Wood"
+	hardness = 30
 
 /obj/covers/dirt_wall/blocks
 	name = "dirt blocks wall"
@@ -839,6 +851,7 @@
 	flammable = FALSE
 	explosion_resistance = 6
 	material = "Stone"
+	hardness = 65
 
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
@@ -979,10 +992,11 @@
 	flammable = FALSE
 	explosion_resistance = 6
 	material = "Stone"
+	hardness = 87
 
 /obj/covers/cement_wall
-	name = "cement wall"
-	desc = "A cement wall."
+	name = "concrete wall"
+	desc = "A concrete wall."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "cement_wall"
 	passable = TRUE
@@ -997,6 +1011,7 @@
 	flammable = FALSE
 	explosion_resistance = 7
 	material = "Stone"
+	hardness = 95
 
 /obj/covers/vault
 	name = "vault wall"
@@ -1015,27 +1030,29 @@
 	flammable = FALSE
 	explosion_resistance = 10
 	material = "Stone"
+	hardness = 100
 
 /obj/covers/slate
-    name = "slatestone wall"
-    desc = "A slate wall."
-    icon = 'icons/obj/structures.dmi'
-    icon_state = "slate"
-    passable = TRUE
-    not_movable = TRUE
-    density = TRUE
-    opacity = TRUE
-    amount = 0
-    layer = 3
-    health = 500
-    wood = FALSE
-    wall = TRUE
-    flammable = FALSE
-    explosion_resistance = 10
-    material = "Stone"
+	name = "slatestone wall"
+	desc = "A slate wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "slate"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 500
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 10
+	material = "Stone"
+	hardness = 100
 
 /obj/covers/cement_wall/incomplete
-	name = "cement wall"
+	name = "incomplete concrete wall"
 	desc = "A cement brick wall."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "cementwall_inc1"
@@ -1117,6 +1134,7 @@
 	var/buildstackamount = 8
 	var/buildstack = /obj/item/stack/material/wood
 	material = "Wood"
+	hardness = 15
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))

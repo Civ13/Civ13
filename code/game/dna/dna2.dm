@@ -14,26 +14,26 @@
 // Used in setupgame.dm
 #define DNA_DEFAULT_BOUNDS list(1,2049,2050,4095)
 #define DNA_HARDER_BOUNDS  list(1,3049,3050,4095)
-#define DNA_HARD_BOUNDS    list(1,3490,3500,4095)
+#define DNA_HARD_BOUNDS	list(1,3490,3500,4095)
 
 // UI Indices (can change to mutblock style, if desired)
-#define DNA_UI_HAIR_R      TRUE
-#define DNA_UI_HAIR_G      2
-#define DNA_UI_HAIR_B      3
-#define DNA_UI_BEARD_R     4
-#define DNA_UI_BEARD_G     5
-#define DNA_UI_BEARD_B     6
+#define DNA_UI_HAIR_R	  TRUE
+#define DNA_UI_HAIR_G	  2
+#define DNA_UI_HAIR_B	  3
+#define DNA_UI_BEARD_R	 4
+#define DNA_UI_BEARD_G	 5
+#define DNA_UI_BEARD_B	 6
 #define DNA_UI_SKIN_TONE   7
-#define DNA_UI_SKIN_R      8
-#define DNA_UI_SKIN_G      9
-#define DNA_UI_SKIN_B      10
-#define DNA_UI_EYES_R      11
-#define DNA_UI_EYES_G      12
-#define DNA_UI_EYES_B      13
-#define DNA_UI_GENDER      14
+#define DNA_UI_SKIN_R	  8
+#define DNA_UI_SKIN_G	  9
+#define DNA_UI_SKIN_B	  10
+#define DNA_UI_EYES_R	  11
+#define DNA_UI_EYES_G	  12
+#define DNA_UI_EYES_B	  13
+#define DNA_UI_GENDER	  14
 #define DNA_UI_BEARD_STYLE 15
 #define DNA_UI_HAIR_STYLE  16
-#define DNA_UI_LENGTH      16 // Update this when you add something, or you WILL break shit.
+#define DNA_UI_LENGTH	  16 // Update this when you add something, or you WILL break shit.
 
 #define DNA_SE_LENGTH 27
 // For later:
@@ -76,7 +76,7 @@ var/global/list/datum/dna/gene/dna_genes[0]
 
 	// From old dna.
 	var/b_type = "A+"  // Should probably change to an integer => string map but I'm lazy.
-	var/real_name          // Stores the real name of the person who originally got this dna datum. Used primarily for changelings,
+	var/real_name		  // Stores the real name of the person who originally got this dna datum. Used primarily for changelings,
 
 	// New stuff
 	var/species = "Human"
@@ -125,27 +125,27 @@ var/global/list/datum/dna/gene/dna_genes[0]
 		character.f_style = "Shaved"
 	var/beard	= facial_hair_styles_list.Find(character.f_style)
 
-	SetUIValueRange(DNA_UI_HAIR_R,    character.r_hair,    255,    TRUE)
-	SetUIValueRange(DNA_UI_HAIR_G,    character.g_hair,    255,    TRUE)
-	SetUIValueRange(DNA_UI_HAIR_B,    character.b_hair,    255,    TRUE)
+	SetUIValueRange(DNA_UI_HAIR_R,	character.r_hair,	255,	TRUE)
+	SetUIValueRange(DNA_UI_HAIR_G,	character.g_hair,	255,	TRUE)
+	SetUIValueRange(DNA_UI_HAIR_B,	character.b_hair,	255,	TRUE)
 
-	SetUIValueRange(DNA_UI_BEARD_R,   character.r_facial,  255,    TRUE)
-	SetUIValueRange(DNA_UI_BEARD_G,   character.g_facial,  255,    TRUE)
-	SetUIValueRange(DNA_UI_BEARD_B,   character.b_facial,  255,    TRUE)
+	SetUIValueRange(DNA_UI_BEARD_R,   character.r_facial,  255,	TRUE)
+	SetUIValueRange(DNA_UI_BEARD_G,   character.g_facial,  255,	TRUE)
+	SetUIValueRange(DNA_UI_BEARD_B,   character.b_facial,  255,	TRUE)
 
-	SetUIValueRange(DNA_UI_EYES_R,    character.r_eyes,    255,    TRUE)
-	SetUIValueRange(DNA_UI_EYES_G,    character.g_eyes,    255,    TRUE)
-	SetUIValueRange(DNA_UI_EYES_B,    character.b_eyes,    255,    TRUE)
+	SetUIValueRange(DNA_UI_EYES_R,	character.r_eyes,	255,	TRUE)
+	SetUIValueRange(DNA_UI_EYES_G,	character.g_eyes,	255,	TRUE)
+	SetUIValueRange(DNA_UI_EYES_B,	character.b_eyes,	255,	TRUE)
 
-	SetUIValueRange(DNA_UI_SKIN_R,    character.r_skin,    255,    TRUE)
-	SetUIValueRange(DNA_UI_SKIN_G,    character.g_skin,    255,    TRUE)
-	SetUIValueRange(DNA_UI_SKIN_B,    character.b_skin,    255,    TRUE)
+	SetUIValueRange(DNA_UI_SKIN_R,	character.r_skin,	255,	TRUE)
+	SetUIValueRange(DNA_UI_SKIN_G,	character.g_skin,	255,	TRUE)
+	SetUIValueRange(DNA_UI_SKIN_B,	character.b_skin,	255,	TRUE)
 
-	SetUIValueRange(DNA_UI_SKIN_TONE, 35-character.s_tone, 220,    TRUE) // Value can be negative.
+	SetUIValueRange(DNA_UI_SKIN_TONE, 35-character.s_tone, 220,	TRUE) // Value can be negative.
 
-	SetUIState(DNA_UI_GENDER,         character.gender!=MALE,        TRUE)
+	SetUIState(DNA_UI_GENDER,		 character.gender!=MALE,		TRUE)
 
-	SetUIValueRange(DNA_UI_HAIR_STYLE,  hair,  hair_styles_list.len,       TRUE)
+	SetUIValueRange(DNA_UI_HAIR_STYLE,  hair,  hair_styles_list.len,	   TRUE)
 	SetUIValueRange(DNA_UI_BEARD_STYLE, beard, facial_hair_styles_list.len,1)
 
 	UpdateUI()

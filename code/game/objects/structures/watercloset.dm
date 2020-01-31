@@ -312,7 +312,7 @@
 	icon_state = "w_bathtub"
 	cleanliness = 100
 
-	            //STONE AGE WOODEN BATHTUB//
+				//STONE AGE WOODEN BATHTUB//
 
 			// EARLY COPPER AGE
 /obj/structure/shower/bathtub/stone

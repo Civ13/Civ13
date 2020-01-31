@@ -280,11 +280,11 @@ var/list/organ_cache = list()
 	var/datum/reagent/blood/transplant_blood = locate(/datum/reagent/blood) in reagents.reagent_list
 	transplant_data = list()
 	if (!transplant_blood)
-		transplant_data["species"] =    target.species.name
+		transplant_data["species"] =	target.species.name
 		transplant_data["blood_type"] = target.dna.b_type
 		transplant_data["blood_DNA"] =  target.dna.unique_enzymes
 	else
-		transplant_data["species"] =    transplant_blood.data["species"]
+		transplant_data["species"] =	transplant_blood.data["species"]
 		transplant_data["blood_type"] = transplant_blood.data["blood_type"]
 		transplant_data["blood_DNA"] =  transplant_blood.data["blood_DNA"]
 

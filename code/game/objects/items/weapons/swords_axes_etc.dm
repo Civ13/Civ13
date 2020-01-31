@@ -152,7 +152,7 @@
 	return ..()
 
 /obj/item/garrote/update_icon()
-    icon_state = "garrote[garroting ? "_w" : ""]"
+	icon_state = "garrote[garroting ? "_w" : ""]"
 
 /obj/item/garrote/attack(mob/living/carbon/human/target as mob, mob/living/carbon/human/user as mob)
 	if (garroting)

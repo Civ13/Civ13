@@ -5,7 +5,7 @@
 	var/list/datum/disease2/disease/virus2 = list()
 	var/list/antibodies = list()
 
-	var/life_tick = FALSE      // The amount of life ticks that have processed on this mob.
+	var/life_tick = FALSE	  // The amount of life ticks that have processed on this mob.
 	var/analgesic = FALSE // when this is set, the mob isn't affected by shock or pain
 					  // life should decrease this by TRUE every tick
 	// total amount of wounds on mob, used to spread out healing and the like over all wounds

@@ -51,7 +51,7 @@ var/list/preferences_datums = list()
 	var/r_eyes = FALSE						//Eye color
 	var/g_eyes = FALSE						//Eye color
 	var/b_eyes = FALSE						//Eye color
-	var/species = "Human"               //Species datum to use.
+	var/species = "Human"			   //Species datum to use.
 
 	//Mob preview
 	var/list/preview_icons = list()

@@ -7,16 +7,16 @@
 				//For single Mayor/Governor maps
 var/global_export_tax = 0	//Global Export Tax
 var/global_import_tax = 0	//Global Import Tax
-var/diary               = null
-var/attack_log          = null
-var/href_logfile        = null
-var/customserver_name        = null
-var/game_version        = "Civilization 13"
-var/changelog_hash      = ""
+var/diary			   = null
+var/attack_log		  = null
+var/href_logfile		= null
+var/customserver_name   = null
+var/game_version		= "Civilization 13"
+var/changelog_hash	  = ""
 
 var/round_progressing = TRUE
 
-var/datum/configuration/config      = null
+var/datum/configuration/config	  = null
 
 
 var/Debug2 = FALSE

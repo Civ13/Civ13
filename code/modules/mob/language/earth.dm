@@ -110,10 +110,10 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = LATIN_SYLLABLES
 	mutual_intelligibility = list(/datum/language/portuguese = 30,
-        /datum/language/french = 30,
-        /datum/language/spanish = 30,
-        /datum/language/english = 10,
-        /datum/language/dutch = 10)
+		/datum/language/french = 30,
+		/datum/language/spanish = 30,
+		/datum/language/english = 10,
+		/datum/language/dutch = 10)
 
 /datum/language/arab
 	name = "Arabic"
@@ -288,38 +288,38 @@
 	mutual_intelligibility = list()
 
 /datum/language/gaelic
-    name = "Gaelic"
-    desc = "Drunken ramblings!"
-    key = "g"
-    colour = "Gaelic"
-    flags = RESTRICTED | COMMON_VERBS
-    syllables = GAELIC_SYLLABLES
-    mutual_intelligibility = list()
+	name = "Gaelic"
+	desc = "Drunken ramblings!"
+	key = "g"
+	colour = "Gaelic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = GAELIC_SYLLABLES
+	mutual_intelligibility = list()
 
 /datum/language/inuit
-    name = "inuktitut"
-    desc = "Wendigo!"
-    key = "t"
-    colour = "Inuktitut"
-    flags = RESTRICTED | COMMON_VERBS
-    syllables = INUKTITUT_SYLLABLES
-    mutual_intelligibility = list()
+	name = "inuktitut"
+	desc = "Wendigo!"
+	key = "t"
+	colour = "Inuktitut"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = INUKTITUT_SYLLABLES
+	mutual_intelligibility = list()
 
 /datum/language/cherokee
-    name = "Cherokee"
-    desc = "Zah-dah-dah-goh-huhn-yuhn"
-    key = "q"
-    colour = "Cherokee"
-    flags = RESTRICTED | COMMON_VERBS
-    syllables = CHEROKEE_SYLLABLES
-    mutual_intelligibility = list()
+	name = "Cherokee"
+	desc = "Zah-dah-dah-goh-huhn-yuhn"
+	key = "q"
+	colour = "Cherokee"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CHEROKEE_SYLLABLES
+	mutual_intelligibility = list()
 
 
 /datum/language/oldnorse
-    name = "Old Norse"
-    desc = "Asgard Awaits!"
-    key = "o"
-    colour = "Old Norse"
-    flags = RESTRICTED | COMMON_VERBS
-    syllables = OLDNORSE_SYLLABLES
-    mutual_intelligibility = list()
+	name = "Old Norse"
+	desc = "Asgard Awaits!"
+	key = "o"
+	colour = "Old Norse"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = OLDNORSE_SYLLABLES
+	mutual_intelligibility = list()

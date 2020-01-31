@@ -12,7 +12,7 @@
 	edge = TRUE
 	force_divisor = 0.1 // 6 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.25 // 5 when thrown with weight 20 (steel)
-	var/loaded      //Descriptive string for currently loaded food object.
+	var/loaded	  //Descriptive string for currently loaded food object.
 	var/scoop_food = TRUE
 
 /obj/item/weapon/material/kitchen/utensil/New()

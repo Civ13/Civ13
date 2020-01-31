@@ -2,13 +2,13 @@
 // These are the main datums that emit light.
 
 /datum/light_source
-	var/atom/top_atom       // The atom we're emitting light from (for example a mob if we're from a flashlight that's being held).
-	var/atom/source_atom    // The atom that we belong to.
+	var/atom/top_atom	   // The atom we're emitting light from (for example a mob if we're from a flashlight that's being held).
+	var/atom/source_atom	// The atom that we belong to.
 
-	var/turf/source_turf    // The turf under the above.
-	var/light_power         // Intensity of the emitter light.
-	var/light_range         // The range of the emitted light.
-	var/light_color         // The colour of the light, string, decomposed by parse_light_color()
+	var/turf/source_turf	// The turf under the above.
+	var/light_power		 // Intensity of the emitter light.
+	var/light_range		 // The range of the emitted light.
+	var/light_color		 // The colour of the light, string, decomposed by parse_light_color()
 
 	// Variables for keeping track of the colour.
 	var/lum_r
@@ -20,14 +20,14 @@
 	var/tmp/applied_lum_g
 	var/tmp/applied_lum_b
 
-	var/list/datum/lighting_corner/effect_str     // List used to store how much we're affecting corners.
+	var/list/datum/lighting_corner/effect_str	 // List used to store how much we're affecting corners.
 	var/list/turf/affecting_turfs
 
-	var/applied             // Whether we have applied our light yet or not.
+	var/applied			 // Whether we have applied our light yet or not.
 
-	var/vis_update          // Whether we should smartly recalculate visibility. and then only update tiles that became (in)visible to us.
-	var/needs_update        // Whether we are queued for an update.
-	var/destroyed           // Whether we are destroyed and need to stop emitting light.
+	var/vis_update		  // Whether we should smartly recalculate visibility. and then only update tiles that became (in)visible to us.
+	var/needs_update		// Whether we are queued for an update.
+	var/destroyed		   // Whether we are destroyed and need to stop emitting light.
 	var/force_update
 
 /datum/light_source/New(var/atom/owner, var/atom/top)
@@ -39,7 +39,7 @@
 	top_atom = top
 	if (top_atom != source_atom)
 		if (!top.light_sources)
-			top.light_sources     = list()
+			top.light_sources	 = list()
 
 		top_atom.light_sources += src
 
@@ -50,7 +50,7 @@
 
 	parse_light_color()
 
-	effect_str      = list()
+	effect_str	  = list()
 	affecting_turfs = list()
 
 	update()
@@ -63,11 +63,11 @@
 	force_update()
 	if (source_atom && source_atom.light_sources)
 		source_atom.light_sources -= src
-		source_atom                = null
+		source_atom				= null
 
 	if (top_atom && top_atom.light_sources)
-		top_atom.light_sources    -= src
-		top_atom                   = null
+		top_atom.light_sources	-= src
+		top_atom				   = null
 
 #ifdef LIGHTING_INSTANT_UPDATES
 /datum/light_source/proc/effect_update()
@@ -88,11 +88,11 @@
 // Call it dirty, I don't care.
 // This is here so there's no performance loss on non-instant updates from the fact that the engine can also do instant updates.
 // If you're wondering what's with the "BYOND" argument: BYOND won't let me have a () macro that has no arguments :|.
-#define effect_update(BYOND)            \
-	if (!needs_update)                   \
-	{                                   \
+#define effect_update(BYOND)			\
+	if (!needs_update)				   \
+	{								   \
 		lighting_update_lights += src;  \
-		needs_update            = TRUE; \
+		needs_update			= TRUE; \
 	}
 #endif
 
@@ -174,28 +174,28 @@
 // As such this all gets counted as a single line.
 // The braces and semicolons are there to be able to do this on a single line.
 
-#define APPLY_CORNER(C)              \
+#define APPLY_CORNER(C)			  \
 	. = LUM_FALLOFF(C, source_turf); \
-                                     \
-	. *= light_power;                \
-                                     \
-	effect_str[C] = .;               \
-                                     \
-	C.update_lumcount                \
-	(                                \
-		. * applied_lum_r,           \
-		. * applied_lum_g,           \
-		. * applied_lum_b            \
+									 \
+	. *= light_power;				\
+									 \
+	effect_str[C] = .;			   \
+									 \
+	C.update_lumcount				\
+	(								\
+		. * applied_lum_r,		   \
+		. * applied_lum_g,		   \
+		. * applied_lum_b			\
 	);
 
 // I don't need to explain what this does, do I?
-#define REMOVE_CORNER(C)             \
-	. = -effect_str[C];              \
-	C.update_lumcount                \
-	(                                \
-		. * applied_lum_r,           \
-		. * applied_lum_g,           \
-		. * applied_lum_b            \
+#define REMOVE_CORNER(C)			 \
+	. = -effect_str[C];			  \
+	C.update_lumcount				\
+	(								\
+		. * applied_lum_r,		   \
+		. * applied_lum_g,		   \
+		. * applied_lum_b			\
 	);
 
 // This is the define used to calculate falloff.

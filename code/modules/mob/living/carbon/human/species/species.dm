@@ -5,12 +5,12 @@
 /datum/species
 
 	// Descriptors and strings.
-	var/name                                             // Species name.
-	var/name_plural                                      // Pluralized name (since "[name]s" is not always valid)
-	var/blurb = "A completely nondescript species."      // A brief lore summary for use in the chargen screen.
+	var/name											 // Species name.
+	var/name_plural									  // Pluralized name (since "[name]s" is not always valid)
+	var/blurb = "A completely nondescript species."	  // A brief lore summary for use in the chargen screen.
 
 	// Icon/appearance vars.
-	var/icobase = 'icons/mob/human_races/r_human.dmi'    // Normal icon set.
+	var/icobase = 'icons/mob/human_races/r_human.dmi'	// Normal icon set.
 	var/deform = 'icons/mob/human_races/r_def_human.dmi' // Mutated icon set.
 
 	// Damage overlay and masks.
@@ -18,22 +18,22 @@
 	var/damage_mask = 'icons/mob/human_races/masks/dam_mask_human.dmi'
 	var/blood_mask = 'icons/mob/human_races/masks/blood_human.dmi'
 
-	var/prone_icon                                       // If set, draws this from icobase when mob is prone.
-	var/eyes = "eyes_s"                                  // Icon for eyes.
-	var/has_floating_eyes                                // Eyes will overlay over darkness (glow)
-	var/blood_color = "#A10808"                          // Red.
-	var/flesh_color = "#FFC896"                          // Pink.
-	var/base_color                                       // Used by changelings. Should also be used for icon previes..
-	var/tail                                             // Name of tail state in species effects icon file.
-	var/tail_animation                                   // If set, the icon to obtain tail animation states from.
-	var/race_key = FALSE       	                             // Used for mob icon cache string.
-	var/icon/icon_template                               // Used for mob icon generation for non-32x32 species.
+	var/prone_icon									   // If set, draws this from icobase when mob is prone.
+	var/eyes = "eyes_s"								  // Icon for eyes.
+	var/has_floating_eyes								// Eyes will overlay over darkness (glow)
+	var/blood_color = "#A10808"						  // Red.
+	var/flesh_color = "#FFC896"						  // Pink.
+	var/base_color									   // Used by changelings. Should also be used for icon previes..
+	var/tail											 // Name of tail state in species effects icon file.
+	var/tail_animation								   // If set, the icon to obtain tail animation states from.
+	var/race_key = FALSE	   								 // Used for mob icon cache string.
+	var/icon/icon_template							   // Used for mob icon generation for non-32x32 species.
 	var/mob_size	= MOB_MEDIUM
 	var/show_ssd = "fast asleep"
 	var/virus_immune
-	var/blood_volume = 560                               // Initial blood volume.
-	var/hunger_factor = DEFAULT_HUNGER_FACTOR            // Multiplier for hunger.
-	var/taste_sensitivity = TASTE_NORMAL                 // How sensitive the species is to minute tastes.
+	var/blood_volume = 560							   // Initial blood volume.
+	var/hunger_factor = DEFAULT_HUNGER_FACTOR			// Multiplier for hunger.
+	var/taste_sensitivity = TASTE_NORMAL				 // How sensitive the species is to minute tastes.
 
 	var/teeth_type = /obj/item/stack/teeth/generic 		 //What sort of teeth do the species have
 
@@ -42,27 +42,27 @@
 
 	// Language/culture vars.
 	var/default_language = "Galactic Common" // Default language is used when 'say' is used without modifiers.
-	var/language = "Galactic Common"         // Default racial language, if any.
-	var/list/secondary_langs = list()        // The names of secondary languages that are available to this species.
-	var/list/speech_sounds                   // A list of sounds to potentially play when speaking.
-	var/list/speech_chance                   // The likelihood of a speech sound playing.
-	var/num_alternate_languages = FALSE          // How many secondary languages are available to select at character creation
-	var/name_language = "Galactic Common"    // The language to use when determining names for this species, or null to use the first name/last name generator
+	var/language = "Galactic Common"		 // Default racial language, if any.
+	var/list/secondary_langs = list()		// The names of secondary languages that are available to this species.
+	var/list/speech_sounds				   // A list of sounds to potentially play when speaking.
+	var/list/speech_chance				   // The likelihood of a speech sound playing.
+	var/num_alternate_languages = FALSE		  // How many secondary languages are available to select at character creation
+	var/name_language = "Galactic Common"	// The language to use when determining names for this species, or null to use the first name/last name generator
 
 	// Combat vars.
-	var/total_health = 100                   // Point at which the mob will enter crit.
-	var/list/unarmed_types = list(           // Possible unarmed attacks that the mob will use in combat,
+	var/total_health = 100				   // Point at which the mob will enter crit.
+	var/list/unarmed_types = list(		   // Possible unarmed attacks that the mob will use in combat,
 		/datum/unarmed_attack,
 		/datum/unarmed_attack/bite
 		)
-	var/list/unarmed_attacks = null          // For empty hand harm-intent attack
-	var/brute_mod =     TRUE                    // Physical damage multiplier.
-	var/burn_mod =      TRUE                    // Burn damage multiplier.
-	var/oxy_mod =       TRUE                    // Oxyloss modifier
-	var/toxins_mod =    TRUE                    // Toxloss modifier
-	var/radiation_mod = TRUE                    // Radiation modifier
-	var/flash_mod =     TRUE                    // Stun from blindness modifier.
-	var/vision_flags = SEE_SELF              // Same flags as glasses.
+	var/list/unarmed_attacks = null		  // For empty hand harm-intent attack
+	var/brute_mod =	 TRUE					// Physical damage multiplier.
+	var/burn_mod =	  TRUE					// Burn damage multiplier.
+	var/oxy_mod =	   TRUE					// Oxyloss modifier
+	var/toxins_mod =	TRUE					// Toxloss modifier
+	var/radiation_mod = TRUE					// Radiation modifier
+	var/flash_mod =	 TRUE					// Stun from blindness modifier.
+	var/vision_flags = SEE_SELF			  // Same flags as glasses.
 
 	// Death vars.
 	var/meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat/human
@@ -77,25 +77,25 @@
 	var/halloss_message_self = "You're in too much pain to keep going..."
 
 	// Environment tolerance/life processes vars.
-	var/reagent_tag                                   //Used for metabolizing reagents.
-//	var/breath_pressure = 16                          // Minimum partial pressure safe for breathing, kPa
-//	var/breath_type = "oxygen"                        // Non-oxygen gas breathed, if any.
-//	var/poison_type = "plasma"                        // Poisonous air.
-//	var/exhale_type = "carbon_dioxide"                // Exhaled gas type.
-	var/cold_level_1 = 260                            // Cold damage level TRUE below this point.
-	var/cold_level_2 = 250                            // Cold damage level 2 below this point.
-	var/cold_level_3 = 220                            // Cold damage level 3 below this point.
-	var/heat_level_1 = 315                            // Heat damage level TRUE above this point.
-	var/heat_level_2 = 323                            // Heat damage level 2 above this point.
-	var/heat_level_3 = 333                           // Heat damage level 3 above this point.
-	var/passive_temp_gain = FALSE		                  // Species will gain this much temperature every second
+	var/reagent_tag								   //Used for metabolizing reagents.
+//	var/breath_pressure = 16						  // Minimum partial pressure safe for breathing, kPa
+//	var/breath_type = "oxygen"						// Non-oxygen gas breathed, if any.
+//	var/poison_type = "plasma"						// Poisonous air.
+//	var/exhale_type = "carbon_dioxide"				// Exhaled gas type.
+	var/cold_level_1 = 260							// Cold damage level TRUE below this point.
+	var/cold_level_2 = 250							// Cold damage level 2 below this point.
+	var/cold_level_3 = 220							// Cold damage level 3 below this point.
+	var/heat_level_1 = 315							// Heat damage level TRUE above this point.
+	var/heat_level_2 = 323							// Heat damage level 2 above this point.
+	var/heat_level_3 = 333						   // Heat damage level 3 above this point.
+	var/passive_temp_gain = FALSE						  // Species will gain this much temperature every second
 //	var/hazard_high_pressure = HAZARD_HIGH_PRESSURE   // Dangerously high pressure.
 //	var/warning_high_pressure = WARNING_HIGH_PRESSURE // High pressure warning.
 //	var/warning_low_pressure = WARNING_LOW_PRESSURE   // Low pressure warning.
-//	var/hazard_low_pressure = HAZARD_LOW_PRESSURE     // Dangerously low pressure.
-	var/light_dam                                     // If set, mob will be damaged in light over this value and heal in light below its negative.
-	var/body_temperature = 310.15	                  // Non-IS_SYNTHETIC species will try to stabilize at this temperature.
-	                                                  // (also affects temperature processing)
+//	var/hazard_low_pressure = HAZARD_LOW_PRESSURE	 // Dangerously low pressure.
+	var/light_dam									 // If set, mob will be damaged in light over this value and heal in light below its negative.
+	var/body_temperature = 310.15					  // Non-IS_SYNTHETIC species will try to stabilize at this temperature.
+													  // (also affects temperature processing)
 
 	var/list/heat_discomfort_strings = list(
 		"You feel sweat drip down your neck.",
@@ -117,27 +117,27 @@
 	var/list/inherent_verbs 	  // Species-specific verbs.
 	var/has_fine_manipulation = TRUE // Can use small items.
 	var/siemens_coefficient = TRUE   // The lower, the thicker the skin and better the insulation.
-	var/darksight = 2             // Native darksight distance.
-	var/flags = FALSE                 // Various specific features.
-	var/appearance_flags = FALSE      // Appearance/display related features.
-	var/spawn_flags = FALSE           // Flags that specify who can spawn as this species
-	var/slowdown = FALSE              // Passive movement speed malus (or boost, if negative)
-	var/primitive_form            // Lesser form, if any (ie. monkey for humans)
-	var/greater_form              // Greater form, if any, ie. human for monkeys.
+	var/darksight = 2			 // Native darksight distance.
+	var/flags = FALSE				 // Various specific features.
+	var/appearance_flags = FALSE	  // Appearance/display related features.
+	var/spawn_flags = FALSE		   // Flags that specify who can spawn as this species
+	var/slowdown = FALSE			  // Passive movement speed malus (or boost, if negative)
+	var/primitive_form			// Lesser form, if any (ie. monkey for humans)
+	var/greater_form			  // Greater form, if any, ie. human for monkeys.
 	var/holder_type
-	var/gluttonous                // Can eat some mobs. Values can be GLUT_TINY, GLUT_SMALLER, GLUT_ANYTHING.
-	var/rarity_value = TRUE          // Relative rarity/collector value for this species.
-	                              // Determines the organs that the species spawns with and
-	var/list/has_organ = list(    // which required-organ checks are conducted.
-		"heart" =    /obj/item/organ/heart,
-		"lungs" =    /obj/item/organ/lungs,
-		"liver" =    /obj/item/organ/liver,
+	var/gluttonous				// Can eat some mobs. Values can be GLUT_TINY, GLUT_SMALLER, GLUT_ANYTHING.
+	var/rarity_value = TRUE		  // Relative rarity/collector value for this species.
+								  // Determines the organs that the species spawns with and
+	var/list/has_organ = list(	// which required-organ checks are conducted.
+		"heart" =	/obj/item/organ/heart,
+		"lungs" =	/obj/item/organ/lungs,
+		"liver" =	/obj/item/organ/liver,
 		"kidneys" =  /obj/item/organ/kidneys,
-		"brain" =    /obj/item/organ/brain,
+		"brain" =	/obj/item/organ/brain,
 		"appendix" = /obj/item/organ/appendix,
-		"eyes" =     /obj/item/organ/eyes
+		"eyes" =	 /obj/item/organ/eyes
 		)
-	var/vision_organ              // If set, this organ is required for vision. Defaults to "eyes" if the species has them.
+	var/vision_organ			  // If set, this organ is required for vision. Defaults to "eyes" if the species has them.
 
 	var/list/has_limbs = list(
 		"chest" =  list("path" = /obj/item/organ/external/chest),
@@ -454,9 +454,9 @@
 		if ((organ in H.organs) || (organ in H.internal_organs))
 			qdel(organ)
 
-	if (H.organs)                  H.organs.Cut()
-	if (H.internal_organs)         H.internal_organs.Cut()
-	if (H.organs_by_name)          H.organs_by_name.Cut()
+	if (H.organs)				  H.organs.Cut()
+	if (H.internal_organs)		 H.internal_organs.Cut()
+	if (H.organs_by_name)		  H.organs_by_name.Cut()
 	if (H.internal_organs_by_name) H.internal_organs_by_name.Cut()
 
 	H.organs = list()

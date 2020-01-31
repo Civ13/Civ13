@@ -3,7 +3,7 @@
 	plane = GAME_PLANE
 	var/last_move = null
 	var/anchored = FALSE
-	// var/elevation = 2    - not used anywhere
+	// var/elevation = 2	- not used anywhere
 	var/move_speed = 10
 	var/l_move_time = TRUE
 	var/m_flag = TRUE

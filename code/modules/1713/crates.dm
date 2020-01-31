@@ -647,14 +647,14 @@ obj/structure/closet/crate/airdrops/food
 obj/structure/closet/crate/airdrops/weapons
 	name = "weapons crate"
 	paths = list(/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47 = 1,
-	            /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt = 1,
+				/obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt = 1,
 				/obj/item/ammo_magazine/ak47/makeshift = 2,
 				/obj/item/ammo_casing/a762x54 = 10)
 
 obj/structure/closet/crate/airdrops/military
 	name = "military crate"
 	paths = list(/obj/item/weapon/gun/projectile/submachinegun/m16 = 1,
-	            /obj/item/ammo_magazine/m16 = 2,
+				/obj/item/ammo_magazine/m16 = 2,
 				/obj/item/clothing/mask/gas/military = 1,
 				/obj/item/clothing/accessory/armor/nomads/thickcarrier = 1,
 				/obj/item/weapon/grenade/modern/f1 = 1,

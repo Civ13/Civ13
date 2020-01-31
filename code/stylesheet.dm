@@ -92,8 +92,8 @@ h1.alert, h2.alert		{color: #ff0000;}
 
 .interface				{color: #704C70;}
 
-.good                   {color: #839E69; font-weight: bold;}
-.bad                    {color: #ff3737; font-weight: bold;}
+.good				   {color: #839E69; font-weight: bold;}
+.bad					{color: #ff3737; font-weight: bold;}
 
 BIG IMG.icon 			{width: 32px; height: 32px;}
 

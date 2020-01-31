@@ -23,5 +23,5 @@
 #define CE_ALCOHOL "alcohol" // Liver filtering
 #define CE_ALCOHOL_TOXIC "alcotoxic" // Liver damage
 #define CE_SPEEDBOOST "gofast" // Hyperzine
-#define CE_PULSE      "xcardic" // increases or decreases heart rate
-#define CE_NOPULSE    "heartstop" // stops heartbeat
+#define CE_PULSE	  "xcardic" // increases or decreases heart rate
+#define CE_NOPULSE	"heartstop" // stops heartbeat

@@ -92,8 +92,8 @@ mob/living/InCone(mob/center = usr, dir = NORTH)
 
 
 proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
-    for (var/atom/O in list) if (!O.InCone(center, dir)) list -= O
-    return list
+	for (var/atom/O in list) if (!O.InCone(center, dir)) list -= O
+	return list
 
 /mob/proc/update_vision_cone()
 	return

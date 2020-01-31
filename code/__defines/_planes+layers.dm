@@ -40,7 +40,7 @@ What is the naming convention for planes or layers?
 
 */
 
-#define SPACE_PLANE     -10
+#define SPACE_PLANE	 -10
 
 #define PARALLAX_PLANE  -9
 

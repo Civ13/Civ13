@@ -4,10 +4,10 @@
 /datum/data/vending_product
 	var/product_name = "generic" // Display name for the product
 	var/product_path = null
-	var/amount = 0            // The original amount held in the vending machine
-	var/price = 0              // Price to buy one
+	var/amount = 0			// The original amount held in the vending machine
+	var/price = 0			  // Price to buy one
 	var/display_color = null   // Display color for vending machine listing
-	var/vending_machine        // The vending machine we belong to
+	var/vending_machine		// The vending machine we belong to
 	var/image/product_image			//an image to be used as an overlay in the vending machine
 	var/list/product_item = list()	//the actual objects
 	var/is_stack = FALSE
