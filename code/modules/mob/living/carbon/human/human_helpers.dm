@@ -270,6 +270,8 @@
 	var/roofs_removed = TRUE
 
 /mob/living/carbon/human/proc/process_static_roofs()
+	if (!client)
+		return
 	var/area/A = get_area(loc)
 	if (A.location == AREA_INSIDE)
 		if (!roofs_removed)
