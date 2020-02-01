@@ -9,9 +9,9 @@
 //				if (choice_race == "Randomize")
 //					choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla")
 
-			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin"))
+			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","German","Greek",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
 			if (choice1 == "Randomize")
-				choice1 = pick("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
+				choice1 = pick("Russian","German","Greek",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin")
 			else
 				var/list/possible_h_list = list("Black")
 				var/list/possible_e_list = list("Black")
