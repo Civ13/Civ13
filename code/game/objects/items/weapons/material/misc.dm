@@ -601,8 +601,8 @@
 	cooldownw = 11
 
 /obj/item/weapon/material/hatchet/bone_battleaxe
-	name = "bone battle axe"
-	desc = "A very sharpened bone axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	name = "battle axe"
+	desc = "A very sharp bone axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "bone_battleaxe"
 	item_state = "bone_battleaxe"
