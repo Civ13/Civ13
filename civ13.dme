@@ -323,6 +323,7 @@
 #include "code\game\objects\structures\repairing.dm"
 #include "code\game\objects\structures\rocks.dm"
 #include "code\game\objects\structures\safe.dm"
+#include "code\game\objects\structures\sea.dm"
 #include "code\game\objects\structures\sign_flags.dm"
 #include "code\game\objects\structures\signs.dm"
 #include "code\game\objects\structures\table.dm"
@@ -909,5 +910,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\isles.dmm"
+#include "maps\special\nomads_new_world.dmm"
 // END_INCLUDE
