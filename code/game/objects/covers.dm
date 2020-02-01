@@ -1247,7 +1247,6 @@
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
 			new current_area_type(get_turf(src))
-			visible_message("The roof collapses!")
 		var/turf/floor/T = get_turf(loc)
 		if (T)
 			T.water_level = origin_water_level
