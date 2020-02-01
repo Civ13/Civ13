@@ -718,7 +718,8 @@ RECIPE: /material/steel/,fuel pump (small),/obj/structure/fuelpump/small,15,120,
 RECIPE: /material/steel/,fuel pump (N),/obj/structure/fuelpump/n,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (S),/obj/structure/fuelpump/s,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
-RECIPE: /material/steel/,steel frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,steel ship frame,/obj/structure/vehicleparts/frame/ship/steel,2,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,driver's seat,/obj/structure/bed/chair/drivers,8,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,loaders's seat,/obj/structure/bed/chair/loader,6,40,0,1,vehicle parts,126,125,0,8,null
 RECIPE: /material/steel/,gunner's seat,/obj/structure/bed/chair/gunner,6,40,0,1,vehicle parts,126,125,0,8,null
@@ -770,6 +771,7 @@ RECIPE: /material/wood/,communications pole,/obj/structure/phoneline,2,50,1,1,no
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,outrigger boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,wood vehicle frame,/obj/structure/vehicleparts/frame/wood,2,40,0,1,vehicle parts,126,0,0,8,null
+
 RECIPE: /material/wood/,wood ship frame,/obj/structure/vehicleparts/frame/ship,4,40,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,ship rudder axis (2500 weight),/obj/structure/vehicleparts/axis/ship/heavy,45,300,0,1,vehicle parts,55,0,0,8,null
 RECIPE: /material/wood/,light ship rudder axis (1200 weight),/obj/structure/vehicleparts/axis/ship,25,200,0,1,vehicle parts,41,0,0,8,null
