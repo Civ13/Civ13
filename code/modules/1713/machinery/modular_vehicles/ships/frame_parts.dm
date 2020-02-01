@@ -1,8 +1,8 @@
 /obj/structure/vehicleparts/frame/ship/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!I || !H)
 		return
-	if (istype (I, /obj/item/stack/material/wood) && !axis)
-		var/obj/item/stack/material/wood/S = I
+	if (((istype (I, /obj/item/stack/material/wood) && !istype(src, /obj/structure/vehicleparts/frame/ship/steel)) || (istype (I, /obj/item/stack/material/steel) && istype(src, /obj/structure/vehicleparts/frame/ship/steel))) && !axis)
+		var/obj/item/stack/material/S = I
 		var/list/optlist = list("Cancel")
 		if (w_left[1] == "")
 			optlist += "left"
@@ -21,7 +21,7 @@
 		if (choice1 == "Cancel")
 			return
 		else
-			choice2 = input(H, "How thick should the armor be? 1 wood = 5mm. 0 to 50mm.") as num
+			choice2 = input(H, "How thick should the armor be? 1 [S] = 5mm. 0 to 50mm.") as num
 			if (!isnum(choice2))
 				return
 			else if (choice2 <= 0)
@@ -29,7 +29,7 @@
 			else if (choice2 > 50)
 				return
 			else if (choice2/5 > S.amount)
-				H << "<span class='warning'>Not enough wood!</span>"
+				H << "<span class='warning'>Not enough [S]!</span>"
 				return
 
 		var/choice3 = WWinput(H, "Which type of wall?", "Wall Creation", "Cancel", list("Cancel","wall","crenelated wall","open window"))
@@ -77,6 +77,7 @@
 			else
 				w_back = list("boat_port0",TRUE,TRUE,choice2,choice2*1.5,FALSE,FALSE)
 		update_icon()
+
 	else
 		..()
 
