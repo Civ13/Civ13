@@ -377,6 +377,7 @@
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 15)
 	M.adjustBrainLoss(-0.5 * removed)
+	M.mood += removed*10
 
 /datum/reagent/thc
 	name = "THC"
@@ -399,6 +400,8 @@
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 25)
 	M.adjustBrainLoss(-0.1 * removed)
+	M.mood += removed*20
+
 /datum/reagent/serotrotium
 	name = "Serotrotium"
 	id = "serotrotium"

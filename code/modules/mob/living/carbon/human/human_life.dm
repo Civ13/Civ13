@@ -438,11 +438,9 @@
 				disease_treatment = 0
 
 	if (disease == TRUE)
-		if (!disease_type in disease_immunity)
-			//Do nothing
-		else
+		if (disease_type in disease_immunity)
 			disease = FALSE
-			disease_type = ""
+			disease_type = "none"
 			disease_progression = 0
 			disease_treatment = 0
 

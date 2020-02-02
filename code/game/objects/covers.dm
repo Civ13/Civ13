@@ -24,7 +24,8 @@
 	var/current_area_type = /area/caribbean
 	var/incomplete = FALSE
 	explosion_resistance = TRUE
-	var/bullethole_count = 0
+	var/list/bullethole_count = list()
+	var/list/bullethole_overlays = list()
 //	invisibility = 101 //starts invisible
 	var/material = "Wood" //Depending on mat, depending on what harms it.
 	var/adjusts = FALSE //if it adjusts acording to neighbouring sprites
@@ -633,7 +634,7 @@
 	flammable = FALSE
 	explosion_resistance = 10
 	material = "Stone"
-	hardness = 95
+	hardness = 100
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
@@ -719,7 +720,7 @@
 	flammable = FALSE
 	explosion_resistance = 8
 	material = "Stone"
-	hardness = 95
+	hardness = 100
 
 /obj/covers/sandstone_wall
 	name = "sandstone brick wall"
@@ -738,7 +739,7 @@
 	flammable = FALSE
 	explosion_resistance = 8
 	material = "Stone"
-	hardness = 95
+	hardness = 100
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -851,7 +852,7 @@
 	flammable = FALSE
 	explosion_resistance = 6
 	material = "Stone"
-	hardness = 65
+	hardness = 75
 
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
@@ -992,7 +993,7 @@
 	flammable = FALSE
 	explosion_resistance = 6
 	material = "Stone"
-	hardness = 87
+	hardness = 92
 
 /obj/covers/cement_wall
 	name = "concrete wall"
@@ -1246,7 +1247,6 @@
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
 			new current_area_type(get_turf(src))
-			visible_message("The roof collapses!")
 		var/turf/floor/T = get_turf(loc)
 		if (T)
 			T.water_level = origin_water_level
@@ -1418,6 +1418,8 @@
 						visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 						qdel(src)
 			else
+				if (istype(proj, /obj/item/projectile/bullet) && bullethole_count.len < 13)
+					new_bullethole()
 				health -= proj.damage * 0.1
 				try_destroy()
 			return
@@ -1469,6 +1471,8 @@
 /obj/covers/update_icon()
 	..()
 	check_relatives(1,1)
+	overlays.Cut()
+	overlays |= bullethole_overlays
 
 /obj/covers/New()
 	..()
@@ -1477,6 +1481,22 @@
 /obj/covers/Destroy()
 	check_relatives(0,1)
 	..()
+
+/obj/covers/proc/new_bullethole()
+	if (bullethole_count.len >= 13)
+		return
+	if (!wall)
+		return
+	var/list/opts = list(1,2,3,4,5,6,7,8,9,10,11,12,13)
+	for(var/i in bullethole_count)
+		opts -= i
+	if (isemptylist(opts))
+		return
+	var/chnum = pick(opts)
+	var/tmp_bullethole = image(icon = 'icons/turf/walls.dmi', icon_state = "bullethole[chnum]", layer = src.layer+0.01)
+	bullethole_overlays += tmp_bullethole
+	bullethole_count += list(chnum)
+	update_icon()
 ////////////////////////////////////////////////////////////
 
 /obj/covers/wood_wall/aztec

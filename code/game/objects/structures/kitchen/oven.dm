@@ -294,7 +294,7 @@
 				if (x == HH.x)
 					currdir = ""
 			if (currdir != "somewhere" && currdir != "")
-				HH << "You see some smoke signals [currdir] of you..."
+				HH << "<b>You see some smoke signals [currdir] of you...</b>"
 
 /obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))

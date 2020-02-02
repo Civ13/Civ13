@@ -102,9 +102,6 @@ var/list/global/wall_cache = list()
 				return
 	..()
 
-/turf/wall/rockwall/update_icon()
-	return
-
 /turf/wall/rockwall/New(var/newloc, var/materialtype, var/rmaterialtype)
 	..(newloc, materialtype, rmaterialtype)
 
