@@ -118,6 +118,24 @@
 	caliber = 76.2
 	heavy_armor_penetration = 80
 	damage = 125
+
+/obj/item/cannon_ball/shell/tank/HE204
+	atype = "HE"
+	caliber = 204
+	heavy_armor_penetration = 100
+	damage = 500
+
+/obj/item/cannon_ball/shell/tank/AP204
+	atype = "AP"
+	caliber = 204
+	heavy_armor_penetration = 150
+	damage = 400
+
+/obj/item/cannon_ball/shell/tank/APCR204
+	atype = "APCR"
+	caliber = 204
+	heavy_armor_penetration = 125
+	damage = 450
 /obj/item/cannon_ball/shell/tank/nuclear/
 	atype = "NUCLEAR"
 	New()
@@ -333,4 +351,27 @@
 	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	update_icon()
+
+/obj/structure/shellrack/full204/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE204(storage)
+	new /obj/item/cannon_ball/shell/tank/HE204(storage)
+	new /obj/item/cannon_ball/shell/tank/HE204(storage)
+	new /obj/item/cannon_ball/shell/tank/HE204(storage)
+	new /obj/item/cannon_ball/shell/tank/HE204(storage)
+	new /obj/item/cannon_ball/shell/tank/HE204(storage)
+
+
+	new /obj/item/cannon_ball/shell/tank/AP204(storage)
+	new /obj/item/cannon_ball/shell/tank/AP204(storage)
+	new /obj/item/cannon_ball/shell/tank/AP204(storage)
+	new /obj/item/cannon_ball/shell/tank/AP204(storage)
+	new /obj/item/cannon_ball/shell/tank/AP204(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
 	update_icon()
