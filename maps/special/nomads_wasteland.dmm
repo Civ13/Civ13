@@ -711,7 +711,7 @@
 "nI" = (/obj/covers/steelplating,/obj/structure/closet/crate,/obj/item/weapon/flame/lighter/zippo,/turf/floor/dirt,/area/caribbean/void/caves)
 "nJ" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/carpet,/area/caribbean/void/caves)
 "nK" = (/turf/floor/carpet,/area/caribbean/void/caves)
-"nL" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/coat/priest,/obj/item/weapon/book/holybook,/obj/item/weapon/reagent_containers/food/drinks/bottle/holywater,/obj/item/weapon/material/kitchen/utensil/knife/circumcision,/turf/floor/carpet,/area/caribbean/void/caves)
+"nL" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/coat/priest,/obj/item/weapon/book/holybook,/obj/item/weapon/material/kitchen/utensil/knife/circumcision,/turf/floor/carpet,/area/caribbean/void/caves)
 "nM" = (/obj/covers/marblefloor,/obj/roof/concrete,/turf/floor/grass,/area/caribbean/nomads/forest)
 "nN" = (/obj/covers/steelplating/white,/obj/covers/cement_wall,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "nO" = (/obj/covers/steelplating/white,/obj/covers/cement_wall,/obj/structure/sign/portrait/lenin,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
