@@ -484,6 +484,13 @@
 	item_state = "tactical1"
 	worn_state = "tactical1"
 
+/obj/item/clothing/under/gorka
+	name = "gorka outfit"
+	desc = "A gorka outfit used by spertnaz."
+	icon_state = "gorka"
+	item_state = "gorka"
+	worn_state = "gorka"
+
 /obj/item/clothing/under/modern8
 	name = "modern skirt"
 	desc = "An outfit composed of a black skirt and white shirt."
