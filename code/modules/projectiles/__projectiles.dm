@@ -421,7 +421,7 @@
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	damage = DAMAGE_MEDIUM + 1
 	penetrating = 1
-	armor_penetration = 9
+	armor_penetration = 3
 
 /obj/item/projectile/bullet/mg/a127x108
 	damage = DAMAGE_HIGH + 2
