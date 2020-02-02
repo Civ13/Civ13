@@ -248,7 +248,7 @@
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
 	if (istype(M, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M
-		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando")
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
 			H << "This tunnel is too small for you!"
 			return
 		else
@@ -262,6 +262,17 @@
 	icon_state = "hole_bottom"
 	istop = FALSE
 /obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong
+
+/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong/attack_hand(var/mob/M)
+	if (istype(M, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = M
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
+			H << "This tunnel is too small for you!"
+			return
+		else
+			..()
+	else
+		..()
 
 /obj/structure/multiz/ladder/ww2/teleporter
 	name = "ladder"
