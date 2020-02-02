@@ -486,7 +486,7 @@
 
 /obj/item/clothing/under/gorka
 	name = "gorka outfit"
-	desc = "A gorka outfit used by spertnaz."
+	desc = "A gorka outfit used by Spetsnaz."
 	icon_state = "gorka"
 	item_state = "gorka"
 	worn_state = "gorka"
