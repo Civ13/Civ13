@@ -104,6 +104,57 @@
 	edge = TRUE
 	w_class = 2.0
 
+/obj/item/weapon/armorplatesswimmer
+	name = "swimmer plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "swimmerplate"
+	item_state = "swimmerplate"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/weapon/armorplatessharpshooter
+	name = "sharpshooter plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "sharpshooter"
+	item_state = "sharpshooter"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/weapon/armorplate
+	name = "armor plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "plate1"
+	item_state = "plate1"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
 /obj/item/clothing/accessory/armor/knee_protections
 	name = "knee protections"
 	desc = "Used to increase the protection of the legs."
@@ -456,6 +507,45 @@
 	slowdown = 0.3
 	w_class = 4
 	weight = 3.8
+
+/obj/item/clothing/accessory/armor/coldwar/platecarrier
+	name = "tan plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is tan."
+	icon_state = "platecarrier_tan"
+	item_state = "platecarrier_tan"
+	worn_state = "platecarrier_tan"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/coldwar/platecarriergreen
+	name = "olive plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is olive."
+	icon_state = "platecarrier_green"
+	item_state = "platecarrier_green"
+	worn_state = "platecarrier_green"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/coldwar/platecarrierblack
+	name = "black plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is black."
+	icon_state = "platecarrier_black"
+	item_state = "platecarrier_black"
+	worn_state = "platecarrier_black"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
 
 /obj/item/clothing/accessory/armor/nomads/kevlarblack
 	name = "black kevlar vest"

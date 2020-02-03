@@ -37,6 +37,7 @@
 /datum/job/var/is_rcw = FALSE
 /datum/job/var/is_tanker = FALSE
 /datum/job/var/is_prison = FALSE
+/datum/job/var/is_navy = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov

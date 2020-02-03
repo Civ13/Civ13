@@ -471,7 +471,7 @@
 	rank_abbreviation = "1lt."
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateJPCap"
+	spawn_location = "JoinLateJPLT"
 	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_commander = TRUE
@@ -519,7 +519,7 @@
 	rank_abbreviation = "2lt."
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateJPCap"
+	spawn_location = "JoinLateJPLT"
 	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_commander = TRUE
@@ -584,14 +584,15 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/type100(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier100(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
+	var/obj/item/clothing/accessory/storage/sheath/katanah = new /obj/item/clothing/accessory/storage/sheath/katana(null)
+	uniform.attackby(katanah, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your group according to the <b>Captain or Leiutenant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -743,6 +744,7 @@ datum/job/japanese/ija_medic
 	spawn_location = "JoinLateJP"
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
+	is_tanker = TRUE
 	// AUTOBALANCE
 	min_positions = 4
 	max_positions = 100

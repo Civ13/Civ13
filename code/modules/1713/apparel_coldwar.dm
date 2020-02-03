@@ -358,7 +358,7 @@
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
 /obj/item/clothing/accessory/storage/webbing/pouches
-	name = "black puches"
+	name = "black pouches"
 	desc = "a set of pouches to store magazines in."
 	slots = 3
 	icon_state = "black_pouches"
@@ -368,7 +368,7 @@
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine)
 
 /obj/item/clothing/accessory/storage/webbing/largepouches
-	name = "large black puches"
+	name = "large black pouches"
 	desc = "a large set of pouches to store magazines in."
 	slots = 6
 	icon_state = "largepouches"
@@ -377,8 +377,18 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine)
 
+/obj/item/clothing/accessory/storage/webbing/largepouchestan
+	name = "large tan pouches"
+	desc = "a large set of pouches to store magazines in."
+	slots = 6
+	icon_state = "largepouches_tan"
+	item_state = "largepouches_tan"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine)
+
 /obj/item/clothing/accessory/storage/webbing/tanpouches
-	name = "tan puches"
+	name = "tan pouches"
 	desc = "a set of pouches to store magazines in."
 	slots = 3
 	icon_state = "tan_pouches"
