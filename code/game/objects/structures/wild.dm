@@ -440,6 +440,7 @@
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 3
 		new/obj/item/weapon/leaves/palm_leaves(get_turf(src))
+		new/obj/item/weapon/leaves/palm_leaves(get_turf(src))
 		qdel(src)
 		return
 /obj/structure/wild/palm/New()

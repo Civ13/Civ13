@@ -1,4 +1,4 @@
-/obj/structure/fish
+f/obj/structure/fish
 	name = "fish"
 	desc = "There seems to be a bunch of fish here."
 	icon = 'icons/mob/fish.dmi'
