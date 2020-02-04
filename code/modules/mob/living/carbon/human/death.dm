@@ -67,7 +67,7 @@
 		for(var/stocky in poss_list)
 			for(var/list/lx in map.custom_company[stocky])
 				if (lx[1] == src)
-					map.sales_registry += list(list(stocky,lx[2],map.custom_company_value[stocky]*(lx[2]/100)*2,null))
+					map.sales_registry += list(list(stocky,lx[2],map.custom_company_value[stocky]*(lx[2]/100)*2,null,1))
 			for(var/l=1, l <= map.custom_company[stocky].len, l++)
 				if (map.custom_company[stocky][l][1] == src)
 					map.custom_company[stocky][l][1] = null
