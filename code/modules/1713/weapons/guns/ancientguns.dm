@@ -319,13 +319,13 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 			var/dirpick = 6
 			if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
 				dirpick = 4
-			if (W.dir == NORTH)
+			if (user.dir == NORTH)
 				target = locate(user.x,user.y+dirpick,user.z)
-			else if (W.dir == SOUTH)
+			else if (user.dir == SOUTH)
 				target = locate(user.x,user.y-dirpick,user.z)
-			else if (W.dir == EAST)
+			else if (user.dir == EAST)
 				target = locate(user.x+dirpick,user.y,user.z)
-			else if (W.dir == WEST)
+			else if (user.dir == WEST)
 				target = locate(user.x-dirpick,user.y,user.z)
 			if (target)
 				afterattack(target, user, FALSE)
