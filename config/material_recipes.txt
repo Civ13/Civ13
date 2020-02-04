@@ -556,7 +556,7 @@ RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/
 //**************************************************************
 
 //COPPER AGE WOODEN CART//
-RECIPE: /material/wood/,wooden cart,/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,1,null
+RECIPE: /material/wood/,wooden cart,/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,8,null
 //COPPER AGE WOODEN CART//
 
 //DARK AGE STONE CART//
