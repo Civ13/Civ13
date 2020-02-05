@@ -500,9 +500,9 @@
 	overdose = 15
 
 /datum/reagent/dragonpowder/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_PAINKILLER, 100)
+	M.add_chemical_effect(CE_PAINKILLER, 600)
 	M.addictions["cocaine"] += 0.50
-	M.add_chemical_effect(CE_SPEEDBOOST, 6)
-	M.add_chemical_effect(CE_PULSE, 7)
+	M.add_chemical_effect(CE_SPEEDBOOST, 12)
+	M.add_chemical_effect(CE_PULSE, 9)
 	M.mood += removed*100
 
