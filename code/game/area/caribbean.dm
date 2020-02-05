@@ -20,6 +20,31 @@
 	icon_state = "blue1"
 	location = AREA_INSIDE
 
+/area/caribbean/roofed/tundra
+	climate = "tundra"
+	base_turf = /turf/floor/dirt/winter
+
+/area/caribbean/roofed/taiga
+	climate = "taiga"
+	base_turf = /turf/floor/dirt/winter
+
+/area/caribbean/roofed/temperate
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/roofed/desert
+	icon_state = "purple1"
+	climate = "desert"
+	base_turf = /turf/floor/beach/sand/desert
+
+/area/caribbean/roofed/semiarid
+	climate = "semiarid"
+	base_turf = /turf/floor/dirt/dust
+
+/area/caribbean/roofed/jungle
+	climate = "jungle"
+	base_turf = /turf/floor/dirt/jungledirt
+
 /area/caribbean/treasury
 	name = "Colony Treasury"
 	base_turf = /turf/floor/dirt

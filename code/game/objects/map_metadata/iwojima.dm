@@ -21,7 +21,7 @@
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese Army will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture Japanese Command within Mount Suribachi!</font>"
 	faction1 = JAPANESE
 	faction2 = AMERICAN
-	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 	gamemode = "Siege"

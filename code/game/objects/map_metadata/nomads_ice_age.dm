@@ -67,7 +67,7 @@
 			if  (A.location != AREA_INSIDE)
 				G.ChangeTurf(/turf/floor/winter/grass)
 		spawn(100)
-			change_weather(WEATHER_SNOW)
+			change_weather(WEATHER_WET)
 		spawn(800)
 		for (var/turf/floor/beach/water/shallowsaltwater/W)
 			W.ChangeTurf(/turf/floor/beach/water/ice/salty)

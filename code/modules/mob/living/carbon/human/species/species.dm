@@ -201,7 +201,7 @@
 		if (istype(H.wear_suit, /obj/item/clothing/suit))
 			if (H.wear_suit.min_cold_protection_temperature <= COAT_MIN_COLD_PROTECTION_TEMPERATURE)
 				var/area/mob_area = get_area(H)
-				if (mob_area.weather != WEATHER_BLIZZARD)
+				if (mob_area.weather != WEATHER_EXTREME && mob_area.icon_state == "snow_storm")
 					return //properly clothed for cold weather
 
 		var/covered = FALSE // Basic coverage can help.
@@ -222,11 +222,11 @@
 			H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
 
 		var/area/A = get_area(H)
-		if (A.weather == WEATHER_RAIN)
+		if (A.weather == WEATHER_WET && findtext(A,"rain"))
 			if (prob(15))
 				H << "<span class='danger'>The cold rain chills you to the bone.</span>"
 			H.adjustFireLoss(3) // wet is bad
-		else if (A.weather == WEATHER_SNOW)
+		else if (A.weather == WEATHER_WET && findtext(A,"snow"))
 			if (prob(15))
 				H << "<span class='danger'>The freezing snowfall chills you to the bone.</span>"
 			H.adjustFireLoss(2)

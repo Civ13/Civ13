@@ -706,27 +706,27 @@
 	switch (mob_area.weather)
 		if (WEATHER_NONE)
 			loc_temp *= 1.00
-		if (WEATHER_SNOW)
+		if (WEATHER_WET)
 			switch (mob_area.weather_intensity)
 				if (1.0)
-					loc_temp *= 0.87
+					loc_temp *= 0.94
 				if (2.0)
-					loc_temp *= 0.86
+					loc_temp *= 0.93
 				if (3.0)
-					loc_temp *= 0.85
-		if (WEATHER_RAIN)
-			switch (mob_area.weather_intensity)
-				if (1.0)
-					loc_temp *= 0.99
-				if (2.0)
-					loc_temp *= 0.97
-				if (3.0)
-					loc_temp *= 0.95
-		if (WEATHER_BLIZZARD)
-			loc_temp = -82
-		if (WEATHER_SANDSTORM)
-			loc_temp = 60
+					loc_temp *= 0.92
+		if (WEATHER_EXTREME)
+			if (mob_area.icon_state == "snow_storm")
+				loc_temp = -82
+			else if (mob_area.icon_state == "sandstorm")
+				loc_temp = 60
 	loc_temp = round(loc_temp)
+
+	//inside areas have natural insulation, so the temp will be more moderate than outside.
+	if (mob_area.location == AREA_INSIDE)
+		if (loc_temp > 22)
+			loc_temp = (max(22,loc_temp-40))
+		else if (loc_temp < 10)
+			loc_temp = (min(10,loc_temp+40))
 
 	for (var/obj/structure/brazier/BR in range(3, src))
 		if (BR.on == TRUE)
@@ -748,12 +748,7 @@
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
-	//inside areas have natural insulation, so the temp will be more moderate than outside.
-	if (mob_area.location == AREA_INSIDE)
-		if (loc_temp > 22)
-			loc_temp = (max(22,loc_temp-40))
-		else if (loc_temp < 18)
-			loc_temp = (min(18,loc_temp+40))
+
 	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13 || map.ID == MAP_COLONY) && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 

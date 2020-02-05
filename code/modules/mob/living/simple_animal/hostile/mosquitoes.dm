@@ -33,10 +33,10 @@
 
 /mob/living/simple_animal/mosquito/Life()
 	..()
-	if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM || season == "WINTER")
+	if (weather == WEATHER_EXTREME || weather == WEATHER_WET)
 		spawn(1000)//Wait a bit
-			if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM || season == "WINTER")//If still weather
-				visible_message("The [src] freezes to death!")
+			var/area/A = get_area(loc)
+			if (findtext(A.icon_state,"rain") || findtext(A.icon_state,"snow") || findtext(A.icon_state,"monsoon")|| findtext(A.icon_state,"sandstorm"))//If still weather
 				qdel(src)
 	if (stat != DEAD)
 		if (prob(70))

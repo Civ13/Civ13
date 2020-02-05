@@ -23,7 +23,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	is_singlefaction = TRUE
-	valid_weather_types = list(WEATHER_RAIN, WEATHER_NONE, WEATHER_STORM, WEATHER_SMOG)
+	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME, WEATHER_SMOG)
 	availablefactions = list("Orc tribesman")
 	availablefactions_run = TRUE
 	civilizations = TRUE
@@ -112,9 +112,9 @@
 		for (var/turf/floor/grass/G)
 			G.update_icon()
 		spawn(100)
-			change_weather(WEATHER_RAIN)
+			change_weather(WEATHER_WET)
 		spawn(15000)
-			change_weather(WEATHER_SNOW)
+			change_weather(WEATHER_WET)
 			for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/no_mans_land/temperate))
 				var/area/A = get_area(D)
 				if (A.location == AREA_OUTSIDE && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
@@ -144,7 +144,7 @@
 		for (var/turf/floor/grass/G)
 			G.ChangeTurf(/turf/floor/winter/grass)
 		spawn(100)
-			change_weather(WEATHER_SNOW)
+			change_weather(WEATHER_WET)
 		spawn(800)
 		for (var/turf/floor/beach/water/shallowsaltwater/SW)
 			if (SW.water_level <= 50 && SW.z > 1)
