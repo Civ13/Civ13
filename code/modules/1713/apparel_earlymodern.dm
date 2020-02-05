@@ -442,6 +442,13 @@
 	item_state = "modern2"
 	worn_state = "modern2"
 
+/obj/item/clothing/under/expensive
+	name = "shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers."
+	icon_state = "bman"
+	item_state = "bman"
+	worn_state = "bman"
+
 /obj/item/clothing/under/modern3
 	name = "grey outfit"
 	desc = "An outfit composed of a white shirt and grey trousers."
@@ -462,6 +469,13 @@
 	icon_state = "modern7"
 	item_state = "modern7"
 	worn_state = "modern7"
+
+/obj/item/clothing/under/swat
+	name = "swat outfit"
+	desc = "A uniform used by police special forces."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
 
 /obj/item/clothing/under/milrus2
 	name = "russian military outfit"

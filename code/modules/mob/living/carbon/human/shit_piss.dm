@@ -23,7 +23,7 @@
 	icon_state = "floor1"
 	random_icon_states = list("floor1", "floor2", "floor3", "floor4", "floor5", "floor6", "floor7", "floor8")
 	var/dried = 0
-
+	decay_timer = 18000
 
 /obj/effect/decal/cleanable/poo/New()
 	icon = 'icons/effects/pooeffect.dmi'
@@ -72,6 +72,7 @@
 	icon_state = "pee1"
 	random_icon_states = list("pee1", "pee2", "pee3")
 	var/dried = 0
+	decay_timer = 18000
 
 /obj/effect/decal/cleanable/urine/Crossed(AM as mob|obj)
 	if (istype(AM, /mob/living/carbon))

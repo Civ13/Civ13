@@ -459,6 +459,27 @@
 	var/slots = 4
 	ripable = FALSE
 
+/obj/item/clothing/suit/swat
+	name = "swat heavy vest"
+	desc = "a heavy NIJ level IV vest, used by swat officers."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 105, arrow = 80, gun = 116, energy = 70, bomb = 74, bio = 44, rad = 40)
+	var/slots = 6
+	ripable = FALSE
+
+/obj/item/clothing/suit/police
+	name = "police bulletproof vest"
+	desc = "a police vest (Level III)."
+	icon_state = "policevest"
+	item_state = "policevest"
+	worn_state = "policevest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 60, arrow = 20, gun = 74, energy = 40, bomb = 20, bio = 32, rad = 20)
+	ripable = FALSE
+
 /obj/item/clothing/suit/a6b44
 	name = "6B44 vest"
 	desc = "6B44 is a modular bullet-resistant vest."
