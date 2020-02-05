@@ -513,6 +513,15 @@ obj/item/projectile/bullet/rifle/a556x45
 	embed = FALSE
 	sharp = FALSE
 
+/obj/item/projectile/bullet/shotgun/rubber
+	name = "rubber shell"
+	check_armor = "melee"
+	armor_penetration = 0
+	damage = 20
+	agony = 100
+	embed = FALSE
+	sharp = FALSE
+
 
 //generic calibers for custom weapons
 /obj/item/projectile/bullet/rifle/largerifle

@@ -911,6 +911,13 @@
 	spent_icon = "bshell_casing"
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
 
+/obj/item/ammo_casing/shotgun/rubber
+	name = "rubber shell"
+	desc = "A rubber shell."
+	icon_state = "rubber"
+	spent_icon = "rubber_casing"
+	projectile_type = /obj/item/projectile/bullet/shotgun/rubber
+
 //generic calibers for custom weapons
 /obj/item/ammo_casing/largerifle
 	name = "8mm bullet"
