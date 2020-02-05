@@ -27,6 +27,17 @@
 	weakens = 5
 	flammable = TRUE
 
+/obj/item/weapon/melee/nightbaton
+	name = "police baton"
+	desc = "A stick used by police officers."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "nightbaton"
+	item_state = "nightbaton"
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_WEAK+2
+	weakens = 6
+	flammable = TRUE
+
 /obj/item/weapon/melee/classic_baton/club
 	name = "wood club"
 	desc = "One of the oldest weapons in the world. Good for when you need to knock people down."
