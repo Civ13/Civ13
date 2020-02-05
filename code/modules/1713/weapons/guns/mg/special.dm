@@ -133,8 +133,8 @@
 /obj/item/weapon/gun/projectile/special/ak74mtactical
 	name = "Tactical AK-74M"
 	desc = "A russian tactical rifle used by the Spetsnaz."
-	icon_state = "ak74mspecial"
-	item_state = "ak47"
+	icon_state = "tactical"
+	item_state = "ak74mspecial"
 	base_icon = "ak74mspecial"
 	weight = 3.97
 	caliber = "a545x39"

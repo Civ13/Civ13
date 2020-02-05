@@ -88,6 +88,23 @@
 	attack_verb = list("bludgeoned", "hit")
 	flammable = TRUE
 
+/obj/item/weapon/globe
+	name = "globe"
+	desc = "flat earthers hate this thing."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "globe"
+	item_state = "globe"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_NORMAL + 1
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 5
+	throw_range = 5
+
+	attack_verb = list("bludgeoned", "hit")
+	flammable = TRUE
+
 /obj/item/weapon/hammer/modern
 	name = "clawhammer"
 	desc = "Tear stuff apart with this."

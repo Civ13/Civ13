@@ -217,3 +217,12 @@
 	on_state = "flashlight_on"
 	off_state = "flashlight_off"
 	slot_flags = SLOT_BELT|SLOT_MASK
+
+/obj/item/flashlight/modern
+	unlimited = TRUE
+	name = "flashlight"
+	desc = "an electrical flashlight."
+	icon_state = "modernlight_off"
+	on_state = "modernlight_on"
+	off_state = "modernlight_off"
+	slot_flags = SLOT_BELT|SLOT_MASK
