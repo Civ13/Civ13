@@ -33,6 +33,7 @@
 	maxHealth = 10
 	health = 10
 
+
 /mob/living/simple_animal/crab/Life()
 	..()
 	//CRAB movement

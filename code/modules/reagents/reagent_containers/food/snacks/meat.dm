@@ -162,6 +162,40 @@
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 3
 
+/obj/item/weapon/reagent_containers/food/snacks/rawlobster
+	name = "lobster"
+	desc = "A fresh lobster. Yum!"
+	icon_state = "lobster_raw"
+	health = 180
+	filling_color = "#7F0000"
+	center_of_mass = list("x"=16, "y"=14)
+	raw = TRUE
+	rotten_icon_state = "lobster_rottenraw"
+	rots = TRUE
+	non_vegetarian = TRUE
+	satisfaction = -15
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("food_poisoning", 1)
+		bitesize = 3
+
+/obj/item/weapon/reagent_containers/food/snacks/rawlobster/boiled
+	name = "boiled lobster"
+	desc = "A boiled lobster. Looks very tasty."
+	icon_state = "lobster_boiled"
+	health = 180
+	filling_color = "#7F0000"
+	center_of_mass = list("x"=16, "y"=14)
+	raw = FALSE
+	rotten_icon_state = "lobster_rottenboiled"
+	rots = TRUE
+	non_vegetarian = TRUE
+	satisfaction = 25
+	New()
+		..()
+		reagents.remove_reagent("food_poisoning")
+
 /obj/item/weapon/reagent_containers/food/snacks/cockroach
 	name = "cockroach"
 	desc = "A dead cockroach. No, please don't make me eat it..."
