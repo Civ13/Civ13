@@ -253,6 +253,9 @@
 	if (WWinput(user, "This will start building a roof [your_dir] of you.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts building the roof.</span>", "<span class='danger'>You start building the roof.</span>")
 		if (do_after(user, covers_time, user.loc) && src && !done)
+			for (var/obj/roof/RF in get_step(user, user.dir))
+				user << "That area is already roofed!"
+				return
 			done = TRUE
 			new target_type(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes building the roof.</span>")

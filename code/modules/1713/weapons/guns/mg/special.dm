@@ -2,7 +2,7 @@
 	force = 10
 	throwforce = 20
 	fire_sound = 'sound/weapons/smg.ogg'
-	var/base_icon = "ak74mspecial"
+	var/base_icon = "tactical"
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER|SLOT_BELT
@@ -77,20 +77,6 @@
 		return FALSE
 	return TRUE
 
-/obj/item/weapon/gun/projectile/special/handle_post_fire()
-	..()
-	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
-	if (world.time - last_fire > 50)
-		jamcheck = 0
-	else
-		jamcheck += 0.12
-
-	if (prob(jamcheck*reverse_health_percentage))
-		jammed_until = max(world.time + (jamcheck * 4), 45)
-		jamcheck = 0
-
-	last_fire = world.time
-
 /obj/item/weapon/gun/projectile/special/update_icon()
 	if (sniper_scope)
 		if (!ammo_magazine)
@@ -114,7 +100,7 @@
 	name = "MK-18"
 	desc = "An american automatic rifle."
 	icon_state = "mk18"
-	item_state = "tactical"
+	item_state = "mk18"
 	base_icon = "mk18"
 	weight = 3.97
 	caliber = "a556x45"
@@ -134,7 +120,7 @@
 	name = "Tactical AK-74M"
 	desc = "A russian tactical rifle used by the Spetsnaz."
 	icon_state = "tactical"
-	item_state = "ak74mspecial"
+	item_state = "tactical"
 	base_icon = "tactical"
 	weight = 3.97
 	caliber = "a545x39"

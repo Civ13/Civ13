@@ -450,6 +450,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/sound_toggleOFF = 'sound/items/lighter_off.ogg'
 	flammable = TRUE
 
+/obj/item/weapon/flame/lighter/bullet
+	name = "bullet lighter"
+	desc = "A casing that is now a lighter, cheeki breeki."
+	icon_state = "bullet"
+	item_state = "bullet"
+	sound_toggleON = 'sound/items/zippo_on.ogg'
+	sound_toggleOFF = 'sound/items/zippo_off.ogg'
+
 /obj/item/weapon/flame/lighter/zippo
 	name = "\improper Zippo lighter"
 	desc = "The zippo."
