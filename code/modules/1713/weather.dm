@@ -314,3 +314,152 @@
 			possibilities += WEATHER_SMOG
 	if (possibilities.len)
 		change_weather(pick(possibilities))
+
+/proc/get_temp(var/atom/A) //gets the local (area-based) temperature
+	var/loc_temp = 20
+	if (!A)
+		return loc_temp
+	var/area/mob_area = get_area(A)
+
+	if (!mob_area)
+		return loc_temp
+
+	switch (season)
+		if ("WINTER")
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = -29
+				if ("sea")
+					loc_temp = -11
+				if ("tundra")
+					loc_temp = -60
+				if ("taiga")
+					loc_temp = -53
+				if ("semiarid")
+					loc_temp = 0
+				if ("desert")
+					loc_temp = 32
+				if ("jungle")
+					loc_temp = 30
+				if ("savanna")
+					loc_temp = 27
+
+		if ("FALL")
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 7
+				if ("sea")
+					loc_temp = 11
+				if ("tundra")
+					loc_temp = -50
+				if ("taiga")
+					loc_temp = -35
+				if ("semiarid")
+					loc_temp = 12
+				if ("desert")
+					loc_temp = 34
+				if ("jungle")
+					loc_temp = 32
+				if ("savanna")
+					loc_temp = 29
+
+		if ("SUMMER")
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 30
+				if ("sea")
+					loc_temp = 23
+				if ("tundra")
+					loc_temp = -25
+				if ("taiga")
+					loc_temp = -10
+				if ("semiarid")
+					loc_temp = 35
+				if ("desert")
+					loc_temp = 50
+				if ("jungle")
+					loc_temp = 40
+				if ("savanna")
+					loc_temp = 35
+
+		if ("SPRING")
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 10
+				if ("sea")
+					loc_temp = 14
+				if ("tundra")
+					loc_temp = -35
+				if ("taiga")
+					loc_temp = -15
+				if ("semiarid")
+					loc_temp = 28
+				if ("desert")
+					loc_temp = 40
+				if ("jungle")
+					loc_temp = 34
+				if ("savanna")
+					loc_temp = 29
+		if ("Dry Season")
+			loc_temp = 45
+		if ("Wet Season")
+			loc_temp = 30
+
+
+	switch (time_of_day)
+		if ("Midday")
+			loc_temp *= 1.03
+		if ("Afternoon")
+			loc_temp *= 1.02
+		if ("Morning")
+			loc_temp *= 1.01
+		if ("Evening")
+			loc_temp *= 1.00 // default
+		if ("Early Morning")
+			loc_temp *= 0.99
+		if ("Night")
+			loc_temp *= 0.97
+
+	switch (mob_area.weather)
+		if (WEATHER_NONE)
+			loc_temp *= 1.00
+		if (WEATHER_WET)
+			switch (mob_area.weather_intensity)
+				if (1.0)
+					loc_temp *= 0.94
+				if (2.0)
+					loc_temp *= 0.93
+				if (3.0)
+					loc_temp *= 0.92
+		if (WEATHER_EXTREME)
+			if (mob_area.icon_state == "snow_storm")
+				loc_temp = -82
+			else if (mob_area.icon_state == "sandstorm")
+				loc_temp = 60
+	loc_temp = round(loc_temp)
+
+	//inside areas have natural insulation, so the temp will be more moderate than outside.
+	if (mob_area.location == AREA_INSIDE)
+		if (loc_temp > 22)
+			loc_temp = (max(22,loc_temp-40))
+		else if (loc_temp < 10)
+			loc_temp = (min(10,loc_temp+40))
+		if (mob_area.weather == WEATHER_EXTREME && season == "WINTER" && (mob_area.climate == "temperate" || mob_area.climate == "taiga" || mob_area.climate == "tundra"))
+			loc_temp = -10
+
+	for (var/obj/structure/brazier/BR in range(3, src))
+		if (BR.on == TRUE)
+			if (loc_temp < 22)
+				loc_temp = 22
+				break
+	for (var/obj/structure/heatsource/HS in range(3, src))
+		if (HS.on == TRUE)
+			if (loc_temp < 22)
+				loc_temp = 22
+				break
+	for (var/obj/structure/oven/fireplace/FP in range(1, src))
+		if (FP.on == TRUE)
+			if (loc_temp < 22)
+				loc_temp = 22
+				break
+	return loc_temp
