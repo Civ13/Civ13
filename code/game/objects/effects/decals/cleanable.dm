@@ -1,6 +1,6 @@
 /obj/effect/decal/cleanable
 	var/list/random_icon_states = list()
-
+	var/decay_timer = 0
 /obj/effect/decal/cleanable/clean_blood(var/ignore = FALSE)
 	if (!ignore)
 		qdel(src)
@@ -11,10 +11,15 @@
 	if (random_icon_states && length(random_icon_states) > 0)
 		icon_state = pick(random_icon_states)
 	..()
-
-	// if we're on a lift, make us an "overlay" (actually in the turf's vis_contents list). We won't move with the lift that way, and a lot of lag will be avoided
 	cleanables += src
+	if (decay_timer)
+		do_decay()
 
 /obj/effect/decal/cleanable/Destroy()
 	cleanables -= src
 	..()
+
+/obj/effect/decal/cleanable/proc/do_decay()
+	spawn(decay_timer)
+		if (src)
+			Destroy()
