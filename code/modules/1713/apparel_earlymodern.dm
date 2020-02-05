@@ -442,6 +442,13 @@
 	item_state = "modern2"
 	worn_state = "modern2"
 
+/obj/item/clothing/under/expensive
+	name = "shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers."
+	icon_state = "bman"
+	item_state = "bman"
+	worn_state = "bman"
+
 /obj/item/clothing/under/modern3
 	name = "grey outfit"
 	desc = "An outfit composed of a white shirt and grey trousers."
