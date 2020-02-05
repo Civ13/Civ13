@@ -234,10 +234,11 @@
 		else if (stage <= 2)
 			user << "You start adding snow to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish adding snow to the wall."
-				stage = (stage+1)
-				icon_state = "igloo_wall_inc[stage]"
-				health = (20*stage)
-				qdel(W)
-				return
+				if (stage <= 2)
+					user << "You finish adding snow to the wall."
+					stage = (stage+1)
+					icon_state = "igloo_wall_inc[stage]"
+					health = (20*stage)
+					qdel(W)
+					return
 	..()

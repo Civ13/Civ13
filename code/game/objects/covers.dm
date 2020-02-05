@@ -825,13 +825,14 @@
 		else if (stage <= 2)
 			user << "You start adding dirt to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish adding dirt to the wall."
-				stage = (stage+1)
-				icon_state = "drysod_wall_inc[stage]"
-				base_icon_state = icon_state
-				health = (20*stage)
-				qdel(W)
-				return
+				if (stage <= 2)
+					user << "You finish adding dirt to the wall."
+					stage = (stage+1)
+					icon_state = "drysod_wall_inc[stage]"
+					base_icon_state = icon_state
+					health = (20*stage)
+					qdel(W)
+					return
 	..()
 
 
@@ -886,13 +887,14 @@
 		else if (stage <= 1)
 			user << "You start adding clay blocks to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish clay block to the wall."
-				stage += 1
-				icon_state = "claybrickwall_inc[stage]"
-				base_icon_state = icon_state
-				health = (30*stage)
-				qdel(W)
-				return
+				if (stage <= 1)
+					user << "You finish clay block to the wall."
+					stage += 1
+					icon_state = "claybrickwall_inc[stage]"
+					base_icon_state = icon_state
+					health = (30*stage)
+					qdel(W)
+					return
 	..()
 /obj/covers/clay_wall/sumerian
 	name = "sumerian clay wall"
@@ -968,13 +970,14 @@
 		else if (stage <= 1)
 			user << "You start adding clay blocks to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish adding clay to the wall."
-				stage += 1
-				icon_state = "sumerian-wall_inc[stage]"
-				base_icon_state = icon_state
-				health = (30*stage)
-				qdel(W)
-				return
+				if (stage <= 1)
+					user << "You finish adding clay to the wall."
+					stage += 1
+					icon_state = "sumerian-wall_inc[stage]"
+					base_icon_state = icon_state
+					health = (30*stage)
+					qdel(W)
+					return
 	..()
 /obj/covers/brick_wall
 	name = "brick wall"
