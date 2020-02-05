@@ -598,6 +598,18 @@
 	restricts_view = 2
 	health = 90
 
+/obj/item/clothing/head/helmet/swat
+	name = "swat helmet"
+	desc = "A standard kevlar helmet used by swat officers."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+	body_parts_covered = HEAD
+	armor = list(melee = 65, arrow = 95, gun = 85, energy = 27, bomb = 64, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
+
 /obj/item/clothing/head/helmet/tactical
 	name = "tactical helmet"
 	desc = "A standard bulletproof helmet, made of polyethylene."

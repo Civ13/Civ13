@@ -463,6 +463,13 @@
 	item_state = "modern7"
 	worn_state = "modern7"
 
+/obj/item/clothing/under/swat
+	name = "swat outfit"
+	desc = "A uniform used by police special forces."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+
 /obj/item/clothing/under/milrus2
 	name = "russian military outfit"
 	desc = "An outfit composed of camo pants and shirt."
