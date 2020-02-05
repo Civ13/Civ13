@@ -2,7 +2,7 @@
 	force = 10
 	throwforce = 20
 	fire_sound = 'sound/weapons/smg.ogg'
-	var/base_icon = "tactical"
+	var/base_icon = "ak74mspecial"
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER|SLOT_BELT
@@ -135,7 +135,7 @@
 	desc = "A russian tactical rifle used by the Spetsnaz."
 	icon_state = "tactical"
 	item_state = "ak74mspecial"
-	base_icon = "ak74mspecial"
+	base_icon = "tactical"
 	weight = 3.97
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
