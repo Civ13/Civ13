@@ -498,6 +498,27 @@
 	item_state = "tactical1"
 	worn_state = "tactical1"
 
+/obj/item/clothing/under/pmc
+	name = "pmc outfit"
+	desc = "A outfit used by PMC units."
+	icon_state = "pmc"
+	item_state = "pmc"
+	worn_state = "pmc"
+
+/obj/item/clothing/under/mafia
+	name = "fancy outfit"
+	desc = "A outfit that is expensive and has style."
+	icon_state = "mafia"
+	item_state = "mafia"
+	worn_state = "mafia"
+
+/obj/item/clothing/under/engi
+	name = "worker outfit"
+	desc = "A outfit used by construction workers."
+	icon_state = "pmc"
+	item_state = "pmc"
+	worn_state = "pmc"
+
 /obj/item/clothing/under/gorka
 	name = "gorka outfit"
 	desc = "A gorka outfit used by Spetsnaz."
