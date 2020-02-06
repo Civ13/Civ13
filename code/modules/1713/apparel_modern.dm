@@ -479,6 +479,7 @@
 	item_state = "idf_olive"
 	worn_state = "idf_olive"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/head/helmet/modern/idf
 	name = "IDF helmet"

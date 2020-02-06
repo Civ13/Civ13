@@ -197,7 +197,7 @@
 
 		//Check protected bodyparts
 		var/sum = 0
-		var/list/exposed_bp = list("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","head")
+		var/list/exposed_bp = list("l_leg","r_leg","chest","groin","l_arm","r_arm","head")
 		for (var/obj/item/clothing/C in list(H.head,H.wear_suit,H.w_uniform,H.shoes,H.gloves,H.wear_mask))
 			if (C)
 				if (C.heat_protection)

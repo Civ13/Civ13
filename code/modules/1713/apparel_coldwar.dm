@@ -326,6 +326,7 @@
 	body_parts_covered = FACE|EYES|HEAD
 	w_class = 1
 	restricts_view = 2
+	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/mask/sovietbala
 	name = "green balaclava"
@@ -336,6 +337,7 @@
 	body_parts_covered = FACE|EYES|HEAD
 	w_class = 1
 	restricts_view = 2
+	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing
 	name = "green chest webbing"

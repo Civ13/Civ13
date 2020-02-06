@@ -658,6 +658,7 @@
 	icon_state = "huipil"
 	item_state = "huipil"
 	worn_state = "huipil"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/under/halfhuipil
 	name = "half huipil"

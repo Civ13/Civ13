@@ -1,9 +1,11 @@
+
 /obj/item/clothing/head/hairflower
 	name = "hair flower pin"
 	icon_state = "hairflower"
 	desc = "Smells nice."
 	slot_flags = SLOT_HEAD | SLOT_EARS
 	body_parts_covered = FALSE
+	heat_protection = 0
 
 /obj/item/clothing/head/powdered_wig
 	name = "powdered wig"
