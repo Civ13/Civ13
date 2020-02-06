@@ -235,13 +235,13 @@
 
 	if (H.bodytemperature < cold_level_1)
 		var/area/A = get_area(H)
-		for (var/obj/structure/brazier/BR in range(3, src))
+		for (var/obj/structure/brazier/BR in range(3, H))
 			if (BR.on == TRUE)
 				return
-		for (var/obj/structure/heatsource/HS in range(3, src))
+		for (var/obj/structure/heatsource/HS in range(3, H))
 			if (HS.on == TRUE)
 				return
-		for (var/obj/structure/oven/fireplace/FP in range(1, src))
+		for (var/obj/structure/oven/fireplace/FP in range(1, H))
 			if (FP.on == TRUE)
 				return
 		var/turf/T = get_turf(H)
