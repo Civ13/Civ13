@@ -147,17 +147,14 @@ var/world_topic_spam_protect_time = world.timeofday
 	T = replacetext(T, "{ROUNDTIME}", roundduration2text())
 	// UPPERCASE constants
 	T = replacetextEx(T, "{TIMEOFDAY}", uppertext(time_of_day))
-	T = replacetextEx(T, "{WEATHER}", uppertext(get_weather()))
 	T = replacetextEx(T, "{SEASON}", uppertext(season))
 	T = replacetextEx(T, "{MAP}", uppertext(map.title)) // name of the map
 	// Capitalized constants - no change
 	T = replacetextEx(T, "{Timeofday}", time_of_day)
-	T = replacetextEx(T, "{Weather}", get_weather())
 	T = replacetextEx(T, "{Season}", season)
 	T = replacetextEx(T, "{Map}", map.title) // name of the map
 	// lowercase constants
 	T = replacetextEx(T, "{timeofday}", lowertext(time_of_day))
-	T = replacetextEx(T, "{weather}", lowertext(get_weather()))
 	T = replacetextEx(T, "{season}", lowertext(season))
 	T = replacetextEx(T, "{map}", lowertext(map.title)) // name of the map
 

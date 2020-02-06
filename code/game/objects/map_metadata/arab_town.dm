@@ -22,7 +22,7 @@
 	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within <b>40 minutes</b>!</font>"
 	faction1 = AMERICAN
 	faction2 = ARAB
-	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
 	artillery_count = 3
@@ -174,7 +174,7 @@ var/no_loop_arab = FALSE
 	mission_start_message = "<font size=4>Capture most of the town and hold the enemy base! The grace wall will go down in <b>6 minutes</b>.</font>"
 	faction1 = AMERICAN
 	faction2 = ARAB
-	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
 	artillery_count = 3

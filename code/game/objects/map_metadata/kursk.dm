@@ -22,7 +22,7 @@
 	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the ceasefire ends!<br></font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
-	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 

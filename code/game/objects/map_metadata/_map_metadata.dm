@@ -20,7 +20,7 @@ var/civmax_research = list(230,230,230)
 	var/event_faction = null
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
-	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW, WEATHER_SANDSTORM, WEATHER_BLIZZARD, WEATHER_NONE, WEATHER_STORM, WEATHER_SMOG)
+	var/list/valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME, WEATHER_NONE, WEATHER_SMOG)
 	var/squad_spawn_locations = TRUE
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
@@ -848,7 +848,7 @@ var/civmax_research = list(230,230,230)
 	return FALSE
 
 /////////////////////////////////SEASONS//////////////////////////
-/obj/map_metadata/proc/seasons()
+/obj/map_metadata/proc/seasons(var/looping = TRUE)
 	if (season == "FALL")
 		season = "WINTER"
 		world << "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>"
@@ -1009,9 +1009,9 @@ var/civmax_research = list(230,230,230)
 		for (var/turf/floor/grass/G)
 			G.update_icon()
 		spawn(100)
-			change_weather(WEATHER_RAIN)
+			change_weather(WEATHER_WET)
 		spawn(15000)
-			change_weather(WEATHER_SNOW)
+			change_weather(WEATHER_WET)
 			for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
 				if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
 					D.ChangeTurf(/turf/floor/dirt/winter)
@@ -1028,5 +1028,6 @@ var/civmax_research = list(230,230,230)
 					if (get_area(G).climate == "temperate")
 						if (prob(50))
 							G.ChangeTurf(/turf/floor/winter/grass)
-	spawn(18000)
-		seasons()
+	if (looping)
+		spawn(18000)
+			seasons()

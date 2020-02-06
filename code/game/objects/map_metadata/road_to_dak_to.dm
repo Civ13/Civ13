@@ -23,7 +23,7 @@
 	mission_start_message = "<font size=4>The <b>Vietcong</b> must defend the village from the Americans. The <b>US Army</b> must defend their base.<br>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = AMERICAN
 	faction2 = VIETNAMESE
-	valid_weather_types = list(WEATHER_RAIN, WEATHER_NONE, WEATHER_STORM)
+	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	artillery_count = 3

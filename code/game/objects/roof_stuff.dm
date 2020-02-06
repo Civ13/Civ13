@@ -94,13 +94,28 @@
 	roof_overlay = image(icon='icons/turf/roofs.dmi', loc = src, icon_state=overlay_state,layer=11.1)
 	recalculate_borders(TRUE)
 	var/area/caribbean/CURRENTAREA = get_area(src)
-//	var/oldclimate = CURRENTAREA.climate
+	var/oldclimate = CURRENTAREA.climate
+
 	if (CURRENTAREA.location == AREA_OUTSIDE)
 		current_area_type = CURRENTAREA.type
-		new/area/caribbean/roofed(get_turf(src))
-// TODO: Different roofed climates
-//		var/area/caribbean/roofed/A = new/area/caribbean/roofed(src.loc)
-//		A.climate = oldclimate
+		switch(oldclimate)
+			if ("tundra")
+				new/area/caribbean/roofed/tundra(get_turf(src))
+			if ("taiga")
+				new/area/caribbean/roofed/taiga(get_turf(src))
+			if ("temperate")
+				new/area/caribbean/roofed/temperate(get_turf(src))
+			if ("sea")
+				new/area/caribbean/roofed/sea(get_turf(src))
+			if ("semiarid")
+				new/area/caribbean/roofed/semiarid(get_turf(src))
+			if ("desert")
+				new/area/caribbean/roofed/desert(get_turf(src))
+			if ("savanna")
+				new/area/caribbean/roofed/savanna(get_turf(src))
+			if ("jungle")
+				new/area/caribbean/roofed/jungle(get_turf(src))
+
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
 	collapse_check()

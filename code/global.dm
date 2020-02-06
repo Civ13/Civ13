@@ -41,12 +41,6 @@ var/deer_count = 0
 var/wolf_count = 0
 var/bear_count = 0
 
-/proc/get_weather()
-	. = get_weather_default(weather)
-	if (. == "none")
-		return "Clear skies"
-	return "It's [lowertext(.)]ing"
-
 /proc/get_season()
 	return capitalize(lowertext(season))
 
