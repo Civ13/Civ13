@@ -472,6 +472,17 @@
 	var/slots = 6
 	ripable = FALSE
 
+/obj/item/clothing/suit/heavyvest1
+	name = "heavy vest"
+	desc = "a heavy NIJ level IV vest."
+	icon_state = "heavypolice"
+	item_state = "heavypolice"
+	worn_state = "heavypolice"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 50, arrow = 40, gun = 112, energy = 68, bomb = 40, bio = 32, rad = 20)
+	var/slots = 6
+	ripable = FALSE
+
 /obj/item/clothing/suit/police
 	name = "police bulletproof vest"
 	desc = "a police vest (Level III)."
