@@ -415,6 +415,17 @@
 	item_state = "insurgent_leader"
 	worn_state = "insurgent_leader"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/tacti
+	name = "tactical outfit"
+	desc = "A outfit used by tactical units."
+	icon_state = "tacti"
+	item_state = "tacti"
+	worn_state = "tacti"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
 /obj/item/clothing/under/us_uni/us_lightuni_modern
 	name = "U.S. Army training uniform"
 	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."

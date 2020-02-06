@@ -252,6 +252,7 @@ RECIPE: /material/cloth/,yellow NBC hood,/obj/item/clothing/head/nbc,3,100,0,1,j
 RECIPE: /material/cloth/,grey parka,/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,0,1,jackets & vests,0,0,145,8,null
 RECIPE: /material/cloth/,custom haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/cloth/,black haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
+RECIPE: /material/cloth/,B-3 vest,/obj/item/clothing/suit/b3,45,300,0,1,jackets & vests,0,0,145,8,null
 
 RECIPE: /material/cloth/,mayan headdress,/obj/item/clothing/head/mayan_headdress,4,55,0,1,hats & masks,0,0,18,3,null
 RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,hats & masks,0,0,18,1,null
