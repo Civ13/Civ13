@@ -234,6 +234,16 @@
 				H.adjustFireLossByPart(2, i)
 
 	if (H.bodytemperature < cold_level_1)
+		var/area/A = get_area(H)
+		for (var/obj/structure/brazier/BR in range(3, src))
+			if (BR.on == TRUE)
+				return
+		for (var/obj/structure/heatsource/HS in range(3, src))
+			if (HS.on == TRUE)
+				return
+		for (var/obj/structure/oven/fireplace/FP in range(1, src))
+			if (FP.on == TRUE)
+				return
 		var/turf/T = get_turf(H)
 		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && H.shoes)
 			if (H.shoes.cold_protection != FEET)
@@ -272,6 +282,11 @@
 
 		if (prob(12))
 			H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
+
+		if (A.icon_state == "snow_storm" && A.location == AREA_OUTSIDE)
+			if (prob(12))
+				H << "<span class='danger'>The blizzard chills you to the bone!</span>"
+			H.adjustFireLoss(3)
 /*
 		var/area/A = get_area(H)
 		if (A.weather == WEATHER_WET && findtext(A,"rain"))
