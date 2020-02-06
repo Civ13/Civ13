@@ -477,6 +477,27 @@
 	item_state = "swat"
 	worn_state = "swat"
 
+/obj/item/clothing/under/combat
+	name = "combat outfit"
+	desc = "A combat uniform plated with kevlar."
+	icon_state = "combat"
+	item_state = "combat"
+	worn_state = "combat"
+
+/obj/item/clothing/under/police
+	name = "police outfit"
+	desc = "A uniform used by police forces."
+	icon_state = "police"
+	item_state = "police"
+	worn_state = "police"
+
+/obj/item/clothing/under/prisoner
+	name = "prison outfit"
+	desc = "Normally worn by criminals and scum."
+	icon_state = "prisoner"
+	item_state = "prisoner"
+	worn_state = "prisoner"
+
 /obj/item/clothing/under/milrus2
 	name = "russian military outfit"
 	desc = "An outfit composed of camo pants and shirt."
