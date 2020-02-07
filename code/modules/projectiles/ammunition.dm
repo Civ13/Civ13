@@ -178,7 +178,7 @@
 
 /obj/item/ammo_magazine/emptymagazine/pistol/filled
 	name = "pistol magazine (9mm)"
-	caliber = "a9x19"
+	caliber = "pistol9"
 	ammo_type = /obj/item/ammo_casing/pistol9
 	max_ammo = 17
 	weight = 0.34
