@@ -165,6 +165,13 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
+
+/obj/item/weapon/gun/projectile/pistol/glock17/standardized
+	ammo_type = /obj/item/ammo_casing/pistol9
+	caliber = "pistol9"
+	magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+
+
 /obj/item/weapon/gun/projectile/pistol/glock17/update_icon()
 	..()
 	if (ammo_magazine)

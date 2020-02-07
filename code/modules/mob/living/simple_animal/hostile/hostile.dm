@@ -4,6 +4,14 @@
 	a_intent = I_HARM
 	behaviour = "hunt"
 
+/mob/living/simple_animal
+	var/ranged = FALSE
+	var/rapid = FALSE //If fires faster
+	var/casingtype = null
+	var/projectiletype = null
+	var/projectilesound = null
+	var/fire_desc = "fires"
+
 /mob/living/simple_animal/proc/FindTarget()
 
 	var/atom/T = null
@@ -58,8 +66,14 @@
 	if (!target_mob || SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
 	if (target_mob in ListTargets(7))
-		stance = HOSTILE_STANCE_ATTACKING
-		walk_to(src, target_mob, TRUE, move_to_delay)
+		if(ranged)
+			if(get_dist(src, target_mob) <= 6)
+				OpenFire(target_mob)
+			else
+				walk_to(src, target_mob, 1, move_to_delay)
+		else
+			stance = HOSTILE_STANCE_ATTACKING
+			walk_to(src, target_mob, TRUE, move_to_delay)
 
 /mob/living/simple_animal/proc/AttackTarget()
 	if (!target_mob || SA_attackable(target_mob))
@@ -68,9 +82,13 @@
 	if (!(target_mob in ListTargets(7)))
 		LostTarget()
 		return FALSE
-	if (get_dist(src, target_mob) <= 1)	//Attacking
-		AttackingTarget()
-		return TRUE
+	if (ranged)
+		if (get_dist(src, target_mob) <= 6)
+			OpenFire(target_mob)
+	else
+		if (get_dist(src, target_mob) <= 1)	//Attacking
+			AttackingTarget()
+			return TRUE
 
 /mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
@@ -141,3 +159,43 @@
 			var/obj/structure/obstacle = locate(/obj/structure, get_step(src, dir))
 			if (istype(obstacle, /obj/structure/window) || istype(obstacle, /obj/structure/closet) || istype(obstacle, /obj/structure/table) || istype(obstacle, /obj/structure/grille))
 				obstacle.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
+
+/////////////////////////////////////////////////////////
+////////////////////RANGED///////////////////////////////
+
+/mob/living/simple_animal/proc/OpenFire(target_mob)
+	var/target = target_mob
+	visible_message("<span class='danger'>\The [src] [fire_desc] at \the [target]!</span>", 1)
+
+	if(rapid)
+		spawn(1)
+			Shoot(target, src.loc, src)
+			if(casingtype)
+				new casingtype(get_turf(src))
+		spawn(4)
+			Shoot(target, src.loc, src)
+			if(casingtype)
+				new casingtype(get_turf(src))
+		spawn(6)
+			Shoot(target, src.loc, src)
+			if(casingtype)
+				new casingtype(get_turf(src))
+	else
+		Shoot(target, src.loc, src)
+		if(casingtype)
+			new casingtype
+
+	stance = HOSTILE_STANCE_IDLE
+	target_mob = null
+	return
+
+/mob/living/simple_animal/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
+	if(target == start)
+		return
+
+	var/obj/item/projectile/A = new projectiletype(get_turf(user))
+	playsound(user, projectilesound, 100, 1)
+	if(!A)	return
+	var/def_zone = get_exposed_defense_zone(target)
+	A.launch(target, def_zone)
+

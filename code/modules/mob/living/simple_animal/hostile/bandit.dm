@@ -1,7 +1,7 @@
 /mob/living/simple_animal/hostile/bandit
 	name = "Bandit"
-	desc = "A bandit! he looks scary!."
-	icon_state = "bandit"
+	desc = "A bandit! he looks scary!"
+	icon_state = "bandit2"
 	icon_dead = "bandit_dead"
 	turns_per_move = 3
 	response_help = "pushes"
@@ -24,13 +24,18 @@
 	attacktext = "pistol-whipped"
 	attack_sound = 'sound/weapons/punch3.ogg'
 	mob_size = MOB_MEDIUM
+	starves = FALSE
+	behaviour = "hostile"
+	var/corpse = /mob/living/carbon/human/corpse/bandit
+	var/gun = /obj/item/weapon/gun/projectile/pistol/glock17/standardized
+	faction = PIRATES
+	ranged = 1
+	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
+	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	casingtype = /obj/item/ammo_casing/pistol9
 
-	var/corpse = /mob/living/carbon/human/corpse/japanese
 
-	faction = JAPANESE
-
-
-/mob/living/simple_animal/hostile/japanese/death()
+/mob/living/simple_animal/hostile/bandit/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
