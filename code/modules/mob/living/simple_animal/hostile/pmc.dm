@@ -1,13 +1,13 @@
-/mob/living/simple_animal/hostile/bandit
-	name = "Bandit"
-	desc = "A bandit! he looks scary!"
+/mob/living/simple_animal/hostile/pmc
+	name = "PMC"
+	desc = "A heavily armoured PMC unit."
 	icon_state = "pmc"
-	icon_dead = "pmc_dead"
+	icon_dead = "bandit_dead"
 	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
-	speak = list("You are dead meat!", "COME BACK HERE!")
+	speak = list("Civlian stay still!", "responding to hostile")
 	speak_emote = list("grumbles", "mumbles")
 	emote_hear = list("curses","grumbles")
 	emote_see = list("stares", "draws firearm")
@@ -15,8 +15,8 @@
 	speed = 6
 	move_to_delay = 3
 	stop_automated_movement_when_pulled = 0
-	maxHealth = 160
-	health = 160
+	maxHealth = 300
+	health = 300
 	move_to_delay = 4
 	harm_intent_damage = 10
 	melee_damage_lower = 35
@@ -26,14 +26,22 @@
 	mob_size = MOB_MEDIUM
 	starves = FALSE
 	behaviour = "hostile"
+	var/corpse = /mob/living/carbon/human/corpse/pmc
 	faction = PIRATES
 	ranged = 1
-	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
-	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	projectiletype = /obj/item/projectile/bullet/rifle/a577
+	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
 
 	New()
 		..()
-		gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
+		gun = new/obj/item/weapon/gun/projectile/submachinegun/ar12(src)
 
-/mob/living/simple_animal/hostile/bandit/death()
+/mob/living/simple_animal/hostile/pmc/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	if(gun)
+		gun.forceMove(src.loc)
+	qdel(src)
+	return
