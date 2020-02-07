@@ -3,7 +3,7 @@
 	desc = "A bandit! he looks scary!"
 	icon_state = "bandit2"
 	icon_dead = "bandit_dead"
-	turns_per_move = 3
+	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -13,7 +13,7 @@
 	emote_see = list("stares", "draws firearm")
 	speak_chance = TRUE
 	speed = 6
-	move_to_delay = 4
+	move_to_delay = 3
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 200
 	health = 200
@@ -27,17 +27,21 @@
 	starves = FALSE
 	behaviour = "hostile"
 	var/corpse = /mob/living/carbon/human/corpse/bandit
-	var/gun = /obj/item/weapon/gun/projectile/pistol/glock17/standardized
 	faction = PIRATES
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
 	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'
 	casingtype = /obj/item/ammo_casing/pistol9
 
+	New()
+		..()
+		gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
 
 /mob/living/simple_animal/hostile/bandit/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
+	if(gun)
+		new gun (src.loc)
 	qdel(src)
 	return

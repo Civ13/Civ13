@@ -11,12 +11,18 @@
 	var/projectiletype = null
 	var/projectilesound = null
 	var/fire_desc = "fires"
+	var/gun = null
 
 /mob/living/simple_animal/proc/FindTarget()
 
 	var/atom/T = null
 	stop_automated_movement = FALSE
-	for (var/atom/A in ListTargets(7))
+	var/list/the_targets = ListTargets(7)
+	if (behaviour == "hostile")
+		for(var/mob/living/ML in the_targets)
+			if (!ishuman(ML))
+				the_targets -= ML
+	for (var/atom/A in the_targets)
 
 		if (A == src)
 			continue
@@ -63,20 +69,20 @@
 	return
 
 /mob/living/simple_animal/proc/MoveToTarget()
-	if (!target_mob || SA_attackable(target_mob))
+	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
 	if (target_mob in ListTargets(7))
+		stance = HOSTILE_STANCE_ATTACKING
 		if(ranged)
 			if(get_dist(src, target_mob) <= 6)
 				OpenFire(target_mob)
 			else
 				walk_to(src, target_mob, 1, move_to_delay)
 		else
-			stance = HOSTILE_STANCE_ATTACKING
 			walk_to(src, target_mob, TRUE, move_to_delay)
 
 /mob/living/simple_animal/proc/AttackTarget()
-	if (!target_mob || SA_attackable(target_mob))
+	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
 	if (!(target_mob in ListTargets(7)))
@@ -85,6 +91,8 @@
 	if (ranged)
 		if (get_dist(src, target_mob) <= 6)
 			OpenFire(target_mob)
+		else
+			MoveToTarget()
 	else
 		if (get_dist(src, target_mob) <= 1)	//Attacking
 			AttackingTarget()
@@ -197,5 +205,6 @@
 	playsound(user, projectilesound, 100, 1)
 	if(!A)	return
 	var/def_zone = get_exposed_defense_zone(target)
-	A.launch(target, def_zone)
+	A.launch(target, user, src.gun, def_zone)
+
 

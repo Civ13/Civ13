@@ -280,7 +280,7 @@
 			if (HOSTILE_STANCE_ALERT)
 				var/found_mob = FALSE
 				if (target_mob && target_mob in ListTargets(7))
-					if (!(SA_attackable(target_mob)))
+					if ((SA_attackable(target_mob)))
 						stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
 						stance_step++
 						found_mob = TRUE
@@ -331,7 +331,7 @@
 					target_mob = FindTarget()
 			if (HOSTILE_STANCE_TIRED)
 				stance_step++
-				if (stance_step >= 2) //rests for 5 ticks
+				if (stance_step >= 2) //rests for 2 ticks
 					if (target_mob && target_mob in ListTargets(7))
 						stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
 					else
@@ -340,7 +340,7 @@
 			if (HOSTILE_STANCE_ALERT)
 				var/found_mob = FALSE
 				if (target_mob && target_mob in ListTargets(7))
-					if (!(SA_attackable(target_mob)))
+					if ((SA_attackable(target_mob)))
 						stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
 						stance_step++
 						found_mob = TRUE
@@ -351,7 +351,7 @@
 
 				if (stance_step <= -10) //If we have not found a mob for 20-ish ticks, revert to idle mode
 					stance = HOSTILE_STANCE_IDLE
-				if (stance_step >= 2)   //If we have been staring at a mob for 2 ticks,
+				if (stance_step >= 1)   //If we have been staring at a mob for 2 ticks,
 					stance = HOSTILE_STANCE_ATTACK
 
 			if (HOSTILE_STANCE_ATTACK)
@@ -737,9 +737,9 @@
 /mob/living/simple_animal/proc/SA_attackable(target_mob)
 	if (isliving(target_mob))
 		var/mob/living/L = target_mob
-		if (!L.stat)
-			return (0)
-	return TRUE
+		if (L.stat != DEAD)
+			return TRUE
+	return FALSE
 
 /mob/living/simple_animal/say(var/message)
 	var/verb = "says"
