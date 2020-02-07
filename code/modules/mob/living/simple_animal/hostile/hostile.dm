@@ -11,7 +11,7 @@
 	var/projectiletype = null
 	var/projectilesound = null
 	var/fire_desc = "fires"
-	var/gun = null
+	var/obj/item/gun = null
 
 /mob/living/simple_animal/proc/FindTarget()
 
@@ -192,9 +192,6 @@
 		Shoot(target, src.loc, src)
 		if(casingtype)
 			new casingtype
-
-	stance = HOSTILE_STANCE_IDLE
-	target_mob = null
 	return
 
 /mob/living/simple_animal/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
@@ -204,7 +201,9 @@
 	var/obj/item/projectile/A = new projectiletype(get_turf(user))
 	playsound(user, projectilesound, 100, 1)
 	if(!A)	return
-	var/def_zone = get_exposed_defense_zone(target)
+	var/def_zone = pick("chest","head")
+	if (prob(8))
+		def_zone = pick("l_arm","r_arm","r_leg","l_leg")
 	A.launch(target, user, src.gun, def_zone)
 
 

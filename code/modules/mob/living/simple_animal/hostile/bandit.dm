@@ -31,7 +31,7 @@
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
 	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'
-	casingtype = /obj/item/ammo_casing/pistol9
+	casingtype = null
 
 	New()
 		..()
@@ -42,6 +42,6 @@
 	if(corpse)
 		new corpse (src.loc)
 	if(gun)
-		new gun (src.loc)
+		gun.forceMove(src.loc)
 	qdel(src)
 	return

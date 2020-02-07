@@ -319,40 +319,23 @@
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
 			if (turns_since_move >= turns_per_move && stance==HOSTILE_STANCE_IDLE)
-				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
-					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
-					moving_to = pick(cardinal)
-					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
-					Move(get_step(src,moving_to))
-					turns_since_move = FALSE
+				var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+				moving_to = pick(cardinal)
+				set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+				Move(get_step(src,moving_to))
+				turns_since_move = FALSE
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
 				if (!target_mob || !(target_mob in ListTargets(7)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
-			if (HOSTILE_STANCE_TIRED)
-				stance_step++
-				if (stance_step >= 2) //rests for 2 ticks
-					if (target_mob && target_mob in ListTargets(7))
-						stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
-					else
-						stance = HOSTILE_STANCE_IDLE
+					if (target_mob)
+						stance = HOSTILE_STANCE_ATTACK
 
-			if (HOSTILE_STANCE_ALERT)
-				var/found_mob = FALSE
+			if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
 				if (target_mob && target_mob in ListTargets(7))
 					if ((SA_attackable(target_mob)))
-						stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
-						stance_step++
-						found_mob = TRUE
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
-
-				if (!found_mob)
-					stance_step--
-
-				if (stance_step <= -10) //If we have not found a mob for 20-ish ticks, revert to idle mode
-					stance = HOSTILE_STANCE_IDLE
-				if (stance_step >= 1)   //If we have been staring at a mob for 2 ticks,
-					stance = HOSTILE_STANCE_ATTACK
+						stance = HOSTILE_STANCE_ATTACK
 
 			if (HOSTILE_STANCE_ATTACK)
 				if (destroy_surroundings)
@@ -362,13 +345,8 @@
 			if (HOSTILE_STANCE_ATTACKING)
 				if (destroy_surroundings)
 					DestroySurroundings()
-				spawn(10)
+				spawn(5)
 					AttackTarget()
-				if (stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
-					custom_emote(1, "is worn out and needs to rest." )
-					stance = HOSTILE_STANCE_TIRED
-					stance_step = FALSE
-					walk(src, FALSE) //This stops the bear's walking
 		return t_behaviour
 /mob/living/simple_animal/gib()
 	..(icon_gib,1)
