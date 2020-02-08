@@ -164,6 +164,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/change_wind_spd,
 	/client/proc/randomly_change_weather,
 	/client/proc/randomly_modify_weather,
+	/client/proc/change_season,
 	/client/proc/change_colour_filter,
 	/datum/admins/proc/print_chemical_reactions,
 	/datum/admins/proc/print_crafting_recipes,

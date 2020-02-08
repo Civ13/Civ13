@@ -153,15 +153,9 @@
 				switch(A.weather)
 					if (WEATHER_NONE)
 						multiplier = 1
-					if (WEATHER_RAIN)
+					if (WEATHER_WET)
 						multiplier = 1.5
-					if (WEATHER_SNOW)
-						multiplier = 1.5
-					if (WEATHER_BLIZZARD)
-						multiplier = 3
-					if (WEATHER_SANDSTORM)
-						multiplier = 1.3
-					if (WEATHER_STORM)
+					if (WEATHER_EXTREME)
 						multiplier = 2
 					if (WEATHER_SMOG)
 						multiplier = 1

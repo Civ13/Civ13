@@ -187,10 +187,63 @@
 	return name
 
 /datum/species/proc/get_environment_discomfort(var/mob/living/carbon/human/H)
-	if (H.bodytemperature > heat_level_1)
-		return //todo: ?
+	if (H.bodytemperature > heat_level_1 && !H.orc)
+		var/area/A = get_area(H)
+		if (A.climate == "desert" && A.location == AREA_OUTSIDE)
+			if (!H.shoes)
+				if (prob(25))
+					H << "<span class='danger'>The hot ground burns your feet!</span>"
+					H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
 
-	if (H.bodytemperature < cold_level_1)
+		//Check protected bodyparts
+		var/sum = 0
+		var/list/exposed_bp = list("l_leg","r_leg","chest","groin","l_arm","r_arm","head")
+		for (var/obj/item/clothing/C in list(H.head,H.wear_suit,H.w_uniform,H.shoes,H.gloves,H.wear_mask))
+			if (C)
+				if (C.heat_protection)
+					sum |= C.heat_protection
+			if (sum & HEAD)
+				exposed_bp -= "head"
+			if (sum & UPPER_TORSO)
+				exposed_bp -= "chest"
+			if (sum & LOWER_TORSO)
+				exposed_bp -= "groin"
+			if (sum & LEGS)
+				exposed_bp -= "l_leg"
+				exposed_bp -= "r_leg"
+			if (sum & FEET)
+				exposed_bp -= "l_foot"
+				exposed_bp -= "r_foot"
+			if (sum & ARMS)
+				exposed_bp -= "l_arm"
+				exposed_bp -= "r_arm"
+			if (sum & HANDS)
+				exposed_bp -= "l_hand"
+				exposed_bp -= "r_hand"
+
+		for (var/i in exposed_bp)
+			H.adjustFireLossByPart(1, i)
+
+		if (prob(12))
+			H << "<span class='danger'>[pick(heat_discomfort_strings)]</span>"
+
+		if (A.weather == WEATHER_EXTREME && findtext(A,"sandstorm"))
+			if (prob(15))
+				H << "<span class='danger'>The dust abrades your exposed flesh!</span>"
+			for (var/i in exposed_bp)
+				H.adjustFireLossByPart(2, i)
+
+	if (H.bodytemperature < cold_level_1 && !H.wolfman)
+		var/area/A = get_area(H)
+		for (var/obj/structure/brazier/BR in range(3, H))
+			if (BR.on == TRUE)
+				return
+		for (var/obj/structure/heatsource/HS in range(3, H))
+			if (HS.on == TRUE)
+				return
+		for (var/obj/structure/oven/fireplace/FP in range(1, H))
+			if (FP.on == TRUE)
+				return
 		var/turf/T = get_turf(H)
 		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && H.shoes)
 			if (H.shoes.cold_protection != FEET)
@@ -198,39 +251,53 @@
 					H << "<span class='danger'>Your feet are freezing!</span>"
 					H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
 
-		if (istype(H.wear_suit, /obj/item/clothing/suit))
-			if (H.wear_suit.min_cold_protection_temperature <= COAT_MIN_COLD_PROTECTION_TEMPERATURE)
-				var/area/mob_area = get_area(H)
-				if (mob_area.weather != WEATHER_BLIZZARD)
-					return //properly clothed for cold weather
+		//Check protected bodyparts
+		var/sum = 0
+		var/list/exposed_bp = list("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","head")
+		for (var/obj/item/clothing/C in list(H.head,H.wear_suit,H.w_uniform,H.shoes,H.gloves,H.wear_mask))
+			if (C)
+				if (C.cold_protection)
+					sum |= C.cold_protection
+			if (sum & HEAD)
+				exposed_bp -= "head"
+			if (sum & UPPER_TORSO)
+				exposed_bp -= "chest"
+			if (sum & LOWER_TORSO)
+				exposed_bp -= "groin"
+			if (sum & LEGS)
+				exposed_bp -= "l_leg"
+				exposed_bp -= "r_leg"
+			if (sum & FEET)
+				exposed_bp -= "l_foot"
+				exposed_bp -= "r_foot"
+			if (sum & ARMS)
+				exposed_bp -= "l_arm"
+				exposed_bp -= "r_arm"
+			if (sum & HANDS)
+				exposed_bp -= "l_hand"
+				exposed_bp -= "r_hand"
 
-		var/covered = FALSE // Basic coverage can help.
-		for (var/obj/item/clothing/clothes in H)
-			if (H.l_hand == clothes|| H.r_hand == clothes)
-				continue
-			if ((clothes.body_parts_covered & UPPER_TORSO) && (clothes.body_parts_covered & LOWER_TORSO))
-				covered = TRUE
-				break
-
-		// if we aren't covered, take more damage + weather damage
-		if (!covered)
-			H.adjustFireLoss(3)
-		else
-			H.adjustFireLoss(2)
+		for (var/i in exposed_bp)
+			H.adjustFireLossByPart(1, i)
 
 		if (prob(12))
 			H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
 
+		if (A.icon_state == "snow_storm" && A.location == AREA_OUTSIDE)
+			if (prob(12))
+				H << "<span class='danger'>The blizzard chills you to the bone!</span>"
+			H.adjustFireLoss(3)
+/*
 		var/area/A = get_area(H)
-		if (A.weather == WEATHER_RAIN)
+		if (A.weather == WEATHER_WET && findtext(A,"rain"))
 			if (prob(15))
 				H << "<span class='danger'>The cold rain chills you to the bone.</span>"
 			H.adjustFireLoss(3) // wet is bad
-		else if (A.weather == WEATHER_SNOW)
+		else if (A.weather == WEATHER_WET && findtext(A,"snow"))
 			if (prob(15))
 				H << "<span class='danger'>The freezing snowfall chills you to the bone.</span>"
 			H.adjustFireLoss(2)
-
+*/
 /datum/species/proc/sanitize_name(var/name)
 	return sanitizeName(name)
 

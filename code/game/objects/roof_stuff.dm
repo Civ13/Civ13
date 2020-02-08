@@ -23,6 +23,34 @@
 	var/current_area_type = /area/caribbean
 	var/image/roof_overlay
 
+/obj/roof/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	user.do_attack_animation(src)
+	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+	if (flammable)
+		if (istype(W, /obj/item/flashlight/torch))
+			var/obj/item/flashlight/torch/T = W
+			if (T.on)
+				health -= 15
+				if (prob(30))
+					new/obj/effect/fire(loc)
+					visible_message("<span class='danger'>The roof catches fire!<span>")
+			return
+	if (istype(W, /obj/item/weapon/hammer))
+		user << "You start removing \the [src]..."
+		if (do_after(user, 60, src) && src)
+			user << "You removed \the [src]."
+			qdel(src)
+			return
+	else
+		switch(W.damtype)
+			if ("fire")
+				health -= W.force * TRUE
+			if ("brute")
+				health -= W.force * 0.20
+		return
+	..()
+
 /obj/roof/wood
 	name = "wood roof"
 
@@ -94,13 +122,28 @@
 	roof_overlay = image(icon='icons/turf/roofs.dmi', loc = src, icon_state=overlay_state,layer=11.1)
 	recalculate_borders(TRUE)
 	var/area/caribbean/CURRENTAREA = get_area(src)
-//	var/oldclimate = CURRENTAREA.climate
+	var/oldclimate = CURRENTAREA.climate
+
 	if (CURRENTAREA.location == AREA_OUTSIDE)
 		current_area_type = CURRENTAREA.type
-		new/area/caribbean/roofed(get_turf(src))
-// TODO: Different roofed climates
-//		var/area/caribbean/roofed/A = new/area/caribbean/roofed(src.loc)
-//		A.climate = oldclimate
+		switch(oldclimate)
+			if ("tundra")
+				new/area/caribbean/roofed/tundra(get_turf(src))
+			if ("taiga")
+				new/area/caribbean/roofed/taiga(get_turf(src))
+			if ("temperate")
+				new/area/caribbean/roofed/temperate(get_turf(src))
+			if ("sea")
+				new/area/caribbean/roofed/sea(get_turf(src))
+			if ("semiarid")
+				new/area/caribbean/roofed/semiarid(get_turf(src))
+			if ("desert")
+				new/area/caribbean/roofed/desert(get_turf(src))
+			if ("savanna")
+				new/area/caribbean/roofed/savanna(get_turf(src))
+			if ("jungle")
+				new/area/caribbean/roofed/jungle(get_turf(src))
+
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
 	collapse_check()

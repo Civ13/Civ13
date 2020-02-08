@@ -81,11 +81,15 @@
 	if (fleas)
 		user << "<b>\The [src] is infested with fleas!</b>"
 ///////////////////////////////////////////////////////////////////////
+/obj/item/clothing/head
+	heat_protection = HEAD
+
 /obj/item/clothing/head/helmet
 	restricts_view = 1
 	health = 35
 // Ears: headsets, earmuffs and tiny objects
 	ripable = FALSE
+
 /obj/item/clothing/ears
 	name = "ears"
 	w_class = 1.0
@@ -307,6 +311,7 @@ BLIND	 // can't see anything
 	var/list/say_messages
 	var/list/say_verbs
 	var/blocks_scope = FALSE
+	heat_protection = HEAD
 
 /obj/item/clothing/mask/update_clothing_icon()
 	if (ismob(loc))

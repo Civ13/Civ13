@@ -15,8 +15,8 @@ RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,1,5
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,1,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,1,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
-RECIPE: /material/wood/,concrete roof builder,/obj/item/weapon/roofbuilder/concrete,1,20,0,1,none,103,0,0,8,null
-RECIPE: /material/wood/,concrete pillar,/obj/structure/mine_support/stone/concrete,2,20,0,1,none,103,0,0,8,null
+RECIPE: /material/clay/,concrete roof builder,/obj/item/weapon/roofbuilder/concrete,1,20,0,1,none,103,0,0,8,null
+RECIPE: /material/clay/,concrete pillar,/obj/structure/mine_support/stone/concrete,2,20,0,1,none,103,0,0,8,null
 RECIPE: /material/clay/,furnace,/obj/structure/furnace/clay,10,150,1,1,none,26,0,0,8,null
 
 RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,weapons,0,0,0,8,null
@@ -252,6 +252,7 @@ RECIPE: /material/cloth/,yellow NBC hood,/obj/item/clothing/head/nbc,3,100,0,1,j
 RECIPE: /material/cloth/,grey parka,/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,0,1,jackets & vests,0,0,145,8,null
 RECIPE: /material/cloth/,custom haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/cloth/,black haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
+RECIPE: /material/cloth/,B-3 vest,/obj/item/clothing/suit/b3,45,300,0,1,jackets & vests,0,0,145,8,null
 
 RECIPE: /material/cloth/,mayan headdress,/obj/item/clothing/head/mayan_headdress,4,55,0,1,hats & masks,0,0,18,3,null
 RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,hats & masks,0,0,18,1,null

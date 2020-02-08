@@ -78,6 +78,9 @@
 /datum/job/chinese
 	default_language = "Chinese"
 	additional_languages = list("English" = 5, "Vietnamese" = 10, "Japanese" = 5)
+/datum/job/npc
+	default_language = "English"
+
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 

@@ -393,12 +393,12 @@
 		//pleased
 		else if (power >= 150 && power < 250)
 			if (prob(power/250))
-				if (weather == WEATHER_RAIN || WEATHER_SNOW)
+				if (weather == WEATHER_WET)
 					change_weather_somehow()
 					visible_message("The gods have blessed us with good weather!")
 		//very pleased
 		else if (power >= 250)
-			if (weather == WEATHER_RAIN || WEATHER_SNOW)
+			if (weather == WEATHER_WET)
 				change_weather_somehow()
 			visible_message("The gods have blessed us with good weather!")
 			if (prob(50) && human_clients_mob_list.len>0)

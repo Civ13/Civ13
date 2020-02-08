@@ -174,6 +174,15 @@
 	max_ammo = 15
 	weight = 0.2
 	multiple_sprites = TRUE
+
+
+/obj/item/ammo_magazine/emptymagazine/pistol/filled
+	name = "pistol magazine (9mm)"
+	caliber = "pistol9"
+	ammo_type = /obj/item/ammo_casing/pistol9
+	max_ammo = 17
+	weight = 0.34
+
 /obj/item/ammo_magazine/emptymagazine/pistol/a45
 	name = "pistol magazine (8)"
 	mag_type = MAGAZINE

@@ -120,6 +120,7 @@
 	icon_state = "customshendyt"
 	item_state = "customshendyt"
 	worn_state = "customshendyt"
+	heat_protection = LOWER_TORSO
 
 /obj/item/clothing/under/custom/celtic
 	name = "celtic trousers"
@@ -127,6 +128,7 @@
 	icon_state = "customceltic"
 	item_state = "customceltic"
 	worn_state = "customceltic"
+	heat_protection = LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/custom/toga/purple
 	name = "purple toga"
@@ -136,6 +138,7 @@
 	worn_state = "customtoga"
 	uncolored = FALSE
 	color = "#66023C"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
 ///////////////MEDIEVAL//////////////////////////////////////
 /obj/item/clothing/under/custom/tunic
@@ -144,6 +147,7 @@
 	icon_state = "customtunic"
 	item_state = "customtunic"
 	worn_state = "customtunic"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/under/custom/haori
 	name = "haori"
@@ -165,6 +169,7 @@
 	icon_state = "customarabictunic"
 	item_state = "customarabictunic"
 	worn_state = "customarabictunic"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/suit/storage/jacket/custom/poncho
 	name = "poncho"
@@ -172,6 +177,7 @@
 	icon_state = "customponcho"
 	item_state = "customponcho"
 	worn_state = "customponcho"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/under/customren
 	name = "renaissance outfit"
@@ -681,6 +687,7 @@
 	item_state = "tribalrobe"
 	icon_state = "tribalrobe"
 	worn_state = "tribalrobe"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
 	New()
 		..()
@@ -753,6 +760,7 @@
 	item_state = "customuni"
 	icon_state = "customuni"
 	worn_state = "customuni"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
 	New()
 		..()
@@ -976,6 +984,7 @@
 	icon_state = "modern_camo_custom"
 	worn_state = "modern_camo_custom"
 	color = "#FFFFFF"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	New()
 		..()
 		spawn(5)

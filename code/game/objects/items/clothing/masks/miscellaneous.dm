@@ -7,6 +7,7 @@
 	w_class = 2
 	gas_transfer_coefficient = 0.90
 	voicechange = TRUE
+	heat_protection = 0
 
 /obj/item/clothing/mask/muzzle/tape
 	name = "length of tape"
