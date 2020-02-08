@@ -266,7 +266,7 @@
    * a guy who knows Polish + Russian understands ~88% Ukrainian
    * a guy who knows only Russian understands ~66% Ukrainian
 
-    - Kachnov
+	- Kachnov
 */
 
 /mob/proc/get_mutual_intelligibility(var/datum/language/reference)

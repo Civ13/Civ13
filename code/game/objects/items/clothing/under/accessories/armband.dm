@@ -209,6 +209,14 @@
 	worn_state = "patch_marksman"
 	slot = "armband"
 
+/obj/item/clothing/accessory/patch/swat
+	name = "SWAT patch"
+	desc = "A SWAT tag."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+	slot = "armband"
+
 /obj/item/clothing/accessory/patch/specialforce
 	name = "special forces patch"
 	desc = "A patch used by special forces."

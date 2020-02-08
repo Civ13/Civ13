@@ -32,11 +32,11 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/heat_capacity = TRUE
 
 	//Properties for both
-	var/temperature = T20C      // Initial turf temperature.
+	var/temperature = T20C	  // Initial turf temperature.
 
 	// General properties.
 	var/icon_old = null
-	var/pathweight = TRUE          // How much does it cost to pathfind over this turf?
+	var/pathweight = TRUE		  // How much does it cost to pathfind over this turf?
 
 	var/list/decals
 	var/move_delay = 0

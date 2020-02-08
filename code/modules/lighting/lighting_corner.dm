@@ -6,12 +6,12 @@
 /var/list/LIGHTING_CORNER_DIAGONAL = list(NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST)
 
 /datum/lighting_corner
-	var/list/turf/masters                 = list()
+	var/list/turf/masters				 = list()
 	var/list/datum/light_source/affecting = list() // Light sources affecting us.
-	var/active                            = FALSE  // TRUE if one of our masters has dynamic lighting.
+	var/active							= FALSE  // TRUE if one of our masters has dynamic lighting.
 
-	var/x     = 0
-	var/y     = 0
+	var/x	 = 0
+	var/y	 = 0
 
 	// luminosity values based on lights
 	var/lum_r = 0.0
@@ -27,7 +27,7 @@
 	masters[new_turf] = turn(diagonal, 180)
 
 	var/vertical   = diagonal & ~(diagonal - 1) // The horizontal directions (4 and 8) are bigger than the vertical ones (1 and 2), so we can reliably say the lsb is the horizontal direction.
-	var/horizontal = diagonal & ~vertical       // Now that we know the horizontal one we can get the vertical one.
+	var/horizontal = diagonal & ~vertical	   // Now that we know the horizontal one we can get the vertical one.
 
 	x = new_turf.x + (horizontal == EAST  ? 0.5 : -0.5)
 	y = new_turf.y + (vertical   == NORTH ? 0.5 : -0.5)
@@ -42,21 +42,21 @@
 	T = get_step(new_turf, diagonal)
 	if (T) // In case we're on the map's border.
 		masters[T]   = diagonal
-		i            = LIGHTING_CORNER_DIAGONAL.Find(turn(diagonal, 180))
+		i			= LIGHTING_CORNER_DIAGONAL.Find(turn(diagonal, 180))
 		T.corners[i] = src
 
 	// Now the horizontal one.
 	T = get_step(new_turf, horizontal)
 	if (T) // Ditto.
 		masters[T]   = ((T.x > x) ? EAST : WEST) | ((T.y > y) ? NORTH : SOUTH) // Get the dir based on coordinates.
-		i            = LIGHTING_CORNER_DIAGONAL.Find(turn(masters[T], 180))
+		i			= LIGHTING_CORNER_DIAGONAL.Find(turn(masters[T], 180))
 		T.corners[i] = src
 
 	// And finally the vertical one.
 	T = get_step(new_turf, vertical)
 	if (T)
 		masters[T]   = ((T.x > x) ? EAST : WEST) | ((T.y > y) ? NORTH : SOUTH) // Get the dir based on coordinates.
-		i            = LIGHTING_CORNER_DIAGONAL.Find(turn(masters[T], 180))
+		i			= LIGHTING_CORNER_DIAGONAL.Find(turn(masters[T], 180))
 		T.corners[i] = src
 
 	spawn() // Lighting overlays get initialized AFTER corners, so this spawn() will make sure the activity (which checks for overlays) is updated after the overlays are generated.

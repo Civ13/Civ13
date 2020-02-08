@@ -1,9 +1,9 @@
 /mob/living/simple_animal/hostile/bandit
 	name = "Bandit"
-	desc = "A bandit! he looks scary!."
-	icon_state = "bandit"
-	icon_dead = "bandit_dead"
-	turns_per_move = 3
+	desc = "A bandit! he looks scary!"
+	icon_state = "bandit2"
+	icon_dead = "bandit2_dead"
+	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -13,10 +13,10 @@
 	emote_see = list("stares", "draws firearm")
 	speak_chance = TRUE
 	speed = 6
-	move_to_delay = 4
+	move_to_delay = 3
 	stop_automated_movement_when_pulled = 0
-	maxHealth = 200
-	health = 200
+	maxHealth = 150
+	health = 150
 	move_to_delay = 4
 	harm_intent_damage = 10
 	melee_damage_lower = 35
@@ -24,15 +24,27 @@
 	attacktext = "pistol-whipped"
 	attack_sound = 'sound/weapons/punch3.ogg'
 	mob_size = MOB_MEDIUM
+	starves = FALSE
+	behaviour = "hostile"
+	faction = PIRATES
+	ranged = 1
+	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
+	var/corpse = /mob/living/carbon/human/corpse/bandit
+	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	casingtype = null
 
-	var/corpse = /mob/living/carbon/human/corpse/japanese
+	New()
+		..()
+		if (prob(65))
+			gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
+		else
+			gun = new/obj/item/weapon/gun/projectile/revolver/coltnewpolice/standardized(src)
 
-	faction = JAPANESE
-
-
-/mob/living/simple_animal/hostile/japanese/death()
+/mob/living/simple_animal/hostile/bandit/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
-	qdel(src)
+	if(gun)
+		gun.forceMove(src.loc)
+		qdel(src)
 	return

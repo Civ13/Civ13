@@ -4,13 +4,13 @@
 	var/title = "generic job"
 	//English meaning of this job's title, if applicable
 	var/en_meaning = ""
-	var/faction = "None"	              // Players will be allowed to spawn in as jobs that are set to "Human"
+	var/faction = "None"				  // Players will be allowed to spawn in as jobs that are set to "Human"
 
-	var/total_positions = FALSE               // How many players can be this job
-	var/current_positions = FALSE             // How many players have this job
-	var/selection_color = "#ffffff"       // Selection screen color
-	var/minimal_player_age = FALSE            // If you have use_age_restriction_for_jobs config option enabled and the database set up, this option will add a requirement for players to be at least minimal_player_age days old. (meaning they first signed in at least that many days before.)
-	var/head_position = FALSE                 // Is this position Command?
+	var/total_positions = FALSE			   // How many players can be this job
+	var/current_positions = FALSE			 // How many players have this job
+	var/selection_color = "#ffffff"	   // Selection screen color
+	var/minimal_player_age = FALSE			// If you have use_age_restriction_for_jobs config option enabled and the database set up, this option will add a requirement for players to be at least minimal_player_age days old. (meaning they first signed in at least that many days before.)
+	var/head_position = FALSE				 // Is this position Command?
 	var/minimum_character_age = FALSE
 	var/ideal_character_age = 30
 	//job equipment

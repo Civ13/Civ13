@@ -11,7 +11,14 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-
+	New()
+		..()
+		spawn(1)
+			for(var/obj/roof/R in range(1,src))
+				if (opacity)
+					R.update_transparency(0)
+				else
+					R.update_transparency(1)
 /obj/structure/curtain/open
 	icon_state = "open"
 	opacity = FALSE
@@ -32,15 +39,22 @@
 	opacity = !opacity
 	if (opacity)
 		icon_state = "closed"
+		for(var/obj/roof/R in range(1,src))
+			R.update_transparency(0)
 	else
 		icon_state = "open"
+		for(var/obj/roof/R in range(1,src))
+			R.update_transparency(1)
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
+
 
 /obj/structure/curtain/Destroy()
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()
+	for(var/obj/roof/R in range(1,src))
+		R.update_transparency(0)
 
 /obj/structure/curtain/black
 	name = "black curtain"

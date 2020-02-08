@@ -23,7 +23,7 @@
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the grace wall is removed.<br>The <b>NKVD</b> must keep the prisoners contained, and make them serve the Soviet Union with forced labor. The <b>Prisoners</b> must try to survive, increase their faction power, and if possible, escape.</font>"
 	faction1 = RUSSIAN
 	faction2 = CIVILIAN
-	valid_weather_types = list(WEATHER_NONE, WEATHER_SNOW, WEATHER_BLIZZARD)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
 		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
 	gamemode = "Prison Simulation"

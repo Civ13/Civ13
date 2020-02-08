@@ -295,7 +295,7 @@
 
 				if (24 to 27)
 					if (prob(3))
-						fingerprints[full_print] = full_print     	//Sucks to be you.
+						fingerprints[full_print] = full_print	 	//Sucks to be you.
 					else
 						fingerprints[full_print] = stars(full_print, rand(15, 55)) // 20 to 29
 
@@ -346,12 +346,12 @@
 		fingerprintshidden = list()
 
 	//skytodo
-	//A.fingerprints |= fingerprints            //detective
-	//A.fingerprintshidden |= fingerprintshidden    //admin
+	//A.fingerprints |= fingerprints			//detective
+	//A.fingerprintshidden |= fingerprintshidden	//admin
 	if (A.fingerprints && fingerprints)
-		A.fingerprints |= fingerprints.Copy()            //detective
+		A.fingerprints |= fingerprints.Copy()			//detective
 	if (A.fingerprintshidden && fingerprintshidden)
-		A.fingerprintshidden |= fingerprintshidden.Copy()    //admin	A.fingerprintslast = fingerprintslast
+		A.fingerprintshidden |= fingerprintshidden.Copy()	//admin	A.fingerprintslast = fingerprintslast
 
 
 //returns TRUE if made bloody, returns FALSE otherwise

@@ -209,7 +209,7 @@
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
 	var/num_fragments = 30  //total number of fragments produced by the grenade
 	var/fragment_damage = 15
-	var/damage_step = 2      //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	var/big_bomb = FALSE
 	var/spread_range = 7
 /obj/item/weapon/grenade/modern/prime()
@@ -399,7 +399,7 @@
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
 	var/num_fragments = 37  //total number of fragments produced by the grenade
 	var/fragment_damage = 15
-	var/damage_step = 2      //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	var/big_bomb = FALSE
 	secondary_action = TRUE
 	var/explosion_size = 2
@@ -410,7 +410,7 @@
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
 	var/num_fragments = 37  //total number of fragments produced by the grenade
 	var/fragment_damage = 15
-	var/damage_step = 2      //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	var/big_bomb = FALSE
 
 	//The radius of the circle used to launch projectiles. Lower values mean less projectiles are used but if set too low gaps may appear in the spread pattern

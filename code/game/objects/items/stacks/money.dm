@@ -390,3 +390,11 @@
 	icon_state = "goldcoin_pile"
 	amount = 1
 	value = 0.4
+
+/obj/item/stack/money/bitcoin
+	name = "bitcoin"
+	desc = "A physical bitcoin."
+	singular_name = "bitcoin"
+	icon_state = "bitcoin"
+	amount = 1
+	value = 5000

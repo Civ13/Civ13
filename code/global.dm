@@ -7,16 +7,16 @@
 				//For single Mayor/Governor maps
 var/global_export_tax = 0	//Global Export Tax
 var/global_import_tax = 0	//Global Import Tax
-var/diary               = null
-var/attack_log          = null
-var/href_logfile        = null
-var/customserver_name        = null
-var/game_version        = "Civilization 13"
-var/changelog_hash      = ""
+var/diary			   = null
+var/attack_log		  = null
+var/href_logfile		= null
+var/customserver_name   = null
+var/game_version		= "Civilization 13"
+var/changelog_hash	  = ""
 
 var/round_progressing = TRUE
 
-var/datum/configuration/config      = null
+var/datum/configuration/config	  = null
 
 
 var/Debug2 = FALSE
@@ -40,12 +40,6 @@ var/pig_count = 0
 var/deer_count = 0
 var/wolf_count = 0
 var/bear_count = 0
-
-/proc/get_weather()
-	. = get_weather_default(weather)
-	if (. == "none")
-		return "Clear skies"
-	return "It's [lowertext(.)]ing"
 
 /proc/get_season()
 	return capitalize(lowertext(season))

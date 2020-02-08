@@ -2,13 +2,13 @@
 				BLOOD SYSTEM
 ****************************************************/
 //Blood levels. These are percentages based on the species blood_volume far.
-var/const/BLOOD_VOLUME_SAFE =    85
-var/const/BLOOD_VOLUME_OKAY =    75
-var/const/BLOOD_VOLUME_BAD =     60
+var/const/BLOOD_VOLUME_SAFE =	85
+var/const/BLOOD_VOLUME_OKAY =	75
+var/const/BLOOD_VOLUME_BAD =	 60
 var/const/BLOOD_VOLUME_SURVIVE = 20
 
 /mob/living/carbon/human/var/datum/reagents/vessel // Container for blood and BLOOD ONLY. Do not transfer other chems here.
-/mob/living/carbon/human/var/var/pale = FALSE          // Should affect how mob sprite is drawn, but currently doesn't.
+/mob/living/carbon/human/var/var/pale = FALSE		  // Should affect how mob sprite is drawn, but currently doesn't.
 
 //Initializes blood vessels
 /mob/living/carbon/human/proc/make_blood()

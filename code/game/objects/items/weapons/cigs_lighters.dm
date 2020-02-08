@@ -81,7 +81,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/zippomes = "USER lights NAME with FLAME"
 	var/weldermes = "USER lights NAME with FLAME"
 	var/ignitermes = "USER lights NAME with FLAME"
-
+	heat_protection = 0
 /obj/item/clothing/mask/smokable/New()
 	..()
 	flags |= NOREACT // so it doesn't react until you light it
@@ -449,6 +449,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/sound_toggleON = 'sound/items/lighter_on.ogg'
 	var/sound_toggleOFF = 'sound/items/lighter_off.ogg'
 	flammable = TRUE
+
+/obj/item/weapon/flame/lighter/bullet
+	name = "bullet lighter"
+	desc = "A casing that is now a lighter, cheeki breeki."
+	icon_state = "bullet"
+	item_state = "bullet"
+	sound_toggleON = 'sound/items/zippo_on.ogg'
+	sound_toggleOFF = 'sound/items/zippo_off.ogg'
 
 /obj/item/weapon/flame/lighter/zippo
 	name = "\improper Zippo lighter"

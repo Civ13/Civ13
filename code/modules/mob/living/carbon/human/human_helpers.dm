@@ -116,7 +116,7 @@
 	set name = "Wake Up"
 	set category = "IC"
 
-	if (!usr.sleeping)
+	if (!usr.sleeping && !inducedSSD)
 		usr << "<span class = 'red'>You are already awake.</span>"
 		return
 	if (WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
@@ -153,15 +153,9 @@
 				switch(A.weather)
 					if (WEATHER_NONE)
 						multiplier = 1
-					if (WEATHER_RAIN)
+					if (WEATHER_WET)
 						multiplier = 1.5
-					if (WEATHER_SNOW)
-						multiplier = 1.5
-					if (WEATHER_BLIZZARD)
-						multiplier = 3
-					if (WEATHER_SANDSTORM)
-						multiplier = 1.3
-					if (WEATHER_STORM)
+					if (WEATHER_EXTREME)
 						multiplier = 2
 					if (WEATHER_SMOG)
 						multiplier = 1
@@ -248,23 +242,39 @@
 	if (!client)
 		return
 	var/obj/structure/vehicleparts/frame/found = null
+
 	for (var/image/tmpimg in client.images)
 		if (tmpimg.icon == 'icons/obj/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles96x96.dmi')
-		 client.images.Remove(tmpimg)
+			client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
-	if (found)
-		for (var/obj/structure/vehicleparts/frame/FR in view(client))
+	for (var/obj/structure/vehicleparts/frame/FR in view(client))
+		if (found)
 			if (FR.axis != found.axis && FR != found)
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
-	else
-		for (var/obj/structure/vehicleparts/frame/FR in view(client))
+		else
 			if (locate(FR) in view(client))
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
+
+/mob/living/carbon/human
+	var/roofs_removed = TRUE
+
+/mob/living/carbon/human/proc/process_static_roofs()
+	if (!client)
+		return
+	var/area/A = get_area(loc)
+	if (A.location == AREA_INSIDE)
+		if (!roofs_removed)
+			client.images = (client.images ^ roofs_list)
+			roofs_removed = TRUE
+	else
+		if (roofs_removed)
+			client.images |= roofs_list
+			roofs_removed = FALSE
 
 /mob/living/carbon/human
 	var/drowning = FALSE

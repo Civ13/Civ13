@@ -55,7 +55,7 @@
 
 	accuracy_increase_mod = 1.50
 	accuracy_decrease_mod = 2.00
-	KD_chance = KD_CHANCE_LOW
+	KD_chance = KD_CHANCE_MEDIUM
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
 
@@ -165,6 +165,13 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
+
+/obj/item/weapon/gun/projectile/pistol/glock17/standardized
+	ammo_type = /obj/item/ammo_casing/pistol9
+	caliber = "pistol9"
+	magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+
+
 /obj/item/weapon/gun/projectile/pistol/glock17/update_icon()
 	..()
 	if (ammo_magazine)
@@ -172,6 +179,46 @@
 	else
 		icon_state = "glock170"
 	return
+
+/obj/item/weapon/gun/projectile/pistol/sig250
+	name = "SIG 250"
+	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
+	icon_state = "sig250"
+	item_state = "sig250"
+	fire_delay = 2.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/sig250
+	weight = 0.594
+	max_shells = 17 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/sig250/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "sig250"
+	else
+		icon_state = "sig250_open"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/pl14
+	name = "PL-14"
+	desc = "A modern experimental pistol made by Kalashnikov (chambered in 9x19mm)."
+	icon_state = "pl14"
+	fire_delay = 1.8
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/pl14
+	weight = 0.594
+	max_shells = 16 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.15
 
 /obj/item/weapon/gun/projectile/pistol/mp443
 	name = "MP-443"

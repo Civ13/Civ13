@@ -59,13 +59,13 @@
 	var/wound_update_accuracy = TRUE 	// how often wounds should be updated, a higher number means less often
 	var/joint = "joint"   // Descriptive string used in dislocation.
 	var/amputation_point  // Descriptive string used in amputation.
-	var/dislocated = FALSE    // If you target a joint, you can dislocate the limb, causing temporary damage to the organ.
+	var/dislocated = FALSE	// If you target a joint, you can dislocate the limb, causing temporary damage to the organ.
 	var/can_grasp //It would be more appropriate if these two were named "affects_grasp" and "affects_stand" at this point
 	var/can_stand
 	var/pain = FALSE
 	var/fracturetimer = 0
-	var/artery_name = "artery"         // Flavour text for carotid artery, aorta, etc.
-	var/arterial_bleed_severity = 1    // Multiplier for bleeding in a limb.
+	var/artery_name = "artery"		 // Flavour text for carotid artery, aorta, etc.
+	var/arterial_bleed_severity = 1	// Multiplier for bleeding in a limb.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold

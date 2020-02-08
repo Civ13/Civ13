@@ -566,7 +566,15 @@
 							if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
 								if (O && !O.gcDestroyed)
 									if (O.density && !istype(O, /obj/structure))
-										passthrough = FALSE
+										if (istype(O, /obj/covers))
+											var/obj/covers/CVR = O
+											if (prob(100-CVR.hardness) && CVR.density)
+												passthrough = TRUE
+												passthrough_message = "<span class = 'warning'>The [name] penetrates through \the [CVR]!</span>"
+											else
+												passthrough = FALSE
+										else
+											passthrough = FALSE
 									else if (istype(O, /obj/structure))
 										var/obj/structure/S = O
 										if (!S.CanPass(src, original))

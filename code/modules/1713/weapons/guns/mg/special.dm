@@ -57,7 +57,7 @@
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 1.50
-	KD_chance = KD_CHANCE_HIGH
+	KD_chance = KD_CHANCE_HIGH+5
 	stat = "machinegun"
 	w_class = 3
 	attachment_slots = ATTACH_IRONSIGHTS
@@ -76,20 +76,6 @@
 		user << "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>"
 		return FALSE
 	return TRUE
-
-/obj/item/weapon/gun/projectile/special/handle_post_fire()
-	..()
-	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
-	if (world.time - last_fire > 50)
-		jamcheck = 0
-	else
-		jamcheck += 0.12
-
-	if (prob(jamcheck*reverse_health_percentage))
-		jammed_until = max(world.time + (jamcheck * 4), 45)
-		jamcheck = 0
-
-	last_fire = world.time
 
 /obj/item/weapon/gun/projectile/special/update_icon()
 	if (sniper_scope)
@@ -114,7 +100,7 @@
 	name = "MK-18"
 	desc = "An american automatic rifle."
 	icon_state = "mk18"
-	item_state = "tactical"
+	item_state = "mk18"
 	base_icon = "mk18"
 	weight = 3.97
 	caliber = "a556x45"
@@ -133,9 +119,9 @@
 /obj/item/weapon/gun/projectile/special/ak74mtactical
 	name = "Tactical AK-74M"
 	desc = "A russian tactical rifle used by the Spetsnaz."
-	icon_state = "ak74mspecial"
-	item_state = "ak47"
-	base_icon = "ak74mspecial"
+	icon_state = "tactical"
+	item_state = "tactical"
+	base_icon = "tactical"
 	weight = 3.97
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/kar_shot.ogg'

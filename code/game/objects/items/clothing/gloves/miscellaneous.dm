@@ -64,7 +64,23 @@
 	name = "combat gloves"
 	icon_state = "black"
 	item_state = "swat_gl"
-	armor = list(melee = 80, arrow = 15, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 80, arrow = 15, gun = 10, energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	siemens_coefficient = FALSE
+
+/obj/item/clothing/gloves/thick/swat //Combined effect of SWAT gloves and insulated gloves
+	desc = "combat gloves used by swat officers."
+	name = "swat gloves"
+	icon_state = "swat"
+	item_state = "swat"
+	armor = list(melee = 80, arrow = 15, gun = 15, energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	siemens_coefficient = FALSE
+
+/obj/item/clothing/gloves/thick/salamon //Combined effect of SWAT gloves and insulated gloves
+	desc = "gold plated gloves. These look expensive."
+	name = "gold plated gloves"
+	icon_state = "salamon"
+	item_state = "salamon"
+	armor = list(melee = 50, arrow = 15, gun = 10, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	siemens_coefficient = FALSE
 
 /obj/item/clothing/gloves/botanic_leather

@@ -68,7 +68,7 @@
 
 	accuracy_increase_mod = 1.50
 	accuracy_decrease_mod = 2.00
-	KD_chance = KD_CHANCE_LOW
+	KD_chance = KD_CHANCE_MEDIUM
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
 	load_delay = 6
@@ -251,24 +251,13 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c38
 	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 
-/obj/item/weapon/gun/projectile/revolver/coltnewpolice
-	name = "Colt new police 32"
-	desc = "Common revolver used by police."
-	icon_state = "coltnewpolice"
-	w_class = 2
-	caliber = "a32"
-	load_method = SINGLE_CASING
-	handle_casings = CYCLE_CASINGS
-	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c32
-	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
-	cocked = FALSE
+/obj/item/weapon/gun/projectile/revolver/coltnewpolice/standardized
+	ammo_type = /obj/item/ammo_casing/pistol9
+	caliber = "pistol9"
 
 /obj/item/weapon/gun/projectile/revolver/enfieldno2
 	name = "Enfield No. 2"

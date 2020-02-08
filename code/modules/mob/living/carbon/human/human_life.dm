@@ -438,11 +438,9 @@
 				disease_treatment = 0
 
 	if (disease == TRUE)
-		if (!disease_type in disease_immunity)
-			//Do nothing
-		else
+		if (disease_type in disease_immunity)
 			disease = FALSE
-			disease_type = ""
+			disease_type = "none"
 			disease_progression = 0
 			disease_treatment = 0
 
@@ -521,6 +519,7 @@
 		if (!client)
 			species.handle_npc(src)
 	process_roofs()
+	process_static_roofs()
 
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
@@ -587,11 +586,11 @@
 
 	if (!species.vision_organ) // Presumably if a species has no vision organs, they see via some other means.
 		eye_blind =  0
-		blinded =    0
+		blinded =	0
 		eye_blurry = 0
 	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
 		eye_blind =  1
-		blinded =    1
+		blinded =	1
 		eye_blurry = 1
 
 /mob/living/carbon/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
@@ -608,153 +607,15 @@
 
 	if (!mob_area)
 		return
-	switch (season)
-		if ("WINTER")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = -29
-				if ("sea")
-					loc_temp = -11
-				if ("tundra")
-					loc_temp = -60
-				if ("taiga")
-					loc_temp = -53
-				if ("semiarid")
-					loc_temp = 0
-				if ("desert")
-					loc_temp = 32
-				if ("jungle")
-					loc_temp = 30
-				if ("savanna")
-					loc_temp = 27
 
-		if ("FALL")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 7
-				if ("sea")
-					loc_temp = 11
-				if ("tundra")
-					loc_temp = -50
-				if ("taiga")
-					loc_temp = -35
-				if ("semiarid")
-					loc_temp = 12
-				if ("desert")
-					loc_temp = 34
-				if ("jungle")
-					loc_temp = 32
-				if ("savanna")
-					loc_temp = 29
+	loc_temp = get_temp(src)
 
-		if ("SUMMER")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 30
-				if ("sea")
-					loc_temp = 23
-				if ("tundra")
-					loc_temp = -25
-				if ("taiga")
-					loc_temp = -10
-				if ("semiarid")
-					loc_temp = 35
-				if ("desert")
-					loc_temp = 50
-				if ("jungle")
-					loc_temp = 40
-				if ("savanna")
-					loc_temp = 35
-
-		if ("SPRING")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 10
-				if ("sea")
-					loc_temp = 14
-				if ("tundra")
-					loc_temp = -35
-				if ("taiga")
-					loc_temp = -15
-				if ("semiarid")
-					loc_temp = 28
-				if ("desert")
-					loc_temp = 40
-				if ("jungle")
-					loc_temp = 34
-				if ("savanna")
-					loc_temp = 29
-		if ("Dry Season")
-			loc_temp = 45
-		if ("Wet Season")
-			loc_temp = 30
-
-
-	switch (time_of_day)
-		if ("Midday")
-			loc_temp *= 1.03
-		if ("Afternoon")
-			loc_temp *= 1.02
-		if ("Morning")
-			loc_temp *= 1.01
-		if ("Evening")
-			loc_temp *= 1.00 // default
-		if ("Early Morning")
-			loc_temp *= 0.99
-		if ("Night")
-			loc_temp *= 0.97
-
-	switch (mob_area.weather)
-		if (WEATHER_NONE)
-			loc_temp *= 1.00
-		if (WEATHER_SNOW)
-			switch (mob_area.weather_intensity)
-				if (1.0)
-					loc_temp *= 0.87
-				if (2.0)
-					loc_temp *= 0.86
-				if (3.0)
-					loc_temp *= 0.85
-		if (WEATHER_RAIN)
-			switch (mob_area.weather_intensity)
-				if (1.0)
-					loc_temp *= 0.99
-				if (2.0)
-					loc_temp *= 0.97
-				if (3.0)
-					loc_temp *= 0.95
-		if (WEATHER_BLIZZARD)
-			loc_temp = -82
-		if (WEATHER_SANDSTORM)
-			loc_temp = 60
-	loc_temp = round(loc_temp)
-
-	for (var/obj/structure/brazier/BR in range(3, src))
-		if (BR.on == TRUE)
-			if (loc_temp < 22)
-				loc_temp = 22
-				break
-	for (var/obj/structure/heatsource/HS in range(3, src))
-		if (HS.on == TRUE)
-			if (loc_temp < 22)
-				loc_temp = 22
-				break
-	for (var/obj/structure/oven/fireplace/FP in range(1, src))
-		if (FP.on == TRUE)
-			if (loc_temp < 22)
-				loc_temp = 22
-				break
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
-	//inside areas have natural insulation, so the temp will be more moderate than outside.
-	if (mob_area.location == AREA_INSIDE)
-		if (loc_temp > 22)
-			loc_temp = (max(22,loc_temp-40))
-		else if (loc_temp < 18)
-			loc_temp = (min(18,loc_temp+40))
+
 	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13 || map.ID == MAP_COLONY) && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 
@@ -795,6 +656,9 @@
 	if (map && map.civilizations)
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
+
+//this is handled in the get_environment_discomfort.
+/*
 	if (bodytemperature >= species.heat_level_1 && !orc)
 		//Body temperature is too hot.
 
@@ -821,9 +685,8 @@
 			if (species.cold_level_2 to species.cold_level_1)
 				burn_dam = COLD_DAMAGE_LEVEL_1
 		take_overall_damage(burn=burn_dam, used_weapon = "Low Body Temperature")
+*/
 
-
-	// tell src they're dying
 	species.get_environment_discomfort(src)
 
 /mob/living/carbon/human/proc/stabilize_body_temperature()
@@ -1606,6 +1469,7 @@
 								if (stat == DEAD)
 									var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
 									HR.name = "[src]'s remains"
+									strip()
 									qdel(src)
 									return
 								else

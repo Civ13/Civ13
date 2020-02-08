@@ -1,21 +1,21 @@
-/var/list/lighting_update_overlays  = list()    // List of lighting overlays queued for update.
+/var/list/lighting_update_overlays  = list()	// List of lighting overlays queued for update.
 
 /atom/movable/lighting_overlay
-	name             = ""
+	name			 = ""
 
-	icon             = 'icons/effects/icon.png'
-	color            = LIGHTING_BASE_MATRIX
+	icon			 = 'icons/effects/icon.png'
+	color			= LIGHTING_BASE_MATRIX
 
-	mouse_opacity    = FALSE
-	plane            = LIGHTING_PLANE
-	layer            = LIGHTING_LAYER
-	invisibility     = INVISIBILITY_LIGHTING
+	mouse_opacity	= FALSE
+	plane			= LIGHTING_PLANE
+	layer			= LIGHTING_LAYER
+	invisibility	 = INVISIBILITY_LIGHTING
 
 	simulated = FALSE
 	anchored = TRUE
 	flags = NOREACT
 
-	blend_mode       = BLEND_MULTIPLY
+	blend_mode	   = BLEND_MULTIPLY
 
 	var/needs_update = FALSE
 
@@ -28,10 +28,10 @@
 	. = ..()
 	verbs.Cut()
 
-	layer              = 13 // The lighting overlay should appear above everything including weather effects
-	var/turf/T         = loc // If this runtimes atleast we'll know what's creating overlays in things that aren't turfs.
+	layer			  = 13 // The lighting overlay should appear above everything including weather effects
+	var/turf/T		 = loc // If this runtimes atleast we'll know what's creating overlays in things that aren't turfs.
 	T.lighting_overlay = src
-	T.luminosity       = FALSE
+	T.luminosity	   = FALSE
 
 	if (no_update)
 		return

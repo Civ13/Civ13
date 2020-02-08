@@ -156,10 +156,11 @@
 	var/area/A = get_area(get_turf(src))
 	if (!A)
 		return
-	if (A.weather == WEATHER_RAIN || A.weather == WEATHER_SNOW)
-		if (prob(30))
-			qdel(src)
-	if (A.weather == WEATHER_STORM || A.weather == WEATHER_BLIZZARD)
+	if (A.weather == WEATHER_WET)
+		if (A.climate != "semiarid" || A.climate != "jungle" || A.climate != "desert" || A.climate != "savanna" || season == "WINTER" || season == "SPRING")
+			if (prob(30))
+				qdel(src)
+	if (A.weather == WEATHER_EXTREME)
 		qdel(src)
 
 	for (var/mob/living/L in src.loc)

@@ -57,7 +57,7 @@
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 1.50
-	KD_chance = KD_CHANCE_MEDIUM
+	KD_chance = KD_CHANCE_HIGH+3
 	stat = "machinegun"
 	w_class = 3
 	attachment_slots = ATTACH_IRONSIGHTS
@@ -745,6 +745,27 @@
 		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
 		)
 	effectiveness_mod = 1.08
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/sigsauer
+	name = "SIG SAUER"
+	desc = "A American assault rifle (chambered in 7.62x51mm)."
+	icon_state = "sigsauer"
+	item_state = "hk417"
+	base_icon = "sigsauer"
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/hk
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	weight = 3.8
+	equiptimer = 7
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1.1, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
+		)
+	effectiveness_mod = 1.27
 	sel_mode = 1
 
 /obj/item/weapon/gun/projectile/submachinegun/p90

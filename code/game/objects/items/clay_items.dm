@@ -16,7 +16,7 @@
 /obj/item/weapon/clay/roofing
 	name = "unfired clay roof tiles"
 	icon_state = "unfired_clayroofing"
-	result = "/obj/item/weapon/roofbuilder/clay"
+	result = /obj/item/weapon/roofbuilder/clay
 /obj/item/weapon/clay/vase
 	name = "unfired clay vase"
 	icon_state = "unfired_clayvase"

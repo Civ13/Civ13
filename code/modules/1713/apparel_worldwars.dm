@@ -282,6 +282,13 @@
 			rolled = TRUE
 	update_clothing_icon()
 
+/obj/item/clothing/under/ww2/japuni_summer
+	name = "japanese uniform"
+	desc = "A imperial japanese army uniform. This one meant for tropical warm climates."
+	icon_state = "japuni_summer"
+	item_state = "ww2_japuni"
+	worn_state = "ww2_japuni"
+
 obj/item/clothing/under/ww2/japuni_med
 	name = "japanese medic uniform"
 	desc = "A imperial japanese army uniform, this one bears the rank of a medic."
@@ -808,6 +815,13 @@ obj/item/clothing/under/ww2/us
 	item_state = "usuni2"
 	worn_state = "usuni2"
 
+obj/item/clothing/under/ww2/us_navy
+	name = "U.S. Navy uniform"
+	desc = "An american uniform, used by sailors in the US navy during WW2."
+	icon_state = "us_navy"
+	item_state = "us_navy"
+	worn_state = "us_navy"
+
 obj/item/clothing/under/ww2/us_cap
 	name = "american captain uniform"
 	desc = "An american uniform, used by captains in the US army."
@@ -946,6 +960,13 @@ obj/item/clothing/head/ww2/us_nco_cap
 	icon_state = "usnco_cap"
 	item_state = "usnco_cap"
 	worn_state = "usnco_cap"
+
+obj/item/clothing/head/ww2/us_sailor_hat
+	name = "us sailor hat"
+	desc = "A hat worn by american sailors."
+	icon_state = "sailor_hat"
+	item_state = "sailor_hat"
+	worn_state = "sailor_hat"
 
 obj/item/clothing/head/ww2/german_tanker
 	name = "german tanker headset"
@@ -1112,13 +1133,20 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 
 /obj/item/clothing/head/helmet/ww2/ss
 	name = "german ss helmet"
-	desc = "The typical rounded steel helmet of the Schutzstaffel."
+	desc = "The typical rounded steel helmet of the Schutzstaffel. This one is prepared with camo."
 	icon_state = "sshelm"
 	item_state = "sshelm"
 	worn_state = "sshelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 42, arrow = 32, gun = 12, energy = 15, bomb = 42, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/ss/dark
+	name = "german ss helmet"
+	desc = "The typical rounded steel helmet of the Schutzstaffel."
+	icon_state = "sshelm_dark"
+	item_state = "sshelm_dark"
+	worn_state = "sshelm_dark"
 
 /obj/item/clothing/head/helmet/ww2/soviet
 	name = "soviet helmet"

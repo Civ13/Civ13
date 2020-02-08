@@ -90,7 +90,7 @@
 	else if (choice == "Change Orders")
 		var/list/currlist = list()
 		for (var/i = 1, i <= map.globalmarketplace.len, i++)
-			if (map.globalmarketplace[i][1] == user)
+			if (map.globalmarketplace[i][1] == user && map.globalmarketplace[i][5])
 				currlist += list(list(i,"[map.globalmarketplace[i][3]] of [map.globalmarketplace[i][2]], for [map.globalmarketplace[i][4]*10] silver."))
 		if (isemptylist(currlist))
 			user << "You have no orders on the market!"
@@ -272,8 +272,14 @@
 			return
 		else
 			var/list/tempbuylist = list("Cancel")
+			var/found = FALSE
 			for(var/list/i in map.sales_registry)
-				tempbuylist += "[i[2]]% of [i[1]], at [i[3]*10] sc"
+				if (i[5])
+					tempbuylist += "[i[2]]% of [i[1]], at [i[3]*10] sc"
+					found = TRUE
+			if (!found)
+				user << "<span class='notice'>There are no stocks for sale!</span>"
+				return
 			var/choice3 = WWinput(user, "Which stock do you want to buy?", "Stock Market", "Cancel", tempbuylist)
 			if (choice3 == "Cancel")
 				return
@@ -288,7 +294,7 @@
 				if (istype(user.get_inactive_hand(), /obj/item/stack/money))
 					var/obj/item/stack/money/M = user.get_inactive_hand()
 					for(var/list/L in map.sales_registry)
-						if (L[1] == ord && text2num(L[2]) == ord_perc && text2num(L[3]) == ord_price)
+						if (L[5] && L[1] == ord && text2num(L[2]) == ord_perc && text2num(L[3]) == ord_price)
 							if (M.amount*M.value >= ord_price)
 								var/tma = M.amount*M.value
 								var/tmb = ord_price
@@ -298,18 +304,22 @@
 								GC.amount = tmc
 								if (GC.amount <= 0)
 									qdel(GC)
-								if (L[4])
+								if (ishuman(L[4]))
 									var/mob/living/carbon/human/SELLER = L[4]
 									SELLER.transfer_stock_proc(ord,ord_perc,user)
+									L[5] = 0
 									map.sales_registry -= L
 									for(var/list/LL in map.sales_registry)
 										if (LL[1] == ord && LL[4]==SELLER)
+											LL[5] = 0
 											map.sales_registry -= LL
 								else
 									transfer_stock_nomob(ord,ord_perc,user)
+									L[5] = 0
 									map.sales_registry -= L
 									for(var/list/LL in map.sales_registry)
 										if (LL[1]==ord && LL[2]==ord_perc && LL[3]==ord_price && LL[4]==null)
+											LL[5] = 0
 											map.sales_registry -= LL
 							else
 								user << "<span class='notice'>You do not have enough money. You need [map.sales_registry[ord][3]*10] sc and you only have [M.amount*M.value*10] sc.</span>"
@@ -342,6 +352,6 @@
 					if (saleprice <=0)
 						return
 					else
-						map.sales_registry += list(list(choice2,compchoice_amt,saleprice/10,user))
+						map.sales_registry += list(list(choice2,compchoice_amt,saleprice/10,user,1))
 						user << "<span class='notice'>You sucessfully put up [compchoice_amt]% of [choice2] at [saleprice].</span>"
 						return

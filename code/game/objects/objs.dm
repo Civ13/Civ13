@@ -30,9 +30,9 @@
 	return distance == -1 || (get_dist(src, user) <= distance)
 
 /obj/proc/matrixangle(x)
-    var/matrix/M = matrix()
-    M.Turn(x)
-    return M
+	var/matrix/M = matrix()
+	M.Turn(x)
+	return M
 
 /obj/Destroy()
 	processing_objects -= src

@@ -326,6 +326,7 @@
 	body_parts_covered = FACE|EYES|HEAD
 	w_class = 1
 	restricts_view = 2
+	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/mask/sovietbala
 	name = "green balaclava"
@@ -336,6 +337,7 @@
 	body_parts_covered = FACE|EYES|HEAD
 	w_class = 1
 	restricts_view = 2
+	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing
 	name = "green chest webbing"
@@ -358,7 +360,7 @@
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
 /obj/item/clothing/accessory/storage/webbing/pouches
-	name = "black puches"
+	name = "black pouches"
 	desc = "a set of pouches to store magazines in."
 	slots = 3
 	icon_state = "black_pouches"
@@ -367,8 +369,28 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine)
 
+/obj/item/clothing/accessory/storage/webbing/largepouches
+	name = "large black pouches"
+	desc = "a large set of pouches to store magazines in."
+	slots = 6
+	icon_state = "largepouches"
+	item_state = "largepouches"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine)
+
+/obj/item/clothing/accessory/storage/webbing/largepouchestan
+	name = "large tan pouches"
+	desc = "a large set of pouches to store magazines in."
+	slots = 6
+	icon_state = "largepouches_tan"
+	item_state = "largepouches_tan"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine)
+
 /obj/item/clothing/accessory/storage/webbing/tanpouches
-	name = "tan puches"
+	name = "tan pouches"
 	desc = "a set of pouches to store magazines in."
 	slots = 3
 	icon_state = "tan_pouches"
@@ -437,6 +459,49 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 103, arrow = 110, gun = 110, energy = 67, bomb = 70, bio = 40, rad = 36)
 	var/slots = 4
+	ripable = FALSE
+
+/obj/item/clothing/suit/swat
+	name = "swat heavy vest"
+	desc = "a heavy NIJ level IV vest, used by swat officers."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 105, arrow = 80, gun = 116, energy = 70, bomb = 74, bio = 44, rad = 40)
+	var/slots = 6
+	ripable = FALSE
+
+/obj/item/clothing/suit/heavyvest1
+	name = "heavy vest"
+	desc = "a heavy NIJ level IV vest."
+	icon_state = "heavypolice"
+	item_state = "heavypolice"
+	worn_state = "heavypolice"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 50, arrow = 40, gun = 112, energy = 68, bomb = 40, bio = 32, rad = 20)
+	var/slots = 6
+	ripable = FALSE
+
+/obj/item/clothing/suit/medvest
+	name = "medium vest"
+	desc = "a heavy NIJ level III vest."
+	icon_state = "mediumvest"
+	item_state = "mediumvest"
+	worn_state = "mediumvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 30, arrow = 40, gun = 84, energy = 47, bomb = 35, bio = 29, rad = 10)
+	var/slots = 6
+	ripable = FALSE
+
+/obj/item/clothing/suit/police
+	name = "police bulletproof vest"
+	desc = "a police vest (Level III)."
+	icon_state = "policevest"
+	item_state = "policevest"
+	worn_state = "policevest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 60, arrow = 20, gun = 74, energy = 40, bomb = 20, bio = 32, rad = 20)
 	ripable = FALSE
 
 /obj/item/clothing/suit/a6b44

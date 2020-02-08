@@ -247,11 +247,11 @@
 				fuel += 0.5
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/stack/ore/coal))      //FUEL 3
+			else if (istype(I, /obj/item/stack/ore/coal))	  //FUEL 3
 				fuel += I.amount*3
 				qdel(I)
-				return                  //INPUT 1
-			else if (istype(I, /obj/item/stack/ore/charcoal))      //FUEL 3
+				return				  //INPUT 1
+			else if (istype(I, /obj/item/stack/ore/charcoal))	  //FUEL 3
 				fuel += I.amount*1
 				qdel(I)
 				return

@@ -4,7 +4,7 @@
 
 /datum/lobby_music_player
 	var/song_title = null
-    // format is 'title:probability_multiplier = ogg'
+	// format is 'title:probability_multiplier = ogg'
 	var/list/songs = list() // see map_metadata.dm
 
 

@@ -7,6 +7,7 @@
 	w_class = 2
 	gas_transfer_coefficient = 0.90
 	voicechange = TRUE
+	heat_protection = 0
 
 /obj/item/clothing/mask/muzzle/tape
 	name = "length of tape"
@@ -17,9 +18,9 @@
 	w_class = TRUE
 
 /obj/item/clothing/mask/muzzle/New()
-    ..()
-    say_messages = list("Mmfph!", "Mmmf mrrfff!", "Mmmf mnnf!")
-    say_verbs = list("mumbles", "says")
+	..()
+	say_messages = list("Mmfph!", "Mmmf mrrfff!", "Mmmf mnnf!")
+	say_verbs = list("mumbles", "says")
 
 // Clumsy folks can't take the mask off themselves.
 /obj/item/clothing/mask/muzzle/attack_hand(mob/user as mob)

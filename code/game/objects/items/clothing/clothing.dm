@@ -81,11 +81,15 @@
 	if (fleas)
 		user << "<b>\The [src] is infested with fleas!</b>"
 ///////////////////////////////////////////////////////////////////////
+/obj/item/clothing/head
+	heat_protection = HEAD
+
 /obj/item/clothing/head/helmet
 	restricts_view = 1
 	health = 35
 // Ears: headsets, earmuffs and tiny objects
 	ripable = FALSE
+
 /obj/item/clothing/ears
 	name = "ears"
 	w_class = 1.0
@@ -160,8 +164,8 @@ SEE_MOBS  // can see all mobs, no matter what
 SEE_OBJS  // can see all objs, no matter what
 SEE_TURFS // can see all turfs (and areas), no matter what
 SEE_PIXELS// if an object is located on an unlit area, but some of its pixels are
-          // in a lit area (via pixel_x,y or smooth movement), can see those pixels
-BLIND     // can't see anything
+		  // in a lit area (via pixel_x,y or smooth movement), can see those pixels
+BLIND	 // can't see anything
 */
 /obj/item/clothing/glasses
 	name = "glasses"
@@ -307,6 +311,7 @@ BLIND     // can't see anything
 	var/list/say_messages
 	var/list/say_verbs
 	var/blocks_scope = FALSE
+	heat_protection = HEAD
 
 /obj/item/clothing/mask/update_clothing_icon()
 	if (ismob(loc))

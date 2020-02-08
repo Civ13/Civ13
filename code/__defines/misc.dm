@@ -1,7 +1,7 @@
 #define DEBUG
 
 //some colors
-#define COLOR_RED    "#FF0000"
+#define COLOR_RED	"#FF0000"
 #define COLOR_GREEN  "#00FF00"
 #define COLOR_BLUE   "#0000FF"
 #define COLOR_CYAN   "#00FFFF"
@@ -11,31 +11,31 @@
 #define COLOR_WHITE  "#FFFFFF"
 #define COLOR_BLACK  "#000000"
 #define COLOR_LIGHT_BLUE "#4242F0"
-#define COLOR_SILVER           "#c0c0c0"
-#define COLOR_GRAY             "#808080"
-#define COLOR_RED_LIGHT        "#b00000"
-#define COLOR_MAROON           "#800000"
-#define COLOR_AMBER            "#ffbf00"
-#define COLOR_OLIVE            "#808000"
-#define COLOR_LIME             "#00ff00"
-#define COLOR_TEAL             "#008080"
-#define COLOR_BLUE_LIGHT       "#33ccff"
-#define COLOR_NAVY             "#000080"
-#define COLOR_PURPLE           "#800080"
-#define COLOR_LUMINOL          "#66ffff"
-#define COLOR_BEIGE            "#ceb689"
-#define COLOR_BLUE_GRAY        "#6a97b0"
-#define COLOR_BROWN            "#b19664"
-#define COLOR_DARK_BROWN       "#917448"
-#define COLOR_DARK_ORANGE      "#b95a00"
-#define COLOR_GREEN_GRAY       "#8daf6a"
-#define COLOR_RED_GRAY         "#aa5f61"
+#define COLOR_SILVER		   "#c0c0c0"
+#define COLOR_GRAY			 "#808080"
+#define COLOR_RED_LIGHT		"#b00000"
+#define COLOR_MAROON		   "#800000"
+#define COLOR_AMBER			"#ffbf00"
+#define COLOR_OLIVE			"#808000"
+#define COLOR_LIME			 "#00ff00"
+#define COLOR_TEAL			 "#008080"
+#define COLOR_BLUE_LIGHT	   "#33ccff"
+#define COLOR_NAVY			 "#000080"
+#define COLOR_PURPLE		   "#800080"
+#define COLOR_LUMINOL		  "#66ffff"
+#define COLOR_BEIGE			"#ceb689"
+#define COLOR_BLUE_GRAY		"#6a97b0"
+#define COLOR_BROWN			"#b19664"
+#define COLOR_DARK_BROWN	   "#917448"
+#define COLOR_DARK_ORANGE	  "#b95a00"
+#define COLOR_GREEN_GRAY	   "#8daf6a"
+#define COLOR_RED_GRAY		 "#aa5f61"
 #define COLOR_PALE_BLUE_GRAY   "#8bbbd5"
 #define COLOR_PALE_GREEN_GRAY  "#aed18b"
-#define COLOR_PALE_RED_GRAY    "#cc9090"
+#define COLOR_PALE_RED_GRAY	"#cc9090"
 #define COLOR_PALE_PURPLE_GRAY "#bda2ba"
-#define COLOR_PURPLE_GRAY      "#a2819e"
-#define COLOR_SUN              "#ec8b2f"
+#define COLOR_PURPLE_GRAY	  "#a2819e"
+#define COLOR_SUN			  "#ec8b2f"
 
 /*
 //Area flags, possibly more to come
@@ -66,13 +66,13 @@
 #define BOMBCAP_LIGHT_RADIUS max_explosion_range
 #define BOMBCAP_FLASH_RADIUS (max_explosion_range*1.5)
 
-#define WEAPON_FORCE_HARMLESS    3
-#define WEAPON_FORCE_WEAK        7
-#define WEAPON_FORCE_NORMAL      10
-#define WEAPON_FORCE_PAINFUL    15
+#define WEAPON_FORCE_HARMLESS	3
+#define WEAPON_FORCE_WEAK		7
+#define WEAPON_FORCE_NORMAL	  10
+#define WEAPON_FORCE_PAINFUL	15
 #define WEAPON_FORCE_DANGEROUS   20
-#define WEAPON_FORCE_ROBUST      26
-#define WEAPON_FORCE_LETHAL      51
+#define WEAPON_FORCE_ROBUST	  26
+#define WEAPON_FORCE_LETHAL	  51
 
 //HUD element hidings flags
 #define F12_FLAG 1 // 0001

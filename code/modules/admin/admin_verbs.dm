@@ -12,7 +12,7 @@ var/list/admin_verbs_default = list(
 	/client/proc/see_world_realtime,
 	/client/proc/see_processes,
 	/client/proc/getserverlog,			//allows us to fetch server logs (diary) for other days,
-	/client/proc/getruntimelog                     // allows us to access runtime logs to somebody,
+	/client/proc/getruntimelog					 // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
 	/client/proc/enable_fov,
@@ -53,7 +53,7 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/show_player_info,
 	/client/proc/free_slot,			//frees slot for chosen job,
 	/client/proc/cmd_admin_change_custom_event,
-	/client/proc/allow_character_respawn,    // Allows a ghost to respawn ,
+	/client/proc/allow_character_respawn,	// Allows a ghost to respawn ,
 	/client/proc/reset_roundstart_autobalance,
 	/datum/admins/proc/ic_announce,
 	/client/proc/change_human_appearance_admin,	// Allows an admin to change the basic appearance of human-based mobs ,
@@ -164,6 +164,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/change_wind_spd,
 	/client/proc/randomly_change_weather,
 	/client/proc/randomly_modify_weather,
+	/client/proc/change_season,
 	/client/proc/change_colour_filter,
 	/datum/admins/proc/print_chemical_reactions,
 	/datum/admins/proc/print_crafting_recipes,

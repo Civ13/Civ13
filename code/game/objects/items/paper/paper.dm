@@ -24,7 +24,7 @@
 	var/fields		//Amount of user created fields
 	var/free_space = MAX_PAPER_MESSAGE_LEN
 	var/list/stamped
-	var/list/ico[0]      //Icons and
+	var/list/ico[0]	  //Icons and
 	var/list/offset_x[0] //offsets stored for later
 	var/list/offset_y[0] //usage by the photocopier
 	var/rigged = FALSE

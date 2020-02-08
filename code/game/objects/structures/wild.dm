@@ -275,6 +275,8 @@
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
+		if (leaves>0)
+			new/obj/item/weapon/leaves(get_turf(src))
 		qdel(src)
 		return
 
@@ -282,10 +284,7 @@
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
-		if (prob(50))
-			dropwood.amount = 4
-		else
-			dropwood.amount = 7
+		dropwood.amount = rand(4,7)
 		qdel(src)
 		return
 
@@ -440,6 +439,8 @@
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 3
+		new/obj/item/weapon/leaves/palm_leaves(get_turf(src))
+		new/obj/item/weapon/leaves/palm_leaves(get_turf(src))
 		qdel(src)
 		return
 /obj/structure/wild/palm/New()
@@ -750,6 +751,10 @@
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
+		if (leaves>0)
+			new/obj/item/weapon/leaves(get_turf(src))
+		if (leaves>=3) //give extra leaves
+			new/obj/item/weapon/leaves(get_turf(src))
 		qdel(src)
 		return
 

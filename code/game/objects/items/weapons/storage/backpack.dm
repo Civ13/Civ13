@@ -10,7 +10,8 @@
 		slot_l_hand_str = 'icons/mob/items/lefthand_backpacks.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand_backpacks.dmi',
 		)
-	icon_state = "backpack0"
+	icon_state = "backpack"
+	base_icon = "backpack"
 	item_state = "backpack"
 	worn_state = "backpack"
 	//most backpacks use the default backpack state for inhand overlays
@@ -49,6 +50,7 @@
 	name = "leather satchel"
 	desc = "It's a very fancy satchel made with fine leather."
 	icon_state = "satchel"
+	base_icon = "satchel"
 
 /obj/item/weapon/storage/backpack/ww2/jap
 	name = "japanese backpack"
@@ -56,14 +58,27 @@
 	icon_state = "jappack"
 	item_state = "jappack"
 	worn_state = "jappack"
+	base_icon = "jappack"
+	max_storage_space = 26
+
+/obj/item/weapon/storage/backpack/ww2/german
+	name = "german backpack"
+	desc = "It's a standard issue backpack for german military personel"
+	icon_state = "germanpack"
+	item_state = "germanpack"
+	worn_state = "germanpack"
+	base_icon = "germanpack"
+	max_storage_space = 26
 obj/item/weapon/storage/backpack/ww2/american
 	name = "american backpack"
 	desc = "It's a standard issue backpack for american military personel"
 	icon_state = "uspack"
 	item_state = "uspack"
 	worn_state = "uspack"
+	base_icon = "uspack"
+	max_storage_space = 26
 
-/obj/item/weapon/storage/backpack/sapper
+/obj/item/weapon/storage/backpack/ww2/german/sapper
 	New()
 		..()
 		new /obj/item/weapon/storage/toolbox/emergency(src)
@@ -81,6 +96,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	desc = "A big backpack made for long walks."
 	icon_state = "rucksack"
 	item_state = "rucksack"
+	base_icon = "rucksack"
 	w_class = 4
 	slot_flags = SLOT_BACK
 	max_w_class = 4
@@ -93,6 +109,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	desc = "A big backpack made for long walks."
 	icon_state = "civback"
 	item_state = "civback"
+	base_icon = "civback"
 	w_class = 4
 	slot_flags = SLOT_BACK
 	max_w_class = 5

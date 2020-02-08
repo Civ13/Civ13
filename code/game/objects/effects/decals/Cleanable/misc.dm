@@ -15,6 +15,7 @@
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "ash"
 	anchored = TRUE
+	decay_timer = 32000
 
 /obj/effect/decal/cleanable/ash/New()
 	..()
@@ -48,6 +49,7 @@
 	layer = 2
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "flour"
+	decay_timer = 18000
 
 /obj/effect/decal/cleanable/greenglow
 	name = "glowing goo"
@@ -60,10 +62,7 @@
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "greenglow"
 
-	New()
-		..()
-		spawn(1200)// 2 minutes
-			qdel(src)
+	decay_timer = 1200
 
 /obj/effect/decal/cleanable/foam
 	name = "foam"
@@ -76,10 +75,7 @@
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "foam"
 
-	New()
-		..()
-		spawn(2400)// 4 minutes
-			qdel(src)
+	decay_timer = 2400
 
 
 /obj/effect/decal/cleanable/cobweb
@@ -99,6 +95,7 @@
 	layer = 3
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "molten"
+	decay_timer = 18000
 
 /obj/effect/decal/cleanable/cobweb2
 	name = "cobweb"
@@ -120,7 +117,7 @@
 	icon = 'icons/effects/blood.dmi'
 	icon_state = "vomit_1"
 	random_icon_states = list("vomit_1", "vomit_2", "vomit_3", "vomit_4")
-	var/list/viruses = list()
+	decay_timer = 18000
 
 	Destroy()
 		..()
@@ -140,6 +137,7 @@
 	layer = 2
 	icon = 'icons/effects/tomatodecal.dmi'
 	random_icon_states = list("tomato_floor1", "tomato_floor2", "tomato_floor3")
+	decay_timer = 18000
 
 /obj/effect/decal/cleanable/egg_smudge
 	name = "smashed egg"
@@ -149,6 +147,7 @@
 	layer = 2
 	icon = 'icons/effects/tomatodecal.dmi'
 	random_icon_states = list("smashed_egg1", "smashed_egg2", "smashed_egg3")
+	decay_timer = 12000
 
 /obj/effect/decal/cleanable/pie_smudge //honk
 	name = "smashed pie"
@@ -158,6 +157,7 @@
 	layer = 2
 	icon = 'icons/effects/tomatodecal.dmi'
 	random_icon_states = list("smashed_pie")
+	decay_timer = 18000
 
 /obj/effect/decal/cleanable/fruit_smudge
 	name = "smudge"
@@ -168,3 +168,4 @@
 	icon = 'icons/effects/blood.dmi'
 	icon_state = "mfloor1"
 	random_icon_states = list("mfloor1", "mfloor2", "mfloor3", "mfloor4", "mfloor5", "mfloor6", "mfloor7")
+	decay_timer = 18000

@@ -539,14 +539,14 @@
 	chemical_symbol = "Te"
 
 /datum/reagent/iodine
-    name = "Iodine"
-    id = "iodine"
-    description = " Iodine is a dark grey or purple solid. It can sublimate into a purple-pink gas that has an irritating odor. The solid iodine is a dark, almost black, grey or purple color."
-    taste_description = "raw fish"
-    reagent_state = SOLID
-    color = "#AF9600"
-    atomic_nr = 53
-    chemical_symbol = "I"
+	name = "Iodine"
+	id = "iodine"
+	description = " Iodine is a dark grey or purple solid. It can sublimate into a purple-pink gas that has an irritating odor. The solid iodine is a dark, almost black, grey or purple color."
+	taste_description = "raw fish"
+	reagent_state = SOLID
+	color = "#AF9600"
+	atomic_nr = 53
+	chemical_symbol = "I"
 
 /datum/reagent/iodine/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	M.radiation -= 2 * removed

@@ -20,6 +20,13 @@
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
+/obj/structure/railing/steel
+	name = "steel railing"
+	desc = "An ordinary steel railing. Prevents from human stupidity."
+	icon = 'icons/obj/railing_white.dmi'
+	color = "#697585"
+	flammable = FALSE
+
 /obj/structure/railing/New(loc, constructed=0)
 	..()
 	if (constructed)	//player-constructed railings

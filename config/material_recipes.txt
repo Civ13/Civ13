@@ -15,6 +15,8 @@ RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,1,5
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,1,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,1,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
+RECIPE: /material/clay/,concrete roof builder,/obj/item/weapon/roofbuilder/concrete,1,20,0,1,none,103,0,0,8,null
+RECIPE: /material/clay/,concrete pillar,/obj/structure/mine_support/stone/concrete,2,20,0,1,none,103,0,0,8,null
 RECIPE: /material/clay/,furnace,/obj/structure/furnace/clay,10,150,1,1,none,26,0,0,8,null
 
 RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,weapons,0,0,0,8,null
@@ -250,6 +252,7 @@ RECIPE: /material/cloth/,yellow NBC hood,/obj/item/clothing/head/nbc,3,100,0,1,j
 RECIPE: /material/cloth/,grey parka,/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,0,1,jackets & vests,0,0,145,8,null
 RECIPE: /material/cloth/,custom haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
 RECIPE: /material/cloth/,black haori jacket,/obj/item/clothing/suit/storage/jacket/custom/haori_jacket,4,75,0,1,jackets & vests,0,0,38,8,null
+RECIPE: /material/cloth/,B-3 vest,/obj/item/clothing/suit/b3,45,300,0,1,jackets & vests,0,0,145,8,null
 
 RECIPE: /material/cloth/,mayan headdress,/obj/item/clothing/head/mayan_headdress,4,55,0,1,hats & masks,0,0,18,3,null
 RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,hats & masks,0,0,18,1,null
@@ -554,7 +557,7 @@ RECIPE: /material/glass/,large sunglasses,/obj/item/clothing/glasses/sunglasses/
 //**************************************************************
 
 //COPPER AGE WOODEN CART//
-RECIPE: /material/wood/,wooden cart,/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,1,null
+RECIPE: /material/wood/,wooden cart,/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,8,null
 //COPPER AGE WOODEN CART//
 
 //DARK AGE STONE CART//
@@ -716,7 +719,8 @@ RECIPE: /material/steel/,fuel pump (small),/obj/structure/fuelpump/small,15,120,
 RECIPE: /material/steel/,fuel pump (N),/obj/structure/fuelpump/n,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (S),/obj/structure/fuelpump/s,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
-RECIPE: /material/steel/,steel frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,steel ship frame,/obj/structure/vehicleparts/frame/ship/steel,2,40,0,1,vehicle parts,97,0,0,8,null
 RECIPE: /material/steel/,driver's seat,/obj/structure/bed/chair/drivers,8,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,loaders's seat,/obj/structure/bed/chair/loader,6,40,0,1,vehicle parts,126,125,0,8,null
 RECIPE: /material/steel/,gunner's seat,/obj/structure/bed/chair/gunner,6,40,0,1,vehicle parts,126,125,0,8,null
@@ -768,6 +772,7 @@ RECIPE: /material/wood/,communications pole,/obj/structure/phoneline,2,50,1,1,no
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,outrigger boat frame,/obj/item/vehicleparts/frame/boat,22,200,0,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,wood vehicle frame,/obj/structure/vehicleparts/frame/wood,2,40,0,1,vehicle parts,126,0,0,8,null
+
 RECIPE: /material/wood/,wood ship frame,/obj/structure/vehicleparts/frame/ship,4,40,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,ship rudder axis (2500 weight),/obj/structure/vehicleparts/axis/ship/heavy,45,300,0,1,vehicle parts,55,0,0,8,null
 RECIPE: /material/wood/,light ship rudder axis (1200 weight),/obj/structure/vehicleparts/axis/ship,25,200,0,1,vehicle parts,41,0,0,8,null
@@ -785,7 +790,7 @@ RECIPE: /material/wood/,wall frame,/obj/structure/wallframe,1,150,1,1,constructi
 RECIPE: /material/wood/,roof support,/obj/structure/roof_support,2,30,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,nordic roof support,/obj/structure/roof_support/nordic,2,30,1,1,construction,47,0,0,8,null
 RECIPE: /material/wood/,mine support,/obj/structure/mine_support,2,30,1,1,construction,0,0,0,8,null
-RECIPE: /material/wood/,roof builder,/obj/item/weapon/roofbuilder,1,20,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,wood roof builder,/obj/item/weapon/roofbuilder,1,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,door,/obj/structure/simple_door/key_door/anyone/wood,5,50,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,aztec door,/obj/structure/simple_door/key_door/anyone/aztec,5,50,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,nordic door,/obj/structure/simple_door/key_door/anyone/nordic,5,50,1,1,construction,35,0,0,8,null
@@ -821,7 +826,7 @@ RECIPE: /material/wood/,male outhouse,/obj/structure/toilet/outhouse/male,35,600
 RECIPE: /material/wood/,female outhouse,/obj/structure/toilet/outhouse/female,35,600,1,1,hygiene,0,0,45,8,null
 
 RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0,1,weapons,0,95,0,8,null
-RECIPE: /material/wood/,pilum,/obj/item/weapon/material/spear/pilum,3,50,0,1,weapons,0,22,0,2,wood
+RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,4,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,4,90,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,3,null

@@ -3,15 +3,15 @@
 		var/area/mob_area = get_area(src)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
-		var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Biome Appropriate",list("Biome Appopriate","Randomize","Customize"))
+		var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Biome Appropriate",list("Biome Appropriate","Randomize","Customize"))
 		if (choices == "Customize")
 //				var/choice_race = WWinput(src, "Which race do you want to be?","Character Customization","Randomize",list("Randomize","Human","Ant","Lizard","Crustacean","Orc","Gorilla"))
 //				if (choice_race == "Randomize")
 //					choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla")
 
-			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin"))
+			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","German","Greek",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
 			if (choice1 == "Randomize")
-				choice1 = pick("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
+				choice1 = pick("Russian","German","Greek",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin")
 			else
 				var/list/possible_h_list = list("Black")
 				var/list/possible_e_list = list("Black")
@@ -158,7 +158,7 @@
 				else if (s_tone < abs(possible_s_list[1]))
 					s_tone = abs(possible_s_list[1])
 				s_tone = -s_tone
-				var/list/sec_lang_list = list("Randomize","Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
+				var/list/sec_lang_list = list("Randomize","Russian","German","Greek","Latin")
 				sec_lang_list -= choice1
 				var/sec_lang = WWinput(src, "Choose your secondary language:","Character Customization","Randomize",sec_lang_list)
 				if (sec_lang == "Randomize")
@@ -166,7 +166,7 @@
 					sec_lang = pick(sec_lang_list)
 				add_language(sec_lang,TRUE)
 				add_note("Known Languages", sec_lang)
-		else if (choices == "Biome Appopriate")
+		else if (choices == "Biome Appropriate")
 			var/list/possible_h_list = list("Black")
 			var/list/possible_e_list = list("Black")
 			var/list/possible_s_list = list(10,60)
@@ -200,33 +200,6 @@
 						choices = "German"
 				if ("temperate")
 					if (prob(50))
-						add_language("Japanese",TRUE)
-						remove_language("English")
-						remove_note("Known Languages","English")
-						for (var/datum/language/japanese/A in languages)
-							default_language = A
-						name = species.get_random_japanese_name(gender)
-						real_name = name
-						add_note("Known Languages", "Japanese")
-						possible_h_list = list("Dark Brown","Black")
-						possible_e_list = list("Brown","Black")
-						possible_s_list = list(35,55)
-						choices = "Japanese"
-					else
-						add_language("Portuguese",TRUE)
-						remove_language("English")
-						remove_note("Known Languages","English")
-						for (var/datum/language/portuguese/A in languages)
-							default_language = A
-						name = species.get_random_portuguese_name(gender)
-						real_name = name
-						add_note("Known Languages", "Portuguese")
-						possible_h_list = list("Light Brown","Dark Brown")
-						possible_e_list = list("Green","Brown")
-						possible_s_list = list(40,58)
-						choices = "Portuguese"
-				if ("semiarid","sea")
-					if (prob(50))
 						add_language("Latin",TRUE)
 						remove_language("English")
 						remove_note("Known Languages","English")
@@ -252,37 +225,11 @@
 						possible_e_list = list("Brown","Black")
 						possible_s_list = list(50,70)
 						choices = "Greek"
-				if ("desert","jungle","savanna")
-					if (prob(50))
-						add_language("Arabic",TRUE)
-						remove_language("English")
-						remove_note("Known Languages","English")
-						for (var/datum/language/arab/A in languages)
-							default_language = A
-						name = species.get_random_arab_name(gender)
-						real_name = name
-						add_note("Known Languages", "Arabic")
-						possible_h_list = list("Dark Brown","Black")
-						possible_e_list = list("Brown","Black")
-						possible_s_list = list(75,100)
-						choices = "Arabic"
-					else
-						add_language("Chinese",TRUE)
-						remove_language("English")
-						remove_note("Known Languages","English")
-						for (var/datum/language/chinese/A in languages)
-							default_language = A
-						name = species.get_random_chinese_name(gender)
-						real_name = name
-						add_note("Known Languages", "Chinese")
-						possible_h_list = list("Dark Brown","Black")
-						possible_e_list = list("Brown","Black")
-						possible_s_list = list(45,68)
-						choices = "Chinese"
+
 			new_hair = pick(possible_h_list)
 			new_eyes = pick(possible_e_list)
 			s_tone = -rand(possible_s_list[1],possible_s_list[2])
-			var/list/sec_lang_list = list("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
+			var/list/sec_lang_list = list("Russian","German","Greek","Latin")
 			sec_lang_list -= choices
 			var/sec_lang = pick(sec_lang_list)
 			add_language(sec_lang,TRUE)
@@ -292,7 +239,7 @@
 			var/list/possible_h_list = list("Black")
 			var/list/possible_e_list = list("Black")
 			var/list/possible_s_list = list(10,60)
-			var/choice1 = pick("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
+			var/choice1 = pick("Russian","German","Greek","Latin")
 			switch(choice1)
 				if ("Russian")
 					add_language("Russian",TRUE)
@@ -422,7 +369,7 @@
 			new_hair = pick(possible_h_list)
 			new_eyes = pick(possible_e_list)
 			s_tone = -rand(possible_s_list[1],possible_s_list[2])
-			var/list/sec_lang_list = list("Russian","German","Greek","Japanese","Chinese","Portuguese","Arabic","Latin")
+			var/list/sec_lang_list = list("Russian","German","Greek","Latin")
 			sec_lang_list -= choices
 			var/sec_lang = pick(sec_lang_list)
 			add_language(sec_lang,TRUE)

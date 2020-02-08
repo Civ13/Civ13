@@ -13,7 +13,7 @@ var/global/list/living_mob_list = list()			//List of all alive mobs, including c
 var/global/list/dog_mob_list = list()				//List of all dogs
 var/global/list/dead_mob_list = list()				//List of all dead mobs, including clientless. Excludes /mob/new_player
 var/global/list/observer_mob_list = list()			//List of all observers, excluding clientless
-var/global/list/human_clients_mob_list = list()     //List of all human mobs with clients
+var/global/list/human_clients_mob_list = list()	 //List of all human mobs with clients
 var/global/list/new_player_mob_list = list()	//List of all new_players, excludes clientless by definition
 
 var/global/list/chemical_reactions_list				//list of all /datum/chemical_reaction datums. Used during chemical reactions
@@ -76,12 +76,15 @@ var/global/list/turfs = list()						//list of all turfs
 var/global/list/new_turfs = list()						//list of all non-default turfs
 var/global/list/grass_turf_list = list() // list of all /turf/floor/grass
 var/global/list/water_turf_list = list() // list of all /turf/floor/grass
+
+var/global/list/roofs_list = list() //list of all the roof IMAGES (not the object!!!)
+
 //Languages/species/whitelist.
 var/global/list/all_species[0]
 var/global/list/all_languages[0]
 var/global/list/language_keys[0]					// Table of say codes for all languages
 var/global/list/whitelisted_species = list("Human") // Species that require a whitelist check.
-var/global/list/playable_species = list("Human")    // A list of ALL playable species, whitelisted, latejoin or otherwise.
+var/global/list/playable_species = list("Human")	// A list of ALL playable species, whitelisted, latejoin or otherwise.
 
 //Preferences stuff
 	//Bodybuilds
@@ -161,15 +164,15 @@ var/list/eye_colors = list(
 var/global/list/global_mutations  = list() // List of hidden mutation things.
 // Noises made when hit while typing.
 var/list/hit_appends = list("-OOF", "-ACK", "-UGH", "-HRNK", "-HURGH", "-GLORF")
-var/list/jobMax        = list()
-var/list/admin_log     = list()
-var/list/reg_dna       = list()
+var/list/jobMax		= list()
+var/list/admin_log	 = list()
+var/list/reg_dna	   = list()
 var/list/newplayer_start = list()
 //Spawnpoints.
-var/list/latejoin         = list()
-var/list/cardinal    = list(NORTH, SOUTH, EAST, WEST)
+var/list/latejoin		 = list()
+var/list/cardinal	= list(NORTH, SOUTH, EAST, WEST)
 var/list/cornerdirs  = list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
-var/list/alldirs     = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
+var/list/alldirs	 = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
 var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 	 2,  1,  3,  8, 10,  9, 11,  4,  6,  5,  7, 12, 14, 13, 15, 32, 34, 33, 35, 40, 42,
 	41, 43, 36, 38, 37, 39, 44, 46, 45, 47, 16, 18, 17, 19, 24, 26, 25, 27, 20, 22, 21,
@@ -269,6 +272,6 @@ var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 		if (islist(chemical_reactions_list[reaction]))
 			var/list/L = chemical_reactions_list[reaction]
 			for (var/t in L)
-				. += "    has: [t]\n"
+				. += "	has: [t]\n"
 	world << .
 */

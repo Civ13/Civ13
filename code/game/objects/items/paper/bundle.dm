@@ -10,7 +10,7 @@
 	throw_speed = TRUE
 	layer = 4
 	attack_verb = list("bapped")
-	var/page = TRUE    // current page
+	var/page = TRUE	// current page
 	var/list/pages = list()  // Ordered list of pages as they are to be displayed. Can be different order than contents.
 	flammable = TRUE
 

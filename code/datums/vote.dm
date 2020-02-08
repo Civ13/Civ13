@@ -315,6 +315,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
 						usr << "You can't start restart votes if you are not playing."
 						return FALSE
+					if (map.nomads && clients.len < 10 && ((world.time-round_start_time)>36000) && !usr.client.holder)
+						usr << "You can't start restart votes if the server population is lower than 10 and the round has been going for over an hour."
+						return FALSE
 					initiate_vote("restart",usr.key)
 			if ("custom")
 				if (usr.client.holder)

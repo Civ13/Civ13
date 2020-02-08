@@ -104,6 +104,57 @@
 	edge = TRUE
 	w_class = 2.0
 
+/obj/item/weapon/armorplatesswimmer
+	name = "swimmer plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "swimmerplate"
+	item_state = "swimmerplate"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/weapon/armorplatessharpshooter
+	name = "sharpshooter plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "sharpshooter"
+	item_state = "sharpshooter"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/weapon/armorplate
+	name = "armor plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "plate1"
+	item_state = "plate1"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
 /obj/item/clothing/accessory/armor/knee_protections
 	name = "knee protections"
 	desc = "Used to increase the protection of the legs."
@@ -364,6 +415,17 @@
 	item_state = "insurgent_leader"
 	worn_state = "insurgent_leader"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/tacti
+	name = "tactical outfit"
+	desc = "A outfit used by tactical units."
+	icon_state = "tacti"
+	item_state = "tacti"
+	worn_state = "tacti"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
 /obj/item/clothing/under/us_uni/us_lightuni_modern
 	name = "U.S. Army training uniform"
 	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
@@ -407,6 +469,19 @@
 	cooldownw = 9
 	value = 60
 
+/obj/item/weapon/material/sword/arabsword2
+	name = "arabic sword"
+	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
+	icon_state = "arabsword2"
+	item_state = "longsword"
+	throw_speed = 4
+	throw_range = 5
+	force_divisor = 0.79 // 45 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 26
+	cooldownw = 10
+	value = 60
 
 /obj/item/clothing/under/idf
 	name = "IDF olive uniform"
@@ -415,6 +490,7 @@
 	item_state = "idf_olive"
 	worn_state = "idf_olive"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/head/helmet/modern/idf
 	name = "IDF helmet"
@@ -443,6 +519,45 @@
 	slowdown = 0.3
 	w_class = 4
 	weight = 3.8
+
+/obj/item/clothing/accessory/armor/coldwar/platecarrier
+	name = "tan plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is tan."
+	icon_state = "platecarrier_tan"
+	item_state = "platecarrier_tan"
+	worn_state = "platecarrier_tan"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/coldwar/platecarriergreen
+	name = "olive plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is olive."
+	icon_state = "platecarrier_green"
+	item_state = "platecarrier_green"
+	worn_state = "platecarrier_green"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/coldwar/platecarrierblack
+	name = "black plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is black."
+	icon_state = "platecarrier_black"
+	item_state = "platecarrier_black"
+	worn_state = "platecarrier_black"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
 
 /obj/item/clothing/accessory/armor/nomads/kevlarblack
 	name = "black kevlar vest"
@@ -491,6 +606,18 @@
 	worn_state = "kevlarhelmet"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
+
+/obj/item/clothing/head/helmet/swat
+	name = "swat helmet"
+	desc = "A standard kevlar helmet used by swat officers."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+	body_parts_covered = HEAD
+	armor = list(melee = 65, arrow = 95, gun = 85, energy = 27, bomb = 64, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 90
@@ -562,7 +689,7 @@
 	item_state = "pcarrier_tan"
 	worn_state = "pcarrier_tan"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.35
 	w_class = 4
@@ -575,7 +702,7 @@
 	item_state = "pcarrier_black"
 	worn_state = "pcarrier_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.35
 	w_class = 4
@@ -588,7 +715,7 @@
 	item_state = "civilianvest"
 	worn_state = "civilianvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 90, gun = 68, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 90, gun = 72, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.30
 	w_class = 4

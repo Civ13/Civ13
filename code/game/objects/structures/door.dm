@@ -58,15 +58,23 @@
 
 /obj/structure/simple_door/New(var/newloc, var/material_name)
 	..()
+	opacity = TRUE
 	update_material(material_name)
 	door_list += src
 	if (material)
 		if (get_material_name() == "wood")
 			flammable = TRUE
+	for(var/obj/roof/R in range(1,src))
+		R.update_transparency(0)
+
 /obj/structure/simple_door/Destroy()
 	door_list -= src
 	..()
-
+	spawn(1)
+		for(var/obj/roof/R in loc)
+			R.collapse_check()
+		for(var/obj/roof/R in range(1,src))
+			R.update_transparency(0)
 /obj/structure/simple_door/proc/update_material(var/material_name)
 	if (!material_name)
 		material_name = DEFAULT_WALL_MATERIAL
@@ -159,6 +167,8 @@
 		update_nearby_tiles()
 		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
+		for(var/obj/roof/R in range(1,src))
+			R.update_transparency(1)
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
@@ -176,7 +186,8 @@
 		update_nearby_tiles()
 		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
-
+		for(var/obj/roof/R in range(1,src))
+			R.update_transparency(0)
 /obj/structure/simple_door/Destroy()
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()

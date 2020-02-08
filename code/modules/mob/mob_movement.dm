@@ -460,8 +460,14 @@
 			var/no_snow = FALSE
 			for (var/obj/covers/CV in get_turf(F))
 				no_snow = TRUE
-			if ((F_area.weather == WEATHER_RAIN || F_area.weather == WEATHER_STORM) && F.may_become_muddy)
-				F.muddy = TRUE
+			if ((F_area.weather == WEATHER_WET && findtext(F_area.icon_state,"rain")) || F_area.weather == WEATHER_EXTREME)
+				if (F.may_become_muddy)
+					if (F_area.climate != "semiarid" || F_area.climate != "jungle" || F_area.climate != "desert" || F_area.climate != "savanna" || season == "WINTER" || season == "SPRING")
+						F.muddy = TRUE
+					else
+						F.muddy = FALSE
+				else
+					F.muddy = FALSE
 			else
 				F.muddy = FALSE
 			for (var/obj/covers/CV in get_turf(F))
@@ -529,7 +535,7 @@
 					mob.next_snow_message = world.time+100
 
 			else if (F.muddy && !H.lizard && F_area.icon_state != "")
-				if (F_area.weather == WEATHER_STORM)
+				if (F_area.weather == WEATHER_EXTREME && findtext(F_area.icon_state,"monsoon"))
 					standing_on_snow = rand(4,5)
 				else
 					standing_on_snow = rand(2,3)

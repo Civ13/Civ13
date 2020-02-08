@@ -24,10 +24,13 @@
 	var/current_area_type = /area/caribbean
 	var/incomplete = FALSE
 	explosion_resistance = TRUE
-	var/bullethole_count = 0
+	var/list/bullethole_count = list()
+	var/list/bullethole_overlays = list()
 //	invisibility = 101 //starts invisible
 	var/material = "Wood" //Depending on mat, depending on what harms it.
 	var/adjusts = FALSE //if it adjusts acording to neighbouring sprites
+
+	var/hardness = 50 //for projectile penetration
 /*
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
@@ -108,22 +111,23 @@
 	material = "Wood"
 
 /obj/covers/slate
-    name = "slatestone wall"
-    desc = "A slate wall."
-    icon = 'icons/obj/structures.dmi'
-    icon_state = "slate"
-    passable = TRUE
-    not_movable = TRUE
-    density = TRUE
-    opacity = TRUE
-    amount = 0
-    layer = 3
-    health = 500
-    wood = FALSE
-    wall = TRUE
-    flammable = FALSE
-    explosion_resistance = 10
-    material = "Stone"
+	name = "slatestone wall"
+	desc = "A slate wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "slate"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 500
+	hardness = 100
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 10
+	material = "Stone"
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -528,6 +532,7 @@
 	wall = TRUE
 	explosion_resistance = 5
 	material = "Wood"
+	hardness = 75
 
 /obj/covers/wood_wall/medieval
 	name = "medieval wall"
@@ -572,6 +577,7 @@
 	wall = TRUE
 	explosion_resistance = 1
 	material = "Wood"
+	hardness = 30
 
 /obj/covers/wood_wall/shoji_divider
 	name = "shoji dividing wall"
@@ -588,6 +594,7 @@
 	wall = TRUE
 	explosion_resistance = 1
 	material = "Wood"
+	hardness = 20
 
 /obj/covers/wood_wall/log
 	name = "log wall"
@@ -604,6 +611,7 @@
 	wall = TRUE
 	explosion_resistance = 7
 	material = "Wood"
+	hardness = 80
 
 /obj/covers/wood_wall/log/corner
 	icon_state = "log_wall_corner"
@@ -626,6 +634,7 @@
 	flammable = FALSE
 	explosion_resistance = 10
 	material = "Stone"
+	hardness = 100
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
@@ -711,6 +720,7 @@
 	flammable = FALSE
 	explosion_resistance = 8
 	material = "Stone"
+	hardness = 100
 
 /obj/covers/sandstone_wall
 	name = "sandstone brick wall"
@@ -729,6 +739,7 @@
 	flammable = FALSE
 	explosion_resistance = 8
 	material = "Stone"
+	hardness = 100
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -746,6 +757,7 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 3
+	hardness = 65
 
 /obj/covers/straw_wall
 	name = "straw wall"
@@ -763,6 +775,7 @@
 	wall = TRUE
 	explosion_resistance = 2
 	material = "Wood"
+	hardness = 30
 
 /obj/covers/dirt_wall/blocks
 	name = "dirt blocks wall"
@@ -812,13 +825,14 @@
 		else if (stage <= 2)
 			user << "You start adding dirt to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish adding dirt to the wall."
-				stage = (stage+1)
-				icon_state = "drysod_wall_inc[stage]"
-				base_icon_state = icon_state
-				health = (20*stage)
-				qdel(W)
-				return
+				if (stage <= 2)
+					user << "You finish adding dirt to the wall."
+					stage = (stage+1)
+					icon_state = "drysod_wall_inc[stage]"
+					base_icon_state = icon_state
+					health = (20*stage)
+					qdel(W)
+					return
 	..()
 
 
@@ -839,6 +853,7 @@
 	flammable = FALSE
 	explosion_resistance = 6
 	material = "Stone"
+	hardness = 75
 
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
@@ -872,13 +887,14 @@
 		else if (stage <= 1)
 			user << "You start adding clay blocks to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish clay block to the wall."
-				stage += 1
-				icon_state = "claybrickwall_inc[stage]"
-				base_icon_state = icon_state
-				health = (30*stage)
-				qdel(W)
-				return
+				if (stage <= 1)
+					user << "You finish clay block to the wall."
+					stage += 1
+					icon_state = "claybrickwall_inc[stage]"
+					base_icon_state = icon_state
+					health = (30*stage)
+					qdel(W)
+					return
 	..()
 /obj/covers/clay_wall/sumerian
 	name = "sumerian clay wall"
@@ -954,13 +970,14 @@
 		else if (stage <= 1)
 			user << "You start adding clay blocks to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish adding clay to the wall."
-				stage += 1
-				icon_state = "sumerian-wall_inc[stage]"
-				base_icon_state = icon_state
-				health = (30*stage)
-				qdel(W)
-				return
+				if (stage <= 1)
+					user << "You finish adding clay to the wall."
+					stage += 1
+					icon_state = "sumerian-wall_inc[stage]"
+					base_icon_state = icon_state
+					health = (30*stage)
+					qdel(W)
+					return
 	..()
 /obj/covers/brick_wall
 	name = "brick wall"
@@ -979,10 +996,11 @@
 	flammable = FALSE
 	explosion_resistance = 6
 	material = "Stone"
+	hardness = 92
 
 /obj/covers/cement_wall
-	name = "cement wall"
-	desc = "A cement wall."
+	name = "concrete wall"
+	desc = "A concrete wall."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "cement_wall"
 	passable = TRUE
@@ -997,6 +1015,7 @@
 	flammable = FALSE
 	explosion_resistance = 7
 	material = "Stone"
+	hardness = 95
 
 /obj/covers/vault
 	name = "vault wall"
@@ -1015,27 +1034,29 @@
 	flammable = FALSE
 	explosion_resistance = 10
 	material = "Stone"
+	hardness = 100
 
 /obj/covers/slate
-    name = "slatestone wall"
-    desc = "A slate wall."
-    icon = 'icons/obj/structures.dmi'
-    icon_state = "slate"
-    passable = TRUE
-    not_movable = TRUE
-    density = TRUE
-    opacity = TRUE
-    amount = 0
-    layer = 3
-    health = 500
-    wood = FALSE
-    wall = TRUE
-    flammable = FALSE
-    explosion_resistance = 10
-    material = "Stone"
+	name = "slatestone wall"
+	desc = "A slate wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "slate"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 500
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 10
+	material = "Stone"
+	hardness = 100
 
 /obj/covers/cement_wall/incomplete
-	name = "cement wall"
+	name = "incomplete concrete wall"
 	desc = "A cement brick wall."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "cementwall_inc1"
@@ -1117,6 +1138,7 @@
 	var/buildstackamount = 8
 	var/buildstack = /obj/item/stack/material/wood
 	material = "Wood"
+	hardness = 15
 
 /obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))
@@ -1204,14 +1226,12 @@
 
 /obj/covers/New()
 	..()
-	if (wall && !incomplete)
-		var/area/caribbean/CURRENTAREA = get_area(src)
-		if (CURRENTAREA.location == AREA_OUTSIDE)
-			current_area_type = CURRENTAREA.type
-			new/obj/roof(get_turf(src))
-
+	initial_opacity = opacity
 	spawn(5)
 		updateturf()
+		if (opacity)
+			for(var/obj/roof/R in range(1,src))
+				R.update_transparency(0)
 	return TRUE
 
 
@@ -1230,7 +1250,6 @@
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
 			new current_area_type(get_turf(src))
-			visible_message("The roof collapses!")
 		var/turf/floor/T = get_turf(loc)
 		if (T)
 			T.water_level = origin_water_level
@@ -1242,6 +1261,10 @@
 		for(var/obj/roof/R in range(2,src))
 			R.collapse_check()
 	..()
+	spawn(1)
+		if (opacity)
+			for(var/obj/roof/R in range(1,src))
+				R.update_transparency(0)
 	return TRUE
 
 // the item you can use to repair a hole
@@ -1398,6 +1421,8 @@
 						visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 						qdel(src)
 			else
+				if (istype(proj, /obj/item/projectile/bullet) && bullethole_count.len < 13)
+					new_bullethole()
 				health -= proj.damage * 0.1
 				try_destroy()
 			return
@@ -1449,6 +1474,8 @@
 /obj/covers/update_icon()
 	..()
 	check_relatives(1,1)
+	overlays.Cut()
+	overlays |= bullethole_overlays
 
 /obj/covers/New()
 	..()
@@ -1457,6 +1484,22 @@
 /obj/covers/Destroy()
 	check_relatives(0,1)
 	..()
+
+/obj/covers/proc/new_bullethole()
+	if (bullethole_count.len >= 13)
+		return
+	if (!wall)
+		return
+	var/list/opts = list(1,2,3,4,5,6,7,8,9,10,11,12,13)
+	for(var/i in bullethole_count)
+		opts -= i
+	if (isemptylist(opts))
+		return
+	var/chnum = pick(opts)
+	var/tmp_bullethole = image(icon = 'icons/turf/walls.dmi', icon_state = "bullethole[chnum]", layer = src.layer+0.01)
+	bullethole_overlays += tmp_bullethole
+	bullethole_count += list(chnum)
+	update_icon()
 ////////////////////////////////////////////////////////////
 
 /obj/covers/wood_wall/aztec

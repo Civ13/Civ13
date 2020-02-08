@@ -276,6 +276,13 @@
 			qdel(src)
 			return
 
+		if ("JoinLateRNNavy")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+
 		if ("JoinLateRNCap")
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()
@@ -585,6 +592,19 @@
 			return
 
 		if ("JoinLateJPDoc")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+
+		if ("JoinLateJPMP")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("JoinLateJPLT")
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()
 			latejoin_turfs[name] += loc
