@@ -74,12 +74,14 @@
 	if (target_mob in ListTargets(7))
 		stance = HOSTILE_STANCE_ATTACKING
 		if(ranged)
-			if(get_dist(src, target_mob) <= 6)
+			if(get_dist(src, target_mob) <= 5)
 				OpenFire(target_mob)
 			else
-				walk_to(src, target_mob, 1, move_to_delay)
+				walk_to(src, target_mob, TRUE, move_to_delay)
 		else
 			walk_to(src, target_mob, TRUE, move_to_delay)
+	else if (target_mob in ListTargets(10))
+		walk_to(src, target_mob, TRUE, move_to_delay)
 
 /mob/living/simple_animal/proc/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))
@@ -89,7 +91,7 @@
 		LostTarget()
 		return FALSE
 	if (ranged)
-		if (get_dist(src, target_mob) <= 6)
+		if (get_dist(src, target_mob) <= 5)
 			OpenFire(target_mob)
 		else
 			MoveToTarget()

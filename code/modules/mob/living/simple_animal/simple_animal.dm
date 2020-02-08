@@ -336,6 +336,10 @@
 					if ((SA_attackable(target_mob)))
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 						stance = HOSTILE_STANCE_ATTACK
+					else
+						target_mob = FindTarget()
+				else
+					target_mob = FindTarget()
 
 			if (HOSTILE_STANCE_ATTACK)
 				if (destroy_surroundings)
@@ -345,7 +349,7 @@
 			if (HOSTILE_STANCE_ATTACKING)
 				if (destroy_surroundings)
 					DestroySurroundings()
-				spawn(5)
+				spawn(3)
 					AttackTarget()
 		return t_behaviour
 /mob/living/simple_animal/gib()
