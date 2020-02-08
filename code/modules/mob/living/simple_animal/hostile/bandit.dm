@@ -29,6 +29,7 @@
 	faction = PIRATES
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
+	var/corpse = /mob/living/carbon/human/corpse/bandit
 	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'
 	casingtype = null
 
@@ -37,3 +38,10 @@
 		gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
 
 /mob/living/simple_animal/hostile/bandit/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	if(gun)
+		gun.forceMove(src.loc)
+		qdel(src)
+	return
