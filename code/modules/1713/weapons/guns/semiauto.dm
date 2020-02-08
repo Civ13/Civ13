@@ -236,7 +236,7 @@
 	name = "Makeshift AKD"
 	desc = "A makeshift ak. chambered in 7.62x54mmR."
 	icon_state = "makeshiftaksniper"
-	item_state = "svd"
+	item_state = "makeshiftaksniper"
 	base_icon = "makeshiftaksniper"
 	w_class = 4
 	load_method = SINGLE_CASING|SPEEDLOADER
