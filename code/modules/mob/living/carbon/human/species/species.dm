@@ -187,7 +187,7 @@
 	return name
 
 /datum/species/proc/get_environment_discomfort(var/mob/living/carbon/human/H)
-	if (H.bodytemperature > heat_level_1)
+	if (H.bodytemperature > heat_level_1 && !H.orc)
 		var/area/A = get_area(H)
 		if (A.climate == "desert" && A.location == AREA_OUTSIDE)
 			if (!H.shoes)
@@ -233,7 +233,7 @@
 			for (var/i in exposed_bp)
 				H.adjustFireLossByPart(2, i)
 
-	if (H.bodytemperature < cold_level_1)
+	if (H.bodytemperature < cold_level_1 && !H.wolfman)
 		var/area/A = get_area(H)
 		for (var/obj/structure/brazier/BR in range(3, H))
 			if (BR.on == TRUE)

@@ -656,6 +656,9 @@
 	if (map && map.civilizations)
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
+
+//this is handled in the get_environment_discomfort.
+/*
 	if (bodytemperature >= species.heat_level_1 && !orc)
 		//Body temperature is too hot.
 
@@ -682,9 +685,8 @@
 			if (species.cold_level_2 to species.cold_level_1)
 				burn_dam = COLD_DAMAGE_LEVEL_1
 		take_overall_damage(burn=burn_dam, used_weapon = "Low Body Temperature")
+*/
 
-
-	// tell src they're dying
 	species.get_environment_discomfort(src)
 
 /mob/living/carbon/human/proc/stabilize_body_temperature()

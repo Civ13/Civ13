@@ -23,6 +23,34 @@
 	var/current_area_type = /area/caribbean
 	var/image/roof_overlay
 
+/obj/roof/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	user.do_attack_animation(src)
+	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+	if (flammable)
+		if (istype(W, /obj/item/flashlight/torch))
+			var/obj/item/flashlight/torch/T = W
+			if (T.on)
+				health -= 15
+				if (prob(30))
+					new/obj/effect/fire(loc)
+					visible_message("<span class='danger'>The roof catches fire!<span>")
+			return
+	if (istype(W, /obj/item/weapon/hammer))
+		user << "You start removing \the [src]..."
+		if (do_after(user, 60, src) && src)
+			user << "You removed \the [src]."
+			qdel(src)
+			return
+	else
+		switch(W.damtype)
+			if ("fire")
+				health -= W.force * TRUE
+			if ("brute")
+				health -= W.force * 0.20
+		return
+	..()
+
 /obj/roof/wood
 	name = "wood roof"
 
