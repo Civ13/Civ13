@@ -117,6 +117,8 @@
 	handle_weakened()
 	handle_paralysed()
 	handle_mutations_and_radiation()
+	updatehealth()
+
 	if (starves)
 		if (herbivore || carnivore || predatory_carnivore || granivore || scavenger)
 			simplehunger-=1
