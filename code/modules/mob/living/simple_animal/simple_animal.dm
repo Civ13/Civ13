@@ -613,7 +613,7 @@
 				else if (istype(src, /mob/living/simple_animal/cat))
 					var/obj/item/stack/material/pelt/catpelt/NP = new/obj/item/stack/material/pelt/catpelt(get_turf(src))
 					NP.amount = 2
-				else if (istype(src, /mob/living/simple_animal/hostile/panther && !istype(src, /mob/living/simple_animal/hostile/panther/jaguar))
+				else if (istype(src, /mob/living/simple_animal/hostile/panther) && !istype(src, /mob/living/simple_animal/hostile/panther/jaguar))
 					var/obj/item/stack/material/pelt/pantherpelt/NP = new/obj/item/stack/material/pelt/pantherpelt(get_turf(src))
 					NP.amount = 3
 				if (istype(user, /mob/living/carbon/human))
