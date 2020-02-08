@@ -29,7 +29,7 @@ obj/structure/gong/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 					return
 			else if (istype(I, /obj/item/weapon/gongmallet))
 				if (cooldown_gong == FALSE)
-					playsound(loc, 'sound/effects/gong.ogg', 100, FALSE, 5)
+					playsound(loc, 'sound/effects/gong.ogg', 200, FALSE, 5)
 					visible_message("<span class='warning'>[H] hits the gong!</span>")
 					cooldown_gong = TRUE
 					spawn(75)
