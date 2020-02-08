@@ -75,6 +75,7 @@
 		stance = HOSTILE_STANCE_ATTACKING
 		if(ranged)
 			if(get_dist(src, target_mob) <= 5)
+				walk_to(src,0)
 				OpenFire(target_mob)
 			else
 				walk_to(src, target_mob, TRUE, move_to_delay)
@@ -92,6 +93,7 @@
 		return FALSE
 	if (ranged)
 		if (get_dist(src, target_mob) <= 5)
+			walk_to(src,0)
 			OpenFire(target_mob)
 		else
 			MoveToTarget()

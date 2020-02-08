@@ -356,6 +356,7 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 
 /mob/living/carbon/human/corpse/bandit
 	gender = MALE
+	h_style = "Fade"
 
 /mob/living/carbon/human/corpse/bandit/New()
 	..()
