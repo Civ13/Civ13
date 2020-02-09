@@ -127,7 +127,7 @@
 			walk_away(src, target_mob, 7, 2)
 			return "retreat"
 	if (!istype(loc, /turf/floor/trench))
-		if (get_dist(src,target_mob) >= 3)
+		if (get_dist(src,target_mob) >= 5)
 			var/tdir = 0
 			if (target_mob.x >= src.x)
 				tdir = EAST
