@@ -169,3 +169,45 @@
 		new corpse (src.loc)
 	qdel(src)
 	return
+
+/mob/living/simple_animal/hostile/human/ww2_american
+	name = "American Soldier"
+	desc = "An american soldier! he looks hostile!"
+	icon_state = "ww2_american_ranged"
+	icon_dead = "bandit2_dead"
+	turns_per_move = 2
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "whacks"
+	speak = list("You're dead!", "Just try and kill me bastards!")
+	speak_emote = list("grumbles", "mumbles")
+	emote_hear = list("curses","grumbles")
+	emote_see = list("aims", "raises his rifle")
+	speak_chance = TRUE
+	speed = 6
+	move_to_delay = 3
+	stop_automated_movement_when_pulled = 0
+	maxHealth = 150
+	health = 150
+	move_to_delay = 4
+	harm_intent_damage = 10
+	melee_damage_lower = 35
+	melee_damage_upper = 45
+	attacktext = "whacked"
+	attack_sound = 'sound/weapons/slice.ogg'
+	mob_size = MOB_MEDIUM
+	starves = FALSE
+	behaviour = "hostile"
+	faction = AMERICAN
+	ranged = 1
+	projectiletype = /obj/item/projectile/bullet/rifle/a3006
+	corpse = /mob/living/carbon/human/corpse/ww2_american
+	projectilesound = 'sound/weapons/kar_shot.ogg'
+	casingtype = null
+
+/mob/living/simple_animal/hostile/human/ww2_american/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	qdel(src)
+	return
