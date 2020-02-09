@@ -179,28 +179,28 @@
 	var/target = target_mob
 	visible_message("<span class='danger'>\The [src] [fire_desc] at \the [target]!</span>", 1)
 	switch(rapid)
-	if(0) //singe-shot
-		Shoot(target, src.loc, src)
-		if(casingtype)
-			new casingtype
-	if(1) //semi-auto
-		var/shots = rand(1,3)
-		var/s_timer = 1
-		for(var/i = 1, i<= shots, i++)
-			spawn(s_timer)
-				Shoot(target, src.loc, src)
-				if(casingtype)
-					new casingtype(get_turf(src))
-			s_timer+=3
-	if (2) //automatic
-		var/shots = rand(3,5)
-		var/s_timer = 1
-		for(var/i = 1, i<= shots, i++)
-			spawn(s_timer)
-				Shoot(target, src.loc, src)
-				if(casingtype)
-					new casingtype(get_turf(src))
-			s_timer+=2
+		if(0) //singe-shot
+			Shoot(target, src.loc, src)
+			if(casingtype)
+				new casingtype
+		if(1) //semi-auto
+			var/shots = rand(1,3)
+			var/s_timer = 1
+			for(var/i = 1, i<= shots, i++)
+				spawn(s_timer)
+					Shoot(target, src.loc, src)
+					if(casingtype)
+						new casingtype(get_turf(src))
+				s_timer+=3
+		if (2) //automatic
+			var/shots = rand(3,5)
+			var/s_timer = 1
+			for(var/i = 1, i<= shots, i++)
+				spawn(s_timer)
+					Shoot(target, src.loc, src)
+					if(casingtype)
+						new casingtype(get_turf(src))
+				s_timer+=2
 	return
 
 /mob/living/simple_animal/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
