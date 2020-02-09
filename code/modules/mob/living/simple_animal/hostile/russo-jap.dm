@@ -75,3 +75,101 @@
 		new corpse (src.loc)
 	qdel(src)
 	return
+
+
+/mob/living/simple_animal/hostile/ww2_jap
+	name = "Japanese Soldier"
+	desc = "A jap soldier! he looks hostile!"
+	icon_state = "jap_ww2_ranged"
+	icon_dead = "bandit2_dead"
+	turns_per_move = 2
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "whacks"
+	speak = list("TEMEE WA SHIDNEIRU", "ORE O KOROSHITE")
+	speak_emote = list("grumbles", "mumbles")
+	emote_hear = list("curses","grumbles")
+	emote_see = list("aims", "raises his rifle")
+	speak_chance = TRUE
+	speed = 6
+	move_to_delay = 3
+	stop_automated_movement_when_pulled = 0
+	maxHealth = 150
+	health = 150
+	move_to_delay = 4
+	harm_intent_damage = 10
+	melee_damage_lower = 35
+	melee_damage_upper = 45
+	attacktext = "bayoneted"
+	attack_sound = 'sound/weapons/slice.ogg'
+	mob_size = MOB_MEDIUM
+	starves = FALSE
+	behaviour = "hostile"
+	faction = JAPANESE
+	ranged = 1
+	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
+	var/corpse = /mob/living/carbon/human/corpse/japanese_ww2
+	projectilesound = 'sound/weapons/kar_shot.ogg'
+	casingtype = null
+
+	New()
+		..()
+		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
+
+/mob/living/simple_animal/hostile/ww2_jap/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	if(gun)
+		gun.forceMove(src.loc)
+		qdel(src)
+	return
+
+
+/mob/living/simple_animal/hostile/ww2_jap_summer
+	name = "Japanese Soldier"
+	desc = "A jap soldier! he looks hostile!"
+	icon_state = "jap_ww2_ranged_summer4"
+	icon_dead = "bandit2_dead"
+	turns_per_move = 2
+	response_help = "pushes"
+	response_disarm = "shoves"
+	response_harm = "whacks"
+	speak = list("TEMEE WA SHIDNEIRU", "ORE O KOROSHITE")
+	speak_emote = list("grumbles", "mumbles")
+	emote_hear = list("curses","grumbles")
+	emote_see = list("aims", "raises his rifle")
+	speak_chance = TRUE
+	speed = 6
+	move_to_delay = 3
+	stop_automated_movement_when_pulled = 0
+	maxHealth = 150
+	health = 150
+	move_to_delay = 4
+	harm_intent_damage = 10
+	melee_damage_lower = 35
+	melee_damage_upper = 45
+	attacktext = "bayoneted"
+	attack_sound = 'sound/weapons/slice.ogg'
+	mob_size = MOB_MEDIUM
+	starves = FALSE
+	behaviour = "hostile"
+	faction = JAPANESE
+	ranged = 1
+	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
+	var/corpse = /mob/living/carbon/human/corpse/japanese_ww2
+	projectilesound = 'sound/weapons/kar_shot.ogg'
+	casingtype = null
+
+	New()
+		..()
+		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
+
+/mob/living/simple_animal/hostile/ww2_jap_summer/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	if(gun)
+		gun.forceMove(src.loc)
+		qdel(src)
+	return
