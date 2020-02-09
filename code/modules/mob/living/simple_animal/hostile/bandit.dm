@@ -27,7 +27,8 @@
 	starves = FALSE
 	behaviour = "hostile"
 	faction = PIRATES
-	ranged = 1
+	ranged = TRUE
+	rapid = TRUE
 	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
 	var/corpse = /mob/living/carbon/human/corpse/bandit
 	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'

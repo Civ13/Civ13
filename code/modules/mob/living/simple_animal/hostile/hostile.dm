@@ -178,24 +178,29 @@
 /mob/living/simple_animal/proc/OpenFire(target_mob)
 	var/target = target_mob
 	visible_message("<span class='danger'>\The [src] [fire_desc] at \the [target]!</span>", 1)
-
-	if(rapid)
-		spawn(1)
-			Shoot(target, src.loc, src)
-			if(casingtype)
-				new casingtype(get_turf(src))
-		spawn(4)
-			Shoot(target, src.loc, src)
-			if(casingtype)
-				new casingtype(get_turf(src))
-		spawn(6)
-			Shoot(target, src.loc, src)
-			if(casingtype)
-				new casingtype(get_turf(src))
-	else
+	switch(rapid)
+	if(0) //singe-shot
 		Shoot(target, src.loc, src)
 		if(casingtype)
 			new casingtype
+	if(1) //semi-auto
+		var/shots = rand(1,3)
+		var/s_timer = 1
+		for(var/i = 1, i<= shots, i++)
+			spawn(s_timer)
+				Shoot(target, src.loc, src)
+				if(casingtype)
+					new casingtype(get_turf(src))
+			s_timer+=3
+	if (2) //automatic
+		var/shots = rand(3,5)
+		var/s_timer = 1
+		for(var/i = 1, i<= shots, i++)
+			spawn(s_timer)
+				Shoot(target, src.loc, src)
+				if(casingtype)
+					new casingtype(get_turf(src))
+			s_timer+=2
 	return
 
 /mob/living/simple_animal/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
@@ -208,6 +213,6 @@
 	var/def_zone = pick("chest","head")
 	if (prob(8))
 		def_zone = pick("l_arm","r_arm","r_leg","l_leg")
-	A.launch(target, user, src.gun, def_zone)
+	A.launch(target, user, src.gun, def_zone, rand(-1,1), rand(-1,1))
 
 
