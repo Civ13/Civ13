@@ -24,6 +24,7 @@
 	attacktext = "slashed"
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
+	language = new/datum/language/japanese
 
 	corpse = /mob/living/carbon/human/corpse/japanese
 

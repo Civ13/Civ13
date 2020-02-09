@@ -20,6 +20,8 @@
 #define CHEROKEE "CHEROKEE"
 #define INUIT "INUIT"
 #define OLDNNORSE "OLDNORSE"
+#define EGYPTIAN "EGYPTIAN"
+#define IROQUOIS "IROQUOIS"
 
 //used for languages & factions
 #define SPANISH "SPANISH"
@@ -32,6 +34,7 @@
 #define ARAB "ARAB"
 #define GERMAN "GERMAN"
 #define VIETNAMESE "VIETNAMESE"
+#define KOREAN "KOREAN"
 /proc/faction_const2name(constant,age = 0)
 
 	if (constant == PIRATES)
@@ -110,3 +113,12 @@
 
 	if (constant == CHINESE)
 		return "Chinese"
+
+	if (constant == EGYPTIAN)
+		return "Egyptian"
+
+	if (constant == KOREAN)
+		return "Korean"
+
+	if (constant == IROQUOIS)
+		return "Iroquois"
