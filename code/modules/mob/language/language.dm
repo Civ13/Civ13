@@ -243,6 +243,37 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 	return full_name
 
 
+datum/language/proc/get_random_egyptian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+		else
+			return capitalize(pick(first_names_male_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+
+	var/full_name = "Isis"
+	return full_name
+
+datum/language/proc/get_random_korean_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_korean)) + " " + capitalize(pick(last_names_korean))
+		else
+			return capitalize(pick(first_names_male_korean)) + " " + capitalize(pick(last_names_korean))
+
+	var/full_name = "Hyung Do Seong"
+	return full_name
+
+datum/language/proc/get_random_iroquois_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_iroquois)) + " " + capitalize(pick(last_names_iroquois))
+		else
+			return capitalize(pick(first_names_male_iroquois)) + " " + capitalize(pick(last_names_iroquois))
+
+	var/full_name = "At'tawig"
+	return full_name
+
+
 /datum/language
 	var/list/scramble_cache = list()
 
