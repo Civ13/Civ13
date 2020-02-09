@@ -20,6 +20,12 @@
 /mob/living/simple_animal/hostile/human/Life()
 	..()
 	do_human_behaviour()
+
+/mob/living/simple_mob/hostile/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
+	if (prob(33))
+		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
+		playsound(get_turf(src), pick(screamlist), 100, extrarange = 50)
+	..()
 /////////////////////////////////////////////////////////
 ////////////////////RANGED///////////////////////////////
 
@@ -104,7 +110,6 @@
 /////////////////////////////AI STUFF///////////////////////////////////////////////
 //Special behaviour for human hostile mobs, taking cover, grenades, etc.
 /mob/living/simple_animal/hostile/human/proc/do_human_behaviour()
-	walk(src,0)
 	if (!target_mob)
 		return "no target"
 	for(var/obj/item/weapon/grenade/G in view(2,src))
