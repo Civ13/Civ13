@@ -192,7 +192,6 @@ Current Defines (_defines/attachment.dm)
 		if (do_after(user, 15, user))
 			A_attached = TRUE
 			G.attachment_slots -= attachment_type
-			loc = G
 			G.actions += actions
 			G.verbs += verbs
 			G.attachments += src
@@ -200,6 +199,15 @@ Current Defines (_defines/attachment.dm)
 				user.unEquip(src)
 				G.update_attachment_actions(user)
 				user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+				if (istype(src, /obj/item/weapon/attachment/bayonet/flag))
+					G.bayonet_ico.icon_state = "jap_flag"
+					bayonet_ico.pixel_x = 0
+					bayonet_ico.pixel_y = 0
+				else
+					G.bayonet_ico.icon_state = "bayonet"
+					bayonet_ico.pixel_x = 6
+					bayonet_ico.pixel_y = 6
+			loc = G
 			G.bayonet = src
 			G.overlays += G.bayonet_ico
 		else
@@ -221,12 +229,19 @@ Current Defines (_defines/attachment.dm)
 	else
 		return
 
-/obj/item/weapon/attachment/jap_flag
+/obj/item/weapon/attachment/bayonet/flag
 	name = "japanese flag"
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "jap_flag"
 	item_state = "jap_flag"
+	sharp = FALSE
+	edge = FALSE
+	attack_verb = list("bashed")
 	attachment_type = ATTACH_BARREL
+	force = 1
+
+/obj/item/weapon/attachment/bayonet/flag/attack_self(mob/user)
+	return
 
 /obj/item/weapon/attachment/bayonet/military
 	force = WEAPON_FORCE_ROBUST

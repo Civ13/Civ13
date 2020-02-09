@@ -51,7 +51,13 @@
 						T = L
 						break
 	if (T)
-		custom_emote(1,"stares alertly at [T].")
+		if (!istype(src,/mob/living/simple_animal/hostile/human))
+			custom_emote(1,"stares alertly at [T].")
+		else
+			var/mob/living/simple_animal/hostile/human/HM = src
+			if (HM.messages["enemy_sighted"] && prob(25))
+				HM.say(HM.messages["enemy_sighted"],HM.language)
+
 		stance = HOSTILE_STANCE_ALERT
 	return T
 

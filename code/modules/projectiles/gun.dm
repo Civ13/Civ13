@@ -186,7 +186,7 @@
 	if (user.a_intent != I_HELP && !bayonet && fire) // point blank shooting
 		Fire(A, user, pointblank=1)
 	else
-		if (bayonet && isliving(A))
+		if (bayonet && isliving(A) && !istype(bayonet, /obj/item/weapon/attachment/bayonet/flag))
 			var/mob/living/L = A
 			var/mob/living/carbon/C = A
 			if (!istype(C) || !C.check_attack_throat(src, user))

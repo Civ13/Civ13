@@ -14,6 +14,7 @@
 		"backup" = null,
 		"injured" = null,
 		"enemy_sighted" = null,
+		"grenade" = null,
 	)
 
 /mob/living/simple_animal/hostile/human/Life()
@@ -91,11 +92,14 @@
 				walk_to(src,0)
 				OpenFire(target_mob)
 			else
-				walk_to(src, target_mob, TRUE, move_to_delay)
+				if (!istype(loc, /turf/floor/trench))
+					walk_to(src, target_mob, TRUE, move_to_delay)
 		else
-			walk_to(src, target_mob, TRUE, move_to_delay)
+			if (!istype(loc, /turf/floor/trench))
+				walk_to(src, target_mob, TRUE, move_to_delay)
 	else if (target_mob in ListTargets(10))
-		walk_to(src, target_mob, TRUE, move_to_delay)
+		if (!istype(loc, /turf/floor/trench))
+			walk_to(src, target_mob, TRUE, move_to_delay)
 
 /////////////////////////////AI STUFF///////////////////////////////////////////////
 //Special behaviour for human hostile mobs, taking cover, grenades, etc.
@@ -103,39 +107,47 @@
 	walk(src,0)
 	if (!target_mob)
 		return "no target"
-
+	for(var/obj/item/weapon/grenade/G in view(2,src))
+		if (G.active)
+			walk_away(src, G, 5, 2)
+			spawn(20)
+				walk(src,0)
+			if (messages["grenade"])
+				say(messages["grenade"],language)
+			return "grenade"
 	if (health < maxHealth*0.6)
 		if (prob(8))
 			if (prob(75))
 				new/obj/effect/decal/cleanable/blood/drip(loc)
 			else
 				new/obj/effect/decal/cleanable/blood(loc)
-		if (prob(5))
+		if (prob(5) && messages["injured"])
 			say(messages["injured"],language)
 		if (health < maxHealth*0.2)
 			walk_away(src, target_mob, 7, 2)
-
-	if (get_dist(src,target_mob) >= 3)
-		var/tdir = 0
-		if (target_mob.x >= src.x)
-			tdir = EAST
-		if (target_mob.x < src.x)
-			tdir = WEST
-		if (target_mob.y < src.y)
-			tdir = SOUTH
-		if (target_mob.y >= src.y)
-			tdir = NORTH
-		var/found_cover = FALSE
-		var/turf/GST = get_step(loc, tdir)
-		for(var/obj/structure/ST in GST)
-			if (ST.density == TRUE || istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir)
-				found_cover = TRUE
-				break
-		if (!found_cover)
-			for(var/obj/structure/window/sandbag/SB in range(4,src))
-				if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
-					walk_to(src, SB, TRUE, move_to_delay)
-
+			return "retreat"
+	if (!istype(loc, /turf/floor/trench))
+		if (get_dist(src,target_mob) >= 3)
+			var/tdir = 0
+			if (target_mob.x >= src.x)
+				tdir = EAST
+			if (target_mob.x < src.x)
+				tdir = WEST
+			if (target_mob.y < src.y)
+				tdir = SOUTH
+			if (target_mob.y >= src.y)
+				tdir = NORTH
+			var/found_cover = FALSE
+			var/turf/GST = get_step(loc, tdir)
+			for(var/obj/structure/ST in GST)
+				if (ST.density == TRUE || istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir)
+					found_cover = TRUE
+					break
+			if (!found_cover)
+				for(var/obj/structure/window/sandbag/SB in view(4,src))
+					if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
+						walk_to(src, SB, TRUE, move_to_delay)
+						return "find cover"
 	if (target_mob in range(7, src))
 		var/found_friends = FALSE
 		for(var/mob/living/simple_animal/hostile/human/SA in range(11,src))
