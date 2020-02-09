@@ -323,8 +323,8 @@
 /mob/living/simple_animal/pelican
 	name = "\improper pelican"
 	desc = "A common sea bird."
-	icon_state = "pelican-filled"
-	icon_living = "pelican-filled"
+	icon_state = "pelican-filed"
+	icon_living = "pelican-filed"
 	icon_dead = "pelican-dead"
 	speak = list("GRUNT!","KRRR KRRR!")
 	speak_emote = list("gruntss","hisses")
@@ -376,8 +376,8 @@
 	melee_damage_upper = 4
 
 /mob/living/simple_animal/crow
-	name = "\improper pelican"
-	desc = "A common sea bird."
+	name = "\improper crow"
+	desc = "A common scavenger bird."
 	icon_state = "crow"
 	icon_living = "crow"
 	icon_dead = "crow-dead"
