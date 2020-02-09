@@ -193,7 +193,7 @@
 			if (!H.shoes)
 				if (prob(25))
 					H << "<span class='danger'>The hot ground burns your feet!</span>"
-					H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
+					H.adjustFireLossByPart(1, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0
@@ -231,7 +231,7 @@
 			if (prob(15))
 				H << "<span class='danger'>The dust abrades your exposed flesh!</span>"
 			for (var/i in exposed_bp)
-				H.adjustFireLossByPart(2, i)
+				H.adjustFireLossByPart(0.5, i)
 
 	if (H.bodytemperature < cold_level_1 && !H.wolfman)
 		var/area/A = get_area(H)
@@ -249,7 +249,7 @@
 			if (H.shoes.cold_protection != FEET)
 				if (prob(25 - (H.shoes ? 15 : 0)))
 					H << "<span class='danger'>Your feet are freezing!</span>"
-					H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
+					H.adjustFireLossByPart(1, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0
