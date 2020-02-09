@@ -286,7 +286,7 @@
 		if (A.icon_state == "snow_storm" && A.location == AREA_OUTSIDE)
 			if (prob(12))
 				H << "<span class='danger'>The blizzard chills you to the bone!</span>"
-			H.adjustFireLoss(3)
+			H.adjustFireLoss(0.5)
 /*
 		var/area/A = get_area(H)
 		if (A.weather == WEATHER_WET && findtext(A,"rain"))
