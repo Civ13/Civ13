@@ -172,30 +172,34 @@ Current Defines (_defines/attachment.dm)
 		edge = 1
 		sharp = 1
 		return
-/obj/item/weapon/attachment/bayonet/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
+/obj/item/weapon/attachment/bayonet/attached(var/mob/user = null, obj/item/weapon/gun/G, var/quick = FALSE)
 	if (quick)
-		user.unEquip(src)
+		if (user)
+			user.unEquip(src)
 		A_attached = TRUE
 		G.attachment_slots -= attachment_type
 		loc = G
 		G.actions += actions
 		G.verbs += verbs
 		G.attachments += src
-		user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+		if (user)
+			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 		G.bayonet = src
 		G.overlays += G.bayonet_ico
 	else
-		user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
+		if (user)
+			user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
 		if (do_after(user, 15, user))
-			user.unEquip(src)
 			A_attached = TRUE
 			G.attachment_slots -= attachment_type
 			loc = G
 			G.actions += actions
 			G.verbs += verbs
 			G.attachments += src
-			G.update_attachment_actions(user)
-			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			if (user)
+				user.unEquip(src)
+				G.update_attachment_actions(user)
+				user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 			G.bayonet = src
 			G.overlays += G.bayonet_ico
 		else
