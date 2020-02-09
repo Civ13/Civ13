@@ -201,12 +201,12 @@ Current Defines (_defines/attachment.dm)
 				user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 				if (istype(src, /obj/item/weapon/attachment/bayonet/flag))
 					G.bayonet_ico.icon_state = "jap_flag"
-					bayonet_ico.pixel_x = 0
-					bayonet_ico.pixel_y = 0
+					G.bayonet_ico.pixel_x = 0
+					G.bayonet_ico.pixel_y = 0
 				else
 					G.bayonet_ico.icon_state = "bayonet"
-					bayonet_ico.pixel_x = 6
-					bayonet_ico.pixel_y = 6
+					G.bayonet_ico.pixel_x = 6
+					G.bayonet_ico.pixel_y = 6
 			loc = G
 			G.bayonet = src
 			G.overlays += G.bayonet_ico
