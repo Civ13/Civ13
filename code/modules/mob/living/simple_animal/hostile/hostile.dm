@@ -215,4 +215,22 @@
 		def_zone = pick("l_arm","r_arm","r_leg","l_leg")
 	A.launch(target, user, src.gun, def_zone, rand(-1,1), rand(-1,1))
 
+/////////////////////////////AI STUFF///////////////////////////////////////////////
+//Special behaviour for human hostile mobs, taking cover, grenades, etc.
+/mob/living/simple_animal/proc/do_human_behaviour()
+	if (!target_mob)
+		return "no target"
+	var/tdir = 0
+	if (target_mob.x >= src.x)
+		tdir = EAST
+	if (target_mob.x < src.x)
+		tdir = WEST
+	if (target_mob.y < src.y)
+		tdir = SOUTH
+	if (target_mob.y >= src.y)
+		tdir = NORTH
 
+	for(var/obj/structure/window/sandbag/SB in range(4,src))
+		if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
+			walk_to(src, SB, TRUE, move_to_delay)
+			return "take cover"
