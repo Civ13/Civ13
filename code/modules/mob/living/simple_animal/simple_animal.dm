@@ -213,36 +213,11 @@
 	if (!t_behaviour)
 		t_behaviour = behaviour
 	if (t_behaviour == "scared")
-		var/done = FALSE
 		for (var/mob/living/carbon/human/H in range(7, src))
-			if (done == FALSE)
-				var/dirh = get_dir(src,H)
-				if (dirh == WEST && isturf(locate(x+7,y,z)))
-					walk_to(src, locate(x+7,y,z), TRUE, 3)
-					done = TRUE
-				else if (dirh == EAST && isturf(locate(x-7,y,z)))
-					walk_to(src, locate(x-7,y,z), TRUE, 3)
-					done = TRUE
-				else if (dirh == NORTH && isturf(locate(x,y-7,z)))
-					walk_to(src, locate(x,y-7,z), TRUE, 3)
-					done = TRUE
-				else if (dirh == SOUTH && isturf(locate(x,y+7,z)))
-					walk_to(src, locate(x,y+7,z), TRUE, 3)
-					done = TRUE
-				if (!done)
-					if (dirh == EAST && isturf(locate(x+7,y,z)))
-						walk_to(src, locate(x+7,y,z), TRUE, 3)
-						done = TRUE
-					else if (dirh == WEST && isturf(locate(x-7,y,z)))
-						walk_to(src, locate(x-7,y,z), TRUE, 3)
-						done = TRUE
-					else if (dirh == SOUTH && isturf(locate(x,y-7,z)))
-						walk_to(src, locate(x,y-7,z), TRUE, 3)
-						done = TRUE
-					else if (dirh == NORTH && isturf(locate(x,y+7,z)))
-						walk_to(src, locate(x,y+7,z), TRUE, 3)
-						done = TRUE
-		return "scared"
+			walk_away(src, H, 7, 2)
+			spawn(50)
+				walk(src,0)
+			return "scared"
 
 	else if (t_behaviour == "wander")
 		var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
@@ -724,14 +699,14 @@
 			return TRUE
 	return FALSE
 
-/mob/living/simple_animal/say(var/message)
+/mob/living/simple_animal/say(var/message, var/datum/language/language = null)
 	var/verb = "says"
 	if (speak_emote.len)
 		verb = pick(speak_emote)
 
 	message = sanitize(message)
 
-	..(message, null, verb)
+	..(message, language, verb)
 
 /mob/living/simple_animal/get_speech_ending(verb, var/ending)
 	return verb

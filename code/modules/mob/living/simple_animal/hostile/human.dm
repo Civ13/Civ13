@@ -7,7 +7,7 @@
 	var/projectiletype = null
 	var/projectilesound = null
 	var/fire_desc = "fires"
-	var/obj/item/gun = null
+	var/obj/item/weapon/gun/projectile/gun = null
 
 	var/datum/language/language = new/datum/language/english
 	var/list/messages = list(
@@ -15,6 +15,10 @@
 		"injured" = null,
 		"enemy_sighted" = null,
 	)
+
+/mob/living/simple_animal/hostile/human/Life()
+	..()
+	do_human_behaviour()
 /////////////////////////////////////////////////////////
 ////////////////////RANGED///////////////////////////////
 
@@ -96,22 +100,51 @@
 /////////////////////////////AI STUFF///////////////////////////////////////////////
 //Special behaviour for human hostile mobs, taking cover, grenades, etc.
 /mob/living/simple_animal/hostile/human/proc/do_human_behaviour()
+	walk(src,0)
 	if (!target_mob)
 		return "no target"
-	var/tdir = 0
-	if (target_mob.x >= src.x)
-		tdir = EAST
-	if (target_mob.x < src.x)
-		tdir = WEST
-	if (target_mob.y < src.y)
-		tdir = SOUTH
-	if (target_mob.y >= src.y)
-		tdir = NORTH
 
-	for(var/obj/structure/window/sandbag/SB in range(4,src))
-		if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
-			walk_to(src, SB, TRUE, move_to_delay)
-			return "take cover"
+	if (health < maxHealth*0.6)
+		if (prob(8))
+			if (prob(75))
+				new/obj/effect/decal/cleanable/blood/drip(loc)
+			else
+				new/obj/effect/decal/cleanable/blood(loc)
+		if (prob(5))
+			say(messages["injured"],language)
+		if (health < maxHealth*0.2)
+			walk_away(src, target_mob, 7, 2)
+
+	if (get_dist(src,target_mob) >= 3)
+		var/tdir = 0
+		if (target_mob.x >= src.x)
+			tdir = EAST
+		if (target_mob.x < src.x)
+			tdir = WEST
+		if (target_mob.y < src.y)
+			tdir = SOUTH
+		if (target_mob.y >= src.y)
+			tdir = NORTH
+		var/found_cover = FALSE
+		var/turf/GST = get_step(loc, tdir)
+		for(var/obj/structure/ST in GST)
+			if (ST.density == TRUE || istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir)
+				found_cover = TRUE
+				break
+		if (!found_cover)
+			for(var/obj/structure/window/sandbag/SB in range(4,src))
+				if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
+					walk_to(src, SB, TRUE, move_to_delay)
+
+	if (target_mob in range(7, src))
+		var/found_friends = FALSE
+		for(var/mob/living/simple_animal/hostile/human/SA in range(11,src))
+			if (istype(SA, src.type) && !SA.target_mob && SA.faction == src.faction)
+				if (get_dist(src,SA) > 7)
+					found_friends = TRUE
+					break
+		if (found_friends && prob(50))
+			call_for_backup(11)
 
 /mob/living/simple_animal/hostile/human/proc/call_for_backup(var/trange=1)
 	if (!trange)
@@ -123,3 +156,4 @@
 			walk_to(SA, src, TRUE, move_to_delay)
 			SA.target_mob = src.target_mob
 	return
+
