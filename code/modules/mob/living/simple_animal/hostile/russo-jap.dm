@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/japanese
+/mob/living/simple_animal/hostile/human/japanese
 	name = "Japanese Soldier"
 	desc = "A japanese soldier."
 	icon_state = "japmelee"
@@ -25,19 +25,19 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 
-	var/corpse = /mob/living/carbon/human/corpse/japanese
+	corpse = /mob/living/carbon/human/corpse/japanese
 
 	faction = JAPANESE
 
 
-/mob/living/simple_animal/hostile/japanese/death()
+/mob/living/simple_animal/hostile/human/japanese/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
 	qdel(src)
 	return
 
-/mob/living/simple_animal/hostile/japanesecap
+/mob/living/simple_animal/hostile/human/japanesecap
 	name = "Japanese Captain"
 	desc = "A japanese captain."
 	icon_state = "japcommander"
@@ -64,12 +64,12 @@
 	attack_sound = 'sound/weapons/punch3.ogg'
 	mob_size = MOB_MEDIUM
 
-	var/corpse = /mob/living/carbon/human/corpse/japanesecap
+	corpse = /mob/living/carbon/human/corpse/japanesecap
 
 	faction = JAPANESE
 
 
-/mob/living/simple_animal/hostile/japanesecap/death()
+/mob/living/simple_animal/hostile/human/japanesecap/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
@@ -77,7 +77,7 @@
 	return
 
 
-/mob/living/simple_animal/hostile/ww2_jap
+/mob/living/simple_animal/hostile/human/ww2_jap
 	name = "Japanese Soldier"
 	desc = "A jap soldier! he looks hostile!"
 	icon_state = "jap_ww2_ranged"
@@ -108,7 +108,7 @@
 	faction = JAPANESE
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
-	var/corpse = /mob/living/carbon/human/corpse/japanese_ww2
+	corpse = /mob/living/carbon/human/corpse/japanese_ww2
 	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
 
@@ -116,7 +116,7 @@
 		..()
 		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
 
-/mob/living/simple_animal/hostile/ww2_jap/death()
+/mob/living/simple_animal/hostile/human/ww2_jap/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
@@ -126,7 +126,7 @@
 	return
 
 
-/mob/living/simple_animal/hostile/ww2_jap_summer
+/mob/living/simple_animal/hostile/human/ww2_jap_summer
 	name = "Japanese Soldier"
 	desc = "A jap soldier! he looks hostile!"
 	icon_state = "jap_ww2_ranged_summer4"
@@ -157,7 +157,7 @@
 	faction = JAPANESE
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
-	var/corpse = /mob/living/carbon/human/corpse/japanese_ww2
+	corpse = /mob/living/carbon/human/corpse/japanese_ww2
 	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
 
@@ -165,7 +165,7 @@
 		..()
 		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
 
-/mob/living/simple_animal/hostile/ww2_jap_summer/death()
+/mob/living/simple_animal/hostile/human/ww2_jap_summer/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
