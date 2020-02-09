@@ -414,9 +414,11 @@
 	effectiveness_mod = 1.06
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
-/obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper/New()
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet/New()
 	..()
-	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	var/obj/item/weapon/attachment/bayonet/military/SP = new/obj/item/weapon/attachment/bayonet/military(src)
 	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training
