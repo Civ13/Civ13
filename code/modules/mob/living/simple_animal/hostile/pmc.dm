@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/pmc
+/mob/living/simple_animal/hostile/human/pmc
 	name = "PMC"
 	desc = "A heavily armoured PMC unit."
 	icon_state = "pmc"
@@ -26,9 +26,10 @@
 	mob_size = MOB_MEDIUM
 	starves = FALSE
 	behaviour = "hostile"
-	var/corpse = /mob/living/carbon/human/corpse/pmc
+	corpse = /mob/living/carbon/human/corpse/pmc
 	faction = PIRATES
 	ranged = 1
+	rapid = 2
 	projectiletype = /obj/item/projectile/bullet/rifle/a577
 	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
@@ -37,7 +38,7 @@
 		..()
 		gun = new/obj/item/weapon/gun/projectile/submachinegun/ar12(src)
 
-/mob/living/simple_animal/hostile/pmc/death()
+/mob/living/simple_animal/hostile/human/pmc/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)

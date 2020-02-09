@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/bandit
+/mob/living/simple_animal/hostile/human/bandit
 	name = "Bandit"
 	desc = "A bandit! he looks scary!"
 	icon_state = "bandit2"
@@ -27,20 +27,23 @@
 	starves = FALSE
 	behaviour = "hostile"
 	faction = PIRATES
-	ranged = 1
+	ranged = TRUE
+	rapid = TRUE
 	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
-	var/corpse = /mob/living/carbon/human/corpse/bandit
+	corpse = /mob/living/carbon/human/corpse/bandit
 	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'
 	casingtype = null
 
+
 	New()
 		..()
+		messages["backup"] = "Need backup!"
 		if (prob(65))
 			gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
 		else
 			gun = new/obj/item/weapon/gun/projectile/revolver/coltnewpolice/standardized(src)
 
-/mob/living/simple_animal/hostile/bandit/death()
+/mob/living/simple_animal/hostile/human/bandit/death()
 	..()
 	if(corpse)
 		new corpse (src.loc)
