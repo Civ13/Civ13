@@ -120,9 +120,7 @@
 	..()
 	if(corpse)
 		new corpse (src.loc)
-	if(gun)
-		gun.forceMove(src.loc)
-		qdel(src)
+	qdel(src)
 	return
 
 
@@ -169,7 +167,5 @@
 	..()
 	if(corpse)
 		new corpse (src.loc)
-	if(gun)
-		gun.forceMove(src.loc)
-		qdel(src)
+	qdel(src)
 	return
