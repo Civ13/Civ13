@@ -112,6 +112,7 @@
 	corpse = /mob/living/carbon/human/corpse/japanese_ww2
 	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
+	language = new/datum/language/japanese
 
 	New()
 		..()

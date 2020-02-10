@@ -178,6 +178,6 @@
 			walk_to(SA, src, TRUE, move_to_delay)
 			SA.target_mob = src.target_mob
 			spawn(45)
-				walk_to(src,0)
+				SA.walk_to(src,0)
 	return
 
