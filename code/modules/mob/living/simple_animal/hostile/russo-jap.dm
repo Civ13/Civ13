@@ -112,13 +112,14 @@
 	corpse = /mob/living/carbon/human/corpse/japanese_ww2
 	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
+	language = new/datum/language/japanese
 
 	New()
 		..()
-		messages["injured"] = "I am injured!"
-		messages["backup"] = "I need backup!"
-		messages["enemy_sighted"] = "Found an american dog!"
-		messages["grenade"] = "GRENADE!!!"
+		messages["injured"] = "!!I am injured!"
+		messages["backup"] = "!!I need backup!"
+		messages["enemy_sighted"] = "!!Found an american dog!"
+		messages["grenade"] = "!!GRENADE!!!"
 
 		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
 		icon_state = "ww2_jap_ranged[rand(1,4)]"
@@ -173,7 +174,12 @@
 	corpse = /mob/living/carbon/human/corpse/ww2_american
 	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
-
+	New()
+		..()
+		messages["injured"] = "!!Injured!"
+		messages["backup"] = "!!I need backup!"
+		messages["enemy_sighted"] = "!!Found a jap!"
+		messages["grenade"] = "!!GRENADE!!!"
 /mob/living/simple_animal/hostile/human/ww2_american/death()
 	..()
 	if(corpse)

@@ -133,31 +133,31 @@
 				new/obj/effect/decal/cleanable/blood(loc)
 		if (prob(5) && messages["injured"])
 			say(messages["injured"],language)
-		if (health < maxHealth*0.2)
-			walk_away(src, target_mob, 7, 2)
-			return "retreat"
-	if (!istype(loc, /turf/floor/trench))
-		if (get_dist(src,target_mob) >= 5)
-			var/tdir = 0
-			if (target_mob.x >= src.x)
-				tdir = EAST
-			if (target_mob.x < src.x)
-				tdir = WEST
-			if (target_mob.y < src.y)
-				tdir = SOUTH
-			if (target_mob.y >= src.y)
-				tdir = NORTH
-			var/found_cover = FALSE
-			var/turf/GST = get_step(loc, tdir)
-			for(var/obj/structure/ST in GST)
-				if (ST.density == TRUE || istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir)
-					found_cover = TRUE
-					break
-			if (!found_cover)
-				for(var/obj/structure/window/sandbag/SB in view(4,src))
-					if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
-						walk_to(src, SB, TRUE, move_to_delay)
-						return "find cover"
+		if (prob(10))
+			if (health < maxHealth*0.2)
+				walk_away(src, target_mob, 7, 2)
+				return "retreat"
+	if (get_dist(src,target_mob) >= 3 && prob(50))
+		var/tdir = 0
+		if (target_mob.x >= src.x)
+			tdir = EAST
+		if (target_mob.x < src.x)
+			tdir = WEST
+		if (target_mob.y < src.y)
+			tdir = SOUTH
+		if (target_mob.y >= src.y)
+			tdir = NORTH
+		var/found_cover = FALSE
+		var/turf/GST = get_step(loc, tdir)
+		for(var/obj/structure/ST in GST)
+			if (ST.density == TRUE || istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir)
+				found_cover = TRUE
+				break
+		if (!found_cover)
+			for(var/obj/structure/window/sandbag/SB in view(4,src))
+				if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
+					walk_to(src, SB, TRUE, move_to_delay)
+					return "find cover"
 	if (target_mob in range(7, src))
 		var/found_friends = FALSE
 		for(var/mob/living/simple_animal/hostile/human/SA in range(11,src))
@@ -178,6 +178,6 @@
 			walk_to(SA, src, TRUE, move_to_delay)
 			SA.target_mob = src.target_mob
 			spawn(45)
-				walk_to(src,0)
+				SA.walk_to(src,0)
 	return
 
