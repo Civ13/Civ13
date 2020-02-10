@@ -11,9 +11,12 @@
 	var/list/the_targets = ListTargets(7)
 	if (behaviour == "hostile")
 		for(var/mob/living/ML in the_targets)
-			if ((ishuman(ML) || istype(ML, /mob/living/simple_animal/hostile/human)) && ML.faction == src.faction)
+			if (ishuman(ML))
+				var/mob/living/carbon/human/H = ML
+				if (H.faction_text == src.faction)
+					the_targets -= ML
+			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
 				the_targets -= ML
-
 	for (var/atom/A in the_targets)
 
 		if (A == src)

@@ -18,43 +18,61 @@
 	)
 
 /mob/living/simple_animal/hostile/human/Life()
+	if (target_mob)
+		if(get_dist(src, target_mob) <= 4)
+			walk_to(src,0)
 	..()
 	do_human_behaviour()
 
-/mob/living/simple_mob/hostile/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
-	if (prob(33))
-		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
-		playsound(get_turf(src), pick(screamlist), 100, extrarange = 50)
-	..()
+/mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
+	if (ishuman(speaker))
+		var/mob/living/carbon/human/H = speaker
+		if (H.faction_text == faction && s_language.name == language.name)
+			if (findtext(message, "attack!"))
+				say("!!URAAAAAAA!", language)
+				if (prob(33))
+					playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100, 2)
+				var/mob/living/EN = null
+				for (var/mob/living/carbon/human/PENP in range(20,src))
+					if (PENP.faction_text != faction && PENP.stat != DEAD)
+						EN = PENP
+						target_mob = EN
+						walk_to(src,EN, TRUE, move_to_delay)
+						return
+				for (var/mob/living/simple_animal/hostile/human/PEN in range(20,src))
+					if (PEN.faction != faction && PEN.stat != DEAD)
+						EN = PEN
+						target_mob = EN
+						walk_to(src,EN, TRUE, move_to_delay)
+						return
 /////////////////////////////////////////////////////////
 ////////////////////RANGED///////////////////////////////
 
 /mob/living/simple_animal/hostile/human/proc/OpenFire(target_mob)
-	var/target = target_mob
-	visible_message("<span class='danger'>\The [src] [fire_desc] at \the [target]!</span>", 1)
-	switch(rapid)
-		if(0) //singe-shot
-			Shoot(target, src.loc, src)
-			if(casingtype)
-				new casingtype
-		if(1) //semi-auto
-			var/shots = rand(1,3)
-			var/s_timer = 1
-			for(var/i = 1, i<= shots, i++)
-				spawn(s_timer)
-					Shoot(target, src.loc, src)
-					if(casingtype)
-						new casingtype(get_turf(src))
-				s_timer+=3
-		if (2) //automatic
-			var/shots = rand(3,5)
-			var/s_timer = 1
-			for(var/i = 1, i<= shots, i++)
-				spawn(s_timer)
-					Shoot(target, src.loc, src)
-					if(casingtype)
-						new casingtype(get_turf(src))
-				s_timer+=2
+	spawn(rand(0,2))
+		switch(rapid)
+			if(0) //singe-shot
+				Shoot(target_mob, src.loc, src)
+				if(casingtype)
+					new casingtype
+			if(1) //semi-auto
+				var/shots = rand(1,3)
+				var/s_timer = 1
+				for(var/i = 1, i<= shots, i++)
+					spawn(s_timer)
+						Shoot(target_mob, src.loc, src)
+						if(casingtype)
+							new casingtype(get_turf(src))
+					s_timer+=3
+			if (2) //automatic
+				var/shots = rand(3,5)
+				var/s_timer = 1
+				for(var/i = 1, i<= shots, i++)
+					spawn(s_timer)
+						Shoot(target_mob, src.loc, src)
+						if(casingtype)
+							new casingtype(get_turf(src))
+					s_timer+=2
 	return
 
 /mob/living/simple_animal/hostile/human/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
@@ -68,15 +86,20 @@
 	if (prob(8))
 		def_zone = pick("l_arm","r_arm","r_leg","l_leg")
 	A.launch(target, user, src.gun, def_zone, rand(-1,1), rand(-1,1))
+	set_light(3)
+	spawn(5)
+		set_light(0)
 
 
 /mob/living/simple_animal/hostile/human/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
-	if (!(target_mob in ListTargets(7)))
-		LostTarget()
-		return FALSE
+	if (!(target_mob in ListTargets(11)))
+		spawn(50)
+		if (!(target_mob in ListTargets(11)))
+			LostTarget()
+			return FALSE
 	if (ranged)
 		if (get_dist(src, target_mob) <= 5)
 			walk_to(src,0)
@@ -136,6 +159,8 @@
 		if (prob(10))
 			if (health < maxHealth*0.2)
 				walk_away(src, target_mob, 7, 2)
+				spawn(30)
+					walk_to(src,0)
 				return "retreat"
 	if (get_dist(src,target_mob) >= 3 && prob(50))
 		var/tdir = 0
@@ -150,13 +175,15 @@
 		var/found_cover = FALSE
 		var/turf/GST = get_step(loc, tdir)
 		for(var/obj/structure/ST in GST)
-			if (ST.density == TRUE || istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir)
+			if (ST.density == TRUE || (istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir))
 				found_cover = TRUE
 				break
 		if (!found_cover)
 			for(var/obj/structure/window/sandbag/SB in view(4,src))
 				if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
 					walk_to(src, SB, TRUE, move_to_delay)
+					spawn(40)
+						walk_to(src,0)
 					return "find cover"
 	if (target_mob in range(7, src))
 		var/found_friends = FALSE
@@ -171,13 +198,13 @@
 /mob/living/simple_animal/hostile/human/proc/call_for_backup(var/trange=1)
 	if (!trange)
 		return
-	if (prob(30) && messages["backup"])
+	if (prob(20) && messages["backup"])
 		say(messages["backup"],language)
 	for(var/mob/living/simple_animal/hostile/human/SA in range(trange,src))
 		if (istype(SA, src.type) && !SA.target_mob && SA.faction == src.faction)
 			walk_to(SA, src, TRUE, move_to_delay)
 			SA.target_mob = src.target_mob
-			spawn(45)
-				SA.walk_to(src,0)
+			spawn(25)
+				walk_to(SA,0)
 	return
 

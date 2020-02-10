@@ -37,10 +37,10 @@
 
 	New()
 		..()
-		messages["injured"] = "I am injured!"
-		messages["backup"] = "I need backup!"
-		messages["enemy_sighted"] = "I found one!"
-		messages["grenade"] = "GRENADE!"
+		messages["injured"] = "!!I am injured!"
+		messages["backup"] = "!!Over here!"
+		messages["enemy_sighted"] = "!!I see one!"
+		messages["grenade"] = "!!GRENADE!"
 		if (prob(65))
 			gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
 		else

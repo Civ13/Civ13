@@ -11,6 +11,11 @@
 	anchored = TRUE
 	climbable = TRUE
 	mouse_drop_zone = TRUE
+	maxhealth = 30
+	health = 30
+	New()
+		..()
+		health = maxhealth
 
 /obj/structure/window/sandbag/sandbag
 	name = "sandbag wall"
@@ -221,7 +226,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-	health = 30
+	maxhealth = 30
 
 /obj/structure/window/sandbag/sandstone
 	name = "sandstone wall"
@@ -229,7 +234,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-	health = 30
+	maxhealth = 30
 
 /obj/item/weapon/sandbag/sandbag //:agony:
 	name = "sandbag"
@@ -238,7 +243,7 @@
 	w_class = TRUE
 	sand_amount = TRUE
 	value = 0
-	health = 30
+	maxhealth = 30
 
 /obj/item/weapon/sandbag/sandbag/empty
 	sand_amount = FALSE
@@ -286,7 +291,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = FALSE
-	health = 10000000
+	maxhealth = 10000000
 
 /obj/structure/window/sandbag/railing/stone
 	name = "railing"
@@ -295,7 +300,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = FALSE
-	health = 10000000
+	maxhealth = 10000000
 
 /obj/structure/window/sandbag/railing/New()
 	..()
@@ -305,7 +310,7 @@
 	name = "jersey barrier"
 	icon_state = "jerseybarrier1"
 	icon = 'icons/obj/junk.dmi'
-	health = 50
+	maxhealth = 80
 
 /obj/structure/window/sandbag/jersey/New()
 	..()
