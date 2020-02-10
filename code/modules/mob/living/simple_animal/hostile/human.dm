@@ -29,8 +29,14 @@
 		if (findtext(message, "attack!"))
 			say("URAAAAAAA!", language)
 			var/mob/living/simple_animal/hostile/human/EN = null
+			for (var/mob/living/carbon/human/PENP in range(15,src))
+				if (PENP.faction != faction && PENP.stat != DEAD)
+					EN = PENP
+					target_mob = EN
+					walk_to(src,EN, TRUE, move_to_delay)
+					return
 			for (var/mob/living/simple_animal/hostile/human/PEN in range(15,src))
-				if (PEN.faction != faction)
+				if (PEN.faction != faction && PEN.stat != DEAD)
 					EN = PEN
 					target_mob = EN
 					walk_to(src,EN, TRUE, move_to_delay)
