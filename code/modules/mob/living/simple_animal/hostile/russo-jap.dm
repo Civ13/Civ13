@@ -81,7 +81,7 @@
 /mob/living/simple_animal/hostile/human/ww2_jap
 	name = "Japanese Soldier"
 	desc = "A jap soldier! he looks hostile!"
-	icon_state = "ww2_jap_ranged0"
+	icon_state = "ww2_jap_ranged1"
 	icon_dead = "bandit2_dead"
 	turns_per_move = 2
 	response_help = "pushes"
@@ -133,7 +133,7 @@
 /mob/living/simple_animal/hostile/human/ww2_jap/summer
 	name = "Japanese Soldier"
 	desc = "A jap soldier! he looks hostile!"
-	icon_state = "ww2_jap_ranged_summer0"
+	icon_state = "ww2_jap_ranged_summer1"
 
 	New()
 		..()
