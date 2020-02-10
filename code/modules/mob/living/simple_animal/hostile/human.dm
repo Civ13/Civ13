@@ -24,6 +24,17 @@
 	..()
 	do_human_behaviour()
 
+/mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
+	if (speaker.faction == faction && s_language == language)
+		if (findtext(message, "attack!"))
+			say("URAAAAAAA!", language)
+			var/mob/living/simple_animal/hostile/human/EN = null
+			for (var/mob/living/simple_animal/hostile/human/PEN in range(15,src))
+				if (PEN.faction != faction)
+					EN = PEN
+					target_mob = EN
+					walk_to(src,EN, TRUE, move_to_delay)
+					return
 /////////////////////////////////////////////////////////
 ////////////////////RANGED///////////////////////////////
 
