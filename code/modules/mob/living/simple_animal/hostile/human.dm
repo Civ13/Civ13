@@ -29,15 +29,17 @@
 		var/mob/living/carbon/human/H = speaker
 		if (H.faction_text == faction && s_language.name == language.name)
 			if (findtext(message, "attack!"))
-				say("URAAAAAAA!", language)
-				var/mob/living/simple_animal/hostile/human/EN = null
-				for (var/mob/living/carbon/human/PENP in range(15,src))
+				say("!!URAAAAAAA!", language)
+				if (prob(33))
+					playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100, 2)
+				var/mob/living/EN = null
+				for (var/mob/living/carbon/human/PENP in range(30,src))
 					if (PENP.faction_text != faction && PENP.stat != DEAD)
 						EN = PENP
 						target_mob = EN
 						walk_to(src,EN, TRUE, move_to_delay)
 						return
-				for (var/mob/living/simple_animal/hostile/human/PEN in range(15,src))
+				for (var/mob/living/simple_animal/hostile/human/PEN in range(30,src))
 					if (PEN.faction != faction && PEN.stat != DEAD)
 						EN = PEN
 						target_mob = EN
