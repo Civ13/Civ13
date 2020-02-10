@@ -111,6 +111,7 @@
 //Special behaviour for human hostile mobs, taking cover, grenades, etc.
 /mob/living/simple_animal/hostile/human/proc/do_human_behaviour()
 	if (!target_mob)
+		walk_to(src,0)
 		return "no target"
 	for(var/obj/item/weapon/grenade/G in view(2,src))
 		if (G.active)
@@ -172,5 +173,7 @@
 		if (istype(SA, src.type) && !SA.target_mob && SA.faction == src.faction)
 			walk_to(SA, src, TRUE, move_to_delay)
 			SA.target_mob = src.target_mob
+			spawn(45)
+				walk_to(src,0)
 	return
 
