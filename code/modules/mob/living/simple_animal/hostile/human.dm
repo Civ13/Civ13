@@ -24,40 +24,35 @@
 	..()
 	do_human_behaviour()
 
-/mob/living/simple_mob/hostile/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
-	if (prob(33))
-		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
-		playsound(get_turf(src), pick(screamlist), 100, extrarange = 50)
-	..()
 /////////////////////////////////////////////////////////
 ////////////////////RANGED///////////////////////////////
 
 /mob/living/simple_animal/hostile/human/proc/OpenFire(target_mob)
 	var/target = target_mob
-	visible_message("<span class='danger'>\The [src] [fire_desc] at \the [target]!</span>", 1)
-	switch(rapid)
-		if(0) //singe-shot
-			Shoot(target, src.loc, src)
-			if(casingtype)
-				new casingtype
-		if(1) //semi-auto
-			var/shots = rand(1,3)
-			var/s_timer = 1
-			for(var/i = 1, i<= shots, i++)
-				spawn(s_timer)
-					Shoot(target, src.loc, src)
-					if(casingtype)
-						new casingtype(get_turf(src))
-				s_timer+=3
-		if (2) //automatic
-			var/shots = rand(3,5)
-			var/s_timer = 1
-			for(var/i = 1, i<= shots, i++)
-				spawn(s_timer)
-					Shoot(target, src.loc, src)
-					if(casingtype)
-						new casingtype(get_turf(src))
-				s_timer+=2
+	spawn(rand(0,2))
+		switch(rapid)
+			if(0) //singe-shot
+				Shoot(target, src.loc, src)
+				if(casingtype)
+					new casingtype
+			if(1) //semi-auto
+				var/shots = rand(1,3)
+				var/s_timer = 1
+				for(var/i = 1, i<= shots, i++)
+					spawn(s_timer)
+						Shoot(target, src.loc, src)
+						if(casingtype)
+							new casingtype(get_turf(src))
+					s_timer+=3
+			if (2) //automatic
+				var/shots = rand(3,5)
+				var/s_timer = 1
+				for(var/i = 1, i<= shots, i++)
+					spawn(s_timer)
+						Shoot(target, src.loc, src)
+						if(casingtype)
+							new casingtype(get_turf(src))
+					s_timer+=2
 	return
 
 /mob/living/simple_animal/hostile/human/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
