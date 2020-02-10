@@ -25,22 +25,24 @@
 	do_human_behaviour()
 
 /mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
-	if (speaker.faction == faction && s_language == language)
-		if (findtext(message, "attack!"))
-			say("URAAAAAAA!", language)
-			var/mob/living/simple_animal/hostile/human/EN = null
-			for (var/mob/living/carbon/human/PENP in range(15,src))
-				if (PENP.faction != faction && PENP.stat != DEAD)
-					EN = PENP
-					target_mob = EN
-					walk_to(src,EN, TRUE, move_to_delay)
-					return
-			for (var/mob/living/simple_animal/hostile/human/PEN in range(15,src))
-				if (PEN.faction != faction && PEN.stat != DEAD)
-					EN = PEN
-					target_mob = EN
-					walk_to(src,EN, TRUE, move_to_delay)
-					return
+	if (ishuman(speaker))
+		var/mob/living/carbon/human/H = speaker
+		if (H.faction_text == faction && s_language == language)
+			if (findtext(message, "attack!"))
+				say("URAAAAAAA!", language)
+				var/mob/living/simple_animal/hostile/human/EN = null
+				for (var/mob/living/carbon/human/PENP in range(15,src))
+					if (PENP.faction_text != faction && PENP.stat != DEAD)
+						EN = PENP
+						target_mob = EN
+						walk_to(src,EN, TRUE, move_to_delay)
+						return
+				for (var/mob/living/simple_animal/hostile/human/PEN in range(15,src))
+					if (PEN.faction != faction && PEN.stat != DEAD)
+						EN = PEN
+						target_mob = EN
+						walk_to(src,EN, TRUE, move_to_delay)
+						return
 /////////////////////////////////////////////////////////
 ////////////////////RANGED///////////////////////////////
 
@@ -83,6 +85,9 @@
 	if (prob(8))
 		def_zone = pick("l_arm","r_arm","r_leg","l_leg")
 	A.launch(target, user, src.gun, def_zone, rand(-1,1), rand(-1,1))
+	set_light(3)
+	spawn(5)
+		set_light(0)
 
 
 /mob/living/simple_animal/hostile/human/AttackTarget()
