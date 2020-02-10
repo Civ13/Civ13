@@ -27,7 +27,7 @@
 /mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
 	if (ishuman(speaker))
 		var/mob/living/carbon/human/H = speaker
-		if (H.faction_text == faction && s_language == language)
+		if (H.faction_text == faction && s_language.name == language.name)
 			if (findtext(message, "attack!"))
 				say("URAAAAAAA!", language)
 				var/mob/living/simple_animal/hostile/human/EN = null
@@ -195,7 +195,7 @@
 /mob/living/simple_animal/hostile/human/proc/call_for_backup(var/trange=1)
 	if (!trange)
 		return
-	if (prob(30) && messages["backup"])
+	if (prob(20) && messages["backup"])
 		say(messages["backup"],language)
 	for(var/mob/living/simple_animal/hostile/human/SA in range(trange,src))
 		if (istype(SA, src.type) && !SA.target_mob && SA.faction == src.faction)
