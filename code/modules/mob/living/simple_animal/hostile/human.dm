@@ -33,13 +33,13 @@
 				if (prob(33))
 					playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100, 2)
 				var/mob/living/EN = null
-				for (var/mob/living/carbon/human/PENP in range(30,src))
+				for (var/mob/living/carbon/human/PENP in range(20,src))
 					if (PENP.faction_text != faction && PENP.stat != DEAD)
 						EN = PENP
 						target_mob = EN
 						walk_to(src,EN, TRUE, move_to_delay)
 						return
-				for (var/mob/living/simple_animal/hostile/human/PEN in range(30,src))
+				for (var/mob/living/simple_animal/hostile/human/PEN in range(20,src))
 					if (PEN.faction != faction && PEN.stat != DEAD)
 						EN = PEN
 						target_mob = EN
@@ -49,11 +49,10 @@
 ////////////////////RANGED///////////////////////////////
 
 /mob/living/simple_animal/hostile/human/proc/OpenFire(target_mob)
-	var/target = target_mob
 	spawn(rand(0,2))
 		switch(rapid)
 			if(0) //singe-shot
-				Shoot(target, src.loc, src)
+				Shoot(target_mob, src.loc, src)
 				if(casingtype)
 					new casingtype
 			if(1) //semi-auto
@@ -61,7 +60,7 @@
 				var/s_timer = 1
 				for(var/i = 1, i<= shots, i++)
 					spawn(s_timer)
-						Shoot(target, src.loc, src)
+						Shoot(target_mob, src.loc, src)
 						if(casingtype)
 							new casingtype(get_turf(src))
 					s_timer+=3
@@ -70,7 +69,7 @@
 				var/s_timer = 1
 				for(var/i = 1, i<= shots, i++)
 					spawn(s_timer)
-						Shoot(target, src.loc, src)
+						Shoot(target_mob, src.loc, src)
 						if(casingtype)
 							new casingtype(get_turf(src))
 					s_timer+=2
@@ -174,7 +173,7 @@
 		var/found_cover = FALSE
 		var/turf/GST = get_step(loc, tdir)
 		for(var/obj/structure/ST in GST)
-			if (ST.density == TRUE || istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir)
+			if (ST.density == TRUE || (istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir))
 				found_cover = TRUE
 				break
 		if (!found_cover)

@@ -180,6 +180,8 @@
 		messages["backup"] = "!!I need backup!"
 		messages["enemy_sighted"] = "!!Found a jap!"
 		messages["grenade"] = "!!GRENADE!!!"
+		gun = new/obj/item/weapon/gun/projectile/semiautomatic/m1garand(src)
+
 /mob/living/simple_animal/hostile/human/ww2_american/death()
 	..()
 	if(corpse)
