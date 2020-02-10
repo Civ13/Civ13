@@ -24,6 +24,7 @@
 	attacktext = "slashed"
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
+	language = new/datum/language/japanese
 
 	corpse = /mob/living/carbon/human/corpse/japanese
 
@@ -80,15 +81,15 @@
 /mob/living/simple_animal/hostile/human/ww2_jap
 	name = "Japanese Soldier"
 	desc = "A jap soldier! he looks hostile!"
-	icon_state = "ww2_jap_ranged0"
+	icon_state = "ww2_jap_ranged1"
 	icon_dead = "bandit2_dead"
 	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "whacks"
-	speak = list("TEMEE WA SHIDNEIRU", "ORE O KOROSHITE")
-	speak_emote = list("grumbles", "mumbles")
-	emote_hear = list("curses","grumbles")
+	speak = list()
+	speak_emote = list()
+	emote_hear = list()
 	emote_see = list("aims", "raises his rifle")
 	speak_chance = TRUE
 	speed = 6
@@ -114,6 +115,11 @@
 
 	New()
 		..()
+		messages["injured"] = "I am injured!"
+		messages["backup"] = "I need backup!"
+		messages["enemy_sighted"] = "Found an american dog!"
+		messages["grenade"] = "GRENADE!!!"
+
 		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
 		icon_state = "ww2_jap_ranged[rand(1,4)]"
 /mob/living/simple_animal/hostile/human/ww2_jap/death()
@@ -124,56 +130,19 @@
 	return
 
 
-/mob/living/simple_animal/hostile/human/ww2_jap_summer
+/mob/living/simple_animal/hostile/human/ww2_jap/summer
 	name = "Japanese Soldier"
 	desc = "A jap soldier! he looks hostile!"
-	icon_state = "ww2_jap_ranged_summer0"
-	icon_dead = "bandit2_dead"
-	turns_per_move = 2
-	response_help = "pushes"
-	response_disarm = "shoves"
-	response_harm = "whacks"
-	speak = list("TEMEE WA SHIDNEIRU", "ORE O KOROSHITE")
-	speak_emote = list("grumbles", "mumbles")
-	emote_hear = list("curses","grumbles")
-	emote_see = list("aims", "raises his rifle")
-	speak_chance = TRUE
-	speed = 6
-	move_to_delay = 3
-	stop_automated_movement_when_pulled = 0
-	maxHealth = 150
-	health = 150
-	move_to_delay = 4
-	harm_intent_damage = 10
-	melee_damage_lower = 35
-	melee_damage_upper = 45
-	attacktext = "bayoneted"
-	attack_sound = 'sound/weapons/slice.ogg'
-	mob_size = MOB_MEDIUM
-	starves = FALSE
-	behaviour = "hostile"
-	faction = JAPANESE
-	ranged = 1
-	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
-	corpse = /mob/living/carbon/human/corpse/japanese_ww2
-	projectilesound = 'sound/weapons/kar_shot.ogg'
-	casingtype = null
+	icon_state = "ww2_jap_ranged_summer1"
 
 	New()
 		..()
-		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
 		icon_state = "ww2_jap_ranged_summer[rand(1,4)]"
-/mob/living/simple_animal/hostile/human/ww2_jap_summer/death()
-	..()
-	if(corpse)
-		new corpse (src.loc)
-	qdel(src)
-	return
 
 /mob/living/simple_animal/hostile/human/ww2_american
 	name = "American Soldier"
 	desc = "An american soldier! he looks hostile!"
-	icon_state = "ww2_american_ranged"
+	icon_state = "ww2_american_ranged1"
 	icon_dead = "bandit2_dead"
 	turns_per_move = 2
 	response_help = "pushes"

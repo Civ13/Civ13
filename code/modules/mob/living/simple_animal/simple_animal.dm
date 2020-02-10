@@ -297,8 +297,10 @@
 			if (turns_since_move >= turns_per_move && stance==HOSTILE_STANCE_IDLE)
 				var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 				moving_to = pick(cardinal)
-				set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
-				Move(get_step(src,moving_to))
+				var/turf/move_to_turf = get_step(src,moving_to)
+				if (!(istype(loc, /turf/floor/trench) && !istype(move_to_turf, /turf/floor/trench)))
+					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+					Move(move_to_turf)
 				turns_since_move = FALSE
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)

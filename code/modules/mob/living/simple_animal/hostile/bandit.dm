@@ -7,9 +7,9 @@
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
-	speak = list("You are dead meat!", "COME BACK HERE!")
-	speak_emote = list("grumbles", "mumbles")
-	emote_hear = list("curses","grumbles")
+	speak = list()
+	speak_emote = list()
+	emote_hear = list()
 	emote_see = list("stares", "draws firearm")
 	speak_chance = TRUE
 	speed = 6
@@ -40,6 +40,7 @@
 		messages["injured"] = "I am injured!"
 		messages["backup"] = "I need backup!"
 		messages["enemy_sighted"] = "I found one!"
+		messages["grenade"] = "GRENADE!"
 		if (prob(65))
 			gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
 		else

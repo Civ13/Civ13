@@ -320,6 +320,90 @@
 	melee_damage_lower = 3
 	melee_damage_upper = 7
 
+/mob/living/simple_animal/pelican
+	name = "\improper pelican"
+	desc = "A common sea bird."
+	icon_state = "pelican-filed"
+	icon_living = "pelican-filed"
+	icon_dead = "pelican-dead"
+	speak = list("GRUNT!","KRRR KRRR!")
+	speak_emote = list("gruntss","hisses")
+	emote_hear = list("grunts")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	turns_per_move = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 12
+	harm_intent_damage = 7
+	pass_flags = PASSTABLE
+	mob_size = MOB_MEDIUM
+	granivore = 1
+	behaviour = "defends"
+	melee_damage_lower = 3
+	melee_damage_upper = 7
+
+/mob/living/simple_animal/seagull
+	name = "\improper seagull"
+	desc = "A common sea bird."
+	icon_state = "gull"
+	icon_living = "gull"
+	icon_dead = "gull-dead"
+	speak = list("squak!","SQUAK SQUAK!")
+	speak_emote = list("squaks")
+	emote_hear = list("squaks")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	turns_per_move = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 12
+	harm_intent_damage = 7
+	pass_flags = PASSTABLE
+	mob_size = MOB_MEDIUM
+	granivore = 1
+	scavenger = 1
+	behaviour = "wander"
+	melee_damage_lower = 2
+	melee_damage_upper = 4
+
+/mob/living/simple_animal/crow
+	name = "\improper crow"
+	desc = "A common scavenger bird."
+	icon_state = "crow"
+	icon_living = "crow"
+	icon_dead = "crow-dead"
+	speak = list("caw caw!","CA-CAW CA-CAW!")
+	speak_emote = list("caws")
+	emote_hear = list("caws")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	turns_per_move = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 12
+	harm_intent_damage = 7
+	pass_flags = PASSTABLE
+	mob_size = MOB_MEDIUM
+	granivore = 1
+	carnivore = 1
+	scavenger = 1
+	behaviour = "wander"
+	melee_damage_lower = 3
+	melee_damage_upper = 7
+
 /mob/living/simple_animal/turkeychick
 	name = "\improper turkey chick"
 	desc = "Adorable! They make such a racket though."

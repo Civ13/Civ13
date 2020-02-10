@@ -43,7 +43,7 @@
 	maxrange = 80
 	w_class = 35
 
-/obj/structure/cannon/modern/tank/naval
+/obj/structure/cannon/modern/naval
 	name = "naval cannon"
 	desc = "A giant artillery cannon usually mounted on a ship."
 	icon = 'icons/obj/ship_cannon.dmi'
@@ -543,6 +543,8 @@
 							if (explosion)
 								if (istype(src,/obj/structure/cannon/mortar))
 									explosion(target, 1, 2, 2, 3)
+								else if (istype(src,/obj/structure/cannon/modern/naval))
+									explosion(target, 2, 3, 4, 5)
 								else
 									explosion(target, 1, 2, 3, 4)
 							if (nuclear)

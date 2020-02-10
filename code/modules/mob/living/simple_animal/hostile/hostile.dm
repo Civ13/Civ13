@@ -11,8 +11,9 @@
 	var/list/the_targets = ListTargets(7)
 	if (behaviour == "hostile")
 		for(var/mob/living/ML in the_targets)
-			if (!ishuman(ML))
+			if ((ishuman(ML) || istype(ML, /mob/living/simple_animal/hostile/human)) && ML.faction == src.faction)
 				the_targets -= ML
+
 	for (var/atom/A in the_targets)
 
 		if (A == src)
@@ -51,7 +52,13 @@
 						T = L
 						break
 	if (T)
-		custom_emote(1,"stares alertly at [T].")
+		if (!istype(src,/mob/living/simple_animal/hostile/human))
+			custom_emote(1,"stares alertly at [T].")
+		else
+			var/mob/living/simple_animal/hostile/human/HM = src
+			if (HM.messages["enemy_sighted"] && prob(25))
+				HM.say(HM.messages["enemy_sighted"],HM.language)
+
 		stance = HOSTILE_STANCE_ALERT
 	return T
 
