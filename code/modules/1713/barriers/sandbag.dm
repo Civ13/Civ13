@@ -148,8 +148,9 @@
 	return FALSE
 
 /obj/structure/window/sandbag/bullet_act(var/obj/item/projectile/Proj)
-	return FALSE
-
+	health -= 0.05
+	if (health <= 0)
+		qdel(src)
 /obj/structure/window/sandbag/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -237,6 +238,7 @@
 	w_class = TRUE
 	sand_amount = TRUE
 	value = 0
+	health = 30
 
 /obj/item/weapon/sandbag/sandbag/empty
 	sand_amount = FALSE
@@ -303,6 +305,7 @@
 	name = "jersey barrier"
 	icon_state = "jerseybarrier1"
 	icon = 'icons/obj/junk.dmi'
+	health = 50
 
 /obj/structure/window/sandbag/jersey/New()
 	..()
