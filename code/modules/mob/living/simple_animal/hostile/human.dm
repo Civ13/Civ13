@@ -97,6 +97,10 @@
 			if(get_dist(src, target_mob) <= 5)
 				walk_to(src,0)
 				OpenFire(target_mob)
+			else if (get_dist(src, target_mob) <= 1)
+				walk_away(src, target_mob, 5, 2)
+				spawn(10)
+					walk(src,0)
 			else
 				if (!istype(loc, /turf/floor/trench))
 					walk_to(src, target_mob, TRUE, move_to_delay)
