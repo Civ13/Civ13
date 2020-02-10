@@ -95,9 +95,11 @@
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
-	if (!(target_mob in ListTargets(7)))
-		LostTarget()
-		return FALSE
+	if (!(target_mob in ListTargets(11)))
+		spawn(50)
+		if (!(target_mob in ListTargets(11)))
+			LostTarget()
+			return FALSE
 	if (ranged)
 		if (get_dist(src, target_mob) <= 5)
 			walk_to(src,0)
