@@ -18,6 +18,9 @@
 	)
 
 /mob/living/simple_animal/hostile/human/Life()
+	if (target_mob)
+		if(get_dist(src, target_mob) <= 4)
+			walk_to(src,0)
 	..()
 	do_human_behaviour()
 
@@ -136,6 +139,8 @@
 		if (prob(10))
 			if (health < maxHealth*0.2)
 				walk_away(src, target_mob, 7, 2)
+				spawn(30)
+					walk_to(src,0)
 				return "retreat"
 	if (get_dist(src,target_mob) >= 3 && prob(50))
 		var/tdir = 0
@@ -157,6 +162,8 @@
 			for(var/obj/structure/window/sandbag/SB in view(4,src))
 				if (SB.dir == tdir && get_dist(src,SB) < get_dist(src,target_mob))
 					walk_to(src, SB, TRUE, move_to_delay)
+					spawn(40)
+						walk_to(src,0)
 					return "find cover"
 	if (target_mob in range(7, src))
 		var/found_friends = FALSE
@@ -177,7 +184,7 @@
 		if (istype(SA, src.type) && !SA.target_mob && SA.faction == src.faction)
 			walk_to(SA, src, TRUE, move_to_delay)
 			SA.target_mob = src.target_mob
-			spawn(45)
-				SA.walk_to(src,0)
+			spawn(25)
+				walk_to(SA,0)
 	return
 
