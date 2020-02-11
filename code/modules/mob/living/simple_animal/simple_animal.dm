@@ -672,7 +672,7 @@
 	icon_state = icon_dead
 	density = FALSE
 
-	walk_to(src,0) // stops movement
+	walk(src,0) // stops movement
 	unregisterSpawner()
 	delayed_decay(src,3000)
 	return ..(gibbed,deathmessage)

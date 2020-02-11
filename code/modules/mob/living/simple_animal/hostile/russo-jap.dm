@@ -116,10 +116,10 @@
 
 	New()
 		..()
-		messages["injured"] = "!!I am injured!"
-		messages["backup"] = "!!I need backup!"
-		messages["enemy_sighted"] = "!!Found an american dog!"
-		messages["grenade"] = "!!GRENADE!!!"
+		messages["injured"] = list("!!I am injured!","!!AAARGH!")
+		messages["backup"] =list( "!!I need backup!","!!Cover me!")
+		messages["enemy_sighted"] = list("!!Found an american dog!","!!Enemy spotted!")
+		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
 
 		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
 		icon_state = "ww2_jap_ranged[rand(1,4)]"
@@ -176,10 +176,10 @@
 	casingtype = null
 	New()
 		..()
-		messages["injured"] = "!!Injured!"
-		messages["backup"] = "!!I need backup!"
-		messages["enemy_sighted"] = "!!Found a jap!"
-		messages["grenade"] = "!!GRENADE!!!"
+		messages["injured"] = list("!!I am injured!","!!AAARGH!")
+		messages["backup"] =list( "!!I need backup!","!!Cover me!")
+		messages["enemy_sighted"] = list("!!Jap!!","!!Enemy spotted!")
+		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
 		gun = new/obj/item/weapon/gun/projectile/semiautomatic/m1garand(src)
 
 /mob/living/simple_animal/hostile/human/ww2_american/death()
