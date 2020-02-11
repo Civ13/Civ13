@@ -43,7 +43,7 @@
 				return
 		if (H.faction_text == faction && s_language.name == language.name && H.original_job && H.original_job.is_officer)
 			if (findtext(message, "men, "))
-				if (findtext(message, "cover me") || findtext(message, "come here"))
+				if (findtext(message, "cover me") || findtext(message, "come here") || findtext(message, "on me"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
 					walk_towards(src,H,7)
@@ -375,6 +375,7 @@
 		L = target_obj
 	else
 		return
+	stop_automated_movement = TRUE
 	if (get_dist(target_obj,src)>1 && target_action != "helping")
 		walk_towards(src,target_obj,7)
 	else if (get_dist(target_obj,src)<=1 && target_action != "helping")
@@ -394,7 +395,10 @@
 		target_action = "helping"
 
 	if (!enemy_detected && target_action=="helping")
+		target_action = "bandaging"
 		visible_message("<span class='notice'>[src] starts bandaging [target_obj]...</span>")
+		playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
+		walk(src,0)
 		spawn(70)
 			if (target_obj && src && get_dist(src,target_obj)<=1 && src.stat != DEAD && L.stat != DEAD)
 				visible_message("[target_obj] is all bandaged.")
@@ -414,13 +418,18 @@
 					H.update_bandaging(0)
 					target_mob = null
 					target_action = "none"
+					stop_automated_movement = FALSE
 					return
 				else if (isliving(target_obj))
 					var/mob/living/simple_animal/hostile/human/HMB = target_obj
 					HMB.adjustBruteLoss(-((HMB.maxHealth-HMB.health)*0.5))
 					target_mob = null
 					target_action = "none"
+					stop_automated_movement = FALSE
 					return
+		spawn(150)
+			if (target_action == "bandaging")
+				target_action = "none"
 
 /mob/living/simple_animal/hostile/human/proc/drag_patient(var/mob/living/MB)
 	if (MB.stat != DEAD && MB.faction != src.faction)
