@@ -11,7 +11,7 @@
 	emote_hear = list("brays")
 	emote_see = list("shakes its head")
 	speak_chance = TRUE
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 6
@@ -40,7 +40,7 @@
 	emote_hear = list("brays")
 	emote_see = list("shakes its head")
 	speak_chance = TRUE
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 6
@@ -195,7 +195,7 @@
 	speak = list("OINK!","SQWEEEL!")
 	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
 	speak_chance = 1
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 5
@@ -225,7 +225,7 @@
 	speak = list("OINK!","SQWEEEL!")
 	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
 	speak_chance = 1
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 6
@@ -374,7 +374,7 @@
 	emote_hear = list("brays")
 	emote_see = list("shakes its head", "stamps a foot", "glares around")
 	speak_chance = 1
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
@@ -516,7 +516,7 @@
 	emote_hear = list("brays")
 	emote_see = list("shakes its head", "stamps a foot", "glares around")
 	speak_chance = 1
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
@@ -708,7 +708,7 @@
 	emote_hear = list("grunts")
 	emote_see = list("shakes its head")
 	speak_chance = TRUE
-	turns_per_move = 8
+	move_to_delay = 8
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 6

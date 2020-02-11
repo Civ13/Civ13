@@ -3,7 +3,6 @@
 	desc = "Does what he wants cause a pirate is free."
 	icon_state = "piratemelee"
 	icon_dead = "piratemelee_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"

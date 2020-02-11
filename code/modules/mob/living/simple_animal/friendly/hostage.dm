@@ -15,7 +15,7 @@
 	melee_damage_upper = 9
 	mob_size = MOB_MEDIUM
 	possession_candidate = FALSE
-	turns_per_move = 4
+	move_to_delay = 4
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"

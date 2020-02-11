@@ -3,7 +3,6 @@
 	desc = "A heavily armoured PMC unit."
 	icon_state = "pmc"
 	icon_dead = "bandit_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"

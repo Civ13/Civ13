@@ -3,7 +3,6 @@
 	desc = "A japanese soldier."
 	icon_state = "japmelee"
 	icon_dead = "japmelee_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -43,7 +42,6 @@
 	desc = "A japanese captain."
 	icon_state = "japcommander"
 	icon_dead = "japmelee_dead"
-	turns_per_move = 3
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -83,7 +81,6 @@
 	desc = "A jap soldier! he looks hostile!"
 	icon_state = "ww2_jap_ranged1"
 	icon_dead = "bandit2_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "whacks"
@@ -156,7 +153,6 @@
 	desc = "An american soldier! he looks hostile!"
 	icon_state = "ww2_american_ranged1"
 	icon_dead = "bandit2_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "whacks"

@@ -10,7 +10,7 @@
 	emote_hear = list("snorts")
 	emote_see = list("snorts", "puffs out some air")
 	speak_chance = TRUE
-	turns_per_move = 4
+	move_to_delay = 4
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
