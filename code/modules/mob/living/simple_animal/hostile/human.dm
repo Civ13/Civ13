@@ -30,8 +30,11 @@
 		help_patient()
 
 /mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
+	if (stat == DEAD)
+		return
 	if (ishuman(speaker))
 		var/mob/living/carbon/human/H = speaker
+		message = replacetext(message,"-","") //remove stuttering
 		if (H.faction_text == faction && s_language.name == language.name && role == "medic")
 			if (findtext(message, "medic!") && target_action != "helping" && target_action != "moving")
 				if (H.getTotalDmg()>42)
@@ -399,8 +402,10 @@
 
 	if (!enemy_detected && target_action=="helping")
 		target_action = "bandaging"
-		if (H.getTotalDmg()>95)
-			say(pick("!!Hang on buddy, you will be fine!","!!You'll be fine kid, don't worry."), language)
+		if (ishuman(target_mob)
+			var/mob/living/carbon/human/H = target_mob
+			if (H.getTotalDmg()>95)
+				say(pick("!!Hang on buddy, you will be fine!","!!You'll be fine kid, don't worry."), language)
 		visible_message("<span class='notice'>[src] starts bandaging [target_obj]...</span>")
 		playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
 		walk(src,0)
