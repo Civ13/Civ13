@@ -402,7 +402,7 @@
 
 	if (!enemy_detected && target_action=="helping")
 		target_action = "bandaging"
-		if (ishuman(target_mob)
+		if (ishuman(target_mob))
 			var/mob/living/carbon/human/H = target_mob
 			if (H.getTotalDmg()>95)
 				say(pick("!!Hang on buddy, you will be fine!","!!You'll be fine kid, don't worry."), language)
