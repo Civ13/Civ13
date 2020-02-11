@@ -43,7 +43,7 @@
 					help_patient()
 					return
 				else
-					say(pick("!!Shut up, you pussy!","!!That's just a scratch...","That's nothing, I am busy..."), language)
+					say(pick("!!Shut up, you pussy!","!!That's just a scratch...","!!That's nothing, I am busy..."), language)
 		if (H.faction_text == faction && s_language.name == language.name && H.original_job && H.original_job.is_officer)
 			if (findtext(message, "men, "))
 				if (findtext(message, "cover me") || findtext(message, "come here") || findtext(message, "on me"))
@@ -399,6 +399,8 @@
 
 	if (!enemy_detected && target_action=="helping")
 		target_action = "bandaging"
+		if (H.getTotalDmg()>95)
+			say(pick("!!Hang on buddy, you will be fine!","!!You'll be fine kid, don't worry."), language)
 		visible_message("<span class='notice'>[src] starts bandaging [target_obj]...</span>")
 		playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
 		walk(src,0)
