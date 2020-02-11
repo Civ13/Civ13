@@ -262,12 +262,27 @@
 /obj/structure/flag/french
 	icon_state = "french"
 	name = "French Flag"
-	desc = "The French flag, white with golden fleur-de-lys"
+	desc = "The French flag, white with golden fleur-de-lys."
+
+/obj/structure/flag/french_modern
+	icon_state = "french2"
+	name = "French Flag"
+	desc = "The modern french tricoleur."
 
 /obj/structure/flag/spanish
 	icon_state = "spanish"
 	name = "Spanish Flag"
 	desc = "The Spanish flag, white with a red cross of burgundy."
+
+/obj/structure/flag/spanish_modern
+	icon_state = "spanish2"
+	name = "Spanish Flag"
+	desc = "The modern yellow and red spanish flag."
+
+/obj/structure/flag/italian
+	icon_state = "italian"
+	name = "Italian Flag"
+	desc = "The modern italian flag."
 
 /obj/structure/flag/british
 	icon_state = "british"
@@ -313,6 +328,12 @@
 	icon_state = "german"
 	name = "German Flag"
 	desc = "The German flag."
+
+/obj/structure/flag/german_modern
+	icon_state = "german2"
+	name = "German Flag"
+	desc = "The German flag."
+
 
 /obj/structure/flag/confed
 	icon_state = "confed"

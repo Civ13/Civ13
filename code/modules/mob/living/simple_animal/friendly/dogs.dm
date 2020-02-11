@@ -63,7 +63,7 @@
 
 	turns_since_scan++
 	if (turns_since_scan > 5)
-		walk_to(src,0)
+		walk(src,0)
 		turns_since_scan = FALSE
 
 		if (flee_target) //fleeing takes precendence
