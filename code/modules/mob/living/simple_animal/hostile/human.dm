@@ -295,8 +295,10 @@
 /mob/living/simple_animal/hostile/human/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
+		wander = TRUE
 	if (target_mob in ListTargets(7))
 		stance = HOSTILE_STANCE_ATTACKING
+		wander = FALSE
 		if(ranged)
 			if(get_dist(src, target_mob) <= 5)
 				walk(src,0)
@@ -312,6 +314,7 @@
 			if (!istype(loc, /turf/floor/trench))
 				walk_to(src, target_mob, TRUE, move_to_delay)
 	else if (target_mob in ListTargets(10))
+		wander = FALSE
 		if (!istype(loc, /turf/floor/trench))
 			walk_to(src, target_mob, TRUE, move_to_delay)
 
@@ -319,7 +322,10 @@
 //Special behaviour for human hostile mobs, taking cover, grenades, etc.
 /mob/living/simple_animal/hostile/human/proc/do_human_behaviour()
 	if (!target_mob)
+		wander = TRUE
 		return "no target"
+	else
+		wander = FALSE
 	for(var/obj/item/weapon/grenade/G in view(2,src))
 		if (G.active)
 			walk_away(src, G, 5, 2)
