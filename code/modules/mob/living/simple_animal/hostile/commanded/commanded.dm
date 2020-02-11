@@ -13,7 +13,7 @@
 	var/mob/master = null //undisputed master. Their commands hold ultimate sway and ultimate power.
 	var/list/allowed_targets = list() //WHO CAN I KILL D:
 
-/mob/living/simple_animal/hostile/commanded/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "", var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol)
+/mob/living/simple_animal/hostile/commanded/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "", var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/original_message = "")
 	if ((speaker in friends) || speaker == master)
 //		world.log << "DEBUG: The command was recognized"
 		command_buffer.Add(speaker)

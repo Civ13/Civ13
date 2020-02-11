@@ -1,6 +1,6 @@
 // At minimum every mob has a hear_say proc.
 /mob/var/next_language_learn = -1
-/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
+/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE, var/original_message = "")
 	if (!client)
 		return
 
@@ -10,6 +10,7 @@
 		return
 
 	//make sure the air can transmit speech - hearer's side
+	original_message = message
 
 	if (sleeping || stat == TRUE)
 		hear_sleep(message)

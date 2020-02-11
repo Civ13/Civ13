@@ -12,6 +12,7 @@
 
 	var/role = "soldier" //soldier, medic, officer, recon, guard...
 	var/atom/target_obj = null //for some roles (i.e. guard)
+	var/action_running = FALSE
 	var/target_action = null
 	var/datum/language/language = new/datum/language/english
 
@@ -26,24 +27,35 @@
 
 	..()
 	do_human_behaviour()
-	if (role == "medic")
+	if (role == "medic" && !action_running)
 		help_patient()
 
-/mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
+/mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE, var/original_message = "")
 	if (stat == DEAD)
 		return
-	if (ishuman(speaker))
+	if (istype(speaker, /mob/living/simple_animal/hostile/human) && speaker.faction == src.faction)
+		var/mob/living/simple_animal/hostile/human/SMH = speaker
+		if (target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
+			for(var/msg in SMH.messages["injured"])
+				msg = replacetext(msg,"!!","")
+				if (findtext(message,msg))
+					say("!!Coming!", language)
+					target_action = "moving"
+					target_mob = null
+					target_obj = speaker
+					walk_towards(src,target_obj,7)
+					return
+	else if (ishuman(speaker))
 		var/mob/living/carbon/human/H = speaker
-		message = replacetext(message,"-","") //remove stuttering
+		message = original_message
 		if (H.faction_text == faction && s_language.name == language.name && role == "medic")
-			if (findtext(message, "medic!") && target_action != "helping" && target_action != "moving")
+			if (findtext(message, "medic!") && target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
 				if (H.getTotalDmg()>42)
 					say("!!Coming!", language)
 					target_action = "moving"
 					target_mob = null
 					target_obj = speaker
 					walk_towards(src,target_obj,7)
-					help_patient()
 					return
 				else
 					say(pick("!!Shut up, you pussy!","!!That's just a scratch...","!!That's nothing, I am busy..."), language)
@@ -178,7 +190,7 @@
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Moving out!"), language)
 					if (prob(33))
-						playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100, 2)
+						playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 					var/turf/t_dir = null
 					if (findtext(message, "move north"))
 						t_dir = locate(x+rand(-2,2),y+10,z)
@@ -249,7 +261,7 @@
 		return
 
 	var/obj/item/projectile/A = new projectiletype(get_turf(user))
-	playsound(user, projectilesound, 100, 1)
+	playsound(user, projectilesound, 100, TRUE)
 	if(!A)	return
 	var/def_zone = pick("chest","head")
 	if (prob(8))
@@ -369,17 +381,23 @@
 		if (istype(SA, src.type) && !SA.target_mob && SA.faction == src.faction)
 			walk_to(SA, src, TRUE, move_to_delay)
 			SA.target_mob = src.target_mob
-			spawn(25)
+			spawn(45)
 				walk_to(SA,0)
 	return
 
 /mob/living/simple_animal/hostile/human/proc/help_patient()
+	if (!action_running)
+		action_running = TRUE
+	else
+		return
 	if (!target_obj || target_action == "none")
+		action_running = FALSE
 		return
 	var/mob/living/L = null
 	if (isliving(target_obj))
 		L = target_obj
 	else
+		action_running = FALSE
 		return
 	stop_automated_movement = TRUE
 	if (get_dist(target_obj,src)>1 && target_action != "helping")
@@ -394,6 +412,7 @@
 			target_action = "drag"
 			enemy_detected = TRUE
 			drag_patient(SA)
+			action_running = FALSE
 			return
 
 	if (!enemy_detected && target_action=="drag")
@@ -429,6 +448,7 @@
 					target_mob = null
 					target_action = "none"
 					stop_automated_movement = FALSE
+					action_running = FALSE
 					return
 				else if (isliving(target_obj))
 					var/mob/living/simple_animal/hostile/human/HMB = target_obj
@@ -436,10 +456,13 @@
 					target_mob = null
 					target_action = "none"
 					stop_automated_movement = FALSE
+					action_running = FALSE
 					return
 		spawn(150)
 			if (target_action == "bandaging")
 				target_action = "none"
+				action_running = FALSE
+	action_running = FALSE
 
 /mob/living/simple_animal/hostile/human/proc/drag_patient(var/mob/living/MB)
 	if (MB.stat != DEAD && MB.faction != src.faction)

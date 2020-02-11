@@ -53,7 +53,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 		return "asks"
 	return verb
 
-/mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", var/alt_message=null, var/animal = FALSE, var/howl = FALSE)
+/mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", var/alt_message=null, var/animal = FALSE, var/howl = FALSE, var/original_message = "")
 	if (client)
 		if (client.prefs.muted & MUTE_IC)
 			src << "<span class = 'red'>You cannot speak in IC (Muted).</span>"
@@ -90,6 +90,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	if (is_muzzled())
 		src << "<span class='danger'>You're muzzled and cannot speak!</span>"
 		return
+	original_message = message
 
 	message = trim_left(message)
 
@@ -161,7 +162,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 		if (howl)
 			verb = "howls"
 		M << speech_bubble
-		M.hear_say(message, verb, speaking, alt_name, italics, src, speech_sound, sound_vol, alt_message, animal)
+		M.hear_say(message, verb, speaking, alt_name, italics, src, speech_sound, sound_vol, alt_message, animal, original_message)
 
 	for (var/obj/O in listening_obj)
 		spawn(0)
