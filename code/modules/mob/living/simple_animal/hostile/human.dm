@@ -33,14 +33,17 @@
 	if (ishuman(speaker))
 		var/mob/living/carbon/human/H = speaker
 		if (H.faction_text == faction && s_language.name == language.name && role == "medic")
-			if (findtext(message, "medic!") && H.getTotalDmg()>42 && target_action != "helping" && target_action != "moving")
-				say("!!Coming!", language)
-				target_action = "moving"
-				target_mob = null
-				target_obj = speaker
-				walk_towards(src,target_obj,7)
-				help_patient()
-				return
+			if (findtext(message, "medic!") && target_action != "helping" && target_action != "moving")
+				if (H.getTotalDmg()>42)
+					say("!!Coming!", language)
+					target_action = "moving"
+					target_mob = null
+					target_obj = speaker
+					walk_towards(src,target_obj,7)
+					help_patient()
+					return
+				else
+					say(pick("!!Shut up, you pussy!","!!That's just a scratch...","That's nothing, I am busy..."), language)
 		if (H.faction_text == faction && s_language.name == language.name && H.original_job && H.original_job.is_officer)
 			if (findtext(message, "men, "))
 				if (findtext(message, "cover me") || findtext(message, "come here") || findtext(message, "on me"))
