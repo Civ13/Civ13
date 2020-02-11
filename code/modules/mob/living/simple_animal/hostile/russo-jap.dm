@@ -140,6 +140,17 @@
 		..()
 		icon_state = "ww2_jap_ranged_summer[rand(1,4)]"
 
+/mob/living/simple_animal/hostile/human/ww2_jap/summer/medic
+	name = "Japanese Medic"
+	icon_state = "ww2_jap_ranged_summer_medic"
+	corpse = /mob/living/carbon/human/corpse/japanese_ww2_medic
+	role = "medic"
+
+	New()
+		..()
+		icon_state = "ww2_jap_ranged_summer_medic"
+
+
 /mob/living/simple_animal/hostile/human/ww2_american
 	name = "American Soldier"
 	desc = "An american soldier! he looks hostile!"
@@ -188,3 +199,13 @@
 		new corpse (src.loc)
 	qdel(src)
 	return
+
+/mob/living/simple_animal/hostile/human/ww2_american/medic
+	name = "American Medic"
+	icon_state = "ww2_american_ranged_medic"
+	corpse = /mob/living/carbon/human/corpse/ww2_american_medic
+	role = "medic"
+
+	New()
+		..()
+		icon_state = "ww2_american_ranged_medic"
