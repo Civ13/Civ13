@@ -9,6 +9,8 @@
 	var/projectilesound = null
 	var/fire_desc = "fires"
 	var/obj/item/weapon/gun/projectile/gun = null
+	var/grenades = 0 //number of grenades
+	var/grenade_type = /obj/item/weapon/grenade
 
 	var/role = "soldier" //soldier, medic, officer, recon, guard...
 	var/atom/target_obj = null //for some roles (i.e. guard)
@@ -256,6 +258,26 @@
 ////////////////////RANGED///////////////////////////////
 
 /mob/living/simple_animal/hostile/human/proc/OpenFire(target_mob)
+	if (grenades && prob(5) && target_mob in view(7,src))
+		var/do_it = FALSE
+		for(var/mob/living/L in range(3,target_mob))
+			if (L.faction == src.faction)
+				break
+			else if (ishuman(L))
+				var/mob/living/carbon/human/H = L
+				if (H.faction_text == faction)
+					break
+				else
+					do_it++
+			else
+				do_it++
+		if (do_it>=3 && grenades)
+			grenades--
+			var/obj/item/weapon/grenade/GN = new grenade_type(loc)
+			throw_item(GN,target_mob)
+			GN.active = TRUE
+			spawn(GN.det_time)
+				GN.prime()
 	spawn(rand(0,2))
 		switch(rapid)
 			if(0) //singe-shot
@@ -551,3 +573,12 @@
 			spawn(3)
 				AttackTarget()
 	return t_behaviour
+
+/mob/living/simple_animal/hostile/human/throw_item(var/obj/item/item,var/atom/target)
+	if (!item || !target)
+		return
+
+	playsound(src, 'sound/effects/throw.ogg', 50, TRUE)
+	visible_message("<span class = 'warning'>[src] throws \the [item]!</span>")
+
+	item.throw_at(target, 7, item.throw_speed, src)

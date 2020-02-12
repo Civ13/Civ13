@@ -105,10 +105,12 @@
 	corpse = /mob/living/carbon/human/corpse/japanese_ww2
 	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
+	grenade_type = /obj/item/weapon/grenade/ww2/type97
 	language = new/datum/language/japanese
 
 	New()
 		..()
+		grenades = rand(1,2)
 		messages["injured"] = list("!!I am injured!","!!AAARGH!")
 		messages["backup"] =list( "!!I need backup!","!!Cover me!")
 		messages["enemy_sighted"] = list("!!Found an american dog!","!!Enemy spotted!")
@@ -142,6 +144,7 @@
 	New()
 		..()
 		icon_state = "ww2_jap_ranged_summer_medic"
+		grenades = 0
 
 
 /mob/living/simple_animal/hostile/human/ww2_american
@@ -175,8 +178,11 @@
 	corpse = /mob/living/carbon/human/corpse/ww2_american
 	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
+	grenade_type = /obj/item/weapon/grenade/ww2/mk2
+
 	New()
 		..()
+		grenades = rand(1,2)
 		messages["injured"] = list("!!I am injured!","!!AAARGH!")
 		messages["backup"] =list( "!!I need backup!","!!Cover me!")
 		messages["enemy_sighted"] = list("!!Jap!!","!!Enemy spotted!")
@@ -195,6 +201,7 @@
 	icon_state = "ww2_american_ranged_medic"
 	corpse = /mob/living/carbon/human/corpse/ww2_american_medic
 	role = "medic"
+	grenades = 0
 
 	New()
 		..()

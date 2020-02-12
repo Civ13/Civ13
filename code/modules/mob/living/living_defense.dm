@@ -151,7 +151,9 @@
 		var/obj/O = AM
 		var/dtype = O.damtype
 		var/throw_damage = O.throwforce*(speed/THROWFORCE_SPEED_DIVISOR)
-		var/mob/living/carbon/human/M = O.thrower
+		var/mob/living/carbon/human/M = null
+		if (ishuman(O.thrower))
+			M = O.thrower
 		var/miss_chance = 15
 		if (M)
 			miss_chance = 15 - M.getStat("throwing")/100
