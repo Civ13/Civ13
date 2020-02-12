@@ -710,6 +710,20 @@
 	anchored = 1.0
 	invisibility = 101
 
+var/global/list/faction_targets = list()
+
+/obj/effect/landmark/npctarget/faction
+	name = "faction target"
+	icon_state = "f1"
+	anchored = 1.0
+	invisibility = 101
+	var/faction = "none"
+	New()
+		..()
+		faction_targets += list(list(src.name,src.faction,src.x,src.y,src.z))
+		qdel(src)
+
+
 //Costume spawner landmarks
 /obj/effect/landmark/costume/New() //costume spawner, selects a random subclass and disappears
 

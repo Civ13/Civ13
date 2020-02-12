@@ -29,7 +29,7 @@
 	do_human_behaviour()
 	if (role == "medic" && !action_running)
 		help_patient()
-
+	do_behaviour()
 /mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE, var/original_message = "")
 	if (stat == DEAD)
 		return
@@ -50,7 +50,7 @@
 		message = original_message
 		if (H.faction_text == faction && s_language.name == language.name && role == "medic")
 			if (findtext(message, "medic!") && target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
-				if (H.getTotalDmg()>42)
+				if (H.getTotalDmg()>30)
 					say("!!Coming!", language)
 					target_action = "moving"
 					target_mob = null
@@ -61,7 +61,33 @@
 					say(pick("!!Shut up, you pussy!","!!That's just a scratch...","!!That's nothing, I am busy..."), language)
 		if (H.faction_text == faction && s_language.name == language.name && H.original_job && H.original_job.is_officer)
 			if (findtext(message, "men, "))
-				if (findtext(message, "cover me") || findtext(message, "come here") || findtext(message, "on me"))
+				if (findtext(message, "charge") || findtext(message, "attack") || findtext(message, "advance"))
+					var/turf/t_turf = null
+					var/t_distance = 1000
+					//check all the targets and choose the closest one that has enemies nearby.
+					for(var/list/LT in faction_targets)
+						if (LT[2] == src.faction)
+							var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
+							for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
+								if (HH.faction != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
+									t_turf = t_turf2
+									t_distance = get_dist(src,t_turf2)
+									break
+							for(var/mob/living/carbon/human/HH in range(7,t_turf2))
+								if (HH.faction_text != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
+									t_turf = t_turf2
+									t_distance = get_dist(src,t_turf2)
+									break
+					if (t_turf && t_distance<1000)
+						walk_towards(src,t_turf,7)
+						if (prob(20))
+							say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
+						if (prob(60))
+							playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
+					else
+						say(pick("!!Uh?? Where to?"), language)
+					return
+				else if (findtext(message, "cover me") || findtext(message, "come here") || findtext(message, "on me"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
 					walk_towards(src,H,7)
@@ -71,7 +97,7 @@
 					if (prob(30))
 						say(pick("!!Falling back!","!!Retreating!"), language)
 					if (target_mob)
-						walk_away(src,target_mob,7)
+						walk_away(src,target_mob,10,7)
 						spawn(40)
 							target_mob = null
 						spawn(45)
@@ -86,7 +112,7 @@
 							if (PEN.faction != faction && PEN.stat != DEAD)
 								EN = PEN
 								break
-						walk_away(src,EN,7)
+						walk_away(src,EN,10,7)
 						spawn(40)
 							target_mob = null
 						spawn(45)
@@ -189,8 +215,8 @@
 				else if (findtext(message, "move north") || findtext(message, "move south") || findtext(message, "move east") || findtext(message, "move west"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Moving out!"), language)
-					if (prob(33))
-						playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
+//					if (prob(33))
+//						playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 					var/turf/t_dir = null
 					if (findtext(message, "move north"))
 						t_dir = locate(x+rand(-2,2),y+10,z)
@@ -296,15 +322,15 @@
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
 		wander = TRUE
-	if (target_mob in ListTargets(7))
+	if (target_mob in ListTargets(8))
 		stance = HOSTILE_STANCE_ATTACKING
 		wander = FALSE
 		if(ranged)
-			if(get_dist(src, target_mob) <= 5)
+			if(get_dist(src, target_mob) <= 6)
 				walk(src,0)
 				OpenFire(target_mob)
 			else if (get_dist(src, target_mob) <= 1)
-				walk_away(src, target_mob, 5, 2)
+				walk_away(src, target_mob, 5, 7)
 				spawn(10)
 					walk(src,0)
 			else
@@ -313,7 +339,7 @@
 		else
 			if (!istype(loc, /turf/floor/trench))
 				walk_to(src, target_mob, TRUE, move_to_delay)
-	else if (target_mob in ListTargets(10))
+	else if (target_mob in ListTargets(12))
 		wander = FALSE
 		if (!istype(loc, /turf/floor/trench))
 			walk_to(src, target_mob, TRUE, move_to_delay)
@@ -328,7 +354,7 @@
 		wander = FALSE
 	for(var/obj/item/weapon/grenade/G in view(2,src))
 		if (G.active)
-			walk_away(src, G, 5, 2)
+			walk_away(src, G, 5, 7)
 			spawn(20)
 				walk(src,0)
 			if (!isemptylist(messages["grenade"]))
@@ -392,9 +418,7 @@
 	return
 
 /mob/living/simple_animal/hostile/human/proc/help_patient()
-	if (!action_running)
-		action_running = TRUE
-	else
+	if (action_running)
 		return
 	if (!target_obj || target_action == "none")
 		action_running = FALSE
@@ -408,6 +432,7 @@
 	stop_automated_movement = TRUE
 	if (get_dist(target_obj,src)>1 && target_action != "helping")
 		walk_towards(src,target_obj,7)
+		return
 	else if (get_dist(target_obj,src)<=1 && target_action != "helping")
 		walk(src,0)
 		target_action = "helping"
@@ -425,8 +450,9 @@
 		walk(src,0)
 		target_action = "helping"
 
-	if (!enemy_detected && target_action=="helping")
+	if (!enemy_detected && !action_running && target_action=="helping")
 		target_action = "bandaging"
+		action_running = TRUE
 		if (ishuman(target_mob))
 			var/mob/living/carbon/human/H = target_mob
 			if (H.getTotalDmg()>95)
@@ -468,7 +494,7 @@
 			if (target_action == "bandaging")
 				target_action = "none"
 				action_running = FALSE
-	action_running = FALSE
+
 
 /mob/living/simple_animal/hostile/human/proc/drag_patient(var/mob/living/MB)
 	if (MB.stat != DEAD && MB.faction != src.faction)
@@ -476,3 +502,52 @@
 		MB.forceMove(loc)
 		walk_to(src,get_step(src,tdir),10)
 		visible_message("<span class='warning'>[src] drags [MB]!</span>")
+
+
+
+/mob/living/simple_animal/hostile/human/do_behaviour(var/t_behaviour = null)
+	if (stat == DEAD || stat == UNCONSCIOUS)
+		return FALSE
+	if (!t_behaviour)
+		t_behaviour = behaviour
+
+	a_intent = I_HARM
+
+	if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
+		turns_since_move++
+		if (turns_since_move >= move_to_delay && stance==HOSTILE_STANCE_IDLE)
+			var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+			moving_to = pick(cardinal)
+			var/turf/move_to_turf = get_step(src,moving_to)
+			if (!(istype(loc, /turf/floor/trench) && !istype(move_to_turf, /turf/floor/trench)))
+				set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+				Move(move_to_turf)
+			turns_since_move = FALSE
+	switch(stance)
+		if (HOSTILE_STANCE_IDLE)
+			if (!target_mob || !(target_mob in ListTargets(10)) || target_mob.stat != CONSCIOUS)
+				target_mob = FindTarget()
+				if (target_mob)
+					stance = HOSTILE_STANCE_ATTACK
+
+		if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
+			if (target_mob && target_mob in ListTargets(10))
+				if ((SA_attackable(target_mob)))
+					set_dir(get_dir(src,target_mob))	//Keep staring at the mob
+					stance = HOSTILE_STANCE_ATTACK
+				else
+					target_mob = FindTarget()
+			else
+				target_mob = FindTarget()
+
+		if (HOSTILE_STANCE_ATTACK)
+			if (destroy_surroundings)
+				DestroySurroundings()
+			MoveToTarget()
+
+		if (HOSTILE_STANCE_ATTACKING)
+			if (destroy_surroundings)
+				DestroySurroundings()
+			spawn(3)
+				AttackTarget()
+	return t_behaviour
