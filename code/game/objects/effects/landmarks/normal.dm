@@ -720,8 +720,9 @@ var/global/list/faction_targets = list()
 	var/faction = "none"
 	New()
 		..()
-		faction_targets += list(list(src.name,src.faction,src.x,src.y,src.z))
-		qdel(src)
+		spawn(200) //so you have time to edit
+			faction_targets += list(list(src.name,src.faction,src.x,src.y,src.z))
+			qdel(src)
 
 
 //Costume spawner landmarks

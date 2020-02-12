@@ -89,20 +89,27 @@
 					else
 						say(pick("!!Uh?? Where to?"), language)
 					return
-				else if (findtext(message, "cover me") || findtext(message, "come here") || findtext(message, "on me"))
+				else if (findtext(message, "cover me") || findtext(message, "come here"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
 					walk_towards(src,H,7)
 					spawn(30)
 						walk(src,0)
+				else if (findtext(message, "follow me") || findtext(message, "on me"))
+					if (prob(20))
+						say(pick("!!Sir yes Sir!","!!Roger that!","!!Following!"), language)
+					walk_towards(src,H,7)
+				else if (findtext(message, "stop") || findtext(message, "hold"))
+					if (prob(20))
+						say(pick("!!Sir yes Sir!","!!Roger that!","!!Stopping, Sir!"), language)
+					walk(src,0)
 				else if (findtext(message, "retreat") || findtext(message, "fall back"))
 					if (prob(30))
 						say(pick("!!Falling back!","!!Retreating!"), language)
 					if (target_mob)
-						walk_away(src,target_mob,10,7)
-						spawn(40)
-							target_mob = null
-						spawn(45)
+						walk_away(src,target_mob.loc,10,7)
+						target_mob = null
+						spawn(80)
 							walk(src,0)
 					else
 						var/mob/living/EN = null

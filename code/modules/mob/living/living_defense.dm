@@ -174,7 +174,7 @@
 
 		O.throwing = FALSE		//it hit, so stop moving
 
-		if (ismob(O.thrower))
+		if (ismob(O.thrower) && M.client)
 			var/client/assailant = M.client
 			if (assailant)
 				attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been hit with a [O], thrown by [M.name] ([assailant.ckey])</font>")
