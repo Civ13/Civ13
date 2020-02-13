@@ -737,9 +737,12 @@ var/global/faction2_npcs = 0
 	var/timer = 3000
 	var/active = TRUE
 	var/faction = null
+	New()
+		..()
+		spawning()
 
 	proc/spawning()
-		spawn(3000)
+		spawn(1500)
 			spawning()
 		if (!active)
 			return
