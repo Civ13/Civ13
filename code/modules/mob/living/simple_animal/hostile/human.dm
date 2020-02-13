@@ -64,162 +64,35 @@
 		if (H.faction_text == faction && s_language.name == language.name && H.original_job && H.original_job.is_officer)
 			if (findtext(message, "men, "))
 				if (findtext(message, "charge") || findtext(message, "attack") || findtext(message, "advance"))
-					var/turf/t_turf = null
-					var/t_distance = 1000
-					//check all the targets and choose the closest one that has enemies nearby.
-					for(var/list/LT in faction_targets)
-						if (LT[2] == src.faction)
-							var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
-							for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
-								if (HH.faction != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
-									t_turf = t_turf2
-									t_distance = get_dist(src,t_turf2)
-									break
-							for(var/mob/living/carbon/human/HH in range(7,t_turf2))
-								if (HH.faction_text != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
-									t_turf = t_turf2
-									t_distance = get_dist(src,t_turf2)
-									break
-					if (t_turf && t_distance<1000)
-						walk_towards(src,t_turf,7)
-						if (prob(20))
-							say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
-						if (prob(60))
-							playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
-					else
-						say(pick("!!Uh?? Where to?"), language)
-					return
+					charge()
+
 				else if (findtext(message, "cover me") || findtext(message, "come here"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
 					walk_towards(src,H,7)
 					spawn(30)
 						walk(src,0)
+
 				else if (findtext(message, "follow me") || findtext(message, "on me"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Following!"), language)
 					walk_towards(src,H,7)
+
 				else if (findtext(message, "stop") || findtext(message, "hold"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Stopping, Sir!"), language)
 					walk(src,0)
+
 				else if (findtext(message, "retreat") || findtext(message, "fall back"))
 					if (prob(30))
 						say(pick("!!Falling back!","!!Retreating!"), language)
-					if (target_mob)
-						walk_away(src,target_mob.loc,10,7)
-						target_mob = null
-						spawn(80)
-							walk(src,0)
-					else
-						var/mob/living/EN = null
-						for (var/mob/living/carbon/human/PENP in range(10,src))
-							if (PENP.faction_text != faction && PENP.stat != DEAD)
-								EN = PENP
-								break
-						for (var/mob/living/simple_animal/hostile/human/PEN in range(10,src))
-							if (PEN.faction != faction && PEN.stat != DEAD)
-								EN = PEN
-								break
-						walk_away(src,EN,10,7)
-						spawn(40)
-							target_mob = null
-						spawn(45)
-							walk(src,0)
+					retreat()
+
 				else if (findtext(message, "take cover") || findtext(message, "hide"))
 					if (prob(35))
 						say(pick("!!Taking cover!"), language)
-					var/mob/tgt = null //if theres no enemy, take cover somewhere behind the officer
-					if (target_mob)
-						tgt = target_mob
-					else
-						tgt = H
-					var/tdir = 0
-					if (tgt.x >= src.x && abs(tgt.y-src.y)<=abs(tgt.x-src.x))
-						tdir = EAST
-					if (tgt.x < src.x && abs(tgt.y-src.y)<=abs(tgt.x-src.x))
-						tdir = WEST
-					if (tgt.y < src.y && abs(tgt.y-src.y)>abs(tgt.x-src.x))
-						tdir = SOUTH
-					if (tgt.y >= src.y && abs(tgt.y-src.y)>abs(tgt.x-src.x))
-						tdir = NORTH
-					if (tdir)
-						var/found_cover = FALSE
-						var/turf/GST = get_step(loc, tdir)
-						for(var/obj/structure/ST in GST)
-							if (ST.density == TRUE || (istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir))
-								found_cover = TRUE
-								break
-						if (!found_cover)
-							for(var/obj/structure/window/sandbag/SB in view(7,src))
-								if (!found_cover && SB.dir == tdir && get_dist(src,SB) < get_dist(src,tgt))
-									found_cover = TRUE
-									walk_to(src, SB, TRUE, move_to_delay)
-									spawn(40)
-										walk(src,0)
-									break
-						if (!found_cover)
-							for(var/obj/covers/SB in view(7,src))
-								if (!found_cover && SB.density)
-									if (tdir == NORTH)
-										if (SB.y < tgt.y)
-											walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
-											found_cover = TRUE
-											spawn(40)
-												walk(src,0)
-											break
-									else if (tdir == SOUTH)
-										if (SB.y > tgt.y)
-											walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
-											found_cover = TRUE
-											spawn(40)
-												walk(src,0)
-											break
-									else if (tdir == EAST)
-										if (SB.x < tgt.x)
-											walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
-											found_cover = TRUE
-											spawn(40)
-												walk(src,0)
-											break
-									else if (tdir == WEST)
-										if (SB.x > tgt.x)
-											walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
-											found_cover = TRUE
-											spawn(40)
-												walk(src,0)
-											break
-						if (!found_cover)
-							for(var/obj/structure/SB in view(7,src))
-								if (!found_cover && SB.density)
-									if (tdir == NORTH)
-										if (SB.y < tgt.y)
-											walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
-											found_cover = TRUE
-											spawn(40)
-												walk(src,0)
-											break
-									else if (tdir == SOUTH)
-										if (SB.y > tgt.y)
-											walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
-											found_cover = TRUE
-											spawn(40)
-												walk(src,0)
-											break
-									else if (tdir == EAST)
-										if (SB.x < tgt.x)
-											walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
-											found_cover = TRUE
-											spawn(40)
-												walk(src,0)
-											break
-									else if (tdir == WEST)
-										if (SB.x > tgt.x)
-											walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
-											found_cover = TRUE
-											spawn(40)
-												walk(src,0)
-											break
+					take_cover(H)
+
 
 				else if (findtext(message, "move north") || findtext(message, "move south") || findtext(message, "move east") || findtext(message, "move west"))
 					if (prob(20))
@@ -381,6 +254,13 @@
 		return "no target"
 	else
 		wander = FALSE
+	if (prob(33))
+		var/enemy_found = 0
+		for(var/mob/living/simple_animal/hostile/human/HH in range(3,target_mob))
+			if (HH.faction != faction && HH.stat != DEAD)
+				enemy_found++
+		if (enemy_found >= 3)
+			take_cover(target_mob)
 	for(var/obj/item/weapon/grenade/G in view(2,src))
 		if (G.active)
 			walk_away(src, G, 5, 7)
@@ -540,7 +420,7 @@
 	if (!t_behaviour)
 		t_behaviour = behaviour
 
-	a_intent = I_HARM
+	a_intent = I_HELP
 
 	if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 		turns_since_move++
@@ -589,3 +469,157 @@
 	visible_message("<span class = 'warning'>[src] throws \the [item]!</span>")
 
 	item.throw_at(target, 7, item.throw_speed, src)
+
+/mob/living/simple_animal/hostile/human/proc/retreat()
+	if (target_mob)
+		walk_away(src,target_mob.loc,10,7)
+		target_mob = null
+		spawn(80)
+			walk(src,0)
+	else
+		var/mob/living/EN = null
+		for (var/mob/living/carbon/human/PENP in range(10,src))
+			if (PENP.faction_text != faction && PENP.stat != DEAD)
+				EN = PENP
+				break
+		for (var/mob/living/simple_animal/hostile/human/PEN in range(10,src))
+			if (PEN.faction != faction && PEN.stat != DEAD)
+				EN = PEN
+				break
+		walk_away(src,EN,10,7)
+		spawn(40)
+			target_mob = null
+		spawn(45)
+			walk(src,0)
+
+/mob/living/simple_animal/hostile/human/proc/take_cover(var/mob/living/H)
+	var/mob/tgt = null //if theres no enemy, take cover somewhere behind the officer
+	if (target_mob)
+		tgt = target_mob
+	else
+		tgt = H
+	var/tdir = 0
+	if (tgt.x >= src.x && abs(tgt.y-src.y)<=abs(tgt.x-src.x))
+		tdir = EAST
+	if (tgt.x < src.x && abs(tgt.y-src.y)<=abs(tgt.x-src.x))
+		tdir = WEST
+	if (tgt.y < src.y && abs(tgt.y-src.y)>abs(tgt.x-src.x))
+		tdir = SOUTH
+	if (tgt.y >= src.y && abs(tgt.y-src.y)>abs(tgt.x-src.x))
+		tdir = NORTH
+	if (tdir)
+		var/found_cover = FALSE
+		var/turf/GST = get_step(loc, tdir)
+		for(var/obj/structure/ST in GST)
+			if (ST.density == TRUE || (istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir))
+				found_cover = TRUE
+				break
+		if (!found_cover)
+			for(var/obj/structure/window/sandbag/SB in view(7,src))
+				if (!found_cover && SB.dir == tdir && get_dist(src,SB) < get_dist(src,tgt))
+					found_cover = TRUE
+					walk_to(src, SB, TRUE, move_to_delay)
+					spawn(40)
+						walk(src,0)
+					break
+		if (!found_cover)
+			for(var/obj/covers/SB in view(7,src))
+				if (!found_cover && SB.density)
+					if (tdir == NORTH)
+						if (SB.y < tgt.y)
+							walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
+							found_cover = TRUE
+							spawn(40)
+								walk(src,0)
+							break
+					else if (tdir == SOUTH)
+						if (SB.y > tgt.y)
+							walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
+							found_cover = TRUE
+							spawn(40)
+								walk(src,0)
+							break
+					else if (tdir == EAST)
+						if (SB.x < tgt.x)
+							walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
+							found_cover = TRUE
+							spawn(40)
+								walk(src,0)
+							break
+					else if (tdir == WEST)
+						if (SB.x > tgt.x)
+							walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
+							found_cover = TRUE
+							spawn(40)
+								walk(src,0)
+							break
+		if (!found_cover)
+			for(var/obj/structure/SB in view(7,src))
+				if (!found_cover && SB.density)
+					if (tdir == NORTH)
+						if (SB.y < tgt.y)
+							walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
+							found_cover = TRUE
+							spawn(40)
+								walk(src,0)
+							break
+					else if (tdir == SOUTH)
+						if (SB.y > tgt.y)
+							walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
+							found_cover = TRUE
+							spawn(40)
+								walk(src,0)
+							break
+					else if (tdir == EAST)
+						if (SB.x < tgt.x)
+							walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
+							found_cover = TRUE
+							spawn(40)
+								walk(src,0)
+							break
+					else if (tdir == WEST)
+						if (SB.x > tgt.x)
+							walk_to(src, get_step(SB,OPPOSITE_DIR(tdir)), TRUE, move_to_delay)
+							found_cover = TRUE
+							spawn(40)
+								walk(src,0)
+							break
+
+/mob/living/simple_animal/hostile/human/proc/charge()
+	var/turf/t_turf = null
+	var/t_distance = 1000
+	//check all the targets and choose the closest one that has enemies nearby.
+	for(var/list/LT in faction_targets)
+		if (LT[2] == src.faction)
+			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
+			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
+				if (HH.faction != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
+					t_turf = t_turf2
+					t_distance = get_dist(src,t_turf2)
+					break
+			for(var/mob/living/carbon/human/HH in range(7,t_turf2))
+				if (HH.faction_text != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
+					t_turf = t_turf2
+					t_distance = get_dist(src,t_turf2)
+					break
+	if (t_turf && t_distance<1000)
+		walk_towards(src,t_turf,7)
+		if (prob(20))
+			say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
+		if (prob(60))
+			playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
+	else
+		//none found - just move to the nearest one
+		for(var/list/LT in faction_targets)
+			if (LT[2] == src.faction)
+				var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
+				if (get_dist(src,t_turf2)<t_distance)
+					t_turf = t_turf2
+					t_distance = get_dist(src,t_turf2)
+		if (t_turf && t_distance<1000)
+			walk_towards(src,t_turf,7)
+			if (prob(20))
+				say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
+			if (prob(60))
+				playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
+	return

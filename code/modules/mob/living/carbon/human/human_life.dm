@@ -1453,7 +1453,7 @@
 		return
 
 /mob/living/carbon/human/proc/do_rotting()
-	if (!map.civilizations)
+	if (!map.civilizations && !istype(src, /mob/living/carbon/human/corpse))
 		return
 	spawn(600)
 		if (stat == DEAD)
@@ -1467,9 +1467,10 @@
 							rotting_stage = 2
 							spawn(2000)
 								if (stat == DEAD)
-									var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
-									HR.name = "[src]'s remains"
-									strip()
+									if (!istype(src, /mob/living/carbon/human/corpse))
+										var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+										HR.name = "[src]'s remains"
+										strip()
 									qdel(src)
 									return
 								else

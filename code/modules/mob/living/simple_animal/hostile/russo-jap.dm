@@ -110,6 +110,7 @@
 
 	New()
 		..()
+		faction2_npcs++
 		grenades = rand(1,2)
 		messages["injured"] = list("!!I am injured!","!!AAARGH!")
 		messages["backup"] =list( "!!I need backup!","!!Cover me!")
@@ -120,6 +121,7 @@
 		icon_state = "ww2_jap_ranged[rand(1,4)]"
 /mob/living/simple_animal/hostile/human/ww2_jap/death()
 	..()
+	faction2_npcs--
 	if(corpse)
 		new corpse (src.loc)
 	qdel(src)
@@ -138,7 +140,7 @@
 /mob/living/simple_animal/hostile/human/ww2_jap/summer/medic
 	name = "Japanese Medic"
 	icon_state = "ww2_jap_ranged_summer_medic"
-	corpse = /mob/living/carbon/human/corpse/japanese_ww2_medic
+	corpse = /mob/living/carbon/human/corpse/ww2_jap_medic
 	role = "medic"
 
 	New()
@@ -146,6 +148,28 @@
 		icon_state = "ww2_jap_ranged_summer_medic"
 		grenades = 0
 
+/mob/living/simple_animal/hostile/human/ww2_jap/mg
+	name = "Japanese Machinegunner"
+	icon_state = "ww2_jap_ranged_summer_mg"
+	corpse = /mob/living/carbon/human/corpse/ww2_jap_mg
+	rapid = 2
+	grenades = 0
+
+	New()
+		..()
+		icon_state = "ww2_jap_ranged_summer_mg"
+
+/mob/living/simple_animal/hostile/human/ww2_jap/squad_leader
+	name = "Japanese Squad Leader"
+	icon_state = "ww2_jap_ranged_summer_sl"
+	corpse = /mob/living/carbon/human/corpse/ww2_jap_sl
+	rapid = 1
+	grenades = 1
+	role = "officer"
+
+	New()
+		..()
+		icon_state = "ww2_jap_ranged_summer_sl"
 
 /mob/living/simple_animal/hostile/human/ww2_american
 	name = "American Soldier"
@@ -182,6 +206,7 @@
 
 	New()
 		..()
+		faction1_npcs++
 		grenades = rand(1,2)
 		messages["injured"] = list("!!I am injured!","!!AAARGH!")
 		messages["backup"] =list( "!!I need backup!","!!Cover me!")
@@ -191,6 +216,7 @@
 
 /mob/living/simple_animal/hostile/human/ww2_american/death()
 	..()
+	faction1_npcs--
 	if(corpse)
 		new corpse (src.loc)
 	qdel(src)
@@ -206,3 +232,26 @@
 	New()
 		..()
 		icon_state = "ww2_american_ranged_medic"
+
+/mob/living/simple_animal/hostile/human/ww2_american/mg
+	name = "American Machinegunner"
+	icon_state = "ww2_american_ranged_mg"
+	corpse = /mob/living/carbon/human/corpse/ww2_american_mg
+	rapid = 2
+	grenades = 0
+
+	New()
+		..()
+		icon_state = "ww2_american_ranged_mg"
+
+/mob/living/simple_animal/hostile/human/ww2_american/squad_leader
+	name = "American Squad Leader"
+	icon_state = "ww2_american_ranged_sl"
+	corpse = /mob/living/carbon/human/corpse/ww2_american_sl
+	rapid = 1
+	grenades = 1
+	role = "officer"
+
+	New()
+		..()
+		icon_state = "ww2_american_ranged_sl"
