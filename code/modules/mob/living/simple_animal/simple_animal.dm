@@ -343,6 +343,10 @@
 	custom_emote(2, act_desc)
 
 /mob/living/simple_animal/bullet_act(var/obj/item/projectile/proj)
+	if (proj.firer && istype(proj.firer, /mob/living/simple_animal/hostile/human))
+		var/mob/living/simple_animal/hostile/human/HM = proj.firer
+		if(HM.faction == src.faction)
+			return
 	if (proj.firer && ishuman(proj.firer) && proj.firedfrom)
 		if (proj.firer == rider)
 			return //we can't hit the animals we are riding

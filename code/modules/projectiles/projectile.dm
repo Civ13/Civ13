@@ -270,6 +270,11 @@
 
 //Called when the projectile intercepts a mob. Returns TRUE if the projectile hit the mob, FALSE if it missed and should keep flying.
 /obj/item/projectile/proc/attack_mob(var/mob/living/target_mob, var/distance, var/miss_modifier=0)
+	if (firer && istype(firer, /mob/living/simple_animal/hostile/human) && target_mob && istype(target_mob, /mob/living/simple_animal/hostile/human))
+		var/mob/living/simple_animal/hostile/human/HM = firer
+		var/mob/living/simple_animal/hostile/human/HM2 = target_mob
+		if(HM.faction == HM2.faction)
+			return
 
 	if (is_shrapnel)
 		var/hit_zone = "head"
