@@ -46,7 +46,7 @@
 					target_action = "moving"
 					target_mob = null
 					target_obj = speaker
-					walk_towards(src,target_obj,7)
+					walk_towards(src,target_obj,5)
 					return
 	else if (ishuman(speaker))
 		var/mob/living/carbon/human/H = speaker
@@ -58,7 +58,7 @@
 					target_action = "moving"
 					target_mob = null
 					target_obj = speaker
-					walk_towards(src,target_obj,7)
+					walk_towards(src,target_obj,5)
 					return
 				else
 					say(pick("!!Shut up, you pussy!","!!That's just a scratch...","!!That's nothing, I am busy..."), language)
@@ -70,14 +70,14 @@
 				else if (findtext(message, "cover me") || findtext(message, "come here"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Coming!"), language)
-					walk_towards(src,H,7)
+					walk_towards(src,H,5)
 					spawn(30)
 						walk(src,0)
 
 				else if (findtext(message, "follow me") || findtext(message, "on me"))
 					if (prob(20))
 						say(pick("!!Sir yes Sir!","!!Roger that!","!!Following!"), language)
-					walk_towards(src,H,7)
+					walk_towards(src,H,5)
 
 				else if (findtext(message, "stop") || findtext(message, "hold"))
 					if (prob(20))
@@ -349,13 +349,14 @@
 		return
 	stop_automated_movement = TRUE
 	if (get_dist(target_obj,src)>1 && target_action != "helping")
-		walk_towards(src,target_obj,7)
+		walk_towards(src,target_obj,5)
 		return
 	else if (get_dist(target_obj,src)<=1 && target_action != "helping")
 		walk(src,0)
 		target_action = "helping"
 
 	var/enemy_detected = FALSE
+/*
 	for(var/mob/living/simple_animal/hostile/human/SA in view(7,src))
 		if (SA.stat != DEAD && SA.faction != src.faction)
 			target_action = "drag"
@@ -367,7 +368,7 @@
 	if (!enemy_detected && target_action=="drag")
 		walk(src,0)
 		target_action = "helping"
-
+*/
 	if (!enemy_detected && !action_running && target_action=="helping")
 		target_action = "bandaging"
 		action_running = TRUE
@@ -429,7 +430,7 @@
 	if (!t_behaviour)
 		t_behaviour = behaviour
 
-	a_intent = I_HELP
+	a_intent = I_HARM
 
 	if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 		turns_since_move++
@@ -481,7 +482,7 @@
 
 /mob/living/simple_animal/hostile/human/proc/retreat()
 	if (target_mob)
-		walk_away(src,target_mob.loc,10,7)
+		walk_away(src,target_mob.loc,10,5)
 		target_mob = null
 		spawn(80)
 			walk(src,0)
@@ -495,7 +496,7 @@
 			if (PEN.faction != faction && PEN.stat != DEAD)
 				EN = PEN
 				break
-		walk_away(src,EN,10,7)
+		walk_away(src,EN,10,5)
 		spawn(40)
 			target_mob = null
 		spawn(45)
@@ -612,7 +613,7 @@
 					t_distance = get_dist(src,t_turf2)
 					break
 	if (t_turf && t_distance<1000)
-		walk_towards(src,t_turf,7)
+		walk_towards(src,t_turf,5)
 		if (prob(20))
 			say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
 		if (prob(60))
@@ -626,7 +627,7 @@
 					t_turf = t_turf2
 					t_distance = get_dist(src,t_turf2)
 		if (t_turf && t_distance<1000)
-			walk_towards(src,t_turf,7)
+			walk_towards(src,t_turf,5)
 			if (prob(20))
 				say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
 			if (prob(60))

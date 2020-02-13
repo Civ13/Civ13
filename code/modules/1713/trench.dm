@@ -171,7 +171,7 @@ var/list/global/floor_cache = list()
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
 	if(isliving(O))
 		var/mob/living/L = O
-		if (L.mob_size <= MOB_SMALL)
+		if (L.mob_size <= MOB_SMALL || !ishuman(L))
 			L.forceMove(src)
 			return 1
 		if(!istype(oldloc, /turf/floor/trench))
@@ -228,7 +228,7 @@ var/list/global/floor_cache = list()
 /turf/floor/trench/Exit(atom/movable/O, atom/newloc)
 	if(isliving(O))
 		var/mob/living/L = O
-		if (L.mob_size <= MOB_SMALL)
+		if (L.mob_size <= MOB_SMALL || !ishuman(L))
 			var/turf/T = newloc
 			if(T.Enter(O, src))
 				L.forceMove(newloc)
