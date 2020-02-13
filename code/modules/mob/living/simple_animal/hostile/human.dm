@@ -1,6 +1,7 @@
 
 /mob/living/simple_animal/hostile/human
 	var/corpse = null
+	var/idle_counter = 0
 
 	var/ranged = FALSE
 	var/rapid = FALSE //If fires faster
@@ -251,8 +252,16 @@
 /mob/living/simple_animal/hostile/human/proc/do_human_behaviour()
 	if (!target_mob)
 		wander = TRUE
+		if (role == "officer")
+			idle_counter++
+			if (idle_counter == 120)
+				for(var/mob/living/simple_animal/hostile/human/H in range(3,src))
+					if (H.faction == src.faction)
+						H.charge()
+				idle_counter = 0
 		return "no target"
 	else
+		idle_counter = 0
 		wander = FALSE
 	if (prob(33))
 		var/enemy_found = 0
