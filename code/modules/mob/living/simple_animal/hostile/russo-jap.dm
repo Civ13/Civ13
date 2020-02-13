@@ -103,7 +103,6 @@
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
 	corpse = /mob/living/carbon/human/corpse/japanese_ww2
-	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
 	grenade_type = /obj/item/weapon/grenade/ww2/type97
 	language = new/datum/language/japanese
@@ -154,14 +153,17 @@
 	corpse = /mob/living/carbon/human/corpse/ww2_jap_mg
 	rapid = 2
 	grenades = 0
+	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
 
 	New()
 		..()
 		icon_state = "ww2_jap_ranged_summer_mg"
+		gun = new/obj/item/weapon/gun/projectile/automatic/type99(src)
 
 /mob/living/simple_animal/hostile/human/ww2_jap/squad_leader
 	name = "Japanese Squad Leader"
 	icon_state = "ww2_jap_ranged_summer_sl"
+	projectiletype = /obj/item/projectile/bullet/pistol/c8mmnambu
 	corpse = /mob/living/carbon/human/corpse/ww2_jap_sl
 	rapid = 1
 	grenades = 1
@@ -170,6 +172,7 @@
 	New()
 		..()
 		icon_state = "ww2_jap_ranged_summer_sl"
+		gun = new/obj/item/weapon/gun/projectile/submachinegun/type100(src)
 
 /mob/living/simple_animal/hostile/human/ww2_american
 	name = "American Soldier"
@@ -200,7 +203,6 @@
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/rifle/a3006
 	corpse = /mob/living/carbon/human/corpse/ww2_american
-	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
 	grenade_type = /obj/item/weapon/grenade/ww2/mk2
 
@@ -239,10 +241,12 @@
 	corpse = /mob/living/carbon/human/corpse/ww2_american_mg
 	rapid = 2
 	grenades = 0
+	projectiletype = /obj/item/projectile/bullet/rifle/a762x54/weak
 
 	New()
 		..()
 		icon_state = "ww2_american_ranged_mg"
+		gun = new/obj/item/weapon/gun/projectile/automatic/bar(src)
 
 /mob/living/simple_animal/hostile/human/ww2_american/squad_leader
 	name = "American Squad Leader"
@@ -251,7 +255,9 @@
 	rapid = 1
 	grenades = 1
 	role = "officer"
+	projectiletype = /obj/item/projectile/bullet/pistol/a45
 
 	New()
 		..()
 		icon_state = "ww2_american_ranged_sl"
+		gun = new/obj/item/weapon/gun/projectile/submachinegun/thompson(src)

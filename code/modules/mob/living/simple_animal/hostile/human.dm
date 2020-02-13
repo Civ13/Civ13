@@ -7,7 +7,6 @@
 	var/rapid = FALSE //If fires faster
 	var/casingtype = null
 	var/projectiletype = null
-	var/projectilesound = null
 	var/fire_desc = "fires"
 	var/obj/item/weapon/gun/projectile/gun = null
 	var/grenades = 0 //number of grenades
@@ -36,7 +35,8 @@
 /mob/living/simple_animal/hostile/human/hear_say(var/message, var/verb = "says", var/datum/language/s_language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE, var/original_message = "")
 	if (stat == DEAD)
 		return
-	if (istype(speaker, /mob/living/simple_animal/hostile/human) && speaker.faction == src.faction)
+
+	if (istype(speaker, /mob/living/simple_animal/hostile/human) && speaker.faction == src.faction && role == "medic")
 		var/mob/living/simple_animal/hostile/human/SMH = speaker
 		if (target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
 			for(var/msg in SMH.messages["injured"])
@@ -186,11 +186,11 @@
 	return
 
 /mob/living/simple_animal/hostile/human/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
-	if(target == start)
+	if(target == start || !gun)
 		return
 
 	var/obj/item/projectile/A = new projectiletype(get_turf(user))
-	playsound(user, projectilesound, 100, TRUE)
+	playsound(user, gun.fire_sound, 100, TRUE)
 	if(!A)	return
 	var/def_zone = pick("chest","head")
 	if (prob(8))
@@ -254,7 +254,7 @@
 		wander = TRUE
 		if (role == "officer")
 			idle_counter++
-			if (idle_counter == 120)
+			if (idle_counter >= 120)
 				for(var/mob/living/simple_animal/hostile/human/H in range(3,src))
 					if (H.faction == src.faction)
 						H.charge()

@@ -30,7 +30,6 @@
 	ranged = 1
 	rapid = 2
 	projectiletype = /obj/item/projectile/bullet/rifle/a577
-	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
 
 	New()
