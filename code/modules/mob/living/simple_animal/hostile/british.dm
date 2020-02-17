@@ -3,7 +3,6 @@
 	desc = "A british soldier."
 	icon_state = "britishmelee"
 	icon_dead = "britishmelee_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -42,7 +41,6 @@
 	desc = "A british town militia."
 	icon_state = "britishmelee"
 	icon_dead = "britishmelee_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"

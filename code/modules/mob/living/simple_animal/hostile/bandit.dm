@@ -3,7 +3,6 @@
 	desc = "A bandit! he looks scary!"
 	icon_state = "bandit2"
 	icon_dead = "bandit2_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -31,7 +30,6 @@
 	rapid = TRUE
 	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
 	corpse = /mob/living/carbon/human/corpse/bandit
-	projectilesound = 'sound/weapons/guns/fire/pistol_fire.ogg'
 	casingtype = null
 
 

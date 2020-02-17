@@ -19,7 +19,6 @@
 	var/list/emote_hear = list()	//Hearable emotes
 	var/list/emote_see = list()		//Unlike speak_emote, the list of things in this variable only show by themselves with no spoken text. IE: Ian barks, Ian yaps
 
-	var/turns_per_move = TRUE
 	var/turns_since_move = FALSE
 	universal_speak = FALSE		//No, just no.
 	var/meat_amount = FALSE
@@ -134,7 +133,7 @@
 		stop_automated_movement = TRUE
 		if (get_dist(src, following_mob) > 2)
 			turns_since_move++
-			if (turns_since_move >= turns_per_move)
+			if (turns_since_move >= move_to_delay)
 				walk_to(src, following_mob,1, 6)
 				turns_since_move = FALSE
 		if (get_dist(src, following_mob) > 6)
@@ -146,7 +145,7 @@
 	if (!client && !stop_automated_movement && wander && !anchored && clients.len > 0)
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
-			if (turns_since_move >= turns_per_move)
+			if (turns_since_move >= move_to_delay)
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
 
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
@@ -231,7 +230,7 @@
 
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
-			if (turns_since_move >= turns_per_move && stance==HOSTILE_STANCE_IDLE)
+			if (turns_since_move >= move_to_delay && stance==HOSTILE_STANCE_IDLE)
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
@@ -294,7 +293,7 @@
 
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
-			if (turns_since_move >= turns_per_move && stance==HOSTILE_STANCE_IDLE)
+			if (turns_since_move >= move_to_delay && stance==HOSTILE_STANCE_IDLE)
 				var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 				moving_to = pick(cardinal)
 				var/turf/move_to_turf = get_step(src,moving_to)
@@ -344,6 +343,10 @@
 	custom_emote(2, act_desc)
 
 /mob/living/simple_animal/bullet_act(var/obj/item/projectile/proj)
+	if (proj.firer && istype(proj.firer, /mob/living/simple_animal/hostile/human))
+		var/mob/living/simple_animal/hostile/human/HM = proj.firer
+		if(HM.faction == src.faction)
+			return
 	if (proj.firer && ishuman(proj.firer) && proj.firedfrom)
 		if (proj.firer == rider)
 			return //we can't hit the animals we are riding
@@ -768,7 +771,7 @@
 				eat()
 				return
 			for(var/turf/floor/grass/GT in range(6,src))
-				walk_towards(src, GT, turns_per_move)
+				walk_towards(src, GT, move_to_delay)
 				return
 		else
 			return
@@ -784,7 +787,7 @@
 				eat()
 				return
 			for(var/obj/structure/farming/plant/PL in range(8,src))
-				walk_towards(src, PL, turns_per_move)
+				walk_towards(src, PL, move_to_delay)
 				return
 
 	if (carnivore)
@@ -795,7 +798,7 @@
 				return
 			for(var/mob/living/ML in range(9,src))
 				if (ML.stat == DEAD)
-					walk_towards(src, ML, turns_per_move)
+					walk_towards(src, ML, move_to_delay)
 					return
 
 	if (predatory_carnivore)
@@ -807,7 +810,7 @@
 					return
 			for(var/mob/living/ML in range(9,src))
 				if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
-					walk_towards(src, ML, turns_per_move)
+					walk_towards(src, ML, move_to_delay)
 					return
 
 	if (scavenger)
@@ -819,7 +822,7 @@
 					return
 			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
 				if(!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
-					walk_towards(src, FD, turns_per_move)
+					walk_towards(src, FD, move_to_delay)
 					return
 
 /mob/living/simple_animal/proc/eat()

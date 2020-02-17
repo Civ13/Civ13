@@ -3,7 +3,6 @@
 	desc = "A heavily armoured PMC unit."
 	icon_state = "pmc"
 	icon_dead = "bandit_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -31,7 +30,6 @@
 	ranged = 1
 	rapid = 2
 	projectiletype = /obj/item/projectile/bullet/rifle/a577
-	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
 
 	New()

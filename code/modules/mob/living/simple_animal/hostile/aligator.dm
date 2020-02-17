@@ -12,8 +12,7 @@
 	emote_hear = list("bellows","hisses","snaps")
 	emote_see = list("stares ferociously", "stomps")
 	speak_chance = TRUE
-	turns_per_move = 12
-	move_to_delay = 8
+	move_to_delay = 12
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
@@ -44,7 +43,6 @@
 	emote_hear = list("bellows","hisses","snaps")
 	emote_see = list("stares ferociously", "stomps")
 	speak_chance = TRUE
-	turns_per_move = 5
 	move_to_delay = 12
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat

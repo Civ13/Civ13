@@ -10,7 +10,7 @@
 	speak = list("bzzzz","zzzzzzz")
 	emote_see = list("buzz around", "fly around")
 	speak_chance = TRUE
-	turns_per_move = 3
+	move_to_delay = 3
 	see_in_dark = 9
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 0

@@ -9,7 +9,7 @@
 	speak = list("screech","chirps")
 	emote_see = list("flaps", "swoops down")
 	speak_chance = TRUE
-	turns_per_move = 3
+	move_to_delay = 3
 	see_in_dark = 10
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 1

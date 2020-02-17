@@ -33,7 +33,7 @@
 	emote_hear = list("cheeps")
 	emote_see = list("pecks at the ground","flaps its tiny wings")
 	speak_chance = 2
-	turns_per_move = 2
+	move_to_delay = 2
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = TRUE
 	response_help  = "pets"
@@ -84,7 +84,7 @@
 	emote_hear = list("clucks")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 2
 	response_help  = "pets"
@@ -203,7 +203,7 @@
 	emote_hear = list("clucks")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 2
 	response_help  = "pets"
@@ -253,7 +253,7 @@
 	emote_hear = list("gubles")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -279,7 +279,7 @@
 	emote_hear = list("gubles")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -304,7 +304,7 @@
 	emote_hear = list("honks")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -331,7 +331,7 @@
 	emote_hear = list("grunts")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -358,7 +358,7 @@
 	emote_hear = list("squaks")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -386,7 +386,7 @@
 	emote_hear = list("caws")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -416,7 +416,7 @@
 	emote_hear = list("cheeps")
 	emote_see = list("pecks at the ground","flaps its tiny wings")
 	speak_chance = 2
-	turns_per_move = 2
+	move_to_delay = 2
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = TRUE
 	response_help  = "pets"

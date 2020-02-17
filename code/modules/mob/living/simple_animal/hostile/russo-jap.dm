@@ -3,7 +3,6 @@
 	desc = "A japanese soldier."
 	icon_state = "japmelee"
 	icon_dead = "japmelee_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -13,11 +12,10 @@
 	emote_see = list("stares murderously", "draws metal")
 	speak_chance = TRUE
 	speed = 4
-	move_to_delay = 6
+	move_to_delay = 4
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 100
 	health = 100
-	move_to_delay = 6
 	harm_intent_damage = 5
 	melee_damage_lower = 30
 	melee_damage_upper = 40
@@ -43,7 +41,6 @@
 	desc = "A japanese captain."
 	icon_state = "japcommander"
 	icon_dead = "japmelee_dead"
-	turns_per_move = 3
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -57,7 +54,6 @@
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 120
 	health = 120
-	move_to_delay = 4
 	harm_intent_damage = 10
 	melee_damage_lower = 35
 	melee_damage_upper = 45
@@ -83,7 +79,6 @@
 	desc = "A jap soldier! he looks hostile!"
 	icon_state = "ww2_jap_ranged1"
 	icon_dead = "bandit2_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "whacks"
@@ -92,12 +87,10 @@
 	emote_hear = list()
 	emote_see = list("aims", "raises his rifle")
 	speak_chance = TRUE
-	speed = 6
 	move_to_delay = 3
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 150
 	health = 150
-	move_to_delay = 4
 	harm_intent_damage = 10
 	melee_damage_lower = 35
 	melee_damage_upper = 45
@@ -110,12 +103,14 @@
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
 	corpse = /mob/living/carbon/human/corpse/japanese_ww2
-	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
+	grenade_type = /obj/item/weapon/grenade/ww2/type97
 	language = new/datum/language/japanese
 
 	New()
 		..()
+		faction2_npcs++
+		grenades = rand(1,2)
 		messages["injured"] = list("!!I am injured!","!!AAARGH!")
 		messages["backup"] =list( "!!I need backup!","!!Cover me!")
 		messages["enemy_sighted"] = list("!!Found an american dog!","!!Enemy spotted!")
@@ -125,6 +120,7 @@
 		icon_state = "ww2_jap_ranged[rand(1,4)]"
 /mob/living/simple_animal/hostile/human/ww2_jap/death()
 	..()
+	faction2_npcs--
 	if(corpse)
 		new corpse (src.loc)
 	qdel(src)
@@ -143,20 +139,46 @@
 /mob/living/simple_animal/hostile/human/ww2_jap/summer/medic
 	name = "Japanese Medic"
 	icon_state = "ww2_jap_ranged_summer_medic"
-	corpse = /mob/living/carbon/human/corpse/japanese_ww2_medic
+	corpse = /mob/living/carbon/human/corpse/ww2_jap_medic
 	role = "medic"
 
 	New()
 		..()
 		icon_state = "ww2_jap_ranged_summer_medic"
+		grenades = 0
 
+/mob/living/simple_animal/hostile/human/ww2_jap/mg
+	name = "Japanese Machinegunner"
+	icon_state = "ww2_jap_ranged_summer_mg"
+	corpse = /mob/living/carbon/human/corpse/ww2_jap_mg
+	rapid = 2
+	grenades = 0
+	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
+
+	New()
+		..()
+		icon_state = "ww2_jap_ranged_summer_mg"
+		gun = new/obj/item/weapon/gun/projectile/automatic/type99(src)
+
+/mob/living/simple_animal/hostile/human/ww2_jap/squad_leader
+	name = "Japanese Squad Leader"
+	icon_state = "ww2_jap_ranged_summer_sl"
+	projectiletype = /obj/item/projectile/bullet/pistol/c8mmnambu
+	corpse = /mob/living/carbon/human/corpse/ww2_jap_sl
+	rapid = 1
+	grenades = 1
+	role = "officer"
+
+	New()
+		..()
+		icon_state = "ww2_jap_ranged_summer_sl"
+		gun = new/obj/item/weapon/gun/projectile/submachinegun/type100(src)
 
 /mob/living/simple_animal/hostile/human/ww2_american
 	name = "American Soldier"
 	desc = "An american soldier! he looks hostile!"
 	icon_state = "ww2_american_ranged1"
 	icon_dead = "bandit2_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "whacks"
@@ -165,12 +187,10 @@
 	emote_hear = list("curses","grumbles")
 	emote_see = list("aims", "raises his rifle")
 	speak_chance = TRUE
-	speed = 6
 	move_to_delay = 3
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 150
 	health = 150
-	move_to_delay = 4
 	harm_intent_damage = 10
 	melee_damage_lower = 35
 	melee_damage_upper = 45
@@ -183,10 +203,13 @@
 	ranged = 1
 	projectiletype = /obj/item/projectile/bullet/rifle/a3006
 	corpse = /mob/living/carbon/human/corpse/ww2_american
-	projectilesound = 'sound/weapons/kar_shot.ogg'
 	casingtype = null
+	grenade_type = /obj/item/weapon/grenade/ww2/mk2
+
 	New()
 		..()
+		faction1_npcs++
+		grenades = rand(1,2)
 		messages["injured"] = list("!!I am injured!","!!AAARGH!")
 		messages["backup"] =list( "!!I need backup!","!!Cover me!")
 		messages["enemy_sighted"] = list("!!Jap!!","!!Enemy spotted!")
@@ -195,6 +218,7 @@
 
 /mob/living/simple_animal/hostile/human/ww2_american/death()
 	..()
+	faction1_npcs--
 	if(corpse)
 		new corpse (src.loc)
 	qdel(src)
@@ -205,7 +229,35 @@
 	icon_state = "ww2_american_ranged_medic"
 	corpse = /mob/living/carbon/human/corpse/ww2_american_medic
 	role = "medic"
+	grenades = 0
 
 	New()
 		..()
 		icon_state = "ww2_american_ranged_medic"
+
+/mob/living/simple_animal/hostile/human/ww2_american/mg
+	name = "American Machinegunner"
+	icon_state = "ww2_american_ranged_mg"
+	corpse = /mob/living/carbon/human/corpse/ww2_american_mg
+	rapid = 2
+	grenades = 0
+	projectiletype = /obj/item/projectile/bullet/rifle/a762x54/weak
+
+	New()
+		..()
+		icon_state = "ww2_american_ranged_mg"
+		gun = new/obj/item/weapon/gun/projectile/automatic/bar(src)
+
+/mob/living/simple_animal/hostile/human/ww2_american/squad_leader
+	name = "American Squad Leader"
+	icon_state = "ww2_american_ranged_sl"
+	corpse = /mob/living/carbon/human/corpse/ww2_american_sl
+	rapid = 1
+	grenades = 1
+	role = "officer"
+	projectiletype = /obj/item/projectile/bullet/pistol/a45
+
+	New()
+		..()
+		icon_state = "ww2_american_ranged_sl"
+		gun = new/obj/item/weapon/gun/projectile/submachinegun/thompson(src)

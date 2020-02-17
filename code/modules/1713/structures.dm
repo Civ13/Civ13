@@ -269,6 +269,12 @@
 	name = "French Flag"
 	desc = "The modern french tricoleur."
 
+/obj/structure/flag/french_monarchist
+	icon_state = "french3"
+	name = "French Flag"
+	desc = "The french monarchist flag."
+
+
 /obj/structure/flag/spanish
 	icon_state = "spanish"
 	name = "Spanish Flag"

@@ -169,6 +169,8 @@ var/list/global/floor_cache = list()
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
+	if (isliving(O) && !ishuman(O))
+		return ..()
 	if(isliving(O))
 		var/mob/living/L = O
 		if (L.mob_size <= MOB_SMALL)
@@ -226,6 +228,8 @@ var/list/global/floor_cache = list()
 	return ..()
 
 /turf/floor/trench/Exit(atom/movable/O, atom/newloc)
+	if (isliving(O) && !ishuman(O))
+		return ..()
 	if(isliving(O))
 		var/mob/living/L = O
 		if (L.mob_size <= MOB_SMALL)
