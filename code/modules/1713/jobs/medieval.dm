@@ -1152,7 +1152,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate/blue(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
@@ -1160,6 +1160,11 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
 	world << "<b><big>[H.real_name] is the Bohemian Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this state. Organize your subjects!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1174,11 +1179,10 @@
 
 	return TRUE
 
-/datum/job/german/lord
-	title = "Gebeiter"
-	en_meaning = "Lord"
-	rank_abbreviation = "Lord"
-	head_position = TRUE
+/datum/job/german/retainer
+	title = "Halter"
+	en_meaning = "Retainer"
+	rank_abbreviation = "Halter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
@@ -1193,14 +1197,13 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/lord/equip(var/mob/living/carbon/human/H)
+/datum/job/german/retainer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate/blue(H), slot_wear_suit)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
@@ -1208,8 +1211,13 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+
 	world << "<b><big>[H.real_name] is the Bohemian Lord!</big></b>"
-	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this state. Organize your subjects!")
+	H.add_note("Role", "You are a <b>[title]</b>, the retainer to the Lord of this state. Recruit staff to serve the lord in the castle and keep them well mannered! Keep the lord safe!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1252,6 +1260,10 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+
 	H.add_note("Role", "You are a <b>[title]</b>, a landed citizen of the Realm. You are a heavy soldier, so protect the Lord!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1297,9 +1309,15 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
 
+	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_r_store)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
-	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies.")
+	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies. Protect the Lord and his city!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1425,7 +1443,7 @@
 	min_positions = 3
 	max_positions = 10
 
-/datum/job/german/farmer/farmer/equip(var/mob/living/carbon/human/H)
+/datum/job/german/farmer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1719,7 +1737,8 @@
 	is_merchant = TRUE
 	SL_check_independent = TRUE
 	whitelisted = TRUE
-	is_1713 = TRUE
+	is_medieval = TRUE
+	is_rp = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 3
@@ -1777,6 +1796,8 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 	SL_check_independent = TRUE
+	is_medieval = TRUE
+	is_rp = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1

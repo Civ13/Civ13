@@ -29,6 +29,7 @@
 			qdel(W)
 		else
 			icon_state = "loom"
+
 /obj/structure/mill
 	name = "mill"
 	desc = "A small mill, used to grind cereals into flour."
@@ -60,6 +61,38 @@
 			qdel(W)
 		else
 			icon_state = "flour_mill"
+
+/obj/structure/mill/large
+	name = "mill"
+	desc = "A small mill, used to grind cereals into flour."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "mill_large"
+	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+/obj/structure/mill/large/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
+		H.visible_message("You start to mill the [W.name].")
+		icon_state = "mill_large1"
+		if (do_after(H, 20, H.loc))
+			H.visible_message("You finish milling the [W.name].")
+			var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
+			flour.reagents.remove_reagent("flour", 20)
+			icon_state = "mill_large"
+			qdel(W)
+		else
+			icon_state = "mill_large"
+
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
+		H.visible_message("You start to mill the [W.name].")
+		icon_state = "mill_large1"
+		if (do_after(H, 20, H.loc))
+			H.visible_message("You finish milling the [W.name].")
+			new/obj/item/weapon/reagent_containers/food/snacks/rice(H.loc)
+			icon_state = "mill_large"
+			qdel(W)
+		else
+			icon_state = "mill_large"
 
 /obj/structure/dehydrator
 	name = "dehydrator"
