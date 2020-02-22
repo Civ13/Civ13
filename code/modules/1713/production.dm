@@ -74,7 +74,7 @@
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
 		H.visible_message("You start to mill the [W.name].")
 		icon_state = "mill_large1"
-		if (do_after(H, 20, H.loc))
+		if (do_after(H, 36, H.loc))
 			H.visible_message("You finish milling the [W.name].")
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
 			flour.reagents.remove_reagent("flour", 20)
@@ -86,7 +86,7 @@
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
 		H.visible_message("You start to mill the [W.name].")
 		icon_state = "mill_large1"
-		if (do_after(H, 20, H.loc))
+		if (do_after(H, 36, H.loc))
 			H.visible_message("You finish milling the [W.name].")
 			new/obj/item/weapon/reagent_containers/food/snacks/rice(H.loc)
 			icon_state = "mill_large"

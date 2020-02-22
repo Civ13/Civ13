@@ -1161,10 +1161,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
 	world << "<b><big>[H.real_name] is the Bohemian Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this state. Organize your subjects!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1212,9 +1209,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
 
 	world << "<b><big>[H.real_name] is the Bohemian Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the retainer to the Lord of this state. Recruit staff to serve the lord in the castle and keep them well mannered! Keep the lord safe!")
@@ -1347,7 +1342,7 @@
 /datum/job/german/priest/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 
 	if (H.gender == "male")
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
@@ -1390,7 +1385,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1448,7 +1443,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1510,7 +1505,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1541,7 +1536,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft weapons and guns. However, you probably should follow the <b>Governor's</b> orders!")
 	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("crafting", STAT_VERY_VERY_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_HIGH)
@@ -1570,7 +1565,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1629,7 +1624,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1689,7 +1684,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1748,7 +1743,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
@@ -1808,7 +1803,7 @@
 
 //shoes
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 	if (H.gender == "male")
