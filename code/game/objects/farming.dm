@@ -643,7 +643,7 @@
 					growth()
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe))
 		if (stage < readyStageMin) // destroy
 			user << "<span class = 'warning'>You uproot the [name].</span>"
 			qdel(src)
