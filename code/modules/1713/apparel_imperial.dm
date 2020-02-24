@@ -215,7 +215,7 @@
 							cdur = "[duration/60] hours"
 						else
 							cdur = "[duration] minutes"
-						desc = "A visa issued by <b>[user.civilization]</b> to <b>[owner]</b>.<br>Issued on <b>[roundduration2text()]</b> and valid for <b>[cdur]</b> starting then.<br>Signed by: <b><i>[user]</i></b>."
+						desc = "A visa issued by <b>[user.civilization]</b> to <b>[owner]</b>.<br>Issued on <b>[roundduration2text_days()]</b> and valid for <b>[cdur]</b> starting then.<br>Signed by: <b><i>[user]</i></b>."
 						user << "You issue the visa."
 						update_icon()
 						do_duration()

@@ -599,7 +599,7 @@
 	var/list/dat = list("<center>")
 	dat += "<b><big>Welcome, [key].</big></b>"
 	dat += "<br>"
-	dat += "Round Duration: [roundduration2text()]"
+	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"
 	dat += "<b>Current Autobalance Status</b>: "
 	if (BRITISH in map.faction_organization)
