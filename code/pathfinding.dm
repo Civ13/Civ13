@@ -93,10 +93,10 @@
 		current = cameFrom[current]
 		totalPath += current
 	// reverse the path
-	. = list()
+	var/list/tlist = list()
 	for(var/i = totalPath.len to 1 step -1)
-		. += totalPath[i]
-	return .
+		tlist += totalPath[i]
+	return tlist
 
 /proc/getNeighbors(turf/current, list/directions)
 	. = list()
@@ -176,6 +176,8 @@
 		walk_to(src, next, 0, 4)
 		if(get_dist(get_turf(src), next) > 1)
 			get_path()
+		spawn(move_to_delay)
+			do_movement()
 	else
 		// get a path
 		get_path()
