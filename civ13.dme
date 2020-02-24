@@ -18,6 +18,7 @@
 #include "code\hud.dm"
 #include "code\movementMachine.dm"
 #include "code\names.dm"
+#include "code\pathfinding.dm"
 #include "code\predefines.dm"
 #include "code\setup.dm"
 #include "code\stylesheet.dm"

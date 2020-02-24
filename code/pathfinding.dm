@@ -25,13 +25,7 @@
 		if (P > maxtraverse)
 			return
 
-
-//#define DEBUG_ASTAR
-
 /proc/cirrAstar(turf/start, turf/goal, var/min_dist=0, proc/adjacent, proc/heuristic, maxtraverse = 30, adjacent_param = null, exclude = null)
-	#ifdef DEBUG_ASTAR
-	clearAstarViz()
-	#endif
 
 	var/list/closedSet = list()
 	var/list/openSet = list(start)
@@ -66,10 +60,7 @@
 		traverse += 1
 		if(traverse > maxtraverse)
 			return null // it's taking too long, abandon
-		LAGCHECK(LAG_LOW)
 	return null // if we reach this part, there's no more nodes left to explore
-
-
 
 /proc/heuristic(turf/start, turf/goal)
 	if(!start || !goal)
@@ -106,9 +97,6 @@
 	. = list()
 	for(var/i = totalPath.len to 1 step -1)
 		. += totalPath[i]
-	#ifdef DEBUG_ASTAR
-	addAstarViz(.)
-	#endif
 	return .
 
 /proc/getNeighbors(turf/current, list/directions)
@@ -122,22 +110,7 @@
 			if(T && checkTurfPassable(T))
 				. += T
 				cardinalTurfs["[direction]"] = 1 // can pass
-	 //diagonals need to avoid the leaking problem
-	for(var/direction in ordinal)
-		if(direction in directions)
-			var/turf/T = get_step(current, direction)
-			if(T && checkTurfPassable(T))
-				// check relevant cardinals
-				var/clear = 1
-				for(var/cardinal in cardinal)
-					if(direction & cardinal)
-						// this used to check each cardinal turf again but that's completely unnecessary
-						if(!cardinalTurfs["[direction]"])
-							clear = 0
-				if(clear)
-					. += T
 
-// shamelessly stolen from further down and modified
 /proc/checkTurfPassable(turf/T)
 	if(!T)
 		return 0 // can't go on a turf that doesn't exist!!
@@ -145,10 +118,12 @@
 		return 0
 	for(var/atom/O in T.contents)
 		if (O.density) // && !(O.flags & ON_BORDER)) -- fuck you, windows, you're dead to me
-			if (istype(O, /obj/machinery/door))
-				var/obj/machinery/door/D = O
-				if (D.isblocked())
+			if (istype(O, /obj/structure/simple_door))
+				var/obj/structure/simple_door/D = O
+				if (D.locked)
 					return 0 // a blocked door is a blocking door
+				else
+					D.Open()
 			if (ismob(O))
 				var/mob/M = O
 				if (M.anchored)
@@ -157,187 +132,18 @@
 			return 0 // not a special case, so this is a blocking object
 	return 1
 
-
-
-#ifdef DEBUG_ASTAR
-/var/static/list/astarImages = list()
-/proc/clearAstarViz()
-	for(var/client/C in clients)
-		C.images -= astarImages
-	astarImages = list()
-
-/proc/addAstarViz(var/list/path)
-	astarImages = list()
-	for(var/turf/T in path)
-		var/image/marker = image('icons/mob/screen1.dmi', T, icon_state="x3")
-		marker.color="#0F8"
-		astarImages += marker
-	for(var/client/C in clients)
-		C.images += astarImages
-#endif
-
-
-
-
-
-
-
-
-
-
 /******************************************************************/
 // Navigation procs
 // Used for A-star pathfinding
 
 // Returns the surrounding cardinal turfs with open links
-// Including through doors openable with the ID
-/turf/proc/CardinalTurfsWithAccess(var/obj/item/card/id/ID)
+// Including through doors if openable
+/turf/proc/CardinalTurfsWithAccess()
 	var/L[] = new()
-
-	//	for(var/turf/simulated/t in oview(src,1))
 
 	for(var/d in cardinal)
-		var/turf/simulated/T = get_step(src, d)
-		//if(istype(T) && !T.density)
-		if (T && T.pathable && !T.density)
-			if(!LinkBlockedWithAccess(src, T, ID))
-				L.Add(T)
-	return L
-/turf/proc/AllDirsTurfsWithAccess(var/obj/item/card/id/ID)
-	var/L[] = new()
-
-	//	for(var/turf/simulated/t in oview(src,1))
-
-	for(var/d in alldirs)
-		var/turf/simulated/T = get_step(src, d)
-		//if(istype(T) && !T.density)
-		if (T && T.pathable && !T.density)
-			if(!LinkBlockedWithAccess(src, T, ID))
-				L.Add(T)
-	return L
-
-
-/turf/proc/CardinalTurfsSpace()
-	var/L[] = new()
-
-	for (var/d in cardinal)
 		var/turf/T = get_step(src, d)
-		if (T && (T.pathable || istype(T, /turf/space)) && !T.density)
-			if (!LinkBlockedWithAccess(src, T))
+		if (T && !T.density)
+			if(checkTurfPassable(T))
 				L.Add(T)
-
 	return L
-
-// Returns true if a link between A and B is blocked
-// Movement through doors allowed if ID has access
-/proc/LinkBlockedWithAccess(turf/A, turf/B, obj/item/card/id/ID)
-
-	if(A == null || B == null) return 1
-	var/adir = get_dir(A,B)
-	var/rdir = get_dir(B,A)
-	if((adir & (NORTH|SOUTH)) && (adir & (EAST|WEST)))	//	diagonal
-		var/iStep = get_step(A,adir&(NORTH|SOUTH))
-		if(!LinkBlockedWithAccess(A,iStep, ID) && !LinkBlockedWithAccess(iStep,B,ID))
-			return 0
-
-		var/pStep = get_step(A,adir&(EAST|WEST))
-		if(!LinkBlockedWithAccess(A,pStep,ID) && !LinkBlockedWithAccess(pStep,B,ID))
-			return 0
-		return 1
-
-	if(!DirWalkableWithAccess(A,adir, ID))
-		return 1
-
-	var/DirWalkableB = DirWalkableWithAccess(B,rdir, ID)
-	if(!DirWalkableB)
-		return 1
-
-	if (DirWalkableB == 2) //we found a door we can open! Let's open the door before we check the whole tile for dense objects below.
-		return 0
-
-	for (var/atom/O in B.contents)
-		if (O.density)
-			if (ismob(O))
-				var/mob/M = O
-				if (M.anchored)
-					return 1
-				return 0
-			return 1
-
-	return 0
-
-// Returns true if direction is accessible from loc
-// If we found a door we could open, return 2 instead of 1.
-// Checks doors against access with given ID
-/proc/DirWalkableWithAccess(turf/loc,var/dir,var/obj/item/card/id/ID)
-	.= 1
-
-	for (var/atom in loc)
-		if (!isobj(atom)) continue
-		var/obj/D = atom
-
-		if (D.density)
-			if (D.object_flags & BOTS_DIRBLOCK)
-				if (D.flags & ON_BORDER && dir == D.dir)//windoors and directional windows
-					if (D.has_access_requirements())
-						if (D.check_access(ID) == 0)
-							return 0
-						else
-							.= 2
-					else
-						return 0
-				else					//other solid objects
-					if (D.has_access_requirements())
-						if (D.check_access(ID) == 0)
-							return 0
-						else
-							.= 2
-					else
-						return 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/turf/proc
-	AdjacentTurfs()
-		var/L[] = new()
-		for(var/turf/simulated/t in oview(src,1))
-			if(!t.density)
-				if(!LinkBlocked(src, t) && !TurfBlockedNonWindow(t))
-					L.Add(t)
-		return L
-	Distance(turf/t)
-		if(get_dist(src,t) == 1)
-			var/cost = (src.x - t.x) * (src.x - t.x) + (src.y - t.y) * (src.y - t.y)
-			cost *= (pathweight+t.pathweight)/2
-			return cost
-		else
-			return get_dist(src,t)
-	AdjacentTurfsSpace()
-		var/L[] = new()
-		for(var/turf/t in oview(src,1))
-			if(!t.density)
-				if(!LinkBlocked(src, t) && !TurfBlockedNonWindow(t))
-					L.Add(t)
-		return L
-
-
