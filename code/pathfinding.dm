@@ -147,3 +147,31 @@
 			if(checkTurfPassable(T))
 				L.Add(T)
 	return L
+
+/mob/living/simple_animal/hostile/human/proc/do_movement()
+	if (!target_obj)
+		return
+	walk(src, 0)
+	if(src.found_path)
+		if(src.found_path.len > 0)
+			// follow the path
+			src.found_path.Cut(1, 2)
+			var/turf/next
+			if(src.found_path.len >= 1)
+				next = src.found_path[1]
+			else
+				next = get_turf(target_obj)
+			walk_to(src, next, 0, 4)
+			if(get_dist(get_turf(src), next) > 1)
+				get_path()
+	else
+		// get a path
+		get_path()
+
+/mob/living/simple_animal/hostile/human/proc/get_path()
+	if(!target_obj)
+		return 0
+	src.found_path = cirrAstar(get_turf(src), get_turf(target_obj), 0, null, /proc/heuristic, 60)
+	if(!src.found_path) // no path :C
+		return 0
+	return 1

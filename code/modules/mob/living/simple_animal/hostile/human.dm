@@ -13,6 +13,7 @@
 	var/grenade_type = /obj/item/weapon/grenade
 
 	var/role = "soldier" //soldier, medic, officer, recon, guard...
+	var/list/found_path = null
 	var/atom/target_obj = null //for some roles (i.e. guard)
 	var/action_running = FALSE
 	var/target_action = null
