@@ -25,7 +25,7 @@
 		if (P > maxtraverse)
 			return
 
-/proc/cirrAstar(var/turf/start, var/turf/goal, var/min_dist=1, var/maxtraverse = 30)
+/proc/cirrAstar(var/turf/start, var/turf/goal, var/min_dist=1, var/maxtraverse = 50)
 
 	var/list/closedSet = list()
 	var/list/openSet = list(start)
@@ -163,25 +163,37 @@
 	if (tgt)
 		target_obj = tgt
 	if (!target_obj)
+		found_path = list()
 		return 0
-	walk(src, 0)
-	if(src.found_path.len > 0)
+	if (get_dist(src,target_obj)<=1)
+		target_obj = null
+		found_path = list()
+		return 0
+//	walk(src, 0)
+	if(found_path.len > 0)
 		// follow the path
-		src.found_path.Cut(1, 2)
-		var/turf/next
-		if(src.found_path.len >= 1)
+		found_path.Cut(1, 2)
+		var/turf/next = null
+		if(found_path.len >= 1)
 			next = src.found_path[1]
 		else
 			next = get_turf(target_obj)
-		walk_to(src, next, 0, 4)
+		walk_to(src, next, TRUE, move_to_delay)
 		if(get_dist(get_turf(src), next) > 1)
 			get_path()
 		spawn(move_to_delay)
 			do_movement()
+		return found_path.len
 	else
 		// get a path
-		get_path()
-	return found_path.len
+		found_path = list()
+		if (get_path())
+			spawn(move_to_delay)
+				do_movement()
+			return found_path.len
+		else
+			walk_towards(src,target_obj,move_to_delay)
+			return 0
 
 /mob/living/simple_animal/hostile/human/proc/get_path(var/atom/tgt = null)
 	if (tgt)
@@ -192,7 +204,7 @@
 	var/turf/tb = get_turf(target_obj)
 	if (!ta || !tb)
 		return 0
-	found_path = cirrAstar(ta, tb, 1, 60)
+	found_path = cirrAstar(ta, tb, 1, 220)
 	if(!found_path.len) // no path :C
 		return 0
 	return 1
