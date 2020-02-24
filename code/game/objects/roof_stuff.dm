@@ -51,8 +51,15 @@
 		return
 	..()
 
+/obj/roof/canopy
+	name = ""
+	icon_state = ""
+	overlay_state = ""
+
 /obj/roof/wood
 	name = "wood roof"
+	icon_state = "wood_dm"
+	overlay_state = "wood"
 
 /obj/roof/clay
 	name = "clay roof"
@@ -197,6 +204,9 @@
 /obj/roof/proc/collapse_check()
 	spawn(50)
 		var/supportfound = FALSE
+		if (istype(src, /obj/roof/canopy))
+			for (var/obj/structure/tent/TT in loc)
+				supportfound = TRUE
 		for (var/obj/structure/roof_support/RS in range(2, src))
 			supportfound = TRUE
 		for (var/obj/structure/mine_support/stone/SS in range(2, src))
