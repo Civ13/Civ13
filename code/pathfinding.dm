@@ -25,7 +25,7 @@
 		if (P > maxtraverse)
 			return
 
-/proc/cirrAstar(turf/start, turf/goal, var/min_dist=0, proc/adjacent, proc/heuristic, maxtraverse = 30, adjacent_param = null, exclude = null)
+/proc/cirrAstar(var/turf/start, var/turf/goal, var/min_dist=1, var/maxtraverse = 30)
 
 	var/list/closedSet = list()
 	var/list/openSet = list(start)
@@ -38,10 +38,9 @@
 	var/traverse = 0
 
 	while(openSet.len > 0)
-		var/current = pickLowest(openSet, fScore)
+		var/turf/current = pickLowest(openSet, fScore)
 		if(distance(current, goal) <= min_dist)
 			return reconstructPath(cameFrom, current)
-
 		openSet -= current
 		closedSet += current
 		var/list/neighbors = getNeighbors(current, alldirs)
@@ -59,8 +58,8 @@
 			fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal)
 		traverse += 1
 		if(traverse > maxtraverse)
-			return null // it's taking too long, abandon
-	return null // if we reach this part, there's no more nodes left to explore
+			return list() // it's taking too long, abandon
+	return list() // if we reach this part, there's no more nodes left to explore
 
 /proc/heuristic(turf/start, turf/goal)
 	if(!start || !goal)
@@ -110,6 +109,20 @@
 			if(T && checkTurfPassable(T))
 				. += T
 				cardinalTurfs["[direction]"] = 1 // can pass
+	 //diagonals need to avoid the leaking problem
+	for(var/direction in ordinal)
+		if(direction in directions)
+			var/turf/T = get_step(current, direction)
+			if(T && checkTurfPassable(T))
+				// check relevant cardinals
+				var/clear = 1
+				for(var/cardinal in cardinal)
+					if(direction & cardinal)
+						// this used to check each cardinal turf again but that's completely unnecessary
+						if(!cardinalTurfs["[direction]"])
+							clear = 0
+				if(clear)
+					. += T
 
 /proc/checkTurfPassable(turf/T)
 	if(!T)
@@ -122,8 +135,6 @@
 				var/obj/structure/simple_door/D = O
 				if (D.locked)
 					return 0 // a blocked door is a blocking door
-				else
-					D.Open()
 			if (ismob(O))
 				var/mob/M = O
 				if (M.anchored)
@@ -148,30 +159,38 @@
 				L.Add(T)
 	return L
 
-/mob/living/simple_animal/hostile/human/proc/do_movement()
+/mob/living/simple_animal/hostile/human/proc/do_movement(var/atom/tgt = null)
+	if (tgt)
+		target_obj = tgt
 	if (!target_obj)
-		return
+		return 0
 	walk(src, 0)
-	if(src.found_path)
-		if(src.found_path.len > 0)
-			// follow the path
-			src.found_path.Cut(1, 2)
-			var/turf/next
-			if(src.found_path.len >= 1)
-				next = src.found_path[1]
-			else
-				next = get_turf(target_obj)
-			walk_to(src, next, 0, 4)
-			if(get_dist(get_turf(src), next) > 1)
-				get_path()
+	if(src.found_path.len > 0)
+		// follow the path
+		src.found_path.Cut(1, 2)
+		var/turf/next
+		if(src.found_path.len >= 1)
+			next = src.found_path[1]
+		else
+			next = get_turf(target_obj)
+		walk_to(src, next, 0, 4)
+		if(get_dist(get_turf(src), next) > 1)
+			get_path()
 	else
 		// get a path
 		get_path()
+	return found_path.len
 
-/mob/living/simple_animal/hostile/human/proc/get_path()
+/mob/living/simple_animal/hostile/human/proc/get_path(var/atom/tgt = null)
+	if (tgt)
+		target_obj = tgt
 	if(!target_obj)
 		return 0
-	src.found_path = cirrAstar(get_turf(src), get_turf(target_obj), 0, null, /proc/heuristic, 60)
-	if(!src.found_path) // no path :C
+	var/turf/ta = get_turf(src)
+	var/turf/tb = get_turf(target_obj)
+	if (!ta || !tb)
+		return 0
+	found_path = cirrAstar(ta, tb, 1, 60)
+	if(!found_path.len) // no path :C
 		return 0
 	return 1
