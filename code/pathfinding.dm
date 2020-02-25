@@ -179,8 +179,6 @@
 		else
 			next = get_turf(target_obj)
 		walk_to(src, next, TRUE, move_to_delay)
-		if(get_dist(get_turf(src), next) > 1)
-			get_path()
 		spawn(move_to_delay)
 			do_movement()
 		return found_path.len
@@ -204,7 +202,7 @@
 	var/turf/tb = get_turf(target_obj)
 	if (!ta || !tb)
 		return 0
-	found_path = cirrAstar(ta, tb, 1, 220)
+	found_path = cirrAstar(ta, tb, 1, 1000)
 	if(!found_path.len) // no path :C
 		return 0
-	return 1
+	return found_path.len

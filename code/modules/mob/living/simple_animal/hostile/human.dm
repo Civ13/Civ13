@@ -66,7 +66,7 @@
 		if (H.faction_text == faction && s_language.name == language.name && H.original_job && H.original_job.is_officer)
 			if (findtext(message, "men, "))
 				if (findtext(message, "charge") || findtext(message, "attack") || findtext(message, "advance"))
-					charge()
+					charge(H.get_objective())
 
 				else if (findtext(message, "cover me") || findtext(message, "come here"))
 					if (prob(20))
@@ -248,7 +248,7 @@
 			if (idle_counter >= 120)
 				for(var/mob/living/simple_animal/hostile/human/H in range(3,src))
 					if (H.faction == src.faction)
-						H.charge()
+						H.charge(get_objective())
 				idle_counter = 0
 		return "no target"
 	else
@@ -576,24 +576,14 @@
 								do_movement(loc)
 							break
 
-/mob/living/simple_animal/hostile/human/proc/charge()
-	var/turf/t_turf = null
+/mob/living/simple_animal/hostile/human/proc/charge(var/atom/objective = null)
+	if (!objective)
+		objective = get_objective()
+	if (!objective)
+		return
+	var/turf/t_turf = get_turf(objective)
 	var/t_distance = 1000
-	//check all the targets and choose the closest one that has enemies nearby.
-	for(var/list/LT in faction_targets)
-		if (LT[2] == src.faction)
-			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
-			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
-				if (HH.faction != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
-					t_turf = t_turf2
-					t_distance = get_dist(src,t_turf2)
-					break
-			for(var/mob/living/carbon/human/HH in range(7,t_turf2))
-				if (HH.faction_text != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
-					t_turf = t_turf2
-					t_distance = get_dist(src,t_turf2)
-					break
-	if (t_turf && t_distance<1000)
+	if (t_turf)
 		do_movement(t_turf)
 		if (prob(20))
 			say(pick("!!URAAAAA!","!!Charge!","!!Moving out!"), language)
@@ -614,3 +604,44 @@
 			if (prob(60))
 				playsound(loc, get_sfx("charge_[uppertext(language.name)]"), 100)
 	return
+
+/mob/living/proc/get_objective()
+	return
+
+/mob/living/simple_animal/hostile/human/get_objective()
+	var/turf/t_turf = null
+	var/t_distance = 1000
+	//check all the targets and choose the closest one that has enemies nearby.
+	for(var/list/LT in faction_targets)
+		if (LT[2] == src.faction)
+			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
+			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
+				if (HH.faction != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
+					t_turf = t_turf2
+					t_distance = get_dist(src,t_turf2)
+					break
+			for(var/mob/living/carbon/human/HH in range(7,t_turf2))
+				if (HH.faction_text != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
+					t_turf = t_turf2
+					t_distance = get_dist(src,t_turf2)
+					break
+	return t_turf
+
+/mob/living/carbon/human/get_objective()
+	var/turf/t_turf = null
+	var/t_distance = 1000
+	//check all the targets and choose the closest one that has enemies nearby.
+	for(var/list/LT in faction_targets)
+		if (LT[2] == src.faction_text)
+			var/turf/t_turf2 = locate(LT[3],LT[4],LT[5])
+			for(var/mob/living/simple_animal/hostile/human/HH in range(7,t_turf2))
+				if (HH.faction != src.faction_text && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
+					t_turf = t_turf2
+					t_distance = get_dist(src,t_turf2)
+					break
+			for(var/mob/living/carbon/human/HH in range(7,t_turf2))
+				if (HH.faction_text != src.faction_text && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
+					t_turf = t_turf2
+					t_distance = get_dist(src,t_turf2)
+					break
+	return t_turf
