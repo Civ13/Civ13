@@ -77,7 +77,6 @@
 		if (do_after(H, 36, H.loc))
 			H.visible_message("You finish milling the [W.name].")
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
-			flour.reagents.remove_reagent("flour", 20)
 			icon_state = "mill_large"
 			qdel(W)
 		else
