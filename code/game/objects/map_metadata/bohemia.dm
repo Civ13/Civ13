@@ -17,13 +17,13 @@
 	ordinal_age = 2
 	faction_distribution_coeffs = list( GERMAN = 1)
 	battle_name = "bohemia"
-	mission_start_message = "<big>Europeans</b> have built a kingdom! The <b>People</b> must thrive on their industry and live peacefully!.</big><br><span class = 'notice'><i>THIS IS AN HRP MAP - .</b> No griefing will be tolerated. If you break the rules, you will be banned from the server!<i></span>" // to be replaced with the round's main event
+	mission_start_message = "<big>Europeans</b> have built a kingdom! The <b>People</b> must thrive on their industry and live peacefully!.</big><br><span class = 'notice'><i>THIS IS AN HRP MAP - </b>No griefing will be tolerated. If you break the rules, you will be banned from the server!<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
-	gamemode = "Medeival RP"
-
+	gamemode = "Medieval RP"
+	is_singlefaction = TRUE
 /obj/map_metadata/bohemia/New()
 	..()
 	spawn(18000)

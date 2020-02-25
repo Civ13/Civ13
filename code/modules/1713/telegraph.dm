@@ -109,7 +109,7 @@
 	else
 		for(var/obj/item/weapon/paper/C in inpaper)
 			if (C.free_space >= 22)
-				new_text = "<b><font face='Courier New'>Telegram at [roundduration2text()]: [new_text]</b></font><br>"
+				new_text = "<b><font face='Courier New'>Telegram at [roundduration2text_days()]: [new_text]</b></font><br>"
 				C.info += new_text
 				C.free_space -= length(strip_html_properly(new_text))
 

@@ -18,6 +18,7 @@
 #include "code\hud.dm"
 #include "code\movementMachine.dm"
 #include "code\names.dm"
+#include "code\pathfinding.dm"
 #include "code\predefines.dm"
 #include "code\setup.dm"
 #include "code\stylesheet.dm"
@@ -915,5 +916,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\iwojima.dmm"
+#include "maps\1013\bohemia.dmm"
 // END_INCLUDE

@@ -193,7 +193,7 @@
 			if (!H.shoes)
 				if (prob(25))
 					H << "<span class='danger'>The hot ground burns your feet!</span>"
-					H.adjustFireLossByPart(1, pick("l_foot", "r_foot"))
+					H.adjustFireLossByPart(0.3, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0
@@ -222,7 +222,7 @@
 				exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
-			H.adjustFireLossByPart(0.8, i)
+			H.adjustFireLossByPart(0.2, i)
 
 		if (prob(12))
 			H << "<span class='danger'>[pick(heat_discomfort_strings)]</span>"
@@ -278,7 +278,7 @@
 				exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
-			H.adjustFireLossByPart(0.8, i)
+			H.adjustFireLossByPart(0.5, i)
 
 		if (prob(12))
 			H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
