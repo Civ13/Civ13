@@ -1127,9 +1127,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/german/lord
-	title = "Gebeiter"
-	en_meaning = "Lord"
-	rank_abbreviation = "Lord"
+	title = "Freiherr"
+	en_meaning = "Baron"
+	rank_abbreviation = "Freiherr"
 	head_position = TRUE
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
@@ -1177,9 +1177,9 @@
 	return TRUE
 
 /datum/job/german/retainer
-	title = "Halter"
+	title = "Dienstmann"
 	en_meaning = "Retainer"
-	rank_abbreviation = "Halter"
+	rank_abbreviation = "Dienstmann"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
@@ -1272,7 +1272,7 @@
 	return TRUE
 
 /datum/job/german/medieval_swordsman
-	title = "Gardist"
+	title = "Wachmann"
 	en_meaning = "Guardsman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1323,7 +1323,7 @@
 	return TRUE
 
 /datum/job/german/priest
-	title = "Geistliche"
+	title = "Pfaffe"
 	en_meaning = "Church Priest"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1364,7 +1364,7 @@
 	return TRUE
 
 /datum/job/german/prospector
-	title = "Bergmann"
+	title = "Kumpel"
 	en_meaning = "Miner/Explorer"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1422,7 +1422,7 @@
 	return TRUE
 
 /datum/job/german/farmer
-	title = "Der Farmer"
+	title = "Bauer"
 	en_meaning = "Farmer/Rancher"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1543,7 +1543,7 @@
 	return TRUE
 
 /datum/job/german/inkeeper
-	title = "Gastwirt"
+	title = "Gastwirst"
 	en_meaning = "Innkeeper"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1602,8 +1602,8 @@
 	return TRUE
 
 /datum/job/german/barkeep
-	title = "Barkeeper/Barkeeperin"
-	en_meaning = "Taverner"
+	title = "Kneiper"
+	en_meaning = "Taverner/Barkeeper"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
@@ -1662,7 +1662,7 @@
 	return TRUE
 
 /datum/job/german/worker
-	title = "Bauer"
+	title = "Kleinbauer"
 	en_meaning = "Basic Peasant"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1720,9 +1720,9 @@
 	return TRUE
 
 /datum/job/german/merchant
-	title = "Handler"
+	title = "Kaufmann"
 	en_meaning = "Merchant/Trader"
-	rank_abbreviation = "Merchant"
+	rank_abbreviation = "Kaufmann"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivA"
 	is_merchant = TRUE
@@ -1782,7 +1782,7 @@
 /datum/job/german/medic
 	title = "Arzt"
 	en_meaning = "Doctor"
-	rank_abbreviation = "Doctor"
+	rank_abbreviation = "Arzt"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 	SL_check_independent = TRUE
