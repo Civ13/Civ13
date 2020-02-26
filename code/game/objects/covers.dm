@@ -207,8 +207,13 @@
 				sideslist += direction
 				continue
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
-			icon_state = "d_road+" //4 sides
-			base_icon_state = icon_state
+			if ((NORTHWEST in sideslist) && (NORTHEAST in sideslist) && (NORTHEAST in sideslist) && (SOUTHWEST in sideslist))
+				icon_state = "d_roadfull" //4 sides
+				base_icon_state = icon_state
+			else
+				icon_state = "d_road+" //4 sides
+				base_icon_state = icon_state
+
 			return
 		if (vertical)
 			if (WEST in sideslist)
