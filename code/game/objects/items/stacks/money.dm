@@ -62,7 +62,6 @@
 		desc = "A small silver coin."
 		singular_name = "real"
 		icon_state = "silvercoin_pile"
-		amount = 50
 		value = 1
 		return ..()
 	else
@@ -70,7 +69,6 @@
 		desc = "A small silver coin."
 		singular_name = "pfennig"
 		icon_state = "silvercoin_pile"
-		amount = 1
 		value = 1
 		return ..()
 /obj/item/stack/money/rubles
@@ -94,7 +92,6 @@
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "5 Dollar Bill"
 		icon_state = "5dollar"
-		amount = 1
 		value = 20
 		novariants = FALSE
 		update_icon()
@@ -104,7 +101,6 @@
 		desc = "A silver coin, also called piece of eight, worth 8 reales."
 		singular_name = "dollar"
 		icon_state = "silvercoin_pile"
-		amount = 1
 		value = 8
 		return ..()
 	else
@@ -112,7 +108,6 @@
 		desc = "A silver coin, worth 4 pfennig."
 		singular_name = "kreuzer"
 		icon_state = "silvercoin_pile"
-		amount = 1
 		value = 4
 		return ..()
 
@@ -129,7 +124,6 @@
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "20 Dollar Bill"
 		icon_state = "20dollar"
-		amount = 1
 		value = 80
 		novariants = FALSE
 		update_icon()
@@ -139,7 +133,6 @@
 		desc = "A gold coin. Worth 16 reales."
 		singular_name = "escudo"
 		icon_state = "goldcoin_pile"
-		amount = 1
 		value = 16
 		return ..()
 	else
@@ -147,7 +140,6 @@
 		desc = "A gold coin, worth 60 kreuzers or 240 pfennige."
 		singular_name = "gulden"
 		icon_state = "goldcoin_pile"
-		amount = 1
 		value = 60
 		return ..()
 /obj/item/stack/money/doubloon
@@ -163,7 +155,6 @@
 		desc = "A/some dollar(s) of paper money."
 		singular_name = "50 Dollar Bill"
 		icon_state = "50dollar"
-		amount = 1
 		value = 200
 		novariants = FALSE
 		update_icon()
@@ -173,7 +164,6 @@
 		desc = "A large gold coin, the largest in circulation. Worth 32 reales."
 		singular_name = "doubloon"
 		icon_state = "goldcoin_pile"
-		amount = 1
 		value = 32
 		return ..()
 	else
@@ -181,7 +171,6 @@
 		desc = "A valuable gold coin, worth 2 gulden or 120 kreuzers or 480 pfennige."
 		singular_name = "thalers"
 		icon_state = "goldcoin_pile"
-		amount = 1
 		value = 120
 		return ..()
 /obj/item/stack/money/goldnugget
