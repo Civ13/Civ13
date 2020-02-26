@@ -202,7 +202,7 @@
 	var/turf/tb = get_turf(target_obj)
 	if (!ta || !tb)
 		return 0
-	found_path = cirrAstar(ta, tb, 1, 1000)
+	found_path = cirrAstar(ta, tb, 1, 250)
 	if(!found_path.len) // no path :C
 		return 0
 	return found_path.len

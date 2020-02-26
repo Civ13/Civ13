@@ -1211,7 +1211,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
 
-	world << "<b><big>[H.real_name] is the Bohemian Lord!</big></b>"
+	world << "<b><big>[H.real_name] is the Bohemian Retainer!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the retainer to the Lord of this state. Recruit staff to serve the lord in the castle and keep them well mannered! Keep the lord safe!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

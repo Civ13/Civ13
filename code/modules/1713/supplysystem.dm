@@ -145,8 +145,10 @@
 					new/obj/item/stack/money/real(loc, round((money%20)/4))	// 1 Dollar Bill
 				if (((money/4) - round(money/4)) > 0)
 					new/obj/item/stack/money/cents(loc, round(((money/4) - round(money/4)), 0.01) * 100)  //Cents
-			else
+			else if (map.ordinal_age == 4)
 				new/obj/item/stack/money/dollar(loc, money/8)
+			else
+				new/obj/item/stack/money/dollar(loc, money/4)
 			money = 0
 			return
 		else if (money > 400 && money <= 800)
@@ -159,8 +161,10 @@
 					new/obj/item/stack/money/real(loc, round(((money%80)%20)/4)) //Change 1 Dollar Bill
 				if (((money/4) - round(money/4)) > 0)
 					new/obj/item/stack/money/cents(loc, round(((money/4) - round(money/4)), 0.01) * 100)  //Cents
-			else
+			else if (map.ordinal_age == 4)
 				new/obj/item/stack/money/escudo(loc, money/16)
+			else
+				new/obj/item/stack/money/escudo(loc, money/60)
 			money = 0
 			return
 		else if (money > 800 && money <= 1600)
@@ -175,8 +179,10 @@
 					new/obj/item/stack/money/real(loc, round((((money%200)%80)%20)/4)) //Change 1 Dollar Bill
 				if (((money/4) - round(money/4)) > 0)
 					new/obj/item/stack/money/cents(loc, round(((money/4) - round(money/4)), 0.01) * 100)  //Cents
-			else
+			else if (map.ordinal_age == 4)
 				new/obj/item/stack/money/doubloon(loc, money/32)
+			else
+				new/obj/item/stack/money/doubloon(loc, money/120)
 			money = 0
 			return
 		else if (money == 0)
@@ -236,8 +242,10 @@
 					new/obj/item/stack/money/real(loc, round((money%20)/4))	// 1 Dollar Bill
 				if (((money/4) - round(money/4)) > 0)
 					new/obj/item/stack/money/cents(loc, round(((money/4) - round(money/4)), 0.01) * 100)  //Cents
-			else
+			else if (map.ordinal_age == 4)
 				new/obj/item/stack/money/dollar(loc, money/8)
+			else
+				new/obj/item/stack/money/dollar(loc, money/4)
 			money = 0
 			var/list/fturfs = latejoin_turfs[faction_treasury]
 			var/spawnpointa = pick(fturfs)
@@ -261,8 +269,10 @@
 					new/obj/item/stack/money/real(loc, round(((money%80)%20)/4)) //Change 1 Dollar Bill
 				if (((money/4) - round(money/4)) > 0)
 					new/obj/item/stack/money/cents(loc, round(((money/4) - round(money/4)), 0.01) * 100)  //Cents
-			else
+			else if (map.ordinal_age == 4)
 				new/obj/item/stack/money/escudo(loc, money/16)
+			else
+				new/obj/item/stack/money/escudo(loc, money/60)
 			money = 0
 			var/list/fturfs = latejoin_turfs[faction_treasury]
 			var/spawnpointa = pick(fturfs)
@@ -288,8 +298,10 @@
 					new/obj/item/stack/money/real(loc, round((((money%200)%80)%20)/4)) //Change 1 Dollar Bill
 				if (((money/4) - round(money/4)) > 0)
 					new/obj/item/stack/money/cents(loc, round(((money/4) - round(money/4)), 0.01) * 100)  //Cents
-			else
+			else if (map.ordinal_age == 4)
 				new/obj/item/stack/money/doubloon(loc, money/32)
+			else
+				new/obj/item/stack/money/doubloon(loc, money/120)
 			money = 0
 			var/list/fturfs = latejoin_turfs[faction_treasury]
 			var/spawnpointa = pick(fturfs)

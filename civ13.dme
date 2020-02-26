@@ -916,5 +916,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\Stalingrad.dmm"
+#include "maps\1013\bohemia.dmm"
 // END_INCLUDE

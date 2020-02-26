@@ -57,7 +57,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age < 4)
+	else if (map.ordinal_age == 4)
 		name = "spanish reales"
 		desc = "A small silver coin."
 		singular_name = "real"
@@ -65,7 +65,14 @@
 		amount = 50
 		value = 1
 		return ..()
-
+	else
+		name = "pfennige"
+		desc = "A small silver coin."
+		singular_name = "pfennig"
+		icon_state = "silvercoin_pile"
+		amount = 1
+		value = 1
+		return ..()
 /obj/item/stack/money/rubles
 	name = "soviet ruble"
 	desc = "A Soviet 1 ruble banknote."
@@ -92,13 +99,21 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age < 4)
+	else if (map.ordinal_age == 3)
 		name = "spanish dollars"
 		desc = "A silver coin, also called piece of eight, worth 8 reales."
 		singular_name = "dollar"
 		icon_state = "silvercoin_pile"
 		amount = 1
 		value = 8
+		return ..()
+	else
+		name = "kreuzers"
+		desc = "A silver coin, worth 4 pfennig."
+		singular_name = "kreuzer"
+		icon_state = "silvercoin_pile"
+		amount = 1
+		value = 4
 		return ..()
 
 /obj/item/stack/money/escudo
@@ -119,7 +134,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age < 4)
+	else if (map.ordinal_age == 4)
 		name = "spanish escudos"
 		desc = "A gold coin. Worth 16 reales."
 		singular_name = "escudo"
@@ -127,7 +142,14 @@
 		amount = 1
 		value = 16
 		return ..()
-
+	else
+		name = "gulden"
+		desc = "A gold coin, worth 60 kreuzers or 240 pfennige."
+		singular_name = "gulden"
+		icon_state = "goldcoin_pile"
+		amount = 1
+		value = 60
+		return ..()
 /obj/item/stack/money/doubloon
 	name = "spanish doubloons"
 	desc = "A large gold coin, the largest in circulation. Worth 32 reales."
@@ -146,7 +168,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age < 4)
+	else if (map.ordinal_age == 4)
 		name = "spanish doubloons"
 		desc = "A large gold coin, the largest in circulation. Worth 32 reales."
 		singular_name = "doubloon"
@@ -154,7 +176,14 @@
 		amount = 1
 		value = 32
 		return ..()
-
+	else
+		name = "thaler"
+		desc = "A valuable gold coin, worth 2 gulden or 120 kreuzers or 480 pfennige."
+		singular_name = "thalers"
+		icon_state = "goldcoin_pile"
+		amount = 1
+		value = 120
+		return ..()
 /obj/item/stack/money/goldnugget
 	name = "gold nuggets"
 	desc = "A shiny gold nugget."

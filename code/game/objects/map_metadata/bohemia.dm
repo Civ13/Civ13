@@ -1,6 +1,6 @@
 /obj/map_metadata/bohemia
 	ID = MAP_BOHEMIA
-	title = "Bohemia (250x250x2)"
+	title = "Bohemia (250x210x2)"
 	lobby_icon_state = "medieval"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
@@ -24,6 +24,8 @@
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Medieval RP"
 	is_singlefaction = TRUE
+	force_mapgen = TRUE
+
 /obj/map_metadata/bohemia/New()
 	..()
 	spawn(18000)
