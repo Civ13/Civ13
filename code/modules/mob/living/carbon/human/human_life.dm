@@ -588,7 +588,7 @@
 		eye_blind =  0
 		blinded =	0
 		eye_blurry = 0
-	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
+	else if (!vision || (vision && vision.is_broken()) || istype(eyes,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
 		eye_blind =  1
 		blinded =	1
 		eye_blurry = 1
