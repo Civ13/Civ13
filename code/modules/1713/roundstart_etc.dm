@@ -38,7 +38,7 @@ var/GRACE_PERIOD_LENGTH = 7
 	var/list/riverturfs = list()
 	var/list/jungleturfs = list()
 
-	if (map && map.nomads && !map.override_mapgen)
+	if (map && (map.nomads && !map.override_mapgen) || map.force_mapgen)
 		for (var/turf/floor/F in world)
 			F.plant()
 			if (istype(F, /turf/floor/dirt/jungledirt))

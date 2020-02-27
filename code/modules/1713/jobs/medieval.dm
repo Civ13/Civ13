@@ -1127,9 +1127,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/german/lord
-	title = "Gebeiter"
-	en_meaning = "Lord"
-	rank_abbreviation = "Lord"
+	title = "Freiherr"
+	en_meaning = "Baron"
+	rank_abbreviation = "Freiherr"
 	head_position = TRUE
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
@@ -1177,9 +1177,9 @@
 	return TRUE
 
 /datum/job/german/retainer
-	title = "Halter"
+	title = "Dienstmann"
 	en_meaning = "Retainer"
-	rank_abbreviation = "Halter"
+	rank_abbreviation = "Dienstmann"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
@@ -1211,7 +1211,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
 
-	world << "<b><big>[H.real_name] is the Bohemian Lord!</big></b>"
+	world << "<b><big>[H.real_name] is the Bohemian Retainer!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the retainer to the Lord of this state. Recruit staff to serve the lord in the castle and keep them well mannered! Keep the lord safe!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1256,8 +1256,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/silvercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/escudo/ten(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a landed citizen of the Realm. You are a heavy soldier, so protect the Lord!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1273,7 +1272,7 @@
 	return TRUE
 
 /datum/job/german/medieval_swordsman
-	title = "Gardist"
+	title = "Wachmann"
 	en_meaning = "Guardsman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1304,9 +1303,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
 
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_r_store)
 
@@ -1326,7 +1323,7 @@
 	return TRUE
 
 /datum/job/german/priest
-	title = "Geistliche"
+	title = "Pfaffe"
 	en_meaning = "Church Priest"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1352,8 +1349,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/nun(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/nun_hood(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the colony's religious affairs, assisting the doctor, and if possible, of converting the natives...")
 	H.setStat("strength", STAT_MEDIUM_LOW)
@@ -1368,7 +1364,7 @@
 	return TRUE
 
 /datum/job/german/prospector
-	title = "Bergmann"
+	title = "Kumpel"
 	en_meaning = "Miner/Explorer"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1412,7 +1408,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
 	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a miner who is tasked with collecting metals for the local lord and smithy. Explore the area, mine, and sell to the <b>Merchant or Blacksmith</b> what you find!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -1426,7 +1422,7 @@
 	return TRUE
 
 /datum/job/german/farmer
-	title = "Der Farmer"
+	title = "Bauer"
 	en_meaning = "Farmer/Rancher"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1471,7 +1467,7 @@
 	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
 	H.equip_to_slot_or_del(new/obj/item/weapon/plough(H), slot_l_hand)
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, specialized in plant growth, animal husbandry, and cooking. Keep the colony fed!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1532,7 +1528,7 @@
 
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/hammer(H), slot_belt)
 	H.equip_to_slot_or_del(new 	/obj/item/stack/material/iron/twentyfive(H), slot_l_hand)
-	H.equip_to_slot_or_del(new  /obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft weapons and guns. However, you probably should follow the <b>Governor's</b> orders!")
 	H.setStat("strength", STAT_VERY_HIGH)
@@ -1547,7 +1543,7 @@
 	return TRUE
 
 /datum/job/german/inkeeper
-	title = "Gastwirt"
+	title = "Gastwirst"
 	en_meaning = "Innkeeper"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1590,7 +1586,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
 
@@ -1606,8 +1602,8 @@
 	return TRUE
 
 /datum/job/german/barkeep
-	title = "Barkeeper/Barkeeperin"
-	en_meaning = "Taverner"
+	title = "Kneiper"
+	en_meaning = "Taverner/Barkeeper"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
@@ -1648,7 +1644,7 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
 
@@ -1666,7 +1662,7 @@
 	return TRUE
 
 /datum/job/german/worker
-	title = "Bauer"
+	title = "Kleinbauer"
 	en_meaning = "Basic Peasant"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1708,7 +1704,7 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
 
 	H.add_note("Role", "You are a simple <b>Peasant</b>. Live your life!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1724,9 +1720,9 @@
 	return TRUE
 
 /datum/job/german/merchant
-	title = "Handler"
+	title = "Kaufmann"
 	en_meaning = "Merchant/Trader"
-	rank_abbreviation = "Merchant"
+	rank_abbreviation = "Kaufmann"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivA"
 	is_merchant = TRUE
@@ -1767,9 +1763,8 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a trader who decided to move in to the new colony to get rich. Establish your trading post and deal with both the Natives and the Colonists!")
 	H.setStat("strength", STAT_NORMAL)
@@ -1787,7 +1782,7 @@
 /datum/job/german/medic
 	title = "Arzt"
 	en_meaning = "Doctor"
-	rank_abbreviation = "Doctor"
+	rank_abbreviation = "Arzt"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 	SL_check_independent = TRUE
@@ -1830,8 +1825,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/coppercoin/twohundred(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the people and peasants healthy.")
 	H.setStat("strength", STAT_NORMAL)

@@ -566,7 +566,7 @@
 		if (client && client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return FALSE
-	if (map.ordinal_age == 2 && !map.civilizations && !istype(job, /datum/job/civilian))
+	if (map.ordinal_age == 2 && !map.civilizations && !istype(job, /datum/job/civilian) && map.ID != MAP_BOHEMIA)
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return FALSE

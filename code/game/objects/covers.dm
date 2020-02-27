@@ -201,16 +201,42 @@
 /obj/covers/roads/update_icon()
 	..()
 	spawn(1)
+		overlays.Cut()
 		var/list/sideslist = list()
-		for (var/direction in list(1,2,4,8,5,6,9,10))
+		for (var/direction in list(NORTH,SOUTH,EAST,WEST))
 			for(var/obj/covers/roads/R in get_step(src,direction))
 				sideslist += direction
 				continue
+		for (var/direction in list(NORTHEAST,NORTHWEST,SOUTHEAST,SOUTHWEST))
+			var/turf/T = null
+			switch(direction)
+				if (NORTHEAST)
+					T = locate(src.x+1,src.y+1,src.z)
+				if (NORTHWEST)
+					T = locate(src.x-1,src.y+1,src.z)
+				if (SOUTHEAST)
+					T = locate(src.x+1,src.y-1,src.z)
+				if (SOUTHWEST)
+					T = locate(src.x-1,src.y-1,src.z)
+			if (T)
+				for(var/obj/covers/roads/R in T)
+					sideslist += direction
+					continue
+		if (NORTHWEST in sideslist)
+			overlays += image(icon=src.icon, icon_state = "d_roadnwc")
+		if (NORTHEAST in sideslist)
+			overlays += image(icon=src.icon, icon_state = "d_roadnec")
+		if (SOUTHEAST in sideslist)
+			overlays += image(icon=src.icon, icon_state = "d_roadsec")
+		if (SOUTHWEST in sideslist)
+			overlays += image(icon=src.icon, icon_state = "d_roadswc")
+
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_road+" //4 sides
 			base_icon_state = icon_state
 			return
-		if (vertical)
+
+		if (icon_state == "d_roadvr")
 			if (WEST in sideslist)
 				if (!(NORTH in sideslist))
 					if (EAST in sideslist)
@@ -226,6 +252,9 @@
 					else
 						icon_state = "d_roadnw" //Turn, NORTH-WEST
 						base_icon_state = icon_state
+				else if ((SOUTH in sideslist) && (NORTH in sideslist))
+					icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
+					base_icon_state = icon_state
 			else if (EAST in sideslist)
 				if (!(NORTH in sideslist))
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
@@ -234,15 +263,14 @@
 				else if (!(SOUTH in sideslist))
 					icon_state = "d_roadne" //Turn, NORTH-EAST
 					base_icon_state = icon_state
+				else if ((SOUTH in sideslist) && (NORTH in sideslist))
+					icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+					base_icon_state = icon_state
 		else
 			if (NORTH in sideslist)
 				if (!(EAST in sideslist))
-					if (SOUTH in sideslist)
-						icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
-						base_icon_state = icon_state
-					else
-						icon_state = "d_roadnw" //Turn, NORTH-WEST
-						base_icon_state = icon_state
+					icon_state = "d_roadnw" //Turn, NORTH-WEST
+					base_icon_state = icon_state
 				else if (!(WEST in sideslist))
 					if (SOUTH in sideslist)
 						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
@@ -250,6 +278,9 @@
 					else
 						icon_state = "d_roadne" //Turn, NORTH-EAST
 						base_icon_state = icon_state
+				else if ((WEST in sideslist) && (EAST in sideslist))
+					icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+					base_icon_state = icon_state
 			else if (SOUTH in sideslist)
 				if (!(EAST in sideslist))
 					icon_state = "d_roadsw" //Turn, SOUTH-WEST
@@ -257,16 +288,19 @@
 				else if (!(WEST in sideslist))
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
 					base_icon_state = icon_state
-		if (WEST in sideslist && NORTH in sideslist && SOUTH in sideslist)
+				else if ((WEST in sideslist) && (EAST in sideslist))
+					icon_state = "d_roadtswe" //T, EAST SOUTH WEST
+					base_icon_state = icon_state
+		if ((WEST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
 			base_icon_state = icon_state
-		if (WEST in sideslist && NORTH in sideslist && EAST in sideslist)
+		if ((WEST in sideslist) && (NORTH in sideslist) && (EAST in sideslist))
 			icon_state = "d_roadtnwe" //T, NORTH EAST WEST
 			base_icon_state = icon_state
-		if (WEST in sideslist && EAST in sideslist && SOUTH in sideslist)
+		if ((WEST in sideslist) && (EAST in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_roadtswe" //T, SOUTH EAST WEST
 			base_icon_state = icon_state
-		if (EAST in sideslist && NORTH in sideslist && SOUTH in sideslist)
+		if ((EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
 			base_icon_state = icon_state
 

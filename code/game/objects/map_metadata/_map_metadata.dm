@@ -183,6 +183,7 @@ var/civmax_research = list(230,230,230)
 	var/persistence = FALSE
 
 	var/override_mapgen = FALSE
+	var/force_mapgen = FALSE
 
 /obj/map_metadata/New()
 	..()
