@@ -281,6 +281,24 @@
 		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
 	)
 
+/obj/structure/vending/sales/market_stall/prepared
+	name = "market stall"
+	desc = "A market stall selling an assortment of goods."
+	icon_state = "market_stall"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 10
+
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage = 0.15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 0.15,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 0.35
+	)
+
 /obj/structure/vending/sales/market_stall
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."
