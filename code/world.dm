@@ -190,7 +190,6 @@ var/world_topic_spam_protect_time = world.timeofday
 		if (map)
 			s["map"] = map.name
 			s["age"] = map.age
-		s["players"] = 0
 
 		if (input["status"] == "2")
 			var/list/players = list()
