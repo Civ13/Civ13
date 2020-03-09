@@ -185,8 +185,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		s["stationtime"] = stationtime2text()
 		s["roundduration"] = roundduration2text()
 
-		s["map"] = "unknown"
-		s["age"] = "unknown"
+		s["map"] = map.name ? map.name : null
 
 		if (input["status"] == "2")
 			var/list/players = list()
@@ -203,9 +202,7 @@ var/world_topic_spam_protect_time = world.timeofday
 			s["playerlist"] = list2params(players)
 			s["admins"] = admins.len
 			s["adminlist"] = list2params(admins)
-			if (map)
-				s["map"] = map.name
-				s["age"] = map.age
+			s["age"] = map.age
 		else
 			var/n = FALSE
 			var/admins = FALSE
