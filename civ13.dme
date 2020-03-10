@@ -696,6 +696,7 @@
 #include "code\modules\mob\living\carbon\human\shit_piss.dm"
 #include "code\modules\mob\living\carbon\human\stripping.dm"
 #include "code\modules\mob\living\carbon\human\tester.dm"
+#include "code\modules\mob\living\carbon\human\traits.dm"
 #include "code\modules\mob\living\carbon\human\unarmed_attack.dm"
 #include "code\modules\mob\living\carbon\human\update_icons.dm"
 #include "code\modules\mob\living\carbon\human\whisper.dm"
@@ -916,5 +917,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1013\bohemia.dmm"
+#include "maps\special\nomads_mediterranean.dmm"
 // END_INCLUDE
