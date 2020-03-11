@@ -29,13 +29,13 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 
 	var/mob_species = all_species[pref.species]
 	. += "<table><tr style='vertical-align:top'><td>"
-	. += "<b>You are a [skintone2racedescription(pref.s_tone)] [age2agedescription(pref.age)] [pref.gender].</b><br><br>"
+	. += "<b>You are a [age2agedescription(pref.age)] [skintone2racedescription(pref.s_tone)] [pref.gender].</b><br><br>"
 	. += "<b>Gender:</b> <a href='?src=\ref[src];gender=1'>[capitalize(lowertext(pref.gender))]</a><br>"
 	. += "<b>Age:</b> <a href='?src=\ref[src];age=1'>[pref.age]</a><br>"
 	. += "<b>Blood Type: </b><a href='?src=\ref[src];blood_type=1'>[pref.b_type]</a><br>"
 	if (has_flag(mob_species, HAS_SKIN_TONE))
 		. += "<b>Skin Tone: </b><a href='?src=\ref[src];skin_tone=1'>[-pref.s_tone + 35]/220</a><br>"
-	. += "<br><br>"
+	. += "<br>"
 	. += "<font face='fixedsys' size='3' color='[hair_colors[pref.hair_color]]'><table style='display:inline;' bgcolor='[hair_colors[pref.hair_color]]'><tr><td><font color='[hair_colors[pref.hair_color]]'>__</font></td></tr></table></font>&nbsp;<b>Hair</b><br>"
 	if (has_flag(mob_species, HAS_HAIR_COLOR))
 		. += "<b>Color:</b> <a href='?src=\ref[src];hair_color=1'>[pref.hair_color]</a>"

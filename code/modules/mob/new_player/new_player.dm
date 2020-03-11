@@ -249,6 +249,10 @@
 			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 			return
 
+		if (check_trait_points(client.prefs.traits) != 0)
+			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be 0).","Error")
+			return FALSE
+
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			if (check_rights(R_ADMIN, FALSE, src))
@@ -283,6 +287,10 @@
 			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 			return
 
+		if (check_trait_points(client.prefs.traits) != 0)
+			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be 0).","Error")
+			return FALSE
+
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			if (check_rights(R_ADMIN, FALSE, src))
@@ -316,6 +324,10 @@
 		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
 			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 			return
+
+		if (check_trait_points(client.prefs.traits) != 0)
+			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be 0).","Error")
+			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
