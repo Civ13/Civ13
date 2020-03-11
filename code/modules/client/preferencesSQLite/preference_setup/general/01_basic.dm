@@ -126,6 +126,9 @@
 				tt = "[tt] ([trait_list[tt][1]])"
 				possible += tt
 		var/add = WWinput(usr, "Add Trait:", "Traits", "Cancel", possible)
+		if (add == "Cancel")
+			pref.save_preferences()
+			return TOPIC_REFRESH
 		if (!findtext(add,"Cancel"))
 			var/list/padd = splittext(add," (")
 			pref.traits += padd[1]
@@ -138,11 +141,14 @@
 		var/list/possible = pref.traits
 		possible += "Cancel"
 		for(var/tt in possible)
-			if (tt != "Cancel")
+			if (!findtext(tt,"Cancel"))
 				possible -= tt
 				tt = "[tt] ([trait_list[tt][1]])"
 				possible += tt
 		var/remove = WWinput(usr, "Remove Trait:", "Traits", "Cancel", possible)
+		if (remove == "Cancel")
+			pref.save_preferences()
+			return TOPIC_REFRESH
 		if (!findtext(remove,"Cancel"))
 			var/list/premove = splittext(remove," (")
 			pref.traits -= premove[1]
