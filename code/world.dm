@@ -220,6 +220,9 @@ var/world_topic_spam_protect_time = world.timeofday
 
 			s["players"] = n
 			s["admins"] = admins
+			if (map)
+				s["map"] = map.name
+				s["age"] = map.age
 
 		return list2params(s)
 
