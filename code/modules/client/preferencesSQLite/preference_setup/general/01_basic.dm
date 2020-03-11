@@ -61,9 +61,9 @@
 		for (var/i=1, i<=pref.traits.len, i++)
 			if (pref.traits[i] != "Cancel")
 				if (i == pref.traits.len)
-					. += "[pref.traits[i]] ([trait_list[pref.traits[i][1]]])"
+					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
 				else
-					. += "[pref.traits[i]] ([trait_list[pref.traits[i][1]]]), "
+					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]]), "
 /datum/category_item/player_setup_item/general/basic/OnTopic(var/href,var/list/href_list, var/mob/user)
 
 	//real names
@@ -128,8 +128,9 @@
 		var/add = WWinput(usr, "Add Trait:", "Traits", "Cancel", possible)
 		if (!findtext(add,"Cancel"))
 			var/list/padd = splittext(add," (")
-			world << "[padd]"
 			pref.traits += padd[1]
+		if ("Cancel" in pref.traits)
+			pref.traits -= "Cancel"
 		pref.save_preferences()
 		return TOPIC_REFRESH
 
