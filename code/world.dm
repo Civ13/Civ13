@@ -204,7 +204,7 @@ var/world_topic_spam_protect_time = world.timeofday
 			s["admins"] = admins.len
 			s["adminlist"] = list2params(admins)
 			if (map)
-				s["map"] = map.name
+				s["map"] = map.title
 				s["age"] = map.age
 		else
 			var/n = FALSE
@@ -221,7 +221,7 @@ var/world_topic_spam_protect_time = world.timeofday
 			s["players"] = n
 			s["admins"] = admins
 			if (map)
-				s["map"] = map.name
+				s["map"] = map.title
 				s["age"] = map.age
 
 		return list2params(s)
