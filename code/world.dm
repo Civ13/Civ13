@@ -206,6 +206,7 @@ var/world_topic_spam_protect_time = world.timeofday
 			if (map)
 				s["map"] = map.title
 				s["age"] = map.age
+			s["season"] = season
 		else
 			var/n = FALSE
 			var/admins = FALSE
