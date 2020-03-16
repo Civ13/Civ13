@@ -184,6 +184,38 @@
 				w_uniform = null
 				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
 				update_inv_w_uniform(1)
+			if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
+				var/f_res = FALSE
+				var/f_sens = FALSE
+				for (var/i in traits)
+					if (i == "Cold Sensivity")
+						f_sens = TRUE
+					else if (i == "Heat Tolerance")
+						f_res = TRUE
+					else if (i == "Heat Sensivity")
+						traits -= i
+					else if (i == "Cold Tolerance")
+						traits -= i
+				if (!f_res)
+					traits += "Heat Tolerance"
+				if (!f_sens)
+					traits += "Cold Sensivity"
+			else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
+				var/f_res = FALSE
+				var/f_sens = FALSE
+				for (var/i in traits)
+					if (i == "Heat Sensivity")
+						f_sens = TRUE
+					else if (i == "Cold Tolerance")
+						f_res = TRUE
+					else if (i == "Cold Sensivity")
+						traits -= i
+					else if (i == "Heat Tolerance")
+						traits -= i
+				if (!f_res)
+					traits += "Cold Tolerance"
+				if (!f_sens)
+					traits += "Heat Sensivity"
 
 
 ///////////////LANGUAGE PROC/////////////////////////

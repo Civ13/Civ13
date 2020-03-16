@@ -2,7 +2,7 @@
 	var/list/traits = list()
 //name = cost, exclusions, description
 var/global/list/trait_list = list(
-	"Lactose Intolerance" = list(-1,list(),"You have the inability to digest dairy products and will get sick when you ingest them and you are not as strong as everyone else. (Get food poisoning from anytype of milk product and have a limit on strength)"),
+	"Lactose Intolerance" = list(-1,list(),"You have the inability to digest dairy products and will get sick when you ingest them. (Get food poisoning from anytype of milk product)"),
 	"Skilled Archer" = list(3,list("Skilled Fighter"),"You are better at fighting with ranged weapons and running away. (Start with better Dexterity, and bow skills)"),
 	"Skilled Fighter" = list(3,list("Skilled Archer"),"You are better at fighting with your fists and melee weapons. (Start with better Strength, and sword skills)"),
 	"Blindness" = list(-4,list(),"You can not see, you may require aid."),
@@ -34,5 +34,10 @@ var/global/list/trait_list = list(
 	"Baldness"= list(-1,list(),"You cant grow hair at all."),
 	"Demi-God"= list(15,list(),"You are superior in many ways, but there are things still stronger than you. (Beyond max Strength, Dexterity or Philisophy, Crafting/ Speed Increase aswell"),
 	"Empathetic" = list(4,list(),"You can notice what type of mood someone is in when you look at them."),
-	"Deaf" = list(-2,list(),"You cannot hear at all. (Sense of smell is increased)"),
+	"Deaf" = list(-2,list(),"You cannot hear at all."),
+	"Mute" = list(-2,list(),"You cannot speak at all."),
+	"Heat Tolerance" = list(2,list("Heat Sensivity"),"You can tolerate the heat better than most people."),
+	"Heat Sensivity" = list(-2,list("Heat Tolerance"),"Extreme heat affects you more than most people."),
+	"Cold Tolerance" = list(2,list("Cold Sensivity"),"You can tolerate the cold weather better than most people."),
+	"Cold Sensivity" = list(-2,list("Cold Tolerance"),"Extreme cold affects you more than most people."),
 )
