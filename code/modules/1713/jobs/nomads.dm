@@ -188,34 +188,34 @@
 				var/f_res = FALSE
 				var/f_sens = FALSE
 				for (var/i in traits)
-					if (i == "Cold Sensivity")
+					if (i == "Cold Sensitivity")
 						f_sens = TRUE
 					else if (i == "Heat Tolerance")
 						f_res = TRUE
-					else if (i == "Heat Sensivity")
+					else if (i == "Heat Sensitivity")
 						traits -= i
 					else if (i == "Cold Tolerance")
 						traits -= i
 				if (!f_res)
 					traits += "Heat Tolerance"
 				if (!f_sens)
-					traits += "Cold Sensivity"
+					traits += "Cold Sensitivity"
 			else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
 				var/f_res = FALSE
 				var/f_sens = FALSE
 				for (var/i in traits)
-					if (i == "Heat Sensivity")
+					if (i == "Heat Sensitivity")
 						f_sens = TRUE
 					else if (i == "Cold Tolerance")
 						f_res = TRUE
-					else if (i == "Cold Sensivity")
+					else if (i == "Cold Sensitivity")
 						traits -= i
 					else if (i == "Heat Tolerance")
 						traits -= i
 				if (!f_res)
 					traits += "Cold Tolerance"
 				if (!f_sens)
-					traits += "Heat Sensivity"
+					traits += "Heat Sensitivity"
 
 
 ///////////////LANGUAGE PROC/////////////////////////
