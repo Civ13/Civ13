@@ -531,19 +531,22 @@
 	if (gender == MALE)
 		var/currh = h_growth
 		var/currf = f_growth
-		if (h_growth < 4)
+		if (h_growth < 4 && !find_trait("Baldness"))
 			h_growth += 0.002
 		if (f_growth < 4)
 			f_growth += 0.002
-
-		if (h_growth >= 1 && currh < 1)
-			h_style = pick("Short Hair","Cut Hair","Skinhead")
-		else if (h_growth >= 2 && currh < 2)
-			h_style = pick("Parted","Bedhead","Bedhead 2","Bedhead 3","Mulder")
-		else if (h_growth >= 3 && currh < 3)
-			h_style = pick("Shoulder-length Hair","Dreadlocks","Long Emo","Gentle")
-		else if (h_growth >= 4 && currh < 4)
-			h_style = "Hime Cut"
+		if (find_trait("Baldness"))
+			h_growth = 0
+			h_style = "Bald"
+		else
+			if (h_growth >= 1 && currh < 1)
+				h_style = pick("Short Hair","Cut Hair","Skinhead")
+			else if (h_growth >= 2 && currh < 2)
+				h_style = pick("Parted","Bedhead","Bedhead 2","Bedhead 3","Mulder")
+			else if (h_growth >= 3 && currh < 3)
+				h_style = pick("Shoulder-length Hair","Dreadlocks","Long Emo","Gentle")
+			else if (h_growth >= 4 && currh < 4)
+				h_style = "Hime Cut"
 
 		if (f_growth >= 1 && currf < 1)
 			f_style = "Chinstrap"
