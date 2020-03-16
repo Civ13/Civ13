@@ -131,10 +131,10 @@
 			return TOPIC_REFRESH
 		if (!findtext(add,"Cancel"))
 			var/list/padd = splittext(add," (")
-			switch(alert(usr,"[trait_list[padd[1]][3]]","[padd[1]]","Yes","No"))
-				if ("Yes")
+			switch(alert(usr,"[trait_list[padd[1]][3]]","[padd[1]]","Add","Cancel"))
+				if ("Add")
 					pref.traits += padd[1]
-				if ("No")
+				if ("Cancel")
 					pref.save_preferences()
 					return TOPIC_REFRESH
 		if ("Cancel" in pref.traits)

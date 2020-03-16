@@ -221,8 +221,8 @@
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return TRUE
 
-		if (check_trait_points(client.prefs.traits) != 0)
-			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be 0).","Error")
+		if (check_trait_points(client.prefs.traits) > 0)
+			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
 			return FALSE
 
 		if (client && client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
@@ -253,8 +253,8 @@
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return
 
-		if (check_trait_points(client.prefs.traits) != 0)
-			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be 0).","Error")
+		if (check_trait_points(client.prefs.traits) > 0)
+			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
 			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
@@ -291,8 +291,8 @@
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return
 
-		if (check_trait_points(client.prefs.traits) != 0)
-			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be 0).","Error")
+		if (check_trait_points(client.prefs.traits) > 0)
+			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
 			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
@@ -329,8 +329,8 @@
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return
 
-		if (check_trait_points(client.prefs.traits) != 0)
-			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be 0).","Error")
+		if (check_trait_points(client.prefs.traits) > 0)
+			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
 			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
