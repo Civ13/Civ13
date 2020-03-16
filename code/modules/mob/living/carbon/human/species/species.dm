@@ -189,9 +189,9 @@
 /datum/species/proc/get_environment_discomfort(var/mob/living/carbon/human/H)
 	if (H.bodytemperature > heat_level_1 && !H.orc)
 		var/dmod = 1
-		if ("Heat Tolerance" in H.traits)
+		if (H.find_trait("Heat Tolerance"))
 			dmod = 0.3
-		if ("Heat Sensitivity" in H.traits)
+		if (H.find_trait("Heat Sensitivity"))
 			dmod = 2
 		var/area/A = get_area(H)
 		if (A.climate == "desert" && A.location == AREA_OUTSIDE)
@@ -240,9 +240,9 @@
 
 	if (H.bodytemperature < cold_level_1 && !H.wolfman)
 		var/dmod = 1
-		if ("Cold Tolerance" in H.traits)
+		if (H.find_trait("Cold Tolerance"))
 			dmod = 0.3
-		if ("Cold Sensitivity" in H.traits)
+		if (H.find_trait("Cold Sensitivity"))
 			dmod = 2
 		var/area/A = get_area(H)
 		for (var/obj/structure/brazier/BR in range(3, H))

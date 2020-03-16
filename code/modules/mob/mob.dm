@@ -48,19 +48,19 @@
 	if (!client)	return
 
 	if (type)
-		if (type & TRUE && (sdisabilities & BLIND || blinded || paralysis) )//Vision related
+		if (type & TRUE && ((sdisabilities & BLIND) || blinded || find_trait("Blind") || paralysis) )//Vision related
 			if (!( alt ))
 				return
 			else
 				msg = alt
 				type = alt_type
-		if (type & 2 && (sdisabilities & DEAF || ear_deaf))//Hearing related
+		if (type & 2 && ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf")))//Hearing related
 			if (!( alt ))
 				return
 			else
 				msg = alt
 				type = alt_type
-				if ((type & TRUE && sdisabilities & BLIND))
+				if ((type & TRUE && (sdisabilities & BLIND)) || find_trait("Blind"))
 					return
 	// Added voice muffling for Issue 41.
 	if (stat == UNCONSCIOUS || sleeping > 0)

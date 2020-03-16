@@ -1,11 +1,17 @@
-/mob/living/carbon/human
+/mob
 	var/list/traits = list()
 //name = cost, exclusions, description
+
+/mob/proc/find_trait(var/tt = null)
+	if (!tt)
+		return FALSE
+	if (tt in traits)
+		return TRUE
 var/global/list/trait_list = list(
 //	"Lactose Intolerance" = list(-1,list(),"You have the inability to digest dairy products and will get sick when you ingest them. (Get food poisoning from anytype of milk product)"),
 //	"Skilled Archer" = list(3,list("Skilled Fighter"),"You are better at fighting with ranged weapons and running away. (Start with better Dexterity, and bow skills)"),
 //	"Skilled Fighter" = list(3,list("Skilled Archer"),"You are better at fighting with your fists and melee weapons. (Start with better Strength, and sword skills)"),
-//	"Blindness" = list(-4,list(),"You can not see, you may require aid."),
+	"Blind" = list(-6,list(),"You can not see, you may require aid."),
 //	"Partial Blindness" = list(-2,list(),"You can barely see, you may require aid or sometype of instrument"),
 //	"Introverted" = list(-3,list("Extroverted"),"Introverted: You seem to be horrible at public speaking and like to think more. (Gain mood by not talking and be prevented from talking at random times)"),
 //	"Extroverted" = list(-1,list("Introverted"),"You always want to speak to people and tell tales to them, you'll feel better while talking. (Gain mood by talking and being near people)"),
@@ -34,8 +40,8 @@ var/global/list/trait_list = list(
 //	"Baldness"= list(-1,list(),"You cant grow hair at all."),
 //	"Demi-God"= list(15,list(),"You are superior in many ways, but there are things still stronger than you. (Beyond max Strength, Dexterity or Philisophy, Crafting/ Speed Increase aswell"),
 //	"Empathetic" = list(4,list(),"You can notice what type of mood someone is in when you look at them."),
-//	"Deaf" = list(-2,list(),"You cannot hear at all."),
-//	"Mute" = list(-2,list(),"You cannot speak at all."),
+	"Deaf" = list(-2,list(),"You cannot hear at all."),
+	"Mute" = list(-2,list(),"You cannot speak at all."),
 	"Heat Tolerance" = list(2,list("Heat Sensitivity"),"You can tolerate the heat better than most people."),
 	"Heat Sensitivity" = list(-2,list("Heat Tolerance"),"Extreme heat affects you more than most people."),
 	"Cold Tolerance" = list(2,list("Cold Sensitivity"),"You can tolerate the cold weather better than most people."),

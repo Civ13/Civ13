@@ -857,7 +857,7 @@
 				embedded_flag = FALSE
 
 		//Ears
-		if (sdisabilities & DEAF)	//disabled-deaf, doesn't get better on its own
+		if ((sdisabilities & DEAF) || find_trait("Deaf"))	//disabled-deaf, doesn't get better on its own
 			ear_deaf = max(ear_deaf, TRUE)
 		else if (ear_deaf)			//deafness, heals slowly over time
 			ear_deaf = max(ear_deaf-1, FALSE)
