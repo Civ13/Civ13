@@ -754,6 +754,11 @@
 
 		mob.last_movement = world.time
 
+		var/t_movement_speed_multiplier = mob.movement_speed_multiplier
+		if (mob.find_trait("Slowness"))
+			t_movement_speed_multiplier *= 1.15
+		else if (mob.find_trait("Agile"))
+			t_movement_speed_multiplier /= 1.15
 		if (move_delay > world.time)
 			move_delay -= world.time
 		if (istype(src, /mob/living/carbon/human))
@@ -761,9 +766,9 @@
 			if (HH.riding == TRUE && !isnull(HH.riding_mob))
 				move_delay = 0.5
 			else
-				move_delay /= mob.movement_speed_multiplier
+				move_delay /= t_movement_speed_multiplier
 		else
-			move_delay /= mob.movement_speed_multiplier
+			move_delay /= t_movement_speed_multiplier
 			if (ordinal)
 				move_delay *= ROOT2_FAST
 		move_delay += world.time
