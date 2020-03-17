@@ -63,7 +63,7 @@
 	var/list/valid_hairstyles = generate_valid_hairstyles()
 	var/list/valid_facial_hairstyles = generate_valid_facial_hairstyles()
 
-	if (valid_hairstyles.len)
+	if (valid_hairstyles.len && !find_trait("Baldness"))
 		h_style = pick(valid_hairstyles)
 	else
 		//this shouldn't happen

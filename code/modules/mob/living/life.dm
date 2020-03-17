@@ -140,7 +140,7 @@
 
 /mob/living/proc/handle_disabilities()
 	//Eyes
-	if (sdisabilities & BLIND || stat)	//blindness from disability or unconsciousness doesn't get better on its own
+	if ((sdisabilities & BLIND) || stat || find_trait("Blind"))	//blindness from disability or unconsciousness doesn't get better on its own
 		eye_blind = max(eye_blind, TRUE)
 	else if (eye_blind)			//blindness, heals slowly over time
 		eye_blind = max(eye_blind-1,0)
@@ -148,7 +148,7 @@
 		eye_blurry = max(eye_blurry-1, FALSE)
 
 	//Ears
-	if (sdisabilities & DEAF)		//disabled-deaf, doesn't get better on its own
+	if ((sdisabilities & DEAF) || find_trait("Deaf"))		//disabled-deaf, doesn't get better on its own
 		setEarDamage(-1, max(ear_deaf, TRUE))
 	else
 		// deafness heals slowly over time, unless ear_damage is over 100

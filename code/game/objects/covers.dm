@@ -181,6 +181,30 @@
 	explosion_resistance = 2
 	material = "Stone"
 
+/obj/covers/sandstone/brick
+	name = "sandstone brick floor"
+	icon_state = "sandstone_brick"
+
+/obj/covers/sandstone/slab
+	name = "sandstone slab floor"
+	icon_state = "sandstone_slab"
+
+/obj/covers/sandstone/slab/red
+	name = "red sandstone slab floor"
+	icon_state = "red_sandstone_slab"
+
+/obj/covers/sandstone/tile
+	name = "sandstone tile"
+	icon_state = "sandstone_tile"
+
+/obj/covers/sandstone/tile/decorative
+	name = "sandstone decorative tile"
+	icon_state = "sandstone_decorative_tile"
+
+/obj/covers/sandstone/tile/decorative/red
+	name = "red sandstone decorative tile"
+	icon_state = "red_sandstone_decorative_tile"
+
 /obj/covers/roads
 	name = "dirt road"
 	icon = 'icons/turf/roads.dmi'
@@ -567,6 +591,11 @@
 	explosion_resistance = 5
 	material = "Wood"
 	hardness = 75
+
+/obj/covers/wood_wall/adjustable
+	icon_state = "new_wood0"
+	base_icon_state = "new_wood"
+	adjusts = TRUE
 
 /obj/covers/wood_wall/medieval
 	name = "medieval wall"
@@ -1015,9 +1044,11 @@
 	..()
 /obj/covers/brick_wall
 	name = "brick wall"
-	desc = "A clay brick wall."
-	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "brickwall"
+	desc = "A red brick wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "new_brick0"
+	base_icon_state = "new_brick"
+	adjusts = TRUE
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
@@ -1552,7 +1583,28 @@
 
 /obj/covers/stone_wall/roman
 	name = "roman stone wall"
-	desc = "A Roman style stone wall."
+	desc = "A Roman-style stone wall."
 	icon_state = "roman0"
 	base_icon_state = "roman"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/egyptian
+	name = "egyptian sandstone wall"
+	desc = "An Egyptian-style sandstone wall."
+	icon_state = "egyptian0"
+	base_icon_state = "egyptian"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/mayan
+	name = "mayan stone wall"
+	desc = "A Mayan-style stone wall."
+	icon_state = "mayan0"
+	base_icon_state = "mayan"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/classic
+	name = "stone brick wall"
+	desc = "A stone brick wall."
+	icon_state = "stone_brick_wall0"
+	base_icon_state = "stone_brick_wall"
 	adjusts = TRUE

@@ -82,11 +82,11 @@
 				if (blocked)
 					user << "<span class='warning'>\The [blocked] is in the way!</span>"
 					return
-				if (H.gorillaman)
+				if (H.gorillaman || H.find_trait("Vegan"))
 					if (non_vegetarian)
-						user << "<span class='warning'>You are an herbivore! You can't eat this!</span>"
+						user << "<span class='warning'>You are a vegan/herbivore! You can't eat this!</span>"
 						return
-				else if (H.wolfman || H.crab)
+				else if (H.wolfman || H.crab || H.find_trait("Carnivore"))
 					if (!non_vegetarian)
 						user << "<span class='warning'>You are a carnivore! You can't eat this!</span>"
 						return

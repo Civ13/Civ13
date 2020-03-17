@@ -170,7 +170,7 @@ Please contact me on #coderbus IRC. ~Carn x
 		M.Scale(size_multiplier)
 		M.Translate(0, 16*(size_multiplier-1))
 		transform = M
-	if (riding)
+	if (riding && riding_mob)
 		riding_mob.update_icons()
 	..()
 

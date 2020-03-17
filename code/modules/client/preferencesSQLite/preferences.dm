@@ -53,6 +53,8 @@ var/list/preferences_datums = list()
 	var/b_eyes = FALSE						//Eye color
 	var/species = "Human"			   //Species datum to use.
 
+	var/list/traits = list()
+
 	//Mob preview
 	var/list/preview_icons = list()
 	var/list/preview_icons_front = list()
@@ -184,6 +186,8 @@ var/list/preferences_datums = list()
 
 	character.h_style = h_style
 	character.f_style = f_style
+
+	character.traits = traits
 
 	character.all_underwear.Cut()
 

@@ -18,7 +18,7 @@
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND || blinded) || !(speaker in view(src)))
+		if (!speaker || ((sdisabilities & BLIND) || blinded || find_trait("Blind")) || !(speaker in view(src)))
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
@@ -72,7 +72,7 @@
 		if (is_preference_enabled(/datum/client_preference/ghost_ears) && (speaker in view(src)))
 			message = "<b>[message]</b>"
 
-	if (sdisabilities & DEAF || ear_deaf)
+	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (!language || !(language.flags & INNATE)) // INNATE is the flag for audible-emote-language, so we don't want to show an "x talks but you cannot hear them" message if it's set
 			if (speaker == src)
 				src << "<span class='warning'>You cannot hear yourself speak!</span>"
@@ -119,7 +119,7 @@
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND || blinded) || !(speaker in view(src)))
+		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
@@ -146,7 +146,7 @@
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
 
-	if (sdisabilities & DEAF || ear_deaf)
+	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
 	else
@@ -177,7 +177,7 @@
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND || blinded) || !(speaker in view(src)))
+		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
@@ -204,7 +204,7 @@
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
 
-	if (sdisabilities & DEAF || ear_deaf)
+	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the telephone vibrate but can hear nothing from it!</span>"
 	else

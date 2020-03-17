@@ -1,4 +1,25 @@
-// civs
+/*Index*/
+/*   * 1 - Colonial Suits
+     * 2 - Colonial Uniforms
+     * 3 - Colonial Hats
+     * 4 - Colonial Boots
+     * 5 - Colonial Accessories & Items
+     * 6 - Colonial Pirate Clothing
+     ///////////////////////////////////
+     * 7 - Colonial Infantry & Sailor Clothes
+     * 7a - Colonial Infantry & Sailor Boots
+     * 7b - Colonial British Army & Navy Clothes
+     * 7c - Colonial Portuguese Army & Navy Clothes
+     * 7d - Colonial Spanish Army & Navy Clothes
+     * 7e - Colonial French Army & Navy Clothes
+     * 7f - Colonial Dutch Army & Navy Clothes
+     ///////////////////////////////////
+     * 8 - Colonial Army Clothes
+     * 8a - Colonial Army Uniforms
+     ///////////////////////////////////
+     * 9 - Miscallaneous */
+
+/* Colonial Suits*/
 
 /obj/item/clothing/suit/storage/jacket/kool_kids_klub
 	name = "white robe with hood"
@@ -7,6 +28,8 @@
 	item_state = "kool_kids_klub"
 	worn_state = "kool_kids_klub"
 	body_parts_covered = FULL_BODY
+
+/* Colonial Uniforms*/
 
 /obj/item/clothing/under/civ4
 	name = "Fancy Colonial Clothing"
@@ -50,14 +73,11 @@
 	item_state = "civuni6"
 	worn_state = "civuni6"
 
-/obj/item/clothing/head/kerchief
-	name = "kerchief"
-	icon_state = "kerchief"
-	item_state = "kerchief"
-	worn_state = "kerchief"
-	desc = "A kerchief, worn by women over the hair."
-	flags_inv = BLOCKHAIR
-	body_parts_covered = HEAD
+/obj/item/clothing/under/doctor
+	name = "doctor's uniform"
+	desc = "A sterile, nicely pressed suit for doctors."
+	icon_state = "ba_suit"
+	item_state = "ba_suit"
 
 /obj/item/clothing/under/civf1
 	name = "Dark dress"
@@ -94,8 +114,116 @@
 	item_state = "dressr"
 	worn_state = "dressr"
 
-// WEBBING - can hold everything but clothing
+/* Colonial Hats*/
 
+/obj/item/clothing/head/furhat
+	name = "fur hat"
+	desc = "A hat made of fur."
+	icon_state = "furhat_hat"
+	item_state = "furhat_hat"
+
+/obj/item/clothing/head/furcap
+	name = "fur cap"
+	desc = "A cap made of fur."
+	icon_state = "furcap_hat"
+	item_state = "furcap_hat"
+
+/obj/item/clothing/head/roundcap
+	name = "roundcap"
+	desc = "A cap made of leather."
+	icon_state = "roundcap_hat"
+	item_state = "roundcap_hat"
+
+/obj/item/clothing/head/kerchief
+	name = "kerchief"
+	icon_state = "kerchief"
+	item_state = "kerchief"
+	worn_state = "kerchief"
+	desc = "A kerchief, worn by women over the hair."
+	flags_inv = BLOCKHAIR
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/red_beret
+	name = "red sailor beret"
+	desc = "A red beret."
+	icon_state = "redberet"
+	item_state = "redberet"
+
+/obj/item/clothing/head/blackberet
+	name = "black beret"
+	desc = "A black military beret."
+	icon_state = "blackberret"
+	item_state = "blackberret"
+
+/obj/item/clothing/head/blue_beret
+	name = "blue sailor beret"
+	desc = "A blue beret."
+	icon_state = "blueberet"
+	item_state = "blueberet"
+
+/obj/item/clothing/head/tarred_hat
+	name = "tarred hat"
+	desc = "A tarred hat, commonly used by sailors."
+	icon_state = "tarred_hat"
+	item_state = "tarred_hat"
+	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/head/strawhat
+	name = "straw hat"
+	icon_state = "boater_hat"
+	desc = "A straw hat, commonly used by sailors."
+	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/head/tricorne_black
+	name = "black tricorne"
+	desc = "A black tricorne. In fashion."
+	icon_state = "tricorne_black"
+	item_state = "tricorne_black"
+
+/* Colonial Boots*/
+
+/obj/item/clothing/shoes/blackboots1
+	name = "black boots"
+	desc = "Classic black boots."
+	icon_state = "sailorboots1"
+	item_state = "sailorboots1"
+	worn_state = "sailorboots1"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/shoes/leatherboots1
+	name = "leather boots"
+	desc = "Classic leather boots."
+	icon_state = "sailorboots2"
+	item_state = "sailorboots2"
+	worn_state = "sailorboots2"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/shoes/winterboots
+	name = "winter boots"
+	desc = "Classic winter boots."
+	icon_state = "winterboots"
+	item_state = "winterboots"
+	worn_state = "winterboots"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 40)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.9
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+/* Colonial Accessories & Items*/
+
+// WEBBING - can hold everything but clothing
 /obj/item/clothing/accessory/storage/webbing
 	name = "bandolier"
 	desc = "two leather belts with small pouches for ammunition."
@@ -106,12 +234,6 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing)
-
-/obj/item/clothing/under/doctor
-	name = "doctor's uniform"
-	desc = "A sterile, nicely pressed suit for doctors."
-	icon_state = "ba_suit"
-	item_state = "ba_suit"
 
 /obj/item/clothing/accessory/storage/coinpouch
 	name = "coin pouch"
@@ -227,32 +349,7 @@
 		qdel(src)
 		return
 
-
-/obj/item/weapon/storage/backpack/quiver
-	name = "quiver"
-	desc = "The best way to carry a bow and arrows."
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "quiver"
-	item_state = "quiver"
-
-/obj/item/weapon/storage/backpack/quiver/New()
-		..()
-		can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
-
-/obj/item/weapon/storage/backpack/quiver/full/New()
-	..()
-	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-//pirate stuff
+//* Colonial Pirate Clothing*/
 
 /obj/item/clothing/suit/storage/jacket/piratejacket1
 	name = "black jacket"
@@ -335,6 +432,9 @@
 	item_state = "piratebandana1"
 	flags_inv = BLOCKHAIR
 
+/* Colonial Infantry Clothes*/
+	/* Colonial Infantry & Sailor Boots*/
+
 /obj/item/clothing/shoes/soldiershoes
 	name = "infantry shoes"
 	desc = "Low black infantry shoes."
@@ -358,6 +458,7 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
 /obj/item/clothing/shoes/sailorboots2
 	name = "leather sailor boots"
 	desc = "Classic leather sailor boots."
@@ -370,7 +471,21 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-/////////british stuff/////////
+
+/obj/item/clothing/shoes/usmc
+	name = "military boots"
+	desc = "Classic tan military boots."
+	icon_state = "usmc"
+	item_state = "usmc"
+	worn_state = "usmc"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 40)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.7
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+	/* Colonial British Army & Navy Clothes*/
 
 /obj/item/clothing/under/british_sailor1
 	name = "british sailor clothes"
@@ -451,13 +566,13 @@
 	icon_state = "chasseur_br"
 	item_state = "chasseur_br"
 
-/////////Portuguese/////////
+/* Colonial Portuguese Army & Navy Clothes*/
+
 /obj/item/clothing/head/tricorne_portuguese
 	name = "Portuguese Navy tricorne"
 	desc = "A green tricorne, used by the Portuguese Navy."
 	icon_state = "tricorne_portuguese"
 	item_state = "tricorne_portuguese"
-
 
 /obj/item/clothing/head/chasseur_portuguese
 	name = "Portuguese feathered hat"
@@ -514,7 +629,8 @@
 	worn_state = "portuguese_sailor4"
 
 
-/////////Spanish/////////
+/* Colonial Spanish Army & Navy Clothes*/
+
 /obj/item/clothing/head/tricorne_spanish
 	name = "Spanish Navy tricorne"
 	desc = "A yellow tricorne, used by the Spanish Navy."
@@ -562,8 +678,8 @@
 	item_state = "spanish_sailor3"
 	worn_state = "spanish_sailor3"
 
+/* Colonial French Army & Navy Clothes*/
 
-/////////French/////////
 /obj/item/clothing/head/tricorne_french
 	name = "French Navy tricorne"
 	desc = "A white and blue tricorne, used by the French Navy."
@@ -604,20 +720,6 @@
 	item_state = "baycona"
 	worn_state = "baycona"
 
-/obj/item/clothing/under/scavfit
-	name = "Ripped outfit"
-	desc = "A set of blue jeans and brown hoodie."
-	icon_state = "scavfit"
-	item_state = "scavfit"
-	worn_state = "scavfit"
-
-/obj/item/clothing/under/wastelander
-	name = "outfit"
-	desc = "A set of tan pants and a brown coat."
-	icon_state = "wastelander"
-	item_state = "wastelander"
-	worn_state = "wastelander"
-
 /obj/item/clothing/under/french_sailor1
 	name = "french sailor clothes"
 	desc = "A set of french navy sailor clothes, with light blue shirt and trousers."
@@ -650,7 +752,9 @@
 	desc = "A feathered black bicorne, used by the French Light Infantry."
 	icon_state = "chasseur_fr"
 	item_state = "chasseur_fr"
-/////////Dutch/////////
+
+/* Colonial Dutch Army & Navy Clothes*/
+
 /obj/item/clothing/head/tricorne_dutch
 	name = "United Provinces Navy tricorne"
 	desc = "An orange tricorne, used by the United Provinces Navy."
@@ -662,7 +766,6 @@
 	desc = "A feathered black bicorne, used by the United Provinces Light Infantry."
 	icon_state = "chasseur_nl"
 	item_state = "chasseur_nl"
-
 
 /obj/item/clothing/head/dutch_army
 	name = "United Provinces Army tricorne"
@@ -704,24 +807,9 @@
 	icon_state = "dutch_sailor3"
 	item_state = "dutch_sailor3"
 	worn_state = "dutch_sailor3"
-/////////GENERIC/////////
-/obj/item/clothing/head/red_beret
-	name = "red sailor beret"
-	desc = "A red beret."
-	icon_state = "redberet"
-	item_state = "redberet"
 
-/obj/item/clothing/head/blackberet
-	name = "black beret"
-	desc = "A black military beret."
-	icon_state = "blackberret"
-	item_state = "blackberret"
-
-/obj/item/clothing/head/blue_beret
-	name = "blue sailor beret"
-	desc = "A blue beret."
-	icon_state = "blueberet"
-	item_state = "blueberet"
+//* Colonial Army Clothes*/
+	/* Colonial Army Uniforms*/
 
 /obj/item/clothing/under/generic_officer
 	name = "officer clothes"
@@ -730,77 +818,6 @@
 	item_state = "officer"
 	worn_state = "officer"
 
-/obj/item/clothing/head/tarred_hat
-	name = "tarred hat"
-	desc = "A tarred hat, commonly used by sailors."
-	icon_state = "tarred_hat"
-	item_state = "tarred_hat"
-	flags_inv = BLOCKHEADHAIR
-
-/obj/item/clothing/head/strawhat
-	name = "straw hat"
-	icon_state = "boater_hat"
-	desc = "A straw hat, commonly used by sailors."
-	flags_inv = BLOCKHEADHAIR
-
-/obj/item/clothing/head/tricorne_black
-	name = "black tricorne"
-	desc = "A black tricorne. In fashion."
-	icon_state = "tricorne_black"
-	item_state = "tricorne_black"
-
-/obj/item/clothing/shoes/blackboots1
-	name = "black boots"
-	desc = "Classic black boots."
-	icon_state = "sailorboots1"
-	item_state = "sailorboots1"
-	worn_state = "sailorboots1"
-	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
-	item_flags = NOSLIP
-	siemens_coefficient = 0.6
-	cold_protection = FEET
-	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-/obj/item/clothing/shoes/leatherboots1
-	name = "leather boots"
-	desc = "Classic leather boots."
-	icon_state = "sailorboots2"
-	item_state = "sailorboots2"
-	worn_state = "sailorboots2"
-	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 30)
-	item_flags = NOSLIP
-	siemens_coefficient = 0.6
-	cold_protection = FEET
-	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-
-/obj/item/clothing/shoes/winterboots
-	name = "winter boots"
-	desc = "Classic winter boots."
-	icon_state = "winterboots"
-	item_state = "winterboots"
-	worn_state = "winterboots"
-	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 40)
-	item_flags = NOSLIP
-	siemens_coefficient = 0.9
-	cold_protection = FEET
-	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-
-/obj/item/clothing/shoes/usmc
-	name = "military boots"
-	desc = "Classic tan military boots."
-	icon_state = "usmc"
-	item_state = "usmc"
-	worn_state = "usmc"
-	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = 40)
-	item_flags = NOSLIP
-	siemens_coefficient = 0.7
-	cold_protection = FEET
-	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-
-/////Army stuff
 /obj/item/clothing/suit/storage/jacket/dutch_officer_army
 	name = "United Provinces Army jacket"
 	desc = "A standard army jacket of the United Provinces Army. Orange with golden buttons."
@@ -857,23 +874,46 @@
 	item_state = "french_army"
 	worn_state = "french_army"
 
-///////////////
+/* Miscallaneous*/
 
-/obj/item/clothing/head/furhat
-	name = "fur hat"
-	desc = "A hat made of fur."
-	icon_state = "furhat_hat"
-	item_state = "furhat_hat"
+//These two seem misplaced, refer to be moved to modern or their own apparel, quiver is wierdly placed too.
+/obj/item/clothing/under/scavfit
+	name = "Ripped outfit"
+	desc = "A set of blue jeans and brown hoodie."
+	icon_state = "scavfit"
+	item_state = "scavfit"
+	worn_state = "scavfit"
 
-/obj/item/clothing/head/furcap
-	name = "fur cap"
-	desc = "A cap made of fur."
-	icon_state = "furcap_hat"
-	item_state = "furcap_hat"
+/obj/item/clothing/under/wastelander
+	name = "outfit"
+	desc = "A set of tan pants and a brown coat."
+	icon_state = "wastelander"
+	item_state = "wastelander"
+	worn_state = "wastelander"
+
+/obj/item/weapon/storage/backpack/quiver
+	name = "quiver"
+	desc = "The best way to carry a bow and arrows."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "quiver"
+	item_state = "quiver"
+
+/obj/item/weapon/storage/backpack/quiver/New()
+		..()
+		can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
+
+/obj/item/weapon/storage/backpack/quiver/full/New()
+	..()
+	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
 
 
-/obj/item/clothing/head/roundcap
-	name = "roundcap"
-	desc = "A cap made of leather."
-	icon_state = "roundcap_hat"
-	item_state = "roundcap_hat"
