@@ -1,3 +1,21 @@
+/*Index*/
+/* 1 - Roman Uniform & Sandals
+ * 2 - Greek Uniforms
+ * 3 - Celtic Uniforms
+ * 4 - Mayan & Aztec Uniforms + Sandals
+ * 5 - Egyptian Uniforms
+ * 6 - Ancient Armor
+ * 7 - Ancient Capes
+ * 8 - Ancient Headpieces
+ * 9 - Ancient Helmets
+ * 10 - Royal & Imperial Headwear
+ * 11 - Pelts
+ * 12 - Fur Coats
+ * 13 - Fur Shoes
+ * 14 - Ancient Facemasks & Covers
+ * 15 - Miscallaneous*/
+
+/*Roman Uniforms & Sandals*/
 
 /obj/item/clothing/shoes/roman
 	name = "sandals"
@@ -41,6 +59,8 @@
 	worn_state = "roman_centurion"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
+/*Greek Uniforms*/
+
 /obj/item/clothing/under/greek1
 	name = "Greek uniform"
 	desc = "A light tunic, covered with bronze and leather armor. Used by the Hellenic armies."
@@ -81,7 +101,7 @@
 	worn_state = "toxotai"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
-//celtic
+/*Celtic Uniforms*/
 
 /obj/item/clothing/under/celtic_green
 	name = "green celtic trousers"
@@ -123,6 +143,8 @@
 	worn_state = "celtic_long_braccae"
 	heat_protection = LOWER_TORSO|LEGS
 
+/*Mayan & Aztec Uniforms + Sandals*/
+
 /obj/item/clothing/under/mayan_loincloth
 	name = "mayan loincloth"
 	desc = "Mayan-style loincloth."
@@ -149,23 +171,30 @@
 	armor = list(melee = 10, arrow = 5, gun = FALSE, energy = FALSE, bomb = 1, bio = FALSE, rad = FALSE)
 	siemens_coefficient = 0.6
 
+/*Egyptian Uniforms*/
+
 /obj/item/clothing/under/pharaoh
-	name = "fancy shendyt"
+	name = "pharaohic shendyt"
 	desc = "A fancy, decorated shendyt."
 	icon_state = "pharaoh"
 	item_state = "pharaoh"
 	worn_state = "pharaoh"
+	heat_protection = LOWER_TORSO|UPPER_TORSO
 
 /obj/item/clothing/under/pharaoh2
-	name = "great shendyt"
+	name = "nemes shendyt"
 	desc = "A fancy, decorated shendyt."
 	icon_state = "greatshendyt"
 	item_state = "greatshendyt"
 	worn_state = "greatshendyt"
-	heat_protection = LOWER_TORSO
+	heat_protection = LOWER_TORSO|UPPER_TORSO
+
+/*Ancient Armor*/
+
 /obj/item/clothing/suit/armor
 	health = 40
 	ripable = FALSE
+
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "scale armor"
 	desc = "A thick, expensive scaled iron armor, covering the torso."
@@ -202,6 +231,8 @@
 	slowdown = 0.2
 	health = 18
 
+/*Ancient Capes*/
+
 /obj/item/clothing/suit/cape
 	name = "red cape"
 	desc = "A long red cape."
@@ -215,6 +246,44 @@
 	icon_state = "bluecape"
 	item_state = "bluecape"
 	worn_state = "bluecape"
+
+/*Ancient Headpieces*/
+
+/obj/item/clothing/head/toxotai
+	name = "toxotai hat"
+	desc = "a wide brim hat, used by the toxotai."
+	icon_state = "toxotai"
+	item_state = "toxotai"
+	worn_state = "toxotai"
+
+/obj/item/clothing/head/egyptian_headdress_black
+	name = "black egyptian headdress"
+	desc = "a plain sun-protective linen headdress, despite its black stripes."
+	icon_state = "egyptian_headdress_black"
+	item_state = "egyptian_headdress_black"
+	worn_state = "egyptian_headdress_black"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
+
+/obj/item/clothing/head/egyptian_headdress_blue
+	name = "blue egyptian headdress"
+	desc = "a plain sun-protective blue linen headdress."
+	icon_state = "egyptian_headdress_blue"
+	item_state = "egyptian_headdress_blue"
+	worn_state = "egyptian_headdress_blue"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
+
+/obj/item/clothing/head/egyptian_headdress_red
+	name = "red egyptian headdress"
+	desc = "a plain sun-protective red linen headdress."
+	icon_state = "egyptian_headdress_red"
+	item_state = "egyptian_headdress_red"
+	worn_state = "egyptian_headdress_red"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
+
+/*Ancient Helmets*/
 
 /obj/item/clothing/head/helmet/roman
 	name = "Roman legionary helmet"
@@ -313,6 +382,8 @@
 	armor = list(melee = 27, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
 	health = 20
 
+/*Royal & Laurel Headwear*/
+
 /obj/item/clothing/head/nemes
 	name = "nemes headdress"
 	desc = "a fancy, golden headdress."
@@ -320,6 +391,7 @@
 	item_state = "nemes_headdress"
 	worn_state = "nemes_headdress"
 	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/head/doublecrown
 	name = "double crown"
@@ -327,6 +399,22 @@
 	icon_state = "doublecrown"
 	item_state = "doublecrown"
 	worn_state = "doublecrown"
+
+/obj/item/clothing/head/laurelcrown
+	name = "laurel crown"
+	desc = "a crown made of laurel."
+	icon_state = "laurelcrown"
+	item_state = "laurelcrown"
+	body_parts_covered = FALSE
+
+/obj/item/clothing/head/laurelcrown/gold
+	name = "gold laurel crown"
+	desc = "a crown made of gold, imitating a laurel crown."
+	icon_state = "laurelcrown_gold"
+	item_state = "laurelcrown_gold"
+	body_parts_covered = FALSE
+
+/*Pelts*/
 
 /obj/item/clothing/head/bearpelt
 	name = "bearpelt headcover"
@@ -358,12 +446,17 @@
 	cold_protection = HEAD
 	var/colortype = "black"
 
-/obj/item/clothing/head/toxotai
-	name = "toxotai hat"
-	desc = "a wide brim hat, used by the toxotai."
-	icon_state = "toxotai"
-	item_state = "toxotai"
-	worn_state = "toxotai"
+/obj/item/clothing/head/lionpelt
+	name = "lionpelt headcover"
+	desc = "A lion pelt turned into a headcover."
+	icon_state = "lionpelt"
+	item_state = "lionpelt"
+	worn_state = "lionpelt"
+	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
+	var/colortype = "brown" //I haven't knocked together the coloration idea yet - @fantasticfwoosh
+
+/*Fur Coats*/
 
 /obj/item/clothing/suit/storage/coat
 	var/hood = FALSE
@@ -427,6 +520,7 @@
 	worn_state = "fur_jacket5"
 	specific = TRUE
 	colorn = 5
+
 /obj/item/clothing/suit/storage/coat/fur/orc
 	name = "orc fur coat"
 	desc = "A thick dark green fur coat, made from disgusting orc pelts."
@@ -435,6 +529,7 @@
 	worn_state = "fur_jacket6"
 	specific = TRUE
 	colorn = 6
+
 /obj/item/clothing/suit/storage/coat/fur/New()
 	..()
 	if (!specific)
@@ -474,6 +569,7 @@
 		usr.update_inv_wear_suit(1)
 		return
 
+/*Fur Shoes*/
 
 /obj/item/clothing/shoes/fur
 	name = "fur boots"
@@ -545,6 +641,8 @@
 		item_state = "fur[colorn]"
 		worn_state = "fur[colorn]"
 
+/*Ancient Facemasks & Covers*/
+
 /obj/item/clothing/mask/redkerchief
 	name = "red kerchief"
 	desc = "A piece of light cloth, worn around the neck."
@@ -593,6 +691,7 @@
 	partscovered = FACE
 	flags_inv = 0
 	w_class = 2
+
 /obj/item/clothing/mask/shemagh/update_icon()
 	if (toggled == FALSE)
 		body_parts_covered = 0
@@ -609,7 +708,6 @@
 		worn_state = usedstate
 		heat_protection = HEAD|FACE|EYES
 	..()
-
 
 /obj/item/clothing/mask/shemagh/verb/toggle_hood()
 	set category = null
@@ -638,23 +736,12 @@
 		usr.update_inv_wear_mask(1)
 		return
 
-/obj/item/clothing/head/laurelcrown
-	name = "laurel crown"
-	desc = "a crown made of laurel."
-	icon_state = "laurelcrown"
-	item_state = "laurelcrown"
-	body_parts_covered = FALSE
+/*Miscallaneous*/
 
-/obj/item/clothing/head/laurelcrown/gold
-	name = "gold laurel crown"
-	desc = "a crown made of gold, imitating a laurel crown."
-	icon_state = "laurelcrown_gold"
-	item_state = "laurelcrown_gold"
-	body_parts_covered = FALSE
-
-/obj/item/clothing/suit/towel
+/obj/item/clothing/under/towel  //this was incorrectly reported as a exterior suit, it is actually a interior uniform
 	name = "white towel"
 	desc = "A simple towel to wrap around yourself."
 	icon_state = "towel"
 	item_state = "towel"
 	worn_state = "towel"
+	heat_protection = LOWER_TORSO
