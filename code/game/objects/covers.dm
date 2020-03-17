@@ -592,6 +592,11 @@
 	material = "Wood"
 	hardness = 75
 
+/obj/covers/wood_wall/adjustable
+	icon_state = "new_wood0"
+	base_icon_state = "new_wood"
+	adjusts = TRUE
+
 /obj/covers/wood_wall/medieval
 	name = "medieval wall"
 	desc = "A dark-ages wall."
@@ -1039,9 +1044,11 @@
 	..()
 /obj/covers/brick_wall
 	name = "brick wall"
-	desc = "A clay brick wall."
-	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "brickwall"
+	desc = "A red brick wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "new_brick0"
+	base_icon_state = "new_brick"
+	adjusts = TRUE
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
@@ -1593,4 +1600,11 @@
 	desc = "A Mayan-style stone wall."
 	icon_state = "mayan0"
 	base_icon_state = "mayan"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/classic
+	name = "stone brick wall"
+	desc = "A stone brick wall."
+	icon_state = "stone_brick_wall0"
+	base_icon_state = "stone_brick_wall"
 	adjusts = TRUE
