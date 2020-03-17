@@ -474,13 +474,13 @@
 		for (var/mob/living/carbon/human/H in range(2,src))
 			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria") //malaria doesn't transmit from person to person.
 				if (stat != DEAD)
-					if (prob(1))
+					if (prob(1) || (prob(2) && find_trait("Weak Immune System")))
 						disease = TRUE
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
 				else if (stat == DEAD)
-					if (prob(3))
+					if (prob(3) || (prob(6) && find_trait("Weak Immune System")))
 						disease = TRUE
 						disease_type = H.disease_type
 						disease_progression = 0
@@ -488,7 +488,7 @@
 
 		if (disease == FALSE)
 			if (prob(1) && map.civilizations)
-				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
+				if ((prob(20) || (prob(40) && find_trait("Weak Immune System"))) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
