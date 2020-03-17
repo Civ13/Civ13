@@ -75,6 +75,10 @@
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 
+	if (find_trait("Gigantism"))
+		size_multiplier = 1.3
+	else if (find_trait("Dwarfism"))
+		size_multiplier = 0.8
 	if (riding && riding_mob)
 		if (!(riding_mob in range(1,src)))
 			riding = FALSE
@@ -124,16 +128,20 @@
 	if (has_hunger_and_thirst)
 		var/water_m = 1
 		var/food_m = 1
+		if (find_trait("Gigantism"))
+			food_m *= 1.2
+		else if (find_trait("Dwarfism"))
+			food_m *= 0.8
 		if (orc)
-			food_m = 1.5
+			food_m *= 1.5
 		if (crab)
-			food_m = 0.8
-			water_m = 2.5
+			food_m *= 0.8
+			water_m *= 2.5
 		if (gorillaman)
-			water_m = 0.2
+			water_m *= 0.2
 		if (istype(buckled, /obj/structure/cross))
-			food_m = 1.5
-			water_m = 5
+			food_m *= 1.5
+			water_m *= 5
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
 			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
