@@ -1552,7 +1552,21 @@
 
 /obj/covers/stone_wall/roman
 	name = "roman stone wall"
-	desc = "A Roman style stone wall."
+	desc = "A Roman-style stone wall."
 	icon_state = "roman0"
 	base_icon_state = "roman"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/egyptian
+	name = "egyptian sandstone wall"
+	desc = "An Egyptian-style sandstone wall."
+	icon_state = "egyptian0"
+	base_icon_state = "egyptian"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/mayan
+	name = "mayan stone wall"
+	desc = "A Mayan-style stone wall."
+	icon_state = "mayan0"
+	base_icon_state = "mayan"
 	adjusts = TRUE

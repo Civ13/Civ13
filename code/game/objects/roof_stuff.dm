@@ -87,6 +87,20 @@
 	overlay_state = "palm"
 	icon_state = "palm_dm"
 
+/obj/roof/sandstone
+	name = "sandstone roof"
+	desc = "An egyptian-style sandstone roof."
+	overlay_state = "sandstone"
+	flammable = FALSE
+	icon_state = "sandstone_dm"
+
+/obj/roof/mayan
+	name = "mayan roof"
+	desc = "A mayan-style stone roof."
+	overlay_state = "mayan"
+	flammable = FALSE
+	icon_state = "mayan_dm"
+
 /obj/roof/proc/update_transparency(var/on = TRUE) //to see through windows and stuff
 	roof_overlay.alpha = 255
 	spawn(1)
@@ -265,6 +279,20 @@
 	icon_state = "concrete_roof_builder"
 	flammable = FALSE
 	target_type = /obj/roof/concrete
+
+/obj/item/weapon/roofbuilder/sandstone
+	name = "sandstone roofing"
+	desc = "Use this to build roofs."
+	icon_state = "sandstone_roof_builder"
+	flammable = FALSE
+	target_type = /obj/roof/sandstone
+
+/obj/item/weapon/roofbuilder/mayan
+	name = "mayan roofing"
+	desc = "Use this to build roofs."
+	icon_state = "mayan_roof_builder"
+	flammable = FALSE
+	target_type = /obj/roof/mayan
 
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
 	var/your_dir = "NORTH"
