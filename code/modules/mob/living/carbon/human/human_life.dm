@@ -75,6 +75,10 @@
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 
+	if (find_trait("Gigantism"))
+		size_multiplier = 1.3
+	else if (find_trait("Dwarfism"))
+		size_multiplier = 0.8
 	if (riding && riding_mob)
 		if (!(riding_mob in range(1,src)))
 			riding = FALSE
@@ -124,16 +128,20 @@
 	if (has_hunger_and_thirst)
 		var/water_m = 1
 		var/food_m = 1
+		if (find_trait("Gigantism"))
+			food_m *= 1.2
+		else if (find_trait("Dwarfism"))
+			food_m *= 0.8
 		if (orc)
-			food_m = 1.5
+			food_m *= 1.5
 		if (crab)
-			food_m = 0.8
-			water_m = 2.5
+			food_m *= 0.8
+			water_m *= 2.5
 		if (gorillaman)
-			water_m = 0.2
+			water_m *= 0.2
 		if (istype(buckled, /obj/structure/cross))
-			food_m = 1.5
-			water_m = 5
+			food_m *= 1.5
+			water_m *= 5
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
 			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
@@ -150,7 +158,6 @@
 				if (UNCONSCIOUS) // takes over an hour to starve
 					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
 					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
-			mood -= 0.02
 		else
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
@@ -159,7 +166,27 @@
 				if (UNCONSCIOUS) // takes over an hour to starve
 					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
 					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
-			mood -= 0.02
+		if (find_trait("Extroverted"))
+			if (prob(20))
+				var/ct = 0
+				for(var/mob/living/carbon/human/HM in range(3,src))
+					if (HM.stat != DEAD)
+						ct++
+				if (ct)
+					mood += 0.12
+				else
+					mood -= 0.8
+		else if (find_trait("Introverted"))
+			if (prob(20))
+				var/ct = 0
+				for(var/mob/living/carbon/human/HM in range(3,src))
+					if (HM.stat != DEAD)
+						ct++
+				if (!ct)
+					mood += 0.12
+				else
+					mood -= 0.8
+		mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats && stats.len)
 	// hotfixes some stamina bugs
@@ -447,13 +474,13 @@
 		for (var/mob/living/carbon/human/H in range(2,src))
 			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria") //malaria doesn't transmit from person to person.
 				if (stat != DEAD)
-					if (prob(1))
+					if (prob(1) || (prob(2) && find_trait("Weak Immune System")))
 						disease = TRUE
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
 				else if (stat == DEAD)
-					if (prob(3))
+					if (prob(3) || (prob(6) && find_trait("Weak Immune System")))
 						disease = TRUE
 						disease_type = H.disease_type
 						disease_progression = 0
@@ -461,7 +488,7 @@
 
 		if (disease == FALSE)
 			if (prob(1) && map.civilizations)
-				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
+				if ((prob(20) || (prob(40) && find_trait("Weak Immune System"))) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
@@ -531,19 +558,22 @@
 	if (gender == MALE)
 		var/currh = h_growth
 		var/currf = f_growth
-		if (h_growth < 4)
+		if (h_growth < 4 && !find_trait("Baldness"))
 			h_growth += 0.002
 		if (f_growth < 4)
 			f_growth += 0.002
-
-		if (h_growth >= 1 && currh < 1)
-			h_style = pick("Short Hair","Cut Hair","Skinhead")
-		else if (h_growth >= 2 && currh < 2)
-			h_style = pick("Parted","Bedhead","Bedhead 2","Bedhead 3","Mulder")
-		else if (h_growth >= 3 && currh < 3)
-			h_style = pick("Shoulder-length Hair","Dreadlocks","Long Emo","Gentle")
-		else if (h_growth >= 4 && currh < 4)
-			h_style = "Hime Cut"
+		if (find_trait("Baldness"))
+			h_growth = 0
+			h_style = "Bald"
+		else
+			if (h_growth >= 1 && currh < 1)
+				h_style = pick("Short Hair","Cut Hair","Skinhead")
+			else if (h_growth >= 2 && currh < 2)
+				h_style = pick("Parted","Bedhead","Bedhead 2","Bedhead 3","Mulder")
+			else if (h_growth >= 3 && currh < 3)
+				h_style = pick("Shoulder-length Hair","Dreadlocks","Long Emo","Gentle")
+			else if (h_growth >= 4 && currh < 4)
+				h_style = "Hime Cut"
 
 		if (f_growth >= 1 && currf < 1)
 			f_style = "Chinstrap"
@@ -857,7 +887,7 @@
 				embedded_flag = FALSE
 
 		//Ears
-		if (sdisabilities & DEAF)	//disabled-deaf, doesn't get better on its own
+		if ((sdisabilities & DEAF) || find_trait("Deaf"))	//disabled-deaf, doesn't get better on its own
 			ear_deaf = max(ear_deaf, TRUE)
 		else if (ear_deaf)			//deafness, heals slowly over time
 			ear_deaf = max(ear_deaf-1, FALSE)

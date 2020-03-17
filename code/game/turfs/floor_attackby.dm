@@ -1173,7 +1173,10 @@
 			if (watertype == "irradiated_water")
 				H.rad_act(5)
 			else
-				if (prob(sickness*15) && !H.orc && !H.crab)
+				var/dmod = 1
+				if (H.find_trait("Weak Immune System"))
+					dmod = 2
+				if (prob(sickness*15*dmod) && !H.orc && !H.crab)
 					if (H.disease == 0)
 						H.disease_progression = 0
 						H.disease_type ="cholera"

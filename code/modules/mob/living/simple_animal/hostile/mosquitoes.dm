@@ -60,8 +60,11 @@
 		if (prob(10))
 			for (var/mob/living/carbon/human/TG in range(1,src))
 				visible_message("<span class = 'danger'>\The [src] bite [TG]!")
+				var/dmod = 1
+				if (TG.find_trait("Weak Immune System"))
+					dmod = 2
 				TG.adjustBruteLoss(1,2)
-				if (prob(20) && TG.disease == 0)
+				if (prob(20*dmod) && TG.disease == 0)
 					TG.disease_progression = 0
 					TG.disease_type ="malaria"
 					TG.disease = 1

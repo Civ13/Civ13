@@ -188,12 +188,17 @@
 
 /datum/species/proc/get_environment_discomfort(var/mob/living/carbon/human/H)
 	if (H.bodytemperature > heat_level_1 && !H.orc)
+		var/dmod = 1
+		if (H.find_trait("Heat Tolerance"))
+			dmod = 0.3
+		if (H.find_trait("Heat Sensitivity"))
+			dmod = 2
 		var/area/A = get_area(H)
 		if (A.climate == "desert" && A.location == AREA_OUTSIDE)
 			if (!H.shoes)
 				if (prob(25))
 					H << "<span class='danger'>The hot ground burns your feet!</span>"
-					H.adjustFireLossByPart(0.3, pick("l_foot", "r_foot"))
+					H.adjustFireLossByPart(0.3*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0
@@ -222,7 +227,7 @@
 				exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
-			H.adjustFireLossByPart(0.2, i)
+			H.adjustFireLossByPart(0.2*dmod, i)
 
 		if (prob(12))
 			H << "<span class='danger'>[pick(heat_discomfort_strings)]</span>"
@@ -231,9 +236,14 @@
 			if (prob(15))
 				H << "<span class='danger'>The dust abrades your exposed flesh!</span>"
 			for (var/i in exposed_bp)
-				H.adjustFireLossByPart(1, i)
+				H.adjustFireLossByPart(1*dmod, i)
 
 	if (H.bodytemperature < cold_level_1 && !H.wolfman)
+		var/dmod = 1
+		if (H.find_trait("Cold Tolerance"))
+			dmod = 0.3
+		if (H.find_trait("Cold Sensitivity"))
+			dmod = 2
 		var/area/A = get_area(H)
 		for (var/obj/structure/brazier/BR in range(3, H))
 			if (BR.on == TRUE)
@@ -249,7 +259,7 @@
 			if (H.shoes.cold_protection != FEET)
 				if (prob(25 - (H.shoes ? 15 : 0)))
 					H << "<span class='danger'>Your feet are freezing!</span>"
-					H.adjustFireLossByPart(1, pick("l_foot", "r_foot"))
+					H.adjustFireLossByPart(1*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0
@@ -278,7 +288,7 @@
 				exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
-			H.adjustFireLossByPart(0.5, i)
+			H.adjustFireLossByPart(0.5*dmod, i)
 
 		if (prob(12))
 			H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
@@ -286,7 +296,7 @@
 		if (A.icon_state == "snow_storm" && A.location == AREA_OUTSIDE)
 			if (prob(12))
 				H << "<span class='danger'>The blizzard chills you to the bone!</span>"
-			H.adjustFireLoss(0.8)
+			H.adjustFireLoss(0.8*dmod)
 /*
 		var/area/A = get_area(H)
 		if (A.weather == WEATHER_WET && findtext(A,"rain"))

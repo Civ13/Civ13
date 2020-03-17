@@ -18,7 +18,7 @@
 /obj/structure/closet/coffin/sarcophagus
 	name = "sarcophagus"
 	desc = "It's a burial receptacle for egyptian royalty."
-	icon_state = "sarcophagus"
+	icon_state = "sarcophagus_closed"
 	icon_closed = "sarcophagus_closed"
 	icon_opened = "sarcophagus_open"
 	throwpass = TRUE

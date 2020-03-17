@@ -138,7 +138,7 @@
 	if (fleas_found)
 		img_nasties.overlays += fleas
 		mood -= 0.02
-		if (prob(0.2) && !disease && !inducedSSD)
+		if ((prob(0.2) || (prob(0.5) && find_trait("Weak Immune System"))) && !disease && !inducedSSD)
 			disease = TRUE
 			disease_type = "typhus"
 			disease_progression = 0

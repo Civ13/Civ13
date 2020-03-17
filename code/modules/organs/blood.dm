@@ -97,8 +97,10 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 	if (!amt)
 		return
-
-	vessel.remove_reagent("blood",amt)
+	var/dmod = 1
+	if (find_trait("Hemophilia"))
+		dmod = 1.25
+	vessel.remove_reagent("blood",amt*dmod)
 
 	// don't splatter blood all the time
 	if (prob(amt * 100))
