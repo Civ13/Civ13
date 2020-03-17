@@ -649,6 +649,8 @@ RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/ar
 RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,gold
 
+RECIPE: /material/gold/,gold sarcophagus,/obj/structure/closet/coffin/sarcophagus/gold,15,350,1,1,none,0,0,0,1,gold
+
 RECIPE: /material/silver/,silver hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,none,17,16,0,8,silver
 RECIPE: /material/silver/,silver-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,none,17,16,0,3,silver
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
@@ -764,6 +766,8 @@ RECIPE: /material/bronze/,bronze arm bangles,/obj/item/clothing/accessory/armban
 RECIPE: /material/bronze/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,bronze
 RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/bronze/,bronze statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,bronze
+
+RECIPE: /material/bronze/,bronze sarcophagus,/obj/structure/closet/coffin/sarcophagus,25,350,1,1,none,0,0,0,1,bronze
 
 RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 
