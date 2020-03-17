@@ -181,6 +181,30 @@
 	explosion_resistance = 2
 	material = "Stone"
 
+/obj/covers/sandstone/brick
+	name = "sandstone brick floor"
+	icon_state = "sandstone_brick"
+
+/obj/covers/sandstone/slab
+	name = "sandstone slab floor"
+	icon_state = "sandstone_slab"
+
+/obj/covers/sandstone/slab/red
+	name = "red sandstone slab floor"
+	icon_state = "red_sandstone_slab"
+
+/obj/covers/sandstone/tile
+	name = "sandstone tile"
+	icon_state = "sandstone_tile"
+
+/obj/covers/sandstone/tile/decorative
+	name = "sandstone decorative tile"
+	icon_state = "sandstone_decorative_tile"
+
+/obj/covers/sandstone/tile/decorative/red
+	name = "red sandstone decorative tile"
+	icon_state = "red_sandstone_decorative_tile"
+
 /obj/covers/roads
 	name = "dirt road"
 	icon = 'icons/turf/roads.dmi'
