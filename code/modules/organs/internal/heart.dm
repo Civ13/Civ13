@@ -126,11 +126,14 @@
 			if(temp.status & ORGAN_ARTERY_CUT)
 				var/bleed_amount = Floor((owner.vessel.total_volume / (temp.applied_pressure ? 500 : 250))*temp.arterial_bleed_severity)
 				if(bleed_amount)
+					var/dmod = 1
+					if (owner.find_trait("Hemophilia"))
+						dmod = 1.25
 					if(open_wound)
 						blood_max += bleed_amount
 						do_spray += "the [temp.artery_name] in \the [owner]'s [temp.name]"
 					else
-						owner.vessel.remove_reagent("blood", bleed_amount)
+						owner.vessel.remove_reagent("blood", bleed_amount*dmod)
 
 		switch(pulse)
 			if(PULSE_SLOW)
