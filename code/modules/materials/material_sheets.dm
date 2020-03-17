@@ -382,6 +382,14 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+/obj/item/stack/material/pelt/lionpelt
+	name = "lion pelt"
+	desc = "A pelt from a skinned lion."
+	icon_state = "sheet-lionpelt"
+	default_type = "lionpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
 /obj/item/stack/material/pelt/monkeypelt
 	name = "monkey pelt"
 	desc = "A pelt from a skinned monkey."
