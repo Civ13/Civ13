@@ -150,7 +150,6 @@
 				if (UNCONSCIOUS) // takes over an hour to starve
 					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
 					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
-			mood -= 0.02
 		else
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
@@ -159,7 +158,27 @@
 				if (UNCONSCIOUS) // takes over an hour to starve
 					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
 					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
-			mood -= 0.02
+		if (find_trait("Extroverted"))
+			if (prob(20))
+				var/ct = 0
+				for(var/mob/living/carbon/human/HM in range(3,src))
+					if (HM.stat != DEAD)
+						ct++
+				if (ct)
+					mood += 0.12
+				else
+					mood -= 0.8
+		else if (find_trait("Introverted"))
+			if (prob(20))
+				var/ct = 0
+				for(var/mob/living/carbon/human/HM in range(3,src))
+					if (HM.stat != DEAD)
+						ct++
+				if (!ct)
+					mood += 0.12
+				else
+					mood -= 0.8
+		mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats && stats.len)
 	// hotfixes some stamina bugs
