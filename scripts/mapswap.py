@@ -5,10 +5,22 @@ import time
 import psutil
 import signal
 
-def findfile(name, path):
-	for root, dirs, files in os.walk(path):
-		if name in files:
-			return os.path.join(root, name)
+def getListOfFiles(dirName):
+    # create a list of file and sub directories 
+    # names in the given directory 
+    listOfFile = os.listdir(dirName)
+    allFiles = list()
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory 
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + getListOfFiles(fullPath)
+        else:
+            allFiles.append(fullPath)
+                
+    return allFiles
 
 if len(sys.argv) == 1:
 	print("Not enough args provided.")
@@ -35,14 +47,19 @@ os.system("git reset --hard origin/master")
 map = sys.argv[1]
 dmms = []
 mapname = "{}.dmm".format(map.lower())
-checked_mapname = findfile(mapname,"{}{}".format(mdir,cdir))
-if checked_mapname:
-	mapname = mapname.replace("{}{}".format(mdir,cdir),"")
-	dmms.append("#include \"{}\"".format(mapname))
-
-else:
+maploc = "{}civ13-git/maps/".format(mdir)
+maplist = getListOfFiles(maploc)
+done = 0
+for i in maplist:
+	if mapname in i:
+		maploc = i
+		print(maploc)
+		done = 1
+if done == 0:
 	print("Invalid argument.")
 	sys.exit()
+else:
+	dmms.append("#include \"{}\"".format(maploc))
 
 DME = "{}civ13-git/civ13.dme".format(mdir)
 
