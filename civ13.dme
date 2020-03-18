@@ -735,6 +735,7 @@
 #include "code\modules\mob\living\simple_animal\hostile\british.dm"
 #include "code\modules\mob\living\simple_animal\hostile\buffalo.dm"
 #include "code\modules\mob\living\simple_animal\hostile\dino.dm"
+#include "code\modules\mob\living\simple_animal\hostile\fox.dm"
 #include "code\modules\mob\living\simple_animal\hostile\hostile.dm"
 #include "code\modules\mob\living\simple_animal\hostile\human.dm"
 #include "code\modules\mob\living\simple_animal\hostile\mammoth.dm"

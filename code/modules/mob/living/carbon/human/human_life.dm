@@ -1495,6 +1495,8 @@
 						if (stat == DEAD)
 							visible_message("[src]'s body is visibly rotten!")
 							rotting_stage = 2
+							if (isturf(loc))
+								new/mob/living/simple_animal/crow(loc)
 							spawn(2000)
 								if (stat == DEAD)
 									if (!istype(src, /mob/living/carbon/human/corpse))
