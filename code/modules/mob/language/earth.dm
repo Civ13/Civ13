@@ -25,7 +25,7 @@
 #define INUKTITUT_SYLLABLES list("i", "pi", "ti", "ki", "gi", "mi", "ni", "si", "li", "ji", "vi", "ri", "qi", "ngi", "nngi", "u", "pu", "tu", "ku", "gu", "mu", "nu", "su", "lu", "ju", "vu", "ru", "qu", "ngu", "nngu", "a", "pa", "ta", "ka", "ga", "ma", "na", "sa", "la", "ja", "va", "ra", "qa", "nga", "nnga", "h", "p", "t", "k", "g", "m", "n", "s", "l", "j", "v", "r", "q", "ng", "nng", "li", "lu", "la", "l" )
 #define CHEROKEE_SYLLABLES list("a", "e", "i", "o", "u", "v", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "sa", "s", "da", "ta", "tla", "dla", "tsa", "wa", "ya", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "ti", "tli", "tsi", "wi", "yi", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tlo", "tso", "wo", "yo", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "tsv", "wv", "yv" )
 #define OLDNORSE_SYLLABLES list("a", "be", "ve", "b", "ge", "g", "gh", "gje", "de", "d", "ze", "ss", "he", "h", "i", "je", "ka", "kj", "c", "k", "el", "la","em", "en", "m", "n", "o", "pe", "p", "er", "r", "es", "s", "te", "t", "u", "ef", "f", "ehv", "jer", "ska", "sk", "e", "ju", "ja", "y")
-#define EGYPTIAN_SYLLABLES list("ur", "men", "neb", "mes", "mer", "su", "bat", "kheper", "ra", "sha", "ka", "ntr", "se", "nef" "ke", "wadj", "wa", "baw", "pu", "rut", "khe", "sa", "ra", "hyt" "kh")
+#define EGYPTIAN_SYLLABLES list("ura","ure", "nuf", "nif", "pha", "phe", "phi", "fenet", "fanat", "uneph", "uniph", "ophset", "uphset", "un", "ne", "nef", "nak", "naf", "rak", "raf", "ru", "ri", "tu", "ti", "ta", "te", "ut", "it", "pher", "phir", "inet", "uot","eunet", "runet", "aunet", "mun", "mon", "min", "am", "em", "im", "oka", "okef", "okif", "okuf", "kha", "onet", "kama", "umet", "khe", "khuf", "nem", "nim", "net", "nit", "phet", "phat", "phat", "om", "am", "um", "im", "yut", "yat", "yit", "eim", "uim", "iem", "het", "uminet", "nieter", "umerter", "omier", "kepne", "kepher", "kuph", "keph", "kiph", "ieun", "iaun", "ioun", "onetfer", "unetfer", "enetfer", "ferneh", "pherneh", "miu", "mih", "mie", "kek")
 #define KOREAN_SYLLABLES list("gya", "ga", "geo", "gyeo", "go", "gyo", "gu", "gyu", "geu", "gi", "na", "nya", "neo", "nyeo", "no", "nyo", "nu", "nyu", "neu", "ni", "da", "dya", "deo", "dyeo", "do", "dyo", "du", "dyu", "deu", "di", "ra", "rya", "reo", "ryeo", "ro", "ryo", "ru", "ryu", "reu", "ri", "ma", "mya", "meo", "myeo", "mo", "myo", "mu", "myu", "meu", "mi", "ba", "bya", "beo", "byeo", "bo", "byo", "bu", "byu", "beu", "bi", "sa", "sya", "seo", "syeo", "so", "syo", "su", "syu", "seu", "si", "a", "ya", "eo", "yeo", "o", "yo", "u", "yu", "eu", "i", "ja", "jya", "jeo", "jyeo", "jo", "jyo", "ju", "jyu", "jeu", "ji", "cha", "chya", "cheo", "chyeo", "cho", "chyo", "chu", "chyu", "cheu", "chi", "ka", "kya", "keo", "kyeo", "ko", "kyo", "ku", "kyu", "keu", "ki", "ta", "tya", "teo", "tyeo", "to", "tyo", "tu", "tyu", "teu", "ti", "pa", "pya", "peo", "pyeo", "po", "pyo", "pu", "pyu", "peu", "pi", "ha", "hya", "heo", "hyeo", "ho", "hyo", "hu", "hyu", "heu", "hi")
 #define IROQUOIS_SYLLABLES list("a", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "s", "sa", "da", "ta", "dla", "tla", "tsa", "wa", "ya", "e", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "i", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "tli", "tsi", "twi", "wi", "yi", "ti", "o", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tio", "tso", "wo", "yo", "u", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "v", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "wv", "yv")
 
@@ -124,7 +124,7 @@
 	colour = "Arabic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ARAB_SYLLABLES
-	mutual_intelligibility = list(/datum/language/hebrew = 35)
+	mutual_intelligibility = list(/datum/language/hebrew = 35, /datum/language/egyptian= 30)
 
 /datum/language/hebrew
 	name = "Hebrew"
@@ -133,7 +133,7 @@
 	colour = "Hebrew"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = HEBREW_SYLLABLES
-	mutual_intelligibility = list(/datum/language/arab = 35)
+	mutual_intelligibility = list(/datum/language/arab = 35, /datum/language/egyptian= 30)
 
 /datum/language/japanese
 	name = "Japanese"
@@ -205,7 +205,7 @@
 	colour = "Zulu"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = SWAHILI_SYLLABLES
-	mutual_intelligibility = list(/datum/language/swahili = 35)
+	mutual_intelligibility = list(/datum/language/swahili = 35, /datum/language/egyptian= 10)
 
 /datum/language/swahili
 	name = "Swahili"
@@ -214,7 +214,7 @@
 	colour = "Swahili"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = SWAHILI_SYLLABLES
-	mutual_intelligibility = list(/datum/language/zulu = 35)
+	mutual_intelligibility = list(/datum/language/zulu = 35, /datum/language/egyptian= 10)
 
 /datum/language/armenian
 	name = "Armenian"
@@ -332,8 +332,11 @@
     key = "k"
     colour = "Egyptian"
     flags = RESTRICTED | COMMON_VERBS
-    syllables = OLDNORSE_SYLLABLES
-    mutual_intelligibility = list()
+    syllables = EGYPTIAN_SYLLABLES
+    mutual_intelligibility = list(/datum/language/hebrew = 30,
+	/datum/language/swahili = 10,
+	/datum/language/arab = 30,
+	/datum/language/zulu = 10)
 
 /datum/language/korean
     name = "Korean"
