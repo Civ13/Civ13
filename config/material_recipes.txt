@@ -223,7 +223,6 @@ RECIPE: /material/cloth/,sofa (left),/obj/structure/bed/sofa/left,8,140,1,1,furn
 RECIPE: /material/cloth/,sofa (centre),/obj/structure/bed/sofa,8,140,1,1,furniture,0,0,93,8,null
 RECIPE: /material/cloth/,sofa (right),/obj/structure/bed/sofa/right,8,140,1,1,furniture,0,0,93,8,null
 
-RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,jackets & vests,0,0,28,8,null
 RECIPE: /material/cloth/,custom colonial jacket,/obj/item/clothing/suit/storage/jacket/customcolonial,5,90,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,custom colonial coat,/obj/item/clothing/suit/storage/jacket/customcolonialcoat,7,120,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,4,null
@@ -256,6 +255,9 @@ RECIPE: /material/cloth/,B-3 vest,/obj/item/clothing/suit/b3,45,300,0,1,jackets 
 
 RECIPE: /material/cloth/,mayan headdress,/obj/item/clothing/head/mayan_headdress,4,55,0,1,hats & masks,0,0,18,3,null
 RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,hats & masks,0,0,18,1,null
+RECIPE: /material/cloth/,black egyptian headdress,/obj/item/clothing/head/egyptian_headdress_black,4,55,0,1,hats & masks,0,0,18,1,null
+RECIPE: /material/cloth/,blue egyptian headdress,/obj/item/clothing/head/egyptian_headdress_blue,4,55,0,1,hats & masks,0,0,18,1,null
+RECIPE: /material/cloth/,red egyptian headdress,/obj/item/clothing/head/egyptian_headdress_red,4,55,0,1,hats & masks,0,0,18,1,null
 RECIPE: /material/cloth/,double crown,/obj/item/clothing/head/doublecrown,5,65,0,1,hats & masks,0,0,18,1,null
 RECIPE: /material/cloth/,eyepatch,/obj/item/clothing/glasses/eyepatch,2,55,0,1,hats & masks,0,0,18,8,null
 RECIPE: /material/cloth/,blindfold,/obj/item/clothing/glasses/sunglasses/blindfold,2,55,0,1,hats & masks,0,0,18,8,null
@@ -298,15 +300,16 @@ RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130
 RECIPE: /material/cloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats & masks,0,0,109,8,null
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
+RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,28,8,null
 RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,0,3,null
 RECIPE: /material/cloth/,fancy shendyt,/obj/item/clothing/under/pharaoh,8,145,0,1,clothing,15,0,0,2,null
 RECIPE: /material/cloth/,great shendyt,/obj/item/clothing/under/pharaoh2,10,185,0,1,clothing,15,0,0,2,null
+RECIPE: /material/cloth/,customizable shendyt,/obj/item/clothing/under/custom/shendyt,2,45,0,1,clothing,15,0,0,2,null
 RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,15,0,0,3,null
 RECIPE: /material/cloth/,huipil,/obj/item/clothing/under/huipil,3,55,0,1,clothing,15,0,0,4,null
 RECIPE: /material/cloth/,half huipil,/obj/item/clothing/under/halfhuipil,2,45,0,1,clothing,15,0,0,4,null
 RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/roman,4,85,0,1,clothing,15,0,0,8,null
 RECIPE: /material/cloth/,customizable toga,/obj/item/clothing/under/custom/toga,3,65,0,1,clothing,15,0,0,2,null
-RECIPE: /material/cloth/,customizable shendyt,/obj/item/clothing/under/custom/shendyt,2,45,0,1,clothing,15,0,0,2,null
 RECIPE: /material/cloth/,customizable celtic trousers,/obj/item/clothing/under/custom/celtic,2,55,0,1,clothing,15,0,0,1,null
 RECIPE: /material/cloth/,customizable tribal robe,/obj/item/clothing/under/customtribalrobe,3,100,0,1,clothing,15,0,0,3,null
 RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,38,0,0,8,null
@@ -420,6 +423,8 @@ RECIPE: /material/catpelt/,fur boots,/obj/item/clothing/shoes/fur,3,80,0,1,none,
 RECIPE: /material/catpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather,3,80,0,1,none,0,0,0,8,null
 
 RECIPE: /material/pantherpelt/,panther pelt headcover,/obj/item/clothing/head/pantherpelt,3,150,0,1,none,0,0,0,8,null
+
+RECIPE: /material/lionpelt/,lion pelt headcover,/obj/item/clothing/head/lionpelt,3,150,0,1,none,0,0,0,8,null
 
 RECIPE: /material/monkeypelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/monkeypelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
