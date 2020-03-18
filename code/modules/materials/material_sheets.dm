@@ -398,6 +398,22 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+/obj/item/stack/material/pelt/foxpelt
+	name = "fox pelt"
+	desc = "A pelt from a skinned fox."
+	icon_state = "sheet-foxpelt"
+	default_type = "foxpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+/obj/item/stack/material/pelt/foxpelt/white
+	name = "white fox pelt"
+	desc = "A pelt from a skinned white fox."
+	icon_state = "sheet-whitefoxpelt"
+	default_type = "whitefoxpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
 /obj/item/stack/material/pelt/orcpelt
 	name = "Orc Pelt"
 	desc = "The skin of an Orc"

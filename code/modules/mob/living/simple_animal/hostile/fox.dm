@@ -25,3 +25,11 @@
 	carnivore = 1
 	scavenger = 1
 	behaviour = "defends"
+
+/mob/living/simple_animal/hostile/fox/arctic
+	name = "arctic fox"
+	desc = "A small white fox."
+	icon_state = "arcticfox"
+	icon_living = "arcticfox"
+	icon_dead = "arcticfox_dead"
+	icon_gib = "arcticfox_gib"
