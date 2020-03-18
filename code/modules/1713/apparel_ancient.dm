@@ -456,6 +456,24 @@
 	cold_protection = HEAD
 	var/colortype = "brown" //I haven't knocked together the coloration idea yet - @fantasticfwoosh
 
+/obj/item/clothing/head/foxpelt
+	name = "foxpelt headcover"
+	desc = "A fox pelt turned into a headcover."
+	icon_state = "foxpelt"
+	item_state = "foxpelt"
+	worn_state = "foxpelt"
+	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
+	var/colortype = "brown"
+
+/obj/item/clothing/head/foxpelt/white
+	name = "white foxpelt headcover"
+	desc = "A fox pelt turned into a headcover."
+	icon_state = "whitefoxpelt"
+	item_state = "whitefoxpelt"
+	worn_state = "whitefoxpelt"
+	colortype = "white"
+
 /*Fur Coats*/
 
 /obj/item/clothing/suit/storage/coat
