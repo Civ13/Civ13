@@ -109,6 +109,9 @@ RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,
 RECIPE: /material/woolcloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,hats & masks,0,0,38,8,null
 RECIPE: /material/woolcloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,hats & masks,0,0,62,3,null
 RECIPE: /material/woolcloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats & masks,0,0,52,3,null
+RECIPE: /material/woolcloth/,brown eisenbruck,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats & masks,0,0,52,8,null
+RECIPE: /material/woolcloth/,grey eisenbruck,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats & masks,0,0,52,8,null
+RECIPE: /material/woolcloth/,ratty eisenbruck,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/woolcloth/,red kerchief,/obj/item/clothing/mask/shemagh/redkerchief,2,45,0,1,hats & masks,0,0,98,8,null
 RECIPE: /material/woolcloth/,grey kerchief,/obj/item/clothing/mask/shemagh/greykerchief,2,45,0,1,hats & masks,0,0,98,8,null
 RECIPE: /material/woolcloth/,brown flatcap,/obj/item/clothing/head/flatcap1,2,55,0,1,hats & masks,0,0,109,8,null
@@ -120,6 +123,7 @@ RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/cus
 RECIPE: /material/woolcloth/,custom hennin,/obj/item/clothing/head/custom_hennin,2,40,0,1,hats & masks,0,0,38,3,null
 RECIPE: /material/woolcloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,15,6,null
+RECIPE: /material/woolcloth/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,2,100,0,1,clothing,24,0,38,8,null
 RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,15,6,null
 RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,15,6,null
 RECIPE: /material/woolcloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,24,0,38,6,null
@@ -280,6 +284,9 @@ RECIPE: /material/cloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1
 RECIPE: /material/cloth/,gat hat,/obj/item/clothing/head/gat,2,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/cloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats & masks,0,0,52,3,null
 RECIPE: /material/cloth/,feathered hat,/obj/item/clothing/head/feathered_hat,3,55,0,1,hats & masks,0,0,52,8,null
+RECIPE: /material/cloth/,brown eisenbruck,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats & masks,0,0,52,8,null
+RECIPE: /material/cloth/,grey eisenbruck,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats & masks,0,0,52,8,null
+RECIPE: /material/cloth/,ratty eisenbruck,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/cloth/,custom beret,/obj/item/clothing/head/custom/customberet,2,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/cloth/,custom bandana,/obj/item/clothing/head/custom/custombandana,2,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/cloth/,custom feather cap,/obj/item/clothing/head/custom_feathered_hat,4,55,0,1,hats & masks,0,0,52,8,null
@@ -326,6 +333,7 @@ RECIPE: /material/cloth/,black haori,/obj/item/clothing/under/haori,3,100,0,1,cl
 RECIPE: /material/cloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,24,0,38,8,null
 RECIPE: /material/cloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,24,0,38,8,null
 RECIPE: /material/cloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,24,0,38,8,null
+RECIPE: /material/cloth/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,2,100,0,1,clothing,24,0,38,8,null
 RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,clothing,38,0,0,3,null
 RECIPE: /material/cloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/cloth/,customizable pontifical clothing,/obj/item/clothing/under/custompontifical,6,105,0,1,clothing,0,0,59,8,null
@@ -1107,7 +1115,7 @@ RECIPE: /material/sandstone/,pickaxe,/obj/item/weapon/pickaxe/stone,2,50,0,1,too
 RECIPE: /material/sandstone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,sandstone
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,2,30,0,1,none,0,0,0,8,null
-
+RECIPE: /material/rags/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,4,80,0,1,none,0,39,0,2,null
 
 RECIPE: /material/fossil/,bones (10x),/obj/item/stack/material/bone,1,10,0,1,none,0,0,0,8,null
 RECIPE: /material/fossil/,stone (8x),/obj/item/stack/material/stone,1,10,0,1,none,0,0,0,8,null
