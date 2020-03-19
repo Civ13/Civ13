@@ -24,7 +24,7 @@
 #define GAELIC_SYLLABLES list("ba", "be", "bi", "bu", "ca", "ce", "ci", "co", "cu", "da", "de", "di", "do", "du", "d'a", "d'e", "d'i", "d'o", "d'u", "fa", "fe", "fi", "fo", "fu", "ga", "ge", "gi", "go", "gu", "ha", "he", "hi", "ho", "hu", "la", "le", "li", "lo", "lu", "ma", "me", "mi", "mo", "mu", "m'a", "m'e", "m'i", "m'o", "m'u", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "ra", "re", "ri", "ro", "ru", "sa", "se", "si", "so", "su", "ta", "te", "ti", "to", "tu", "ab", "eb", "ib", "ob", "ub", "ac", "ec", "ic", "oc", "uc", "ad", "ed", "id", "od", "ud", "af", "ef", "if", "of", "uf", "ag", "eg", "ig", "og", "ug", "ah", "eh", "ih", "oh", "uh", "al", "el", "il", "ol", "ul", "am", "em", "im", "om", "um", "an", "ep", "ip", "op", "up", "ar", "er", "ir", "or", "ur", "as", "es", "is", "os", "us", "at", "et", "it", "ot", "ut")
 #define INUKTITUT_SYLLABLES list("i", "pi", "ti", "ki", "gi", "mi", "ni", "si", "li", "ji", "vi", "ri", "qi", "ngi", "nngi", "u", "pu", "tu", "ku", "gu", "mu", "nu", "su", "lu", "ju", "vu", "ru", "qu", "ngu", "nngu", "a", "pa", "ta", "ka", "ga", "ma", "na", "sa", "la", "ja", "va", "ra", "qa", "nga", "nnga", "h", "p", "t", "k", "g", "m", "n", "s", "l", "j", "v", "r", "q", "ng", "nng", "li", "lu", "la", "l" )
 #define CHEROKEE_SYLLABLES list("a", "e", "i", "o", "u", "v", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "sa", "s", "da", "ta", "tla", "dla", "tsa", "wa", "ya", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "ti", "tli", "tsi", "wi", "yi", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tlo", "tso", "wo", "yo", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "tsv", "wv", "yv" )
-#define OLDNORSE_SYLLABLES list("a", "be", "ve", "b", "ge", "g", "gh", "gje", "de", "d", "ze", "ss", "he", "h", "i", "je", "ka", "kj", "c", "k", "el", "la","em", "en", "m", "n", "o", "pe", "p", "er", "r", "es", "s", "te", "t", "u", "ef", "f", "ehv", "jer", "ska", "sk", "e", "ju", "ja", "y")
+#define OLDNORSE_SYLLABLES list("arveb", "ber", "ver", "bor", "gelk", "goar", "ghersknin", "gjer", "derah", "dute", "keb", "sarb", "sirb", "herv", "harv", "ivorn", "je", "ka", "kj", "cu'ur", "ku'ur", "elek", "lar","emia", "enik", "mersk", "nersk", "onmerb", "pev", "pav", "erk", "runer", "esen", "sah", "teeb", "tuo", "urber", "efrak", "fersber", "ehv", "jer", "ska", "skume", "evber", "jukbe", "jar", "mi", "mir", "luw", "uevb", "bervg", "verbar", "al", "an", "yer", "yeyorg", "hu'un", "gu'un", "ursber", "norg", "nork", "kerg", "erb", "arb", "sterubur", "stuk", "du'gpkar", "eren", "pertber", "pebre")
 #define EGYPTIAN_SYLLABLES list("ura","ure", "nuf", "nif", "pha", "phe", "phi", "fenet", "fanat", "uneph", "uniph", "ophset", "uphset", "un", "ne", "nef", "nak", "naf", "rak", "raf", "ru", "ri", "tu", "ti", "ta", "te", "ut", "it", "pher", "phir", "inet", "uot","eunet", "runet", "aunet", "mun", "mon", "min", "am", "em", "im", "oka", "okef", "okif", "okuf", "kha", "onet", "kama", "umet", "khe", "khuf", "nem", "nim", "net", "nit", "phet", "phat", "phat", "om", "am", "um", "im", "yut", "yat", "yit", "eim", "uim", "iem", "het", "uminet", "nieter", "umerter", "omier", "kepne", "kepher", "kuph", "keph", "kiph", "ieun", "iaun", "ioun", "onetfer", "unetfer", "enetfer", "ferneh", "pherneh", "miu", "mih", "mie", "kek")
 #define KOREAN_SYLLABLES list("gya", "ga", "geo", "gyeo", "go", "gyo", "gu", "gyu", "geu", "gi", "na", "nya", "neo", "nyeo", "no", "nyo", "nu", "nyu", "neu", "ni", "da", "dya", "deo", "dyeo", "do", "dyo", "du", "dyu", "deu", "di", "ra", "rya", "reo", "ryeo", "ro", "ryo", "ru", "ryu", "reu", "ri", "ma", "mya", "meo", "myeo", "mo", "myo", "mu", "myu", "meu", "mi", "ba", "bya", "beo", "byeo", "bo", "byo", "bu", "byu", "beu", "bi", "sa", "sya", "seo", "syeo", "so", "syo", "su", "syu", "seu", "si", "a", "ya", "eo", "yeo", "o", "yo", "u", "yu", "eu", "i", "ja", "jya", "jeo", "jyeo", "jo", "jyo", "ju", "jyu", "jeu", "ji", "cha", "chya", "cheo", "chyeo", "cho", "chyo", "chu", "chyu", "cheu", "chi", "ka", "kya", "keo", "kyeo", "ko", "kyo", "ku", "kyu", "keu", "ki", "ta", "tya", "teo", "tyeo", "to", "tyo", "tu", "tyu", "teu", "ti", "pa", "pya", "peo", "pyeo", "po", "pyo", "pu", "pyu", "peu", "pi", "ha", "hya", "heo", "hyeo", "ho", "hyo", "hu", "hyu", "heu", "hi")
 #define IROQUOIS_SYLLABLES list("a", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "s", "sa", "da", "ta", "dla", "tla", "tsa", "wa", "ya", "e", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "i", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "tli", "tsi", "twi", "wi", "yi", "ti", "o", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tio", "tso", "wo", "yo", "u", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "v", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "wv", "yv")
@@ -46,7 +46,11 @@
 	colour = "danish"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DANISH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/french = 10,/datum/language/german = 10,/datum/language/dutch = 10,/datum/language/english = 10)
+	mutual_intelligibility = list(/datum/language/french = 10,
+	/datum/language/german = 10,
+	/datum/language/oldnorse = 25,
+	/datum/language/dutch = 10,
+	/datum/language/english = 10)
 
 /datum/language/spanish
 	name = "Spanish"
@@ -83,7 +87,7 @@
 	colour = "Dutch"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DUTCH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/german = 40)
+	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/german = 40,/datum/language/oldnorse = 15)
 
 /datum/language/carib
 	name = "Carib"
@@ -196,7 +200,7 @@
 	colour = "german"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GERMAN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 15,/datum/language/dutch = 35)
+	mutual_intelligibility = list(/datum/language/english = 15,/datum/language/dutch = 35,/datum/language/oldnorse = 15)
 
 /datum/language/zulu
 	name = "Zulu"
@@ -242,7 +246,7 @@
 	colour = "Black Speech"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = BLACKSPEECH_SYLLABLES
-	mutual_intelligibility = list()
+	mutual_intelligibility = list(/datum/language/oldnorse = 10) //easteregg to Norse god Baldr
 
 /datum/language/ant
 	name = "Antspeak"
@@ -324,7 +328,11 @@
 	colour = "Old Norse"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = OLDNORSE_SYLLABLES
-	mutual_intelligibility = list()
+	mutual_intelligibility = list(/datum/language/german = 20,
+	/datum/language/dutch = 15,
+	/datum/language/english = 10,
+	/datum/language/blackspeech=10,
+	/datum/language/danish = 25)
 
 /datum/language/egyptian
     name = "Egyptian"
@@ -354,4 +362,4 @@
     colour = "Iroquois"
     flags = RESTRICTED | COMMON_VERBS
     syllables = IROQUOIS_SYLLABLES
-    mutual_intelligibility = list(/datum/language/inuit = 10 )
+    mutual_intelligibility = list(/datum/language/inuit = 10)
