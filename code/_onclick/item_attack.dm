@@ -68,8 +68,8 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		return FALSE
 	if (ishuman(user))
 		var/mob/living/carbon/human/H = user
-		if (H.stats["stamina"][1] >= cooldownw*2)
-			H.stats["stamina"][1] = max(0,H.stats["stamina"][1] - cooldownw*2)
+		if (H.stats["stamina"][1] >= cooldownw)
+			H.stats["stamina"][1] = max(0,H.stats["stamina"][1] - cooldownw)
 		else
 			H << "<span class='warning'>You need to catch your breath!</span>"
 			return
