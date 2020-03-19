@@ -202,6 +202,13 @@
 	item_state = "leather_tunic"
 	worn_state = "leather_tunic"
 
+/obj/item/clothing/under/medieval/beggar_clothing
+	name = "beggar_clothing"
+	desc = "Loosely stitched from patch cloth, contains deep pockets for spare change."
+	icon_state = "beggar_clothing"
+	item_state = "beggar_clothing"
+	worn_state = "beggar_clothing"
+
 /obj/item/clothing/under/medieval/blue
 	name = "blue tunic"
 	desc = "A light blue tunic."
@@ -508,6 +515,36 @@
 //continue
 
 /* Medieval Helmets*/
+
+/obj/item/clothing/head/helmet/brown_eisenbruck
+	name = "brown eisenbruck"
+	desc = "a padded brown coif, applies practical if modest protection."
+	icon_state = "brown_eisenbruck"
+	item_state = "brown_eisenbruck"
+	worn_state = "brown_eisenbruck"
+	body_parts_covered = HEAD
+	armor = list(melee = 24, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
+	health = 20
+
+/obj/item/clothing/head/helmet/grey_eisenbruck
+	name = "grey eisenbruck"
+	desc = "a padded grey coif, applies practical if modest protection."
+	icon_state = "grey_eisenbruck"
+	item_state = "grey_eisenbruck"
+	worn_state = "grey_eisenbruck"
+	body_parts_covered = HEAD
+	armor = list(melee = 24, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
+	health = 20
+
+/obj/item/clothing/head/helmet/aged_eisenbruck
+	name = "ratty old eisenbruck"
+	desc = "a ratty, old padded coif, its color faded but remains protective."
+	icon_state = "aged_eisenbruck"
+	item_state = "aged_eisenbruck"
+	worn_state = "aged_eisenbruck"
+	body_parts_covered = HEAD
+	armor = list(melee = 24, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
+	health = 20
 
 /obj/item/clothing/head/helmet/medieval
 	name = "knight helmet"
