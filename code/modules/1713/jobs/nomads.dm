@@ -281,11 +281,11 @@
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)
 					if ("tundra")
-						add_language("Russian",TRUE)
+						add_language("Old Norse",TRUE)
 						remove_language("English")
-						for (var/datum/language/russian/A in languages)
+						for (var/datum/language/oldnorse/A in languages)
 							default_language = A
-						name = species.get_random_russian_name(gender)
+						name = species.get_random_oldnorse_name(gender)
 						real_name = name
 						return
 					if ("taiga")
@@ -307,22 +307,22 @@
 							add_note("Known Languages", "Latin")
 							return
 						else
-							add_language("Arabic",TRUE)
+							add_language("Greek",TRUE)
 							remove_language("English")
-							for (var/datum/language/arab/A in languages)
+							for (var/datum/language/greek/A in languages)
 								default_language = A
-							name = species.get_random_arab_name(gender)
+							name = species.get_random_greek_name(gender)
 							real_name = name
-							add_note("Known Languages", "Arabic")
+							add_note("Known Languages", "Greek")
 							return
 					if ("savanna")
-						add_language("Japanese",TRUE)
+						add_language("Korean",TRUE)
 						remove_language("English")
-						for (var/datum/language/japanese/A in languages)
+						for (var/datum/language/korean/A in languages)
 							default_language = A
-						name = species.get_random_japanese_name(gender)
+						name = species.get_random_korean_name(gender)
 						real_name = name
-						add_note("Known Languages", "Japanese")
+						add_note("Known Languages", "Korean")
 						return
 					if ("jungle")
 						add_language("Japanese",TRUE)
@@ -334,23 +334,43 @@
 						add_note("Known Languages", "Japanese")
 						return
 					if ("desert")
-						add_language("Arabic",TRUE)
-						remove_language("English")
-						for (var/datum/language/arab/A in languages)
-							default_language = A
-						name = species.get_random_arab_name(gender)
-						real_name = name
-						add_note("Known Languages", "Arabic")
-						return
+						if (prob(50))
+							add_language("Hebrew",TRUE)
+							remove_language("English")
+							for (var/datum/language/hebrew/A in languages)
+								default_language = A
+							name = species.get_random_hebrew_name(gender)
+							real_name = name
+							add_note("Known Languages", "Hebrew")
+							return
+						else
+							add_language("Egyptian",TRUE)
+							remove_language("English")
+							for (var/datum/language/egyptian/A in languages)
+								default_language = A
+							name = species.get_random_egyptian_name(gender)
+							real_name = name
+							add_note("Known Languages", "Egyptian")
+							return
 					if ("temperate")
-						add_language("Latin",TRUE)
-						remove_language("English")
-						for (var/datum/language/latin/A in languages)
-							default_language = A
-						name = species.get_random_roman_name(gender)
-						real_name = name
-						add_note("Known Languages", "Latin")
-						return
+						if (prob(50))
+							add_language("German",TRUE)
+							remove_language("English")
+							for (var/datum/language/german/A in languages)
+								default_language = A
+							name = species.get_random_german_name(gender)
+							real_name = name
+							add_note("Known Languages", "German")
+							return
+						else
+							add_language("French",TRUE)
+							remove_language("English")
+							for (var/datum/language/french/A in languages)
+								default_language = A
+							name = species.get_random_french_name(gender)
+							real_name = name
+							add_note("Known Languages", "French")
+							return
 		else if (map.ID == MAP_NOMADS_MEDITERRANEAN)
 			spawn(5)
 				//SOUTH

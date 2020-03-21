@@ -231,6 +231,32 @@ proc/random_arab_name(gender, species = "Human")
 	else
 		return current_species.get_random_arab_name(gender)
 
+proc/random_korean_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_korean)) + " " + capitalize(pick(last_names_korean))
+		else
+			return capitalize(pick(first_names_male_korean)) + " " + capitalize(pick(last_names_korean))
+	else
+		return current_species.get_random_korean_name(gender)
+
+proc/random_egyptian_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+		else
+			return capitalize(pick(first_names_male_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+	else
+		return current_species.get_random_egyptian_name(gender)
+
 proc/random_skin_tone()
 
 	var/skin_tone = "caucasian"

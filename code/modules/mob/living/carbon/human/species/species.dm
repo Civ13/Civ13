@@ -523,7 +523,19 @@
 		else
 			return capitalize(pick(first_names_male_cherokee))
 
+/datum/species/proc/get_random_korean_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_korean)) + " " + capitalize(pick(last_names_korean))
+		else
+			return capitalize(pick(first_names_male_korean)) + " " + capitalize(pick(last_names_korean))
 
+/datum/species/proc/get_random_egyptian_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+		else
+			return capitalize(pick(first_names_male_egyptian)) + " " + capitalize(pick(last_names_egyptian))
 
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
