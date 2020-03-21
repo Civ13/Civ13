@@ -516,6 +516,8 @@
 								meat.satisfaction = -30
 						else if (istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar))
 							new/obj/item/weapon/pigleg(get_turf(src))
+						else if (istype(src, /mob/living/simple_animal/boar))
+							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/chicken) || istype(src, /mob/living/simple_animal/rooster))
 							new/obj/item/weapon/chicken_carcass(get_turf(src))
 						else
@@ -590,11 +592,23 @@
 				else if (istype(src, /mob/living/simple_animal/monkey))
 					var/obj/item/stack/material/pelt/monkeypelt/NP = new/obj/item/stack/material/pelt/monkeypelt(get_turf(src))
 					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/fox/arctic))
+					var/obj/item/stack/material/pelt/foxpelt/white/NP = new/obj/item/stack/material/pelt/foxpelt/white(get_turf(src))
+					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/fox))
+					var/obj/item/stack/material/pelt/foxpelt/NP = new/obj/item/stack/material/pelt/foxpelt(get_turf(src))
+					NP.amount = 3
 				else if (istype(src, /mob/living/simple_animal/cat))
 					var/obj/item/stack/material/pelt/catpelt/NP = new/obj/item/stack/material/pelt/catpelt(get_turf(src))
 					NP.amount = 2
 				else if (istype(src, /mob/living/simple_animal/hostile/panther) && !istype(src, /mob/living/simple_animal/hostile/panther/jaguar))
 					var/obj/item/stack/material/pelt/pantherpelt/NP = new/obj/item/stack/material/pelt/pantherpelt(get_turf(src))
+					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/sabertooth) && !istype(src, /mob/living/simple_animal/hostile/sabertooth/white))
+					var/obj/item/stack/material/pelt/lionpelt/NP = new/obj/item/stack/material/pelt/lionpelt(get_turf(src))
+					NP.amount = 6
+				else if (istype(src, /mob/living/simple_animal/hostile/sabertooth/lion) && !istype(src, /mob/living/simple_animal/hostile/sabertooth/lion/gladiator))
+					var/obj/item/stack/material/pelt/lionpelt/NP = new/obj/item/stack/material/pelt/lionpelt(get_turf(src))
 					NP.amount = 3
 				if (istype(user, /mob/living/carbon/human))
 					var/mob/living/carbon/human/HM = user

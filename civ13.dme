@@ -735,6 +735,7 @@
 #include "code\modules\mob\living\simple_animal\hostile\british.dm"
 #include "code\modules\mob\living\simple_animal\hostile\buffalo.dm"
 #include "code\modules\mob\living\simple_animal\hostile\dino.dm"
+#include "code\modules\mob\living\simple_animal\hostile\fox.dm"
 #include "code\modules\mob\living\simple_animal\hostile\hostile.dm"
 #include "code\modules\mob\living\simple_animal\hostile\human.dm"
 #include "code\modules\mob\living\simple_animal\hostile\mammoth.dm"
@@ -745,6 +746,7 @@
 #include "code\modules\mob\living\simple_animal\hostile\pirate.dm"
 #include "code\modules\mob\living\simple_animal\hostile\pmc.dm"
 #include "code\modules\mob\living\simple_animal\hostile\russo-jap.dm"
+#include "code\modules\mob\living\simple_animal\hostile\sabertooth.dm"
 #include "code\modules\mob\living\simple_animal\hostile\skeleton.dm"
 #include "code\modules\mob\living\simple_animal\hostile\snake.dm"
 #include "code\modules\mob\living\simple_animal\hostile\troll.dm"
@@ -917,5 +919,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_mediterranean.dmm"
+#include "maps\1013\bohemia.dmm"
 // END_INCLUDE

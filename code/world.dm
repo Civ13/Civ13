@@ -224,7 +224,7 @@ var/world_topic_spam_protect_time = world.timeofday
 			if (map)
 				s["map"] = map.title
 				s["age"] = map.age
-
+			s["season"] = season
 		return list2params(s)
 
 /world/Reboot(var/reason)

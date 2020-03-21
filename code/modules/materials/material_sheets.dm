@@ -382,11 +382,35 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+/obj/item/stack/material/pelt/lionpelt
+	name = "lion pelt"
+	desc = "A pelt from a skinned lion."
+	icon_state = "sheet-lionpelt"
+	default_type = "lionpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
 /obj/item/stack/material/pelt/monkeypelt
 	name = "monkey pelt"
 	desc = "A pelt from a skinned monkey."
 	icon_state = "sheet-monkeypelt"
 	default_type = "monkeypelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+/obj/item/stack/material/pelt/foxpelt
+	name = "fox pelt"
+	desc = "A pelt from a skinned fox."
+	icon_state = "sheet-foxpelt"
+	default_type = "foxpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+/obj/item/stack/material/pelt/foxpelt/white
+	name = "white fox pelt"
+	desc = "A pelt from a skinned white fox."
+	icon_state = "sheet-whitefoxpelt"
+	default_type = "whitefoxpelt"
 	w_class = 2.0
 	flammable = TRUE
 	value = 3

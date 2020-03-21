@@ -62,8 +62,9 @@
 			if (pref.traits[i] != "Cancel")
 				if (i == pref.traits.len)
 					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
-				else
+				else if (pref.traits.len)
 					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]]), "
+
 /datum/category_item/player_setup_item/general/basic/OnTopic(var/href,var/list/href_list, var/mob/user)
 
 	//real names

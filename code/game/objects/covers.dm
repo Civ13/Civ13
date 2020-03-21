@@ -246,13 +246,14 @@
 				for(var/obj/covers/roads/R in T)
 					sideslist += direction
 					continue
-		if (NORTHWEST in sideslist)
+
+		if ((NORTHWEST in sideslist) && (NORTH in sideslist) && (WEST in sideslist))
 			overlays += image(icon=src.icon, icon_state = "d_roadnwc")
-		if (NORTHEAST in sideslist)
+		if ((NORTHEAST in sideslist) && (NORTH in sideslist) && (EAST in sideslist))
 			overlays += image(icon=src.icon, icon_state = "d_roadnec")
-		if (SOUTHEAST in sideslist)
+		if ((SOUTHEAST in sideslist) && (SOUTH in sideslist) && (EAST in sideslist))
 			overlays += image(icon=src.icon, icon_state = "d_roadsec")
-		if (SOUTHWEST in sideslist)
+		if ((SOUTHWEST in sideslist) && (SOUTH in sideslist) && (WEST in sideslist))
 			overlays += image(icon=src.icon, icon_state = "d_roadswc")
 
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
