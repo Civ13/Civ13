@@ -346,7 +346,7 @@
 						md = "seems to be in a good mood."
 					if(80 to 10000)
 						md = "seems to be in an excellent mood!"
-				msg -= "<br><i>[T.He] [md]</b>.</i>"
+				msg += "<br><i>[T.He] [md]</b>.</i>"
 		else if (isobserver(user))
 			if (civilization != "none")
 				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
