@@ -16,6 +16,7 @@
      ///////////////////////////////////
      * 8 - Colonial Army Clothes
      * 8a - Colonial Army Uniforms
+     * 8b - Colonial Army Jackets
      ///////////////////////////////////
      * 9 - Miscallaneous */
 
@@ -248,6 +249,12 @@
 	desc = "A personal wallet, where you can carry your coins and small objects."
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "wallet"
+
+/obj/item/clothing/accessory/storage/coinpouch/gator_wallet
+	name = "alligator scale wallet"
+	desc = "A exotic personal wallet decorated in alligator scale, where you can carry your coins and small objects."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "gator_wallet"
 
 /obj/item/clothing/accessory/storage/coinpouch/New()
 	..()
@@ -516,14 +523,14 @@
 	worn_state = "british_sailor4"
 
 /obj/item/clothing/head/tricorne_british
-	name = "Royal Navy tricorne"
-	desc = "A blue tricorne, used by the British Royal Navy."
+	name = "royal navy tricorne"
+	desc = "A blue tricorne, used by the british royal navy."
 	icon_state = "tricorne_british"
 	item_state = "tricorne_british"
 
 /obj/item/clothing/head/tricorne_british_army
-	name = "British Army tricorne"
-	desc = "A red tricorne, used by the British Army."
+	name = "british Army tricorne"
+	desc = "A red tricorne, used by the british army."
 	icon_state = "tricorne_british2"
 	item_state = "tricorne_british2"
 
@@ -535,67 +542,67 @@
 
 /obj/item/clothing/accessory/armband/british_scarf
 	name = "blue scarf"
-	desc = "A blue scarf, used by Royal Navy sailors."
+	desc = "A blue scarf, used by royal navy sailors."
 	icon_state = "british_scarf"
 	item_state = "british_scarf"
 
 /obj/item/clothing/suit/storage/jacket/british_captain
-	name = "Royal Navy Captain jacket"
-	desc = "A standard Captain jacket of the Royal Navy. Blue with golden buttons, white laces and golden cuffs."
+	name = "royal navy captain jacket"
+	desc = "A standard captain jacket of the royal navy. Blue with golden buttons, white laces and golden cuffs."
 	icon_state = "british_captain"
 	item_state = "british_captain"
 	worn_state = "british_captain"
 
 /obj/item/clothing/suit/storage/jacket/british_officer
-	name = "Royal Navy Officer jacket"
-	desc = "A standard Officer jacket of the Royal Navy. Blue with golden buttons."
+	name = "royal navy officer jacket"
+	desc = "A standard officer jacket of the royal navy. Blue with golden buttons."
 	icon_state = "british_officer"
 	item_state = "british_officer"
 	worn_state = "british_officer"
 
 /obj/item/clothing/suit/storage/jacket/british_soldier
-	name = "British red jacket"
-	desc = "The british redcoat, used by the British Army and Marines."
+	name = "british red jacket"
+	desc = "The british redcoat, used by the british army and marines."
 	icon_state = "british_soldier_jacket"
 	item_state = "british_soldier_jacket"
 	worn_state = "british_soldier_jacket"
 
 /obj/item/clothing/head/chasseur_british
-	name = "British feathered hat"
-	desc = "A feathered black bicorne, used by the British Light Infantry."
+	name = "british feathered hat"
+	desc = "A feathered black bicorne, used by the british light infantry."
 	icon_state = "chasseur_br"
 	item_state = "chasseur_br"
 
 /* Colonial Portuguese Army & Navy Clothes*/
 
 /obj/item/clothing/head/tricorne_portuguese
-	name = "Portuguese Navy tricorne"
+	name = "portuguese navy tricorne"
 	desc = "A green tricorne, used by the Portuguese Navy."
 	icon_state = "tricorne_portuguese"
 	item_state = "tricorne_portuguese"
 
 /obj/item/clothing/head/chasseur_portuguese
-	name = "Portuguese feathered hat"
-	desc = "A feathered black bicorne, used by the Portuguese Light Infantry."
+	name = "portuguese feathered hat"
+	desc = "A feathered black bicorne, used by the portuguese light infantry."
 	icon_state = "chasseur_pt"
 	item_state = "chasseur_pt"
 
 /obj/item/clothing/head/portuguese_army
-	name = "Portuguese Army tricorne"
-	desc = "A green tricorne, used by the Portuguese Army"
+	name = "portuguese army tricorne"
+	desc = "A green tricorne, used by the portuguese army"
 	icon_state = "tricorne_portuguese"
 	item_state = "tricorne_portuguese"
 
 /obj/item/clothing/suit/storage/jacket/portuguese_captain
-	name = "Portuguese Captain jacket"
-	desc = "A standard Captain jacket of the Portuguese Navy. Blue with golden buttons, white laces and golden cuffs."
+	name = "portuguese captain jacket"
+	desc = "A standard captain jacket of the portuguese navy. Blue with golden buttons, white laces and golden cuffs."
 	icon_state = "portuguese_captain"
 	item_state = "portuguese_captain"
 	worn_state = "portuguese_captain"
 
 /obj/item/clothing/suit/storage/jacket/portuguese_officer
-	name = "Portuguese Officer jacket"
-	desc = "A standard Officer jacket of the Portuguese Navy. Blue with golden buttons."
+	name = "portuguese officer jacket"
+	desc = "A standard officer jacket of the portuguese navy. Blue with golden buttons."
 	icon_state = "portuguese_officer"
 	item_state = "portuguese_officer"
 	worn_state = "portuguese_officer"
@@ -632,27 +639,27 @@
 /* Colonial Spanish Army & Navy Clothes*/
 
 /obj/item/clothing/head/tricorne_spanish
-	name = "Spanish Navy tricorne"
-	desc = "A yellow tricorne, used by the Spanish Navy."
+	name = "spanish navy tricorne"
+	desc = "A yellow tricorne, used by the spanish navy."
 	icon_state = "tricorne_spanish"
 	item_state = "tricorne_spanish"
 
 /obj/item/clothing/head/spanish_army
-	name = "Spanish Army tricorne"
-	desc = "A yellow tricorne, used by the Spanish Army."
+	name = "spanish army tricorne"
+	desc = "A yellow tricorne, used by the spanish army."
 	icon_state = "tricorne_spanish"
 	item_state = "tricorne_spanish"
 
 /obj/item/clothing/suit/storage/jacket/spanish_captain
-	name = "Spanish Captain jacket"
-	desc = "A standard Captain jacket of the Spanish Navy. Yellow with golden buttons, white laces and golden cuffs."
+	name = "spanish captain jacket"
+	desc = "A standard Captain jacket of the spanish navy. Yellow with golden buttons, white laces and golden cuffs."
 	icon_state = "spanish_captain"
 	item_state = "spanish_captain"
 	worn_state = "spanish_captain"
 
 /obj/item/clothing/suit/storage/jacket/spanish_officer
-	name = "Spanish Officer jacket"
-	desc = "A standard Officer jacket of the Spanish Navy. Yellow with golden buttons."
+	name = "spanish officer jacket"
+	desc = "A standard Officer jacket of the spanish navy. Yellow with golden buttons."
 	icon_state = "spanish_officer"
 	item_state = "spanish_officer"
 	worn_state = "spanish_officer"
@@ -681,27 +688,27 @@
 /* Colonial French Army & Navy Clothes*/
 
 /obj/item/clothing/head/tricorne_french
-	name = "French Navy tricorne"
-	desc = "A white and blue tricorne, used by the French Navy."
+	name = "french navy tricorne"
+	desc = "A white and blue tricorne, used by the french navy."
 	icon_state = "tricorne_french"
 	item_state = "tricorne_french"
 
 /obj/item/clothing/head/french_army
-	name = "French Army tricorne"
-	desc = "A blue tricorne, used by the French Army."
+	name = "french army tricorne"
+	desc = "A blue tricorne, used by the french army."
 	icon_state = "tricorne_british"
 	item_state = "tricorne_british"
 
 /obj/item/clothing/suit/storage/jacket/french_captain
-	name = "French Captain jacket"
-	desc = "A standard Captain jacket of the French Navy. White with golden buttons, blue laces and golden cuffs."
+	name = "french captain jacket"
+	desc = "A standard captain jacket of the french navy. White with golden buttons, blue laces and golden cuffs."
 	icon_state = "french_captain"
 	item_state = "french_captain"
 	worn_state = "french_captain"
 
 /obj/item/clothing/suit/storage/jacket/french_officer
-	name = "French Officer jacket"
-	desc = "A standard Officer jacket of the French Navy. White with golden buttons."
+	name = "french officer jacket"
+	desc = "A standard officer jacket of the french navy. White with golden buttons."
 	icon_state = "french_officer"
 	item_state = "french_officer"
 	worn_state = "french_officer"
@@ -714,7 +721,7 @@
 	worn_state = "french_officer"
 
 /obj/item/clothing/under/baycona
-	name = "Baycona outfit"
+	name = "baycona outfit"
 	desc = "A set of baycona officer clothes, this seems to be very old."
 	icon_state = "baycona"
 	item_state = "baycona"
@@ -742,47 +749,47 @@
 	worn_state = "french_sailor3"
 
 /obj/item/clothing/head/french_army
-	name = "French Army tricorne"
-	desc = "A white and blue tricorne, used by the French Army."
+	name = "french army tricorne"
+	desc = "A white and blue tricorne, used by the french army."
 	icon_state = "tricorne_french"
 	item_state = "tricorne_french"
 
 /obj/item/clothing/head/chasseur_french
-	name = "French feathered hat"
-	desc = "A feathered black bicorne, used by the French Light Infantry."
+	name = "french feathered hat"
+	desc = "A feathered black bicorne, used by the french light infantry."
 	icon_state = "chasseur_fr"
 	item_state = "chasseur_fr"
 
 /* Colonial Dutch Army & Navy Clothes*/
 
 /obj/item/clothing/head/tricorne_dutch
-	name = "United Provinces Navy tricorne"
-	desc = "An orange tricorne, used by the United Provinces Navy."
+	name = "united provinces navy tricorne"
+	desc = "An orange tricorne, used by the united provinces navy."
 	icon_state = "tricorne_dutch"
 	item_state = "tricorne_dutch"
 
 /obj/item/clothing/head/chasseur_dutch
-	name = "United Provinces feathered hat"
-	desc = "A feathered black bicorne, used by the United Provinces Light Infantry."
+	name = "united Provinces feathered hat"
+	desc = "A feathered black bicorne, used by the united provinces light infantry."
 	icon_state = "chasseur_nl"
 	item_state = "chasseur_nl"
 
 /obj/item/clothing/head/dutch_army
-	name = "United Provinces Army tricorne"
-	desc = "An orange tricorne, used by the Dutch United Provinces Army."
+	name = "united Provinces Army tricorne"
+	desc = "An orange tricorne, used by the dutch united provinces army."
 	icon_state = "tricorne_dutch"
 	item_state = "tricorne_dutch"
 
 /obj/item/clothing/suit/storage/jacket/dutch_captain
-	name = "United Provinces Captain jacket"
-	desc = "A standard Captain jacket of the United Provinces Navy. Orange with golden buttons, white laces and golden cuffs."
+	name = "united provinces captain jacket"
+	desc = "A standard captain jacket of the united provinces navy. Orange with golden buttons, white laces and golden cuffs."
 	icon_state = "dutch_captain"
 	item_state = "dutch_captain"
 	worn_state = "dutch_captain"
 
 /obj/item/clothing/suit/storage/jacket/dutch_officer
-	name = "United Provinces Officer jacket"
-	desc = "A standard Officer jacket of the United Provinces Navy. Orange with golden buttons."
+	name = "united provinces officer jacket"
+	desc = "A standard officer jacket of the united provinces navy. Orange with golden buttons."
 	icon_state = "dutch_officer"
 	item_state = "dutch_officer"
 	worn_state = "dutch_officer"
@@ -818,61 +825,63 @@
 	item_state = "officer"
 	worn_state = "officer"
 
-/obj/item/clothing/suit/storage/jacket/dutch_officer_army
-	name = "United Provinces Army jacket"
-	desc = "A standard army jacket of the United Provinces Army. Orange with golden buttons."
-	icon_state = "dutch_army"
-	item_state = "dutch_army"
-	worn_state = "dutch_army"
-
-/obj/item/clothing/suit/storage/jacket/spanish_officer_army
-	name = "Spanish Army jacket"
-	desc = "A standard army jacket of the Spanish Army. Yellow with golden buttons."
-	icon_state = "spanish_officer"
-	item_state = "spanish_officer"
-	worn_state = "spanish_officer"
-
-/obj/item/clothing/suit/storage/jacket/portuguese_officer_army
-	name = "Portuguese Army jacket"
-	desc = "A standard army jacket of the Portuguese Army. Green with golden buttons."
-	icon_state = "portuguese_army"
-	item_state = "portuguese_army"
-	worn_state = "portuguese_army"
-
-/obj/item/clothing/suit/storage/jacket/french_officer_army
-	name = "French Army jacket"
-	desc = "A standard army jacket of the French Army. White with blue trimmings."
-	icon_state = "french_army"
-	item_state = "french_army"
-	worn_state = "french_army"
-
-/obj/item/clothing/suit/storage/jacket/british_officer_army
-	name = "British Army jacket"
-	desc = "A standard army jacket of the French Army. Red and White."
-	icon_state = "british_officer"
-	item_state = "british_officer"
-	worn_state = "british_officer"
-
 /obj/item/clothing/under/dutch_soldier
-	name = "Dutch Army uniform"
-	desc = "A set of United Provinces army clothes. Yellow shirts and trousers."
+	name = "dutch army uniform"
+	desc = "A set of united provinces army clothes. Yellow shirts and trousers."
 	icon_state = "dutch_army"
 	item_state = "dutch_army"
 	worn_state = "dutch_army"
 
 /obj/item/clothing/under/portuguese_soldier
-	name = "Portuguese Army uniform"
-	desc = "A set of Portuguese army clothes. Red shirt with black and white trousers."
+	name = "portuguese army uniform"
+	desc = "A set of portuguese army clothes. Red shirt with black and white trousers."
 	icon_state = "portuguese_army"
 	item_state = "portuguese_army"
 	worn_state = "portuguese_army"
 
 /obj/item/clothing/under/french_soldier
 	name = "French Army uniform"
-	desc = "A set of French army clothes. White shirt with blue and white trousers."
+	desc = "A set of french army clothes. White shirt with blue and white trousers."
 	icon_state = "french_army"
 	item_state = "french_army"
 	worn_state = "french_army"
+
+	/* Colonial Army Jackets*/ //officer army jackets seem to be... unfinished.
+
+/obj/item/clothing/suit/storage/jacket/dutch_officer_army
+	name = "united provinces army jacket"
+	desc = "A standard army jacket of the united provinces army. Orange with golden buttons."
+	icon_state = "dutch_army"
+	item_state = "dutch_army"
+	worn_state = "dutch_army"
+
+/obj/item/clothing/suit/storage/jacket/spanish_officer_army
+	name = "spanish army jacket"
+	desc = "A standard army jacket of the spanish Army. Yellow with golden buttons."
+	icon_state = "spanish_officer"
+	item_state = "spanish_officer"
+	worn_state = "spanish_officer"
+
+/obj/item/clothing/suit/storage/jacket/portuguese_officer_army
+	name = "portuguese army jacket"
+	desc = "A standard army jacket of the portuguese Army. Green with golden buttons."
+	icon_state = "portuguese_army"
+	item_state = "portuguese_army"
+	worn_state = "portuguese_army"
+
+/obj/item/clothing/suit/storage/jacket/french_officer_army
+	name = "french army jacket"
+	desc = "A standard army jacket of the french army. White with blue trimmings."
+	icon_state = "french_army"
+	item_state = "french_army"
+	worn_state = "french_army"
+
+/obj/item/clothing/suit/storage/jacket/british_officer_army
+	name = "british army jacket"
+	desc = "A standard army jacket of the british army. Red and white."
+	icon_state = "british_officer"
+	item_state = "british_officer"
+	worn_state = "british_officer"
 
 /* Miscallaneous*/
 
