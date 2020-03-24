@@ -231,6 +231,18 @@
 	slowdown = 0.2
 	health = 18
 
+/obj/item/clothing/suit/armor/ancient/gator_scale_armor
+	name = "alligator scale armor"
+	desc = "A carefully cured & hardened alligator scale armor, covering the torso."
+	icon_state = "gator_scale_armor"
+	item_state = "gator_scale_armor"
+	worn_state = "gator_scale_armor"
+	body_parts_covered = UPPER_TORSO
+	armor = list(melee = 45, arrow = 25, gun = 5, energy = 10, bomb = 20, bio = 20, rad = 10)
+	value = 40
+	slowdown = 0.2
+	health = 18
+
 /*Ancient Capes*/
 
 /obj/item/clothing/suit/cape
@@ -455,6 +467,16 @@
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
 	var/colortype = "brown" //I haven't knocked together the coloration idea yet - @fantasticfwoosh
+
+/obj/item/clothing/head/gatorpelt
+	name = "alligator pelt headcover"
+	desc = "A alligator pelt turned into a headcover."
+	icon_state = "gatorpelt"
+	item_state = "gatorpelt"
+	worn_state = "gatorpelt"
+	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
+	var/colortype = "grey" //i really dont know what to put in this one - @fantasticfwoosh
 
 /obj/item/clothing/head/foxpelt
 	name = "foxpelt headcover"

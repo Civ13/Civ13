@@ -580,6 +580,15 @@ var/list/name_to_material
 	melting_point = T0C+300
 	hardness = 25
 
+/*/material/gator_scale //In preparation, snakes and other reptiles have other sorts.
+	name = "alligator scale"
+	icon_colour = "#443d36"
+
+	flags = MATERIAL_PADDING
+	ignition_point = T0C+300
+	melting_point = T0C+300
+	hardness = 25*/
+
 /material/pelt
 	name = "pelt"
 	use_name = "pelt"
@@ -668,6 +677,16 @@ var/list/name_to_material
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/lionpelt
 
+/* /material/gatorpelt
+	name = "alligatorpelt"
+	use_name = "alligator"
+	icon_colour = "#443d36"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/gatorpelt */
 
 /material/monkeypelt
 	name = "monkeypelt"
@@ -712,6 +731,17 @@ var/list/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/hairlesshide
+
+/*/material/scalelesshide //deactivated for now, prepped up for skinned gatorpelts
+	name = "scalelesshide"
+	use_name = "scaleless hide"
+	icon_colour = "#443d36"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/scalelesshide*/
 
 /material/humanpelt
 	name = "humanpelt"
