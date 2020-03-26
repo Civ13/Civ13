@@ -1,7 +1,5 @@
 
-/*
- * Backpack
- */
+/* backpack.dm*/
 
 /obj/item/weapon/storage/backpack
 	name = "backpack"
@@ -42,15 +40,21 @@
 	..(user)
 */
 
-/*
- * Satchel Types
- */
+/* Satchels*/
 
 /obj/item/weapon/storage/backpack/satchel
 	name = "leather satchel"
 	desc = "It's a very fancy satchel made with fine leather."
 	icon_state = "satchel"
 	base_icon = "satchel"
+
+/obj/item/weapon/storage/backpack/satchel/gator_satchel
+	name = "alligator scale satchel"
+	desc = "A fashionable satchel lined with exotic alligator scales"
+	icon_state = "gator_satchel"
+	base_icon = "gator_satchel"
+
+/* Backpacks */
 
 /obj/item/weapon/storage/backpack/ww2/jap
 	name = "japanese backpack"
@@ -69,6 +73,13 @@
 	worn_state = "germanpack"
 	base_icon = "germanpack"
 	max_storage_space = 26
+
+/obj/item/weapon/storage/backpack/ww2/german/sapper
+	New()
+		..()
+		new /obj/item/weapon/storage/toolbox/emergency(src)
+		new /obj/item/weapon/storage/toolbox/mechanical(src)
+
 obj/item/weapon/storage/backpack/ww2/american
 	name = "american backpack"
 	desc = "It's a standard issue backpack for american military personel"
@@ -78,18 +89,11 @@ obj/item/weapon/storage/backpack/ww2/american
 	base_icon = "uspack"
 	max_storage_space = 26
 
-/obj/item/weapon/storage/backpack/ww2/german/sapper
-	New()
-		..()
-		new /obj/item/weapon/storage/toolbox/emergency(src)
-		new /obj/item/weapon/storage/toolbox/mechanical(src)
-
 /obj/item/weapon/storage/backpack/scavpack
 	name = "scavenger pack"
 	desc = "A makeshift backpack made of a mix of materials."
 	icon_state = "scavpack"
 	item_state = "scavpack"
-
 
 /obj/item/weapon/storage/backpack/rucksack
 	name = "rucksack"
@@ -102,10 +106,8 @@ obj/item/weapon/storage/backpack/ww2/american
 	max_w_class = 4
 	max_storage_space = 36
 
-
-
 /obj/item/weapon/storage/backpack/civbag
-	name = "Backpack"
+	name = "backpack"
 	desc = "A big backpack made for long walks."
 	icon_state = "civback"
 	item_state = "civback"
