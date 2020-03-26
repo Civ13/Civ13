@@ -390,6 +390,16 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
+/* /obj/item/stack/material/pelt/gator_pelt  //reserved
+	name = "gator pelt"
+	desc = "A pelt from a skinned alligator."
+	icon_state = "sheet-gatorpelt"
+	default_type = "gatorpelt"
+	w_class = 2.0
+	flammable = FALSE
+	value = 3 */
+
 /obj/item/stack/material/pelt/monkeypelt
 	name = "monkey pelt"
 	desc = "A pelt from a skinned monkey."
