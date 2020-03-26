@@ -610,6 +610,9 @@
 				else if (istype(src, /mob/living/simple_animal/hostile/sabertooth/lion) && !istype(src, /mob/living/simple_animal/hostile/sabertooth/lion/gladiator))
 					var/obj/item/stack/material/pelt/lionpelt/NP = new/obj/item/stack/material/pelt/lionpelt(get_turf(src))
 					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/hostile/alligator))
+					var/obj/item/stack/material/pelt/gatorpelt/NP = new/obj/item/stack/material/pelt/gatorpelt(get_turf(src))
+					NP.amount = 3
 				if (istype(user, /mob/living/carbon/human))
 					var/mob/living/carbon/human/HM = user
 					HM.adaptStat("medical", amt/3)

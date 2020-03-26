@@ -579,16 +579,16 @@ var/list/name_to_material
 	ignition_point = T0C+300
 	melting_point = T0C+300
 	hardness = 25
-
-/*/material/gator_scale //In preparation, snakes and other reptiles have other sorts.
+/*
+/material/gatorscale // In preparation, snakes and other reptiles have other sorts.
 	name = "alligator scale"
 	icon_colour = "#443d36"
 
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+300
 	melting_point = T0C+300
-	hardness = 25*/
-
+	hardness = 25
+*/
 /material/pelt
 	name = "pelt"
 	use_name = "pelt"
@@ -677,8 +677,8 @@ var/list/name_to_material
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/lionpelt
 
-/* /material/gatorpelt
-	name = "alligatorpelt"
+/material/gatorpelt
+	name = "alligator pelt"
 	use_name = "alligator"
 	icon_colour = "#443d36"
 	ignition_point = T0C+400
@@ -686,7 +686,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/pelt/gatorpelt */
+	stack_type = /obj/item/stack/material/pelt/gatorpelt
 
 /material/monkeypelt
 	name = "monkeypelt"
