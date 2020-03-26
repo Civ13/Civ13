@@ -23,7 +23,8 @@ RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,
 RECIPE: /material/leather/,comfy chair,/obj/structure/bed/chair/comfy/brown,6,100,1,1,furniture,25,0,25,8,null
 RECIPE: /material/leather/,bug swatter,/obj/item/weapon/swatter,3,90,0,1,tools,0,0,0,8,null
 RECIPE: /material/leather/,quiver,/obj/item/weapon/storage/backpack/quiver,3,60,0,1,storage,0,0,0,8,null
-RECIPE: /material/leather/,leather satchel,/obj/item/weapon/storage/belt/leather,3,60,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,leather belt satchel,/obj/item/weapon/storage/belt/leather,3,60,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,leather satchel,/obj/item/weapon/storage/backpack/satchel,3,100,0,1,storage,120,0,125,8,null
 RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null
 RECIPE: /material/leather/,leather waterskin,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin,3,90,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,ore collector,/obj/item/weapon/storage/ore_collector,5,100,0,1,storage,0,0,0,8,null
@@ -83,6 +84,11 @@ RECIPE: /material/leather/,riding boots,/obj/item/clothing/shoes/riding2,3,50,0,
 RECIPE: /material/leather/,black leather shoes,/obj/item/clothing/shoes/soldiershoes,2,60,0,1,foot wear,55,0,25,8,null
 RECIPE: /material/leather/,black leather boots,/obj/item/clothing/shoes/blackboots1,3,80,0,1,foot wear,55,0,25,8,null
 RECIPE: /material/leather/,leather boots,/obj/item/clothing/shoes/leatherboots1,3,80,0,1,foot wear,55,0,25,8,null
+RECIPE: /material/leather/,work boots,/obj/item/clothing/shoes/workboots,4,80,0,1,foot wear,120,0,112,8,null
+RECIPE: /material/leather/,laceup shoes,/obj/item/clothing/shoes/laceup,3,60,0,1,foot wear,112,0,112,8,null
+RECIPE: /material/leather/,plain leather shoes,/obj/item/clothing/shoes/leather,3,60,0,1,foot wear,112,0,112,8,null
+RECIPE: /material/leather/,biker jacket,/obj/item/clothing/suit/storage/coat/ww2/biker,6,110,0,1,jackets & vests,150,0,175,8,null
+RECIPE: /material/leather/,80's jacket,/obj/item/clothing/suit/storage/coat/oldyjacket,6,110,0,1,jackets & vests,185,0,175,7,null
 RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,0,1,weapons,0,38,0,8,null
 RECIPE: /material/leather/,leather curtain,/obj/structure/curtain/leather,1,80,1,1,furniture,0,0,0,8,null
 
@@ -179,7 +185,6 @@ RECIPE: /material/woolcloth/,brown bomber's jacket,/obj/item/clothing/suit/stora
 RECIPE: /material/woolcloth/,black bomber's jacket,/obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack,4,70,0,1,jackets & vests,0,0,109,8,null
 RECIPE: /material/woolcloth/,service jacket,/obj/item/clothing/suit/storage/coat/ww2/servicejacket,3,70,0,1,jackets & vests,0,0,109,8,null
 RECIPE: /material/woolcloth/,modern coat,/obj/item/clothing/suit/storage/coat/ww2/moderncoat,4,70,0,1,jackets & vests,0,0,109,8,null
-
 
 RECIPE: /material/cloth/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
 RECIPE: /material/cloth/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
@@ -433,6 +438,15 @@ RECIPE: /material/catpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather,3,
 RECIPE: /material/pantherpelt/,panther pelt headcover,/obj/item/clothing/head/pantherpelt,3,150,0,1,none,0,0,0,8,null
 
 RECIPE: /material/lionpelt/,lion pelt headcover,/obj/item/clothing/head/lionpelt,3,150,0,1,none,0,0,0,8,null
+
+RECIPE: /material/pelt/gatorpelt/,alligator pelt headcover,/obj/item/clothing/head/gatorpelt,3,150,0,1,none,0,0,0,8,null
+RECIPE: /material/pelt/gatorpelt/,alligator scale armor,/obj/item/clothing/suit/armor/ancient/gator_scale_armor,9,100,0,1,none,0,18,18,2,null
+RECIPE: /material/pelt/gatorpelt/,alligator scale belt,/obj/item/weapon/storage/belt/gator_belt,3,80,0,1,none,0,0,98,7,null
+RECIPE: /material/pelt/gatorpelt/,alliator scale wallet,/obj/item/clothing/accessory/storage/coinpouch/gator_wallet,2,60,0,1,storage,87,0,0,8,null
+RECIPE: /material/pelt/gatorpelt/,alligator scale satchel,/obj/item/weapon/storage/backpack/satchel/gator_satchel,3,100,0,1,storage,120,0,125,8,null
+RECIPE: /material/pelt/gatorpelt/,alligator scale riding boots,/obj/item/clothing/shoes/riding1/gator_cowboy,3,60,0,1,foot wear,0,0,98,4,null
+RECIPE: /material/pelt/gatorpelt/,alligator scale ankle boots,/obj/item/clothing/shoes/gator_ankleboots,3,60,0,1,foot wear,0,0,98,7,null
+RECIPE: /material/pelt/gatorpelt/,alligator scale laceup shoes,/obj/item/clothing/shoes/gator_laceup,3,60,0,1,foot wear,112,0,112,8,null
 
 RECIPE: /material/monkeypelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/monkeypelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
