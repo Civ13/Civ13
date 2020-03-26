@@ -72,7 +72,63 @@
 
 /obj/item/clothing/accessory/rank/germ_schutze
 	icon_state = "germ_shtz"
-	item_state = "jap_nitohei"
-	worn_state = "jap_nitohei"
-	name = "Nitohei rank patch"
+	item_state = "germ_shtz"
+	worn_state = "germ_shtz"
+	name = "Schutze rank patch"
 	desc = "the rank of 2nd class soldier, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/germ_schutze
+	icon_state = "germ_schtz"
+	item_state = "germ_schtz"
+	worn_state = "germ_schtz"
+	name = "Schutze rank patch"
+	desc = "the rank of 2nd class soldier, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/germ_oberschutze
+	icon_state = "germ_obrschtz"
+	item_state = "germ_obrschtz"
+	worn_state = "germ_obrschtz"
+	name = "Oberschutze rank patch"
+	desc = "the rank of 1st class soldier, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/germ_gefreiter
+	icon_state = "germ_gftr"
+	item_state = "germ_gftr"
+	worn_state = "germ_gftr"
+	name = "Gefreiter rank patch"
+	desc = "the rank of Acting Corporal, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/germ_obergefreiter
+	icon_state = "germ_obrgftr"
+	item_state = "germ_obrgftr"
+	worn_state = "germ_obrgftr"
+	name = "Obergefreiter rank patch"
+	desc = "the rank of Corporal, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/germ_gruppenfuhrer
+	icon_state = "germ_grppnfher"
+	item_state = "germ_grppnfher"
+	worn_state = "germ_grppnfher"
+	name = "Unteroffizier rank patch"
+	desc = "the rank of Sergeant, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/germ_2leutnant
+	icon_state = "germ_2lt"
+	item_state = "germ_2lt"
+	worn_state = "germ_2lt"
+	name = "Leutnant rank patch"
+	desc = "the rank of 2nd Lieutenant, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/germ_2leutnant
+	icon_state = "germ_1lt"
+	item_state = "germ_1lt"
+	worn_state = "germ_1lt"
+	name = "Ober Leutnant rank patch"
+	desc = "the rank of 1st Lieutenant, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/rank/germ_hauptmann
+	icon_state = "germ_hptmn"
+	item_state = "germ_hptmn"
+	worn_state = "germ_hptmn"
+	name = "Hauptmann rank patch"
+	desc = "the rank of Captain, to be sewn into the collar of a uniform."
