@@ -442,8 +442,9 @@ RECIPE: /material/lionpelt/,lion pelt headcover,/obj/item/clothing/head/lionpelt
 RECIPE: /material/pelt/gatorpelt/,alligator pelt headcover,/obj/item/clothing/head/gatorpelt,3,150,0,1,none,0,0,0,8,null
 RECIPE: /material/pelt/gatorpelt/,alligator scale armor,/obj/item/clothing/suit/armor/ancient/gator_scale_armor,9,100,0,1,none,0,18,18,2,null
 RECIPE: /material/pelt/gatorpelt/,alligator scale belt,/obj/item/weapon/storage/belt/gator_belt,3,80,0,1,none,0,0,98,7,null
+RECIPE: /material/leather/,biker jacket,/obj/item/clothing/suit/storage/coat/ww2/biker/gator_jacket,6,110,0,1,jackets & vests,150,0,175,8,null
 RECIPE: /material/pelt/gatorpelt/,alliator scale wallet,/obj/item/clothing/accessory/storage/coinpouch/gator_wallet,2,60,0,1,storage,87,0,0,8,null
-RECIPE: /material/pelt/gatorpelt/,alligator scale satchel,/obj/item/weapon/storage/backpack/satchel/gator_satchel,3,100,0,1,storage,120,0,125,8,null
+RECIPE: /material/pelt/gatorpelt/,alligator scale satchel,/obj/item/weapon/storage/backpack/satchel/gator_satchel,5,100,0,1,storage,120,0,125,8,null
 RECIPE: /material/pelt/gatorpelt/,alligator scale riding boots,/obj/item/clothing/shoes/riding1/gator_cowboy,3,60,0,1,foot wear,0,0,98,4,null
 RECIPE: /material/pelt/gatorpelt/,alligator scale ankle boots,/obj/item/clothing/shoes/gator_ankleboots,3,60,0,1,foot wear,0,0,98,7,null
 RECIPE: /material/pelt/gatorpelt/,alligator scale laceup shoes,/obj/item/clothing/shoes/gator_laceup,3,60,0,1,foot wear,112,0,112,8,null
