@@ -1383,12 +1383,6 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
 
-/obj/item/weapon/storage/belt/gator_belt //doesn't hold anything thus far.
-	name = "alligator scale belt"
-	desc = "A purely decorative alligator scale thin belt."
-	icon_state = "gator_belt"
-	item_state = "gator_belt"
-
 /obj/item/weapon/storage/belt/gulagguard
 	name = "GULAG guard belt"
 	desc = "A belt that can hold the standard issue gear of GULAG guards."
