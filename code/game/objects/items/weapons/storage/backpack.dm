@@ -47,6 +47,7 @@
 	desc = "It's a very fancy satchel made with fine leather."
 	icon_state = "satchel"
 	base_icon = "satchel"
+	worn_state = "satchel-norm"
 
 /obj/item/weapon/storage/backpack/satchel/gator_satchel
 	name = "alligator scale satchel"
