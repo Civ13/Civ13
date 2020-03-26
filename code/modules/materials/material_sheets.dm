@@ -327,6 +327,16 @@
 	value = 2
 	w_class = 2.0
 	flammable = TRUE
+/*
+/obj/item/stack/material/scales/gator_scale  //placeholder for alternative scaly hide crafting
+	name = "alligator scales"
+	desc = "The fine scales of a alligator."
+	icon_state = "sheet-scales"
+	default_type = "alligator scales"
+	value = 2
+	w_class = 2.0
+	flammable = FALSE
+*/
 
 /obj/item/stack/material/pelt
 	name = "animal pelt"
@@ -345,7 +355,6 @@
 	value = 3
 	w_class = 2.0
 	flammable = TRUE
-
 /obj/item/stack/material/pelt/bearpelt/brown
 	name = "brown bear pelt"
 	desc = "A pelt from a skinned bear."
@@ -358,6 +367,7 @@
 	icon_state = "sheet-whitebearpelt"
 	default_type = "whitebearpelt"
 	value = 3
+
 /obj/item/stack/material/pelt/wolfpelt
 	name = "wolf pelt"
 	desc = "A pelt from a skinned wolf."
@@ -366,6 +376,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
 /obj/item/stack/material/pelt/catpelt
 	name = "cat pelt"
 	desc = "A pelt from a skinned cat."
@@ -391,14 +402,14 @@
 	flammable = TRUE
 	value = 3
 
-/* /obj/item/stack/material/pelt/gator_pelt  //reserved
+/obj/item/stack/material/pelt/gatorpelt
 	name = "gator pelt"
 	desc = "A pelt from a skinned alligator."
 	icon_state = "sheet-gatorpelt"
 	default_type = "gatorpelt"
 	w_class = 2.0
 	flammable = FALSE
-	value = 3 */
+	value = 3
 
 /obj/item/stack/material/pelt/monkeypelt
 	name = "monkey pelt"
@@ -408,6 +419,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
 /obj/item/stack/material/pelt/foxpelt
 	name = "fox pelt"
 	desc = "A pelt from a skinned fox."
@@ -424,6 +436,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
 /obj/item/stack/material/pelt/orcpelt
 	name = "Orc Pelt"
 	desc = "The skin of an Orc"
