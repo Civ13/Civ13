@@ -32,38 +32,41 @@
 	else
 		currcursor = "Default"
 	. += "<b>Cursor Style: </b><a href='?src=\ref[src];select_cursor=1'><b>[currcursor]</b></A><br><br>"
-	for (var/v in TRUE to pref.preview_icons.len)
-		if (isicon(pref.preview_icons_front[v]))
-			user << browse_rsc(pref.preview_icons_front[v], "previewicon_[v]_front.png")
-		if (isicon(pref.preview_icons_back[v]))
-			user << browse_rsc(pref.preview_icons_back[v], "previewicon_[v]_back.png")
-		if (isicon(pref.preview_icons_east[v]))
-			user << browse_rsc(pref.preview_icons_east[v], "previewicon_[v]_east.png")
-		if (isicon(pref.preview_icons_west[v]))
-			user << browse_rsc(pref.preview_icons_west[v], "previewicon_[v]_west.png")
-	. += "<b>Preview</b><br>"
+	if (ishuman(user) && user.stat != DEAD)
+		. += "<br>"
+	else
+		for (var/v in TRUE to pref.preview_icons.len)
+			if (isicon(pref.preview_icons_front[v]))
+				user << browse_rsc(pref.preview_icons_front[v], "previewicon_[v]_front.png")
+			if (isicon(pref.preview_icons_back[v]))
+				user << browse_rsc(pref.preview_icons_back[v], "previewicon_[v]_back.png")
+			if (isicon(pref.preview_icons_east[v]))
+				user << browse_rsc(pref.preview_icons_east[v], "previewicon_[v]_east.png")
+			if (isicon(pref.preview_icons_west[v]))
+				user << browse_rsc(pref.preview_icons_west[v], "previewicon_[v]_west.png")
+		. += "<b>Preview</b><br>"
 
-	for (var/v in TRUE to pref.preview_icons.len)
-		. += "<img src=previewicon_[v]_front.png height=64 width=64>"
-		. += "<img src=previewicon_[v]_back.png height=64 width=64>"
-		. += "<img src=previewicon_[v]_east.png height=64 width=64>"
-		. += "<img src=previewicon_[v]_west.png height=64 width=64>"
-		. += "<br><br>"
-	// name
-	. += "<b>Name:</b> "
-	. += "<a href='?src=\ref[src];rename=1'><b>[pref.real_name]</b></a><br><br>"
-	. += "(<a href='?src=\ref[src];random_name=1'>Randomize Name</a>)<br><br>"
-	. += "<b>Always Randomize Name:</b> <a href='?src=\ref[src];always_random_name=1'>[pref.be_random_name ? "Yes" : "No"]</a><br><br>"
-	. += "<b>Traits: ([check_trait_points(pref.traits)])</b><br>"
-	. += "<i>(The sum of trait values has to be <b>0</b>)</i><br>"
-	. += "<a href='?src=\ref[src];add_traits=1'>Add</a> <a href='?src=\ref[src];remove_traits=1'>Remove</a><br><br>"
-	if (pref.traits.len)
-		for (var/i=1, i<=pref.traits.len, i++)
-			if (pref.traits[i] != "Cancel")
-				if (i == pref.traits.len)
-					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
-				else if (pref.traits.len)
-					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]]), "
+		for (var/v in TRUE to pref.preview_icons.len)
+			. += "<img src=previewicon_[v]_front.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_back.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_east.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_west.png height=64 width=64>"
+			. += "<br><br>"
+		// name
+		. += "<b>Name:</b> "
+		. += "<a href='?src=\ref[src];rename=1'><b>[pref.real_name]</b></a><br><br>"
+		. += "(<a href='?src=\ref[src];random_name=1'>Randomize Name</a>)<br><br>"
+		. += "<b>Always Randomize Name:</b> <a href='?src=\ref[src];always_random_name=1'>[pref.be_random_name ? "Yes" : "No"]</a><br><br>"
+		. += "<b>Traits: ([check_trait_points(pref.traits)])</b><br>"
+		. += "<i>(The sum of trait values has to be <b>0</b>)</i><br>"
+		. += "<a href='?src=\ref[src];add_traits=1'>Add</a> <a href='?src=\ref[src];remove_traits=1'>Remove</a><br><br>"
+		if (pref.traits.len)
+			for (var/i=1, i<=pref.traits.len, i++)
+				if (pref.traits[i] != "Cancel")
+					if (i == pref.traits.len)
+						. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
+					else if (pref.traits.len)
+						. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]]), "
 
 /datum/category_item/player_setup_item/general/basic/OnTopic(var/href,var/list/href_list, var/mob/user)
 
