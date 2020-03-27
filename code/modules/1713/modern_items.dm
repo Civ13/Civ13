@@ -434,7 +434,7 @@
 		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
 		return
 	if (volume < 1)
-		H << "<span class = 'notice'>The refinery is empty! Put some crude petroleum in first.</span>"
+		H << "<span class = 'notice'>The refinery is empty! Put some percursors in first.</span>"
 		return
 	if (active)
 		active = FALSE
@@ -753,7 +753,7 @@
 
 /obj/structure/bakelizer/attack_hand(var/mob/living/carbon/human/H)
 	if (volume < 1)
-		H << "<span class = 'notice'>The refinery is empty! Put some crude petroleum in first.</span>"
+		H << "<span class = 'notice'>The bakelizer is empty! Put some crude petroleum in first.</span>"
 		return
 	if (active)
 		active = FALSE
