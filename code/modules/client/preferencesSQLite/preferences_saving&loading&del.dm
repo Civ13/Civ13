@@ -66,7 +66,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 /datum/preferences/proc/save_preferences(var/list/charprefs = list())
 
-	if (!client_ckey)
+	if (!client_ckey || !client.key)
 		return FALSE
 
 	if (real_name == "PLACEHOLDER")
