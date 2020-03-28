@@ -93,6 +93,8 @@
 			if (istype(loc, /turf/floor/beach/water) && !found)
 				if (istype(loc, /turf/floor/beach/water/deep/saltwater))
 					if (prob(70))
+						found = /obj/item/weapon/reagent_containers/food/snacks/octopus
+					else if (prob(70))
 						found = /obj/item/weapon/reagent_containers/food/snacks/rawlobster
 					else
 						found = /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
