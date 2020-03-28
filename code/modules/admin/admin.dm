@@ -523,7 +523,21 @@ proc/admin_notice(var/message, var/rights)
 		world << "<big>Research has been <b>deactivated.</b></big>"
 		log_admin("[key_name(usr)] has deactivated the Research.")
 		return
-
+/datum/admins/proc/redirect_all_players()
+	set category = "Debug"
+	set desc="Redirects all players to another server."
+	set name="Server Redirection"
+	if (!usr.client.holder)
+		return
+	if (usr.client.holder.rank == "Admiral" || usr.client.holder.rank == "Host")
+		redirect_all_players = input("Where to redirect them to? Use byond://server:port format","Redirection",null) as text
+		if (redirect_all_players == null || redirect_all_players == "0" || redirect_all_players == "")
+			return
+		for (var/C in clients)
+			winset(C, null, "mainwindow.flash=1")
+			C << link(redirect_all_players)
+	else
+		return
 /datum/admins/proc/set_research_speed()
 	set category = "Special"
 	set desc="Changes research speed in Auto-Research mode."
