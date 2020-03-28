@@ -899,3 +899,30 @@
 			stored_unit.forceMove(get_turf(src))
 			stored_unit = null
 			return
+
+/obj/structure/wild/bamboo
+	name = "bamboo"
+	icon = 'icons/obj/flora/bamboo.dmi'
+	icon_state = "bamboowall1"
+	deadicon = "none"
+	deadicon_state = "none"
+	opacity = FALSE
+	density = FALSE
+	edible = TRUE
+	leaves = 1
+	max_leaves = 1
+
+/obj/structure/wild/bamboo/New()
+	..()
+	if (prob(50))
+		icon_state = "bamboowall[rand(1,3)]"
+	else
+		icon_state = "bamboowall_single[rand(1,3)]"
+
+/obj/structure/wild/bamboo/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
+		dropwood.amount = 2
+		qdel(src)
+		return

@@ -72,8 +72,8 @@
 
 /obj/structure/fishing_cage/attack_hand(mob/user as mob)
 	if (found)
-		user << "You open the cage and find there is [found] inside!"
 		var/obj/item/weapon/reagent_containers/food/FD = new found(loc)
+		user << "You open the cage and find there is [FD] inside!"
 		user.put_in_hands(FD)
 		found = null
 		generate_fish()
