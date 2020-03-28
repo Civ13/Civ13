@@ -190,37 +190,8 @@
 			return
 
 	else if (is_sliceable() && !istype(W, /obj/item/weapon/reagent_containers/food/drinks) && !istype(W, /obj/item/weapon/reagent_containers/glass))
-		//these are used to allow hiding edge items in food that is not on a table/tray
 
-		var/can_slice_here = FALSE
-		if (isturf(loc))
-			if (locate(/obj/structure/table) in loc)
-				can_slice_here = TRUE
-			else if (locate(/obj/structure/optable) in loc)
-				can_slice_here = TRUE
-
-		var/hide_item = (!W.edge || !can_slice_here)
-
-		if (hide_item)
-			if (contents.len)
-				user << "<span class='danger'>There's already something inside \the [src].</span>"
-				return
-			if (W.w_class >= w_class)
-				user << "<span class='warning'>\the [W] is too big to hide inside \the [src].</span>"
-				return
-
-			user << "<span class='warning'>You slip \the [W] inside \the [src].</span>"
-			user.remove_from_mob(W)
-			W.dropped(user)
-			add_fingerprint(user)
-			contents += W
-			return
-
-		else if (W.edge)
-			if (!can_slice_here)
-				user << "<span class='warning'>You cannot slice \the [src] here! You need a table or at least a tray to do it.</span>"
-				return
-
+		if (W.edge)
 			var/slices_lost = 0
 			if (W.w_class > 3)
 				user.visible_message("<span class='notice'>\The [user] crudely slices \the [src] with [W]!</span>", "<span class='notice'>You crudely slice \the [src] with your [W]!</span>")
