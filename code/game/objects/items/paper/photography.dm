@@ -150,6 +150,7 @@ var/global/photo_count = 0
 	var/on = 1
 	var/base_icon_state = "camera"
 	var/size = 3
+	var/colorset = "sepia" //sepia, oldgrayscale, grayscale, oldcolor, color
 /obj/item/camera/update_icon()
 	if(on)
 		icon_state = "[base_icon_state]"
@@ -250,7 +251,17 @@ var/global/photo_count = 0
 	var/y_c = target.y - (size-1)/2
 	var/z_c	= target.z
 	var/icon/photoimage = generate_image(x_c, y_c, z_c, size, 1, user, 0)
-
+	switch(colorset)
+		if ("sepia")
+			photoimage.GrayScale()
+			photoimage.ColorTone(rgb(112, 66, 20))
+		if ("oldgrayscale")
+			photoimage.GrayScale()
+			photoimage.ColorTone(rgb(231, 231, 231))
+		if ("grayscale")
+			photoimage.GrayScale()
+		if ("oldcolor")
+			photoimage.ColorTone(rgb(233, 250, 242))
 	var/obj/item/weapon/photo/p = new()
 	p.img = photoimage
 	p.desc = mobs
