@@ -503,6 +503,17 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += pants
 				standing.overlays += shirt
 				standing.overlays += belt
+		if (istype(w_uniform, /obj/item/clothing/under/crinoline_dress))
+			var/obj/item/clothing/under/crinoline_dress/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_dress")
+				pants.color = CU.topcolor
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_under")
+				shirt.color = CU.undercolor
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_lining")
+				standing.overlays += pants
+				standing.overlays += shirt
+				standing.overlays += belt
 		if (istype(w_uniform, /obj/item/clothing/under/customuniform))
 			var/obj/item/clothing/under/customuniform/CU = w_uniform
 			if (!CU.uncolored)
@@ -552,7 +563,7 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += green
 				standing.overlays += black
 				standing.overlays += beltm
-		if (istype(w_uniform, /obj/item/clothing/under/custompyjamas))
+		else if (istype(w_uniform, /obj/item/clothing/under/custompyjamas))
 			var/obj/item/clothing/under/custompyjamas/CU = w_uniform
 			if (!CU.uncolored)
 				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompyjamas_base")
@@ -560,7 +571,7 @@ var/global/list/damage_icon_parts = list()
 				shirt.color = CU.stripescolor
 				standing.overlays += pants
 				standing.overlays += shirt
-		if (istype(w_uniform, /obj/item/clothing/under/custompontifical))
+		else if (istype(w_uniform, /obj/item/clothing/under/custompontifical))
 			var/obj/item/clothing/under/custompontifical/CU = w_uniform
 			if (!CU.uncolored)
 				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_leggings")
