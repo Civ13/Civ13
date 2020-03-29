@@ -380,7 +380,7 @@
 	desc = "A common scavenger bird."
 	icon_state = "crow"
 	icon_living = "crow"
-	icon_dead = "crow-dead"
+	icon_dead = "crow_dead"
 	speak = list("caw caw!","CA-CAW CA-CAW!")
 	speak_emote = list("caws")
 	emote_hear = list("caws")
