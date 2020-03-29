@@ -1082,6 +1082,7 @@
 	explosion_resistance = 7
 	material = "Stone"
 	hardness = 95
+	adjusts = TRUE
 
 /obj/covers/vault
 	name = "vault wall"
