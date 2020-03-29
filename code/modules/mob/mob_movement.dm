@@ -560,7 +560,10 @@
 					H.nutrition -= 0.005
 					H.water -= 0.005
 					if (H.stats["stamina"][1] > 0)
-						--H.stats["stamina"][1]
+						if (H.find_trait("Flat Footed"))
+							H.stats["stamina"][1] -= 2
+						else
+					 	--H.stats["stamina"][1]
 					if (H.bodytemperature < H.species.body_temperature)
 						H.bodytemperature += 0.66
 			if ("walk")

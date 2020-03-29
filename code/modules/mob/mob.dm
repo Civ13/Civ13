@@ -921,7 +921,9 @@ mob/proc/yank_out_object()
 	return weakened
 
 /mob/living/proc/handle_stuttering()
-	if (stuttering)
+	if (find_trait("Stutter"))
+		stuttering = 10
+	else if (stuttering)
 		stuttering = max(stuttering-1, 0)
 	return stuttering
 
