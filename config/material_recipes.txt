@@ -769,7 +769,8 @@ RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,prod
 RECIPE: /material/steel/,IV drip,/obj/structure/iv_drip,6,140,0,1,production,95,0,95,8,null
 RECIPE: /material/steel/,wheelchair,/obj/structure/bed/chair/wheelchair,6,140,0,1,none,95,0,98,8,null
 RECIPE: /material/steel/,zippo lighter,/obj/item/weapon/flame/lighter/zippo,4,95,0,1,none,145,0,0,8,null
-RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,1,75,1,1,none,105,0,0,8,null
+RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,2,75,1,1,none,105,0,0,8,null
+RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (star),/obj/structure/fuelpump/star,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (small),/obj/structure/fuelpump/small,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (N),/obj/structure/fuelpump/n,15,120,1,1,none,120,0,0,8,null
