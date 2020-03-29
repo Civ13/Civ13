@@ -1,4 +1,4 @@
-/*	Photography!
+/*	Photography! Ported from Baystation12 on 28/03/2020
  *	Contains:
  *		Camera
  *		Camera Film
@@ -209,7 +209,7 @@ var/global/photo_count = 0
 	captureimage(target, user, flag)
 
 	playsound(loc, pick('sound/items/polaroid1.ogg', 'sound/items/polaroid2.ogg'), 75, 1, -3)
-
+	visible_message("Click!")
 	pictures_left--
 	to_chat(user, "<span class='notice'>[pictures_left] photos left.</span>")
 
