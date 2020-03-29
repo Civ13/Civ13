@@ -487,6 +487,22 @@
 				var/amount_to_transfer = current.volume * part
 				reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
 
+/obj/item/weapon/reagent_containers/glass/barrel/jerrycan
+	name = "steel jerrycan"
+	desc = "A steel jerrycan. Good for transporting fuel."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "jerrycan"
+	amount_per_transfer_from_this = 30
+	volume = 150
+	density = FALSE
+/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline
+	New()
+		..()
+		reagents.add_reagent("gasoline",150)
+/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel
+	New()
+		..()
+		reagents.add_reagent("diesel",150)
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
 	name = "small fueltank"
 	icon_state = "fueltank_small"

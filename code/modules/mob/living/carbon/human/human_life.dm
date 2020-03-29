@@ -79,6 +79,10 @@
 		size_multiplier = 1.3
 	else if (find_trait("Dwarfism"))
 		size_multiplier = 0.8
+	else if (find_trait("Short"))
+		size_multiplier = 0.9
+	else if (find_trait("Tall"))
+		size_multiplier = 1.1
 	if (riding && riding_mob)
 		if (!(riding_mob in range(1,src)))
 			riding = FALSE
@@ -186,7 +190,8 @@
 					mood += 0.12
 				else
 					mood -= 0.8
-		mood -= 0.02
+		if (!inducedSSD)
+			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats && stats.len)
 	// hotfixes some stamina bugs

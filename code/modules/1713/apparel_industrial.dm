@@ -25,6 +25,18 @@
 	icon_state = "cowboy2"
 	item_state = "cowboy2"
 
+/obj/item/clothing/head/vaquerohat
+	name = "vaquero hat"
+	desc = "a wide brimmed hat with a feather in the top, favored by mexican cowboys."
+	icon_state = "vaquerohat"
+	item_state = "vaquerohat"
+
+/obj/item/clothing/head/bandit
+	name = "bandit hat"
+	desc = "a dark and long brimmed cowboy hat with a grim presence."
+	icon_state = "bandit"
+	item_state = "bandit"
+
 /obj/item/clothing/head/unionhat
 	name = "dark union hat"
 	desc = "a dark, slouched leather hat worn commonly by union soldiers."

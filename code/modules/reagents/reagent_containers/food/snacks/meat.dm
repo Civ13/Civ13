@@ -212,3 +212,21 @@
 		reagents.add_reagent("protein", 1)
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 3
+
+/obj/item/weapon/reagent_containers/food/snacks/octopus
+	name = "octopus"
+	desc = "A fresh octopus. Yum!"
+	icon_state = "purple_octopus"
+	health = 130
+	filling_color = "#7F0000"
+	center_of_mass = list("x"=16, "y"=14)
+	raw = TRUE
+	rotten_icon_state = "octopus_rotten"
+	rots = TRUE
+	non_vegetarian = TRUE
+	satisfaction = -10
+	New()
+		..()
+		reagents.add_reagent("protein", 3)
+		reagents.add_reagent("food_poisoning", 1)
+		bitesize = 3

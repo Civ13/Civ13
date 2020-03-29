@@ -24,7 +24,7 @@
 
 	var/on_welcome_popup = FALSE
 
-
+var/global/redirect_all_players = null
 /mob/new_player/New()
 	mob_list += src
 	new_player_mob_list += src
@@ -33,7 +33,11 @@
 	spawn (10)
 		if (client)
 			movementMachine_clients -= client
-
+	if (!client || !client.holder || (client.holder.rank != "Host" && client.holder.rank != "Admiral"))
+		if (redirect_all_players)
+			for (var/C in clients)
+				winset(C, null, "mainwindow.flash=1")
+				C << link(redirect_all_players)
 /mob/new_player/Destroy()
 	new_player_mob_list -= src
 	..()

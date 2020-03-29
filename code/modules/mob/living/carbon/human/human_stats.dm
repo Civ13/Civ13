@@ -10,6 +10,10 @@
 		smod = 1.5
 	else if (find_trait("Dwarfism"))
 		smod = 0.7
+	else if (find_trait("Short"))
+		smod = 0.85
+	else if (find_trait("Tall"))
+		smod = 1.15
 	if (stats[lowertext(statname)] && stats[lowertext(statname)][1])
 		if (statname == "strength")
 			return (stats[lowertext(statname)][1]/100)*mood_modifier*smod

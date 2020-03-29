@@ -168,6 +168,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/change_colour_filter,
 	/datum/admins/proc/print_chemical_reactions,
 	/datum/admins/proc/print_crafting_recipes,
+	/datum/admins/proc/redirect_all_players,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(

@@ -235,15 +235,15 @@
 						salestax = (map.custom_civs[H.civilization][9]/100)*R.price
 					var/price_with_tax = R.price+salestax
 					currently_vending = R
-					if (moneyin < price_with_tax)
+					if (moneyin < price_with_tax*inp)
 						status_message = "Please insert money to pay for the item."
 						status_error = FALSE
 					else
-						moneyin -= price_with_tax
+						moneyin -= price_with_tax*inp
 						if (owner != "Global")
-							map.custom_company_value[owner] += R.price
+							map.custom_company_value[owner] += price_with_tax*inp
 							if (map.custom_civs[H.civilization])
-								map.custom_civs[H.civilization][5] += salestax
+								map.custom_civs[H.civilization][5] += salestax*inp
 						var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
 						GC.amount = moneyin/0.4
 						if (GC.amount == 0)
