@@ -266,7 +266,7 @@ RECIPE: /material/cloth/,orange hawaiian shirt,/obj/item/clothing/suit/hawaiian/
 RECIPE: /material/cloth/,purple hawaiian shirt,/obj/item/clothing/suit/hawaiian/purple,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,green hawaiian shirt,/obj/item/clothing/suit/hawaiian/green,3,100,0,1,jackets & vests,0,0,165,8,null
 
-RECIPE: /material/cloth/,fiendish headdress,/obj/item/clothing/head/fiendish,4,55,0,1,religious,0,0,18,4,null
+RECIPE: /material/cloth/,fiendish headdress,/obj/item/clothing/head/fiendish,4,55,0,1,hats & masks,0,0,18,4,null
 RECIPE: /material/cloth/,semitic cap,/obj/item/clothing/head/semitic_cap,4,55,0,1,hats & masks,0,0,18,3,null
 RECIPE: /material/cloth/,mayan headdress,/obj/item/clothing/head/mayan_headdress,4,55,0,1,hats & masks,0,0,18,3,null
 RECIPE: /material/cloth/,pharoah headdress,/obj/item/clothing/head/pharoah,6,55,0,1,hats & masks,0,0,18,1,null
