@@ -9,17 +9,18 @@
  * 8 - Ancient Headpieces
  * 9 - Ancient Helmets
  * 10 - Royal & Imperial Headwear
- * 11 - Pelts
- * 12 - Fur Coats
- * 13 - Fur Shoes
- * 14 - Ancient Facemasks & Covers
- * 15 - Miscallaneous*/
+ * 11 - Religious Headwear
+ * 12 - Pelts
+ * 13 - Fur Coats
+ * 14 - Fur Shoes
+ * 15 - Ancient Facemasks & Covers
+ * 16 - Miscallaneous*/
 
 /*Roman Uniforms & Sandals*/
 
 /obj/item/clothing/shoes/roman
 	name = "sandals"
-	desc = "basic leather sandals, going up to the knee."
+	desc = "Basic leather sandals, going up to the knee."
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -28,8 +29,8 @@
 	siemens_coefficient = 0.6
 
 /obj/item/clothing/under/roman
-	name = "Roman legionary uniform"
-	desc = "A red tunic covered with iron armor. Used by the Roman Army."
+	name = "roman legionary uniform"
+	desc = "A red tunic covered with iron armor. Used by the roman army."
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -52,8 +53,8 @@
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
 /obj/item/clothing/under/roman_centurion
-	name = "Roman centurion uniform"
-	desc = "A red tunic covered with iron armor, with added golden plates. Used by the Roman Army's Centurions."
+	name = "roman centurion uniform"
+	desc = "A red tunic covered with iron armor, with added golden plates. Used by the roman army's centurions."
 	icon_state = "roman_centurion"
 	item_state = "roman_centurion"
 	worn_state = "roman_centurion"
@@ -62,32 +63,32 @@
 /*Greek Uniforms*/
 
 /obj/item/clothing/under/greek1
-	name = "Greek uniform"
-	desc = "A light tunic, covered with bronze and leather armor. Used by the Hellenic armies."
+	name = "greek uniform"
+	desc = "A light tunic, covered with bronze and leather armor. Used by the hellenic armies."
 	icon_state = "athens"
 	item_state = "athens"
 	worn_state = "athens"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
 /obj/item/clothing/under/greek2
-	name = "Greek uniform"
-	desc = "A light tunic, covered with bronze and leather armor. Used by the Hellenic armies."
+	name = "greek uniform"
+	desc = "A light tunic, covered with bronze and leather armor. Used by the hellenic armies."
 	icon_state = "thebes"
 	item_state = "thebes"
 	worn_state = "thebes"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
 /obj/item/clothing/under/greek3
-	name = "Greek uniform"
-	desc = "A light tunic, covered with bronze and leather armor. Used by the Hellenic armies."
+	name = "greek uniform"
+	desc = "A light tunic, covered with bronze and leather armor. Used by the hellenic armies."
 	icon_state = "corinthia"
 	item_state = "corinthia"
 	worn_state = "corinthia"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
 /obj/item/clothing/under/greek_commander
-	name = "Greek Commander uniform"
-	desc = "A light blue tunic covered by a bronze plate armor. Used by Hellenic Commanders."
+	name = "greek commander uniform"
+	desc = "A light blue tunic covered by a bronze plate armor. Used by hellenic commanders."
 	icon_state = "greek_commander"
 	item_state = "greek_commander"
 	worn_state = "greek_commander"
@@ -155,7 +156,7 @@
 
 /obj/item/clothing/under/aztec_loincloth
 	name = "aztec loincloth"
-	desc = "A loincloth fit for a ferocious Aztec warrior."
+	desc = "A loincloth fit for a ferocious aztec warrior."
 	icon_state = "aztec_loincloth"
 	item_state = "aztec_loincloth"
 	worn_state = "aztec_loincloth"
@@ -320,8 +321,8 @@
 	health = 35
 
 /obj/item/clothing/head/helmet/roman_centurion
-	name = "Roman centurion helmet"
-	desc = "An iron Roman helmet, used by Centurions."
+	name = "roman centurion helmet"
+	desc = "An iron roman helmet, used by centurions."
 	icon_state = "roman_c"
 	item_state = "roman_c"
 	worn_state = "roman_c"
@@ -363,8 +364,8 @@
 	health = 40
 
 /obj/item/clothing/head/helmet/greek_commander
-	name = "Lochagos helmet"
-	desc = "A bronze Greek helmet, covering most of the face, with red plummage on top. Worn by Hellenic Lochagos."
+	name = "lochagos helmet"
+	desc = "A bronze Greek helmet, covering most of the face, with red plummage on top. Worn by hellenic lochagos."
 	icon_state = "greek_c"
 	item_state = "greek_c"
 	worn_state = "greek_c"
@@ -374,8 +375,8 @@
 	health = 40
 
 /obj/item/clothing/head/helmet/greek_sl
-	name = "Dimoerites helmet"
-	desc = "A bronze Greek helmet, covering most of the face, with blue plummage on top. Worn by Hellenic Dimoerites."
+	name = "dimoerites helmet"
+	desc = "A bronze Greek helmet, covering most of the face, with blue plummage on top. Worn by hellenic dimoerites."
 	icon_state = "greek_sl"
 	item_state = "greek_sl"
 	worn_state = "greek_sl"
@@ -396,9 +397,18 @@
 
 /*Royal & Laurel Headwear*/
 
+/obj/item/clothing/head/pharoah
+	name = "pharoah headdress"
+	desc = "A ornate, golden headdress."
+	icon_state = "pharoah_headdress"
+	item_state = "pharoah_headdress"
+	worn_state = "pharoah_headdress"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
+
 /obj/item/clothing/head/nemes
 	name = "nemes headdress"
-	desc = "a fancy, golden headdress."
+	desc = "A fancy, golden headdress."
 	icon_state = "nemes_headdress"
 	item_state = "nemes_headdress"
 	worn_state = "nemes_headdress"
@@ -407,24 +417,42 @@
 
 /obj/item/clothing/head/doublecrown
 	name = "double crown"
-	desc = "a double-coloured cloth crown."
+	desc = "A double-coloured cloth crown."
 	icon_state = "doublecrown"
 	item_state = "doublecrown"
 	worn_state = "doublecrown"
 
 /obj/item/clothing/head/laurelcrown
 	name = "laurel crown"
-	desc = "a crown made of laurel."
+	desc = "A crown made of laurel."
 	icon_state = "laurelcrown"
 	item_state = "laurelcrown"
 	body_parts_covered = FALSE
 
 /obj/item/clothing/head/laurelcrown/gold
 	name = "gold laurel crown"
-	desc = "a crown made of gold, imitating a laurel crown."
+	desc = "A crown made of gold, imitating a laurel crown."
 	icon_state = "laurelcrown_gold"
 	item_state = "laurelcrown_gold"
 	body_parts_covered = FALSE
+
+/* Religious Headwear*/
+
+/obj/item/clothing/head/fiendish
+	name = "fiendish headdress"
+	desc = "A menacing headdress, preferred by cults & covens."
+	icon_state = "fiendish"
+	item_state = "fiendish"
+	worn_state = "fiendish"
+	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/head/semitic_cap
+	name = "semitic cap"
+	desc = "A yellow knob-headed hat applied to denote jews amongst themselves and those ruling over them."
+	icon_state = "semitic_cap"
+	item_state = "semitic_cap"
+	worn_state = "semitic_cap"
+	flags_inv = BLOCKHEADHAIR
 
 /*Pelts*/
 

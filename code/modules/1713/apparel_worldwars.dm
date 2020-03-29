@@ -1372,17 +1372,6 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	worn_state = "gator_jacket"
 	value = 150
 
-/obj/item/clothing/suit/storage/coat/oldyjacket //needs moving forward in time to coldwar or modern,
-	name = "red jacket"
-	desc = "A red jacket from the 80s."
-	icon_state = "jacket80s"
-	item_state = "jacket80s"
-	worn_state = "jacket80s"
-	body_parts_covered = UPPER_TORSO||ARMS
-	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
-	value = 100
-
 /obj/item/weapon/storage/belt/gulagguard
 	name = "GULAG guard belt"
 	desc = "A belt that can hold the standard issue gear of GULAG guards."
