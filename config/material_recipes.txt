@@ -51,6 +51,8 @@ RECIPE: /material/leather/,samurai helmet,/obj/item/clothing/head/helmet/samurai
 RECIPE: /material/leather/,red samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/red,10,80,0,1,armor,0,39,0,2,null
 RECIPE: /material/leather/,blue samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,10,80,0,1,armor,0,39,0,2,null
 RECIPE: /material/leather/,black samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/black,10,80,0,1,armor,0,39,0,2,null
+RECIPE: /material/leather/,tsuranuki armored shoes,/obj/item/clothing/shoes/tsuranuki,5,80,0,1,armor,0,39,0,2,null
+RECIPE: /material/leather/,kote gauntlets,/obj/item/clothing/gloves/gauntlets/kote,5,80,0,1,armor,0,39,0,2,null
 
 RECIPE: /material/leather/,gunpowder pouch,/obj/item/weapon/reagent_containers/food/drinks/gunpowder,2,60,0,1,weapon accessories,0,54,0,8,null
 RECIPE: /material/leather/,bandolier,/obj/item/clothing/accessory/storage/webbing,3,70,0,1,weapon accessories,0,54,0,8,null
