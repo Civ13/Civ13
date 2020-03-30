@@ -872,6 +872,34 @@
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 
+/obj/item/clothing/shoes/tsuranuki
+	name = "tsuranuki"
+	desc = "A pair of plated armored shoes."
+	icon_state = "tsuranuki"
+	item_state = "tsuranuki"
+	worn_state = "tsuranuki"
+	body_parts_covered = FEET|LEG_RIGHT|LEG_LEFT
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 45, arrow = 30, gun = 7, energy = 8, bomb = 25, bio = 15, rad = 25)
+	cold_protection = FEET|LEG_RIGHT|LEG_LEFT
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	health = 35
+	item_flags = NOSLIP
+
+/obj/item/clothing/gloves/gauntlets/kote
+	name = "kote gauntlets"
+	desc = "A pair of armored iron gauntlets."
+	icon_state = "kote"
+	item_state = "kote"
+	worn_state = "kote"
+	body_parts_covered = HANDS|ARM_RIGHT|ARM_LEFT
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 45, arrow = 30, gun = 7, energy = 8, bomb = 25, bio = 15, rad = 25)
+	cold_protection = HANDS|ARM_RIGHT|ARM_LEFT
+	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 23
+
 	/* Medieval Japanese Headpieces & Helmets*/
 
 /obj/item/clothing/head/helmet/samurai
