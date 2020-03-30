@@ -375,7 +375,10 @@ var/global/redirect_all_players = null
 				if (i == client.ckey)
 					found = TRUE
 			if (!found)
-				WWalert(usr,"The game is currently only accepting approved players. Visit the Discord to get approved.", "Error")
+				if (config.discordurl)
+					WWalert(usr,"The game is currently only accepting approved players. Visit the Discord to get approved: [config.discordurl]", "Error")
+				else
+					WWalert(usr,"The game is currently only accepting approved players. Visit the Discord to get approved.", "Error")
 				return
 
 		if (!ticker.players_can_join)
