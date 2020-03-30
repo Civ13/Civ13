@@ -146,7 +146,7 @@ var/global/photo_count = 0
 	w_class = 2
 	slot_flags = SLOT_BELT
 	var/pictures_max = 10
-	var/pictures_left = 10
+	var/pictures_left = 0
 	var/size = 3
 	var/colorset = "color" //sepia, oldgrayscale, grayscale, oldcolor, color
 
