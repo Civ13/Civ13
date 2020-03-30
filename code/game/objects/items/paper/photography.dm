@@ -11,7 +11,7 @@
 *******/
 /obj/item/camera_film
 	name = "film cartridge"
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	desc = "A camera film cartridge. Insert it into a camera to reload it."
 	icon_state = "film"
 	item_state = "film"
