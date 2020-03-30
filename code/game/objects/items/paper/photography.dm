@@ -267,10 +267,10 @@ var/global/photo_count = 0
 			photoimage.ColorTone(rgb(231, 231, 231))
 		if ("grayscale")
 			photoimage.GrayScale()
-		if ("oldcolor")
-			var/icon/tic = icon('icons/effects/96x96.dmi', "oldphoto")
-			tic.Blend(photoimage, BLEND_MULTIPLY)
-			photoimage = tic
+//		if ("oldcolor")
+//			var/icon/tic = icon('icons/effects/96x96.dmi', "oldphoto")
+//			photoimage.Blend(tic, BLEND_MULTIPLY)
+//			photoimage = tic
 	var/obj/item/weapon/photo/p = new()
 	p.img = photoimage
 	p.desc = mobs

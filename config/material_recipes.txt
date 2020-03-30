@@ -727,7 +727,7 @@ RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95
 
 RECIPE: /material/copper/,telegraph,/obj/structure/telegraph,12,90,1,1,machinery,105,0,0,8,null
 RECIPE: /material/copper/,teleprinter,/obj/structure/teleprinter,12,120,1,1,machinery,105,0,0,8,null
-RECIPE: /material/copper/,electronic circuits,/obj/item/stack/material/electronics,1,80,0,1,none,100,0,0,8,null
+RECIPE: /material/copper/,electronic circuits,/obj/item/stack/material/electronics,1,80,0,1,none,95,0,0,8,null
 RECIPE: /material/copper/,copper arrowhead (x4),/obj/item/stack/arrowhead/copper,1,10,0,1,ammunition,0,16,0,8,null
 RECIPE: /material/copper/,copper hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,8,8,0,8,copper
 RECIPE: /material/copper/,copper-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,8,8,0,3,copper
