@@ -155,18 +155,21 @@ var/global/photo_count = 0
 	desc = "An early wooden camera. Takes sepia photos."
 	icon_state = "camera_early"
 	colorset = "sepia"
+	pictures_max = 1
 
 /obj/item/camera/earlymodern
 	name = "camera"
 	desc = "An early 20th century camera. Takes black and white photos."
 	icon_state = "camera_ww2"
 	colorset = "grayscale"
+	pictures_max = 5
 
 /obj/item/camera/coldwar
 	name = "camera"
 	desc = "A late 20th century camera. Takes vintage color photos."
 	icon_state = "camera_coldwar"
 	colorset = "oldcolor"
+	pictures_max = 8
 
 /obj/item/camera/verb/change_size()
 	set name = "Set Photo Focus"
