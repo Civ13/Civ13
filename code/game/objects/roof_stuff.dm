@@ -68,6 +68,13 @@
 	overlay_state = "clay"
 	icon_state = "clay_dm"
 
+/obj/roof/clay/kerawa
+	name = "kerawa roof"
+	desc = "A clay tile roof."
+	flammable = FALSE
+	overlay_state = "black_slateroof"
+	icon_state = "black_slateroof_dm"
+
 /obj/roof/concrete
 	name = "concrete roof"
 	desc = "A concrete roof."
@@ -258,6 +265,13 @@
 	icon_state = "clay_roof_builder"
 	flammable = FALSE
 	target_type = /obj/roof/clay
+
+/obj/item/weapon/roofbuilder/clay/kerawa
+	name = "black clay roofing"
+	desc = "Use this to build roofs."
+	icon_state = "black_slateroof_builder"
+	flammable = FALSE
+	target_type = /obj/roof/clay/kerawa
 
 /obj/item/weapon/roofbuilder/leaves
 	name = "thatch roofing"
