@@ -1068,7 +1068,8 @@
 	name = "concrete wall"
 	desc = "A concrete wall."
 	icon = 'icons/obj/structures.dmi'
-	icon_state = "cement_wall"
+	icon_state = "cement_wall0"
+	base_icon_state = "cement_wall"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
