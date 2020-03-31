@@ -94,10 +94,15 @@ RECIPE: /material/leather/,80's jacket,/obj/item/clothing/suit/storage/coat/oldy
 RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,0,1,weapons,0,38,0,8,null
 RECIPE: /material/leather/,leather curtain,/obj/structure/curtain/leather,1,80,1,1,furniture,0,0,0,8,null
 
-RECIPE: /material/electronics/,pill maker,/obj/structure/chem_master,20,120,1,1,none,80,0,0,8,null
-RECIPE: /material/electronics/,telephone,/obj/item/weapon/telephone,2,120,1,1,none,80,0,0,8,null
-RECIPE: /material/electronics/,radio transmitter,/obj/structure/radio/transmitter,6,150,1,1,none,100,0,0,8,null
-RECIPE: /material/electronics/,radio receiver,/obj/structure/radio,3,80,1,1,none,100,0,0,8,null
+RECIPE: /material/electronics/,pill maker,/obj/structure/chem_master,20,120,1,1,none,100,0,0,8,null
+RECIPE: /material/electronics/,telephone,/obj/item/weapon/telephone,2,120,1,1,none,100,0,0,8,null
+RECIPE: /material/electronics/,radio transmitter,/obj/structure/radio/transmitter,6,150,1,1,none,105,0,0,8,null
+RECIPE: /material/electronics/,radio receiver,/obj/structure/radio,3,80,1,1,none,105,0,0,8,null
+RECIPE: /material/electronics/,early camera,/obj/item/camera/early,5,150,1,1,none,95,0,0,5,null
+RECIPE: /material/electronics/,black and white camera,/obj/item/camera/earlymodern,6,150,1,1,none,115,0,0,7,null
+RECIPE: /material/electronics/,early color camera,/obj/item/camera/coldwar,7,150,1,1,none,160,0,0,7,null
+RECIPE: /material/electronics/,modern camera,/obj/item/camera,7,150,1,1,none,205,0,0,8,null
+
 RECIPE: /material/electronics/,television,/obj/structure/TV,3,80,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,geiger counter,/obj/item/weapon/geiger_counter,5,120,0,1,none,110,0,0,8,null
 RECIPE: /material/electronics/,2-way radio,/obj/structure/radio/transmitter_receiver,10,150,1,1,none,137,0,0,8,null
@@ -386,6 +391,7 @@ RECIPE: /material/barbedwire/,barbwire,/obj/structure/barbwire,1,20,0,1,none,0,0
 
 RECIPE: /material/lead/,lead safe,/obj/structure/closet/crate/lead,3,100,1,1,none,0,0,65,8,null
 
+RECIPE: /material/plastic/,camera film,/obj/item/camera_film,4,55,1,1,none,95,0,0,8,null
 RECIPE: /material/plastic/,dumpster,/obj/structure/closet/crate/dumpster,5,95,1,1,storage,105,0,0,8,null
 RECIPE: /material/plastic/,filing cabinet,/obj/structure/filingcabinet,6,95,1,1,storage,0,0,0,8,null
 RECIPE: /material/plastic/,large filing cabinet,/obj/structure/filingcabinet/filingcabinet,6,95,1,1,storage,0,0,0,8,null
@@ -721,7 +727,7 @@ RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95
 
 RECIPE: /material/copper/,telegraph,/obj/structure/telegraph,12,90,1,1,machinery,105,0,0,8,null
 RECIPE: /material/copper/,teleprinter,/obj/structure/teleprinter,12,120,1,1,machinery,105,0,0,8,null
-RECIPE: /material/copper/,electronic circuits,/obj/item/stack/material/electronics,1,80,0,1,none,130,0,0,8,null
+RECIPE: /material/copper/,electronic circuits,/obj/item/stack/material/electronics,1,80,0,1,none,95,0,0,8,null
 RECIPE: /material/copper/,copper arrowhead (x4),/obj/item/stack/arrowhead/copper,1,10,0,1,ammunition,0,16,0,8,null
 RECIPE: /material/copper/,copper hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,8,8,0,8,copper
 RECIPE: /material/copper/,copper-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,8,8,0,3,copper
@@ -967,6 +973,7 @@ RECIPE: /material/wood/,research kit,/obj/item/weapon/researchkit,10,190,0,1,pap
 RECIPE: /material/wood/,scientific literature,/obj/item/weapon/book/research,4,110,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/,language book,/obj/item/weapon/book/language_book,10,160,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/,holy book,/obj/item/weapon/book/holybook,15,240,1,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/,photo album,/obj/item/weapon/storage/photo_album,5,85,0,1,paper & printing,95,0,0,8,null
 RECIPE: /material/wood/,passport,/obj/item/clothing/accessory/storage/passport,3,150,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,visa (empty),/obj/item/weapon/visa,1,40,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null

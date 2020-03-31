@@ -11,7 +11,7 @@
 *******/
 /obj/item/camera_film
 	name = "film cartridge"
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	desc = "A camera film cartridge. Insert it into a camera to reload it."
 	icon_state = "film"
 	item_state = "film"
@@ -25,7 +25,7 @@ var/global/photo_count = 0
 
 /obj/item/weapon/photo
 	name = "photo"
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "photo"
 	item_state = "paper"
 	w_class = 1.0
@@ -139,23 +139,37 @@ var/global/photo_count = 0
 *********/
 /obj/item/camera
 	name = "camera"
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	desc = "A polaroid camera."
-	icon_state = "camera"
+	icon_state = "camera_modern"
 	item_state = "camera"
 	w_class = 2
 	slot_flags = SLOT_BELT
 	var/pictures_max = 10
-	var/pictures_left = 10
-	var/on = 1
-	var/base_icon_state = "camera"
+	var/pictures_left = 0
 	var/size = 3
-	var/colorset = "sepia" //sepia, oldgrayscale, grayscale, oldcolor, color
-/obj/item/camera/update_icon()
-	if(on)
-		icon_state = "[base_icon_state]"
-	else
-		icon_state = "[base_icon_state]_off"
+	var/colorset = "color" //sepia, oldgrayscale, grayscale, oldcolor, color
+
+/obj/item/camera/early
+	name = "camera"
+	desc = "An early wooden camera. Takes sepia photos."
+	icon_state = "camera_early"
+	colorset = "sepia"
+	pictures_max = 1
+
+/obj/item/camera/earlymodern
+	name = "camera"
+	desc = "An early 20th century camera. Takes black and white photos."
+	icon_state = "camera_ww2"
+	colorset = "grayscale"
+	pictures_max = 5
+
+/obj/item/camera/coldwar
+	name = "camera"
+	desc = "A late 20th century camera. Takes vintage color photos."
+	icon_state = "camera_coldwar"
+	colorset = "oldcolor"
+	pictures_max = 8
 
 /obj/item/camera/verb/change_size()
 	set name = "Set Photo Focus"
@@ -166,12 +180,6 @@ var/global/photo_count = 0
 		to_chat(usr, "<span class='notice'>Camera will now take [size]x[size] photos.</span>")
 
 /obj/item/camera/attack(mob/living/carbon/human/M as mob, mob/user as mob)
-	return
-
-/obj/item/camera/attack_self(mob/user as mob)
-	on = !on
-	update_icon()
-	to_chat(user, "You switch the camera [on ? "on" : "off"].")
 	return
 
 /obj/item/camera/attackby(obj/item/I as obj, mob/user as mob)
@@ -206,7 +214,7 @@ var/global/photo_count = 0
 	return mob_detail
 
 /obj/item/camera/afterattack(atom/target as mob|obj|turf|area, mob/user as mob, flag)
-	if(!on || !pictures_left || ismob(target.loc)) return
+	if(!pictures_left || ismob(target.loc)) return
 	captureimage(target, user, flag)
 
 	playsound(loc, pick('sound/items/polaroid1.ogg', 'sound/items/polaroid2.ogg'), 75, 1, -3)
@@ -214,7 +222,6 @@ var/global/photo_count = 0
 	pictures_left--
 	to_chat(user, "<span class='notice'>[pictures_left] photos left.</span>")
 
-	on = 0
 	update_icon()
 
 /obj/item/camera/examine(mob/user)
@@ -260,10 +267,10 @@ var/global/photo_count = 0
 			photoimage.ColorTone(rgb(231, 231, 231))
 		if ("grayscale")
 			photoimage.GrayScale()
-		if ("oldcolor")
-			var/icon/tic = icon('icons/effects/96x96.dmi', "oldphoto")
-			tic.Blend(photoimage, BLEND_MULTIPLY)
-			photoimage = tic
+//		if ("oldcolor")
+//			var/icon/tic = icon('icons/effects/96x96.dmi', "oldphoto")
+//			photoimage.Blend(tic, BLEND_MULTIPLY)
+//			photoimage = tic
 	var/obj/item/weapon/photo/p = new()
 	p.img = photoimage
 	p.desc = mobs

@@ -978,13 +978,30 @@ var/list/atom_types = null
 		log_and_message_admins(msg)
 
 /client/proc/reload_admins()
-	set name = "Reload Admins"
+	set name = "Reload Lists"
 	set category = "Debug"
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually reloaded admins.")
+	message_admins("[key_name(usr)] manually reloaded admins, whitelists and approved lists.")
+
 	load_admins(1)
+
+	var/F = file("SQL/approved.txt")
+	if (fexists(F))
+		var/list/approved_list_temp = file2list(F,"\n")
+		for (var/i in approved_list_temp)
+			if (findtext(i, "="))
+				var/list/current = splittext(i, "=")
+				approved_list += current[1]
+
+	var/F2 = file("SQL/whitelist.txt")
+	if (fexists(F2))
+		var/list/whitelist_temp = file2list(F2,"\n")
+		for (var/i in whitelist_temp)
+			if (findtext(i, "="))
+				var/list/current = splittext(i, "=")
+				whitelist_list += current[1]
 
 /client/proc/reload_bans()
 	set name = "Update Bans"

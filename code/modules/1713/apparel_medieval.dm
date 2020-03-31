@@ -203,7 +203,7 @@
 	worn_state = "leather_tunic"
 
 /obj/item/clothing/under/medieval/beggar_clothing
-	name = "beggar_clothing"
+	name = "beggar clothing"
 	desc = "Loosely stitched from patch cloth, contains deep pockets for spare change."
 	icon_state = "beggar_clothing"
 	item_state = "beggar_clothing"
