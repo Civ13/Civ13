@@ -346,6 +346,7 @@ obj/structure/closet/crate/empty
 	paths = list(/obj/item/stack/farming/seeds/tobacco = 3,
 				/obj/item/stack/farming/seeds/sugarcane = 3,
 				/obj/item/stack/farming/seeds/hemp = 3,
+				/obj/item/stack/farming/seeds/flax = 3,
 				/obj/item/stack/farming/seeds/cotton = 3,)
 	cratevalue = 60
 
