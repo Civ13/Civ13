@@ -761,7 +761,7 @@ RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,wal
 RECIPE: /material/steel/,steel window,/obj/structure/window_frame/metal,5,140,1,1,construction,96,0,0,8,null
 RECIPE: /material/steel/,steel hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,50,44,0,8,steel
 RECIPE: /material/steel/,steel-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,3,steel
-RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,8,null
+RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,4,null
 RECIPE: /material/steel/,throwing axe,/obj/item/weapon/material/thrown/throwing_axe,3,20,0,1,weapons,50,44,0,8,null
 RECIPE: /material/steel/,steel throwing knife,/obj/item/weapon/material/thrown/throwing_knife,2,20,0,1,weapons,50,44,0,8,steel
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,none,75,0,0,8,null
@@ -812,9 +812,9 @@ RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1
 RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,3,bronze
-RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,8,null
-RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,8,null
-RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,8,null
+RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,4,null
+RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,4,null
+RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,4,null
 RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,27,34,0,8,bronze
 RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,27,42,0,8,bronze
 RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,34,21,0,4,bronze
