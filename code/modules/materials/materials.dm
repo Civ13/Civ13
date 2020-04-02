@@ -274,8 +274,21 @@ var/list/name_to_material
 	tableslam_noise = null
 	hardness = 10
 
-	sheet_singular_name = "leave"
+	sheet_singular_name = "leaf"
 	sheet_plural_name = "leaves"
+
+/material/flax
+	name = "flax"
+	stack_type = /obj/item/stack/material/flax
+	flags = MATERIAL_UNMELTABLE
+	cut_delay = 5
+	icon_colour = "#5f9ea0"
+	shard_type = null
+	tableslam_noise = null
+	hardness = 10
+
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
 
 /material/coca
 	name = "coca"
@@ -542,6 +555,14 @@ var/list/name_to_material
 	ignition_point = T0C+232
 	melting_point = T0C+300
 	flags = MATERIAL_PADDING
+
+/material/rettedfabric
+	name = "retted fabric"
+	icon_colour = "#c19a6b"
+	stack_type = /obj/item/stack/material/rettedfabric
+	hardness = 7
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
 
 /material/woolcloth
 	name = "woolcloth"

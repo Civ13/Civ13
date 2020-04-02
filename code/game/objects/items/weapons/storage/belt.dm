@@ -115,6 +115,7 @@
 	new /obj/item/stack/farming/seeds/tomato(src)
 	new /obj/item/stack/farming/seeds/potato(src)
 	new /obj/item/stack/farming/seeds/hemp(src)
+	new /obj/item/stack/farming/seeds/flax(src)
 
 /obj/item/weapon/storage/belt/gator_belt //doesn't hold anything
 	name = "alligator scale belt"
