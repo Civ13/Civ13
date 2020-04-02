@@ -118,7 +118,8 @@
 			possible += trait_list[i]
 		for(var/tt in possible)
 			if (tt != "Cancel")
-				if (tt in pref.traits)
+				var/tf = "[tt] ([trait_list[tt][1]])"
+				if (tf in pref.traits)
 					possible -= tt
 				else
 					for(var/tt2 in trait_list[tt][2])
@@ -158,9 +159,9 @@
 		if (remove == "Cancel")
 			pref.save_preferences()
 			return TOPIC_REFRESH
-		if (!findtext(remove,"Cancel"))
-			var/list/premove = splittext(remove," (")
-			pref.traits -= premove[1]
+		for(var/i in pref.traits)
+			if (findtext(remove, i))
+				pref.traits -= i
 		pref.save_preferences()
 		return TOPIC_REFRESH
 	return ..()
