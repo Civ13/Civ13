@@ -6,8 +6,19 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-/obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob) ///obj/item/stack/material/rettedfabric
 	if (istype(W, /obj/item/stack/material/cotton))
+		H.visible_message("You start to produce the cloth.")
+		icon_state = "loom1"
+		if (do_after(H, min(W.amount*20, 200), H.loc))
+			H.visible_message("You finish producing the cloth.")
+			icon_state = "loom"
+			var/obj/item/stack/material/cloth/clothes = new/obj/item/stack/material/cloth(H.loc)
+			clothes.amount = W.amount
+			qdel(W)
+		else
+			icon_state = "loom"
+	if (istype(W, /obj/item/stack/material/rettedfabric))
 		H.visible_message("You start to produce the cloth.")
 		icon_state = "loom1"
 		if (do_after(H, min(W.amount*20, 200), H.loc))

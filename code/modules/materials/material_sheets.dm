@@ -191,6 +191,13 @@
 	value = 2
 	flammable = TRUE
 
+/obj/item/stack/material/flax
+	name = "Flax"
+	icon_state = "flax"
+	default_type = "flax"
+	value = 2
+	flammable = TRUE
+
 /obj/item/stack/material/tobacco
 	name = "tobacco leaves"
 	icon_state = "tobacco"
@@ -210,7 +217,7 @@
 
 /obj/item/stack/material/poppy
 	name = "poppy"
-	desc = "dried opium poppies. Opium can be extracted."
+	desc = "Dried opium poppies. Opium can be extracted."
 	icon_state = "poppy"
 	default_type = "poppy"
 	value = 5
@@ -289,6 +296,13 @@
 	icon_state = "sheet-cloth"
 	default_type = "cloth"
 	value = 3
+	w_class = 2.0
+	flammable = TRUE
+
+/obj/item/stack/material/rettedfabric
+	name = "retted fabric"
+	icon_state = "sheet-rettedfabric"
+	value = 1
 	w_class = 2.0
 	flammable = TRUE
 
