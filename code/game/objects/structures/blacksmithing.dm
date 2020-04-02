@@ -233,7 +233,10 @@ obj/structure/anvil/New()
 					steel_amt -= 10
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/smallsword(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/smallsword(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -247,7 +250,10 @@ obj/structure/anvil/New()
 					steel_amt -= 15
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/sabre(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/sabre(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -261,7 +267,10 @@ obj/structure/anvil/New()
 					steel_amt -= 12
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/cutlass(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/cutlass(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -275,7 +284,10 @@ obj/structure/anvil/New()
 					steel_amt -= 18
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/rapier(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/rapier(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -289,7 +301,10 @@ obj/structure/anvil/New()
 					steel_amt -= 15
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/spadroon(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/spadroon(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -303,7 +318,10 @@ obj/structure/anvil/New()
 					steel_amt -= 15
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/armingsword(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/armingsword(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -317,7 +335,10 @@ obj/structure/anvil/New()
 					steel_amt -= 18
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/longsword(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/longsword(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -332,7 +353,10 @@ obj/structure/anvil/New()
 					steel_amt -= 15
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/katana(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/katana(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -347,7 +371,10 @@ obj/structure/anvil/New()
 					steel_amt -= 10
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/wakazashi(user.loc)
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/wakazashi(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -362,7 +389,10 @@ obj/structure/anvil/New()
 					steel_amt -= 5
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/knife/tanto(user.loc)
+					var/obj/item/weapon/material/knife/SW = new/obj/item/weapon/material/knife/tanto(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -566,7 +596,10 @@ obj/structure/anvil/New()
 						iron_amt -= 10
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/smallsword/iron(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/smallsword/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -580,7 +613,10 @@ obj/structure/anvil/New()
 						iron_amt -= 10
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/gladius(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/gladius(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -594,7 +630,10 @@ obj/structure/anvil/New()
 						iron_amt -= 14
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/xiphos(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/xiphos(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -608,7 +647,10 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/sabre/iron(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/sabre/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -622,7 +664,10 @@ obj/structure/anvil/New()
 						iron_amt -= 12
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/cutlass/iron(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/cutlass/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -636,7 +681,10 @@ obj/structure/anvil/New()
 						iron_amt -= 18
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/rapier/iron(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/rapier/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -650,7 +698,10 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/spadroon/iron(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/spadroon/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -664,7 +715,10 @@ obj/structure/anvil/New()
 						iron_amt -= 16
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/urukhaiscimitar(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/urukhaiscimitar(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -678,7 +732,10 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/armingsword/iron(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/armingsword/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -692,7 +749,10 @@ obj/structure/anvil/New()
 						iron_amt -= 18
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/longsword/iron(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/longsword/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -706,7 +766,10 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/katana/iron(user.loc)
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/katana/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"

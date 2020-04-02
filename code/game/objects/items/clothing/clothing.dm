@@ -60,15 +60,15 @@
 	var/healthp = (health/initial(health))*100
 	switch (healthp)
 		if (-100 to 30)
-			user << "It is almost falling apart!"
+			user << "<font color='#7f0000'>Is pratically falling apart!</font>"
 		if (31 to 55)
-			user << "Seems to be in a very bad condition."
+			user << "<font color='#a74510'>Seems to be in very bad condition.</font>"
 		if (56 to 75)
-			user << "Seems to be damaged."
+			user << "<font color='#cccc00'>Seems to be in a rough condition.</font>"
 		if (76 to 90)
-			user << "Seems to be in decent condition."
+			user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
 		if (91 to 1000)
-			user << "Seems to be in very good condition!"
+			user << "<font color='#245319'>Seems to be in very good condition.</font>"
 	switch (dirtyness)
 		if (-100 to 29)
 			user << "Looks clean."
