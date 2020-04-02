@@ -190,6 +190,51 @@
 	worn_state = "greatshendyt"
 	heat_protection = LOWER_TORSO|UPPER_TORSO
 
+/*Ainu Things*/
+/obj/item/clothing/under/ainu
+	name = "ainu robes"
+	desc = "A set of robes worn by the ainu."
+	icon_state = "ainu_robe"
+	item_state = "ainu_robe"
+	worn_state = "ainu_robe"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+
+/obj/item/clothing/under/ainu2
+	name = "ainu robes"
+	desc = "A set of robes worn by the ainu."
+	icon_state = "ainu_robe2"
+	item_state = "ainu_robe2"
+	worn_state = "ainu_robe2"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
+
+/obj/item/clothing/head/ainu_bandana
+	name = "ainu bandana"
+	desc = "a bandana with intricate patterns."
+	icon_state = "ainu"
+	item_state = "ainu"
+	worn_state = "ainu"
+	var/folded = FALSE
+
+/obj/item/clothing/head/ainu_bandana/verb/fold_bandana()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/ainu_bandana)
+		return
+	else
+		if (folded)
+			item_state = "ainu"
+			worn_state = "ainu"
+			item_state_slots["slot_w_head"] = "ainu"
+			usr << "<span class = 'danger'>You unfold your bandana.</span>"
+			folded = FALSE
+		else if (!folded)
+			item_state = "ainu_smol"
+			worn_state = "ainu_smol"
+			item_state_slots["slot_w_head"] = "ainu_smol"
+			usr << "<span class = 'danger'>You fold your bandana.</span>"
+			folded = TRUE
+	update_clothing_icon()
+
 /*Ancient Armor*/
 
 /obj/item/clothing/suit/armor
