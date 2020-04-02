@@ -54,3 +54,8 @@
 	mob_size = MOB_MINISCULE
 	maxHealth = 40
 	health = 40
+
+/mob/living/simple_animal/crab/small/dead
+	New()
+		..()
+		death()
