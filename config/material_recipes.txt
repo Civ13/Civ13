@@ -850,6 +850,7 @@ RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sails,15,
 RECIPE: /material/wood/,research desk,/obj/structure/researchdesk,8,250,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,altar of chad,/obj/structure/researchdesk/chad,8,100,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null
+RECIPE: /material/wood/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,economy & production,118,0,0,8,null
 RECIPE: /material/wood/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/,salting container,/obj/structure/salting_container,6,100,1,1,economy & production,0,0,18,8,null
@@ -921,7 +922,7 @@ RECIPE: /material/wood/,bucket,/obj/item/weapon/reagent_containers/glass/bucket,
 RECIPE: /material/wood/,plough,/obj/item/weapon/plough,4,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,berries gatherer,/obj/item/weapon/berriesgatherer,4,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,fishing pole,/obj/item/weapon/fishing,3,120,0,1,tools,0,0,0,8,null
-RECIPE: /material/wood/,fishing cage,/obj/structure/fishing_cage,8,170,1,1,tools,12,0,12,8,null
+RECIPE: /material/wood/,fishing cage,/obj/structure/fishing_cage,12,200,1,1,tools,12,0,12,8,null
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,41,0,0,8,null

@@ -88,7 +88,7 @@
 	generating = TRUE
 	found = null
 	if (istype(loc, /turf/floor/beach/water))
-		spawn(rand(6000,18000))
+		spawn(rand(18000,24000))
 			generating = FALSE
 			if (istype(loc, /turf/floor/beach/water) && !found)
 				if (istype(loc, /turf/floor/beach/water/deep/saltwater))
