@@ -227,7 +227,7 @@
 			customcolor1 = "#000000"
 		else
 			customcolor1 = uppertext(customcolor1)
-			if (lentext(customcolor1) != 6)
+			if (length(customcolor1) != 6)
 				customcolor1 = "#000000"
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -243,7 +243,7 @@
 			customcolor2 = "#FFFFFF"
 		else
 			customcolor2 = uppertext(customcolor2)
-			if (lentext(customcolor2) != 6)
+			if (length(customcolor2) != 6)
 				customcolor2 = "#FFFFFF"
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -264,7 +264,7 @@
 			return
 		else
 			customcolor = uppertext(customcolor)
-			if (lentext(customcolor) != 6)
+			if (length(customcolor) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -316,7 +316,7 @@
 			return
 		else
 			customcolor = uppertext(customcolor)
-			if (lentext(customcolor) != 6)
+			if (length(customcolor) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -356,7 +356,7 @@
 			return
 		else
 			customcolor = uppertext(customcolor)
-			if (lentext(customcolor) != 6)
+			if (length(customcolor) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -960,7 +960,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)

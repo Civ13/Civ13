@@ -111,7 +111,7 @@ proc/isemptylist(list/list)
 			instances++
 	return instances
 
-//Empties the list by .Cut(). Setting lenght = FALSE has been confirmed to leak references.
+//Empties the list by .Cut(). Setting length = FALSE has been confirmed to leak references.
 proc/clearlist(var/list/L)
 	if (islist(L))
 		L.Cut()

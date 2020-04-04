@@ -33,7 +33,7 @@
 	// Whether or not the accessory can be affected by colouration
 	var/do_colouration = TRUE
 
-	var/growth = 0 // to order by lenght. 0 = bald, 1 = short, 2 = medium (covering the ears), 3 = shoulder length, 4 = mid-back
+	var/growth = 0 // to order by length. 0 = bald, 1 = short, 2 = medium (covering the ears), 3 = shoulder length, 4 = mid-back
 
 /*
 ////////////////////////////
