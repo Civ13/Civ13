@@ -38,8 +38,11 @@
 		if (!istype(P, /obj/item/weapon/gun/projectile/ancient) && !istype(P, /obj/item/weapon/gun/projectile/bow) && !istype(P, /obj/item/weapon/gun/projectile/capnball) && !istype(P, /obj/item/weapon/gun/projectile/flintlock))
 			rechamber_gun(P, user)
 			return
-	else if (istype(P, /obj/item/blueprint/gun))
+	else if (istype(P, /obj/item/blueprint/gun) && H.getStatCoeff("crafting") >= 1.5)
 		assemble_from_blueprint(user,P)
+		return
+	else if (H.getStatCoeff("crafting") < 1.5)
+		user << "<span class='warning'>You are not skilled enough to do this.</span>"
 		return
 /obj/item/weapon/gun/projectile
 	var/rechambered = FALSE
@@ -127,8 +130,8 @@
 				P.desc = "[split_desc[1]]. Rechambered into [choice]."
 /obj/structure/gunbench/attack_hand(var/mob/user as mob)
 	var/mob/living/carbon/human/H = user
-	if (H.getStatCoeff("crafting") < 1.9 && map.civilizations)
-		user << "You don't have the skills to use this."
+	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
+		user << "You don't have the skills to design a new gun! Use an existing blueprint."
 		return FALSE
 ////////////////STOCK///////////////////////////////
 	var/list/display = list("Cancel")
@@ -349,6 +352,45 @@
 	else if (choice_caliber == "5.5mm intermediate rifle")
 		current_gun.caliber = "smallintermediumrifle"
 		current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
+		var/do_skn_override = input(user, "Do you want to give this gun a different appearance or keep the default look?", "Gunsmithing", "Keep", list("Keep","Change"))
+		if (do_skn_override == "Change")
+			var/list/possible_list = list("Cancel")
+			var/dst = WWinput(user, "Choose the gun's look:", "Gunsmithing", "Cancel", possible_list)
+			switch (choice_receiver)
+				if ("Pump-Action")
+					possible_list = list("Cancel", "shotgun", "remington870", "remington11", "winchester1873")
+				if ("Bolt-Action")
+					possible_list = list("Cancel", "gewehr71", "gewehr98", "lebel", "mosin", "murata", "enfield", "p14enfield", "carcano", "arisaka30", "arisaka35")
+					if (ordinal_age >= 6)
+						possible_list = list("Cancel", "gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfieldww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
+				if("Semi-Auto (large)")
+					possible_list = list("Cancel", "svt", "g41", "g43", "m1garand")
+					if (ordinal_age >= 7)
+						possible_list += "m14"
+						possible_list += "sks"
+				if ("Open-Bolt (large)")
+					possible_list = list("Cancel", "madsen", "mg34", "type99lmg", "bar", "dp")
+					if (map.ordinal_age >= 7)
+						possible_list += "pkmp"
+						possible_list += "negev"
+						possible_list += "m60"
+				if ("Open-Bolt (small)")
+					possible_list = list("Cancel", "pps", "ppsh", "mp40", "greasegun", "tommygun", "thompson", "avtomat")
+					if (map.ordinal_age >= 8)
+						possible_list += "victor"
+						possible_list += "p90"
+				if ("Revolver")
+					possible_list = list("Cancel", "revolver", "t26revolver", "nagant", "panther", "detective", "detective_leopard", "detective_gold", "goldrevolver", "mateba", "peacemaker", "colt1877", "dragoon", "coltnewpolice", "enfield02", "smithwesson32", "graysonfito", "magnum58", "webley4", "m1892")
+				if ("Semi-Auto (small)")
+					possible_list = list("Cancel", "p220", "nambu", "mauser", "luger", "bouchardât", "colt", "m9beretta", "tanm9", "black1911","tt30", "waltherp30", "jericho941", "glock17", "coltpockethammerles", "tarusg3", "mp443", "chinese_ms14", "chinese_plastic", "pl14", "sig250")
+				if ("Dual Selective Fire")
+					possible_list = list("Cancel", "stg", "g3", "ar12", "ak47", "ak74", "aks74", "aks", "ak74m", "az58", "whiteaz58", "blackaz58", "chinese_assault_rifle")
+				if ("Triple Selective Fire")
+					possible_list = list("Cancel", "m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
+
+			if (dst != "Cancel" && dst != none)
+				current_gun.override_sprite = dst
+
 	if (choice_caliber && choice_stock && choice_barrel && choice_receiver && choice_feeding)
 		var/named = input(user, "Choose a name for this gun (max 15 characters):", "Gunsmithing", "gun")
 		if (named && named != "")
@@ -424,6 +466,7 @@
 	NEWGUN.feeding_type = bpsource.feeding_type
 	NEWGUN.override_sprite = bpsource.override_sprite
 	NEWGUN.step = 4
+	NEWGUN.finish()
 
 	if (user)
 		user << "You assemble a new [NEWGUN.name]."
