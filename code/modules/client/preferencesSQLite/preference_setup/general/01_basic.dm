@@ -115,20 +115,8 @@
 	else if (href_list["add_traits"])
 		var/list/possible = list("Cancel")
 		for(var/i=1, i<= trait_list.len, i++)
-			possible += trait_list[i]
-		for(var/tt in possible)
-			if (tt != "Cancel")
-				if (tt in pref.traits)
-					possible -= tt
-				else
-					for(var/tt2 in trait_list[tt][2])
-						if (tt2 in pref.traits)
-							possible -= tt
-		for(var/tt in possible)
-			if (tt != "Cancel")
-				possible -= tt
-				tt = "[tt] ([trait_list[tt][1]])"
-				possible += tt
+			if (!(i in pref.traits))
+				possible += "[trait_list[i]] ([trait_list[trait_list[i]][1]])"
 		var/add = WWinput(usr, "Add Trait:", "Traits", "Cancel", possible)
 		if (add == "Cancel")
 			pref.save_preferences()
@@ -158,9 +146,9 @@
 		if (remove == "Cancel")
 			pref.save_preferences()
 			return TOPIC_REFRESH
-		if (!findtext(remove,"Cancel"))
-			var/list/premove = splittext(remove," (")
-			pref.traits -= premove[1]
+		for(var/i in pref.traits)
+			if (findtext(remove, i))
+				pref.traits -= i
 		pref.save_preferences()
 		return TOPIC_REFRESH
 	return ..()

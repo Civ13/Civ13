@@ -35,7 +35,7 @@
 			return
 		else
 			choosecolor1 = uppertext(choosecolor1)
-			if (lentext(choosecolor1) != 6)
+			if (length(choosecolor1) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -53,7 +53,7 @@
 			return
 		else
 			choosecolor2 = uppertext(choosecolor2)
-			if (lentext(choosecolor2) != 6)
+			if (length(choosecolor2) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)

@@ -278,7 +278,7 @@
 
 	msg += "*---------*</span>"
 	if (pose)
-		if ( findtext(pose,".",lentext(pose)) == FALSE && findtext(pose,"!",lentext(pose)) == FALSE && findtext(pose,"?",lentext(pose)) == FALSE )
+		if ( findtext(pose,".",length(pose)) == FALSE && findtext(pose,"!",length(pose)) == FALSE && findtext(pose,"?",length(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
 	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13)

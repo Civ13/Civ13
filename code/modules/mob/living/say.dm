@@ -17,8 +17,8 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	var/prefix = ""
 	for (var/rp in radio_prefixes)
 		if (dd_hasprefix(message, rp))
-			prefix = copytext(message, 1, lentext(rp)+1)
-			message = copytext(message, lentext(rp)+1, lentext(message)+1)
+			prefix = copytext(message, 1, length(rp)+1)
+			message = copytext(message, length(rp)+1, length(message)+1)
 
 	var/list/returns[3]
 	var/speech_problem_flag = FALSE

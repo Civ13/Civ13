@@ -156,6 +156,12 @@
 	desc = "Makes good fertilizer at least."
 	icon_state = "animal1"
 
+/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer
+	name = "fertilizer"
+	desc = "Natural fertilizer for your plants (or bombs)."
+	icon_state = "fertilizer"
+	decay = 120*600
+
 /obj/item/weapon/reagent_containers/food/snacks/poo/animal/New()
 	..()
 	icon_state = pick("animal1", "animal2", "animal3")

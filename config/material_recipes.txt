@@ -586,6 +586,8 @@ RECIPE: /material/stone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,
 RECIPE: /material/hemp/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
 RECIPE: /material/hemp/,joint,/obj/item/clothing/mask/smokable/cigarette/joint,2,10,0,1,none,0,0,0,8,null
 
+RECIPE: /material/flax/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
+
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,fishing net,/obj/item/weapon/fishing/net,4,100,0,1,none,0,0,0,8,null
@@ -762,7 +764,7 @@ RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,wal
 RECIPE: /material/steel/,steel window,/obj/structure/window_frame/metal,5,140,1,1,construction,96,0,0,8,null
 RECIPE: /material/steel/,steel hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,50,44,0,8,steel
 RECIPE: /material/steel/,steel-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,50,44,0,3,steel
-RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,8,null
+RECIPE: /material/steel/,steel shield,/obj/item/weapon/shield/steel,4,85,0,1,weapons,50,44,0,4,null
 RECIPE: /material/steel/,throwing axe,/obj/item/weapon/material/thrown/throwing_axe,3,20,0,1,weapons,50,44,0,8,null
 RECIPE: /material/steel/,steel throwing knife,/obj/item/weapon/material/thrown/throwing_knife,2,20,0,1,weapons,50,44,0,8,steel
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,none,75,0,0,8,null
@@ -813,9 +815,9 @@ RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1
 RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,3,bronze
-RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,8,null
-RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,8,null
-RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,8,null
+RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,4,null
+RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,4,null
+RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,4,null
 RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,27,34,0,8,bronze
 RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,27,42,0,8,bronze
 RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,34,21,0,4,bronze
@@ -850,6 +852,7 @@ RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sails,15,
 RECIPE: /material/wood/,research desk,/obj/structure/researchdesk,8,250,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,altar of chad,/obj/structure/researchdesk/chad,8,100,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null
+RECIPE: /material/wood/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,economy & production,118,0,0,8,null
 RECIPE: /material/wood/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/,salting container,/obj/structure/salting_container,6,100,1,1,economy & production,0,0,18,8,null
@@ -921,7 +924,7 @@ RECIPE: /material/wood/,bucket,/obj/item/weapon/reagent_containers/glass/bucket,
 RECIPE: /material/wood/,plough,/obj/item/weapon/plough,4,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,berries gatherer,/obj/item/weapon/berriesgatherer,4,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,fishing pole,/obj/item/weapon/fishing,3,120,0,1,tools,0,0,0,8,null
-RECIPE: /material/wood/,fishing cage,/obj/structure/fishing_cage,8,170,1,1,tools,12,0,12,8,null
+RECIPE: /material/wood/,fishing cage,/obj/structure/fishing_cage,12,200,1,1,tools,12,0,12,8,null
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,41,0,0,8,null
@@ -942,6 +945,7 @@ RECIPE: /material/wood/,small mill,/obj/structure/mill,4,90,1,1,economy & produc
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,tanning rack,/obj/structure/converter/tanning,8,80,1,1,economy & production,16,0,0,8,null
 RECIPE: /material/wood/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
 
 RECIPE: /material/wood/,wood altar,/obj/structure/altar/wood,20,200,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/wood/,decorative wood mask,/obj/structure/religious/tribalmask,2,50,1,1,religious & decoration,0,0,0,2,null

@@ -6,8 +6,19 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-/obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob) ///obj/item/stack/material/rettedfabric
 	if (istype(W, /obj/item/stack/material/cotton))
+		H.visible_message("You start to produce the cloth.")
+		icon_state = "loom1"
+		if (do_after(H, min(W.amount*20, 200), H.loc))
+			H.visible_message("You finish producing the cloth.")
+			icon_state = "loom"
+			var/obj/item/stack/material/cloth/clothes = new/obj/item/stack/material/cloth(H.loc)
+			clothes.amount = W.amount
+			qdel(W)
+		else
+			icon_state = "loom"
+	if (istype(W, /obj/item/stack/material/rettedfabric))
 		H.visible_message("You start to produce the cloth.")
 		icon_state = "loom1"
 		if (do_after(H, min(W.amount*20, 200), H.loc))
@@ -748,3 +759,33 @@
 			GS.satisfaction *= 1.5 //food that is already bad will taste worse when canned
 		tlist += GS
 	return tlist
+
+/obj/structure/compost
+	name = "compost bin"
+	desc = "A wood box, used to turn trash and scraps into fertilizer."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "compostbin"
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	var/max = 10
+	var/current = 0
+
+/obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+	if (current >= max)
+		H << "<span class='warning'>The compost bin is full!</span>"
+		return
+
+	else if (istype(W, /obj/item/weapon/reagent_containers/food))
+		current+=0.5
+		compost()
+		return
+
+/obj/structure/compost/proc/compost()
+	if (current>=1)
+		current=max(0,current-1)
+		spawn(18000)
+			if (src)
+				new/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer(loc)
+				return
+
