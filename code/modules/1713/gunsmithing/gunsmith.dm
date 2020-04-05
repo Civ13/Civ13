@@ -417,7 +417,7 @@
 	NEWGUN.name = bpsource.custom_name
 	NEWGUN.caliber = bpsource.caliber
 	NEWGUN.ammo_type = bpsource.ammo_type
-	NEWGUN.custom_name = bpsource.name
+	NEWGUN.name = bpsource.name
 	NEWGUN.receiver_type = bpsource.receiver_type
 	NEWGUN.stock_type = bpsource.stock_type
 	NEWGUN.barrel_type = bpsource.barrel_type
