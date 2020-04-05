@@ -37,7 +37,10 @@
 	else if (istype(P, /obj/item/weapon/gun/projectile))
 		if (!istype(P, /obj/item/weapon/gun/projectile/ancient) && !istype(P, /obj/item/weapon/gun/projectile/bow) && !istype(P, /obj/item/weapon/gun/projectile/capnball) && !istype(P, /obj/item/weapon/gun/projectile/flintlock))
 			rechamber_gun(P, user)
-
+			return
+	else if (istype(P, /obj/item/blueprint/gun))
+		assemble_from_blueprint(user,P)
+		return
 /obj/item/weapon/gun/projectile
 	var/rechambered = FALSE
 
@@ -359,6 +362,20 @@
 				current_gun.name = "gun"
 			else
 				return
+		var/save_blueprint = input(user, "Do you want to save this gun's blueprint?", "Gunsmithing", "Yes", list("Yes","No"))
+		if (save_blueprint == "Yes")
+			var/obj/item/blueprint/gun/newgunbp = new/obj/item/blueprint/gun(loc)
+			newgunbp.name = "[current_gun.name] blueprint"
+			newgunbp.caliber = current_gun.caliber
+			newgunbp.ammo_type = current_gun.ammo_type
+			newgunbp.custom_name = current_gun.name
+			newgunbp.receiver_type = current_gun.receiver_type
+			newgunbp.stock_type = current_gun.stock_type
+			newgunbp.barrel_type = current_gun.barrel_type
+			newgunbp.feeding_type = current_gun.feeding_type
+			newgunbp.override_sprite = current_gun.override_sprite
+			newgunbp.cost_wood = using_wood
+			newgunbp.cost_steel = using_steel
 		if (current_gun)
 			current_gun.finish()
 			wood_amt -= using_wood
@@ -381,6 +398,36 @@
 		using_steel = 0
 		return
 
+/obj/structure/gunbench/proc/assemble_from_blueprint(var/mob/living/user = null, var/obj/item/blueprint/gun/bpsource = null)
+	if (!bpsource)
+		return
+	if (wood_amt < bpsource.cost_wood)
+		if (user)
+			user << "Not enough wood!"
+		return
+	if (steel_amt < bpsource.cost_steel)
+		if (user)
+			user << "Not enough steel!"
+		return
+
+	using_wood -= cost_wood
+	using_steel -= cost_steel
+
+	var/obj/item/weapon/gun/projectile/custom/NEWGUN = new/obj/item/weapon/gun/projectile/custom(src.loc)
+	NEWGUN.name = bpsource.custom_name
+	NEWGUN.caliber = bpsource.caliber
+	NEWGUN.ammo_type = bpsource.ammo_type
+	NEWGUN.custom_name = bpsource.name
+	NEWGUN.receiver_type = bpsource.receiver_type
+	NEWGUN.stock_type = bpsource.stock_type
+	NEWGUN.barrel_type = bpsource.barrel_type
+	NEWGUN.feeding_type = bpsource.feeding_type
+	NEWGUN.override_sprite = bpsource.override_sprite
+	NEWGUN.step = 4
+
+	if (user)
+		user << "You assemble a new [NEWGUN.name]."
+	return
 /obj/item/weapon/gun/projectile/custom
 	name = "unfinished gun"
 	desc = "an unfinished gun"
@@ -397,6 +444,8 @@
 	var/image/feeding_img = null
 	var/barrel_type = "none"
 	var/image/barrel_img = null
+
+	var/override_sprite = null
 
 	gun_safety = TRUE
 	//bolt action
