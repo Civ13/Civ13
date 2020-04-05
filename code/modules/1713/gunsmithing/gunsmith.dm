@@ -410,8 +410,8 @@
 			user << "Not enough steel!"
 		return
 
-	using_wood -= cost_wood
-	using_steel -= cost_steel
+	using_wood -= bpsource.cost_wood
+	using_steel -= bpsource.cost_steel
 
 	var/obj/item/weapon/gun/projectile/custom/NEWGUN = new/obj/item/weapon/gun/projectile/custom(src.loc)
 	NEWGUN.name = bpsource.custom_name
