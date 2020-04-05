@@ -29,7 +29,7 @@
 /*//mob/living/simple_animal/boar_male
 	name = "boar"
 	desc = "A male boar."
-	
+
 icon_state = "boar_male"
 	icon_living = "boar_male"
 	icon_dead = "boar_male_dead"
@@ -55,7 +55,7 @@ icon_state = "boar_male"
 	melee_damage_lower = 8
 	melee_damage_upper = 15
 
-mob/living/simple_animal/boar/female
+/mob/living/simple_animal/boar/female
 	name = "boar"
 	desc = "A female boar."
 	icon_state = "boar_female"

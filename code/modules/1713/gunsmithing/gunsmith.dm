@@ -13,7 +13,7 @@
 	not_disassemblable = TRUE
 	var/obj/item/weapon/gun/projectile/custom/current_gun = null
 
-/obj/structure/gunbench/attackby(obj/item/P as obj, mob/user as mob)
+/obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/carbon/human/user as mob)
 	if (istype(P, /obj/item/stack/material/wood))
 		user << "You begin cutting the wood..."
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
@@ -38,10 +38,10 @@
 		if (!istype(P, /obj/item/weapon/gun/projectile/ancient) && !istype(P, /obj/item/weapon/gun/projectile/bow) && !istype(P, /obj/item/weapon/gun/projectile/capnball) && !istype(P, /obj/item/weapon/gun/projectile/flintlock))
 			rechamber_gun(P, user)
 			return
-	else if (istype(P, /obj/item/blueprint/gun) && H.getStatCoeff("crafting") >= 1.5)
+	else if (istype(P, /obj/item/blueprint/gun) && user.getStatCoeff("crafting") >= 1.5)
 		assemble_from_blueprint(user,P)
 		return
-	else if (H.getStatCoeff("crafting") < 1.5)
+	else if (user.getStatCoeff("crafting") < 1.5)
 		user << "<span class='warning'>You are not skilled enough to do this.</span>"
 		return
 /obj/item/weapon/gun/projectile
@@ -361,11 +361,11 @@
 					possible_list = list("Cancel", "shotgun", "remington870", "remington11", "winchester1873")
 				if ("Bolt-Action")
 					possible_list = list("Cancel", "gewehr71", "gewehr98", "lebel", "mosin", "murata", "enfield", "p14enfield", "carcano", "arisaka30", "arisaka35")
-					if (ordinal_age >= 6)
+					if (map.ordinal_age >= 6)
 						possible_list = list("Cancel", "gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfieldww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
 				if("Semi-Auto (large)")
 					possible_list = list("Cancel", "svt", "g41", "g43", "m1garand")
-					if (ordinal_age >= 7)
+					if (map.ordinal_age >= 7)
 						possible_list += "m14"
 						possible_list += "sks"
 				if ("Open-Bolt (large)")
@@ -388,7 +388,7 @@
 				if ("Triple Selective Fire")
 					possible_list = list("Cancel", "m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
 
-			if (dst != "Cancel" && dst != none)
+			if (dst != "Cancel" && dst != null)
 				current_gun.override_sprite = dst
 
 	if (choice_caliber && choice_stock && choice_barrel && choice_receiver && choice_feeding)
@@ -526,16 +526,18 @@
 	if (stock_type == "none" || receiver_type == "none" || feeding_type == "none" || barrel_type == "none")
 		qdel(src)
 		return
-	stock_img = image("icon" = src.icon, "icon_state" = src.stock_type)
-	overlays += stock_img
-	barrel_img = image("icon" = src.icon, "icon_state" = src.barrel_type)
-	overlays += barrel_img
-	receiver_img = image("icon" = src.icon, "icon_state" = src.receiver_type)
-	overlays += receiver_img
-	if (feeding_type == "Open (Belt-Fed)" || feeding_type == "External Magazine" || feeding_type == "Large External Magazine")
-		feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
-		overlays += feeding_img
-
+	if (!override_sprite)
+		stock_img = image("icon" = src.icon, "icon_state" = src.stock_type)
+		overlays += stock_img
+		barrel_img = image("icon" = src.icon, "icon_state" = src.barrel_type)
+		overlays += barrel_img
+		receiver_img = image("icon" = src.icon, "icon_state" = src.receiver_type)
+		overlays += receiver_img
+		if (feeding_type == "Open (Belt-Fed)" || feeding_type == "External Magazine" || feeding_type == "Large External Magazine")
+			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
+			overlays += feeding_img
+	else
+		icon_state = override_sprite
 	switch(stock_type)
 		if ("Rifle Wooden Stock")
 			equiptimer = 15
@@ -1237,24 +1239,27 @@
 		if (FM.fire_delay == -1)
 			FM.fire_delay = fire_delay
 /obj/item/weapon/gun/projectile/custom/update_icon()
-	if (stock_type == "Folding Stock")
-		if (!folded)
-			stock_img = image("icon" = src.icon, "icon_state" = "[src.stock_type]")
+	if (!override_sprite)
+		if (stock_type == "Folding Stock")
+			if (!folded)
+				stock_img = image("icon" = src.icon, "icon_state" = "[src.stock_type]")
+			else
+				stock_img = image("icon" = src.icon, "icon_state" = "none")
+		if (feeding_type == "Open (Belt-Fed)" || feeding_type == "External Magazine" || feeding_type == "Large External Magazine")
+			if (ammo_magazine)
+				feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_loaded")
+			else
+				feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
 		else
-			stock_img = image("icon" = src.icon, "icon_state" = "none")
-	if (feeding_type == "Open (Belt-Fed)" || feeding_type == "External Magazine" || feeding_type == "Large External Magazine")
-		if (ammo_magazine)
-			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_loaded")
-		else
-			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
+			feeding_img = image("icon" = src.icon, "icon_state" = "none")
+		overlays.Cut()
+		overlays += stock_img
+		overlays += barrel_img
+		overlays += receiver_img
+		overlays += feeding_img
+		update_held_icon()
 	else
-		feeding_img = image("icon" = src.icon, "icon_state" = "none")
-	overlays.Cut()
-	overlays += stock_img
-	overlays += barrel_img
-	overlays += receiver_img
-	overlays += feeding_img
-	update_held_icon()
+		..()
 
 
 
