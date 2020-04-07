@@ -284,6 +284,14 @@
 	value = 1
 	flammable = TRUE
 
+/obj/item/stack/material/bamboo
+	name = "bamboo bundle"
+	icon_state = "sheet-bamboo"
+	default_type = "bamboo"
+	dropsound = 'sound/effects/drop_wood.ogg'
+	value = 1
+	flammable = TRUE
+
 /obj/item/stack/material/cotton
 	name = "cotton pile"
 	icon_state = "sheet-cotton"

@@ -519,6 +519,27 @@ var/list/name_to_material
 	hardness = 90
 	icon_colour = "#D2BA9C"
 
+/material/bamboo
+	name = "bamboo"
+	stack_type = /obj/item/stack/material/bamboo
+	icon_colour = "#414833"
+	integrity = 50
+	icon_base = "wood"
+	explosion_resistance = 2
+	shard_type = SHARD_SPLINTER
+	shard_can_repair = FALSE
+	hardness = 45
+	weight = 15
+	melting_point = T0C+300
+	ignition_point = T0C+288
+
+	dooropen_noise = 'sound/effects/doorcreaky.ogg'
+	door_icon_base = "wood"
+	destruction_desc = "splinters"
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
+	hitsound = 'sound/effects/woodhit.ogg'
+
 /material/clay
 	name = "clay"
 	integrity = 60
