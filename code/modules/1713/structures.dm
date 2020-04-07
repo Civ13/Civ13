@@ -441,5 +441,36 @@
 					qdel(W)
 		else
 			H << "<span class='notice'>That does not exist!</span>"
+	else if(istype(W, /obj/item/stack/material/bamboo))
+		var/input
+		var/display = list("Bamboo Door - 1", "Bamboo Wall - 1", "Bamboo Window - 1", "Cancel")
+		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
+		playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		if (input == "Cancel")
+			return
+		var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
+		if(input == "Bamboo Door - 3")
+			if(W.amount >= 3)
+				if (do_after(H, 40, src))
+					S.icon_state = "bamboo-door"
+					S.name = "bamboo door"
+					S.density = FALSE
+					S.opacity = FALSE
+					qdel(src)
+					qdel(W)
+		else if(input == "Bamboo Wall - 2")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					qdel(src)
+					qdel(W)
+			return
+		else if(input == "Bamboo Window - 3")
+			if(W.amount >= 3)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else
+			H << "<span class='notice'>That does not exist!</span>"
 	else
 		..()
