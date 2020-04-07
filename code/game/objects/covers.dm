@@ -660,6 +660,20 @@
 	material = "Wood"
 	hardness = 20
 
+/obj/covers/wood_wall/bamboo
+	name = "bamboo wall"
+	desc = "A wall made from bamboo."
+	icon = 'icons/obj/bamboostuff.dmi'
+	icon_state = "bamboo_wall"
+	health = 80
+	amount = 3
+	layer = 3
+	health = 70
+	wall = TRUE
+	explosion_resistance = 3
+	material = "Wood"
+	hardness = 40
+
 /obj/covers/wood_wall/log
 	name = "log wall"
 	desc = "A log wall."
@@ -919,6 +933,47 @@
 	material = "Stone"
 	hardness = 75
 
+/obj/covers/clay_wall/grecian
+	name = "smooth grecian plaster wall"
+	desc = "A grecian style plaster wall."
+	icon_state = "grecian_plaster_smooth"
+	health = 230
+	explosion_resistance = 8
+
+/obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/plaster))
+		user << "You start adding plaster to the wall..."
+		if (do_after(user, 20, src))
+			user << "You finish adding plaster to the wall, rendering it."
+			qdel(W)
+			var/obj/covers/clay_wall/grecian/S = new /obj/covers/clay_wall/grecian(loc)
+			qdel(src)
+			var/choice = WWinput(user, "What type of wall?","Grecian Walls","Normal",list("Grecian Smooth","Grecian Smooth Pattern","Grecian Cobbled","Grecian Cobbled Pattern"))
+			if (choice == "Grecian Smooth")
+				return
+			else if (choice == "Grecian Smooth Pattern")
+				S.icon_state = "grecian_plaster_pattern"
+				base_icon_state = icon_state
+				var/choice1 = WWinput(user, "Which orientation?","Grecian Smooth Pattern","Vertical",list("Vertical","Horizontal"))
+				if (choice1 == "Vertical")
+					S.dir = SOUTH
+				else if (choice1 == "Horizontal")
+					S.dir = EAST
+			else if (choice == "Grecian Cobbled")
+				S.icon_state = "grecian_plaster_cobbled"
+				base_icon_state = icon_state
+				S.name = "cobbled grecian plaster wall"
+			else if (choice == "Grecian Cobbled Pattern")
+				S.icon_state = "grecian_plaster_pattern"
+				base_icon_state = icon_state
+				var/choice2 = WWinput(user, "Which orientation?","Grecian Cobbled Pattern","Vertical",list("Vertical","Horizontal"))
+				if (choice2 == "Vertical")
+					S.dir = NORTH
+				else if (choice2 == "Horizontal")
+					S.dir = WEST
+			return
+	..()
+
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
 	desc = "A clay block wall."
@@ -960,6 +1015,7 @@
 					qdel(W)
 					return
 	..()
+
 /obj/covers/clay_wall/sumerian
 	name = "sumerian clay wall"
 	desc = "A sumerian style clay wall."
@@ -1568,39 +1624,40 @@
 	bullethole_overlays += tmp_bullethole
 	bullethole_count += list(chnum)
 	update_icon()
+
 ////////////////////////////////////////////////////////////
 
 /obj/covers/wood_wall/aztec
 	name = "aztec wood wall"
-	desc = "A wood wall, in Aztec style."
+	desc = "A wood wall, in aztec style."
 	icon_state = "aztec0"
 	base_icon_state = "aztec"
 	adjusts = TRUE
 
 /obj/covers/wood_wall/nordic
 	name = "nordic wood wall"
-	desc = "A wood wall, in Northern European style."
+	desc = "A wood wall, in northern european style."
 	icon_state = "nordic0"
 	base_icon_state = "nordic"
 	adjusts = TRUE
 
 /obj/covers/stone_wall/roman
 	name = "roman stone wall"
-	desc = "A Roman-style stone wall."
+	desc = "A roman-style stone wall."
 	icon_state = "roman0"
 	base_icon_state = "roman"
 	adjusts = TRUE
 
 /obj/covers/stone_wall/egyptian
 	name = "egyptian sandstone wall"
-	desc = "An Egyptian-style sandstone wall."
+	desc = "An egyptian-style sandstone wall."
 	icon_state = "egyptian0"
 	base_icon_state = "egyptian"
 	adjusts = TRUE
 
 /obj/covers/stone_wall/mayan
 	name = "mayan stone wall"
-	desc = "A Mayan-style stone wall."
+	desc = "A mayan-style stone wall."
 	icon_state = "mayan0"
 	base_icon_state = "mayan"
 	adjusts = TRUE
@@ -1611,3 +1668,12 @@
 	icon_state = "stone_brick_wall0"
 	base_icon_state = "stone_brick_wall"
 	adjusts = TRUE
+
+/obj/covers/stone_wall/fortress
+	name = "fortress brick wall"
+	desc = "A dense fortress brick wall."
+	icon_state = "fortress_brickwall0"
+	base_icon_state = "fortress_brickwall"
+	adjusts = TRUE
+	health = 750 // 150 more health than stone
+	explosion_resistance = 12 //2 tougher than stone
