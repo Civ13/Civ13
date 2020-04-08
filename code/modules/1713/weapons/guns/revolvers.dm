@@ -262,7 +262,7 @@
 /obj/item/weapon/gun/projectile/revolver/enfieldno2
 	name = "Enfield No. 2"
 	desc = "British revolver made with love."
-	icon_state = "Enfield02"
+	icon_state = "enfield02"
 	w_class = 2
 	caliber = "a41"
 	load_method = SINGLE_CASING
@@ -274,10 +274,10 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
-/obj/item/weapon/gun/projectile/revolver/webly4
-	name = "Webly Mk IV"
+/obj/item/weapon/gun/projectile/revolver/webley4
+	name = "Webley Mk IV"
 	desc = "British revolver chambered in (.445)."
-	icon_state = "webly4"
+	icon_state = "webley4"
 	w_class = 2
 	caliber = "webly445"
 	load_method = SINGLE_CASING
