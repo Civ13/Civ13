@@ -13,6 +13,7 @@ RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2
 RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
 
 RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5,50,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,plaster,/obj/item/weapon/clay/plaster,1.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,0.5,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,0.5,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,0.5,15,1,1,none,103,0,0,8,null
@@ -564,6 +565,7 @@ RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,
 RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
 
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall/classic,8,140,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,fortress wall,/obj/covers/stone_wall/fortress,14,190,1,1,construction,32,28,0,3,null
 RECIPE: /material/stone/,roman stone wall,/obj/covers/stone_wall/roman,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,mayan wall,/obj/covers/stone_wall/mayan,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,roman door,/obj/structure/simple_door/key_door/anyone/roman,5,50,1,1,construction,28,0,0,8,null

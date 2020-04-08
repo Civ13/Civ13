@@ -1,7 +1,7 @@
 //for unfired clay stuff, i.e. unusable
 /obj/item/weapon/clay
 	name = "unfired clay"
-	desc = "unfired clay. Put it in the fire to dry it"
+	desc = "Unfired clay. Put it in the fire to dry it"
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claylump"
 	item_state = "claylump"
@@ -103,21 +103,21 @@
 /obj/item/weapon/clay/claybricks/fired
 	name = "clay blocks"
 	icon_state = "claybricks"
-	desc = "clay blocks. Can be used to make clay walls."
+	desc = "Clay blocks. Can be used to make clay walls."
 	throwforce = WEAPON_FORCE_WEAK+2
 	force = WEAPON_FORCE_WEAK+4
 
 /obj/item/weapon/clay/advclaybricks/fired
 	name = "bricks"
 	icon_state = "advclaybricks"
-	desc = "modern bricks. Can be used to make brick walls."
+	desc = "Modern bricks. Can be used to make brick walls."
 	throwforce = WEAPON_FORCE_WEAK+3
 	force = WEAPON_FORCE_WEAK+5
 
 /obj/item/weapon/clay/advclaybricks/fired/cement
 	name = "cement bricks"
 	icon_state = "cementbricks"
-	desc = "modern bricks. Can be used to make cement walls."
+	desc = "Modern bricks. Can be used to make cement walls."
 	throwforce = WEAPON_FORCE_WEAK+4
 	force = WEAPON_FORCE_WEAK+6
 
@@ -242,7 +242,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/smallclaypot
 	name = "small clay pot"
-	desc = "small clay pot."
+	desc = "Small clay pot."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "smallclaypot"
 	amount_per_transfer_from_this = 5
@@ -254,7 +254,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypot
 	name = "medium clay pot"
-	desc = "medium clay pot."
+	desc = "Medium clay pot."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claypot1"
 	amount_per_transfer_from_this = 10
@@ -267,7 +267,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot
 	name = "big clay pot"
-	desc = "big clay pot."
+	desc = "Big clay pot."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "bigclaypot1"
 	amount_per_transfer_from_this = 10
@@ -279,7 +279,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug
 	name = "clay jug"
-	desc = "clay jug."
+	desc = "Clay jug."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "clayjug1"
 	amount_per_transfer_from_this = 10
@@ -291,7 +291,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claybowl
 	name = "clay bowl"
-	desc = "clay bowl."
+	desc = "Clay bowl."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claybowl"
 	amount_per_transfer_from_this = 10
@@ -300,7 +300,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claycup
 	name = "clay cup"
-	desc = "clay cup."
+	desc = "Clay cup."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claycup"
 	amount_per_transfer_from_this = 10
@@ -309,7 +309,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claywinecup
 	name = "clay wine cup"
-	desc = "clay wine cup."
+	desc = "Clay wine cup."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claywinecup"
 	amount_per_transfer_from_this = 5
@@ -318,7 +318,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayvase
 	name = "clay vase"
-	desc = "clay vase."
+	desc = "Clay vase."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "clayvase"
 	amount_per_transfer_from_this = 15
@@ -327,7 +327,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypitcher
 	name = "clay pitcher"
-	desc = "clay pitcher."
+	desc = "Clay pitcher."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claypitcher"
 	amount_per_transfer_from_this = 15
@@ -336,7 +336,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher
 	name = "large clay pitcher"
-	desc = "large clay pitcher."
+	desc = "Large clay pitcher."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "largeclaypitcher"
 	amount_per_transfer_from_this = 20
@@ -396,7 +396,7 @@
 
 /obj/item/weapon/clayshards
 	name = "clay shards"
-	desc = "clay shards from broken clay pottery."
+	desc = "Clay shards from broken clay pottery."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "clayshards"
 	item_state = "clayshards"
@@ -405,3 +405,17 @@
 	w_class = 1
 	throw_speed = 5
 	throw_range = 8
+
+/obj/item/weapon/plaster
+	name = "raw plaster"
+	desc = "Raw plaster. Ready to be applied onto a surface" //plans later to mould this somehow, like plaster-casts or something
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "plasterlump"
+	item_state = "plasterlump"
+	throwforce = WEAPON_FORCE_WEAK
+	force = WEAPON_FORCE_WEAK
+	w_class = 2
+	throw_speed = 3
+	throw_range = 5
+	var/result = "none"
+	value = 1
