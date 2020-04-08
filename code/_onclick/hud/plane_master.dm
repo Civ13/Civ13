@@ -16,7 +16,7 @@
 /obj/screen/plane_master/game_world/backdrop(mob/mymob)
 	filters = list()
 	if(istype(mymob) && mymob.client)
-		filters += filter(type="drop_shadow", x=0, y=-2, size=4, border=4, color="#04080FAA")
+		filters += filter(type="drop_shadow", x=0, y=-2, size=4, color="#04080FAA")
 
 /obj/screen/plane_master/lighting
 	name = "lighting plane master"
