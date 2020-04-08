@@ -277,6 +277,7 @@
 #include "code\game\objects\map_metadata\nomads_continental.dm"
 #include "code\game\objects\map_metadata\nomads_desert.dm"
 #include "code\game\objects\map_metadata\nomads_divide.dm"
+#include "code\game\objects\map_metadata\nomads_europe.dm"
 #include "code\game\objects\map_metadata\nomads_extended.dm"
 #include "code\game\objects\map_metadata\nomads_ice_age.dm"
 #include "code\game\objects\map_metadata\nomads_island.dm"
@@ -920,5 +921,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_continental.dmm"
+#include "maps\special\nomads_europe.dmm"
 // END_INCLUDE
