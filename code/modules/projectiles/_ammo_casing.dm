@@ -56,6 +56,13 @@
 	projectile_type = /obj/item/projectile/arrow/arrow/fire/gods
 	weight = 0.18
 
+/obj/item/ammo_casing/arrow/flint
+	name = "flint arrow"
+	desc = "An arrow with a flint tip."
+	icon_state = "arrow_flint"
+	projectile_type = /obj/item/projectile/arrow/arrow/flint
+	weight = 0.14
+
 /obj/item/ammo_casing/arrow/stone
 	name = "stone arrow"
 	desc = "An arrow with a stone tip."
@@ -126,6 +133,13 @@
 	slot_flags = SLOT_BELT
 	value = 2
 	var/volume = 5
+
+/obj/item/ammo_casing/bolt/flint
+	name = "flint bolt"
+	desc = "An bolt with a flint tip."
+	icon_state = "bolt_flint"
+	projectile_type = /obj/item/projectile/arrow/bolt/flint
+	weight = 0.15
 
 /obj/item/ammo_casing/bolt/stone
 	name = "stone bolt"
@@ -204,6 +218,17 @@
 //ARROWHEADS
 
 /obj/item/ammo_casing/arrow/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/flint))
+		var/obj/item/weapon/flint/F = W
+		if (F.sharpened)
+			new/obj/item/ammo_casing/arrow/flint(user.loc)
+			//F.amount--
+			//if (F.amount<1)
+			qdel(F)
+			playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
+			user << "<span class = 'notice'>You attach the [F] to the [src]</span>"
+			qdel(src)
+
 	if(istype(W, /obj/item/stack/arrowhead))
 		var/obj/item/stack/arrowhead/AH = W
 		if(istype(W, /obj/item/stack/arrowhead/stone))
@@ -235,6 +260,17 @@
 	..()
 
 /obj/item/ammo_casing/bolt/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/flint))
+		var/obj/item/weapon/flint/F = W
+		if (F.sharpened)
+			new/obj/item/ammo_casing/bolt/flint(user.loc)
+			//F.amount--
+			//if (F.amount<1)
+			qdel(F)
+		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
+		user << "<span class = 'notice'>You attach the [W] to the [src]</span>"
+		qdel(src)
+
 	if(istype(W, /obj/item/stack/arrowhead))
 		var/obj/item/stack/arrowhead/AH = W
 		if(istype(W, /obj/item/stack/arrowhead/stone))
