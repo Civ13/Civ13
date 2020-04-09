@@ -3,21 +3,21 @@
 
 /obj/item/clothing/under/chad
 	name = "chad clothing"
-	desc = "wow!"
+	desc = "Wow!"
 	icon_state = "chad"
 	item_state = "chad"
 	worn_state = "chad"
 
 /obj/item/clothing/shoes/chad
 	name = "chad shoes"
-	desc = "ouch!"
+	desc = "Ouch!"
 	icon_state = "chad"
 	item_state = "chad"
 	worn_state = "chad"
 	force = WEAPON_FORCE_WEAK
 
 /obj/item/clothing/under/flamengo
-	name = "Flamengo shirt with yellow shorts"
+	name = "flamengo shirt with yellow shorts"
 	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
 	icon_state = "flamengo"
 	item_state = "flamengo"
@@ -33,21 +33,21 @@
 
 /obj/item/clothing/under/wise_tutor
 	name = "wise tutor's outfit"
-	desc = "A loose outfit worn by the spritually wise."
+	desc = "A loose outfit worn by the wise & experienced."
 	icon_state = "wise_tutor"
 	item_state = "wise_tutor"
 	worn_state = "wise_tutor"
 
 /obj/item/clothing/under/arrogant_student
 	name = "arrogant student's outfit"
-	desc = "A loose outfit worn by the arrogant students."
+	desc = "A loose outfit worn by arrogant students."
 	icon_state = "arrogant_student"
 	item_state = "arrogant_student"
 	worn_state = "arrogant_student"
 
 /obj/item/clothing/suit/storage/jacket/wise_tutor
 	name = "wise tutor's robe"
-	desc = "A rough brown robe favored by wizened teachers."
+	desc = "A rough brown robe, favored by wizened teachers."
 	icon_state = "wise_tutor_robe"
 	item_state = "wise_tutor_robe"
 	worn_state = "wise_tutor_robe"
@@ -77,7 +77,7 @@
 
 /obj/item/clothing/suit/storage/jacket/arrogant_student
 	name = "arrogant_student robe"
-	desc = "A rough black favored by those who believe they are already good enough."
+	desc = "A rough black robe, favored by those who believe they are already good enough."
 	icon_state = "arrogant_student_robe"
 	item_state = "arrogant_student_robe"
 	worn_state = "arrogant_student_robe"
