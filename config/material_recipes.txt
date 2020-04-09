@@ -881,6 +881,7 @@ RECIPE: /material/wood/,nordic wall,/obj/covers/wood_wall/nordic,8,170,1,1,const
 RECIPE: /material/wood/,aztec wall,/obj/covers/wood_wall/aztec,8,170,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,custom sign,/obj/structure/sign/custom,3,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,signpost,/obj/structure/sign/custom,4,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wood jail bars,/obj/covers/jail/woodjail,8,30,1,1,construction,55,0,0,8,null
 RECIPE: /material/wood/,locked wood jail door,/obj/structure/simple_door/key_door/custom/jail/woodjail,12,30,1,1,construction,55,0,0,8,null

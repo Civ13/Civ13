@@ -187,6 +187,22 @@
 		customdesc = input(user, "Choose a description for this sign:") as text|null
 		if (customdesc == null)
 			customdesc = "An empty sign."
+	if (findtext(recipe.title, "signpost"))
+		var/indesc = input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "") as text|null
+		if (customdesc != null && customdesc != "")
+			customdesc = "<b>West:</b> [indesc]"
+		indesc = null
+		indesc = input(user, "Add a North sign? Leave empty to not add one.", "Signpost", "") as text|null
+		if (customdesc != null && customdesc != "")
+			customdesc += "<br><b>North:</b> [indesc]"
+		indesc = null
+		indesc = input(user, "Add a East sign? Leave empty to not add one.", "Signpost", "") as text|null
+		if (customdesc != null && customdesc != "")
+			customdesc += "<br><b>East:</b> [indesc]"
+		indesc = null
+		indesc = input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "") as text|null
+		if (customdesc != null && customdesc != "")
+			customdesc += "<br><b>South:</b> [indesc]"
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"

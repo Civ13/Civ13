@@ -134,10 +134,37 @@
 		desc = "Exit to the south."
 
 /obj/structure/sign/custom
-	name = "Sign"
+	name = "sign"
 	desc = "Signs something."
 	icon_state = "woodsign2"
 
+/obj/structure/sign/signpost
+	name = "signpost"
+	desc = "Signs something."
+	icon_state = "signpost_pole"
+
+	New()
+		..()
+		spawn(1)
+			if (findtext(desc, "<b>West:</b>"))
+				overlays += icon(src.icon, "signpost_west", layer=src.layer+0.01)
+			if (findtext(desc, "<b>North:</b>"))
+				overlays += icon(src.icon, "signpost_north", layer=src.layer+0.02)
+			if (findtext(desc, "<b>East:</b>"))
+				overlays += icon(src.icon, "signpost_east", layer=src.layer+0.03)
+			if (findtext(desc, "<b>South:</b>"))
+				overlays += icon(src.icon, "signpost_south", layer=src.layer+0.04)
+			update_icon()
+	update_icon()
+		overlays.Cut()
+		if (findtext(desc, "<b>West:</b>"))
+			overlays += icon(src.icon, "signpost_west", layer=src.layer+0.01)
+		if (findtext(desc, "<b>North:</b>"))
+			overlays += icon(src.icon, "signpost_north", layer=src.layer+0.02)
+		if (findtext(desc, "<b>East:</b>"))
+			overlays += icon(src.icon, "signpost_east", layer=src.layer+0.03)
+		if (findtext(desc, "<b>South:</b>"))
+			overlays += icon(src.icon, "signpost_south", layer=src.layer+0.04)
 //numbers
 /obj/structure/sign/n1
 	desc = "A silver sign which reads 'I'."
