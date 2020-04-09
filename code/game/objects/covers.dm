@@ -937,8 +937,8 @@
 	name = "smooth grecian plaster wall"
 	desc = "A grecian style plaster wall."
 	icon_state = "grecian_plaster_smooth"
-	health = 230
-	explosion_resistance = 8
+	health = 210
+	explosion_resistance = 7
 
 /obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/plaster))
@@ -1099,6 +1099,7 @@
 					qdel(W)
 					return
 	..()
+
 /obj/covers/brick_wall
 	name = "brick wall"
 	desc = "A red brick wall."
@@ -1123,7 +1124,7 @@
 /obj/covers/cement_wall
 	name = "concrete wall"
 	desc = "A concrete wall."
-	icon = 'icons/obj/structures.dmi'
+	icon = 'icons/turf/walls.dmi'
 	icon_state = "cement_wall0"
 	base_icon_state = "cement_wall"
 	passable = TRUE
@@ -1182,7 +1183,7 @@
 /obj/covers/cement_wall/incomplete
 	name = "incomplete concrete wall"
 	desc = "A cement brick wall."
-	icon = 'icons/obj/claystuff.dmi'
+	icon = 'icons/turf/walls.dmi'
 	icon_state = "cementwall_inc1"
 	passable = TRUE
 	not_movable = TRUE
@@ -1207,14 +1208,12 @@
 			new /obj/covers/cement_wall(loc)
 			qdel(src)
 			return
-			return
 	..()
 
-
 /obj/covers/brick_wall/incomplete
-	name = "brick wall"
-	desc = "A clay brick wall."
-	icon = 'icons/obj/claystuff.dmi'
+	name = "incomplete brick wall"
+	desc = "A red brick wall."
+	icon = 'icons/turf/walls.dmi'
 	icon_state = "brickwall_inc1"
 	passable = TRUE
 	not_movable = TRUE
@@ -1237,12 +1236,15 @@
 			user << "You finish adding bricks to the wall, completing it."
 			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window"))
 			if (choice == "Wall")
+				qdel(W)
 				new /obj/covers/brick_wall(loc)
+				qdel(src)
+				return
 			else if (choice == "Window")
+				qdel(W)
 				new /obj/structure/window_frame/brick(loc)
-			qdel(W)
-			qdel(src)
-			return
+				qdel(src)
+				return
 	..()
 
 /obj/covers/jail/
