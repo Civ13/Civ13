@@ -157,6 +157,7 @@
 	var/obj/item/stack/money/goldcoin/build_override_coins_gold = null
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = null
 	var/obj/structure/vending/sales/build_override_vending = null
+	var/obj/structure/supplier/build_override_supply = null
 	if (istype(get_turf(H), /turf/floor/beach/water/deep))
 		H << "<span class = 'danger'>You can't build here!</span>"
 		return
@@ -607,6 +608,24 @@
 		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
 		if (customvar == "Cancel")
 			return
+	else if (findtext(recipe.title, "supply stall"))
+		customname = input(user, "Choose a name for this [recipe.title]:") as text|null
+		if (customname == "" || customname == null)
+			customname = recipe.title
+		var/list/clist = list()
+		for(var/i in map.custom_company_nr)
+			for(var/list/L in map.custom_company[i])
+				if (L[1]==H)
+					clist += i
+		if (isemptylist(clist))
+			H << "You are not part of any companies!"
+			return
+		customvar2 = recipe.title
+		clist += "Cancel"
+		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
+		if (customvar == "Cancel")
+			return
+
 	else if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -1219,6 +1238,15 @@
 					RB.statue_layers += "obj_[inpo]"
 			RB.update_icon()
 
+		else if (istype(O, /obj/structure/supplier))
+			build_override_supply = new /obj/structure/supplier
+			build_override_supply.owner = customvar
+			build_override_supply.name = customname
+			build_override_supply.desc = "A [customvar2], property of [customvar]."
+			build_override_supply.loc = get_turf(O)
+			build_override_supply.add_fingerprint(user)
+			qdel(O)
+			return
 		else if (istype(O, /obj/structure/vending/sales))
 			if (customvar2 == "market stall")
 				build_override_vending = new /obj/structure/vending/sales/market_stall
@@ -1231,6 +1259,7 @@
 			build_override_vending.add_fingerprint(user)
 			qdel(O)
 			return
+
 		else if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O
 			S.amount = produced
