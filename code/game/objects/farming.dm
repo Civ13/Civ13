@@ -94,7 +94,7 @@
 	icon_state = "bambooseeds"
 	color = null
 	biomes = list("jungle","sea")
-	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	seasons = list( "WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 
 /obj/item/stack/farming/seeds/cotton
 	name = "cotton seeds"
@@ -378,7 +378,7 @@
 	plant = "bamboo"
 	harvest_verb = "cut some shoots from"
 	biomes = list("jungle","sea")
-	seasons = list("SUMMER", "SPRING", "FALL", "Wet Season")
+	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	max_water = 80
 
 /obj/structure/farming/plant/coca
@@ -756,6 +756,13 @@
 		var/obj/item/stack/material/hemp/I2 = new/obj/item/stack/material/hemp(loc)
 		I2.radiation = radiation/2
 
+/obj/structure/farming/plant/flax/spawnProduce()
+	var/obj/item/stack/material/flax/I = new/obj/item/stack/material/flax(loc)
+	I.radiation = radiation/2
+	if (fertilized)
+		var/obj/item/stack/material/flax/I2 = new/obj/item/stack/material/flax(loc)
+		I2.radiation = radiation/2
+
 /obj/structure/farming/plant/tobacco/spawnProduce()
 	var/obj/item/stack/material/tobacco/I = new/obj/item/stack/material/tobacco(loc)
 	I.radiation = radiation/2
@@ -793,6 +800,13 @@
 
 /obj/structure/farming/plant/tree/spawnProduce()
 	var/obj/item/stack/material/wood/NW = new/obj/item/stack/material/wood(loc)
+	NW.amount = 3
+	NW.radiation = radiation/2
+	if (fertilized)
+		NW.amount = 6
+
+/obj/structure/farming/plant/bamboo/spawnProduce()
+	var/obj/item/stack/material/bamboo/NW = new/obj/item/stack/material/bamboo(loc)
 	NW.amount = 3
 	NW.radiation = radiation/2
 	if (fertilized)
