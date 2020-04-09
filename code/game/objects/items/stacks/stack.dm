@@ -189,19 +189,19 @@
 			customdesc = "An empty sign."
 	if (findtext(recipe.title, "signpost"))
 		var/indesc = input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "") as text|null
-		if (customdesc != null && customdesc != "")
+		if (indesc != null && indesc != "")
 			customdesc = "<b>West:</b> [indesc]"
 		indesc = null
 		indesc = input(user, "Add a North sign? Leave empty to not add one.", "Signpost", "") as text|null
-		if (customdesc != null && customdesc != "")
+		if (indesc != null && indesc != "")
 			customdesc += "<br><b>North:</b> [indesc]"
 		indesc = null
 		indesc = input(user, "Add a East sign? Leave empty to not add one.", "Signpost", "") as text|null
-		if (customdesc != null && customdesc != "")
+		if (indesc != null && indesc != "")
 			customdesc += "<br><b>East:</b> [indesc]"
 		indesc = null
 		indesc = input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "") as text|null
-		if (customdesc != null && customdesc != "")
+		if (indesc != null && indesc != "")
 			customdesc += "<br><b>South:</b> [indesc]"
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
@@ -1070,7 +1070,10 @@
 
 		if (customdesc != "")
 			O.desc = customdesc
-
+		if (istype(O, /obj/structure/sign/signpost))
+			O.desc = customdesc
+			var/obj/structure/sign/signpost/STR = O
+			STR.update_icon()
 		if (istype(O, /obj/structure/rails/turn))
 			var/obj/structure/rails/turn/RT = O
 			RT.turn_dir = turn_dir
