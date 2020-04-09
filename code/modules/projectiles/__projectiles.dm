@@ -24,6 +24,14 @@
 	sharp = TRUE
 	var/volume = 5
 
+/obj/item/projectile/arrow/flint
+	damage = DAMAGE_MEDIUM-10
+	penetrating = 1
+	armor_penetration = 10
+	icon_state = "flint"
+	embed = FALSE
+	sharp = FALSE
+
 /obj/item/projectile/arrow/stone
 	damage = DAMAGE_MEDIUM-10
 	penetrating = 1
@@ -57,6 +65,12 @@
 	damage_type = BURN
 	gibs = TRUE
 	crushes = TRUE
+
+/obj/item/projectile/arrow/arrow/flint
+	damage = DAMAGE_MEDIUM
+	penetrating = 0
+	armor_penetration = 3
+	icon_state = "arrow_flint"
 
 /obj/item/projectile/arrow/arrow/stone
 	damage = DAMAGE_MEDIUM
@@ -131,6 +145,12 @@
 	penetrating = 1
 	armor_penetration = 6+10
 	icon_state = "bolt_iron"
+
+/obj/item/projectile/arrow/bolt/flint
+	damage = DAMAGE_MEDIUM+5
+	penetrating = 0
+	armor_penetration = 2+10
+	icon_state = "bolt_flint"
 
 /obj/item/projectile/arrow/bolt/stone
 	damage = DAMAGE_MEDIUM+5
