@@ -136,18 +136,6 @@
 	var/list/L = hearers(dist,src)
 	return L
 
-/mob/living/simple_animal/hostile/Life()
-
-	. = ..()
-	if (!.)
-		walk(src, FALSE)
-		return FALSE
-	if (client)
-		return FALSE
-	if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
-
-		check_food() // animals will search for crops, grass, and so on
-
 /mob/living/simple_animal/proc/DestroySurroundings()
 	if (prob(break_stuff_probability))
 		for (var/dir in cardinal) // North, South, East, West
