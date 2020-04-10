@@ -828,6 +828,7 @@
 #include "code\modules\projectiles\gun.dm"
 #include "code\modules\projectiles\projectile.dm"
 #include "code\modules\projectiles\guns\projectile.dm"
+#include "code\modules\projectiles\guns\projectile\dartgun.dm"
 #include "code\modules\projectiles\projectile\arrows.dm"
 #include "code\modules\projectiles\projectile\bullets.dm"
 #include "code\modules\projectiles\projectile\cannon.dm"
