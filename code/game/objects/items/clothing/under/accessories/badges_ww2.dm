@@ -1,185 +1,162 @@
 /obj/item/clothing/accessory/medal
+	icon = 'icons/obj/clothing/badges.dmi'
 	ripable = FALSE
+	item_icons = 'icons/mob/badge.dmi'
 
 /obj/item/clothing/accessory/medal/bronze
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "bronze"
+	worn_state = "bronze"
 	name = "Bronze Medal"
 
-
 /obj/item/clothing/accessory/medal/silver
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "silver"
+	worn_state = "silver"
 	name = "Silver Medal"
 
 /obj/item/clothing/accessory/medal/gold
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "gold"
+	worn_state = "gold"
 	name = "Gold Medal"
 
 /obj/item/clothing/accessory/medal/german/ww1/iron_cross_1st
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "ww1_EK_1st"
 	worn_state = "ww1_EK_1st"
 	name = "Iron Cross"
 	desc = "An iron cross given to 1st class ranking personnel"
 
 /obj/item/clothing/accessory/medal/german/ww1/iron_cross_2nd
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "ww1_EK_2nd"
 	worn_state = "ww1_EK_2nd"
 	name = "Iron Cross"
 	desc = "An iron cross given to 2nd class ranking personnel"
 
 /obj/item/clothing/accessory/medal/german/ww1/great_iron_cross
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "ww1_GEK"
 	worn_state = "ww1_GEK"
 	name = "Great Iron Cross"
 	desc = "A great iron cross"
 
 /obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "EK_2nd"
 	worn_state = "EK_2nd"
 	name = "Iron Cross"
 	desc = "An iron cross given to 2nd class ranking personnel"
 
 /obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "EK_1st"
 	worn_state = "EK_1st"
 	name = "Iron Cross"
 	desc = "An iron cross given to 1st class ranking personnel"
 
 /obj/item/clothing/accessory/medal/german/ww2/great_iron_cross
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "GEK"
 	worn_state = "GEK"
 	name = "Great Iron Cross"
 	desc = "A great iron cross"
 
 /obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "Knight_EK"
 	worn_state = "Knight_EK"
 	name = "Iron Cross"
 	desc = "A great iron cross"
 
 /obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "Knight_EK"
 	worn_state = "Knight_EK"
 	name = "Knight Iron Cross"
 	desc = "A knight iron cross"
 
 /obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_oak
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "Knight_EK_oaken"
 	worn_state = "Knight_EK_oaken"
 	name = "Knight Iron Cross"
 	desc = "An oak knight iron cross"
 
 /obj/item/clothing/accessory/medal/german/ww2/iron_cross_knight_gold_oak
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "Knight_EK_gold_oaken"
 	worn_state = "Knight_EK_gold_oaken"
 	name = "Knight Iron Cross"
 	desc = "A gold oak knight iron cross"
 
 /obj/item/clothing/accessory/medal/german/ww2/long_service
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "wehrmacht_long_service"
 	worn_state = "wehrmacht_long_service"
 	name = "Long Service Medal"
 	desc = "A Wehrmacht long service medal"
 
 /obj/item/clothing/accessory/medal/german/ww2/eastern_front
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "eastern_front"
 	worn_state = "eastern_front"
 	name = "Eastern Front Medal"
 	desc = "A Wehrmacht eastern front medal"
 
 /obj/item/clothing/accessory/medal/german/ww2/assault_badge
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "assault_badge"
 	worn_state = "assault_badge"
 	name = "Assault Badge"
 	desc = "An assault badge for assistance in infantry assaults"
 
 /obj/item/clothing/accessory/medal/german/ww2/tank_destruction
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "silver_tank_destruction"
 	worn_state = "silver_tank_destruction"
 	name = "Tank Destruction Badge"
 	desc = "A badge showing the wearer has destroyed an enemy tank"
 
 /obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "gold_tank_destruction"
 	worn_state = "gold_tank_destruction"
 	name = "Tank Destruction Badge"
 	desc = "A badge showing the wearer has destroyed an enemy tank"
 
 /obj/item/clothing/accessory/medal/german/ww2/wound
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "black_wound"
 	worn_state = "black_wound"
 	name = "Wounded Badge"
 	desc = "A black badge showing the wearer has been wounded for the fatherland"
 
 /obj/item/clothing/accessory/medal/german/ww2/wound_silver
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "silver_wound"
 	worn_state = "silver_wound"
 	name = "Wounded Badge"
 	desc = "A silver badge showing the wearer has been wounded for the fatherland"
 
 /obj/item/clothing/accessory/medal/german/ww2/wound_gold
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "gold_wound"
 	worn_state = "gold_wound"
 	name = "Wounded Badge"
 	desc = "A gold badge showing the wearer has been wounded for the fatherland"
 
 /obj/item/clothing/accessory/medal/german/ww2/wehrmacht_sadler
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "wehrmacht_sadler"
 	worn_state = "wehrmacht_sadler"
 	name = "Wehrmacht Sadler"
 	desc = "An eagle pin displaying the symbol of the wehrmacht"
 
 /obj/item/clothing/accessory/medal/german/ww2/ss_sadler
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "ss_wehrmacht_sadler"
 	worn_state = "ss_wehrmacht_sadler"
 	name = "SS Sadler"
 	desc = "An eagle pin displaying the symbol of the schutzstaffel"
 
 /obj/item/clothing/accessory/medal/german/ww2/ss_pin
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "ss_pin"
 	worn_state = "ss_pin"
 	name = "SS pin"
 	desc = "A pin displaying the symbol of the Schutzstaffel"
 
 /obj/item/clothing/accessory/medal/german/ww2/nazi_pin
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "nazi_pin"
 	worn_state = "nazi_pin"
 	name = "NSDAP pin"
 	desc = "A pin displaying the symbol of the 3rd Reich"
 
 /obj/item/clothing/accessory/medal/german/ww2/totenkopf
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "totenkopf"
 	worn_state = "totenkopf"
 	name = "Totenkopf pin"
 	desc = "A pin displaying the symbol of the SS Totenkopf"
 
 /obj/item/clothing/accessory/medal/german/ww2/nsdap_pin
-	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "NSDAP"
 	worn_state = "NSDAP"
 	name = "NSDAP pin"
