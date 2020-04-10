@@ -130,7 +130,6 @@
 			B.reagents.trans_to_obj(dart, mix_amount)
 
 /obj/item/weapon/gun/projectile/dartgun/attack_self(mob/user)
-	user.set_machine(src)
 	var/dat = "<b>[src] mixing control:</b><br><br>"
 
 	if (beakers.len)
