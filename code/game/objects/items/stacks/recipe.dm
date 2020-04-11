@@ -11,7 +11,6 @@
 	var/one_per_turf = FALSE
 	var/on_floor = FALSE
 	var/use_material
-
 	New(_title, _result_type, _req_amount = 1, _res_amount = 1, _max_res_amount = 1, _time = 0, _one_per_turf = FALSE, _on_floor = FALSE, _supplied_material = null)
 
 		title = _title
@@ -23,7 +22,6 @@
 		one_per_turf = _one_per_turf
 		on_floor = _on_floor
 		use_material = _supplied_material
-
 /*
  * Recipe list datum
  */

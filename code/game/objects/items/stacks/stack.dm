@@ -82,7 +82,7 @@
 	if (recipe_list && recipes_sublist && recipe_list[recipes_sublist] && istype(recipe_list[recipes_sublist], /datum/stack_recipe_list))
 		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
 		recipe_list = srl.recipes
-	var/t1 = text("<HTML><HEAD><title>Constructions from []</title></HEAD><body><TT>Amount Left: []<br>", src, get_amount())
+	var/t1 = text("<style>[common_browser_style]</style><HTML style=\"line-height: 1.8;\"><HEAD><title>Crafting</title></HEAD><body bgcolor=\"#392611\" style=\"border-color: #392611;\"><br><tt><center><strong><font color=\"white\" size=\"4\">[]</font><br><font color=\"white\" size=\"3\">Amount Left: []</strong></font><br><br><font color=\"white\" size=\"2\">", src, get_amount())
 	for (var/i=1;i<=recipe_list.len,i++)
 		var/E = recipe_list[i]
 		if (isnull(E))
@@ -106,11 +106,15 @@
 				title+= "[R.res_amount]x [R.title]\s"
 			else
 				title+= "[R.title]"
+			//Honestly this should work.
+			//var/atom/REE
+			//REE = new R.result_type()
+			//title+= " ([R.req_amount] [singular_name]\s) \icon[REE]"
 			title+= " ([R.req_amount] [singular_name]\s)"
 			if (can_build)
 				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
 			else
-				t1 += text("[]", title)
+				t1 += text("<strike><font style=\"background: #2A2A2A;border-color: #392611;\">[]</font></strike>", title)
 				continue
 			if (R.max_res_amount>1 && max_multiplier>1)
 				max_multiplier = min(max_multiplier, round(R.max_res_amount/R.res_amount))
