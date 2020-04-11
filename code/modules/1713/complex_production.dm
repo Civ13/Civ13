@@ -504,6 +504,29 @@
 		..()
 		reagents.add_reagent("protein", 2)
 
+/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/user as mob)
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		user << "You slice the salami up."
+		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
+		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
+		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
+		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
+		return
+	..()
+
+/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice
+	name = "salami slice"
+	desc = "Meat in a convenient casing, dried and salted, sliced."
+	icon_state = "salami_slice"
+	icon = 'icons/obj/complex_foods.dmi'
+	bitesize = 1
+	raw = FALSE
+	rots = FALSE
+	satisfaction = -1
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 1)
 /////////////////////////////////////////////////
 ////////////////////MINCER///////////////////////
 /////////////////////////////////////////////////
@@ -559,12 +582,12 @@
 		output_amount = 4
 		icon_state = full_state
 		qdel(W)
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/chicken))
 		input = W
 		output_amount = 2
 		icon_state = full_state
 		qdel(W)
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet))
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/fishfillet))
 		input = W
 		output_amount = 1
 		icon_state = full_state
