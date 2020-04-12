@@ -782,8 +782,8 @@ RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,prod
 RECIPE: /material/steel/,IV drip,/obj/structure/iv_drip,6,140,0,1,production,95,0,95,8,null
 RECIPE: /material/steel/,wheelchair,/obj/structure/bed/chair/wheelchair,6,140,0,1,none,95,0,98,8,null
 RECIPE: /material/steel/,zippo lighter,/obj/item/weapon/flame/lighter/zippo,4,95,0,1,none,145,0,0,8,null
-RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,2,75,1,1,none,105,0,0,8,null
-RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,none,120,0,0,8,null
+RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,2,75,1,1,storage,105,0,0,8,null
+RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,storage,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (star),/obj/structure/fuelpump/star,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (small),/obj/structure/fuelpump/small,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (N),/obj/structure/fuelpump/n,15,120,1,1,none,120,0,0,8,null
@@ -809,7 +809,9 @@ RECIPE: /material/steel/,450u huge fuel tank,/obj/item/weapon/reagent_containers
 RECIPE: /material/steel/,street lamp,/obj/structure/lamp/lamppost_small,3,35,0,1,electrical,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
-RECIPE: /material/steel/,refrigerator,/obj/structure/closet/fridge,15,230,1,1,none,150,0,178,8,null
+RECIPE: /material/steel/,storage,/obj/structure/closet/fridge,15,230,1,1,storage,150,0,178,8,null
+RECIPE: /material/steel/,metal crate,/obj/structure/closet/crate,3,80,1,1,storage,115,0,0,8,null
+RECIPE: /material/steel/,cash register,/obj/structure/closet/crate/cash_register,3,60,1,1,storage,135,0,0,8,null
 RECIPE: /material/steel/,steel arrowhead (x4),/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
@@ -940,6 +942,8 @@ RECIPE: /material/wood/,shell rack,/obj/structure/shellrack,6,90,1,1,furniture,8
 RECIPE: /material/wood/,target practice dummy,/obj/structure/target_practice,7,120,1,1,furniture,18,0,0,8,null
 RECIPE: /material/wood/,bed,/obj/structure/bed/wood,4,60,_one_per_turf = 1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
+RECIPE: /material/wood/,military crate,/obj/structure/closet/crate/ww2,5,50,1,1,furniture,105,0,0,8,null
+RECIPE: /material/wood/,large crate,/obj/structure/closet/crate/empty/large,8,80,1,1,furniture,95,0,0,8,null
 RECIPE: /material/wood/,table,/obj/structure/table/wood,4,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,wood pole,/obj/structure/barricade/wood_pole,2,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,large barrel,/obj/structure/reagent_dispensers/largebarrel,16,100,1,1,furniture,19,0,0,8,null
@@ -1096,6 +1100,7 @@ RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,wea
 RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
 RECIPE: /material/iron/,iron altar,/obj/structure/altar/iron,12,200,1,1,furniture,0,0,0,8,null
 RECIPE: /material/iron/,locker,/obj/structure/closet,4,80,1,1,furniture,105,0,0,8,null
+
 RECIPE: /material/iron/,iron arm bangles,/obj/item/clothing/accessory/armband/armbangle,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/iron/,splints,/obj/item/stack/medical/splint,2,75,0,1,healthcare,35,0,44,8,null
 RECIPE: /material/iron/,surgical drill,/obj/item/weapon/surgery/surgicaldrill,2,50,0,1,healthcare,35,0,110,8,null
