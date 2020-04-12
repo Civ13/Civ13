@@ -511,6 +511,7 @@
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
+		qdel(src)
 		return
 	..()
 
@@ -569,6 +570,7 @@
 		user << "You start to crank the lever."
 		icon_state = active_state
 		if (do_after(user, 35))
+			playsound(loc, 'sound/effects/rollermove.ogg', 35, TRUE)
 			user << "The grinder plops out some mince!"
 			for(var/i=1, i<=output_amount, i++)
 				new /obj/item/weapon/reagent_containers/food/snacks/mince(get_turf(src))
@@ -594,3 +596,50 @@
 		qdel(W)
 	else
 		..()
+
+///////////////////////////////////////////
+/////////////CUTTING BOARD/////////////////
+///////////////////////////////////////////
+
+/obj/structure/cutting_board
+	name = "cutting board"
+	desc = "A wood board used to prepare food."
+	icon = 'icons/obj/complex_foods.dmi'
+	icon_state = "cutting_board"
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	var/input
+
+
+/obj/structure/cutting_board/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if(input != null)
+			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/mince))
+				user << "That is processed enough, shape it with your hands."
+			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+				user << "You begin to mince the [input]."
+				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+				if(do_after(user, 60))
+					input = /obj/item/weapon/reagent_containers/food/snacks/mince
+					icon_state = "cutting_board_mince"
+				else
+					user << "You stop mincing"
+
+		else
+			user << "You need to put something on the cutting board!"
+	if(input != null)
+		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_mince"
+			icon_state = "cutting_board"
+		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_steak"
+			qdel(W)
+	else
+		new input(src.loc)
+		input = null
+	..()
