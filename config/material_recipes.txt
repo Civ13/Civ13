@@ -812,6 +812,10 @@ RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools
 RECIPE: /material/steel/,storage,/obj/structure/closet/fridge,15,230,1,1,storage,150,0,178,8,null
 RECIPE: /material/steel/,metal crate,/obj/structure/closet/crate,3,80,1,1,storage,115,0,0,8,null
 RECIPE: /material/steel/,cash register,/obj/structure/closet/crate/cash_register,3,60,1,1,storage,135,0,0,8,null
+RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
+RECIPE: /material/steel/,red toolbox,/obj/item/weapon/storage/toolbox,4,60,0,1,storage,95,0,0,8,null
+RECIPE: /material/steel/,blue toolbox,/obj/item/weapon/storage/toolbox/blue,4,60,0,1,storage,95,0,0,8,null
+RECIPE: /material/steel/,yellow toolbox,/obj/item/weapon/storage/toolbox/yellow,4,60,0,1,storage,95,0,0,8,null
 RECIPE: /material/steel/,steel arrowhead (x4),/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
