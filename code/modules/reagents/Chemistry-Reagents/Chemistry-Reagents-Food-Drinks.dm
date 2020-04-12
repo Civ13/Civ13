@@ -89,7 +89,16 @@
 	name = "barleyflour"
 	id = "barleyflour"
 	description = "You can eat it, but the main use is to make beer."
-	taste_description = "toasted cereal"
+	taste_description = "toasted barley"
+	reagent_state = SOLID
+	nutriment_factor = TRUE
+	color = "#666666"
+
+/datum/reagent/nutriment/oatflour
+	name = "oatflour"
+	id = "oatflour"
+	description = "Grounded oats."
+	taste_description = "oats"
 	reagent_state = SOLID
 	nutriment_factor = TRUE
 	color = "#666666"

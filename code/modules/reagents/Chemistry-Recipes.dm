@@ -719,12 +719,6 @@ datum/admins/proc/print_chemical_reactions()
 	result = null
 	required_reagents = list("egg" = 3, "flour" = 10, "sugar" = 2)
 	result_amount = TRUE
-/datum/chemical_reaction/dough/on_reaction(var/datum/reagents/holder, var/created_volume = 1)
-	if (holder)
-		var/location = get_turf(holder.my_atom)
-		for (var/i = 1, i <= created_volume, i++)
-			new /obj/item/weapon/reagent_containers/food/snacks/dough(location)
-		return
 
 /* Alcohol */
 
