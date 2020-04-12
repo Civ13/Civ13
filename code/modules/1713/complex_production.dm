@@ -84,6 +84,7 @@
 	nutriment_desc = list("cured meat" = 4)
 	satisfaction = 10
 	nutriment_amt = 2
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 4)

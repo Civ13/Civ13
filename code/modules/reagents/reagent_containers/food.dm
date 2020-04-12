@@ -65,10 +65,11 @@
 				return
 		//temp until I put a continuing proc somewhere else like by the potatoes but i cant figure it right now because i have other stuff to do k thx bye.
 		if(istype(src, /obj/item/weapon/reagent_containers/food/snacks/grown/potato))
-			if(prob(10))
-				new/obj/item/weapon/reagent_containers/food/snacks/grown/greenpotato(src.loc)
-				qdel(src)
-				return
+			if (isturf(loc))
+				if(prob(10))
+					new/obj/item/weapon/reagent_containers/food/snacks/grown/greenpotato(src.loc)
+					qdel(src)
+					return
 		if (istype(loc, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = loc
 			if (F.powersource && F.powersource.powered)

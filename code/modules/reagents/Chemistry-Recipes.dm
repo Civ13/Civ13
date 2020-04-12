@@ -982,9 +982,19 @@ datum/admins/proc/print_chemical_reactions()
 	name = "beer"
 	id = "beer"
 	result = "beer"
+	required_reagents = list("barleyflour" = 2, "water" = 2, "hops" = 1)
+	catalysts = list("enzyme" = 5)
+	result_amount = 2
+
+
+/datum/chemical_reaction/wheatbeer
+	name = "wheat beer"
+	id = "wheatbeer"
+	result = "wheatbeer"
 	required_reagents = list("flour" = 2, "water" = 2)
 	catalysts = list("enzyme" = 5)
 	result_amount = 2
+
 
 /datum/chemical_reaction/ale
 	name = "ale"
