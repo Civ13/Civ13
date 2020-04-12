@@ -133,6 +133,18 @@
 	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
 		user << "You don't have the skills to design a new gun! Use an existing blueprint."
 		return FALSE
+	var/found = FALSE
+	if (istype(user.l_hand, /obj/item/stack/money))
+		var/obj/item/stack/money/M = user.l_hand
+		if (M.value*M.amount >= 200)
+			found = TRUE
+	else if (istype(user.r_hand, /obj/item/stack/money))
+		var/obj/item/stack/money/M = user.r_hand
+		if (M.value*M.amount >= 200)
+			found = TRUE
+	if (!found)
+		user << "You don't have enough money to make a new blueprint! You need 500 gold or equivalent in one of your hands."
+		return FALSE
 ////////////////STOCK///////////////////////////////
 	var/list/display = list("Cancel")
 	if (map.ordinal_age == 5)
@@ -403,34 +415,35 @@
 				current_gun.name = "gun"
 			else
 				return
-		var/save_blueprint = WWinput(user, "Do you want to save this gun's blueprint? You will need an equivalent to 500 gold coins in your off hand!", "Gunsmithing", "Yes", list("Yes","No"))
-		if (save_blueprint == "Yes")
-			var/found = FALSE
-			if (istype(user.l_hand, /obj/item/stack/money))
-				var/obj/item/stack/money/M = user.l_hand
-				if (M.value*M.amount >= 200)
-					found = TRUE
-					M.amount -= 200/M.value
-			else if (istype(user.r_hand, /obj/item/stack/money))
-				var/obj/item/stack/money/M = user.r_hand
-				if (M.value*M.amount >= 200)
-					found = TRUE
-					M.amount -= 200/M.value
-			if (found)
-				var/obj/item/blueprint/gun/newgunbp = new/obj/item/blueprint/gun(loc)
-				newgunbp.name = "[current_gun.name] blueprint"
-				newgunbp.caliber = current_gun.caliber
-				newgunbp.ammo_type = current_gun.ammo_type
-				newgunbp.custom_name = current_gun.name
-				newgunbp.receiver_type = current_gun.receiver_type
-				newgunbp.stock_type = current_gun.stock_type
-				newgunbp.barrel_type = current_gun.barrel_type
-				newgunbp.feeding_type = current_gun.feeding_type
-				newgunbp.override_sprite = current_gun.override_sprite
-				newgunbp.cost_wood = using_wood
-				newgunbp.cost_steel = using_steel
-			else
-				user << "<span class='warning'>You did not have enough money to make a blueprint!</span>"
+		var/found = FALSE
+		if (istype(user.l_hand, /obj/item/stack/money))
+			var/obj/item/stack/money/M = user.l_hand
+			if (M.value*M.amount >= 200)
+				found = TRUE
+				M.amount -= 200/M.value
+		else if (istype(user.r_hand, /obj/item/stack/money))
+			var/obj/item/stack/money/M = user.r_hand
+			if (M.value*M.amount >= 200)
+				found = TRUE
+				M.amount -= 200/M.value
+		if (found)
+			var/obj/item/blueprint/gun/newgunbp = new/obj/item/blueprint/gun(loc)
+			newgunbp.name = "[current_gun.name] blueprint"
+			newgunbp.caliber = current_gun.caliber
+			newgunbp.ammo_type = current_gun.ammo_type
+			newgunbp.custom_name = current_gun.name
+			newgunbp.custom_name = replacetext(newgunbp.name, " blueprint", "")
+			newgunbp.receiver_type = current_gun.receiver_type
+			newgunbp.stock_type = current_gun.stock_type
+			newgunbp.barrel_type = current_gun.barrel_type
+			newgunbp.feeding_type = current_gun.feeding_type
+			newgunbp.override_sprite = current_gun.override_sprite
+			newgunbp.cost_wood = using_wood
+			newgunbp.cost_steel = using_steel
+		else
+			user << "<span class='warning'>You do not have enough money to finish the blueprint!</span>"
+			qdel(current_gun)
+			return
 		if (current_gun)
 			current_gun.finish()
 			wood_amt -= using_wood
