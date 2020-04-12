@@ -964,17 +964,53 @@ var/list/atom_types = null
 /datum/admins/proc/paralyze_mob(mob/living/H as mob)
 	set category = "Admin"
 	set name = "Toggle Paralyze"
-	set desc = "Paralyzes a player. Or unparalyses them."
+	set desc = "Paralyzes a player and the area around. Or unparalyses them."
 
 	var/msg
 
 	if (check_rights(R_ADMIN))
-		if (H.paralysis == FALSE)
-			H.paralysis = 8000
-			msg = "has paralyzed [key_name(H)]."
+		var/chc = WWinput(usr, "Paralyze area or player?", "Player", list("Player", "Area"))
+		if (chc == "Area")
+			var/rngd = WWinput(usr, "What range to paralyze/unparalyze?", 3, list(2,3,4,5,6))
+			if (H.paralysis == FALSE)
+				H.paralysis = 8000
+				msg = "has paralyzed [key_name(H)] and everyone in [rngd] tiles around."
+				for (var/mob/living/carbon/human/HH in range(rngd,H))
+					if (HH.paralysis == FALSE)
+						HH.paralysis = 8000
+			else
+				H.paralysis = FALSE
+				msg = "has unparalyzed [key_name(H)] and everyone in [rngd] tiles around."
+				for (var/mob/living/carbon/human/HH in range(rngd,H))
+					if (HH.paralysis == TRUE)
+						HH.paralysis = 0
 		else
-			H.paralysis = FALSE
-			msg = "has unparalyzed [key_name(H)]."
+			if (H.paralysis == FALSE)
+				H.paralysis = 8000
+				msg = "has paralyzed [key_name(H)]."
+			else
+				H.paralysis = FALSE
+				msg = "has unparalyzed [key_name(H)]."
+		log_and_message_admins(msg)
+/datum/admins/proc/punish(mob/living/carbon/human/H as mob)
+	set category = "Admin"
+	set name = "Punish"
+	set desc = "Punishes a player."
+
+	var/msg
+
+	if (check_rights(R_ADMIN))
+		var/chc = WWinput(usr, "What to do?", "Cancel", list("Cancel", "Cholera", "Brain Damage"))
+		if (chc == "Cancel")
+			return
+		else if (chc == "Cholera")
+			H.disease_progression = 0
+			H.disease_type ="cholera"
+			H.disease = 1
+			msg = "has given [key_name(H)] cholera."
+		else if (chc == "Brain Damage")
+			H.adjustBrainLoss(15)
+			msg = "has given [key_name(H)] 15 units of brain damage."
 		log_and_message_admins(msg)
 
 /client/proc/reload_admins()
