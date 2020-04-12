@@ -515,6 +515,7 @@
 								meat.rotten = TRUE
 								meat.satisfaction = -30
 						else if (istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/boar))
 							new/obj/item/weapon/pigleg(get_turf(src))
@@ -623,10 +624,9 @@
 					var/mob/living/carbon/human/HM = user
 					HM.adaptStat("medical", amt/3)
 				else
-					if ((amt-2) >= 1)
-						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
-						leather.name = "[name] leather"
-						leather.amount = (amt-2)
+					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+					leather.name = "[name] leather"
+					leather.amount = amt
 				crush()
 				qdel(src)
 		else

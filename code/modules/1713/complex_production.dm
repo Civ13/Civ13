@@ -234,12 +234,10 @@
 			dry_obj(producttype)
 			return
 /obj/structure/drying_rack/proc/dry_obj(var/obj_type = null)
-	spawn(12000) //20 minutes
-		if (!src || !loc)
-			return
-		if (obj_type == /obj/item/weapon/pigleg)
+	spawn(1500) //2.5 minutes or so.
+		if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/sausage/salted)
 			if (isturf(src.loc))
-				new/obj/item/weapon/pigleg/salted/dried(src.loc)
+				new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami(src.loc)
 			visible_message("The [producttype_name] finishes drying.")
 			filled -= 1
 			if (filled)
@@ -247,9 +245,12 @@
 			else
 				icon_state = "drying_rack"
 			return
-		if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/sausage/salted)
+	spawn(12000) //20 minutes
+		if (!src || !loc)
+			return
+		if (obj_type == /obj/item/weapon/pigleg)
 			if (isturf(src.loc))
-				new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami(src.loc)
+				new/obj/item/weapon/pigleg/salted/dried(src.loc)
 			visible_message("The [producttype_name] finishes drying.")
 			filled -= 1
 			if (filled)
@@ -410,6 +411,22 @@
 	New()
 		..()
 		reagents.add_reagent("protein", 6)
+
+/obj/item/weapon/reagent_containers/food/snacks/pig/stomach
+	name = "pig stomach"
+	desc = "A stomach from a pig."
+	icon_state = "pig_stomach"
+	bitesize = 1
+	satisfaction = -1
+	rotten_icon_state = "pig_stomach_rotten"
+	raw = TRUE
+	rots = TRUE
+	non_vegetarian = TRUE
+	decay = 15*1000
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+
 /obj/item/stack/sausagecasing
 	name = "Sausage Casing"
 	desc = "A casing made from a animals stomach to hold meat."
@@ -422,19 +439,28 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/cow/stomach/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
-		new /obj/item/weapon/reagent_containers/food/snacks/cow/tripe(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/cow/tripe(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
 		user << "You cut the lining out of the stomach."
-		if(map.ordinal_age >= 2)
+		if(map.ordinal_age >= 1)
 			var/obj/item/stack/sausagecasing/SC = new /obj/item/stack/sausagecasing(src)
 			SC.amount = 3
 		qdel(src)
 	else
 		..()
-
-/obj/item/weapon/reagent_containers/food/snacks/cow/tripe
+/obj/item/weapon/reagent_containers/food/snacks/pig/stomach/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (!rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
+		user << "You cut the lining out of the stomach."
+		if(map.ordinal_age >= 1)
+			var/obj/item/stack/sausagecasing/SC = new /obj/item/stack/sausagecasing(src)
+			SC.amount = 2
+		qdel(src)
+	else
+		..()
+/obj/item/weapon/reagent_containers/food/snacks/tripe
 	name = "tripe"
-	desc = "stomach lining from a cow."
+	desc = "stomach lining, tasty!"
 	icon_state = "tripe"
 	bitesize = 1
 	raw = FALSE
@@ -551,6 +577,37 @@
 	New()
 		..()
 		reagents.add_reagent("protein", 2)
+/obj/item/weapon/reagent_containers/food/snacks/meatball
+	name = "meat patty"
+	desc = "Round meat."
+	icon_state = "meatball_raw"
+	icon = 'icons/obj/complex_foods.dmi'
+	bitesize = 3
+	raw = TRUE
+	rotten_icon_state = "meatball_rotten"
+	rots = TRUE
+	decay = 15*800
+	satisfaction = -4
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/patty
+	name = "meat patty"
+	desc = "Circular meat."
+	icon_state = "patty_raw"
+	icon = 'icons/obj/complex_foods.dmi'
+	bitesize = 3
+	raw = TRUE
+	rotten_icon_state = "patty_raw"
+	rots = TRUE
+	decay = 15*800
+	satisfaction = -4
+	non_vegetarian = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 2)
 
 /obj/structure/meat_grinder
 	name = "meat grinder"
@@ -616,31 +673,68 @@
 /obj/structure/cutting_board/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		if(input != null)
-			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/mince))
-				user << "That is processed enough, shape it with your hands."
 			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
 				user << "You begin to mince the [input]."
 				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
 				if(do_after(user, 60))
-					input = /obj/item/weapon/reagent_containers/food/snacks/mince
-					icon_state = "cutting_board_mince"
+					input = null
+					icon_state = "cutting_board_dirty"
+					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
+					return
 				else
 					user << "You stop mincing"
-
+					return
+			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/mince))
+				playsound(loc, 'sound/effects/squishy.ogg', 10, TRUE)
+				if(do_after(user, 10))
+					user << "You form the [input] into a meatball!"
+					input = null
+					icon_state = "cutting_board_dirty"
+					new /obj/item/weapon/reagent_containers/food/snacks/meatball(src.loc)
+					return
+				else
+					user << "You stop forming the [input]"
+					return
+			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meatball))
+				user << "You smash the [input] into a patty!"
+				playsound(loc, 'sound/effects/squishy.ogg', 5, TRUE)
+				input = null
+				icon_state = "cutting_board_dirty"
+				new /obj/item/weapon/reagent_containers/food/snacks/patty(src.loc)
+				return
 		else
 			user << "You need to put something on the cutting board!"
-	if(input != null)
-		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
-			input = W
-			user << "You place the [W] on the cutting board."
-			icon_state = "cutting_board_mince"
-			icon_state = "cutting_board"
-		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
-			input = W
-			user << "You place the [W] on the cutting board."
-			icon_state = "cutting_board_steak"
-			qdel(W)
+			return
 	else
-		new input(src.loc)
-		input = null
+		if(input == null)
+			if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
+				input = W
+				user << "You place the [W] on the cutting board."
+				icon_state = "cutting_board_mince"
+				qdel(W)
+				return
+			if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
+				input = W
+				user << "You place the [W] on the cutting board."
+				icon_state = "cutting_board_steak"
+				qdel(W)
+				return
+			if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+				input = W
+				user << "You place the [W] on the cutting board."
+				icon_state = "cutting_board_fish"
+				qdel(W)
+				return
+			if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meatball))
+				input = W
+				user << "You place the [W] on the cutting board."
+				icon_state = "cutting_board_meatball"
+				qdel(W)
+				return
+		else if(input != null)
+			user << "You scrape off the cutting board"
+			new input(src.loc)
+			input = null
+			icon_state = "cutting_board_dirty"
+			return
 	..()
