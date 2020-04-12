@@ -146,6 +146,22 @@
 	nutriment_desc = list("wheat" = TRUE)
 	decay = 55*600
 	satisfaction = -2
+/obj/item/weapon/reagent_containers/food/snacks/grown/oat
+	name = "oat"
+	icon_state = "oat"
+	desc = "oats. Can be milled."
+	color = "#fffaf0"
+	nutriment_desc = list("oats" = TRUE)
+	decay = 55*600
+	satisfaction = -2
+/obj/item/weapon/reagent_containers/food/snacks/grown/barley
+	name = "barley"
+	icon_state = "barley"
+	desc = "barley. Can be milled."
+	color = "#fffaf0"
+	nutriment_desc = list("barley" = TRUE)
+	decay = 55*600
+	satisfaction = -2
 /obj/item/weapon/reagent_containers/food/snacks/grown/tomato
 	name = "tomato"
 	icon_state = "tomato"

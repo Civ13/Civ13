@@ -152,11 +152,11 @@
 	biomes = list("temperate","jungle","savanna","desert","sea","semiarid","taiga")
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
 
-/*/obj/item/stack/farming/seeds/beans
+/obj/item/stack/farming/seeds/beans
 	name = "bean seeds"
 	plant = "beans"
 	color = "#bc8f8f" //rosy brown
-	biomes = list("temperate","savanna", "desert", "sea", "semiarid", "taiga")*/
+	biomes = list("temperate","savanna", "desert", "sea", "semiarid", "taiga")
 
 /* Grains */
 
@@ -167,11 +167,17 @@
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate","tundra","taiga","sea")
 
-/*/obj/item/stack/farming/seeds/oat
+/obj/item/stack/farming/seeds/barley
+	name = "barley seeds"
+	plant = "barley"
+	color = "#26241d"
+	biomes = list("temperate", "semiarid", "taiga","sea")
+
+/obj/item/stack/farming/seeds/oat
 	name = "oat seeds"
 	plant = "oat"
-	color = "#26241d"
-	biomes = list("temperate", "tundra", "taiga")*/
+	color = "#b1c11b"
+	biomes = list("temperate", "tundra", "taiga","sea")
 
 /obj/item/stack/farming/seeds/rice
 	name = "rice seeds"
@@ -417,17 +423,26 @@
 	icon_state = "wheat-grow1"
 	plant = "wheat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
-	biomes = list("temperate","tundra","taiga","sea","desert","semi-arid")
+	biomes = list("temperate","tundra","taiga","sea","desert","semiarid")
 	max_water = 50
 
-/*/obj/structure/farming/plant/oat
+/obj/structure/farming/plant/oat
 	name = "oat plant"
 	desc = "a oat plant."
 	icon_state = "oat-grow1"
 	plant = "oat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
-	biomes = list("temperate", "tundra", "taiga")
-	max_water = 50*/
+	biomes = list("temperate", "tundra", "taiga","sea")
+	max_water = 50
+
+/obj/structure/farming/plant/barley
+	name = "barley plant"
+	desc = "a barley plant."
+	icon_state = "barley-grow1"
+	plant = "barley"
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("semiarid","temperate", "taiga","sea")
+	max_water = 50
 
 /obj/structure/farming/plant/rice
 	name = "rice"
@@ -497,14 +512,14 @@
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
 	max_water = 70
 
-/*/obj/structure/farming/plant/beans
+/obj/structure/farming/plant/beans
 	name = "bean plant"
 	desc = "a bean plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "beans-grow1"
 	plant = "beans"
 	biomes = list("temperate","savanna", "desert", "sea","semiarid", "taiga")
-	max_water = 50*/
+	max_water = 50
 
 /* fruit plants */
 
