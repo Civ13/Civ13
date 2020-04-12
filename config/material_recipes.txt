@@ -924,6 +924,7 @@ RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
 
+RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,logistics,20,0,0,8,null
 RECIPE: /material/wood/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
 RECIPE: /material/wood/,produce basket,/obj/item/weapon/storage/produce_basket,5,100,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,mop,/obj/item/weapon/mop,2,55,0,1,tools,22,0,0,8,null
