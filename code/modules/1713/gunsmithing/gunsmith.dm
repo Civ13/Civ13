@@ -415,18 +415,18 @@
 				current_gun.name = "gun"
 			else
 				return
-		var/found = FALSE
+		var/foundm = FALSE
 		if (istype(user.l_hand, /obj/item/stack/money))
 			var/obj/item/stack/money/M = user.l_hand
 			if (M.value*M.amount >= 200)
-				found = TRUE
+				foundm = TRUE
 				M.amount -= 200/M.value
 		else if (istype(user.r_hand, /obj/item/stack/money))
 			var/obj/item/stack/money/M = user.r_hand
 			if (M.value*M.amount >= 200)
-				found = TRUE
+				foundm = TRUE
 				M.amount -= 200/M.value
-		if (found)
+		if (foundm)
 			var/obj/item/blueprint/gun/newgunbp = new/obj/item/blueprint/gun(loc)
 			newgunbp.name = "[current_gun.name] blueprint"
 			newgunbp.caliber = current_gun.caliber
