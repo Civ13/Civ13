@@ -81,7 +81,6 @@ var/world_is_open = TRUE
 
 	// This is kinda important. Set up details of what the hell things are made of.
 	populate_material_list()
-
 	processScheduler = new
 //	master_controller = new /datum/controller/game_controller()
 
