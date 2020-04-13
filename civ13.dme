@@ -403,6 +403,7 @@
 #include "code\modules\1713\apparel_stoneage.dm"
 #include "code\modules\1713\apparel_worldwars.dm"
 #include "code\modules\1713\armor.dm"
+#include "code\modules\1713\automation.dm"
 #include "code\modules\1713\barbwire.dm"
 #include "code\modules\1713\battlereport_variables.dm"
 #include "code\modules\1713\betting.dm"
