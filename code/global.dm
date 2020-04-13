@@ -18,11 +18,10 @@ var/round_progressing = TRUE
 
 var/datum/configuration/config	  = null
 
-
 var/Debug2 = FALSE
 var/datum/debug/debugobj
 
-
+var/craftingIconList = list()
 
 var/join_motd = null
 

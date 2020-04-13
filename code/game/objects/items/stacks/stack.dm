@@ -106,10 +106,6 @@
 				title+= "[R.res_amount]x [R.title]\s"
 			else
 				title+= "[R.title]"
-			//Honestly this should work.
-			//var/atom/REE
-			//REE = new R.result_type()
-			//title+= " ([R.req_amount] [singular_name]\s) \icon[REE]"
 			title+= " ([R.req_amount] [singular_name]\s)"
 			if (can_build)
 				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
