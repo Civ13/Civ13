@@ -794,4 +794,3 @@
 			if (src)
 				new/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer(loc)
 				return
-

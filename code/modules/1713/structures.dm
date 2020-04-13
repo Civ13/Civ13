@@ -253,7 +253,6 @@
 	name = "Pirate Flag"
 	desc = "A black and white pirate flags with skull and bones."
 
-
 /obj/structure/flag/black
 	icon_state = "black"
 	name = "Black Flag"
@@ -355,6 +354,107 @@
 	icon_state = "chinese"
 	name = "Republic of China Flag"
 	desc = "The Republic of China flag."
+/obj/structure/flag/pole
+	icon_state = "flagpole_blank"
+	name = "Flagpole"
+	desc = "Flagless, apply cloth or a flag."
+
+/obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+	if(istype(W, /obj/item/stack/material/cloth))
+		if(W.amount >= 5)
+			W.amount -= 5
+			new /obj/structure/flag/pole/custom(src.loc)
+			if(W.amount <= 0)
+				qdel(W)
+			qdel(src)
+		else
+			H << "You need atleast five cloth to do that!"
+	if(istype(W, /obj/item/flagmaker))
+		new /obj/structure/flag/pole/custom(src.loc)
+		qdel(src)
+	..()
+/obj/structure/flag/pole/custom
+	icon_state = "cust_flag"
+	name = "Flag"
+	desc = "A flag."
+	var/uncolored = TRUE
+	var/flagcolor = null
+	var/symbol = "Moon"
+	var/symbolcolor = null
+
+/obj/structure/flag/pole/custom/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+	if (uncolored)
+		var/input = input(H, "Flag Color - Choose a hex color (without the # | default is white):", "Flag Color" , "FFFFFF")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (length(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			flagcolor = addtext("#",input)
+	if (!symbol)
+		var/input
+		var/display = list("Moon", "Cross", "Star", "Sun", "Plus", "Saltire", "None", "Cancel")
+		input =  WWinput(H, "What symbol would you like?", "Flag Making", "Cancel", display)
+		playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
+		if (input == "Cancel")
+			return
+		else if(input == "Moon")
+			symbol = "cust_f_moon"
+		else if(input == "Cross")
+			symbol = "cust_f_cross"
+		else if(input == "Star")
+			symbol = "cust_f_star"
+		else if(input == "Sun")
+			symbol = "cust_f_sun"
+		else if(input == "Plus")
+			symbol = "cust_f_plus"
+		else if(input == "Saltire")
+			symbol = "cust_f_saltire"
+		else if(input == "None")
+			symbol = "cust_f_blank"
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+	if (!symbolcolor)
+		var/input = input(H, "Symbol Color - Choose a hex color (without the # | default is black):", "Symbol Color" , "000000")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (length(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			symbolcolor = addtext("#",input)
+	if (flagcolor && symbol && symbolcolor)
+		uncolored = FALSE
+		var/image/flag = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_cloth")
+		flag.color = flagcolor
+		var/image/csymbol = image("icon" = 'icons/obj/flags.dmi', "icon_state" = symbol)
+		csymbol.color = symbolcolor
+		var/image/border = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_outline")
+		overlays += flag
+		overlays += csymbol
+		overlays += border
+		return
+	else
+		..()
 
 /obj/structure/wallframe
 	name = "wall frame"

@@ -819,6 +819,7 @@ RECIPE: /material/steel/,yellow toolbox,/obj/item/weapon/storage/toolbox/yellow,
 RECIPE: /material/steel/,steel arrowhead (x4),/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
+RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole/,6,95,0,1,none,0,0,0,8,null
 
 RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
