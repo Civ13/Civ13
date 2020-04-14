@@ -10,6 +10,7 @@
 	var/origin_water_level = 0
 	var/not_movable = FALSE //if it can be removed by wrenches
 	var/health = 100
+	var/maxhealth = 100
 	is_cover = TRUE
 	anchored = TRUE
 	opacity = FALSE
@@ -28,6 +29,8 @@
 	var/list/bullethole_overlays = list()
 //	invisibility = 101 //starts invisible
 	var/material = "Wood" //Depending on mat, depending on what harms it.
+	var/buildstackamount = 8
+	var/buildstack = /obj/item/stack/material/wood
 	var/adjusts = FALSE //if it adjusts acording to neighbouring sprites
 
 	var/hardness = 50 //for projectile penetration
@@ -53,7 +56,16 @@
 		else
 			//Do nothing, you're not important.
 			..()*/
-
+/obj/covers/proc/run_decay()
+	if (!src || !wall)
+		return
+	decay()
+	spawn(24000)
+		if (src && wall)
+			run_decay()
+			return
+		else
+			return
 
 /obj/covers/ex_act(severity)
 	switch(severity)
@@ -1261,8 +1273,6 @@
 	health = 100000
 	wall = TRUE
 	explosion_resistance = 100
-	var/buildstackamount = 8
-	var/buildstack = /obj/item/stack/material/wood
 	material = "Wood"
 	hardness = 15
 
@@ -1353,6 +1363,7 @@
 /obj/covers/New()
 	..()
 	initial_opacity = opacity
+	maxhealth = health
 	spawn(5)
 		updateturf()
 		if (opacity)
@@ -1505,6 +1516,15 @@
 				onfire = TRUE
 				visible_message("<span class='danger'>\The [src] catches fire!</span>")
 				start_fire()
+		if (istype(W, /obj/item/stack))
+			var/obj/item/stack/S = W
+			if (S.amount <= 0)
+				qdel(S)
+			else
+				repair(S, user)
+				playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+				user.do_attack_animation(src)
+				return
 		else
 			switch(W.damtype)
 				if ("fire")
@@ -1602,7 +1622,10 @@
 	check_relatives(1,1)
 	overlays.Cut()
 	overlays |= bullethole_overlays
-
+	if (moldy>0)
+		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "mold[moldy]", layer = src.layer+0.02)
+	if (cracked>0)
+		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "cracks[cracked]", layer = src.layer+0.01)
 /obj/covers/New()
 	..()
 	check_relatives(1,1)
