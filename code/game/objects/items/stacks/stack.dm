@@ -793,28 +793,52 @@
 					return
 
 	else if (findtext(recipe.title, "fiendish headdress"))
-		if (!istype(H.l_hand, /obj/item/stack/material/bone) && !istype(H.r_hand, /obj/item/stack/material/bone))
-			user << "<span class = 'warning'>You need a stack of at least 2 bones in one of your hands in order to make this.</span>"
+		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
+			user << "<span class = 'warning'>You need a stack of at least 2 cloth in one of your hands in order to make this.</span>"
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/bone))
-				var/obj/item/stack/material/leather/NB = H.l_hand
+				var/obj/item/stack/material/bone/NB = H.l_hand
 				if (NB.amount >= 2)
 					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
-					user << "<span class = 'warning'>You need a stack of at least 2 cloth sheets in one of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need a stack of at least 2 bone in one of your hands in order to make this.</span>"
 					return
-			else if (istype(H.r_hand, /obj/item/stack/material/cloth))
-				var/obj/item/stack/material/leather/NB = H.r_hand
+			else if (istype(H.r_hand, /obj/item/stack/material/bone))
+				var/obj/item/stack/material/bone/NB = H.r_hand
 				if (NB.amount >= 2)
 					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
-					user << "<span class = 'warning'>You need a stack of at least 2 cloth sheets sheets & 2 bones in either of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need a stack of at least 2 bone in one your hands in order to make this.</span>"
+
+	else if (findtext(recipe.title, "fortress wall"))
+		if (!istype(H.l_hand, /obj/item/stack/material/stone) && !istype(H.r_hand, /obj/item/stack/material/stone))
+			user << "<span class = 'warning'>You need a stack of at least 8 stone in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/stonebrick))
+				var/obj/item/stack/material/stonebrick/NB = H.l_hand
+				if (NB.amount >= 8)
+					NB.amount -= 8
+					if (NB.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 8 stone bricks in one of your hands in order to make this.</span>"
 					return
+			else if (istype(H.r_hand, /obj/item/stack/material/stonebrick))
+				var/obj/item/stack/material/stonebrick/NB = H.r_hand
+				if (NB.amount >= 8)
+					NB.amount -= 8
+					if (NB.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 8 stone bricks in one of your hands in order to make this.</span>"
+					return
+	return
 
 	if (!can_use(required))
 		if (produced>1)
