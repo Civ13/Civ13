@@ -396,6 +396,8 @@
 /////////////////////////////////////////////////
 /obj/item/weapon/reagent_containers/food/snacks/cow
 	icon = 'icons/obj/complex_foods.dmi'
+/obj/item/weapon/reagent_containers/food/snacks/pig
+	icon = 'icons/obj/complex_foods.dmi'
 
 /obj/item/weapon/reagent_containers/food/snacks/cow/stomach
 	name = "cow stomach"
