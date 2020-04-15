@@ -391,8 +391,8 @@ var/list/name_to_material
 	integrity = 500
 	hardness = 45
 	door_icon_base = "stone"
-	sheet_singular_name = "brick"
-	sheet_plural_name = "bricks"
+	sheet_singular_name = "block"
+	sheet_plural_name = "blocks"
 
 /material/stone
 	name = "stone"
@@ -407,6 +407,16 @@ var/list/name_to_material
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/stone
 	door_icon_base = "stone"
+
+/material/stonebrick
+	name = "stone brick"
+	hardness = 50
+	weight = 11
+	integrity = 450
+	icon_colour = "#808080"
+	sheet_singular_name = "brick"
+	sheet_plural_name = "bricks"
+	stack_type = /obj/item/stack/material/stonebrick
 
 /material/flint
 	name = "flint"
@@ -424,11 +434,12 @@ var/list/name_to_material
 	sheet_singular_name = "piece"
 	sheet_plural_name = "pieces"
 
-/material/stone/stonebrick
+/* /material/stone/stonebrick
 	name = "brick"
 	icon_base = "newbrick"
 	icon_colour = "#808080"
 	stack_type = /obj/item/stack/material/marble
+*/
 
 /material/stone/marble
 	name = "marble"

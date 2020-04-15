@@ -144,6 +144,12 @@
 	default_type = "stone"
 	value = 2
 
+/obj/item/stack/material/stonebrick
+	name = "stone brick"
+	icon_state = "sheet-stonebrick"
+	default_type = "stonebrick"
+	value = 1
+
 /obj/item/stack/material/clay
 	name = "clay lump"
 	icon = 'icons/obj/claystuff.dmi'
