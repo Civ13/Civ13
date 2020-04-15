@@ -706,11 +706,11 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 600
+	health = 400
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 10
+	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
 
@@ -796,7 +796,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 8
+	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
 
@@ -815,7 +815,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 8
+	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
 
@@ -1113,11 +1113,11 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 190
+	health = 450
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 6
+	explosion_resistance = 7
 	material = "Stone"
 	hardness = 92
 
@@ -1133,11 +1133,11 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 200
+	health = 650 //until there are stronger alternatives.
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 7
+	explosion_resistance = 8
 	material = "Stone"
 	hardness = 95
 	adjusts = TRUE
@@ -1665,11 +1665,19 @@
 	adjusts = TRUE
 
 /obj/covers/stone_wall/classic
+	name = "stone block wall"
+	desc = "A stone block wall."
+	icon_state = "stone_block_wall0"
+	base_icon_state = "stone_block_wall"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/brick
 	name = "stone brick wall"
 	desc = "A stone brick wall."
-	icon_state = "stone_brick_wall0"
-	base_icon_state = "stone_brick_wall"
+	icon_state = "stone_brickwall0"
+	base_icon_state = "stone_brickwall"
 	adjusts = TRUE
+	health = 550
 
 /obj/covers/stone_wall/fortress
 	name = "fortress brick wall"
@@ -1677,5 +1685,5 @@
 	icon_state = "fortress_brickwall0"
 	base_icon_state = "fortress_brickwall"
 	adjusts = TRUE
-	health = 750 // 150 more health than stone
-	explosion_resistance = 12 //2 tougher than stone
+	health = 650
+	explosion_resistance = 7
