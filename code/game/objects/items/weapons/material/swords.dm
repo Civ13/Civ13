@@ -94,7 +94,7 @@
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 60
-	cooldownw = 7
+	cooldownw = 9
 
 obj/item/weapon/material/sword/wakazashi
 	name = "wakazashi"
@@ -106,7 +106,7 @@ obj/item/weapon/material/sword/wakazashi
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT
 	value = 60
-	cooldownw = 6
+	cooldownw = 11
 
 /obj/item/weapon/material/knife/tanto
 	name = "tanto"
@@ -171,7 +171,7 @@ obj/item/weapon/material/sword/wakazashi
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
-	cooldownw = 6
+	cooldownw = 7
 	value = 35
 
 obj/item/weapon/material/sword/smallsword/iron
@@ -194,7 +194,7 @@ obj/item/weapon/material/sword/smallsword/bronze
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 40
-	cooldownw = 9
+	cooldownw = 11
 	value = 50
 
 obj/item/weapon/material/sword/spadroon/iron
@@ -217,7 +217,7 @@ obj/item/weapon/material/sword/spadroon/bronze
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 37
-	cooldownw = 11
+	cooldownw = 13
 	value = 50
 
 obj/item/weapon/material/sword/armingsword/iron
@@ -240,7 +240,7 @@ obj/item/weapon/material/sword/armingsword/bronze
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 40
-	cooldownw = 13
+	cooldownw = 16
 	value = 50
 
 /obj/item/weapon/material/sword/vangar
@@ -254,7 +254,7 @@ obj/item/weapon/material/sword/armingsword/bronze
 	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 35
-	cooldownw = 7
+	cooldownw = 12
 
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"
@@ -267,7 +267,7 @@ obj/item/weapon/material/sword/armingsword/bronze
 	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 28
-	cooldownw = 8
+	cooldownw = 10
 	value = 40
 
 obj/item/weapon/material/sword/cutlass/iron
@@ -284,7 +284,7 @@ obj/item/weapon/material/sword/cutlass/iron
 	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 30
-	cooldownw = 8
+	cooldownw = 11
 	value = 45
 
 obj/item/weapon/material/sword/scimitar/iron
@@ -301,7 +301,7 @@ obj/item/weapon/material/sword/scimitar/iron
 	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 34
-	cooldownw = 9
+	cooldownw = 11
 	value = 60
 
 obj/item/weapon/material/sword/saif/iron
@@ -318,7 +318,7 @@ obj/item/weapon/material/sword/saif/iron
 	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 32
-	cooldownw = 9
+	cooldownw = 14
 	value = 50
 
 obj/item/weapon/material/sword/sabre/iron
@@ -335,7 +335,7 @@ obj/item/weapon/material/sword/sabre/iron
 	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 47
-	cooldownw = 15
+	cooldownw = 18
 	value = 60
 
 obj/item/weapon/material/sword/longsword/iron
@@ -358,7 +358,7 @@ obj/item/weapon/material/sword/longsword/diamond
 	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 60
-	cooldownw = 30
+	cooldownw = 32
 	value = 60
 
 /obj/item/weapon/material/sword/urukhaiscimitar
@@ -386,7 +386,7 @@ obj/item/weapon/material/sword/longsword/diamond
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 30
-	cooldownw = 5
+	cooldownw = 9
 	value = 60
 
 obj/item/weapon/material/sword/rapier/iron
@@ -404,7 +404,7 @@ obj/item/weapon/material/sword/rapier/iron
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
-	cooldownw = 6
+	cooldownw = 10
 	value = 35
 
 /obj/item/weapon/material/sword/xiphos
@@ -419,7 +419,7 @@ obj/item/weapon/material/sword/rapier/iron
 	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 28
-	cooldownw = 7
+	cooldownw = 9
 	value = 40
 
 /obj/item/weapon/material/sword/broadsword
@@ -433,5 +433,5 @@ obj/item/weapon/material/sword/rapier/iron
 	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 20
-	cooldownw = 15
+	cooldownw = 24
 	value = 60

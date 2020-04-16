@@ -695,7 +695,7 @@
 	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 22
-	cooldownw = 7
+	cooldownw = 8
 	value = 60
 /obj/item/clothing/head/ww/cheka
 	name = "Cheka cap"

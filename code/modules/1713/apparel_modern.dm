@@ -466,7 +466,7 @@
 	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 26
-	cooldownw = 9
+	cooldownw = 14
 	value = 60
 
 /obj/item/weapon/material/sword/arabsword2
@@ -480,7 +480,7 @@
 	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 26
-	cooldownw = 10
+	cooldownw = 15
 	value = 60
 
 /obj/item/clothing/under/idf

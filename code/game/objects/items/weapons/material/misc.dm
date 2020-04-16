@@ -49,7 +49,7 @@
 	thrown_force_divisor = 0.35 // as above
 	w_class = 3
 	attack_verb = list("slashed", "clawed")
-	cooldownw = 9
+	cooldownw = 13
 
 /obj/item/weapon/material/spear
 	name = "spear"
@@ -133,7 +133,7 @@
 	attack_verb = list("bashed","poked","beaten")
 	value = 6
 	block_chance = 20
-	cooldownw = 6
+	cooldownw = 10
 
 /obj/item/weapon/material/fancycane
 	name = "black cane"
@@ -171,7 +171,7 @@
 	attack_verb = list("bashed","impaled","beaten")
 	value = 30
 	block_chance = 36
-	cooldownw = 6
+	cooldownw = 10
 	color = null
 
 /obj/item/weapon/material/naginata/steel
@@ -196,7 +196,7 @@
 	value = 15
 	slot_flags = SLOT_BELT
 	block_chance = 15
-	cooldownw = 5
+	cooldownw = 15
 	var/chopping_speed = 1.90
 
 /obj/item/weapon/material/machete
@@ -215,7 +215,7 @@
 	value = 15
 	slot_flags = SLOT_BELT
 	block_chance = 15
-	cooldownw = 5
+	cooldownw = 7
 	var/chopping_speed = 1.50
 
 /obj/item/weapon/material/machete1
@@ -234,7 +234,7 @@
 	value = 15
 	slot_flags = SLOT_BELT
 	block_chance = 15
-	cooldownw = 5
+	cooldownw = 7
 	var/chopping_speed = 1.0
 
 /obj/item/weapon/material/hatchet/tribal
@@ -279,7 +279,7 @@
 	slot_flags = SLOT_BELT
 	applies_material_colour = FALSE
 	value = 20
-	block_chance = 12
+	block_chance = 16
 	cooldownw = 6
 
 /obj/item/weapon/material/minihoe // -- Numbers
@@ -292,7 +292,7 @@
 	thrown_force_divisor = 0.25 // as above
 	w_class = 2
 	attack_verb = list("slashed", "sliced", "cut", "clawed")
-	cooldownw = 5
+	cooldownw = 7
 
 /obj/item/weapon/material/scythe
 	icon_state = "scythe0"
@@ -307,7 +307,7 @@
 	w_class = 4
 	slot_flags = SLOT_SHOULDER
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
-	cooldownw = 5
+	cooldownw = 17
 
 /obj/item/weapon/material/pilum
 	name = "pilum"
@@ -327,7 +327,7 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 10
-	cooldownw = 7
+	cooldownw = 12
 
 /obj/item/weapon/material/roman_standard
 	name = "Roman Standard"
@@ -346,7 +346,7 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 0
 	block_chance = 15
-	cooldownw = 10
+	cooldownw = 30
 
 /obj/item/weapon/material/roman_standard/New()
 	..()
@@ -559,7 +559,7 @@
 	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 15
-	cooldownw = 12
+	cooldownw = 16
 
 /obj/item/weapon/material/pike
 	name = "pike"
@@ -579,7 +579,7 @@
 	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 18
-	cooldownw = 13
+	cooldownw = 16
 
 /obj/item/weapon/material/hatchet/battleaxe
 	name = "battle axe"
@@ -636,4 +636,4 @@
 	attack_verb = list("bashed","poked","beaten")
 	value = 6
 	block_chance = 20
-	cooldownw = 5
+	cooldownw = 13
