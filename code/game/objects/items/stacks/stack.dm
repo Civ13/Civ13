@@ -838,7 +838,6 @@
 				else
 					user << "<span class = 'warning'>You need a stack of at least 8 stone bricks in one of your hands in order to make this.</span>"
 					return
-	return
 
 	if (!can_use(required))
 		if (produced>1)
