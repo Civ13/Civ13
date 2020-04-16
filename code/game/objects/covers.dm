@@ -722,7 +722,7 @@
 			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
 			return
 		else
-			var/display = list("Smooth", "Cave", "Underground Cave", "Brick", "Cobbled", "Tiled", "Cancel")
+			var/display = list("Smooth", "Cave", "Underground Cave", "Carved Brick", "Cobbled", "Tiled", "Cancel")
 			var/input =  WWinput(user, "What design do you want to carve?", "Carving", "Cancel", display)
 			if (input == "Cancel")
 				return
@@ -735,9 +735,9 @@
 			else if  (input == "Underground Cave")
 				user << "<span class='notice'>You will now carve the cave design!</span>"
 				design = "undercave"
-			else if  (input == "Brick")
+			else if  (input == "Carved Brick")
 				user << "<span class='notice'>You will now carve the brick design!</span>"
-				design = "brick"
+				design = "carvedbrick"
 			else if  (input == "Cobbled")
 				user << "<span class='notice'>You will now carve the cobbled design!</span>"
 				design = "cobbled"
@@ -747,7 +747,7 @@
 			visible_message("<span class='danger'>[user] starts to chisel a design!</span>", "<span class='danger'>You start chiseling a design.</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',60,1)
 			if (do_after(user, 60, src))
-			//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+			//Designs possible are "smooth", "cave", "carvedbrick", "cobbled", "tiled"
 				if(design == "smooth")
 					src.icon_state = "b_stone_wall"
 					base_icon_state = icon_state
@@ -763,10 +763,10 @@
 					base_icon_state = icon_state
 					src.name = "cave wall"
 					src.desc = "A cave wall."
-				else if(design == "brick")
+				else if(design == "carvedbrick")
 					src.icon_state = "b_brick_stone_wall"
 					base_icon_state = icon_state
-					src.name = "stone brick wall"
+					src.name = "stone carved brick wall"
 					src.desc = "A cave wall carved to look like its made of stone bricks."
 				else if(design == "cobbled")
 					src.icon_state = "b_cobbled_stone_wall"
