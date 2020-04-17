@@ -872,7 +872,7 @@
 	flammable = FALSE
 	explosion_resistance = 4
 
-/obj/covers/dirt_wall/blocks/
+/obj/covers/dirt_wall/blocks/incomplete
 	name = "dirt blocks wall"
 	desc = "A dirt blocks wall."
 	icon = 'icons/turf/walls.dmi'
