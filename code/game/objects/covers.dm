@@ -872,7 +872,7 @@
 	flammable = FALSE
 	explosion_resistance = 4
 
-/obj/covers/dirt_wall/blocks/incomplete
+/obj/covers/dirt_wall/blocks/
 	name = "dirt blocks wall"
 	desc = "A dirt blocks wall."
 	icon = 'icons/turf/walls.dmi'
@@ -1184,7 +1184,8 @@
 	name = "incomplete concrete wall"
 	desc = "A cement brick wall."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "cementwall_inc1"
+	base_icon_state = "cement_wall_inc"
+	icon_state = "cement_wall_inc0"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
@@ -1214,7 +1215,8 @@
 	name = "incomplete brick wall"
 	desc = "A red brick wall."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "brickwall_inc1"
+	base_icon_state = "new_brick_inc"
+	icon_state = "new_brick_inc0"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
