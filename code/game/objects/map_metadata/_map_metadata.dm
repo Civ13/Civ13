@@ -183,6 +183,7 @@ var/civmax_research = list(230,230,230)
 	var/persistence = FALSE
 
 	var/override_mapgen = FALSE
+	var/force_mapgen = FALSE
 
 /obj/map_metadata/New()
 	..()
@@ -222,7 +223,7 @@ var/civmax_research = list(230,230,230)
 		else if (i[2] == "drug")
 			i[3] = pick("peyote", "psilocybin","mindbreaker")
 		else if (i[2] == "healing")
-			i[3] = pick("paracetamol", "penicilin", "opium", "cocaine", "sal_acid")
+			i[3] = pick("paracetamol", "penicillin", "opium", "cocaine", "sal_acid")
 	spawn(5000)
 		pollution()
 	spawn(2400)

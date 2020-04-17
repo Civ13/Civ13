@@ -422,6 +422,14 @@
 				else
 					qdel(C)
 				return
+			else if (istype(C, /obj/item/stack/farming/seeds/flax))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/flax(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 			else if (istype(C, /obj/item/stack/farming/seeds/corn))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/corn(src)
@@ -512,6 +520,14 @@
 			else if (istype(C, /obj/item/stack/farming/seeds/tree))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/tree(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/bamboo))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/bamboo(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else
@@ -1173,7 +1189,10 @@
 			if (watertype == "irradiated_water")
 				H.rad_act(5)
 			else
-				if (prob(sickness*15) && !H.orc && !H.crab)
+				var/dmod = 1
+				if (H.find_trait("Weak Immune System"))
+					dmod = 2
+				if (prob(sickness*15*dmod) && !H.orc && !H.crab)
 					if (H.disease == 0)
 						H.disease_progression = 0
 						H.disease_type ="cholera"

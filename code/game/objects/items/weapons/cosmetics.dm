@@ -74,7 +74,7 @@
 	w_class = 1.0
 	slot_flags = SLOT_EARS
 	icon = 'icons/obj/items.dmi'
-	icon_state = "comb"
+	icon_state = "purplecomb"
 	item_state = "comb"
 	flammable = TRUE
 

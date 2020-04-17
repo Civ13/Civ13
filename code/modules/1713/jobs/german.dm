@@ -236,7 +236,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/german/shocktroop
-	title = "Stosstruppen"
+	title = "Stosstrupp"
 	en_meaning = "Shock Troop"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -913,7 +913,7 @@
 
 
 /datum/job/german/tank_crew_leader
-	title = "Panzerführer"
+	title = "Panzerkommandant"
 	en_meaning = "Armored Squad Leader"
 	rank_abbreviation = "Pzf."
 	selection_color = "#2d2d63"
@@ -1000,7 +1000,7 @@
 	return TRUE
 
 /datum/job/german/machine_gunner
-	title = "Machinengewehr Schütze"
+	title = "MG-Schütze"
 	en_meaning = "Machine Gunner"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1048,7 +1048,7 @@
 	return TRUE
 
 /datum/job/german/sniper_schutze
-	title = "Scharfschützen"
+	title = "Scharfschütze"
 	en_meaning = "Sniper"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"

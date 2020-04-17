@@ -12,7 +12,7 @@
 	emote_see = list("runs in a circle", "shakes", "scritches at something")
 	pass_flags = PASSTABLE
 	speak_chance = TRUE
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	maxHealth = 5
 	health = 5
@@ -87,21 +87,24 @@
 	if ( ishuman(AM) )
 		if (!stat)
 			var/mob/living/carbon/human/M = AM
+			var/dmod = 1
+			if (find_trait("Weak Immune System"))
+				dmod = 2
 			M << "<span class = 'notice'>\icon[src] Squeek!</span>"
 			M << 'sound/effects/mousesqueek.ogg'
 			target_mob = M
 			stance = HOSTILE_STANCE_ATTACK
 			stance_step = 6
-			if(plaguemouse && prob(2))
+			if(plaguemouse && prob(2*dmod))
 				M.disease = TRUE
 				M.disease_type = "plague"
-			else if((plaguemouse && prob(0.03)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //2 percent chance because of if-else logic,
+			else if((plaguemouse && prob(0.03*dmod)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //2 percent chance because of if-else logic,
 				M.disease = TRUE
 				M.disease_type = "plague"
-			else if(plaguemouse && body_color == "black" && prob(4)) //prob is 3 percent.
+			else if(plaguemouse && body_color == "black" && prob(4*dmod)) //prob is 3 percent.
 				M.disease = TRUE
 				M.disease_type = "plague"
-			else if((plaguemouse && body_color == "black" && prob(5)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //four percent chance kinda
+			else if((plaguemouse && body_color == "black" && prob(5*dmod)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //four percent chance kinda
 				M.disease = TRUE
 				M.disease_type = "plague"
 	..()
@@ -141,8 +144,11 @@
 		var/mob/living/carbon/human/H = target_mob
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
+		var/dmod = 1
+		if (H.find_trait("Weak Immune System"))
+			dmod = 2
 		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
-		if (prob(3))
+		if (prob(3*dmod))
 			H.disease = TRUE
 			H.disease_type = "plague"
 	else if (isliving(target_mob))

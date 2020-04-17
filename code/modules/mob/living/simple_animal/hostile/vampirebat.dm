@@ -10,7 +10,7 @@
 	speak = list("screech","chirps")
 	emote_see = list("flaps", "swoops down")
 	speak_chance = TRUE
-	turns_per_move = 3
+	move_to_delay = 3
 	see_in_dark = 10
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 1
@@ -64,7 +64,10 @@
 			for (var/mob/living/carbon/human/TG in range(1,src))
 				visible_message("<span class = 'danger'>\The [src] bites [TG]!")
 				TG.adjustBruteLoss(1,2)
-				if (prob(25) && TG.disease == 0)
+				var/dmod = 1
+				if (TG.find_trait("Weak Immune System"))
+					dmod = 2
+				if (prob(25*dmod) && TG.disease == 0)
 					TG.disease_progression = 0
 					TG.disease_type ="malaria"
 					TG.disease = 1

@@ -5,7 +5,7 @@ SERVER_NAME Civilization 13
 ## Where is the game folder located?
 MASTER_DIRECTORY /home/1713
 
-## If this server is running RP maps only, TDM only, or both (RP TDM ALL).
+## If this server is running: Persistence mode, RP maps only, TDM only, or both (PERSISTENCE RP TDM ALL).
 ALLOWED_GAMEMODES ALL
 
 ## What features do you want to advertise on your hub message?
@@ -168,7 +168,7 @@ WIKIURL http://civ13.com/wiki/index.php/Main_Page
 WEBSITEURL http://civ13.com/
 
 ##Github address
-GITHUBURL https://github.com/civ13-SS13/civ13/
+GITHUBURL https://github.com/civ13/civ13/
 
 ##Github repo id
 ##This can be found by going to https://api.github.com/users/<user name here>/repos

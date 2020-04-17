@@ -7,15 +7,20 @@
 	icon = 'icons/obj/structures.dmi'
 	name = "dirt wall"
 	icon_state = "dirt_wall"
-	layer = MOB_LAYER + 0.5 //just above mobs
+	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 	mouse_drop_zone = TRUE
+	maxhealth = 30
+	health = 30
+	New()
+		..()
+		health = maxhealth
 
 /obj/structure/window/sandbag/sandbag
 	name = "sandbag wall"
 	icon_state = "sandbag"
-	layer = MOB_LAYER + 0.51 //just above mobs
+	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 
@@ -68,7 +73,7 @@
 			layer = MOB_LAYER - 0.01
 			pixel_y = FALSE
 		if (SOUTH)
-			layer = MOB_LAYER + 0.01
+			layer = MOB_LAYER + 2
 			pixel_y = FALSE
 		if (EAST)
 			layer = MOB_LAYER - 0.05
@@ -148,8 +153,9 @@
 	return FALSE
 
 /obj/structure/window/sandbag/bullet_act(var/obj/item/projectile/Proj)
-	return FALSE
-
+	health -= 0.05
+	if (health <= 0)
+		qdel(src)
 /obj/structure/window/sandbag/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -220,7 +226,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-	health = 30
+	maxhealth = 30
 
 /obj/structure/window/sandbag/sandstone
 	name = "sandstone wall"
@@ -228,7 +234,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-	health = 30
+	maxhealth = 30
 
 /obj/item/weapon/sandbag/sandbag //:agony:
 	name = "sandbag"
@@ -237,6 +243,7 @@
 	w_class = TRUE
 	sand_amount = TRUE
 	value = 0
+	maxhealth = 30
 
 /obj/item/weapon/sandbag/sandbag/empty
 	sand_amount = FALSE
@@ -284,7 +291,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = FALSE
-	health = 10000000
+	maxhealth = 10000000
 
 /obj/structure/window/sandbag/railing/stone
 	name = "railing"
@@ -293,7 +300,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = FALSE
-	health = 10000000
+	maxhealth = 10000000
 
 /obj/structure/window/sandbag/railing/New()
 	..()
@@ -303,6 +310,7 @@
 	name = "jersey barrier"
 	icon_state = "jerseybarrier1"
 	icon = 'icons/obj/junk.dmi'
+	maxhealth = 80
 
 /obj/structure/window/sandbag/jersey/New()
 	..()

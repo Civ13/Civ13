@@ -1,6 +1,6 @@
 // At minimum every mob has a hear_say proc.
 /mob/var/next_language_learn = -1
-/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
+/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE, var/original_message = "")
 	if (!client)
 		return
 
@@ -10,6 +10,7 @@
 		return
 
 	//make sure the air can transmit speech - hearer's side
+	original_message = message
 
 	if (sleeping || stat == TRUE)
 		hear_sleep(message)
@@ -17,7 +18,7 @@
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND || blinded) || !(speaker in view(src)))
+		if (!speaker || ((sdisabilities & BLIND) || blinded || find_trait("Blind")) || !(speaker in view(src)))
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
@@ -71,7 +72,7 @@
 		if (is_preference_enabled(/datum/client_preference/ghost_ears) && (speaker in view(src)))
 			message = "<b>[message]</b>"
 
-	if (sdisabilities & DEAF || ear_deaf)
+	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (!language || !(language.flags & INNATE)) // INNATE is the flag for audible-emote-language, so we don't want to show an "x talks but you cannot hear them" message if it's set
 			if (speaker == src)
 				src << "<span class='warning'>You cannot hear yourself speak!</span>"
@@ -118,7 +119,7 @@
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND || blinded) || !(speaker in view(src)))
+		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
@@ -145,7 +146,7 @@
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
 
-	if (sdisabilities & DEAF || ear_deaf)
+	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
 	else
@@ -176,7 +177,7 @@
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND || blinded) || !(speaker in view(src)))
+		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
@@ -203,7 +204,7 @@
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
 
-	if (sdisabilities & DEAF || ear_deaf)
+	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the telephone vibrate but can hear nothing from it!</span>"
 	else
@@ -251,7 +252,7 @@
 		if (copytext(heardword,1, TRUE) in punctuation)
 			heardword = copytext(heardword,2)
 		if (copytext(heardword,-1) in punctuation)
-			heardword = copytext(heardword,1,lentext(heardword))
+			heardword = copytext(heardword,1,length(heardword))
 		heard = "<span class = 'game_say'>...You hear something about...[heardword]</span>"
 
 	else

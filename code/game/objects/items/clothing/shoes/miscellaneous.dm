@@ -97,6 +97,11 @@
 	desc = "The height of fashion, and they're pre-polished!"
 	icon_state = "laceups"
 
+/obj/item/clothing/shoes/gator_laceup
+	name = "alligator scale laceup shoes"
+	desc = "The height of luxurious footwear, and they're pre-polished!"
+	icon_state = "gator_laceups"
+
 /obj/item/clothing/shoes/leather
 	name = "leather shoes"
 	desc = "A sturdy pair of leather shoes."

@@ -365,3 +365,11 @@
 	taste_description = "diesel"
 	reagent_state = LIQUID
 	color = "#f9c901"
+
+/datum/reagent/nitric_acid
+	name = "Nitric acid"
+	id = "nitric_acid"
+	description = "A highly corrosive mineral acid."
+	taste_description = "acid"
+	reagent_state = LIQUID
+	color = "#FFFFFF"

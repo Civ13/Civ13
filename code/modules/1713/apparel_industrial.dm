@@ -1,36 +1,62 @@
-///////////////////INDUSTRIAL AGE APPAREL (LATE 1850's)///////////////////
+/*Index*/ // For reference 'Industrial' represents the 1850's onwards
+/* 1 - Industrial Headpieces
+   2 - Industrial Accessories
+   3 - Industrial Uniforms
+   4 - Industrial Suits
+   5 - Industrial Boots*/
+
+/* Industrial Headpieces*/
+
 /obj/item/clothing/head/bowler_hat
 	name = "bowler hat"
 	desc = "A round bowler hat."
 	icon_state = "bowler_hat"
 	item_state = "bowler_hat"
+
 /obj/item/clothing/head/cowboyhat
 	name = "cowboy hat"
 	desc = "a curved leather hat."
 	icon_state = "cowboy"
 	item_state = "cowboy"
+
 /obj/item/clothing/head/cowboyhat2
 	name = "dark cowboy hat"
 	desc = "a grayish, curved leather hat."
 	icon_state = "cowboy2"
 	item_state = "cowboy2"
+
+/obj/item/clothing/head/vaquerohat
+	name = "vaquero hat"
+	desc = "a wide brimmed hat with a feather in the top, favored by mexican cowboys."
+	icon_state = "vaquerohat"
+	item_state = "vaquerohat"
+
+/obj/item/clothing/head/bandit
+	name = "bandit hat"
+	desc = "a dark and long brimmed cowboy hat with a grim presence."
+	icon_state = "bandit"
+	item_state = "bandit"
+
 /obj/item/clothing/head/unionhat
 	name = "dark union hat"
 	desc = "a dark, slouched leather hat worn commonly by union soldiers."
 	icon_state = "union_hat"
 	item_state = "union_hat"
+
 /obj/item/clothing/head/unionhatlight
 	name = "light union hat"
 	desc = "a light, slouched leather hat worn commonly by union soldiers."
 	icon_state = "union_hat2"
 	item_state = "union_hat2"
+
 /obj/item/clothing/head/confederatehat
 	name = "grey confederate hat"
 	desc = "a grey, slouched leather hat worn commonly by confederate soldiers."
 	icon_state = "confederate_hat"
 	item_state = "confederate_hat"
+
 /obj/item/clothing/head/unioncap
-	name = "Union Cap"
+	name = "union Cap"
 	desc = "A cap worn by union soldiers."
 	icon_state = "union_cap"
 	item_state = "union_cap"
@@ -46,18 +72,18 @@
 			item_state = "union_cap"
 			worn_state = "union_cap"
 			item_state_slots["slot_head"] = "union_cap"
-			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			usr << "<span class = 'danger'>you adjust your cap's band.</span>"
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "union_capad"
 			worn_state = "union_capad"
 			item_state_slots["slot_head"] = "union_capad"
-			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			usr << "<span class = 'danger'>you adjust your cap's band.</span>"
 			adjusted = TRUE
 	update_clothing_icon()
 
 /obj/item/clothing/head/confederatecap
-	name = "Confederate Cap"
+	name = "confederate cap"
 	desc = "A cap worn by confederate soldiers."
 	icon_state = "confederate_cap"
 	item_state = "confederate_cap"
@@ -73,20 +99,20 @@
 			item_state = "confederate_cap"
 			worn_state = "confederate_cap"
 			item_state_slots["slot_head"] = "confederate_cap"
-			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			usr << "<span class = 'danger'>you adjust your cap's band.</span>"
 			adjusted = FALSE
 		else if (!adjusted)
 			item_state = "confederate_capad"
 			worn_state = "confederate_capad"
 			item_state_slots["slot_head"] = "confederate_capad"
-			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			usr << "<span class = 'danger'>you adjust your cap's band.</span>"
 			adjusted = TRUE
 	update_clothing_icon()
 
 
 /obj/item/clothing/head/sombrero
 	name = "cowboy hat"
-	desc = "ay caranba!"
+	desc = "Ay caramba!"
 	icon_state = "sombrero"
 	item_state = "sombrero"
 
@@ -95,6 +121,8 @@
 	desc = "Asian style."
 	icon_state = "rice_hat"
 	item_state = "rice_hat"
+
+/* Industrial Accessories & Items*/
 
 /obj/item/clothing/accessory/armband/blue_scarf
 	name = "blue scarf"
@@ -137,6 +165,28 @@
 	icon_state = "suspenders2"
 	item_state = "suspenders2"
 	slot = "sash"
+
+/obj/item/weapon/watch/pocket
+	name = "pocket watch"
+	desc = "Used to check the time."
+	icon = 'icons/obj/device.dmi'
+	icon_state = "pocketwatch"
+	item_state = "pocketwatch"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	slot_flags = SLOT_ID | SLOT_POCKET
+	w_class = 1
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_HARMLESS
+	icon_override = TRUE
+
+/obj/item/weapon/watch/pocket/attack_self(var/mob/living/L)
+	L << "<big>It is now [clock_time()].</big>"
+	return
+
+/* Industrial Uniforms*/
+
 /obj/item/clothing/under/industrial1
 	name = "pioneer outfit"
 	desc = "A red shirt with leather trousers, commonly used among pioneers."
@@ -173,21 +223,21 @@
 	worn_state = "worker_outfit"
 
 /obj/item/clothing/under/bartender
-	name = "Bartender Outfit"
+	name = "bartender Outfit"
 	desc = "A stilish bartender outfit."
 	icon_state = "bartender"
 	item_state = "bartender"
 	worn_state = "bartender"
 
 /obj/item/clothing/under/union_uniform
-	name = "Union Uniform"
+	name = "union uniform"
 	desc = "A blue uniform worn by union soldiers."
 	icon_state = "union_uniform"
 	item_state = "union_uniform"
 	worn_state = "union_uniform"
 
 obj/item/clothing/under/confederate_uniform/grey
-	name = "Confederate Uniform"
+	name = "confederate uniform"
 	desc = "A grey uniform worn by confederate soldiers."
 	icon_state = "confederate_uniform1"
 	item_state = "confederate_uniform1"
@@ -196,7 +246,7 @@ obj/item/clothing/under/confederate_uniform/grey
 	specific = TRUE
 
 obj/item/clothing/under/confederate_uniform/grey_blue
-	name = "Confederate Uniform"
+	name = "confederate uniform"
 	desc = "A grey uniform worn by confederate soldiers, however this one has union pants."
 	icon_state = "confederate_uniform2"
 	item_state = "confederate_uniform2"
@@ -222,6 +272,7 @@ obj/item/clothing/under/confederate_uniform/New()
 		item_state = "confederate_uniform[colorn]"
 		worn_state = "confederate_uniform[colorn]"
 
+/* Industrial Suits */
 
 /obj/item/clothing/suit/storage/jacket/leatherovercoat1
 	name = "leather overcoat"
@@ -258,6 +309,8 @@ obj/item/clothing/under/confederate_uniform/New()
 	item_state = "bluevest"
 	worn_state = "bluevest"
 
+/* Industrial Boots*/
+
 /obj/item/clothing/shoes/riding1
 	name = "black riding boots"
 	desc = "Black leather boots with spurs, perfect for riding."
@@ -280,6 +333,25 @@ obj/item/clothing/under/confederate_uniform/New()
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 
+/obj/item/clothing/shoes/riding1/gator_cowboy
+	name = "alligator scale riding boots"
+	desc = "Alligator scale patterned boots with spurs, perfect for riding in style."
+	icon_state = "gator_cowboy"
+	item_state = "gator_cowboy"
+	worn_state = "gator_cowboy"
+
+/obj/item/clothing/shoes/gator_ankleboots
+	name = "alligator scale ankle boots"
+	desc = "Classy alligator scale ankle-length boots, a certain statement for fashion."
+	icon_state = "gator_ankleboots"
+	item_state = "gator_ankleboots"
+	worn_state = "gator_ankleboots"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 50, arrow = 30, gun = FALSE, energy = 20, bomb = 40, bio = 10, rad = 20)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+
+/* Industrial Coats*/
 
 /obj/item/clothing/suit/storage/coat/kozhanka
 	name = "fur coat"
@@ -326,7 +398,7 @@ obj/item/clothing/under/confederate_uniform/New()
 		worn_state = "kozhankah"
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
-		item_state_slots["slot_wear_suit"] = "kozhankah"
+		item_state_slots["slot_wear_suit"] = "kozhankah[colorn]"
 		usr << "<span class = 'danger'>You cover your head with your coat's hood.</span>"
 		update_icon()
 		hood = TRUE
@@ -343,22 +415,47 @@ obj/item/clothing/under/confederate_uniform/New()
 	specific = TRUE
 	colorn = 2
 
-/obj/item/weapon/watch/pocket
-	name = "pocket watch"
-	desc = "Used to check the time."
-	icon = 'icons/obj/device.dmi'
-	icon_state = "pocketwatch"
-	item_state = "pocketwatch"
-	flammable = FALSE
-	density = FALSE
-	opacity = FALSE
-	slot_flags = SLOT_ID | SLOT_POCKET
-	w_class = 1
-	force = WEAPON_FORCE_WEAK
-	throwforce = WEAPON_FORCE_HARMLESS
-	icon_override = TRUE
+/obj/item/clothing/suit/storage/coat/monk_robes
+	name = "monk robes"
+	desc = "Robes commonly worn by monks, warm in the winters."
+	icon_state = "kozhanka"
+	item_state = "kozhanka"
+	worn_state = "kozhanka"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+	flags_inv = BLOCKHEADHAIR
+/obj/item/clothing/suit/storage/coat/monk_robes/verb/toggle_hood()
+	set category = null
+	set src in usr
+	set name = "Toggle Hood"
+	if (hood)
+		icon_state = "monk_robes"
+		item_state = "monk_robes"
+		worn_state = "monk_robes"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+		item_state_slots["slot_wear_suit"] = "monk_robes"
+		usr << "<span class = 'danger'>you take off your robes' hood.</span>"
+		update_icon()
+		hood = FALSE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		return
+	else if (!hood)
+		icon_state = "monk_robes_hood"
+		item_state = "monk_robes_hood"
+		worn_state = "monk_robes_hood"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
+		item_state_slots["slot_wear_suit"] = "monk_robes_hood"
+		usr << "<span class = 'danger'>you cover your head with your robes' hood.</span>"
+		update_icon()
+		hood = TRUE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		return
 
-/obj/item/weapon/watch/pocket/attack_self(var/mob/living/L)
-	L << "<big>It is now [clock_time()].</big>"
-	return
+
 

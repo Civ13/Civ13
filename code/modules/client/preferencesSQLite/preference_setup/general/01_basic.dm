@@ -32,29 +32,42 @@
 	else
 		currcursor = "Default"
 	. += "<b>Cursor Style: </b><a href='?src=\ref[src];select_cursor=1'><b>[currcursor]</b></A><br><br>"
-	for (var/v in TRUE to pref.preview_icons.len)
-		if (isicon(pref.preview_icons_front[v]))
-			user << browse_rsc(pref.preview_icons_front[v], "previewicon_[v]_front.png")
-		if (isicon(pref.preview_icons_back[v]))
-			user << browse_rsc(pref.preview_icons_back[v], "previewicon_[v]_back.png")
-		if (isicon(pref.preview_icons_east[v]))
-			user << browse_rsc(pref.preview_icons_east[v], "previewicon_[v]_east.png")
-		if (isicon(pref.preview_icons_west[v]))
-			user << browse_rsc(pref.preview_icons_west[v], "previewicon_[v]_west.png")
-	. += "<b>Preview</b><br><br>"
+	if (ishuman(user) && user.stat != DEAD)
+		. += "<br>"
+	else
+		for (var/v in TRUE to pref.preview_icons.len)
+			if (isicon(pref.preview_icons_front[v]))
+				user << browse_rsc(pref.preview_icons_front[v], "previewicon_[v]_front.png")
+			if (isicon(pref.preview_icons_back[v]))
+				user << browse_rsc(pref.preview_icons_back[v], "previewicon_[v]_back.png")
+			if (isicon(pref.preview_icons_east[v]))
+				user << browse_rsc(pref.preview_icons_east[v], "previewicon_[v]_east.png")
+			if (isicon(pref.preview_icons_west[v]))
+				user << browse_rsc(pref.preview_icons_west[v], "previewicon_[v]_west.png")
+		. += "<b>Preview</b><br>"
 
-	for (var/v in TRUE to pref.preview_icons.len)
-		. += "<img src=previewicon_[v]_front.png height=64 width=64>"
-		. += "<img src=previewicon_[v]_back.png height=64 width=64>"
-		. += "<img src=previewicon_[v]_east.png height=64 width=64>"
-		. += "<img src=previewicon_[v]_west.png height=64 width=64>"
-		. += "<br><br><br>"
-	// name
-	. += "<b>Name:</b> "
-	. += "<a href='?src=\ref[src];rename=1'><b>[pref.real_name]</b></a><br><br>"
-	. += "(<a href='?src=\ref[src];random_name=1'>Random Name</A>) <br><br>"
-	. += "<b>Always Randomize Name:</b> <a href='?src=\ref[src];always_random_name=1'>[pref.be_random_name ? "Yes" : "No"]</a><br><br>"
-	. += "<br><br>"
+		for (var/v in TRUE to pref.preview_icons.len)
+			. += "<img src=previewicon_[v]_front.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_back.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_east.png height=64 width=64>"
+			. += "<img src=previewicon_[v]_west.png height=64 width=64>"
+			. += "<br><br>"
+		// name
+		. += "<b>Name:</b> "
+		. += "<a href='?src=\ref[src];rename=1'><b>[pref.real_name]</b></a><br><br>"
+		. += "(<a href='?src=\ref[src];random_name=1'>Randomize Name</a>)<br><br>"
+		. += "<b>Always Randomize Name:</b> <a href='?src=\ref[src];always_random_name=1'>[pref.be_random_name ? "Yes" : "No"]</a><br><br>"
+		. += "<b>Traits: ([check_trait_points(pref.traits)])</b><br>"
+		. += "<i>(The sum of trait values has to be <b>0</b>)</i><br>"
+		. += "<a href='?src=\ref[src];add_traits=1'>Add</a> <a href='?src=\ref[src];remove_traits=1'>Remove</a><br><br>"
+		if (pref.traits.len)
+			for (var/i=1, i<=pref.traits.len, i++)
+				if (pref.traits[i] != "Cancel")
+					if (i == pref.traits.len)
+						. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
+					else if (pref.traits.len)
+						. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]]), "
+
 /datum/category_item/player_setup_item/general/basic/OnTopic(var/href,var/list/href_list, var/mob/user)
 
 	//real names
@@ -98,4 +111,52 @@
 			pref.cursor = null
 		pref.save_preferences()
 		return TOPIC_REFRESH
+
+	else if (href_list["add_traits"])
+		var/list/possible = list("Cancel")
+		for(var/i=1, i<= trait_list.len, i++)
+			if (!(i in pref.traits))
+				possible += "[trait_list[i]] ([trait_list[trait_list[i]][1]])"
+		var/add = WWinput(usr, "Add Trait:", "Traits", "Cancel", possible)
+		if (add == "Cancel")
+			pref.save_preferences()
+			return TOPIC_REFRESH
+		if (!findtext(add,"Cancel"))
+			var/list/padd = splittext(add," (")
+			switch(alert(usr,"[trait_list[padd[1]][3]]","[padd[1]]","Add","Cancel"))
+				if ("Add")
+					pref.traits += padd[1]
+				if ("Cancel")
+					pref.save_preferences()
+					return TOPIC_REFRESH
+		if ("Cancel" in pref.traits)
+			pref.traits -= "Cancel"
+		pref.save_preferences()
+		return TOPIC_REFRESH
+
+	else if (href_list["remove_traits"])
+		var/list/possible = pref.traits
+		possible += "Cancel"
+		for(var/tt in possible)
+			if (!findtext(tt,"Cancel"))
+				possible -= tt
+				tt = "[tt] ([trait_list[tt][1]])"
+				possible += tt
+		var/remove = WWinput(usr, "Remove Trait:", "Traits", "Cancel", possible)
+		if (remove == "Cancel")
+			pref.save_preferences()
+			return TOPIC_REFRESH
+		for(var/i in pref.traits)
+			if (findtext(remove, i))
+				pref.traits -= i
+		pref.save_preferences()
+		return TOPIC_REFRESH
 	return ..()
+/proc/check_trait_points(var/list/traitlist = list())
+	if (isemptylist(traitlist))
+		return 0
+	var/count = 0
+	for (var/i in traitlist)
+		if (trait_list[i] && trait_list[i][1]!=0)
+			count += trait_list[i][1]
+	return count

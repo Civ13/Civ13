@@ -41,7 +41,7 @@ proc/admin_notice(var/message, var/rights)
 		usr << "Error: you are not an admin!"
 		return
 
-	var/body = "<html><head><title>Options for [M.key]</title></head>"
+	var/body = "<html><style>[common_browser_style]</style><head><title>Options for [M.key]</title></head>"
 	body += "<body>Options panel for <b>[M]</b>"
 	if (M.client)
 		body += " played by <b>[M.client]</b> "
@@ -215,7 +215,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!istype(src,/datum/admins))
 		usr << "Error: you are not an admin!"
 		return
-	var/dat = "<html><head><title>Info on [key]</title></head>"
+	var/dat = "<html><style>[common_browser_style]</style><head><title>Info on [key]</title></head>"
 	dat += "<body>"
 
 	var/p_age = "unknown"
@@ -523,7 +523,21 @@ proc/admin_notice(var/message, var/rights)
 		world << "<big>Research has been <b>deactivated.</b></big>"
 		log_admin("[key_name(usr)] has deactivated the Research.")
 		return
-
+/datum/admins/proc/redirect_all_players()
+	set category = "Debug"
+	set desc="Redirects all players to another server."
+	set name="Server Redirection"
+	if (!usr.client.holder)
+		return
+	if (usr.client.holder.rank == "Admiral" || usr.client.holder.rank == "Host")
+		redirect_all_players = input("Where to redirect them to? Use byond://server:port format","Redirection",null) as text
+		if (redirect_all_players == null || redirect_all_players == "0" || redirect_all_players == "")
+			return
+		for (var/C in clients)
+			winset(C, null, "mainwindow.flash=1")
+			C << link(redirect_all_players)
+	else
+		return
 /datum/admins/proc/set_research_speed()
 	set category = "Special"
 	set desc="Changes research speed in Auto-Research mode."
@@ -950,27 +964,80 @@ var/list/atom_types = null
 /datum/admins/proc/paralyze_mob(mob/living/H as mob)
 	set category = "Admin"
 	set name = "Toggle Paralyze"
-	set desc = "Paralyzes a player. Or unparalyses them."
+	set desc = "Paralyzes a player and the area around. Or unparalyses them."
 
 	var/msg
 
 	if (check_rights(R_ADMIN))
-		if (H.paralysis == FALSE)
-			H.paralysis = 8000
-			msg = "has paralyzed [key_name(H)]."
+		var/chc = WWinput(usr, "Paralyze area or player?", "Player", list("Player", "Area"))
+		if (chc == "Area")
+			var/rngd = WWinput(usr, "What range to paralyze/unparalyze?", 3, list(2,3,4,5,6))
+			if (H.paralysis == FALSE)
+				H.paralysis = 8000
+				msg = "has paralyzed [key_name(H)] and everyone in [rngd] tiles around."
+				for (var/mob/living/carbon/human/HH in range(rngd,H))
+					if (HH.paralysis == FALSE)
+						HH.paralysis = 8000
+			else
+				H.paralysis = FALSE
+				msg = "has unparalyzed [key_name(H)] and everyone in [rngd] tiles around."
+				for (var/mob/living/carbon/human/HH in range(rngd,H))
+					if (HH.paralysis == TRUE)
+						HH.paralysis = 0
 		else
-			H.paralysis = FALSE
-			msg = "has unparalyzed [key_name(H)]."
+			if (H.paralysis == FALSE)
+				H.paralysis = 8000
+				msg = "has paralyzed [key_name(H)]."
+			else
+				H.paralysis = FALSE
+				msg = "has unparalyzed [key_name(H)]."
+		log_and_message_admins(msg)
+/datum/admins/proc/punish(mob/living/carbon/human/H as mob)
+	set category = "Admin"
+	set name = "Punish"
+	set desc = "Punishes a player."
+
+	var/msg
+
+	if (check_rights(R_ADMIN))
+		var/chc = WWinput(usr, "What to do?", "Cancel", list("Cancel", "Cholera", "Brain Damage"))
+		if (chc == "Cancel")
+			return
+		else if (chc == "Cholera")
+			H.disease_progression = 0
+			H.disease_type ="cholera"
+			H.disease = 1
+			msg = "has given [key_name(H)] cholera."
+		else if (chc == "Brain Damage")
+			H.adjustBrainLoss(15)
+			msg = "has given [key_name(H)] 15 units of brain damage."
 		log_and_message_admins(msg)
 
 /client/proc/reload_admins()
-	set name = "Reload Admins"
+	set name = "Reload Lists"
 	set category = "Debug"
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually reloaded admins.")
+	message_admins("[key_name(usr)] manually reloaded admins, whitelists and approved lists.")
+
 	load_admins(1)
+
+	var/F = file("SQL/approved.txt")
+	if (fexists(F))
+		var/list/approved_list_temp = file2list(F,"\n")
+		for (var/i in approved_list_temp)
+			if (findtext(i, "="))
+				var/list/current = splittext(i, "=")
+				approved_list += current[1]
+
+	var/F2 = file("SQL/whitelist.txt")
+	if (fexists(F2))
+		var/list/whitelist_temp = file2list(F2,"\n")
+		for (var/i in whitelist_temp)
+			if (findtext(i, "="))
+				var/list/current = splittext(i, "=")
+				whitelist_list += current[1]
 
 /client/proc/reload_bans()
 	set name = "Update Bans"

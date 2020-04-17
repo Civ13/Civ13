@@ -11,7 +11,7 @@
 	emote_hear = list("barks","pants")
 	emote_see = list("sniffs the floor", "wags it's tail")
 	speak_chance = TRUE
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
@@ -63,7 +63,7 @@
 
 	turns_since_scan++
 	if (turns_since_scan > 5)
-		walk_to(src,0)
+		walk(src,0)
 		turns_since_scan = FALSE
 
 		if (flee_target) //fleeing takes precendence

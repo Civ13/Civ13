@@ -47,7 +47,7 @@
 				"Cold War Era (1958-1984)" = 0,
 				"Modern Era (1985-2020)" = 0,
 			)
-		else if (config.allowedgamemodes == "RP")
+		else if (config.allowedgamemodes == "RP" || config.allowedgamemodes == "PERSISTENCE")
 			epochs = list(
 				"Civilization 13 (Nomads)" = 0,
 				"Civilization 13 (Colony & Pioneers)" = 0,

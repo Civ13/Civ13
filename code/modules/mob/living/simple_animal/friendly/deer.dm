@@ -10,7 +10,7 @@
 	emote_hear = list("bellows")
 	emote_see = list("shakes its head", "looks attently")
 	speak_chance = TRUE
-	turns_per_move = 2
+	move_to_delay = 2
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 5
@@ -136,7 +136,7 @@
 	emote_hear = list("bellows")
 	emote_see = list("shakes its head", "looks attently")
 	speak_chance = TRUE
-	turns_per_move = 2
+	move_to_delay = 2
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 5
@@ -166,7 +166,7 @@
 	emote_hear = list("bellows")
 	emote_see = list("shakes its head", "looks attently")
 	speak_chance = TRUE
-	turns_per_move = 2
+	move_to_delay = 2
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 6

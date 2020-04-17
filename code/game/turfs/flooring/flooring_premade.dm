@@ -200,7 +200,10 @@
 				if (prob(9))
 					new/obj/structure/wild/jungle(src)
 				else if(prob(2))
-					new/obj/structure/wild/palm(src)
+					if (prob(50))
+						new/obj/structure/wild/bamboo(src)
+					else
+						new/obj/structure/wild/palm(src)
 				else if(prob(3))
 					new/obj/structure/wild/smallbush(src)
 				else if(prob(5))

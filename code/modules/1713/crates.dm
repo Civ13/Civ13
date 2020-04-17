@@ -174,6 +174,14 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 
+/obj/structure/closet/crate/empty/large
+	name = "large crate"
+	desc = "A hefty wooden crate."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "densecrate"
+	icon_opened = "densecrate_open"
+	icon_closed = "densecrate"
+	storagecap = 20
 
 /obj/structure/closet/crate/cash_register
 	name = "cash register"
@@ -182,11 +190,11 @@ obj/structure/closet/crate/empty
 	icon_state = "cash_register"
 	icon_opened = "cash_register_opened"
 	icon_closed = "cash_register"
-	flammable = TRUE
-	not_movable = TRUE
+	flammable = FALSE
 	not_disassemblable = TRUE
-	anchored = TRUE
 	opacity = FALSE
+	density = FALSE
+	storagecap = 6
 
 /obj/structure/closet/crate/bayonets
 	name = "bayonets crate"
@@ -346,6 +354,7 @@ obj/structure/closet/crate/empty
 	paths = list(/obj/item/stack/farming/seeds/tobacco = 3,
 				/obj/item/stack/farming/seeds/sugarcane = 3,
 				/obj/item/stack/farming/seeds/hemp = 3,
+				/obj/item/stack/farming/seeds/flax = 3,
 				/obj/item/stack/farming/seeds/cotton = 3,)
 	cratevalue = 60
 
@@ -504,6 +513,7 @@ obj/structure/closet/crate/ww2
 	icon_opened = "mil_crate_opened"
 	icon_closed = "mil_crate_closed"
 	name = "military crate"
+
 obj/structure/closet/crate/ww2/mk2
 	name = "Mk2 grenade crate"
 	paths = list(/obj/item/weapon/grenade/ww2/mk2 = 10)

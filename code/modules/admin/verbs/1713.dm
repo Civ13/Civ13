@@ -562,6 +562,8 @@ var/chinese_forceEnabled = FALSE
 	var/msg16 = "Vietnamese: [alive_vietnamese.len] alive, [heavily_injured_vietnamese.len] heavily injured or unconscious, [dead_vietnamese.len] deceased. Mortality rate: [mortality_vietnamese]%"
 	var/msg17 = "Chinese: [alive_chinese.len] alive, [heavily_injured_chinese.len] heavily injured or unconscious, [dead_chinese.len] deceased. Mortality rate: [mortality_chinese]%"
 
+	var/msg_npcs = "NPCs: [faction1_npcs] americans alive, [faction2_npcs] japanese alive."
+
 	var/msg_companies= ""
 	var/relpc = ""
 	var/relpc_am = 0
@@ -693,6 +695,8 @@ var/chinese_forceEnabled = FALSE
 				world << "<font size=3>[msg_factions]</font>"
 			if (map.civilizations && msg_companies != "")
 				world << "<font size=3>[msg_companies]</font>"
+			if (map.ID == MAP_IWO_JIMA)
+				world << "<font size=3>[msg_npcs]</font>"
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
 			else

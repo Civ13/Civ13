@@ -72,9 +72,10 @@
 
 /obj/structure/fishing_cage/attack_hand(mob/user as mob)
 	if (found)
-		user << "You open the cage and find there is [found] inside!"
-		var/obj/item/weapon/reagent_containers/food/FD = new found(loc)
-		user.put_in_hands(FD)
+		var/atom/FD = new found(loc)
+		user << "You open the cage and find there is [FD] inside!"
+		if (isitem(FD))
+			user.put_in_hands(FD)
 		found = null
 		generate_fish()
 		return
@@ -88,18 +89,22 @@
 	generating = TRUE
 	found = null
 	if (istype(loc, /turf/floor/beach/water))
-		spawn(rand(6000,18000))
+		spawn(rand(18000,24000))
 			generating = FALSE
 			if (istype(loc, /turf/floor/beach/water) && !found)
 				if (istype(loc, /turf/floor/beach/water/deep/saltwater))
 					if (prob(70))
+						found = /obj/item/weapon/reagent_containers/food/snacks/octopus
+					else if (prob(70))
 						found = /obj/item/weapon/reagent_containers/food/snacks/rawlobster
 					else
 						found = /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
 
 				else if (istype(loc, /turf/floor/beach/water/shallowsaltwater))
-					found = /obj/item/weapon/reagent_containers/food/snacks/rawfish
-
+					if (prob(90))
+						found = /obj/item/weapon/reagent_containers/food/snacks/rawfish
+					else
+						found = /mob/living/simple_animal/crab/small/dead
 				else if (istype(loc, /turf/floor/beach/water/jungle) || istype(loc, /turf/floor/beach/water/deep/jungle) || istype(loc, /turf/floor/beach/water/flooded))
 					found = /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
 

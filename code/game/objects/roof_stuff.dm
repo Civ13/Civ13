@@ -51,8 +51,15 @@
 		return
 	..()
 
+/obj/roof/canopy
+	name = ""
+	icon_state = ""
+	overlay_state = ""
+
 /obj/roof/wood
 	name = "wood roof"
+	icon_state = "wood_dm"
+	overlay_state = "wood"
 
 /obj/roof/clay
 	name = "clay roof"
@@ -60,6 +67,13 @@
 	flammable = FALSE
 	overlay_state = "clay"
 	icon_state = "clay_dm"
+
+/obj/roof/clay/kerawa
+	name = "kerawa roof"
+	desc = "A clay tile roof."
+	flammable = FALSE
+	overlay_state = "black_slateroof"
+	icon_state = "black_slateroof_dm"
 
 /obj/roof/concrete
 	name = "concrete roof"
@@ -79,6 +93,20 @@
 	desc = "a roof made of layered palm leaves."
 	overlay_state = "palm"
 	icon_state = "palm_dm"
+
+/obj/roof/sandstone
+	name = "sandstone roof"
+	desc = "An egyptian-style sandstone roof."
+	overlay_state = "sandstone"
+	flammable = FALSE
+	icon_state = "sandstone_dm"
+
+/obj/roof/mayan
+	name = "mayan roof"
+	desc = "A mayan-style stone roof."
+	overlay_state = "mayan"
+	flammable = FALSE
+	icon_state = "mayan_dm"
 
 /obj/roof/proc/update_transparency(var/on = TRUE) //to see through windows and stuff
 	roof_overlay.alpha = 255
@@ -166,7 +194,7 @@
 					update_transparency(0)
 				else
 					update_transparency(1)
-			else if (istype(S, /obj/structure/window) || istype(S, /obj/structure/window_frame))
+			else if ((istype(S, /obj/structure/window) && !(istype(S, /obj/structure/window/sandbag) || istype(S, /obj/structure/window/snowwall)))  || istype(S, /obj/structure/window_frame))
 				var/found = FALSE
 				for(var/obj/structure/SS in S.loc)
 					if (istype(SS, /obj/structure/simple_door) || istype(SS, /obj/structure/curtain))
@@ -197,6 +225,9 @@
 /obj/roof/proc/collapse_check()
 	spawn(50)
 		var/supportfound = FALSE
+		if (istype(src, /obj/roof/canopy))
+			for (var/obj/structure/tent/TT in loc)
+				supportfound = TRUE
 		for (var/obj/structure/roof_support/RS in range(2, src))
 			supportfound = TRUE
 		for (var/obj/structure/mine_support/stone/SS in range(2, src))
@@ -235,6 +266,13 @@
 	flammable = FALSE
 	target_type = /obj/roof/clay
 
+/obj/item/weapon/roofbuilder/clay/kerawa
+	name = "black clay roofing"
+	desc = "Use this to build roofs."
+	icon_state = "black_slateroof_builder"
+	flammable = FALSE
+	target_type = /obj/roof/clay/kerawa
+
 /obj/item/weapon/roofbuilder/leaves
 	name = "thatch roofing"
 	desc = "Use this to build roofs."
@@ -255,6 +293,20 @@
 	icon_state = "concrete_roof_builder"
 	flammable = FALSE
 	target_type = /obj/roof/concrete
+
+/obj/item/weapon/roofbuilder/sandstone
+	name = "sandstone roofing"
+	desc = "Use this to build roofs."
+	icon_state = "sandstone_roof_builder"
+	flammable = FALSE
+	target_type = /obj/roof/sandstone
+
+/obj/item/weapon/roofbuilder/mayan
+	name = "mayan roofing"
+	desc = "Use this to build roofs."
+	icon_state = "mayan_roof_builder"
+	flammable = FALSE
+	target_type = /obj/roof/mayan
 
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
 	var/your_dir = "NORTH"

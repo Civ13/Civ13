@@ -274,8 +274,21 @@ var/list/name_to_material
 	tableslam_noise = null
 	hardness = 10
 
-	sheet_singular_name = "leave"
+	sheet_singular_name = "leaf"
 	sheet_plural_name = "leaves"
+
+/material/flax
+	name = "flax"
+	stack_type = /obj/item/stack/material/flax
+	flags = MATERIAL_UNMELTABLE
+	cut_delay = 5
+	icon_colour = "#5f9ea0"
+	shard_type = null
+	tableslam_noise = null
+	hardness = 10
+
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
 
 /material/coca
 	name = "coca"
@@ -378,8 +391,8 @@ var/list/name_to_material
 	integrity = 500
 	hardness = 45
 	door_icon_base = "stone"
-	sheet_singular_name = "brick"
-	sheet_plural_name = "bricks"
+	sheet_singular_name = "block"
+	sheet_plural_name = "blocks"
 
 /material/stone
 	name = "stone"
@@ -394,6 +407,16 @@ var/list/name_to_material
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/stone
 	door_icon_base = "stone"
+
+/material/stonebrick
+	name = "stone brick"
+	hardness = 50
+	weight = 11
+	integrity = 450
+	icon_colour = "#808080"
+	sheet_singular_name = "brick"
+	sheet_plural_name = "bricks"
+	stack_type = /obj/item/stack/material/stonebrick
 
 /material/flint
 	name = "flint"
@@ -411,11 +434,12 @@ var/list/name_to_material
 	sheet_singular_name = "piece"
 	sheet_plural_name = "pieces"
 
-/material/stone/stonebrick
+/* /material/stone/stonebrick
 	name = "brick"
 	icon_base = "newbrick"
 	icon_colour = "#808080"
 	stack_type = /obj/item/stack/material/marble
+*/
 
 /material/stone/marble
 	name = "marble"
@@ -506,6 +530,27 @@ var/list/name_to_material
 	hardness = 90
 	icon_colour = "#D2BA9C"
 
+/material/bamboo
+	name = "bamboo"
+	stack_type = /obj/item/stack/material/bamboo
+	icon_colour = "#414833"
+	integrity = 50
+	icon_base = "wood"
+	explosion_resistance = 2
+	shard_type = SHARD_SPLINTER
+	shard_can_repair = FALSE
+	hardness = 45
+	weight = 15
+	melting_point = T0C+300
+	ignition_point = T0C+288
+
+	dooropen_noise = 'sound/effects/doorcreaky.ogg'
+	door_icon_base = "wood"
+	destruction_desc = "splinters"
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
+	hitsound = 'sound/effects/woodhit.ogg'
+
 /material/clay
 	name = "clay"
 	integrity = 60
@@ -543,6 +588,14 @@ var/list/name_to_material
 	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
+/material/rettedfabric
+	name = "retted fabric"
+	icon_colour = "#c19a6b"
+	stack_type = /obj/item/stack/material/rettedfabric
+	hardness = 7
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
+
 /material/woolcloth
 	name = "woolcloth"
 	hardness = 10
@@ -579,7 +632,16 @@ var/list/name_to_material
 	ignition_point = T0C+300
 	melting_point = T0C+300
 	hardness = 25
+/*
+/material/gatorscale // In preparation, snakes and other reptiles have other sorts.
+	name = "alligator scale"
+	icon_colour = "#443d36"
 
+	flags = MATERIAL_PADDING
+	ignition_point = T0C+300
+	melting_point = T0C+300
+	hardness = 25
+*/
 /material/pelt
 	name = "pelt"
 	use_name = "pelt"
@@ -657,6 +719,28 @@ var/list/name_to_material
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/pantherpelt
 
+/material/lionpelt
+	name = "lionpelt"
+	use_name = "lion"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/lionpelt
+
+/material/gatorpelt
+	name = "alligator pelt"
+	use_name = "alligator"
+	icon_colour = "#443d36"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/gatorpelt
+
 /material/monkeypelt
 	name = "monkeypelt"
 	use_name = "monkey"
@@ -668,6 +752,28 @@ var/list/name_to_material
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/monkeypelt
 
+/material/foxpelt
+	name = "foxpelt"
+	use_name = "fox"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/foxpelt
+
+/material/whitefoxpelt
+	name = "whitefoxpelt"
+	use_name = "white fox"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/foxpelt/white
+
 /material/hairlesshide
 	name = "hairlesshide"
 	use_name = "hairless hide"
@@ -678,6 +784,17 @@ var/list/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/hairlesshide
+
+/*/material/scalelesshide //deactivated for now, prepped up for skinned gatorpelts
+	name = "scalelesshide"
+	use_name = "scaleless hide"
+	icon_colour = "#443d36"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/scalelesshide*/
 
 /material/humanpelt
 	name = "humanpelt"

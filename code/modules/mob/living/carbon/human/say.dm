@@ -34,16 +34,16 @@
 	var/normal_message = message
 	for (var/rp in radio_prefixes)
 		if (dd_hasprefix(normal_message, rp))
-			normal_message = copytext(normal_message, lentext(rp)+1, lentext(normal_message)+1)
+			normal_message = copytext(normal_message, length(rp)+1, length(normal_message)+1)
 
 	var/normal_message_without_html = message_without_html
 	for (var/rp in radio_prefixes)
 		if (dd_hasprefix(normal_message_without_html, rp))
-			normal_message_without_html = copytext(normal_message_without_html, lentext(rp)+1, lentext(normal_message_without_html)+1)
+			normal_message_without_html = copytext(normal_message_without_html, length(rp)+1, length(normal_message_without_html)+1)
 	if (wolfman && howling)
-		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = TRUE)
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = TRUE, original_message = message_without_html)
 	else
-		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic)
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = FALSE, original_message = message_without_html)
 
 	for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, src))
 		D.hear_command(message_without_html, src)
@@ -137,7 +137,7 @@
 	return verb
 
 /mob/living/carbon/human/handle_speech_problems(var/message, var/verb)
-	if (silent || (sdisabilities & MUTE))
+	if (silent || (sdisabilities & MUTE) || find_trait("Mute"))
 		message = ""
 		speech_problem_flag = TRUE
 	else if (istype(wear_mask, /obj/item/clothing/mask))

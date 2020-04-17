@@ -187,16 +187,17 @@
 		reagents.add_reagent("blackpepper", 20)
 
 /obj/item/weapon/reagent_containers/food/condiment/flour
-	name = "flour sack"
+	name = "small flour sack"
 	desc = "A bag of flour. Good for baking!"
 	icon = 'icons/obj/food/food.dmi'
 	icon_state = "flour"
 	item_state = "flour"
-	decay = 45*600
+	decay = 100*600
 	satisfaction = -3
+	volume = 10
 	New()
 		..()
-		reagents.add_reagent("flour", 30)
+		reagents.add_reagent("flour", 10)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
 /obj/item/weapon/reagent_containers/food/condiment/flour/attack_self(mob/user)
@@ -213,6 +214,16 @@
 		if (src.reagents.has_reagent("flour", 5))
 			WW.reagents.remove_reagent("water", 5)
 			src.reagents.remove_reagent("flour", 5)
+			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
+			return
+		else if (src.reagents.has_reagent("barleyflour", 5))
+			WW.reagents.remove_reagent("water", 5)
+			src.reagents.remove_reagent("barleyflour", 5)
+			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
+			return
+		else if (src.reagents.has_reagent("oatflour", 5))
+			WW.reagents.remove_reagent("water", 5)
+			src.reagents.remove_reagent("oatflour", 5)
 			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
 			return
 		else

@@ -117,9 +117,9 @@
 		var/obj/item/organ/external/O = get_organ(organ_name)
 		if (O)
 			if (amount > 0)
-				O.take_damage(amount, amount, sharp=is_sharp(damage_source), edge=damage_source ? damage_source.edge : 0, used_weapon=damage_source)
+				O.take_damage(0, amount, sharp=is_sharp(damage_source), edge=damage_source ? damage_source.edge : 0, used_weapon=damage_source)
 			else
-				O.heal_damage(-amount, -amount, internal=0,)
+				O.heal_damage(0, -amount, internal=0,)
 
 /mob/living/carbon/human/Stun(amount)
 	handle_zoom_stuff(1)

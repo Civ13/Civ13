@@ -1353,9 +1353,9 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
 
-/obj/item/clothing/suit/storage/coat/ww2/biker
+/obj/item/clothing/suit/storage/coat/ww2/biker //it may have started this 'era', but biker jackets became popular still long after
 	name = "biker jacket"
-	desc = "A black jacket meant for high-alititude temperatures."
+	desc = "A black jacket, favoured by the bold and recreational thrill seekers."
 	icon_state = "biker"
 	item_state = "biker"
 	worn_state = "biker"
@@ -1364,16 +1364,13 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
 
-/obj/item/clothing/suit/storage/coat/oldyjacket
-	name = "red jacket"
-	desc = "A red jacket from the 80s."
-	icon_state = "jacket80s"
-	item_state = "jacket80s"
-	worn_state = "jacket80s"
-	body_parts_covered = UPPER_TORSO||ARMS
-	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
-	value = 100
+/obj/item/clothing/suit/storage/coat/ww2/biker/gator_jacket
+	name = "alligator scale jacket"
+	desc = "A sleek alligator scale jacket, bold and impression-setting like the people who wear it. 'See-ya later alligator'."
+	icon_state = "gator_jacket"
+	item_state = "gator_jacket"
+	worn_state = "gator_jacket"
+	value = 150
 
 /obj/item/weapon/storage/belt/gulagguard
 	name = "GULAG guard belt"

@@ -81,7 +81,6 @@ var/world_is_open = TRUE
 
 	// This is kinda important. Set up details of what the hell things are made of.
 	populate_material_list()
-
 	processScheduler = new
 //	master_controller = new /datum/controller/game_controller()
 
@@ -185,6 +184,9 @@ var/world_topic_spam_protect_time = world.timeofday
 		s["stationtime"] = stationtime2text()
 		s["roundduration"] = roundduration2text()
 
+		s["map"] = "unknown"
+		s["age"] = "unknown"
+
 		if (input["status"] == "2")
 			var/list/players = list()
 			var/list/admins = list()
@@ -200,6 +202,10 @@ var/world_topic_spam_protect_time = world.timeofday
 			s["playerlist"] = list2params(players)
 			s["admins"] = admins.len
 			s["adminlist"] = list2params(admins)
+			if (map)
+				s["map"] = map.title
+				s["age"] = map.age
+			s["season"] = season
 		else
 			var/n = FALSE
 			var/admins = FALSE
@@ -214,7 +220,10 @@ var/world_topic_spam_protect_time = world.timeofday
 
 			s["players"] = n
 			s["admins"] = admins
-
+			if (map)
+				s["map"] = map.title
+				s["age"] = map.age
+			s["season"] = season
 		return list2params(s)
 
 /world/Reboot(var/reason)

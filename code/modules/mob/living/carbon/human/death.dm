@@ -58,7 +58,8 @@
 			for(var/i in GD.points)
 				if (i[1]==PJ.nationality)
 					i[3]-=50
-
+	handle_piss()
+	handle_shit()
 	var/list/poss_list = list()
 	for(var/cmp in map.custom_company_nr)
 		if (find_company_member(src,cmp))

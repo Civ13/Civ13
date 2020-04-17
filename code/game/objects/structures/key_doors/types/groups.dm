@@ -80,7 +80,7 @@
 
 /obj/item/weapon/key/civ/hall
 	code = CV_CODE2
-	name = "Colony Hall Key"
+	name = "Gaurd's Key"
 
 /obj/structure/simple_door/key_door/civ/hall
 	keyslot_type = /datum/keyslot/civ/hall
@@ -92,7 +92,7 @@
 
 /obj/item/weapon/key/civ/gov
 	code = CV_CODE3
-	name = "Governor's Office Key"
+	name = "Leader's Key"
 
 /obj/structure/simple_door/key_door/civ/gov
 	keyslot_type = /datum/keyslot/civ/gov

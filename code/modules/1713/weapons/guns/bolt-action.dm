@@ -336,6 +336,7 @@
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/boltaction/arisaka30
 	name = "Arisaka Type 30"
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
@@ -359,6 +360,42 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka30/attack_self(mob/user)
+	if (!check_bolt)//Keeps people from spamming the bolt
+		check_bolt++
+		if (!do_after(user, 2, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
+			check_bolt--
+			return
+	else return
+	if (check_bolt_lock)
+		user << "<span class='notice'>The bolt won't move, the gun is empty!</span>"
+		check_bolt--
+		return
+	bolt_open = !bolt_open
+	if (bolt_open)
+		if (chambered)
+			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
+			chambered.loc = get_turf(src)
+			chambered.randomrotation()
+			loaded -= chambered
+			chambered = null
+			if (bolt_safety)
+				if (!loaded.len)
+					check_bolt_lock++
+					user << "<span class='notice'>The bolt is locked!</span>"
+		else
+			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You work the bolt open.</span>"
+	else
+		playsound(loc, 'sound/weapons/arisaka_close.ogg', 50, TRUE)
+		user << "<span class='notice'>You work the bolt closed.</span>"
+		bolt_open = FALSE
+	add_fingerprint(user)
+	update_icon()
+	check_bolt--
+
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka38
 	name = "Arisaka Type 38"
@@ -384,6 +421,41 @@
 	equiptimer = 18
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
+/obj/item/weapon/gun/projectile/boltaction/arisaka38/attack_self(mob/user)
+	if (!check_bolt)//Keeps people from spamming the bolt
+		check_bolt++
+		if (!do_after(user, 2, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
+			check_bolt--
+			return
+	else return
+	if (check_bolt_lock)
+		user << "<span class='notice'>The bolt won't move, the gun is empty!</span>"
+		check_bolt--
+		return
+	bolt_open = !bolt_open
+	if (bolt_open)
+		if (chambered)
+			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
+			chambered.loc = get_turf(src)
+			chambered.randomrotation()
+			loaded -= chambered
+			chambered = null
+			if (bolt_safety)
+				if (!loaded.len)
+					check_bolt_lock++
+					user << "<span class='notice'>The bolt is locked!</span>"
+		else
+			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You work the bolt open.</span>"
+	else
+		playsound(loc, 'sound/weapons/arisaka_close.ogg', 50, TRUE)
+		user << "<span class='notice'>You work the bolt closed.</span>"
+		bolt_open = FALSE
+	add_fingerprint(user)
+	update_icon()
+	check_bolt--
+
 /obj/item/weapon/gun/projectile/boltaction/arisaka99
 	name = "Arisaka Type 99"
 	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
@@ -408,15 +480,52 @@
 	equiptimer = 18
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/attack_self(mob/user)
+	if (!check_bolt)//Keeps people from spamming the bolt
+		check_bolt++
+		if (!do_after(user, 2, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
+			check_bolt--
+			return
+	else return
+	if (check_bolt_lock)
+		user << "<span class='notice'>The bolt won't move, the gun is empty!</span>"
+		check_bolt--
+		return
+	bolt_open = !bolt_open
+	if (bolt_open)
+		if (chambered)
+			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
+			chambered.loc = get_turf(src)
+			chambered.randomrotation()
+			loaded -= chambered
+			chambered = null
+			if (bolt_safety)
+				if (!loaded.len)
+					check_bolt_lock++
+					user << "<span class='notice'>The bolt is locked!</span>"
+		else
+			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You work the bolt open.</span>"
+	else
+		playsound(loc, 'sound/weapons/arisaka_close.ogg', 50, TRUE)
+		user << "<span class='notice'>You work the bolt closed.</span>"
+		bolt_open = FALSE
+	add_fingerprint(user)
+	update_icon()
+	check_bolt--
+
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper
 	name = "Arisaka Type 99"
 	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
 	effectiveness_mod = 1.06
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
-/obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper/New()
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet/New()
 	..()
-	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	var/obj/item/weapon/attachment/bayonet/military/SP = new/obj/item/weapon/attachment/bayonet/military(src)
 	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training
@@ -442,6 +551,40 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+/obj/item/weapon/gun/projectile/boltaction/arisaka99_training/attack_self(mob/user)
+	if (!check_bolt)//Keeps people from spamming the bolt
+		check_bolt++
+		if (!do_after(user, 2, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
+			check_bolt--
+			return
+	else return
+	if (check_bolt_lock)
+		user << "<span class='notice'>The bolt won't move, the gun is empty!</span>"
+		check_bolt--
+		return
+	bolt_open = !bolt_open
+	if (bolt_open)
+		if (chambered)
+			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
+			chambered.loc = get_turf(src)
+			chambered.randomrotation()
+			loaded -= chambered
+			chambered = null
+			if (bolt_safety)
+				if (!loaded.len)
+					check_bolt_lock++
+					user << "<span class='notice'>The bolt is locked!</span>"
+		else
+			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You work the bolt open.</span>"
+	else
+		playsound(loc, 'sound/weapons/arisaka_close.ogg', 50, TRUE)
+		user << "<span class='notice'>You work the bolt closed.</span>"
+		bolt_open = FALSE
+	add_fingerprint(user)
+	update_icon()
+	check_bolt--
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr71
 	name = "Gewehr 71"

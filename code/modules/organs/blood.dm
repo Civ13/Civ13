@@ -97,8 +97,10 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 	if (!amt)
 		return
-
-	vessel.remove_reagent("blood",amt)
+	var/dmod = 1
+	if (find_trait("Hemophilia"))
+		dmod = 1.25
+	vessel.remove_reagent("blood",amt*dmod)
 
 	// don't splatter blood all the time
 	if (prob(amt * 100))
@@ -260,8 +262,8 @@ proc/blood_incompatible(donor,receiver,donor_species,receiver_species)
 		if (donor_species != receiver_species)
 			return TRUE
 
-	var/donor_antigen = copytext(donor,1,lentext(donor))
-	var/receiver_antigen = copytext(receiver,1,lentext(receiver))
+	var/donor_antigen = copytext(donor,1,length(donor))
+	var/receiver_antigen = copytext(receiver,1,length(receiver))
 	var/donor_rh = (findtext(donor,"+")>0)
 	var/receiver_rh = (findtext(receiver,"+")>0)
 

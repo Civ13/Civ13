@@ -83,3 +83,18 @@
 	outputamount = 3
 	actiontext = "tann"
 	overlayed = FALSE
+
+/obj/structure/converter/retting_trough
+	name = "retting trough"
+	desc = "Soaks fiberous plants over time into retted fabric. Requires at least two seperate hemp or flax at a time."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "retting_trough"
+	idlesprite = "retting_trough"
+	activesprite = "retting_trough_full"
+	delay = 250
+	input = list (/obj/item/stack/material/hemp, /obj/item/stack/material/flax)
+	inputamount = 2
+	output = /obj/item/stack/material/rettedfabric
+	outputamount = 1
+	actiontext = "soaks"
+	overlayed = FALSE

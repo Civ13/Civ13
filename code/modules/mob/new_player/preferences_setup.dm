@@ -83,7 +83,7 @@
 		else
 			icobase = 'icons/mob/human_races/r_human.dmi'
 
-		for (var/v in TRUE to 3)
+		for (var/v in TRUE to 2)
 
 			var/icon/I = new /icon(icobase, "torso[g][body.index]")
 			I.Blend(new /icon(icobase, "groin[g][body.index]"), ICON_OVERLAY)
@@ -122,11 +122,8 @@
 
 			var/icon/clothes = null
 
-			switch (v)
-				if (2)
-					clothes = new /icon('icons/mob/uniform.dmi', "demo_pirate")
-				if (3)
-					clothes = new /icon('icons/mob/uniform.dmi', "demo_british")
+			if (v==2)
+				clothes = new /icon('icons/mob/uniform.dmi', "demo_british")
 
 			if (clothes)
 				I.Blend(clothes, ICON_OVERLAY)

@@ -50,7 +50,7 @@
 	if (A > upper) return FALSE
 	return TRUE
 
-
+/*
 /proc/Get_Angle(atom/movable/start,atom/movable/end)//For beams.
 	if (!start || !end) return FALSE
 	var/dy
@@ -64,7 +64,7 @@
 		.+=180
 	else if (dx<0)
 		.+=360
-
+*/
 //Returns location. Returns null if no location was found.
 /proc/get_teleport_loc(turf/location,mob/target,distance = TRUE, density = FALSE, errorx = FALSE, errory = FALSE, eoffsetx = FALSE, eoffsety = FALSE)
 /*
@@ -484,10 +484,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 //Makes sure MIDDLE is between LOW and HIGH. If not, it adjusts it. Returns the adjusted value. Lower bound takes priority.
 /proc/between(var/low, var/middle, var/high)
 	return max(min(middle, high), low)
-
-proc/arctan(x)
-	var/y=arcsin(x/sqrt(1+x*x))
-	return y
 
 //Will return the contents of an atom recursivly to a depth of 'searchDepth'
 /atom/proc/GetAllContents(searchDepth = 5)

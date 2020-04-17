@@ -132,7 +132,7 @@
 	var/full_name = "Yuri Davidenko"
 	return full_name
 
-datum/language/proc/get_random_gaelic_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_gaelic_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_gaelic)) + " " + capitalize(pick(last_names_gaelic))
@@ -142,7 +142,7 @@ datum/language/proc/get_random_gaelic_name(var/gender, name_count=2, syllable_co
 	var/full_name = "Sean Mcloughlin"
 	return full_name
 
-datum/language/proc/get_random_oldnorse_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_oldnorse_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
@@ -152,7 +152,7 @@ datum/language/proc/get_random_oldnorse_name(var/gender, name_count=2, syllable_
 	var/full_name = "Dovahkiin"
 	return full_name
 
-datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_inuit))
@@ -162,7 +162,7 @@ datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_cou
 	var/full_name = "Epawig"
 	return full_name
 
-datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_cherokee))
@@ -240,6 +240,37 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 		return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
 
 	var/full_name = "Ibrahim Ibn Osama"
+	return full_name
+
+
+/datum/language/proc/get_random_egyptian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+		else
+			return capitalize(pick(first_names_male_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+
+	var/full_name = "Isis"
+	return full_name
+
+/datum/language/proc/get_random_korean_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_korean)) + " " + capitalize(pick(last_names_korean))
+		else
+			return capitalize(pick(first_names_male_korean)) + " " + capitalize(pick(last_names_korean))
+
+	var/full_name = "Hyung Do Seong"
+	return full_name
+
+/datum/language/proc/get_random_iroquois_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_iroquois)) + " " + capitalize(pick(last_names_iroquois))
+		else
+			return capitalize(pick(first_names_male_iroquois)) + " " + capitalize(pick(last_names_iroquois))
+
+	var/full_name = "At'tawig"
 	return full_name
 
 

@@ -169,6 +169,8 @@ var/list/global/floor_cache = list()
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
+	if (isliving(O) && !ishuman(O))
+		return ..()
 	if(isliving(O))
 		var/mob/living/L = O
 		if (L.mob_size <= MOB_SMALL)
@@ -226,6 +228,8 @@ var/list/global/floor_cache = list()
 	return ..()
 
 /turf/floor/trench/Exit(atom/movable/O, atom/newloc)
+	if (isliving(O) && !ishuman(O))
+		return ..()
 	if(isliving(O))
 		var/mob/living/L = O
 		if (L.mob_size <= MOB_SMALL)
@@ -399,7 +403,10 @@ var/list/global/floor_cache = list()
 			if (watertype == "irradiated_water")
 				H.rad_act(5)
 			else
-				if (prob(25) && !H.orc && !H.crab)
+				var/dmod = 1
+				if (H.find_trait("Weak Immune System"))
+					dmod = 2
+				if (prob(25*dmod) && !H.orc && !H.crab)
 					if (H.disease == 0)
 						H.disease_progression = 0
 						H.disease_type ="cholera"

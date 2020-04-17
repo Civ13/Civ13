@@ -185,8 +185,11 @@
 		self_feed_message(user)
 		if (reagents.has_reagent("cholera") && istype(user, /mob/living/carbon/human))
 			var/mob/living/carbon/human/HH = user
+			var/dmod = 1
+			if (HH.find_trait("Weak Immune System"))
+				dmod = 2
 			var/probcholera = reagents.get_reagent_amount("cholera")
-			if (prob(min(probcholera*25,100)) && !HH.orc && !HH.crab)
+			if (prob(min(probcholera*25*dmod,100)) && !HH.orc && !HH.crab)
 				if (HH.disease == 0)
 					HH.disease_progression = 0
 					HH.disease_type ="cholera"
@@ -222,14 +225,17 @@
 		msg_admin_attack("[key_name(user)] fed [key_name(target)] with [name]. Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
 		if (reagents.has_reagent("cholera") && istype(target, /mob/living/carbon/human))
 			var/mob/living/carbon/human/HH = target
+			var/dmod = 1
+			if (HH.find_trait("Weak Immune System"))
+				dmod = 2
 			var/probcholera = reagents.get_reagent_amount("cholera")
-			if (prob(min(probcholera*25,100)))
+			if (prob(min(probcholera*25*dmod,100)))
 				if (HH.disease == 0)
 					HH.disease_progression = 0
 					HH.disease_type ="cholera"
 					HH.disease = 1
 			var/probplague = reagents.get_reagent_amount("plague")
-			if (prob(min(probplague*25,100)))
+			if (prob(min(probplague*25*dmod,100)))
 				HH.disease_progression = 0
 				HH.disease_type ="plague"
 				HH.disease = 1

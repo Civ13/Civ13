@@ -235,19 +235,30 @@
 						salestax = (map.custom_civs[H.civilization][9]/100)*R.price
 					var/price_with_tax = R.price+salestax
 					currently_vending = R
-					if (moneyin < price_with_tax)
+					if (moneyin < price_with_tax*inp)
 						status_message = "Please insert money to pay for the item."
 						status_error = FALSE
 					else
-						moneyin -= price_with_tax
+						moneyin -= price_with_tax*inp
 						if (owner != "Global")
-							map.custom_company_value[owner] += R.price
+							map.custom_company_value[owner] += price_with_tax*inp
 							if (map.custom_civs[H.civilization])
-								map.custom_civs[H.civilization][5] += salestax
-						var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-						GC.amount = moneyin/0.4
-						if (GC.amount == 0)
-							qdel(GC)
+								map.custom_civs[H.civilization][5] += salestax*inp
+						if (moneyin > 0 && moneyin <= 3)
+							var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
+							NM.amount = moneyin/NM.value
+							if (NM.amount <= 0)
+								qdel(NM)
+						else if (moneyin > 3 && moneyin <= 40)
+							var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
+							NM.amount = moneyin/NM.value
+							if (NM.amount <= 0)
+								qdel(NM)
+						else
+							var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
+							NM.amount = moneyin/NM.value
+							if (NM.amount <= 0)
+								qdel(NM)
 						moneyin = 0
 						vend(R, usr, inp)
 						nanomanager.update_uis(src)
@@ -279,6 +290,24 @@
 	)
 	prices = list(
 		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
+	)
+
+/obj/structure/vending/sales/market_stall/prepared
+	name = "market stall"
+	desc = "A market stall selling an assortment of goods."
+	icon_state = "market_stall"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 10
+
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage = 0.15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 0.15,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 0.35
 	)
 
 /obj/structure/vending/sales/market_stall

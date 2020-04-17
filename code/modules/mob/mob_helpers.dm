@@ -32,7 +32,7 @@
 proc/isdeaf(A)
 	if (isliving(A))
 		var/mob/living/M = A
-		return (M.sdisabilities & DEAF) || M.ear_deaf
+		return (M.sdisabilities & DEAF) || M.ear_deaf || M.find_trait("Deaf")
 	return FALSE
 
 proc/hasorgans(A) // Fucking really??
@@ -156,8 +156,8 @@ var/list/global/organ_rel_size = list(
 
 proc/slur(phrase)
 	phrase = rhtml_decode(phrase)
-	var/leng=lentext(phrase)
-	var/counter=lentext(phrase)
+	var/leng=length(phrase)
+	var/counter=length(phrase)
 	var/newphrase=""
 	var/newletter=""
 	while (counter>=1)
@@ -320,7 +320,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HARM)
 proc/is_blind(A)
 	if (istype(A, /mob/living/carbon))
 		var/mob/living/carbon/C = A
-		if (C.sdisabilities & BLIND || C.blinded)
+		if ((C.sdisabilities & BLIND) || C.blinded || C.find_trait("Blind"))
 			return TRUE
 		if (istype(C.eyes, /obj/item/clothing/glasses/sunglasses/blindfold))
 			return TRUE

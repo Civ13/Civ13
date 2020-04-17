@@ -181,6 +181,30 @@
 	explosion_resistance = 2
 	material = "Stone"
 
+/obj/covers/sandstone/brick
+	name = "sandstone brick floor"
+	icon_state = "sandstone_brick"
+
+/obj/covers/sandstone/slab
+	name = "sandstone slab floor"
+	icon_state = "sandstone_slab"
+
+/obj/covers/sandstone/slab/red
+	name = "red sandstone slab floor"
+	icon_state = "red_sandstone_slab"
+
+/obj/covers/sandstone/tile
+	name = "sandstone tile"
+	icon_state = "sandstone_tile"
+
+/obj/covers/sandstone/tile/decorative
+	name = "sandstone decorative tile"
+	icon_state = "sandstone_decorative_tile"
+
+/obj/covers/sandstone/tile/decorative/red
+	name = "red sandstone decorative tile"
+	icon_state = "red_sandstone_decorative_tile"
+
 /obj/covers/roads
 	name = "dirt road"
 	icon = 'icons/turf/roads.dmi'
@@ -201,16 +225,43 @@
 /obj/covers/roads/update_icon()
 	..()
 	spawn(1)
+		overlays.Cut()
 		var/list/sideslist = list()
-		for (var/direction in list(1,2,4,8,5,6,9,10))
+		for (var/direction in list(NORTH,SOUTH,EAST,WEST))
 			for(var/obj/covers/roads/R in get_step(src,direction))
 				sideslist += direction
 				continue
+		for (var/direction in list(NORTHEAST,NORTHWEST,SOUTHEAST,SOUTHWEST))
+			var/turf/T = null
+			switch(direction)
+				if (NORTHEAST)
+					T = locate(src.x+1,src.y+1,src.z)
+				if (NORTHWEST)
+					T = locate(src.x-1,src.y+1,src.z)
+				if (SOUTHEAST)
+					T = locate(src.x+1,src.y-1,src.z)
+				if (SOUTHWEST)
+					T = locate(src.x-1,src.y-1,src.z)
+			if (T)
+				for(var/obj/covers/roads/R in T)
+					sideslist += direction
+					continue
+
+		if ((NORTHWEST in sideslist) && (NORTH in sideslist) && (WEST in sideslist))
+			overlays += image(icon=src.icon, icon_state = "d_roadnwc")
+		if ((NORTHEAST in sideslist) && (NORTH in sideslist) && (EAST in sideslist))
+			overlays += image(icon=src.icon, icon_state = "d_roadnec")
+		if ((SOUTHEAST in sideslist) && (SOUTH in sideslist) && (EAST in sideslist))
+			overlays += image(icon=src.icon, icon_state = "d_roadsec")
+		if ((SOUTHWEST in sideslist) && (SOUTH in sideslist) && (WEST in sideslist))
+			overlays += image(icon=src.icon, icon_state = "d_roadswc")
+
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_road+" //4 sides
 			base_icon_state = icon_state
 			return
-		if (vertical)
+
+		if (icon_state == "d_roadvr")
 			if (WEST in sideslist)
 				if (!(NORTH in sideslist))
 					if (EAST in sideslist)
@@ -226,6 +277,9 @@
 					else
 						icon_state = "d_roadnw" //Turn, NORTH-WEST
 						base_icon_state = icon_state
+				else if ((SOUTH in sideslist) && (NORTH in sideslist))
+					icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
+					base_icon_state = icon_state
 			else if (EAST in sideslist)
 				if (!(NORTH in sideslist))
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
@@ -234,15 +288,14 @@
 				else if (!(SOUTH in sideslist))
 					icon_state = "d_roadne" //Turn, NORTH-EAST
 					base_icon_state = icon_state
+				else if ((SOUTH in sideslist) && (NORTH in sideslist))
+					icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+					base_icon_state = icon_state
 		else
 			if (NORTH in sideslist)
 				if (!(EAST in sideslist))
-					if (SOUTH in sideslist)
-						icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
-						base_icon_state = icon_state
-					else
-						icon_state = "d_roadnw" //Turn, NORTH-WEST
-						base_icon_state = icon_state
+					icon_state = "d_roadnw" //Turn, NORTH-WEST
+					base_icon_state = icon_state
 				else if (!(WEST in sideslist))
 					if (SOUTH in sideslist)
 						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
@@ -250,6 +303,9 @@
 					else
 						icon_state = "d_roadne" //Turn, NORTH-EAST
 						base_icon_state = icon_state
+				else if ((WEST in sideslist) && (EAST in sideslist))
+					icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+					base_icon_state = icon_state
 			else if (SOUTH in sideslist)
 				if (!(EAST in sideslist))
 					icon_state = "d_roadsw" //Turn, SOUTH-WEST
@@ -257,16 +313,19 @@
 				else if (!(WEST in sideslist))
 					icon_state = "d_roadse" //Turn, SOUTH-EAST
 					base_icon_state = icon_state
-		if (WEST in sideslist && NORTH in sideslist && SOUTH in sideslist)
+				else if ((WEST in sideslist) && (EAST in sideslist))
+					icon_state = "d_roadtswe" //T, EAST SOUTH WEST
+					base_icon_state = icon_state
+		if ((WEST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
 			base_icon_state = icon_state
-		if (WEST in sideslist && NORTH in sideslist && EAST in sideslist)
+		if ((WEST in sideslist) && (NORTH in sideslist) && (EAST in sideslist))
 			icon_state = "d_roadtnwe" //T, NORTH EAST WEST
 			base_icon_state = icon_state
-		if (WEST in sideslist && EAST in sideslist && SOUTH in sideslist)
+		if ((WEST in sideslist) && (EAST in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_roadtswe" //T, SOUTH EAST WEST
 			base_icon_state = icon_state
-		if (EAST in sideslist && NORTH in sideslist && SOUTH in sideslist)
+		if ((EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
 			icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
 			base_icon_state = icon_state
 
@@ -534,6 +593,11 @@
 	material = "Wood"
 	hardness = 75
 
+/obj/covers/wood_wall/adjustable
+	icon_state = "new_wood0"
+	base_icon_state = "new_wood"
+	adjusts = TRUE
+
 /obj/covers/wood_wall/medieval
 	name = "medieval wall"
 	desc = "A dark-ages wall."
@@ -596,6 +660,20 @@
 	material = "Wood"
 	hardness = 20
 
+/obj/covers/wood_wall/bamboo
+	name = "bamboo wall"
+	desc = "A wall made from bamboo."
+	icon = 'icons/obj/bamboostuff.dmi'
+	icon_state = "bamboo_wall"
+	health = 80
+	amount = 3
+	layer = 3
+	health = 70
+	wall = TRUE
+	explosion_resistance = 3
+	material = "Wood"
+	hardness = 40
+
 /obj/covers/wood_wall/log
 	name = "log wall"
 	desc = "A log wall."
@@ -628,11 +706,11 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 600
+	health = 400
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 10
+	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
 
@@ -644,7 +722,7 @@
 			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
 			return
 		else
-			var/display = list("Smooth", "Cave", "Underground Cave", "Brick", "Cobbled", "Tiled", "Cancel")
+			var/display = list("Smooth", "Cave", "Underground Cave", "Carved Brick", "Cobbled", "Tiled", "Cancel")
 			var/input =  WWinput(user, "What design do you want to carve?", "Carving", "Cancel", display)
 			if (input == "Cancel")
 				return
@@ -657,9 +735,9 @@
 			else if  (input == "Underground Cave")
 				user << "<span class='notice'>You will now carve the cave design!</span>"
 				design = "undercave"
-			else if  (input == "Brick")
+			else if  (input == "Carved Brick")
 				user << "<span class='notice'>You will now carve the brick design!</span>"
-				design = "brick"
+				design = "carvedbrick"
 			else if  (input == "Cobbled")
 				user << "<span class='notice'>You will now carve the cobbled design!</span>"
 				design = "cobbled"
@@ -669,7 +747,7 @@
 			visible_message("<span class='danger'>[user] starts to chisel a design!</span>", "<span class='danger'>You start chiseling a design.</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',60,1)
 			if (do_after(user, 60, src))
-			//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
+			//Designs possible are "smooth", "cave", "carvedbrick", "cobbled", "tiled"
 				if(design == "smooth")
 					src.icon_state = "b_stone_wall"
 					base_icon_state = icon_state
@@ -685,10 +763,10 @@
 					base_icon_state = icon_state
 					src.name = "cave wall"
 					src.desc = "A cave wall."
-				else if(design == "brick")
+				else if(design == "carvedbrick")
 					src.icon_state = "b_brick_stone_wall"
 					base_icon_state = icon_state
-					src.name = "stone brick wall"
+					src.name = "stone carved brick wall"
 					src.desc = "A cave wall carved to look like its made of stone bricks."
 				else if(design == "cobbled")
 					src.icon_state = "b_cobbled_stone_wall"
@@ -718,7 +796,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 8
+	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
 
@@ -737,7 +815,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 8
+	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
 
@@ -855,6 +933,47 @@
 	material = "Stone"
 	hardness = 75
 
+/obj/covers/clay_wall/grecian
+	name = "smooth grecian plaster wall"
+	desc = "A grecian style plaster wall."
+	icon_state = "grecian_plaster_smooth"
+	health = 210
+	explosion_resistance = 7
+
+/obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/plaster))
+		user << "You start adding plaster to the wall..."
+		if (do_after(user, 20, src))
+			user << "You finish adding plaster to the wall, rendering it."
+			qdel(W)
+			var/obj/covers/clay_wall/grecian/S = new /obj/covers/clay_wall/grecian(loc)
+			qdel(src)
+			var/choice = WWinput(user, "What type of wall?","Grecian Walls","Normal",list("Grecian Smooth","Grecian Smooth Pattern","Grecian Cobbled","Grecian Cobbled Pattern"))
+			if (choice == "Grecian Smooth")
+				return
+			else if (choice == "Grecian Smooth Pattern")
+				S.icon_state = "grecian_plaster_pattern"
+				base_icon_state = icon_state
+				var/choice1 = WWinput(user, "Which orientation?","Grecian Smooth Pattern","Vertical",list("Vertical","Horizontal"))
+				if (choice1 == "Vertical")
+					S.dir = SOUTH
+				else if (choice1 == "Horizontal")
+					S.dir = EAST
+			else if (choice == "Grecian Cobbled")
+				S.icon_state = "grecian_plaster_cobbled"
+				base_icon_state = icon_state
+				S.name = "cobbled grecian plaster wall"
+			else if (choice == "Grecian Cobbled Pattern")
+				S.icon_state = "grecian_plaster_pattern"
+				base_icon_state = icon_state
+				var/choice2 = WWinput(user, "Which orientation?","Grecian Cobbled Pattern","Vertical",list("Vertical","Horizontal"))
+				if (choice2 == "Vertical")
+					S.dir = NORTH
+				else if (choice2 == "Horizontal")
+					S.dir = WEST
+			return
+	..()
+
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
 	desc = "A clay block wall."
@@ -896,6 +1015,7 @@
 					qdel(W)
 					return
 	..()
+
 /obj/covers/clay_wall/sumerian
 	name = "sumerian clay wall"
 	desc = "A sumerian style clay wall."
@@ -979,43 +1099,48 @@
 					qdel(W)
 					return
 	..()
+
 /obj/covers/brick_wall
 	name = "brick wall"
-	desc = "A clay brick wall."
-	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "brickwall"
+	desc = "A red brick wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "new_brick0"
+	base_icon_state = "new_brick"
+	adjusts = TRUE
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 190
+	health = 450
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 6
+	explosion_resistance = 7
 	material = "Stone"
 	hardness = 92
 
 /obj/covers/cement_wall
 	name = "concrete wall"
 	desc = "A concrete wall."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "cement_wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "cement_wall0"
+	base_icon_state = "cement_wall"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 200
+	health = 650 //until there are stronger alternatives.
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
-	explosion_resistance = 7
+	explosion_resistance = 8
 	material = "Stone"
 	hardness = 95
+	adjusts = TRUE
 
 /obj/covers/vault
 	name = "vault wall"
@@ -1058,7 +1183,7 @@
 /obj/covers/cement_wall/incomplete
 	name = "incomplete concrete wall"
 	desc = "A cement brick wall."
-	icon = 'icons/obj/claystuff.dmi'
+	icon = 'icons/turf/walls.dmi'
 	icon_state = "cementwall_inc1"
 	passable = TRUE
 	not_movable = TRUE
@@ -1083,14 +1208,12 @@
 			new /obj/covers/cement_wall(loc)
 			qdel(src)
 			return
-			return
 	..()
 
-
 /obj/covers/brick_wall/incomplete
-	name = "brick wall"
-	desc = "A clay brick wall."
-	icon = 'icons/obj/claystuff.dmi'
+	name = "incomplete brick wall"
+	desc = "A red brick wall."
+	icon = 'icons/turf/walls.dmi'
 	icon_state = "brickwall_inc1"
 	passable = TRUE
 	not_movable = TRUE
@@ -1113,12 +1236,15 @@
 			user << "You finish adding bricks to the wall, completing it."
 			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window"))
 			if (choice == "Wall")
+				qdel(W)
 				new /obj/covers/brick_wall(loc)
+				qdel(src)
+				return
 			else if (choice == "Window")
+				qdel(W)
 				new /obj/structure/window_frame/brick(loc)
-			qdel(W)
-			qdel(src)
-			return
+				qdel(src)
+				return
 	..()
 
 /obj/covers/jail/
@@ -1500,25 +1626,64 @@
 	bullethole_overlays += tmp_bullethole
 	bullethole_count += list(chnum)
 	update_icon()
+
 ////////////////////////////////////////////////////////////
 
 /obj/covers/wood_wall/aztec
 	name = "aztec wood wall"
-	desc = "A wood wall, in Aztec style."
+	desc = "A wood wall, in aztec style."
 	icon_state = "aztec0"
 	base_icon_state = "aztec"
 	adjusts = TRUE
 
 /obj/covers/wood_wall/nordic
 	name = "nordic wood wall"
-	desc = "A wood wall, in Northern European style."
+	desc = "A wood wall, in northern european style."
 	icon_state = "nordic0"
 	base_icon_state = "nordic"
 	adjusts = TRUE
 
 /obj/covers/stone_wall/roman
 	name = "roman stone wall"
-	desc = "A Roman style stone wall."
+	desc = "A roman-style stone wall."
 	icon_state = "roman0"
 	base_icon_state = "roman"
 	adjusts = TRUE
+
+/obj/covers/stone_wall/egyptian
+	name = "egyptian sandstone wall"
+	desc = "An egyptian-style sandstone wall."
+	icon_state = "egyptian0"
+	base_icon_state = "egyptian"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/mayan
+	name = "mayan stone wall"
+	desc = "A mayan-style stone wall."
+	icon_state = "mayan0"
+	base_icon_state = "mayan"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/classic
+	name = "stone block wall"
+	desc = "A stone block wall."
+	icon_state = "stone_block_wall0"
+	base_icon_state = "stone_block_wall"
+	adjusts = TRUE
+
+/obj/covers/stone_wall/brick
+	name = "stone brick wall"
+	desc = "A stone brick wall."
+	icon_state = "stone_brickwall0"
+	base_icon_state = "stone_brickwall"
+	adjusts = TRUE
+	health = 550
+
+/obj/covers/stone_wall/fortress
+	name = "fortress brick wall"
+	desc = "A dense fortress brick wall."
+	icon_state = "fortress_brickwall0"
+	base_icon_state = "fortress_brickwall"
+	adjusts = TRUE
+	health = 650
+	explosion_resistance = 7

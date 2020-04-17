@@ -173,6 +173,26 @@
 	create_path = /mob/living/simple_animal/hostile/panther
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/boar
+	name = "boar spawner"
+	hostile = TRUE
+	max_number = 3
+	max_range = 12
+	create_path = /mob/living/simple_animal/boar
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/fox
+	name = "fox spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 12
+	create_path = /mob/living/simple_animal/hostile/fox
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/fox/arctic
+	name = "arctic fox spawner"
+	create_path = /mob/living/simple_animal/hostile/fox/arctic
+
 /obj/effect/spawner/mobspawner/panthers/jaguar
 	name = "jaguar spawner"
 	hostile = TRUE

@@ -4,7 +4,6 @@
 	icon = 'icons/mob/zombie1.dmi'
 	icon_state = ""
 	icon_dead = ""
-	turns_per_move = 8
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"

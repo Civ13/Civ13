@@ -11,7 +11,7 @@
 	emote_hear = list("meows","mews")
 	emote_see = list("shakes their head", "shivers")
 	speak_chance = TRUE
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
@@ -54,7 +54,7 @@
 
 	turns_since_scan++
 	if (turns_since_scan > 5)
-		walk_to(src,0)
+		walk(src,0)
 		turns_since_scan = FALSE
 
 		if (flee_target) //fleeing takes precendence
@@ -158,7 +158,7 @@
 		if (movement_target != friend)
 			if (current_dist > follow_dist && !istype(movement_target, /mob/living/simple_animal/mouse) && (friend in oview(src)))
 				//stop existing movement
-				walk_to(src,0)
+				walk(src,0)
 				turns_since_scan = FALSE
 
 				//walk to friend
@@ -168,7 +168,7 @@
 
 		//already following and close enough, stop
 		else if (current_dist <= near_dist)
-			walk_to(src,0)
+			walk(src,0)
 			movement_target = null
 			stop_automated_movement = FALSE
 			if (prob(10))

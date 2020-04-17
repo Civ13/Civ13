@@ -69,7 +69,7 @@
 				new/obj/item/weapon/reagent_containers/food/snacks/frogegg(src.loc)
 			else if (isturf(loc) && !istype(loc, /turf/floor/beach/water))
 				for(var/turf/floor/beach/water/WT in range(6,src))
-					walk_towards(src, WT, turns_per_move)
+					walk_towards(src, WT, move_to_delay)
 					spawn(10)
 						new/obj/item/weapon/reagent_containers/food/snacks/frogegg(WT)
 					break

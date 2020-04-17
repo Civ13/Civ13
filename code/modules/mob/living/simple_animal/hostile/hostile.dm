@@ -4,15 +4,6 @@
 	a_intent = I_HARM
 	behaviour = "hunt"
 
-/mob/living/simple_animal
-	var/ranged = FALSE
-	var/rapid = FALSE //If fires faster
-	var/casingtype = null
-	var/projectiletype = null
-	var/projectilesound = null
-	var/fire_desc = "fires"
-	var/obj/item/gun = null
-
 /mob/living/simple_animal/proc/FindTarget()
 
 	var/atom/T = null
@@ -20,7 +11,11 @@
 	var/list/the_targets = ListTargets(7)
 	if (behaviour == "hostile")
 		for(var/mob/living/ML in the_targets)
-			if (!ishuman(ML))
+			if (ishuman(ML))
+				var/mob/living/carbon/human/H = ML
+				if (H.faction_text == src.faction)
+					the_targets -= ML
+			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
 				the_targets -= ML
 	for (var/atom/A in the_targets)
 
@@ -60,7 +55,13 @@
 						T = L
 						break
 	if (T)
-		custom_emote(1,"stares alertly at [T].")
+		if (!istype(src,/mob/living/simple_animal/hostile/human))
+			custom_emote(1,"stares alertly at [T].")
+		else
+			var/mob/living/simple_animal/hostile/human/HM = src
+			if (HM.messages["enemy_sighted"] && prob(25))
+				HM.say(HM.messages["enemy_sighted"],HM.language)
+
 		stance = HOSTILE_STANCE_ALERT
 	return T
 
@@ -73,14 +74,7 @@
 		stance = HOSTILE_STANCE_IDLE
 	if (target_mob in ListTargets(7))
 		stance = HOSTILE_STANCE_ATTACKING
-		if(ranged)
-			if(get_dist(src, target_mob) <= 5)
-				walk_to(src,0)
-				OpenFire(target_mob)
-			else
-				walk_to(src, target_mob, TRUE, move_to_delay)
-		else
-			walk_to(src, target_mob, TRUE, move_to_delay)
+		walk_to(src, target_mob, TRUE, move_to_delay)
 	else if (target_mob in ListTargets(10))
 		walk_to(src, target_mob, TRUE, move_to_delay)
 
@@ -91,16 +85,9 @@
 	if (!(target_mob in ListTargets(7)))
 		LostTarget()
 		return FALSE
-	if (ranged)
-		if (get_dist(src, target_mob) <= 5)
-			walk_to(src,0)
-			OpenFire(target_mob)
-		else
-			MoveToTarget()
-	else
-		if (get_dist(src, target_mob) <= 1)	//Attacking
-			AttackingTarget()
-			return TRUE
+	if (get_dist(src, target_mob) <= 1)	//Attacking
+		AttackingTarget()
+		return TRUE
 
 /mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
@@ -149,18 +136,6 @@
 	var/list/L = hearers(dist,src)
 	return L
 
-/mob/living/simple_animal/hostile/Life()
-
-	. = ..()
-	if (!.)
-		walk(src, FALSE)
-		return FALSE
-	if (client)
-		return FALSE
-	if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
-
-		check_food() // animals will search for crops, grass, and so on
-
 /mob/living/simple_animal/proc/DestroySurroundings()
 	if (prob(break_stuff_probability))
 		for (var/dir in cardinal) // North, South, East, West
@@ -171,43 +146,3 @@
 			var/obj/structure/obstacle = locate(/obj/structure, get_step(src, dir))
 			if (istype(obstacle, /obj/structure/window) || istype(obstacle, /obj/structure/closet) || istype(obstacle, /obj/structure/table) || istype(obstacle, /obj/structure/grille))
 				obstacle.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
-
-/////////////////////////////////////////////////////////
-////////////////////RANGED///////////////////////////////
-
-/mob/living/simple_animal/proc/OpenFire(target_mob)
-	var/target = target_mob
-	visible_message("<span class='danger'>\The [src] [fire_desc] at \the [target]!</span>", 1)
-
-	if(rapid)
-		spawn(1)
-			Shoot(target, src.loc, src)
-			if(casingtype)
-				new casingtype(get_turf(src))
-		spawn(4)
-			Shoot(target, src.loc, src)
-			if(casingtype)
-				new casingtype(get_turf(src))
-		spawn(6)
-			Shoot(target, src.loc, src)
-			if(casingtype)
-				new casingtype(get_turf(src))
-	else
-		Shoot(target, src.loc, src)
-		if(casingtype)
-			new casingtype
-	return
-
-/mob/living/simple_animal/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
-	if(target == start)
-		return
-
-	var/obj/item/projectile/A = new projectiletype(get_turf(user))
-	playsound(user, projectilesound, 100, 1)
-	if(!A)	return
-	var/def_zone = pick("chest","head")
-	if (prob(8))
-		def_zone = pick("l_arm","r_arm","r_leg","l_leg")
-	A.launch(target, user, src.gun, def_zone)
-
-

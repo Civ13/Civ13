@@ -45,13 +45,15 @@
 		seasons()
 
 /obj/map_metadata/nomads_continental/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
+	return (ordinal_age >= 2)
 
 /obj/map_metadata/nomads_continental/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
+	return (ordinal_age >= 2)
 
 /obj/map_metadata/nomads_continental/cross_message(faction)
-	return ""
+	if (faction == CIVILIAN)
+		return "<big><b>As the world technological level advances, new shipbuilding techniques make us at last be able to navigate the oceans...</b></big>"
+
 
 /obj/map_metadata/nomads_continental/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)

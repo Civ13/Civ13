@@ -33,23 +33,27 @@ var/GRACE_PERIOD_LENGTH = 7
 // this is roundstart because we need to wait for objs to be created
 /hook/roundstart/proc/nature()
 
+	if (map && (map.nomads && !map.override_mapgen) || map.force_mapgen)
+		spawn(10)
+			map.seed_the_map()
+	return
+
+/obj/map_metadata/proc/seed_the_map()
 	var/list/jungleriverturfs = list()
 	var/list/seaturfs = list()
 	var/list/riverturfs = list()
 	var/list/jungleturfs = list()
-
-	if (map && map.nomads && !map.override_mapgen)
-		for (var/turf/floor/F in world)
-			F.plant()
-			if (istype(F, /turf/floor/dirt/jungledirt))
-				jungleturfs += F
-			else if (istype(F, /turf/floor/beach/water/shallowsaltwater) || istype(F, /turf/floor/beach/water/deep/saltwater))
-				seaturfs += F
-			else if (istype(F, /turf/floor/beach/water/jungle))
-				jungleriverturfs += F
-				riverturfs += F
-			else if (istype(F, /turf/floor/beach/water) && !istype(F, /turf/floor/beach/water/ice) && !istype(F, /turf/floor/beach/water/swamp) && !istype(F, /turf/floor/beach/water/flooded))
-				riverturfs += F
+	for (var/turf/floor/F in world)
+		F.plant()
+		if (istype(F, /turf/floor/dirt/jungledirt))
+			jungleturfs += F
+		else if (istype(F, /turf/floor/beach/water/shallowsaltwater) || istype(F, /turf/floor/beach/water/deep/saltwater))
+			seaturfs += F
+		else if (istype(F, /turf/floor/beach/water/jungle))
+			jungleriverturfs += F
+			riverturfs += F
+		else if (istype(F, /turf/floor/beach/water) && !istype(F, /turf/floor/beach/water/ice) && !istype(F, /turf/floor/beach/water/swamp) && !istype(F, /turf/floor/beach/water/flooded))
+			riverturfs += F
 	//gets the total number of tiles in the world, to dinamically distribute fauna and flora
 	spawn(200)
 		for (var/i = 1, i <= riverturfs.len/800, i++)

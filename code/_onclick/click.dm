@@ -69,10 +69,10 @@
 	// can't click on stuff when we're lying, unless it's a bed
 	if (ishuman(src))
 		var/mob/living/carbon/human/H = src
-		if (H.lying)
-			if (ismob(A) || (A.loc && istype(A.loc, /turf)))
-				if (!istype(A, /obj/structure/bed))
-					return
+		//if (H.lying)
+			//if (ismob(A) || (A.loc && istype(A.loc, /turf)))
+				//if (!istype(A, /obj/structure/bed))
+					//return
 
 		if (istype(H.get_active_hand(),/obj/item/weapon/flamethrower))
 			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()

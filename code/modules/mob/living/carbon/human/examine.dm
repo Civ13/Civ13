@@ -195,7 +195,7 @@
 	if (fire_stacks)
 		msg += "[T.He] [T.is] covered in some liquid.\n"
 	if (on_fire)
-		msg += "<span class='warning'>[T.He] [T.is] on fire!.</span>\n"
+		msg += "<span class='warning'>[T.He] [T.is] on fire!</span>\n"
 	msg += "<span class='warning'>"
 
 	msg += "</span>"
@@ -278,7 +278,7 @@
 
 	msg += "*---------*</span>"
 	if (pose)
-		if ( findtext(pose,".",lentext(pose)) == FALSE && findtext(pose,"!",lentext(pose)) == FALSE && findtext(pose,"?",lentext(pose)) == FALSE )
+		if ( findtext(pose,".",length(pose)) == FALSE && findtext(pose,"!",length(pose)) == FALSE && findtext(pose,"?",length(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
 	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13)
@@ -333,6 +333,20 @@
 
 			else
 				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
+			if (user.find_trait("Empathetic"))
+				var/md
+				switch(mood)
+					if(-5000000 to 20)
+						md = "seems to be in a horrible mood!"
+					if(20 to 40)
+						md = "seems to be in a bad mood."
+					if(40 to 60)
+						md = "seems to be in a neutral mood."
+					if(60 to 80)
+						md = "seems to be in a good mood."
+					if(80 to 10000)
+						md = "seems to be in an excellent mood!"
+				msg += "<br><i>[T.He] [md]</b>.</i>"
 		else if (isobserver(user))
 			if (civilization != "none")
 				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"

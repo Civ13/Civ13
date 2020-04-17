@@ -170,7 +170,18 @@
 	if (!isnum(amount))
 		return FALSE
 	for (var/datum/reagent/current in reagent_list)
-		if (current.id == id)
+		if (id == "ethanol")
+			if (istype(current,/datum/reagent/ethanol))
+				current.volume -= amount // It can go negative, but it doesn't matter
+				update_total() // Because this proc will delete it then
+				if (!safety)
+					handle_reactions()
+				if (my_atom)
+					my_atom.on_reagent_change()
+
+			return TRUE
+
+		else if (current.id == id)
 			current.volume -= amount // It can go negative, but it doesn't matter
 			update_total() // Because this proc will delete it then
 			if (!safety)
@@ -203,7 +214,11 @@
 
 /datum/reagents/proc/has_reagent(var/id, var/amount = 0)
 	for (var/datum/reagent/current in reagent_list)
-		if (current.id == id)
+		if (id == "ethanol")
+			if (istype(current,/datum/reagent/ethanol))
+				if (current.volume >= amount)
+					return TRUE
+		else if (current.id == id)
 			if (current.volume >= amount)
 				return TRUE
 			else
@@ -234,9 +249,16 @@
 	return
 
 /datum/reagents/proc/get_reagent_amount(var/id)
-	for (var/datum/reagent/current in reagent_list)
-		if (current.id == id)
-			return current.volume
+	if (id == "ethanol")
+		var/tvol = 0
+		for (var/datum/reagent/current in reagent_list)
+			if (istype(current,/datum/reagent/ethanol))
+				tvol += current.volume
+		return tvol
+	else
+		for (var/datum/reagent/current in reagent_list)
+			if (current.id == id)
+				return current.volume
 	return FALSE
 
 /datum/reagents/proc/get_data(var/id)
