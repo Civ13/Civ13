@@ -410,8 +410,8 @@
 	name = "raw plaster"
 	desc = "Raw plaster. Ready to be applied onto a surface" //plans later to mould this somehow, like plaster-casts or something
 	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "plasterlump"
-	item_state = "plasterlump"
+	icon_state = "plaster"
+	item_state = "plaster"
 	throwforce = WEAPON_FORCE_WEAK
 	force = WEAPON_FORCE_WEAK
 	w_class = 2
