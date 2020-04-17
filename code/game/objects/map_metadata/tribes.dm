@@ -3,7 +3,7 @@
 	ID = MAP_TRIBES
 	title = "Tribes (225x225x2)"
 	no_winner ="The round is proceeding normally."
-	lobby_icon_state = "civ13"
+	lobby_icon_state = "fantasy"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 3600 // 6 minutes!
 	squad_spawn_locations = FALSE

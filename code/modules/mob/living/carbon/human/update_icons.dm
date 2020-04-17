@@ -459,7 +459,9 @@ var/global/list/damage_icon_parts = list()
 /mob/living/carbon/human/update_inv_w_uniform(var/update_icons=1)
 	var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
 	var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
-	var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_over")
+	var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_belt")
+	var/image/buckle = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_buckle")
+	var/image/buttons = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_button")
 	var/image/epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_epaulettes")
 	var/image/brown = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l1")
 	var/image/green = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l2")
@@ -517,17 +519,21 @@ var/global/list/damage_icon_parts = list()
 		if (istype(w_uniform, /obj/item/clothing/under/customuniform))
 			var/obj/item/clothing/under/customuniform/CU = w_uniform
 			if (!CU.uncolored)
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
-				pants.color = CU.pantscolor
 				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
 				shirt.color = CU.shirtcolor
-				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_over")
-				epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_epaulettes")
-				epaulettes.color = CU.epaulettescolor
-				standing.overlays += pants
+				buttons = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_buttons")
+				buttons.color = CU.buttonscolor
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_belt")
+				belt.color = CU.beltcolor
+				buckle = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_buckle")
+				buckle.color = CU.bucklecolor
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
+				pants.color = CU.pantscolor
 				standing.overlays += shirt
+				standing.overlays += buttons
 				standing.overlays += belt
-				standing.overlays += epaulettes
+				standing.overlays += buckle
+				standing.overlays += pants
 		else if (istype(w_uniform, /obj/item/clothing/under/customdress))
 			var/obj/item/clothing/under/customdress/CD = w_uniform
 			if (!CD.uncolored)

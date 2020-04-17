@@ -23,7 +23,6 @@
 		one_per_turf = _one_per_turf
 		on_floor = _on_floor
 		use_material = _supplied_material
-
 /*
  * Recipe list datum
  */

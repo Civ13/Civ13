@@ -5,7 +5,7 @@ SERVER_NAME Civilization 13
 ## Where is the game folder located?
 MASTER_DIRECTORY /home/1713
 
-## If this server is running RP maps only, TDM only, or both (RP TDM ALL).
+## If this server is running: Persistence mode, RP maps only, TDM only, or both (PERSISTENCE RP TDM ALL).
 ALLOWED_GAMEMODES ALL
 
 ## What features do you want to advertise on your hub message?

@@ -35,6 +35,10 @@
 		fuel += I.amount
 		qdel(I)
 		return
+	if (istype(I, /obj/item/stack/material/bamboo))
+		fuel += I.amount*2
+		qdel(I)
+		return
 	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
 		fuel += 1
 		qdel(I)
@@ -64,6 +68,10 @@
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/weapon/branch))
+		fuel += I.amount*1
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/weapon/leaves))
 		fuel += I.amount*1
 		qdel(I)
 		return

@@ -435,6 +435,10 @@
 	name = "medieval window frame"
 	desc = "A dark ages window, minus the window."
 
+/obj/structure/window_frame/bamboo
+	icon_state = "bamboo_windownew_frame"
+	name = "bamboo window frame"
+	desc = "A frame for a window, made of bamboo."
 
 /obj/structure/window_frame/brick
 	icon_state = "brick_windownew_frame"
@@ -474,6 +478,8 @@
 					new/obj/structure/window/classic/shoji(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/medieval))
 					new/obj/structure/window/classic/medieval(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/bamboo))
+					new/obj/structure/window/classic/bamboo(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/stone))
 					new/obj/structure/window/classic/stone(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sandstone))
@@ -537,6 +543,12 @@
 	basestate = "medieval_windownew"
 	name = "medieval window"
 	desc = "A dark ages window."
+
+/obj/structure/window/classic/bamboo
+	icon_state = "bamboo_windownew"
+	basestate = "bamboo_windownew"
+	name = "bamboo window"
+	desc = "A bamboo window, made of bamboo."
 
 /obj/structure/window/classic/metal
 	icon_state = "windowmetal"

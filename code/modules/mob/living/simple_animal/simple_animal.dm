@@ -515,11 +515,18 @@
 								meat.rotten = TRUE
 								meat.satisfaction = -30
 						else if (istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/boar))
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/chicken) || istype(src, /mob/living/simple_animal/rooster))
 							new/obj/item/weapon/chicken_carcass(get_turf(src))
+						else if (istype(src, /mob/living/simple_animal/cow) || istype(src, /mob/living/simple_animal/bull))
+							new/obj/item/weapon/reagent_containers/food/snacks/cow/stomach(get_turf(src))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meat"
+								meat.radiation = radiation/2
 						else
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
@@ -613,9 +620,13 @@
 				else if (istype(src, /mob/living/simple_animal/hostile/alligator))
 					var/obj/item/stack/material/pelt/gatorpelt/NP = new/obj/item/stack/material/pelt/gatorpelt(get_turf(src))
 					NP.amount = 3
-				if (istype(user, /mob/living/carbon/human))
+				else if (istype(user, /mob/living/carbon/human))
 					var/mob/living/carbon/human/HM = user
 					HM.adaptStat("medical", amt/3)
+				else
+					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+					leather.name = "[name] leather"
+					leather.amount = amt
 				crush()
 				qdel(src)
 		else

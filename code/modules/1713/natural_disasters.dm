@@ -39,6 +39,8 @@
 	var/stage = 0
 	var/dries = TRUE
 	var/spreads = TRUE
+	light_power = 2
+	light_color = "#FFA500"
 	New()
 		..()
 		if (dries)

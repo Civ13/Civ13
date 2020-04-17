@@ -299,22 +299,22 @@
 	name = "sofa"
 	desc = "A sofa where you can rest."
 	icon = 'icons/obj/junk.dmi'
-	icon_state = "sofac"
+	icon_state = "sofa_forward"
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_dir = SOUTH
 	buckle_lying = TRUE
-	base_icon = "sofac"
+	base_icon = "sofa_forward"
 	applies_material_colour = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
 /obj/structure/bed/sofa/left
-	icon_state = "sofa"
-	base_icon = "sofa"
+	icon_state = "sofa_forward_left"
+	base_icon = "sofa_forward_left"
 /obj/structure/bed/sofa/right
-	icon_state = "sofa2"
-	base_icon = "sofa2"
+	icon_state = "sofa_forward_right"
+	base_icon = "sofa_forward_right"
 /obj/structure/bed/sofa/get_material()
 	return
 

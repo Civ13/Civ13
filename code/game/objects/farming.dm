@@ -94,7 +94,7 @@
 	icon_state = "bambooseeds"
 	color = null
 	biomes = list("jungle","sea")
-	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	seasons = list( "WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 
 /obj/item/stack/farming/seeds/cotton
 	name = "cotton seeds"
@@ -152,11 +152,11 @@
 	biomes = list("temperate","jungle","savanna","desert","sea","semiarid","taiga")
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
 
-/*/obj/item/stack/farming/seeds/beans
+/obj/item/stack/farming/seeds/beans
 	name = "bean seeds"
 	plant = "beans"
 	color = "#bc8f8f" //rosy brown
-	biomes = list("temperate","savanna", "desert", "sea", "semiarid", "taiga")*/
+	biomes = list("temperate","savanna", "desert", "sea", "semiarid", "taiga")
 
 /* Grains */
 
@@ -167,11 +167,17 @@
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate","tundra","taiga","sea")
 
-/*/obj/item/stack/farming/seeds/oat
+/obj/item/stack/farming/seeds/barley
+	name = "barley seeds"
+	plant = "barley"
+	color = "#26241d"
+	biomes = list("temperate", "semiarid", "taiga","sea")
+
+/obj/item/stack/farming/seeds/oat
 	name = "oat seeds"
 	plant = "oat"
-	color = "#26241d"
-	biomes = list("temperate", "tundra", "taiga")*/
+	color = "#b1c11b"
+	biomes = list("temperate", "tundra", "taiga","sea")
 
 /obj/item/stack/farming/seeds/rice
 	name = "rice seeds"
@@ -378,7 +384,7 @@
 	plant = "bamboo"
 	harvest_verb = "cut some shoots from"
 	biomes = list("jungle","sea")
-	seasons = list("SUMMER", "SPRING", "FALL", "Wet Season")
+	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	max_water = 80
 
 /obj/structure/farming/plant/coca
@@ -417,17 +423,26 @@
 	icon_state = "wheat-grow1"
 	plant = "wheat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
-	biomes = list("temperate","tundra","taiga","sea","desert","semi-arid")
+	biomes = list("temperate","tundra","taiga","sea","desert","semiarid")
 	max_water = 50
 
-/*/obj/structure/farming/plant/oat
+/obj/structure/farming/plant/oat
 	name = "oat plant"
 	desc = "a oat plant."
 	icon_state = "oat-grow1"
 	plant = "oat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
-	biomes = list("temperate", "tundra", "taiga")
-	max_water = 50*/
+	biomes = list("temperate", "tundra", "taiga","sea")
+	max_water = 50
+
+/obj/structure/farming/plant/barley
+	name = "barley plant"
+	desc = "a barley plant."
+	icon_state = "barley-grow1"
+	plant = "barley"
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
+	biomes = list("semiarid","temperate", "taiga","sea")
+	max_water = 50
 
 /obj/structure/farming/plant/rice
 	name = "rice"
@@ -497,14 +512,14 @@
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
 	max_water = 70
 
-/*/obj/structure/farming/plant/beans
+/obj/structure/farming/plant/beans
 	name = "bean plant"
 	desc = "a bean plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "beans-grow1"
 	plant = "beans"
 	biomes = list("temperate","savanna", "desert", "sea","semiarid", "taiga")
-	max_water = 50*/
+	max_water = 50
 
 /* fruit plants */
 
@@ -756,6 +771,13 @@
 		var/obj/item/stack/material/hemp/I2 = new/obj/item/stack/material/hemp(loc)
 		I2.radiation = radiation/2
 
+/obj/structure/farming/plant/flax/spawnProduce()
+	var/obj/item/stack/material/flax/I = new/obj/item/stack/material/flax(loc)
+	I.radiation = radiation/2
+	if (fertilized)
+		var/obj/item/stack/material/flax/I2 = new/obj/item/stack/material/flax(loc)
+		I2.radiation = radiation/2
+
 /obj/structure/farming/plant/tobacco/spawnProduce()
 	var/obj/item/stack/material/tobacco/I = new/obj/item/stack/material/tobacco(loc)
 	I.radiation = radiation/2
@@ -793,6 +815,13 @@
 
 /obj/structure/farming/plant/tree/spawnProduce()
 	var/obj/item/stack/material/wood/NW = new/obj/item/stack/material/wood(loc)
+	NW.amount = 3
+	NW.radiation = radiation/2
+	if (fertilized)
+		NW.amount = 6
+
+/obj/structure/farming/plant/bamboo/spawnProduce()
+	var/obj/item/stack/material/bamboo/NW = new/obj/item/stack/material/bamboo(loc)
 	NW.amount = 3
 	NW.radiation = radiation/2
 	if (fertilized)

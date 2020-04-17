@@ -50,19 +50,25 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 /obj/structure/mill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/oat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/barley))
 		H.visible_message("You start to mill the [W.name].")
 		icon_state = "flour_mill1"
 		if (do_after(H, 20, H.loc))
 			H.visible_message("You finish milling the [W.name].")
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
-			flour.reagents.remove_reagent("flour", 20)
+			if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/barley))
+				flour.reagents.remove_reagent("flour", 10)
+				flour.reagents.add_reagent("barleyflour", 10)
+			else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/oat))
+				flour.reagents.remove_reagent("flour", 10)
+				flour.reagents.add_reagent("oatflour", 10)
+
 			icon_state = "flour_mill"
 			qdel(W)
 		else
 			icon_state = "flour_mill"
 
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
 		H.visible_message("You start to mill the [W.name].")
 		icon_state = "flour_mill1"
 		if (do_after(H, 20, H.loc))
@@ -788,4 +794,3 @@
 			if (src)
 				new/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer(loc)
 				return
-

@@ -719,12 +719,6 @@ datum/admins/proc/print_chemical_reactions()
 	result = null
 	required_reagents = list("egg" = 3, "flour" = 10, "sugar" = 2)
 	result_amount = TRUE
-/datum/chemical_reaction/dough/on_reaction(var/datum/reagents/holder, var/created_volume = 1)
-	if (holder)
-		var/location = get_turf(holder.my_atom)
-		for (var/i = 1, i <= created_volume, i++)
-			new /obj/item/weapon/reagent_containers/food/snacks/dough(location)
-		return
 
 /* Alcohol */
 
@@ -988,9 +982,19 @@ datum/admins/proc/print_chemical_reactions()
 	name = "beer"
 	id = "beer"
 	result = "beer"
+	required_reagents = list("barleyflour" = 2, "water" = 2, "hops" = 1)
+	catalysts = list("enzyme" = 5)
+	result_amount = 2
+
+
+/datum/chemical_reaction/wheatbeer
+	name = "wheat beer"
+	id = "wheatbeer"
+	result = "wheatbeer"
 	required_reagents = list("flour" = 2, "water" = 2)
 	catalysts = list("enzyme" = 5)
 	result_amount = 2
+
 
 /datum/chemical_reaction/ale
 	name = "ale"

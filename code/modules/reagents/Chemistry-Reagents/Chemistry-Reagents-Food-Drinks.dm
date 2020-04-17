@@ -89,7 +89,16 @@
 	name = "barleyflour"
 	id = "barleyflour"
 	description = "You can eat it, but the main use is to make beer."
-	taste_description = "toasted cereal"
+	taste_description = "toasted barley"
+	reagent_state = SOLID
+	nutriment_factor = TRUE
+	color = "#666666"
+
+/datum/reagent/nutriment/oatflour
+	name = "oatflour"
+	id = "oatflour"
+	description = "Grounded oats."
+	taste_description = "oats"
 	reagent_state = SOLID
 	nutriment_factor = TRUE
 	color = "#666666"
@@ -211,6 +220,16 @@
 	taste_mult = 0.7
 	reagent_state = LIQUID
 	color = "#365E30"
+	overdose = REAGENTS_OVERDOSE
+
+/datum/reagent/hops
+	name = "Hops"
+	id = "hops"
+	description = "A plant used to give beer its bitter taste."
+	taste_description = "bittery hops"
+	taste_mult = 1.2
+	reagent_state = LIQUID
+	color = "#709B40"
 	overdose = REAGENTS_OVERDOSE
 
 /datum/reagent/capsaicin
@@ -653,14 +672,23 @@
 	description = "A dark alchoholic beverage made by malted barley and yeast."
 	taste_description = "hearty barley ale"
 	color = "#664300"
-	strength = 70
+	strength = 90
 	nutriment_factor = 2
 
 /datum/reagent/ethanol/beer
 	name = "Beer"
 	id = "beer"
-	description = "An alcoholic beverage made from malted grains, hops, yeast, and water."
+	description = "An alcoholic beverage made from malted barley, hops, yeast, and water."
 	taste_description = "beer"
+	color = "#664300"
+	strength = 70
+	nutriment_factor = 1
+
+/datum/reagent/ethanol/wheatbeer
+	name = "Wheat Beer"
+	id = "wheatbeer"
+	description = "An alcoholic beverage made from malted wheat, hops, yeast, and water."
+	taste_description = "wheat beer"
 	color = "#664300"
 	strength = 70
 	nutriment_factor = 1

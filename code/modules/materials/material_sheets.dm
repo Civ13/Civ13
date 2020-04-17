@@ -144,6 +144,12 @@
 	default_type = "stone"
 	value = 2
 
+/obj/item/stack/material/stonebrick
+	name = "stone brick"
+	icon_state = "sheet-stonebrick"
+	default_type = "stonebrick"
+	value = 1
+
 /obj/item/stack/material/clay
 	name = "clay lump"
 	icon = 'icons/obj/claystuff.dmi'
@@ -280,6 +286,14 @@
 	name = "wooden plank"
 	icon_state = "sheet-wood"
 	default_type = "wood"
+	dropsound = 'sound/effects/drop_wood.ogg'
+	value = 1
+	flammable = TRUE
+
+/obj/item/stack/material/bamboo
+	name = "bamboo bundle"
+	icon_state = "sheet-bamboo"
+	default_type = "bamboo"
 	dropsound = 'sound/effects/drop_wood.ogg'
 	value = 1
 	flammable = TRUE

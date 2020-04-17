@@ -503,6 +503,67 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+	else if (map.ID == MAP_NOMADS_EUROPE)
+		var/new_hair = "Black"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(-10,-60)
+		var/area/mob_area = get_area(src)
+		spawn(5)
+			switch (mob_area.climate)
+				if ("tundra","taiga")
+					add_language("Russian",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/russian/A in languages)
+						default_language = A
+					name = species.get_random_russian_name(gender)
+					real_name = name
+					add_note("Known Languages", "Russian")
+					possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
+					possible_e_list = list("Blue","Green")
+					possible_s_list = list(10,28)
+				if ("temperate","sea")
+					add_language("German",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/german/A in languages)
+						default_language = A
+					name = species.get_random_german_name(gender)
+					real_name = name
+					add_note("Known Languages", "German")
+					possible_h_list = list("Light Brown","Blond","Dirty Blond")
+					possible_e_list = list("Blue","Green")
+					possible_s_list = list(15,30)
+				if ("semiarid","desert")
+					add_language("Spanish",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/spanish/A in languages)
+						default_language = A
+					name = species.get_random_spanish_name(gender)
+					real_name = name
+					add_note("Known Languages", "Spanish")
+					possible_h_list = list("Light Brown","Dark Brown")
+					possible_e_list = list("Green","Brown")
+					possible_s_list = list(-40,-58)
+
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
+		var/hex_hair = hair_colors[new_hair]
+		r_hair = hex2num(copytext(hex_hair, 2, 4))
+		g_hair = hex2num(copytext(hex_hair, 4, 6))
+		b_hair = hex2num(copytext(hex_hair, 6, 8))
+		r_facial = hex2num(copytext(hex_hair, 2, 4))
+		g_facial = hex2num(copytext(hex_hair, 4, 6))
+		b_facial = hex2num(copytext(hex_hair, 6, 8))
+		var/hex_eyes = eye_colors[new_eyes]
+		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+		change_eye_color(r_eyes, g_eyes, b_eyes)
 	else if (map.ID == MAP_NOMADS_MEDITERRANEAN)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"

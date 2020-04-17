@@ -14,6 +14,12 @@
 	max_storage_space = 14 //enough to hold all starting contents
 	attack_verb = list("robusted")
 
+/obj/item/weapon/storage/toolbox/blue
+	icon_state = "toolbox_blue"
+	item_state = "toolbox_blue"
+/obj/item/weapon/storage/toolbox/yellow
+	icon_state = "toolbox_yellow"
+	item_state = "toolbox_yellow"
 /obj/item/weapon/storage/toolbox/emergency
 	name = "emergency toolbox"
 	icon_state = "toolbox_red"
