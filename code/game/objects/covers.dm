@@ -1254,6 +1254,7 @@
 	icon = 'icons/turf/walls.dmi'
 	base_icon_state = "cement_wall_inc"
 	icon_state = "cement_wall_inc0"
+	adjusts = FALSE
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
@@ -1286,6 +1287,7 @@
 	icon = 'icons/turf/walls.dmi'
 	base_icon_state = "new_brick_inc"
 	icon_state = "new_brick_inc0"
+	adjusts = FALSE
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
