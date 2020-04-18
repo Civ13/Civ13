@@ -140,6 +140,7 @@
 	flammable = FALSE
 	explosion_resistance = 10
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -153,6 +154,7 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/romanroad
 	name = "roman road"
@@ -166,6 +168,7 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/marblefloor
 	name = "marble floor"
@@ -179,6 +182,7 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/slatefloor
 	name = "slate floor"
@@ -192,6 +196,10 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/sandstone
+	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone/brick
 	name = "sandstone brick floor"
@@ -230,6 +238,7 @@
 	explosion_resistance = 10
 	material = "Stone"
 	var/vertical = FALSE
+	buildstack = null
 
 /obj/covers/roads/dirt
 	name = "dirt road"
@@ -388,6 +397,7 @@
 	flammable = FALSE
 	explosion_resistance = 3
 	material = "Steel"
+	buildstack = /obj/item/stack/material/steel
 
 /obj/covers/steelplating/white
 	name = "white floor"
@@ -405,6 +415,7 @@
 	flammable = FALSE
 	explosion_resistance = 4
 	material = "Stone"
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/concretefloor/New()
 	..()
@@ -725,6 +736,7 @@
 	explosion_resistance = 10
 	material = "Stone"
 	hardness = 100
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
@@ -848,6 +860,7 @@
 	flammable = FALSE
 	explosion_resistance = 3
 	hardness = 65
+	buildstack = /obj/item/weapon/sandbag
 
 /obj/covers/straw_wall
 	name = "straw wall"
@@ -925,7 +938,6 @@
 					return
 	..()
 
-
 /obj/covers/clay_wall
 	name = "clay block wall"
 	desc = "A clay block wall."
@@ -944,6 +956,7 @@
 	explosion_resistance = 6
 	material = "Stone"
 	hardness = 75
+	buildstack = /obj/item/weapon/clay/claybricks/fired
 
 /obj/covers/clay_wall/grecian
 	name = "smooth grecian plaster wall"
@@ -1132,6 +1145,7 @@
 	explosion_resistance = 6
 	material = "Stone"
 	hardness = 92
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired
 
 /obj/covers/cement_wall
 	name = "concrete wall"
@@ -1153,6 +1167,7 @@
 	material = "Stone"
 	hardness = 95
 	adjusts = TRUE
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/vault
 	name = "vault wall"
