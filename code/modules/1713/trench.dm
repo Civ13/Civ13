@@ -28,6 +28,12 @@ var/list/global/floor_cache = list()
 							TF.ChangeTurf(/turf/floor/trench/flooded/salty)
 						else
 							TF.ChangeTurf(/turf/floor/trench/flooded)
+				for (var/turf/floor/irrigation/IF in range(1, src))
+					if (!IF.flooded || !istype(IF,/turf/floor/irrigation/flooded))
+						if (salty)
+							IF.ChangeTurf(/turf/floor/irrigation/flooded/salty)
+						else
+							IF.ChangeTurf(/turf/floor/irrigation/flooded)
 			else
 				for (var/turf/floor/TF in range(1, src))
 					if (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded))
@@ -474,6 +480,12 @@ var/list/global/floor_cache = list()
 							TF.ChangeTurf(/turf/floor/irrigation/flooded/salty)
 						else
 							TF.ChangeTurf(/turf/floor/irrigation/flooded)
+				for (var/turf/floor/trench/TF in range(1, src))
+					if (!TF.flooded || !istype(TF,/turf/floor/trench/flooded))
+						if (salty)
+							TF.ChangeTurf(/turf/floor/trench/flooded/salty)
+						else
+							TF.ChangeTurf(/turf/floor/trench/flooded)
 			else
 				for (var/turf/floor/TF in range(1, src))
 					if (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/irrigation/flooded))
