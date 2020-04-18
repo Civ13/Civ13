@@ -429,6 +429,15 @@
 		..()
 		reagents.add_reagent("protein", 4)
 
+//I am just adding it to pig/stomach since it drops less the a big ol' cow/stomach.
+/obj/item/weapon/reagent_containers/food/snacks/pig/stomach/goat
+	name = "goat stomach"
+	desc = "A stomach from a goat."
+
+/obj/item/weapon/reagent_containers/food/snacks/pig/stomach/sheep
+	name = "sheep stomach"
+	desc = "A stomach from a sheep."
+
 /obj/item/stack/sausagecasing
 	name = "Sausage Casing"
 	desc = "A casing made from a animals stomach to hold meat."
@@ -692,12 +701,26 @@
 /obj/structure/cutting_board/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		if(input != null)
+			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/fishfillet) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet))
+				user << "You begin to mince the [input]."
+				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+				if(do_after(user, 180))
+					playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+					input = null
+					icon_state = "cutting_board_dirty"
+					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
+					return
+				else
+					user << "You stop mincing"
+					return
 			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
 				user << "You begin to mince the [input]."
 				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
-				if(do_after(user, 60))
+				if(do_after(user, 180))
+					playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
 					input = null
 					icon_state = "cutting_board_dirty"
+					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
 					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
 					return
 				else
@@ -706,6 +729,7 @@
 			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/mince))
 				playsound(loc, 'sound/effects/squishy.ogg', 10, TRUE)
 				if(do_after(user, 10))
+					playsound(loc, 'sound/effects/squishy.ogg', 10, TRUE)
 					user << "You form the [input] into a meatball!"
 					input = null
 					icon_state = "cutting_board_dirty"
@@ -725,6 +749,18 @@
 				user << "You need to put something on the cutting board!"
 				return
 	else if(input == null && istype(W, /obj/item/weapon/reagent_containers/food/snacks))
+		if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/fishfillet) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_cutlet"
+			qdel(W)
+			return
+		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_mince"
+			qdel(W)
+			return
 		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
 			input = W
 			user << "You place the [W] on the cutting board."
