@@ -360,6 +360,15 @@ var/list/global/floor_cache = list()
 					visible_message("<span class = 'notice'>[user] makes a trench.</span>")
 					ChangeTurf(/turf/floor/trench)
 		return
+	/*else if (istype(C, /obj/item/weapon/shovel))
+		if(src.available_dirt <= 0)
+			visible_message("<span class = 'notice'>[user] starts to dig an irrigation channel.</span>")
+			if (!do_after(user, 25))
+				return
+			if (istype(src,/turf/floor/dirt))
+				visible_message("<span class = 'notice'>[user] makes a irrigation channel.</span>")
+				ChangeTurf(/turf/floor/irrigation)
+			return*/ // THISS ENABLES YOU TO DIG AN IRRIGATION CHANNEL ONCE YOU DIG UP ALL THE DIRT IN A TURF.
 	..()
 
 /turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
@@ -367,6 +376,17 @@ var/list/global/floor_cache = list()
 		var/obj/item/weapon/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
 		if (!do_after(user, (10 - S.dig_speed)*10, src))
+			return
+		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
+		var/area/A = get_area(src)
+		if (A.climate == "jungle" || A.climate == "savanna")
+			ChangeTurf(/turf/floor/dirt/jungledirt)
+		else
+			ChangeTurf(/turf/floor/dirt)
+		return
+	else if (istype(C, /obj/item/weapon/shovel))
+		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
+		if (!do_after(user, 100))
 			return
 		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
 		var/area/A = get_area(src)
@@ -396,6 +416,173 @@ var/list/global/floor_cache = list()
 			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
 			return
 		H << "You start drinking some water from the flooded trench..."
+		if (do_after(H,50,src))
+			var/watertype = "water"
+			if (radiation>0)
+				watertype = "irradiated_water"
+			if (watertype == "irradiated_water")
+				H.rad_act(5)
+			else
+				var/dmod = 1
+				if (H.find_trait("Weak Immune System"))
+					dmod = 2
+				if (prob(25*dmod) && !H.orc && !H.crab)
+					if (H.disease == 0)
+						H.disease_progression = 0
+						H.disease_type ="cholera"
+						H.disease = 1
+			if (H.water < 0)
+				H.water += rand(40,50)
+			H.water += 75
+			H.bladder += 75
+			H << "You drink some water."
+			playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+			return
+		else
+			return
+	else
+		..()
+//////////////////////////////////////////////////////////////////////////
+//AGRICULTURE - IRRIGATION////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+/turf/floor/irrigation
+	name = "Irrigation Channel"
+	icon = 'icons/turf/trench.dmi'
+	icon_state = "irrigation"
+	base_icon_state = "irrigation"
+	//var/image/over_OS_darkness = null
+	plane = UNDERFLOOR_PLANE
+	initial_flooring = /decl/flooring/irrigation
+	var/trench_filling = 0
+	var/flooded = FALSE
+	var/salty = FALSE
+	var/message_cooldown = 0
+
+/turf/floor/irrigation/New()
+	if (!icon_state)
+		icon_state = "irrigation"
+
+	..()
+	spawn(4)
+		if (src && istype(src, /turf/floor/irrigation))
+			update_icon()
+			if (istype(src, /turf/floor/irrigation/flooded))
+				for (var/turf/floor/irrigation/TF in range(1, src))
+					if (!TF.flooded || !istype(TF,/turf/floor/irrigation/flooded))
+						if (salty)
+							TF.ChangeTurf(/turf/floor/irrigation/flooded/salty)
+						else
+							TF.ChangeTurf(/turf/floor/irrigation/flooded)
+			else
+				for (var/turf/floor/TF in range(1, src))
+					if (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/irrigation/flooded))
+						flooded = TRUE
+						if (istype(TF, /turf/floor/irrigation/flooded))
+							var/turf/floor/irrigation/flooded/WT = TF
+							if (WT.salty)
+								ChangeTurf(/turf/floor/irrigation/flooded/salty)
+							else
+								ChangeTurf(/turf/floor/irrigation/flooded)
+						else if (istype(TF, /turf/floor/beach/water))
+							var/turf/floor/beach/water/WT = TF
+							if (WT.salty)
+								ChangeTurf(/turf/floor/irrigation/flooded/salty)
+							else
+								ChangeTurf(/turf/floor/irrigation/flooded)
+			for (var/direction in list(1,2,4,8,5,6,9,10))
+				if (istype(get_step(src,direction),/turf))
+					var/turf/FF = get_step(src,direction)
+					if (istype(FF, /turf/floor/irrigation))
+						FF.update_icon() //so siding get updated properly
+/turf/floor/irrigation/make_grass()
+	overlays.Cut()
+	if (islist(decals))
+		decals.Cut()
+		decals = null
+
+	set_light(0)
+	levelupdate()
+
+	ChangeTurf(/turf/floor/irrigation)
+
+/turf/floor/irrigation/flooded
+	name = "flooded irrigation channel"
+	flooded = TRUE
+	icon_state = "irrigation_flooded"
+	base_icon_state = "irrigation_flooded"
+	initial_flooring = /decl/flooring/irrigation/flooded
+	salty = FALSE
+	move_delay = 4
+
+/turf/floor/irrigation/flooded/salty
+	name = "flooded saltwater irrigation channel"
+	salty = TRUE
+
+/turf/floor/irrigation/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+		var/choice = WWinput(user, "Do you want to start filling up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
+		if (choice == "Yes")
+			user << "You shove some dirt into the irrigation channel."
+			if (istype(src, /turf/floor/irrigation))
+				qdel(C)
+				return
+	..()
+
+/turf/floor/irrigation/flooded/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+		var/choice = WWinput(user, "Do you want to start filling up the irrigation channel with \the [C]?","irrigation","Yes",list("Yes","No"))
+		if (choice == "Yes")
+			user << "You shove some dirt into the irrigation channel."
+			if (istype(src, /turf/floor/irrigation))
+				qdel(C)
+				return
+		else
+			return
+	else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+		var/obj/item/weapon/reagent_containers/RG = C
+		if (istype(RG) && RG.is_open_container())
+			if (do_after(user, 15, src, check_for_repeats = FALSE))
+				var/sumex = 0
+				if (src.salty)
+					RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
+					sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
+				RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
+				user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
+				playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
+				user.setClickCooldown(5)
+				return
+			else
+				return
+	else
+		..()
+
+/turf/floor/irrigation/proc/check_filling()
+	ChangeTurf(get_base_turf_by_area(src))
+	return
+
+/decl/flooring/irrigation
+	name = "irrigation channel"
+	desc = "A groove dug into the ground."
+	icon = 'icons/turf/trench.dmi'
+	icon_base = "irrigation"
+	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+
+/decl/flooring/irrigation/flooded
+	name = "flooded irrigation channel"
+	desc = "A groove dug into the ground, flooded with water."
+	icon = 'icons/turf/trench.dmi'
+	icon_base = "irrigation_flooded"
+	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+
+/turf/floor/trench/flooded/attack_hand(var/mob/living/carbon/human/H)
+	if (!ishuman(H))
+		return
+	if (H.a_intent == I_GRAB)
+		if (salty)
+			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			return
+		H << "You start drinking some water from the flooded irrigation channel..."
 		if (do_after(H,50,src))
 			var/watertype = "water"
 			if (radiation>0)
