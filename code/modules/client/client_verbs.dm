@@ -332,16 +332,7 @@
 				else
 					display_name = "<span class = 'ping'>[holder.OOC_rank()]</span> [display_name]"
 
-			// patrons get OOC colors too, now  kachnov
-
-			var/admin_patron_check = FALSE
-			if (holder && !holder.fakekey && (holder.rights & R_ADMIN))
-				admin_patron_check = TRUE
-
-			if (admin_patron_check && config.allow_admin_ooccolor && (prefs.ooccolor != initial(prefs.ooccolor))) // keeping this for the badmins
-				target << "<font color='[prefs.ooccolor]'><span class='ooc'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></font>"
-			else
-				target << "<span class='ooc'><span class='[ooc_style]'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>"
+			target << "<span class='ooc'><span class='[ooc_style]'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>"
 
 /client/verb/looc(msg as text)
 	set name = "LOOC"
