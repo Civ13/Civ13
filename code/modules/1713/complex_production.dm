@@ -567,8 +567,9 @@
 /obj/item/weapon/reagent_containers/food/snacks/mince
 	name = "minced meat"
 	desc = "Blended meat."
-	icon_state = "minced_meat"
 	icon = 'icons/obj/complex_foods.dmi'
+	icon_state = "minced_meat"
+	filling_color = "#DB0000"
 	bitesize = 2
 	raw = TRUE
 	rotten_icon_state = "minced_meat_rotten"
@@ -580,10 +581,11 @@
 		..()
 		reagents.add_reagent("protein", 2)
 /obj/item/weapon/reagent_containers/food/snacks/meatball
-	name = "meat patty"
+	name = "meatball"
 	desc = "Round meat."
-	icon_state = "meatball_raw"
 	icon = 'icons/obj/complex_foods.dmi'
+	icon_state = "meatball_raw"
+	filling_color = "#DB0000"
 	bitesize = 3
 	raw = TRUE
 	rotten_icon_state = "meatball_rotten"
@@ -600,9 +602,10 @@
 	desc = "Circular meat."
 	icon_state = "patty_raw"
 	icon = 'icons/obj/complex_foods.dmi'
+	filling_color = "#DB0000"
 	bitesize = 3
 	raw = TRUE
-	rotten_icon_state = "patty_raw"
+	rotten_icon_state = "patty_rotten"
 	rots = TRUE
 	decay = 15*800
 	satisfaction = -4
@@ -625,7 +628,7 @@
 	var/input
 	var/output_amount = 0
 
-/obj/structure/meat_grinder/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/meat_grinder/attack_hand(mob/living/carbon/human/user as mob)
 	if (input != null)
 		user << "You start to crank the lever."
 		icon_state = active_state
@@ -634,29 +637,38 @@
 			user << "The grinder plops out some mince!"
 			for(var/i=1, i<=output_amount, i++)
 				new /obj/item/weapon/reagent_containers/food/snacks/mince(get_turf(src))
-			qdel(W)
 			input = null
 			icon_state = empty_state
 		else
 			icon_state = full_state
-	else if (istype(W, /obj/item/weapon/pigleg) || istype(W, /obj/item/weapon/chicken_carcass))
-		input = W
-		output_amount = 4
-		icon_state = full_state
-		qdel(W)
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/chicken))
-		input = W
-		output_amount = 2
-		icon_state = full_state
-		qdel(W)
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/fishfillet))
-		input = W
-		output_amount = 1
-		icon_state = full_state
-		qdel(W)
+
+/obj/structure/meat_grinder/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if(input==null)
+		if (istype(W, /obj/item/weapon/pigleg) || istype(W, /obj/item/weapon/chicken_carcass))
+			input = W
+			output_amount = 4
+			icon_state = full_state
+			user << "You insert the [W] into the [src]"
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/chicken))
+			input = W
+			output_amount = 2
+			icon_state = full_state
+			user << "You insert the [W] into the [src]"
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/fishfillet))
+			input = W
+			output_amount = 1
+			icon_state = full_state
+			user << "You insert the [W] into the [src]"
+			qdel(W)
+			return
+		else
+			..()
 	else
 		..()
-
 ///////////////////////////////////////////
 /////////////CUTTING BOARD/////////////////
 ///////////////////////////////////////////
@@ -670,8 +682,13 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	var/input
-
-
+/*/obj/structure/cutting_board/attack_hand(var/mob/living/carbon/human/H)
+	if(input != null)
+		H << "You scrape off the cutting board"
+		new input(src.loc)
+		input = null
+		icon_state = "cutting_board_dirty"
+		return*/ //Cutting board removing of the object doesn't work for some reason and I cannot figure out why.
 /obj/structure/cutting_board/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		if(input != null)
@@ -704,39 +721,36 @@
 				icon_state = "cutting_board_dirty"
 				new /obj/item/weapon/reagent_containers/food/snacks/patty(src.loc)
 				return
+			else
+				user << "You need to put something on the cutting board!"
+				return
+	else if(input == null && istype(W, /obj/item/weapon/reagent_containers/food/snacks))
+		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_mince"
+			qdel(W)
+			return
+		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_steak"
+			qdel(W)
+			return
+		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_fish"
+			qdel(W)
+			return
+		if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meatball))
+			input = W
+			user << "You place the [W] on the cutting board."
+			icon_state = "cutting_board_meatball"
+			qdel(W)
+			return
 		else
-			user << "You need to put something on the cutting board!"
-			return
+			user << "You cannot put that on [src]!"
 	else
-		if(input == null)
-			if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/mince))
-				input = W
-				user << "You place the [W] on the cutting board."
-				icon_state = "cutting_board_mince"
-				qdel(W)
-				return
-			if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat))
-				input = W
-				user << "You place the [W] on the cutting board."
-				icon_state = "cutting_board_steak"
-				qdel(W)
-				return
-			if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
-				input = W
-				user << "You place the [W] on the cutting board."
-				icon_state = "cutting_board_fish"
-				qdel(W)
-				return
-			if(istype(W, /obj/item/weapon/reagent_containers/food/snacks/meatball))
-				input = W
-				user << "You place the [W] on the cutting board."
-				icon_state = "cutting_board_meatball"
-				qdel(W)
-				return
-		else if(input != null)
-			user << "You scrape off the cutting board"
-			new input(src.loc)
-			input = null
-			icon_state = "cutting_board_dirty"
-			return
+		..()
 	..()
