@@ -44,7 +44,6 @@ var/list/gamemode_cache = list()
 	var/Ticklag = 0.9
 	var/Tickcomp = FALSE
 //	var/socket_talk	= FALSE					// use socket_talk to communicate with other processes
-	var/list/resource_urls = null
 	var/list/mode_names = list()
 	var/list/modes = list()				// allowed modes
 	var/list/votable_modes = list()		// votable modes
@@ -214,9 +213,6 @@ var/list/gamemode_cache = list()
 					config.hub_features = value
 				if ("hub_banner_url")
 					config.hub_banner_url = value
-
-				if ("resource_urls")
-					config.resource_urls = splittext(value, " ")
 
 				if ("use_recursive_explosions")
 					use_recursive_explosions = TRUE
