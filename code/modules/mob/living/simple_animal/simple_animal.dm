@@ -518,11 +518,24 @@
 							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/boar))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/chicken) || istype(src, /mob/living/simple_animal/rooster))
 							new/obj/item/weapon/chicken_carcass(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/cow) || istype(src, /mob/living/simple_animal/bull))
 							new/obj/item/weapon/reagent_containers/food/snacks/cow/stomach(get_turf(src))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meat"
+								meat.radiation = radiation/2
+						else if (istype(src, /mob/living/simple_animal/goat))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach/goat(get_turf(src))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meat"
+								meat.radiation = radiation/2
+						else if (istype(src, /mob/living/simple_animal/sheep))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach/sheep(get_turf(src))
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 								meat.name = "[name] meat"

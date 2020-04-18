@@ -10,6 +10,7 @@
 	var/origin_water_level = 0
 	var/not_movable = FALSE //if it can be removed by wrenches
 	var/health = 100
+	var/maxhealth = 100
 	is_cover = TRUE
 	anchored = TRUE
 	opacity = FALSE
@@ -28,6 +29,8 @@
 	var/list/bullethole_overlays = list()
 //	invisibility = 101 //starts invisible
 	var/material = "Wood" //Depending on mat, depending on what harms it.
+	var/buildstackamount = 8
+	var/buildstack = /obj/item/stack/material/wood
 	var/adjusts = FALSE //if it adjusts acording to neighbouring sprites
 
 	var/hardness = 50 //for projectile penetration
@@ -53,7 +56,16 @@
 		else
 			//Do nothing, you're not important.
 			..()*/
-
+/obj/covers/proc/run_decay()
+	if (!src || !wall)
+		return
+	decay()
+	spawn(24000)
+		if (src && wall)
+			run_decay()
+			return
+		else
+			return
 
 /obj/covers/ex_act(severity)
 	switch(severity)
@@ -128,6 +140,7 @@
 	flammable = FALSE
 	explosion_resistance = 10
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -141,6 +154,7 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/romanroad
 	name = "roman road"
@@ -154,6 +168,21 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/stonebrickfloor
+	name = "stone brick floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "stone_bricks"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stonebrick
 
 /obj/covers/marblefloor
 	name = "marble floor"
@@ -167,6 +196,21 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/ornatemarblefloor
+	name = "marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "ornate_marble"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/slatefloor
 	name = "slate floor"
@@ -180,6 +224,10 @@
 	flammable = FALSE
 	explosion_resistance = 2
 	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/sandstone
+	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone/brick
 	name = "sandstone brick floor"
@@ -218,6 +266,7 @@
 	explosion_resistance = 10
 	material = "Stone"
 	var/vertical = FALSE
+	buildstack = null
 
 /obj/covers/roads/dirt
 	name = "dirt road"
@@ -376,6 +425,7 @@
 	flammable = FALSE
 	explosion_resistance = 3
 	material = "Steel"
+	buildstack = /obj/item/stack/material/steel
 
 /obj/covers/steelplating/white
 	name = "white floor"
@@ -393,11 +443,24 @@
 	flammable = FALSE
 	explosion_resistance = 4
 	material = "Stone"
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/concretefloor/New()
 	..()
 	icon_state = pick("concrete6","concrete7")
 	base_icon_state = icon_state
+
+/obj/covers/sidewalk
+	name = "sidewalk"
+	icon_state = "sidewalk"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	material = "Stone"
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -713,6 +776,7 @@
 	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
+	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
@@ -766,7 +830,7 @@
 				else if(design == "carvedbrick")
 					src.icon_state = "b_brick_stone_wall"
 					base_icon_state = icon_state
-					src.name = "stone carved brick wall"
+					src.name = "stone brick wall"
 					src.desc = "A cave wall carved to look like its made of stone bricks."
 				else if(design == "cobbled")
 					src.icon_state = "b_cobbled_stone_wall"
@@ -836,6 +900,7 @@
 	flammable = FALSE
 	explosion_resistance = 3
 	hardness = 65
+	buildstack = /obj/item/weapon/sandbag
 
 /obj/covers/straw_wall
 	name = "straw wall"
@@ -913,7 +978,6 @@
 					return
 	..()
 
-
 /obj/covers/clay_wall
 	name = "clay block wall"
 	desc = "A clay block wall."
@@ -932,6 +996,7 @@
 	explosion_resistance = 6
 	material = "Stone"
 	hardness = 75
+	buildstack = /obj/item/weapon/clay/claybricks/fired
 
 /obj/covers/clay_wall/grecian
 	name = "smooth grecian plaster wall"
@@ -1120,6 +1185,7 @@
 	explosion_resistance = 7
 	material = "Stone"
 	hardness = 92
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired
 
 /obj/covers/cement_wall
 	name = "concrete wall"
@@ -1141,6 +1207,7 @@
 	material = "Stone"
 	hardness = 95
 	adjusts = TRUE
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/vault
 	name = "vault wall"
@@ -1160,6 +1227,7 @@
 	explosion_resistance = 10
 	material = "Stone"
 	hardness = 100
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/slate
 	name = "slatestone wall"
@@ -1199,6 +1267,7 @@
 	wall = TRUE
 	flammable = FALSE
 	material = "Stone"
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
@@ -1263,8 +1332,6 @@
 	health = 100000
 	wall = TRUE
 	explosion_resistance = 100
-	var/buildstackamount = 8
-	var/buildstack = /obj/item/stack/material/wood
 	material = "Wood"
 	hardness = 15
 
@@ -1355,6 +1422,7 @@
 /obj/covers/New()
 	..()
 	initial_opacity = opacity
+	maxhealth = health
 	spawn(5)
 		updateturf()
 		if (opacity)
@@ -1507,6 +1575,15 @@
 				onfire = TRUE
 				visible_message("<span class='danger'>\The [src] catches fire!</span>")
 				start_fire()
+		if (istype(W, /obj/item/stack))
+			var/obj/item/stack/S = W
+			if (S.amount <= 0)
+				qdel(S)
+			else
+				repair(S, user)
+				playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+				user.do_attack_animation(src)
+				return
 		else
 			switch(W.damtype)
 				if ("fire")
@@ -1604,7 +1681,10 @@
 	check_relatives(1,1)
 	overlays.Cut()
 	overlays |= bullethole_overlays
-
+	if (moldy>0)
+		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "mold[moldy]", layer = src.layer+0.02)
+	if (cracked>0)
+		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "cracks[cracked]", layer = src.layer+0.01)
 /obj/covers/New()
 	..()
 	check_relatives(1,1)

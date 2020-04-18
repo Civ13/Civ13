@@ -9,7 +9,6 @@
 	var/total_positions = FALSE			   // How many players can be this job
 	var/current_positions = FALSE			 // How many players have this job
 	var/selection_color = "#ffffff"	   // Selection screen color
-	var/minimal_player_age = FALSE			// If you have use_age_restriction_for_jobs config option enabled and the database set up, this option will add a requirement for players to be at least minimal_player_age days old. (meaning they first signed in at least that many days before.)
 	var/head_position = FALSE				 // Is this position Command?
 	var/minimum_character_age = FALSE
 	var/ideal_character_age = 30
@@ -122,8 +121,6 @@
 	return (available_in_days(C) == FALSE) //Available in FALSE days = available right now = player is old enough to play.
 
 /datum/job/proc/available_in_days(client/C)
-/*	if (C && config.use_age_restriction_for_jobs && isnum(C.player_age) && isnum(minimal_player_age))
-		return max(0, minimal_player_age - C.player_age)*/
 	return FALSE
 
 /datum/job/proc/apply_fingerprints(var/mob/living/carbon/human/target)

@@ -202,6 +202,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	buildstack = /obj/item/weapon/snowwall
 
 /obj/covers/snow_wall/blocks/incomplete
 	name = "snow blocks wall"

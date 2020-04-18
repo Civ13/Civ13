@@ -1080,7 +1080,7 @@
 		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
 		return
 /obj/structure/computer/attack_hand(var/mob/living/carbon/human/H)
-	if(src.active)
+	if(!src.active)
 		load_os()
 	else
 		H << "<span class = 'notice'>You need to turn the [src] on first!</span>"
@@ -1103,6 +1103,45 @@
 		<html>
 		<head>
 		<title>Unga OS V 0.1</title>
+		<script>
+		var lastVals = new Array();
+		var lastValsOffset = 0;
+		function keydownfunc (event)
+		{
+			var theKey = (event.which) ? event.which : event.keyCode;
+			if (theKey == 38)
+			{
+				if (lastVals.length > lastValsOffset)
+				{
+					document.getElementById("consoleinput_text").value = lastVals\[lastVals.length - lastValsOffset - 1];
+					lastValsOffset++;
+					if (lastValsOffset >= lastVals.length)
+					{
+						lastValsOffset = 0;
+					}
+				}
+			}
+			else if (theKey == 40)
+			{
+				if (lastValsOffset > 0)
+				{
+					lastValsOffset--;
+					document.getElementById("consoleinput_text").value = lastVals\[lastVals.length - lastValsOffset - 1];
+				}
+			}
+		}
+		function lineEnter (ev)
+			{
+				if (document.getElementById("consoleinput_text").value != null)
+				{
+					document.getElementById("display").textContent += document.getElementById("consoleinput_text").value;
+					lastVals.push(document.getElementById("consoleinput_text").value);
+					document.location = "byond://?src=\ref[src]&command=" + encodeURIComponent(document.getElementById("consoleinput_text").value);
+					document.getElementById("consoleinput_text").focus();
+					document.getElementById("consoleinput_text").value = "";
+				}
+			}
+		</script>
 		<style>
 		body {
 		    background-color: #161610
@@ -1114,34 +1153,10 @@
 		for(var/i in display)
 			os += i
 		os += {"</textarea>
+		<form name="consoleinput" action="byond://?src=\ref[src]" method="get" onsubmit="javascript:return lineEnter(event)">
+			<input id = "consoleinput_text" type="text" name="command" maxlength="300" size="40" onKeyDown="javascript:return keydownfunc(event)">
+			<input type="submit" value="Enter">
+		</form>
 		</center>
 		</html>"}
 		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-		var/nextline = null
-		var/contents = null
-		var/index = 0
-		index = index
-		while(!nextline)
-			nextline = input("Enter a command. (EXIT to EXIT)","Input", "") as text
-			if(nextline == "EXIT")
-				display += nextline
-				break;
-			if(nextline == "HELP")
-				contents += input("Enter PRINT contents.","PRINT", "") as text
-				display += "EXIT - quits input."
-				display += "HELP - shows commands."
-				display += "PRINT - one argument, displays to screen."
-				display += "INDEX - one argument, sets memory index."
-				display += "PLACE - print current memory index."
-				display += "WRITE - one argument, writes to current index."
-				display += "READ - one argument, reads memory index."
-				display += "RUN - two arguments, runs memory between indexs (inclusive)."
-			if(nextline == "PRINT")
-				contents = input("Enter PRINT contents.","PRINT", "") as text
-				display += contents
-			if(nextline == "INDEX")
-				index = input("Enter target INDEX.","INDEX", "") as text
-				display += nextline + " is now " + contents
-			//this isn't done.
-			//also I would rather have a textbox communicate with byond, but I cant find out how anywhere.
-			nextline = null
