@@ -9,6 +9,7 @@
 	anchored = TRUE
 	var/delay = 10 //Time to wait for the conversion to complete.
 	var/input = /obj/item/stack/material/lead //Input material
+	var/input1 = /obj/item/stack/material/lead //Just for you fwoosh!
 	var/inputamount = 1 //How much material is required
 	var/output = /obj/item/stack/material/gold //Finished material
 	var/outputamount = 1 //How much material is produced.
@@ -22,7 +23,7 @@
 
 /obj/structure/converter/attackby(obj/item/M as obj, mob/user as mob)
 	if(!filled)
-		if(istype(M, input))
+		if(istype(M, input) || istype(M, input1))
 			if(M.amount >= inputamount)
 				M.amount -= inputamount
 				if(M.amount <= 0)
@@ -92,9 +93,10 @@
 	idlesprite = "retting_trough"
 	activesprite = "retting_trough_full"
 	delay = 250
-	input = list (/obj/item/stack/material/hemp, /obj/item/stack/material/flax)
+	input = /obj/item/stack/material/hemp
+	input1 = /obj/item/stack/material/flax
 	inputamount = 2
 	output = /obj/item/stack/material/rettedfabric
 	outputamount = 1
-	actiontext = "soaks"
+	actiontext = "soak"
 	overlayed = FALSE

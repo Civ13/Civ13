@@ -170,10 +170,38 @@
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
 
+/obj/covers/stonebrickfloor
+	name = "stone brick floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "stone_bricks"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stonebrick
+
 /obj/covers/marblefloor
 	name = "marble floor"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "marble"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/ornatemarblefloor
+	name = "marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "ornate_marble"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -421,6 +449,18 @@
 	..()
 	icon_state = pick("concrete6","concrete7")
 	base_icon_state = icon_state
+
+/obj/covers/sidewalk
+	name = "sidewalk"
+	icon_state = "sidewalk"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	material = "Stone"
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -790,7 +830,7 @@
 				else if(design == "carvedbrick")
 					src.icon_state = "b_brick_stone_wall"
 					base_icon_state = icon_state
-					src.name = "stone carved brick wall"
+					src.name = "stone brick wall"
 					src.desc = "A cave wall carved to look like its made of stone bricks."
 				else if(design == "cobbled")
 					src.icon_state = "b_cobbled_stone_wall"
@@ -1187,6 +1227,7 @@
 	explosion_resistance = 10
 	material = "Stone"
 	hardness = 100
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/slate
 	name = "slatestone wall"
@@ -1226,6 +1267,7 @@
 	wall = TRUE
 	flammable = FALSE
 	material = "Stone"
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
