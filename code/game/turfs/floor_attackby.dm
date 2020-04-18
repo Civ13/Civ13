@@ -53,7 +53,7 @@
 						if (!istype(UT, /turf/floor/dirt/underground))
 							UT.ChangeTurf(/turf/floor/dirt/underground/empty)
 					new/obj/effect/effect/smoke(src)
-			/*var/area/A = get_area(src)
+			/*var/area/A = get_area(src) //Removed this, caused a very big glitch, this code seems unnecessary.
 			if (supportfound)
 				if(map.ID == MAP_NOMADS_DESERT)
 					ChangeTurf(/turf/floor/dirt/dust)
