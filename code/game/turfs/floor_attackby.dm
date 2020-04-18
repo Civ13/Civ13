@@ -41,7 +41,8 @@
 						M.adjustBruteLoss(rand(9,21))
 						M.Weaken(12)
 					var/turf/floor/dirt/underground/DT = get_turf(src)
-					DT.ChangeTurf(/turf/floor/dirt/underground/empty)
+					if (!istype(DT, /turf/floor/dirt/underground))
+						DT.ChangeTurf(/turf/floor/dirt/underground/empty)
 				else
 					visible_message("The mine starts to cave in!")
 					playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
@@ -52,14 +53,14 @@
 						if (!istype(UT, /turf/floor/dirt/underground))
 							UT.ChangeTurf(/turf/floor/dirt/underground/empty)
 					new/obj/effect/effect/smoke(src)
-			var/area/A = get_area(src)
+			/*var/area/A = get_area(src)
 			if (supportfound)
 				if(map.ID == MAP_NOMADS_DESERT)
 					ChangeTurf(/turf/floor/dirt/dust)
 				else if (A.climate == "jungle" || A.climate == "savanna")
 					ChangeTurf(/turf/floor/dirt/jungledirt)
 				else
-					ChangeTurf(/turf/floor/dirt)
+					ChangeTurf(/turf/floor/dirt)*/
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
