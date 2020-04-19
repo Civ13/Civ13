@@ -86,7 +86,17 @@
 		O.forceMove(loc)
 	else
 		..()
-
+/obj/structure/barricade/wood_pole/attack_hand(mob/living/user as mob)
+	if (!isliving(user))
+		return
+	if (attached_ob && istype(attached_ob, /obj/item/flashlight/lantern))
+		user << "You remove \the [attached_ob] from \the [src]."
+		var/obj/item/flashlight/lantern/O = attached_ob
+		O.anchored = FALSE
+		O.forceMove(user.loc)
+		user.put_in_hands(O)
+		attached_ob = null
+		return
 /obj/structure/barricade/wood_pole/Destroy()
 	if (attached_ob != null)
 		if (istype(attached_ob, /obj/item/flashlight/lantern))
