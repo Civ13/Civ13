@@ -419,7 +419,7 @@ var/list/global/floor_cache = list()
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			H << "<span class='warning'>Itï¿½s probably not a good idea to drink saltwater.</span>"
 			return
 		H << "You start drinking some water from the flooded trench..."
 		if (do_after(H,50,src))
@@ -455,8 +455,7 @@ var/list/global/floor_cache = list()
 /turf/floor/irrigation
 	name = "Irrigation Channel"
 	icon = 'icons/turf/trench.dmi'
-	icon_state = "irrigation"
-	base_icon_state = "irrigation"
+	icon_state = "dirt"
 	//var/image/over_OS_darkness = null
 	plane = UNDERFLOOR_PLANE
 	initial_flooring = /decl/flooring/irrigation
@@ -465,64 +464,10 @@ var/list/global/floor_cache = list()
 	var/salty = FALSE
 	var/message_cooldown = 0
 
-/turf/floor/irrigation/New()
-	if (!icon_state)
-		icon_state = "irrigation"
-
-	..()
-	spawn(4)
-		if (src && istype(src, /turf/floor/irrigation))
-			update_icon()
-			if (istype(src, /turf/floor/irrigation/flooded))
-				for (var/turf/floor/irrigation/TF in range(1, src))
-					if (!TF.flooded || !istype(TF,/turf/floor/irrigation/flooded))
-						if (salty)
-							TF.ChangeTurf(/turf/floor/irrigation/flooded/salty)
-						else
-							TF.ChangeTurf(/turf/floor/irrigation/flooded)
-				for (var/turf/floor/trench/TF in range(1, src))
-					if (!TF.flooded || !istype(TF,/turf/floor/trench/flooded))
-						if (salty)
-							TF.ChangeTurf(/turf/floor/trench/flooded/salty)
-						else
-							TF.ChangeTurf(/turf/floor/trench/flooded)
-			else
-				for (var/turf/floor/TF in range(1, src))
-					if (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/irrigation/flooded))
-						flooded = TRUE
-						if (istype(TF, /turf/floor/irrigation/flooded))
-							var/turf/floor/irrigation/flooded/WT = TF
-							if (WT.salty)
-								ChangeTurf(/turf/floor/irrigation/flooded/salty)
-							else
-								ChangeTurf(/turf/floor/irrigation/flooded)
-						else if (istype(TF, /turf/floor/beach/water))
-							var/turf/floor/beach/water/WT = TF
-							if (WT.salty)
-								ChangeTurf(/turf/floor/irrigation/flooded/salty)
-							else
-								ChangeTurf(/turf/floor/irrigation/flooded)
-			for (var/direction in list(1,2,4,8,5,6,9,10))
-				if (istype(get_step(src,direction),/turf))
-					var/turf/FF = get_step(src,direction)
-					if (istype(FF, /turf/floor/irrigation))
-						FF.update_icon() //so siding get updated properly
-/turf/floor/irrigation/make_grass()
-	overlays.Cut()
-	if (islist(decals))
-		decals.Cut()
-		decals = null
-
-	set_light(0)
-	levelupdate()
-
-	ChangeTurf(/turf/floor/irrigation)
-
 /turf/floor/irrigation/flooded
 	name = "flooded irrigation channel"
 	flooded = TRUE
-	icon_state = "irrigation_flooded"
-	base_icon_state = "irrigation_flooded"
+	icon_state = "dirt"
 	initial_flooring = /decl/flooring/irrigation/flooded
 	salty = FALSE
 	move_delay = 4
@@ -592,7 +537,7 @@ var/list/global/floor_cache = list()
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			H << "<span class='warning'>Itï¿½s probably not a good idea to drink saltwater.</span>"
 			return
 		H << "You start drinking some water from the flooded irrigation channel..."
 		if (do_after(H,50,src))
