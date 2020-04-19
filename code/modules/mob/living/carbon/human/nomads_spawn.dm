@@ -522,7 +522,7 @@
 					name = species.get_random_russian_name(gender)
 					real_name = name
 					add_note("Known Languages", "Russian")
-					possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
+					possible_h_list = list("Light Blond","Blond","Dirty Blond")
 					possible_e_list = list("Blue","Green")
 					possible_s_list = list(-10,-28)
 				if ("temperate")
@@ -546,7 +546,7 @@
 					name = species.get_random_gaelic_name(gender)
 					real_name = name
 					add_note("Known Languages", "Gaelic")
-					possible_h_list = list("Light Brown","Blond","Dirty Blond","Dark Brown")
+					possible_h_list = list("Orange","Red")
 					possible_e_list = list("Blue","Green","Brown")
 					possible_s_list = list(-22,-37)
 				if ("semiarid","desert")
