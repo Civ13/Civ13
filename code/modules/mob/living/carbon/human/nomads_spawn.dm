@@ -541,7 +541,7 @@
 					add_language("Gaelic",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","Gaelic")
-					for (var/datum/language/german/A in languages)
+					for (var/datum/language/gaelic/A in languages)
 						default_language = A
 					name = species.get_random_gaelic_name(gender)
 					real_name = name
