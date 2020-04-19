@@ -419,7 +419,7 @@ var/list/global/floor_cache = list()
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			H << "<span class='warning'>Itï¿½s probably not a good idea to drink saltwater.</span>"
 			return
 		H << "You start drinking some water from the flooded trench..."
 		if (do_after(H,50,src))
@@ -537,7 +537,7 @@ var/list/global/floor_cache = list()
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			H << "<span class='warning'>Itï¿½s probably not a good idea to drink saltwater.</span>"
 			return
 		H << "You start drinking some water from the flooded irrigation channel..."
 		if (do_after(H,50,src))
