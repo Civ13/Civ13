@@ -21,6 +21,7 @@ var/global/list/image/splatter_cache=list()
 	var/list/datum/disease2/disease/virus2 = list()
 	var/amount = 5
 	var/drytime
+	decay_timer = 216000
 
 /obj/effect/decal/cleanable/blood/reveal_blood()
 /*	if (!fluorescent)
