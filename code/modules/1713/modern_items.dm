@@ -1133,8 +1133,18 @@
 				</html>
 				"}
 		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
-/*
+
 /obj/structure/computer/Topic(href, list/href_list)
-    var/action = href_list["action"]
-    if(action == "textrecieved")
-    if(action == "textenter")*/
+	var/action = href_list["action"]
+	if(action == "textrecieved")
+		var/typenoise = pick('sound/machines/computer/key_1.ogg',
+							 'sound/machines/computer/key_2.ogg',
+							 'sound/machines/computer/key_3.ogg',
+							 'sound/machines/computer/key_4.ogg',
+							 'sound/machines/computer/key_5.ogg',
+							 'sound/machines/computer/key_6.ogg',
+							 'sound/machines/computer/key_7.ogg',
+							 'sound/machines/computer/key_8.ogg')
+		playsound(loc, typenoise, 10, TRUE)
+	if(action == "textenter")
+		playsound(loc, 'sound/machines/computer/key_enter.ogg', 10, TRUE)

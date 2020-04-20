@@ -148,9 +148,11 @@ var/list/interior_areas = list(/area/caribbean/houses,
 			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
 				U.collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					var/turf/floor/dirt/underground/empty/T = src
+					T.mining_clear_debris()
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H, U.rocktype)
+					mining_proc(H)
 				return TRUE
 	if (world.time >= user.next_push)
 		if (ismob(user.pulling))
