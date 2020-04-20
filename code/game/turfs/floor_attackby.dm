@@ -257,6 +257,8 @@
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					var/turf/floor/dirt/underground/empty/TT = src
+					TT.mining_clear_debris()
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
@@ -1039,6 +1041,8 @@
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
 				U.collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					var/turf/floor/dirt/underground/empty/T = src
+					T.mining_clear_debris()
 					return TRUE
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
