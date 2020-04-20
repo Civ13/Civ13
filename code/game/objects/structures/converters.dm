@@ -37,7 +37,7 @@
 				filled = TRUE
 				spawn(delay)
 					visible_message("<span class='alert'>The [name] finishes [actiontext]ing.</span>")
-					for(var/i=0,i<=outputamount,i++)
+					for(var/i=1,i<=outputamount,i++)
 						new output(src.loc)
 					icon_state = idlesprite
 					if(overlayed)
