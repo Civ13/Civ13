@@ -316,6 +316,7 @@
 /obj/item/stack/material/rettedfabric
 	name = "retted fabric"
 	icon_state = "sheet-rettedfabric"
+	default_type = "rettedfabric"
 	value = 1
 	w_class = 2.0
 	flammable = TRUE
