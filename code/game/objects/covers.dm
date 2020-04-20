@@ -727,7 +727,7 @@
 	name = "bamboo wall"
 	desc = "A wall made from bamboo."
 	icon = 'icons/obj/bamboostuff.dmi'
-	icon_state = "bamboo_wall"
+	icon_state = "bamboo"
 	health = 80
 	amount = 3
 	layer = 3

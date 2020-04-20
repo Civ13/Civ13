@@ -103,6 +103,8 @@
 			new/obj/structure/window_frame/metal(loc)
 		else if (istype(src, /obj/structure/window/classic/sumerian))
 			new/obj/structure/window_frame/sumerian(loc)
+		else if (istype(src, /obj/structure/window/classic/bamboo))
+			new/obj/structure/window_frame/bamboo(loc)
 		else
 			new/obj/structure/window_frame(loc)
 	qdel(src)
