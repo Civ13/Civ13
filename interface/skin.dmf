@@ -721,8 +721,8 @@ window "outputwindow"
 window "browserwindow"
 	elem "browserwindow"
 		type = MAIN
-		pos = 281,0
-		size = 656x538
+		pos = 372,0
+		size = 640x480
 		anchor1 = none
 		anchor2 = none
 		saved-params = "pos;size;is-minimized;is-maximized"
