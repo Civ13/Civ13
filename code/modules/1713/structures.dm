@@ -561,35 +561,33 @@
 		else
 			H << "<span class='notice'>That does not exist!</span>"
 	else if(istype(W, /obj/item/stack/material/bamboo))
-		var/input
-		var/display = list("Bamboo Door - 1", "Bamboo Wall - 1", "Bamboo Window - 1", "Cancel")
-		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
-		playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Door - 2", "Bamboo Window - 2", "Cancel"))
 		if (input == "Cancel")
 			return
-		var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
-		if(input == "Bamboo Door - 3")
+		if(input == "Bamboo Wall - 3")
 			if(W.amount >= 3)
 				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/bamboo(src.loc)
+					qdel(src)
+					W.amount -= 3
+					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		else if(input == "Bamboo Door - 2")
+			if(W.amount >= 2)
+				if (do_after(H, 40, src))
+					var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
 					S.icon_state = "bamboo-door"
 					S.name = "bamboo door"
 					S.density = FALSE
 					S.opacity = FALSE
 					qdel(src)
-					qdel(W)
-		else if(input == "Bamboo Wall - 2")
-			if(W.amount >= 1)
+					W.amount -= 2
+					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		else if(input == "Bamboo Window - 2")
+			if(W.amount >= 2)
 				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/bamboo(src.loc)
 					qdel(src)
-					qdel(W)
-			return
-		else if(input == "Bamboo Window - 3")
-			if(W.amount >= 3)
-				if (do_after(H, 40, src))
-					new/obj/structure/window_frame/shoji(src.loc)
-					qdel(src)
-					qdel(W)
+					W.amount -= 2
+					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
 		else
 			H << "<span class='notice'>That does not exist!</span>"
-	else
-		..()
