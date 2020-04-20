@@ -503,6 +503,7 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+
 	else if (map.ID == MAP_NOMADS_EUROPE)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
@@ -521,10 +522,10 @@
 					name = species.get_random_russian_name(gender)
 					real_name = name
 					add_note("Known Languages", "Russian")
-					possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
+					possible_h_list = list("Light Blond","Blond","Dirty Blond")
 					possible_e_list = list("Blue","Green")
-					possible_s_list = list(10,28)
-				if ("temperate","sea")
+					possible_s_list = list(-10,-28)
+				if ("temperate")
 					add_language("German",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","English")
@@ -535,19 +536,31 @@
 					add_note("Known Languages", "German")
 					possible_h_list = list("Light Brown","Blond","Dirty Blond")
 					possible_e_list = list("Blue","Green")
-					possible_s_list = list(15,30)
-				if ("semiarid","desert")
-					add_language("Spanish",TRUE)
+					possible_s_list = list(-15,-30)
+				if ("sea")
+					add_language("Gaelic",TRUE)
 					remove_language("English")
-					remove_note("Known Languages","English")
-					for (var/datum/language/spanish/A in languages)
+					remove_note("Known Languages","Gaelic")
+					for (var/datum/language/gaelic/A in languages)
 						default_language = A
-					name = species.get_random_spanish_name(gender)
+					name = species.get_random_gaelic_name(gender)
 					real_name = name
-					add_note("Known Languages", "Spanish")
+					add_note("Known Languages", "Gaelic")
+					possible_h_list = list("Orange","Red")
+					possible_e_list = list("Blue","Green","Brown")
+					possible_s_list = list(-22,-37)
+				if ("semiarid","desert")
+					add_language("French",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","French")
+					for (var/datum/language/french/A in languages)
+						default_language = A
+					name = species.get_random_french_name(gender)
+					real_name = name
+					add_note("Known Languages", "French")
 					possible_h_list = list("Light Brown","Dark Brown")
 					possible_e_list = list("Green","Brown")
-					possible_s_list = list(-40,-58)
+					possible_s_list = list(-29,-48)
 
 		new_hair = pick(possible_h_list)
 		new_eyes = pick(possible_e_list)

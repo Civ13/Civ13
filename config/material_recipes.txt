@@ -736,6 +736,7 @@ RECIPE: /material/tin/,small tin pot,/obj/item/weapon/reagent_containers/glass/s
 RECIPE: /material/tin/,small tin can (x3),/obj/item/weapon/can/small,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,tin can (x2),/obj/item/weapon/can,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95,0,0,8,null
+RECIPE: /material/tin/,dummy armor,/obj/item/weapon/dummy_armor,4,120,1,1,none,18,0,0,8,null
 
 RECIPE: /material/copper/,telegraph,/obj/structure/telegraph,12,90,1,1,machinery,105,0,0,8,null
 RECIPE: /material/copper/,teleprinter,/obj/structure/teleprinter,12,120,1,1,machinery,105,0,0,8,null
@@ -823,6 +824,7 @@ RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tool
 RECIPE: /material/steel/,red toolbox,/obj/item/weapon/storage/toolbox,4,60,0,1,storage,95,0,0,8,null
 RECIPE: /material/steel/,blue toolbox,/obj/item/weapon/storage/toolbox/blue,4,60,0,1,storage,95,0,0,8,null
 RECIPE: /material/steel/,yellow toolbox,/obj/item/weapon/storage/toolbox/yellow,4,60,0,1,storage,95,0,0,8,null
+RECIPE: /material/steel/,footlocker,/obj/structure/closet/crate/footlocker,1.5,50,0,1,storage,95,0,0,8,null
 RECIPE: /material/steel/,steel arrowhead (x4),/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
@@ -931,6 +933,7 @@ RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
+RECIPE: /material/wood/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,39,0,2,wood
 
 RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,logistics,20,0,0,8,null
 RECIPE: /material/wood/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
@@ -952,7 +955,8 @@ RECIPE: /material/wood/,chair,/obj/structure/bed/chair/wood,4,50,1,1,furniture,1
 RECIPE: /material/wood/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,bookcase,/obj/structure/bookcase,6,80,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,shell rack,/obj/structure/shellrack,6,90,1,1,furniture,80,105,0,8,null
-RECIPE: /material/wood/,target practice dummy,/obj/structure/target_practice,7,120,1,1,furniture,18,0,0,8,null
+RECIPE: /material/wood/,target practice dummy,/obj/structure/target_practice,8,120,1,1,furniture,18,0,0,8,null
+RECIPE: /material/wood/,target practice target,/obj/structure/target_practice/target,6,120,1,1,furniture,18,0,0,8,null
 RECIPE: /material/wood/,bed,/obj/structure/bed/wood,4,60,_one_per_turf = 1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,military crate,/obj/structure/closet/crate/ww2,5,50,1,1,furniture,105,0,0,8,null

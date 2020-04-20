@@ -1128,6 +1128,9 @@
 				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
 					user << "<span class='notice'>You can't dig up here, there is something blocking the way!</span>"
 					return
+			if (istype(TB, /turf/floor/beach/water) || istype(TB, /turf/floor/lava))
+				user << "<span class='notice'>You can't dig down here, there is something blocking the way!</span>"
+				return
 			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
 				user << "<span class='notice'>You can't dig up on that type of floor!</span>"
 				return

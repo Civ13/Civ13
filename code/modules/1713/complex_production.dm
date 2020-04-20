@@ -472,6 +472,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/tripe
 	name = "tripe"
 	desc = "stomach lining, tasty!"
+	icon = 'icons/obj/complex_foods.dmi'
 	icon_state = "tripe"
 	bitesize = 1
 	raw = FALSE
