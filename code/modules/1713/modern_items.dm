@@ -1133,8 +1133,8 @@
 				</html>
 				"}
 		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
-
+/*
 /obj/structure/computer/Topic(href, list/href_list)
     var/action = href_list["action"]
     if(action == "textrecieved")
-    if(action == "textenter")
+    if(action == "textenter")*/
