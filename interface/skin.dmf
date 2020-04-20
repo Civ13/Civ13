@@ -721,12 +721,13 @@ window "outputwindow"
 window "browserwindow"
 	elem "browserwindow"
 		type = MAIN
-		pos = 372,0
-		size = 640x480
+		pos = 281,0
+		size = 656x538
 		anchor1 = none
 		anchor2 = none
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Browser"
+		statusbar = false
 		is-pane = true
 	elem "browser"
 		type = BROWSER

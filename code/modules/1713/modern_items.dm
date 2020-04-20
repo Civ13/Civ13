@@ -1099,64 +1099,42 @@
 		icon_state = "1980_computer_off"
 /obj/structure/computer/proc/load_os()
 	if(operatingsystem == "ungaOS")
-		var/os = {"<!DOCTYPE html>
-		<html>
-		<head>
-		<title>Unga OS V 0.1</title>
-		<script>
-		var lastVals = new Array();
-		var lastValsOffset = 0;
-		function keydownfunc (event)
-		{
-			var theKey = (event.which) ? event.which : event.keyCode;
-			if (theKey == 38)
-			{
-				if (lastVals.length > lastValsOffset)
-				{
-					document.getElementById("consoleinput_text").value = lastVals\[lastVals.length - lastValsOffset - 1];
-					lastValsOffset++;
-					if (lastValsOffset >= lastVals.length)
-					{
-						lastValsOffset = 0;
+		var/os = {"
+				<!DOCTYPE html>
+				<html>
+				<head>
+				<title>Unga OS V 0.1</title>
+				<style>
+				body {
+					background-color: #161610
+				}
+				.vertical-center {
+				  margin: 0;
+				  position: absolute;
+				  top: 40%;
+				  -ms-transform: translateY(-50%);
+				  transform: translateY(-50%);
+				  padding-left: 5%
+				}
+				</style>
+				<script type="text/javascript">
+					typeFunction() {
+						if (e.keyCode == 13) {
+							byond://?src=\ref[src]&action=textenter&value=document.getElementById('input').value
+					    }
+						byond://?src=\ref[src]&action=textrecieved&value=document.getElementById('input').value
 					}
-				}
-			}
-			else if (theKey == 40)
-			{
-				if (lastValsOffset > 0)
-				{
-					lastValsOffset--;
-					document.getElementById("consoleinput_text").value = lastVals\[lastVals.length - lastValsOffset - 1];
-				}
-			}
-		}
-		function lineEnter (ev)
-			{
-				if (document.getElementById("consoleinput_text").value != null)
-				{
-					document.getElementById("display").textContent += document.getElementById("consoleinput_text").value;
-					lastVals.push(document.getElementById("consoleinput_text").value);
-					document.location = "byond://?src=\ref[src]&command=" + encodeURIComponent(document.getElementById("consoleinput_text").value);
-					document.getElementById("consoleinput_text").focus();
-					document.getElementById("consoleinput_text").value = "";
-				}
-			}
-		</script>
-		<style>
-		body {
-		    background-color: #161610
-		}
-		</style>
-		</head>
-		<center>
-		<textarea id="display" name="display" rows="20" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">"}
-		for(var/i in display)
-			os += i
-		os += {"</textarea>
-		<form name="consoleinput" action="byond://?src=\ref[src]" method="get" onsubmit="javascript:return lineEnter(event)">
-			<input id = "consoleinput_text" type="text" name="command" maxlength="300" size="40" onKeyDown="javascript:return keydownfunc(event)">
-			<input type="submit" value="Enter">
-		</form>
-		</center>
-		</html>"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+				</head>
+				<div class="vertical-center">
+				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
+				</textarea>
+				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
+				</div>
+				</html>
+				"}
+		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
+
+/obj/structure/computer/Topic(href, list/href_list)
+    var/action = href_list["action"]
+    if(action == "textrecieved")
+    if(action == "textenter")
