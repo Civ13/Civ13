@@ -536,6 +536,7 @@
 	var/lamb = FALSE
 	herbivore = 1
 	var/sheared = FALSE
+	wandersounds = list('sound/animals/sheep/sheep_1.ogg','sound/animals/sheep/sheep_2.ogg')
 
 /mob/living/simple_animal/sheep/update_icons()
 	..()
