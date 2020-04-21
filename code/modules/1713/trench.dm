@@ -561,13 +561,21 @@ var/list/global/floor_cache = list()
 		var/turf/T = get_step(src, checkdir)
 		if (!istype(T, /turf/floor))
 			continue
+		var/turf/floor/F = T
+		if (F.flooded || istype(F, /turf/floor/beach/water))
+			flooded = TRUE
+			if (F.salty)
+				salty = TRUE
+		if (flooded || istype(src, /turf/floor/beach/water))
+			F.flooded = TRUE
+			if (salty)
+				F.salty = TRUE
 		if (!can_join_with(T))
 			continue
 		if (update_self)
 			if (can_join_with(T))
 				junction |= get_dir(src,T)
 		if (update_others)
-			var/turf/floor/F = T
 			F.check_relatives(1,0)
 	if (!isnull(junction))
 		var/tpicon = ""
