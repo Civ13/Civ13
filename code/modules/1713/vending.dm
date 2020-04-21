@@ -184,7 +184,7 @@
 		/obj/item/clothing/shoes/jackboots = 15,
 		/obj/item/clothing/under/ww2/us = 15,
 		/obj/item/clothing/under/ww2/us_shirtless = 15,
-		/obj/item/clothing/head/helmet/ww2/us = 15,
+		/obj/item/clothing/head/helmet/ww2/usm1 = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
