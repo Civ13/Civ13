@@ -558,25 +558,26 @@ var/list/global/floor_cache = list()
 	if (update_self)
 		junction = FALSE
 	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
+		var/turf/floor/T = get_step(src, checkdir)
 		if (!istype(T, /turf/floor))
 			continue
-		var/turf/floor/F = T
-		if (F.flooded || istype(F, /turf/floor/beach/water))
+		if (T.flooded || istype(T, /turf/floor/beach/water))
 			flooded = TRUE
-			if (F.salty)
+			if (T.salty)
 				salty = TRUE
 		if (flooded || istype(src, /turf/floor/beach/water))
-			F.flooded = TRUE
+			T.flooded = TRUE
 			if (salty)
-				F.salty = TRUE
-		if (!can_join_with(T))
+				T.salty = TRUE
+		if (!T.irrigation)
 			continue
 		if (update_self)
-			if (can_join_with(T))
+			if (T.irrigation)
 				junction |= get_dir(src,T)
 		if (update_others)
-			F.check_relatives(1,0)
+			T.check_relatives(1,0)
+		if (flooded)
+			T.expand_flood()
 	if (!isnull(junction))
 		var/tpicon = ""
 		if (flooded)
@@ -584,7 +585,17 @@ var/list/global/floor_cache = list()
 		irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation[junction][tpicon]", layer = src.layer += 0.01)
 	update_icon()
 
-/turf/floor/proc/can_join_with(var/turf/floor/W)
-	if (W.irrigation)
-		return TRUE
-	return FALSE
+/turf/floor/proc/expand_flood()
+	if (!flooded)
+		return
+	for (var/checkdir in cardinal)
+		var/turf/floor/T = get_step(src, checkdir)
+		if (!istype(T, /turf/floor) || !T.irrigation)
+			continue
+		if (salty && !T.salty)
+			T.salty = TRUE
+		if (flooded && !T.flooded)
+			T.flooded = TRUE
+			T.expand_flood()
+			T.check_relatives()
+	return
