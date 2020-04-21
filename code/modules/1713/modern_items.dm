@@ -994,7 +994,7 @@
 	var/internals = list()
 	var/operatingsystem = "ungaOS"
 	var/memory = list()
-	var/display = list()
+	var/display = "UngaOS V 0.0.1<br>"
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -1127,7 +1127,9 @@
 				</head>
 				<div class="vertical-center">
 				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
-				</textarea>
+				"}
+		os+=display
+		os+={"</textarea>
 				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
 				</div>
 				</html>
@@ -1148,3 +1150,4 @@
 		playsound(loc, typenoise, 10, TRUE)
 	if(action == "textenter")
 		playsound(loc, 'sound/machines/computer/key_enter.ogg', 10, TRUE)
+		display+=href_list["value"]
