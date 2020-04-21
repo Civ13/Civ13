@@ -777,6 +777,7 @@
 	material = "Stone"
 	hardness = 100
 	buildstack = /obj/item/stack/material/stone
+	adjusts=FALSE
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
