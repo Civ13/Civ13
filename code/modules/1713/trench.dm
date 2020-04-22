@@ -12,6 +12,7 @@ var/list/global/floor_cache = list()
 	flooded = FALSE
 	salty = FALSE
 	var/message_cooldown = 0
+	var/previous_turf = /turf/floor/dirt
 
 /turf/floor/trench/New()
 	if (!icon_state)
@@ -322,7 +323,9 @@ var/list/global/floor_cache = list()
 				return
 			if(2)
 				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-				ChangeTurf(/turf/floor/trench)
+				var/turf/floor/trench/T = new /turf/floor/trench
+				T.previous_turf = src
+				ChangeTurf(T)
 		return
 	..()
 
@@ -344,7 +347,9 @@ var/list/global/floor_cache = list()
 					return
 				if(2)
 					visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-					ChangeTurf(/turf/floor/trench)
+					var/turf/floor/trench/T = new /turf/floor/trench
+					T.previous_turf = src
+					ChangeTurf(T)
 		return
 	..()
 
@@ -364,7 +369,9 @@ var/list/global/floor_cache = list()
 					return
 				if(2)
 					visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-					ChangeTurf(/turf/floor/trench)
+					var/turf/floor/trench/T = new /turf/floor/trench
+					T.previous_turf = src
+					ChangeTurf(T)
 		return
 	/*else if (istype(C, /obj/item/weapon/shovel))
 		if(src.available_dirt <= 0)

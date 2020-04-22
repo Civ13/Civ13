@@ -57,7 +57,13 @@
 		if (!do_after(user, (C.cooldownw * C.force)))
 			return
 		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
-		qdel(src)
+		var/area/AREA = get_area(src)
+		if(map.ID == MAP_NOMADS_DESERT)
+			ChangeTurf(/turf/floor/dirt/dust)
+		else if (AREA.climate == "jungle" || AREA.climate == "savanna")
+			ChangeTurf(/turf/floor/dirt/jungledirt)
+		else
+			ChangeTurf(/turf/floor/dirt)
 	..()
 /obj/structure/wild/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(src, /obj/structure/wild/junglebush) || istype(src, /obj/structure/wild/smallbush/) || istype(src, /obj/structure/wild/burnedbush/) || istype(src, /obj/structure/wild/tallgrass2) || istype(src, /obj/structure/wild/tallgrass) || istype(src, /obj/structure/wild/flowers) || istype(src, /obj/structure/wild/bush/big) || istype(src, /obj/structure/wild/bush))
