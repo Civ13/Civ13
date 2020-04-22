@@ -385,6 +385,15 @@
 	..()
 	icon_state = "rock_debris[rand(1,2)]"
 
+/turf/floor/dirt/underground/empty/proc/mining_clear_debris()
+	var/area/A = get_area(get_turf(src))
+	if(map.ID == MAP_NOMADS_DESERT)
+		ChangeTurf(/turf/floor/dirt/dust)
+	else if (A.climate == "jungle" || A.climate == "savanna")
+		ChangeTurf(/turf/floor/dirt/jungledirt)
+	else
+		ChangeTurf(/turf/floor/dirt)
+
 /turf/floor/dirt/ploughed
 	name = "ploughed field"
 	icon = 'icons/turf/floors.dmi'

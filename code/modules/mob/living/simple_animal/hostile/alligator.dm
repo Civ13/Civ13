@@ -28,6 +28,7 @@
 	carnivore = 1
 	can_bite_limbs_off = TRUE
 	faction = "neutral"
+	hostilesounds = list('sound/animals/alligator/alligator_grunt.ogg')
 
 
 /mob/living/simple_animal/hostile/mirelurk

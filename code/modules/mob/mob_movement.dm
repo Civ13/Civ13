@@ -542,6 +542,28 @@
 				if (world.time >= mob.next_mud_message)
 					mob << "<span class = 'warning'>The mud slows you down.</span>"
 					mob.next_mud_message = world.time+100
+					if (ishuman(mob))
+						var/mob/living/carbon/human/perp = mob
+						var/obj/item/organ/external/l_foot = perp.get_organ("l_foot")
+						var/obj/item/organ/external/r_foot = perp.get_organ("r_foot")
+						var/hasfeet = TRUE
+						if ((!l_foot || l_foot.is_stump()) && (!r_foot || r_foot.is_stump()))
+							hasfeet = FALSE
+						if (hasfeet && perp.shoes && !perp.buckled)//Adding blood to shoes
+							var/obj/item/clothing/shoes/S = perp.shoes
+							if (istype(S))
+								S.blood_color = "#70543E"
+								S.track_blood = max(5,S.track_blood)
+								if (!S.blood_overlay)
+									S.generate_blood_overlay()
+								if (!S.blood_DNA)
+									S.blood_DNA = list()
+									S.blood_overlay.color = "#70543E"
+									S.overlays += S.blood_overlay
+								if (S.blood_overlay && S.blood_overlay.color != "#70543E")
+									S.blood_overlay.color = "#70543E"
+									S.overlays.Cut()
+									S.overlays += S.blood_overlay
 			if (!H.crab)
 				move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))

@@ -44,8 +44,6 @@
 		//things that require the database//
 		////////////////////////////////////
 	var/player_age = 0	//So admins know why it isn't working - Used to determine how old the account is - in days.
-	//preload_rsc = TRUE // This was FALSE, so Bay12 can set it to an URL once the player logs in and have them download the resources from a different server. But we change it.
-	preload_rsc = TRUE
 
 	var/next_normal_respawn = -1
 

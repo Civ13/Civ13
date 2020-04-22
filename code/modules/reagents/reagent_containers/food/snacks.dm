@@ -547,21 +547,6 @@
 	else
 		..()
 
-
-/obj/item/weapon/reagent_containers/food/snacks/meatball
-	name = "meatball"
-	desc = "A great meal all round."
-	icon_state = "meatball"
-	filling_color = "#DB0000"
-	center_of_mass = list("x"=16, "y"=16)
-	decay = 12*600
-	satisfaction = 8
-	non_vegetarian = TRUE
-	New()
-		..()
-		reagents.add_reagent("protein", 3)
-		bitesize = 2
-
 /obj/item/weapon/reagent_containers/food/snacks/sausage
 	name = "Sausage"
 	desc = "A piece of mixed, long meat."
@@ -1662,20 +1647,6 @@
 	non_vegetarian = TRUE
 	decay = 12*600
 	satisfaction = 5
-	New()
-		..()
-		reagents.add_reagent("protein", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/rawmeatball
-	name = "raw meatball"
-	desc = "A raw meatball."
-	icon = 'icons/obj/food/food_ingredients.dmi'
-	icon_state = "rawmeatball"
-	satisfaction = -2
-	bitesize = 2
-	center_of_mass = list("x"=16, "y"=15)
-	decay = 17*600
-	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 2)

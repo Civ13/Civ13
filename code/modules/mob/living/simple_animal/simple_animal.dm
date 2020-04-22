@@ -65,7 +65,6 @@
 
 	var/removed_from_list = FALSE //this is fucking stupid. But I have to do it because the death() proc runs 30 times or some shit. Thx BYOND -Taislin
 
-
 	//hostile mob stuff
 	var/stance = HOSTILE_STANCE_IDLE	//Used to determine behavior
 	var/mob/living/target_mob
@@ -77,6 +76,12 @@
 	var/enroute = FALSE
 	var/stance_step = FALSE
 	var/can_bite_limbs_off = FALSE
+	//SoundFX
+	var/hostilesounds = list()
+	var/wandersounds = list()
+
+	//Radiation Varients
+	var/mutation_variants = list()
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -227,7 +232,9 @@
 		return "wander"
 	else if (t_behaviour == "hunt" || t_behaviour == "defends")
 		a_intent = I_HARM
-
+		if(prob(50))
+			if(!isemptylist(wandersounds))
+				playsound(src, pick(hostilesounds), 60)
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
 			if (turns_since_move >= move_to_delay && stance==HOSTILE_STANCE_IDLE)
@@ -265,6 +272,8 @@
 							var/action = pick( list( "stares alertly at [target_mob].", "closely watches [target_mob]." ) )
 							if (action)
 								custom_emote(1,action)
+								if(!isemptylist(hostilesounds))
+									playsound(src, pick(hostilesounds), 60)
 				if (!found_mob)
 					stance_step--
 
@@ -518,11 +527,24 @@
 							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/boar))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach(get_turf(src))
 							new/obj/item/weapon/pigleg(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/chicken) || istype(src, /mob/living/simple_animal/rooster))
 							new/obj/item/weapon/chicken_carcass(get_turf(src))
 						else if (istype(src, /mob/living/simple_animal/cow) || istype(src, /mob/living/simple_animal/bull))
 							new/obj/item/weapon/reagent_containers/food/snacks/cow/stomach(get_turf(src))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meat"
+								meat.radiation = radiation/2
+						else if (istype(src, /mob/living/simple_animal/goat))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach/goat(get_turf(src))
+							for (var/i=0, i<=namt, i++)
+								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+								meat.name = "[name] meat"
+								meat.radiation = radiation/2
+						else if (istype(src, /mob/living/simple_animal/sheep))
+							new/obj/item/weapon/reagent_containers/food/snacks/pig/stomach/sheep(get_turf(src))
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 								meat.name = "[name] meat"
@@ -738,6 +760,8 @@
 		verb = pick(speak_emote)
 
 	message = sanitize(message)
+	if(!isemptylist(wandersounds))
+		playsound(src, pick(wandersounds), 60)
 
 	..(message, language, verb)
 
@@ -1013,11 +1037,28 @@
 		radiation = 0
 	if(radiation > 0)
 		radiation -= 0.05
-		switch(radiation)
-			if(100 to INFINITY)
-				adjustFireLoss(radiation*0.002)
-				updatehealth()
+		if(radiation >= 80 && radiation <= 100) //"Safe" Mutation/Radiation amount. Low Chance.
+			if(prob(1))
+				mutate()
+		else if(radiation >= 100 && radiation <= 150) //Unsafe levels of radiation, Higher chance.
+			adjustFireLoss(radiation*0.002)
+			updatehealth()
+			if(prob(5))
+				mutate()
+		else if(radiation >= 150 && radiation <= 200) //Very unsafe levels of radiation.
+			adjustFireLoss(radiation*0.004)
+			updatehealth()
+			if(prob(15))
+				mutate()
+		else if(radiation >= 200) //How is it still even alive!?!?
+			adjustFireLoss(radiation*0.006)
+			updatehealth()
+			if(prob(25))
+				mutate()
+		else
+			return
 
-		if (radiation > 80)
-			death()
+/mob/living/simple_animal/proc/mutate()
+	if(mutation_variants == null)
 		return
+	..()

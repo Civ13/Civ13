@@ -44,19 +44,19 @@
 	for (var/mob/living/simple_animal/mouse/snack in oview(src,5))
 		if (snack.stat < DEAD && prob(15))
 			audible_emote(pick("growls!","barks fiercely at the [snack]!","eyes [snack] and sniffs the floor!"))
-			playsound(src.loc, 'sound/animals/dogbark1.ogg', 100, TRUE, 3)
+			playsound(src.loc, 'sound/animals/dog/dogbark1.ogg', 100, TRUE, 3)
 		break
 
 	for (var/mob/living/simple_animal/cat/cats in oview(src,5))
 		if (cats.stat < DEAD && prob(35))
 			audible_emote(pick("growls!","barks fiercely at the [cats]!","eyes [cats] attentively!"))
-			playsound(src.loc, 'sound/animals/dogbark1.ogg', 100, TRUE, 3)
+			playsound(src.loc, 'sound/animals/dog/dogbark1.ogg', 100, TRUE, 3)
 		break
 
 	for (var/mob/living/simple_animal/hostile/enemy in orange(src,15))
 		if (enemy.stat < DEAD && prob(35))
 			audible_emote(pick("barks in fear!","smells something!"))
-			playsound(src.loc, 'sound/animals/dogbark2.ogg', 100, TRUE, 3)
+			playsound(src.loc, 'sound/animals/dog/dogbark2.ogg', 100, TRUE, 3)
 		break
 	if (incapacitated())
 		return

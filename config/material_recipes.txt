@@ -536,10 +536,12 @@ RECIPE: /material/stone/,scientific rock slate,/obj/item/weapon/book/research,4,
 RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,stone
 
 RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,floors,0,0,0,8,null
-RECIPE: /material/stone/,slate floor,/obj/covers/slatefloor,1.2,25,1,1,floors,25,0,0,8,null
+RECIPE: /material/stone/,slate floor,/obj/covers/slatefloor,1,25,1,1,floors,25,0,0,8,null
 RECIPE: /material/stone/,roman road,/obj/covers/romanroad,1,25,1,1,floors,20,0,0,8,null
 RECIPE: /material/stone/,marble floor,/obj/covers/marblefloor,1,25,1,1,floors,32,0,0,8,null
+RECIPE: /material/stone/,ornate marble tile,/obj/covers/marblefloor,1,25,1,1,floors,32,0,0,8,null
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,floors,100,0,0,8,null
+RECIPE: /material/stone/,sidewalk,/obj/covers/sidewalk,1,25,1,1,floors,100,0,0,8,null
 
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
@@ -565,7 +567,8 @@ RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,
 RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
 
 RECIPE: /material/stone/,stone bricks,/obj/item/stack/material/stonebrick,1,25,1,1,none,35,0,0,8,null
-RECIPE: /material/stonebricks/,stone brick wall,/obj/covers/stone_wall/brick,6,140,1,1,none,35,0,0,8,null
+RECIPE: /material/stonebrick/,stone brick wall,/obj/covers/stone_wall/brick,6,140,1,1,none,35,0,0,8,null
+RECIPE: /material/stonebrick/,stone brick floor,/obj/covers/stonebrickfloor,1,25,1,1,none,18,0,0,8,null
 
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,construction,0,0,0,2,null
 RECIPE: /material/stone/,stone block wall,/obj/covers/stone_wall/classic,8,140,1,1,construction,0,0,0,2,null
@@ -727,12 +730,13 @@ RECIPE: /material/silver/,silver-tipped spear,/obj/item/weapon/material/spear,1,
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver crown,/obj/item/clothing/head/helmet/silver_crown,3,135,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver arm bangles,/obj/item/clothing/accessory/armband/armbangle/silver,2,95,0,1,none,0,0,0,8,null
-RECIPE: /material/gold/,silver statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,silver
+RECIPE: /material/silver/,silver statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,silver
 
 RECIPE: /material/tin/,small tin pot,/obj/item/weapon/reagent_containers/glass/small_pot,3,120,0,1,none,0,0,0,8,null
 RECIPE: /material/tin/,small tin can (x3),/obj/item/weapon/can/small,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,tin can (x2),/obj/item/weapon/can,1,50,0,1,none,95,0,0,8,null
 RECIPE: /material/tin/,large tin can,/obj/item/weapon/can/large,1,50,0,1,none,95,0,0,8,null
+RECIPE: /material/tin/,dummy armor,/obj/item/weapon/dummy_armor,4,120,1,1,none,18,0,0,8,null
 
 RECIPE: /material/copper/,telegraph,/obj/structure/telegraph,12,90,1,1,machinery,105,0,0,8,null
 RECIPE: /material/copper/,teleprinter,/obj/structure/teleprinter,12,120,1,1,machinery,105,0,0,8,null
@@ -820,6 +824,7 @@ RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tool
 RECIPE: /material/steel/,red toolbox,/obj/item/weapon/storage/toolbox,4,60,0,1,storage,95,0,0,8,null
 RECIPE: /material/steel/,blue toolbox,/obj/item/weapon/storage/toolbox/blue,4,60,0,1,storage,95,0,0,8,null
 RECIPE: /material/steel/,yellow toolbox,/obj/item/weapon/storage/toolbox/yellow,4,60,0,1,storage,95,0,0,8,null
+RECIPE: /material/steel/,footlocker,/obj/structure/closet/crate/footlocker,1.5,50,0,1,storage,95,0,0,8,null
 RECIPE: /material/steel/,steel arrowhead (x4),/obj/item/stack/arrowhead/steel,1,10,0,1,projectiles,0,45,0,8,null
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,none,24,33,0,8,steel
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
@@ -928,6 +933,7 @@ RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
+RECIPE: /material/wood/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,39,0,2,wood
 
 RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,logistics,20,0,0,8,null
 RECIPE: /material/wood/,rollingpin,/obj/item/weapon/material/kitchen/rollingpin,1,50,0,1,tools,22,0,0,8,null
@@ -949,7 +955,8 @@ RECIPE: /material/wood/,chair,/obj/structure/bed/chair/wood,4,50,1,1,furniture,1
 RECIPE: /material/wood/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,bookcase,/obj/structure/bookcase,6,80,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,shell rack,/obj/structure/shellrack,6,90,1,1,furniture,80,105,0,8,null
-RECIPE: /material/wood/,target practice dummy,/obj/structure/target_practice,7,120,1,1,furniture,18,0,0,8,null
+RECIPE: /material/wood/,target practice dummy,/obj/structure/target_practice,8,120,1,1,furniture,18,0,0,8,null
+RECIPE: /material/wood/,target practice target,/obj/structure/target_practice/target,6,120,1,1,furniture,18,0,0,8,null
 RECIPE: /material/wood/,bed,/obj/structure/bed/wood,4,60,_one_per_turf = 1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/,military crate,/obj/structure/closet/crate/ww2,5,50,1,1,furniture,105,0,0,8,null
@@ -1055,6 +1062,8 @@ RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,2
 RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
+RECIPE: /material/iron/,pitchfork,/obj/item/weapon/material/pitchfork,4,120,0,1,tools,30,0,0,8,null
+
 RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
 RECIPE: /material/iron/,cooking pot,/obj/structure/pot,8,180,1,1,production,33,0,0,8,null
 RECIPE: /material/iron/,oven,/obj/structure/oven,8,150,1,1,production,33,0,0,8,null
@@ -1130,7 +1139,7 @@ RECIPE: /material/iron/,ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,
 RECIPE: /material/iron/,armor workbench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
 RECIPE: /material/iron/,large drying rack,/obj/structure/drying_rack,8,120,1,1,production,0,0,16,8,null
-RECIPE: /material/iron/,meat grinder,/obj/structure/meat_grinder,8,120,1,1,production,0,0,16,8,null
+RECIPE: /material/iron/,meat grinder,/obj/structure/meat_grinder,8,120,1,1,production,0,0,90,8,null
 
 RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,125,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,egyptian wall,/obj/covers/stone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null

@@ -589,7 +589,8 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 
 /material/rettedfabric
-	name = "retted fabric"
+	name = "rettedfabric"
+	display_name = "retted fabric"
 	icon_colour = "#c19a6b"
 	stack_type = /obj/item/stack/material/rettedfabric
 	hardness = 7

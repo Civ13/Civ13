@@ -4,11 +4,15 @@
 	desc = "A wood platform, covered in straw. Used for training both melee and ranged weapons."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "target_dummy"
+	var/wreckage_icon = "target_dummy_wreckage"
 	density = TRUE
 	w_class = 5
 	var/health = 100
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	var/ranged = TRUE
+	var/melee = TRUE
+	var/humanoid = TRUE
 
 /obj/structure/target_practice/indestructible
 
@@ -18,7 +22,14 @@
 /obj/structure/target_practice/indestructible/ex_act()
 	return
 /obj/structure/target_practice/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
-
+	if (istype(W, /obj/item/weapon/dummy_armor))
+		if(src.humanoid)
+			visible_message("<span class='notice'>[user] put [W] on the [src]!</span>","<span class='notice'>You put [W] on the [src]!</span>")
+			src.icon_state = icon_state + "_armor"
+			src.health += 200
+			qdel(W)
+		else
+			user << "<span class='notice'>That doesn't fit on [src]</span>"
 	if (istype(W, /obj/item/weapon/material))
 		user.setClickCooldown(W.cooldownw)
 		if (W.attack_verb.len)
@@ -32,9 +43,11 @@
 		check_health()
 		if (prob(20))
 			if (prob(80))
-				user.adaptStat("swords", 1)
+				if(melee)
+					user.adaptStat("swords", 1)
 			else
-				user.adaptStat("strength", 1)
+				if(melee)
+					user.adaptStat("strength", 1)
 			return
 		else
 			return
@@ -53,9 +66,11 @@
 		check_health()
 		if (prob(20))
 			if (prob(60))
-				user.adaptStat("strength", 1)
+				if(melee)
+					user.adaptStat("strength", 1)
 			else
-				user.adaptStat("dexterity", 1)
+				if(melee)
+					user.adaptStat("dexterity", 1)
 			return
 		else
 			return
@@ -70,20 +85,70 @@
 		if (prob(40))
 			switch (proj.firedfrom.gun_type)
 				if (GUN_TYPE_RIFLE)
-					H.adaptStat("rifle", 1)
+					if(ranged)
+						H.adaptStat("rifle", 1)
 				if (GUN_TYPE_PISTOL)
-					H.adaptStat("pistol", 1)
+					if(ranged)
+						H.adaptStat("pistol", 1)
 				if (GUN_TYPE_BOW)
-					H.adaptStat("bows", 1)
-		else
-			return
+					if(ranged)
+						H.adaptStat("bows", 1)
 		visible_message("<span class='notice'>[H] hits the target with the [proj]!</span>","<span class='notice'>You hit the target with the [proj]!</span>")
-
+		if(istype(src, /obj/structure/target_practice/target))
+			if (istype(proj, /obj/item/projectile/arrow/arrow))
+				if(prob(75))
+					if(istype(proj, /obj/item/projectile/arrow/arrow/stone))
+						new/obj/item/ammo_casing/arrow/stone(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/arrow/flint))
+						new/obj/item/ammo_casing/arrow/flint(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/arrow/sandstone))
+						new/obj/item/ammo_casing/arrow/sandstone(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/arrow/copper))
+						new/obj/item/ammo_casing/arrow/copper(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/arrow/iron))
+						new/obj/item/ammo_casing/arrow/iron(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/arrow/bronze))
+						new/obj/item/ammo_casing/arrow/bronze(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/arrow/steel))
+						new/obj/item/ammo_casing/arrow/steel(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/arrow/modern))
+						new/obj/item/ammo_casing/arrow/modern(src.loc)
+					else
+						new/obj/item/ammo_casing/arrow(src.loc)
+					visible_message("<span class = 'warning'>The arrow falls to the ground!</span>")
+				else
+					visible_message("<span class = 'warning'>The arrow shatters!</span>")
+			else if (istype(proj, /obj/item/projectile/arrow/bolt))
+				if(prob(75))
+					if(istype(proj, /obj/item/projectile/arrow/bolt/stone))
+						new/obj/item/ammo_casing/bolt/stone(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/bolt/flint))
+						new/obj/item/ammo_casing/bolt/flint(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/bolt/sandstone))
+						new/obj/item/ammo_casing/bolt/sandstone(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/bolt/copper))
+						new/obj/item/ammo_casing/bolt/copper(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/bolt/iron))
+						new/obj/item/ammo_casing/bolt/iron(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/bolt/bronze))
+						new/obj/item/ammo_casing/bolt/bronze(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/bolt/steel))
+						new/obj/item/ammo_casing/bolt/steel(src.loc)
+					else if(istype(proj, /obj/item/projectile/arrow/bolt/modern))
+						new/obj/item/ammo_casing/bolt/modern(src.loc)
+					else
+						new/obj/item/ammo_casing/bolt(src.loc)
+					visible_message("<span class = 'warning'>The bolt falls to the ground!</span>")
+				else
+					visible_message("<span class = 'warning'>The bolt shatters!</span>")
 	return
 
 /obj/structure/target_practice/proc/check_health()
 	if (health <= 0)
 		visible_message("<span class='notice'>The dummy is broken apart!</span>")
+		var/obj/structure/target_practice_wreckage/JUNK = new /obj/structure/target_practice_wreckage(src.loc)
+		JUNK.target_type = src
+		JUNK.icon = src.wreckage_icon
 		qdel(src)
 		return
 	else
@@ -93,3 +158,54 @@
 	visible_message("\The [src] blows up!")
 	qdel(src)
 	return
+
+/obj/item/weapon/dummy_armor
+	name = "dummy armor"
+	desc = "A set of preadjusted cheap armor, to extend the life of a training dummy."
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "dummy_armor"
+	w_class = 3.0
+	throwforce = FALSE
+	throw_speed = 1
+	throw_range = 3
+
+/obj/structure/target_practice_wreckage/
+	name = "dummy wreckage"
+	desc = "The wreckage of a training dummy. Can be fixed with wood."
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "target_dummy_wreckage"
+	var/target_type = /obj/structure/target_practice
+	density = TRUE
+	w_class = 5
+	var/health = 10
+	not_movable = FALSE
+	not_disassemblable = FALSE
+
+/obj/structure/target_practice_wreckage/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+	var/mob/living/carbon/human/H = user
+	if(istype(W, /obj/item/stack/material/wood))
+		if(W.amount >= 3)
+			visible_message("<span class='danger'>[user] starts repairing the dummy..</span>")
+			if(do_after(H, (60 / H.getStatCoeff("crafting")), H.loc))
+				visible_message("<span class='danger'>[user] finishes repairing the dummy.</span>")
+				W.amount -= 3
+				if(W.amount <= 0)
+					qdel(W)
+				new target_type(src.loc)
+				qdel(src)
+				if (ishuman(user))
+					H.adaptStat("crafting", 1)
+
+/obj/structure/target_practice/target
+	name = "target practice target"
+	desc = "A wood target, covered in straw. Used for training ranged weapons."
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "target_dummy_target"
+	density = TRUE
+	w_class = 5
+	health = 100
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	ranged = TRUE
+	melee = FALSE
+	humanoid = FALSE

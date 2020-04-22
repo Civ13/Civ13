@@ -26,6 +26,8 @@
 	layer = 4.1
 	melee_damage_lower = 2
 	melee_damage_upper = 5
+	wandersounds = list('sound/animals/bat/bats_1.ogg','sound/animals/bat/bats_2.ogg','sound/animals/bat/bats_3.ogg')
+	hostilesounds = list('sound/animals/bat/bats_1.ogg','sound/animals/bat/bats_2.ogg','sound/animals/bat/bats_3.ogg')
 /mob/living/simple_animal/vampirebatblack/New()
 	..()
 

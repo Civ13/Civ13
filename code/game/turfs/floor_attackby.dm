@@ -41,7 +41,8 @@
 						M.adjustBruteLoss(rand(9,21))
 						M.Weaken(12)
 					var/turf/floor/dirt/underground/DT = get_turf(src)
-					DT.ChangeTurf(/turf/floor/dirt/underground/empty)
+					if (!istype(DT, /turf/floor/dirt/underground))
+						DT.ChangeTurf(/turf/floor/dirt/underground/empty)
 				else
 					visible_message("The mine starts to cave in!")
 					playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
@@ -52,14 +53,14 @@
 						if (!istype(UT, /turf/floor/dirt/underground))
 							UT.ChangeTurf(/turf/floor/dirt/underground/empty)
 					new/obj/effect/effect/smoke(src)
-			var/area/A = get_area(src)
+			/*var/area/A = get_area(src) //Removed this, caused a very big glitch, this code seems unnecessary.
 			if (supportfound)
 				if(map.ID == MAP_NOMADS_DESERT)
 					ChangeTurf(/turf/floor/dirt/dust)
 				else if (A.climate == "jungle" || A.climate == "savanna")
 					ChangeTurf(/turf/floor/dirt/jungledirt)
 				else
-					ChangeTurf(/turf/floor/dirt)
+					ChangeTurf(/turf/floor/dirt)*/
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
@@ -256,6 +257,8 @@
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					var/turf/floor/dirt/underground/empty/TT = src
+					TT.mining_clear_debris()
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
@@ -1038,6 +1041,8 @@
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
 				U.collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					var/turf/floor/dirt/underground/empty/T = src
+					T.mining_clear_debris()
 					return TRUE
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
@@ -1127,6 +1132,9 @@
 				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
 					user << "<span class='notice'>You can't dig up here, there is something blocking the way!</span>"
 					return
+			if (istype(TB, /turf/floor/beach/water) || istype(TB, /turf/floor/lava))
+				user << "<span class='notice'>You can't dig down here, there is something blocking the way!</span>"
+				return
 			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
 				user << "<span class='notice'>You can't dig up on that type of floor!</span>"
 				return

@@ -86,7 +86,17 @@
 		O.forceMove(loc)
 	else
 		..()
-
+/obj/structure/barricade/wood_pole/attack_hand(mob/living/user as mob)
+	if (!isliving(user))
+		return
+	if (attached_ob && istype(attached_ob, /obj/item/flashlight/lantern))
+		user << "You remove \the [attached_ob] from \the [src]."
+		var/obj/item/flashlight/lantern/O = attached_ob
+		O.anchored = FALSE
+		O.forceMove(user.loc)
+		user.put_in_hands(O)
+		attached_ob = null
+		return
 /obj/structure/barricade/wood_pole/Destroy()
 	if (attached_ob != null)
 		if (istype(attached_ob, /obj/item/flashlight/lantern))
@@ -384,7 +394,14 @@
 	var/symbol = "Moon"
 	var/symbolcolor = null
 
+
 /obj/structure/flag/pole/custom/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+	if(istype(W, /obj/item/weapon))
+		if(W.sharp)
+			H << "You tear down the flag!"
+			new/obj/structure/flag/pole(src.loc)
+			qdel(src)
+/obj/structure/flag/pole/custom/attack_hand(var/mob/living/carbon/human/H)
 	if (uncolored)
 		var/input = input(H, "Flag Color - Choose a hex color (without the # | default is white):", "Flag Color" , "FFFFFF")
 		if (input == null || input == "")
@@ -403,59 +420,59 @@
 				if (!(numtocheck in listallowed))
 					return
 			flagcolor = addtext("#",input)
-		if (!symbol)
-			var/display = list("Moon", "Cross", "Star", "Sun", "Plus", "Saltire", "None", "Cancel")
-			input =  WWinput(H, "What symbol would you like?", "Flag Making", "Cancel", display)
-			playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
-			if (input == "Cancel")
-				return
-			else if(input == "Moon")
-				symbol = "cust_f_moon"
-			else if(input == "Cross")
-				symbol = "cust_f_cross"
-			else if(input == "Star")
-				symbol = "cust_f_star"
-			else if(input == "Sun")
-				symbol = "cust_f_sun"
-			else if(input == "Plus")
-				symbol = "cust_f_plus"
-			else if(input == "Saltire")
-				symbol = "cust_f_saltire"
-			else if(input == "None")
-				symbol = "cust_f_blank"
-			else
-				H << "<span class='notice'>That does not exist!</span>"
-		if (!symbolcolor)
-			input = input(H, "Symbol Color - Choose a hex color (without the # | default is black):", "Symbol Color" , "000000")
-			if (input == null || input == "")
-				return
-			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				symbolcolor = addtext("#",input)
-		if (flagcolor && symbol && symbolcolor)
-			uncolored = FALSE
-			var/image/flag = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_cloth")
-			flag.color = flagcolor
-			var/image/csymbol = image("icon" = 'icons/obj/flags.dmi', "icon_state" = symbol)
-			csymbol.color = symbolcolor
-			var/image/border = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_outline")
-			overlays += flag
-			overlays += csymbol
-			overlays += border
+	if (!symbol)
+		var/display = list("Moon", "Cross", "Star", "Sun", "Plus", "Saltire", "None", "Cancel")
+		var/input =  WWinput(H, "What symbol would you like?", "Flag Making", "Cancel", display)
+		playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
+		if (input == "Cancel")
+			return
+		else if(input == "Moon")
+			symbol = "cust_f_moon"
+		else if(input == "Cross")
+			symbol = "cust_f_cross"
+		else if(input == "Star")
+			symbol = "cust_f_star"
+		else if(input == "Sun")
+			symbol = "cust_f_sun"
+		else if(input == "Plus")
+			symbol = "cust_f_plus"
+		else if(input == "Saltire")
+			symbol = "cust_f_saltire"
+		else if(input == "None")
+			symbol = "cust_f_blank"
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+	if (!symbolcolor)
+		var/input = input(H, "Symbol Color - Choose a hex color (without the # | default is black):", "Symbol Color" , "000000")
+		if (input == null || input == "")
 			return
 		else
-			..()
+			input = uppertext(input)
+			if (length(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			symbolcolor = addtext("#",input)
+	if (flagcolor && symbol && symbolcolor)
+		uncolored = FALSE
+		var/image/flag = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_cloth")
+		flag.color = flagcolor
+		var/image/border = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_outline")
+		var/image/csymbol = image("icon" = 'icons/obj/flags.dmi', "icon_state" = symbol)
+		csymbol.color = symbolcolor
+		overlays += flag
+		overlays += border
+		overlays += csymbol
+		return
+	else
+		..()
 	..()
 
 /obj/structure/wallframe
@@ -544,35 +561,33 @@
 		else
 			H << "<span class='notice'>That does not exist!</span>"
 	else if(istype(W, /obj/item/stack/material/bamboo))
-		var/input
-		var/display = list("Bamboo Door - 1", "Bamboo Wall - 1", "Bamboo Window - 1", "Cancel")
-		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
-		playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Door - 2", "Bamboo Window - 2", "Cancel"))
 		if (input == "Cancel")
 			return
-		var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
-		if(input == "Bamboo Door - 3")
+		if(input == "Bamboo Wall - 3")
 			if(W.amount >= 3)
 				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/bamboo(src.loc)
+					qdel(src)
+					W.amount -= 3
+					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		else if(input == "Bamboo Door - 2")
+			if(W.amount >= 2)
+				if (do_after(H, 40, src))
+					var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
 					S.icon_state = "bamboo-door"
 					S.name = "bamboo door"
 					S.density = FALSE
 					S.opacity = FALSE
 					qdel(src)
-					qdel(W)
-		else if(input == "Bamboo Wall - 2")
-			if(W.amount >= 1)
+					W.amount -= 2
+					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		else if(input == "Bamboo Window - 2")
+			if(W.amount >= 2)
 				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/bamboo(src.loc)
 					qdel(src)
-					qdel(W)
-			return
-		else if(input == "Bamboo Window - 3")
-			if(W.amount >= 3)
-				if (do_after(H, 40, src))
-					new/obj/structure/window_frame/shoji(src.loc)
-					qdel(src)
-					qdel(W)
+					W.amount -= 2
+					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
 		else
 			H << "<span class='notice'>That does not exist!</span>"
-	else
-		..()

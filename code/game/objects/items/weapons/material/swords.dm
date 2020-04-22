@@ -84,6 +84,33 @@
 		edge = 1
 		sharp = 1
 		return
+
+/obj/item/weapon/material/sword/training
+	name = "Training Sword"
+	desc = "A wood sword used for nonlethal practice."
+	icon_state = "wood_sword"
+	item_state = "wood_sword"
+	block_chance = 50
+	force_divisor = 1
+	thrown_force_divisor = 1
+	force = 1
+	slot_flags = SLOT_BELT | SLOT_BACK
+	value = 0
+	cooldownw = 8
+	sharpness = 0
+	flammable = TRUE
+	attack_verb = list("thwacked", "hit", "clonked", "batted", "tapped", "smacked", "poked", "slapped")
+	hitsound = 'sound/weapons/kick.ogg'
+	drawsound = 'sound/items/unholster_sword01.ogg'
+	sharp = FALSE
+	edge = FALSE
+	default_material = "wood"
+
+/obj/item/weapon/material/sword/attack_self(mob/user)
+	..()
+	edge = 0
+	sharp = 0
+
 /obj/item/weapon/material/sword/katana
 	name = "katana"
 	desc = "A sword used by the japanese for centuries. Made to slice and slash, not chop or saw."

@@ -994,7 +994,7 @@
 	var/internals = list()
 	var/operatingsystem = "ungaOS"
 	var/memory = list()
-	var/display = list()
+	var/display = "UngaOS V 0.0.1<br>"
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -1080,7 +1080,7 @@
 		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
 		return
 /obj/structure/computer/attack_hand(var/mob/living/carbon/human/H)
-	if(src.active)
+	if(!src.active)
 		load_os()
 	else
 		H << "<span class = 'notice'>You need to turn the [src] on first!</span>"
@@ -1099,49 +1099,55 @@
 		icon_state = "1980_computer_off"
 /obj/structure/computer/proc/load_os()
 	if(operatingsystem == "ungaOS")
-		var/os = {"<!DOCTYPE html>
-		<html>
-		<head>
-		<title>Unga OS V 0.1</title>
-		<style>
-		body {
-		    background-color: #161610
-		}
-		</style>
-		</head>
-		<center>
-		<textarea id="display" name="display" rows="20" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">"}
-		for(var/i in display)
-			os += i
-		os += {"</textarea>
-		</center>
-		</html>"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-		var/nextline = null
-		var/contents = null
-		var/index = 0
-		index = index
-		while(!nextline)
-			nextline = input("Enter a command. (EXIT to EXIT)","Input", "") as text
-			if(nextline == "EXIT")
-				display += nextline
-				break;
-			if(nextline == "HELP")
-				contents += input("Enter PRINT contents.","PRINT", "") as text
-				display += "EXIT - quits input."
-				display += "HELP - shows commands."
-				display += "PRINT - one argument, displays to screen."
-				display += "INDEX - one argument, sets memory index."
-				display += "PLACE - print current memory index."
-				display += "WRITE - one argument, writes to current index."
-				display += "READ - one argument, reads memory index."
-				display += "RUN - two arguments, runs memory between indexs (inclusive)."
-			if(nextline == "PRINT")
-				contents = input("Enter PRINT contents.","PRINT", "") as text
-				display += contents
-			if(nextline == "INDEX")
-				index = input("Enter target INDEX.","INDEX", "") as text
-				display += nextline + " is now " + contents
-			//this isn't done.
-			//also I would rather have a textbox communicate with byond, but I cant find out how anywhere.
-			nextline = null
+		var/os = {"
+				<!DOCTYPE html>
+				<html>
+				<head>
+				<title>Unga OS V 0.1</title>
+				<style>
+				body {
+					background-color: #161610
+				}
+				.vertical-center {
+				  margin: 0;
+				  position: absolute;
+				  top: 40%;
+				  -ms-transform: translateY(-50%);
+				  transform: translateY(-50%);
+				  padding-left: 5%
+				}
+				</style>
+				<script type="text/javascript">
+					typeFunction() {
+						if (e.keyCode == 13) {
+							byond://?src=\ref[src]&action=textenter&value=document.getElementById('input').value
+					    }
+						byond://?src=\ref[src]&action=textrecieved&value=document.getElementById('input').value
+					}
+				</head>
+				<div class="vertical-center">
+				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
+				"}
+		os+=display
+		os+={"</textarea>
+				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
+				</div>
+				</html>
+				"}
+		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
+
+/obj/structure/computer/Topic(href, list/href_list)
+	var/action = href_list["action"]
+	if(action == "textrecieved")
+		var/typenoise = pick('sound/machines/computer/key_1.ogg',
+							 'sound/machines/computer/key_2.ogg',
+							 'sound/machines/computer/key_3.ogg',
+							 'sound/machines/computer/key_4.ogg',
+							 'sound/machines/computer/key_5.ogg',
+							 'sound/machines/computer/key_6.ogg',
+							 'sound/machines/computer/key_7.ogg',
+							 'sound/machines/computer/key_8.ogg')
+		playsound(loc, typenoise, 10, TRUE)
+	if(action == "textenter")
+		playsound(loc, 'sound/machines/computer/key_enter.ogg', 10, TRUE)
+		display+=href_list["value"]
