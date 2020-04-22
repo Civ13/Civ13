@@ -232,7 +232,7 @@
 		return "wander"
 	else if (t_behaviour == "hunt" || t_behaviour == "defends")
 		a_intent = I_HARM
-		if(prob(10))
+		if(prob(50))
 			if(!isemptylist(wandersounds))
 				playsound(src, pick(hostilesounds), 60)
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
@@ -756,12 +756,12 @@
 
 /mob/living/simple_animal/say(var/message, var/datum/language/language = null)
 	var/verb = "says"
-	if(!isemptylist(wandersounds))
-		playsound(src, pick(wandersounds), 60)
 	if (speak_emote.len)
 		verb = pick(speak_emote)
 
 	message = sanitize(message)
+	if(!isemptylist(wandersounds))
+		playsound(src, pick(wandersounds), 60)
 
 	..(message, language, verb)
 
