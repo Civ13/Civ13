@@ -42,7 +42,7 @@
 	item_state = "germcap2"
 
 /obj/item/clothing/head/ww/frenchcap
-	name = "french képi"
+	name = "french kepi"
 	desc = "A flat circular cap worn by french soldiers."
 	icon_state = "frenchcap"
 	item_state = "frenchcap"

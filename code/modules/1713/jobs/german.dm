@@ -1142,7 +1142,7 @@
 	return TRUE
 
 /datum/job/german/sanitater
-	title = "Sanitäter"
+	title = "Sanitater"
 	en_meaning = "Medic"
 	rank_abbreviation = "Obrgf."
 	selection_color = "#2d2d63"

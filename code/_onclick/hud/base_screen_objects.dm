@@ -481,7 +481,7 @@
 		C.activate_hand("r")
 
 /obj/screen/inventory/hand/update_icon()
-	if (slot_id == (parentmob.hand ? slot_l_hand : slot_r_hand)) //Если данный элемент ХУДа отображает левую
+	if (slot_id == (parentmob.hand ? slot_l_hand : slot_r_hand)) //Еслe aaнныe элемент oУaa отоaрaжaет леaую
 		icon_state = "act_hand[slot_id==slot_l_hand ? "-l" : "-r"]"
 	else
 		icon_state = "hand[slot_id==slot_l_hand ? "-l" : "-r"]"

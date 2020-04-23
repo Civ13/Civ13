@@ -6,7 +6,7 @@
 	H.real_name = H.name
 
 /datum/job/chinese/captain
-	title = "Shàngwèi"
+	title = "Shangwei"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Shang."
 	head_position = TRUE
@@ -60,7 +60,7 @@
 	return TRUE
 
 /datum/job/chinese/lieutenant
-	title = "Zhongwèi"
+	title = "Zhongwei"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Zhong."
 	head_position = TRUE
@@ -114,7 +114,7 @@
 	return TRUE
 
 /datum/job/chinese/sergeant
-	title = "Shàngshi"
+	title = "Shangshi"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Shi."
 	selection_color = "#2d2d63"
@@ -171,7 +171,7 @@
 	return TRUE
 
 /datum/job/chinese/doctor
-	title = "Shàowèi"
+	title = "Shaowei"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Shao."
 	selection_color = "#2d2d63"
@@ -217,7 +217,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/chinese/infantry
-	title = "Èrdeng Bing"
+	title = "erdeng Bing"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Erd."
 	selection_color = "#2d2d63"
