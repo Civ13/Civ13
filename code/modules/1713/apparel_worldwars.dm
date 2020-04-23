@@ -194,20 +194,11 @@
 	worn_state = "brodie_mk2_nettan"
 
 /obj/item/clothing/head/helmet/ww/mk2brodieog/attackby(obj/item/W as obj, mob/user as mob)
-    if (!istype(W)) return//I really don't understand why this check is needed
+	if (!istype(W)) return//I really don't understand why this check is needed
 	if (istype(W, /obj/item/stack/material/hemp))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You put foliage on the helmet.</span>"
 		new/obj/item/clothing/head/helmet/ww/mk2brodiegnet(user.loc)
-		qdel(src)
-		qdel(W)
-
-/obj/item/clothing/head/helmet/ww/mk2brodiegnet/attackby(obj/item/W as obj, mob/user as mob)
-    if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/rope))
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You put foliage on the helmet.</span>"
-		new/obj/item/clothing/head/helmet/ww/mk2brodietnet(user.loc)
 		qdel(src)
 		qdel(W)
 
