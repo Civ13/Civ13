@@ -100,6 +100,7 @@
 	mob_size = MOB_SMALL
 	granivore = 1
 	behaviour = "wander"
+	wandersounds = list('sound/animals/bird/chicken_1.ogg','sound/animals/bird/chicken_2.ogg')
 
 /mob/living/simple_animal/chicken/New()
 	..()
@@ -218,7 +219,15 @@
 	mob_size = MOB_SMALL
 	granivore = 1
 	behaviour = "wander"
-
+	wandersounds = list('sound/animals/bird/chicken_1.ogg','sound/animals/bird/chicken_2.ogg')
+	var/announced_day = TRUE
+/mob/living/simple_animal/rooster/Life()
+	..()
+	if (time_of_day == "Early Morning" && !announced_day)
+		playsound(src, 'sound/animals/bird/rooster.ogg', 60)
+		announced_day = TRUE
+	else if (time_of_day != "Early Morning" && announced_day)
+		announced_day = FALSE
 /mob/living/simple_animal/rooster/New()
 	..()
 	if (!body_color)
@@ -267,6 +276,7 @@
 	var/egg_timer = FALSE
 	granivore = 1
 	behaviour = "wander"
+	wandersounds = list('sound/animals/turkey/turkey_1.ogg','sound/animals/turkey/turkey_2.ogg','sound/animals/turkey/turkey_3.ogg')
 
 /mob/living/simple_animal/turkey_m
 	name = "\improper turkey"
@@ -292,6 +302,7 @@
 	mob_size = MOB_MEDIUM
 	granivore = 1
 	behaviour = "wander"
+	wandersounds = list('sound/animals/turkey/turkey_1.ogg','sound/animals/turkey/turkey_2.ogg','sound/animals/turkey/turkey_3.ogg')
 
 /mob/living/simple_animal/goose
 	name = "\improper goose"
@@ -403,6 +414,7 @@
 	behaviour = "wander"
 	melee_damage_lower = 3
 	melee_damage_upper = 7
+	wandersounds = list('sound/animals/bird/crow_1.ogg','sound/animals/bird/crow_2.ogg','sound/animals/bird/crow_3.ogg')
 
 /mob/living/simple_animal/turkeychick
 	name = "\improper turkey chick"

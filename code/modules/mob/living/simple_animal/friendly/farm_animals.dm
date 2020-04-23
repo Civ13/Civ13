@@ -27,6 +27,7 @@
 	var/overpopulationCountdown = 0
 	mob_size = MOB_LARGE
 	herbivore = 1
+	wandersounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_2.ogg','sound/animals/cow/cow_3.ogg')
 
 /mob/living/simple_animal/bull
 	name = "bull"
@@ -52,6 +53,7 @@
 	health = 65
 	mob_size = MOB_LARGE
 	herbivore = 1
+	wandersounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_2.ogg','sound/animals/cow/cow_3.ogg')
 
 /mob/living/simple_animal/cow/death()
 	if (!removed_from_list)
@@ -215,6 +217,7 @@
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
 
 /mob/living/simple_animal/pig_gilt
 	name = "pig gilt"
@@ -244,6 +247,7 @@
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
 
 /mob/living/simple_animal/pig_gilt/death()
 	if (!removed_from_list)
@@ -393,6 +397,7 @@
 	mob_size = MOB_MEDIUM
 	var/lamb = FALSE
 	herbivore = 1
+	wandersounds = list('sound/animals/goat/goat_1.ogg','sound/animals/goat/goat_2.ogg','sound/animals/goat/goat_3.ogg')
 
 /mob/living/simple_animal/goat/New()
 	goat_count += 1
@@ -402,6 +407,7 @@
 			icon_state = "goat_lamb"
 			icon_living = "goat_lamb"
 			icon_dead = "goat_lamb_dead"
+			wandersounds = list('sound/animals/goat/baby_goat_1.ogg','sound/animals/goat/baby_goat_2.ogg')
 			meat_amount = 2
 			mob_size = MOB_SMALL
 			spawn(3000)
@@ -410,6 +416,7 @@
 				icon_living = "goat_ram"
 				icon_dead = "goat_ram_dead"
 				mob_size = MOB_MEDIUM
+				wandersounds = list('sound/animals/goat/goat_1.ogg','sound/animals/goat/goat_2.ogg','sound/animals/goat/goat_3.ogg')
 
 /mob/living/simple_animal/goat/female
 	name = "goat ewe"
@@ -536,6 +543,7 @@
 	var/lamb = FALSE
 	herbivore = 1
 	var/sheared = FALSE
+	wandersounds = list('sound/animals/sheep/sheep_1.ogg','sound/animals/sheep/sheep_2.ogg')
 
 /mob/living/simple_animal/sheep/update_icons()
 	..()

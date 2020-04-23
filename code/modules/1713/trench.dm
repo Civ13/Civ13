@@ -9,9 +9,10 @@ var/list/global/floor_cache = list()
 	plane = UNDERFLOOR_PLANE
 	initial_flooring = /decl/flooring/trench
 	var/trench_filling = 0
-	var/flooded = FALSE
-	var/salty = FALSE
+	flooded = FALSE
+	salty = FALSE
 	var/message_cooldown = 0
+	var/previous_turf = /turf/floor/dirt
 
 /turf/floor/trench/New()
 	if (!icon_state)
@@ -28,12 +29,12 @@ var/list/global/floor_cache = list()
 							TF.ChangeTurf(/turf/floor/trench/flooded/salty)
 						else
 							TF.ChangeTurf(/turf/floor/trench/flooded)
-				for (var/turf/floor/irrigation/IF in range(1, src))
-					if (!IF.flooded || !istype(IF,/turf/floor/irrigation/flooded))
+				for (var/turf/floor/IF in range(1, src))
+					if (!IF.flooded)
 						if (salty)
-							IF.ChangeTurf(/turf/floor/irrigation/flooded/salty)
+							IF.irrigate("salty")
 						else
-							IF.ChangeTurf(/turf/floor/irrigation/flooded)
+							IF.irrigate("fresh")
 			else
 				for (var/turf/floor/TF in range(1, src))
 					if (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded))
@@ -322,7 +323,9 @@ var/list/global/floor_cache = list()
 				return
 			if(2)
 				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-				ChangeTurf(/turf/floor/trench)
+				var/turf/floor/trench/T = new /turf/floor/trench
+				T.previous_turf = src
+				ChangeTurf(T)
 		return
 	..()
 
@@ -344,7 +347,9 @@ var/list/global/floor_cache = list()
 					return
 				if(2)
 					visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-					ChangeTurf(/turf/floor/trench)
+					var/turf/floor/trench/T = new /turf/floor/trench
+					T.previous_turf = src
+					ChangeTurf(T)
 		return
 	..()
 
@@ -364,17 +369,10 @@ var/list/global/floor_cache = list()
 					return
 				if(2)
 					visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-					ChangeTurf(/turf/floor/trench)
+					var/turf/floor/trench/T = new /turf/floor/trench
+					T.previous_turf = src
+					ChangeTurf(T)
 		return
-	/*else if (istype(C, /obj/item/weapon/shovel))
-		if(src.available_dirt <= 0)
-			visible_message("<span class = 'notice'>[user] starts to dig an irrigation channel.</span>")
-			if (!do_after(user, 25))
-				return
-			if (istype(src,/turf/floor/dirt))
-				visible_message("<span class = 'notice'>[user] makes a irrigation channel.</span>")
-				ChangeTurf(/turf/floor/irrigation)
-			return*/ // THISS ENABLES YOU TO DIG AN IRRIGATION CHANNEL ONCE YOU DIG UP ALL THE DIRT IN A TURF.
 	..()
 
 /turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
@@ -452,94 +450,58 @@ var/list/global/floor_cache = list()
 //AGRICULTURE - IRRIGATION////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-/turf/floor/irrigation
-	name = "Irrigation Channel"
-	icon = 'icons/turf/trench.dmi'
-	icon_state = "dirt"
-	//var/image/over_OS_darkness = null
-	plane = UNDERFLOOR_PLANE
-	initial_flooring = /decl/flooring/irrigation
-	var/trench_filling = 0
+/turf/floor
+	var/irrigation = FALSE
 	var/flooded = FALSE
 	var/salty = FALSE
-	var/message_cooldown = 0
+	var/image/irrigation_overlay = null
 
-/turf/floor/irrigation/flooded
-	name = "flooded irrigation channel"
-	flooded = TRUE
-	icon_state = "dirt"
-	initial_flooring = /decl/flooring/irrigation/flooded
-	salty = FALSE
-	move_delay = 4
-
-/turf/floor/irrigation/flooded/salty
-	name = "flooded saltwater irrigation channel"
-	salty = TRUE
-
-/turf/floor/irrigation/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
-		var/choice = WWinput(user, "Do you want to start filling up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
-		if (choice == "Yes")
-			user << "You shove some dirt into the irrigation channel."
-			if (istype(src, /turf/floor/irrigation))
-				qdel(C)
-				return
+/turf/floor/update_icon()
 	..()
+	if (irrigation && irrigation_overlay)
+		overlays.Cut()
+		overlays += irrigation_overlay
 
-/turf/floor/irrigation/flooded/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
-		var/choice = WWinput(user, "Do you want to start filling up the irrigation channel with \the [C]?","irrigation","Yes",list("Yes","No"))
-		if (choice == "Yes")
-			user << "You shove some dirt into the irrigation channel."
-			if (istype(src, /turf/floor/irrigation))
-				qdel(C)
+/turf/floor/attackby(obj/item/C as obj, mob/user as mob)
+	if (irrigation && irrigation_overlay)
+		if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+			var/choice = WWinput(user, "Do you want to start filling up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
+			if (choice == "Yes")
+				user << "You shove some dirt into the irrigation channel."
+				flooded=FALSE
+				irrigation = FALSE
+				salty = FALSE
+				irrigation_overlay = null
 				return
-		else
-			return
-	else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
-		var/obj/item/weapon/reagent_containers/RG = C
-		if (istype(RG) && RG.is_open_container())
-			if (do_after(user, 15, src, check_for_repeats = FALSE))
-				var/sumex = 0
-				if (src.salty)
-					RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
-					sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
-				RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
-				user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
-				playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
-				user.setClickCooldown(5)
-				return
-			else
-				return
+
+		else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+			if (flooded)
+				var/obj/item/weapon/reagent_containers/RG = C
+				if (istype(RG) && RG.is_open_container())
+					if (do_after(user, 15, src, check_for_repeats = FALSE))
+						var/sumex = 0
+						if (salty)
+							RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
+							sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
+						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
+						user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
+						playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
+						user.setClickCooldown(5)
+						return
+					else
+						return
 	else
 		..()
 
-/turf/floor/irrigation/proc/check_filling()
-	ChangeTurf(get_base_turf_by_area(src))
-	return
-
-/decl/flooring/irrigation
-	name = "irrigation channel"
-	desc = "A groove dug into the ground."
-	icon = 'icons/turf/trench.dmi'
-	icon_base = "irrigation"
-	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
-
-/decl/flooring/irrigation/flooded
-	name = "flooded irrigation channel"
-	desc = "A groove dug into the ground, flooded with water."
-	icon = 'icons/turf/trench.dmi'
-	icon_base = "irrigation_flooded"
-	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
-
-/turf/floor/trench/flooded/attack_hand(var/mob/living/carbon/human/H)
+/turf/floor/attack_hand(var/mob/living/carbon/human/H)
+	..()
 	if (!ishuman(H))
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It�s probably not a good idea to drink saltwater.</span>"
+			H << "<span class='warning'>It's probably not a good idea to drink saltwater.</span>"
 			return
-		H << "You start drinking some water from the flooded irrigation channel..."
+		H << "You start drinking some water from \the [src]..."
 		if (do_after(H,50,src))
 			var/watertype = "water"
 			if (radiation>0)
@@ -564,5 +526,73 @@ var/list/global/floor_cache = list()
 			return
 		else
 			return
-	else
-		..()
+
+/turf/floor/proc/irrigate(var/irrigation_type = "empty")
+	switch(irrigation_type)
+		if ("empty")
+			name = "irrigation channel"
+			flooded = FALSE
+			irrigation = TRUE
+			salty = FALSE
+			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0", layer = src.layer += 0.01)
+			check_relatives(1,1,irrigation_type)
+		if ("fresh")
+			name = "flooded irrigation channel"
+			flooded = TRUE
+			irrigation = TRUE
+			salty = FALSE
+			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0_flooded", layer = src.layer += 0.01)
+			check_relatives(1,1,irrigation_type)
+		if ("salty")
+			name = "flooded saltwater irrigation channel"
+			salty = TRUE
+			flooded = TRUE
+			irrigation = TRUE
+			irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation0_flooded", layer = src.layer += 0.01)
+			check_relatives(1,1,irrigation_type)
+
+/turf/floor/proc/check_relatives(var/update_self = FALSE, var/update_others = FALSE, watertype = "empty")
+	var/junction
+	if (update_self)
+		junction = FALSE
+	for (var/checkdir in cardinal)
+		var/turf/floor/T = get_step(src, checkdir)
+		if (!istype(T, /turf/floor))
+			continue
+		if (T.flooded || istype(T, /turf/floor/beach/water))
+			flooded = TRUE
+			if (T.salty)
+				salty = TRUE
+		if (flooded || istype(src, /turf/floor/beach/water))
+			T.flooded = TRUE
+			if (salty)
+				T.salty = TRUE
+		if (!T.irrigation)
+			continue
+		if (update_self)
+			if (T.irrigation)
+				junction |= get_dir(src,T)
+		if (update_others)
+			T.check_relatives(1,0)
+	expand_flood()
+	if (!isnull(junction))
+		var/tpicon = ""
+		if (flooded)
+			tpicon = "_flooded"
+		irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation[junction][tpicon]", layer = src.layer += 0.01)
+	update_icon()
+
+/turf/floor/proc/expand_flood()
+	if (!flooded)
+		return
+	for (var/checkdir in cardinal)
+		var/turf/floor/T = get_step(src, checkdir)
+		if (!istype(T, /turf/floor) || !T.irrigation)
+			continue
+		if (salty && !T.salty)
+			T.salty = TRUE
+		if (flooded && !T.flooded)
+			T.flooded = TRUE
+			T.expand_flood()
+			T.check_relatives(1,0)
+	return

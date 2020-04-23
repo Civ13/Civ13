@@ -397,6 +397,19 @@
 /obj/item/weapon/key/japanese/german////yeah ik i'm just lazy and already mapped so stfu bish
 	name = "German Officer key"
 
+#define JP_OFF_CODE 995 * 7
+/datum/keyslot/japanese_officer
+	code = JP_OFF_CODE
+
+/obj/item/weapon/key/japanese_officer
+	code = JP_OFF_CODE
+	name = "Japanese Officer key"
+
+/obj/structure/simple_door/key_door/japanese_officer
+	keyslot_type = /datum/keyslot/japanese_officer
+	unique_door_name = "Japanese locked"
+#undef JP_OFF_CODE
+
 #define DE_CODE 995 * 12
 /datum/keyslot/german
 	code = DE_CODE

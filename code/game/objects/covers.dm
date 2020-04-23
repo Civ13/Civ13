@@ -727,7 +727,7 @@
 	name = "bamboo wall"
 	desc = "A wall made from bamboo."
 	icon = 'icons/obj/bamboostuff.dmi'
-	icon_state = "bamboo_wall"
+	icon_state = "bamboo"
 	health = 80
 	amount = 3
 	layer = 3
@@ -777,6 +777,7 @@
 	material = "Stone"
 	hardness = 100
 	buildstack = /obj/item/stack/material/stone
+	adjusts=FALSE
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user

@@ -730,8 +730,8 @@
 		if (TR.flooded && !TR.salty)
 			water = max_water //water within 2 tiles means no need to manually water the plants.
 			return
-	for(var/turf/floor/irrigation/flooded/IR in range(2,src))
-		if (IR.flooded && !IR.salty)
+	for(var/turf/floor/IR in range(2,src))
+		if (IR.irrigation && IR.flooded && !IR.salty)
 			water = max_water //water within 2 tiles means no need to manually water the plants.
 			return
 	var/currcl = get_area(get_turf(src)).climate

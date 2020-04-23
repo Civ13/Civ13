@@ -52,6 +52,7 @@
 	name = "whip"
 	desc = "A leather whip. To keep your slaves in order."
 	icon = 'icons/obj/items.dmi'
+	hitsound = 'sound/weapons/whipcrack.ogg'
 	icon_state = "whip"
 	item_state = "whip"
 	slot_flags = SLOT_BELT

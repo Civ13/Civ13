@@ -231,7 +231,7 @@
 	icon_state = "seashallow"
 	move_delay = 3
 	water_level = 30 // in centimeters
-	var/salty = FALSE
+	salty = FALSE
 	var/sickness = 1 //amount of toxins, from 0 to 3
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE

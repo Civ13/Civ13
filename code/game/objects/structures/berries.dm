@@ -48,6 +48,9 @@
 				if (src && berries >= 1)
 					new btype(get_turf(src))
 					new btype(get_turf(src))
+					/*if(rand(100) <= 10)
+						var/obj/item/stack/berryseeds/BS = new /obj/item/stack/berryseeds(get_turf(src))
+						BS.bushtype = src*/
 					berries--
 					berryproc()
 				else
@@ -129,6 +132,20 @@
 				if ("disgusting")
 					satisfaction = -6
 					nutriment_desc = list("disgusting food" = 1)
+
+/obj/item/berryseeds
+	name = "berry seeds"
+	desc = "Seeds of some sort of berry."
+	icon = 'icons/obj/flora/berries.dmi'
+	icon_state = "berryseeds"
+	var/bushtype = /obj/structure/wild/berrybush
+
+/obj/item/berryseeds/attack_self(mob/user)
+	new bushtype(user.loc)
+	src.amount--
+	if(src.amount <= 0)
+		qdel(src)
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries/tinto
 	name = "tinto berries"
 	icon_state = "tintoberry"
