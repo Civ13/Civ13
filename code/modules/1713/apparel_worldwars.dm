@@ -458,6 +458,141 @@ obj/item/clothing/head/ww2/jap_mp
 	item_state = "japcap_mp"
 	worn_state = "japcap_mp"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////BRITISH////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/obj/item/clothing/head/ww2/britishoffcap
+	name = "british officer cap"
+	desc = "A cap worn by british officers."
+	icon_state = "ww2_british_officer"
+	item_state = "ww2_british_officer"
+	worn_state = "ww2_british_officer"
+	var/toggled = FALSE
+
+/obj/item/clothing/head/ww2/britishoffcap/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/ww2/britishoffcap)
+		return
+	else
+		if (toggled)
+			item_state = "ww2_british_officer"
+			worn_state = "ww2_british_officer"
+			item_state_slots["slot_w_uniform"] = "ww2_british_officer"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = FALSE
+		else if (!toggled)
+			item_state = "ww2_british_officer_flap"
+			worn_state = "ww2_british_officer_flap"
+			item_state_slots["slot_w_uniform"] = "ww2_british_officer_flap"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/head/ww2/britishoffcap_tropical
+	name = "british officer cap"
+	desc = "A cap worn by british officers, this one being a tropical green."
+	icon_state = "ww2_british_officer_tropical"
+	item_state = "ww2_british_officer_tropical"
+	worn_state = "ww2_british_officer_tropical"
+	var/toggled = FALSE
+
+/obj/item/clothing/head/ww2/britishoffcap_tropical/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/ww2/britishoffcap_tropical)
+		return
+	else
+		if (toggled)
+			item_state = "ww2_british_officer_tropical"
+			worn_state = "ww2_british_officer_tropical"
+			item_state_slots["slot_w_uniform"] = "ww2_british_officer_tropical"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = FALSE
+		else if (!toggled)
+			item_state = "ww2_british_officer_tropical_flap"
+			worn_state = "ww2_british_officer_tropical_flap"
+			item_state_slots["slot_w_uniform"] = "ww2_british_officer_tropical_flap"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/under/ww2/british
+	name = "british uniform"
+	desc = "A khaki british uniform."
+	icon_state = "ww2_british_tropical"
+	item_state = "ww2_british_tropical"
+	worn_state = "ww2_british_tropical"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/british/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/british)
+		return
+	else
+		if (rolled)
+			item_state = "ww2_british_tropical"
+			worn_state = "ww2_british_tropical"
+			item_state_slots["slot_w_uniform"] = "ww2_british_tropical"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "ww2_british_tropical_rolled"
+			worn_state = "ww2_british_tropical_rolled"
+			item_state_slots["slot_w_uniform"] = "ww2_british_tropical_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/under/ww2/british_off
+	name = "british officer uniform"
+	desc = "A tropical green british officer uniform."
+	icon_state = "ww2_british_off_tropical"
+	item_state = "ww2_british_off_tropical"
+	worn_state = "ww2_british_off_tropical"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/british_off/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/british_off)
+		return
+	else
+		if (rolled)
+			item_state = "ww2_british_off_tropical"
+			worn_state = "ww2_british_off_tropical"
+			item_state_slots["slot_w_uniform"] = "ww2_british_off_tropical"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "ww2_british_off_tropical_rolled"
+			worn_state = "ww2_british_off_tropical_rolled"
+			item_state_slots["slot_w_uniform"] = "ww2_british_off_tropical_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/head/ww2/british_hat
+	name = "british hat"
+	desc = "A brown hat sometimes worn by british soldiers."
+	icon_state = "ww2_aussie"
+	item_state = "ww2_aussie"
+	worn_state = "ww2_aussie"
+
+/obj/item/clothing/head/ww2/british_tropical_hat
+	name = "tropical british hat"
+	desc = "A khaki hat worn by british soldiers in tropical climates."
+	icon_state = "ww2_british_tropical"
+	item_state = "ww2_british_tropical"
+	worn_state = "ww2_british_tropical"
+
+/obj/item/clothing/head/ww2/british_beret
+	name = "british beret"
+	desc = "A khaki beret worn by british soldiers."
+	icon_state = "ww2_british_beret"
+	item_state = "ww2_british_beret"
+	worn_state = "ww2_british_beret"
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/under/ww2/chiuni
 	name = "chinese uniform"
 	desc = "A chinese army uniform."

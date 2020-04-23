@@ -236,6 +236,5 @@ var/list/global/phone_numbers = list()
 	desc = "Used to communicate with other telephones. No number."
 	icon_state = "telephone"
 	connected = TRUE
-
 	wireless = TRUE
 	maxrange = 30
