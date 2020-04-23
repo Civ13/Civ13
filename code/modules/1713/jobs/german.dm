@@ -859,7 +859,7 @@
 	return TRUE
 
 /datum/job/german/schutze_soldaten
-	title = "Schütze"
+	title = "Schutze"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -957,7 +957,7 @@
 	return TRUE
 
 /datum/job/german/tank_crew
-	title = "Panzerschütze"
+	title = "Panzerschutze"
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1000,7 +1000,7 @@
 	return TRUE
 
 /datum/job/german/machine_gunner
-	title = "MG-Schütze"
+	title = "MG-Schutze"
 	en_meaning = "Machine Gunner"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1048,7 +1048,7 @@
 	return TRUE
 
 /datum/job/german/sniper_schutze
-	title = "Scharfschütze"
+	title = "Scharfschutze"
 	en_meaning = "Sniper"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1188,7 +1188,7 @@
 
 ////////////////////////////////TANKERS AND PANZERGRANADIERS///////////////////////////
 /datum/job/german/tank_crew_leader
-	title = "Panzerführer"
+	title = "Panzerfuhrer"
 	en_meaning = "Armored Squad Leader"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1232,7 +1232,7 @@
 	return TRUE
 
 /datum/job/german/tank_crew
-	title = "Panzerschütze"
+	title = "Panzerschutze"
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -1275,7 +1275,7 @@
 	return TRUE
 
 /datum/job/german/ss_panzergrenadier_squad_leader
-	title = "Waffen-SS Unterscharführer Panzergrenadier"
+	title = "Waffen-SS Unterscharfuhrer Panzergrenadier"
 	en_meaning = "Waffen-SS Mechanized Infantry"
 	rank_abbreviation = "Uscha."
 	selection_color = "#2d2d63"
