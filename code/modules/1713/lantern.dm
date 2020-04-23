@@ -120,9 +120,9 @@
 	fuel = 100000
 
 /obj/item/flashlight/lantern/on/anchored
-	on_state = "lantern-on_a"
-	off_state = "lantern_a"
-	icon_state = "lantern-on_a"
+	on_state = "lantern-on"
+	off_state = "lantern_on"
+	icon_state = "lantern-on"
 	anchored = TRUE
 	unlimited = TRUE
 	fuel = 10

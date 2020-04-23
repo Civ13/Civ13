@@ -561,8 +561,9 @@
 
 
 	return TRUE
-
+//////////////////////////////////////////////////////
 ////////////////////////////WW1///////////////////////
+//////////////////////////////////////////////////////
 /datum/job/british/ww1captain
 	title = "Army Captain"
 	rank_abbreviation = "Cap."
@@ -866,6 +867,166 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////WW2//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/british/ww2lieutenant_pow
+	title = "POW Lieutenant"
+	rank_abbreviation = "Lt."
+	head_position = TRUE
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRNCap"
+	whitelisted = TRUE
+	SL_check_independent = TRUE
+	is_commander = TRUE
+	is_officer = TRUE
+	is_ww2 = TRUE
+	is_prison = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/british/ww2lieutenant_pow/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british_off(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/britishoffcap_tropical(H), slot_head)
+//weapons
+	give_random_name(H)
+	world << "<b><big>[H.real_name] is the Lieutenant of the British POWs!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the POWs and their behaviour. The organizationa and survival of POWs relies on you!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/british/ww2sergeant_pow
+	title = "POW Sergeant"
+	rank_abbreviation = "Sgt."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	is_officer = TRUE
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+	is_prison
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/british/ww2sergeant_pow/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/britishoffcap(H), slot_head)
+//weapons
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad of POWs. Organize your group according to the <b>Captain or Lieutenant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/british/ww2pow
+	title = "British P.O.W."
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN" //for testing!
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+	is_prison = TRUE
+
+	// AUTOBALANCE
+	min_positions = 12
+	max_positions = 124
+
+/datum/job/british/ww2pow/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british(H), slot_w_uniform)
+//head
+	var/randhead = rand(1,3)
+	if (randhead == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/british_hat(H), slot_head)
+	else if (randhead == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/british_tropical_hat(H), slot_head)
+	else if (randhead == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/british_beret(H), slot_head)
+//back
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Royal Army captured and are now a Prisoner of War. Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/british/ww2doctor_pow
+	title = "POW Doctor"
+	rank_abbreviation = "Dr."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRNSurgeon"
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+	is_prison = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 3
+
+/datum/job/british/ww2doctor_pow/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british(H), slot_w_uniform) // for now
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/britishoffcap(H), slot_head)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the POWs healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_VERY_HIGH)
 
 
 	return TRUE

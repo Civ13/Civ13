@@ -358,7 +358,9 @@
 		/obj/item/weapon/handcuffs,
 		/obj/item/ammo_casing,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
-		/obj/item/weapon/shovel
+		/obj/item/weapon/shovel,
+		/obj/item/weapon/key,
+		/obj/item/weapon/melee/classic_baton
 		)
 /obj/item/weapon/storage/belt/jap/soldier
 /obj/item/weapon/storage/belt/jap/soldier/New()
@@ -400,7 +402,30 @@
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
 
+/obj/item/weapon/storage/belt/jap/camp_guard
+/obj/item/weapon/storage/belt/jap/camp_guard/New()
+	..()
+	new /obj/item/weapon/key/japanese(src)
+	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
 
+/obj/item/weapon/storage/belt/jap/camp_officer
+/obj/item/weapon/storage/belt/jap/camp_officer/New()
+	..()
+	new /obj/item/weapon/key/japanese(src)
+	new /obj/item/weapon/key/japanese_officer(src)
+	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/ammo_magazine/c8mmnambu(src)
+	new /obj/item/ammo_magazine/c8mmnambu(src)
 /////////////////////////////////////////////////////////////////////////////////
 //////////////CIVILIAN STUFF/////////////////////////////////////////////////////
 /obj/item/clothing/head/top_hat
