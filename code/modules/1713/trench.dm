@@ -373,15 +373,6 @@ var/list/global/floor_cache = list()
 					T.previous_turf = src
 					ChangeTurf(T)
 		return
-	/*else if (istype(C, /obj/item/weapon/shovel))
-		if(src.available_dirt <= 0)
-			visible_message("<span class = 'notice'>[user] starts to dig an irrigation channel.</span>")
-			if (!do_after(user, 25))
-				return
-			if (istype(src,/turf/floor/dirt))
-				visible_message("<span class = 'notice'>[user] makes a irrigation channel.</span>")
-				ChangeTurf(/turf/floor/irrigation)
-			return*/ // THISS ENABLES YOU TO DIG AN IRRIGATION CHANNEL ONCE YOU DIG UP ALL THE DIRT IN A TURF.
 	..()
 
 /turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
@@ -583,8 +574,7 @@ var/list/global/floor_cache = list()
 				junction |= get_dir(src,T)
 		if (update_others)
 			T.check_relatives(1,0)
-		if (flooded)
-			T.expand_flood()
+	expand_flood()
 	if (!isnull(junction))
 		var/tpicon = ""
 		if (flooded)
@@ -604,5 +594,5 @@ var/list/global/floor_cache = list()
 		if (flooded && !T.flooded)
 			T.flooded = TRUE
 			T.expand_flood()
-			T.check_relatives()
+			T.check_relatives(1,0)
 	return
