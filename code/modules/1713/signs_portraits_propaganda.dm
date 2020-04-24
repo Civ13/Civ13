@@ -13,7 +13,7 @@
 
 /obj/structure/sign/portrait/hitler
 	name = "Portrait of Hitler"
-	desc = "Our glorious Führer!"
+	desc = "Our glorious Fuhrer!"
 	icon_state = "hitler"
 
 /obj/structure/sign/portrait/lenin

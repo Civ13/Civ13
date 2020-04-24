@@ -1757,9 +1757,9 @@
 
 
 /datum/job/portuguese/civilian/medic
-	title = "Médico"
+	title = "Medico"
 	en_meaning = "Colony Medic"
-	rank_abbreviation = "Médico"
+	rank_abbreviation = "Medico"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
 	SL_check_independent = TRUE
@@ -2653,7 +2653,7 @@
 	H.make_businessman()
 	return TRUE
 /datum/job/french/civilian/priest
-	title = "Prêtre"
+	title = "Pretre"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"

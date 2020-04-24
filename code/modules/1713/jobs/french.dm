@@ -90,7 +90,7 @@
 	return TRUE
 
 /datum/job/french/boatswain
-	title = "Chef déquipage"
+	title = "Chef dequipage"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Chef deq."
 	head_position = TRUE
@@ -156,7 +156,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	H.add_note("Role", "You are a <b>[title]</b>, a petty officer in the ship. Organize your group according to the <b>Chef d'équipage</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a petty officer in the ship. Organize your group according to the <b>Chef d'equipage</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -548,7 +548,7 @@
 
 ////////////////////////////WW1///////////////////////
 /datum/job/french/ww1captain
-	title = "Capitaine de le Armée"
+	title = "Capitaine de le Armee"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Cap."
 	head_position = TRUE
@@ -596,7 +596,7 @@
 	return TRUE
 
 /datum/job/french/ww1lieutenant
-	title = "Lieutenant de le Armée"
+	title = "Lieutenant de le Armee"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Lt."
 	head_position = TRUE
@@ -644,7 +644,7 @@
 
 
 /datum/job/french/ww1second_lieutenant
-	title = "Sous-Lieutenant de le Armée"
+	title = "Sous-Lieutenant de le Armee"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "Slt."
 	head_position = TRUE
@@ -692,7 +692,7 @@
 
 
 /datum/job/french/ww1sergeant
-	title = "Sergeant de le Armée"
+	title = "Sergeant de le Armee"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
@@ -737,7 +737,7 @@
 	return TRUE
 
 /datum/job/french/ww1doctor
-	title = "Docteur de le Armée"
+	title = "Docteur de le Armee"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
@@ -779,7 +779,7 @@
 	return TRUE
 
 /datum/job/french/ww1shocktroop
-	title = "Chasseur Léger"
+	title = "Chasseur Leger"
 	en_meaning = "Shock Troop"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"

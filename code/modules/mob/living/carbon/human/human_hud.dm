@@ -44,8 +44,8 @@
 /mob/living/carbon/human/check_HUDdatum()//correct a datum?
 	var/mob/living/carbon/human/H = src
 
-	if (H.client.prefs.UI_style && !(H.client.prefs.UI_style == "")) //если у клиента моба прописан стиль\тип ХУДа
-		if (global.HUDdatums.Find(H.client.prefs.UI_style))//Если существует такой тип ХУДА
+	if (H.client.prefs.UI_style && !(H.client.prefs.UI_style == "")) //еслe у eлeентa моaa пропeсaн стeлu\тeп oУaa
+		if (global.HUDdatums.Find(H.client.prefs.UI_style))//Еслe сущестaует тaeоe тeп oУaa
 			return TRUE
 
 	return FALSE
@@ -103,30 +103,30 @@
 	var/mob/living/carbon/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
-	for (var/HUDname in species.hud.ProcessHUD) //Добавляем Элементы ХУДа (не инвентарь)
-		if (!(HUDdatum.HUDneed.Find(HUDname))) //Ищем такой в датуме
+	for (var/HUDname in species.hud.ProcessHUD) //aоaaaляем Элементы oУaa (не eнaентaрu)
+		if (!(HUDdatum.HUDneed.Find(HUDname))) //eщем тaeоe a aaтуме
 		//	log_debug("[usr] try create a [HUDname], but it no have in HUDdatum [HUDdatum.name]")
 		else
 			var/HUDtype = HUDdatum.HUDneed[HUDname]["type"]
 			var/obj/screen/HUD = new HUDtype(HUDname, HUDdatum.HUDneed[HUDname]["loc"], H, HUDdatum.HUDneed[HUDname]["icon"] ? HUDdatum.HUDneed[HUDname]["icon"] : HUDdatum.icon, HUDdatum.HUDneed[HUDname]["icon_state"] ? HUDdatum.HUDneed[HUDname]["icon_state"] : null)
-/*			if (HUDdatum.HUDneed[HUDname]["icon"])//Анализ на овверайд icon
+/*			if (HUDdatum.HUDneed[HUDname]["icon"])//aнaлec нa оaaерaea icon
 				HUD.icon = HUDdatum.HUDneed[HUDname]["icon"]
 			else
 				HUD.icon = HUDdatum.icon
-			if (HUDdatum.HUDneed[HUDname]["icon_state"])//Анализ на овверайд icon_state
+			if (HUDdatum.HUDneed[HUDname]["icon_state"])//aнaлec нa оaaерaea icon_state
 				HUD.icon_state = HUDdatum.HUDneed[HUDname]["icon_state"]*/
 			if (HUDdatum.HUDneed[HUDname]["hideflag"])
 				HUD.hideflag = HUDdatum.HUDneed[HUDname]["hideflag"]
-			H.HUDneed[HUD.name] += HUD//Добавляем в список худов
-			if (HUD.process_flag)//Если худ нужно процессить
-				H.HUDprocess += HUD//Вливаем в соотвествующий список
+			H.HUDneed[HUD.name] += HUD//aоaaaляем a спeсоe oуaоa
+			if (HUD.process_flag)//Еслe oуa нужно проoессeтu
+				H.HUDprocess += HUD//aлeaaем a соотaестaующee спeсоe
 
 	return
 /mob/living/carbon/human/create_HUDfrippery()
 	var/mob/living/carbon/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
-	//Добавляем Элементы ХУДа (украшения)
+	//aоaaaляем Элементы oУaa (уeрaшенeя)
 	for (var/list/whistle in HUDdatum.HUDfrippery)
 		var/obj/screen/frippery/perdelka = new (whistle["icon_state"],whistle["loc"], whistle["dir"],H)
 		perdelka.icon = HUDdatum.icon

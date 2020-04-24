@@ -42,7 +42,7 @@
 	item_state = "germcap2"
 
 /obj/item/clothing/head/ww/frenchcap
-	name = "french képi"
+	name = "french kepi"
 	desc = "A flat circular cap worn by french soldiers."
 	icon_state = "frenchcap"
 	item_state = "frenchcap"
@@ -140,15 +140,100 @@
 		strap = TRUE
 		usr.update_inv_head(1)
 
-/obj/item/clothing/head/helmet/ww/brodie
-	name = "Brodie helmet"
-	desc = "A typical british helmet."
-	icon_state = "brodie"
-	item_state = "brodie"
-	worn_state = "brodie"
+/obj/item/clothing/head/helmet/ww/mk1brodiedeb
+	name = "Mk1 Brodie Helmet"
+	desc = "A typical british helmet in WW1, this one being in duck egg blue."
+	icon_state = "brodie_mk1_deb"
+	item_state = "brodie_mk1_deb"
+	worn_state = "brodie_mk1_deb"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww/mk1brodieag
+	name = "Mk1 Brodie Helmet"
+	desc = "A typical british helmetin WW1, this one being in apple green."
+	icon_state = "brodie_mk1_ag"
+	item_state = "brodie_mk1_ag"
+	worn_state = "brodie_mk1_ag"
+
+/obj/item/clothing/head/helmet/ww/mk2brodieog
+	name = "Mk2 Brodie Helmet"
+	desc = "A typical british helmet in WW2, this one being in olive green."
+	icon_state = "brodie_mk2_og"
+	item_state = "brodie_mk2_og"
+	worn_state = "brodie_mk2_og"
+
+/obj/item/clothing/head/helmet/ww/mk2brodiemedic
+	name = "Mk2 Brodie Medic Helmet"
+	desc = "A typical british helmet in WW2, this one being for medics."
+	icon_state = "brodie_mk2_medic"
+	item_state = "brodie_mk2_medic"
+	worn_state = "brodie_mk2_medic"
+
+
+/obj/item/clothing/head/helmet/ww/mk2brodieirish
+	name = "Irish Mk2 Brodie Helmet"
+	desc = "A typical british helmet in WW2, this one being the Irish Royal Rifles."
+	icon_state = "brodie_mk2_irish"
+	item_state = "brodie_mk2_irish"
+	worn_state = "brodie_mk2_irish"
+
+/obj/item/clothing/head/helmet/ww/mk2brodiegnet
+	name = "Mk2 Brodie Helmet with green netting"
+	desc = "A typical british helmet in WW2, this one being having green netting."
+	icon_state = "brodie_mk2_netgreen"
+	item_state = "brodie_mk2_netgreen"
+	worn_state = "brodie_mk2_netgreen"
+
+/obj/item/clothing/head/helmet/ww/mk2brodietnet
+	name = "Mk2 Brodie Helmet with tan netting"
+	desc = "A typical british helmet in WW2, this one being having tan netting."
+	icon_state = "brodie_mk2_nettan"
+	item_state = "brodie_mk2_nettan"
+	worn_state = "brodie_mk2_nettan"
+
+/obj/item/clothing/head/helmet/ww/mk2brodieog/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/stack/material/hemp))
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You put foliage on the helmet.</span>"
+		new/obj/item/clothing/head/helmet/ww/mk2brodiegnet(user.loc)
+		qdel(src)
+		qdel(W)
+
+/obj/item/clothing/head/helmet/ww/mk2brodiegnet/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/stack/material/hemp))
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You put foliage on the helmet.</span>"
+		new/obj/item/clothing/head/helmet/ww/mk2brodiegreennetf(user.loc)
+		qdel(src)
+		qdel(W)
+
+/obj/item/clothing/head/helmet/ww/mk2brodietnet/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/stack/material/hemp))
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You put foliage on the helmet.</span>"
+		new/obj/item/clothing/head/helmet/ww/mk2brodietannetf(user.loc)
+		qdel(src)
+		qdel(W)
+
+/obj/item/clothing/head/helmet/ww/mk2brodietannetf
+	name = "Camoflauged Mk2 Brodie Helmet"
+	desc = "A typical british helmet in WW2, this one being having tan netting and foliage for camoflauge."
+	icon_state = "brodie_mk2_nettanf"
+	item_state = "brodie_mk2_nettanf"
+	worn_state = "brodie_mk2_nettanf"
+
+/obj/item/clothing/head/helmet/ww/mk2brodiegreennetf
+	name = "Camoflauged Mk2 Brodie Helmet"
+	desc = "A typical british helmet in WW2, this one being having green netting and foliage for camoflauge."
+	icon_state = "brodie_mk2_netgreenf"
+	item_state = "brodie_mk2_netgreenf"
+	worn_state = "brodie_mk2_netgreenf"
+
 /obj/item/clothing/head/helmet/ww/pickelhaube2
 	name = "leather pickelhaube"
 	desc = "A typical pointed helmet."
@@ -158,12 +243,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 30, arrow = 30, gun = 3, energy = 10, bomb = 35, bio = 20, rad = FALSE)
-/obj/item/clothing/head/helmet/ww/brodie/khaki
-	name = "khaki Brodie helmet"
-	desc = "A typical british helmet, with a khaki cover."
-	icon_state = "brodie_old"
-	item_state = "brodie_old"
-	worn_state = "brodie_old"
+
 
 /obj/item/clothing/glasses/pilot
 	name = "pilot goggles"
