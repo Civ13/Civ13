@@ -125,7 +125,7 @@
 		if (epoch == "Early Modern Era (1896-1933)")
 	// 1903 - TDM
 			maps = list(
-				MAP_HILL203 = 0,
+				MAP_HILL_203 = 0,
 				MAP_YPRES = 0,
 				MAP_TSARITSYN = 10,
 			)
