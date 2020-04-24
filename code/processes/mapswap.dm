@@ -117,9 +117,10 @@
 				MAP_KHALKHYN_GOL = 0,
 				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
-				MAP_GULAG13 = 15,
+//				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
 //				MAP_NANJING = 20,
+				MAP_IWO_JIMA = 30,
 			)
 
 		if (epoch == "Early Modern Era (1896-1933)")
