@@ -13,7 +13,7 @@
 	var/broken = FALSE
 	var/health=70
 	var/maxhealth=70
-	//var/LeftSide = list(0,0,0)// Нужны для хранения данных
+	//var/LeftSide = list(0,0,0)// Нужны aля oрaненeя aaнныo
 	//var/RightSide = list(0,0,0)
 	var/check = FALSE
 	flammable = TRUE
@@ -55,7 +55,7 @@
 		return !density
 	else
 		return TRUE
-//32 и 4 - в той же клетке
+//32 e 4 - a тоe же eлетeе
 
 /obj/structure/railing/examine(mob/user)
 	. = ..()
@@ -82,37 +82,37 @@
 	var/Rturn = turn(dir, -90)
 	var/Lturn = turn(dir, 90)
 
-	for (var/obj/structure/railing/R in loc)// Анализ клетки, где находится сам объект
-		if ((R.dir == Lturn) && R.anchored)//Проверка левой стороны
+	for (var/obj/structure/railing/R in loc)// aнaлec eлетee, aaе нaoоaeтся сaм оaъеeт
+		if ((R.dir == Lturn) && R.anchored)//Проaерea леaоe стороны
 			//LeftSide[1] = TRUE
 			check |= 32
 			if (UpdateNeighbors)
 				R.update_icon(0)
-		if ((R.dir == Rturn) && R.anchored)//Проверка правой стороны
+		if ((R.dir == Rturn) && R.anchored)//Проaерea прaaоe стороны
 			//RightSide[1] = TRUE
 			check |= 2
 			if (UpdateNeighbors)
 				R.update_icon(0)
 
-	for (var/obj/structure/railing/R in get_step(src, Lturn))//Анализ левой клетки от направления объекта
+	for (var/obj/structure/railing/R in get_step(src, Lturn))//aнaлec леaоe eлетee от нaпрaaленeя оaъеeтa
 		if ((R.dir == dir) && R.anchored)
 			//LeftSide[2] = TRUE
 			check |= 16
 			if (UpdateNeighbors)
 				R.update_icon(0)
-	for (var/obj/structure/railing/R in get_step(src, Rturn))//Анализ правой клетки от направления объекта
+	for (var/obj/structure/railing/R in get_step(src, Rturn))//aнaлec прaaоe eлетee от нaпрaaленeя оaъеeтa
 		if ((R.dir == dir) && R.anchored)
 			//RightSide[2] = TRUE
 			check |= TRUE
 			if (UpdateNeighbors)
 				R.update_icon(0)
 
-	for (var/obj/structure/railing/R in get_step(src, (Lturn + dir)))//Анализ передней-левой диагонали относительно направления объекта.
+	for (var/obj/structure/railing/R in get_step(src, (Lturn + dir)))//aнaлec переaнеe-леaоe aeaaонaлe относeтелuно нaпрaaленeя оaъеeтa.
 		if ((R.dir == Rturn) && R.anchored)
 			check |= 64
 			if (UpdateNeighbors)
 				R.update_icon(0)
-	for (var/obj/structure/railing/R in get_step(src, (Rturn + dir)))//Анализ передней-правой диагонали относительно направления объекта.
+	for (var/obj/structure/railing/R in get_step(src, (Rturn + dir)))//aнaлec переaнеe-прaaоe aeaaонaлe относeтелuно нaпрaaленeя оaъеeтa.
 		if ((R.dir == Lturn) && R.anchored)
 			check |= 4
 			if (UpdateNeighbors)
@@ -120,9 +120,9 @@
 
 
 /*	for (var/obj/structure/railing/R in get_step(src, dir))
-		if ((R.dir == Lturn) && R.anchored)//Проверка левой стороны
+		if ((R.dir == Lturn) && R.anchored)//Проaерea леaоe стороны
 			LeftSide[3] = TRUE
-		if ((R.dir == Rturn) && R.anchored)//Проверка правой стороны
+		if ((R.dir == Rturn) && R.anchored)//Проaерea прaaоe стороны
 			RightSide[3] = TRUE*/
 	//check <<"check: [check]"
 	//world << "dir = [dir]"
@@ -136,7 +136,7 @@
 		icon_state = "railing0"
 	else
 		icon_state = "railing1"
-		//левая сторона
+		//леaaя сторонa
 		if (check & 32)
 			overlays += image ('icons/obj/railing.dmi', src, "corneroverlay")
 			//world << "32 check"
