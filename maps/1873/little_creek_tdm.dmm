@@ -3,10 +3,10 @@
 "ac" = (/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "ad" = (/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "ae" = (/turf/floor/dirt/dust,/area/caribbean/desert)
-"af" = (/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
-"ag" = (/obj/structure/sign/clock{name = "\improper clock"},/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"af" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"ag" = (/obj/structure/sign/clock{name = "\improper clock"},/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "ah" = (/turf/wall/wood,/area/caribbean/desert/buildings)
-"ai" = (/obj/structure/sign/flag/red2,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"ai" = (/obj/structure/sign/flag/red2,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "aj" = (/mob/living/simple_animal/lizard,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "ak" = (/obj/covers/wood_wall,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
 "al" = (/turf/floor/wood,/area/caribbean/desert/buildings)
@@ -61,20 +61,20 @@
 "bi" = (/obj/structure/wild/tree/cactus,/turf/floor/dirt,/area/caribbean/desert)
 "bj" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/desert)
 "bk" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt,/area/caribbean/desert)
-"bl" = (/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"bl" = (/obj/structure/sign/goldenplaque{desc = "The Biggest Bank in Arizona!"; name = "Little Creek Banking Co."},/obj/covers/brick_wall,/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bm" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water,/area/caribbean/desert)
 "bn" = (/obj/structure/fish/salmon,/turf/floor/beach/water,/area/caribbean/desert)
 "bo" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/desert)
-"bp" = (/obj/structure/sign/kiddieplaque{desc = "Sheriff's Office"; name = "Sheriff's Office"},/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"bp" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "bq" = (/turf/floor/beach/sand,/area/caribbean/desert)
 "br" = (/turf/floor/dirt/underground{name = "rock"},/area/caribbean/desert)
 "bs" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/underground{name = "rock"},/area/caribbean/desert)
 "bt" = (/obj/structure/wild/rock,/turf/floor/dirt/underground{name = "rock"},/area/caribbean/desert)
 "bu" = (/obj/structure/wild/rock,/turf/floor/beach/sand,/area/caribbean/desert)
 "bv" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt/underground{name = "rock"},/area/caribbean/desert)
-"bw" = (/obj/structure/sign/kiddieplaque{desc = "Armory"; name = "Armory"},/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"bw" = (/obj/structure/sign/kiddieplaque{desc = "Sheriff's Office"; name = "Sheriff's Office"},/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "bx" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand,/area/caribbean/desert)
-"by" = (/obj/structure/sign/clock,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"by" = (/obj/structure/window/classic,/obj/structure/barricade,/obj/covers/brick_wall,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "bz" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/desert)
 "bA" = (/mob/living/simple_animal/hostile/poison/snake,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "bB" = (/obj/structure/simple_door/key_door/civ/bank,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
@@ -98,6 +98,7 @@
 "bT" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bU" = (/mob/living/simple_animal/bull,/turf/floor/beach/sand,/area/caribbean/desert/town)
 "bV" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/pen,/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"bW" = (/obj/structure/sign/kiddieplaque{desc = "Armory"; name = "Armory"},/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "bX" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bY" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bZ" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
@@ -115,11 +116,11 @@
 "cl" = (/obj/effect/floor_decal/spline/fancy/wood,/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cm" = (/obj/effect/floor_decal/spline/fancy/wood,/obj/structure/potted_plant,/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cn" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 6},/obj/structure/bed/chair/wood/wings{icon_state = "wooden_chair_wings"; dir = 1},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"co" = (/obj/structure/sign/clock,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "cp" = (/obj/structure/barricade/steel,/obj/structure/window/classic,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cq" = (/mob/living/simple_animal/dog,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
 "cr" = (/obj/item/weapon/sandbag,/turf/floor/dirt,/area/caribbean/desert/town)
 "cs" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
-"ct" = (/obj/structure/sign/goldenplaque{desc = "The Biggest Bank in Arizona!"; name = "Little Creek Banking Co."},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cu" = (/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cv" = (/obj/structure/roof_support,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cw" = (/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
@@ -747,7 +748,7 @@ acbqbqacacacacadadadfzfAfzfzfAfzfzfAfzfzfAfzfzfzadadaheQjmjSahlleSahadadeKazazeK
 acbqacacacbqbqadadadfAfEfIfEfIfEfIfEfIfEfJfLfQfRadadezcLjmfaahcLcLezadadeKazeKazeKadafcecfcfcfcfcfcgcfcgcfcgcfcgcfchafadadazeKadjujBjvftfvfvftjvjAjuadhDhUhVhVicfuidieifigfwfuadadacacbqbqacacacacacacac
 acbqbqacacbqbqadadadfzfJfIfTfIfIfIfIfIfUfIfLfJfzadadahePcLeOahfiahahadeKadeKeKaAeKadaScecfcfcfcfcfcfcfcfcfcfcfcfcfchaSadeKazayadftftknftgDjCftknftftadhEihjDhVijfufwfwfwfwfwhKadadacacacacbqacacacaeacac
 acbqacacacaUacadanadfzfVfWgcgdfIfIfUgegzgAfLfQfzadadezfBcLcLjUcLfCezadadeKeKeKeKadadafcicjcjcjcjckclksclcmcjcjcjcjcnafadadeKeKadftjEfvfvfvfvfvfvjFftadhDhVhVhVhVfufwfwfwfwfwfuadadacacacacacacacacacacac
-acbqbqacacacacadanadfAfIfIfIfUfIfIfIfIfIgBfLfIfRadadahfncLcLcLcLcLahadanadazeKeKadadafaicpcpcpafaicsctcsaiafcpcpcpaiafadeKeKeKadftftjuftgCgDftjuftftadhDhEikilhEfuhKimgFimhKfuadadadacaeaeacacacacacacac
+acbqbqacacacacadanadfAfIfIfIfUfIfIfIfIfIgBfLfIfRadadahfncLcLcLcLcLahadanadazeKeKadadafaicpcpcpafaicsblcsaiafcpcpcpaiafadeKeKeKadftftjuftgCgDftjuftftadhDhEikilhEfuhKimgFimhKfuadadadacaeaeacacacacacacac
 acbxbqbqacacacadadadfzfAfzgGgGgHfzfAfzfzfAfzfzfzadadahezahfifiahezaheHadeKeKeKeKeKeHcubEbEbEbEcvbEbEbEbEbEcvbEbEbEbEcweKadeKeKadauateHadeKeKadeKadeKeKeKadeHeKeKeKeKeKeKcqadeKeKeHeKeKeKaeaeaeaeaeacacac
 acacacbqacacacadadadadadadeKeKadadeHadadadadadadadadadadadeKeKadadaueKeKcrazazazeKeKcxcEcEcEcEbEbEbEbEbEbEbEcEcEcEcEcOeKazazazeKeKazazaAayeKeKeKeKeKeKeKeKeKeKeKeKeKeKeKeKaAazazeKeKeKeKaVaVaVaeaeaeaeae
 acacacbqaTacbqbqadadadadadeKadadeKadadadeKadeKeKadeKeKeKadadeKeKeKeKayeKeKeKeKeKeKayeKeKeKeKeKeKazeKeKeKeKeKayeKeKeKeKeKazeKeKeKeKeKeKazeKazazazazeKeKeKeKazazazazeKeKeKeKeKeKcrazazazeKaeaeaeaeaVaVaVaV
@@ -770,14 +771,14 @@ acacacbqbzacacbqanadadaddcdndoadaddpaddqadadaddraddsadadanadadadeKeKeKadadadeKeK
 acacacacacacacacadadadadaddndpanandtaddraddpaddpadadadeKadeKeKeKazazeKeKeKeKeKazazeKeKeKeKeKeKeKazazeKeKeKadeKeKeKeKeKeKexeKexexexeKeKadadadadadeKeKeHadadadadgMgMgPgPgPgMgPgPgPgMgMadadacaUbzbqacacacac
 acacacacacacacacacacacadaddndradadadadadaddtandpadadeKacaeaeeKeKeKeKeKeKeKeKazeKeKeKeKeKeKeKeKeKeKaAeKeKeKadeKayeKeKeKeKadawadadanazayazeKeKeKeKayayadadadadadawadadanadadananadadadadadacacacaXacacacac
 acacacacacacacacbqbqacanandvdradandpaddoadadandtaddsadacacaTadadadadadadeKeKeKeKadadadadadadeKeKeKazeKeKeKeKahahezahahahezahahadadeKeKadadadeKazazeKeKazeKeKeKeKeKadadadadadbqbqacacacacacacacacacacacac
-bqbqacacacacacbrbqbqacdwaddxdydydAdydydydAdAdAdydydBadacacaTadblblblcBcBbpjGjGbpcBcBblblbladadeKeKazeKeKeKeKezfYalfZahgaalgbahadeKeKadadadadeKadadadadeKadadcFadeKeKadadadadbqacacacacacacacacacacacacac
-acbqacacacaTacacbrbrbrdwadadadadadadananananananadadadacacacadblcGcHcIcJcKcMcMcNcMcMcRkobladadadeKeKeKeKeKadahalalaleFalalalezadeKeKakakejakeFakakakadazaddCdCdCdCeKeKdCdCadacacacacacaUacacacbqacacacac
+bqbqacacacacacbrbqbqacdwaddxdydydAdydydydAdAdAdydydBadacacaTadbpbpbpcBcBbwjGjGbwbycBbpbpbpadadeKeKazeKeKeKeKezfYalfZahgaalgbahadeKeKadadadadeKadadadadeKadadcFadeKeKadadadadbqacacacacacacacacacacacacac
+acbqacacacaTacacbrbrbrdwadadadadadadananananananadadadacacacadbpcGcHcIcJcKcMcMcNcMcMcRkobpadadadeKeKeKeKeKadahalalaleFalalalezadeKeKakakejakeFakakakadazaddCdCdCdCeKeKdCdCadacacacacacaUacacacbqacacacac
 acbqacacacbqacacacbrbracacacacacacacacacbracacbqbqacacacacacadcBkocMkMkMkMkMkMkMkMcScTcVcBadaneKeKayeKeKeKeKeFalalgfahalgkjsahadeKadakghfKgialalgjakeKeKaddCamamamamamamdCdTacacacacacbqbqbrbrbrbrbracac
-acacacacacacacbqacacacacacacacacacbqbqacbrbrbrbqbqacacacacacadblblcMbwbyblkMkMkMkMkMkMkMbladadeKazeKeKazeKadahfMgkggahfKalgbezdDeKadejaleWalalalgaejeKeKaddCamamamdUamdVdWadacacacbqacacacbrbracbqbqacac
-acacacacacacacbqacacacacacaXacacacbqbqacacacbrbracacacacacacadbldacMlmdbblcMddcXddddcXddblaveKeKazeKcrazeKadahahahahahahahahaheKeKadakalgkgleWalghakadeKaddCamdXdVeKeKcAdWdYacacbqbqacacbrbrbracacacacac
-acacacacacacacacbqacacacacacacacacbqacacacacacbrbracacacacacadcBlCcMcMdeblcMbldfdfbldfdfcBeHadeKeKeKeKeKeKeHejalalfZahghjQghaheKeKadejlogngoalalfZejadeKaddCameKeKdZeaeKeKavacbqacacacacacacacacacacacac
-acacacacacacacbqbqbqacacacacacacacacbqbqacacacacbrbracacbqacadblkNkOlndiblcMblegehblegehbladadeKeKeKeKeKeKadahalalaleFalalalejeKeKadakgralgralgagaakadeKazdCeKcAeKeKcAeKdCadacbqacacacacaWacacacacacacac
-acbqacacacacbqbqbqbqbqacacacaUacbracbqbqbqbqacacbqbqacacbqaXadblblcBcBblblcBblbleiblbleibladadadeKaAeKeKeKeKeFalgkgsahaleWalahadeKadakakejakeFakakakeHeKeKecdCeKedeKdCeKdCkpacbxacacacacacaTacacacacacac
+acacacacacacacbqacacacacacacacacacbqbqacbrbrbrbqbqacacacacacadbpbpcMbWcobpkMkMkMkMkMkMkMbpadadeKazeKeKazeKadahfMgkggahfKalgbezdDeKadejaleWalalalgaejeKeKaddCamamamdUamdVdWadacacacbqacacacbrbracbqbqacac
+acacacacacacacbqacacacacacaXacacacbqbqacacacbrbracacacacacacadbpdacMlmdbbpcMddcXddddcXddbpaveKeKazeKcrazeKadahahahahahahahahaheKeKadakalgkgleWalghakadeKaddCamdXdVeKeKcAdWdYacacbqbqacacbrbrbracacacacac
+acacacacacacacacbqacacacacacacacacbqacacacacacbrbracacacacacadcBlCcMcMdebpcMbpdfdfbpdfdfcBeHadeKeKeKeKeKeKeHejalalfZahghjQghaheKeKadejlogngoalalfZejadeKaddCameKeKdZeaeKeKavacbqacacacacacacacacacacacac
+acacacacacacacbqbqbqacacacacacacacacbqbqacacacacbrbracacbqacadbpkNkOlndibpcMbpegehbpegehbpadadeKeKeKeKeKeKadahalalaleFalalalejeKeKadakgralgralgagaakadeKazdCeKcAeKeKcAeKdCadacbqacacacacaWacacacacacacac
+acbqacacacacbqbqbqbqbqacacacaUacbracbqbqbqbqacacbqbqacacbqaXadbpbpcBcBbpbpcBbpbpeibpbpeibpadadadeKaAeKeKeKeKeFalgkgsahaleWalahadeKadakakejakeFakakakeHeKeKecdCeKedeKdCeKdCkpacbxacacacacacaTacacacacacac
 acbqacacacacbubqbqbqbqacacacacacaTacacacbqacacacacacacbqacacadadadanananadadadadadananadadadadeKeKazeKeKeKadahfXgkgfahfKalgjejadeKadadadadeKeKadadadadeKeKadaddTcFadadeedTdMacacacacacacacaTacacbracacac
 acacacacacacacacacacacacacbqbqaTaTacacacacacacacacbqacacbqacbqacbqacacbqacadadadadananadadadadeKaAeKeKeKeKadahahahahahahahahahadeKeKeKeKeKeKayeKeKeKeKazeKadavadaddTefanaddMacacacacacacbqbqbqbrbracacac
 acacacacacacacbrbracacbqbqbqacacacacbqbqbqacbqbqacacbracacacacbqacacacbqacadadadadadadadadadeKeKazeKeKeKeKadejalfGfZahfKgagaahadeKeKeKeKadadadadeKeKadawadeKacacacacacacbqbqacacacacacacacacbrbracacacac
