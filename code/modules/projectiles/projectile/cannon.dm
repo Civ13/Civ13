@@ -73,6 +73,7 @@
 		return TRUE
 
 	firer = user
+	firer_loc = get_turf(src)
 	firer_original_dir = firer.dir
 	firedfrom = launcher
 

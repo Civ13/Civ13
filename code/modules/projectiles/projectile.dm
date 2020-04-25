@@ -78,7 +78,7 @@
 	var/useless = FALSE
 
 	var/can_hit_in_trench = 1
-
+	var/turf/firer_loc = null
 	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
 	var/atype = "normal"
 /obj/item/projectile/proc/checktype()
@@ -163,6 +163,7 @@
 		return TRUE
 
 	firer = user
+	firer_loc = get_turf(src)
 	firer_original_dir = firer.dir
 	firedfrom = launcher
 
@@ -215,6 +216,7 @@
 
 	firer = null
 	firedfrom = null
+	firer_loc = get_turf(src)
 	def_zone = "chest"
 
 	if (targloc == curloc) //Shooting something in the same turf
@@ -248,6 +250,7 @@
 	loc = get_turf(user) //move the projectile out into the world
 
 	firer = user
+	firer_loc = get_turf(src)
 	firer_original_dir = firer.dir
 	firedfrom = launcher
 	shot_from = launcher.name
@@ -264,6 +267,7 @@
 	original = new_target
 	if (new_firer)
 		firer = src
+		firer_loc = get_turf(src)
 		firer_original_dir = firer.dir
 
 	setup_trajectory(starting_loc, new_target)
@@ -477,10 +481,10 @@
 		if(!istype(T, /turf/floor/trench) || can_hit_in_trench)
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
-				if (istype(O, /obj/structure/vehicleparts/frame) && ((firer && firer.loc != O.loc) || (!firer && loc != O.loc)))
+				if (istype(O, /obj/structure/vehicleparts/frame) && ((firer_loc && firer_loc != O.loc) || (!firer_loc && loc != O.loc)))
 					var/obj/structure/vehicleparts/frame/NO = O
 					var/obj/structure/vehicleparts/axis/found = null
-					for (var/obj/structure/vehicleparts/frame/FM in firer.loc)
+					for (var/obj/structure/vehicleparts/frame/FM in firer_loc)
 						found = FM.axis
 					if (!found || found != NO.axis)
 						if (found != NO.axis)
@@ -542,7 +546,7 @@
 					var/skip = FALSE
 					if (firer)
 						for (var/obj/structure/vehicleparts/frame/VP1 in L.loc)
-							for (var/obj/structure/vehicleparts/frame/VP2 in firer.loc)
+							for (var/obj/structure/vehicleparts/frame/VP2 in firer_loc)
 								if (VP1.axis == VP2.axis && istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 									skip = TRUE
 					if ((!skip) && (!L.lying || T == get_turf(original) || execution))

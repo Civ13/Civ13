@@ -424,6 +424,8 @@
 	var/turf/tloc = null
 	if (proj.firer)
 		tloc = proj.firer.loc
+	else if (proj.firer_loc)
+		tloc = proj.firer_loc
 	else
 		tloc = get_turf(src)
 	for (var/obj/structure/vehicleparts/frame/F in tloc)
