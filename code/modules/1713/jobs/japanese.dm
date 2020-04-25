@@ -857,6 +857,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper(H), slot_shoulder)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/sniper_scope(H), slot_l_store)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sniper, 1st class, employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders and take out valuable targets from a range!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -934,7 +935,7 @@
 	is_officer = TRUE
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
-	is_prison
+	is_prison = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 4
@@ -981,7 +982,7 @@
 	spawn_location = "JoinLateJPDoc"
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
-	is_prison
+	is_prison = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -1024,7 +1025,7 @@
 	spawn_location = "JoinLateJP"
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
-	is_prison
+	is_prison = TRUE
 	// AUTOBALANCE
 	min_positions = 10
 	max_positions = 50
