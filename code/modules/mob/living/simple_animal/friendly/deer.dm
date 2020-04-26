@@ -30,6 +30,7 @@
 
 	melee_damage_lower = 6
 	melee_damage_upper = 12
+	wandersounds = list('sound/animals/deer/deer_bleat_1.ogg','sound/animals/deer/deer_bleat_2.ogg','sound/animals/deer/deer_bleat_3.ogg')
 
 /mob/living/simple_animal/deer/male
 	name = "stag"

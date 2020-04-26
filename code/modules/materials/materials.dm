@@ -409,7 +409,8 @@ var/list/name_to_material
 	door_icon_base = "stone"
 
 /material/stonebrick
-	name = "stone brick"
+	name = "stonebrick"
+	display_name = "stone brick"
 	hardness = 50
 	weight = 11
 	integrity = 450

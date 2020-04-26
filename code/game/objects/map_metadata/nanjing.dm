@@ -28,7 +28,7 @@
 
 /obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == FALSE)
+	if (J.is_ww2 == TRUE && J.is_tanker == FALSE && J.is_prison == FALSE)
 		. = TRUE
 	else
 		. = FALSE

@@ -405,7 +405,7 @@
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
 				else if (W && W.w_class >= 3) //Otherwise they can only see large or normal items from a distance...
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
-		if (istype(W, /obj/item/weapon/bedroll))
+		if (istype(W, /obj/item/weapon/bedroll) && istype(src,/obj/item/weapon/storage/backpack))
 			icon_state = "[base_icon]1"
 		orient2hud(usr)
 		if (usr.s_active)

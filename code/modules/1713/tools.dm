@@ -207,7 +207,7 @@
 
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
-	var/display = list("Tunnel", "Grave", "Pit Latrine","Cancel")
+	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine","Cancel")
 	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
 	if (input == "Cancel")
 		return
@@ -272,6 +272,13 @@
 		else if (!TB.is_diggable)
 			user << "<span class='warning'>You cannot dig a hole here!</span>"
 			return
+	else if (input == "Irrigation Channel")
+		visible_message("<span class = 'notice'>[user] starts to dig an irrigation channel.</span>")
+		if (do_after(user, 25,src))
+			visible_message("<span class = 'notice'>[user] makes a irrigation channel.</span>")
+			TB.irrigate("empty")
+			return
+		return
 	else if  (input == "Grave")
 		if (istype(TB, /turf/open) || istype(TB, /turf/wall) || istype(TB, /turf/floor/wood) || istype(TB, /turf/floor/wood_broken) || istype(TB, /turf/floor/ship) || istype(TB, /turf/floor/carpet) || istype(TB, /turf/floor/broken_floor) || istype(TB, /turf/floor/plating/cobblestone) || istype(TB, /turf/floor/plating/concrete) || istype(TB, /turf/floor/plating/stone_old))
 			return

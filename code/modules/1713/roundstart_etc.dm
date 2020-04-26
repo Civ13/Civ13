@@ -79,7 +79,7 @@ var/GRACE_PERIOD_LENGTH = 7
 		season = "Wet Season"
 	else if (map.ID == MAP_NOMADS_ICE_AGE || map.ID == MAP_GULAG13)
 		season = "WINTER"
-	else if (map.ID == MAP_HILL203)
+	else if (map.ID == MAP_HILL_203)
 		season = "FALL"
 	else if (map.ID == MAP_TSARITSYN)
 		season = "FALL"

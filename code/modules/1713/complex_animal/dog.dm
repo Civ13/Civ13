@@ -396,9 +396,9 @@ s
 					if (prob(5) && world.time >= next_bork)
 						visible_message("<span class = 'danger'>\The [src] starts barking! It smells an enemy!</span>")
 						if (prob(50))
-							playsound(src.loc, 'sound/animals/dogbark1.ogg', 100, TRUE, 3)
+							playsound(src.loc, 'sound/animals/dog/dogbark1.ogg', 100, TRUE, 3)
 						else
-							playsound(src.loc, 'sound/animals/dogbark2.ogg', 100, TRUE, 3)
+							playsound(src.loc, 'sound/animals/dog/dogbark2.ogg', 100, TRUE, 3)
 						next_bork = world.time + 500 // shut the fuck up dogs - kachnov
 						return
 

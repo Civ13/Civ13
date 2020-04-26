@@ -63,6 +63,9 @@
 	var/tmp/told_cant_shoot = FALSE //So that it doesn't spam them with the fact they cannot hit them.
 	var/tmp/lock_time = -100
 
+
+	var/damage_modifier = 0
+
 //	var/wielded = FALSE
 //	var/must_wield = FALSE
 //	var/can_wield = FALSE
@@ -410,6 +413,9 @@
 
 	if (params)
 		P.set_clickpoint(params)
+
+	if (damage_modifier != 0)
+		P.damage += damage_modifier
 
 	//shooting while in shock
 	var/x_offset = 0
