@@ -37,6 +37,28 @@ var/global/list/valid_coordinates = list()
 
 /proc/check_coords_check()
 	return (!map || map.faction2_can_cross_blocks() || map.faction1_can_cross_blocks())
+
+/mob/living/carbon/human/proc/find_nco()
+	set category = "Officer"
+	set name = "Find Squad Leader"
+	set desc="Check where your squad leader is."
+
+	if(!original_job.uses_squads || original_job.squad < 1)
+		return
+	if (original_job.faction_text == map.faction1)
+		if (!map.faction1_squad_leaders[original_job.squad])
+			src << "<big>There is no squad leader!</big>"
+			return
+		else if (map.faction1_squad_leaders[original_job.squad] == src)
+			src << "<big>You are the squad leader!</big>"
+			return
+	else if (original_job.faction_text == map.faction2)
+		if (!map.faction2_squad_leaders[original_job.squad])
+			src << "<big>There is no squad leader!</big>"
+			return
+		else if (map.faction2_squad_leaders[original_job.squad] == src)
+			src << "<big>You are the squad leader!</big>"
+			return
 /mob/living/carbon/human/proc/Commander_Announcement()
 	set category = "Officer"
 	set name = "Faction Announcement"
