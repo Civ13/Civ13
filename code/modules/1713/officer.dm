@@ -66,6 +66,23 @@ var/global/list/valid_coordinates = list()
 		var/tdist = get_dist(src,TSL)
 		var/tdir = dir2text(get_dir(src,TSL))
 		src << "<big><font color='yellow'>Your squad leader is [tdist] meters [tdir] from you.</font></big>"
+/mob/living/carbon/human/proc/Squad_Announcement()
+	set category = "Officer"
+	set name = "Squad Announcement"
+	set desc="Announce to everyone in your squad."
+	var/messaget = "Squad Leader Message"
+	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))
+	if (message)
+		message = sanitize(message, 500, extra = FALSE)
+		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
+	for (var/mob/living/carbon/human/M)
+		if (faction_text == M.faction_text && original_job.is_squad_leader && M.squad == squad && world.time > announcement_cooldown)
+			messaget = "Squad Leader Message:"
+			M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
+			announcement_cooldown = world.time+1200
+			log_admin("Squad Announcement: [key_name(usr)] - [messaget] : [message]")
+
+
 /mob/living/carbon/human/proc/Commander_Announcement()
 	set category = "Officer"
 	set name = "Faction Announcement"
