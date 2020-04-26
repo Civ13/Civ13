@@ -545,7 +545,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivA"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
 	// AUTOBALANCE
 	min_positions = 9999
@@ -579,7 +579,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivB"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
 	// AUTOBALANCE
 	min_positions = 9999
@@ -613,7 +613,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
 	// AUTOBALANCE
 	min_positions = 9999
@@ -646,7 +646,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivD"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
 	// AUTOBALANCE
 	min_positions = 9999
@@ -679,7 +679,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivE"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
 	// AUTOBALANCE
 	min_positions = 9999
@@ -712,7 +712,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivF"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
 	// AUTOBALANCE
 	min_positions = 9999
@@ -745,7 +745,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_nomad = TRUE
 	// AUTOBALANCE
 	min_positions = 9999
@@ -779,7 +779,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND1"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 9999
 	max_positions = 9999
@@ -812,7 +812,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND2"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 9999
 	max_positions = 9999
@@ -846,7 +846,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND3"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 9999
 	max_positions = 9999
@@ -879,7 +879,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 9999
 	max_positions = 9999
@@ -911,7 +911,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 9999
 	max_positions = 9999
@@ -944,7 +944,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 9999
 	max_positions = 9999
@@ -975,7 +975,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 9999
 	max_positions = 9999

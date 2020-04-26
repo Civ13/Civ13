@@ -16,7 +16,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -58,7 +58,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -98,7 +98,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateBoatswain"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -140,7 +140,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateMidshipman"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -176,7 +176,7 @@
 	rank_abbreviation = "Surgeon"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateSurgeon"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -215,7 +215,7 @@
 	rank_abbreviation = "Carpenter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateCarpenter"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -267,7 +267,7 @@
 	rank_abbreviation = "Cook"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateCook"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -323,7 +323,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -394,7 +394,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateDM"
-	SL_check_independent = TRUE
+
 	is_deathmatch = TRUE
 
 	// AUTOBALANCE
@@ -467,7 +467,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_marooned = TRUE
 
 	// AUTOBALANCE

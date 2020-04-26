@@ -15,7 +15,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -61,7 +61,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
@@ -108,7 +108,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
@@ -154,7 +154,8 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -198,7 +199,7 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -241,8 +242,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE" //for testing!
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -283,8 +285,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE" //for testing!
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 12
@@ -330,7 +333,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = TRUE
 
@@ -379,7 +382,8 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_ww2 = TRUE
 	is_reichstag = TRUE
 	// AUTOBALANCE
@@ -420,7 +424,7 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = TRUE
 	// AUTOBALANCE
@@ -464,10 +468,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	whitelisted = TRUE
 	is_reichstag = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 6
 	max_positions = 30
@@ -521,9 +526,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 6
 	max_positions = 30
@@ -572,9 +578,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 12
@@ -631,9 +638,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 12
@@ -679,7 +687,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	// AUTOBALANCE
@@ -729,7 +737,7 @@
 	spawn_location = "JoinLateGECap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	// AUTOBALANCE
@@ -778,7 +786,7 @@
 	spawn_location = "JoinLateGECap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	// AUTOBALANCE
@@ -825,9 +833,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+	is_squad_leader = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 10
@@ -864,9 +873,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 8
 	max_positions = 100
@@ -918,12 +928,13 @@
 	rank_abbreviation = "Pzf."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_tanker = TRUE
 	whitelisted = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_officer = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -962,10 +973,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_tanker = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 4
 	max_positions = 64
@@ -1005,9 +1017,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -1053,9 +1066,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -1102,7 +1116,7 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 
@@ -1147,9 +1161,10 @@
 	rank_abbreviation = "Obrgf."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -1193,13 +1208,15 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_tanker = TRUE
 	whitelisted = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_officer = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 8
@@ -1237,10 +1254,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_tanker = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 4
 	max_positions = 64
@@ -1280,11 +1298,13 @@
 	rank_abbreviation = "Uscha."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_tanker = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_officer = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 6
@@ -1323,9 +1343,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_tanker = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 6
 	max_positions = 30
@@ -1374,7 +1395,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGESap"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_tanker = TRUE
 	// AUTOBALANCE

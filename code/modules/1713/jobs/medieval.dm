@@ -9,7 +9,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -53,7 +53,7 @@
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -92,7 +92,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -138,7 +138,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -193,7 +193,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -242,7 +242,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -315,7 +315,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
@@ -360,7 +360,7 @@
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
@@ -403,7 +403,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
@@ -448,7 +448,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 	// AUTOBALANCE
@@ -498,7 +498,7 @@
 	rank_abbreviation = "Father"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 	is_religious = TRUE
@@ -542,7 +542,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -586,7 +586,7 @@
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -625,7 +625,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -671,7 +671,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -726,7 +726,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -774,7 +774,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -854,7 +854,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -897,7 +897,7 @@
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -940,7 +940,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -986,7 +986,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -1040,7 +1040,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
 	// AUTOBALANCE
@@ -1090,7 +1090,7 @@
 	rank_abbreviation = "Imam"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_religious = TRUE
 
@@ -1134,7 +1134,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = FALSE
@@ -1183,7 +1183,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = FALSE
@@ -1233,7 +1233,7 @@
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 	is_squad_leader = TRUE
@@ -1277,7 +1277,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
@@ -1328,7 +1328,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-	SL_check_independent = TRUE
+
 	is_religious = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
@@ -1369,7 +1369,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 	// AUTOBALANCE
@@ -1427,7 +1427,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 	// AUTOBALANCE
@@ -1489,7 +1489,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivB"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 	// AUTOBALANCE
@@ -1548,7 +1548,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivD"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
@@ -1607,7 +1607,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
@@ -1667,7 +1667,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
@@ -1726,7 +1726,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivA"
 	is_merchant = TRUE
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
@@ -1785,7 +1785,7 @@
 	rank_abbreviation = "Arzt"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
