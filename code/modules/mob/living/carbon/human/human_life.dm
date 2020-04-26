@@ -1422,8 +1422,8 @@
 					if (map.ID == MAP_TSARITSYN)
 						holder2.icon_state = "sov_basic"
 			holder2.overlays.Cut()
-			if (original_job.uses_squads && original_job.squad > 0)
-				holder2.overlays += icon(holder2.icon,"squad_[original_job.squad]")
+			if (original_job.uses_squads && squad > 0)
+				holder2.overlays += icon(holder2.icon,"squad_[squad]")
 			if (original_job.is_commander)
 				holder2.overlays += icon(holder2.icon,"commander")
 			else if (original_job.is_officer || original_job.is_squad_leader)

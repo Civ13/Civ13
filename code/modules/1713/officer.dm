@@ -43,25 +43,25 @@ var/global/list/valid_coordinates = list()
 	set name = "Find Squad Leader"
 	set desc="Check where your squad leader is."
 
-	if(!original_job.uses_squads || original_job.squad < 1)
+	if(!original_job.uses_squads || squad < 1)
 		return
 	var/mob/living/carbon/human/TSL = null
 	if (faction_text == map.faction1)
-		if (!map.faction1_squad_leaders[original_job.squad])
+		if (!map.faction1_squad_leaders[squad])
 			src << "<big>There is no squad leader!</big>"
 			return
-		else if (map.faction1_squad_leaders[original_job.squad] == src)
+		else if (map.faction1_squad_leaders[squad] == src)
 			src << "<big>You are the squad leader!</big>"
 			return
-		TSL = map.faction1_squad_leaders[original_job.squad]
+		TSL = map.faction1_squad_leaders[squad]
 	else if (faction_text == map.faction2)
-		if (!map.faction2_squad_leaders[original_job.squad])
+		if (!map.faction2_squad_leaders[squad])
 			src << "<big>There is no squad leader!</big>"
 			return
-		else if (map.faction2_squad_leaders[original_job.squad] == src)
+		else if (map.faction2_squad_leaders[squad] == src)
 			src << "<big>You are the squad leader!</big>"
 			return
-		TSL = map.faction2_squad_leaders[original_job.squad]
+		TSL = map.faction2_squad_leaders[squad]
 	if (TSL)
 		var/tdist = get_dist(src,TSL)
 		var/tdir = dir2text(get_dir(src,TSL))
