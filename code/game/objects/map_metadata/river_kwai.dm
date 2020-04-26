@@ -5,12 +5,11 @@
 	lobby_icon_state = "camp"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 3600
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		JAPANESE,
 		BRITISH)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(JAPANESE) = /area/caribbean/british,
 		list(BRITISH) = /area/caribbean/russian/land/inside/command,

@@ -6,12 +6,11 @@
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 0
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		GERMAN,
 		RUSSIAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/german/reichstag/roof/objective,
 		list(GERMAN) = /area/caribbean/german/reichstag/roof/objective,

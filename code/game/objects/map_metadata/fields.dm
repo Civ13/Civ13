@@ -4,13 +4,12 @@
 	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
-	squad_spawn_locations = FALSE
+
 //	min_autobalance_players = 90
 	faction_organization = list(
 		BRITISH,
 		FRENCH)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(BRITISH) = /area/caribbean/colonies/british,
 		list(FRENCH) = /area/caribbean/colonies/french

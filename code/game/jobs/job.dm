@@ -39,30 +39,7 @@
 
 	var/enabled = TRUE
 
-	/*For copy-pasting:
-	implanted =
-	uniform =
-	pda =
-	ear =
-	shoes =
-	suit =
-	suit_store =
-	gloves =
-	mask =
-	belt =
-	hand =
-	hat =
-
-	put_in_backpack = list(
-
-		)
-
-	backpacks = list(
-		/obj/item/weapon/storage/backpack,
-		/obj/item/weapon/storage/backpack/satchel_norm,
-		/obj/item/weapon/storage/backpack/satchel
-		)
-	*/
+	var/squad = 0
 
 /datum/job/proc/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_english_name(H.gender)

@@ -5,12 +5,11 @@
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		JAPANESE,
 		CHINESE)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		list(CHINESE) = /area/caribbean/russian/land/inside/command,

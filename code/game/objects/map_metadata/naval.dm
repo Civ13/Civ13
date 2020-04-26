@@ -6,13 +6,12 @@
 	no_winner ="No ship has been captured."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
-	squad_spawn_locations = FALSE
+
 //	min_autobalance_players = 90
 	faction_organization = list(
 		FRENCH,
 		PIRATES)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(FRENCH) = /area/caribbean/british/ship/lower,
 		list(PIRATES) = /area/caribbean/pirates/ship/lower
