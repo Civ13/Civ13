@@ -135,6 +135,33 @@ var/list/recently_died = list()
 	return list(alive, dead, injured)
 
 /mob/living/carbon/human/death()
+	if (original_job.uses_squads && original_job.squad > 0)
+		if (faction_text == map.faction1)
+			map.faction1_squads[original_job.squad] -= src
+			if (map.faction1_squad_leaders[original_job.squad] == src)
+				map.faction1_squad_leaders[original_job.squad] -= src
+				for(var/mob/living/carbon/human/HSM in map.faction1_squads[original_job.squad])
+					if (HSM != src)
+						HSM << "<big><b>Your NCO has been killed!</b></big>"
+						if (HSM.original_job.is_squad_leader && (!map.faction1_squad_leaders[original_job.squad] || map.faction1_squad_leaders[original_job.squad] == src))
+							HSM << "<big><b>You are the new squad leader!</b></big>"
+							map.faction1_squad_leaders[original_job.squad] = HSM
+							for(var/mob/living/carbon/human/HSM2 in map.faction2_squads[original_job.squad])
+								if (HSM2 != HSM)
+									HSM2 << "<big><b>[HSM] is your new NCO.</b></big>"
+		else if (faction_text == map.faction2)
+			map.faction2_squads[original_job.squad] -= src
+			if (map.faction2_squad_leaders[original_job.squad] == src)
+				map.faction2_squad_leaders[original_job.squad] -= src
+				for(var/mob/living/carbon/human/HSM in map.faction2_squads[original_job.squad])
+					if (HSM != src)
+						HSM << "<big><b>Your NCO has been killed!</b></big>"
+						if (HSM.original_job.is_squad_leader && (!map.faction2_squad_leaders[original_job.squad] || map.faction2_squad_leaders[original_job.squad] == src))
+							HSM << "<big><b>You are the new squad leader!</b></big>"
+							map.faction2_squad_leaders[original_job.squad] = HSM
+							for(var/mob/living/carbon/human/HSM2 in map.faction2_squads[original_job.squad])
+								if (HSM2 != HSM)
+									HSM2 << "<big><b>[HSM] is your new NCO.</b></big>"
 	if (original_job_title == "Nomad")
 		if (civilization != "none" && map.custom_civs[civilization][4])
 			if (map.custom_civs[civilization][4].real_name == real_name)
