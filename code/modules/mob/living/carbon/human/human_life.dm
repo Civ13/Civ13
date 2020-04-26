@@ -1319,7 +1319,7 @@
 				death()
 /mob/living/carbon/human/proc/handle_hud_list()
 
-	if (original_job && never_set_faction_huds)
+	if (original_job && never_set_faction_huds && stat != DEAD)
 
 		never_set_faction_huds = FALSE
 
@@ -1421,7 +1421,11 @@
 						holder2.icon_state = ""
 					if (map.ID == MAP_TSARITSYN)
 						holder2.icon_state = "sov_basic"
-
+			if (original_job.is_commander)
+				holder2.overlays.Cut()
+				holder2.overlays += icon(holder2.icon,"commander")
+			else if (original_job.is_officer)
+				holder2.overlays += icon(holder2.icon,"officer")
 			hud_list[BASE_FACTION] = holder2
 
 /mob/living/carbon/human/handle_silent()
