@@ -45,14 +45,14 @@ var/global/list/valid_coordinates = list()
 
 	if(!original_job.uses_squads || original_job.squad < 1)
 		return
-	if (original_job.faction_text == map.faction1)
+	if (faction_text == map.faction1)
 		if (!map.faction1_squad_leaders[original_job.squad])
 			src << "<big>There is no squad leader!</big>"
 			return
 		else if (map.faction1_squad_leaders[original_job.squad] == src)
 			src << "<big>You are the squad leader!</big>"
 			return
-	else if (original_job.faction_text == map.faction2)
+	else if (faction_text == map.faction2)
 		if (!map.faction2_squad_leaders[original_job.squad])
 			src << "<big>There is no squad leader!</big>"
 			return
