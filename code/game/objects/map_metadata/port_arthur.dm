@@ -1,6 +1,6 @@
-/obj/map_metadata/hill203
-	ID = MAP_HILL_203
-	title = "Hill 203 (100x160x1)"
+/obj/map_metadata/port_arthur
+	ID = MAP_PORT_ARTHUR
+	title = "Port Arthur (100x130x1)"
 	lobby_icon_state = "ww1"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
@@ -13,28 +13,28 @@
 		)
 	roundend_condition_sides = list(
 		list(JAPANESE) = /area/caribbean/island,
-		list(RUSSIAN) = /area/caribbean/island,
+		list(RUSSIAN) = /area/caribbean/russian/land/inside/command,
 		)
-	age = "1904"
-	faction_distribution_coeffs = list(JAPANESE = 0.5, RUSSIAN = 0.5)
-	battle_name = "Siege of Hill 203"
-	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Hill 203! Each side will win if they manage to hold the hilltop for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	age = "1905"
+	faction_distribution_coeffs = list(JAPANESE = 0.7, RUSSIAN = 0.3)
+	battle_name = "Siege of Port Arthur"
+	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Port Arthur! The Japanese will win if the manage to hold the fort for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	ordinal_age = 5
 	songs = list(
 		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg')
-	gamemode = "King of the Hill"
-/obj/map_metadata/hill203/faction2_can_cross_blocks()
+	gamemode = "Siege"
+/obj/map_metadata/port_arthur/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/hill203/faction1_can_cross_blocks()
+/obj/map_metadata/port_arthur/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/hill203/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/port_arthur/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/japanese))
-		if (J.is_coldwar || J.is_ww2)
+		if (J.is_coldwar || J.is_ww2|| J.is_prison)
 			. = FALSE
 		else
 			. = TRUE
@@ -44,19 +44,19 @@
 		else
 			. = TRUE
 
-/obj/map_metadata/hill203/short_win_time(faction)
+/obj/map_metadata/port_arthur/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
 		return 3000 // 5 minutes
 
-/obj/map_metadata/hill203/long_win_time(faction)
+/obj/map_metadata/port_arthur/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
 		return 3000 // 5 minutes
 
-/obj/map_metadata/hill203/roundend_condition_def2name(define)
+/obj/map_metadata/port_arthur/roundend_condition_def2name(define)
 	..()
 	switch (define)
 		if (RUSSIAN)
@@ -64,14 +64,14 @@
 		if (JAPANESE)
 			return "Japanese"
 
-/obj/map_metadata/hill203/roundend_condition_def2army(define)
+/obj/map_metadata/port_arthur/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (RUSSIAN)
 			return "Russian Army"
 		if (JAPANESE)
 			return "Japanese Army"
-/obj/map_metadata/hill203/army2name(army)
+/obj/map_metadata/port_arthur/army2name(army)
 	..()
 	switch (army)
 		if ("Russians")
@@ -79,7 +79,7 @@
 		if ("Japanese")
 			return "Japanese"
 
-/obj/map_metadata/hill203/cross_message(faction)
+/obj/map_metadata/port_arthur/cross_message(faction)
 	if (faction == JAPANESE)
 		return "<font size = 4>The Japanese may now cross the invisible wall!</font>"
 	else if (faction == RUSSIAN)
@@ -87,7 +87,7 @@
 	else
 		return ""
 
-/obj/map_metadata/hill203/reverse_cross_message(faction)
+/obj/map_metadata/port_arthur/reverse_cross_message(faction)
 	if (faction == JAPANESE)
 		return "<span class = 'userdanger'>The Japanese may no longer cross the invisible wall!</span>"
 	else if (faction == RUSSIAN)
@@ -95,7 +95,7 @@
 	else
 		return ""
 
-/obj/map_metadata/hill203/update_win_condition()
+/obj/map_metadata/port_arthur/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
 	if (world.time >= next_win && next_win != -1)
@@ -112,7 +112,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the Hill! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the Fort! They will win in {time} minute{s}."
 				next_win = world.time + short_win_time(roundend_condition_sides[2][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -121,7 +121,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the Hill! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the Fort! They will win in {time} minute{s}."
 				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -130,7 +130,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Hill! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Fort! They will win in {time} minute{s}."
 				next_win = world.time + short_win_time(roundend_condition_sides[1][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -139,7 +139,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Hill! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Fort! They will win in {time} minute{s}."
 				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -147,7 +147,7 @@
 
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The [current_winner] has lost control of the Hill!</font>"
+			world << "<font size = 3>The [current_winner] has lost control of the Fort!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
