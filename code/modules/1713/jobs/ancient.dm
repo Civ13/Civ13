@@ -18,7 +18,7 @@
 	rank_abbreviation = "Cen."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	head_position = TRUE
 	is_officer = TRUE
@@ -58,7 +58,7 @@
 	rank_abbreviation = "Dec."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 
 	// Autobalance
@@ -96,7 +96,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 6
@@ -131,7 +131,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 12
 	max_positions = 200
@@ -170,7 +170,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	// AUTOBALANCE
 	min_positions = 8
 	max_positions = 100
@@ -215,7 +215,7 @@
 	rank_abbreviation = "Lo."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGR"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	head_position = TRUE
 	is_officer = TRUE
@@ -252,7 +252,7 @@
 	rank_abbreviation = "Di."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGR"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	// Autobalance
 	min_positions = 2
@@ -294,7 +294,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGR"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 12
@@ -338,7 +338,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGR"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 8
@@ -376,7 +376,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	is_gladiator = TRUE
 	// AUTOBALANCE
 	min_positions = 100
@@ -414,7 +414,7 @@
 	rank_abbreviation = "Medicus"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
-	SL_check_independent = TRUE
+
 	is_gladiator = TRUE
 	// AUTOBALANCE
 	min_positions = 3
@@ -447,7 +447,7 @@
 	rank_abbreviation = "Custos"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_gladiator = TRUE
@@ -484,7 +484,7 @@
 	rank_abbreviation = "Imperator"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
-	SL_check_independent = TRUE
+
 	is_gladiator = TRUE
 	is_commander = TRUE
 	head_position = TRUE

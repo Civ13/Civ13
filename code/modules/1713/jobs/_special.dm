@@ -40,6 +40,9 @@
 /datum/job/var/is_navy = FALSE
 /datum/job/var/is_rp = FALSE
 
+/datum/job/var/squad = 0
+/datum/job/var/uses_squads = FALSE
+
 /datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold

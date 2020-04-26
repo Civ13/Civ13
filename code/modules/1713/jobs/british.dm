@@ -19,7 +19,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -60,7 +60,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -99,7 +99,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -141,7 +141,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -177,7 +177,7 @@
 	rank_abbreviation = "Surgeon"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -214,7 +214,7 @@
 	rank_abbreviation = "Carpenter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCarpenter"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -261,7 +261,7 @@
 	rank_abbreviation = "Cook"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCook"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -310,7 +310,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -366,7 +366,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 	is_commander = TRUE
 
@@ -409,7 +409,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 
 	// AUTOBALANCE
@@ -448,7 +448,7 @@
 	rank_abbreviation = "Doc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 
 	// AUTOBALANCE
@@ -486,7 +486,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 
 	// AUTOBALANCE
@@ -528,7 +528,7 @@
 	rank_abbreviation = "Cha."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 
 	// AUTOBALANCE
@@ -573,7 +573,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -618,7 +618,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
@@ -664,7 +664,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
@@ -709,7 +709,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -752,7 +752,7 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -794,7 +794,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN" //for testing!
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -835,7 +835,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN" //for testing!
-	SL_check_independent = TRUE
+
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -880,7 +880,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww2 = TRUE
@@ -919,7 +919,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_prison
 
@@ -955,7 +955,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN" //for testing!
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_prison = TRUE
 
@@ -998,7 +998,7 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_prison = TRUE
 

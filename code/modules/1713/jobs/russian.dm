@@ -15,7 +15,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -62,7 +62,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -111,7 +111,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -159,7 +159,8 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -204,7 +205,7 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUDoc"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -244,7 +245,7 @@
 	rank_abbreviation = "Ye."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU" //for testing!
-	SL_check_independent = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -286,7 +287,7 @@
 	rank_abbreviation = "Ry."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU" //for testing!
-	SL_check_independent = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -334,7 +335,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -383,7 +384,7 @@
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -425,7 +426,8 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
@@ -469,7 +471,7 @@
 	rank_abbreviation = "Srj."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUDoc"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
@@ -510,8 +512,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -554,8 +557,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 20
@@ -620,7 +624,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_rcw = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -665,7 +669,8 @@
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_squad_leader = TRUE
-	SL_check_independent = TRUE
+	uses_squads = TRUE
+
 	is_rcw = TRUE
 
 	// AUTOBALANCE
@@ -708,7 +713,7 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_rcw = TRUE
 
 	// AUTOBALANCE
@@ -753,8 +758,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU" //for testing!
-	SL_check_independent = TRUE
+
 	is_rcw = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -802,8 +808,9 @@
 	rank_abbreviation = "Vakhmistr"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU2"
-	SL_check_independent = TRUE
+
 	is_rcw = TRUE
+	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -851,9 +858,9 @@
 	rank_abbreviation = "Kazak"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU2"
-	SL_check_independent = TRUE
-	is_rcw = TRUE
 
+	is_rcw = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 6
 	max_positions = 70
@@ -901,7 +908,7 @@
 	rank_abbreviation = "Chekist"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU3"
-	SL_check_independent = TRUE
+
 	is_rcw = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -947,7 +954,8 @@
 	rank_abbreviation = "Kom."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU3"
-	SL_check_independent = TRUE
+
+	uses_squads = TRUE
 	is_rcw = TRUE
 	is_squad_leader = TRUE
 	is_officer = TRUE
@@ -994,7 +1002,7 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU3"
-	SL_check_independent = TRUE
+
 	is_rcw = TRUE
 
 	// AUTOBALANCE
@@ -1037,8 +1045,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU3"
-	SL_check_independent = TRUE
+
 	is_rcw = TRUE
+	uses_squads = TRUE
 
 	// AUTOBALANCE
 	min_positions = 10
@@ -1090,9 +1099,10 @@
 	rank_abbreviation = "Kom."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	uses_squads = TRUE
 	is_tanker = TRUE
 	whitelisted = TRUE
 	is_squad_leader = TRUE
@@ -1136,10 +1146,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_tanker = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 4
 	max_positions = 64
@@ -1181,10 +1192,11 @@
 	rank_abbreviation = "Srj."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_tanker = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_officer = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -1225,9 +1237,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_tanker = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 6
 	max_positions = 30
@@ -1275,7 +1288,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUSap"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_tanker = TRUE
 	// AUTOBALANCE

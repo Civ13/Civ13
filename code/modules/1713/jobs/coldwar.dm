@@ -12,7 +12,7 @@
 	rank_abbreviation = "Si Quan"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPCap"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -62,7 +62,7 @@
 	rank_abbreviation = "Bac Si"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	// AUTOBALANCE
 	min_positions = 3
@@ -112,8 +112,10 @@
 	rank_abbreviation = "Tuy Phai"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
+	uses_squads = TRUE
+	is_squad_leader = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 12
@@ -164,8 +166,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 20
 	max_positions = 200
@@ -236,7 +239,7 @@
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
@@ -281,9 +284,10 @@
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	can_get_coordinates = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -327,7 +331,7 @@
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	whitelisted = TRUE
 	// AUTOBALANCE
@@ -371,7 +375,7 @@
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -417,9 +421,10 @@
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_radioman = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 5
@@ -463,8 +468,9 @@
 	rank_abbreviation = "Spc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 12
@@ -506,8 +512,9 @@
 	rank_abbreviation = "Spc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -552,8 +559,9 @@
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 10
 	max_positions = 100
@@ -601,7 +609,7 @@
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_specops = TRUE
 	whitelisted = TRUE
@@ -644,7 +652,7 @@
 	rank_abbreviation = "Sfc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_specops = TRUE
 	// AUTOBALANCE
@@ -678,7 +686,7 @@
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_specops = TRUE
 	// AUTOBALANCE
@@ -716,11 +724,13 @@
 	rank_abbreviation = "Leader"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_specops = TRUE
 	is_modernday = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -788,10 +798,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_specops = TRUE
 	is_modernday = TRUE
+	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 22
 	max_positions = 66

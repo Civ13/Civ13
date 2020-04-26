@@ -39,7 +39,24 @@ var/civmax_research = list(230,230,230)
 	var/list/songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	var/mission_start_message = "Round will start soon!"
+
 	var/squads = 1
+	var/list/faction_1_squads = list(
+		"1" = list(),
+		"2" = list(),
+		"3" = list(),
+		"4" = list(),
+		"5" = list(),
+		"6" = list(),
+	)
+	var/list/faction_2_squads = list(
+		"1" = list(),
+		"2" = list(),
+		"3" = list(),
+		"4" = list(),
+		"5" = list(),
+		"6" = list(),
+	)
 	var/required_players = 1
 	var/time_both_sides_locked = -1
 	var/time_to_end_round_after_both_sides_locked = 6000
