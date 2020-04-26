@@ -7,6 +7,7 @@
 	var/locked = FALSE //for customized locks in RP
 
 	var/override_material = FALSE
+	var/override_opacity = FALSE
 
 	icon = 'icons/obj/doors/material_doors.dmi'
 	icon_state = "metal"
@@ -179,7 +180,10 @@
 	flick("[basic_icon]closing",src)
 	spawn (10)
 		density = TRUE
-		opacity = TRUE
+		if(override_opacity)
+			opacity = FALSE
+		else
+			opacity = TRUE
 		state = FALSE
 		update_icon()
 		isSwitchingStates = FALSE
@@ -381,13 +385,14 @@
 	..(newloc, "wood")
 	basic_icon = "fence"
 	icon_state = "fence"
-	name = "Fence Gate"
+	name = "fence gate"
+	override_opacity = TRUE
 	opacity = FALSE
 /obj/structure/simple_door/fence/picket/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	basic_icon = "picketfence"
 	icon_state = "picketfence"
-	name = "Picket Fence Gate"
+	name = "picket fence gate"
 /obj/structure/simple_door/cell/New(var/newloc,var/material_name)
 	..(newloc, "iron")
 /obj/structure/simple_door/stone/New(var/newloc,var/material_name)
