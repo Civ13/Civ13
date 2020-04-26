@@ -163,8 +163,8 @@
 	uses_squads = TRUE
 
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 10
+	min_positions = 2
+	max_positions = 12
 
 /datum/job/russian/sergeant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -431,8 +431,8 @@
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 6
+	min_positions = 2
+	max_positions = 12
 
 /datum/job/russian/sergeant_soviet/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -517,8 +517,8 @@
 	uses_squads = TRUE
 
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 8
+	min_positions = 2
+	max_positions = 12
 
 /datum/job/russian/machinegunner_soviet/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -1108,8 +1108,8 @@
 	is_squad_leader = TRUE
 	is_officer = TRUE
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 8
+	min_positions = 2
+	max_positions = 6
 
 /datum/job/russian/tank_crew_leader/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -1153,7 +1153,7 @@
 	uses_squads = TRUE
 	// AUTOBALANCE
 	min_positions = 4
-	max_positions = 64
+	max_positions = 32
 
 /datum/job/russian/tank_crew/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
