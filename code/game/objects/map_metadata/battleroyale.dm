@@ -6,7 +6,7 @@
 	respawn_delay = 0
 
 	no_winner ="The fighting is still going."
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		PIRATES)
 

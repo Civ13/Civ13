@@ -5,7 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		CIVILIAN,)
 	roundend_condition_sides = list(

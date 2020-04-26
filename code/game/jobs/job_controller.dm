@@ -105,7 +105,7 @@ var/global/datum/controller/occupations/job_master
 
 	if (map)
 		map.faction_organization = map.initial_faction_organization.Copy()
-	switch(_clients)
+	switch(clients.len)
 		if (0 to 12)
 			map.squads = 1
 		if (13 to 24)
