@@ -45,6 +45,7 @@ var/global/list/valid_coordinates = list()
 
 	if(!original_job.uses_squads || original_job.squad < 1)
 		return
+	var/mob/living/carbon/human/TSL = null
 	if (faction_text == map.faction1)
 		if (!map.faction1_squad_leaders[original_job.squad])
 			src << "<big>There is no squad leader!</big>"
@@ -52,6 +53,7 @@ var/global/list/valid_coordinates = list()
 		else if (map.faction1_squad_leaders[original_job.squad] == src)
 			src << "<big>You are the squad leader!</big>"
 			return
+		TSL = map.faction1_squad_leaders[original_job.squad]
 	else if (faction_text == map.faction2)
 		if (!map.faction2_squad_leaders[original_job.squad])
 			src << "<big>There is no squad leader!</big>"
@@ -59,6 +61,11 @@ var/global/list/valid_coordinates = list()
 		else if (map.faction2_squad_leaders[original_job.squad] == src)
 			src << "<big>You are the squad leader!</big>"
 			return
+		TSL = map.faction2_squad_leaders[original_job.squad]
+	if (TSL)
+		var/tdist = get_dist(src,TSL)
+		var/tdir = dir2text(get_dir(src,TSL))
+		src << "<big><font color='yellow'>Your squad leader is [tdist] meters [tdir] from you.</font></big>"
 /mob/living/carbon/human/proc/Commander_Announcement()
 	set category = "Officer"
 	set name = "Faction Announcement"

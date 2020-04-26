@@ -614,6 +614,7 @@ var/global/redirect_all_players = null
 	if (ishuman(character))
 		var/mob/living/carbon/human/H = character
 		if (H.original_job.uses_squads)
+			H.verbs += /mob/living/carbon/human/proc/find_nco
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
 					if (!H.back)
