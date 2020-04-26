@@ -709,7 +709,8 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
-
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
@@ -794,6 +795,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN" //for testing!
+	uses_squads = TRUE
 
 	is_ww1 = TRUE
 
@@ -835,6 +837,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN" //for testing!
+	uses_squads = TRUE
 
 	is_ww1 = TRUE
 
