@@ -103,8 +103,8 @@
 	desc = "A badge showing the wearer has destroyed an enemy tank"
 
 /obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold
-	icon_state = "gold_tank_destruction"
-	worn_state = "gold_tank_destruction"
+	icon_state = "golden_tank_destruction"
+	worn_state = "golden_tank_destruction"
 	name = "Tank Destruction Badge"
 	desc = "A badge showing the wearer has destroyed an enemy tank"
 
