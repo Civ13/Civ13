@@ -1206,7 +1206,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 10)
 					user << "You begin crafting the stahlhelm..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src) && iron_amt >= 7)
+					if (do_after(user,150,src) && iron_amt >= 10)
 						user << "You craft the stahlhelm."
 						iron_amt -= 10
 						if (iron_amt <= 0)
@@ -1219,7 +1219,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 10)
 					user << "You begin crafting the type 92..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src) && iron_amt >= 7)
+					if (do_after(user,150,src) && iron_amt >= 10)
 						user << "You craft the type 92."
 						iron_amt -= 10
 						if (iron_amt <= 0)
@@ -1235,7 +1235,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 10)
 					user << "You begin crafting the M1..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src) && iron_amt >= 7)
+					if (do_after(user,150,src) && iron_amt >= 10)
 						user << "You craft the M1."
 						iron_amt -= 10
 						if (iron_amt <= 0)
@@ -1250,7 +1250,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 10)
 					user << "You begin crafting the soviet helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src) && iron_amt >= 7)
+					if (do_after(user,150,src) && iron_amt >= 10)
 						user << "You craft the soviet helmet."
 						iron_amt -= 10
 						if (iron_amt <= 0)
@@ -1265,7 +1265,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 10)
 					user << "You begin crafting the brodie..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src) && iron_amt >= 7)
+					if (do_after(user,150,src) && iron_amt >= 10)
 						user << "You craft the Mk2 Brodie."
 						iron_amt -= 10
 						if (iron_amt <= 0)
@@ -1280,7 +1280,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 10)
 					user << "You begin crafting the M26 Adrian..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src) && iron_amt >= 7)
+					if (do_after(user,150,src) && iron_amt >= 10)
 						user << "You craft the M26 Adrian."
 						iron_amt -= 10
 						if (iron_amt <= 0)
@@ -1466,7 +1466,7 @@ obj/structure/anvil/New()
 					if (iron_amt >= 10)
 						user << "You begin crafting the M15 Adrian..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,150,src) && iron_amt >= 7)
+						if (do_after(user,150,src) && iron_amt >= 10)
 							user << "You craft the M15 Adrian."
 							iron_amt -= 10
 							if (iron_amt <= 0)
@@ -1481,7 +1481,7 @@ obj/structure/anvil/New()
 					if (iron_amt >= 10)
 						user << "You begin crafting the M15 Adrian..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,150,src) && iron_amt >= 7)
+						if (do_after(user,150,src) && iron_amt >= 10)
 							user << "You craft the M15 Adrian."
 							iron_amt -= 10
 							if (iron_amt <= 0)
@@ -1496,7 +1496,7 @@ obj/structure/anvil/New()
 					if (iron_amt >= 10)
 						user << "You begin crafting the M15 Adrian..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,150,src) && iron_amt >= 7)
+						if (do_after(user,150,src) && iron_amt >= 10)
 							user << "You craft the M15 Adrian."
 							iron_amt -= 10
 							if (iron_amt <= 0)
@@ -1520,7 +1520,7 @@ obj/structure/anvil/New()
 					if (iron_amt >= 10)
 						user << "You begin crafting the Mk1 Brodie..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,150,src) && iron_amt >= 7)
+						if (do_after(user,150,src) && iron_amt >= 10)
 							user << "You craft the Mk1 Brodie."
 							iron_amt -= 10
 							if (iron_amt <= 0)
@@ -1535,7 +1535,7 @@ obj/structure/anvil/New()
 					if (iron_amt >= 10)
 						user << "You begin crafting the Mk1 Brodie..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-						if (do_after(user,150,src) && iron_amt >= 7)
+						if (do_after(user,150,src) && iron_amt >= 10)
 							user << "You craft the Mk1 Brodie."
 							iron_amt -= 10
 							if (iron_amt <= 0)
