@@ -184,6 +184,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c762x38mmR
+	ammo_type = /obj/item/ammo_casing/a762x38
 	weight = 1.45
 	single_action = FALSE
 	blackpowder = FALSE
@@ -284,6 +285,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/webly445
+	ammo_type = /obj/item/ammo_casing/webly445
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -395,6 +397,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c9mm_jap_revolver
+	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = TRUE
@@ -411,6 +414,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c455
+	ammo_type = /obj/item/ammo_casing/a455
 	weight = 1.6
 	single_action = FALSE
 	blackpowder = FALSE
@@ -441,6 +445,7 @@
 	w_class = 1
 	caliber = "a41"
 	magazine_type = /obj/item/ammo_magazine/c41
+	ammo_type = /obj/item/ammo_casing/a41
 	weight = 0.31
 	load_method = SINGLE_CASING
 	max_shells = 2
