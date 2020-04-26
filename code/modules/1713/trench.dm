@@ -1,5 +1,8 @@
 var/list/global/floor_cache = list()
 
+/turf
+	var/previous_turf = /turf/floor/dirt
+
 /turf/floor/trench
 	name = "trench"
 	icon = 'icons/turf/trench.dmi'
@@ -12,7 +15,6 @@ var/list/global/floor_cache = list()
 	flooded = FALSE
 	salty = FALSE
 	var/message_cooldown = 0
-	var/previous_turf = /turf/floor/dirt
 
 /turf/floor/trench/New()
 	if (!icon_state)
@@ -347,9 +349,9 @@ var/list/global/floor_cache = list()
 					return
 				if(2)
 					visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-					var/turf/floor/trench/T = new /turf/floor/trench
-					T.previous_turf = src
-					ChangeTurf(T)
+					var/previous_turf_type = src.type
+					ChangeTurf(/turf/floor/trench)
+					previous_turf = previous_turf_type
 		return
 	..()
 
@@ -369,9 +371,9 @@ var/list/global/floor_cache = list()
 					return
 				if(2)
 					visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-					var/turf/floor/trench/T = new /turf/floor/trench
-					T.previous_turf = src
-					ChangeTurf(T)
+					var/previous_turf_type = src.type
+					ChangeTurf(/turf/floor/trench)
+					previous_turf = previous_turf_type
 		return
 	..()
 
