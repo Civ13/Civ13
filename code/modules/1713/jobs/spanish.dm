@@ -16,7 +16,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -58,7 +58,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -98,7 +98,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSPBoatswain"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -140,7 +140,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSPMidshipman"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -176,7 +176,7 @@
 	rank_abbreviation = "Cirujano"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSPSurgeon"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -213,7 +213,7 @@
 	rank_abbreviation = "Carpintero"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSPCarpenter"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -254,7 +254,7 @@
 	rank_abbreviation = "Cocinero"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSPCook"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -303,7 +303,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 6

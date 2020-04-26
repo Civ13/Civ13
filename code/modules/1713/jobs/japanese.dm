@@ -15,7 +15,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -63,7 +63,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -113,7 +113,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -162,7 +162,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -208,7 +208,7 @@
 	rank_abbreviation = "Gun-i"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -247,7 +247,7 @@
 	rank_abbreviation = "Shefu"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -291,7 +291,7 @@
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -333,7 +333,7 @@
 	rank_abbreviation = "Itto."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 3
@@ -377,7 +377,7 @@
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -427,7 +427,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -473,7 +473,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPLT"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww2 = TRUE
@@ -521,7 +521,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPLT"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww2 = TRUE
@@ -568,7 +568,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -613,7 +613,7 @@
 	rank_abbreviation = "Gun-i"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
@@ -654,7 +654,7 @@
 	rank_abbreviation = "Sen-i"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
@@ -694,7 +694,7 @@
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 20
@@ -744,7 +744,7 @@
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_tanker = TRUE
 	// AUTOBALANCE
@@ -786,7 +786,7 @@
 	rank_abbreviation = "Itto."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 4
@@ -832,7 +832,7 @@
 	rank_abbreviation = "Jo."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -885,7 +885,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_prison = TRUE
 	// AUTOBALANCE
@@ -933,7 +933,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_prison = TRUE
 	// AUTOBALANCE
@@ -980,7 +980,7 @@
 	rank_abbreviation = "Sen-i"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_prison = TRUE
 
@@ -1023,7 +1023,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_prison = TRUE
 	// AUTOBALANCE

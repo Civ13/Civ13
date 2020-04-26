@@ -1424,7 +1424,7 @@
 			if (original_job.is_commander)
 				holder2.overlays.Cut()
 				holder2.overlays += icon(holder2.icon,"commander")
-			else if (original_job.is_officer)
+			else if (original_job.is_officer || original_job.is_squad_leader)
 				holder2.overlays += icon(holder2.icon,"officer")
 			hud_list[BASE_FACTION] = holder2
 

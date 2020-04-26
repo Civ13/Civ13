@@ -8,7 +8,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -57,7 +57,7 @@
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -106,7 +106,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -146,7 +146,7 @@
 	rank_abbreviation = "NKVD"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
 	// AUTOBALANCE
 	min_positions = 10
@@ -182,7 +182,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /datum/job/civilian/prisoner
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
 	spawn_location = "JoinLateCiv"
 	selection_color = "#2d2d63"

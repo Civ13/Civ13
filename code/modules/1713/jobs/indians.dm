@@ -13,7 +13,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 
 	// AUTOBALANCE
@@ -52,7 +52,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 2
@@ -95,7 +95,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 20
@@ -146,7 +146,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND1"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 60
@@ -187,7 +187,7 @@ datum/job/indians/tribes/blue
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND2"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 60
@@ -228,7 +228,7 @@ datum/job/indians/tribes/green
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND3"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 60
@@ -269,7 +269,7 @@ datum/job/indians/tribes/yellow
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 60
@@ -310,7 +310,7 @@ datum/job/indians/tribes/white
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND5"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 60
@@ -353,7 +353,7 @@ datum/job/indians/tribes/black
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND6"
-	SL_check_independent = TRUE
+
 
 	// AUTOBALANCE
 	min_positions = 60

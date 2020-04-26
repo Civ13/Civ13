@@ -7,7 +7,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -69,7 +69,7 @@
 	rank_abbreviation = "Dep."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -128,7 +128,7 @@
 	rank_abbreviation = "Dep."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -186,7 +186,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -224,7 +224,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -304,7 +304,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -367,7 +367,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -400,7 +400,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -460,7 +460,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -514,7 +514,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -550,7 +550,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
@@ -607,7 +607,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 	// AUTOBALANCE
 	min_positions = 6
@@ -687,7 +687,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -768,7 +768,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 	// AUTOBALANCE
 	min_positions = 2

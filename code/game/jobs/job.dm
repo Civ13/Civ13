@@ -39,8 +39,6 @@
 
 	var/enabled = TRUE
 
-	var/squad = 0
-
 /datum/job/proc/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
