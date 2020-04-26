@@ -539,7 +539,7 @@ RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,floo
 RECIPE: /material/stone/,slate floor,/obj/covers/slatefloor,1,25,1,1,floors,25,0,0,8,null
 RECIPE: /material/stone/,roman road,/obj/covers/romanroad,1,25,1,1,floors,20,0,0,8,null
 RECIPE: /material/stone/,marble floor,/obj/covers/marblefloor,1,25,1,1,floors,32,0,0,8,null
-RECIPE: /material/stone/,ornate marble tile,/obj/covers/marblefloor,1,25,1,1,floors,32,0,0,8,null
+RECIPE: /material/stone/,ornate marble tile,/obj/covers/ornatemarblefloor,1,25,1,1,floors,32,0,0,8,null
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,floors,100,0,0,8,null
 RECIPE: /material/stone/,sidewalk,/obj/covers/sidewalk,1,25,1,1,floors,100,0,0,8,null
 
@@ -568,7 +568,7 @@ RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stonebal
 
 RECIPE: /material/stone/,stone bricks,/obj/item/stack/material/stonebrick,1,25,1,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick wall,/obj/covers/stone_wall/brick,6,140,1,1,none,35,0,0,8,null
-RECIPE: /material/stonebrick/,stone brick floor,/obj/covers/stonebrickfloor,1,25,1,1,none,18,0,0,8,null
+RECIPE: /material/stonebrick/,stone brick floor,/obj/covers/stonebrickfloor,1,25,1,1,none,35,0,0,8,null
 
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,construction,0,0,0,2,null
 RECIPE: /material/stone/,stone block wall,/obj/covers/stone_wall/classic,8,140,1,1,construction,0,0,0,2,null
