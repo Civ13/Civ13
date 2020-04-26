@@ -179,6 +179,38 @@
 	can_hold = list(/obj/item/clothing/mask/smokable/cigarette/cigar)
 	icon_type = "cigar"
 
+/obj/item/weapon/storage/fancy/medal
+	name = "medal case"
+	desc = "A case for holding medals to be awarded."
+	icon_state = "cigarcase"
+	item_state = "cigarcase"
+	icon = 'icons/obj/cigarettes.dmi'
+	w_class = 1
+	throwforce = WEAPON_FORCE_HARMLESS
+	slot_flags = SLOT_BELT
+	storage_slots = 14
+	can_hold = list(/obj/item/clothing/accessory/medal)
+	icon_type = "cigar"
+
+/obj/item/weapon/storage/fancy/medal/german_full
+	name = "german medal case"
+/obj/item/weapon/storage/fancy/medal/german_full/New()
+	..()
+	new /obj/item/clothing/accessory/medal/german/ww2/eastern_front(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/tank_destruction(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
+	new /obj/item/clothing/accessory/medal/german/ww2/eastern_front(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/assault_badge(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/tank_destruction(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/wound(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/wound_silver(src)
+	new	/obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
+
 /obj/item/weapon/storage/fancy/cigar/full
 	name = "cigar case"
 	desc = "A case for holding your cigars when you are not smoking them."
