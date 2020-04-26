@@ -105,7 +105,19 @@ var/global/datum/controller/occupations/job_master
 
 	if (map)
 		map.faction_organization = map.initial_faction_organization.Copy()
-
+	switch(_clients)
+		if (0 to 12)
+			map.squads = 1
+		if (13 to 24)
+			map.squads = 2
+		if (25 to 36)
+			map.squads = 3
+		if (37 to 48)
+			map.squads = 4
+		if (49 to 60)
+			map.squads = 5
+		if (61 to 1000)
+			map.squads = 6
 	_clients = max(max(_clients, (map ? map.min_autobalance_players : 0)), clients.len, admin_expected_clients)
 
 	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 50))
@@ -137,9 +149,6 @@ var/global/datum/controller/occupations/job_master
 			J.total_positions = positions
 		else
 			J.total_positions = 0
-
-	if (map && map.subfaction_is_main_faction)
-		announce = FALSE
 
 	if (map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY))
 		if (map)

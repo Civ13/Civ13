@@ -5,11 +5,10 @@
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		GERMAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(GERMAN) = /area/caribbean/british,
 		)

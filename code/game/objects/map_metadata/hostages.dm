@@ -5,14 +5,13 @@
 	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	min_autobalance_players = 100
 	no_winner ="The operation is still underway."
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/greek,
 		list(ARAB) = /area/caribbean/greek
