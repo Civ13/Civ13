@@ -115,7 +115,7 @@
 			maps = list(
 				MAP_REICHSTAG = 0,
 				MAP_KHALKHYN_GOL = 0,
-				MAP_OMAHA = 10,
+//				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
 //				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
@@ -129,6 +129,7 @@
 				MAP_HILL_203 = 0,
 				MAP_YPRES = 0,
 				MAP_TSARITSYN = 10,
+				MAP_PORT_ARTHUR = 10,
 			)
 
 		if (epoch == "Industrial Age (1850-1895)")

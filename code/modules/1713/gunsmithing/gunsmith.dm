@@ -91,7 +91,7 @@
 		return
 	else
 		H << "You start converting \the [P] into [choice]..."
-		playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+		playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
 		if (do_after(H, 100, src))
 			H << "You successfully convert \the [P]."
 			P.caliber = null
@@ -433,6 +433,10 @@
 			newgunbp.ammo_type = current_gun.ammo_type
 			newgunbp.custom_name = current_gun.name
 			newgunbp.custom_name = replacetext(newgunbp.name, " blueprint", "")
+			if (choice_caliber == "shotgun")
+				newgunbp.desc = "A blueprint for a gun chambered in 12 gauge. The feed system is [lowertext(current_gun.feeding_type)]."
+			else
+				newgunbp.desc = "A blueprint for a gun chambered in [choice_caliber] rounds. The feed system is [lowertext(current_gun.feeding_type)]."
 			newgunbp.receiver_type = current_gun.receiver_type
 			newgunbp.stock_type = current_gun.stock_type
 			newgunbp.barrel_type = current_gun.barrel_type
@@ -481,7 +485,7 @@
 	using_wood -= bpsource.cost_wood
 	using_steel -= bpsource.cost_steel
 	user << "You begin crafting the [bpsource.custom_name]..."
-	playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+	playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
 	if (do_after(user,200,src))
 		if (!bpsource)
 			return
@@ -495,10 +499,8 @@
 			return
 		var/obj/item/weapon/gun/projectile/custom/NEWGUN = new/obj/item/weapon/gun/projectile/custom(src.loc)
 		NEWGUN.name = bpsource.custom_name
-		NEWGUN.name = replacetext(NEWGUN.name, " blueprint", "")
 		NEWGUN.caliber = bpsource.caliber
 		NEWGUN.ammo_type = bpsource.ammo_type
-		NEWGUN.name = bpsource.name
 		NEWGUN.receiver_type = bpsource.receiver_type
 		NEWGUN.stock_type = bpsource.stock_type
 		NEWGUN.barrel_type = bpsource.barrel_type
