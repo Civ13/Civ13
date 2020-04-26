@@ -860,7 +860,7 @@ obj/structure/anvil/New()
 			else if (map.ordinal_age == 8)
 				display4 = list("Scrap Armor (16)", "Scrap Helmet (15)", "Cancel")
 			else if (map.ordinal_age == 6)
-				display4 = list("Mk2 Brodie (10)", "Stahlhelm (10)","Type 92 Helmet (10)", "Soviet Helmet (10)", "M1 Helmet (10)", "Cancel")
+				display4 = list("Mk2 Brodie (10)", "Stahlhelm (10)","Type 92 Helmet (10)", "Soviet Helmet (10)", "M1 Helmet (10)", "M26 Adrian (10)", "Cancel")
 			else if (map.ordinal_age == 5)
 				display4 = list("Pickelhaube (7)","MesH Pickelhaube (7)", "Pith (7)", "Mk1 Brodie (10)", "Stahlhelm (10)", "M15 Adrian Helmet (10)", "Cancel")
 			else if (map.ordinal_age == 2)
@@ -1276,6 +1276,21 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
+			if (choice4 == "M26 Adrian (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the M26 Adrian..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 7)
+						user << "You craft the M26 Adrian."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/ww2/adrianm26(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
 
 			if (choice4 == "Pith (7)")
 				if (iron_amt >= 7)
@@ -1445,7 +1460,7 @@ obj/structure/anvil/New()
 			if (choice4 == "M15 Adrian Helmet (10)")
 				var/list/display5 = list("Cancel")
 				if (iron_amt >= 10)
-					display5 = list("Standard M15 Adrian", "Russian M15 Adrian", "Cancel")
+					display5 = list("Standard M15 Adrian", "Russian M15 Adrian", "Greek M15 Adrian", "Cancel")
 				var/choice5 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display5)
 				if (choice5 == "Standard M15 Adrian")
 					if (iron_amt >= 10)
@@ -1476,6 +1491,22 @@ obj/structure/anvil/New()
 					else
 						user << "<span class='notice'>You need more iron to make this!</span>"
 						return
+
+				if (choice5 == "Greek M15 Adrian")
+					if (iron_amt >= 10)
+						user << "You begin crafting the M15 Adrian..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,150,src) && iron_amt >= 7)
+							user << "You craft the M15 Adrian."
+							iron_amt -= 10
+							if (iron_amt <= 0)
+								icon_state = "anvil1"
+							new/obj/item/clothing/head/helmet/ww/adriangreek(user.loc)
+							return
+					else
+						user << "<span class='notice'>You need more iron to make this!</span>"
+						return
+
 
 					if (choice5 == "Cancel")
 						return
