@@ -199,7 +199,7 @@
 	buildstack = /obj/item/stack/material/stone
 
 /obj/covers/ornatemarblefloor
-	name = "marble floor"
+	name = "ornate marble floor"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "ornate_marble"
 	passable = TRUE
@@ -1759,10 +1759,11 @@
 /obj/covers/stone_wall/brick
 	name = "stone brick wall"
 	desc = "A stone brick wall."
-	icon_state = "stone_brickwall0"
-	base_icon_state = "stone_brickwall"
+	icon_state = "new_stonebrick0"
+	base_icon_state = "new_stonebrick"
 	adjusts = TRUE
 	health = 550
+	buildstack = /obj/item/stack/material/stonebrick
 
 /obj/covers/stone_wall/fortress
 	name = "fortress brick wall"
@@ -1772,3 +1773,4 @@
 	adjusts = TRUE
 	health = 650
 	explosion_resistance = 7
+	buildstack = /obj/item/stack/material/stonebrick
