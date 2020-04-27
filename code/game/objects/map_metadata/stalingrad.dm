@@ -19,7 +19,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Stalingrad"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><font size=3>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>50</b> points wins!</font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><font size=3>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>40</b> points wins!</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -171,9 +171,9 @@ obj/map_metadata/stalingrad/proc/points_check()
 
 /obj/map_metadata/stalingrad/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 6000)
-		if (sov_points < 50 && ger_points < 50)
+		if (sov_points < 40 && ger_points < 40)
 			return TRUE
-		if (sov_points >= 50 && sov_points > ger_points)
+		if (sov_points >= 40 && sov_points > ger_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE
@@ -182,7 +182,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
-		if (ger_points >= 50 && ger_points > sov_points)
+		if (ger_points >= 40 && ger_points > sov_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE
