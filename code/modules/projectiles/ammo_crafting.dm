@@ -365,7 +365,7 @@
 		else if (input == "5.5mm intermediate rifle")
 			resultpath = /obj/item/ammo_casing/smallintermediumrifle
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		if (resultpath != null)
+		if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 			for(var/i=1;i<=amount;i++)
 				var/obj/item/ammo_casing/NC = new resultpath(user.loc)
 				NC.btype = inputbtype
