@@ -601,14 +601,6 @@ var/global/redirect_all_players = null
 		return FALSE
 
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
-	job_master.relocate(character)
-
-	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
-		character.buckled.loc = character.loc
-		character.buckled.set_dir(character.dir)
-
-	if (character.mind)
-		ticker.minds += character.mind
 
 	//squads
 	if (ishuman(character))
@@ -634,9 +626,9 @@ var/global/redirect_all_players = null
 						H << "<big><b>You are the new squad leader!</b></big>"
 						map.faction1_squad_leaders[tmplist[1]] = H
 					else if (map.faction1_squad_leaders[H.squad] && map.faction1_squad_leaders[H.squad] != H)
-						H << "<big><b>Your NCO is [map.faction1_squad_leaders[H.squad]].</b></big>"
+						H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
 				else if (map.faction1_squad_leaders[H.squad])
-					H << "<big><b>Your NCO is [map.faction1_squad_leaders[H.squad]].</b></big>"
+					H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
 			else if (H.faction_text == map.faction2)
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
 					if (!H.back)
@@ -654,11 +646,19 @@ var/global/redirect_all_players = null
 						H << "<big><b>You are the new squad leader!</b></big>"
 						map.faction2_squad_leaders[tmplist[1]] = H
 					else if (map.faction2_squad_leaders[H.squad] && map.faction2_squad_leaders[H.squad] != H)
-						H << "<big><b>Your NCO is [map.faction2_squad_leaders[H.squad]].</b></big>"
+						H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
 				else if (map.faction2_squad_leaders[H.squad])
-					H << "<big><b>Your NCO is [map.faction2_squad_leaders[H.squad]].</b></big>"
+					H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
 	//
 
+	job_master.relocate(character)
+
+	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
+		character.buckled.loc = character.loc
+		character.buckled.set_dir(character.dir)
+
+	if (character.mind)
+		ticker.minds += character.mind
 	character.lastarea = get_area(loc)
 	qdel(src)
 	return TRUE

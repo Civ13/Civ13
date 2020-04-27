@@ -187,7 +187,7 @@ var/global/datum/controller/occupations/job_master
 
 	if (!H)
 		return
-	/*
+
 	if (H.original_job && H.original_job.uses_squads && !H.original_job.is_squad_leader && H.squad > 0)
 		var/mob/living/carbon/human/HSL = null
 		world.log << "trying"
@@ -215,7 +215,7 @@ var/global/datum/controller/occupations/job_master
 					if (H_area)
 						H_area.play_ambience(H)
 				return
-	*/
+
 	var/spawn_location = H.job_spawn_location
 
 	if (!spawn_location && H.original_job)
