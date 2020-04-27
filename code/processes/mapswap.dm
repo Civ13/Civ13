@@ -507,3 +507,12 @@
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
+	else if (vote.voted_gamemode == "Normal")
+		world << "<font color='green'><big>Normal Mode</big><br>No respawn delays.</big></font>"
+		return
+	else if (vote.voted_gamemode == "Competitive")
+		world << "<font color='yellow'><big>Competitive Mode</big><br>5 minute respawn delays, increased damage.</big></font>"
+		return
+	if (vote.voted_gamemode == "Harcore")
+		world << "<font color='red'><big>HARDCORE Mode</big><br>No respawns, increased damage.</big></font>"
+		return

@@ -217,9 +217,15 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("Yes")
 						choices.Add("No")
 				if ("gamemode")
-					var/list/options = list("Classic (Stone Age Start)", "Chad Mode", "Chad Mode +", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
-					if (!default)
-						default = "Classic (Stone Age Start)"
+					var/list/options = list()
+					if (config.allowedgamemodes == "TDM")
+						options = list("Normal", "Competitive", "Hardcore")
+						if (!default)
+							default = "Normal"
+					else
+						options = list("Classic (Stone Age Start)", "Chad Mode", "Chad Mode +", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
+						if (!default)
+							default = "Classic (Stone Age Start)"
 					choices.Add(options)
 				else
 					return FALSE
