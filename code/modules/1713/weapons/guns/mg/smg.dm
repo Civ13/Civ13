@@ -215,6 +215,7 @@
 	item_state = "ppsh"
 	base_icon = "ppsh"
 	caliber = "a762x25"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	weight = 3.63
@@ -232,6 +233,7 @@
 	item_state = "pps"
 	base_icon = "pps"
 	caliber = "a762x25"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_pps
 	weight = 3.04
@@ -249,7 +251,7 @@
 	item_state = "ak47"
 	base_icon = "ak47"
 	caliber = "a762x39"
-	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
+	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 3.47
 	equiptimer = 15
@@ -322,7 +324,7 @@
 	item_state = "ak74"
 	base_icon = "ak74"
 	caliber = "a545x39"
-	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
+	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
 	weight = 3.07
 	equiptimer = 15
@@ -522,7 +524,7 @@
 	item_state = "m16"
 	base_icon = "m16"
 	caliber = "a556x45"
-	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
+	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3.07
 	equiptimer = 15
@@ -622,7 +624,7 @@
 	item_state = "m14"
 	base_icon = "m14"
 	caliber = "a762x51"
-	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
+	fire_sound = 'sound/weapons/guns/fire/M14.ogg'
 	magazine_type = /obj/item/ammo_magazine/m14
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 3.6

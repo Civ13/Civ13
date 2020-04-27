@@ -378,6 +378,7 @@
 	base_icon = "smithwesson32"
 	w_class = 1
 	caliber = "a32"
+	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -410,6 +411,7 @@
 	icon_state = "webley"
 	w_class = 2
 	caliber = "a455"
+	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -428,6 +430,7 @@
 	icon_state = "panther"
 	item_state = "panther"
 	w_class = 2
+	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
 	caliber = "a44p"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
@@ -444,6 +447,7 @@
 	item_state = "pistol"
 	w_class = 1
 	caliber = "a41"
+	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
 	magazine_type = /obj/item/ammo_magazine/c41
 	ammo_type = /obj/item/ammo_casing/a41
 	weight = 0.31

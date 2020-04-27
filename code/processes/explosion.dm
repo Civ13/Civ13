@@ -53,7 +53,10 @@
 	var/adminlog = data.adminlog
 	var/z_transfer = data.z_transfer
 	var/power = data.rec_pow
+	var/sound = data.sound
 
+	if (!sound)
+		sound = get_sfx("explosion")
 	if (config.use_recursive_explosions)
 		explosion_rec(epicenter, power)
 		return
@@ -264,3 +267,4 @@
 	var/is_rec
 	var/rec_pow
 	var/list/objects_with_immunity = list()
+	var/sound = null

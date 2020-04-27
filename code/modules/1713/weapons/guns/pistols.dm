@@ -361,7 +361,7 @@
 	icon_state = "coltpockethammerless"
 	w_class = 2
 	caliber = "a32acp"
-	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
+	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a32acp

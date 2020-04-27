@@ -185,6 +185,7 @@
 	icon_state = "sks"
 	item_state = "ks"
 	base_icon = "sks"
+	fire_sound = 'sound/weapons/guns/fire/SKS.ogg'
 	w_class = 4
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 10
@@ -336,7 +337,7 @@
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 8
 	caliber = "a3006"
-	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
+	fire_sound = 'sound/weapons/guns/fire/Garand.ogg'
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/garand

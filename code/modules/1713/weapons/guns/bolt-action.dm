@@ -304,6 +304,7 @@
 	icon_state ="mosin"
 	item_state ="mosin"
 	base_icon = "mosin"
+	fire_sound = 'sound/weapons/guns/fire/Mosin.ogg'
 	force = 12
 	caliber = "a762x54"
 	weight = 4.3
@@ -626,6 +627,7 @@
 	icon_state = "mauser90"
 	item_state = "gewehr98"
 	base_icon = "mauser90"
+	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	caliber = "a765x53"
 	weight = 3.8
 	ammo_type = /obj/item/ammo_casing/a765x53
@@ -648,6 +650,7 @@
 	icon_state = "mauser93"
 	item_state = "gewehr98"
 	base_icon = "mauser93"
+	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	caliber = "a7x57"
 	weight = 3.68
 	ammo_type = /obj/item/ammo_casing/a7x57
@@ -680,6 +683,7 @@
 	item_state = "gewehr98"
 	base_icon = "gewehr98"
 	caliber = "a792x57"
+	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	weight = 4
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
