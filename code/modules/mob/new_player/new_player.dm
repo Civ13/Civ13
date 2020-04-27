@@ -619,6 +619,7 @@ var/global/redirect_all_players = null
 							done = TRUE
 							H.squad = i
 							map.faction1_squad_leaders[i] = H
+							break
 					if (!done)
 						H.squad = rand(1,map.squads)
 				else
@@ -643,6 +644,7 @@ var/global/redirect_all_players = null
 							done = TRUE
 							H.squad = i
 							map.faction2_squad_leaders[i] = H
+							break
 					if (!done)
 						H.squad = rand(1,map.squads)
 				else
