@@ -30,6 +30,7 @@
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Faction-Based RP"
+	is_RP = TRUE
 
 obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 	..()

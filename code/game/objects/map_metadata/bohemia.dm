@@ -24,7 +24,7 @@
 	gamemode = "Medieval RP"
 	is_singlefaction = TRUE
 	force_mapgen = TRUE
-
+	is_RP = TRUE
 /obj/map_metadata/bohemia/New()
 	..()
 	spawn(18000)

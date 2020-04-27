@@ -33,6 +33,7 @@
 		list("Polish",0,0),
 		list("Ukrainian",0,0),
 	)
+	is_RP = TRUE
 	var/gracedown1 = TRUE
 	var/siren = FALSE
 obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)

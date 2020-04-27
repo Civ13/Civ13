@@ -39,7 +39,7 @@ var/civmax_research = list(230,230,230)
 	var/list/songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	var/mission_start_message = "Round will start soon!"
-
+	var/is_RP = FALSE
 	var/squads = 1
 	var/list/faction1_squads = list(
 		1 = list(),

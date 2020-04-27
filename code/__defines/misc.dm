@@ -66,14 +66,6 @@
 #define BOMBCAP_LIGHT_RADIUS max_explosion_range
 #define BOMBCAP_FLASH_RADIUS (max_explosion_range*1.5)
 
-#define WEAPON_FORCE_HARMLESS	3
-#define WEAPON_FORCE_WEAK		7
-#define WEAPON_FORCE_NORMAL	  10
-#define WEAPON_FORCE_PAINFUL	15
-#define WEAPON_FORCE_DANGEROUS   20
-#define WEAPON_FORCE_ROBUST	  26
-#define WEAPON_FORCE_LETHAL	  51
-
 //HUD element hidings flags
 #define F12_FLAG 1 // 0001
 #define TOGGLE_INVENTORY_FLAG 2 //0010

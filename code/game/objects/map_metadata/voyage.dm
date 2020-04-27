@@ -20,6 +20,7 @@
 	battle_name = "Transatlantic Voyage"
 	mission_start_message = "<font size=4>The travel is starting. Hold the ship against the pirates!</font>"
 
+	is_RP = TRUE
 	var/first_event_done = FALSE
 	var/second_event_done = FALSE
 	var/third_event_done = FALSE

@@ -29,6 +29,7 @@
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Colony Building RP"
+	is_RP = TRUE
 
 /obj/map_metadata/colony/New()
 	..()

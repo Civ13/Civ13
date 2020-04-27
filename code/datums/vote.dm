@@ -58,7 +58,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			return
 		if (map.persistence)
 			return
-		if (map.civilizations && autogamemode_triggered == FALSE)
+		if (!map.is_RP && autogamemode_triggered == FALSE)
 			initiate_vote("gamemode","the server", TRUE)
 			log_debug("The server has called a gamemode vote.")
 			autogamemode_triggered = TRUE
@@ -218,11 +218,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("No")
 				if ("gamemode")
 					var/list/options = list()
-					if (config.allowedgamemodes == "TDM")
+					if (config.allowedgamemodes == "TDM" && !map.is_RP && !map.nomads && map.civilizations)
 						options = list("Normal", "Competitive", "Hardcore")
 						if (!default)
 							default = "Normal"
-					else
+					else if (map.nomads || map.civilizations)
 						options = list("Classic (Stone Age Start)", "Chad Mode", "Chad Mode +", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
 						if (!default)
 							default = "Classic (Stone Age Start)"
