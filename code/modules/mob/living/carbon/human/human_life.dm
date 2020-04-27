@@ -1319,8 +1319,8 @@
 				death()
 /mob/living/carbon/human/proc/handle_hud_list()
 	if (stat == DEAD)
-		hud_list[BASE_FACTION] = null
-		hud_list[FACTION_TO_ENEMIES] = null
+		hud_list[BASE_FACTION].icon_state = ""
+		hud_list[FACTION_TO_ENEMIES].icon_state = ""
 	if (original_job && never_set_faction_huds && stat != DEAD)
 
 		never_set_faction_huds = FALSE
