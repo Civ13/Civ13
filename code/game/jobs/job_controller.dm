@@ -105,7 +105,7 @@ var/global/datum/controller/occupations/job_master
 
 	if (map)
 		map.faction_organization = map.initial_faction_organization.Copy()
-	switch(_clients)
+	switch(clients.len)
 		if (0 to 12)
 			map.squads = 1
 		if (13 to 24)
@@ -187,6 +187,34 @@ var/global/datum/controller/occupations/job_master
 
 	if (!H)
 		return
+
+	if (H.original_job && H.original_job.uses_squads && !H.original_job.is_squad_leader && H.squad > 0)
+		var/mob/living/carbon/human/HSL = null
+		world.log << "trying"
+		if (H.faction_text == map.faction1)
+			if (map.faction1_squad_leaders[H.squad])
+				HSL = map.faction1_squad_leaders[H.squad]
+				world.log << "found"
+		else if (H.faction_text == map.faction2)
+			if (map.faction2_squad_leaders[H.squad])
+				HSL = map.faction2_squad_leaders[H.squad]
+				world.log << "found"
+		if (HSL && HSL.stat == CONSCIOUS)
+			world.log << "[HSL]"
+			var/found = FALSE
+			for(var/mob/living/carbon/human/EN in range(6,HSL))
+				if (EN.stat == CONSCIOUS && EN.faction_text != H.faction_text)
+					found = TRUE
+					continue
+			if (!found)
+				H.forceMove(get_turf(HSL))
+				HSL << "<big><font color='green'>[H] has arrived at your squad.</font></big>"
+				// make sure we have the right ambience for our new location
+				spawn (1)
+					var/area/H_area = get_area(H)
+					if (H_area)
+						H_area.play_ambience(H)
+				return
 
 	var/spawn_location = H.job_spawn_location
 

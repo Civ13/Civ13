@@ -6,7 +6,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		ARAB,
 		FRENCH)

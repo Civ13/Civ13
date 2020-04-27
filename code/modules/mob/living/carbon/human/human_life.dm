@@ -1318,7 +1318,11 @@
 			if (getBruteLoss() >= 150)
 				death()
 /mob/living/carbon/human/proc/handle_hud_list()
-
+	if (stat == DEAD)
+		hud_list[BASE_FACTION].icon_state = ""
+		hud_list[BASE_FACTION].overlays.Cut()
+		hud_list[FACTION_TO_ENEMIES].icon_state = ""
+		hud_list[FACTION_TO_ENEMIES].overlays.Cut()
 	if (original_job && never_set_faction_huds && stat != DEAD)
 
 		never_set_faction_huds = FALSE
@@ -1421,8 +1425,10 @@
 						holder2.icon_state = ""
 					if (map.ID == MAP_TSARITSYN)
 						holder2.icon_state = "sov_basic"
+			holder2.overlays.Cut()
+			if (original_job.uses_squads && squad > 0)
+				holder2.overlays += icon(holder2.icon,"squad_[squad]")
 			if (original_job.is_commander)
-				holder2.overlays.Cut()
 				holder2.overlays += icon(holder2.icon,"commander")
 			else if (original_job.is_officer || original_job.is_squad_leader)
 				holder2.overlays += icon(holder2.icon,"officer")

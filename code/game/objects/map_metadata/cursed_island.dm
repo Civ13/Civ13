@@ -7,7 +7,7 @@
 	respawn_delay = 0
 
 	no_winner ="The crew is alive."
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		BRITISH,)
 	roundend_condition_sides = list(

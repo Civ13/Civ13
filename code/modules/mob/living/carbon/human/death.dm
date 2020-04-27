@@ -60,6 +60,34 @@
 					i[3]-=50
 	handle_piss()
 	handle_shit()
+	if (original_job.uses_squads && squad > 0)
+		if (faction_text == map.faction1)
+			map.faction1_squads[squad] -= src
+			if (map.faction1_squad_leaders[squad] == src)
+				map.faction1_squad_leaders[squad] = null
+				for(var/mob/living/carbon/human/HSM in map.faction1_squads[squad])
+					if (HSM != src)
+						HSM << "<big><b><font color='red'>Your squad leader has been killed!</font></b></big>"
+						if (HSM.original_job.is_squad_leader && (!map.faction1_squad_leaders[squad] || map.faction1_squad_leaders[squad] == src))
+							HSM << "<big><b><font color='green'>You are the new squad leader!</font></b></big>"
+							map.faction1_squad_leaders[squad] = HSM
+							for(var/mob/living/carbon/human/HSM2 in map.faction2_squads[squad])
+								if (HSM2 != HSM)
+									HSM2 << "<big><b>[HSM] is your new squad leader.</b></big>"
+		else if (faction_text == map.faction2)
+			map.faction2_squads[squad] -= src
+			if (map.faction2_squad_leaders[squad] == src)
+				map.faction2_squad_leaders[squad] = null
+				for(var/mob/living/carbon/human/HSM in map.faction2_squads[squad])
+					if (HSM != src)
+						HSM << "<big><b><font color='red'>Your squad leader has been killed!</font></b></big>"
+						if (HSM.original_job.is_squad_leader && (!map.faction2_squad_leaders[squad] || map.faction2_squad_leaders[squad] == src))
+							HSM << "<big><b><font color='green'>You are the new squad leader!</font></b></big>"
+							map.faction2_squad_leaders[squad] = HSM
+							for(var/mob/living/carbon/human/HSM2 in map.faction2_squads[squad])
+								if (HSM2 != HSM)
+									HSM2 << "<big><b>[HSM] is your new squad leader.</b></big>"
+	handle_hud_list()
 	var/list/poss_list = list()
 	for(var/cmp in map.custom_company_nr)
 		if (find_company_member(src,cmp))
