@@ -39,7 +39,7 @@ var/list/global/floor_cache = list()
 							IF.irrigate("fresh")
 			else
 				for (var/turf/floor/TF in range(1, src))
-					if ((istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded)) && (map.civilizations || map.nomads || map.ID == MAP_COLONY || map.ID == MAP_FOUR_COLONIES || map.ID == MAP_PIONEERS || map.ID == MAP_BOHEMIA))
+					if (map && (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded)) && (map.civilizations || map.nomads || map.ID == MAP_COLONY || map.ID == MAP_FOUR_COLONIES || map.ID == MAP_PIONEERS || map.ID == MAP_BOHEMIA))
 						flooded = TRUE
 						if (istype(TF, /turf/floor/trench/flooded))
 							var/turf/floor/trench/flooded/WT = TF
