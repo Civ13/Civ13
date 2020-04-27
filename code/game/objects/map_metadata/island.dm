@@ -43,6 +43,10 @@ obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))
 		. = FALSE
+	else if (J.is_prison == TRUE)
+		. = FALSE
+	else if (J.is_ww2 == TRUE)
+		. = FALSE
 	else
 		. = TRUE
 /obj/map_metadata/island/faction2_can_cross_blocks()

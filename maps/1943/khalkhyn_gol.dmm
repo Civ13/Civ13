@@ -181,6 +181,7 @@
 "dy" = (/obj/structure/closet/cabinet,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/antitox,/obj/item/weapon/storage/pill_bottle/antitox,/obj/item/weapon/storage/pill_bottle/pervitin,/obj/item/weapon/storage/pill_bottle/pervitin,/obj/item/weapon/storage/pill_bottle/pervitin,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "dz" = (/obj/structure/iv_drip,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "dA" = (/obj/structure/bed/chair/wheelchair,/obj/structure/bed/chair/wheelchair,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
+"dB" = (/obj/structure/vehicleparts/frame/t34,/obj/structure/cannon/modern/tank/russian76{anchored = 1},/turf/floor/grass,/area/caribbean/russian/land/outside)
 "dC" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/dirt,/area/caribbean/japanese/land/outside)
 "dD" = (/turf/wall/rockwall,/area/caribbean/japanese/land/inside/command)
 "dE" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
@@ -427,7 +428,6 @@
 "im" = (/obj/structure/vehicleparts/frame/t34/right/door,/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "in" = (/obj/structure/vehicleparts/frame/t34/right,/obj/structure/bed/chair/commander,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "io" = (/obj/structure/wild/jungle/medpine,/obj/structure/window/sandbag/sandbag,/turf/floor/grass,/area/caribbean)
-"ip" = (/obj/structure/vehicleparts/frame/t34,/obj/structure/cannon/modern/tank/russian76,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iq" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean)
 "ir" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "is" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/russian/land/inside)
@@ -461,7 +461,7 @@ aaaaaaaaaaaaaaaaaaagaaaaaaaaaaaiaaaaaaaaaaaaaebJaaaaaabYbYacaaaaagaaaaaaakakakak
 aaaaaaaaaabJaaaaaaaaaaaeaaaaaaaaacacaaaaaaaaaaacaaagaabYbYaaaaaaaaaaaaaaakakakakakakakakakakakakesesakakakakakakakakakakaMakakakakakakakakakaMaMaMaMaMakakakakakakakakakakaaaaaaaaac
 aaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaacacacaaaaaaaaaaaaacbYbYaaaaaaaaaaaaaaakakakakakakakakakakakakakaKaMakeDeieyakakaKakakeDeieyakaMakakesakakakakakakakakakesaMakakakakakakbJagaaaaaa
 aaaaaaaaaaaaadaaaabJaaaaacaaaaacaabJaaagaaaaaaaeaaaaacbYchaaaaaeaaaaaaaiakakakakakakakaMivakakakaMfzaMakimfPikakakilakakimfPikakakakakakakaMakakakakakakizakakakakakakakakacaaaaacaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaabJaaaaacaabJacacbYbYaaaaacacacacakakakakakakakakakaMakakakakakakinipixakakakaMakinipixakakakaMakakakakakakakakakakaMakakakakakakakaaaaaaacaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaabJaaaaacaabJacacbYbYaaaaacacacacakakakakakakakakakaMakakakakakakindBixakakakaMakindBixakakakaMakakakakakakakakakakaMakakakakakakakaaaaaaacaa
 aaacaaaaaaaaaaaaacaeaaaaagaaaaaaaaaaaaacacaaaaaaaaaaaeaabYbYacacacaaaaaaakakakakakakakakakakakakakakakakiyiAiBakakakakakiyiAiBakakakakakakakakakakakakakakakakakakakaMakaMaaaaaaacaa
 aaaaaaagaaaaacacbMaaaaaaacaeaaaaaaaaaaaaaaaaaaaaaaacaaaabYbYaeaaaaagaaaaakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakaaaaacaaaa
 aaaaaaaaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaagaaaebYbYbYaaaaaaaaaaaaaeakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakacacaeaaaa
