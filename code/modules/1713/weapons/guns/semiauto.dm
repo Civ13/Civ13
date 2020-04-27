@@ -63,6 +63,8 @@
 	var/base_icon = "semiautomatic"
 	equiptimer = 12
 	gun_safety = TRUE
+	reload_sound = 'sound/weapons/guns/interact/smg_magin.ogg'
+	unload_sound = 'sound/weapons/guns/interact/smg_magout.ogg'
 
 /obj/item/weapon/gun/projectile/semiautomatic/update_icon()
 	if (sniper_scope)
@@ -315,7 +317,7 @@
 	w_class = 4
 	caliber = "a792x33"
 	fire_sound = 'sound/weapons/guns/fire/stg.ogg'
-	load_magazine_sound = 'sound/weapons/guns/interact/stg_reload.ogg'
+	reload_sound = 'sound/weapons/guns/interact/stg_reload.ogg'
 	magazine_type = /obj/item/ammo_magazine/stg
 	weight = 4.6
 	load_delay = 8
@@ -341,6 +343,8 @@
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/garand
+	reload_sound = 'sound/weapons/guns/interact/GarandLoad.ogg'
+	unload_sound = 'sound/weapons/guns/interact/GarandUnload.ogg'
 	weight = 4.9
 	firemodes = list(
 		list(name="single shot",burst=1, move_delay=2, fire_delay=2)
