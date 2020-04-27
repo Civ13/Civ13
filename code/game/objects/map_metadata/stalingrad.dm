@@ -42,9 +42,9 @@ obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	else if (istype(J, /datum/job/german/ss_pionier) || istype(J, /datum/job/german/ss_panzergrenadier) || istype(J, /datum/job/german/ss_panzergrenadier_squad_leader) || istype(J, /datum/job/german/ss_panzergrenadier_squad_leader))
 		. = TRUE
-	else if (J.is_reichstag == TRUE)///idk what I'm doing, I just wanted to be sure
-		. = FALSE
 	else
+		. = FALSE
+	if (J.is_reichstag == TRUE)
 		. = FALSE
 
 /obj/map_metadata/stalingrad/faction1_can_cross_blocks()
