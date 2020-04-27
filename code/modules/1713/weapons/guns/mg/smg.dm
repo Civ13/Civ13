@@ -64,6 +64,8 @@
 	var/jammed_until = -1
 	var/jamcheck = 0
 	var/last_fire = -1
+	reload_sound = 'sound/weapons/guns/interact/smg_magin.ogg'
+	unload_sound = 'sound/weapons/guns/interact/smg_magout.ogg'
 
 /obj/item/weapon/gun/projectile/submachinegun/special_check(mob/user)
 	if (gun_safety && safetyon)

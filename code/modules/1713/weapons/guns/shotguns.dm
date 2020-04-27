@@ -84,7 +84,7 @@
 		recentpump = world.time
 
 /obj/item/weapon/gun/projectile/shotgun/pump/proc/pump(mob/M as mob)
-	playsound(M, 'sound/weapons/guns/interact/shotgunpump.ogg', 60, TRUE)
+	playsound(M, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, TRUE)
 
 	if (chambered)//We have a shell in the chamber
 		chambered.loc = get_turf(src)//Eject casing
@@ -206,7 +206,7 @@
 		recentpump = world.time
 
 /obj/item/weapon/gun/projectile/shotgun/remington870/proc/pump(mob/M as mob)
-	playsound(M, 'sound/weapons/guns/interact/shotgunpump.ogg', 60, TRUE)
+	playsound(M, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, TRUE)
 
 	if (chambered)//We have a shell in the chamber
 		chambered.loc = get_turf(src)//Eject casing

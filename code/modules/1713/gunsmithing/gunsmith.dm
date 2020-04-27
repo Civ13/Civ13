@@ -1528,7 +1528,7 @@
 
 /obj/item/weapon/gun/projectile/custom/proc/pump(mob/M as mob)
 	if (receiver_type == "Pump-Action")
-		playsound(M, 'sound/weapons/guns/interact/shotgunpump.ogg', 60, TRUE)
+		playsound(M, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, TRUE)
 
 		if (chambered)//We have a shell in the chamber
 			chambered.loc = get_turf(src)//Eject casing
