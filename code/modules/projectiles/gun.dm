@@ -267,7 +267,10 @@
 		if (!projectile)
 			handle_click_empty(user)
 			break
-
+		if (istype(src, /obj/item/weapon/gun/projectile/semiautomatic/m1garand))
+			var/obj/item/weapon/gun/projectile/semiautomatic/m1garand/G = src
+			if (!G.loaded.len)
+				playsound(loc, 'sound/weapons/guns/interact/GarandUnload.ogg', 100, TRUE)
 		health_check(user)
 		health -= 0.2
 

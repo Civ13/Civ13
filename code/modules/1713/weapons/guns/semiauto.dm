@@ -63,8 +63,8 @@
 	var/base_icon = "semiautomatic"
 	equiptimer = 12
 	gun_safety = TRUE
-	reload_sound = 'sound/weapons/guns/interact/smg_magin.ogg'
-	unload_sound = 'sound/weapons/guns/interact/smg_magout.ogg'
+	reload_sound = 'sound/weapons/guns/interact/semiauto_magin.ogg'
+	unload_sound = 'sound/weapons/guns/interact/semiauto_magout.ogg'
 
 /obj/item/weapon/gun/projectile/semiautomatic/update_icon()
 	if (sniper_scope)
