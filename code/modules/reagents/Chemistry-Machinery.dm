@@ -116,8 +116,6 @@
 		ui.open()
 
 /obj/structure/chemical_dispenser/Topic(href, href_list)
-	if (stat & (NOPOWER|BROKEN))
-		return FALSE // don't update UIs attached to this object
 
 	if (href_list["amount"])
 		amount = round(text2num(href_list["amount"]), 5) // round to nearest 5

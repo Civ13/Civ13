@@ -624,7 +624,7 @@ var/global/redirect_all_players = null
 						H.squad = rand(1,map.squads)
 				else
 					H.squad = rand(1,map.squads)
-				map.faction1_squads[H.squad] += H
+				map.faction1_squads[H.squad] += list(H)
 				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
 				if (H.original_job.is_squad_leader)
 					if (!map.faction1_squad_leaders[H.squad] || map.faction1_squad_leaders[H.squad] == H)
@@ -649,7 +649,7 @@ var/global/redirect_all_players = null
 						H.squad = rand(1,map.squads)
 				else
 					H.squad = rand(1,map.squads)
-				map.faction2_squads[H.squad] += H
+				map.faction2_squads[H.squad] += list(H)
 				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
 				if (H.original_job.is_squad_leader)
 					if (!map.faction2_squad_leaders[H.squad] || map.faction2_squad_leaders[H.squad] == H)

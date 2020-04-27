@@ -195,9 +195,6 @@
 		ui.open()
 
 /obj/structure/vending/sales/Topic(href, href_list)
-	if (stat & BROKEN)
-		return
-
 	if (isliving(usr))
 		if (usr.stat || usr.restrained())
 			return
@@ -392,8 +389,6 @@
 	nanomanager.update_uis(src)
 
 /obj/structure/vending/process()
-	if (stat & (BROKEN|NOPOWER))
-		return
 
 	if (!active)
 		return

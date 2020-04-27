@@ -17,7 +17,7 @@
 	whitelisted = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -60,7 +60,7 @@
 	whitelisted = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -103,7 +103,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -144,7 +144,7 @@
 	is_officer = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -181,7 +181,7 @@
 	spawn_location = "JoinLatePTSurgeon"
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -219,7 +219,7 @@
 	spawn_location = "JoinLatePTCarpenter"
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -263,7 +263,7 @@
 	spawn_location = "JoinLatePTCook"
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -313,7 +313,7 @@
 	spawn_location = "JoinLatePT"
 
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -368,7 +368,7 @@
 
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -411,7 +411,7 @@
 
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
 
@@ -450,7 +450,7 @@
 
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 6
 
@@ -489,7 +489,7 @@
 
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 100
 
@@ -529,7 +529,7 @@
 
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 4
 	max_positions = 20
 

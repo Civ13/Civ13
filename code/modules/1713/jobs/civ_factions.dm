@@ -13,7 +13,7 @@
 
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -56,7 +56,7 @@
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -121,7 +121,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -165,7 +165,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -210,7 +210,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -270,7 +270,7 @@
 
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -330,7 +330,7 @@
 
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -370,7 +370,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -427,7 +427,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -486,7 +486,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -562,7 +562,7 @@
 	whitelisted = TRUE
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -635,7 +635,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -711,7 +711,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
@@ -790,7 +790,7 @@
 
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -833,7 +833,7 @@
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -898,7 +898,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -942,7 +942,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -987,7 +987,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1047,7 +1047,7 @@
 
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1105,7 +1105,7 @@
 
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1145,7 +1145,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -1203,7 +1203,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -1262,7 +1262,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -1337,7 +1337,7 @@
 	whitelisted = TRUE
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -1410,7 +1410,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1486,7 +1486,7 @@
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
@@ -1567,7 +1567,7 @@
 
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1610,7 +1610,7 @@
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1675,7 +1675,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1719,7 +1719,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -1764,7 +1764,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1824,7 +1824,7 @@
 
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1883,7 +1883,7 @@
 
 	is_religious = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1923,7 +1923,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -1981,7 +1981,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -2040,7 +2040,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -2116,7 +2116,7 @@
 
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -2189,7 +2189,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -2265,7 +2265,7 @@
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
@@ -2345,7 +2345,7 @@
 
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -2388,7 +2388,7 @@
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -2453,7 +2453,7 @@
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -2497,7 +2497,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -2542,7 +2542,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -2602,7 +2602,7 @@
 
 	is_merchant = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -2661,7 +2661,7 @@
 
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -2701,7 +2701,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -2759,7 +2759,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -2818,7 +2818,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -2894,7 +2894,7 @@
 
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -2967,7 +2967,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -3043,7 +3043,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 

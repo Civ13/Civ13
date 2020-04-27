@@ -239,38 +239,16 @@
 #define UNCONSCIOUS 1
 #define DEAD		2
 
-// Channel numbers for power.
-#define EQUIP   1
-#define LIGHT   2
-#define ENVIRON 3
-#define TOTAL   4 // For total power used only.
-
-// Bitflags for machine stat variable.
-#define BROKEN   1
-#define NOPOWER  2
-#define POWEROFF 4  // TBD.
-#define MAINT	8  // Under maintenance.
-#define EMPED	16 // Temporary broken by EMP pulse.
-
-// Bitmasks for door switches.
-#define OPEN   1
-#define IDSCAN 2
-#define BOLTS  4
-#define SHOCK  8
-#define SAFE   16
-
-// Metal sheets, glass sheets, and rod stacks.
-#define MAX_STACK_AMOUNT_METAL 50
-#define MAX_STACK_AMOUNT_GLASS 50
-#define MAX_STACK_AMOUNT_RODS  60
+// TDM gamemodes
+#define NORMAL		 0
+#define COMPETITIVE	 1
+#define HARDCORE	 2
 
 #define GAS_O2  (1 << 0)
 #define GAS_N2  (1 << 1)
 #define GAS_PL  (1 << 2)
 #define GAS_CO2 (1 << 3)
 #define GAS_N2O (1 << 4)
-
-#define IS_MODE_COMPILED(MODE) (ispath(text2path("/datum/game_mode/"+(MODE))))
 
 // Damage things. TODO: Merge these down to reduce on defines.
 // Way to waste perfectly good damage-type names (BRUTE) on this... If you were really worried about case sensitivity, you could have just used lowertext(damagetype) in the proc.

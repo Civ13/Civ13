@@ -547,7 +547,7 @@
 	spawn_location = "JoinLateCivA"
 
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -581,7 +581,7 @@
 	spawn_location = "JoinLateCivB"
 
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -615,7 +615,7 @@
 	spawn_location = "JoinLateCivC"
 
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -648,7 +648,7 @@
 	spawn_location = "JoinLateCivD"
 
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -681,7 +681,7 @@
 	spawn_location = "JoinLateCivE"
 
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -714,7 +714,7 @@
 	spawn_location = "JoinLateCivF"
 
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -747,7 +747,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_nomad = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -780,7 +780,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND1"
 
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -813,7 +813,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND2"
 
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -847,7 +847,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND3"
 
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -880,7 +880,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
 
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -912,7 +912,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
 
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -945,7 +945,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
 
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
@@ -976,7 +976,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
 
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 

@@ -10,7 +10,7 @@
 	is_commander = TRUE
 
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -59,7 +59,7 @@
 	whitelisted = TRUE
 
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -108,7 +108,7 @@
 	whitelisted = TRUE
 
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -148,7 +148,7 @@
 	spawn_location = "JoinLateRU"
 
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 50
 
@@ -301,7 +301,7 @@
 	title = "Janitor"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
 	equip(var/mob/living/carbon/human/H)
@@ -320,7 +320,7 @@
 	title = "Miner"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
@@ -339,7 +339,7 @@
 	title = "Logger"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
@@ -358,7 +358,7 @@
 	title = "Builder"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
@@ -377,7 +377,7 @@
 	title = "Nurse Helper"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 30
 	equip(var/mob/living/carbon/human/H)
@@ -396,7 +396,7 @@
 	title = "Kitchen Duty"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 25
 	equip(var/mob/living/carbon/human/H)
@@ -415,7 +415,7 @@
 	title = "Collaborator"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 12
 	equip(var/mob/living/carbon/human/H)

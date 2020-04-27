@@ -16,7 +16,7 @@
 	is_coldwar = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -64,7 +64,7 @@
 	spawn_location = "JoinLateJP"
 
 	is_coldwar = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 18
 
@@ -116,7 +116,7 @@
 	is_coldwar = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -169,7 +169,7 @@
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 20
 	max_positions = 200
 
@@ -244,7 +244,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -289,7 +289,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	can_get_coordinates = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -334,7 +334,7 @@
 
 	is_coldwar = TRUE
 	whitelisted = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -377,7 +377,7 @@
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -425,7 +425,7 @@
 	is_coldwar = TRUE
 	is_radioman = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -471,7 +471,7 @@
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -515,7 +515,7 @@
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -562,7 +562,7 @@
 
 	is_coldwar = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 
@@ -615,7 +615,7 @@
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -655,7 +655,7 @@
 
 	is_coldwar = TRUE
 	is_specops = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -689,7 +689,7 @@
 
 	is_coldwar = TRUE
 	is_specops = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 33
 
@@ -731,7 +731,7 @@
 	is_modernday = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -803,7 +803,7 @@
 	is_specops = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 22
 	max_positions = 66
 

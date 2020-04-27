@@ -16,7 +16,7 @@
 
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
 /datum/job/indians/carib_chief/equip(var/mob/living/carbon/human/H)
@@ -54,7 +54,7 @@
 	spawn_location = "JoinLateIND"
 
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 30
 /datum/job/indians/carib_shaman/equip(var/mob/living/carbon/human/H)
@@ -97,7 +97,7 @@
 	spawn_location = "JoinLateIND"
 
 
-	// AUTOBALANCE
+
 	min_positions = 20
 	max_positions = 300
 
@@ -148,7 +148,7 @@
 	spawn_location = "JoinLateIND1"
 
 
-	// AUTOBALANCE
+
 	min_positions = 60
 	max_positions = 300
 
@@ -189,7 +189,7 @@ datum/job/indians/tribes/blue
 	spawn_location = "JoinLateIND2"
 
 
-	// AUTOBALANCE
+
 	min_positions = 60
 	max_positions = 300
 
@@ -230,7 +230,7 @@ datum/job/indians/tribes/green
 	spawn_location = "JoinLateIND3"
 
 
-	// AUTOBALANCE
+
 	min_positions = 60
 	max_positions = 300
 
@@ -271,7 +271,7 @@ datum/job/indians/tribes/yellow
 	spawn_location = "JoinLateIND4"
 
 
-	// AUTOBALANCE
+
 	min_positions = 60
 	max_positions = 300
 
@@ -312,7 +312,7 @@ datum/job/indians/tribes/white
 	spawn_location = "JoinLateIND5"
 
 
-	// AUTOBALANCE
+
 	min_positions = 60
 	max_positions = 300
 
@@ -355,7 +355,7 @@ datum/job/indians/tribes/black
 	spawn_location = "JoinLateIND6"
 
 
-	// AUTOBALANCE
+
 	min_positions = 60
 	max_positions = 300
 

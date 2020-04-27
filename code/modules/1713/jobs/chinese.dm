@@ -18,7 +18,7 @@
 	is_ww2 = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -73,7 +73,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -124,7 +124,7 @@
 	is_officer = TRUE
 	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -180,7 +180,7 @@
 	spawn_location = "JoinLateRUDoc"
 	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -226,7 +226,7 @@
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -275,7 +275,7 @@
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 

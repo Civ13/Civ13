@@ -10,7 +10,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -72,7 +72,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 16
 
@@ -131,7 +131,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 100
 
@@ -189,7 +189,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 6
 
@@ -227,7 +227,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 100
 
@@ -307,7 +307,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -370,7 +370,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -403,7 +403,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -463,7 +463,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -517,7 +517,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -553,7 +553,7 @@
 
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -609,7 +609,7 @@
 	spawn_location = "JoinLatePirate"
 
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 100
 
@@ -689,7 +689,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 9
 
@@ -770,7 +770,7 @@
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 9
 

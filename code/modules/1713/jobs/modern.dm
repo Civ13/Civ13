@@ -12,7 +12,7 @@
 	whitelisted = TRUE
 	is_modernday = TRUE
 	is_radioman = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -58,7 +58,7 @@
 	is_radioman = TRUE
 	is_modernday = TRUE
 	can_get_coordinates = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -103,7 +103,7 @@
 
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -151,7 +151,7 @@
 	is_coldwar = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -195,7 +195,7 @@
 
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -245,7 +245,7 @@
 	is_coldwar = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 
@@ -309,7 +309,7 @@
 	whitelisted = TRUE
 	is_modernday = TRUE
 	is_radioman = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -357,7 +357,7 @@
 	is_modernday = TRUE
 	can_get_coordinates = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -405,7 +405,7 @@
 
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -454,7 +454,7 @@
 	is_coldwar = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -500,7 +500,7 @@
 	is_coldwar = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -548,7 +548,7 @@
 	is_coldwar = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 
@@ -600,7 +600,7 @@
 	is_modernday = TRUE
 	uses_squads = TRUE
 	is_squad_leader = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -662,7 +662,7 @@
 
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -728,7 +728,7 @@
 	is_coldwar = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 12
 
@@ -791,7 +791,7 @@
 	is_coldwar = TRUE
 	is_modernday = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 120
 
