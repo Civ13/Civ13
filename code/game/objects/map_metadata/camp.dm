@@ -6,7 +6,7 @@
 	respawn_delay = 0
 
 	no_winner = "No faction controls the Castle."
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		BRITISH,
 		FRENCH)

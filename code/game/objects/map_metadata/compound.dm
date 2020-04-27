@@ -7,7 +7,7 @@
 	respawn_delay = 300
 	no_winner ="No base has been captured."
 
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		AMERICAN,
 		VIETNAMESE)

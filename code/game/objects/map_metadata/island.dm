@@ -8,7 +8,7 @@
 
 	no_winner ="No faction has captured the enemy's base."
 	var/do_once_activations = TRUE
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		BRITISH,
 		PIRATES)

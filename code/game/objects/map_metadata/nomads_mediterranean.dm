@@ -7,7 +7,7 @@
 	respawn_delay = 6000 // 10 minutes!
 
 	no_winner = "The round is proceeding normally."
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		CIVILIAN,)
 
