@@ -38,11 +38,9 @@ obj/map_metadata/stalingrad/New()
 
 obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && !J.is_reichstag  && (!J.is_tanker || istype(J, /datum/job/german/tank_crew)))
+	if (J.is_ww2 == TRUE && !J.is_reichstag  && (!J.is_tanker || istype(J, /datum/job/german/tank_crew)) && (J.is_tanker || istype(J, /datum/job/russian)))
 		. = TRUE
 	else
-		. = FALSE
-	if (J.is_tanker && istype(J, /datum/job/russian))
 		. = FALSE
 
 /obj/map_metadata/stalingrad/faction1_can_cross_blocks()
