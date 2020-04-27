@@ -218,7 +218,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("No")
 				if ("gamemode")
 					var/list/options = list()
-					if (config.allowedgamemodes == "TDM" && !map.is_RP && !map.nomads && map.civilizations)
+					if (!map.is_RP && !map.nomads && map.civilizations)
 						options = list("Normal", "Competitive", "Hardcore")
 						if (!default)
 							default = "Normal"
