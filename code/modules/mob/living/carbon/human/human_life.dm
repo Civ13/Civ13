@@ -1318,7 +1318,9 @@
 			if (getBruteLoss() >= 150)
 				death()
 /mob/living/carbon/human/proc/handle_hud_list()
-
+	if (stat == DEAD)
+		hud_list[BASE_FACTION] = null
+		hud_list[FACTION_TO_ENEMIES] = null
 	if (original_job && never_set_faction_huds && stat != DEAD)
 
 		never_set_faction_huds = FALSE

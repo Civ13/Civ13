@@ -87,6 +87,7 @@
 							for(var/mob/living/carbon/human/HSM2 in map.faction2_squads[squad])
 								if (HSM2 != HSM)
 									HSM2 << "<big><b>[HSM] is your new squad leader.</b></big>"
+	handle_hud_list()
 	var/list/poss_list = list()
 	for(var/cmp in map.custom_company_nr)
 		if (find_company_member(src,cmp))
