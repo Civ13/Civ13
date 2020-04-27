@@ -841,7 +841,6 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/flashlight(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform

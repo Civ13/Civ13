@@ -611,8 +611,7 @@ var/global/redirect_all_players = null
 				H.verbs += /mob/living/carbon/human/proc/Squad_Announcement
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
-					if (!H.back)
-						H.back = new/obj/item/weapon/radio/faction1(H)
+					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				var/list/tmplist = list(1,map.faction1_squads[1].len)
 				if (map.squads>=2)
 					for(var/i=map.squads, i>=2,i--)

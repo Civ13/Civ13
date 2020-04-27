@@ -79,8 +79,8 @@ var/global/list/valid_coordinates = list()
 		if (faction_text == M.faction_text && original_job.is_squad_leader && M.squad == squad && world.time > announcement_cooldown)
 			messaget = "Squad Leader Message:"
 			M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
-			announcement_cooldown = world.time+1200
-			log_admin("Squad Announcement: [key_name(usr)] - [messaget] : [message]")
+	announcement_cooldown = world.time+1200
+	log_admin("Squad Announcement: [key_name(usr)] - [messaget] : [message]")
 
 
 /mob/living/carbon/human/proc/Commander_Announcement()
