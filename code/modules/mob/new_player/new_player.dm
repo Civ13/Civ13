@@ -612,7 +612,17 @@ var/global/redirect_all_players = null
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
 					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
-				H.squad = rand(1,map.squads)
+				if (H.original_job.is_squad_leader)
+					var/done = FALSE
+					for(var/i, i<=map.squads, i++)
+						if (!map.faction1_squad_leaders[i])
+							done = TRUE
+							H.squad = i
+							map.faction1_squad_leaders[i] = H
+					if (!done)
+						H.squad = rand(1,map.squads)
+				else
+					H.squad = rand(1,map.squads)
 				map.faction1_squads[H.squad] += H
 				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
 				if (H.original_job.is_squad_leader)
@@ -626,7 +636,17 @@ var/global/redirect_all_players = null
 			else if (H.faction_text == map.faction2)
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
 					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
-				H.squad = rand(1,map.squads)
+				if (H.original_job.is_squad_leader)
+					var/done = FALSE
+					for(var/i, i<=map.squads, i++)
+						if (!map.faction2_squad_leaders[i])
+							done = TRUE
+							H.squad = i
+							map.faction2_squad_leaders[i] = H
+					if (!done)
+						H.squad = rand(1,map.squads)
+				else
+					H.squad = rand(1,map.squads)
 				map.faction2_squads[H.squad] += H
 				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
 				if (H.original_job.is_squad_leader)
