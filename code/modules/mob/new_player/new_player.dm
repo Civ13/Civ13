@@ -612,38 +612,27 @@ var/global/redirect_all_players = null
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
 					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
-				var/list/tmplist = list(1,map.faction1_squads[1].len)
-				if (map.squads>=2)
-					for(var/i=map.squads, i>=2,i--)
-						if (map.faction1_squads[i].len<tmplist[1] || (H.original_job.is_squad_leader && !map.faction1_squad_leaders[tmplist[1]]))
-							tmplist = list(i,map.faction1_squads[i].len)
-				H.squad = tmplist[1]
-				map.faction1_squads[tmplist[1]] += H
+				H.squad = rand(1,map.squads)
+				map.faction1_squads[H.squad] += H
 				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
 				if (H.original_job.is_squad_leader)
 					if (!map.faction1_squad_leaders[H.squad] || map.faction1_squad_leaders[H.squad] == H)
 						H << "<big><b>You are the new squad leader!</b></big>"
-						map.faction1_squad_leaders[tmplist[1]] = H
+						map.faction1_squad_leaders[H.squad] = H
 					else if (map.faction1_squad_leaders[H.squad] && map.faction1_squad_leaders[H.squad] != H)
 						H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
 				else if (map.faction1_squad_leaders[H.squad])
 					H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
 			else if (H.faction_text == map.faction2)
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
-					if (!H.back)
-						H.back = new/obj/item/weapon/radio/faction2(H)
-				var/list/tmplist = list(1,map.faction2_squads[1].len)
-				if (map.squads>=2)
-					for(var/i=map.squads, i>=2,i--)
-						if (map.faction2_squads[i].len<tmplist[1] || (H.original_job.is_squad_leader && !map.faction2_squad_leaders[tmplist[1]]))
-							tmplist = list(i,map.faction2_squads[i].len)
-				H.squad = tmplist[1]
-				map.faction2_squads[tmplist[1]] += H
+					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
+				H.squad = rand(1,map.squads)
+				map.faction2_squads[H.squad] += H
 				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
 				if (H.original_job.is_squad_leader)
 					if (!map.faction2_squad_leaders[H.squad] || map.faction2_squad_leaders[H.squad] == H)
 						H << "<big><b>You are the new squad leader!</b></big>"
-						map.faction2_squad_leaders[tmplist[1]] = H
+						map.faction2_squad_leaders[H.squad] = H
 					else if (map.faction2_squad_leaders[H.squad] && map.faction2_squad_leaders[H.squad] != H)
 						H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
 				else if (map.faction2_squad_leaders[H.squad])
