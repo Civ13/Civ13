@@ -623,8 +623,8 @@ var/global/redirect_all_players = null
 						H.back = new/obj/item/weapon/radio/faction1(H)
 				var/list/tmplist = list(1,map.faction1_squads[1].len)
 				if (map.squads>=2)
-					for(var/i=2, i<=map.squads,i++)
-						if (map.faction1_squads[i].len<tmplist[1])
+					for(var/i=map.squads, i>=2,i--)
+						if (map.faction1_squads[i].len<tmplist[1] || (H.original_job.is_squad_leader && !map.faction1_squad_leaders[tmplist[1]]))
 							tmplist = list(i,map.faction1_squads[i].len)
 				H.squad = tmplist[1]
 				map.faction1_squads[tmplist[1]] += H
@@ -643,8 +643,8 @@ var/global/redirect_all_players = null
 						H.back = new/obj/item/weapon/radio/faction2(H)
 				var/list/tmplist = list(1,map.faction2_squads[1].len)
 				if (map.squads>=2)
-					for(var/i=2, i<=map.squads,i++)
-						if (map.faction2_squads[i].len<tmplist[1])
+					for(var/i=map.squads, i>=2,i--)
+						if (map.faction2_squads[i].len<tmplist[1] || (H.original_job.is_squad_leader && !map.faction2_squad_leaders[tmplist[1]]))
 							tmplist = list(i,map.faction2_squads[i].len)
 				H.squad = tmplist[1]
 				map.faction2_squads[tmplist[1]] += H
