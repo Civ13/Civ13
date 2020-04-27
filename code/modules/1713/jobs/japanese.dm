@@ -568,7 +568,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
-
+	uses_squads = TRUE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -583,12 +583,12 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/type100(H), slot_shoulder)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier100(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katanah = new /obj/item/clothing/accessory/storage/sheath/katana(null)
@@ -654,7 +654,7 @@
 	rank_abbreviation = "Sen-i"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
-
+	uses_squads = TRUE
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
@@ -694,7 +694,7 @@
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-
+	uses_squads = TRUE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 20
@@ -739,12 +739,11 @@
 	return TRUE
 
 /datum/job/japanese/ija_ww2ATunit
-	title = "Nitohei Taisen-sha"
+	title = "Nitohei Taisensha"
 	en_meaning = "Anti Tank Unit"
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-
 	is_ww2 = TRUE
 	is_tanker = TRUE
 	// AUTOBALANCE
@@ -786,7 +785,7 @@
 	rank_abbreviation = "Itto."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-
+	uses_squads = TRUE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 4
@@ -832,7 +831,7 @@
 	rank_abbreviation = "Jo."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-
+	uses_squads = TRUE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -871,6 +870,100 @@
 
 
 	return TRUE
+/////////////////////////////////////////////////TANK CREW//////////////////////////////////////////////////////
+/datum/job/japanese/ija_sergeant_tanker
+	title = "Sensha Gunso"
+	en_meaning = "Tank Sergeant"
+	rank_abbreviation = "Gu."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateJP"
+	is_officer = TRUE
+	is_tanker = TRUE
+	is_ww2 = TRUE
+	uses_squads = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 3
+
+/datum/job/japanese/ija_sergeant_tanker/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_tanker(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/katanah = new /obj/item/clothing/accessory/storage/sheath/katana(null)
+	uniform.attackby(katanah, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading an armored squad. Organize your group according to the <b>Captain or Leiutenant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
+
+	return TRUE
+
+/datum/job/japanese/ija_ww2_tanker
+	title = "Senshahei"
+	en_meaning = "Tanker"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateJP"
+	is_tanker = TRUE
+	is_ww2 = TRUE
+	uses_squads = TRUE
+	// AUTOBALANCE
+	min_positions = 5
+	max_positions = 30
+
+/datum/job/japanese/ija_ww2_tanker/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_tanker(H), slot_w_uniform)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_tanker(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a tanker  employed by the Imperial Japanese Army. Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
+
+	return TRUE
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////WW2 JAPANESE PRISON//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
