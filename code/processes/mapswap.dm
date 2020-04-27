@@ -142,7 +142,7 @@
 			maps = list(
 //				MAP_CURSED_ISLAND = 0,
 				MAP_NAVAL = 0,
-				MAP_ISLAND <= 15,
+				MAP_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
 		//		MAP_BATTLEROYALE = 20,
 				MAP_SUPPLY_RAID = 8,
@@ -155,7 +155,7 @@
 			maps = list(
 				MAP_HERACLEA = 0,
 				MAP_SIEGE = 0,
-				MAP_GLADIATORS <= 12,
+				MAP_GLADIATORS = 0,
 			)
 		if (epoch == "Middle Ages (700-1450)")
 	//	1013 - TDM

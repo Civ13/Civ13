@@ -38,8 +38,12 @@ obj/map_metadata/stalingrad/New()
 
 obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && !J.is_reichstag  && (!J.is_tanker || istype(J, /datum/job/german/tank_crew)) && (J.is_tanker || istype(J, /datum/job/russian)))
+	if (J.is_ww2 == TRUE && J.is_tanker == FALSE)
 		. = TRUE
+	else if (istype(J, /datum/job/german/ss_pionier) || istype(J, /datum/job/german/ss_panzergrenadier) || istype(J, /datum/job/german/ss_panzergrenadier_squad_leader) || istype(J, /datum/job/german/ss_panzergrenadier_squad_leader))
+		. = TRUE
+	else if (J.is_reichstag == TRUE)///idk what I'm doing, I just wanted to be sure
+		. = FALSE
 	else
 		. = FALSE
 
