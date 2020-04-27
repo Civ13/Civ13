@@ -608,7 +608,7 @@
 			recoil = 2 //extra kickback
 			handle_casings = HOLD_CASINGS
 			load_method = SINGLE_CASING | SPEEDLOADER
-			load_shell_sound = 'sound/weapons/clip_reload.ogg'
+			load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 			accuracy = TRUE
 			gun_type = GUN_TYPE_RIFLE
 			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
@@ -674,7 +674,7 @@
 			unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
 			reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 			cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
-			fire_sound = 'sound/weapons/guns/fire/revolver_fire.ogg'
+			fire_sound = 'sound/weapons/guns/fire/revolver.ogg'
 			magazine_based = FALSE
 			gun_type = GUN_TYPE_PISTOL
 			single_action = FALSE
@@ -990,7 +990,7 @@
 			w_class = 3
 			sel_mode = 1
 			full_auto = TRUE
-			fire_sound = 'sound/weapons/mosin_shot.ogg'
+			fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 			weight = 3.47
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
@@ -1056,7 +1056,7 @@
 			w_class = 3
 			sel_mode = 1
 			full_auto = TRUE
-			fire_sound = 'sound/weapons/mosin_shot.ogg'
+			fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 			weight = 3.47
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
@@ -1121,7 +1121,7 @@
 			item_state = "shotgun-f"
 			stat = "rifle"
 			gun_type = GUN_TYPE_SHOTGUN
-			fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
+			fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 			// 15% more accurate than SMGs
 			accuracy_list = list(
 
@@ -1187,7 +1187,7 @@
 		if ("Internal Magazine")
 			handle_casings = EJECT_CASINGS
 			load_method = SINGLE_CASING | SPEEDLOADER
-			load_shell_sound = 'sound/weapons/clip_reload.ogg'
+			load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 			max_shells = 5
 			magazine_type = /obj/item/ammo_magazine/emptyclip
 		if ("Internal Magazine (Removable)")
@@ -1201,7 +1201,7 @@
 		if ("Tubular")
 			handle_casings = EJECT_CASINGS
 			load_method = SINGLE_CASING
-			load_shell_sound = 'sound/weapons/clip_reload.ogg'
+			load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 			max_shells = 8
 			slot_flags &= ~SLOT_HOLSTER
 		if ("Revolving")
@@ -1418,7 +1418,7 @@
 		bolt_open = !bolt_open
 		if (bolt_open)
 			if (chambered)
-				playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+				playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
 				user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 				chambered.loc = get_turf(src)
 				chambered.randomrotation()
@@ -1429,10 +1429,10 @@
 						check_bolt_lock++
 						user << "<span class='notice'>The bolt is locked!</span>"
 			else
-				playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+				playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
 				user << "<span class='notice'>You work the bolt open.</span>"
 		else
-			playsound(loc, 'sound/weapons/bolt_close.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/bolt_close.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt closed.</span>"
 			bolt_open = FALSE
 		add_fingerprint(user)
@@ -1528,7 +1528,7 @@
 
 /obj/item/weapon/gun/projectile/custom/proc/pump(mob/M as mob)
 	if (receiver_type == "Pump-Action")
-		playsound(M, 'sound/weapons/shotgunpump.ogg', 60, TRUE)
+		playsound(M, 'sound/weapons/guns/interact/shotgunpump.ogg', 60, TRUE)
 
 		if (chambered)//We have a shell in the chamber
 			chambered.loc = get_turf(src)//Eject casing

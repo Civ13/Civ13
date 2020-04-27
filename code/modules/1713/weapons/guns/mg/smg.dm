@@ -1,7 +1,7 @@
 /obj/item/weapon/gun/projectile/submachinegun
 	force = 10
 	throwforce = 20
-	fire_sound = 'sound/weapons/smg.ogg'
+	fire_sound = 'sound/weapons/guns/fire/smg.ogg'
 	var/base_icon = "smg"
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
@@ -118,7 +118,7 @@
 	base_icon = "mp40"
 	weight = 3.97
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/mp40.ogg'
+	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
 	magazine_type = /obj/item/ammo_magazine/mp40
 	full_auto = TRUE
 	equiptimer = 12
@@ -137,7 +137,7 @@
 	base_icon = "greasegun"
 	weight = 3.6
 	caliber = "a45acp"
-	fire_sound = 'sound/weapons/mp40.ogg'
+	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
 	magazine_type = /obj/item/ammo_magazine/greasegun
 	full_auto = TRUE
 	slot_flags = SLOT_BELT
@@ -157,7 +157,7 @@
 	base_icon = "thompson"
 	weight = 3.6
 	caliber = "a45acp"
-	fire_sound = 'sound/weapons/mp40.ogg'
+	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
 	magazine_type = /obj/item/ammo_magazine/thompson
 	full_auto = TRUE
 	slot_flags = SLOT_BELT
@@ -177,7 +177,7 @@
 	base_icon = "tommygun"
 	weight = 3.6
 	caliber = "a45acp"
-	fire_sound = 'sound/weapons/mp40.ogg'
+	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
 	magazine_type = /obj/item/ammo_magazine/tommy
 	full_auto = TRUE
 	slot_flags = SLOT_BELT
@@ -197,7 +197,7 @@
 	base_icon = "type100"
 	weight = 3.97
 	caliber = "c8mmnambu"
-	fire_sound = 'sound/weapons/mp40.ogg'
+	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
 	magazine_type = /obj/item/ammo_magazine/type100
 	full_auto = TRUE
 	equiptimer = 12
@@ -249,7 +249,7 @@
 	item_state = "ak47"
 	base_icon = "ak47"
 	caliber = "a762x39"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 3.47
 	equiptimer = 15
@@ -322,7 +322,7 @@
 	item_state = "ak74"
 	base_icon = "ak74"
 	caliber = "a545x39"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
 	weight = 3.07
 	equiptimer = 15
@@ -522,7 +522,7 @@
 	item_state = "m16"
 	base_icon = "m16"
 	caliber = "a556x45"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3.07
 	equiptimer = 15
@@ -542,7 +542,7 @@
 	item_state = "m16"
 	base_icon = "m16"
 	caliber = "a556x45"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3.07
 	equiptimer = 15
@@ -561,7 +561,6 @@
 	item_state = "m4"
 	base_icon = "m4"
 	caliber = "a556x45"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3.07
 	equiptimer = 9
@@ -623,7 +622,7 @@
 	item_state = "m14"
 	base_icon = "m14"
 	caliber = "a762x51"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/m14
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 3.6
@@ -648,7 +647,7 @@
 	item_state = "g3"
 	base_icon = "g3"
 	caliber = "a762x51"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/hk
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	weight = 4.2
@@ -668,7 +667,7 @@
 	item_state = "scarl"
 	base_icon = "scarl"
 	caliber = "a556x45"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3
 	equiptimer = 10
@@ -689,7 +688,7 @@
 	base_icon = "scarh"
 	desc = "A belgian assault rifle, chambered in 7.62x51mm."
 	caliber = "a762x51"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/scarh
 	weight = 3.5
 	equiptimer = 11
@@ -711,7 +710,7 @@
 	base_icon = "ar12"
 	desc = "A american rifle, used by special forces, chambered in (7.62x51mm)."
 	caliber = "a762x51"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/scarh
 	weight = 3.5
 	equiptimer = 11
@@ -733,7 +732,7 @@
 	item_state = "hk417"
 	base_icon = "hk417"
 	caliber = "a762x51"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/hk
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	weight = 3.8
@@ -747,27 +746,6 @@
 	effectiveness_mod = 1.08
 	sel_mode = 1
 
-/obj/item/weapon/gun/projectile/submachinegun/sigsauer
-	name = "SIG SAUER"
-	desc = "A American assault rifle (chambered in 7.62x51mm)."
-	icon_state = "sigsauer"
-	item_state = "hk417"
-	base_icon = "sigsauer"
-	caliber = "a762x51"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
-	magazine_type = /obj/item/ammo_magazine/hk
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
-	weight = 3.8
-	equiptimer = 7
-	slot_flags = SLOT_SHOULDER
-	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1.1, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
-		)
-	effectiveness_mod = 1.27
-	sel_mode = 1
-
 /obj/item/weapon/gun/projectile/submachinegun/p90
 	name = "P90"
 	desc = "A compact but powerful firearm, chambered in 5.7x28mm."
@@ -775,7 +753,7 @@
 	item_state = "p90"
 	base_icon = "p90"
 	caliber = "a57x28"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/smg.ogg'
 	magazine_type = /obj/item/ammo_magazine/p90
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
 	weight = 2.3
@@ -796,7 +774,7 @@
 	item_state = "victor"
 	base_icon = "victor"
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
 	weight = 3
@@ -817,7 +795,7 @@
 	item_state = "makeshiftak"
 	base_icon = "makeshiftak"
 	caliber = "intermediumrifle"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 3.8
 	equiptimer = 15
@@ -836,7 +814,7 @@
 	item_state = "bx7"
 	base_icon = "bx7"
 	caliber = "a50cal"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/heavy_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/bx7
 	weight = 4.0
 	equiptimer = 10
@@ -857,7 +835,7 @@
 	item_state = "vz58"
 	base_icon = "az58"
 	caliber = "a762x39"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 2.93
 	equiptimer = 12

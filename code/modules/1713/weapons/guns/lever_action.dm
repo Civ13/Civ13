@@ -185,7 +185,7 @@
 	name = "Winchester M1873"
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
 	force = 9
-	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	icon_state = "winchester1873"
 	caliber = "a44"
 	max_shells = 15
@@ -200,7 +200,7 @@
 	name = "Golden Winchester M1873"
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
 	force = 9
-	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	icon_state = "goldwinchester"
 	caliber = "a44"
 	max_shells = 15

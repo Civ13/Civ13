@@ -72,7 +72,7 @@
 	icon_state = "nambu"
 	w_class = 2
 	caliber = "c8mmnambu"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/c8mmnambu
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/c8mmnambu
@@ -93,7 +93,7 @@
 	icon_state = "nambu_ww2"
 	w_class = 2
 	caliber = "c8mmnambu"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/c8mmnambu
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/c8mmnambu
@@ -114,7 +114,7 @@
 	icon_state = "luger"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/luger
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -135,7 +135,7 @@
 	icon_state = "waltherp38"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/walther
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -157,7 +157,7 @@
 	fire_delay = 2.3
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
@@ -188,7 +188,7 @@
 	fire_delay = 2.3
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/sig250
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
@@ -211,7 +211,7 @@
 	fire_delay = 1.8
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/pl14
 	weight = 0.594
 	max_shells = 16 //Glock 17 real capacity
@@ -227,7 +227,7 @@
 	fire_delay = 3.3
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/mp443
 	weight = 0.594
 	max_shells = 17
@@ -250,7 +250,7 @@
 	fire_delay = 2.3
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
@@ -273,7 +273,7 @@
 	fire_delay = 3.7
 	w_class = 2
 	caliber = "a45"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/p220
 	weight = 0.594
 	max_shells = 7
@@ -296,7 +296,7 @@
 	fire_delay = 1.1
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
@@ -318,7 +318,7 @@
 	icon_state = "mauser"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/mauser
 	weight = 0.794
 	max_shells = 10
@@ -340,7 +340,7 @@
 	icon_state = "borchardt"
 	w_class = 2
 	caliber = "a765x25"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/borchardt
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a765x25
@@ -361,7 +361,7 @@
 	icon_state = "coltpockethammerless"
 	w_class = 2
 	caliber = "a32acp"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a32acp
@@ -382,7 +382,7 @@
 	icon_state = "bergmann"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/bergmann
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -403,7 +403,7 @@
 	icon_state = "colt"
 	w_class = 2
 	caliber = "a45acp"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/m1911
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a45acp
@@ -417,7 +417,7 @@
 	icon_state = "black1911"
 	w_class = 2
 	caliber = "a45acp"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/m1911
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a45acp
@@ -431,7 +431,7 @@
 	icon_state = "tt30"
 	w_class = 2
 	caliber = "a765x25"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/tt30
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a765x25
@@ -445,7 +445,7 @@
 	icon_state = "m9beretta"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/m9beretta
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -459,7 +459,7 @@
 	icon_state = "jericho941"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/jericho
 	weight = 0.85
 	ammo_type = /obj/item/ammo_casing/a9x19

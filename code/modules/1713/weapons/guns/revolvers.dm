@@ -12,7 +12,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
-	fire_sound = 'sound/weapons/guns/fire/revolver_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/revolver.ogg'
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	magazine_based = FALSE
 	var/single_action = FALSE
@@ -576,7 +576,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
-	fire_sound = 'sound/weapons/guns/fire/revolver_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/revolver.ogg'
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	magazine_based = FALSE
 	var/single_action = FALSE
@@ -758,7 +758,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
-	fire_sound = 'sound/weapons/guns/fire/revolver_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	magazine_based = FALSE
 	var/single_action = FALSE
