@@ -326,7 +326,7 @@
 "gn" = (/obj/structure/bed/chair,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
 "go" = (/obj/structure/closet/cabinet,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
 "gp" = (/obj/structure/table/rack,/obj/item/weapon/book/manual/barman_recipes,/turf/floor/wood,/area/caribbean/roofed)
-"gq" = (/obj/structure/table/rack,/obj/item/weapon/book/convention,/turf/floor/wood,/area/caribbean/roofed)
+"gq" = (/obj/structure/table/rack,/turf/floor/wood,/area/caribbean/roofed)
 "gr" = (/obj/structure/bed/chair,/obj/structure/lamp/lamp_big/alwayson/white{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
 "gs" = (/obj/structure/table/iron,/obj/structure/potted_plant,/turf/floor/wood,/area/caribbean/roofed)
 "gt" = (/obj/structure/filingcabinet/chestdrawer,/obj/structure/lamp/lamp_big/alwayson/white{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
@@ -417,6 +417,10 @@
 "ia" = (/obj/structure/iv_drip,/obj/structure/iv_drip,/obj/structure/lamp/lamp_big/alwayson/white{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
 "ib" = (/obj/structure/bed/chair/wheelchair,/turf/floor/wood,/area/caribbean/roofed)
 "ic" = (/obj/item/weapon/reagent_containers/food/snacks/watermelonslice,/obj/item/weapon/reagent_containers/food/snacks/watermelonslice,/obj/item/weapon/reagent_containers/food/snacks/watermelonslice,/obj/item/weapon/reagent_containers/food/snacks/watermelonslice,/obj/structure/shelf,/turf/floor/wood,/area/caribbean/roofed)
+"id" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/grass,/area/caribbean)
+"ie" = (/obj/structure/vehicleparts/frame/i_go/rb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/engine/internal/diesel{enginesize = 20000},/turf/floor/grass,/area/caribbean)
+"if" = (/obj/structure/vehicleparts/frame/i_go/back,/obj/structure/shellrack/full57,/turf/floor/grass,/area/caribbean)
+"ig" = (/obj/structure/vehicleparts/frame/i_go/lb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/turf/floor/grass,/area/caribbean)
 "ih" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "ii" = (/obj/structure/window/sandbag/sandbag,/turf/floor/plating/road,/area/caribbean)
 "ij" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/road,/area/caribbean)
@@ -631,8 +635,14 @@
 "mk" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 1},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "ml" = (/obj/structure/bed/chair,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "mm" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/bed/wood,/obj/item/weapon/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"mn" = (/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/item/cannon_ball/shell/tank/HE57,/obj/structure/closet/crate/ww2,/turf/floor/grass,/area/caribbean)
+"mo" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/grass,/area/caribbean)
+"mp" = (/obj/structure/vehicleparts/frame/i_go/left/door,/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean)
+"mq" = (/obj/structure/vehicleparts/frame/i_go,/obj/structure/bed/chair/loader,/turf/floor/grass,/area/caribbean)
 "mr" = (/obj/structure/barricade/steel,/obj/structure/window/sandbag/sandbag,/turf/floor/grass,/area/caribbean/japanese/land/outside)
 "ms" = (/obj/structure/barricade/steel,/turf/floor/grass,/area/caribbean/japanese/land/outside)
+"mt" = (/obj/structure/vehicleparts/frame/i_go/right/door,/turf/floor/grass,/area/caribbean)
+"mu" = (/obj/structure/vehicleparts/frame/i_go/left,/obj/structure/bed/chair/commander,/turf/floor/grass,/area/caribbean)
 "mv" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "mw" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "mx" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/japanese/land/outside)
@@ -641,6 +651,7 @@
 "mA" = (/obj/structure/wild/tallgrass,/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "mB" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "mC" = (/turf/floor/dirt/jungledirt,/area/caribbean)
+"mD" = (/obj/structure/vehicleparts/frame/i_go,/obj/structure/cannon/modern/tank/japanese57{anchored = 1},/turf/floor/grass,/area/caribbean)
 "mE" = (/obj/covers/wood_wall/log/corner,/turf/floor/dirt/underground,/area/caribbean/japanese/land/inside/command)
 "mF" = (/obj/covers/wood_wall/log{icon_state = "log_wall"; dir = 4},/turf/floor/grass,/area/caribbean/japanese/land/inside/command)
 "mG" = (/obj/covers/wood_wall/log/corner,/turf/floor/grass,/area/caribbean/japanese/land/inside/command)
@@ -706,6 +717,10 @@
 "nO" = (/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/structure/closet/crate/ww2,/turf/floor/grass,/area/caribbean/japanese/land/outside)
 "nP" = (/obj/structure/multiz/ladder/ww2,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
 "nQ" = (/obj/map_metadata/nanjing,/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"nR" = (/obj/structure/vehicleparts/frame/i_go/right,/obj/structure/bed/chair/gunner{anchored = 1; dir = 8; icon_state = "officechair_white"},/turf/floor/grass,/area/caribbean)
+"nS" = (/obj/structure/vehicleparts/frame/i_go/rf,/obj/structure/vehicleparts/movement/tracks,/turf/floor/grass,/area/caribbean)
+"nT" = (/obj/structure/vehicleparts/axis/heavy/i_go,/obj/structure/vehicleparts/frame/i_go/front,/turf/floor/grass,/area/caribbean)
+"nU" = (/obj/structure/vehicleparts/frame/i_go/lf,/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers,/turf/floor/grass,/area/caribbean)
 
 (1,1,1) = {"
 agagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagaiajajajaiagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagag
@@ -1093,11 +1108,11 @@ aaaaaaaamrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmrmsbDbDbDjIbDmbbDbDbD
 aaaaaalXmvmvmvmvmvmvmvmvmvmvmvmvmvmvmvmvmvmvmvmvmwmvmvmvmvmxmyjhabababababababababababababababjhababababababababababaaaaaamjblblababababababababababababjhabababababgWabababjhababababababababababjfababgWabababababababababababababababjhababaa
 aaaalIlImzmzmzmzmzmzmzmzmzmzmzmzmzmzmzmzmAmzmzmzmzmzmzmzmzmBmyabababababababababgWabjhababababababababababababababababmCmCmjmjbDabababababababababababababababgWababababababjhabababababababababjfjfabababababababgWababababgWababababababababaa
 aamEmFmFmFmFmFmFmFmFmGmHmHmHmHmHmHmImHmHmHmHmHmHmHmHmHmHmHmBmyabababababjhabgWabababababababababababgWababababjhabababababmjbDbDababababjhababababjhabababababababababjhababababababgWabababababjfjfababababjhabababababababababjhabababababaaaa
-aamJmKmKmKmKmKmKmKmLmJmMmMmHmHmMmMmHmMmMmHmMmMmMmNmOmPmQmRmBmyabababababababababababababababjhababababababababababgWabababjIbDbDgWabababababababababababababababababababababgWabababababababababjfjfabababababababababjhababababababababababaaaa
-aamJmKmSmTmKmKmKmKmUmJmHmMmMmNmHmVmWmXmXmYmZmZnamMmOmPmPnbmBmyababgWabababababababababababababgWabababjhabababababababababbDbDbDabjhabababababababababjhababgWabjhabababababababababababababababjfjfabababababababababababababababababababaaaaaa
-aancndnenfmKmKmKmKngnhmMmMmMmMmMmZmZmZmZmZmZnimZmMmOmPmPnbmBmyababababababababababababgWabababababababababgWabababababjtabbDbDbDabababababjhabgWababababababababababababababababababjhababababjfjfjfabababababgWababababababababgWabababaaaaaaaa
-mMmJnjmKmKmKmKmKnknlmJmMmMmMmMnmmZmZnnmZmZnnnomZmMmOmPmPnbmBmyabababababjhababababababababababababababababababababjhabababbDbDmfabababababababababababababgWababababgWabababababababababababababjfjfababjhabgWababjhabgWabababababababaaaaaaaaaa
-mMmJnpmKmKmKmKmKngngmJmMmMmMmMmMmZmZnqnononrnsmZmMmOmPmPntmBnuabjfababababababjhabababababababjhabababababjhabababababgWabbDbDbDabababababababababjhababababababababababababgWababababababababjfjfjfababababababababababababjhabababaaaaaaaaaaaa
+aamJmKmKmKmKmKmKmKmLmJmMmMmHmHmMmMmHmMmMmHmMmMmMmNmOmPmQmRmBmyabababababababababababababababjhididababababababababgWabababjIbDbDgWabababababababababababababababababababababgWabababababababababjfjfabababababababababjhababababababababababaaaa
+aamJmKmSmTmKmKmKmKmUmJmHmMmMmNmHmVmWmXmXmYmZmZnamMmOmPmPnbmBmyababgWababababababababieifigababmnmoababjhabababababababababbDbDbDabjhabababababababababjhababgWabjhabababababababababababababababjfjfabababababababababababababababababababaaaaaa
+aancndnenfmKmKmKmKngnhmMmMmMmMmMmZmZmZmZmZmZnimZmMmOmPmPnbmBmyabababababababababababmpmqmtababmnmoababababgWabababababjtabbDbDbDabababababjhabgWababababababababababababababababababjhababababjfjfjfabababababgWababababababababgWabababaaaaaaaa
+mMmJnjmKmKmKmKmKnknlmJmMmMmMmMnmmZmZnnmZmZnnnomZmMmOmPmPnbmBmyabababababjhabababababmumDnRababababababababababababjhabababbDbDmfabababababababababababababgWababababgWabababababababababababababjfjfababjhabgWababjhabgWabababababababaaaaaaaaaa
+mMmJnpmKmKmKmKmKngngmJmMmMmMmMmMmZmZnqnononrnsmZmMmOmPmPntmBnuabjfababababababjhababnSnTnUababjhabababababjhabababababgWabbDbDbDabababababababababjhababababababababababababgWababababababababjfjfjfababababababababababababjhabababaaaaaaaaaaaa
 mMmGnvnwnvnxnhnhnxnxmGmMmMmMmMmMnamZmZmZmZmZmZnamMmMnynymHmBnzababjsjsjsjTababababababababababababgWabababababababababababbDjIbDababababjfjfjfjfabababababababababjhababababababababababababjfjfabababababababababababababababababaaaaaaaaaaaaaa
 mMmMmMmMmMmMmMmMmMmMmMnAmMmMmMmMmMmMmMmMmMmMmMmMmMmMnymMmMmHnyjfjflXlXlYjmabababababababababababababababababababgWababababbDbDbDababababababababjfjfabababababababababjhabababababababababjfjfababjhjhgWabababababababababgWabababaaaaaaaaaaaaaa
 mMmMmMmMmMmMmMmMmMmMmMmMmMmMmMmMmNmMmMmMmMmNmMmMmMnymMnynynynyabablIlIlMjUjfjfjfjfabjfjfjfabjfjfjfjfjfjfjfjfabababababababaoaoaojfjfjfabjfjfjfjfjfabjfabjfjfjfabjfabababababababababjfjfjfjfababababababababjhabgWababjhababababaaaaaaaaaaaaaaaa

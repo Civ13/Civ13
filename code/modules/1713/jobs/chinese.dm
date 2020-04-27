@@ -15,6 +15,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
+	is_ww2 = TRUE
 
 
 	// AUTOBALANCE
@@ -67,6 +68,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
+	is_ww2 = TRUE
 
 	is_commander = TRUE
 	is_officer = TRUE
@@ -120,7 +122,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJRU"
 	is_officer = TRUE
-
+	is_ww2 = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -176,7 +178,7 @@
 	rank_abbreviation = "Shao."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUDoc"
-
+	is_ww2 = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1
@@ -222,7 +224,7 @@
 	rank_abbreviation = "Erd."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-
+	is_ww2 = TRUE
 
 	// AUTOBALANCE
 	min_positions = 6
@@ -271,7 +273,7 @@
 	rank_abbreviation = "Yi."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-
+	is_ww2 = TRUE
 
 	// AUTOBALANCE
 	min_positions = 2

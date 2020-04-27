@@ -210,10 +210,10 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/i_go/left/door
 	w_left = list("c_door",TRUE,TRUE,17,50,TRUE,TRUE)
-	doorcode = 1011
+	doorcode = 5970
 /obj/structure/vehicleparts/frame/i_go/right/door
 	w_right = list("c_door",TRUE,TRUE,17,50,TRUE,TRUE)
-	doorcode = 1011
+	doorcode = 5970
 /obj/structure/vehicleparts/frame/i_go/rb
 	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
