@@ -29,6 +29,8 @@
 	..()
 	if (J.is_ww2 == TRUE && J.is_tanker == FALSE && J.is_prison == FALSE)
 		. = TRUE
+	else if (istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker))
+		. = FALSE
 	else
 		. = FALSE
 
