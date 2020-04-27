@@ -187,7 +187,29 @@ var/global/datum/controller/occupations/job_master
 
 	if (!H)
 		return
-
+	if (H.original_job && H.original_job.uses_squads && !H.original_job.is_squad_leader)
+		var/mob/living/carbon/human/HSL = null
+		if (H.faction_text == map.faction1)
+			if (map.faction1_squad_leaders[H.squad])
+				HSL = map.faction1_squad_leaders[H.squad]
+		else if (H.faction_text == map.faction2)
+			if (map.faction2_squad_leaders[H.squad])
+				HSL = map.faction2_squad_leaders[H.squad]
+		if (HSL && HSL.stat == CONSCIOUS)
+			var/found = FALSE
+			for(var/mob/living/carbon/human/EN in range(6,HSL))
+				if (EN.faction_text != H.faction_text)
+					found = TRUE
+					continue
+			if (!found)
+				H.loc = HSL.loc
+				HSL << "<big><font color='green'>[H] has arrived at your squad.</font></big>"
+				// make sure we have the right ambience for our new location
+				spawn (1)
+					var/area/H_area = get_area(H)
+					if (H_area)
+						H_area.play_ambience(H)
+				return
 	var/spawn_location = H.job_spawn_location
 
 	if (!spawn_location && H.original_job)
