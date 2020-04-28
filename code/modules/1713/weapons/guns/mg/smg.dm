@@ -159,7 +159,7 @@
 	base_icon = "thompson"
 	weight = 3.6
 	caliber = "a45acp"
-	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
+	fire_sound = 'sound/weapons/guns/fire/thompson.ogg'
 	magazine_type = /obj/item/ammo_magazine/thompson
 	full_auto = TRUE
 	slot_flags = SLOT_BELT
@@ -179,7 +179,7 @@
 	base_icon = "tommygun"
 	weight = 3.6
 	caliber = "a45acp"
-	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
+	fire_sound = 'sound/weapons/guns/fire/thompson.ogg'
 	magazine_type = /obj/item/ammo_magazine/tommy
 	full_auto = TRUE
 	slot_flags = SLOT_BELT
