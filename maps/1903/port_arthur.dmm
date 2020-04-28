@@ -128,7 +128,7 @@
 "cx" = (/obj/structure/barricade,/turf/floor/dirt/winter{icon_state = "grass2"},/area/caribbean)
 "cy" = (/turf/floor/dirt/winter{icon_state = "grass1"},/area/caribbean)
 "cz" = (/obj/structure/barricade,/turf/floor/dirt/winter,/area/caribbean)
-"cA" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/mob/living/carbon/human/corpse/japanese,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
+"cA" = (/obj/structure/flag/russian,/turf/floor/dirt,/area/caribbean)
 "cB" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter,/area/caribbean)
 "cC" = (/obj/structure/barricade,/turf/floor/dirt/winter{icon_state = "snowgrass"},/area/caribbean)
 "cD" = (/turf/floor/dirt/burned,/area/caribbean)
@@ -177,6 +177,7 @@
 "du" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dv" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/dirt/winter{icon_state = "grass2"},/area/caribbean)
 "dw" = (/turf/floor/dirt/dust,/area/caribbean)
+"dx" = (/obj/structure/barbwire,/mob/living/carbon/human/corpse/japanesesgt,/turf/floor/dirt,/area/caribbean)
 "dy" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/mob/living/carbon/human/corpse/japanese,/turf/floor/dirt,/area/caribbean)
 "dz" = (/mob/living/carbon/human/corpse/russian,/turf/floor/dirt,/area/caribbean)
 "dA" = (/turf/floor/dirt/underground,/area/caribbean)
@@ -209,14 +210,10 @@
 "eb" = (/obj/structure/closet/crate/footlocker,/obj/item/weapon/storage/fancy/cigar,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "ec" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "ed" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"ee" = (/turf/floor/dirt/winter{icon_state = "grass2"},/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"ef" = (/obj/structure/flag/russian,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"eg" = (/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"eh" = (/obj/structure/barbwire,/mob/living/carbon/human/corpse/japanese,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"ei" = (/obj/structure/barbwire,/mob/living/carbon/human/corpse/japanesesgt,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"ej" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"ek" = (/obj/structure/barricade,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"el" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
+"ee" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"ef" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"eg" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_66%"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"eh" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "en" = (/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
 "eo" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
 "ep" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
@@ -251,9 +248,6 @@
 "eT" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/obj/structure/sign/minefield{desc = "<b>2346</b>"; name = "Command Phone #"},/turf/floor/trench,/area/caribbean)
 "eU" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean)
 "eV" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean)
-"eW" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"eX" = (/obj/structure/wild/burnedtree{icon_state = "burnedbush9"},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
-"eY" = (/obj/structure/wild/rock{icon_state = "rock4"},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
 "eZ" = (/obj/structure/wild/tree/dead_tree/destroyed{icon_state = "5"},/turf/floor/dirt,/area/caribbean)
 "fa" = (/obj/structure/wild/rock{icon_state = "rock4"},/turf/floor/dirt,/area/caribbean)
 "fb" = (/obj/structure/wild/tree/dead_tree/destroyed{icon_state = "8"},/turf/floor/dirt,/area/caribbean)
@@ -341,10 +335,10 @@ abababaiabababababababababacaWdIdIbidIdIdIbcdIdIdudIdIdIdIdIdIdIdudIdIdIdIdIdIdI
 abababaQaQaQabababababababacbkdIdIbidIdIcaacaXacacacacacacacacacacacbbbcbcbbacacacacbbdIagdIdIagdIbbacacacacbbbcbcbbacacacacacacacacacacacacacacaYcicicidecicidqacabababaPabababababaEaEabaEabababababab
 ababababababaQababeAabababacdDdIdIdIdIdIcaacdkdIdIdEdIdIdIdIdIdIdIdIdIdIdIdEdIdIacagdIdIdIdIdIdIdIdIagacdIdEdIdIdIdIdIdIdIdIdIdIdIdEdIdIdIdIdIdkaccicicicicicidHacababaEaEaEajaEabaEaPababababababababab
 abababababababababaQababaQacdNdIdIdIdIdIcaacdkdIagdIdIdIdIdIdIdIdIdIdIdIdIdIagdIacdIdIdIdIdIdIdIdIdIdIacdIagdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIagdIdkaccicidlcicicidHacababababababababababababababababababab
-abababababababababababababacacdIdIagdIdIcaacdkdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIacdIeceqdIdIdIdIeceqdIacdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdkaccidOdodPciciaoacababaPabababaPabaPabababababababababab
-abababakababababaQaQaQabababacacdRdRdudIcaacdkdIdIdIdIdQdIdIdIdIdQdIdIdIdIdIdIdIacdIeceqdIdIdIdIeceqdIacdIdIdIdIdIdIdIdQdIdIdIdIdIdQdIdIdIdIdIdkacdSdTdYdTdZaoaoaPaPaPabababaPababaEaPababababababababab
-ababababababababeBababababababacacacacacacacacdIagdIdIdIdIdIdIdIdIdIdIdIdIdIagdIacdIeceresesesesfoeqdIacdIagdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIagdIacacacacacacacacabababababaEaEaEaEaEaEabababababbfabababab
-ababababababaQabababababababababababababababacacdIdIdFdIdIdIdIdFdIdIdpdpdsdpdIdIacagdIfsfsfsfsfsdIdIagacdIdIdIdudpdpdpdpdIdIdFdIdIdIdIdFdIdIacacabetababababababababababababbfababbfalbfbfababababababab
+abababababababababababababacacdIdIagdIdIcaacdkdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIacdIeeeqdIdIdIdIeceqdIacdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdkaccidOdodPciciaoacababaPabababaPabaPabababababababababab
+abababakababababaQaQaQabababacacdRdRdudIcaacdkdIdIdIdIdQdIdIdIdIdQdIdIdIdIdIdIdIacdIeceqdIdIdIdIecefdIacdIdIdIdIdIdIdIdQdIdIdIdIdIdQdIdIdIdIdIdkacdSdTdYdTdZaoaoaPaPaPabababaPababaEaPababababababababab
+ababababababababeBababababababacacacacacacacacdIagdIdIdIdIdIdIdIdIdIdIdIdIdIagdIacdIeeeresesegesfoeqdIacdIagdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIagdIacacacacacacacacabababababaEaEaEaEaEaEabababababbfabababab
+ababababababaQabababababababababababababababacacdIdIdFdIdIdIdIdFdIdIdpdpdsdpdIdIacagdIfsehfsfsfsehdIagacdIdIdIdudpdpdpdpdIdIdFdIdIdIdIdFdIdIacacabetababababababababababababbfababbfalbfbfababababababab
 ababahasasasasasababababababababababababababbjacacacdGdGacacacdGdGacacacacacacacacacdudIdIdIdIdIdIduacacacacacacacacacacacdGdGacacacdGdGacacacblababababababababababababaPababababababababababamabababab
 ababababababaQaQabababababababababababababaQabababbmbmbmbmabbmbmbmbmabababababababacacagdIdIdIdIagacacabababababaEababaPbmbmbmbmabbmbmbnbnababababababababababababababababababababababababababababababab
 abababababababaQaQababababarabababababababaiababababababababababababababababababababacdIdIdIdIdIdIacababababababaEabababababaiababababaPabababababetababaPabababababababaPababababababababaiabababababab
@@ -395,9 +389,9 @@ aaaaaaaaaaaaaaaaaEcnaaeUaaaaaaaacsaaaaaaaaaaaaaaaacHcQbsbobobzbzbzbzbzbzbzbzbobo
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasasaaaaaacHcIdabobobobobobobobocMboboboboboevbobWbobobobocMbobobobobobobobobodbcYcOaaaaaaaaaaaaaaeVaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacHdcddbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqdfdgdcaaaaaaaaaaaaaaaaaaaaaaaaaaaEaEdhaaaaaaaaaaaEaaaaaaaEaaaaaaaaaEaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaadidjdjdncgdjdndjdjdjdndjdjdjdjdmdjdndjdjdjdjdndjdjdjdjdndjdjdjdndiaaaaaaaaaaaaaaaaaaaaaaaaaaaacGcGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-edededededededededededededededeeededededededeWededefededegegegegegegegegehegeiegegegegegehegegegegehegegegegegegegegegededefedededededededededededejededededededededededededededededededededeWededededed
-edededededcwedededededededekedeeedededededededededededededededededededededededeXedededededededeeedededededededededededededededededeeededededededcAededededededededededededededededededededededededededed
-edededededededededededededeleledededededededededededededededededededeeedededededededededededededededededededededededededededededededededededejejedededeeedededededeeeYededededededeeeeededededededededed
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaeUaaaacAaaaadididididididididrdidxdidididididrdididididrdididididididididiaaaacAaaaaaaaaaaaaaaaaaaaaaacGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeUaaaaaaaaaa
+aaaaaaaaaacsaaaaaaaaaaaaaadhaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafcaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaadyaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaadtdtaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacGcGaaaaaaaEaaaaaaaaaaaEfaaaaaaaaaaaaaaEaEaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaadtdtaaaaaaaaaaaaaaaadvaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwcUaaaaaaaaaaaaaaaaaaaaaaeZaaaaaaaaaEaaaaaaaaaadhcGcGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadtdBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwaaaaaaaaaacUaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacsaaaaaaaaaafaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadtdtaaaaaaaaaaaaaaaaaaaadhdidididrdididididiaaaafbaaaaaaaaaaaaaaaaaaaaaaaaaaeVaaaaaaaaaaaaaaaacDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaa

@@ -40,11 +40,11 @@ obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
 		. = TRUE
-	else if (istype(J, /datum/job/german/ss_pionier) || istype(J, /datum/job/german/ss_panzergrenadier) || istype(J, /datum/job/german/ss_panzergrenadier_squad_leader) || istype(J, /datum/job/german/ss_panzergrenadier_squad_leader))
+	else if (istype(J, /datum/job/german/ss_pionier) || istype(J, /datum/job/german/ss_panzergrenadier) || istype(J, /datum/job/german/ss_panzergrenadier_squad_leader) || istype(J, /datum/job/german/tank_crew_leader))
+		. = FALSE
+	else if (J.is_reichstag == TRUE)
 		. = FALSE
 	else
-		. = FALSE
-	if (J.is_reichstag == TRUE)
 		. = FALSE
 
 /obj/map_metadata/stalingrad/faction1_can_cross_blocks()
