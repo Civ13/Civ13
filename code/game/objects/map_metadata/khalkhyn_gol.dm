@@ -16,7 +16,7 @@
 		)
 	age = "1939"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(JAPANESE = 0.5, RUSSIAN = 0.5)
+	faction_distribution_coeffs = list(JAPANESE = 0.6, RUSSIAN = 0.4)
 	battle_name = "battle of Khalkhyn Gol"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command</b>. The Soviets will win if they manage to capture the <b>Japanese command</b>.</font>"
 	faction1 = JAPANESE
@@ -27,9 +27,9 @@
 
 /obj/map_metadata/khalkhyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == FALSE && J.is_prison == FALSE)
+	if (J.is_ww2 == TRUE && J.is_tanker == TRUE && J.is_prison == FALSE)
 		. = TRUE
-	else if (istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker))
+	else if (istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker) || istype(J, /datum/job/russian/tank_crew_leader))
 		. = FALSE
 	else
 		. = FALSE

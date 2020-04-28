@@ -161,7 +161,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
-	fire_sound = 	'sound/weapons/guns/fire/MG34.ogg'
+	fire_sound = 	'sound/weapons/guns/fire/mg34.ogg'
 	force = 20
 	throwforce = 30
 	var/cover_open = FALSE

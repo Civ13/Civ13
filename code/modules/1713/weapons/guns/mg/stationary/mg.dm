@@ -136,6 +136,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	icon_state = "type98hmg"
 	base_icon = "type98hmg"
 	caliber = "a77x58"
+	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
 	magazine_type = /obj/item/ammo_magazine/type92
 	ammo_type = /obj/item/ammo_casing/a77x58
 	firemodes = list(
