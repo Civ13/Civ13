@@ -462,6 +462,7 @@
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
+	magazine_type = /obj/item/ammo_magazine/arisaka99
 	recoil = 2
 	force = 11
 	throwforce = 25
