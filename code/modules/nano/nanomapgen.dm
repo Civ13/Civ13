@@ -1,6 +1,6 @@
 // This file is a modified version of https://raw2.github.com/Baystation12/OldCode-BS12/master/code/TakePicture.dm
 
-#define NANOMAP_ICON_SIZE 4
+#define NANOMAP_ICON_SIZE 1
 #define NANOMAP_MAX_ICON_DIMENSION 1024
 
 #define NANOMAP_TILES_PER_IMAGE (NANOMAP_MAX_ICON_DIMENSION / NANOMAP_ICON_SIZE)
