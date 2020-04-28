@@ -1434,6 +1434,12 @@
 "BD" = (/obj/structure/window/classic,/obj/covers/jail/steeljail,/turf/floor/wood{icon_state = "wood-broken6"},/area/caribbean/houses)
 "BE" = (/turf/floor/wood{icon_state = "wood-broken4"},/area/caribbean/nomads/forest/snow)
 "BF" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/wood{icon_state = "wood-broken7"},/area/caribbean/houses)
+"BG" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/outside{name = "Soviet Base"})
+"BH" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/winter,/area/caribbean/russian/land/outside{name = "Soviet Base"})
+"BI" = (/obj/structure/closet/crate/ww2/artillery_shells/HE76,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/outside{name = "Soviet Base"})
+"BJ" = (/obj/structure/closet/crate/ww2/artillery_shells/HE76,/turf/floor/winter,/area/caribbean/russian/land/outside{name = "Soviet Base"})
+"BK" = (/obj/structure/closet/crate/ww2/artillery_shells/APCR76,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/outside{name = "Soviet Base"})
+"BL" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/winter,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "BM" = (/obj/structure/table/marble,/obj/covers/carpet/redcarpet,/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/three)
 "BN" = (/obj/structure/props/junk{icon_state = "Junk_9"},/turf/floor/dirt,/area/caribbean/nomads/forest/snow)
 "BO" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt,/area/caribbean/nomads/forest/snow)
@@ -2133,10 +2139,10 @@ agagtKtKtKtKzZFvAdAdAdFvzYtKtKtKtKtKadagtKadtKtKtKtKtKtKtKtKtKtKtKtKtKadadadadtK
 kQkQkQkQkQkQANFvAdAdAdFvAOkQkQkQmnmnkQkQkQkQkQkQkQkQkUkVkVkVkVkVkVkVkVkVkWkQkQkQkQkQkQkQkQkQkQkQkQkQkQmnkQkQkQkQkQkQlylGlGlGlykQkQkQmnkQnLtKkQkQkQmnkQkQkQkQkQkQkQkQkQkQmnkQkQkQkQkQ
 kQnLkQkQkQnLkQAMlGlGlGAMkQkQkQnLkQlgkQnLkQkQnLkQkQkYkZlalblblblblblblblcldkYkQkQkQkQnLkQkQkQkQkQkQkQkQkQkQkQkQnLkQkQlylGlGlGlylylylylylylylylylylylylylylylylylylykQkQkQkQkQkQkQkQkQ
 kQtRnLlekQkQkQlylGlGlGlykQkQlfkQkQkQnLkQBjtTtTtUkQlgkZlhliljljlkljlllllmldkQkQtRkQkQkQkQkQtVtTtTBkkQtRkQkQkQnLkQkQkQlylGlGlGlylGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlykQkQkQkQkQkQkQnLkQ
-kQkQkQkQkQkQkQlylGlGlGlykQkQkQkQkQkQkQkQtXtYkQtZkQkQkZlqlrlrljljljlrlrlsltkQkQlgkQkQkQkQkQtXtYkQtZkQkQnLkQkQkQkQkQkQlylGlGlGlylGlQlRlGlGlGlGlQlRlGlGlGAQARASlGlGlykQkQkQkQkQkQkQkQkQ
-kQtRtRtRtRtRtRlylGlGlGlytRtRtRtRtRtRtRkQkQkQkQtRkQnLkQlvlvlvkQkQkQlvlvlvkQkQkQkQkQkQrDkQkQkQkQkQkQkQkQkQkQkQkQkQkQkQlylGlGlGlyATlTlUlGlGlGATlTlUlGlGlGAUAVAWlGlGlykQkQkQkQkQkQkQkQkQ
-kQtRtRtRtRtRtRlylGlGlGlytRtRtRtRtRtRtRkQkQnLkQkQkQkQkQkQtRkQkQkQkQkQkQkQkQkQkQnLkQkQkQkQkQkQkQkQkQkQkQkQkQkQkQFlkQkQlylGlGlGlylGmcmdlGlGlGlGmcmdlGlGlGAXAZBalGlGlykQkQFmkQkQkQkQkQkQ
-kQtRtRtRtRtRtRlylGlGlGlytRtRtRtRtRtRtRkQkQnLnLkQkQkQnLkQkQtRkQkQkQkQnLkQkQkQkQkQnLkQkQkQkQsXsXsXsXkQkQkQFTFTFTFTFTkQlylGlGlGlylGlGlGlGlGlGlGlGlGlGlGlGBbBcBdlGlGlykQkQkQkQkQkQkQkQkQ
+kQkQkQkQkQkQkQlylGlGlGlykQkQkQkQkQkQkQkQtXtYkQtZkQkQkZlqlrlrljljljlrlrlsltkQkQlgkQkQkQkQkQtXtYkQtZkQkQnLkQkQkQkQkQkQlylGlGlGlyATlQlRlGlGlGATlQlRlGlGlGAQARASlGlGBGBHkQkQkQkQkQkQkQkQ
+kQtRtRtRtRtRtRlylGlGlGlytRtRtRtRtRtRtRkQkQkQkQtRkQnLkQlvlvlvkQkQkQlvlvlvkQkQkQkQkQkQrDkQkQkQkQkQkQkQkQkQkQkQkQkQkQkQlylGlGlGlylGlTlUlGlGlGlGlTlUlGlGlGAUAVAWlGlGBGBHkQkQkQkQkQkQkQkQ
+kQtRtRtRtRtRtRlylGlGlGlytRtRtRtRtRtRtRkQkQnLkQkQkQkQkQkQtRkQkQkQkQkQkQkQkQkQkQnLkQkQkQkQkQkQkQkQkQkQkQkQkQkQkQFlkQkQlylGlGlGlylGmcmdlGlGlGlGmcmdlGlGlGAXAZBalGlGBIBJkQFmkQkQkQkQkQkQ
+kQtRtRtRtRtRtRlylGlGlGlytRtRtRtRtRtRtRkQkQnLnLkQkQkQnLkQkQtRkQkQkQkQnLkQkQkQkQkQnLkQkQkQkQsXsXsXsXkQkQkQFTFTFTFTFTkQlylGlGlGlylGlGlGlGlGlGlGlGlGlGlGlGBbBcBdlGlGBKBLkQkQkQkQkQkQkQkQ
 kQtRtRtRtRtRtRlylGlGlGlytRtRtRtRtRtRtRkQlylylylylylylylylylylylylylylylylylylylylykQkQkQkQFUsZtatbkQkQkQFTFVGmFWFTkQlylGlGlGlylGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlykQkQkQnLkQkQkQkQkQ
 kQkQFnkQkQkQkQlylGlGlGlykQkQtRtRtRkQkQkQlylylylyyLlyyLlylylylylylylylylylylylylylykQnLkQkQtctctdtdkQkQkQFTFXFYFWFTkQlylGlGlGlylGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlykQkQkQkQkQkQkQkQkQ
 kQkQkQtRtRnLkQlylGlGlGlylylylylylylylylylylymlmlmllEmlmlmllFmlmlmlmllEmlmlmlmllylynLkQkQkQkQkQkQkQkQkQkQFTFZlyFWFTkQlylGlGlGlylGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlGlykQkQkQkQkQkQkQkQkQ
