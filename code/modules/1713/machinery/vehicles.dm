@@ -100,7 +100,7 @@
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"
 	speeds = 4
-	speedlist = list(1=12,2=8,3=6,4=5)
+	speedlist = list(1=10,2=7,3=5,4=4)
 	color = "#6a5a3d"
 	turret_type = "jap_turret"
 	New()
