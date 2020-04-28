@@ -101,6 +101,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
 
@@ -403,6 +404,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
 
@@ -660,6 +662,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
 
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
 

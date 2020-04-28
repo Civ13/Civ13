@@ -209,6 +209,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
 
+	is_medic = TRUE
 
 
 	min_positions = 1
@@ -614,8 +615,8 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
-
 
 	min_positions = 2
 	max_positions = 4
@@ -658,6 +659,7 @@
 	is_ww2 = TRUE
 
 
+	is_medic = TRUE
 	min_positions = 2
 	max_positions = 10
 
@@ -1074,6 +1076,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_prison = TRUE
 

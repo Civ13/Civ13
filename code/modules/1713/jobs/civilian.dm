@@ -343,6 +343,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 
+	is_medic = TRUE
 	is_1713 = TRUE
 
 
@@ -1391,6 +1392,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 
+	is_medic = TRUE
 	is_pioneer = TRUE
 
 

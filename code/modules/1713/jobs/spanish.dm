@@ -176,8 +176,7 @@
 	rank_abbreviation = "Cirujano"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSPSurgeon"
-
-
+	is_medic = TRUE
 
 	min_positions = 1
 	max_positions = 10

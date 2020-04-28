@@ -107,6 +107,7 @@
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
 
+	is_medic = TRUE
 	is_prison = TRUE
 
 	min_positions = 1

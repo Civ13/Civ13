@@ -200,6 +200,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
 
+	is_medic = TRUE
 	is_ww1 = TRUE
 
 
@@ -425,6 +426,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_reichstag = TRUE
 
@@ -1028,6 +1030,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 
@@ -1073,6 +1076,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE

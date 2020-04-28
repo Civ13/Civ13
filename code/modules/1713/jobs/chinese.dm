@@ -181,6 +181,7 @@
 	is_ww2 = TRUE
 
 
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
 

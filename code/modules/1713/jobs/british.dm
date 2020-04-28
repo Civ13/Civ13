@@ -177,8 +177,7 @@
 	rank_abbreviation = "Surgeon"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-
-
+	is_medic = TRUE
 
 	min_positions = 1
 	max_positions = 10
@@ -449,6 +448,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 
+	is_medic = TRUE
 	is_army = TRUE
 
 
@@ -756,6 +756,7 @@
 
 	is_ww1 = TRUE
 
+	is_medic = TRUE
 
 	min_positions = 1
 	max_positions = 10
@@ -1002,6 +1003,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_prison = TRUE
 

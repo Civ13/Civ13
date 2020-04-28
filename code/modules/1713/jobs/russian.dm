@@ -206,8 +206,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUDoc"
 
-
-
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
 
@@ -473,8 +472,7 @@
 	spawn_location = "JoinLateRUDoc"
 
 	is_ww2 = TRUE
-
-
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 4
 
@@ -715,7 +713,7 @@
 	spawn_location = "JoinLateRU"
 
 	is_rcw = TRUE
-
+	is_medic = TRUE
 
 	min_positions = 1
 	max_positions = 10
@@ -1002,9 +1000,8 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU3"
-
 	is_rcw = TRUE
-
+	is_medic = TRUE
 
 	min_positions = 1
 	max_positions = 10

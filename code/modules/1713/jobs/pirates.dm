@@ -177,8 +177,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateSurgeon"
 
-
-
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
 

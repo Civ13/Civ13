@@ -1786,6 +1786,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 
+	is_medic = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
 

@@ -415,6 +415,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
 
+	is_medic = TRUE
 	is_gladiator = TRUE
 
 	min_positions = 3

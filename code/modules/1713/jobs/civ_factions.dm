@@ -209,6 +209,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 
+	is_medic = TRUE
 	is_RP = TRUE
 
 	min_positions = 1
@@ -986,6 +987,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
 
+	is_medic = TRUE
 	is_RP = TRUE
 
 	min_positions = 1
@@ -1763,6 +1765,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
 
+	is_medic = TRUE
 	is_RP = TRUE
 
 	min_positions = 1
@@ -2541,6 +2544,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
 
+	is_medic = TRUE
 	is_RP = TRUE
 
 	min_positions = 1

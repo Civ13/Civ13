@@ -132,7 +132,7 @@
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-
+	is_medic = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
@@ -177,6 +177,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 
 	min_positions = 1

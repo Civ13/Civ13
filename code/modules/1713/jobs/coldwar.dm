@@ -63,6 +63,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
 
+	is_medic = TRUE
 	is_coldwar = TRUE
 
 	min_positions = 3
@@ -376,6 +377,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 
+	is_medic = TRUE
 	is_coldwar = TRUE
 
 	min_positions = 2
@@ -653,6 +655,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_specops = TRUE
 
