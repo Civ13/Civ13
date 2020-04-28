@@ -18,7 +18,7 @@
 
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -66,7 +66,7 @@
 	is_officer = TRUE
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -113,7 +113,7 @@
 	is_officer = TRUE
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -158,7 +158,7 @@
 	uses_squads = TRUE
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -200,9 +200,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
 
+	is_medic = TRUE
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -246,7 +247,7 @@
 	is_ww1 = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -289,7 +290,7 @@
 	is_ww1 = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 400
 
@@ -337,7 +338,7 @@
 	is_ww2 = TRUE
 	is_reichstag = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -386,7 +387,7 @@
 	uses_squads = TRUE
 	is_ww2 = TRUE
 	is_reichstag = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 6
 
@@ -425,9 +426,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_reichstag = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -473,7 +475,7 @@
 	whitelisted = TRUE
 	is_reichstag = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 30
 
@@ -530,7 +532,7 @@
 	is_ww2 = TRUE
 	is_reichstag = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 30
 
@@ -583,7 +585,7 @@
 	is_reichstag = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 60
 
@@ -643,7 +645,7 @@
 	is_reichstag = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 60
 
@@ -690,7 +692,7 @@
 
 	is_ww2 = TRUE
 	is_reichstag = FALSE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -740,7 +742,7 @@
 
 	is_ww2 = TRUE
 	is_reichstag = FALSE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -789,7 +791,7 @@
 
 	is_ww2 = TRUE
 	is_reichstag = FALSE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -837,7 +839,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -877,7 +879,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 120
 
@@ -932,7 +934,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -981,7 +983,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -1028,10 +1030,11 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 4
 
@@ -1073,10 +1076,11 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGEDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -1128,7 +1132,7 @@
 	uses_squads = TRUE
 	is_officer = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 6
 
@@ -1170,7 +1174,7 @@
 	is_reichstag = FALSE
 	is_tanker = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 4
 	max_positions = 32
 
@@ -1216,7 +1220,7 @@
 	uses_squads = TRUE
 	is_officer = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 6
 
@@ -1258,7 +1262,7 @@
 	is_ww2 = TRUE
 	is_tanker = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 30
 
@@ -1309,7 +1313,7 @@
 
 	is_ww2 = TRUE
 	is_tanker = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 

@@ -17,7 +17,7 @@
 	whitelisted = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -66,7 +66,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -115,7 +115,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -162,7 +162,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -206,8 +206,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUDoc"
 
-
-	// AUTOBALANCE
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
 
@@ -247,7 +246,7 @@
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -289,7 +288,7 @@
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -337,7 +336,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -386,7 +385,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -430,7 +429,7 @@
 	uses_squads = TRUE
 	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -473,8 +472,7 @@
 	spawn_location = "JoinLateRUDoc"
 
 	is_ww2 = TRUE
-
-	// AUTOBALANCE
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 4
 
@@ -516,7 +514,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -561,7 +559,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 20
 	max_positions = 100
 
@@ -626,7 +624,7 @@
 	is_rcw = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -673,7 +671,7 @@
 
 	is_rcw = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -715,8 +713,8 @@
 	spawn_location = "JoinLateRU"
 
 	is_rcw = TRUE
+	is_medic = TRUE
 
-	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 10
 
@@ -762,7 +760,7 @@
 	is_rcw = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 100
 
@@ -815,7 +813,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -861,7 +859,7 @@
 
 	is_rcw = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 70
 
@@ -913,7 +911,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -960,7 +958,7 @@
 	is_squad_leader = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -1002,10 +1000,9 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU3"
-
 	is_rcw = TRUE
+	is_medic = TRUE
 
-	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 10
 
@@ -1049,7 +1046,7 @@
 	is_rcw = TRUE
 	uses_squads = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 
@@ -1107,7 +1104,7 @@
 	whitelisted = TRUE
 	is_squad_leader = TRUE
 	is_officer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 6
 
@@ -1151,7 +1148,7 @@
 	is_reichstag = FALSE
 	is_tanker = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 4
 	max_positions = 32
 
@@ -1198,7 +1195,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_officer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 6
 
@@ -1241,7 +1238,7 @@
 	is_ww2 = TRUE
 	is_tanker = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 30
 
@@ -1291,7 +1288,7 @@
 
 	is_ww2 = TRUE
 	is_tanker = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 

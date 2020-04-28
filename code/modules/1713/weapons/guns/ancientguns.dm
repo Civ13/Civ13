@@ -17,7 +17,7 @@ obj/item/weapon/gun/projectile/ancient
 	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/stoneball
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	accuracy = TRUE
 	gun_type = GUN_TYPE_RIFLE
 	attachment_slots = ATTACH_BARREL

@@ -16,6 +16,7 @@
 		)
 	age = "1943"
 	ordinal_age = 6
+	is_RP = TRUE
 	faction_distribution_coeffs = list(JAPANESE = 0.25, BRITISH = 0.75)
 	battle_name = "Bridge Over the River Kwai"
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the grace wall is removed.<br>The <b>Japanese</b> must keep the prisoners contained, and make them construct a railroad. The <b>Prisoners</b> must try to survive, follow their orders.</font>"

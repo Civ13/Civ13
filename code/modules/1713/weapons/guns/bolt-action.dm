@@ -18,7 +18,8 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	//+2 accuracy over the LWAP because only one shot
 	accuracy = TRUE
 //	scoped_accuracy = 2
@@ -105,7 +106,7 @@
 	bolt_open = !bolt_open
 	if (bolt_open)
 		if (chambered)
-			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
 			chambered.randomrotation()
@@ -116,10 +117,10 @@
 					check_bolt_lock++
 					user << "<span class='notice'>The bolt is locked!</span>"
 		else
-			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open.</span>"
 	else
-		playsound(loc, 'sound/weapons/bolt_close.ogg', 50, TRUE)
+		playsound(loc, 'sound/weapons/guns/interact/bolt_close.ogg', 50, TRUE)
 		user << "<span class='notice'>You work the bolt closed.</span>"
 		bolt_open = FALSE
 	add_fingerprint(user)
@@ -202,7 +203,6 @@
 	item_state ="shotgun"
 	base_icon = "sharps"
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a4570"
 	weight = 4.5
 	effectiveness_mod = 0.99
@@ -215,7 +215,7 @@
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a4570
 	magazine_type = /obj/item/ammo_magazine/sharps
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 1
 	gun_safety = FALSE
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
@@ -226,7 +226,6 @@
 	item_state ="shotgun"
 	base_icon = "martini_henry"
 	force = 13
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a577"
 	weight = 5
 	effectiveness_mod = 0.98
@@ -239,7 +238,7 @@
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a577
 	magazine_type = /obj/item/ammo_magazine/c577
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 1
 	load_delay = 7
 
@@ -250,7 +249,6 @@
 	item_state ="shotgun"
 	base_icon = "makeshiftbolt"
 	force = 13
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 5
 	effectiveness_mod = 0.98
@@ -263,7 +261,7 @@
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 1
 	load_delay = 7
 
@@ -283,17 +281,17 @@
 	bolt_open = !bolt_open
 	if (bolt_open)
 		if (chambered)
-			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You open the breech lever, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
 			chambered.randomrotation()
 			loaded -= chambered
 			chambered = null
 		else
-			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You open the breech lever.</span>"
 	else
-		playsound(loc, 'sound/weapons/bolt_close.ogg', 50, TRUE)
+		playsound(loc, 'sound/weapons/guns/interact/bolt_close.ogg', 50, TRUE)
 		user << "<span class='notice'>You close the breech lever.</span>"
 		bolt_open = FALSE
 	add_fingerprint(user)
@@ -306,8 +304,8 @@
 	icon_state ="mosin"
 	item_state ="mosin"
 	base_icon = "mosin"
+	fire_sound = 'sound/weapons/guns/fire/Mosin.ogg'
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 4.3
 	effectiveness_mod = 0.96
@@ -320,7 +318,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
 
 /obj/item/weapon/gun/projectile/boltaction/mosin/m30
@@ -345,10 +343,8 @@
 	base_icon = "arisaka30"
 	caliber = "a65x50"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a65x50
 	magazine_type = /obj/item/ammo_magazine/arisaka
-	bolt_safety = FALSE
 	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_SHOULDER
@@ -357,7 +353,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
@@ -375,7 +371,7 @@
 	bolt_open = !bolt_open
 	if (bolt_open)
 		if (chambered)
-			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/arisaka_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
 			chambered.randomrotation()
@@ -386,10 +382,10 @@
 					check_bolt_lock++
 					user << "<span class='notice'>The bolt is locked!</span>"
 		else
-			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/arisaka_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open.</span>"
 	else
-		playsound(loc, 'sound/weapons/arisaka_close.ogg', 50, TRUE)
+		playsound(loc, 'sound/weapons/guns/interact/arisaka_close.ogg', 50, TRUE)
 		user << "<span class='notice'>You work the bolt closed.</span>"
 		bolt_open = FALSE
 	add_fingerprint(user)
@@ -405,8 +401,6 @@
 	base_icon = "arisaka38"
 	caliber = "a65x50"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a65x50
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
@@ -417,7 +411,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
@@ -435,7 +429,7 @@
 	bolt_open = !bolt_open
 	if (bolt_open)
 		if (chambered)
-			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/arisaka_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
 			chambered.randomrotation()
@@ -446,10 +440,10 @@
 					check_bolt_lock++
 					user << "<span class='notice'>The bolt is locked!</span>"
 		else
-			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/arisaka_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open.</span>"
 	else
-		playsound(loc, 'sound/weapons/arisaka_close.ogg', 50, TRUE)
+		playsound(loc, 'sound/weapons/guns/interact/arisaka_close.ogg', 50, TRUE)
 		user << "<span class='notice'>You work the bolt closed.</span>"
 		bolt_open = FALSE
 	add_fingerprint(user)
@@ -464,9 +458,6 @@
 	base_icon = "arisaka99"
 	caliber = "a77x58"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a77x58
-	magazine_type = /obj/item/ammo_magazine/arisaka99
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
@@ -476,7 +467,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
@@ -494,7 +485,7 @@
 	bolt_open = !bolt_open
 	if (bolt_open)
 		if (chambered)
-			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/arisaka_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
 			chambered.randomrotation()
@@ -505,10 +496,10 @@
 					check_bolt_lock++
 					user << "<span class='notice'>The bolt is locked!</span>"
 		else
-			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/arisaka_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open.</span>"
 	else
-		playsound(loc, 'sound/weapons/arisaka_close.ogg', 50, TRUE)
+		playsound(loc, 'sound/weapons/guns/interact/arisaka_close.ogg', 50, TRUE)
 		user << "<span class='notice'>You work the bolt closed.</span>"
 		bolt_open = FALSE
 	add_fingerprint(user)
@@ -536,10 +527,9 @@
 	base_icon = "arisaka99"
 	caliber = "a77x58_wood"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	ammo_type = /obj/item/ammo_casing/a77x58_wood
 	magazine_type = /obj/item/ammo_magazine/arisaka99_training
-	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
@@ -548,7 +538,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training/attack_self(mob/user)
@@ -565,7 +555,7 @@
 	bolt_open = !bolt_open
 	if (bolt_open)
 		if (chambered)
-			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/arisaka_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
 			chambered.randomrotation()
@@ -576,10 +566,10 @@
 					check_bolt_lock++
 					user << "<span class='notice'>The bolt is locked!</span>"
 		else
-			playsound(loc, 'sound/weapons/arisaka_open.ogg', 50, TRUE)
+			playsound(loc, 'sound/weapons/guns/interact/arisaka_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open.</span>"
 	else
-		playsound(loc, 'sound/weapons/arisaka_close.ogg', 50, TRUE)
+		playsound(loc, 'sound/weapons/guns/interact/arisaka_close.ogg', 50, TRUE)
 		user << "<span class='notice'>You work the bolt closed.</span>"
 		bolt_open = FALSE
 	add_fingerprint(user)
@@ -594,10 +584,8 @@
 	base_icon = "gewehr71"
 	caliber = "a765x53"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a765x53
 	magazine_type = /obj/item/ammo_magazine/gewehr71
-	bolt_safety = FALSE
 	effectiveness_mod = 0.85
 	value = 90
 	slot_flags = SLOT_SHOULDER
@@ -607,7 +595,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 19
 
 /obj/item/weapon/gun/projectile/boltaction/madsenm47
@@ -618,7 +606,6 @@
 	base_icon = "madsenm47"
 	caliber = "a765x53"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a762x51
 	magazine_type = /obj/item/ammo_magazine/gewehr71
 	bolt_safety = FALSE
@@ -631,7 +618,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 20
 
 /obj/item/weapon/gun/projectile/boltaction/mauser1890
@@ -640,9 +627,9 @@
 	icon_state = "mauser90"
 	item_state = "gewehr98"
 	base_icon = "mauser90"
+	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	caliber = "a765x53"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a765x53
 	magazine_type = /obj/item/ammo_magazine/gewehr71
 	bolt_safety = FALSE
@@ -654,7 +641,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/mauser1893
@@ -663,9 +650,9 @@
 	icon_state = "mauser93"
 	item_state = "gewehr98"
 	base_icon = "mauser93"
+	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	caliber = "a7x57"
 	weight = 3.68
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a7x57
 	magazine_type = /obj/item/ammo_magazine/mauser1893
 	bolt_safety = FALSE
@@ -677,7 +664,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/mauser1893/mauser1893o
@@ -696,8 +683,8 @@
 	item_state = "gewehr98"
 	base_icon = "gewehr98"
 	caliber = "a792x57"
+	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	weight = 4
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
 	bolt_safety = FALSE
@@ -709,7 +696,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/mauser1903
@@ -746,7 +733,6 @@
 	icon_state = "p14enfield"
 	item_state = "p14enfield"
 	base_icon = "p14enfield"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a303"
 	weight = 4.2
 	bolt_safety = FALSE
@@ -759,7 +745,7 @@
 	slot_flags = SLOT_SHOULDER
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 12
 /obj/item/weapon/gun/projectile/boltaction/carcano
 	name = "carcano 1891"
@@ -769,7 +755,6 @@
 	base_icon = "carcano"
 	caliber = "a65x52"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a65x52
 	magazine_type = /obj/item/ammo_magazine/carcano
 	bolt_safety = FALSE
@@ -781,7 +766,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 14
 /obj/item/weapon/gun/projectile/boltaction/arisaka35
 	name = "Arisaka Type 35"
@@ -791,7 +776,6 @@
 	base_icon = "arisaka35"
 	caliber = "a65x50"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a65x50
 	bolt_safety = FALSE
 	effectiveness_mod = 0.98
@@ -803,7 +787,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/arisaka
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/murata
@@ -814,7 +798,6 @@
 	base_icon = "murata"
 	caliber = "a8x53"
 	weight = 3.8
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a8x53
 	bolt_safety = FALSE
 	effectiveness_mod = 0.75
@@ -827,7 +810,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/murata
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	blackpowder = TRUE
 	equiptimer = 17
 	/////need to add:
@@ -847,7 +830,6 @@
 	item_state ="berdan"
 	base_icon = "berdan"
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 4.0
 	effectiveness_mod = 0.96
@@ -860,7 +842,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 17
 /obj/item/weapon/gun/projectile/boltaction/berdan/update_icon(var/add_scope = FALSE)
 	if (bolt_open)
@@ -880,7 +862,6 @@
 	item_state ="enfield"
 	base_icon = "enfield"
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a303"
 	weight = 4.5
 	effectiveness_mod = 0.99
@@ -893,7 +874,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 10
 	equiptimer = 15
 /obj/item/weapon/gun/projectile/boltaction/lebel
@@ -903,7 +884,6 @@
 	item_state ="lebel"
 	base_icon = "lebel"
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a8x50"
 	weight = 4.4
 	effectiveness_mod = 0.97
@@ -916,7 +896,7 @@
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a8x50
 	magazine_type = /obj/item/ammo_magazine/c8x50
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 8
 	equiptimer = 16
 /obj/item/weapon/gun/projectile/boltaction/berthier
@@ -926,7 +906,6 @@
 	item_state ="berthier"
 	base_icon = "berthier"
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a8x50"
 	weight = 3
 	effectiveness_mod = 0.94
@@ -939,7 +918,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a8x50
 	magazine_type = /obj/item/ammo_magazine/c8x50_3clip
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 3
 	equiptimer = 13
 /obj/item/weapon/gun/projectile/boltaction/berthier/m16
@@ -956,7 +935,6 @@
 	base_icon = "obrez"
 	force = 5
 	attachment_slots = ATTACH_IRONSIGHTS
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 1.4
 	w_class = 2
@@ -974,7 +952,6 @@
 	base_icon = "m24"
 	caliber = "a762x51"
 	weight = 4
-	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a762x51
 	magazine_type = /obj/item/ammo_magazine/m24
 	bolt_safety = FALSE
@@ -986,7 +963,7 @@
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/boltaction/m24/New()
@@ -1001,7 +978,6 @@
 	item_state ="springfield_ww2"
 	base_icon = "springfield_ww2"
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a3006"
 	weight = 4.5
 	effectiveness_mod = 1.2
@@ -1014,7 +990,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/springfield
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 5
 	equiptimer = 12
 

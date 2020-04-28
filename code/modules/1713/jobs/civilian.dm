@@ -23,7 +23,7 @@
 	is_governor = TRUE
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -67,7 +67,7 @@
 	is_officer = TRUE
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -133,7 +133,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -177,7 +177,7 @@
 
 	whitelisted = TRUE
 	is_1713 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -241,7 +241,7 @@
 	whitelisted = TRUE
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -292,7 +292,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -343,9 +343,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 
+	is_medic = TRUE
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -406,7 +407,7 @@
 
 	whitelisted = TRUE
 	is_1713 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -465,7 +466,7 @@
 
 	is_religious = TRUE
 	is_1713 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -506,7 +507,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -564,7 +565,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -624,7 +625,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -700,7 +701,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 3
 
@@ -774,7 +775,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -849,7 +850,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -926,7 +927,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
@@ -1000,7 +1001,7 @@
 
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -1041,7 +1042,7 @@
 	is_governor = TRUE
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1085,7 +1086,7 @@
 	is_officer = TRUE
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1149,7 +1150,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1193,7 +1194,7 @@
 
 	whitelisted = TRUE
 	is_pioneer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1254,7 +1255,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1300,7 +1301,7 @@
 	whitelisted = TRUE
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -1345,7 +1346,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -1391,9 +1392,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 
+	is_medic = TRUE
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1452,7 +1454,7 @@
 
 	whitelisted = TRUE
 	is_pioneer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -1509,7 +1511,7 @@
 
 	is_religious = TRUE
 	is_pioneer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1550,7 +1552,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -1605,7 +1607,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -1662,7 +1664,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -1734,7 +1736,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 3
 
@@ -1806,7 +1808,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1861,7 +1863,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1918,7 +1920,7 @@
 
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 

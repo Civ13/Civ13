@@ -16,6 +16,7 @@
 		list(INDIANS) = /area/caribbean/british
 		)
 	age = "1873"
+	is_RP = TRUE
 	ordinal_age = 4
 	faction_distribution_coeffs = list( CIVILIAN = 0.8,INDIANS = 0.2)
 	battle_name = "new frontier"

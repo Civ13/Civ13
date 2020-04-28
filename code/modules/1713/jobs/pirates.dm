@@ -18,7 +18,7 @@
 	whitelisted = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -60,7 +60,7 @@
 	whitelisted = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -102,7 +102,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -142,7 +142,7 @@
 	is_officer = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -177,8 +177,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateSurgeon"
 
-
-	// AUTOBALANCE
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
 
@@ -217,7 +216,7 @@
 	spawn_location = "JoinLatePirateCarpenter"
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -269,7 +268,7 @@
 	spawn_location = "JoinLatePirateCook"
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -325,7 +324,7 @@
 	spawn_location = "JoinLatePirate"
 
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -397,7 +396,7 @@
 
 	is_deathmatch = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 0
 	max_positions = 0
 	total_positions = 0
@@ -470,7 +469,7 @@
 
 	is_marooned = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 60
 	max_positions = 300
 

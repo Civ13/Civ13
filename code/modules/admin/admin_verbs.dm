@@ -54,7 +54,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/free_slot,			//frees slot for chosen job,
 	/client/proc/cmd_admin_change_custom_event,
 	/client/proc/allow_character_respawn,	// Allows a ghost to respawn ,
-	/client/proc/reset_roundstart_autobalance,
 	/datum/admins/proc/ic_announce,
 	/client/proc/change_human_appearance_admin,	// Allows an admin to change the basic appearance of human-based mobs ,
 	/client/proc/change_human_appearance_self,	// Allows the human-based mob itself change its basic appearance ,
@@ -288,7 +287,6 @@ var/list/admin_verbs_mentor = list(
 )
 
 var/list/admin_verbs_manager = list(
-	/client/proc/reset_roundstart_autobalance,
 	/client/proc/toggle_BYOND_hub_visibility,
 	/client/proc/toggle_playing,
 	/client/proc/start_epochswap_vote,

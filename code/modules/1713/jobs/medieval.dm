@@ -12,7 +12,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -56,7 +56,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -95,7 +95,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 25
 
@@ -141,7 +141,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -196,7 +196,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
@@ -245,7 +245,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 18
 	max_positions = 100
 
@@ -319,7 +319,7 @@
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -364,7 +364,7 @@
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -407,7 +407,7 @@
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 50
 
@@ -451,7 +451,7 @@
 
 	is_medieval = TRUE
 	is_crusader = TRUE
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -502,7 +502,7 @@
 	is_medieval = TRUE
 	is_crusader = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -545,7 +545,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -589,7 +589,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -628,7 +628,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 25
 
@@ -674,7 +674,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -729,7 +729,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
@@ -777,7 +777,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 18
 	max_positions = 100
 
@@ -857,7 +857,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -900,7 +900,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -943,7 +943,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -989,7 +989,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -1043,7 +1043,7 @@
 
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
@@ -1094,7 +1094,7 @@
 	is_medieval = TRUE
 	is_religious = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -1141,7 +1141,7 @@
 	is_rp = TRUE
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1190,7 +1190,7 @@
 	is_rp = TRUE
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1238,7 +1238,7 @@
 	is_rp = TRUE
 	is_squad_leader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -1281,7 +1281,7 @@
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 15
 
@@ -1332,7 +1332,7 @@
 	is_religious = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1372,7 +1372,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -1430,7 +1430,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 10
 
@@ -1492,7 +1492,7 @@
 
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1552,7 +1552,7 @@
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1611,7 +1611,7 @@
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1671,7 +1671,7 @@
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 50
 
@@ -1730,7 +1730,7 @@
 	whitelisted = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -1786,10 +1786,11 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 
+	is_medic = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 

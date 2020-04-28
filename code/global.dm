@@ -14,6 +14,7 @@ var/customserver_name   = null
 var/game_version		= "Civilization 13"
 var/changelog_hash	  = ""
 
+
 var/round_progressing = TRUE
 
 var/datum/configuration/config	  = null

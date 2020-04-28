@@ -1,7 +1,7 @@
 /obj/item/weapon/gun/projectile/special
 	force = 10
 	throwforce = 20
-	fire_sound = 'sound/weapons/smg.ogg'
+	fire_sound = 'sound/weapons/guns/fire/smg.ogg'
 	var/base_icon = "tactical"
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
@@ -104,7 +104,7 @@
 	base_icon = "mk18"
 	weight = 3.97
 	caliber = "a556x45"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/mk18
 	full_auto = TRUE
 	equiptimer = 12
@@ -124,7 +124,7 @@
 	base_icon = "tactical"
 	weight = 3.97
 	caliber = "a545x39"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
 	full_auto = TRUE
 	equiptimer = 12

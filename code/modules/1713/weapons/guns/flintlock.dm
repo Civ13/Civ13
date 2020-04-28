@@ -19,7 +19,8 @@
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/musketball
 //	magazine_type = /obj/item/ammo_magazine/musketball
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	fire_sound = 'sound/weapons/guns/fire/musket.ogg'
 	//+2 accuracy over the LWAP because only one shot
 	accuracy = TRUE
 //	scoped_accuracy = 2
@@ -100,11 +101,11 @@
 			return
 	else return
 	if (!cocked)
-		playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+		playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
 		user << "<span class='notice'>You cock the [src]!</span>"
 		cocked = TRUE
 	else
-		playsound(loc, 'sound/weapons/bolt_close.ogg', 50, TRUE)
+		playsound(loc, 'sound/weapons/guns/interact/bolt_close.ogg', 50, TRUE)
 		user << "<span class='notice'>You uncock the [src].</span>"
 		cocked = FALSE
 	add_fingerprint(user)
@@ -150,7 +151,6 @@
 	name = "flintlock musket"
 	desc = "A simple flintlock musket of the early XVIII century."
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball"
 	weight = 6.0
 	effectiveness_mod = 0.97
@@ -161,7 +161,6 @@
 	name = "flintlock musket"
 	desc = "A finer flintlock musket, this one seems to be made out of ebony and steel."
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball"
 	weight = 6.0
 	effectiveness_mod = 1.20
@@ -174,7 +173,6 @@
 	name = "Springfield M1861 Musket"
 	desc = "A simple flintlock musket of the 1860's used commonly in the civil war."
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball"
 	weight = 6.0
 	effectiveness_mod = 0.97
@@ -189,7 +187,6 @@
 	name = "Springfield 1795 Musket"
 	desc = "The Model 1795 was the first musket to be produced in the United States."
 	force = 12
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball"
 	weight = 5.0
 	effectiveness_mod = 1.09
@@ -205,7 +202,6 @@
 	icon_state = "compactmusket"
 	item_state = "musketoon"
 	force = 8
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball"
 	weight = 4.0
 	effectiveness_mod = 0.87
@@ -219,7 +215,6 @@
 	icon_state = "crude"
 	item_state = "musketoon"
 	force = 8
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball"
 	weight = 4.0
 	effectiveness_mod = 0.75
@@ -279,7 +274,7 @@
 	recoil = 2
 	force = 6
 	w_class = 2
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	caliber = "musketball_pistol"
 	weight = 2.5
 	effectiveness_mod = 1
@@ -346,7 +341,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss
 	gun_type = GUN_TYPE_SHOTGUN
-	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	equiptimer = 15
 	// 15% more accurate than SMGs
 	accuracy_list = list(

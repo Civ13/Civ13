@@ -21,7 +21,7 @@
 	whitelisted = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -62,7 +62,7 @@
 	whitelisted = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -103,7 +103,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -143,7 +143,7 @@
 	is_officer = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -177,9 +177,8 @@
 	rank_abbreviation = "Surgeon"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
+	is_medic = TRUE
 
-
-	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 10
 
@@ -216,7 +215,7 @@
 	spawn_location = "JoinLateRNCarpenter"
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -263,7 +262,7 @@
 	spawn_location = "JoinLateRNCook"
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -312,7 +311,7 @@
 	spawn_location = "JoinLateRN"
 
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -370,7 +369,7 @@
 	is_army = TRUE
 	is_commander = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -412,7 +411,7 @@
 
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
 
@@ -449,9 +448,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 
+	is_medic = TRUE
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 6
 
@@ -489,7 +489,7 @@
 
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 100
 
@@ -531,7 +531,7 @@
 
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 4
 	max_positions = 20
 
@@ -576,7 +576,7 @@
 
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -623,7 +623,7 @@
 	is_officer = TRUE
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -669,7 +669,7 @@
 	is_officer = TRUE
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -713,7 +713,7 @@
 	uses_squads = TRUE
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -756,7 +756,8 @@
 
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+	is_medic = TRUE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -799,7 +800,7 @@
 
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -841,7 +842,7 @@
 
 	is_ww1 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 400
 
@@ -889,7 +890,7 @@
 	is_ww2 = TRUE
 	is_prison = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -926,7 +927,7 @@
 	is_ww2 = TRUE
 	is_prison
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -962,7 +963,7 @@
 	is_ww2 = TRUE
 	is_prison = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 124
 
@@ -1002,10 +1003,11 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_prison = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 

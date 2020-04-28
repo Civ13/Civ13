@@ -9,7 +9,7 @@
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -51,7 +51,7 @@
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -94,7 +94,7 @@
 	can_get_coordinates = TRUE
 	is_ww2 = TRUE
 	is_officer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -132,10 +132,10 @@
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-
+	is_medic = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -177,8 +177,9 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -223,7 +224,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -263,7 +264,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -305,7 +306,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 100
 
@@ -343,7 +344,7 @@
 
 	is_ww2 = TRUE
 	whitelisted = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -378,7 +379,7 @@
 	spawn_location = "JoinLateRNCook"
 
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -414,7 +415,7 @@
 	whitelisted = TRUE
 
 	is_navy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 

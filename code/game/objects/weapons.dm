@@ -16,6 +16,11 @@
 		maxhealth = health
 		..()
 		maxhealth = health
+
+/obj/item/weapon/New()
+	..()
+	force*=global_damage_modifier
+
 /obj/item/weapon/Bump(mob/M as mob)
 	spawn(0)
 		..()

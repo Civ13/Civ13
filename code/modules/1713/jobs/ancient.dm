@@ -22,7 +22,7 @@
 	is_commander = TRUE
 	head_position = TRUE
 	is_officer = TRUE
-	// Autobalance
+
 	min_positions = 1
 	max_positions = 1
 
@@ -61,7 +61,7 @@
 
 	is_officer = TRUE
 
-	// Autobalance
+
 	min_positions = 2
 	max_positions = 10
 
@@ -97,7 +97,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 6
 
@@ -132,7 +132,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 200
 
@@ -171,7 +171,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
 
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 100
 /datum/job/roman/velites/equip(var/mob/living/carbon/human/H)
@@ -219,7 +219,7 @@
 	is_commander = TRUE
 	head_position = TRUE
 	is_officer = TRUE
-	// Autobalance
+
 	min_positions = 1
 	max_positions = 1
 
@@ -254,7 +254,7 @@
 	spawn_location = "JoinLateGR"
 
 	is_officer = TRUE
-	// Autobalance
+
 	min_positions = 2
 	max_positions = 10
 
@@ -296,7 +296,7 @@
 	spawn_location = "JoinLateGR"
 
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 200
 
@@ -340,7 +340,7 @@
 	spawn_location = "JoinLateGR"
 
 
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 100
 /datum/job/greek/toxotai/equip(var/mob/living/carbon/human/H)
@@ -378,7 +378,7 @@
 	spawn_location = "JoinLateRO"
 
 	is_gladiator = TRUE
-	// AUTOBALANCE
+
 	min_positions = 100
 	max_positions = 100
 /datum/job/roman/gladiator/equip(var/mob/living/carbon/human/H)
@@ -415,8 +415,9 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
 
+	is_medic = TRUE
 	is_gladiator = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 8
 /datum/job/roman/doctor/equip(var/mob/living/carbon/human/H)
@@ -451,7 +452,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_gladiator = TRUE
-	// Autobalance
+
 	min_positions = 2
 	max_positions = 8
 
@@ -491,7 +492,7 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 /datum/job/roman/emperor/equip(var/mob/living/carbon/human/H)

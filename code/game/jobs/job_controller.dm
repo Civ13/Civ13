@@ -51,8 +51,6 @@ var/global/datum/controller/occupations/job_master
 		//Debug info
 	var/list/job_debug = list()
 
-	var/admin_expected_clients = 0
-
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
 //	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
 //	var/randomfaction_spawn = "Red Goose Tribesman"
@@ -101,7 +99,7 @@ var/global/datum/controller/occupations/job_master
 	map.availablefactions_run = FALSE
 	return
 
-/datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0, var/announce = TRUE)
+/datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0)
 
 	if (map)
 		map.faction_organization = map.initial_faction_organization.Copy()
@@ -118,17 +116,9 @@ var/global/datum/controller/occupations/job_master
 			map.squads = 5
 		if (61 to 1000)
 			map.squads = 6
-	_clients = max(max(_clients, (map ? map.min_autobalance_players : 0)), clients.len, admin_expected_clients)
+	_clients = max(_clients, clients.len)
 
-	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 50))
-
-	if (announce == TRUE)
-		world << ""
-	else if (announce == 2)
-		if (!roundstart_time)
-			world << "<span class = 'warning'>An admin has changed autobalance to be set up for [max(_clients, autobalance_for_players)] players.</span>"
-		else
-			world << "<span class = 'warning'>An admin has reset autobalance for [max(_clients, autobalance_for_players)] players.</span>"
+	var/autobalance_for_players = round(max(_clients, clients.len))
 
 	if (map && map.civilizations && map.ID != MAP_TRIBES)
 		if (map.ID == MAP_CIVILIZATIONS)
@@ -139,25 +129,24 @@ var/global/datum/controller/occupations/job_master
 		if (map && map.ID == MAP_TRIBES)
 			set_factions(autobalance_for_players)
 
-	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
-		civilians_forceEnabled = TRUE
 	for (var/datum/job/J in occupations)
-		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")
-			var/positions = round((autobalance_for_players/J.scale_to_players) * J.max_positions)
+		if (J.title != "N/A" && J.title != "generic job")
+			var/positions = J.max_positions
 			positions = max(positions, J.min_positions)
 			positions = min(positions, J.max_positions)
 			J.total_positions = positions
 		else
 			J.total_positions = 0
 
+	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
+		civilians_forceEnabled = TRUE
+
 	if (map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY))
-		if (map)
-			if (announce)
-				world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
-				indians_toggled = FALSE
-				pirates_toggled = FALSE
-				spanish_toggled = FALSE
-				civilians_forceEnabled = TRUE
+		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
+		indians_toggled = FALSE
+		pirates_toggled = FALSE
+		spanish_toggled = FALSE
+		civilians_forceEnabled = TRUE
 	if (map.civilizations)
 		civilians_forceEnabled = TRUE
 

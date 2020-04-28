@@ -17,7 +17,7 @@
 	whitelisted = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -67,7 +67,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -117,7 +117,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -164,7 +164,7 @@
 	is_officer = TRUE
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -209,8 +209,9 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
 
+	is_medic = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -249,7 +250,7 @@
 	spawn_location = "JoinLateJP"
 
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -293,7 +294,7 @@
 	spawn_location = "JoinLateJP"
 
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -335,7 +336,7 @@
 	spawn_location = "JoinLateJP"
 
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 10
 
@@ -379,7 +380,7 @@
 	spawn_location = "JoinLateJP"
 
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -429,7 +430,7 @@
 	whitelisted = TRUE
 
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -477,7 +478,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -525,7 +526,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -570,7 +571,7 @@
 	is_officer = TRUE
 	uses_squads = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -614,9 +615,9 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 
-	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 4
 
@@ -657,7 +658,8 @@
 	uses_squads = TRUE
 	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
+	is_medic = TRUE
 	min_positions = 2
 	max_positions = 10
 
@@ -696,7 +698,7 @@
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 20
 	max_positions = 100
 
@@ -746,7 +748,7 @@
 	spawn_location = "JoinLateJP"
 	is_ww2 = TRUE
 	is_tanker = TRUE
-	// AUTOBALANCE
+
 	min_positions = 4
 	max_positions = 100
 
@@ -787,7 +789,7 @@
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 4
 	max_positions = 15
 
@@ -833,7 +835,7 @@
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -881,7 +883,7 @@
 	is_tanker = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -928,7 +930,7 @@
 	is_tanker = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 30
 
@@ -981,7 +983,7 @@
 
 	is_ww2 = TRUE
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1029,7 +1031,7 @@
 
 	is_ww2 = TRUE
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -1074,10 +1076,11 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPDoc"
 
+	is_medic = TRUE
 	is_ww2 = TRUE
 	is_prison = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -1119,7 +1122,7 @@
 
 	is_ww2 = TRUE
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 50
 

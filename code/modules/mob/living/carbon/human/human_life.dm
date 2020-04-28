@@ -1432,6 +1432,8 @@
 				holder2.overlays += icon(holder2.icon,"commander")
 			else if (original_job.is_officer || original_job.is_squad_leader)
 				holder2.overlays += icon(holder2.icon,"officer")
+			else if (original_job.is_medic)
+				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2
 
 /mob/living/carbon/human/handle_silent()

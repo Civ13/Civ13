@@ -27,6 +27,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
 	faction2 = CIVILIAN
+	is_RP = TRUE
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Colony Building RP"

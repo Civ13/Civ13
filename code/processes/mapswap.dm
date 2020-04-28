@@ -507,3 +507,24 @@
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
+	else if (vote.voted_gamemode == "Normal")
+		world << "<font color='green'><big>Normal Mode</big><br>No respawn delays.</big></font>"
+		config.disable_fov = TRUE
+		config.no_respawn_delays = TRUE
+		map.gamemode = "Normal"
+		global_damage_modifier = 1
+		return
+	else if (vote.voted_gamemode == "Competitive")
+		world << "<font color='yellow'><big>Competitive Mode</big><br>Respawn delay enabled, increased damage.</big></font>"
+		config.disable_fov = TRUE
+		config.no_respawn_delays = FALSE
+		map.gamemode = "Competitive"
+		global_damage_modifier = 1.25
+		return
+	else if (vote.voted_gamemode == "Hardcore")
+		world << "<font color='red'><big>HARDCORE Mode</big><br>No respawns, increased damage. Field of View enabled.</big></font>"
+		config.disable_fov = FALSE
+		config.no_respawn_delays = FALSE
+		map.gamemode = "Hardcore"
+		global_damage_modifier = 1.45
+		return

@@ -40,7 +40,7 @@
 	var/full_auto = FALSE
 	var/fire_delay = 5 	//delay after shooting before the gun can be used again
 	var/burst_delay = 2	//delay between shots, if firing in bursts
-	var/fire_sound = 'sound/weapons/kar_shot.ogg'
+	var/fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	var/fire_sound_text = "gunshot"
 	var/recoil = 0		//screen shake
 	var/silenced = FALSE
@@ -267,7 +267,10 @@
 		if (!projectile)
 			handle_click_empty(user)
 			break
-
+		if (istype(src, /obj/item/weapon/gun/projectile/semiautomatic/m1garand))
+			var/obj/item/weapon/gun/projectile/semiautomatic/m1garand/G = src
+			if (!G.loaded.len)
+				playsound(loc, 'sound/weapons/guns/interact/GarandUnload.ogg', 100, TRUE)
 		health_check(user)
 		health -= 0.2
 

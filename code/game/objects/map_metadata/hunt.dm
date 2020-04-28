@@ -25,6 +25,7 @@
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Survival RP"
+	is_RP = TRUE
 
 /obj/map_metadata/hunt/New()
 	..()
