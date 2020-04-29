@@ -127,7 +127,7 @@
 	if (state >= GRAB_AGGRESSIVE)
 		affecting.drop_l_hand()
 		affecting.drop_r_hand()
-
+		affecting.canmove = FALSE
 		if (iscarbon(affecting))
 			handle_eye_mouth_covering(affecting, assailant, assailant.targeted_organ)
 
@@ -335,6 +335,7 @@
 		var/mob/M = loc
 		M.mouth_covered = FALSE
 		M.grab_list = list()
+		M.canmove = TRUE
 	loc = null
 	if (!destroying)
 		qdel(src)
@@ -356,6 +357,7 @@
 		if (ismob(loc))
 			var/mob/M = loc
 			M.grab_list = list()
+			M.canmove = TRUE
 	if (affecting)
 		animate(affecting, pixel_x = FALSE, pixel_y = FALSE, 4, TRUE, LINEAR_EASING)
 		affecting.layer = 4
