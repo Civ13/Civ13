@@ -656,9 +656,14 @@
 	material = "Wood"
 	hardness = 75
 
-/obj/covers/wood_wall/adjustable
+/obj/covers/wood_wall/nonadjustable
 	icon_state = "new_wood0"
 	base_icon_state = "new_wood"
+	adjusts = FALSE
+
+/obj/covers/wood_wall/adjustable
+	icon_state = "woodwall0"
+	base_icon_state = "woodwall"
 	adjusts = TRUE
 
 /obj/covers/wood_wall/medieval
@@ -864,6 +869,7 @@
 	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
+	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone_wall
 	name = "sandstone brick wall"
@@ -883,6 +889,7 @@
 	explosion_resistance = 7
 	material = "Stone"
 	hardness = 100
+	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -999,46 +1006,94 @@
 	hardness = 75
 	buildstack = /obj/item/weapon/clay/claybricks/fired
 
-/obj/covers/clay_wall/grecian
-	name = "smooth grecian plaster wall"
-	desc = "A grecian style plaster wall."
-	icon_state = "grecian_plaster_smooth"
+/obj/covers/clay_wall/doorway
+	name = "clay block doorway"
+	desc = "A clay block doorway."
+	icon_state = "clay_doorway"
+	density = FALSE
+	opacity = FALSE
+
+/obj/covers/clay_wall/redearth
+	name = "red earthern bordered wall"
+	desc = "A red earthen bordered wall."
+	icon_state = "red_earth_smooth_b"
 	health = 210
 	explosion_resistance = 7
 
-/obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/plaster))
-		user << "You start adding plaster to the wall..."
+/* Additional red-earth types seperately defined for mapping/spawning purposes*/
+
+/obj/covers/clay_wall/redearth/smooth
+	name = "red earthern smooth wall"
+	desc = "A red earthen smooth wall."
+	icon_state = "red_earth_smooth"
+
+/obj/covers/clay_wall/redearth
+	name = "red earthern smooth wall"
+	desc = "A red earthen smooth wall."
+	icon_state = "red_earth_wall"
+
+/obj/covers/clay_wall/redearth/pillared
+	name = "red earthern pillared wall"
+	desc = "A red earthen pillared wall."
+	icon_state = "red_earth_pillared"
+
+/obj/covers/clay_wall/redearth/doorway
+	name = "red earthern doorway"
+	desc = "A red earthen doorway."
+	icon_state = "red_earth_doorway"
+	density = FALSE
+	opacity = FALSE
+
+/* Red Earth Types -End*/
+
+/obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)  //this list doesn't like multi arguements, single type per stucco catalyst unless you know what you're doing please.
+	if (istype(W, /obj/item/weapon/stucco))
+		user << "You start adding stucco to the wall..."
 		if (do_after(user, 20, src))
-			user << "You finish adding plaster to the wall, rendering it."
+			user << "You finish adding stucco to the wall, rendering it."
 			qdel(W)
-			var/obj/covers/clay_wall/grecian/S = new /obj/covers/clay_wall/grecian(loc)
+			var/obj/covers/clay_wall/redearth/S = new /obj/covers/clay_wall/redearth(loc)
 			qdel(src)
-			var/choice = WWinput(user, "What type of wall?","Grecian Walls","Normal",list("Grecian Smooth","Grecian Smooth Pattern","Grecian Cobbled","Grecian Cobbled Pattern"))
-			if (choice == "Grecian Smooth")
+			var/choice = WWinput(user, "What type of wall?","Red Earth Walls Walls","Normal",list("Red Earth Bordered Wall","Red Earth Smooth Wall","Red Earth Wall","Red Earth Pillared Wall"))
+			if (choice == "Red Earth Bordered Wall")
 				return
-			else if (choice == "Grecian Smooth Pattern")
-				S.icon_state = "grecian_plaster_pattern"
+			else if (choice == "Red Earth Smooth Wall")
+				S.icon_state = "red_earth_smooth"
 				base_icon_state = icon_state
-				var/choice1 = WWinput(user, "Which orientation?","Grecian Smooth Pattern","Vertical",list("Vertical","Horizontal"))
+				S.name = "red earthen smooth wall"
+				var/choice1 = WWinput(user, "Which orientation?","Red Earth Smooth Wall","Direction",list("Vertical","Horizontal"))
 				if (choice1 == "Vertical")
 					S.dir = SOUTH
 				else if (choice1 == "Horizontal")
 					S.dir = EAST
-			else if (choice == "Grecian Cobbled")
-				S.icon_state = "grecian_plaster_cobbled"
+			else if (choice == "Red Earth Wall")
+				S.icon_state = "red_earth_wall"
 				base_icon_state = icon_state
-				S.name = "cobbled grecian plaster wall"
-			else if (choice == "Grecian Cobbled Pattern")
-				S.icon_state = "grecian_plaster_pattern"
+				S.name = "red earthen wall"
+			else if (choice == "Red Earth Pillared Wall")
+				S.icon_state = "red_earth_pillared"
 				base_icon_state = icon_state
-				var/choice2 = WWinput(user, "Which orientation?","Grecian Cobbled Pattern","Vertical",list("Vertical","Horizontal"))
-				if (choice2 == "Vertical")
-					S.dir = NORTH
-				else if (choice2 == "Horizontal")
-					S.dir = WEST
+				S.name = "red earthen pillared wall"
 			return
 	..()
+
+/obj/covers/clay_wall/archway/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco))
+		user << "You start adding stucco to the archway..."
+		if (do_after(user, 20, src))
+			user << "You finish adding stucco to the archway, rendering over it."
+			qdel(W)
+			new /obj/covers/clay_wall/redearth/doorway(loc)
+			qdel(src)
+
+/obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco))
+		user << "You start adding stucco to the wood window frame..."
+		if (do_after(user, 20, src))
+			user << "You finish adding stucco to the wood window frame, rendering over it."
+			qdel(W)
+			new /obj/structure/window_frame/redearth(loc)
+			qdel(src)
 
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
@@ -1066,8 +1121,17 @@
 			if (do_after(user, 20, src))
 				user << "You finish adding clay blocks to the wall, completing it."
 				qdel(W)
-				new /obj/covers/clay_wall(loc)
+				var/obj/covers/clay_wall/S = new /obj/covers/clay_wall(loc)
 				qdel(src)
+				var/choice = WWinput(user, "What type of construction?","Clay Constructions","Normal",list("Wall","Doorway"))
+				if (choice == "Wall")
+					return
+				else if (choice == "Doorway")
+					S.icon_state = "clay_doorway"
+					base_icon_state = icon_state
+					S.name = "clay_doorway"
+					S.density = FALSE
+					S.opacity = FALSE
 				return
 		else if (stage <= 1)
 			user << "You start adding clay blocks to the wall..."
@@ -1100,6 +1164,13 @@
 	explosion_resistance = 6
 	material = "Stone"
 
+/obj/covers/clay_wall/sumerian/doorway //if you actually wanted to summon one.
+	name = "sumerian clay doorway"
+	desc = "A sumerian style clay doorway."
+	icon_state = "sumerian-door"
+	density = FALSE
+	opacity = FALSE
+
 /obj/covers/clay_wall/sumerian/incomplete
 	name = "sumerian clay wall"
 	desc = "A sumerian style clay wall."
@@ -1128,7 +1199,7 @@
 				qdel(W)
 				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
 				qdel(src)
-				var/choice = WWinput(user, "What type of wall?","Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
+				var/choice = WWinput(user, "What type of wall?","Sumerian Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
 				if (choice == "Normal")
 					return
 				else if (choice == "Doorway")
@@ -1308,7 +1379,7 @@
 		user << "You start adding bricks to the wall..."
 		if (do_after(user, 20, src))
 			user << "You finish adding bricks to the wall, completing it."
-			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window"))
+			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window","Full Window"))
 			if (choice == "Wall")
 				qdel(W)
 				new /obj/covers/brick_wall(loc)
@@ -1317,6 +1388,11 @@
 			else if (choice == "Window")
 				qdel(W)
 				new /obj/structure/window_frame/brick(loc)
+				qdel(src)
+				return
+			else if (choice == "Full Window")
+				qdel(W)
+				new /obj/structure/window_frame/brickfull(loc)
 				qdel(src)
 				return
 	..()
@@ -1503,7 +1579,7 @@
 		var/mob/living/carbon/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-	if (WWinput(user, "This will start building a floor cover [dir2text(user.dir)] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
+	if (WWinput(user, "This will start building a floor cover [user.dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 		if (do_after(user, covers_time, user.loc) && src)
 			qdel(src)
@@ -1741,6 +1817,16 @@
 	icon_state = "egyptian0"
 	base_icon_state = "egyptian"
 	adjusts = TRUE
+	buildstack = /obj/item/stack/material/sandstone
+
+/obj/covers/stone_wall/egyptian/archway
+	name = "egyptian archway"
+	desc = "A egyptian style sandstone archway."
+	icon_state = "egyptian_archway"
+	base_icon_state = "egyptian_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
 
 /obj/covers/stone_wall/mayan
 	name = "mayan stone wall"
@@ -1756,6 +1842,260 @@
 	base_icon_state = "stone_block_wall"
 	adjusts = TRUE
 
+/obj/covers/stone_wall/classic/archway
+	name = "stone block archway"
+	desc = "A stone block archway."
+	icon_state = "stone_block_archway"
+	base_icon_state = "stone_block_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
+
+/obj/covers/stone_wall/classic/villa
+	name = "villa wall"
+	desc = "A roman style villa wall."
+	icon_state = "villa_wall"
+	adjusts = FALSE
+
+/obj/covers/stone_wall/classic/villa/relief
+	name = "villa wall relief"
+	desc = "A roman style villa wall with a large empty relief."
+	icon_state = "villa_wall_l_relief"
+
+
+/* Additional roman villa types seperately defined for mapping/spawning purposes*/
+
+/obj/covers/stone_wall/classic/villa/pillared
+	name = "pillared villa wall"
+	desc = "A roman style pillared villa wall."
+	icon_state = "villa_wall"
+
+/obj/covers/stone_wall/classic/villa/relief/gladiator
+	name = "villa wall relief of a gladiator"
+	desc = "A roman style villa wall with a chiselled relief of a gladiator."
+	icon_state = "villa_wall_l_relief_gladiator"
+
+/obj/covers/stone_wall/classic/villa/relief/aquila
+	name = "villa wall relief of a aquila"
+	desc = "A roman style villa wall with a chiselled relief of a aquila."
+	icon_state = "villa_wall_l_relief_aquila"
+
+/obj/covers/stone_wall/classic/villa/relief/greek
+	name = "villa wall relief of a hoplite"
+	desc = "A roman style villa wall with a chiselled relief of a hoplite."
+	icon_state = "villa_wall_l_relief_greek"
+
+/obj/covers/stone_wall/classic/villa/doorway
+	name = "villa doorway"
+	desc = "A roman style villa doorway."
+	icon_state = "villa_door"
+	base_icon_state = "villa_door"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
+
+/* Additional roman villa types - End*/
+
+/obj/covers/stone_wall/classic/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/roman))
+		user << "You start adding roman stucco to the wall..."
+		if (do_after(user, 20, src))
+			user << "You finish adding roman stucco to the wall, rendering it."
+			qdel(W)
+			var/obj/covers/stone_wall/classic/villa/S = new /obj/covers/stone_wall/classic/villa(loc)
+			qdel(src)
+			var/choice = WWinput(user, "What type of wall?","Roman Villa Walls","Normal",list("Villa Wall","Villa Pillared Wall","Villa Wall With Clear Relief", "Villa Wall With Gladiator Relief", "Villa Wall With Aquila Relief", "Villa Wall With Hoplite Relief"))
+			if (choice == "Villa Wall")
+				return
+			else if (choice == "Villa Pillared Wall")
+				S.icon_state = "villa_pillared"
+				base_icon_state = icon_state
+				S.name = "pillared villa wall"
+				S.desc = "A roman style pillared villa wall."
+			else if (choice == "Villa Wall With Clear Relief")
+				S.icon_state = "villa_wall_l_relief"
+				base_icon_state = icon_state
+				S.name = "villa wall relief"
+				S.desc = "A roman style villa wall with a large empty relief."
+			else if (choice == "Villa Wall With Gladiator Relief")
+				S.icon_state = "villa_wall_l_relief_gladiator"
+				base_icon_state = icon_state
+				S.name = "villa wall relief of a gladiator"
+				S.desc = "A roman style villa wall with a chiselled relief of a gladiator."
+			else if (choice == "Villa Wall With Aquila Relief")
+				S.icon_state = "villa_wall_l_relief_aquila"
+				base_icon_state = icon_state
+				S.name = "villa wall relief of a aquila"
+				S.desc = "A roman style villa wall with a chiselled relief of a aquila."
+			else if (choice == "Villa Wall With Hoplite Relief")
+				S.icon_state = "villa_wall_l_relief_greek"
+				base_icon_state = icon_state
+				S.name = "villa wall relief of a hoplite"
+				S.desc = "A roman style villa wall with a chiselled relief of a hoplite."
+			return
+	..()
+
+/obj/structure/window_frame/stone/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/roman))
+		user << "You start adding roman stucco to the stone window..."
+		if (do_after(user, 20, src))
+			user << "You finish adding roman stucco to the stone window, rendering over it."
+			qdel(W)
+			new /obj/structure/window_frame/villa(loc)
+			qdel(src)
+
+/obj/structure/window_frame/stonefull/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/roman))
+		user << "You start adding roman stucco to the full stone window..."
+		if (do_after(user, 20, src))
+			user << "You finish adding roman stucco to the full stone window, rendering over it."
+			qdel(W)
+			new /obj/structure/window_frame/villafull(loc)
+			qdel(src)
+
+/obj/covers/stone_wall/classic/archway/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/roman))
+		user << "You start adding roman stucco to the archway..."
+		if (do_after(user, 20, src))
+			user << "You finish adding roman stucco to the archway, rendering over it."
+			qdel(W)
+			new /obj/covers/stone_wall/classic/villa/doorway(loc)
+			qdel(src)
+
+/obj/covers/stone_wall/classic/grecian
+	name = "smooth and bordered grecian wall"
+	desc = "A grecian style bordered stone wall."
+	icon_state = "grecian_smooth_b"
+	adjusts = FALSE
+
+/obj/covers/stone_wall/classic/grecian/archway
+	name = "grecian archway"
+	desc = "A impressive grecian archway."
+	icon_state = "grecian_archway"
+	base_icon_state = "grecian_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
+
+/* Additional grecian types seperately defined for mapping/spawning purposes*/
+
+/obj/covers/stone_wall/classic/grecian/smooth
+	name = "smooth grecian wall"
+	desc = "A grecian style smooth stone wall."
+	icon_state = "grecian_smooth"
+
+/obj/covers/stone_wall/classic/grecian/cobbled
+	name = "cobbled grecian wall"
+	desc = "A grecian style cobbled stone wall."
+	icon_state = "grecian_cobbled"
+
+/obj/covers/stone_wall/classic/grecian/cobbled_bordered
+	name = "cobbled and bordered grecian wall"
+	desc = "A grecian style borde stone wall."
+	icon_state = "grecian_cobbled_b"
+
+/obj/covers/stone_wall/classic/grecian/pattern
+	name = "patterened grecian wall"
+	desc = "A grecian style patterned stone wall."
+	icon_state = "grecian_patterned"
+
+/obj/covers/stone_wall/classic/grecian/pattern
+	name = "patterened and bordered grecian wall"
+	desc = "A grecian style patterned and bordered stone wall."
+	icon_state = "grecian_patterned_b"
+
+//grecian pattern N/E (smooth), S/W (cobbled), rotate it yourself.
+
+/* Additional grecian types - End*/
+
+/obj/covers/stone_wall/classic/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/greek))
+		user << "You start adding greek stucco to the wall..."
+		if (do_after(user, 20, src))
+			user << "You finish adding greek stucco to the wall, rendering it."
+			qdel(W)
+			var/obj/covers/stone_wall/classic/grecian/S = new /obj/covers/stone_wall/classic/grecian(loc)
+			qdel(src)
+			var/choice = WWinput(user, "What type of wall?","Grecian Walls","Normal",list("Grecian Smooth Bordered Wall","Grecian Smooth","Grecian Smooth Patterned Wall","Grecian Smooth Bordered Patterned Wall", "Grecian Cobbled Bordered Wall", "Grecian Cobbled", "Grecian Cobbled Pattern", "Grecian Cobbled Bordered Pattern"))
+			if (choice == "Grecian Smooth Bordered Wall")
+				return
+			else if (choice == "Grecian Smooth")
+				S.icon_state = "grecian_smooth"
+				base_icon_state = icon_state
+				S.name = "smooth grecian wall"
+				S.desc = "A grecian style smooth stone wall."
+				var/choice1 = WWinput(user, "Which orientation?","Grecian Smooth","Direction",list("Vertical","Horizontal"))
+				if (choice1 == "Vertical")
+					S.dir = SOUTH
+				else if (choice1 == "Horizontal")
+					S.dir = EAST
+			else if (choice == "Grecian Smooth Patterned Wall")
+				S.icon_state = "grecian_pattern"
+				base_icon_state = icon_state
+				S.name = "smooth patterned grecian wall"
+				S.desc = "A grecian style smooth patterned stone wall."
+				var/choice2 = WWinput(user, "Which orientation?","Grecian Smooth Pattern","Direction",list("Vertical","Horizontal"))
+				if (choice2 == "Vertical")
+					S.dir = SOUTH
+				else if (choice2 == "Horizontal")
+					S.dir = EAST
+			else if (choice == "Grecian Smooth Bordered Patterned Wall")
+				S.icon_state = "grecian_pattern_b"
+				base_icon_state = icon_state
+				S.name = "smooth patterned and bordered grecian wall"
+				S.desc = "A grecian style smooth, patterned and bordered stone wall."
+				var/choice3 = WWinput(user, "Which orientation?","Grecian Smooth Bordered Pattern","Direction",list("Vertical","Horizontal"))
+				if (choice3 == "Vertical")
+					S.dir = SOUTH
+				else if (choice3 == "Horizontal")
+					S.dir = EAST
+			else if (choice == "Grecian Cobbled Bordered Wall")
+				S.icon_state = "grecian_cobbled_b"
+				base_icon_state = icon_state
+				S.name = "cobbled and bordered grecian wall"
+				S.desc = "A grecian style cobbled and bordered stone wall."
+			else if (choice == "Grecian Cobbled")
+				S.icon_state = "grecian_cobbled"
+				base_icon_state = icon_state
+				S.name = "grecian cobbled wall"
+				S.desc = "A grecian style cobbled stone wall."
+				var/choice4 = WWinput(user, "Which orientation?","Grecian Cobbled","Direction",list("Vertical","Horizontal"))
+				if (choice4 == "Vertical")
+					S.dir = NORTH
+				else if (choice4 == "Horizontal")
+					S.dir = WEST
+			else if (choice == "Grecian Cobbled Pattern")
+				S.icon_state = "grecian_pattern"
+				S.name = "grecian cobbled pattern wall"
+				base_icon_state = icon_state
+				S.desc = "A grecian style cobbled patterned stone wall."
+				var/choice5 = WWinput(user, "Which orientation?","Grecian Cobbled Pattern","Direction",list("Vertical","Horizontal"))
+				if (choice5 == "Vertical")
+					S.dir = NORTH
+				else if (choice5 == "Horizontal")
+					S.dir = WEST
+			else if (choice == "Grecian Cobbled Bordered Pattern")
+				S.icon_state = "grecian_pattern_b"
+				S.name = "grecian cobbled pattern and bordered wall"
+				base_icon_state = icon_state
+				S.desc = "A grecian style cobbled pattern and bordered stone wall."
+				var/choice6 = WWinput(user, "Which orientation?","Grecian Cobbled Pattern","Direction",list("Vertical","Horizontal"))
+				if (choice6 == "Vertical")
+					S.dir = NORTH
+				else if (choice6 == "Horizontal")
+					S.dir = WEST
+			return
+	..()
+
+/obj/covers/stone_wall/classic/archway/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/greek))
+		user << "You start adding greek stucco to the archway..."
+		if (do_after(user, 20, src))
+			user << "You finish adding greek stucco to the archway, rendering over it."
+			qdel(W)
+			new /obj/covers/stone_wall/classic/grecian/archway(loc)
+			qdel(src)
+
 /obj/covers/stone_wall/brick
 	name = "stone brick wall"
 	desc = "A stone brick wall."
@@ -1764,6 +2104,15 @@
 	adjusts = TRUE
 	health = 550
 	buildstack = /obj/item/stack/material/stonebrick
+
+/obj/covers/stone_wall/brick/archway
+	name = "stone brick archway"
+	desc = "A stone brick archway."
+	icon_state = "new_stonebrick_archway"
+	base_icon_state = "new_stonebrick_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
 
 /obj/covers/stone_wall/fortress
 	name = "fortress brick wall"
@@ -1774,3 +2123,12 @@
 	health = 650
 	explosion_resistance = 7
 	buildstack = /obj/item/stack/material/stonebrick
+
+/obj/covers/stone_wall/fortress/archway
+	name = "fortress brick archway"
+	desc = "A fortress brick archway."
+	icon_state = "fortress_brickwall_archway"
+	base_icon_state = "fortress_brickwall_archway"
+	adjusts = FALSE
+	density = FALSE
+	opacity = FALSE
