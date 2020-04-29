@@ -95,21 +95,34 @@
 			new/obj/structure/window_frame/medieval(loc)
 		else if (istype(src, /obj/structure/window/classic/brick))
 			new/obj/structure/window_frame/brick(loc)
+		else if (istype(src, /obj/structure/window/classic/brickfull))
+			new/obj/structure/window_frame/brickfull(loc)
 		else if (istype(src, /obj/structure/window/classic/stone))
 			new/obj/structure/window_frame/stone(loc)
+		else if (istype(src, /obj/structure/window/classic/stonefull))
+			new/obj/structure/window_frame/stonefull(loc)
 		else if (istype(src, /obj/structure/window/classic/sandstone))
 			new/obj/structure/window_frame/sandstone(loc)
+		else if (istype(src, /obj/structure/window/classic/sandstonefull))
+			new/obj/structure/window_frame/sandstonefull(loc)
 		else if (istype(src, /obj/structure/window/classic/metal))
 			new/obj/structure/window_frame/metal(loc)
 		else if (istype(src, /obj/structure/window/classic/sumerian))
 			new/obj/structure/window_frame/sumerian(loc)
 		else if (istype(src, /obj/structure/window/classic/bamboo))
 			new/obj/structure/window_frame/bamboo(loc)
+		else if (istype(src, /obj/structure/window/classic/redearth))
+			new/obj/structure/window_frame/redearth(loc)
+		else if (istype(src, /obj/structure/window/classic/villa))
+			new/obj/structure/window_frame/villa(loc)
+		else if (istype(src, /obj/structure/window/classic/villafull))
+			new/obj/structure/window_frame/villafull(loc)
+		else if (istype(src, /obj/structure/window/classic/portholefull))
+			new/obj/structure/window_frame/portholefull(loc)
 		else
 			new/obj/structure/window_frame(loc)
 	qdel(src)
 	return
-
 
 /obj/structure/window/bullet_act(var/obj/item/projectile/Proj)
 
@@ -425,10 +438,25 @@
 /obj/structure/window_frame/shoji
 	icon_state = "shoji_windownew_frame"
 	name = "shoji window frame"
-	desc = "A good old window frame, only Japanese-style."
+	desc = "A good old window frame, only japanese-style."
 
 /obj/structure/window_frame/metal
 	icon_state = "windowmetal_frame"
+	health = 500
+	flammable = FALSE
+
+/*
+/obj/structure/window_frame/porthole
+	icon_state = "metal_porthole_frame"
+	name = "metal porthole frame"
+	desc = "A metal porthole with a empty space for glass.
+		health = 500
+	flammable = FALSE" */
+
+/obj/structure/window_frame/portholefull
+	icon_state = "metal_porthole_fullframe"
+	name = "full metal porthole frame"
+	desc = "A large metal porthole with a empty space for glass."
 	health = 500
 	flammable = FALSE
 
@@ -442,12 +470,32 @@
 	name = "bamboo window frame"
 	desc = "A frame for a window, made of bamboo."
 
+/obj/structure/window_frame/redearth
+	icon_state = "red_earthwindownew_frame"
+	name = "red earthen window frame"
+	desc = "A empty three panelled red earthen window frame with no glass."
+
+/obj/structure/window_frame/villa
+	icon_state = "villa_windownew_frame"
+	name = "villa window frame"
+	desc = "A elegant roman villa window frame."
+
+/obj/structure/window_frame/villafull
+	icon_state = "villa_windownew_fullframe"
+	name = "villa full window frame"
+	desc = "A elegant large roman villa window frame."
+
 /obj/structure/window_frame/brick
 	icon_state = "brick_windownew_frame"
 	name = "brick window frame"
 	desc = "A frame for a window, made of bricks."
 	health = 200
 	flammable = FALSE
+
+/obj/structure/window_frame/brickfull
+	icon_state = "brick_windownew_fullframe"
+	name = "full brick window frame"
+	desc = "A frame for a full window, made of bricks."
 
 /obj/structure/window_frame/stone
 	icon_state = "stone_windownew_frame"
@@ -456,12 +504,22 @@
 	health = 250
 	flammable = FALSE
 
+/obj/structure/window_frame/stonefull
+	icon_state = "stone_windownew_fullframe"
+	name = "full stone window frame"
+	desc = "Stone carved to support a large window's worth of glass."
+
 /obj/structure/window_frame/sandstone
 	icon_state = "sandstone_windownew_frame"
 	name = "sandstone window frame"
 	desc = "Sandstone carved to support some glass.."
 	health = 250
 	flammable = FALSE
+
+/obj/structure/window_frame/sandstonefull
+	icon_state = "sandstone_windownew_fullframe"
+	name = "sandstone window frame"
+	desc = "Sandstone carved to support a large window's worth of glass.."
 
 /obj/structure/window_frame/sumerian
 	icon_state = "sumerian_windownew_frame"
@@ -482,14 +540,28 @@
 					new/obj/structure/window/classic/medieval(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/bamboo))
 					new/obj/structure/window/classic/bamboo(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/redearth))
+					new/obj/structure/window/classic/redearth(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/villa))
+					new/obj/structure/window/classic/villa(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/villafull))
+					new/obj/structure/window/classic/villafull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/stone))
 					new/obj/structure/window/classic/stone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/stonefull))
+					new/obj/structure/window/classic/stonefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sandstone))
 					new/obj/structure/window/classic/sandstone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/sandstonefull))
+					new/obj/structure/window/classic/sandstonefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/brick))
 					new/obj/structure/window/classic/brick(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/brickfull))
+					new/obj/structure/window/classic/brickfull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/metal))
 					new/obj/structure/window/classic/metal(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/portholefull))
+					new/obj/structure/window/classic/portholefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sumerian))
 					new/obj/structure/window/classic/sumerian(get_turf(src))
 				else
@@ -538,13 +610,31 @@
 	icon_state = "shoji_windownew"
 	basestate = "shoji_windownew"
 	name = "shoji window"
-	desc = "A good old window, only Japanese-style."
+	desc = "A good old window, only japanese-style."
 
 /obj/structure/window/classic/medieval
 	icon_state = "medieval_windownew"
 	basestate = "medieval_windownew"
 	name = "medieval window"
 	desc = "A dark ages window."
+
+/obj/structure/window/classic/redearth
+	icon_state = "red_earthwindownew"
+	basestate = "red_earthwindownew"
+	name = "red earthen window"
+	desc = "A three panelled red earthen window."
+
+/obj/structure/window/classic/villa
+	icon_state = "villa_windownew"
+	basestate = "villa_windownew"
+	name = "villa window"
+	desc = "A elegant roman villa window."
+
+/obj/structure/window/classic/villafull
+	icon_state = "villa_windownew_full"
+	basestate = "villa_windownew_full"
+	name = "full villa window"
+	desc = "A elegant large roman villa full-window."
 
 /obj/structure/window/classic/bamboo
 	icon_state = "bamboo_windownew"
@@ -560,6 +650,24 @@
 	damage_per_fire_tick = 1.0
 	maxhealth = 300.0
 
+/*
+/obj/structure/window/classic/porthole
+	icon_state = "windowmetal"
+	basestate = "windowmetal"
+	flammable = FALSE
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	maxhealth = 300.0 */
+
+/obj/structure/window/classic/portholefull
+	icon_state = "metal_porthole_full"
+	name = "full metal porthole"
+	desc = "A large metal porthole, with a large stretched sheet of glass."
+	flammable = FALSE
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	maxhealth = 300.0
+
 /obj/structure/window/classic/brick
 	icon_state = "brick_windownew"
 	name = "brick window"
@@ -569,14 +677,24 @@
 	health = 200
 	flammable = FALSE
 
+/obj/structure/window/classic/brickfull
+	icon_state = "brick_windownew_full"
+	name = "full brick window"
+	desc = "A full brick window, made of bricks."
+
 /obj/structure/window/classic/stone
 	icon_state = "stone_windownew"
 	name = "stone window"
-	desc = "Stone window with glass-covered holes."
+	desc = "A stone window with glass-covered holes."
 	maximal_heat = T0C + 1600
 	damage_per_fire_tick = 1.0
 	health = 250
 	flammable = FALSE
+
+/obj/structure/window/classic/stonefull
+	icon_state = "stone_windownew_full"
+	name = "full stone window"
+	desc = "A stone window with large glass-covered holes."
 
 /obj/structure/window/classic/sandstone
 	icon_state = "sandstone_windownew"
@@ -586,6 +704,11 @@
 	damage_per_fire_tick = 1.0
 	health = 250
 	flammable = FALSE
+
+/obj/structure/window/classic/sandstonefull
+	icon_state = "sandstone_windownew_full"
+	name = "full sandstone window"
+	desc = "Sandstone with large glass windows."
 
 /obj/structure/window/classic/sumerian
 	icon_state = "sumerian_windownew"
