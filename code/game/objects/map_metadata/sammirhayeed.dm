@@ -1,4 +1,3 @@
-
 /obj/map_metadata/sammirhayeed
 	ID = MAP_SAMMIRHAYEED
 	title = "Sammir Hayeed (80x80x1)"
@@ -32,7 +31,7 @@
 /obj/map_metadata/sammirhayeed/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
-obj/map_metadata/sammirhayeed/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/sammirhayeed/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/arab))
 		if (J.is_coldwar || J.is_specops)

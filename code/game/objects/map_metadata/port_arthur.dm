@@ -16,7 +16,7 @@
 	age = "1905"
 	faction_distribution_coeffs = list(JAPANESE = 0.7, RUSSIAN = 0.3)
 	battle_name = "Siege of Port Arthur"
-	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Port Arthur! The Japanese will win if the manage to hold the fort for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=3>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Port Arthur! The Russians will win if they hold the fort for <b>30 minutes</b> The Japanese will win if the manage to hold the fort for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	ordinal_age = 5
@@ -27,7 +27,7 @@
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/port_arthur/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/port_arthur/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -79,9 +79,9 @@
 
 /obj/map_metadata/port_arthur/cross_message(faction)
 	if (faction == JAPANESE)
-		return "<font size = 4>The Japanese may now cross the invisible wall!</font>"
+		return "<font size = 3>The Japanese may now cross the invisible wall!</font>"
 	else if (faction == RUSSIAN)
-		return "<font size = 4>The Russians may now cross the invisible wall!</font>"
+		return ""
 	else
 		return ""
 
@@ -89,14 +89,14 @@
 	if (faction == JAPANESE)
 		return "<span class = 'userdanger'>The Japanese may no longer cross the invisible wall!</span>"
 	else if (faction == RUSSIAN)
-		return "<span class = 'userdanger'>The Russians may no longer cross the invisible wall!</span>"
+		return ""
 	else
 		return ""
 
 /obj/map_metadata/port_arthur/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
-	if (world.time >= 24000)
+	if (world.time >= 18000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
