@@ -1189,9 +1189,9 @@
 	rank_abbreviation = "Srj."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
+	is_ss_panzer = TRUE
 
 	is_ww2 = TRUE
-	is_tanker = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_officer = TRUE
@@ -1236,8 +1236,8 @@
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = TRUE
-	is_tanker = TRUE
 	uses_squads = TRUE
+	is_ss_panzer = TRUE
 
 	min_positions = 6
 	max_positions = 30
@@ -1285,9 +1285,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUSap"
+	is_ss_panzer = TRUE
 
 	is_ww2 = TRUE
-	is_tanker = TRUE
 
 	min_positions = 2
 	max_positions = 12
