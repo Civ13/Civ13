@@ -1215,11 +1215,11 @@
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
-	is_tanker = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_officer = TRUE
 	uses_squads = TRUE
+	is_ss_panzer = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1258,9 +1258,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
+	is_ss_panzer = TRUE
 
 	is_ww2 = TRUE
-	is_tanker = TRUE
 	uses_squads = TRUE
 
 	min_positions = 6
@@ -1310,9 +1310,8 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGESap"
-
+	is_ss_panzer = TRUE
 	is_ww2 = TRUE
-	is_tanker = TRUE
 
 	min_positions = 2
 	max_positions = 12
