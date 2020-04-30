@@ -13,7 +13,9 @@ RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2
 RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
 
 RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5,50,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,plaster,/obj/item/weapon/plaster,1.5,25,0,1,none,18,0,0,8,null
+RECIPE: /material/clay/,raw stucco,/obj/item/weapon/stucco,1.5,25,0,1,wall coverings & stucco,18,0,0,8,null
+RECIPE: /material/clay/,raw greek stucco,/obj/item/weapon/stucco/greek,1.5,25,0,1,wall coverings & stucco,18,0,0,2,null
+RECIPE: /material/clay/,raw roman stucco,/obj/item/weapon/stucco/roman,1.5,25,0,1,wall coverings & stucco,18,0,0,2,null
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,0.5,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,0.5,15,1,1,none,103,0,0,8,null
@@ -555,6 +557,7 @@ RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1
 
 RECIPE: /material/stone/,stone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,stone
 RECIPE: /material/stone/,stone window,/obj/structure/window_frame/stone,5,140,1,1,construction,18,0,0,8,null
+RECIPE: /material/stone/,full stone window,/obj/structure/window_frame/stonefull,5,140,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,stone
 
@@ -569,10 +572,13 @@ RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stonebal
 RECIPE: /material/stone/,stone bricks,/obj/item/stack/material/stonebrick,1,25,1,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick wall,/obj/covers/stone_wall/brick,6,140,1,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick floor,/obj/covers/stonebrickfloor,1,25,1,1,none,35,0,0,8,null
+RECIPE: /material/stonebrick/,stone brick archway,/obj/covers/stone_wall/brick/archway,6,140,1,1,none,35,0,0,8,null
 
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,construction,0,0,0,2,null
 RECIPE: /material/stone/,stone block wall,/obj/covers/stone_wall/classic,8,140,1,1,construction,0,0,0,2,null
+RECIPE: /material/stone/,stone block archway,/obj/covers/stone_wall/classic/archway,8,140,1,1,doorways and other buildings,0,0,0,2,null
 RECIPE: /material/stone/,fortress wall,/obj/covers/stone_wall/fortress,8,190,1,1,construction,45,35,0,3,null
+RECIPE: /material/stone/,fortress archway,/obj/covers/stone_wall/fortress,16,190,1,1,doorways and other buildings,0,0,0,2,null
 RECIPE: /material/stone/,roman stone wall,/obj/covers/stone_wall/roman,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,mayan wall,/obj/covers/stone_wall/mayan,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,roman door,/obj/structure/simple_door/key_door/anyone/roman,5,50,1,1,construction,28,0,0,8,null
@@ -1143,6 +1149,7 @@ RECIPE: /material/iron/,meat grinder,/obj/structure/meat_grinder,8,120,1,1,produ
 
 RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,125,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,egyptian wall,/obj/covers/stone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null
+RECIPE: /material/sandstone/,egyptian archway,/obj/covers/stone_wall/egyptian/archway,6,125,1,1,construction,0,0,0,1,null
 RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone
 RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,1,25,1,1,floors,0,0,0,8,null
@@ -1155,6 +1162,7 @@ RECIPE: /material/sandstone/,red sandstone decorative tile,/obj/covers/sandstone
 
 RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,3,45,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
+RECIPE: /material/sandstone/,full sandstone window,/obj/structure/window_frame/sandstonefull,5,140,1,1,construction,18,0,0,8,null
 RECIPE: /material/sandstone/,sandstone roof builder,/obj/item/weapon/roofbuilder/sandstone,1,20,0,1,construction,0,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7,250,1,1,structures,21,0,0,8,null
