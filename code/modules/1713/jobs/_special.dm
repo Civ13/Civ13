@@ -40,6 +40,7 @@
 /datum/job/var/is_navy = FALSE
 /datum/job/var/is_rp = FALSE
 /datum/job/var/is_medic = FALSE
+/datum/job/var/is_ss_panzer = FALSE
 
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE

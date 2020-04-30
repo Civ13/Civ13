@@ -31,17 +31,21 @@
 	var/a1_control = "none"
 	var/a2_control = "none"
 	var/a3_control = "none"
-obj/map_metadata/stalingrad/New()
+/obj/map_metadata/stalingrad/New()
 	..()
 	spawn(3000)
 		points_check()
 
-obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
+	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
 		. = TRUE
-	else if (istype(J, /datum/job/german/ss_pionier) || istype(J, /datum/job/german/ss_panzergrenadier) || istype(J, /datum/job/german/ss_panzergrenadier_squad_leader) || istype(J, /datum/job/german/tank_crew_leader))
+	else if (J.is_ss_panzer == TRUE)
 		. = FALSE
+	else if (J.is_tanker == TRUE)
+		. = FALSE
+	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
+		. = TRUE
 	else if (J.is_reichstag == TRUE)
 		. = FALSE
 	else

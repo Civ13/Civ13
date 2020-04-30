@@ -406,12 +406,13 @@
 	throw_speed = 5
 	throw_range = 8
 
-/obj/item/weapon/plaster
-	name = "raw plaster"
-	desc = "Raw plaster. Ready to be applied onto a surface" //plans later to mould this somehow, like plaster-casts or something
+
+/obj/item/weapon/stucco
+	name = "generic raw stucco"
+	desc = "Raw stucco. Nothing particular in its composition, ready to be applied onto a surface"
 	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "plaster"
-	item_state = "plaster"
+	icon_state = "stucco"
+	item_state = "stucco"
 	throwforce = WEAPON_FORCE_WEAK
 	force = WEAPON_FORCE_WEAK
 	w_class = 2
@@ -419,3 +420,15 @@
 	throw_range = 5
 	var/result = "none"
 	value = 1
+
+/obj/item/weapon/stucco/greek
+	name = "greek raw stucco"
+	desc = "Raw stucco. Dyed with blue streaks and clandestine white, ready to be applied onto a crude stone surface"
+	icon_state = "greek_stucco"
+	item_state = "greek_stucco"
+
+/obj/item/weapon/stucco/roman
+	name = "roman raw stucco"
+	desc = "Raw stucco. It has a creamy complexion, ready to be applied onto a crude stone surface"
+	icon_state = "roman_stucco"
+	item_state = "roman_stucco"
