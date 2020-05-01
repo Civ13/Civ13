@@ -27,9 +27,13 @@
 
 /obj/map_metadata/khalkhyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == TRUE && J.is_prison == FALSE)
+	if (J.is_ww2 == TRUE)
 		. = TRUE
-	else if (istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker) || istype(J, /datum/job/russian/tank_crew_leader))
+	if (istype(J, /datum/job/russian/tank_crew) || istype(J, /datum/job/japanese/ija_ww2ATunit))
+		. = TRUE
+	if (J.is_tanker == TRUE)
+		. = FALSE
+	if (J.is_prison == TRUE)
 		. = FALSE
 	else
 		. = FALSE

@@ -29,7 +29,7 @@
 	..()
 	if (J.is_ww2 == TRUE)
 		. = TRUE
-	else if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper) || istype(J, /datum/job/japanese/ija_ww2_tanker))
+	if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper) || istype(J, /datum/job/japanese/ija_ww2_tanker))
 		. = TRUE
 	else
 		. = FALSE
