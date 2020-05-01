@@ -1006,12 +1006,25 @@
 	hardness = 75
 	buildstack = /obj/item/weapon/clay/claybricks/fired
 
-/obj/covers/clay_wall/doorway
+/obj/covers/claydoorway
 	name = "clay block doorway"
 	desc = "A clay block doorway."
+	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "clay_doorway"
+	passable = TRUE
+	not_movable = TRUE
 	density = FALSE
 	opacity = FALSE
+	amount = 0
+	layer = 3
+	health = 150
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 6
+	material = "Stone"
+	hardness = 75
+	buildstack = /obj/item/weapon/clay/claybricks/fired
 
 /obj/covers/clay_wall/redearth
 	name = "red earthern bordered wall"
@@ -1026,11 +1039,6 @@
 	name = "red earthern smooth wall"
 	desc = "A red earthen smooth wall."
 	icon_state = "red_earth_smooth"
-
-/obj/covers/clay_wall/redearth
-	name = "red earthern smooth wall"
-	desc = "A red earthen smooth wall."
-	icon_state = "red_earth_wall"
 
 /obj/covers/clay_wall/redearth/pillared
 	name = "red earthern pillared wall"
@@ -1077,11 +1085,11 @@
 			return
 	..()
 
-/obj/covers/clay_wall/archway/attackby(obj/item/W as obj, mob/user as mob)
+/*/obj/covers/claydoorway/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/stucco))
-		user << "You start adding stucco to the archway..."
+		user << "You start adding stucco to the doorway..."
 		if (do_after(user, 20, src))
-			user << "You finish adding stucco to the archway, rendering over it."
+			user << "You finish adding stucco to the doorway, rendering over it."
 			qdel(W)
 			new /obj/covers/clay_wall/redearth/doorway(loc)
 			qdel(src)
@@ -1093,7 +1101,7 @@
 			user << "You finish adding stucco to the wood window frame, rendering over it."
 			qdel(W)
 			new /obj/structure/window_frame/redearth(loc)
-			qdel(src)
+			qdel(src)*/
 
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
@@ -1123,15 +1131,16 @@
 				qdel(W)
 				var/obj/covers/clay_wall/S = new /obj/covers/clay_wall(loc)
 				qdel(src)
-				var/choice = WWinput(user, "What type of construction?","Clay Constructions","Normal",list("Wall","Doorway"))
+				var/choice = WWinput(user, "What type of construction?","Clay Constructions","Normal",list("Wall", "Alternative Brick Style", "Doorway"))
 				if (choice == "Wall")
 					return
-				else if (choice == "Doorway")
-					S.icon_state = "clay_doorway"
+				else if (choice == "Alternative Brick Style")
+					S.icon_state = "clay_block_alt"
 					base_icon_state = icon_state
-					S.name = "clay_doorway"
-					S.density = FALSE
-					S.opacity = FALSE
+					S.name = "clay block wall"
+				/*else if (choice == "Doorway") //until a solution can be found
+					qdel(src)
+					new /obj/covers/claydoorway(loc)*/
 				return
 		else if (stage <= 1)
 			user << "You start adding clay blocks to the wall..."
@@ -1868,7 +1877,7 @@
 /obj/covers/stone_wall/classic/villa/pillared
 	name = "pillared villa wall"
 	desc = "A roman style pillared villa wall."
-	icon_state = "villa_wall"
+	icon_state = "villa_pillared"
 
 /obj/covers/stone_wall/classic/villa/relief/gladiator
 	name = "villa wall relief of a gladiator"
