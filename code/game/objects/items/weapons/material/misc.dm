@@ -353,10 +353,10 @@
 	cooldownw = 7
 
 /obj/item/weapon/material/roman_standard
-	name = "Roman Standard"
+	name = "roman standard"
 	sharp = TRUE
 	edge = TRUE
-	desc = "A golden standard of a Roman Legion, with the Aquila on top."
+	desc = "A standard of a roman legion, with the aquila on top."
 	slot_flags = SLOT_SHOULDER
 	icon_state = "roman_standard"
 	item_state = "roman_standard"
@@ -373,7 +373,53 @@
 
 /obj/item/weapon/material/roman_standard/New()
 	..()
-	name = "Roman Standard"
+	name = "roman standard"
+
+/obj/item/weapon/material/greek_standard
+	name = "greek standard"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A standard of the hellenic armies. It is laquered in red carrying red feathers."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "greek_standard"
+	item_state = "greek_standard"
+	default_material = "wood"
+	throw_speed = 3
+	throw_range = 5
+	allow_spin = FALSE
+	force_divisor = 0.4 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 0
+	block_chance = 15
+	cooldownw = 10
+
+/obj/item/weapon/material/greek_standard/New()
+	..()
+	name = "greek standard"
+
+/obj/item/weapon/material/egyptian_standard
+	name = "egyptian standard"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A standard of the phaoroic armies with a mighty lion in gold attached upon it."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "egypt_standard"
+	item_state = "egypt_standard"
+	default_material = "wood"
+	throw_speed = 3
+	throw_range = 5
+	allow_spin = FALSE
+	force_divisor = 0.4 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 0
+	block_chance = 15
+	cooldownw = 10
+
+/obj/item/weapon/material/egyptian_standard/New()
+	..()
+	name = "egyptian standard"
 
 /obj/item/weapon/material/spear/dory
 	name = "dory"
