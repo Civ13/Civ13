@@ -38,6 +38,9 @@
 	projectile.loc = get_turf(user)
 	projectile.throw_at(target, throw_distance, release_force, user)
 	projectile.dir = get_dir(src.loc, target.loc)
+	if (ishuman(user) && istype(projectile, /obj/item/missile))
+		var/obj/item/missile/MS = projectile
+		MS.firer = user
 	if (istype(projectile, /obj/item/missile))
 		var/obj/item/missile/M = projectile
 		M.startingturf = get_turf(user)
@@ -211,6 +214,7 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "missile"
 	var/primed = null
+	var/mob/living/carbon/human/firer = null
 	var/turf/startingturf = null
 	throwforce = 15
 	heavy_armor_penetration = 12
@@ -218,12 +222,12 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
-			handle_vehicle_hit(hit_atom)
+			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else
 			..()
 		return
-/obj/item/missile/proc/handle_vehicle_hit(hit_atom)
+/obj/item/missile/proc/handle_vehicle_hit(hit_atom, var/mob/living/carbon/human/firer = null)
 	for(var/obj/structure/vehicleparts/frame/F in range(1,hit_atom))
 		for (var/mob/M in F.axis.transporting)
 			shake_camera(M, 3, 3)
@@ -274,13 +278,15 @@
 			MV.broken = TRUE
 			MV.update_icon()
 		F.update_icon()
+		if (firer)
+			firer.awards["tank"]+=(heavy_armor_penetration/70)
 
 /obj/item/missile/explosive
 	heavy_armor_penetration = 50
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
-			handle_vehicle_hit(hit_atom)
+			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else
 			..()
@@ -291,7 +297,7 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 3)
-			handle_vehicle_hit(hit_atom)
+			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else
 			..()
@@ -306,7 +312,7 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom,0,1,3,1)
-			handle_vehicle_hit(hit_atom)
+			handle_vehicle_hit(hit_atom,firer)
 			var/turf/T = get_turf(hit_atom)
 			if(!T) return
 			var/list/target_turfs = getcircle(T, spread_range)

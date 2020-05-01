@@ -554,7 +554,7 @@
 							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
 						else
 							w_back[5] -= adjdam
-							visible_message("<span class = 'danger'><bigThe rear hull is damaged!</big></span>")
+							visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
 		else
 			switch(penloc)
 				if ("left")
