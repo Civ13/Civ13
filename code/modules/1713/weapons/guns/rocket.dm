@@ -279,7 +279,7 @@
 			MV.update_icon()
 		F.update_icon()
 		if (firer)
-			firer.awards["tank"]+=(heavy_armor_penetration/70)
+			firer.awards["tank"]+=(heavy_armor_penetration/150)
 
 /obj/item/missile/explosive
 	heavy_armor_penetration = 50
