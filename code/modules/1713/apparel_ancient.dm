@@ -8,6 +8,7 @@
  * 7 - Ancient Capes
  * 8 - Ancient Headpieces
  * 9 - Ancient Helmets
+ * 9a - Nomads (Craftable) Helmets
  * 10 - Royal & Imperial Headwear
  * 11 - Religious Headwear
  * 12 - Pelts
@@ -344,8 +345,8 @@
 /*Ancient Helmets*/
 
 /obj/item/clothing/head/helmet/roman
-	name = "Roman legionary helmet"
-	desc = "The typical helmet of the Roman Army."
+	name = "roman legionary helmet"
+	desc = "The typical helmet of the roman army."
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -355,8 +356,8 @@
 	health = 35
 
 /obj/item/clothing/head/helmet/roman_decurion
-	name = "Roman decurion helmet"
-	desc = "An iron Roman helmet, used by Decurions."
+	name = "roman decurion helmet"
+	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
 	icon_state = "roman_d"
 	item_state = "roman_d"
 	worn_state = "roman_d"
@@ -367,7 +368,7 @@
 
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "roman centurion helmet"
-	desc = "An iron roman helmet, used by centurions."
+	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
 	icon_state = "roman_c"
 	item_state = "roman_c"
 	worn_state = "roman_c"
@@ -387,22 +388,38 @@
 	armor = list(melee = 60, arrow = 45, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	health = 40
 
-/obj/item/clothing/head/helmet/horned
-	name = "horned helmet"
-	desc = "A horned helmet, used by barbarians."
-	icon_state = "viking"
-	item_state = "viking"
-	worn_state = "viking"
-	body_parts_covered = HEAD
-	armor = list(melee = 45, arrow = 30, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-	health = 25
+/obj/item/clothing/head/helmet/solinvictus
+	name = "sol invictus helmet"
+	desc = "A gold adorned helmet with masqued visage and gold solar streaks. Worn by roman emperors."
+	icon_state = "sol_invictus"
+	item_state = "sol_invictus"
+	worn_state = "sol_invictus"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 50, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	restricts_view = 2
+	health = 55
+	slowdown = 0.25
+
+/obj/item/clothing/head/helmet/anax
+	name = "greek anax helmet"
+	desc = "A reinforced bronze greek helmet, covering most of the face, with black plummage on top. Worn by hellenic kings."
+	icon_state = "leonidas"
+	item_state = "leonidas"
+	worn_state = "leonidas"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 60, arrow = 45, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	restricts_view = 1
+	health = 50
+	slowdown = 0.10
 
 /obj/item/clothing/head/helmet/greek
 	name = "greek helmet"
-	desc = "A bronze Greek helmet, covering most of the face."
-	icon_state = "greek"
-	item_state = "greek"
-	worn_state = "greek"
+	desc = "A bronze greek helmet, covering most of the face."
+	icon_state = "new_greek"
+	item_state = "new_greek"
+	worn_state = "new_greek"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
@@ -410,10 +427,10 @@
 
 /obj/item/clothing/head/helmet/greek_commander
 	name = "lochagos helmet"
-	desc = "A bronze Greek helmet, covering most of the face, with red plummage on top. Worn by hellenic lochagos."
-	icon_state = "greek_c"
-	item_state = "greek_c"
-	worn_state = "greek_c"
+	desc = "A bronze greek helmet, covering most of the face, with red plummage on top. Worn by hellenic lochagos."
+	icon_state = "spartan"
+	item_state = "spartan"
+	worn_state = "spartan"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
@@ -421,10 +438,10 @@
 
 /obj/item/clothing/head/helmet/greek_sl
 	name = "dimoerites helmet"
-	desc = "A bronze Greek helmet, covering most of the face, with blue plummage on top. Worn by hellenic dimoerites."
-	icon_state = "greek_sl"
-	item_state = "greek_sl"
-	worn_state = "greek_sl"
+	desc = "A bronze greek helmet, covering most of the face, with blue plummage on top. Worn by hellenic dimoerites."
+	icon_state = "athenian"
+	item_state = "athenian"
+	worn_state = "athenian"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
@@ -439,6 +456,105 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 27, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
 	health = 20
+
+	/* Nomads (Craftable) Helmets*/
+
+/obj/item/clothing/head/helmet/gladiator/nomads //nerfing it down for mass consumption
+	name = "gladiator helmet"
+	desc = "A gladiator helmet."
+	icon_state = "gladiator"
+	item_state = "gladiator"
+	worn_state = "gladiator"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 30
+
+/obj/item/clothing/head/helmet/horned
+	name = "horned helmet"
+	desc = "A horned helmet, used by barbarians."
+	icon_state = "barbarian" //"viking" can be used elsewise for wagner
+	item_state = "barbarian"
+	worn_state = "barbarian"
+	body_parts_covered = HEAD
+	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 30
+
+/obj/item/clothing/head/helmet/asterix
+	name = "winged helmet"
+	desc = "A winged helmet, used swift warriors who don't mind brutalistic stabs to the face."
+	icon_state = "asterix"
+	item_state = "asterix"
+	worn_state = "asterix"
+	body_parts_covered = HEAD
+	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 30
+
+/obj/item/clothing/head/helmet/greek/nomads
+	name = "greek helmet"
+	desc = "A bronze greek helmet, covering most of the face."
+	icon_state = "new_greek"
+	item_state = "new_greek"
+	worn_state = "new_greek"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 30
+
+/obj/item/clothing/head/helmet/greek_commander/nomads
+	name = "lochagos helmet"
+	desc = "A bronze greek helmet, covering most of the face, with red plummage on top. Worn by hellenic lochagos."
+	icon_state = "spartan"
+	item_state = "spartan"
+	worn_state = "spartan"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
+
+/obj/item/clothing/head/helmet/greek_sl/nomads
+	name = "dimoerites helmet"
+	desc = "A bronze greek helmet, covering most of the face, with blue plummage on top. Worn by hellenic dimoerites."
+	icon_state = "athenian"
+	item_state = "athenian"
+	worn_state = "athenian"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
+
+/obj/item/clothing/head/helmet/roman/nomads
+	name = "roman legionary helmet"
+	desc = "The typical helmet of the roman army."
+	icon_state = "roman"
+	item_state = "roman"
+	worn_state = "roman"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE) //nerfed
+	health = 30
+
+/obj/item/clothing/head/helmet/roman_decurion/nomads
+	name = "roman decurion helmet"
+	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
+	icon_state = "roman_d"
+	item_state = "roman_d"
+	worn_state = "roman_d"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
+
+/obj/item/clothing/head/helmet/roman_centurion/nomads
+	name = "roman centurion helmet"
+	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
+	icon_state = "roman_c"
+	item_state = "roman_c"
+	worn_state = "roman_c"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
 
 /*Royal & Laurel Headwear*/
 
@@ -858,3 +974,51 @@
 	item_state = "towel"
 	worn_state = "towel"
 	heat_protection = LOWER_TORSO
+
+/obj/item/clothing/mask/bossjaw
+	name = "'rite nasty boss jawpiece"
+	desc = "A chunk of crude metal crafted into the shape of a orcish jaw, cements status amongst brutes making them appear larger."
+	icon_state = "bossjaw"
+	item_state = "bossjaw"
+	worn_state = "bossjaw"
+	body_parts_covered = FACE
+	flags_inv = 0
+	w_class = 2
+	armor = list(melee = 15, arrow = 5, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/anax/aries //op fantasy helm
+	name = "aries helmet"
+	desc = "A reinforced bronze greek helmet, covering most of the face, with red plummage on top. Worn by dieties and avatars of destruction such as aries."
+	icon_state = "aries"
+	item_state = "aries"
+	worn_state = "aries"
+	armor = list(melee = 70, arrow = 60, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 60
+
+/obj/item/clothing/head/helmet/anax/athena //
+	name = "athena helmet"
+	desc = "A reinforced bronze greek helmet, covering most of the face, with blue plummage on top and a gold laurel. Chosen helm of the god of tactical warfare and knowledge athena herself."
+	icon_state = "athena"
+	item_state = "athena"
+	worn_state = "athena"
+	armor = list(melee = 70, arrow = 60, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 60
+
+/obj/item/clothing/head/helmet/asterix/apollo
+	name = "conspicious gaelic helmet"
+	desc = "The gold winged helmet of the god of the sun and light, as well a a messenger of olympus. The wearer feels energized to move quickly"
+	icon_state = "apollo"
+	item_state = "apollo"
+	worn_state = "apollo"
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
+	slowdown = -0.25 //actually reduces your slowdown
+
+/obj/item/clothing/head/helmet/asterix/conspicious //R.I.P Albert Uzdero / René Goscinny respectively.
+	name = "conspicious gaelic helmet"
+	desc = "A hard to miss winged helmet with white & black trimmings and modest red necktie, often worn by chieftains."
+	icon_state = "vitalstatistix"
+	item_state = "vitalstatistix"
+	worn_state = "vitalstatistix"
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40

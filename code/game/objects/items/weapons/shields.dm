@@ -55,7 +55,7 @@
 	material = "steel"
 	health = 30
 	w_class = 3.0
-	base_block_chance = 30
+	base_block_chance = 38 //minor change to make the upgrade worthwhile
 	slowdown = 0.3
 
 /obj/item/weapon/shield/iron
@@ -65,7 +65,7 @@
 	material = "iron"
 	health = 25
 	w_class = 3.0
-	base_block_chance = 30
+	base_block_chance = 33
 	slowdown = 0.25
 
 /obj/item/weapon/shield/bronze
@@ -95,22 +95,108 @@
 	item_state = icon_state
 	update_icon()
 
+/* Nomads Aspis Shields*/
+
+/obj/item/weapon/shield/nomads/aspis //to avoid the new() , this variant is nerfed to be evenly matched with roman but slightly stronger than iron shields
+	name = "athenian aspis"
+	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	icon_state = "athenian_shield"
+	item_state = "athenian_shield"
+	material = "bronze"
+	health = 23
+	w_class = 3.0
+	base_block_chance = 35
+	slowdown = 0.4
+
+/obj/item/weapon/shield/nomads/spartan
+	name = "spartan aspis"
+	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	icon_state = "spartan_shield"
+	item_state = "spartan_shield"
+	material = "bronze"
+	health = 23
+	w_class = 3.0
+	base_block_chance = 35
+	slowdown = 0.4
+
+/obj/item/weapon/shield/nomads/aspis/pegasus
+	name = "aspis with image of a pegasus"
+	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	icon_state = "pegasus_shield"
+	item_state = "pegasus_shield"
+	material = "bronze"
+	health = 23
+	w_class = 3.0
+	base_block_chance = 35
+	slowdown = 0.4
+
+/obj/item/weapon/shield/nomads/aspis/owl
+	name = "aspis with image of a owl"
+	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	icon_state = "owl_shield"
+	item_state = "owl_shield"
+	material = "bronze"
+	health = 23
+	w_class = 3.0
+	base_block_chance = 35
+	slowdown = 0.4
+
+/* Nomads Aspis Shields -End*/
+
+/obj/item/weapon/shield/egyptian
+	name = "egyptian shield"
+	desc = "a semi oval, rectangular bronze shield of egyptian design and motifs"
+	icon_state = "egyptian_shield"
+	item_state = "egyptian_shield"
+	material = "bronze"
+	health = 23
+	w_class = 3.0
+	base_block_chance = 35
+	slowdown = 0.4
+
+/obj/item/weapon/shield/scutum
+	name = "scutum shield"
+	desc = "a rounded rectangular shield, with celtic motifs."
+	icon_state = "scutum"
+	item_state = "scutum"
+	material = "bronze"
+	health = 23
+	w_class = 3.0
+	base_block_chance = 37
+	slowdown = 0.3
+
 /obj/item/weapon/shield/roman
 	name = "roman shield"
-	desc = "a rectangular shield, with Roman motifs."
+	desc = "a rectangular shield, with roman motifs."
 	icon_state = "roman_shield"
 	item_state = "roman_shield"
 	material = "bronze"
 	health = 23
 	w_class = 3.0
-	base_block_chance = 35
+	base_block_chance = 37
 	slowdown = 0.3
+
+/obj/item/weapon/shield/roman/blue
+	name = "blue roman shield"
+	desc = "a blue rectangular shield, with roman motifs. Often used by imitation legions and client states."
+	icon_state = "blue_roman_shield"
+	item_state = "blue_roman_shield"
+
+/obj/item/weapon/shield/roman/praetorian
+	name = "praetorian roman shield"
+	desc = "a purple rectangular shield, with roman motifs. Often used by the praetorian guard, it looks more robust than the standard roman shield."
+	icon_state = "prae_roman_shield"
+	item_state = "prae_roman_shield"
+	health = 30
+	base_block_chance = 37
+	slowdown = 0.40
 
 /obj/item/weapon/shield/roman_buckler
 	name = "roman parma shield"
+	desc = "a circular buckler, with roman motifs."
 	icon_state = "roman_buckler"
 	item_state = "roman_buckler"
-	base_block_chance = 257
+	base_block_chance = 25 //nerfed from 257
 	w_class = 2.0
 	material = "wood"
 	health = 20 // hardness of wood
@@ -160,7 +246,6 @@
 	playsound(src, "shatter", 70, TRUE)
 	qdel(src)
 
-
 /obj/item/weapon/shield/iron/semioval
 	name = "semioval iron shield"
 	icon_state = "semioval_shield"
@@ -180,6 +265,30 @@
 	name = "semioval iron templar shield"
 	icon_state = "semioval_shield_templar2"
 	item_state = "semioval_shield_templar2"
+
+/* Nomads Semi Oval & Medieval Shields*/
+
+/obj/item/weapon/shield/iron/nomads/semioval
+	name = "semioval iron shield"
+	icon_state = "semioval_shield"
+	item_state = "semioval_shield"
+	material = "iron"
+	health = 25
+	w_class = 3.0
+	base_block_chance = 37
+	slowdown = 0.3
+
+/obj/item/weapon/shield/iron/nomads/semioval/templar
+	name = "semioval iron templar shield"
+	icon_state = "semioval_shield_templar"
+	item_state = "semioval_shield_templar"
+
+/obj/item/weapon/shield/iron/nomads/semioval/templar2
+	name = "semioval iron templar shield"
+	icon_state = "semioval_shield_templar2"
+	item_state = "semioval_shield_templar2"
+
+/* Nomads Semi Oval & Medieval Shields -End*/
 
 obj/item/weapon/shield/red_buckler
 	name = "red buckler shield"
