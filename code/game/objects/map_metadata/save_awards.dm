@@ -20,23 +20,23 @@ AWARDS:
 	if (map.gamemode == "Hardcore")
 		if (map.ordinal_age>=5)
 			awards["service"]++
-			if (awards["service"]>=12000 && client && !("long service" in awarded))
-				map.give_award(client.ckey, name, "long service", capitalize(faction_text),src)
+			if (awards["service"]>=12000 && client && !("long service medal" in awarded))
+				map.give_award(client.ckey, name, "long service medal", capitalize(faction_text),src)
 
-			if (awards["tank"]>=2 && !("tank destroyer silver" in awarded))
-				map.give_award(client.ckey, name, "tank destroyer silver", capitalize(faction_text),src)
-			else if (awards["tank"]>=4 && !("tank destroyer gold" in awarded))
-				map.give_award(client.ckey, name, "tank destroyer gold", capitalize(faction_text),src)
+			if (awards["tank"]>=2 && !("tank destroyer silver badge" in awarded))
+				map.give_award(client.ckey, name, "tank destroyer silver badge", capitalize(faction_text),src)
+			else if (awards["tank"]>=4 && !("tank destroyer gold badge" in awarded))
+				map.give_award(client.ckey, name, "tank destroyer gold badge", capitalize(faction_text),src)
 
-			if (awards["wounded"]>=300 && !("wounded gold" in awarded))
-				map.give_award(client.ckey, name, "wounded gold", capitalize(faction_text),src)
-				map.remove_award(client.ckey, name, "wounded silver")
-				map.remove_award(client.ckey, name, "wounded")
-			else if (awards["wounded"]>=220 && !("wounded silver" in awarded))
-				map.give_award(client.ckey, name, "wounded silver", capitalize(faction_text),src)
-				map.remove_award(client.ckey, name, "wounded")
-			else if (awards["wounded"]>=150 && !("wounded" in awarded))
-				map.give_award(client.ckey, name,"wounded", capitalize(faction_text),src)
+			if (awards["wounded"]>=300 && !("wounded gold badge" in awarded))
+				map.give_award(client.ckey, name, "wounded gold badge", capitalize(faction_text),src)
+				map.remove_award(client.ckey, name, "wounded silver badge")
+				map.remove_award(client.ckey, name, "wounded badge")
+			else if (awards["wounded"]>=220 && !("wounded silver badge" in awarded))
+				map.give_award(client.ckey, name, "wounded silver badge", capitalize(faction_text),src)
+				map.remove_award(client.ckey, name, "wounded badge")
+			else if (awards["wounded"]>=150 && !("wounded badge" in awarded))
+				map.give_award(client.ckey, name,"wounded badge", capitalize(faction_text),src)
 
 			for(var/list/i in awards["kills"])
 				if (islist(i) && i[1] != "" && i[2] >= 100 && i[3]==0)
@@ -59,6 +59,7 @@ AWARDS:
 		if (awards[i][1]!="")
 			var/txtexport = list2text(awards[i])
 			text2file(txtexport,F)
+			world << "[awards[i][2]] ([awards[i][1]]) has received a <b>[awards[i][3]]</b>!"
 	return TRUE
 
 /obj/map_metadata/proc/give_award(var/_ckey, var/charname, var/awardtype, var/faction, var/mob/living/carbon/human/L = null)
@@ -70,24 +71,24 @@ AWARDS:
 		if (!(awardtype in L.awarded))
 			L.awarded += list(awardtype)
 		var/obj/item/clothing/accessory/medal/MEDAL = null
-		if (L.w_uniform)
+		if (L.w_uniform && istype(L.w_uniform, /obj/item/clothing))
 			switch(awardtype)
-				if ("wounded")
+				if ("wounded badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound(L.loc)
 
-				if ("wounded silver")
+				if ("wounded silver badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound_silver(L.loc)
 
-				if ("wounded gold")
+				if ("wounded gold badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound_gold(L.loc)
 
-				if ("long service")
+				if ("long service medal")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/long_service(L.loc)
 
-				if ("tank destroyer silver")
+				if ("tank destroyer silver badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/tank_destruction(L.loc)
 
-				if ("tank destroyer gold")
+				if ("tank destroyer gold badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold(L.loc)
 
 				if ("assault badge")
@@ -100,7 +101,13 @@ AWARDS:
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(L.loc)
 
 			if (MEDAL)
-				L.w_uniform.attackby(MEDAL, L)
+				var/obj/item/clothing/CL = L.w_uniform
+				CL.attackby(MEDAL, L)
+				if (CL.can_attach_accessory(MEDAL))
+					CL.accessories += MEDAL
+					MEDAL.on_attached(CL, L)
+					verbs |= /obj/item/clothing/proc/removetie_verb
+					CL.update_inv_w_uniform()
 	return
 
 /obj/map_metadata/proc/remove_award(var/_ckey, var/charname, var/awardtype)
