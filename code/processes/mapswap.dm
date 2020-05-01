@@ -163,7 +163,7 @@
 			maps = list(
 				MAP_CAMP = 0,
 				MAP_KARAK = 0,
-				MAP_SAMMIRHAYEED = 20,
+//				MAP_SAMMIRHAYEED = 20,
 			)
 		if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
