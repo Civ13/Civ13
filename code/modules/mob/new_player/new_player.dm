@@ -601,6 +601,66 @@ var/global/redirect_all_players = null
 		return FALSE
 
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
+
+	//squads
+	if (ishuman(character))
+		var/mob/living/carbon/human/H = character
+		if (H.original_job.uses_squads)
+			H.verbs += /mob/living/carbon/human/proc/find_nco
+			if (H.original_job.is_squad_leader)
+				H.verbs += /mob/living/carbon/human/proc/Squad_Announcement
+			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
+				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
+					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
+				if (H.original_job.is_squad_leader)
+					var/done = FALSE
+					for(var/i, i<=map.squads, i++)
+						if (!map.faction1_squad_leaders[i])
+							done = TRUE
+							H.squad = i
+							map.faction1_squad_leaders[i] = H
+							break
+					if (!done)
+						H.squad = rand(1,map.squads)
+				else
+					H.squad = rand(1,map.squads)
+				map.faction1_squads[H.squad] += list(H)
+				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
+				if (H.original_job.is_squad_leader)
+					if (!map.faction1_squad_leaders[H.squad] || map.faction1_squad_leaders[H.squad] == H)
+						H << "<big><b>You are the new squad leader!</b></big>"
+						map.faction1_squad_leaders[H.squad] = H
+					else if (map.faction1_squad_leaders[H.squad] && map.faction1_squad_leaders[H.squad] != H)
+						H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
+				else if (map.faction1_squad_leaders[H.squad])
+					H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
+			else if (H.faction_text == map.faction2)
+				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
+					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
+				if (H.original_job.is_squad_leader)
+					var/done = FALSE
+					for(var/i, i<=map.squads, i++)
+						if (!map.faction2_squad_leaders[i])
+							done = TRUE
+							H.squad = i
+							map.faction2_squad_leaders[i] = H
+							break
+					if (!done)
+						H.squad = rand(1,map.squads)
+				else
+					H.squad = rand(1,map.squads)
+				map.faction2_squads[H.squad] += list(H)
+				H << "<big><b>You have been assigned to Squad [H.squad]!</b></big>"
+				if (H.original_job.is_squad_leader)
+					if (!map.faction2_squad_leaders[H.squad] || map.faction2_squad_leaders[H.squad] == H)
+						H << "<big><b>You are the new squad leader!</b></big>"
+						map.faction2_squad_leaders[H.squad] = H
+					else if (map.faction2_squad_leaders[H.squad] && map.faction2_squad_leaders[H.squad] != H)
+						H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
+				else if (map.faction2_squad_leaders[H.squad])
+					H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
+	//
+
 	job_master.relocate(character)
 
 	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
@@ -609,7 +669,6 @@ var/global/redirect_all_players = null
 
 	if (character.mind)
 		ticker.minds += character.mind
-
 	character.lastarea = get_area(loc)
 	qdel(src)
 	return TRUE

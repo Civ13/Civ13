@@ -4,12 +4,11 @@
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		JAPANESE,
 		AMERICAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/british,
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
@@ -29,6 +28,8 @@
 	..()
 	if (J.is_ww2 == TRUE && J.is_tanker == FALSE && J.is_prison == FALSE)
 		. = TRUE
+	else if (istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker))
+		. = FALSE
 	else
 		. = FALSE
 	if (J.is_navy == TRUE)

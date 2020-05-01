@@ -6,12 +6,11 @@
 	lobby_icon_state = "camp"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 3600
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		RUSSIAN,
 		CIVILIAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/british,
 		list(CIVILIAN) = /area/caribbean/russian/land/inside/command,
@@ -34,6 +33,7 @@
 		list("Polish",0,0),
 		list("Ukrainian",0,0),
 	)
+	is_RP = TRUE
 	var/gracedown1 = TRUE
 	var/siren = FALSE
 obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)

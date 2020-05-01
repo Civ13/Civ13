@@ -19,11 +19,11 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -61,13 +61,13 @@
 	rank_abbreviation = "Architect"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivA"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -130,10 +130,10 @@
 	spawn_location = "JoinLateCivB"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -174,10 +174,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivB"
 	is_merchant = TRUE
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_1713 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -235,13 +235,13 @@
 	rank_abbreviation = "Officer"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -289,10 +289,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -342,10 +342,11 @@
 	rank_abbreviation = "Doctor"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -403,10 +404,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_1713 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -462,10 +463,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_religious = TRUE
 	is_1713 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -503,10 +504,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -561,10 +562,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -621,10 +622,10 @@
 	rank_abbreviation = "Carpenter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -697,10 +698,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 3
 
@@ -771,10 +772,10 @@
 	rank_abbreviation = "Innkeeper"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivD"
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -846,10 +847,10 @@
 	rank_abbreviation = "Waiter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -923,10 +924,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
@@ -997,10 +998,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_1713 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -1037,11 +1038,11 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1079,13 +1080,13 @@
 	rank_abbreviation = "Head Architect"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivA"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1146,10 +1147,10 @@
 	spawn_location = "JoinLateCivB"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1190,10 +1191,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivB"
 	is_merchant = TRUE
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_pioneer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1251,10 +1252,10 @@
 	spawn_location = "JoinLateCivA"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1294,13 +1295,13 @@
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -1342,10 +1343,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -1390,10 +1391,11 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1449,10 +1451,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_pioneer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -1506,10 +1508,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_religious = TRUE
 	is_pioneer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1547,10 +1549,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -1602,10 +1604,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -1659,10 +1661,10 @@
 	rank_abbreviation = "Carpenter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -1731,10 +1733,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 3
 
@@ -1803,10 +1805,10 @@
 	rank_abbreviation = "Innkeeper"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivD"
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1858,10 +1860,10 @@
 	rank_abbreviation = "Barkeeper"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1915,10 +1917,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_pioneer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 

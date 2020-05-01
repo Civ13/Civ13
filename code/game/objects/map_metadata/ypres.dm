@@ -5,14 +5,13 @@
 	lobby_icon_state = "ww1"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
-	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+
+
 	faction_organization = list(
 		BRITISH,
 		FRENCH,
 		GERMAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(BRITISH) = /area/caribbean/british/land/inside/objective,
 		list(FRENCH) = /area/caribbean/french/land/inside/objective,

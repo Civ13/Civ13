@@ -7,10 +7,10 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -69,10 +69,10 @@
 	rank_abbreviation = "Dep."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 16
 
@@ -128,10 +128,10 @@
 	rank_abbreviation = "Dep."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 100
 
@@ -186,10 +186,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 6
 
@@ -224,10 +224,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 100
 
@@ -304,10 +304,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+	is_medic = TRUE
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -367,10 +367,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -400,10 +400,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -460,10 +460,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -514,10 +514,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -550,10 +550,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -607,9 +607,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 100
 
@@ -687,9 +687,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 9
 
@@ -768,9 +768,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 9
 

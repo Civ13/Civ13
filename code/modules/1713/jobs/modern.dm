@@ -5,14 +5,14 @@
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_modernday = TRUE
 	is_radioman = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -51,13 +51,14 @@
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_radioman = TRUE
 	is_modernday = TRUE
 	can_get_coordinates = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -99,10 +100,11 @@
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -146,10 +148,11 @@
 	rank_abbreviation = "Spc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 12
 
@@ -190,10 +193,10 @@
 	rank_abbreviation = "Spc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -239,10 +242,11 @@
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 10
 	max_positions = 100
 
@@ -299,14 +303,14 @@
 	en_meaning = "IDF Lieutenant"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_modernday = TRUE
 	is_radioman = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -346,13 +350,15 @@
 	en_meaning = "IDF Sergeant"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
+	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_radioman = TRUE
 	is_modernday = TRUE
 	can_get_coordinates = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -397,10 +403,11 @@
 	rank_abbreviation = "Chovesh"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -445,10 +452,11 @@
 	rank_abbreviation = "Rav."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -490,10 +498,11 @@
 	rank_abbreviation = "Rav."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -537,10 +546,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 10
 	max_positions = 100
 
@@ -586,11 +596,13 @@
 	rank_abbreviation = "Leader"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+	is_squad_leader = TRUE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -649,10 +661,11 @@
 	rank_abbreviation = "Dr."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -714,10 +727,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 3
 	max_positions = 12
 
@@ -776,10 +790,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 12
 	max_positions = 120
 

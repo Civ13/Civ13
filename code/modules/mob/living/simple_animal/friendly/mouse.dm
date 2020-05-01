@@ -132,36 +132,6 @@
 				HM.adaptStat("medical", 0.3)
 			qdel(src)
 
-/mob/living/simple_animal/mouse/AttackingTarget()
-	if (!Adjacent(target_mob))
-		return
-	playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
-	custom_emote(1, "bites [target_mob]!")
-
-	var/damage = pick(melee_damage_lower,melee_damage_upper)
-
-	if (ishuman(target_mob))
-		var/mob/living/carbon/human/H = target_mob
-		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
-		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
-		var/dmod = 1
-		if (H.find_trait("Weak Immune System"))
-			dmod = 2
-		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
-		if (prob(3*dmod))
-			H.disease = TRUE
-			H.disease_type = "plague"
-	else if (isliving(target_mob))
-		var/mob/living/L = target_mob
-		L.adjustBruteLoss(damage)
-		if (istype(target_mob, /mob/living/simple_animal))
-			var/mob/living/simple_animal/SA = target_mob
-			if (SA.behaviour == "defends" || SA.behaviour == "hunt")
-				if (SA.stance != HOSTILE_STANCE_ATTACK && SA.stance != HOSTILE_STANCE_ATTACKING)
-					SA.stance = HOSTILE_STANCE_ATTACK
-					SA.stance_step = 7
-					SA.target_mob = src
-		return L
 /*
  * Mouse types
  */

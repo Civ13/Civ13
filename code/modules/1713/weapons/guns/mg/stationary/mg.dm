@@ -16,7 +16,7 @@
 	max_shells = FALSE
 	anchored = FALSE
 	auto_eject = TRUE
-	fire_sound = 'sound/weapons/guns/fire/mg34_firing.ogg'
+	fire_sound = 'sound/weapons/guns/fire/mg34.ogg'
 	firemodes = list(
 		list(name="full auto", burst=8, burst_delay=0.6, fire_delay=1.0, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
@@ -136,6 +136,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	icon_state = "type98hmg"
 	base_icon = "type98hmg"
 	caliber = "a77x58"
+	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
 	magazine_type = /obj/item/ammo_magazine/type92
 	ammo_type = /obj/item/ammo_casing/a77x58
 	firemodes = list(

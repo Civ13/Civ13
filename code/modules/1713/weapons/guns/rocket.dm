@@ -341,7 +341,7 @@
 	force = 5.0
 	flags =  CONDUCT
 	slot_flags = 0
-	fire_sound = 'sound/effects/bang.ogg'
+	fire_sound = 'sound/weapons/guns/fire/M79.ogg'
 	var/max_rockets = 1
 	var/list/rockets = new/list()
 	release_force = 9

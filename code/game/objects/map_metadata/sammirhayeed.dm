@@ -1,17 +1,15 @@
-
 /obj/map_metadata/sammirhayeed
 	ID = MAP_SAMMIRHAYEED
 	title = "Sammir Hayeed (80x80x1)"
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
-	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+
+
 	faction_organization = list(
 		ARAB,
 		FRENCH)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(ARAB) = /area/caribbean/arab,
 		list(FRENCH) = /area/caribbean/colonies,
@@ -33,7 +31,7 @@
 /obj/map_metadata/sammirhayeed/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
-obj/map_metadata/sammirhayeed/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/sammirhayeed/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/arab))
 		if (J.is_coldwar || J.is_specops)

@@ -21,7 +21,6 @@ var/civmax_research = list(230,230,230)
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
 	var/list/valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME, WEATHER_NONE, WEATHER_SMOG)
-	var/squad_spawn_locations = TRUE
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
 
@@ -30,12 +29,9 @@ var/civmax_research = list(230,230,230)
 	var/faction2 = PIRATES
 	var/faction1_points = 0
 	var/faction2_points = 0
-	var/no_subfaction_chance = TRUE
-	var/subfaction_is_main_faction = FALSE
 	var/list/faction_organization = list()
 	var/list/initial_faction_organization = list()
 	var/list/faction_distribution_coeffs = list(INFINITY) // list(INFINITY) = no hard locks on factions
-	var/list/available_subfactions = list()
 	var/list/roundend_condition_sides = list(
 		list(PIRATES) = /area/caribbean/pirates,
 		list(BRITISH) = /area/caribbean/british)
@@ -43,7 +39,40 @@ var/civmax_research = list(230,230,230)
 	var/list/songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	var/mission_start_message = "Round will start soon!"
-
+	var/is_RP = FALSE
+	var/squads = 1
+	var/list/faction1_squads = list(
+		1 = list(),
+		2 = list(),
+		3 = list(),
+		4 = list(),
+		5 = list(),
+		6 = list(),
+	)
+	var/list/faction2_squads = list(
+		1 = list(),
+		2 = list(),
+		3 = list(),
+		4 = list(),
+		5 = list(),
+		6 = list(),
+	)
+	var/list/faction1_squad_leaders = list(
+		1 = null,
+		2 = null,
+		3 = null,
+		4 = null,
+		5 = null,
+		6 = null,
+	)
+	var/list/faction2_squad_leaders = list(
+		1 = null,
+		2 = null,
+		3 = null,
+		4 = null,
+		5 = null,
+		6 = null,
+	)
 	var/required_players = 1
 	var/time_both_sides_locked = -1
 	var/time_to_end_round_after_both_sides_locked = 6000
@@ -197,22 +226,6 @@ var/civmax_research = list(230,230,230)
 	if (civilizations || nomads)
 		savegame()
 */
-	// get a subfaction, just one, for this round
-	var/subfaction = null
-	for (var/faction in available_subfactions)
-		if (prob(available_subfactions[faction]))
-			subfaction = faction
-			break
-
-	if (!no_subfaction_chance && available_subfactions.len)
-		subfaction = pick(available_subfactions)
-
-	qdel_list(available_subfactions)
-	available_subfactions = list()
-
-	if (subfaction)
-		available_subfactions += subfaction
-
 	// makes win condition helper datum
 	win_condition = new
 

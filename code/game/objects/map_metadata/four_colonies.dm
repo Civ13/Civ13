@@ -5,14 +5,13 @@
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		BRITISH,
 		PORTUGUESE,
 		FRENCH,
 		SPANISH)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 	//nonexistent in this map, to prevent win by capture
 		list(SPANISH) = /area/caribbean/british,
@@ -31,6 +30,7 @@
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Faction-Based RP"
+	is_RP = TRUE
 
 obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 	..()

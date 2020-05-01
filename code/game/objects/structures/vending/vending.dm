@@ -142,8 +142,6 @@
 
 
 /obj/structure/vending/attack_hand(mob/user as mob)
-	if (stat & BROKEN) //|| user.blacklisted == TRUE
-		return
 
 	ui_interact(user)
 
@@ -186,9 +184,6 @@
 		ui.open()
 
 /obj/structure/vending/Topic(href, href_list)
-	if (stat & BROKEN)
-		return
-
 	if (isliving(usr))
 		if (usr.stat || usr.restrained())
 			return
@@ -249,8 +244,6 @@
 	nanomanager.update_uis(src)
 
 /obj/structure/vending/process()
-	if (stat & (BROKEN|NOPOWER))
-		return
 
 	if (!active)
 		return

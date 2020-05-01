@@ -1,6 +1,6 @@
 /obj/item/weapon/gun/projectile/semiautomatic
 	maxhealth = 60
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	// pistol accuracy, rifle skill & decent KD chance
 	accuracy_list = list(
 
@@ -63,6 +63,8 @@
 	var/base_icon = "semiautomatic"
 	equiptimer = 12
 	gun_safety = TRUE
+	reload_sound = 'sound/weapons/guns/interact/semiauto_magin.ogg'
+	unload_sound = 'sound/weapons/guns/interact/semiauto_magout.ogg'
 
 /obj/item/weapon/gun/projectile/semiautomatic/update_icon()
 	if (sniper_scope)
@@ -185,6 +187,7 @@
 	icon_state = "sks"
 	item_state = "ks"
 	base_icon = "sks"
+	fire_sound = 'sound/weapons/guns/fire/SKS.ogg'
 	w_class = 4
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 10
@@ -266,7 +269,7 @@
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 10
 	caliber = "a792x57"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
@@ -290,7 +293,7 @@
 	max_shells = 10
 	load_delay = 8
 	caliber = "a792x57"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/g43
@@ -313,8 +316,8 @@
 	slot_flags = SLOT_SHOULDER|SLOT_BELT
 	w_class = 4
 	caliber = "a792x33"
-	fire_sound = 'sound/weapons/stg.ogg'
-	load_magazine_sound = 'sound/weapons/stg_reload.ogg'
+	fire_sound = 'sound/weapons/guns/fire/stg.ogg'
+	reload_sound = 'sound/weapons/guns/interact/stg_reload.ogg'
 	magazine_type = /obj/item/ammo_magazine/stg
 	weight = 4.6
 	load_delay = 8
@@ -336,10 +339,12 @@
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 8
 	caliber = "a3006"
-	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/Garand.ogg'
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/garand
+	reload_sound = 'sound/weapons/guns/interact/GarandLoad.ogg'
+	unload_sound = 'sound/weapons/guns/interact/GarandUnload.ogg'
 	weight = 4.9
 	firemodes = list(
 		list(name="single shot",burst=1, move_delay=2, fire_delay=2)
@@ -359,7 +364,7 @@
 	load_method = MAGAZINE
 	load_delay = 5
 	caliber = "a556x45"
-	fire_sound = 'sound/weapons/kar_shot.ogg'
+	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a556x45
 	magazine_type = /obj/item/ammo_magazine/ar15

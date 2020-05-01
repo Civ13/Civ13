@@ -15,9 +15,10 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 1
 
@@ -39,8 +40,8 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/chinese(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -67,11 +68,12 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+	is_ww2 = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -93,8 +95,8 @@
 ////weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/chinese(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -118,11 +120,11 @@
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Shi."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateJRU"
+	spawn_location = "JoinLateRU"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 10
 
@@ -151,7 +153,7 @@
 	else if (randweap == 3)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -176,9 +178,10 @@
 	rank_abbreviation = "Shao."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUDoc"
-	SL_check_independent = TRUE
+	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
 
@@ -222,9 +225,9 @@
 	rank_abbreviation = "Erd."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 200
 
@@ -271,9 +274,9 @@
 	rank_abbreviation = "Yi."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+	is_ww2 = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 

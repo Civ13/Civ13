@@ -10,10 +10,10 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -51,12 +51,12 @@
 	rank_abbreviation = "Architect"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -116,12 +116,12 @@
 	rank_abbreviation = "Officer"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -163,9 +163,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -208,9 +208,10 @@
 	rank_abbreviation = "Doctor"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -267,10 +268,10 @@
 	rank_abbreviation = "Merchant"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -327,10 +328,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -368,9 +369,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -425,9 +426,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -484,9 +485,9 @@
 	rank_abbreviation = "Carpenter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -558,11 +559,11 @@
 	rank_abbreviation = "Blacksmith"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -633,9 +634,9 @@
 	rank_abbreviation = "Innkeeper"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -709,9 +710,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
@@ -787,10 +788,10 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -828,12 +829,12 @@
 	rank_abbreviation = "Arquitecto"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -893,12 +894,12 @@
 	rank_abbreviation = "Oficial"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -940,9 +941,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -985,9 +986,10 @@
 	rank_abbreviation = "Doctor"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1044,10 +1046,10 @@
 	rank_abbreviation = "Comerciante"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1102,10 +1104,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1143,9 +1145,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -1201,9 +1203,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -1260,9 +1262,9 @@
 	rank_abbreviation = "Carpenter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -1333,11 +1335,11 @@
 	rank_abbreviation = "Ferrero"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -1408,9 +1410,9 @@
 	rank_abbreviation = "Ventero"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1484,9 +1486,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
@@ -1564,10 +1566,10 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1605,12 +1607,12 @@
 	rank_abbreviation = "Arquiteto"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1670,12 +1672,12 @@
 	rank_abbreviation = "Comandante"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1717,9 +1719,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -1762,9 +1764,10 @@
 	rank_abbreviation = "Medico"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1821,10 +1824,10 @@
 	rank_abbreviation = "Mercador"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1880,10 +1883,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_religious = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1921,9 +1924,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -1979,9 +1982,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -2038,9 +2041,9 @@
 	rank_abbreviation = "Carpinteiro"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -2113,10 +2116,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -2187,9 +2190,9 @@
 	rank_abbreviation = "Taberneiro"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -2263,9 +2266,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
@@ -2342,10 +2345,10 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -2383,12 +2386,12 @@
 	rank_abbreviation = "Architecte"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -2448,12 +2451,12 @@
 	rank_abbreviation = "Officier"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -2495,9 +2498,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
@@ -2540,9 +2543,10 @@
 	rank_abbreviation = "Docteur"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -2599,10 +2603,10 @@
 	rank_abbreviation = "Marchand"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_merchant = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -2658,10 +2662,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -2699,9 +2703,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
@@ -2757,9 +2761,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -2816,9 +2820,9 @@
 	rank_abbreviation = "Charpentier"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
@@ -2891,10 +2895,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -2965,9 +2969,9 @@
 	rank_abbreviation = "Aubergiste"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -3041,9 +3045,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 

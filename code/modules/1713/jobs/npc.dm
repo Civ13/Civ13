@@ -12,7 +12,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = ""
 
-	// AUTOBALANCE
+
 	min_positions = 0
 	max_positions = 0
 

@@ -18,11 +18,11 @@
 	rank_abbreviation = "Cen."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	head_position = TRUE
 	is_officer = TRUE
-	// Autobalance
+
 	min_positions = 1
 	max_positions = 1
 
@@ -58,10 +58,10 @@
 	rank_abbreviation = "Dec."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 
-	// Autobalance
+
 	min_positions = 2
 	max_positions = 10
 
@@ -96,8 +96,8 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 6
 
@@ -131,8 +131,8 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 12
 	max_positions = 200
 
@@ -170,8 +170,8 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 8
 	max_positions = 100
 /datum/job/roman/velites/equip(var/mob/living/carbon/human/H)
@@ -215,11 +215,11 @@
 	rank_abbreviation = "Lo."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGR"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	head_position = TRUE
 	is_officer = TRUE
-	// Autobalance
+
 	min_positions = 1
 	max_positions = 1
 
@@ -252,9 +252,9 @@
 	rank_abbreviation = "Di."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGR"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
-	// Autobalance
+
 	min_positions = 2
 	max_positions = 10
 
@@ -294,9 +294,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGR"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 12
 	max_positions = 200
 
@@ -338,9 +338,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGR"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 8
 	max_positions = 100
 /datum/job/greek/toxotai/equip(var/mob/living/carbon/human/H)
@@ -376,9 +376,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRO"
-	SL_check_independent = TRUE
+
 	is_gladiator = TRUE
-	// AUTOBALANCE
+
 	min_positions = 100
 	max_positions = 100
 /datum/job/roman/gladiator/equip(var/mob/living/carbon/human/H)
@@ -414,9 +414,10 @@
 	rank_abbreviation = "Medicus"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_gladiator = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 8
 /datum/job/roman/doctor/equip(var/mob/living/carbon/human/H)
@@ -447,11 +448,11 @@
 	rank_abbreviation = "Custos"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_gladiator = TRUE
-	// Autobalance
+
 	min_positions = 2
 	max_positions = 8
 
@@ -484,14 +485,14 @@
 	rank_abbreviation = "Imperator"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
-	SL_check_independent = TRUE
+
 	is_gladiator = TRUE
 	is_commander = TRUE
 	head_position = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 /datum/job/roman/emperor/equip(var/mob/living/carbon/human/H)

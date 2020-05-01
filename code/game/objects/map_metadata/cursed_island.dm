@@ -5,13 +5,11 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,
 		/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 0
-	squad_spawn_locations = FALSE
+
 	no_winner ="The crew is alive."
-//	min_autobalance_players = 90
+
 	faction_organization = list(
 		BRITISH,)
-	available_subfactions = list(
-		)
 	roundend_condition_sides = list(
 		list(BRITISH) = /area/caribbean/british
 		)

@@ -13,7 +13,9 @@ RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2
 RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
 
 RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5,50,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,plaster,/obj/item/weapon/plaster,1.5,25,0,1,none,18,0,0,8,null
+RECIPE: /material/clay/,raw stucco,/obj/item/weapon/stucco,1.5,25,0,1,wall coverings & stucco,18,0,0,8,null
+RECIPE: /material/clay/,raw greek stucco,/obj/item/weapon/stucco/greek,1.5,25,0,1,wall coverings & stucco,18,0,0,2,null
+RECIPE: /material/clay/,raw roman stucco,/obj/item/weapon/stucco/roman,1.5,25,0,1,wall coverings & stucco,18,0,0,2,null
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,0.5,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,0.5,15,1,1,none,103,0,0,8,null
@@ -45,16 +47,15 @@ RECIPE: /material/leather/,long celtic braccae,/obj/item/clothing/under/celtic_l
 RECIPE: /material/leather/,short celtic braccae,/obj/item/clothing/under/celtic_short_braccae,2,55,0,1,clothing,0,19,0,1,null
 RECIPE: /material/leather/,medieval shoes,/obj/item/clothing/shoes/medieval,3,80,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,arabic-style shoes,/obj/item/clothing/shoes/medieval/arab,2,60,0,1,foot wear,0,39,0,2,null
-RECIPE: /material/leather/,samurai armor,/obj/item/clothing/suit/armor/samurai,20,100,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,red samurai armor,/obj/item/clothing/suit/armor/samurai/red,20,100,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,blue samurai armor,/obj/item/clothing/suit/armor/samurai/blue,20,100,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,black samurai armor,/obj/item/clothing/suit/armor/samurai/black,20,100,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,samurai helmet,/obj/item/clothing/head/helmet/samurai/guard,10,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,red samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/red,10,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,blue samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,10,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,black samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/black,10,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,tsuranuki armored shoes,/obj/item/clothing/shoes/tsuranuki,5,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,kote gauntlets,/obj/item/clothing/gloves/gauntlets/kote,5,80,0,1,armor,0,39,0,2,null
+RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
+RECIPE: /material/leather/,tatami samurai armor,/obj/item/clothing/suit/armor/samurai,10,180,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,red tatami samurai armor,/obj/item/clothing/suit/armor/samurai/red,10,180,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,blue tatami samurai armor,/obj/item/clothing/suit/armor/samurai/blue,10,180,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,black tatami samurai armor,/obj/item/clothing/suit/armor/samurai/black,10,180,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard,7,140,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,red leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/red,7,140,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,blue leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,7,140,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,black leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/black,7,140,0,1,armor,0,33,0,3,null
 
 RECIPE: /material/leather/,gunpowder pouch,/obj/item/weapon/reagent_containers/food/drinks/gunpowder,2,60,0,1,weapon accessories,0,54,0,8,null
 RECIPE: /material/leather/,bandolier,/obj/item/clothing/accessory/storage/webbing,3,70,0,1,weapon accessories,0,54,0,8,null
@@ -290,6 +291,11 @@ RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hat
 RECIPE: /material/cloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,38,4,null
 RECIPE: /material/cloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,38,4,null
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,38,8,null
+RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,helmets,0,0,38,3,null
+RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,helmets,0,0,38,3,null
+RECIPE: /material/cloth/,green arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab3,5,75,0,1,helmets,0,0,38,3,null
+RECIPE: /material/cloth/,blue arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab4,5,75,0,1,helmets,0,0,38,3,null
+RECIPE: /material/cloth/,emirate turban,/obj/item/clothing/head/helmet/medieval/emirate,7,90,0,1,helmets,0,0,38,3,null
 RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats & masks,0,0,38,8,null
 RECIPE: /material/cloth/,custom keffiyeh,/obj/item/clothing/head/custom_keffiyeh,2,55,0,1,hats & masks,0,0,38,8,null
 RECIPE: /material/cloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,hats & masks,0,0,38,8,null
@@ -349,6 +355,7 @@ RECIPE: /material/cloth/,customizable crinoline dress,/obj/item/clothing/under/c
 RECIPE: /material/cloth/,customizable arabic tunic,/obj/item/clothing/under/custom/arabictunic,4,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light brown arabic tunic,/obj/item/clothing/under/medieval/arab1,3,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light white arabic tunic,/obj/item/clothing/under/medieval/arab2,3,85,0,1,clothing,38,0,0,5,null
+RECIPE: /material/cloth/,emirate tunic,/obj/item/clothing/under/medieval/emirate,4,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,38,0,0,8,null
@@ -555,6 +562,7 @@ RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1
 
 RECIPE: /material/stone/,stone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,stone
 RECIPE: /material/stone/,stone window,/obj/structure/window_frame/stone,5,140,1,1,construction,18,0,0,8,null
+RECIPE: /material/stone/,full stone window,/obj/structure/window_frame/stonefull,5,140,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,stone
 
@@ -566,13 +574,16 @@ RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,pr
 RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,null
 RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
 
-RECIPE: /material/stone/,stone bricks,/obj/item/stack/material/stonebrick,1,25,1,1,none,35,0,0,8,null
+RECIPE: /material/stone/,stone bricks,/obj/item/stack/material/stonebrick,1,25,0,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick wall,/obj/covers/stone_wall/brick,6,140,1,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick floor,/obj/covers/stonebrickfloor,1,25,1,1,none,35,0,0,8,null
+RECIPE: /material/stonebrick/,stone brick archway,/obj/covers/stone_wall/brick/archway,6,140,1,1,none,35,0,0,8,null
 
 RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,construction,0,0,0,2,null
 RECIPE: /material/stone/,stone block wall,/obj/covers/stone_wall/classic,8,140,1,1,construction,0,0,0,2,null
+RECIPE: /material/stone/,stone block archway,/obj/covers/stone_wall/classic/archway,8,140,1,1,doorways and other buildings,0,0,0,2,null
 RECIPE: /material/stone/,fortress wall,/obj/covers/stone_wall/fortress,8,190,1,1,construction,45,35,0,3,null
+RECIPE: /material/stone/,fortress archway,/obj/covers/stone_wall/fortress,16,190,1,1,doorways and other buildings,0,0,0,2,null
 RECIPE: /material/stone/,roman stone wall,/obj/covers/stone_wall/roman,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,mayan wall,/obj/covers/stone_wall/mayan,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,roman door,/obj/structure/simple_door/key_door/anyone/roman,5,50,1,1,construction,28,0,0,8,null
@@ -1143,6 +1154,7 @@ RECIPE: /material/iron/,meat grinder,/obj/structure/meat_grinder,8,120,1,1,produ
 
 RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,125,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,egyptian wall,/obj/covers/stone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null
+RECIPE: /material/sandstone/,egyptian archway,/obj/covers/stone_wall/egyptian/archway,6,125,1,1,construction,0,0,0,1,null
 RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone
 RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone floor,/obj/covers/sandstone,1,25,1,1,floors,0,0,0,8,null
@@ -1155,6 +1167,7 @@ RECIPE: /material/sandstone/,red sandstone decorative tile,/obj/covers/sandstone
 
 RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,3,45,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
+RECIPE: /material/sandstone/,full sandstone window,/obj/structure/window_frame/sandstonefull,5,140,1,1,construction,18,0,0,8,null
 RECIPE: /material/sandstone/,sandstone roof builder,/obj/item/weapon/roofbuilder/sandstone,1,20,0,1,construction,0,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7,250,1,1,structures,21,0,0,8,null

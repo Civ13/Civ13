@@ -5,18 +5,18 @@
 	lobby_icon_state = "wildwest"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
-	squad_spawn_locations = FALSE
+
 	no_winner ="The round is proceeding normally."
 	faction_organization = list(
 		CIVILIAN,
 		INDIANS)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british,
 		list(INDIANS) = /area/caribbean/british
 		)
 	age = "1873"
+	is_RP = TRUE
 	ordinal_age = 4
 	faction_distribution_coeffs = list( CIVILIAN = 0.8,INDIANS = 0.2)
 	battle_name = "new frontier"

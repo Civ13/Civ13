@@ -137,6 +137,7 @@
 	item_state = "bar"
 	base_icon = "bar"
 	caliber = "a3006_weak"
+	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
 	magazine_type = /obj/item/ammo_magazine/bar
 	weight = 9.12
 	force = 20
@@ -160,7 +161,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
-	fire_sound = 	'sound/weapons/guns/fire/mg34_firing.ogg'
+	fire_sound = 	'sound/weapons/guns/fire/mg34.ogg'
 	force = 20
 	throwforce = 30
 	var/cover_open = FALSE

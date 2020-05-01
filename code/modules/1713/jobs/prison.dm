@@ -8,9 +8,9 @@
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -57,9 +57,9 @@
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -106,9 +106,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -146,9 +147,9 @@
 	rank_abbreviation = "NKVD"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 50
 
@@ -182,7 +183,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /datum/job/civilian/prisoner
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
 	spawn_location = "JoinLateCiv"
 	selection_color = "#2d2d63"
@@ -301,7 +302,7 @@
 	title = "Janitor"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
 	equip(var/mob/living/carbon/human/H)
@@ -320,7 +321,7 @@
 	title = "Miner"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
@@ -339,7 +340,7 @@
 	title = "Logger"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
@@ -358,7 +359,7 @@
 	title = "Builder"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
 	equip(var/mob/living/carbon/human/H)
@@ -377,7 +378,7 @@
 	title = "Nurse Helper"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 30
 	equip(var/mob/living/carbon/human/H)
@@ -396,7 +397,7 @@
 	title = "Kitchen Duty"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 25
 	equip(var/mob/living/carbon/human/H)
@@ -415,7 +416,7 @@
 	title = "Collaborator"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 12
 	equip(var/mob/living/carbon/human/H)

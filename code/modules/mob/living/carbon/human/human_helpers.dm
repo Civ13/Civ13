@@ -267,7 +267,7 @@
 	if (!client)
 		return
 	var/area/A = get_area(loc)
-	if (A.location == AREA_INSIDE)
+	if (A && A.location == AREA_INSIDE)
 		if (!roofs_removed)
 			client.images = (client.images ^ roofs_list)
 			roofs_removed = TRUE

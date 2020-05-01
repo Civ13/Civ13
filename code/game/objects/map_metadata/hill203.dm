@@ -4,13 +4,12 @@
 	lobby_icon_state = "ww1"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
-	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+
+
 	faction_organization = list(
 		JAPANESE,
 		RUSSIAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(JAPANESE) = /area/caribbean/island,
 		list(RUSSIAN) = /area/caribbean/island,

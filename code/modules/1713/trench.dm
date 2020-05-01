@@ -32,14 +32,14 @@ var/list/global/floor_cache = list()
 						else
 							TF.ChangeTurf(/turf/floor/trench/flooded)
 				for (var/turf/floor/IF in range(1, src))
-					if (!IF.flooded)
+					if (!IF.flooded && IF.irrigation)
 						if (salty)
 							IF.irrigate("salty")
 						else
 							IF.irrigate("fresh")
 			else
 				for (var/turf/floor/TF in range(1, src))
-					if (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded))
+					if (map && (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded)) && (map.civilizations || map.nomads || map.ID == MAP_COLONY || map.ID == MAP_FOUR_COLONIES || map.ID == MAP_PIONEERS || map.ID == MAP_BOHEMIA))
 						flooded = TRUE
 						if (istype(TF, /turf/floor/trench/flooded))
 							var/turf/floor/trench/flooded/WT = TF
@@ -497,37 +497,38 @@ var/list/global/floor_cache = list()
 
 /turf/floor/attack_hand(var/mob/living/carbon/human/H)
 	..()
-	if (!ishuman(H))
-		return
-	if (H.a_intent == I_GRAB)
-		if (salty)
-			H << "<span class='warning'>It's probably not a good idea to drink saltwater.</span>"
+	if (irrigation && irrigation_overlay)
+		if (!ishuman(H))
 			return
-		H << "You start drinking some water from \the [src]..."
-		if (do_after(H,50,src))
-			var/watertype = "water"
-			if (radiation>0)
-				watertype = "irradiated_water"
-			if (watertype == "irradiated_water")
-				H.rad_act(5)
+		if (H.a_intent == I_GRAB)
+			if (salty)
+				H << "<span class='warning'>It's probably not a good idea to drink saltwater.</span>"
+				return
+			H << "You start drinking some water from \the [src]..."
+			if (do_after(H,50,src))
+				var/watertype = "water"
+				if (radiation>0)
+					watertype = "irradiated_water"
+				if (watertype == "irradiated_water")
+					H.rad_act(5)
+				else
+					var/dmod = 1
+					if (H.find_trait("Weak Immune System"))
+						dmod = 2
+					if (prob(25*dmod) && !H.orc && !H.crab)
+						if (H.disease == 0)
+							H.disease_progression = 0
+							H.disease_type ="cholera"
+							H.disease = 1
+				if (H.water < 0)
+					H.water += rand(40,50)
+				H.water += 75
+				H.bladder += 75
+				H << "You drink some water."
+				playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+				return
 			else
-				var/dmod = 1
-				if (H.find_trait("Weak Immune System"))
-					dmod = 2
-				if (prob(25*dmod) && !H.orc && !H.crab)
-					if (H.disease == 0)
-						H.disease_progression = 0
-						H.disease_type ="cholera"
-						H.disease = 1
-			if (H.water < 0)
-				H.water += rand(40,50)
-			H.water += 75
-			H.bladder += 75
-			H << "You drink some water."
-			playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
-			return
-		else
-			return
+				return
 
 /turf/floor/proc/irrigate(var/irrigation_type = "empty")
 	switch(irrigation_type)

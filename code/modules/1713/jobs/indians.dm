@@ -13,10 +13,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
 /datum/job/indians/carib_chief/equip(var/mob/living/carbon/human/H)
@@ -52,9 +52,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 2
 	max_positions = 30
 /datum/job/indians/carib_shaman/equip(var/mob/living/carbon/human/H)
@@ -95,9 +95,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 20
 	max_positions = 300
 
@@ -146,9 +146,9 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND1"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 60
 	max_positions = 300
 
@@ -187,9 +187,9 @@ datum/job/indians/tribes/blue
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND2"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 60
 	max_positions = 300
 
@@ -228,9 +228,9 @@ datum/job/indians/tribes/green
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND3"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 60
 	max_positions = 300
 
@@ -269,9 +269,9 @@ datum/job/indians/tribes/yellow
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 60
 	max_positions = 300
 
@@ -310,9 +310,9 @@ datum/job/indians/tribes/white
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND5"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 60
 	max_positions = 300
 
@@ -353,9 +353,9 @@ datum/job/indians/tribes/black
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND6"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 60
 	max_positions = 300
 

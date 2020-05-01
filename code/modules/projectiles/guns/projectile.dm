@@ -36,7 +36,6 @@
 	attachment_slots = ATTACH_IRONSIGHTS
 
 	var/load_shell_sound = 'sound/weapons/empty.ogg'
-	var/load_magazine_sound = 'sound/weapons/flipblade.ogg'
 
 	var/executing = FALSE
 

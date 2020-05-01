@@ -116,7 +116,6 @@ var/list/gamemode_cache = list()
 
 	var/no_respawn_delays = FALSE
 	var/allowedgamemodes = "ALL"
-	var/max_expected_players = 50 // determines autobalance
 
 	// hub stuff
 
@@ -182,9 +181,6 @@ var/list/gamemode_cache = list()
 
 				if ("no_respawn_delays")
 					no_respawn_delays = text2num(value)
-
-				if ("max_expected_players")
-					max_expected_players = text2num(value)
 
 				if ("scripts_directory")
 					if (!list("null", "Null", "NULL", "nil", "Nil", "NILL").Find(value))

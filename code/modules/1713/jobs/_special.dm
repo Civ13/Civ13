@@ -39,13 +39,16 @@
 /datum/job/var/is_prison = FALSE
 /datum/job/var/is_navy = FALSE
 /datum/job/var/is_rp = FALSE
+/datum/job/var/is_medic = FALSE
+/datum/job/var/is_ss_panzer = FALSE
+
+/datum/job/var/squad = 0
+/datum/job/var/uses_squads = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold
-/datum/job/var/player_threshold = 0 // number of players who have to be on for this job to be open
-/datum/job/var/scale_to_players = 50 // as we approach this, our open positions approach max_positions. Does nothing if min_positions == max_positions, so just don't touch it
 
 /* type_flag() replaces flag, and base_type_flag() replaces department_flag
  * this is a better solution than bit constants, in my opinion */

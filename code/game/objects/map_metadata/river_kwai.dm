@@ -5,18 +5,18 @@
 	lobby_icon_state = "camp"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	respawn_delay = 3600
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		JAPANESE,
 		BRITISH)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(JAPANESE) = /area/caribbean/british,
 		list(BRITISH) = /area/caribbean/russian/land/inside/command,
 		)
 	age = "1943"
 	ordinal_age = 6
+	is_RP = TRUE
 	faction_distribution_coeffs = list(JAPANESE = 0.25, BRITISH = 0.75)
 	battle_name = "Bridge Over the River Kwai"
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the grace wall is removed.<br>The <b>Japanese</b> must keep the prisoners contained, and make them construct a railroad. The <b>Prisoners</b> must try to survive, follow their orders.</font>"

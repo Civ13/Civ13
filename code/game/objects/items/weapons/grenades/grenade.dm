@@ -14,6 +14,7 @@
 	var/loadable = TRUE
 	flammable = TRUE
 	value = 5
+	var/explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
 
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))
@@ -89,7 +90,7 @@
 	if(!O) return
 
 	if(explosion_size)
-		explosion(O,0,1,3,1)
+		explosion(O,0,1,3,1,sound=explosion_sound)
 		qdel(src)
 
 
@@ -103,6 +104,7 @@
 	throw_range = 2
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
+	explosion_sound = 'sound/weapons/Explosives/Dynamite.ogg'
 /obj/item/weapon/grenade/bomb/New()
 	..()
 	det_time = rand(80,120)
@@ -114,7 +116,7 @@
 	if(!O) return
 
 	if(explosion_size)
-		explosion(O,1,2,3,1)
+		explosion(O,1,2,3,1,sound=explosion_sound)
 		qdel(src)
 
 
@@ -123,6 +125,7 @@
 	desc = "Light it and run."
 	icon_state = "dynamite0"
 	det_time = 40
+	explosion_sound = 'sound/weapons/Explosives/Dynamite.ogg'
 	var/explosion_size = 2
 	var/state = 0
 
@@ -134,7 +137,7 @@
 	if(!O) return
 
 	if(explosion_size)
-		explosion(O,0,2,4,2)
+		explosion(O,0,2,4,2,sound=explosion_sound)
 		qdel(src)
 
 /obj/item/weapon/grenade/dynamite/attack_self(mob/user as mob)
@@ -212,6 +215,7 @@
 	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	var/big_bomb = FALSE
 	var/spread_range = 7
+	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 /obj/item/weapon/grenade/modern/prime()
 	set waitfor = 0
 	..()
@@ -220,7 +224,7 @@
 	if(!T) return
 
 	if(explosion_size)
-		explosion(T,0,1,3,1)
+		explosion(T,0,1,3,1,sound=explosion_sound)
 	if (!ismob(loc))
 
 		var/list/target_turfs = getcircle(T, spread_range)
@@ -248,6 +252,7 @@
 	icon_state = "mills"
 	det_time = 70
 	throw_range = 7
+	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/ww2/mills2
 	name = "mills bomb no. 36M"
@@ -303,7 +308,7 @@
 	icon_state = "type91"
 	det_time = 80
 	throw_range = 10
-
+	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/coldwar/m26
 	name = "M26 grenade"
@@ -311,7 +316,7 @@
 	icon_state = "m26"
 	det_time = 50
 	throw_range = 9
-
+	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/coldwar/m67
 	name = "M67 grenade"
@@ -328,7 +333,7 @@
 	if(!T) return
 
 	if(explosion_size)
-		explosion(T,0,1,3,1)
+		explosion(T,0,1,3,1,sound=explosion_sound)
 	if (!ismob(loc))
 
 		var/list/target_turfs = getcircle(T, spread_range)
@@ -357,7 +362,7 @@
 	if(!T) return
 
 	if(explosion_size)
-		explosion(T,0,1,3,1)
+		explosion(T,0,1,3,1,sound=explosion_sound)
 	if (!ismob(loc))
 
 		var/list/target_turfs = getcircle(T, spread_range)
@@ -393,7 +398,7 @@
 	if(!T) return
 
 	if(explosion_size)
-		explosion(T,1,3,3,1)
+		explosion(T,1,3,3,1,sound=explosion_sound)
 		qdel(src)
 
 /obj/item/weapon/grenade/ww2
@@ -706,7 +711,7 @@
 	var/turf/T = get_turf(src)
 	if(!T) return
 
-	explosion(T,2,2,2,2)
+	explosion(T,2,2,2,2,sound=explosion_sound)
 	for(var/obj/structure/vehicleparts/frame/F in range(1,T))
 		for (var/mob/M in F.axis.transporting)
 			shake_camera(M, 3, 3)

@@ -66,9 +66,46 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 35, gun = 10, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/ww/adriangreek
+	name = "Greek M15 Adrian helmet"
+	desc = "A typical greek adrian helmet."
+	icon_state = "adrian_greek"
+	item_state = "adrian_greek"
+	worn_state = "adrian_greek"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+	var/strap = FALSE
+
+/obj/item/clothing/head/helmet/ww/adriangreek/verb/toggle_strap()
+	set category = null
+	set src in usr
+	set name = "Toggle Strap"
+	if (strap)
+		icon_state = "adrian_greek"
+		item_state = "adrian_greek"
+		worn_state = "adrian_greek"
+		body_parts_covered = HEAD
+		item_state_slots["slot_wear_head"] = "adrian_greek"
+		usr << "<span class = 'danger'>You put down your helmets strap.</span>"
+		update_icon()
+		strap = FALSE
+		usr.update_inv_head(1)
+	else if (!strap)
+		icon_state = "adrian_greek_strap"
+		item_state = "adrian_greek_strap"
+		worn_state = "adrian_greek_strap"
+		body_parts_covered = HEAD
+		item_state_slots["slot_wear_head"] = "adrian_greek_strap"
+		usr << "<span class = 'danger'>You put up your helmets strap.</span>"
+		update_icon()
+		strap = TRUE
+		usr.update_inv_head(1)
+
 /obj/item/clothing/head/helmet/ww/adrian
 	name = "M15 Adrian helmet"
-	desc = "A typical french adrian helmet."
+	desc = "A typical french adrian."
 	icon_state = "adrian_standard"
 	item_state = "adrian_standard"
 	worn_state = "adrian_standard"
@@ -139,6 +176,63 @@
 		update_icon()
 		strap = TRUE
 		usr.update_inv_head(1)
+
+/obj/item/clothing/head/helmet/ww/adrianm15medic
+	name = "Medic M15 Adrian helmet"
+	desc = "The adrian helmet but soviet, used by the red army"
+	icon_state = "m15_adrian_m"
+	item_state = "m15_adrian_m"
+	worn_state = "m15_adrian_m"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/adrianm26
+	name = "M26 Adrian helmet"
+	desc = "A Typical M26 Adrian Helmet"
+	icon_state = "m26_adrian"
+	item_state = "m26_adrian"
+	worn_state = "m26_adrian"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+	var/strap = FALSE
+
+/obj/item/clothing/head/helmet/ww2/adrianm26/verb/toggle_strap()
+	set category = null
+	set src in usr
+	set name = "Toggle Strap"
+	if (strap)
+		icon_state = "m26_adrian"
+		item_state = "m26_adrian"
+		worn_state = "m26_adrian"
+		body_parts_covered = HEAD
+		item_state_slots["slot_wear_head"] = "m26_adrian"
+		usr << "<span class = 'danger'>You put down your helmets strap.</span>"
+		update_icon()
+		strap = FALSE
+		usr.update_inv_head(1)
+	else if (!strap)
+		icon_state = "m26_adrian_s"
+		item_state = "m26_adrian_s"
+		worn_state = "m26_adrian_s"
+		body_parts_covered = HEAD
+		item_state_slots["slot_wear_head"] = "m26_adrian_s"
+		usr << "<span class = 'danger'>You put up your helmets strap.</span>"
+		update_icon()
+		strap = TRUE
+		usr.update_inv_head(1)
+
+/obj/item/clothing/head/helmet/ww2/adrianm26medic
+	name = "Medic M26 Adrian helmet"
+	desc = "A Typical M26 Adrian Helmet, this one for medics"
+	icon_state = "m26_medic"
+	item_state = "m26_medic"
+	worn_state = "m26_medic"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/ww/mk1brodiedeb
 	name = "Mk1 Brodie Helmet"

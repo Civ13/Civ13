@@ -12,7 +12,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
-	fire_sound = 'sound/weapons/guns/fire/revolver_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/revolver.ogg'
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	magazine_based = FALSE
 	var/single_action = FALSE
@@ -184,6 +184,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c762x38mmR
+	ammo_type = /obj/item/ammo_casing/a762x38
 	weight = 1.45
 	single_action = FALSE
 	blackpowder = FALSE
@@ -284,6 +285,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/webly445
+	ammo_type = /obj/item/ammo_casing/webly445
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -376,6 +378,7 @@
 	base_icon = "smithwesson32"
 	w_class = 1
 	caliber = "a32"
+	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -395,6 +398,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c9mm_jap_revolver
+	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = TRUE
@@ -407,10 +411,12 @@
 	icon_state = "webley"
 	w_class = 2
 	caliber = "a455"
+	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c455
+	ammo_type = /obj/item/ammo_casing/a455
 	weight = 1.6
 	single_action = FALSE
 	blackpowder = FALSE
@@ -424,6 +430,7 @@
 	icon_state = "panther"
 	item_state = "panther"
 	w_class = 2
+	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
 	caliber = "a44p"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
@@ -440,7 +447,9 @@
 	item_state = "pistol"
 	w_class = 1
 	caliber = "a41"
+	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
 	magazine_type = /obj/item/ammo_magazine/c41
+	ammo_type = /obj/item/ammo_casing/a41
 	weight = 0.31
 	load_method = SINGLE_CASING
 	max_shells = 2
@@ -571,7 +580,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
-	fire_sound = 'sound/weapons/guns/fire/revolver_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/revolver.ogg'
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	magazine_based = FALSE
 	var/single_action = FALSE
@@ -753,7 +762,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
-	fire_sound = 'sound/weapons/guns/fire/revolver_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	magazine_based = FALSE
 	var/single_action = FALSE

@@ -3,13 +3,13 @@
 	rank_abbreviation = "Cpt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = FALSE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -45,13 +45,13 @@
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNBoatswain"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = FALSE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -87,13 +87,14 @@
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
 	is_ww2 = TRUE
 	is_officer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -131,9 +132,10 @@
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+	is_medic = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -174,9 +176,10 @@
 	rank_abbreviation = "2lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -218,9 +221,10 @@
 	rank_abbreviation = "Pfc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -257,9 +261,10 @@
 	rank_abbreviation = "Pfc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
@@ -298,9 +303,10 @@
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 8
 	max_positions = 100
 
@@ -335,10 +341,10 @@
 	rank_abbreviation = "Ssgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNMidshipman"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	whitelisted = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -371,9 +377,9 @@
 	rank_abbreviation = "Pfc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCook"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -404,12 +410,12 @@
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNNavy"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_navy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 

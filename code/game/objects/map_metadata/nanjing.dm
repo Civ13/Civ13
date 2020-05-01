@@ -5,12 +5,11 @@
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		JAPANESE,
 		CHINESE)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		list(CHINESE) = /area/caribbean/russian/land/inside/command,
@@ -28,7 +27,9 @@
 
 /obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == FALSE && J.is_prison == FALSE)
+	if (J.is_ww2 == TRUE)
+		. = TRUE
+	else if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper) || istype(J, /datum/job/japanese/ija_ww2_tanker))
 		. = TRUE
 	else
 		. = FALSE

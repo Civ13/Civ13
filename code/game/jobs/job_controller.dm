@@ -51,8 +51,6 @@ var/global/datum/controller/occupations/job_master
 		//Debug info
 	var/list/job_debug = list()
 
-	var/admin_expected_clients = 0
-
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
 //	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
 //	var/randomfaction_spawn = "Red Goose Tribesman"
@@ -101,22 +99,26 @@ var/global/datum/controller/occupations/job_master
 	map.availablefactions_run = FALSE
 	return
 
-/datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0, var/announce = TRUE)
+/datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0)
 
 	if (map)
 		map.faction_organization = map.initial_faction_organization.Copy()
+	switch(clients.len)
+		if (0 to 12)
+			map.squads = 1
+		if (13 to 24)
+			map.squads = 2
+		if (25 to 36)
+			map.squads = 3
+		if (37 to 48)
+			map.squads = 4
+		if (49 to 60)
+			map.squads = 5
+		if (61 to 1000)
+			map.squads = 6
+	_clients = max(_clients, clients.len)
 
-	_clients = max(max(_clients, (map ? map.min_autobalance_players : 0)), clients.len, admin_expected_clients)
-
-	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 50))
-
-	if (announce == TRUE)
-		world << ""
-	else if (announce == 2)
-		if (!roundstart_time)
-			world << "<span class = 'warning'>An admin has changed autobalance to be set up for [max(_clients, autobalance_for_players)] players.</span>"
-		else
-			world << "<span class = 'warning'>An admin has reset autobalance for [max(_clients, autobalance_for_players)] players.</span>"
+	var/autobalance_for_players = round(max(_clients, clients.len))
 
 	if (map && map.civilizations && map.ID != MAP_TRIBES)
 		if (map.ID == MAP_CIVILIZATIONS)
@@ -127,28 +129,24 @@ var/global/datum/controller/occupations/job_master
 		if (map && map.ID == MAP_TRIBES)
 			set_factions(autobalance_for_players)
 
-	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
-		civilians_forceEnabled = TRUE
 	for (var/datum/job/J in occupations)
-		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")
-			var/positions = round((autobalance_for_players/J.scale_to_players) * J.max_positions)
+		if (J.title != "N/A" && J.title != "generic job")
+			var/positions = J.max_positions
 			positions = max(positions, J.min_positions)
 			positions = min(positions, J.max_positions)
 			J.total_positions = positions
 		else
 			J.total_positions = 0
 
-	if (map && map.subfaction_is_main_faction)
-		announce = FALSE
+	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
+		civilians_forceEnabled = TRUE
 
 	if (map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY))
-		if (map)
-			if (announce)
-				world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
-				indians_toggled = FALSE
-				pirates_toggled = FALSE
-				spanish_toggled = FALSE
-				civilians_forceEnabled = TRUE
+		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
+		indians_toggled = FALSE
+		pirates_toggled = FALSE
+		spanish_toggled = FALSE
+		civilians_forceEnabled = TRUE
 	if (map.civilizations)
 		civilians_forceEnabled = TRUE
 
@@ -178,6 +176,34 @@ var/global/datum/controller/occupations/job_master
 
 	if (!H)
 		return
+
+	if (H.original_job && H.original_job.uses_squads && !H.original_job.is_squad_leader && H.squad > 0)
+		var/mob/living/carbon/human/HSL = null
+		world.log << "trying"
+		if (H.faction_text == map.faction1)
+			if (map.faction1_squad_leaders[H.squad])
+				HSL = map.faction1_squad_leaders[H.squad]
+				world.log << "found"
+		else if (H.faction_text == map.faction2)
+			if (map.faction2_squad_leaders[H.squad])
+				HSL = map.faction2_squad_leaders[H.squad]
+				world.log << "found"
+		if (HSL && HSL.stat == CONSCIOUS)
+			world.log << "[HSL]"
+			var/found = FALSE
+			for(var/mob/living/carbon/human/EN in range(6,HSL))
+				if (EN.stat == CONSCIOUS && EN.faction_text != H.faction_text)
+					found = TRUE
+					continue
+			if (!found)
+				H.forceMove(get_turf(HSL))
+				HSL << "<big><font color='green'>[H] has arrived at your squad.</font></big>"
+				// make sure we have the right ambience for our new location
+				spawn (1)
+					var/area/H_area = get_area(H)
+					if (H_area)
+						H_area.play_ambience(H)
+				return
 
 	var/spawn_location = H.job_spawn_location
 

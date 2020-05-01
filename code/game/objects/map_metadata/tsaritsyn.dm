@@ -6,12 +6,11 @@
 	no_winner ="The church is under Soviet control."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 600
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		RUSSIAN,
 		CIVILIAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/british,
 		list(CIVILIAN) = /area/caribbean/russian/land/inside/command,

@@ -5,12 +5,11 @@ K
 	lobby_icon_state = "ancient"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/three,/area/caribbean/no_mans_land/invisible_wall/four)
 	respawn_delay = 0
-	squad_spawn_locations = FALSE
+
 	no_winner ="The round is proceeding normally."
 	faction_organization = list(
 		ROMAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(ROMAN) = /area/caribbean/british,
 		)

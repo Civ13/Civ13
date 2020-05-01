@@ -9,10 +9,10 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -53,10 +53,10 @@
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -92,10 +92,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 25
 
@@ -138,10 +138,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -193,10 +193,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
@@ -242,10 +242,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 18
 	max_positions = 100
 
@@ -315,11 +315,11 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -360,11 +360,11 @@
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -403,11 +403,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 50
 
@@ -448,10 +448,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -498,11 +498,11 @@
 	rank_abbreviation = "Father"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
@@ -542,10 +542,10 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -586,10 +586,10 @@
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -625,10 +625,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 25
 
@@ -671,10 +671,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -726,10 +726,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
@@ -774,10 +774,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 18
 	max_positions = 100
 
@@ -854,10 +854,10 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -897,10 +897,10 @@
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -940,10 +940,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -986,10 +986,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
@@ -1040,10 +1040,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
@@ -1090,11 +1090,11 @@
 	rank_abbreviation = "Imam"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_religious = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
@@ -1134,14 +1134,14 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = FALSE
 	is_rp = TRUE
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1183,14 +1183,14 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = FALSE
 	is_rp = TRUE
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1233,12 +1233,12 @@
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 	is_squad_leader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -1277,11 +1277,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateGE"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 15
 
@@ -1328,11 +1328,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-	SL_check_independent = TRUE
+
 	is_religious = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
@@ -1369,10 +1369,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
@@ -1427,10 +1427,10 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 10
 
@@ -1489,10 +1489,10 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivB"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1548,11 +1548,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivD"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
@@ -1607,11 +1607,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
@@ -1667,11 +1667,11 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 50
 
@@ -1726,11 +1726,11 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivA"
 	is_merchant = TRUE
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
@@ -1785,11 +1785,12 @@
 	rank_abbreviation = "Arzt"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_medieval = TRUE
 	is_rp = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 

@@ -5,12 +5,11 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/british,
 		list(ARAB) = /area/caribbean/arab
@@ -157,12 +156,11 @@ var/no_loop_arab = FALSE
 	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/british,
 		list(ARAB) = /area/caribbean/arab

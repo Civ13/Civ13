@@ -116,8 +116,6 @@
 		ui.open()
 
 /obj/structure/chemical_dispenser/Topic(href, href_list)
-	if (stat & (NOPOWER|BROKEN))
-		return FALSE // don't update UIs attached to this object
 
 	if (href_list["amount"])
 		amount = round(text2num(href_list["amount"]), 5) // round to nearest 5
@@ -155,10 +153,6 @@
 				for (var/list/r in dispensable_reagents)
 					if (R.id == r[1])
 						r[2] += B.reagents.get_reagent_amount(R.id)
-						done = TRUE
-						break
-					else
-						dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
 						done = TRUE
 						break
 				if (!done)
