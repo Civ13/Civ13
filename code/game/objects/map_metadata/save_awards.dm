@@ -107,7 +107,7 @@ AWARDS:
 					CL.accessories += MEDAL
 					MEDAL.on_attached(CL, L)
 					verbs |= /obj/item/clothing/proc/removetie_verb
-					CL.update_inv_w_uniform()
+					L.update_inv_w_uniform()
 	return
 
 /obj/map_metadata/proc/remove_award(var/_ckey, var/charname, var/awardtype)
