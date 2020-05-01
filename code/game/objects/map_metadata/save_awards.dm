@@ -30,11 +30,11 @@ AWARDS:
 
 			if (awards["wounded"]>=300 && !("wounded gold" in awarded))
 				map.give_award(client.ckey, name, "wounded gold", capitalize(faction_text),src)
-				map.remove_award(client.ckey, name, "wounded silver", capitalize(faction_text),src)
-				map.remove_award(client.ckey, name, "wounded", capitalize(faction_text))
+				map.remove_award(client.ckey, name, "wounded silver")
+				map.remove_award(client.ckey, name, "wounded")
 			else if (awards["wounded"]>=220 && !("wounded silver" in awarded))
 				map.give_award(client.ckey, name, "wounded silver", capitalize(faction_text),src)
-				map.remove_award(client.ckey, name, "wounded", capitalize(faction_text))
+				map.remove_award(client.ckey, name, "wounded")
 			else if (awards["wounded"]>=150 && !("wounded" in awarded))
 				map.give_award(client.ckey, name,"wounded", capitalize(faction_text),src)
 
@@ -44,7 +44,7 @@ AWARDS:
 					awards["kill_count"]++
 			if (awards["kill_count"]>= 10 && !("iron cross 1st class" in awarded))
 				map.give_award(client.ckey, name,"iron cross 1st class", capitalize(faction_text),src)
-				map.remove_award(client.ckey, name, "iron cross 2nd class", capitalize(faction_text))
+				map.remove_award(client.ckey, name, "iron cross 2nd class")
 			else if (awards["kill_count"]>= 7 && !("iron cross 2nd class" in awarded))
 				map.give_award(client.ckey, name,"iron cross 2nd class", capitalize(faction_text),src)
 			else if (awards["kill_count"]>= 3 && !("assault badge" in awarded))
@@ -102,8 +102,8 @@ AWARDS:
 				L.w_uniform.attackby(MEDAL, L)
 	return
 
-/obj/map_metadata/proc/remove_award(var/_ckey, var/charname, var/awardtype, var/faction)
+/obj/map_metadata/proc/remove_award(var/_ckey, var/charname, var/awardtype)
 	for (var/list/i in awards)
-		if (i[1] == _ckey && i[2] == charname && i[3] == awardtype && i[4] == faction)
+		if (i[1] == _ckey && i[2] == charname && i[3] == awardtype)
 			awards -= i
 	return
