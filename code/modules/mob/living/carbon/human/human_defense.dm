@@ -501,8 +501,9 @@ bullet_act
 	if (!map.civilizations && !map.nomads && !map.is_RP&& ishuman(src) && ishuman(user))
 		var/mob/living/carbon/human/Hsrc = src
 		var/mob/living/carbon/human/Huser = user
-		Hsrc.awards["wounded"]+=min(effective_force,100)
-		Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
+		if (Hsrc.stat != DEAD)
+			Hsrc.awards["wounded"]+=min(effective_force,100)
+			Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
 	return blocked
 
 /mob/living/carbon/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)

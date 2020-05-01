@@ -35,7 +35,7 @@
 /mob/living/carbon/human/Life()
 
 	handle_zoom_stuff()
-	if (!map.civilizations && map.nomads && !map.is_RP)
+	if (!map.civilizations && !map.nomads && !map.is_RP)
 		process_awards()
 	if (transforming)
 		return
