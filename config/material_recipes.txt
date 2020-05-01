@@ -47,16 +47,15 @@ RECIPE: /material/leather/,long celtic braccae,/obj/item/clothing/under/celtic_l
 RECIPE: /material/leather/,short celtic braccae,/obj/item/clothing/under/celtic_short_braccae,2,55,0,1,clothing,0,19,0,1,null
 RECIPE: /material/leather/,medieval shoes,/obj/item/clothing/shoes/medieval,3,80,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,arabic-style shoes,/obj/item/clothing/shoes/medieval/arab,2,60,0,1,foot wear,0,39,0,2,null
-RECIPE: /material/leather/,samurai armor,/obj/item/clothing/suit/armor/samurai,20,100,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,red samurai armor,/obj/item/clothing/suit/armor/samurai/red,20,100,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,blue samurai armor,/obj/item/clothing/suit/armor/samurai/blue,20,100,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,black samurai armor,/obj/item/clothing/suit/armor/samurai/black,20,100,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,samurai helmet,/obj/item/clothing/head/helmet/samurai/guard,10,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,red samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/red,10,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,blue samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,10,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,black samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/black,10,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,tsuranuki armored shoes,/obj/item/clothing/shoes/tsuranuki,5,80,0,1,armor,0,39,0,2,null
-RECIPE: /material/leather/,kote gauntlets,/obj/item/clothing/gloves/gauntlets/kote,5,80,0,1,armor,0,39,0,2,null
+RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
+RECIPE: /material/leather/,tatami samurai armor,/obj/item/clothing/suit/armor/samurai,10,180,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,red tatami samurai armor,/obj/item/clothing/suit/armor/samurai/red,10,180,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,blue tatami samurai armor,/obj/item/clothing/suit/armor/samurai/blue,10,180,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,black tatami samurai armor,/obj/item/clothing/suit/armor/samurai/black,10,180,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard,7,140,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,red leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/red,7,140,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,blue leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,7,140,0,1,armor,0,33,0,3,null
+RECIPE: /material/leather/,black leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/black,7,140,0,1,armor,0,33,0,3,null
 
 RECIPE: /material/leather/,gunpowder pouch,/obj/item/weapon/reagent_containers/food/drinks/gunpowder,2,60,0,1,weapon accessories,0,54,0,8,null
 RECIPE: /material/leather/,bandolier,/obj/item/clothing/accessory/storage/webbing,3,70,0,1,weapon accessories,0,54,0,8,null
@@ -292,6 +291,11 @@ RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hat
 RECIPE: /material/cloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,38,4,null
 RECIPE: /material/cloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,38,4,null
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,38,8,null
+RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,helmets,0,0,38,3,null
+RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,helmets,0,0,38,3,null
+RECIPE: /material/cloth/,green arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab3,5,75,0,1,helmets,0,0,38,3,null
+RECIPE: /material/cloth/,blue arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab4,5,75,0,1,helmets,0,0,38,3,null
+RECIPE: /material/cloth/,emirate turban,/obj/item/clothing/head/helmet/medieval/emirate,7,90,0,1,helmets,0,0,38,3,null
 RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats & masks,0,0,38,8,null
 RECIPE: /material/cloth/,custom keffiyeh,/obj/item/clothing/head/custom_keffiyeh,2,55,0,1,hats & masks,0,0,38,8,null
 RECIPE: /material/cloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,hats & masks,0,0,38,8,null
@@ -351,6 +355,7 @@ RECIPE: /material/cloth/,customizable crinoline dress,/obj/item/clothing/under/c
 RECIPE: /material/cloth/,customizable arabic tunic,/obj/item/clothing/under/custom/arabictunic,4,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light brown arabic tunic,/obj/item/clothing/under/medieval/arab1,3,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light white arabic tunic,/obj/item/clothing/under/medieval/arab2,3,85,0,1,clothing,38,0,0,5,null
+RECIPE: /material/cloth/,emirate tunic,/obj/item/clothing/under/medieval/emirate,4,85,0,1,clothing,38,0,0,5,null
 RECIPE: /material/cloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,38,0,0,8,null
 RECIPE: /material/cloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,38,0,0,8,null
@@ -569,7 +574,7 @@ RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,pr
 RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,null
 RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stoneball,1,25,0,1,projectiles,24,49,0,8,null
 
-RECIPE: /material/stone/,stone bricks,/obj/item/stack/material/stonebrick,1,25,1,1,none,35,0,0,8,null
+RECIPE: /material/stone/,stone bricks,/obj/item/stack/material/stonebrick,1,25,0,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick wall,/obj/covers/stone_wall/brick,6,140,1,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick floor,/obj/covers/stonebrickfloor,1,25,1,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick archway,/obj/covers/stone_wall/brick/archway,6,140,1,1,none,35,0,0,8,null
@@ -1079,8 +1084,8 @@ RECIPE: /material/iron/,handcuffs,/obj/item/weapon/handcuffs,1,50,0,1,tools,0,61
 RECIPE: /material/iron/,monocle,/obj/item/clothing/glasses/monocle,3,110,0,1,none,0,61,0,8,null
 RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,0,1,tools,0,46,0,8,null
 RECIPE: /material/iron/,lantern,/obj/item/flashlight/lantern,4,140,0,1,none,28,0,0,8,null
-RECIPE: /material/iron/,unlocked door,/obj/structure/simple_door/key_door/anyone,5,50,1,1,construction,28,0,0,8,null
-RECIPE: /material/iron/,locked door,/obj/structure/simple_door/key_door/custom,5,50,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,unlocked iron door,/obj/structure/simple_door/key_door/anyone,5,50,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,locked iron door,/obj/structure/simple_door/key_door/custom,5,50,1,1,construction,28,0,0,8,null
 RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 RECIPE: /material/iron/,keychain,/obj/item/weapon/storage/belt/keychain,1,30,0,1,none,28,0,0,8,null
 RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,construction,50,0,0,8,null
