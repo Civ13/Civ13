@@ -33,6 +33,7 @@
 /process/epochswap/fire()
 	// no SCHECK here
 	if (is_ready())
+		map.save_awards()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
 				//Stone Age (?-3000 B.C.)" = 0,

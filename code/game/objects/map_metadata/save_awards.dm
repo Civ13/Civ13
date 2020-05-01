@@ -55,9 +55,6 @@ AWARDS:
 	var/F = file("SQL/awards.txt")
 	if (!awards.len)
 		return
-	if (fexists(F))
-		fcopy("SQL/awards.txt","SQL/awards_backup.txt")
-		fdel(F)
 	for (var/i = 1, i <= awards.len, i++)
 		var/txtexport = list2text(awards[i])
 		text2file(txtexport,F)
