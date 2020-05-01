@@ -20,23 +20,23 @@ AWARDS:
 	if (map.gamemode == "Hardcore")
 		if (map.ordinal_age>=5)
 			awards["service"]++
-			if (awards["service"]>=12000 && client && !("long service" in awarded))
-				map.give_award(client.ckey, name, "long service", capitalize(faction_text),src)
+			if (awards["service"]>=12000 && client && !("long service medal" in awarded))
+				map.give_award(client.ckey, name, "long service medal", capitalize(faction_text),src)
 
-			if (awards["tank"]>=2 && !("tank destroyer silver" in awarded))
-				map.give_award(client.ckey, name, "tank destroyer silver", capitalize(faction_text),src)
-			else if (awards["tank"]>=4 && !("tank destroyer gold" in awarded))
-				map.give_award(client.ckey, name, "tank destroyer gold", capitalize(faction_text),src)
+			if (awards["tank"]>=2 && !("tank destroyer silver badge" in awarded))
+				map.give_award(client.ckey, name, "tank destroyer silver badge", capitalize(faction_text),src)
+			else if (awards["tank"]>=4 && !("tank destroyer gold badge" in awarded))
+				map.give_award(client.ckey, name, "tank destroyer gold badge", capitalize(faction_text),src)
 
-			if (awards["wounded"]>=300 && !("wounded gold" in awarded))
-				map.give_award(client.ckey, name, "wounded gold", capitalize(faction_text),src)
-				map.remove_award(client.ckey, name, "wounded silver")
-				map.remove_award(client.ckey, name, "wounded")
-			else if (awards["wounded"]>=220 && !("wounded silver" in awarded))
-				map.give_award(client.ckey, name, "wounded silver", capitalize(faction_text),src)
-				map.remove_award(client.ckey, name, "wounded")
-			else if (awards["wounded"]>=150 && !("wounded" in awarded))
-				map.give_award(client.ckey, name,"wounded", capitalize(faction_text),src)
+			if (awards["wounded"]>=300 && !("wounded gold badge" in awarded))
+				map.give_award(client.ckey, name, "wounded gold badge", capitalize(faction_text),src)
+				map.remove_award(client.ckey, name, "wounded silver badge")
+				map.remove_award(client.ckey, name, "wounded badge")
+			else if (awards["wounded"]>=220 && !("wounded silver badge" in awarded))
+				map.give_award(client.ckey, name, "wounded silver badge", capitalize(faction_text),src)
+				map.remove_award(client.ckey, name, "wounded badge")
+			else if (awards["wounded"]>=150 && !("wounded badge" in awarded))
+				map.give_award(client.ckey, name,"wounded badge", capitalize(faction_text),src)
 
 			for(var/list/i in awards["kills"])
 				if (islist(i) && i[1] != "" && i[2] >= 100 && i[3]==0)
@@ -59,6 +59,7 @@ AWARDS:
 		if (awards[i][1]!="")
 			var/txtexport = list2text(awards[i])
 			text2file(txtexport,F)
+			world << "[awards[i][2]] ([awards[i][1]]) has received a <b>[awards[i][3]]</b>!"
 	return TRUE
 
 /obj/map_metadata/proc/give_award(var/_ckey, var/charname, var/awardtype, var/faction, var/mob/living/carbon/human/L = null)
