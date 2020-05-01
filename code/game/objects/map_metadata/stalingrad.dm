@@ -40,13 +40,13 @@
 	..()
 	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
 		. = TRUE
-	if (J.is_ss_panzer == TRUE)
+	else if (J.is_ss_panzer == TRUE)
 		. = FALSE
-	if (J.is_tanker == TRUE)
+	else if (J.is_tanker == TRUE)
 		. = FALSE
-	if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
+	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
 		. = TRUE
-	if (J.is_reichstag == TRUE)
+	else if (J.is_reichstag == TRUE)
 		. = FALSE
 	else
 		. = FALSE
