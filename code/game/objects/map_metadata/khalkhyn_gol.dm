@@ -29,11 +29,11 @@
 	..()
 	if (J.is_ww2 == TRUE)
 		. = TRUE
-	if (istype(J, /datum/job/russian/tank_crew) || istype(J, /datum/job/japanese/ija_ww2ATunit))
+	else if (istype(J, /datum/job/russian/tank_crew) || istype(J, /datum/job/japanese/ija_ww2ATunit))
 		. = TRUE
-	if (J.is_tanker == TRUE)
+	else if (J.is_tanker == TRUE)
 		. = FALSE
-	if (J.is_prison == TRUE)
+	else if (J.is_prison == TRUE)
 		. = FALSE
 	else
 		. = FALSE
