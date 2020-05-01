@@ -63,7 +63,7 @@ AWARDS:
 /obj/map_metadata/proc/give_award(var/_ckey, var/charname, var/awardtype, var/faction, var/mob/living/carbon/human/L = null)
 	//ckey,charname,award,faction,map,date
 	var/parsed_title = splittext(title, " (")
-	awards += list(list(_ckey,charname,awardtype,faction,parsed_title[1],time2text(world.realtime, "YYYY/MM-Month/DD-Day")))
+	awards += list(list(_ckey,charname,awardtype,faction,parsed_title[1],time2text(world.realtime, "YYYY/MM/DD")))
 	if (L)
 		L << "<font size=3 color='yellow'>You have received a [awardtype] medal!</font>"
 		if (!(awardtype in L.awarded))
