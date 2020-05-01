@@ -155,10 +155,6 @@
 						r[2] += B.reagents.get_reagent_amount(R.id)
 						done = TRUE
 						break
-					else
-						dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
-						done = TRUE
-						break
 				if (!done)
 					dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
 			B.reagents.clear_reagents()
