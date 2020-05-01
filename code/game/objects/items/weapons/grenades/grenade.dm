@@ -15,7 +15,7 @@
 	flammable = TRUE
 	value = 5
 	var/explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
-
+	var/mob/living/carbon/human/firer = null
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))
 		if (det_time > 1)
@@ -26,6 +26,7 @@
 /obj/item/weapon/grenade/attack_self(mob/user as mob)
 	if (!active)
 		user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+		firer = user
 		activate(user)
 		add_fingerprint(user)
 
@@ -41,7 +42,7 @@
 
 	if (user)
 		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
-
+		firer = user
 	icon_state = initial(icon_state) + "_active"
 	active = TRUE
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
@@ -143,12 +144,14 @@
 /obj/item/weapon/grenade/dynamite/attack_self(mob/user as mob)
 	if (state == 2)
 		activate()
+		firer = user
 	return
 
 /obj/item/weapon/grenade/dynamite/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (state == 2 && istype(W, /obj/item/flashlight))
 		var/obj/item/flashlight/F = W
 		if (F.on)
+			firer = user
 			activate(user)
 			add_fingerprint(user)
 			name = "lighted dynamite stick"
@@ -433,6 +436,7 @@
 					user << "You successfully place the booby trap here using \the [src]."
 					var/obj/item/mine/boobytrap/BT = new /obj/item/mine/boobytrap(get_turf(user))
 					BT.origin = src.type
+					firer = user
 					qdel(src)
 		else
 			return
@@ -566,12 +570,14 @@
 /obj/item/weapon/grenade/suicide_vest/kamikaze/attack_self(mob/user as mob)
 	if (!active && armed1 == "armed")
 		user << "<span class='warning'>You switch \the [name]!</span>"
+		firer = user
 		activate(user)
 		add_fingerprint(user)
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/attack_hand(mob/user as mob)
 	if (!active && armed1 == "armed" && loc == user)
 		user << "<span class='warning'>You switch \the [name]!</span>"
+		firer = user
 		activate(user)
 		add_fingerprint(user)
 	else
@@ -585,6 +591,7 @@
 	if (armed1 == "armed")
 		usr << "You disarm \the [src]."
 		armed1 = "disarmed"
+		firer = null
 		return
 	else
 		usr << "<span class='warning'>You arm \the [src]!</span>"
@@ -770,4 +777,6 @@
 			MV.broken = TRUE
 			MV.update_icon()
 		F.update_icon()
+		if (firer)
+			firer.awards["tank"]+=(heavy_armor_penetration/120)
 	qdel(src)
