@@ -71,24 +71,24 @@ AWARDS:
 		if (!(awardtype in L.awarded))
 			L.awarded += list(awardtype)
 		var/obj/item/clothing/accessory/medal/MEDAL = null
-		if (L.w_uniform)
+		if (L.w_uniform && istype(L.w_uniform, /obj/item/clothing))
 			switch(awardtype)
-				if ("wounded")
+				if ("wounded badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound(L.loc)
 
-				if ("wounded silver")
+				if ("wounded silver badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound_silver(L.loc)
 
-				if ("wounded gold")
+				if ("wounded gold badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound_gold(L.loc)
 
-				if ("long service")
+				if ("long service medal")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/long_service(L.loc)
 
-				if ("tank destroyer silver")
+				if ("tank destroyer silver badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/tank_destruction(L.loc)
 
-				if ("tank destroyer gold")
+				if ("tank destroyer gold badge")
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold(L.loc)
 
 				if ("assault badge")
@@ -101,7 +101,13 @@ AWARDS:
 					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(L.loc)
 
 			if (MEDAL)
-				L.w_uniform.attackby(MEDAL, L)
+				var/obj/item/clothing/CL = L.w_uniform
+				CL.attackby(MEDAL, L)
+				if (CL.can_attach_accessory(MEDAL))
+					CL.accessories += MEDAL
+					MEDAL.on_attached(CL, L)
+					verbs |= /obj/item/clothing/proc/removetie_verb
+					CL.update_inv_w_uniform()
 	return
 
 /obj/map_metadata/proc/remove_award(var/_ckey, var/charname, var/awardtype)
