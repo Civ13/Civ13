@@ -56,8 +56,9 @@ AWARDS:
 	if (!awards.len)
 		return
 	for (var/i = 1, i <= awards.len, i++)
-		var/txtexport = list2text(awards[i])
-		text2file(txtexport,F)
+		if (awards[i][1]!="")
+			var/txtexport = list2text(awards[i])
+			text2file(txtexport,F)
 	return TRUE
 
 /obj/map_metadata/proc/give_award(var/_ckey, var/charname, var/awardtype, var/faction, var/mob/living/carbon/human/L = null)
@@ -103,7 +104,9 @@ AWARDS:
 	return
 
 /obj/map_metadata/proc/remove_award(var/_ckey, var/charname, var/awardtype)
-	for (var/list/i in awards)
-		if (i[1] == _ckey && i[2] == charname && i[3] == awardtype)
-			awards -= i
+	for (var/i=1, i<=awards.len, i++)
+		if (awards[i][1] == _ckey && awards[i][2] == charname && awards[i][3] == awardtype)
+			awards[i][1] = ""
+			awards[i][2] = ""
+			awards[i][3] = ""
 	return
