@@ -109,6 +109,7 @@ bullet_act
 				if (GUN_TYPE_MG)
 					H.adaptStat("machinegun", 1)
 
+
 	def_zone = check_zone(def_zone)
 
 
@@ -497,7 +498,12 @@ bullet_act
 	instadeath_check()
 	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
-
+	if (!map.civilizations && !map.nomads && !map.is_RP&& ishuman(src) && ishuman(user))
+		var/mob/living/carbon/human/Hsrc = src
+		var/mob/living/carbon/human/Huser = user
+		if (Hsrc.stat != DEAD)
+			Hsrc.awards["wounded"]+=min(effective_force,100)
+			Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
 	return blocked
 
 /mob/living/carbon/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)

@@ -1084,8 +1084,8 @@ RECIPE: /material/iron/,handcuffs,/obj/item/weapon/handcuffs,1,50,0,1,tools,0,61
 RECIPE: /material/iron/,monocle,/obj/item/clothing/glasses/monocle,3,110,0,1,none,0,61,0,8,null
 RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,0,1,tools,0,46,0,8,null
 RECIPE: /material/iron/,lantern,/obj/item/flashlight/lantern,4,140,0,1,none,28,0,0,8,null
-RECIPE: /material/iron/,unlocked door,/obj/structure/simple_door/key_door/anyone,5,50,1,1,construction,28,0,0,8,null
-RECIPE: /material/iron/,locked door,/obj/structure/simple_door/key_door/custom,5,50,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,unlocked iron door,/obj/structure/simple_door/key_door/anyone,5,50,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,locked iron door,/obj/structure/simple_door/key_door/custom,5,50,1,1,construction,28,0,0,8,null
 RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 RECIPE: /material/iron/,keychain,/obj/item/weapon/storage/belt/keychain,1,30,0,1,none,28,0,0,8,null
 RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,construction,50,0,0,8,null
