@@ -231,7 +231,12 @@
 			var/keyname = input(user, "Choose a name for the door:") as text|null
 			if (keyname == null)
 				keyname = "Locked"
-			build_override_door = new /obj/structure/simple_door/key_door/custom
+			if (findtext(recipe.title, "iron door"))
+				build_override_door = new /obj/structure/simple_door/key_door/custom
+			if (findtext(recipe.title, "jail door"))
+				build_override_door = new /obj/structure/simple_door/key_door/custom/jail/steeljail
+			if (findtext(recipe.title, "wood jail"))
+				build_override_door = new /obj/structure/simple_door/key_door/custom/jail/woodjail
 			build_override_door.name = keyname
 			build_override_door.custom_code = key.code
 
