@@ -29,20 +29,16 @@
 obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/german))
-		if (J.is_ww2 == TRUE && J.is_reichstag == TRUE)
+		if (J.is_ww2 == TRUE || J.is_reichstag == TRUE)
 			. = TRUE
-		else if (J.is_ss_panzer == TRUE)
-			. = FALSE
-		else if (J.is_tanker == TRUE)
+		else if (J.is_ss_panzer == TRUE || J.is_tanker == TRUE)
 			. = FALSE
 		else
 			. = FALSE
 	else
 		if (J.is_ww2 == TRUE || J.is_reichstag == TRUE)
 			. = TRUE
-		else if (J.is_ss_panzer == TRUE)
-			. = FALSE
-		else if (J.is_tanker == TRUE)
+		else if (J.is_ss_panzer == TRUE || J.is_tanker == TRUE)
 			. = FALSE
 		else
 			. = FALSE

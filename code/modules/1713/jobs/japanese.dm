@@ -162,7 +162,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
-
+	uses_squads = TRUE
 
 
 	min_positions = 1
@@ -334,7 +334,7 @@
 	rank_abbreviation = "Itto."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-
+	uses_squads = TRUE
 
 
 	min_positions = 3
@@ -378,7 +378,7 @@
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJP"
-
+	uses_squads = TRUE
 
 
 	min_positions = 6
@@ -428,7 +428,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-
 	is_ww2 = TRUE
 
 	min_positions = 1
@@ -474,7 +473,6 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPLT"
 	whitelisted = TRUE
-
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww2 = TRUE
@@ -522,7 +520,6 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateJPLT"
 	whitelisted = TRUE
-
 	is_commander = TRUE
 	is_officer = TRUE
 	is_ww2 = TRUE
@@ -570,8 +567,8 @@
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
 	uses_squads = TRUE
+	is_squad_leader = TRUE
 	is_ww2 = TRUE
-
 	min_positions = 1
 	max_positions = 4
 

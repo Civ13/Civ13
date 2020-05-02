@@ -36,6 +36,38 @@
 
 	)
 
+/obj/structure/vending/capnball
+	name = "Cap n Ball weapon rack"
+	desc = "An assorted rack of Cap n Ball weapons."
+	icon_state = "apparel_rifles"
+	products = list(
+		/obj/item/weapon/gun/projectile/flintlock/springfield = 15,
+		/obj/item/weapon/gun/projectile/flintlock/springfield1795 = 5,
+		/obj/item/weapon/attachment/bayonet = 15,
+	)
+
+/obj/structure/vending/confederate_apparel
+	name = "confederate apparel rack"
+	desc = "An assorted rack of confederate apparel."
+	icon_state = "apparel_confed"
+	products = list(
+		/obj/item/clothing/head/confederatecap = 15,
+		/obj/item/clothing/under/confederate_uniform/grey = 15,
+		/obj/item/clothing/under/confederate_uniform/grey_blue = 15,
+		/obj/item/clothing/head/confederatehat = 5,
+	)
+/obj/structure/vending/union_apparel
+	name = "union apparel rack"
+	desc = "An assorted rack of union apparel."
+	icon_state = "apparel_japan"
+	products = list(
+		/obj/item/clothing/head/unioncap = 15,
+		/obj/item/clothing/under/union_uniform = 15,
+		/obj/item/clothing/head/unionhat = 5,
+		/obj/item/clothing/head/unionhatlight = 5,
+
+	)
+
 /obj/structure/vending/britishapparel
 	name = "Royal Navy sailor clothes rack"
 	desc = "Basic wear for sailors of the Royal Navy."
