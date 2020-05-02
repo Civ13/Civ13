@@ -778,5 +778,5 @@
 			MV.update_icon()
 		F.update_icon()
 		if (firer)
-			firer.awards["tank"]+=(heavy_armor_penetration/120)
+			firer.awards["tank"]+=(heavy_armor_penetration/200)
 	qdel(src)

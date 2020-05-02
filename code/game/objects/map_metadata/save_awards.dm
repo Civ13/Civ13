@@ -20,14 +20,14 @@ AWARDS:
 	if (map.gamemode == "Hardcore")
 		if (map.ordinal_age>=5)
 			awards["service"]++
-			if (awards["service"]>=12000 && client && !("long service medal" in awarded))
+			if (awards["service"]>=1200 && client && !("long service medal" in awarded))
 				map.give_award(client.ckey, name, "long service medal", capitalize(faction_text),src)
 
 			if (awards["tank"]>=2 && !("tank destroyer silver badge" in awarded))
 				map.give_award(client.ckey, name, "tank destroyer silver badge", capitalize(faction_text),src)
 			else if (awards["tank"]>=4 && !("tank destroyer gold badge" in awarded))
 				map.give_award(client.ckey, name, "tank destroyer gold badge", capitalize(faction_text),src)
-
+				map.remove_award(client.ckey, name, "tank destroyer silver badge")
 			if (awards["wounded"]>=300 && !("wounded gold badge" in awarded))
 				map.give_award(client.ckey, name, "wounded gold badge", capitalize(faction_text),src)
 				map.remove_award(client.ckey, name, "wounded silver badge")
