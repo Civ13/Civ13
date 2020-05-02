@@ -616,8 +616,16 @@
 				stat("Grace Period Status:", grace_period_string)
 				stat("Round End Condition:", map.current_stat_message())
 			if (map)
+				var/gmd = map.gamemode
+				switch(map.gamemode)
+					if ("Normal")
+						gmd = "<font color='green'>Normal</font>"
+					if ("Competitive")
+						gmd = "<font color='yellow'>Competitive</font>"
+					if ("Hardcore")
+						gmd = "<font color='red'>Hardcore</font>"
 				stat("Map:", map.title)
-				stat("Mode:", map.gamemode)
+				stat("Mode:", gmd)
 				stat("Epoch:", map.age)
 				stat("Season:", get_season())
 				stat("Wind:", map.winddesc)
