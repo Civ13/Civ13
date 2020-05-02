@@ -215,6 +215,7 @@ var/civmax_research = list(230,230,230)
 	var/override_mapgen = FALSE
 	var/force_mapgen = FALSE
 
+	var/lastcheck = 0
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -411,7 +412,26 @@ var/civmax_research = list(230,230,230)
 	last_crossing_block_status[faction2] = faction2_can_cross_blocks()
 	last_crossing_block_status[faction1] = faction1_can_cross_blocks()
 
+	if (processes.ticker.playtime_elapsed > 6000 && world.realtime > lastcheck)
+		var/count1 = 0
+		var/count2 = 0
+		for(var/mob/living/carbon/human/H in world)
+			if (H.faction_text == faction1)
+				count1++
+			else if (H.faction_text == faction2)
+				count2++
+		if (!count1)
+			current_winner = roundend_condition_def2army(faction2)
+			current_loser = roundend_condition_def2army(faction1)
+			ticker.finished = TRUE
+			next_win = world.time - 100
+		else if (!count2)
+			current_winner = roundend_condition_def2army(faction1)
+			current_loser = roundend_condition_def2army(faction2)
+			ticker.finished = TRUE
+			next_win = world.time - 100
 
+		lastcheck = world.realtime + 600
 	if (event_faction)
 		last_crossing_block_status[event_faction] = specialfaction_can_cross_blocks()
 
