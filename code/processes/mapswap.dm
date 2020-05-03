@@ -116,7 +116,7 @@
 			maps = list(
 				MAP_REICHSTAG = 0,
 				MAP_KHALKHYN_GOL = 0,
-//				MAP_OMAHA = 10,
+				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
 //				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
@@ -164,7 +164,7 @@
 			maps = list(
 				MAP_CAMP = 0,
 				MAP_KARAK = 0,
-//				MAP_SAMMIRHAYEED = 20,
+				MAP_SAMMIRHAYEED = 20,
 			)
 		if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(

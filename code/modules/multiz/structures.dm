@@ -284,7 +284,7 @@
 	istop = FALSE
 /obj/structure/multiz/ladder/ww2/teleporter/New()
 	..()
-	spawn(20)
+	spawn(100)
 		for (var/obj/structure/multiz/ladder/ww2/teleporter/ladder in world)
 			if (!(ladder in ladder_list))
 				ladder_list += ladder
@@ -295,7 +295,7 @@
 				continue
 /obj/structure/multiz/ladder/ww2/teleporter/find_target()
 	for (var/obj/structure/multiz/ladder/ww2/teleporter/ladder in ladder_list)
-		if (area_id == ladder.area_id && ladder != src)
+		if (area_id == ladder.area_id && ladder != src && ((ladder.istop && !src.istop) || (!ladder.istop && src.istop)))
 			return ladder
 	return FALSE
 /obj/structure/multiz/ladder/ww2/teleporter/Crossed(var/atom/movable/AM)
