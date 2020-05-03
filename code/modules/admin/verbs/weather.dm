@@ -19,7 +19,7 @@
 	set category = "Debug"
 	set name = "Change the Season"
 
-	map.seasons(FALSE)
+	map.seasons(FALSE,TRUE)
 	src << "<span class = 'good'>Sucessfully changed the season.</span>"
 	message_admins("[key_name(src)] changed the season.")
 	log_admin("[key_name(src)] randomly changed the season.")
