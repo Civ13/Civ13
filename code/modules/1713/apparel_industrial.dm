@@ -458,4 +458,45 @@ obj/item/clothing/under/confederate_uniform/New()
 		return
 
 
+/obj/item/clothing/accessory/storage/webbing/civil_war
+	name = "cartirdge rigging"
+	desc = "A rig of cases for ammo and a bayonet."
+	icon_state = "civil_war"
+	item_state = "civil_war"
+	slots = 13
 
+/obj/item/clothing/accessory/storage/webbing/civil_war/full
+	slots = 13
+/obj/item/clothing/accessory/storage/webbing/civil_war/full/New()
+	..()
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/ammo_casing/musketball(src)
+	new/obj/item/weapon/attachment/bayonet(src)
+
+/obj/item/clothing/accessory/storage/webbing/civil_war/officer/full
+	slots = 13
+/obj/item/clothing/accessory/storage/webbing/civil_war/officer/full/New()
+	..()
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/ammo_casing/musketball_pistol(src)
+	new/obj/item/weapon/gun/projectile/capnball/dragoon(src)
