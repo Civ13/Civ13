@@ -334,7 +334,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-
 	is_ww2 = TRUE
 
 	min_positions = 1

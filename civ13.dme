@@ -272,6 +272,7 @@
 #include "code\game\objects\map_metadata\kursk.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
+#include "code\game\objects\map_metadata\missionary_ridge.dm"
 #include "code\game\objects\map_metadata\nanjing.dm"
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\nomads.dm"
@@ -468,6 +469,7 @@
 #include "code\modules\1713\jobs\british.dm"
 #include "code\modules\1713\jobs\chinese.dm"
 #include "code\modules\1713\jobs\civ_factions.dm"
+#include "code\modules\1713\jobs\civil_war.dm"
 #include "code\modules\1713\jobs\civilian.dm"
 #include "code\modules\1713\jobs\coldwar.dm"
 #include "code\modules\1713\jobs\dutch.dm"
@@ -931,5 +933,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1013\sammirhayeed.dmm"
+#include "maps\1873\missionary_ridge.dmm"
 // END_INCLUDE
