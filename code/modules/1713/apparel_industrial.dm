@@ -466,7 +466,7 @@ obj/item/clothing/under/confederate_uniform/New()
 	slots = 13
 
 /obj/item/clothing/accessory/storage/webbing/civil_war/full
-
+	slots = 13
 /obj/item/clothing/accessory/storage/webbing/civil_war/full/New()
 	..()
 	new/obj/item/ammo_casing/musketball(src)
@@ -484,7 +484,7 @@ obj/item/clothing/under/confederate_uniform/New()
 	new/obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/clothing/accessory/storage/webbing/civil_war/officer/full
-
+	slots = 13
 /obj/item/clothing/accessory/storage/webbing/civil_war/officer/full/New()
 	..()
 	new/obj/item/ammo_casing/musketball_pistol(src)

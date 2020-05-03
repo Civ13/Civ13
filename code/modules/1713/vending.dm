@@ -55,6 +55,7 @@
 		/obj/item/clothing/under/confederate_uniform/grey = 15,
 		/obj/item/clothing/under/confederate_uniform/grey_blue = 15,
 		/obj/item/clothing/head/confederatehat = 5,
+		/obj/item/clothing/accessory/storage/webbing/civil_war = 15,
 	)
 /obj/structure/vending/union_apparel
 	name = "union apparel rack"
@@ -65,6 +66,7 @@
 		/obj/item/clothing/under/union_uniform = 15,
 		/obj/item/clothing/head/unionhat = 5,
 		/obj/item/clothing/head/unionhatlight = 5,
+		/obj/item/clothing/accessory/storage/webbing/civil_war = 15,
 
 	)
 
