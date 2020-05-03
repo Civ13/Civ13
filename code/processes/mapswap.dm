@@ -120,7 +120,7 @@
 				MAP_KURSK = 10,
 //				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
-//				MAP_NANJING = 20,
+				MAP_NANJING = 20,
 				MAP_IWO_JIMA = 30,
 			)
 

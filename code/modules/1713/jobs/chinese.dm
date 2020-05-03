@@ -220,7 +220,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/chinese/infantry
-	title = "erdeng Bing"
+	title = "Erdeng Bing"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Erd."
 	selection_color = "#2d2d63"
