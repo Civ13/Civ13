@@ -1,7 +1,7 @@
 
 /obj/map_metadata/nanjing
 	ID = MAP_NANJING
-	title = "Nanjing (120x200x2)"
+	title = "Nanjing (100x168x2)"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
@@ -27,7 +27,7 @@
 
 /obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_tanker == TRUE || J.is_prison == TRUE)
+	if (J.is_prison == TRUE)
 		. = FALSE
 	else if (J.is_ww2 == TRUE)
 		. = TRUE
