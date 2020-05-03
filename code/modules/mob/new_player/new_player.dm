@@ -610,7 +610,7 @@ var/global/redirect_all_players = null
 			if (H.original_job.is_squad_leader)
 				H.verbs += /mob/living/carbon/human/proc/Squad_Announcement
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
-				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
+				if (H.original_job.is_officer && map.ordinal_age >= 6 || H.original_job.is_squad_leader && map.ordinal_age >= 6 || H.original_job.is_commander && map.ordinal_age >= 6)
 					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
@@ -635,7 +635,7 @@ var/global/redirect_all_players = null
 				else if (map.faction1_squad_leaders[H.squad])
 					H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
 			else if (H.faction_text == map.faction2)
-				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander && map.ordinal_age >= 6)
+				if (H.original_job.is_officer && map.ordinal_age >= 6 || H.original_job.is_squad_leader && map.ordinal_age >= 6 || H.original_job.is_commander && map.ordinal_age >= 6)
 					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
