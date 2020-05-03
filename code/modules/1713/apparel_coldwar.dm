@@ -145,27 +145,27 @@
 /obj/item/clothing/head/helmet/modern/ushelmet
 	name = "M1 helmet"
 	desc = "A typical us army helmet."
-	icon_state = "ushelmet"
-	item_state = "ushelmet"
-	worn_state = "ushelmet"
+	icon_state = "m1_standard"
+	item_state = "m1_standard"
+	worn_state = "m1_standard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
 /obj/item/clothing/head/helmet/modern/ushelmet/sgt
-	name = "M1 helmet (sergeant)"
-	desc = "A typical us army helmet. With sergeant markings."
-	icon_state = "ushelmet_sgt"
-	item_state = "ushelmet_sgt"
-	worn_state = "ushelmet_sgt"
+	name = "M1 helmet 2nd LT"
+	desc = "A typical us army helmet. With lieutenant markings."
+	icon_state = "m1_2nd_lt"
+	item_state = "m1_2nd_lt"
+	worn_state = "m1_2nd_lt"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/lt
-	name = "M1 helmet (lieutenant)"
+	name = "M1 helmet 1st LT"
 	desc = "A typical us army helmet. With lieutenant markings."
-	icon_state = "ushelmet_lt"
-	item_state = "ushelmet_lt"
-	worn_state = "ushelmet_lt"
+	icon_state = "m1_1st_lt"
+	item_state = "m1_1st_lt"
+	worn_state = "m1_1st_lt"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/camo
 	name = "M1 camo helmet"
@@ -187,16 +187,16 @@
 /obj/item/clothing/head/helmet/modern/ushelmet/late
 	name = "M1 helmet"
 	desc = "A typical us army helmet."
-	icon_state = "ushelmet2"
-	item_state = "ushelmet2"
-	worn_state = "ushelmet2"
+	icon_state = "m1_standard"
+	item_state = "m1_standard"
+	worn_state = "m1_standard"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/medical
 	name = "M1 medical helmet"
 	desc = "A typical us army helmet, with a red cross on a white background."
-	icon_state = "ushelmet_medical"
-	item_state = "ushelmet_medical"
-	worn_state = "ushelmet_medical"
+	icon_state = "m1_medic"
+	item_state = "m1_medic"
+	worn_state = "m1_medic"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/late/New()
 	..()
