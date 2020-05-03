@@ -144,6 +144,8 @@ var/list/gamemode_cache = list()
 	// python
 	var/scripts_directory = null
 
+	var/daynight_on = TRUE
+	var/seasons_on = TRUE
 /datum/configuration/proc/load(filename, type = "config") //the type can also be game_options, in which case it uses a different switch. not making it separate to not copypaste code - Urist
 
 	var/list/Lines = file2list(filename)
