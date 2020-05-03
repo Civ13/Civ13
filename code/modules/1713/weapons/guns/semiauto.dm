@@ -136,16 +136,16 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/avtomat
-	name = "fedorov avtomat"
-	desc = "Russian automatic rifle, used in ww1."
+	name = "Fedorov Avtomat"
+	desc = "Russian automatic rifle, used during WWI."
 	icon_state = "avtomat"
 	item_state = "svt"
 	base_icon = "avtomat"
 	w_class = 4
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 25
-	caliber = "a762x54"
-	ammo_type = /obj/item/ammo_casing/a762x54
+	caliber = "a65x50"
+	ammo_type = /obj/item/ammo_casing/a65x50
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/avtomat
 	weight = 3.85
@@ -183,7 +183,7 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/sks
 	name = "SKS"
-	desc = "Soviet semi-automatic rifle chambered in 7.62x54mmR."
+	desc = "Soviet semi-automatic rifle chambered in 7.62x39mm."
 	icon_state = "sks"
 	item_state = "ks"
 	base_icon = "sks"
@@ -191,8 +191,9 @@
 	w_class = 4
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 10
-	caliber = "a762x54"
-	ammo_type = /obj/item/ammo_casing/a762x54
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	damage_modifier = 1.2
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/mosin
 	weight = 3.85

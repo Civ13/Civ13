@@ -67,9 +67,9 @@
 		return ..()
 
 /obj/item/weapon/gun/projectile/pistol/nambu
-	name = "Nambu Pistol"
-	desc = "Standard issue Japanese pistol. Chambered in 8mm nambu ammunition."
-	icon_state = "nambu"
+	name = "Type A Nambu"
+	desc = "Standard issue Japanese pistol. Chambered in 8x22mm Nambu."
+	icon_state = "nambu_ww2"
 	w_class = 2
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
@@ -82,14 +82,14 @@
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
 	if (ammo_magazine)
-		icon_state = "nambu"
+		icon_state = "nambu_ww2"
 	else
-		icon_state = "nambu0"
+		icon_state = "nambu_ww20"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu
-	name = "Nambu Type 14"
-	desc = "Standard issue Japanese pistol. Chambered in 8mm nambu ammunition."
+	name = "Type 14 Nambu"
+	desc = "Standard issue Japanese pistol. Chambered in 8x22mm Nambu."
 	icon_state = "nambu_ww2"
 	w_class = 2
 	caliber = "c8mmnambu"
@@ -313,16 +313,17 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/mauser
-	name = "Mauser c96"
-	desc = "A Mauser c96 chambered in 9x19mm parabellum, german design."
+	name = "Mauser C96"
+	desc = "An early German pistol that can chamber 7.62x25mm TT."
 	icon_state = "mauser"
 	w_class = 2
-	caliber = "a9x19"
+	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/mauser
 	weight = 0.794
 	max_shells = 10
-	ammo_type = /obj/item/ammo_casing/a9x19
+	ammo_type = /obj/item/ammo_casing/a762x25
+	damage_modifier = 0.98
 	load_method = SINGLE_CASING | SPEEDLOADER
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
@@ -336,7 +337,7 @@
 
 /obj/item/weapon/gun/projectile/pistol/borchardt
 	name = "Borchardt c93"
-	desc = "A Borchardt c93 semi-automatic pistol chambered in 7.65x25mm parabellum, german design."
+	desc = "A German semi-automatic pistol chambered in 7.65x25mm Borchardt."
 	icon_state = "borchardt"
 	w_class = 2
 	caliber = "a765x25"
@@ -356,8 +357,8 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/colthammerless
-	name = "Colt Hammerless"
-	desc = "A Colt pistol which does indeed have a hammer, Just hidden."
+	name = "Colt Pocket Hammerless"
+	desc = "An early, compact Colt pistol chambered in .32 ACP."
 	icon_state = "coltpockethammerless"
 	w_class = 2
 	caliber = "a32acp"
@@ -377,15 +378,15 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/bergmann
-	name = "Bergmann no.2"
-	desc = "A semi automatic pistol made in 1896."
+	name = "Bergmann No.2"
+	desc = "A particularly unique-in-appearance early German semi-automatic pistol."
 	icon_state = "bergmann"
 	w_class = 2
-	caliber = "a9x19"
+	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/bergmann
 	weight = 0.794
-	ammo_type = /obj/item/ammo_casing/a9x19
+	ammo_type = /obj/item/ammo_casing/c8mmnambu
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
@@ -426,22 +427,22 @@
 	effectiveness_mod = 1.02
 
 /obj/item/weapon/gun/projectile/pistol/tt30
-	name = "TT-30"
+	name = "TT-33"
 	desc = "The standard issue pistol of the Soviet Union. Chambered in 7.62x25mm Tokarev."
 	icon_state = "tt30"
 	w_class = 2
-	caliber = "a765x25"
+	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/tt30
 	weight = 0.794
-	ammo_type = /obj/item/ammo_casing/a765x25
+	ammo_type = /obj/item/ammo_casing/a762x25
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.98
 
 /obj/item/weapon/gun/projectile/pistol/m9beretta
-	name = "M9 Beretta"
-	desc = "The standard issue pistol of the US Army of the late 20th century. Chambered in 9mm Parabellum."
+	name = "Beretta M9"
+	desc = "The standard issue pistol of US Armed Forces from 1985 to 2017."
 	icon_state = "m9beretta"
 	w_class = 2
 	caliber = "a9x19"

@@ -114,12 +114,12 @@ obj/item/ammo_magazine/type99
 	mag_type = MAGAZINE
 	caliber = "a762x25"
 	ammo_type = /obj/item/ammo_casing/a762x25
-	max_ammo = 71
+	max_ammo = 65
 	weight = 1.3
 	multiple_sprites = TRUE
 
 obj/item/ammo_magazine/dp
-	name = "DP disk (7.62x54mmR)"
+	name = "DP pan (7.62x54mmR)"
 	icon_state = "dpdisk"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
@@ -161,12 +161,12 @@ obj/item/ammo_magazine/dp
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/avtomat
-	name = "avtomat magazine (7.62x54mm)"
+	name = "avtomat magazine (6.5x50mm)"
 	icon_state = "g43"
-	caliber = "a762x54"
+	caliber = "a65x50"
 	mag_type = MAGAZINE
 
-	ammo_type = /obj/item/ammo_casing/a762x54
+	ammo_type = /obj/item/ammo_casing/a65x50
 	max_ammo = 25
 	weight = 0.44
 	multiple_sprites = TRUE
@@ -195,11 +195,11 @@ obj/item/ammo_magazine/dp
 	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/tt30
-	name = "TT30 magazine (7.62x25mm)"
+	name = "TT-33 magazine (7.62x25mm)"
 	icon_state = "m1911"
 	mag_type = MAGAZINE
-	ammo_type = /obj/item/ammo_casing/a765x25
-	caliber = "a765x25"
+	ammo_type = /obj/item/ammo_casing/a762x25
+	caliber = "a762x25"
 	max_ammo = 8
 	multiple_sprites = TRUE
 /obj/item/ammo_magazine/tt30/empty/New()
