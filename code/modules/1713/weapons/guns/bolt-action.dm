@@ -512,6 +512,10 @@
 	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
 	effectiveness_mod = 1.06
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+/obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet
 
@@ -728,6 +732,10 @@
 	weight = 3.7
 	effectiveness_mod = 1.05
 	equiptimer = 12
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese
+	name = "Chiang Kai-Shek"
+	desc = "A shortened, modernized carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition. This one being adopted by the Chinese."
 /obj/item/weapon/gun/projectile/boltaction/p14enfield
 	name = "Pattern 1914 Enfield"
 	desc = "A british bolt-action rifle based on the Mauser line, chambered in .303 Enfield ammunition."
