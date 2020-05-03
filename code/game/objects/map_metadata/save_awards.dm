@@ -12,7 +12,7 @@ AWARDS:
 */
 
 /mob/living/carbon/human
-	var/list/awards = list("wounded"=0,"service"=0,"tank"=0,"kills"=list("",0,0), "kill_count"=0)
+	var/list/awards = list("medic"=0,"wounded"=0,"service"=0,"tank"=0,"kills"=list("",0,0), "kill_count"=0)
 	var/list/awarded = list()
 /mob/living/carbon/human/proc/process_awards()
 	if (!client)
@@ -23,19 +23,22 @@ AWARDS:
 			if (awards["service"]>=1200 && client && !("long service medal" in awarded))
 				map.give_award(client.ckey, name, "long service medal", capitalize(faction_text),src)
 
+			if (awards["medic"]>=200 && client && !("medical medal" in awarded))
+				map.give_award(client.ckey, name, "medical medal", capitalize(faction_text),src)
+
 			if (awards["tank"]>=2 && !("tank destroyer silver badge" in awarded))
 				map.give_award(client.ckey, name, "tank destroyer silver badge", capitalize(faction_text),src)
 			else if (awards["tank"]>=4 && !("tank destroyer gold badge" in awarded))
 				map.give_award(client.ckey, name, "tank destroyer gold badge", capitalize(faction_text),src)
 				map.remove_award(client.ckey, name, "tank destroyer silver badge")
-			if (awards["wounded"]>=300 && !("wounded gold badge" in awarded))
+			if (awards["wounded"]>=200 && !("wounded gold badge" in awarded))
 				map.give_award(client.ckey, name, "wounded gold badge", capitalize(faction_text),src)
 				map.remove_award(client.ckey, name, "wounded silver badge")
 				map.remove_award(client.ckey, name, "wounded badge")
-			else if (awards["wounded"]>=220 && !("wounded silver badge" in awarded))
+			else if (awards["wounded"]>=130 && !("wounded silver badge" in awarded))
 				map.give_award(client.ckey, name, "wounded silver badge", capitalize(faction_text),src)
 				map.remove_award(client.ckey, name, "wounded badge")
-			else if (awards["wounded"]>=150 && !("wounded badge" in awarded))
+			else if (awards["wounded"]>=80 && !("wounded badge" in awarded))
 				map.give_award(client.ckey, name,"wounded badge", capitalize(faction_text),src)
 
 			for(var/list/i in awards["kills"])

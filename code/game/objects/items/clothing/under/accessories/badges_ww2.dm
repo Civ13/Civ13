@@ -18,6 +18,12 @@
 	worn_state = "gold"
 	name = "Gold Medal"
 
+/obj/item/clothing/accessory/medal/american/combat_medical_badge
+	icon_state = "combat_medical_badge"
+	worn_state = "combat_medical_badge"
+	name = "Combat Medical Badge"
+	desc = "A badge given to those who excel in providing medical care during combat."
+
 /obj/item/clothing/accessory/medal/german/ww1/iron_cross_1st
 	icon_state = "ww1_EK_1st"
 	worn_state = "ww1_EK_1st"
