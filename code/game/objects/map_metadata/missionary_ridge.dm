@@ -2,7 +2,7 @@
 	ID = MAP_MISSIONARY_RIDGE
 	title = "Missionary Ridge (120x180x1)"
 	lobby_icon_state = "wildwest"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 
 	faction_organization = list(
@@ -13,13 +13,13 @@
 		list(AMERICAN) = /area/caribbean/island,
 		list(CIVILIAN) = /area/caribbean/russian/land/inside/command,
 		)
-	age = "1905"
+	age = "1873"
 	faction_distribution_coeffs = list(AMERICAN = 0.5, CIVILIAN = 0.5)
 	battle_name = "Battle of Missionary Ridge"
 	mission_start_message = "<font size=3>The <b>Union Army</b> and the <b>Confederate Army</b> are battling for the control of Missionary ridge! The Confederates will win if they hold their command for <b>30 minutes</b> The Union will win if the manage to hold the enemy command for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
-	faction1 = JAPANESE
-	faction2 = RUSSIAN
-	ordinal_age = 5
+	faction1 = AMERICAN
+	faction2 = CIVILIAN
+	ordinal_age = 4
 	songs = list(
 		"Argonnerwaldlied:1" = 'sound/music/good_bad_ugly.ogg')
 	gamemode = "Siege"
@@ -27,7 +27,7 @@
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/missionary_ridge/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/missionary_ridge/job_enabled_specialcheck(var/datum/job/J)
 	..()

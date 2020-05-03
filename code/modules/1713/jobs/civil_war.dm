@@ -193,7 +193,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/unioncap(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_belt)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
@@ -445,7 +445,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/capnball/dragoon(H), slot_r_hand)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform

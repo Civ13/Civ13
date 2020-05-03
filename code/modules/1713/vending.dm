@@ -44,6 +44,7 @@
 		/obj/item/weapon/gun/projectile/flintlock/springfield = 15,
 		/obj/item/weapon/gun/projectile/flintlock/springfield1795 = 5,
 		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/weapon/shovel/trench = 15,
 	)
 
 /obj/structure/vending/confederate_apparel
