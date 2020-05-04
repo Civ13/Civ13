@@ -48,17 +48,6 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 </font>"}
 
 //Please use mob or src (not usr) in these procs. This way they can be called in the same fashion as procs.
-/client/verb/website()
-	set name = "website"
-	set desc = "Visit the website"
-	set hidden = TRUE
-	if (config.websiteurl)
-		if (WWinput(src, "This will open the website in your browser. Are you sure?", "Website", "Yes", list("Yes", "No")) == "No")
-			return
-		src << link(config.websiteurl)
-	else
-		src << "<span class='warning'>The website URL is not set in the server configuration.</span>"
-	return
 
 /client/verb/wiki()
 	set name = "wiki"
@@ -72,55 +61,6 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 		src << "<span class='warning'>The wiki URL is not set in the server configuration.</span>"
 	return
 
-/client/verb/donate()
-	set name = "donate"
-	set desc = "Support the server via paypal."
-	set hidden = TRUE
-	if (config.donationurl)
-		if (WWinput(src, "This will open the donation link in your browser. Are you sure?", "Donations", "Yes", list("Yes", "No")) == "No")
-			return
-		src << link(config.donationurl)
-	else
-		src << "<span class='warning'>The donation URL is not set in the server configuration.</span>"
-	return
-
-/client/verb/github()
-	set name = "Github"
-	set desc = "Visit the Github"
-	set hidden = TRUE
-	if (config.githuburl)
-		if (WWinput(src, "This will open the Github in your browser. Are you sure?", "Github", "Yes", list("Yes", "No")) == "No")
-			return
-		src << link(config.githuburl)
-	else
-		src << "<span class='warning'>The Github URL is not set in the server configuration.</span>"
-	return
-
-/client/verb/discord()
-	set name = "discord"
-	set desc = "Visit the discord"
-	set hidden = TRUE
-	if (config.discordurl)
-		if (WWinput(src, "This will open the Discord in your browser. Are you sure?", "Discord", "Yes", list("Yes", "No")) == "No")
-			return
-		src << link(config.discordurl)
-	else
-		src << "<span class='warning'>The Discord URL is not set in the server configuration.</span>"
-	return
-
-#define RULES_FILE "config/rules.html"
-/client/verb/rules()
-	set name = "Rules"
-	set desc = "Show Server Rules"
-	set hidden = TRUE
-	if (config.rulesurl)
-		if (WWinput(src, "This will open the rules in your browser. Are you sure?", "Rules", "Yes", list("Yes", "No")) == "No")
-			return
-		src << link(config.rulesurl)
-	else
-		src << "<span class='warning'>The rules URL is not set in the server configuration.</span>"
-	return
-#undef RULES_FILE
 
 /client/verb/hotkeys_help()
 	set name = "hotkeys-help"
