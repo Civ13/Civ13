@@ -376,7 +376,11 @@
 	return created_wound
 
 
-/obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE)
+/obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE, var/mob/living/carbon/human/healer = null)
+
+	if (healer && healer != owner)
+		healer.awards["medic"]+=(brute+burn)
+		owner.awards["wounded"]+=(brute+burn)
 
 	//Heal damage on the individual wounds
 	for (var/datum/wound/W in wounds)
