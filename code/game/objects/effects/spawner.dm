@@ -435,12 +435,35 @@
 	max_range = 11
 	create_path = /mob/living/simple_animal/hostile/mammoth
 	timer = 7200
+
 /obj/effect/spawner/mobspawner/troll
 	name = "troll spawner"
 	max_number = 1
 	max_range = 11
-	create_path = /mob/living/simple_animal/hostile/troll
+	create_path = /mob/living/simple_animal/hostile/fantasy/troll
 	timer = 7200
+
+/obj/effect/spawner/mobspawner/cavetroll
+	name = "troll spawner"
+	max_number = 1
+	max_range = 11
+	create_path = /mob/living/simple_animal/hostile/fantasy/cavetroll
+	timer = 7200
+
+/obj/effect/spawner/mobspawner/hornedcavetroll
+	name = "troll spawner"
+	max_number = 1
+	max_range = 11
+	create_path = /mob/living/simple_animal/hostile/fantasy/hornedcavetroll
+	timer = 7200
+
+/obj/effect/spawner/mobspawner/kingcavetroll
+	name = "troll spawner"
+	max_number = 1
+	max_range = 11
+	create_path = /mob/living/simple_animal/hostile/fantasy/kingcavetroll
+	timer = 7200
+
 /obj/effect/spawner/mobspawner/penguins
 	name = "penguin spawner"
 	max_number = 2
