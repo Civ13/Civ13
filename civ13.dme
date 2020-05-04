@@ -255,6 +255,7 @@
 #include "code\game\objects\map_metadata\colony.dm"
 #include "code\game\objects\map_metadata\compound.dm"
 #include "code\game\objects\map_metadata\cursed_island.dm"
+#include "code\game\objects\map_metadata\europe_colony.dm"
 #include "code\game\objects\map_metadata\fields.dm"
 #include "code\game\objects\map_metadata\four_colonies.dm"
 #include "code\game\objects\map_metadata\gladiators.dm"
@@ -933,5 +934,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\nanjing.dmm"
+#include "maps\1713\europe_colony.dmm"
 // END_INCLUDE
