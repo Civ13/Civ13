@@ -27,7 +27,7 @@ TESTING_PORT 11000
 HUBTESTING_PORT 11001
 
 ## Put on byond hub: uncomment this to put your server on the byond hub.
-HUB
+#HUB
 
 # Lobby time: This is the amount of time between rounds that players have to setup their characters and be ready.
 LOBBY_COUNTDOWN 90
@@ -127,7 +127,7 @@ USE_JOB_WHITELIST
 
 ## set a server location for world reboot. Don't include the byond://, just give the address and port.
 # Don't set this to the same server, BYOND will automatically restart players to the server when it has restarted.
-SERVER 192.210.161.174:23999
+SERVER 35.224.222.189:80
 
 ## donation address
 DONATIONURL https://www.patreon.com/1713ad
