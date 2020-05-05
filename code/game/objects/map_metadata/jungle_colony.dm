@@ -8,8 +8,8 @@
 	respawn_delay = 7200 // 12 minutes!
 
 	faction_organization = list(
-		INDIANS,
 		CIVILIAN,
+		INDIANS,
 		PIRATES,
 		SPANISH)
 
@@ -23,10 +23,10 @@
 	ordinal_age = 3
 	faction_distribution_coeffs = list(INDIANS = 0.4, CIVILIAN = 0.4, PIRATE = 0.1, SPANISH = 0.1)
 	battle_name = "new colony"
-	mission_start_message = "<big>Europeans</b> have reached the shore! The <b>Colonists</b> must build their villages. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND COLONISTS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
+	mission_start_message = "<big>Europeans</b> have reached the shore! The <b>Colonists</b> must build their villages.<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
-	faction1 = INDIANS
-	faction2 = CIVILIAN
+	faction1 = CIVILIAN
+	faction2 = INDIANS
 	is_RP = TRUE
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
