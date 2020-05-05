@@ -35,8 +35,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket5(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
@@ -100,8 +98,6 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 
-	//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_hand)
 	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather(H), slot_belt)
@@ -145,8 +141,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket2(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
@@ -210,8 +204,6 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
@@ -379,8 +371,6 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
@@ -440,8 +430,6 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 

@@ -30,6 +30,38 @@
 	worn_state = "kool_kids_klub"
 	body_parts_covered = FULL_BODY
 
+/obj/item/clothing/suit/storage/jacket/inq
+	name = "inquisitor robe"
+	desc = "A black robe adorned with red shoulders."
+	icon_state = "inq"
+	item_state = "inq"
+	worn_state = "inq"
+	body_parts_covered = FULL_BODY
+
+/obj/item/clothing/suit/storage/jacket/cape
+	name = "cape"
+	desc = "A black cape, edgy."
+	icon_state = "cape"
+	item_state = "cape"
+	worn_state = "cape"
+	body_parts_covered = FULL_BODY
+
+/obj/item/clothing/suit/storage/jacket/inqalt
+	name = "inquisitor coat"
+	desc = "A black and grey coat."
+	icon_state = "inqalt"
+	item_state = "inqalt"
+	worn_state = "inqalt"
+	body_parts_covered = FULL_BODY
+
+/obj/item/clothing/suit/storage/jacket/harlequin
+	name = "harlequin coat"
+	desc = "A funny looking coat."
+	icon_state = "harlequin"
+	item_state = "harlequin"
+	worn_state = "harlequin"
+	body_parts_covered = FULL_BODY
+
 /* Colonial Uniforms*/
 
 /obj/item/clothing/under/civ4
@@ -114,6 +146,49 @@
 	icon_state = "dressr"
 	item_state = "dressr"
 	worn_state = "dressr"
+
+/obj/item/clothing/under/inq1
+	name = "Inquisitor's uniform"
+	desc = "A uniform commonly worn by members of the Inquisitorium."
+	icon_state = 'chapblack_s-old'
+	item_state = 'chapblack_s-old'
+	worn_state = 'chapblack_s-old'
+
+/obj/item/clothing/under/inq2
+	name = "Inquisitor's uniform"
+	desc = "A uniform commonly worn by members of the Inquisitorium."
+	icon_state = 'chapblack_s'
+	item_state = 'chapblack_s'
+	worn_state = 'chapblack_s'
+
+/obj/item/clothing/under/harlequin
+	name = "Harlequin's uniform"
+	desc = "A trickster's uniform"
+	icon_state = 'harlequin_s'
+	item_state = 'harlequin_s'
+	worn_state = 'harlequin_s'
+
+/obj/item/clothing/under/tentacles
+	name = "a writhing mass of tentacles"
+	desc = "why?"
+	icon_state = 'tentacles_s'
+	item_state = 'tentacles_s'
+	worn_state = 'tentacles_s'
+
+/obj/item/clothing/under/maid_s
+	name = "maid uniform"
+	desc = "kinky"
+	icon_state = 'maid_s'
+	item_state = 'maid_s'
+	worn_state = 'maid_s'
+
+/obj/item/clothing/under/janimaid_s
+	name = "maid uniform"
+	desc = "kinky"
+	icon_state = 'janimaid_s'
+	item_state = 'janimaid_s'
+	worn_state = 'janimaid_s'
+
 
 /* Colonial Hats*/
 
@@ -355,6 +430,18 @@
 	spawn(duration*600)
 		qdel(src)
 		return
+
+/obj/item/clothing/mask/solitaire
+	name = "solitaire's mask"
+	desc = "you shouldn't be seeing this"
+	icon_state = "solitaire"
+	item_state = "solitaire"
+	worn_state = "solitaire"
+	body_parts_covered = FACE|EYES
+	flags_inv = 0
+	w_class = 2
+	armor = list(melee = 100, arrow = 100, gun = 100, energy = 100, bomb = 100, bio = 100, rad = true)
+	restricts_view = 0
 
 //* Colonial Pirate Clothing*/
 
