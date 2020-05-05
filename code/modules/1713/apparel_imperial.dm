@@ -150,44 +150,44 @@
 /obj/item/clothing/under/inq1
 	name = "Inquisitor's uniform"
 	desc = "A uniform commonly worn by members of the Inquisitorium."
-	icon_state = 'chapblack_s-old'
-	item_state = 'chapblack_s-old'
-	worn_state = 'chapblack_s-old'
+	icon_state = "chapblacksold"
+	item_state = "chapblacksold"
+	worn_state = "chapblacksold"
 
 /obj/item/clothing/under/inq2
 	name = "Inquisitor's uniform"
 	desc = "A uniform commonly worn by members of the Inquisitorium."
-	icon_state = 'chapblack_s'
-	item_state = 'chapblack_s'
-	worn_state = 'chapblack_s'
+	icon_state = "chapblacks"
+	item_state = "chapblacks"
+	worn_state = "chapblacks"
 
 /obj/item/clothing/under/harlequin
 	name = "Harlequin's uniform"
 	desc = "A trickster's uniform"
-	icon_state = 'harlequin_s'
-	item_state = 'harlequin_s'
-	worn_state = 'harlequin_s'
+	icon_state = "harlequins"
+	item_state = "harlequins"
+	worn_state = "harlequins"
 
 /obj/item/clothing/under/tentacles
 	name = "a writhing mass of tentacles"
 	desc = "why?"
-	icon_state = 'tentacles_s'
-	item_state = 'tentacles_s'
-	worn_state = 'tentacles_s'
+	icon_state = "tentacles"
+	item_state = "tentacles"
+	worn_state = "tentacles"
 
-/obj/item/clothing/under/maid_s
+/obj/item/clothing/under/maids
+	name = "short maid uniform"
+	desc = "kinky"
+	icon_state = "maids"
+	item_state = "maids"
+	worn_state = "maids"
+
+/obj/item/clothing/under/janimaids
 	name = "maid uniform"
 	desc = "kinky"
-	icon_state = 'maid_s'
-	item_state = 'maid_s'
-	worn_state = 'maid_s'
-
-/obj/item/clothing/under/janimaid_s
-	name = "maid uniform"
-	desc = "kinky"
-	icon_state = 'janimaid_s'
-	item_state = 'janimaid_s'
-	worn_state = 'janimaid_s'
+	icon_state = "janimaids"
+	item_state = "janimaids"
+	worn_state = "janimaids"
 
 
 /* Colonial Hats*/
@@ -440,7 +440,7 @@
 	body_parts_covered = FACE|EYES
 	flags_inv = 0
 	w_class = 2
-	armor = list(melee = 100, arrow = 100, gun = 100, energy = 100, bomb = 100, bio = 100, rad = true)
+	armor = list(melee = 100, arrow = 100, gun = 100, energy = 100, bomb = 100, bio = 100)
 	restricts_view = 0
 
 //* Colonial Pirate Clothing*/
