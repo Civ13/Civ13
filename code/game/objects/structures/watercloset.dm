@@ -878,6 +878,7 @@
 	sound = 'sound/effects/watersplash.ogg'
 	max_volume = 750
 	volume = 750
+	density = TRUE
 
 /obj/structure/sink/well/sandstone
 	name = "sandstone well"
