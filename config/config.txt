@@ -1,6 +1,6 @@
 ## Server name: This appears at the top of the screen in-game and in the BYOND hub. Remove the # infront of SERVERNAME and replace 'tgstation' with the name of your choice.
 ## IMPORTANT: Don't include special characters such as ' in here
-SERVER_NAME Civilization 13
+SERVER_NAME Chaos Rising
 
 ## Where is the game folder located?
 MASTER_DIRECTORY /home/1713
@@ -123,29 +123,29 @@ ALLOW_WEBCLIENT
 #USEAPPROVEDLIST
 
 ## Jobs that can be whitelisted are whitelisted, according to a new DB whitelists table
-USE_JOB_WHITELIST
+#USE_JOB_WHITELIST
 
 ## set a server location for world reboot. Don't include the byond://, just give the address and port.
 # Don't set this to the same server, BYOND will automatically restart players to the server when it has restarted.
 SERVER 35.224.222.189:80
 
 ## donation address
-DONATIONURL https://www.patreon.com/1713ad
+#DONATIONURL https://www.patreon.com/1713ad
 
 ## rules address
-RULESURL http://civ13.com/wiki/index.php?title=Rules
+#RULESURL http://civ13.com/wiki/index.php?title=Rules
 
 ## discord address
-DISCORDURL https://discord.gg/hBEtg4x
+#DISCORDURL https://discord.gg/hBEtg4x
 
 ## Wiki address
 WIKIURL http://civ13.com/wiki/index.php/Main_Page
 
 ## Website address
-WEBSITEURL http://civ13.com/
+#WEBSITEURL http://civ13.com/
 
 ##Github address
-GITHUBURL https://github.com/civ13/civ13/
+GITHUBURL https://github.com/TyrannyTY/Chaos-Rising
 
 ##Github repo id
 ##This can be found by going to https://api.github.com/users/<user name here>/repos
