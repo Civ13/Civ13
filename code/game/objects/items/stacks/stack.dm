@@ -165,9 +165,66 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
-	if (findtext(recipe.title, "talisman") || findtext(recipe.title, "totem"))
+	if (findtext(recipe.title, "talisman"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
+			return
+		else if (H.religion == "Priests")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Monks")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Clerics")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+	if (findtext(recipe.title, "totem"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
+			return
+		else if (H.religion == "Priests")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Monks")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Clerics")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Cultists")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+	if (findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
+			return
+		else if (H.religion == "Shamans")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Priests")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Monks")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Clerics")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+	if (findtext(recipe.title, "monumental stone buddha"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
+			return
+		else if (H.religion == "Shamans")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Priests")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Cultists")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Clerics")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
 	if (H.original_job_title == "Gorilla tribesman" || H.original_job_title == "Ant tribesman")
 		if (findtext(recipe.title, "wood sarissa") || findtext(recipe.title, "wood dory") || findtext(recipe.title, "soft wood wall") || findtext(recipe.title, "log wall"))
@@ -655,11 +712,27 @@
 		if (H.getStatCoeff("crafting") < 1.55)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
+	else if (findtext(recipe.title, "monumental stone pillar") || findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider") || findtext(recipe.title, "monumental stone buddha") || findtext(recipe.title, "monumental saint statue"))
+		if (H.getStatCoeff("crafting") < 1.55)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
 	else if (findtext(recipe.title, "fire lance"))
 		if (H.getStatCoeff("crafting") < 1.25)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
+	else if (findtext(recipe.title, "moai") || findtext(recipe.title, "long moai") || findtext(recipe.title, "monumental sandstone obelisk") || findtext(recipe.title, "monumental stone megalith"))
+		if (H.getStatCoeff("crafting") < 1.25)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
 	else if (findtext(recipe.title, "hand cannon"))
+		if (H.getStatCoeff("crafting") < 1.35)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	else if (findtext(recipe.title, "monumental crucero cross") || findtext(recipe.title, "stone statue") || findtext(recipe.title, "sandstone statue"))
+		if (H.getStatCoeff("crafting") < 1.35)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	else if (findtext(recipe.title, "grandfather clock"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -675,6 +748,10 @@
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 	else if (findtext(recipe.title, "stormy sea") || findtext(recipe.title, "city street") || findtext(recipe.title, "sea sunset") || findtext(recipe.title, "valley") || findtext(recipe.title, "still life") || findtext(recipe.title, "bird and blossom") || findtext(recipe.title, "pine on the shore") || findtext(recipe.title, "temple by the river") || findtext(recipe.title, "desert camp") || findtext(recipe.title, "barque at sea"))
+		if (H.getStatCoeff("crafting") < 2)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	else if (findtext(recipe.title, "monumental marble statue of venus") || findtext(recipe.title, "monumental bronze statue of karl marx"))
 		if (H.getStatCoeff("crafting") < 2)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -845,7 +922,7 @@
 					user << "<span class = 'warning'>You need a stack of at least 8 stone bricks in one of your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "purple arabic turban helmet"))
+	else if (findtext(recipe.title, "purple arabic turban helmet") || findtext(recipe.title, "red arabic turban helmet") || findtext(recipe.title, "green arabic turban helmet") || findtext(recipe.title, "blue arabic turban helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
 			user << "<span class = 'warning'>You need a stack of at least 5 cloth in one of your hands in order to make this.</span>"
 			return
@@ -868,75 +945,7 @@
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
 					return
-	else if (findtext(recipe.title, "red arabic turban helmet"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			user << "<span class = 'warning'>You need a stack of at least 5 cloth in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
-					return
-	else if (findtext(recipe.title, "green arabic turban helmet"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			user << "<span class = 'warning'>You need a stack of at least 5 cloth in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
-					return
-	else if (findtext(recipe.title, "blue arabic turban helmet"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			user << "<span class = 'warning'>You need a stack of at least 5 cloth in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
-					return
+
 	else if (findtext(recipe.title, "emirate turban"))
 		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
 			user << "<span class = 'warning'>You need a stack of at least 7 cloth in one of your hands in order to make this.</span>"
@@ -961,76 +970,7 @@
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "tatami samurai armor"))
-		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
-			user << "<span class = 'warning'>You need a stack of at least 10 leather in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 5)
-					NB.amount -= 5
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 5 iron in one of your hands in order to make this.</span>"
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 5)
-					NB.amount -= 5
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 5 iron in one your hands in order to make this.</span>"
-					return
-	else if (findtext(recipe.title, "red tatami samurai armor"))
-		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
-			user << "<span class = 'warning'>You need a stack of at least 10 leather in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 5)
-					NB.amount -= 5
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 5 iron in one of your hands in order to make this.</span>"
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 5)
-					NB.amount -= 5
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 5 iron in one your hands in order to make this.</span>"
-					return
-	else if (findtext(recipe.title, "blue tatami samurai armor"))
-		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
-			user << "<span class = 'warning'>You need a stack of at least 10 leather in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 5)
-					NB.amount -= 5
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 5 iron in one of your hands in order to make this.</span>"
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 5)
-					NB.amount -= 5
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 5 iron in one your hands in order to make this.</span>"
-					return
-	else if (findtext(recipe.title, "black tatami samurai armor"))
+	else if (findtext(recipe.title, "tatami samurai armor") || findtext(recipe.title, "red tatami samurai armor") || findtext(recipe.title, "blue tatami samurai armor") || findtext(recipe.title, "black tatami samurai armor"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			user << "<span class = 'warning'>You need a stack of at least 10 leather in one of your hands in order to make this.</span>"
 			return
@@ -1054,7 +994,7 @@
 					user << "<span class = 'warning'>You need a stack of at least 5 iron in one your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "leather kabuto helmet"))
+	else if (findtext(recipe.title, "leather kabuto helmet") || findtext(recipe.title, "red leather kabuto helmet") || findtext(recipe.title, "blue leather kabuto helmet") || findtext(recipe.title, "black leather kabuto helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			user << "<span class = 'warning'>You need a stack of at least 7 leather in one of your hands in order to make this.</span>"
 			return
@@ -1077,74 +1017,29 @@
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
 					return
-	else if (findtext(recipe.title, "red leather kabuto helmet"))
-		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
-			user << "<span class = 'warning'>You need a stack of at least 7 leather in one of your hands in order to make this.</span>"
+
+	else if (findtext(recipe.title, "grandfather clock"))
+		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+			user << "<span class = 'warning'>You need a stack of at least 9 wood in one of your hands in order to make this.</span>"
 			return
 		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
+			if (istype(H.l_hand, /obj/item/stack/material/glass))
 				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
+				if (NB.amount >= 2)
+					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need a stack of at least 2 glass in one of your hands in order to make this.</span>"
 					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
+			else if (istype(H.r_hand, /obj/item/stack/material/glass))
+				var/obj/item/stack/material/glass/NB = H.r_hand
+				if (NB.amount >= 2)
+					NB.amount -= 2
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
-					return
-	else if (findtext(recipe.title, "blue leather kabuto helmet"))
-		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
-			user << "<span class = 'warning'>You need a stack of at least 7 leather in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
-					return
-	else if (findtext(recipe.title, "black leather kabuto helmet"))
-		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
-			user << "<span class = 'warning'>You need a stack of at least 7 leather in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>"
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					user << "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>"
+					user << "<span class = 'warning'>You need a stack of at least 2 glass in one your hands in order to make this.</span>"
 					return
 
 	if (!can_use(required))
