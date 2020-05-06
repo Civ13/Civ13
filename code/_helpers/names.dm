@@ -3,5 +3,5 @@
 		if (config.server_name)
 			customserver_name = config.server_name
 		else
-			customserver_name = "Civilization 13"
+			customserver_name = "Chaos Rising"
 	return customserver_name

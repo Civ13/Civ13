@@ -38,7 +38,7 @@
 /proc/faction_const2name(constant,age = 0)
 
 	if (constant == PIRATES)
-		return "Pirates"
+		return "Orc Tribes"
 
 	if (constant == BRITISH)
 		if (age >= 6)
@@ -53,13 +53,13 @@
 			return "Colonists"
 
 	if (constant == INDIANS)
-		return "Native Tribe"
+		return "Elven Villages"
 
 	if (constant == PORTUGUESE)
 		return "Portuguese Empire"
 
 	if (constant == SPANISH)
-		return "Spanish Empire"
+		return "Dwarven Stronghold"
 
 	if (constant == FRENCH)
 		if (age >= 4)

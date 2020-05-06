@@ -45,7 +45,7 @@ var/global/soldiers[17]
 // you appear to be a civilian to other civilians
 /datum/faction/civilian
 	icon_state = "civilian_basic"
-	title = "Civilian"
+	title = "The Empire"
 	team = TEAM_CV
 
 /datum/faction/pirates/base_type()
@@ -54,7 +54,7 @@ var/global/soldiers[17]
 // you appear to be a pirate to other pirates
 /datum/faction/pirates
 	icon_state = "pirate_basic"
-	title = "Pirate"
+	title = "Orc Tribes"
 	team = TEAM_PI
 
 /datum/faction/pirates/base_type()
@@ -63,7 +63,7 @@ var/global/soldiers[17]
 // you appear to be a pirate to other pirates
 /datum/faction/spanish
 	icon_state = "spanish_basic"
-	title = "Spanish"
+	title = "Dwarven Stronghold"
 	team = TEAM_SP
 
 /datum/faction/spanish/base_type()
@@ -89,7 +89,7 @@ var/global/soldiers[17]
 
 /datum/faction/indians
 	icon_state = "indian_basic"
-	title = "Indian"
+	title = "Elven Village"
 	team = TEAM_IN
 
 /datum/faction/indians/base_type()

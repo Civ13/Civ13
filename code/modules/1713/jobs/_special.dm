@@ -111,7 +111,7 @@
 /datum/job/proc/assign_faction(var/mob/living/carbon/human/user)
 
 	if (istype(src, /datum/job/pirates))
-		user.faction_text = "PIRATES"
+		user.faction_text = "Orc Tribes"
 		user.base_faction = new/datum/faction/pirates(user, src)
 	else if (istype(src, /datum/job/british))
 		user.faction_text = "BRITISH"
@@ -123,10 +123,10 @@
 		user.faction_text = "FRENCH"
 		user.base_faction = new/datum/faction/french(user, src)
 	else if (istype(src, /datum/job/spanish))
-		user.faction_text = "SPANISH"
+		user.faction_text = "Dwarves"
 		user.base_faction = new/datum/faction/spanish(user, src)
 	else if (istype(src, /datum/job/indians))
-		user.faction_text = "INDIANS"
+		user.faction_text = "Elven Villages"
 		user.base_faction = new/datum/faction/indians(user, src)
 	else if (istype(src, /datum/job/dutch))
 		user.faction_text = "DUTCH"
@@ -138,7 +138,7 @@
 		user.faction_text = "RUSSIAN"
 		user.base_faction = new/datum/faction/russian(user, src)
 	else if (istype(src, /datum/job/civilian))
-		user.faction_text = "CIVILIAN"
+		user.faction_text = "The Empire"
 		user.base_faction = new/datum/faction/civilian(user, src)
 	else if (istype(src, /datum/job/roman))
 		user.faction_text = "ROMAN"

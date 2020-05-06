@@ -1,6 +1,6 @@
 /process/battle_report
 	var/BR_ticks = 0
-	var/max_BR_ticks = 600 // 10 minutes
+	var/max_BR_ticks = 3600 // 10 minutes
 	var/pirates_deaths_this_cycle = 0
 	var/british_deaths_this_cycle = 0
 	var/next_can_grant_points = -1
