@@ -16,6 +16,8 @@ RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5
 RECIPE: /material/clay/,raw stucco,/obj/item/weapon/stucco,1.5,25,0,1,wall coverings & stucco,18,0,0,8,null
 RECIPE: /material/clay/,raw greek stucco,/obj/item/weapon/stucco/greek,1.5,25,0,1,wall coverings & stucco,18,0,0,2,null
 RECIPE: /material/clay/,raw roman stucco,/obj/item/weapon/stucco/roman,1.5,25,0,1,wall coverings & stucco,18,0,0,2,null
+RECIPE: /material/clay/,light clay plant pot,/obj/structure/plant_pot/clay/light,4,25,1,1,plant pots & decoration,18,0,0,8,null
+RECIPE: /material/clay/,medium sized yellow clay planter,/obj/structure/plant_pot/medium_planter/clay/yellow,4,25,1,1,plant pots & decoration,18,0,0,8,null
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,0.5,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,0.5,15,1,1,none,103,0,0,8,null
@@ -545,10 +547,30 @@ RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,
 RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,floors,0,0,0,8,null
 RECIPE: /material/stone/,slate floor,/obj/covers/slatefloor,1,25,1,1,floors,25,0,0,8,null
 RECIPE: /material/stone/,roman road,/obj/covers/romanroad,1,25,1,1,floors,20,0,0,8,null
-RECIPE: /material/stone/,marble floor,/obj/covers/marblefloor,1,25,1,1,floors,32,0,0,8,null
-RECIPE: /material/stone/,ornate marble tile,/obj/covers/ornatemarblefloor,1,25,1,1,floors,32,0,0,8,null
+RECIPE: /material/stone/,stone decorative slab floor,/obj/covers/stone/slab/decorative,1,25,1,1,floors,32,0,0,8,null
 RECIPE: /material/stone/,road,/obj/covers/road,1,25,1,1,floors,100,0,0,8,null
 RECIPE: /material/stone/,sidewalk,/obj/covers/sidewalk,1,25,1,1,floors,100,0,0,8,null
+
+RECIPE: /material/stone/,raw marble floor,/obj/covers/raw_marblefloor,1,25,1,1,marble floors,20,0,0,8,null
+RECIPE: /material/stone/,raw black marble floor,/obj/covers/raw_marblefloor/black,1,25,1,1,marble floors,20,0,0,8,null
+RECIPE: /material/stone/,raw pink marble floor,/obj/covers/raw_marblefloor/pink,1,25,1,1,marble floors,20,0,0,8,null
+
+RECIPE: /material/stone/,marble floor,/obj/covers/marblefloor,1,25,1,1,marble floors,25,0,0,8,null
+RECIPE: /material/stone/,marble tiles,/obj/covers/marbletile,1,25,1,1,marble floors,25,0,0,8,null
+RECIPE: /material/stone/,black marble tiles,/obj/covers/marbletile/black,1,25,1,1,marble floors,25,0,0,8,null
+RECIPE: /material/stone/,pink marble tiles,/obj/covers/marbletile/pink,1,25,1,1,marble floors,25,0,0,8,null
+
+RECIPE: /material/stone/,ornate marble tile,/obj/covers/ornatemarblefloor,1,25,1,1,marble floors,32,0,0,8,null
+RECIPE: /material/stone/,ornate black marble tile,/obj/covers/ornatemarblefloor/black,1,25,1,1,marble floors,32,0,0,8,null
+RECIPE: /material/stone/,decorative marble tile,/obj/covers/decorative_marbletile,1,25,1,1,marble floors,32,0,0,8,null
+RECIPE: /material/stone/,decorative black marble tile,/obj/covers/decorative_marbletile/black,1,25,1,1,marble floors,32,0,0,8,null
+RECIPE: /material/stone/,decorative pink marble tile,/obj/covers/decorative_marbletile/pink,1,25,1,1,marble floors,32,0,0,8,null
+
+RECIPE: /material/stone/,marble grid tile floor,/obj/covers/marble_grid,1,25,1,1,marble floors,45,0,0,8,null
+RECIPE: /material/stone/,marble checkerboard floor,/obj/covers/marble_checkerboard,1,25,1,1,marble floors,45,0,0,8,null
+RECIPE: /material/stone/,reverse marble checkerboard floor,/obj/covers/marble_checkerboard/reverse,1,25,1,1,marble floors,45,0,0,8,null
+RECIPE: /material/stone/,pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink,1,25,1,1,marble floors,45,0,0,8,null
+RECIPE: /material/stone/,reverse pink marble checkerboard floor,/obj/covers/marble_checkerboard/pink/reverse,1,25,1,1,marble floors,45,0,0,8,null
 
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
@@ -556,9 +578,24 @@ RECIPE: /material/stone/,marble altar,/obj/structure/altar/marble,20,200,1,1,rel
 RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,43,0,0,8,null
 RECIPE: /material/stone/,totem,/obj/structure/religious/totem,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,large stone head,/obj/structure/religious/olmec_head,12,190,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,gargoyle statue,/obj/structure/religious/gargoyle,12,190,1,1,religious & decoration,32,0,0,8,null
+RECIPE: /material/stone/,angel statue,/obj/structure/religious/angel,12,190,1,1,religious & decoration,32,0,0,8,null
 RECIPE: /material/stone/,aztec statue,/obj/structure/religious/aztec_statue,8,140,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,moai,/obj/structure/religious/moai,20,250,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1,religious & decoration,0,0,0,8,null
+
+RECIPE: /material/stone/,monumental stone pillar,/obj/structure/religious/monument/pillar_monument,45,300,1,1,religious & decoration,22,0,0,8,null
+RECIPE: /material/stone/,monumental stone megalith,/obj/structure/religious/monument/megalith,45,300,1,1,religious & decoration,0,0,0,2,null
+RECIPE: /material/stone/,monumental marble statue of venus,/obj/structure/religious/monument/venus,45,300,1,1,religious & decoration,35,0,0,8,null
+RECIPE: /material/stone/,monumental ominous statue of the deep-one,/obj/structure/religious/monument/cultist/cthulu,45,300,1,1,religious & decoration,22,0,0,8,null
+RECIPE: /material/stone/,monumental ominous statue of the evil-one,/obj/structure/religious/monument/cultist/moloch,45,300,1,1,religious & decoration,22,0,0,8,null
+RECIPE: /material/stone/,monumental ominous statue of the outsider,/obj/structure/religious/monument/cultist/outsider,45,300,1,1,religious & decoration,22,0,0,8,null
+RECIPE: /material/stone/,monumental stone buddha,/obj/structure/religious/monument/monk/quangshi,45,300,1,1,religious & decoration,32,0,0,8,null
+RECIPE: /material/stone/,monumental saint statue,/obj/structure/religious/monument/priesthood/saint,45,300,1,1,religious & decoration,32,0,0,8,null
+
+RECIPE: /material/stone/,smooth roman road,/obj/covers/roads/roman,1,0,1,1,roads,20,0,0,8,null
+RECIPE: /material/stone/,smooth cobble road,/obj/covers/roads/cobble,1,0,1,1,roads,32,0,0,8,null
+RECIPE: /material/stone/,smooth modern road,obj/covers/roads/modern,1,0,1,1,roads,100,0,0,8,null
 
 RECIPE: /material/stone/,stone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,stone
 RECIPE: /material/stone/,stone window,/obj/structure/window_frame/stone,5,140,1,1,construction,18,0,0,8,null
@@ -569,6 +606,8 @@ RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,
 RECIPE: /material/stone/,furnace,/obj/structure/furnace,10,150,1,1,production,26,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 
+RECIPE: /material/stone/,stone bust,/obj/item/weapon/material/bust,3,10,0,0,projectiles,20,0,0,0,null
+RECIPE: /material/stone/,stone bust of hippocrates,/obj/item/weapon/material/hippocratic,3,10,0,0,projectiles,20,0,0,0,null
 RECIPE: /material/stone/,stone arrowhead (x4),/obj/item/stack/arrowhead/stone,1,10,0,1,projectiles,0,14,0,8,null
 RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,null
 RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,null
@@ -860,9 +899,11 @@ RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4
 RECIPE: /material/bronze/,bronze arm bangles,/obj/item/clothing/accessory/armband/armbangle/bronze,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/bronze/,razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,tools,0,0,0,8,bronze
 RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
-RECIPE: /material/bronze/,bronze statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,bronze
 
-RECIPE: /material/bronze/,bronze sarcophagus,/obj/structure/closet/coffin/sarcophagus,25,350,1,1,none,0,0,0,1,bronze
+RECIPE: /material/bronze/,bronze statue,/obj/structure/religious/statue,10,250,1,1,religious & decoration,10,0,0,8,bronze
+RECIPE: /material/bronze/,monumental bronze statue of karl marx,/obj/structure/religious/monument/karl_marx,30,300,1,1,religious & decoration,125,0,0,8,null
+RECIPE: /material/bronze/,bronze bust of karl marx,/obj/item/weapon/material/marx,3,80,0,0,religious & decoration,125,0,0,8,null
+RECIPE: /material/bronze/,bronze sarcophagus,/obj/structure/closet/coffin/sarcophagus,25,350,1,1,religious & decoration,0,0,0,1,bronze
 
 RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 
@@ -961,6 +1002,7 @@ RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,nu
 RECIPE: /material/wood/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,coffin,/obj/structure/closet/coffin,4,50,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,wardrobe,/obj/structure/closet/cabinet,5,80,1,1,furniture,41,0,0,8,null
+RECIPE: /material/wood/,grandfather clock,/obj/structure/TV/grandfather,9,160,1,1,furniture,42,0,0,8,null
 RECIPE: /material/wood/,cabinet,/obj/structure/closet/cabinet/ceiling,4,60,1,1,furniture,41,0,0,8,null
 RECIPE: /material/wood/,chair,/obj/structure/bed/chair/wood,4,50,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,furniture,14,0,0,8,null
@@ -991,6 +1033,7 @@ RECIPE: /material/wood/,tiki statue,/obj/structure/religious/tiki_statue,10,150,
 RECIPE: /material/wood/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/wood/,wood totem pole,/obj/structure/religious/totem_pole,10,250,1,1,religious & decoration,0,0,0,2,null
 RECIPE: /material/wood/,cross,/obj/structure/religious/woodcross2,4,80,1,1,religious & decoration,47,0,0,8,null
+RECIPE: /material/wood/,monumental crucero cross,/obj/structure/religious/monument/crucero,45,300,1,1,religious & decoration,32,0,0,8,null
 
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,kitchen & other,0,0,0,8,null
 RECIPE: /material/wood/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,kitchen & other,24,0,38,8,null
@@ -1099,6 +1142,7 @@ RECIPE: /material/iron/,iron shield,/obj/item/weapon/shield/iron,4,85,0,1,weapon
 RECIPE: /material/iron/,halberd,/obj/item/weapon/material/halberd,2,60,0,1,weapons,33,39,0,8,iron
 RECIPE: /material/iron/,pike,/obj/item/weapon/material/pike,3,75,0,1,weapons,33,39,0,8,iron
 RECIPE: /material/iron/,hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,0,0,0,8,iron
+RECIPE: /material/iron/,planting trowel,/obj/item/weapon/material/trowel,3,35,0,1,tools,20,0,0,8,iron
 RECIPE: /material/iron/,shovel,/obj/item/weapon/shovel,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,null
 RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,40,0,1,tools,110,0,0,8,null
@@ -1178,6 +1222,7 @@ RECIPE: /material/sandstone/,pillar,/obj/structure/mine_support/stone,2,130,1,1,
 RECIPE: /material/sandstone/,sandstone totem,/obj/structure/religious/totem/sandstone,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone altar,/obj/structure/altar/sandstone,15,200,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/sandstone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,43,0,0,8,sandstone
+RECIPE: /material/sandstone/,monumental sandstone obelisk,/obj/structure/religious/monument/obelisk,45,300,1,1,religious & decoration,22,0,0,2,null
 
 RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandbag/sandstone,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
