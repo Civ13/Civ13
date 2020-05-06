@@ -38,14 +38,6 @@
 	worn_state = "inq"
 	body_parts_covered = FULL_BODY
 
-/obj/item/clothing/suit/storage/jacket/cape
-	name = "cape"
-	desc = "A black cape, edgy."
-	icon_state = "cape"
-	item_state = "cape"
-	worn_state = "cape"
-	body_parts_covered = FULL_BODY
-
 /obj/item/clothing/suit/storage/jacket/inqalt
 	name = "inquisitor coat"
 	desc = "A black and grey coat."
@@ -255,6 +247,14 @@
 	desc = "A black tricorne. In fashion."
 	icon_state = "tricorne_black"
 	item_state = "tricorne_black"
+
+/obj/item/clothing/head/cape
+	name = "cape"
+	desc = "A black cape, edgy."
+	icon_state = "cape"
+	item_state = "cape"
+	worn_state = "cape"
+	flags_inv = BLOCKHEADHAIR
 
 /* Colonial Boots*/
 
