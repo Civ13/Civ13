@@ -6,7 +6,7 @@
 	lobby_icon_state = "fantasy"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 3600 // 6 minutes!
-
+	force_mapgen = TRUE
 
 	faction_organization = list(
 		CIVILIAN,)
