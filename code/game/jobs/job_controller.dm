@@ -52,7 +52,7 @@ var/global/datum/controller/occupations/job_master
 	var/list/job_debug = list()
 
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
-	map.availablefactions = list("Orc tribesman", "Ant tribesman", "Human tribesman", "Gorilla tribesman", "Lizard tribesman")
+	map.availablefactions = list("Human tribesman", "Lizard tribesman", "Orc tribesman", "Ant tribesman", "Gorilla tribesman")
 /*
 //	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
 //	var/randomfaction_spawn = "Red Goose Tribesman"
