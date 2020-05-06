@@ -29,7 +29,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/vietcong(H), slot_w_uniform)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pith(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/vchelmet(H), slot_head)
 //back
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
@@ -78,7 +78,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/vietcong(H), slot_w_uniform)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
+	if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/vchelmet(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
+
 //back
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
@@ -132,6 +136,8 @@
 //head
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(H), slot_head)
+	else if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/vchelmet(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat(H), slot_head)
 
@@ -185,6 +191,8 @@
 //head
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(H), slot_head)
+	else if (prob(5))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/vchelmet(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat(H), slot_head)
 //back
