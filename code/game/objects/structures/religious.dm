@@ -66,6 +66,252 @@
 		update_icon()
 
 
+obj/structure/religious/monument
+	name = "monumental construction"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = null
+	density = TRUE
+	anchored = TRUE
+	layer = 6
+	var/image/top = null
+
+	New()
+		..()
+		top.icon_state = null
+		update_icon()
+
+/obj/structure/religious/monument/obelisk
+	name = "monumental sandstone obelisk"
+	desc = "A large sandstone obelisk."
+	icon_state = "obelisk_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "obelisk_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/megalith
+	name = "monumental stone megalith"
+	desc = "A enormous rough stone megalith planted into the ground."
+	icon_state = "megalith_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "megalith_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/pillar_monument
+	name = "monumental stone pillar"
+	desc = "A tall pillar that stands triumphantly and is easy to the eye."
+	icon_state = "monumental_pillar_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "monumental_pillar_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/crucero
+	name = "monumental crucero cross"
+	desc = "A large edifice of a cross, as if to impact a statement."
+	icon_state = "crucero_bottom"
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "crucero_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/venus
+	name = "monumental marble statue of venus"
+	desc = "A chiselled marble statue of the classical goddess venus, she is barely covered for modesty."
+	icon_state = "venus_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "venus_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/karl_marx
+	name = "monumental bronze statue of karl marx"
+	desc = "The father of communism himself, enshrined in bronze."
+	icon_state = "communist_santa_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "communist_santa_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/* Religious Monuments*/
+
+/obj/structure/religious/monument/cultist
+	name = "monumental cultist statue"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon_state = null
+	var/religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/cthulu
+	name = "monumental ominous statue of the deep-one"
+	desc = "A large seated statue of creature, its visage is unsettling and the inscription on the base is written in a cryptic set of symbols."
+	icon_state = "cthulu_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "cthulu_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/moloch
+	name = "monumental ominous statue of the evil-one"
+	desc = "A statue of a demonic being, its lifelike wings and features are prominently displayed in the stone."
+	icon_state = "moloch_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "moloch_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/outsider
+	name = "monumental ominous statue of the outsider"
+	desc = "A statue of a extra-dimensional creature, it is baffling to look with strange physiology for dramatic effect."
+	icon_state = "outsider_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "outsider_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/monk
+	name = "monumental monk statue"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon_state = null
+	var/religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/monk/quangshi
+	name = "monumental stone buddha"
+	desc = "This large stone statue of bhudda, it extrubes a exceptional feeling of tranqulity and harmonious nature."
+	icon_state = "quangshi_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "quangshi_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/priesthood
+	name = "monumental priesthood statue"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon_state = null
+	var/religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/priesthood/saint
+	name = "monumental saint statue"
+	desc = "A enormous stone statue of a angellic saint, with a sword firmly gripped in hand."
+	icon_state = "saint_bottom"
+	religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "saint_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/*-Religious Monuments*/
+
 
 /obj/structure/religious/aztec_statue
 	name = "aztec statue"
@@ -99,6 +345,24 @@
 	anchored = TRUE
 	layer = 3.2
 	flammable = TRUE
+
+/obj/structure/religious/gargoyle
+	name = "gargoyle statue"
+	desc = "A statue of a watchful gargoyle."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = "gargoyle"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
+
+/obj/structure/religious/angel
+	name = "angel statue"
+	desc = "A statue of a watchful angel."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = "angel"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
 
 /obj/structure/religious/totem/New()
 	..()

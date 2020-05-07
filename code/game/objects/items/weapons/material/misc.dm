@@ -37,8 +37,82 @@
 	block_chance = 10
 	cooldownw = 7
 
+/obj/item/weapon/material/trowel
+	name = "planting trowel"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A short spade used for gardening activities like emptying or filling plant-pots."
+	icon_state = "trowel"
+	item_state = "trowel"
+	default_material = "iron"
+	throw_speed = 4
+	throw_range = 4
+	allow_spin = FALSE
+	force_divisor = 0.2 // 12 with hardness 60 (steel)
+	thrown_force_divisor = 0.2 // 8 with weight 20 (steel)
+	attack_verb = list("jabbed","hit","bashed")
+	cooldownw = 7
+
+
+/obj/item/weapon/material/bust
+	name = "stone bust"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A stone bust of a person"
+	icon_state = "bust"
+	item_state = "bust"
+	default_material = "stone"
+	throw_speed = 3
+	throw_range = 3
+	allow_spin = FALSE
+	force_divisor = 0.35
+	thrown_force_divisor = 0.35
+	attack_verb = list("bludgeoned","hit","bashed")
+	value = 15
+	block_chance = 10
+	cooldownw = 7
+
+/obj/item/weapon/material/hippocratic
+	name = "stone bust of hippocrates"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A stone bust of hippocrates marx"
+	icon_state = "hippocratic_oath"
+	item_state = "hippocratic_oath"
+	default_material = "stone"
+	throw_speed = 3
+	throw_range = 3
+	allow_spin = FALSE
+	force_divisor = 0.35
+	thrown_force_divisor = 0.35
+	attack_verb = list("bludgeoned","hit","bashed")
+	value = 15
+	block_chance = 10
+	cooldownw = 7
+
+/obj/item/weapon/material/marx
+	name = "bronze bust of karl marx"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A bronze bust of karl marx"
+	icon_state = "marx"
+	item_state = "marx"
+	default_material = "bronze"
+	throw_speed = 3
+	throw_range = 3
+	allow_spin = FALSE
+	force_divisor = 0.35
+	thrown_force_divisor = 0.35
+	attack_verb = list("bludgeoned","hit","bashed")
+	value = 50
+	block_chance = 10
+	cooldownw = 7
+
+
 /obj/item/weapon/material/pitchfork
 	name = "pitchfork"
+	sharp = TRUE
+	edge = FALSE
 	desc = "It's used for removing weeds or scratching your back."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "rake"
