@@ -40,7 +40,7 @@
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nanjing/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 48000 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/nanjing/roundend_condition_def2name(define)
@@ -69,13 +69,13 @@
 
 /obj/map_metadata/nanjing/cross_message(faction)
 	if (faction == CHINESE)
-		return "<font size = 4>The Chinese may now cross the invisible wall!</font>"
+		return "<font size = 4>The Japanese may now cross the invisible wall!</font>"
 	else if (faction == JAPANESE)
 		return "<font size = 4>The Japanese may now cross the invisible wall!</font>"
 
 /obj/map_metadata/nanjing/reverse_cross_message(faction)
 	if (faction == CHINESE)
-		return "<span class = 'userdanger'>The Chinese may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The Japanese may no longer cross the invisible wall!</span>"
 	else if (faction == JAPANESE)
 		return "<span class = 'userdanger'>The Japanese may no longer cross the invisible wall!</span>"
 

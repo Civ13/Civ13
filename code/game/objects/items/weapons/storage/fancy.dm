@@ -212,7 +212,7 @@
 	new	/obj/item/clothing/accessory/medal/german/ww2/wound_gold(src)
 
 /obj/item/weapon/storage/fancy/medal/japanese_pacific_full
-	name = "german medal case"
+	name = "japanese medal case"
 /obj/item/weapon/storage/fancy/medal/japanese_pacific_full/New()
 	..()
 	new /obj/item/clothing/accessory/medal/japanese/ww2/east_asia(src)
@@ -231,7 +231,7 @@
 	new	/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(src)
 
 obj/item/weapon/storage/fancy/medal/japanese_china_full
-	name = "german medal case"
+	name = "japanese medal case"
 /obj/item/weapon/storage/fancy/medal/japanese_china_full/New()
 	..()
 	new /obj/item/clothing/accessory/medal/japanese/ww2/china_incident1931(src)

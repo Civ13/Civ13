@@ -109,7 +109,7 @@
 				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
 				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 
-	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal))
+	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer))
 		user << "You start fertilizing the ploughed field..."
 		var/mob/living/carbon/human/H = user
 		if (do_after(user, 60/H.getStatCoeff("farming"), src))
