@@ -522,12 +522,12 @@
 		config.disable_fov = TRUE
 		config.no_respawn_delays = FALSE
 		map.gamemode = "Competitive"
-		global_damage_modifier = 1.25
+		global_damage_modifier = 1.15
 		return
 	else if (vote.voted_gamemode == "Hardcore")
 		world << "<font color='red'><big>HARDCORE Mode</big><br>No respawns, increased damage. Field of View enabled. Awards active.</big></font>"
 		config.disable_fov = FALSE
 		config.no_respawn_delays = FALSE
 		map.gamemode = "Hardcore"
-		global_damage_modifier = 1.45
+		global_damage_modifier = 1.30
 		return
