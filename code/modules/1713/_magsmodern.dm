@@ -226,7 +226,11 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/colthammerless
+<<<<<<< HEAD
 	name = "Colt Hammerless (.32)"
+=======
+	name = "Colt Hammerless Magazine (.32)"
+>>>>>>> d3901dc38b3cd122d4ced94c1d140b637080ebfb
 	icon_state = "glock17"
 	mag_type = MAGAZINE
 	caliber = "a32acp"
@@ -236,7 +240,11 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/bergmann
+<<<<<<< HEAD
 	name = "bergmann (8x22mm)"
+=======
+	name = "Bergmann Magazine (8x22mm)"
+>>>>>>> d3901dc38b3cd122d4ced94c1d140b637080ebfb
 	icon_state = "bergmann_ammo"
 	mag_type = MAGAZINE
 	caliber = "c8mmnambu"
