@@ -29,6 +29,8 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_cowboy == TRUE)
 		if (J.title == "Outlaw" || J.title == "Sheriffs Deputy" || J.title == "Sheriff")
 			. = TRUE
+		if (J.is_civil_war == TRUE)
+			. = FALSE
 		else
 			. = FALSE
 	else
