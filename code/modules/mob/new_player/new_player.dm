@@ -185,7 +185,7 @@ var/global/redirect_all_players = null
 
 			observer.started_as_observer = TRUE
 			close_spawn_windows()
-			var/turf/T = get_turf(round(world.maxx/2),round(world.maxy/2),world.maxz)
+			var/turf/T = get_turf(locate(1,1,world.maxz))
 			if (T)
 				observer.loc = T
 			else
