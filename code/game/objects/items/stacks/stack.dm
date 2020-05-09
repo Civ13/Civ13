@@ -547,7 +547,6 @@
 				else
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
 					return
-
 	else if (recipe.result_type == /obj/item/stack/material/electronics)
 		if (H.getStatCoeff("crafting") < 2.2)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -1358,6 +1357,17 @@
 			P.symbol = map.custom_religions[H.religion][4]
 			P.color1 = map.custom_religions[H.religion][5]
 			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O,/obj/covers/roads))
+			var/obj/covers/roads/DR = O
+			if (H.dir == NORTH || H.dir == SOUTH)
+				DR.vertical = TRUE
+				DR.dir = 1
+				DR.icon_state = "[DR.roadtype]vr"
+			else
+				DR.vertical = FALSE
+				DR.dir = 4
+				DR.icon_state = "[DR.roadtype]hr"
+
 		else if (istype(O, /obj/structure/fuelpump))
 			var/obj/structure/fuelpump/FP = O
 			FP.customcolor = addtext("#",customcolor)
