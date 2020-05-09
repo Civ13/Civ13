@@ -25,7 +25,6 @@
 	var/body_part = null
 	var/icon_position = FALSE
 	var/model
-	var/force_icon
 	var/damage_state = "00"
 	var/brute_dam = FALSE //sum of blunt, pierce and cut damage
 	var/burn_dam = FALSE
