@@ -299,7 +299,7 @@
 	check_bolt--
 
 /obj/item/weapon/gun/projectile/boltaction/mosin
-	name = "Mosin-Nagant M1891"
+	name = "Mosin M1891"
 	desc = "Russian bolt-action rifle chambered in 7.62x54mmR cartridges."
 	icon_state ="mosin"
 	item_state ="mosin"
@@ -322,8 +322,8 @@
 	equiptimer = 18
 
 /obj/item/weapon/gun/projectile/boltaction/mosin/m30
-	name = "Mosin-Nagant M1891/30"
-	desc = "A shortened version of the original M1891. Bolt-action rifle chambered in 7.62x54mmR cartridges."
+	name = "Mosin 91/30"
+	desc = "A modernized version of the original M1891. Bolt-action rifle chambered in 7.62x54mmR cartridges."
 	icon_state ="mosin30"
 	item_state ="mosin30"
 	base_icon = "mosin30"
@@ -723,6 +723,7 @@
 	weight = 3.5
 	effectiveness_mod = 0.97
 	equiptimer = 12
+	
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k
 	name = "Karabiner 98k"
 	desc = "A shortened, modernized carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition."
@@ -732,10 +733,13 @@
 	weight = 3.7
 	effectiveness_mod = 1.05
 	equiptimer = 12
+	
+	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese
 	name = "Chiang Kai-Shek"
 	desc = "A shortened, modernized carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition. This one being adopted by the Chinese."
+
 /obj/item/weapon/gun/projectile/boltaction/p14enfield
 	name = "Pattern 1914 Enfield"
 	desc = "A british bolt-action rifle based on the Mauser line, chambered in .303 Enfield ammunition."
@@ -945,6 +949,7 @@
 	force = 5
 	attachment_slots = ATTACH_IRONSIGHTS
 	caliber = "a762x54"
+	damage_modifier = 0.8
 	weight = 1.4
 	w_class = 2
 	effectiveness_mod = 0.77
@@ -962,6 +967,7 @@
 	caliber = "a762x51"
 	weight = 4
 	ammo_type = /obj/item/ammo_casing/a762x51
+	damage_modifier = 1.25
 	magazine_type = /obj/item/ammo_magazine/m24
 	bolt_safety = FALSE
 	effectiveness_mod = 1.15

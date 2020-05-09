@@ -105,8 +105,8 @@
 	throwforce = 30
 
 /obj/item/weapon/gun/projectile/automatic/type99
-	name = "Type-99 light machine gun"
-	desc = "The Type-99 Light Machine Gun, is a light machine gun (LMG) refitted to fit the new 7.7x58mm cartridge rather than the old 6.50x50mm rounds. This one is 7.7x58mm Arisaka rounds."
+	name = "Type 99 Light Machinegun"
+	desc = "The Type 99 Light Machine Gun, is a light machine gun (LMG) refitted to fit the new 7.7x58mm cartridge rather than the old 6.50x50mm rounds."
 	icon_state = "type99lmg"
 	item_state = "type99lmg"
 	base_icon = "type99lmg"
@@ -119,32 +119,33 @@
 	slowdown = 0.2
 
 /obj/item/weapon/gun/projectile/automatic/dp28
-	name = "DP28 light machine gun"
-	desc = "The DP28 Light Machine Gun, is a light machine gun (LMG) This one is 7.62x54mmR rounds."
+	name = "DP-28"
+	desc = "The DP-28 light machinegun. This one is in 7.62x54mmR."
 	icon_state = "dp"
 	item_state = "dp"
 	base_icon = "dp"
 	caliber = "a762x54_weak"
+	fire_sound = 'sound/weapons/guns/fire/DP28.ogg'
 	magazine_type = /obj/item/ammo_magazine/dp
 	weight = 9.12
 	force = 20
 	throwforce = 30
 
 /obj/item/weapon/gun/projectile/automatic/bar
-	name = "Browning Automatic Rifle"
+	name = "M1918A2 BAR"
 	desc = "The BAR, is a light machine gun (LMG) This one is chambered in .30-06 rounds."
 	icon_state = "bar"
 	item_state = "bar"
 	base_icon = "bar"
 	caliber = "a3006_weak"
-	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
+	fire_sound = 'sound/weapons/guns/fire/M1918A2.ogg'
 	magazine_type = /obj/item/ammo_magazine/bar
 	weight = 9.12
 	force = 20
 	throwforce = 30
 ////////////////////////////MG34/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/mg34
-	name = "MG 34"
+	name = "MG34"
 	desc = "German light machinegun chambered in 7.92x57mm Mauser. An utterly devastating support weapon."
 	icon_state = "mg34"
 	item_state = "mg34"
@@ -205,14 +206,15 @@
 		user << "<span class='warning'>You need to open the cover to unload [src].</span>"
 		return
 	..()
-///////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/m60
-	name = "M60 machine gun"
+///////////////////////////////////////////////////////////////////////////
+	name = "M60"
 	desc = "An american machinegun chambered in 7.62x51mm NATO rounds. Heavy and handles like a pig."
 	icon_state = "m60"
 	item_state = "m60"
 	base_icon = "m60"
 	caliber = "a762x51_weak"
+	fire_sound = 'sound/weapons/guns/fire/M60.ogg'
 	magazine_type = /obj/item/ammo_magazine/b762
 	weight = 10.5
 	firemodes = list(
@@ -226,12 +228,13 @@
 	slowdown = 1
 
 /obj/item/weapon/gun/projectile/automatic/m249
-	name = "M249 machine gun"
+	name = "M249 SAW"
 	desc = "An american machinegun chambered in 5.56x45mm NATO rounds. Sucessor of the M60."
 	icon_state = "m60"
 	item_state = "m60"
 	base_icon = "m60"
 	caliber = "a556x45"
+	fire_sound = 'sound/weapons/guns/fire/Minimi.ogg'
 	magazine_type = /obj/item/ammo_magazine/m249
 	weight = 10
 	firemodes = list(

@@ -55,8 +55,8 @@
 	stat = "rifle"
 
 /obj/item/weapon/gun/projectile/shotgun/pump
-	name = "pump-action shotgun"
-	desc = "A pump-action shotgun chambered in 12 gauge rounds."
+	name = "Pump-Action Shotgun"
+	desc = "A placeholder shotgun chambered in 12 gauge rounds."
 	icon_state = "shotgun"
 	item_state = "shotgun"
 	max_shells = 6
@@ -99,8 +99,8 @@
 	update_icon()
 
 /obj/item/weapon/gun/projectile/shotgun/coachgun
-	name = "coach gun"
-	desc = "a double-barreled shotgun, commonly used by messengers and on stagecoaches."
+	name = "Coach Gun"
+	desc = "A double-barreled shotgun, commonly used by messengers and on stagecoaches."
 	icon_state = "doublebarreled"
 	item_state = "shotgun"
 	max_shells = 2
@@ -177,8 +177,8 @@
 
 
 /obj/item/weapon/gun/projectile/shotgun/remington870
-	name = "Remington 870"
-	desc = "A pump-action shotgun chambered in 12 gauge rounds."
+	name = "Remington 870 Express"
+	desc = "A pump-action shotgun with a 3in 12 gauge chamber."
 	icon_state = "remington870"
 	item_state = "shotgun"
 	max_shells = 7

@@ -496,7 +496,7 @@
 	var/stype = "explosive"
 
 /obj/item/ammo_casing/a65x50
-	name = "6.5x50mm bullet"
+	name = "6.5x50mm Arisaka cartridge"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -510,7 +510,7 @@
 	caliber = "a65x50_weak"
 
 /obj/item/ammo_casing/a65x52
-	name = "6.5x52mm bullet"
+	name = "6.5x52mm Carcano cartridge"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -520,7 +520,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a8x53
-	name = "8x53mm bullet"
+	name = "8x53mm Murata cartridge"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -530,7 +530,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a8x50
-	name = "8x50mmR bullet"
+	name = "8x50mmR Lebel cartridge"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -544,7 +544,7 @@
 	caliber = "a8x50_weak"
 
 /obj/item/ammo_casing/c9mm_jap_revolver
-	name = "9mm bullet"
+	name = "9x22mm Type 26 cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -554,7 +554,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a41
-	name = ".41 Short bullet"
+	name = ".41 Short cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -564,7 +564,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a50cal
-	name = ".50 caliber bullet"
+	name = ".50 caliber cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -574,7 +574,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a32
-	name = ".32 bullet"
+	name = ".32 cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -584,7 +584,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a38
-	name = ".38 bullet"
+	name = ".38 cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -594,7 +594,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a45
-	name = ".45 Colt bullet"
+	name = ".45 Long Colt cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -604,7 +604,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a45acp
-	name = ".45 ACP bullet"
+	name = ".45 ACP cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -614,7 +614,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a455
-	name = ".455 Webley bullet"
+	name = ".455 Webley cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -624,7 +624,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a44
-	name = ".44-40 Winchester bullet"
+	name = ".44-40 Winchester cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -634,7 +634,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a44magnum
-	name = ".44 magnum bullet"
+	name = ".44 Magnum cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -644,7 +644,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a4570
-	name = ".45-70 Government bullet"
+	name = ".45-70 Government cartridge"
 	desc = "A brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -654,7 +654,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a792x57
-	name = "7.92x57mm bullet"
+	name = "7.92x57mm Mauser cartridge"
 	desc = "A brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -668,7 +668,7 @@
 	caliber = "a792x57_weak"
 
 /obj/item/ammo_casing/a765x53
-	name = "7.65x53mm bullet"
+	name = "7.65x53mm Belgian cartridge"
 	desc = "A brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -678,7 +678,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a765x25
-	name = "7.65x25mm bullet"
+	name = "7.65x25mm Borchardt cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -688,7 +688,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a7x57
-	name = "7x53mm bullet"
+	name = "7x57mm Mauser cartridge"
 	desc = "A brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -698,7 +698,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a77x58
-	name = "7.7x58mm bullet"
+	name = "7.7x58mm Arisaka cartridge"
 	desc = "A brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -718,7 +718,7 @@
 	value = 6
 
 /obj/item/ammo_casing/a577
-	name = ".577/450 Martini-Henry bullet"
+	name = ".577/450 Martini-Henry cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -729,7 +729,7 @@
 
 
 /obj/item/ammo_casing/a762x54
-	name = "7.62x54mm bullet"
+	name = "7.62x54mmR cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -743,7 +743,7 @@
 	caliber = "a762x54_weak"
 
 /obj/item/ammo_casing/a303
-	name = ".303 bullet"
+	name = ".303 british cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -757,7 +757,7 @@
 	caliber = "a303_weak"
 
 /obj/item/ammo_casing/a3006
-	name = ".30-06 bullet"
+	name = ".30-06 cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -771,7 +771,7 @@
 	caliber = "a3006_weak"
 
 /obj/item/ammo_casing/a762x38
-	name = "7.62x38mmR bullet"
+	name = "7.62x38mmR cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -781,7 +781,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a8x27
-	name = "8x27mmR bullet"
+	name = "8x27mmR french ordnance cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -791,7 +791,7 @@
 	value = 5
 
 /obj/item/ammo_casing/c8mmnambu
-	name = "8mm bullet"
+	name = "8x22mm Nambu Cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -801,7 +801,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a9x19
-	name = "9x19mm bullet"
+	name = "9x19mm Luger cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -811,7 +811,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a765x25
-	name = "7.65x25mm bullet"
+	name = "7.65x25 Borchardt cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -821,7 +821,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a762x25
-	name = "7.62x25mm bullet"
+	name = "7.62x25mm TT cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -831,7 +831,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a792x33
-	name = "7.92x33mm bullet"
+	name = "7.92x33mm cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -841,7 +841,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a545x39
-	name = "5.45x39mm bullet"
+	name = "5.45x39mm cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -851,7 +851,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a32acp
-	name = ".32 ACP bullet"
+	name = ".32 ACP cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -861,7 +861,7 @@
 	value = 2
 
 /obj/item/ammo_casing/webly445
-	name = ".455 webly bullet"
+	name = "Bugged bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -871,7 +871,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a556x45
-	name = "5.56x45mm bullet"
+	name = "5.56x45mm NATO cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -880,7 +880,7 @@
 	caliber = "a556x45"
 	value = 2
 /obj/item/ammo_casing/a762x51
-	name = "7.62x51mm bullet"
+	name = "7.62x51mm NATO cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -894,7 +894,7 @@
 	caliber = "a762x51_weak"
 
 /obj/item/ammo_casing/a762x39
-	name = "7.62x39mm bullet"
+	name = "7.62x39mm cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -904,7 +904,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a44p
-	name = ".44 bullet"
+	name = "Bugged bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -914,7 +914,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a57x28
-	name = "a57x28mm bullet"
+	name = "57x28mm cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -956,7 +956,7 @@
 
 //generic calibers for custom weapons
 /obj/item/ammo_casing/largerifle
-	name = "8mm bullet"
+	name = "7.8x60mm cartridge"
 	desc = "A brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -966,7 +966,7 @@
 	value = 8
 
 /obj/item/ammo_casing/smallrifle
-	name = "6.5mm bullet"
+	name = "6.6x50mm cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -976,7 +976,7 @@
 	value = 8
 
 /obj/item/ammo_casing/pistol45
-	name = ".45 bullet"
+	name = ".45 cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -985,7 +985,7 @@
 	caliber = "pistol45"
 	value = 2
 /obj/item/ammo_casing/pistol9
-	name = "9mm bullet"
+	name = "9mm cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -995,7 +995,7 @@
 	value = 2
 
 /obj/item/ammo_casing/intermediumrifle
-	name = "7.5mm bullet"
+	name = "7.8x35mm cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -1005,7 +1005,7 @@
 	value = 8
 
 /obj/item/ammo_casing/smallintermediumrifle
-	name = "5.5mm bullet"
+	name = "5.5x40mm cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"

@@ -12,7 +12,7 @@
 	slot_flags = SLOT_SHOULDER
 	caliber = "bolt"
 	recoil = 1 //little shaking
-	fire_sound = 'sound/weapons/arrow_fly.ogg'
+	fire_sound = 'sound/weapons/guns/fire/Crossbow.ogg'
 	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/bolt
