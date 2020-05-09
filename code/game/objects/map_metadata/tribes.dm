@@ -32,12 +32,12 @@
 	gamemode = "Faction-Based RP"
 /obj/map_metadata/tribes/New()
 	var/newnamea = list("Orc Horde" = list(48,48,48,null,0,"skull","#9A1313","#000000"))
-	var/newnameb = list("Ant Colony" = list(21,21,21,null,0,"star","#0C1EA7","#67A7CE"))
-	var/newnamec = list("Gorilla Tribe" = list(27,32,30,null,0,"sun","#9A9A9A","#098518"))
+	var/newnameb = list("Ant Colony" = list(35,35,35,null,0,"star","#0C1EA7","#67A7CE"))
+	var/newnamec = list("Gorilla Tribe" = list(40,40,40,null,0,"sun","#9A9A9A","#098518"))
 	var/newnamed = list("Human Kingdom" = list(62,62,62,null,0,"cross","#E5C100","#FFFFFF"))
-	var/newnamee = list("Lizard Clan" = list(21,21,21,null,0,"big_cross","#669932","#1E1E1E"))
-	var/newnamef = list("Wolfpack" = list(21,21,21,null,0,"moon","#FFFFFF","#848484"))
-	var/newnameg = list("Crustacean Union" = list(21,21,21,null,0,"seashell","#EEEEEE","#7F0000"))
+	var/newnamee = list("Lizard Clan" = list(35,35,35,null,0,"big_cross","#669932","#1E1E1E"))
+	var/newnamef = list("Wolfpack" = list(35,35,35,null,0,"moon","#FFFFFF","#848484"))
+	var/newnameg = list("Crustacean Union" = list(35,35,35,null,0,"seashell","#EEEEEE","#7F0000"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
