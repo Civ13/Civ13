@@ -62,7 +62,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 		mind = body.mind	//we don't transfer the mind but we keep a reference to it.
 
-	if (!T)	T = pick(latejoin_turfs["Ghost"])			//Safety in case we cannot find the body's position
+	if (!T)	T = get_turf(locate(1,1,world.maxz))			//Safety in case we cannot find the body's position
 	forceMove(T)
 
 	if (!name)							//To prevent nameless ghosts
