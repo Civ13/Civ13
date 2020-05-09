@@ -90,8 +90,6 @@ var/global/list/limb_icon_cache = list()
 		icon = force_icon
 	else if (!dna)
 		icon = 'icons/mob/human_races/r_human.dmi'
-	else if (status & ORGAN_MUTATED)
-		icon = species.deform
 	else
 		icon = species.icobase
 	mob_icon = new/icon(icon, icon_state)

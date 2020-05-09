@@ -11,7 +11,7 @@
 		U = src
 	else
 		return
-	if (map.civilizations == TRUE)
+	if (map.civilizations == TRUE || map.ID == MAP_TRIBES)
 		var/choosename = russian_to_cp1251(input(U, "Choose a name for the company:") as text|null)
 		create_company_pr(choosename)
 		return
@@ -82,7 +82,7 @@
 		H = src
 	else
 		return
-	if (map.civilizations == TRUE)
+	if (map.civilizations == TRUE || map.ID == MAP_TRIBES)
 		var/found = FALSE
 		var/list/currlist = list()
 		var/list/currlist_ind = list("Cancel")
