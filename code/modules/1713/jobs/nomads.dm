@@ -534,7 +534,7 @@
 						else
 							var/input_name = input(src, "Choose the new name: (Max 15 characters, please keep it language appropriate)","Custom Name", name) as text
 							input_name = sanitizeName(input_name, 15, FALSE)
-							if (input_name != "")
+							if (input_name && input_name != "" && input_name != null)
 								name = input_name
 								real_name = input_name
 								return

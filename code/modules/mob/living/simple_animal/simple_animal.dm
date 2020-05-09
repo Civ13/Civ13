@@ -233,7 +233,7 @@
 	else if (t_behaviour == "hunt" || t_behaviour == "defends")
 		a_intent = I_HARM
 		if(prob(50))
-			if(!isemptylist(wandersounds))
+			if(!isemptylist(hostilesounds))
 				playsound(src, pick(hostilesounds), 60)
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
