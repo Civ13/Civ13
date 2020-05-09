@@ -86,9 +86,7 @@ var/global/list/limb_icon_cache = list()
 		gender = "_f"
 
 	icon_state = "[icon_name][gender][owner.body_build.index]"
-	if (force_icon)
-		icon = force_icon
-	else if (!dna)
+	if (!dna)
 		icon = 'icons/mob/human_races/r_human.dmi'
 	else
 		icon = species.icobase
