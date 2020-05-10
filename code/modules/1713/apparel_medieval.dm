@@ -1196,7 +1196,7 @@
 
 /obj/item/clothing/suit/armor/samurai
 	name = "kozane armor"
-	desc = "A protective & lightweight leather armor, bound to and covering most of the body yet flexible. Often worn by a lord's bodyguards."
+	desc = "A protective & lightweight armor, bound to and covering most of the body yet slightly flexible. Often worn by a lord's bodyguards."
 	icon_state = "samurai3"
 	item_state = "samurai3"
 	worn_state = "samurai3"
@@ -1435,7 +1435,7 @@
 
 /obj/item/clothing/head/helmet/samurai/guard
 	name = "leather kabuto"
-	desc = "A thick leather helmet of japanese origin."
+	desc = "A helmet of japanese origin."
 	icon_state = "samurai_guard3"
 	item_state = "samurai_guard3"
 	worn_state = "samurai_guard3"

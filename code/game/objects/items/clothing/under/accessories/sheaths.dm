@@ -115,7 +115,8 @@
 		/obj/item/weapon/material/sword/saif,
 		/obj/item/weapon/material/sword/sabre,
 		/obj/item/weapon/material/sword/rapier,
-		/obj/item/weapon/material/sword/armingsword)
+		/obj/item/weapon/material/sword/armingsword,
+		/obj/item/weapon/material/sword/urukhaiscimitar)
 
 /obj/item/clothing/accessory/storage/sheath/knife
 	name = "knife sheath"

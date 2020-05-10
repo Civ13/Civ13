@@ -875,12 +875,12 @@ RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole/,6,95,0,1,none,0,0,0,
 RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,3,bronze
-RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,4,null
-RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,4,null
-RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,4,null
-RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,27,34,0,8,bronze
-RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,27,42,0,8,bronze
-RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,34,21,0,4,bronze
+RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,2,null
+RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,2,null
+RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,2,null
+RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,27,34,0,2,bronze
+RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,27,42,0,2,bronze
+RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,34,21,0,2,bronze
 RECIPE: /material/bronze/,bronze retractor,/obj/item/weapon/surgery/retractor/bronze,2,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze hemostat,/obj/item/weapon/surgery/hemostat/bronze,2,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze cautery,/obj/item/weapon/surgery/cautery/bronze,2,50,0,1,healthcare,18,0,26,8,null
