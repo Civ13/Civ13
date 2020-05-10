@@ -50,14 +50,6 @@ RECIPE: /material/leather/,short celtic braccae,/obj/item/clothing/under/celtic_
 RECIPE: /material/leather/,medieval shoes,/obj/item/clothing/shoes/medieval,3,80,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,arabic-style shoes,/obj/item/clothing/shoes/medieval/arab,2,60,0,1,foot wear,0,39,0,2,null
 RECIPE: /material/leather/,emirate shoes,/obj/item/clothing/shoes/medieval/emirate,4,60,0,1,foot wear,0,39,0,2,null
-RECIPE: /material/leather/,tatami samurai armor,/obj/item/clothing/suit/armor/samurai,10,180,0,1,armor,0,33,0,3,null
-RECIPE: /material/leather/,red tatami samurai armor,/obj/item/clothing/suit/armor/samurai/red,10,180,0,1,armor,0,33,0,3,null
-RECIPE: /material/leather/,blue tatami samurai armor,/obj/item/clothing/suit/armor/samurai/blue,10,180,0,1,armor,0,33,0,3,null
-RECIPE: /material/leather/,black tatami samurai armor,/obj/item/clothing/suit/armor/samurai/black,10,180,0,1,armor,0,33,0,3,null
-RECIPE: /material/leather/,leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard,7,140,0,1,armor,0,33,0,3,null
-RECIPE: /material/leather/,red leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/red,7,140,0,1,armor,0,33,0,3,null
-RECIPE: /material/leather/,blue leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,7,140,0,1,armor,0,33,0,3,null
-RECIPE: /material/leather/,black leather kabuto helmet,/obj/item/clothing/head/helmet/samurai/guard/black,7,140,0,1,armor,0,33,0,3,null
 
 RECIPE: /material/leather/,gunpowder pouch,/obj/item/weapon/reagent_containers/food/drinks/gunpowder,2,60,0,1,weapon accessories,0,54,0,8,null
 RECIPE: /material/leather/,bandolier,/obj/item/clothing/accessory/storage/webbing,3,70,0,1,weapon accessories,0,54,0,8,null
