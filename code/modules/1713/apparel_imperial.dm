@@ -291,6 +291,80 @@
 			name = "[faction]'s passport"
 			desc = "[faction] passport, issued to [owner]. Can hold several visas."
 
+/obj/item/weapon/civilian_passport
+	name = "Identification Documents"
+	desc = "The identification papers of a civilian."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "passport"
+	item_state = "paper"
+	throwforce = FALSE
+	w_class = TRUE
+	slot_flags = SLOT_ID | SLOT_POCKET
+	throw_range = TRUE
+	throw_speed = TRUE
+	attack_verb = list("bapped")
+	flammable = TRUE
+	var/mob/living/carbon/human/owner = null
+	var/document_name = ""
+	var/list/document_details = list()
+	var/list/guardnotes = list()
+	secondary_action = TRUE
+	New()
+		..()
+		spawn(20)
+			if (ishuman(loc))
+				var/mob/living/carbon/human/H = loc
+				document_name = H.real_name
+				owner = H
+				name = "[document_name] indentification documents"
+				desc = "The identification papers of <b>[document_name]</b>."
+				var/crimereason = "Nationality"
+				if (istype(H.original_job, /datum/job/civilian/prisoner))
+					var/datum/job/civilian/prisoner/P = H.original_job
+					switch(P.nationality)
+						if ("German")
+							crimereason = "German Citizen."
+						if ("Ukrainian")
+							crimereason = "Ukrainian Citizen."
+						if ("Polish")
+							crimereason = "Polish Citizen."
+
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
+/obj/item/weapon/civilian_passport/examine(mob/user)
+	user << "<span class='info'>*---------*</span>"
+	..(user)
+	if (document_details.len >= 9)
+		user << "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>"
+		if (document_details[6] == "male")
+			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
+		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
+		user << "<b><span class='info'>Detained for:</b> [document_details[5]]</span>"
+		user << "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>"
+		user << "<b><span class='info'>Assigned Job:</b> [document_details[9]]</span>"
+	user << "<span class='info'>*---------*</span>"
+	if (guardnotes.len)
+		for(var/i in guardnotes)
+			user << "NOTE: [i]"
+	user << "<span class='info'>*---------*</span>"
+
+/obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (!ishuman(H))
+		return
+	if (istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/russian))
+		var/confirm = WWinput(H, "Do you want to add a note to these documents?", "Prisoner Documents", "No", list("No","Yes"))
+		if (confirm == "No")
+			return
+		else
+			var/texttoadd = input(H, "What do you want to write? Up to 150 characters", "Notes", "") as text
+			texttoadd = sanitize(texttoadd, 150, FALSE)
+			texttoadd = "<i>[texttoadd] - <b>[H.real_name]</b></i>"
+			guardnotes += texttoadd
+			return
+
+/obj/item/weapon/civilian_passport/secondary_attack_self(mob/living/carbon/human/user)
+	showoff(user)
+	return
+
 /obj/item/weapon/visa
 	name = "visa"
 	desc = "a traveller visa."

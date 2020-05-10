@@ -479,3 +479,101 @@
 		return
 	else
 		..()
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////EXECUTION POST///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/obj/structure/post_execution
+	icon = 'icons/obj/structures.dmi'
+	name = "execution post"
+	desc = "a wood stock with a rope to tie prisoners to in preparation for a firing squad."
+	icon_state = "post_execution"
+	layer = MOB_LAYER - 0.11
+	anchored = TRUE
+	var/mob/living/carbon/human/hanging = null
+	var/image/poverlay
+	var/icon/hoverlay
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	New()
+		..()
+		poverlay = image(icon=src.icon, icon_state="post_execution",layer=MOB_LAYER+1)
+		hoverlay = icon(icon=src.icon, icon_state="post_execution_rope")
+/obj/structure/post_execution/New()
+	..()
+	processing_objects |= src
+
+/obj/structure/post_execution/Del()
+	processing_objects -= src
+	..()
+
+/obj/structure/post_execution/bullet_act(var/obj/item/projectile/P)
+	if (hanging && prob(30))
+		hanging.bullet_act(P)
+		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+	else
+		..()
+
+/obj/structure/post_execution/process()
+	fire()
+
+// call this instead of process() if you want to do direct calls, I think its better - Kachnov
+/obj/structure/post_execution/proc/fire()
+	if (hanging)
+		hanging.forceMove(loc)
+		hanging.lying = 0
+		hanging.dir = SOUTH
+
+	else
+		overlays.Cut()
+		hoverlay = icon(icon=src.icon, icon_state="post_execution_rope")
+
+/obj/structure/post_execution/MouseDrop_T(var/atom/dropping, var/mob/user as mob)
+	if (!ismob(dropping))
+		return
+
+	if (hanging)
+		return
+
+	var/mob/living/carbon/human/target = dropping
+	var/mob/living/carbon/human/hangman = user
+
+	if (!istype(target) || !istype(hangman))
+		return
+	visible_message("<span class = 'danger'>[hangman] starts to tie [target == hangman ? "themselves" : target] to the post...</span>")
+	if (do_after(hangman, 60, target))
+		if (src)
+			visible_message("<span class = 'danger'>[hangman] ties [target == hangman ? "themselves" : target] to the post!</span>")
+			hanging = target
+			target.loc = get_turf(src)
+			target.dir = SOUTH
+			spawn(10)
+				target.update_icons()
+				target.anchored = 1
+			overlays += poverlay
+			if (target.s_tone)
+				if (target.s_tone >= 0)
+					hoverlay.Blend(rgb(target.s_tone, target.s_tone, target.s_tone), ICON_ADD)
+				else
+					hoverlay.Blend(rgb(-target.s_tone,  -target.s_tone,  -target.s_tone), ICON_SUBTRACT)
+					overlays += hoverlay
+
+/obj/structure/post_execution/attack_hand(var/mob/living/carbon/human/H)
+	if (!istype(H))
+		return
+
+	if (!hanging)
+		return
+
+	if (hanging == H)
+		return
+
+	visible_message("<span class = 'danger'>[H] starts to untie [hanging] from the post...</span>")
+	if (do_after(H, 60, src))
+		if (src && hanging)
+			visible_message("<span class = 'danger'>[H] unties [hanging] from the post!</span>")
+			hanging.pixel_x = 0
+			hanging.pixel_y = 0
+			hanging.anchored = 0
+			hanging = null
+			overlays.Cut()

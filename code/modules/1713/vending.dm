@@ -429,6 +429,44 @@ obj/structure/vending/sofammo
 
 	)
 
+/obj/structure/vending/ssapparel
+	name = "SS apparel rack"
+	desc = "Basic wear for SS soldiers."
+	icon_state = "apparel_german"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/ww2/german_ss = 15,
+		/obj/item/clothing/suit/storage/coat/ww2/ss_parka = 15,
+		/obj/item/clothing/head/ww2/german_fieldcap = 15,
+		/obj/item/clothing/head/helmet/ww2/ss/dark = 15,
+		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/flashlight/flashlight = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
+
+	)
+
+/obj/structure/vending/ss_officerapparel
+	name = "SS Officer apparel rack"
+	desc = "Basic wear for SS Officers."
+	icon_state = "apparel_german"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 10,
+		/obj/item/clothing/under/ww2/german_ss_officer = 10,
+		/obj/item/clothing/suit/storage/coat/ww2/german_officer = 10,
+		/obj/item/clothing/head/ww2/ss_cap = 10,
+		/obj/item/clothing/head/helmet/ww2/ss/dark = 10,
+		/obj/item/clothing/accessory/storage/webbing/ww1/german = 10,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/flashlight/flashlight = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 20,
+
+	)
+
 /obj/structure/vending/wehrmachtweapons
 	name = "Wehrmacht rifle rack"
 	desc = "A rack of war equipment."
