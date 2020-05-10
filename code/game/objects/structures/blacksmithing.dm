@@ -2003,7 +2003,7 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
-			if(choice11 == "Metal Samurai Helmet (15)")
+			if(choice11 == "Samurai Helmet (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting the samurai helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2012,12 +2012,12 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/clothing/head/helmet/samurai(user.loc)
+						new/obj/item/clothing/head/helmet/samurai/guard(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if(choice11 == "Red Metal Samurai Helmet (15)")
+			if(choice11 == "Red Samurai Helmet (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting the samurai helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2026,12 +2026,12 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/clothing/head/helmet/samurai/red(user.loc)
+						new/obj/item/clothing/head/helmet/samurai/guard/red(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if(choice11 == "Blue Metal Samurai Helmet (15)")
+			if(choice11 == "Blue Samurai Helmet (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting the samurai helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2040,12 +2040,12 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/clothing/head/helmet/samurai/blue(user.loc)
+						new/obj/item/clothing/head/helmet/samurai/guard/blue(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if(choice11 == "Black Metal Samurai Helmet (15)")
+			if(choice11 == "Black Samurai Helmet (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting the samurai helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2054,7 +2054,7 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/clothing/head/helmet/samurai/black(user.loc)
+						new/obj/item/clothing/head/helmet/samurai/guard/black(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -2112,7 +2112,7 @@ obj/structure/anvil/New()
 						iron_amt -= 16
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/clothing/suit/armor/samurai/lord(user.loc)
+						new/obj/item/clothing/suit/armor/samurai(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -2126,7 +2126,7 @@ obj/structure/anvil/New()
 						iron_amt -= 16
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/clothing/suit/armor/samurai/lord/red(user.loc)
+						new/obj/item/clothing/suit/armor/samurai/red(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -2140,7 +2140,7 @@ obj/structure/anvil/New()
 						iron_amt -= 16
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/clothing/suit/armor/samurai/lord/blue(user.loc)
+						new/obj/item/clothing/suit/armor/samurai/blue(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -2154,7 +2154,7 @@ obj/structure/anvil/New()
 						iron_amt -= 16
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/clothing/suit/armor/samurai/lord/black(user.loc)
+						new/obj/item/clothing/suit/armor/samurai/black(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
