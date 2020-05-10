@@ -235,7 +235,7 @@
 "eA" = (/obj/covers/sandstone,/obj/structure/gate/sandstone/open,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/three)
 "eB" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/four)
 "eC" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/four)
-"eD" = (/obj/structure/target_practice/indestructible,/turf/floor/beach/sand,/area/caribbean/forest/dirt)
+"eD" = (/obj/structure/practice_dummy/indestructible,/turf/floor/beach/sand,/area/caribbean/forest/dirt)
 "eE" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/three)
 "eF" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/n3,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/three)
 "eG" = (/obj/structure/functions/clean_arena1,/turf/floor/dirt,/area/caribbean/roman/arena3)
