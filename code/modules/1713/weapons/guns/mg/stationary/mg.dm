@@ -16,9 +16,9 @@
 	max_shells = FALSE
 	anchored = FALSE
 	auto_eject = TRUE
-	fire_sound = 'sound/weapons/guns/fire/mg34.ogg'
+	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	firemodes = list(
-		list(name="full auto", burst=8, burst_delay=0.6, fire_delay=1.0, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	full_auto = TRUE
 	fire_delay = 3
@@ -73,7 +73,11 @@
 	icon_state = "maxim"
 	base_icon = "maxim"
 	caliber = "a762x54_weak"
+	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	magazine_type = /obj/item/ammo_magazine/maxim
+	firemodes = list(
+		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
+		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
 obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
@@ -82,7 +86,11 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	icon_state = "maxim_ww2"
 	base_icon = "maxim_ww2"
 	caliber = "a762x54_weak"
+	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	magazine_type = /obj/item/ammo_magazine/maxim
+	firemodes = list(
+		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
+		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08
@@ -91,7 +99,11 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	icon_state = "mg08"
 	base_icon = "mg08"
 	caliber = "a792x57_weak"
+	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	magazine_type = /obj/item/ammo_magazine/mg08
+	firemodes = list(
+		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
+		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm
@@ -101,6 +113,9 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	base_icon = "pkm"
 	caliber = "a762x54_weak"
 	magazine_type = /obj/item/ammo_magazine/pkm
+	firemodes = list(
+		list(name="full auto", burst=4, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers
@@ -109,8 +124,13 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	icon_state = "vickers"
 	base_icon = "vickers"
 	caliber = "a303_weak"
+	fire_sound = 'sound/weapons/guns/fire/Vickers.ogg'
 	magazine_type = /obj/item/ammo_magazine/vickers
+	firemodes = list(
+		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
+		)
 	ammo_type = /obj/item/ammo_casing/a303/weak
+
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/hotchkiss1914
 	name = "Hotchkiss M1914 machine gun"
@@ -136,11 +156,12 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	icon_state = "type98hmg"
 	base_icon = "type98hmg"
 	caliber = "a77x58"
-	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
+	fire_sound = 'sound/weapons/guns/fire/Type92.ogg'
 	magazine_type = /obj/item/ammo_magazine/type92
-	ammo_type = /obj/item/ammo_casing/a77x58
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.3), recoil = 1.0),)
+		list(name="full auto", burst=4, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a77x58
 	attachment_slots = ATTACH_SCOPE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
@@ -150,4 +171,7 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	base_icon = "mg34hmg"
 	caliber = "a792x57_weak"
 	magazine_type = /obj/item/ammo_magazine/mg34belt
+	firemodes = list(
+		list(name="full auto", burst=4, burst_delay=1, fire_delay=1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
