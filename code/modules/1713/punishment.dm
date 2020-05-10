@@ -488,7 +488,7 @@
 	name = "execution post"
 	desc = "a wood stock with a rope to tie prisoners to in preparation for a firing squad."
 	icon_state = "post_execution"
-	layer = MOB_LAYER - 0.1
+	layer = MOB_LAYER - 0.11
 	anchored = TRUE
 	var/mob/living/carbon/human/hanging = null
 	var/image/poverlay

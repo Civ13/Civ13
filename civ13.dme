@@ -187,6 +187,7 @@
 #include "code\game\objects\items\clothing\under\accessories\sheaths.dm"
 #include "code\game\objects\items\clothing\under\accessories\storage.dm"
 #include "code\game\objects\items\devices\flashlight.dm"
+#include "code\game\objects\items\devices\shamisen.dm"
 #include "code\game\objects\items\devices\trombone.dm"
 #include "code\game\objects\items\devices\violin.dm"
 #include "code\game\objects\items\paper\bundle.dm"
