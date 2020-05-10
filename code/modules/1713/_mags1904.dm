@@ -314,11 +314,11 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/mauser
-	name = "Mauser clip (9x19mm)"
+	name = "Mauser clip (7.63mm)"
 	icon_state = "mauser"
-	caliber = "a9x19"
+	caliber = "a762x25"
 
-	ammo_type = /obj/item/ammo_casing/a9x19
+	ammo_type = /obj/item/ammo_casing/a762x25
 	max_ammo = 10
 	weight = 0.06
 	multiple_sprites = TRUE
