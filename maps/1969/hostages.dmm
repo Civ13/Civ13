@@ -320,7 +320,7 @@
 "go" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
 "gp" = (/obj/structure/closet/crate/chest,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gq" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
-"gr" = (/obj/structure/target_practice,/turf/floor/dirt,/area/caribbean/arab/caves)
+"gr" = (/obj/structure/practice_dummy,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gs" = (/obj/item/stack/ammopart/casing/pistol,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gt" = (/obj/effect/floor_decal/industrial/warning{icon_state = "warning"; dir = 8},/obj/effect/floor_decal/industrial/outline/grey,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gu" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)

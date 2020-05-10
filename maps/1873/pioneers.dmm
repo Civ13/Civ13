@@ -65,7 +65,7 @@
 "bm" = (/obj/structure/grille/logfence{icon_state = "palisade"; dir = 8},/obj/structure/railing,/obj/covers/wood,/turf/floor/wood,/area/caribbean)
 "bn" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/covers/wood/stairs,/turf/floor/dirt/dust,/area/caribbean)
 "bo" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/covers/wood/stairs,/turf/floor/dirt/dust,/area/caribbean)
-"bp" = (/obj/structure/target_practice,/turf/floor/dirt/dust,/area/caribbean)
+"bp" = (/obj/structure/practice_dummy,/turf/floor/dirt/dust,/area/caribbean)
 "bq" = (/obj/covers/wood/stairs,/turf/floor/wood,/area/caribbean/roofed)
 "br" = (/obj/structure/grille/logfence{icon_state = "palisade"; dir = 8},/turf/floor/dirt/dust,/area/caribbean)
 "bs" = (/obj/structure/simple_door/key_door/civ/inn{name = "Kitchen"},/turf/floor/wood,/area/caribbean/roofed)
