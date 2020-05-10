@@ -28,7 +28,7 @@
 	..()
 	if (J.is_ww2 == TRUE)
 		. = TRUE
-	else if (J.is_tanker == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE)
+	if (J.is_tanker == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE)
 		. = FALSE
 	else
 		. = FALSE
