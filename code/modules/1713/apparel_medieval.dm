@@ -1195,7 +1195,7 @@
 	/* Medieval Japanese*/
 
 /obj/item/clothing/suit/armor/samurai
-	name = "tatami samurai armor"
+	name = "kozane armor"
 	desc = "A protective & lightweight leather armor, bound to and covering most of the body yet flexible. Often worn by a lord's bodyguards."
 	icon_state = "samurai3"
 	item_state = "samurai3"
@@ -1207,25 +1207,25 @@
 	health = 35
 
 /obj/item/clothing/suit/armor/samurai/red
-	name = "red tatami samurai armo"
+	name = "red kozane armor"
 	icon_state = "samurai1"
 	item_state = "samurai1"
 	worn_state = "samurai1"
 
 /obj/item/clothing/suit/armor/samurai/blue
-	name = "blue tatami samurai armo"
+	name = "blue kozane armor"
 	icon_state = "samurai2"
 	item_state = "samurai2"
 	worn_state = "samurai2"
 
 /obj/item/clothing/suit/armor/samurai/black
-	name = "black tatami samurai armo"
+	name = "black kozane armor"
 	icon_state = "samurai4"
 	item_state = "samurai4"
 	worn_state = "samurai4"
 
 /obj/item/clothing/suit/armor/samurai/lord
-	name = "samurai armor"
+	name = "kozane armor"
 	desc = "A thick, metal armor of japanese origin, covering most of the body. Often worn by a lord."
 	icon_state = "samurai_lord3"
 	item_state = "samurai_lord3"
@@ -1236,19 +1236,19 @@
 	slowdown = 0.9
 
 /obj/item/clothing/suit/armor/samurai/lord/red
-	name = "red samurai armor"
+	name = "red kozane armor"
 	icon_state = "samurai_lord1"
 	item_state = "samurai_lord1"
 	worn_state = "samurai_lord1"
 
 /obj/item/clothing/suit/armor/samurai/lord/blue
-	name = "blue samurai armor"
+	name = "blue kozane armor"
 	icon_state = "samurai_lord2"
 	item_state = "samurai_lord2"
 	worn_state = "samurai_lord2"
 
 /obj/item/clothing/suit/armor/samurai/lord/black
-	name = "black samurai armor"
+	name = "black kozane armor"
 	icon_state = "samurai_lord4"
 	item_state = "samurai_lord4"
 	worn_state = "samurai_lord4"
@@ -1434,7 +1434,7 @@
 	health = 30
 
 /obj/item/clothing/head/helmet/samurai/guard
-	name = "leather kabuto helmet"
+	name = "leather kabuto"
 	desc = "A thick leather helmet of japanese origin."
 	icon_state = "samurai_guard3"
 	item_state = "samurai_guard3"
@@ -1444,21 +1444,21 @@
 	health = 32
 
 /obj/item/clothing/head/helmet/samurai/guard/red
-	name = "red leather kabuto helmet"
+	name = "red leather kabuto"
 	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
 	icon_state = "samurai_guard1"
 	item_state = "samurai_guard1"
 	worn_state = "samurai_guard1"
 
 /obj/item/clothing/head/helmet/samurai/guard/blue
-	name = "blue leather kabuto helmet"
+	name = "blue leather kabuto"
 	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
 	icon_state = "samurai_guard2"
 	item_state = "samurai_guard2"
 	worn_state = "samurai_guard2"
 
 /obj/item/clothing/head/helmet/samurai/guard/black
-	name = "black leather kabuto helmet"
+	name = "black leather kabuto"
 	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
 	icon_state = "samurai_guard4"
 	item_state = "samurai_guard4"

@@ -184,6 +184,7 @@
 				MAP_NOMADS_NEW_WORLD = 10,
 				MAP_NOMADS_MEDITERRANEAN = 10,
 				MAP_NOMADS_ISLAND = 0,
+				MAP_NOMADS_KARAFUTO = 0,
 			)
 		if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(

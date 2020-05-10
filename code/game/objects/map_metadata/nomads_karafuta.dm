@@ -1,8 +1,8 @@
 
-/obj/map_metadata/nomads_karafuta
-	ID = MAP_NOMADS_KARAFUTA
+/obj/map_metadata/nomads_karafuto
+	ID = MAP_NOMADS_KARAFUTO
 	no_winner ="The round is proceeding normally."
-	title = "Nomads (Karafuta-Sakhalinsk) (300x450x2)"
+	title = "Nomads (Karafuto-Sakhalinsk) (300x450x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -33,16 +33,16 @@
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads_karafuta/faction2_can_cross_blocks()
+/obj/map_metadata/nomads_karafuto/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads_karafuta/faction1_can_cross_blocks()
+/obj/map_metadata/nomads_karafuto/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads_karafuta/cross_message(faction)
+/obj/map_metadata/nomads_karafuto/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_karafuta/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/nomads_karafuto/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE
 	else
