@@ -186,6 +186,14 @@
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 15, arrow = 10, gun = 0, energy = 0, bomb = 10, bio = 0, rad = FALSE)
 
+/obj/item/clothing/mask/wooden/expressive
+	name = "expressive wooden mask"
+	desc = "A tribal wooden mask. This one has a grin transfixed on its face"
+	icon_state = "bumba"
+	item_state = "bumba"
+	body_parts_covered = FACE|EYES
+	armor = list(melee = 15, arrow = 10, gun = 0, energy = 0, bomb = 10, bio = 0, rad = FALSE)
+
 /* Miscallaneous*/
 
 // These three seem misplaced, someone ought to revise the implementation & placement later.
@@ -215,25 +223,34 @@
 
 /////////////////////////////
 
-/obj/item/clothing/mask/chitinmask
-	name = "chitin mask"
-	desc = "A mask made from insect chitin."
-	icon_state = "chitin_mask"
-	item_state = "chitin_mask"
-	body_parts_covered = FACE|EYES
-	armor = list(melee = 19, arrow = 9, gun = 0, energy = 0, bomb = 12, bio = 0, rad = FALSE)
-
-/obj/item/clothing/head/helmet/chitin // name and description fixed & tidied up.
-	name = "chitin helmet"
-	desc = "A helmet made from insect chitin."
-	icon_state = "chitin_helmet"
-	item_state = "chitin_helmet"
-	worn_state = "chitin_helmet"
-	armor = list(melee = 30, arrow = 19, gun = 12, energy = 18, bomb = 18, bio = 19, rad = FALSE)
-
 /obj/item/clothing/head/chief_hat
-	name = "Chief hat"
+	name = "chief hat"
 	desc = "A hat made with withe feathers. Worn by tribal leaders."
 	icon_state = "chief_hat"
 	item_state = "chief_hat"
 	flags_inv = BLOCKHEADHAIR
+
+/obj/item/weapon/storage/backpack/quiver
+	name = "quiver"
+	desc = "The best way to carry a bow and arrows."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "quiver"
+	item_state = "quiver"
+
+/obj/item/weapon/storage/backpack/quiver/New()
+		..()
+		can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
+
+/obj/item/weapon/storage/backpack/quiver/full/New()
+	..()
+	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
+	new /obj/item/ammo_casing/arrow/bronze(src)
