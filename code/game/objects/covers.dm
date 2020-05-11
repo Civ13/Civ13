@@ -242,7 +242,7 @@
 
 /obj/covers/raw_marblefloor/New()
 	..()
-	icon = icon_state
+	icon = 'icons/turf/floors.dmi'
 	icon_state = pick("raw_marble0", "raw_marble1", "raw_marble2")
 	update_icon()
 
@@ -478,8 +478,8 @@
 
 /obj/covers/roads/modern
 	name = "modern road"
-	icon_state = "road"
-	roadtype = "road"
+	icon_state = "tarmac"
+	roadtype = "tarmac"
 
 /obj/covers/roads/dirt
 	name = "dirt road"
@@ -496,6 +496,10 @@
 	icon_state = "street"
 	roadtype = "street"
 
+/obj/covers/roads/sandstone
+	name = "sandstone road"
+	icon_state = "s_stone"
+	roadtype = "s_stone"
 
 /obj/covers/roads/update_icon()
 	..()
@@ -698,6 +702,29 @@
 		if (do_after(user,25,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+
+/obj/covers/roads/sandstone/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (istype(O,/obj/item/weapon/pickaxe/bone))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,65,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/sandstone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,45,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/sandstone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,25,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/sandstone(loc)
 			qdel(src)
 
 /* Road Destruction - End*/
