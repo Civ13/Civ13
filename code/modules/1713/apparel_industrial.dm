@@ -115,13 +115,6 @@
 	desc = "Ay caramba!"
 	icon_state = "sombrero"
 	item_state = "sombrero"
-
-/obj/item/clothing/head/rice_hat
-	name = "rice hat"
-	desc = "Asian style."
-	icon_state = "rice_hat"
-	item_state = "rice_hat"
-
 /* Industrial Accessories & Items*/
 
 /obj/item/clothing/accessory/armband/blue_scarf

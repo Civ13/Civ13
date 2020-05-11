@@ -231,20 +231,20 @@
 /* Cold War Hats*/
 
 /obj/item/clothing/head/jungle_hat
-	name = "Khaki Boonie"
+	name = "khaki boonie"
 	desc = "A wide brim, soft jungle hat."
 	icon_state = "khaki_boonie"
 	item_state = "khaki_boonie"
 	body_parts_covered = HEAD
 
 /obj/item/clothing/head/jungle_hat/khaki
-	name = "Black Boonie"
+	name = "black boonie"
 	icon_state = "black_boonie"
 	item_state = "black_boonie"
 	body_parts_covered = HEAD
 
 /obj/item/clothing/head/rice_hat
-	name = "Rice Hat"
+	name = "rice hat"
 	desc = "A wide brim, rice farmer hat."
 	icon_state = "rice_hat"
 	item_state = "rice_hat"
@@ -253,7 +253,7 @@
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
-	name = "Local NLF Uniform"
+	name = "local NLF uniform"
 	desc = "A black uniform of the NLF."
 	icon_state = "localnlfuniform_v1"
 	item_state = "localnlfuniform_v1"
@@ -261,7 +261,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/localnlf2
-	name = "Local NLF Uniform"
+	name = "local NLF uniform"
 	desc = "A black and blue uniform of the NLF."
 	icon_state = "localnlfuniform_v2"
 	item_state = "localnlfuniform_v2"
@@ -269,45 +269,45 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/localnlf3
-	name = "Local NLF Uniform"
-	desc = "A black and khaki uniform of the vietcong."
+	name = "local NLF uniform"
+	desc = "A black and khaki uniform of the NLF."
 	icon_state = "localnlfuniform_v3"
 	item_state = "localnlfuniform_v3"
 	worn_state = "localnlfuniform_v3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/localnlf4
-	name = "Local NLF Uniform"
-	desc = "A blue and khaki uniform of the vietcong."
+	name = "local NLF uniform"
+	desc = "A blue and khaki uniform of the NLF."
 	icon_state = "localnlfuniform_v4"
 	item_state = "localnlfuniform_v4"
 	worn_state = "localnlfuniform_v4"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/localnlf5
-	name = "Local NLF Uniform"
-	desc = "A grey uniform of the vietcong."
+	name = "local NLF uniform"
+	desc = "A grey uniform of the NLF."
 	icon_state = "localnlfuniform_v5"
 	item_state = "localnlfuniform_v5"
 	worn_state = "localnlfuniform_v5"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/accessory/armband/khan_ran/black
-	name = "Khan Ran Scarf (black and white)"
+	name = "khan ran scarf (black and white)"
 	desc = "A traditional mekong delta white-and-grey checkered scarf."
 	icon_state = "khan_ran_v1"
 	item_state = "khan_ran_v1"
 	slot = "decor"
 
 /obj/item/clothing/accessory/armband/khan_ran/blue
-	name = "Khan Ran Scarf (blue and white)"
+	name = "khan ran scarf (blue and white)"
 	desc = "A traditional mekong delta white-and-blue checkered scarf."
 	icon_state = "khan_ran_v2"
 	item_state = "khan_ran_v2"
 	slot = "decor"
 
 /obj/item/clothing/accessory/storage/webbing/nlfsmallpouches
-	name = "NLF Small Pouches"
+	name = "NLF small pouches"
 	desc = "A green chest-level webbing, with 5 medium sized pouches."
 	slots = 5
 	icon_state = "nlfchestrig_v2"
@@ -317,7 +317,7 @@
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
 /obj/item/clothing/accessory/storage/webbing/nlfchestrig
-	name = "NLF Chestrig"
+	name = "NLF chestrig"
 	desc = "A green chest-level webbing, with three medium sized pouches."
 	slots = 5
 	icon_state = "nlfchestrig_v1"
@@ -327,7 +327,7 @@
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
 /obj/item/clothing/shoes/nlfsandal1
-	name = "Leather Sandals"
+	name = "leather sandals"
 	desc = "A pair of simple, thin leather strap sandals. Covers up to the lower foot."
 	icon_state = "nlfsandals_v2"
 	item_state = "nlfsandals_v2"
@@ -340,8 +340,8 @@
 	var/colorn = 1
 
 /obj/item/clothing/shoes/nlfsandal2
-	name = "Leather Sandals"
-	desc = "A pair of simple, thin leather strap sandals. Covers up to the lower foot and raps around the ankle."
+	name = "leather sandals"
+	desc = "A pair of simple, thin leather strap sandals. Covers up to the lower foot and wraps around the ankle."
 	icon_state = "nlfsandals_v1"
 	item_state = "nlfsandals_v1"
 	worn_state = "nlfsandals_v1"
