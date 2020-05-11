@@ -231,16 +231,16 @@
 /* Cold War Hats*/
 
 /obj/item/clothing/head/jungle_hat
+	name = "black boonie"
+	icon_state = "black_boonie"
+	item_state = "black_boonie"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/jungle_hat/khaki
 	name = "khaki boonie"
 	desc = "A wide brim, soft jungle hat."
 	icon_state = "khaki_boonie"
 	item_state = "khaki_boonie"
-	body_parts_covered = HEAD
-
-/obj/item/clothing/head/jungle_hat/khaki
-	name = "black boonie"
-	icon_state = "black_boonie"
-	item_state = "black_boonie"
 	body_parts_covered = HEAD
 
 /obj/item/clothing/head/rice_hat
