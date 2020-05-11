@@ -254,7 +254,7 @@
 "eT" = (/obj/structure/wild/palm,/obj/structure/grille/logfence{icon_state = "palisade"; dir = 8},/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "eU" = (/obj/structure/grille/logfence{icon_state = "palisade"; dir = 1},/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "eV" = (/obj/structure/grille/logfence{icon_state = "palisade"; dir = 1},/obj/item/flashlight/lantern/on{anchored = 1; fuel = 2.14748e+009},/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
-"eW" = (/obj/structure/target_practice,/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
+"eW" = (/obj/structure/practice_dummy,/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "eX" = (/obj/covers/cobblestone,/obj/structure/flag/british,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "eY" = (/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest/Jungle)
 "eZ" = (/obj/structure/grille/logfence{icon_state = "palisade"; dir = 1},/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
