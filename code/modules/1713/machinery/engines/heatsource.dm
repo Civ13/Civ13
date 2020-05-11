@@ -34,22 +34,37 @@
 					return
 		else if (istype(W, /obj/item/stack/ore/coal))
 			fuel += (240)*W.amount
-			user << "You refuel the [src]."
+			user << "You place \the [W] in \the [src], refueling it."
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/ore/charcoal))
 			fuel += (80)*W.amount
-			user << "You refuel the [src]."
+			user << "You place \the [W] in \the [src], refueling it."
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/material/wood))
 			fuel += (60)*W.amount
-			user << "You refuel the [src]."
+			user << "You place \the [W] in \the [src], refueling it."
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/branch))
 			fuel += (60)*W.amount
-			user << "You refuel the [src]."
+			user << "You place \the [W] in \the [src], refueling it."
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/stack/material/bamboo))
+			fuel += (60)*W.amount
+			user << "You place \the [W] in \the [src], refueling it."
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/weapon/leaves))
+			fuel += (30)*W.amount
+			user << "You place \the [W] in \the [src], refueling it."
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/poo))
+			fuel += (60)*W.amount
+			user << "You place \the [W] in \the [src], refueling it."
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/glass) && !istype(W, /obj/item/weapon/reagent_containers/glass/rag))
@@ -60,7 +75,7 @@
 					amt += fcont.reagents.get_reagent_amount(F)
 					fcont.reagents.remove_reagent(F, fcont.reagents.get_reagent_amount(F))
 			fuel += (30)*amt
-			user << "You refuel the [src]."
+			user << "You pour \the fuel in \the [src], refueling it."
 			fcont.reagents.clear_reagents()
 			return
 		else if  (istype(W, /obj/item))
