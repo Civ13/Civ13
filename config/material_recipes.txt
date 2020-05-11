@@ -74,7 +74,14 @@ RECIPE: /material/leather/,green webbing,/obj/item/clothing/accessory/storage/we
 RECIPE: /material/leather/,light webbing,/obj/item/clothing/accessory/storage/webbing/light,1,50,0,1,storage,0,0,99,8,null
 RECIPE: /material/leather/,leather armor,/obj/item/clothing/suit/armor/medieval/leather,6,130,0,1,armor,0,15,72,5,null
 RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,hats & masks,0,15,72,4,null
+RECIPE: /material/leather/,khepresh war crown,/obj/item/clothing/head/helmet/khepresh,3,90,0,1,armor,0,15,22,2,null
+RECIPE: /material/leather/,steppe leather helmet,/obj/item/clothing/head/helmet/steppe_leather,3,100,0,1,armor,0,33,28,3,null
+RECIPE: /material/leather/,steppe leather armor,/obj/item/clothing/suit/armor/medieval/steppe_leather,5,140,0,1,armor,0,33,28,3,null
 RECIPE: /material/leather/,leather roundcap,/obj/item/clothing/head/roundcap,2,100,0,1,hats & masks,65,0,0,4,null
+RECIPE: /material/leather/,leather infantry cap,/obj/item/clothing/head/helmet/leather_infantry,3,90,0,1,armor,0,88,92,4,null
+RECIPE: /material/leather/,brown leather infantry cap,/obj/item/clothing/head/helmet/leather_infantry/brown,3,90,0,1,armor,0,88,92,4,null
+RECIPE: /material/leather/,blue leather infantry cap,/obj/item/clothing/head/helmet/leather_infantry/blue,3,90,0,1,armor,0,88,92,4,null
+RECIPE: /material/leather/,red leather infantry cap,/obj/item/clothing/head/helmet/leather_infantry/red,3,90,0,1,armor,0,88,92,4,null
 RECIPE: /material/leather/,custom flag maker,/obj/item/flagmaker,4,100,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
 RECIPE: /material/leather/,pilot goggles,/obj/item/clothing/glasses/pilot,2,60,0,1,accessories,0,0,107,8,null
@@ -100,7 +107,7 @@ RECIPE: /material/electronics/,black and white camera,/obj/item/camera/earlymode
 RECIPE: /material/electronics/,early color camera,/obj/item/camera/coldwar,7,150,1,1,none,160,0,0,7,null
 RECIPE: /material/electronics/,modern camera,/obj/item/camera,7,150,1,1,none,205,0,0,8,null
 
-RECIPE: /material/electronics/,television,/obj/structure/TV,3,80,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,television,/obj/structure/TV/television,3,80,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,geiger counter,/obj/item/weapon/geiger_counter,5,120,0,1,none,110,0,0,8,null
 RECIPE: /material/electronics/,2-way radio,/obj/structure/radio/transmitter_receiver,10,150,1,1,none,137,0,0,8,null
 RECIPE: /material/electronics/,portable radio,/obj/item/weapon/radio,12,100,0,1,none,141,0,0,8,null
@@ -111,11 +118,13 @@ RECIPE: /material/electronics/,component analyser,/obj/item/weapon/analyser,18,1
 RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,jackets & vests,0,0,0,8,null
 RECIPE: /material/woolcloth/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
+RECIPE: /material/woolcloth/,steppe wool shoes,/obj/item/clothing/shoes/steppe_shoes,3,80,0,1,none,0,0,33,3,null
 
 RECIPE: /material/woolcloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,18,4,null
 RECIPE: /material/woolcloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,18,4,null
 RECIPE: /material/woolcloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,18,8,null
 RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats & masks,0,18,0,8,null
+RECIPE: /material/woolcloth/,steppe shaman hat,/obj/item/clothing/head/steppe_shaman,4,70,0,1,hats,0,0,33,3,null
 RECIPE: /material/woolcloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,hats & masks,0,0,38,8,null
 RECIPE: /material/woolcloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,hats & masks,0,0,62,3,null
 RECIPE: /material/woolcloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats & masks,0,0,52,3,null
@@ -133,6 +142,8 @@ RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/cus
 RECIPE: /material/woolcloth/,custom hennin,/obj/item/clothing/head/custom_hennin,2,40,0,1,hats & masks,0,0,38,3,null
 RECIPE: /material/woolcloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/woolcloth/,light hanfu,/obj/item/clothing/under/hanfu/light,3,100,0,1,clothing,0,0,15,6,null
+RECIPE: /material/woolcloth/,steppe wool tunic,/obj/item/clothing/under/medieval/steppe_tunic,3,100,0,1,clothing,0,0,33,3,null
+RECIPE: /material/woolcloth/,kilt,/obj/item/clothing/under/medieval/kilt,2,100,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,2,100,0,1,clothing,24,0,38,8,null
 RECIPE: /material/woolcloth/,dark hanfu,/obj/item/clothing/under/hanfu,3,100,0,1,clothing,0,0,15,6,null
 RECIPE: /material/woolcloth/,green hanfu,/obj/item/clothing/under/hanfu/green,3,100,0,1,clothing,0,0,15,6,null
@@ -150,6 +161,7 @@ RECIPE: /material/woolcloth/,baggy renaissance clothing,/obj/item/clothing/under
 RECIPE: /material/woolcloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,custom uniform,/obj/item/clothing/under/customuniform,3,75,0,1,clothing,0,0,98,8,null
 
+RECIPE: /material/woolcloth/,steppe shaman wool coat,/obj/item/clothing/suit/storage/jacket/steppe_shaman,6,140,0,1,jackets & vests,0,0,33,3,null
 RECIPE: /material/woolcloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/woolcloth/,fancy brown jacket,/obj/item/clothing/suit/storage/jacket/piratejacket2,10,180,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/woolcloth/,fancy red jacket,/obj/item/clothing/suit/storage/jacket/piratejacket5,10,180,0,1,jackets & vests,0,0,57,3,null
@@ -236,6 +248,7 @@ RECIPE: /material/cloth/,sofa (left),/obj/structure/bed/sofa/left,8,140,1,1,furn
 RECIPE: /material/cloth/,sofa (centre),/obj/structure/bed/sofa,8,140,1,1,furniture,0,0,93,8,null
 RECIPE: /material/cloth/,sofa (right),/obj/structure/bed/sofa/right,8,140,1,1,furniture,0,0,93,8,null
 
+RECIPE: /material/cloth/,plague doctor suit,/obj/item/clothing/suit/storage/jacket/plaguedoctor,5,120,0,1,clothing,0,0,38,3,null
 RECIPE: /material/cloth/,custom colonial jacket,/obj/item/clothing/suit/storage/jacket/customcolonial,5,90,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,custom colonial coat,/obj/item/clothing/suit/storage/jacket/customcolonialcoat,7,120,0,1,jackets & vests,0,0,57,3,null
 RECIPE: /material/cloth/,black jacket,/obj/item/clothing/suit/storage/jacket/piratejacket1,6,110,0,1,jackets & vests,0,0,57,4,null
@@ -278,13 +291,22 @@ RECIPE: /material/cloth/,nemes headdress,/obj/item/clothing/head/nemes,6,55,0,1,
 RECIPE: /material/cloth/,black egyptian headdress,/obj/item/clothing/head/egyptian_headdress_black,4,55,0,1,hats & masks,0,0,18,1,null
 RECIPE: /material/cloth/,blue egyptian headdress,/obj/item/clothing/head/egyptian_headdress_blue,4,55,0,1,hats & masks,0,0,18,1,null
 RECIPE: /material/cloth/,red egyptian headdress,/obj/item/clothing/head/egyptian_headdress_red,4,55,0,1,hats & masks,0,0,18,1,null
-RECIPE: /material/cloth/,double crown,/obj/item/clothing/head/doublecrown,5,65,0,1,hats & masks,0,0,18,1,null
+RECIPE: /material/cloth/,hedjet crown,/obj/item/clothing/head/hedjet,5,65,0,1,hats,0,0,18,1,null
+RECIPE: /material/cloth/,deshret crown,/obj/item/clothing/head/deshret,5,65,0,1,hats,0,0,18,1,null
 RECIPE: /material/cloth/,eyepatch,/obj/item/clothing/glasses/eyepatch,2,55,0,1,hats & masks,0,0,18,8,null
 RECIPE: /material/cloth/,blindfold,/obj/item/clothing/glasses/sunglasses/blindfold,2,55,0,1,hats & masks,0,0,18,8,null
 RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats & masks,0,0,18,8,null
+RECIPE: /material/cloth/,pschent crown,/obj/item/clothing/head/pschent,5,65,0,1,hats,0,0,24,1,null
+RECIPE: /material/cloth/,hooded cape,/obj/item/clothing/head/hooded_cape,6,100,0,1,hats,0,0,35,3,null
 RECIPE: /material/cloth/,red beret,/obj/item/clothing/head/red_beret,2,55,0,1,hats & masks,0,0,38,4,null
 RECIPE: /material/cloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,0,1,hats & masks,0,0,38,4,null
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,38,8,null
+RECIPE: /material/cloth/,phrigian hat,/obj/item/clothing/head/phrigian_hat,4,55,0,1,hats,0,0,38,2,null
+RECIPE: /material/cloth/,red phrigian hat,/obj/item/clothing/head/phrigian_hat/red,4,55,0,1,hats,0,0,38,2,null
+RECIPE: /material/cloth/,blue phrigian hat,/obj/item/clothing/head/phrigian_hat/blue,4,55,0,1,hats,0,0,38,2,null
+RECIPE: /material/cloth/,plague doctor hat,/obj/item/clothing/head/plaguedoctor,4,65,0,1,hats,0,0,38,3,null
+RECIPE: /material/cloth/,plague doctor mask,/obj/item/clothing/mask/plaguedoctor,4,90,0,1,masks & eyewear,0,0,38,3,null
+RECIPE: /material/cloth/,nun hood,/obj/item/clothing/head/nun_hood,4,65,0,1,hats,0,0,38,3,null
 RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,helmets,0,0,38,3,null
 RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,helmets,0,0,38,3,null
 RECIPE: /material/cloth/,green arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab3,5,75,0,1,helmets,0,0,38,3,null
@@ -311,6 +333,7 @@ RECIPE: /material/cloth/,ratty eisenbruck,/obj/item/clothing/head/helmet/aged_ei
 RECIPE: /material/cloth/,custom beret,/obj/item/clothing/head/custom/customberet,2,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/cloth/,custom bandana,/obj/item/clothing/head/custom/custombandana,2,55,0,1,hats & masks,0,0,52,8,null
 RECIPE: /material/cloth/,custom feather cap,/obj/item/clothing/head/custom_feathered_hat,4,55,0,1,hats & masks,0,0,52,8,null
+RECIPE: /material/cloth/,nurse hat,/obj/item/clothing/head/nurse,2,50,0,1,hats,0,0,88,8,null
 RECIPE: /material/cloth/,cowboy hat,/obj/item/clothing/head/cowboyhat,3,55,0,1,hats & masks,0,0,98,8,null
 RECIPE: /material/cloth/,dark cowboy hat,/obj/item/clothing/head/cowboyhat2,3,55,0,1,hats & masks,0,0,98,8,null
 RECIPE: /material/cloth/,bowler hat,/obj/item/clothing/head/bowler_hat,2,55,0,1,hats & masks,0,0,98,5,null
@@ -328,6 +351,7 @@ RECIPE: /material/cloth/,custom officer cap,/obj/item/clothing/head/custom_off_c
 RECIPE: /material/cloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats & masks,0,0,109,8,null
+RECIPE: /material/cloth/,sterile mask,/obj/item/clothing/mask/sterile,2,130,0,1,masks & eyewear,0,0,140,8,null
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
 RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,28,8,null
@@ -376,6 +400,7 @@ RECIPE: /material/cloth/,black stripes clothing,/obj/item/clothing/under/pirate1
 RECIPE: /material/cloth/,red stripes clothing,/obj/item/clothing/under/pirate2,3,75,0,1,clothing,79,0,0,3,null
 RECIPE: /material/cloth/,blue stripes clothing,/obj/item/clothing/under/pirate3,3,75,0,1,clothing,79,0,0,3,null
 RECIPE: /material/cloth/,customizable pyjamas,/obj/item/clothing/under/custompyjamas,3,100,0,1,clothing,79,0,0,8,null
+RECIPE: /material/cloth/,nightingale dress,/obj/item/clothing/under/nightingale,4,90,0,1,clothing,88,0,0,5,null
 RECIPE: /material/cloth/,pioneer outfit,/obj/item/clothing/under/industrial1,3,75,0,1,clothing,98,0,0,5,null
 RECIPE: /material/cloth/,rancher outfit,/obj/item/clothing/under/industrial2,3,75,0,1,clothing,98,0,0,6,null
 RECIPE: /material/cloth/,cowboy outfit,/obj/item/clothing/under/industrial3,3,75,0,1,clothing,98,0,0,8,null
@@ -420,6 +445,7 @@ RECIPE: /material/plastic/,plastic bottle,/obj/item/weapon/reagent_containers/fo
 
 RECIPE: /material/chitin/,chitin mask,/obj/item/clothing/mask/chitinmask,4,65,0,1,none,0,0,0,0,null
 RECIPE: /material/chitin/,chitin helmet,/obj/item/clothing/head/helmet/chitin,7,115,0,1,none,0,0,0,0,null
+RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,180,0,1,none,0,0,0,0,null
 
 RECIPE: /material/bearpelt/brown/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bearpelt/brown/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
@@ -427,6 +453,7 @@ RECIPE: /material/bearpelt/brown/,fur coat,/obj/item/clothing/suit/storage/coat/
 RECIPE: /material/bearpelt/brown/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/brown/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/brown/,bear pelt headcover,/obj/item/clothing/head/bearpelt/brown,4,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/brown/,brown napoleonic bearskin hat,/obj/item/clothing/head/helmet/napoleonic/bearskin/brown,4,120,0,1,none,0,88,92,3,null
 
 RECIPE: /material/bearpelt/white/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bearpelt/white/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
@@ -434,6 +461,7 @@ RECIPE: /material/bearpelt/white/,fur coat,/obj/item/clothing/suit/storage/coat/
 RECIPE: /material/bearpelt/white/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/white/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/white/,bear pelt headcover,/obj/item/clothing/head/bearpelt/white,4,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/white/,white napoleonic bearskin hat,/obj/item/clothing/head/helmet/napoleonic/bearskin/white,4,120,0,1,none,0,88,92,3,null
 
 RECIPE: /material/bearpelt/black/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/bearpelt/black/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
@@ -441,6 +469,7 @@ RECIPE: /material/bearpelt/black/,fur coat,/obj/item/clothing/suit/storage/coat/
 RECIPE: /material/bearpelt/black/,fur boots,/obj/item/clothing/shoes/fur/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/black/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/black/,bear pelt headcover,/obj/item/clothing/head/bearpelt/black,4,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/black/,black napoleonic bearskin hat,/obj/item/clothing/head/helmet/napoleonic/bearskin,4,120,0,1,none,0,88,92,3,null
 
 RECIPE: /material/wolfpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/wolfpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
@@ -598,8 +627,8 @@ RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,
 RECIPE: /material/stone/,furnace,/obj/structure/furnace,10,150,1,1,production,26,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 
-RECIPE: /material/stone/,stone bust,/obj/item/weapon/material/bust,3,10,0,0,projectiles,20,0,0,0,null
-RECIPE: /material/stone/,stone bust of hippocrates,/obj/item/weapon/material/hippocratic,3,10,0,0,projectiles,20,0,0,0,null
+RECIPE: /material/stone/,stone bust,/obj/item/weapon/material/bust,3,10,0,0,none,20,0,0,8,stone
+RECIPE: /material/stone/,stone bust of hippocrates,/obj/item/weapon/material/hippocratic,3,10,0,0,none,20,0,0,8,stone
 RECIPE: /material/stone/,stone arrowhead (x4),/obj/item/stack/arrowhead/stone,1,10,0,1,projectiles,0,14,0,8,null
 RECIPE: /material/stone/,catapult projectile,/obj/item/catapult_ball,5,75,0,1,projectiles,24,33,0,4,null
 RECIPE: /material/stone/,sling projectile (x5),/obj/item/ammo_casing/stone,1,25,0,1,projectiles,0,0,0,8,null
@@ -872,15 +901,17 @@ RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,non
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
 RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole/,6,95,0,1,none,0,0,0,8,null
 
-RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,30,0,8,null
+RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,21,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,3,bronze
 RECIPE: /material/bronze/,bronze shield,/obj/item/weapon/shield/bronze,4,85,0,1,weapons,21,16,0,2,null
-RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,21,16,0,2,null
-RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,21,16,0,2,null
-RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,27,34,0,2,bronze
-RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,27,42,0,2,bronze
-RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,34,21,0,2,bronze
+RECIPE: /material/bronze/,aspis shield,/obj/item/weapon/shield/aspis,5,95,0,1,weapons,24,16,0,2,null
+RECIPE: /material/bronze/,roman shield,/obj/item/weapon/shield/roman,6,105,0,1,weapons,24,16,0,2,null
+RECIPE: /material/bronze/,bronze small sword,/obj/item/weapon/material/sword/smallsword/bronze,10,80,0,1,weapons,21,16,0,2,bronze
+RECIPE: /material/bronze/,bronze arming sword,/obj/item/weapon/material/sword/armingsword/bronze,15,125,0,1,weapons,24,21,0,2,bronze
+RECIPE: /material/bronze/,bronze phrigian helmet,/obj/item/clothing/head/helmet/phrigian,4,100,0,1,armor,21,16,0,1,bronze
+RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,24,21,0,2,bronze
+RECIPE: /material/bronze/,bronze dragoon helmet,/obj/item/clothing/head/helmet/napoleonic/dragoon,7,100,0,1,armor,0,88,92,3,null
 RECIPE: /material/bronze/,bronze retractor,/obj/item/weapon/surgery/retractor/bronze,2,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze hemostat,/obj/item/weapon/surgery/hemostat/bronze,2,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze cautery,/obj/item/weapon/surgery/cautery/bronze,2,50,0,1,healthcare,18,0,26,8,null
@@ -894,7 +925,7 @@ RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,
 
 RECIPE: /material/bronze/,bronze statue,/obj/structure/religious/statue,10,250,1,1,religious & decoration,10,0,0,8,bronze
 RECIPE: /material/bronze/,monumental bronze statue of karl marx,/obj/structure/religious/monument/karl_marx,30,300,1,1,religious & decoration,125,0,0,8,null
-RECIPE: /material/bronze/,bronze bust of karl marx,/obj/item/weapon/material/marx,3,80,0,0,religious & decoration,125,0,0,8,null
+RECIPE: /material/bronze/,bronze bust of karl marx,/obj/item/weapon/material/marx,3,80,0,0,religious & decoration,125,0,0,8,bronze
 RECIPE: /material/bronze/,bronze sarcophagus,/obj/structure/closet/coffin/sarcophagus,25,350,1,1,religious & decoration,0,0,0,1,bronze
 
 RECIPE: /material/wood/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
@@ -1019,6 +1050,7 @@ RECIPE: /material/wood/,retting trough,/obj/structure/converter/retting_trough,8
 RECIPE: /material/wood/,wood altar,/obj/structure/altar/wood,20,200,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/wood/,decorative wood mask,/obj/structure/religious/tribalmask,2,50,1,1,religious & decoration,0,0,0,2,null
 RECIPE: /material/wood/,wearable wood mask,/obj/item/clothing/mask/wooden,2,50,0,1,religious & decoration,0,0,0,2,null
+RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,religious & decoration,0,0,0,2,null
 RECIPE: /material/wood/,impaled skull,/obj/structure/religious/impaledskull,2,50,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/wood/,small cross,/obj/structure/religious/woodcross1,2,50,1,1,religious & decoration,47,0,0,8,null
 RECIPE: /material/wood/,tiki statue,/obj/structure/religious/tiki_statue,10,150,1,1,religious & decoration,0,0,0,8,null
@@ -1187,6 +1219,8 @@ RECIPE: /material/iron/,armor workbench,/obj/structure/repair/workbench,16,180,1
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
 RECIPE: /material/iron/,large drying rack,/obj/structure/drying_rack,8,120,1,1,production,0,0,16,8,null
 RECIPE: /material/iron/,meat grinder,/obj/structure/meat_grinder,8,120,1,1,production,0,0,90,8,null
+
+RECIPE: /material/sandstone/,smooth sandstone road,/obj/covers/roads/sandstone,1,0,1,1,roads,0,0,0,8,null
 
 RECIPE: /material/sandstone/,sandstone wall,/obj/covers/sandstone_smooth_wall,8,125,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,egyptian wall,/obj/covers/stone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null
