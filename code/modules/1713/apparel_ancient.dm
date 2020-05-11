@@ -266,6 +266,18 @@
 	slowdown = 0.2
 	health = 28
 
+/obj/item/clothing/suit/armor/ancient/bronze_lamellar
+	name = "bronze egyptian lamellar"
+	desc = "A bronze lamellar armor of egyptian design."
+	icon_state = "egyptian_lamellar"
+	item_state = "egyptian_lamellar"
+	worn_state = "egyptian_lamellar"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //identical to bronze armor
+	value = 25
+	slowdown = 0.7
+	health = 48
+
 /obj/item/clothing/suit/armor/ancient/aztec_harness
 	name = "aztec harness"
 	desc = "A few metal plates on leather strips, covering the torso."
@@ -395,7 +407,7 @@
 	item_state = "sol_invictus"
 	worn_state = "sol_invictus"
 	body_parts_covered = HEAD|FACE|EYES
-	flags_inv = BLOCKHEADHAIR
+	flags_inv = BLOCKHAIR
 	armor = list(melee = 65, arrow = 50, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	restricts_view = 2
 	health = 55
@@ -408,7 +420,7 @@
 	item_state = "leonidas"
 	worn_state = "leonidas"
 	body_parts_covered = HEAD|FACE|EYES
-	flags_inv = BLOCKHEADHAIR
+	flags_inv = BLOCKHAIR
 	armor = list(melee = 60, arrow = 45, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	restricts_view = 1
 	health = 50
@@ -447,6 +459,28 @@
 	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	health = 40
 
+/obj/item/clothing/head/helmet/egyptian
+	name = "egyptian war headdress"
+	desc = "A bronze egyptian headpiece, with a exposed face to relieve the wearer of heat."
+	icon_state = "egyptian_bronze_headdress"
+	item_state = "egyptian_bronze_headdress"
+	worn_state = "egyptian_bronze_headdress"
+	body_parts_covered = HEAD|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 35
+	heat_protection = HEAD|FACE|EYES
+
+/obj/item/clothing/head/helmet/phrigian
+	name = "bronze phrigian helmet"
+	desc = "A knob ended bronze phrigian helmet. With more emphasis on style than overall protection"
+	icon_state = "phrigian_helmet"
+	item_state = "phrigian_helmet"
+	worn_state = "phrigian_helmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 38, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+	health = 30
+
 /obj/item/clothing/head/helmet/leather
 	name = "leather helmet"
 	desc = "A simple leather helmet."
@@ -454,8 +488,19 @@
 	item_state = "leatherhelmet"
 	worn_state = "leatherhelmet"
 	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 27, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
 	health = 20
+
+/obj/item/clothing/head/helmet/khepresh
+	name = "khepresh war crown"
+	desc = "A ornate egyptian war crown made of leather and gold. It is not as protective as bronze or iron, but practical for protecting your majesty."
+	icon_state = "khepresh"
+	item_state = "khepresh"
+	worn_state = "khepresh"
+	body_parts_covered = HEAD
+	armor = list(melee = 30, arrow = 20, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE) //lightly stronger than leather
+	health = 30
 
 	/* Nomads (Craftable) Helmets*/
 
@@ -477,6 +522,7 @@
 	item_state = "barbarian"
 	worn_state = "barbarian"
 	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	health = 30
 
@@ -487,8 +533,21 @@
 	item_state = "asterix"
 	worn_state = "asterix"
 	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	health = 30
+
+/obj/item/clothing/head/helmet/egyptian/nomads
+	name = "egyptian war headdress"
+	desc = "A bronze egyptian headdress, with a exposed face to relieve the wearer of heat."
+	icon_state = "egyptian_bronze_headdress"
+	item_state = "egyptian_bronze_headdress"
+	worn_state = "egyptian_bronze_headdress"
+	body_parts_covered = HEAD|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 30
+	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/head/helmet/greek/nomads
 	name = "greek helmet"
@@ -576,12 +635,39 @@
 	flags_inv = BLOCKHEADHAIR
 	heat_protection = HEAD|FACE|EYES
 
-/obj/item/clothing/head/doublecrown
+/obj/item/clothing/head/doublecrown //replaced by hedjet/deshret/pschent following
 	name = "double crown"
 	desc = "A double-coloured cloth crown."
 	icon_state = "doublecrown"
 	item_state = "doublecrown"
 	worn_state = "doublecrown"
+
+/obj/item/clothing/head/hedjet
+	name = "hedjet crown"
+	desc = "A egyptian crown made from cloth. It is often worn by pharoahs ruling over the floodplains." //historically the northern pharoahs nearer to the nile delta
+	icon_state = "hedjet"
+	item_state = "hedjet"
+	worn_state = "hedjet"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
+
+/obj/item/clothing/head/deshret
+	name = "deshret crown"
+	desc = "A red egyptian crown made from cloth. It is often worn by pharoahs ruling over desert dunes." //historically the southern pharoahs nearer to the nubian desert
+	icon_state = "deshret"
+	item_state = "deshret"
+	worn_state = "deshret"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
+
+/obj/item/clothing/head/pschent
+	name = "pschent crown"
+	desc = "A combined red and white egyptian crown made from cloth. Combined of deshret & hedjet; it represents divine authority over their domain." //worn by herod, of a united egyptian kingdom.
+	icon_state = "pschent"
+	item_state = "pschent"
+	worn_state = "pschent"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/head/laurelcrown
 	name = "laurel crown"
@@ -750,14 +836,7 @@
 	specific = TRUE
 	colorn = 5
 
-/obj/item/clothing/suit/storage/coat/fur/orc
-	name = "orc fur coat"
-	desc = "A thick dark green fur coat, made from disgusting orc pelts."
-	icon_state = "fur_jacket6"
-	item_state = "fur_jacket6"
-	worn_state = "fur_jacket6"
-	specific = TRUE
-	colorn = 6
+//orc fur coat & boots relocated to apparel_tribes.dm
 
 /obj/item/clothing/suit/storage/coat/fur/New()
 	..()
@@ -855,13 +934,6 @@
 	worn_state = "fur5"
 	specific = TRUE
 
-/obj/item/clothing/shoes/fur/orc
-	name = "orc fur boots"
-	desc = "Dense fur boots made from orc skin."
-	icon_state = "fur6"
-	item_state = "fur6"
-	worn_state = "fur6"
-	specific = TRUE
 /obj/item/clothing/shoes/fur/New()
 	..()
 	if (!specific)
@@ -975,17 +1047,6 @@
 	worn_state = "towel"
 	heat_protection = LOWER_TORSO
 
-/obj/item/clothing/mask/bossjaw
-	name = "'rite nasty boss jawpiece"
-	desc = "A chunk of crude metal crafted into the shape of a orcish jaw, cements status amongst brutes making them appear larger."
-	icon_state = "bossjaw"
-	item_state = "bossjaw"
-	worn_state = "bossjaw"
-	body_parts_covered = FACE
-	flags_inv = 0
-	w_class = 2
-	armor = list(melee = 15, arrow = 5, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
-
 /obj/item/clothing/head/helmet/anax/aries //op fantasy helm
 	name = "aries helmet"
 	desc = "A reinforced bronze greek helmet, covering most of the face, with red plummage on top. Worn by dieties and avatars of destruction such as aries."
@@ -995,7 +1056,7 @@
 	armor = list(melee = 70, arrow = 60, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	health = 60
 
-/obj/item/clothing/head/helmet/anax/athena //
+/obj/item/clothing/head/helmet/anax/athena
 	name = "athena helmet"
 	desc = "A reinforced bronze greek helmet, covering most of the face, with blue plummage on top and a gold laurel. Chosen helm of the god of tactical warfare and knowledge athena herself."
 	icon_state = "athena"
@@ -1020,5 +1081,74 @@
 	icon_state = "vitalstatistix"
 	item_state = "vitalstatistix"
 	worn_state = "vitalstatistix"
+	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	health = 40
+
+/obj/item/clothing/head/helmet/egyptian/anubis
+	name = "bronze anubis headdress"
+	desc = "A bronze egyptian headpiece, with the visage of the god anubis; god of the dead."
+	icon_state = "anubis"
+	item_state = "anubis"
+	worn_state = "anubis"
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 70, arrow = 60, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 60
+
+/obj/item/clothing/head/helmet/egyptian/osiris
+	name = "bronze osirus headdress"
+	desc = "A bronze egyptian headpiece, with the visage of the god osiris; god of the underworld."
+	icon_state = "osiris"
+	item_state = "osiris"
+	worn_state = "osiris"
+	flags_inv = BLOCKHAIR
+	armor = list(melee = 70, arrow = 60, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 60
+
+/obj/item/clothing/head/atef
+	name = "atef crown"
+	desc = "A white egyptian crown made from cloth adorned with plumes of feathers. The preferred crown of egyptian dieties."
+	icon_state = "deshret"
+	item_state = "deshret"
+	worn_state = "deshret"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD|FACE|EYES
+
+/obj/item/clothing/mask/anubis
+	name = "anubis mask"
+	desc = "A bronze mask in the form of a the egyptian god of the dead, anubis."
+	icon_state = "anubis"
+	item_state = "anubis"
+	flags_inv = HIDEFACE
+	body_parts_covered = FACE
+	w_class = 2
+	armor = list(melee = 15, arrow = 15, gun = FALSE, energy = 15, bomb = 45, bio = FALSE, rad = FALSE) //modest, weaker than japanese facemask
+	blocks_scope = TRUE
+	restricts_view = 1
+	heat_protection = FACE|EYES
+
+/obj/item/clothing/mask/osiris
+	name = "osiris mask"
+	desc = "A mask in the form of a the egyptian god of the underworld, osiris."
+	icon_state = "osiris"
+	item_state = "osiris"
+	flags_inv = HIDEFACE
+	body_parts_covered = FACE
+	w_class = 1
+	armor = list(melee = 15, arrow = 15, gun = FALSE, energy = 15, bomb = 45, bio = FALSE, rad = FALSE)
+	blocks_scope = TRUE
+	restricts_view = 1
+	heat_protection = FACE|EYES
+
+/obj/item/clothing/suit/armor/god_pharoah //copied broadly from /obj/item/clothing/suit/armor/sauronarmor
+	name = "pharoahic armor of the gods"
+	desc = "The armor of the divine gods of the desert"
+	icon_state = "settra"
+	item_state = "settra"
+	worn_state = "settra"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 95, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
+	value = 70
+	slowdown = 1
+	health = 90
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
