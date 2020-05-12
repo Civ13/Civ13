@@ -194,6 +194,34 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	slowdown = 1.7
 	health = 50
 
+/obj/item/clothing/shoes/orc
+	name = "orcish sabatons"
+	desc = "A pair of orc plated armored boots."
+	icon_state = "ork_warrior"
+	item_state = "ork_warrior"
+	worn_state = "ork_warrior"
+	body_parts_covered = FEET
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 75, arrow = 60, gun = 10, energy = 8, bomb = 25, bio = 15, rad = FALSE)
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 35
+
+/obj/item/clothing/gloves/gauntlets/orc
+	name = "orcish gauntlets"
+	desc = "A pair of orcish armored gauntlets."
+	icon_state = "ork_gauntlet"
+	item_state = "ork_gauntlet"
+	worn_state = "ork_gauntlet"
+	body_parts_covered = HANDS
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 75, arrow = 60, gun = 10, energy = 8, bomb = 25, bio = 15, rad = FALSE)
+	cold_protection = HANDS
+	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+	health = 30
+
 	/* - 3b. Other Orc Clothes & Accessories*/
 
 /obj/item/clothing/mask/bossjaw

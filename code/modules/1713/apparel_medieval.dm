@@ -66,8 +66,8 @@
 	siemens_coefficient = 0.6
 
 /obj/item/clothing/shoes/medieval/knight
-	name = "armored shoes"
-	desc = "A pair of plated armored shoes."
+	name = "Sabatons"
+	desc = "A pair of plated armored boots."
 	icon_state = "knight"
 	item_state = "knight"
 	worn_state = "knight"

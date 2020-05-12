@@ -869,7 +869,7 @@ obj/structure/anvil/New()
 				display4 = list("Iron Chestplate (12)", "Conical Helmet (6)", "Protective Conical Helmet (10)", "Cancel")
 			else if (map.ordinal_age == 2)
 				if (H.orc)
-					display4 = list("Grunt Armor (10)", "Urukhai Armor (12)", "Grunt Helmet (10)", "Spearman Helmet (12)", "Berserker Helmet (15)", "Cancel")
+					display4 = list("Grunt Armor (10)", "Urukhai Armor (12)", "Grunt Helmet (10)", "Spearman Helmet (12)", "Berserker Helmet (15)", "Orkish Gauntlets (10)", "Orkish Sabatons (10)","Cancel")
 				else
 					display4 = list("Chainmail (10)", "Hauberk (12)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Crusader Helmet (15)", "Knight Helmet (15)", "Gauntlets (10)", "Plated Boots (10)", "Cancel")
 			else if (map.ordinal_age == 0)
@@ -1361,7 +1361,35 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
+			if (choice4 == "Orkish Gauntlets (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the gauntlets..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 10)
+						user << "You craft the gauntlets."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/gloves/gauntlets/orc(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
 
+			if (choice4 == "Orkish Sabatons (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the sabatons..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 10)
+						user << "You craft the sabatons."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/shoes/orc(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
 			if (choice4 == "Pickelhaube (7)")
 				if (iron_amt >= 7)
 					user << "You begin crafting the pickelhaube..."
@@ -1761,7 +1789,7 @@ obj/structure/anvil/New()
 			var/list/display8 = list("Cancel")
 			if (map.ordinal_age == 2)
 				if (H.orc)
-					display8 = list( "Cancel")
+					display8 = list( "Orkish Shield (16)", "Cancel")
 				else
 					display8 = list("Semi Oval Shield(16)", "Semi Oval Templar Shield(16)", "Cancel")
 			else if (map.ordinal_age == 0)
@@ -1986,7 +2014,20 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-
+			if (choice8 == "Orkish Shield (16)")
+				if (iron_amt >= 13)
+					user << "You begin crafting the orkish shield..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,160,src) && iron_amt >= 13)
+						user << "You craft the orkish shield."
+						iron_amt -= 13
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/shield/iron/orc(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
 			if (choice8 == "Cancel")
 				return
 
