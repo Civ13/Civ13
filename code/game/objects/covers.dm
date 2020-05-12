@@ -1395,7 +1395,7 @@
 /* Red Earth Types -End*/
 
 /obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)  //this list doesn't like multi arguements, single type per stucco catalyst unless you know what you're doing please.
-	if (istype(W, /obj/item/weapon/stucco))
+	if (istype(W, /obj/item/weapon/stucco/generic))
 		user << "You start adding stucco to the wall..."
 		if (do_after(user, 20, src))
 			user << "You finish adding stucco to the wall, rendering it."
@@ -1425,23 +1425,14 @@
 			return
 	..()
 
-/*/obj/covers/claydoorway/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/stucco))
+/obj/covers/claydoorway/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/generic))
 		user << "You start adding stucco to the doorway..."
 		if (do_after(user, 20, src))
 			user << "You finish adding stucco to the doorway, rendering over it."
 			qdel(W)
 			new /obj/covers/clay_wall/redearth_doorway(loc)
 			qdel(src)
-
-/obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/stucco))
-		user << "You start adding stucco to the wood window frame..."
-		if (do_after(user, 20, src))
-			user << "You finish adding stucco to the wood window frame, rendering over it."
-			qdel(W)
-			new /obj/structure/window_frame/redearth(loc)
-			qdel(src)*/
 
 /obj/covers/clay_wall/incomplete
 	name = "clay block wall"
@@ -1478,9 +1469,9 @@
 					S.icon_state = "clay_block_alt"
 					base_icon_state = icon_state
 					S.name = "clay block wall"
-				/*else if (choice == "Doorway") //until a solution can be found
-					qdel(src)
-					new /obj/covers/claydoorway(loc)*/
+				else if (choice == "Doorway") //until a solution can be found
+					new /obj/covers/claydoorway(S.loc)
+					qdel(S)
 				return
 		else if (stage <= 1)
 			user << "You start adding clay blocks to the wall..."
@@ -1558,8 +1549,8 @@
 					S.density = FALSE
 					S.opacity = FALSE
 				else if (choice == "Window")
-					new /obj/structure/window_frame/sumerian(loc)
-					qdel(src)
+					new /obj/structure/window_frame/sumerian(S.loc)
+					qdel(S)
 				else if (choice == "Corner")
 					S.icon_state = "sumerian-corner1"
 					base_icon_state = icon_state
@@ -2283,24 +2274,6 @@
 				S.desc = "A roman style villa wall with a chiselled relief of a hoplite."
 			return
 	..()
-
-/obj/structure/window_frame/stone/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/stucco/roman))
-		user << "You start adding roman stucco to the stone window..."
-		if (do_after(user, 20, src))
-			user << "You finish adding roman stucco to the stone window, rendering over it."
-			qdel(W)
-			new /obj/structure/window_frame/villa(loc)
-			qdel(src)
-
-/obj/structure/window_frame/stonefull/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/stucco/roman))
-		user << "You start adding roman stucco to the full stone window..."
-		if (do_after(user, 20, src))
-			user << "You finish adding roman stucco to the full stone window, rendering over it."
-			qdel(W)
-			new /obj/structure/window_frame/villafull(loc)
-			qdel(src)
 
 /obj/covers/stone_wall/classic/archway/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/stucco/roman))

@@ -13,7 +13,7 @@ RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2
 RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
 
 RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5,50,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,raw stucco,/obj/item/weapon/stucco,1.5,25,0,1,wall coverings & stucco,18,0,0,8,null
+RECIPE: /material/clay/,raw stucco,/obj/item/weapon/stucco/generic,1.5,25,0,1,wall coverings & stucco,18,0,0,8,null
 RECIPE: /material/clay/,raw greek stucco,/obj/item/weapon/stucco/greek,1.5,25,0,1,wall coverings & stucco,18,0,0,2,null
 RECIPE: /material/clay/,raw roman stucco,/obj/item/weapon/stucco/roman,1.5,25,0,1,wall coverings & stucco,18,0,0,2,null
 RECIPE: /material/clay/,light clay plant pot,/obj/structure/plant_pot/clay/light,4,25,1,1,plant pots & decoration,18,0,0,8,null
@@ -125,7 +125,7 @@ RECIPE: /material/woolcloth/,blue beret,/obj/item/clothing/head/blue_beret,2,55,
 RECIPE: /material/woolcloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats & masks,0,0,18,8,null
 RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats & masks,0,18,0,8,null
 RECIPE: /material/woolcloth/,steppe shaman hat,/obj/item/clothing/head/steppe_shaman,4,70,0,1,hats,0,0,33,3,null
-RECIPE: /material/woolcloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,hats & masks,0,0,38,8,null
+RECIPE: /material/woolcloth/,shemagh,/obj/item/clothing/mask/shemagh,2,55,0,1,hats & masks,0,0,33,8,null
 RECIPE: /material/woolcloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,hats & masks,0,0,62,3,null
 RECIPE: /material/woolcloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats & masks,0,0,52,3,null
 RECIPE: /material/woolcloth/,brown eisenbruck,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats & masks,0,0,52,8,null
@@ -154,6 +154,9 @@ RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3
 RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
+RECIPE: /material/woolcloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,28,5,null
+RECIPE: /material/woolcloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,28,5,null
+RECIPE: /material/woolcloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
 RECIPE: /material/woolcloth/,dark artisan clothing,/obj/item/clothing/under/artisan/dark,3,100,0,1,clothing,0,0,38,3,null
 RECIPE: /material/woolcloth/,light artisan clothing,/obj/item/clothing/under/artisan/light,3,100,0,1,clothing,0,0,38,3,null
 RECIPE: /material/woolcloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
@@ -352,6 +355,7 @@ RECIPE: /material/cloth/,custom field cap,/obj/item/clothing/head/custom/fieldca
 RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats & masks,0,0,109,8,null
 RECIPE: /material/cloth/,sterile mask,/obj/item/clothing/mask/sterile,2,130,0,1,masks & eyewear,0,0,140,8,null
+RECIPE: /material/cloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
 RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,28,8,null
@@ -414,6 +418,8 @@ RECIPE: /material/cloth/,grey outfit,/obj/item/clothing/under/modern3,4,75,0,1,c
 RECIPE: /material/cloth/,brown outfit,/obj/item/clothing/under/modern4,4,75,0,1,clothing,112,0,0,8,null
 RECIPE: /material/cloth/,farmer outfit,/obj/item/clothing/under/farmer_outfit,4,75,0,1,clothing,112,0,0,8,null
 RECIPE: /material/cloth/,mechanic outfit,/obj/item/clothing/under/mechanic_outfit,4,75,0,1,clothing,112,0,0,8,null
+RECIPE: /material/cloth/,blue ainu robes,/obj/item/clothing/under/ainu,3,100,0,1,clothing,0,0,28,5,null
+RECIPE: /material/cloth/,brown ainu robes,/obj/item/clothing/under/ainu2,3,100,0,1,clothing,0,0,28,5,null
 
 RECIPE: /material/barbedwire/,barbwire,/obj/structure/barbwire,1,20,0,1,none,0,0,0,8,null
 

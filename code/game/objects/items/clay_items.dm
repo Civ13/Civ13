@@ -421,6 +421,8 @@
 	var/result = "none"
 	value = 1
 
+/obj/item/weapon/stucco/generic
+
 /obj/item/weapon/stucco/greek
 	name = "greek raw stucco"
 	desc = "Raw stucco. Dyed with blue streaks and clandestine white, ready to be applied onto a crude stone surface"
