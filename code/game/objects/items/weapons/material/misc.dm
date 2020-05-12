@@ -76,9 +76,9 @@
 	name = "stone bust of hippocrates"
 	sharp = FALSE
 	edge = FALSE
-	desc = "A stone bust of hippocrates marx"
-	icon_state = "hippocratic_oath"
-	item_state = "hippocratic_oath"
+	desc = "A stone bust of hippocrates"
+	icon_state = "hippocratic"
+	item_state = "hippocratic"
 	default_material = "stone"
 	throw_speed = 3
 	throw_range = 3
@@ -478,8 +478,8 @@
 	edge = TRUE
 	desc = "A standard of the phaoroic armies with a mighty lion in gold attached upon it."
 	slot_flags = SLOT_SHOULDER
-	icon_state = "egypt_standard"
-	item_state = "egypt_standard"
+	icon_state = "egyptian_standard"
+	item_state = "egyptian_standard"
 	default_material = "wood"
 	throw_speed = 3
 	throw_range = 5

@@ -16,6 +16,7 @@
    * - 10a Medieval Mayan
    * - 10b Medieval Norse Armor
    * - 10c Medieval Mamluk Armor
+   * - 10d Medieval Steppe Clothes & Armor
    /////////////////////////////////////
    * - 11 Medieval Japanese
    * - 11a Medieval Japanese Armor
@@ -27,8 +28,7 @@
    * - 12 Miscallenous Medieval Extra-Cultural Clothes
    * - 13 Fantasy Medieval Clothes
    * - 13a Fantasy Crusader Helmets
-   * - 13b Dark Souls Armor
-   * - 13c Sauron & Orc Cultural Clothes*/
+   * - 13b Dark Souls Armor*/
 
 /* Medieval Shoes & Boots*/
 
@@ -66,8 +66,8 @@
 	siemens_coefficient = 0.6
 
 /obj/item/clothing/shoes/medieval/knight
-	name = "armored shoes"
-	desc = "A pair of plated armored shoes."
+	name = "Sabatons"
+	desc = "A pair of plated armored boots."
 	icon_state = "knight"
 	item_state = "knight"
 	worn_state = "knight"
@@ -121,6 +121,52 @@
 	icon_state = "noblehat2"
 	item_state = "noblehat2"
 
+/obj/item/clothing/head/phrigian_hat
+	name = "phrigian hat"
+	desc = "a knob ended hat of the ancient phrigian design. Often worn by merchants or peasants of jewish descent."
+	icon_state = "phrigian_hat"
+	item_state = "phrigian_hat"
+	worn_state = "phrigian_hat"
+
+/obj/item/clothing/head/phrigian_hat/red
+	name = "red phrigian hat"
+	icon_state = "phrigian_hat_red"
+	item_state = "phrigian_hat_red"
+	worn_state = "phrigian_hat_red"
+
+/obj/item/clothing/head/phrigian_hat/blue
+	name = "blue phrigian hat"
+	icon_state = "phrigian_hat_blue"
+	item_state = "phrigian_hat_blue"
+	worn_state = "phrigian_hat_blue"
+
+/obj/item/clothing/head/hooded_cape
+	name = "long black hooded cape"
+	desc = "A long black hooded cape. Often worn those wishing to conceal themselves in the shadows."
+	icon_state = "black_cape"
+	item_state = "black_cape"
+	worn_state = "black_cape"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHAIR|HIDEFACE
+
+/obj/item/clothing/head/plaguedoctor
+	name = "plague doctor hat"
+	desc = "A a short brimmed black hat. Often worn by plague doctors to cut a discreet figure in the streets between visitations."
+	icon_state = "plaguedoctor"
+	item_state = "plaguedoctor"
+	worn_state = "plaguedoctor"
+	flags_inv = BLOCKHAIR
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/nun_hood //path can't be changed, has dependencies in civilian.dm & civ_factions.dm
+	name = "nun hood"
+	desc = "A typical nun hood. Made in such a way to indicate commitment, like that found in marriage to the faith."
+	icon_state = "nun_hood"
+	item_state = "nun_hood"
+	worn_state = "nun_hood"
+	flags_inv = BLOCKHAIR
+	body_parts_covered = HEAD
+
 /obj/item/clothing/head/turban
 	name = "turban"
 	desc = "a colored, light fabric turban."
@@ -169,6 +215,13 @@
 	item_state = "arabw_robe"
 	worn_state = "arabw_robe"
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/suit/storage/jacket/plaguedoctor //moved from jobs.dm
+	name = "plague doctor suit"
+	desc = "Used by plague doctors. Only adds to the mystery behind their methods."
+	icon_state = "plaguedoctor"
+	icon_state = "plaguedoctor"
+	icon_state = "plaguedoctor"
 
 /* Medieval Uniforms*/
 
@@ -220,6 +273,13 @@
 	icon_state = "leather_tunic"
 	item_state = "leather_tunic"
 	worn_state = "leather_tunic"
+
+/obj/item/clothing/under/medieval/kilt
+	name = "kilt"
+	desc = "A green and tartan woolen kilt."
+	icon_state = "kilt"
+	item_state = "kilt"
+	worn_state = "kilt"
 
 /obj/item/clothing/under/medieval/beggar_clothing
 	name = "beggar clothing"
@@ -310,6 +370,13 @@
 	item_state = "arab3"
 	worn_state = "arab3"
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/nun
+	name = "nun dress"
+	desc = "A very modest nun dress. With a small cross around the neck, to aide protection against temptation."
+	icon_state = "nun"
+	item_state = "nun"
+	worn_state = "nun"
 
 /* Medieval Armor*/
 
@@ -652,7 +719,6 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 	health = 45
-
 
 /obj/item/clothing/head/helmet/medieval/arab
 	name = "conical arabic helmet and turban"
@@ -1190,6 +1256,67 @@
 	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 	health = 45
 
+/* Medieval Steppe Clothes & Armor*/
+
+/obj/item/clothing/head/steppe_shaman
+	name = "steppe shaman wool hat"
+	desc = "a dyed red wool hat of steppe nomad design. Often worn by shamans to protect themselves from the elements on the steppe whilst performing rituals"
+	icon_state = "steppe_shaman_wool_hat"
+	item_state = "steppe_shaman_wool_hat"
+	worn_state = "steppe_shaman_wool_hat"
+
+/obj/item/clothing/suit/storage/jacket/steppe_shaman
+	name = "steppe shaman wool coat"
+	desc = "A colorful woolen coat, used by shamans to wrap warm whilst performing rituals on the open steppe."
+	icon_state = "steppe_shaman_wool_coat"
+	item_state = "steppe_shaman_wool_coat"
+	worn_state = "steppe_shaman_wool_coat"
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/suit/armor/medieval/steppe_leather
+	name = "steppe leather armor"
+	desc = "Leather armor made from sheets of leather bound in a steppe nomad style, making adequate protection for prospective warriors."
+	icon_state = "steppe_leather_armor"
+	item_state = "steppe_leather_armor"
+	worn_state = "steppe_leather_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 45, arrow = 25, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE) //stronger than leather, weaker than bronze
+	value = 20
+	flammable = TRUE
+	slowdown = 0.2
+	health = 33
+
+/obj/item/clothing/head/helmet/steppe_leather
+	name = "steppe leather helmet"
+	desc = "A iron studded leather helmet built in the steppe nomadic style. Often used by raiders or tribal warfare upon the great steppes"
+	icon_state = "steppe_leather_helmet"
+	item_state = "steppe_leather_helmet"
+	worn_state = "steppe_leather_helmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 30, arrow = 20, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE) //lightly stronger than leather
+	health = 30
+
+/obj/item/clothing/under/medieval/steppe_tunic
+	name = "steppe wool tunic"
+	desc = "A brown tunic made out of wool. Often worn by nomads upon the great steppes."
+	icon_state = "steppe_wool_tunic"
+	item_state = "steppe_wool_tunic"
+	worn_state = "steppe_wool_tunic"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/shoes/steppe_shoes
+	name = "steppe wool shoe"
+	desc = "A pair of insulated rough woolen shoes for keeping feet warm on the open steppe."
+	icon_state = "steppe_wool_shoes"
+	item_state = "steppe_wool_shoes"
+	worn_state = "steppe_wool_shoes"
+	body_parts_covered = FEET
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 10, arrow = 8, gun = FALSE, energy = 6, bomb = 12, bio = 10, rad = FALSE)
+	cold_protection = FEET
+	health = 35
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
 
 /* Medieval Japanese*/
 	/* Medieval Japanese*/
@@ -1573,7 +1700,7 @@ obj/item/clothing/head/helmet/samurai/black
 	health = 65
 	slowdown = 0.10
 
-/*
+/* wip
 /obj/item/clothing/suit/armor/giantdad
 	name = "lordran armor"
 	desc = "The legendary armor of the father, its pierce mark from a equally legendary sword is indistinguishable. It is written he got back up again and smited the attacker."
@@ -1612,151 +1739,3 @@ obj/item/clothing/head/helmet/samurai/black
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	health = 40
 */
-
-	/* Sauron, Orc & LOTR Cultural Clothes */
-
-/obj/item/clothing/head/helmet/sauronhelm
-	name = "sauron's helmet"
-	desc = "The helmet to the armor of sauron"
-	icon_state = "sauronhelmet"
-	item_state = "sauronhelmet"
-	worn_state = "sauronhelmet"
-	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 80, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
-	value = 70
-	slowdown = 1
-	health = 90
-
-/obj/item/clothing/suit/armor/sauronarmor
-	name = "sauron's armor"
-	desc = "The armor of sauron"
-	icon_state = "sauronarmor"
-	item_state = "sauronarmor"
-	worn_state = "sauronarmor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 95, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
-	value = 70
-	slowdown = 1
-	health = 90
-
-/obj/item/clothing/suit/armor/darkplate
-	name = "plated armor"
-	desc = "A cheap dark iron armor."
-	icon_state = "ork_plate_elite"
-	item_state = "ork_plate_elite"
-	worn_state = "ork_plate_elite"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
-	value = 50
-	slowdown = 1.5
-	health = 60
-
-/obj/item/clothing/suit/armor/darkplateelite
-	name = "plated armor"
-	desc = "A cheap dark iron armor."
-	icon_state = "ork_plate_commander"
-	item_state = "ork_plate_commander"
-	worn_state = "ork_plate_commander"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 80, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
-	value = 50
-	slowdown = 1.5
-	health = 60
-
-/obj/item/clothing/head/helmet/orc_beserker
-	name = "orc beserker helm"
-	desc = "Orc make good helmet!"
-	icon_state = "beserkerhelmet"
-	item_state = "beserkerhelmet"
-	worn_state = "beserkerhelmet"
-	body_parts_covered = HEAD|FACE|EYES
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 70, arrow = 80, gun = FALSE, energy = FALSE, bomb = 50, bio = 20, rad = 10)
-
-/obj/item/clothing/head/helmet/eliteorc
-	name = "iron helmet"
-	desc = "A helmet with front plate, made of dark iron."
-	icon_state = "ork_elite_helmet_2"
-	item_state = "ork_elite_helmet_2"
-	worn_state = "ork_elite_helmet_2"
-	body_parts_covered = HEAD|FACE|EYES
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 80, arrow = 90, gun = FALSE, energy = FALSE, bomb = 50, bio = 20, rad = 10)
-
-/obj/item/clothing/head/helmet/eliteorc2
-	name = "iron helmet"
-	desc = "A helmet made of dark iron."
-	icon_state = "ork_elite_helmet"
-	item_state = "ork_elite_helmet"
-	worn_state = "ork_elite_helmet"
-	body_parts_covered = HEAD
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 70, arrow = 70, gun = FALSE, energy = FALSE, bomb = 50, bio = 20, rad = 10)
-
-/obj/item/clothing/head/helmet/orc_spearman
-	name = "orc spearman helm"
-	desc = "Orc make good helmet!"
-	icon_state = "spearmanhelmet"
-	item_state = "spearmanhelmet"
-	worn_state = "spearmanhelmet"
-	body_parts_covered = HEAD|FACE|EYES
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
-
-/obj/item/clothing/head/helmet/orc_captain
-	name = "orc captain helm"
-	desc = "Orc make good helmet!"
-	icon_state = "captainhelmet"
-	item_state = "captainhelmet"
-	worn_state = "captainhelmet"
-	body_parts_covered = HEAD|FACE|EYES
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
-
-/obj/item/clothing/head/helmet/orc_grunt
-	name = "orc grunt helm"
-	desc = "Orc make good helmet!"
-	icon_state = "grunthelmet"
-	item_state = "grunthelmet"
-	worn_state = "grunthelmet"
-	body_parts_covered = HEAD|FACE
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-
-/obj/item/clothing/suit/armor/ork_urukhai
-	name = "orc urukhai armor"
-	desc = "Orc make good armor!"
-	icon_state = "urukhai_armor"
-	item_state = "urukhai_armor"
-	worn_state = "urukhai_armor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = 25)
-	value = 50
-	slowdown = 1.7
-	health = 50
-
-/obj/item/clothing/suit/armor/ork_whitehand
-	name = "orc whitehand armor"
-	desc = "Orc make good armor!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "whitehand_armor"
-	item_state = "whitehand_armor"
-	worn_state = "whitehand_armor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = 25)
-	value = 50
-	slowdown = 1.7
-	health = 50
-
-/obj/item/clothing/suit/armor/ork_grunt
-	name = "orc grunt armor"
-	desc = "Orc make good armor!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "grunt_armor"
-	item_state = "grunt_armor"
-	worn_state = "grunt_armor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 50, arrow = 35, gun = 6, energy = 10, bomb = 35, bio = 20, rad = 20)
-	value = 50
-	slowdown = 1.7
-	health = 50

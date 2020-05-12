@@ -49,41 +49,61 @@
 					qdel(src)
 					return
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))
+			if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
 				fuel += I.amount
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
-				fuel += 0.5
+			else if (istype(I, /obj/item/stack/material/bamboo))
+				fuel += I.amount
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/stack/ore/coal))
+			else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
+				fuel += I.amount+0.5
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/weapon/leaves))
+				fuel += I.amount+0.5
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))	// FUEL +1
+				fuel += I.amount+1
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
+				fuel += I.amount*2.5
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
 				fuel += I.amount*3
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				fuel += I.amount*1
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/weapon/branch))
-				fuel += I.amount*1
-				qdel(I)
-				return
+
 			else if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
 				iron += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/copper) || istype(I, /obj/item/stack/material/copper))
 				copper += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/tin) || istype(I, /obj/item/stack/material/tin))
 				tin += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else
 				H << "<span class = 'warning'>You can't smelt this.</span>"
 				return
+
 			var/space = max_space
 			for (var/obj/item/II in contents)
 				space -= II.w_class
@@ -239,50 +259,72 @@
 					qdel(src)
 					return
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood)) //FUEL 1
+			if (istype(I, /obj/item/stack/material/wood))
 				fuel += I.amount
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo)) //FUEL 2
-				fuel += 0.5
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/coal))	  //FUEL 3
-				fuel += I.amount*3
-				qdel(I)
-				return				  //INPUT 1
-			else if (istype(I, /obj/item/stack/ore/charcoal))	  //FUEL 3
-				fuel += I.amount*1
+			else if (istype(I, /obj/item/stack/material/bamboo))
+				fuel += I.amount
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/weapon/branch))
-				fuel += I.amount*1
+				fuel += I.amount+0.5
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
+			else if (istype(I, /obj/item/weapon/leaves))
+				fuel += I.amount+0.5
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
+				fuel += I.amount+1
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/ore/charcoal))
+				fuel += I.amount*2.5
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/ore/coal))
+				fuel += I.amount*3
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return				  //INPUT 1
+
 			else if (istype(I, /obj/item/stack/money/goldcoin))
 				gold += I.amount/50
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/gold))
 				gold += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 
 			else if (istype(I, /obj/item/stack/money/coppercoin))
 				copper += I.amount/50
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/copper))
 				copper += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 
 			else if (istype(I, /obj/item/stack/money/silvercoin))
 				silver += I.amount/100
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/material/silver))
 				silver += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 

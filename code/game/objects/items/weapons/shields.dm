@@ -325,3 +325,13 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.22
+
+/obj/item/weapon/shield/iron/orc
+	name = "uruk-hai shield"
+	icon_state = "orc_shield"
+	item_state = "semioval_shield"
+	material = "iron"
+	health = 25
+	w_class = 3.0
+	base_block_chance = 40
+	slowdown = 0.3
