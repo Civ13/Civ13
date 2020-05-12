@@ -1549,8 +1549,8 @@
 					S.density = FALSE
 					S.opacity = FALSE
 				else if (choice == "Window")
-					new /obj/structure/window_frame/sumerian(loc)
-					qdel(src)
+					new /obj/structure/window_frame/sumerian(S.loc)
+					qdel(S)
 				else if (choice == "Corner")
 					S.icon_state = "sumerian-corner1"
 					base_icon_state = icon_state
