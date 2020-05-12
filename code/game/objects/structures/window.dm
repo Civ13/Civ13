@@ -435,17 +435,20 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/windowglass
+	var/stucco_window = TRUE
 	icon = 'icons/obj/windows.dmi'
 
 /obj/structure/window_frame/shoji
 	icon_state = "shoji_windownew_frame"
 	name = "shoji window frame"
 	desc = "A good old window frame, only japanese-style."
+	stucco_window = FALSE
 
 /obj/structure/window_frame/metal
 	icon_state = "windowmetal_frame"
 	health = 500
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/portholefull
 	icon_state = "metal_porthole_fullframe"
@@ -453,16 +456,19 @@
 	desc = "A large metal porthole with a empty space for glass."
 	health = 500
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/medieval
 	icon_state = "medieval_windownew_frame"
 	name = "medieval window frame"
 	desc = "A dark ages window, minus the window."
+	stucco_window = FALSE
 
 /obj/structure/window_frame/bamboo
 	icon_state = "bamboo_windownew_frame"
 	name = "bamboo window frame"
 	desc = "A frame for a window, made of bamboo."
+	stucco_window = FALSE
 
 /obj/structure/window_frame/clay
 	icon_state = "clay_windownew_frame"
@@ -470,6 +476,7 @@
 	desc = "A empty hole within the clay wall with no glass."
 	health = 80
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/redearth
 	icon_state = "red_earthwindownew_frame"
@@ -477,6 +484,7 @@
 	desc = "A empty three panelled red earthen window frame with no glass."
 	health = 120
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/villa
 	icon_state = "villa_windownew_frame"
@@ -484,6 +492,7 @@
 	desc = "A elegant roman villa window frame."
 	health = 250
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/villafull
 	icon_state = "villa_windownew_fullframe"
@@ -491,6 +500,7 @@
 	desc = "A elegant large roman villa window frame."
 	health = 250
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/brick
 	icon_state = "brick_windownew_frame"
@@ -498,6 +508,7 @@
 	desc = "A frame for a window, made of bricks."
 	health = 200
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/brickfull
 	icon_state = "brick_windownew_fullframe"
@@ -505,6 +516,7 @@
 	desc = "A frame for a full window, made of bricks."
 	health = 200
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/stone
 	icon_state = "stone_windownew_frame"
@@ -512,6 +524,7 @@
 	desc = "Stone carved to support a few panes of glass."
 	health = 250
 	flammable = FALSE
+	stucco_window = TRUE
 
 /obj/structure/window_frame/stonefull
 	icon_state = "stone_windownew_fullframe"
@@ -519,6 +532,7 @@
 	desc = "Stone carved to support a large window's worth of glass."
 	health = 250
 	flammable = FALSE
+	stucco_window = TRUE
 
 /obj/structure/window_frame/sandstone
 	icon_state = "sandstone_windownew_frame"
@@ -526,6 +540,7 @@
 	desc = "Sandstone carved to support some glass.."
 	health = 250
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/sandstonefull
 	icon_state = "sandstone_windownew_fullframe"
@@ -533,6 +548,7 @@
 	desc = "Sandstone carved to support a large window's worth of glass.."
 	health = 250
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/sumerian
 	icon_state = "sumerian_windownew_frame"
@@ -540,8 +556,32 @@
 	desc = "A sumerian window made of clay, can hold glass."
 	health = 150
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/generic) && (stucco_window))
+		if (!istype(src, /obj/structure/window_frame/stonefull) && !istype(src, /obj/structure/window_frame/stone))
+			user << "You start adding stucco to the wood window frame..."
+			if (do_after(user, 20, src))
+				user << "You finish adding stucco to the wood window frame, rendering over it."
+				new /obj/structure/window_frame/redearth(loc)
+				qdel(W)
+				qdel(src)
+	if (istype(W, /obj/item/weapon/stucco/roman) && (stucco_window))
+		if (istype(src, /obj/structure/window_frame/stone))
+			user << "You start adding roman stucco to the stone window..."
+			if (do_after(user, 20, src))
+				user << "You finish adding roman stucco to the stone window, rendering over it."
+				new /obj/structure/window_frame/villa(loc)
+				qdel(W)
+				qdel(src)
+		if (istype(src, /obj/structure/window_frame/stonefull))
+			user << "You start adding roman stucco to the full stone window..."
+			if (do_after(user, 20, src))
+				user << "You finish adding roman stucco to the full stone window, rendering over it."
+				new /obj/structure/window_frame/villafull(loc)
+				qdel(W)
+				qdel(src)
 	if (istype(W, /obj/item/stack/material/glass))
 		var/obj/item/stack/S = W
 		if (S.amount >= 3)
@@ -569,6 +609,10 @@
 					new/obj/structure/window/classic/brick(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/brickfull))
 					new/obj/structure/window/classic/brickfull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/stone))
+					new/obj/structure/window/classic/stone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/stonefull))
+					new/obj/structure/window/classic/stonefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sandstone))
 					new/obj/structure/window/classic/sandstone(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sandstonefull))
@@ -591,40 +635,6 @@
 		visible_message("<span class = 'notice'>The window is broken by [user]!</span>")
 		qdel(src)
 		return
-
-//I can't explain the reasons why, but stone windows are being difficult about glass placement without a identifiable issue so this is in abstract to ensure that they can be interacted with.
-
-/obj/structure/window_frame/stone/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/stack/material/glass))
-		var/obj/item/stack/S = W
-		if (S.amount >= 3)
-			visible_message("<span class = 'notice'>[user] starts to add glass to the window frame...</span>")
-			if (do_after(user, 50, src))
-			else if (istype(src, /obj/structure/window/classic/stone))
-				new/obj/structure/window_frame/stone(get_turf(src))
-				visible_message("<span class = 'notice'>[user] adds glass to the window frame.</span>")
-				S.use(3)
-				qdel(src)
-		else
-			user << "<span class = 'warning'>You need at least 3 sheets of glass.</span>"
-			return
-	return TRUE
-
-/obj/structure/window_frame/stonefull/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/stack/material/glass))
-		var/obj/item/stack/S = W
-		if (S.amount >= 3)
-			visible_message("<span class = 'notice'>[user] starts to add glass to the window frame...</span>")
-			if (do_after(user, 50, src))
-			else if (istype(src, /obj/structure/window/classic/stonefull))
-				new/obj/structure/window_frame/stonefull(get_turf(src))
-				visible_message("<span class = 'notice'>[user] adds glass to the window frame.</span>")
-				S.use(3)
-				qdel(src)
-		else
-			user << "<span class = 'warning'>You need at least 3 sheets of glass.</span>"
-			return
-	return TRUE
 
 /obj/structure/window/classic
 	desc = "A good old window."
