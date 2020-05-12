@@ -2275,24 +2275,6 @@
 			return
 	..()
 
-/obj/structure/window_frame/stone/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/stucco/roman))
-		user << "You start adding roman stucco to the stone window..."
-		if (do_after(user, 20, src))
-			user << "You finish adding roman stucco to the stone window, rendering over it."
-			qdel(W)
-			new /obj/structure/window_frame/villa(loc)
-			qdel(src)
-
-/obj/structure/window_frame/stonefull/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/stucco/roman))
-		user << "You start adding roman stucco to the full stone window..."
-		if (do_after(user, 20, src))
-			user << "You finish adding roman stucco to the full stone window, rendering over it."
-			qdel(W)
-			new /obj/structure/window_frame/villafull(loc)
-			qdel(src)
-
 /obj/covers/stone_wall/classic/archway/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/stucco/roman))
 		user << "You start adding roman stucco to the archway..."
