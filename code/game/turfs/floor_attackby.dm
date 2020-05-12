@@ -109,7 +109,7 @@
 				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
 				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 
-	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal))
+	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer))
 		user << "You start fertilizing the ploughed field..."
 		var/mob/living/carbon/human/H = user
 		if (do_after(user, 60/H.getStatCoeff("farming"), src))
@@ -656,7 +656,7 @@
 		var/obj/item/weapon/plough/PL = C
 		var/turf/T = get_turf(src)
 		if (user.a_intent == I_DISARM)
-			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach) || istype(T, /turf/floor/winter))
+			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach/sand) || istype(T, /turf/floor/winter))
 				for(var/obj/covers/CV in T)
 					user << "<span class='danger'>You can't make a dirt road here.</span>"
 					return

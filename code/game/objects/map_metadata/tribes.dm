@@ -1,12 +1,12 @@
 
 /obj/map_metadata/tribes
 	ID = MAP_TRIBES
-	title = "Tribes (225x225x2)"
+	title = "Tribes (200x448x2)"
 	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "fantasy"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/temperate,/area/caribbean/no_mans_land/invisible_wall/desert,/area/caribbean/no_mans_land/invisible_wall/semiarid,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3600 // 6 minutes!
-
+	force_mapgen = TRUE
 
 	faction_organization = list(
 		CIVILIAN,)
@@ -18,7 +18,7 @@
 	ordinal_age = 2
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the four tribes"
-	mission_start_message = "<big>Four tribes are settling in this land. Will they be able to get along?<br>The grace wall will be up for <b>25 minutes</b>.</big>"
+	mission_start_message = "<big>Several tribes are settling in this land. Will they be able to get along?<br>The grace wall will be up for <b>25 minutes</b>.</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	is_singlefaction = TRUE
@@ -32,12 +32,12 @@
 	gamemode = "Faction-Based RP"
 /obj/map_metadata/tribes/New()
 	var/newnamea = list("Orc Horde" = list(48,48,48,null,0,"skull","#9A1313","#000000"))
-	var/newnameb = list("Ant Colony" = list(21,21,21,null,0,"star","#0C1EA7","#67A7CE"))
-	var/newnamec = list("Gorilla Tribe" = list(27,32,30,null,0,"sun","#9A9A9A","#098518"))
+	var/newnameb = list("Ant Colony" = list(35,35,35,null,0,"star","#0C1EA7","#67A7CE"))
+	var/newnamec = list("Gorilla Tribe" = list(40,40,40,null,0,"sun","#9A9A9A","#098518"))
 	var/newnamed = list("Human Kingdom" = list(62,62,62,null,0,"cross","#E5C100","#FFFFFF"))
-	var/newnamee = list("Lizard Clan" = list(21,21,21,null,0,"big_cross","#669932","#1E1E1E"))
-	var/newnamef = list("Wolfpack" = list(21,21,21,null,0,"moon","#FFFFFF","#848484"))
-	var/newnameg = list("Crustacean Union" = list(21,21,21,null,0,"seashell","#EEEEEE","#7F0000"))
+	var/newnamee = list("Lizard Clan" = list(35,35,35,null,0,"big_cross","#669932","#1E1E1E"))
+	var/newnamef = list("Wolfpack" = list(35,35,35,null,0,"moon","#FFFFFF","#848484"))
+	var/newnameg = list("Crustacean Union" = list(35,35,35,null,0,"seashell","#EEEEEE","#7F0000"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
@@ -45,133 +45,28 @@
 	custom_civs += newnamee
 	custom_civs += newnamef
 	custom_civs += newnameg
-
+		//////////////////////////////////////creator, type, points, symbol, color1, color2, clergy style
+	var/newnamera = list("Order of the Great Tree" = list(null,"Knowledge",0, "Tree","#098518","#9A9A9A","Shamans")) //gorillas
+	var/newnamerb = list("The Great Serpent" = list(null,"Combat",0, "Skull","#654321","#014421","Shamans")) //lizards
+	var/newnamerc = list("Father in the Sky" = list(null,"Production",0, "Cross","#FFD700","#FFFFFF","Priests")) //hoo-mans
+	var/newnamerd = list("Followers of Morgoth" = list(null,"Combat",0, "Skull","#000000","#9A1313","Cultists")) //orcs
+	var/newnamere = list("Followers of the Hive Mother" = list(null,"Knowledge",0, "Star","#67A7CE","#0C1EA7","Monks")) //ants
+	var/newnamerf = list("Moon Worshippers" = list(null,"Combat",0, "Moon","#848484","#FFFFFF","Priests")) //wolves
+	var/newnamerg = list("Cthulhu" = list(null,"Production",0, "Sun","#ADFF2F","#000000","Cultists")) //crustaceans
+	custom_religions += newnamera
+	custom_religions += newnamerb
+	custom_religions += newnamerc
+	custom_religions += newnamerd
+	custom_religions += newnamere
+	custom_religions += newnamerf
+	custom_religions += newnamerg
 	spawn(1)
 		civilians_forceEnabled = TRUE
 
 	spawn(18000)
 		seasons()
 	..()
-/obj/map_metadata/tribes/seasons()
-	if (season == "WINTER")
-		season = "SPRING"
-		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"
-		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.change_season()
-			TREES.leaves = TREES.max_leaves
-		for (var/turf/floor/dirt/winter/D)
-			if (prob(60))
-				D.ChangeTurf(/turf/floor/dirt)
-		for (var/turf/floor/winter/grass/G)
-			if (prob(60))
-				G.ChangeTurf(/turf/floor/grass)
-		for (var/turf/floor/dirt/burned/B)
-			var/area/A = get_area(B)
-			if (A.location == AREA_OUTSIDE)
-				if (prob(60))
-					B.ChangeTurf(/turf/floor/dirt)
-		spawn(150)
-			change_weather(WEATHER_NONE)
-			for (var/obj/structure/window/snowwall/SW1)
-				if (prob(60))
-					qdel(SW1)
-			for (var/obj/covers/snow_wall/SW2)
-				if (prob(60))
-					qdel(SW2)
-			for (var/obj/item/weapon/snowwall/SW3)
-				if (prob(60))
-					qdel(SW3)
-		spawn(1500)
-			for (var/turf/floor/beach/water/ice/salty/SW)
-				SW.ChangeTurf(/turf/floor/beach/water/shallowsaltwater)
-			for (var/turf/floor/beach/water/ice/W)
-				W.ChangeTurf(/turf/floor/beach/water)
-		spawn(3000)
-			for (var/turf/floor/dirt/winter/D)
-				D.ChangeTurf(/turf/floor/dirt)
-			for (var/turf/floor/winter/grass/G)
-				G.ChangeTurf(/turf/floor/grass)
-			for (var/obj/structure/window/snowwall/SW1)
-				qdel(SW1)
-			for (var/obj/covers/snow_wall/SW2)
-				qdel(SW2)
-			for (var/obj/item/weapon/snowwall/SW3)
-				qdel(SW3)
-	else if (season == "SUMMER")
-		season = "FALL"
-		world << "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>.</big>"
-		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.change_season()
-		for (var/turf/floor/dirt/D)
-			var/area/A = get_area(D)
-			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed) && A.location == AREA_OUTSIDE)
-				D.ChangeTurf(/turf/floor/grass)
-			D.update_icon()
-		for (var/turf/floor/dirt/burned/BD)
-			BD.ChangeTurf(/turf/floor/dirt)
-		for (var/turf/floor/grass/G)
-			G.update_icon()
-		spawn(100)
-			change_weather(WEATHER_WET)
-		spawn(15000)
-			change_weather(WEATHER_WET)
-			for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/no_mans_land/temperate))
-				var/area/A = get_area(D)
-				if (A.location == AREA_OUTSIDE && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
-					D.ChangeTurf(/turf/floor/dirt/winter)
-			for (var/turf/floor/grass/G)
-				if (prob(40))
-					G.ChangeTurf(/turf/floor/winter/grass)
-			spawn(1200)
-				for (var/turf/floor/dirt/D)
-					if (!istype(D,/turf/floor/dirt/winter))
-						var/area/A = get_area(D)
-						if (A.location == AREA_OUTSIDE && prob(50))
-							D.ChangeTurf(/turf/floor/dirt/winter)
-				for (var/turf/floor/grass/G)
-					if (prob(50))
-						G.ChangeTurf(/turf/floor/winter/grass)
-	else if (season == "FALL")
-		season = "WINTER"
-		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
-		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.change_season()
-		for (var/turf/floor/dirt/D)
-			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground) && !istype(D,/turf/floor/dirt/dust))
-				var/area/A = get_area(D)
-				if (A.location == AREA_OUTSIDE)
-					D.ChangeTurf(/turf/floor/dirt/winter)
-		for (var/turf/floor/grass/G)
-			G.ChangeTurf(/turf/floor/winter/grass)
-		spawn(100)
-			change_weather(WEATHER_WET)
-		spawn(800)
-		for (var/turf/floor/beach/water/shallowsaltwater/SW)
-			if (SW.water_level <= 50 && SW.z > 1)
-				SW.ChangeTurf(/turf/floor/beach/water/ice/salty)
-		for (var/turf/floor/beach/water/W)
-			if (W.water_level <= 50 && W.z > 1)
-				W.ChangeTurf(/turf/floor/beach/water/ice)
-		spawn(12000)
-			for (var/turf/floor/dirt/winter/D)
-				if (prob(20))
-					D.ChangeTurf(/turf/floor/dirt)
-			for (var/turf/floor/winter/grass/G)
-				if (prob(20))
-					G.ChangeTurf(/turf/floor/grass)
-	else if (season == "SPRING")
-		season = "SUMMER"
-		world << "<big>The weather is warm. It is now <b>Summer</b>.</big>"
-		for (var/obj/structure/wild/tree/live_tree/TREES)
-			TREES.change_season()
-		for (var/turf/floor/dirt/winter/D)
-			D.ChangeTurf(/turf/floor/dirt)
-		for (var/turf/floor/winter/grass/G)
-			G.ChangeTurf(/turf/floor/grass)
-		spawn(100)
-			change_weather(WEATHER_NONE)
-	spawn(18000)
-		seasons()
+
 /obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian/fantasy))

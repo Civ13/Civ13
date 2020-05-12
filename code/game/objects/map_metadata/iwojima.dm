@@ -26,14 +26,12 @@
 	gamemode = "Siege"
 /obj/map_metadata/iwojima/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == FALSE && J.is_prison == FALSE)
+	if (J.is_ww2 == TRUE || J.is_navy == TRUE)
 		. = TRUE
-	else if (istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker))
+	else if (J.is_tanker == TRUE || J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_sergeant_tanker) || istype(J, /datum/job/japanese/ija_ww2_tanker))
 		. = FALSE
 	else
 		. = FALSE
-	if (J.is_navy == TRUE)
-		. = TRUE
 
 /obj/map_metadata/iwojima/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)

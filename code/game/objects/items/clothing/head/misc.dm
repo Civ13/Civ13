@@ -38,14 +38,6 @@
 	body_parts_covered = FALSE
 	force = WEAPON_FORCE_PAINFUL
 
-/obj/item/clothing/head/plaguedoctorhat
-	name = "plague doctor's hat"
-	desc = "These were once used by Plague doctors. They're pretty much useless."
-	icon_state = "plaguedoctor"
-	permeability_coefficient = 0.01
-	siemens_coefficient = 0.9
-	body_parts_covered = FALSE
-
 /obj/item/clothing/head/pirate
 	name = "pirate hat"
 	desc = "Yarr."

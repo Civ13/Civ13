@@ -1,5 +1,5 @@
 
-/proc/explosion(turf/epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range, adminlog = TRUE, z_transfer = UP|DOWN, is_rec = config.use_recursive_explosions)
+/proc/explosion(turf/epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range, adminlog = TRUE, z_transfer = UP|DOWN, is_rec = config.use_recursive_explosions, sound = 'sound/weapons/Explosives/Dynamite.ogg')
 /*
 	// TODO: splits explosions bigger than 5x5 into sub-explosions
 	var/num_explosions = devastation_range/5
@@ -21,7 +21,7 @@
 	data.z_transfer = z_transfer
 	data.is_rec = is_rec
 	data.rec_pow = max(0,devastation_range) * 2 + max(0,heavy_impact_range) + max(0,light_impact_range)
-
+	data.sound = sound
 	// queue work
 	processes.callproc.queue(processes.explosion, /process/explosion/proc/queue, list(data), 1)
 

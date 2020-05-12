@@ -170,6 +170,20 @@
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
 
+/obj/covers/stone/slab/decorative
+	name = "stone decorative slab floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "decorative_stone_slab"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
 /obj/covers/stonebrickfloor
 	name = "stone brick floor"
 	icon = 'icons/turf/floors.dmi'
@@ -211,6 +225,199 @@
 	explosion_resistance = 2
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/raw_marblefloor
+	name = "raw marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "raw_marble0"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/raw_marblefloor/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("raw_marble0", "raw_marble1", "raw_marble2")
+	update_icon()
+
+/obj/covers/marbletile
+	name = "marble tiles"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "marble_tile0"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/marbletile/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("marble_tile0", "marble_tile1", "marble_tile2")
+	update_icon()
+
+/obj/covers/ornate_marbletile
+	name = "ornate marble tile"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "ornate_marble"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/decorative_marbletile
+	name = "decorative marble tile"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "decorative_marble_tile0"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/decorative_marbletile/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("decorative_marble_tile0", "decorative_marble_tile1", "decorative_marble_tile2")
+	update_icon()
+
+/obj/covers/marble_checkerboard
+	name = "marble checkerboard floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "marble_checkerboard"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/marble_checkerboard/reverse
+	name = "reverse marble checkerboard floor"
+	icon_state = "marble_checkerboard_reverse"
+
+/obj/covers/marble_grid
+	name = "marble grid tile floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "marble_grid"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+	buildstack = /obj/item/stack/material/stone
+
+/* BLack Marble Floors*/
+
+/obj/covers/ornatemarblefloor/black
+	name = "ornate black marble tile"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "ornate_black_marble"
+
+/obj/covers/decorative_marbletile/black
+	name = "decorative black marble tile"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "decorative_black_marble_tile0"
+
+/obj/covers/decorative_marbletile/black/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("decorative_black_marble_tile0", "decorative_black_marble_tile1", "decorative_black_marble_tile2", "decorative_black_marble_tile3")
+	update_icon()
+
+/obj/covers/raw_marblefloor/black
+	name = "raw black marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "black_marble0"
+
+/obj/covers/raw_marblefloor/black/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("black_marble0", "black_marble1", "black_marble2", "black_marble3")
+	update_icon()
+
+/obj/covers/marbletile/black
+	name = "black marble tiles"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "black_marble_tile0"
+
+/obj/covers/marbletile/black/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("black_marble_tile0", "black_marble_tile1", "black_marble_tile2", "black_marble_tile3")
+	update_icon()
+
+/* Pink Marble Floors*/
+
+/obj/covers/raw_marblefloor/pink
+	name = "raw pink marble floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "pink_marble0"
+
+/obj/covers/raw_marblefloor/pink/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("pink_marble0", "pink_marble1", "pink_marble2")
+	update_icon()
+
+/obj/covers/decorative_marbletile/pink
+	name = "decorative pink marble tile"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "decorative_pink_marble_tile0"
+
+/obj/covers/decorative_marbletile/pink/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("decorative_pink_marble_tile0", "decorative_pink_marble_tile1", "decorative_pink_marble_tile2")
+	update_icon()
+
+/obj/covers/marbletile/pink
+	name = "pink marble tiles"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "pink_marble_tile0"
+
+/obj/covers/marbletile/pink/New()
+	..()
+	icon = 'icons/turf/floors.dmi'
+	icon_state = pick("pink_marble_tile0", "pink_marble_tile1", "pink_marble_tile2")
+	update_icon()
+
+/obj/covers/marble_checkerboard/pink
+	name = "pink marble checkerboard floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "pink_marble_checkerboard"
+
+/obj/covers/marble_checkerboard/pink/reverse
+	name = "reverse pink marble checkerboard floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "pink_marble_checkerboard_reverse"
+
+/* Marble Floors -End*/
 
 /obj/covers/slatefloor
 	name = "slate floor"
@@ -254,9 +461,9 @@
 	icon_state = "red_sandstone_decorative_tile"
 
 /obj/covers/roads
-	name = "dirt road"
+	name = "road"
 	icon = 'icons/turf/roads.dmi'
-	icon_state = "d_roadvr"
+	icon_state = "road"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
@@ -267,9 +474,32 @@
 	material = "Stone"
 	var/vertical = FALSE
 	buildstack = null
+	var/roadtype = "road"
+
+/obj/covers/roads/modern
+	name = "modern road"
+	icon_state = "tarmac"
+	roadtype = "tarmac"
 
 /obj/covers/roads/dirt
 	name = "dirt road"
+	icon_state = "d_road"
+	roadtype = "d_road"
+
+/obj/covers/roads/roman
+	name = "roman road"
+	icon_state = "r_road"
+	roadtype = "r_road"
+
+/obj/covers/roads/cobble
+	name = "cobble street"
+	icon_state = "street"
+	roadtype = "street"
+
+/obj/covers/roads/sandstone
+	name = "sandstone road"
+	icon_state = "s_stone"
+	roadtype = "s_stone"
 
 /obj/covers/roads/update_icon()
 	..()
@@ -297,85 +527,85 @@
 					continue
 
 		if ((NORTHWEST in sideslist) && (NORTH in sideslist) && (WEST in sideslist))
-			overlays += image(icon=src.icon, icon_state = "d_roadnwc")
+			overlays += image(icon=src.icon, icon_state = "[roadtype]nwc")
 		if ((NORTHEAST in sideslist) && (NORTH in sideslist) && (EAST in sideslist))
-			overlays += image(icon=src.icon, icon_state = "d_roadnec")
+			overlays += image(icon=src.icon, icon_state = "[roadtype]nec")
 		if ((SOUTHEAST in sideslist) && (SOUTH in sideslist) && (EAST in sideslist))
-			overlays += image(icon=src.icon, icon_state = "d_roadsec")
+			overlays += image(icon=src.icon, icon_state = "[roadtype]sec")
 		if ((SOUTHWEST in sideslist) && (SOUTH in sideslist) && (WEST in sideslist))
-			overlays += image(icon=src.icon, icon_state = "d_roadswc")
+			overlays += image(icon=src.icon, icon_state = "[roadtype]swc")
 
 		if ((WEST in sideslist) && (EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
-			icon_state = "d_road+" //4 sides
+			icon_state = "[roadtype]+" //4 sides
 			base_icon_state = icon_state
 			return
 
-		if (icon_state == "d_roadvr")
+		if (icon_state == "[roadtype]vr")
 			if (WEST in sideslist)
 				if (!(NORTH in sideslist))
 					if (EAST in sideslist)
-						icon_state = "d_roadtswe" //T, SOUTH EAST WEST
+						icon_state = "[roadtype]tswe" //T, SOUTH EAST WEST
 						base_icon_state = icon_state
 					else
-						icon_state = "d_roadsw" //Turn, SOUTH-WEST
+						icon_state = "[roadtype]sw" //Turn, SOUTH-WEST
 						base_icon_state = icon_state
 				else if (!(SOUTH in sideslist))
 					if (EAST in sideslist)
-						icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+						icon_state = "[roadtype]tnwe" //T, NORTH EAST WEST
 						base_icon_state = icon_state
 					else
-						icon_state = "d_roadnw" //Turn, NORTH-WEST
+						icon_state = "[roadtype]nw" //Turn, NORTH-WEST
 						base_icon_state = icon_state
 				else if ((SOUTH in sideslist) && (NORTH in sideslist))
-					icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
+					icon_state = "[roadtype]tnsw" //T, NORTH SOUTH WEST
 					base_icon_state = icon_state
 			else if (EAST in sideslist)
 				if (!(NORTH in sideslist))
-					icon_state = "d_roadse" //Turn, SOUTH-EAST
+					icon_state = "[roadtype]se" //Turn, SOUTH-EAST
 					base_icon_state = icon_state
 					return
 				else if (!(SOUTH in sideslist))
-					icon_state = "d_roadne" //Turn, NORTH-EAST
+					icon_state = "[roadtype]ne" //Turn, NORTH-EAST
 					base_icon_state = icon_state
 				else if ((SOUTH in sideslist) && (NORTH in sideslist))
-					icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+					icon_state = "[roadtype]tnse" //T, NORTH SOUTH EAST
 					base_icon_state = icon_state
 		else
 			if (NORTH in sideslist)
 				if (!(EAST in sideslist))
-					icon_state = "d_roadnw" //Turn, NORTH-WEST
+					icon_state = "[roadtype]nw" //Turn, NORTH-WEST
 					base_icon_state = icon_state
 				else if (!(WEST in sideslist))
 					if (SOUTH in sideslist)
-						icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+						icon_state = "[roadtype]tnse" //T, NORTH SOUTH EAST
 						base_icon_state = icon_state
 					else
-						icon_state = "d_roadne" //Turn, NORTH-EAST
+						icon_state = "[roadtype]ne" //Turn, NORTH-EAST
 						base_icon_state = icon_state
 				else if ((WEST in sideslist) && (EAST in sideslist))
-					icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+					icon_state = "[roadtype]tnwe" //T, NORTH EAST WEST
 					base_icon_state = icon_state
 			else if (SOUTH in sideslist)
 				if (!(EAST in sideslist))
-					icon_state = "d_roadsw" //Turn, SOUTH-WEST
+					icon_state = "[roadtype]sw" //Turn, SOUTH-WEST
 					base_icon_state = icon_state
 				else if (!(WEST in sideslist))
-					icon_state = "d_roadse" //Turn, SOUTH-EAST
+					icon_state = "[roadtype]se" //Turn, SOUTH-EAST
 					base_icon_state = icon_state
 				else if ((WEST in sideslist) && (EAST in sideslist))
-					icon_state = "d_roadtswe" //T, EAST SOUTH WEST
+					icon_state = "[roadtype]tswe" //T, EAST SOUTH WEST
 					base_icon_state = icon_state
 		if ((WEST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
-			icon_state = "d_roadtnsw" //T, NORTH SOUTH WEST
+			icon_state = "[roadtype]tnsw" //T, NORTH SOUTH WEST
 			base_icon_state = icon_state
 		if ((WEST in sideslist) && (NORTH in sideslist) && (EAST in sideslist))
-			icon_state = "d_roadtnwe" //T, NORTH EAST WEST
+			icon_state = "[roadtype]tnwe" //T, NORTH EAST WEST
 			base_icon_state = icon_state
 		if ((WEST in sideslist) && (EAST in sideslist) && (SOUTH in sideslist))
-			icon_state = "d_roadtswe" //T, SOUTH EAST WEST
+			icon_state = "[roadtype]tswe" //T, SOUTH EAST WEST
 			base_icon_state = icon_state
 		if ((EAST in sideslist) && (NORTH in sideslist) && (SOUTH in sideslist))
-			icon_state = "d_roadtnse" //T, NORTH SOUTH EAST
+			icon_state = "[roadtype]tnse" //T, NORTH SOUTH EAST
 			base_icon_state = icon_state
 
 /obj/covers/roads/New()
@@ -388,6 +618,116 @@
 		for(var/obj/covers/roads/R in range(1,src))
 			R.update_icon()
 		update_icon()
+
+/* Road Destruction*/
+
+/obj/covers/roads/modern/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (istype(O,/obj/item/weapon/pickaxe/bone))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,65,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,45,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,25,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+
+/obj/covers/roads/dirt/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (istype(O, /obj/item/weapon/shovel/bone))
+		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
+		user << "<span class='notice'>You begin filling over in the earth of \the [src].</span>"
+		if (do_after(user,60,src))
+			user << "<span class='notice'>You finish filling over \the [src].</span>"
+			qdel(src)
+	else if (istype(O, /obj/item/weapon/shovel))
+		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
+		user << "<span class='notice'>You begin filling over in the earth of \the [src].</span>"
+		if (do_after(user,30,src))
+			user << "<span class='notice'>You finish filling over \the [src].</span>"
+			qdel(src)
+
+/obj/covers/roads/roman/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (istype(O,/obj/item/weapon/pickaxe/bone))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,65,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,45,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,25,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+
+/obj/covers/roads/cobble/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (istype(O,/obj/item/weapon/pickaxe/bone))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,65,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,45,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,25,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/stone(loc)
+			qdel(src)
+
+/obj/covers/roads/sandstone/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (istype(O,/obj/item/weapon/pickaxe/bone))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,65,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/sandstone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,45,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/sandstone(loc)
+			qdel(src)
+	else if (istype(O,/obj/item/weapon/pickaxe/jackhammer))
+		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
+		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		if (do_after(user,25,src))
+			user << "<span class='notice'>You break apart \the [src].</span>"
+			new /obj/item/stack/material/sandstone(loc)
+			qdel(src)
+
+/* Road Destruction - End*/
 
 /obj/covers/cobblestone/stairs
 	name = "stone stairs"
@@ -1045,7 +1385,7 @@
 	desc = "A red earthen pillared wall."
 	icon_state = "red_earth_pillared"
 
-/obj/covers/clay_wall/redearth/doorway
+/obj/covers/clay_wall/redearth_doorway
 	name = "red earthern doorway"
 	desc = "A red earthen doorway."
 	icon_state = "red_earth_doorway"
@@ -1091,7 +1431,7 @@
 		if (do_after(user, 20, src))
 			user << "You finish adding stucco to the doorway, rendering over it."
 			qdel(W)
-			new /obj/covers/clay_wall/redearth/doorway(loc)
+			new /obj/covers/clay_wall/redearth_doorway(loc)
 			qdel(src)
 
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
@@ -1894,7 +2234,7 @@
 	desc = "A roman style villa wall with a chiselled relief of a hoplite."
 	icon_state = "villa_wall_l_relief_greek"
 
-/obj/covers/stone_wall/classic/villa/doorway
+/obj/covers/stone_wall/classic/villa_doorway
 	name = "villa doorway"
 	desc = "A roman style villa doorway."
 	icon_state = "villa_door"
@@ -1968,8 +2308,18 @@
 		if (do_after(user, 20, src))
 			user << "You finish adding roman stucco to the archway, rendering over it."
 			qdel(W)
-			new /obj/covers/stone_wall/classic/villa/doorway(loc)
+			new /obj/covers/stone_wall/classic/villa_doorway(loc)
 			qdel(src)
+			return
+
+	if (istype(W, /obj/item/weapon/stucco/greek))
+		user << "You start adding greek stucco to the archway..."
+		if (do_after(user, 20, src))
+			user << "You finish adding greek stucco to the archway, rendering over it."
+			qdel(W)
+			new /obj/covers/stone_wall/classic/grecian_archway(loc)
+			qdel(src)
+			return
 
 /obj/covers/stone_wall/classic/grecian
 	name = "smooth and bordered grecian wall"
@@ -1977,7 +2327,7 @@
 	icon_state = "grecian_smooth_b"
 	adjusts = FALSE
 
-/obj/covers/stone_wall/classic/grecian/archway
+/obj/covers/stone_wall/classic/grecian_archway
 	name = "grecian archway"
 	desc = "A impressive grecian archway."
 	icon_state = "grecian_archway"
@@ -2008,7 +2358,7 @@
 	desc = "A grecian style patterned stone wall."
 	icon_state = "grecian_patterned"
 
-/obj/covers/stone_wall/classic/grecian/pattern
+/obj/covers/stone_wall/classic/grecian/bordered_pattern
 	name = "patterened and bordered grecian wall"
 	desc = "A grecian style patterned and bordered stone wall."
 	icon_state = "grecian_patterned_b"
@@ -2095,15 +2445,6 @@
 					S.dir = WEST
 			return
 	..()
-
-/obj/covers/stone_wall/classic/archway/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/stucco/greek))
-		user << "You start adding greek stucco to the archway..."
-		if (do_after(user, 20, src))
-			user << "You finish adding greek stucco to the archway, rendering over it."
-			qdel(W)
-			new /obj/covers/stone_wall/classic/grecian/archway(loc)
-			qdel(src)
 
 /obj/covers/stone_wall/brick
 	name = "stone brick wall"

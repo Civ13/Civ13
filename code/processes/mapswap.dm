@@ -33,6 +33,7 @@
 /process/epochswap/fire()
 	// no SCHECK here
 	if (is_ready())
+		map.save_awards()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
 				//Stone Age (?-3000 B.C.)" = 0,
@@ -115,12 +116,12 @@
 			maps = list(
 				MAP_REICHSTAG = 0,
 				MAP_KHALKHYN_GOL = 0,
-//				MAP_OMAHA = 10,
+				MAP_OMAHA = 10,
 				MAP_KURSK = 10,
 //				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
-//				MAP_NANJING = 20,
-				MAP_IWO_JIMA = 30,
+				MAP_NANJING = 20,
+//				MAP_IWO_JIMA = 70,
 			)
 
 		if (epoch == "Early Modern Era (1896-1933)")
@@ -136,6 +137,7 @@
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK_TDM = 0,
+				MAP_MISSIONARY_RIDGE = 20,
 			)
 		if (epoch == "Imperial Age (1650-1780)")
 		//1713 - TDM
@@ -182,6 +184,7 @@
 				MAP_NOMADS_NEW_WORLD = 10,
 				MAP_NOMADS_MEDITERRANEAN = 10,
 				MAP_NOMADS_ISLAND = 0,
+				MAP_NOMADS_KARAFUTO = 0,
 			)
 		if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(
@@ -520,12 +523,12 @@
 		config.disable_fov = TRUE
 		config.no_respawn_delays = FALSE
 		map.gamemode = "Competitive"
-		global_damage_modifier = 1.25
+		global_damage_modifier = 1.15
 		return
 	else if (vote.voted_gamemode == "Hardcore")
-		world << "<font color='red'><big>HARDCORE Mode</big><br>No respawns, increased damage. Field of View enabled.</big></font>"
+		world << "<font color='red'><big>HARDCORE Mode</big><br>No respawns, increased damage. Field of View enabled. Awards active.</big></font>"
 		config.disable_fov = FALSE
 		config.no_respawn_delays = FALSE
 		map.gamemode = "Hardcore"
-		global_damage_modifier = 1.45
+		global_damage_modifier = 1.30
 		return

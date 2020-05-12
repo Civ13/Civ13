@@ -399,7 +399,7 @@
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
-		else if (map.ID == MAP_NOMADS_KARAFUTA)
+		else if (map.ID == MAP_NOMADS_KARAFUTO)
 			spawn(5)
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)
@@ -446,6 +446,7 @@
 				if (original_job_title == "Orc tribesman")
 					orc = 1
 					civilization = "Orc Horde"
+					religion = "Followers of Morgoth"
 					add_language("Black Speech",TRUE)
 					remove_language("English")
 					for (var/datum/language/blackspeech/A in languages)
@@ -457,6 +458,7 @@
 				else if (original_job_title == "Ant tribesman")
 					ant = 1
 					civilization = "Ant Colony"
+					religion = "Followers of the Hive Mother"
 					add_language("Antspeak",TRUE)
 					remove_language("English")
 					for (var/datum/language/ant/A in languages)
@@ -468,6 +470,7 @@
 				else if (original_job_title == "Gorilla tribesman")
 					gorillaman = 1
 					civilization = "Gorilla Tribe"
+					religion = "Order of the Great Tree"
 					add_language("Ape Speech",TRUE)
 					remove_language("English")
 					for (var/datum/language/ape/A in languages)
@@ -479,6 +482,7 @@
 				else if (original_job_title == "Wolf tribesman")
 					wolfman = 1
 					civilization = "Wolfpack"
+					religion = "Moon Worshippers"
 					add_language("Wolf Howling",TRUE)
 					remove_language("English")
 					for (var/datum/language/wolf/A in languages)
@@ -490,6 +494,7 @@
 				else if (original_job_title == "Lizard tribesman")
 					lizard = 1
 					civilization = "Lizard Clan"
+					religion = "The Great Serpent"
 					add_language("Lizard Hissing",TRUE)
 					remove_language("English")
 					for (var/datum/language/lizard/A in languages)
@@ -501,6 +506,7 @@
 				else if (original_job_title == "Crustacean tribesman")
 					crab = 1
 					civilization = "Crustacean Union"
+					religion = "Cthulhu"
 					add_language("Clack Tongue",TRUE)
 					remove_language("English")
 					for (var/datum/language/crab/A in languages)
@@ -511,6 +517,7 @@
 					return
 				else
 					civilization = "Human Kingdom"
+					religion = "Father in the Sky"
 					name = species.get_random_english_name(gender)
 					real_name = name
 					give_clothes()
@@ -534,7 +541,7 @@
 						else
 							var/input_name = input(src, "Choose the new name: (Max 15 characters, please keep it language appropriate)","Custom Name", name) as text
 							input_name = sanitizeName(input_name, 15, FALSE)
-							if (input_name != "")
+							if (input_name && input_name != "" && input_name != null)
 								name = input_name
 								real_name = input_name
 								return
@@ -789,6 +796,7 @@
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Orc Host"
+	H.religion = "Followers of Morgoth"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
 	H.add_note("Race Mechanics", "- Stronger than humans, good starting strength and average construction skills.<br>- Second most advanced after humans, but no gunpowder.<br>- Radioactive resistance, can't get cholera or food posioning from raw meat, no bad mood from raw meat, gore, or hygiene.<br>- Need to eat more often.<br>- Can handle extreme heat better.")
@@ -822,6 +830,7 @@
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Ant Colony"
+	H.religion = "Followers of the Hive Mother"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
 	H.add_note("Race Mechanics", "- Very good strength and dexterity, decent construction skills.<br>- Lowest technology of all races. Can't build walls besides dirt walls, can't build doors.<br>- Can dig holes, mine, and collect dirt/sand without tools use grab intent and click on a floor. To dig a hole, right click and use the Dig verb.<br>- Natural armoured skin gives some melee and radioactive defense.<br>- Can't handle the extreme cold or extreme heat.")
@@ -856,6 +865,7 @@
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Gorilla Tribe"
+	H.religion = "Order of the Great Tree"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Very high strength, dexterity, and stamina. Good on unarmed fights.<br>- Can jump further than other races. <br>- Doesn't need to drink as often as other races, as they get water from their food.<br>- Since you are an herbivore, you cannot eat meat, eggs, and so on. You can use grab intent to collect and eat leaves from trees.")
@@ -889,6 +899,7 @@
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Human Kingdom"
+	H.religion = "Father in the Sky"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Advanced technology compared to all other races (can build crude gunpowder weapons like arquebuses)<br>- Good crafting and intelligence.<br>- The weakest race physically, compared to other races.")
@@ -921,6 +932,7 @@
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Wolfpack"
+	H.religion = "Moon Worshippers"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
 	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
@@ -954,6 +966,7 @@
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Lizard Clan"
+	H.religion = "The Great Serpent"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have a poisonous bite and faster movement in rough terrain.")
 	H.add_note("Race Mechanics", "- Not slowed down by rough terrain (mud, snow). <br>- Poisonous bite gives toxic damage. <br>- Not attacked by wild reptiles.<br>- Can't handle the extreme cold or extreme heat.")
@@ -985,6 +998,7 @@
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Crustacean Union"
+	H.religion = "Cthulhu"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have a very hard shell and strong claws, but need water to survive.")
 	H.add_note("Race Mechanics", "- Natural armoured skin gives good melee and radioactive defense.<br>- Cannot wear shoes or gloves.<br>- Can only eat meat (including rotten, doesn't get food poisoning).<br>- No movement delay on water or sand.")

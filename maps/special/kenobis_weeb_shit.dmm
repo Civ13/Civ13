@@ -161,7 +161,7 @@
 "de" = (/obj/covers/steelplating,/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "df" = (/obj/covers/steelplating,/obj/structure/filingcabinet/chestdrawer,/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "dg" = (/obj/covers/steelplating,/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/grass,/area/caribbean/japanese/land/inside)
-"dh" = (/obj/covers/steelplating,/obj/structure/target_practice/indestructible,/turf/floor/grass,/area/caribbean/japanese/land/inside)
+"dh" = (/obj/covers/steelplating,/obj/structure/practice_dummy/indestructible,/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "di" = (/obj/covers/steelplating,/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 1},/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "dj" = (/obj/covers/steelplating,/obj/structure/radio/receiver/loudspeaker/faction2{icon_state = "loudspeaker"; dir = 4},/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "dk" = (/obj/covers/cement_wall,/turf/floor/grass,/area/caribbean/japanese/land/inside)

@@ -81,7 +81,7 @@
 	if (faction == JAPANESE)
 		return "<font size = 3>The Japanese may now cross the invisible wall!</font>"
 	else if (faction == RUSSIAN)
-		return ""
+		return "<font size = 3>The Japanese may now cross the invisible wall!</font>"
 	else
 		return ""
 
@@ -89,7 +89,7 @@
 	if (faction == JAPANESE)
 		return "<span class = 'userdanger'>The Japanese may no longer cross the invisible wall!</span>"
 	else if (faction == RUSSIAN)
-		return ""
+		return "<span class = 'userdanger'>The Japanese may no longer cross the invisible wall!</span>"
 	else
 		return ""
 

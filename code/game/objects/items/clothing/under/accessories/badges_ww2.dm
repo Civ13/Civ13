@@ -18,6 +18,12 @@
 	worn_state = "gold"
 	name = "Gold Medal"
 
+/obj/item/clothing/accessory/medal/american/combat_medical_badge
+	icon_state = "combat_medical_badge"
+	worn_state = "combat_medical_badge"
+	name = "Combat Medical Badge"
+	desc = "A badge given to those who excel in providing medical care during combat."
+
 /obj/item/clothing/accessory/medal/german/ww1/iron_cross_1st
 	icon_state = "ww1_EK_1st"
 	worn_state = "ww1_EK_1st"
@@ -162,6 +168,30 @@
 	name = "NSDAP pin"
 	desc = "A pin displaying the symbol of the NSDAP"
 
+
+/obj/item/clothing/accessory/medal/japanese/ww2/east_asia
+	icon_state = "east_asia_war"
+	worn_state = "east_asia_war"
+	name = "East Asia War medal"
+	desc = "A medal given to those who fought in the pacific theatre."
+
+/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1931
+	icon_state = "china_incident1931"
+	worn_state = "china_incident1931"
+	name = "China Incident medal"
+	desc = "A medal given to those who fought in China and Manchuria from 1931-1937."
+
+/obj/item/clothing/accessory/medal/japanese/ww2/china_incident1937
+	icon_state = "china_incident1937"
+	worn_state = "china_incident1937"
+	name = "China Incident medal"
+	desc = "A medal given to those who fought in Chinafrom 1937-1945."
+
+/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun
+	icon_state = "order_rising_sun"
+	worn_state = "order_rising_sun"
+	name = "Order of the Rising Sun"
+	desc = "A medal given to those who fought valiantly for japan and contributed greatly to war efforts."
 
 /obj/item/clothing/accessory/rank
 	ripable = FALSE

@@ -197,18 +197,18 @@ var/no_loop_arab = FALSE
 	..()
 	switch (define)
 		if (ARAB)
-			return "Hezbollah"
+			return "Insurgent"
 /obj/map_metadata/arab_town/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (ARAB)
-			return "Hezbollah"
+			return "Insurgents"
 
 /obj/map_metadata/arab_town/army2name(army)
 	..()
 	switch (army)
-		if ("Hezbollah")
-			return "Hezbollah"
+		if ("Insurgents")
+			return "Insurgent"
 
 
 /obj/map_metadata/arab_town/cross_message(faction)

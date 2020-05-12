@@ -18,7 +18,11 @@
      * 8a - Colonial Army Uniforms
      * 8b - Colonial Army Jackets
      ///////////////////////////////////
-     * 9 - Miscallaneous */
+     * 9 - Napoleonic Clothing
+     * 9a - Napoleonic Army Clothing
+     * 9b - Napoleonic Armor
+     ////////////////////////////////
+     * 10 - Miscallaneous*/
 
 /* Colonial Suits*/
 
@@ -290,6 +294,80 @@
 			faction = owner.civilization
 			name = "[faction]'s passport"
 			desc = "[faction] passport, issued to [owner]. Can hold several visas."
+
+/obj/item/weapon/civilian_passport
+	name = "Identification Documents"
+	desc = "The identification papers of a civilian."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "passport"
+	item_state = "paper"
+	throwforce = FALSE
+	w_class = TRUE
+	slot_flags = SLOT_ID | SLOT_POCKET
+	throw_range = TRUE
+	throw_speed = TRUE
+	attack_verb = list("bapped")
+	flammable = TRUE
+	var/mob/living/carbon/human/owner = null
+	var/document_name = ""
+	var/list/document_details = list()
+	var/list/guardnotes = list()
+	secondary_action = TRUE
+	New()
+		..()
+		spawn(20)
+			if (ishuman(loc))
+				var/mob/living/carbon/human/H = loc
+				document_name = H.real_name
+				owner = H
+				name = "[document_name] indentification documents"
+				desc = "The identification papers of <b>[document_name]</b>."
+				var/crimereason = "Nationality"
+				if (istype(H.original_job, /datum/job/civilian/prisoner))
+					var/datum/job/civilian/prisoner/P = H.original_job
+					switch(P.nationality)
+						if ("German")
+							crimereason = "German Citizen."
+						if ("Ukrainian")
+							crimereason = "Ukrainian Citizen."
+						if ("Polish")
+							crimereason = "Polish Citizen."
+
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, crimereason, H.gender, rand(6,32),P.original_eyes, P.randrole)
+/obj/item/weapon/civilian_passport/examine(mob/user)
+	user << "<span class='info'>*---------*</span>"
+	..(user)
+	if (document_details.len >= 9)
+		user << "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>"
+		if (document_details[6] == "male")
+			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
+		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
+		user << "<b><span class='info'>Detained for:</b> [document_details[5]]</span>"
+		user << "<b><span class='info'>Sentence:</b> [document_details[7]] years</span>"
+		user << "<b><span class='info'>Assigned Job:</b> [document_details[9]]</span>"
+	user << "<span class='info'>*---------*</span>"
+	if (guardnotes.len)
+		for(var/i in guardnotes)
+			user << "NOTE: [i]"
+	user << "<span class='info'>*---------*</span>"
+
+/obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (!ishuman(H))
+		return
+	if (istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/russian))
+		var/confirm = WWinput(H, "Do you want to add a note to these documents?", "Prisoner Documents", "No", list("No","Yes"))
+		if (confirm == "No")
+			return
+		else
+			var/texttoadd = input(H, "What do you want to write? Up to 150 characters", "Notes", "") as text
+			texttoadd = sanitize(texttoadd, 150, FALSE)
+			texttoadd = "<i>[texttoadd] - <b>[H.real_name]</b></i>"
+			guardnotes += texttoadd
+			return
+
+/obj/item/weapon/civilian_passport/secondary_attack_self(mob/living/carbon/human/user)
+	showoff(user)
+	return
 
 /obj/item/weapon/visa
 	name = "visa"
@@ -883,6 +961,186 @@
 	item_state = "british_officer"
 	worn_state = "british_officer"
 
+/* Napoleonic Clothes*/
+
+/obj/item/clothing/under/nightingale
+	name = "nightingale dress"
+	desc = "A modest nurse dress with a sown on apron. Often found worn by nurses tending to the injuries within wartime field hospitals."
+	icon_state = "nightingale"
+	item_state = "nightingale"
+	worn_state = "nightingale"
+
+/obj/item/clothing/head/nurse
+	name = "nurse hat"
+	desc = "A white nurse hat, symbolic of care and empathy."
+	icon_state = "nursehat"
+	item_state = "nursehat"
+	worn_state = "nursehat"
+	body_parts_covered = HEAD
+
+/* Napoleonic Army Clothing*/
+
+/obj/item/clothing/under/napoleonic
+	name = "napoleonic french soldier uniform"
+	desc = "A uniform of the french army, with golden epaulettes, black shirt and a gold buttoned white gilet." //gilet is a light jacket which would be worn under a coat
+	icon_state = "nap_french_army"
+	item_state = "nap_french_army"
+	worn_state = "nap_french_army"
+
+/obj/item/clothing/under/napoleonic/british
+	name = "napoleonic british soldier uniform"
+	desc = "A uniform of the british army, with a red shirt, blue epaulettes and white frogging." //criss cross on the sprite is called frogging.
+	icon_state = "nap_british_army"
+	item_state = "nap_british_army"
+	worn_state = "nap_british_army"
+
+/obj/item/clothing/under/napoleonic/blackwatch
+	name = "napoleonic blackwatch soldier uniform"
+	desc = "A uniform of the british army's scottish infantry. Often worn in fearsome highland charges with a red shirt, itchy kilt and a white saltire." //saltire is a cross often found in flags
+	icon_state = "blackwatch"
+	item_state = "blackwatch"
+	worn_state = "blackwatch"
+
+/obj/item/clothing/under/napoleonic/walloon
+	name = "napoleonic walloon soldier uniform"
+	desc = "A uniform of the spanish army. Often worn by swiss conscripts loyal to spain it has a dark navy shirt with a red gilet with gold buttons."
+	icon_state = "walloon_guard"
+	item_state = "walloon_guard"
+	worn_state = "walloon_guard"
+
+/obj/item/clothing/under/napoleonic/russian
+	name = "napoleonic russian soldier uniform"
+	desc = "A uniform of the russian army. It has brown trousers and a green shirt with a single line of gold buttons."
+	icon_state = "nap_russian_army"
+	item_state = "nap_russian_army"
+	worn_state = "nap_russian_army"
+
+/obj/item/clothing/under/napoleonic/patriot
+	name = "patriotic american soldier uniform"
+	desc = "A uniform of the american army. Often worn by proud defenders of freedom and liberty it is blue with a white saltire and a red undershirt."
+	icon_state = "patriot"
+	item_state = "patriot"
+	worn_state = "patriot"
+
+/obj/item/clothing/under/napoleonic/prussian
+	name = "napoleonic prussian soldier uniform"
+	desc = "A uniform of the prussian army. Often worn by professional troops it has a navy shirt with red and white leather shoulder epaulettes with a assortment of buttons."
+	icon_state = "nap_prussian_army"
+	item_state = "nap_prussian_army"
+	worn_state = "nap_prussian_army"
+
+/obj/item/clothing/under/napoleonic/jaeger
+	name = "napoleonic jaeger soldier uniform"
+	desc = "A uniform of the joint austrian and german army. It has a dark green shirt with black saltire, and a lime green collar and epaulletes."
+	icon_state = "nap_jaegers"
+	item_state = "nap_jaegers"
+	worn_state = "nap_jaegers"
+
+/obj/item/clothing/under/napoleonic/portuguese
+	name = "napoleonic portuguese soldier uniform"
+	desc = "A uniform of the portuguese army. Often worn by pennisula soldiers, it has a dark navy shirt with a white saltire."
+	icon_state = "nap_portuguese_army"
+	item_state = "nap_portuguese_army"
+	worn_state = "nap_portuguese_army"
+
+/obj/item/clothing/under/napoleonic/italian
+	name = "napoleonic italian soldier uniform"
+	desc = "A uniform of the italian army. It has a dark green shirt with a bright orange trimmings along the arms and feet and a white saltire."
+	icon_state = "nap_portuguese_army"
+	item_state = "nap_portuguese_army"
+	worn_state = "nap_portuguese_army"
+
+/obj/item/clothing/under/napoleonic/satsuma
+	name = "napoleonic portuguese soldier uniform"
+	desc = "A uniform of the imperial japanese army. It has a black buttoned shirt and blue trousers with a white harness."
+	icon_state = "nap_satsuma"
+	item_state = "nap_satsuma"
+	worn_state = "nap_satsuma"
+
+/* Napoleonic Armor*/
+// Can't add these helmets to blacksmithing.dm until code seperation of the napoleonic era or new functions make them inaccessible to early colonial settlers. @FantasticFwoosh
+
+/obj/item/clothing/head/helmet/leather_infantry
+	name = "leather infantry cap"
+	desc = "A protective leather cap often worn by soldiers of early era modern warfare."
+	icon_state = "nap_lea_infantry_cap"
+	item_state = "nap_lea_infantry_cap"
+	worn_state = "nap_lea_infantry_cap"
+	body_parts_covered = HEAD
+	armor = list(melee = 30, arrow = 25, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //leather with more bomb + gun protection
+	health = 25
+
+/obj/item/clothing/head/helmet/leather_infantry/brown
+	name = "brown leather infantry helmet"
+	icon_state = "brown_nap_lea_infantry_cap"
+	item_state = "brown_nap_lea_infantry_cap"
+	worn_state = "brown_nap_lea_infantry_cap"
+
+/obj/item/clothing/head/helmet/prussian
+	name = "prussian leather infantry helmet"
+	desc = "A protective leather cap often worn by prussian soldiers of the napoleonic era."
+	icon_state = "prussian_lea_infantry_cap"
+	item_state = "prussian_lea_infantry_cap"
+	worn_state = "prussian_lea_infantry_cap"
+	armor = list(melee = 35, arrow = 50, gun = 15, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 35
+
+/obj/item/clothing/head/helmet/leather_infantry/blue //for nomads
+	name = "blue leather infantry helmet"
+	icon_state = "prussian_lea_infantry_cap"
+	item_state = "prussian_lea_infantry_cap"
+	worn_state = "prussian_lea_infantry_cap"
+
+/obj/item/clothing/head/helmet/leather_infantry/red //for nomads
+	name = "red leather infantry helmet"
+	icon_state = "commissar"
+	item_state = "commissar"
+	worn_state = "commissar"
+
+/obj/item/clothing/head/helmet/satsuma
+	name = "satsuma infantry hat"
+	desc = "A pointed black hat often worn by soldiers of imperial japan's satsuma era."
+	icon_state = "nap_satsuma"
+	item_state = "nap_satsuma"
+	worn_state = "nap_satsuma"
+	body_parts_covered = HEAD
+	armor = list(melee = 30, arrow = 25, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //equal to infantry cap
+	health = 25
+
+/obj/item/clothing/head/helmet/napoleonic/dragoon
+	name = "dragoon helmet"
+	desc = "A bronze helmet with a impressive plume. It is often worn by napoleonic cavalry squadrons; though it is more for show it can still deflect harm."
+	icon_state = "dragoon"
+	item_state = "dragoon"
+	worn_state = "dragoon"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 40, gun = 8, energy = 15, bomb = 45, bio = 20, rad = FALSE) //slightly stronger than a kettle helmet being its equal, protective conical outclasses it
+	health = 32
+
+/obj/item/clothing/head/helmet/napoleonic/bearskin
+	name = "black napoleonic bearskin hat"
+	desc = "A decorative parade hat felted from bear skin and bronze. Often worn by napoleonic grenadiers."
+	icon_state = "napoleonic_bearskin_hat"
+	item_state = "napoleonic_bearskin_hat"
+	worn_state = "napoleonic_bearskin_hat"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 40, gun = 8, energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	health = 30
+
+/obj/item/clothing/head/helmet/napoleonic/bearskin/brown
+	name = "brown napoleonic bearskin hat"
+	icon_state = "brown_napoleonic_bearskin_hat"
+	item_state = "brown_napoleonic_bearskin_hat"
+	worn_state = "brown_napoleonic_bearskin_hat"
+
+/obj/item/clothing/head/helmet/napoleonic/bearskin/white
+	name = "white napoleonic bearskin hat"
+	icon_state = "white_napoleonic_bearskin_hat"
+	item_state = "white_napoleonic_bearskin_hat"
+	worn_state = "white_napoleonic_bearskin_hat"
+
 /* Miscallaneous*/
 
 //These two seem misplaced, refer to be moved to modern or their own apparel, quiver is wierdly placed too.
@@ -900,29 +1158,11 @@
 	item_state = "wastelander"
 	worn_state = "wastelander"
 
-/obj/item/weapon/storage/backpack/quiver
-	name = "quiver"
-	desc = "The best way to carry a bow and arrows."
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "quiver"
-	item_state = "quiver"
-
-/obj/item/weapon/storage/backpack/quiver/New()
-		..()
-		can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
-
-/obj/item/weapon/storage/backpack/quiver/full/New()
-	..()
-	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-
-
+/obj/item/clothing/head/helmet/leather_infantry/commissar //rdming your men at random to 'inspire' them is against the rules
+	name = "commisar hat"
+	desc = "A protective leather cap often worn by squadron commanders of a grimdark future."
+	icon_state = "commissar"
+	item_state = "commissar"
+	worn_state = "commissar"
+	armor = list(melee = 35, arrow = 50, gun = 15, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 35

@@ -70,6 +70,15 @@ var/global/FREQ2 = rand(201,250)
 	..()
 	freq = FREQ1
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
+/obj/structure/radio/faction1/New()
+	freq = FREQ1
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+	powerneeded = 0
+/obj/structure/radio/faction2/New()
+	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+	powerneeded = 0
 /obj/structure/radio/receiver/loudspeaker/faction2/New()
 	..()
 	freq = FREQ2

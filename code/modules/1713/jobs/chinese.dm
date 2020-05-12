@@ -38,8 +38,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_officer(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/chinese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -93,8 +92,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_officer(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 ////weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/chinese(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -123,7 +121,8 @@
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_ww2 = TRUE
-
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 
 	min_positions = 1
 	max_positions = 10
@@ -143,18 +142,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_officer(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
-	var/randweap = rand(1,3)
-	if (randweap== 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
-	else if (randweap == 2)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka30(H), slot_shoulder)
-	else if (randweap == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -220,12 +211,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/chinese/infantry
-	title = "erdeng Bing"
+	title = "Erdeng Bing"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Erd."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
+	uses_squads = TRUE
 
 
 	min_positions = 6
@@ -247,13 +239,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/chicap(H), slot_head)
 //back
-	var/randweap = rand(1,3)
-	if (randweap== 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
-	else if (randweap == 2)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka30(H), slot_shoulder)
-	else if (randweap == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese(H), slot_shoulder)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class  employed by the Chinese Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -275,7 +261,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
-
+	uses_squads = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -296,13 +282,7 @@
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/chicap(H), slot_head)
-	var/randweap = rand(1,3)
-	if (randweap== 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
-	else if (randweap == 2)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka30(H), slot_shoulder)
-	else if (randweap == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/sniper_scope(H), slot_l_store)
 	give_random_name(H)

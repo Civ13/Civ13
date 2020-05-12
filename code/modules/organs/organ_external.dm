@@ -25,7 +25,6 @@
 	var/body_part = null
 	var/icon_position = FALSE
 	var/model
-	var/force_icon
 	var/damage_state = "00"
 	var/brute_dam = FALSE //sum of blunt, pierce and cut damage
 	var/burn_dam = FALSE
@@ -376,7 +375,11 @@
 	return created_wound
 
 
-/obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE)
+/obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE, var/mob/living/carbon/human/healer = null)
+
+	if (healer && healer != owner)
+		healer.awards["medic"]+=(brute+burn)
+		owner.awards["wounded"]+=(brute+burn)
 
 	//Heal damage on the individual wounds
 	for (var/datum/wound/W in wounds)

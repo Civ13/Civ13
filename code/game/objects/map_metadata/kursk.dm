@@ -27,7 +27,9 @@
 
 /obj/map_metadata/kursk/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == TRUE && J.is_ss_panzer == TRUE)
+	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
+		. = TRUE
+	else if (J.is_ss_panzer == TRUE)
 		. = TRUE
 	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
 		. = TRUE

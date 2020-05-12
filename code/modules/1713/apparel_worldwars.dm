@@ -1593,6 +1593,25 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/ww2/usgreennet/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/stack/material/hemp))
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You put foliage on the helmet.</span>"
+		new/obj/item/clothing/head/helmet/ww2/usm1camogreen(user.loc)
+		qdel(src)
+		qdel(W)
+
+/obj/item/clothing/head/helmet/ww2/usm1camogreen
+	name = "M1 Helmet with netting"
+	desc = "The typical rounded steel helmet of the US Army, with tan netting."
+	icon_state = "m1_greennet_leaves"
+	item_state = "m1_greennet_leaves"
+	worn_state = "m1_greennet_leaves"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/helmet/ww2/ustannet
 	name = "M1 Helmet with netting"
 	desc = "The typical rounded steel helmet of the US Army, with tan netting."

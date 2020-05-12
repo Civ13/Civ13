@@ -154,7 +154,6 @@
 "cX" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "cY" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "cZ" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
-"da" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/type100,/obj/item/ammo_magazine/type100,/obj/item/ammo_magazine/type100,/obj/item/ammo_magazine/type100,/obj/item/ammo_magazine/type100,/obj/item/ammo_magazine/type100,/obj/item/ammo_magazine/type100,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "db" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "dc" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/arisakabox99,/obj/item/ammo_magazine/arisakabox99,/obj/item/ammo_magazine/arisakabox99,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "dd" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/arisakabox,/obj/item/ammo_magazine/arisakabox,/obj/item/ammo_magazine/arisakabox,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
@@ -400,19 +399,19 @@
 "hJ" = (/obj/item/weapon/gun/projectile/submachinegun/type100,/turf/floor/dirt,/area/caribbean/admin)
 "hK" = (/obj/item/ammo_magazine/type100,/obj/item/ammo_magazine/type100,/turf/floor/dirt,/area/caribbean/admin)
 "hL" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/admin)
-"hM" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/target_practice,/turf/floor/dirt,/area/caribbean/admin)
+"hM" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/practice_dummy,/turf/floor/dirt,/area/caribbean/admin)
 "hN" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/admin)
-"hO" = (/obj/structure/target_practice,/turf/floor/dirt,/area/caribbean/admin)
+"hO" = (/obj/structure/practice_dummy,/turf/floor/dirt,/area/caribbean/admin)
 "hP" = (/obj/item/weapon/gun/projectile/pistol/ww2/nambu,/turf/floor/dirt,/area/caribbean/admin)
 "hQ" = (/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/turf/floor/dirt,/area/caribbean/admin)
 "hR" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/admin)
 "hS" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/admin)
 "hT" = (/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/turf/floor/dirt,/area/caribbean/admin)
 "hU" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98{icon_state = "type98hmg"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/admin)
-"hV" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/target_practice,/turf/floor/dirt,/area/caribbean/admin)
+"hV" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/practice_dummy,/turf/floor/dirt,/area/caribbean/admin)
 "hW" = (/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/admin)
 "hX" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/admin)
-"hY" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/obj/structure/target_practice,/turf/floor/dirt,/area/caribbean/admin)
+"hY" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/obj/structure/practice_dummy,/turf/floor/dirt,/area/caribbean/admin)
 "hZ" = (/obj/structure/barricade,/obj/structure/sign/flag/japanese,/turf/floor/grass,/area/caribbean/forest)
 "ia" = (/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/turf/floor/dirt,/area/caribbean/forest)
 "ib" = (/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/turf/floor/dirt,/area/caribbean/forest)
@@ -522,24 +521,24 @@ aaaaaaaaaaaaaabJaaaaaaaaaaaaaaaaacacbYgDacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac
 aaaaaaaaaaaaaaaaacaaaaaaaaaaaaacdTacgcbYacacaaaeaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaaaaaaaaaaaacacaaaaacacaaacaaaaacaaaaaaaaaaacaaacacaafnbYacaaaaaaaaaaaaaaaaaaaaaaaabJaaanaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacgKgegfbYacaaaaaaaaaaaabJaaaaaaaaacaaaaaaaaaaaabJaaacbMacacacacbMbMacaaaaaaacacacacacamacacacacacacgigLacbYbYaafnaafnfOfOaaaaaaaaaaaaaaaaaaaaaaaaaabJ
 aaagaaaaacaaaaaaaaaaaaaaaaaaaaacacacacbYaaaaaaacaaacaaacaaaaaaaaaaaaaaaaaaaaacacacacacaTaTaTacaTaTacacacacacacaTaTaTaTaTaTaTaTaTaSaSaSaSaSaSfYaSaafnfnfnaaaaaaagaaaaaaaaaaaaaaaaaaaa
-aaacaaaabJaaaaaaaaacacggacghacaaacacacbYacaaacggacacghacaaaaaaacbJacaaacacacacaTaTaTaTaTaTaTaTaTaTaTaTaTgaaTaTaTgqgqgqaTgqgqgqaTaTaTaTgaaTaTaTaSaSaSanaaaafnfnaabJaaaaaaaaaaaaagaaaa
-acacacacacaaaaacacacacgigjgkacacacacacbYacacacgigjgjgkacacacacacacacacacaTaTaTaTgqgqgqgqgqgqgqgqgqgqgqaTaTgqgqgqgqgqgqgqgqgqgqgqgqgqgaaTaTgqaTaTaSaSaSaaacaafnbJaaaaaaaaaaaabJaafnaa
+aaacaaaabJaaaaaaaaacacggacghacaaacacacbYacaaacggacacghacaaaaaaacbJacaaacacacacaTaTaTaTaTaTaTaTaTaTaTaTaTgaaTaTaTgqgqgqaTgqaTaTaTaTaTaTgaaTaTaTaSaSaSanaaaafnfnaabJaaaaaaaaaaaaagaaaa
+acacacacacaaaaacacacacgigjgkacacacacacbYacacacgigjgjgkacacacacacacacacacaTaTaTaTgqgqgqgqgqgqgqgqgqgqgqaTaTgqgqgqgqgqgqgqgqgqaTaTaTaTgaaTaTgqaTaTaSaSaSaaacaafnbJaaaaaaaaaaaabJaafnaa
 aSaTaTaTacacacacacaTaTaTaTaTaTaTaTaTacbYacaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTgqgqgqgqgqaTgaaTaTgqgqgqgqgqgaaTaTaTaTgqaTgqgqgqaTaTaTaTaTgaaTgqgqgqaTajglgmgmaSaPaPacaaacaaaabJaaaaaaaaaa
 aTaTaTaTaTaTaTaTaTgqgqgqgqgqgqaTgqaTgugvgFaTgqgqgqgqgqgqgqaTaTaTaTaTaTgqgqgqaTaTgaaTaTaSaSaTaTaTaTaTaTgafYaSaSgaaTaTaTaTaTaTaSaSaSaTaTgaaTgqgqgqgqaTaTajaNhcaPaPaSaaaaaaaaaaaaacaaaa
 aTgqgqgqgqaTgqgqgqgqgqgqgqgqgqgqaTgqaRgvaUgqgqgqgqgqgqgqgqgqgqgqgqgqgqgqgqaTaTaTaSaSaSaSaTaTaTaTaSaSaSaSaSaSaSaSaSaSaTaSaSaSaSbQaSaSaSaSaTgaaTgqgqgqgqaTaTgmgmgmaPaSaPaQaQaPaPaaaaaa
 gqgqgqgqgqgqgqgqgqgqgqgqaTaTaTgqgqgqaRgvgFgqaTgqgqaTaTaTaTaTaTaTaTaTaTaTgqgqgqaTaTaTaTaTaTaTaTaTaTaTaSaSbQeOeOaSaSbQbQaSaSbQaSaSaSaQaPaSaTaSaTaTaTaTgqgqaTaTaTgngmgmgngmgmgnfZaPaPaP
 gqgqgqgqgqgqgqgqaTaTaTaTaTaTaTaTaTaTgugvgFhdaTaTaTgaacacacacacacacacacaTaTgqgqgqgqgqgqgqgqgqgqgqaTaTaSaSaSaSeOaSaSaSaSeOaSaSaSaPaPaSaSaSaSaSaSaSaSaTaTgqgqgqaTaTaTaTaTgaaTgmgmgmgnhc
 aTaTaTaTaTaTaTaTaTaSaTaSgrgsgsgtacacgugvheachfaTacacacaabJbJacacaaaaacacaTaTaTgqaTaTaTaTaTaTaTgqgqaTaTaSaSaSgobQaSgpaSgMgNgNgNgOaPaPaPaPaPaSaSaSfYaSaTaTgqgqgqgqgqgqglgPgPaTaTaSgmgm
-acacacacacacacacacacacacggacacghacacacbYacacacbMaaaaaaaaaaaaaaaaaaaaaaacacacaTaTaTacacacacacaTaTgqgqaTgagagoaSaSaSaSeOeOaSgoaSaPbQaPgQgRgNgRgRgQaSaTaSaTaTaTaTaTaTgSgPajgqgqaTaTaTga
-aaaaacaaacacacacaaaaaaacidacaaacacgwgxbYbYacaaaaaaaeaaaaaaaaaaacacaaaabJaaacacacacbMaaaaaaacacgagqgqgqgqaTaSaSaSaSaSbQaSaSaSaPaSaPaPeOaPaPaPaPaPaSaSaSaSaSaSaSaSaTajgPglgSgqgqgqgqaT
-aaaaaabJacacaaaaagaaaaaaaaaaaaaaacgygcgDbYaaacacaaaaaaaaaaaaaaaaaaananaaacaaaaaaacaaaaaaacaaacaTaTgqgqgqaTaTaSaSgTgNgNgUgMaSaPaPaPaPaQaSaPeOeOfZaPaPaPaSaPgQgRgNgMaSaSaTaTgqgqaTgqgq
-aaaaagaaaaaaaaaaaaaaaaaaaaaaaaacaaacgcacbYaaaaaaaabJaaaaaaaaaaaaaaaaaaaaaaaaaaaabMaaaaaaaaaaacacaTaTaTgqgqaTaTaTaTaTaSaSaSaSaPaQaPaPeOeOeOeOeOaPaQaPeOaPeOaSeOaPaPfZaSaSaTaTaTaTgqgq
-aaaaaaaaaaaaaaaaaaaaaaaaaabJaaaaaaaaaabYbYacaaaaaaaaaaaaaaaaaaaaaaanagaaaaaaaaaaaeaaaaaaaaaaaaacacacaTaTaTgqgqaTgqaTaTaTaSaSaSgQgRgRgQaPaPaSaSaSaPaPaPaSaPaPeOaQaPaPaSaSfYaSaTaTgqgq
+acacacacacacacacacacacacggacacghacacacbYacacacbMaaaaaaaaaaaaaaaaaaaaaaacacacaTaTaTacacacacacaTaTgqgqaTgagagoaSaSaSaSeOeOaSgoaSaPbQaPaPaPaSaPaPaPaSaTaSaTaTaTaTaTaTgSgPajgqgqaTaTaTga
+aaaaacaaacacacacaaaaaaacidacaaacacgwgxbYbYacaaaaaaaeaaaaaaaaaaacacaaaabJaaacacacacbMaaaaaaacacgagqgqgqgqaTaSaSaSaSaSbQaSaSaSaPaSaPaPaPaPaPaPaPaPaSaSaSaSaSaSaSaSaTajgPglgSgqgqgqgqaT
+aaaaaabJacacaaaaagaaaaaaaaaaaaaaacgygcgDbYaaacacaaaaaaaaaaaaaaaaaaananaaacaaaaaaacaaaaaaacaaacaTaTgqgqgqaTaTaSaSgTgNgNgUgMaSaPaPaPaPaQaSaPaPaPfZaPaPaPaSaPgQgRgNgMaSaSaTaTgqgqaTgqgq
+aaaaagaaaaaaaaaaaaaaaaaaaaaaaaacaaacgcacbYaaaaaaaabJaaaaaaaaaaaaaaaaaaaaaaaaaaaabMaaaaaaaaaaacacaTaTaTgqgqaTaTaTaTaTaSaSaSaSaPaQaPaPaPaPaPaPaPaPaQaPeOaPeOaSeOaPaPfZaSaSaTaTaTaTgqgq
+aaaaaaaaaaaaaaaaaaaaaaaaaabJaaaaaaaaaabYbYacaaaaaaaaaaaaaaaaaaaaaaanagaaaaaaaaaaaeaaaaaaaaaaaaacacacaTaTaTgqgqaTgqaTaTaTaSaSaSaPaPaPaPaPaPaSaSaSaPaPaPaSaPaPeOaQaPaPaSaSfYaSaTaTgqgq
 aaaaaaaaaaaaaaaaaaaaaaaaagaaaaaaaaaaaaaabYbYaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaabJaaacacaTgagqgqgqgqgqgqaTaTaTaSaSaSaSaSaSaPaSaSgMgRgRgNgNgMaSaSaSaSaPaSaTaTaTaTaTaTgq
 aaaaaaaaaaaaaabJaaaaaaaaaaaaaaanaaaaaaaabYbJaaananbJagaaaaaaaaaaaaaaaaaaaabJaaaaaaaaaaaaaaaaaaaaaaaaacacaTaTaTaTgqgqgVgqgqaTaTaTaSaSaTaTaSaSaTaSaSaSaSaSaSaSaSaTaSaSaSaSaSaTaTgqgqgq
 aaaaaaaaaaaaaaaaaaaaaaaabJaaaeaaaaananacbYaaaaanaganaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaabJaaagaaaaacacaaaaacacacacaTaTaTgqgqgqgqaTaTaTgagaaTgaaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTgqgqgqgq
 aaaaaaaaaaaaaaaeaaaaaaagaaaaaaaaaaaganacbYbYaaaaaaaaaaaaaabJaaaaaaaaaaaaaeaaaaaaagaaaaaaaaaaaaaaaaaaanaaaaaaacacacaTaTaTgqgqgqaTgWgaaTaTgWaTgqgqgqgqaTaTgqgqgqgqgqgqgqgqgqgqgqaTgaaT
-aabJaeaaaaaaaaeXaaaaaaaaaaaaaafnfnfnaaaabYbYaabLaaaaaaaaaaaaaaaaaaaaanaaaaaaaaaaaabJaaaaaaaaaaaaaaaaaaacbMaaaabMacacaTaTgqgqgqgaaTgagWaTgagaaTaTaTgqgqgqgqgqaTaTgqgqgqgqaTaTaTaTaTaS
+aabJaeaaaaaaaaeXaaaaaaaaaaaaaafnfnfnaaaabYbYaabLaaaaaaaaaaaaaaaaaaaaanaaaaaaaaaaaabJaaaaaaaaaaaaaaaaaaacbMaaaabMacacaTaTgqgqgqgaaTgaaTaTgagaaTaTaTgqgqgqgqgqaTaTgqgqgqgqaTaTaTaTaTaS
 aaaaaaaaaaaaaaaaaaaaaaaabJfnfnfnfnfnfnfnaabYaaaaaaaaaaagaaaaaaaaaaaaaaagaaaaaaaaaaaaaaaaanaaaaaaaaacaaacacaaaaaaaaacacaTaTaTaTaTaTgaaTaTgaaTaTacaTaTaTaTaTaTaTaTaTaTaTaTaTaSaSaSaSfY
 aaaaaaaaaaaaaaaaaaaaacaaaafnfnfnaaaaaaaabYbYaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaebJaaaaaaaaaaaaaaaaaaaaaaacaaaaacacacacaTacacacacacacacacbMacacacacacaTaTaTaSaTacacbMacacaaacaaac
 aaaaaaaaaaaaaaaaaaaaaaaafnfnaaagbJaaaaaabYaaaaaeaaaabJanaaaaaaaeaaaaaaaaacaaaaaaagagaaaaaaaaaaaaananaaaaaaaaaaaaaaaabJacacacacaaacbJbYgDaaacacacacacaabMbMacacacacacaaaaacaaacacanaa
@@ -620,7 +619,7 @@ fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFcFcPcQhwcJ
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfvcFcFcFcFcFcFcFcFcFcFfWfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfscuctfsfsfvcifBfsfsctcuctfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfChxcUfDcFcFcVcFcFftfsfsfsfsfsfsfsfsfsfsfsfsfsfvfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfsfsfsfsfsfsfscFfsfsfsfsfsfsfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfCfucJfDcFcFcFencFcFcifsfsfsfsfsfsfsfsfsfsfscXcYcZfsfsfsfsfsfsfsfsfscFcFcFfsfsfsfsfsfsfsfsfsfscFfsfsfsfsfsfsfsfsfsfs
-fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFigfDfsfsfscFcFfsfsfsfsfsfsfsfsdaiEcFcFcFcFdbfsdcddfsfsfscFcFdEfsfsfsfsfsfsfsfsfsfsfscFcFfsfsfsfsfsfsfsfsfs
+fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFigfDfsfsfscFcFfsfsfsfsfsfsfsfscZiEcFcFcFcFdbfsdcddfsfsfscFcFdEfsfsfsfsfsfsfsfsfsfsfscFcFfsfsfsfsfsfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfvfsfsfsfsfsfscFcFfsfsfsfsfsdehycFcFcFcFcFcFcFcFcFcFcFfscFcFcFfsfsfsfsfsfsfsfsfsfsfsfsfscFfsfsfsfsfsfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsdEcFcFcicFcFcFcFcFcFcFcFcFfAcFcFcFcFcFcicFcFfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcicFcFcFcFfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFcFcFcFcFcFcFcFcFcFcFfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfs

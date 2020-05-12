@@ -415,6 +415,14 @@
 	new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/ammo_magazine/arisaka99(src)
 
+/obj/item/weapon/storage/belt/jap/camp_guard_SS
+/obj/item/weapon/storage/belt/jap/camp_guard_SS/New()
+	..()
+	new /obj/item/weapon/key/german(src)
+	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+
 /obj/item/weapon/storage/belt/jap/camp_officer
 /obj/item/weapon/storage/belt/jap/camp_officer/New()
 	..()

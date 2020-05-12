@@ -145,27 +145,27 @@
 /obj/item/clothing/head/helmet/modern/ushelmet
 	name = "M1 helmet"
 	desc = "A typical us army helmet."
-	icon_state = "ushelmet"
-	item_state = "ushelmet"
-	worn_state = "ushelmet"
+	icon_state = "m1_standard"
+	item_state = "m1_standard"
+	worn_state = "m1_standard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
 /obj/item/clothing/head/helmet/modern/ushelmet/sgt
-	name = "M1 helmet (sergeant)"
-	desc = "A typical us army helmet. With sergeant markings."
-	icon_state = "ushelmet_sgt"
-	item_state = "ushelmet_sgt"
-	worn_state = "ushelmet_sgt"
+	name = "M1 helmet 2nd LT"
+	desc = "A typical us army helmet. With lieutenant markings."
+	icon_state = "m1_2nd_lt"
+	item_state = "m1_2nd_lt"
+	worn_state = "m1_2nd_lt"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/lt
-	name = "M1 helmet (lieutenant)"
+	name = "M1 helmet 1st LT"
 	desc = "A typical us army helmet. With lieutenant markings."
-	icon_state = "ushelmet_lt"
-	item_state = "ushelmet_lt"
-	worn_state = "ushelmet_lt"
+	icon_state = "m1_1st_lt"
+	item_state = "m1_1st_lt"
+	worn_state = "m1_1st_lt"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/camo
 	name = "M1 camo helmet"
@@ -187,16 +187,16 @@
 /obj/item/clothing/head/helmet/modern/ushelmet/late
 	name = "M1 helmet"
 	desc = "A typical us army helmet."
-	icon_state = "ushelmet2"
-	item_state = "ushelmet2"
-	worn_state = "ushelmet2"
+	icon_state = "m1_standard"
+	item_state = "m1_standard"
+	worn_state = "m1_standard"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/medical
 	name = "M1 medical helmet"
 	desc = "A typical us army helmet, with a red cross on a white background."
-	icon_state = "ushelmet_medical"
-	item_state = "ushelmet_medical"
-	worn_state = "ushelmet_medical"
+	icon_state = "m1_medic"
+	item_state = "m1_medic"
+	worn_state = "m1_medic"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/late/New()
 	..()
@@ -231,33 +231,126 @@
 /* Cold War Hats*/
 
 /obj/item/clothing/head/jungle_hat
-	name = "green jungle hat"
-	desc = "A wide brim, soft jungle hat."
-	icon_state = "jungle_hat_green"
-	item_state = "jungle_hat_green"
+	name = "black boonie"
+	icon_state = "black_boonie"
+	item_state = "black_boonie"
 	body_parts_covered = HEAD
 
 /obj/item/clothing/head/jungle_hat/khaki
-	name = "khaki jungle hat"
-	icon_state = "jungle_hat_khaki"
-	item_state = "jungle_hat_khaki"
+	name = "khaki boonie"
+	desc = "A wide brim, soft jungle hat."
+	icon_state = "khaki_boonie"
+	item_state = "khaki_boonie"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/rice_hat
+	name = "rice hat"
+	desc = "A wide brim, rice farmer hat."
+	icon_state = "rice_hat"
+	item_state = "rice_hat"
+	body_parts_covered = HEAD
 
 /* Vietcong Clothes*/
 
-/obj/item/clothing/under/vietcong
-	name = "vietcong uniform"
-	desc = "A black uniform of the vietcong."
-	icon_state = "vietcong"
-	item_state = "vietcong"
-	worn_state = "vietcong"
+/obj/item/clothing/under/localnlf1
+	name = "local NLF uniform"
+	desc = "A black uniform of the NLF."
+	icon_state = "localnlfuniform_v1"
+	item_state = "localnlfuniform_v1"
+	worn_state = "localnlfuniform_v1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
-/obj/item/clothing/accessory/armband/khan_ran_scarf
-	name = "khan ran scarf"
-	desc = "A traditional mekong delta white-and-grey chekered scarf."
-	icon_state = "khan_ran_scarf"
-	item_state = "khan_ran_scarf"
+/obj/item/clothing/under/localnlf2
+	name = "local NLF uniform"
+	desc = "A black and blue uniform of the NLF."
+	icon_state = "localnlfuniform_v2"
+	item_state = "localnlfuniform_v2"
+	worn_state = "localnlfuniform_v2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/localnlf3
+	name = "local NLF uniform"
+	desc = "A black and khaki uniform of the NLF."
+	icon_state = "localnlfuniform_v3"
+	item_state = "localnlfuniform_v3"
+	worn_state = "localnlfuniform_v3"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/localnlf4
+	name = "local NLF uniform"
+	desc = "A blue and khaki uniform of the NLF."
+	icon_state = "localnlfuniform_v4"
+	item_state = "localnlfuniform_v4"
+	worn_state = "localnlfuniform_v4"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/localnlf5
+	name = "local NLF uniform"
+	desc = "A grey uniform of the NLF."
+	icon_state = "localnlfuniform_v5"
+	item_state = "localnlfuniform_v5"
+	worn_state = "localnlfuniform_v5"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/accessory/armband/khan_ran/black
+	name = "khan ran scarf (black and white)"
+	desc = "A traditional mekong delta white-and-grey checkered scarf."
+	icon_state = "khan_ran_v1"
+	item_state = "khan_ran_v1"
 	slot = "decor"
+
+/obj/item/clothing/accessory/armband/khan_ran/blue
+	name = "khan ran scarf (blue and white)"
+	desc = "A traditional mekong delta white-and-blue checkered scarf."
+	icon_state = "khan_ran_v2"
+	item_state = "khan_ran_v2"
+	slot = "decor"
+
+/obj/item/clothing/accessory/storage/webbing/nlfsmallpouches
+	name = "NLF small pouches"
+	desc = "A green chest-level webbing, with 5 medium sized pouches."
+	slots = 5
+	icon_state = "nlfchestrig_v2"
+	item_state = "nlfchestrig_v2"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/accessory/storage/webbing/nlfchestrig
+	name = "NLF chestrig"
+	desc = "A green chest-level webbing, with three medium sized pouches."
+	slots = 5
+	icon_state = "nlfchestrig_v1"
+	item_state = "nlfchestrig_v1"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
+
+/obj/item/clothing/shoes/nlfsandal1
+	name = "leather sandals"
+	desc = "A pair of simple, thin leather strap sandals. Covers up to the lower foot."
+	icon_state = "nlfsandals_v2"
+	item_state = "nlfsandals_v2"
+	worn_state = "nlfsandals_v2"
+	force = WEAPON_FORCE_WEAK
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	var/colorn = 1
+
+/obj/item/clothing/shoes/nlfsandal2
+	name = "leather sandals"
+	desc = "A pair of simple, thin leather strap sandals. Covers up to the lower foot and wraps around the ankle."
+	icon_state = "nlfsandals_v1"
+	item_state = "nlfsandals_v1"
+	worn_state = "nlfsandals_v1"
+	force = WEAPON_FORCE_WEAK
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	var/colorn = 1
 
 /* Cold War Armor*/
 
@@ -595,3 +688,14 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
 	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
 	ripable = FALSE
+
+/obj/item/clothing/head/helmet/modern/vchelmet
+	name = "viet pith helmet"
+	desc = "A pith helmet used by the vietnamese."
+	icon_state = "viet_pith"
+	item_state = "viet_pith"
+	worn_state = "viet_pith"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	health = 24

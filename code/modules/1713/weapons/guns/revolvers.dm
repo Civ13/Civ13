@@ -175,7 +175,7 @@
 
 
 /obj/item/weapon/gun/projectile/revolver/nagant_revolver
-	name = "Nagant revolver"
+	name = "M1895 Nagant"
 	desc = "Russian officer's revolver."
 	icon_state = "nagant"
 	w_class = 2
@@ -193,7 +193,7 @@
 	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/m1892
-	name = "Modele 1892 revolver"
+	name = "Modèle 1892 Revolver"
 	desc = "French officer's revolver."
 	icon_state = "m1892"
 	w_class = 2
@@ -242,15 +242,16 @@
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/coltnewpolice
-	name = "Colt new police"
+	name = "Colt New Police"
 	desc = "Common revolver used by police."
 	icon_state = "coltnewpolice"
 	w_class = 2
-	caliber = "a38"
+	caliber = "a32"
+	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c38
+	magazine_type = /obj/item/ammo_magazine/c32
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
@@ -277,15 +278,16 @@
 
 /obj/item/weapon/gun/projectile/revolver/webley4
 	name = "Webley Mk IV"
-	desc = "British revolver chambered in (.445)."
+	desc = "British revolver chambered in (.455)."
 	icon_state = "webley4"
 	w_class = 2
-	caliber = "webly445"
+	caliber = "a455"
+	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/webly445
-	ammo_type = /obj/item/ammo_casing/webly445
+	magazine_type = /obj/item/ammo_magazine/c455
+	ammo_type = /obj/item/ammo_casing/a455
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -406,12 +408,12 @@
 	load_delay = 5
 
 /obj/item/weapon/gun/projectile/revolver/webley
-	name = "Webley revolver"
+	name = "Webley Revolver"
 	desc = "British officer's revolver."
 	icon_state = "webley"
 	w_class = 2
 	caliber = "a455"
-	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
+	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6

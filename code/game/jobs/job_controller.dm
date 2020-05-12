@@ -52,6 +52,8 @@ var/global/datum/controller/occupations/job_master
 	var/list/job_debug = list()
 
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
+	map.availablefactions = list("Human tribesman", "Crustacean tribesman", "Orc tribesman", "Lizard tribesman")
+/*
 //	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
 //	var/randomfaction_spawn = "Red Goose Tribesman"
 //	//sets 2 factions for >=10ppl, 3 factions for >=15, 4 factions for >=20, 5 factions for >=25 and 6 factions for >=30
@@ -70,7 +72,7 @@ var/global/datum/controller/occupations/job_master
 			var/d = pick(randomfaction-a-b-c)
 			map.availablefactions = list(a,b,c,d)
 //			world << "Four tribes are enabled: <b>[replacetext(a, " tribesman", "")], [replacetext(b, " tribesman", "")], [replacetext(c, " tribesman", "")], [replacetext(d, " tribesman", "")]</b>."
-
+*/
 	map.availablefactions_run = FALSE
 	return
 
