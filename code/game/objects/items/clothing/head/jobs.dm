@@ -33,7 +33,7 @@
 	desc = "A stylish hat that both protects you from enraged former-crewmembers and gives you a false sense of authority."
 	icon_state = "hopcap"
 
-//Chaplain
+//Chaplain // Nuns & Plague Doctor -> relocated to apparel medieval
 /obj/item/clothing/head/chaplain_hood
 	name = "preacher's hood"
 	desc = "It's hood that covers the head."
@@ -50,25 +50,6 @@
 	name = "preacher's hood"
 	desc = "Typical priest hood."
 	icon_state = "chaplain_hoodie"
-
-/obj/item/clothing/suit/storage/jacket/plaguedoctor
-	name = "plague doctor suit"
-	desc = "Used by plague doctors. Doesn't seem to be very effective."
-	icon_state = "plaguedoctor"
-
-//Chaplain
-/obj/item/clothing/head/nun_hood
-	name = "nun hood"
-	desc = "A typical nun hood."
-	icon_state = "nun_hood"
-	flags_inv = BLOCKHAIR
-	body_parts_covered = HEAD
-
-/obj/item/clothing/under/nun
-	name = "nun clothing"
-	desc = "A typical nun clothing."
-	icon_state = "nun"
-
 
 //Mime
 /obj/item/clothing/head/beret

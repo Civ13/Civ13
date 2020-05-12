@@ -771,6 +771,8 @@
 	desc = "A wood box, used to turn trash and scraps into fertilizer."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "compostbin"
+	anchored = TRUE
+	density = TRUE
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -784,13 +786,67 @@
 
 	else if (istype(W, /obj/item/weapon/reagent_containers/food))
 		current+=0.5
+		H << "You place \the [W] in \the [src], composting it."
 		compost()
+		qdel(W)
 		return
+	else if (istype(W, /obj/item/weapon/leaves))
+		current+=0.25
+		H << "You place \the [W] in \the [src], composting it."
+		compost()
+		qdel(W)
+		return
+	else if (istype(W, /obj/item/stack/farming/seeds))
+		if (current >= max)
+			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
+			return
+		else
+			current+=W.amount/10 	//divides (using /) by tenths from each plant input of 1, 0.10 gain per seed, 10 seeds = 1 unit. 100 seeds = 10
+			H << "You place \the [W] in \the [src], composting it."
+			compost()
+			qdel(W)
+	else if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca))
+		if (current >= max)
+			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
+			return
+		else
+			current+=W.amount/4 	//by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
+			H << "You place \the [W] in \the [src], composting it."
+			compost()
+			qdel(W)
+	else if (istype(W, /obj/item/stack/material/flax) || istype(W, /obj/item/stack/material/hemp) || istype(W, /obj/item/stack/material/rettedfabric))
+		if (current >= max)
+			H << "<span class = 'warning'>You need to reduce the current stack of \ [W] first to fit inside \ the [src]!</span>"
+			return
+		else
+			current+=W.amount/4 	//by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
+			H << "You place \the [W] in \the [src], composting it."
+			compost()
+			qdel(W)
+			return
 
-/obj/structure/compost/proc/compost()
+	if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		H << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		H << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(H,40,src))
+			H << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			qdel(src)
+
+/obj/structure/compost/proc/compost(mob/living/carbon/human/H as mob)
+	spawn(500)
+	visible_message(">>The composted material begins to degrade.")
 	if (current>=1)
 		current=max(0,current-1)
-		spawn(18000)
+		spawn(1500)
 			if (src)
 				new/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer(loc)
 				return
