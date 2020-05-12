@@ -20,6 +20,24 @@
 			species.unarmed_attacks += new /datum/unarmed_attack/kick()
 			species.unarmed_attacks += new /datum/unarmed_attack/punch()
 			species.unarmed_attacks += new /datum/unarmed_attack/bite()
+	if (type == "Satyr")
+		if (body_build.name != "Satyr")
+			icon = 'icons/mob/human.dmi'
+			icon_update = 1
+			s_tone = prev_tone
+			src << "<font size=3>You turn into a satyr!</font>"
+			body_build = get_body_build(gender,"Satyr")
+			damage_multiplier = 1
+			movement_speed_multiplier = 1.0
+			update_hair()
+			change_facial_hair()
+			force_update_limbs()
+			update_body()
+			species.unarmed_attacks = list()
+			species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+			species.unarmed_attacks += new /datum/unarmed_attack/kick()
+			species.unarmed_attacks += new /datum/unarmed_attack/punch()
+			species.unarmed_attacks += new /datum/unarmed_attack/bite()
 	else if (type == "Gorilla")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into a Gorilla!</font>"
