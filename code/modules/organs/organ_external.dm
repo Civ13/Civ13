@@ -237,7 +237,7 @@
 ****************************************************/
 
 /obj/item/organ/external/proc/is_damageable(var/additional_damage = FALSE)
-	return (vital || brute_dam + burn_dam + additional_damage < max_damage)
+	return (vital || brute_dam + burn_dam + additional_damage <= max_damage)
 
 
 /obj/item/organ/external/take_damage(brute, burn, sharp, edge, used_weapon = null)
