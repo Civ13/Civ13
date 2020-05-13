@@ -306,7 +306,9 @@
 		/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 0.15,
 		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 0.35
 	)
-
+	New()
+		..()
+		update_icon()
 /obj/structure/vending/sales/market_stall
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."
