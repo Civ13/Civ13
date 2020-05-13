@@ -14,6 +14,7 @@
 	pixel_x = rand(0,16)-8
 	pixel_y = rand(0,8)-8
 	process_radioactivity()
+	..()
 
 /obj/item/stack/ore/proc/process_radioactivity()
 	if (!src || !radioactive || radioactive_amt <= 0)

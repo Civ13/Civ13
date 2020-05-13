@@ -118,7 +118,7 @@ var/list/name_to_material
 	if (!rod_product)
 		user << "<span class='warning'>You cannot make anything out of \the [target_stack]</span>"
 		return
-	if (used_stack.get_amount() < 1 || target_stack.get_amount() < 1)
+	if (used_stack.amount < 1 || target_stack.amount < 1)
 		user << "<span class='warning'>You need one rod and one sheet of [display_name] to make anything useful.</span>"
 		return
 	used_stack.use(1)
@@ -131,7 +131,7 @@ var/list/name_to_material
 	if (!wire_product)
 		user << "<span class='warning'>You cannot make anything out of \the [target_stack]</span>"
 		return
-	if (used_stack.get_amount() < 5 || target_stack.get_amount() < 1)
+	if (used_stack.amount < 5 || target_stack.amount < 1)
 		user << "<span class='warning'>You need five wires and one sheet of [display_name] to make anything useful.</span>"
 		return
 

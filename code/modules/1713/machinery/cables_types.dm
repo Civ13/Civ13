@@ -116,7 +116,7 @@
 		user << "<span class='warning'>You can't lay a cable here!"
 		return
 
-	if(get_amount() < 1) // Out of cable
+	if(amount < 1) // Out of cable
 		user << "<span class='warning'>There is no cable left!</span>"
 		qdel(src)
 		return
