@@ -156,3 +156,12 @@
 
 /datum/body_build/crab/female
 	gender 			= FEMALE
+
+/datum/body_build/satyr
+	name			= "Satyr"
+	index			= "_satyr"
+	nohair = FALSE
+	nofacialhair = FALSE
+
+/datum/body_build/satyr/female
+	gender 			= FEMALE
