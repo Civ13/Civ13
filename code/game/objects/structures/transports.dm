@@ -294,7 +294,7 @@
 			user << "<span class='notice'>You dismantle \the [src].</span>"//We lose some materials in the process. Some wood and rope is no longer useful as raw.
 			var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
 			new /obj/item/stack/material/rope(get_turf(src))
-			W.add(4)//adds 4 boards to the stack, making it 5
+			W.amount += 4 //adds 4 boards to the stack, making it 5
 			qdel(src)
 			return
 	else
@@ -509,7 +509,7 @@
 			user << "<span class='notice'>You dismantle \the [src].</span>"//We lose some materials in the process. Some wood is no longer useful as raw.
 			new /obj/item/sail(get_turf(src))
 			var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
-			W.add(9)//adds 9 boards to the stack, making it 10
+			W.amount += 9 //adds 9 boards to the stack, making it 10
 			qdel(src)
 			return
 	else

@@ -30,7 +30,7 @@
 				return TRUE
 
 	else if (!in_use)
-		if (get_amount() < 2)
+		if (amount < 2)
 			user << "<span class='warning'>You need at least two rods to do this.</span>"
 			return
 		usr << "<span class='notice'>Assembling grille...</span>"
