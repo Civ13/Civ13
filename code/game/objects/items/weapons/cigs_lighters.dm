@@ -256,7 +256,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	name = "joint"
 	desc = "A joint filled with weed."
 	icon_state = "joint"
-	icon_on = "joint-on"
+	icon_on = "jointon"
 	icon_off = "joint"
 	smoketime = 200
 	chem_volume = 70

@@ -61,7 +61,7 @@
 
 /obj/item/weapon/clay/clayjug
 	name = "unfired clay jug"
-	icon_state = "unfired_clayjug"
+	icon_state = "unfired_bigclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug
 	New()
 		..()
@@ -73,14 +73,14 @@
 
 /obj/item/weapon/clay/smallclaypot
 	name = "unfired small clay pot"
-	icon_state = "unfired_smallclaypot"
+	icon_state = "unfired_smallclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/smallclaypot
 	New()
 		..()
 		icon_state = "unfired_smallclaypot[pick(1,2)]"
 /obj/item/weapon/clay/bigclaypot
 	name = "unfired big clay pot"
-	icon_state = "unfired_bigclaypot"
+	icon_state = "unfired_bigclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot
 	New()
 		..()

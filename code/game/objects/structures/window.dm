@@ -635,6 +635,33 @@
 		visible_message("<span class = 'notice'>The window is broken by [user]!</span>")
 		qdel(src)
 		return
+	if (istype(W, /obj/item/weapon/wrench))
+		if (reinf && state >= 1)
+			state = 3 - state
+			update_nearby_icons()
+			playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+			user << (state == TRUE ? "<span class='notice'>You have unfastened the window from the frame.</span>" : "<span class='notice'>You have fastened the window to the frame.</span>")
+		else if (reinf && state == FALSE)
+			set_anchored(!anchored)
+			playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+			user << (anchored ? "<span class='notice'>You have fastened the frame to the floor.</span>" : "<span class='notice'>You have unfastened the frame from the floor.</span>")
+		else if (!reinf)
+			set_anchored(!anchored)
+			playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+			user << (anchored ? "<span class='notice'>You have fastened the window to the floor.</span>" : "<span class='notice'>You have unfastened the window.</span>")
+	else if (istype(W, /obj/item/weapon/crowbar) && reinf && state <= 1)
+		state = TRUE - state
+		playsound(loc, 'sound/items/Crowbar.ogg', 75, TRUE)
+		user << (state ? "<span class='notice'>You have pried the window into the frame.</span>" : "<span class='notice'>You have pried the window out of the frame.</span>")
+	else if (istype(W, /obj/item/weapon/hammer) && !anchored && (!state || !reinf))
+		if (!glasstype)
+			user << "<span class='notice'>You're not sure how to dismantle \the [src] properly.</span>"
+		else
+			playsound(loc, 'sound/items/Ratchet.ogg', 75, TRUE)
+			visible_message("<span class='notice'>[user] dismantles \the [src].</span>")
+			if (dir == SOUTHWEST)
+				var/obj/item/stack/material/mats = new glasstype(loc)
+				mats.amount = is_fulltile() ? 4 : 2
 
 /obj/structure/window/classic
 	desc = "A good old window."
