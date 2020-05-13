@@ -30,22 +30,23 @@
 		stacktype = type
 	if (_amount)
 		amount = _amount
+	//Check if it should be merged on creation
 	if(merge)
+		//For every stack in location, repeat the code.
 		for(var/obj/item/stack/S in loc)
-			if(istype(S, src))
+			if(istype(S, src)) // If stack types match, we merge.
 				merge(S)
 	return
 
+//If a stack is pulled over another stack, this proc is called.
 obj/item/stack/Crossed(var/obj/item/stack/S)
+	//Checking if stack types match and if it isn't thrown to avoid scooping up stacks in flight.
 	if(istype(S, stacktype) && !S.throwing)
 		merge(S)
 	. = ..()
 
-/obj/item/stack/hitby(atom/movable/S, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum)
-	if(istype(S, stacktype))
-		merge(S)
-	. = ..()
-
+//Merging two stacks, logic to avoid going over the max_amount cap.
+//If we get stack with amount 0, we delete it.
 /obj/item/proc/merge(obj/item/stack/S)
 	var/transfer = src.amount
 	transfer = min(transfer, S.max_amount - S.amount)
