@@ -635,7 +635,6 @@
 		visible_message("<span class = 'notice'>The window is broken by [user]!</span>")
 		qdel(src)
 		return
-
 /obj/structure/window/classic
 	desc = "A good old window."
 	icon_state = "windownew"
