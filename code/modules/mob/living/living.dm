@@ -835,3 +835,15 @@ default behaviour is:
 		life_forced = FALSE
 	else
 		return
+
+//Code to handle merging stacks when they are in mob's direct inventory.
+//Called when object enters the contents of a mob. Storage items not supported yet.
+/mob/living/Entered(var/obj/item/stack/O)
+	..()
+	if(istype(O, /obj/item/stack))
+		if(O.amount != O.max_amount)
+			for(var/obj/item/stack/S in contents)
+				if(S.stacktype == O.stacktype)
+					if(O.amount == O.max_amount)
+						break
+					S.merge(O)
