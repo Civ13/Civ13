@@ -837,7 +837,14 @@
 	if (!H || !src || !E)
 		return
 	var/list/elements = list("hydrogen", "helium", "lithium", "nitrogen", "oxygen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine")
+	var/list/elements1 = list("nitrogen", "phosphorus", "chlorine", "potassium", "iodine")
+	var/list/elements2 = list("hydrogen", "helium", "lithium", "oxygen", "fluorine", "magnesium", "aluminum", "silicon", "calcium", "arsenic", "tungsten", "radium", "thorium", "bromine")
+
 	var/randreg = pick(elements)
+	if (prob(70))
+		randreg = pick(elements1)
+	else
+		randreg = pick(elements2)
 	if (E.reagents.total_volume <= 0)
 		E.reagents.add_reagent(randreg,5)
 		E.update_icon()
