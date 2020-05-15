@@ -1517,10 +1517,18 @@
 								new/mob/living/simple_animal/crow(loc)
 							spawn(2000)
 								if (stat == DEAD)
-									if (!istype(src, /mob/living/carbon/human/corpse))
-										var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
-										HR.name = "[src]'s remains"
+									if (map.ID == MAP_NOMADS_WASTELAND_2)
+										var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
+										playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
+										//transferring vars.
+										playerzombie.loc = loc
+										playerzombie.name = "[real_name]'s zombie"
 										strip()
+									else
+										if (!istype(src, /mob/living/carbon/human/corpse))
+											var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+											HR.name = "[src]'s remains"
+											strip()
 									qdel(src)
 									return
 								else

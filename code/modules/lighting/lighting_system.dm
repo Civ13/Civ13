@@ -75,3 +75,10 @@ var/created_lighting_corners_and_overlays = FALSE
 	processes.time_of_day_change.admincaller = admincaller
 	processes.time_of_day_change.announce = announce
 	processes.time_of_day_change.fire(TRUE)
+
+	if (_time_of_day == "Night" && map && map.ID == MAP_NOMADS_WASTELAND_2)
+		var/obj/map_metadata/nomads_wasteland/two/map2 = map
+		map2.zombies(TRUE)
+	if (_time_of_day == "Morning" && map && map.ID == MAP_NOMADS_WASTELAND_2)
+		var/obj/map_metadata/nomads_wasteland/two/map2 = map
+		map2.zombies(FALSE)

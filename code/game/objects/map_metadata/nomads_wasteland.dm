@@ -122,3 +122,7 @@
 
 	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
+
+/obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
+	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
+		S.activated = start
