@@ -8,7 +8,7 @@
 
 	var/atom/T = null
 	stop_automated_movement = FALSE
-	var/list/the_targets = ListTargets(7)
+	var/list/the_targets = ListTargets(8)
 	if (behaviour == "hostile")
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
@@ -72,7 +72,7 @@
 /mob/living/simple_animal/proc/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
-	if (target_mob in ListTargets(7))
+	if (target_mob in ListTargets(8))
 		stance = HOSTILE_STANCE_ATTACKING
 		walk_to(src, target_mob, TRUE, move_to_delay)
 	else if (target_mob in ListTargets(10))
@@ -82,7 +82,7 @@
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
-	if (!(target_mob in ListTargets(7)))
+	if (!(target_mob in ListTargets(8)))
 		LostTarget()
 		return FALSE
 	if (get_dist(src, target_mob) <= 1)	//Attacking
@@ -139,7 +139,7 @@
 	walk(src, FALSE)
 
 
-/mob/living/simple_animal/proc/ListTargets(var/dist = 7)
+/mob/living/simple_animal/proc/ListTargets(var/dist = 8)
 	var/list/L = hearers(dist,src)
 	return L
 

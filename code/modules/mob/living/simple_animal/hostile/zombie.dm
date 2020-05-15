@@ -25,6 +25,7 @@
 	attack_sound = 'sound/animals/zombie/zombiehit.ogg'
 	faction = "neutral"
 	var/list/bodyparts = list()
+	behaviour = "hostile"
 
 /mob/living/simple_animal/hostile/zombie/New()
 	..()
