@@ -60,7 +60,7 @@
 					i[3]-=50
 	handle_piss()
 	handle_shit()
-	if (original_job.uses_squads && squad > 0)
+	if (squad > 0 && original_job && original_job.uses_squads)
 		if (faction_text == map.faction1)
 			map.faction1_squads[squad] -= src
 			if (map.faction1_squad_leaders[squad] == src)
