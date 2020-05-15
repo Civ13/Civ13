@@ -16,9 +16,9 @@
 	maxHealth = 80
 	health = 80
 	stop_automated_movement_when_pulled = FALSE
-	harm_intent_damage = 14
-	melee_damage_lower = 8
-	melee_damage_upper = 14
+	harm_intent_damage = 18
+	melee_damage_lower = 10
+	melee_damage_upper = 18
 	move_to_delay = 12
 	break_stuff_probability = 25
 	attacktext = "scratched"
@@ -199,14 +199,15 @@
 	var/damage = pick(melee_damage_lower,melee_damage_upper)
 	if (ishuman(target_mob))
 		var/mob/living/carbon/human/H = target_mob
-		if (istype(src, /mob/living/simple_animal/mouse))
-			var/dmod = 1
-			if (H.find_trait("Weak Immune System"))
-				dmod = 2
-			if (prob(3*dmod))
-				H.disease = TRUE
-				H.disease_type = "zombie"
-
+		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
+		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
+		var/dmod = 1
+		if (H.find_trait("Weak Immune System"))
+			dmod = 2
+		if (prob(3*dmod))
+			H.disease = TRUE
+			H.disease_type = "zombie"
+		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob
 		L.adjustBruteLoss(damage)
