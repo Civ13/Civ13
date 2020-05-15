@@ -222,8 +222,10 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
-/datum/reagent/potassium_iodide/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/potassium_iodide/affect_blood(var/mob/living/carbon/human/M, var/alien, var/removed)
 	M.radiation -= 15 * removed
+	if (M.disease == 1 && M.disease_type == "zombie")
+		M.disease_treatment = TRUE
 
 /datum/reagent/penicillin
 	name = "penicillin"

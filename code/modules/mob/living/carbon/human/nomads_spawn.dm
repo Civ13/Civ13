@@ -1,4 +1,7 @@
 /mob/living/carbon/human/proc/nomads_spawn()
+	if (map && map.ID == MAP_NOMADS_WASTELAND_2)
+		add_note("Map Mechanics", "- Zombies will spawn in some areas <b>at night</b>.<br><br>- Bodies will turn into zombies after a while! To prevent this, <b>remove the head from the body</b>.<br><br>- Getting bit or scratched by an zombie will not automatically turn you into one. However, theres a small chance you get <b>infected with the zombie virus</b>. You will get high fevers and massive headaches. This can be prevented by taking <b>Potassium Iodide</b>, as it will kill the virus, even after symptoms have started.")
+
 	if (map && (/*map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || */map.ID == MAP_NOMADS_NEW_WORLD))
 		var/area/mob_area = get_area(src)
 		var/new_hair = "Black"
