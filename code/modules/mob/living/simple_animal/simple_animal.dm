@@ -251,6 +251,7 @@
 			if (HOSTILE_STANCE_IDLE)
 				if (!target_mob || !(target_mob in ListTargets(7)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
+					stance_step = 0
 			if (HOSTILE_STANCE_TIRED)
 				stance_step++
 				if (stance_step >= 5) //rests for 5 ticks
@@ -268,7 +269,7 @@
 						found_mob = TRUE
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 
-						if (stance_step in list(1,4,7)) //every 3 ticks
+						if (stance_step in list(0,3,5)) //every 3 ticks
 							var/action = pick( list( "stares alertly at [target_mob].", "closely watches [target_mob]." ) )
 							if (action)
 								custom_emote(1,action)
@@ -279,7 +280,7 @@
 
 				if (stance_step <= -10) //If we have not found a mob for 20-ish ticks, revert to idle mode
 					stance = HOSTILE_STANCE_IDLE
-				if (stance_step >= 3)   //If we have been staring at a mob for 7 ticks,
+				if (stance_step >= 1)   //If we have been staring at a mob for 1 ticks,
 					stance = HOSTILE_STANCE_ATTACK
 
 			if (HOSTILE_STANCE_ATTACK)
@@ -399,7 +400,7 @@
 
 		if (I_DISARM)
 			if (behaviour == "defends")
-				stance = HOSTILE_STANCE_ALERT
+				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
@@ -409,7 +410,7 @@
 
 		if (I_GRAB)
 			if (behaviour == "defends")
-				stance = HOSTILE_STANCE_ALERT
+				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
 			if (M == src)
@@ -430,7 +431,7 @@
 
 		if (I_HARM)
 			if (behaviour == "defends")
-				stance = HOSTILE_STANCE_ALERT
+				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
 			adjustBruteLoss(harm_intent_damage*M.getStatCoeff("strength"))
@@ -657,7 +658,7 @@
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			O.attack(src, user, tgt)
 	if (behaviour == "defends")
-		stance = HOSTILE_STANCE_ALERT
+		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
 		target_mob = user
 		..()

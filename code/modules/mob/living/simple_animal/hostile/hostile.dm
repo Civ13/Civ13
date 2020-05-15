@@ -62,7 +62,7 @@
 			if (HM.messages["enemy_sighted"] && prob(25))
 				HM.say(HM.messages["enemy_sighted"],HM.language)
 
-		stance = HOSTILE_STANCE_ALERT
+		stance = HOSTILE_STANCE_ATTACK
 	return T
 
 
