@@ -125,7 +125,9 @@ var/list/name_to_material
 	target_stack.use(1)
 	var/obj/item/stack/S = new rod_product(get_turf(user))
 	S.add_fingerprint(user)
-	S.add_to_stacks(user)
+	for(var/obj/item/stack/T in get_turf(user))
+		if(T == src)
+			T.merge(src)
 
 /material/proc/build_wired_product(var/mob/user, var/obj/item/stack/used_stack, var/obj/item/stack/target_stack)
 	if (!wire_product)
