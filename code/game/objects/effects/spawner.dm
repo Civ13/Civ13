@@ -497,6 +497,30 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/hostile/zombie
 	timer = 1000
+
+/obj/effect/spawner/mobspawner/zombies/special
+	activated = FALSE
+	max_range = 9
+	max_number = 14
+	timer = 600
+
+/obj/effect/spawner/mobspawner/zombies/special/getEmptyTurf()
+	var/list/turf/emptyTurfs = new
+	for(var/turf/T in range(max_range,src))
+		var/invalid = FALSE
+		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
+			invalid = TRUE
+		for(var/obj/structure/OB in T)
+			invalid = TRUE
+		for(var/obj/covers/OB in T)
+			invalid = TRUE
+		for(var/mob/living/carbon/human/OB in view(4,T))
+			if (OB.stat != DEAD)
+				invalid = TRUE
+		if (!invalid)
+			emptyTurfs += T
+	if (emptyTurfs.len)
+		return pick(emptyTurfs)
 ////////////////////OBJ SPAWNER///////////
 /obj/effect/spawner/objspawner
 	name = "obj spawner"

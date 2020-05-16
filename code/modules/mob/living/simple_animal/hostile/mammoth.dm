@@ -59,7 +59,7 @@
 		if (istype(target_mob, /mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = target_mob
 			if (SA.behaviour == "defends" || SA.behaviour == "hunt")
-				if (SA.stance != HOSTILE_STANCE_ATTACK && SA.stance != HOSTILE_STANCE_ATTACKING)
+				if (SA.stance != HOSTILE_STANCE_ATTACK)
 					SA.stance = HOSTILE_STANCE_ATTACK
 					SA.stance_step = 7
 					SA.target_mob = src

@@ -1,7 +1,7 @@
 
 /obj/map_metadata/nomads_wasteland
 	ID = MAP_NOMADS_WASTELAND
-	title = "Nomads (Wasteland) (235x235x2)"
+	title = "Wasteland (235x235x2)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
@@ -39,13 +39,15 @@
 	age6_done = TRUE
 	age7_done = TRUE
 	age8_done = TRUE
+	var/nonukes = FALSE
 /obj/map_metadata/nomads_wasteland/New()
 	..()
 	spawn(18000)
 		seasons()
 		var/randtimer = rand(72000,108000)
-		nuke_proc(randtimer)
-		supplydrop_proc()
+		if (!nonukes)
+			nuke_proc(randtimer)
+			supplydrop_proc()
 /obj/map_metadata/nomads_wasteland/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
@@ -56,7 +58,7 @@
 	return ""
 
 /obj/map_metadata/nomads_wasteland/proc/nuke_proc(var/timer=72000)
-	if (processes.ticker.playtime_elapsed > timer)
+	if (processes.ticker.playtime_elapsed > timer && !nonukes)
 		var/vx = rand(25,world.maxx-25)
 		var/vy = rand(25,world.maxy-25)
 		var/turf/epicenter = get_turf(locate(vx,vy,2))
@@ -75,7 +77,7 @@
 			nuke_proc(timer)
 	return
 /obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
-	if (world_radiation >= 280)
+	if (world_radiation >= 280 && !nonukes)
 		var/droptype = pick("supplies","food","weapons","medicine")
 		var/turf/locationt = pick(supplydrop_turfs)
 		switch(droptype)
@@ -107,3 +109,20 @@
 		. = TRUE
 	else
 		. = FALSE
+
+
+//////////////////////////////////
+////////Wasteland 2///////////////
+
+/obj/map_metadata/nomads_wasteland/two
+	ID = MAP_NOMADS_WASTELAND_2
+	title = "Wasteland II (235x235x2)"
+	gamemode = "Wasteland"
+	nonukes = TRUE
+
+	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
+	ambience = list('sound/ambience/desert.ogg')
+
+/obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
+	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
+		S.activated = start

@@ -79,6 +79,7 @@
 	var/adj_temp = FALSE
 	var/targ_temp = 310
 	var/halluci = FALSE
+	metabolism = REM*3
 //purified ethanol (for engines)
 /datum/reagent/ethanol/pethanol
 	name = "Purified Ethanol"

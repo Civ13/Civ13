@@ -469,6 +469,50 @@
 				bodytemperature = 310.055
 				src << "You feel much better now! The disease is finally gone!"
 				disease_treatment = 0
+		else if (disease_type == "zombie")
+			mood -= 0.15
+			if (!disease_treatment)
+				disease_progression += 0.5
+			else
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+
+			if (disease_progression == 25)
+				src << "You feel your temperature rising."
+				apply_effect(10, DROWSY, FALSE)
+				bodytemperature = 311.35
+			if (prob(1))
+				apply_effect(7, DROWSY, FALSE)
+			else if (disease_progression >= 60 && disease_progression < 140 && prob(10))
+				src << pick("You feel like your fever is getting worse!","Your head hurts so much!")
+				adjustBrainLoss(rand(2,3))
+				apply_effect(8, AGONY, FALSE)
+				bodytemperature = 313.15
+			else if (disease_progression >= 140 && disease_progression < 200 && prob(1) && !disease_treatment)
+				adjustBrainLoss(rand(7,10))
+				src << "<big>[pick("You feel your body burning up!","Your head is pounding!")]</big>"
+				apply_effect(12, AGONY, FALSE)
+				bodytemperature = 314.15
+
+			else if (disease_progression >= 200 && disease_progression < 240 && prob(8) && !disease_treatment)
+				src << "You feel your fever going down."
+				adjustBrainLoss(rand(4,6))
+				apply_effect(6, DROWSY, FALSE)
+				bodytemperature = 313.35
+			else if (disease_progression >= 240 && prob(50))
+				adjustBrainLoss(200)
+				var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
+				playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
+				visible_message("<big>[src] turns into a zombie!</big>")
+				//transferring vars.
+				playerzombie.loc = loc
+				playerzombie.name = "[real_name]'s zombie"
+				strip()
+
 
 	if (disease == TRUE)
 		if (disease_type in disease_immunity)
@@ -478,7 +522,7 @@
 			disease_treatment = 0
 
 		for (var/mob/living/carbon/human/H in range(2,src))
-			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria") //malaria doesn't transmit from person to person.
+			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria" && !disease_type == "zombie") //malaria doesn't transmit from person to person.
 				if (stat != DEAD)
 					if (prob(1) || (prob(2) && find_trait("Weak Immune System")))
 						disease = TRUE
@@ -1517,10 +1561,22 @@
 								new/mob/living/simple_animal/crow(loc)
 							spawn(2000)
 								if (stat == DEAD)
-									if (!istype(src, /mob/living/carbon/human/corpse))
-										var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
-										HR.name = "[src]'s remains"
+									var/found = FALSE
+									for (var/obj/item/organ/external/head/H in organs)
+										found = TRUE
+										break
+									if (map.ID == MAP_NOMADS_WASTELAND_2 && found)
+										var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
+										playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
+										//transferring vars.
+										playerzombie.loc = loc
+										playerzombie.name = "[real_name]'s zombie"
 										strip()
+									else
+										if (!istype(src, /mob/living/carbon/human/corpse))
+											var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+											HR.name = "[src]'s remains"
+											strip()
 									qdel(src)
 									return
 								else

@@ -8,7 +8,7 @@
 
 	var/atom/T = null
 	stop_automated_movement = FALSE
-	var/list/the_targets = ListTargets(7)
+	var/list/the_targets = ListTargets(8)
 	if (behaviour == "hostile")
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
@@ -62,7 +62,7 @@
 			if (HM.messages["enemy_sighted"] && prob(25))
 				HM.say(HM.messages["enemy_sighted"],HM.language)
 
-		stance = HOSTILE_STANCE_ALERT
+		stance = HOSTILE_STANCE_ATTACK
 	return T
 
 
@@ -72,8 +72,8 @@
 /mob/living/simple_animal/proc/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
-	if (target_mob in ListTargets(7))
-		stance = HOSTILE_STANCE_ATTACKING
+	if (target_mob in ListTargets(8))
+		stance = HOSTILE_STANCE_ATTACK
 		walk_to(src, target_mob, TRUE, move_to_delay)
 	else if (target_mob in ListTargets(10))
 		walk_to(src, target_mob, TRUE, move_to_delay)
@@ -82,7 +82,7 @@
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
-	if (!(target_mob in ListTargets(7)))
+	if (!(target_mob in ListTargets(8)))
 		LostTarget()
 		return FALSE
 	if (get_dist(src, target_mob) <= 1)	//Attacking
@@ -110,6 +110,7 @@
 			if (prob(3*dmod))
 				H.disease = TRUE
 				H.disease_type = "plague"
+
 		if (prob(95) || !can_bite_limbs_off)
 			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
 		else
@@ -123,7 +124,7 @@
 		if (istype(target_mob, /mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = target_mob
 			if (SA.behaviour == "defends" || SA.behaviour == "hunt")
-				if (SA.stance != HOSTILE_STANCE_ATTACK && SA.stance != HOSTILE_STANCE_ATTACKING)
+				if (SA.stance != HOSTILE_STANCE_ATTACK)
 					SA.stance = HOSTILE_STANCE_ATTACK
 					SA.stance_step = 7
 					SA.target_mob = src
@@ -138,7 +139,7 @@
 	walk(src, FALSE)
 
 
-/mob/living/simple_animal/proc/ListTargets(var/dist = 7)
+/mob/living/simple_animal/proc/ListTargets(var/dist = 8)
 	var/list/L = hearers(dist,src)
 	return L
 
