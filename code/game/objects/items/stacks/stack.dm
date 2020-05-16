@@ -24,6 +24,7 @@
 	var/customcolor2 = "FFFFFF"
 	var/customcode = "0000"
 	var/customname = ""
+
 /obj/item/stack/New(var/loc, var/_amount=0, var/merge = TRUE)
 	..()
 	if (!stacktype)
@@ -132,18 +133,6 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			qdel(src)
 		return S
 	return FALSE
-
-/obj/item/stack/proc/add_to_stacks(mob/user as mob)
-	for (var/obj/item/stack/item in user.loc)
-		if (item==src)
-			continue
-		var/transfer = transfer_to(item)
-		if (transfer)
-			user << "<span class='notice'>You add a new [item.singular_name] to the stack. It now contains [item.amount] [item.singular_name]\s.</span>"
-			item.update_icon()
-			src.update_icon() //funcionou
-		if (!amount)
-			break
 
 /obj/item/stack/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
@@ -1855,11 +1844,6 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			qdel(O)
 			return
 
-		else if (istype(O, /obj/item/stack))
-			var/obj/item/stack/S = O
-			S.amount = produced
-			S.add_to_stacks(user)
-			S.update_icon()
 		else if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
 			new/obj/item/weapon/clay/verysmallclaypot(get_turf(O))
 		else if (istype(O, /obj/item/ammo_casing/stone))

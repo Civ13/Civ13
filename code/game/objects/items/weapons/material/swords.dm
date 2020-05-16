@@ -86,7 +86,7 @@
 		return
 
 /obj/item/weapon/material/sword/training
-	name = "Training Sword"
+	name = "training sword"
 	desc = "A wood sword used for nonlethal practice."
 	icon_state = "wood_sword"
 	item_state = "wood_sword"
