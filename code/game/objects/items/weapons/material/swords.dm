@@ -106,6 +106,27 @@
 	edge = FALSE
 	default_material = "wood"
 
+/obj/item/weapon/material/sword/training/bamboo
+	name = "bokken training sword"
+	desc = "A bamboo sword used for nonlethal practice."
+	icon_state = "bokken_sword"
+	item_state = "bokken_sword"
+	block_chance = 50
+	force_divisor = 1
+	thrown_force_divisor = 1
+	force = 1
+	slot_flags = SLOT_BELT | SLOT_BACK
+	value = 0
+	cooldownw = 8
+	sharpness = 0
+	flammable = TRUE
+	attack_verb = list("thwacked", "hit", "clonked", "batted", "tapped", "smacked", "poked", "slapped")
+	hitsound = 'sound/weapons/kick.ogg'
+	drawsound = 'sound/items/unholster_sword01.ogg'
+	sharp = FALSE
+	edge = FALSE
+	default_material = "bamboo"
+
 /obj/item/weapon/material/sword/attack_self(mob/user)
 	..()
 	edge = 0
