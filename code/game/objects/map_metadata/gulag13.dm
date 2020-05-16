@@ -19,7 +19,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(RUSSIAN = 0.25, CIVILIAN = 0.75)
 	battle_name = "Gulag nr. 13"
-	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the grace wall is removed.<br>The <b>NKVD</b> must keep the prisoners contained, and make them serve the Soviet Union with forced labor. The <b>Prisoners</b> must try to survive, increase their faction power, and if possible, escape.</font>"
+	mission_start_message = "<font size=4>NKVD have <b>4 minutes</b> to prepare before the grace wall is removed for the NKVD, the Prisoners won't be able to cross until 30 minutes have elapsed.<br>The <b>NKVD</b> must keep the prisoners contained, and make them serve the Soviet Union with forced labor. The <b>Prisoners</b> must try to survive, increase their faction power, and if possible, escape.</font>"
 	faction1 = RUSSIAN
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -57,7 +57,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/gulag13/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/gulag13/roundend_condition_def2name(define)
