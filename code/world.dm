@@ -374,6 +374,18 @@ var/world_topic_spam_protect_time = world.timeofday
 						discord_admin_ban(tempmsg[1],temp_ckey,tempmsg[3],tempmsg[4])
 			fdel(I)
 			I << ""
+		var/J = file("SQL/discord2unban.txt")
+		if (fexists(J))
+			var/list/messages_read = splittext(file2text(J), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+					var/temp_ckey = lowertext(tempmsg[2])
+					temp_ckey = replacetext(temp_ckey," ", "")
+					temp_ckey = replacetext(temp_ckey,"_", "")
+					discord_admin_unban(tempmsg[1],temp_ckey)
+			fdel(J)
+			J << ""
 		sleep (100)
 
 /proc/start_serverswap_loop()
