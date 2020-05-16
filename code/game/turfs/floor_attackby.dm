@@ -109,17 +109,18 @@
 				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
 				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 
-	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer))
-		user << "You start fertilizing the ploughed field..."
-		var/mob/living/carbon/human/H = user
-		if (do_after(user, 60/H.getStatCoeff("farming"), src))
-			user << "You fertilize the ploughed field around this plot."
-			for (var/obj/structure/farming/plant/P in range(1,src))
-				P.fertilized = TRUE
-			qdel(C)
-			if (ishuman(user))
-				H.adaptStat("farming", 1)
-			return
+	if (istype(src, /turf/floor/dirt/ploughed))
+		if ((istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal) || istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)))
+			user << "You start fertilizing the ploughed field..."
+			var/mob/living/carbon/human/H = user
+			if (do_after(user, 60/H.getStatCoeff("farming"), src))
+				user << "You fertilize the ploughed field around this plot."
+				for (var/obj/structure/farming/plant/P in range(1,src))
+					P.fertilized = TRUE
+				qdel(C)
+				if (ishuman(user))
+					H.adaptStat("farming", 1)
+				return
 
 	if ((flooring && istype(C, /obj/item/stack/rods)))
 		return ..(C, user)

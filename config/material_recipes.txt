@@ -323,7 +323,6 @@ RECIPE: /material/cloth/,custom noble hat,/obj/item/clothing/head/custom/customn
 RECIPE: /material/cloth/,black bicorne,/obj/item/clothing/head/bicorne_british_soldier,2,95,0,1,hats & masks,0,0,52,4,null
 RECIPE: /material/cloth/,black tricorne,/obj/item/clothing/head/tricorne_black,3,75,0,1,hats & masks,0,0,52,4,null
 RECIPE: /material/cloth/,tarred hat,/obj/item/clothing/head/tarred_hat,3,75,0,1,hats & masks,0,0,52,5,null
-RECIPE: /material/cloth/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,hats & masks,0,0,38,8,null
 RECIPE: /material/cloth/,kasa hat,/obj/item/clothing/head/helmet/kasa,3,75,0,1,hats & masks,0,0,40,8,null
 RECIPE: /material/cloth/,jingasa hat,/obj/item/clothing/head/helmet/jingasa,5,75,0,1,hats & masks,0,0,40,8,null
 RECIPE: /material/cloth/,bandana,/obj/item/clothing/head/piratebandana1,2,55,0,1,hats & masks,0,0,52,8,null
@@ -611,14 +610,16 @@ RECIPE: /material/stone/,aztec statue,/obj/structure/religious/aztec_statue,8,14
 RECIPE: /material/stone/,moai,/obj/structure/religious/moai,20,250,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1,religious & decoration,0,0,0,8,null
 
-RECIPE: /material/stone/,monumental stone pillar,/obj/structure/religious/monument/pillar_monument,45,300,1,1,religious & decoration,22,0,0,8,null
 RECIPE: /material/stone/,monumental stone megalith,/obj/structure/religious/monument/megalith,45,300,1,1,religious & decoration,0,0,0,2,null
-RECIPE: /material/stone/,monumental marble statue of venus,/obj/structure/religious/monument/venus,45,300,1,1,religious & decoration,35,0,0,8,null
+RECIPE: /material/stone/,monumental statue of a giant ape,/obj/structure/religious/monument/shaman/ape,45,300,1,1,religious & decoration,0,0,0,2,null
+RECIPE: /material/stone/,monumental stone pillar,/obj/structure/religious/monument/pillar_monument,45,300,1,1,religious & decoration,22,0,0,8,null
 RECIPE: /material/stone/,monumental ominous statue of the deep-one,/obj/structure/religious/monument/cultist/cthulu,45,300,1,1,religious & decoration,22,0,0,8,null
 RECIPE: /material/stone/,monumental ominous statue of the evil-one,/obj/structure/religious/monument/cultist/moloch,45,300,1,1,religious & decoration,22,0,0,8,null
 RECIPE: /material/stone/,monumental ominous statue of the outsider,/obj/structure/religious/monument/cultist/outsider,45,300,1,1,religious & decoration,22,0,0,8,null
+RECIPE: /material/stone/,monumental ominous statue of the ruler,/obj/structure/religious/monument/cultist/sauron,45,300,1,1,religious & decoration,32,0,0,8,null
 RECIPE: /material/stone/,monumental stone buddha,/obj/structure/religious/monument/monk/quangshi,45,300,1,1,religious & decoration,32,0,0,8,null
 RECIPE: /material/stone/,monumental saint statue,/obj/structure/religious/monument/priesthood/saint,45,300,1,1,religious & decoration,32,0,0,8,null
+RECIPE: /material/stone/,monumental marble statue of venus,/obj/structure/religious/monument/venus,45,300,1,1,religious & decoration,62,0,0,8,null
 
 RECIPE: /material/stone/,smooth roman road,/obj/covers/roads/roman,1,0,1,1,roads,20,0,0,8,null
 RECIPE: /material/stone/,smooth cobble road,/obj/covers/roads/cobble,1,0,1,1,roads,32,0,0,8,null
@@ -907,6 +908,8 @@ RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,non
 RECIPE: /material/steel/,steel statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,steel
 RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole/,6,95,0,1,none,0,0,0,8,null
 
+RECIPE: /material/steel/,vending machine,/obj/structure/vending/sales/vending,12,150,1,1,none,200,0,0,8,null
+
 RECIPE: /material/bronze/,bronze arrowhead (x4),/obj/item/stack/arrowhead/bronze,1,10,0,1,projectiles,0,21,0,8,null
 RECIPE: /material/bronze/,bronze hatchet,/obj/item/weapon/material/hatchet,2,35,0,1,tools,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze-tipped spear,/obj/item/weapon/material/spear,1,35,0,1,weapons,21,16,0,3,bronze
@@ -1128,8 +1131,24 @@ RECIPE: /material/wood/,market stall,/obj/structure/vending/sales/market_stall,2
 RECIPE: /material/wood/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
 
+RECIPE: /material/bamboo/,bamboo altar,obj/structure/altar/material/bamboo,20,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/bamboo/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,8,null
 
-RECIPE: /material/steel/,vending machine,/obj/structure/vending/sales/vending,12,150,1,1,none,200,0,0,8,null
+RECIPE: /material/bamboo/,roof support,/obj/structure/roof_support/bamboo,2,30,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,bamboo wall frame,/obj/structure/wallframe/bamboo,1,150,1,1,construction,10,0,0,8,null
+RECIPE: /material/bamboo/,horizontal tatami floor,/obj/covers/tatami,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,vertical tatami floor,/obj/covers/tatami_vertical,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,horizontal dark tatami floor,/obj/covers/tatami_dark,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,vertical dark tatami floor,/obj/covers/tatami_dark_vertical,0.75,20,1,1,construction,0,0,0,8,null
+
+RECIPE: /material/bamboo/,research kit,/obj/item/weapon/researchkit,10,190,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/bamboo/,scientific literature,/obj/item/weapon/book/research,4,110,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/bamboo/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/bamboo/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & printing,19,0,0,8,null
+
+RECIPE: /material/bamboo/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,none,0,0,38,8,null
+RECIPE: /material/bamboo/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,none,0,0,0,8,null
+RECIPE: /material/bamboo/,bokken training sword,/obj/item/weapon/material/sword/training/bamboo,8,80,0,1,none,0,21,0,3,bamboo
 
 RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
@@ -1241,6 +1260,12 @@ RECIPE: /material/sandstone/,sandstone tile,/obj/covers/sandstone/tile,2,30,1,1,
 RECIPE: /material/sandstone/,sandstone decorative tile,/obj/covers/sandstone/tile/decorative,2.5,35,1,1,floors,0,0,0,8,null
 RECIPE: /material/sandstone/,red sandstone decorative tile,/obj/covers/sandstone/tile/decorative/red,2.5,35,1,1,floors,0,0,0,8,null
 
+RECIPE: /material/sandstone/,pillar,/obj/structure/mine_support/stone/sandstone,2,130,1,1,construction,0,0,0,8,sandstone
+RECIPE: /material/sandstone/,egyptian column,/obj/structure/mine_support/stone/egyptian,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/sandstone/,ionic column,/obj/structure/mine_support/stone/ionic/sandstone,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/sandstone/,solomonic column,/obj/structure/mine_support/stone/solomonic/sandstone,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/sandstone/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/sandstone,2.5,130,1,1,construction,22,0,0,8,null
+RECIPE: /material/sandstone/,aztec column,/obj/structure/mine_support/stone/aztec/sandstone,2.5,130,1,1,construction,32,0,0,8,null
 RECIPE: /material/sandstone/,sandstone stairs,/obj/covers/sandstone/stairs,3,45,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone window,/obj/structure/window_frame/sandstone,5,140,1,1,construction,18,0,0,8,null
 RECIPE: /material/sandstone/,full sandstone window,/obj/structure/window_frame/sandstonefull,5,140,1,1,construction,18,0,0,8,null
@@ -1249,7 +1274,6 @@ RECIPE: /material/sandstone/,sandstone roof builder,/obj/item/weapon/roofbuilder
 RECIPE: /material/sandstone/,sandstone well,/obj/structure/sink/well/sandstone,7,250,1,1,structures,21,0,0,8,null
 RECIPE: /material/sandstone/,furnace,/obj/structure/furnace/sandstone,10,150,1,1,structures,26,0,0,8,null
 RECIPE: /material/sandstone/,sandstone brazier,/obj/structure/brazier/sandstone,3,100,1,1,structures,0,0,0,8,null
-RECIPE: /material/sandstone/,pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,sandstone
 
 RECIPE: /material/sandstone/,sandstone totem,/obj/structure/religious/totem/sandstone,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/sandstone/,sandstone altar,/obj/structure/altar/sandstone,15,200,1,1,religious & decoration,0,0,0,8,null
@@ -1259,7 +1283,6 @@ RECIPE: /material/sandstone/,monumental sandstone obelisk,/obj/structure/religio
 RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandbag/sandstone,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/barricade/sandstone_v/crenelated,5,80,1,1,fortifications,0,0,0,8,null
-
 
 RECIPE: /material/sandstone/,sandstone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,sandstone
 RECIPE: /material/sandstone/,research kit,/obj/item/weapon/researchkit,10,190,0,1,tools,0,0,0,8,sandstone
@@ -1273,6 +1296,15 @@ RECIPE: /material/sandstone/,sandstone arrowhead (x4),/obj/item/stack/arrowhead/
 
 RECIPE: /material/sandstone/,pickaxe,/obj/item/weapon/pickaxe/stone,2,50,0,1,tools,0,0,0,8,sandstone
 RECIPE: /material/sandstone/,grindstone,/obj/structure/repair/grindstone,18,180,1,1,production,25,0,0,8,sandstone
+
+RECIPE: /material/obsidian/,pillar,/obj/structure/mine_support/stone/obsidian,2,130,1,1,construction,0,0,0,8,obsidian
+RECIPE: /material/obsidian/,ionic column,/obj/structure/mine_support/stone/ionic/obsidian,2.5,130,1,1,construction,22,0,0,8,obsidian
+RECIPE: /material/obsidian/,solomonic column,/obj/structure/mine_support/stone/solomonic/obsidian,2.5,130,1,1,construction,22,0,0,8,obsidian
+RECIPE: /material/obsidian/,thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/obsidian,2.5,130,1,1,construction,22,0,0,8,obsidian
+RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec/obsidian,2.5,130,1,1,construction,32,0,0,8,obsidian
+
+RECIPE: /material/obsidian/,obsidian brazier,/obj/structure/brazier/obsidian,3,100,1,1,none,0,0,0,8,null
+RECIPE: /material/obsidian/,obsidian altar,/obj/structure/altar/obsidian,15,200,1,1,religious & decoration,0,0,0,8,null
 
 RECIPE: /material/rags/,bandages,/obj/item/stack/medical/bruise_pack/bint,2,30,0,1,none,0,0,0,8,null
 RECIPE: /material/rags/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,4,80,0,1,none,0,39,0,2,null

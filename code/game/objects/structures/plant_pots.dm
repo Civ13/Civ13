@@ -967,12 +967,11 @@
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
-	else if (istype(O,/obj/item/weapon/hammer))
+	else if (istype(O,/obj/item/weapon/hammer) || istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
 		user << "<span class='notice'>You begin smashing apart \the [src].</span>"
 		if (do_after(user,25,src))
 			user << "<span class='notice'>You smash apart \the [src].</span>"
-			new /obj/item/weapon/sandbag(loc)
 			new /obj/item/weapon/clayshards(loc)
 			qdel(src)
 

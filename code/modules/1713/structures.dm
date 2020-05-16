@@ -477,7 +477,7 @@
 
 /obj/structure/wallframe
 	name = "wall frame"
-	desc = "A wooden wall frame, add something like paper or wood to it."
+	desc = "A wooden wall frame, add something like paper, bamboo bundles or wood to it.."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wall_frame"
 	flammable = TRUE
@@ -561,7 +561,7 @@
 		else
 			H << "<span class='notice'>That does not exist!</span>"
 	else if(istype(W, /obj/item/stack/material/bamboo))
-		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Door - 2", "Bamboo Window - 2", "Cancel"))
+		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Doorway - 2", "Bamboo Window - 2", "Cancel"))
 		if (input == "Cancel")
 			return
 		if(input == "Bamboo Wall - 3")
@@ -570,24 +570,157 @@
 					new/obj/covers/wood_wall/bamboo(src.loc)
 					qdel(src)
 					W.amount -= 3
-					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
-		else if(input == "Bamboo Door - 2")
+		else if(input == "Bamboo Doorway - 2")
 			if(W.amount >= 2)
 				if (do_after(H, 40, src))
 					var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
 					S.icon_state = "bamboo-door"
-					S.name = "bamboo door"
+					S.name = "bamboo doorway"
+					S.desc = "A doorway made from bamboo."
 					S.density = FALSE
 					S.opacity = FALSE
 					qdel(src)
 					W.amount -= 2
-					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
 		else if(input == "Bamboo Window - 2")
 			if(W.amount >= 2)
 				if (do_after(H, 40, src))
 					new/obj/structure/window_frame/bamboo(src.loc)
 					qdel(src)
 					W.amount -= 2
-					playsound(src.loc,'sound/effects/rip_pack.ogg',40)
 		else
 			H << "<span class='notice'>That does not exist!</span>"
+
+/* Bamboo Wall-Frame*/
+
+/obj/structure/wallframe/bamboo
+	name = "bamboo wall frame"
+	desc = "A bamboo wall frame, add something like paper, bamboo bundles or wood to it."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "wall_frame_bamboo"
+
+/obj/structure/wallframe/bamboo/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+	if(istype(W, /obj/item/stack/material/wood))
+		var/input
+		var/display = list("Oriental Window - 4", "Oriental Wall - 6","Oriental Braced Wall (--) - 6", "Oriental Doorway - 6", "Oriental Two Panelled Wall (|) - 6", "Oriental Two Panelled Braced Wall (-|-)", "Oriental Three Panelled Wall (||) - 6",  "Oriental Three Panelled Braced Wall (-|-|-) - 6", "Cancel")
+		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
+		playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
+		if (input == "Cancel")
+			return
+		else if(input == "Oriental Window - 4")
+			if(W.amount >= 4)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/oriental(src.loc)
+					qdel(src)
+					W.amount -= 4
+		else if(input == "Oriental Wall - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 41, src))
+					new/obj/covers/wood_wall/oriental(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Braced Wall (--) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 43, src))
+					new/obj/covers/wood_wall/oriental/b(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Doorway - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 40, src))
+					var/obj/covers/wood_wall/oriental/S = new /obj/covers/wood_wall/oriental(loc)
+					S.icon_state = "oriental-door"
+					S.name = "oriental doorway"
+					S.desc = "A east-oriental style doorway."
+					S.density = FALSE
+					S.opacity = FALSE
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Two Panelled Wall (|) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/oriental/twop(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Two Panelled Braced Wall (-|-)")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/oriental/twop/b(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Three Panelled Wall (||) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/oriental/threep(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Three Panelled Braced Wall (-|-|-) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/oriental/threep/b(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+	else if(istype(W, /obj/item/weapon/paper))
+		var/input
+		var/display = list("Shoji Door - 1", "Shoji Wall - 1", "Shoji Divider - 1", "Shoji Window - 1", "Cancel")
+		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
+		playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		if (input == "Cancel")
+			return
+		else if(input == "Shoji Door - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/structure/simple_door/key_door/anyone/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else if(input == "Shoji Wall - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else if(input == "Shoji Divider - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/shoji_divider(src.loc)
+					qdel(src)
+					qdel(W)
+		else if(input == "Shoji Window - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+	else if(istype(W, /obj/item/stack/material/bamboo))
+		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Doorway - 2", "Bamboo Window - 2", "Cancel"))
+		if (input == "Cancel")
+			return
+		if(input == "Bamboo Wall - 3")
+			if(W.amount >= 3)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/bamboo(src.loc)
+					qdel(src)
+					W.amount -= 3
+		else if(input == "Bamboo Doorway - 2")
+			if(W.amount >= 2)
+				if (do_after(H, 40, src))
+					var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
+					S.icon_state = "bamboo-door"
+					S.name = "bamboo doorway"
+					S.desc = "A doorway made from bamboo."
+					S.density = FALSE
+					S.opacity = FALSE
+					qdel(src)
+					W.amount -= 2
+		else if(input == "Bamboo Window - 2")
+			if(W.amount >= 2)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/bamboo(src.loc)
+					qdel(src)
+					W.amount -= 2
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+

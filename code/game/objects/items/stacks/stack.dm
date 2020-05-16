@@ -327,7 +327,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (H.religion == "Cultists")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
-	if (findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider"))
+	if (findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider") || findtext(recipe.title, "monumental ominous statue of the ruler"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
@@ -348,6 +348,22 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
 		else if (H.religion == "Shamans")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Priests")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Cultists")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Clerics")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+	if (findtext(recipe.title, "monumental statue of a giant ape"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
+			return
+		else if (H.religion == "Monks")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
 		else if (H.religion == "Priests")
