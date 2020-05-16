@@ -475,15 +475,38 @@ obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
 	else
 		..()
 
+/* Religious Structures*/ //(not counting monuments)
+/* Wood Altars*/ //and wood-like
+
 obj/structure/altar/wood
 	name = "wood altar"
 	icon_state = "wood_altar"
 	flammable = TRUE
 	health = 70
 
+obj/structure/altar/bamboo
+	name = "bamboo altar"
+	icon_state = "bamboo_altar"
+	flammable = TRUE
+	health = 70
+
+/* Stone Altars*/
+
 obj/structure/altar/stone
 	name = "stone altar"
 	icon_state = "stone_altar"
+	flammable = FALSE
+	health = 160
+
+obj/structure/altar/stone/material/obsidian
+	name = "obsidian altar"
+	icon_state = "obsidian_altar"
+	flammable = FALSE
+	health = 160
+
+obj/structure/altar/darkstone
+	name = "darkstone altar"
+	icon_state = "blood_altar"
 	flammable = FALSE
 	health = 160
 
@@ -499,13 +522,15 @@ obj/structure/altar/marble
 	flammable = FALSE
 	health = 110
 
+/* Metal Altars*/
+
 obj/structure/altar/iron
 	name = "iron altar"
 	icon_state = "iron_altar"
 	flammable = FALSE
 	health = 120
 
-
+/* Religious Banners*/
 
 /obj/structure/banner/religious
 	name = "religious banner"
