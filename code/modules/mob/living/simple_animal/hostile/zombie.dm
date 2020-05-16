@@ -19,7 +19,7 @@
 	harm_intent_damage = 18
 	melee_damage_lower = 10
 	melee_damage_upper = 18
-	move_to_delay = 12
+	move_to_delay = 3
 	break_stuff_probability = 25
 	attacktext = "scratched"
 	attack_sound = 'sound/animals/zombie/zombiehit.ogg'
@@ -81,9 +81,6 @@
 	update_icons()
 	..()
 /mob/living/simple_animal/hostile/zombie/Life()
-	. =..()
-	if (!.)
-		return
 	..()
 	switch(stance)
 
