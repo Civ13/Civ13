@@ -3,9 +3,12 @@
 	desc = "A loom, used to transform cotton into cloth."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "loom"
+	anchored = TRUE
+	density = TRUE
 	flammable = TRUE
 	not_movable = FALSE
-	not_disassemblable = TRUE
+	not_disassemblable = FALSE
+
 /obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob) ///obj/item/stack/material/rettedfabric
 	if (istype(W, /obj/item/stack/material/cotton))
 		H.visible_message("You start to produce the cloth.")
@@ -41,14 +44,33 @@
 		else
 			icon_state = "loom"
 
+/obj/structure/loom/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user. << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		user. << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(user,50,src))
+			user. << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			qdel(src)
+
 /obj/structure/mill
 	name = "mill"
 	desc = "A small mill, used to grind cereals into flour."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "flour_mill"
+	anchored = TRUE
+	density = TRUE
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
+
 /obj/structure/mill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/oat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/barley))
 		H.visible_message("You start to mill the [W.name].")
@@ -76,6 +98,22 @@
 			new/obj/item/weapon/reagent_containers/food/snacks/rice(H.loc)
 			icon_state = "flour_mill"
 			qdel(W)
+
+	else if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		H << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		H << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(H,50,src))
+			H << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			qdel(src)
+
 		else
 			icon_state = "flour_mill"
 
@@ -115,6 +153,8 @@
 	desc = "A wood structure used to dry meat, fish, tobacco, and so on."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "wood_drier0"
+	anchored = TRUE
+	density = TRUE
 	var/filled = 0
 	var/stage = 0
 	var/obj_type = /obj/item/weapon/reagent_containers/food/snacks/rawcutlet
@@ -168,6 +208,22 @@
 			obj_type = /obj/item/weapon/reagent_containers/food/snacks/driedsalmon
 			dry_obj(obj_type)
 			return
+
+	if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		H << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		H << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(H,50,src))
+			H << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			qdel(src)
+
 /obj/structure/dehydrator/proc/dry_obj(var/obj_type = null)
 	spawn(1200) //2 minutes
 		if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/rawcutlet)
@@ -233,6 +289,15 @@
 		qdel(O)
 		yeast_growth()
 		return
+
+	else if (istype(O,/obj/item/weapon/hammer) || istype(O,/obj/item/weapon/hammer/modern))
+		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
+		user << "<span class='notice'>You begin smashing apart \the [src].</span>"
+		if (do_after(user,25,src))
+			user << "<span class='notice'>You smash apart \the [src].</span>"
+			new /obj/item/weapon/material/shard/glass(loc)
+			qdel(src)
+
 	else
 		..()
 
@@ -390,12 +455,13 @@
 	desc = "An oil well, extracting petroleum to a barrel."
 	icon = 'icons/obj/obj32x64.dmi'
 	icon_state = "oilwell"
-	flammable = TRUE
 	anchored = TRUE
+	density = TRUE
+	flammable = TRUE
 	var/obj/structure/oil_spring/base = null
 	var/list/barrel = list()
 	not_movable = TRUE
-	not_disassemblable = TRUE
+	not_disassemblable = FALSE
 
 /obj/structure/oilwell/New()
 	..()
@@ -441,6 +507,24 @@
 			visible_message("[user] puts \the [W] in \the [src].","You put \the [W] in \the [src].")
 			start_extraction()
 			return
+
+	if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		user. << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(user,130,src))
+			user. << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc) 	//10 out of total of 40 to craft
+			qdel(src)
+
 	else
 		..()
 
@@ -464,6 +548,8 @@
 	desc = "Used to copy books and papers."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "printingpress0"
+	anchored = TRUE
+	density = TRUE
 	flammable = TRUE
 	var/list/base = list()
 	var/list/copy = list()
@@ -496,8 +582,26 @@
 			user.drop_from_inventory(W)
 			W.forceMove(locate(0,0,0))
 			return
+
+	if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user. << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		user. << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(user,60,src))
+			user. << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc)
+			new /obj/item/stack/material/wood(loc) 	//5 out of 12 to craft
+			qdel(src)
+
 	else
 		..()
+
 /obj/structure/printingpress/attack_hand(var/mob/living/carbon/human/H)
 	if (copying)
 		return
@@ -604,9 +708,11 @@
 	desc = "A pressure tool used to seal cans."
 	icon = 'icons/obj/cans.dmi'
 	icon_state = "canner"
+	anchored = TRUE
+	density = TRUE
 	flammable = FALSE
 	not_movable = FALSE
-	not_disassemblable = TRUE
+	not_disassemblable = FALSE
 
 /obj/structure/canner/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/can))
@@ -622,6 +728,21 @@
 				icon_state = "canner"
 			else
 				icon_state = "canner"
+
+	if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		H << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		H << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(H,50,src))
+			H << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/iron(loc)
+			new /obj/item/stack/material/iron(loc)
+			new /obj/item/stack/material/iron(loc)
+			new /obj/item/stack/material/iron(loc) 	//4 out of 7 to craft
+			qdel(src)
 
 /obj/item/weapon/can
 	name = "empty can"
@@ -832,7 +953,7 @@
 	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		H << "<span class='notice'>You begin dismantling \the [src].</span>"
-		if (do_after(H,40,src))
+		if (do_after(H,50,src))
 			H << "<span class='notice'>You dismantle \the [src].</span>"
 			new /obj/item/stack/material/wood(loc)
 			new /obj/item/stack/material/wood(loc)
@@ -843,7 +964,7 @@
 
 /obj/structure/compost/proc/compost(mob/living/carbon/human/H as mob)
 	spawn(500)
-	visible_message(">>The composted material begins to degrade.")
+	visible_message("The composted material begins to degrade.")
 	if (current>=1)
 		current=max(0,current-1)
 		spawn(1500)
