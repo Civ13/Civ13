@@ -66,7 +66,7 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "flour_mill"
 	anchored = TRUE
-	density = TRUE
+	density = FALSE
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -709,7 +709,7 @@
 	icon = 'icons/obj/cans.dmi'
 	icon_state = "canner"
 	anchored = TRUE
-	density = TRUE
+	density = FALSE
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
