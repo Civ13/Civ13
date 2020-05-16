@@ -921,7 +921,6 @@
 #include "code\processes\nanoui.dm"
 #include "code\processes\obj.dm"
 #include "code\processes\ping_track.dm"
-#include "code\processes\profiler.dm"
 #include "code\processes\projectile.dm"
 #include "code\processes\python.dm"
 #include "code\processes\scheduler.dm"
