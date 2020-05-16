@@ -147,7 +147,7 @@
 				MAP_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
 		//		MAP_BATTLEROYALE = 20,
-				MAP_SUPPLY_RAID = 8,
+		//		MAP_SUPPLY_RAID = 8,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
@@ -192,7 +192,7 @@
 				MAP_COLONY = 0,
 				MAP_JUNGLE_COLONY = 4,
 				MAP_PIONEERS = 10,
-				MAP_FOUR_COLONIES = 35,
+				MAP_FOUR_COLONIES = 30,
 			)
 		if (epoch == "Civilization 13 (Prison Camps)")
 			maps = list(
@@ -200,9 +200,10 @@
 			)
 		if (epoch == "Civilization 13 (Others)")
 			maps = list(
-				MAP_TRIBES = 8,
+				MAP_TRIBES = 12,
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
+				MAP_FOUR_KINDGOMS = 16
 			)
 
 		spawn(10)

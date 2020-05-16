@@ -259,6 +259,7 @@
 #include "code\game\objects\map_metadata\cursed_island.dm"
 #include "code\game\objects\map_metadata\fields.dm"
 #include "code\game\objects\map_metadata\four_colonies.dm"
+#include "code\game\objects\map_metadata\four_kingdoms.dm"
 #include "code\game\objects\map_metadata\gladiators.dm"
 #include "code\game\objects\map_metadata\gulag13.dm"
 #include "code\game\objects\map_metadata\heraclea.dm"
