@@ -63,6 +63,12 @@
 	icon_state = "civuni3"
 	item_state = "civuni3"
 	worn_state = "civuni3"
+/obj/item/clothing/under/civ3
+	name = "Victorian Tailcoat"
+	desc = "Also known as a butler suit."
+	icon_state = "victorian_tailcoat"
+	item_state = "victorian_tailcoat"
+	worn_state = "victorian_tailcoat"
 
 /obj/item/clothing/under/civ5
 	name = "Green Colonial Clothing"

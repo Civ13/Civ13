@@ -82,6 +82,13 @@
 			adjusted = TRUE
 	update_clothing_icon()
 
+/obj/item/clothing/under/civ87
+	name = "victorian tailcoat"
+	desc = "Also known as a butler suit."
+	icon_state = "victorian_tailcoat"
+	item_state = "victorian_tailcoat"
+	worn_state = "victorian_tailcoat"
+
 /obj/item/clothing/head/confederatecap
 	name = "confederate cap"
 	desc = "A cap worn by confederate soldiers."
