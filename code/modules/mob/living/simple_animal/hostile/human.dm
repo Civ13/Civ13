@@ -432,10 +432,7 @@
 		if (HOSTILE_STANCE_ATTACK)
 			if (destroy_surroundings)
 				DestroySurroundings()
-			if (get_dist(target_obj,src)>1)
-				MoveToTarget()
-			else
-				AttackTarget()
+			AttackTarget()
 	return t_behaviour
 
 /mob/living/simple_animal/hostile/human/throw_item(var/obj/item/item,var/atom/target)

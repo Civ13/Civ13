@@ -287,10 +287,7 @@
 			if (HOSTILE_STANCE_ATTACK)
 				if (destroy_surroundings)
 					DestroySurroundings()
-				if (target_mob && get_dist(target_mob,src)>1)
-					MoveToTarget()
-				else
-					AttackTarget()
+				AttackTarget()
 				if (stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
 					custom_emote(1, "is worn out and needs to rest." )
 					stance = HOSTILE_STANCE_TIRED
@@ -316,8 +313,6 @@
 					if (target_mob)
 						stance = HOSTILE_STANCE_ATTACK
 						if (target_mob && get_dist(target_mob,src)>1)
-							MoveToTarget()
-						else
 							AttackTarget()
 			if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
 				if (target_mob && target_mob in ListTargets(7))
@@ -332,10 +327,7 @@
 			if (HOSTILE_STANCE_ATTACK)
 				if (destroy_surroundings)
 					DestroySurroundings()
-				if (target_mob && get_dist(target_mob,src)>1)
-					MoveToTarget()
-				else
-					AttackTarget()
+				AttackTarget()
 		return t_behaviour
 /mob/living/simple_animal/gib()
 	..(icon_gib,1)
