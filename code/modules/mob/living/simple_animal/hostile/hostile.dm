@@ -88,6 +88,9 @@
 	if (get_dist(src, target_mob) <= 1)	//Attacking
 		AttackingTarget()
 		return TRUE
+	else
+		MoveToTarget()
+
 
 /mob/living/simple_animal/proc/AttackingTarget()
 	if (!Adjacent(target_mob))

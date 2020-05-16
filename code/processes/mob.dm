@@ -26,19 +26,6 @@
 				qdel(M)
 			continue
 
-		else if (ishuman(M))
-			if (!M.original_job)
-				// runtime prevention hackcode
-				if (M.client || M.ckey) // we have, or had, a client
-					if (M.original_job_title)
-						for (var/datum/job/J in job_master.occupations)
-							if (J.title == M.original_job_title)
-								M.original_job = J
-								goto skip1
-				continue
-
-		skip1
-
 		try
 			// since we spent so long getting here we have to do this again
 			if (!M)
