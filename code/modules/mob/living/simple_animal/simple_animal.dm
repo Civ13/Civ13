@@ -280,18 +280,16 @@
 
 				if (stance_step <= -10) //If we have not found a mob for 20-ish ticks, revert to idle mode
 					stance = HOSTILE_STANCE_IDLE
-				if (stance_step >= 1)   //If we have been staring at a mob for 1 ticks,
+				if (stance_step >= 1 || (behaviour == "hostile"))   //If we have been staring at a mob for 1 ticks,
 					stance = HOSTILE_STANCE_ATTACK
+					AttackTarget()
 
 			if (HOSTILE_STANCE_ATTACK)
 				if (destroy_surroundings)
 					DestroySurroundings()
-				MoveToTarget()
-
-			if (HOSTILE_STANCE_ATTACKING)
-				if (destroy_surroundings)
-					DestroySurroundings()
-				spawn(10)
+				if (target_mob && get_dist(target_mob,src)>1)
+					MoveToTarget()
+				else
 					AttackTarget()
 				if (stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
 					custom_emote(1, "is worn out and needs to rest." )
@@ -317,26 +315,26 @@
 					target_mob = FindTarget()
 					if (target_mob)
 						stance = HOSTILE_STANCE_ATTACK
-
+						if (target_mob && get_dist(target_mob,src)>1)
+							MoveToTarget()
+						else
+							AttackTarget()
 			if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
 				if (target_mob && target_mob in ListTargets(7))
 					if ((SA_attackable(target_mob)))
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 						stance = HOSTILE_STANCE_ATTACK
+						AttackTarget()
 					else
 						target_mob = FindTarget()
 				else
 					target_mob = FindTarget()
-
 			if (HOSTILE_STANCE_ATTACK)
 				if (destroy_surroundings)
 					DestroySurroundings()
-				MoveToTarget()
-
-			if (HOSTILE_STANCE_ATTACKING)
-				if (destroy_surroundings)
-					DestroySurroundings()
-				spawn(3)
+				if (target_mob && get_dist(target_mob,src)>1)
+					MoveToTarget()
+				else
 					AttackTarget()
 		return t_behaviour
 /mob/living/simple_animal/gib()

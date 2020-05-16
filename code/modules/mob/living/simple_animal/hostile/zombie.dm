@@ -105,10 +105,6 @@
 				var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
 				playsound(src.loc, sound2play, 100, TRUE)
 
-		if (HOSTILE_STANCE_ATTACKING)
-			var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
-			playsound(src.loc, sound2play, 100, TRUE)
-
 /mob/living/simple_animal/hostile/zombie/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 	if (hit_zone in list("r_leg", "l_leg", "l_arm", "r_arm") && prob(25))
 		visible_message("<span class='notice'>[user] tried to strike \the [src] but missed!</span>")
@@ -212,11 +208,4 @@
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob
 		L.adjustBruteLoss(damage)
-		if (istype(target_mob, /mob/living/simple_animal))
-			var/mob/living/simple_animal/SA = target_mob
-			if (SA.behaviour == "defends" || SA.behaviour == "hunt")
-				if (SA.stance != HOSTILE_STANCE_ATTACK && SA.stance != HOSTILE_STANCE_ATTACKING)
-					SA.stance = HOSTILE_STANCE_ATTACK
-					SA.stance_step = 7
-					SA.target_mob = src
 		return L

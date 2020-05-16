@@ -216,7 +216,7 @@
 		stance = HOSTILE_STANCE_IDLE
 		wander = TRUE
 	if (target_mob in ListTargets(8))
-		stance = HOSTILE_STANCE_ATTACKING
+		stance = HOSTILE_STANCE_ATTACK
 		wander = FALSE
 		if(ranged)
 			if(get_dist(src, target_mob) <= 6)
@@ -432,12 +432,9 @@
 		if (HOSTILE_STANCE_ATTACK)
 			if (destroy_surroundings)
 				DestroySurroundings()
-			MoveToTarget()
-
-		if (HOSTILE_STANCE_ATTACKING)
-			if (destroy_surroundings)
-				DestroySurroundings()
-			spawn(3)
+			if (get_dist(target_obj,src)>1)
+				MoveToTarget()
+			else
 				AttackTarget()
 	return t_behaviour
 

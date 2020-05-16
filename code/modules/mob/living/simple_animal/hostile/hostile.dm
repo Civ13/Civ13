@@ -73,7 +73,7 @@
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
 	if (target_mob in ListTargets(8))
-		stance = HOSTILE_STANCE_ATTACKING
+		stance = HOSTILE_STANCE_ATTACK
 		walk_to(src, target_mob, TRUE, move_to_delay)
 	else if (target_mob in ListTargets(10))
 		walk_to(src, target_mob, TRUE, move_to_delay)
@@ -124,7 +124,7 @@
 		if (istype(target_mob, /mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = target_mob
 			if (SA.behaviour == "defends" || SA.behaviour == "hunt")
-				if (SA.stance != HOSTILE_STANCE_ATTACK && SA.stance != HOSTILE_STANCE_ATTACKING)
+				if (SA.stance != HOSTILE_STANCE_ATTACK)
 					SA.stance = HOSTILE_STANCE_ATTACK
 					SA.stance_step = 7
 					SA.target_mob = src
