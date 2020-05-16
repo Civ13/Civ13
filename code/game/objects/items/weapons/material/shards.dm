@@ -84,3 +84,9 @@
 // Preset types - left here for the code that uses them
 /obj/item/weapon/material/shard/shrapnel/New(loc)
 	..(loc, "steel")
+
+/obj/item/weapon/material/shard/glass/New(loc) //why doesn't this exist before?
+	..(loc, "glass")
+
+/obj/item/weapon/material/shard/obsidian/New(loc) // all it is, is volcanic glass
+	..(loc, "obsidian")
