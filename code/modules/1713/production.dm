@@ -45,13 +45,13 @@
 			icon_state = "loom"
 	if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user. << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		H. << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user. << "<span class='notice'>You begin dismantling \the [src].</span>"
-		if (do_after(user,50,src))
-			user. << "<span class='notice'>You dismantle \the [src].</span>"
+		H. << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(H,50,src))
+			H. << "<span class='notice'>You dismantle \the [src].</span>"
 			new /obj/item/stack/material/wood(loc)
 			new /obj/item/stack/material/wood(loc)
 			new /obj/item/stack/material/wood(loc)
