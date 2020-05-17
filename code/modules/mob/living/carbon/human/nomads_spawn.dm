@@ -283,6 +283,18 @@
 					add_note("Known Languages", "Japanese")
 					possible_h_list = list("Dark Brown","Black")
 					possible_e_list = list("Brown","Black")
+					possible_s_list = list(35,45)
+				if ("Ainu")
+					add_language("Ainu",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/ainu/A in languages)
+						default_language = A
+					name = species.get_random_ainu_name(gender)
+					real_name = name
+					add_note("Known Languages", "Ainu")
+					possible_h_list = list("Dark Brown","Black")
+					possible_e_list = list("Brown","Black")
 					possible_s_list = list(35,55)
 				if ("Chinese")
 					add_language("Chinese",TRUE)
@@ -394,22 +406,65 @@
 /////////////////////////Karafuta-Sakhalinsk///////////////////////
 ///////////////////////////////////////////////////////////////////
 	else if (map && (map.ID == MAP_NOMADS_KARAFUTO))
-		var/area/mob_area = get_area(src)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
-		switch (mob_area.climate)
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(10,60)
+		spawn(5)
 			if ("tundra")
-				s_tone = -40
-				new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond")
-				new_eyes = pick("Green", "Blue")
-
-
-			if ("temperate")
-				s_tone = -35
-				new_hair = "Black"
-				new_eyes = pick("Dark Brown", "Black")
-
-
+				if (y>420)
+					add_language("Russian",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/russian/A in languages)
+						default_language = A
+					name = species.get_random_russian_name(gender)
+					real_name = name
+					add_note("Known Languages", "Russian")
+					possible_h_list = list("Light Blond","Blond","Dirty Blond")
+					possible_e_list = list("Blue","Green")
+					possible_s_list = list(15,28)
+				else if ("temperate" && y<420)
+					add_language("Ainu",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/ainu/A in languages)
+						default_language = A
+					name = species.get_random_ainu_name(gender)
+					real_name = name
+					add_note("Known Languages", "Ainu")
+					possible_h_list = list("Dark Brown","Black")
+					possible_e_list = list("Brown","Black")
+					possible_s_list = list(35,45)
+			else
+				if ("temperate" && y<100)
+					add_language("Japanese",TRUE)
+					remove_language("Japanese")
+					remove_note("Known Languages","Japanese")
+					for (var/datum/language/japanese/A in languages)
+						default_language = A
+					name = species.get_random_japanese_name(gender)
+					real_name = name
+					add_note("Known Languages", "Japanese")
+					possible_h_list = list("Dark Brown","Black")
+					possible_e_list = list("Brown","Black")
+					possible_s_list = list(25,35)
+				else if (y>100)
+					add_language("Ainu",TRUE)
+					remove_language("Ainu")
+					remove_note("Known Languages","Ainu")
+					for (var/datum/language/ainu/A in languages)
+						default_language = A
+					name = species.get_random_ainu_name(gender)
+					real_name = name
+					add_note("Known Languages", "Ainu")
+					possible_h_list = list("Dark Brown","Black")
+					possible_e_list = list("Brown","Black")
+					possible_s_list = list(35,45)
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
 		var/hex_hair = hair_colors[new_hair]
 		r_hair = hex2num(copytext(hex_hair, 2, 4))
 		g_hair = hex2num(copytext(hex_hair, 4, 6))

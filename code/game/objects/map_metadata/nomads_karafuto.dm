@@ -1,12 +1,11 @@
 
 /obj/map_metadata/nomads_karafuto
 	ID = MAP_NOMADS_KARAFUTO
-	no_winner ="The round is proceeding normally."
-	title = "Nomads (Karafuto-Sakhalinsk) (300x450x2)"
+	title = "Nomads Karafuto (Temperate) (300x450x2)"
 	lobby_icon_state = "civ13"
+	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
-	civilizations = TRUE
 
 
 	faction_organization = list(
@@ -29,19 +28,19 @@
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
-/obj/map_metadata/nomads_karafuta/New()
+/obj/map_metadata/nomads_karafuto/New()
 	..()
 	spawn(18000)
 		seasons()
 
 /obj/map_metadata/nomads_karafuto/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_karafuto/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 18000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_karafuto/cross_message(faction)
-	return ""
+	return "The nomads may now cross the waterway!"
 
 /obj/map_metadata/nomads_karafuto/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)

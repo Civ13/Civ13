@@ -1,10 +1,10 @@
 Amu
-Aruzhou
+Aruzou
 Hajime
 Harumo
 Hiteru
 Hokuwa
-Iketeru
+Ikuteru
 Kadokawa
 Kadotoru
 Kamaru
@@ -19,7 +19,7 @@ Oshi
 Shinsei
 Shitsoi
 Shorai
-Shumitats
+Shumitatsu
 Sorai
 Soru
 Sotarua
@@ -35,4 +35,4 @@ Warai
 Yama
 Yamato
 Yato
-Zhou
+Zou
