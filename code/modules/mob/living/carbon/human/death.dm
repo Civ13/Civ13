@@ -89,17 +89,18 @@
 									HSM2 << "<big><b>[HSM] is your new squad leader.</b></big>"
 	handle_hud_list()
 	var/list/poss_list = list()
-	for(var/cmp in map.custom_company_nr)
-		if (find_company_member(src,cmp))
-			poss_list += cmp
-	if (!isemptylist(poss_list))
-		for(var/stocky in poss_list)
-			for(var/list/lx in map.custom_company[stocky])
-				if (lx[1] == src)
-					map.sales_registry += list(list(stocky,lx[2],map.custom_company_value[stocky]*(lx[2]/100)*2,null,1))
-			for(var/l=1, l <= map.custom_company[stocky].len, l++)
-				if (map.custom_company[stocky][l][1] == src)
-					map.custom_company[stocky][l][1] = null
+	if (map)
+		for(var/cmp in map.custom_company_nr)
+			if (find_company_member(src,cmp))
+				poss_list += cmp
+		if (!isemptylist(poss_list))
+			for(var/stocky in poss_list)
+				for(var/list/lx in map.custom_company[stocky])
+					if (lx[1] == src)
+						map.sales_registry += list(list(stocky,lx[2],map.custom_company_value[stocky]*(lx[2]/100)*2,null,1))
+				for(var/l=1, l <= map.custom_company[stocky].len, l++)
+					if (map.custom_company[stocky][l][1] == src)
+						map.custom_company[stocky][l][1] = null
 	src << browse(null, "window=memory")
 
 	if (client)

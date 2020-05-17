@@ -423,7 +423,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 		if (islist(admincheck) && !isemptylist(admincheck))
 			for(var/i in admincheck)
 				var/list/admincheck_two = splittext(i, ";")
-				if (admincheck_two[1] == "[_ckey]")
+				if (admincheck_two.len && admincheck_two[1] == "[_ckey]")
 					src << "<span class = 'danger'>You can't ban admins!</span>"
 					return TRUE
 	return FALSE

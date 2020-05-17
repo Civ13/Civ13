@@ -292,10 +292,11 @@
 
 		var/speech = input("What will [key_name(M)] say?.", "Force speech", "")// Don't need to sanitize, since it does that in say(), we also trust our admins.
 		if (!speech)	return
-		M.say(speech)
-		speech = sanitize(speech) // Nah, we don't trust them
-		log_admin("[key_name(usr)] forced [key_name(M)] to say: [speech]")
-		message_admins("<span class = 'notice'>[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]</span>")
+		if (M)
+			M.say(speech)
+			speech = sanitize(speech) // Nah, we don't trust them
+			log_admin("[key_name(usr)] forced [key_name(M)] to say: [speech]")
+			message_admins("<span class = 'notice'>[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]</span>")
 
 	else if (href_list["revive"])
 		if (!check_rights(R_REJUVINATE))	return

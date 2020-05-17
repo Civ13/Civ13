@@ -64,7 +64,7 @@
 
 
 /obj/item/weapon/paper/update_icon()
-	if (map.ordinal_age <= 1)
+	if (map && map.ordinal_age <= 1)
 		if (info)
 			icon_state = "scrollpaper1"
 		else
