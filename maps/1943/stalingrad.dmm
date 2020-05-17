@@ -987,7 +987,7 @@
 "tr" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/houses)
 "ts" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
 "tt" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/nomads/forest/snow)
-"tu" = (/obj/item/weapon/stool/wood,/obj/structure/noose,/mob/living/carbon/human/corpse/prisoner,/turf/floor/wood,/area/caribbean/houses)
+"tu" = (/obj/item/weapon/stool/wood,/obj/structure/noose,/mob/living/human/corpse/prisoner,/turf/floor/wood,/area/caribbean/houses)
 "tv" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 4},/turf/floor/wood,/area/caribbean/nomads/forest/snow)
 "tw" = (/obj/structure/table/modern/table,/turf/floor/wood{icon_state = "wood-broken5"},/area/caribbean/houses)
 "tx" = (/obj/structure/table/modern/table,/obj/structure/radio{anchored = 1; powered = 1; powerneeded = 0},/turf/floor/wood,/area/caribbean/houses)

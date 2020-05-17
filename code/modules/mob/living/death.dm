@@ -8,7 +8,7 @@
 	var/list/legs = list()
 
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		for (var/obj/item/organ/external/arm/A in H.organs)
 			++appendages
 			arms += A
@@ -26,7 +26,7 @@
 	if (!appendages)
 		crush()
 
-	for(var/mob/living/carbon/human/NB in view(6,src))
+	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
 			NB.mood -= 10
 			NB.ptsd += 1

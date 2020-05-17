@@ -175,8 +175,8 @@
 		M.update_floating( M.Check_Dense_Object() )
 
 /area/proc/thunk(mob)
-	if (istype(mob,/mob/living/carbon/human/))
-		var/mob/living/carbon/human/H = mob
+	if (istype(mob,/mob/living/human/))
+		var/mob/living/human/H = mob
 		if (istype(H.shoes, /obj/item/clothing/shoes/magboots) && (H.shoes.item_flags & NOSLIP))
 			return
 

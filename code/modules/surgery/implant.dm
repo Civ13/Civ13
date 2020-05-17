@@ -6,7 +6,7 @@
 
 /datum/surgery_step/cavity
 	priority = TRUE
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(!hasorgans(target))
 			return FALSE
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -32,7 +32,7 @@
 				return "abdominal"
 		return ""
 
-	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'red'>[user]'s hand slips, scraping around inside [target]'s [affected.name] with \the [tool]!</span>", \
 		"<span class = 'red'>Your hand slips, scraping around inside [target]'s [affected.name] with \the [tool]!</span>")
@@ -48,12 +48,12 @@
 	min_duration = 60
 	max_duration = 80
 
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
 			return affected && !affected.cavity
 
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("[user] starts making some space inside [target]'s [get_cavity(affected)] cavity with \the [tool].", \
 		"You start making some space inside [target]'s [get_cavity(affected)] cavity with \the [tool]." )
@@ -61,7 +61,7 @@
 		affected.cavity = TRUE
 		..()
 
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'notice'>[user] makes some space inside [target]'s [get_cavity(affected)] cavity with \the [tool].</span>", \
 		"<span class = 'notice'>You make some space inside [target]'s [get_cavity(affected)] cavity with \the [tool].</span>" )
@@ -78,12 +78,12 @@
 	min_duration = 60
 	max_duration = 80
 
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
 			return affected && affected.cavity
 
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("[user] starts mending [target]'s [get_cavity(affected)] cavity wall with \the [tool].", \
 		"You start mending [target]'s [get_cavity(affected)] cavity wall with \the [tool]." )
@@ -91,7 +91,7 @@
 		affected.cavity = FALSE
 		..()
 
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'notice'>[user] mends [target]'s [get_cavity(affected)] cavity walls with \the [tool].</span>", \
 		"<span class = 'notice'>You mend [target]'s [get_cavity(affected)] cavity walls with \the [tool].</span>" )
@@ -105,7 +105,7 @@
 	min_duration = 80
 	max_duration = 100
 
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
 			if(affected && affected.cavity)
@@ -116,7 +116,7 @@
 					total_volume += I.w_class
 				return total_volume <= get_max_wclass(affected)
 
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("[user] starts putting \the [tool] inside [target]'s [get_cavity(affected)] cavity.", \
 		"You start putting \the [tool] inside [target]'s [get_cavity(affected)] cavity." )
@@ -124,7 +124,7 @@
 		playsound(target.loc, 'sound/effects/squelch1.ogg', 50, TRUE)
 		..()
 
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 
 		user.visible_message("<span class = 'notice'>[user] puts \the [tool] inside [target]'s [get_cavity(affected)] cavity.</span>", \
@@ -153,18 +153,18 @@
 	min_duration = 80
 	max_duration = 100
 
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/brain/sponge = target.internal_organs_by_name["brain"]
 		return ..() && (!sponge || !sponge.damage)
 
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("[user] starts poking around inside [target]'s [affected.name] with \the [tool]...", \
 		"You start poking around inside [target]'s [affected.name] with \the [tool]..." )
 		target.custom_pain("The pain in your [affected.name] is living hell!",1)
 		..()
 
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 
 		var/find_prob = FALSE
@@ -174,7 +174,7 @@
 			var/obj/item/obj = pick(affected.implants)
 
 			find_prob +=50
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (prob(find_prob)*H.getStatCoeff("medical"))
 				user.visible_message("<span class = 'notice'>[user] takes something out of incision on [target]'s [affected.name] with \the [tool].</span>", \
 				"<span class = 'notice'>You take [obj] out of incision on [target]'s [affected.name]s with \the [tool].</span>" )
@@ -191,7 +191,7 @@
 			user.visible_message("<span class = 'notice'>[user] could not find anything inside [target]'s [affected.name], and pulls \the [tool] out.</span>", \
 			"<span class = 'notice'>You could not find anything inside [target]'s [affected.name].</span>" )
 
-	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		..()
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 		if (affected.implants.len)

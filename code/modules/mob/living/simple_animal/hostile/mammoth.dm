@@ -43,7 +43,7 @@
 		return
 	custom_emote(1, pick("bites [target_mob]!","stomps on [target_mob]!", "kicks [target_mob]!"))
 	if (ishuman(target_mob))
-		var/mob/living/carbon/human/H = target_mob
+		var/mob/living/human/H = target_mob
 		var/dam_zone = pick("l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
 		if (prob(88))

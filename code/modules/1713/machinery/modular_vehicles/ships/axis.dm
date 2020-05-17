@@ -133,7 +133,7 @@
 							qdel(L)
 					else
 						if (ishuman(L))
-							var/mob/living/carbon/human/HH = L
+							var/mob/living/human/HH = L
 							HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 							HH.Weaken(rand(2,5))
 							visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
@@ -352,7 +352,7 @@
 	return TRUE
 
 
-/obj/structure/vehicleparts/axis/ship/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/vehicleparts/axis/ship/attack_hand(var/mob/living/human/H)
 	if (!ishuman(H))
 		return
 	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))

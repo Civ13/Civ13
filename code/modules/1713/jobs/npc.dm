@@ -1,7 +1,7 @@
 /datum/job/npc
 	faction = "Human"
 
-/datum/job/npc/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/npc/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
 
@@ -16,7 +16,7 @@
 	min_positions = 0
 	max_positions = 0
 
-/datum/job/npc/bandit/equip(var/mob/living/carbon/human/H)
+/datum/job/npc/bandit/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)

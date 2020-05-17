@@ -1,7 +1,7 @@
 /datum/job/chinese
 	faction = "Human"
 
-/datum/job/chinese/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/chinese/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_chinese_name(H.gender)
 	H.real_name = H.name
 
@@ -22,7 +22,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/chinese/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -76,7 +76,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/chinese/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -127,7 +127,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/chinese/sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -176,7 +176,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/chinese/doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -223,7 +223,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/chinese/infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -266,7 +266,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/chinese/sniper/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)

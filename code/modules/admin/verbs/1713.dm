@@ -580,7 +580,7 @@ var/chinese_forceEnabled = FALSE
 		for (var/relf in map.facl)
 			var/curr = ""
 			map.facl[relf] = 0
-			for (var/mob/living/carbon/human/H in world)
+			for (var/mob/living/human/H in world)
 				if (relf == H.civilization)
 					map.facl[relf] += 1
 					curr = "[H.civilization]"

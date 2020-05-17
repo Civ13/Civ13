@@ -170,7 +170,7 @@
 	M.eye_blurry = max(M.eye_blurry - 5, FALSE)
 	M.eye_blind = max(M.eye_blind - 5, FALSE)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
 		if (E && istype(E))
 			if (E.damage > 0)
@@ -188,7 +188,7 @@
 
 /datum/reagent/peridaxon/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 
 		for (var/obj/item/organ/I in H.internal_organs)
 			if (I.damage > 0)
@@ -222,7 +222,7 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
-/datum/reagent/potassium_iodide/affect_blood(var/mob/living/carbon/human/M, var/alien, var/removed)
+/datum/reagent/potassium_iodide/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.radiation -= 15 * removed
 	if (M.disease == 1 && M.disease_type == "zombie")
 		M.disease_treatment = TRUE
@@ -239,8 +239,8 @@
 	scannable = TRUE
 
 /datum/reagent/penicillin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/HH = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/HH = M
 		if (HH.disease == 1 && HH.disease_type == "typhus")
 			HH.disease_treatment = TRUE
 

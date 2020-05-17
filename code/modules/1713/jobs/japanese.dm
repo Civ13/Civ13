@@ -1,7 +1,7 @@
 /datum/job/japanese
 	faction = "Human"
 
-/datum/job/japanese/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/japanese/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_japanese_name(H.gender)
 	H.real_name = H.name
 
@@ -21,7 +21,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -71,7 +71,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -121,7 +121,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/lieutenant2/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/lieutenant2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -168,7 +168,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/japanese/sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -215,7 +215,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/japanese/doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -254,7 +254,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/japanese/cook/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat(H), slot_wear_suit)
@@ -298,7 +298,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/japanese/infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -340,7 +340,7 @@
 	min_positions = 3
 	max_positions = 10
 
-/datum/job/japanese/sniper/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -384,7 +384,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/japanese/whitesash_infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/whitesash_infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -433,7 +433,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/ija_captain/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -480,7 +480,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/ija_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -527,7 +527,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/ija_lieutenant2/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_lieutenant2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -572,7 +572,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/japanese/ija_sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -617,7 +617,7 @@
 	min_positions = 2
 	max_positions = 4
 
-/datum/job/japanese/ija_doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -659,7 +659,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/japanese/ija_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -698,7 +698,7 @@
 	min_positions = 20
 	max_positions = 100
 
-/datum/job/japanese/ija_ww2infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_ww2infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -748,7 +748,7 @@
 	min_positions = 4
 	max_positions = 100
 
-/datum/job/japanese/ija_ww2ATunit/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_ww2ATunit/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -789,7 +789,7 @@
 	min_positions = 4
 	max_positions = 15
 
-/datum/job/japanese/ija_machinegunner/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_machinegunner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -835,7 +835,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/japanese/ija_sniper/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -883,7 +883,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/japanese/ija_sergeant_tanker/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_sergeant_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -929,7 +929,7 @@
 	min_positions = 5
 	max_positions = 30
 
-/datum/job/japanese/ija_ww2_tanker/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_ww2_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -982,7 +982,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/ija_camp_director/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_camp_director/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -1030,7 +1030,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/japanese/camp_officer/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/camp_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -1078,7 +1078,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/japanese/camp_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/camp_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -1120,7 +1120,7 @@
 	min_positions = 10
 	max_positions = 50
 
-/datum/job/japanese/camp_guard/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/camp_guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)

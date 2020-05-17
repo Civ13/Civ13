@@ -30,7 +30,7 @@
 						sleep(rand(2,4))
 
 
-	var/mob/living/carbon/human/H = M	  ///////////////////////////////////// /Let's have this ready for later.
+	var/mob/living/human/H = M	  ///////////////////////////////////// /Let's have this ready for later.
 
 
 	if (!(user.targeted_organ == ("eyes" || "head"))) //////////////hitting anything else other than the eyes

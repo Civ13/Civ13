@@ -107,7 +107,7 @@
 	strength = 10
 	metabolism = REM
 
-/datum/reagent/toxin/food_poisoning/affect_blood(var/mob/living/carbon/human/M, var/alien, var/removed)
+/datum/reagent/toxin/food_poisoning/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	if (!M.crab)
 		M.adjustToxLoss(5 * removed)
@@ -141,7 +141,7 @@
 
 /datum/reagent/toxin/plague/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if(H.disease_type != "plague") //force plague.
 			H.disease_type = "plague"
 			H.disease = 1
@@ -160,7 +160,7 @@
 /datum/reagent/toxin/potassium_chloride/overdose(var/mob/living/carbon/M, var/alien)
 	..()
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.stat != TRUE)
 			if (H.losebreath >= 10)
 				H.losebreath = max(10, H.losebreath - 10)
@@ -182,7 +182,7 @@
 /datum/reagent/toxin/potassium_chlorophoride/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.stat != TRUE)
 			if (H.losebreath >= 10)
 				H.losebreath = max(10, M.losebreath-10)

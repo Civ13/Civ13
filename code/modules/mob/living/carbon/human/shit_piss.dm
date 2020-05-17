@@ -190,7 +190,7 @@
 
 
 //#####LIFE PROCS#####
-/mob/living/carbon/human/proc/print_excrement()
+/mob/living/human/proc/print_excrement()
 	if(bowels >= 250)
 		switch(bowels)
 			if(250 to 400)
@@ -215,7 +215,7 @@
 	return
 
 //poo and pee counters. This is called in human_life.
-/mob/living/carbon/human/proc/handle_excrement()
+/mob/living/human/proc/handle_excrement()
 	if(bowels <= 0)
 		bowels = 0
 	if(bladder <= 0)
@@ -272,7 +272,7 @@
 				handle_piss()
 
 //Shitting
-/mob/living/carbon/human/proc/handle_shit()
+/mob/living/human/proc/handle_shit()
 	var/message = null
 	if (src.bowels >= 30)
 
@@ -323,7 +323,7 @@
 	visible_message("[message]")
 
 //Peeing
-/mob/living/carbon/human/proc/handle_piss()
+/mob/living/human/proc/handle_piss()
 	var/message = null
 	if (bladder < 30)
 		to_chat(src, "You don't have to.")

@@ -250,7 +250,7 @@
 
 /datum/reagent/capsaicin/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.species && (H.species.flags & (NO_PAIN)))
 			return
 	if (dose < agony_dose)
@@ -285,8 +285,8 @@
 	var/obj/item/face_protection = null
 
 	var/list/protection
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		protection = list(H.head, H.wear_mask)
 		if (H.species && (H.species.flags & NO_PAIN))
 			no_pain = TRUE //TODO: living-level can_feel_pain() proc
@@ -327,7 +327,7 @@
 
 /datum/reagent/condensedcapsaicin/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.species && (H.species.flags & NO_PAIN))
 			return
 	if (dose == metabolism)
@@ -408,7 +408,7 @@
 	taste_description = "olives"
 	color = "#343400"
 
-/datum/reagent/drink/olive_oil/affect_blood(var/mob/living/carbon/human/M, var/alien, var/removed)
+/datum/reagent/drink/olive_oil/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	if (prob(10))
 		M << "<span class = 'warning'>You feel sick...</span>"
@@ -528,8 +528,8 @@
 	M.hallucination = max(0, M.hallucination - 6 * removed)
 	if (M.bodytemperature > 310.7)
 		M.bodytemperature = (M.bodytemperature-0.1)
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/HH = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/HH = M
 		if (HH.disease == 1 && HH.disease_type == "flu")
 			HH.disease_treatment = TRUE
 
@@ -545,8 +545,8 @@
 	M.drowsyness = max(0, M.drowsyness - 2 * removed)
 	if (M.bodytemperature > 310.055)
 		M.bodytemperature = (M.bodytemperature-0.15)
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/HH = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/HH = M
 		if (HH.disease == 1 && HH.disease_type == "malaria")
 			HH.disease_treatment = TRUE
 
@@ -1237,7 +1237,7 @@
 	if (dose > 30)
 		M.adjustToxLoss(2 * removed)
 	if (dose > 60 && ishuman(M) && prob(5))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		var/obj/item/organ/heart/L = H.internal_organs_by_name["heart"]
 		if (L && istype(L))
 			if (dose < 120)

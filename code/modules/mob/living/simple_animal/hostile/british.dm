@@ -24,7 +24,7 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 
-	var/corpse = /mob/living/carbon/human/corpse/british
+	var/corpse = /mob/living/human/corpse/british
 
 	faction = BRITISH
 
@@ -61,7 +61,7 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 
 
-	var/corpse = /mob/living/carbon/human/corpse/british
+	var/corpse = /mob/living/human/corpse/british
 	faction = CIVILIAN
 
 

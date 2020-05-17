@@ -141,7 +141,7 @@
 					user << "<span class='warning'>The [src] has no money left to buy from you!</span>"
 					return
 	return
-/obj/structure/supplier/attack_hand(mob/living/carbon/human/H as mob)
+/obj/structure/supplier/attack_hand(mob/living/human/H as mob)
 	if (find_company_member(H,owner))
 		var/choice = WWinput(H,"What do you want to do?", "Stall Management", "Cancel", list("Change Name", "Remove Products Inside", "Change Amount", "Change Price", "Remove Order", "Remove Money", "Cancel"))
 		if (choice == "Cancel")

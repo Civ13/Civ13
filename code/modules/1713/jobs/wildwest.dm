@@ -14,7 +14,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/sheriff/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/sheriff/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -76,7 +76,7 @@
 	min_positions = 3
 	max_positions = 16
 
-/datum/job/civilian/deputy/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -135,7 +135,7 @@
 	min_positions = 6
 	max_positions = 100
 
-/datum/job/civilian/deputy2/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/deputy2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -193,7 +193,7 @@
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/civilian/bank/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/bank/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
@@ -231,7 +231,7 @@
 	min_positions = 8
 	max_positions = 100
 
-/datum/job/civilian/townsmen/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townsmen/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -311,7 +311,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/civilian/towndoctor/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/towndoctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -374,7 +374,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/civilian/townbartender/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townbartender/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -407,7 +407,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/civilian/townrancher/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townrancher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -467,7 +467,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/civilian/townprospector/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townprospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -521,7 +521,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/townpriest/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townpriest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -557,7 +557,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/townblacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townblacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -613,7 +613,7 @@
 	min_positions = 6
 	max_positions = 100
 
-/datum/job/civilian/outlaw/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/outlaw/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -693,7 +693,7 @@
 	min_positions = 2
 	max_positions = 9
 
-/datum/job/civilian/outlaw1/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/outlaw1/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -774,7 +774,7 @@
 	min_positions = 2
 	max_positions = 9
 
-/datum/job/civilian/outlaw2/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/outlaw2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))

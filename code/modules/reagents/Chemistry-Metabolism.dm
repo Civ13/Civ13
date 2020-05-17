@@ -13,7 +13,7 @@
 
 	var/metabolism_type = FALSE //non-human mobs
 	if (ishuman(parent))
-		var/mob/living/carbon/human/H = parent
+		var/mob/living/human/H = parent
 		metabolism_type = H.species.reagent_tag
 
 	for (var/datum/reagent/current in reagent_list)

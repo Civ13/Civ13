@@ -67,7 +67,7 @@
 		return FALSE
 	if (processes.ticker.playtime_elapsed >= 1200)
 		if (alive_n_of_side(PIRATES) <= 1 && !win_condition_spam_check)
-			for (var/mob/living/carbon/human/H in player_list)
+			for (var/mob/living/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
 					if (H.original_job.base_type_flag() == PIRATES)
 						winner_name =  H.name

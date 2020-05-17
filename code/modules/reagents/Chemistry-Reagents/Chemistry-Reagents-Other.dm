@@ -194,7 +194,7 @@
 		if (M.wear_mask.clean_blood())
 			M.update_inv_wear_mask(0)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.head)
 			if (H.head.clean_blood())
 				H.update_inv_head(0)

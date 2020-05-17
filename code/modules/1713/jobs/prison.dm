@@ -14,7 +14,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/nkvd_gulag_commander/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_gulag_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -45,8 +45,8 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.verbs += /mob/living/carbon/human/proc/Sound_Alarm
-	H.verbs += /mob/living/carbon/human/proc/Stop_Alarm
+	H.verbs += /mob/living/human/proc/Sound_Alarm
+	H.verbs += /mob/living/human/proc/Stop_Alarm
 	return TRUE
 
 /datum/job/russian/nkvd_gulag_officer
@@ -63,7 +63,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/russian/nkvd_gulag_officer/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_gulag_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -94,8 +94,8 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.verbs += /mob/living/carbon/human/proc/Sound_Alarm
-	H.verbs += /mob/living/carbon/human/proc/Stop_Alarm
+	H.verbs += /mob/living/human/proc/Sound_Alarm
+	H.verbs += /mob/living/human/proc/Stop_Alarm
 
 	return TRUE
 
@@ -113,7 +113,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/russian/nkvd_gulag_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_gulag_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -153,7 +153,7 @@
 	min_positions = 10
 	max_positions = 50
 
-/datum/job/russian/nkvd_gulag_guard/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_gulag_guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -195,7 +195,7 @@
 	var/original_eyes = "Black"
 	var/original_facial = "Shaved"
 	var/original_hair = "Short Hair"
-/datum/job/civilian/prisoner/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/prisoner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -232,7 +232,7 @@
 	H.give_nationality()
 	return TRUE
 
-/mob/living/carbon/human/proc/give_nationality()
+/mob/living/human/proc/give_nationality()
 	if (istype(original_job, /datum/job/civilian/prisoner))
 		var/datum/job/civilian/prisoner/PJ = original_job
 		var/randpick = rand(1,4)
@@ -305,7 +305,7 @@
 
 	min_positions = 2
 	max_positions = 20
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -324,7 +324,7 @@
 
 	min_positions = 10
 	max_positions = 100
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -343,7 +343,7 @@
 
 	min_positions = 10
 	max_positions = 100
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -362,7 +362,7 @@
 
 	min_positions = 10
 	max_positions = 100
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -381,7 +381,7 @@
 
 	min_positions = 3
 	max_positions = 30
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -400,7 +400,7 @@
 
 	min_positions = 3
 	max_positions = 25
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -419,7 +419,7 @@
 
 	min_positions = 1
 	max_positions = 12
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		randrole = pick("Janitor", "Kitchen Duty", "Miner", "Nurse Helper",/* "Builder", "Logger"*/)
 		var/obj/item/clothing/under/uniform = H.w_uniform

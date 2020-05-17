@@ -12,7 +12,7 @@
 	var/maxhealth = 100
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	var/mob/living/carbon/human/stored_unit = null
+	var/mob/living/human/stored_unit = null
 
 	var/protection_chance = 85 //odds of something hitting the TV
 
@@ -147,7 +147,7 @@
 
 /* Television Technical (reserved)*/
 
-/obj/structure/TV/television/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/structure/TV/television/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
@@ -178,7 +178,7 @@
 
 /* Clocks Technical (reserved)*/
 
-/obj/structure/TV/grandfather/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/structure/TV/grandfather/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")

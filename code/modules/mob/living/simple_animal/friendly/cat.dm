@@ -113,7 +113,7 @@
 	if (O.force)
 		set_flee_target(user? user : loc)
 
-/mob/living/simple_animal/cat/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/cat/attack_hand(mob/living/human/M as mob)
 	. = ..()
 	if (M.a_intent == I_HARM)
 		set_flee_target(M)
@@ -143,7 +143,7 @@
 */
 //Basic friend AI
 /mob/living/simple_animal/cat/fluff
-	var/mob/living/carbon/human/friend
+	var/mob/living/human/friend
 
 /mob/living/simple_animal/cat/fluff/handle_movement_target()
 	if (friend)

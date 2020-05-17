@@ -1,7 +1,7 @@
 /datum/job/portuguese
 	faction = "Human"
 
-/datum/job/portuguese/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/portuguese/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_portuguese_name(H.gender)
 	H.real_name = H.name
 
@@ -21,7 +21,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/portuguese/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -64,7 +64,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/portuguese/qm/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -107,7 +107,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/portuguese/boatswain/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -148,7 +148,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/portuguese/midshipman/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -186,7 +186,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/portuguese/surgeon/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -224,7 +224,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/portuguese/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -268,7 +268,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/portuguese/cook/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //jacket
@@ -318,7 +318,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/portuguese/seaman/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/seaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -373,7 +373,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/portuguese/army_commander/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/army_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -416,7 +416,7 @@
 	min_positions = 2
 	max_positions = 20
 
-/datum/job/portuguese/army_officer/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/army_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -456,7 +456,7 @@
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/portuguese/field_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/field_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -495,7 +495,7 @@
 	min_positions = 12
 	max_positions = 100
 
-/datum/job/portuguese/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
@@ -535,7 +535,7 @@
 	min_positions = 4
 	max_positions = 20
 
-/datum/job/portuguese/chasseur/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/chasseur/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes

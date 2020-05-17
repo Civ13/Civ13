@@ -753,7 +753,7 @@
 /obj/structure/farming/plant/examine(mob/user)
 	..(user)
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.getStatCoeff("farming")>= 1.6 && H.getStatCoeff("farming") < 2.2)
 			var/water_desc = "healthy"
 			if (water/max_water < 0.66 && water/max_water >= 0.33)

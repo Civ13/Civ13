@@ -5,7 +5,7 @@
 	icon_state = "operating_table"
 	density = TRUE
 	anchored = 1.0
-	var/mob/living/carbon/human/victim = null
+	var/mob/living/human/victim = null
 	var/strapped = 0.0
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -61,8 +61,8 @@
 	return
 
 /obj/structure/optable/proc/check_victim()
-	if (locate(/mob/living/carbon/human, loc))
-		var/mob/living/carbon/human/M = locate(/mob/living/carbon/human, loc)
+	if (locate(/mob/living/human, loc))
+		var/mob/living/human/M = locate(/mob/living/human, loc)
 		if (M.lying)
 			return TRUE
 	victim = null
@@ -85,7 +85,7 @@
 /obj/structure/optable/MouseDrop_T(mob/target, mob/user)
 
 	var/mob/living/M = user
-	if (user.stat || user.restrained() || !check_table(user) || !iscarbon(target))
+	if (user.stat || user.restrained() || !check_table(user) || !ishuman(target))
 		return
 	if (istype(M))
 		take_victim(target,user)
@@ -105,7 +105,7 @@
 /obj/structure/optable/attackby(obj/item/weapon/W as obj, mob/living/carbon/user as mob)
 	if (istype(W, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = W
-		if (iscarbon(G.affecting) && check_table(G.affecting))
+		if (ishuman(G.affecting) && check_table(G.affecting))
 			take_victim(G.affecting,usr)
 			qdel(W)
 			return

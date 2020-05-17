@@ -141,7 +141,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 		return FALSE
 	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))
 		var/turf/floor/dirt/underground/U = src
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.ant)
 			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
@@ -339,8 +339,8 @@ var/const/enterloopsanity = 100
 			return ..()
 
 
-		if (istype(M, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = M
+		if (istype(M, /mob/living/human))
+			var/mob/living/human/H = M
 			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
 				if (H.overlays_standing[25])
 					H.overlays_standing[25] = null
@@ -452,7 +452,7 @@ var/const/enterloopsanity = 100
 	..()
 
 //returns TRUE if made bloody, returns FALSE otherwise
-/turf/add_blood(mob/living/carbon/human/M as mob)
+/turf/add_blood(mob/living/human/M as mob)
 	if (!..())
 		return FALSE
 

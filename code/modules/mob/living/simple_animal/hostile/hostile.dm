@@ -12,7 +12,7 @@
 	if (behaviour == "hostile")
 		for(var/mob/living/ML in the_targets)
 			if (ishuman(ML))
-				var/mob/living/carbon/human/H = ML
+				var/mob/living/human/H = ML
 				if (H.faction_text == src.faction)
 					the_targets -= ML
 			if (istype(ML, /mob/living/simple_animal/hostile/human) && ML.faction == src.faction)
@@ -29,8 +29,8 @@
 
 		if (isliving(A))
 			var/mob/living/L = A
-			if (istype(L, /mob/living/carbon/human))
-				var/mob/living/carbon/human/RH = L
+			if (istype(L, /mob/living/human))
+				var/mob/living/human/RH = L
 				if (RH.faction_text == faction && !attack_same)
 					continue
 				else if (RH in friends)
@@ -103,7 +103,7 @@
 
 	var/damage = pick(melee_damage_lower,melee_damage_upper)
 	if (ishuman(target_mob))
-		var/mob/living/carbon/human/H = target_mob
+		var/mob/living/human/H = target_mob
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
 		if (istype(src, /mob/living/simple_animal/mouse))
@@ -119,7 +119,7 @@
 		else
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)
 			visible_message("\The [src] bites off [H]'s limb!")
-			for(var/mob/living/carbon/human/NB in view(6,src))
+			for(var/mob/living/human/NB in view(6,src))
 				NB.mood -= 10
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob

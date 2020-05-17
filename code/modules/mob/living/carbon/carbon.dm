@@ -39,8 +39,8 @@
 			var/obj/item/I = user.get_active_hand()
 			if (I && I.force)
 				var/d = rand(round(I.force / 4), I.force)
-				if (istype(src, /mob/living/carbon/human))
-					var/mob/living/carbon/human/H = src
+				if (istype(src, /mob/living/human))
+					var/mob/living/human/H = src
 					var/obj/item/organ/external/organ = H.get_organ("chest")
 					if (istype(organ))
 						if (organ.take_damage(d, FALSE))
@@ -69,7 +69,7 @@
 /mob/living/carbon/attack_hand(mob/M as mob)
 	if (!istype(M, /mob/living/carbon)) return
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
 		if (H.hand)
 			temp = H.organs_by_name["l_hand"]
@@ -129,8 +129,8 @@
 
 /mob/living/carbon/proc/help_shake_act(mob/living/carbon/M)
 	if (health >= config.health_threshold_crit)
-		if (src == M && istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = src
+		if (src == M && istype(src, /mob/living/human))
+			var/mob/living/human/H = src
 			H.exam_self()
 			/*visible_message( \
 				text("\blue [src] examines [].",gender==MALE?"himself":"herself"), \
@@ -208,12 +208,12 @@
 				t_him = "him"
 			else if (gender == FEMALE)
 				t_him = "her"
-			if (istype(src,/mob/living/carbon/human) && src:w_uniform)
-				var/mob/living/carbon/human/H = src
+			if (istype(src,/mob/living/human) && src:w_uniform)
+				var/mob/living/human/H = src
 				H.w_uniform.add_fingerprint(M)
 
 			var/show_ssd
-			var/mob/living/carbon/human/H = src
+			var/mob/living/human/H = src
 			if (istype(H)) show_ssd = H.species.show_ssd
 			if (show_ssd && !client && !teleop)
 				M.visible_message("<span class='notice'>[M] shakes [src] trying to wake [t_him] up!</span>", \
@@ -225,7 +225,7 @@
 				M.visible_message("<span class='notice'>[M] shakes [src] trying to wake [t_him] up!</span>", \
 									"<span class='notice'>You shake [src] trying to wake [t_him] up!</span>")
 			else
-				var/mob/living/carbon/human/hugger = M
+				var/mob/living/human/hugger = M
 				if (istype(hugger))
 					hugger.species.hug(hugger,src)
 				else
@@ -260,7 +260,7 @@
 /mob/living/carbon/clean_blood()
 	. = ..()
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.gloves)
 			if (H.gloves.clean_blood())
 				H.update_inv_gloves(0)
@@ -291,7 +291,7 @@
 
 	// hack to stop people from throwing molotovs over the grace wall - Kachnov
 	if (ishuman(src) && !istype(get_area(src), /area/caribbean/admin))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.original_job)
 			if (istype(item, /obj/item/weapon/reagent_containers/food/drinks/bottle))
 				var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = item
@@ -324,10 +324,10 @@
 
 	var/throwtime_divider = 4
 	if (istype(item, /obj/item/weapon/material/thrown))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		H.adaptStat("throwing", 0.05)
 	else if (isitem(item))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		var/obj/item/I = item
 		switch (I.w_class)
 			if (2)
@@ -339,7 +339,7 @@
 			if (5)
 				throwtime_divider *= 0.5 + H.getStat("throwing")/100
 	else if (ismob(item))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		throwtime_divider *= 0.5 + H.getStat("throwing")/100
 	//actually throw it!
 

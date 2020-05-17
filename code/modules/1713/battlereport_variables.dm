@@ -1,4 +1,4 @@
-#define BATTLEREPORT_VARIABLE_CHECK(_mob) if (!istype(_mob, /mob/living/carbon/human/corpse) && (!get_area(_mob) || !istype(get_area(_mob), /area/caribbean/admin)))
+#define BATTLEREPORT_VARIABLE_CHECK(_mob) if (!istype(_mob, /mob/living/human/corpse) && (!get_area(_mob) || !istype(get_area(_mob), /area/caribbean/admin)))
 
 var/list/alive_british = list()
 var/list/alive_pirates = list()
@@ -57,7 +57,7 @@ var/list/dead_chinese = list()
 
 var/list/recently_died = list()
 
-/mob/living/carbon/human/proc/get_battle_report_lists()
+/mob/living/human/proc/get_battle_report_lists()
 
 	var/list/alive = list()
 	var/list/injured = list()
@@ -134,13 +134,13 @@ var/list/recently_died = list()
 				alive = alive_chinese
 	return list(alive, dead, injured)
 
-/mob/living/carbon/human/death()
+/mob/living/human/death()
 	if (original_job_title == "Nomad")
 		if (civilization != "none" && map.custom_civs[civilization][4])
 			if (map.custom_civs[civilization][4].real_name == real_name)
 				map.custom_civs[civilization][4] = null
 	BATTLEREPORT_VARIABLE_CHECK(src)
-		if (!istype(src, /mob/living/carbon/human/corpse))
+		if (!istype(src, /mob/living/human/corpse))
 			var/list/lists = get_battle_report_lists()
 			var/list/alive = lists[1]
 			var/list/dead = lists[2]
@@ -161,7 +161,7 @@ var/list/recently_died = list()
 	..()
 
 
-/mob/living/carbon/human/Life()
+/mob/living/human/Life()
 
 	var/list/lists = get_battle_report_lists()
 	var/list/alive = lists[1]
@@ -171,7 +171,7 @@ var/list/recently_died = list()
 	..()
 
 	BATTLEREPORT_VARIABLE_CHECK(src)
-		if (istype(src, /mob/living/carbon/human/corpse))
+		if (istype(src, /mob/living/human/corpse))
 			return
 
 		if (recently_died.Find(getRoundUID()))

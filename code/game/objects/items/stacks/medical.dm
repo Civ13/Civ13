@@ -16,12 +16,12 @@
 			user << "<span class='warning'>\The [src] cannot be applied to [C]!</span>"
 		return TRUE
 
-	if (!istype(user, /mob/living/carbon/human))
+	if (!istype(user, /mob/living/human))
 		user << "<span class='warning'>You don't have the dexterity to do this!</span>"
 		return TRUE
 
-	if (istype(C, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = C
+	if (istype(C, /mob/living/human))
+		var/mob/living/human/H = C
 
 		H.UpdateDamageIcon()
 
@@ -48,8 +48,8 @@
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting && affecting.open == FALSE)
@@ -113,8 +113,8 @@
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting && (affecting.open == FALSE || (affecting.open && !affecting.is_disinfected())))
@@ -163,7 +163,7 @@
 				if (affecting)
 					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
 
-		var/mob/living/carbon/human/H_user = user
+		var/mob/living/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
 			if (affecting && affecting.open == FALSE)
 				if (affecting.is_bandaged() && affecting.is_disinfected())
@@ -183,8 +183,8 @@
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting)
@@ -228,7 +228,7 @@
 				if (affecting)
 					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than some healing herbs!</span>"
 
-		var/mob/living/carbon/human/H_user = user
+		var/mob/living/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
 			if (affecting)
 				if (affecting.is_salved() && affecting.is_disinfected())
@@ -251,8 +251,8 @@
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting.is_disinfected())
@@ -300,8 +300,8 @@
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting && affecting.open == FALSE)
@@ -336,8 +336,8 @@
 /obj/item/stack/medical/splint/attack(mob/living/carbon/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
-	if (istype(M, /mob/living/carbon/human) && user.targeted_organ != "random")
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human) && user.targeted_organ != "random")
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 		var/limb = "chest"
 		if (affecting)

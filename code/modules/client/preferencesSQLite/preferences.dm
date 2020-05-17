@@ -151,7 +151,7 @@ var/list/preferences_datums = list()
 
 	return TRUE
 
-/datum/preferences/proc/copy_to(mob/living/carbon/human/character, safety = FALSE)
+/datum/preferences/proc/copy_to(mob/living/human/character, safety = FALSE)
 	// Sanitizing rather than saving as someone might still be editing when copy_to occurs.
 	player_setup.sanitize_setup()
 	if (be_random_name)

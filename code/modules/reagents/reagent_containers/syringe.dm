@@ -92,8 +92,8 @@
 							user << "<span class='warning'>You are unable to locate any blood. (To be specific, your target seems to be missing their DNA datum).</span>"
 							return
 						var/datum/reagent/B
-						if (istype(T, /mob/living/carbon/human))
-							var/mob/living/carbon/human/H = T
+						if (istype(T, /mob/living/human))
+							var/mob/living/human/H = T
 							if (H.species && H.species.flags & NO_BLOOD)
 								H.reagents.trans_to_obj(src, amount)
 							else
@@ -142,7 +142,7 @@
 					user << "<span class='notice'>[target] is full.</span>"
 					return
 
-				var/mob/living/carbon/human/H = target
+				var/mob/living/human/H = target
 				if (istype(H))
 					var/tgt = user.targeted_organ
 					if (user.targeted_organ == "random")
@@ -230,9 +230,9 @@
 
 	proc/syringestab(mob/living/carbon/target as mob, mob/living/carbon/user as mob)
 
-		if (istype(target, /mob/living/carbon/human))
+		if (istype(target, /mob/living/human))
 
-			var/mob/living/carbon/human/H = target
+			var/mob/living/human/H = target
 			var/tgt = user.targeted_organ
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")

@@ -1,4 +1,4 @@
-/proc/getHumanBreakoutTime(var/mob/living/carbon/human/H, var/time = 100)
+/proc/getHumanBreakoutTime(var/mob/living/human/H, var/time = 100)
 	if (!istype(H))
 		return time
 	return time /= (H.getStatCoeff("strength")*H.getStatCoeff("strength"))
@@ -52,7 +52,7 @@
 		breakouttime = HC.breakouttime
 		displaytime = breakouttime / 600 //Minutes
 
-//	var/mob/living/carbon/human/H = src
+//	var/mob/living/human/H = src
 
 	visible_message(
 		"<span class='danger'>\The [src] attempts to remove \the [HC]!</span>",
@@ -107,7 +107,7 @@
 
 /mob/living/carbon/proc/can_break_cuffs()
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		return H.getStatCoeff("strength") >= 2.3
 
 /mob/living/carbon/proc/break_handcuffs()

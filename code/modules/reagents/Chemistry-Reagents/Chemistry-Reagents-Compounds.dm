@@ -187,7 +187,7 @@
 
 /datum/reagent/acid/affect_touch(var/mob/living/carbon/M, var/alien, var/removed) // This is the most interesting
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.head)
 		/*	if (H.head.unacidable)
 				H << "<span class='danger'>Your [H.head] protects you from the acid.</span>"

@@ -49,7 +49,7 @@
 	..()
 	default_material = null
 
-/obj/item/weapon/material/sword/magic/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
+/obj/item/weapon/material/sword/magic/attack(mob/living/human/M as mob, mob/living/user as mob)
 	..()
 	if(prob(weakens))
 		M.Weaken(weakenpower)
@@ -236,7 +236,7 @@
 
 //Utility
 /obj/item/weapon/material/magic/wand/examine(mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	user << "<span class='notice'>[desc]</span>"
 	user << "<span class='notice'>The currently active spell is [magic_state]</span>"
 	if(H.getStat("magic") <= 100)

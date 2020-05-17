@@ -13,7 +13,7 @@
 	// make stuff invisible while we're scoping
 	for (current in current_list)
 
-		var/mob/living/carbon/human/H = current
+		var/mob/living/human/H = current
 
 		if (!isDeleted(H))
 			try

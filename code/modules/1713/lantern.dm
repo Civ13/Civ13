@@ -177,7 +177,7 @@
 	else
 		item_state = "tikitorch"
 
-/obj/item/flashlight/tiki_torch/attack_hand(var/mob/living/carbon/human/user)
+/obj/item/flashlight/tiki_torch/attack_hand(var/mob/living/human/user)
 	attack_self(user)
 
 /obj/item/flashlight/tiki_torch/verb_pickup()

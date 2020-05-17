@@ -57,7 +57,7 @@
 		colorov.color = customcolor
 		overlays += colorov
 
-/obj/structure/fuelpump/attack_hand(var/mob/living/carbon/human/user)
+/obj/structure/fuelpump/attack_hand(var/mob/living/human/user)
 	if (unlocked)
 		if (unlockedvol>0)
 			var/ch3 = WWinput("This pump still has [unlockedvol] inside! Are you sure you want to finish?","[name]","No",list("No","Yes"))
@@ -158,7 +158,7 @@
 	set category = null
 	set src in range(1, usr)
 
-	var/mob/living/carbon/human/user
+	var/mob/living/human/user
 
 	if (ishuman(usr))
 		user = usr

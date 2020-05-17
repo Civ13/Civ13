@@ -28,7 +28,7 @@
 //Checking for protections
 		var/eye_safety = 0
 		var/ear_safety = 0
-		if(iscarbon(M))
+		if(ishuman(M))
 			eye_safety = M.eyecheck()
 			if(ishuman(M))
 				if(istype(M:l_ear, /obj/item/clothing/ears/earmuffs) || istype(M:r_ear, /obj/item/clothing/ears/earmuffs))
@@ -70,7 +70,7 @@
 
 //This really should be in mob not every check
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
 			if (E && E.damage >= E.min_bruised_damage)
 				M << "<span class='danger'>Your eyes start to burn badly!</span>"

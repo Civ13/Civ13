@@ -96,7 +96,7 @@
 
 		// check for TK users
 
-/*		if (istype(usr, /mob/living/carbon/human))
+/*		if (istype(usr, /mob/living/human))
 			if (istype(usr.l_hand, /obj/item/tk_grab) || istype(usr.r_hand, /obj/item/tk_grab/))
 				if (!(usr in nearby))
 					if (usr.client && usr.using_object==src)
@@ -174,5 +174,5 @@
 		if(damtype == BURN)
 			. |= DAM_LASER
 
-/obj/proc/secondary_attack_self(mob/living/carbon/human/user)
+/obj/proc/secondary_attack_self(mob/living/human/user)
 	return

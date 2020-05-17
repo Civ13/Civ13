@@ -11,7 +11,7 @@
 	else
 		var/M_faction = null
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			if (map.civilizations)
 				M_faction = H.civilization
 			else
@@ -38,7 +38,7 @@
 
 		var/M_faction = null
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			if (map.civilizations)
 				M_faction = H.civilization
 			else

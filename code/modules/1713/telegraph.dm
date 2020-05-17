@@ -259,7 +259,7 @@
 	var/list/storedphrases = list()
 	var/on = FALSE
 	var/bdrunning = FALSE
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 
 /obj/structure/radiorecorder/update_icon()
 	..()

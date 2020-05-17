@@ -13,7 +13,7 @@
 	not_disassemblable = TRUE
 	var/obj/item/weapon/gun/projectile/custom/current_gun = null
 
-/obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/carbon/human/user as mob)
+/obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/human/user as mob)
 	if (istype(P, /obj/item/stack/material/wood))
 		user << "You begin cutting the wood..."
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
@@ -47,7 +47,7 @@
 /obj/item/weapon/gun/projectile
 	var/rechambered = FALSE
 
-/obj/structure/gunbench/proc/rechamber_gun(var/obj/item/weapon/gun/projectile/P, var/mob/living/carbon/human/H)
+/obj/structure/gunbench/proc/rechamber_gun(var/obj/item/weapon/gun/projectile/P, var/mob/living/human/H)
 	var/list/caliber_options = list("Cancel")
 	//custom guns:
 	if (istype(P, /obj/item/weapon/gun/projectile/custom))
@@ -129,7 +129,7 @@
 				var/list/split_desc = splittext(P.desc, ". Rechambered into")
 				P.desc = "[split_desc[1]]. Rechambered into [choice]."
 /obj/structure/gunbench/attack_hand(var/mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
 		user << "You don't have the skills to design a new gun! Use an existing blueprint."
 		return FALSE

@@ -34,8 +34,8 @@
 					message = stars(message)
 
 	var/speaker_name = speaker.name
-	if (istype(speaker, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = speaker
+	if (istype(speaker, /mob/living/human))
+		var/mob/living/human/H = speaker
 		if (H.special_job_title != null)
 			speaker_name = H.GetVoice()
 		else
@@ -56,7 +56,7 @@
 		message = "<i>[message]</i>"
 	alt_name = speaker_name
 	if (ishuman(speaker))
-		var/mob/living/carbon/human/H = speaker
+		var/mob/living/human/H = speaker
 		if (istype(H.original_job, /datum/job/civilian/prisoner))
 			alt_name = speaker.name
 
@@ -88,7 +88,7 @@
 			playsound_local(source, speech_sound, sound_vol, TRUE)
 
 	if (language && ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (!H.languages.Find(language) && world.time >= src.next_language_learn)
 			src.next_language_learn = world.time + 60 // Cooldown is 60 ticks seconds = 6 seconds
 			var/lname = capitalize(language.name)

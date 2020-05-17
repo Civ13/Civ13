@@ -32,7 +32,7 @@ var/global/soldiers[17]
 	// redefine these since they don't exist in /datum
 	var/icon = 'icons/mob/hud_1713.dmi'
 	var/icon_state = ""
-	var/mob/living/carbon/human/holder = null
+	var/mob/living/human/holder = null
 	var/title = "Something that shouldn't exist"
 	var/list/objectives = list()
 	var/team = null
@@ -186,7 +186,7 @@ var/global/soldiers[17]
 /datum/faction/arab/base_type()
 	return "/datum/faction/arab"
 // CODE
-/datum/faction/New(var/mob/living/carbon/human/H, var/datum/job/J)
+/datum/faction/New(var/mob/living/human/H, var/datum/job/J)
 
 	if (!H || !istype(H))
 		return

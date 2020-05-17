@@ -1,8 +1,8 @@
-/mob/living/carbon/human/var/list/next_look_at = list()
-/mob/living/carbon/human/examine(var/mob/user)
+/mob/living/human/var/list/next_look_at = list()
+/mob/living/human/examine(var/mob/user)
 
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (!H.next_look_at.Find(getRoundUID(TRUE)) || H.next_look_at[getRoundUID(TRUE)] <= world.time)
 			H.visible_message("<small>[H] looks at [src].</small>")
 			H.next_look_at[getRoundUID(TRUE)] = world.time + 100
@@ -213,8 +213,8 @@
 
 	var/health_percentage = health
 
-	if (istype(user, /mob/living/carbon/human) && user:species)
-		var/mob/living/carbon/human/H = user
+	if (istype(user, /mob/living/human) && user:species)
+		var/mob/living/human/H = user
 		health_percentage = (health/H.species.total_health) * 100
 
 	if (health_percentage <= 75 && health_percentage > 50)//Is the person a little hurt?
@@ -284,7 +284,7 @@
 	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13)
 		if (original_job)
 			if (ishuman(user) && user != src)
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				if (H.original_job)
 					if (H.original_job.base_type_flag() == original_job.base_type_flag()) // when you ghost, mind.assigned_job is set to null
 						if (original_job.en_meaning)
@@ -297,7 +297,7 @@
 				msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"
 	else if (map.ID == MAP_LITTLE_CREEK)
 		if (ishuman(user) && user != src)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (H.original_job)
 				if (H.original_job_title == original_job_title && original_job_title == "East Side Gang")
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
@@ -306,7 +306,7 @@
 
 	else if (map.ID == MAP_GULAG13)
 		if (ishuman(user) && user != src)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (istype(H.original_job, /datum/job/civilian/prisoner) && istype(original_job, /datum/job/civilian/prisoner))
 				msg += "<br><i>You recognize [T.him] as a prisoner named <b>[real_name]</b>.</i>"
 				var/datum/job/civilian/prisoner/PT = original_job
@@ -317,7 +317,7 @@
 					msg += "<br><i>You recognize [T.him] as a fellow <b>collaborator</b>!</i>"
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (H.religion == religion && religion_style == "Cultists" && religious_clergy == "Cultists")
 				msg += "<br><i>You recognize [T.him] as an ordained <b>Cultist</b> of your cult, <b>[religion]</b>.</i>"
 			else if (H.religion == religion && religion_style == "Cultists" && religious_clergy != "Cultists")
@@ -354,7 +354,7 @@
 				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
 
 		else if (ishuman(user) && user == src)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (H.civilization != "none")
 				msg += "<br><i>You belong to <b>[H.civilization]</b>.</i>"
 				if (map && map.custom_civs[H.civilization][4] && map.custom_civs[H.civilization][4].real_name == H.real_name)
@@ -368,7 +368,7 @@
 
 	user << msg
 
-/mob/living/carbon/human/Topic(href, href_list[], hsrc)
+/mob/living/human/Topic(href, href_list[], hsrc)
 
 	..()
 

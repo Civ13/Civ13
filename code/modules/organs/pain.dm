@@ -31,7 +31,7 @@ mob/var/next_pain_time = FALSE
 			no_pain_prob += E.volume
 		if (prob(no_pain_prob))
 			return
-	if (amount > 10 && istype(src,/mob/living/carbon/human))
+	if (amount > 10 && istype(src,/mob/living/human))
 		if (src:paralysis)
 			src:paralysis = max(0, src:paralysis-round(amount/10))
 	var/msg
@@ -86,7 +86,7 @@ mob/living/carbon/proc/custom_pain(var/message, var/power = 0, var/force = FALSE
 			to_chat(src, "<b>[message]</b>")
 	next_pain_time = world.time + (100-power)
 
-mob/living/carbon/human/proc/handle_pain()
+mob/living/human/proc/handle_pain()
 	if(stat)
 		return
 	if(world.time < next_pain_time)
@@ -133,7 +133,7 @@ mob/living/carbon/human/proc/handle_pain()
 			if(61 to INFINITY)
 				custom_pain("Your body aches all over, it's driving you mad.", getToxLoss())
 
-/mob/living/carbon/human/proc/painchecks()
+/mob/living/human/proc/painchecks()
 	if (stat >= 2)
 		return
 	if (species.flags & NO_PAIN)
@@ -151,7 +151,7 @@ mob/living/carbon/human/proc/handle_pain()
 	else
 		return TRUE
 
-mob/living/carbon/human/proc/suffer_well(var/prob)
+mob/living/human/proc/suffer_well(var/prob)
 	if (prob(prob) && !stat)
 		emote("agony")
 		Weaken(10)

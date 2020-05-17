@@ -45,7 +45,7 @@
 /obj/item/weapon/handcuffs/proc/place_handcuffs(var/mob/living/carbon/target, var/mob/user)
 	playsound(loc, cuff_sound, 30, TRUE, -2)
 
-	var/mob/living/carbon/human/H = target
+	var/mob/living/human/H = target
 	if (!istype(H))
 		return FALSE
 
@@ -80,11 +80,11 @@
 	return TRUE
 
 var/last_chew = FALSE
-/mob/living/carbon/human/RestrainedClickOn(var/atom/A)
+/mob/living/human/RestrainedClickOn(var/atom/A)
 	if (A != src) return ..()
 	if (last_chew + 26 > world.time) return
 
-	var/mob/living/carbon/human/H = A
+	var/mob/living/human/H = A
 	if (!H.handcuffed) return
 	if (H.a_intent != I_HARM) return
 	if (H.targeted_organ != "mouth") return

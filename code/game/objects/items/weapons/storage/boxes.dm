@@ -99,7 +99,7 @@
 	..(user)
 	user << "It has [currcap] matches out of a maximum of [maxcap]."
 
-/obj/item/weapon/matchbox/attack_hand(mob/living/carbon/human/H)
+/obj/item/weapon/matchbox/attack_hand(mob/living/human/H)
 	if (currcap>=1 && (src == H.l_hand || src == H.r_hand))
 		H << "You take a match from the matchbox."
 		H.put_in_hands(new/obj/item/weapon/flame/match(H))

@@ -39,7 +39,7 @@
 
 	var/enabled = TRUE
 
-/datum/job/proc/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/proc/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
 	return FALSE
@@ -47,7 +47,7 @@
 /datum/job/proc/get_keys()
 	return list()
 
-/datum/job/proc/equip(var/mob/living/carbon/human/H)
+/datum/job/proc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 	//Put items in hands
@@ -85,7 +85,7 @@
 
 	return TRUE
 
-/datum/job/proc/update_character(var/mob/living/carbon/human/H)
+/datum/job/proc/update_character(var/mob/living/human/H)
 	return TRUE
 
 /datum/job/proc/get_access()
@@ -98,14 +98,14 @@
 /datum/job/proc/available_in_days(client/C)
 	return FALSE
 
-/datum/job/proc/apply_fingerprints(var/mob/living/carbon/human/target)
+/datum/job/proc/apply_fingerprints(var/mob/living/human/target)
 	if (!istype(target))
 		return FALSE
 	for (var/obj/item/item in target.contents)
 		apply_fingerprints_to_item(target, item)
 	return TRUE
 
-/datum/job/proc/apply_fingerprints_to_item(var/mob/living/carbon/human/holder, var/obj/item/item)
+/datum/job/proc/apply_fingerprints_to_item(var/mob/living/human/holder, var/obj/item/item)
 	item.add_fingerprint(holder,1)
 	if (item.contents.len)
 		for (var/obj/item/sub_item in item.contents)

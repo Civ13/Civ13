@@ -50,11 +50,11 @@
 	else if (!locate(using_MG) in range(1, src) || stop_using)
 		use_MG(null)
 
-/mob/living/carbon/human/Move()
+/mob/living/human/Move()
 	handle_MG_operation()
 	..()
 
-/mob/living/carbon/human/update_canmove()
+/mob/living/human/update_canmove()
 	if (lying || stat)
 		handle_MG_operation(stop_using = TRUE)
 	..()

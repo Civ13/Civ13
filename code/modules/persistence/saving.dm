@@ -32,7 +32,7 @@
 
 /proc/list2text_assoc_mob(var/mob/A)
 	. = list()
-	if (istype(A, /mob/living/carbon/human))
+	if (istype(A, /mob/living/human))
 		for (var/key in A.vars)
 			if (A.vars[key] != initial(A.vars[key]))
 				if (islist(A.vars[key]))

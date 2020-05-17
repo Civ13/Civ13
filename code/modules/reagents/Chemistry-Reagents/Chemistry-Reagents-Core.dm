@@ -24,7 +24,7 @@
 /datum/reagent/blood/touch_turf(var/turf/T)
 	if (!istype(T) || volume < 3)
 		return
-	if (!data["donor"] || istype(data["donor"], /mob/living/carbon/human))
+	if (!data["donor"] || istype(data["donor"], /mob/living/human))
 		blood_splatter(T, src, TRUE)
 
 /datum/reagent/blood/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)

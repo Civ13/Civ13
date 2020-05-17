@@ -46,7 +46,7 @@ default behaviour is:
 
 	// no more pushing people past caribbean blocks - Kachnov
 	if (istype(AM, /obj/structure/closet))
-		for (var/mob/living/carbon/human/H in AM)
+		for (var/mob/living/human/H in AM)
 			if (map.check_caribbean_block(H, get_step(get_turf(AM), dir)))
 				return
 
@@ -81,8 +81,8 @@ default behaviour is:
 				return
 
 			if (can_swap_with(tmob)) // mutual brohugs all around!
-				if (istype(src, /mob/living/carbon/human))
-					var/mob/living/carbon/human/H = src
+				if (istype(src, /mob/living/human))
+					var/mob/living/human/H = src
 					if (H.riding)
 						var/mob/living/simple_animal/horse/HR = H.riding_mob
 						if (!tmob.anchored)
@@ -195,9 +195,9 @@ default behaviour is:
 
 //sort of a legacy burn method for /electrocute, /shock, and the e_chair
 /mob/living/proc/burn_skin(burn_amount)
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		//world << "DEBUG: burn_skin(), mutations=[mutations]"
-		var/mob/living/carbon/human/H = src	//make this damage method divide the damage to be done among all the body parts, then burn each body part for that much damage. will have better effect then just randomly picking a body part
+		var/mob/living/human/H = src	//make this damage method divide the damage to be done among all the body parts, then burn each body part for that much damage. will have better effect then just randomly picking a body part
 		var/divided_damage = (burn_amount)/(H.organs.len)
 		var/extradam = FALSE	//added to when organ is at max dam
 		for (var/obj/item/organ/external/affecting in H.organs)
@@ -223,7 +223,7 @@ default behaviour is:
 		temperature -= change
 		if (actual < desired)
 			temperature = desired
-//	if (istype(src, /mob/living/carbon/human))
+//	if (istype(src, /mob/living/human))
 //		world << "[src] ~ [bodytemperature] ~ [temperature]"
 	return temperature
 
@@ -238,7 +238,7 @@ default behaviour is:
 /mob/living/proc/adjustBruteLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	bruteloss = min(max(bruteloss + amount, FALSE),(maxHealth*2))
@@ -250,7 +250,7 @@ default behaviour is:
 /mob/living/proc/adjustOxyLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	oxyloss = min(max(oxyloss + amount, FALSE),(maxHealth*2))
@@ -258,7 +258,7 @@ default behaviour is:
 /mob/living/proc/setOxyLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	oxyloss = amount
@@ -269,7 +269,7 @@ default behaviour is:
 /mob/living/proc/adjustToxLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	toxloss = min(max(toxloss + amount, FALSE),(maxHealth*2))
@@ -277,7 +277,7 @@ default behaviour is:
 /mob/living/proc/setToxLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	toxloss = amount
@@ -288,7 +288,7 @@ default behaviour is:
 /mob/living/proc/adjustFireLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	fireloss = min(max(fireloss + amount, FALSE),(maxHealth*2))
@@ -299,7 +299,7 @@ default behaviour is:
 /mob/living/proc/adjustCloneLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	cloneloss = min(max(cloneloss + amount, FALSE),(maxHealth*2))
@@ -421,7 +421,7 @@ default behaviour is:
 	rejuvenate()
 	if (buckled)
 		buckled.unbuckle_mob()
-	if (iscarbon(src))
+	if (ishuman(src))
 		var/mob/living/carbon/C = src
 
 		if (C.handcuffed && !initial(C.handcuffed))
@@ -772,7 +772,7 @@ default behaviour is:
 		// kind of mob pull value AT ALL, you will be able to pull
 		// them, so don't bother checking that explicitly.
 
-		if (!iscarbon(src))
+		if (!ishuman(src))
 			M.LAssailant = null
 		else
 			M.LAssailant = usr
@@ -800,7 +800,7 @@ default behaviour is:
 		HUD.update_icon()
 /*
 	if (ishuman(AM))
-		var/mob/living/carbon/human/H = AM
+		var/mob/living/human/H = AM
 		if (H.pull_damage())
 			src << "\red <b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"
 */
