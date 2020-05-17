@@ -662,6 +662,7 @@
 #include "code\modules\mob\groups\religions.dm"
 #include "code\modules\mob\language\earth.dm"
 #include "code\modules\mob\language\language.dm"
+#include "code\modules\mob\living\chat_overlay.dm"
 #include "code\modules\mob\living\damage_procs.dm"
 #include "code\modules\mob\living\death.dm"
 #include "code\modules\mob\living\default_language.dm"
