@@ -287,7 +287,7 @@
 #include "code\game\objects\map_metadata\nomads_ice_age.dm"
 #include "code\game\objects\map_metadata\nomads_island.dm"
 #include "code\game\objects\map_metadata\nomads_jungle.dm"
-#include "code\game\objects\map_metadata\nomads_karafuta.dm"
+#include "code\game\objects\map_metadata\nomads_karafuto.dm"
 #include "code\game\objects\map_metadata\nomads_mediterranean.dm"
 #include "code\game\objects\map_metadata\nomads_mountain.dm"
 #include "code\game\objects\map_metadata\nomads_new_world.dm"
@@ -938,5 +938,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\nomads\nomads_wasteland_2.dmm"
+#include "maps\nomads\nomads_karafuto.dmm"
 // END_INCLUDE
