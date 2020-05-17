@@ -203,7 +203,7 @@
 				MAP_TRIBES = 12,
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
-				MAP_FOUR_KINDGOMS = 16
+//				MAP_FOUR_KINDGOMS = 16
 			)
 
 		spawn(10)

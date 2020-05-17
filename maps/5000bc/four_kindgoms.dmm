@@ -452,8 +452,8 @@
 "iJ" = (/obj/structure/barricade/stone_v{color = "#686453"},/obj/covers/cobblestone{color = "#586243"},/obj/structure/religious/monument/cultist/sauron,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "iK" = (/obj/structure/barricade/stone_v{color = "#686453"},/obj/covers/cobblestone{color = "#586243"},/obj/structure/religious/monument/cultist/sauron/reverse,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "iL" = (/turf/floor/dirt,/area/caribbean/admin)
-"iM" = (/turf/wall/void,/area/caribbean/admin)
-"iN" = (/obj/map_metadata/four_kingdoms,/turf/wall/void,/area/caribbean/admin)
+"iM" = (/turf/wall/indestructable/black,/area/caribbean/admin)
+"iN" = (/obj/map_metadata/four_kingdoms,/turf/wall/indestructable/black,/area/caribbean/admin)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadad
