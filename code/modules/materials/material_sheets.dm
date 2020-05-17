@@ -7,6 +7,7 @@
 	throw_speed = 3
 	throw_range = 3
 	max_amount = 50
+	can_stack = TRUE
 
 	var/default_type = DEFAULT_WALL_MATERIAL
 	var/material/material

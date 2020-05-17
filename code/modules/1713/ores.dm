@@ -6,6 +6,7 @@
 	w_class = 2
 	amount = 1
 	max_amount = 50
+	can_stack = TRUE
 	value = 1
 	var/radioactive = FALSE
 	var/radioactive_amt = 0
