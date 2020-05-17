@@ -125,7 +125,7 @@
 		if (getBruteLoss() >= 15)
 			adjustBruteLoss(-2)
 			if (halloss > 40)
-				adjustHalLoss(-10)
+				adjustHalLoss(-30)
 
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
