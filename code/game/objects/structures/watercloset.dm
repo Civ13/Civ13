@@ -878,6 +878,7 @@
 	sound = 'sound/effects/watersplash.ogg'
 	max_volume = 750
 	volume = 750
+	mosquito_limit = 0
 
 /obj/structure/sink/well/sandstone
 	name = "sandstone well"
@@ -934,10 +935,11 @@
 
 	spawn(2000)
 		if (map.chad_mode)
+			mosquito_limit = 1
 			mosquito_proc()
 
 /obj/structure/sink/proc/mosquito_proc()
-	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
+	if (istype(src, /obj/structure/sink/puddle))
 		if (mosquito_count < mosquito_limit && mosquito_limit != 0)
 			var/mob/living/simple_animal/mosquito/NM = new/mob/living/simple_animal/mosquito(src.loc)
 			if(NM != null)//Fix for mosquito weather death.

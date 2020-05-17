@@ -38,8 +38,9 @@
 	else
 		if (istype(W, /obj/item/weapon/pen))
 			usr << browse("", "window=[name]") //Closes the dialog
-		var/obj/P = pages[page]
-		P.attackby(W, user)
+		if (pages.len)
+			var/obj/P = pages[page]
+			P.attackby(W, user)
 
 	update_icon()
 	attack_self(usr) //Update the browsed page.

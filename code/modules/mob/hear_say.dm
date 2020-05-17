@@ -80,9 +80,9 @@
 				src << "<span class='name'>[alt_name]</span> talks but you cannot hear."
 	else
 		if (language)
-			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]")
+			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]",speaker, message)
 		else
-			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"")
+			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"",speaker, message)
 		if (speech_sound && (get_dist(speaker, src) <= 7 && z == speaker.z))
 			var/turf/source = speaker? get_turf(speaker) : get_turf(src)
 			playsound_local(source, speech_sound, sound_vol, TRUE)
@@ -98,8 +98,11 @@
 				H.add_note("Known Languages", "[language.name]")
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"
 
-/mob/proc/on_hear_say(var/message)
+/mob/proc/on_hear_say(var/message, var/mob/speaker = null,var/message2 = "")
 	src << message
+	if (speaker && message2 != "")
+		if (speaker in view(7,src))
+			new/obj/chat_text(speaker,message2)
 
 /mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/radio/source, var/obj/structure/radio/destination)
 

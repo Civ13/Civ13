@@ -257,7 +257,7 @@
 */
 
 /obj/item/vehicleparts/wheel/secondary_attack_self(mob/living/carbon/human/user)
-	if (user.driver_vehicle.axis.currentspeed <= 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
+	if (user && user.driver_vehicle && user.driver_vehicle.axis && user.driver_vehicle.axis.currentspeed <= 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
 		return
 	else
 		user.driver_vehicle.axis.currentspeed--
