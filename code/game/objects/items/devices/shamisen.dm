@@ -1,3 +1,5 @@
+#define MAX_CHARS_PER_LINE 200
+#define MAX_CHARS_TOTAL 20000
 
 /obj/item/shamisen
 	name = "Shamisen"
