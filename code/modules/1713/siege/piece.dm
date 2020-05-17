@@ -412,7 +412,7 @@
 
 	if (href_list["load"])
 		var/obj/item/cannon_ball/M = user.get_active_hand()
-		if (M && istype(M) && do_after(user, caliber/2, src, canmove = istank))
+		if (M && istype(M) && do_after(user, caliber/2, src, can_move = istank))
 			user.remove_from_mob(M)
 			M.loc = src
 			loaded = M

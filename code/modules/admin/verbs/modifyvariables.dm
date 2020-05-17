@@ -583,7 +583,8 @@ var/list/VVckey_edit = list("key", "ckey")
 			else
 				var/var_new =  input("Enter new number:","Num",O.vars[variable]) as null|num
 				if (var_new==null) return
-				O.vars[variable] = var_new
+				if (O)
+					O.vars[variable] = var_new
 
 		if ("type")
 			var/var_new = input("Enter type:","Type",O.vars[variable]) as null|anything in typesof(/obj,/mob,/area,/turf)

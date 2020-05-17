@@ -595,7 +595,7 @@ var/list/admin_verbs_host = list(
 	if (!H) return
 
 	log_and_message_admins("is altering the appearance of [H].")
-	H.change_appearance(APPEARANCE_ALL, usr, usr, check_species_whitelist = FALSE, state = admin_state)
+	H.change_appearance(APPEARANCE_ALL, usr, usr, check_species_whitelist = FALSE, _state = admin_state)
 
 
 /client/proc/change_human_appearance_self()

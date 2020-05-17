@@ -3,6 +3,7 @@
 
 	var/list/epochs = list(
 		//"Stone Age (?-3000 B.C.)" = 0,
+		"Chad Mode" = 0,
 		"Bronze Age (500 B.C.-400 A.D.)" = 0,
 		//"Dark Ages (400-700)" = 0,
 		"Middle Ages (700-1450)" = 0,
@@ -36,6 +37,7 @@
 		map.save_awards()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
+				"Chad Mode" = 0,
 				//Stone Age (?-3000 B.C.)" = 0,
 				"Bronze Age (500 B.C.-400 A.D.)" = 0,
 				//"Dark Ages (400-700)" = 0,
@@ -158,6 +160,11 @@
 				MAP_HERACLEA = 0,
 				MAP_SIEGE = 0,
 				MAP_GLADIATORS = 0,
+			)
+		if (epoch == "Chad Mode")
+	// chad mode group for TDM
+			maps = list(
+				MAP_JUNGLE_OF_THE_CHADS = 0,
 			)
 		if (epoch == "Middle Ages (700-1450)")
 	//	1013 - TDM

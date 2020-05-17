@@ -182,7 +182,7 @@
 			skip
 
 
-	if (W == A) // Handle attack_self
+	if (W && W == A) // Handle attack_self
 		W.attack_self(src)
 		if (hand)
 			update_inv_l_hand(0)
