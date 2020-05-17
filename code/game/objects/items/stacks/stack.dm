@@ -155,7 +155,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 /obj/item/stack/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, type))
 		var/obj/item/stack/S = W
-		src.transfer_to(S, 1)
+		S.merge(src)
 		S.update_icon()
 		src.update_icon()
 		spawn(0) //give the stacks a chance to delete themselves if necessary
