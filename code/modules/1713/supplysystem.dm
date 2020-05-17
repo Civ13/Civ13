@@ -48,9 +48,9 @@
 		list("governor","blunderbuss crate (5)", /obj/structure/closet/crate/blunderbusses,495),
 	)
 
-	/obj/structure/supplybook/New()
-		src.import_tax_rate = global.global_import_tax
-		return ..()
+/obj/structure/supplybook/New()
+	src.import_tax_rate = global.global_import_tax
+	return ..()
 
 /obj/structure/exportbook
 	name = "exporting book"
