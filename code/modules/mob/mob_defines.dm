@@ -63,7 +63,7 @@
 	var/canmove = TRUE
 	//Allows mobs to move through dense areas without restriction. For instance, in space or out of holder objects.
 	var/incorporeal_move = FALSE //0 is off, TRUE is normal, 2 is for ninjas.
-	var/
+
 	var/list/pinned = list()			// List of things pinning this creature to walls (see living_defense.dm)
 	var/list/embedded = list()		  // Embedded items, since simple mobs don't have organs.
 	var/list/languages = list()		 // For speaking/listening.
@@ -171,7 +171,7 @@
 
 	var/list/HUDneed = list() // What HUD object need see
 	var/list/HUDinventory = list()
-	var/list/HUDfrippery = list()//сaестелee e перaелee
+	var/list/HUDfrippery = list()//пїЅaпїЅпїЅпїЅпїЅпїЅee e пїЅпїЅпїЅaпїЅпїЅee
 	var/list/HUDprocess = list() //What HUD object need process
 	var/list/HUDtech = list()
 	var/defaultHUD = "" //Default mob hud
