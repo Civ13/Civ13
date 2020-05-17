@@ -19,13 +19,14 @@
 	var/build_type = null //used when directly applied to a turf
 	var/real_value = 1
 	value = 1
+	var/can_stack = FALSE //Determines if stacks should be auto-merged.
 	var/customcolor = "FFFFFF"
 	var/customcolor1 = "000000"
 	var/customcolor2 = "FFFFFF"
 	var/customcode = "0000"
 	var/customname = ""
 
-/obj/item/stack/New(var/loc, var/_amount=0, var/merge = TRUE)
+/obj/item/stack/New(var/loc, var/_amount=0, var/merge = can_stack)
 	..()
 	if (!stacktype)
 		stacktype = type
@@ -99,7 +100,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 //attempts to transfer amount to S, and returns the amount actually transferred
 /obj/item/stack/proc/transfer_to(obj/item/stack/S, var/_amount=null)
-	if ((stacktype != S.stacktype))
+	if (stacktype != S.stacktype)
 		return FALSE
 	if (isnull(_amount))
 		_amount = amount
@@ -154,8 +155,8 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 /obj/item/stack/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, type))
 		var/obj/item/stack/S = W
-		merge(S)
-		W.update_icon()
+		src.transfer_to(S, 1)
+		S.update_icon()
 		src.update_icon()
 		spawn(0) //give the stacks a chance to delete themselves if necessary
 		if (S && usr.using_object == S)
@@ -1859,7 +1860,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			build_override_vending.add_fingerprint(user)
 			qdel(O)
 			return
-
+		else if (istype(O, /obj/item/stack))
+			var/obj/item/stack/S = O
+			S.amount = produced
+			S.update_icon()
 		else if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
 			new/obj/item/weapon/clay/verysmallclaypot(get_turf(O))
 		else if (istype(O, /obj/item/ammo_casing/stone))
