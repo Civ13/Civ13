@@ -35,7 +35,7 @@
 		maptext_width = TILE_SIZE*ceil(11*0.5)
 		maptext_x = -(maptext_width-TILE_SIZE)*0.5
 		maptext_y = TILE_SIZE*0.75
-		maptext = "<center><font size=1>[desired_text]</font></center>"
+		maptext = "<center>[desired_text]</center>"
 
 		spawn(100)
 			animate(src,alpha=0,time=10)
