@@ -71,7 +71,7 @@
 /obj/structure/optable/process()
 	check_victim()
 
-/obj/structure/optable/proc/take_victim(mob/living/carbon/C, mob/living/carbon/user as mob)
+/obj/structure/optable/proc/take_victim(mob/living/human/C, mob/living/human/user as mob)
 	if (C == user)
 		user.visible_message("[user] climbs on \the [src].","You climb on \the [src].")
 	else
@@ -102,7 +102,7 @@
 
 	take_victim(usr,usr)
 
-/obj/structure/optable/attackby(obj/item/weapon/W as obj, mob/living/carbon/user as mob)
+/obj/structure/optable/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = W
 		if (ishuman(G.affecting) && check_table(G.affecting))
@@ -110,7 +110,7 @@
 			qdel(W)
 			return
 
-/obj/structure/optable/proc/check_table(mob/living/carbon/patient as mob)
+/obj/structure/optable/proc/check_table(mob/living/human/patient as mob)
 	check_victim()
 	if (victim && get_turf(victim) == get_turf(src) && victim.lying)
 		usr << "<span class='warning'>\The [src] is already occupied!</span>"

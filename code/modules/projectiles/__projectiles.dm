@@ -3,7 +3,7 @@
 	damage = DAMAGE_VERY_HIGH + 26
 	penetrating = 4
 	armor_penetration = 33
-	
+
 // XVIII Century stuff
 /obj/item/projectile/bullet/rifle/musketball
 	damage = DAMAGE_VERY_HIGH + 47
@@ -131,7 +131,7 @@
 	New()
 		..()
 		reagents.add_reagent("batrachotoxin",15)
-/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/M as mob)
+/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/human/M as mob)
 	if (prob(10))
 		M.fire_stacks += 1
 	if (M)
@@ -213,7 +213,7 @@
 	gibs = TRUE
 	crushes = TRUE
 
-/obj/item/projectile/arrow/bolt/fire/on_impact(mob/living/carbon/M as mob)
+/obj/item/projectile/arrow/bolt/fire/on_impact(mob/living/human/M as mob)
 	if (prob(10))
 		M.fire_stacks += 1
 	if (M)

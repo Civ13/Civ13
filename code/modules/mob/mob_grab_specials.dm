@@ -153,7 +153,7 @@
 			can_eat = 2
 
 	if (can_eat)
-		var/mob/living/carbon/attacker = user
+		var/mob/living/human/attacker = user
 		user.visible_message("<span class='danger'>[user] is attempting to devour [target]!</span>")
 		if (can_eat == 2)
 			if (!do_mob(user, target, 30)) return

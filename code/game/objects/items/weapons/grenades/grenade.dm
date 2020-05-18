@@ -32,7 +32,7 @@
 
 	// clicking a grenade a second time turned throw mode off, this fixes that
 	if (ishuman(user))
-		var/mob/living/carbon/C = user
+		var/mob/living/human/C = user
 		C.throw_mode_on()
 
 
@@ -160,7 +160,7 @@
 
 			// clicking a grenade a second time turned throw mode off, this fixes that
 			if (ishuman(user))
-				var/mob/living/carbon/C = user
+				var/mob/living/human/C = user
 				C.throw_mode_on()
 			return
 	else if (state == 1 && istype(W, /obj/item/stack/material/rope))

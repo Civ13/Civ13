@@ -10,7 +10,7 @@
 	var/heal_brute = 0
 	var/heal_burn = 0
 	value = 0
-/obj/item/stack/medical/attack(mob/living/carbon/C as mob, mob/user as mob)
+/obj/item/stack/medical/attack(mob/living/human/C as mob, mob/user as mob)
 	if (!istype(C) )
 		if (!istype(C, /mob/living/simple_animal))
 			user << "<span class='warning'>\The [src] cannot be applied to [C]!</span>"
@@ -27,7 +27,7 @@
 
 		H.updatehealth()
 
-	else if (istype(C, /mob/living/carbon))
+	else if (istype(C, /mob/living/human))
 		C.heal_organ_damage((heal_brute/2), (heal_burn/2))
 		user.visible_message( \
 			"<span class='notice'>[C] has been applied with [src] by [user].</span>", \
@@ -109,7 +109,7 @@
 	heal_brute = 0
 	flammable = TRUE
 
-/obj/item/stack/medical/advanced/bruise_pack/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/advanced/bruise_pack/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 
@@ -179,7 +179,7 @@
 	item_state = null
 	amount = 10
 	heal_brute = 0
-/obj/item/stack/medical/advanced/herbs/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/advanced/herbs/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 
@@ -247,7 +247,7 @@
 	heal_brute = 0
 	flammable = TRUE
 
-/obj/item/stack/medical/advanced/sulfa/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/advanced/sulfa/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 
@@ -296,7 +296,7 @@
 	amount = 10
 
 
-/obj/item/stack/medical/advanced/ointment/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/advanced/ointment/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 
@@ -333,7 +333,7 @@
 	amount = 5
 	max_amount = 5
 
-/obj/item/stack/medical/splint/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/splint/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 	if (istype(M, /mob/living/human) && user.targeted_organ != "random")

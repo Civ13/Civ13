@@ -68,9 +68,9 @@
 			qdel(src)
 			return FALSE
 
-	if (istype(M, /mob/living/carbon))
+	if (istype(M, /mob/living/human))
 		//TODO: replace with standard_feed_mob() call.
-		var/mob/living/carbon/C = M
+		var/mob/living/human/C = M
 		var/fullness = C.get_fullness()
 		if (C == user)								//If you're eating it yourself
 			if (istype(C,/mob/living/human))

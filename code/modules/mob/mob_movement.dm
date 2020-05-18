@@ -129,14 +129,14 @@
 			return
 		if (SOUTHWEST)
 			if (ishuman(usr))
-				var/mob/living/carbon/C = usr
+				var/mob/living/human/C = usr
 				C.toggle_throw_mode()
 			else
 				usr << "<span class = 'red'>This mob type cannot throw items.</span>"
 			return
 		if (NORTHWEST)
 			if (ishuman(usr))
-				var/mob/living/carbon/C = usr
+				var/mob/living/human/C = usr
 				if (!C.get_active_hand())
 					usr << "<span class = 'red'>You have nothing to drop in your hand.</span>"
 					return
@@ -156,7 +156,7 @@
 
 /client/verb/swap_hand()
 	set hidden = TRUE
-	if (istype(mob, /mob/living/carbon))
+	if (istype(mob, /mob/living/human))
 		mob:swap_hand()
 	return
 
@@ -172,7 +172,7 @@
 
 /client/verb/toggle_throw_mode()
 	set hidden = TRUE
-	if (!istype(mob, /mob/living/carbon))
+	if (!istype(mob, /mob/living/human))
 		return
 	if (!mob.stat && isturf(mob.loc) && !mob.restrained())
 		mob:toggle_throw_mode()

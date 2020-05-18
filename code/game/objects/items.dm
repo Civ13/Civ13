@@ -424,7 +424,7 @@ var/list/global/slot_flags_enumeration = list(
 		return
 	if (!usr.canmove || usr.stat || usr.restrained() || !Adjacent(usr))
 		return
-	if ((!istype(usr, /mob/living/carbon)))//Is humanoid, and is not a brain
+	if ((!istype(usr, /mob/living/human)))//Is humanoid, and is not a brain
 		usr << "<span class='warning'>You can't pick things up!</span>"
 		return
 	if ( usr.stat || usr.restrained() )//Is not asleep/dead and is not restrained
@@ -460,7 +460,7 @@ var/list/global/slot_flags_enumeration = list(
 /obj/item/proc/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	return FALSE
 
-/obj/item/proc/eyestab(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+/obj/item/proc/eyestab(mob/living/human/M as mob, mob/living/human/user as mob)
 
 	var/mob/living/human/H = M
 	if (istype(H))
@@ -587,7 +587,7 @@ var/list/global/slot_flags_enumeration = list(
 	for (var/mob/M in view(user))
 		M.show_message("[user] holds up [src]. <a HREF=?src=\ref[M];lookitem=\ref[src]>Take a closer look.</a>",1)
 
-/mob/living/carbon/verb/showoff()
+/mob/living/human/verb/showoff()
 	set name = "Show Held Item"
 	set category = "IC"
 

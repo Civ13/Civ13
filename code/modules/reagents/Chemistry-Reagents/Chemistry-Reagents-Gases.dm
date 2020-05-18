@@ -231,15 +231,15 @@ var/mob/living/human/next_gas_flesh_message = -1
 	if (istype(L, /mob/living/simple_animal/cockroach) || istype(L, /mob/living/simple_animal/mosquito) || istype(L, /mob/living/simple_animal/fly))
 		L.death()
 
-/datum/reagent/toxin/zyklon_b/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/zyklon_b/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 
 	..(M, alien, removed)
 
-/datum/reagent/toxin/zyklon_b/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/zyklon_b/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 
 
 	..(M, alien, removed)
 
-/datum/reagent/toxin/zyklon_b/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/zyklon_b/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 
 	..(M, alien, removed)

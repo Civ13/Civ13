@@ -31,7 +31,7 @@ var/list/organ_cache = list()
 	if (!owner)
 		return ..()
 
-	if (istype(owner, /mob/living/carbon))
+	if (istype(owner, /mob/living/human))
 		if ((owner.internal_organs) && (src in owner.internal_organs))
 			owner.internal_organs -= src
 		if (istype(owner, /mob/living/human))
@@ -62,7 +62,7 @@ var/list/organ_cache = list()
 /obj/item/organ/proc/update_health()
 	return
 
-/obj/item/organ/New(var/mob/living/carbon/holder, var/internal)
+/obj/item/organ/New(var/mob/living/human/holder, var/internal)
 	..(holder)
 	organ_check()
 	organ_list += src

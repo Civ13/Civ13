@@ -1035,7 +1035,7 @@
 	material = "Wood"
 
 
-/obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
+/obj/covers/saloon_door/Crossed(mob/living/human/M as mob )
 	if (ismob(M) && !isghost(M) && M.mob_size >= MOB_MEDIUM)
 		visible_message("[M] pushes \the [src].","You push \the [src]")
 		icon_state = "saloon_opening"

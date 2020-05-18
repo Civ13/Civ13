@@ -474,7 +474,7 @@
 	update_icon()
 
 /obj/screen/inventory/hand/Click()
-	var/mob/living/carbon/C = parentmob
+	var/mob/living/human/C = parentmob
 	if (slot_id == slot_l_hand)
 		C.activate_hand("l")
 	else
@@ -890,7 +890,7 @@ obj/screen/tactic
 	update_icon()
 
 /obj/screen/mov_intent/update_icon()
-	var/mob/living/carbon/C = parentmob
+	var/mob/living/human/C = parentmob
 	switch(C.m_intent)
 		if ("run")
 			icon_state = "running"

@@ -128,7 +128,7 @@
 			return FALSE
 		if (M.client)
 			if (ishuman(M))
-				var/mob/living/carbon/C = M
+				var/mob/living/human/C = M
 				if (!C.handcuffed)
 					SwitchState()
 			else

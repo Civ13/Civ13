@@ -145,14 +145,14 @@
 
 	if (state >= GRAB_KILL)
 		if (ishuman(affecting))
-			var/mob/living/carbon/C = affecting
+			var/mob/living/human/C = affecting
 			C.apply_effect(STUTTER, 5) //It will hamper your voice, being choked and all.
 			C.Weaken(5)	//Should keep you down unless you get help.
 			C.losebreath = max(C.losebreath + 2, 3)
 
 	adjust_position()
 
-/obj/item/weapon/grab/proc/handle_eye_mouth_covering(mob/living/carbon/target, mob/user, var/target_zone)
+/obj/item/weapon/grab/proc/handle_eye_mouth_covering(mob/living/human/target, mob/user, var/target_zone)
 	var/announce = (target_zone != last_hit_zone) //only display messages when switching between different target zones
 	last_hit_zone = target_zone
 
@@ -269,7 +269,7 @@
 		affecting.setClickCooldown(10)
 		affecting.set_dir(WEST)
 		if (ishuman(affecting))
-			var/mob/living/carbon/C = affecting
+			var/mob/living/human/C = affecting
 			C.losebreath += 1
 	adjust_position()
 

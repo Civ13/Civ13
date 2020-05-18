@@ -414,7 +414,7 @@
 	if (!target || !istype(target) || !target.simulated)
 		return
 	if (ishuman(target))
-		var/mob/living/carbon/C = target
+		var/mob/living/human/C = target
 		if (type == CHEM_BLOOD)
 			var/datum/reagents/R = C.reagents
 			return trans_to_holder(R, amount, multiplier, copy)

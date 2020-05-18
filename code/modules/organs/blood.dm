@@ -165,7 +165,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 ****************************************************/
 
 //Gets blood from mob to the container, preserving all data in it.
-/mob/living/carbon/proc/take_blood(obj/item/weapon/reagent_containers/container, var/amount)
+/mob/living/human/proc/take_blood(obj/item/weapon/reagent_containers/container, var/amount)
 
 	var/datum/reagent/B = get_blood(container.reagents)
 	if (!B) B = new /datum/reagent/blood
@@ -209,7 +209,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	vessel.remove_reagent("blood",amount) // Removes blood if human
 
 //Transfers blood from container ot vessels
-/mob/living/carbon/proc/inject_blood(var/datum/reagent/blood/injected, var/amount)
+/mob/living/human/proc/inject_blood(var/datum/reagent/blood/injected, var/amount)
 	if (!injected || !istype(injected))
 		return
 
@@ -246,7 +246,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	..()
 
 //Gets human's own blood.
-/mob/living/carbon/proc/get_blood(datum/reagents/container)
+/mob/living/human/proc/get_blood(datum/reagents/container)
 	var/datum/reagent/blood/res = locate() in container.reagent_list //Grab some blood
 	if (res) // Make sure there's some blood at all
 		if (res.data["donor"] != src) //If it's not theirs, then we look for theirs

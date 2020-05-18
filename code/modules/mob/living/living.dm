@@ -422,7 +422,7 @@ default behaviour is:
 	if (buckled)
 		buckled.unbuckle_mob()
 	if (ishuman(src))
-		var/mob/living/carbon/C = src
+		var/mob/living/human/C = src
 
 		if (C.handcuffed && !initial(C.handcuffed))
 			C.drop_from_inventory(C.handcuffed)
@@ -650,7 +650,7 @@ default behaviour is:
 /mob/living/proc/slip(var/slipped_on,stun_duration=8)
 	return FALSE
 
-/mob/living/carbon/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
+/mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in internal_organs)
 		return
 	..()

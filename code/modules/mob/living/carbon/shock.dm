@@ -1,8 +1,8 @@
 /mob/living/var/traumatic_shock = FALSE
-/mob/living/carbon/var/shock_stage = FALSE
+/mob/living/human/var/shock_stage = FALSE
 
 // proc to find out in how much pain the mob is at the moment
-/mob/living/carbon/proc/updateshock()
+/mob/living/human/proc/updateshock()
 
 	traumatic_shock = 			\
 	1	* getOxyLoss() + 		\

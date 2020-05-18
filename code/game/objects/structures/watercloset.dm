@@ -511,7 +511,7 @@
 		L.fire_stacks = -20 //Douse ourselves with water to avoid fire more easily
 
 	if (ishuman(O))
-		var/mob/living/carbon/M = O
+		var/mob/living/human/M = O
 		if (M.r_hand)
 			M.r_hand.clean_blood()
 		if (M.l_hand)

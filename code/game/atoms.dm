@@ -375,7 +375,7 @@
 	. = TRUE
 	return TRUE
 
-/atom/proc/add_vomit_floor(mob/living/carbon/M as mob, var/toxvomit = FALSE)
+/atom/proc/add_vomit_floor(mob/living/human/M as mob, var/toxvomit = FALSE)
 	if ( istype(src, /turf) )
 		var/obj/effect/decal/cleanable/vomit/this = new /obj/effect/decal/cleanable/vomit(src)
 
@@ -383,7 +383,7 @@
 		if (toxvomit)
 			this.icon_state = "vomittox_[pick(1,4)]"
 
-/atom/proc/add_vomit_floor_bloody(mob/living/carbon/M as mob, var/toxvomit = FALSE)
+/atom/proc/add_vomit_floor_bloody(mob/living/human/M as mob, var/toxvomit = FALSE)
 	if ( istype(src, /turf) )
 		new /obj/effect/decal/cleanable/vomit/bloody(src)
 

@@ -35,13 +35,13 @@
 				data -= data[i]
 				data -= null
 
-/datum/reagent/nutriment/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/nutriment/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (!injectable)
 		M.adjustToxLoss(0.1 * removed)
 		return
 	affect_ingest(M, alien, removed)
 
-/datum/reagent/nutriment/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/nutriment/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	if (issmall(M)) removed *= 2 // Small bodymass, more effect from lower volume.
 	M.heal_organ_damage(0.5 * removed, FALSE)
 	M.nutrition += nutriment_factor * removed // For hunger and fatness
@@ -201,7 +201,7 @@
 	taste_mult = 2
 	overdose = REAGENTS_OVERDOSE
 //salt will make you thirsty
-/datum/reagent/sodiumchloride/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/sodiumchloride/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.water -= (removed * 360 * 1.5) //basically, it removes the saltwater you drink plus dehydrates you in the same amount
 
 /datum/reagent/blackpepper
@@ -245,10 +245,10 @@
 	var/discomfort_message = "<span class='danger'>Your insides feel uncomfortably hot!</span>"
 	var/slime_temp_adj = 10
 
-/datum/reagent/capsaicin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/capsaicin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(0.5 * removed)
 
-/datum/reagent/capsaicin/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/capsaicin/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	if (ishuman(M))
 		var/mob/living/human/H = M
 		if (H.species && (H.species.flags & (NO_PAIN)))
@@ -277,7 +277,7 @@
 	discomfort_message = "<span class='danger'>You feel like your insides are burning!</span>"
 	slime_temp_adj = 15
 
-/datum/reagent/capsaicin/condensed/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/capsaicin/condensed/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	var/eyes_covered = FALSE
 	var/mouth_covered = FALSE
 	var/no_pain = FALSE
@@ -325,7 +325,7 @@
 		M.Stun(5)
 		M.Weaken(5)
 
-/datum/reagent/condensedcapsaicin/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/condensedcapsaicin/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	if (ishuman(M))
 		var/mob/living/human/H = M
 		if (H.species && (H.species.flags & NO_PAIN))
@@ -353,11 +353,11 @@
 	var/adj_temp = FALSE
 
 // apparently this never happens - Kachnov
-/datum/reagent/drink/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(removed) // Probably not a good idea; not very deadly though
 	return
 
-/datum/reagent/drink/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	M.nutrition += nutrition * removed
 	M.bladder += removed
 	M.bowels += (nutrition * removed)/6
@@ -397,7 +397,7 @@
 	taste_description = "carrots"
 	color = "#FF8C00" // rgb: 255, 140, FALSE
 
-/datum/reagent/drink/carrotjuice/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/carrotjuice/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.reagents.add_reagent("imidazoline", removed * 0.2)
 
@@ -437,7 +437,7 @@
 	taste_mult = 1.1
 	color = "#365E30"
 
-/datum/reagent/drink/limejuice/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/limejuice/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustToxLoss(-0.5 * removed)
 
@@ -448,7 +448,7 @@
 	taste_description = "oranges"
 	color = "#E78108"
 
-/datum/reagent/drink/orangejuice/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/orangejuice/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustOxyLoss(-2 * removed)
 
@@ -474,7 +474,7 @@
 	taste_description = "tomatoes"
 	color = "#731008"
 
-/datum/reagent/drink/tomatojuice/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/tomatojuice/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.heal_organ_damage(0, 0.5 * removed)
 
@@ -494,7 +494,7 @@
 	taste_description = "milk"
 	color = "#DFDFDF"
 
-/datum/reagent/drink/milk/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/milk/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.heal_organ_damage(0.5 * removed, FALSE)
 	holder.remove_reagent("capsaicin", 10 * removed)
@@ -521,7 +521,7 @@
 	adj_sleepy = -3
 	adj_temp = 20
 
-/datum/reagent/drink/tea/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/tea/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustToxLoss(-1.5 * removed)
 	M.drowsyness = max(0, M.drowsyness - 4 * removed)
@@ -540,7 +540,7 @@
 	taste_description = "bitter"
 	color = "#f4f4f4"
 
-/datum/reagent/drink/quinine/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/quinine/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.drowsyness = max(0, M.drowsyness - 2 * removed)
 	if (M.bodytemperature > 310.055)
@@ -563,14 +563,14 @@
 	adj_temp = 25
 	overdose = 45
 
-/datum/reagent/drink/coffee/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/drink/coffee/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	if (adj_temp > 0)
 		holder.remove_reagent("frostoil", 10 * removed)
 	M.add_chemical_effect(CE_PULSE, TRUE)
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
 
-/datum/reagent/drink/coffee/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/drink/coffee/overdose(var/mob/living/human/M, var/alien)
 	M.make_jittery(5)
 	M.add_chemical_effect(CE_PULSE, 2)
 
@@ -719,7 +719,7 @@
 	color = "#664300"
 	strength = 40
 
-/datum/reagent/ethanol/deadrum/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ethanol/deadrum/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.dizziness +=5
 
@@ -735,7 +735,7 @@
 /datum/reagent/ethanol/coffee
 	overdose = 45
 
-/datum/reagent/ethanol/coffee/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ethanol/coffee/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.dizziness = max(0, M.dizziness - 5)
 	M.drowsyness = max(0, M.drowsyness - 3)
@@ -743,7 +743,7 @@
 	if (M.bodytemperature > 310)
 		M.bodytemperature = max(310, M.bodytemperature - (5 * TEMPERATURE_DAMAGE_COEFFICIENT))
 
-/datum/reagent/ethanol/coffee/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/ethanol/coffee/overdose(var/mob/living/human/M, var/alien)
 	M.make_jittery(5)
 
 /datum/reagent/ethanol/coffee/kahlua
@@ -797,7 +797,7 @@
 	strength = 25
 	nutriment_factor = TRUE
 
-/datum/reagent/ethanol/thirteenloko/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ethanol/thirteenloko/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.drowsyness = max(0, M.drowsyness - 7)
 	if (M.bodytemperature > 310)
@@ -955,7 +955,7 @@
 	color = "#664300"
 	strength = 12
 
-/datum/reagent/ethanol/beepsky_smash/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ethanol/beepsky_smash/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.Stun(2)
 
@@ -1209,7 +1209,7 @@
 	color = "#2E2E61"
 	strength = 10
 
-/datum/reagent/ethanol/neurotoxin/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ethanol/neurotoxin/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.Weaken(3)
 	M.add_chemical_effect(CE_PULSE, -1)
@@ -1232,7 +1232,7 @@
 	druggy = 50
 	halluci = 10
 
-/datum/reagent/ethanol/pwine/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ethanol/pwine/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	if (dose > 30)
 		M.adjustToxLoss(2 * removed)

@@ -201,7 +201,7 @@
 	return
 
 
-/obj/item/organ/external/New(var/mob/living/carbon/holder)
+/obj/item/organ/external/New(var/mob/living/human/holder)
 	..(holder, FALSE)
 	if (owner)
 		replaced(owner)

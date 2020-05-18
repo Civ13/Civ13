@@ -176,7 +176,7 @@
 			user.show_message("<b>[string]</b>")
 
 		if (ishuman(victim))
-			var/mob/living/carbon/C = victim
+			var/mob/living/human/C = victim
 			var/hunger_coeff = C.nutrition/C.max_nutrition
 			var/thirst_coeff = C.water/C.max_water
 			var/oxyloss = victim.getOxyLoss()

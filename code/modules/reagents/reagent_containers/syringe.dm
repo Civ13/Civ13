@@ -85,9 +85,9 @@
 					if (reagents.has_reagent("blood"))
 						user << "<span class='notice'>There is already a blood sample in this syringe.</span>"
 						return
-					if (istype(target, /mob/living/carbon))
+					if (istype(target, /mob/living/human))
 						var/amount = reagents.get_free_space()
-						var/mob/living/carbon/T = target
+						var/mob/living/human/T = target
 						if (!T.dna)
 							user << "<span class='warning'>You are unable to locate any blood. (To be specific, your target seems to be missing their DNA datum).</span>"
 							return
@@ -228,7 +228,7 @@
 			filling.color = reagents.get_color()
 			overlays += filling
 
-	proc/syringestab(mob/living/carbon/target as mob, mob/living/carbon/user as mob)
+	proc/syringestab(mob/living/human/target as mob, mob/living/human/user as mob)
 
 		if (istype(target, /mob/living/human))
 
@@ -278,7 +278,7 @@
 		admin_inject_log(user, target, src, contained_reagents, trans, violent=1)
 		break_syringe(target, user)
 
-	proc/break_syringe(mob/living/carbon/target, mob/living/carbon/user)
+	proc/break_syringe(mob/living/human/target, mob/living/human/user)
 		desc += " It is broken."
 		mode = SYRINGE_BROKEN
 		if (target)

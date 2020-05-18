@@ -321,7 +321,7 @@
 		smoke_signals()
 	else
 		..()
-/obj/structure/oven/fireplace/Crossed(mob/living/carbon/M as mob)
+/obj/structure/oven/fireplace/Crossed(mob/living/human/M as mob)
 	if (icon_state == "[base_state]_on" && ishuman(M))
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")

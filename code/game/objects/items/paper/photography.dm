@@ -196,7 +196,7 @@ var/global/photo_count = 0
 
 /obj/item/camera/proc/get_mobs(turf/the_turf as turf)
 	var/mob_detail
-	for(var/mob/living/carbon/A in the_turf)
+	for(var/mob/living/human/A in the_turf)
 		if(A.invisibility) continue
 		var/holding = null
 		if(A.l_hand || A.r_hand)

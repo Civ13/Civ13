@@ -53,8 +53,8 @@
 
 
 /obj/effect/decal/cleanable/poo/Crossed(AM as mob|obj, var/forceslip = 0)
-	if (istype(AM, /mob/living/carbon) && src.dried == 0)
-		var/mob/living/carbon/M = AM
+	if (istype(AM, /mob/living/human) && src.dried == 0)
+		var/mob/living/human/M = AM
 		if (M.m_intent == "walk")
 			return
 
@@ -75,8 +75,8 @@
 	decay_timer = 18000
 
 /obj/effect/decal/cleanable/urine/Crossed(AM as mob|obj)
-	if (istype(AM, /mob/living/carbon))
-		var/mob/living/carbon/M =	AM
+	if (istype(AM, /mob/living/human))
+		var/mob/living/human/M =	AM
 		if (ishuman(M) && M.m_intent == "walk")
 			return
 

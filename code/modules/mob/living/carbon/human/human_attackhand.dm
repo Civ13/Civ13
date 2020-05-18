@@ -8,7 +8,7 @@
 			return u_attack
 	return null
 
-/mob/living/human/attack_hand(mob/living/carbon/M as mob)
+/mob/living/human/attack_hand(mob/living/human/M as mob)
 
 	var/mob/living/human/H = M
 	if (istype(H))
@@ -396,7 +396,7 @@
 	return FALSE
 
 //Breaks all grips and pulls that the mob currently has.
-/mob/living/human/proc/break_all_grabs(mob/living/carbon/user)
+/mob/living/human/proc/break_all_grabs(mob/living/human/user)
 	var/success = FALSE
 	if (pulling)
 		visible_message("<span class='danger'>[user] has broken [src]'s grip on [pulling]!</span>")

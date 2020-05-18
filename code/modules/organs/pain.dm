@@ -16,7 +16,7 @@ mob/var/next_pain_time = FALSE
 
 // partname is the name of a body part
 // amount is a num from TRUE to 100
-/mob/living/carbon/proc/pain(var/partname, var/amount, var/force, var/burning = FALSE)
+/mob/living/human/proc/pain(var/partname, var/amount, var/force, var/burning = FALSE)
 	if (stat >= 1)
 		return
 	if (species && (species.flags & NO_PAIN))
@@ -52,7 +52,7 @@ mob/var/next_pain_time = FALSE
 // message is the custom message to be displayed
 // power decides how much painkillers will stop the message
 // force means it ignores anti-spam timer
-mob/living/carbon/proc/custom_pain(var/message, var/power = 0, var/force = FALSE, var/obj/item/organ/external/affecting, var/nohalloss = FALSE, var/flash_pain = 0)
+mob/living/human/proc/custom_pain(var/message, var/power = 0, var/force = FALSE, var/obj/item/organ/external/affecting, var/nohalloss = FALSE, var/flash_pain = 0)
 	if(!message || stat || chem_effects[CE_PAINKILLER] > power)
 		return 0
 

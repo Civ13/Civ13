@@ -8,6 +8,8 @@
 #define CELL_VOLUME		2500 // Liters in a cell.
 #define MOLES_CELLSTANDARD (ONE_ATMOSPHERE*CELL_VOLUME/(T20C*R_IDEAL_GAS_EQUATION)) // Moles in a 2.5 m^3 cell at 101.325 kPa and 20 C.
 
+#define MAX_CHARS_PER_LINE 200
+#define MAX_CHARS_TOTAL 20000
 
 // These are for when a mob breathes poisonous air.
 #define MIN_TOXIN_DAMAGE TRUE

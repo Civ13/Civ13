@@ -74,7 +74,7 @@
 /*
 /mob/living/simple_animal/mouse/MouseDrop(atom/over_object)
 
-	var/mob/living/carbon/H = over_object
+	var/mob/living/human/H = over_object
 	if (!istype(H) || !Adjacent(H)) return ..()
 
 	if (H.a_intent == I_HELP)

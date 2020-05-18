@@ -191,7 +191,7 @@
 	else
 		if (bayonet && isliving(A) && !istype(bayonet, /obj/item/weapon/attachment/bayonet/flag))
 			var/mob/living/L = A
-			var/mob/living/carbon/C = A
+			var/mob/living/human/C = A
 			if (!istype(C) || !C.check_attack_throat(src, user))
 				// bayonets no longer have a miss chance, but have been balanced otherwise - Kachnov
 				var/obj/item/weapon/attachment/bayonet/a = bayonet
@@ -423,8 +423,8 @@
 	//shooting while in shock
 	var/x_offset = 0
 	var/y_offset = 0
-	if (istype(user, /mob/living/carbon))
-		var/mob/living/carbon/mob = user
+	if (istype(user, /mob/living/human))
+		var/mob/living/human/mob = user
 		if (mob.shock_stage > 120)
 			y_offset = rand(-2,2)
 			x_offset = rand(-2,2)

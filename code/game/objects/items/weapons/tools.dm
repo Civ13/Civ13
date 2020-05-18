@@ -147,7 +147,7 @@
 			item_state = "cutters_yellow"
 	..()
 
-/obj/item/weapon/wirecutters/attack(mob/living/carbon/C as mob, mob/user as mob)
+/obj/item/weapon/wirecutters/attack(mob/living/human/C as mob, mob/user as mob)
 	..()
 
 /*
