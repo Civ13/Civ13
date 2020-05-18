@@ -30,7 +30,7 @@
 			else
 				if (language)
 					message = language.scramble(alt_message, src)
-					original_message = language.scramble(alt_message, src)
+					alt_message = language.scramble(alt_message, src)
 				else
 					message = stars(message)
 
@@ -81,9 +81,9 @@
 				src << "<span class='name'>[alt_name]</span> talks but you cannot hear."
 	else
 		if (language)
-			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]",speaker, original_message)
+			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]",speaker, alt_message)
 		else
-			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"",speaker, original_message)
+			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"",speaker, alt_message)
 		if (speech_sound && (get_dist(speaker, src) <= 7 && z == speaker.z))
 			var/turf/source = speaker? get_turf(speaker) : get_turf(src)
 			playsound_local(source, speech_sound, sound_vol, TRUE)
