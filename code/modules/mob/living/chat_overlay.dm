@@ -58,11 +58,11 @@
 	var/genUID = rand(1,99999)
 	shell("sudo python3 tts/amazontts.py \"[message]\" [gnd] [genUID]")
 	spawn(5)
-		var/fpath = "tts/[genUID].ogg"
+		var/fpath = "[genUID].ogg"
 		if (fexists(fpath))
-			world.log << fpath
+			world << fpath
 			playsound(src, fpath)
 			fdel(fpath)
 		else
-			world.log << "nope"
+			world << "nope"
 		return
