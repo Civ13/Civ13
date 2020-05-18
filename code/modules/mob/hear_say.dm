@@ -102,7 +102,7 @@
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null,var/message2 = "")
 	src << message
 	if (speaker && message2 != "")
-		if (client && speaker in view(7,src))
+		if (client && ishuman(speaker) && speaker in view(7,src))
 			if (client && is_preference_enabled(/datum/client_preference/show_chat_overlays))
 				client.screen += new/obj/chat_text(speaker,message2)
 			if (client && is_preference_enabled(/datum/client_preference/play_chat_tts))
