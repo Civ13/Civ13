@@ -41,7 +41,7 @@
 /mob/living/simple_animal/fly/bullet_act(var/obj/item/projectile/Proj)
 	return
 
-/mob/living/simple_animal/fly/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/fly/attack_hand(mob/living/human/M as mob)
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	if (prob(40))

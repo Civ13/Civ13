@@ -17,7 +17,7 @@
 	set name = "Del-All"
 
 	// to prevent REALLY stupid deletions
-	var/blocked = list(/obj, /mob, /mob/living, /mob/living/carbon, /mob/living/carbon/human, /mob/observer)
+	var/blocked = list(/obj, /mob, /mob/living, /mob/living/human, /mob/living/human, /mob/observer)
 	var/hsbitem = input(usr, "Choose an object to delete.", "Delete:") as null|anything in typesof(/obj) + typesof(/mob) - blocked
 	if (hsbitem)
 		for (var/atom/O in world)

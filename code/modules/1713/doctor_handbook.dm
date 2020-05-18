@@ -25,7 +25,7 @@
 	user.visible_message("<span class='notice'>[user] glances through [src], inspecting [victim]'s [victim.stat == DEAD ? "corpse" : "body"].</span>")
 
 	if (ishuman(victim))
-		var/mob/living/carbon/human/H = victim
+		var/mob/living/human/H = victim
 
 		var/severity_blood_loss = FALSE
 		var/severity_poisoning = FALSE
@@ -175,8 +175,8 @@
 			string += " need[ecount == TRUE ? "s" : ""] splinting for safe transport."
 			user.show_message("<b>[string]</b>")
 
-		if (iscarbon(victim))
-			var/mob/living/carbon/C = victim
+		if (ishuman(victim))
+			var/mob/living/human/C = victim
 			var/hunger_coeff = C.nutrition/C.max_nutrition
 			var/thirst_coeff = C.water/C.max_water
 			var/oxyloss = victim.getOxyLoss()

@@ -169,7 +169,7 @@
 			dislocated = 2
 		else
 			dislocated = TRUE
-	owner.verbs |= /mob/living/carbon/human/proc/undislocate
+	owner.verbs |= /mob/living/human/proc/undislocate
 	if (children && children.len)
 		for (var/obj/item/organ/external/child in children)
 			child.dislocate()
@@ -186,7 +186,7 @@
 		for (var/obj/item/organ/external/limb in owner.organs)
 			if (limb.dislocated == 2)
 				return
-		owner.verbs -= /mob/living/carbon/human/proc/undislocate
+		owner.verbs -= /mob/living/human/proc/undislocate
 
 /obj/item/organ/external/update_health()
 	damage = min(max_damage, (brute_dam + burn_dam))
@@ -194,14 +194,14 @@
 	if (damage > max_damage)
 		if (prob(20))
 			droplimb(0,DROPLIMB_EDGE)
-			for(var/mob/living/carbon/human/NB in view(6,src))
+			for(var/mob/living/human/NB in view(6,src))
 				if (!NB.orc)
 					NB.mood -= 9
 					NB.ptsd += 1
 	return
 
 
-/obj/item/organ/external/New(var/mob/living/carbon/holder)
+/obj/item/organ/external/New(var/mob/living/human/holder)
 	..(holder, FALSE)
 	if (owner)
 		replaced(owner)
@@ -209,7 +209,7 @@
 	spawn(1)
 		get_icon()
 
-/obj/item/organ/external/replaced(var/mob/living/carbon/human/target)
+/obj/item/organ/external/replaced(var/mob/living/human/target)
 	owner = target
 	forceMove(owner)
 	if (istype(owner))
@@ -343,28 +343,28 @@
 				if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
 					if (prob(20))
 						droplimb(0, DROPLIMB_EDGE)
-						for(var/mob/living/carbon/human/NB in view(6,src))
+						for(var/mob/living/human/NB in view(6,src))
 							if (!NB.orc)
 								NB.mood -= 10
 								NB.ptsd += 1
 				else if(burn >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(burn/3))
 					if (prob(20))
 						droplimb(0, DROPLIMB_BURN)
-						for(var/mob/living/carbon/human/NB in view(6,src))
+						for(var/mob/living/human/NB in view(6,src))
 							if (!NB.orc)
 								NB.mood -= 10
 								NB.ptsd += 1
 				else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
 					if (prob(20))
 						droplimb(0, DROPLIMB_BLUNT)
-						for(var/mob/living/carbon/human/NB in view(6,src))
+						for(var/mob/living/human/NB in view(6,src))
 							if (!NB.orc)
 								NB.mood -= 10
 								NB.ptsd += 1
 				else if(brute >= max_damage / DROPLIMB_THRESHOLD_TEAROFF && prob(brute/3))
 					if (prob(20))
 						droplimb(0, DROPLIMB_BLUNT)
-						for(var/mob/living/carbon/human/NB in view(6,src))
+						for(var/mob/living/human/NB in view(6,src))
 							if (!NB.orc)
 								NB.mood -= 10
 								NB.ptsd += 1
@@ -375,7 +375,7 @@
 	return created_wound
 
 
-/obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE, var/mob/living/carbon/human/healer = null)
+/obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE, var/mob/living/human/healer = null)
 
 	if (healer && healer != owner)
 		healer.awards["medic"]+=(brute+burn)
@@ -681,8 +681,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	status &= ~ORGAN_BLEEDING
 	var/clamped = FALSE
 
-	var/mob/living/carbon/human/H
-	if (istype(owner,/mob/living/carbon/human))
+	var/mob/living/human/H
+	if (istype(owner,/mob/living/human))
 		H = owner
 
 	//update damage counts
@@ -796,7 +796,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 				owner.death()
 				playsound(owner, "chop", 100 , FALSE)//Splat.
 
-	var/mob/living/carbon/human/victim = owner //Keep a reference for post-removed().
+	var/mob/living/human/victim = owner //Keep a reference for post-removed().
 	var/obj/item/organ/external/parent_organ = parent
 
 	if (disintegrate != DROPLIMB_BLUNT)
@@ -874,7 +874,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/is_stump()
 	return FALSE
 
-/obj/item/organ/external/proc/release_restraints(var/mob/living/carbon/human/holder)
+/obj/item/organ/external/proc/release_restraints(var/mob/living/human/holder)
 	if (!holder)
 		holder = owner
 	if (!holder)
@@ -1018,7 +1018,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if (!owner)
 		return
 
-	var/mob/living/carbon/human/victim = owner
+	var/mob/living/human/victim = owner
 
 	..()
 

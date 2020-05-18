@@ -1,7 +1,7 @@
 /datum/job/german
 	faction = "Human"
 
-/datum/job/german/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/german/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_german_name(H.gender)
 	H.real_name = H.name
 
@@ -22,7 +22,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/german/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -70,7 +70,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/german/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -117,7 +117,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/second_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/german/second_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -162,7 +162,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/german/sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/german/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -207,7 +207,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/german/doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/german/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -251,7 +251,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/german/shocktroop/equip(var/mob/living/carbon/human/H)
+/datum/job/german/shocktroop/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -294,7 +294,7 @@
 	min_positions = 12
 	max_positions = 400
 
-/datum/job/german/infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/german/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -342,7 +342,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/captain_reichstag/equip(var/mob/living/carbon/human/H)
+/datum/job/german/captain_reichstag/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -391,7 +391,7 @@
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/german/sergeant_reichstag/equip(var/mob/living/carbon/human/H)
+/datum/job/german/sergeant_reichstag/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -433,7 +433,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/german/doctor_reichstag/equip(var/mob/living/carbon/human/H)
+/datum/job/german/doctor_reichstag/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -479,7 +479,7 @@
 	min_positions = 6
 	max_positions = 30
 
-/datum/job/german/ss_reichstag/equip(var/mob/living/carbon/human/H)
+/datum/job/german/ss_reichstag/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -536,7 +536,7 @@
 	min_positions = 6
 	max_positions = 30
 
-/datum/job/german/infantry_reichstag/equip(var/mob/living/carbon/human/H)
+/datum/job/german/infantry_reichstag/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -589,7 +589,7 @@
 	min_positions = 12
 	max_positions = 60
 
-/datum/job/german/volkssturm_reichstag/equip(var/mob/living/carbon/human/H)
+/datum/job/german/volkssturm_reichstag/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
@@ -649,7 +649,7 @@
 	min_positions = 12
 	max_positions = 60
 
-/datum/job/german/hj_reichstag/equip(var/mob/living/carbon/human/H)
+/datum/job/german/hj_reichstag/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
@@ -696,7 +696,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/hauptmann/equip(var/mob/living/carbon/human/H)
+/datum/job/german/hauptmann/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -746,7 +746,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/oberleutnant/equip(var/mob/living/carbon/human/H)
+/datum/job/german/oberleutnant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -795,7 +795,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/german/leutnant/equip(var/mob/living/carbon/human/H)
+/datum/job/german/leutnant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -843,7 +843,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/german/gruppenfuhrer/equip(var/mob/living/carbon/human/H)
+/datum/job/german/gruppenfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -883,7 +883,7 @@
 	min_positions = 8
 	max_positions = 120
 
-/datum/job/german/schutze_soldaten/equip(var/mob/living/carbon/human/H)
+/datum/job/german/schutze_soldaten/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -938,7 +938,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/german/machine_gunner/equip(var/mob/living/carbon/human/H)
+/datum/job/german/machine_gunner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -987,7 +987,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/german/sniper_schutze/equip(var/mob/living/carbon/human/H)
+/datum/job/german/sniper_schutze/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1038,7 +1038,7 @@
 	min_positions = 2
 	max_positions = 4
 
-/datum/job/german/mediziner/equip(var/mob/living/carbon/human/H)
+/datum/job/german/mediziner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -1084,7 +1084,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/german/sanitater/equip(var/mob/living/carbon/human/H)
+/datum/job/german/sanitater/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -1136,7 +1136,7 @@
 	min_positions = 2
 	max_positions = 6
 
-/datum/job/german/tank_crew_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/german/tank_crew_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1178,7 +1178,7 @@
 	min_positions = 4
 	max_positions = 32
 
-/datum/job/german/tank_crew/equip(var/mob/living/carbon/human/H)
+/datum/job/german/tank_crew/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -1224,7 +1224,7 @@
 	min_positions = 2
 	max_positions = 6
 
-/datum/job/german/ss_panzergrenadier_squad_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/german/ss_panzergrenadier_squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1266,7 +1266,7 @@
 	min_positions = 6
 	max_positions = 30
 
-/datum/job/german/ss_panzergrenadier/equip(var/mob/living/carbon/human/H)
+/datum/job/german/ss_panzergrenadier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1316,7 +1316,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/german/ss_pionier/equip(var/mob/living/carbon/human/H)
+/datum/job/german/ss_pionier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)

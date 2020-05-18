@@ -8,13 +8,13 @@
 	flammable = FALSE
 	not_movable = FALSE
 
-/obj/structure/marketplace/attack_hand(var/mob/living/carbon/human/user as mob)
+/obj/structure/marketplace/attack_hand(var/mob/living/human/user as mob)
 	var/choice =  WWinput(user, "Do you want to buy something, or change a order you placed in the market?", "Global Exchange", "Cancel", list("Buy", "Change Orders", "Withdraw Money","Cancel"))
 	if (choice == "Cancel")
 		return
 	else if (choice == "Withdraw Money")
 		var/done = FALSE
-		for (var/mob/living/carbon/human/H in map.marketplaceaccounts)
+		for (var/mob/living/human/H in map.marketplaceaccounts)
 			if (H == user)
 				done = TRUE
 				var/accmoney = map.marketplaceaccounts[H]
@@ -74,7 +74,7 @@
 								BO.forceMove(get_turf(src))
 							map.globalmarketplace[currlist[k][1]][6] = 1
 							user << "You fulfill the order."
-							var/mob/living/carbon/human/seller = map.globalmarketplace[currlist[k][1]][1]
+							var/mob/living/human/seller = map.globalmarketplace[currlist[k][1]][1]
 							map.marketplaceaccounts[seller] += (cost/1.1)
 							return
 						else
@@ -157,7 +157,7 @@
 	flammable = FALSE
 	not_movable = FALSE
 
-/obj/structure/stockmarket/attack_hand(var/mob/living/carbon/human/user as mob)
+/obj/structure/stockmarket/attack_hand(var/mob/living/human/user as mob)
 	var/list/optlist = list("Check Companies","Buy Stock","Sell Stock","Manage Company")
 	if (user.leader && user.civilization != "none")
 		optlist += "Faction Treasury"
@@ -305,7 +305,7 @@
 								if (GC.amount <= 0)
 									qdel(GC)
 								if (ishuman(L[4]))
-									var/mob/living/carbon/human/SELLER = L[4]
+									var/mob/living/human/SELLER = L[4]
 									SELLER.transfer_stock_proc(ord,ord_perc,user)
 									L[5] = 0
 									map.sales_registry -= L

@@ -80,7 +80,7 @@
 /datum/job/npc
 	default_language = "English"
 
-/datum/job/update_character(var/mob/living/carbon/human/H)
+/datum/job/update_character(var/mob/living/human/H)
 	. = ..()
 
 	var/list/notes = list()

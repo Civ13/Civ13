@@ -716,7 +716,7 @@
 
 /* Road Destruction*/
 
-/obj/covers/roads/modern/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/modern/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
@@ -739,7 +739,7 @@
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
-/obj/covers/roads/dirt/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/dirt/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O, /obj/item/weapon/shovel/bone))
 		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
 		user << "<span class='notice'>You begin filling over in the earth of \the [src].</span>"
@@ -753,7 +753,7 @@
 			user << "<span class='notice'>You finish filling over \the [src].</span>"
 			qdel(src)
 
-/obj/covers/roads/roman/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/roman/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
@@ -776,7 +776,7 @@
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
-/obj/covers/roads/cobble/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/cobble/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
@@ -799,7 +799,7 @@
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
-/obj/covers/roads/sandstone/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/sandstone/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
@@ -1035,7 +1035,7 @@
 	material = "Wood"
 
 
-/obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
+/obj/covers/saloon_door/Crossed(mob/living/human/M as mob )
 	if (ismob(M) && !isghost(M) && M.mob_size >= MOB_MEDIUM)
 		visible_message("[M] pushes \the [src].","You push \the [src]")
 		icon_state = "saloon_opening"
@@ -1261,7 +1261,7 @@
 	adjusts=FALSE
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if(istype(W, /obj/item/weapon/chisel))
 		var design = "smooth"
 		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
@@ -2052,7 +2052,7 @@
 		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
 			visible_message("<span class='notice'>You can't build here!</span>")
 			return
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 	if (WWinput(user, "This will start building a floor cover [user.dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
@@ -2062,7 +2062,7 @@
 			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
 			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				H.adaptStat("crafting", 3)
 		return
 

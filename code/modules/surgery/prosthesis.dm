@@ -25,7 +25,7 @@
 	limb_type = "foot"
 	flammable = TRUE
 
-/obj/item/weapon/prosthesis/attack(mob/living/carbon/human/C as mob, mob/living/carbon/human/user as mob)
+/obj/item/weapon/prosthesis/attack(mob/living/human/C as mob, mob/living/human/user as mob)
 	if (user.a_intent == I_HELP)
 		if (user.getStatCoeff("medical") < 1.5)
 			user << "Your medical skill is too low for such a complicated procedure!"

@@ -22,7 +22,7 @@
 	var/rag_amt = 1
 	secondary_action = TRUE
 
-/obj/item/clothing/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/clothing/secondary_attack_self(mob/living/human/user)
 	if (secondary_action && ripable && rag_amt > 0)
 		user << "You start ripping apart \the [src]..."
 		if (do_after(user, 100, get_turf(user)))
@@ -99,11 +99,11 @@
 /obj/item/clothing/ears/attack_hand(mob/user as mob)
 	if (!user) return
 
-	if (loc != user || !istype(user,/mob/living/carbon/human))
+	if (loc != user || !istype(user,/mob/living/human))
 		..()
 		return
 
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (H.l_ear != src && H.r_ear != src)
 		..()
 		return
@@ -274,8 +274,8 @@ BLIND	 // can't see anything
 /obj/item/clothing/head/update_icon(var/mob/user)
 
 	overlays.Cut()
-	var/mob/living/carbon/human/H
-	if (istype(user,/mob/living/carbon/human))
+	var/mob/living/human/H
+	if (istype(user,/mob/living/human))
 		H = user
 
 	if (on)

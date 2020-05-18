@@ -47,7 +47,7 @@
 /obj/item/mine/attackby(obj/item/W as obj, mob/user as mob)
 	if (anchored)
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (istype(W, /obj/item/weapon/wirecutters))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
 				if (!do_after(user,60))
@@ -82,7 +82,7 @@
 /obj/item/mine/attack_hand(mob/user as mob)
 	if (anchored)
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			user.visible_message("<span class = 'notice'>\The [user] starts to dig around the \the [src] with their bare hands!</span>")
 			if (!do_after(user,100))
 				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up the \the [src].</span>")
@@ -228,7 +228,7 @@
 /obj/item/mine/boobytrap/attackby(obj/item/W as obj, mob/user as mob)
 	if (anchored)
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (istype(W, /obj/item/weapon/wirecutters))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
 				if (!do_after(user,60))
@@ -263,7 +263,7 @@
 /obj/item/mine/boobytrap/attack_hand(mob/user as mob)
 	if (anchored)
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			user.visible_message("<span class = 'notice'>\The [user] starts to dig around the \the [src] with their bare hands!</span>")
 			if (!do_after(user,100))
 				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up the \the [src].</span>")

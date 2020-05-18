@@ -100,7 +100,7 @@
 	radiation += amount
 	return
 
-/mob/living/carbon/human/rad_act(amount)
+/mob/living/human/rad_act(amount)
 	if(amount <= 0)
 		return
 	if (inducedSSD)
@@ -120,7 +120,7 @@
 			var/blocked = getarmor_rad("chest")
 			var/new_amount = max(0, amount*(1 - blocked/100))
 			I.rad_act(new_amount)
-/mob/living/carbon/human/proc/getarmor_rad(organ)
+/mob/living/human/proc/getarmor_rad(organ)
 	return getarmor_organ(get_organ(organ), "rad")
 
 /obj/item/weapon/geiger_counter //DISCLAIMER: I know nothing about how real-life Geiger counters work. This will not be realistic. ~Xhuis
@@ -276,7 +276,7 @@
 						cseverity = severity/30
 					T.rad_act(cseverity)
 					if (ishuman(T))
-						var/mob/living/carbon/human/H = T
+						var/mob/living/human/H = T
 						H.Weaken(3)
 						if (H.HUDtech.Find("flash"))
 							flick("e_flash", H.HUDtech["flash"])

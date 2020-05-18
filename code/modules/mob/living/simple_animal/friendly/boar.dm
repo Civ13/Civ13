@@ -68,7 +68,7 @@ icon_state = "boar_male"
 	..()
 	if (stat != DEAD)
 		var/done = FALSE
-		for (var/mob/living/carbon/human/H in range(7, src))
+		for (var/mob/living/human/H in range(7, src))
 			if (done == FALSE)
 				var/dirh = get_dir(src,H)
 				if (dirh == WEST)

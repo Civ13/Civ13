@@ -3,14 +3,14 @@ copies what reagents will be taken out of the holder.
 catalogue the 'taste strength' of each one
 calculate text size per text.
 */
-/mob/living/carbon/proc/ingest(var/datum/reagents/from, var/datum/reagents/target, var/amount = TRUE, var/multiplier = TRUE, var/copy = FALSE, var/smoked = FALSE) //we kind of 'sneak' a proc in here for ingesting stuff so we can play with it.
+/mob/living/human/proc/ingest(var/datum/reagents/from, var/datum/reagents/target, var/amount = TRUE, var/multiplier = TRUE, var/copy = FALSE, var/smoked = FALSE) //we kind of 'sneak' a proc in here for ingesting stuff so we can play with it.
 	var/datum/reagents/temp = new() //temporary holder used to analyse what gets transfered.
 	var/list/tastes = list() //descriptor = strength
 	from.trans_to_holder(temp, amount, multiplier, TRUE)
 	var/list/out = list()
 	var/minimum_percent = 15
-	if (istype(src,/mob/living/carbon/human))
-		var/mob/living/carbon/human/H = src
+	if (istype(src,/mob/living/human))
+		var/mob/living/human/H = src
 		minimum_percent = round(15/H.species.taste_sensitivity)
 	if (minimum_percent < 100)
 		var/total_taste = FALSE

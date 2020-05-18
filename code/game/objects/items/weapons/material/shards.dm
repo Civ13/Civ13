@@ -57,7 +57,7 @@
 
 		playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE) // not sure how to handle metal shards with sounds
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 
 			if (H.species.siemens_coefficient<0.5) //Thick skin.
 				return

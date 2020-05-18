@@ -5,7 +5,7 @@
 /datum/keyslot/New()
 	..()
 
-/datum/keyslot/proc/check_weapon(var/obj/item/weapon/W, var/mob/living/carbon/human/H, var/msg = FALSE)
+/datum/keyslot/proc/check_weapon(var/obj/item/weapon/W, var/mob/living/human/H, var/msg = FALSE)
 	. = FALSE
 
 	if (istype(W, /obj/item/weapon/key))
@@ -25,7 +25,7 @@
 
 	return .
 
-/datum/keyslot/proc/check_user(var/mob/living/carbon/human/H, var/msg = FALSE)
+/datum/keyslot/proc/check_user(var/mob/living/human/H, var/msg = FALSE)
 	if (code == -1)
 		return TRUE
 

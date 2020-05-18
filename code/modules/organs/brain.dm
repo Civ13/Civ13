@@ -13,7 +13,7 @@
 	throw_range = 5
 	relative_size = 60
 	attack_verb = list("attacked", "slapped", "whacked")
-	var/mob/living/carbon/brain/brainmob = null
+	var/mob/living/human/brain/brainmob = null
 
 	var/const/damage_threshold_count = 10
 	var/damage_threshold_value = 10

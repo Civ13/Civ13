@@ -1,4 +1,4 @@
-/mob/living/carbon/human/proc/get_unarmed_attack(var/mob/living/carbon/human/target, var/hit_zone)
+/mob/living/human/proc/get_unarmed_attack(var/mob/living/human/target, var/hit_zone)
 	for (var/datum/unarmed_attack/u_attack in species.unarmed_attacks)
 		if (u_attack.is_usable(src, target, hit_zone))
 			if (pulling_punches)
@@ -8,9 +8,9 @@
 			return u_attack
 	return null
 
-/mob/living/carbon/human/attack_hand(mob/living/carbon/M as mob)
+/mob/living/human/attack_hand(mob/living/human/M as mob)
 
-	var/mob/living/carbon/human/H = M
+	var/mob/living/human/H = M
 	if (istype(H))
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
 		if (H.hand)
@@ -325,7 +325,7 @@
 			playsound(loc, 'sound/weapons/punchmiss.ogg', 25, TRUE, -1)
 			visible_message("<span class = 'red'><b>[M] attempted to disarm [src]!</b></span>")
 	return
-/mob/living/carbon/human/proc/resuscitate()
+/mob/living/human/proc/resuscitate()
 	if(!is_asystole())
 		return
 	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
@@ -345,10 +345,10 @@
 		heart.handle_pulse()
 		return TRUE
 
-/mob/living/carbon/human/proc/afterattack(atom/target as mob|obj|turf|area, mob/living/user as mob|obj, inrange, params)
+/mob/living/human/proc/afterattack(atom/target as mob|obj|turf|area, mob/living/user as mob|obj, inrange, params)
 	return
 
-/mob/living/carbon/human/attack_generic(var/mob/user, var/damage, var/attack_message)
+/mob/living/human/attack_generic(var/mob/user, var/damage, var/attack_message)
 
 	if (!damage || !istype(user))
 		return
@@ -366,7 +366,7 @@
 	return TRUE
 
 //Used to attack a joint through grabbing
-/mob/living/carbon/human/proc/grab_joint(var/mob/living/user, var/def_zone)
+/mob/living/human/proc/grab_joint(var/mob/living/user, var/def_zone)
 	var/has_grab = FALSE
 	for (var/obj/item/weapon/grab/G in list(user.l_hand, user.r_hand))
 		if (G.affecting == src && G.state == GRAB_NECK)
@@ -396,7 +396,7 @@
 	return FALSE
 
 //Breaks all grips and pulls that the mob currently has.
-/mob/living/carbon/human/proc/break_all_grabs(mob/living/carbon/user)
+/mob/living/human/proc/break_all_grabs(mob/living/human/user)
 	var/success = FALSE
 	if (pulling)
 		visible_message("<span class='danger'>[user] has broken [src]'s grip on [pulling]!</span>")
@@ -428,7 +428,7 @@
 	If you are applying pressure to another and attempt to apply pressure to yourself, you'll have to switch to an empty hand which will also stop do_mob()
 	Changing targeted zones should also stop do_mob(), preventing you from applying pressure to more than one body part at once.
 */
-/mob/living/carbon/human/proc/apply_pressure(mob/living/user, var/target_zone)
+/mob/living/human/proc/apply_pressure(mob/living/user, var/target_zone)
 	var/obj/item/organ/external/organ = get_organ(target_zone)
 	if(!organ || !(organ.status & ORGAN_BLEEDING))
 		return 0
@@ -447,7 +447,7 @@
 		check_pressure(user,target_zone)
 	return 1
 
-/mob/living/carbon/human/proc/check_pressure(mob/living/user, var/target_zone)
+/mob/living/human/proc/check_pressure(mob/living/user, var/target_zone)
 	var/obj/item/organ/external/organ = get_organ(target_zone)
 	if(!organ || !(organ.status & ORGAN_BLEEDING))
 		return FALSE

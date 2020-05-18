@@ -20,7 +20,7 @@
 
 	usr.say(message)
 
-/mob/living/carbon/human/verb/howl_verb(message as text)
+/mob/living/human/verb/howl_verb(message as text)
 	set name = "Howl"
 	set category = "IC"
 
@@ -41,7 +41,7 @@
 	set name = "Me"
 	set category = "IC"
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if ((H.werewolf || H.gorillaman) && H.body_build.name != "Default")
 			if (map && map.ID != MAP_TRIBES)
 				usr << "<span class = 'red'>You can't emote.</span>"

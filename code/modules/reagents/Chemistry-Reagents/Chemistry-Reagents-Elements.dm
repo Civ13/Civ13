@@ -62,7 +62,7 @@
 	atomic_nr = 6
 	chemical_symbol = "C"
 
-/datum/reagent/carbon/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/carbon/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	if (M.ingested && M.ingested.reagent_list.len > 1) // Need to have at least 2 reagents - cabon and something to remove
 		var/effect = TRUE / (M.ingested.reagent_list.len - 1)
 		for (var/datum/reagent/R in M.ingested.reagent_list)
@@ -271,7 +271,7 @@
 	atomic_nr = 26
 	chemical_symbol = "Fe"
 
-/datum/reagent/iron/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/iron/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_BLOODRESTORE, 8 * removed)
 
 /datum/reagent/cobalt
@@ -344,7 +344,7 @@
 	atomic_nr = 33
 	chemical_symbol = "As"
 
-/datum/reagent/arsenic/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/arsenic/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(20 * removed)
 
 /datum/reagent/selenium
@@ -548,7 +548,7 @@
 	atomic_nr = 53
 	chemical_symbol = "I"
 
-/datum/reagent/iodine/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/iodine/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	M.radiation -= 2 * removed
 
 /datum/reagent/xenon
@@ -822,7 +822,7 @@
 	atomic_nr = 80
 	chemical_symbol = "Hg"
 
-/datum/reagent/mercury/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/mercury/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (prob(5))
 		M.emote(pick("twitch", "drool", "moan"))
 	M.adjustBrainLoss(0.1)
@@ -847,7 +847,7 @@
 	atomic_nr = 82
 	chemical_symbol = "Pb"
 
-/datum/reagent/mercury/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/mercury/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (prob(5))
 		M.emote(pick("twitch", "drool", "moan"))
 	M.adjustBrainLoss(0.3)
@@ -917,7 +917,7 @@
 	chemical_symbol = "ra"
 	radioactive = TRUE
 
-/datum/reagent/radium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/radium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.apply_effect(10 * removed, IRRADIATE, blocked = 0) // Radium may increase your chances to cure a disease
 
 /datum/reagent/radium/touch_turf(var/turf/T)
@@ -971,10 +971,10 @@
 	chemical_symbol = "U"
 	radioactive = TRUE
 
-/datum/reagent/uranium/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/uranium/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	affect_ingest(M, alien, removed)
 
-/datum/reagent/uranium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/uranium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.apply_effect(5 * removed, IRRADIATE, blocked = 0)
 
 /datum/reagent/uranium/touch_turf(var/turf/T)
@@ -1006,10 +1006,10 @@
 	chemical_symbol = "Pu"
 	radioactive = TRUE
 
-/datum/reagent/plutonium/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/plutonium/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	affect_ingest(M, alien, removed)
 
-/datum/reagent/plutonium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/plutonium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.apply_effect(15 * removed, IRRADIATE, blocked = 0)
 
 /datum/reagent/plutonium/touch_turf(var/turf/T)

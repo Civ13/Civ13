@@ -3,7 +3,7 @@ Add fingerprints to items when we put them in our hands.
 This saves us from having to call add_fingerprint() any time something is put in a human's hands programmatically.
 */
 
-/mob/living/carbon/human/verb/quick_equip()
+/mob/living/human/verb/quick_equip()
 	set name = "quick-equip"
 	set hidden = TRUE
 
@@ -33,7 +33,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
 
 	var/obj/item/I = mob.get_active_hand()
@@ -52,7 +52,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
 	for(var/obj/structure/bed/O in mob.loc)
 		if (!O.buckled_mob && !mob.buckled)
@@ -71,9 +71,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	if (H.targeted_organ != "head" && H.targeted_organ != "mouth" && H.targeted_organ != "eyes")
 		H.targeted_organ = "head"
@@ -94,9 +94,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	if (H.targeted_organ != "l_hand" && H.targeted_organ != "l_arm")
 		H.targeted_organ = "l_arm"
@@ -117,9 +117,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	H.targeted_organ = "chest"
 
@@ -133,9 +133,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	if (H.targeted_organ != "r_hand" && H.targeted_organ != "r_arm")
 		H.targeted_organ = "r_arm"
@@ -156,9 +156,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	if (H.targeted_organ != "l_foot" && H.targeted_organ != "l_leg")
 		H.targeted_organ = "l_leg"
@@ -179,9 +179,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	H.targeted_organ = "groin"
 
@@ -195,9 +195,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	if (H.targeted_organ != "r_foot" && H.targeted_organ != "r_leg")
 		H.targeted_organ = "r_leg"
@@ -210,7 +210,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	H.HUDneed["damage zone"].update_icon()
 	H.HUDneed["random damage zone"].update_icon()
-/mob/living/carbon/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = TRUE)
+/mob/living/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = TRUE)
 	for (var/slot in slots)
 		if (equip_to_slot_if_possible(W, slots[slot], del_on_fail = FALSE))
 			return slot
@@ -219,12 +219,12 @@ This saves us from having to call add_fingerprint() any time something is put in
 	return null
 
 
-/mob/living/carbon/human/proc/has_organ(name)
+/mob/living/human/proc/has_organ(name)
 	var/obj/item/organ/external/O = organs_by_name[name]
 
 	return (O && !O.is_stump())
 
-/mob/living/carbon/human/proc/has_organ_for_slot(slot)
+/mob/living/human/proc/has_organ_for_slot(slot)
 	switch(slot)
 		if (slot_back)
 			return has_organ("chest")
@@ -270,7 +270,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (slot_eyes)
 			return TRUE
 
-/mob/living/carbon/human/u_equip(obj/W as obj)
+/mob/living/human/u_equip(obj/W as obj)
 	if (!W)	return FALSE
 
 	if (W == wear_suit)
@@ -368,7 +368,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 //This is an UNSAFE proc. Use mob_can_equip() before calling this one! Or rather use equip_to_slot_if_possible() or advanced_equip_to_slot_if_possible()
 //set redraw_mob to FALSE if you don't wish the hud to be updated - if you're doing it manually in your own proc.
-/mob/living/carbon/human/equip_to_slot(obj/item/W as obj, slot, redraw_mob = TRUE)
+/mob/living/human/equip_to_slot(obj/item/W as obj, slot, redraw_mob = TRUE)
 
 	if (!slot) return
 	if (!istype(W)) return
@@ -504,7 +504,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	return TRUE
 
 //Checks if a given slot can be accessed at this time, either to equip or unequip I
-/mob/living/carbon/human/slot_is_accessible(var/slot, var/obj/item/I, mob/user=null)
+/mob/living/human/slot_is_accessible(var/slot, var/obj/item/I, mob/user=null)
 	var/obj/item/covering = null
 	var/check_flags = FALSE
 
@@ -520,7 +520,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		return FALSE
 	return TRUE
 
-/mob/living/carbon/human/get_equipped_item(var/slot)
+/mob/living/human/get_equipped_item(var/slot)
 	switch(slot)
 		if (slot_back)	   return back
 		if (slot_legcuffed)  return legcuffed
@@ -543,7 +543,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (slot_shoulder)   return shoulder
 	return ..()
 
-/mob/living/carbon/human/get_equipped_items(var/include_carried = FALSE)
+/mob/living/human/get_equipped_items(var/include_carried = FALSE)
 	var/list/items = new/list()
 
 	if (back) items += back
@@ -596,14 +596,14 @@ This saves us from having to call add_fingerprint() any time something is put in
 				mob.dir = EAST
 			var/matrix/M = matrix()
 			M.Turn(90)
-			var/mob/living/carbon/human/H = mob
+			var/mob/living/human/H = mob
 			M.Scale(H.size_multiplier)
 			M.Translate(1,-6)
 			mob.transform = M
 		else
 			mob.prone = FALSE
 			var/matrix/M = matrix()
-			var/mob/living/carbon/human/H = mob
+			var/mob/living/human/H = mob
 			M.Scale(H.size_multiplier)
 			M.Translate(0, 16*(H.size_multiplier-1))
 			mob.transform = M
@@ -618,7 +618,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 	if (ishuman(mob))
-		var/mob/living/carbon/human/H = mob
+		var/mob/living/human/H = mob
 		H.resist()
 		switch (mob.middle_click_intent)
 			if("kick")
@@ -662,9 +662,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	if (H.m_intent == "walk")
 		mob.m_intent = "run"
@@ -691,9 +691,9 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 
-	if (!istype(mob,/mob/living/carbon/human))
+	if (!istype(mob,/mob/living/human))
 		return
-	var/mob/living/carbon/human/H = mob
+	var/mob/living/human/H = mob
 
 	if (H.tactic == "charge")
 		H.tactic = "aim"

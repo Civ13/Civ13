@@ -7,7 +7,7 @@
 	var/active = FALSE
 	var/blocks_scope = FALSE
 
-/obj/item/clothing/glasses/attack_self(mob/living/carbon/human/user)
+/obj/item/clothing/glasses/attack_self(mob/living/human/user)
 	if(toggleable && !user.incapacitated())
 		if(active)
 			active = 0

@@ -127,8 +127,8 @@
 		if (world.time - user.last_bumped <= 60)
 			return FALSE
 		if (M.client)
-			if (iscarbon(M))
-				var/mob/living/carbon/C = M
+			if (ishuman(M))
+				var/mob/living/human/C = M
 				if (!C.handcuffed)
 					SwitchState()
 			else

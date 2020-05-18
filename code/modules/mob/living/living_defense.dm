@@ -35,8 +35,8 @@
 		else
 			dmg = 0.8
 	if (absorb >= 2)
-		if (istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = src
+		if (istype(src, /mob/living/human))
+			var/mob/living/human/H = src
 			H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[absorb_text]")
@@ -44,8 +44,8 @@
 			show_message("<span class='warning'>Your armor absorbs the blow!</span>")
 		return 2
 	if (absorb == TRUE)
-		if (istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = src
+		if (istype(src, /mob/living/human))
+			var/mob/living/human/H = src
 			H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[soften_text]",4)
@@ -72,7 +72,7 @@
 	var/damage = P.damage
 
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			damage /= H.getStatCoeff("strength")
 		var/instadeath = 0
@@ -151,7 +151,7 @@
 		var/obj/O = AM
 		var/dtype = O.damtype
 		var/throw_damage = O.throwforce*(speed/THROWFORCE_SPEED_DIVISOR)
-		var/mob/living/carbon/human/M = null
+		var/mob/living/human/M = null
 		if (ishuman(O.thrower))
 			M = O.thrower
 		var/miss_chance = 15
@@ -322,7 +322,7 @@ var/obj/human_fire_overlay_lying = null
 		Weaken(fire_stacks+1)
 
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.lying)
 			overlays += human_fire_overlay_lying
 		else

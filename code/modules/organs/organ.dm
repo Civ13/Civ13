@@ -5,7 +5,7 @@ var/list/organ_cache = list()
 	icon = 'icons/obj/surgery.dmi'
 	value = 0
 	var/dead_icon
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/status = 0
 	var/vital //Lose a vital limb, die immediately.
 	var/damage = 0 // amount of damage to the organ
@@ -31,10 +31,10 @@ var/list/organ_cache = list()
 	if (!owner)
 		return ..()
 
-	if (istype(owner, /mob/living/carbon))
+	if (istype(owner, /mob/living/human))
 		if ((owner.internal_organs) && (src in owner.internal_organs))
 			owner.internal_organs -= src
-		if (istype(owner, /mob/living/carbon/human))
+		if (istype(owner, /mob/living/human))
 			if ((owner.internal_organs_by_name) && (src in owner.internal_organs_by_name))
 				owner.internal_organs_by_name -= src
 			if ((owner.organs) && (src in owner.organs))
@@ -62,7 +62,7 @@ var/list/organ_cache = list()
 /obj/item/organ/proc/update_health()
 	return
 
-/obj/item/organ/New(var/mob/living/carbon/holder, var/internal)
+/obj/item/organ/New(var/mob/living/human/holder, var/internal)
 	..(holder)
 	organ_check()
 	organ_list += src
@@ -77,7 +77,7 @@ var/list/organ_cache = list()
 			species = all_species[dna.species]
 		else
 			log_debug("[src] at [loc] spawned without a proper DNA.")
-		var/mob/living/carbon/human/H = holder
+		var/mob/living/human/H = holder
 		if (istype(H))
 			if (internal)
 				var/obj/item/organ/external/E = H.get_organ(parent_organ)
@@ -273,7 +273,7 @@ var/list/organ_cache = list()
 
 	owner = null
 
-/obj/item/organ/proc/replaced(var/mob/living/carbon/human/target,var/obj/item/organ/external/affected)
+/obj/item/organ/proc/replaced(var/mob/living/human/target,var/obj/item/organ/external/affected)
 
 	if (!istype(target)) return
 
@@ -295,7 +295,7 @@ var/list/organ_cache = list()
 	affected.internal_organs |= src
 	target.internal_organs_by_name[organ_tag] = src
 
-/obj/item/organ/eyes/replaced(var/mob/living/carbon/human/target)
+/obj/item/organ/eyes/replaced(var/mob/living/human/target)
 
 	// Apply our eye colour to the target.
 	if (istype(target) && eye_colour)

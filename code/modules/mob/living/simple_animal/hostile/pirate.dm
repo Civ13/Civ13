@@ -23,7 +23,7 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 
-	var/corpse = /mob/living/carbon/human/corpse/pirate
+	var/corpse = /mob/living/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass
 
 	faction = PIRATES

@@ -285,7 +285,7 @@
 	slot_flags = SLOT_ID | SLOT_POCKET
 	slots = 15
 	w_class = 2
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/faction = ""
 	flammable = TRUE
 
@@ -314,7 +314,7 @@
 	throw_speed = TRUE
 	attack_verb = list("bapped")
 	flammable = TRUE
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/document_name = ""
 	var/list/document_details = list()
 	var/list/guardnotes = list()
@@ -323,7 +323,7 @@
 		..()
 		spawn(20)
 			if (ishuman(loc))
-				var/mob/living/carbon/human/H = loc
+				var/mob/living/human/H = loc
 				document_name = H.real_name
 				owner = H
 				name = "[document_name] indentification documents"
@@ -357,7 +357,7 @@
 			user << "NOTE: [i]"
 	user << "<span class='info'>*---------*</span>"
 
-/obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
 		return
 	if (istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/russian))
@@ -371,7 +371,7 @@
 			guardnotes += texttoadd
 			return
 
-/obj/item/weapon/civilian_passport/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/weapon/civilian_passport/secondary_attack_self(mob/living/human/user)
 	showoff(user)
 	return
 
@@ -387,10 +387,10 @@
 	throw_speed = TRUE
 	attack_verb = list("bapped")
 	flammable = TRUE
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/duration = 0
 
-/obj/item/weapon/visa/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+/obj/item/weapon/visa/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/pen) && !owner && duration == 0)
 		if (user.civilization == "none")
 			user << "You are not in a faction!"
@@ -400,9 +400,9 @@
 				user << "You don't have the recruitment permissions to issue visas!"
 				return
 			else
-				var/mob/living/carbon/human/U = null
+				var/mob/living/human/U = null
 				var/closemobs = list("Cancel")
-				for (var/mob/living/carbon/human/M in range(4,loc))
+				for (var/mob/living/human/M in range(4,loc))
 					if (M.civilization != user.civilization)
 						closemobs += M
 				var/choice2 = WWinput(usr, "Who to give the visa to?", "Visa", "Cancel", closemobs)

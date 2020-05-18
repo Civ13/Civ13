@@ -514,7 +514,7 @@
 			invalid = TRUE
 		for(var/obj/covers/OB in T)
 			invalid = TRUE
-		for(var/mob/living/carbon/human/OB in view(4,T))
+		for(var/mob/living/human/OB in view(4,T))
 			if (OB.stat != DEAD)
 				invalid = TRUE
 		if (!invalid)

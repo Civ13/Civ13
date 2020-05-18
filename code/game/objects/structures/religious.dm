@@ -550,8 +550,8 @@ obj/structure/religious/monument
 					if (ML.stat != 0)
 						ML.forceMove(src)
 					else
-						if (istype(ML, /mob/living/carbon/human))
-							var/mob/living/carbon/human/H = ML
+						if (istype(ML, /mob/living/human))
+							var/mob/living/human/H = ML
 							H.buriedalive = TRUE
 							H.buried_proc()
 							ML.anchored = TRUE
@@ -562,7 +562,7 @@ obj/structure/religious/monument
 							ML.stat = DEAD
 						ML.forceMove(src)
 				for (var/obj/structure/closet/coffin/CF in src.loc)
-					for (var/mob/living/carbon/human/HM in CF)
+					for (var/mob/living/human/HM in CF)
 						HM.buriedalive = TRUE
 						HM.buried_proc()
 						if (HM.client)
@@ -589,8 +589,8 @@ obj/structure/religious/monument
 					if (ML.stat != 0)
 						ML.forceMove(src.loc)
 					else
-						if (istype(ML, /mob/living/carbon/human))
-							var/mob/living/carbon/human/H = ML
+						if (istype(ML, /mob/living/human))
+							var/mob/living/human/H = ML
 							H.buriedalive = FALSE
 							ML.anchored = FALSE
 							if (H.client)
@@ -600,7 +600,7 @@ obj/structure/religious/monument
 							ML.stat = DEAD
 						ML.forceMove(src.loc)
 				for (var/obj/structure/closet/coffin/CF in src)
-					for (var/mob/living/carbon/human/HM in CF)
+					for (var/mob/living/human/HM in CF)
 						HM.buriedalive = FALSE
 						if (HM.client)
 							HM.client.eye = HM.client.mob
@@ -710,7 +710,7 @@ obj/structure/religious/monument
 			visible_message("The gods are angry, sending heavy rains!")
 			if (prob(100-power))
 				var/diseasedone = FALSE
-				for (var/mob/living/carbon/human/HH in range(10,loc))
+				for (var/mob/living/human/HH in range(10,loc))
 					if (diseasedone == FALSE)
 						HH.disease = TRUE
 						if (99)

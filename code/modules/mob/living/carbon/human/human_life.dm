@@ -25,14 +25,14 @@
 
 //#define RADIATION_SPEED_COEFFICIENT 0.1
 
-/mob/living/carbon/human
+/mob/living/human
 	var/global/list/overlays_cache = null
 	var/heatDamageFromClothingTimer = 0
 	var/start_to_rot = FALSE
 	var/rotting_stage = 0
 
 	var/healing_stage = 0 //for beds
-/mob/living/carbon/human/Life()
+/mob/living/human/Life()
 
 	handle_zoom_stuff()
 	if (!map.civilizations && !map.nomads && !map.is_RP)
@@ -174,7 +174,7 @@
 		if (find_trait("Extroverted"))
 			if (prob(20))
 				var/ct = 0
-				for(var/mob/living/carbon/human/HM in range(3,src))
+				for(var/mob/living/human/HM in range(3,src))
 					if (HM.stat != DEAD)
 						ct++
 				if (ct)
@@ -184,7 +184,7 @@
 		else if (find_trait("Introverted"))
 			if (prob(20))
 				var/ct = 0
-				for(var/mob/living/carbon/human/HM in range(3,src))
+				for(var/mob/living/human/HM in range(3,src))
 					if (HM.stat != DEAD)
 						ct++
 				if (!ct)
@@ -521,7 +521,7 @@
 			disease_progression = 0
 			disease_treatment = 0
 
-		for (var/mob/living/carbon/human/H in range(2,src))
+		for (var/mob/living/human/H in range(2,src))
 			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria" && !disease_type == "zombie") //malaria doesn't transmit from person to person.
 				if (stat != DEAD)
 					if (prob(1) || (prob(2) && find_trait("Weak Immune System")))
@@ -604,7 +604,7 @@
 	//Update our name based on whether our face is obscured/disfigured
 	name = get_visible_name()
 
-/mob/living/carbon/human/proc/handle_hair_growth() //hair will increase in size every ~16.666 mins
+/mob/living/human/proc/handle_hair_growth() //hair will increase in size every ~16.666 mins
 	if (gender == MALE)
 		var/currh = h_growth
 		var/currf = f_growth
@@ -652,12 +652,12 @@
 		return
 
 
-/mob/living/carbon/human/proc/handle_some_updates()
+/mob/living/human/proc/handle_some_updates()
 	if (life_tick > 5 && timeofdeath && (timeofdeath < 5 || world.time - timeofdeath > 6000))	//We are long dead, or we're junk mobs spawned
 		return FALSE
 	return TRUE
 
-/mob/living/carbon/human/handle_disabilities()
+/mob/living/human/handle_disabilities()
 	..()
 	//Vision
 	var/obj/item/organ/vision
@@ -673,14 +673,14 @@
 		blinded =	1
 		eye_blurry = 1
 
-/mob/living/carbon/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
+/mob/living/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
 	if (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
 	if (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
 	..()
 
-/mob/living/carbon/human/handle_environment()
+/mob/living/human/handle_environment()
 
 	var/loc_temp = 20
 	var/area/mob_area = get_area(src)
@@ -769,7 +769,7 @@
 
 	species.get_environment_discomfort(src)
 
-/mob/living/carbon/human/proc/stabilize_body_temperature()
+/mob/living/human/proc/stabilize_body_temperature()
 
 	var/body_temperature_difference = species.body_temperature - bodytemperature
 
@@ -787,7 +787,7 @@
 		bodytemperature -= 0.1
 
 //This proc returns a number made up of the flags for body parts which you are protected on. (such as HEAD, UPPER_TORSO, LOWER_TORSO, etc. See setup.dm for the full list)
-/mob/living/carbon/human/proc/get_heat_protection_flags(temperature) //Temperature is the temperature you're being exposed to.
+/mob/living/human/proc/get_heat_protection_flags(temperature) //Temperature is the temperature you're being exposed to.
 	. = FALSE
 	//Handle normal clothing
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
@@ -796,7 +796,7 @@
 				. |= C.heat_protection
 
 //See proc/get_heat_protection_flags(temperature) for the description of this proc.
-/mob/living/carbon/human/proc/get_cold_protection_flags(temperature)
+/mob/living/human/proc/get_cold_protection_flags(temperature)
 	. = FALSE
 	//Handle normal clothing
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
@@ -804,17 +804,17 @@
 			if (C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
 				. |= C.cold_protection
 
-/mob/living/carbon/human/get_heat_protection(temperature) //Temperature is the temperature you're being exposed to.
+/mob/living/human/get_heat_protection(temperature) //Temperature is the temperature you're being exposed to.
 	var/thermal_protection_flags = get_heat_protection_flags(temperature)
 	return get_thermal_protection(thermal_protection_flags)
 
-/mob/living/carbon/human/get_cold_protection(temperature)
+/mob/living/human/get_cold_protection(temperature)
 
 	temperature = max(temperature, 2.7) //There is an occasional bug where the temperature is miscalculated in ares with a small amount of gas on them, so this is necessary to ensure that that bug does not affect this calculation. Space's temperature is 2.7K and most suits that are intended to protect against any cold, protect down to 2.0K.
 	var/thermal_protection_flags = get_cold_protection_flags(temperature)
 	return get_thermal_protection(thermal_protection_flags)
 
-/mob/living/carbon/human/proc/get_thermal_protection(var/flags)
+/mob/living/human/proc/get_thermal_protection(var/flags)
 	.=0
 	if (flags)
 		if (flags & HEAD)
@@ -841,7 +841,7 @@
 			. += THERMAL_PROTECTION_HAND_RIGHT
 	return min(1,.)
 
-/mob/living/carbon/human/handle_chemicals_in_body()
+/mob/living/human/handle_chemicals_in_body()
 	if (reagents)
 		chem_effects.Cut()
 		analgesic = FALSE
@@ -879,7 +879,7 @@
 
 	return //TODO: DEFERRED
 
-/mob/living/carbon/human/handle_regular_status_updates()
+/mob/living/human/handle_regular_status_updates()
 	if (!handle_some_updates())
 		return FALSE
 
@@ -975,7 +975,7 @@
 
 	return TRUE
 
-/mob/living/carbon/human/handle_regular_hud_updates()
+/mob/living/human/handle_regular_hud_updates()
 	for (var/obj/screen/H in HUDprocess)
 //		var/obj/screen/B = H
 		H.process()
@@ -1016,7 +1016,7 @@
 
 	return TRUE
 
-/mob/living/carbon/human/handle_random_events()
+/mob/living/human/handle_random_events()
 
 	// Puke if toxloss is too high
 	if (!stat)
@@ -1029,13 +1029,13 @@
 		if (T.get_lumcount() == 0)
 			playsound_local(src,pick(scarySounds),50, TRUE, -1)*/s
 
-/mob/living/carbon/human/handle_stomach()
+/mob/living/human/handle_stomach()
 	spawn(0)
 		for (var/mob/living/M in stomach_contents)
 			if (M.loc != src)
 				stomach_contents.Remove(M)
 				continue
-			if (iscarbon(M)|| isanimal(M))
+			if (ishuman(M)|| isanimal(M))
 				if (M.stat == 2)
 					M.death(1)
 					stomach_contents.Remove(M)
@@ -1071,9 +1071,9 @@
 #define STARVATION_TOX_DAMAGE 2.5
 #define STARVATION_BRAIN_DAMAGE 2.5
 
-/mob/living/carbon/human/var/list/informed_starvation[4]
+/mob/living/human/var/list/informed_starvation[4]
 
-/mob/living/carbon/human/proc/handle_starvation()//Making this it's own proc for my sanity's sake - Matt
+/mob/living/human/proc/handle_starvation()//Making this it's own proc for my sanity's sake - Matt
 
 	if (nutrition < 220 && nutrition >= 150)
 		if (prob(3))
@@ -1192,9 +1192,9 @@
 #define DEHYDRATION_TOX_DAMAGE 2.5
 #define DEHYDRATION_BRAIN_DAMAGE 2.5
 
-/mob/living/carbon/human/var/list/informed_dehydration[4]
+/mob/living/human/var/list/informed_dehydration[4]
 
-/mob/living/carbon/human/proc/handle_dehydration()//Making this it's own proc for my sanity's sake - Matt
+/mob/living/human/proc/handle_dehydration()//Making this it's own proc for my sanity's sake - Matt
 
 	if (water < 200 && water >= 150)
 		if (prob(3))
@@ -1304,7 +1304,7 @@
 				if (prob(10))
 					Weaken(15)
 
-/mob/living/carbon/human/proc/handle_shock()
+/mob/living/human/proc/handle_shock()
 	..()
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (species && species.flags & NO_PAIN) return
@@ -1362,7 +1362,7 @@
 		spawn(1200)
 			if (getBruteLoss() >= 150)
 				death()
-/mob/living/carbon/human/proc/handle_hud_list()
+/mob/living/human/proc/handle_hud_list()
 	if (stat == DEAD)
 		hud_list[BASE_FACTION].icon_state = ""
 		hud_list[BASE_FACTION].overlays.Cut()
@@ -1481,17 +1481,17 @@
 				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2
 
-/mob/living/carbon/human/handle_silent()
+/mob/living/human/handle_silent()
 	if (..())
 		speech_problem_flag = TRUE
 	return silent
 
-/mob/living/carbon/human/handle_slurring()
+/mob/living/human/handle_slurring()
 	if (..())
 		speech_problem_flag = TRUE
 	return slurring
 
-/mob/living/carbon/human/handle_stunned()
+/mob/living/human/handle_stunned()
 	if (species.flags & NO_PAIN)
 		stunned = FALSE
 		return FALSE
@@ -1499,12 +1499,12 @@
 		speech_problem_flag = TRUE
 	return stunned
 
-/mob/living/carbon/human/handle_stuttering()
+/mob/living/human/handle_stuttering()
 	if (..())
 		speech_problem_flag = TRUE
 	return stuttering
 
-/mob/living/carbon/human/handle_fire()
+/mob/living/human/handle_fire()
 	if (..())
 		return
 
@@ -1514,13 +1514,13 @@
 	if (thermal_protection < 1 && bodytemperature < burn_temperature)
 		bodytemperature += round(BODYTEMP_HEATING_MAX*(1-thermal_protection), TRUE)
 
-/mob/living/carbon/human/rejuvenate()
+/mob/living/human/rejuvenate()
 	restore_blood()
 	shock_stage = 0
 	traumatic_shock = 0
 	..()
 
-/mob/living/carbon/human/handle_vision()
+/mob/living/human/handle_vision()
 
 	if (client)
 		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal)
@@ -1539,13 +1539,13 @@
 	update_equipment_vision()
 	species.handle_vision(src)
 
-/mob/living/carbon/human/update_sight()
+/mob/living/human/update_sight()
 	..()
 	if (stat == DEAD)
 		return
 
-/mob/living/carbon/human/proc/do_rotting()
-	if (!map.civilizations && !istype(src, /mob/living/carbon/human/corpse))
+/mob/living/human/proc/do_rotting()
+	if (!map.civilizations && !istype(src, /mob/living/human/corpse))
 		return
 	spawn(600)
 		if (stat == DEAD)
@@ -1573,7 +1573,7 @@
 										playerzombie.name = "[real_name]'s zombie"
 										strip()
 									else
-										if (!istype(src, /mob/living/carbon/human/corpse))
+										if (!istype(src, /mob/living/human/corpse))
 											var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
 											HR.name = "[src]'s remains"
 											strip()
@@ -1586,7 +1586,7 @@
 				else
 					return
 
-/mob/living/carbon/human/proc/ssd_hiding(var/timer = 10)
+/mob/living/human/proc/ssd_hiding(var/timer = 10)
 	if (!map.civilizations)
 		return
 	if (timer <= 0)
@@ -1601,7 +1601,7 @@
 				invisibility = 0
 				return
 
-/mob/living/carbon/human/proc/buried_proc()
+/mob/living/human/proc/buried_proc()
 	if (buriedalive)
 		spawn(300)
 			if (buriedalive && stat != DEAD)
@@ -1609,7 +1609,7 @@
 				src << "<span class='danger'>You can't breathe!</span>"
 
 
-/mob/living/carbon/human/proc/process_addictions(drug = null, value = 0)
+/mob/living/human/proc/process_addictions(drug = null, value = 0)
 	if (!drug || value == 0)
 		return
 	else
@@ -1761,14 +1761,14 @@
 							make_dizzy(6) // It is decreased at the speed of 3 per tick
 						return
 
-/mob/living/carbon/human/proc/instadeath_check()
+/mob/living/human/proc/instadeath_check()
 	if (getBrainLoss() > 60 || getTotalDmg() > 150)
 		death()
 		return
 	else
 		return
 
-/mob/living/carbon/human/proc/handle_embedded_objects()
+/mob/living/human/proc/handle_embedded_objects()
 
 	for (var/obj/item/organ/external/organ in organs)
 		if (organ.status & ORGAN_SPLINTED) //Splints prevent movement.

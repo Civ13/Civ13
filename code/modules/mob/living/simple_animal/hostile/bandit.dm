@@ -29,7 +29,7 @@
 	ranged = TRUE
 	rapid = TRUE
 	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
-	corpse = /mob/living/carbon/human/corpse/bandit
+	corpse = /mob/living/human/corpse/bandit
 	casingtype = null
 
 

@@ -11,7 +11,7 @@
 	metabolism = REM * 0.05 // 0.01 by default. They last a while and slowly kill you.
 	var/strength = 4 // How much damage it deals per unit
 
-/datum/reagent/toxin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (strength)
 		if (issmall(M)) removed *= 2 // Small bodymass, more effect from lower volume.
 		M.adjustToxLoss(strength * removed)
@@ -57,7 +57,7 @@
 	if (istype(L))
 		L.adjust_fire_stacks(amount / 5)
 
-/datum/reagent/toxin/plasma/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/plasma/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	M.take_organ_damage(0, removed * 0.1) //being splashed directly with plasma causes minor chemical burns
 /*	if (prob(50))
 		M.pl_effects()*/
@@ -78,7 +78,7 @@
 	strength = 17
 	metabolism = REM * 1
 
-/datum/reagent/toxin/cyanide/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/cyanide/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustOxyLoss(20 * removed)
 	M.sleeping += 0
@@ -93,7 +93,7 @@
 	strength = 25
 	metabolism = REM * 1
 
-/datum/reagent/toxin/batrachotoxin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/batrachotoxin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustBrainLoss(6.5 * removed)
 
@@ -107,7 +107,7 @@
 	strength = 10
 	metabolism = REM
 
-/datum/reagent/toxin/food_poisoning/affect_blood(var/mob/living/carbon/human/M, var/alien, var/removed)
+/datum/reagent/toxin/food_poisoning/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	if (!M.crab)
 		M.adjustToxLoss(5 * removed)
@@ -125,7 +125,7 @@
 	taste_description = "mud"
 	metabolism = REM
 
-/datum/reagent/toxin/cholera/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/cholera/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	return
 
 /datum/reagent/toxin/plague
@@ -139,9 +139,9 @@
 	taste_description = "death"
 	metabolism = REM
 
-/datum/reagent/toxin/plague/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/plague/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if(H.disease_type != "plague") //force plague.
 			H.disease_type = "plague"
 			H.disease = 1
@@ -157,10 +157,10 @@
 	strength = FALSE
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/toxin/potassium_chloride/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/toxin/potassium_chloride/overdose(var/mob/living/human/M, var/alien)
 	..()
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.stat != TRUE)
 			if (H.losebreath >= 10)
 				H.losebreath = max(10, H.losebreath - 10)
@@ -179,10 +179,10 @@
 	strength = 10
 	overdose = 20
 
-/datum/reagent/toxin/potassium_chlorophoride/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/potassium_chlorophoride/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.stat != TRUE)
 			if (H.losebreath >= 10)
 				H.losebreath = max(10, M.losebreath-10)
@@ -200,7 +200,7 @@
 	metabolism = REM
 	strength = 3
 
-/datum/reagent/toxin/zombiepowder/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/zombiepowder/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.status_flags |= FAKEDEATH
 	M.adjustOxyLoss(3 * removed)
@@ -277,7 +277,7 @@
 	color = "#C8A5DC"
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/lexorin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/lexorin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.take_organ_damage(3 * removed, FALSE)
 	if (M.losebreath < 15)
 		M.losebreath++
@@ -291,7 +291,7 @@
 	reagent_state = LIQUID
 	color = "#801E28"
 
-/datum/reagent/slimejelly/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/slimejelly/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (prob(10))
 		M << "<span class='danger'>Your insides are burning!</span>"
 		M.adjustToxLoss(rand(100, 300) * removed)
@@ -308,7 +308,7 @@
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/soporific/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/soporific/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	var/effective_dose = dose
 	if (issmall(M))
 		effective_dose *= 2
@@ -337,7 +337,7 @@
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE * 0.5
 
-/datum/reagent/chloralhydrate/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/chloralhydrate/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	var/effective_dose = dose
 	if (issmall(M))
 		effective_dose *= 2
@@ -367,7 +367,7 @@
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/peyote/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/peyote/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.druggy = max(M.druggy, 15)
 	if (prob(25) && isturf(M.loc) && M.canmove && !M.restrained())
 		step(M, pick(cardinal))
@@ -390,7 +390,7 @@
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/thc/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/thc/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.druggy = max(M.druggy, 30)
 	if (prob(25) && isturf(M.loc) && M.canmove && !M.restrained())
 		step(M, pick(cardinal))
@@ -412,7 +412,7 @@
 	metabolism = REM * 0.25
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/serotrotium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/serotrotium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (prob(7))
 		M.emote(pick("twitch", "drool", "moan", "gasp"))
 	return
@@ -427,7 +427,7 @@
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/cryptobiolin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/cryptobiolin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.make_dizzy(4)
 	M.confused = max(M.confused, 20)
 
@@ -440,7 +440,7 @@
 	color = "#C8A5DC"
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/impedrezene/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/impedrezene/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.jitteriness = max(M.jitteriness - 5, FALSE)
 	if (prob(80))
 		M.adjustBrainLoss(0.1 * removed)
@@ -459,7 +459,7 @@
 	metabolism = REM * 0.25
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/mindbreaker/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/mindbreaker/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.hallucination = max(M.hallucination, 100)
 
 /datum/reagent/psilocybin
@@ -471,7 +471,7 @@
 	overdose = REAGENTS_OVERDOSE
 	metabolism = REM * 0.5
 
-/datum/reagent/psilocybin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/psilocybin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.druggy = max(M.druggy, 30)
 
 	var/effective_dose = dose
@@ -504,7 +504,7 @@
 	reagent_state = LIQUID
 	color = "#181818"
 
-/datum/reagent/nicotine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/nicotine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.add_chemical_effect(CE_PULSE, TRUE)
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)

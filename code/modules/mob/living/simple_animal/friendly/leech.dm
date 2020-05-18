@@ -16,7 +16,7 @@
 	mob_size = MOB_MINISCULE
 	possession_candidate = TRUE
 
-/mob/living/simple_animal/leech/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/leech/attack_hand(mob/living/human/M as mob)
 	if (stat == DEAD)
 		M << "This leech is dead, no point in picking it up."
 	else
@@ -45,7 +45,7 @@
 			desc = "A bloodsucking leech."
 			return
 
-/obj/item/weapon/leech/attack(var/mob/living/carbon/human/C, var/mob/living/user)
+/obj/item/weapon/leech/attack(var/mob/living/human/C, var/mob/living/user)
 	visible_message("[user] starts to attach the leech to [C]...")
 	if (do_after(user,150,src))
 		visible_message("[user] has finished leeching [C].")

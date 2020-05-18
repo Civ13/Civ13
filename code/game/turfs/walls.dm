@@ -42,7 +42,7 @@ var/list/global/wall_cache = list()
 /turf/wall/rockwall/lavaspawner
 
 /turf/wall/rockwall/attackby(obj/item/W as obj, mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if(istype(W, /obj/item/weapon/chisel))
 		var design = "smooth"
 		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))

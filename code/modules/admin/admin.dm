@@ -812,7 +812,7 @@ var/list/atom_types = null
 	var/J = WWinput(usr, "Which job?", "Spawn Player", WWinput_first_choice(job_master_occupation_names), WWinput_list_or_null(job_master_occupation_names))
 	if (J != "Cancel" && G)
 		var/mob_type = job2mobtype(J)
-		var/mob/living/carbon/human/H = new mob_type(G.loc)
+		var/mob/living/human/H = new mob_type(G.loc)
 		G.mind.transfer_to(H)
 		G.reenter_corpse()
 		job_master.EquipRank(H, J)
@@ -852,7 +852,7 @@ var/list/atom_types = null
 /datum/admins/proc/output_ai_laws()
 	return FALSE
 
-/client/proc/update_mob_sprite(mob/living/carbon/human/H as mob)
+/client/proc/update_mob_sprite(mob/living/human/H as mob)
 	set category = "Admin"
 	set name = "Update Mob Sprite"
 	set desc = "Should fix any mob sprite update errors."
@@ -975,13 +975,13 @@ var/list/atom_types = null
 			if (H.paralysis == FALSE)
 				H.paralysis = 8000
 				msg = "has paralyzed [key_name(H)] and everyone in [rngd] tiles around."
-				for (var/mob/living/carbon/human/HH in range(rngd,H))
+				for (var/mob/living/human/HH in range(rngd,H))
 					if (HH.paralysis == FALSE)
 						HH.paralysis = 8000
 			else
 				H.paralysis = FALSE
 				msg = "has unparalyzed [key_name(H)] and everyone in [rngd] tiles around."
-				for (var/mob/living/carbon/human/HH in range(rngd,H))
+				for (var/mob/living/human/HH in range(rngd,H))
 					if (HH.paralysis == TRUE)
 						HH.paralysis = 0
 		else
@@ -992,7 +992,7 @@ var/list/atom_types = null
 				H.paralysis = FALSE
 				msg = "has unparalyzed [key_name(H)]."
 		log_and_message_admins(msg)
-/datum/admins/proc/punish(mob/living/carbon/human/H as mob)
+/datum/admins/proc/punish(mob/living/human/H as mob)
 	set category = "Admin"
 	set name = "Punish"
 	set desc = "Punishes a player."

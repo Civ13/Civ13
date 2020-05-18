@@ -21,8 +21,8 @@
 			accessories += A
 			A.on_attached(src, user)
 			verbs |= /obj/item/clothing/proc/removetie_verb
-			if (istype(loc, /mob/living/carbon/human))
-				var/mob/living/carbon/human/H = loc
+			if (istype(loc, /mob/living/human))
+				var/mob/living/human/H = loc
 				H.update_inv_w_uniform()
 			return
 		else

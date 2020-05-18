@@ -103,7 +103,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 		var/c1 = 0
 		var/c2 = 0
 		var/prev_control = a1_control
-		for (var/mob/living/carbon/human/H in player_list)
+		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
 				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
@@ -126,7 +126,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 		c1 = 0
 		c2 = 0
 		prev_control = a2_control
-		for (var/mob/living/carbon/human/H in player_list)
+		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
 				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
@@ -149,7 +149,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 		c1 = 0
 		c2 = 0
 		prev_control = a3_control
-		for (var/mob/living/carbon/human/H in player_list)
+		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
 				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)

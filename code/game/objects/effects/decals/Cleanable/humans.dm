@@ -66,7 +66,7 @@ var/global/list/image/splatter_cache=list()
 	if (basecolor == "rainbow") basecolor = get_random_colour(1)
 	color = basecolor
 
-/obj/effect/decal/cleanable/blood/Crossed(mob/living/carbon/human/perp)
+/obj/effect/decal/cleanable/blood/Crossed(mob/living/human/perp)
 	if (!istype(perp))
 		return
 	if (amount < 1)
@@ -112,7 +112,7 @@ var/global/list/image/splatter_cache=list()
 	amount = FALSE
 	processing_objects -= src
 
-/obj/effect/decal/cleanable/blood/attack_hand(mob/living/carbon/human/user)
+/obj/effect/decal/cleanable/blood/attack_hand(mob/living/human/user)
 	..()
 	if (amount && istype(user))
 		add_fingerprint(user)

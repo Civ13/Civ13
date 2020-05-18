@@ -166,7 +166,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 			ticker.minds += player.mind
 
 /datum/controller/gameticker/proc/equip_characters()
-	for (var/mob/living/carbon/human/player in player_list)
+	for (var/mob/living/human/player in player_list)
 		if (player && player.mind && player.mind.assigned_role)
 		//	if (!player_is_antag(player.mind, only_offstation_roles = TRUE))
 			job_master.EquipRank(player, player.mind.assigned_role, FALSE)

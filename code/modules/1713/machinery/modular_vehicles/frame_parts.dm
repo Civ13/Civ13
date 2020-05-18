@@ -229,7 +229,7 @@ var/global/list/vehicle_walls = list( \
 
 /obj/structure/vehicleparts/frame/proc/adding_walls()
 
-/obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !H)
 		return
 	if (istype (I, /obj/item/stack/material/steel))

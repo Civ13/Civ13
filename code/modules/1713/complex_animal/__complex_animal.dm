@@ -203,8 +203,8 @@ called after H added to knows_about_mobs() */
 	apply_damage(dmg)
 	if (client)
 		var/m_faction = P.firer.faction
-		if (istype(P, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = P
+		if (istype(P, /mob/living/human))
+			var/mob/living/human/H = P
 			if (map.civilizations)
 				m_faction = H.civilization
 			else

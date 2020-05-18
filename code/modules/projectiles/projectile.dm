@@ -294,7 +294,7 @@
 
 		if (ishuman(target_mob))
 
-			var/mob/living/carbon/human/H = target_mob
+			var/mob/living/human/H = target_mob
 			if (hit_zone == "head")
 				if (H.head && istype(H.head, /obj/item/clothing/head/helmet))
 					var/obj/item/clothing/head/helmet/helmet = H.head
@@ -371,7 +371,7 @@
 	// 50-60% chance of less severe damage: either 6, 12, or 18 less damage based on number of redirections
 	var/helmet_protection = 0
 
-	var/mob/living/carbon/human/H = target_mob
+	var/mob/living/human/H = target_mob
 	if (istype(H) && H.head && istype(H.head, /obj/item/clothing/head/helmet))
 		helmet_protection = 15
 
