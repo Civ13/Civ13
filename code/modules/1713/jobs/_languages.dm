@@ -71,13 +71,13 @@
 /datum/job/greek
 	default_language = "Greek"
 	additional_languages = list("Latin" = 10)
-	male_tts_voice = "Giorgio" //italian
-	female_tts_voice = "Bianca" //italian
+	male_tts_voice = "Jacek" //polish
+	female_tts_voice = "Maja" //polish
 
 /datum/job/arab
 	default_language = "Arabic"
 	additional_languages = list("French" = 10)
-	male_tts_voice = "Brian" //british
+	male_tts_voice = "Russel" //australian
 	female_tts_voice = "Zeina"
 
 /datum/job/japanese
