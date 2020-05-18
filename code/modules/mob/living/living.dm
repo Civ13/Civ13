@@ -568,7 +568,7 @@ default behaviour is:
 	update_vision_cone()
 
 
-	for(var/obj/chat_text/CT in stored_chat_text)
+	for(var/obj/chat_text/CT in client.stored_chat_text)
 		CT.glide_size = src.glide_size
 		CT.forceMove(src.loc)
 

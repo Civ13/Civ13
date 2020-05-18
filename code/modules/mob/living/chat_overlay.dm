@@ -2,7 +2,7 @@
 
 #define TILE_SIZE 32
 
-/mob/living
+/client
 	var/obj/chat_text/chat_text
 	var/list/stored_chat_text = list()
 
@@ -16,19 +16,21 @@
 	var/mob/living/owner
 
 /obj/chat_text/Destroy()
-	owner.stored_chat_text -= src
-	owner = null
+	if (owner && owner.client)
+		owner.client.stored_chat_text -= src
+		owner = null
 	return ..()
 
 /obj/chat_text/New(var/atom/desired_loc,var/desired_text)
 
 	if(isliving(desired_loc))
 		owner = desired_loc
-
-		for(var/obj/chat_text/CT in owner.stored_chat_text)
+		if (!owner.client)
+			return
+		for(var/obj/chat_text/CT in owner.client.stored_chat_text)
 			qdel(CT)
 
-		owner.stored_chat_text += src
+		owner.client.stored_chat_text += src
 
 		forceMove(get_turf(desired_loc))
 
