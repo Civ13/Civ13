@@ -68,12 +68,12 @@ var/list/preferences_datums = list()
 
 	var/datum/category_collection/player_setup_collection/player_setup
 
-	var/list/preferences_enabled = list("CHAT_OVERLAY","CHAT_TTS","SOUND_MIDI", "SOUND_LOBBY", "SOUND_AMBIENCE",
+	var/list/preferences_enabled = list("CHAT_OVERLAY","SOUND_MIDI", "SOUND_LOBBY", "SOUND_AMBIENCE",
 		"CHAT_GHOSTEARS", "CHAT_GHOSTSIGHT", "CHAT_GHOSTRADIO", "CHAT_SHOWICONS",
 		"SHOW_TYPING", "CHAT_OOC", "CHAT_LOOC", "CHAT_DEAD", "SHOW_PROGRESS",
 		"CHAT_DEBUGLOGS", "CHAT_PRAYER", "SOUND_ADMINHELP")
 
-	var/list/preferences_disabled = list()
+	var/list/preferences_disabled = list("CHAT_TTS")
 
 /datum/preferences/New(client/C)
 
