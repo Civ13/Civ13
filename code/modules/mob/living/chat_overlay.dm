@@ -63,7 +63,7 @@ var/global/sound_tts_num = 0
 		var/fpath = "[genUID].ogg"
 		if (fexists(fpath))
 			if (client)
-				client << fpath
+				src.playsound_local(loc,fpath,100)
 			spawn(50)
 				fdel(fpath)
 		return
