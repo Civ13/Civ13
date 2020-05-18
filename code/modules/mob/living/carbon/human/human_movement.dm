@@ -53,7 +53,7 @@
 	if (wear_suit)
 		var/obj/item/clothing/WS = wear_suit
 		tally += WS.slowdown
-		if (WS.accessories.len)
+		if (WS.accessories && WS.accessories.len)
 			for (var/obj/item/clothing/accessory/AC in WS.accessories)
 				tally += AC.slowdown
 	if (w_uniform)
