@@ -273,6 +273,15 @@
 	var/full_name = "At'tawig"
 	return full_name
 
+/datum/language/proc/get_random_filipino_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_filipino)) + " " + capitalize(pick(last_names_filipino))
+		else
+			return capitalize(pick(first_names_male_filipino)) + " " + capitalize(pick(last_names_filipino))
+
+	var/full_name = "Hyung Do Seong"
+	return full_name
 
 /datum/language
 	var/list/scramble_cache = list()
