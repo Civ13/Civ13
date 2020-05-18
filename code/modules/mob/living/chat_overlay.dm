@@ -55,12 +55,10 @@ var/global/sound_tts_num = 0
 /mob/proc/play_tts(message)
 	if (!message || message == "" || !client)
 		return
-	var/gnd = 1
-	if (gender == FEMALE)
-		gnd = 0
+	voice = tts_voice
 	sound_tts_num+=1
 	var/genUID = sound_tts_num
-	shell("sudo python3 tts/amazontts.py \"[message]\" [gnd] [genUID]")
+	shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
 	spawn(1)
 		var/fpath = "[genUID].ogg"
 		if (fexists(fpath))
@@ -69,3 +67,136 @@ var/global/sound_tts_num = 0
 			spawn(50)
 				fdel(fpath)
 		return
+
+
+/////AMAZON AWS POLLY VOICES///////////////
+/*
+Arabic (arb)
+
+Zeina	Female
+
+Chinese, Mandarin (cmn-CN)
+
+Zhiyu	Female
+
+Danish (da-DK)	
+Naja	Female
+Mads	Male
+
+Dutch (nl-NL)	
+Lotte	Female
+Ruben	Male
+
+English (Australian) (en-AU)
+
+Nicole	Female
+Russell	Male
+
+English (British) (en-GB)
+
+Amy	Female
+Emma	Female
+
+Brian	Male
+English (Indian) (en-IN)	
+Aditi*	Female
+
+Raveena	Female
+English (US) (en-US)	
+Ivy	Female (child)
+
+Joanna**	Female
+
+Kendra	Female
+
+Kimberly	Female
+
+Salli	Female
+
+Joey	Male
+
+Justin	Male (child)
+
+Matthew**	Male
+English (Welsh) (en-GB-WLS)	
+Geraint	Male
+French (fr-FR)	
+Céline/Celine	Female
+
+Léa	Female
+
+Mathieu	Male
+French (Canadian) (fr-CA)	
+Chantal	Female
+German (de-DE)	
+Marlene	Female
+
+Vicki	Female
+
+Hans	Male
+Hindi (hi-IN)	
+Aditi*	Female
+Icelandic (is-IS)	
+Dóra/Dora	Female
+
+Karl	Male
+Italian (it-IT)	
+Carla	Female
+
+Bianca	Female
+
+Giorgio	Male
+Japanese (ja-JP)	
+Mizuki	Female
+
+Takumi	Male
+Korean (ko-KR)	
+Seoyeon	Female
+Norwegian (nb-NO)	
+Liv	Female
+Polish (pl-PL)	
+Ewa	Female
+
+Maja	Female
+
+Jacek	Male
+
+Jan	Male
+Portuguese (Brazilian) (pt-BR)	
+Camila	Female
+Vitória/Vitoria	Female
+
+Ricardo	Male
+Portuguese (European) (pt-PT)	
+Inês/Ines	Female
+
+Cristiano	Male
+Romanian (ro-RO)	
+Carmen	Female
+Russian (ru-RU)	
+Tatyana	Female
+
+Maxim	Male
+Spanish (European) (es-ES)	
+Conchita	Female
+
+Lucia	Female
+
+Enrique	Male
+Spanish (Mexican) (es-MX)	
+Mia	Female
+US Spanish (es-US)	
+Lupe	Female
+Penelope	Female
+Miguel	Male
+
+Swedish (sv-SE)	
+Astrid	Female
+
+Turkish (tr-TR)	
+Filiz	Female
+
+Welsh (cy-GB)	
+Gwyneth	Female
+
+*/
