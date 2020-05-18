@@ -289,6 +289,7 @@ var/list/admin_verbs_mentor = list(
 var/list/admin_verbs_manager = list(
 	/client/proc/toggle_BYOND_hub_visibility,
 	/client/proc/toggle_playing,
+	/client/proc/toggle_tts,
 	/client/proc/start_epochswap_vote,
 )
 
