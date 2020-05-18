@@ -48,6 +48,7 @@
 		qdel(src)
 
 	return FALSE
+var/global/sound_tts_num = 0
 
 /mob/proc/play_tts(message)
 	if (!message || message == "")
@@ -55,11 +56,13 @@
 	var/gnd = 1
 	if (gender == FEMALE)
 		gnd = 0
-	var/genUID = rand(1,99999)
+	sound_tts_num+=1
+	var/genUID = sound_tts_num
 	shell("sudo python3 tts/amazontts.py \"[message]\" [gnd] [genUID]")
 	spawn(5)
 		var/fpath = "[genUID].ogg"
 		if (fexists(fpath))
-			playsound(src, fpath)
-			fdel(fpath)
+			playsound(src, fpath, 100, FALSE)
+			spawn(50)
+				fdel(fpath)
 		return
