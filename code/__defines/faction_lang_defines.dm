@@ -35,6 +35,7 @@
 #define GERMAN "GERMAN"
 #define VIETNAMESE "VIETNAMESE"
 #define KOREAN "KOREAN"
+#define FILIPINO "FILIPINO"
 /proc/faction_const2name(constant,age = 0)
 
 	if (constant == PIRATES)
@@ -122,3 +123,6 @@
 
 	if (constant == IROQUOIS)
 		return "Iroquois"
+
+	if (constant == FILIPINO)
+		return "Filipino"

@@ -86,6 +86,12 @@
 	male_tts_voice = "Takumi"
 	female_tts_voice = "Mizuki"
 
+/datum/job/japanese/ija_ww2ATunit
+	default_language = "Japanese"
+	additional_languages = list("Korean" = 100, "Russian" = 10)
+	male_tts_voice = "Takumi"
+	female_tts_voice = "Mizuki"
+
 /datum/job/russian
 	default_language = "Russian"
 	additional_languages = list("English" = 15, "Japanese" = 5)
