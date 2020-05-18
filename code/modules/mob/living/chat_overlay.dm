@@ -51,7 +51,7 @@
 var/global/sound_tts_num = 0
 
 /mob/proc/play_tts(message)
-	if (!message || message == "")
+	if (!message || message == "" || !client)
 		return
 	var/gnd = 1
 	if (gender == FEMALE)
@@ -61,8 +61,9 @@ var/global/sound_tts_num = 0
 	shell("sudo python3 tts/amazontts.py \"[message]\" [gnd] [genUID]")
 	spawn(1)
 		var/fpath = "[genUID].ogg"
-		if (fexists(fpath) && C)
-			C << fpath
+		if (fexists(fpath))
+			if (client)
+				client << fpath
 			spawn(50)
 				fdel(fpath)
 		return
