@@ -366,6 +366,10 @@
 /datum/language/proc/format_message_plain(message, verb)
 	return "[verb], \"[capitalize(message)]\""
 
+/datum/language/proc/format_message_overlay(message)
+	return "[capitalize(message)]"
+
+
 /datum/language/proc/format_message_radio(message, verb)
 	return "[verb], <span class='[colour]'>\"[capitalize(message)]\"</span>"
 

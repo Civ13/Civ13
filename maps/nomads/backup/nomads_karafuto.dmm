@@ -200,7 +200,7 @@
 "dR" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/sea)
 "dS" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/sea)
 "dT" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/sea)
-"dU" = (/obj/map_metadata/nomads_karafuto,/turf/wall/indestructable/black,/area/caribbean/void/caves)
+"dU" = (/obj/map_metadata/nomads_karafuta,/turf/wall/indestructable/black,/area/caribbean/void/caves)
 "dV" = (/obj/effect/spawner/mobspawner/frog,/turf/floor/grass,/area/caribbean/nomads)
 "dW" = (/obj/effect/spawner/mobspawner/sheep_m,/turf/floor/grass,/area/caribbean/nomads)
 "dX" = (/obj/effect/spawner/mobspawner/horse,/turf/floor/grass,/area/caribbean/nomads)

@@ -1,4 +1,3 @@
-
 /obj/item/trombone
 	name = "trumpet"
 	desc = "To announce the arrival of the king!"
