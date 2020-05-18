@@ -242,7 +242,7 @@
 	//if no support >> roof falls down
 		if (!supportfound)
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
-			for (var/mob/living/carbon/human/M in range(1, src))
+			for (var/mob/living/human/M in range(1, src))
 				M.adjustBruteLoss(rand(17,27))
 				M.Weaken(15)
 				M << "The roof collapses!"
@@ -324,7 +324,7 @@
 	var/covers_time = 80
 
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 	var/area/currentarea = get_area(get_step(user, user.dir))
@@ -355,7 +355,7 @@
 			new target_type(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes building the roof.</span>")
 			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				H.adaptStat("crafting", 1)
 			qdel(src)
 		return

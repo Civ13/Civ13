@@ -1,5 +1,5 @@
 
-/obj/item/weapon/grab/proc/inspect_organ(mob/living/carbon/human/H, mob/user, var/target_zone)
+/obj/item/weapon/grab/proc/inspect_organ(mob/living/human/H, mob/user, var/target_zone)
 
 	var/obj/item/organ/external/E = H.get_organ(target_zone)
 
@@ -41,7 +41,7 @@
 		if (!bad)
 			user << "<span class='notice'>[H]'s skin is normal.</span>"
 
-/obj/item/weapon/grab/proc/jointlock(mob/living/carbon/human/target, mob/attacker, var/target_zone)
+/obj/item/weapon/grab/proc/jointlock(mob/living/human/target, mob/attacker, var/target_zone)
 	if (state < GRAB_AGGRESSIVE)
 		attacker << "<span class='warning'>You require a better grab to do this.</span>"
 		return
@@ -56,7 +56,7 @@
 		target << "<span class='danger'>You feel extreme pain!</span>"
 		affecting.adjustHalLoss(Clamp(0, 60-affecting.halloss, 30)) //up to 60 halloss
 
-/obj/item/weapon/grab/proc/attack_eye(mob/living/carbon/human/target, mob/living/carbon/human/attacker)
+/obj/item/weapon/grab/proc/attack_eye(mob/living/human/target, mob/living/human/attacker)
 	if (!istype(attacker))
 		return
 
@@ -81,7 +81,7 @@
 
 	attack.handle_eye_attack(attacker, target)
 
-/obj/item/weapon/grab/proc/headbut(mob/living/carbon/human/target, mob/living/carbon/human/attacker)
+/obj/item/weapon/grab/proc/headbut(mob/living/human/target, mob/living/human/attacker)
 	if (!istype(attacker))
 		return
 	if (target.lying || target.prone)
@@ -111,7 +111,7 @@
 	qdel(src)
 	return
 
-/obj/item/weapon/grab/proc/dislocate(mob/living/carbon/human/target, mob/living/attacker, var/target_zone)
+/obj/item/weapon/grab/proc/dislocate(mob/living/human/target, mob/living/attacker, var/target_zone)
 	if (state < GRAB_NECK)
 		attacker << "<span class='warning'>You require a better grab to do this.</span>"
 		return
@@ -143,8 +143,8 @@
 /obj/item/weapon/grab/proc/devour(mob/target, mob/user)
 	var/can_eat
 
-	var/mob/living/carbon/human/H = user
-	if (istype(H) && H.species.gluttonous && (iscarbon(target) || isanimal(target)))
+	var/mob/living/human/H = user
+	if (istype(H) && H.species.gluttonous && (ishuman(target) || isanimal(target)))
 		if (H.species.gluttonous == GLUT_TINY && (target.mob_size <= MOB_TINY) && !ishuman(target)) // Anything MOB_TINY or smaller
 			can_eat = TRUE
 		else if (H.species.gluttonous == GLUT_SMALLER && (H.mob_size > target.mob_size)) // Anything we're larger than
@@ -153,7 +153,7 @@
 			can_eat = 2
 
 	if (can_eat)
-		var/mob/living/carbon/attacker = user
+		var/mob/living/human/attacker = user
 		user.visible_message("<span class='danger'>[user] is attempting to devour [target]!</span>")
 		if (can_eat == 2)
 			if (!do_mob(user, target, 30)) return

@@ -231,7 +231,7 @@
 		else
 			icon_state = "dumpsteropen_full"
 
-/obj/structure/closet/crate/dumpster/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/closet/crate/dumpster/attack_hand(mob/living/human/user as mob)
 	if (!ishuman(user))
 		return
 	add_fingerprint(user)

@@ -123,7 +123,7 @@
 			update_icon()
 
 /obj/item/weapon/gun/projectile/revolver/special_check(mob/user)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (gun_safety && safetyon)
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
@@ -145,7 +145,7 @@
 		spawn (1)
 			new/obj/effect/effect/smoke/chem(get_step(src, dir))
 
-/obj/item/weapon/gun/projectile/revolver/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
+/obj/item/weapon/gun/projectile/revolver/unload_ammo(var/mob/living/human/user, allow_dump=0)
 	if (loaded.len)
 		//presumably, if it can be speed-loaded, it can be speed-unloaded.
 		if (allow_dump && (load_method & SPEEDLOADER))
@@ -682,7 +682,7 @@
 			cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolving/special_check(mob/user)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
@@ -704,7 +704,7 @@
 		spawn (1)
 			new/obj/effect/effect/smoke/chem(get_step(src, dir))
 
-/obj/item/weapon/gun/projectile/revolving/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
+/obj/item/weapon/gun/projectile/revolving/unload_ammo(var/mob/living/human/user, allow_dump=0)
 	if (loaded.len)
 		//presumably, if it can be speed-loaded, it can be speed-unloaded.
 		if (allow_dump && (load_method & SPEEDLOADER))
@@ -872,7 +872,7 @@
 			update_icon()
 
 /obj/item/weapon/gun/projectile/capnball/special_check(mob/user)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
@@ -891,7 +891,7 @@
 		spawn (1)
 			new/obj/effect/effect/smoke/chem(get_step(src, dir))
 
-/obj/item/weapon/gun/projectile/capnball/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
+/obj/item/weapon/gun/projectile/capnball/unload_ammo(var/mob/living/human/user, allow_dump=0)
 	if (loaded.len)
 		//presumably, if it can be speed-loaded, it can be speed-unloaded.
 		if (allow_dump && (load_method & SPEEDLOADER))

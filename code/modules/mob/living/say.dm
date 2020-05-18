@@ -115,7 +115,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	var/italics = FALSE
 	var/message_range = 7
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.wolfman && howl)
 			message_range = 30
 	var/turf/T = get_turf(src)

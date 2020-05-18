@@ -6,7 +6,7 @@
 	priority = 2
 	can_infect = TRUE
 	blood_level = TRUE
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return FALSE
@@ -27,13 +27,13 @@
 	min_duration = 50
 	max_duration = 70
 
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		return ..() && affected && affected.open == 1
 
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -44,7 +44,7 @@
 		target.custom_pain("Something hurts horribly in your [affected.name]!",120)
 		..()
 
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -54,7 +54,7 @@
 		"<span class = 'notice'>You have cut [target]'s [affected.encased] open with \the [tool].</span>")
 		affected.open = 1.5
 
-	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -78,13 +78,13 @@
 	min_duration = 30
 	max_duration = 40
 
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		return ..() && affected && affected.open == 1.5
 
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -96,7 +96,7 @@
 		target.custom_pain("Something hurts horribly in your [affected.name]!",120)
 		..()
 
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -112,7 +112,7 @@
 		if (prob(10))
 			affected.fracture()
 
-	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -136,14 +136,14 @@
 	min_duration = 20
 	max_duration = 40
 
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		return ..() && affected && affected.open == 2.5
 
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -155,7 +155,7 @@
 		target.custom_pain("Something hurts horribly in your [affected.name]!",120)
 		..()
 
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -167,7 +167,7 @@
 
 		affected.open = 1
 
-	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return

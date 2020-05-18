@@ -1,4 +1,4 @@
-/mob/living/carbon/human/proc/handle_strip(var/slot_to_strip,var/mob/living/user)
+/mob/living/human/proc/handle_strip(var/slot_to_strip,var/mob/living/user)
 
 	if (!slot_to_strip || !user.IsAdvancedToolUser())
 		return
@@ -79,7 +79,7 @@
 			user.put_in_hands(held)
 
 // Empty out everything in the target's pockets.
-/mob/living/carbon/human/proc/empty_pockets(var/mob/living/user)
+/mob/living/human/proc/empty_pockets(var/mob/living/user)
 	if (!r_store && !l_store)
 		user << "<span class='warning'>\The [src] has nothing in their pockets.</span>"
 		return
@@ -90,7 +90,7 @@
 	visible_message("<span class='danger'>\The [user] empties \the [src]'s pockets!</span>")
 
 // Remove all splints.
-/mob/living/carbon/human/proc/remove_splints(var/mob/living/user)
+/mob/living/human/proc/remove_splints(var/mob/living/user)
 
 	var/can_reach_splints = TRUE
 

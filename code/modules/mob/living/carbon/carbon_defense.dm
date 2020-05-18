@@ -1,11 +1,11 @@
 
 //Called when the mob is hit with an item in combat.
-/mob/living/carbon/resolve_item_attack(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
+/mob/living/human/resolve_item_attack(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
 	if (check_attack_throat(I, user))
 		return null
 	..()
 
-/mob/living/carbon/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)
+/mob/living/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)
 	if (!effective_force || blocked >= 2)
 		return FALSE
 
@@ -22,7 +22,7 @@
 	return TRUE
 
 // Attacking someone with a weapon while they are neck-grabbed = throat slitting
-/mob/living/carbon/proc/check_attack_throat(obj/item/W, mob/user)
+/mob/living/human/proc/check_attack_throat(obj/item/W, mob/user)
 	if (user.a_intent == I_HARM)
 		for (var/obj/item/weapon/grab/G in grabbed_by)
 			if (G.assailant == user && G.state >= GRAB_NECK)
@@ -31,7 +31,7 @@
 	return FALSE
 
 // Knifing
-/mob/living/carbon/proc/attack_throat(obj/item/W, obj/item/weapon/grab/G, mob/user, delay = 20)
+/mob/living/human/proc/attack_throat(obj/item/W, obj/item/weapon/grab/G, mob/user, delay = 20)
 
 	if (!W.has_edge() || !W.force || W.damtype != BRUTE)
 		return FALSE //unsuitable weapon

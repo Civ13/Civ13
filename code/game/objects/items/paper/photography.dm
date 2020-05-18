@@ -112,7 +112,7 @@ var/global/photo_count = 0
 
 /obj/item/weapon/storage/photo_album/MouseDrop(obj/over_object as obj)
 
-	if((istype(usr, /mob/living/carbon/human)))
+	if((istype(usr, /mob/living/human)))
 		var/mob/M = usr
 		if(!( istype(over_object, /obj/screen) ))
 			return ..()
@@ -179,7 +179,7 @@ var/global/photo_count = 0
 		size = nsize
 		to_chat(usr, "<span class='notice'>Camera will now take [size]x[size] photos.</span>")
 
-/obj/item/camera/attack(mob/living/carbon/human/M as mob, mob/user as mob)
+/obj/item/camera/attack(mob/living/human/M as mob, mob/user as mob)
 	return
 
 /obj/item/camera/attackby(obj/item/I as obj, mob/user as mob)
@@ -196,7 +196,7 @@ var/global/photo_count = 0
 
 /obj/item/camera/proc/get_mobs(turf/the_turf as turf)
 	var/mob_detail
-	for(var/mob/living/carbon/A in the_turf)
+	for(var/mob/living/human/A in the_turf)
 		if(A.invisibility) continue
 		var/holding = null
 		if(A.l_hand || A.r_hand)

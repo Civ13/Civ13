@@ -2,7 +2,7 @@
 
 /obj/item/clothing/gloves
 	var/transfer_blood = FALSE
-	var/mob/living/carbon/human/bloody_hands_mob
+	var/mob/living/human/bloody_hands_mob
 
 /obj/item/clothing/shoes/
 	var/track_blood = FALSE

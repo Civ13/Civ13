@@ -1,4 +1,4 @@
-/mob/living/carbon/human/proc/selfheal()
+/mob/living/human/proc/selfheal()
 	set category = "Tester"
 	set name = "Heal Self"
 	src << "<span class = 'good'>Please wait <b>5</b> seconds.</span>"
@@ -6,7 +6,7 @@
 		src << "<span class = 'good'>You've been fully healed.</span>"
 		revive()
 
-/mob/living/carbon/human/proc/selfrevive()
+/mob/living/human/proc/selfrevive()
 	set category = "Tester"
 	set name = "Revive Self"
 	src << "<span class = 'good'>Please wait <b>30</b> seconds.</span>"

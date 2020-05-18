@@ -71,7 +71,7 @@
 		return ..()
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/attack_self(mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	var/list/actions = list()
 
 	if (cocktail_food)

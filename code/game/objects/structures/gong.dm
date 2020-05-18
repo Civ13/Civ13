@@ -8,7 +8,7 @@
 	not_disassemblable = FALSE
 	var/cooldown_gong = FALSE
 
-obj/structure/gong/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+obj/structure/gong/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)

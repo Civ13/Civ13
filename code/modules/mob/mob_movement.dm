@@ -36,9 +36,9 @@
 
 // weight slowdown
 
-/mob/living/carbon/human/var/last_run_delay = -1
-/mob/living/carbon/human/var/next_calculate_run_delay = -1
-/mob/living/carbon/human/get_run_delay()
+/mob/living/human/var/last_run_delay = -1
+/mob/living/human/var/next_calculate_run_delay = -1
+/mob/living/human/get_run_delay()
 
 	. = ..()
 
@@ -128,15 +128,15 @@
 			attack_self()
 			return
 		if (SOUTHWEST)
-			if (iscarbon(usr))
-				var/mob/living/carbon/C = usr
+			if (ishuman(usr))
+				var/mob/living/human/C = usr
 				C.toggle_throw_mode()
 			else
 				usr << "<span class = 'red'>This mob type cannot throw items.</span>"
 			return
 		if (NORTHWEST)
-			if (iscarbon(usr))
-				var/mob/living/carbon/C = usr
+			if (ishuman(usr))
+				var/mob/living/human/C = usr
 				if (!C.get_active_hand())
 					usr << "<span class = 'red'>You have nothing to drop in your hand.</span>"
 					return
@@ -156,7 +156,7 @@
 
 /client/verb/swap_hand()
 	set hidden = TRUE
-	if (istype(mob, /mob/living/carbon))
+	if (istype(mob, /mob/living/human))
 		mob:swap_hand()
 	return
 
@@ -172,7 +172,7 @@
 
 /client/verb/toggle_throw_mode()
 	set hidden = TRUE
-	if (!istype(mob, /mob/living/carbon))
+	if (!istype(mob, /mob/living/human))
 		return
 	if (!mob.stat && isturf(mob.loc) && !mob.restrained())
 		mob:toggle_throw_mode()
@@ -236,8 +236,8 @@
 		m_flag = TRUE
 		if ((A != loc && A && A.z == z))
 			last_move = get_dir(A, loc)
-	if (istype(src, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = src
+	if (istype(src, /mob/living/human))
+		var/mob/living/human/H = src
 		if (H.riding == TRUE && !isnull(H.riding_mob))
 			if (H.pulling)
 				H.stop_pulling()
@@ -317,7 +317,7 @@
 
 	var/mob_is_observer = istype(mob, /mob/observer)
 	var/mob_is_living = istype(mob, /mob/living)
-	var/mob_is_human = istype(mob, /mob/living/carbon/human)
+	var/mob_is_human = istype(mob, /mob/living/human)
 	var/mob_loc = mob.loc
 
 
@@ -358,7 +358,7 @@
 			return
 
 	if (mob_is_human)
-		var/mob/living/carbon/human/H = mob
+		var/mob/living/human/H = mob
 		if (H.crouching)
 			return
 
@@ -421,7 +421,7 @@
 
 	// we can probably move now, so update our eye for ladders
 	if (mob_is_human)
-		var/mob/living/carbon/human/H = mob
+		var/mob/living/human/H = mob
 		H.update_laddervision(null)
 
 	if (!mob.lastarea)
@@ -453,7 +453,7 @@
 		var/F_is_valid_floor = istype(F)
 		var/standing_on_snow = FALSE
 
-		var/mob/living/carbon/human/H = mob
+		var/mob/living/human/H = mob
 		if (F && ishuman(H) && F_is_valid_floor && isnull(H.riding_mob))
 
 			var/area/F_area = get_area(F)
@@ -543,7 +543,7 @@
 					mob << "<span class = 'warning'>The mud slows you down.</span>"
 					mob.next_mud_message = world.time+100
 					if (ishuman(mob))
-						var/mob/living/carbon/human/perp = mob
+						var/mob/living/human/perp = mob
 						var/obj/item/organ/external/l_foot = perp.get_organ("l_foot")
 						var/obj/item/organ/external/r_foot = perp.get_organ("r_foot")
 						var/hasfeet = TRUE
@@ -621,8 +621,8 @@
 
 			else if (istype(mob.pulling, /mob))
 				move_delay += 1.25
-				if (istype(mob.pulling, /mob/living/carbon/human))
-					var/mob/living/carbon/human/HH = mob.pulling
+				if (istype(mob.pulling, /mob/living/human))
+					var/mob/living/human/HH = mob.pulling
 					for (var/obj/structure/noose/N in get_turf(HH))
 						if (N.hanging == HH)
 							mob.stop_pulling()
@@ -655,7 +655,7 @@
 		if (mob.pulledby || mob.buckled) // Wheelchair driving!
 			if (istype(mob.buckled, /obj/structure/bed/chair/wheelchair))
 				if (mob_is_human)
-					var/mob/living/carbon/human/driver = mob
+					var/mob/living/human/driver = mob
 					var/obj/item/organ/external/l_hand = driver.get_organ("l_hand")
 					var/obj/item/organ/external/r_hand = driver.get_organ("r_hand")
 					if ((!l_hand || l_hand.is_stump()) && (!r_hand || r_hand.is_stump()))
@@ -666,8 +666,8 @@
 				move_delay += 2
 				return mob.buckled.relaymove(mob,direct)
 
-		if (istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/HH = src
+		if (istype(src, /mob/living/human))
+			var/mob/living/human/HH = src
 			if (HH.riding == TRUE && !isnull(HH.riding_mob))
 				move_delay = world.time + 0.5
 
@@ -788,8 +788,8 @@
 			t_movement_speed_multiplier *= 1.25
 		if (move_delay > world.time)
 			move_delay -= world.time
-		if (istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/HH = src
+		if (istype(src, /mob/living/human))
+			var/mob/living/human/HH = src
 			if (HH.riding == TRUE && !isnull(HH.riding_mob))
 				move_delay = 0.5
 			else
@@ -943,8 +943,8 @@
 			Move(get_step(mob, NORTH), NORTH)
 		catch (var/E)
 			pass(E)
-		if (istype(mob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = mob
+		if (istype(mob, /mob/living/human))
+			var/mob/living/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				if (MW && MW.control && MW.control.axis && MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
 					H << "You switch into forward."
@@ -984,8 +984,8 @@
 			Move(get_step(mob, SOUTH), SOUTH)
 		catch (var/E)
 			pass(E)
-		if (istype(mob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = mob
+		if (istype(mob, /mob/living/human))
+			var/mob/living/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				if (MW && MW.control && MW.control.axis && !MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
 					H << "You switch into reverse."
@@ -1023,8 +1023,8 @@
 			Move(get_step(mob, EAST), EAST)
 		catch (var/E)
 			pass(E)
-		if (istype(mob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = mob
+		if (istype(mob, /mob/living/human))
+			var/mob/living/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"right")
 			if (H.driver && H.driver_vehicle)
@@ -1055,8 +1055,8 @@
 			Move(get_step(mob, WEST), WEST)
 		catch (var/E)
 			pass(E)
-		if (istype(mob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = mob
+		if (istype(mob, /mob/living/human))
+			var/mob/living/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir("left")
 			if (H.driver && H.driver_vehicle)

@@ -190,7 +190,7 @@
 	icon_state = "ltube_broken"
 	broken = TRUE
 
-/obj/structure/lamp/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/lamp/attack_hand(mob/living/human/user as mob)
 	if (lamp_inside)
 		if (lamp_broken)
 			user << "You remove the broken lightbulb."
@@ -312,7 +312,7 @@
 	var/product = "gasoline"
 	powerneeded = 1
 
-/obj/structure/refinery/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/refinery/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (isemptylist(barrel))
 			barrel += W
@@ -429,7 +429,7 @@
 			product = "diesel"
 			usr << "This refinery will now produce <b>Diesel</b>."
 			return
-/obj/structure/refinery/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/refinery/attack_hand(var/mob/living/human/H)
 	if (isemptylist(barrel))
 		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
 		return
@@ -517,7 +517,7 @@
 	maxvolume = 300
 	product = "ethanol"
 
-/obj/structure/refinery/biofuel/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/refinery/biofuel/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (isemptylist(barrel))
 			barrel += W
@@ -695,7 +695,7 @@
 	var/plastic = 0
 	powerneeded = 1
 
-/obj/structure/bakelizer/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/bakelizer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/C = W
 		if (C.reagents.has_reagent("petroleum",1))
@@ -751,7 +751,7 @@
 		..()
 
 
-/obj/structure/bakelizer/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/bakelizer/attack_hand(var/mob/living/human/H)
 	if (volume < 1)
 		H << "<span class = 'notice'>The bakelizer is empty! Put some crude petroleum in first.</span>"
 		return
@@ -867,7 +867,7 @@
 	..()
 
 /obj/structure/shopping_cart/attack_hand(mob/user as mob)
-	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+	if (istype(user, /mob/living/human) && user in range(1,src))
 		storage.open(user)
 		update_icon()
 	else
@@ -898,7 +898,7 @@
 	var/active = FALSE
 	powerneeded = 1
 
-/obj/structure/base_powered_object/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/base_powered_object/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
 			H << "<span class='notice'>Fix the [src] in place with a wrench first.</span>"
@@ -942,7 +942,7 @@
 		..()
 
 
-/obj/structure/base_powered_object/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/base_powered_object/attack_hand(var/mob/living/human/H)
 	if (active)
 		active = FALSE
 		powered = FALSE
@@ -1002,7 +1002,7 @@
 	powered = FALSE
 	powerneeded = 1
 
-/obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
 			H << "<span class='notice'>Fix the [src] in place with a wrench first.</span>"
@@ -1044,7 +1044,7 @@
 
 	else
 		..()
-/obj/structure/computer/verb/toggle_power(var/mob/living/carbon/human/H)
+/obj/structure/computer/verb/toggle_power(var/mob/living/human/H)
 	set category = null
 	set name = "Turn On"
 	set src in range(1, usr)
@@ -1079,7 +1079,7 @@
 	else
 		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
 		return
-/obj/structure/computer/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/computer/attack_hand(var/mob/living/human/H)
 	if(!src.active)
 		load_os()
 	else

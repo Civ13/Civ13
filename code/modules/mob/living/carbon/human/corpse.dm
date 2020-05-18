@@ -1,15 +1,15 @@
-/mob/living/carbon/human/corpse
+/mob/living/human/corpse
 	icon = 'icons/mob/human.dmi'
 	icon_state = "corpse_map_state"
 
-/mob/living/carbon/human/corpse/New()
+/mob/living/human/corpse/New()
 	..()
 	death()
 
-/mob/living/carbon/human/corpse/pirate
+/mob/living/human/corpse/pirate
 	gender = MALE
 
-/mob/living/carbon/human/corpse/pirate/New()
+/mob/living/human/corpse/pirate/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -28,10 +28,10 @@
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-mob/living/carbon/human/corpse/british_sailor
+mob/living/human/corpse/british_sailor
 	gender = MALE
 
-/mob/living/carbon/human/corpse/british_sailor/New()
+/mob/living/human/corpse/british_sailor/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -57,10 +57,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/british
+/mob/living/human/corpse/british
 	gender = MALE
 
-/mob/living/carbon/human/corpse/british/New()
+/mob/living/human/corpse/british/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -79,10 +79,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/japanese
+/mob/living/human/corpse/japanese
 	gender = MALE
 
-/mob/living/carbon/human/corpse/japanese/New()
+/mob/living/human/corpse/japanese/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -101,10 +101,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/japanese_ww2
+/mob/living/human/corpse/japanese_ww2
 	gender = MALE
 
-/mob/living/carbon/human/corpse/japanese_ww2/New()
+/mob/living/human/corpse/japanese_ww2/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -123,10 +123,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/japanese_ww2_antitank
+/mob/living/human/corpse/japanese_ww2_antitank
 	gender = MALE
 
-/mob/living/carbon/human/corpse/japanese_ww2_antitank/New()
+/mob/living/human/corpse/japanese_ww2_antitank/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -145,10 +145,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/ww2_jap_sl
+/mob/living/human/corpse/ww2_jap_sl
 	gender = MALE
 
-/mob/living/carbon/human/corpse/ww2_jap_sl/New()
+/mob/living/human/corpse/ww2_jap_sl/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -167,10 +167,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/ww2_jap_medic
+/mob/living/human/corpse/ww2_jap_medic
 	gender = MALE
 
-/mob/living/carbon/human/corpse/ww2_jap_medic/New()
+/mob/living/human/corpse/ww2_jap_medic/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -189,10 +189,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/ww2_jap_mg
+/mob/living/human/corpse/ww2_jap_mg
 	gender = MALE
 
-/mob/living/carbon/human/corpse/ww2_jap_mg/New()
+/mob/living/human/corpse/ww2_jap_mg/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -210,10 +210,10 @@ mob/living/carbon/human/corpse/british_sailor
 		invisibility = 0
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
-/mob/living/carbon/human/corpse/russian
+/mob/living/human/corpse/russian
 	gender = MALE
 
-/mob/living/carbon/human/corpse/russian/New()
+/mob/living/human/corpse/russian/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -232,10 +232,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/russian_soviet
+/mob/living/human/corpse/russian_soviet
 	gender = MALE
 
-/mob/living/carbon/human/corpse/russian_soviet/New()
+/mob/living/human/corpse/russian_soviet/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -254,10 +254,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/russian_soviet_sgt
+/mob/living/human/corpse/russian_soviet_sgt
 	gender = MALE
 
-/mob/living/carbon/human/corpse/russian_soviet_sgt/New()
+/mob/living/human/corpse/russian_soviet_sgt/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -276,10 +276,10 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-mob/living/carbon/human/corpse/russian_soviet_tanker
+mob/living/human/corpse/russian_soviet_tanker
 	gender = MALE
 
-/mob/living/carbon/human/corpse/russian_soviet_tanker/New()
+/mob/living/human/corpse/russian_soviet_tanker/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -298,10 +298,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/russiansgt
+/mob/living/human/corpse/russiansgt
 	gender = MALE
 
-/mob/living/carbon/human/corpse/russiansgt/New()
+/mob/living/human/corpse/russiansgt/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -320,10 +320,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/japanesesgt
+/mob/living/human/corpse/japanesesgt
 	gender = MALE
 
-/mob/living/carbon/human/corpse/japanesesgt/New()
+/mob/living/human/corpse/japanesesgt/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -343,10 +343,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 			death()
 
 
-/mob/living/carbon/human/corpse/japanesecap
+/mob/living/human/corpse/japanesecap
 	gender = MALE
 
-/mob/living/carbon/human/corpse/japanesecap/New()
+/mob/living/human/corpse/japanesecap/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -366,19 +366,19 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 			death()
 
 
-/mob/living/carbon/human/corpse/Giant
+/mob/living/human/corpse/Giant
 	gender = MALE
 
-/mob/living/carbon/human/corpse/Giant/New()
+/mob/living/human/corpse/Giant/New()
 	..()
 	icon_state = "body_m_giant"
 	spawn (50) // must be here or they won't spawn, it seems - Kachnov
 		death()
 
-/mob/living/carbon/human/corpse/prisoner
+/mob/living/human/corpse/prisoner
 	gender = MALE
 
-/mob/living/carbon/human/corpse/prisoner/New()
+/mob/living/human/corpse/prisoner/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -397,11 +397,11 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/bandit
+/mob/living/human/corpse/bandit
 	gender = MALE
 	h_style = "Fade"
 
-/mob/living/carbon/human/corpse/bandit/New()
+/mob/living/human/corpse/bandit/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -420,10 +420,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/pmc
+/mob/living/human/corpse/pmc
 	gender = MALE
 
-/mob/living/carbon/human/corpse/pmc/New()
+/mob/living/human/corpse/pmc/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -442,10 +442,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/ww2_american
+/mob/living/human/corpse/ww2_american
 	gender = MALE
 
-/mob/living/carbon/human/corpse/ww2_american/New()
+/mob/living/human/corpse/ww2_american/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -464,10 +464,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/ww2_american_medic
+/mob/living/human/corpse/ww2_american_medic
 	gender = MALE
 
-/mob/living/carbon/human/corpse/ww2_american_medic/New()
+/mob/living/human/corpse/ww2_american_medic/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -486,10 +486,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/ww2_american_sl
+/mob/living/human/corpse/ww2_american_sl
 	gender = MALE
 
-/mob/living/carbon/human/corpse/ww2_american_sl/New()
+/mob/living/human/corpse/ww2_american_sl/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -508,10 +508,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/ww2_american_mg
+/mob/living/human/corpse/ww2_american_mg
 	gender = MALE
 
-/mob/living/carbon/human/corpse/ww2_american_mg/New()
+/mob/living/human/corpse/ww2_american_mg/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -530,10 +530,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/beggar
+/mob/living/human/corpse/beggar
 	gender = MALE
 
-/mob/living/carbon/human/corpse/beggar/New()
+/mob/living/human/corpse/beggar/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
@@ -552,10 +552,10 @@ mob/living/carbon/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
-/mob/living/carbon/human/corpse/beggar_f
+/mob/living/human/corpse/beggar_f
 	gender = FEMALE
 
-/mob/living/carbon/human/corpse/beggar_f/New()
+/mob/living/human/corpse/beggar_f/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0

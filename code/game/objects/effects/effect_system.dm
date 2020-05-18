@@ -178,12 +178,12 @@ steam.start() -- spawns the effect
 	..()
 	processes.callproc.queue(src, /datum/proc/qdeleted, null, time_to_live)
 
-/obj/effect/effect/smoke/Crossed(mob/living/carbon/M as mob )
+/obj/effect/effect/smoke/Crossed(mob/living/human/M as mob )
 	..()
 	if (istype(M))
 		affect(M)
 
-/obj/effect/effect/smoke/proc/affect(var/mob/living/carbon/M)
+/obj/effect/effect/smoke/proc/affect(var/mob/living/human/M)
 	if (istype(M))
 		return FALSE
 	return TRUE
@@ -230,10 +230,10 @@ steam.start() -- spawns the effect
 
 /obj/effect/effect/smoke/bad/Move()
 	..()
-	for (var/mob/living/carbon/M in get_turf(src))
+	for (var/mob/living/human/M in get_turf(src))
 		affect(M)
 
-/obj/effect/effect/smoke/bad/affect(var/mob/living/carbon/M)
+/obj/effect/effect/smoke/bad/affect(var/mob/living/human/M)
 	if (!..())
 		return FALSE
 	M.drop_item()
@@ -258,10 +258,10 @@ steam.start() -- spawns the effect
 
 /obj/effect/effect/smoke/sleepy/Move()
 	..()
-	for (var/mob/living/carbon/M in get_turf(src))
+	for (var/mob/living/human/M in get_turf(src))
 		affect(M)
 
-/obj/effect/effect/smoke/sleepy/affect(mob/living/carbon/M as mob )
+/obj/effect/effect/smoke/sleepy/affect(mob/living/human/M as mob )
 	if (!..())
 		return FALSE
 
@@ -283,10 +283,10 @@ steam.start() -- spawns the effect
 
 /obj/effect/effect/smoke/mustard/Move()
 	..()
-	for (var/mob/living/carbon/human/R in get_turf(src))
+	for (var/mob/living/human/R in get_turf(src))
 		affect(R)
 
-/obj/effect/effect/smoke/mustard/affect(var/mob/living/carbon/human/R)
+/obj/effect/effect/smoke/mustard/affect(var/mob/living/human/R)
 	if (!..())
 		return FALSE
 	if (R.wear_suit != null)

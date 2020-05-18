@@ -30,7 +30,7 @@
 	..()
 
 /obj/structure/piano/process()
-	for (var/mob/living/carbon/human/H in range(1, src))
+	for (var/mob/living/human/H in range(1, src))
 		var/turf/T = get_step(H, H.dir)
 		if (T.contents.Find(src))
 			return TRUE

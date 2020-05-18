@@ -356,7 +356,7 @@ var/global/FREQ2 = rand(201,250)
 				<br>
 				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 
-/obj/structure/radio/proc/broadcast(var/msg, var/mob/living/carbon/human/speaker)
+/obj/structure/radio/proc/broadcast(var/msg, var/mob/living/human/speaker)
 
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
@@ -364,7 +364,7 @@ var/global/FREQ2 = rand(201,250)
 
 	var/list/tried_mobs = list()
 
-	for (var/mob/living/carbon/human/hearer in human_mob_list)
+	for (var/mob/living/human/hearer in human_mob_list)
 		if (tried_mobs.Find(hearer))
 			continue
 		tried_mobs += hearer
@@ -546,7 +546,7 @@ var/global/FREQ2 = rand(201,250)
 		<br>
 		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 
-/obj/item/weapon/radio/proc/broadcast(var/msg, var/mob/living/carbon/human/speaker)
+/obj/item/weapon/radio/proc/broadcast(var/msg, var/mob/living/human/speaker)
 
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
@@ -554,7 +554,7 @@ var/global/FREQ2 = rand(201,250)
 
 	var/list/tried_mobs = list()
 
-	for (var/mob/living/carbon/human/hearer in human_mob_list)
+	for (var/mob/living/human/hearer in human_mob_list)
 		if (tried_mobs.Find(hearer))
 			continue
 		tried_mobs += hearer

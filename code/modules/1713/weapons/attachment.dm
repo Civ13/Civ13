@@ -75,7 +75,7 @@ Current Defines (_defines/attachment.dm)
 	set name = "Field Strip"
 	set desc = "Removes any attachments."
 	set category = null
-	var/mob/living/carbon/human/user = usr
+	var/mob/living/human/user = usr
 
 	for (var/obj/item/weapon/attachment/A in attachments)
 		A.removed(user, src)

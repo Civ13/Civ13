@@ -414,7 +414,7 @@ var/list/global/floor_cache = list()
 		return
 	..()
 
-/turf/floor/trench/flooded/attack_hand(var/mob/living/carbon/human/H)
+/turf/floor/trench/flooded/attack_hand(var/mob/living/human/H)
 	if (!ishuman(H))
 		return
 	if (H.a_intent == I_GRAB)
@@ -495,7 +495,7 @@ var/list/global/floor_cache = list()
 	else
 		..()
 
-/turf/floor/attack_hand(var/mob/living/carbon/human/H)
+/turf/floor/attack_hand(var/mob/living/human/H)
 	..()
 	if (irrigation && irrigation_overlay)
 		if (!ishuman(H))

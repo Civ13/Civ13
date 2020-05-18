@@ -244,7 +244,7 @@
 		if (!istype(mob, /mob/new_player))
 			src << browse(null, "window=playersetup;")
 
-		if (istype(mob, /mob/living/carbon/human))
+		if (istype(mob, /mob/living/human))
 			human_clients_mob_list |= mob
 
 		else if (istype(mob, /mob/observer))

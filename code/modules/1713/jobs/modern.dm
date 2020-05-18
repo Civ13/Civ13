@@ -16,7 +16,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/american/usmc_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -62,7 +62,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/usmc_sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -108,7 +108,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/usmc_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -156,7 +156,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/american/usmc_marksman/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_marksman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -200,7 +200,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/usmc_lmg/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_lmg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -250,7 +250,7 @@
 	min_positions = 10
 	max_positions = 100
 
-/datum/job/american/usmc_soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -293,7 +293,7 @@
 	default_language = "Hebrew"
 	additional_languages = list("English" = 25, "Russian" = 25, "Arabic" = 10)
 
-/datum/job/american/idf/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/american/idf/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_hebrew_name(H.gender)
 	H.real_name = H.name
 	H.circumcised = TRUE
@@ -314,7 +314,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/american/idf/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -362,7 +362,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/idf/sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -411,7 +411,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/idf/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -460,7 +460,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/idf/marksman/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/marksman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -506,7 +506,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/idf/lmg/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/lmg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -554,7 +554,7 @@
 	min_positions = 10
 	max_positions = 100
 
-/datum/job/american/idf/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -606,7 +606,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/arab/hezbollah/squad_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/hezbollah/squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -669,7 +669,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/arab/hezbollah/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/hezbollah/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -735,7 +735,7 @@
 	min_positions = 3
 	max_positions = 12
 
-/datum/job/arab/hezbollah/sniper/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/hezbollah/sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -798,7 +798,7 @@
 	min_positions = 12
 	max_positions = 120
 
-/datum/job/arab/hezbollah/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/hezbollah/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)

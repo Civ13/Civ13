@@ -49,7 +49,7 @@
 	..()
 	default_material = null
 
-/obj/item/weapon/material/sword/magic/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
+/obj/item/weapon/material/sword/magic/attack(mob/living/human/M as mob, mob/living/user as mob)
 	..()
 	if(prob(weakens))
 		M.Weaken(weakenpower)
@@ -236,7 +236,7 @@
 
 //Utility
 /obj/item/weapon/material/magic/wand/examine(mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	user << "<span class='notice'>[desc]</span>"
 	user << "<span class='notice'>The currently active spell is [magic_state]</span>"
 	if(H.getStat("magic") <= 100)
@@ -301,8 +301,8 @@
 	//shooting while in shock
 	var/x_offset = 0
 	var/y_offset = 0
-	if (istype(user, /mob/living/carbon))
-		var/mob/living/carbon/mob = user
+	if (istype(user, /mob/living/human))
+		var/mob/living/human/mob = user
 		if (mob.shock_stage > 120)
 			y_offset = rand(-2,2)
 			x_offset = rand(-2,2)

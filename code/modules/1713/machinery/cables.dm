@@ -60,7 +60,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	set name = "Under/Over tiles"
 	set src in range(1, usr)
 
-	if (!istype(usr, /mob/living/carbon/human))
+	if (!istype(usr, /mob/living/human))
 		return
 	if (tilepos == "over")
 		tilepos = "under"

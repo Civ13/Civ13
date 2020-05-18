@@ -72,7 +72,7 @@
   */
 /obj/structure/chemical_dispenser/ui_interact(mob/user, ui_key = "main",var/datum/nanoui/ui = null, var/force_open = TRUE)
 	if (user.stat || user.restrained()) return
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return
@@ -219,7 +219,7 @@
 	if (on)
 		icon_state = "distill_on"
 
-/obj/structure/lab_distillery/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/lab_distillery/attack_hand(var/mob/living/human/H)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return
@@ -235,7 +235,7 @@
 		update_icon()
 		process_distillery()
 	..()
-/obj/structure/lab_distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/lab_distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/human/H as mob)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return

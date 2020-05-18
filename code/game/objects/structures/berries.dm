@@ -24,7 +24,7 @@
 
 /obj/structure/wild/berrybush/attack_hand(mob/user as mob)
 	if (user.a_intent == I_GRAB && ishuman(user) && berries > 0)
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		H << "You start foraging for some berries..."
 		if (do_after(user, 80, src))
 			if (src && berries >= 1)
@@ -39,10 +39,10 @@
 	else
 		..()
 /obj/structure/wild/berrybush/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if(istype(W, /obj/item/weapon/berriesgatherer))
 		if (ishuman(user) && berries > 0)
-			//var/mob/living/carbon/human/H = user
+			//var/mob/living/human/H = user
 			H << "You start gathering some berries..."
 			if (do_after(user, 80, src))
 				if (src && berries >= 1)

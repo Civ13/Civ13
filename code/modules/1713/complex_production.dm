@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////
-//////////////////////JAMÓN//////////////////////
+//////////////////////JAMï¿½N//////////////////////
 /////////////////////////////////////////////////
 
 /obj/item/weapon/pigleg
@@ -39,7 +39,7 @@
 	desc = "a dried, ready to eat ham, wrapped in a protective case. Delicious!"
 	icon_state = "labeled_ham"
 
-/obj/item/weapon/pigleg/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/user as mob)
+/obj/item/weapon/pigleg/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (slices<=0)
 		qdel(src)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) && slices>0 && ready)
@@ -76,7 +76,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/curedham
 	name = "cured ham slice"
-	desc = "Delicious Iberian-style jamón."
+	desc = "Delicious Iberian-style jamï¿½n."
 	icon = 'icons/obj/complex_foods.dmi'
 	icon_state = "ham_ready_to_eat"
 	trash = null
@@ -90,7 +90,7 @@
 		reagents.add_reagent("protein", 4)
 		bitesize = 2
 
-/obj/structure/salting_container/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/user as mob)
+/obj/structure/salting_container/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (salting)
 		user << "<span class=warning>The container is full!</span>"
 		return
@@ -180,7 +180,7 @@
 	var/max_capacity = 3
 	var/drying = FALSE
 
-/obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if (filled >= max_capacity)
 		H << "<span class='notice'>\The [src] is full!</span>"
 		return
@@ -291,7 +291,7 @@
 		spawn(3600)
 			qdel(src)
 
-/obj/item/weapon/chicken_carcass/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+/obj/item/weapon/chicken_carcass/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) && !rotten)
 		user << "You start separating the chicken parts..."
 		if (do_after(user, 75, src))
@@ -326,7 +326,7 @@
 	icon_state = "chicken_breast"
 	rotten_icon_state = "rotten_chicken_breast"
 
-	attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+	attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 		if (istype(W, /obj/item/weapon/hammer) && !findtext(icon_state, "flat") && !rotten)
 			user << "You start flattening the chicken breast..."
 			if (do_after(user, 50, src))
@@ -355,7 +355,7 @@
 	New()
 		..()
 		reagents.remove_reagent("protein", 2)
-	attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+	attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 
 		if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed"))
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
@@ -379,7 +379,7 @@
 		..()
 		reagents.remove_reagent("protein", 2)
 
-	attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+	attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed"))
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
 			if (F.reagents.has_reagent("flour", 5))
@@ -543,7 +543,7 @@
 		..()
 		reagents.add_reagent("protein", 2)
 
-/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/user as mob)
+/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user << "You slice the salami up."
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
@@ -638,7 +638,7 @@
 	var/input
 	var/output_amount = 0
 
-/obj/structure/meat_grinder/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/meat_grinder/attack_hand(mob/living/human/user as mob)
 	if (input != null)
 		user << "You start to crank the lever."
 		icon_state = active_state
@@ -692,7 +692,7 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	var/input
-/*/obj/structure/cutting_board/attack_hand(var/mob/living/carbon/human/H)
+/*/obj/structure/cutting_board/attack_hand(var/mob/living/human/H)
 	if(input != null)
 		H << "You scrape off the cutting board"
 		new input(src.loc)

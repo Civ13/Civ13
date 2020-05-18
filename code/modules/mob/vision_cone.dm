@@ -98,7 +98,7 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 /mob/proc/update_vision_cone()
 	return
 
-/mob/living/carbon/human/update_vision_cone()
+/mob/living/human/update_vision_cone()
 	var/delay = 10
 	if (client && HUDtech["fov"] && !config.disable_fov)
 //delete these lines when activating "normal" update vision cone
@@ -140,17 +140,17 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 	else
 		return
 
-mob/living/carbon/human/proc/rest_cone_act()//For showing and hiding the cone when you rest or lie down.
+mob/living/human/proc/rest_cone_act()//For showing and hiding the cone when you rest or lie down.
 	if (resting || lying || prone)
 		hide_cone()
 	else
 		show_cone()
 
 //Making these generic procs so you can call them anywhere.
-mob/living/carbon/human/proc/show_cone()
+mob/living/human/proc/show_cone()
 	if (HUDtech["fov"])
 		HUDtech["fov"].alpha = 255
 
-mob/living/carbon/human/proc/hide_cone()
+mob/living/human/proc/hide_cone()
 	if (HUDtech["fov"])
 		HUDtech["fov"].alpha = 0

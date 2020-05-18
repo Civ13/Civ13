@@ -47,7 +47,7 @@
 		..()
 		desc = "A red fire extinguisher filled with foam. Has [cap] units left."
 
-/obj/item/weapon/fire_extinguisher/attack_self(mob/living/carbon/human/user as mob)
+/obj/item/weapon/fire_extinguisher/attack_self(mob/living/human/user as mob)
 	if (!ishuman(user))
 		return
 	if (cap >= 1)
@@ -58,7 +58,7 @@
 		if (dest)
 			for (var/obj/effect/fire/BO in dest)
 				qdel(BO)
-			for (var/mob/living/carbon/human/H in dest)
+			for (var/mob/living/human/H in dest)
 				if (H.fire_stacks > 0)
 					H.fire_stacks = 0
 			new/obj/effect/decal/cleanable/foam(dest)
@@ -147,7 +147,7 @@
 			item_state = "cutters_yellow"
 	..()
 
-/obj/item/weapon/wirecutters/attack(mob/living/carbon/C as mob, mob/user as mob)
+/obj/item/weapon/wirecutters/attack(mob/living/human/C as mob, mob/user as mob)
 	..()
 
 /*

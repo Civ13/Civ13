@@ -17,7 +17,7 @@
 		return FALSE
 	return ..(M, user, def_zone)
 
-/obj/item/weapon/reagent_containers/food/snacks/MRE/attack_self(var/mob/living/carbon/human/H)
+/obj/item/weapon/reagent_containers/food/snacks/MRE/attack_self(var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (!open && opens)

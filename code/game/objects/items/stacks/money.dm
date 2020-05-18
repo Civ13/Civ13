@@ -244,7 +244,7 @@
 	spawn(600)
 		check_value()
 
-/obj/structure/oil_deposits/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/oil_deposits/attack_hand(mob/living/human/user as mob)
 	if (user.civilization == "none")
 		user << "You are not part of a faction!"
 		return
@@ -278,7 +278,7 @@
 /obj/structure/carriage/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (H.original_job_title == "West Side Gang")
 				faction1val += (W.value*W.amount)
 			else if (H.original_job_title == "East Side Gang")

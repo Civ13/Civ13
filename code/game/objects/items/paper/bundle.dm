@@ -116,7 +116,7 @@
 
 	if (istype(pages[page], /obj/item/weapon/paper))
 		var/obj/item/weapon/paper/P = W
-		if (!(istype(usr, /mob/living/carbon/human) || isghost(usr)))
+		if (!(istype(usr, /mob/living/human) || isghost(usr)))
 			dat+= "<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[stars(P.info)][P.stamps]</BODY></HTML>"
 		else
 			dat+= "<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[P.info][P.stamps]</BODY></HTML>"

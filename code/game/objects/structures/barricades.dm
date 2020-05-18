@@ -752,7 +752,7 @@
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "shelf0"
 
-/obj/structure/shelf/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+/obj/structure/shelf/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	if (user.a_intent == I_HELP)
 		user.drop_from_inventory(W)
 		W.forceMove(loc)

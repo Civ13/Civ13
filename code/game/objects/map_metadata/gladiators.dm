@@ -78,7 +78,7 @@ K
 		text2file(txtexport,F)
 	return
 
-/obj/map_metadata/gladiators/check_caribbean_block(var/mob/living/carbon/human/H, var/turf/T)
+/obj/map_metadata/gladiators/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)

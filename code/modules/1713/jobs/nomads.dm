@@ -1,8 +1,8 @@
-/mob/living/carbon/human/proc/give_random_civ_name()
+/mob/living/human/proc/give_random_civ_name()
 	name = species.get_random_english_name(gender)
 	real_name = name
 
-/mob/living/carbon/human/proc/give_clothes()
+/mob/living/human/proc/give_clothes()
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
@@ -220,7 +220,7 @@
 
 ///////////////LANGUAGE PROC/////////////////////////
 
-/mob/living/carbon/human/proc/give_languages()
+/mob/living/human/proc/give_languages()
 	if (map && map.civilizations)
 		if (map.ID == MAP_NOMADS_CONTINENTAL)
 			spawn(5)
@@ -558,7 +558,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civa/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civa/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_a
 	H.give_clothes()
@@ -592,7 +592,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civb/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civb/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_b
 	H.give_clothes()
@@ -626,7 +626,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civc/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_c
 	H.give_clothes()
@@ -659,7 +659,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civd/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civd/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_d
 	H.give_clothes()
@@ -692,7 +692,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/cive/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/cive/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_e
 	H.give_clothes()
@@ -725,7 +725,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civf/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civf/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_f
 	H.give_clothes()
@@ -758,7 +758,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civnomad/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civnomad/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_clothes()
 	H.make_nomad()
@@ -791,7 +791,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/orc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
@@ -825,7 +825,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/ant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
@@ -860,7 +860,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/gorilla/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
@@ -894,7 +894,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/human/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
@@ -927,7 +927,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/wolf/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/wolf/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
@@ -961,7 +961,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/lizard/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/lizard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
@@ -993,7 +993,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/crab/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/crab/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()

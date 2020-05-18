@@ -220,7 +220,7 @@
 	if (isnull(M)) return
 	if (isnull(M.key)) return
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (!istype(H.dna, /datum/dna))
 			return FALSE
 		if (H.gloves)
@@ -248,7 +248,7 @@
 			fingerprintshidden = list()
 
 		//First, make sure their DNA makes sense.
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (!istype(H.dna, /datum/dna) || !H.dna.uni_identity || (length(H.dna.uni_identity) != 32))
 			if (!istype(H.dna, /datum/dna))
 				H.dna = new /datum/dna(null)
@@ -355,7 +355,7 @@
 
 
 //returns TRUE if made bloody, returns FALSE otherwise
-/atom/proc/add_blood(mob/living/carbon/human/M as mob)
+/atom/proc/add_blood(mob/living/human/M as mob)
 
 	if (flags & NOBLOODY)
 		return FALSE
@@ -375,7 +375,7 @@
 	. = TRUE
 	return TRUE
 
-/atom/proc/add_vomit_floor(mob/living/carbon/M as mob, var/toxvomit = FALSE)
+/atom/proc/add_vomit_floor(mob/living/human/M as mob, var/toxvomit = FALSE)
 	if ( istype(src, /turf) )
 		var/obj/effect/decal/cleanable/vomit/this = new /obj/effect/decal/cleanable/vomit(src)
 
@@ -383,7 +383,7 @@
 		if (toxvomit)
 			this.icon_state = "vomittox_[pick(1,4)]"
 
-/atom/proc/add_vomit_floor_bloody(mob/living/carbon/M as mob, var/toxvomit = FALSE)
+/atom/proc/add_vomit_floor_bloody(mob/living/human/M as mob, var/toxvomit = FALSE)
 	if ( istype(src, /turf) )
 		new /obj/effect/decal/cleanable/vomit/bloody(src)
 
@@ -456,7 +456,7 @@
 	return ..(AM, old_loc, FALSE)
 
 //Kicking
-/atom/proc/kick_act(mob/living/carbon/human/user)
+/atom/proc/kick_act(mob/living/human/user)
 	if (!user.canClick())
 		return
 	//They're not adjcent to us so we can't kick them. Can't kick in straightjacket or while being incapacitated (except lying), can't kick while legcuffed or while being locked in closet
@@ -480,12 +480,12 @@
 		return 1 //We do have legs now though, so we can kick.
 
 //Kicking
-/atom/proc/bite_act(mob/living/carbon/human/user)
+/atom/proc/bite_act(mob/living/human/user)
 	if (!user.canClick())
 		return
 	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT) || istype(user.loc, /obj/structure/closet) || !ishuman(src))
 		return
-	var/mob/living/carbon/human/target = src
+	var/mob/living/human/target = src
 	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent
 		var/limbcheck = user.targeted_organ
 		if (limbcheck == "random")
@@ -527,7 +527,7 @@
 		return TRUE
 
 //Jumping
-/atom/proc/jump_act(atom/target, mob/living/carbon/human/user)
+/atom/proc/jump_act(atom/target, mob/living/human/user)
 	if (!user.canClick())
 		return
 	//No jumping on the ground dummy && No jumping in space && No jumping in straightjacket or while being incapacitated (except handcuffs) && No jumping vhile being legcuffed or locked in closet

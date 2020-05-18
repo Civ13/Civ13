@@ -39,8 +39,8 @@ proc/hasorgans(A) // Fucking really??
 	return ishuman(A)
 
 proc/iscuffed(A)
-	if (istype(A, /mob/living/carbon))
-		var/mob/living/carbon/C = A
+	if (istype(A, /mob/living/human))
+		var/mob/living/human/C = A
 		if (C.handcuffed)
 			return TRUE
 	return FALSE
@@ -318,8 +318,8 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HARM)
 
 
 proc/is_blind(A)
-	if (istype(A, /mob/living/carbon))
-		var/mob/living/carbon/C = A
+	if (istype(A, /mob/living/human))
+		var/mob/living/human/C = A
 		if ((C.sdisabilities & BLIND) || C.blinded || C.find_trait("Blind"))
 			return TRUE
 		if (istype(C.eyes, /obj/item/clothing/glasses/sunglasses/blindfold))
@@ -424,13 +424,13 @@ proc/is_blind(A)
 
 	return FALSE
 
-/mob/living/carbon/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
+/mob/living/human/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
 	if (handcuffed)
 		return SAFE_PERP
 
 	return ..()
 
-/mob/living/carbon/human/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
+/mob/living/human/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
 	var/threatcount = ..()
 	if (. == SAFE_PERP)
 		return SAFE_PERP

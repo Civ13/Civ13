@@ -527,7 +527,7 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/check_events()
 	return TRUE
 
-/obj/map_metadata/proc/check_caribbean_block(var/mob/living/carbon/human/H, var/turf/T)
+/obj/map_metadata/proc/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -698,7 +698,7 @@ var/civmax_research = list(230,230,230)
 	var/s1 = 0
 	var/s2 = 0
 
-	for (var/mob/living/carbon/human/H in human_mob_list)
+	for (var/mob/living/human/H in human_mob_list)
 
 		var/datum/job/job = H.original_job
 

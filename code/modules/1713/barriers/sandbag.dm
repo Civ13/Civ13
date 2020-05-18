@@ -1,7 +1,7 @@
 // this now inherits from window as its an easy way to give it the same
 // multidirectional collision behavior
 
-/mob/living/carbon/human/var/crouching = FALSE
+/mob/living/human/var/crouching = FALSE
 
 /obj/structure/window/sandbag
 	icon = 'icons/obj/structures.dmi'
@@ -279,7 +279,7 @@
 	var/sandbag_time = 50
 
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		sandbag_time /= H.getStatCoeff("strength")
 		sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
@@ -293,7 +293,7 @@
 				sb.progress = progress
 				visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
 				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					H.adaptStat("crafting", 3)
 			return
 

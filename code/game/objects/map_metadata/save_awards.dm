@@ -11,10 +11,10 @@ AWARDS:
 "iron cross 1st class" = deal > 100 damage to 8 different enemies
 */
 
-/mob/living/carbon/human
+/mob/living/human
 	var/list/awards = list("medic"=0,"wounded"=0,"service"=0,"tank"=0,"kills"=list("",0,0), "kill_count"=0)
 	var/list/awarded = list()
-/mob/living/carbon/human/proc/process_awards()
+/mob/living/human/proc/process_awards()
 	if (!client)
 		return FALSE
 	if (map.gamemode == "Hardcore")
@@ -65,7 +65,7 @@ AWARDS:
 			world << "[awards[i][2]] ([awards[i][1]]) has received a <b>[awards[i][3]]</b>!"
 	return TRUE
 
-/obj/map_metadata/proc/give_award(var/_ckey, var/charname, var/awardtype, var/faction, var/mob/living/carbon/human/L = null)
+/obj/map_metadata/proc/give_award(var/_ckey, var/charname, var/awardtype, var/faction, var/mob/living/human/L = null)
 	//ckey,charname,award,faction,map,date
 	var/parsed_title = splittext(title, " (")
 	awards += list(list(_ckey,charname,awardtype,faction,parsed_title[1],time2text(world.realtime, "YYYY/MM/DD")))

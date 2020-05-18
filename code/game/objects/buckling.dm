@@ -31,7 +31,7 @@
 	M.update_canmove()
 	buckled_mob = M
 	post_buckle_mob(M)
-	if (istype(src, /obj/structure/bed/bedroll) && istype(M, /mob/living/carbon/human))
+	if (istype(src, /obj/structure/bed/bedroll) && istype(M, /mob/living/human))
 		var/obj/structure/bed/bedroll/BR = src
 		BR.used = TRUE
 		BR.check_use(M)
@@ -44,7 +44,7 @@
 		buckled_mob.anchored = initial(buckled_mob.anchored)
 		buckled_mob.update_canmove()
 		buckled_mob = null
-		if (istype(src, /obj/structure/bed/bedroll) && istype(., /mob/living/carbon/human))
+		if (istype(src, /obj/structure/bed/bedroll) && istype(., /mob/living/human))
 			var/obj/structure/bed/bedroll/BR = src
 			BR.used = FALSE
 			BR.check_use(.)

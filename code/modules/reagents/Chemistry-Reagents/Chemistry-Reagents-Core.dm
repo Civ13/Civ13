@@ -24,10 +24,10 @@
 /datum/reagent/blood/touch_turf(var/turf/T)
 	if (!istype(T) || volume < 3)
 		return
-	if (!data["donor"] || istype(data["donor"], /mob/living/carbon/human))
+	if (!data["donor"] || istype(data["donor"], /mob/living/human))
 		blood_splatter(T, src, TRUE)
 
-/datum/reagent/blood/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/blood/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 
 	var/effective_dose = dose
 	if (issmall(M)) effective_dose *= 2
@@ -38,11 +38,11 @@
 		M.adjustToxLoss(removed)
 
 
-/datum/reagent/blood/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/blood/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	return
 
 
-/datum/reagent/blood/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/blood/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.inject_blood(src, volume)
 	remove_self(volume)
 
@@ -55,7 +55,7 @@
 	reagent_state = LIQUID
 	color = "#0050F0"
 
-/datum/reagent/antibodies/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/antibodies/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (data)
 		M.antibodies |= data["antibodies"]
 	..()
@@ -85,7 +85,7 @@
 			L.adjust_fire_stacks(-(amount / 10))
 			remove_self(amount)
 
-/datum/reagent/water/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/water/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 15
@@ -99,7 +99,7 @@
 	metabolism = REM * 10
 	taste_description = "water"
 
-/datum/reagent/water/irradiated/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/water/irradiated/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 15

@@ -32,7 +32,7 @@
 /obj/structure/practice_dummy/indestructible/ex_act()
 	return
 
-/obj/structure/practice_dummy/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+/obj/structure/practice_dummy/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	//If the user is holding dummy armor, equips the dummy(not target) with it and increases it's health.
 	if (istype(W, /obj/item/weapon/dummy_armor))
 		if(src.humanoid)
@@ -68,7 +68,7 @@
 		..()
 
 //Similar to the above, but with bare hands.
-/obj/structure/practice_dummy/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/practice_dummy/attack_hand(mob/living/human/user as mob)
 	if (user.a_intent == I_HARM)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (prob(67))
@@ -95,7 +95,7 @@
 //Training ranged skills
 /obj/structure/practice_dummy/bullet_act(var/obj/item/projectile/proj)
 	if (proj.firer && ishuman(proj.firer) && proj.firedfrom)
-		var/mob/living/carbon/human/H = proj.firer
+		var/mob/living/human/H = proj.firer
 		health -= 8
 		check_health()
 		if (prob(40))
@@ -211,8 +211,8 @@
 	icon_state = "target_dummy_wreckage"
 
 //Check if the object being used on it is wood, if it is and there is enough of it, repair the wreckage back into dummy/target.
-/obj/structure/practice_dummy/wreckage/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
-	var/mob/living/carbon/human/H = user
+/obj/structure/practice_dummy/wreckage/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	var/mob/living/human/H = user
 	if(istype(W, /obj/item/stack/material/wood))
 		if(W.amount >= 3)
 			visible_message("<span class='danger'>[user] starts repairing the dummy..</span>")

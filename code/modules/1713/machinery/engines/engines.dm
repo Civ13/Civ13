@@ -211,7 +211,7 @@
 	var/enginesize = 0
 
 
-/obj/item/weapon/enginemaker/attack_self(mob/living/carbon/human/H)
+/obj/item/weapon/enginemaker/attack_self(mob/living/human/H)
 	if (!istype(H.l_hand, /obj/item/stack/material/steel) && !istype(H.r_hand, /obj/item/stack/material/steel))
 		H << "<span class = 'warning'>You need to have a steel stack in one of your hands in order to make this.</span>"
 		return

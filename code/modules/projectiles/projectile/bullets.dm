@@ -43,7 +43,7 @@
 	else if (ismob(A))
 		if (!mob_passthrough_check)
 			return FALSE
-		if (iscarbon(A))
+		if (ishuman(A))
 			damage *= 0.7 //squishy mobs absorb KE
 		return TRUE
 

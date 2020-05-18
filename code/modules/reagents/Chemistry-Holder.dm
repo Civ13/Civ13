@@ -191,7 +191,7 @@
 			// if we're losing blood (amount > 0), loose some nutrition too
 			if (id == "blood" && amount > 0)
 				if (my_atom && ishuman(my_atom))
-					var/mob/living/carbon/human/H = my_atom
+					var/mob/living/human/H = my_atom
 					if (H.nutrition > (H.max_nutrition * 0.33))
 						H.nutrition -= amount/8
 						H.nutrition = min(H.nutrition, H.max_nutrition)
@@ -413,8 +413,8 @@
 /datum/reagents/proc/trans_to_mob(var/mob/target, var/amount = TRUE, var/type = CHEM_BLOOD, var/multiplier = TRUE, var/copy = FALSE, var/smoked = FALSE) // Transfer after checking into which holder...
 	if (!target || !istype(target) || !target.simulated)
 		return
-	if (iscarbon(target))
-		var/mob/living/carbon/C = target
+	if (ishuman(target))
+		var/mob/living/human/C = target
 		if (type == CHEM_BLOOD)
 			var/datum/reagents/R = C.reagents
 			return trans_to_holder(R, amount, multiplier, copy)

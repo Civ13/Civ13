@@ -41,7 +41,7 @@
 	if (stat != DEAD)
 		if (prob(70))
 			var/done = FALSE
-			for (var/mob/living/carbon/human/H in range(6, src))
+			for (var/mob/living/human/H in range(6, src))
 				if (done == FALSE)
 					walk_towards(src, H, 3)
 					done = TRUE
@@ -58,7 +58,7 @@
 		else
 			walk_rand(src,4)
 		if (prob(10))
-			for (var/mob/living/carbon/human/TG in range(1,src))
+			for (var/mob/living/human/TG in range(1,src))
 				visible_message("<span class = 'danger'>\The [src] bite [TG]!")
 				var/dmod = 1
 				if (TG.find_trait("Weak Immune System"))
@@ -71,7 +71,7 @@
 /mob/living/simple_animal/mosquito/bullet_act(var/obj/item/projectile/Proj)
 	return
 
-/mob/living/simple_animal/mosquito/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/mosquito/attack_hand(mob/living/human/M as mob)
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	if (prob(40))

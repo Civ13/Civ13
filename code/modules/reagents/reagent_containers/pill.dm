@@ -31,7 +31,7 @@
 			qdel(src)
 			return TRUE
 
-		else if (istype(M, /mob/living/carbon/human))
+		else if (istype(M, /mob/living/human))
 			if (!M.can_force_feed(user, src))
 				return
 

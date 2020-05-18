@@ -14,7 +14,7 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 
-/obj/structure/researchdesk/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/researchdesk/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (!map.civilizations || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES)
 		return
 
@@ -82,7 +82,7 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 
-/obj/structure/researchdesk/chad/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/researchdesk/chad/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (!W)
 		return
 
@@ -93,18 +93,18 @@
 	if (istype(W, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = W
 		var/mob/living/affecting = G.affecting
-		if(!istype(affecting, /mob/living/carbon/human) && !istype(affecting, /mob/living/carbon/human/corpse))
+		if(!istype(affecting, /mob/living/human) && !istype(affecting, /mob/living/human/corpse))
 			H << "This item has no research value."
 			return
 
 	if (done == FALSE)
 		if (istype(W, /obj/item/weapon/grab))
 			var/obj/item/weapon/grab/G = W
-			var/mob/living/carbon/human/affecting = G.affecting
-			if(istype(affecting, /mob/living/carbon/human))
+			var/mob/living/human/affecting = G.affecting
+			if(istype(affecting, /mob/living/human))
 				marketval = 15
 				moneyin = 15
-			else if(istype(affecting, /mob/living/carbon/human/corpse))
+			else if(istype(affecting, /mob/living/human/corpse))
 				marketval = 10
 				moneyin = 10
 			else
@@ -121,7 +121,7 @@
 			return
 		else if (choice == "Industrial" && W)
 			var/obj/item/weapon/grab/G = W
-			var/mob/living/carbon/human/affecting = G.affecting
+			var/mob/living/human/affecting = G.affecting
 			if(affecting.lastKnownCkey != H.ckey)
 				if(affecting != null)
 					if(affecting.civilization != "none")
@@ -139,7 +139,7 @@
 			return
 		else if (choice == "Military" && W)
 			var/obj/item/weapon/grab/G = W
-			var/mob/living/carbon/human/affecting = G.affecting
+			var/mob/living/human/affecting = G.affecting
 			if(affecting.lastKnownCkey != H.ckey)
 				if(affecting != null)
 					if(affecting.civilization != "none")
@@ -157,7 +157,7 @@
 			return
 		else if (choice == "Health" && W)
 			var/obj/item/weapon/grab/G = W
-			var/mob/living/carbon/human/affecting = G.affecting
+			var/mob/living/human/affecting = G.affecting
 			if(affecting.lastKnownCkey != H.ckey)
 				if(affecting != null)
 					if(affecting.civilization != "none")

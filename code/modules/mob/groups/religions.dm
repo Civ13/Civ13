@@ -1,17 +1,17 @@
-/mob/living/carbon/human/make_nomad()
+/mob/living/human/make_nomad()
 	..()
 	if (map.nomads)
-		verbs += /mob/living/carbon/human/proc/create_religion
-		verbs += /mob/living/carbon/human/proc/abandon_religion
-		verbs += /mob/living/carbon/human/proc/clergy
+		verbs += /mob/living/human/proc/create_religion
+		verbs += /mob/living/human/proc/abandon_religion
+		verbs += /mob/living/human/proc/clergy
 
 ///////////////////////RELIGION/////////////////////////
-/mob/living/carbon/human/proc/create_religion()
+/mob/living/human/proc/create_religion()
 	set name = "Create Religion"
 	set category = "Faction"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		U = src
 	else
 		return
@@ -30,10 +30,10 @@
 		usr << "<span class='danger'>You cannot create a religion in this map.</span>"
 		return
 
-/mob/living/carbon/human/proc/create_religion_pr(var/newname = "none")
+/mob/living/human/proc/create_religion_pr(var/newname = "none")
 	if (!ishuman(src))
 		return
-	var/mob/living/carbon/human/H = src
+	var/mob/living/human/H = src
 	for(var/i = 1, i <= map.custom_religion_nr.len, i++)
 		if (map.custom_religion_nr[i] == newname)
 			usr << "<span class='danger'>That religion already exists. Choose another name.</span>"
@@ -126,12 +126,12 @@
 	else
 		return
 
-/mob/living/carbon/human/proc/abandon_religion()
+/mob/living/human/proc/abandon_religion()
 	set name = "Abandon Religion"
 	set category = "Faction"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		U = src
 	else
 		return
@@ -155,12 +155,12 @@
 		usr << "<span class='danger'>You cannot leave your religion in this map.</span>"
 		return
 
-/mob/living/carbon/human/proc/clergy()
+/mob/living/human/proc/clergy()
 	set name = "Join the Clergy"
 	set category = "Faction"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		U = src
 	else
 		return
@@ -228,7 +228,7 @@
 	else
 		usr << "<span class='danger'>You cannot join the clergy on this map.</span>"
 		return
-/mob/living/carbon/human/proc/religion_check()
+/mob/living/human/proc/religion_check()
 	for (var/obj/item/clothing/CT in contents)
 		for (var/obj/item/clothing/accessory/armband/talisman/T in CT.contents)
 			if (T.religion == "none" || religion == "none")
@@ -262,7 +262,7 @@
 			overlays += overs
 			update_icon()
 
-/obj/item/weapon/book/holybook/attack_self(var/mob/living/carbon/human/user as mob)
+/obj/item/weapon/book/holybook/attack_self(var/mob/living/human/user as mob)
 	if (user.religion == religion && religion != "none")
 		user << "You stare at the glorious holy book of your religion."
 	else if (user.religion != religion && religion != "none" && !user.religious_leader && user.religious_clergy == FALSE)
@@ -379,7 +379,7 @@ obj/structure/altar
 		update_icon()
 		invisibility = 0
 
-/obj/structure/altar/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+/obj/structure/altar/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if (user.a_intent == I_HELP && user.religion == religion && user.religious_clergy == "Cultists")
 		if (istype(W, /obj/item/clothing/accessory/armband/talisman))
@@ -421,7 +421,7 @@ obj/structure/altar
 		return
 
 
-obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
+obj/structure/altar/attack_hand(mob/living/human/H as mob)
 	if (H.religion == religion && (H.religious_clergy == "Priests" || H.religious_leader) && H.religion_style == "Priests")
 		var/choice = WWinput(H, "What action do you want to perform?", "[religion]'s Altar", "Cancel", list("Cancel", "Worshipping Session", "Conversion"))
 		switch(choice)
@@ -432,12 +432,12 @@ obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
 					session = TRUE
 					visible_message("[H] starts holding a worshipping session of the [religion] religion...")
 					var/list/currlist = list()
-					for (var/mob/living/carbon/human/A in range(3, loc))
+					for (var/mob/living/human/A in range(3, loc))
 						if (A.stat == 0 && A != H && A.religion == religion)
 							currlist += A
 					if (do_after(H, 600, src))
 						var/list/currlist2 = list()
-						for (var/mob/living/carbon/human/AA in range(3, loc))
+						for (var/mob/living/human/AA in range(3, loc))
 							if (AA.stat == 0 && (AA in currlist))
 								currlist2 += AA
 						map.custom_religions[religion][3] += currlist2.len*0.8
@@ -450,14 +450,14 @@ obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
 
 			if ("Conversion")
 				var/list/closemobs = list("Cancel")
-				for (var/mob/living/carbon/human/M in range(2,loc))
+				for (var/mob/living/human/M in range(2,loc))
 					if (M.religion != religion && M.religious_clergy == FALSE && M.religion_style != "Clerics")
 						closemobs += M
 				var/choice3 = WWinput(H, "Who do you want to convert?", "[religion]'s Altar", "Cancel", closemobs)
 				if (choice3 == "Cancel")
 					return
 				else
-					var/mob/living/carbon/human/choice2 = choice3
+					var/mob/living/human/choice2 = choice3
 					var/answer = WWinput(choice2, "[H] asks you to convert to his religion, [H.religion]. Will you accept?", null, "Yes", list("Yes","No"))
 					if (answer == "Yes")
 						usr << "[choice2] accepts your offer. They are worshipping [H.religion]."

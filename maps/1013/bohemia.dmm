@@ -621,15 +621,15 @@
 "lW" = (/obj/covers/cobblestone,/obj/structure/barricade/stone_v/crenelated,/obj/structure/window/sandbag/railing/stone{icon_state = "stone"; dir = 8},/turf/floor/grass,/area/caribbean/nomads/forest)
 "lX" = (/obj/covers/cobblestone,/turf/floor/beach/water/deep/swamp,/area/caribbean/void/caves)
 "lY" = (/obj/covers/cobblestone,/obj/structure/mine_support/stone,/obj/item/flashlight/torch/on/unlimited,/turf/floor/dirt,/area/caribbean/void/caves)
-"lZ" = (/obj/covers/cobblestone,/obj/structure/mine_support/stone,/mob/living/carbon/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
+"lZ" = (/obj/covers/cobblestone,/obj/structure/mine_support/stone,/mob/living/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
 "ma" = (/obj/covers/cobblestone,/obj/structure/mine_support/stone,/mob/living/simple_animal/mouse/gray,/turf/floor/dirt,/area/caribbean/void/caves)
-"mb" = (/obj/covers/cobblestone,/obj/effect/decal/cleanable/poo,/obj/structure/mine_support/stone,/mob/living/carbon/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
-"mc" = (/obj/covers/cobblestone,/obj/effect/decal/cleanable/poo/drip,/obj/structure/mine_support/stone,/mob/living/carbon/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
-"md" = (/obj/covers/cobblestone,/obj/effect/decal/cleanable/poo,/mob/living/carbon/human/corpse/beggar_f,/turf/floor/dirt,/area/caribbean/void/caves)
-"me" = (/obj/covers/cobblestone,/mob/living/carbon/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
-"mf" = (/obj/covers/cobblestone,/mob/living/carbon/human/corpse/beggar_f,/turf/floor/dirt,/area/caribbean/void/caves)
-"mg" = (/obj/covers/cobblestone,/obj/structure/bed/bedroll,/mob/living/carbon/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
-"mh" = (/obj/covers/cobblestone,/obj/structure/bed/bedroll,/mob/living/carbon/human/corpse/beggar_f,/turf/floor/dirt,/area/caribbean/void/caves)
+"mb" = (/obj/covers/cobblestone,/obj/effect/decal/cleanable/poo,/obj/structure/mine_support/stone,/mob/living/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
+"mc" = (/obj/covers/cobblestone,/obj/effect/decal/cleanable/poo/drip,/obj/structure/mine_support/stone,/mob/living/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
+"md" = (/obj/covers/cobblestone,/obj/effect/decal/cleanable/poo,/mob/living/human/corpse/beggar_f,/turf/floor/dirt,/area/caribbean/void/caves)
+"me" = (/obj/covers/cobblestone,/mob/living/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
+"mf" = (/obj/covers/cobblestone,/mob/living/human/corpse/beggar_f,/turf/floor/dirt,/area/caribbean/void/caves)
+"mg" = (/obj/covers/cobblestone,/obj/structure/bed/bedroll,/mob/living/human/corpse/beggar,/turf/floor/dirt,/area/caribbean/void/caves)
+"mh" = (/obj/covers/cobblestone,/obj/structure/bed/bedroll,/mob/living/human/corpse/beggar_f,/turf/floor/dirt,/area/caribbean/void/caves)
 
 (1,1,1) = {"
 gxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgxgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgGgG

@@ -16,7 +16,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/french/medieval_lord/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -60,7 +60,7 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/french/medieval_knight/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -99,7 +99,7 @@
 	min_positions = 5
 	max_positions = 25
 
-/datum/job/french/medieval_swordsman/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -145,7 +145,7 @@
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/french/medieval_spearman/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -200,7 +200,7 @@
 	min_positions = 6
 	max_positions = 40
 
-/datum/job/french/medieval_archer/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -249,7 +249,7 @@
 	min_positions = 18
 	max_positions = 100
 
-/datum/job/french/medieval_militia/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(65))
@@ -323,7 +323,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/french/crusader_lord/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -368,7 +368,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/french/crusader_templar/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_templar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -411,7 +411,7 @@
 	min_positions = 8
 	max_positions = 50
 
-/datum/job/french/crusader_heavy/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_heavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -455,7 +455,7 @@
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/french/crusader_light/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_light/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -506,7 +506,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/french/crusader_priest/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -549,7 +549,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/medieval_lord/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -593,7 +593,7 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/british/medieval_knight/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -632,7 +632,7 @@
 	min_positions = 5
 	max_positions = 25
 
-/datum/job/british/medieval_swordsman/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -678,7 +678,7 @@
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/british/medieval_spearman/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -733,7 +733,7 @@
 	min_positions = 6
 	max_positions = 40
 
-/datum/job/british/medieval_archer/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -781,7 +781,7 @@
 	min_positions = 18
 	max_positions = 100
 
-/datum/job/british/medieval_militia/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(65))
@@ -840,7 +840,7 @@
 /datum/job/arab
 	faction = "Human"
 
-/datum/job/arab/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/arab/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_arab_name()
 	H.real_name = H.name
 
@@ -861,7 +861,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/arab/medieval_lord/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -904,7 +904,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/arab/medieval_knight/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -947,7 +947,7 @@
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/arab/medieval_swordsman/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -993,7 +993,7 @@
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/arab/medieval_spearman/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -1047,7 +1047,7 @@
 	min_positions = 6
 	max_positions = 40
 
-/datum/job/arab/medieval_archer/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -1098,7 +1098,7 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/arab/imam/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/imam/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -1145,7 +1145,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/lord/equip(var/mob/living/carbon/human/H)
+/datum/job/german/lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -1194,7 +1194,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/retainer/equip(var/mob/living/carbon/human/H)
+/datum/job/german/retainer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -1242,7 +1242,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/german/medieval_knight/equip(var/mob/living/carbon/human/H)
+/datum/job/german/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -1285,7 +1285,7 @@
 	min_positions = 5
 	max_positions = 15
 
-/datum/job/german/medieval_swordsman/equip(var/mob/living/carbon/human/H)
+/datum/job/german/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -1336,7 +1336,7 @@
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/german/priest/equip(var/mob/living/carbon/human/H)
+/datum/job/german/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -1376,7 +1376,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/german/prospector/equip(var/mob/living/carbon/human/H)
+/datum/job/german/prospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1434,7 +1434,7 @@
 	min_positions = 3
 	max_positions = 10
 
-/datum/job/german/farmer/equip(var/mob/living/carbon/human/H)
+/datum/job/german/farmer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1496,7 +1496,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/german/blacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/german/blacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1556,7 +1556,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/german/inkeeper/equip(var/mob/living/carbon/human/H)
+/datum/job/german/inkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1615,7 +1615,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/barkeep/equip(var/mob/living/carbon/human/H)
+/datum/job/german/barkeep/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1675,7 +1675,7 @@
 	min_positions = 10
 	max_positions = 50
 
-/datum/job/german/worker/equip(var/mob/living/carbon/human/H)
+/datum/job/german/worker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1734,7 +1734,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/german/merchant/equip(var/mob/living/carbon/human/H)
+/datum/job/german/merchant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1794,7 +1794,7 @@
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/german/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/german/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes

@@ -1,4 +1,4 @@
-/mob/living/carbon/New()
+/mob/living/human/New()
 	//setup reagent holders
 	bloodstr = new/datum/reagents/metabolism(1000, src, CHEM_BLOOD)
 	ingested = new/datum/reagents/metabolism(1000, src, CHEM_INGEST)
@@ -6,14 +6,14 @@
 	reagents = bloodstr
 	..()
 
-/mob/living/carbon/Life()
+/mob/living/human/Life()
 	..()
 
 	// Increase germ_level regularly
 	if (germ_level < GERM_LEVEL_AMBIENT && prob(30))	//if you're just standing there, you shouldn't get more germs beyond an ambient level
 		germ_level++
 
-/mob/living/carbon/Destroy()
+/mob/living/human/Destroy()
 	qdel(ingested)
 	qdel(touching)
 	// We don't qdel(bloodstr) because it's the same as qdel(reagents)
@@ -23,7 +23,7 @@
 		qdel(food)
 	return ..()
 
-/mob/living/carbon/rejuvenate()
+/mob/living/human/rejuvenate()
 	bloodstr.clear_reagents()
 	ingested.clear_reagents()
 	touching.clear_reagents()
@@ -31,7 +31,7 @@
 	..()
 
 
-/mob/living/carbon/relaymove(var/mob/living/user, direction)
+/mob/living/human/relaymove(var/mob/living/user, direction)
 	if ((user in stomach_contents) && istype(user))
 		if (user.last_special <= world.time)
 			user.last_special = world.time + 50
@@ -39,8 +39,8 @@
 			var/obj/item/I = user.get_active_hand()
 			if (I && I.force)
 				var/d = rand(round(I.force / 4), I.force)
-				if (istype(src, /mob/living/carbon/human))
-					var/mob/living/carbon/human/H = src
+				if (istype(src, /mob/living/human))
+					var/mob/living/human/H = src
 					var/obj/item/organ/external/organ = H.get_organ("chest")
 					if (istype(organ))
 						if (organ.take_damage(d, FALSE))
@@ -56,7 +56,7 @@
 						stomach_contents.Remove(A)
 					gib()
 
-/mob/living/carbon/gib()
+/mob/living/human/gib()
 	for (var/mob/M in src)
 		if (M in stomach_contents)
 			stomach_contents.Remove(M)
@@ -66,10 +66,10 @@
 				N.show_message(text("<span class = 'red'><b>[M] bursts out of [src]!</b></span>"), 2)
 	..()
 
-/mob/living/carbon/attack_hand(mob/M as mob)
-	if (!istype(M, /mob/living/carbon)) return
+/mob/living/human/attack_hand(mob/M as mob)
+	if (!istype(M, /mob/living/human)) return
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
 		if (H.hand)
 			temp = H.organs_by_name["l_hand"]
@@ -79,7 +79,7 @@
 
 	return
 
-/mob/living/carbon/electrocute_act(var/shock_damage, var/obj/source, var/siemens_coeff = 1.0, var/def_zone = null)
+/mob/living/human/electrocute_act(var/shock_damage, var/obj/source, var/siemens_coeff = 1.0, var/def_zone = null)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	shock_damage *= siemens_coeff
 	if (shock_damage<1)
@@ -108,13 +108,13 @@
 
 	return shock_damage
 
-/mob/living/carbon/swap_hand()
+/mob/living/human/swap_hand()
 	hand = !( hand )
 	for (var/obj/screen/inventory/hand/H in HUDinventory)
 		H.update_icon()
 	return
 
-/mob/living/carbon/proc/activate_hand(var/selhand) //0 or "r" or "right" for right hand; TRUE or "l" or "left" for left hand.
+/mob/living/human/proc/activate_hand(var/selhand) //0 or "r" or "right" for right hand; TRUE or "l" or "left" for left hand.
 
 	if (istext(selhand))
 		selhand = lowertext(selhand)
@@ -127,10 +127,10 @@
 	if (selhand != hand)
 		swap_hand()
 
-/mob/living/carbon/proc/help_shake_act(mob/living/carbon/M)
+/mob/living/human/proc/help_shake_act(mob/living/human/M)
 	if (health >= config.health_threshold_crit)
-		if (src == M && istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = src
+		if (src == M && istype(src, /mob/living/human))
+			var/mob/living/human/H = src
 			H.exam_self()
 			/*visible_message( \
 				text("\blue [src] examines [].",gender==MALE?"himself":"herself"), \
@@ -208,12 +208,12 @@
 				t_him = "him"
 			else if (gender == FEMALE)
 				t_him = "her"
-			if (istype(src,/mob/living/carbon/human) && src:w_uniform)
-				var/mob/living/carbon/human/H = src
+			if (istype(src,/mob/living/human) && src:w_uniform)
+				var/mob/living/human/H = src
 				H.w_uniform.add_fingerprint(M)
 
 			var/show_ssd
-			var/mob/living/carbon/human/H = src
+			var/mob/living/human/H = src
 			if (istype(H)) show_ssd = H.species.show_ssd
 			if (show_ssd && !client && !teleop)
 				M.visible_message("<span class='notice'>[M] shakes [src] trying to wake [t_him] up!</span>", \
@@ -225,7 +225,7 @@
 				M.visible_message("<span class='notice'>[M] shakes [src] trying to wake [t_him] up!</span>", \
 									"<span class='notice'>You shake [src] trying to wake [t_him] up!</span>")
 			else
-				var/mob/living/carbon/human/hugger = M
+				var/mob/living/human/hugger = M
 				if (istype(hugger))
 					hugger.species.hug(hugger,src)
 				else
@@ -242,25 +242,25 @@
 
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 
-/mob/living/carbon/proc/eyecheck()
+/mob/living/human/proc/eyecheck()
 	return FALSE
 
 // ++++ROCKDTBEN++++ MOB PROCS -- Ask me before touching.
 // Stop! ... Hammertime! ~Carn
 
-/mob/living/carbon/proc/getDNA()
+/mob/living/human/proc/getDNA()
 	return dna
 
-/mob/living/carbon/proc/setDNA(var/datum/dna/newDNA)
+/mob/living/human/proc/setDNA(var/datum/dna/newDNA)
 	return
 //	dna = newDNA
 
 // ++++ROCKDTBEN++++ MOB PROCS //END
 
-/mob/living/carbon/clean_blood()
+/mob/living/human/clean_blood()
 	. = ..()
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.gloves)
 			if (H.gloves.clean_blood())
 				H.update_inv_gloves(0)
@@ -276,7 +276,7 @@
 /mob/proc/throw_item(atom/target)
 	return
 
-/mob/living/carbon/throw_item(atom/target)
+/mob/living/human/throw_item(atom/target)
 
 	throw_mode_off()
 
@@ -291,7 +291,7 @@
 
 	// hack to stop people from throwing molotovs over the grace wall - Kachnov
 	if (ishuman(src) && !istype(get_area(src), /area/caribbean/admin))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.original_job)
 			if (istype(item, /obj/item/weapon/reagent_containers/food/drinks/bottle))
 				var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = item
@@ -324,10 +324,10 @@
 
 	var/throwtime_divider = 4
 	if (istype(item, /obj/item/weapon/material/thrown))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		H.adaptStat("throwing", 0.05)
 	else if (isitem(item))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		var/obj/item/I = item
 		switch (I.w_class)
 			if (2)
@@ -339,7 +339,7 @@
 			if (5)
 				throwtime_divider *= 0.5 + H.getStat("throwing")/100
 	else if (ismob(item))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		throwtime_divider *= 0.5 + H.getStat("throwing")/100
 	//actually throw it!
 
@@ -377,24 +377,24 @@
 
 		item.throw_at(target, throw_range, item.throw_speed, src)
 
-/mob/living/carbon/fire_act(temperature)
+/mob/living/human/fire_act(temperature)
 	..()
 	var/temp_inc = max(min(BODYTEMP_HEATING_MAX*(1-get_heat_protection()), temperature - bodytemperature), FALSE)
 	bodytemperature += temp_inc
 
-/mob/living/carbon/can_use_hands()
+/mob/living/human/can_use_hands()
 	if (handcuffed)
 		return FALSE
 	if (buckled && !istype(buckled, /obj/structure/bed/chair)) // buckling does not restrict hands
 		return FALSE
 	return TRUE
 
-/mob/living/carbon/restrained()
+/mob/living/human/restrained()
 	if (handcuffed)
 		return TRUE
 	return FALSE
 
-/mob/living/carbon/u_equip(obj/item/W as obj)
+/mob/living/human/u_equip(obj/item/W as obj)
 	if (!W)	return FALSE
 
 	else if (W == handcuffed)
@@ -411,15 +411,15 @@
 
 	return
 
-/mob/living/carbon/Bump(var/atom/movable/AM, yes)
+/mob/living/human/Bump(var/atom/movable/AM, yes)
 	if (now_pushing || !yes)
 		return
 	..()
 
-/mob/living/carbon/cannot_use_vents()
+/mob/living/human/cannot_use_vents()
 	return
 
-/mob/living/carbon/slip(var/slipped_on,stun_duration=8)
+/mob/living/human/slip(var/slipped_on,stun_duration=8)
 	if (buckled)
 		return FALSE
 	stop_pulling()
@@ -429,13 +429,13 @@
 	Weaken(Floor(stun_duration/2))
 	return TRUE
 
-/mob/living/carbon/proc/add_chemical_effect(var/effect, var/magnitude = 1)
+/mob/living/human/proc/add_chemical_effect(var/effect, var/magnitude = 1)
 	if (effect in chem_effects)
 		chem_effects[effect] += magnitude
 	else
 		chem_effects[effect] = magnitude
 
-/mob/living/carbon/get_default_language()
+/mob/living/human/get_default_language()
 	if (default_language)
 		return default_language
 
@@ -443,7 +443,7 @@
 		return null
 	return species.default_language ? all_languages[species.default_language] : null
 
-/mob/living/carbon/show_inv(mob/user as mob)
+/mob/living/human/show_inv(mob/user as mob)
 	user.set_using_object(src)
 	var/dat = {"
 	<b><HR><FONT size=3>[name]</FONT></b>
@@ -460,5 +460,5 @@
 	onclose(user, "mob[name]")
 	return
 
-/mob/living/carbon/proc/get_fullness()
+/mob/living/human/proc/get_fullness()
 	return (nutrition + (reagents.get_reagent_amount("nutriment") * 25)) + 160

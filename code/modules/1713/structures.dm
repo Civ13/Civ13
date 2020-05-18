@@ -369,7 +369,7 @@
 	name = "Flagpole"
 	desc = "Flagless, apply cloth or a flag."
 
-/obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+/obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/cloth))
 		if(W.amount >= 5)
 			W.amount -= 5
@@ -395,13 +395,13 @@
 	var/symbolcolor = null
 
 
-/obj/structure/flag/pole/custom/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+/obj/structure/flag/pole/custom/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/weapon))
 		if(W.sharp)
 			H << "You tear down the flag!"
 			new/obj/structure/flag/pole(src.loc)
 			qdel(src)
-/obj/structure/flag/pole/custom/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/flag/pole/custom/attack_hand(var/mob/living/human/H)
 	if (uncolored)
 		var/input = input(H, "Flag Color - Choose a hex color (without the # | default is white):", "Flag Color" , "FFFFFF")
 		if (input == null || input == "")
@@ -487,7 +487,7 @@
 	density = FALSE
 	opacity = FALSE
 
-/obj/structure/wallframe/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+/obj/structure/wallframe/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/wood))
 		var/input
 		var/display = list("Medieval Window - 4", "Medieval Wall - 6", "Medieval Crossbraced Wall (X) - 6", "Medieval Braced Wall (\\) - 6", "Medieval Braced Wall (/) - 6", "Cancel")
@@ -598,7 +598,7 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wall_frame_bamboo"
 
-/obj/structure/wallframe/bamboo/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+/obj/structure/wallframe/bamboo/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/wood))
 		var/input
 		var/display = list("Oriental Window - 4", "Oriental Wall - 6","Oriental Braced Wall (--) - 6", "Oriental Doorway - 6", "Oriental Two Panelled Wall (|) - 6", "Oriental Two Panelled Braced Wall (-|-)", "Oriental Three Panelled Wall (||) - 6",  "Oriental Three Panelled Braced Wall (-|-|-) - 6", "Cancel")

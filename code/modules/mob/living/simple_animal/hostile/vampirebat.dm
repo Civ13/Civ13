@@ -38,7 +38,7 @@
 	if (stat != DEAD)
 		if (prob(80))
 			var/done = FALSE
-			for (var/mob/living/carbon/human/H in range(8, src))
+			for (var/mob/living/human/H in range(8, src))
 				if (done == FALSE)
 					walk_towards(src, H, 3)
 					done = TRUE
@@ -63,7 +63,7 @@
 		else
 			walk_rand(src,4)
 		if (prob(5))
-			for (var/mob/living/carbon/human/TG in range(1,src))
+			for (var/mob/living/human/TG in range(1,src))
 				visible_message("<span class = 'danger'>\The [src] bites [TG]!")
 				TG.adjustBruteLoss(1,2)
 				var/dmod = 1

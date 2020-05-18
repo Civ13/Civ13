@@ -27,11 +27,11 @@
 #define isliving(A) istype(A, /mob/living)
 //---------------------------------------------------
 
-#define iscarbon(A) istype(A, /mob/living/carbon)
+#define iscarbon(A) istype(A, /mob/living/human)
 
-#define isbrain(A) istype(A, /mob/living/carbon/brain)
+#define isbrain(A) istype(A, /mob/living/human/brain)
 
-#define ishuman(A) istype(A, /mob/living/carbon/human)
+#define ishuman(A) istype(A, /mob/living/human)
 //---------------------------------------------------
 
 #define isanimal(A) istype(A, /mob/living/simple_animal)

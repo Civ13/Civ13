@@ -3,7 +3,7 @@
 	icon_name = ""
 	dislocated = -1
 
-/obj/item/organ/external/stump/New(var/mob/living/carbon/holder, var/internal, var/obj/item/organ/external/limb)
+/obj/item/organ/external/stump/New(var/mob/living/human/holder, var/internal, var/obj/item/organ/external/limb)
 	if (istype(limb))
 		limb_name = limb.limb_name
 		body_part = limb.body_part

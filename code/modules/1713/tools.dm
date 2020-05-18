@@ -226,7 +226,7 @@
 				return
 			var/digging_tunnel_time = 400
 			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				digging_tunnel_time /= H.getStatCoeff("strength")
 				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 			visible_message("<span class='danger'>[user] starts digging up!</span>", "<span class='danger'>You start digging up.</span>")
@@ -237,7 +237,7 @@
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
 				visible_message("<span class='danger'>[user] finishes digging up.</span>")
 				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)
 					H.adaptStat("strength", 1)
 			return
@@ -248,7 +248,7 @@
 			else
 				var/digging_tunnel_time = 200
 				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					digging_tunnel_time /= H.getStatCoeff("strength")
 					digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 				visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
@@ -262,7 +262,7 @@
 						BL.ChangeTurf(/turf/floor/dirt)
 					visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
 					if (ishuman(user))
-						var/mob/living/carbon/human/H = user
+						var/mob/living/human/H = user
 						H.adaptStat("crafting", 1)
 						H.adaptStat("strength", 1)
 				return
