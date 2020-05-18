@@ -60,9 +60,6 @@
 	spawn(5)
 		var/fpath = "[genUID].ogg"
 		if (fexists(fpath))
-			world << fpath
 			playsound(src, fpath)
 			fdel(fpath)
-		else
-			world << "nope"
 		return
