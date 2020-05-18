@@ -347,7 +347,7 @@
 	unique_door_name = "GULAG locked"
 /obj/structure/simple_door/key_door/soviet/guard/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
-		if (W.code == custom_code)
+		if (W.code == RU_CODE)
 			locked = !locked
 			if (locked == 1)
 				visible_message("<span class = 'notice'>[user] locks the door.</span>")
@@ -357,11 +357,11 @@
 				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
-		if (W.code != custom_code)
+		if (W.code != RU_CODE)
 			user << "This key does not match this lock!"
 	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
 		for (var/obj/item/weapon/key/KK in W.contents)
-			if (KK.code == custom_code)
+			if (KK.code == RU_CODE)
 				locked = !locked
 				if (locked == 1)
 					visible_message("<span class = 'notice'>[user] locks the door.</span>")
@@ -371,7 +371,7 @@
 					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
-		if (W.code != custom_code)
+		if (W.code != RU_CODE)
 			user << "None of the keys match this lock!"
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker
@@ -460,7 +460,7 @@
 
 /obj/structure/simple_door/key_door/german/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
-		if (W.code == custom_code)
+		if (W.code == DE_CODE)
 			locked = !locked
 			if (locked == 1)
 				visible_message("<span class = 'notice'>[user] locks the door.</span>")
@@ -470,11 +470,11 @@
 				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
-		if (W.code != custom_code)
+		if (W.code != DE_CODE)
 			user << "This key does not match this lock!"
 	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
 		for (var/obj/item/weapon/key/KK in W.contents)
-			if (KK.code == custom_code)
+			if (KK.code == DE_CODE)
 				locked = !locked
 				if (locked == 1)
 					visible_message("<span class = 'notice'>[user] locks the door.</span>")
@@ -484,7 +484,7 @@
 					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
-		if (W.code != custom_code)
+		if (W.code != DE_CODE)
 			user << "None of the keys match this lock!"
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker
@@ -510,7 +510,7 @@
 	unique_door_name = "German locked"
 /obj/structure/simple_door/key_door/german/officer/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
-		if (W.code == custom_code)
+		if (W.code == DE_CODE_OFF)
 			locked = !locked
 			if (locked == 1)
 				visible_message("<span class = 'notice'>[user] locks the door.</span>")
@@ -520,11 +520,11 @@
 				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
-		if (W.code != custom_code)
+		if (W.code != DE_CODE_OFF)
 			user << "This key does not match this lock!"
 	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
 		for (var/obj/item/weapon/key/KK in W.contents)
-			if (KK.code == custom_code)
+			if (KK.code == DE_CODE_OFF)
 				locked = !locked
 				if (locked == 1)
 					visible_message("<span class = 'notice'>[user] locks the door.</span>")
@@ -534,7 +534,7 @@
 					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
-		if (W.code != custom_code)
+		if (W.code != DE_CODE_OFF)
 			user << "None of the keys match this lock!"
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You pound the bars uselessly!"//sucker

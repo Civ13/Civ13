@@ -428,13 +428,14 @@
 			item_state_slots["slot_w_uniform"] = "ww2_japcap"
 			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = FALSE
+			update_clothing_icon()
 		else if (!toggled)
 			item_state = "ww2_japcap_extended"
 			worn_state = "ww2_japcap_extended"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap_extended"
 			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/head/ww2/japoffcap
 	name = "japanese officer cap"
@@ -456,13 +457,14 @@
 			item_state_slots["slot_w_uniform"] = "ww2_japoffcap"
 			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = FALSE
+			update_clothing_icon()
 		else if (!toggled)
 			item_state = "ww2_japoffcap_extended"
 			worn_state = "ww2_japoffcap_extended"
 			item_state_slots["slot_w_uniform"] = "ww2_japoffcap_extended"
 			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/japoffuni
 	name = "japanese officer uniform"
@@ -484,13 +486,14 @@
 			item_state_slots["slot_w_uniform"] = "ww2_japoffuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_japoffuni_rolled"
 			worn_state = "ww2_japoffuni_rolled"
 			item_state_slots["slot_w_uniform"] = "ww2_japoffuni_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/japuni
 	name = "japanese uniform"
@@ -512,13 +515,14 @@
 			item_state_slots["slot_w_uniform"] = "ww2_japuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_japuni_rolled"
 			worn_state = "ww2_japuni_rolled"
 			item_state_slots["slot_w_uniform"] = "ww2_japuni_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/japuni_summer
 	name = "japanese uniform"
@@ -547,13 +551,14 @@ obj/item/clothing/under/ww2/japuni_med/verb/roll_sleeves()
 			item_state_slots["slot_w_uniform"] = "japuni_med"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "japuni_med_rolled"
 			worn_state = "japuni_med_rolled"
 			item_state_slots["slot_w_uniform"] = "japuni_med_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 obj/item/clothing/under/ww2/japuni_mp
 	name = "japanese Kenpeitai uniform"

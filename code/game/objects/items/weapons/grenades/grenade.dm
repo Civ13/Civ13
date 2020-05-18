@@ -8,7 +8,7 @@
 	throw_speed = 4
 	throw_range = 8
 	flags = CONDUCT
-	slot_flags = SLOT_BELT|SLOT_MASK
+	slot_flags = SLOT_BELT|SLOT_POCKET
 	var/active = FALSE
 	var/det_time = 50
 	var/loadable = TRUE
