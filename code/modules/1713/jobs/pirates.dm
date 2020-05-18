@@ -2,7 +2,7 @@
 /datum/job/pirates
 	faction = "Human"
 
-/datum/job/pirates/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/pirates/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
 
@@ -22,7 +22,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/pirates/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -64,7 +64,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/pirates/qm/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -106,7 +106,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/pirates/boatswain/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -146,7 +146,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/pirates/midshipman/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -181,7 +181,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/pirates/surgeon/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -220,7 +220,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/pirates/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -272,7 +272,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/pirates/cook/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -328,7 +328,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/pirates/seaman/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/seaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -401,7 +401,7 @@
 	max_positions = 0
 	total_positions = 0
 
-/datum/job/pirates/battleroyale/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/battleroyale/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -473,7 +473,7 @@
 	min_positions = 60
 	max_positions = 300
 
-/datum/job/pirates/marooned/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/marooned/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))

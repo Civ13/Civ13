@@ -163,8 +163,8 @@
 					if (data.objects_with_immunity.Find(AM))
 						continue
 					if (AM && AM.simulated)	AM.ex_act(dist)
-					if (istype(AM, /mob/living/carbon/human))
-						var/mob/living/carbon/human/H = AM
+					if (istype(AM, /mob/living/human))
+						var/mob/living/human/H = AM
 						if (H)
 							switch(dist)
 								if (1)

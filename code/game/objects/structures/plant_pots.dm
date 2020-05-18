@@ -12,7 +12,7 @@
 	not_disassemblable = TRUE
 	var/planttype = null //saves immense amounts of time from copy-pasting
 	var/plantverb = null //also saves time from the task of making sure its consistent across objects.
-	var/mob/living/carbon/human/stored_unit = null
+	var/mob/living/human/stored_unit = null
 	var/protection_chance = 35 //odds of something hitting the src
 	var/filled_type = null
 
@@ -962,7 +962,7 @@
 */
 
 
-/obj/structure/plant_pot/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/structure/plant_pot/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")

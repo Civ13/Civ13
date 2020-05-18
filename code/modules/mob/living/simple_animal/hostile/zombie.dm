@@ -192,7 +192,7 @@
 
 	var/damage = pick(melee_damage_lower,melee_damage_upper)
 	if (ishuman(target_mob))
-		var/mob/living/carbon/human/H = target_mob
+		var/mob/living/human/H = target_mob
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
 		var/dmod = 1

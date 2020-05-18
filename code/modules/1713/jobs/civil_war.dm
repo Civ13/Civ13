@@ -13,7 +13,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/american/union_captain/equip(var/mob/living/carbon/human/H)
+/datum/job/american/union_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
@@ -56,7 +56,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/american/union_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/union_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
@@ -100,7 +100,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/american/union_sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/union_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
@@ -141,7 +141,7 @@
 	min_positions = 8
 	max_positions = 100
 
-/datum/job/american/union_soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/american/union_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
@@ -180,7 +180,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/american/union_doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/american/union_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
@@ -231,7 +231,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/confederate_captain/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/confederate_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
@@ -278,7 +278,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/confederate_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/confederate_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	var/randshoes = rand(1,2)
@@ -330,7 +330,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/civilian/confederate_sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/confederate_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	var/randshoes = rand(1,2)
@@ -379,7 +379,7 @@
 	min_positions = 8
 	max_positions = 100
 
-/datum/job/civilian/confederate_soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/confederate_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	var/randshoes = rand(1,2)
@@ -425,7 +425,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/civilian/confederate_doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/confederate_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	var/randshoes = rand(1,2)

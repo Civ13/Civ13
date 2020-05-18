@@ -1,6 +1,6 @@
-/mob/living/carbon/human
+/mob/living/human
 	var/prev_tone = null
-/mob/living/carbon/human/proc/handle_animalistic(var/type = "Default")
+/mob/living/human/proc/handle_animalistic(var/type = "Default")
 	if (type == "Default")
 		if (body_build.name != "Default")
 			icon = 'icons/mob/human.dmi'

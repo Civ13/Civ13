@@ -12,7 +12,7 @@
 	var/next_activation = -1;
 
 /obj/structure/transport_lever/attack_hand(var/mob/user as mob)
-//f (user && istype(user, /mob/living/carbon/human))
+//f (user && istype(user, /mob/living/human))
 //function(user)
 	if (world.time < next_activation)
 		next_activation = world.time + 50

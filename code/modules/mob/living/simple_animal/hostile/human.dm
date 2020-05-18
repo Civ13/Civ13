@@ -50,7 +50,7 @@
 					do_movement(target_obj)
 					return
 	else if (ishuman(speaker))
-		var/mob/living/carbon/human/H = speaker
+		var/mob/living/human/H = speaker
 		message = original_message
 		if (H.faction_text == faction && s_language.name == language.name && role == "medic")
 			if (findtext(message, "medic!") && target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
@@ -134,7 +134,7 @@
 			if (L.faction == src.faction)
 				break
 			else if (ishuman(L))
-				var/mob/living/carbon/human/H = L
+				var/mob/living/human/H = L
 				if (H.faction_text == faction)
 					break
 				else
@@ -342,7 +342,7 @@
 		target_action = "bandaging"
 		action_running = TRUE
 		if (ishuman(target_mob))
-			var/mob/living/carbon/human/H = target_mob
+			var/mob/living/human/H = target_mob
 			if (H.getTotalDmg()>95)
 				say(pick("!!Hang on buddy, you will be fine!","!!You'll be fine kid, don't worry."), language)
 		visible_message("<span class='notice'>[src] starts bandaging [target_obj]...</span>")
@@ -353,7 +353,7 @@
 			if (target_obj && src && get_dist(src,target_obj)<=1 && src.stat != DEAD && L.stat != DEAD)
 				visible_message("[target_obj] is all bandaged.")
 				if (ishuman(target_obj))
-					var/mob/living/carbon/human/H = target_obj
+					var/mob/living/human/H = target_obj
 					for (var/obj/item/organ/external/affecting in H.organs)
 
 						if (affecting && affecting.open == FALSE)
@@ -453,7 +453,7 @@
 			do_movement(loc)
 	else
 		var/mob/living/EN = null
-		for (var/mob/living/carbon/human/PENP in range(10,src))
+		for (var/mob/living/human/PENP in range(10,src))
 			if (PENP.faction_text != faction && PENP.stat != DEAD)
 				EN = PENP
 				break
@@ -614,14 +614,14 @@
 					t_turf = t_turf2
 					t_distance = get_dist(src,t_turf2)
 					break
-			for(var/mob/living/carbon/human/HH in range(7,t_turf2))
+			for(var/mob/living/human/HH in range(7,t_turf2))
 				if (HH.faction_text != src.faction && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
 					t_turf = t_turf2
 					t_distance = get_dist(src,t_turf2)
 					break
 	return t_turf
 
-/mob/living/carbon/human/get_objective()
+/mob/living/human/get_objective()
 	var/turf/t_turf = null
 	var/t_distance = 1000
 	//check all the targets and choose the closest one that has enemies nearby.
@@ -633,7 +633,7 @@
 					t_turf = t_turf2
 					t_distance = get_dist(src,t_turf2)
 					break
-			for(var/mob/living/carbon/human/HH in range(7,t_turf2))
+			for(var/mob/living/human/HH in range(7,t_turf2))
 				if (HH.faction_text != src.faction_text && HH.stat != DEAD && get_dist(src,t_turf2)<t_distance)
 					t_turf = t_turf2
 					t_distance = get_dist(src,t_turf2)

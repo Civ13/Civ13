@@ -31,7 +31,7 @@
 		forceMove(VP)
 		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
 
-/obj/structure/vehicleparts/movement/sails/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/vehicleparts/movement/sails/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (istype(I, /obj/item/weapon/weldingtool))
 		return
 	else

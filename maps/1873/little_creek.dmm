@@ -457,7 +457,7 @@
 "iO" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/wood,/area/caribbean/void/caves)
 "iP" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/void/caves)
 "iQ" = (/obj/structure/multiz/ladder/ww2/up,/turf/floor/wood,/area/caribbean/void/caves)
-"iR" = (/obj/structure/bed{material = "wood"},/mob/living/carbon/human/corpse,/turf/floor/wood,/area/caribbean/void/caves)
+"iR" = (/obj/structure/bed{material = "wood"},/mob/living/human/corpse,/turf/floor/wood,/area/caribbean/void/caves)
 "iS" = (/obj/structure/closet/crate/chest,/turf/floor/wood,/area/caribbean/void/caves)
 "iT" = (/obj/item/weapon/surgery/bone_saw,/obj/item/weapon/surgery/bonesetter,/obj/item/weapon/surgery/cautery,/obj/item/weapon/surgery/hemostat,/obj/item/weapon/surgery/retractor,/obj/item/weapon/surgery/scalpel,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/void/caves)
 "iU" = (/obj/structure/bed{material = "wood"},/obj/effect/decal/cleanable/blood/drip,/turf/floor/wood,/area/caribbean/void/caves)

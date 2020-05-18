@@ -20,11 +20,11 @@
 /obj/structure/gladiator_ledger/attack_hand(mob/user as mob)
 	if (map.ID == MAP_GLADIATORS)
 		var/obj/map_metadata/gladiators/GD = map
-		if (istype(user, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = user
+		if (istype(user, /mob/living/human))
+			var/mob/living/human/H = user
 			if (H.original_job_title == "Imperator" && timer <= world.time && H.client.ckey == "taislin")
 				var/list/vlist = list("Cancel")
-				for(var/mob/living/carbon/human/GLAD in world)
+				for(var/mob/living/human/GLAD in world)
 					var/area/A = get_area(GLAD)
 					if (GLAD.original_job_title == "Gladiator" && GLAD.stat != DEAD && GLAD.client && A.name == arena_name)
 						vlist += "[GLAD.name], [GLAD.client.ckey]"
@@ -41,7 +41,7 @@
 							continue
 					if (!done)
 						var/statlist = "1,1,1,1,1,1,1,1,1,1"
-						for(var/mob/living/carbon/human/GLAD1 in world)
+						for(var/mob/living/human/GLAD1 in world)
 							if (GLAD1.original_job_title == "Gladiator" && GLAD1.stat != DEAD && GLAD1.client && GLAD1.name==splitdata[1] && GLAD1.client.ckey==splitdata[2])
 								statlist = "[GLAD1.stats["strength"][1]],[GLAD1.stats["crafting"][1]],[GLAD1.stats["rifle"][1]],[GLAD1.stats["dexterity"][1]],[GLAD1.stats["swords"][1]],[GLAD1.stats["pistol"][1]],[GLAD1.stats["bows"][1]],[GLAD1.stats["medical"][1]],[GLAD1.stats["philosophy"][1]],[GLAD1.stats["machinegun"][1]],[GLAD1.stats["stamina"][1]]"
 						GD.gladiator_stats += list(list(splitdata[2],splitdata[1],statlist,0,1,1))
@@ -167,7 +167,7 @@
 /obj/structure/gladiator_control/proc/run_proc()
 	active_emperor = 0
 /*
-	for(var/mob/living/carbon/human/EMP in world)
+	for(var/mob/living/human/EMP in world)
 		if (EMP.original_job_title == "Imperator" && EMP.stat == CONSCIOUS)
 			active_emperor++
 */
@@ -219,7 +219,7 @@
 			victory_min = 2
 			teams = TRUE
 	var/area/A = get_area_name(arena)
-	for(var/mob/living/carbon/human/GLAD in A)
+	for(var/mob/living/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
 			count++
 	if (count == count_max)
@@ -237,7 +237,7 @@
 		world << "<font size=3 color='yellow'>The combat has started at <b>[arena]</b>!</font>"
 		if (!teams)
 			var/list/currlist = list()
-			for(var/mob/living/carbon/human/H in A)
+			for(var/mob/living/human/H in A)
 				if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
 					currlist += H.name
 			for(var/i = 1, i <= G.gladiator_stats.len, i++)
@@ -250,7 +250,7 @@
 			flist = replacetext(flist,", .",".")
 			world << "<font size=2 color='yellow'>Fighters: [flist]</font>"
 		else
-			for(var/mob/living/carbon/human/H in A)
+			for(var/mob/living/human/H in A)
 				if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
 					if (team1.len < victory_min)
 						team1 += H
@@ -288,12 +288,12 @@
 	var/obj/map_metadata/gladiators/GD = map
 	var/area/A = get_area_name(arena)
 	var/count = 0
-	for(var/mob/living/carbon/human/GLAD in A)
+	for(var/mob/living/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 			count++
 	if (count == 1)
-		var/mob/living/carbon/human/WINNER
-		for(var/mob/living/carbon/human/GLAD in A)
+		var/mob/living/human/WINNER
+		for(var/mob/living/human/GLAD in A)
 			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 				WINNER = GLAD
 		for(var/obj/structure/gate/GATES in A)
@@ -333,18 +333,18 @@
 		return
 
 	else if (count == victory_min && victory_min > 1)
-		for(var/mob/living/carbon/human/HH in team1)
+		for(var/mob/living/human/HH in team1)
 			if (HH.stat != CONSCIOUS || HH.surrendered)
 				team1 -= HH
-		for(var/mob/living/carbon/human/HM in team2)
+		for(var/mob/living/human/HM in team2)
 			if (HM.stat != CONSCIOUS || HM.surrendered)
 				team2 -= HM
 		if((team1.len == 0 && team2.len > 0) || (team2.len == 0 && team1.len > 0))
 			var/list/winnerlist = list()
-			for(var/mob/living/carbon/human/GLAD in A)
+			for(var/mob/living/human/GLAD in A)
 				if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 					winnerlist += GLAD
-			for (var/mob/living/carbon/human/k in winnerlist)
+			for (var/mob/living/human/k in winnerlist)
 				var/done = FALSE
 				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
 					if (GD.gladiator_stats[i][1] == k.client.ckey && GD.gladiator_stats[i][2] == k.name && GD.gladiator_stats[i][4] == 0)
@@ -357,7 +357,7 @@
 			GD.save_gladiators()
 
 			var/flist = ""
-			for(var/mob/living/carbon/human/H in winnerlist)
+			for(var/mob/living/human/H in winnerlist)
 				flist += "[H] ([H.client.ckey]), "
 			flist += "."
 			flist = replacetext(flist,", .",".")
@@ -387,8 +387,8 @@
 /*
 /obj/structure/gladiator_control/attack_hand(mob/user as mob)
 	if (map.ID == MAP_GLADIATORS)
-		if (istype(user, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = user
+		if (istype(user, /mob/living/human))
+			var/mob/living/human/H = user
 			if (H.original_job_title == "Imperator")
 				var/choice = WWinput(user,"Do you want to toggle the auto-matchmaking [automode ? "off" : "on"]?","Auto-matchmaking mode","Yes",list("Yes","No"))
 				if (choice == "No")
@@ -413,7 +413,7 @@
 	var/obj/map_metadata/gladiators/G = map
 	var/area/A = get_area_name(arena)
 
-	for(var/mob/living/carbon/human/GLAD in A)
+	for(var/mob/living/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
 			count++
 
@@ -431,7 +431,7 @@
 
 		world << "<font size=3 color='yellow'>The [current_style] combat has started at <b>[arena]</b>!</font>"
 		var/list/currlist = list()
-		for(var/mob/living/carbon/human/H in A)
+		for(var/mob/living/human/H in A)
 			if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
 				currlist += H.name
 		for(var/i = 1, i <= G.gladiator_stats.len, i++)
@@ -453,13 +453,13 @@
 	var/obj/map_metadata/gladiators/GD = map
 	var/area/A = get_area_name(arena)
 
-	var/mob/living/carbon/human/WINNER
+	var/mob/living/human/WINNER
 	var/count = 0
-	for(var/mob/living/carbon/human/GLAD in A)
+	for(var/mob/living/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 			count++
 	if (count == 1)
-		for(var/mob/living/carbon/human/GLAD in A)
+		for(var/mob/living/human/GLAD in A)
 			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 				WINNER = GLAD
 			if (!WINNER)
@@ -514,10 +514,10 @@
 	var/area/A = get_area_name(arena)
 	var/area/B = get_area_name("Arena IV outer ring")
 
-	for(var/mob/living/carbon/human/GLAD in A)
+	for(var/mob/living/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
 			count++
-	for(var/mob/living/carbon/human/GLAD in B)
+	for(var/mob/living/human/GLAD in B)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
 			count++
 	if (count == count_max)
@@ -534,7 +534,7 @@
 
 		world << "<font size=3 color='yellow'>The [current_style] combat has started at <b>[arena]</b>!</font>"
 		var/list/currlist = list()
-		for(var/mob/living/carbon/human/H in A)
+		for(var/mob/living/human/H in A)
 			if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
 				currlist += H.name
 		for(var/i = 1, i <= G.gladiator_stats.len, i++)
@@ -557,9 +557,9 @@
 	var/area/A = get_area_name(arena)
 	var/area/B = get_area_name("Arena IV outer ring")
 	var/turf/TGT = pick_area_turf(/area/caribbean/roman/armory/loot2)
-	var/mob/living/carbon/human/WINNER
+	var/mob/living/human/WINNER
 	var/count = 0
-	for(var/mob/living/carbon/human/GLAD in A)
+	for(var/mob/living/human/GLAD in A)
 		GLAD.strip_nobasics(TGT, TRUE)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 			if (current_style == "wrestling" && !GLAD.lying && !GLAD.scrambling && !GLAD.prone)
@@ -571,15 +571,15 @@
 	for(var/obj/item/II in B)
 		II.loc = TGT
 	if (current_style == "unarmed")
-		for(var/mob/living/carbon/human/GLAD in B)
+		for(var/mob/living/human/GLAD in B)
 			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 				count++
 	if (count == 1)
-		for(var/mob/living/carbon/human/GLAD in A)
+		for(var/mob/living/human/GLAD in A)
 			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 				WINNER = GLAD
 		if (current_style == "unarmed")
-			for(var/mob/living/carbon/human/GLAD in B)
+			for(var/mob/living/human/GLAD in B)
 				if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 					WINNER = GLAD
 		timer--
@@ -635,11 +635,11 @@
 	clean_proc(user)
 /obj/structure/functions/clean_arena1/proc/clean_proc(mob/living/user)
 	if (user)
-		if (!istype(user, /mob/living/carbon/human))
+		if (!istype(user, /mob/living/human))
 			return
 		else
 			var/area/A = get_area(src.loc)
-			for (var/mob/living/carbon/human/H in A)
+			for (var/mob/living/human/H in A)
 				if (H.stat == DEAD)
 					H.strip(H.loc,TRUE)
 					qdel(H)
@@ -652,7 +652,7 @@
 				qdel(C)
 			if (A.name == "Arena IV")
 				var/area/B = get_area_name("Arena IV outer ring")
-				for (var/mob/living/carbon/human/H in B)
+				for (var/mob/living/human/H in B)
 					if (H.stat == DEAD)
 						H.strip(H.loc,TRUE)
 						qdel(H)
@@ -668,7 +668,7 @@
 	return
 /obj/structure/functions/clean_arena1/proc/clean_proc_nomob()
 	var/area/A = get_area(src.loc)
-	for (var/mob/living/carbon/human/H in A)
+	for (var/mob/living/human/H in A)
 		if (H.stat == DEAD)
 			H.strip(H.loc,TRUE)
 			qdel(H)
@@ -681,7 +681,7 @@
 		qdel(C)
 	if (A.name == "Arena IV")
 		var/area/B = get_area_name("Arena IV outer ring")
-		for (var/mob/living/carbon/human/H in B)
+		for (var/mob/living/human/H in B)
 			if (H.stat == DEAD)
 				H.strip(H.loc,TRUE)
 				qdel(H)
@@ -702,8 +702,8 @@
 /obj/structure/bed/saving
 	material = "wood"
 
-/obj/structure/bed/saving/attack_hand(mob/living/carbon/human/user as mob)
-	if (!istype(user, /mob/living/carbon/human))
+/obj/structure/bed/saving/attack_hand(mob/living/human/user as mob)
+	if (!istype(user, /mob/living/human))
 		return
 	if (!user.client)
 		return
@@ -742,7 +742,7 @@
 /////////////////////////////////////////////////////////////
 ////////////////PROFILE/LOADING/PROC/////////////////////////
 /////////////////////////////////////////////////////////////
-/mob/living/carbon/human/proc/check_profiles()
+/mob/living/human/proc/check_profiles()
 	spawn(10)
 		if (map.ID == MAP_GLADIATORS && client)
 			var/obj/map_metadata/gladiators/GD = map

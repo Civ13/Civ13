@@ -1,4 +1,4 @@
-/mob/living/carbon/human/proc/togglerace(targetraceinput)
+/mob/living/human/proc/togglerace(targetraceinput)
 	src << "<span> You start to change....</span>"
 	spawn(4000)
 		if (src && orc+ant+crab+wolfman+lizard+gorillaman<=0)
@@ -15,12 +15,12 @@
 					lizard = 0
 				if ("gorillaman")
 					gorillaman = 0
-/mob/living/carbon/human/proc/checkrace()
+/mob/living/human/proc/checkrace()
 	if(!orc && !ant && !wolfman && !lizard && !gorillaman && !crab && can_mutate)
 		return TRUE
 	else
 		return FALSE
-/mob/living/carbon/human/rad_act()
+/mob/living/human/rad_act()
 	..()
 	if (inducedSSD)
 		return

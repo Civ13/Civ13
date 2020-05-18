@@ -21,7 +21,7 @@
 	else
 		icon_state = base_state
 
-/obj/structure/oven/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/oven/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
 
@@ -97,7 +97,7 @@
 	visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
 
 // todo: fix eggs not roasting & roasted meat sandwiches turning to burnt mess
-/obj/structure/oven/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/oven/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
@@ -283,7 +283,7 @@
 		on = FALSE
 		set_light(0)
 		return
-/obj/structure/oven/fireplace/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] lights \the [name].</span>")
 		on = TRUE
@@ -296,7 +296,7 @@
 	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 /obj/structure/oven/fireplace/proc/smoke_signals()
-	for (var/mob/living/carbon/human/HH in range(25,src))
+	for (var/mob/living/human/HH in range(25,src))
 		if (!HH.blinded && !HH.paralysis && HH.sleeping <= 0 && HH.stat == 0)
 			var/currdir = "somewhere"
 			if (z == HH.z)
@@ -315,13 +315,13 @@
 			if (currdir != "somewhere" && currdir != "")
 				HH << "<b>You see some smoke signals [currdir] of you...</b>"
 
-/obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
 		H << "You produce some smoke signals."
 		smoke_signals()
 	else
 		..()
-/obj/structure/oven/fireplace/Crossed(mob/living/carbon/M as mob)
+/obj/structure/oven/fireplace/Crossed(mob/living/human/M as mob)
 	if (icon_state == "[base_state]_on" && ishuman(M))
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")
@@ -401,7 +401,7 @@
 		icon_state = base_state
 		set_light(0)
 
-/obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
@@ -524,7 +524,7 @@
 	else
 		..()
 
-/obj/structure/furnace/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/furnace/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 1)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE

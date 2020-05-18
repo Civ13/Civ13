@@ -1,4 +1,4 @@
-/mob/living/carbon/
+/mob/living/human/
 	gender = MALE
 	var/datum/species/species //Contains icon generation and language information, set during New().
 	var/list/stomach_contents = list()

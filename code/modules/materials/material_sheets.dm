@@ -247,7 +247,7 @@
 
 /obj/item/stack/material/rope/attack_hand(var/mob/M)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.hand && H.l_hand && H.l_hand.type == /obj/item/stack/material/rope)
 			return
 		else if (!H.hand && H.r_hand && H.r_hand.type == /obj/item/stack/material/rope)
@@ -555,7 +555,7 @@
 		if (isturf(loc))
 			qdel(src)
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
-	var/mob/living/carbon/human/U = user
+	var/mob/living/human/U = user
 	recipes = material.get_recipes_civs(U.original_job_title, U)
 	..()
 

@@ -220,7 +220,7 @@
 	return TRUE
 
 
-/obj/structure/window/kick_act(var/mob/living/carbon/human/user)
+/obj/structure/window/kick_act(var/mob/living/human/user)
 	if(!..())
 		return
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(10,15), 0)

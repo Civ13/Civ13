@@ -67,7 +67,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 	if (M == user && user.a_intent != I_HARM)
 		return FALSE
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.stats["stamina"][1] >= (cooldownw*0.45)/H.getStatCoeff("strength"))
 			H.stats["stamina"][1] = max(0,H.stats["stamina"][1] - (cooldownw*0.45)/H.getStatCoeff("strength"))
 		else

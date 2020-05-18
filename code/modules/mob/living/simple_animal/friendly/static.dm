@@ -24,7 +24,7 @@
 	counter = 1
 	anchored = TRUE
 	species = "cod"
-/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/fishing) && counter > 0)
 		H.visible_message("[H] starts fishing.")
 		if (istype(W, /obj/item/weapon/fishing/modern))
@@ -110,8 +110,8 @@
 			return
 	if (!istype(get_turf(src), /turf/floor/beach/water))
 		return
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		if (H.driver_vehicle)
 			return
 		if (H.riding && H.riding_mob)
@@ -127,7 +127,7 @@
 				affecting.droplimb(FALSE, DROPLIMB_EDGE)
 				visible_message("The piranhas bite off [H]'s [affecting]!")
 				qdel(affecting)
-				for(var/mob/living/carbon/human/NB in view(6,src))
+				for(var/mob/living/human/NB in view(6,src))
 					NB.mood -= 10
 					NB.ptsd += 1
 			spawn(300)
@@ -177,7 +177,7 @@
 			done = TRUE
 	spawn(600)
 		check_food()
-/obj/structure/anthill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/anthill/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/branch))
 		var/obj/item/weapon/branch/B = W
 		H.visible_message("[H] starts poking inside the anthill with the stick.")

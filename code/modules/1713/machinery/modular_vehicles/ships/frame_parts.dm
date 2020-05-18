@@ -1,4 +1,4 @@
-/obj/structure/vehicleparts/frame/ship/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/vehicleparts/frame/ship/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !H)
 		return
 	if (((istype (I, /obj/item/stack/material/wood) && !istype(src, /obj/structure/vehicleparts/frame/ship/steel)) || (istype (I, /obj/item/stack/material/steel) && istype(src, /obj/structure/vehicleparts/frame/ship/steel))) && !axis)

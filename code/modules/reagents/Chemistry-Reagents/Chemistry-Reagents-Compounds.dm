@@ -7,7 +7,7 @@
 	color = "#808080"
 	metabolism = REM * 0.2
 
-/datum/reagent/acetone/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/acetone/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(removed * 3)
 
 /datum/reagent/acetone/touch_obj(var/obj/O)	//I copied this wholesale from ethanol and could likely be converted into a shared proc. ~Techhead
@@ -43,7 +43,7 @@
 	reagent_state = LIQUID
 	color = "#ffffe0"
 
-/datum/reagent/napalm/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/napalm/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustToxLoss(10)
 
@@ -60,7 +60,7 @@
 	color = "#404030"
 	metabolism = REM * 0.5
 
-/datum/reagent/ammonia/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ammonia/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(removed * 1.5)
 
 /datum/reagent/ethanol
@@ -91,13 +91,13 @@
 	if (istype(L))
 		L.adjust_fire_stacks(amount / 15)
 
-/datum/reagent/ethanol/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ethanol/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (issmall(M)) removed *= 2
 	M.adjustToxLoss(removed * 2 * toxicity)
 	// apparently this doesn't get called, so moving thirstcode to affect_ingest()
 	return
 
-/datum/reagent/ethanol/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ethanol/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	if (issmall(M)) removed *= 2
 	M.bladder += removed
 	var/strength_mod = 2
@@ -162,10 +162,10 @@
 	metabolism = REM * 0.2
 	touch_met = 5
 
-/datum/reagent/hydrazine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/hydrazine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(4 * removed)
 
-/datum/reagent/hydrazine/affect_touch(var/mob/living/carbon/M, var/alien, var/removed) // Hydrazine is both toxic and flammable.
+/datum/reagent/hydrazine/affect_touch(var/mob/living/human/M, var/alien, var/removed) // Hydrazine is both toxic and flammable.
 	M.adjust_fire_stacks(removed / 12)
 	M.adjustToxLoss(0.2 * removed)
 
@@ -181,13 +181,13 @@
 	var/power = 5
 	var/meltdose = 10 // How much is needed to melt
 
-/datum/reagent/acid/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/acid/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (issmall(M)) removed *= 2
 	M.take_organ_damage(0, removed * power * 2)
 
-/datum/reagent/acid/affect_touch(var/mob/living/carbon/M, var/alien, var/removed) // This is the most interesting
+/datum/reagent/acid/affect_touch(var/mob/living/human/M, var/alien, var/removed) // This is the most interesting
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.head)
 		/*	if (H.head.unacidable)
 				H << "<span class='danger'>Your [H.head] protects you from the acid.</span>"
@@ -270,6 +270,6 @@
 	reagent_state = SOLID
 	color = "#FFFFFF"
 
-/datum/reagent/sugar/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/sugar/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.nutrition += removed * 2
 	M.bowels += removed/12

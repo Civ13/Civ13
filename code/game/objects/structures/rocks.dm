@@ -21,7 +21,7 @@
 	maxhealth = 60
 	health = 60
 
-/obj/structure/wild/rock/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/wild/rock/attack_hand(var/mob/living/human/H)
 	if (H.a_intent == I_GRAB)
 		H << "You start looking for some flint among the rocks..."
 		if (do_after(H, 50, H.loc) && flint_amount > 0)
@@ -34,7 +34,7 @@
 	else
 		..()
 
-/obj/structure/wild/rock/attackby(var/obj/item/weapon/W, var/mob/living/carbon/human/H)
+/obj/structure/wild/rock/attackby(var/obj/item/weapon/W, var/mob/living/human/H)
 	if (istype(W, /obj/item/weapon/flint))
 		H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		var/obj/item/weapon/flint/F = W

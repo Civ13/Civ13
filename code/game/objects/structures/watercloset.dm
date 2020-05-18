@@ -498,7 +498,7 @@
 				mymist = null
 				ismist = FALSE
 
-/mob/living/carbon/human/proc/is_nude()
+/mob/living/human/proc/is_nude()
 	return (!w_uniform) ? 1 : 0
 
 //Yes, showers are super powerful as far as washing goes.
@@ -510,8 +510,8 @@
 		L.ExtinguishMob()
 		L.fire_stacks = -20 //Douse ourselves with water to avoid fire more easily
 
-	if (iscarbon(O))
-		var/mob/living/carbon/M = O
+	if (ishuman(O))
+		var/mob/living/human/M = O
 		if (M.r_hand)
 			M.r_hand.clean_blood()
 		if (M.l_hand)
@@ -528,7 +528,7 @@
 			M.touching.remove_any(remove_amount)
 
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			H.color = initial(H.color)
 
 			var/washgloves = TRUE
@@ -635,7 +635,7 @@
 	M.bodytemperature += temp_adj
 
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (temperature >= H.species.heat_level_1)
 			H << "<span class='danger'>The water is searing hot!</span>"
 		else if (temperature <= H.species.cold_level_1)
@@ -704,7 +704,7 @@
 	if (!Adjacent(user))
 		return
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
 		if (user.hand)
 			temp = H.organs_by_name["l_hand"]

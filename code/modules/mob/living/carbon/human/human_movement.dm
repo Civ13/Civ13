@@ -1,7 +1,7 @@
-/mob/living/carbon/human/var/stored_tally = 0
-/mob/living/carbon/human/var/next_calculate_tally = -1
+/mob/living/human/var/stored_tally = 0
+/mob/living/human/var/next_calculate_tally = -1
 
-/mob/living/carbon/human/movement_delay()
+/mob/living/human/movement_delay()
 
 	if (world.time <= next_calculate_tally)
 		return stored_tally
@@ -118,7 +118,7 @@
 	else
 		return tally
 
-/mob/living/carbon/human/slip_chance(var/prob_slip = 5)
+/mob/living/human/slip_chance(var/prob_slip = 5)
 	if (!..())
 		return FALSE
 
@@ -130,7 +130,7 @@
 
 	return prob_slip
 
-/mob/living/carbon/human/Check_Shoegrip()
+/mob/living/human/Check_Shoegrip()
 	if (species.flags & NO_SLIP)
 		return TRUE
 	if (shoes && (shoes.item_flags & NOSLIP) && istype(shoes, /obj/item/clothing/shoes/magboots))  //magboots + dense_object = no floating

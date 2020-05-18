@@ -69,7 +69,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		return FALSE
 	return TRUE
 
-/obj/item/stack/proc/use(var/used,var/mob/living/carbon/human/H = null)
+/obj/item/stack/proc/use(var/used,var/mob/living/human/H = null)
 	if (!can_use(used))
 		return FALSE
 	if (H)
@@ -282,7 +282,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	var/customvar2 = ""
 	var/customdesc = ""
 	var/turn_dir = 0
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/item/weapon/key/civ/build_override_key = null
@@ -1932,7 +1932,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			return
 
 		if (ishuman(usr))
-			var/mob/living/carbon/human/H = usr
+			var/mob/living/human/H = usr
 			if (H.can_build_recipe)
 				H.can_build_recipe = FALSE
 				produce_recipe(R, multiplier, usr)

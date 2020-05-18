@@ -35,11 +35,11 @@
 	if (!usr)	return
 	if (raw)
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			if (!H.orc && !H.crab && !H.wolfman && !H.lizard)
 				M.reagents.add_reagent("food_poisoning", 1)
 	if (ishuman(M))
-		var/mob/living/carbon/human/HM = M
+		var/mob/living/human/HM = M
 		if (HM.orc || HM.crab || HM.wolfman)
 			HM.mood += abs(satisfaction)
 		else
@@ -68,13 +68,13 @@
 			qdel(src)
 			return FALSE
 
-	if (istype(M, /mob/living/carbon))
+	if (istype(M, /mob/living/human))
 		//TODO: replace with standard_feed_mob() call.
-		var/mob/living/carbon/C = M
+		var/mob/living/human/C = M
 		var/fullness = C.get_fullness()
 		if (C == user)								//If you're eating it yourself
-			if (istype(C,/mob/living/carbon/human))
-				var/mob/living/carbon/human/H = M
+			if (istype(C,/mob/living/human))
+				var/mob/living/human/H = M
 				if (!H.check_has_mouth())
 					user << "Where do you intend to put \the [src]? You don't have a mouth!"
 					return
@@ -105,8 +105,8 @@
 		else
 			if (!M.can_force_feed(user, src))
 				return
-			if (istype(M,/mob/living/carbon/human))
-				var/mob/living/carbon/human/H = M
+			if (istype(M,/mob/living/human))
+				var/mob/living/human/H = M
 				if (H.gorillaman)
 					if (non_vegetarian)
 						user << "<span class='warning'>[H] is an herbivore! They can't eat this!</span>"
@@ -1752,7 +1752,7 @@
 			food_decay()
 			return
 
-/obj/item/weapon/leaves/attack(mob/living/carbon/human/M as mob, mob/living/carbon/human/user as mob)
+/obj/item/weapon/leaves/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (!M || !ishuman(M) || !M.gorillaman)
 		return
 	playsound(M.loc,'sound/items/eatfood.ogg', rand(10,50), TRUE)

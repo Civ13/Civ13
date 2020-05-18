@@ -252,7 +252,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		usr << "<font color='red'>There is no active key like that in the game or the person is not currently a ghost.</font>"
 		return
 
-	var/mob/living/carbon/human/new_character = new(pick(latejoin))//The mob being spawned.
+	var/mob/living/human/new_character = new(pick(latejoin))//The mob being spawned.
 
 
 	new_character.gender = pick(MALE,FEMALE)

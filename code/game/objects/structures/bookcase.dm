@@ -89,7 +89,7 @@
 					sum_i += RB.k_level
 		current_research = sum_i+sum_m+sum_h
 
-/obj/structure/bookcase/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/structure/bookcase/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O, /obj/item/weapon/book))
 		user.drop_item()
 		O.loc = src

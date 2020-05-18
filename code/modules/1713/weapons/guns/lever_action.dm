@@ -105,7 +105,7 @@
 		cocked = TRUE
 */
 /obj/item/weapon/gun/projectile/leveraction/special_check(mob/user)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
@@ -168,7 +168,7 @@
 
 	update_icon()
 /*
-/obj/item/weapon/gun/projectile/leveraction/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
+/obj/item/weapon/gun/projectile/leveraction/unload_ammo(var/mob/living/human/user, allow_dump=0)
 	if (loaded.len)
 		if (load_method & SINGLE_CASING)
 			var/obj/item/ammo_casing/C = loaded[loaded.len]

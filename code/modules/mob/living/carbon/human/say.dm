@@ -1,4 +1,4 @@
-/mob/living/carbon/human/say(var/message, var/howling = FALSE)
+/mob/living/human/say(var/message, var/howling = FALSE)
 
 	// workaround for language bug that happens when you're spawned in
 	if (!languages.len)
@@ -67,7 +67,7 @@
 			if (TL.connected)
 				TL.broadcast(message_without_html, src)
 
-/mob/living/carbon/human/proc/forcesay(list/append)
+/mob/living/human/proc/forcesay(list/append)
 	if (stat == CONSCIOUS)
 		if (client)
 			var/virgin = TRUE	//has the text been modified yet?
@@ -99,30 +99,30 @@
 					say(temp)
 				winset(client, "input", "text=[null]")
 
-/mob/living/carbon/human/say_understands(var/mob/other,var/datum/language/speaking = null)
+/mob/living/human/say_understands(var/mob/other,var/datum/language/speaking = null)
 
 	if (species.can_understand(other))
 		return TRUE
 
 	return ..()
 
-/mob/living/carbon/human/GetVoice()
+/mob/living/human/GetVoice()
 	return real_name
 
-/mob/living/carbon/human/proc/SetSpecialVoice(var/new_voice)
+/mob/living/human/proc/SetSpecialVoice(var/new_voice)
 	if (new_voice)
 		special_voice = new_voice
 	return
 
-/mob/living/carbon/human/proc/UnsetSpecialVoice()
+/mob/living/human/proc/UnsetSpecialVoice()
 	special_voice = ""
 	return
 
-/mob/living/carbon/human/proc/GetSpecialVoice()
+/mob/living/human/proc/GetSpecialVoice()
 	return special_voice
 
 
-/mob/living/carbon/human/say_quote(var/message, var/datum/language/speaking = null)
+/mob/living/human/say_quote(var/message, var/datum/language/speaking = null)
 	var/verb = "says"
 	var/ending = copytext(message, length(message))
 
@@ -136,7 +136,7 @@
 
 	return verb
 
-/mob/living/carbon/human/handle_speech_problems(var/message, var/verb)
+/mob/living/human/handle_speech_problems(var/message, var/verb)
 	if (silent || (sdisabilities & MUTE) || find_trait("Mute"))
 		message = ""
 		speech_problem_flag = TRUE
@@ -160,7 +160,7 @@
 	returns[3] = speech_problem_flag
 	return returns
 
-/mob/living/carbon/human/handle_speech_sound()
+/mob/living/human/handle_speech_sound()
 	if (species.speech_sounds && prob(species.speech_chance))
 		var/list/returns[2]
 		returns[1] = sound(pick(species.speech_sounds))

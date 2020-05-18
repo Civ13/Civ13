@@ -15,7 +15,7 @@
 		for(var/atom/T)
 			if ((istype(T, /mob/living) || istype(T, /obj)))
 				if (ishuman(T))
-					var/mob/living/carbon/human/H = T
+					var/mob/living/human/H = T
 					H.Weaken(duration)
 				else if (istype(T, /obj/structure/window))
 					var/obj/structure/window/W = T
@@ -79,7 +79,7 @@
 		var/mob/living/L = O
 		visible_message("<span class='danger'>\The [O] is burned by the lava!</span>")
 		if (ishuman(L))
-			var/mob/living/carbon/human/H = L
+			var/mob/living/human/H = L
 			var/dam_zone = pick("l_foot", "r_foot", "l_leg", "r_leg")
 			var/obj/item/organ/external/affecting = H.get_organ(dam_zone)
 			switch(stage)

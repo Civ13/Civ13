@@ -1,4 +1,4 @@
-/mob/living/carbon/human/verb/give(var/mob/living/target in view(1)-usr)
+/mob/living/human/verb/give(var/mob/living/target in view(1)-usr)
 	set category = "IC"
 	set name = "Give"
 
@@ -40,14 +40,14 @@
 		target.put_in_hands(I) // If this fails it will just end up on the floor, but that's fitting for things like dionaea.
 		target.visible_message("<span class='notice'>\The [usr] handed \the [I] to \the [target].</span>")
 
-/mob/living/carbon/human/verb/recruit()
+/mob/living/human/verb/recruit()
 	set category = null
 	set name = "Recruit"
 	set desc = "Invite into your faction."
 
 	set src in view(1)
 
-	var/mob/living/carbon/human/user
+	var/mob/living/human/user
 
 	if (!ishuman(src))
 		return
@@ -99,14 +99,14 @@
 	else
 		return
 
-/mob/living/carbon/human/verb/faction_perms()
+/mob/living/human/verb/faction_perms()
 	set category = null
 	set name = "Faction Perms"
 	set desc = "Change the faction permissions of this person."
 
 	set src in view(1)
 
-	var/mob/living/carbon/human/user
+	var/mob/living/human/user
 
 	if (!ishuman(src))
 		return

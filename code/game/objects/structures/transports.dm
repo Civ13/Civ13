@@ -5,7 +5,7 @@
 	icon_state = "motorcycle"
 	var/list/ontop = list()
 	var/list/ontop_o = list()
-	var/mob/living/carbon/human/driver = null
+	var/mob/living/human/driver = null
 	var/lastmove = 0
 	var/vehicle_m_delay = 15
 	anchored = FALSE
@@ -128,9 +128,9 @@
 	moving = FALSE
 	return
 
-/obj/structure/vehicle/MouseDrop_T(atom/A, mob/living/carbon/human/user)
-	if (istype(A, /mob/living/carbon/human))
-		var/mob/living/carbon/human/M = A
+/obj/structure/vehicle/MouseDrop_T(atom/A, mob/living/human/user)
+	if (istype(A, /mob/living/human))
+		var/mob/living/human/M = A
 		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop) && ontop.len < mobcapacity)
 			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 			if (do_after(M, 40, src))
@@ -175,7 +175,7 @@
 				update_icon()
 				return
 
-/obj/structure/vehicle/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/vehicle/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
 		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 		if (do_after(user, 30, src))
@@ -210,7 +210,7 @@
 			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
 		return
 
-/obj/structure/vehicle/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+/obj/structure/vehicle/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/vehicleparts/wheel))
 		if ((user in ontop))
 			if (user == driver && engine)
@@ -326,7 +326,7 @@
 	var/image/cover_overlay = null
 	var/image/cover_overlay_c = null
 	var/maxcapacity = 1 //besides the driver
-	var/mob/living/carbon/human/currentcap = null
+	var/mob/living/human/currentcap = null
 	bound_width = 64
 	bound_height = 64
 	mobcapacity = 2
@@ -530,9 +530,9 @@
 			engine.connections += axis
 			dwheel.forceMove(src)
 
-/obj/structure/vehicle/boat/MouseDrop_T(atom/A, mob/living/carbon/human/user)
-	if (istype(A, /mob/living/carbon/human))
-		var/mob/living/carbon/human/M = A
+/obj/structure/vehicle/boat/MouseDrop_T(atom/A, mob/living/human/user)
+	if (istype(A, /mob/living/human))
+		var/mob/living/human/M = A
 		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
 			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 			if (do_after(M, 40, src))
@@ -581,7 +581,7 @@
 				update_icon()
 				return
 
-/obj/structure/vehicle/boat/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/vehicle/boat/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
 		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 		if (do_after(user, 30, src))
@@ -622,7 +622,7 @@
 			O.dir = dir
 			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
 		return
-/obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+/obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/GC = W
 		if (fueltank && fueltank.reagents && fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
@@ -828,7 +828,7 @@
 				visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
 		for(var/mob/living/L in get_turf(get_step(src,driver.dir)))
 			if (ishuman(L))
-				var/mob/living/carbon/human/HH = L
+				var/mob/living/human/HH = L
 				HH.adjustBruteLoss(rand(7,16)*axis.currentspeed)
 				HH.Weaken(rand(2,5))
 				blocked = 1

@@ -182,7 +182,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 	faction1_points = rescued_hostages*5
 	faction2_points = held_hostages*5
 
-	for (var/mob/living/carbon/human/PR in world)
+	for (var/mob/living/human/PR in world)
 		if (PR.stat != DEAD && PR.handcuffed)
 			var/area/currarea2 = get_area(PR)
 			if (istype(currarea2, /area/caribbean/british/land/inside/objective))

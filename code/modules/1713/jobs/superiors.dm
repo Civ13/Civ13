@@ -1,4 +1,4 @@
-/mob/living/carbon/human/proc/is_superior_of(var/mob/living/carbon/human/H)
+/mob/living/human/proc/is_superior_of(var/mob/living/human/H)
 	if (!original_job)
 		return FALSE
 	if (!H.original_job)

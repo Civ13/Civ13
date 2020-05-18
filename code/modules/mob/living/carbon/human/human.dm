@@ -1,4 +1,4 @@
-/mob/living/carbon/human
+/mob/living/human
 	name = "unknown"
 	real_name = "unknown"
 	voice_name = "unknown"
@@ -6,7 +6,7 @@
 	icon_state = "human_m_s"
 	var/is_murderer = FALSE // for the "find the murderer" gamemode
 	var/can_mutate = FALSE //from high rads, into ant etc
-/mob/living/carbon/human/New(var/new_loc, var/new_species = null)
+/mob/living/human/New(var/new_loc, var/new_species = null)
 
 	if (original_job_title && !client)
 		if (job_master)
@@ -83,11 +83,11 @@
 		if (client)
 			human_clients_mob_list |= src
 			if (config.allow_selfheal)
-				verbs |= /mob/living/carbon/human/proc/selfheal
-				verbs |= /mob/living/carbon/human/proc/selfrevive
+				verbs |= /mob/living/human/proc/selfheal
+				verbs |= /mob/living/human/proc/selfrevive
 	spawn(5)
 		nomads_spawn()
-/mob/living/carbon/human/Destroy()
+/mob/living/human/Destroy()
 	human_mob_list -= src
 	human_clients_mob_list -= src
 	for (var/organ in organs)
@@ -95,7 +95,7 @@
 	return ..()
 
 var/list/coefflist = list()
-/mob/living/carbon/human/Stat()
+/mob/living/human/Stat()
 	. = ..()
 	if (.)
 		// the loc.density short circuits 95% of the time and bypasses an expensive typecheck - Kachnov
@@ -182,7 +182,7 @@ var/list/coefflist = list()
 					stat("[capitalize(statname)]: ", "[coeff]x average")
 
 
-/mob/living/carbon/human/ex_act(severity)
+/mob/living/human/ex_act(severity)
 	if (!blinded)
 		if (HUDtech.Find("flash"))
 			flick("flash", HUDtech["flash"])
@@ -266,16 +266,16 @@ var/list/coefflist = list()
 	if (update)	UpdateDamageIcon()
 
 
-/mob/living/carbon/human/restrained()
+/mob/living/human/restrained()
 	if (handcuffed)
 		return TRUE
 	return FALSE
 
-/mob/living/carbon/human/var/co2overloadtime = null
-/mob/living/carbon/human/var/temperature_resistance = T0C+75
+/mob/living/human/var/co2overloadtime = null
+/mob/living/human/var/temperature_resistance = T0C+75
 
 
-/mob/living/carbon/human/show_inv(mob/user as mob)
+/mob/living/human/show_inv(mob/user as mob)
 	if (user.incapacitated()  || !user.Adjacent(src))
 		return
 
@@ -319,7 +319,7 @@ var/list/coefflist = list()
 	return
 
 //repurposed proc. Now it combines get_id_name() and get_face_name() to determine a mob's name variable. Made into a seperate proc as it'll be useful elsewhere
-/mob/living/carbon/human/proc/get_visible_name()
+/mob/living/human/proc/get_visible_name()
 	if ((wear_mask && (wear_mask.flags_inv&HIDEFACE)) || (head && (head.flags_inv&HIDEFACE)) || (werewolf && body_build.name != "Default"))	//Wearing a mask which hides our face, use id-name if possible	//Likewise for hats
 		return "Unknown"
 	if (original_job.is_prison && istype(original_job, /datum/job/civilian))
@@ -336,7 +336,7 @@ var/list/coefflist = list()
 
 //Removed the horrible safety parameter. It was only being used by ninja code anyways.
 //Now checks siemens_coefficient of the affected area by default
-/mob/living/carbon/human/electrocute_act(var/shock_damage, var/obj/source, var/base_siemens_coeff = 1.0, var/def_zone = null)
+/mob/living/human/electrocute_act(var/shock_damage, var/obj/source, var/base_siemens_coeff = 1.0, var/def_zone = null)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 
 	if (!def_zone)
@@ -348,7 +348,7 @@ var/list/coefflist = list()
 	return ..(shock_damage, source, siemens_coeff, def_zone)
 
 
-/mob/living/carbon/human/Topic(href, href_list)
+/mob/living/human/Topic(href, href_list)
 
 	if (href_list["refresh"])
 		if ((using_object)&&(in_range(src, usr)))
@@ -375,7 +375,7 @@ var/list/coefflist = list()
 
 ///eyecheck()
 ///Returns a number between -1 to 2
-/mob/living/carbon/human/eyecheck()
+/mob/living/human/eyecheck()
 	if (!species.has_organ["eyes"]) //No eyes, can't hurt them.
 		return FLASH_PROTECTION_MAJOR
 
@@ -388,7 +388,7 @@ var/list/coefflist = list()
 
 //Used by various things that knock people out by applying blunt trauma to the head.
 //Checks that the species has a "head" (brain containing organ) and that hit_zone refers to it.
-/mob/living/carbon/human/proc/headcheck(var/target_zone, var/brain_tag = "brain")
+/mob/living/human/proc/headcheck(var/target_zone, var/brain_tag = "brain")
 	if (!species.has_organ[brain_tag])
 		return FALSE
 
@@ -408,14 +408,14 @@ var/list/coefflist = list()
 
 	return TRUE
 
-/mob/living/carbon/human/IsAdvancedToolUser(var/silent)
+/mob/living/human/IsAdvancedToolUser(var/silent)
 	if (species.has_fine_manipulation)
 		return TRUE
 	if (!silent)
 		src << "<span class='warning'>You don't have the dexterity to use that!</span>"
 	return FALSE
 
-/mob/living/carbon/human/abiotic(var/full_body = FALSE)
+/mob/living/human/abiotic(var/full_body = FALSE)
 	if (full_body && ((l_hand && !( l_hand.abstract )) || (r_hand && !( r_hand.abstract )) || (back || wear_mask || head || shoes || w_uniform || wear_suit || l_ear || r_ear || gloves)))
 		return TRUE
 
@@ -425,16 +425,16 @@ var/list/coefflist = list()
 	return FALSE
 
 
-/mob/living/carbon/human/proc/check_dna()
+/mob/living/human/proc/check_dna()
 	dna.check_integrity(src)
 	return
 
-/mob/living/carbon/human/get_species()
+/mob/living/human/get_species()
 	if (!species)
 		set_species()
 	return species.name
 
-/mob/living/carbon/human/proc/check_has_mouth()
+/mob/living/human/proc/check_has_mouth()
 	// Todo, check stomach organ when implemented.
 	var/obj/item/organ/external/head/H = get_organ("head")
 	if (istype(H, /obj/item/organ/external/stump))
@@ -443,7 +443,7 @@ var/list/coefflist = list()
 		return FALSE
 	return TRUE
 
-/mob/living/carbon/human/proc/vomit()
+/mob/living/human/proc/vomit()
 
 	if (!check_has_mouth())
 		return
@@ -470,7 +470,7 @@ var/list/coefflist = list()
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 
-/mob/living/carbon/human/proc/vomit_blood()
+/mob/living/human/proc/vomit_blood()
 
 	if (!check_has_mouth())
 		return
@@ -498,18 +498,18 @@ var/list/coefflist = list()
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 
-/mob/living/carbon/human/proc/get_visible_gender()
+/mob/living/human/proc/get_visible_gender()
 	if (wear_suit && wear_suit.flags_inv & HIDEJUMPSUIT && ((head && head.flags_inv & HIDEMASK) || wear_mask))
 		return NEUTER
 	return gender
 
-/mob/living/carbon/human/proc/increase_germ_level(n)
+/mob/living/human/proc/increase_germ_level(n)
 	if (gloves)
 		gloves.germ_level += n
 	else
 		germ_level += n
 
-/mob/living/carbon/human/revive()
+/mob/living/human/revive()
 
 	if (species && !(species.flags & NO_BLOOD))
 		vessel.add_reagent("blood",species.blood_volume-vessel.total_volume)
@@ -541,11 +541,11 @@ var/list/coefflist = list()
 
 	..()
 
-/mob/living/carbon/human/proc/is_lung_ruptured()
+/mob/living/human/proc/is_lung_ruptured()
 	var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
 	return L && L.is_bruised()
 
-/mob/living/carbon/human/proc/rupture_lung()
+/mob/living/human/proc/rupture_lung()
 	var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
 
 	if (L && !L.is_bruised())
@@ -553,7 +553,7 @@ var/list/coefflist = list()
 		L.bruise()
 
 /*
-/mob/living/carbon/human/verb/simulate()
+/mob/living/human/verb/simulate()
 	set name = "sim"
 	set background = TRUE
 
@@ -584,7 +584,7 @@ var/list/coefflist = list()
 */
 //returns TRUE if made bloody, returns FALSE otherwise
 
-/mob/living/carbon/human/add_blood(mob/living/carbon/human/M as mob)
+/mob/living/human/add_blood(mob/living/human/M as mob)
 	if (!..())
 		return FALSE
 	//if this blood isn't already in the list, add it
@@ -593,15 +593,15 @@ var/list/coefflist = list()
 			blood_DNA[M.dna.unique_enzymes] = M.dna.b_type
 	hand_blood_color = blood_color
 	update_inv_gloves()	//handles bloody hands overlays and updating
-//	verbs += /mob/living/carbon/human/proc/bloody_doodle
+//	verbs += /mob/living/human/proc/bloody_doodle
 	return TRUE //we applied blood to the item
 
-/mob/living/carbon/human/proc/get_full_print()
+/mob/living/human/proc/get_full_print()
 	if (!dna ||!dna.uni_identity)
 		return
 	return md5(dna.uni_identity)
 
-/mob/living/carbon/human/clean_blood(var/clean_feet)
+/mob/living/human/clean_blood(var/clean_feet)
 	.=..()
 	gunshot_residue = null
 	if (clean_feet && !shoes)
@@ -610,7 +610,7 @@ var/list/coefflist = list()
 		update_inv_shoes(1)
 		return TRUE
 
-/mob/living/carbon/human/verb/check_pulse()
+/mob/living/human/verb/check_pulse()
 	set category = null
 	set name = "Check pulse"
 	set desc = "Approximately count somebody's pulse. Requires you to stand still at least 6 seconds."
@@ -640,7 +640,7 @@ var/list/coefflist = list()
 	else
 		usr << "<span class='warning'>You failed to check the pulse. Try again.</span>"
 
-/mob/living/carbon/human/proc/set_species(var/new_species, var/default_colour)
+/mob/living/human/proc/set_species(var/new_species, var/default_colour)
 //	world << "set species"
 	if (!dna)
 		if (!new_species)
@@ -719,7 +719,7 @@ var/list/coefflist = list()
 	else
 		return FALSE
 /*
-/mob/living/carbon/human/proc/bloody_doodle()
+/mob/living/human/proc/bloody_doodle()
 	set category = "IC"
 	set name = "Write in blood"
 	set desc = "Use blood on your hands to write a short message on the floor or a wall, murder mystery style."
@@ -731,7 +731,7 @@ var/list/coefflist = list()
 		return FALSE //something is terribly wrong
 
 	if (!bloody_hands)
-		verbs -= /mob/living/carbon/human/proc/bloody_doodle
+		verbs -= /mob/living/human/proc/bloody_doodle
 
 	if (gloves)
 		src << "<span class='warning'>Your [gloves] are getting in the way.</span>"
@@ -774,7 +774,7 @@ var/list/coefflist = list()
 		W.message = message
 		W.add_fingerprint(src)
 */
-/mob/living/carbon/human/can_inject(var/mob/user, var/error_msg, var/target_zone)
+/mob/living/human/can_inject(var/mob/user, var/error_msg, var/target_zone)
 	. = TRUE
 
 	if (!target_zone)
@@ -801,10 +801,10 @@ var/list/coefflist = list()
 			fail_msg = "There is no exposed flesh or thin material [target_zone == "head" ? "on their head" : "on their body"] to inject into."
 		user << "<span class='alert'>[fail_msg]</span>"
 
-/mob/living/carbon/human/proc/exam_self()
+/mob/living/human/proc/exam_self()
 	var/organpain = FALSE
-	if (istype(src, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = usr
+	if (istype(src, /mob/living/human))
+		var/mob/living/human/H = usr
 		if (!stat)
 			visible_message("<span class = 'notice'>[src] examines [gender==MALE?"himself":"herself"].</span>")
 		if (ishuman(H))
@@ -865,7 +865,7 @@ var/list/coefflist = list()
 
 
 
-/mob/living/carbon/human/print_flavor_text(var/shrink = TRUE)
+/mob/living/human/print_flavor_text(var/shrink = TRUE)
 	var/list/equipment = list(head,wear_mask,w_uniform,wear_suit,gloves,shoes)
 
 	for (var/obj/item/clothing/C in equipment)
@@ -884,36 +884,36 @@ var/list/coefflist = list()
 			return "<span class = 'notice'>[copytext_preserve_html(msg, TRUE, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
 	return ..()
 
-/mob/living/carbon/human/getDNA()
+/mob/living/human/getDNA()
 	if (species.flags & NO_SCAN)
 		return null
 	..()
 
-/mob/living/carbon/human/setDNA()
+/mob/living/human/setDNA()
 	if (species.flags & NO_SCAN)
 		return
 	..()
 
-/mob/living/carbon/human/has_brain()
+/mob/living/human/has_brain()
 	if (internal_organs_by_name["brain"])
 		var/obj/item/organ/brain = internal_organs_by_name["brain"]
 		if (brain && istype(brain))
 			return TRUE
 	return FALSE
 
-/mob/living/carbon/human/has_eyes()
+/mob/living/human/has_eyes()
 	if (internal_organs_by_name["eyes"])
 		var/obj/item/organ/eyes = internal_organs_by_name["eyes"]
 		if (eyes && istype(eyes) && !(eyes.status & ORGAN_CUT_AWAY))
 			return TRUE
 	return FALSE
 
-/mob/living/carbon/human/slip(var/slipped_on, stun_duration=8)
+/mob/living/human/slip(var/slipped_on, stun_duration=8)
 	if ((species.flags & NO_SLIP) || (shoes && (shoes.item_flags & NOSLIP)))
 		return FALSE
 	..(slipped_on,stun_duration)
 
-/mob/living/carbon/human/proc/undislocate()
+/mob/living/human/proc/undislocate()
 	set category = null
 	set name = "Undislocate Joint"
 	set desc = "Pop a joint back into place. Extremely painful."
@@ -967,25 +967,25 @@ var/list/coefflist = list()
 		S << "<span class='danger'>[U] pops your [current_limb.joint] back in!</span>"
 	current_limb.undislocate()
 
-/mob/living/carbon/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
+/mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in organs)
 		return
 	..()
 
-/mob/living/carbon/human/reset_view(atom/A, update_hud = TRUE)
+/mob/living/human/reset_view(atom/A, update_hud = TRUE)
 	..()
 	if (update_hud)
 		handle_regular_hud_updates()
 
 //Puts the item into our active hand if possible. returns TRUE on success.
-/mob/living/carbon/human/put_in_active_hand(var/obj/item/W)
+/mob/living/human/put_in_active_hand(var/obj/item/W)
 	return (hand ? put_in_l_hand(W) : put_in_r_hand(W))
 
 //Puts the item into our inactive hand if possible. returns TRUE on success.
-/mob/living/carbon/human/put_in_inactive_hand(var/obj/item/W)
+/mob/living/human/put_in_inactive_hand(var/obj/item/W)
 	return (hand ? put_in_r_hand(W) : put_in_l_hand(W))
 
-/mob/living/carbon/human/put_in_hands(var/obj/item/W)
+/mob/living/human/put_in_hands(var/obj/item/W)
 	if (!W)
 		return FALSE
 	if (put_in_active_hand(W))
@@ -999,7 +999,7 @@ var/list/coefflist = list()
 	else
 		return ..()
 
-/mob/living/carbon/human/put_in_l_hand(var/obj/item/W)
+/mob/living/human/put_in_l_hand(var/obj/item/W)
 	if (!..() || l_hand)
 		return FALSE
 	W.forceMove(src)
@@ -1010,7 +1010,7 @@ var/list/coefflist = list()
 	update_inv_l_hand()
 	return TRUE
 
-/mob/living/carbon/human/put_in_r_hand(var/obj/item/W)
+/mob/living/human/put_in_r_hand(var/obj/item/W)
 	if (!..() || r_hand)
 		return FALSE
 	W.forceMove(src)
@@ -1021,7 +1021,7 @@ var/list/coefflist = list()
 	update_inv_r_hand()
 	return TRUE
 
-/mob/living/carbon/human/verb/pull_punches()
+/mob/living/human/verb/pull_punches()
 	set name = "Pull Punches"
 	set desc = "Try not to hurt them."
 	set category = "IC"
@@ -1032,7 +1032,7 @@ var/list/coefflist = list()
 	return
 
 //generates realistic-ish pulse output based on preset levels
-/mob/living/carbon/human/proc/get_pulse(var/method)	//method FALSE is for hands, TRUE is for machines, more accurate
+/mob/living/human/proc/get_pulse(var/method)	//method FALSE is for hands, TRUE is for machines, more accurate
 	var/temp = FALSE
 	switch(pulse())
 		if (PULSE_NONE)
@@ -1050,7 +1050,7 @@ var/list/coefflist = list()
 	return "[method ? temp : temp + rand(-10, 10)]"
 //			output for machines^	^^^^^^^output for people^^^^^^^^^
 
-/mob/living/carbon/human/proc/pulse()
+/mob/living/human/proc/pulse()
 	var/obj/item/organ/heart/H = internal_organs_by_name["heart"]
 	if (!H)
 		return PULSE_NONE
@@ -1058,6 +1058,6 @@ var/list/coefflist = list()
 		return H.pulse
 
 
-/mob/living/carbon/human/proc/make_adrenaline(amount)
+/mob/living/human/proc/make_adrenaline(amount)
 	if(stat == CONSCIOUS)
 		reagents.add_reagent("adrenaline", amount)

@@ -24,7 +24,7 @@
 		if (m.lying || m.prone)
 			extra_chance += 60
 		if (ishuman(m))
-			var/mob/living/carbon/human/H = m
+			var/mob/living/human/H = m
 			if (H.crouching && !H.lying)
 				extra_chance += 20
 

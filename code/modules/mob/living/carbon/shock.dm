@@ -1,8 +1,8 @@
 /mob/living/var/traumatic_shock = FALSE
-/mob/living/carbon/var/shock_stage = FALSE
+/mob/living/human/var/shock_stage = FALSE
 
 // proc to find out in how much pain the mob is at the moment
-/mob/living/carbon/proc/updateshock()
+/mob/living/human/proc/updateshock()
 
 	traumatic_shock = 			\
 	1	* getOxyLoss() + 		\
@@ -14,8 +14,8 @@
 	-1	* analgesic
 
 	// broken or ripped off organs will add quite a bit of pain
-	if (istype(src,/mob/living/carbon/human))
-		var/mob/living/carbon/human/M = src
+	if (istype(src,/mob/living/human))
+		var/mob/living/human/M = src
 		for (var/obj/item/organ/external/organ in M.organs)
 			if (organ && (organ.is_broken() || organ.open))
 				traumatic_shock += 30

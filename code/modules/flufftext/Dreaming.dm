@@ -3,7 +3,7 @@ var/list/dreams = list(
 	"Eggs", "Home", "Homeland",
 	)
 
-/mob/living/carbon/proc/dream()
+/mob/living/human/proc/dream()
 	dreaming = TRUE
 
 	spawn(0)
@@ -16,8 +16,8 @@ var/list/dreams = list(
 		dreaming = FALSE
 		return TRUE
 
-/mob/living/carbon/proc/handle_dreams()
+/mob/living/human/proc/handle_dreams()
 	if (client && !dreaming && prob(5))
 		dream()
 
-/mob/living/carbon/var/dreaming = FALSE
+/mob/living/human/var/dreaming = FALSE
