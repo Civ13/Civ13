@@ -29,7 +29,8 @@
 					message = pick(S.speak)
 			else
 				if (language)
-					message = language.scramble(alt_message, src)
+					alt_message = language.scramble(alt_message, src)
+					message = alt_message
 				else
 					message = stars(message)
 
@@ -80,9 +81,9 @@
 				src << "<span class='name'>[alt_name]</span> talks but you cannot hear."
 	else
 		if (language)
-			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]",speaker, language.format_message_overlay(message))
+			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]",speaker, alt_message)
 		else
-			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"",speaker, message)
+			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"",speaker, alt_message)
 		if (speech_sound && (get_dist(speaker, src) <= 7 && z == speaker.z))
 			var/turf/source = speaker? get_turf(speaker) : get_turf(src)
 			playsound_local(source, speech_sound, sound_vol, TRUE)
@@ -101,9 +102,11 @@
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null,var/message2 = "")
 	src << message
 	if (speaker && message2 != "")
-		if (speaker in view(7,src))
-			new/obj/chat_text(speaker,message2)
-
+		if (client && ishuman(speaker) && speaker in view(7,src))
+			if (client && is_preference_enabled(/datum/client_preference/show_chat_overlays))
+				client.screen += new/obj/chat_text(speaker,message2)
+			if (client && is_preference_enabled(/datum/client_preference/play_chat_tts))
+				play_tts(message2)
 /mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/radio/source, var/obj/structure/radio/destination)
 
 	if (!client || !message)
