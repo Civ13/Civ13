@@ -55,7 +55,7 @@ var/global/sound_tts_num = 0
 /mob/proc/play_tts(message)
 	if (!message || message == "" || !client)
 		return
-	voice = tts_voice
+	var/voice = tts_voice
 	sound_tts_num+=1
 	var/genUID = sound_tts_num
 	shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
@@ -72,131 +72,122 @@ var/global/sound_tts_num = 0
 /////AMAZON AWS POLLY VOICES///////////////
 /*
 Arabic (arb)
-
-Zeina	Female
+Zeina		Female
 
 Chinese, Mandarin (cmn-CN)
+Zhiyu		Female
 
-Zhiyu	Female
+Danish (da-DK)
+Naja		Female
+Mads		Male
 
-Danish (da-DK)	
-Naja	Female
-Mads	Male
-
-Dutch (nl-NL)	
-Lotte	Female
-Ruben	Male
+Dutch (nl-NL)
+Lotte		Female
+Ruben		Male
 
 English (Australian) (en-AU)
-
-Nicole	Female
-Russell	Male
+Nicole		Female
+Russell		Male
 
 English (British) (en-GB)
+Amy		Female
+Emma		Female
+Brian		Male
 
-Amy	Female
-Emma	Female
+English (Indian) (en-IN)
+Aditi		Female
+Raveena		Female
 
-Brian	Male
-English (Indian) (en-IN)	
-Aditi*	Female
+English (US) (en-US)
+Ivy		Female (child)
+Joanna		Female
+Kendra		Female
+Kimberly		Female
+Salli		Female
+Joey		Male
+Justin		Male (child)
+Matthew		Male
 
-Raveena	Female
-English (US) (en-US)	
-Ivy	Female (child)
+English (Welsh) (en-GB-WLS)
+Geraint		Male
 
-Joanna**	Female
+French (fr-FR)
+Céline/Celine		Female
+Léa	Femal
+Mathieu		Male
 
-Kendra	Female
+French (Canadian) (fr-CA)
+Chantal		Female
 
-Kimberly	Female
+German (de-DE)
+Marlene		Female
+Vicki		Female
+Hans		Male
 
-Salli	Female
+Hindi (hi-IN)
+Aditi*		Female
 
-Joey	Male
+Icelandic (is-IS)
+Dóra/Dora		Female
+Karl		Male
 
-Justin	Male (child)
+Italian (it-IT)
+Carla		Female
+Bianca		Female
+Giorgio		Male
 
-Matthew**	Male
-English (Welsh) (en-GB-WLS)	
-Geraint	Male
-French (fr-FR)	
-Céline/Celine	Female
+Japanese (ja-JP)
+Mizuki		Female
+Takumi		Male
 
-Léa	Female
+Korean (ko-KR)
+Seoyeon		Female
 
-Mathieu	Male
-French (Canadian) (fr-CA)	
-Chantal	Female
-German (de-DE)	
-Marlene	Female
+Norwegian (nb-NO)
+Liv		Female
 
-Vicki	Female
+Polish (pl-PL)
+Ewa		Female
+Maja		Female
+Jacek		Male
+Jan		Male
 
-Hans	Male
-Hindi (hi-IN)	
-Aditi*	Female
-Icelandic (is-IS)	
-Dóra/Dora	Female
+Portuguese (Brazilian) (pt-BR)
+Camila		Female
+Vitória/Vitoria		Female
+Ricardo		Male
 
-Karl	Male
-Italian (it-IT)	
-Carla	Female
+Portuguese (European) (pt-PT)
+Inês/Ines		Female
+Cristiano		Male
 
-Bianca	Female
+Romanian (ro-RO)
+Carmen		Female
 
-Giorgio	Male
-Japanese (ja-JP)	
-Mizuki	Female
+Russian (ru-RU)
+Tatyana		Female
+Maxim		Male
 
-Takumi	Male
-Korean (ko-KR)	
-Seoyeon	Female
-Norwegian (nb-NO)	
-Liv	Female
-Polish (pl-PL)	
-Ewa	Female
+Spanish (European) (es-ES)
+Conchita		Female
+Lucia		Female
+Enrique		Male
 
-Maja	Female
+Spanish (Mexican) (es-MX)
+Mia		Female
 
-Jacek	Male
+US Spanish (es-US)
+Lupe		Female
+Penelope		Female
+Miguel		Male
 
-Jan	Male
-Portuguese (Brazilian) (pt-BR)	
-Camila	Female
-Vitória/Vitoria	Female
+Swedish (sv-SE)
+Astrid		Female
 
-Ricardo	Male
-Portuguese (European) (pt-PT)	
-Inês/Ines	Female
+Turkish (tr-TR)
+Filiz		Female
 
-Cristiano	Male
-Romanian (ro-RO)	
-Carmen	Female
-Russian (ru-RU)	
-Tatyana	Female
-
-Maxim	Male
-Spanish (European) (es-ES)	
-Conchita	Female
-
-Lucia	Female
-
-Enrique	Male
-Spanish (Mexican) (es-MX)	
-Mia	Female
-US Spanish (es-US)	
-Lupe	Female
-Penelope	Female
-Miguel	Male
-
-Swedish (sv-SE)	
-Astrid	Female
-
-Turkish (tr-TR)	
-Filiz	Female
-
-Welsh (cy-GB)	
-Gwyneth	Female
+Welsh (cy-GB)
+Gwyneth		Female
 
 */
