@@ -59,7 +59,7 @@
 /datum/job/french
 	default_language = "French"
 	additional_languages = list("English" = 10, "Spanish" = 15)
-	male_tts_voice = "Matthieu"
+	male_tts_voice = "Mathieu"
 	female_tts_voice = "Celine"
 
 /datum/job/roman
