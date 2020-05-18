@@ -55,7 +55,8 @@ var/global/sound_tts_num = 0
 /mob/proc/play_tts(message)
 	if (!message || message == "" || !client)
 		return
-	var/voice = tts_voice
+	var/voice = "Matthew"
+
 	sound_tts_num+=1
 	var/genUID = sound_tts_num
 	shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
@@ -68,6 +69,26 @@ var/global/sound_tts_num = 0
 				fdel(fpath)
 		return
 
+/mob/living/human/play_tts(message)
+	if (!message || message == "" || !client)
+		return
+	var/voice = "Matthew"
+	if (original_job)
+		if (gender == MALE)
+			voice = original_job.male_tts_voice
+		else
+			voice = original_job.female_tts_voice
+	sound_tts_num+=1
+	var/genUID = sound_tts_num
+	shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
+	spawn(1)
+		var/fpath = "[genUID].ogg"
+		if (fexists(fpath))
+			if (client)
+				src.playsound_local(loc,fpath,100)
+			spawn(50)
+				fdel(fpath)
+		return
 
 /////AMAZON AWS POLLY VOICES///////////////
 /*

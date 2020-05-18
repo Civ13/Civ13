@@ -105,8 +105,6 @@
 
 	var/targeted_organ = "chest"
 
-	var/tts_voice = "Matthew"
-
 //	var/job = null//Living
 
 	// Job information: this goes here because it copies the mind.assigned_job

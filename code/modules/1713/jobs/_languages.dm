@@ -1,18 +1,25 @@
 /datum/job
 	var/default_language = "Common"
 	var/list/additional_languages = list() // "Name" = probability between 1-100
-
+	var/male_tts_voice = "Matthew"
+	var/female_tts_voice = "Joanna"
 /datum/job/civilian
 	default_language = "English"
 	additional_languages = list()
+	male_tts_voice = "Brian"
+	female_tts_voice = "Amy"
 
 /datum/job/civilian/portuguese
 	default_language = "Portuguese"
 	additional_languages = list("French" = 25, "Spanish" = 35, "English" = 10)
+	male_tts_voice = "Cristiano"
+	female_tts_voice = "Ines"
 
 /datum/job/civilian/spanish
 	default_language = "Spanish"
 	additional_languages = list("Portuguese" = 15, "French" = 25, "English" = 10)
+	male_tts_voice = "Enrique"
+	female_tts_voice = "Lucia"
 
 /datum/job/pirates
 	default_language = "English"
@@ -29,10 +36,14 @@
 /datum/job/portuguese
 	default_language = "Portuguese"
 	additional_languages = list("French" = 25, "Spanish" = 35, "English" = 10)
+	male_tts_voice = "Cristiano"
+	female_tts_voice = "Ines"
 
 /datum/job/spanish
 	default_language = "Spanish"
 	additional_languages = list("Portuguese" = 15, "French" = 25, "English" = 10)
+	male_tts_voice = "Enrique"
+	female_tts_voice = "Lucia"
 
 /datum/job/dutch
 	default_language = "Dutch"
