@@ -77,7 +77,7 @@
 /datum/job/arab
 	default_language = "Arabic"
 	additional_languages = list("French" = 10)
-	male_tts_voice = "Russel" //australian
+	male_tts_voice = "Russell" //australian
 	female_tts_voice = "Zeina"
 
 /datum/job/japanese
