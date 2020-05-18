@@ -65,7 +65,7 @@ var/global/sound_tts_num = 0
 	sound_tts_num+=1
 	var/genUID = sound_tts_num
 	shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
-	spawn(1)
+	spawn(2)
 		var/fpath = "[genUID].ogg"
 		if (fexists(fpath))
 			if (client)
