@@ -60,6 +60,9 @@
 	spawn(5)
 		var/fpath = "tts/[genUID].ogg"
 		if (fexists(fpath))
+			world.log << fpath
 			playsound(src, fpath)
 			fdel(fpath)
+		else
+			world.log << "nope"
 		return
