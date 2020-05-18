@@ -1,5 +1,6 @@
 import os
 
+currdir = os.path.dirname(os.path.abspath(__file__))
 lines = open(os.path.join(currdir,"paths.txt"))
 all_lines = lines.readlines()
 mdir = all_lines[1]
