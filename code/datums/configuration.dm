@@ -62,7 +62,7 @@ var/list/gamemode_cache = list()
 	var/ToRban = FALSE
 	var/automute_on = FALSE					//enables automuting/spam prevention
 
-	var/tts_on = TRUE
+	var/tts_on = FALSE
 	var/guests_allowed = TRUE
 	var/debugparanoid = FALSE
 
@@ -186,7 +186,7 @@ var/list/gamemode_cache = list()
 					no_respawn_delays = text2num(value)
 
 				if ("tts_on")
-					tts_on = value
+					tts_on = text2num(value)
 
 				if ("scripts_directory")
 					if (!list("null", "Null", "NULL", "nil", "Nil", "NILL").Find(value))
