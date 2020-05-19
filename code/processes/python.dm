@@ -19,12 +19,12 @@
 			log_debug("Executing python3 command '[command]'")
 			last = world.realtime
 			if (world.system_type != UNIX)
-				log_debug("mapswap is only available on UNIX hosts!")
+				log_debug("python scripts are only available on UNIX hosts!")
 				return FALSE
 			else
 				return shell("sudo python3 [getScriptDir()]/[command]")
 		else
-			log_debug("python mapswap already running!")
+			log_debug("python script \"[command]\" already running!")
 			return FALSE
 	return FALSE
 
