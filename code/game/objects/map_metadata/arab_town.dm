@@ -1,4 +1,4 @@
-/obj/map_metadata/arab_town
+d/obj/map_metadata/arab_town
 	ID = MAP_ARAB_TOWN
 	title = "Arab Town (100x100x1)"
 	lobby_icon_state = "modern"
@@ -23,7 +23,7 @@
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
+		"Al Qassam:1" = 'sound/music/al_qassam.ogg',)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
 obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
@@ -174,7 +174,7 @@ var/no_loop_arab = FALSE
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
+		"Al Qassam:1" = 'sound/music/al_qassam.ogg',)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
 /obj/map_metadata/arab_town_2/job_enabled_specialcheck(var/datum/job/J)
