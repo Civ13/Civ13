@@ -75,7 +75,8 @@ var/global/sound_tts_num = 0
 		var/fpath = "[genUID].ogg"
 		if (fexists(fpath))
 			if (client)
-				send_rsc(src, file(fpath), "[genUID].ogg")
+				var/FT = send_rsc(src, file(fpath), "[genUID].ogg")
+				client << FT
 //				src.playsound_local(loc,fpath,100)
 			spawn(50)
 				fdel(fpath)
