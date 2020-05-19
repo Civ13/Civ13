@@ -104,7 +104,7 @@
 	if (speaker && message2 != "")
 		if (client && ishuman(speaker) && speaker in view(7,src))
 			if (client && is_preference_enabled(/datum/client_preference/show_chat_overlays))
-				client.screen += new/obj/chat_text(null,speaker,message2,src)
+				client.seen_chat_text += new/obj/chat_text(null,speaker,message2,src)
 			if (config.tts_on && client && ishuman(src) && ishuman(speaker) && is_preference_enabled(/datum/client_preference/play_chat_tts))
 				play_tts(message2,speaker)
 /mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/radio/source, var/obj/structure/radio/destination)
