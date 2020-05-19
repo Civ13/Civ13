@@ -121,7 +121,10 @@
 			if ("fire")
 				health -= W.force * TRUE
 			if ("brute")
-				health -= W.force * 0.20
+				if (istype (W, /obj/item/projectile))
+					health -= W.force * 0.2
+				else
+					health -= W.force * 0.20
 
 	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 	user.do_attack_animation(src)
@@ -138,7 +141,7 @@
 
 
 /obj/structure/wild/bullet_act(var/obj/item/projectile/proj)
-	if (proj.damage > 100 && prob(33)) // makes shrapnel unable to take down trees
+	if (proj.damage > 200 && prob(33)) // makes shrapnel unable to take down trees
 		visible_message("<span class = 'danger'>[src] collapses!</span>")
 		qdel(src)
 	else if (istype(proj, /obj/item/projectile/shell))

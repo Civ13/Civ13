@@ -339,7 +339,38 @@
 	desc = "A cap worn by russian army officers."
 	icon_state = "rusoffcap"
 	item_state = "rusoffcap"
-
+/obj/item/weapon/storage/belt/russian
+	name = "RussianSoldier belt"
+	desc = "A belt that can hold gear like pistols, ammo and other things."
+	icon_state = "japbelt"
+	item_state = "japbelt"
+	storage_slots = 12
+	max_w_class = 3
+	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/shovel,
+		/obj/item/weapon/key,
+		/obj/item/weapon/melee/classic_baton
+		)
+/obj/item/weapon/storage/belt/russian/soldier
+/obj/item/weapon/storage/belt/russian/soldier/New()
+	..()
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
 /obj/item/weapon/storage/belt/jap
 	name = "Japanese Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."

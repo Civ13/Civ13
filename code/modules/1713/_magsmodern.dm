@@ -254,3 +254,13 @@
 	max_ammo = 20
 	weight = 0.5
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/sks
+	name = "clip (7.62x39mm)"
+	icon_state = "clip"
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 5
+	weight = 0.04
+	multiple_sprites = TRUE
+	clip = TRUE
