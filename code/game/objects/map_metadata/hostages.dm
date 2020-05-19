@@ -25,7 +25,7 @@
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
+		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
 	artillery_count = 0
 
 	var/total_hostages = 6
