@@ -47,12 +47,12 @@
 */
 		message = image(loc = origin_loc)
 		message.plane = CHAT_PLANE
-		message.maptext_width = TILE_SIZE*ceil(11*0.5)
-		message.maptext_x = -(maptext_width-TILE_SIZE)*0.5
+		message.maptext_width = TILE_SIZE*7
+		message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
 		message.maptext_y = TILE_SIZE*0.75
 		message.maptext = "<center>[desired_text]</center>"
 		target.images += message
-		spawn(100)
+		spawn(50)
 			animate(src,alpha=0,time=10)
 			sleep(10)
 			if(src)
