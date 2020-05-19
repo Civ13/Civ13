@@ -30,6 +30,7 @@
 	loc = null
 	if(isliving(origin_loc) && origin_loc.client && target_mob && target_mob.client)
 		owner = origin_loc.client
+		target = target_mob.client
 		if (!owner)
 			return
 
