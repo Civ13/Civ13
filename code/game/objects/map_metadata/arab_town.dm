@@ -1,4 +1,4 @@
-d/obj/map_metadata/arab_town
+/obj/map_metadata/arab_town
 	ID = MAP_ARAB_TOWN
 	title = "Arab Town (100x100x1)"
 	lobby_icon_state = "modern"
