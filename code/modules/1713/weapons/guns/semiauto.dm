@@ -195,7 +195,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x39
 	damage_modifier = 1.2
 	slot_flags = SLOT_SHOULDER
-	magazine_type = /obj/item/ammo_magazine/mosin
+	magazine_type = /obj/item/ammo_magazine/sks
 	weight = 3.85
 	firemodes = list(
 		list(name="single shot",burst=1, move_delay=2, fire_delay=4)
