@@ -33,18 +33,14 @@
 		target = target_mob.client
 		if (!owner)
 			return
-
+		for (var/obj/chat_text/CT in owner.stored_chat_text)
+			if (CT.target)
+				CT.target.seen_chat_text -= CT
+				CT.target.images -= CT.message
+			owner.stored_chat_text -= CT
+			qdel(CT)
 		owner.stored_chat_text += src
 
-/*
-		//check the owner location in relation to who it is displayed to
-		var/base_x = target_mob.x-8
-		var/base_y = target_mob.y-8
-
-		if (abs(origin_loc.x-base_x)>9 || abs(origin_loc.y-base_y)>9)
-			qdel(src)
-		screen_loc = "[origin_loc.x-base_x],[origin_loc.y-base_y]"
-*/
 		message = image(loc = origin_loc)
 		message.plane = CHAT_PLANE
 		message.maptext_width = TILE_SIZE*7
@@ -70,6 +66,8 @@
 var/global/sound_tts_num = 0
 
 /mob/proc/play_tts(message,var/mob/living/human/speaker)
+	if (world.system_type != UNIX)
+		return
 	if (!message || message == "" || !client || !speaker)
 		return
 	var/voice = "Matthew"
