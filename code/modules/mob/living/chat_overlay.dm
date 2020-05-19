@@ -1,4 +1,4 @@
-//mostly ported from BurgerStation, 17/05/2020
+//overlay chat mostly ported from BurgerStation, 17/05/2020
 
 #define TILE_SIZE 32
 
@@ -10,7 +10,6 @@
 	name = "overlay"
 	desc = "overlay object"
 	plane = CHAT_PLANE
-
 	icon = null
 
 	var/mob/living/owner
@@ -21,18 +20,22 @@
 		owner = null
 	return ..()
 
-/obj/chat_text/New(var/atom/desired_loc,var/desired_text)
-
-	if(isliving(desired_loc))
-		owner = desired_loc
+/obj/chat_text/New(var/atom/desired_loc,var/atom/origin_loc, var/desired_text, var/mob/target)
+	..()
+	loc = null
+	if(isliving(origin_loc) && target && target.client)
+		owner = origin_loc
 		if (!owner.client)
 			return
 		for(var/obj/chat_text/CT in owner.client.stored_chat_text)
 			qdel(CT)
 
 		owner.client.stored_chat_text += src
+		//check the owner location in relation to who it is displayed to
+		var/base_x = target.x-8
+		var/base_y = target.y-8
 
-		forceMove(get_turf(desired_loc))
+		screen_loc = "[origin_loc.x-base_x],[origin_loc.y-base_y]"
 
 		maptext_width = TILE_SIZE*ceil(11*0.5)
 		maptext_x = -(maptext_width-TILE_SIZE)*0.5
@@ -43,9 +46,12 @@
 			animate(src,alpha=0,time=10)
 			sleep(10)
 			if(src)
+				if (target && target.client)
+					target.client.screen -= src
+				if (owner && owner.client)
+					owner.client.stored_chat_text -= src
 				qdel(src)
 
-		return ..()
 	else
 		qdel(src)
 
