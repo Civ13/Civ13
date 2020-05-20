@@ -74,7 +74,8 @@
 	set desc = "Name this animal."
 
 	set src in view(1)
-
+	if (!istype(usr, /mob/living/human))
+		return
 	var/mob_factions = "none"
 	if (istype(usr, /mob/living/human))
 		var/mob/living/human/H = usr

@@ -17,3 +17,4 @@ scripts/modtimetest.py
 scripts/restartciv13.py
 scripts/killciv13.py
 scripts/killsudos.py
+scripts/clear_oggs.py
