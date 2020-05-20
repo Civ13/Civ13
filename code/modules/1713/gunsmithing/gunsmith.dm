@@ -340,22 +340,22 @@
 	else if (choice_caliber == "shotgun")
 		current_gun.caliber = "12gauge"
 		current_gun.ammo_type = /obj/item/ammo_casing/shotgun
-	else if (choice == "8mm large rifle")
+	else if (choice_caliber == "8mm large rifle")
 		current_gun.caliber = "a792x57"
 		current_gun.ammo_type = /obj/item/ammo_casing/a792x57
-	else if (choice == "6.5mm small rifle")
+	else if (choice_caliber == "6.5mm small rifle")
 		current_gun.caliber = "a65x50"
 		current_gun.ammo_type = /obj/item/ammo_casing/a65x50
-	else if (choice == ".45 pistol")
+	else if (choice_caliber == ".45 pistol")
 		current_gun.caliber = "a45"
 		current_gun.ammo_type = /obj/item/ammo_casing/a45
-	else if (choice == "9mm pistol")
+	else if (choice_caliber == "9mm pistol")
 		current_gun.caliber = "a9x19"
 		current_gun.ammo_type = /obj/item/ammo_casing/a9x19
-	else if (choice == "7.5mm intermediate rifle")
+	else if (choice_caliber == "7.5mm intermediate rifle")
 		current_gun.caliber = "a762x39"
 		current_gun.ammo_type = /obj/item/ammo_casing/a762x39
-	else if (choice == "5.5mm intermediate rifle")
+	else if (choice_caliber == "5.5mm intermediate rifle")
 		current_gun.caliber = "a556x45"
 		current_gun.ammo_type = /obj/item/ammo_casing/a556x45
 		current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
