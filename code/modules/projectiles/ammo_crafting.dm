@@ -313,9 +313,9 @@
 		else if (input == ".44-40 Winchester")
 			resultpath = /obj/item/ammo_casing/a44
 		else if (input == ".45 pistol")
-			resultpath = /obj/item/ammo_casing/pistol45
+			resultpath = /obj/item/ammo_casing/a45
 		else if (input == "9mm pistol")
-			resultpath = /obj/item/ammo_casing/pistol9
+			resultpath = /obj/item/ammo_casing/a9x19
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
@@ -354,16 +354,16 @@
 			resultpath = /obj/item/ammo_casing/a765x53
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "8mm large rifle")
-			resultpath = /obj/item/ammo_casing/largerifle
+			resultpath = /obj/item/ammo_casing/a792x57
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "6.5mm small rifle")
-			resultpath = /obj/item/ammo_casing/smallrifle
+			resultpath = /obj/item/ammo_casing/a65x50
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "7.5mm intermediate rifle")
-			resultpath = /obj/item/ammo_casing/intermediumrifle
+			resultpath = /obj/item/ammo_casing/a762x39
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "5.5mm intermediate rifle")
-			resultpath = /obj/item/ammo_casing/smallintermediumrifle
+			resultpath = /obj/item/ammo_casing/a556x45
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 			for(var/i=1;i<=amount;i++)

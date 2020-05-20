@@ -24,7 +24,7 @@
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK+1
-	weakens = 5
+	weakens = 3
 	flammable = TRUE
 
 /obj/item/weapon/melee/nightbaton
