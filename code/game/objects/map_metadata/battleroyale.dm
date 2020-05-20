@@ -88,7 +88,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 1)
 	battle_name = "Battleroyale at Arab Town"
-	mission_start_message = "<font size=4><b>Last standing player wins!</b></font>"
+	mission_start_message = "<font size=4><b>Last standing player wins!</b><br> TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
 
 /obj/map_metadata/battleroyale/two/job_enabled_specialcheck(var/datum/job/J)
 
