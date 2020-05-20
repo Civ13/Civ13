@@ -9,6 +9,4 @@ scripts/copiedfolderpaths.txt
 scripts/copyconfigfiles.py
 scripts/launch.py
 scripts/mapswap.py
-scripts/killciv13.py
-scripts/killsudos.py
 scripts/clear_oggs.py
