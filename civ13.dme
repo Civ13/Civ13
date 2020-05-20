@@ -940,5 +940,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\nomads\nomads.dmm"
+#include "maps\special\battleroyale_2.dmm"
 // END_INCLUDE
