@@ -66,8 +66,6 @@
 var/global/sound_tts_num = 0
 
 /mob/proc/play_tts(message,var/mob/living/human/speaker)
-	if (world.system_type != UNIX)
-		return
 	if (!message || message == "" || !client || !speaker)
 		return
 	var/voice = "Matthew"
@@ -79,7 +77,10 @@ var/global/sound_tts_num = 0
 		voice = speaker.original_job.female_tts_voice
 	sound_tts_num+=1
 	var/genUID = sound_tts_num
-	shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
+	if (world.system_type != UNIX)
+		shell("python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
+	else
+		shell("sudo python3 tts/amazontts.py \"[message]\" [voice] [genUID]")
 	spawn(2)
 		var/fpath = "[genUID].ogg"
 		if (fexists(fpath))

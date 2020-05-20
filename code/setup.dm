@@ -87,7 +87,7 @@
 	if (fexists(F5) && world.system_type == UNIX)
 		shell("sudo python3 scripts/clear_oggs.py")
 	else if (fexists(F5) && world.system_type != UNIX)
-		admin_notice("<span class='danger'>The ogg cleaner script is only available on UNIX.</span>", R_DEBUG)
+		shell("python3 scripts/windows/clear_oggs.py")
 	else
 		admin_notice("<span class='danger'>Failed to find the ogg cleaner script!</span>", R_DEBUG)
 	sleep(-1)

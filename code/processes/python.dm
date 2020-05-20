@@ -19,8 +19,7 @@
 			log_debug("Executing python3 command '[command]'")
 			last = world.realtime
 			if (world.system_type != UNIX)
-				log_debug("python scripts are only available on UNIX hosts!")
-				return FALSE
+				return shell("python3 [getScriptDir()]/windows/[command]")
 			else
 				return shell("sudo python3 [getScriptDir()]/[command]")
 		else
