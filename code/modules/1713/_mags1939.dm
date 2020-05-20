@@ -34,7 +34,7 @@
 
 obj/item/ammo_magazine/type100
 	name = "Type 100 Magazine"
-	icon_state = "pps"
+	icon_state = "type100"
 	mag_type = MAGAZINE
 	caliber = "c8mmnambu"
 	ammo_type = /obj/item/ammo_casing/c8mmnambu

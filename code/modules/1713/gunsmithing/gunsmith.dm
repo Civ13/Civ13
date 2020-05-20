@@ -97,28 +97,28 @@
 			P.caliber = null
 
 			if (choice == "8mm large rifle")
-				P.caliber = "largerifle"
-				P.ammo_type = /obj/item/ammo_casing/largerifle
+				P.caliber = "a792x57"
+				P.ammo_type = /obj/item/ammo_casing/a792x57
 
 			else if (choice == "6.5mm small rifle")
-				P.caliber = "smallrifle"
-				P.ammo_type = /obj/item/ammo_casing/smallrifle
+				P.caliber = "a65x50"
+				P.ammo_type = /obj/item/ammo_casing/a65x50
 
 			else if (choice == ".45 pistol")
-				P.caliber = "pistol45"
-				P.ammo_type = /obj/item/ammo_casing/pistol45
+				P.caliber = "a45"
+				P.ammo_type = /obj/item/ammo_casing/a45
 
 			else if (choice == "9mm pistol")
-				P.caliber = "pistol9"
-				P.ammo_type = /obj/item/ammo_casing/pistol9
+				P.caliber = "a9x19"
+				P.ammo_type = /obj/item/ammo_casing/a9x19
 
 			else if (choice == "7.5mm intermediate rifle")
-				P.caliber = "intermediumrifle"
-				P.ammo_type = /obj/item/ammo_casing/intermediumrifle
+				P.caliber = "a762x39"
+				P.ammo_type = /obj/item/ammo_casing/a762x39
 
 			else if (choice == "5.5mm intermediate rifle")
-				P.caliber = "smallintermediumrifle"
-				P.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
+				P.caliber = "a556x45"
+				P.ammo_type = /obj/item/ammo_casing/a556x45
 
 			P.effectiveness_mod *= 0.9
 			if (!findtext(P.name,"(rechambered)"))
@@ -340,30 +340,26 @@
 	else if (choice_caliber == "shotgun")
 		current_gun.caliber = "12gauge"
 		current_gun.ammo_type = /obj/item/ammo_casing/shotgun
-
-	else if (choice_caliber == "8mm large rifle")
-		current_gun.caliber = "largerifle"
-		current_gun.ammo_type = /obj/item/ammo_casing/largerifle
-
-	else if (choice_caliber == "6.5mm small rifle")
-		current_gun.caliber = "smallrifle"
-		current_gun.ammo_type = /obj/item/ammo_casing/smallrifle
-
-	else if (choice_caliber == ".45 pistol")
-		current_gun.caliber = "pistol45"
-		current_gun.ammo_type = /obj/item/ammo_casing/pistol45
-
-	else if (choice_caliber == "9mm pistol")
-		current_gun.caliber = "pistol9"
-		current_gun.ammo_type = /obj/item/ammo_casing/pistol9
-
-	else if (choice_caliber == "7.5mm intermediate rifle")
-		current_gun.caliber = "intermediumrifle"
-		current_gun.ammo_type = /obj/item/ammo_casing/intermediumrifle
-
-	else if (choice_caliber == "5.5mm intermediate rifle")
-		current_gun.caliber = "smallintermediumrifle"
+	else if (choice == "8mm large rifle")
+		current_gun.caliber = "a792x57"
+		current_gun.ammo_type = /obj/item/ammo_casing/a792x57
+	else if (choice == "6.5mm small rifle")
+		current_gun.caliber = "a65x50"
+		current_gun.ammo_type = /obj/item/ammo_casing/a65x50
+	else if (choice == ".45 pistol")
+		current_gun.caliber = "a45"
+		current_gun.ammo_type = /obj/item/ammo_casing/a45
+	else if (choice == "9mm pistol")
+		current_gun.caliber = "a9x19"
+		current_gun.ammo_type = /obj/item/ammo_casing/a9x19
+	else if (choice == "7.5mm intermediate rifle")
+		current_gun.caliber = "a762x39"
+		current_gun.ammo_type = /obj/item/ammo_casing/a762x39
+	else if (choice == "5.5mm intermediate rifle")
+		current_gun.caliber = "a556x45"
+		current_gun.ammo_type = /obj/item/ammo_casing/a556x45
 		current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
+
 	var/do_skn_override = WWinput(user, "Do you want to give this gun a different appearance or keep the default look?", "Gunsmithing", "Keep", list("Keep","Change"))
 	if (do_skn_override == "Change")
 		var/list/possible_list = list("Cancel")
@@ -1194,8 +1190,8 @@
 			handle_casings = EJECT_CASINGS
 			load_method = MAGAZINE
 			if (receiver_type == "Semi-Auto (small)")
-				if (caliber == "pistol9")
-					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+				if (caliber == "a9x19")
+					magazine_type = /obj/item/ammo_casing/a9x19
 				else
 					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
 		if ("Tubular")
