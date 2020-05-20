@@ -8,13 +8,7 @@ scripts/copiedconfigpaths.txt
 scripts/copiedfolderpaths.txt
 scripts/copyconfigfiles.py
 scripts/launch.py
-scripts/updateserver.py
 scripts/mapswap.py
-scripts/restartinactiveserver.py
-scripts/updateserverabspaths.py
-scripts/updateserverabspathsnogitpull.py
-scripts/modtimetest.py
-scripts/restartciv13.py
 scripts/killciv13.py
 scripts/killsudos.py
 scripts/clear_oggs.py
