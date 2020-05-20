@@ -52,4 +52,4 @@ t2 = time.time() - t1
 print("Finished updating all directories in {} seconds".format(t2))
 
 print("Started server on port {}.".format(port))
-os.system("{}/bin/dreamdaemon.exe {}{}civ13.dmb {} -trusted -logself -webclient &".format(byonddir,mdir,cdir,port))
+os.system("{}/bin/dreamdaemon.exe {}{}civ13.dmb {} -trusted -logself -webclient".format(byonddir,mdir,cdir,port))
