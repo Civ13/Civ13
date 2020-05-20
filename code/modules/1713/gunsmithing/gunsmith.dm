@@ -57,32 +57,32 @@
 				caliber_options = list("shotgun","Cancel")
 
 			if ("Bolt-Action","Semi-Auto (large)")
-				caliber_options = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+				caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 			if ("Open-Bolt (large)")
-				caliber_options = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+				caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
 				caliber_options = list("9mm pistol",".45 pistol","Cancel")
 
 			if ("Dual Selective Fire", "Triple Selective Fire")
-				caliber_options = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+				caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 		if (PC.feeding_type == "Internal Magazine (Removable)")
 			caliber_options = list("9mm pistol",".45 pistol","Cancel")
 	//others
 	else if (istype(P, /obj/item/weapon/gun/projectile/automatic))
-		caliber_options = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+		caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 	else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
-		caliber_options = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+		caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 	else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
-		caliber_options = list("6.5mm small rifle","5.5mm intermediate rifle","Cancel")
+		caliber_options = list("6.5x50mm small rifle","5.56x45mm intermediate rifle","Cancel")
 	else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
 		caliber_options = list("9mm pistol",".45 pistol","Cancel")
 	else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
-		caliber_options = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+		caliber_options = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 	else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
-		caliber_options = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+		caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 	else
 		caliber_options = list("Cancel")
 
@@ -96,11 +96,11 @@
 			H << "You successfully convert \the [P]."
 			P.caliber = null
 
-			if (choice == "8mm large rifle")
+			if (choice == "7.92x57mm large rifle")
 				P.caliber = "a792x57"
 				P.ammo_type = /obj/item/ammo_casing/a792x57
 
-			else if (choice == "6.5mm small rifle")
+			else if (choice == "6.5x50mm small rifle")
 				P.caliber = "a65x50"
 				P.ammo_type = /obj/item/ammo_casing/a65x50
 
@@ -112,11 +112,11 @@
 				P.caliber = "a9x19"
 				P.ammo_type = /obj/item/ammo_casing/a9x19
 
-			else if (choice == "7.5mm intermediate rifle")
+			else if (choice == "7.62x39mm intermediate rifle")
 				P.caliber = "a762x39"
 				P.ammo_type = /obj/item/ammo_casing/a762x39
 
-			else if (choice == "5.5mm intermediate rifle")
+			else if (choice == "5.56x45mm intermediate rifle")
 				P.caliber = "a556x45"
 				P.ammo_type = /obj/item/ammo_casing/a556x45
 
@@ -317,16 +317,16 @@
 			caliberlist = list("shotgun","Cancel")
 
 		if ("Bolt-Action","Semi-Auto (large)")
-			caliberlist = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+			caliberlist = list("7.92x57mm large rifle","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 		if ("Open-Bolt (large)")
-			caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+			caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 		if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
 			caliberlist = list("9mm pistol",".45 pistol","Cancel")
 
 		if ("Dual Selective Fire", "Triple Selective Fire")
-			caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+			caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 	if (choice_feeding == "Internal Magazine (Removable)")
 		caliberlist = list("9mm pistol",".45 pistol","Cancel")
@@ -340,10 +340,10 @@
 	else if (choice_caliber == "shotgun")
 		current_gun.caliber = "12gauge"
 		current_gun.ammo_type = /obj/item/ammo_casing/shotgun
-	else if (choice_caliber == "8mm large rifle")
+	else if (choice_caliber == "7.92x57mm large rifle")
 		current_gun.caliber = "a792x57"
 		current_gun.ammo_type = /obj/item/ammo_casing/a792x57
-	else if (choice_caliber == "6.5mm small rifle")
+	else if (choice_caliber == "6.5x50mm small rifle")
 		current_gun.caliber = "a65x50"
 		current_gun.ammo_type = /obj/item/ammo_casing/a65x50
 	else if (choice_caliber == ".45 pistol")
@@ -352,13 +352,12 @@
 	else if (choice_caliber == "9mm pistol")
 		current_gun.caliber = "a9x19"
 		current_gun.ammo_type = /obj/item/ammo_casing/a9x19
-	else if (choice_caliber == "7.5mm intermediate rifle")
+	else if (choice_caliber == "7.62x39mm intermediate rifle")
 		current_gun.caliber = "a762x39"
 		current_gun.ammo_type = /obj/item/ammo_casing/a762x39
-	else if (choice_caliber == "5.5mm intermediate rifle")
+	else if (choice_caliber == "5.56x45mm intermediate rifle")
 		current_gun.caliber = "a556x45"
 		current_gun.ammo_type = /obj/item/ammo_casing/a556x45
-		current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
 
 	var/do_skn_override = WWinput(user, "Do you want to give this gun a different appearance or keep the default look?", "Gunsmithing", "Keep", list("Keep","Change"))
 	if (do_skn_override == "Change")
@@ -1208,7 +1207,7 @@
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine/small
 			if (receiver_type == "Semi-Auto (small)")
-				if (caliber == "pistol9")
+				if (caliber == "a9x19")
 					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
 				else
 					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
@@ -1248,23 +1247,23 @@
 		if ("12gauge")
 			tempdesc = "12 gauge"
 
-		if ("largerifle")
-			tempdesc = "8mm large rifle rounds"
+		if ("a792x57")
+			tempdesc = "7.92x57mm large rifle rounds"
 
-		if ("smallrifle")
-			tempdesc = "6.5mm small rifle rounds"
+		if ("a65x50")
+			tempdesc = "6.5x50mm small rifle rounds"
 
-		if ("pistol45")
+		if ("a45")
 			tempdesc = ".45 pistol rounds"
 
-		if ("pistol9")
+		if ("a9x19")
 			tempdesc = "9mm pistol rounds"
 
-		if ("intermediumrifle")
-			tempdesc = "7.5mm intermediate rifle rounds"
+		if ("a762x39")
+			tempdesc = "7.62x39mm intermediate rifle rounds"
 
-		if ("smallintermediumrifle")
-			tempdesc = "5.5mm intermediate rifle rounds"
+		if ("a556x45")
+			tempdesc = "5.56x45mm intermediate rifle rounds"
 
 	desc = "A gun chambered in [tempdesc]. The feed system is [lowertext(feeding_type)]."
 	if (!firemodes.len)

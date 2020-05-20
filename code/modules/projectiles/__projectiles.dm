@@ -540,35 +540,3 @@ obj/item/projectile/bullet/rifle/a556x45
 	agony = 100
 	embed = FALSE
 	sharp = FALSE
-
-
-//generic calibers for custom weapons
-/obj/item/projectile/bullet/rifle/largerifle
-	damage = DAMAGE_VERY_HIGH + 46
-	penetrating = 1
-	armor_penetration = 36
-
-/obj/item/projectile/bullet/rifle/smallrifle
-	damage = DAMAGE_VERY_HIGH + 12
-	penetrating = 1
-	armor_penetration = 28
-
-/obj/item/projectile/bullet/pistol/pistol45
-	damage = DAMAGE_HIGH + 1
-	penetrating = 1
-	armor_penetration = 5
-
-/obj/item/projectile/bullet/pistol/pistol9
-	damage = DAMAGE_LOW
-	penetrating = 1
-	armor_penetration = 8
-
-/obj/item/projectile/bullet/rifle/intermediumrifle
-	damage = DAMAGE_HIGH + 8
-	penetrating = 1
-	armor_penetration = 21
-
-obj/item/projectile/bullet/rifle/smallintermediumrifle
-	damage = DAMAGE_HIGH - 8
-	penetrating = 1
-	armor_penetration = 17

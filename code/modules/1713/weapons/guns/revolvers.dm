@@ -258,8 +258,6 @@
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/coltnewpolice/standardized
-	ammo_type = /obj/item/ammo_casing/pistol9
-	caliber = "pistol9"
 
 /obj/item/weapon/gun/projectile/revolver/enfieldno2
 	name = "Enfield No. 2"
