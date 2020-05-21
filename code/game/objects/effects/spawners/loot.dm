@@ -32,5 +32,10 @@
 
 /obj/effect/spawner/lootdrop/accessories
 	name = "accessory spawner"
-	loot = list(/obj/item/clothing/accessory/storage/webbing/light,/obj/item/clothing/accessory/storage/webbing/largepouchestan,/obj/item/clothing/accessory/storage/webbing/green_webbing,/obj/item/clothing/accessory/storage/webbing/us_vest,/obj/item/clothing/accessory/storage/webbing/ww1/british,/obj/item/weapon/storage/belt/leather,/obj/item/weapon/storage/belt/medical/full_us,/obj/item/weapon/storage/belt/tactical,/obj/item/weapon/storage/belt/utility,/obj/item/weapon/storage/backpack/civbag,/obj/item/weapon/storage/backpack/rucksack,/obj/item/weapon/storage/backpack/scavpack,/obj/item/weapon/storage/backpack/ww2/jap)
+	loot = list(/obj/item/clothing/accessory/storage/webbing/light,/obj/item/clothing/accessory/storage/webbing/largepouchestan,/obj/item/clothing/accessory/storage/webbing/green_webbing,/obj/item/clothing/accessory/storage/webbing/us_vest,/obj/item/clothing/accessory/storage/webbing/ww1/british,/obj/item/weapon/storage/belt/leather,/obj/item/weapon/storage/belt/medical/full_us,/obj/item/weapon/storage/belt/tactical,/obj/item/weapon/storage/belt/utility,/obj/item/weapon/storage/backpack/civbag,/obj/item/weapon/storage/backpack/rucksack,/obj/item/weapon/storage/backpack/scavpack,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/clothing/mask/gas/modern2,/obj/item/clothing/mask/gas/modern,/obj/item/clothing/mask/gas/military)
+	nr = 2
+
+/obj/effect/spawner/lootdrop/explosives
+	name = "explosives spawner"
+	loot = list(/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/flashbang/m84,/obj/item/weapon/grenade/incendiary/anm14,/obj/item/weapon/grenade/chemical/mustard,/obj/item/weapon/grenade/chemical/chlorine,/obj/item/weapon/grenade/coldwar/m67,/obj/item/weapon/grenade/ww2/stg1924)
 	nr = 2
