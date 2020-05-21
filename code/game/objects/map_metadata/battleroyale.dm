@@ -59,11 +59,12 @@
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
 /obj/map_metadata/battleroyale/update_win_condition()
-	if (world.time >= 36000)
+	if (world.time >= 18000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		message = "One hour has passed! The combat has ended in a stalemate!"
+		processes.python.execute("mapswap.py", "BATTLEROYALE_2")
+		message = "30 minutes have passed! The combat has ended in a stalemate!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
@@ -78,6 +79,8 @@
 						world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
+			if (config.allowedgamemodes == "BR")
+				processes.python.execute("mapswap.py", "BATTLEROYALE_2")
 			return FALSE
 
 

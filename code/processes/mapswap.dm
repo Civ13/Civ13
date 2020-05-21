@@ -57,6 +57,7 @@
 				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
 		else if (config.allowedgamemodes == "BR")
+			ready = FALSE
 			processes.python.execute("mapswap.py", "BATTLEROYALE_2")
 			return
 		ready = FALSE
@@ -64,8 +65,9 @@
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
-
-	if (ready)
+	if (config.allowedgamemodes == "BR")
+		. = FALSE
+	else if (ready)
 		if (admin_triggered)
 			. = TRUE
 		// round will end soon (tm)
@@ -223,8 +225,9 @@
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
-
-	if (ready)
+	if (config.allowedgamemodes == "BR")
+		. = FALSE
+	else if (ready)
 		if (admin_triggered)
 			. = TRUE
 		// round will end soon (tm)
