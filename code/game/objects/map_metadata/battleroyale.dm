@@ -25,7 +25,7 @@
 	faction2 = CIVILIAN
 	var/message = ""
 	gamemode = "Battleroyale"
-
+	required_players = 6
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
 
 	..()
