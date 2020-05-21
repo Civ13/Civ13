@@ -14,7 +14,7 @@
 
 /obj/effect/spawner/lootdrop/guns
 	name = "gun spawner"
-	loot = list(/obj/item/weapon/gun/projectile/pistol/glock17,/obj/item/weapon/gun/projectile/pistol/m1911,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/semiautomatic/m1garand,/obj/item/weapon/gun/projectile/automatic/mg34,/obj/item/weapon/gun/projectile/submachinegun/type100,/obj/item/weapon/gun/projectile/submachinegun/ak47)
+	loot = list(/obj/item/weapon/gun/projectile/pistol/glock17,/obj/item/weapon/gun/projectile/pistol/m1911,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/semiautomatic/svd,/obj/item/weapon/gun/projectile/automatic/m249,/obj/item/weapon/gun/projectile/submachinegun/p90,/obj/item/weapon/gun/projectile/submachinegun/ak47)
 
 /obj/effect/spawner/lootdrop/melee
 	name = "melee spawner"
@@ -22,7 +22,7 @@
 
 /obj/effect/spawner/lootdrop/ammo
 	name = "ammo spawner"
-	loot = list(/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/type100,/obj/item/ammo_magazine/mg34,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/garand)
+	loot = list(/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/p90,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/svd)
 	nr = 2
 
 /obj/effect/spawner/lootdrop/armor
