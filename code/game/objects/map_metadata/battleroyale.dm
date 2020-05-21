@@ -120,7 +120,7 @@
 	return .
 
 /obj/map_metadata/battleroyale/two/proc/closing_areas()
-	if (processes.ticker.playtime_elapsed < 3600)
+	if (processes.ticker.playtime_elapsed < 2400)
 		spawn(600)
 			closing_areas()
 		return
@@ -251,7 +251,7 @@
 /obj/screen/areashow
 	maptext = "<center>Unknown Area</center>"
 	maptext_width = 32*8
-	maptext_x = (32*8 * -0.5)
+	maptext_x = (32*8 * -0.5)+32
 	maptext_y = 32*0.75
 	icon_state = "blank"
 
@@ -274,5 +274,5 @@
 		maptext = "<center>[parea.name] ([parentmob.x],[parentmob.y])</center>"
 	else
 		maptext = "<center>Unknown Area</center>"
-	spawn(50)
+	spawn(20)
 		update()
