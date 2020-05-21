@@ -483,17 +483,17 @@
 //clothes
 	var/randcloth = rand(1,6)
 	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern1(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
 	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
 	else if (randcloth == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern4(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(H), slot_w_uniform)
 	else if (randcloth == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern8(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
 	else if (randcloth == 6)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern7(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 
 //bandages
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)

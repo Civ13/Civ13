@@ -124,7 +124,7 @@
 		spawn(600)
 			closing_areas()
 		return "too early to close areas"
-	var/list/all_areas = list(list("one","two","three","four","five","six"))
+	var/list/all_areas = list("one","two","three","four","five","six")
 	var/list/possible_areas = all_areas
 	if (closed_areas.len)
 		for (var/i in closed_areas)
