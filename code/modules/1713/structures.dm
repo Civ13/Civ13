@@ -201,7 +201,7 @@
 	name = "sofa"
 	desc = "A sofa."
 	icon = 'icons/obj/junk.dmi'
-	icon_state = "sofa"
+	icon_state = "sofa_forward_left"
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -210,7 +210,7 @@
 	anchored = TRUE
 
 /obj/structure/props/sofa/p2
-	icon_state = "sofa2"
+	icon_state = "sofa_forward_right"
 
 /obj/structure/props/sofa/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
 	if (istype(mover, /obj/item/projectile))

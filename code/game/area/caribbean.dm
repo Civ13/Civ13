@@ -309,7 +309,7 @@
 	base_turf = /turf/floor/dirt
 
 /area/caribbean/no_mans_land/battleroyale/one
-	name = "Area 1"
+	name = "North-Western Area"
 	icon_state = "red1"
 	base_turf = /turf/floor/dirt
 
@@ -317,40 +317,74 @@
 	location = AREA_INSIDE
 	icon_state = "purple1"
 
+/area/caribbean/no_mans_land/battleroyale/one/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/one/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
 /area/caribbean/no_mans_land/battleroyale/two
-	name = "Area 2"
+	name = "North-Eastern Area"
 	icon_state = "blue1"
 	base_turf = /turf/floor/dirt
 /area/caribbean/no_mans_land/battleroyale/two/inside
 	location = AREA_INSIDE
 	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/two/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/two/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
 /area/caribbean/no_mans_land/battleroyale/three
-	name = "Area 3"
+	name = "Western Area"
 	icon_state = "green1"
 	base_turf = /turf/floor/dirt
 /area/caribbean/no_mans_land/battleroyale/three/inside
 	location = AREA_INSIDE
 	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/three/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/three/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
 /area/caribbean/no_mans_land/battleroyale/four
-	name = "Area 4"
+	name = "Eastern Area"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
 /area/caribbean/no_mans_land/battleroyale/four/inside
 	location = AREA_INSIDE
 	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/four/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/four/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
 /area/caribbean/no_mans_land/battleroyale/five
-	name = "Area 5"
+	name = "South-Western Area"
 	icon_state = "red2"
 /area/caribbean/no_mans_land/battleroyale/five/inside
 	location = AREA_INSIDE
 	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/five/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/five/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
 /area/caribbean/no_mans_land/battleroyale/six
-	name = "Area 6"
+	name = "South-Eastern Area"
 	icon_state = "blue2"
 /area/caribbean/no_mans_land/battleroyale/six/inside
 	location = AREA_INSIDE
 	icon_state = "purple1"
-
+/area/caribbean/no_mans_land/battleroyale/six/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/six/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
 
 /area/caribbean/no_mans_land/capturable
 	base_turf = /turf/floor/dirt/burned

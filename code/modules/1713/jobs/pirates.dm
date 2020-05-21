@@ -481,19 +481,19 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	var/randcloth = rand(1,7)
+	var/randcloth = rand(1,6)
 	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern1(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
 	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
 	else if (randcloth == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern4(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(H), slot_w_uniform)
 	else if (randcloth == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern8(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
 	else if (randcloth == 6)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern7(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 
 //bandages
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
@@ -507,7 +507,9 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	spawn(200)
+		if (H.client)
+			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 
 	return TRUE
 
