@@ -59,7 +59,7 @@
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
 /obj/map_metadata/battleroyale/update_win_condition()
-	if (world.time >= 18000)
+	if (processes.ticker.playtime_elapsed >= 18000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
