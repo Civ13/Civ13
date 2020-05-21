@@ -277,7 +277,7 @@
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Eastern Area")
 						H.gib()
 			world << "<big>The <b>North-Eastern</b> area has been closed!</big>"
-			closed_areas += list("one")
+			closed_areas += list("two")
 			return
 		if ("three")
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/battleroyale/three/border))
