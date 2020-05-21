@@ -118,6 +118,8 @@ Works together with spawning an observer, noted above.
 	src << sound(null, channel = 778)
 	// remove ambient sounds
 	stop_ambience(src)
+	if (map && map.ID == MAP_BATTLEROYALE_2)
+		world << "<big><font color='red'>[name] ([client.ckey]) has died! [alive_n_of_side(PIRATES)] remaining.</font></big>"
 	if (key)
 		var/mob/observer/ghost/ghost = new(src)	//Transfer safety to observer spawning proc.
 		ghost.can_reenter_corpse = can_reenter_corpse

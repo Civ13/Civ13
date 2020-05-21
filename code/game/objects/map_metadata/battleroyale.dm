@@ -123,11 +123,12 @@
 	if (processes.ticker.playtime_elapsed < 1800)
 		spawn(600)
 			closing_areas()
-		return
+		return "too early to close areas"
 	var/list/all_areas = list(list("one","two","three","four","five","six"))
 	var/list/possible_areas = all_areas
-	for (var/i in closed_areas)
-		possible_areas -= i
+	if (closed_areas.len)
+		for (var/i in closed_areas)
+			possible_areas -= i
 	if (possible_areas.len > 1)
 		var/ar_to_close = pick(possible_areas)
 		var/ar_to_close_string = ""
@@ -152,9 +153,9 @@
 				spawn(600)
 					close_area(ar_to_close)
 					closing_areas()
-					return
+					return ar_to_close_string
 	else
-		return
+		return "too many areas closed"
 
 /obj/map_metadata/battleroyale/two/proc/close_area(var/artc = null)
 	if (closed_areas.len >= 5)
@@ -274,5 +275,5 @@
 		maptext = "<center>[parea.name] ([parentmob.x],[parentmob.y])</center>"
 	else
 		maptext = "<center>Unknown Area</center>"
-	spawn(20)
+	spawn(10)
 		update()

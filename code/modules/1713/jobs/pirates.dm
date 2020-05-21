@@ -507,7 +507,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	spawn(600)
+	spawn(200)
 		if (H.client)
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 
