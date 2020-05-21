@@ -481,7 +481,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	var/randcloth = rand(1,7)
+	var/randcloth = rand(1,6)
 	if (randcloth == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern1(H), slot_w_uniform)
 	else if (randcloth == 2)
@@ -507,7 +507,9 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	spawn(600)
+		if (H.client)
+			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 
 	return TRUE
 

@@ -89,13 +89,13 @@
 	/* Indian-Carib Cultural Accessories*/
 
 /obj/item/clothing/accessory/armband/indian1
-	name = "indian acessories"
+	name = "indian accessories"
 	desc = "red face paint and indian necklaces."
 	icon_state = "indian1"
 	item_state = "indian1"
 
 /obj/item/clothing/accessory/armband/indian2
-	name = "indian acessories"
+	name = "indian accessories"
 	desc = "Gold indian necklaces."
 	icon_state = "indian2"
 	item_state = "indian2"
