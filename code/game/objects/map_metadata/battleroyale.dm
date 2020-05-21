@@ -230,15 +230,13 @@
 				ar_to_close_string = "South-Western"
 			if ("six")
 				ar_to_close_string = "South-Eastern"
-		world << "<big><b>The [ar_to_close_string] area will close in 3 minutes!</big></b>"
+		world << "<big><b>The [ar_to_close_string] area will close in 2 minutes!</big></b>"
 		spawn(600)
-			world << "<big><b>The [ar_to_close_string] area will close in 2 minutes!</big></b>"
+			world << "<big><b>The [ar_to_close_string] area will close in 1 minute!</big></b>"
 			spawn(600)
-				world << "<big><b>The [ar_to_close_string] area will close in 1 minute!</big></b>"
-				spawn(600)
-					close_area(ar_to_close)
-					closing_areas()
-					return ar_to_close_string
+				close_area(ar_to_close)
+				closing_areas()
+				return ar_to_close_string
 	else
 		return "too many areas closed"
 
