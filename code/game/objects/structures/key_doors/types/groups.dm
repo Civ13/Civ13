@@ -333,11 +333,11 @@
 /obj/item/weapon/key/soviet/guard
 	code = RU_CODE
 	name = "GULAG guard key"
-
+	health = 90000
 /obj/item/weapon/key/soviet/guard/max
 	code = RU_CODE+2
 	name = "Maximum Security guard key"
-	health = 2000
+	health = 90000
 /obj/structure/simple_door/key_door/soviet
 	keyslot_type = /datum/keyslot/soviet
 	unique_door_name = "Soviet locked"
@@ -345,47 +345,10 @@
 /obj/structure/simple_door/key_door/soviet/guard
 	keyslot_type = /datum/keyslot/soviet/guard
 	unique_door_name = "GULAG locked"
-/obj/structure/simple_door/key_door/soviet/guard/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/key))
-		if (W.code == RU_CODE)
-			locked = !locked
-			if (locked == 1)
-				visible_message("<span class = 'notice'>[user] locks the door.</span>")
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
-			else if (locked == 0)
-				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
-		if (W.code != RU_CODE)
-			user << "This key does not match this lock!"
-	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
-		for (var/obj/item/weapon/key/KK in W.contents)
-			if (KK.code == RU_CODE)
-				locked = !locked
-				if (locked == 1)
-					visible_message("<span class = 'notice'>[user] locks the door.</span>")
-					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-					return
-				else if (locked == 0)
-					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
-					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-					return
-		if (W.code != RU_CODE)
-			user << "None of the keys match this lock!"
-	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You pound the bars uselessly!"//sucker
-	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
-		user << "<span class='notice'>You start disassembling the [src]...</span>"
-		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
-		return
-	else
-		attack_hand(user)//keys!
-	return TRUE // for key_doors
+
 /obj/structure/simple_door/key_door/soviet/guard/max
 	keyslot_type = /datum/keyslot/soviet/guard/max
 	unique_door_name = "Maximum Security locked"
-
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard
 	unique_door_name = "GULAG locked"
 	locked = TRUE
@@ -484,10 +447,10 @@
 					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
-		if (W.code != DE_CODE)
+		if (W.code != 0)
 			user << "None of the keys match this lock!"
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You pound the bars uselessly!"//sucker
+		user << "You pound the door uselessly!"//sucker
 	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
 		user << "<span class='notice'>You start disassembling the [src]...</span>"
 		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
@@ -534,10 +497,10 @@
 					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
-		if (W.code != DE_CODE_OFF)
+		if (W.code != 0)
 			user << "None of the keys match this lock!"
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You pound the bars uselessly!"//sucker
+		user << "You pound the door uselessly!"//sucker
 	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
 		user << "<span class='notice'>You start disassembling the [src]...</span>"
 		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
