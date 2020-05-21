@@ -130,8 +130,93 @@
 		for (var/i in closed_areas)
 			possible_areas -= i
 	if (possible_areas.len > 1)
-		var/ar_to_close = pick(possible_areas)
+		var/ar_to_close = pick("one","two","five","six")
 		var/ar_to_close_string = ""
+		if (closed_areas.len)
+			if ("one" in closed_areas)
+				if ("two" in closed_areas)
+					if ("three" in closed_areas)
+						if ("four" in closed_areas)
+							if ("five" in closed_areas)
+								return "too many areas closed"
+							else
+								ar_to_close = "five"
+						else
+							ar_to_close = "four"
+					else
+						ar_to_close = "three"
+				else
+					ar_to_close = "two"
+			else if ("two" in closed_areas)
+				if ("one" in closed_areas)
+					if ("four" in closed_areas)
+						if ("three" in closed_areas)
+							if ("six" in closed_areas)
+								return "too many areas closed"
+							else
+								ar_to_close = "six"
+						else
+							ar_to_close = "three"
+					else
+						ar_to_close = "four"
+				else
+					ar_to_close = "one"
+			else if ("three" in closed_areas)
+				if ("one" in closed_areas)
+					if ("five" in closed_areas)
+						if ("six" in closed_areas)
+							if ("two" in closed_areas)
+								return "too many areas closed"
+							else
+								ar_to_close = "two"
+						else
+							ar_to_close = "six"
+					else
+						ar_to_close = "five"
+				else
+					ar_to_close = "one"
+			else if ("four" in closed_areas)
+				if ("six" in closed_areas)
+					if ("two" in closed_areas)
+						if ("five" in closed_areas)
+							if ("one" in closed_areas)
+								return "too many areas closed"
+							else
+								ar_to_close = "one"
+						else
+							ar_to_close = "five"
+					else
+						ar_to_close = "two"
+				else
+					ar_to_close = "six"
+			else if ("five" in closed_areas)
+				if ("six" in closed_areas)
+					if ("three" in closed_areas)
+						if ("four" in closed_areas)
+							if ("one" in closed_areas)
+								return "too many areas closed"
+							else
+								ar_to_close = "one"
+						else
+							ar_to_close = "four"
+					else
+						ar_to_close = "three"
+				else
+					ar_to_close = "six"
+			else if ("six" in closed_areas)
+				if ("five" in closed_areas)
+					if ("four" in closed_areas)
+						if ("three" in closed_areas)
+							if ("two" in closed_areas)
+								return "too many areas closed"
+							else
+								ar_to_close = "two"
+						else
+							ar_to_close = "three"
+					else
+						ar_to_close = "four"
+				else
+					ar_to_close = "five"
 		switch(ar_to_close)
 			if ("one")
 				ar_to_close_string = "North-Western"
