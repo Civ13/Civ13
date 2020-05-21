@@ -175,6 +175,8 @@
 						H.gib()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one/inside))
 						H.gib()
+					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Western Area")
+						H.gib()
 			world << "<big>The <b>North-Western</b> area has been closed!</big>"
 			closed_areas += list("one")
 			return
@@ -188,6 +190,8 @@
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two))
 						H.gib()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two/inside))
+						H.gib()
+					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Eastern Area")
 						H.gib()
 			world << "<big>The <b>North-Eastern</b> area has been closed!</big>"
 			closed_areas += list("one")
@@ -203,6 +207,8 @@
 						H.gib()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three/inside))
 						H.gib()
+					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Western Area")
+						H.gib()
 			world << "<big>The <b>Western</b> area has been closed!</big>"
 			closed_areas += list("three")
 			return
@@ -216,6 +222,8 @@
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four))
 						H.gib()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four/inside))
+						H.gib()
+					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Eastern Area")
 						H.gib()
 			world << "<big>The <b>Eastern</b> area has been closed!</big>"
 			closed_areas += list("four")
@@ -231,6 +239,8 @@
 						H.gib()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five/inside))
 						H.gib()
+					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Western Area")
+						H.gib()
 			world << "<big>The <b>South-Western</b> area has been closed!</big>"
 			closed_areas += list("five")
 			return
@@ -244,6 +254,8 @@
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six))
 						H.gib()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six/inside))
+						H.gib()
+					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Eastern Area")
 						H.gib()
 			world << "<big>The <b>South-Eastern</b> area has been closed!</big>"
 			closed_areas += list("six")
