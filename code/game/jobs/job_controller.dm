@@ -230,9 +230,12 @@ var/global/datum/controller/occupations/job_master
 	world << "[H]([H.original_job.title]) original job spawn location = [H.original_job.spawn_location]"
 	world << "[H]([H.original_job.title]) spawn location = [spawn_location]"
 	#endif
-
+	var/turf/spawnpoint = null
 	var/list/turfs = latejoin_turfs[spawn_location]
-	var/spawnpoint = pick(turfs)
+	if (!latejoin_turfs[spawn_location].len)
+		spawnpoint = locate(50,50,1)
+	else
+		spawnpoint = pick(turfs)
 	if (!locate(/mob) in spawnpoint && !locate(/obj/structure) in spawnpoint)
 		H.loc = spawnpoint
 		if (map.ID == MAP_BATTLEROYALE || map.ID == MAP_BATTLEROYALE_2) // if its the DM map, remove the "used" spawnpoint from the list

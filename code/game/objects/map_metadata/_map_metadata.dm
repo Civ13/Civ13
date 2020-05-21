@@ -397,6 +397,10 @@ var/civmax_research = list(230,230,230)
 	if (last_crossing_block_status[faction2] == FALSE)
 		if (faction2_can_cross_blocks())
 			world << cross_message(faction2)
+			if (ID == MAP_BATTLEROYALE_2)
+				var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				for (var/mob/M in player_list)
+					M.client << warning_sound
 
 	else if (last_crossing_block_status[faction2] == TRUE)
 		if (!faction2_can_cross_blocks())
