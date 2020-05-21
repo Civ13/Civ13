@@ -92,10 +92,10 @@
 	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
 
 	var/list/closed_areas = list()
-	New()
-		..()
-		spawn(1000)
-			closing_areas()
+/obj/map_metadata/battleroyale/two/New()
+	..()
+	spawn(1000)
+		closing_areas()
 
 /obj/map_metadata/battleroyale/two/job_enabled_specialcheck(var/datum/job/J)
 
@@ -120,7 +120,7 @@
 	return .
 
 /obj/map_metadata/battleroyale/two/proc/closing_areas()
-	if (processes.ticker.playtime_elapsed < 2400)
+	if (processes.ticker.playtime_elapsed < 1800)
 		spawn(600)
 			closing_areas()
 		return
@@ -128,7 +128,6 @@
 	var/list/possible_areas = all_areas
 	for (var/i in closed_areas)
 		possible_areas -= i
-		world << "area [i] already closed."
 	if (possible_areas.len > 1)
 		var/ar_to_close = pick(possible_areas)
 		var/ar_to_close_string = ""
@@ -145,6 +144,7 @@
 				ar_to_close_string = "South-Western"
 			if ("six")
 				ar_to_close_string = "South-Eastern"
+		world << "<big><b>The [ar_to_close_string] area will close in 3 minutes!</big></b>"
 		spawn(600)
 			world << "<big><b>The [ar_to_close_string] area will close in 2 minutes!</big></b>"
 			spawn(600)
