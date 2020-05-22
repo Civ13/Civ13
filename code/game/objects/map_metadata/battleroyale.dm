@@ -248,6 +248,7 @@
 		world << "<big><b>The [ar_to_close_string] Area will close in 2 minutes!</big></b>"
 		ar_to_close_timeleft = 120
 		spawn(600)
+			ar_to_close_timeleft = 60
 			world << "<big><b>The [ar_to_close_string] Area will close in 1 minute!</big></b>"
 			spawn(600)
 				close_area(ar_to_close)
