@@ -729,7 +729,7 @@
 
 			skipgrab
 
-			#define STOMP_TIME 3
+			#define STOMP_TIME 1
 
 			// wall stomping is bad
 			if (!t1.density && !locate_dense_type(t1.contents, /obj/structure))
@@ -741,7 +741,7 @@
 							if (L.lying && L != H && !istype(L, /mob/living/simple_animal/mosquito)) // you could step on yourself, this fixes it - Kachnov
 								H.visible_message("<span class = 'danger'>[H] steps on [L]!</span>")
 								playsound(mob.loc, 'sound/effects/gore/fallsmash.ogg', 35, TRUE)
-								L.adjustBruteLoss(rand(6,7))
+								L.adjustBruteLoss(rand(0.2,1))
 								if (ishuman(L))
 									L.emote("painscream")
 //								H.next_change_dir[num2text(opposite_direction(direct))] = world.time + (STOMP_TIME*3)

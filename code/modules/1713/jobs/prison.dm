@@ -147,7 +147,7 @@
 	rank_abbreviation = "NKVD"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRU"
-
+	whitelisted = TRUE
 	is_prison = TRUE
 
 	min_positions = 10
