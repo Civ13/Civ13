@@ -286,7 +286,7 @@
 "fz" = (/obj/effect/spawner/lootdrop/ammo,/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
 "fA" = (/obj/structure/window/sandbag/sandbag,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
 "fB" = (/obj/structure/window/sandbag/sandbag,/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
-"fC" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
+"fC" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{name = "Western Area"})
 "fD" = (/obj/covers/cobblestone,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/battleroyale/six)
 "fE" = (/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/three)
 "fF" = (/obj/covers/cobblestone,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall{name = "South-Eastern Area"})
@@ -301,7 +301,7 @@
 "fO" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire,/turf/floor/beach/water,/area/caribbean/no_mans_land/battleroyale/three)
 "fP" = (/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/sandbag/sandbag,/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
 "fQ" = (/obj/effect/spawner/lootdrop/guns,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/battleroyale/two/border)
-"fR" = (/obj/structure/window/sandbag/jersey{icon_state = "jerseybarrier1"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
+"fR" = (/obj/structure/window/sandbag/jersey{icon_state = "jerseybarrier1"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{name = "Western Area"})
 "fS" = (/obj/structure/window/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/battleroyale/four)
 "fT" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/four)
 "fU" = (/obj/structure/sign/traffic/zebracrossing{icon_state = "zebra"; dir = 8},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/four)
@@ -884,6 +884,7 @@
 "qZ" = (/obj/effect/landmark{name = "JoinLateDM"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/five)
 "ra" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/plating/concrete,/area/caribbean/no_mans_land/battleroyale/five/inside)
 "rb" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/semiautomatic/ar15,/turf/floor/plating/tiled/woodh,/area/caribbean/no_mans_land/battleroyale/six/inside)
+"rc" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{name = "Western Area"})
 "rd" = (/obj/effect/spawner/lootdrop/melee,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/two)
 "re" = (/obj/effect/spawner/lootdrop/melee,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/battleroyale/one)
 "rf" = (/obj/effect/spawner/lootdrop/guns,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/battleroyale/one)
@@ -918,6 +919,7 @@
 "rI" = (/obj/effect/spawner/lootdrop/ammo,/turf/floor/ship/wood_ship,/area/caribbean/no_mans_land/battleroyale/five/inside)
 "rJ" = (/obj/effect/spawner/lootdrop/ammo,/turf/floor/wood,/area/caribbean/no_mans_land/battleroyale/six/inside)
 "rK" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/obj/effect/spawner/lootdrop/ammo,/turf/floor/ship/wood_ship,/area/caribbean/no_mans_land/battleroyale/five/inside)
+"rL" = (/obj/structure/window/sandbag/jersey,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{name = "Western Area"})
 "rM" = (/obj/effect/spawner/lootdrop/ammo,/turf/floor/plating/tiled/woodh,/area/caribbean/no_mans_land/battleroyale/six/inside)
 "rN" = (/obj/effect/spawner/lootdrop/ammo,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/battleroyale/six/inside)
 "rO" = (/obj/effect/spawner/lootdrop/melee,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/battleroyale/six/inside)
@@ -1200,9 +1202,9 @@ eYfnfnfmeYfufvfwfxfgfgfnfneYfgeYfnfnfnfnfnfnfyfnfnfnfnfnfyfyfyfyfyfyfyfyfyfyfyfy
 fnfyfyfnfnfufufEfEfufufufnfnfnfnfnfyfyfyfyfyfyfyfyfyfyfyfyfnfnfnfnfnfnfnfnfnfnfnfyfyfyfyeZeJdOeDdxkksGdVdVdVdUdUdUegdUdVdVdVdVdVdVdVdUdVdUdVdUdUendUviendUdUdUdUdUdUdUeoeodUeodUdUdUeoeoeodUdVdUendTdSdS
 fyfyfyfyfyfyfyfufufufufnfnfyfyfyfyfyfyfyfnfnfnfnfnfnsjsjsjfneYfneYfgfgfgeYeYfneYfJfnfyfyeZfzdOeDrokksGdVdUdUdUfKdUeneoeodUeodUdUdUeoeoeodUdVdUenegenenegdRdRdRdRdRdRdRdRdRdRdRdRdRdRdRendUdVdVdUdUdTegdS
 eYfnfneYfnfufufufufnfyfyfyfyfnfnfnfnfnfnfnfnfneYfmeYskqQslfgfgfgdDdDdDfffffgeYfgeYeYfnfndwdwfAeDdwfBsFdUegenenenenfdegegegegendTeoegegeodUdVeoegegegegdRfTfTfTfTfTfTfTfUrqfWfTfTfTdRegeneodUdVeodTdTdSdS
-fgeYfgfgfgeYfgfxfEfOfufnfnfnfnfnfneYfgeYfgfgeYfgdDdDsmsmsmdDdDdDdDdDdDdDdDdDdDffffffeYfnfPfkfCeDfRsTsYendTegegegegegdSdSegegfSfSfSegegdUdVdVdUegegdSdRdRfTfTfTfTfTfVfWfUfTfTfTgdfTdRdRegdUdVdVdUdTdSemdS
-dDdDdDdDdDdDdDduduffdDfgfgeYeYeYfgfgdDdDdDdDdDdDdDdDdDeSeSeSeSeSeSeSfXeSeSdDdDdDdDdDfgeYeZdxdOeDdxkksZfYfZfZeifZfZeigagaeifZgbgbgbsnsisidVdUdUdTdTdSdSdRdRdRwidRdRdRgndRdRdRgofTfTdRgcenendVdUdUdTdTdSdS
-eSeSgedIdIgfggeSdugegfgfggdDdDdDdDdDdDdDdqgheddqedghghgidqgheddqedghghgidqgheddqedghghgjdwrodxdxdwkgsCdRgkeyexezeyexezeyexgadSdSgbsoqRspdVdUdTdUenfqgmdRdRgDgDgDgDgDgDgDgEgDdRfTfTdRgldTdUdVdUdTdUenfqgm
+fgeYfgfgfgeYfgfxfEfOfufnfnfnfnfnfneYfgeYfgfgeYfgdDdDsmsmsmdDdDdDdDdDdDdDdDdDdDffffffeYfnfPfkfCsefRsTsYendTegegegegegdSdSegegfSfSfSegegdUdVdVdUegegdSdRdRfTfTfTfTfTfVfWfUfTfTfTgdfTdRdRegdUdVdVdUdTdSemdS
+dDdDdDdDdDdDdDduduffdDfgfgeYeYeYfgfgdDdDdDdDdDdDdDdDdDeSeSeSeSeSeSeSfXeSeSdDdDdDdDdDfgeYeZdxrceDsckksZfYfZfZeifZfZeigagaeifZgbgbgbsnsisidVdUdUdTdTdSdSdRdRdRwidRdRdRgndRdRdRgofTfTdRgcenendVdUdUdTdTdSdS
+eSeSgedIdIgfggeSdugegfgfggdDdDdDdDdDdDdDdqgheddqedghghgidqgheddqedghghgidqgheddqedghghgjdwroscscrLkgsCdRgkeyexezeyexezeyexgadSdSgbsoqRspdVdUdTdUenfqgmdRdRgDgDgDgDgDgDgDgEgDdRfTfTdRgldTdUdVdUdTdUenfqgm
 feeSgpeSeSeSgqdDdugpeSdDgrdDdDvjdDdDeSeSdqgsgtgugtrrgveSdqgwgtvkgtgxgveSdqdsgygwgtgwgvdudxdxdOeDdxtasCdRgzgAgBezgAgCvlgBgAgadSdSgbsnsqspdVdTendTendSdSdRdRgDgTgUgTgVgDgWgUgDdRgXfTdRgcdTdUdVdTendTendSdS
 eSgGeSeSfXeSeSeSdudueSeSfXfXeSeSeSeSeSeSdqgHgsgIgsgsgvfXdqgJgIgwgwdsgvgGdqgKgLgwdsgwgMdudxeJdxdxdxkksCgNgkgOgCezrsgBezgQgRgadSdSgbgSdTeodVdUdTfldSdTdSdRdRgEgUgUgUgUgEgUgUgEdRhbfTdRgSdTeodVdUdTendSdTdS
 eSgGfXeSeSeSgYeSdudueSeSeSeSgGgGeSeSeSeSdqdsrtdsdsgxdqeSdqgwgurtgIgwdqeTdqgwrtdsgugwdqdudxdxdOeDgZkksCdRgzezeIezezeIezezeIgadSdSgbgcdTdUdVdVdUegdSemhadRdRgDgDgDgEgDgDgUgUgDdRhjhjdRgcdTdUdVdVdUendSemha
