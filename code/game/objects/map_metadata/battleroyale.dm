@@ -128,7 +128,7 @@
 
 /obj/map_metadata/battleroyale/two/proc/closing_areas()
 	if (processes.ticker.playtime_elapsed < 1200)
-		spawn(600)
+		spawn(200)
 			closing_areas()
 		return "too early to close areas"
 	var/list/all_areas = list("one","two","three","four","five","six")
