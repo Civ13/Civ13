@@ -246,9 +246,9 @@
 			if ("none")
 				ar_to_close_string = "None"
 		world << "<big><b>The [ar_to_close_string] Area will close in 2 minutes!</big></b>"
-		ar_to_close_timeleft = 120
+		ar_to_close_timeleft = 60
 		spawn(600)
-			ar_to_close_timeleft = 60
+			ar_to_close_timeleft = 30
 			world << "<big><b>The [ar_to_close_string] Area will close in 1 minute!</big></b>"
 			spawn(600)
 				close_area(ar_to_close)
@@ -409,12 +409,12 @@
 	if (!parentmob || !src)
 		return
 	if (map && map.ar_to_close_string != "" && map.ar_to_close_string != "None")
-		if (map.ar_to_close_timeleft > 0 && (map.ar_to_close_timeleft>60))
-			maptext = "<center><font color='green'><b>Closing:</b> [round(map.ar_to_close_timeleft)] secs</font></center>"
-		else if (map.ar_to_close_timeleft > 0 && (map.ar_to_close_timeleft>30))
-			maptext = "<center><font color='yellow'><b>Closing:</b> [round(map.ar_to_close_timeleft)] secs</font></center>"
+		if (map.ar_to_close_timeleft > 0 && (map.ar_to_close_timeleft>30))
+			maptext = "<center><font color='green'><b>Closing:</b> [round(map.ar_to_close_timeleft*2)] secs</font></center>"
+		else if (map.ar_to_close_timeleft > 0 && (map.ar_to_close_timeleft>15))
+			maptext = "<center><font color='yellow'><b>Closing:</b> [round(map.ar_to_close_timeleft*2)] secs</font></center>"
 		else if (map.ar_to_close_timeleft > 0)
-			maptext = "<center><font color='red'><b>Closing:</b> [round(map.ar_to_close_timeleft)] secs</font></center>"
+			maptext = "<center><font color='red'><b>Closing:</b> [round(map.ar_to_close_timeleft*2)] secs</font></center>"
 		else
 			maptext = "<center><font color='green'><b>Closing:</b> None</font></center>"
 	else
