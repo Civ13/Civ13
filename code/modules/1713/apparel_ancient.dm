@@ -750,7 +750,7 @@
 	item_state = "gatorpelt"
 	worn_state = "gatorpelt"
 	flags_inv = BLOCKHEADHAIR
-	cold_protection = HEAD
+	heat_protection = HEAD
 	var/colortype = "grey" //i really dont know what to put in this one - @fantasticfwoosh
 
 /obj/item/clothing/head/foxpelt
@@ -770,6 +770,24 @@
 	item_state = "whitefoxpelt"
 	worn_state = "whitefoxpelt"
 	colortype = "white"
+
+/obj/item/clothing/head/sheeppelt
+	name = "sheep-pelt headcover"
+	desc = "A sheep pelt turned into a headcover. The thick wool helps keep the cold off your body."
+	icon_state = "sheeppelt"
+	item_state = "sheeppelt"
+	worn_state = "sheeppelt"
+	cold_protection = HEAD|ARMS
+	var/colortype = "white"
+
+/obj/item/clothing/head/goatpelt
+	name = "goatpelt headcover"
+	desc = "A goat pelt turned into a headcover. The light loose fur helps keep the sun's rays off your body."
+	icon_state = "goatpelt"
+	item_state = "goatpelt"
+	worn_state = "goatpelt"
+	heat_protection = HEAD|ARMS
+	var/colortype = "beige" //erm...
 
 /*Fur Coats*/
 
