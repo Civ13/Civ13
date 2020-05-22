@@ -428,7 +428,7 @@
 	battle_name = "Battleroyale at Arab Town"
 	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
 
-/obj/map_metadata/battleroyale/three/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/battleroyale/two/job_enabled_specialcheck(var/datum/job/J)
 
 	..()
 	if (J.is_RP == TRUE)
@@ -442,9 +442,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale/modern))
-		J.total_positions = 32
-		J.min_positions = 32
-		J.max_positions = 32
+		J.total_positions = latejoin_turfs["JoinLateDM"].len
+		J.min_positions = J.total_positions
+		J.max_positions = J.total_positions
 		. = TRUE
 	else
 		. = FALSE
@@ -454,7 +454,7 @@
 	title = "Camp Battle Royale (100x100x1)"
 
 	age = "1013"
-	ordinal_age = 3
+	ordinal_age = 2
 	faction_distribution_coeffs = list(PIRATES = 1)
 	battle_name = "Battleroyale at Camp"
 	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
@@ -473,9 +473,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale/medieval))
-		J.total_positions = 32
-		J.min_positions = 32
-		J.max_positions = 32
+		J.total_positions = latejoin_turfs["JoinLateDM"].len
+		J.min_positions = J.total_positions
+		J.max_positions = J.total_positions
 		. = TRUE
 	else
 		. = FALSE
