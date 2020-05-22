@@ -530,6 +530,7 @@ RECIPE: /material/cloth/,black suit,/obj/item/clothing/suit/storage/jacket/black
 RECIPE: /material/cloth/,dark black suit,/obj/item/clothing/suit/storage/jacket/really_black_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,burgundy suit,/obj/item/clothing/suit/storage/jacket/burgundy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,checkered suit,/obj/item/clothing/suit/storage/jacket/checkered_suit,15,200,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/cloth/,victorian tailcoat,/obj/item/clothing/suit/storage/jacket/vict_tailcoat,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,navy suit,/obj/item/clothing/suit/storage/jacket/navy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,olive drab NBC suit,/obj/item/clothing/suit/nbc/olive,12,200,0,1,jackets & vests,0,0,145,8,null
 RECIPE: /material/cloth/,olive drab NBC hood,/obj/item/clothing/head/nbc/olive,3,100,0,1,jackets & vests,0,0,145,8,null
