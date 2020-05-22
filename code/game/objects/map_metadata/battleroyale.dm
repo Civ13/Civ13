@@ -26,6 +26,7 @@
 	var/message = ""
 	gamemode = "Battleroyale"
 	required_players = 6
+	var/list/closed_areas = list()
 
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
 
@@ -98,8 +99,7 @@
 	battle_name = "Battleroyale at Arab Town"
 	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
 
-	var/list/closed_areas = list()
-/obj/map_metadata/battleroyale/two/New()
+/obj/map_metadata/battleroyale/New()
 	..()
 	spawn(1000)
 		closing_areas()
@@ -126,7 +126,7 @@
 		. = FALSE
 	return .
 
-/obj/map_metadata/battleroyale/two/proc/closing_areas()
+/obj/map_metadata/battleroyale/proc/closing_areas()
 	if (processes.ticker.playtime_elapsed < 1200)
 		spawn(200)
 			closing_areas()
@@ -260,7 +260,7 @@
 	else
 		return "too many areas closed"
 
-/obj/map_metadata/battleroyale/two/proc/close_area(var/artc = null)
+/obj/map_metadata/battleroyale/proc/close_area(var/artc = null)
 	if (closed_areas.len >= 5)
 		return
 	if (!artc || artc in closed_areas)
