@@ -114,9 +114,6 @@ var/global/redirect_all_players = null
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
 		else if (map.nomads == TRUE)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
-		else if (map.ID == MAP_BATTLEROYALE || map.ID == MAP_BATTLEROYALE_2)
-			output += "<p><a href='byond://?src=\ref[src];br=1'>Join the Fight!</a></p>"
-
 		else
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
@@ -363,33 +360,6 @@ var/global/redirect_all_players = null
 			return
 		close_spawn_windows()
 		AttemptLateSpawn("Nomad")
-		return TRUE
-
-
-	if (href_list["br"])
-
-		if (client && client.quickBan_isbanned("Playing"))
-			WWalert(src,"You're banned from playing.","Error")
-			return TRUE
-
-		if (!ticker.players_can_join)
-			WWalert(src,"You can't join the game yet.","Error")
-			return TRUE
-
-		if (map && map.faction1_can_cross_blocks())
-			WWalert(usr,"You can't join the game after the grace wall has ended. Wait until the next round.","Error")
-			return FALSE
-
-		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
-			WWalert(src,"The round is either not ready, or has already finished.","Error")
-			return FALSE
-
-		if (check_trait_points(client.prefs.traits) > 0)
-			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
-			return FALSE
-
-		close_spawn_windows()
-		AttemptLateSpawn("Battle Royale Fighter")
 		return TRUE
 
 
