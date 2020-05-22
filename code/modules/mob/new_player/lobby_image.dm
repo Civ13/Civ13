@@ -40,7 +40,7 @@
 		for(var/mob/living/human/H in player_list)
 			if (H.stat != DEAD)
 				var/image/ni = image(icon='icons/effects/mapeffects.dmi', icon_state="reddot",layer=src.layer+0.01)
-				ni.pixel_x = min(480,ceil(H.x*4.8)-2)
-				ni.pixel_y = min(480,ceil(H.y*4.8)-2)
+				ni.pixel_x = min(480,ceil(H.x*4.8)-4)
+				ni.pixel_y = min(480,ceil(H.y*4.8)-4)
 				overlays += ni
 				stored_img += ni
