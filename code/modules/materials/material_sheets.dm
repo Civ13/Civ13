@@ -441,6 +441,15 @@
 	flammable = FALSE
 	value = 3
 
+/obj/item/stack/material/pelt/lizardpelt
+	name = "lizard pelt"
+	desc = "A pelt from a skinned lizard."
+	icon_state = "sheet-lizardpelt"
+	default_type = "lizardpelt"
+	w_class = 2.0
+	flammable = FALSE
+	value = 3
+
 /obj/item/stack/material/pelt/monkeypelt
 	name = "monkey pelt"
 	desc = "A pelt from a skinned monkey."
@@ -466,6 +475,24 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
+/obj/item/stack/material/pelt/sheeppelt
+	name = "sheep pelt"
+	desc = "A wooly pelt from a skinned sheep."
+	icon_state = "sheet-sheeppelt"
+	default_type = "sheeppelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 2
+
+/obj/item/stack/material/pelt/goatpelt
+	name = "goat pelt"
+	desc = "A pelt from a skinned goat."
+	icon_state = "sheet-goatpelt"
+	default_type = "goatpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 2
 
 /obj/item/stack/material/pelt/orcpelt
 	name = "Orc Pelt"
