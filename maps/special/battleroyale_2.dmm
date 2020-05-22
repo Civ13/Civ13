@@ -73,7 +73,7 @@
 "bu" = (/obj/structure/grille/fence{icon_state = "1"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/one)
 "bv" = (/obj/structure/grille/fence{icon_state = "1"; dir = 4},/turf/floor/beach/sand,/area/caribbean/no_mans_land/battleroyale/one)
 "bw" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/one)
-"bx" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/two)
+"bx" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
 "by" = (/obj/structure/props/junk,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/one)
 "bz" = (/obj/item/weapon/newspaper,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/one)
 "bA" = (/obj/structure/window/sandbag/sandbag,/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/one/border)
@@ -285,7 +285,7 @@
 "fy" = (/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/battleroyale/three)
 "fz" = (/obj/effect/spawner/lootdrop/ammo,/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
 "fA" = (/obj/structure/window/sandbag/sandbag,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
-"fB" = (/obj/structure/window/sandbag/sandbag,/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
+"fB" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
 "fC" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{name = "Western Area"})
 "fD" = (/obj/covers/cobblestone,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/battleroyale/six)
 "fE" = (/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/three)
@@ -978,9 +978,9 @@
 "sP" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/effect/landmark{name = "JoinLateDM"},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
 "sQ" = (/obj/structure/sign/traffic/cone{icon_state = "cone1"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
 "sR" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/four/border)
-"sS" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
-"sT" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
-"sU" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
+"sS" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
+"sT" = (/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
+"sU" = (/obj/structure/window/sandbag/jersey,/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 8},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three)
 "sV" = (/turf/floor/dirt/underground/sandy,/area/caribbean/no_mans_land/invisible_wall{name = "North-Eastern Area"})
 "sW" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall{name = "North-Eastern Area"})
 "sX" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall{name = "North-Eastern Area"})
@@ -1078,6 +1078,7 @@
 "uL" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/six/border)
 "uM" = (/obj/covers/cobblestone,/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/dirt,/area/caribbean/no_mans_land/battleroyale/six)
 "uN" = (/obj/structure/sign/traffic/noentry,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/six/border)
+"uO" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/three/border)
 "uQ" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall{name = "South-Eastern Area"})
 "uR" = (/obj/structure/sign/traffic/zebracrossing{icon_state = "zebra"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/five/border)
 "uS" = (/obj/structure/window/sandbag/jersey,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/six/border)
@@ -1185,7 +1186,7 @@ bLbMacbNbOaGbPbMbQbQbQbMbPbwananbwbRbSbSbTacacbUbVbWbUbVbXbVacbwananbwaaaaacacaa
 bLbZbLacacacbPcacacbcacabPacananaccccdcecfacbUbWbWbWcgbWbWbUbWacananacaaaaaachaaacchaaacbYbYbYbYbYdiboaqaDaqaqaKsXprhEaCaqaqararasasarvgataqaqaqaqaqaqaDalalaKaqaKaDalaqaCaqaqaqaqaqaqaEaqaqalalhEhEhEaq
 bLcacbbLacacbPbPbPbPbPcibPaccjanacckcececfacbWbWclvhcmcnbWbVbWaccjanacaccococpcqcocpcocrananancjcjdjdkaqaqaqaqaqhEhEhEaqaqaqatararasasararaqaCaqaqaqaqaqalalalalalalalalveaqaqaqriaqaEaFaqalalalhEprhEaq
 bLcucacubLacacbPcvcwbPcabPbIcxanaccycecdcfbWclczbWcmcAbWbWbVbWaccxanacaacocBcCcDcEbZcocFanbEbCcGcHdlbocIaqbeaqaqbebebeaqaqaWatauatarasasaratataqaqaqaDaqaqaKbealaqaCalaqaqaqaqbeaqaqaqaqaqalaqaqhEhEhEaD
-bLcJcacacJbLacbPbZcabPcabPaccKcKaycLcdcecfbWclclcMcnrjclbWclbWaccKcKaccNcpcacacacacacpcOananbCbDcPdmdgbebebebebebebebebebebebebeauararasasararaqaqaqaqbxaqaqaqaqbeaqaqaqmjaPaqbebeaqaqaqalalaqaqaqaqaqaq
+bLcJcacacJbLacbPbZcabPcabPaccKcKaycLcdcecfbWclclcMcnrjclbWclbWaccKcKaccNcpcacacacacacpcOananbCbDcPdmdgbebebebebebebebebebebebebeauararasasararaqaqaqaqaqaqaqaqaqbeaqaqaqmjaPaqbebeaqaqaqalalaqaqaqaqaqaq
 bLcRcarkcubMacbPcScabPrlcUacancjacckcecVcfbWcmcWbWcnbWcXcYcmbWacancjacaacocZcZrmcacacobyananbCdabWdndodcdcdddcdedfdfdfdfdfdfdfbeatatatarasarauaqaCaqaqaqaqaPaqaqaPaqaEaCaqaqaqaqaqaqaPaqaEbeaqaqaqaqaqaq
 dpdrdtdtdrdpdydzdAdBdzdtdzdCbldldydFdGdGdHdndndKdLdMdndPdndQdndybldldyewfpfNiNjpjqdtdBdyblbljrjsdnjtdojujujujvjwjvjvjvjvjvjvjvbojxjyjxjzjAjAjzbnbnjBbnbnbnfQbnbnbnbnbnbnbnbnbnjCbnbobnbnbnbobnjDbnjCbnbn
 jFjGjHjHjXjFkbkbkfjHjHjHkfkbkgkkklkmkokpktkukukukukvkukwkulHkuklkgkklLoIpqpHpHqsjHqWpqrzkkkkrYrZsBkusCsCsCsCsCsCsCsCsCsCsCsCsCsCsDsDsDsEsFsGsFsEsDsDsDsDsHsDsDsIsJsDsDsCsKsDsDsDsDsDsDsDsEsDsDsDsDsLsDsD
@@ -1195,16 +1196,16 @@ dxdxdxdxdxdxdxeCdOeDdxdxdxdxdxeEdxeFdxdxscscscdxdxdxdxeCdOeDdxdxdxdxdxdxdxdxdxdx
 dxdxdxdxdxdOeDeCdxdxdxeJdxdxrodxdxdxdxdxscqBscdxdxdOeDeCdxdxdxdxwndxdxdxdxdxdxdxdOeDsdscscdxdOeDeKkusCekezezeHrpeLezezekdRdSdSdSdSdSdSegdUdVdUeoegegdSfqdSdSqvdSdSdSqvdRfqdSdSdSdSdSemeRdTdRdSdSdSdSdSdS
 dudududududuepdududuetdududududueMeperdusasasfdueOdududueedududNdududNdueedueeeedududuePdxeJdOeDeQsOsCeieHezexezexezezeidRdSdSdSdSemeRdTdUdUdUdTegdSdSdSdSemhadSdSdSemdSdSfafahAdSdSdSegendRdSfddShadSdS
 eSeSeSeSeSdueSdueSeSeSeSdududueSdueSeSdueSdDeSeSdueSeSeTeSeSeSeSdueSeSeSeSeSdudueSeSdudNdxdxdOeDdxsQsRehezeWeXeWeXezeWehdSdSdSdSfafasgendUdUdUdTemdSdSdSdSdSeghaegegdSemdSfaqPfahadShafdfdfdegfddSqxdSdS
-eSeSeSdDeSeSeSdueSdDdDdDeSeSeSeSeSeSeSeSeSdDdDdDeSeSdDdDeSdDdDdDdDdDdDdDdDdDdDeYdDdDdDdueZdxdOvwfbsSsCeheiehehfcfceifcehdSdSdSdSfaqNsheodUdVeoegvxdSenegegegegegegegegegegsgsgsgdSegfdenegegfdegfdfddSdS
-eSfeeSeSeSeSeSdudDdDdDdDdDdDeSdDdDdDdDdDdDdDdDdDffdDeYdDdDffdDeYeYeYdDeYeYeYfgeYeYeYdDdufhfbdOfifjsTsMegegegegegegegegegegegegdSsgshsidUdVdUdTdTegegegdTenenendTdTendTeodTendTegegegfddTdUdRegdUfdegfdeg
-dDdDdDdDdDdDdududDdDeYeYeYdDdDdDffffdDfgeYeYfmfmfmfgfgfgeYfgfgeYfnfmfmeYfneYfneYeYfgffdDfofkdOeDdxsUsEenenendTdTendTeodTendTegegegfddTdUdVdVdUdTdUegdUdUdTdUdUdUdUdUeodUdUeoendTdUdUdUdUdUdUdUdUdUfddTfd
-eYfgeYfgdDeYdDdueYeYeYfgfgfffffgeYeYfgeYfnfmfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfneYeYfrfsdOeDrokksFdTdUdUdUdUdUeodUdUeoendTendUdUdUdUdUdVdUdUdUdUdVdUdUdUdVdVdVdVdVdVdUdUdUdUdUdVdVdVdVdVdVdUdUfdfdfd
-eYfnfnfmeYfufvfwfxfgfgfnfneYfgeYfnfnfnfnfnfnfyfnfnfnfnfnfyfyfyfyfyfyfyfyfyfyfyfyfyfnfnfneZdxdOfteJkksFdUdUdVdVdVdVdVdVdVdUdUdUdUdVdVdVdVdVdVdVdVdUdVdUdUdVdVdVdUdVdUdVdUdUdVdVdUdUdVdVdUdVdUdVdUendTegdS
-fnfyfyfnfnfufufEfEfufufufnfnfnfnfnfyfyfyfyfyfyfyfyfyfyfyfyfnfnfnfnfnfnfnfnfnfnfnfyfyfyfyeZeJdOeDdxkksGdVdVdVdUdUdUegdUdVdVdVdVdVdVdVdUdVdUdVdUdUendUviendUdUdUdUdUdUdUeoeodUeodUdUdUeoeoeodUdVdUendTdSdS
-fyfyfyfyfyfyfyfufufufufnfnfyfyfyfyfyfyfyfnfnfnfnfnfnsjsjsjfneYfneYfgfgfgeYeYfneYfJfnfyfyeZfzdOeDrokksGdVdUdUdUfKdUeneoeodUeodUdUdUeoeoeodUdVdUenegenenegdRdRdRdRdRdRdRdRdRdRdRdRdRdRdRendUdVdVdUdUdTegdS
-eYfnfneYfnfufufufufnfyfyfyfyfnfnfnfnfnfnfnfnfneYfmeYskqQslfgfgfgdDdDdDfffffgeYfgeYeYfnfndwdwfAeDdwfBsFdUegenenenenfdegegegegendTeoegegeodUdVeoegegegegdRfTfTfTfTfTfTfTfUrqfWfTfTfTdRegeneodUdVeodTdTdSdS
-fgeYfgfgfgeYfgfxfEfOfufnfnfnfnfnfneYfgeYfgfgeYfgdDdDsmsmsmdDdDdDdDdDdDdDdDdDdDffffffeYfnfPfkfCsefRsTsYendTegegegegegdSdSegegfSfSfSegegdUdVdVdUegegdSdRdRfTfTfTfTfTfVfWfUfTfTfTgdfTdRdRegdUdVdVdUdTdSemdS
-dDdDdDdDdDdDdDduduffdDfgfgeYeYeYfgfgdDdDdDdDdDdDdDdDdDeSeSeSeSeSeSeSfXeSeSdDdDdDdDdDfgeYeZdxrceDsckksZfYfZfZeifZfZeigagaeifZgbgbgbsnsisidVdUdUdTdTdSdSdRdRdRwidRdRdRgndRdRdRgofTfTdRgcenendVdUdUdTdTdSdS
+eSeSeSdDeSeSeSdueSdDdDdDeSeSeSeSeSeSeSeSeSdDdDdDeSeSdDdDeSdDdDdDdDdDdDdDdDdDdDeYdDdDdDdueZdxdOvwfbbxsCeheiehehfcfceifcehdSdSdSdSfaqNsheodUdVeoegvxdSenegegegegegegegegegegsgsgsgdSegfdenegegfdegfdfddSdS
+eSfeeSeSeSeSeSdudDdDdDdDdDdDeSdDdDdDdDdDdDdDdDdDffdDeYdDdDffdDeYeYeYdDeYeYeYfgeYeYeYdDdufhfbdOfifjfBsMegegegegegegegegegegegegdSsgshsidUdVdUdTdTegegegdTenenendTdTendTeodTendTegegegfddTdUdRegdUfdegfdeg
+dDdDdDdDdDdDdududDdDeYeYeYdDdDdDffffdDfgeYeYfmfmfmfgfgfgeYfgfgeYfnfmfmeYfneYfneYeYfgffdDfofkdOeDdxsSsEenenendTdTendTeodTendTegegegfddTdUdVdVdUdTdUegdUdUdTdUdUdUdUdUeodUdUeoendTdUdUdUdUdUdUdUdUdUfddTfd
+eYfgeYfgdDeYdDdueYeYeYfgfgfffffgeYeYfgeYfnfmfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfneYeYfrfsdOeDrosTsFdTdUdUdUdUdUeodUdUeoendTendUdUdUdUdUdVdUdUdUdUdVdUdUdUdVdVdVdVdVdVdUdUdUdUdUdVdVdVdVdVdVdUdUfdfdfd
+eYfnfnfmeYfufvfwfxfgfgfnfneYfgeYfnfnfnfnfnfnfyfnfnfnfnfnfyfyfyfyfyfyfyfyfyfyfyfyfyfnfnfneZdxdOfteJsTsFdUdUdVdVdVdVdVdVdVdUdUdUdUdVdVdVdVdVdVdVdVdUdVdUdUdVdVdVdUdVdUdVdUdUdVdVdUdUdVdVdUdVdUdVdUendTegdS
+fnfyfyfnfnfufufEfEfufufufnfnfnfnfnfyfyfyfyfyfyfyfyfyfyfyfyfnfnfnfnfnfnfnfnfnfnfnfyfyfyfyeZeJdOeDdxsTsGdVdVdVdUdUdUegdUdVdVdVdVdVdVdVdUdVdUdVdUdUendUviendUdUdUdUdUdUdUeoeodUeodUdUdUeoeoeodUdVdUendTdSdS
+fyfyfyfyfyfyfyfufufufufnfnfyfyfyfyfyfyfyfnfnfnfnfnfnsjsjsjfneYfneYfgfgfgeYeYfneYfJfnfyfyeZfzdOeDrosTsGdVdUdUdUfKdUeneoeodUeodUdUdUeoeoeodUdVdUenegenenegdRdRdRdRdRdRdRdRdRdRdRdRdRdRdRendUdVdVdUdUdTegdS
+eYfnfneYfnfufufufufnfyfyfyfyfnfnfnfnfnfnfnfnfneYfmeYskqQslfgfgfgdDdDdDfffffgeYfgeYeYfnfnsUdwfAeDdwuOsFdUegenenenenfdegegegegendTeoegegeodUdVeoegegegegdRfTfTfTfTfTfTfTfUrqfWfTfTfTdRegeneodUdVeodTdTdSdS
+fgeYfgfgfgeYfgfxfEfOfufnfnfnfnfnfneYfgeYfgfgeYfgdDdDsmsmsmdDdDdDdDdDdDdDdDdDdDffffffeYfnfPfkfCsefRfBsYendTegegegegegdSdSegegfSfSfSegegdUdVdVdUegegdSdRdRfTfTfTfTfTfVfWfUfTfTfTgdfTdRdRegdUdVdVdUdTdSemdS
+dDdDdDdDdDdDdDduduffdDfgfgeYeYeYfgfgdDdDdDdDdDdDdDdDdDeSeSeSeSeSeSeSfXeSeSdDdDdDdDdDfgeYeZdxrceDscsTsZfYfZfZeifZfZeigagaeifZgbgbgbsnsisidVdUdUdTdTdSdSdRdRdRwidRdRdRgndRdRdRgofTfTdRgcenendVdUdUdTdTdSdS
 eSeSgedIdIgfggeSdugegfgfggdDdDdDdDdDdDdDdqgheddqedghghgidqgheddqedghghgidqgheddqedghghgjdwroscscrLkgsCdRgkeyexezeyexezeyexgadSdSgbsoqRspdVdUdTdUenfqgmdRdRgDgDgDgDgDgDgDgEgDdRfTfTdRgldTdUdVdUdTdUenfqgm
 feeSgpeSeSeSgqdDdugpeSdDgrdDdDvjdDdDeSeSdqgsgtgugtrrgveSdqgwgtvkgtgxgveSdqdsgygwgtgwgvdudxdxdOeDdxtasCdRgzgAgBezgAgCvlgBgAgadSdSgbsnsqspdVdTendTendSdSdRdRgDgTgUgTgVgDgWgUgDdRgXfTdRgcdTdUdVdTendTendSdS
 eSgGeSeSfXeSeSeSdudueSeSfXfXeSeSeSeSeSeSdqgHgsgIgsgsgvfXdqgJgIgwgwdsgvgGdqgKgLgwdsgwgMdudxeJdxdxdxkksCgNgkgOgCezrsgBezgQgRgadSdSgbgSdTeodVdUdTfldSdTdSdRdRgEgUgUgUgUgEgUgUgEdRhbfTdRgSdTeodVdUdTendSdTdS
