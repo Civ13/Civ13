@@ -151,7 +151,7 @@
 				MAP_NAVAL = 0,
 				MAP_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
-		//		MAP_BATTLEROYALE = 20,
+				MAP_BATTLEROYALE = 6,
 		//		MAP_SUPPLY_RAID = 8,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
