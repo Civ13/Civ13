@@ -157,7 +157,7 @@
 /obj/item/ammo_magazine/p90
 	name = "P90 Magazine (5.7x28mm)"
 	icon_state = "p90"
-
+	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a57x28
 	caliber = "a57x28"
 	max_ammo = 50
