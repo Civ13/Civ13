@@ -43,7 +43,6 @@
 		qdel(src)
 		return
 	name = "[material.display_name] barricade"
-	desc = "This space is blocked off by a barricade made of [material.display_name]."
 	if (istype(material, /material/wood))
 		icon_state = "wood_barricade"
 		flammable = TRUE
