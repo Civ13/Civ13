@@ -55,6 +55,9 @@ bullet_act
 					else if (wolfman)
 						var/obj/item/stack/material/pelt/wolfpelt/HP = new/obj/item/stack/material/pelt/wolfpelt(get_turf(src))
 						HP.amount = 3
+					else if (lizard)
+						var/obj/item/stack/material/pelt/lizardpelt/HP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+						HP.amount = 3
 					else
 						var/obj/item/stack/material/pelt/humanpelt/HP = new/obj/item/stack/material/pelt/humanpelt(get_turf(src))
 						HP.amount = 3
