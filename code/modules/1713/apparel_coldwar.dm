@@ -614,6 +614,14 @@
 
 /* Miscallaneous*/
 
+/obj/item/clothing/under/gatorpants
+	name = "shirtless gator pants"
+	desc = "A tight fitting pair of alligator scale pants. When you're this on-point; wearing a shirt would just cramp your style."
+	icon_state = "gator_pants"
+	item_state = "gator_pants"
+	worn_state = "gator_pants"
+	body_parts_covered = LOWER_TORSO|LEGS
+
 /obj/item/clothing/suit/bx //is this futuristic?
 	name = "carbon black suit"
 	desc = "A high tech suit made of comprssed carbon materials."

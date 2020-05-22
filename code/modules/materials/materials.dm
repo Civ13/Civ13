@@ -724,7 +724,7 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/pelt/lionpelt
 
 /material/gatorpelt
-	name = "alligator pelt"
+	name = "gatorpelt"
 	use_name = "alligator"
 	icon_colour = "#443d36"
 	hardness = 30
@@ -733,6 +733,17 @@ var/list/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/gatorpelt
+
+/material/lizardpelt
+	name = "lizardpelt"
+	use_name = "lizard"
+	icon_colour = "#6b8e23" 	//olive drab
+	hardness = 30
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/lizardpelt
 
 /material/monkeypelt
 	name = "monkeypelt"
@@ -766,6 +777,28 @@ var/list/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/foxpelt/white
+
+/material/sheeppelt
+	name = "sheeppelt"
+	use_name = "sheep"
+	icon_colour = "#8C7E6E" 	//white
+	hardness = 30
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/sheeppelt
+
+/material/goatpelt
+	name = "goatpelt"
+	use_name = "goat"
+	icon_colour = "#f5f5dc" 	//beige
+	hardness = 30
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/goatpelt
 
 /material/hairlesshide
 	name = "hairlesshide"
