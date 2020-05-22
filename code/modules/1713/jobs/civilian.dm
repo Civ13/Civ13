@@ -1343,7 +1343,7 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-
+	whitelisted = TRUE
 	is_pioneer = TRUE
 
 
@@ -1549,17 +1549,24 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-
 	is_pioneer = TRUE
 
 
 	min_positions = 3
 	max_positions = 40
+	default_language = "Chinese"
+	additional_languages = list("English" = 100, "Vietnamese" = 10, "Japanese" = 5)
+	male_tts_voice = "Takumi" //jap
+	female_tts_voice = "Zhiyu" //chinese
 
+/datum/job/civilian/prospector_pioneer/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_chinese_name(H.gender)
+	H.real_name = H.name
 /datum/job/civilian/prospector_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(H), slot_head)
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
 	else
@@ -1567,11 +1574,11 @@
 	if (H.gender == "male")
 		var/randcloth = rand(1,3)
 		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/haori(H), slot_w_uniform)
 		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/blue(H), slot_w_uniform)
 		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/red(H), slot_w_uniform)
 	else
 		var/randcloth = rand(1,3)
 		if (randcloth == 1)
@@ -1581,7 +1588,10 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
 	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
@@ -1688,15 +1698,15 @@
 
 	//head
 		var/randhead = rand(1,5)
-		if (randhead == 1)
+		if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (randhead == 1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead== 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 4)
+		else if (randhead == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 5)
+		else if (randhead == 4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)
@@ -1761,16 +1771,16 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 
 	//head
-		var/randhead = rand(1,5)
-		if (randhead == 1)
+		var/randhead = rand(1,4)
+		if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (randhead == 1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead== 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 4)
+		else if (randhead == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 5)
+		else if (randhead == 4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)
@@ -1942,16 +1952,16 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 
 	//head
-		var/randhead = rand(1,5)
-		if (randhead == 1)
+		var/randhead = rand(1,4)
+		if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (randhead == 1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead== 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 4)
+		else if (randhead == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 5)
+		else if (randhead == 4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)
