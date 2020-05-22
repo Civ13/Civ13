@@ -421,6 +421,7 @@
 /obj/map_metadata/battleroyale/two
 	ID = MAP_BATTLEROYALE_2
 	title = "Arab Town Battle Royale (100x100x1)"
+	lobby_icon_state = "battleroyale_arab"
 
 	age = "2013"
 	ordinal_age = 8
