@@ -163,7 +163,6 @@
 	max_ammo = 50
 	weight = 0.045
 	multiple_sprites = TRUE
-	clip = TRUE
 
 /obj/item/ammo_magazine/glock17
 	name = "G17 Glock (9x19mm)"
