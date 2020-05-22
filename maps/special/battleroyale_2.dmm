@@ -291,6 +291,8 @@
 "fE" = (/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/three)
 "fF" = (/obj/covers/cobblestone,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall{name = "South-Eastern Area"})
 "fG" = (/obj/covers/cobblestone,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/battleroyale/six)
+"fH" = (/obj/structure/sign/traffic/cone{icon_state = "cone1"; dir = 8},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{name = "South-Western Area"})
+"fI" = (/obj/structure/sign/traffic/cone{icon_state = "cone1"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{name = "South-Western Area"})
 "fJ" = (/obj/structure/closet/hideout/pine,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/three)
 "fK" = (/obj/structure/closet/hideout/pine,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/four)
 "fN" = (/obj/structure/table/wood,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/battleroyale/one/border/inside)
@@ -864,7 +866,6 @@
 "qL" = (/obj/structure/closet/cabinet,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/battleroyale/five/inside)
 "qM" = (/obj/structure/bed,/obj/item/weapon/bedsheet/green,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/battleroyale/five/inside)
 "qN" = (/obj/effect/landmark{name = "JoinLateDM"},/turf/floor/dirt,/area/caribbean/no_mans_land/battleroyale/four)
-"qO" = (/obj/structure/sign/traffic/cone{icon_state = "cone1"; dir = 4},/turf/floor/plating/road,/area/caribbean/no_mans_land/battleroyale/five)
 "qP" = (/obj/effect/landmark{name = "JoinLateDM"},/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/battleroyale/four)
 "qQ" = (/obj/effect/landmark{name = "JoinLateDM"},/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/three)
 "qR" = (/obj/effect/landmark{name = "JoinLateDM"},/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/four)
@@ -1242,7 +1243,7 @@ ngpkjPjPlSjPlEjPqgjPqhmXjRngqajPjPlEngjVjKjKjVngngngqiqiqilSqiqingngoqjRjSjKjVpx
 ngpkrajPngjPqkqlqmjPlSjRjRlSjPjPqnpkjOjRvZvLvNngqoqpqoqilFjPqimqqnqqngjRjJjKjRjRoQoQjRjKlRmKqrmLjKtZuZlTpEpFpElTpEpFpElTmmmmmnmnmmmmmnmmmmkekekIkdqtkdkdoenUpJrbnUqeoDoDoDoAwavMvMoeoApgpgpgppnUoDnVnUoe
 ngpkrajPngjPjPjPjPjPqhnejRnglFjPqnpkngjRwbqXvNlSjPjPjPlSjPjPlSjPqnpkjOjRkykyjRjEjRkOjRjKjKmKqymLjKtZuKkdqtqzkekekIqAmmmmmmmnmnmnmnmmmmmmkekImIkdkdkdqtkdoeoAoDoDoGoDoDoUoDoHwaqYvMoeoHoDququoDoGoDpfoAoe
 oqngngngoqqhlSqhoqngoqjRkOngngngjOngngjRwcwcvNqiqilSqiqirEjPqipTjPjPqijRjKjSjRqCjRjEjRjKjKjKjJjKlRtZuKkdmIkemmmmmmmmmnmnmnmnmnmnmmmmmmmmmmkekdkdkdkdkdkdoenUnUnUnUoDoVpgpgoAwavMvMoeoAptoDoVoDnUnUnUnUoe
-jRjRjRpBjVpBjRpAjRjRjRjRrQjRjRjVjRpApBjRjKjSjIjOjPjPjPqilElEqijPjPjPlSjRjKjJjRqDjEjRjRjKjKmKqrmLjKtZuKkdkIkemmmnmnmnmnmmmnwdwdwdmmmmkekIkekekdoTqEqFkdkdodnUoWoDoGoDoDpopgnUodkAkAodnUoDoDoDoDoGoDoDnUod
-jKjKnFvYvLvVjKnsjKjKjKmJmKmLjKjKjKjKjKjKjKjJjIqiqGqHqIqiqJqKqiqoqLqMngjRmNjKjRjRqDjEjRjKjKjKjKjKjKtZuKkdkImmmnmnmmmmmmkemmwdvawekIkIkIkdqtkdkdkdkekdqFkdoenUnUnUnUnUnUnUnUnUoekAkAoenUnUnUnUnUnUnUnUnUoe
-sAjKqOvYqXvLjKjKjKmKmLmTjKjKjKjKjKplpcjKjKjKkOngqiqingqingqingqingqingjRjKjKjRjEqSqSjRjKjKmKqrmLjKtZuKkdkImmmnmnmmkIkIkdkewfwfwfkekdkdkdkdkdkdkdkdkdkdkzoeoeoeoeoeoeoeoeoeoeoekAkAoeoeoeoeoeoeoeoeoeoeoe
+vNvNvNvNjVpBjRpAjRjRjRjRrQjRjRjVjRpApBjRjKjSjIjOjPjPjPqilElEqijPjPjPlSjRjKjJjRqDjEjRjRjKjKmKqrmLjKtZuKkdkIkemmmnmnmnmnmmmnwdwdwdmmmmkekIkekekdoTqEqFkdkdodnUoWoDoGoDoDpopgnUodkAkAodnUoDoDoDoDoGoDoDnUod
+vLvLfHvYvLvVjKnsjKjKjKmJmKmLjKjKjKjKjKjKjKjJjIqiqGqHqIqiqJqKqiqoqLqMngjRmNjKjRjRqDjEjRjKjKjKjKjKjKtZuKkdkImmmnmnmmmmmmkemmwdvawekIkIkIkdqtkdkdkdkekdqFkdoenUnUnUnUnUnUnUnUnUoekAkAoenUnUnUnUnUnUnUnUnUoe
+sAvLfIvYqXvLjKjKjKmKmLmTjKjKjKjKjKplpcjKjKjKkOngqiqingqingqingqingqingjRjKjKjRjEqSqSjRjKjKmKqrmLjKtZuKkdkImmmnmnmmkIkIkdkewfwfwfkekdkdkdkdkdkdkdkdkdkdkzoeoeoeoeoeoeoeoeoeoeoekAkAoeoeoeoeoeoeoeoeoeoeoe
 "}

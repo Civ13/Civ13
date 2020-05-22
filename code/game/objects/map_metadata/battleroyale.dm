@@ -26,6 +26,7 @@
 	var/message = ""
 	gamemode = "Battleroyale"
 	required_players = 6
+
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
 
 	..()
@@ -136,14 +137,15 @@
 		for (var/i in closed_areas)
 			possible_areas -= i
 	if (possible_areas.len > 1)
-		var/ar_to_close = pick("one","two","five","six")
-		var/ar_to_close_string = ""
+		ar_to_close = pick("one","two","five","six")
+		ar_to_close_string = "None"
 		if (closed_areas.len)
 			if ("one" in closed_areas)
 				if ("two" in closed_areas)
 					if ("three" in closed_areas)
 						if ("four" in closed_areas)
 							if ("five" in closed_areas)
+								ar_to_close_string = "None"
 								return "too many areas closed"
 							else
 								ar_to_close = "five"
@@ -158,6 +160,7 @@
 					if ("four" in closed_areas)
 						if ("three" in closed_areas)
 							if ("six" in closed_areas)
+								ar_to_close_string = "None"
 								return "too many areas closed"
 							else
 								ar_to_close = "six"
@@ -172,6 +175,7 @@
 					if ("five" in closed_areas)
 						if ("six" in closed_areas)
 							if ("two" in closed_areas)
+								ar_to_close_string = "None"
 								return "too many areas closed"
 							else
 								ar_to_close = "two"
@@ -186,6 +190,7 @@
 					if ("two" in closed_areas)
 						if ("five" in closed_areas)
 							if ("one" in closed_areas)
+								ar_to_close_string = "None"
 								return "too many areas closed"
 							else
 								ar_to_close = "one"
@@ -200,6 +205,7 @@
 					if ("three" in closed_areas)
 						if ("four" in closed_areas)
 							if ("one" in closed_areas)
+								ar_to_close_string = "None"
 								return "too many areas closed"
 							else
 								ar_to_close = "one"
@@ -214,6 +220,7 @@
 					if ("four" in closed_areas)
 						if ("three" in closed_areas)
 							if ("two" in closed_areas)
+								ar_to_close_string = "None"
 								return "too many areas closed"
 							else
 								ar_to_close = "two"
@@ -236,9 +243,12 @@
 				ar_to_close_string = "South-Western"
 			if ("six")
 				ar_to_close_string = "South-Eastern"
-		world << "<big><b>The [ar_to_close_string] area will close in 2 minutes!</big></b>"
+			if ("none")
+				ar_to_close_string = "None"
+		world << "<big><b>The [ar_to_close_string] Area will close in 2 minutes!</big></b>"
+		ar_to_close_timeleft = 120
 		spawn(600)
-			world << "<big><b>The [ar_to_close_string] area will close in 1 minute!</big></b>"
+			world << "<big><b>The [ar_to_close_string] Area will close in 1 minute!</big></b>"
 			spawn(600)
 				close_area(ar_to_close)
 				closing_areas()
@@ -259,14 +269,14 @@
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/battleroyale/one/border/inside))
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
-				for(var/mob/living/human/H in world)
+				for(var/mob/living/human/H in player_list)
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one/inside))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Western Area")
-						H.gib()
-			world << "<big>The <b>North-Western</b> area has been closed!</big>"
+						H.crush()
+			world << "<big>The <b>North-Western</b> Area has been closed!</big>"
 			closed_areas += list("one")
 			return
 		if ("two")
@@ -275,14 +285,14 @@
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/battleroyale/two/border/inside))
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
-				for(var/mob/living/human/H in world)
+				for(var/mob/living/human/H in player_list)
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two/inside))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Eastern Area")
-						H.gib()
-			world << "<big>The <b>North-Eastern</b> area has been closed!</big>"
+						H.crush()
+			world << "<big>The <b>North-Eastern</b> Area has been closed!</big>"
 			closed_areas += list("two")
 			return
 		if ("three")
@@ -291,14 +301,14 @@
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/battleroyale/three/border/inside))
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
-				for(var/mob/living/human/H in world)
+				for(var/mob/living/human/H in player_list)
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three/inside))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Western Area")
-						H.gib()
-			world << "<big>The <b>Western</b> area has been closed!</big>"
+						H.crush()
+			world << "<big>The <b>Western</b> Area has been closed!</big>"
 			closed_areas += list("three")
 			return
 		if ("four")
@@ -307,14 +317,14 @@
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/battleroyale/four/border/inside))
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
-				for(var/mob/living/human/H in world)
+				for(var/mob/living/human/H in player_list)
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four/inside))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Eastern Area")
-						H.gib()
-			world << "<big>The <b>Eastern</b> area has been closed!</big>"
+						H.crush()
+			world << "<big>The <b>Eastern</b> Area has been closed!</big>"
 			closed_areas += list("four")
 			return
 		if ("five")
@@ -323,14 +333,14 @@
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/battleroyale/five/border/inside))
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
-				for(var/mob/living/human/H in world)
+				for(var/mob/living/human/H in player_list)
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five/inside))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Western Area")
-						H.gib()
-			world << "<big>The <b>South-Western</b> area has been closed!</big>"
+						H.crush()
+			world << "<big>The <b>South-Western</b> Area has been closed!</big>"
 			closed_areas += list("five")
 			return
 		if ("six")
@@ -339,19 +349,19 @@
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/battleroyale/six/border/inside))
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
-				for(var/mob/living/human/H in world)
+				for(var/mob/living/human/H in player_list)
 					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six/inside))
-						H.gib()
+						H.crush()
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Eastern Area")
-						H.gib()
-			world << "<big>The <b>South-Eastern</b> area has been closed!</big>"
+						H.crush()
+			world << "<big>The <b>South-Eastern</b> Area has been closed!</big>"
 			closed_areas += list("six")
 			return
-
+//////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow
-	maptext = "<center>Unknown Area</center>"
+	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
 	maptext_width = 32*8
 	maptext_x = (32*8 * -0.5)+32
 	maptext_y = 32*0.75
@@ -361,9 +371,9 @@
 	..()
 	var/area/parea = get_area(get_turf(parentmob))
 	if (parea)
-		maptext = "<center>[parea.name] ([parentmob.x],[parentmob.y])</center>"
+		maptext = "<center><font color='yellow'><b>[parea.name]</b> ([parentmob.x],[parentmob.y])</font></center>"
 	else
-		maptext = "<center>Unknown Area</center>"
+		maptext = "<center><font color='yellow'>Unknown Area</font></center>"
 	icon_state = "blank"
 	spawn(50)
 		update()
@@ -373,8 +383,60 @@
 		return
 	var/area/parea = get_area(get_turf(parentmob))
 	if (parea)
-		maptext = "<center>[parea.name] ([parentmob.x],[parentmob.y])</center>"
+		maptext = "<center><font color='yellow'><b>[parea.name]</b> ([parentmob.x],[parentmob.y])</font></center>"
+		if (parea.name == "[map.ar_to_close_string] Area")
+			maptext = "<center><font color='red'><b>[parea.name]</b> ([parentmob.x],[parentmob.y]) (CLOSING!)</font></center>"
 	else
-		maptext = "<center>Unknown Area</center>"
+		maptext = "<center><font color='yellow'>Unknown Area</font></center>"
 	spawn(10)
+		update()
+
+/obj/screen/areaclosing
+	maptext = "<center><font color='green'><b>Closing:</b> None</font></center>"
+	maptext_width = 96
+	maptext_x = 0
+	maptext_y = 32*0.75
+	icon_state = "blank"
+
+/obj/screen/areaclosing/New()
+	..()
+	icon_state = "blank"
+	spawn(100)
+		update()
+
+/obj/screen/areaclosing/proc/update()
+	if (!parentmob || !src)
+		return
+	if (map && map.ar_to_close_string != "" && map.ar_to_close_string != "None")
+		if (map.ar_to_close_timeleft > 0 && (map.ar_to_close_timeleft>600))
+			maptext = "<center><font color='green'><b>Closing:</b> [round(map.ar_to_close_timeleft)] secs</font></center>"
+		else if (map.ar_to_close_timeleft > 0 && (map.ar_to_close_timeleft>300))
+			maptext = "<center><font color='yellow'><b>Closing:</b> [round(map.ar_to_close_timeleft)] secs</font></center>"
+		else if (map.ar_to_close_timeleft > 0)
+			maptext = "<center><font color='red'><b>Closing:</b> [round(map.ar_to_close_timeleft)] secs</font></center>"
+		else
+			maptext = "<center><font color='green'><b>Closing:</b> None</font></center>"
+	else
+		maptext = "<center><font color='green'><b>Closing:</b> None</font></center>"
+	spawn(10)
+		update()
+
+/obj/screen/playersleft
+	maptext = "<center><font color='yellow'>Alive: <b>N/A</b></font></center>"
+	maptext_width = 64
+	maptext_x = 64
+	maptext_y = 32*0.75
+	icon_state = "blank"
+
+/obj/screen/playersleft/New()
+	..()
+	icon_state = "blank"
+	spawn(100)
+		update()
+
+/obj/screen/playersleft/proc/update()
+	if (!parentmob || !src)
+		return
+	maptext = "<center><font color='yellow'>Alive: <b>[alive_n_of_side(PIRATES)]</b></font></center>"
+	spawn(50)
 		update()

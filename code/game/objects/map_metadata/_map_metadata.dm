@@ -216,6 +216,11 @@ var/civmax_research = list(230,230,230)
 	var/force_mapgen = FALSE
 
 	var/lastcheck = 0
+
+	var/ar_to_close = ""
+	var/ar_to_close_string = "None"
+	var/ar_to_close_timeleft = 0
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -384,7 +389,8 @@ var/civmax_research = list(230,230,230)
 			autoresearch_proc()
 // called from the map process
 /obj/map_metadata/proc/tick()
-
+	if (ar_to_close_timeleft > 0)
+		ar_to_close_timeleft--
 	if (last_crossing_block_status[faction1] == FALSE)
 		if (faction1_can_cross_blocks())
 			world << cross_message(faction1)

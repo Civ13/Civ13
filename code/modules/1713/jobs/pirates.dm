@@ -510,7 +510,8 @@
 	spawn(200)
 		if (H.client)
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
-
+			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
+			H.client.screen += new/obj/screen/playersleft("Players Left","12,14", H, null, "")
 	return TRUE
 
 /datum/job/pirates/marooned
