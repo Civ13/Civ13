@@ -245,9 +245,9 @@
 				ar_to_close_string = "South-Eastern"
 			if ("none")
 				ar_to_close_string = "None"
-		world << "<big><b>The [ar_to_close_string] Area will close in 2 minutes!</big></b>"
-		ar_to_close_timeleft = 60
-		spawn(600)
+		world << "<big><b>The [ar_to_close_string] Area will close in 1.5 minutes!</big></b>"
+		ar_to_close_timeleft = 45
+		spawn(300)
 			ar_to_close_timeleft = 30
 			world << "<big><b>The [ar_to_close_string] Area will close in 1 minute!</big></b>"
 			spawn(600)
