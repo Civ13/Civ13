@@ -26,59 +26,47 @@
 
 /* Colonial Suits*/
 
-/obj/item/clothing/suit/storage/jacket/kool_kids_klub
-	name = "white robe with hood"
-	desc = "A white robe with a white hood, covering the whole body."
-	icon_state = "kool_kids_klub"
-	item_state = "kool_kids_klub"
-	worn_state = "kool_kids_klub"
-	body_parts_covered = FULL_BODY
+//pending, due to recently rebased content.
 
 /* Colonial Uniforms*/
 
 /obj/item/clothing/under/civ4
-	name = "Fancy Colonial Clothing"
+	name = "fancy colonial clothing"
 	desc = "A set composed of a quality white linen shirt and black trousers."
 	icon_state = "civuni4"
 	item_state = "civuni4"
 	worn_state = "civuni4"
 
 /obj/item/clothing/under/civ1
-	name = "Blue Colonial Clothing"
+	name = "blue colonial clothing"
 	desc = "A set composed of a light blue linen shirt and short trousers."
 	icon_state = "civuni1"
 	item_state = "civuni1"
 	worn_state = "civuni1"
 
 /obj/item/clothing/under/civ2
-	name = "White Colonial Clothing"
+	name = "white colonial clothing"
 	desc = "A set composed of a white linen shirt and black trousers."
 	icon_state = "civuni2"
 	item_state = "civuni2"
 	worn_state = "civuni2"
 
 /obj/item/clothing/under/civ3
-	name = "Short-sleeved Colonial Clothing"
+	name = "short-sleeved colonial clothing"
 	desc = "A set composed of a light white linen shirt with short sleeves and black trousers."
 	icon_state = "civuni3"
 	item_state = "civuni3"
 	worn_state = "civuni3"
-/obj/item/clothing/under/civ3
-	name = "Victorian Tailcoat"
-	desc = "Also known as a butler suit."
-	icon_state = "victorian_tailcoat"
-	item_state = "victorian_tailcoat"
-	worn_state = "victorian_tailcoat"
 
 /obj/item/clothing/under/civ5
-	name = "Green Colonial Clothing"
+	name = "green colonial clothing"
 	desc = "A set composed of a green linen shirt and black trousers."
 	icon_state = "civuni5"
 	item_state = "civuni5"
 	worn_state = "civuni5"
 
 /obj/item/clothing/under/civ6
-	name = "Pink Colonial Clothing"
+	name = "pink colonial clothing"
 	desc = "A set composed of a pink linen shirt and black trousers."
 	icon_state = "civuni6"
 	item_state = "civuni6"
@@ -91,35 +79,35 @@
 	item_state = "ba_suit"
 
 /obj/item/clothing/under/civf1
-	name = "Dark dress"
+	name = "dark dress"
 	desc = "A dark dress, used by peasant women."
 	icon_state = "dress1"
 	item_state = "dress1"
 	worn_state = "dress1"
 
 /obj/item/clothing/under/civf2
-	name = "Blue dress"
+	name = "blue dress"
 	desc = "A blue dress."
 	icon_state = "dress2"
 	item_state = "dress2"
 	worn_state = "dress2"
 
 /obj/item/clothing/under/civf3
-	name = "Brown dress"
+	name = "brown dress"
 	desc = "A brown dress."
 	icon_state = "dress3"
 	item_state = "dress3"
 	worn_state = "dress3"
 
 /obj/item/clothing/under/civfg
-	name = "Green dress"
+	name = "green dress"
 	desc = "A green dress."
 	icon_state = "dressg"
 	item_state = "dressg"
 	worn_state = "dressg"
 
 /obj/item/clothing/under/civfr
-	name = "Red dress"
+	name = "red dress"
 	desc = "A red dress."
 	icon_state = "dressr"
 	item_state = "dressr"

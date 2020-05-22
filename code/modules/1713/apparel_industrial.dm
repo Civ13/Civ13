@@ -82,7 +82,7 @@
 			adjusted = TRUE
 	update_clothing_icon()
 
-/obj/item/clothing/under/civ87
+/obj/item/clothing/suit/storage/jacket/vict_tailcoat
 	name = "victorian tailcoat"
 	desc = "Also known as a butler suit."
 	icon_state = "victorian_tailcoat"
@@ -457,9 +457,18 @@ obj/item/clothing/under/confederate_uniform/New()
 		usr.update_inv_wear_suit(1)
 		return
 
+/* Miscallaneous*/
+
+/obj/item/clothing/suit/storage/jacket/kool_kids_klub 	//24 December 1865
+	name = "white robe with hood"
+	desc = "A white robe with a white hood, covering the whole body."
+	icon_state = "kool_kids_klub"
+	item_state = "kool_kids_klub"
+	worn_state = "kool_kids_klub"
+	body_parts_covered = FULL_BODY
 
 /obj/item/clothing/accessory/storage/webbing/civil_war
-	name = "cartirdge rigging"
+	name = "cartridge rigging"
 	desc = "A rig of cases for ammo and a bayonet."
 	icon_state = "civil_war"
 	item_state = "civil_war"
