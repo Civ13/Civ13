@@ -5,6 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	is_singlefaction = TRUE
+	battleroyale = TRUE
 
 	no_winner ="The fighting is still going."
 
@@ -65,7 +66,10 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		processes.python.execute("mapswap.py", list("BATTLEROYALE_2"))
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+		last_win_condition = win_condition.hash
 		message = "30 minutes have passed! The combat has ended in a stalemate!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
@@ -84,47 +88,16 @@
 						world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
 						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
-			if (config.allowedgamemodes == "BR")
-				processes.python.execute("mapswap.py", list("BATTLEROYALE_2"))
+			next_win = -1
+			current_win_condition = no_winner
+			win_condition.hash = 0
+			last_win_condition = win_condition.hash
 			return FALSE
-
-
-/obj/map_metadata/battleroyale/two
-	ID = MAP_BATTLEROYALE_2
-	title = "Arab Town Battle Royale (100x100x1)"
-
-	age = "2013"
-	ordinal_age = 8
-	faction_distribution_coeffs = list(PIRATES = 1)
-	battle_name = "Battleroyale at Arab Town"
-	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
 
 /obj/map_metadata/battleroyale/New()
 	..()
 	spawn(1000)
 		closing_areas()
-
-/obj/map_metadata/battleroyale/two/job_enabled_specialcheck(var/datum/job/J)
-
-	..()
-	if (J.is_RP == TRUE)
-		. = FALSE
-	else if (J.is_army == TRUE)
-		. = FALSE
-	else if (J.is_coldwar == TRUE)
-		. = FALSE
-	else if (J.is_medieval == TRUE)
-		. = FALSE
-	else if (J.is_marooned == TRUE)
-		. = FALSE
-	else if (istype(J, /datum/job/pirates/battleroyale/modern))
-		J.total_positions = 32
-		J.min_positions = 32
-		J.max_positions = 32
-		. = TRUE
-	else
-		. = FALSE
-	return .
 
 /obj/map_metadata/battleroyale/proc/closing_areas()
 	if (processes.ticker.playtime_elapsed < 1200)
@@ -444,3 +417,66 @@
 	maptext = "<center><font color='yellow'>Alive: <b>[alive_n_of_side(PIRATES)]</b></font></center>"
 	spawn(50)
 		update()
+
+/obj/map_metadata/battleroyale/two
+	ID = MAP_BATTLEROYALE_2
+	title = "Arab Town Battle Royale (100x100x1)"
+
+	age = "2013"
+	ordinal_age = 8
+	faction_distribution_coeffs = list(PIRATES = 1)
+	battle_name = "Battleroyale at Arab Town"
+	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
+
+/obj/map_metadata/battleroyale/three/job_enabled_specialcheck(var/datum/job/J)
+
+	..()
+	if (J.is_RP == TRUE)
+		. = FALSE
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
+		. = FALSE
+	else if (J.is_marooned == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale/modern))
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
+		. = TRUE
+	else
+		. = FALSE
+	return .
+/obj/map_metadata/battleroyale/three
+	ID = MAP_BATTLEROYALE_3
+	title = "Camp Battle Royale (100x100x1)"
+
+	age = "1013"
+	ordinal_age = 3
+	faction_distribution_coeffs = list(PIRATES = 1)
+	battle_name = "Battleroyale at Camp"
+	mission_start_message = "<font size=4><b>Last standing player wins!</b><br>TWO MINUTES UNTIL THE INVISIBLE WALL DISAPPEARS!</font>"
+
+/obj/map_metadata/battleroyale/three/job_enabled_specialcheck(var/datum/job/J)
+
+	..()
+	if (J.is_RP == TRUE)
+		. = FALSE
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
+		. = FALSE
+	else if (J.is_marooned == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale/medieval))
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
+		. = TRUE
+	else
+		. = FALSE
+	return .

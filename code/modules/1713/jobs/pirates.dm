@@ -462,6 +462,59 @@
 
 	return TRUE
 
+/datum/job/pirates/battleroyale/medieval
+	title = "Medieval Battle Royale Fighter"
+	en_meaning = ""
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateDM"
+
+	is_deathmatch = TRUE
+
+	min_positions = 0
+	max_positions = 0
+	total_positions = 0
+
+/datum/job/pirates/battleroyale/medieval/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	var/randcloth = rand(1,6)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
+	else if (randcloth == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(H), slot_w_uniform)
+	else if (randcloth == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
+	else if (randcloth == 6)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+
+//bandages
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+
+	H.add_note("Role", "Be the last one to live!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	spawn(200)
+		if (H.client)
+			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
+			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
+			H.client.screen += new/obj/screen/playersleft("Players Left","12,14", H, null, "")
+	return TRUE
 
 
 /datum/job/pirates/battleroyale/modern

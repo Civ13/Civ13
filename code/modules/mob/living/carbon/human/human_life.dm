@@ -1383,7 +1383,7 @@
 			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					if (map && map.ID != MAP_BATTLEROYALE && MAP_BATTLEROYALE_2)
+					if (map && !map.battleroyale)
 						holder2.icon_state = "pirate_basic"
 				if (BRITISH)
 					if (map.ordinal_age >= 4)

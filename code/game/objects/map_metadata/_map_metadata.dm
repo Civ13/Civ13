@@ -211,7 +211,7 @@ var/civmax_research = list(230,230,230)
 	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"), list("zelenyy","neutral","water"), list("marron","neutral","water"), list("corcairghorm","neutral","water"))
 
 	var/persistence = FALSE
-
+	var/battleroyale = FALSE
 	var/override_mapgen = FALSE
 	var/force_mapgen = FALSE
 
@@ -403,7 +403,7 @@ var/civmax_research = list(230,230,230)
 	if (last_crossing_block_status[faction2] == FALSE)
 		if (faction2_can_cross_blocks())
 			world << cross_message(faction2)
-			if (ID == MAP_BATTLEROYALE_2 || ID == MAP_BATTLEROYALE)
+			if (battleroyale)
 				var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 				for (var/mob/M in player_list)
 					M.client << warning_sound
