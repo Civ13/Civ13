@@ -56,10 +56,7 @@
 				"Civilization 13 (Colony & Pioneers)" = 0,
 				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
-		else if (config.allowedgamemodes == "BR")
-			ready = FALSE
-			processes.python.execute("mapswap.py", "BATTLEROYALE_2")
-			return
+
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
 

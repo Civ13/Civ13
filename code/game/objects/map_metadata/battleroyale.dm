@@ -40,9 +40,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale) && !istype(J, /datum/job/pirates/battleroyale/modern))
-		J.total_positions = 32
-		J.min_positions = 32
-		J.max_positions = 32
+		J.total_positions = latejoin_turfs["JoinLateDM"].len
+		J.min_positions = J.total_positions
+		J.max_positions = J.total_positions
 		. = TRUE
 	else
 		. = FALSE
@@ -63,7 +63,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		processes.python.execute("mapswap.py", "BATTLEROYALE_2")
+		processes.python.execute("mapswap.py", list("BATTLEROYALE_2"))
 		message = "30 minutes have passed! The combat has ended in a stalemate!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
@@ -83,7 +83,7 @@
 						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
 			if (config.allowedgamemodes == "BR")
-				processes.python.execute("mapswap.py", "BATTLEROYALE_2")
+				processes.python.execute("mapswap.py", list("BATTLEROYALE_2"))
 			return FALSE
 
 
