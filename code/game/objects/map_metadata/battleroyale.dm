@@ -1,9 +1,10 @@
 /obj/map_metadata/battleroyale
 	ID = MAP_BATTLEROYALE
 	title = "Isla Robusta Battle Royale (125x125x1)"
-	lobby_icon_state = "imperial"
+	lobby_icon_state = "battleroyale"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
+	is_singlefaction = TRUE
 
 	no_winner ="The fighting is still going."
 
@@ -24,7 +25,7 @@
 	faction2 = CIVILIAN
 	var/message = ""
 	gamemode = "Battleroyale"
-
+	required_players = 6
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
 
 	..()
@@ -58,11 +59,12 @@
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
 /obj/map_metadata/battleroyale/update_win_condition()
-	if (world.time >= 36000)
+	if (processes.ticker.playtime_elapsed >= 18000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		message = "One hour has passed! The combat has ended in a stalemate!"
+		processes.python.execute("mapswap.py", "BATTLEROYALE_2")
+		message = "30 minutes have passed! The combat has ended in a stalemate!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
@@ -73,17 +75,21 @@
 					if (H.original_job.base_type_flag() == PIRATES)
 						winner_name =  H.name
 						winner_ckey = H.ckey
+						var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+						for (var/mob/M in player_list)
+							M.client << warning_sound
 						message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
-						world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+						world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
 						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
+			if (config.allowedgamemodes == "BR")
+				processes.python.execute("mapswap.py", "BATTLEROYALE_2")
 			return FALSE
 
 
 /obj/map_metadata/battleroyale/two
 	ID = MAP_BATTLEROYALE_2
 	title = "Arab Town Battle Royale (100x100x1)"
-	lobby_icon_state = "civ13"
 
 	age = "2013"
 	ordinal_age = 8
@@ -120,7 +126,7 @@
 	return .
 
 /obj/map_metadata/battleroyale/two/proc/closing_areas()
-	if (processes.ticker.playtime_elapsed < 1800)
+	if (processes.ticker.playtime_elapsed < 1200)
 		spawn(600)
 			closing_areas()
 		return "too early to close areas"
@@ -277,7 +283,7 @@
 					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Eastern Area")
 						H.gib()
 			world << "<big>The <b>North-Eastern</b> area has been closed!</big>"
-			closed_areas += list("one")
+			closed_areas += list("two")
 			return
 		if ("three")
 			for (var/turf/T in get_area_turfs(/area/caribbean/no_mans_land/battleroyale/three/border))

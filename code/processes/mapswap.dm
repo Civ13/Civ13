@@ -56,13 +56,18 @@
 				"Civilization 13 (Colony & Pioneers)" = 0,
 				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
+		else if (config.allowedgamemodes == "BR")
+			ready = FALSE
+			processes.python.execute("mapswap.py", "BATTLEROYALE_2")
+			return
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
-
-	if (ready)
+	if (config.allowedgamemodes == "BR")
+		. = FALSE
+	else if (ready)
 		if (admin_triggered)
 			. = TRUE
 		// round will end soon (tm)
@@ -106,6 +111,7 @@
 				MAP_HOSTAGES = 0,
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
+				MAP_BATTLEROYALE_2 = 10,
 			)
 		if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM
@@ -219,8 +225,9 @@
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
-
-	if (ready)
+	if (config.allowedgamemodes == "BR")
+		. = FALSE
+	else if (ready)
 		if (admin_triggered)
 			. = TRUE
 		// round will end soon (tm)
