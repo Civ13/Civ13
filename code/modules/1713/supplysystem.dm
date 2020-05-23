@@ -48,9 +48,9 @@
 		list("governor","blunderbuss crate (5)", /obj/structure/closet/crate/blunderbusses,495),
 	)
 
-	/obj/structure/supplybook/New()
-		src.import_tax_rate = global.global_import_tax
-		return ..()
+/obj/structure/supplybook/New()
+	src.import_tax_rate = global.global_import_tax
+	return ..()
 
 /obj/structure/exportbook
 	name = "exporting book"
@@ -79,7 +79,7 @@
 	icon_state = "supplybook"
 	not_movable = FALSE
 	not_disassemblable = TRUE
-/obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
+/obj/structure/supplybook/attack_hand(var/mob/living/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Trader" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand" && user.original_job_title != "Mayor" && user.original_job_title != "Kaufmann" && user.original_job_title != "Freiherr")
 		user << "Only the merchants have access to the international shipping companies. Negotiate with one."
 		return
@@ -321,7 +321,7 @@
 			user << "Too much money to pay you back! Buy something else to reduce the money deposited."
 			return
 
-/obj/structure/supplybook/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/supplybook/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if (W.amount && istype(W, /obj/item/stack/money))
 		money += W.value*W.amount
 		qdel(W)
@@ -330,7 +330,7 @@
 		H << "You need to use either money or another form of currency (gold, pearls, valuable items)."
 		return
 
-/obj/structure/exportbook/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/exportbook/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Trader" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Kaufmann")
 		if (H.original_job_title != "Gobernador" && H.original_job_title != "Governador" && H.original_job_title != "Governeur" && H.original_job_title != "Governor" && H.original_job_title != "British Governor" && H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Trader" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Mayor" && H.original_job_title != "Kaufmann" && H.original_job_title != "Freiherr")
 			H << "Only the merchants have access to the international shipping companies. Negotiate with one."
@@ -540,7 +540,7 @@
 					done = FALSE
 					return
 
-/obj/structure/exportbook/attack_hand(var/mob/living/carbon/human/H as mob)
+/obj/structure/exportbook/attack_hand(var/mob/living/human/H as mob)
 	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Trader" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Banker" && H.original_job_title != "Kaufmann")
 		if (H.original_job_title != "Gobernador" && H.original_job_title != "Governador" && H.original_job_title != "Governeur" && H.original_job_title != "Governor" && H.original_job_title != "British Governor" && H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Trader" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Mayor"&& H.original_job_title != "Freiherr" && H.original_job_title != "Kaufmann")
 			H << "Only the merchants have access to the international shipping companies. Negotiate with one."

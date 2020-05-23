@@ -8,7 +8,7 @@ var/civmax_research = list(230,230,230)
 	icon_state = "x2"
 	anchored = TRUE
 	simulated = FALSE
-	invisibility = 101
+	invisibility = 0
 	var/ID = null // MUST be text, or aspects will break
 	var/no_winner = "Neither side has captured the other side's base."
 	var/title = null
@@ -211,11 +211,16 @@ var/civmax_research = list(230,230,230)
 	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"), list("zelenyy","neutral","water"), list("marron","neutral","water"), list("corcairghorm","neutral","water"))
 
 	var/persistence = FALSE
-
+	var/battleroyale = FALSE
 	var/override_mapgen = FALSE
 	var/force_mapgen = FALSE
 
 	var/lastcheck = 0
+
+	var/ar_to_close = ""
+	var/ar_to_close_string = "None"
+	var/ar_to_close_timeleft = 0
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -384,7 +389,8 @@ var/civmax_research = list(230,230,230)
 			autoresearch_proc()
 // called from the map process
 /obj/map_metadata/proc/tick()
-
+	if (ar_to_close_timeleft > 0)
+		ar_to_close_timeleft--
 	if (last_crossing_block_status[faction1] == FALSE)
 		if (faction1_can_cross_blocks())
 			world << cross_message(faction1)
@@ -397,6 +403,10 @@ var/civmax_research = list(230,230,230)
 	if (last_crossing_block_status[faction2] == FALSE)
 		if (faction2_can_cross_blocks())
 			world << cross_message(faction2)
+			if (battleroyale)
+				var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+				for (var/mob/M in player_list)
+					M.client << warning_sound
 
 	else if (last_crossing_block_status[faction2] == TRUE)
 		if (!faction2_can_cross_blocks())
@@ -527,7 +537,7 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/check_events()
 	return TRUE
 
-/obj/map_metadata/proc/check_caribbean_block(var/mob/living/carbon/human/H, var/turf/T)
+/obj/map_metadata/proc/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -698,7 +708,7 @@ var/civmax_research = list(230,230,230)
 	var/s1 = 0
 	var/s2 = 0
 
-	for (var/mob/living/carbon/human/H in human_mob_list)
+	for (var/mob/living/human/H in human_mob_list)
 
 		var/datum/job/job = H.original_job
 
@@ -1042,7 +1052,7 @@ var/civmax_research = list(230,230,230)
 			spawn(15000)
 				change_weather(WEATHER_WET)
 				for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
-					if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
+					if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !(get_area(D).climate == "jungle"))
 						D.ChangeTurf(/turf/floor/dirt/winter)
 				for (var/turf/floor/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
 					if (get_area(G).climate == "temperate")

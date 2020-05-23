@@ -29,11 +29,11 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak47/makeshift
-	name = "Makeshift AK-47 magazine (7.5mm)"
+	name = "Makeshift AK-47 magazine (7.62x39mm)"
 	icon_state = "makeshiftak-47"
 	mag_type = MAGAZINE
-	caliber = "intermediumrifle"
-	ammo_type = /obj/item/ammo_casing/intermediumrifle
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
 	max_ammo = 28
 	weight = 0.6
 	multiple_sprites = TRUE
@@ -156,14 +156,13 @@
 
 /obj/item/ammo_magazine/p90
 	name = "P90 Magazine (5.7x28mm)"
-	icon_state = "clip"
-
+	icon_state = "p90"
+	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a57x28
-	caliber = "57x28"
+	caliber = "a57x28"
 	max_ammo = 50
 	weight = 0.045
 	multiple_sprites = TRUE
-	clip = TRUE
 
 /obj/item/ammo_magazine/glock17
 	name = "G17 Glock (9x19mm)"
@@ -254,3 +253,13 @@
 	max_ammo = 20
 	weight = 0.5
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/sks
+	name = "clip (7.62x39mm)"
+	icon_state = "clip"
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 5
+	weight = 0.04
+	multiple_sprites = TRUE
+	clip = TRUE

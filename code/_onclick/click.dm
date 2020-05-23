@@ -68,7 +68,7 @@
 
 	// can't click on stuff when we're lying, unless it's a bed
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		//if (H.lying)
 			//if (ismob(A) || (A.loc && istype(A.loc, /turf)))
 				//if (!istype(A, /obj/structure/bed))
@@ -120,7 +120,7 @@
 
 	// stop looking down a ladder
 	if (istype(A, /obj/structure/multiz/ladder/ww2))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (istype(H) && H.laddervision)
 			H.update_laddervision(null)
 			H.visible_message("<span class = 'notice'>[H] stops looking [H.laddervision_direction()] the ladder.</span>")
@@ -182,7 +182,7 @@
 			skip
 
 
-	if (W == A) // Handle attack_self
+	if (W && W == A) // Handle attack_self
 		W.attack_self(src)
 		if (hand)
 			update_inv_l_hand(0)

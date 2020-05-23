@@ -1,16 +1,16 @@
-/mob/living/carbon/human/proc/update_eyes()
+/mob/living/human/proc/update_eyes()
 	var/obj/item/organ/eyes/eyes = internal_organs_by_name["eyes"]
 	if (eyes)
 		eyes.update_colour()
 		regenerate_icons()
 
-/mob/living/carbon/var/list/internal_organs = list()
-/mob/living/carbon/human/var/list/organs = list()
-/mob/living/carbon/human/var/list/organs_by_name = list() // map organ names to organs
-/mob/living/carbon/human/var/list/internal_organs_by_name = list() // so internal organs have less ickiness too
+/mob/living/human/var/list/internal_organs = list()
+/mob/living/human/var/list/organs = list()
+/mob/living/human/var/list/organs_by_name = list() // map organ names to organs
+/mob/living/human/var/list/internal_organs_by_name = list() // so internal organs have less ickiness too
 
 // Takes care of organ related updates, such as broken and missing limbs
-/mob/living/carbon/human/proc/handle_organs()
+/mob/living/human/proc/handle_organs()
 
 	var/force_process = FALSE
 	var/damage_this_tick = getBruteLoss() + getFireLoss() + getToxLoss()
@@ -69,7 +69,7 @@
 		if (limbs_count == FALSE)
 			has_limbs = FALSE
 
-/mob/living/carbon/human/proc/handle_stance()
+/mob/living/human/proc/handle_stance()
 	// Don't need to process any of this if they aren't standing anyways
 	// unless their stance is damaged, and we want to check if they should stay down
 	if (!stance_damage && (lying || resting || prone) && (life_tick % 4) == FALSE)
@@ -127,7 +127,7 @@
 			custom_emote(1, "collapses!")
 		Weaken(5) //can't emote while weakened, apparently.
 
-/mob/living/carbon/human/proc/handle_grasp()
+/mob/living/human/proc/handle_grasp()
 	if (!l_hand && !r_hand)
 		return
 
@@ -172,13 +172,13 @@
 
 
 //Handles chem traces
-/mob/living/carbon/human/proc/handle_trace_chems()
+/mob/living/human/proc/handle_trace_chems()
 	//New are added for reagents to random organs.
 	for (var/datum/reagent/A in reagents.reagent_list)
 		var/obj/item/organ/O = pick(organs)
 		O.trace_chemicals[A.name] = 100
 
-/mob/living/carbon/human/proc/sync_organ_dna()
+/mob/living/human/proc/sync_organ_dna()
 	var/list/all_bits = internal_organs|organs
 	for (var/obj/item/organ/O in all_bits)
 		O.set_dna(dna)
@@ -186,7 +186,7 @@
 /mob/living/proc/is_asystole()
 	return FALSE
 
-/mob/living/carbon/human/is_asystole()
+/mob/living/human/is_asystole()
 	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
 	if(!istype(heart) || !heart.is_working())
 		return TRUE

@@ -3,6 +3,7 @@
 
 	var/list/epochs = list(
 		//"Stone Age (?-3000 B.C.)" = 0,
+		"Chad Mode" = 0,
 		"Bronze Age (500 B.C.-400 A.D.)" = 0,
 		//"Dark Ages (400-700)" = 0,
 		"Middle Ages (700-1450)" = 0,
@@ -17,6 +18,7 @@
 		"Civilization 13 (Colony & Pioneers)" = 0,
 		"Civilization 13 (Prison Camps)" = 15,
 		"Civilization 13 (Others)" = 0,
+		"Battle Royale" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -36,6 +38,8 @@
 		map.save_awards()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
+				"Chad Mode" = 0,
+				"Battle Royale" = 0,
 				//Stone Age (?-3000 B.C.)" = 0,
 				"Bronze Age (500 B.C.-400 A.D.)" = 0,
 				//"Dark Ages (400-700)" = 0,
@@ -54,13 +58,17 @@
 				"Civilization 13 (Colony & Pioneers)" = 0,
 				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
+		else if (config.allowedgamemodes == "BR")
+			epochs = list(
+				"Battle Royale" = 0,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
-
-	if (ready)
+	if (config.allowedgamemodes == "BR")
+		. = FALSE
+	else if (ready)
 		if (admin_triggered)
 			. = TRUE
 		// round will end soon (tm)
@@ -105,13 +113,13 @@
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
 			)
-		if (epoch == "Cold War Era (1958-1984)")
+		else if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM
 			maps = list(
 				MAP_COMPOUND = 0,
 				MAP_ROAD_TO_DAK_TO = 0,
 			)
-		if (epoch == "World War II (1934-1957)")
+		else if (epoch == "World War II (1934-1957)")
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,
@@ -124,7 +132,7 @@
 //				MAP_IWO_JIMA = 70,
 			)
 
-		if (epoch == "Early Modern Era (1896-1933)")
+		else if (epoch == "Early Modern Era (1896-1933)")
 	// 1903 - TDM
 			maps = list(
 				MAP_HILL_203 = 0,
@@ -133,44 +141,48 @@
 				MAP_PORT_ARTHUR = 10,
 			)
 
-		if (epoch == "Industrial Age (1850-1895)")
+		else if (epoch == "Industrial Age (1850-1895)")
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK_TDM = 0,
 				MAP_MISSIONARY_RIDGE = 20,
 			)
-		if (epoch == "Imperial Age (1650-1780)")
+		else if (epoch == "Imperial Age (1650-1780)")
 		//1713 - TDM
 			maps = list(
 //				MAP_CURSED_ISLAND = 0,
 				MAP_NAVAL = 0,
 				MAP_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
-		//		MAP_BATTLEROYALE = 20,
-				MAP_SUPPLY_RAID = 8,
+		//		MAP_SUPPLY_RAID = 8,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
 			)
-		if (epoch == "Bronze Age (500 B.C.-400 A.D.)")
+		else if (epoch == "Bronze Age (500 B.C.-400 A.D.)")
 	// 313bc - TDM
 			maps = list(
 				MAP_HERACLEA = 0,
 				MAP_SIEGE = 0,
 				MAP_GLADIATORS = 0,
 			)
-		if (epoch == "Middle Ages (700-1450)")
+		else if (epoch == "Chad Mode")
+	// chad mode group for TDM
+			maps = list(
+				MAP_JUNGLE_OF_THE_CHADS = 0,
+			)
+		else if (epoch == "Middle Ages (700-1450)")
 	//	1013 - TDM
 			maps = list(
 				MAP_CAMP = 0,
 				MAP_KARAK = 0,
 				MAP_SAMMIRHAYEED = 20,
 			)
-		if (epoch == "Stone Age (?-3000 B.C.)")
+		else if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
 				MAP_TRIBES = 0,
 			)
-		if (epoch == "Civilization 13 (Nomads)")
+		else if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
 //				MAP_CIVILIZATIONS = 0,
 				MAP_NOMADS = 0,
@@ -181,37 +193,44 @@
 				MAP_NOMADS_CONTINENTAL = 20,
 				MAP_NOMADS_PANGEA = 10,
 				MAP_NOMADS_WASTELAND = 0,
+				MAP_NOMADS_WASTELAND_2 = 0,
 				MAP_NOMADS_NEW_WORLD = 10,
 				MAP_NOMADS_MEDITERRANEAN = 10,
 				MAP_NOMADS_ISLAND = 0,
 				MAP_NOMADS_KARAFUTO = 0,
 			)
-		if (epoch == "Civilization 13 (Colony & Pioneers)")
+		else if (epoch == "Civilization 13 (Colony & Pioneers)")
 			maps = list(
 				MAP_COLONY = 0,
 				MAP_JUNGLE_COLONY = 4,
 				MAP_PIONEERS = 10,
-				MAP_FOUR_COLONIES = 35,
+				MAP_FOUR_COLONIES = 30,
 			)
-		if (epoch == "Civilization 13 (Prison Camps)")
+		else if (epoch == "Civilization 13 (Prison Camps)")
 			maps = list(
 				MAP_GULAG13 = 15,
 			)
-		if (epoch == "Civilization 13 (Others)")
+		else if (epoch == "Civilization 13 (Others)")
 			maps = list(
-				MAP_TRIBES = 8,
+				MAP_TRIBES = 12,
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
+//				MAP_FOUR_KINDGOMS = 16
 			)
-
+		else if (epoch == "Battle Royale")
+			maps = list(
+				MAP_BATTLEROYALE_MEDIEVAL = 0,
+				MAP_BATTLEROYALE_IMPERIAL = 0,
+				MAP_BATTLEROYALE_MODERN = 0,)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
 			return
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
-
-	if (ready)
+	if (config.allowedgamemodes == "BR")
+		. = FALSE
+	else if (ready)
 		if (admin_triggered)
 			. = TRUE
 		// round will end soon (tm)
@@ -268,7 +287,7 @@
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)",  "Chad Mode", "Chad Mode +")
+		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
 
 	map.gamemode = vote.voted_gamemode
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")

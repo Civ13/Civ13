@@ -50,11 +50,11 @@
 	else if (!locate(using_MG) in range(1, src) || stop_using)
 		use_MG(null)
 
-/mob/living/carbon/human/Move()
+/mob/living/human/Move()
 	handle_MG_operation()
 	..()
 
-/mob/living/carbon/human/update_canmove()
+/mob/living/human/update_canmove()
 	if (lying || stat)
 		handle_MG_operation(stop_using = TRUE)
 	..()
@@ -153,13 +153,13 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98
 	name = "Type 92 machine gun"
 	desc = "A japanese heavy machinegun. Uses 7.7x58mm Arisaka rounds."
-	icon_state = "type98hmg"
-	base_icon = "type98hmg"
+	icon_state = "type92hmg"
+	base_icon = "type92hmg"
 	caliber = "a77x58"
 	fire_sound = 'sound/weapons/guns/fire/Type92.ogg'
 	magazine_type = /obj/item/ammo_magazine/type92
 	firemodes = list(
-		list(name="full auto", burst=4, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		list(name="full auto", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a77x58
 	attachment_slots = ATTACH_SCOPE

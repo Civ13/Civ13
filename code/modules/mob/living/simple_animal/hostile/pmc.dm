@@ -25,7 +25,7 @@
 	mob_size = MOB_MEDIUM
 	starves = FALSE
 	behaviour = "hostile"
-	corpse = /mob/living/carbon/human/corpse/pmc
+	corpse = /mob/living/human/corpse/pmc
 	faction = PIRATES
 	ranged = 1
 	rapid = 2

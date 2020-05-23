@@ -1,18 +1,26 @@
 /datum/job
 	var/default_language = "Common"
 	var/list/additional_languages = list() // "Name" = probability between 1-100
+	var/male_tts_voice = "Matthew"
+	var/female_tts_voice = "Joanna"
 
 /datum/job/civilian
 	default_language = "English"
 	additional_languages = list()
+	male_tts_voice = "Brian"
+	female_tts_voice = "Amy"
 
 /datum/job/civilian/portuguese
 	default_language = "Portuguese"
 	additional_languages = list("French" = 25, "Spanish" = 35, "English" = 10)
+	male_tts_voice = "Cristiano"
+	female_tts_voice = "Ines"
 
 /datum/job/civilian/spanish
 	default_language = "Spanish"
 	additional_languages = list("Portuguese" = 15, "French" = 25, "English" = 10)
+	male_tts_voice = "Enrique"
+	female_tts_voice = "Lucia"
 
 /datum/job/pirates
 	default_language = "English"
@@ -21,66 +29,103 @@
 /datum/job/british
 	default_language = "English"
 	additional_languages = list("French" = 15, "Spanish" = 15, "Portuguese" = 5, "German" = 5)
+	male_tts_voice = "Brian"
+	female_tts_voice = "Amy"
 
 /datum/job/indians
 	default_language = "Carib"
 	additional_languages = list("French" = 25, "Spanish" = 25, "Portuguese" = 25, "English" = 25)
+	male_tts_voice = "Miguel"
+	female_tts_voice = "Penelope"
 
 /datum/job/portuguese
 	default_language = "Portuguese"
 	additional_languages = list("French" = 25, "Spanish" = 35, "English" = 10)
+	male_tts_voice = "Cristiano"
+	female_tts_voice = "Ines"
 
 /datum/job/spanish
 	default_language = "Spanish"
 	additional_languages = list("Portuguese" = 15, "French" = 25, "English" = 10)
+	male_tts_voice = "Enrique"
+	female_tts_voice = "Lucia"
 
 /datum/job/dutch
 	default_language = "Dutch"
 	additional_languages = list("French" = 15, "Spanish" = 10, "English" = 25)
+	male_tts_voice = "Ruben"
+	female_tts_voice = "Lotte"
 
 /datum/job/french
 	default_language = "French"
 	additional_languages = list("English" = 10, "Spanish" = 15)
+	male_tts_voice = "Mathieu"
+	female_tts_voice = "Celine"
 
 /datum/job/roman
 	default_language = "Latin"
 	additional_languages = list("Greek" = 10)
+	male_tts_voice = "Giorgio" //italian
+	female_tts_voice = "Bianca" //italian
 
 /datum/job/greek
 	default_language = "Greek"
 	additional_languages = list("Latin" = 10)
+	male_tts_voice = "Jacek" //polish
+	female_tts_voice = "Maja" //polish
 
 /datum/job/arab
 	default_language = "Arabic"
 	additional_languages = list("French" = 10)
+	male_tts_voice = "Russell" //australian
+	female_tts_voice = "Zeina"
 
 /datum/job/japanese
 	default_language = "Japanese"
 	additional_languages = list("English" = 15, "Russian" = 10)
+	male_tts_voice = "Takumi"
+	female_tts_voice = "Mizuki"
+
+/datum/job/japanese/ija_ww2ATunit
+	default_language = "Japanese"
+	additional_languages = list("Korean" = 100, "Russian" = 10)
+	male_tts_voice = "Takumi"
+	female_tts_voice = "Mizuki"
 
 /datum/job/russian
 	default_language = "Russian"
 	additional_languages = list("English" = 15, "Japanese" = 5)
+	male_tts_voice = "Maxim"
+	female_tts_voice = "Tatyana"
 
 /datum/job/german
 	default_language = "German"
 	additional_languages = list("French" = 15, "English" = 15)
+	male_tts_voice = "Hans"
+	female_tts_voice = "Vicki"
 
 /datum/job/american
 	default_language = "English"
 	additional_languages = list("French" = 10, "Spanish" = 25, "Portuguese" = 5, "German" = 5)
+	male_tts_voice = "Matthew"
+	female_tts_voice = "Joanna"
 
 /datum/job/vietnamese
 	default_language = "Vietnamese"
 	additional_languages = list("French" = 5, "English" = 5, "Chinese" = 10)
+	male_tts_voice = "Takumi" //jap
+	female_tts_voice = "Zhiyu" //chinese
 
 /datum/job/chinese
 	default_language = "Chinese"
 	additional_languages = list("English" = 5, "Vietnamese" = 10, "Japanese" = 5)
+	male_tts_voice = "Takumi" //jap
+	female_tts_voice = "Zhiyu" //chinese
+
 /datum/job/npc
 	default_language = "English"
 
-/datum/job/update_character(var/mob/living/carbon/human/H)
+/datum/job/update_character(var/mob/living/human/H)
 	. = ..()
 
 	var/list/notes = list()

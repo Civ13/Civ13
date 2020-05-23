@@ -60,7 +60,7 @@
 /obj/covers/examine(mob/user)
 	..()
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.getStatCoeff("crafting") > 1.8)
 			H << get_wall_condition()
 

@@ -4,7 +4,7 @@
 	icon_state = "hooked0"
 	anchored = FALSE
 	density = TRUE
-	var/mob/living/carbon/human/attached = null
+	var/mob/living/human/attached = null
 	var/mode = TRUE // TRUE is injecting, FALSE is taking blood.
 	var/obj/item/weapon/reagent_containers/beaker = null
 
@@ -103,7 +103,7 @@
 				if (prob(5)) visible_message("\The [src] pings.")
 				return
 
-			var/mob/living/carbon/human/T = attached
+			var/mob/living/human/T = attached
 
 			if (!istype(T)) return
 			if (!T.dna)

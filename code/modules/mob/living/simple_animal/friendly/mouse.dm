@@ -52,14 +52,14 @@
 	desc = "It's a small [body_color] rodent, often seen hiding in the ship's hull and making a nuisance of itself."
 
 	if(body_color == "black")
-		if(map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
+		if(map && map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
 			if(prob(50))
 				plaguemouse = TRUE
 		else
 			if(prob(25))
 				plaguemouse = TRUE
 	else
-		if(map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
+		if(map && map.ordinal_age == 2 || map.ordinal_age == 3) //Approx epochs where black plague was a thing.
 			if(prob(10))
 				plaguemouse = TRUE
 		else
@@ -74,7 +74,7 @@
 /*
 /mob/living/simple_animal/mouse/MouseDrop(atom/over_object)
 
-	var/mob/living/carbon/H = over_object
+	var/mob/living/human/H = over_object
 	if (!istype(H) || !Adjacent(H)) return ..()
 
 	if (H.a_intent == I_HELP)
@@ -86,7 +86,7 @@
 /mob/living/simple_animal/mouse/Crossed(AM as mob|obj)
 	if ( ishuman(AM) )
 		if (!stat)
-			var/mob/living/carbon/human/M = AM
+			var/mob/living/human/M = AM
 			var/dmod = 1
 			if (find_trait("Weak Immune System"))
 				dmod = 2
@@ -127,8 +127,8 @@
 			meat.radiation = radiation/2
 			if(plaguemouse)
 				meat.reagents.add_reagent("plague", 3)
-			if (istype(user, /mob/living/carbon/human))
-				var/mob/living/carbon/human/HM = user
+			if (istype(user, /mob/living/human))
+				var/mob/living/human/HM = user
 				HM.adaptStat("medical", 0.3)
 			qdel(src)
 
@@ -178,7 +178,7 @@
 			var/obj/item/weapon/reagent_containers/food/snacks/S = src
 			if(PM.plaguemouse)
 				S.reagents.add_reagent("plague", 0.05)
-		else if(istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/M = src
+		else if(istype(src, /mob/living/human))
+			var/mob/living/human/M = src
 			if(PM.plaguemouse)
 				M.reagents.add_reagent("plague", 0.05)*/

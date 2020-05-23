@@ -628,12 +628,12 @@
 
 /obj/item/weapon/material/spear/sarissa/update_icon()
 // yes, i know this is horrible shitcode. Pls no bully
-	if (!istype(loc, /mob/living/carbon/human))
+	if (!istype(loc, /mob/living/human))
 		deployed = FALSE
 		item_state = "dory"
 		worn_state = "dory"
 	else
-		var/mob/living/carbon/human/US = loc
+		var/mob/living/human/US = loc
 		if (deployed)
 			item_state = ""
 			worn_state = ""

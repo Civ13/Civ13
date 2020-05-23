@@ -75,7 +75,7 @@ Current Defines (_defines/attachment.dm)
 	set name = "Field Strip"
 	set desc = "Removes any attachments."
 	set category = null
-	var/mob/living/carbon/human/user = usr
+	var/mob/living/human/user = usr
 
 	for (var/obj/item/weapon/attachment/A in attachments)
 		A.removed(user, src)
@@ -199,7 +199,7 @@ Current Defines (_defines/attachment.dm)
 				user.unEquip(src)
 				G.update_attachment_actions(user)
 				user << "<span class = 'notice'>You attach [src] to the [G].</span>"
-				if (istype(src, /obj/item/weapon/attachment/bayonet/flag))
+				if (istype(src, /obj/item/weapon/attachment/bayonet/flag) && G.bayonet_ico)
 					G.bayonet_ico.icon_state = "jap_flag"
 					G.bayonet_ico.pixel_x = 0
 					G.bayonet_ico.pixel_y = 0

@@ -71,7 +71,7 @@ var/list/global/phone_numbers = list()
 	else
 		return
 
-/obj/item/weapon/telephone/proc/broadcast(var/msg, var/mob/living/carbon/human/speaker)
+/obj/item/weapon/telephone/proc/broadcast(var/msg, var/mob/living/human/speaker)
 
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
@@ -79,7 +79,7 @@ var/list/global/phone_numbers = list()
 
 	var/list/tried_mobs = list()
 
-	for (var/mob/living/carbon/human/hearer in human_mob_list)
+	for (var/mob/living/human/hearer in human_mob_list)
 		if (tried_mobs.Find(hearer))
 			continue
 		tried_mobs += hearer
@@ -224,7 +224,7 @@ var/list/global/phone_numbers = list()
 			if (TLG.phonenumber == target && TLG.phonenumber != origin)
 				if (!TLG.ringing)
 					TLG.ringproc(origin, originphone)
-			for (var/mob/living/carbon/human/H in range(maxrange,src))
+			for (var/mob/living/human/H in range(maxrange,src))
 				for (var/obj/item/weapon/telephone/TLGH in H)
 					if (TLGH.phonenumber == target && TLGH.phonenumber != origin)
 						if (!TLGH.ringing)

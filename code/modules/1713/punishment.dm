@@ -4,7 +4,7 @@
 	icon_state = ""
 	layer = MOB_LAYER + 1.0
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -67,8 +67,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -85,7 +85,7 @@
 			spawn(10)
 				target.update_icons()
 
-/obj/structure/noose/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/noose/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 
@@ -110,7 +110,7 @@
 	icon_state = "gallows0"
 	layer = MOB_LAYER + 1.0
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	var/roped = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -184,8 +184,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -202,7 +202,7 @@
 					target.update_icons()
 					target.anchored = 1
 
-/obj/structure/gallows/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/gallows/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (!hanging && roped)
@@ -231,7 +231,7 @@
 				hanging = null
 				icon_state = "gallows1"
 
-/obj/structure/gallows/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/gallows/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon))
 		if (W.sharp == TRUE && hanging && roped)
 			visible_message("<span class = 'danger'>[H] starts to cut the noose with the [W]...</span>")
@@ -273,7 +273,7 @@
 	var/base_icon = "greekcross"
 	layer = MOB_LAYER - 0.1
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	var/image/crossoverlay
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -323,8 +323,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -345,7 +345,7 @@
 				target.anchored = 1
 			overlays += crossoverlay
 
-/obj/structure/cross/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/cross/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 
@@ -374,7 +374,7 @@
 	icon_state = "pillory"
 	layer = MOB_LAYER - 0.1
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	var/image/poverlay
 	var/icon/hoverlay
 	not_movable = FALSE
@@ -419,8 +419,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -442,7 +442,7 @@
 					hoverlay.Blend(rgb(-target.s_tone,  -target.s_tone,  -target.s_tone), ICON_SUBTRACT)
 					overlays += hoverlay
 
-/obj/structure/pillory/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/pillory/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 
@@ -490,7 +490,7 @@
 	icon_state = "post_execution"
 	layer = MOB_LAYER - 0.11
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	var/image/poverlay
 	var/icon/hoverlay
 	not_movable = FALSE
@@ -535,8 +535,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -558,7 +558,7 @@
 					hoverlay.Blend(rgb(-target.s_tone,  -target.s_tone,  -target.s_tone), ICON_SUBTRACT)
 					overlays += hoverlay
 
-/obj/structure/post_execution/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/post_execution/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 

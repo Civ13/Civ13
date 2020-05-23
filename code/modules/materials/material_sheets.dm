@@ -7,6 +7,7 @@
 	throw_speed = 3
 	throw_range = 3
 	max_amount = 50
+	can_stack = TRUE
 
 	var/default_type = DEFAULT_WALL_MATERIAL
 	var/material/material
@@ -246,7 +247,7 @@
 
 /obj/item/stack/material/rope/attack_hand(var/mob/M)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.hand && H.l_hand && H.l_hand.type == /obj/item/stack/material/rope)
 			return
 		else if (!H.hand && H.r_hand && H.r_hand.type == /obj/item/stack/material/rope)
@@ -440,6 +441,15 @@
 	flammable = FALSE
 	value = 3
 
+/obj/item/stack/material/pelt/lizardpelt
+	name = "lizard pelt"
+	desc = "A pelt from a skinned lizard."
+	icon_state = "sheet-lizardpelt"
+	default_type = "lizardpelt"
+	w_class = 2.0
+	flammable = FALSE
+	value = 3
+
 /obj/item/stack/material/pelt/monkeypelt
 	name = "monkey pelt"
 	desc = "A pelt from a skinned monkey."
@@ -465,6 +475,24 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
+/obj/item/stack/material/pelt/sheeppelt
+	name = "sheep pelt"
+	desc = "A wooly pelt from a skinned sheep."
+	icon_state = "sheet-sheeppelt"
+	default_type = "sheeppelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 2
+
+/obj/item/stack/material/pelt/goatpelt
+	name = "goat pelt"
+	desc = "A pelt from a skinned goat."
+	icon_state = "sheet-goatpelt"
+	default_type = "goatpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 2
 
 /obj/item/stack/material/pelt/orcpelt
 	name = "Orc Pelt"
@@ -554,7 +582,7 @@
 		if (isturf(loc))
 			qdel(src)
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
-	var/mob/living/carbon/human/U = user
+	var/mob/living/human/U = user
 	recipes = material.get_recipes_civs(U.original_job_title, U)
 	..()
 

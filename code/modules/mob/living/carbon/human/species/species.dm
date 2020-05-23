@@ -162,7 +162,7 @@
 
 	var/pass_flags = FALSE
 
-/datum/species/proc/get_eyes(var/mob/living/carbon/human/H)
+/datum/species/proc/get_eyes(var/mob/living/human/H)
 	return
 
 /datum/species/New()
@@ -185,7 +185,7 @@
 /datum/species/proc/get_bodytype()
 	return name
 
-/datum/species/proc/get_environment_discomfort(var/mob/living/carbon/human/H)
+/datum/species/proc/get_environment_discomfort(var/mob/living/human/H)
 	if (H.bodytemperature > heat_level_1 && !H.orc)
 		var/dmod = 1
 		if (H.find_trait("Heat Tolerance"))
@@ -536,7 +536,14 @@
 		else
 			return capitalize(pick(first_names_male_egyptian)) + " " + capitalize(pick(last_names_egyptian))
 
-/datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
+/datum/species/proc/get_random_filipino_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_filipino)) + " " + capitalize(pick(last_names_filipino))
+		else
+			return capitalize(pick(first_names_male_filipino)) + " " + capitalize(pick(last_names_filipino))
+
+/datum/species/proc/create_organs(var/mob/living/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)
 		if ((organ in H.organs) || (organ in H.internal_organs))
@@ -566,7 +573,7 @@
 			O.organ_tag = organ_tag
 		H.internal_organs_by_name[organ_tag] = O
 
-/datum/species/proc/hug(var/mob/living/carbon/human/H,var/mob/living/target)
+/datum/species/proc/hug(var/mob/living/human/H,var/mob/living/target)
 
 	var/t_him = "them"
 	switch(target.gender)
@@ -578,19 +585,19 @@
 	H.visible_message("<span class='notice'>[H] hugs [target] to make [t_him] feel better!</span>", \
 					"<span class='notice'>You hug [target] to make [t_him] feel better!</span>")
 
-/datum/species/proc/remove_inherent_verbs(var/mob/living/carbon/human/H)
+/datum/species/proc/remove_inherent_verbs(var/mob/living/human/H)
 	if (inherent_verbs)
 		for (var/verb_path in inherent_verbs)
 			H.verbs -= verb_path
 	return
 
-/datum/species/proc/add_inherent_verbs(var/mob/living/carbon/human/H)
+/datum/species/proc/add_inherent_verbs(var/mob/living/human/H)
 	if (inherent_verbs)
 		for (var/verb_path in inherent_verbs)
 			H.verbs |= verb_path
 	return
 
-/datum/species/proc/handle_post_spawn(var/mob/living/carbon/human/H) //Handles anything not already covered by basic species assignment.
+/datum/species/proc/handle_post_spawn(var/mob/living/human/H) //Handles anything not already covered by basic species assignment.
 	add_inherent_verbs(H)
 	H.mob_bump_flag = bump_flag
 	H.mob_swap_flags = swap_flags
@@ -598,11 +605,11 @@
 	H.pass_flags = pass_flags
 	H.mob_size = mob_size
 
-/datum/species/proc/handle_death(var/mob/living/carbon/human/H) //Handles any species-specific death events (such as dionaea nymph spawns).
+/datum/species/proc/handle_death(var/mob/living/human/H) //Handles any species-specific death events (such as dionaea nymph spawns).
 	return
 
 // Builds the HUD using species-specific icons and usable slots.
-/datum/species/proc/build_hud(var/mob/living/carbon/human/H)
+/datum/species/proc/build_hud(var/mob/living/human/H)
 	return
 
 //Used by xenos understanding larvae and dionaea understanding nymphs.
@@ -610,13 +617,13 @@
 	return
 
 // Called in life() when the mob has no client.
-/datum/species/proc/handle_npc(var/mob/living/carbon/human/H)
+/datum/species/proc/handle_npc(var/mob/living/human/H)
 	return
 
-/datum/species/proc/get_vision_flags(var/mob/living/carbon/human/H)
+/datum/species/proc/get_vision_flags(var/mob/living/human/H)
 	return vision_flags
 
-/datum/species/proc/handle_vision(var/mob/living/carbon/human/H)
+/datum/species/proc/handle_vision(var/mob/living/human/H)
 	H.update_sight()
 	H.sight |= get_vision_flags(H)
 	H.sight |= H.equipment_vision_flags

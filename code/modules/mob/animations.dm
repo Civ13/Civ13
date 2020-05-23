@@ -12,7 +12,7 @@ below 100 is not dizzy
 /mob/var/is_dizzy = FALSE
 
 /mob/proc/make_dizzy(var/amount)
-	if (!istype(src, /mob/living/carbon/human)) // for the moment, only humans get dizzy
+	if (!istype(src, /mob/living/human)) // for the moment, only humans get dizzy
 		return
 
 	dizziness = min(1000, dizziness + amount)	// store what will be new value
@@ -47,7 +47,7 @@ note dizziness decrements automatically in the mob's Life() proc.
 /mob/var/is_jittery = FALSE
 /mob/var/jitteriness = FALSE//Carbon
 /mob/proc/make_jittery(var/amount)
-	if (!istype(src, /mob/living/carbon/human)) // for the moment, only humans get dizzy
+	if (!istype(src, /mob/living/human)) // for the moment, only humans get dizzy
 		return
 
 	jitteriness = min(1000, jitteriness + amount)	// store what will be new value

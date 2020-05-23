@@ -83,6 +83,14 @@
 	else
 		admin_notice("<span class='danger'>Failed to load the dictionary!</span>", R_DEBUG)
 	sleep(-1)
+	var/F5 = file("scripts/clear_oggs.py")
+	if (fexists(F5) && world.system_type == UNIX)
+		shell("sudo python3 scripts/clear_oggs.py")
+	else if (fexists(F5) && world.system_type != UNIX)
+		shell("python3 scripts/windows/clear_oggs.py")
+	else
+		admin_notice("<span class='danger'>Failed to find the ogg cleaner script!</span>", R_DEBUG)
+	sleep(-1)
 /////////////////PERSISTENCE STUFF/////////////////////
 /*	var/Fp = file("set_persistent.py")
 	if (fexists(Fp))

@@ -1,0 +1,11 @@
+config/tips.txt
+config/admin_ranks.txt
+config/material_recipes.txt
+config/material_recipes_camp.txt
+config/dictionary.txt
+scripts/copiedconfigpaths.txt
+scripts/copiedfolderpaths.txt
+scripts/copyconfigfiles.py
+scripts/launch.py
+scripts/mapswap.py
+scripts/clear_oggs.py

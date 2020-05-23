@@ -14,7 +14,7 @@ obj/structure/anvil/New()
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
 
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(P,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
@@ -57,7 +57,7 @@ obj/structure/anvil/New()
 			return
 
 /obj/structure/anvil/attack_hand(var/mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (H.getStatCoeff("crafting") < 1.7)
 		user << "You don't have the skills to use this."
 		return

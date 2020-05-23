@@ -28,8 +28,8 @@
 	faction = PIRATES
 	ranged = TRUE
 	rapid = TRUE
-	projectiletype = /obj/item/projectile/bullet/pistol/pistol9
-	corpse = /mob/living/carbon/human/corpse/bandit
+	projectiletype = /obj/item/projectile/bullet/pistol/a9x19
+	corpse = /mob/living/human/corpse/bandit
 	casingtype = null
 
 

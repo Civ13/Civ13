@@ -90,7 +90,7 @@
 	var/last_fire = -1
 
 /obj/item/weapon/gun/projectile/flintlock/attack_self(mob/user)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
@@ -113,7 +113,7 @@
 	check_cocked--
 
 /obj/item/weapon/gun/projectile/flintlock/special_check(mob/user)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
@@ -126,7 +126,7 @@
 	return ..()
 
 /obj/item/weapon/gun/projectile/flintlock/load_ammo(var/obj/item/A, mob/user)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE

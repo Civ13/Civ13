@@ -4,7 +4,7 @@
 /datum/job/roman
 	faction = "Human"
 
-/datum/job/roman/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/roman/give_random_name(var/mob/living/human/H)
 	if (title != "Gladiator")
 		H.name = H.species.get_random_roman_name()
 		H.real_name = H.name
@@ -26,7 +26,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/roman/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -65,7 +65,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/roman/squad_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -101,7 +101,7 @@
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/roman/bearer/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/bearer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -136,7 +136,7 @@
 	min_positions = 12
 	max_positions = 200
 
-/datum/job/roman/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -174,7 +174,7 @@
 
 	min_positions = 8
 	max_positions = 100
-/datum/job/roman/velites/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/velites/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -204,7 +204,7 @@
 /datum/job/greek
 	faction = "Human"
 
-/datum/job/greek/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/greek/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_greek_name()
 	H.real_name = H.name
 
@@ -223,7 +223,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/greek/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/greek/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -258,7 +258,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/greek/squad_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/greek/squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -300,7 +300,7 @@
 	min_positions = 12
 	max_positions = 200
 
-/datum/job/greek/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/greek/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -343,7 +343,7 @@
 
 	min_positions = 8
 	max_positions = 100
-/datum/job/greek/toxotai/equip(var/mob/living/carbon/human/H)
+/datum/job/greek/toxotai/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -381,7 +381,7 @@
 
 	min_positions = 100
 	max_positions = 100
-/datum/job/roman/gladiator/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/gladiator/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -420,7 +420,7 @@
 
 	min_positions = 3
 	max_positions = 8
-/datum/job/roman/doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -456,7 +456,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/roman/guard/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -495,7 +495,7 @@
 
 	min_positions = 1
 	max_positions = 1
-/datum/job/roman/emperor/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/emperor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)

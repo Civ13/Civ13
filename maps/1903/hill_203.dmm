@@ -52,10 +52,10 @@
 "aZ" = (/obj/structure/wild/burnedbush,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "ba" = (/obj/structure/wild/tree/dead_tree,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "bb" = (/obj/structure/flag/russian,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
-"bc" = (/turf/wall/brick,/area/caribbean/japanese/land/inside)
-"bd" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bc" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bd" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "be" = (/obj/structure/window/classic,/obj/structure/barricade,/obj/covers/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"bf" = (/obj/structure/sign/flag/japanese,/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bf" = (/obj/covers/wood,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "bg" = (/obj/covers/wood,/obj/structure/simple_door/key_door/japanese,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bh" = (/obj/covers/wood,/obj/structure/telegraph{name = "High Command"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "bi" = (/obj/covers/wood,/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/ammo_magazine/c762x38mmR,/obj/item/ammo_magazine/c762x38mmR,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/clothing/accessory/medal/bronze,/obj/item/clothing/accessory/medal/gold,/obj/item/clothing/accessory/medal/silver,/obj/item/clothing/accessory/holster/hip,/turf/floor/wood,/area/caribbean/russian/land/inside)
@@ -64,12 +64,12 @@
 "bl" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bm" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bn" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"bo" = (/obj/covers/wood,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bo" = (/obj/structure/sign/flag/japanese,/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "bp" = (/obj/structure/barricade,/obj/structure/window/classic,/obj/covers/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bq" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"br" = (/obj/structure/sink/kitchen,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"br" = (/obj/structure/phoneline,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "bs" = (/obj/structure/window/classic,/obj/covers/wood,/obj/structure/barricade,/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"bt" = (/obj/structure/sign/redcross,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bt" = (/obj/structure/sign/redcross,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "bu" = (/obj/structure/vending/japaneseapparel,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bv" = (/obj/covers/wood,/obj/structure/oven,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bw" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -82,7 +82,7 @@
 "bD" = (/obj/covers/wood,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "bE" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/adv,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bF" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPDoc"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"bG" = (/obj/structure/sign/flag/japanese,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bG" = (/obj/structure/sink/kitchen,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "bH" = (/obj/structure/table/wood,/obj/item/ammo_magazine/arisakabox,/obj/item/ammo_magazine/arisakabox,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bI" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "bJ" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -91,7 +91,7 @@
 "bM" = (/obj/covers/wood,/obj/structure/optable,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bN" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bO" = (/obj/covers/wood,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"bP" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/structure/sign/flag/japanese,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bP" = (/obj/structure/sign/flag/japanese,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "bQ" = (/obj/structure/wild/burnedtree,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "bR" = (/obj/structure/window/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
 "bS" = (/obj/structure/window/sandbag,/obj/structure/phoneline,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
@@ -142,7 +142,7 @@
 "cL" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "cM" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "cN" = (/obj/covers/wood,/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/russian/land/inside)
-"cO" = (/obj/structure/phoneline,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"cO" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/structure/sign/flag/japanese,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "cP" = (/obj/covers/wood,/obj/structure/telegraph{name = "Trenches"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "cQ" = (/obj/covers/wood,/obj/structure/teleprinter,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "cR" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -185,16 +185,16 @@
 "dC" = (/obj/item/ammo_magazine/maxim,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dD" = (/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dE" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim{icon_state = "maxim"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"dF" = (/mob/living/carbon/human/corpse/russian,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dF" = (/mob/living/human/corpse/russian,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dG" = (/obj/structure/wild/tree/dead_tree,/obj/map_metadata/hill203,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"dH" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dH" = (/mob/living/human/corpse/japanese,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dI" = (/obj/covers/wood,/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dJ" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/rd,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dK" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dL" = (/obj/covers/wood,/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dM" = (/obj/covers/wood,/obj/structure/filingcabinet/filingcabinet,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dN" = (/obj/covers/wood,/obj/structure/telegraph{name = "Barracks"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"dO" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/structure/phoneline,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"dO" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/structure/phoneline,/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "dP" = (/obj/effect/decal/cleanable/blood,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dQ" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/taiga)
 "dR" = (/obj/structure/wild/burnedbush,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
@@ -275,13 +275,13 @@
 "fo" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter/grass,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fp" = (/obj/item/weapon/attachment/scope/adjustable/binoculars,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fq" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"fr" = (/mob/living/carbon/human/corpse/russian,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"fr" = (/mob/living/human/corpse/russian,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "fs" = (/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"ft" = (/mob/living/carbon/human/corpse/russiansgt,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
-"fu" = (/mob/living/carbon/human/corpse/russian,/turf/floor/winter/grass,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"fv" = (/mob/living/carbon/human/corpse/russian,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"ft" = (/mob/living/human/corpse/russiansgt,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"fu" = (/mob/living/human/corpse/russian,/turf/floor/winter/grass,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fv" = (/mob/living/human/corpse/russian,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fw" = (/obj/effect/decal/cleanable/blood,/obj/effect/decal/cleanable/generic,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"fx" = (/mob/living/carbon/human/corpse/russiansgt,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fx" = (/mob/living/human/corpse/russiansgt,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fy" = (/obj/item/weapon/material/shard{default_material = "iron"; icon_state = "splinterslarge"},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fz" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fA" = (/obj/item/weapon/material/shard{default_material = "iron"; icon_state = "splinterslarge"},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
@@ -294,8 +294,8 @@
 "fH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fI" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fJ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"fK" = (/mob/living/carbon/human/corpse/japanesesgt,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"fL" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fK" = (/mob/living/human/corpse/japanesesgt,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fL" = (/mob/living/human/corpse/japanese,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fM" = (/obj/item/weapon/sandbag/sandbag,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fN" = (/obj/item/ammo_magazine/maxim,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fO" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
@@ -310,7 +310,7 @@
 "fX" = (/obj/structure/wild/smallbush/winter,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fY" = (/obj/effect/decal/cleanable/ash,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fZ" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"ga" = (/obj/effect/decal/cleanable/blood,/mob/living/carbon/human/corpse/russian,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"ga" = (/obj/effect/decal/cleanable/blood,/mob/living/human/corpse/russian,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "gb" = (/obj/item/weapon/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "gc" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "gd" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
@@ -319,10 +319,10 @@
 "gg" = (/obj/structure/window/sandbag/sandbag,/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "gh" = (/obj/item/weapon/material/shard{default_material = "iron"; icon_state = "splinterslarge"},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "gi" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"gj" = (/mob/living/carbon/human/corpse/japanesesgt,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"gk" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
-"gl" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
-"gm" = (/obj/structure/wild/tree/dead_tree,/mob/living/carbon/human/corpse/japanese,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"gj" = (/mob/living/human/corpse/japanesesgt,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gk" = (/mob/living/human/corpse/japanese,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"gl" = (/mob/living/human/corpse/japanese,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"gm" = (/obj/structure/wild/tree/dead_tree,/mob/living/human/corpse/japanese,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "gn" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "go" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
 
@@ -462,8 +462,8 @@ aaaaaaaaaaaaaaaaaaaaaaaaaacCaaaaaaaaaaaaaaaafgfgfgfgaaaacHcpcqdSaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaabRbRbRbRbRbRbRaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbR
 bTbTbTbTbTbTbTbTbTbTbTbTbTbTbTfjbWaaaabXfkbTazbTbTbTbTbTbTbTbTdUbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbUbUbTbTbTbTbTbTazbTbTbTbTbTbTflbWaabXfmbTbTbTbTbTbTbTbTbTbTbTbTbTbTdUbTbTbTbTbTbTbTbTbTbTbTbTbTbT
-azazazazazazazazazazazazazazazbZbWaaaabXcaadadcfcfdXazcfcfazazazazazazazazazazazazazazazazazazazazazazazazceazazazazazazcfcfdXazcfcfbZbWaabXdYazazazazazazazazazazazazazazazazazazazazazazazazadazazazaz
-azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazduazcoazazazazazadazazazazazazazazazazadazazazazazazazazazazazazdZeaebazcoazduazazbZbWaabXcaazazazazazazazazadazazazceceazazazazazbaazazazazazazazazaz
+azazazazazazazazazazazazazazazbZbWaaaabXcaadadazazazazazazazazazazazazazcfcfdXazcfcfazazazazazazazazazcfcfdXazcfcfazazazazazazazazazbZbWaabXdYazazazazazazazazazazazazazazazazazazazazazazazazadazazazaz
+azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazadazazazazduazcoazazazadazazazazazazazazduazcoazdZeaebazazazazazazbZbWaabXcaazazazazazazazazadazazazceceazazazazazbaazazazazazazazazaz
 azazazceazazadadazazazbaazazazbZbWaaaabXcaazadazazazazazazazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazccaabXecazazcbazazcbazazcbazazcbazazcbazazazazadazazazazazazazazaz
 azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaabXcaazazazazazazazazazazazazazazazazazazazazadazazazazazazazaz
 chchchchchchchchchchchchchchchedbWaaaabXcmchchchchchcjchchchchchchchchchchchchchchchchchchchchchchchchchchchchcjchchchchchchchchchchckbWaabXcmchchchchchchchchcjcjchchchchchchchchchchchchchchchchchchch
@@ -476,15 +476,15 @@ adadadadaaaaaaaaadadadadadadadadaYadadadadadadadadazazazazazazazazazazazazadadad
 adadadadaaaaaaaaadadadadadadadadadadadadadadadadadadazbaazazazazazazazazadadadadadadaaaaaaadadadadadadadadadadazadazazadafadadadadadadadadadadadadadadadadadadadadadadadadaeadadadadaaaaadadadadadadadad
 azazazegaaaaaaaaazazadazazadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaadadadadadadadadadadadadadaddRadadadadadadadadadadadadadaYadadadadadadadadadadadadadadademaaaaadadadadadadadad
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaadadadadadadadadadadadadadaYadadadadadadadadadadadaYafadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bcbdbobpbfbqbqbfbpbobobobobdbcaaadadadadadadadadadadadadadadadadadadazazazazazazazegaaaaaaazazazadadadadadadadadadadadadadadadadaYadadadadadadadadadadadadadadadadaabcbdbccObcbcbdbebfbgbfbdbcbcbcbcbdbc
+bcbdbfbpbobqbqbobpbfbfbfbfbdbcaaadadadadadadadadadadadadadadadadadadazazazazazazazegaaaaaaazazazadadadadadadadadadadadadadadadadaYadadadadadadadadadadadadadadadadaabcbdbcbrbcbcbdbebobgbobdbcbcbcbcbdbc
 bddjeneneobjbjbjbjdkdkdkdkbjbdaaadadadadadadadadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabddIcscPcQcRbcbjbjbjbjbcbjbjbjcsdJbd
-bcdjbjbjdkdkbjbjbjdldldmdmbjbcaaadadadadadadadadadadadadadadadadadadaabcbdbcbcbcbsbdbfbqbtbsbdbcbsbsbcbdbcaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabcbjbjbnbncSbcbjbjbjbjbcbjbjbjbjbjbc
-bcbubjdkdndodkbjbjdkdkdkdkbybraaadadadadadadadaYadadadadadadadadadadaabdbjbjbjbjbjbjbjbjbjdpdpdpdpdKcQcTbdaaadadadadadadaYadadadadafadadadadadadadadadadadadadadadaabcbjbjbjbjbjbcbjbjbjbjbcbkbjbjbjdJbc
-bcbxbjbjdkdkbjbjbjbjbjbjbjbybcaaadadadadadadadadadadadadadadadadadadaabcbzbzbzbzbzbzbjbjbjbjbjbjbjbjbjdLcOaaadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadaacOcVbwbjbjdIbdbjbjbjbjbdbNbwbjbjbjbc
+bcdjbjbjdkdkbjbjbjdldldmdmbjbcaaadadadadadadadadadadadadadadadadadadaabcbdbcbcbcbsbdbobqbtbsbdbcbsbsbcbdbcaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabcbjbjbnbncSbcbjbjbjbjbcbjbjbjbjbjbc
+bcbubjdkdndodkbjbjdkdkdkdkbybGaaadadadadadadadaYadadadadadadadadadadaabdbjbjbjbjbjbjbjbjbjdpdpdpdpdKcQcTbdaaadadadadadadaYadadadadafadadadadadadadadadadadadadadadaabcbjbjbjbjbjbcbjbjbjbjbcbkbjbjbjdJbc
+bcbxbjbjdkdkbjbjbjbjbjbjbjbybcaaadadadadadadadadadadadadadadadadadadaabcbzbzbzbzbzbzbjbjbjbjbjbjbjbjbjdLbraaadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadaabrcVbwbjbjdIbdbjbjbjbjbdbNbwbjbjbjbc
 bcbubjdqdqdqdqdqbjbjdkdrbjbybcaaadadadadadadadadadadadadadadadadadadaabsbjbjbzbjbjbzbjbjbjbjbjbAbjbAbjbAbsaaadadadadadadaYadadadadadadadadadadadadadadadadadadadadaabccQbwbjbjdIbcbmblbNbjbcbkbjbjbjdJbc
 bdbxbjbCbCbCbCbCbjbjdkdrbjbvbcbcbdaaadadadadadadadadadadadadadadadadaabsbEbjbzbEbjbzbFbjbFbjbjbAbjbAbjbAbsaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabcdKbjbjbjbjbcbjctbkbjbcbjbjbjbjbjbc
-bcbHbjdqdqdqdqdqbjbjdkdsbjbBbjdKbcaaadadadadadadadadadadadadadadadadaabcbJbjbzbJbjbzbjbjbjbjbjbAbjbAbjbAbcaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabcdMbjbjbjbjbGbjbjbjbjbGbjbjbjbjbjbc
+bcbHbjdqdqdqdqdqbjbjdkdsbjbBbjdKbcaaadadadadadadadadadadadadadadadadaabcbJbjbzbJbjbzbjbjbjbjbjbAbjbAbjbAbcaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabcdMbjbjbjbjbPbjbjbjbjbPbjbjbjbjbjbc
 bcbHbjbCbCbCbCbCbjbjdkdtbjbjbjcQbcaaadadadadadadadadadadadadadadadadaabdbMbjbzbMbjbzcXbNfhcYcZbAbjbAbjbAbdaaadadadadadadadadadadadadadadadadadadadadafadadadadadadaabccQcWcubjbjbgbjbjbjbjbgbjbkcubjbkbc
-bcesbjdqdqdqdqdqbjbjdkdrbjbjbjcTbcaaadadadadadadadadadadadadadadadadaabcbdbcbcbcbcbdbcbcbcbcbdbcbcbcbcbdbcaaadadadadadadadadadafadadadadadaYadadadadadadadadadadadaabddNbkblbjbvbPbjbjbjbjbPbvbmblbkbkbd
-bdbcbcbcbcbdbcbcbcbcbcbdbcbcbcbcdOaaadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadaacObdbcbcbcbdbcbdbcbcbdbcbdbcbcbcbdbc
+bcesbjdqdqdqdqdqbjbjdkdrbjbjbjcTbcaaadadadadadadadadadadadadadadadadaabcbdbcbcbcbcbdbcbcbcbcbdbcbcbcbcbdbcaaadadadadadadadadadafadadadadadaYadadadadadadadadadadadaabddNbkblbjbvcObjbjbjbjcObvbmblbkbkbd
+bdbcbcbcbcbdbcbcbcbcbcbdbcbcbcbcdOaaadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadaabrbdbcbcbcbdbcbdbcbcbdbcbdbcbcbcbdbc
 "}

@@ -118,20 +118,22 @@ var/list/name_to_material
 	if (!rod_product)
 		user << "<span class='warning'>You cannot make anything out of \the [target_stack]</span>"
 		return
-	if (used_stack.get_amount() < 1 || target_stack.get_amount() < 1)
+	if (used_stack.amount < 1 || target_stack.amount < 1)
 		user << "<span class='warning'>You need one rod and one sheet of [display_name] to make anything useful.</span>"
 		return
 	used_stack.use(1)
 	target_stack.use(1)
 	var/obj/item/stack/S = new rod_product(get_turf(user))
 	S.add_fingerprint(user)
-	S.add_to_stacks(user)
+	for(var/obj/item/stack/T in get_turf(user))
+		if(T == src)
+			T.merge(src)
 
 /material/proc/build_wired_product(var/mob/user, var/obj/item/stack/used_stack, var/obj/item/stack/target_stack)
 	if (!wire_product)
 		user << "<span class='warning'>You cannot make anything out of \the [target_stack]</span>"
 		return
-	if (used_stack.get_amount() < 5 || target_stack.get_amount() < 1)
+	if (used_stack.amount < 5 || target_stack.amount < 1)
 		user << "<span class='warning'>You need five wires and one sheet of [display_name] to make anything useful.</span>"
 		return
 
@@ -211,229 +213,223 @@ var/list/name_to_material
 
 /material/diamond
 	name = "diamond"
-	stack_type = /obj/item/stack/material/diamond
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 60
 	icon_colour = "#00FFE1"
+	hardness = 100
+	cut_delay = 60
 	opacity = 0.4
 	shard_type = SHARD_SHARD
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
-	hardness = 100
+	stack_type = /obj/item/stack/material/diamond
+	flags = MATERIAL_UNMELTABLE
 
 /material/obsidian
 	name = "obsidian"
-	stack_type = /obj/item/stack/material/obsidian
 	icon_colour = "#060606"
 	hardness = 85
 	sheet_singular_name = "cut rock"
 	sheet_plural_name = "cut rocks"
+	stack_type = /obj/item/stack/material/obsidian
 
 /material/barbedwire
 	name = "barbedwire"
-	stack_type = /obj/item/stack/material/barbwire
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 10
 	icon_colour = "#FFFFFF"
+	hardness = 30
+	cut_delay = 10
 	shard_type = SHARD_SHARD
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
-	hardness = 30
+	stack_type = /obj/item/stack/material/barbwire
+	flags = MATERIAL_UNMELTABLE
 
 /material/rope
 	name = "rope"
-	stack_type = /obj/item/stack/material/rope
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 5
 	icon_colour = "#FFFFFF"
+	hardness = 10
+	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	hardness = 10
-
 	sheet_singular_name = "coil"
 	sheet_plural_name = "coils"
+	stack_type = /obj/item/stack/material/rope
+	flags = MATERIAL_UNMELTABLE
 
 /material/tobacco
 	name = "tobacco"
-	stack_type = /obj/item/stack/material/tobacco
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 5
 	icon_colour = "#FFFFFE"
+	hardness = 10
+	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	hardness = 10
-
 	sheet_singular_name = "leave"
 	sheet_plural_name = "leaves"
+	stack_type = /obj/item/stack/material/tobacco
+	flags = MATERIAL_UNMELTABLE
 
 /material/hemp
 	name = "hemp"
-	stack_type = /obj/item/stack/material/hemp
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 5
 	icon_colour = "#FFFFFE"
+	hardness = 10
+	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	hardness = 10
-
 	sheet_singular_name = "leaf"
 	sheet_plural_name = "leaves"
+	stack_type = /obj/item/stack/material/hemp
+	flags = MATERIAL_UNMELTABLE
 
 /material/flax
 	name = "flax"
-	stack_type = /obj/item/stack/material/flax
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 5
 	icon_colour = "#5f9ea0"
+	hardness = 10
+	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	hardness = 10
-
 	sheet_singular_name = "bundle"
 	sheet_plural_name = "bundles"
+	stack_type = /obj/item/stack/material/flax
+	flags = MATERIAL_UNMELTABLE
 
 /material/coca
 	name = "coca"
-	stack_type = /obj/item/stack/material/coca
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 5
 	icon_colour = "#faeff1"
+	hardness = 10
+	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	hardness = 10
-
 	sheet_singular_name = "leave"
 	sheet_plural_name = "leaves"
+	stack_type = /obj/item/stack/material/coca
+	flags = MATERIAL_UNMELTABLE
 
 /material/poppy
 	name = "poppy"
-	stack_type = /obj/item/stack/material/poppy
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 5
 	icon_colour = "#2b1d0e"
+	hardness = 10
+	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	hardness = 10
-
 	sheet_singular_name = "plant"
 	sheet_plural_name = "plants"
+	stack_type = /obj/item/stack/material/poppy
+	flags = MATERIAL_UNMELTABLE
 
 /material/gold
 	name = "gold"
-	stack_type = /obj/item/stack/material/gold
 	icon_colour = "#EDD12F"
-	weight = 24
 	hardness = 70
+	weight = 24
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
+	stack_type = /obj/item/stack/material/gold
 
 /material/copper
 	name = "copper"
 	icon_colour = "#b87333"
-	stack_type = /obj/item/stack/material/copper
-	weight = 14
 	hardness = 42
+	weight = 14
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
+	stack_type = /obj/item/stack/material/copper
 
 /material/plastic
 	name = "plastic"
 	icon_colour = "#dddddd"
-	stack_type = /obj/item/stack/material/plastic
-	weight = 8
 	hardness = 36
+	weight = 8
 	sheet_singular_name = "sheet"
 	sheet_plural_name = "sheets"
+	stack_type = /obj/item/stack/material/plastic
 
 /material/tin
 	name = "tin"
 	icon_colour = "#d3d4d5"
-	stack_type = /obj/item/stack/material/tin
-	weight = 11
 	hardness = 40
+	weight = 11
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
+	stack_type = /obj/item/stack/material/tin
 
 /material/bronze
 	name = "bronze"
 	icon_colour = "#7c4611"
-	stack_type = /obj/item/stack/material/bronze
-	weight = 17
 	hardness = 47
+	weight = 17
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
+	stack_type = /obj/item/stack/material/bronze
 
 /material/lead
 	name = "lead"
 	icon_colour = "#444f53"
-	stack_type = /obj/item/stack/material/lead
-	weight = 30
 	hardness = 35
+	weight = 30
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
+	stack_type = /obj/item/stack/material/lead
 
 /material/silver
 	name = "silver"
-	stack_type = /obj/item/stack/material/silver
 	icon_colour = "#D1E6E3"
-	weight = 22
 	hardness = 65
-
+	weight = 22
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
+	stack_type = /obj/item/stack/material/silver
 
 /material/sandstone
 	name = "sandstone"
-	stack_type = /obj/item/stack/material/sandstone
 	icon_base = "stone"
 	icon_reinf = "reinf_stone"
 	icon_colour = "#D9C179"
-	shard_type = SHARD_STONE_PIECE
-	weight = 22
-	integrity = 500
 	hardness = 45
+	integrity = 500
+	weight = 22
+	shard_type = SHARD_STONE_PIECE
 	door_icon_base = "stone"
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
+	stack_type = /obj/item/stack/material/sandstone
 
 /material/stone
 	name = "stone"
-	hardness = 50
-	weight = 22
-	integrity = 500
-	shard_type = SHARD_STONE_PIECE
 	icon_base = "stone"
 	icon_reinf = "reinf_stone"
 	icon_colour = "#808080"
+	hardness = 50
+	integrity = 500
+	weight = 22
+	shard_type = SHARD_STONE_PIECE
+	door_icon_base = "stone"
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/stone
-	door_icon_base = "stone"
 
 /material/stonebrick
 	name = "stonebrick"
 	display_name = "stone brick"
-	hardness = 50
-	weight = 11
-	integrity = 450
 	icon_colour = "#808080"
+	hardness = 50
+	integrity = 450
+	weight = 11
 	sheet_singular_name = "brick"
 	sheet_plural_name = "bricks"
 	stack_type = /obj/item/stack/material/stonebrick
 
 /material/flint
 	name = "flint"
-	hardness = 50
-	weight = 22
-	integrity = 500
 	icon_colour = "#6f6a64"
+	hardness = 50
+	integrity = 500
+	weight = 22
 	sheet_singular_name = "stone"
 	sheet_plural_name = "stones"
 
 /material/bone
 	name = "bone"
-	hardness = 45
 	icon_colour = "#ccd1c4"
+	hardness = 45
 	sheet_singular_name = "piece"
 	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/bone
 
 /* /material/stone/stonebrick
 	name = "brick"
@@ -446,37 +442,37 @@ var/list/name_to_material
 	name = "marble"
 	icon_colour = "#AAAAAA"
 	weight = 26
-	hardness = 100
 	integrity = 201 //hack to stop kitchen benches being flippable, todo: refactor into weight system
+	hardness = 100
 	stack_type = /obj/item/stack/material/marble
 
 /material/steel
 	name = "steel"
-	stack_type = /obj/item/stack/material/steel
-	integrity = 300
-	hardness = 60
 	icon_base = "solid"
 	icon_reinf = "reinf_over"
 	icon_colour = "#666666"
+	hardness = 60
+	integrity = 300
 	hitsound = 'sound/weapons/genhit.ogg'
+	stack_type = /obj/item/stack/material/steel
 
 /material/glass
 	name = "glass"
-	stack_type = /obj/item/stack/material/glass
-	flags = MATERIAL_BRITTLE
 	icon_colour = "#00E1FF"
-	opacity = 0.3
+	hardness = 30
 	integrity = 100
+	weight = 15
+	opacity = 0.3
 	shard_type = SHARD_SHARD
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
-	hardness = 30
-	weight = 15
+	hitsound = 'sound/effects/Glasshit.ogg'
 	door_icon_base = "stone"
 	destruction_desc = "shatters"
+	stack_type = /obj/item/stack/material/glass
+	flags = MATERIAL_BRITTLE
 //	window_options = list("One Direction" = 1, "Full Window" = 4)
 	created_window = /obj/structure/window/classic
 	rod_product = /obj/item/stack/material/glass/reinforced
-	hitsound = 'sound/effects/Glasshit.ogg'
 
 /material/glass/proc/is_reinforced()
 	return (hardness > 35) //todo
@@ -484,13 +480,13 @@ var/list/name_to_material
 /material/iron
 	name = "iron"
 	icon_base = "metal"
-	stack_type = /obj/item/stack/material/iron
 	icon_colour = "#5C5454"
-	weight = 22
 	hardness = 55
+	weight = 22
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	hitsound = 'sound/weapons/smash.ogg'
+	stack_type = /obj/item/stack/material/iron
 
 /material/iron/indestructable
 	name = "indestructable"
@@ -501,139 +497,134 @@ var/list/name_to_material
 
 /material/wood
 	name = "wood"
-	stack_type = /obj/item/stack/material/wood
-	icon_colour = "#824B28"
-	integrity = 50
 	icon_base = "wood"
+	icon_colour = "#824B28"
+	hardness = 40
+	integrity = 50
+	weight = 18
 	explosion_resistance = 2
 	shard_type = SHARD_SPLINTER
 	shard_can_repair = FALSE // you can't weld splinters back into planks
-	hardness = 40
-	weight = 18
 	melting_point = T0C+300 //okay, not melting in this case, but hot enough to destroy wood
 	ignition_point = T0C+288
-
-	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	door_icon_base = "wood"
+	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	destruction_desc = "splinters"
 	sheet_singular_name = "plank"
 	sheet_plural_name = "planks"
 	hitsound = 'sound/effects/woodhit.ogg'
+	stack_type = /obj/item/stack/material/wood
 
 /material/wood/hard
 	name = "hardwood"
-	integrity = 175
 	hardness = 200
+	integrity = 175
 
 /material/wood/soft
 	name = "softwood"
-	integrity = 80
 	hardness = 90
+	integrity = 80
 	icon_colour = "#D2BA9C"
 
 /material/bamboo
 	name = "bamboo"
-	stack_type = /obj/item/stack/material/bamboo
-	icon_colour = "#414833"
-	integrity = 50
 	icon_base = "wood"
+	icon_colour = "#414833"
+	hardness = 45
+	integrity = 50
+	weight = 15
 	explosion_resistance = 2
 	shard_type = SHARD_SPLINTER
 	shard_can_repair = FALSE
-	hardness = 45
-	weight = 15
 	melting_point = T0C+300
 	ignition_point = T0C+288
-
 	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	door_icon_base = "wood"
+	hitsound = 'sound/effects/woodhit.ogg'
 	destruction_desc = "splinters"
 	sheet_singular_name = "bundle"
 	sheet_plural_name = "bundles"
-	hitsound = 'sound/effects/woodhit.ogg'
+	stack_type = /obj/item/stack/material/bamboo
 
 /material/clay
 	name = "clay"
-	integrity = 60
-	hardness = 90
 	icon_colour = "#734222"
+	hardness = 90
+	integrity = 60
 
 /material/wood/straw
-	hardness = 35
-	icon_colour = "#BCB9B4"
-	integrity = 55
 	name = "straw"
+	icon_colour = "#BCB9B4"
+	hardness = 35
+	integrity = 55
 //	icon_base = "straw"
 
 /material/wood/log
 	name = "log"
-	integrity = 175
 	hardness = 200
+	integrity = 175
 	door_icon_base = "rustic"
 
 /material/paper
 	name = "paper"
 	hardness = 25
 	integrity = 35
-	door_icon_base = "shoji"
-	hitsound = 'sound/effects/cardboardpunch.ogg'
 	melting_point = T0C+300
 	ignition_point = T0C+288
+	door_icon_base = "shoji"
+	hitsound = 'sound/effects/cardboardpunch.ogg'
 
 /material/cloth
 	name = "cloth"
 	hardness = 10
-
-	door_icon_base = "wood"
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	door_icon_base = "wood"
 	flags = MATERIAL_PADDING
 
 /material/rettedfabric
 	name = "rettedfabric"
 	display_name = "retted fabric"
 	icon_colour = "#c19a6b"
-	stack_type = /obj/item/stack/material/rettedfabric
 	hardness = 7
 	sheet_singular_name = "bundle"
 	sheet_plural_name = "bundles"
+	stack_type = /obj/item/stack/material/rettedfabric
 
 /material/woolcloth
 	name = "woolcloth"
 	hardness = 10
-
-	door_icon_base = "wood"
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	door_icon_base = "wood"
 	flags = MATERIAL_PADDING
 
 
 /material/rags
 	name = "rags"
 	icon_colour = "#EBEFFF"
-	stack_type = /obj/item/stack/material/rags
 	hardness = 7
 	sheet_singular_name = "sheet"
 	sheet_plural_name = "sheets"
+	stack_type = /obj/item/stack/material/rags
 
 /material/electronics
 	name = "electronic"
 	icon_colour = "#272727"
-	stack_type = /obj/item/stack/material/electronics
-	weight = 14
 	hardness = 20
+	weight = 14
 	sheet_singular_name = "circuit"
 	sheet_plural_name = "circuits"
+	stack_type = /obj/item/stack/material/electronics
 
 //TODO PLACEHOLDERS:
 /material/leather
 	name = "leather"
 	icon_colour = "#5C4831"
-
-	flags = MATERIAL_PADDING
+	hardness = 25
 	ignition_point = T0C+300
 	melting_point = T0C+300
-	hardness = 25
+	flags = MATERIAL_PADDING
 /*
 /material/gatorscale // In preparation, snakes and other reptiles have other sorts.
 	name = "alligator scale"
@@ -648,9 +639,9 @@ var/list/name_to_material
 	name = "pelt"
 	use_name = "pelt"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt
@@ -659,9 +650,9 @@ var/list/name_to_material
 	name = "bearpelt"
 	use_name = "bear"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/bearpelt/black
@@ -670,9 +661,9 @@ var/list/name_to_material
 	name = "whitebearpelt"
 	use_name = "white bear"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/bearpelt/white
@@ -681,9 +672,9 @@ var/list/name_to_material
 	name = "brownbearpelt"
 	use_name = "brown bear"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/bearpelt/brown
@@ -692,9 +683,9 @@ var/list/name_to_material
 	name = "wolfpelt"
 	use_name = "wolf"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/wolfpelt
@@ -703,9 +694,9 @@ var/list/name_to_material
 	name = "catpelt"
 	use_name = "cat"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/catpelt
@@ -714,9 +705,9 @@ var/list/name_to_material
 	name = "pantherpelt"
 	use_name = "panther"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/pantherpelt
@@ -725,31 +716,42 @@ var/list/name_to_material
 	name = "lionpelt"
 	use_name = "lion"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/lionpelt
 
 /material/gatorpelt
-	name = "alligator pelt"
+	name = "gatorpelt"
 	use_name = "alligator"
 	icon_colour = "#443d36"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/gatorpelt
+
+/material/lizardpelt
+	name = "lizardpelt"
+	use_name = "lizard"
+	icon_colour = "#6b8e23" 	//olive drab
+	hardness = 30
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/lizardpelt
 
 /material/monkeypelt
 	name = "monkeypelt"
 	use_name = "monkey"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/monkeypelt
@@ -758,9 +760,9 @@ var/list/name_to_material
 	name = "foxpelt"
 	use_name = "fox"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/foxpelt
@@ -769,20 +771,42 @@ var/list/name_to_material
 	name = "whitefoxpelt"
 	use_name = "white fox"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/foxpelt/white
+
+/material/sheeppelt
+	name = "sheeppelt"
+	use_name = "sheep"
+	icon_colour = "#8C7E6E" 	//white
+	hardness = 30
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/sheeppelt
+
+/material/goatpelt
+	name = "goatpelt"
+	use_name = "goat"
+	icon_colour = "#f5f5dc" 	//beige
+	hardness = 30
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/goatpelt
 
 /material/hairlesshide
 	name = "hairlesshide"
 	use_name = "hairless hide"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/hairlesshide
@@ -802,9 +826,9 @@ var/list/name_to_material
 	name = "humanpelt"
 	use_name = "human"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "skin"
 	sheet_plural_name = "skins"
 	stack_type = /obj/item/stack/material/pelt/humanpelt
@@ -813,9 +837,9 @@ var/list/name_to_material
 	name = "antpelt"
 	use_name = "ant"
 	icon_colour = "#0C0000"
+	hardness = 50
 	ignition_point = T0C+700
 	melting_point = T0C+700
-	hardness = 50
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/antpelt
@@ -824,9 +848,9 @@ var/list/name_to_material
 	name = "chitin"
 	use_name = "chitin"
 	icon_colour = "#3F0000"
+	hardness = 51
 	ignition_point = T0C+800
 	melting_point = T0C+800
-	hardness = 51
 	sheet_singular_name = "sheet"
 	sheet_plural_name = "sheets"
 	stack_type = /obj/item/stack/material/chitin
@@ -835,9 +859,9 @@ var/list/name_to_material
 	name = "gorillapelt"
 	use_name = "gorilla"
 	icon_colour = "#8C7E6E"
+	hardness = 30
 	ignition_point = T0C+400
 	melting_point = T0C+400
-	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/gorillapelt
@@ -846,9 +870,9 @@ var/list/name_to_material
 	name = "orcnpelt"
 	use_name = "orc"
 	icon_colour = "#013220"
+	hardness = 45
 	ignition_point = T0C+700
 	melting_point = T0C+700
-	hardness = 45
 	sheet_singular_name = "skin"
 	sheet_plural_name = "skins"
 	stack_type = /obj/item/stack/material/pelt/orcpelt
@@ -858,103 +882,103 @@ var/list/name_to_material
 	display_name = "comfy"
 	use_name = "red upholstery"
 	icon_colour = "#DA020A"
-	flags = MATERIAL_PADDING
+	hardness = 12
 	ignition_point = T0C+232
 	melting_point = T0C+300
 	sheet_singular_name = "tile"
 	sheet_plural_name = "tiles"
-	hardness = 12
+	flags = MATERIAL_PADDING
 
 /material/cotton
 	name = "cotton"
-	hardness = 6
-	stack_type = /obj/item/stack/material/cotton
 	display_name ="cotton"
 	icon_colour = "#FFFFFF"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
 	sheet_singular_name = "stack"
 	sheet_plural_name = "stacks"
+	stack_type = /obj/item/stack/material/cotton
+	flags = MATERIAL_PADDING
 
 /material/wool
 	name = "wool"
-	hardness = 6
-	stack_type = /obj/item/stack/material/wool
 	display_name ="wool"
 	icon_colour = "#F1F1F1"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
 	sheet_singular_name = "pile"
 	sheet_plural_name = "piles"
+	stack_type = /obj/item/stack/material/wool
+	flags = MATERIAL_PADDING
 
 /material/cloth_teal
 	name = "teal"
 	display_name ="teal"
 	use_name = "teal cloth"
 	icon_colour = "#00EAFA"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
-	hardness = 6
+	flags = MATERIAL_PADDING
 
 /material/cloth_black
 	name = "black"
 	display_name = "black"
 	use_name = "black cloth"
 	icon_colour = "#505050"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
-	hardness = 6
+	flags = MATERIAL_PADDING
 
 /material/cloth_green
 	name = "green"
 	display_name = "green"
 	use_name = "green cloth"
 	icon_colour = "#01C608"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
-	hardness = 6
+	flags = MATERIAL_PADDING
 
 /material/cloth_puple
 	name = "purple"
 	display_name = "purple"
 	use_name = "purple cloth"
 	icon_colour = "#9C56C4"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
-	hardness = 6
+	flags = MATERIAL_PADDING
 
 /material/cloth_blue
 	name = "blue"
 	display_name = "blue"
 	use_name = "blue cloth"
 	icon_colour = "#6B6FE3"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
-	hardness = 6
+	flags = MATERIAL_PADDING
 
 /material/cloth_beige
 	name = "beige"
 	display_name = "beige"
 	use_name = "beige cloth"
 	icon_colour = "#E8E7C8"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
-	hardness = 6
+	flags = MATERIAL_PADDING
 
 /material/cloth_lime
 	name = "lime"
 	display_name = "lime"
 	use_name = "lime cloth"
 	icon_colour = "#62E36C"
-	flags = MATERIAL_PADDING
+	hardness = 6
 	ignition_point = T0C+232
 	melting_point = T0C+300
-	hardness = 6
+	flags = MATERIAL_PADDING

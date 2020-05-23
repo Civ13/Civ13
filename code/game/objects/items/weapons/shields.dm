@@ -329,7 +329,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 /obj/item/weapon/shield/iron/orc
 	name = "uruk-hai shield"
 	icon_state = "orc_shield"
-	item_state = "semioval_shield"
+	item_state = "orc_shield"
 	material = "iron"
 	health = 25
 	w_class = 3.0

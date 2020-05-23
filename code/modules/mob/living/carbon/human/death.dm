@@ -1,4 +1,4 @@
-/mob/living/carbon/human/gib()
+/mob/living/human/gib()
 	if (client)
 		client.movement_busy = FALSE
 	ghostize() // preserve our body's icon before it explodes
@@ -19,11 +19,11 @@
 
 	..(species.gibbed_anim)
 	gibs(loc, null, species.flesh_color, species.blood_color)
-	for(var/mob/living/carbon/human/NB in view(6,src))
+	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
 			NB.mood -= 15
 			NB.ptsd += 3
-/mob/living/carbon/human/crush()
+/mob/living/human/crush()
 
 	sleep(1)
 
@@ -35,13 +35,13 @@
 	..(species.gibbed_anim)
 	gibs(loc, null, species.flesh_color, species.blood_color)
 
-/mob/living/carbon/human/maim()
+/mob/living/human/maim()
 	next_emote["vocal"] = world.time + 50
 	..()
 	next_emote["vocal"] = world.time - 1
 	emote("painscream")
 
-/mob/living/carbon/human/death(gibbed = FALSE)
+/mob/living/human/death(gibbed = FALSE)
 
 	if (stat == DEAD) return
 	if (map && map.ID == MAP_GLADIATORS && client)
@@ -60,46 +60,47 @@
 					i[3]-=50
 	handle_piss()
 	handle_shit()
-	if (original_job.uses_squads && squad > 0)
+	if (squad > 0 && original_job && original_job.uses_squads)
 		if (faction_text == map.faction1)
 			map.faction1_squads[squad] -= src
 			if (map.faction1_squad_leaders[squad] == src)
 				map.faction1_squad_leaders[squad] = null
-				for(var/mob/living/carbon/human/HSM in map.faction1_squads[squad])
+				for(var/mob/living/human/HSM in map.faction1_squads[squad])
 					if (HSM != src)
 						HSM << "<big><b><font color='red'>Your squad leader has been killed!</font></b></big>"
 						if (HSM.original_job.is_squad_leader && (!map.faction1_squad_leaders[squad] || map.faction1_squad_leaders[squad] == src))
 							HSM << "<big><b><font color='green'>You are the new squad leader!</font></b></big>"
 							map.faction1_squad_leaders[squad] = HSM
-							for(var/mob/living/carbon/human/HSM2 in map.faction2_squads[squad])
+							for(var/mob/living/human/HSM2 in map.faction2_squads[squad])
 								if (HSM2 != HSM)
 									HSM2 << "<big><b>[HSM] is your new squad leader.</b></big>"
 		else if (faction_text == map.faction2)
 			map.faction2_squads[squad] -= src
 			if (map.faction2_squad_leaders[squad] == src)
 				map.faction2_squad_leaders[squad] = null
-				for(var/mob/living/carbon/human/HSM in map.faction2_squads[squad])
+				for(var/mob/living/human/HSM in map.faction2_squads[squad])
 					if (HSM != src)
 						HSM << "<big><b><font color='red'>Your squad leader has been killed!</font></b></big>"
 						if (HSM.original_job.is_squad_leader && (!map.faction2_squad_leaders[squad] || map.faction2_squad_leaders[squad] == src))
 							HSM << "<big><b><font color='green'>You are the new squad leader!</font></b></big>"
 							map.faction2_squad_leaders[squad] = HSM
-							for(var/mob/living/carbon/human/HSM2 in map.faction2_squads[squad])
+							for(var/mob/living/human/HSM2 in map.faction2_squads[squad])
 								if (HSM2 != HSM)
 									HSM2 << "<big><b>[HSM] is your new squad leader.</b></big>"
 	handle_hud_list()
 	var/list/poss_list = list()
-	for(var/cmp in map.custom_company_nr)
-		if (find_company_member(src,cmp))
-			poss_list += cmp
-	if (!isemptylist(poss_list))
-		for(var/stocky in poss_list)
-			for(var/list/lx in map.custom_company[stocky])
-				if (lx[1] == src)
-					map.sales_registry += list(list(stocky,lx[2],map.custom_company_value[stocky]*(lx[2]/100)*2,null,1))
-			for(var/l=1, l <= map.custom_company[stocky].len, l++)
-				if (map.custom_company[stocky][l][1] == src)
-					map.custom_company[stocky][l][1] = null
+	if (map)
+		for(var/cmp in map.custom_company_nr)
+			if (find_company_member(src,cmp))
+				poss_list += cmp
+		if (!isemptylist(poss_list))
+			for(var/stocky in poss_list)
+				for(var/list/lx in map.custom_company[stocky])
+					if (lx[1] == src)
+						map.sales_registry += list(list(stocky,lx[2],map.custom_company_value[stocky]*(lx[2]/100)*2,null,1))
+				for(var/l=1, l <= map.custom_company[stocky].len, l++)
+					if (map.custom_company[stocky][l][1] == src)
+						map.custom_company[stocky][l][1] = null
 	src << browse(null, "window=memory")
 
 	if (client)

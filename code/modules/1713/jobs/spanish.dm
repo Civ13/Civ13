@@ -2,7 +2,7 @@
 /datum/job/spanish
 	faction = "Human"
 
-/datum/job/spanish/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/spanish/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_spanish_name(H.gender)
 	H.real_name = H.name
 
@@ -22,7 +22,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -64,7 +64,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/qm/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -106,7 +106,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/boatswain/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -146,7 +146,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/spanish/midshipman/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -181,7 +181,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/spanish/surgeon/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -218,7 +218,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/spanish/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -259,7 +259,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/spanish/cook/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
@@ -308,7 +308,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/spanish/seaman/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/seaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)

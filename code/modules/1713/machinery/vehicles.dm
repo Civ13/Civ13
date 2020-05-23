@@ -182,7 +182,7 @@
 	desc = "Used to steer a boat and control the sails."
 	icon_state = "rudder"
 	var/spamtimer = 0
-/obj/item/vehicleparts/wheel/rudder_sails/attack_self(mob/living/carbon/human/H)
+/obj/item/vehicleparts/wheel/rudder_sails/attack_self(mob/living/human/H)
 	if(!H.driver_vehicle)
 		return
 	if (!H.driver_vehicle.sails)
@@ -203,7 +203,7 @@
 			H.driver_vehicle.sails_on = FALSE
 			H.driver_vehicle.update_overlay()
 			return
-/obj/item/vehicleparts/wheel/attack_self(mob/living/carbon/human/H)
+/obj/item/vehicleparts/wheel/attack_self(mob/living/human/H)
 	if(!H.driver_vehicle)
 		return
 	if(!H.driver_vehicle.engine)
@@ -256,8 +256,8 @@
 		return
 */
 
-/obj/item/vehicleparts/wheel/secondary_attack_self(mob/living/carbon/human/user)
-	if (user.driver_vehicle.axis.currentspeed <= 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
+/obj/item/vehicleparts/wheel/secondary_attack_self(mob/living/human/user)
+	if (user && user.driver_vehicle && user.driver_vehicle.axis && user.driver_vehicle.axis.currentspeed <= 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
 		return
 	else
 		user.driver_vehicle.axis.currentspeed--

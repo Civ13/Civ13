@@ -108,7 +108,7 @@
 /datum/job/proc/get_side_name()
 	return capitalize(lowertext(base_type_flag()))
 
-/datum/job/proc/assign_faction(var/mob/living/carbon/human/user)
+/datum/job/proc/assign_faction(var/mob/living/human/user)
 
 	if (istype(src, /datum/job/pirates))
 		user.faction_text = "PIRATES"
@@ -176,7 +176,7 @@
 		return "Pirate crew"
 	return null
 
-/datum/job/update_character(var/mob/living/carbon/human/H)
+/datum/job/update_character(var/mob/living/human/H)
 	..()
 	if (is_officer || can_get_coordinates)
 		H.make_artillery_officer()
@@ -189,12 +189,13 @@
 
 	// hack to make scope icons immediately appear - Kachnov
 	spawn (20)
-		for (var/obj/item/weapon/gun/G in H.contents)
-			if (list(H.l_hand, H.r_hand).Find(G))
-				for (var/obj/item/weapon/attachment/scope/S in G.contents)
+		if (H)
+			for (var/obj/item/weapon/gun/G in H.contents)
+				if (list(H.l_hand, H.r_hand).Find(G))
+					for (var/obj/item/weapon/attachment/scope/S in G.contents)
+						if (S.azoom)
+							S.azoom.Grant(H)
+			for (var/obj/item/weapon/attachment/scope/S in H.contents)
+				if (list(H.l_hand, H.r_hand).Find(S))
 					if (S.azoom)
 						S.azoom.Grant(H)
-		for (var/obj/item/weapon/attachment/scope/S in H.contents)
-			if (list(H.l_hand, H.r_hand).Find(S))
-				if (S.azoom)
-					S.azoom.Grant(H)

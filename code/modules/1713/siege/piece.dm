@@ -385,7 +385,7 @@
 
 	user.face_atom(src)
 	var/istank = istype(src, /obj/structure/cannon/modern/tank)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
@@ -412,7 +412,7 @@
 
 	if (href_list["load"])
 		var/obj/item/cannon_ball/M = user.get_active_hand()
-		if (M && istype(M) && do_after(user, caliber/2, src, canmove = istank))
+		if (M && istype(M) && do_after(user, caliber/2, src, can_move = istank))
 			user.remove_from_mob(M)
 			M.loc = src
 			loaded = M

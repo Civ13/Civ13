@@ -254,7 +254,7 @@
 	..()
 
 /obj/structure/shellrack/attack_hand(mob/user as mob)
-	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+	if (istype(user, /mob/living/human) && user in range(1,src))
 		if (storage)
 			storage.open(user)
 		update_icon()

@@ -3,7 +3,7 @@
 /proc/job2mobtype(rank)
 	for (var/datum/job/J in job_master.occupations)
 		if (J.title == rank)
-			return /mob/living/carbon/human
+			return /mob/living/human
 
 /mob/new_player
 	var/ready = FALSE
@@ -604,17 +604,18 @@ var/global/redirect_all_players = null
 
 	//squads
 	if (ishuman(character))
-		var/mob/living/carbon/human/H = character
+		var/mob/living/human/H = character
 		if (H.original_job.uses_squads)
-			H.verbs += /mob/living/carbon/human/proc/find_nco
+			H.verbs += /mob/living/human/proc/find_nco
 			if (H.original_job.is_squad_leader)
-				H.verbs += /mob/living/carbon/human/proc/Squad_Announcement
+				H.verbs += /mob/living/human/proc/Squad_Announcement
 			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
-				if (H.original_job.is_officer && map.ordinal_age >= 6 || H.original_job.is_squad_leader && map.ordinal_age >= 6 || H.original_job.is_commander && map.ordinal_age >= 6)
-					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
+				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
+					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
+						H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
-					for(var/i, i<=map.squads, i++)
+					for(var/i=1, i<=map.squads, i++)
 						if (!map.faction1_squad_leaders[i])
 							done = TRUE
 							H.squad = i
@@ -635,11 +636,12 @@ var/global/redirect_all_players = null
 				else if (map.faction1_squad_leaders[H.squad])
 					H << "<big><b>Your squad leader is [map.faction1_squad_leaders[H.squad]].</b></big>"
 			else if (H.faction_text == map.faction2)
-				if (H.original_job.is_officer && map.ordinal_age >= 6 || H.original_job.is_squad_leader && map.ordinal_age >= 6 || H.original_job.is_commander && map.ordinal_age >= 6)
-					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
+				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
+					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
+						H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
-					for(var/i, i<=map.squads, i++)
+					for(var/i=1, i<=map.squads, i++)
 						if (!map.faction2_squad_leaders[i])
 							done = TRUE
 							H.squad = i
@@ -928,7 +930,7 @@ var/global/redirect_all_players = null
 	spawning = TRUE
 	close_spawn_windows()
 
-	var/mob/living/carbon/human/new_character
+	var/mob/living/human/new_character
 
 	var/use_species_name
 	var/datum/species/chosen_species

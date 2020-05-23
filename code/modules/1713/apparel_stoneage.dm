@@ -89,13 +89,13 @@
 	/* Indian-Carib Cultural Accessories*/
 
 /obj/item/clothing/accessory/armband/indian1
-	name = "indian acessories"
+	name = "indian accessories"
 	desc = "red face paint and indian necklaces."
 	icon_state = "indian1"
 	item_state = "indian1"
 
 /obj/item/clothing/accessory/armband/indian2
-	name = "indian acessories"
+	name = "indian accessories"
 	desc = "Gold indian necklaces."
 	icon_state = "indian2"
 	item_state = "indian2"
@@ -254,3 +254,31 @@
 	new /obj/item/ammo_casing/arrow/bronze(src)
 	new /obj/item/ammo_casing/arrow/bronze(src)
 	new /obj/item/ammo_casing/arrow/bronze(src)
+
+/obj/item/weapon/storage/backpack/quiver/medieval/New()
+	..()
+	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+	new /obj/item/ammo_casing/arrow/iron(src)
+
+/obj/item/weapon/storage/backpack/quiver/crossbow/New()
+	..()
+	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)
+	new /obj/item/ammo_casing/bolt/iron(src)

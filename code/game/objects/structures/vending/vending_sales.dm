@@ -86,7 +86,7 @@
 	set src in range(1, usr)
 
 
-	if (!istype(usr, /mob/living/carbon/human))
+	if (!istype(usr, /mob/living/human))
 		return
 
 	if (owner != "Global" && find_company_member(usr,owner))
@@ -226,7 +226,7 @@
 					vend(R, usr, inp)
 
 				else
-					var/mob/living/carbon/human/H = usr
+					var/mob/living/human/H = usr
 					var/salestax = 0
 					if (H.civilization != "none")
 						salestax = (map.custom_civs[H.civilization][9]/100)*R.price
@@ -306,7 +306,9 @@
 		/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 0.15,
 		/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread = 0.35
 	)
-
+	New()
+		..()
+		update_icon()
 /obj/structure/vending/sales/market_stall
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."

@@ -61,7 +61,7 @@
 
 /obj/item/weapon/clay/clayjug
 	name = "unfired clay jug"
-	icon_state = "unfired_clayjug"
+	icon_state = "unfired_bigclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug
 	New()
 		..()
@@ -73,14 +73,14 @@
 
 /obj/item/weapon/clay/smallclaypot
 	name = "unfired small clay pot"
-	icon_state = "unfired_smallclaypot"
+	icon_state = "unfired_smallclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/smallclaypot
 	New()
 		..()
 		icon_state = "unfired_smallclaypot[pick(1,2)]"
 /obj/item/weapon/clay/bigclaypot
 	name = "unfired big clay pot"
-	icon_state = "unfired_bigclaypot"
+	icon_state = "unfired_bigclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot
 	New()
 		..()
@@ -192,7 +192,7 @@
 	if (blocked < 2)
 		weaken_duration = 5 + min(0, force - target.getarmor(hit_zone, "melee") + 10)
 
-	var/mob/living/carbon/human/H = target
+	var/mob/living/human/H = target
 	if (istype(H) && H.headcheck(hit_zone))
 		var/obj/item/organ/affecting = H.get_organ(hit_zone) //headcheck should ensure that affecting is not null
 		user.visible_message("<span class='danger'>[user] shatters [src] into [H]'s [affecting.name]!</span>")
@@ -343,7 +343,7 @@
 	volume = 130
 	w_class = 2.0
 
-/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (istype(I, /obj/item/stack/material))
 		var/obj/item/stack/material/S = I
 		if (istype(I, /obj/item/stack/material/gold))

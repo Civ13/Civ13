@@ -1,7 +1,7 @@
 /datum/job/chinese
 	faction = "Human"
 
-/datum/job/chinese/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/chinese/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_chinese_name(H.gender)
 	H.real_name = H.name
 
@@ -22,7 +22,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/chinese/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -45,6 +45,10 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+
 	world << "<b><big>[H.real_name] is the Captain of the Chinese Forces!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -76,7 +80,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/chinese/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -99,6 +103,10 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+
 	world << "<b><big>[H.real_name] is the 1st Lieutenant of the Chinese forces!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -127,7 +135,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/chinese/sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -150,6 +158,10 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your group according to the <b>Captain or Leiutenant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -176,7 +188,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/chinese/doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -194,6 +206,10 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -223,7 +239,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/chinese/infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -240,7 +256,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/chicap(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese(H), slot_shoulder)
-
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class  employed by the Chinese Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -266,7 +285,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/chinese/sniper/equip(var/mob/living/carbon/human/H)
+/datum/job/chinese/sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -286,6 +305,8 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/sniper_scope(H), slot_l_store)
 	give_random_name(H)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, a sharpshooter promoted to soldier first-class employed by the Chinese Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

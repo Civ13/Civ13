@@ -808,9 +808,9 @@
 	icon_state = "makeshiftak"
 	item_state = "makeshiftak"
 	base_icon = "makeshiftak"
-	caliber = "intermediumrifle"
+	caliber = "a762x39"
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
-	magazine_type = /obj/item/ammo_magazine/ak47
+	magazine_type = /obj/item/ammo_magazine/ak47/makeshift
 	weight = 3.8
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER

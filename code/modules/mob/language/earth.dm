@@ -28,7 +28,7 @@
 #define EGYPTIAN_SYLLABLES list("ura","ure", "nuf", "nif", "pha", "phe", "phi", "fenet", "fanat", "uneph", "uniph", "ophset", "uphset", "un", "ne", "nef", "nak", "naf", "rak", "raf", "ru", "ri", "tu", "ti", "ta", "te", "ut", "it", "pher", "phir", "inet", "uot","eunet", "runet", "aunet", "mun", "mon", "min", "am", "em", "im", "oka", "okef", "okif", "okuf", "kha", "onet", "kama", "umet", "khe", "khuf", "nem", "nim", "net", "nit", "phet", "phat", "phat", "om", "am", "um", "im", "yut", "yat", "yit", "eim", "uim", "iem", "het", "uminet", "nieter", "umerter", "omier", "kepne", "kepher", "kuph", "keph", "kiph", "ieun", "iaun", "ioun", "onetfer", "unetfer", "enetfer", "ferneh", "pherneh", "miu", "mih", "mie", "kek")
 #define KOREAN_SYLLABLES list("gya", "ga", "geo", "gyeo", "go", "gyo", "gu", "gyu", "geu", "gi", "na", "nya", "neo", "nyeo", "no", "nyo", "nu", "nyu", "neu", "ni", "da", "dya", "deo", "dyeo", "do", "dyo", "du", "dyu", "deu", "di", "ra", "rya", "reo", "ryeo", "ro", "ryo", "ru", "ryu", "reu", "ri", "ma", "mya", "meo", "myeo", "mo", "myo", "mu", "myu", "meu", "mi", "ba", "bya", "beo", "byeo", "bo", "byo", "bu", "byu", "beu", "bi", "sa", "sya", "seo", "syeo", "so", "syo", "su", "syu", "seu", "si", "a", "ya", "eo", "yeo", "o", "yo", "u", "yu", "eu", "i", "ja", "jya", "jeo", "jyeo", "jo", "jyo", "ju", "jyu", "jeu", "ji", "cha", "chya", "cheo", "chyeo", "cho", "chyo", "chu", "chyu", "cheu", "chi", "ka", "kya", "keo", "kyeo", "ko", "kyo", "ku", "kyu", "keu", "ki", "ta", "tya", "teo", "tyeo", "to", "tyo", "tu", "tyu", "teu", "ti", "pa", "pya", "peo", "pyeo", "po", "pyo", "pu", "pyu", "peu", "pi", "ha", "hya", "heo", "hyeo", "ho", "hyo", "hu", "hyu", "heu", "hi")
 #define IROQUOIS_SYLLABLES list("a", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "s", "sa", "da", "ta", "dla", "tla", "tsa", "wa", "ya", "e", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "i", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "tli", "tsi", "twi", "wi", "yi", "ti", "o", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tio", "tso", "wo", "yo", "u", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "v", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "wv", "yv")
-
+#define FILIPINO_SYLLABLES list("a", "b", "da", "fa", "ga", "gra", "ha", "han", "hon", "ka", "la", "lat", "ma", "na", "nga", "pa", "pra", "ra", "sa", "sal", "ta", "tra", "wa", "e", "be", "bre", "de", "dre", "ge", "he", "ke", "le", "me", "ne", "pe", "pre", "re", "se", "te", "tre", "i", "bi", "di", "fi", "gi", "hi", "ki", "li", "mi", "ni", "pi", "pri", "ri", "si", "ti", "o", "ong", "oo", "bo", "bro", "do", "dro", "go", "ho", "ko", "lo", "mo", "no", "ngo", "po", "pro", "ro", "so", "to", "tro", "yo", "u", "bu", "du", "gu", "hu", "ku", "lu", "mu", "pu", "yu")
 /datum/language/portuguese
 	name = "Portuguese"
 	desc = "Muito bom."
@@ -363,3 +363,12 @@
     flags = RESTRICTED | COMMON_VERBS
     syllables = IROQUOIS_SYLLABLES
     mutual_intelligibility = list(/datum/language/inuit = 10)
+
+/datum/language/filipino
+    name = "Filipino"
+    desc = "Maligayang bati!"
+    key = "ph"
+    colour = "Filipino"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = FILIPINO_SYLLABLES
+    mutual_intelligibility = list(/datum/language/spanish = 40)

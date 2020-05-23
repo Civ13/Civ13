@@ -210,7 +210,7 @@ var/list/slot_equipment_priority = list( \
 
 		if (istype(W, /obj/item/clothing/glasses) && ishuman(src))
 			var/obj/item/clothing/glasses/G = W
-			var/mob/living/carbon/human/user = src
+			var/mob/living/human/user = src
 			if(G.toggleable && G.active)
 				G.active = 0
 				G.icon_state = G.off_state

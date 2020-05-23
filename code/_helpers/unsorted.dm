@@ -917,7 +917,7 @@ proc/is_hot(obj/item/W as obj)
 	)
 
 //check if mob is lying down on something we can operate him on.
-/proc/can_operate(mob/living/carbon/M)
+/proc/can_operate(mob/living/human/M)
 	var/M_turf = get_turf(M)
 	for (var/obj/structure/optable/O in M_turf)
 		return TRUE

@@ -174,13 +174,13 @@ var/global/datum/controller/occupations/job_master
 			return
 
 
-/datum/controller/occupations/proc/relocate(var/mob/living/carbon/human/H)
+/datum/controller/occupations/proc/relocate(var/mob/living/human/H)
 
 	if (!H)
 		return
 
 	if (H.original_job && H.original_job.uses_squads && !H.original_job.is_squad_leader && H.squad > 0)
-		var/mob/living/carbon/human/HSL = null
+		var/mob/living/human/HSL = null
 		world.log << "trying"
 		if (H.faction_text == map.faction1)
 			if (map.faction1_squad_leaders[H.squad])
@@ -193,7 +193,7 @@ var/global/datum/controller/occupations/job_master
 		if (HSL && HSL.stat == CONSCIOUS)
 			world.log << "[HSL]"
 			var/found = FALSE
-			for(var/mob/living/carbon/human/EN in range(6,HSL))
+			for(var/mob/living/human/EN in range(6,HSL))
 				if (EN.stat == CONSCIOUS && EN.faction_text != H.faction_text)
 					found = TRUE
 					continue
@@ -230,12 +230,15 @@ var/global/datum/controller/occupations/job_master
 	world << "[H]([H.original_job.title]) original job spawn location = [H.original_job.spawn_location]"
 	world << "[H]([H.original_job.title]) spawn location = [spawn_location]"
 	#endif
-
+	var/turf/spawnpoint = null
 	var/list/turfs = latejoin_turfs[spawn_location]
-	var/spawnpoint = pick(turfs)
+	if (!latejoin_turfs[spawn_location].len)
+		spawnpoint = locate(48,50,1)
+	else
+		spawnpoint = pick(turfs)
 	if (!locate(/mob) in spawnpoint && !locate(/obj/structure) in spawnpoint)
 		H.loc = spawnpoint
-		if (map.ID == MAP_BATTLEROYALE) // if its the DM map, remove the "used" spawnpoint from the list
+		if (map.battleroyale) // if its the DM map, remove the "used" spawnpoint from the list
 			latejoin_turfs[spawn_location] -= spawnpoint
 
 	// make sure we have the right ambience for our new location
@@ -303,7 +306,7 @@ var/global/datum/controller/occupations/job_master
 	unassigned = list()
 	return
 
-/datum/controller/occupations/proc/EquipRank(var/mob/living/carbon/human/H, var/rank, var/joined_late = FALSE)
+/datum/controller/occupations/proc/EquipRank(var/mob/living/human/H, var/rank, var/joined_late = FALSE)
 	if (!H)	return null
 
 	var/datum/job/job = GetJob(rank)
@@ -492,7 +495,7 @@ var/global/datum/controller/occupations/job_master
 		world << "[H] ([rank]) GOT TO after spawnID()"
 		#endif
 
-		if (!istype(H, /mob/living/carbon/human/corpse))
+		if (!istype(H, /mob/living/human/corpse))
 			relocate(H)
 			if (H.client)
 				H.client.remove_gun_icons()
@@ -506,7 +509,7 @@ var/global/datum/controller/occupations/job_master
 
 			return H
 
-/datum/controller/occupations/proc/spawnKeys(var/mob/living/carbon/human/H, rank, title)
+/datum/controller/occupations/proc/spawnKeys(var/mob/living/human/H, rank, title)
 
 	if (!H)	return FALSE
 
@@ -522,7 +525,7 @@ var/global/datum/controller/occupations/job_master
 
 	return TRUE
 
-/datum/controller/occupations/proc/spawn_keys(var/mob/living/carbon/human/H, rank, var/datum/job/job)
+/datum/controller/occupations/proc/spawn_keys(var/mob/living/human/H, rank, var/datum/job/job)
 
 	var/list/_keys = job.get_keys()
 	if (!_keys.len)

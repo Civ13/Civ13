@@ -1,10 +1,10 @@
-/mob/living/carbon/human/dummy
+/mob/living/human/dummy
 	real_name = "Test Dummy"
 	status_flags = GODMODE|CANPUSH
 /*
-/mob/living/carbon/human/monkey
+/mob/living/human/monkey
 	icon_state = "monkey"
 
-/mob/living/carbon/human/monkey/New(var/new_loc)
+/mob/living/human/monkey/New(var/new_loc)
 	..(new_loc, "Monkey")
 */

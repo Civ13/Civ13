@@ -21,7 +21,7 @@
 /obj/item/weapon/material/sword/handle_shield(mob/living/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
 	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
-	var/mob/living/carbon/human/H_user = user
+	var/mob/living/human/H_user = user
 	var/isdefend = 1 //the defend tactic modifier
 	var/modif = 1
 	if (H_user.religion_check() == "Combat")
@@ -30,7 +30,7 @@
 		isdefend = 1.2
 	if(default_parry_check(user, attacker, damage_source) && prob(isdefend*(min(block_chance * (H_user.getStatCoeff("swords")*modif),92))) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
 		user.visible_message("<font color='#E55300'><big>\The [user] parries [attack_text] with \the [src]!</big></font>")
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		H.adaptStat("swords", 1*modif)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
 		if (istype(damage_source, /obj/item/weapon/sledgehammer))
@@ -86,7 +86,7 @@
 		return
 
 /obj/item/weapon/material/sword/training
-	name = "Training Sword"
+	name = "training sword"
 	desc = "A wood sword used for nonlethal practice."
 	icon_state = "wood_sword"
 	item_state = "wood_sword"
@@ -105,6 +105,26 @@
 	sharp = FALSE
 	edge = FALSE
 	default_material = "wood"
+
+/obj/item/weapon/material/sword/training/bamboo
+	desc = "A bamboo sword used for nonlethal practice."
+	icon_state = "bokken_sword"
+	item_state = "bokken_sword"
+	block_chance = 50
+	force_divisor = 1
+	thrown_force_divisor = 1
+	force = 1
+	slot_flags = SLOT_BELT | SLOT_BACK
+	value = 0
+	cooldownw = 8
+	sharpness = 0
+	flammable = TRUE
+	attack_verb = list("thwacked", "hit", "clonked", "batted", "tapped", "smacked", "poked", "slapped")
+	hitsound = 'sound/weapons/kick.ogg'
+	drawsound = 'sound/items/unholster_sword01.ogg'
+	sharp = FALSE
+	edge = FALSE
+	default_material = "bamboo"
 
 /obj/item/weapon/material/sword/attack_self(mob/user)
 	..()
@@ -152,7 +172,7 @@ obj/item/weapon/material/sword/wakazashi
 	..()
 	if (!ishuman(user))
 		return
-	var/mob/living/carbon/human/M = user
+	var/mob/living/human/M = user
 	suicide = TRUE
 	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] gut.</span>")
 	if (!do_after(user, 60))
@@ -170,7 +190,7 @@ obj/item/weapon/material/sword/wakazashi
 
 /obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, def_zone)
 	..()
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if(istype(A, H))
 		if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 			user << "<span class = 'danger'>You have no idea how to do this.</span>"

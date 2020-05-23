@@ -5,7 +5,7 @@
 /datum/job/british
 	faction = "Human"
 
-/datum/job/british/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/british/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
 
@@ -25,7 +25,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/british/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -66,7 +66,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/qm/equip(var/mob/living/carbon/human/H)
+/datum/job/british/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -107,7 +107,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/boatswain/equip(var/mob/living/carbon/human/H)
+/datum/job/british/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -147,7 +147,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/british/midshipman/equip(var/mob/living/carbon/human/H)
+/datum/job/british/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -182,7 +182,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/british/surgeon/equip(var/mob/living/carbon/human/H)
+/datum/job/british/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -219,7 +219,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/british/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/british/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -266,7 +266,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/british/cook/equip(var/mob/living/carbon/human/H)
+/datum/job/british/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
@@ -315,7 +315,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/british/seaman/equip(var/mob/living/carbon/human/H)
+/datum/job/british/seaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -373,7 +373,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/army_commander/equip(var/mob/living/carbon/human/H)
+/datum/job/british/army_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -415,7 +415,7 @@
 	min_positions = 2
 	max_positions = 20
 
-/datum/job/british/army_officer/equip(var/mob/living/carbon/human/H)
+/datum/job/british/army_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -455,7 +455,7 @@
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/british/field_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/british/field_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -493,7 +493,7 @@
 	min_positions = 12
 	max_positions = 100
 
-/datum/job/british/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/british/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -535,7 +535,7 @@
 	min_positions = 4
 	max_positions = 20
 
-/datum/job/british/chasseur/equip(var/mob/living/carbon/human/H)
+/datum/job/british/chasseur/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -580,7 +580,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/ww1captain/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww1captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -627,7 +627,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/ww1lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww1lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -673,7 +673,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/ww1second_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww1second_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -717,7 +717,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/british/ww1sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww1sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -761,7 +761,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/british/ww1doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww1doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -804,7 +804,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/british/ww1shocktroop/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww1shocktroop/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -846,7 +846,7 @@
 	min_positions = 12
 	max_positions = 400
 
-/datum/job/british/ww1infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww1infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -894,7 +894,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/ww2lieutenant_pow/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww2lieutenant_pow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -931,7 +931,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/british/ww2sergeant_pow/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww2sergeant_pow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -967,7 +967,7 @@
 	min_positions = 12
 	max_positions = 124
 
-/datum/job/british/ww2pow/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww2pow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -1011,7 +1011,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/british/ww2doctor_pow/equip(var/mob/living/carbon/human/H)
+/datum/job/british/ww2doctor_pow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)

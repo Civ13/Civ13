@@ -2,7 +2,7 @@
 /datum/job/vietnamese
 	faction = "Human"
 
-/datum/job/vietnamese/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/vietnamese/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_vietnamese_name(H.gender)
 	H.real_name = H.name
 
@@ -20,7 +20,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/vietnamese/vietcong_officer/equip(var/mob/living/carbon/human/H)
+/datum/job/vietnamese/vietcong_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -61,6 +61,10 @@
 	var/obj/item/clothing/accessory/armband/red_scarf/rscarf = new /obj/item/clothing/accessory/armband/red_scarf(null)
 	uniform.attackby(rscarf, H)
 	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Viet Cong in the fight against the imperialists!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -87,7 +91,7 @@
 	min_positions = 3
 	max_positions = 18
 
-/datum/job/vietnamese/vietcong_doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/vietnamese/vietcong_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -139,6 +143,10 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -166,7 +174,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/vietnamese/vietcong_comms/equip(var/mob/living/carbon/human/H)
+/datum/job/vietnamese/vietcong_comms/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -213,6 +221,10 @@
 		var/obj/item/clothing/accessory/armband/khan_ran/blue = new /obj/item/clothing/accessory/armband/khan_ran/blue(null)
 		uniform.attackby(blue, H)
 	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the communications and also acting as a courier for ammunition, grenades, and so on. Keep the squads up to date and supplied!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -240,7 +252,7 @@
 	min_positions = 20
 	max_positions = 200
 
-/datum/job/vietnamese/vietcong/equip(var/mob/living/carbon/human/H)
+/datum/job/vietnamese/vietcong/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -300,6 +312,10 @@
 		var/obj/item/clothing/accessory/armband/khan_ran/blue = new /obj/item/clothing/accessory/armband/khan_ran/blue(null)
 		uniform.attackby(blue, H)
 	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
+
 	H.add_note("Role", "You are a <b>[title]</b>, fighting guerilla warfare against the imperialists!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -319,7 +335,7 @@
 /datum/job/american
 	faction = "Human"
 
-/datum/job/american/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/american/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
 
@@ -338,7 +354,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/american/american_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/american_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -383,7 +399,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/american_sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/american_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -428,7 +444,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/american/american_sf/equip(var/mob/living/carbon/human/H)
+/datum/job/american/american_sf/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -472,7 +488,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/american_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/american/american_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -520,7 +536,7 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/american/american_radioman/equip(var/mob/living/carbon/human/H)
+/datum/job/american/american_radioman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -566,7 +582,7 @@
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/american/american_marksman/equip(var/mob/living/carbon/human/H)
+/datum/job/american/american_marksman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -610,7 +626,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/american_lmg/equip(var/mob/living/carbon/human/H)
+/datum/job/american/american_lmg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -657,7 +673,7 @@
 	min_positions = 10
 	max_positions = 100
 
-/datum/job/american/american_soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/american/american_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -710,7 +726,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/american/specops_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/american/specops_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -751,7 +767,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/american/specops_doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/american/specops_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -785,7 +801,7 @@
 	min_positions = 6
 	max_positions = 33
 
-/datum/job/american/specops_operator/equip(var/mob/living/carbon/human/H)
+/datum/job/american/specops_operator/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -827,7 +843,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/arab/insurgent_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/insurgent_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -899,7 +915,7 @@
 	min_positions = 22
 	max_positions = 66
 
-/datum/job/arab/insurgent/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/insurgent/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))

@@ -49,7 +49,7 @@
 				continue
 			out.Add("[size][tastes[i]]")
 	usr << "<span class='notice'>You can smell [english_list(out,"something indescribable")].</span>" //no taste means there are too many tastes and not enough flavor.
-/obj/item/weapon/reagent_containers/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/weapon/reagent_containers/secondary_attack_self(mob/living/human/user)
 	smell()
 
 /obj/item/weapon/reagent_containers/verb/set_APTFT() //set amount_per_transfer_from_this
@@ -129,7 +129,7 @@
 	msg_admin_attack("[user.name] ([user.ckey]) splashed [target.name] ([target.key]) with [name]. Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
 	var/washed = FALSE
 	if (ishuman(target))
-		var/mob/living/carbon/human/HT = target
+		var/mob/living/human/HT = target
 		if (HT.is_nude())
 			if (reagents.has_reagent("water", 30))
 				HT.hygiene = min(HT.hygiene+(reagents.get_reagent_amount("water")),HYGIENE_LEVEL_CLEAN)
@@ -171,8 +171,8 @@
 		return TRUE
 
 	if (target == user)
-		if (istype(user, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = user
+		if (istype(user, /mob/living/human))
+			var/mob/living/human/H = user
 			if (!H.check_has_mouth())
 				user << "Where do you intend to put \the [src]? You don't have a mouth!"
 				return
@@ -183,8 +183,8 @@
 
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 		self_feed_message(user)
-		if (reagents.has_reagent("cholera") && istype(user, /mob/living/carbon/human))
-			var/mob/living/carbon/human/HH = user
+		if (reagents.has_reagent("cholera") && istype(user, /mob/living/human))
+			var/mob/living/human/HH = user
 			var/dmod = 1
 			if (HH.find_trait("Weak Immune System"))
 				dmod = 2
@@ -199,8 +199,8 @@
 		feed_sound(user)
 		return TRUE
 	else
-		if (istype(target, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = target
+		if (istype(target, /mob/living/human))
+			var/mob/living/human/H = target
 			if (!H.check_has_mouth())
 				user << "Where do you intend to put \the [src]? \The [H] doesn't have a mouth!"
 				return
@@ -223,8 +223,8 @@
 		target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [user.name] ([user.ckey]). Reagents: [contained]</font>")
 		user.attack_log += text("\[[time_stamp()]\] <font color='red'>Fed [name] by [target.name] ([target.ckey]). Reagents: [contained]</font>")
 		msg_admin_attack("[key_name(user)] fed [key_name(target)] with [name]. Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
-		if (reagents.has_reagent("cholera") && istype(target, /mob/living/carbon/human))
-			var/mob/living/carbon/human/HH = target
+		if (reagents.has_reagent("cholera") && istype(target, /mob/living/human))
+			var/mob/living/human/HH = target
 			var/dmod = 1
 			if (HH.find_trait("Weak Immune System"))
 				dmod = 2

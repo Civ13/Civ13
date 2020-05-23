@@ -7,11 +7,11 @@ var/const/BLOOD_VOLUME_OKAY =	75
 var/const/BLOOD_VOLUME_BAD =	 60
 var/const/BLOOD_VOLUME_SURVIVE = 20
 
-/mob/living/carbon/human/var/datum/reagents/vessel // Container for blood and BLOOD ONLY. Do not transfer other chems here.
-/mob/living/carbon/human/var/var/pale = FALSE		  // Should affect how mob sprite is drawn, but currently doesn't.
+/mob/living/human/var/datum/reagents/vessel // Container for blood and BLOOD ONLY. Do not transfer other chems here.
+/mob/living/human/var/var/pale = FALSE		  // Should affect how mob sprite is drawn, but currently doesn't.
 
 //Initializes blood vessels
-/mob/living/carbon/human/proc/make_blood()
+/mob/living/human/proc/make_blood()
 
 	if (vessel)
 		return
@@ -27,7 +27,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		fixblood()
 
 //Resets blood data
-/mob/living/carbon/human/proc/fixblood()
+/mob/living/human/proc/fixblood()
 	for (var/datum/reagent/blood/B in vessel.reagent_list)
 		if (B.id == "blood")
 			B.data = list(	"donor"=src,"viruses"=null,"species"=species.name,"blood_DNA"=dna.unique_enzymes,"blood_colour"= species.blood_color,"blood_type"=dna.b_type,	\
@@ -38,7 +38,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
  * it now takes ~10 minutes to bleed out with 100 brute damage and 10 minutes to recover all blood
  * bloodloss is capped to 4 per tick (2.5 minutes to bleed out) - Kachnov */
 
-/mob/living/carbon/human/handle_blood()
+/mob/living/human/handle_blood()
 
 	make_blood()
 
@@ -90,7 +90,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		vessel.add_reagent("blood", 1.00)
 
 //Makes a blood drop, leaking amt units of blood from the mob
-/mob/living/carbon/human/proc/drip(var/amt as num)
+/mob/living/human/proc/drip(var/amt as num)
 
 	if (species && species.flags & NO_BLOOD) //TODO: Make drips come from the reagents instead.
 		return
@@ -108,7 +108,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 
 #define BLOOD_SPRAY_DISTANCE 2
-/mob/living/carbon/human/proc/blood_squirt(var/amt, var/turf/sprayloc)
+/mob/living/human/proc/blood_squirt(var/amt, var/turf/sprayloc)
 	if(amt <= 0 || !istype(sprayloc))
 		return
 	var/spraydir = pick(alldirs)
@@ -126,7 +126,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 					continue
 
 				if(ishuman(A))
-					var/mob/living/carbon/human/H = A
+					var/mob/living/human/H = A
 					if(!H.lying)
 						H.bloody_body(src)
 						H.bloody_hands(src)
@@ -155,7 +155,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	return bled
 #undef BLOOD_SPRAY_DISTANCE
 
-/mob/living/carbon/human/proc/remove_blood(var/amt)
+/mob/living/human/proc/remove_blood(var/amt)
 	if(!amt)
 		return 0
 	return vessel.remove_reagent("blood", amt * (src.mob_size/MOB_MEDIUM))
@@ -165,7 +165,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 ****************************************************/
 
 //Gets blood from mob to the container, preserving all data in it.
-/mob/living/carbon/proc/take_blood(obj/item/weapon/reagent_containers/container, var/amount)
+/mob/living/human/proc/take_blood(obj/item/weapon/reagent_containers/container, var/amount)
 
 	var/datum/reagent/B = get_blood(container.reagents)
 	if (!B) B = new /datum/reagent/blood
@@ -184,8 +184,8 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	B.data["blood_type"] = copytext(dna.b_type,1,0)
 
 	// Putting this here due to return shenanigans.
-	if (istype(src,/mob/living/carbon/human))
-		var/mob/living/carbon/human/H = src
+	if (istype(src,/mob/living/human))
+		var/mob/living/human/H = src
 		B.data["blood_colour"] = H.species.blood_color
 		B.color = B.data["blood_colour"]
 
@@ -197,7 +197,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	return B
 
 //For humans, blood does not appear from blue, it comes from vessels.
-/mob/living/carbon/human/take_blood(obj/item/weapon/reagent_containers/container, var/amount)
+/mob/living/human/take_blood(obj/item/weapon/reagent_containers/container, var/amount)
 
 	if (species && species.flags & NO_BLOOD)
 		return null
@@ -209,7 +209,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	vessel.remove_reagent("blood",amount) // Removes blood if human
 
 //Transfers blood from container ot vessels
-/mob/living/carbon/proc/inject_blood(var/datum/reagent/blood/injected, var/amount)
+/mob/living/human/proc/inject_blood(var/datum/reagent/blood/injected, var/amount)
 	if (!injected || !istype(injected))
 		return
 
@@ -226,7 +226,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	reagents.update_total()
 
 //Transfers blood from reagents to vessel, respecting blood types compatability.
-/mob/living/carbon/human/inject_blood(var/datum/reagent/blood/injected, var/amount)
+/mob/living/human/inject_blood(var/datum/reagent/blood/injected, var/amount)
 
 	if (species.flags & NO_BLOOD)
 		reagents.add_reagent("blood", amount, injected.data)
@@ -246,7 +246,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	..()
 
 //Gets human's own blood.
-/mob/living/carbon/proc/get_blood(datum/reagents/container)
+/mob/living/human/proc/get_blood(datum/reagents/container)
 	var/datum/reagent/blood/res = locate() in container.reagent_list //Grab some blood
 	if (res) // Make sure there's some blood at all
 		if (res.data["donor"] != src) //If it's not theirs, then we look for theirs
@@ -284,8 +284,8 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 	var/decal_type = /obj/effect/decal/cleanable/blood/splatter
 	var/turf/T = get_turf(target)
 
-	if (istype(source,/mob/living/carbon/human))
-		var/mob/living/carbon/human/M = source
+	if (istype(source,/mob/living/human))
+		var/mob/living/human/M = source
 		source = M.get_blood(M.vessel)
 
 	// Are we dripping or splattering?
@@ -334,11 +334,11 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 
 
 //Percentage of maximum blood volume.
-/mob/living/carbon/human/proc/get_blood_volume()
+/mob/living/human/proc/get_blood_volume()
 	return round((vessel.get_reagent_amount(/datum/reagent/blood)/species.blood_volume)*100)
 
 //Percentage of maximum blood volume, affected by the condition of circulation organs
-/mob/living/carbon/human/proc/get_blood_circulation()
+/mob/living/human/proc/get_blood_circulation()
 	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
 	var/blood_volume = get_blood_volume()
 	if(!heart)
@@ -373,7 +373,7 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 
 
 //Percentage of maximum blood volume, affected by the condition of circulation organs, affected by the oxygen loss. What ultimately matters for brain
-/mob/living/carbon/human/proc/get_blood_oxygenation()
+/mob/living/human/proc/get_blood_oxygenation()
 	var/blood_volume = get_blood_circulation()
 	if(is_asystole()) // Heart is missing or isn't beating and we're not breathing (hardcrit)
 		return min(blood_volume, BLOOD_VOLUME_SURVIVE)
@@ -392,7 +392,7 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 	return min(blood_volume, 100)
 
 
-/mob/living/carbon/human/proc/get_effective_blood_volume()
+/mob/living/human/proc/get_effective_blood_volume()
 	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
 	var/blood_volume = round((vessel.get_reagent_amount("blood")/species.blood_volume)*100)
 	if(!heart || (heart.pulse == PULSE_NONE && !(status_flags & FAKEDEATH)))

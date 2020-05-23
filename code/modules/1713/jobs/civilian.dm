@@ -2,7 +2,7 @@
 /datum/job/civilian
 	faction = "Human"
 
-/datum/job/civilian/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/civilian/give_random_name(var/mob/living/human/H)
 	if (is_civilizations || is_nomad)
 		H.name = H.species.get_random_name(H.gender)
 		H.real_name = H.name
@@ -27,7 +27,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/governor/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/governor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -71,7 +71,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/architect/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/architect/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -137,7 +137,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/banker/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/banker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -181,7 +181,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/bank_teller/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/bank_teller/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -245,7 +245,7 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/civilian/officer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -296,7 +296,7 @@
 	min_positions = 1
 	max_positions = 30
 
-/datum/job/civilian/veteran/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/veteran/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -350,7 +350,7 @@
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/civilian/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -411,7 +411,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/civilian/merchant/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/merchant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -470,7 +470,7 @@
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/civilian/priest/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -511,7 +511,7 @@
 	min_positions = 3
 	max_positions = 40
 
-/datum/job/civilian/prospector/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/prospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -569,7 +569,7 @@
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/civilian/farmer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/farmer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -629,7 +629,7 @@
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/civilian/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -705,7 +705,7 @@
 	min_positions = 2
 	max_positions = 3
 
-/datum/job/civilian/blacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/blacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -779,7 +779,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/inkeeper/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/inkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -854,7 +854,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/barkeep/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/barkeep/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -931,7 +931,7 @@
 	min_positions = 10
 	max_positions = 150
 
-/datum/job/civilian/worker/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/worker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1005,7 +1005,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/civilian/beggar/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/beggar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 
@@ -1046,7 +1046,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/mayor/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/mayor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
@@ -1090,7 +1090,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/architect_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/architect_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1154,7 +1154,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/banker_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/banker_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
@@ -1198,7 +1198,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/bank_teller_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/bank_teller_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1259,7 +1259,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/judge_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/judge_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
@@ -1305,7 +1305,7 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/civilian/officer_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/officer_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1343,14 +1343,14 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCivC"
-
+	whitelisted = TRUE
 	is_pioneer = TRUE
 
 
 	min_positions = 1
 	max_positions = 30
 
-/datum/job/civilian/veteran_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/veteran_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1399,7 +1399,7 @@
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/civilian/medic_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/medic_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1458,7 +1458,7 @@
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/civilian/merchant_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/merchant_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1515,7 +1515,7 @@
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/civilian/priest_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/priest_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
@@ -1549,17 +1549,24 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
-
 	is_pioneer = TRUE
 
 
 	min_positions = 3
 	max_positions = 40
+	default_language = "Chinese"
+	additional_languages = list("English" = 100, "Vietnamese" = 10, "Japanese" = 5)
+	male_tts_voice = "Takumi" //jap
+	female_tts_voice = "Zhiyu" //chinese
 
-/datum/job/civilian/prospector_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/prospector_pioneer/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_chinese_name(H.gender)
+	H.real_name = H.name
+/datum/job/civilian/prospector_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(H), slot_head)
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
 	else
@@ -1567,11 +1574,11 @@
 	if (H.gender == "male")
 		var/randcloth = rand(1,3)
 		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/haori(H), slot_w_uniform)
 		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/blue(H), slot_w_uniform)
 		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/red(H), slot_w_uniform)
 	else
 		var/randcloth = rand(1,3)
 		if (randcloth == 1)
@@ -1581,7 +1588,10 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
+		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
 	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
@@ -1611,7 +1621,7 @@
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/civilian/farmer_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/farmer_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1668,7 +1678,7 @@
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/civilian/carpenter_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/carpenter_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1688,15 +1698,15 @@
 
 	//head
 		var/randhead = rand(1,5)
-		if (randhead == 1)
+		if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (randhead == 1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead== 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 4)
+		else if (randhead == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 5)
+		else if (randhead == 4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)
@@ -1740,7 +1750,7 @@
 	min_positions = 2
 	max_positions = 3
 
-/datum/job/civilian/blacksmith_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/blacksmith_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1761,16 +1771,16 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 
 	//head
-		var/randhead = rand(1,5)
-		if (randhead == 1)
+		var/randhead = rand(1,4)
+		if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (randhead == 1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead== 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 4)
+		else if (randhead == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 5)
+		else if (randhead == 4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)
@@ -1812,7 +1822,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/inkeeper_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/inkeeper_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1867,7 +1877,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/barkeep_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/barkeep_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1924,7 +1934,7 @@
 	min_positions = 10
 	max_positions = 150
 
-/datum/job/civilian/worker_pioneer/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/worker_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1942,16 +1952,16 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 
 	//head
-		var/randhead = rand(1,5)
-		if (randhead == 1)
+		var/randhead = rand(1,4)
+		if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
+		else if (randhead == 1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 		else if (randhead == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead== 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 4)
+		else if (randhead == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 5)
+		else if (randhead == 4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)

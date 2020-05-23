@@ -54,7 +54,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						C << browse(vote.interface(C),"window=vote")
 
 	proc/autogamemode()
-		if (map.ID == MAP_NOMADS_EXTENDED || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_NOMADS_WASTELAND || map.ID == MAP_TESTING)
+		if (map.ID == MAP_GLADIATORS && map.ID == MAP_NOMADS_EXTENDED || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_JUNGLE_OF_THE_CHADS || map.ID == MAP_NOMADS_WASTELAND || map.ID == MAP_NOMADS_WASTELAND_2 || map.ID == MAP_TESTING || map.battleroyale)
 			return
 		if (map.persistence)
 			return
@@ -223,7 +223,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						if (!default)
 							default = "Normal"
 					else if (map.nomads || map.civilizations)
-						options = list("Classic (Stone Age Start)", "Chad Mode", "Chad Mode +", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
+						options = list("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
 						if (!default)
 							default = "Classic (Stone Age Start)"
 					choices.Add(options)

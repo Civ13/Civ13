@@ -59,7 +59,7 @@
 	visible_message("<span class='danger'>The [name] gets destroyed!</span>")
 	..()
 
-/obj/item/vehicleparts/wheel/modular/attack_self(mob/living/carbon/human/H)
+/obj/item/vehicleparts/wheel/modular/attack_self(mob/living/human/H)
 	if(!control)
 		return
 	if(!control.axis)
@@ -109,7 +109,7 @@
 			return
 
 
-/obj/item/vehicleparts/wheel/modular/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/vehicleparts/wheel/modular/secondary_attack_self(mob/living/human/user)
 	if (!control || !control.axis)
 		return
 	if (control && control.axis && control.axis.engine && control.axis.engine.fueltank && (control.axis.currentspeed <= 0 || control.axis.engine.fueltank.reagents.total_volume <= 0))
@@ -185,11 +185,11 @@
 	return
 
 /obj/structure/bed/chair/drivers/post_buckle_mob()
-	if (buckled_mob && istype(buckled_mob, /mob/living/carbon/human) && buckled_mob.put_in_active_hand(wheel) == FALSE)
+	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(wheel) == FALSE)
 		buckled_mob << "Your hands are full!"
 		return
 
-/obj/structure/bed/chair/drivers/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/bed/chair/drivers/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (buckled_mob && H == buckled_mob && istype(I, /obj/item/vehicleparts/wheel/modular))
 		H.remove_from_mob(I)
 		I.forceMove(src)
@@ -197,7 +197,7 @@
 		return
 	else
 		..()
-/obj/structure/bed/chair/drivers/attack_hand( var/mob/living/carbon/human/H)
+/obj/structure/bed/chair/drivers/attack_hand( var/mob/living/human/H)
 	if (wheel && buckled_mob && H == buckled_mob && wheel.loc != H)
 		if (buckled_mob.put_in_active_hand(wheel))
 			H << "You grab the wheel."
@@ -257,11 +257,11 @@
 	return
 
 /obj/structure/bed/chair/commander/post_buckle_mob()
-	if (buckled_mob && istype(buckled_mob, /mob/living/carbon/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
+	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
 		buckled_mob << "Your hands are full!"
 		return
 
-/obj/structure/bed/chair/commander/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/bed/chair/commander/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (buckled_mob && H == buckled_mob && istype(I, /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
 		H.remove_from_mob(I)
 		I.forceMove(src)
@@ -269,7 +269,7 @@
 		return
 	else
 		..()
-/obj/structure/bed/chair/commander/attack_hand( var/mob/living/carbon/human/H)
+/obj/structure/bed/chair/commander/attack_hand( var/mob/living/human/H)
 	if (buckled_mob && H == buckled_mob && periscope.loc != H)
 		if (buckled_mob.put_in_active_hand(periscope))
 			H << "You look through the periscope."

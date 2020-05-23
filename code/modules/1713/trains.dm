@@ -129,7 +129,7 @@
 
 	set src in view(1)
 
-	if (!istype(usr, /mob/living/carbon/human))
+	if (!istype(usr, /mob/living/human))
 		return
 
 	switch(dir)
@@ -230,7 +230,7 @@
 
 	set src in view(1)
 
-	if (!istype(usr, /mob/living/carbon/human))
+	if (!istype(usr, /mob/living/human))
 		return
 
 
@@ -473,7 +473,7 @@
 	..()
 
 /obj/structure/trains/storage/attack_hand(mob/user as mob)
-	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+	if (istype(user, /mob/living/human) && user in range(1,src))
 		storage.open(user)
 		update_icon()
 	else

@@ -15,7 +15,7 @@
 	var/list/carrying = list() // List of things on the tray. - Doohl
 	var/max_carry = 10
 
-/obj/item/weapon/tray/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+/obj/item/weapon/tray/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 
 	// Drop all the things. All of them.
 	overlays.Cut()
@@ -30,7 +30,7 @@
 						sleep(rand(2,4))
 
 
-	var/mob/living/carbon/human/H = M	  ///////////////////////////////////// /Let's have this ready for later.
+	var/mob/living/human/H = M	  ///////////////////////////////////// /Let's have this ready for later.
 
 
 	if (!(user.targeted_organ == ("eyes" || "head"))) //////////////hitting anything else other than the eyes

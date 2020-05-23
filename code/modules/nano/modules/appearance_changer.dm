@@ -2,7 +2,7 @@
 	name = "Appearance Editor"
 	available_to_ai = FALSE
 	var/flags = APPEARANCE_ALL_HAIR
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/list/valid_species = list()
 	var/list/valid_hairstyles = list()
 	var/list/valid_facial_hairstyles = list()
@@ -11,7 +11,7 @@
 	var/list/whitelist
 	var/list/blacklist
 
-/datum/nano_module/appearance_changer/New(var/location, var/mob/living/carbon/human/H, var/check_species_whitelist = TRUE, var/list/species_whitelist = list(), var/list/species_blacklist = list())
+/datum/nano_module/appearance_changer/New(var/location, var/mob/living/human/H, var/check_species_whitelist = TRUE, var/list/species_whitelist = list(), var/list/species_blacklist = list())
 	..()
 	owner = H
 	check_whitelist = check_species_whitelist
@@ -137,7 +137,7 @@
 	data["change_facial_hair_color"] = can_change(APPEARANCE_FACIAL_HAIR_COLOR)
 	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
-		ui = new(user, src, ui_key, "appearance_changer.tmpl", name, 800, 450, state = _state)
+		ui = new(user, src, ui_key, "appearance_changer.tmpl", name, 800, 450, _state = _state)
 		ui.set_initial_data(data)
 		ui.open()
 		ui.set_auto_update(1)

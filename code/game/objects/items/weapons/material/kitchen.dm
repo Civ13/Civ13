@@ -22,7 +22,7 @@
 	create_reagents(5)
 	return
 
-/obj/item/weapon/material/kitchen/utensil/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+/obj/item/weapon/material/kitchen/utensil/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (!istype(M))
 		return ..()
 
@@ -118,7 +118,7 @@
 		sharp = 1
 		return
 
-/obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/human/M as mob, mob/living/user as mob)
 	if (user.a_intent == I_HELP && (M in range(user,1) || M == user) && ishuman(M) && ishuman(user))
 		visible_message("[user] starts cutting [M]'s hair...","You start cutting [M]'s hair...")
 		if (do_after(user, 80, M))
@@ -344,8 +344,8 @@
 	name = "circumcision knife"
 
 /obj/item/weapon/material/kitchen/utensil/knife/circumcision/attack(target as mob, mob/living/user as mob)
-	if (istype(target, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = target
+	if (istype(target, /mob/living/human))
+		var/mob/living/human/H = target
 		if (user.a_intent == I_HELP && H.gender == MALE)
 			if (H.circumcised)
 				user << "<span class = 'notice'>[H] is already circumcised!</span>"

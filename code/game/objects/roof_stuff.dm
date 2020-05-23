@@ -242,7 +242,7 @@
 	//if no support >> roof falls down
 		if (!supportfound)
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
-			for (var/mob/living/carbon/human/M in range(1, src))
+			for (var/mob/living/human/M in range(1, src))
 				M.adjustBruteLoss(rand(17,27))
 				M.Weaken(15)
 				M << "The roof collapses!"
@@ -324,7 +324,7 @@
 	var/covers_time = 80
 
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 	var/area/currentarea = get_area(get_step(user, user.dir))
@@ -355,7 +355,7 @@
 			new target_type(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes building the roof.</span>")
 			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				H.adaptStat("crafting", 1)
 			qdel(src)
 		return
@@ -393,6 +393,11 @@
 	desc = "A thick wood beam, in nordic style. Used to support roofs in large buildings."
 	icon_state = "nordic_pillar"
 
+/obj/structure/roof_support/bamboo
+	name = "bamboo pillar"
+	desc = "A thick bamboo beam, in nordic style. Used to support roofs in large buildings."
+	icon_state = "bamboo_support"
+
 /obj/structure/mine_support
 	name = "mine support"
 	desc = "A set of wood beams placed to support the mine shaft. Prevents cave-ins."
@@ -429,25 +434,88 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
+/* Stone Pillar Subtypes*/
+
+/obj/structure/mine_support/stone/sandstone
+	name = "sandstone pillar"
+	desc = "A sandstone pillar that can support roofs and mine shafts."
+	icon_state = "sandstone_support_st1"
+
+/obj/structure/mine_support/stone/obsidian
+	name = "obsidian pillar"
+	desc = "A obsidian pillar that can support roofs and mine shafts."
+	icon_state = "obsidian_support_st1"
+
+/* Ionic Pillars*/
+
 /obj/structure/mine_support/stone/ionic
-	name = "Ionic column"
-	desc = "A Ionic-style column that can support roofs and mine shafts."
+	name = "ionic column"
+	desc = "An ionic-style column that can support roofs and mine shafts."
 	icon_state = "column_ionic"
 
+/obj/structure/mine_support/stone/ionic/sandstone
+	name = "sandstone ionic column"
+	desc = "An sandstone ionic-style column that can support roofs and mine shafts."
+	icon_state = "sandstone_column_ionic"
+
+/obj/structure/mine_support/stone/ionic/obsidian
+	name = "obsidian ionic column"
+	desc = "An obsidian ionic-style column that can support roofs and mine shafts."
+	icon_state = "obsidian_column_ionic"
+
+/* Solomonic Pillars*/
+
 /obj/structure/mine_support/stone/solomonic
-	name = "Solomonic column"
-	desc = "A Solomonic-style column that can support roofs and mine shafts."
+	name = "solomonic column"
+	desc = "An solomonic-style column that can support roofs and mine shafts."
 	icon_state = "column_solomonic1"
 
+/obj/structure/mine_support/stone/solomonic/sandstone
+	name = "sandstone solomonic column"
+	desc = "An sandstone solomonic-style column that can support roofs and mine shafts."
+	icon_state = "sandstone_column_solomonic1"
+
+/obj/structure/mine_support/stone/solomonic/obsidian
+	name = "obsidian solomonic column"
+	desc = "An obsidian solomonic-style column that can support roofs and mine shafts."
+	icon_state = "obsidian_column_solomonic1"
+
 /obj/structure/mine_support/stone/solomonic/thick
-	name = "Solomonic column"
-	desc = "A Solomonic-style column that can support roofs and mine shafts."
+	name = "solomonic column"
+	desc = "An solomonic-style column that can support roofs and mine shafts."
 	icon_state = "column_solomonic2"
 
+/obj/structure/mine_support/stone/solomonic/thick/sandstone
+	name = "sandstone solomonic column"
+	desc = "An sandstone solomonic-style column that can support roofs and mine shafts."
+	icon_state = "sandstone_column_solomonic2"
+
+/obj/structure/mine_support/stone/solomonic/thick/obsidian
+	name = "obsidian solomonic column"
+	desc = "An obsidian solomonic-style column that can support roofs and mine shafts."
+	icon_state = "obsidian_column_solomonic2"
+
+/* Cultural Pillars*/
+
 /obj/structure/mine_support/stone/aztec
-	name = "Aztec column"
-	desc = "An Aztec-style column that can support roofs and mine shafts."
+	name = "aztec column"
+	desc = "An aztec-style column that can support roofs and mine shafts."
 	icon_state = "aztec_pillar"
+
+/obj/structure/mine_support/stone/aztec/sandstone
+	name = "sandstone aztec column"
+	desc = "An sandstone aztec-style column that can support roofs and mine shafts."
+	icon_state = "sandstone_aztec_pillar"
+
+/obj/structure/mine_support/stone/aztec/obsidian
+	name = "obsidian aztec column"
+	desc = "An obsidian aztec-style column that can support roofs and mine shafts."
+	icon_state = "obsidian_aztec_pillar"
+
+/obj/structure/mine_support/stone/egyptian
+	name = "egyptian column"
+	desc = "An egyptian-style column that can support roofs and mine shafts."
+	icon_state = "egyptian_pillar"
 
 /obj/structure/mine_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon))

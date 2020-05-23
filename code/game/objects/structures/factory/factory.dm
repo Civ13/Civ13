@@ -29,7 +29,7 @@
 		icon_state = base_state
 		set_light(0)
 
-/obj/structure/machinery/factory/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/machinery/factory/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
@@ -150,7 +150,7 @@
 	else
 		..()
 
-/obj/structure/machinery/factory/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/machinery/factory/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 1)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
@@ -239,7 +239,7 @@
 		icon_state = base_state
 		set_light(0)
 
-/obj/structure/machinery/factory/coinsmelter/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/machinery/factory/coinsmelter/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
@@ -369,7 +369,7 @@
 	else
 		..()
 
-/obj/structure/machinery/factory/coinsmelter/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/machinery/factory/coinsmelter/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 1)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE

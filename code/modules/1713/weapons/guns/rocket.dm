@@ -18,7 +18,7 @@
 	user << "\red Shooting yourself with \a [src] is pretty tricky. You can't seem to manage it."
 	return
 
-/obj/item/weapon/gun/launcher/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/weapon/gun/launcher/secondary_attack_self(mob/living/human/user)
 	if (gun_safety)
 		if (safetyon)
 			safetyon = FALSE
@@ -214,7 +214,7 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "missile"
 	var/primed = null
-	var/mob/living/carbon/human/firer = null
+	var/mob/living/human/firer = null
 	var/turf/startingturf = null
 	throwforce = 15
 	heavy_armor_penetration = 12
@@ -227,7 +227,7 @@
 		else
 			..()
 		return
-/obj/item/missile/proc/handle_vehicle_hit(hit_atom, var/mob/living/carbon/human/firer = null)
+/obj/item/missile/proc/handle_vehicle_hit(hit_atom, var/mob/living/human/firer = null)
 	for(var/obj/structure/vehicleparts/frame/F in range(1,hit_atom))
 		for (var/mob/M in F.axis.transporting)
 			shake_camera(M, 3, 3)

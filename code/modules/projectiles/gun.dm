@@ -147,7 +147,7 @@
 	//DUAL WIELDING: only works with pistols edition
 	var/obj/item/weapon/gun/off_hand = null
 	if (ishuman(user) && user.a_intent == "harm")
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (istype(H.l_hand, /obj/item/weapon/gun) && istype(H.r_hand, /obj/item/weapon/gun))
 			var/obj/item/weapon/gun/LH = H.l_hand
 			var/obj/item/weapon/gun/RH = H.r_hand
@@ -166,7 +166,7 @@
 	Fire(A,user,params) //Otherwise, fire normally.
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return
@@ -191,7 +191,7 @@
 	else
 		if (bayonet && isliving(A) && !istype(bayonet, /obj/item/weapon/attachment/bayonet/flag))
 			var/mob/living/L = A
-			var/mob/living/carbon/C = A
+			var/mob/living/human/C = A
 			if (!istype(C) || !C.check_attack_throat(src, user))
 				// bayonets no longer have a miss chance, but have been balanced otherwise - Kachnov
 				var/obj/item/weapon/attachment/bayonet/a = bayonet
@@ -213,21 +213,21 @@
 /obj/item/weapon/gun/update_held_icon()
 	if (loc && ismob(loc))
 		if (ishuman(loc))
-			var/mob/living/carbon/human/H = loc
+			var/mob/living/human/H = loc
 			if (H.using_zoom())
 				return FALSE
 	..()
 
-/obj/item/weapon/gun/proc/Fire(atom/target, mob/living/user, clickparams, pointblank=0, reflex=0, forceburst = -1, force = FALSE)
+/obj/item/weapon/gun/proc/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE)
 
 	if (!user || !target) return
 
 	if (user.pixel_y > 16) return // can't fire while we're this high up - used for paradropping in particular
 
 	// stops admemes from sending immortal dummies into combat
-	if (user && istype(user, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = user
-		if ((H.client && istype(H, /mob/living/carbon/human/dummy)) || !H.original_job || !H.original_job_title)
+	if (user && istype(user, /mob/living/human))
+		var/mob/living/human/H = user
+		if ((H.client && istype(H, /mob/living/human/dummy)) || !H.original_job || !H.original_job_title)
 			if (clients.len > 1)
 				user << "<span class = 'danger'>Hey you fucking dumbass, don't send immortal dummies into combat.</span>"
 				return
@@ -423,8 +423,8 @@
 	//shooting while in shock
 	var/x_offset = 0
 	var/y_offset = 0
-	if (istype(user, /mob/living/carbon))
-		var/mob/living/carbon/mob = user
+	if (istype(user, /mob/living/human))
+		var/mob/living/human/mob = user
 		if (mob.shock_stage > 120)
 			y_offset = rand(-2,2)
 			x_offset = rand(-2,2)
@@ -439,7 +439,7 @@
 /obj/item/weapon/gun/proc/handle_suicide(mob/living/user)
 	if (!ishuman(user))
 		return
-	var/mob/living/carbon/human/M = user
+	var/mob/living/human/M = user
 
 	// realistic WW2 suicide, no hesitation - Kachnov
 	mouthshoot = TRUE
@@ -489,7 +489,7 @@
 		mouthshoot = FALSE
 		return
 
-/obj/item/weapon/gun/proc/handle_shoot_self(var/mob/living/carbon/human/user)
+/obj/item/weapon/gun/proc/handle_shoot_self(var/mob/living/human/user)
 	if (!istype(user))
 		return
 	if (!special_check(user))
@@ -639,7 +639,7 @@
 	if (user.get_inactive_hand() == src)
 		user:swap_hand()*/
 
-/mob/living/carbon/human/verb/eject_magazine()
+/mob/living/human/verb/eject_magazine()
 	set name = "Eject magazine"
 	set category = null
 
@@ -673,7 +673,7 @@
 	return .
 
 //health stuff; if the gun quality is too low, it might blow up in your hands!
-/obj/item/weapon/gun/proc/health_check(mob/living/carbon/human/H)
+/obj/item/weapon/gun/proc/health_check(mob/living/human/H)
 	if(health <= 0 || maxhealth <= 0)
 		playsound(src, "shatter", 70, TRUE)
 		visible_message("<span class='danger'>\The [src.name] shatters!</span>")

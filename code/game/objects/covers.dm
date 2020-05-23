@@ -56,6 +56,7 @@
 		else
 			//Do nothing, you're not important.
 			..()*/
+
 /obj/covers/proc/run_decay()
 	if (!src || !wall)
 		return
@@ -80,6 +81,9 @@
 			return
 		else
 	return
+
+/* Stone Floors starts here*/
+
 /obj/covers/wood
 	name = "wood floor"
 	icon = 'icons/turf/flooring/wood.dmi'
@@ -122,6 +126,46 @@
 	icon_state = "wood2_stairs"
 	material = "Wood"
 
+/* Bamboo*/
+
+/obj/covers/tatami
+	name = "horizontal tatami floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "tatami0"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Bamboo"
+
+/obj/covers/tatami_vertical
+	name = "vertical tatami floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "tatami1"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Bamboo"
+
+/obj/covers/tatami_dark
+	name = "horizontal tatami floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "tatami_dark0"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Bamboo"
+
+/obj/covers/tatami_dark_vertical
+	name = "vertical tatami floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "tatami_dark1"
+	passable = TRUE
+	amount = 1
+	layer = 1.99
+	material = "Bamboo"
+
+/* Stone Floors*/
+
 /obj/covers/slate
 	name = "slatestone wall"
 	desc = "A slate wall."
@@ -155,6 +199,30 @@
 	explosion_resistance = 2
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/cobblestone/stairs
+	name = "stone stairs"
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "rampup"
+	material = "Stone"
+
+/obj/covers/road
+	name = "road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "road_1"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
+/obj/covers/road/New()
+	..()
+	icon_state = pick("road_1","road_2","road_3")
+	base_icon_state = icon_state
 
 /obj/covers/romanroad
 	name = "roman road"
@@ -197,6 +265,8 @@
 	explosion_resistance = 2
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stonebrick
+
+/* Marble Floors starts here*/
 
 /obj/covers/marblefloor
 	name = "marble floor"
@@ -332,7 +402,7 @@
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
 
-/* BLack Marble Floors*/
+/* Black Marble Floors*/
 
 /obj/covers/ornatemarblefloor/black
 	name = "ornate black marble tile"
@@ -433,6 +503,28 @@
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
 
+/* Stone Floors -End*/
+/* Sandstone Floors*/
+
+/obj/covers/sandstone
+	name = "sandstone floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "sandstone_floor"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+	material = "Stone"
+
+/obj/covers/sandstone/stairs
+	name = "sandstone stairs"
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "sandstone_stairs"
+	material = "Stone"
+
 /obj/covers/sandstone
 	buildstack = /obj/item/stack/material/sandstone
 
@@ -459,6 +551,9 @@
 /obj/covers/sandstone/tile/decorative/red
 	name = "red sandstone decorative tile"
 	icon_state = "red_sandstone_decorative_tile"
+
+/* Sandstone Floors -End*/
+/* Smoothing Road Floors*/
 
 /obj/covers/roads
 	name = "road"
@@ -621,7 +716,7 @@
 
 /* Road Destruction*/
 
-/obj/covers/roads/modern/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/modern/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
@@ -644,7 +739,7 @@
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
-/obj/covers/roads/dirt/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/dirt/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O, /obj/item/weapon/shovel/bone))
 		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
 		user << "<span class='notice'>You begin filling over in the earth of \the [src].</span>"
@@ -658,7 +753,7 @@
 			user << "<span class='notice'>You finish filling over \the [src].</span>"
 			qdel(src)
 
-/obj/covers/roads/roman/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/roman/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
@@ -681,7 +776,7 @@
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
-/obj/covers/roads/cobble/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/cobble/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
@@ -704,7 +799,7 @@
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
-/obj/covers/roads/sandstone/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/covers/roads/sandstone/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
 		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
@@ -729,29 +824,9 @@
 
 /* Road Destruction - End*/
 
-/obj/covers/cobblestone/stairs
-	name = "stone stairs"
-	icon = 'icons/obj/stairs.dmi'
-	icon_state = "rampup"
-	material = "Stone"
+/* Smoothing Road Floors -End*/
 
-/obj/covers/road
-	name = "road"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "road_1"
-	passable = TRUE
-	not_movable = TRUE
-	amount = 0
-	wood = FALSE
-	layer = 1.99
-	flammable = FALSE
-	explosion_resistance = 2
-	material = "Stone"
-
-/obj/covers/road/New()
-	..()
-	icon_state = pick("road_1","road_2","road_3")
-	base_icon_state = icon_state
+/* Metal Floors*/
 
 /obj/covers/steelplating
 	name = "steel floor"
@@ -771,6 +846,9 @@
 	name = "white floor"
 	icon_state = "white"
 	material = "Steel"
+
+/* Metal Floors - End*/
+/* Concrete Floors*/
 
 /obj/covers/concretefloor
 	name = "concrete floor"
@@ -800,26 +878,10 @@
 	layer = 1.99
 	flammable = FALSE
 	material = "Stone"
-	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
+	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement //it is made from stone but for the purposes of immersion takes cement bricks.
 
-/obj/covers/sandstone
-	name = "sandstone floor"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "sandstone_floor"
-	passable = TRUE
-	not_movable = TRUE
-	amount = 0
-	wood = FALSE
-	layer = 1.99
-	flammable = FALSE
-	explosion_resistance = 2
-	material = "Stone"
-
-/obj/covers/sandstone/stairs
-	name = "sandstone stairs"
-	icon = 'icons/obj/stairs.dmi'
-	icon_state = "sandstone_stairs"
-	material = "Stone"
+/* Metal Floors - End*/
+/* Vehicle Floors*/
 
 /obj/covers/wood_ship
 	name = "wood floor"
@@ -830,6 +892,7 @@
 	layer = 1.99
 	material = "Wood"
 
+/* Vehicle Floors - End*/
 //Carpets - To be Expanded upon Later
 
 /obj/covers/carpet/
@@ -953,6 +1016,8 @@
 	flammable = TRUE
 //Continue
 
+/* Doors*/
+
 /obj/covers/saloon_door
 	name = "saloon door"
 	desc = "A wood door."
@@ -970,7 +1035,7 @@
 	material = "Wood"
 
 
-/obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
+/obj/covers/saloon_door/Crossed(mob/living/human/M as mob )
 	if (ismob(M) && !isghost(M) && M.mob_size >= MOB_MEDIUM)
 		visible_message("[M] pushes \the [src].","You push \the [src]")
 		icon_state = "saloon_opening"
@@ -978,6 +1043,9 @@
 		spawn(20)
 			icon_state = "saloon"
 			update_icon()
+
+/* Doors - End*/
+/* Wood Walls*/
 
 /obj/covers/wood_wall
 	name = "soft wood wall"
@@ -1034,6 +1102,54 @@
 	icon_state = "medieval_wall_y2"
 	health = 185
 
+/* Asia-Themed Walls - End*/
+
+/obj/covers/wood_wall/oriental
+	name = "oriental wall"
+	desc = "A east-oriental style wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "oriental"
+	health = 180
+
+/obj/covers/wood_wall/oriental/b
+	name = "braced oriental wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "orientalb"
+	health = 185
+
+/obj/covers/wood_wall/oriental/doorway
+	name = "oriental doorway"
+	desc = "A east-oriental style doorway."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "oriental-door"
+	density = FALSE
+	opacity = FALSE
+	health = 180
+
+/obj/covers/wood_wall/oriental/twop
+	name = "two panelled oriental wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "oriental_twop"
+	health = 180
+
+/obj/covers/wood_wall/oriental/twop/b
+	name = "two panelled braced oriental wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "oriental_twopb"
+	health = 185
+
+/obj/covers/wood_wall/oriental/threep
+	name = "three panelled oriental wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "oriental_threep"
+	health = 180
+
+/obj/covers/wood_wall/oriental/threep/b
+	name = "three panelled braced oriental wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "oriental_threepb"
+	health = 185
+
 /obj/covers/wood_wall/shoji
 	name = "shoji wall"
 	desc = "A shoji paper wall."
@@ -1082,6 +1198,24 @@
 	material = "Wood"
 	hardness = 40
 
+/obj/covers/wood_wall/bamboo/door //for mappers
+	name = "bamboo doorway"
+	desc = "A doorway made from bamboo."
+	icon = 'icons/obj/bamboostuff.dmi'
+	icon_state = "bamboo-door"
+	density = FALSE
+	opacity = FALSE
+	health = 80
+	amount = 3
+	layer = 3
+	health = 70
+	wall = TRUE
+	explosion_resistance = 3
+	material = "Wood"
+	hardness = 40
+
+/* Asia-Themed Walls - End*/
+
 /obj/covers/wood_wall/log
 	name = "log wall"
 	desc = "A log wall."
@@ -1102,6 +1236,8 @@
 /obj/covers/wood_wall/log/corner
 	icon_state = "log_wall_corner"
 	material = "Wood"
+
+/* Wood Walls - End*/
 
 /obj/covers/stone_wall
 	name = "stone wall"
@@ -1125,7 +1261,7 @@
 	adjusts=FALSE
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if(istype(W, /obj/item/weapon/chisel))
 		var design = "smooth"
 		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
@@ -1916,7 +2052,7 @@
 		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
 			visible_message("<span class='notice'>You can't build here!</span>")
 			return
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 	if (WWinput(user, "This will start building a floor cover [user.dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
@@ -1926,7 +2062,7 @@
 			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
 			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				H.adaptStat("crafting", 3)
 		return
 

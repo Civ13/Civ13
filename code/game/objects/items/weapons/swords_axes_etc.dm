@@ -24,7 +24,7 @@
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK+1
-	weakens = 5
+	weakens = 3
 	flammable = TRUE
 
 /obj/item/weapon/melee/nightbaton
@@ -166,14 +166,14 @@
 /obj/item/garrote/update_icon()
 	icon_state = "garrote[garroting ? "_w" : ""]"
 
-/obj/item/garrote/attack(mob/living/carbon/human/target as mob, mob/living/carbon/human/user as mob)
+/obj/item/garrote/attack(mob/living/human/target as mob, mob/living/human/user as mob)
 	if (garroting)
 		stop_garroting(user,target)
 		return
 	else
 		start_garroting(user,target)
 		return
-/obj/item/garrote/proc/start_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
+/obj/item/garrote/proc/start_garroting(mob/living/human/user,mob/living/human/target)
 	if (!user.has_empty_hand())
 		user << "<span class='notice'>You need a free hand to use the garrote!</span>"
 		return
@@ -193,18 +193,18 @@
 			"<span class='danger'>You grab \the [target] with \the [src]!</span>",\
 			"You hear some struggling and muffled cries of surprise")
 		return
-/obj/item/garrote/proc/stop_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
+/obj/item/garrote/proc/stop_garroting(mob/living/human/user,mob/living/human/target)
 	garroting = FALSE
 	user << "<span class='notice'>You release the garrote on your victim.</span>" //Not the grab, though. Only the garrote.
 	update_icon()
 	return
-/obj/item/garrote/attack_self(mob/living/carbon/human/user)
+/obj/item/garrote/attack_self(mob/living/human/user)
 	if(world.time <= next_garrote) 	return
 	if(garroting)
 		stop_garroting(user)
 		return
 
-/obj/item/garrote/proc/garroting_process(mob/living/carbon/human/user,mob/living/carbon/human/target,obj/item/weapon/grab/GB)
+/obj/item/garrote/proc/garroting_process(mob/living/human/user,mob/living/human/target,obj/item/weapon/grab/GB)
 	if (!ishuman(user) || !ishuman(target) || !GB)
 		return FALSE
 	if(ishuman(user))

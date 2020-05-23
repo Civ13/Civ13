@@ -19,7 +19,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(RUSSIAN = 0.25, CIVILIAN = 0.75)
 	battle_name = "Gulag nr. 13"
-	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the grace wall is removed.<br>The <b>NKVD</b> must keep the prisoners contained, and make them serve the Soviet Union with forced labor. The <b>Prisoners</b> must try to survive, increase their faction power, and if possible, escape.</font>"
+	mission_start_message = "<font size=4>NKVD have <b>4 minutes</b> to prepare before the grace wall is removed for the NKVD, the Prisoners won't be able to cross until 30 minutes have elapsed.<br>The <b>NKVD</b> must keep the prisoners contained, and make them serve the Soviet Union with forced labor. The <b>Prisoners</b> must try to survive, increase their faction power, and if possible, escape.</font>"
 	faction1 = RUSSIAN
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -53,12 +53,11 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 
-/obj/map_metadata/gulag13/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
-
 /obj/map_metadata/gulag13/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
+/obj/map_metadata/gulag13/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/gulag13/roundend_condition_def2name(define)
 	..()
@@ -123,7 +122,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	for(var/i in points)
 		if (i[1] != "Guards")
 			i[2]=0
-	for (var/mob/living/carbon/human/H in player_list)
+	for (var/mob/living/human/H in player_list)
 		if (H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner))
 			var/datum/job/civilian/prisoner/PJ = H.original_job
 			var/curval = 0
@@ -152,7 +151,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		for (var/i=1,i<=points.len,i++)
 			world << "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]+points[i][3]]</b></span></font>"
 		var/donecheck = FALSE
-		for(var/mob/living/carbon/human/H in player_list)
+		for(var/mob/living/human/H in player_list)
 			if(H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/prisoner) && !donecheck)
 				var/area/A = get_area(H)
 				if (istype(A, /area/caribbean/nomads/ice/target))
@@ -163,7 +162,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		check_points_msg()
 	return
 
-/obj/map_metadata/gulag13/check_caribbean_block(var/mob/living/carbon/human/H, var/turf/T)
+/obj/map_metadata/gulag13/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -191,7 +190,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	throw_speed = TRUE
 	attack_verb = list("bapped")
 	flammable = TRUE
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/document_name = ""
 	var/list/document_details = list()
 	var/list/guardnotes = list()
@@ -200,7 +199,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 		..()
 		spawn(20)
 			if (ishuman(loc))
-				var/mob/living/carbon/human/H = loc
+				var/mob/living/human/H = loc
 				document_name = H.real_name
 				owner = H
 				name = "[document_name] prisoner documents"
@@ -236,7 +235,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			user << "NOTE: [i]"
 	user << "<span class='info'>*---------*</span>"
 
-/obj/item/weapon/prisoner_passport/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/item/weapon/prisoner_passport/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
 		return
 	if (istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/russian))
@@ -250,11 +249,11 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 			guardnotes += texttoadd
 			return
 
-/obj/item/weapon/prisoner_passport/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/weapon/prisoner_passport/secondary_attack_self(mob/living/human/user)
 	showoff(user)
 	return
 
-/mob/living/carbon/human/proc/Sound_Alarm()
+/mob/living/human/proc/Sound_Alarm()
 	set name = "Sound the Siren"
 	set category = "Officer"
 	if (!map || map.ID != MAP_GULAG13)
@@ -275,7 +274,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 				if (G13.siren)
 					G13.alarm_proc()
 				return
-/mob/living/carbon/human/proc/Stop_Alarm()
+/mob/living/human/proc/Stop_Alarm()
 	set name = "Stop the Siren"
 	set category = "Officer"
 	if (!map || map.ID != MAP_GULAG13)
@@ -316,7 +315,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
-/obj/structure/camp_exportbook/attackby(var/obj/item/stack/S, var/mob/living/carbon/human/H)
+/obj/structure/camp_exportbook/attackby(var/obj/item/stack/S, var/mob/living/human/H)
 	var/obj/map_metadata/gulag13/G = null
 	if (!istype(map, /obj/map_metadata/gulag13))
 		return

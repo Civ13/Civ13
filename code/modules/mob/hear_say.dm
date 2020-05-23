@@ -29,13 +29,14 @@
 					message = pick(S.speak)
 			else
 				if (language)
-					message = language.scramble(alt_message, src)
+					alt_message = language.scramble(alt_message, src)
+					message = alt_message
 				else
 					message = stars(message)
 
 	var/speaker_name = speaker.name
-	if (istype(speaker, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = speaker
+	if (istype(speaker, /mob/living/human))
+		var/mob/living/human/H = speaker
 		if (H.special_job_title != null)
 			speaker_name = H.GetVoice()
 		else
@@ -56,7 +57,7 @@
 		message = "<i>[message]</i>"
 	alt_name = speaker_name
 	if (ishuman(speaker))
-		var/mob/living/carbon/human/H = speaker
+		var/mob/living/human/H = speaker
 		if (istype(H.original_job, /datum/job/civilian/prisoner))
 			alt_name = speaker.name
 
@@ -80,15 +81,15 @@
 				src << "<span class='name'>[alt_name]</span> talks but you cannot hear."
 	else
 		if (language)
-			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]")
+			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]",speaker, alt_message)
 		else
-			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"")
+			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"",speaker, alt_message)
 		if (speech_sound && (get_dist(speaker, src) <= 7 && z == speaker.z))
 			var/turf/source = speaker? get_turf(speaker) : get_turf(src)
 			playsound_local(source, speech_sound, sound_vol, TRUE)
 
 	if (language && ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (!H.languages.Find(language) && world.time >= src.next_language_learn)
 			src.next_language_learn = world.time + 60 // Cooldown is 60 ticks seconds = 6 seconds
 			var/lname = capitalize(language.name)
@@ -98,9 +99,14 @@
 				H.add_note("Known Languages", "[language.name]")
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"
 
-/mob/proc/on_hear_say(var/message)
+/mob/proc/on_hear_say(var/message, var/mob/speaker = null,var/message2 = "")
 	src << message
-
+	if (speaker && message2 != "")
+		if (client && ishuman(speaker) && speaker in view(7,src))
+			if (client && is_preference_enabled(/datum/client_preference/show_chat_overlays))
+				client.seen_chat_text += new/obj/chat_text(null,speaker,message2,src)
+			if (config.tts_on && client && ishuman(src) && ishuman(speaker) && is_preference_enabled(/datum/client_preference/play_chat_tts))
+				play_tts(message2,speaker)
 /mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/radio/source, var/obj/structure/radio/destination)
 
 	if (!client || !message)

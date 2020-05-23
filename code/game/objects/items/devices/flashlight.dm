@@ -39,7 +39,7 @@
 	return TRUE
 
 
-/obj/item/flashlight/attack(mob/living/carbon/human/M as mob, mob/user as mob)
+/obj/item/flashlight/attack(mob/living/human/M as mob, mob/user as mob)
 	add_fingerprint(user)
 	if (istype(src, /obj/item/flashlight/torch) && user.a_intent == I_HARM)
 		if (on && world.time > cooloff)
@@ -55,7 +55,7 @@
 
 	if (on && user.targeted_organ == "eyes")
 
-		var/mob/living/carbon/human/H = M	//mob has protective eyewear
+		var/mob/living/human/H = M	//mob has protective eyewear
 		if (istype(H))
 			for (var/obj/item/clothing/C in list(H.head,H.wear_mask))
 				if (istype(C) && (C.body_parts_covered & EYES))

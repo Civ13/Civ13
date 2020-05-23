@@ -2,7 +2,7 @@
 	name = "\improper zombie"
 	desc = "A reanimated dead corpse."
 	icon = 'icons/mob/zombie1.dmi'
-	icon_state = ""
+	icon_state = "zombie"
 	icon_dead = ""
 	response_help = "pushes"
 	response_disarm = "shoves"
@@ -16,18 +16,20 @@
 	maxHealth = 80
 	health = 80
 	stop_automated_movement_when_pulled = FALSE
-	harm_intent_damage = 14
-	melee_damage_lower = 8
-	melee_damage_upper = 14
-	move_to_delay = 12
+	harm_intent_damage = 18
+	melee_damage_lower = 10
+	melee_damage_upper = 18
+	move_to_delay = 3
 	break_stuff_probability = 25
 	attacktext = "scratched"
 	attack_sound = 'sound/animals/zombie/zombiehit.ogg'
 	faction = "neutral"
 	var/list/bodyparts = list()
+	behaviour = "hostile"
 
 /mob/living/simple_animal/hostile/zombie/New()
 	..()
+	icon_state = ""
 	var/list/totalbodyparts = list("l_hand_s","r_hand_s","l_arm_s","r_arm_s","l_leg_s","r_leg_s","l_foot_s","r_foot_s")
 	icon = pick('icons/mob/zombie1.dmi','icons/mob/zombie2.dmi','icons/mob/zombie3.dmi')
 	bodyparts = totalbodyparts
@@ -79,9 +81,6 @@
 	update_icons()
 	..()
 /mob/living/simple_animal/hostile/zombie/Life()
-	. =..()
-	if (!.)
-		return
 	..()
 	switch(stance)
 
@@ -102,10 +101,6 @@
 			if (prob(10))
 				var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
 				playsound(src.loc, sound2play, 100, TRUE)
-
-		if (HOSTILE_STANCE_ATTACKING)
-			var/sound2play = pick('sound/animals/zombie/zombie_sight1.ogg', 'sound/animals/zombie/zombie_sight2.ogg', 'sound/animals/zombie/zombie_sight3.ogg','sound/animals/zombie/zombie_sight4.ogg','sound/animals/zombie/zombie_sight5.ogg','sound/animals/zombie/zombie_sight6.ogg','sound/animals/zombie/zombie_sight7.ogg')
-			playsound(src.loc, sound2play, 100, TRUE)
 
 /mob/living/simple_animal/hostile/zombie/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 	if (hit_zone in list("r_leg", "l_leg", "l_arm", "r_arm") && prob(25))
@@ -184,3 +179,30 @@
 		else if (i == "r_arm_s")
 			move_to_delay -= 1
 			speed -= 1
+
+
+/mob/living/simple_animal/hostile/zombie/AttackingTarget()
+	if (!Adjacent(target_mob))
+		return
+	if(prob(50))
+		playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
+	else
+		playsound(src.loc, 'sound/weapons/bite_2.ogg', 100, TRUE, 2)
+	custom_emote(1, pick( list("slashes [target_mob]!", "bites [target_mob]!") ) )
+
+	var/damage = pick(melee_damage_lower,melee_damage_upper)
+	if (ishuman(target_mob))
+		var/mob/living/human/H = target_mob
+		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
+		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
+		var/dmod = 1
+		if (H.find_trait("Weak Immune System"))
+			dmod = 2
+		if (prob(3*dmod))
+			H.disease = TRUE
+			H.disease_type = "zombie"
+		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+	else if (isliving(target_mob))
+		var/mob/living/L = target_mob
+		L.adjustBruteLoss(damage)
+		return L

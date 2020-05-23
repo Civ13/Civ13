@@ -8,14 +8,14 @@
 	throw_speed = 4
 	throw_range = 8
 	flags = CONDUCT
-	slot_flags = SLOT_BELT|SLOT_MASK
+	slot_flags = SLOT_BELT|SLOT_POCKET
 	var/active = FALSE
 	var/det_time = 50
 	var/loadable = TRUE
 	flammable = TRUE
 	value = 5
 	var/explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
-	var/mob/living/carbon/human/firer = null
+	var/mob/living/human/firer = null
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))
 		if (det_time > 1)
@@ -31,8 +31,8 @@
 		add_fingerprint(user)
 
 	// clicking a grenade a second time turned throw mode off, this fixes that
-	if (iscarbon(user))
-		var/mob/living/carbon/C = user
+	if (ishuman(user))
+		var/mob/living/human/C = user
 		C.throw_mode_on()
 
 
@@ -159,8 +159,8 @@
 			icon_state = "dynamite3"
 
 			// clicking a grenade a second time turned throw mode off, this fixes that
-			if (iscarbon(user))
-				var/mob/living/carbon/C = user
+			if (ishuman(user))
+				var/mob/living/human/C = user
 				C.throw_mode_on()
 			return
 	else if (state == 1 && istype(W, /obj/item/stack/material/rope))
@@ -426,7 +426,7 @@
 	var/spread_range = 7
 	secondary_action = TRUE
 	var/explosion_size = 2
-/obj/item/weapon/grenade/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/weapon/grenade/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you wan't to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))
 		if (inp == "Yes")
@@ -532,7 +532,7 @@
 		armed = "armed"
 		return
 
-/obj/item/weapon/grenade/suicide_vest/activate(mob/living/carbon/human/user as mob)
+/obj/item/weapon/grenade/suicide_vest/activate(mob/living/human/user as mob)
 	if (active)
 		return
 
@@ -598,7 +598,7 @@
 		armed1 = "armed"
 		return
 
-/obj/item/weapon/grenade/suicide_vest/kamikaze/activate(mob/living/carbon/human/user as mob)
+/obj/item/weapon/grenade/suicide_vest/kamikaze/activate(mob/living/human/user as mob)
 	if (active)
 		return
 

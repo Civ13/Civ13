@@ -1,24 +1,60 @@
 /obj/effect/spawner/lootdrop
 	icon = 'icons/mob/screen/effects.dmi'
-	icon_state = "x2"
-	var/lootcount = TRUE		//how many items will be spawned
-	var/lootdoubles = FALSE		//if the same item can be spawned twice
-	var/loot = ""			//a list of possible items to spawn- a string of paths
-
-/obj/effect/spawner/lootdrop/initialize()
-	var/list/things = params2list(loot)
-
-	if (things && things.len)
-		for (var/i = lootcount, i > 0, i--)
-			if (!things.len)
-				return
-
-			var/loot_spawn = pick(things)
-			var/loot_path = text2path(loot_spawn)
-
-			if (!loot_path || !lootdoubles)
-				things.Remove(loot_spawn)
-				continue
-
-			new loot_path(get_turf(src))
+	icon_state = "x3"
+	var/list/loot = list()
+	var/nr = 1
+	var/loot_spawn
+/obj/effect/spawner/lootdrop/New()
+	..()
+	for (var/i = 1, i<=nr, i++)
+		loot_spawn = pick(loot)
+		new loot_spawn(get_turf(src))
 	qdel(src)
+
+
+/obj/effect/spawner/lootdrop/guns
+	name = "gun spawner"
+	loot = list(/obj/item/weapon/gun/projectile/pistol/glock17,/obj/item/weapon/gun/projectile/pistol/m1911,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/semiautomatic/svd,/obj/item/weapon/gun/projectile/automatic/m249,/obj/item/weapon/gun/projectile/submachinegun/mp40,/obj/item/weapon/gun/projectile/submachinegun/ak47)
+
+
+/obj/effect/spawner/lootdrop/guns/medieval
+	name = "gun spawner"
+	loot = list(/obj/item/weapon/gun/projectile/bow/crossbow,/obj/item/weapon/gun/projectile/bow/longbow,/obj/item/weapon/gun/projectile/bow/shortbow)
+
+/obj/effect/spawner/lootdrop/melee
+	name = "melee spawner"
+	loot = list(/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/material/sword/gladius,/obj/item/weapon/material/sword/armingsword,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/hatchet/battleaxe,/obj/item/weapon/melee/classic_baton)
+
+/obj/effect/spawner/lootdrop/melee/medieval
+	name = "melee spawner"
+	loot = list(/obj/item/weapon/material/sword/armingsword,/obj/item/weapon/material/sword/longsword,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/saif,/obj/item/weapon/material/sword/broadsword,/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/zweihander,/obj/item/weapon/melee/mace,/obj/item/weapon/material/pike,/obj/item/weapon/material/halberd,/obj/item/weapon/material/hatchet/battleaxe)
+
+/obj/effect/spawner/lootdrop/ammo
+	name = "ammo spawner"
+	loot = list(/obj/item/ammo_magazine/glock17,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/svd)
+	nr = 2
+
+/obj/effect/spawner/lootdrop/ammo/medieval
+	name = "ammo spawner"
+	loot = list(/obj/item/weapon/storage/backpack/quiver/medieval,/obj/item/weapon/storage/backpack/quiver/medieval,/obj/item/weapon/storage/backpack/quiver/crossbow)
+	nr = 1
+
+/obj/effect/spawner/lootdrop/armor
+	name = "armor spawner"
+	loot = list(/obj/item/weapon/shield/roman,/obj/item/clothing/suit/armor/ancient/scale,/obj/item/clothing/suit/armor/medieval,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/head/helmet/horned,/obj/item/clothing/head/helmet/kevlarhelmet,/obj/item/clothing/head/helmet/medieval/coif,/obj/item/clothing/head/helmet/modern/brodie,/obj/item/clothing/head/helmet/modern/stahlhelm,/obj/item/clothing/head/helmet/roman_centurion,/obj/item/clothing/accessory/armor/coldwar/flakjacket,/obj/item/clothing/accessory/armor/coldwar/pasgt)
+	nr = 2
+
+/obj/effect/spawner/lootdrop/armor/medieval
+	name = "armor spawner"
+	loot = list(/obj/item/clothing/suit/armor/samurai,/obj/item/clothing/suit/armor/medieval,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/hauberk,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/varangian,/obj/item/clothing/suit/armor/medieval/steppe_leather,/obj/item/clothing/head/helmet/medieval,/obj/item/clothing/head/helmet/medieval/helmet1,/obj/item/clothing/head/helmet/medieval/helmet2,/obj/item/clothing/head/helmet/medieval/helmet3,/obj/item/clothing/head/helmet/medieval/baltic,/obj/item/clothing/head/helmet/medieval/coif,/obj/item/clothing/head/helmet/medieval/coif_helmet,/obj/item/clothing/head/helmet/medieval/viking,/obj/item/clothing/head/helmet/samurai)
+	nr = 2
+
+/obj/effect/spawner/lootdrop/accessories
+	name = "accessory spawner"
+	loot = list(/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/clothing/accessory/storage/webbing/light,/obj/item/clothing/accessory/storage/webbing/largepouchestan,/obj/item/clothing/accessory/storage/webbing/green_webbing,/obj/item/clothing/accessory/storage/webbing/us_vest,/obj/item/clothing/accessory/storage/webbing/ww1/british,/obj/item/weapon/storage/belt/leather,/obj/item/weapon/storage/belt/medical/full_us,/obj/item/weapon/storage/belt/tactical,/obj/item/weapon/storage/belt/utility,/obj/item/weapon/storage/backpack/civbag,/obj/item/weapon/storage/backpack/rucksack,/obj/item/weapon/storage/backpack/scavpack,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/clothing/mask/gas/modern2,/obj/item/clothing/mask/gas/modern,/obj/item/clothing/mask/gas/military,/obj/item/clothing/glasses/nvg,/obj/item/weapon/pill_pack/pervitin)
+	nr = 2
+
+/obj/effect/spawner/lootdrop/explosives
+	name = "explosives spawner"
+	loot = list(/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/flashbang/m84,/obj/item/weapon/grenade/incendiary/anm14,/obj/item/weapon/grenade/chemical/mustard,/obj/item/weapon/grenade/chemical/chlorine,/obj/item/weapon/grenade/coldwar/m67,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/mine/ap,/obj/item/weapon/gun/launcher/rocket/panzerfaust)
+	nr = 2

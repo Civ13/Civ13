@@ -488,7 +488,7 @@
 "jt" = (/obj/structure/lamp/lamp_big/broken,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
 "ju" = (/obj/structure/bed/chair/wood/wings{icon_state = "wooden_chair_wings"; dir = 1},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
 "jv" = (/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
-"jw" = (/obj/structure/vehicleparts/frame/panzeriv/left/door,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
+"jw" = (/obj/structure/vehicleparts/frame/panzeriv/left/door,/obj/item/weapon/radio/faction1,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "jx" = (/obj/structure/lamp/lamp_big{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
 "jy" = (/obj/covers/steelplating,/obj/structure/window/classic,/obj/roof,/turf/floor/dirt,/area/caribbean/no_mans_land/capturable/two)
 "jz" = (/obj/covers/steelplating,/obj/structure/window/classic,/obj/roof,/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/capturable/two)
@@ -778,6 +778,7 @@
 "oX" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/inside)
 "oY" = (/mob/living/simple_animal/mouse/black,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/inside)
 "oZ" = (/turf/wall/void,/area/caribbean/admin)
+"pa" = (/obj/item/weapon/radio/faction2,/obj/item/weapon/radio/faction2,/obj/item/weapon/radio/faction2,/obj/item/weapon/radio/faction2,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "ps" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
 "pt" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/nomads/forest/snow)
 "pu" = (/obj/structure/window/sandbag/sandbag,/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
@@ -987,7 +988,7 @@
 "tr" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/houses)
 "ts" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
 "tt" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/nomads/forest/snow)
-"tu" = (/obj/item/weapon/stool/wood,/obj/structure/noose,/mob/living/carbon/human/corpse/prisoner,/turf/floor/wood,/area/caribbean/houses)
+"tu" = (/obj/item/weapon/stool/wood,/obj/structure/noose,/mob/living/human/corpse/prisoner,/turf/floor/wood,/area/caribbean/houses)
 "tv" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 4},/turf/floor/wood,/area/caribbean/nomads/forest/snow)
 "tw" = (/obj/structure/table/modern/table,/turf/floor/wood{icon_state = "wood-broken5"},/area/caribbean/houses)
 "tx" = (/obj/structure/table/modern/table,/obj/structure/radio{anchored = 1; powered = 1; powerneeded = 0},/turf/floor/wood,/area/caribbean/houses)
@@ -1408,7 +1409,6 @@
 "Cg" = (/obj/covers/brick_wall,/obj/structure/sign/portrait/stalin,/turf/wall/brick{icon_state = "newbrick0"},/area/caribbean/russian/land/inside)
 "Ch" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/turf/floor/wood,/area/caribbean/houses)
 "Co" = (/obj/covers/brick_wall,/obj/structure/sign/redcross{name = "hospital"},/turf/wall/brick{icon_state = "newbrick0"},/area/caribbean/russian/land/inside)
-"Dh" = (/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "Di" = (/obj/structure/barricade,/turf/floor/dirt/burned,/area/caribbean/nomads/forest/snow)
 "Dj" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barricade,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "Dk" = (/obj/structure/barricade,/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
@@ -2025,7 +2025,7 @@ qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqIqUqUqIqIqIqUqIqIqGqIqIqIqIqUqIqIqIqIqI
 qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqIqIqIqIwGwYwZxwqIqIqIvuxxxCxKvuqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqUqIqIqIqIqI
 qIqIyvqIqIqIqIqSqMqMqMqSqIqIqGqGqGqIqIqIqSqSqSqSyFqSyFqSqSqSqSqSqSqSqSqSqSqSqSqSqSqIqUqIqIyKyKyLyLqIqIqIvuyMyNxKvuqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqIqIqIqIqIqI
 qIqIqIqGqGqUqIqSqMqMqMqSqSqSqSqSqSqSqSqSqSqSBWBWBWlEBWBWBWlFBWBWBWBWlEBWBWBWBWqSqSqUqIqIqIqIqIqIqIqIqIqIvuyZqSxKvuqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqIqIqIqIqIqI
-qIqIqXqIqIqIqIqSqMqMqMqMqMqMqMqMqMqMqSqSqSqSBWyRySlHlJyVlLDhlJyVlLlIlHlHlHlMBWqSqSqIqIqIzpqIqIqIqIqIqIqIvuvuzqvuvuqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqIqIqGqGqIqI
+qIqIqXqIqIqIqIqSqMqMqMqMqMqMqMqMqMqMqSqSqSqSBWyRySlHlJyVlLpalJyVlLlIlHlHlHlMBWqSqSqIqIqIzpqIqIqIqIqIqIqIvuvuzqvuvuqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqIqIqGqGqIqI
 qGqIqIqIqIqIqIqSqMqMqMqMqMqMqMqMqMqMqSqSqSqSlFlHlHlHlHlHlHlHlHlHlHlHlHlHlHlOlFqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqMqMqMqSqSqMqMqMqSqSqSqSqSqSqSqSqSqMqMqMqSqSqIqIqIqIqIqIqIqIqI
 qIrgqIqUqXqIqIqSqMqMqMqMqMqMqMqMqMqMqSqSqSqSBWlSlHlHlHlHlHlHlHlHlHBWBWlEBWBWBWqSqMqMqMztztztqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqIqIqIqIqIqI
 qIqIqIqIqIqIqIqSqSAdqSqSqSqSqSqMqMqMqSqSqSqSBWBplHBplHBplHBplHBplHBWlXlYlZmaBWqSqMqMqMztztztqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIAfqIqIqIqIqIqI

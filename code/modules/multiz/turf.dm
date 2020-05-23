@@ -23,8 +23,8 @@
 		return
 	if (istype(mover,/obj/effect/expl_particles))
 		return
-	if (istype(mover, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = mover
+	if (istype(mover, /mob/living/human))
+		var/mob/living/human/H = mover
 		if (H.stopDumbDamage)
 			return
 
@@ -66,9 +66,9 @@
 				M.visible_message("\The [mover] falls from the deck above and slams into \the [below]!", "You land on \the [below].", "You hear a soft whoosh and a crunch")
 
 			// Handle people getting hurt, it's funny!
-			if (istype(mover, /mob/living/carbon/human))
+			if (istype(mover, /mob/living/human))
 				playsound(mover.loc, 'sound/effects/gore/fallsmash.ogg', 50, TRUE)
-				var/mob/living/carbon/human/H = mover
+				var/mob/living/human/H = mover
 				var/damage = 10
 				H.apply_damage(rand(0, damage), BRUTE, "head")
 				H.apply_damage(rand(0, damage), BRUTE, "chest")

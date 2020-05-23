@@ -108,7 +108,7 @@
 	else
 		layer = FLY_LAYER
 
-/obj/item/weapon/gun/projectile/automatic/stationary/proc/started_using(mob/living/carbon/human/user)
+/obj/item/weapon/gun/projectile/automatic/stationary/proc/started_using(mob/living/human/user)
 	..()
 
 	user.forceMove(loc)

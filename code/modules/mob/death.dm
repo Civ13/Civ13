@@ -28,8 +28,13 @@
 		if (do_gibs) gibs(loc)
 
 		spawn(15)
-			if (animation)	qdel(animation)
-			if (src)			qdel(src)
+			if (animation)
+				qdel(animation)
+			if (client)
+				client.movement_busy = FALSE
+				ghostize()
+			if (src)
+				qdel(src)
 
 // gibbing, but without organ or item dropping
 /mob/proc/crush(anim="gibbed-m",do_gibs)
@@ -63,8 +68,13 @@
 
 		spawn(15)
 			if (animation)	qdel(animation)
-			if (src)			qdel(src)
-
+			if (src)
+				qdel(src)
+			if (client)
+				client.movement_busy = FALSE
+				ghostize()
+			if (src)
+				qdel(src)
 /mob/proc/maim()
 	crush()
 

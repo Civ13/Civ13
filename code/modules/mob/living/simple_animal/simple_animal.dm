@@ -217,7 +217,7 @@
 	if (!t_behaviour)
 		t_behaviour = behaviour
 	if (t_behaviour == "scared")
-		for (var/mob/living/carbon/human/H in range(7, src))
+		for (var/mob/living/human/H in range(7, src))
 			walk_away(src, H, 7, 2)
 			spawn(50)
 				walk(src,0)
@@ -251,6 +251,7 @@
 			if (HOSTILE_STANCE_IDLE)
 				if (!target_mob || !(target_mob in ListTargets(7)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
+					stance_step = 0
 			if (HOSTILE_STANCE_TIRED)
 				stance_step++
 				if (stance_step >= 5) //rests for 5 ticks
@@ -268,7 +269,7 @@
 						found_mob = TRUE
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 
-						if (stance_step in list(1,4,7)) //every 3 ticks
+						if (stance_step in list(0,3,5)) //every 3 ticks
 							var/action = pick( list( "stares alertly at [target_mob].", "closely watches [target_mob]." ) )
 							if (action)
 								custom_emote(1,action)
@@ -279,19 +280,14 @@
 
 				if (stance_step <= -10) //If we have not found a mob for 20-ish ticks, revert to idle mode
 					stance = HOSTILE_STANCE_IDLE
-				if (stance_step >= 3)   //If we have been staring at a mob for 7 ticks,
+				if (stance_step >= 1 || (behaviour == "hostile"))   //If we have been staring at a mob for 1 ticks,
 					stance = HOSTILE_STANCE_ATTACK
+					AttackTarget()
 
 			if (HOSTILE_STANCE_ATTACK)
 				if (destroy_surroundings)
 					DestroySurroundings()
-				MoveToTarget()
-
-			if (HOSTILE_STANCE_ATTACKING)
-				if (destroy_surroundings)
-					DestroySurroundings()
-				spawn(10)
-					AttackTarget()
+				AttackTarget()
 				if (stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
 					custom_emote(1, "is worn out and needs to rest." )
 					stance = HOSTILE_STANCE_TIRED
@@ -316,27 +312,22 @@
 					target_mob = FindTarget()
 					if (target_mob)
 						stance = HOSTILE_STANCE_ATTACK
-
+						if (target_mob && get_dist(target_mob,src)>1)
+							AttackTarget()
 			if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
 				if (target_mob && target_mob in ListTargets(7))
 					if ((SA_attackable(target_mob)))
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 						stance = HOSTILE_STANCE_ATTACK
+						AttackTarget()
 					else
 						target_mob = FindTarget()
 				else
 					target_mob = FindTarget()
-
 			if (HOSTILE_STANCE_ATTACK)
 				if (destroy_surroundings)
 					DestroySurroundings()
-				MoveToTarget()
-
-			if (HOSTILE_STANCE_ATTACKING)
-				if (destroy_surroundings)
-					DestroySurroundings()
-				spawn(3)
-					AttackTarget()
+				AttackTarget()
 		return t_behaviour
 /mob/living/simple_animal/gib()
 	..(icon_gib,1)
@@ -359,7 +350,7 @@
 	if (proj.firer && ishuman(proj.firer) && proj.firedfrom)
 		if (proj.firer == rider)
 			return //we can't hit the animals we are riding
-		var/mob/living/carbon/human/H = proj.firer
+		var/mob/living/human/H = proj.firer
 		if (prob(40))
 			switch (proj.firedfrom.gun_type)
 				if (GUN_TYPE_RIFLE)
@@ -375,7 +366,7 @@
 	if (!proj || proj.nodamage)
 		return
 
-/mob/living/simple_animal/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	..()
 
 	if (behaviour == "hunt")
@@ -399,7 +390,7 @@
 
 		if (I_DISARM)
 			if (behaviour == "defends")
-				stance = HOSTILE_STANCE_ALERT
+				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
@@ -409,7 +400,7 @@
 
 		if (I_GRAB)
 			if (behaviour == "defends")
-				stance = HOSTILE_STANCE_ALERT
+				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
 			if (M == src)
@@ -430,7 +421,7 @@
 
 		if (I_HARM)
 			if (behaviour == "defends")
-				stance = HOSTILE_STANCE_ALERT
+				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 				target_mob = M
 			adjustBruteLoss(harm_intent_damage*M.getStatCoeff("strength"))
@@ -486,8 +477,8 @@
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
 					var/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/P = new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
 					P.radiation = radiation/2
-					if (istype(user, /mob/living/carbon/human))
-						var/mob/living/carbon/human/HM = user
+					if (istype(user, /mob/living/human))
+						var/mob/living/human/HM = user
 						HM.adaptStat("medical", 0.3)
 					crush()
 					qdel(src)
@@ -567,8 +558,8 @@
 						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 						bone.name = "[name] bone"
 						bone.amount = (amt-2)
-					if (istype(user, /mob/living/carbon/human))
-						var/mob/living/carbon/human/HM = user
+					if (istype(user, /mob/living/human))
+						var/mob/living/human/HM = user
 						HM.adaptStat("medical", amt/3)
 					crush()
 					qdel(src)
@@ -642,8 +633,17 @@
 				else if (istype(src, /mob/living/simple_animal/hostile/alligator))
 					var/obj/item/stack/material/pelt/gatorpelt/NP = new/obj/item/stack/material/pelt/gatorpelt(get_turf(src))
 					NP.amount = 3
-				else if (istype(user, /mob/living/carbon/human))
-					var/mob/living/carbon/human/HM = user
+				else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor))
+					var/obj/item/stack/material/pelt/lizardpelt/NP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+					NP.amount = 3
+				else if (istype(src, /mob/living/simple_animal/sheep))
+					var/obj/item/stack/material/pelt/sheeppelt/NP = new/obj/item/stack/material/pelt/sheeppelt(get_turf(src))
+					NP.amount = 2
+				else if (istype(src, /mob/living/simple_animal/goat))
+					var/obj/item/stack/material/pelt/goatpelt/NP = new/obj/item/stack/material/pelt/goatpelt(get_turf(src))
+					NP.amount = 2
+				else if (istype(user, /mob/living/human))
+					var/mob/living/human/HM = user
 					HM.adaptStat("medical", amt/3)
 				else
 					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
@@ -657,7 +657,7 @@
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			O.attack(src, user, tgt)
 	if (behaviour == "defends")
-		stance = HOSTILE_STANCE_ALERT
+		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
 		target_mob = user
 		..()

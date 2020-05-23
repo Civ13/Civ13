@@ -74,10 +74,11 @@
 	set desc = "Name this animal."
 
 	set src in view(1)
-
+	if (!istype(usr, /mob/living/human))
+		return
 	var/mob_factions = "none"
-	if (istype(usr, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = usr
+	if (istype(usr, /mob/living/human))
+		var/mob/living/human/H = usr
 		if (map.civilizations)
 			mob_factions = H.civilization
 		else
@@ -101,7 +102,7 @@
 				name = sanitize(_name, 50)
 				return
 	return
-/mob/living/simple_animal/complex_animal/dog/proc/check_can_command(var/list/ranks, var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/check_can_command(var/list/ranks, var/mob/living/human/H)
 	if (!islist(ranks))
 		. = list()
 		. += ranks
@@ -185,7 +186,7 @@
 // parse messages that people say (WIP)
 	// needs faction, friendly, etc support
 	// commands list needs to be filled
-/mob/living/simple_animal/complex_animal/dog/proc/hear_command(var/message, var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/hear_command(var/message, var/mob/living/human/H)
 	if (!faction)
 		return
 	if (!dd_hassuffix(message, "!"))
@@ -289,25 +290,25 @@ s
 		return FALSE
 
 // "frontend" procs
-/mob/living/simple_animal/complex_animal/dog/proc/attack(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/attack(var/mob/living/human/H)
 	if (!(attack_mode == "attack"))
 		visible_message("<span class = 'warning'>\The [src] looks around aggressively.</span>")
 	attack_mode = "attack"
 	onModeChange()
 
-/mob/living/simple_animal/complex_animal/dog/proc/kill(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/kill(var/mob/living/human/H)
 	if (!(attack_mode == "kill"))
 		visible_message("<span class = 'warning'>\The [src] looks around murderously.</span>")
 	attack_mode = "kill"
 	onModeChange()
 
-/mob/living/simple_animal/complex_animal/dog/proc/guard(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/guard(var/mob/living/human/H)
 	if (!(attack_mode == "guard"))
 		visible_message("<span class = 'warning'>\The [src] starts guarding their domain.</span>")
 	attack_mode = "guard"
 	onModeChange()
 
-/mob/living/simple_animal/complex_animal/dog/proc/patrol(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/patrol(var/mob/living/human/H)
 	if (!patrolling)
 		visible_message("<span class = 'warning'>\The [src] starts patrolling.</span>")
 	patrolling = TRUE
@@ -315,7 +316,7 @@ s
 	wander_probability = 80
 	onModeChange()
 
-/mob/living/simple_animal/complex_animal/dog/proc/stop_patrol(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/stop_patrol(var/mob/living/human/H)
 	if (patrolling)
 		visible_message("<span class = 'warning'>\The [src] stops patrolling.</span>")
 	patrolling = FALSE
@@ -323,19 +324,19 @@ s
 	wander_probability = 20
 	onModeChange()
 
-/mob/living/simple_animal/complex_animal/dog/proc/passive(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/passive(var/mob/living/human/H)
 	if (attack_mode != -1)
 		visible_message("<span class = 'notice'>\The [src] looks calm.</span>")
 	attack_mode = -1
 	onModeChange()
 
-/mob/living/simple_animal/complex_animal/dog/proc/stop(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/stop(var/mob/living/human/H)
 	passive()
 	stop_patrol()
 	visible_message("<span class = 'notice'>\The [src] stops doing everything they were doing.</span>")
 	onModeChange()
 
-/mob/living/simple_animal/complex_animal/dog/proc/follow(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/follow(var/mob/living/human/H)
 	visible_message("<span class = 'notice'>\The [src] starts following [H].</span>")
 	if (following)
 		stop_following(H, FALSE)
@@ -344,34 +345,34 @@ s
 	walking_to = H
 	following = H
 
-/mob/living/simple_animal/complex_animal/dog/proc/stop_following(var/mob/living/carbon/human/H, var/message = TRUE)
+/mob/living/simple_animal/complex_animal/dog/proc/stop_following(var/mob/living/human/H, var/message = TRUE)
 	if (following)
 		if (message)
 			visible_message("<span class = 'notice'>\The [src] stops following [following].</span>")
 		walking_to = null
 		following = null
 
-/mob/living/simple_animal/complex_animal/dog/proc/prioritize_following(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/prioritize_following(var/mob/living/human/H)
 	var/o_prioritizes = prioritizes
 	prioritizes = "following"
 	if (o_prioritizes != prioritizes)
 		visible_message("<span class = 'notice'>\The [src] will no longer attack enemies when it is following somebody.</span>")
 
-/mob/living/simple_animal/complex_animal/dog/proc/prioritize_attacking(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/prioritize_attacking(var/mob/living/human/H)
 	var/o_prioritizes = prioritizes
 	prioritizes = "attacking"
 	if (o_prioritizes != prioritizes)
 		visible_message("<span class = 'notice'>\The [src] will no longer follow you when it is attacking somebody.</span>")
 
 /mob/living/simple_animal/complex_animal/dog/proc/onModeChange()
-	for (var/mob/living/carbon/human/H in view(10, src))
+	for (var/mob/living/human/H in view(10, src))
 		onHumanMovement(H)
 
 // dog life
 /mob/living/simple_animal/complex_animal/dog/onEveryLifeTick()
 	. = ..()
 	if (. == TRUE && faction)
-		for (var/mob/living/carbon/human/H in player_list)
+		for (var/mob/living/human/H in player_list)
 
 			var/area/H_area = get_area(H)
 			var/area/src_area = get_area(src)
@@ -405,7 +406,7 @@ s
 // dog combat
 
 /mob/living/simple_animal/complex_animal/dog/var/next_shred = -1
-/mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 	if (stat == CONSCIOUS && !resting && H.stat != DEAD && H.getBruteLoss() <= 500)
 		if (world.time >= next_shred)
 			if (H in range(1, src))
@@ -423,7 +424,7 @@ s
 					shred(H)
 
 // things we do when someone touches us
-/mob/living/simple_animal/complex_animal/dog/onTouchedBy(var/mob/living/carbon/human/H, var/intent = I_HELP)
+/mob/living/simple_animal/complex_animal/dog/onTouchedBy(var/mob/living/human/H, var/intent = I_HELP)
 	if (..(H, intent) && stat == CONSCIOUS && !resting)
 		switch (intent)
 			if (I_HARM)
@@ -440,7 +441,7 @@ s
 						D.onHumanMovement(H)
 
 /* things we do when someone attacks us */
-/mob/living/simple_animal/complex_animal/dog/onAttackedBy(var/mob/living/carbon/human/H, var/obj/item/weapon/W)
+/mob/living/simple_animal/complex_animal/dog/onAttackedBy(var/mob/living/human/H, var/obj/item/weapon/W)
 	if (..(H, W) && stat == CONSCIOUS && !resting)
 		if (W.force > resistance)
 
@@ -453,7 +454,7 @@ s
 					D.enemies |= H
 					D.onHumanMovement(H)
 
-/mob/living/simple_animal/complex_animal/dog/proc/hostileCheck(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/hostileCheck(var/mob/living/human/H)
 	if (!H.original_job)
 		return TRUE
 	if (map.civilizations)
@@ -468,7 +469,7 @@ s
 			. = faction != H.original_job.base_type_flag()
 
 /* check if we should go after an enemy */
-/mob/living/simple_animal/complex_animal/dog/proc/shouldGoAfter(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/shouldGoAfter(var/mob/living/human/H)
 	. = FALSE // when can we attack random enemies who enter our area
 	if (attack_mode == "kill")
 		. = TRUE
@@ -480,7 +481,7 @@ s
 			. = TRUE
 
 /* called after H added to knows_about_mobs() */
-/mob/living/simple_animal/complex_animal/dog/onHumanMovement(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/dog/onHumanMovement(var/mob/living/human/H)
 	if (..(H) && stat == CONSCIOUS && !resting && (!following || prioritizes == "attacking"))
 		if (shouldGoAfter(H) || enemies.Find(H))
 			if (assess_hostility(H) || ((!H.original_job || H.original_job.base_type_flag() != faction)))
@@ -499,7 +500,7 @@ s
 /mob/living/simple_animal/complex_animal/dog/Move()
 	. = ..()
 	if (stat == CONSCIOUS && !resting)
-		for (var/mob/living/carbon/human/H in get_step(src, dir))
+		for (var/mob/living/human/H in get_step(src, dir))
 			if (assess_hostility(H) && shouldGoAfter(H) && !client)
 				shred(H)
 			else if (client)

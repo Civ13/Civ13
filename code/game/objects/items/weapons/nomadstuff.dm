@@ -54,7 +54,7 @@
 		qdel(src)
 		return
 
-/obj/structure/bed/bedroll/proc/check_use(var/mob/living/carbon/human/H)
+/obj/structure/bed/bedroll/proc/check_use(var/mob/living/human/H)
 	if ((H in src.loc) && buckled_mob == H && used == TRUE && running == FALSE)
 		running = TRUE
 		update_icon()

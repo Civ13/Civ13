@@ -95,7 +95,7 @@
 	// are we an ammo box
 	var/is_box = FALSE
 
-/obj/item/ammo_magazine/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/ammo_magazine/secondary_attack_self(mob/living/human/user)
 	if (stored_ammo.len >= max_ammo)
 		user << "<span class='warning'>[src] is full!</span>"
 		return
@@ -178,8 +178,8 @@
 
 /obj/item/ammo_magazine/emptymagazine/pistol/filled
 	name = "pistol magazine (9mm)"
-	caliber = "pistol9"
-	ammo_type = /obj/item/ammo_casing/pistol9
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 17
 	weight = 0.34
 
@@ -233,7 +233,7 @@
 	else
 		return ..()
 
-/obj/item/ammo_magazine/proc/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
+/obj/item/ammo_magazine/proc/unload_ammo(var/mob/living/human/user, allow_dump=0)
 	if (stored_ammo.len > 0)
 		if (allow_dump)
 			var/count = FALSE

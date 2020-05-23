@@ -289,6 +289,7 @@ var/list/admin_verbs_mentor = list(
 var/list/admin_verbs_manager = list(
 	/client/proc/toggle_BYOND_hub_visibility,
 	/client/proc/toggle_playing,
+	/client/proc/toggle_tts,
 	/client/proc/start_epochswap_vote,
 )
 
@@ -397,7 +398,7 @@ var/list/admin_verbs_host = list(
 	else
 		//ghostize
 		if (ishuman(mob))
-			var/mob/living/carbon/human/H = mob
+			var/mob/living/human/H = mob
 			H.handle_zoom_stuff(TRUE)
 
 		var/mob/body = mob
@@ -591,11 +592,11 @@ var/list/admin_verbs_host = list(
 
 	if (!check_rights(R_FUN)) return
 
-	var/mob/living/carbon/human/H = input("Select mob.", "Change Mob Appearance - Admin") as null|anything in human_mob_list
+	var/mob/living/human/H = input("Select mob.", "Change Mob Appearance - Admin") as null|anything in human_mob_list
 	if (!H) return
 
 	log_and_message_admins("is altering the appearance of [H].")
-	H.change_appearance(APPEARANCE_ALL, usr, usr, check_species_whitelist = FALSE, state = admin_state)
+	H.change_appearance(APPEARANCE_ALL, usr, usr, check_species_whitelist = FALSE, _state = admin_state)
 
 
 /client/proc/change_human_appearance_self()
@@ -605,7 +606,7 @@ var/list/admin_verbs_host = list(
 
 	if (!check_rights(R_FUN)) return
 
-	var/mob/living/carbon/human/H = input("Select mob.", "Change Mob Appearance - Self") as null|anything in human_mob_list
+	var/mob/living/human/H = input("Select mob.", "Change Mob Appearance - Self") as null|anything in human_mob_list
 	if (!H) return
 
 	if (!H.client)
@@ -637,9 +638,9 @@ var/list/admin_verbs_host = list(
 
 	if (!check_rights(R_FUN))	return
 
-	var/mob/living/carbon/human/M = WWinput(src, "Select a mob.", "Edit Appearance", WWinput_first_choice(human_mob_list), WWinput_list_or_null(human_mob_list))
+	var/mob/living/human/M = WWinput(src, "Select a mob.", "Edit Appearance", WWinput_first_choice(human_mob_list), WWinput_list_or_null(human_mob_list))
 
-	if (!istype(M, /mob/living/carbon/human))
+	if (!istype(M, /mob/living/human))
 		usr << "<span class = 'red'>You can only do this to humans!</span>"
 		return
 

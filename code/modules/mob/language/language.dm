@@ -273,6 +273,15 @@
 	var/full_name = "At'tawig"
 	return full_name
 
+/datum/language/proc/get_random_filipino_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_filipino)) + " " + capitalize(pick(last_names_filipino))
+		else
+			return capitalize(pick(first_names_male_filipino)) + " " + capitalize(pick(last_names_filipino))
+
+	var/full_name = "Hyung Do Seong"
+	return full_name
 
 /datum/language
 	var/list/scramble_cache = list()
@@ -293,7 +302,7 @@
 	var/scrambled_text = ""
 	var/list/original_words = splittext(input, " ")
 
-	var/mob/living/carbon/human/H = hearer
+	var/mob/living/human/H = hearer
 	if (!ishuman(H))
 		return
 	var/capitalize = TRUE
@@ -365,6 +374,10 @@
 
 /datum/language/proc/format_message_plain(message, verb)
 	return "[verb], \"[capitalize(message)]\""
+
+/datum/language/proc/format_message_overlay(message)
+	return "[capitalize(message)]"
+
 
 /datum/language/proc/format_message_radio(message, verb)
 	return "[verb], <span class='[colour]'>\"[capitalize(message)]\"</span>"
@@ -461,14 +474,14 @@
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_english_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 		if (istype(new_language, /datum/language/spanish))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_spanish_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -476,7 +489,7 @@
 
 		if (istype(new_language, /datum/language/portuguese))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_portuguese_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -484,7 +497,7 @@
 
 		if (istype(new_language, /datum/language/french))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_french_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -492,7 +505,7 @@
 
 		if (istype(new_language, /datum/language/dutch))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_dutch_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -500,7 +513,7 @@
 
 		if (istype(new_language, /datum/language/japanese))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_japanese_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -508,7 +521,7 @@
 
 		if (istype(new_language, /datum/language/chinese))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_chinese_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -516,7 +529,7 @@
 
 		if (istype(new_language, /datum/language/russian))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_russian_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -524,7 +537,7 @@
 
 		if (istype(new_language, /datum/language/carib))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_carib_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -532,7 +545,7 @@
 
 		if (istype(new_language, /datum/language/latin))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_roman_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -540,7 +553,7 @@
 
 		if (istype(new_language, /datum/language/greek))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_greek_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -548,7 +561,7 @@
 
 		if (istype(new_language, /datum/language/arab))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_arab_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -556,7 +569,7 @@
 
 		if (istype(new_language, /datum/language/polish))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_polish_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -564,7 +577,7 @@
 
 		if (istype(new_language, /datum/language/ukrainian))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_ukrainian_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -572,7 +585,7 @@
 
 		if (istype(new_language, /datum/language/gaelic))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_gaelic_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -580,7 +593,7 @@
 
 		if (istype(new_language, /datum/language/oldnorse))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_oldnorse_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -588,7 +601,7 @@
 
 		if (istype(new_language, /datum/language/inuit))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_inuit_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -596,7 +609,7 @@
 
 		if (istype(new_language, /datum/language/cherokee))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_cherokee_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -608,14 +621,14 @@
 
 	// If they don't have a default language, set it
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (!H.default_language)
 			H.default_language = new_language
 
 	// Set partial_language values to mutual_intelligibility scores for the added language
 	// Someone who knows Russian understands N% of Ukrainian
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		var/list/m_int = new_language.mutual_intelligibility
 		for (var/lname in all_languages)
 			var/datum/language/L = all_languages[lname]
@@ -634,7 +647,7 @@
 	if (default_language == L)
 		default_language = null
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		// Remove partial_language values
 		H.partial_languages[rem_language] = 0
 		var/list/m_int = L.mutual_intelligibility

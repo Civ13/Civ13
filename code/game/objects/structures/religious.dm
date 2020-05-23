@@ -73,6 +73,7 @@ obj/structure/religious/monument
 	icon_state = null
 	density = TRUE
 	anchored = TRUE
+	health = 500
 	layer = 6
 	var/image/top = null
 
@@ -243,6 +244,50 @@ obj/structure/religious/monument
 		overlays.Cut()
 		overlays += top
 
+/obj/structure/religious/monument/cultist/sauron
+	name = "monumental ominous statue of the ruler"
+	desc = "A statue of a tall armored figure, sceptre clutched firmly in hand, it radiates a area of uneasyness and authority."
+	icon_state = "sauron_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "sauron_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/sauron/reverse //for mapping
+	name = "monumental ominous statue of the ruler"
+	desc = "A statue of a tall armored figure, sceptre clutched firmly in hand, it radiates a area of uneasyness and authority."
+	icon_state = "reverse_sauron_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "reverse_sauron_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/sauron/examine(var/mob/living/L)
+	if (L.original_job_title == "Orc tribesman")
+		name = "monumental ominous statue of morgoth"
+		desc = "A statue of a the dark lord morgoth, sceptre clutched firmly in hand, it cuts a impressive fiugure of authority."
+		return
+
+/obj/structure/religious/monument/cultist/sauron/reverse/examine(var/mob/living/L)
+	if (L.original_job_title == "Orc tribesman")
+		name = "monumental ominous statue of morgoth"
+		desc = "A statue of a the dark lord morgoth, sceptre clutched firmly in hand, it cuts a impressive fiugure of authority."
+		return
+
 /obj/structure/religious/monument/monk
 	name = "monumental monk statue"
 	desc = "ping a @contributor or sergeant on the discord if you can see this."
@@ -310,6 +355,45 @@ obj/structure/religious/monument
 		overlays.Cut()
 		overlays += top
 
+/obj/structure/religious/monument/shaman
+	name = "monumental shaman statue"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon_state = null
+	var/religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/shaman/ape
+	name = "monumental statue of a giant ape"
+	desc = "A enormous stone statue of a fearsome ape, it is beating its chest furiously."
+	icon_state = "great_ape_bottom"
+	religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "great_ape_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/shaman/ape/examine(var/mob/living/L)
+	if (L.original_job_title == "Gorilla tribesman")
+		desc = "A enormous stone statue of a fearsome ape, it is a exemplar specimen of our kind, a real adonis."
+		return
+
 /*-Religious Monuments*/
 
 
@@ -324,7 +408,7 @@ obj/structure/religious/monument
 
 /obj/structure/religious/tiki_statue
 	name = "tiki statue"
-	desc = "A tiki style wood statue."
+	desc = "A tiki style statue."
 	icon = 'icons/obj/statue.dmi'
 	icon_state = "tikistatue1"
 	density = TRUE
@@ -466,8 +550,8 @@ obj/structure/religious/monument
 					if (ML.stat != 0)
 						ML.forceMove(src)
 					else
-						if (istype(ML, /mob/living/carbon/human))
-							var/mob/living/carbon/human/H = ML
+						if (istype(ML, /mob/living/human))
+							var/mob/living/human/H = ML
 							H.buriedalive = TRUE
 							H.buried_proc()
 							ML.anchored = TRUE
@@ -478,7 +562,7 @@ obj/structure/religious/monument
 							ML.stat = DEAD
 						ML.forceMove(src)
 				for (var/obj/structure/closet/coffin/CF in src.loc)
-					for (var/mob/living/carbon/human/HM in CF)
+					for (var/mob/living/human/HM in CF)
 						HM.buriedalive = TRUE
 						HM.buried_proc()
 						if (HM.client)
@@ -505,8 +589,8 @@ obj/structure/religious/monument
 					if (ML.stat != 0)
 						ML.forceMove(src.loc)
 					else
-						if (istype(ML, /mob/living/carbon/human))
-							var/mob/living/carbon/human/H = ML
+						if (istype(ML, /mob/living/human))
+							var/mob/living/human/H = ML
 							H.buriedalive = FALSE
 							ML.anchored = FALSE
 							if (H.client)
@@ -516,7 +600,7 @@ obj/structure/religious/monument
 							ML.stat = DEAD
 						ML.forceMove(src.loc)
 				for (var/obj/structure/closet/coffin/CF in src)
-					for (var/mob/living/carbon/human/HM in CF)
+					for (var/mob/living/human/HM in CF)
 						HM.buriedalive = FALSE
 						if (HM.client)
 							HM.client.eye = HM.client.mob
@@ -626,7 +710,7 @@ obj/structure/religious/monument
 			visible_message("The gods are angry, sending heavy rains!")
 			if (prob(100-power))
 				var/diseasedone = FALSE
-				for (var/mob/living/carbon/human/HH in range(10,loc))
+				for (var/mob/living/human/HH in range(10,loc))
 					if (diseasedone == FALSE)
 						HH.disease = TRUE
 						if (99)

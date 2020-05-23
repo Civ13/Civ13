@@ -3,7 +3,7 @@
 	damage = DAMAGE_VERY_HIGH + 26
 	penetrating = 4
 	armor_penetration = 33
-	
+
 // XVIII Century stuff
 /obj/item/projectile/bullet/rifle/musketball
 	damage = DAMAGE_VERY_HIGH + 47
@@ -131,7 +131,7 @@
 	New()
 		..()
 		reagents.add_reagent("batrachotoxin",15)
-/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/carbon/M as mob)
+/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/human/M as mob)
 	if (prob(10))
 		M.fire_stacks += 1
 	if (M)
@@ -213,7 +213,7 @@
 	gibs = TRUE
 	crushes = TRUE
 
-/obj/item/projectile/arrow/bolt/fire/on_impact(mob/living/carbon/M as mob)
+/obj/item/projectile/arrow/bolt/fire/on_impact(mob/living/human/M as mob)
 	if (prob(10))
 		M.fire_stacks += 1
 	if (M)
@@ -232,7 +232,7 @@
 /obj/item/projectile/arrow/on_impact(var/atom/A as mob)
 	if (istype(src, /obj/item/projectile/arrow/bolt/vial) || istype(src, /obj/item/projectile/arrow/arrow/vial))
 		if (ishuman(A))
-			var/mob/living/carbon/human/H = A
+			var/mob/living/human/H = A
 			reagents.trans_to_mob(H, volume, CHEM_BLOOD)
 		else
 			reagents.trans_to(A, volume)
@@ -370,7 +370,7 @@
 
 /obj/item/projectile/bullet/rifle/a792x57
 	damage = DAMAGE_VERY_HIGH + 46
-	penetrating = 6
+	penetrating = 5
 	armor_penetration = 50
 
 /obj/item/projectile/bullet/rifle/a792x57/weak/New()
@@ -381,7 +381,7 @@
 
 /obj/item/projectile/bullet/rifle/a765x53
 	damage = DAMAGE_VERY_HIGH + 20
-	penetrating = 6
+	penetrating = 5
 	armor_penetration = 42
 
 /obj/item/projectile/bullet/rifle/a765x25
@@ -396,7 +396,7 @@
 
 /obj/item/projectile/bullet/rifle/a77x58
 	damage = DAMAGE_VERY_HIGH + 20
-	penetrating = 6
+	penetrating = 5
 	armor_penetration = 44
 
 /obj/item/projectile/bullet/rifle/a77x58_wood
@@ -417,7 +417,7 @@
 
 /obj/item/projectile/bullet/rifle/a303
 	damage = DAMAGE_VERY_HIGH + 19
-	penetrating = 6
+	penetrating = 4
 	armor_penetration = 44
 
 /obj/item/projectile/bullet/rifle/a303/weak/New()
@@ -428,7 +428,7 @@
 
 /obj/item/projectile/bullet/rifle/a3006
 	damage = DAMAGE_VERY_HIGH + 35
-	penetrating = 6
+	penetrating = 4
 	armor_penetration = 47
 
 /obj/item/projectile/bullet/rifle/a3006/weak/New()
@@ -475,7 +475,7 @@ obj/item/projectile/bullet/rifle/a545x39
 
 /obj/item/projectile/bullet/rifle/a762x51
 	damage = DAMAGE_VERY_HIGH + 23
-	penetrating = 6
+	penetrating = 5
 	armor_penetration = 42
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
 	damage = (DAMAGE_VERY_HIGH)/2
@@ -504,7 +504,7 @@ obj/item/projectile/bullet/rifle/a556x45
 
 /obj/item/projectile/bullet/rifle/a50cal
 	damage = DAMAGE_OH_GOD + 95
-	penetrating = 7
+	penetrating = 8
 	armor_penetration = 75
 
 /obj/item/projectile/bullet/pistol/a44p
@@ -540,35 +540,3 @@ obj/item/projectile/bullet/rifle/a556x45
 	agony = 100
 	embed = FALSE
 	sharp = FALSE
-
-
-//generic calibers for custom weapons
-/obj/item/projectile/bullet/rifle/largerifle
-	damage = DAMAGE_VERY_HIGH + 46
-	penetrating = 1
-	armor_penetration = 36
-
-/obj/item/projectile/bullet/rifle/smallrifle
-	damage = DAMAGE_VERY_HIGH + 12
-	penetrating = 1
-	armor_penetration = 28
-
-/obj/item/projectile/bullet/pistol/pistol45
-	damage = DAMAGE_HIGH + 1
-	penetrating = 1
-	armor_penetration = 5
-
-/obj/item/projectile/bullet/pistol/pistol9
-	damage = DAMAGE_LOW
-	penetrating = 1
-	armor_penetration = 8
-
-/obj/item/projectile/bullet/rifle/intermediumrifle
-	damage = DAMAGE_HIGH + 8
-	penetrating = 1
-	armor_penetration = 21
-
-obj/item/projectile/bullet/rifle/smallintermediumrifle
-	damage = DAMAGE_HIGH - 8
-	penetrating = 1
-	armor_penetration = 17

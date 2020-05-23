@@ -97,6 +97,8 @@
 			new/obj/structure/window_frame/portholefull(loc)
 		else if (istype(src, /obj/structure/window/classic/medieval))
 			new/obj/structure/window_frame/medieval(loc)
+		else if (istype(src, /obj/structure/window/classic/oriental))
+			new/obj/structure/window_frame/oriental(loc)
 		else if (istype(src, /obj/structure/window/classic/bamboo))
 			new/obj/structure/window_frame/bamboo(loc)
 		else if (istype(src, /obj/structure/window/classic/clay))
@@ -218,7 +220,7 @@
 	return TRUE
 
 
-/obj/structure/window/kick_act(var/mob/living/carbon/human/user)
+/obj/structure/window/kick_act(var/mob/living/human/user)
 	if(!..())
 		return
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(10,15), 0)
@@ -464,6 +466,12 @@
 	desc = "A dark ages window, minus the window."
 	stucco_window = FALSE
 
+/obj/structure/window_frame/oriental
+	icon_state = "oriental_windownew_frame"
+	name = "oriental window frame"
+	desc = "A east-oriental style window, minus the window."
+	stucco_window = FALSE
+
 /obj/structure/window_frame/bamboo
 	icon_state = "bamboo_windownew_frame"
 	name = "bamboo window frame"
@@ -595,6 +603,8 @@
 					new/obj/structure/window/classic/portholefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/medieval))
 					new/obj/structure/window/classic/medieval(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/oriental))
+					new/obj/structure/window/classic/oriental(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/bamboo))
 					new/obj/structure/window/classic/bamboo(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/clay))
@@ -635,7 +645,6 @@
 		visible_message("<span class = 'notice'>The window is broken by [user]!</span>")
 		qdel(src)
 		return
-
 /obj/structure/window/classic
 	desc = "A good old window."
 	icon_state = "windownew"
@@ -689,6 +698,12 @@
 	basestate = "medieval_windownew"
 	name = "medieval window"
 	desc = "A dark ages window."
+
+/obj/structure/window/classic/oriental
+	icon_state = "oriental_windownew"
+	basestate = "oriental_windownew"
+	name = "oriental window"
+	desc = "A east-oriental style window."
 
 /obj/structure/window/classic/bamboo
 	icon_state = "bamboo_windownew"

@@ -195,7 +195,7 @@
 		if (prob(25))
 
 			var/damage = rand(15,30)
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			if (!istype(H))
 				H << "<span class='danger'>You land heavily!</span>"
 				M.adjustBruteLoss(damage)

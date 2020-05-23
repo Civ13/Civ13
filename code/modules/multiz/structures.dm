@@ -142,9 +142,9 @@
 			"You hear the grunting and clanging of a metal ladder being used."
 		)
 
-/mob/living/carbon/human/var/laddervision = null
+/mob/living/human/var/laddervision = null
 
-/obj/structure/multiz/ladder/MouseDrop_T(var/mob/living/carbon/human/user as mob)
+/obj/structure/multiz/ladder/MouseDrop_T(var/mob/living/human/user as mob)
 	if (!user || !istype(user))
 		return
 	if (user.laddervision == src)
@@ -160,7 +160,7 @@
 		user.update_laddervision(target)
 		visible_message("<span class = 'notice'>[user] looks [user.laddervision_direction()] \the [src].</span>")
 
-/mob/living/carbon/human/proc/update_laddervision(var/obj/structure/multiz/ladder/ladder)
+/mob/living/human/proc/update_laddervision(var/obj/structure/multiz/ladder/ladder)
 	if (ladder && istype(ladder))
 		client.perspective = EYE_PERSPECTIVE
 		laddervision = ladder
@@ -176,7 +176,7 @@
 	else
 		return "down"
 
-/mob/living/carbon/human/proc/laddervision_direction()
+/mob/living/human/proc/laddervision_direction()
 	if (!laddervision)
 		return ""
 	var/obj/structure/multiz/ladder = laddervision
@@ -246,8 +246,8 @@
 	icon_state = "pine_closed"
 
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
 			H << "This tunnel is too small for you!"
 			return
@@ -264,8 +264,8 @@
 /obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong
 
 /obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong/attack_hand(var/mob/M)
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
 			H << "This tunnel is too small for you!"
 			return

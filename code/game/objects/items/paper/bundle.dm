@@ -38,8 +38,9 @@
 	else
 		if (istype(W, /obj/item/weapon/pen))
 			usr << browse("", "window=[name]") //Closes the dialog
-		var/obj/P = pages[page]
-		P.attackby(W, user)
+		if (pages.len)
+			var/obj/P = pages[page]
+			P.attackby(W, user)
 
 	update_icon()
 	attack_self(usr) //Update the browsed page.
@@ -115,7 +116,7 @@
 
 	if (istype(pages[page], /obj/item/weapon/paper))
 		var/obj/item/weapon/paper/P = W
-		if (!(istype(usr, /mob/living/carbon/human) || isghost(usr)))
+		if (!(istype(usr, /mob/living/human) || isghost(usr)))
 			dat+= "<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[stars(P.info)][P.stamps]</BODY></HTML>"
 		else
 			dat+= "<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[P.info][P.stamps]</BODY></HTML>"

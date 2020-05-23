@@ -26,53 +26,47 @@
 
 /* Colonial Suits*/
 
-/obj/item/clothing/suit/storage/jacket/kool_kids_klub
-	name = "white robe with hood"
-	desc = "A white robe with a white hood, covering the whole body."
-	icon_state = "kool_kids_klub"
-	item_state = "kool_kids_klub"
-	worn_state = "kool_kids_klub"
-	body_parts_covered = FULL_BODY
+//pending, due to recently rebased content.
 
 /* Colonial Uniforms*/
 
 /obj/item/clothing/under/civ4
-	name = "Fancy Colonial Clothing"
+	name = "fancy colonial clothing"
 	desc = "A set composed of a quality white linen shirt and black trousers."
 	icon_state = "civuni4"
 	item_state = "civuni4"
 	worn_state = "civuni4"
 
 /obj/item/clothing/under/civ1
-	name = "Blue Colonial Clothing"
+	name = "blue colonial clothing"
 	desc = "A set composed of a light blue linen shirt and short trousers."
 	icon_state = "civuni1"
 	item_state = "civuni1"
 	worn_state = "civuni1"
 
 /obj/item/clothing/under/civ2
-	name = "White Colonial Clothing"
+	name = "white colonial clothing"
 	desc = "A set composed of a white linen shirt and black trousers."
 	icon_state = "civuni2"
 	item_state = "civuni2"
 	worn_state = "civuni2"
 
 /obj/item/clothing/under/civ3
-	name = "Short-sleeved Colonial Clothing"
+	name = "short-sleeved colonial clothing"
 	desc = "A set composed of a light white linen shirt with short sleeves and black trousers."
 	icon_state = "civuni3"
 	item_state = "civuni3"
 	worn_state = "civuni3"
 
 /obj/item/clothing/under/civ5
-	name = "Green Colonial Clothing"
+	name = "green colonial clothing"
 	desc = "A set composed of a green linen shirt and black trousers."
 	icon_state = "civuni5"
 	item_state = "civuni5"
 	worn_state = "civuni5"
 
 /obj/item/clothing/under/civ6
-	name = "Pink Colonial Clothing"
+	name = "pink colonial clothing"
 	desc = "A set composed of a pink linen shirt and black trousers."
 	icon_state = "civuni6"
 	item_state = "civuni6"
@@ -85,35 +79,35 @@
 	item_state = "ba_suit"
 
 /obj/item/clothing/under/civf1
-	name = "Dark dress"
+	name = "dark dress"
 	desc = "A dark dress, used by peasant women."
 	icon_state = "dress1"
 	item_state = "dress1"
 	worn_state = "dress1"
 
 /obj/item/clothing/under/civf2
-	name = "Blue dress"
+	name = "blue dress"
 	desc = "A blue dress."
 	icon_state = "dress2"
 	item_state = "dress2"
 	worn_state = "dress2"
 
 /obj/item/clothing/under/civf3
-	name = "Brown dress"
+	name = "brown dress"
 	desc = "A brown dress."
 	icon_state = "dress3"
 	item_state = "dress3"
 	worn_state = "dress3"
 
 /obj/item/clothing/under/civfg
-	name = "Green dress"
+	name = "green dress"
 	desc = "A green dress."
 	icon_state = "dressg"
 	item_state = "dressg"
 	worn_state = "dressg"
 
 /obj/item/clothing/under/civfr
-	name = "Red dress"
+	name = "red dress"
 	desc = "A red dress."
 	icon_state = "dressr"
 	item_state = "dressr"
@@ -279,7 +273,7 @@
 	slot_flags = SLOT_ID | SLOT_POCKET
 	slots = 15
 	w_class = 2
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/faction = ""
 	flammable = TRUE
 
@@ -308,7 +302,7 @@
 	throw_speed = TRUE
 	attack_verb = list("bapped")
 	flammable = TRUE
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/document_name = ""
 	var/list/document_details = list()
 	var/list/guardnotes = list()
@@ -317,7 +311,7 @@
 		..()
 		spawn(20)
 			if (ishuman(loc))
-				var/mob/living/carbon/human/H = loc
+				var/mob/living/human/H = loc
 				document_name = H.real_name
 				owner = H
 				name = "[document_name] indentification documents"
@@ -351,7 +345,7 @@
 			user << "NOTE: [i]"
 	user << "<span class='info'>*---------*</span>"
 
-/obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/item/weapon/civilian_passport/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
 		return
 	if (istype(I, /obj/item/weapon/pen) && istype(H.original_job, /datum/job/russian))
@@ -365,7 +359,7 @@
 			guardnotes += texttoadd
 			return
 
-/obj/item/weapon/civilian_passport/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/weapon/civilian_passport/secondary_attack_self(mob/living/human/user)
 	showoff(user)
 	return
 
@@ -381,10 +375,10 @@
 	throw_speed = TRUE
 	attack_verb = list("bapped")
 	flammable = TRUE
-	var/mob/living/carbon/human/owner = null
+	var/mob/living/human/owner = null
 	var/duration = 0
 
-/obj/item/weapon/visa/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+/obj/item/weapon/visa/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/pen) && !owner && duration == 0)
 		if (user.civilization == "none")
 			user << "You are not in a faction!"
@@ -394,9 +388,9 @@
 				user << "You don't have the recruitment permissions to issue visas!"
 				return
 			else
-				var/mob/living/carbon/human/U = null
+				var/mob/living/human/U = null
 				var/closemobs = list("Cancel")
-				for (var/mob/living/carbon/human/M in range(4,loc))
+				for (var/mob/living/human/M in range(4,loc))
 					if (M.civilization != user.civilization)
 						closemobs += M
 				var/choice2 = WWinput(usr, "Who to give the visa to?", "Visa", "Cancel", closemobs)

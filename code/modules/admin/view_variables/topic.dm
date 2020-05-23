@@ -134,7 +134,7 @@
 			usr << "This can only be used on instances of type /atom/movable"
 			return
 
-		else if (istype(AM, /mob/living/carbon/human))
+		else if (istype(AM, /mob/living/human))
 			usr << "You can't delete all of this type."
 			return
 
@@ -211,9 +211,9 @@
 	else if (href_list["makemonkey"])
 		if (!check_rights(R_SPAWN))	return
 
-		var/mob/living/carbon/human/H = locate(href_list["makemonkey"])
+		var/mob/living/human/H = locate(href_list["makemonkey"])
 		if (!istype(H))
-			usr << "This can only be done to instances of type /mob/living/carbon/human"
+			usr << "This can only be done to instances of type /mob/living/human"
 			return
 
 		if (WWinput(usr, "Confirm mob type change?", "Transform", "Transform", list("Transform","Cancel")) != "Transform")
@@ -228,9 +228,9 @@
 	else if (href_list["setspecies"])
 		if (!check_rights(R_SPAWN))	return
 
-		var/mob/living/carbon/human/H = locate(href_list["setspecies"])
+		var/mob/living/human/H = locate(href_list["setspecies"])
 		if (!istype(H))
-			usr << "This can only be done to instances of type /mob/living/carbon/human"
+			usr << "This can only be done to instances of type /mob/living/human"
 			return
 
 		var/new_species = input("Please choose a new species.","Species",null) as null|anything in all_species
@@ -304,8 +304,8 @@
 		possibleverbs += "Cancel" 								// One for the top...
 		possibleverbs += typesof(/mob/proc,/mob/verb,/mob/living/proc,/mob/living/verb)
 		switch(H.type)
-			if (/mob/living/carbon/human)
-				possibleverbs += typesof(/mob/living/carbon/proc,/mob/living/carbon/verb,/mob/living/carbon/human/verb,/mob/living/carbon/human/proc)
+			if (/mob/living/human)
+				possibleverbs += typesof(/mob/living/human/proc,/mob/living/human/verb,/mob/living/human/verb,/mob/living/human/proc)
 		possibleverbs -= H.verbs
 		possibleverbs += "Cancel" 								// ...And one for the bottom
 
@@ -338,9 +338,9 @@
 	else if (href_list["addorgan"])
 		if (!check_rights(R_SPAWN))	return
 
-		var/mob/living/carbon/M = locate(href_list["addorgan"])
+		var/mob/living/human/M = locate(href_list["addorgan"])
 		if (!istype(M))
-			usr << "This can only be done to instances of type /mob/living/carbon"
+			usr << "This can only be done to instances of type /mob/living/human"
 			return
 
 		var/new_organ = input("Please choose an organ to add.","Organ",null) as null|anything in typesof(/obj/item/organ)-/obj/item/organ
@@ -360,9 +360,9 @@
 	else if (href_list["remorgan"])
 		if (!check_rights(R_SPAWN))	return
 
-		var/mob/living/carbon/M = locate(href_list["remorgan"])
+		var/mob/living/human/M = locate(href_list["remorgan"])
 		if (!istype(M))
-			usr << "This can only be done to instances of type /mob/living/carbon"
+			usr << "This can only be done to instances of type /mob/living/human"
 			return
 
 		var/obj/item/organ/rem_organ = input("Please choose an organ to remove.","Organ",null) as null|anything in M.internal_organs

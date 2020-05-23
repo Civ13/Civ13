@@ -63,7 +63,7 @@
 	var/canmove = TRUE
 	//Allows mobs to move through dense areas without restriction. For instance, in space or out of holder objects.
 	var/incorporeal_move = FALSE //0 is off, TRUE is normal, 2 is for ninjas.
-	var/
+
 	var/list/pinned = list()			// List of things pinning this creature to walls (see living_defense.dm)
 	var/list/embedded = list()		  // Embedded items, since simple mobs don't have organs.
 	var/list/languages = list()		 // For speaking/listening.
@@ -129,8 +129,8 @@
 	var/blinded = null
 	var/ear_deaf = null		//Carbon
 
-//The last mob/living/carbon to push/drag/grab this mob (mostly used by slimes friend recognition)
-	var/mob/living/carbon/LAssailant = null
+//The last mob/living/human to push/drag/grab this mob (mostly used by slimes friend recognition)
+	var/mob/living/human/LAssailant = null
 
 //Wizard mode, but can be used in other modes thanks to the brand new "Give Spell" badmin button
 	var/spell/list/spell_list = list()
@@ -171,7 +171,7 @@
 
 	var/list/HUDneed = list() // What HUD object need see
 	var/list/HUDinventory = list()
-	var/list/HUDfrippery = list()//ñaåñòåëee e ïåðaåëee
+	var/list/HUDfrippery = list()//ï¿½aï¿½ï¿½ï¿½ï¿½ï¿½ee e ï¿½ï¿½ï¿½aï¿½ï¿½ee
 	var/list/HUDprocess = list() //What HUD object need process
 	var/list/HUDtech = list()
 	var/defaultHUD = "" //Default mob hud

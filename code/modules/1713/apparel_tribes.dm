@@ -278,6 +278,80 @@ All eras are accepted, preferably store them in relevant sections with appropria
 
 /* Other Fantasy Clothing & Armor*/
 
+	/* Lizardperson & lizard-reptile hide objects (not snakes)*/
+
+/obj/item/clothing/head/lizardpelt 	//inherits from (/modules/1713/apparel_ancient.dm)
+	name = "lizard pelt headcover"
+	desc = "A lizard pelt turned into a headcover."
+	icon_state = "lizardpelt"
+	item_state = "lizardpelt"
+	worn_state = "lizardpelt"
+	flags_inv = BLOCKHEADHAIR
+	heat_protection = HEAD
+	var/colortype = "green"
+
+/obj/item/clothing/under/lizardpants
+	name = "shirtless lizard pants"
+	desc = "A tight fitting pair of lizard scale pants. When you're this on-point; wearing a shirt would just cramp your style."
+	icon_state = "lizard_pants"
+	item_state = "lizard_pants"
+	worn_state = "lizard_pants"
+	body_parts_covered = LOWER_TORSO|LEGS
+
+/obj/item/weapon/storage/backpack/satchel/lizard_satchel 	//inherits from (weapons/storage/backpack.dm)
+	name = "lizard scale satchel"
+	desc = "A fashionable satchel lined with exotic lizard scales"
+	icon_state = "lizard_satchel"
+	base_icon = "lizard_satchel"
+
+/obj/item/clothing/shoes/riding1/lizard_cowboy 	//inherits from (/modules/1713/apparel_industrial.dm)
+	name = "lizard scale riding boots"
+	desc = "lizard scale patterned boots with spurs, perfect for riding in style."
+	icon_state = "lizard_cowboy"
+	item_state = "lizard_cowboy"
+	worn_state = "lizard_cowboy"
+
+/obj/item/clothing/shoes/lizard_ankleboots 	//same as lizard cowboy
+	name = "lizard scale ankle boots"
+	desc = "Classy lizard scale ankle-length boots, a certain statement for fashion."
+	icon_state = "lizard_ankleboots"
+	item_state = "lizard_ankleboots"
+	worn_state = "lizard_ankleboots"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 50, arrow = 30, gun = FALSE, energy = 20, bomb = 40, bio = 10, rad = 20)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+
+/obj/item/weapon/storage/belt/lizard_belt 	//inherits from (/items/weapons/storage/belt.dm)
+	name = "lizard scale belt"
+	desc = "A purely decorative lizard scale thin belt. It has no pockets or attachments for items"
+	icon_state = "lizard_belt"
+	item_state = "lizard_belt"
+	storage_slots = 0
+	max_w_class = 1
+	max_storage_space = 0
+
+/obj/item/clothing/shoes/lizard_laceup 	//inherits from (/clothing/shoes/miscellaneous.dm)
+	name = "lizard scale laceup shoes"
+	desc = "The height of luxurious footwear, and they're pre-polished!"
+	icon_state = "lizard_laceups"
+
+/obj/item/clothing/suit/storage/coat/ww2/biker/lizard_jacket 	//inherits from (/modules/1713/apparel_worldwars.dm)
+	name = "lizard scale jacket"
+	desc = "A sleek lizard scale jacket, bold and impression-setting like the people who wear it. `Too cool for S-s-s-school'."
+	icon_state = "lizard_jacket"
+	item_state = "lizard_jacket"
+	worn_state = "lizard_jacket"
+	value = 150
+
+/obj/item/clothing/accessory/storage/coinpouch/lizard_wallet 	//inherits from (/modules/1713/apparel_imperial.dm)
+	name = "lizard scale wallet"
+	desc = "A exotic personal wallet decorated in lizard scale, where you can carry your coins and small objects."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "lizard_wallet"
+
+/*Lizard objects -END*/
+
 /obj/item/clothing/head/mystic
 	name = "mystic hood"
 	desc = "A ominous cream hood, it conceals the face almost fully."

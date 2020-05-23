@@ -222,7 +222,7 @@
 	if (blocked < 2)
 		weaken_duration = shatter_duration + min(0, force - target.getarmor(hit_zone, "melee") + 10)
 
-	var/mob/living/carbon/human/H = target
+	var/mob/living/human/H = target
 	if (istype(H) && H.headcheck(hit_zone))
 		var/obj/item/organ/affecting = H.get_organ(hit_zone) //headcheck should ensure that affecting is not null
 		user.visible_message("<span class='danger'>[user] shatters [src] into [H]'s [affecting.name]!</span>")
@@ -262,7 +262,7 @@
 	dropsound = 'sound/effects/drop_glass.ogg'
 	var/icon/broken_outline = icon('icons/obj/drinks.dmi', "broken")
 	value = 0
-/obj/item/weapon/broken_bottle/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+/obj/item/weapon/broken_bottle/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (M != user || M.a_intent != I_HELP)
 		playsound(loc, 'sound/weapons/bladeslice.ogg', 50, TRUE, -1)
 	return ..()

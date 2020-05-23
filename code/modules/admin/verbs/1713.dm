@@ -7,6 +7,13 @@
 	world << "<big><b>You [(ticker.players_can_join) ? "can" : "can't"] join the game [(ticker.players_can_join) ? "now" : "anymore"].</b></big>"
 	message_admins("[key_name(src)] changed the playing setting.")
 
+/client/proc/toggle_tts()
+	set category = "Special"
+	set name = "Toggle TTS"
+
+	config.tts_on = !config.tts_on
+	message_admins("[key_name(src)] changed turned the TTS setting [config.tts_on ? "on" : "off"].")
+
 /client/proc/end_all_grace_periods()
 	set category = "Special"
 	set name = "End All Grace Periods"
@@ -580,7 +587,7 @@ var/chinese_forceEnabled = FALSE
 		for (var/relf in map.facl)
 			var/curr = ""
 			map.facl[relf] = 0
-			for (var/mob/living/carbon/human/H in world)
+			for (var/mob/living/human/H in world)
 				if (relf == H.civilization)
 					map.facl[relf] += 1
 					curr = "[H.civilization]"

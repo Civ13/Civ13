@@ -94,7 +94,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		return
 	if (reagents && reagents.total_volume) // check if it has any reagents at all
 		if (ishuman(loc))
-			var/mob/living/carbon/human/C = loc
+			var/mob/living/human/C = loc
 			if (src == C.wear_mask && C.check_has_mouth()) // if it's in the human/monkey mouth, transfer reagents to the mob
 				reagents.trans_to_mob(C, REM, CHEM_INGEST, 0.2, FALSE, TRUE) // Most of it is not inhaled... balance reasons.
 		else // else just remove some of the reagents
@@ -256,7 +256,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	name = "joint"
 	desc = "A joint filled with weed."
 	icon_state = "joint"
-	icon_on = "joint-on"
+	icon_on = "jointon"
 	icon_off = "joint"
 	smoketime = 200
 	chem_volume = 70
@@ -504,7 +504,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	return
 
 
-/obj/item/weapon/flame/lighter/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+/obj/item/weapon/flame/lighter/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (!istype(M, /mob))
 		return
 	M.IgniteMob()

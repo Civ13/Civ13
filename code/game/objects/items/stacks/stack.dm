@@ -19,18 +19,152 @@
 	var/build_type = null //used when directly applied to a turf
 	var/real_value = 1
 	value = 1
+	var/can_stack = FALSE //Determines if stacks should be auto-merged.
 	var/customcolor = "FFFFFF"
 	var/customcolor1 = "000000"
 	var/customcolor2 = "FFFFFF"
 	var/customcode = "0000"
 	var/customname = ""
-/obj/item/stack/New(var/loc, var/_amount=0)
+
+/obj/item/stack/New(var/loc, var/_amount=0, var/merge = can_stack)
 	..()
 	if (!stacktype)
 		stacktype = type
 	if (_amount)
 		amount = _amount
+	//Check if it should be merged on creation
+	if(merge)
+		//For every stack in location, repeat the code.
+		for(var/obj/item/stack/S in loc)
+			if(istype(S, src)) // If stack types match, we merge.
+				merge(S)
 	return
+
+//If a stack is pulled over another stack, this proc is called.
+obj/item/stack/Crossed(var/obj/item/stack/S)
+	//Checking if stack types match and if it isn't thrown to avoid scooping up stacks in flight.
+	if(istype(S, stacktype) && !S.throwing)
+		merge(S)
+	. = ..()
+
+//Merging two stacks, logic to avoid going over the max_amount cap.
+//If we get stack with amount 0, we delete it.
+/obj/item/proc/merge(obj/item/stack/S)
+	var/transfer = src.amount
+	transfer = min(transfer, S.max_amount - S.amount)
+	if(pulledby)
+		pulledby.start_pulling(S)
+	src.amount -= transfer
+	S.amount += transfer
+	src.update_icon()
+	S.update_icon()
+	if(src.amount <= 0)
+		qdel(src)
+	return transfer
+
+//Return TRUE if an immediate subsequent call to use() would succeed.
+//Ensures that code dealing with stacks uses the same logic
+/obj/item/stack/proc/can_use(var/used)
+	if (amount < used)
+		return FALSE
+	return TRUE
+
+/obj/item/stack/proc/use(var/used,var/mob/living/human/H = null)
+	if (!can_use(used))
+		return FALSE
+	if (H)
+		if (H.religion_check() == "Production")
+			if (used < 4)
+				amount -= used
+			else if (used >= 4 && used < 10)
+				amount -= (used-1)
+			else if (used >= 10)
+				amount -= (used-2)
+			else
+				amount -= used
+		else
+			amount -= used
+	else
+		amount -= used
+	if (amount <= 0)
+		if (usr)
+			usr.remove_from_mob(src)
+		qdel(src) //should be safe to qdel immediately since if someone is still using this stack it will persist for a little while longer
+	return TRUE
+
+/*
+	The transfer and split procs work differently than use() and add().
+	Whereas those procs take no action if the desired amount cannot be added or removed these procs will try to transfer whatever they can.
+	They also remove an equal amount from the source stack.
+*/
+
+//attempts to transfer amount to S, and returns the amount actually transferred
+/obj/item/stack/proc/transfer_to(obj/item/stack/S, var/_amount=null)
+	if (stacktype != S.stacktype)
+		return FALSE
+	if (isnull(_amount))
+		_amount = amount
+	var/transfer = _amount
+	transfer = min(transfer, S.max_amount - S.amount)
+	if (transfer)
+		if (prob(transfer/amount * 100))
+			transfer_fingerprints_to(S)
+			if (blood_DNA)
+				S.blood_DNA |= blood_DNA
+		amount -= transfer
+		S.amount += transfer
+		if (amount <= 0)
+			qdel(src)
+		return S
+	return FALSE
+
+//creates a new stack with the specified amount
+/obj/item/stack/proc/split(var/_amount)
+	if(!amount)
+		return null
+	if (_amount)
+		var/obj/item/stack/S = new type(src.loc, _amount, FALSE)
+		S.color = color
+		if (prob(_amount/amount * 100))
+			transfer_fingerprints_to(S)
+			if (blood_DNA)
+				S.blood_DNA |= blood_DNA
+		amount -= _amount
+		if (amount <= 0)
+			qdel(src)
+		return S
+	return FALSE
+
+/obj/item/stack/attack_hand(mob/user as mob)
+	if (user.get_inactive_hand() == src)
+		var/obj/item/stack/F = split(1)
+		if (F)
+			F.update_icon()
+			src.update_icon()
+			user.put_in_hands(F)
+			add_fingerprint(user)
+			F.add_fingerprint(user)
+			src.update_icon()
+			spawn(0)
+				if (src && usr.using_object == src)
+					interact(usr)
+	else
+		..()
+	return
+
+/obj/item/stack/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, type))
+		var/obj/item/stack/S = W
+		merge(S)
+		S.update_icon()
+		src.update_icon()
+		spawn(0) //give the stacks a chance to delete themselves if necessary
+		if (S && usr.using_object == S)
+			S.interact(usr)
+		if (src && usr.using_object == src)
+			interact(usr)
+	else
+		return ..()
 
 /obj/item/stack/Destroy()
 	if (src && usr && usr.using_object == src)
@@ -40,9 +174,9 @@
 /obj/item/stack/AltClick(mob/living/user)
 	if(zero_amount())
 		return
-	var/max = get_amount()
+	var/max = amount
 	var/stackmaterial = round(input(user,"How many to take out of the stack? (Maximum  [max])") as null|num)
-	max = get_amount()
+	max = amount
 	stackmaterial = min(max, stackmaterial)
 	if(stackmaterial == null || stackmaterial <= 0)
 		return
@@ -75,14 +209,14 @@
 /obj/item/stack/proc/list_recipes(mob/user as mob, recipes_sublist)
 	if (!recipes)
 		return
-	if (!src || get_amount() <= 0)
+	if (!src || amount <= 0)
 		user << browse(null, "window=stack")
 	user.set_using_object(src) //for correct work of onclose
 	var/list/recipe_list = recipes
 	if (recipe_list && recipes_sublist && recipe_list[recipes_sublist] && istype(recipe_list[recipes_sublist], /datum/stack_recipe_list))
 		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
 		recipe_list = srl.recipes
-	var/t1 = text("<style>[common_browser_style]</style><HTML style=\"line-height: 1.8;\"><HEAD><title>Crafting</title></HEAD><body bgcolor=\"#392611\" style=\"border-color: #392611;\"><br><tt><center><strong><font color=\"white\" size=\"4\">[]</font><br><font color=\"white\" size=\"3\">Amount Left: []</strong></font><br><br><font color=\"white\" size=\"2\">", src, get_amount())
+	var/t1 = text("<style>[common_browser_style]</style><HTML style=\"line-height: 1.8;\"><HEAD><title>Crafting</title></HEAD><body bgcolor=\"#392611\" style=\"border-color: #392611;\"><br><tt><center><strong><font color=\"white\" size=\"4\">[]</font><br><font color=\"white\" size=\"3\">Amount Left: []</strong></font><br><br><font color=\"white\" size=\"2\">", src, amount)
 	for (var/i=1;i<=recipe_list.len,i++)
 		var/E = recipe_list[i]
 		if (isnull(E))
@@ -98,7 +232,7 @@
 
 		if (istype(E, /datum/stack_recipe))
 			var/datum/stack_recipe/R = E
-			var/max_multiplier = round(get_amount() / R.req_amount)
+			var/max_multiplier = round(amount / R.req_amount)
 			var/title
 			var/can_build = TRUE
 			can_build = can_build && (max_multiplier>0)
@@ -148,7 +282,7 @@
 	var/customvar2 = ""
 	var/customdesc = ""
 	var/turn_dir = 0
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/item/weapon/key/civ/build_override_key = null
@@ -194,7 +328,7 @@
 		else if (H.religion == "Cultists")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
-	if (findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider"))
+	if (findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider") || findtext(recipe.title, "monumental ominous statue of the ruler"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
@@ -215,6 +349,22 @@
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
 		else if (H.religion == "Shamans")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Priests")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Cultists")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+		else if (H.religion == "Clerics")
+			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
+			return
+	if (findtext(recipe.title, "monumental statue of a giant ape"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
+			return
+		else if (H.religion == "Monks")
 			H << "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>"
 			return
 		else if (H.religion == "Priests")
@@ -1117,7 +1267,7 @@
 					user << "<span class = 'warning'>You need a stack of at least 2 iron in one your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "steppe leather armor"))
+	else if (findtext(recipe.title, "leather skullcap helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			user << "<span class = 'warning'>You need a stack of at least 5 leather in one of your hands in order to make this.</span>"
 			return
@@ -1710,11 +1860,9 @@
 			build_override_vending.add_fingerprint(user)
 			qdel(O)
 			return
-
 		else if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O
 			S.amount = produced
-			S.add_to_stacks(user)
 			S.update_icon()
 		else if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
 			new/obj/item/weapon/clay/verysmallclaypot(get_turf(O))
@@ -1769,7 +1917,7 @@
 
 	if (href_list["make"])
 
-		if (get_amount() < 1)
+		if (amount < 1)
 			qdel(src)
 			return
 
@@ -1784,7 +1932,7 @@
 			return
 
 		if (ishuman(usr))
-			var/mob/living/carbon/human/H = usr
+			var/mob/living/human/H = usr
 			if (H.can_build_recipe)
 				H.can_build_recipe = FALSE
 				produce_recipe(R, multiplier, usr)
@@ -1795,143 +1943,3 @@
 			interact(usr)
 			return
 	return
-
-//Return TRUE if an immediate subsequent call to use() would succeed.
-//Ensures that code dealing with stacks uses the same logic
-/obj/item/stack/proc/can_use(var/used)
-	if (get_amount() < used)
-		return FALSE
-	return TRUE
-
-/obj/item/stack/proc/use(var/used,var/mob/living/carbon/human/H = null)
-	if (!can_use(used))
-		return FALSE
-	if (H)
-		if (H.religion_check() == "Production")
-			if (used < 4)
-				amount -= used
-			else if (used >= 4 && used < 10)
-				amount -= (used-1)
-			else if (used >= 10)
-				amount -= (used-2)
-			else
-				amount -= used
-		else
-			amount -= used
-	else
-		amount -= used
-	if (amount <= 0)
-		if (usr)
-			usr.remove_from_mob(src)
-		qdel(src) //should be safe to qdel immediately since if someone is still using this stack it will persist for a little while longer
-	return TRUE
-
-
-	return FALSE
-
-/obj/item/stack/proc/add(var/extra)
-	if (amount + extra > get_max_amount())
-		return FALSE
-	else
-		amount += extra
-	return TRUE
-/*
-	The transfer and split procs work differently than use() and add().
-	Whereas those procs take no action if the desired amount cannot be added or removed these procs will try to transfer whatever they can.
-	They also remove an equal amount from the source stack.
-*/
-
-//attempts to transfer amount to S, and returns the amount actually transferred
-/obj/item/stack/proc/transfer_to(obj/item/stack/S, var/tamount=null, var/type_verified)
-	if (!get_amount())
-		return FALSE
-	if ((stacktype != S.stacktype) && !type_verified)
-		return FALSE
-	if (isnull(tamount))
-		tamount = get_amount()
-
-	var/transfer = max(min(tamount, get_amount(), (S.get_max_amount() - S.get_amount())), FALSE)
-
-	var/orig_amount = get_amount()
-	if (transfer && use(transfer))
-		S.add(transfer)
-		if (prob(transfer/orig_amount * 100))
-			transfer_fingerprints_to(S)
-			if (blood_DNA)
-				S.blood_DNA |= blood_DNA
-		return transfer
-	return FALSE
-
-//creates a new stack with the specified amount
-/obj/item/stack/proc/split(var/tamount)
-	if (!amount)
-		return null
-
-	var/transfer = max(min(tamount, amount, initial(max_amount)), FALSE)
-
-	var/orig_amount = amount
-	if (transfer && use(transfer))
-		var/obj/item/stack/newstack = new type(loc, transfer)
-		newstack.color = color
-		newstack.amount = transfer
-		if (prob(transfer/orig_amount * 100))
-			transfer_fingerprints_to(newstack)
-			if (blood_DNA)
-				newstack.blood_DNA |= blood_DNA
-		return newstack
-	return null
-
-/obj/item/stack/proc/get_amount()
-	return amount
-
-/obj/item/stack/proc/get_max_amount()
-	return max_amount
-
-/obj/item/stack/proc/add_to_stacks(mob/user as mob)
-	for (var/obj/item/stack/item in user.loc)
-		if (item==src)
-			continue
-		var/transfer = transfer_to(item)
-		if (transfer)
-			user << "<span class='notice'>You add a new [item.singular_name] to the stack. It now contains [item.amount] [item.singular_name]\s.</span>"
-			item.update_icon()
-			src.update_icon() //funcionou
-		if (!amount)
-			break
-
-/obj/item/stack/attack_hand(mob/user as mob)
-	if (user.get_inactive_hand() == src)
-		var/obj/item/stack/F = split(1)
-		if (F)
-			F.update_icon()
-			src.update_icon()
-			user.put_in_hands(F)
-			add_fingerprint(user)
-			F.add_fingerprint(user)
-			src.update_icon()
-			spawn(0)
-				if (src && usr.using_object == src)
-					interact(usr)
-	else
-		..()
-	return
-
-/obj/item/stack/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, type))
-		var/obj/item/stack/S = W
-		if (user.get_inactive_hand()==src)
-			transfer_to(S, TRUE)
-			W.update_icon()
-			src.update_icon()
-		else
-			transfer_to(S)
-			W.update_icon()
-			src.update_icon()
-
-		spawn(0) //give the stacks a chance to delete themselves if necessary
-			if (S && usr.using_object == S)
-				S.interact(usr)
-			if (src && usr.using_object == src)
-				interact(usr)
-	else
-		return ..()

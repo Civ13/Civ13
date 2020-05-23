@@ -11,7 +11,7 @@
 	metabolism = REM * 0.5
 	scannable = TRUE
 
-/datum/reagent/adrenaline/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/adrenaline/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 5)
 	M.add_chemical_effect(CE_PULSE, 1)
@@ -30,7 +30,7 @@
 	color = "#00A000"
 	scannable = TRUE
 
-/datum/reagent/anti_toxin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/anti_toxin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.drowsyness = max(0, M.drowsyness - 6 * removed)
 	M.hallucination = max(0, M.hallucination - 9 * removed)
 	M.adjustToxLoss(-4 * removed)
@@ -44,7 +44,7 @@
 	color = "#36454f"
 	scannable = TRUE
 
-/datum/reagent/charcoal/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/charcoal/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(-5 * removed)
 	M.radiation -= 3 * removed
 
@@ -57,7 +57,7 @@
 	color = "#8040FF"
 	scannable = TRUE
 
-/datum/reagent/tricordrazine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/tricordrazine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustOxyLoss(-6 * removed)
 	M.heal_organ_damage(3 * removed, 3 * removed)
 	M.adjustToxLoss(-3 * removed)
@@ -75,10 +75,10 @@
 	scannable = TRUE
 	metabolism = 0.02
 
-/datum/reagent/paracetamol/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/paracetamol/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 50)
 
-/datum/reagent/paracetamol/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/paracetamol/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.hallucination = max(M.hallucination, 2)
 
@@ -93,10 +93,10 @@
 	scannable = TRUE
 	metabolism = 0.02
 
-/datum/reagent/tramadol/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/tramadol/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 80)
 	M.mood += removed*6
-/datum/reagent/tramadol/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/tramadol/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.hallucination = max(M.hallucination, 2)
 
@@ -110,10 +110,10 @@
 	overdose = 20
 	metabolism = 0.02
 
-/datum/reagent/oxycodone/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/oxycodone/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 200)
 
-/datum/reagent/oxycodone/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/oxycodone/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.druggy = max(M.druggy, 10)
 	M.hallucination = max(M.hallucination, 3)
@@ -131,7 +131,7 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
-/datum/reagent/synaptizine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/synaptizine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.drowsyness = max(M.drowsyness - 5, FALSE)
 	M.AdjustParalysis(-1)
 	M.AdjustStunned(-1)
@@ -152,7 +152,7 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
-/datum/reagent/alkysine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/alkysine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustBrainLoss(-30 * removed)
 	M.add_chemical_effect(CE_PAINKILLER, 10)
 
@@ -166,11 +166,11 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
-/datum/reagent/imidazoline/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/imidazoline/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.eye_blurry = max(M.eye_blurry - 5, FALSE)
 	M.eye_blind = max(M.eye_blind - 5, FALSE)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
 		if (E && istype(E))
 			if (E.damage > 0)
@@ -186,9 +186,9 @@
 	overdose = 10
 	scannable = TRUE
 
-/datum/reagent/peridaxon/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/peridaxon/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 
 		for (var/obj/item/organ/I in H.internal_organs)
 			if (I.damage > 0)
@@ -204,7 +204,7 @@
 	metabolism = REM * 0.15
 	overdose = REAGENTS_OVERDOSE * 0.5
 
-/datum/reagent/hyperzine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/hyperzine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (prob(5))
 		M.emote(pick("twitch", "blink_r", "shiver"))
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
@@ -222,8 +222,10 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
-/datum/reagent/potassium_iodide/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/potassium_iodide/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.radiation -= 15 * removed
+	if (M.disease == 1 && M.disease_type == "zombie")
+		M.disease_treatment = TRUE
 
 /datum/reagent/penicillin
 	name = "penicillin"
@@ -236,9 +238,9 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
-/datum/reagent/penicillin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/HH = M
+/datum/reagent/penicillin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/HH = M
 		if (HH.disease == 1 && HH.disease_type == "typhus")
 			HH.disease_treatment = TRUE
 
@@ -252,7 +254,7 @@
 	overdose = REAGENTS_OVERDOSE
 	touch_met = 5
 
-/datum/reagent/prontosil/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/prontosil/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	M.germ_level -= min(removed*25, M.germ_level)
 
 /datum/reagent/prontosil/touch_obj(var/obj/O)
@@ -270,7 +272,7 @@
 	color = "#ADD8E6"
 	touch_met = 5
 
-/datum/reagent/hydrogen_peroxide/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/hydrogen_peroxide/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	M.germ_level -= min(removed*10, M.germ_level)
 	for (var/obj/item/I in M.contents)
 		I.was_bloodied = null
@@ -301,7 +303,7 @@
 	metabolism = 0.01
 	data = FALSE
 
-/datum/reagent/methylphenidate/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/methylphenidate/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (volume <= 0.1 && data != -1)
 		data = -1
 		M << "<span class='warning'>You lose focus...</span>"
@@ -320,7 +322,7 @@
 	metabolism = 0.01
 	data = FALSE
 
-/datum/reagent/ketamine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/ketamine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (volume <= 0.1 && data != -1)
 		data = -1
 		M << "<span class='warning'>You lose focus...</span>"
@@ -339,7 +341,7 @@
 	metabolism = 0.01
 	data = FALSE
 
-/datum/reagent/citalopram/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/citalopram/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (volume <= 0.1 && data != -1)
 		data = -1
 		M << "<span class='warning'>Your mind feels a little less stable...</span>"
@@ -358,7 +360,7 @@
 	metabolism = 0.01
 	data = FALSE
 
-/datum/reagent/paroxetine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/paroxetine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (volume <= 0.1 && data != -1)
 		data = -1
 		M << "<span class='warning'>Your mind feels much less stable...</span>"
@@ -382,11 +384,11 @@
 	metabolism = REM * 0.10
 	overdose = 14
 
-/datum/reagent/opium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/opium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 100)
 	M.addictions["opium"] += 0.1
 	M.mood += removed*30
-/datum/reagent/opium/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/opium/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
 	M.druggy = max(M.druggy, 200)
@@ -401,13 +403,13 @@
 	metabolism = REM * 0.13
 	overdose = 60
 
-/datum/reagent/cocaine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/cocaine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 40)
 	M.addictions["cocaine"] += 0.12
 	M.add_chemical_effect(CE_SPEEDBOOST, 2)
 	M.add_chemical_effect(CE_PULSE, 4)
 	M.mood += removed*30
-/datum/reagent/opium/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/opium/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.make_dizzy(6)
 
@@ -421,7 +423,7 @@
 	metabolism = REM * 0.15
 	overdose = REAGENTS_OVERDOSE * 0.5
 
-/datum/reagent/pervitin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/pervitin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (prob(5))
 		M.emote(pick("twitch", "blink_r", "shiver"))
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
@@ -438,10 +440,10 @@
 	metabolism = REM * 0.10
 	overdose = 9
 
-/datum/reagent/morphine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/morphine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 200)
 	M.mood += removed*30
-/datum/reagent/morphine/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/morphine/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
 	M.druggy = max(M.druggy, 250)
@@ -476,7 +478,7 @@
 	metabolism = 0.5
 	overdose = 25
 
-/datum/reagent/sal_acid/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/sal_acid/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if(M.getBruteLoss() > 50)
 		M.adjustBruteLoss(-4*REM) //Twice as effective as styptic powder for severe bruising
 	else
@@ -499,7 +501,7 @@
 	metabolism = REM * 1.0
 	overdose = 15
 
-/datum/reagent/dragonpowder/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/dragonpowder/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 600)
 	M.addictions["cocaine"] += 0.50
 	M.add_chemical_effect(CE_SPEEDBOOST, 12)

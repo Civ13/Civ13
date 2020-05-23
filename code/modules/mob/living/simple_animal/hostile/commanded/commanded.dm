@@ -174,7 +174,7 @@
 			friends -= user
 
 
-/mob/living/simple_animal/hostile/commanded/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/hostile/commanded/attack_hand(mob/living/human/M as mob)
 	..()
 	if (M.a_intent == I_HARM) //assume he wants to hurt us.
 		target_mob = M

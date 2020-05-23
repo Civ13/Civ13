@@ -1,7 +1,7 @@
 /datum/job/dutch
 	faction = "Human"
 
-/datum/job/dutch/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/dutch/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_dutch_name(H.gender)
 	H.real_name = H.name
 
@@ -21,7 +21,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/dutch/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -63,7 +63,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/dutch/qm/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -106,7 +106,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/dutch/boatswain/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -147,7 +147,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/dutch/midshipman/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -184,7 +184,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/dutch/surgeon/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -222,7 +222,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/dutch/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -238,7 +238,7 @@
 
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/hatchet(H), slot_belt)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/wrench(H), slot_l_store)
-	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the ship in good condition. Work with the <b>Quartier-maître</b> to ensure everyting is in good conditions!")
+	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the ship in good condition. Work with the <b>Quartier-maï¿½tre</b> to ensure everyting is in good conditions!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
@@ -264,7 +264,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/dutch/cook/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
@@ -283,7 +283,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
 
-	H.add_note("Role", "You are the cook of the ship. Feed the whole crew according to the <b>Quartier-maître</b> orders!")
+	H.add_note("Role", "You are the cook of the ship. Feed the whole crew according to the <b>Quartier-maï¿½tre</b> orders!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
@@ -313,7 +313,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/dutch/seaman/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/seaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -365,7 +365,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/dutch/army_commander/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/army_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -407,7 +407,7 @@
 	min_positions = 2
 	max_positions = 20
 
-/datum/job/dutch/army_officer/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/army_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -447,7 +447,7 @@
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/dutch/field_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/field_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -485,7 +485,7 @@
 	min_positions = 12
 	max_positions = 100
 
-/datum/job/dutch/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -527,7 +527,7 @@
 	min_positions = 4
 	max_positions = 20
 
-/datum/job/dutch/chasseur/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/chasseur/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
