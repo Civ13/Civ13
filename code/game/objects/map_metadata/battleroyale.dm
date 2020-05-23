@@ -1,5 +1,5 @@
 /obj/map_metadata/battleroyale
-	ID = MAP_BATTLEROYALE
+	ID = MAP_BATTLEROYALE_IMPERIAL
 	title = "Isla Robusta Battle Royale (125x125x1)"
 	lobby_icon_state = "battleroyale"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
@@ -419,7 +419,7 @@
 		update()
 
 /obj/map_metadata/battleroyale/two
-	ID = MAP_BATTLEROYALE_2
+	ID = MAP_BATTLEROYALE_MODERN
 	title = "Arab Town Battle Royale (100x100x1)"
 	lobby_icon_state = "battleroyale_arab"
 
@@ -451,7 +451,7 @@
 		. = FALSE
 	return .
 /obj/map_metadata/battleroyale/three
-	ID = MAP_BATTLEROYALE_3
+	ID = MAP_BATTLEROYALE_MEDIEVAL
 	title = "Camp Battle Royale (100x100x1)"
 
 	age = "1013"

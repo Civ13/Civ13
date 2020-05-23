@@ -18,6 +18,7 @@
 		"Civilization 13 (Colony & Pioneers)" = 0,
 		"Civilization 13 (Prison Camps)" = 15,
 		"Civilization 13 (Others)" = 0,
+		"Battle Royale" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -38,6 +39,7 @@
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
 				"Chad Mode" = 0,
+				"Battle Royale" = 0,
 				//Stone Age (?-3000 B.C.)" = 0,
 				"Bronze Age (500 B.C.-400 A.D.)" = 0,
 				//"Dark Ages (400-700)" = 0,
@@ -110,7 +112,6 @@
 				MAP_HOSTAGES = 0,
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
-				MAP_BATTLEROYALE_2 = 10,
 			)
 		else if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM
@@ -153,7 +154,6 @@
 				MAP_NAVAL = 0,
 				MAP_ISLAND = 0,
 		//		MAP_VOYAGE = 10,
-				MAP_BATTLEROYALE = 6,
 		//		MAP_SUPPLY_RAID = 8,
 				MAP_RECIFE = 10,
 				MAP_FIELDS = 10,
@@ -176,7 +176,6 @@
 			maps = list(
 				MAP_CAMP = 0,
 				MAP_KARAK = 0,
-				MAP_BATTLEROYALE_3 = 0,
 				MAP_SAMMIRHAYEED = 20,
 			)
 		else if (epoch == "Stone Age (?-3000 B.C.)")
@@ -220,9 +219,9 @@
 			)
 		else if (epoch == "Battle Royale")
 			maps = list(
-				MAP_BATTLEROYALE = 0,
-				MAP_BATTLEROYALE_2 = 0,
-				MAP_BATTLEROYALE_3 = 0,)
+				MAP_BATTLEROYALE_MEDIEVAL = 0,
+				MAP_BATTLEROYALE_IMPERIAL = 0,
+				MAP_BATTLEROYALE_MODERN = 0,)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
 			return

@@ -25,7 +25,7 @@
 /obj/effect/lobby_image/New()
 	..()
 	spawn(600)
-		if (map && map.ID == MAP_BATTLEROYALE_2)
+		if (map && map.ID == MAP_BATTLEROYALE_MODERN)
 			update_icon_proc()
 
 /obj/effect/lobby_image/proc/update_icon_proc()
@@ -34,7 +34,7 @@
 		update_icon_proc()
 /obj/effect/lobby_image/update_icon()
 	..()
-	if (map && map.ID == MAP_BATTLEROYALE_2)
+	if (map && map.ID == MAP_BATTLEROYALE_MODERN)
 		stored_img = list()
 		overlays.Cut()
 		for(var/mob/living/human/H in player_list)
