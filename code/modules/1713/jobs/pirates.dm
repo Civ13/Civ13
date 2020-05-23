@@ -459,7 +459,9 @@
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
 			H.client.screen += new/obj/screen/playersleft("Players Left","12,14", H, null, "")
-
+	spawn(20)
+		if (H.client)
+			H.name = H.client.ckey
 	return TRUE
 
 /datum/job/pirates/battleroyale/medieval
@@ -514,6 +516,9 @@
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
 			H.client.screen += new/obj/screen/playersleft("Players Left","12,14", H, null, "")
+	spawn(20)
+		if (H.client)
+			H.name = H.client.ckey
 	return TRUE
 
 
@@ -551,7 +556,20 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
 	else if (randcloth == 6)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
-
+//suit
+	var/randsuit = rand(1,6)
+	if (randsuit == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/hawaiian/orange(H), slot_wear_suit)
+	else if (randsuit == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/hawaiian/green(H), slot_wear_suit)
+	else if (randsuit == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
+	else if (randsuit == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown(H), slot_wear_suit)
+	else if (randsuit == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/biker(H), slot_wear_suit)
+	else if (randsuit == 6)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
 //bandages
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 
@@ -569,6 +587,9 @@
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
 			H.client.screen += new/obj/screen/playersleft("Players Left","12,14", H, null, "")
+	spawn(20)
+		if (H.client)
+			H.name = H.client.ckey
 	return TRUE
 
 /datum/job/pirates/marooned
@@ -637,5 +658,8 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 
+	spawn(20)
+		if (H.client)
+			H.name = H.client.ckey
 
 	return TRUE

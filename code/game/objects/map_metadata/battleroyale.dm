@@ -1,5 +1,5 @@
 /obj/map_metadata/battleroyale
-	ID = MAP_BATTLEROYALE
+	ID = MAP_BATTLEROYALE_IMPERIAL
 	title = "Isla Robusta Battle Royale (125x125x1)"
 	lobby_icon_state = "battleroyale"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
@@ -84,7 +84,7 @@
 						var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 						for (var/mob/M in player_list)
 							M.client << warning_sound
-						message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
+						message = "The battle is over! <b>[winner_ckey]</b> was the winner!"
 						world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
 						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
@@ -419,7 +419,7 @@
 		update()
 
 /obj/map_metadata/battleroyale/two
-	ID = MAP_BATTLEROYALE_2
+	ID = MAP_BATTLEROYALE_MODERN
 	title = "Arab Town Battle Royale (100x100x1)"
 	lobby_icon_state = "battleroyale_arab"
 
@@ -451,7 +451,7 @@
 		. = FALSE
 	return .
 /obj/map_metadata/battleroyale/three
-	ID = MAP_BATTLEROYALE_3
+	ID = MAP_BATTLEROYALE_MEDIEVAL
 	title = "Camp Battle Royale (100x100x1)"
 
 	age = "1013"

@@ -3,7 +3,7 @@
 	ID = MAP_HOSTAGES
 	title = "Hostage Rescue (100x100x1)"
 	lobby_icon_state = "modern"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 
 	min_autobalance_players = 100
