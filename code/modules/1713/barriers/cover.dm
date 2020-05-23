@@ -1,4 +1,4 @@
-#define SANDBAG_BLOCK_ITEMS_CHANCE 90
+#define SANDBAG_BLOCK_ITEMS_CHANCE 40
 
 /obj/structure/window/sandbag/incomplete/check_cover(obj/item/projectile/P, turf/from)
 	return prob(..() * round(progress/3))
