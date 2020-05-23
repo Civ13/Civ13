@@ -84,7 +84,7 @@
 						var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 						for (var/mob/M in player_list)
 							M.client << warning_sound
-						message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
+						message = "The battle is over! <b>[winner_ckey]</b> was the winner!"
 						world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
 						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
