@@ -156,7 +156,8 @@
 	name = "bean seeds"
 	plant = "beans"
 	color = "#bc8f8f" //rosy brown
-	biomes = list("temperate","savanna", "desert", "sea", "semiarid", "taiga")
+	biomes = list("temperate","savanna", "desert", "sea", "semiarid") 	//beans are notoriously frost vunerable
+	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
 
 /* Grains */
 
@@ -172,12 +173,14 @@
 	plant = "barley"
 	color = "#26241d"
 	biomes = list("temperate", "semiarid", "taiga","sea")
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
 
 /obj/item/stack/farming/seeds/oat
 	name = "oat seeds"
 	plant = "oat"
 	color = "#b1c11b"
 	biomes = list("temperate", "tundra", "taiga","sea")
+	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
 
 /obj/item/stack/farming/seeds/rice
 	name = "rice seeds"

@@ -43,7 +43,6 @@
 		qdel(src)
 		return
 	name = "[material.display_name] barricade"
-	desc = "This space is blocked off by a barricade made of [material.display_name]."
 	if (istype(material, /material/wood))
 		icon_state = "wood_barricade"
 		flammable = TRUE
@@ -147,7 +146,8 @@
 
 /obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
 	if (istype(mover, /obj/item/projectile))
-		return prob(100-protection_chance)
+		var/obj/item/projectile/P = mover
+		return prob(100-protection_chance-(P.penetrating*4))
 	else
 		return FALSE
 

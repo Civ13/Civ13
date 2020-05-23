@@ -1267,7 +1267,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					user << "<span class = 'warning'>You need a stack of at least 2 iron in one your hands in order to make this.</span>"
 					return
 
-	else if (findtext(recipe.title, "steppe leather armor"))
+	else if (findtext(recipe.title, "leather skullcap helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			user << "<span class = 'warning'>You need a stack of at least 5 leather in one of your hands in order to make this.</span>"
 			return

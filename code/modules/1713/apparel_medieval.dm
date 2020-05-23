@@ -720,6 +720,16 @@
 	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 	health = 45
 
+/obj/item/clothing/head/helmet/leather_skullcap
+	name = "leather skullcap helmet"
+	desc = "A iron studded leather helmet. Often used by raiders or bands of mercenaries."
+	icon_state = "leather_skullcap_helmet"
+	item_state = "leather_skullcap_helmet"
+	worn_state = "leather_skullcap_helmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 30, arrow = 20, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE) //lightly stronger than leather
+	health = 30
+
 /obj/item/clothing/head/helmet/medieval/arab
 	name = "conical arabic helmet and turban"
 	desc = "An iron helmet, covered with a turban."
@@ -1285,16 +1295,6 @@
 	flammable = TRUE
 	slowdown = 0.2
 	health = 33
-
-/obj/item/clothing/head/helmet/steppe_leather
-	name = "steppe leather helmet"
-	desc = "A iron studded leather helmet built in the steppe nomadic style. Often used by raiders or tribal warfare upon the great steppes"
-	icon_state = "steppe_leather_helmet"
-	item_state = "steppe_leather_helmet"
-	worn_state = "steppe_leather_helmet"
-	body_parts_covered = HEAD
-	armor = list(melee = 30, arrow = 20, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE) //lightly stronger than leather
-	health = 30
 
 /obj/item/clothing/under/medieval/steppe_tunic
 	name = "steppe wool tunic"

@@ -211,11 +211,16 @@ var/civmax_research = list(230,230,230)
 	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"), list("zelenyy","neutral","water"), list("marron","neutral","water"), list("corcairghorm","neutral","water"))
 
 	var/persistence = FALSE
-
+	var/battleroyale = FALSE
 	var/override_mapgen = FALSE
 	var/force_mapgen = FALSE
 
 	var/lastcheck = 0
+
+	var/ar_to_close = ""
+	var/ar_to_close_string = "None"
+	var/ar_to_close_timeleft = 0
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -384,7 +389,8 @@ var/civmax_research = list(230,230,230)
 			autoresearch_proc()
 // called from the map process
 /obj/map_metadata/proc/tick()
-
+	if (ar_to_close_timeleft > 0)
+		ar_to_close_timeleft--
 	if (last_crossing_block_status[faction1] == FALSE)
 		if (faction1_can_cross_blocks())
 			world << cross_message(faction1)
@@ -397,7 +403,7 @@ var/civmax_research = list(230,230,230)
 	if (last_crossing_block_status[faction2] == FALSE)
 		if (faction2_can_cross_blocks())
 			world << cross_message(faction2)
-			if (ID == MAP_BATTLEROYALE_2)
+			if (battleroyale)
 				var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 				for (var/mob/M in player_list)
 					M.client << warning_sound

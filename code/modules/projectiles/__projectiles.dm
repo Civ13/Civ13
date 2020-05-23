@@ -370,7 +370,7 @@
 
 /obj/item/projectile/bullet/rifle/a792x57
 	damage = DAMAGE_VERY_HIGH + 46
-	penetrating = 6
+	penetrating = 5
 	armor_penetration = 50
 
 /obj/item/projectile/bullet/rifle/a792x57/weak/New()
@@ -381,7 +381,7 @@
 
 /obj/item/projectile/bullet/rifle/a765x53
 	damage = DAMAGE_VERY_HIGH + 20
-	penetrating = 6
+	penetrating = 5
 	armor_penetration = 42
 
 /obj/item/projectile/bullet/rifle/a765x25
@@ -396,7 +396,7 @@
 
 /obj/item/projectile/bullet/rifle/a77x58
 	damage = DAMAGE_VERY_HIGH + 20
-	penetrating = 6
+	penetrating = 5
 	armor_penetration = 44
 
 /obj/item/projectile/bullet/rifle/a77x58_wood
@@ -417,7 +417,7 @@
 
 /obj/item/projectile/bullet/rifle/a303
 	damage = DAMAGE_VERY_HIGH + 19
-	penetrating = 6
+	penetrating = 4
 	armor_penetration = 44
 
 /obj/item/projectile/bullet/rifle/a303/weak/New()
@@ -428,7 +428,7 @@
 
 /obj/item/projectile/bullet/rifle/a3006
 	damage = DAMAGE_VERY_HIGH + 35
-	penetrating = 6
+	penetrating = 4
 	armor_penetration = 47
 
 /obj/item/projectile/bullet/rifle/a3006/weak/New()
@@ -475,7 +475,7 @@ obj/item/projectile/bullet/rifle/a545x39
 
 /obj/item/projectile/bullet/rifle/a762x51
 	damage = DAMAGE_VERY_HIGH + 23
-	penetrating = 6
+	penetrating = 5
 	armor_penetration = 42
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
 	damage = (DAMAGE_VERY_HIGH)/2
@@ -504,7 +504,7 @@ obj/item/projectile/bullet/rifle/a556x45
 
 /obj/item/projectile/bullet/rifle/a50cal
 	damage = DAMAGE_OH_GOD + 95
-	penetrating = 7
+	penetrating = 8
 	armor_penetration = 75
 
 /obj/item/projectile/bullet/pistol/a44p

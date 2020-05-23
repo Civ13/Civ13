@@ -107,7 +107,6 @@
 	default_material = "wood"
 
 /obj/item/weapon/material/sword/training/bamboo
-	name = "bokken training sword"
 	desc = "A bamboo sword used for nonlethal practice."
 	icon_state = "bokken_sword"
 	item_state = "bokken_sword"
