@@ -1350,6 +1350,7 @@ RECIPE: /material/copper/,copper lamp,/obj/item/flashlight/lantern/copper,3,55,0
 RECIPE: /material/copper/,small copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,3,90,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,large copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,5,120,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,trombone,/obj/item/trombone,6,155,0,1,none,83,0,0,8,null
+RECIPE: /material/copper/,handbell,/obj/item/weapon/handbell,2,50,0,1,none,40,0,0,8,null
 
 //*****************| COPPER WEAPONS & TOOLS |***************************
 
@@ -1752,6 +1753,8 @@ RECIPE: /material/wood/,cutting board,/obj/structure/cutting_board,5,50,0,1,kitc
 
 RECIPE: /material/wood/,gong,/obj/structure/gong,5,100,1,1,entertainment & other,26,0,0,8,null
 RECIPE: /material/wood/,gong mallet,/obj/item/weapon/gongmallet,3,50,0,1,entertainment & other,26,0,0,8,null
+
+RECIPE: /material/wood/,bell stand,/obj/structure/bell_stand,3,100,0,1,entertainment,40,0,0,8,null
 
 RECIPE: /material/wood/,matches (x10),/obj/item/weapon/matchbox,2,80,1,1,entertainment & other,67,0,0,8,null
 RECIPE: /material/wood/,cigar case,/obj/item/weapon/storage/fancy/cigar,2,80,1,1,entertainment & other,65,0,0,8,null
