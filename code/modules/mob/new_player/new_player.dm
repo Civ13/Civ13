@@ -614,7 +614,7 @@ var/global/redirect_all_players = null
 					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction1(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
-					for(var/i, i<=map.squads, i++)
+					for(var/i=1, i<=map.squads, i++)
 						if (!map.faction1_squad_leaders[i])
 							done = TRUE
 							H.squad = i
@@ -639,7 +639,7 @@ var/global/redirect_all_players = null
 					H.equip_to_slot_or_del(new/obj/item/weapon/radio/faction2(H),slot_back)
 				if (H.original_job.is_squad_leader)
 					var/done = FALSE
-					for(var/i, i<=map.squads, i++)
+					for(var/i=1, i<=map.squads, i++)
 						if (!map.faction2_squad_leaders[i])
 							done = TRUE
 							H.squad = i
