@@ -1,7 +1,7 @@
 
 /obj/map_metadata/khalkhyn
 	ID = MAP_KHALKHYN_GOL
-	title = "Khalkhyn Gol (90x200x1)"
+	title = "Khalkhyn Gol"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200

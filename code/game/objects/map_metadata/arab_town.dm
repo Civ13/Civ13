@@ -1,6 +1,6 @@
 /obj/map_metadata/arab_town
 	ID = MAP_ARAB_TOWN
-	title = "Arab Town (100x100x1)"
+	title = "Arab Town"
 	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
@@ -152,7 +152,7 @@ var/no_loop_arab = FALSE
 
 /obj/map_metadata/arab_town_2
 	ID = MAP_ARAB_TOWN_2
-	title = "Arab Town II (70x90x1)"
+	title = "Arab Town II"
 	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200

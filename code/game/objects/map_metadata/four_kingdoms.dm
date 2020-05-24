@@ -1,6 +1,6 @@
 /obj/map_metadata/four_kingdoms
 	ID = MAP_FOUR_KINDGOMS
-	title = "Four Kingdoms (375x375x2)"
+	title = "Four Kingdoms"
 	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "fantasy"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/temperate,/area/caribbean/no_mans_land/invisible_wall/desert,/area/caribbean/no_mans_land/invisible_wall/semiarid,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall)

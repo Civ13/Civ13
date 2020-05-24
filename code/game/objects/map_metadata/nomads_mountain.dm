@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_mountain
 	no_winner ="The round is proceeding normally."
 	ID = MAP_NOMADS_MOUNTAIN
-	title = "Nomads (Mountain) (120x120x8)"
+	title = "Nomads (Mountain)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!

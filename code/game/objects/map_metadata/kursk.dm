@@ -1,7 +1,7 @@
 
 /obj/map_metadata/kursk
 	ID = MAP_KURSK
-	title = "Kursk (100x150x1)"
+	title = "Kursk"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200

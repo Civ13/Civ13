@@ -1,7 +1,7 @@
 
 /obj/map_metadata/nomads_ice_age
 	ID = MAP_NOMADS_ICE_AGE
-	title = "Nomads (Ice Age) (275x275x2)"
+	title = "Nomads (Ice Age)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

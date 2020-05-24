@@ -1,6 +1,6 @@
 /obj/map_metadata/river_kwai
 	ID = MAP_RIVER_KWAI
-	title = "Bridge Over River Kwai (200x200x2)"
+	title = "Bridge Over River Kwai"
 	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "camp"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)

@@ -1,7 +1,7 @@
 
 /obj/map_metadata/chad_jungle
 	ID = MAP_JUNGLE_OF_THE_CHADS
-	title = "JUNGLE OF THE CHADS (300x300x2)"
+	title = "JUNGLE OF THE CHADS"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

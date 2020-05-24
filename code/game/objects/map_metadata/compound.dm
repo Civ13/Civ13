@@ -1,7 +1,7 @@
 
 /obj/map_metadata/compound
 	ID = MAP_COMPOUND
-	title = "Compound (100x100x2)"
+	title = "Compound"
 	lobby_icon_state = "coldwar"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
