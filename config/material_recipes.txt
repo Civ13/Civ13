@@ -280,8 +280,8 @@ RECIPE: /material/leather/,coin pouch,/obj/item/clothing/accessory/storage/coinp
 RECIPE: /material/leather/,wallet,/obj/item/clothing/accessory/storage/coinpouch/wallet,2,60,0,1,accessories,87,0,0,8,null
 
 RECIPE: /material/leather/,customizable armband,/obj/item/clothing/accessory/custom/armband,1,30,0,1,accessories,0,0,0,8,null
-RECIPE: /material/leather/,suspenders,/obj/item/clothing/accessory/armband/suspenders1,1,60,0,1,accessories,0,0,85,8,null
-RECIPE: /material/leather/,dark suspenders,/obj/item/clothing/accessory/armband/suspenders2,1,70,0,1,accessories,0,0,85,8,null
+RECIPE: /material/leather/,suspenders,/obj/item/clothing/accessory/suspenders,1,60,0,1,accessories,0,0,85,8,null
+RECIPE: /material/leather/,dark suspenders,/obj/item/clothing/accessory/suspenders/dark,1,70,0,1,accessories,0,0,85,8,null
 RECIPE: /material/leather/,khaki webbing,/obj/item/clothing/accessory/storage/webbing/khaki_webbing,2,60,0,1,storage,0,0,99,8,null
 RECIPE: /material/leather/,green webbing,/obj/item/clothing/accessory/storage/webbing/green_webbing,2,60,0,1,storage,0,0,99,8,null
 RECIPE: /material/leather/,light webbing,/obj/item/clothing/accessory/storage/webbing/light,1,50,0,1,storage,0,0,99,8,null

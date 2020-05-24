@@ -2015,10 +2015,10 @@
 //suspenders
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/ysuspenders = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/ysuspenders = new /obj/item/clothing/accessory/suspenders(null)
 			uniform.attackby(ysuspenders, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/ysuspenders = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/ysuspenders = new /obj/item/clothing/accessory/suspenders/dark(null)
 			uniform.attackby(ysuspenders, H)
 //hats
 	var/randhat = pick(1,2,3)
