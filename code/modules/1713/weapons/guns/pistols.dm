@@ -11,6 +11,7 @@
 	silencer_fire_sound = 'sound/weapons/guns/fire/Glock17-SD.ogg'
 	maxhealth = 45
 	gtype = "pistol"
+	var/pocket = FALSE
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(
@@ -357,18 +358,34 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/colthammerless
-	name = "Colt Pocket Hammerless"
+	name = "Colt M1903 Pocket Hammerless"
 	desc = "An early, compact Colt pistol chambered in .32 ACP."
 	icon_state = "coltpockethammerless"
 	w_class = 2
 	caliber = "a32acp"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless
-	weight = 0.794
+	weight = 0.680
 	ammo_type = /obj/item/ammo_casing/a32acp
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
+	pocket = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908
+	name = "Colt M1908 Pocket Hammerless"
+	desc = "A later version of the compact Colt pistol, chambered in .380 ACP."
+	icon_state = "coltpockethammerless"
+	w_class = 2
+	caliber = "a380acp"
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/colthammerless/a380acp
+	weight = 0.720
+	ammo_type = /obj/item/ammo_casing/a380acp
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+
 /obj/item/weapon/gun/projectile/pistol/colthammerless/update_icon()
 	..()
 	if (ammo_magazine)

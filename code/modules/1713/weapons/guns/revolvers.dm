@@ -23,6 +23,7 @@
 	gun_type = GUN_TYPE_PISTOL
 	maxhealth = 55
 	gtype = "pistol"
+	var/pocket = FALSE
 
 	accuracy_list = list(
 		// small body parts: head, hand, feet
@@ -407,25 +408,6 @@
 	cocked = FALSE
 	load_delay = 5
 
-/obj/item/weapon/gun/projectile/revolver/webley
-	name = "Webley Revolver"
-	desc = "British officer's revolver."
-	icon_state = "webley"
-	w_class = 2
-	caliber = "a455"
-	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
-	load_method = SINGLE_CASING
-	handle_casings = CYCLE_CASINGS
-	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c455
-	ammo_type = /obj/item/ammo_casing/a455
-	weight = 1.6
-	single_action = FALSE
-	blackpowder = FALSE
-	cocked = FALSE
-	load_delay = 5
-	gun_safety = TRUE
-
 /obj/item/weapon/gun/projectile/revolver/panther
 	name = "Panther revolver"
 	desc = "a .44 caliber revolver."
@@ -463,6 +445,7 @@
 	var/recentpump = FALSE // to prevent spammage
 	load_delay = 6
 	blackpowder = TRUE
+	pocket = TRUE
 
 	accuracy_list = list(
 
