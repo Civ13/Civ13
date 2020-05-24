@@ -13,6 +13,7 @@
 	reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
 	fire_sound = 'sound/weapons/guns/fire/revolver.ogg'
+	silencer_fire_sound = 'sound/weapons/guns/fire/Glock17-SD.ogg'
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	magazine_based = FALSE
 	var/single_action = FALSE

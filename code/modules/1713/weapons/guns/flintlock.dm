@@ -14,11 +14,9 @@
 	slot_flags = SLOT_SHOULDER
 	caliber = "musketball"
 	recoil = 3 //extra kickback
-	//fire_sound = 'sound/weapons/sniper.ogg'
 	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/musketball
-//	magazine_type = /obj/item/ammo_magazine/musketball
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/musket.ogg'
 	//+2 accuracy over the LWAP because only one shot

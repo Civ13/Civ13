@@ -8,6 +8,7 @@
 	gun_safety = TRUE
 	gun_type = GUN_TYPE_PISTOL
 	handle_casings = EJECT_CASINGS
+	silencer_fire_sound = 'sound/weapons/guns/fire/Glock17-SD.ogg'
 	maxhealth = 45
 	accuracy_list = list(
 		// small body parts: head, hand, feet

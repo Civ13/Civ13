@@ -132,6 +132,11 @@ Current Defines (_defines/attachment.dm)
 				A.attached(user, src, FALSE)
 			else
 				user << "You fumble around with the attachment."
+		if (ATTACH_SILENCER)
+			if (attachment_slots & ATTACH_SILENCER)
+				A.attached(user, src, FALSE)
+			else
+				user << "You fumble around with the attachment."
 		else
 			user << "[A] cannot be attached to the [src]."
 
@@ -492,12 +497,15 @@ Current Defines (_defines/attachment.dm)
 	desc = "a gun silencer."
 	attachment_type = ATTACH_SILENCER
 	var/image/ongun
-	var/reduction = 75
+	var/reduction = 50
 	New()
 		..()
 		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
 		ongun.pixel_x = 16
 		ongun.pixel_y = 16
+		if (findtext(icon_state,"pistol"))
+			ongun.pixel_x = 20
+			ongun.pixel_y = 0
 /obj/item/weapon/attachment/silencer/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
 	if (quick)
 		A_attached = TRUE
@@ -545,10 +553,10 @@ Current Defines (_defines/attachment.dm)
 	name = "plastic bottle suppressor"
 	icon_state = "plastic_bottle"
 	desc = "a makeshift suppressor."
-	reduction = 35
+	reduction = 25
 
 /obj/item/weapon/attachment/silencer/oil_filter
 	name = "oil filter suppressor"
 	icon_state = "oil_filter"
 	desc = "a makeshift suppressor."
-	reduction = 50
+	reduction = 35

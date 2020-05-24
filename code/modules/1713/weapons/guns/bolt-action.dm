@@ -13,7 +13,6 @@
 	slot_flags = SLOT_SHOULDER
 	caliber = "a762x54"
 	recoil = 2 //extra kickback
-	//fire_sound = 'sound/weapons/sniper.ogg'
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
