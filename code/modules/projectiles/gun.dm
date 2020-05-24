@@ -43,7 +43,6 @@
 	var/fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	var/fire_sound_text = "gunshot"
 	var/recoil = 0		//screen shake
-	var/silenced = FALSE
 	var/muzzle_flash = 3
 	var/accuracy = 0   //accuracy is measured in tiles. +1 accuracy means that everything is effectively one tile closer for the purpose of miss chance, -1 means the opposite. launchers are not supported, at the moment.
 //	var/scoped_accuracy = null
@@ -343,8 +342,8 @@
 
 //called after successfully firing
 /obj/item/weapon/gun/proc/handle_post_fire(mob/user, atom/target, var/pointblank=0, var/reflex=0)
-	if (silenced)
-		playsound(get_turf(user), fire_sound, 10, TRUE, 100)
+	if (silencer)
+		playsound(get_turf(user), fire_sound, 100-silencer.reduction, TRUE, 100-silencer.reduction)
 	else
 		playsound(get_turf(user), fire_sound, 100, TRUE, 100)
 
@@ -451,10 +450,10 @@
 	var/obj/item/projectile/in_chamber = consume_next_projectile()
 	if (in_chamber && istype(in_chamber))
 		user.visible_message("<span class = 'warning'>[user] pulls the trigger.</span>")
-		if (silenced)
-			playsound(user, fire_sound, 10, TRUE)
+		if (silencer)
+			playsound(user, fire_sound, 50-(silencer.reduction/2), TRUE,50-(silencer.reduction/2))
 		else
-			playsound(user, fire_sound, 50, TRUE)
+			playsound(user, fire_sound, 50, TRUE,50)
 
 		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> shot themselves in the mouth (tried to commit suicide)"
 
@@ -519,10 +518,10 @@
 					damage_multiplier = 3.0
 
 			user.visible_message("<span class = 'red'>[user] shoots \himself in \the [organ_name]!</span>")
-			if (silenced)
-				playsound(user, fire_sound, 20, TRUE)
+			if (silencer)
+				playsound(user, fire_sound, 100-silencer.reduction, TRUE,100-silencer.reduction)
 			else
-				playsound(user, fire_sound, 100, TRUE)
+				playsound(user, fire_sound, 100, TRUE,100-silencer.reduction)
 
 			user.attack_log += "\[[time_stamp()]\] [user]/[user.ckey]</b> shot themselves in the [organ_name]"
 

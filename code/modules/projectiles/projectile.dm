@@ -200,7 +200,7 @@
 	xo = targloc.x - curloc.x + x_offset
 
 	shot_from = launcher
-	silenced = launcher.silenced
+	silenced = launcher.silencer
 
 	projectile_list += src
 
@@ -258,7 +258,10 @@
 	firer_original_dir = firer.dir
 	firedfrom = launcher
 	shot_from = launcher.name
-	silenced = launcher.silenced
+	if (launcher.silencer)
+		silenced = TRUE
+	else
+		silenced = FALSE
 
 	projectile_list += src
 

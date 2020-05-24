@@ -9,11 +9,13 @@ Add attached bayonet sprite
 
 Current Defines (_defines/attachment.dm)
 
-#define ATTACH_IRONSIGHTS TRUE
+#define ATTACH_IRONSIGHTS 1
 #define ATTACH_SCOPE 2
 #define ATTACH_STOCK 4
 #define ATTACH_BARREL 8
-#define ATTACH_UNDER TRUE6
+#define ATTACH_UNDER 16
+#define ATTACH_ADV_SCOPE 32
+#define ATTACH_SILENCER 64
 */
 
 /obj/item/weapon/attachment
@@ -480,3 +482,73 @@ Current Defines (_defines/attachment.dm)
 	acc_modifier = 1.4
 	scopeonly = FALSE
 
+/obj/item/weapon/gun
+	var/silencer_ico
+	var/obj/item/weapon/attachment/silencer/silencer = null
+
+/obj/item/weapon/attachment/silencer
+	icon = 'icons/obj/gun_att.dmi'
+	icon_state = "silencer"
+	desc = "a gun silencer."
+	attachment_type = ATTACH_SILENCER
+	var/image/ongun
+	var/reduction = 75
+	New()
+		..()
+		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
+		ongun.pixel_x = 16
+		ongun.pixel_y = 16
+/obj/item/weapon/attachment/silencer/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
+	if (quick)
+		A_attached = TRUE
+		G.attachment_slots -= attachment_type
+		loc = G
+		G.actions += actions
+		G.verbs += verbs
+		G.attachments += src
+		G.silencer = src
+		G.silencer_ico = ongun
+		G.overlays += G.silencer_ico
+	else
+		if (do_after(user, 15, user))
+			user.unEquip(src)
+			A_attached = TRUE
+			G.attachment_slots -= attachment_type
+			loc = G
+			G.actions += actions
+			G.verbs += verbs
+			G.attachments += src
+			G.update_attachment_actions(user)
+			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			G.silencer = src
+			G.silencer_ico = ongun
+			G.overlays += G.silencer_ico
+		else
+			return
+
+/obj/item/weapon/attachment/silencer/removed(mob/user, obj/item/weapon/gun/G)
+	if (do_after(user, 15, user))
+		G.attachments -= src
+		G.actions -= actions
+		G.verbs -= verbs
+		G.attachment_slots += attachment_type
+		dropped(user)
+		A_attached = FALSE
+		loc = get_turf(src)
+		user << "You remove [src] from the [G]."
+		G.silencer = null
+		G.overlays -= G.silencer_ico
+	else
+		return
+
+/obj/item/weapon/attachment/silencer/plastic_bottle
+	name = "plastic bottle suppressor"
+	icon_state = "plastic_bottle"
+	desc = "a makeshift suppressor."
+	reduction = 35
+
+/obj/item/weapon/attachment/silencer/oil_filter
+	name = "oil filter suppressor"
+	icon_state = "oil_filter"
+	desc = "a makeshift suppressor."
+	reduction = 50

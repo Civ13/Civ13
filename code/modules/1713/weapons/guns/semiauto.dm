@@ -133,7 +133,7 @@
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.03
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/avtomat
 	name = "Fedorov Avtomat"
@@ -159,7 +159,7 @@
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.80
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/remington11
 	name = "Remington 11"
@@ -205,7 +205,7 @@
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.03
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/svd
 	name = "SVD"
@@ -231,7 +231,7 @@
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.03
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/svd/New()
 	..()
@@ -260,7 +260,7 @@
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.03
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/g41
 	name = "Gewehr 41"
@@ -282,7 +282,7 @@
 		)
 	force = 10
 	throwforce = 20
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/semiautomatic/g43
@@ -306,7 +306,7 @@
 		)
 	force = 10
 	throwforce = 20
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	effectiveness_mod = 1.07
 
 /obj/item/weapon/gun/projectile/semiautomatic/stg
@@ -354,7 +354,7 @@
 		)
 	force = 10
 	throwforce = 20
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/semiautomatic/ar15

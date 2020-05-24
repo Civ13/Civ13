@@ -606,7 +606,7 @@
 			load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 			accuracy = TRUE
 			gun_type = GUN_TYPE_RIFLE
-			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 			accuracy_increase_mod = 2.00
 			accuracy_decrease_mod = 6.00
 			KD_chance = KD_CHANCE_HIGH
@@ -851,7 +851,7 @@
 			slot_flags = SLOT_SHOULDER|SLOT_BELT
 			sel_mode = 1
 			full_auto = TRUE
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			firemodes = list(
 				list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
 				)
@@ -907,13 +907,13 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Open-Bolt (large)")
 			item_state = "negev"
 			stat = "machinegun"
 			w_class = 5
 			heavy = TRUE
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			firemodes = list(
 				list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),
 				)
@@ -978,7 +978,7 @@
 			load_method = MAGAZINE
 			sel_mode = 1
 			full_auto = TRUE
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Dual Selective Fire")
 			item_state = "ak47"
 			stat = "rifle"
@@ -993,7 +993,7 @@
 				list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 				)
 			sel_mode = 1
-			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 			load_delay = 8
 			gun_type = GUN_TYPE_RIFLE
 			accuracy_list = list(
@@ -1044,7 +1044,7 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Triple Selective Fire")
 			item_state = "m16"
 			stat = "rifle"
@@ -1060,7 +1060,7 @@
 				list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 				)
 			sel_mode = 1
-			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 			load_delay = 8
 			gun_type = GUN_TYPE_RIFLE
 			accuracy_list = list(
@@ -1111,7 +1111,7 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Pump-Action")
 			item_state = "shotgun-f"
 			stat = "rifle"

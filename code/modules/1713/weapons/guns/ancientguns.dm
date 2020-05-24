@@ -151,7 +151,7 @@ obj/item/weapon/gun/projectile/ancient/arquebus
 	desc = "A iron barrel attached to a wood stock, with a piece of metal in the middle to hold the arquebus still, increasing accuracy."
 	icon_state = "arquebus"
 	item_state = "arquebus"
-	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS | ATTACH_BARREL
 	fire_delay = 9
 	recoil = 4
 
@@ -205,7 +205,7 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 	desc = "A musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger."
 	icon_state = "matchlock"
 	item_state = "matchlock"
-	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS | ATTACH_BARREL
 	fire_delay = 3
 	recoil = 3
 
@@ -259,7 +259,7 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 	desc = "A musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger. This one being Japanese, introduced to them via the Portuguese."
 	icon_state = "tanegashima"
 	item_state = "tanegashima"
-	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS | ATTACH_BARREL
 	fire_delay = 3
 	recoil = 3
 
