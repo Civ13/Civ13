@@ -18,12 +18,12 @@
 	age = "2013"
 	ordinal_age = 8
 	var/fac_nr = 3
-	faction_distribution_coeffs = list(PIRATES = 1)
+	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the deal"
 	mission_start_message = "<font size=4><b>3</b> corporations <b>Last standing player wins!</b></font>"
 	var/winner_name = "Unknown"
 	var/list/winner_ckeys = list()
-	faction1 = PIRATES
+	faction1 = CIVILIAN
 	faction2 = CIVILIAN
 	gamemode = "Battleroyale"
 	required_players = 6
@@ -44,12 +44,12 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/battleroyale/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
+/obj/map_metadata/art_of_the_deal/faction2_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/battleroyale/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
+/obj/map_metadata/art_of_the_deal/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/battleroyale/cross_message(faction)
-	if (faction == PIRATES)
+/obj/map_metadata/art_of_the_deal/cross_message(faction)
+	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"

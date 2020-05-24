@@ -133,14 +133,16 @@ Current Defines (_defines/attachment.dm)
 				A.attached(user, src, FALSE)
 			else
 				user << "You fumble around with the attachment."
-		if (ATTACH_SILENCER && gtype in A.fits)
-			if (attachment_slots & ATTACH_SILENCER)
-				A.attached(user, src, FALSE)
+		if (ATTACH_SILENCER)
+			if (gtype in A.fits)
+				if (attachment_slots & ATTACH_SILENCER)
+					A.attached(user, src, FALSE)
+				else
+					user << "You fumble around with the attachment."
 			else
-				user << "You fumble around with the attachment."
+				user << "[A] cannot be attached to the [src]."
 		else
 			user << "[A] cannot be attached to the [src]."
-
 //ATTACHMENTS
 
 //Scope code is found in code/modules/WW2/weapons/zoom.dm
