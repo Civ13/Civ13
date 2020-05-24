@@ -529,6 +529,7 @@ obj/structure/religious/monument
 	density = FALSE
 	anchored = TRUE
 	var/open = TRUE
+	var/filled = 0
 	not_disassemblable = TRUE
 	not_movable = TRUE
 /obj/structure/religious/grave/attackby(obj/item/W as obj, mob/user as mob)
@@ -606,6 +607,14 @@ obj/structure/religious/monument
 							HM.client.eye = HM.client.mob
 							HM.client.perspective = MOB_PERSPECTIVE
 					CF.forceMove(src.loc)
+	if (istype(W, /obj/item/weapon/sandbag) && open)
+		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
+		filled++
+		qdel(W)
+		if (filled >= 2)
+			visible_message("The grave gets covered.")
+			qdel(src)
+			return
 	else
 		return
 

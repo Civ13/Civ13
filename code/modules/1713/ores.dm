@@ -148,13 +148,12 @@
 			if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
 				user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
 			else
-				var/obj/item/stack/ore/obsidian/O = src
 				visible_message("<span class='danger'>[user] starts to cut the obsidian!</span>", "<span class='danger'>You start cutting the obsidian.</span>")
-				if (do_after(H, min(O.amount*10, 200), H.loc))
+				if (do_after(H, min(src.amount*10, 200), H.loc))
 					visible_message("<span class='danger'>[user] finishes cutting the obsidian!</span>", "<span class='danger'>You finish cutting the obsidian.</span>")
-					var/obj/item/stack/material/obsidian/cut_obsidian = new/obj/item/stack/material/obsidian(O.loc)
-					cut_obsidian.amount = O.amount
-					qdel(O)
+					var/obj/item/stack/material/obsidian/cut_obsidian = new/obj/item/stack/material/obsidian(src.loc)
+					cut_obsidian.amount = src.amount
+					qdel(src)
 		else
 			..()
 			return
