@@ -152,14 +152,14 @@
 	item_state = "yellow_scarf"
 	slot = "decor"
 
-/obj/item/clothing/accessory/armband/suspenders1
+/obj/item/clothing/accessory/suspenders
 	name = "suspenders"
 	desc = "Leather suspenders."
 	icon_state = "suspenders1"
 	item_state = "suspenders1"
 	slot = "sash"
 
-/obj/item/clothing/accessory/armband/suspenders2
+/obj/item/clothing/accessory/suspenders/dark
 	name = "dark suspenders"
 	desc = "Dark leather suspenders."
 	icon_state = "suspenders2"

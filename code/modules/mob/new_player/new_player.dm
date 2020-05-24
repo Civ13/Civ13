@@ -485,27 +485,6 @@ var/global/redirect_all_players = null
 		return TRUE
 	return FALSE
 
-/mob/new_player/proc/LateSpawnForced(rank, needs_random_name = FALSE)
-
-	spawning = TRUE
-	close_spawn_windows()
-
-	job_master.AssignRole(src, rank, TRUE)
-	var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
-	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
-
-	job_master.relocate(character)
-
-	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
-		character.buckled.loc = character.loc
-		character.buckled.set_dir(character.dir)
-
-	ticker.minds += character.mind
-
-	character.lastarea = get_area(loc)
-
-	qdel(src)
-
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
 
 	if (src != usr)

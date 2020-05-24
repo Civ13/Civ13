@@ -280,11 +280,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
@@ -343,11 +343,11 @@
 	else if (randcloth2 == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 	if (prob(50))
-		var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+		var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	else
-		var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	H.add_note("Role", "You are the <b>Town's Doctor</b>, living in Little Creek. Take care of the (many) wounded...")
@@ -432,11 +432,11 @@
 	else if (randcloth4 == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
-		var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+		var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	else
-		var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
@@ -488,11 +488,11 @@
 	else if (randcloth4 == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
-		var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+		var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	else
-		var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
@@ -582,11 +582,11 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.add_note("Role", "You are the <b>Town's Blacksmith</b>, living in Little Creek. Take care of the blacksmith and the stables!")
@@ -662,11 +662,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
@@ -742,11 +742,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	if (prob(20))
@@ -823,11 +823,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	if (prob(20))
