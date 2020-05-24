@@ -1,6 +1,6 @@
 /obj/map_metadata/battleroyale
 	ID = MAP_BATTLEROYALE_IMPERIAL
-	title = "Isla Robusta Battle Royale (125x125x1)"
+	title = "Isla Robusta Battle Royale"
 	lobby_icon_state = "battleroyale"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
@@ -420,7 +420,7 @@
 
 /obj/map_metadata/battleroyale/two
 	ID = MAP_BATTLEROYALE_MODERN
-	title = "Arab Town Battle Royale (100x100x1)"
+	title = "Arab Town Battle Royale"
 	lobby_icon_state = "battleroyale_arab"
 
 	age = "2013"
@@ -452,7 +452,7 @@
 	return .
 /obj/map_metadata/battleroyale/three
 	ID = MAP_BATTLEROYALE_MEDIEVAL
-	title = "Camp Battle Royale (100x100x1)"
+	title = "Camp Battle Royale"
 
 	age = "1013"
 	ordinal_age = 2

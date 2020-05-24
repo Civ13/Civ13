@@ -1,7 +1,7 @@
 
 /obj/map_metadata/karak
 	ID = MAP_KARAK
-	title = "Karak (80x80x1)"
+	title = "Karak"
 	lobby_icon_state = "medieval"
 	no_winner ="The fighting is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

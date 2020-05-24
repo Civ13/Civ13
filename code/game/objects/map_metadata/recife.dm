@@ -1,7 +1,7 @@
 
 /obj/map_metadata/recife
 	ID = MAP_RECIFE
-	title = "Recife (100x100x1)"
+	title = "Recife"
 	lobby_icon_state = "imperial"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

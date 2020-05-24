@@ -1,7 +1,7 @@
 
 /obj/map_metadata/nomads_divide
 	ID = MAP_NOMADS_DIVIDE
-	title = "Nomads (Jungle-Desert) (250x250x2)"
+	title = "Nomads (Jungle-Desert)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

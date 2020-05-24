@@ -1,6 +1,6 @@
 /obj/map_metadata/port_arthur
 	ID = MAP_PORT_ARTHUR
-	title = "Port Arthur (100x130x1)"
+	title = "Port Arthur"
 	lobby_icon_state = "ww1"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0

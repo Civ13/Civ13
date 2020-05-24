@@ -1,6 +1,6 @@
 /obj/map_metadata/omaha
 	ID = MAP_OMAHA
-	title = "Omaha Beach (100x100x1)"
+	title = "Omaha Beach"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200

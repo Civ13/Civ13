@@ -1,7 +1,7 @@
 
 /obj/map_metadata/tsaritsyn
 	ID = MAP_TSARITSYN
-	title = "Tsaritsyn (120x100x1)"
+	title = "Tsaritsyn"
 	lobby_icon_state = "ww1"
 	no_winner ="The church is under Soviet control."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

@@ -1,7 +1,7 @@
 
 /obj/map_metadata/nomads_pangea
 	ID = MAP_NOMADS_PANGEA
-	title = "Nomads (Pangea) (200x500x2)"
+	title = "Nomads (Pangea)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

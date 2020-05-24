@@ -1,6 +1,6 @@
 /obj/map_metadata/sammirhayeed
 	ID = MAP_SAMMIRHAYEED
-	title = "Sammir Hayeed (80x80x1)"
+	title = "Sammir Hayeed"
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300

@@ -1,7 +1,7 @@
 
 /obj/map_metadata/voyage
 	ID = MAP_VOYAGE
-	title = "Voyage (75x75x4)"
+	title = "Voyage"
 	no_winner ="The ship is on the way."
 //	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
