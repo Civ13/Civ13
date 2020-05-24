@@ -560,3 +560,15 @@ Current Defines (_defines/attachment.dm)
 	icon_state = "oil_filter"
 	desc = "a makeshift suppressor."
 	reduction = 35
+
+/obj/item/weapon/attachment/silencer/pistol
+	name = "pistol suppressor"
+	icon_state = "modern_pistol_suppressor"
+	desc = "a pistol suppressor."
+	reduction = 50
+
+/obj/item/weapon/attachment/silencer/pistol/ww2
+	name = "pistol suppressor"
+	icon_state = "ww2_pistol_suppressor"
+	desc = "a pistol suppressor."
+	reduction = 35
