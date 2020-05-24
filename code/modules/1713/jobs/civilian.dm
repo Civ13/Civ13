@@ -757,7 +757,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft weapons and guns. However, you probably should follow the <b>Governor's</b> orders!")
 	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("crafting", 250)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_HIGH)
@@ -1697,16 +1697,15 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 
 	//head
-		var/randhead = rand(1,5)
 		if (prob(10))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 1)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
-		else if (randhead == 2)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead == 3)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 4)
+		else if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)
@@ -1771,16 +1770,15 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 
 	//head
-		var/randhead = rand(1,4)
 		if (prob(10))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 1)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
-		else if (randhead == 2)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead == 3)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 4)
+		else if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)
@@ -1800,7 +1798,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft weapons and guns. However, you probably should follow the <b>Governor's</b> orders!")
 	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", 200)
+	H.setStat("crafting", 250)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_HIGH)
@@ -1952,16 +1950,15 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 
 	//head
-		var/randhead = rand(1,4)
 		if (prob(10))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/confederatecap(H), slot_head)
-		else if (randhead == 1)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
-		else if (randhead == 2)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
-		else if (randhead == 3)
+		else if (prob(30))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-		else if (randhead == 4)
+		else if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
 		var/randcloth = rand(1,3)
