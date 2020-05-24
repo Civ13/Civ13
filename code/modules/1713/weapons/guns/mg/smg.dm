@@ -11,6 +11,7 @@
 	gun_safety = TRUE
 	load_delay = 8
 	gun_type = GUN_TYPE_RIFLE
+	gtype = "smg"
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet

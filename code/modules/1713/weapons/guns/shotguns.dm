@@ -54,6 +54,8 @@
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
 
+	gtype = "shotgun"
+
 /obj/item/weapon/gun/projectile/shotgun/pump
 	name = "Pump-Action Shotgun"
 	desc = "A placeholder shotgun chambered in 12 gauge rounds."

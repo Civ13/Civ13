@@ -33,6 +33,7 @@
 	equiptimer = 15
 	gun_safety = TRUE
 	maxhealth = 20
+	gtype = "rifle"
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 

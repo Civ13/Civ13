@@ -34,6 +34,7 @@
 	var/projtype = "arrow"
 	var/icotype = "bow"
 	equiptimer = 20
+	gtype = "none"
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet

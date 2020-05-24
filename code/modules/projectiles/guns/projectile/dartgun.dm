@@ -53,6 +53,7 @@
 	load_method = MAGAZINE
 	magazine_type = /obj/item/ammo_magazine/chemdart
 	auto_eject = FALSE
+	gtype = "none"
 
 	var/list/beakers = list() //All containers inside the gun.
 	var/list/mixing = list() //Containers being used for mixing.
