@@ -1,6 +1,6 @@
 /obj/map_metadata/hunt
 	ID = MAP_HUNT
-	title = "Hunt (175x175x2)"
+	title = "Hunt"
 	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!

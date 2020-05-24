@@ -1,7 +1,7 @@
 
 /obj/map_metadata/reichstag
 	ID = MAP_REICHSTAG
-	title = "Reichstag (100x100x1)"
+	title = "Reichstag"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200

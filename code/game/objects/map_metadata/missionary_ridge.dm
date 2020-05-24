@@ -1,6 +1,6 @@
 /obj/map_metadata/missionary_ridge
 	ID = MAP_MISSIONARY_RIDGE
-	title = "Missionary Ridge (120x180x1)"
+	title = "Missionary Ridge"
 	lobby_icon_state = "wildwest"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0

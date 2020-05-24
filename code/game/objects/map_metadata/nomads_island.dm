@@ -1,7 +1,7 @@
 
 /obj/map_metadata/nomads_island
 	ID = MAP_NOMADS_ISLAND
-	title = "Nomads (Island) (200x200x2)"
+	title = "Nomads (Island)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

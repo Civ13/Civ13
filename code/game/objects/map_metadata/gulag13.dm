@@ -1,7 +1,7 @@
 
 /obj/map_metadata/gulag13
 	ID = MAP_GULAG13
-	title = "GULAG 13 (120x100x1)"
+	title = "GULAG 13"
 	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "camp"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)

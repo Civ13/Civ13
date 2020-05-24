@@ -1,7 +1,7 @@
 
 /obj/map_metadata/naval
 	ID = MAP_NAVAL
-	title = "Naval Battle (75x75x4)"
+	title = "Naval Battle"
 	lobby_icon_state = "imperial"
 	no_winner ="No ship has been captured."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

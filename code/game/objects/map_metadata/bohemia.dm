@@ -1,6 +1,6 @@
 /obj/map_metadata/bohemia
 	ID = MAP_BOHEMIA
-	title = "Bohemia (250x210x2)"
+	title = "Bohemia"
 	lobby_icon_state = "medieval"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)

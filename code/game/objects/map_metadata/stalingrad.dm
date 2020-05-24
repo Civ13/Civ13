@@ -1,7 +1,7 @@
 
 /obj/map_metadata/stalingrad
 	ID = MAP_STALINGRAD
-	title = "Stalingrad (90x250x2)"
+	title = "Stalingrad"
 	lobby_icon_state = "ww2"
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)

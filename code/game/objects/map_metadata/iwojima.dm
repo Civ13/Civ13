@@ -1,6 +1,6 @@
 /obj/map_metadata/iwojima
 	ID = MAP_IWO_JIMA
-	title = "Iwo Jima (150x280x2)"
+	title = "Iwo Jima"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200

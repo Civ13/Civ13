@@ -1,7 +1,7 @@
 
 /obj/map_metadata/robusta
 	ID = MAP_ROBUSTA
-	title = "Isla Robusta (125x125x1)"
+	title = "Isla Robusta"
 	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900

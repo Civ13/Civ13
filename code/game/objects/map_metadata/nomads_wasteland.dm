@@ -1,7 +1,7 @@
 
 /obj/map_metadata/nomads_wasteland
 	ID = MAP_NOMADS_WASTELAND
-	title = "Wasteland (235x235x2)"
+	title = "Wasteland"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
@@ -116,7 +116,7 @@
 
 /obj/map_metadata/nomads_wasteland/two
 	ID = MAP_NOMADS_WASTELAND_2
-	title = "Wasteland II (235x235x2)"
+	title = "Wasteland II"
 	gamemode = "Wasteland"
 	nonukes = TRUE
 
