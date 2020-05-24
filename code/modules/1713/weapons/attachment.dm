@@ -23,6 +23,7 @@ Current Defines (_defines/attachment.dm)
 	var/attachment_type //Use the 'ATTACH_' defines above (should only use one for this)
 	var/A_attached = FALSE //Is attached
 	w_class = 2
+	var/list/fits = list("pistol", "smg", "rifle", "shotgun", "mg")
 
 /obj/item/weapon/attachment/proc/attached(mob/user, obj/item/weapon/gun/G)
 	user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
@@ -133,13 +134,15 @@ Current Defines (_defines/attachment.dm)
 			else
 				user << "You fumble around with the attachment."
 		if (ATTACH_SILENCER)
-			if (attachment_slots & ATTACH_SILENCER)
-				A.attached(user, src, FALSE)
+			if (gtype in A.fits)
+				if (attachment_slots & ATTACH_SILENCER)
+					A.attached(user, src, FALSE)
+				else
+					user << "You fumble around with the attachment."
 			else
-				user << "You fumble around with the attachment."
+				user << "[A] cannot be attached to the [src]."
 		else
 			user << "[A] cannot be attached to the [src]."
-
 //ATTACHMENTS
 
 //Scope code is found in code/modules/WW2/weapons/zoom.dm
@@ -494,10 +497,12 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer
 	icon = 'icons/obj/gun_att.dmi'
 	icon_state = "silencer"
+	name = "silencer"
 	desc = "a gun silencer."
 	attachment_type = ATTACH_SILENCER
 	var/image/ongun
 	var/reduction = 50
+
 	New()
 		..()
 		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
@@ -551,21 +556,24 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/silencer/plastic_bottle
 	name = "plastic bottle suppressor"
-	icon_state = "plastic_bottle"
+	icon_state = "plastic_bottle_suppressor"
 	desc = "a makeshift suppressor."
 	reduction = 25
+	fits = list("smg", "rifle")
 
 /obj/item/weapon/attachment/silencer/oil_filter
 	name = "oil filter suppressor"
-	icon_state = "oil_filter"
+	icon_state = "oil_filter_suppressor"
 	desc = "a makeshift suppressor."
 	reduction = 35
+	fits = list("smg", "rifle")
 
 /obj/item/weapon/attachment/silencer/pistol
 	name = "pistol suppressor"
 	icon_state = "modern_pistol_suppressor"
 	desc = "a pistol suppressor."
 	reduction = 50
+	fits = list("pistol")
 
 /obj/item/weapon/attachment/silencer/pistol/ww2
 	name = "pistol suppressor"

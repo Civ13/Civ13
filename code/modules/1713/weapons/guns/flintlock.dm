@@ -28,6 +28,7 @@
 	accuracy_decrease_mod = 6.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
+	gtype = "rifle"
 	move_delay = 5
 	fire_delay = 5
 	equiptimer = 20
@@ -283,6 +284,7 @@
 	load_delay = 100
 	value = 70
 	stat = "pistol"
+	gtype = "pistol"
 	equiptimer = 7
 	accuracy_list = list(
 

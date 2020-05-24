@@ -57,6 +57,8 @@
 	headshot_kill_chance = 35
 	KO_chance = 30
 
+	gtype = "rifle"
+
 	var/jammed_until = -1
 	var/jamcheck = 0
 	var/last_fire = -1

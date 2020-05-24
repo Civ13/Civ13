@@ -30,7 +30,7 @@ obj/item/weapon/gun/projectile/ancient
 	var/lighted = FALSE
 	var/gunpowder = FALSE
 	var/bullet = FALSE
-
+	gtype = "rifle"
 
 	accuracy_list = list(
 

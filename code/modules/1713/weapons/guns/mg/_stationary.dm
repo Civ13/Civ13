@@ -1,6 +1,8 @@
 //*********************
 //POD MACHINEGUNS
 //*********************
+/obj/item/weapon/gun/projectile/automatic
+	gtype = "mg"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
 	set category = null // was "Minigun" - removes lag

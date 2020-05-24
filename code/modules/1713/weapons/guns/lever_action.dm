@@ -34,6 +34,7 @@
 	blackpowder = FALSE
 	handle_casings = HOLD_CASINGS
 	equiptimer = 15
+	gtype = "rifle"
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 

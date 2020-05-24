@@ -595,6 +595,7 @@
 	switch(receiver_type)
 		if ("Bolt-Action")
 			item_state = "mosin"
+			gtype = "rifle"
 			w_class = 4
 			force = 10
 			throwforce = 20
@@ -661,6 +662,7 @@
 			load_delay = 4
 			aim_miss_chance_divider = 3.00
 		if ("Revolver")
+			gtype = "pistol"
 			stat = "pistol"
 			w_class = 2
 			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
@@ -727,6 +729,7 @@
 		if ("Semi-Auto (small)")
 			item_state = "pistol"
 			stat = "pistol"
+			gtype = "pistol"
 			move_delay = 1
 			fire_delay = 3
 			equiptimer -= 1
@@ -783,6 +786,7 @@
 		if ("Semi-Auto (large)")
 			item_state = "g41"
 			stat = "rifle"
+			gtype = "rifle"
 			w_class = 4
 			slot_flags = SLOT_SHOULDER
 			accuracy_list = list(
@@ -847,6 +851,7 @@
 		if ("Open-Bolt (small)")
 			item_state = "greasegun"
 			stat = "machinegun"
+			gtype = "smg"
 			w_class = 3
 			slot_flags = SLOT_SHOULDER|SLOT_BELT
 			sel_mode = 1
@@ -911,6 +916,7 @@
 		if ("Open-Bolt (large)")
 			item_state = "negev"
 			stat = "machinegun"
+			gtype = "mg"
 			w_class = 5
 			heavy = TRUE
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
@@ -981,6 +987,7 @@
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Dual Selective Fire")
 			item_state = "ak47"
+			gtype = "rifle"
 			stat = "rifle"
 			w_class = 3
 			sel_mode = 1
@@ -1047,6 +1054,7 @@
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Triple Selective Fire")
 			item_state = "m16"
+			gtype = "rifle"
 			stat = "rifle"
 			w_class = 3
 			sel_mode = 1
@@ -1115,6 +1123,7 @@
 		if ("Pump-Action")
 			item_state = "shotgun-f"
 			stat = "rifle"
+			gtype = "shotgun"
 			gun_type = GUN_TYPE_SHOTGUN
 			fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 			// 15% more accurate than SMGs

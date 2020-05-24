@@ -10,6 +10,7 @@
 	handle_casings = EJECT_CASINGS
 	silencer_fire_sound = 'sound/weapons/guns/fire/Glock17-SD.ogg'
 	maxhealth = 45
+	gtype = "pistol"
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(
