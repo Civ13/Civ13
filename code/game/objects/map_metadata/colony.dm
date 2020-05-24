@@ -50,6 +50,8 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		if (J.is_pioneer == TRUE)
 			. = FALSE
+		if (J.is_deal == TRUE)
+			. = FALSE
 		if (J.is_prison == TRUE)
 			. = FALSE
 		if (J.is_civil_war == TRUE)

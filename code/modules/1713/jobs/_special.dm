@@ -42,6 +42,7 @@
 /datum/job/var/is_medic = FALSE
 /datum/job/var/is_ss_panzer = FALSE
 /datum/job/var/is_civil_war = FALSE
+/datum/job/var/is_deal = FALSE
 
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE

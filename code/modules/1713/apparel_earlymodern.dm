@@ -491,6 +491,12 @@
 	icon_state = "flatcap3"
 	item_state = "flatcap3"
 
+/obj/item/clothing/head/fedora
+	name = "fedora hat"
+	desc = "A wide brim hat."
+	icon_state = "fedora"
+	item_state = "fedora"
+
 
 /obj/item/clothing/under/modern1
 	name = "light brown outfit"
@@ -512,6 +518,34 @@
 	icon_state = "bman"
 	item_state = "bman"
 	worn_state = "bman"
+
+/obj/item/clothing/under/expensive/green
+	name = "green tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a green tie."
+	icon_state = "bman_green"
+	item_state = "bman_green"
+	worn_state = "bman_green"
+
+/obj/item/clothing/under/expensive/blue
+	name = "blue tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a blue tie."
+	icon_state = "bman_blue"
+	item_state = "bman_blue"
+	worn_state = "bman_blue"
+
+/obj/item/clothing/under/expensive/red
+	name = "red tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a red tie."
+	icon_state = "bman_red"
+	item_state = "bman_red"
+	worn_state = "bman_red"
+
+/obj/item/clothing/under/expensive/yellow
+	name = "yellow tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a yellow tie."
+	icon_state = "bman_yellow"
+	item_state = "bman_yellow"
+	worn_state = "bman_yellow"
 
 /obj/item/clothing/under/modern3
 	name = "grey outfit"
@@ -696,21 +730,21 @@
 	worn_state = "really_black_suit"
 
 /obj/item/clothing/suit/storage/jacket/charcoal_suit
-	name = "black suit"
+	name = "charcoal suit"
 	desc = "A formal charcoal grey suit."
 	icon_state = "charcoal_suit"
 	item_state = "charcoal_suit"
 	worn_state = "charcoal_suit"
 
 /obj/item/clothing/suit/storage/jacket/navy_suit
-	name = "black suit"
+	name = "navy suit"
 	desc = "A formal navy blue suit."
 	icon_state = "navy_suit"
 	item_state = "navy_suit"
 	worn_state = "navy_suit"
 
 /obj/item/clothing/suit/storage/jacket/checkered_suit
-	name = "black suit"
+	name = "checkered suit"
 	desc = "A formal grey checkered suit."
 	icon_state = "checkered_suit"
 	item_state = "checkered_suit"
@@ -722,6 +756,27 @@
 	icon_state = "burgundy_suit"
 	item_state = "burgundy_suit"
 	worn_state = "burgundy_suit"
+
+/obj/item/clothing/suit/storage/jacket/black_jacket
+	name = "formal black jacket"
+	desc = "A black formal jacket."
+	icon_state = "black_jacket"
+	item_state = "black_jacket"
+	worn_state = "black_jacket"
+
+/obj/item/clothing/suit/storage/jacket/charcoal_jacket
+	name = "formal charcoal suit"
+	desc = "A formal charcoal grey jacket."
+	icon_state = "charcoal_suit"
+	item_state = "charcoal_suit"
+	worn_state = "charcoal_suit"
+
+/obj/item/clothing/suit/storage/jacket/navy_jacket
+	name = "formal navy suit"
+	desc = "A formal navy blue jacket."
+	icon_state = "navy_jacket"
+	item_state = "navy_jacket"
+	worn_state = "navy_jacket"
 
 /obj/item/clothing/accessory/tie
 	name = "black tie"
