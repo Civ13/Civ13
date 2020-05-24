@@ -33,13 +33,13 @@
 	var/newnamea = list("Red Corporation" = list(230,230,230,null,0,"sun","#7F0000","#7F7F7F",0,0))
 	var/newnameb = list("Blue Syndicate" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Green Enterprises" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
-	var/newnamed = list("Yellow Incorporated" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
+	var/newnamed = list("Yellow Conglomerate" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
-	if (istype(J, /datum/job/civilian/businessman))
+	if (J.is_deal)
 		. = TRUE
 	else
 		. = FALSE

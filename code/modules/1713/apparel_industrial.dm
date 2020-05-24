@@ -155,8 +155,8 @@
 /obj/item/clothing/accessory/suspenders
 	name = "suspenders"
 	desc = "Leather suspenders."
-	icon_state = "suspenders"
-	item_state = "suspenders"
+	icon_state = "suspenders1"
+	item_state = "suspenders1"
 	slot = "sash"
 
 /obj/item/clothing/accessory/suspenders/dark

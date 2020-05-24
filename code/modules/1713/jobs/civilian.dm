@@ -1980,7 +1980,9 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
-
+////////////////////////////////////////////////////////////////
+/////////////////////ART OF THE DEAL GAMEMODE///////////////////
+////////////////////////////////////////////////////////////////
 /datum/job/civilian/businessman
 	title = "Businessman"
 	en_meaning = ""
@@ -1990,8 +1992,8 @@
 
 	is_deal = TRUE
 
-	min_positions = 3
-	max_positions = 8
+	min_positions = 0
+	max_positions = 0
 
 /datum/job/civilian/businessman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1999,7 +2001,6 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 //suit
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(H), slot_w_uniform)
 	var/randsuit = pick(1,2,3)
 	if (randsuit == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_jacket(H), slot_wear_suit)
@@ -2025,7 +2026,7 @@
 	if (randhat == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else if (randhat == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/peakyblinder(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 	H.add_note("Role", "You are a member of the corporation. Make sure the deal goes through!")
@@ -2038,4 +2039,66 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 
+/datum/job/civilian/businessman/yellow
+	title = "Yellow Conglomeratte"
+	selection_color = "#A1A181"
+	min_positions = 3
+	max_positions = 8
+
+/datum/job/civilian/businessman/yellow/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(H), slot_w_uniform)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/armband/spanish/armband = new /obj/item/clothing/accessory/armband/spanish(null)
+	uniform1.attackby(armband, H)
+	..()
+	return TRUE
+
+/datum/job/civilian/businessman/green
+	title = "Green Enterprises"
+	selection_color = "#2D632D"
+	min_positions = 3
+	max_positions = 8
+
+/datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(H), slot_w_uniform)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/armband/portuguese/armband = new /obj/item/clothing/accessory/armband/portuguese(null)
+	uniform1.attackby(armband, H)
+	..()
+	return TRUE
+
+/datum/job/civilian/businessman/blue
+	title = "Blue Syndicate"
+	selection_color = "#353575"
+	min_positions = 3
+	max_positions = 8
+
+/datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/blue(H), slot_w_uniform)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/armband = new /obj/item/clothing/accessory/armband/french(null)
+	uniform1.attackby(armband, H)
+	..()
+	return TRUE
+
+/datum/job/civilian/businessman/red
+	title = "Red Corporation"
+	selection_color = "#632D2D"
+	min_positions = 3
+	max_positions = 8
+
+/datum/job/civilian/businessman/red/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
+	uniform1.attackby(armband, H)
+	..()
 	return TRUE
