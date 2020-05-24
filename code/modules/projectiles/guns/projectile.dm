@@ -33,7 +33,7 @@
 	//var/list/icon_keys = list()		//keys
 	//var/list/ammo_states = list()	//values
 	var/magazine_based = TRUE
-	attachment_slots = ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 
 	var/load_shell_sound = 'sound/weapons/empty.ogg'
 

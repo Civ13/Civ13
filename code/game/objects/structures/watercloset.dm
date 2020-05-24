@@ -64,6 +64,26 @@
 			cistern = !cistern
 			update_icon()
 			return
+	
+	if (istype(src, /obj/structure/toilet/pit_latrine)) 
+		if (istype(I, /obj/item/weapon/sandbag))
+			var/obj/structure/toilet/pit_latrine/PT = src
+			visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
+			PT.filled++
+			qdel(I)
+			if (PT.filled >= 4)
+				visible_message("The pit latrine gets covered.")
+				qdel(src)
+				return
+				
+	if (istype(src, /obj/structure/toilet/outhouse))
+		if (istype(I, /obj/item/weapon/hammer))
+			visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
+			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+			if (do_after(user,50,src))
+				visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
+				qdel(src)
+				return
 
 	if (istype(I, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = I
@@ -119,12 +139,11 @@
 	open = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	var/filled = 0
 
 /obj/structure/toilet/pit_latrine/New()
 	open = TRUE
 
-/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
-	return
 /obj/structure/toilet/pit_latrine/attack_hand(mob/living/user as mob)
 	return
 
@@ -149,9 +168,6 @@
 
 /obj/structure/toilet/outhouse/New()
 	open = FALSE
-
-/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
-	return
 
 /obj/structure/toilet/outhouse/attack_hand(mob/living/user as mob)
 	if(open == FALSE)

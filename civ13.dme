@@ -308,6 +308,7 @@
 #include "code\game\objects\map_metadata\stalingrad.dm"
 #include "code\game\objects\map_metadata\supply_raid.dm"
 #include "code\game\objects\map_metadata\testing.dm"
+#include "code\game\objects\map_metadata\the_art_of_the_deal.dm"
 #include "code\game\objects\map_metadata\tribes.dm"
 #include "code\game\objects\map_metadata\tsaritsyn.dm"
 #include "code\game\objects\map_metadata\voyage.dm"

@@ -44,3 +44,4 @@
 	bayonet_ico.pixel_y = 6
 	optics_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")
 	under_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")
+	silencer_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")

@@ -13,7 +13,6 @@
 	slot_flags = SLOT_SHOULDER
 	caliber = "a762x54"
 	recoil = 2 //extra kickback
-	//fire_sound = 'sound/weapons/sniper.ogg'
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
@@ -24,7 +23,7 @@
 	accuracy = TRUE
 //	scoped_accuracy = 2
 	gun_type = GUN_TYPE_RIFLE
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
 	KD_chance = KD_CHANCE_HIGH
@@ -218,7 +217,7 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 1
 	gun_safety = FALSE
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 /obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry
 	name = "Martini-Henry Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .577/450 cartridges."
@@ -355,7 +354,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka30/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
@@ -413,7 +412,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka38/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
@@ -470,7 +469,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
@@ -511,7 +510,7 @@
 	name = "Arisaka Type 99"
 	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
 	effectiveness_mod = 1.06
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
@@ -545,7 +544,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
 		check_bolt++
@@ -599,7 +598,7 @@
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 19
 
@@ -622,7 +621,7 @@
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 20
 
@@ -723,7 +722,7 @@
 	weight = 3.5
 	effectiveness_mod = 0.97
 	equiptimer = 12
-	
+
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k
 	name = "Karabiner 98k"
 	desc = "A shortened, modernized carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition."
@@ -733,7 +732,7 @@
 	weight = 3.7
 	effectiveness_mod = 1.05
 	equiptimer = 12
-	
+
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese
@@ -947,7 +946,7 @@
 	item_state ="pistol"
 	base_icon = "obrez"
 	force = 5
-	attachment_slots = ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	caliber = "a762x54"
 	damage_modifier = 0.8
 	weight = 1.4

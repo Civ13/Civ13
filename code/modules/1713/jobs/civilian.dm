@@ -1913,11 +1913,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
-
-
 	return TRUE
-
-
 
 /datum/job/civilian/worker_pioneer
 	title = "Pioneer"
@@ -1983,6 +1979,63 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
 
+/datum/job/civilian/businessman
+	title = "Businessman"
+	en_meaning = ""
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCiv"
+
+	is_deal = TRUE
+
+	min_positions = 3
+	max_positions = 8
+
+/datum/job/civilian/businessman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+//suit
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(H), slot_w_uniform)
+	var/randsuit = pick(1,2,3)
+	if (randsuit == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_jacket(H), slot_wear_suit)
+	else if (randsuit == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_jacket(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_jacket(H), slot_wear_suit)
+//glasses
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+//suspenders
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/ysuspenders = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			uniform.attackby(ysuspenders, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/ysuspenders = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			uniform.attackby(ysuspenders, H)
+//hats
+	var/randhat = pick(1,2,3)
+	if (randhat == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
+	else if (randhat == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
+	H.add_note("Role", "You are a member of the corporation. Make sure the deal goes through!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
 
 	return TRUE

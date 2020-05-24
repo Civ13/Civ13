@@ -60,7 +60,7 @@
 	KD_chance = KD_CHANCE_HIGH+5
 	stat = "machinegun"
 	w_class = 3
-	attachment_slots = ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	var/jammed_until = -1
 	var/jamcheck = 0
 	var/last_fire = -1

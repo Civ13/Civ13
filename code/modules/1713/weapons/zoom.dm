@@ -162,6 +162,10 @@ Parts of code courtesy of Super3222
 // I am sorry for creating this abomination -- Irra
 /obj/item/weapon/attachment/scope/proc/can_zoom(mob/living/user, var/silent = FALSE)
 	var/mob/living/human/H = user
+	var/obj/item/weapon/gun/ogun = null
+	if (istype(loc, /obj/item/weapon/gun))
+		ogun = loc
+
 	if (user.stat || !ishuman(user))
 		if (!silent) user << "You are unable to focus through \the [src]."
 		return FALSE
@@ -187,6 +191,9 @@ Parts of code courtesy of Super3222
 			return FALSE
 	else if (user.get_active_hand() != loc)
 		if (!silent) user << "You are too distracted to look through \the [src]."
+		return FALSE
+	else if (ogun && ogun.silencer)
+		if (!silent) user << "The silencer is blocking the view."
 		return FALSE
 	else
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
