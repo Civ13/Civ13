@@ -2040,7 +2040,7 @@
 	H.setStat("medical", STAT_NORMAL)
 
 /datum/job/civilian/businessman/yellow
-	title = "Yellow Conglomeratte"
+	title = "Yellow Conglomerate"
 	selection_color = "#A1A181"
 	spawn_location = "JoinLateCivA"
 	min_positions = 3
