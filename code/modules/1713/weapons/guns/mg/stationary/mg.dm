@@ -163,6 +163,9 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		)
 	ammo_type = /obj/item/ammo_casing/a77x58
 	attachment_slots = ATTACH_SCOPE
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98/update_icon()
+	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "-empty"]"
+
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"
