@@ -215,6 +215,66 @@
 	unique_door_name = "Private Inn Key"
 #undef CV_INN
 
+#define REDCODE rand(1000,1999)
+#define BLUECODE rand(2000,2999)
+#define YELLOWCODE rand(3000,3999)
+#define GREENCODE rand(4000,4999)
+/datum/keyslot/civ/businessred/New()
+	..()
+	code = REDCODE
+
+/obj/item/weapon/key/civ/businessred/New()
+	..()
+	code = REDCODE
+	name = "Headquarters key"
+
+/obj/structure/simple_door/key_door/civ/businessred
+	keyslot_type = /datum/keyslot/civ/businessred
+	unique_door_name = "Headquarters"
+
+/datum/keyslot/civ/businessblue/New()
+	..()
+	code = BLUECODE
+
+/obj/item/weapon/key/civ/businessblue/New()
+	..()
+	code = BLUECODE
+	name = "Headquarters key"
+
+/obj/structure/simple_door/key_door/civ/businessblue
+	keyslot_type = /datum/keyslot/civ/businessblue
+	unique_door_name = "Headquarters"
+
+/datum/keyslot/civ/businessgreen/New()
+	..()
+	code = GREENCODE
+
+/obj/item/weapon/key/civ/businessgreen/New()
+	..()
+	code = GREENCODE
+	name = "Headquarters key"
+
+/obj/structure/simple_door/key_door/civ/businessgreen
+	keyslot_type = /datum/keyslot/civ/businessgreen
+	unique_door_name = "Headquarters"
+
+/datum/keyslot/civ/businessyellow/New()
+	..()
+	code = YELLOWCODE
+
+/obj/item/weapon/key/civ/businessyellow/New()
+	..()
+	code = YELLOWCODE
+	name = "Headquarters key"
+
+/obj/structure/simple_door/key_door/civ/businessyellow
+	keyslot_type = /datum/keyslot/civ/businessyellow
+	unique_door_name = "Headquarters"
+#undef REDCODE
+#undef BLUECODE
+#undef YELLOWCODE
+#undef GREENCODE
+
 #define CV_BANK 82111
 /datum/keyslot/civ/bank
 	code = CV_BANK

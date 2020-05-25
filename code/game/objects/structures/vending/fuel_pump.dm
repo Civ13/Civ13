@@ -36,6 +36,17 @@
 	do_color()
 	updatedesc()
 
+/obj/structure/fuelpump/premade/gasoline
+	fueltype = "gasoline"
+	name = "UngOil gasoline pump"
+	updatedesc()
+
+/obj/structure/fuelpump/premade/diesel
+	fueltype = "diesel"
+	name = "UngOil diesel pump"
+	updatedesc()
+
+
 /obj/structure/fuelpump/n
 	icon_state = "oilpump3"
 
