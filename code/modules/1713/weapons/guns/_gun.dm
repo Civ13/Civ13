@@ -3,6 +3,7 @@
 	var/safetyon = FALSE
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/specialoptics = null
 	var/obj/item/weapon/attachment/under/under = null
+	var/pocket = FALSE
 
 /obj/item/weapon/gun/Destroy()
 	attachments = null

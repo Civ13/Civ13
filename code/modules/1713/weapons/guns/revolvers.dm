@@ -23,7 +23,6 @@
 	gun_type = GUN_TYPE_PISTOL
 	maxhealth = 55
 	gtype = "pistol"
-	var/pocket = FALSE
 
 	accuracy_list = list(
 		// small body parts: head, hand, feet

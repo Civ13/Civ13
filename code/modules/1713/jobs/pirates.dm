@@ -557,7 +557,7 @@
 	else if (randcloth == 6)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 //suit
-	var/randsuit = rand(1,6)
+	var/randsuit = rand(1,7)
 	if (randsuit == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/hawaiian/orange(H), slot_wear_suit)
 	else if (randsuit == 2)
@@ -570,6 +570,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/biker(H), slot_wear_suit)
 	else if (randsuit == 6)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
+	else if (randsuit == 7)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/oldyjacket(H), slot_wear_suit)
 //bandages
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 
