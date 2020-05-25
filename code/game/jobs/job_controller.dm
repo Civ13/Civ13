@@ -225,11 +225,7 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateIND5"
 		else
 			spawn_location = "JoinLateIND5"
-	#ifdef SPAWNLOC_DEBUG
-	world << "[H]([H.original_job.title]) job spawn location = [H.job_spawn_location]"
-	world << "[H]([H.original_job.title]) original job spawn location = [H.original_job.spawn_location]"
-	world << "[H]([H.original_job.title]) spawn location = [spawn_location]"
-	#endif
+
 	var/turf/spawnpoint = null
 	var/list/turfs = latejoin_turfs[spawn_location]
 	if (!latejoin_turfs[spawn_location].len)
@@ -274,7 +270,6 @@ var/global/datum/controller/occupations/job_master
 	if (player && rank)
 		var/datum/job/job = GetJob(rank)
 		if (!job)	return FALSE
-		if (!job.player_old_enough(player.client)) return FALSE
 		var/position_limit = job.total_positions
 		if ((job.current_positions < position_limit) || position_limit == -1)
 			if (player.mind)
@@ -377,13 +372,6 @@ var/global/datum/controller/occupations/job_master
 			processes.job_data.job2players[H.original_job.title] = list()
 		processes.job_data.job2players[H.original_job.title] += H
 
-		#ifdef SPAWNLOC_DEBUG
-		if (H.original_job)
-			world << "[H]'s original job: [H.original_job]"
-		else
-			world << "<span class = 'danger'>WARNING: [H] has no original job!!</span>"
-		#endif
-
 		if (map && H && (H.faction_text in map.orc))
 			H.orc = 1
 		if (map && H && (H.faction_text in map.gorilla))
@@ -398,10 +386,6 @@ var/global/datum/controller/occupations/job_master
 			H.crab = 1
 		var/spawn_location = H.original_job.spawn_location
 		H.job_spawn_location = spawn_location
-
-		#ifdef SPAWNLOC_DEBUG
-		world << "[H] ([rank]) spawn location = [spawn_location]"
-		#endif
 
 		if (!spawn_location)
 			switch (H.original_job.base_type_flag())
@@ -464,14 +448,8 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateAR"
 		H.job_spawn_location = spawn_location
 
-		#ifdef SPAWNLOC_DEBUG
-		world << "[H] ([rank]) GOT TO job spawn location = [H.job_spawn_location]"
-		#endif
-
-		var/alt_title = null
 		if (H.mind)
 			H.mind.assigned_role = rank
-			alt_title = H.mind.role_alt_title
 
 		if (istype(H)) //give humans wheelchairs, if they need them.
 			var/obj/item/organ/external/l_foot = H.get_organ("l_foot")
@@ -483,17 +461,6 @@ var/global/datum/controller/occupations/job_master
 				W.set_dir(H.dir)
 				W.buckled_mob = H
 				W.add_fingerprint(H)
-
-
-		#ifdef SPAWNLOC_DEBUG
-		world << "[H] ([rank]) GOT TO before spawnID()"
-		#endif
-
-		spawnKeys(H, rank, alt_title)
-
-		#ifdef SPAWNLOC_DEBUG
-		world << "[H] ([rank]) GOT TO after spawnID()"
-		#endif
 
 		if (!istype(H, /mob/living/human/corpse))
 			relocate(H)
@@ -508,44 +475,6 @@ var/global/datum/controller/occupations/job_master
 				H.memory()
 
 			return H
-
-/datum/controller/occupations/proc/spawnKeys(var/mob/living/human/H, rank, title)
-
-	if (!H)	return FALSE
-
-	var/datum/job/job = null
-	for (var/datum/job/J in occupations)
-		if (J.title == rank)
-			job = J
-			break
-
-	if (job.uses_keys)
-		spawn_keys(H, rank, job)
-//		H << "<i>Click on a door with your <b>keychain</b> to open it. It will select the right key for you. To put the keychain in your hand, <b>drag</b> it.</i>"
-
-	return TRUE
-
-/datum/controller/occupations/proc/spawn_keys(var/mob/living/human/H, rank, var/datum/job/job)
-
-	var/list/_keys = job.get_keys()
-	if (!_keys.len)
-		return
-
-	var/obj/item/weapon/storage/belt/keychain/keychain = new/obj/item/weapon/storage/belt/keychain()
-
-	if (!H.wear_id) // first, try to equip it to their ID slot
-		H.equip_to_slot_or_del(keychain, slot_wear_id)
-	else if (!H.belt) // first, try to equip it as their belt
-		H.equip_to_slot_or_del(keychain, slot_belt)
-
-	var/list/keys = job.get_keys()
-
-	for (var/obj/item/weapon/key in keys)
-		if (keychain.can_be_inserted(key))
-			keychain.handle_item_insertion(key)
-			keychain.keys += key
-			keychain.update_icon_state()
-
 
 // this is a solution to 5 british and 1 pirates on lowpop.
 /datum/controller/occupations/proc/side_is_hardlocked(side)
