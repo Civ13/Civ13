@@ -234,6 +234,16 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/colthammerless/a380acp
+	name = "Colt Hammerless (.380)"
+	icon_state = "glock17"
+	mag_type = MAGAZINE
+	caliber = "a380acp"
+	ammo_type = /obj/item/ammo_casing/a380acp
+	max_ammo = 7
+	weight = 0.36
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/bergmann
 	name = "bergmann (8x22mm)"
 	icon_state = "bergmann_ammo"

@@ -589,7 +589,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
@@ -637,7 +637,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -683,7 +683,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -727,7 +727,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/mk1brodieag(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_r_store)
