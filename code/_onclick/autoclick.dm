@@ -75,7 +75,8 @@
 	if (istype(src, /obj/item/weapon/gun))
 		var/obj/item/weapon/gun/CG = src
 		if (CG.full_auto)
-			return TRUE
+			var/datum/firemode/F = CG.firemodes[CG.sel_mode]
+			return F.burst_delay
 		else
 			return FALSE
 	else
