@@ -218,6 +218,8 @@ RECIPE: /material/leather/,leather belt satchel,/obj/item/weapon/storage/belt/le
 RECIPE: /material/leather/,leather backpack,/obj/item/weapon/storage/backpack,6,100,0,1,storage,18,0,0,8,null
 RECIPE: /material/leather/,leather waterskin,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin,3,90,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather satchel,/obj/item/weapon/storage/backpack/satchel,3,100,0,1,storage,120,0,125,8,null
+RECIPE: /material/leather/,leather briefcase,/obj/item/weapon/storage/briefcase,2,80,0,1,storage,100,0,100,8,null
+RECIPE: /material/leather/,duffel bag,/obj/item/weapon/storage/backpack/duffel,4,80,0,1,storage,180,0,180,8,null
 
 //*****************| LEATHER HEALTHCARE |***************************
 
