@@ -62,6 +62,8 @@
 		/obj/item/stack/medical/bruise_pack/gauze = 10,
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
 		/obj/item/clothing/accessory/storage/webbing/pouches = 10,
+		/obj/item/weapon/storage/backpack/duffel = 5,
+		/obj/item/weapon/storage/briefcase = 5,
 		/obj/item/clothing/accessory/holster/armpit = 10,
 		/obj/item/clothing/accessory/holster/chest = 10,
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 10,
