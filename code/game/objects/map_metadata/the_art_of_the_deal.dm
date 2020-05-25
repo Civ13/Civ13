@@ -100,3 +100,57 @@
 		/obj/item/ammo_magazine/shellbox/slug = 1,
 		/obj/item/ammo_magazine/m24 = 3,
 	)
+
+/obj/item/weapon/disk
+	name = "diskette"
+	desc = "Some kind of diskette."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "disk_red"
+	item_state = "disk_red"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 4.0
+	throwforce = 3.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	w_class = 1.0
+
+/obj/item/weapon/disk/red
+	name = "red diskette"
+	icon_state = "disk_red"
+	item_state = "disk_red"
+
+/obj/item/weapon/disk/blue
+	name = "blue diskette"
+	icon_state = "disk_blue"
+	item_state = "disk_blue"
+
+/obj/item/weapon/disk/yellow
+	name = "yellow diskette"
+	icon_state = "disk_yellow"
+	item_state = "disk_yellow"
+
+/obj/item/weapon/disk/green
+	name = "green diskette"
+	icon_state = "disk_green"
+	item_state = "disk_green"
+
+/obj/item/weapon/package
+	name = "package"
+	desc = "Some kind of package."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "deliverypackage"
+	item_state = "deliverypackage"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 9.0
+	throwforce = 10.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	w_class = 3.0
