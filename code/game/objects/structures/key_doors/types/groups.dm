@@ -1,3 +1,8 @@
+/var/global/REDCODE = rand(1000,1999)
+/var/global/BLUECODE = rand(2000,2999)
+/var/global/YELLOWCODE = rand(3000,3999)
+/var/global/GREENCODE = rand(4000,4999)
+
 /////////313 stuff//////////
 
 #define AN_CODE 1000
@@ -215,10 +220,6 @@
 	unique_door_name = "Private Inn Key"
 #undef CV_INN
 
-#define REDCODE rand(1000,1999)
-#define BLUECODE rand(2000,2999)
-#define YELLOWCODE rand(3000,3999)
-#define GREENCODE rand(4000,4999)
 /datum/keyslot/civ/businessred/New()
 	..()
 	code = REDCODE
@@ -270,10 +271,6 @@
 /obj/structure/simple_door/key_door/civ/businessyellow
 	keyslot_type = /datum/keyslot/civ/businessyellow
 	unique_door_name = "Headquarters"
-#undef REDCODE
-#undef BLUECODE
-#undef YELLOWCODE
-#undef GREENCODE
 
 #define CV_BANK 82111
 /datum/keyslot/civ/bank
