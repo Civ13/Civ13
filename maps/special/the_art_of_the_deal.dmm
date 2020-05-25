@@ -70,7 +70,7 @@
 "br" = (/obj/covers/cement_wall,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bs" = (/obj/covers/fancywood,/obj/structure/closet,/obj/item/weapon/geiger_counter,/obj/item/weapon/gun_cleaning_kit,/obj/item/weapon/gun_cleaning_kit,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bt" = (/obj/covers/fancywood,/obj/structure/table/modern/retable,/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/obj/roof/concrete,/obj/structure/roof_support/admin,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"bu" = (/obj/covers/fancywood,/obj/structure/shelf,/obj/item/weapon/gun/projectile/revolver/coltnewpolice,/obj/item/ammo_magazine/c32,/obj/item/ammo_magazine/c32,/obj/structure/window/clean,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
+"bu" = (/obj/covers/fancywood,/obj/structure/shelf,/obj/item/ammo_magazine/c32,/obj/item/ammo_magazine/c32,/obj/structure/window/clean,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bv" = (/obj/covers/fancywood,/obj/structure/shelf,/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/structure/window/clean,/obj/structure/roof_support/admin,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bw" = (/obj/covers/fancywood,/obj/structure/shelf,/obj/item/weapon/material/sword/katana,/obj/item/clothing/accessory/storage/sheath/katana,/obj/structure/window/clean,/obj/item/clothing/suit/armor/samurai/black,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "bx" = (/obj/covers/marblefloor,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)

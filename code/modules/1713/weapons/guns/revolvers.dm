@@ -243,9 +243,10 @@
 	single_action = TRUE
 	blackpowder = TRUE
 	cocked = FALSE
+	pocket = TRUE
 
-/obj/item/weapon/gun/projectile/revolver/coltnewpolice
-	name = "Colt New Police"
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive
+	name = "Colt Police Positive"
 	desc = "Common revolver used by police."
 	icon_state = "coltnewpolice"
 	w_class = 2
@@ -259,8 +260,9 @@
 	single_action = FALSE
 	blackpowder = FALSE
 	cocked = FALSE
+	pocket = TRUE
 
-/obj/item/weapon/gun/projectile/revolver/coltnewpolice/standardized
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized
 
 /obj/item/weapon/gun/projectile/revolver/enfieldno2
 	name = "Enfield No. 2"
@@ -375,8 +377,8 @@
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/smithwesson
-	name = "Smith Wesson 32"
-	desc = "A smith 'n Wesson revolver, chambered in (.32)."
+	name = "Smith & Wesson Model 30"
+	desc = "A smith 'n Wesson revolver, chambered in .32 S&W."
 	icon_state = "smithwesson32"
 	base_icon = "smithwesson32"
 	w_class = 1
@@ -386,10 +388,12 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c32
+	ammo_type = /obj/item/ammo_casing/a32
 	weight = 1.6
 	single_action = TRUE
 	blackpowder = TRUE
 	cocked = FALSE
+	pocket = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/t26_revolver
 	name = "Type 26 revolver"
