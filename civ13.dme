@@ -120,7 +120,6 @@
 #include "code\game\dna\dna2_helpers.dm"
 #include "code\game\jobs\job.dm"
 #include "code\game\jobs\job_controller.dm"
-#include "code\game\jobs\jobs.dm"
 #include "code\game\objects\buckling.dm"
 #include "code\game\objects\controls.dm"
 #include "code\game\objects\covers.dm"
@@ -942,5 +941,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\battleroyale_medieval.dmm"
+#include "maps\special\the_art_of_the_deal.dmm"
 // END_INCLUDE
