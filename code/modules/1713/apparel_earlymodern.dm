@@ -757,27 +757,6 @@
 	item_state = "burgundy_suit"
 	worn_state = "burgundy_suit"
 
-/obj/item/clothing/suit/storage/jacket/black_jacket
-	name = "formal black jacket"
-	desc = "A black formal jacket."
-	icon_state = "black_jacket"
-	item_state = "black_jacket"
-	worn_state = "black_jacket"
-
-/obj/item/clothing/suit/storage/jacket/charcoal_jacket
-	name = "formal charcoal suit"
-	desc = "A formal charcoal grey jacket."
-	icon_state = "charcoal_suit"
-	item_state = "charcoal_suit"
-	worn_state = "charcoal_suit"
-
-/obj/item/clothing/suit/storage/jacket/navy_jacket
-	name = "formal navy suit"
-	desc = "A formal navy blue jacket."
-	icon_state = "navy_jacket"
-	item_state = "navy_jacket"
-	worn_state = "navy_jacket"
-
 /obj/item/clothing/accessory/tie
 	name = "black tie"
 	desc = "A black tie."

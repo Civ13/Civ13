@@ -2003,11 +2003,11 @@
 //suit
 	var/randsuit = pick(1,2,3)
 	if (randsuit == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_jacket(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 	else if (randsuit == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_jacket(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_jacket(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(H), slot_wear_suit)
 //glasses
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
