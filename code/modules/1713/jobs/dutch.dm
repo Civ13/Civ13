@@ -9,8 +9,8 @@
 	title = "Kapitein"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Kapitein"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -52,7 +52,7 @@
 	title = " Onderofficier"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Onderofficier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNQM"
 	is_commander = TRUE
 	is_officer = TRUE
@@ -94,8 +94,8 @@
 	title = "Kwartiermeester"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Kwartiermeester"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
 
@@ -138,7 +138,7 @@
 	title = "Adelborst"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Adelborst"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
 
@@ -175,7 +175,7 @@
 	title = "Chirurg"
 	en_meaning = "Medic"
 	rank_abbreviation = "Chirurg"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 
@@ -214,7 +214,7 @@
 	title = "Timmerman"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Timmerman"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCarpenter"
 
 
@@ -256,7 +256,7 @@
 	title = "Kok"
 	en_meaning = "Cook"
 	rank_abbreviation = "Kok"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCook"
 
 
@@ -305,7 +305,7 @@
 	title = "Matroos"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN" //for testing!
 
 
@@ -354,7 +354,7 @@
 	title = "Luitenant"
 	en_meaning = "Infantry Commander"
 	rank_abbreviation = "Luit."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 
@@ -397,7 +397,7 @@
 	title = "Sergeant"
 	en_meaning = "Infantry Squad Leader"
 	rank_abbreviation = "Srg."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
 
@@ -437,7 +437,7 @@
 	title = "Veld Dokter"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "V. Dk."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
@@ -476,7 +476,7 @@
 	title = "Soldaat"
 	en_meaning = "Infantry Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_army = TRUE
@@ -518,7 +518,7 @@
 	title = "Jager"
 	en_meaning = "Light Infantry"
 	rank_abbreviation = "Jag."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_army = TRUE

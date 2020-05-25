@@ -9,8 +9,8 @@
 	title = "Capitaine"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Capitaine"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -52,7 +52,7 @@
 	title = "Quartier-Ma�tre"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Qua.-Ma�."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNQM"
 	is_commander = TRUE
 	is_officer = TRUE
@@ -93,8 +93,8 @@
 	title = "Chef dequipage"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Chef deq."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
 
@@ -136,7 +136,7 @@
 	title = "Aspirant"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Aspirant"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
 
@@ -173,7 +173,7 @@
 	title = "Chirurgien"
 	en_meaning = "Medic"
 	rank_abbreviation = "Chirurgien"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
@@ -211,7 +211,7 @@
 	title = "Charpentier Naval"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Charpentier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCarpenter"
 
 
@@ -252,7 +252,7 @@
 	title = "Cuisinier"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cuisinier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCook"
 
 
@@ -301,7 +301,7 @@
 	title = "Matelot"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN" //for testing!
 
 
@@ -350,7 +350,7 @@
 	title = "Lieutenant"
 	en_meaning = "Infantry Commander"
 	rank_abbreviation = "Ltn."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTCap"
 	is_officer = TRUE
 
@@ -393,7 +393,7 @@
 	title = "Sergent"
 	en_meaning = "Infantry Squad Leader"
 	rank_abbreviation = "Srg."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTMidshipman"
 	is_officer = TRUE
 
@@ -433,7 +433,7 @@
 	title = "Docteur"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "Doc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTSurgeon"
 
 	is_medic = TRUE
@@ -472,7 +472,7 @@
 	title = "Soldat"
 	en_meaning = "Infantry Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_army = TRUE
@@ -512,7 +512,7 @@
 	title = "Chasseur"
 	en_meaning = "Light Infantry"
 	rank_abbreviation = "Cha."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_army = TRUE
@@ -553,8 +553,8 @@
 	title = "Capitaine de le Armee"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Cap."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -601,8 +601,8 @@
 	title = "Lieutenant de le Armee"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
@@ -649,8 +649,8 @@
 	title = "Sous-Lieutenant de le Armee"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "Slt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
@@ -697,7 +697,7 @@
 	title = "Sergeant de le Armee"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -743,7 +743,7 @@
 	title = "Docteur de le Armee"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
@@ -786,7 +786,7 @@
 	title = "Chasseur Leger"
 	en_meaning = "Shock Troop"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE
 
@@ -829,7 +829,7 @@
 	title = "Soldat de infanterie"
 	en_meaning = "Private"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE
 

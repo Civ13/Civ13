@@ -10,8 +10,8 @@
 	title = "Pirate Captain"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Captain"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLatePirateCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -53,7 +53,7 @@
 	title = "Pirate Quartermaster"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Quartermaster"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirateQM"
 	is_commander = TRUE
 	is_officer = TRUE
@@ -94,8 +94,8 @@
 	title = "Pirate Boatswain"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLatePirateBoatswain"
 	whitelisted = TRUE
 
@@ -137,7 +137,7 @@
 	title = "Pirate Mate"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Mate"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirateMidshipman"
 	is_officer = TRUE
 
@@ -174,7 +174,7 @@
 	title = "Pirate Surgeon"
 	en_meaning = "Medic"
 	rank_abbreviation = "Surgeon"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirateSurgeon"
 
 	is_medic = TRUE
@@ -212,7 +212,7 @@
 	title = "Pirate Carpenter"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpenter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirateCarpenter"
 
 
@@ -264,7 +264,7 @@
 	title = "Pirate Cook"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cook"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirateCook"
 
 
@@ -320,7 +320,7 @@
 	title = "Pirate"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 
@@ -391,7 +391,7 @@
 	title = "Marooned Pirate"
 	en_meaning = "Marooned Pirate"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateDM"
 
 	is_deathmatch = TRUE
@@ -468,7 +468,7 @@
 	title = "Medieval Battle Royale Fighter"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateDM"
 
 	is_deathmatch = TRUE
@@ -526,7 +526,7 @@
 	title = "Battle Royale Fighter"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateDM"
 
 	is_deathmatch = TRUE
@@ -598,7 +598,7 @@
 	title = "Marooned Pirate Crew"
 	en_meaning = "Marooned Pirate"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_marooned = TRUE

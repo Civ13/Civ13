@@ -9,8 +9,8 @@
 	title = "Rikugun-Tai-i"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Ri-Tai"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateJPCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -61,8 +61,8 @@
 	title = "Rikugun-Chui"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "1lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
 
@@ -114,8 +114,8 @@
 	title = "Rikugun-Shoi"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "2lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateJPCap"
 	whitelisted = TRUE
 
@@ -167,7 +167,7 @@
 	title = "Gunso"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Gunso"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -217,7 +217,7 @@
 	title = "Gun-i"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Gun-i"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJPDoc"
 
 	is_medic = TRUE
@@ -260,7 +260,7 @@
 	title = "Shefu"
 	en_meaning = "Chef"
 	rank_abbreviation = "Shefu"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 
 
@@ -304,7 +304,7 @@
 	title = "Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 
 
@@ -346,7 +346,7 @@
 	title = "Ittohei"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Itto."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 
@@ -393,7 +393,7 @@
 	title = "Shiro Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 
@@ -442,8 +442,8 @@
 	title = "IJA Rikugun-Tai-i"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Ri-Tai"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateJPCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -492,8 +492,8 @@
 	title = "IJA Rikugun-Chui"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "1lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateJPLT"
 	whitelisted = TRUE
 	is_commander = TRUE
@@ -542,8 +542,8 @@
 	title = "IJA Rikugun-Shoi"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "2lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateJPLT"
 	whitelisted = TRUE
 	is_commander = TRUE
@@ -592,7 +592,7 @@
 	title = "IJA Gunso"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Gu."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
 	uses_squads = TRUE
@@ -641,7 +641,7 @@
 	title = "IJA Gun-i"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Gun-i"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJPDoc"
 
 	is_medic = TRUE
@@ -685,7 +685,7 @@
 	title = "Sento-i"
 	en_meaning = "Medic"
 	rank_abbreviation = "Sen-i"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJPDoc"
 	uses_squads = TRUE
 	is_ww2 = TRUE
@@ -729,7 +729,7 @@
 	title = "Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 	is_ww2 = TRUE
@@ -782,7 +782,7 @@
 	title = "Nitohei Taisensha"
 	en_meaning = "Anti Tank Unit"
 	rank_abbreviation = "Ni."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	is_ww2 = TRUE
 	is_tanker = TRUE
@@ -830,7 +830,7 @@
 	title = "Taiho"
 	en_meaning = "Machinegunner"
 	rank_abbreviation = "Itto."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 	is_ww2 = TRUE
@@ -879,7 +879,7 @@
 	title = "Senmeina no Hito"
 	en_meaning = "Sniper"
 	rank_abbreviation = "Jo."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	uses_squads = TRUE
 	is_ww2 = TRUE
@@ -927,7 +927,7 @@
 	title = "Sensha Gunso"
 	en_meaning = "Tank Sergeant"
 	rank_abbreviation = "Gu."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
 	is_tanker = TRUE
@@ -977,7 +977,7 @@
 	title = "Senshahei"
 	en_meaning = "Tanker"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	is_tanker = TRUE
 	is_ww2 = TRUE
@@ -1027,8 +1027,8 @@
 	title = "Horyoshuyojo-cho"
 	en_meaning = "POW Camp Director"
 	rank_abbreviation = "Ho-cho"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateJPCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -1078,7 +1078,7 @@
 	title = "Horyoshuyojo Gunso"
 	en_meaning = "POW Camp Sergeant"
 	rank_abbreviation = "Gu."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 	is_officer = TRUE
 
@@ -1125,7 +1125,7 @@
 	title = "Horyoshuyojo Sento-i"
 	en_meaning = "Camp Medic"
 	rank_abbreviation = "Sen-i"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJPDoc"
 
 	is_medic = TRUE
@@ -1169,7 +1169,7 @@
 	title = "Horyoshuyojo Anchisukiru"
 	en_meaning = "POW Camp Guard"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 
 	is_ww2 = TRUE

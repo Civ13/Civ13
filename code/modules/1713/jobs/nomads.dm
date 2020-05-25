@@ -550,7 +550,7 @@
 /datum/job/civilian/civa
 	title = "Civilization A Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivA"
 
 	is_civilizations = TRUE
@@ -584,7 +584,7 @@
 /datum/job/civilian/civb
 	title = "Civilization B Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivB"
 
 	is_civilizations = TRUE
@@ -618,7 +618,7 @@
 /datum/job/civilian/civc
 	title = "Civilization C Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivC"
 
 	is_civilizations = TRUE
@@ -651,7 +651,7 @@
 /datum/job/civilian/civd
 	title = "Civilization D Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivD"
 
 	is_civilizations = TRUE
@@ -684,7 +684,7 @@
 /datum/job/civilian/cive
 	title = "Civilization E Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivE"
 
 	is_civilizations = TRUE
@@ -717,7 +717,7 @@
 /datum/job/civilian/civf
 	title = "Civilization F Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivF"
 
 	is_civilizations = TRUE
@@ -750,7 +750,7 @@
 /datum/job/civilian/civnomad
 	title = "Nomad"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_nomad = TRUE
@@ -784,7 +784,7 @@
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND1"
 
 
@@ -818,7 +818,7 @@
 /datum/job/civilian/fantasy/ant
 	title = "Ant tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND2"
 
 
@@ -853,7 +853,7 @@
 /datum/job/civilian/fantasy/gorilla
 	title = "Gorilla tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND3"
 
 
@@ -887,7 +887,7 @@
 /datum/job/civilian/fantasy/human
 	title = "Human tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
 
 
@@ -920,7 +920,7 @@
 /datum/job/civilian/fantasy/wolf
 	title = "Wolf tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
 
 
@@ -954,7 +954,7 @@
 /datum/job/civilian/fantasy/lizard
 	title = "Lizard tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
 
 
@@ -986,7 +986,7 @@
 /datum/job/civilian/fantasy/crab
 	title = "Crustacean tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
 
 

@@ -9,8 +9,8 @@
 	title = "Capitao"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Capitao"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLatePTCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -53,7 +53,7 @@
 	title = "Imediato"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Imediato"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTQM"
 	is_commander = TRUE
 	is_officer = TRUE
@@ -95,8 +95,8 @@
 	title = "Contramestre"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Contramestre"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLatePTBoatswain"
 	whitelisted = TRUE
 
@@ -139,7 +139,7 @@
 	title = "Aspirante"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Aspirante"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTMidshipman"
 	is_officer = TRUE
 
@@ -177,7 +177,7 @@
 	title = "Medico Naval"
 	en_meaning = "Medic"
 	rank_abbreviation = "Medico"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTSurgeon"
 
 
@@ -216,7 +216,7 @@
 	title = "Carpinteiro Naval"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpinteiro"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTCarpenter"
 
 
@@ -260,7 +260,7 @@
 	title = "Cozinheiro"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cozinheiro"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTCook"
 
 
@@ -310,7 +310,7 @@
 	title = "Marinheiro"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 
@@ -362,7 +362,7 @@
 	title = "Tenente"
 	en_meaning = "Infantry Commander"
 	rank_abbreviation = "Ten."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -406,7 +406,7 @@
 	title = "Sargento"
 	en_meaning = "Infantry Squad Leader"
 	rank_abbreviation = "Srg."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTMidshipman"
 	is_officer = TRUE
 
@@ -446,7 +446,7 @@
 	title = "Medico de Campo"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePTSurgeon"
 
 	is_medic = TRUE
@@ -486,7 +486,7 @@
 	title = "Soldado"
 	en_meaning = "Infantry Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_army = TRUE
@@ -526,7 +526,7 @@
 	title = "Cacador"
 	en_meaning = "Light Infantry"
 	rank_abbreviation = "Cac."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_army = TRUE

@@ -9,8 +9,8 @@
 	title = "Heer Hauptmann"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Hpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateGECap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -57,8 +57,8 @@
 	title = "Heer Oberleutnant"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Oblt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
 
@@ -104,8 +104,8 @@
 	title = "Heer Leutnant"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "Lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
 
@@ -151,7 +151,7 @@
 	title = "Heer Unteroffizier"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Uffz."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -197,7 +197,7 @@
 	title = "Heer Doktor"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGEDoc"
 
 	is_medic = TRUE
@@ -241,7 +241,7 @@
 	title = "Stosstrupp"
 	en_meaning = "Shock Troop"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE" //for testing!
 
 	is_ww1 = TRUE
@@ -284,7 +284,7 @@
 	title = "Heer Soldat"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE" //for testing!
 
 	is_ww1 = TRUE
@@ -328,8 +328,8 @@
 	title = "Waffen-SS Hauptsturmfuhrer"
 	en_meaning = "SS Captain"
 	rank_abbreviation = "Hpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateGECap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -380,7 +380,7 @@
 	title = "Feldwebel"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Uffz."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -423,7 +423,7 @@
 	title = "Feldmediziner"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGEDoc"
 
 	is_medic = TRUE
@@ -468,7 +468,7 @@
 	title = "Waffen-SS Sturmmann"
 	en_meaning = "Waffen-SS Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -526,7 +526,7 @@
 	title = "Infanterie Soldat"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -578,7 +578,7 @@
 	title = "Volkssturmmann"
 	en_meaning = "Militia"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -638,7 +638,7 @@
 	title = "Hitlerjunge"
 	en_meaning = "Militia"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -683,8 +683,8 @@
 	title = "Hauptmann"
 	en_meaning = "Captain"
 	rank_abbreviation = "Hpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateGECap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -734,8 +734,8 @@
 	title = "Oberleutnant"
 	en_meaning = "First Lieutenant"
 	rank_abbreviation = "Oblt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateGECap"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -783,8 +783,8 @@
 	title = "Leutnant"
 	en_meaning = "Second Lieutenant"
 	rank_abbreviation = "lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateGECap"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -832,7 +832,7 @@
 	title = "Unteroffizier"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Uffz."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -873,7 +873,7 @@
 	title = "Schutze"
 	en_meaning = "Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -928,7 +928,7 @@
 	title = "MG-Schutze"
 	en_meaning = "Machine Gunner"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -977,7 +977,7 @@
 	title = "Scharfschutze"
 	en_meaning = "Sniper"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -1027,7 +1027,7 @@
 	title = "Mediziner"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGEDoc"
 
 	is_medic = TRUE
@@ -1073,7 +1073,7 @@
 	title = "Sanitater"
 	en_meaning = "Medic"
 	rank_abbreviation = "Obrgf."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGEDoc"
 
 	is_medic = TRUE
@@ -1121,7 +1121,7 @@
 	title = "Panzerfuhrer"
 	en_meaning = "Armored Squad Leader"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -1167,7 +1167,7 @@
 	title = "Panzerschutze"
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -1211,7 +1211,7 @@
 	title = "Waffen-SS Unterscharfuhrer Panzergrenadier"
 	en_meaning = "Waffen-SS Mechanized Infantry"
 	rank_abbreviation = "Uscha."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_ww2 = TRUE
@@ -1256,7 +1256,7 @@
 	title = "Waffen-SS Panzergrenadier"
 	en_meaning = "Waffen-SS Mechanized Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 	is_ss_panzer = TRUE
 
@@ -1308,7 +1308,7 @@
 	title = "Waffen-SS Pionier"
 	en_meaning = "Waffen-SS Sapper"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGESap"
 	is_ss_panzer = TRUE
 	is_ww2 = TRUE

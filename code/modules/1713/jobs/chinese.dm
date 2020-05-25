@@ -9,8 +9,8 @@
 	title = "Shangwei"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Shang."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -67,8 +67,8 @@
 	title = "Zhongwei"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Zhong."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
 	is_ww2 = TRUE
@@ -125,7 +125,7 @@
 	title = "Shangshi"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Shi."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_ww2 = TRUE
@@ -179,7 +179,7 @@
 	title = "Shaowei"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Shao."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUDoc"
 	is_ww2 = TRUE
 
@@ -230,7 +230,7 @@
 	title = "Erdeng Bing"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Erd."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
 	uses_squads = TRUE
@@ -277,7 +277,7 @@
 	title = "Yideng Bing"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Yi."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_ww2 = TRUE
 	uses_squads = TRUE

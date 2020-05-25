@@ -11,7 +11,7 @@
 	title = "Carib Elder"
 	en_meaning = "Native Elder/Leader"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND"
 
 	is_officer = TRUE
@@ -50,7 +50,7 @@
 	title = "Carib Shaman"
 	en_meaning = "Native Shaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND"
 
 
@@ -93,7 +93,7 @@
 	title = "Carib Tribesman"
 	en_meaning = "Native Tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND"
 
 
@@ -144,7 +144,7 @@
 	title = "Red Goose Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND1"
 
 
@@ -185,7 +185,7 @@ datum/job/indians/tribes/blue
 	title = "Blue Turkey Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND2"
 
 
@@ -226,7 +226,7 @@ datum/job/indians/tribes/green
 	title = "Green Monkey Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND3"
 
 
@@ -267,7 +267,7 @@ datum/job/indians/tribes/yellow
 	title = "Yellow Mouse Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
 
 
@@ -308,7 +308,7 @@ datum/job/indians/tribes/white
 	title = "White Wolf Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND5"
 
 
@@ -351,7 +351,7 @@ datum/job/indians/tribes/black
 	title = "Black Bear Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND6"
 
 
