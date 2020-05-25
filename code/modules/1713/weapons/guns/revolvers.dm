@@ -255,6 +255,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c32
+	ammo_type = /obj/item/ammo_casing/a32acp
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
@@ -387,7 +388,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c32
-	ammo_type = /obj/item/ammo_casing/a32
+	ammo_type = /obj/item/ammo_casing/a32acp
 	weight = 1.6
 	single_action = TRUE
 	blackpowder = TRUE

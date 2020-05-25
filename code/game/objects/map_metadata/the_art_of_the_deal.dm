@@ -53,3 +53,50 @@
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
+
+/obj/structure/vending/business_apparel
+	name = "equipment rack"
+	desc = "All the equipment you need for that special business meeting."
+	icon_state = "apparel_german2"
+	products = list(
+		/obj/item/stack/medical/bruise_pack/gauze = 10,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
+		/obj/item/clothing/accessory/storage/webbing/pouches = 10,
+		/obj/item/clothing/accessory/holster/armpit = 10,
+		/obj/item/clothing/accessory/holster/chest = 10,
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 10,
+		/obj/item/clothing/glasses/sunglasses = 10,
+		/obj/item/clothing/glasses/nvg = 2,
+		/obj/item/clothing/gloves/fingerless = 10,
+		/obj/item/clothing/mask/balaclava = 10,
+		/obj/item/clothing/head/ghillie = 1,
+		/obj/item/clothing/suit/storage/ghillie = 1,
+
+//		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 10,
+//		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
+//		/obj/item/clothing/suit/storage/jacket/navy_suit = 10,
+//		/obj/item/clothing/suit/storage/jacket/burgundy_suit = 10,
+//		/obj/item/clothing/suit/storage/jacket/checkered_suit = 10,
+	)
+
+/obj/structure/vending/business_weapons
+	name = "weapon and ammo rack"
+	desc = "When you need to pack that extra punch."
+	icon_state = "weapons_sof"
+	products = list(
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = 3,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 3,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 2,
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = 3,
+		/obj/item/weapon/gun/projectile/shotgun/remington870 = 1,
+		/obj/item/weapon/gun/projectile/boltaction/m24 = 1,
+
+		/obj/item/weapon/plastique/c4 = 2,
+		/obj/item/ammo_magazine/colthammerless = 10,
+		/obj/item/ammo_magazine/colthammerless/a380acp = 10,
+		/obj/item/ammo_magazine/m1911 = 5,
+		/obj/item/ammo_magazine/c32acp = 10,
+		/obj/item/ammo_magazine/shellbox = 1,
+		/obj/item/ammo_magazine/shellbox/slug = 1,
+		/obj/item/ammo_magazine/m24 = 3,
+	)
