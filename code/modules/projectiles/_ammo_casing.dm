@@ -574,7 +574,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a32
-	name = ".32 cartridge"
+	name = ".32 S&W cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"

@@ -95,7 +95,7 @@
 		/obj/item/ammo_magazine/colthammerless = 10,
 		/obj/item/ammo_magazine/colthammerless/a380acp = 10,
 		/obj/item/ammo_magazine/m1911 = 5,
-		/obj/item/ammo_magazine/c32acp = 10,
+		/obj/item/ammo_magazine/c32 = 10,
 		/obj/item/ammo_magazine/shellbox = 1,
 		/obj/item/ammo_magazine/shellbox/slug = 1,
 		/obj/item/ammo_magazine/m24 = 3,

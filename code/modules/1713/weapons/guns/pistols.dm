@@ -362,6 +362,7 @@
 	desc = "An early, compact Colt pistol chambered in .32 ACP."
 	icon_state = "coltpockethammerless"
 	w_class = 2
+	equiptimer = 4
 	caliber = "a32acp"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless
@@ -369,7 +370,7 @@
 	ammo_type = /obj/item/ammo_casing/a32acp
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	effectiveness_mod = 0.9
+	effectiveness_mod = 0.95
 	pocket = TRUE
 
 /obj/item/weapon/gun/projectile/pistol/colthammerless/m1908
