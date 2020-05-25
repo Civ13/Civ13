@@ -10,7 +10,7 @@
 	title = "Si Quan"
 	en_meaning = "Vietcong Officer"
 	rank_abbreviation = "Si Quan"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJPCap"
 
 	is_coldwar = TRUE
@@ -82,7 +82,7 @@
 	title = "Bac Si"
 	en_meaning = "Vietcong Medic"
 	rank_abbreviation = "Bac Si"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 
 	is_medic = TRUE
@@ -164,7 +164,7 @@
 	title = "Tuy Phai"
 	en_meaning = "Vietcong Courer/Runner"
 	rank_abbreviation = "Tuy Phai"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 
 	is_coldwar = TRUE
@@ -243,7 +243,7 @@
 	title = "Binh Ni"
 	en_meaning = "Vietcong Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateJP"
 
 	is_coldwar = TRUE
@@ -343,7 +343,7 @@
 /datum/job/american/american_lieutenant
 	title = "USA Lieutenant"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 
 	is_coldwar = TRUE
@@ -388,7 +388,7 @@
 /datum/job/american/american_sergeant
 	title = "USA Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 
 	is_coldwar = TRUE
@@ -435,7 +435,7 @@
 /datum/job/american/american_sf
 	title = "USA Commando"
 	rank_abbreviation = "Cpl."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -479,7 +479,7 @@
 /datum/job/american/american_medic
 	title = "USA Field Medic"
 	rank_abbreviation = "Cpl."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
@@ -526,7 +526,7 @@
 /datum/job/american/american_radioman
 	title = "USA Radio Operator"
 	rank_abbreviation = "Cpl."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -573,7 +573,7 @@
 /datum/job/american/american_marksman
 	title = "USA Marksman"
 	rank_abbreviation = "Spc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -617,7 +617,7 @@
 /datum/job/american/american_lmg
 	title = "USA Automatic Rifleman"
 	rank_abbreviation = "Spc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -664,7 +664,7 @@
 /datum/job/american/american_soldier
 	title = "USA Rifleman"
 	rank_abbreviation = "Pvt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -714,7 +714,7 @@
 /datum/job/american/specops_leader
 	title = "SOF Team Leader"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -757,7 +757,7 @@
 /datum/job/american/specops_doctor
 	title = "SOF Medic"
 	rank_abbreviation = "Sfc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
@@ -792,7 +792,7 @@
 /datum/job/american/specops_operator
 	title = "SOF Operator"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -830,7 +830,7 @@
 	title = "Insurgent Leader"
 	en_meaning = ""
 	rank_abbreviation = "Leader"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE
@@ -904,7 +904,7 @@
 	title = "Insurgent"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE

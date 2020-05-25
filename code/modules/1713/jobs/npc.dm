@@ -9,7 +9,7 @@
 	title = "Bandit"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = ""
 
 

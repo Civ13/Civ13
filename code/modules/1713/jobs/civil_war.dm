@@ -1,7 +1,7 @@
 /datum/job/american/union_captain
 	title = "Union Captain"
 	rank_abbreviation = "Cpt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 	is_civil_war = TRUE
 	is_officer = TRUE
@@ -44,7 +44,7 @@
 /datum/job/american/union_lieutenant
 	title = "Union Lieutenant"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNBoatswain"
 	is_civil_war = TRUE
 	is_officer = TRUE
@@ -87,7 +87,7 @@
 /datum/job/american/union_sergeant
 	title = "Union Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -132,7 +132,7 @@
 /datum/job/american/union_soldier
 	title = "Union Rifleman"
 	rank_abbreviation = "Pvt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 	is_ww2 = FALSE
 	uses_squads = TRUE
@@ -180,7 +180,7 @@
 /datum/job/american/union_doctor
 	title = "Union Doctor"
 	rank_abbreviation = "2lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 	is_civil_war = TRUE
 	is_medic = TRUE
@@ -228,7 +228,7 @@
 /datum/job/civilian/confederate_captain
 	title = "Confederate Captain"
 	rank_abbreviation = "Cpt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUCap"
 	is_civil_war = TRUE
 	is_officer = TRUE
@@ -275,7 +275,7 @@
 /datum/job/civilian/confederate_lieutenant
 	title = "Confederate Lieutenant"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUSap"
 	is_civil_war = TRUE
 	is_officer = TRUE
@@ -326,7 +326,7 @@
 /datum/job/civilian/confederate_sergeant
 	title = "Confederate Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_squad_leader = TRUE
 	uses_squads = TRUE
@@ -379,7 +379,7 @@
 /datum/job/civilian/confederate_soldier
 	title = "Confederate Rifleman"
 	rank_abbreviation = "Pvt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_ww2 = FALSE
 	uses_squads = TRUE
@@ -433,7 +433,7 @@
 /datum/job/civilian/confederate_doctor
 	title = "Confederate Doctor"
 	rank_abbreviation = "2lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUDoc"
 	is_civil_war = TRUE
 	is_medic = TRUE

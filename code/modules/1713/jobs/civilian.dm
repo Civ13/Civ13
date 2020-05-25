@@ -13,8 +13,8 @@
 	title = "Governor"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governor"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateCivA"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -59,7 +59,7 @@
 	title = "Architect"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architect"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivA"
 
 	is_commander = TRUE
@@ -125,8 +125,8 @@
 	title = "Banker"
 	en_meaning = "Master of Funds"
 	rank_abbreviation = "Banker"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateCivB"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -171,7 +171,7 @@
 	title = "Teller"
 	en_meaning = "Bank Teller"
 	rank_abbreviation = "Teller"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivB"
 	is_merchant = TRUE
 
@@ -233,7 +233,7 @@
 	title = "Town Guard Officer"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officer"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivC"
 
 	is_officer = TRUE
@@ -287,7 +287,7 @@
 	title = "Town Guard"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivC"
 
 	is_1713 = TRUE
@@ -340,7 +340,7 @@
 	title = "Doctor"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
@@ -401,7 +401,7 @@
 	title = "Merchant"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Merchant"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
 
@@ -461,7 +461,7 @@
 	title = "Priest"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_religious = TRUE
@@ -502,7 +502,7 @@
 	title = "Prospector"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -560,7 +560,7 @@
 	title = "Farmer"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -620,7 +620,7 @@
 	title = "Carpenter"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -695,7 +695,7 @@
 	title = "Blacksmith"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Blacksmith"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
 
@@ -770,7 +770,7 @@
 	title = "Inkeeper"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Innkeeper"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivD"
 
 	is_1713 = TRUE
@@ -845,7 +845,7 @@
 	title = "Bar Keep/Bar Maiden"
 	en_meaning = "Colony Taverner"
 	rank_abbreviation = "Waiter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -922,7 +922,7 @@
 	title = "Colonist"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -996,7 +996,7 @@
 	title = "Beggar"
 	en_meaning = "Poor Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_1713 = TRUE
@@ -1032,8 +1032,8 @@
 	title = "Mayor"
 	en_meaning = "Town Leader"
 	rank_abbreviation = "Mayor"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateCivA"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -1078,7 +1078,7 @@
 	title = "Head Architect"
 	en_meaning = "Town Chief Carpenter/Planner"
 	rank_abbreviation = "Head Architect"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivA"
 
 	is_commander = TRUE
@@ -1142,8 +1142,8 @@
 	title = "Town Banker"
 	en_meaning = "Banker/Owner"
 	rank_abbreviation = "Banker"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateCivB"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -1188,7 +1188,7 @@
 	title = "Bank Teller"
 	en_meaning = "Bank Worker"
 	rank_abbreviation = "Teller"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivB"
 	is_merchant = TRUE
 
@@ -1247,8 +1247,8 @@
 	title = "Town Judge"
 	en_meaning = "Judge"
 	rank_abbreviation = "Judge"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateCivA"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -1293,7 +1293,7 @@
 	title = "Union Guard Officer"
 	en_meaning = "Town Security Leader"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivC"
 
 	is_officer = TRUE
@@ -1341,7 +1341,7 @@
 	title = "Union Guard"
 	en_meaning = "Town Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivC"
 	whitelisted = TRUE
 	is_pioneer = TRUE
@@ -1389,7 +1389,7 @@
 	title = "Medical Doctor"
 	en_meaning = "Town Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_medic = TRUE
@@ -1448,7 +1448,7 @@
 	title = "Trader"
 	en_meaning = "Town Trader"
 	rank_abbreviation = "Trader"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
 
@@ -1506,7 +1506,7 @@
 	title = "Church Priest"
 	en_meaning = "Town Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_religious = TRUE
@@ -1547,7 +1547,7 @@
 	title = "Town Prospector"
 	en_meaning = "Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 	is_pioneer = TRUE
 
@@ -1612,7 +1612,7 @@
 	title = "Local Farmer"
 	en_meaning = "Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_pioneer = TRUE
@@ -1669,7 +1669,7 @@
 	title = "Town Carpenter"
 	en_meaning = "Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_pioneer = TRUE
@@ -1739,7 +1739,7 @@
 	title = "Pioneer Blacksmith"
 	en_meaning = "Town Blacksmith"
 	rank_abbreviation = "Blacksmith"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 	whitelisted = TRUE
 
@@ -1811,7 +1811,7 @@
 	title = "Innkeeper"
 	en_meaning = "Innkeeper"
 	rank_abbreviation = "Innkeeper"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivD"
 
 	is_pioneer = TRUE
@@ -1866,7 +1866,7 @@
 	title = "Bar Keeper"
 	en_meaning = "Taverner"
 	rank_abbreviation = "Barkeeper"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_pioneer = TRUE
@@ -1919,7 +1919,7 @@
 	title = "Pioneer"
 	en_meaning = "Settler"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_pioneer = TRUE
@@ -1987,8 +1987,8 @@
 	title = "Businessman"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+
+	spawn_location = "JoinLateCivA"
 
 	is_deal = TRUE
 
@@ -2042,6 +2042,7 @@
 /datum/job/civilian/businessman/yellow
 	title = "Yellow Conglomeratte"
 	selection_color = "#A1A181"
+	spawn_location = "JoinLateCivA"
 	min_positions = 3
 	max_positions = 8
 
@@ -2058,6 +2059,7 @@
 /datum/job/civilian/businessman/green
 	title = "Green Enterprises"
 	selection_color = "#2D632D"
+	spawn_location = "JoinLateCivB"
 	min_positions = 3
 	max_positions = 8
 
@@ -2074,6 +2076,7 @@
 /datum/job/civilian/businessman/blue
 	title = "Blue Syndicate"
 	selection_color = "#353575"
+	spawn_location = "JoinLateCivC"
 	min_positions = 3
 	max_positions = 8
 
@@ -2090,6 +2093,7 @@
 /datum/job/civilian/businessman/red
 	title = "Red Corporation"
 	selection_color = "#632D2D"
+	spawn_location = "JoinLateCivD"
 	min_positions = 3
 	max_positions = 8
 

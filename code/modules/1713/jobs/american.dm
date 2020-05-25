@@ -1,7 +1,7 @@
 /datum/job/american/captain_ww2
 	title = "US Captain"
 	rank_abbreviation = "Cpt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 
 	is_officer = TRUE
@@ -43,7 +43,7 @@
 /datum/job/american/lieutenant_ww2
 	title = "US Lieutenant"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNBoatswain"
 
 	is_officer = TRUE
@@ -85,7 +85,7 @@
 /datum/job/american/sergeant_ww2
 	title = "US Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_squad_leader = TRUE
@@ -130,7 +130,7 @@
 /datum/job/american/medic_ww2
 	title = "US Field Medic"
 	rank_abbreviation = "Cpl."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 	is_medic = TRUE
 	is_ww2 = TRUE
@@ -174,7 +174,7 @@
 /datum/job/american/doctor_ww2
 	title = "US Doctor"
 	rank_abbreviation = "2lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
@@ -219,7 +219,7 @@
 /datum/job/american/sniper_ww2
 	title = "US Sniper"
 	rank_abbreviation = "Pfc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_ww2 = TRUE
@@ -259,7 +259,7 @@
 /datum/job/american/machine_gunner_ww2
 	title = "US Machine Gunner"
 	rank_abbreviation = "Pfc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_ww2 = TRUE
@@ -301,7 +301,7 @@
 /datum/job/american/soldier_ww2
 	title = "US Rifleman"
 	rank_abbreviation = "Pvt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_ww2 = TRUE
@@ -339,7 +339,7 @@
 /datum/job/american/mp_ww2
 	title = "US Military Police"
 	rank_abbreviation = "Ssgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
 
 	is_ww2 = TRUE
@@ -375,7 +375,7 @@
 /datum/job/american/chef_ww2
 	title = "US Chef"
 	rank_abbreviation = "Pfc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCook"
 
 	is_ww2 = TRUE
@@ -408,7 +408,7 @@
 /datum/job/american/sailor_ww2
 	title = "US Sailor"
 	rank_abbreviation = "Pvt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNNavy"
 
 	is_ww2 = TRUE

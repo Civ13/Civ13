@@ -1,9 +1,9 @@
 /datum/job/civilian/sheriff
 	title = "Sheriff"
 	rank_abbreviation = "Sheriff"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	head_position = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -67,7 +67,7 @@
 /datum/job/civilian/deputy
 	title = "Deputy"
 	rank_abbreviation = "Dep."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_cowboy = TRUE
@@ -126,7 +126,7 @@
 /datum/job/civilian/deputy2
 	title = "Sheriffs Deputy"
 	rank_abbreviation = "Dep."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_cowboy = TRUE
@@ -184,7 +184,7 @@
 /datum/job/civilian/bank
 	title = "Bank Worker"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_cowboy = TRUE
@@ -222,7 +222,7 @@
 /datum/job/civilian/townsmen
 	title = "Townsmen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -302,7 +302,7 @@
 /datum/job/civilian/towndoctor
 	title = "Town Doctor"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 	is_medic = TRUE
 	is_cowboy = TRUE
@@ -365,7 +365,7 @@
 /datum/job/civilian/townbartender
 	title = "Town Bartender"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -398,7 +398,7 @@
 /datum/job/civilian/townrancher
 	title = "Town Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -458,7 +458,7 @@
 /datum/job/civilian/townprospector
 	title = "Town Prospector"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -512,7 +512,7 @@
 /datum/job/civilian/townpriest
 	title = "Town Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -548,7 +548,7 @@
 /datum/job/civilian/townblacksmith
 	title = "Town Blacksmith"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -605,7 +605,7 @@
 /datum/job/civilian/outlaw
 	title = "Outlaw"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_cowboy = TRUE
@@ -685,7 +685,7 @@
 /datum/job/civilian/outlaw1
 	title = "West Side Gang"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE
@@ -766,7 +766,7 @@
 /datum/job/civilian/outlaw2
 	title = "East Side Gang"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_cowboy = TRUE

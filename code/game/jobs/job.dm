@@ -8,10 +8,7 @@
 
 	var/total_positions = FALSE			   // How many players can be this job
 	var/current_positions = FALSE			 // How many players have this job
-	var/selection_color = "#ffffff"	   // Selection screen color
-	var/head_position = FALSE				 // Is this position Command?
-	var/minimum_character_age = FALSE
-	var/ideal_character_age = 30
+	var/selection_color = "#2d2d63"	   // Selection screen color
 	//job equipment
 	var/uniform = /obj/item/clothing/under/pirate1
 	var/shoes = /obj/item/clothing/shoes/black
