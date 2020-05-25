@@ -382,7 +382,7 @@ var/list/global/slot_flags_enumeration = list(
 				return FALSE
 			if (istype(src, /obj/item/weapon/gun))
 				var/obj/item/weapon/gun/G = src
-				if (G.silencer)
+				if (G.silencer || !G.pocket)
 					H << "<span class='warning'>[G] doesn't fit in your pockets!</span>"
 					return
 		if (slot_handcuffed)
