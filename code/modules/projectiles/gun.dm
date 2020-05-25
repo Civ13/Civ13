@@ -39,7 +39,6 @@
 
 	var/full_auto = FALSE
 	var/fire_delay = 5 	//delay after shooting before the gun can be used again
-	var/burst_delay = 2	//delay between shots, if firing in bursts
 	var/fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	var/silencer_fire_sound = 'sound/weapons/guns/fire/AKM-SD.ogg'
 	var/fire_sound_text = "gunshot"
@@ -146,21 +145,19 @@
 
 	//DUAL WIELDING: only works with pistols edition
 	var/obj/item/weapon/gun/off_hand = null
-	if (ishuman(user) && user.a_intent == "harm")
+	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (istype(H.l_hand, /obj/item/weapon/gun) && istype(H.r_hand, /obj/item/weapon/gun))
 			var/obj/item/weapon/gun/LH = H.l_hand
 			var/obj/item/weapon/gun/RH = H.r_hand
-			if (RH == "pistol")
-				if (LH == "pistol")
+			if (RH.gtype == "pistol" || RH.gtype == "revolver")
+				if (LH.gtype == "pistol" || LH.gtype == "revolver")
 					if (H.r_hand == src)
 						off_hand = H.l_hand
-
 					else if (H.l_hand == src)
 						off_hand = H.r_hand
-
-					if (off_hand && off_hand.can_hit(user))
-						spawn(1)
+					if (off_hand)
+						spawn(3)
 							off_hand.Fire(A,user,params)
 
 	Fire(A,user,params) //Otherwise, fire normally.
@@ -246,7 +243,7 @@
 	//unpack firemode data
 	var/datum/firemode/firemode = firemodes[sel_mode]
 	var/_burst = firemode.burst
-	var/_burst_delay = isnull(firemode.burst_delay)? burst_delay : firemode.burst_delay
+	var/_burst_delay = isnull(firemode.burst_delay)? 2 : firemode.burst_delay
 	var/_fire_delay = isnull(firemode.fire_delay) ? fire_delay : firemode.fire_delay
 	var/_move_delay = firemode.move_delay
 
