@@ -117,3 +117,14 @@ obj/item/weapon/storage/backpack/ww2/american
 	slot_flags = SLOT_BACK
 	max_w_class = 5
 	max_storage_space = 42
+
+/obj/item/weapon/storage/backpack/duffel
+	name = "duffel bag"
+	desc = "A generic duffel bag."
+	icon_state = "duffel"
+	item_state = "duffel"
+	base_icon = "duffel"
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 3
+	max_storage_space = 34
