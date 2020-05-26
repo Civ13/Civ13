@@ -845,6 +845,7 @@
 #include "code\modules\projectiles\gun.dm"
 #include "code\modules\projectiles\projectile.dm"
 #include "code\modules\projectiles\guns\projectile.dm"
+#include "code\modules\projectiles\guns\projectile\dartgun.dm"
 #include "code\modules\projectiles\projectile\arrows.dm"
 #include "code\modules\projectiles\projectile\bullets.dm"
 #include "code\modules\projectiles\projectile\cannon.dm"
@@ -940,5 +941,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\the_art_of_the_deal.dmm"
+#include "maps\nomads\nomads_wasteland_2.dmm"
 // END_INCLUDE
