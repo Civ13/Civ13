@@ -574,12 +574,12 @@
 /obj/item/weapon/gun/projectile/submachinegun/ar10
 	name = "AR-10"
 	desc = "An ArmaLite battle rifle, chambered in 7.62x51mm."
-	icon_state = "servicerifle16"
+	icon_state = "ar10"
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	item_state = "m16"
-	base_icon = "m16"
+	base_icon = "ar10"
 	caliber = "a762x51"
-	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
+	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
 	magazine_type = /obj/item/ammo_magazine/ar10

@@ -120,9 +120,10 @@ var/list/global/phone_numbers = list()
 				return
 	if (connected)
 		connected = FALSE
-		origincall.connected = FALSE
-		origincall.origincall = null
-		origincall = null
+		if (origincall)
+			origincall.connected = FALSE
+			origincall.origincall = null
+			origincall = null
 		user << "You hang up the phone."
 
 	if (ringing && ringingnum)
