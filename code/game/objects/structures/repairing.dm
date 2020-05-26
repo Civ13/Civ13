@@ -96,7 +96,7 @@
 /obj/item/weapon/gun_cleaning_kit
 	name = "gun cleaning kit"
 	desc = "A kit of tools used to clean firearms."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "guncleaningkit_open"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL

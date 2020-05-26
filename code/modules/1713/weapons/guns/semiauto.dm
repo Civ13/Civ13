@@ -1,6 +1,7 @@
 /obj/item/weapon/gun/projectile/semiautomatic
 	maxhealth = 60
 	fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
+	icon = 'icons/obj/guns/rifles.dmi'
 	// pistol accuracy, rifle skill & decent KD chance
 	accuracy_list = list(
 

@@ -3,6 +3,7 @@
 /obj/item/weapon/gun/projectile/flintlock
 	name = "flintlock musket"
 	desc = "A simple flintlock musket of the early XVIII century."
+	icon = 'icons/obj/guns/ancient.dmi'
 	icon_state = "musket"
 	item_state = "musket"
 	w_class = 4

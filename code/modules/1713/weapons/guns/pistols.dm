@@ -1,6 +1,7 @@
 /obj/item/weapon/gun/projectile/pistol
 	// less accurate than rifles against still targets, but better against moving targets
 	// less accurate than semiautos but with the same ratios
+	icon = 'icons/obj/guns/pistols.dmi'
 	move_delay = 1
 	fire_delay = 3
 	item_state = "pistol"

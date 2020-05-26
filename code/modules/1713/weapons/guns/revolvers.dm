@@ -1,6 +1,7 @@
 /obj/item/weapon/gun/projectile/revolver
 	move_delay = 1
 	fire_delay = 3
+	icon = 'icons/obj/guns/pistols.dmi'
 	name = "revolver"
 	desc = "A simple revolver."
 	icon_state = "revolver"
@@ -341,22 +342,6 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
-	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
-	cocked = FALSE
-
-/obj/item/weapon/gun/projectile/revolver/black
-	name = "Salamon 47"
-	desc = "A gold plated revolver chambered in (.44 magnum)."
-	icon_state = "salamonblack"
-	base_icon = "salamonblack"
-	w_class = 3
-	caliber = "a44magnum"
-	load_method = SINGLE_CASING
-	handle_casings = CYCLE_CASINGS
-	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c44magnum
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -750,6 +735,7 @@
 	icon_state = "revolver"
 	item_state = "revolver"
 	caliber = "musketball_pistol"
+	icon = 'icons/obj/guns/pistols.dmi'
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
