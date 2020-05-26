@@ -48,6 +48,7 @@
 	icon_state = "satchel"
 	base_icon = "satchel"
 	worn_state = "satchel-norm"
+	max_storage_space = 20
 
 /obj/item/weapon/storage/backpack/satchel/gator_satchel
 	name = "alligator scale satchel"
@@ -64,7 +65,7 @@
 	item_state = "jappack"
 	worn_state = "jappack"
 	base_icon = "jappack"
-	max_storage_space = 26
+	max_storage_space = 24
 
 /obj/item/weapon/storage/backpack/ww2/german
 	name = "german backpack"
@@ -73,7 +74,7 @@
 	item_state = "germanpack"
 	worn_state = "germanpack"
 	base_icon = "germanpack"
-	max_storage_space = 26
+	max_storage_space = 24
 
 /obj/item/weapon/storage/backpack/ww2/german/sapper
 	New()
@@ -88,13 +89,14 @@ obj/item/weapon/storage/backpack/ww2/american
 	item_state = "uspack"
 	worn_state = "uspack"
 	base_icon = "uspack"
-	max_storage_space = 26
+	max_storage_space = 24
 
 /obj/item/weapon/storage/backpack/scavpack
 	name = "scavenger pack"
 	desc = "A makeshift backpack made of a mix of materials."
 	icon_state = "scavpack"
 	item_state = "scavpack"
+	max_storage_space = 24
 
 /obj/item/weapon/storage/backpack/rucksack
 	name = "rucksack"
@@ -105,7 +107,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	w_class = 4
 	slot_flags = SLOT_BACK
 	max_w_class = 4
-	max_storage_space = 36
+	max_storage_space = 28
 
 /obj/item/weapon/storage/backpack/civbag
 	name = "backpack"
@@ -116,4 +118,15 @@ obj/item/weapon/storage/backpack/ww2/american
 	w_class = 4
 	slot_flags = SLOT_BACK
 	max_w_class = 5
-	max_storage_space = 42
+	max_storage_space = 28
+
+/obj/item/weapon/storage/backpack/duffel
+	name = "duffel bag"
+	desc = "A generic duffel bag."
+	icon_state = "duffel"
+	item_state = "duffel"
+	base_icon = "duffel"
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 3
+	max_storage_space = 22

@@ -417,3 +417,35 @@
 
 /obj/structure/closet/anchored
 	anchored = TRUE
+
+/obj/structure/closet/safe
+	name = "safe"
+	desc = "A sturdy safe, with a keyslot."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "safe"
+	icon_closed = "safe"
+	icon_opened = "safe-open"
+
+/obj/structure/closet/safe/red
+	New()
+		..()
+		custom_code = REDCODE
+		locked = TRUE
+
+/obj/structure/closet/safe/blue
+	New()
+		..()
+		custom_code = BLUECODE
+		locked = TRUE
+
+/obj/structure/closet/safe/yellow
+	New()
+		..()
+		custom_code = YELLOWCODE
+		locked = TRUE
+
+/obj/structure/closet/safe/green
+	New()
+		..()
+		custom_code = GREENCODE
+		locked = TRUE

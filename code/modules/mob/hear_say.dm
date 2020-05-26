@@ -102,11 +102,14 @@
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null,var/message2 = "")
 	src << message
 	if (speaker && message2 != "")
-		if (client && ishuman(speaker) && speaker in view(7,src))
-			if (client && is_preference_enabled(/datum/client_preference/show_chat_overlays))
+		if (client && speaker.client && (speaker in view(7,src) || speaker == src))
+
+			if (client.is_preference_enabled(/datum/client_preference/show_chat_overlays))
 				client.seen_chat_text += new/obj/chat_text(null,speaker,message2,src)
-			if (config.tts_on && client && ishuman(src) && ishuman(speaker) && is_preference_enabled(/datum/client_preference/play_chat_tts))
+
+			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
 				play_tts(message2,speaker)
+
 /mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/radio/source, var/obj/structure/radio/destination)
 
 	if (!client || !message)

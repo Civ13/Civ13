@@ -88,6 +88,7 @@
 	playsound(get_turf(src), "shatter", 70, TRUE)
 	if (display_message)
 		visible_message("<span class = 'warning'>[src] shatters!</span>")
+		new/obj/item/weapon/material/shard/glass(loc)
 	if (glassed)
 		if (istype(src, /obj/structure/window/classic/shoji))
 			new/obj/structure/window_frame/shoji(loc)

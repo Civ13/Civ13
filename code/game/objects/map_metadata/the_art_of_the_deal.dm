@@ -53,3 +53,106 @@
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
+
+/obj/structure/vending/business_apparel
+	name = "equipment rack"
+	desc = "All the equipment you need for that special business meeting."
+	icon_state = "apparel_german2"
+	products = list(
+		/obj/item/stack/medical/bruise_pack/gauze = 10,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
+		/obj/item/clothing/accessory/storage/webbing/pouches = 10,
+		/obj/item/weapon/storage/backpack/duffel = 5,
+		/obj/item/weapon/storage/briefcase = 5,
+		/obj/item/clothing/accessory/holster/armpit = 10,
+		/obj/item/clothing/accessory/holster/chest = 10,
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 10,
+		/obj/item/clothing/glasses/sunglasses = 10,
+		/obj/item/clothing/glasses/nvg = 2,
+		/obj/item/clothing/gloves/fingerless = 10,
+		/obj/item/clothing/mask/balaclava = 10,
+		/obj/item/clothing/head/ghillie = 1,
+		/obj/item/clothing/suit/storage/ghillie = 1,
+
+//		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 10,
+//		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
+//		/obj/item/clothing/suit/storage/jacket/navy_suit = 10,
+//		/obj/item/clothing/suit/storage/jacket/burgundy_suit = 10,
+//		/obj/item/clothing/suit/storage/jacket/checkered_suit = 10,
+	)
+
+/obj/structure/vending/business_weapons
+	name = "weapon and ammo rack"
+	desc = "When you need to pack that extra punch."
+	icon_state = "weapons_sof"
+	products = list(
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = 3,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 3,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 2,
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = 3,
+		/obj/item/weapon/gun/projectile/shotgun/remington870 = 1,
+		/obj/item/weapon/gun/projectile/boltaction/m24 = 1,
+
+		/obj/item/weapon/plastique/c4 = 2,
+		/obj/item/ammo_magazine/colthammerless = 10,
+		/obj/item/ammo_magazine/colthammerless/a380acp = 10,
+		/obj/item/ammo_magazine/m1911 = 5,
+		/obj/item/ammo_magazine/c32 = 10,
+		/obj/item/ammo_magazine/shellbox = 1,
+		/obj/item/ammo_magazine/shellbox/slug = 1,
+		/obj/item/ammo_magazine/m24 = 3,
+	)
+
+/obj/item/weapon/disk
+	name = "diskette"
+	desc = "Some kind of diskette."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "disk_red"
+	item_state = "disk_red"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 4.0
+	throwforce = 3.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	w_class = 1.0
+
+/obj/item/weapon/disk/red
+	name = "red diskette"
+	icon_state = "disk_red"
+	item_state = "disk_red"
+
+/obj/item/weapon/disk/blue
+	name = "blue diskette"
+	icon_state = "disk_blue"
+	item_state = "disk_blue"
+
+/obj/item/weapon/disk/yellow
+	name = "yellow diskette"
+	icon_state = "disk_yellow"
+	item_state = "disk_yellow"
+
+/obj/item/weapon/disk/green
+	name = "green diskette"
+	icon_state = "disk_green"
+	item_state = "disk_green"
+
+/obj/item/weapon/package
+	name = "package"
+	desc = "Some kind of package."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "deliverypackage"
+	item_state = "deliverypackage"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 9.0
+	throwforce = 10.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	w_class = 3.0

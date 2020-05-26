@@ -69,10 +69,6 @@
 	// can't click on stuff when we're lying, unless it's a bed
 	if (ishuman(src))
 		var/mob/living/human/H = src
-		//if (H.lying)
-			//if (ismob(A) || (A.loc && istype(A.loc, /turf)))
-				//if (!istype(A, /obj/structure/bed))
-					//return
 
 		if (istype(H.get_active_hand(),/obj/item/weapon/flamethrower))
 			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
@@ -205,14 +201,19 @@
 	// A is your location but is not a turf; or is on you (backpack); or is on something on you (box in backpack); sdepth is needed here because contents depth does not equate inventory storage depth.
 	var/sdepth = A.storage_depth(src)
 	if ((!isturf(A) && A == loc) || (sdepth != -1 && sdepth <= 1))
-		// faster access to objects already on you
-	//	if (A.loc != src)
-	//		setMoveCooldown(10) //getting something out of a backpack
-
 		if (W)
 			var/resolved = W.resolve_attackby(A, src)
 			if (!resolved && A && W)
-				W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+				if (istype(W, /obj/item/weapon/gun))
+					var/obj/item/weapon/gun/G = W
+					if (G.full_auto)
+						var/datum/firemode/F = G.firemodes[G.sel_mode]
+						spawn(F.burst_delay)
+							W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+					else
+						W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+				else
+					W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
 		else
 			if (ismob(A)) // No instant mob attacking
 				setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -252,7 +253,16 @@
 				// Return TRUE in attackby() to prevent afterattack() effects (when safely moving items for example)
 				var/resolved = W.resolve_attackby(A,src)
 				if (!resolved && A && W)
-					W.afterattack(A, src, TRUE, params) // TRUE: clicking something Adjacent
+					if (istype(W, /obj/item/weapon/gun))
+						var/obj/item/weapon/gun/G = W
+						if (G.full_auto)
+							var/datum/firemode/F = G.firemodes[G.sel_mode]
+							spawn(F.burst_delay)
+								W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+						else
+							W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+					else
+						W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
 			else
 				if (ismob(A)) // No instant mob attacking
 					setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -260,7 +270,16 @@
 			return
 		else // non-adjacent click
 			if (W)
-				W.afterattack(A, src, FALSE, params) // FALSE: not Adjacent
+				if (istype(W, /obj/item/weapon/gun))
+					var/obj/item/weapon/gun/G = W
+					if (G.full_auto)
+						var/datum/firemode/F = G.firemodes[G.sel_mode]
+						spawn(F.burst_delay)
+							W.afterattack(A, src, FALSE, params)
+					else
+						W.afterattack(A, src, FALSE, params)
+				else
+					W.afterattack(A, src, FALSE, params)
 			else
 				RangedAttack(A, params)
 	return TRUE

@@ -254,12 +254,15 @@
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
+	equiptimer = 4
 	magazine_type = /obj/item/ammo_magazine/c32
+	ammo_type = /obj/item/ammo_casing/a32
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
 	cocked = FALSE
 	pocket = TRUE
+	effectiveness_mod = 0.93
 
 /obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized
 
@@ -389,10 +392,12 @@
 	magazine_type = /obj/item/ammo_magazine/c32
 	ammo_type = /obj/item/ammo_casing/a32
 	weight = 1.6
+	equiptimer = 3
 	single_action = TRUE
 	blackpowder = TRUE
 	cocked = FALSE
 	pocket = TRUE
+	effectiveness_mod = 0.9
 
 /obj/item/weapon/gun/projectile/revolver/t26_revolver
 	name = "Type 26 revolver"

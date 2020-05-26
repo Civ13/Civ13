@@ -39,7 +39,6 @@
 
 	var/full_auto = FALSE
 	var/fire_delay = 5 	//delay after shooting before the gun can be used again
-	var/burst_delay = 2	//delay between shots, if firing in bursts
 	var/fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	var/silencer_fire_sound = 'sound/weapons/guns/fire/AKM-SD.ogg'
 	var/fire_sound_text = "gunshot"
@@ -146,24 +145,26 @@
 
 	//DUAL WIELDING: only works with pistols edition
 	var/obj/item/weapon/gun/off_hand = null
-	if (ishuman(user) && user.a_intent == "harm")
+	var/off_hand_fire = FALSE
+	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (istype(H.l_hand, /obj/item/weapon/gun) && istype(H.r_hand, /obj/item/weapon/gun))
 			var/obj/item/weapon/gun/LH = H.l_hand
 			var/obj/item/weapon/gun/RH = H.r_hand
-			if (RH == "pistol")
-				if (LH == "pistol")
+			if (RH.gtype == "pistol" || RH.gtype == "revolver")
+				if (LH.gtype == "pistol" || LH.gtype == "revolver")
 					if (H.r_hand == src)
 						off_hand = H.l_hand
-
 					else if (H.l_hand == src)
 						off_hand = H.r_hand
-
-					if (off_hand && off_hand.can_hit(user))
-						spawn(1)
-							off_hand.Fire(A,user,params)
-
-	Fire(A,user,params) //Otherwise, fire normally.
+					if (off_hand)
+						off_hand_fire = TRUE
+						spawn(3)
+							off_hand.Fire(A,user,params, accuracy = 0.66)
+	if (!off_hand_fire)
+		Fire(A,user,params) //Otherwise, fire normally.
+	else
+		Fire(A,user,params, accuracy = 0.66)
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/human/H = user
@@ -218,7 +219,7 @@
 				return FALSE
 	..()
 
-/obj/item/weapon/gun/proc/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE)
+/obj/item/weapon/gun/proc/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE, accuracy_mod = 1)
 
 	if (!user || !target) return
 
@@ -246,7 +247,7 @@
 	//unpack firemode data
 	var/datum/firemode/firemode = firemodes[sel_mode]
 	var/_burst = firemode.burst
-	var/_burst_delay = isnull(firemode.burst_delay)? burst_delay : firemode.burst_delay
+	var/_burst_delay = isnull(firemode.burst_delay)? 2 : firemode.burst_delay
 	var/_fire_delay = isnull(firemode.fire_delay) ? fire_delay : firemode.fire_delay
 	var/_move_delay = firemode.move_delay
 
@@ -274,7 +275,6 @@
 		health_check(user)
 		health -= 0.2
 
-		var/acc = 0 // calculated in projectile code
 		var/disp = firemode.dispersion[min(i, firemode.dispersion.len)]
 
 		if (istype(projectile, /obj/item/projectile))
@@ -284,7 +284,7 @@
 				var/obj/item/weapon/gun/projectile/proj = P.firedfrom
 				P.KD_chance = proj.KD_chance
 
-		process_accuracy(projectile, user, target, acc, disp)
+		process_accuracy(projectile, user, target, accuracy_mod, disp)
 
 		if (pointblank)
 			if (istype(projectile, /obj/item/projectile))
@@ -396,7 +396,7 @@
 		return //default behaviour only applies to true projectiles
 
 	//Accuracy modifiers
-	P.accuracy = accuracy + acc_mod
+	P.accuracy = accuracy*acc_mod
 	P.dispersion = dispersion
 /*
 	//accuracy bonus from aiming

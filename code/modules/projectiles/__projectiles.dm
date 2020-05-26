@@ -319,7 +319,7 @@
 	armor_penetration = 3
 
 /obj/item/projectile/bullet/pistol/a32
-	damage = DAMAGE_LOW - 12
+	damage = DAMAGE_LOW - 3
 	penetrating = 1
 	armor_penetration = 3
 

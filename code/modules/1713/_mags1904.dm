@@ -362,10 +362,22 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c32
-	name = "bullet pouch (.33 long)"
+	name = "bullet pouch (.32 S&W Long)"
 	desc = "a pouch of 26 .32 bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a32
+	caliber = "a32"
+	max_ammo = 26
+	weight = 0.9
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
+/obj/item/ammo_magazine/c32acp
+	name = "bullet pouch (.32 ACP)"
+	desc = "a pouch of 26 .32 ACP bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a32acp
 	caliber = "a32"
 	max_ammo = 26
 	weight = 0.9
