@@ -41,7 +41,7 @@
 				if (!found)
 					central.axis.components += A
 				A.anchored = TRUE
-				A.dir = central.axis.components
+				A.dir = central.axis.dir
 				A.name = central.axis.name
 		for (var/obj/structure/vehicleparts/frame/AA in loc)
 			if (!AA.axis)
@@ -54,7 +54,7 @@
 				if (!found)
 					central.axis.components += AA
 				AA.anchored = TRUE
-				AA.dir = central.axis.components
+				AA.dir = central.axis.dir
 				AA.name = central.axis.name
 		for (var/turf/T in rangeto)
 			var/doneps = FALSE
@@ -105,7 +105,7 @@
 				for (var/obj/structure/vehicleparts/frame/F in D.loc)
 					if (!done4)
 						D.anchored = TRUE
-						D.dir = dir
+						D.dir = central.axis.dir
 						central.axis.wheel = D.wheel
 						central.axis.wheel.control = F
 						done4 = TRUE
@@ -114,7 +114,7 @@
 				for (var/obj/structure/vehicleparts/frame/ship/F in D.loc)
 					if (!done4)
 						D.anchored = TRUE
-						D.dir = dir
+						D.dir = central.axis.dir
 						D.ship = central.axis
 						done4 = TRUE
 //		if (!done4)
