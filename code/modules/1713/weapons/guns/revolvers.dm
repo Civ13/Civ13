@@ -546,6 +546,7 @@
 /obj/item/weapon/gun/projectile/revolving
 	move_delay = 1
 	fire_delay = 3
+	icon = 'icons/obj/guns/rifles.dmi'
 	name = "revolving rifle"
 	desc = "A simple revolving rifle."
 	icon_state = "revolver"
