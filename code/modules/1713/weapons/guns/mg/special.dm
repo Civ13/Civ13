@@ -3,6 +3,7 @@
 	throwforce = 20
 	fire_sound = 'sound/weapons/guns/fire/smg.ogg'
 	var/base_icon = "tactical"
+	icon = 'icons/obj/guns/assault_rifles.dmi'
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER|SLOT_BELT

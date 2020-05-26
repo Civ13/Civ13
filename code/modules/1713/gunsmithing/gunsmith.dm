@@ -573,7 +573,7 @@
 			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
 			overlays += feeding_img
 	else
-		icon = 'icons/obj/gun.dmi'
+		icon = 'icons/obj/guns/gun.dmi'
 		icon_state = override_sprite
 	switch(stock_type)
 		if ("Rifle Wooden Stock")

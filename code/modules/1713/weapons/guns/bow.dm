@@ -1,5 +1,6 @@
 /obj/item/weapon/gun/projectile/bow
 	name = "primitive bow"
+	icon = 'icons/obj/guns/bows.dmi'
 	desc = "A simple and crude bow."
 	icon_state = "bow0"
 	item_state = "bow0"

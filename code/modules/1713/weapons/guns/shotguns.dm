@@ -2,6 +2,7 @@
 	maxhealth = 45
 	gun_type = GUN_TYPE_SHOTGUN
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon = 'icons/obj/guns/rifles.dmi'
 	// 15% more accurate than SMGs
 	equiptimer = 17
 	accuracy_list = list(
