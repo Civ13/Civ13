@@ -57,7 +57,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age == 4)
+	else if (map.ordinal_age == 3)
 		name = "spanish reales"
 		desc = "A small silver coin."
 		singular_name = "real"
@@ -128,7 +128,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age == 4)
+	else if (map.ordinal_age == 3)
 		name = "spanish escudos"
 		desc = "A gold coin. Worth 16 reales."
 		singular_name = "escudo"
@@ -159,7 +159,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age == 4)
+	else if (map.ordinal_age == 3)
 		name = "spanish doubloons"
 		desc = "A large gold coin, the largest in circulation. Worth 32 reales."
 		singular_name = "doubloon"
