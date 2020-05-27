@@ -8,7 +8,7 @@
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
 
 /obj/structure/sign/map/examine(mob/user)
-	user << browse(img,"window=popup;size=620x620")
+	user << browse(getFlatIcon(img),"window=popup;size=620x620")
 
 /obj/structure/sign/map/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, /obj/item/weapon/pen))
