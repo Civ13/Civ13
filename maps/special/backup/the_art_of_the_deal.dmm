@@ -505,7 +505,7 @@
 "lb" = (/obj/structure/multiz/ladder/ww2/tunneltop,/turf/floor/grass,/area/caribbean/nomads/forest)
 "lc" = (/obj/structure/religious/totem,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "ld" = (/obj/structure/roof_support/admin,/obj/roof/concrete,/turf/floor/plating/tiled/dark,/area/caribbean/nomads/forest)
-"le" = (/obj/structure/vending/sales/business_weapons,/obj/roof/concrete,/turf/floor/plating/tiled/dark,/area/caribbean/nomads/forest)
+"le" = (/obj/structure/vending/business_weapons,/obj/roof/concrete,/turf/floor/plating/tiled/dark,/area/caribbean/nomads/forest)
 "lf" = (/obj/structure/cell_tower,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "lg" = (/obj/roof/concrete,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/tiled/dark,/area/caribbean/nomads/forest)
 "lh" = (/obj/covers/cement_wall,/obj/structure/banner/faction/banner_a{color1 = "#7f0000"; faction = "Red Corporation"; name = "red corporation banner"; symbol = "sun"},/obj/roof/concrete,/turf/floor/plating/tiled/dark,/area/caribbean/nomads/forest)

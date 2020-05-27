@@ -81,7 +81,7 @@
 //		/obj/item/clothing/suit/storage/jacket/checkered_suit = 10,
 	)
 
-/obj/structure/vending/business_weapons
+/obj/structure/vending/sales/business_weapons
 	name = "weapon and ammo rack"
 	desc = "When you need to pack that extra punch."
 	icon_state = "weapons_sof"
@@ -103,7 +103,24 @@
 		/obj/item/ammo_magazine/shellbox/slug = 1,
 		/obj/item/ammo_magazine/m24 = 3,
 	)
+	prices = list(
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = 64,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 64,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 96,
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = 48,
+		/obj/item/weapon/gun/projectile/shotgun/remington870 = 128,
+		/obj/item/weapon/gun/projectile/boltaction/m24 = 160,
+		/obj/item/weapon/attachment/silencer/pistol = 32,
 
+		/obj/item/weapon/plastique/c4 = 96,
+		/obj/item/ammo_magazine/colthammerless = 16,
+		/obj/item/ammo_magazine/colthammerless/a380acp = 16,
+		/obj/item/ammo_magazine/m1911 = 16,
+		/obj/item/ammo_magazine/c32 = 24,
+		/obj/item/ammo_magazine/shellbox = 32,
+		/obj/item/ammo_magazine/shellbox/slug = 32,
+		/obj/item/ammo_magazine/m24 = 24,
+	)
 /obj/item/weapon/disk
 	name = "diskette"
 	desc = "Some kind of diskette."
@@ -205,7 +222,7 @@
 		if (9 to 10)
 			a = "J"
 	cloc = "[a][b]"
-	maptext = "<center><font color='yellow'><b>[cloc]</b> ([parentmob.x],[parentmob.y])</font></center>"
+	maptext = "<center><font color='yellow'><b>[cloc]</b>  ([parentmob.x],[parentmob.y])</font></center>"
 
 	spawn(10)
 		update()
