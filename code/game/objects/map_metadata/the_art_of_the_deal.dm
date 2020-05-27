@@ -71,7 +71,7 @@
 		/obj/item/clothing/mask/balaclava = 10,
 		/obj/item/clothing/head/ghillie = 1,
 		/obj/item/clothing/suit/storage/ghillie = 1,
-
+		/obj/item/flashlight/flashlight = 10,
 //		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 10,
 //		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
 //		/obj/item/clothing/suit/storage/jacket/navy_suit = 10,

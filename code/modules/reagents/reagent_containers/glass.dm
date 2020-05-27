@@ -518,6 +518,11 @@
 	icon_state = "fueltank_bike"
 	volume = 50
 
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike/full
+	New()
+		..()
+		reagents.add_reagent("gasoline",50)
+
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike75
 	name = "75u motorcycle fueltank"
 	icon_state = "fueltank_bike"

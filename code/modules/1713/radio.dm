@@ -20,7 +20,7 @@
 
 	var/multifreq = FALSE
 	var/list/multifreqlist = list(150)
-
+	var/list/multifreqlist_selectable = list(150)
 /obj/structure/radio/transmitter
 	name = "radio transmitter"
 	icon_state = "radio_transmitter"
@@ -50,16 +50,6 @@
 
 var/global/FREQ1 = rand(150,200)
 var/global/FREQ2 = rand(201,250)
-
-var/global/FREQ1C = rand(150,175)
-var/global/FREQ2C = rand(176,200)
-var/global/FREQ3C = rand(201,225)
-var/global/FREQ4C = rand(226,250)
-
-var/global/FREQ1P = rand(15)
-var/global/FREQ2P = rand(30)
-var/global/FREQ3P = rand(45)
-var/global/FREQ4P = rand(50)
 
 /obj/structure/radio/transmitter_receiver/nopower/faction1/New()
 	..()
@@ -195,7 +185,7 @@ var/global/FREQ4P = rand(50)
 
 	if (href_list["set_frequency"])
 		if (multifreq)
-			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist)
+			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist_selectable)
 			if (!input || input == freq)
 				return
 			freq = input
@@ -447,7 +437,7 @@ var/global/FREQ4P = rand(50)
 
 	var/multifreq = FALSE
 	var/list/multifreqlist = list(150)
-
+	var/list/multifreqlist_selectable = list(150)
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE
@@ -500,7 +490,7 @@ var/global/FREQ4P = rand(50)
 
 	if (href_list["set_frequency"])
 		if (multifreq)
-			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist)
+			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist_selectable)
 			if (!input || input == freq)
 				return
 			freq = input
@@ -644,27 +634,35 @@ var/global/FREQ4P = rand(50)
 
 /obj/item/weapon/radio/walkietalkie/red/New()
 	..()
+	name = "Red radio"
 	freq = "Red (private)"
 	multifreq = TRUE
-	multifreqlist = list("Red (private)","Red","Blue","Green","Yellow")
+	multifreqlist = list("Red (private)","Blue to Red","Red to Blue","Green to Red","Red to Green","Yellow to Red", "Red to Yellow")
+	multifreqlist_selectable = list("Red (private)","Red to Blue","Red to Green","Red to Yellow")
 	desc = "Used to communicate with distant places."
 /obj/item/weapon/radio/walkietalkie/green/New()
 	..()
+	name = "Green radio"
 	freq = "Green (private)"
 	multifreq = TRUE
-	multifreqlist = list("Green (private)","Red","Blue","Green","Yellow")
+	multifreqlist = list("Green (private)","Blue to Green","Green to Blue","Red to Green","Green to Red", "Yellow to Green", "Green to Yellow")
+	multifreqlist_selectable = list("Green (private)","Green to Blue","Green to Red","Green to Yellow")
 	desc = "Used to communicate with distant places."
 /obj/item/weapon/radio/walkietalkie/blue/New()
 	..()
+	name = "Blue radio"
 	freq = "Blue (private)"
 	multifreq = TRUE
-	multifreqlist = list("Blue (private)","Red","Blue","Green","Yellow")
+	multifreqlist = list("Blue (private)","Red to Blue","Blue to Red","Green to Blue","Blue to Green","Yellow to Blue", "Blue to Yellow")
+	multifreqlist_selectable = list("Blue (private)","Blue to Red","Blue to Green","Blue to Yellow")
 	desc = "Used to communicate with distant places."
 /obj/item/weapon/radio/walkietalkie/yellow/New()
 	..()
+	name = "Yellow radio"
 	freq = "Yellow (private)"
 	multifreq = TRUE
-	multifreqlist = list("Yellow (private)","Red","Blue","Green","Yellow")
+	multifreqlist = list("Yellow (private)","Blue to Yellow","Yellow to Blue","Green to Yellow","Yellow to Green","Red to Yellow", "Yellow to Red")
+	multifreqlist_selectable = list("Yellow (private)","Yellow to Blue","Yellow to Green","Yellow to Red")
 	desc = "Used to communicate with distant places."
 /obj/item/weapon/radio/proc/check_freq(var/frequ)
 	if (!frequ)
