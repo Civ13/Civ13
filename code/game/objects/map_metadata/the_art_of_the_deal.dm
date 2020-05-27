@@ -60,7 +60,6 @@
 	icon_state = "apparel_german2"
 	products = list(
 		/obj/item/stack/medical/bruise_pack/gauze = 10,
-		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
 		/obj/item/clothing/accessory/storage/webbing/pouches = 10,
 		/obj/item/weapon/storage/backpack/duffel = 5,
 		/obj/item/weapon/storage/briefcase = 5,
@@ -68,7 +67,6 @@
 		/obj/item/clothing/accessory/holster/chest = 10,
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 10,
 		/obj/item/clothing/glasses/sunglasses = 10,
-		/obj/item/clothing/glasses/nvg = 2,
 		/obj/item/clothing/gloves/fingerless = 10,
 		/obj/item/clothing/mask/balaclava = 10,
 		/obj/item/clothing/head/ghillie = 1,
@@ -86,22 +84,25 @@
 	desc = "When you need to pack that extra punch."
 	icon_state = "weapons_sof"
 	products = list(
-		/obj/item/weapon/gun/projectile/pistol/colthammerless = 3,
-		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 3,
-		/obj/item/weapon/gun/projectile/pistol/m1911 = 2,
-		/obj/item/weapon/gun/projectile/revolver/smithwesson = 3,
-		/obj/item/weapon/gun/projectile/shotgun/remington870 = 1,
-		/obj/item/weapon/gun/projectile/boltaction/m24 = 1,
-		/obj/item/weapon/attachment/silencer/pistol = 3,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = 5,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 5,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 5,
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = 5,
+		/obj/item/weapon/gun/projectile/shotgun/remington870 = 2,
+		/obj/item/weapon/gun/projectile/boltaction/m24 = 2,
+		/obj/item/weapon/attachment/silencer/pistol = 5,
 
 		/obj/item/weapon/plastique/c4 = 2,
-		/obj/item/ammo_magazine/colthammerless = 10,
-		/obj/item/ammo_magazine/colthammerless/a380acp = 10,
-		/obj/item/ammo_magazine/m1911 = 5,
+		/obj/item/ammo_magazine/colthammerless = 20,
+		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
+		/obj/item/ammo_magazine/m1911 = 20,
 		/obj/item/ammo_magazine/c32 = 10,
-		/obj/item/ammo_magazine/shellbox = 1,
-		/obj/item/ammo_magazine/shellbox/slug = 1,
-		/obj/item/ammo_magazine/m24 = 3,
+		/obj/item/ammo_magazine/shellbox = 10,
+		/obj/item/ammo_magazine/shellbox/slug = 10,
+		/obj/item/ammo_magazine/m24 = 10,
+
+		/obj/item/clothing/glasses/nvg = 2,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
 	)
 	prices = list(
 		/obj/item/weapon/gun/projectile/pistol/colthammerless = 64,
@@ -120,6 +121,9 @@
 		/obj/item/ammo_magazine/shellbox = 32,
 		/obj/item/ammo_magazine/shellbox/slug = 32,
 		/obj/item/ammo_magazine/m24 = 24,
+
+		/obj/item/clothing/glasses/nvg = 24,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 128,
 	)
 /obj/item/weapon/disk
 	name = "diskette"

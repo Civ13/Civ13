@@ -2,9 +2,7 @@
 	Interface for vending machines 
 	See: code/game/machinery/vending.dm
 -->
-<h1><center>{{:data.company}}</center></h1>
 {{if data.mode == 0}} <!-- Listing -->
-<h2>Money</h2>
 <div class='item'>
 	<div class='itemLabel'>Money deposited (dollars):</div> 
 	<div class='itemContent'>{{:helper.link(data.moneyin + ' $', 'eject', {'remove_money' : 1})}}</div>
