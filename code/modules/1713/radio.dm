@@ -374,7 +374,8 @@ var/global/FREQ2 = rand(201,250)
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
 		return
-
+	if (!transmitter || !transmitter_on)
+		return
 	var/list/tried_mobs = list()
 
 	for (var/mob/living/human/hearer in human_mob_list)
@@ -390,7 +391,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.check_freq(freq) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
+				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 			for (var/obj/item/weapon/radio/radio in range(1,get_turf(src)))
 				if (radio.receiver_on)
@@ -398,7 +399,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.check_freq(freq) && radio.receiver_on)
+				if (check_freq(radio) && radio.receiver_on)
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
@@ -406,7 +407,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.check_freq(freq) && radio.receiver_on)
+				if (check_freq(radio) && radio.receiver_on)
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 	// let observers hear it
 	// let observers hear it
@@ -576,7 +577,8 @@ var/global/FREQ2 = rand(201,250)
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
 		return
-
+	if (!transmitter || !transmitter_on)
+		return
 	var/list/tried_mobs = list()
 
 	for (var/mob/living/human/hearer in human_mob_list)
@@ -592,7 +594,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.check_freq(freq) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
+				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
@@ -600,7 +602,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.check_freq(freq) && radio.receiver_on)
+				if (check_freq(radio) && radio.receiver_on)
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
@@ -664,24 +666,56 @@ var/global/FREQ2 = rand(201,250)
 	multifreqlist = list("Yellow (private)","Blue to Yellow","Yellow to Blue","Green to Yellow","Yellow to Green","Red to Yellow", "Yellow to Red")
 	multifreqlist_selectable = list("Yellow (private)","Yellow to Blue","Yellow to Green","Yellow to Red")
 	desc = "Used to communicate with distant places."
-/obj/item/weapon/radio/proc/check_freq(var/frequ)
-	if (!frequ)
-		return
-	if (multifreq)
-		if (frequ in multifreqlist)
-			return TRUE
-	else
-		if (frequ == src.freq)
-			return TRUE
-	return FALSE
 
-/obj/structure/radio/proc/check_freq(var/frequ)
-	if (!frequ)
+/obj/item/weapon/radio/proc/check_freq(var/obj/original)
+	if (!original)
 		return
-	if (multifreq)
-		if (frequ in multifreqlist)
-			return TRUE
+	var/obj/item/weapon/radio/R = null
+	var/obj/structure/radio/SR = null
+	if (istype(original, /obj/item/weapon/radio))
+		R = original
+	else if (istype(original, /obj/item/weapon/radio))
+		SR = original
 	else
-		if (frequ == src.freq)
-			return TRUE
+		return FALSE
+	if (SR)
+		if (multifreq)
+			if (SR.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (SR.freq == src.freq)
+				return TRUE
+	else if (R)
+		if (multifreq)
+			if (R.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (R.freq == src.freq)
+				return TRUE
+	return FALSE
+/obj/structure/radio/proc/check_freq(var/obj/original)
+	if (!original)
+		return
+	var/obj/item/weapon/radio/R = null
+	var/obj/structure/radio/SR = null
+	if (istype(original, /obj/item/weapon/radio))
+		R = original
+	else if (istype(original, /obj/item/weapon/radio))
+		SR = original
+	else
+		return FALSE
+	if (SR)
+		if (multifreq)
+			if (SR.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (SR.freq == src.freq)
+				return TRUE
+	else if (R)
+		if (multifreq)
+			if (R.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (R.freq == src.freq)
+				return TRUE
 	return FALSE
