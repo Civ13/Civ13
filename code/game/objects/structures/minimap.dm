@@ -3,6 +3,7 @@
 	name = "area map"
 	icon_state = "areamap"
 	var/image/img
+	var/list/overlay_list = list()
 /obj/structure/sign/map/New()
 	..()
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
@@ -13,7 +14,7 @@
 /obj/structure/sign/map/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, /obj/item/weapon/pen))
 		var/nr = ""
-		var/ico_dir = 1
+		var/ico_dir = 2
 		var/c_color = WWinput(user,"Which color do you want to use?","Color","Cancel",list("Cancel","White","Red","Green","Yellow","Blue"))
 		switch(c_color)
 			if ("Cancel")
@@ -75,9 +76,10 @@
 				y_dist = 60*8
 			if ("J")
 				y_dist = 60*9
-		var/image/symbol_ico = image(icon='icons/minimap_effects.dmi', icon_state = c_icon, dir=ico_dir)
+		var/image/symbol_ico = image(icon='icons/minimap_effects.dmi', icon_state = c_icon, dir=ico_dir, layer=src.layer+1)
 		symbol_ico.pixel_x = x_dist
 		symbol_ico.pixel_y = y_dist
+		overlay_list+=symbol_ico
 		img.overlays += symbol_ico
 		return
 	else
@@ -91,4 +93,11 @@
 	if (!ishuman(usr))
 		return
 	usr << "You clear the map."
+	overlay_list = list()
 	img.overlays.Cut()
+
+/obj/structure/sign/map/update_icon()
+	..()
+	img.overlays.Cut()
+	for (var/image/I in overlay_list)
+		img.overlays += I
