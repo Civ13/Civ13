@@ -70,10 +70,12 @@
 	icon_state = "jihad4"
 
 /obj/structure/sign/clock
-	name = "\improper Broken clock"
-	desc = "Stopped at 5 o'clock."
+	name = "\improper clock"
+	desc = "A clock."
 	icon_state = "clock"
-
+/obj/structure/sign/clock/examine(mob/user)
+	..()
+	user << "<big>It is now [clock_time()].</big>"
 /obj/structure/sign/wide
 	icon = 'icons/obj/decals_wide.dmi'
 	bound_x = 32
