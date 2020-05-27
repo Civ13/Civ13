@@ -122,7 +122,6 @@
 	max_ammo = 20
 	weight = 0.70
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
 	pouch = TRUE
 
 /obj/item/ammo_magazine/emptyclip
@@ -138,7 +137,7 @@
 /obj/item/ammo_magazine/emptyspeedloader
 	name = "speedloader (6)"
 	mag_type = SPEEDLOADER
-	icon_state = "38"
+	icon_state = "38-0"
 	ammo_type = null
 	caliber = null
 	max_ammo = 6

@@ -120,7 +120,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 /obj/item/ammo_magazine/sharps
 	name = "ammo box (.45-70 Government)"
 	icon_state = "oldbox"
-	mag_type = SPEEDLOADER
 	caliber = "a4570"
 	w_class = 3
 
@@ -132,7 +131,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 /obj/item/ammo_magazine/c577
 	name = "ammo box (.577/450 Martini-Henry)"
 	icon_state = "mhbox"
-	mag_type = SPEEDLOADER
 	caliber = "a577"
 	w_class = 3
 
@@ -335,7 +333,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 21
 	weight = 0.4
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c8x27
@@ -346,7 +344,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 24
 	weight = 0.5
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c9mm_jap_revolver
@@ -358,7 +356,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.70
 
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c32
@@ -370,7 +368,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 26
 	weight = 0.9
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c32acp
@@ -382,7 +380,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 26
 	weight = 0.9
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c38
@@ -394,7 +392,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 26
 	weight = 0.9
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c45
@@ -406,7 +404,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 24
 	weight = 0.9
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c455
@@ -418,7 +416,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 24
 	weight = 0.95
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c41
@@ -430,7 +428,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 10
 	weight = 0.1
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/webly445
@@ -442,7 +440,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 10
 	weight = 0.1
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c44
@@ -454,7 +452,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 30
 	weight = 1.1
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c44magnum
@@ -466,7 +464,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 30
 	weight = 1.1
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c8x50
@@ -478,7 +476,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 24
 	weight = 0.95
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/murata
@@ -554,7 +552,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 18
 	weight = 0.4
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	desc = "A pouch containing 18 .44 pistol rounds."
 
 /obj/item/ammo_magazine/shellbox
