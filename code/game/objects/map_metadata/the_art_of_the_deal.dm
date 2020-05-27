@@ -105,25 +105,25 @@
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
 	)
 	prices = list(
-		/obj/item/weapon/gun/projectile/pistol/colthammerless = 64,
-		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 64,
-		/obj/item/weapon/gun/projectile/pistol/m1911 = 96,
-		/obj/item/weapon/gun/projectile/revolver/smithwesson = 48,
-		/obj/item/weapon/gun/projectile/shotgun/remington870 = 128,
-		/obj/item/weapon/gun/projectile/boltaction/m24 = 160,
-		/obj/item/weapon/attachment/silencer/pistol = 32,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = 80,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 80,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 120,
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = 60,
+		/obj/item/weapon/gun/projectile/shotgun/remington870 = 160,
+		/obj/item/weapon/gun/projectile/boltaction/m24 = 200,
+		/obj/item/weapon/attachment/silencer/pistol = 40,
 
-		/obj/item/weapon/plastique/c4 = 96,
-		/obj/item/ammo_magazine/colthammerless = 16,
-		/obj/item/ammo_magazine/colthammerless/a380acp = 16,
-		/obj/item/ammo_magazine/m1911 = 16,
-		/obj/item/ammo_magazine/c32 = 24,
-		/obj/item/ammo_magazine/shellbox = 32,
-		/obj/item/ammo_magazine/shellbox/slug = 32,
-		/obj/item/ammo_magazine/m24 = 24,
+		/obj/item/weapon/plastique/c4 = 120,
+		/obj/item/ammo_magazine/colthammerless = 20,
+		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
+		/obj/item/ammo_magazine/m1911 = 20,
+		/obj/item/ammo_magazine/c32 = 40,
+		/obj/item/ammo_magazine/shellbox = 40,
+		/obj/item/ammo_magazine/shellbox/slug = 40,
+		/obj/item/ammo_magazine/m24 = 20,
 
-		/obj/item/clothing/glasses/nvg = 24,
-		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 128,
+		/obj/item/clothing/glasses/nvg = 20,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 160,
 	)
 /obj/item/weapon/disk
 	name = "diskette"
