@@ -197,7 +197,7 @@
 		return
 	var/cloc = "Unknown"
 	var/a = ceil(parentmob.x/22)
-	var/b = ceil(parentmob.y/22)
+	var/b = 10-ceil(parentmob.y/22)
 	switch(a)
 		if (0 to 1)
 			a = "A"

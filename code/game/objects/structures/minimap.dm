@@ -9,7 +9,7 @@
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
 
 /obj/structure/sign/map/examine(mob/user)
-	user << browse(getFlatIcon(img),"window=popup;size=620x620")
+	user << browse(getFlatIcon(img),"window=popup;size=630x630")
 
 /obj/structure/sign/map/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, /obj/item/weapon/pen))
@@ -54,31 +54,32 @@
 		var/y_dist = 0
 		var/c_location = WWinput(user,"Where do you want to place it (column)?","Location","Cancel",list("Cancel","A","B","C","D","E","F","G","H","I","J"))
 		var/c_location2 = WWinput(user,"Where do you want to place it (line)?","Location","Cancel",list("Cancel","1","2","3","4","5","6","7","8","9","10"))
-		y_dist = (text2num(c_location2)-60)*60
+		y_dist = 600-(text2num(c_location2)*60)
 		switch(c_location)
 			if ("A")
-				y_dist = 0
+				x_dist = 0
 			if ("B")
-				y_dist = 60*1
+				x_dist = 60*1
 			if ("C")
-				y_dist = 60*2
+				x_dist = 60*2
 			if ("D")
-				y_dist = 60*3
+				x_dist = 60*3
 			if ("E")
-				y_dist = 60*4
+				x_dist = 60*4
 			if ("F")
-				y_dist = 60*5
+				x_dist = 60*5
 			if ("G")
-				y_dist = 60*6
+				x_dist = 60*6
 			if ("H")
-				y_dist = 60*7
+				x_dist = 60*7
 			if ("I")
-				y_dist = 60*8
+				x_dist = 60*8
 			if ("J")
-				y_dist = 60*9
+				x_dist = 60*9
 		var/image/symbol_ico = image(icon='icons/minimap_effects.dmi', icon_state = c_icon, dir=ico_dir, layer=src.layer+1)
 		symbol_ico.pixel_x = x_dist
 		symbol_ico.pixel_y = y_dist
+		symbol_ico.color = c_color
 		overlay_list+=symbol_ico
 		img.overlays += symbol_ico
 		return
@@ -101,3 +102,6 @@
 	img.overlays.Cut()
 	for (var/image/I in overlay_list)
 		img.overlays += I
+
+/obj/structure/sign/map/attack_hand(mob/user)
+	examine(user)
