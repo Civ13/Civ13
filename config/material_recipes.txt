@@ -30,8 +30,8 @@
 //**| LEAD |**
 //************
 
-//**| PLASTIC |**| PLASTIC STORAGE |**| PLASTIC GAS MASKS |**| PLASTIC FACE MASKS |**| PLASTIC SIGNS |**| PLASTIC DRINKS |**
-//**************************************************************************************************************************
+//**| PLASTIC |**| PLASTIC STORAGE |**| PLASTIC GAS MASKS |**| PLASTIC FACE MASKS |**| PLASTIC SIGNS |**| PLASTIC DRINKS |**| PLASTIC CLOTHING & ARMOR |**
+//********************************************************************************************************************************************************
 
 //**| CHITIN |**
 //**************
@@ -533,6 +533,7 @@ RECIPE: /material/cloth/,dark black suit,/obj/item/clothing/suit/storage/jacket/
 RECIPE: /material/cloth/,burgundy suit,/obj/item/clothing/suit/storage/jacket/burgundy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,checkered suit,/obj/item/clothing/suit/storage/jacket/checkered_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,victorian tailcoat,/obj/item/clothing/suit/storage/jacket/vict_tailcoat,15,200,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/cloth/,cream short jacket,/obj/item/clothing/suit/storage/jacket/texan,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,navy suit,/obj/item/clothing/suit/storage/jacket/navy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/cloth/,olive drab NBC suit,/obj/item/clothing/suit/nbc/olive,12,200,0,1,jackets & vests,0,0,145,8,null
 RECIPE: /material/cloth/,olive drab NBC hood,/obj/item/clothing/head/nbc/olive,3,100,0,1,jackets & vests,0,0,145,8,null
@@ -602,6 +603,7 @@ RECIPE: /material/cloth/,sombrero,/obj/item/clothing/head/sombrero,4,75,0,1,hats
 RECIPE: /material/cloth/,vaquero hat,/obj/item/clothing/head/vaquerohat,4,75,0,1,hats,0,0,98,4,null
 RECIPE: /material/cloth/,bandit hat,/obj/item/clothing/head/bandit,4,75,0,1,hats,0,0,98,4,null
 RECIPE: /material/cloth/,tophat,/obj/item/clothing/head/top_hat,5,95,0,1,hats,0,0,109,5,null
+RECIPE: /material/cloth/,ten gallon hat,/obj/item/clothing/head/ten_gallon,5,95,0,1,hats,0,0,109,5,null
 RECIPE: /material/cloth/,brown flatcap,/obj/item/clothing/head/flatcap1,2,55,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,blue flatcap,/obj/item/clothing/head/flatcap2,2,55,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,0,1,hats,0,0,109,8,null
@@ -609,6 +611,8 @@ RECIPE: /material/cloth/,custom officer cap,/obj/item/clothing/head/custom_off_c
 RECIPE: /material/cloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats,0,0,109,8,null
+
+RECIPE: /material/cloth/,police cap,/obj/item/clothing/head/traffic_police,4,75,0,1,military & law enforcement clothes,0,0,160,8,null
 
 //*****************| CLOTH MASKS & EYEWEAR |***************************
 
@@ -644,6 +648,8 @@ RECIPE: /material/cloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,
 RECIPE: /material/cloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,2,100,0,1,clothing,0,0,38,8,null
+RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,clothing,0,0,38,8,null
+RECIPE: /material/cloth/,black priest outfit,/obj/item/clothing/under/christian_priest,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/tunic,4,85,0,1,clothing,0,0,38,5,null
@@ -686,10 +692,13 @@ RECIPE: /material/cloth/,farmer outfit,/obj/item/clothing/under/farmer_outfit,4,
 RECIPE: /material/cloth/,mechanic outfit,/obj/item/clothing/under/mechanic_outfit,4,75,0,1,clothing,112,0,0,8,null
 RECIPE: /material/cloth/,custom uniform,/obj/item/clothing/under/customuniform,3,75,0,1,clothing,0,0,112,8,null
 RECIPE: /material/cloth/,worker outfit,/obj/item/clothing/under/industrial5,3,75,0,1,clothing,0,0,112,6,null
+RECIPE: /material/cloth/,texan shirt outfit,/obj/item/clothing/under/texan,5,75,0,1,clothing,0,0,112,8,null
 
-//*****************| CLOTH MILITARY UNIFORMS |***************************
+//*****************| CLOTH MILITARY & LAW ENFORCMENT UNIFORMS |***************************
 
-RECIPE: /material/cloth/,custom camo uniform,/obj/item/clothing/under/customuniform_modern,4,100,0,1,military clothes,0,0,130,8,null
+RECIPE: /material/cloth/,constable outfit,/obj/item/clothing/under/constable,5,75,0,1,military & law enforcement clothes,0,0,138,8,null
+RECIPE: /material/cloth/,police outfit,/obj/item/clothing/under/traffic_police,5,75,0,1,military & law enforcement clothes,0,0,160,8,null
+RECIPE: /material/cloth/,custom camo uniform,/obj/item/clothing/under/customuniform_modern,4,100,0,1,military & law enforcement clothes,0,0,130,8,null
 
 //**************************************************************
 //*********************| BARBWIRE |*****************************
@@ -758,6 +767,12 @@ RECIPE: /material/plastic/,pedestrian crossing sign,/obj/structure/sign/traffic/
 RECIPE: /material/plastic/,fast food cup,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/custom/fastfoodcup,1,15,0,1,drinks,170,0,0,8,null
 RECIPE: /material/plastic/,condiment bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/condiment,0.75,15,0,1,drinks,170,0,0,8,null
 RECIPE: /material/plastic/,plastic bottle,/obj/item/weapon/reagent_containers/food/drinks/plastic/cola,1.5,15,0,1,drinks,170,0,0,8,null
+
+//*****************| PLASTIC CLOTHING & ARMOR |***************************
+
+RECIPE: /material/plastic/,constable helmet,/obj/item/clothing/head/helmet/constable,6,165,0,1,none,0,0,138,8,null
+
+RECIPE: /material/plastic/,surgical apron,/obj/item/clothing/suit/storage/jacket/surgeon,8,140,0,1,jackets & vests,0,0,138,8,null
 
 //**************************************************************
 //*********************| CHITIN |*******************************
