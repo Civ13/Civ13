@@ -1778,7 +1778,9 @@ RECIPE: /material/wood/,passport,/obj/item/clothing/accessory/storage/passport,3
 RECIPE: /material/wood/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,book,/obj/item/weapon/book,4,75,0,1,paper & printing,45,0,0,8,null
-
+RECIPE: /material/wood/,grey folder,/obj/item/weapon/folder,1,75,0,1,paper & printing,120,0,0,8,null
+RECIPE: /material/wood/,yellow folder,/obj/item/weapon/folder/yellow,1,75,0,1,paper & printing,120,0,0,8,null
+RECIPE: /material/wood/,red folder,/obj/item/weapon/folder/red,1,75,0,1,paper & printing,120,0,0,8,null
 RECIPE: /material/wood/,photo album,/obj/item/weapon/storage/photo_album,5,85,0,1,paper & printing,95,0,0,8,null
 
 RECIPE: /material/wood/,religious poster,/obj/item/weapon/poster/religious,1,25,0,1,paper & printing,19,0,0,8,null
