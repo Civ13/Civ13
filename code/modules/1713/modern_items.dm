@@ -251,6 +251,8 @@
 /obj/structure/lamp/lamp_small/alwayson
 	powerneeded = 0
 	on = TRUE
+/obj/structure/lamp/lamp_small/alwayson/white
+	brightness_color = "#ffffff"
 /obj/structure/lamp/lamp_small/alwayson/red
 	brightness_color = "#da0205"
 

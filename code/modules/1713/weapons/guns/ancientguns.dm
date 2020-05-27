@@ -3,6 +3,7 @@
 obj/item/weapon/gun/projectile/ancient
 	name = "ancient handgun"
 	desc = "An ancient handheld blackpowder gun"
+	icon = 'icons/obj/guns/ancient.dmi'
 	icon_state = "handcannon"
 	item_state = "musket"
 	w_class = 5

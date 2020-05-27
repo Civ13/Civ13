@@ -20,11 +20,11 @@
 	var/fac_nr = 3
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the deal"
-	mission_start_message = "<font size=4><b>3</b> corporations <b>Last standing player wins!</b></font>"
+	mission_start_message = "<font size=4><b>4</b> corporations are fighting for control of the disks.</font>"
 	var/winner_name = "Unknown"
 	var/list/winner_ckeys = list()
 	faction1 = CIVILIAN
-	faction2 = CIVILIAN
+	faction2 = PIRATES
 	gamemode = "Battleroyale"
 	required_players = 6
 
@@ -45,10 +45,10 @@
 		. = FALSE
 
 /obj/map_metadata/art_of_the_deal/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/art_of_the_deal/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)
@@ -92,6 +92,7 @@
 		/obj/item/weapon/gun/projectile/revolver/smithwesson = 3,
 		/obj/item/weapon/gun/projectile/shotgun/remington870 = 1,
 		/obj/item/weapon/gun/projectile/boltaction/m24 = 1,
+		/obj/item/weapon/attachment/silencer/pistol = 3,
 
 		/obj/item/weapon/plastique/c4 = 2,
 		/obj/item/ammo_magazine/colthammerless = 10,
@@ -156,3 +157,9 @@
 	sharp = FALSE
 	edge = FALSE
 	w_class = 3.0
+
+/obj/structure/sign/map
+	desc = "A detailed area map for planning operations."
+	name = "area map"
+	icon_state = "areamap"
+	var/icon/img

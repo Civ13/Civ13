@@ -3,6 +3,7 @@
 
 /obj/item/weapon/gun/projectile/leveraction
 	name = "leveraction rifle"
+	icon = 'icons/obj/guns/rifles.dmi'
 	desc = "A simple rifle using a lever-action mechanism."
 	icon_state = "winchester"
 	item_state = "shotgun"

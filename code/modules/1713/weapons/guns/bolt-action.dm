@@ -2,6 +2,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction
 	name = "bolt-action rifle"
+	icon = 'icons/obj/guns/rifles.dmi'
 	desc = "A bolt-action rifle of true ww2 (You shouldn't be seeing this)"
 	icon_state = "mosin"
 	item_state = "mosin" //placeholder

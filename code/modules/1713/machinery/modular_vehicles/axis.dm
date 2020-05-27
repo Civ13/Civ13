@@ -339,9 +339,9 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 			if (NORTH)
 				matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
 			if (EAST)
-				matrix["[disy+1],[disx+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
+				matrix["[disx+1],[disy+1]"] = list(FM, disy+1, disx+1,"[disx+1],[disy+1]")
 			if (WEST)
-				matrix["[disy+1],[disx+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
+				matrix["[disx+1],[disy+1]"] = list(FM, disy+1, disx+1,"[disx+1],[disy+1]")
 	for (var/obj/effect/pseudovehicle/PV in components)
 		var/disx = abs(PV.y-FFL.y)
 		var/disy = abs(PV.x-FFL.x)
@@ -351,9 +351,9 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 			if (NORTH)
 				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
 			if (EAST)
-				matrix["[disy+1],[disx+1]"] = list(PV, disy+1, disx+1,"[disy+1],[disx+1]")
+				matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
 			if (WEST)
-				matrix["[disy+1],[disx+1]"] = list(PV, disy+1, disx+1,"[disy+1],[disx+1]")
+				matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
 	return TRUE
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
