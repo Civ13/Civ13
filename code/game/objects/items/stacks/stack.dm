@@ -628,6 +628,12 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				H << "<span class = 'danger'>You can't make nun clothes as you are not part of the clergy.</span>"
 				return
 
+	else if (findtext(recipe.title, "black priest outfit"))
+		if (H.religious_leader == FALSE)
+			if (H.religious_clergy == 0)
+				H << "<span class = 'danger'>You can't make priest clothes as you are not part of the clergy.</span>"
+				return
+
 	else if (findtext(recipe.title, "sterile mask"))
 		if (H.getStatCoeff("medical") < 0.5)
 			H << "<span class = 'danger'>This is too complex for your current medical skill level.</span>"
@@ -978,7 +984,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 3 copper ingots in one of your hands in order to make this.</span>"
 					return
-	
+
 	else if (findtext(recipe.title, "macuahuitl"))
 		if (!istype(H.l_hand, /obj/item/stack/material/obsidian) && !istype(H.r_hand, /obj/item/stack/material/obsidian))
 			user << "<span class = 'warning'>You need a stack of at least 4 cut rocks of obsidian in one of your hands in order to make this.</span>"

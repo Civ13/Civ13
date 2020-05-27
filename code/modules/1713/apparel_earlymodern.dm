@@ -467,6 +467,7 @@
 	new /obj/item/ammo_magazine/c8mmnambu(src)
 /////////////////////////////////////////////////////////////////////////////////
 //////////////CIVILIAN STUFF/////////////////////////////////////////////////////
+
 /obj/item/clothing/head/top_hat
 	name = "top hat"
 	desc = "A high top hat."
@@ -497,6 +498,15 @@
 	icon_state = "fedora"
 	item_state = "fedora"
 
+/obj/item/clothing/head/helmet/constable
+	name = "constable helmet"
+	desc = "A typical plastic helmet worn by constable's of law enforcement. Protects the head from petty battery and assault."
+	icon_state = "constable"
+	item_state = "constable"
+	worn_state = "constable"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 60, gun = 5, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
 /obj/item/clothing/under/modern1
 	name = "light brown outfit"
@@ -672,6 +682,13 @@
 	icon_state = "peakyblinder"
 	item_state = "peakyblinder"
 	worn_state = "peakyblinder"
+
+/obj/item/clothing/under/constable
+	name = "constable outfit"
+	desc = "An black outfit used by enforcers of the law."
+	icon_state = "constable"
+	item_state = "constable"
+	worn_state = "constable"
 
 /obj/item/clothing/under/oldfirefighter
 	name = "fire fighter uniform"
@@ -866,6 +883,12 @@
 	item_state = "labcoat"
 	worn_state = "labcoat"
 
+/obj/item/clothing/suit/storage/jacket/surgeon
+	name = "surgery apron"
+	desc = "A blue plastic surgery apron."
+	icon_state = "surgical"
+	item_state = "surgical"
+	worn_state = "surgical"
 
 /obj/item/weapon/storage/belt/largepouches
 	name = "large pouches"
