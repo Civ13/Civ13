@@ -1482,7 +1482,7 @@
 	hardness = 75
 	buildstack = /obj/item/weapon/clay/claybricks/fired
 
-/obj/covers/claydoorway
+/obj/covers/clay_wall/claydoorway //if you actually wanted to summon one.
 	name = "clay block doorway"
 	desc = "A clay block doorway."
 	icon = 'icons/obj/claystuff.dmi'
@@ -1491,16 +1491,6 @@
 	not_movable = TRUE
 	density = FALSE
 	opacity = FALSE
-	amount = 0
-	layer = 3
-	health = 150
-	wood = FALSE
-	wall = TRUE
-	flammable = FALSE
-	explosion_resistance = 6
-	material = "Stone"
-	hardness = 75
-	buildstack = /obj/item/weapon/clay/claybricks/fired
 
 /obj/covers/clay_wall/redearth
 	name = "red earthern bordered wall"
@@ -1605,8 +1595,8 @@
 					S.icon_state = "clay_block_alt"
 					base_icon_state = icon_state
 					S.name = "clay block wall"
-				else if (choice == "Doorway") //until a solution can be found
-					new /obj/covers/claydoorway(S.loc)
+				else if (choice == "Doorway")
+					new /obj/covers/clay_wall/claydoorway(S.loc)
 					qdel(S)
 				return
 		else if (stage <= 1)
