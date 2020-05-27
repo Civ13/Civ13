@@ -154,16 +154,16 @@
 
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
-
+	message = replacetext(message,";", "")
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
 	else
 		var/fontsize = 2
 
-		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font></b><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[destination.freq][destination.multifreq ? "" : "kHz"]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		if (track)
-			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font></b><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[destination.freq][destination.multifreq ? "" : "kHz"]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		on_hear_radio(destination, full_message)
 
 /mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/source, var/obj/item/weapon/telephone/destination)

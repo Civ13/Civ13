@@ -18,6 +18,9 @@
 	powerneeded = 5
 	var/on = FALSE
 
+	var/multifreq = FALSE
+	var/list/multifreqlist = list(150)
+
 /obj/structure/radio/transmitter
 	name = "radio transmitter"
 	icon_state = "radio_transmitter"
@@ -47,6 +50,16 @@
 
 var/global/FREQ1 = rand(150,200)
 var/global/FREQ2 = rand(201,250)
+
+var/global/FREQ1C = rand(150,175)
+var/global/FREQ2C = rand(176,200)
+var/global/FREQ3C = rand(201,225)
+var/global/FREQ4C = rand(226,250)
+
+var/global/FREQ1P = rand(15)
+var/global/FREQ2P = rand(30)
+var/global/FREQ3P = rand(45)
+var/global/FREQ4P = rand(50)
 
 /obj/structure/radio/transmitter_receiver/nopower/faction1/New()
 	..()
@@ -181,14 +194,24 @@ var/global/FREQ2 = rand(201,250)
 		return FALSE
 
 	if (href_list["set_frequency"])
-		var/input = input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)") as num
-		if (!input)
+		if (multifreq)
+			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist)
+			if (!input || input == freq)
+				return
+			freq = input
+			user << "Frequency set to <b>[freq]</b>."
+			do_html(user)
 			return
-		freq = sanitize_integer(input, min=150, max=300, default=150)
-		user << "Frequency set to [freq]kHz."
-		desc = "Used to communicate with distant places. Set to [freq]kHz."
-		do_html(user)
-		return
+
+		else
+			var/input = input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)") as num
+			if (!input)
+				return
+			freq = sanitize_integer(input, min=150, max=300, default=150)
+			user << "Frequency set to [freq]kHz."
+			desc = "Used to communicate with distant places. Set to [freq]kHz."
+			do_html(user)
+			return
 
 	if (href_list["receiver"])
 		if (receiver)
@@ -283,7 +306,7 @@ var/global/FREQ2 = rand(201,250)
 				<center>
 				<font size=3><b>[style]</b></font><br><br>
 				</center>
-				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq]kHz</a><br><br>
+				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq][multifreq ? "" : "kHz"]</a><br><br>
 				Transmitter: <a href='?src=\ref[src];transmitter=1'>[transmitter_on ? "ON" : "OFF"]</a><br><br>
 				Receiver: <a href='?src=\ref[src];receiver=1'>[receiver_on ? "ON" : "OFF"]</a><br><br>
 				</font></b><br>
@@ -316,7 +339,7 @@ var/global/FREQ2 = rand(201,250)
 				<center>
 				<font size=3><b>[style]</b></font><br><br>
 				</center>
-				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq]kHz</a><br><br>
+				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq][multifreq ? "" : "kHz"]</a><br><br>
 				Receiver: <a href='?src=\ref[src];receiver=1'>[receiver_on ? "ON" : "OFF"]</a><br><br>
 				</font></b><br>
 				</body>
@@ -348,7 +371,7 @@ var/global/FREQ2 = rand(201,250)
 				<center>
 				<font size=3><b>[style]</b></font><br><br>
 				</center>
-				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq]kHz</a><br><br>
+				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq][multifreq ? "" : "kHz"]</a><br><br>
 				Transmitter: <a href='?src=\ref[src];transmitter=1'>[transmitter_on ? "ON" : "OFF"]</a><br><br>
 				</font></b><br>
 				</body>
@@ -377,7 +400,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.freq == freq && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
+				if (radio.check_freq(freq) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 			for (var/obj/item/weapon/radio/radio in range(1,get_turf(src)))
 				if (radio.receiver_on)
@@ -385,7 +408,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.freq == freq && radio.receiver_on)
+				if (radio.check_freq(freq) && radio.receiver_on)
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
@@ -393,7 +416,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.freq == freq && radio.receiver_on)
+				if (radio.check_freq(freq) && radio.receiver_on)
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 	// let observers hear it
 	// let observers hear it
@@ -421,6 +444,9 @@ var/global/FREQ2 = rand(201,250)
 	var/on = FALSE
 	force = 4.0
 	throwforce = 3.0
+
+	var/multifreq = FALSE
+	var/list/multifreqlist = list(150)
 
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
@@ -473,14 +499,23 @@ var/global/FREQ2 = rand(201,250)
 		return FALSE
 
 	if (href_list["set_frequency"])
-		var/input = input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)") as num
-		if (!input)
+		if (multifreq)
+			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist)
+			if (!input || input == freq)
+				return
+			freq = input
+			user << "Frequency set to <b>[freq]</b>."
+			do_html(user)
 			return
-		freq = sanitize_integer(input, min=150, max=300, default=150)
-		user << "Frequency set to [freq]kHz."
-		desc = "Used to communicate with distant places. Set to [freq]kHz."
-		do_html(user)
-		return
+		else
+			var/input = input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)") as num
+			if (!input)
+				return
+			freq = sanitize_integer(input, min=150, max=300, default=150)
+			user << "Frequency set to [freq]kHz."
+			desc = "Used to communicate with distant places. Set to [freq]kHz."
+			do_html(user)
+			return
 
 	if (href_list["receiver"])
 		if (receiver)
@@ -537,7 +572,7 @@ var/global/FREQ2 = rand(201,250)
 		<center>
 		<font size=3><b>[style]</b></font><br><br>
 		</center>
-		<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq]kHz</a><br><br>
+		<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq][multifreq ? "" : "kHz"]</a><br><br>
 		Transmitter: <a href='?src=\ref[src];transmitter=1'>[transmitter_on ? "ON" : "OFF"]</a><br><br>
 		Receiver: <a href='?src=\ref[src];receiver=1'>[receiver_on ? "ON" : "OFF"]</a><br><br>
 		</font></b><br>
@@ -567,7 +602,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.freq == freq && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
+				if (radio.check_freq(freq) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
@@ -575,7 +610,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.freq == freq && radio.receiver_on)
+				if (radio.check_freq(freq) && radio.receiver_on)
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
@@ -606,3 +641,49 @@ var/global/FREQ2 = rand(201,250)
 	..()
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
+/obj/item/weapon/radio/walkietalkie/red/New()
+	..()
+	freq = "Red (private)"
+	multifreq = TRUE
+	multifreqlist = list("Red (private)","Red","Blue","Green","Yellow")
+	desc = "Used to communicate with distant places."
+/obj/item/weapon/radio/walkietalkie/green/New()
+	..()
+	freq = "Green (private)"
+	multifreq = TRUE
+	multifreqlist = list("Green (private)","Red","Blue","Green","Yellow")
+	desc = "Used to communicate with distant places."
+/obj/item/weapon/radio/walkietalkie/blue/New()
+	..()
+	freq = "Blue (private)"
+	multifreq = TRUE
+	multifreqlist = list("Blue (private)","Red","Blue","Green","Yellow")
+	desc = "Used to communicate with distant places."
+/obj/item/weapon/radio/walkietalkie/yellow/New()
+	..()
+	freq = "Yellow (private)"
+	multifreq = TRUE
+	multifreqlist = list("Yellow (private)","Red","Blue","Green","Yellow")
+	desc = "Used to communicate with distant places."
+/obj/item/weapon/radio/proc/check_freq(var/frequ)
+	if (!frequ)
+		return
+	if (multifreq)
+		if (frequ in multifreqlist)
+			return TRUE
+	else
+		if (frequ == src.freq)
+			return TRUE
+	return FALSE
+
+/obj/structure/radio/proc/check_freq(var/frequ)
+	if (!frequ)
+		return
+	if (multifreq)
+		if (frequ in multifreqlist)
+			return TRUE
+	else
+		if (frequ == src.freq)
+			return TRUE
+	return FALSE

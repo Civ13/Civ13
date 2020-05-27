@@ -2052,6 +2052,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessyellow(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/yellow(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/armband/spanish/armband = new /obj/item/clothing/accessory/armband/spanish(null)
 	uniform1.attackby(armband, H)
@@ -2070,6 +2071,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessgreen(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/green(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/armband/portuguese/armband = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform1.attackby(armband, H)
@@ -2088,6 +2090,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/blue(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessblue(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/blue(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/armband = new /obj/item/clothing/accessory/armband/french(null)
 	uniform1.attackby(armband, H)
@@ -2106,6 +2109,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessred(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/red(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
 	uniform1.attackby(armband, H)
