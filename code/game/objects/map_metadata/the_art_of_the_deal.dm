@@ -163,3 +163,49 @@
 	name = "area map"
 	icon_state = "areamap"
 	var/icon/img
+
+//////////////////SCREEN HELPERS////////////////////////////
+/obj/screen/areashow_aod
+	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
+	maptext_width = 32*8
+	maptext_x = (32*8 * -0.5)+32
+	maptext_y = 32*0.75
+	icon_state = "blank"
+
+/obj/screen/areashow_aod/New()
+	..()
+	spawn(50)
+		update()
+
+/obj/screen/areashow_aod/proc/update()
+	if (!parentmob || !src)
+		return
+	var/cloc = "Unknown"
+	var/a = ceil(parentmob.x/22)
+	var/b = ceil(parentmob.y/22)
+	switch(a)
+		if (0 to 1)
+			a = "A"
+		if (1 to 2)
+			a = "B"
+		if (2 to 3)
+			a = "C"
+		if (3 to 4)
+			a = "D"
+		if (4 to 5)
+			a = "E"
+		if (5 to 6)
+			a = "F"
+		if (6 to 7)
+			a = "G"
+		if (7 to 8)
+			a = "H"
+		if (8 to 9)
+			a = "I"
+		if (9 to 10)
+			a = "J"
+	cloc = "[a][b]"
+	maptext = "<center><font color='yellow'><b>[cloc]</b> ([parentmob.x],[parentmob.y])</font></center>"
+
+	spawn(10)
+		update()

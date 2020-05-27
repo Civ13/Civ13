@@ -2038,7 +2038,8 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
-
+	spawn(100)
+		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 /datum/job/civilian/businessman/yellow
 	title = "Yellow Conglomerate"
 	selection_color = "#A1A181"
