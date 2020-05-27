@@ -179,12 +179,6 @@
 	edge = FALSE
 	w_class = 3.0
 
-/obj/structure/sign/map
-	desc = "A detailed area map for planning operations."
-	name = "area map"
-	icon_state = "areamap"
-	var/icon/img
-
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow_aod
 	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
