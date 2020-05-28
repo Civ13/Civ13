@@ -243,8 +243,14 @@
 	if (!parentmob || !src)
 		return
 	var/cloc = "Unknown"
-	var/a = ceil(parentmob.x/22)
-	var/b = 10-ceil(parentmob.y/22)
+	cloc = parentmob.get_coded_loc()
+	maptext = "<center><font color='yellow'><b>[cloc]</b>  ([parentmob.x],[parentmob.y])</font></center>"
+
+	spawn(10)
+		update()
+/mob/proc/get_coded_loc()
+	var/a = ceil(x/22)
+	var/b = 10-ceil(y/22)
 	switch(a)
 		if (0 to 1)
 			a = "A"
@@ -266,8 +272,4 @@
 			a = "I"
 		if (9 to 10)
 			a = "J"
-	cloc = "[a][b]"
-	maptext = "<center><font color='yellow'><b>[cloc]</b>  ([parentmob.x],[parentmob.y])</font></center>"
-
-	spawn(10)
-		update()
+	return "[a][b]"

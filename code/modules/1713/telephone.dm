@@ -93,8 +93,10 @@ var/list/global/phone_numbers = list()
 		if (!input)
 			return
 		var/tgtnum = 0
-		if (tgtnum != 911)
+		if (input != 911)
 			tgtnum = sanitize_integer(input, min=1000, max=9999, default=0) //0 as a first digit doesnt really work
+		else
+			tgtnum = 911
 		if (tgtnum == 0)
 			return
 		if (!wireless)
@@ -109,13 +111,13 @@ var/list/global/phone_numbers = list()
 			var/found_tower = FALSE
 			for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
 				found_tower = TRUE
-				CT.ring_phone(tgtnum,phonenumber, src)
-				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Ringing [tgtnum]..."
+			if (found_tower)
+				ring_phone(tgtnum,phonenumber, src, user)
 				spawn(200)
 					if (!connected)
 						user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Nobody picked up the phone at [tgtnum]."
 						return
-			if (!found_tower)
+			else
 				user << "<font size=2 color=#FFAE19>No signal.</font>"
 				return
 	if (connected)
@@ -134,7 +136,12 @@ var/list/global/phone_numbers = list()
 			origincall.ringing = FALSE
 			origincall.origincall = src
 		user << "You pick up the phone."
-
+/obj/item/weapon/telephone/attack_hand(var/mob/living/human/H)
+	if (anchored && ishuman(H))
+		attack_self(H)
+		return
+	else
+		..()
 /////////////////////////////MOBILE PHONE/////////////////////////////////////
 /obj/item/weapon/telephone/mobile
 	name = "cellphone"
@@ -144,7 +151,7 @@ var/list/global/phone_numbers = list()
 	force = WEAPON_FORCE_WEAK+3
 	throwforce = WEAPON_FORCE_WEAK
 	wireless = TRUE
-	maxrange = 20
+	maxrange = 40
 	w_class = 2
 	var/list/contacts = list()
 
@@ -189,13 +196,13 @@ var/list/global/phone_numbers = list()
 				var/found_tower = FALSE
 				for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
 					found_tower = TRUE
-					CT.ring_phone(tgtnum,phonenumber, src)
-					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Ringing [tgtnum]..."
+				if (found_tower)
+					ring_phone(tgtnum,phonenumber, src, user)
 					spawn(200)
 						if (!connected)
 							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Nobody picked up the phone at [tgtnum]."
 							return
-				if (!found_tower)
+				else
 					user << "<font size=2 color=#FFAE19>No signal.</font>"
 					return
 	else
@@ -211,26 +218,21 @@ var/list/global/phone_numbers = list()
 	not_disassemblable = TRUE
 	density = FALSE
 	opacity = FALSE
-	var/maxrange = 30
+	var/maxrange = 40
 	var/lastproc = 0
 	anchored = TRUE
 
-/obj/structure/cell_tower/proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone)
+/proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone, var/mob/living/human/user = null)
 	if (!origin || !target)
 		return
-	if (world.time <= lastproc)
-		return
 	else
-		for (var/obj/item/weapon/telephone/TLG in range(maxrange,src))
+		for (var/obj/item/weapon/telephone/TLG in world)
 			if (TLG.phonenumber == target && TLG.phonenumber != origin)
 				if (!TLG.ringing)
+					TLG.ringing = TRUE
 					TLG.ringproc(origin, originphone)
-			for (var/mob/living/human/H in range(maxrange,src))
-				for (var/obj/item/weapon/telephone/TLGH in H)
-					if (TLGH.phonenumber == target && TLGH.phonenumber != origin)
-						if (!TLGH.ringing)
-							TLGH.ringproc(origin, originphone)
-	lastproc = world.time+3
+					if (user)
+						user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] Telephone:</b> </font>Ringing [target]..."
 
 /obj/item/weapon/telephone/wireless
 	name = "telephone"
@@ -238,9 +240,32 @@ var/list/global/phone_numbers = list()
 	icon_state = "telephone"
 	connected = TRUE
 	wireless = TRUE
-	maxrange = 30
+	maxrange = 40
 
-/obj/item/weapon/telephone/wireless/police
+/obj/item/weapon/telephone/mobile/police
 	name = "911 terminal"
 	desc = "Emergency calls will be received here."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "radio_transmitter"
 	phonenumber = 911
+	anchored = TRUE
+	New()
+		..()
+		phone_numbers += phonenumber
+/obj/item/weapon/telephone/mobile/faction
+/obj/item/weapon/telephone/mobile/faction/red
+	name = "Red phone"
+/obj/item/weapon/telephone/mobile/faction/blue
+	name = "Blue phone"
+/obj/item/weapon/telephone/mobile/faction/green
+	name = "Green phone"
+/obj/item/weapon/telephone/mobile/faction/yellow
+	name = "Yellow phone"
+
+/obj/item/weapon/telephone/mobile/faction/New()
+	..()
+	contacts += list(list("Emergency",911))
+	spawn(100)
+		for (var/obj/item/weapon/telephone/mobile/faction/F in world)
+			if (F != src)
+				contacts += list(list(F.name,F.phonenumber))

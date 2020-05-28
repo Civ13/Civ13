@@ -131,4 +131,6 @@
 	buckle_dir = SOUTH
 	buckle_lying = TRUE
 	not_movable = FALSE
+	density = FALSE
+	opacity = FALSE
 	not_disassemblable = FALSE
