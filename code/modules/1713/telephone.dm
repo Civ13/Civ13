@@ -21,7 +21,6 @@
 	var/maxrange = 0
 
 var/list/global/phone_numbers = list()
-
 /obj/item/weapon/telephone/New()
 	..()
 	if (phonenumber == 0)
@@ -239,3 +238,8 @@ var/list/global/phone_numbers = list()
 	connected = TRUE
 	wireless = TRUE
 	maxrange = 30
+
+/obj/item/weapon/telephone/wireless/police
+	name = "911 terminal"
+	desc = "Emergency calls will be received here."
+	phonenumber = 911

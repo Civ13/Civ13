@@ -744,3 +744,39 @@
 	restricts_view = 2
 	flags_inv = HIDEMASK|BLOCKHAIR|BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 65, gun = 5, energy = 35, bomb = 35, bio = 30, rad = FALSE)
+
+
+/obj/item/weapon/storage/belt/police
+	name = "police belt"
+	desc = "A belt that can hold the standard issue gear of police officers."
+	icon_state = "gerbelt"
+	item_state = "gerbelt"
+	storage_slots = 10
+	max_w_class = 3
+	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		)
+/obj/item/weapon/storage/belt/police/New()
+	..()
+	new /obj/item/weapon/melee/nightbaton(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/glock17(src)

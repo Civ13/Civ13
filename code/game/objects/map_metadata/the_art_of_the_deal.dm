@@ -124,6 +124,54 @@
 		/obj/item/clothing/glasses/nvg = 20,
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 160,
 	)
+/obj/structure/vending/police_equipment
+	name = "police equipment"
+	desc = "All the equipment to keep your officers in top shape."
+	icon_state = "apparel_german2"
+	products = list(
+		/obj/item/stack/medical/bruise_pack/gauze = 15,
+		/obj/item/clothing/accessory/holster/hip = 15,
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 15,
+		/obj/item/clothing/glasses/sunglasses = 15,
+		/obj/item/clothing/gloves/thick/swat = 15,
+		/obj/item/clothing/head/helmet/swat = 15,
+		/obj/item/clothing/mask/gas/swat = 15,
+		/obj/item/clothing/suit/police = 15,
+		/obj/item/clothing/head/helmet/constable = 15,
+		/obj/item/clothing/under/constable = 15,
+		/obj/item/clothing/shoes/swat = 15,
+		/obj/item/weapon/storage/backpack/civbag = 15,
+		/obj/item/weapon/melee/nightbaton = 15,
+		/obj/item/weapon/storage/box/handcuffs = 10,
+	)
+	attack_hand(mob/user as mob)
+		if (user.original_job_title == "Police Officer")
+			..()
+		else
+		 user << "You do not have access to this."
+		 return
+/obj/structure/vending/police_weapons
+	name = "police weapons"
+	desc = "When the baton is not enough."
+	icon_state = "weapons_sof"
+	products = list(
+	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
+	/obj/item/ammo_magazine/shellbox/rubber = 10,
+	/obj/item/ammo_magazine/shellbox = 10,
+	/obj/item/weapon/gun/projectile/pistol/glock17 = 20,
+	/obj/item/ammo_magazine/glock17 = 50,
+	/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 5,
+	/obj/item/ammo_casing/grenade_l/teargas = 20,
+	/obj/item/weapon/grenade/flashbang = 30,
+	/obj/item/weapon/grenade/chemical/xylyl_bromide = 10,
+
+	)
+	attack_hand(mob/user as mob)
+		if (user.original_job_title == "Police Officer")
+			..()
+		else
+		 user << "You do not have access to this."
+		 return
 /obj/item/weapon/disk
 	name = "diskette"
 	desc = "Some kind of diskette."

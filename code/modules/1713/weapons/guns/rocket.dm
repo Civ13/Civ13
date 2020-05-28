@@ -420,6 +420,51 @@
 	w_class = 4
 	slot_flags = SLOT_POCKET
 
+/obj/item/ammo_casing/grenade_l/teargas
+	name = "40mm grenade"
+	desc = "A high explosive designed to be fired from a launcher."
+	icon_state = "g40mm_gas"
+	projectile_type = /obj/item/missile/teargas
+
+/obj/item/missile/teargas
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "g40mm_gas"
+	heavy_armor_penetration = 0
+	primed = null
+	throwforce = 6
+	allow_spin = TRUE
+	var/datum/effect/effect/system/smoke_spread/bad/smoke
+	var/stype = /datum/effect/effect/system/smoke_spread/bad
+	throw_impact(atom/hit_atom)
+		if(primed)
+			playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
+			smoke.set_up(10, FALSE, usr ? usr.loc : loc)
+			spawn(0)
+				smoke.start()
+				sleep(10)
+				smoke.start()
+				sleep(10)
+				smoke.start()
+				sleep(10)
+				smoke.start()
+
+			sleep(80)
+			qdel(src)
+			return
+		else
+			..()
+		return
+
+/obj/item/missile/teargas/New()
+	..()
+	smoke = PoolOrNew(stype)
+	smoke.attach(src)
+
+/obj/item/missile/teargas/Destroy()
+	qdel(smoke)
+	smoke = null
+	return ..()
+
 /obj/item/missile/grenade
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "g40mm"
