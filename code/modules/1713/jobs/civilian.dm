@@ -2139,7 +2139,7 @@
 	uniform1.attackby(hiph, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/constable(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 	H.add_note("Role", "You are a member of the police force. Your objectives are to arrest as many businessmen as possible and aprehend money and disks!")
 	H.setStat("strength", STAT_NORMAL)
