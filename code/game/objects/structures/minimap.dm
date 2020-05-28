@@ -134,7 +134,7 @@
 				tst = "(Unresponsive)"
 			else if (H.stat == DEAD)
 				tst = "(Dead)"
-			slist += "<br>[H.name] at [H.get_coded_loc()] ([H.x],[H.y]) [tst]<br>"
+			slist += "<br><b>[H.name]</b> at <b>[H.get_coded_loc()]</b> ([H.x],[H.y]) <b><i>[tst]</i></b><br>"
 /obj/structure/sign/infopanel/proc/do_html(var/mob/m)
 
 	if (m)

@@ -3,10 +3,9 @@
 	title = "The Art of the Deal"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
-	respawn_delay = 0
+	respawn_delay = 3000
 	is_singlefaction = TRUE
 	no_winner ="The fighting is still going."
-
 	faction_organization = list(
 		CIVILIAN)
 
@@ -23,19 +22,29 @@
 	var/list/winner_ckeys = list()
 	faction1 = CIVILIAN
 	faction2 = PIRATES
-	gamemode = "Battleroyale"
+	gamemode = "Negociations"
+	var/list/scores = list(
+		"Red Corporation" = 0,
+		"Blue Syndicate" = 0,
+		"Green Enterprises" = 0,
+		"Yellow Conglomerate" = 0,
+		"Police" = 0,)
 	required_players = 6
 
 /obj/map_metadata/art_of_the_deal/New()
 	..()
+	spawn(3000)
+		score()
 	var/newnamea = list("Red Corporation" = list(230,230,230,null,0,"sun","#7F0000","#7F7F7F",0,0))
 	var/newnameb = list("Blue Syndicate" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Green Enterprises" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Yellow Conglomerate" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
+	var/newnamee = list("Police" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
+	custom_civs += newnamee
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
@@ -52,6 +61,36 @@
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
+/obj/map_metadata/art_of_the_deal/proc/score()
+	world << "<b><font color='yellow' size=3>Scores:</font></b>"
+	for(var/obj/structure/closet/safe/SF in world)
+		if (SF.faction)
+			var/list/tlist = list(SF.faction,0)
+			for(var/obj/item/I in SF)
+				if (istype(I, /obj/item/weapon/disk))
+					var/obj/item/weapon/disk/D = I
+					if (D.faction && D.faction != SF.faction)
+						tlist[2]+=500
+				if (istype(I, /obj/item/stack/money))
+					var/obj/item/stack/money/M = I
+					tlist[2]+=M.amount*M.value/4
+			tlist[2] += scores[SF.faction]
+			world << "<big><font color='yellow' size=2>[tlist[1]]: [tlist[2]] points</font></big>"
+//five-o scores
+	var/list/tlist2 = list("Police",0)
+	for(var/obj/item/I in get_area(/area/caribbean/prison))
+		if (istype(I, /obj/item/weapon/disk))
+			var/obj/item/weapon/disk/D = I
+			if (D.faction)
+				tlist2[2]+=200
+		if (istype(I, /obj/item/stack/money))
+			var/obj/item/stack/money/M = I
+			tlist2[2]+=M.amount*M.value/8
+	tlist2[2] += scores["Police"]
+	world << "<big><font color='yellow' size=2>[tlist2[1]]: [tlist2[2]] points</font></big>"
+	spawn(3000)
+		score()
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/structure/vending/business_apparel
 	name = "equipment rack"
 	desc = "All the equipment you need for that special business meeting."
@@ -188,26 +227,31 @@
 	sharp = FALSE
 	edge = FALSE
 	w_class = 1.0
+	var/faction = null
 
 /obj/item/weapon/disk/red
 	name = "red diskette"
 	icon_state = "disk_red"
 	item_state = "disk_red"
+	faction = "Red Corporation"
 
 /obj/item/weapon/disk/blue
 	name = "blue diskette"
 	icon_state = "disk_blue"
 	item_state = "disk_blue"
+	faction = "Blue Syndicate"
 
 /obj/item/weapon/disk/yellow
 	name = "yellow diskette"
 	icon_state = "disk_yellow"
 	item_state = "disk_yellow"
+	faction = "Yellow Conglomerate"
 
 /obj/item/weapon/disk/green
 	name = "green diskette"
 	icon_state = "disk_green"
 	item_state = "disk_green"
+	faction = "Green Enterprises"
 
 /obj/item/weapon/package
 	name = "package"
