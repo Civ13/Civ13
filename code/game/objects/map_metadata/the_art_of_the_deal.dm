@@ -5,8 +5,6 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	is_singlefaction = TRUE
-	battleroyale = TRUE
-
 	no_winner ="The fighting is still going."
 
 	faction_organization = list(

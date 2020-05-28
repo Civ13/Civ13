@@ -134,6 +134,22 @@
 	name = "yeld sign"
 	icon_state = "yeld"
 
+/obj/structure/sign/traffic/gas
+	name = "gas station sign"
+	icon_state = "gasolinesign"
+
+/obj/structure/sign/traffic/cafe
+	name = "cafe sign"
+	icon_state = "cafesign"
+
+/obj/structure/sign/traffic/parking
+	name = "parking sign"
+	icon_state = "parking"
+
+/obj/structure/sign/traffic/waysign
+	name = "intersection sign"
+	icon_state = "waysign"
+
 /obj/structure/sign/traffic/zebracrossing
 	name = "pedestrian crossing"
 	icon_state = "zebra"
