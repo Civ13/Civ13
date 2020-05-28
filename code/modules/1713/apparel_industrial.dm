@@ -18,24 +18,28 @@
 	desc = "a curved leather hat."
 	icon_state = "cowboy"
 	item_state = "cowboy"
+	heat_protection = HEAD
 
 /obj/item/clothing/head/cowboyhat2
 	name = "dark cowboy hat"
 	desc = "a grayish, curved leather hat."
 	icon_state = "cowboy2"
 	item_state = "cowboy2"
+	heat_protection = HEAD
 
 /obj/item/clothing/head/vaquerohat
 	name = "vaquero hat"
-	desc = "a wide brimmed hat with a feather in the top, favored by mexican cowboys."
+	desc = "a wide brimmed hat with a feather in the top, favored by mexican cowboys. The wide brim helps keep the sun off the wearer's face."
 	icon_state = "vaquerohat"
 	item_state = "vaquerohat"
+	heat_protection = HEAD|EYES
 
 /obj/item/clothing/head/bandit
 	name = "bandit hat"
-	desc = "a dark and long brimmed cowboy hat with a grim presence."
+	desc = "a dark and long brimmed cowboy hat with a grim presence. Despite the dark colors, it helps keep the sun off the wearer's face."
 	icon_state = "bandit"
 	item_state = "bandit"
+	heat_protection = HEAD|EYES
 
 /obj/item/clothing/head/unionhat
 	name = "dark union hat"
@@ -118,10 +122,19 @@
 
 
 /obj/item/clothing/head/sombrero
-	name = "cowboy hat"
-	desc = "Ay caramba!"
+	name = "sombrero"
+	desc = "Ay caramba! The wide brim helps keep the sun off the wearer's face"
 	icon_state = "sombrero"
 	item_state = "sombrero"
+	heat_protection = HEAD|EYES
+
+/obj/item/clothing/head/ten_gallon
+	name = "white ten gallon hat"
+	desc = "Hat of choice of made-men and those aspiring to wealth & greatness. Its white wide brim helps keep the sun off wearer's face."
+	icon_state = "ten_gallon_hat_white"
+	item_state = "ten_gallon_hat_white"
+	heat_protection = HEAD|EYES
+
 /* Industrial Accessories & Items*/
 
 /obj/item/clothing/accessory/armband/blue_scarf
@@ -222,6 +235,27 @@
 	item_state = "worker_outfit"
 	worn_state = "worker_outfit"
 
+/obj/item/clothing/under/texan
+	name = "texan shirt outfit"
+	desc = "A white undershirt with beige briefs. it has texan style bowtie."
+	icon_state = "texas"
+	item_state = "texas"
+	worn_state = "texas"
+
+/obj/item/clothing/under/gang_leader // Welcome to sauce or loss with the Van Derlinde Gang
+	name = "classy outlaw outfit"
+	desc = "A well made black and red outfit with white arms and gold buttons. Often worn by self styled leaders, always with a plan."
+	icon_state = "gang_leader"
+	item_state = "gang_leader"
+	worn_state = "gang_leader"
+
+/obj/item/clothing/under/outlaw //alright arthur, show us what you got
+	name = "outlaw outfit"
+	desc = "A blue shirt with blue denim trousers and white suspenders. Often worn by people at arms length with the wrong side of the law, clothes sense is no judicator of character however."
+	icon_state = "arthur_morgan"
+	item_state = "arthur_morgan"
+	worn_state = "arthur_morgan"
+
 /obj/item/clothing/under/bartender
 	name = "bartender Outfit"
 	desc = "A stilish bartender outfit."
@@ -308,6 +342,13 @@ obj/item/clothing/under/confederate_uniform/New()
 	icon_state = "bluevest"
 	item_state = "bluevest"
 	worn_state = "bluevest"
+
+/obj/item/clothing/suit/storage/jacket/texan
+	name = "cream short jacket"
+	desc = "A cream colored short jacket."
+	icon_state = "texas"
+	item_state = "texas"
+	worn_state = "texas"
 
 /* Industrial Boots*/
 
@@ -466,6 +507,13 @@ obj/item/clothing/under/confederate_uniform/New()
 	item_state = "kool_kids_klub"
 	worn_state = "kool_kids_klub"
 	body_parts_covered = FULL_BODY
+
+/obj/item/clothing/under/dimmadome
+	name = "eccentric businessman outfit"
+	desc = "A cream jacket with white undershirt, the jacket and the shirt seem to be sown into one piece for convenience and it has texan style bowtie. This person probably has a lot of money.."
+	icon_state = "doug_dimmadome"
+	item_state = "doug_dimmadome"
+	worn_state = "doug_dimmadome"
 
 /obj/item/clothing/accessory/storage/webbing/civil_war
 	name = "cartridge rigging"

@@ -24,6 +24,7 @@
 	gun_type = GUN_TYPE_PISTOL
 	maxhealth = 55
 	gtype = "pistol"
+	load_method = SINGLE_CASING|SPEEDLOADER
 
 	accuracy_list = list(
 		// small body parts: head, hand, feet
@@ -183,7 +184,6 @@
 	icon_state = "nagant"
 	w_class = 2
 	caliber = "a762x38"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c762x38mmR
@@ -201,7 +201,6 @@
 	icon_state = "m1892"
 	w_class = 2
 	caliber = "a8x27"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c8x27
@@ -252,7 +251,6 @@
 	w_class = 2
 	caliber = "a32"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	equiptimer = 4
@@ -273,7 +271,6 @@
 	icon_state = "enfield02"
 	w_class = 2
 	caliber = "a41"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c41
@@ -289,7 +286,6 @@
 	w_class = 2
 	caliber = "a455"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c455
@@ -322,7 +318,6 @@
 	base_icon = "graysonfito"
 	w_class = 2
 	caliber = "a44magnum"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
@@ -338,7 +333,6 @@
 	base_icon = "biggi"
 	w_class = 2
 	caliber = "a45"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
@@ -354,7 +348,6 @@
 	base_icon = "magnum58"
 	w_class = 2
 	caliber = "a44magnum"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
@@ -371,7 +364,6 @@
 	w_class = 1
 	caliber = "a32"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c32
@@ -390,7 +382,6 @@
 	icon_state = "t26revolver"
 	w_class = 2
 	caliber = "c9mm_jap_revolver"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c9mm_jap_revolver
@@ -413,7 +404,6 @@
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c44p
 	weight = 0.8
-	load_method = SINGLE_CASING
 	load_delay = 6
 	gun_safety = TRUE
 

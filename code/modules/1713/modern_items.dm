@@ -989,7 +989,7 @@
 
 /obj/structure/computer/
 	name = "Parent Computer"
-	desc = "A simplistic computer. This is the parent object"
+	desc = "A simplistic computer. This is the parent object."
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "1980_computer_off"
 	var/peripherals = list()
@@ -1003,6 +1003,13 @@
 	var/active = FALSE
 	powered = FALSE
 	powerneeded = 1
+
+/obj/structure/computer/nopower
+	name = "Desktop Computer"
+	desc = "A desktop computer running the latest version of UngaOS."
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
 
 /obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))

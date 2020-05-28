@@ -134,6 +134,8 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 				if (!protec)
 					if (current_weight >= 800)
 						visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
+						for(var/obj/item/I in L)
+							qdel(I)
 						L.crush()
 						if (L)
 							qdel(L)
@@ -152,6 +154,8 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 								L.forceMove(get_turf(get_step(TT,dir)))
 							else
 								visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+								for(var/obj/item/I in SA)
+									qdel(I)
 								SA.crush()
 
 			for(var/obj/structure/O in T)
@@ -172,7 +176,7 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 							visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 							return FALSE
 					else if (O.density == FALSE && !(O in transporting))
-						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/rails))
+						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/rails))
 	//						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
 
@@ -523,6 +527,8 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 					var/turf/toget = matrix_current_locs[dlocfind][1]
 					for (var/mob/living/ML in toget)
 						if (!locate(ML) in transporting)
+							for(var/obj/item/I in ML)
+								qdel(I)
 							ML.crush()
 					for (var/obj/structure/ST in toget)
 						if (!ST.density)

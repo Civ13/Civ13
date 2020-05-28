@@ -5,8 +5,6 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	is_singlefaction = TRUE
-	battleroyale = TRUE
-
 	no_winner ="The fighting is still going."
 
 	faction_organization = list(
@@ -60,7 +58,6 @@
 	icon_state = "apparel_german2"
 	products = list(
 		/obj/item/stack/medical/bruise_pack/gauze = 10,
-		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
 		/obj/item/clothing/accessory/storage/webbing/pouches = 10,
 		/obj/item/weapon/storage/backpack/duffel = 5,
 		/obj/item/weapon/storage/briefcase = 5,
@@ -68,12 +65,12 @@
 		/obj/item/clothing/accessory/holster/chest = 10,
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 10,
 		/obj/item/clothing/glasses/sunglasses = 10,
-		/obj/item/clothing/glasses/nvg = 2,
 		/obj/item/clothing/gloves/fingerless = 10,
 		/obj/item/clothing/mask/balaclava = 10,
 		/obj/item/clothing/head/ghillie = 1,
 		/obj/item/clothing/suit/storage/ghillie = 1,
-
+		/obj/item/flashlight/flashlight = 10,
+		/obj/item/ammo_magazine/emptyspeedloader = 20,
 //		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 10,
 //		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
 //		/obj/item/clothing/suit/storage/jacket/navy_suit = 10,
@@ -81,29 +78,52 @@
 //		/obj/item/clothing/suit/storage/jacket/checkered_suit = 10,
 	)
 
-/obj/structure/vending/business_weapons
+/obj/structure/vending/sales/business_weapons
 	name = "weapon and ammo rack"
 	desc = "When you need to pack that extra punch."
 	icon_state = "weapons_sof"
 	products = list(
-		/obj/item/weapon/gun/projectile/pistol/colthammerless = 3,
-		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 3,
-		/obj/item/weapon/gun/projectile/pistol/m1911 = 2,
-		/obj/item/weapon/gun/projectile/revolver/smithwesson = 3,
-		/obj/item/weapon/gun/projectile/shotgun/remington870 = 1,
-		/obj/item/weapon/gun/projectile/boltaction/m24 = 1,
-		/obj/item/weapon/attachment/silencer/pistol = 3,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = 5,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 5,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 5,
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = 10,
+		/obj/item/weapon/gun/projectile/shotgun/remington870 = 2,
+		/obj/item/weapon/gun/projectile/boltaction/m24 = 2,
+		/obj/item/weapon/attachment/silencer/pistol = 5,
 
 		/obj/item/weapon/plastique/c4 = 2,
-		/obj/item/ammo_magazine/colthammerless = 10,
-		/obj/item/ammo_magazine/colthammerless/a380acp = 10,
-		/obj/item/ammo_magazine/m1911 = 5,
+		/obj/item/ammo_magazine/colthammerless = 20,
+		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
+		/obj/item/ammo_magazine/m1911 = 20,
 		/obj/item/ammo_magazine/c32 = 10,
-		/obj/item/ammo_magazine/shellbox = 1,
-		/obj/item/ammo_magazine/shellbox/slug = 1,
-		/obj/item/ammo_magazine/m24 = 3,
-	)
+		/obj/item/ammo_magazine/shellbox = 10,
+		/obj/item/ammo_magazine/shellbox/slug = 10,
+		/obj/item/ammo_magazine/m24 = 10,
 
+		/obj/item/clothing/glasses/nvg = 2,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
+	)
+	prices = list(
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = 80,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 80,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 120,
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = 60,
+		/obj/item/weapon/gun/projectile/shotgun/remington870 = 160,
+		/obj/item/weapon/gun/projectile/boltaction/m24 = 200,
+		/obj/item/weapon/attachment/silencer/pistol = 40,
+
+		/obj/item/weapon/plastique/c4 = 120,
+		/obj/item/ammo_magazine/colthammerless = 20,
+		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
+		/obj/item/ammo_magazine/m1911 = 20,
+		/obj/item/ammo_magazine/c32 = 40,
+		/obj/item/ammo_magazine/shellbox = 40,
+		/obj/item/ammo_magazine/shellbox/slug = 40,
+		/obj/item/ammo_magazine/m24 = 20,
+
+		/obj/item/clothing/glasses/nvg = 20,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 160,
+	)
 /obj/item/weapon/disk
 	name = "diskette"
 	desc = "Some kind of diskette."
@@ -158,8 +178,48 @@
 	edge = FALSE
 	w_class = 3.0
 
-/obj/structure/sign/map
-	desc = "A detailed area map for planning operations."
-	name = "area map"
-	icon_state = "areamap"
-	var/icon/img
+//////////////////SCREEN HELPERS////////////////////////////
+/obj/screen/areashow_aod
+	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
+	maptext_width = 32*8
+	maptext_x = (32*8 * -0.5)+32
+	maptext_y = 32*0.75
+	icon_state = "blank"
+
+/obj/screen/areashow_aod/New()
+	..()
+	spawn(50)
+		update()
+
+/obj/screen/areashow_aod/proc/update()
+	if (!parentmob || !src)
+		return
+	var/cloc = "Unknown"
+	var/a = ceil(parentmob.x/22)
+	var/b = 10-ceil(parentmob.y/22)
+	switch(a)
+		if (0 to 1)
+			a = "A"
+		if (1 to 2)
+			a = "B"
+		if (2 to 3)
+			a = "C"
+		if (3 to 4)
+			a = "D"
+		if (4 to 5)
+			a = "E"
+		if (5 to 6)
+			a = "F"
+		if (6 to 7)
+			a = "G"
+		if (7 to 8)
+			a = "H"
+		if (8 to 9)
+			a = "I"
+		if (9 to 10)
+			a = "J"
+	cloc = "[a][b]"
+	maptext = "<center><font color='yellow'><b>[cloc]</b>  ([parentmob.x],[parentmob.y])</font></center>"
+
+	spawn(10)
+		update()

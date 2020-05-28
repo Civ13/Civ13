@@ -378,6 +378,13 @@
 	item_state = "nun"
 	worn_state = "nun"
 
+/obj/item/clothing/under/christian_priest
+	name = "black priest outfit"
+	desc = "A plain black outfit with a clerical white collar around the neck, often worn by priests of organized religions."
+	icon_state = "christian_priest"
+	item_state = "christian_priest"
+	worn_state = "christian_priest"
+
 /* Medieval Armor*/
 
 /obj/item/clothing/suit/armor/medieval

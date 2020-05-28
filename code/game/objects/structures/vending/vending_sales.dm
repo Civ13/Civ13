@@ -165,32 +165,51 @@
 		data["mode"] = TRUE
 		data["company"] = owner
 		data["product"] = currently_vending.product_name
-		data["price"] = currently_vending.price*10
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			data["price"] = currently_vending.price/4
+		else
+			data["price"] = currently_vending.price*10
 		data["message_err"] = FALSE
 		data["message"] = status_message
 		data["message_err"] = status_error
-		data["moneyin"] = moneyin*10
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			data["moneyin"] = moneyin/4
+		else
+			data["moneyin"] = moneyin*10
 	else
 		data["mode"] = FALSE
 		data["company"] = owner
-		data["moneyin"] = moneyin*10
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			data["moneyin"] = moneyin/4
+		else
+			data["moneyin"] = moneyin*10
 		var/list/listed_products = list()
 
 		for (var/key = TRUE to product_records.len)
 			var/datum/data/vending_product/I = product_records[key]
-
-			listed_products.Add(list(list(
-				"key" = key,
-				"name" = I.product_name,
-				"price" = I.price*10,
-				"color" = I.display_color,
-				"amount" = I.amount)))
+			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+				listed_products.Add(list(list(
+					"key" = key,
+					"name" = I.product_name,
+					"price" = I.price/4,
+					"color" = I.display_color,
+					"amount" = I.amount)))
+			else
+				listed_products.Add(list(list(
+					"key" = key,
+					"name" = I.product_name,
+					"price" = I.price*10,
+					"color" = I.display_color,
+					"amount" = I.amount)))
 
 		data["products"] = listed_products
 
 	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
-		ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
+		else
+			ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
 		ui.set_initial_data(data)
 		ui.open()
 

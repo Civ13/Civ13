@@ -60,7 +60,10 @@
 	icon_state = "oilpump1"
 
 /obj/structure/fuelpump/proc/updatedesc()
-	desc = "This pump has [vol] units of [fueltype] available. Price: [price*10] silver coins per unit. Copper and Gold accepted too."
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		desc = "This pump has [vol] units of [fueltype] available. Price: [price/4] dollars per unit."
+	else
+		desc = "This pump has [vol] units of [fueltype] available. Price: [price*10] silver coins per unit. Copper and Gold accepted too."
 
 /obj/structure/fuelpump/proc/do_color()
 	if (customcolor)

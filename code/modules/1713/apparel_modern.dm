@@ -733,3 +733,14 @@
 	slowdown = 0.10
 	w_class = 3
 	weight = 3.0
+
+/obj/item/clothing/head/helmet/motorcycle
+	name = "motorcycle helmet"
+	desc = "Protects your head from injuries if you crash your bike."
+	icon_state = "motorcycle"
+	item_state = "motorcycle"
+	worn_state = "motorcycle"
+	body_parts_covered = FACE|EYES|HEAD
+	restricts_view = 2
+	flags_inv = HIDEMASK|BLOCKHAIR|BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 65, gun = 5, energy = 35, bomb = 35, bio = 30, rad = FALSE)

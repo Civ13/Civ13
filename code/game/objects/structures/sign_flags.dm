@@ -70,10 +70,12 @@
 	icon_state = "jihad4"
 
 /obj/structure/sign/clock
-	name = "\improper Broken clock"
-	desc = "Stopped at 5 o'clock."
+	name = "\improper clock"
+	desc = "A clock."
 	icon_state = "clock"
-
+/obj/structure/sign/clock/examine(mob/user)
+	..()
+	user << "<big>It is now [clock_time()].</big>"
 /obj/structure/sign/wide
 	icon = 'icons/obj/decals_wide.dmi'
 	bound_x = 32
@@ -131,6 +133,22 @@
 /obj/structure/sign/traffic/yeld
 	name = "yeld sign"
 	icon_state = "yeld"
+
+/obj/structure/sign/traffic/gas
+	name = "gas station sign"
+	icon_state = "gasolinesign"
+
+/obj/structure/sign/traffic/cafe
+	name = "cafe sign"
+	icon_state = "cafesign"
+
+/obj/structure/sign/traffic/parking
+	name = "parking sign"
+	icon_state = "parking"
+
+/obj/structure/sign/traffic/waysign
+	name = "intersection sign"
+	icon_state = "waysign"
 
 /obj/structure/sign/traffic/zebracrossing
 	name = "pedestrian crossing"

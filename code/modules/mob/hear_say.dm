@@ -110,14 +110,13 @@
 			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
 				play_tts(message2,speaker)
 
-/mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/radio/source, var/obj/structure/radio/destination)
+/mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/destination, var/obj/origin)
 
 	if (!client || !message)
 		return
 
 	if (!destination)
-		destination = source
-
+		destination = origin
 	message = capitalize(message)
 
 	if (sleeping || stat==1) //If unconscious or sleeping
@@ -154,16 +153,25 @@
 
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
-
+	message = replacetext(message,";", "")
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
 	else
 		var/fontsize = 2
+		var/full_message = ""
+		if (istype(origin, /obj/structure/radio))
+			var/obj/structure/radio/RD = origin
+			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq][isnum(RD.freq) ? "kHz" : ""]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			if (track)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq][isnum(RD.freq) ? "kHz" : ""]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+		else
+			var/obj/item/weapon/radio/RD = origin
+			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq][isnum(RD.freq) ? "kHz" : ""]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			if (track)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq][isnum(RD.freq) ? "kHz" : ""]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 
-		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font></b><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
-		if (track)
-			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font></b><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+
 		on_hear_radio(destination, full_message)
 
 /mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/source, var/obj/item/weapon/telephone/destination)
