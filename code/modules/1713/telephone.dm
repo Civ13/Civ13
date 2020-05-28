@@ -93,7 +93,8 @@ var/list/global/phone_numbers = list()
 		if (!input)
 			return
 		var/tgtnum = 0
-		tgtnum = sanitize_integer(input, min=1000, max=9999, default=0) //0 as a first digit doesnt really work
+		if (tgtnum != 911)
+			tgtnum = sanitize_integer(input, min=1000, max=9999, default=0) //0 as a first digit doesnt really work
 		if (tgtnum == 0)
 			return
 		if (!wireless)

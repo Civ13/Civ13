@@ -765,6 +765,7 @@
 		/obj/item/ammo_casing,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
 		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/melee/nightbaton,
 		/obj/item/stack/medical/bruise_pack,
 		/obj/item/weapon/whistle,
 		/obj/item/weapon/pen,

@@ -219,11 +219,13 @@
 	throwforce = 15
 	heavy_armor_penetration = 12
 	allow_spin = FALSE
+	var/explosive = TRUE
 	throw_impact(atom/hit_atom)
 		if(primed)
-			explosion(hit_atom, 0, 1, 2, 4)
-			handle_vehicle_hit(hit_atom,firer)
-			qdel(src)
+			if (explosive)
+				explosion(hit_atom, 0, 1, 2, 4)
+				handle_vehicle_hit(hit_atom,firer)
+				qdel(src)
 		else
 			..()
 		return
@@ -369,14 +371,14 @@
 			user.drop_item()
 			I.loc = src
 			rockets += I
-			user << "You put the grenade in \the [src]."
+			user << "You put \the [I] in \the [src]."
 		else
 			usr << "\The [src] cannot hold more grenades."
 
 /obj/item/weapon/gun/launcher/grenadelauncher/consume_next_projectile()
 	if(rockets.len)
 		var/obj/item/ammo_casing/rocket/I = rockets[1]
-		var/obj/item/missile/grenade/M = new (src)
+		var/obj/item/missile/M = new I.projectile_type(src)
 		M.primed = 1
 		rockets -= I
 		return M
@@ -421,8 +423,8 @@
 	slot_flags = SLOT_POCKET
 
 /obj/item/ammo_casing/grenade_l/teargas
-	name = "40mm grenade"
-	desc = "A high explosive designed to be fired from a launcher."
+	name = "40mm tear gas canister"
+	desc = "A canister of tear gas, to be fired from a launcher."
 	icon_state = "g40mm_gas"
 	projectile_type = /obj/item/missile/teargas
 
@@ -430,29 +432,25 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "g40mm_gas"
 	heavy_armor_penetration = 0
+	explosive = FALSE
 	primed = null
 	throwforce = 6
 	allow_spin = TRUE
 	var/datum/effect/effect/system/smoke_spread/bad/smoke
-	var/stype = /datum/effect/effect/system/smoke_spread/bad
+	var/stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/xylyl_bromide
 	throw_impact(atom/hit_atom)
-		if(primed)
-			playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
-			smoke.set_up(10, FALSE, usr ? usr.loc : loc)
-			spawn(0)
-				smoke.start()
-				sleep(10)
-				smoke.start()
-				sleep(10)
-				smoke.start()
-				sleep(10)
-				smoke.start()
-
-			sleep(80)
-			qdel(src)
-			return
-		else
-			..()
+		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
+		smoke.set_up(10, FALSE, usr ? usr.loc : loc)
+		spawn(0)
+			smoke.start()
+			sleep(10)
+			smoke.start()
+			sleep(10)
+			smoke.start()
+			sleep(10)
+			smoke.start()
+		sleep(80)
+		qdel(src)
 		return
 
 /obj/item/missile/teargas/New()
