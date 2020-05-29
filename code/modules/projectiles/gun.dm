@@ -160,7 +160,7 @@
 					if (off_hand)
 						off_hand_fire = TRUE
 						spawn(3)
-							off_hand.Fire(A,user,params, accuracy = 0.66)
+							off_hand.Fire(A,user,params, accuracy_mod = 0.66)
 	if (!off_hand_fire)
 		Fire(A,user,params) //Otherwise, fire normally.
 	else
@@ -522,7 +522,7 @@
 			if (silencer)
 				playsound(user, silencer_fire_sound, 100-silencer.reduction, TRUE,100-silencer.reduction)
 			else
-				playsound(user, fire_sound, 100, TRUE,100-silencer.reduction)
+				playsound(user, fire_sound, 100, TRUE,100)
 
 			user.attack_log += "\[[time_stamp()]\] [user]/[user.ckey]</b> shot themselves in the [organ_name]"
 
