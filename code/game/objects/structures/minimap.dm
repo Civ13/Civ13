@@ -109,6 +109,7 @@
 /obj/item/weapon/map
 	desc = "A portable map of the area."
 	name = "folding map"
+	icon = 'icons/obj/decals.dmi'
 	icon_state = "portable_areamap"
 	var/image/img
 	var/image/playerloc
@@ -117,19 +118,21 @@
 
 /obj/item/weapon/map/New()
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
-	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "reddot",layer=img.layer+0.01)
+	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "reddot",layer=src.layer+1)
 
 /obj/item/weapon/map/examine(mob/user)
+	update_icon()
 	user << browse(getFlatIcon(img),"window=popup;size=630x630")
 
 /obj/item/weapon/map/update_icon()
 	..()
 	img.overlays.Cut()
-	playerloc.pixel_x = min(600,ceil(get_turf(src).x*2.72)-4)
-	playerloc.pixel_y = min(600,ceil(get_turf(src).y*2.72)-4)
+	playerloc.pixel_x = min(600,ceil(get_turf(src).x*2.72))
+	playerloc.pixel_y = min(600,ceil(get_turf(src).y*2.72))
 	img.overlays += playerloc
 
 /obj/item/weapon/map/attack_self(mob/user)
+	update_icon()
 	examine(user)
 //////////////////////////////////////////
 

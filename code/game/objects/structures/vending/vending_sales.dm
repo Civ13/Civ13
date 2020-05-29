@@ -260,21 +260,27 @@
 							map.custom_company_value[owner] += price_with_tax*inp
 							if (map.custom_civs[H.civilization])
 								map.custom_civs[H.civilization][5] += salestax*inp
-						if (moneyin > 0 && moneyin <= 3)
-							var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-							NM.amount = moneyin/NM.value
-							if (NM.amount <= 0)
-								qdel(NM)
-						else if (moneyin > 3 && moneyin <= 40)
-							var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-							NM.amount = moneyin/NM.value
-							if (NM.amount <= 0)
-								qdel(NM)
+						if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
+							D.amount = moneyin/D.value
+							if (D.amount == 0)
+								qdel(D)
 						else
-							var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-							NM.amount = moneyin/NM.value
-							if (NM.amount <= 0)
-								qdel(NM)
+							if (moneyin > 0 && moneyin <= 3)
+								var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
+								NM.amount = moneyin/NM.value
+								if (NM.amount <= 0)
+									qdel(NM)
+							else if (moneyin > 3 && moneyin <= 40)
+								var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
+								NM.amount = moneyin/NM.value
+								if (NM.amount <= 0)
+									qdel(NM)
+							else
+								var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
+								NM.amount = moneyin/NM.value
+								if (NM.amount <= 0)
+									qdel(NM)
 						moneyin = 0
 						vend(R, usr, inp)
 						nanomanager.update_uis(src)
@@ -283,10 +289,16 @@
 			currently_vending = null
 
 		else if (href_list["remove_money"])
-			var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-			GC.amount = moneyin/0.4
-			if (GC.amount == 0)
-				qdel(GC)
+			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+				var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
+				D.amount = moneyin/D.value
+				if (D.amount == 0)
+					qdel(D)
+			else
+				var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+				GC.amount = moneyin/GC.value
+				if (GC.amount == 0)
+					qdel(GC)
 			moneyin = 0
 			nanomanager.update_uis(src)
 			return
