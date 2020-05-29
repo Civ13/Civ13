@@ -73,7 +73,7 @@
 		if (istype(target, /obj/structure/pot))
 			return
 
-		if (istype(target, /obj/item/weapon/sandbag))
+		if (istype(target, /obj/item/weapon/barrier))
 			return
 
 		if (!is_open_container() || !flag)

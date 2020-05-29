@@ -194,7 +194,7 @@
 					update_transparency(0)
 				else
 					update_transparency(1)
-			else if ((istype(S, /obj/structure/window) && !(istype(S, /obj/structure/window/sandbag) || istype(S, /obj/structure/window/snowwall)))  || istype(S, /obj/structure/window_frame))
+			else if ((istype(S, /obj/structure/window) && !(istype(S, /obj/structure/window/barrier) || istype(S, /obj/structure/window/snowwall)))  || istype(S, /obj/structure/window_frame))
 				var/found = FALSE
 				for(var/obj/structure/SS in S.loc)
 					if (istype(SS, /obj/structure/simple_door) || istype(SS, /obj/structure/curtain))

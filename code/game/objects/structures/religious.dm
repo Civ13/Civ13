@@ -607,7 +607,7 @@ obj/structure/religious/monument
 							HM.client.eye = HM.client.mob
 							HM.client.perspective = MOB_PERSPECTIVE
 					CF.forceMove(src.loc)
-	if (istype(W, /obj/item/weapon/sandbag) && open)
+	if (istype(W, /obj/item/weapon/barrier) && open)
 		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
 		filled++
 		qdel(W)

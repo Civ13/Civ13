@@ -3,7 +3,7 @@
 
 /mob/living/human/var/crouching = FALSE
 
-/obj/structure/window/sandbag
+/obj/structure/window/barrier
 	icon = 'icons/obj/structures.dmi'
 	name = "dirt wall"
 	icon_state = "dirt_wall"
@@ -17,16 +17,16 @@
 		..()
 		health = maxhealth
 
-/obj/structure/window/sandbag/sandbag
+/obj/structure/window/barrier/sandbag
 	name = "sandbag wall"
 	icon_state = "sandbag"
 	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 
-/obj/structure/window/sandbag/attack_hand(var/mob/user as mob)
+/obj/structure/window/barrier/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
-		if (istype(src, /obj/structure/window/sandbag/railing) || istype(src, /obj/structure/window/sandbag/jersey) || istype(src, /obj/structure/window/sandbag/sandstone))
+		if (istype(src, /obj/structure/window/barrier/railing) || istype(src, /obj/structure/window/barrier/jersey) || istype(src, /obj/structure/window/barrier/sandstone))
 			return
 		if (WWinput(user, "Dismantle this [src]?", "Dismantle [src]", "Yes", list("Yes", "No")) == "Yes")
 			visible_message("<span class='danger'>[user] starts dismantling the [src].</span>", "<span class='danger'>You start dismantling the [src].</span>")
@@ -34,16 +34,16 @@
 				visible_message("<span class='danger'>[user] finishes dismantling the [src].</span>", "<span class='danger'>You finish dismantling the [src].</span>")
 				var/turf = get_turf(src)
 
-				if (!istype(src, /obj/structure/window/sandbag/incomplete))
+				if (!istype(src, /obj/structure/window/barrier/incomplete))
 					for (var/v in TRUE to rand(4,6))
-						new /obj/item/weapon/sandbag(turf)
+						new /obj/item/weapon/barrier(turf)
 				else
-					var/obj/structure/window/sandbag/incomplete/I = src
+					var/obj/structure/window/barrier/incomplete/I = src
 					for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
-						new /obj/item/weapon/sandbag(turf)
+						new /obj/item/weapon/barrier(turf)
 				qdel(src)
 
-/obj/structure/window/sandbag/ex_act(severity)
+/obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
 		if (1.0)
 			qdel(src)
@@ -56,7 +56,7 @@
 				return ex_act(2.0)
 	return
 
-/obj/structure/window/sandbag/New(location, var/mob/creator)
+/obj/structure/window/barrier/New(location, var/mob/creator)
 	loc = location
 	flags |= ON_BORDER
 
@@ -83,20 +83,20 @@
 			pixel_x = FALSE
 
 //incomplete sandbag structures
-/obj/structure/window/sandbag/incomplete
+/obj/structure/window/barrier/incomplete
 	name = "incomplete dirt barricade"
 	icon_state = "dirt_wall_33%"
 	var/progress = FALSE
 
-/obj/structure/window/sandbag/sandbag/incomplete
+/obj/structure/window/barrier/sandbag/incomplete
 	name = "incomplete sandbag wall"
 	icon_state = "sandbag_33%"
 	var/progress = FALSE
 
-/obj/structure/window/sandbag/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
+/obj/structure/window/barrier/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
 	user.dir = get_dir(user, src)
-	if (istype(O, /obj/item/weapon/sandbag/sandbag))
-		var/obj/item/weapon/sandbag/sandbag/bag = O
+	if (istype(O, /obj/item/weapon/barrier/sandbag))
+		var/obj/item/weapon/barrier/sandbag/bag = O
 		if (bag.sand_amount <= 0)
 			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
 			return
@@ -106,57 +106,57 @@
 				icon_state = "sandbag_66%"
 			if (progress >= 3)
 				icon_state = "sandbag"
-				new/obj/structure/window/sandbag/sandbag(loc, dir)
+				new/obj/structure/window/barrier/sandbag(loc, dir)
 				qdel(src)
 			visible_message("<span class='danger'>[user] puts the sandbag into \the [src].</span>")
 			qdel(O)
 	else
 		return
 
-/obj/structure/window/sandbag/incomplete/ex_act(severity)
+/obj/structure/window/barrier/incomplete/ex_act(severity)
 	qdel(src)
 
-/obj/structure/window/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
+/obj/structure/window/barrier/incomplete/attackby(obj/O as obj, mob/user as mob)
 	user.dir = get_dir(user, src)
-	if (istype(O, /obj/item/weapon/sandbag))
+	if (istype(O, /obj/item/weapon/barrier))
 		if (progress < 3)
 			progress += 1
 			if (progress == 2)
 				icon_state = "dirt_wall_66%"
 			if (progress >= 3)
 				icon_state = "dirt_wall"
-				new/obj/structure/window/sandbag(loc, dir)
+				new/obj/structure/window/barrier(loc, dir)
 				qdel(src)
 			visible_message("<span class='danger'>[user] shovels dirt into [src].</span>")
 			qdel(O)
 	else
 		return
 
-/obj/structure/window/sandbag/set_dir(direction)
+/obj/structure/window/barrier/set_dir(direction)
 	dir = direction
 
 // sandbag window overrides
 
-/obj/structure/window/sandbag/attackby(obj/O as obj, mob/user as mob)
+/obj/structure/window/barrier/attackby(obj/O as obj, mob/user as mob)
 	return FALSE
 
-/obj/structure/window/sandbag/take_damage(var/damage = FALSE, var/sound_effect = TRUE)
+/obj/structure/window/barrier/take_damage(var/damage = FALSE, var/sound_effect = TRUE)
 	return FALSE
 
-/obj/structure/window/sandbag/apply_silicate(var/amount)
+/obj/structure/window/barrier/apply_silicate(var/amount)
 	return FALSE
 
-/obj/structure/window/sandbag/updateSilicate()
+/obj/structure/window/barrier/updateSilicate()
 	return FALSE
 
-/obj/structure/window/sandbag/shatter(var/display_message = TRUE)
+/obj/structure/window/barrier/shatter(var/display_message = TRUE)
 	return FALSE
 
-/obj/structure/window/sandbag/bullet_act(var/obj/item/projectile/Proj)
+/obj/structure/window/barrier/bullet_act(var/obj/item/projectile/Proj)
 	health -= 0.05
 	if (health <= 0)
 		qdel(src)
-/obj/structure/window/sandbag/ex_act(severity)
+/obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
 		if (1.0)
 			qdel(src)
@@ -168,43 +168,43 @@
 			if (prob(50))
 				qdel(src)
 
-/obj/structure/window/sandbag/is_full_window()
+/obj/structure/window/barrier/is_full_window()
 	return FALSE
 
 /obj/structure/window/hitby(AM as mob|obj)
 	return FALSE // don't move
 
-/obj/structure/window/sandbag/attack_generic(var/mob/user, var/damage)
+/obj/structure/window/barrier/attack_generic(var/mob/user, var/damage)
 	return FALSE
 
-/obj/structure/window/sandbag/rotate()
+/obj/structure/window/barrier/rotate()
 	return
 
-/obj/structure/window/sandbag/revrotate()
+/obj/structure/window/barrier/revrotate()
 	return
 
-/obj/structure/window/sandbag/is_fulltile()
+/obj/structure/window/barrier/is_fulltile()
 	return FALSE
 
-/obj/structure/window/sandbag/update_verbs()
+/obj/structure/window/barrier/update_verbs()
 	verbs -= /obj/structure/window/proc/rotate
 	verbs -= /obj/structure/window/proc/revrotate
 
 //merges adjacent full-tile windows into one (blatant ripoff from game/smoothwall.dm)
-/obj/structure/window/sandbag/update_icon()
+/obj/structure/window/barrier/update_icon()
 	return
 
-/obj/structure/window/sandbag/fire_act(temperature)
+/obj/structure/window/barrier/fire_act(temperature)
 	return
 
-/obj/item/weapon/sandbag
+/obj/item/weapon/barrier
 	name = "dirt"
 	icon_state = "dirt_pile"
 	icon = 'icons/obj/items.dmi'
 	w_class = TRUE
 	var/sand_amount = FALSE
 	value = 0
-/obj/item/weapon/sandbag/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/item/weapon/barrier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		if (W.reagents.has_reagent("water", 10))
 			W.reagents.remove_reagent("water", 10)
@@ -213,14 +213,14 @@
 			qdel(src)
 			return
 
-/obj/item/weapon/sandbag/attack_self(mob/user)
+/obj/item/weapon/barrier/attack_self(mob/user)
 	user << "You start building the dirt blocks wall..."
 	if (do_after(user, 25, src))
 		user << "You finish the placement of the dirt blocks wall foundation."
 		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
 		qdel(src)
 		return
-/obj/structure/window/sandbag/rock
+/obj/structure/window/barrier/rock
 	name = "rock wall"
 	icon_state = "rock_barricade"
 	layer = MOB_LAYER + 0.01 //just above mobs
@@ -228,7 +228,7 @@
 	climbable = TRUE
 	maxhealth = 30
 
-/obj/structure/window/sandbag/sandstone
+/obj/structure/window/barrier/sandstone
 	name = "sandstone wall"
 	icon_state = "sandstone_barricade"
 	layer = MOB_LAYER + 0.01 //just above mobs
@@ -236,7 +236,7 @@
 	climbable = TRUE
 	maxhealth = 30
 
-/obj/item/weapon/sandbag/sandbag //:agony:
+/obj/item/weapon/barrier/sandbag
 	name = "sandbag"
 	icon_state = "sandbag_new"
 	icon = 'icons/obj/items.dmi'
@@ -245,11 +245,11 @@
 	value = 0
 	maxhealth = 30
 
-/obj/item/weapon/sandbag/sandbag/empty
+/obj/item/weapon/barrier/sandbag/empty
 	sand_amount = FALSE
 	icon_state = "sandbag_new_empty"
 
-/obj/item/weapon/sandbag/sandbag/empty/attackby(var/obj/item/stack/O as obj, mob/user as mob)
+/obj/item/weapon/barrier/sandbag/empty/attackby(var/obj/item/stack/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/stack/ore/glass) && sand_amount < 1)
 		O.amount--
 		user << "You fill the sandbag with sand."
@@ -261,7 +261,7 @@
 	else
 		..()
 
-/obj/item/weapon/sandbag/sandbag/attack_self(mob/user)
+/obj/item/weapon/barrier/sandbag/attack_self(mob/user)
 	if (sand_amount <= 0)
 		user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
 	var/your_dir = "NORTH"
@@ -289,7 +289,7 @@
 			if (do_after(user, sandbag_time, user.loc))
 				var/progress = sand_amount
 				qdel(src)
-				var/obj/structure/window/sandbag/sandbag/incomplete/sb = new/obj/structure/window/sandbag/sandbag/incomplete(src, user)
+				var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
 				sb.progress = progress
 				visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
 				if (ishuman(user))
@@ -298,18 +298,18 @@
 			return
 
 
-/obj/structure/window/sandbag/sandbag/attack_hand(var/mob/user as mob)
+/obj/structure/window/barrier/sandbag/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
 		if (WWinput(user, "Dismantle this sandbag wall?", "Dismantle sandbag wall", "Yes", list("Yes", "No")) == "Yes")
 			visible_message("<span class='danger'>[user] starts dismantling the sandbag wall.</span>", "<span class='danger'>You start dismantling the sandbag wall.</span>")
 			if (do_after(user, 200, src))
 				visible_message("<span class='danger'>[user] finishes dismantling the sandbag wall.</span>", "<span class='danger'>You finish dismantling the sandbag wall.</span>")
 				var/turf = get_turf(src)
-				new /obj/item/weapon/sandbag/sandbag(turf)
+				new /obj/item/weapon/barrier/sandbag(turf)
 				qdel(src)
 
 
-/obj/structure/window/sandbag/rock/attack_hand(var/mob/user as mob)
+/obj/structure/window/barrier/rock/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
 		if (WWinput(user, "Dismantle this rock wall?", "Dismantle rock wall", "Yes", list("Yes", "No")) == "Yes")
 			visible_message("<span class='danger'>[user] starts dismantling the rock wall.</span>", "<span class='danger'>You start dismantling the rock wall.</span>")
@@ -319,7 +319,7 @@
 				new /obj/item/stack/material/stone(turf)
 				qdel(src)
 
-/obj/structure/window/sandbag/railing
+/obj/structure/window/barrier/railing
 	name = "railing"
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "sandstone"
@@ -328,7 +328,7 @@
 	climbable = FALSE
 	maxhealth = 10000000
 
-/obj/structure/window/sandbag/railing/stone
+/obj/structure/window/barrier/railing/stone
 	name = "railing"
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "stone"
@@ -337,19 +337,19 @@
 	climbable = FALSE
 	maxhealth = 10000000
 
-/obj/structure/window/sandbag/railing/New()
+/obj/structure/window/barrier/railing/New()
 	..()
 	//invisibility = 101
 
-/obj/structure/window/sandbag/jersey
+/obj/structure/window/barrier/jersey
 	name = "jersey barrier"
 	icon_state = "jerseybarrier1"
 	icon = 'icons/obj/junk.dmi'
 	maxhealth = 80
 
-/obj/structure/window/sandbag/jersey/New()
+/obj/structure/window/barrier/jersey/New()
 	..()
 	icon_state = "jerseybarrier[rand(1,2)]"
 
-/obj/structure/window/sandbag/jersey/attack_hand(var/mob/user as mob)
+/obj/structure/window/barrier/jersey/attack_hand(var/mob/user as mob)
 	return

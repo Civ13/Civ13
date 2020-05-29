@@ -28,11 +28,11 @@
 /turf/wall/brick/update_icon()
 	return
 
-/turf/wall/cement_wall
+/turf/wall/cement_wall/New(var/newloc)
+	..(newloc,"cement")
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "cement_wall"
 	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
-	material = null
 
 /turf/wall/cement/New()
 	return

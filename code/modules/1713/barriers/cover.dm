@@ -1,10 +1,10 @@
 #define SANDBAG_BLOCK_ITEMS_CHANCE 40
 
-/obj/structure/window/sandbag/incomplete/check_cover(obj/item/projectile/P, turf/from)
+/obj/structure/window/barrier/incomplete/check_cover(obj/item/projectile/P, turf/from)
 	return prob(..() * round(progress/3))
 
 // how much do we cover mobs behind full sandbags?
-/obj/structure/window/sandbag/proc/check_cover(obj/item/projectile/P, turf/from)
+/obj/structure/window/barrier/proc/check_cover(obj/item/projectile/P, turf/from)
 	var/turf/cover = get_turf(src)
 	if (!cover)
 		return FALSE
@@ -45,7 +45,7 @@
 	return base - min(15, proj.accuracy)
 
 // procedure for both incomplete and complete sandbags
-/obj/structure/window/sandbag/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+/obj/structure/window/barrier/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE

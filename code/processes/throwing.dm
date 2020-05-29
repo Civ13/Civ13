@@ -39,7 +39,7 @@
 
 									var/canMove = TRUE
 									for (var/obj/structure/S in step)
-										if (istype(S, /obj/structure/window/sandbag) || S.throwpass)
+										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
@@ -63,7 +63,7 @@
 										continue
 									var/canMove = TRUE
 									for (var/obj/structure/S in step)
-										if (istype(S, /obj/structure/window/sandbag) || S.throwpass)
+										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
@@ -92,7 +92,7 @@
 										continue
 									var/canMove = TRUE
 									for (var/obj/structure/S in step)
-										if (istype(S, /obj/structure/window/sandbag) || S.throwpass)
+										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
@@ -115,7 +115,7 @@
 										continue
 									var/canMove = TRUE
 									for (var/obj/structure/S in step)
-										if (istype(S, /obj/structure/window/sandbag) || S.throwpass)
+										if (istype(S, /obj/structure/window/barrier) || S.throwpass)
 											continue
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue

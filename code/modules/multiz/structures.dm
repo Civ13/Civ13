@@ -362,7 +362,7 @@
 
 
 /obj/structure/multiz/ladder/ww2/tunneltop/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, /obj/item/weapon/sandbag))
+	if (istype(I, /obj/item/weapon/barrier))
 		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
 		filled++
 		qdel(I)

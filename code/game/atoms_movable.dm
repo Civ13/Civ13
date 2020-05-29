@@ -206,11 +206,11 @@
 			if (istype(A,/mob/living))
 				if (A:lying) continue
 				if (A == thrower)
-					if (locate(/obj/structure/window/sandbag) in get_turf(src))
+					if (locate(/obj/structure/window/barrier) in get_turf(src))
 						continue
 				throw_impact(A,speed)
 			else if (isobj(A))
-				var/obj/structure/window/sandbag/S = A
+				var/obj/structure/window/barrier/S = A
 				if (istype(S) && S.CanPass(src, get_turf(src)))
 					continue
 				else if (A.density && !A.throwpass)	// **TODO: Better behaviour for windows which are dense, but shouldn't always stop movement

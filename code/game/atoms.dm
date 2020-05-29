@@ -559,7 +559,7 @@
 	if (get_dist(target,user)==2)
 		var/dir_to_tgt = get_dir(user,target)
 		for(var/obj/O in range(1,user))
-			if ((get_dir(user,O) in nearbydirections(dir_to_tgt)) && (O.density == TRUE || istype(O, /obj/structure/window/sandbag/railing)))
+			if ((get_dir(user,O) in nearbydirections(dir_to_tgt)) && (O.density == TRUE || istype(O, /obj/structure/window/barrier/railing)))
 				user << "<span class='danger'>You hit the [O]!</span>"
 				user.adjustBruteLoss(rand(2,7))
 				user.Weaken(2)
@@ -584,7 +584,7 @@
 	if (maxdist == 3 && get_dist(target,user)==3)
 		var/dir_to_tgt = get_dir(user,target)
 		for(var/obj/O in range(2,user))
-			if ((get_dir(user,O) in nearbydirections(dir_to_tgt)) && (O.density == TRUE || istype(O, /obj/structure/window/sandbag/railing)))
+			if ((get_dir(user,O) in nearbydirections(dir_to_tgt)) && (O.density == TRUE || istype(O, /obj/structure/window/barrier/railing)))
 				user << "<span class='danger'>You hit the [O]!</span>"
 				user.adjustBruteLoss(rand(2,7))
 				user.Weaken(2)

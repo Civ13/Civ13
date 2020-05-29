@@ -91,7 +91,7 @@ var/list/global/floor_cache = list()
 
 
 /turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+	if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
 		if (choice == "Yes")
 			user << "You shove some dirt into the trench."
@@ -103,7 +103,7 @@ var/list/global/floor_cache = list()
 	..()
 
 /turf/floor/trench/flooded/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+	if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
 		if (choice == "Yes")
 			user << "You shove some dirt into the trench."
@@ -466,7 +466,7 @@ var/list/global/floor_cache = list()
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 	if (irrigation && irrigation_overlay)
-		if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+		if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
 			var/choice = WWinput(user, "Do you want to start filling up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
 			if (choice == "Yes")
 				user << "You shove some dirt into the irrigation channel."

@@ -209,7 +209,7 @@ obj/structure/closet/crate/empty
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/weapon/sandbag/sandbag = 20)
+	paths = list(/obj/item/weapon/barrier/sandbag = 20)
 	cratevalue = 90
 
 /obj/structure/closet/crate/wood

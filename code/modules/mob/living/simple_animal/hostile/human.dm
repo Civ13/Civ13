@@ -487,11 +487,11 @@
 		var/found_cover = FALSE
 		var/turf/GST = get_step(loc, tdir)
 		for(var/obj/structure/ST in GST)
-			if (ST.density == TRUE || (istype(ST, /obj/structure/window/sandbag) && ST.dir == tdir))
+			if (ST.density == TRUE || (istype(ST, /obj/structure/window/barrier) && ST.dir == tdir))
 				found_cover = TRUE
 				break
 		if (!found_cover)
-			for(var/obj/structure/window/sandbag/SB in view(7,src))
+			for(var/obj/structure/window/barrier/SB in view(7,src))
 				if (!found_cover && SB.dir == tdir && get_dist(src,SB) < get_dist(src,tgt))
 					found_cover = TRUE
 					do_movement(SB)
