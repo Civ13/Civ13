@@ -308,6 +308,66 @@
 		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
 	)
 
+/obj/structure/vending/sales/food
+	name = "fruit vending machine"
+	desc = "Basic food products."
+	icon_state = "nutrimat"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/banana = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/orange = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cherry = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apricot = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 15,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/banana = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/orange = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cherry = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apricot = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 8,
+	)
+/obj/structure/vending/sales/food/snacks
+	name = "baker's vending machine"
+	desc = "Basic food products."
+	icon_state = "snack"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/toastedsandwich = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/sandwich = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/creamcheesebreadslice = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/applecakeslice = 15,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/toastedsandwich = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/sandwich = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/creamcheesebreadslice = 16,
+		/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice = 16,
+		/obj/item/weapon/reagent_containers/food/snacks/applecakeslice = 16,
+	)
+/obj/structure/vending/sales/food/hot
+	name = "hot meal vending machine"
+	desc = "Basic food products."
+	icon_state = "games"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/meatballspagetti = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/coffee = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/tea = 15,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/meatballspagetti = 24,
+		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup = 20,
+		/obj/item/weapon/reagent_containers/food/drinks/coffee = 12,
+		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 12,
+		/obj/item/weapon/reagent_containers/food/drinks/tea = 8,
+	)
 /obj/structure/vending/sales/market_stall/prepared
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."

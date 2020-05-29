@@ -1552,7 +1552,7 @@
 		return
 
 /mob/living/human/proc/do_rotting()
-	if (!map.civilizations && !istype(src, /mob/living/human/corpse))
+	if (map && !map.civilizations && !istype(src, /mob/living/human/corpse))
 		return
 	spawn(600)
 		if (stat == DEAD)
