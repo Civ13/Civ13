@@ -113,12 +113,13 @@
 	icon_state = "portable_areamap"
 	var/image/img
 	var/image/playerloc
-	throwforce = WEAPON_FORCE_WEAK
-	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_HARMLESS
+	force = WEAPON_FORCE_HARMLESS
+	w_class = 1.0
 
 /obj/item/weapon/map/New()
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
-	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "reddot",layer=src.layer+1)
+	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "whitedot",layer=src.layer+1)
 
 /obj/item/weapon/map/examine(mob/user)
 	update_icon()
