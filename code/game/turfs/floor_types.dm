@@ -407,6 +407,12 @@
 	icon_state = "road_1"
 	interior = FALSE
 
+/turf/floor/plating/road/whiteline
+	icon_state = "road_line"
+
+/turf/floor/plating/road/yellowline
+	icon_state = "road_yellowline"
+
 /turf/floor/plating/concrete/New()
 	..()
 	icon_state = pick("road_1","road_2","road_3")
