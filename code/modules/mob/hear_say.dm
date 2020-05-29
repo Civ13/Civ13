@@ -162,14 +162,16 @@
 		var/full_message = ""
 		if (istype(origin, /obj/structure/radio))
 			var/obj/structure/radio/RD = origin
-			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq][isnum(RD.freq) ? "kHz" : ""]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
-			if (track)
-				full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq][isnum(RD.freq) ? "kHz" : ""]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			if (RD)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+				if (track)
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		else
 			var/obj/item/weapon/radio/RD = origin
-			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq][isnum(RD.freq) ? "kHz" : ""]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
-			if (track)
-				full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq][isnum(RD.freq) ? "kHz" : ""]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			if (RD)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+				if (track)
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 
 
 		on_hear_radio(destination, full_message)

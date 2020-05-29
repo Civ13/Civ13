@@ -148,14 +148,14 @@ var/list/global/phone_numbers = list()
 	if (connected)
 		connected = FALSE
 		if (origincall)
-			origincall.connected = FALSE
-			origincall.origincall = null
-			origincall = null
 			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
 			if (ishuman(origincall.loc))
 				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
 			else
 				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
+			origincall.connected = FALSE
+			origincall.origincall = null
+			origincall = null
 
 	if (ringing && ringingnum)
 		ringing = FALSE

@@ -2045,7 +2045,7 @@
 	selection_color = "#A1A181"
 	spawn_location = "JoinLateCivA"
 	min_positions = 3
-	max_positions = 8
+	max_positions = 15
 
 /datum/job/civilian/businessman/yellow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2066,7 +2066,7 @@
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
 	min_positions = 3
-	max_positions = 8
+	max_positions = 15
 
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2087,7 +2087,7 @@
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
 	min_positions = 3
-	max_positions = 8
+	max_positions = 15
 
 /datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2108,7 +2108,7 @@
 	selection_color = "#632D2D"
 	spawn_location = "JoinLateCivD"
 	min_positions = 3
-	max_positions = 8
+	max_positions = 15
 
 /datum/job/civilian/businessman/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
