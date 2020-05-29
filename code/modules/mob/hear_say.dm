@@ -184,8 +184,6 @@
 	if (!destination)
 		return
 
-	if (source == destination)
-		return
 	message = capitalize(message)
 
 	if (sleeping || stat==1) //If unconscious or sleeping
