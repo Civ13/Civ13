@@ -19,6 +19,21 @@
 
 	var/wireless = FALSE
 	var/maxrange = 0
+	var/list/contacts = list()
+
+/obj/item/weapon/telephone/verb/name_telephone()
+	set category = null
+	set name = "Name"
+	set desc = "Name this telephone."
+
+	set src in view(1)
+	if (!ishuman(usr))
+		return
+	var/yn = input(usr, "Name this telephone?") in list("Yes", "No")
+	if (yn == "Yes")
+		var/_name = input(usr, "What name?") as text
+		name = sanitize(_name, 20)
+	return
 
 var/list/global/phone_numbers = list()
 /obj/item/weapon/telephone/New()
@@ -63,10 +78,18 @@ var/list/global/phone_numbers = list()
 		if (!connected)
 			origincall = null
 	return
-/obj/item/weapon/telephone/proc/ring()
+/obj/item/weapon/telephone/proc/ring(var/origin = null)
+	var/orname = "Unknown"
+	if (origin)
+		for(var/list/L in contacts)
+			if (L[2] == origin)
+				orname = L[1]
 	if (ringing)
 		playsound(loc, 'sound/machines/telephone.ogg', 65)
-		visible_message("\The [src] rings!")
+		if (!origin)
+			visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Ringing!")
+		else
+			visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Incoming call: <b>[orname]</b> ([origin])")
 	else
 		return
 
@@ -102,10 +125,12 @@ var/list/global/phone_numbers = list()
 		if (!wireless)
 			for (var/obj/structure/phoneline/PL in range(2,loc))
 				PL.ring_phone(tgtnum,phonenumber, src)
-				visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Ringing [tgtnum]...")
+				ringing = TRUE
+				visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Ringing [tgtnum]...")
 				spawn(200)
 					if (!connected)
-						visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Nobody picked up the phone at [tgtnum].")
+						ringing = FALSE
+						visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
 						return
 		else
 			var/found_tower = FALSE
@@ -115,10 +140,10 @@ var/list/global/phone_numbers = list()
 				ring_phone(tgtnum,phonenumber, src, user)
 				spawn(200)
 					if (!connected)
-						user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Nobody picked up the phone at [tgtnum]."
+						user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
 						return
 			else
-				user << "<font size=2 color=#FFAE19>No signal.</font>"
+				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."
 				return
 	if (connected)
 		connected = FALSE
@@ -126,7 +151,11 @@ var/list/global/phone_numbers = list()
 			origincall.connected = FALSE
 			origincall.origincall = null
 			origincall = null
-		user << "You hang up the phone."
+			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
 
 	if (ringing && ringingnum)
 		ringing = FALSE
@@ -135,7 +164,12 @@ var/list/global/phone_numbers = list()
 			origincall.connected = phonenumber
 			origincall.ringing = FALSE
 			origincall.origincall = src
-		user << "You pick up the phone."
+			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You pick up the phone."
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")
+
 /obj/item/weapon/telephone/attack_hand(var/mob/living/human/H)
 	if (anchored && ishuman(H))
 		attack_self(H)
@@ -153,7 +187,6 @@ var/list/global/phone_numbers = list()
 	wireless = TRUE
 	maxrange = 40
 	w_class = 2
-	var/list/contacts = list()
 
 /obj/item/weapon/telephone/mobile/attack_self(var/mob/user as mob)
 	if (!connected && !ringing)
@@ -200,10 +233,10 @@ var/list/global/phone_numbers = list()
 					ring_phone(tgtnum,phonenumber, src, user)
 					spawn(200)
 						if (!connected)
-							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] Telephone:</b> </font>Nobody picked up the phone at [tgtnum]."
+							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
 							return
 				else
-					user << "<font size=2 color=#FFAE19>No signal.</font>"
+					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."
 					return
 	else
 		..()
@@ -223,6 +256,12 @@ var/list/global/phone_numbers = list()
 	anchored = TRUE
 
 /proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone, var/mob/living/human/user = null)
+	var/targetc = ""
+	if (originphone.contacts.len)
+		for (var/list/L in originphone.contacts)
+			if (L[2] == target)
+				targetc = L[1]
+				break
 	if (!origin || !target)
 		return
 	else
@@ -232,7 +271,10 @@ var/list/global/phone_numbers = list()
 					TLG.ringing = TRUE
 					TLG.ringproc(origin, originphone)
 					if (user)
-						user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] Telephone:</b> </font>Ringing [target]..."
+						if (targetc != "")
+							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing <b>[targetc]</b> ([target])..."
+						else
+							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing [target]..."
 
 /obj/item/weapon/telephone/wireless
 	name = "telephone"

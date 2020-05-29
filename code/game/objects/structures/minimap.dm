@@ -105,7 +105,32 @@
 
 /obj/structure/sign/map/attack_hand(mob/user)
 	examine(user)
+//////////////////////////////////////////
+/obj/item/weapon/map
+	desc = "A portable map of the area."
+	name = "folding map"
+	icon_state = "portable_areamap"
+	var/image/img
+	var/image/playerloc
+	throwforce = WEAPON_FORCE_WEAK
+	force = WEAPON_FORCE_WEAK
 
+/obj/item/weapon/map/New()
+	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
+	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "reddot",layer=img.layer+0.01)
+
+/obj/item/weapon/map/examine(mob/user)
+	user << browse(getFlatIcon(img),"window=popup;size=630x630")
+
+/obj/item/weapon/map/update_icon()
+	..()
+	img.overlays.Cut()
+	playerloc.pixel_x = min(600,ceil(get_turf(src).x*2.72)-4)
+	playerloc.pixel_y = min(600,ceil(get_turf(src).y*2.72)-4)
+	img.overlays += playerloc
+
+/obj/item/weapon/map/attack_self(mob/user)
+	examine(user)
 //////////////////////////////////////////
 
 /obj/structure/sign/infopanel

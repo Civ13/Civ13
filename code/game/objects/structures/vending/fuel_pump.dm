@@ -22,30 +22,42 @@
 	var/owner = "Global"
 
 /obj/structure/fuelpump/premade
-	name = "UngOil fuel pump"
+	name = "fuel pump"
 	price = 0.3
 	owner = "Global"
+	var/brand = "UngOil"
 	icon_state = "oilpump3"
 	customcolor = "#3cb44b"
+	maxvol = 1000
 /obj/structure/fuelpump/premade/New()
 	..()
 	fueltype = pick("gasoline","diesel","biodiesel","ethanol","petroleum")
-	vol = rand(140,290)
-	name = "UngOil [fueltype] pump"
-	price = (rand(25,45))/100
+	vol = maxvol
+	name = "[brand] [fueltype] pump"
+	price = 0.4
 	do_color()
 	updatedesc()
 
 /obj/structure/fuelpump/premade/gasoline
 	fueltype = "gasoline"
-	name = "UngOil gasoline pump"
 	updatedesc()
 
 /obj/structure/fuelpump/premade/diesel
 	fueltype = "diesel"
-	name = "UngOil diesel pump"
 	updatedesc()
 
+/obj/structure/fuelpump/premade/yamaha
+	brand = "Yamaha Gas"
+	icon_state = "oilpump1"
+	customcolor = "#7F0000"
+
+/obj/structure/fuelpump/premade/yamaha/gasoline
+	fueltype = "gasoline"
+	updatedesc()
+
+/obj/structure/fuelpump/premade/yamaha/diesel
+	fueltype = "diesel"
+	updatedesc()
 
 /obj/structure/fuelpump/n
 	icon_state = "oilpump3"

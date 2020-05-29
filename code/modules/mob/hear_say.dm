@@ -226,10 +226,14 @@
 			src << "<span class='warning'>You feel the telephone vibrate but can hear nothing from it!</span>"
 	else
 		var/fontsize = 2
-
-		var/full_message = "<font size = [fontsize] color=#FFAE19><b>Telephone ([source.phonenumber]):</font></b><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+		var/contactname = " "
+		for (var/list/L in destination.contacts)
+			if (L[2] == source.phonenumber)
+				contactname = "[L[1]] "
+				break
+		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([source.phonenumber]):</font></b><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		if (track)
-			full_message = "<font size = [fontsize] color=#FFAE19><b>Telephone ([source.phonenumber]):</font></b><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([source.phonenumber]):</font></b><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		on_hear_phone(destination, full_message)
 
 

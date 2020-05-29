@@ -51,6 +51,11 @@
 var/global/FREQ1 = rand(150,200)
 var/global/FREQ2 = rand(201,250)
 
+var/global/FREQR = rand(1,20)
+var/global/FREQB = rand(21,40)
+var/global/FREQY = rand(41,60)
+var/global/FREQG = rand(61,80)
+var/global/FREQP = rand(81,100)
 /obj/structure/radio/transmitter_receiver/nopower/faction1/New()
 	..()
 	freq = FREQ1
@@ -632,6 +637,27 @@ var/global/FREQ2 = rand(201,250)
 /obj/item/weapon/radio/walkietalkie/faction2/New()
 	..()
 	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
+/obj/item/weapon/radio/walkietalkie/factionred/New()
+	..()
+	freq = FREQR
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/item/weapon/radio/walkietalkie/factionblue/New()
+	..()
+	freq = FREQB
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/item/weapon/radio/walkietalkie/factionyellow/New()
+	..()
+	freq = FREQY
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/item/weapon/radio/walkietalkie/factiongreen/New()
+	..()
+	freq = FREQG
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/item/weapon/radio/walkietalkie/factionpolice/New()
+	..()
+	freq = FREQP
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
 /obj/item/weapon/radio/walkietalkie/red/New()
