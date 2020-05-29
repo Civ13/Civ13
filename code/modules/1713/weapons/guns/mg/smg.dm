@@ -226,6 +226,7 @@
 	item_state = "type100"
 	base_icon = "type100"
 	weight = 3.97
+	attachment_slots = ATTACH_BARREL
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/Type100.ogg'
 	magazine_type = /obj/item/ammo_magazine/type100
