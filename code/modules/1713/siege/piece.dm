@@ -90,6 +90,14 @@
 	maxrange = 25
 	caliber = 75
 
+/obj/structure/cannon/modern/tank/american75
+	name = "75 mm M3 gun"
+	desc = "a 75 mm american tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 12
+	maxrange = 25
+	caliber = 75
+
 /obj/structure/cannon/modern/tank/japanese57
 	name = "Type 90 Cannon"
 	desc = "a 57 mm japanese tank-based cannon."

@@ -317,6 +317,28 @@
 	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
 	update_icon()
 
+/obj/structure/shellrack/full75/american/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	new /obj/item/cannon_ball/shell/tank/HE75(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	new /obj/item/cannon_ball/shell/tank/AP75(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR75(storage)
+	update_icon()
+
 /obj/structure/shellrack/full88/New()
 	..()
 	new /obj/item/cannon_ball/shell/tank/HE88(storage)
