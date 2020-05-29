@@ -188,7 +188,7 @@ var/list/slot_equipment_priority = list( \
 		else if (istype(W, /obj/item/vehicleparts/wheel))
 			var/obj/item/vehicleparts/wheel/MD = W
 			if (!locate(MD.origin) in range(1,src))
-				if ((src in MD.origin.ontop) && src == MD.origin.driver && MD.origin.engine && MD.origin.engine.on)
+				if (MD && MD.origin && (src in MD.origin.ontop) && src == MD.origin.driver && MD.origin.engine && MD.origin.engine.on)
 					MD.origin.engine.on = FALSE
 					MD.origin.engine.power_off_connections()
 					MD.origin.engine.currentspeed = 0

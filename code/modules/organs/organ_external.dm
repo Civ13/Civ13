@@ -419,7 +419,8 @@ This function completely restores a damaged organ to perfect condition.
 	germ_level = FALSE
 	pain = FALSE
 	for(var/datum/wound/wound in wounds)
-		wound.embedded_objects.Cut()
+		if (wound.embedded_objects)
+			wound.embedded_objects.Cut()
 	wounds.Cut()
 	number_wounds = FALSE
 

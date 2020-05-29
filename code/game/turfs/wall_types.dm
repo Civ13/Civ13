@@ -41,16 +41,6 @@
 
 /* Wood Walls*/
 
-/turf/wall/shoji
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "shoji_wall"
-	material = null
-
-/turf/wall/shoji2
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "shoji_wall2"
-	material = null
-
 /turf/wall/wood/New(var/newloc)
 	..(newloc,"hardwood")
 /turf/wall/wood/low/New(var/newloc)
