@@ -618,3 +618,21 @@
 	keyslot_type = /datum/keyslot/american
 	unique_door_name = "American locked"
 #undef US_CODE
+
+
+/obj/item/weapon/key/civ/police
+	code = 13443
+	name = "Police Officer key"
+	health = 90000
+
+/datum/keyslot/police
+	code = 13443
+
+/obj/structure/simple_door/key_door/civ/police
+	keyslot_type = /datum/keyslot/police
+	unique_door_name = "Police Station"
+	locked = TRUE
+/obj/structure/simple_door/key_door/custom/jail/steeljail/police
+	unique_door_name = "jail cell"
+	locked = TRUE
+	custom_code = 13443

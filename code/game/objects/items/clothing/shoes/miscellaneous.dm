@@ -20,7 +20,7 @@
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 /obj/item/clothing/shoes/swat
-	name = "swat1"
+	name = "SWAT boots"
 	desc = "When you want to turn up the heat."
 	icon_state = "swat"
 	force = WEAPON_FORCE_WEAK

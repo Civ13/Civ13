@@ -425,27 +425,32 @@
 	icon_state = "safe"
 	icon_closed = "safe"
 	icon_opened = "safe-open"
+	var/faction = null
 
 /obj/structure/closet/safe/red
 	New()
 		..()
 		custom_code = REDCODE
 		locked = TRUE
+		faction = "Red Corporation"
 
 /obj/structure/closet/safe/blue
 	New()
 		..()
 		custom_code = BLUECODE
 		locked = TRUE
+		faction = "Blue Syndicate"
 
 /obj/structure/closet/safe/yellow
 	New()
 		..()
 		custom_code = YELLOWCODE
 		locked = TRUE
+		faction = "Yellow Conglomerate"
 
 /obj/structure/closet/safe/green
 	New()
 		..()
 		custom_code = GREENCODE
 		locked = TRUE
+		faction = "Green Enterprises"

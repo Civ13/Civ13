@@ -118,9 +118,15 @@
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
 		healing_stage += 2
+
+	else if (istype(buckled, /obj/structure/medicalbed))
+		healing_stage += 0.25
 	else
 		healing_stage = 0
-	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
+	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable) || istype(buckled, /obj/structure/medicalbed)))
+		if (istype(buckled, /obj/structure/medicalbed))
+			rejuvenate()
+			src << "You feel much better."
 		healing_stage = 0
 		if (getBruteLoss() >= 15)
 			adjustBruteLoss(-2)

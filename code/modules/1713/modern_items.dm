@@ -276,8 +276,44 @@
 
 /obj/structure/lamp/lamp_small/tank/red
 	brightness_color = "#da0205"
-
-
+/obj/structure/lamp/lamp_small/tank/red/police
+	name = "police lights"
+	pixel_x=32
+	update_icon()
+		..()
+		switch(dir)
+			if(NORTH)
+				pixel_x=-16
+				pixel_y=0
+			if(SOUTH)
+				pixel_x=16
+				pixel_y=0
+			if(WEST)
+				pixel_y=-16
+				pixel_x=0
+			if(EAST)
+				pixel_y=16
+				pixel_x=0
+/obj/structure/lamp/lamp_small/tank/blue
+	brightness_color = "#0202da"
+/obj/structure/lamp/lamp_small/tank/blue/police
+	name = "police lights"
+	pixel_x=-32
+	update_icon()
+		..()
+		switch(dir)
+			if(NORTH)
+				pixel_x=16
+				pixel_y=0
+			if(SOUTH)
+				pixel_x=-16
+				pixel_y=0
+			if(WEST)
+				pixel_y=16
+				pixel_x=0
+			if(EAST)
+				pixel_y=-16
+				pixel_x=0
 /obj/structure/lamp/lamp_big
 	name = "light tube"
 	desc = "A light tube."

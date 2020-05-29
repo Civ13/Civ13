@@ -23,6 +23,8 @@
 	icon_state = "open"
 	opacity = FALSE
 
+/obj/structure/curtain/open/black
+	color = "#222222"
 
 /obj/structure/curtain/bullet_act(obj/item/projectile/P, def_zone)
 	if (!P.nodamage)

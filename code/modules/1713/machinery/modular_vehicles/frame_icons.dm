@@ -222,8 +222,8 @@
 					ticon = normal_icon
 				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg1
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
+//				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
+//				roof.overlays += doub
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
@@ -281,8 +281,8 @@
 					ticon = normal_icon
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg2
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
+//				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
+//				roof.overlays += doub
 
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			ticon = normal_icon
@@ -311,8 +311,8 @@
 					ticon = normal_icon
 				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg3
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
+//				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
+//				roof.overlays += doub
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
@@ -369,8 +369,8 @@
 					ticon = normal_icon
 				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=NORTH)
 				overlays += tmpimg4
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
+//				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
+//				roof.overlays += doub
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon
@@ -386,7 +386,10 @@
 				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=EAST)
 				overlays += tmpimg2
 	if (axis)
-		color = axis.color
+		if (override_color)
+			color = override_color
+		else
+			color = axis.color
 		var/image/overtracks = null
 		for (var/image/II in overlays)
 			if (mwheel && II.icon==mwheel.icon)

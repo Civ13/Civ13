@@ -1,12 +1,11 @@
 /obj/map_metadata/art_of_the_deal
 	ID = MAP_THE_ART_OF_THE_DEAL
 	title = "The Art of the Deal"
-	lobby_icon_state = "civ13"
+	lobby_icon_state = "taotd"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
-	respawn_delay = 0
+	respawn_delay = 3000
 	is_singlefaction = TRUE
 	no_winner ="The fighting is still going."
-
 	faction_organization = list(
 		CIVILIAN)
 
@@ -23,19 +22,29 @@
 	var/list/winner_ckeys = list()
 	faction1 = CIVILIAN
 	faction2 = PIRATES
-	gamemode = "Battleroyale"
+	gamemode = "Negociations"
+	var/list/scores = list(
+		"Red Corporation" = 0,
+		"Blue Syndicate" = 0,
+		"Green Enterprises" = 0,
+		"Yellow Conglomerate" = 0,
+		"Police" = 0,)
 	required_players = 6
 
 /obj/map_metadata/art_of_the_deal/New()
 	..()
+	spawn(3000)
+		score()
 	var/newnamea = list("Red Corporation" = list(230,230,230,null,0,"sun","#7F0000","#7F7F7F",0,0))
 	var/newnameb = list("Blue Syndicate" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Green Enterprises" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Yellow Conglomerate" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
+	var/newnamee = list("Police" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
+	custom_civs += newnamee
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
@@ -52,6 +61,36 @@
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
+/obj/map_metadata/art_of_the_deal/proc/score()
+	world << "<b><font color='yellow' size=3>Scores:</font></b>"
+	for(var/obj/structure/closet/safe/SF in world)
+		if (SF.faction)
+			var/list/tlist = list(SF.faction,0)
+			for(var/obj/item/I in SF)
+				if (istype(I, /obj/item/weapon/disk))
+					var/obj/item/weapon/disk/D = I
+					if (D.faction && D.faction != SF.faction)
+						tlist[2]+=500
+				if (istype(I, /obj/item/stack/money))
+					var/obj/item/stack/money/M = I
+					tlist[2]+=M.amount*M.value/4
+			tlist[2] += scores[SF.faction]
+			world << "<big><font color='yellow' size=2>[tlist[1]]: [tlist[2]] points</font></big>"
+//five-o scores
+	var/list/tlist2 = list("Police",0)
+	for(var/obj/item/I in get_area(/area/caribbean/prison))
+		if (istype(I, /obj/item/weapon/disk))
+			var/obj/item/weapon/disk/D = I
+			if (D.faction)
+				tlist2[2]+=200
+		if (istype(I, /obj/item/stack/money))
+			var/obj/item/stack/money/M = I
+			tlist2[2]+=M.amount*M.value/8
+	tlist2[2] += scores["Police"]
+	world << "<big><font color='yellow' size=2>[tlist2[1]]: [tlist2[2]] points</font></big>"
+	spawn(3000)
+		score()
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/structure/vending/business_apparel
 	name = "equipment rack"
 	desc = "All the equipment you need for that special business meeting."
@@ -124,6 +163,54 @@
 		/obj/item/clothing/glasses/nvg = 20,
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 160,
 	)
+/obj/structure/vending/police_equipment
+	name = "police equipment"
+	desc = "All the equipment to keep your officers in top shape."
+	icon_state = "apparel_german2"
+	products = list(
+		/obj/item/stack/medical/bruise_pack/gauze = 15,
+		/obj/item/clothing/accessory/holster/hip = 15,
+		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 15,
+		/obj/item/clothing/glasses/sunglasses = 15,
+		/obj/item/clothing/gloves/thick/swat = 15,
+		/obj/item/clothing/head/helmet/swat = 15,
+		/obj/item/clothing/mask/gas/swat = 15,
+		/obj/item/clothing/suit/police = 15,
+		/obj/item/clothing/head/helmet/constable = 15,
+		/obj/item/clothing/under/constable = 15,
+		/obj/item/clothing/shoes/swat = 15,
+		/obj/item/weapon/storage/backpack/civbag = 15,
+		/obj/item/weapon/melee/nightbaton = 15,
+		/obj/item/weapon/storage/box/handcuffs = 10,
+	)
+	attack_hand(mob/user as mob)
+		if (user.original_job_title == "Police Officer")
+			..()
+		else
+		 user << "You do not have access to this."
+		 return
+/obj/structure/vending/police_weapons
+	name = "police weapons"
+	desc = "When the baton is not enough."
+	icon_state = "weapons_sof"
+	products = list(
+	/obj/item/weapon/gun/projectile/shotgun/remington870 = 10,
+	/obj/item/ammo_magazine/shellbox/rubber = 10,
+	/obj/item/ammo_magazine/shellbox = 10,
+	/obj/item/weapon/gun/projectile/pistol/glock17 = 20,
+	/obj/item/ammo_magazine/glock17 = 50,
+	/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 5,
+	/obj/item/ammo_casing/grenade_l/teargas = 20,
+	/obj/item/weapon/grenade/flashbang = 30,
+	/obj/item/weapon/grenade/chemical/xylyl_bromide = 10,
+
+	)
+	attack_hand(mob/user as mob)
+		if (user.original_job_title == "Police Officer")
+			..()
+		else
+		 user << "You do not have access to this."
+		 return
 /obj/item/weapon/disk
 	name = "diskette"
 	desc = "Some kind of diskette."
@@ -140,26 +227,31 @@
 	sharp = FALSE
 	edge = FALSE
 	w_class = 1.0
+	var/faction = null
 
 /obj/item/weapon/disk/red
 	name = "red diskette"
 	icon_state = "disk_red"
 	item_state = "disk_red"
+	faction = "Red Corporation"
 
 /obj/item/weapon/disk/blue
 	name = "blue diskette"
 	icon_state = "disk_blue"
 	item_state = "disk_blue"
+	faction = "Blue Syndicate"
 
 /obj/item/weapon/disk/yellow
 	name = "yellow diskette"
 	icon_state = "disk_yellow"
 	item_state = "disk_yellow"
+	faction = "Yellow Conglomerate"
 
 /obj/item/weapon/disk/green
 	name = "green diskette"
 	icon_state = "disk_green"
 	item_state = "disk_green"
+	faction = "Green Enterprises"
 
 /obj/item/weapon/package
 	name = "package"
@@ -195,8 +287,14 @@
 	if (!parentmob || !src)
 		return
 	var/cloc = "Unknown"
-	var/a = ceil(parentmob.x/22)
-	var/b = 10-ceil(parentmob.y/22)
+	cloc = parentmob.get_coded_loc()
+	maptext = "<center><font color='yellow'><b>[cloc]</b>  ([parentmob.x],[parentmob.y])</font></center>"
+
+	spawn(10)
+		update()
+/mob/proc/get_coded_loc()
+	var/a = ceil(x/22)
+	var/b = 10-ceil(y/22)
 	switch(a)
 		if (0 to 1)
 			a = "A"
@@ -218,8 +316,4 @@
 			a = "I"
 		if (9 to 10)
 			a = "J"
-	cloc = "[a][b]"
-	maptext = "<center><font color='yellow'><b>[cloc]</b>  ([parentmob.x],[parentmob.y])</font></center>"
-
-	spawn(10)
-		update()
+	return "[a][b]"

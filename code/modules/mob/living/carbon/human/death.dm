@@ -58,6 +58,13 @@
 			for(var/i in GD.points)
 				if (i[1]==PJ.nationality)
 					i[3]-=50
+	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+		var/obj/map_metadata/art_of_the_deal/GD = map
+		if (civilization && civilization in GD.scores)
+			if (civilization == "Police")
+				GD.scores[civilization] -= 350
+			else
+				GD.scores[civilization] -= 200
 	handle_piss()
 	handle_shit()
 	if (squad > 0 && original_job && original_job.uses_squads)
