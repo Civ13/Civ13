@@ -1956,7 +1956,7 @@
 "Op" = (/obj/covers/road,/obj/structure/window/barrier/jersey,/turf/floor/grass,/area/caribbean/nomads/forest)
 "Oq" = (/obj/covers/steelplating,/obj/structure/bed/chair/comfy/blue{icon_state = "chair_padding"; dir = 1},/obj/roof/clay,/obj/structure/lamp/lamp_big,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Or" = (/obj/structure/table,/obj/covers/steelplating,/obj/roof/concrete,/obj/structure/lamp/lamp_big{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest)
-"Os" = (/obj/structure/sign/armory{desc = "Built 1936"; name = "Hermann Memorial Dam"},/turf/wall/cement_wall,/area/caribbean/nomads/forest)
+"Os" = (/obj/structure/sign/armory{desc = "Built 1936"; name = "Hermann Memorial Dam"},/turf/wall/cement,/area/caribbean/nomads/forest)
 "Ot" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/nomads/forest)
 "Ou" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 9},/obj/covers/steelplating,/obj/roof/concrete,/obj/structure/lamp/lamp_big{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Ov" = (/obj/covers/road,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean/nomads/forest)

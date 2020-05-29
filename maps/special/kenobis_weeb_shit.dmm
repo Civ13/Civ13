@@ -348,7 +348,7 @@
 "gJ" = (/obj/covers/thatch,/obj/structure/vending/sovietweapons,/turf/floor/grass,/area/caribbean/russian/land/inside)
 "gK" = (/obj/covers/thatch,/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/structure/railing,/obj/structure/roof_support,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 1e+009},/turf/floor/grass,/area/caribbean/russian/land/inside)
 "gL" = (/obj/covers/thatch,/obj/structure/railing,/turf/floor/grass,/area/caribbean/russian/land/inside)
-"gM" = (/turf/wall/cement_wall,/area/caribbean)
+"gM" = (/turf/wall/cement,/area/caribbean)
 
 (1,1,1) = {"
 abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab

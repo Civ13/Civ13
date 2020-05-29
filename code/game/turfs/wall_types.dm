@@ -19,25 +19,9 @@
 
 /turf/wall/brick/New(var/newloc)
 	..(newloc,"brick")
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "new_brick"
-	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
 
-/turf/wall/brick/New()
-	return
-/turf/wall/brick/update_icon()
-	return
-
-/turf/wall/cement_wall/New(var/newloc)
-	..(newloc,"cement")
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "cement_wall"
-	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
-
-/turf/wall/cement/New()
-	return
-/turf/wall/cement/update_icon()
-	return
+/turf/wall/cement/New(var/newloc)
+	..(newloc,"concrete")
 
 /* Wood Walls*/
 
@@ -47,9 +31,9 @@
 	..(newloc,"hardwood")
 	opacity = FALSE
 /turf/wall/wood/straw/New(var/newloc)
-	..(newloc,"staw")
+	..(newloc,"straw")
 /turf/wall/wood/soft/New(var/newloc)
-	..(newloc,"softwood")
+	..(newloc,"wood")
 
 /* Stone Walls */
 
@@ -71,11 +55,6 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "fortress_brickwall"
 	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
-
-/turf/wall/fortress/New()
-	return
-/turf/wall/fortress/update_icon()
-	return
 
 /turf/wall/indestructable
 	icon = 'icons/turf/walls.dmi'

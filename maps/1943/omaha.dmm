@@ -755,7 +755,7 @@
 "pS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
 "pU" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34,/turf/floor/plating/road,/area/caribbean/forest)
 "pV" = (/obj/structure/grille/ironfence,/obj/structure/sign/traffic/stop,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
-"pW" = (/obj/covers/cement_wall,/turf/wall/cement_wall,/area/caribbean/german/inside)
+"pW" = (/obj/covers/cement_wall,/turf/wall/cement,/area/caribbean/german/inside)
 
 (1,1,1) = {"
 aaeueueueueueueueueueueueueueueueuaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaa
