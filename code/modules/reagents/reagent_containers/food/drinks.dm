@@ -109,7 +109,7 @@
 		..()
 		base_name = name
 		spawn (1)
-			if (!istype(src, /obj/item/weapon/reagent_containers/food/drinks/bottle))
+			if (reagents && !istype(src, /obj/item/weapon/reagent_containers/food/drinks/bottle))
 				amount_per_transfer_from_this = max(amount_per_transfer_from_this, ceil(reagents.total_volume/5))
 
 

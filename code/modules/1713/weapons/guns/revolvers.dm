@@ -370,8 +370,8 @@
 	ammo_type = /obj/item/ammo_casing/a32
 	weight = 1.6
 	equiptimer = 3
-	single_action = TRUE
-	blackpowder = TRUE
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 	pocket = TRUE
 	effectiveness_mod = 0.9

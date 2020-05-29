@@ -14,7 +14,10 @@
 		qdel(src)
 	not_movable = FALSE
 	not_disassemblable = TRUE
-
+/obj/structure/sign/flag/green
+	name = "\improper green banner"
+	desc = "A green linen banner."
+	icon_state = "green_banner"
 /obj/structure/sign/flag/red
 	name = "\improper red banner"
 	desc = "A red linen banner."

@@ -173,13 +173,15 @@
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
-			for(var/obj/covers/CV in TT && !(CV in transporting))
-				visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-				moving = FALSE
-				stopmovementloop()
-				return FALSE
-			for(var/obj/item/I in TT && !(I in transporting))
-				qdel(I)
+			for(var/obj/covers/CV in TT)
+				if  (!(CV in transporting))
+					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+					moving = FALSE
+					stopmovementloop()
+					return FALSE
+			for(var/obj/item/I in TT)
+				if (!(I in transporting) || istype(I, /obj/item/ammo_casing))
+					qdel(I)
 
 			if ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded))
 				moving = FALSE
