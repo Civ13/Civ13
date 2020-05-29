@@ -402,6 +402,16 @@ var/list/name_to_material
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/stone
+/material/concrete
+	name = "concrete"
+	icon_base = "contrete"
+	icon_reinf = "concrete"
+	icon_colour = "#999999"
+	hardness = 50
+	integrity = 400
+	weight = 18
+	sheet_singular_name = "block"
+	sheet_plural_name = "blocks"
 
 /material/stonebrick
 	name = "stonebrick"

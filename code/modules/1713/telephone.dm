@@ -107,7 +107,7 @@ var/list/global/phone_numbers = list()
 		tried_mobs += hearer
 		if (hearer.stat == CONSCIOUS)
 			for (var/obj/item/weapon/telephone/phone in view(7, hearer))
-				if (src == phone.origincall)
+				if (src == phone.origincall || src == phone)
 					hearer.hear_phone(msg, speaker.default_language, speaker, src, phone)
 
 /obj/item/weapon/telephone/attack_self(var/mob/user as mob)
