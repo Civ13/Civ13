@@ -185,7 +185,7 @@
 						H.shoveling_dirt = FALSE
 						H.adaptStat("strength", 1)
 						T.available_dirt -= 1
-						new /obj/item/weapon/sandbag(T)
+						new /obj/item/weapon/barrier(T)
 					else
 						H.shoveling_dirt = FALSE
 				else
@@ -278,8 +278,8 @@
 		else
 			return ..(C, user)
 
-	else if (istype(C, /obj/item/weapon/sandbag/sandbag))
-		var/obj/item/weapon/sandbag/sandbag/bag = C
+	else if (istype(C, /obj/item/weapon/barrier/sandbag))
+		var/obj/item/weapon/barrier/sandbag/bag = C
 		if (bag.sand_amount <= 0)
 			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
 		var/your_dir = "NORTH"
@@ -307,7 +307,7 @@
 				if (do_after(user, sandbag_time, user.loc))
 					var/progress = bag.sand_amount
 					qdel(C)
-					var/obj/structure/window/sandbag/sandbag/incomplete/sb = new/obj/structure/window/sandbag/sandbag/incomplete(src, user)
+					var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
 					sb.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
 					if (ishuman(user))
@@ -315,7 +315,7 @@
 						H.adaptStat("crafting", 3)
 				return
 
-	else if (istype(C, /obj/item/weapon/sandbag))
+	else if (istype(C, /obj/item/weapon/barrier))
 
 		var/your_dir = "NORTH"
 
@@ -340,10 +340,10 @@
 			if (WWinput(user, "This will start building a dirt barricade [your_dir] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
-					var/obj/item/weapon/sandbag/bag = C
+					var/obj/item/weapon/barrier/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
-					var/obj/structure/window/sandbag/incomplete/sandbag = new/obj/structure/window/sandbag/incomplete(src, user)
+					var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user)
 					sandbag.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
 					if (ishuman(user))
@@ -1121,7 +1121,7 @@
 						H.shoveling_dirt = FALSE
 						H.adaptStat("strength", 1)
 						T.available_dirt -= 1
-						new /obj/item/weapon/sandbag(T)
+						new /obj/item/weapon/barrier(T)
 					else
 						H.shoveling_dirt = FALSE
 				else

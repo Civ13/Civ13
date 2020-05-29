@@ -66,7 +66,7 @@
 			return
 	
 	if (istype(src, /obj/structure/toilet/pit_latrine)) 
-		if (istype(I, /obj/item/weapon/sandbag))
+		if (istype(I, /obj/item/weapon/barrier))
 			var/obj/structure/toilet/pit_latrine/PT = src
 			visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
 			PT.filled++

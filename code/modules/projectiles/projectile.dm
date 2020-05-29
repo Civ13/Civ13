@@ -686,7 +686,7 @@
 		var/src_loc = get_turf(src)
 		if (ismob(firer) && (!firer.prone && !firer.lying))
 			if (firstmove)
-				for (var/obj/structure/window/sandbag/S in src_loc)
+				for (var/obj/structure/window/barrier/S in src_loc)
 					_untouchable += S
 			else
 				if (firer)

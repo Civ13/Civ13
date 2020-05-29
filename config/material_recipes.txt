@@ -452,7 +452,7 @@ RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1
 
 RECIPE: /material/cloth/,small sail,/obj/item/sail,15,125,0,1,none,0,0,22,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
-RECIPE: /material/cloth/,sandbag,/obj/item/weapon/sandbag/sandbag/empty,1,105,0,1,none,0,0,90,8,null
+RECIPE: /material/cloth/,sandbag,/obj/item/weapon/barrier/sandbag/empty,1,105,0,1,none,0,0,90,8,null
 
 //*****************| CLOTH ACCESSORIES |***************************
 
@@ -1132,7 +1132,7 @@ RECIPE: /material/stone/,fortress archway,/obj/covers/stone_wall/fortress,16,190
 
 RECIPE: /material/stone/,roman door,/obj/structure/simple_door/key_door/anyone/roman,5,50,1,1,construction,28,0,0,8,null
 
-RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/sandbag/rock,3,70,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/stone/,rock barrier wall,/obj/structure/window/barrier/rock,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/stone/,fortified wall (horizontal),/obj/structure/barricade/stone_h,5,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,fortified wall (vertical),/obj/structure/barricade/stone_v,5,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,fortified crenelated wall (horizontal),/obj/structure/barricade/stone_h/crenelated,5,80,1,1,fortifications,29,0,0,8,null
@@ -1143,7 +1143,7 @@ RECIPE: /material/stone/,stone shingled wall (vertical bottom),/obj/structure/ba
 RECIPE: /material/stone/,stone shingled wall (horizontal center),/obj/structure/barricade/jap_h,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal left),/obj/structure/barricade/jap_h_l,4,80,1,1,fortifications,29,0,0,8,null
 RECIPE: /material/stone/,stone shingled wall (horizontal right),/obj/structure/barricade/jap_h_r,4,80,1,1,fortifications,29,0,0,8,null
-RECIPE: /material/stone/,jersey barrier,/obj/structure/window/sandbag/jersey,3,70,1,1,fortifications,215,0,0,8,null
+RECIPE: /material/stone/,jersey barrier,/obj/structure/window/barrier/jersey,3,70,1,1,fortifications,215,0,0,8,null
 
 //*******************************************************
 //*********************| RAGS |**************************
@@ -2073,7 +2073,7 @@ RECIPE: /material/sandstone/,furnace,/obj/structure/furnace/sandstone,10,150,1,1
 
 //*********************| SANDSTONE FORTIFICATIONS |**************************
 
-RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/sandbag/sandstone,3,70,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone barrier wall,/obj/structure/window/barrier/sandstone,3,70,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,horizontal sandstone crenelated wall,/obj/structure/barricade/sandstone_h/crenelated,5,80,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/sandstone/,verticle sandstone crenelated wall,/obj/structure/barricade/sandstone_v/crenelated,5,80,1,1,fortifications,0,0,0,8,null
 
