@@ -47,6 +47,8 @@
 	custom_civs += newnamec
 	custom_civs += newnamed
 	custom_civs += newnamee
+	spawn(15000)
+		spawn_disks(TRUE)
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
@@ -63,7 +65,7 @@
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
-/obj/map_metadata/art_of_the_deal/proc/spawn_disks()
+/obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
 	for(var/obj/structure/closet/safe/SF in world)
 		if (SF.faction)
 			switch(SF.faction)
@@ -95,7 +97,9 @@
 					else
 						new/obj/item/weapon/disk/yellow(SF)
 						new/obj/item/weapon/disk/yellow/fake(SF)
-
+	if (repeat)
+		spawn(12000)
+			spawn_disks(repeat)
 	world << "<font size=2 color ='yellow'>New disks have arrived at the vaults!</font>"
 
 /obj/map_metadata/art_of_the_deal/proc/score()
