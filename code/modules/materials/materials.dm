@@ -395,10 +395,11 @@ var/list/name_to_material
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/stone
+
 /material/concrete
 	name = "concrete"
-	icon_base = "contrete"
-	icon_colour = "#999999"
+	icon_base = "cement_wall"
+	icon_colour = null
 	hardness = 50
 	integrity = 400
 	weight = 18
@@ -418,7 +419,8 @@ var/list/name_to_material
 /material/brick
 	name = "brick"
 	display_name = "brick"
-	icon_colour = "#cb4154"
+	icon_base = "new_brick"
+	icon_colour = null
 	hardness = 40
 	integrity = 350
 	weight = 8
@@ -520,6 +522,8 @@ var/list/name_to_material
 	name = "hardwood"
 	hardness = 200
 	integrity = 175
+	icon_colour = null
+	icon_base = "new_wood"
 
 /material/wood/soft
 	name = "softwood"

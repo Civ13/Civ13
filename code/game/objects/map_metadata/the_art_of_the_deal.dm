@@ -6,6 +6,8 @@
 	respawn_delay = 3000
 	is_singlefaction = TRUE
 	no_winner ="The fighting is still going."
+	songs = list(
+		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	faction_organization = list(
 		CIVILIAN)
 
