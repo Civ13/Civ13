@@ -425,6 +425,8 @@
 	icon_state = "safe"
 	icon_closed = "safe"
 	icon_opened = "safe-open"
+	not_disassemblable = TRUE
+	not_movable = TRUE
 	var/faction = null
 
 /obj/structure/closet/safe/red

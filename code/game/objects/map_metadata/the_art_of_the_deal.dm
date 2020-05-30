@@ -63,6 +63,41 @@
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
+/obj/map_metadata/art_of_the_deal/proc/spawn_disks()
+	for(var/obj/structure/closet/safe/SF in world)
+		if (SF.faction)
+			switch(SF.faction)
+				if ("Red Corporation")
+					if (SF.opened)
+						new/obj/item/weapon/disk/red(SF.loc)
+						new/obj/item/weapon/disk/red/fake(SF.loc)
+					else
+						new/obj/item/weapon/disk/red(SF)
+						new/obj/item/weapon/disk/red/fake(SF)
+				if ("Blue Syndicate")
+					if (SF.opened)
+						new/obj/item/weapon/disk/blue(SF.loc)
+						new/obj/item/weapon/disk/blue/fake(SF.loc)
+					else
+						new/obj/item/weapon/disk/red(SF)
+						new/obj/item/weapon/disk/red/fake(SF)
+				if ("Green Enterprises")
+					if (SF.opened)
+						new/obj/item/weapon/disk/green(SF.loc)
+						new/obj/item/weapon/disk/green/fake(SF.loc)
+					else
+						new/obj/item/weapon/disk/green(SF)
+						new/obj/item/weapon/disk/green/fake(SF)
+				if ("Yellow Conglomerate")
+					if (SF.opened)
+						new/obj/item/weapon/disk/yellow(SF.loc)
+						new/obj/item/weapon/disk/yellow/fake(SF.loc)
+					else
+						new/obj/item/weapon/disk/yellow(SF)
+						new/obj/item/weapon/disk/yellow/fake(SF)
+
+	world << "<font size=2 color ='yellow'>New disks have arrived at the vaults!</font>"
+
 /obj/map_metadata/art_of_the_deal/proc/score()
 	world << "<b><font color='yellow' size=3>Scores:</font></b>"
 	for(var/obj/structure/closet/safe/SF in world)
