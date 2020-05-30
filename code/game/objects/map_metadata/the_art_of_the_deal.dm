@@ -221,19 +221,22 @@
 	flammable = FALSE
 	density = FALSE
 	opacity = FALSE
-	var/fake = FALSE
 	force = 4.0
 	throwforce = 3.0
-
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE
 	w_class = 1.0
+
+	var/fake = FALSE
+	var/used = FALSE
 	var/faction = null
 	var/exchange_state = -1 //0-both fake, 1-one is real, 2-both real
 
 /obj/item/weapon/disk/examine(mob/user)
 	..()
+	if (used)
+		user << "<font color='yellow'><i><b>The disk was already decrypted and wiped</b></i></font>."
 	if (exchange_state == -1)
 		user << "The disk is <b><font color='red'>inactive</font></b>."
 	else
@@ -250,6 +253,12 @@
 		H.setClickCooldown(20)
 		if (src.faction == D.faction)
 			H << "These disks are of the same faction, you need another faction's disk to activate them."
+			return
+		else if (src.used)
+			H << "\The [src] has already been used and wiped."
+			return
+		else if (D.used)
+			H << "\The [src] has already been used and wiped."
 			return
 		else if (src.exchange_state != -1 && D.exchange_state != -1)
 			visible_message("<big><font color='red'>Both disks are already active.</font></big>")
@@ -341,7 +350,7 @@
 /obj/item/weapon/paper_bin/police
 	name = "incomming documents"
 	desc = "incomming documents and warrants will arrive here."
-
+	amount = 0
 /obj/item/weapon/paper/police
 	icon_state = "police_record"
 	base_icon = "police_record"
@@ -356,7 +365,7 @@
 		..()
 		icon_state = "police_record"
 		spawn(10)
-			info = "<center>POLICE DEPARTMENT<hr><large><b>Arrest Warrant No.[rand(1000,9999)]</b></large><hr><br>Police forces are hereby authorized and directed to detain <b>[tgt]</b>, working for <b><i>[tgtcmp]</i><b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Police forces shall bring <b>[tgt]</b> forthwith to the Police Station.<br><br><small><center>Form Model 13-B<center></small><hr>"
+			info = "<center>POLICE DEPARTMENT<hr><large><b>Arrest Warrant No. [rand(1000,9999)]</b></large><hr><br>Police forces are hereby authorized and directed to detain <b>[tgt]</b>, working for <b><i>[tgtcmp]</i></b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Police forces shall bring <b>[tgt]</b> forthwith to the Police Station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
 
 /obj/item/weapon/paper/police/searchwarrant
 	icon_state = "police_warrant"
@@ -367,7 +376,7 @@
 		..()
 		icon_state = "police_warrant"
 		spawn(10)
-			info = "<center>POLICE DEPARTMENT<hr><large><b>Search Warrant No.[rand(100,999)]</b></large><hr><br>Police forces are hereby authorized and directed to search all and every property owned by <b>[cmp]</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center>Form Model 13-C1</center></small><hr>"
+			info = "<center>POLICE DEPARTMENT<hr><large><b>Search Warrant No. [rand(100,999)]</b></large><hr><br>Police forces are hereby authorized and directed to search all and every property owned by <b>[cmp]</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow_aod
 	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
