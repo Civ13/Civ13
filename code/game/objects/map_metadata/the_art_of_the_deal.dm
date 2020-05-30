@@ -221,6 +221,7 @@
 	flammable = FALSE
 	density = FALSE
 	opacity = FALSE
+	var/fake = FALSE
 	force = 4.0
 	throwforce = 3.0
 
@@ -230,11 +231,24 @@
 	w_class = 1.0
 	var/faction = null
 
+/obj/item/weapon/disk/examine(mob/user)
+	..()
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.civilization == faction)
+			H << "This is the <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
+	else if (isghost(user))
+		user << "This is the <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
+
 /obj/item/weapon/disk/red
 	name = "red diskette"
 	icon_state = "disk_red"
 	item_state = "disk_red"
 	faction = "Red Corporation"
+
+/obj/item/weapon/disk/red/fake
+	name = "red diskette"
+	fake = TRUE
 
 /obj/item/weapon/disk/blue
 	name = "blue diskette"
@@ -242,17 +256,29 @@
 	item_state = "disk_blue"
 	faction = "Blue Syndicate"
 
+/obj/item/weapon/disk/blue/fake
+	name = "blue diskette"
+	fake = TRUE
+
 /obj/item/weapon/disk/yellow
 	name = "yellow diskette"
 	icon_state = "disk_yellow"
 	item_state = "disk_yellow"
 	faction = "Yellow Conglomerate"
 
+/obj/item/weapon/disk/yellow/fake
+	name = "yellow diskette"
+	fake = TRUE
+
 /obj/item/weapon/disk/green
 	name = "green diskette"
 	icon_state = "disk_green"
 	item_state = "disk_green"
 	faction = "Green Enterprises"
+
+/obj/item/weapon/disk/green/fake
+	name = "green diskette"
+	fake = TRUE
 
 /obj/item/weapon/package
 	name = "package"

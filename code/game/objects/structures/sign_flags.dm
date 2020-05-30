@@ -168,12 +168,14 @@
 	icon_state = "sideline"
 	layer = 2
 
-/obj/structure/sign/traffic/cone
+/obj/item/weapon/trafficcone
 	name = "traffic cone"
+	icon = 'icons/obj/decals.dmi'
 	icon_state = "cone1"
 	anchored = FALSE
+	w_class = 4
 
-/obj/structure/sign/traffic/cone/New()
+/obj/item/weapon/trafficcone/New()
 	..()
 	icon_state = pick("cone1","cone2")
 
