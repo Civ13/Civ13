@@ -119,7 +119,7 @@
 
 /obj/item/weapon/map/New()
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "minimap")
-	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "whitedot",layer=src.layer+1)
+	playerloc = image(icon = 'icons/effects/mapeffects.dmi', icon_state = "blinking",layer=src.layer+1)
 
 /obj/item/weapon/map/examine(mob/user)
 	update_icon()
