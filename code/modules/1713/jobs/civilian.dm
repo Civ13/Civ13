@@ -2129,6 +2129,7 @@
 	rank_abbreviation = ""
 	whitelisted = TRUE
 	spawn_location = "JoinLateCiv"
+	rank_abbreviation = "Officer"
 
 	is_deal = TRUE
 
