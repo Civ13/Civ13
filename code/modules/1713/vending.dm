@@ -355,7 +355,6 @@ obj/structure/vending/japweapons_ww2
 		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/m14 = 15,
-		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/scarl = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/scarh = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/hk417 = 15,
@@ -374,7 +373,6 @@ obj/structure/vending/sofammo
 	desc = "ammunition and attachments for U.S. Special Operations Forces."
 	icon_state = "ammo_crates"
 	products = list(
-		/obj/item/ammo_magazine/ak74 = 20,
 		/obj/item/ammo_magazine/m16 = 50,
 		/obj/item/ammo_magazine/m14 = 50,
 		/obj/item/ammo_magazine/hk = 20,
