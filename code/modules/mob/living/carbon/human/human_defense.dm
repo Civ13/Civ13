@@ -73,20 +73,28 @@ bullet_act
 	else
 		return ..(W, user)
 
+/mob/living/human
+	var/mob/living/human/last_harmed = null
+
 /mob/living/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
 		return // fix for strange bug
-	if (P.firer && ishuman(P.firer) && !map.civilizations && !map.nomads && !map.is_RP)
-		var/mob/living/human/Huser = P.firer
-		if (src.stat != DEAD && src.faction_text != Huser.faction_text)
-			src.awards["wounded"]+=min(P.damage,100)
-			var/done = FALSE
-			for (var/list/i in Huser.awards["kills"])
-				if (i[1]==src.name)
-					i[2]+= min(P.damage,100)
-					done = TRUE
-			if (!done)
-				Huser.awards["kills"]+=list(list(src.name,min(P.damage,100),0))
+	if (P.firer && ishuman(P.firer))
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			var/mob/living/human/Huser = P.firer
+			if (src.stat != DEAD && src.civilization == "Police")
+				last_harmed = Huser
+		else if (!map.civilizations && !map.nomads && !map.is_RP)
+			var/mob/living/human/Huser = P.firer
+			if (src.stat != DEAD && src.faction_text != Huser.faction_text)
+				src.awards["wounded"]+=min(P.damage,100)
+				var/done = FALSE
+				for (var/list/i in Huser.awards["kills"])
+					if (i[1]==src.name)
+						i[2]+= min(P.damage,100)
+						done = TRUE
+				if (!done)
+					Huser.awards["kills"]+=list(list(src.name,min(P.damage,100),0))
 	if (istype(P, /obj/item/projectile/shell))
 		visible_message("<span class = 'danger'>[src] gets blown up by \the [P]!</span>")
 		gib()

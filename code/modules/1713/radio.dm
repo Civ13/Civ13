@@ -419,6 +419,72 @@ var/global/FREQP = rand(81,100)
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio(msg, speaker.default_language, speaker, src)
 
+//broadcasts an announcement on the Police/Emergency frequency
+/proc/global_broadcast(var/tfreq, var/msg)
+
+	var/list/tried_mobs = list()
+
+	for (var/mob/living/human/hearer in human_mob_list)
+		if (tried_mobs.Find(hearer))
+			continue
+		tried_mobs += hearer
+		var/list/used_radios = list()
+		if (hearer.stat == CONSCIOUS)
+			var/list/radios = list()
+			for (var/obj/structure/radio/radio in view(7, hearer))
+				if (radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (radio.freq == tfreq && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
+					hearer.hear_radio_broadcast(msg, radio)
+			for (var/obj/item/weapon/radio/radio in range(1,get_turf(src)))
+				if (radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (radio.freq == tfreq && radio.receiver_on)
+					hearer.hear_radio_broadcast(msg, radio)
+			for (var/obj/item/weapon/radio/radio in hearer.contents)
+				if (radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (radio.freq == tfreq && radio.receiver_on)
+					hearer.hear_radio_broadcast(msg, radio)
+	// let observers hear it
+	for (var/mob/observer/O in mob_list)
+		O.hear_radio_broadcast(msg, null)
+
+/mob/proc/hear_radio_broadcast(var/message, var/obj/origin = null)
+
+	if (!client || !message)
+		return
+
+	message = capitalize(message)
+
+	if (sleeping || stat==1) //If unconscious or sleeping
+		hear_sleep(message)
+		return
+
+	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
+		if (prob(20))
+			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
+	else
+		var/fontsize = 2
+		var/full_message = ""
+		if (istype(origin, /obj/structure/radio))
+			var/obj/structure/radio/RD = origin
+			if (RD)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
+		else
+			var/obj/item/weapon/radio/RD = origin
+			if (RD)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
+		on_hear_obj(origin, full_message)
 
 ////////////////PORTABLE RADIOS//////////////////
 /obj/item/weapon/radio

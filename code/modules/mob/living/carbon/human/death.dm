@@ -62,7 +62,14 @@
 		var/obj/map_metadata/art_of_the_deal/GD = map
 		if (civilization && civilization in GD.scores)
 			if (civilization == "Police")
-				GD.scores[civilization] -= 350
+				GD.scores[civilization] -= 150
+				if (ishuman(last_harmed))
+					GD.scores[last_harmed.civilization] -= 100
+					global_broadcast(FREQP,"<big>10-9: Officer down! All available units proceed to [get_coded_loc()] ([x],[y])!<big>")
+					var/warrant = last_harmed.civilization
+					spawn(rand(300,500))
+						if (warrant != "Police")
+							global_broadcast(FREQP,"<big>Attention, warrant issued for <b>[warrant] HQ</b>, please search the premises as soon as possible.</big>")
 			else
 				GD.scores[civilization] -= 200
 	handle_piss()
