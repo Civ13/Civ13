@@ -50,7 +50,8 @@
 	..(newloc,"sandstone")
 /turf/wall/stone/New(var/newloc)
 	..(newloc,"stone")
-
+/turf/wall/stone/stonebrick/New(var/newloc)
+	..(newloc,"stonebrick")
 /turf/wall/fortress
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "fortress_brickwall"

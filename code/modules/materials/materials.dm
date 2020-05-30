@@ -370,8 +370,7 @@ var/list/name_to_material
 
 /material/sandstone
 	name = "sandstone"
-	icon_base = "stone"
-	icon_reinf = "reinf_stone"
+	icon_base = "new_stonebrick"
 	icon_colour = "#D9C179"
 	hardness = 45
 	integrity = 500
@@ -384,8 +383,7 @@ var/list/name_to_material
 
 /material/stone
 	name = "stone"
-	icon_base = "stone"
-	icon_reinf = "reinf_stone"
+	icon_base = "stone_block_wall"
 	icon_colour = "#808080"
 	hardness = 50
 	integrity = 500
