@@ -69,10 +69,10 @@
 		if (SF.faction)
 			var/list/tlist = list(SF.faction,0)
 			for(var/obj/item/I in SF)
-				if (istype(I, /obj/item/weapon/disk))
-					var/obj/item/weapon/disk/D = I
-					if (D.faction && D.faction != SF.faction)
-						tlist[2]+=500
+//				if (istype(I, /obj/item/weapon/disk))
+//					var/obj/item/weapon/disk/D = I
+//					if (D.faction && D.faction != SF.faction)
+//						tlist[2]+=500
 				if (istype(I, /obj/item/stack/money))
 					var/obj/item/stack/money/M = I
 					tlist[2]+=M.amount*M.value/4
@@ -230,16 +230,54 @@
 	edge = FALSE
 	w_class = 1.0
 	var/faction = null
+	var/exchange_state = -1 //0-both fake, 1-one is real, 2-both real
 
 /obj/item/weapon/disk/examine(mob/user)
 	..()
+	if (exchange_state == -1)
+		user << "The disk is <b><font color='red'>inactive</font></b>."
+	else
+		user << "The disk is <b><font color='green'>active</font></b>."
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (H.civilization == faction)
-			H << "This is the <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
+			H << "This is a <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
 	else if (isghost(user))
-		user << "This is the <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
+		user << "This is a <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
 
+/obj/item/weapon/disk/attackby(var/obj/item/weapon/disk/D, var/mob/living/human/H)
+	if (istype(D, /obj/item/weapon/disk))
+		H.setClickCooldown(20)
+		if (src.faction == D.faction)
+			H << "These disks are of the same faction, you need another faction's disk to activate them."
+			return
+		else if (src.exchange_state != -1 && D.exchange_state != -1)
+			visible_message("<big><font color='red'>Both disks are already active.</font></big>")
+			return
+		else if (src.exchange_state != -1)
+			visible_message("<big><font color='yellow'>\The [src] has already been activated.</font></big>")
+			return
+		else if (D.exchange_state != -1)
+			visible_message("<big><font color='yellow'>\The [D] has already been activated.</font></big>")
+			return
+
+		if (D.fake && src.fake) //both fake
+			D.exchange_state = 0
+			src.exchange_state = 0
+			visible_message("<big><font color='green'>Both disks get activated, completing the transaction.</font></big>")
+			return
+		else if ((D.fake && !src.fake) || (!D.fake && src.fake)) //one is fake
+			D.exchange_state = 1
+			src.exchange_state = 1
+			visible_message("<big><font color='green'>Both disks get activated, completing the transaction.</font></big>")
+			return
+		else if (!D.fake && !src.fake) //both real
+			D.exchange_state = 2
+			src.exchange_state = 2
+			visible_message("<big><font color='green'>Both disks get activated, completing the transaction.</font></big>")
+			return
+	else
+		..()
 /obj/item/weapon/disk/red
 	name = "red diskette"
 	icon_state = "disk_red"
@@ -248,6 +286,7 @@
 
 /obj/item/weapon/disk/red/fake
 	name = "red diskette"
+	faction = "Red Corporation"
 	fake = TRUE
 
 /obj/item/weapon/disk/blue
@@ -258,6 +297,7 @@
 
 /obj/item/weapon/disk/blue/fake
 	name = "blue diskette"
+	faction = "Blue Syndicate"
 	fake = TRUE
 
 /obj/item/weapon/disk/yellow
@@ -268,6 +308,7 @@
 
 /obj/item/weapon/disk/yellow/fake
 	name = "yellow diskette"
+	faction = "Yellow Conglomerate"
 	fake = TRUE
 
 /obj/item/weapon/disk/green
@@ -278,6 +319,7 @@
 
 /obj/item/weapon/disk/green/fake
 	name = "green diskette"
+	faction = "Green Enterprises"
 	fake = TRUE
 
 /obj/item/weapon/package

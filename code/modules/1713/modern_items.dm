@@ -1047,6 +1047,58 @@
 	powerneeded = FALSE
 	anchored = TRUE
 
+/obj/structure/computer/nopower/aotd
+	name = "Desktop Computer"
+	desc = "A desktop computer running the latest version of UngaOS. Has a floppy drive."
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
+/obj/structure/computer/nopower/aotd/attackby(var/obj/item/weapon/disk/D, var/mob/living/human/H)
+	if (istype(D, /obj/item/weapon/disk))
+		if (D.faction == H.civilization)
+			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
+			return
+		else if (H.civilization == "Police")
+			H << "<span class='notice'>You do not know how to decrypt this... Should put it in the evidence room instead.</span>"
+			return
+		else
+			playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
+			switch(D.exchange_state)
+				if (-1)
+					if (D.fake)
+						WWalert(H,"This is a fake inactive disk! You lose 100 points.", "Fake Disk")
+						var/obj/map_metadata/art_of_the_deal/GD = map
+						GD.scores[H.civilization] -= 100
+						qdel(D)
+					else
+						WWalert(H,"This is a real inactive disk! You gain 200 dollars.", "Real Disk")
+						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
+						DLR.amount = 40
+						qdel(D)
+				if (0)
+					if (D.fake)
+						WWalert(H,"This is a fake disk! Since you exchanged it with a fake disk too, both factions lose 400 points.", "Fake Disk")
+						var/obj/map_metadata/art_of_the_deal/GD = map
+						GD.scores[H.civilization] -= 400
+						qdel(D)
+
+				if (1)
+					if (D.fake)
+						WWalert(H,"This is a fake disk! Since you exchanged it with a real disk, you gain nothing and the other faction gains 400 dollars.", "Fake Disk")
+						qdel(D)
+					else
+						WWalert(H,"This is a real disk! Since you exchanged it with a fake disk, you gain 400 dollars and the other faction gains nothing.", "Real Disk")
+						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
+						DLR.amount = 80
+						qdel(D)
+				if (2)
+					if (!D.fake)
+						WWalert(H,"This is a real disk! Since you exchanged it with a real disk too, both factions gain 1000 dollars.", "Real Disk")
+						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
+						DLR.amount = 200
+						qdel(D)
+	else
+		..()
 /obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
