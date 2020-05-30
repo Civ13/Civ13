@@ -102,9 +102,6 @@ var/list/global/wall_cache = list()
 				return
 	..()
 
-/turf/wall/rockwall/New(var/newloc, var/materialtype, var/rmaterialtype)
-	..(newloc, materialtype, rmaterialtype)
-
 // Walls always hide the stuff below them.
 /turf/wall/levelupdate()
 	for (var/obj/O in src)
@@ -134,16 +131,7 @@ var/list/global/wall_cache = list()
 		L.update_overlay()
 	..()
 
-/turf/wall/process()
-	// Calling parent will kill processing
-	if (!radiate())
-		return PROCESS_KILL
-
 /turf/wall/bullet_act(var/obj/item/projectile/Proj)
-/*
-	if (istype(Proj,/obj/item/projectile/beam))
-		burn(2500)*/
-
 	var/proj_damage = Proj.get_structure_damage()
 
 	//cap the amount of damage, so that things like emitters can't destroy walls in one hit.
@@ -180,21 +168,6 @@ var/list/global/wall_cache = list()
 				user << "<span class='danger'>It looks heavily damaged.</span>"
 //Damage
 
-/turf/wall/melt()
-
-	if (!can_melt())
-		return
-
-	ChangeTurf(get_base_turf_by_area(src))
-
-	var/turf/floor/F = src
-	if (!F)
-		return
-	F.burn_tile()
-	F.icon_state = "wall_thermite"
-	visible_message("<span class='danger'>\The [src] spontaneously combusts!</span>") //!!OH SHIT!!
-	return
-
 /turf/wall/proc/take_damage(dam)
 	if (dam)
 		damage = max(0, damage + dam)
@@ -218,14 +191,6 @@ var/list/global/wall_cache = list()
 
 /turf/wall/fire_act(temperature)
 	burn(temperature)
-
-/turf/wall/adjacent_fire_act(turf/floor/adj_turf, datum/gas_mixture/adj_air, adj_temp, adj_volume)
-	burn(adj_temp)
-	if (adj_temp > material.melting_point)
-		take_damage(log(RAND_F(0.9, 1.1) * (adj_temp - material.melting_point)))
-
-	return ..()
-
 /turf/wall/proc/dismantle_wall(var/devastated, var/explode, var/no_product)
 
 	for (var/obj/O in contents) //Eject contents!
@@ -236,6 +201,7 @@ var/list/global/wall_cache = list()
 	//update_connections(1)
 	update_icon()
 	ChangeTurf(get_base_turf_by_area(src))
+
 /turf/wall/ex_act(severity)
 	switch(severity)
 		if (1.0, 2.0)
@@ -245,48 +211,6 @@ var/list/global/wall_cache = list()
 				dismantle_wall(1,1)
 		if (3.0)
 			take_damage(rand(50, 100))
-
-// Wall-rot effect, a nasty fungus that destroys walls.
-
-/turf/wall/proc/can_melt()
-	if (material.flags & MATERIAL_UNMELTABLE)
-		return FALSE
-	return TRUE
-
-/turf/wall/proc/thermitemelt(mob/user as mob)
-	if (!can_melt())
-		return
-	var/obj/effect/overlay/O = new/obj/effect/overlay( src )
-	O.name = "Thermite"
-	O.desc = "Looks hot."
-	O.icon = 'icons/effects/fire.dmi'
-	O.icon_state = "2"
-	O.anchored = TRUE
-	O.density = TRUE
-	O.layer = 5
-
-	ChangeTurf(get_base_turf_by_area(src))
-
-	var/turf/floor/F = src
-	F.burn_tile()
-	F.icon_state = "wall_thermite"
-	user << "<span class='warning'>The thermite starts melting through the wall.</span>"
-
-	spawn(100)
-		if (O)
-			qdel(O)
-//	F.sd_LumReset()		//TODO: ~Carn
-	return
-
-/turf/wall/proc/radiate()
-
-	var/total_radiation = (material ? material.radioactivity : 0) + (reinf_material ? reinf_material.radioactivity / 2 : FALSE)
-	if (!total_radiation)
-		return
-
-	for (var/mob/living/L in range(3,src))
-		L.apply_effect(total_radiation, IRRADIATE,0)
-	return total_radiation
 
 /turf/wall/proc/burn(temperature)
 	if (material.combustion_effect(src, temperature, 0.7))
