@@ -16,15 +16,19 @@
 /* Building Material*/
 
 /* Clay Walls*/
-
+/turf/wall/brick
+	icon_state = "new_brick0"
 /turf/wall/brick/New(var/newloc)
 	..(newloc,"brick")
 
+/turf/wall/cement
+	icon_state = "cement_wall0"
 /turf/wall/cement/New(var/newloc)
 	..(newloc,"concrete")
 
 /* Wood Walls*/
-
+/turf/wall/wood
+	icon_state = "new_wood0"
 /turf/wall/wood/New(var/newloc)
 	..(newloc,"hardwood")
 /turf/wall/wood/low/New(var/newloc)
@@ -45,11 +49,16 @@
 	return
 /turf/wall/old_stone/update_icon()
 	return
-
+/turf/wall/sandstone
+	icon_state = "stone_block_wall0"
 /turf/wall/sandstone/New(var/newloc)
 	..(newloc,"sandstone")
+/turf/wall/stone
+	icon_state = "stone_block_wall0"
 /turf/wall/stone/New(var/newloc)
 	..(newloc,"stone")
+/turf/wall/stone/stonebrick
+	icon_state = "new_stonebrick0"
 /turf/wall/stone/stonebrick/New(var/newloc)
 	..(newloc,"stonebrick")
 /turf/wall/fortress
