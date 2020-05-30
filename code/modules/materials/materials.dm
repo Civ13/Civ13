@@ -370,8 +370,7 @@ var/list/name_to_material
 
 /material/sandstone
 	name = "sandstone"
-	icon_base = "stone"
-	icon_reinf = "reinf_stone"
+	icon_base = "new_stonebrick"
 	icon_colour = "#D9C179"
 	hardness = 45
 	integrity = 500
@@ -384,8 +383,7 @@ var/list/name_to_material
 
 /material/stone
 	name = "stone"
-	icon_base = "stone"
-	icon_reinf = "reinf_stone"
+	icon_base = "stone_block_wall"
 	icon_colour = "#808080"
 	hardness = 50
 	integrity = 500
@@ -395,10 +393,11 @@ var/list/name_to_material
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/stone
+
 /material/concrete
 	name = "concrete"
-	icon_base = "contrete"
-	icon_colour = "#999999"
+	icon_base = "cement_wall"
+	icon_colour = null
 	hardness = 50
 	integrity = 400
 	weight = 18
@@ -408,6 +407,7 @@ var/list/name_to_material
 /material/stonebrick
 	name = "stonebrick"
 	display_name = "stone brick"
+	icon_base = "new_stonebrick"
 	icon_colour = "#808080"
 	hardness = 50
 	integrity = 450
@@ -418,7 +418,8 @@ var/list/name_to_material
 /material/brick
 	name = "brick"
 	display_name = "brick"
-	icon_colour = "#cb4154"
+	icon_base = "new_brick"
+	icon_colour = null
 	hardness = 40
 	integrity = 350
 	weight = 8
@@ -520,6 +521,8 @@ var/list/name_to_material
 	name = "hardwood"
 	hardness = 200
 	integrity = 175
+	icon_colour = null
+	icon_base = "new_wood"
 
 /material/wood/soft
 	name = "softwood"
