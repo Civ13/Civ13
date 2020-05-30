@@ -427,6 +427,7 @@
 	icon_opened = "safe-open"
 	not_disassemblable = TRUE
 	not_movable = TRUE
+	anchored = TRUE
 	var/faction = null
 
 /obj/structure/closet/safe/red
@@ -438,7 +439,7 @@
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
-		new /obj/item/weapon/disk/red/fake(src)
+		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red/fake(src)
 		new /obj/item/weapon/disk/red/fake(src)
 /obj/structure/closet/safe/blue
@@ -450,7 +451,7 @@
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
-		new /obj/item/weapon/disk/blue/fake(src)
+		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue/fake(src)
 		new /obj/item/weapon/disk/blue/fake(src)
 /obj/structure/closet/safe/yellow
@@ -462,7 +463,7 @@
 		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow(src)
-		new /obj/item/weapon/disk/yellow/fake(src)
+		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow/fake(src)
 		new /obj/item/weapon/disk/yellow/fake(src)
 /obj/structure/closet/safe/green
@@ -474,6 +475,6 @@
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)
-		new /obj/item/weapon/disk/green/fake(src)
+		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green/fake(src)
 		new /obj/item/weapon/disk/green/fake(src)
