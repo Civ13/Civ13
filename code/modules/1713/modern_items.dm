@@ -1096,7 +1096,7 @@
 					if (!D.fake)
 						WWalert(H,"This is a real disk! Since you exchanged it with a real disk too, both factions gain 1000 dollars.", "Real Disk")
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
-						DLR.amount = 200
+						DLR.amount = 100
 						D.used = TRUE
 	else
 		..()
