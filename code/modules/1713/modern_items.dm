@@ -1067,8 +1067,7 @@
 				if (-1)
 					if (D.fake)
 						WWalert(H,"This is a fake inactive disk! You lose 100 points.", "Fake Disk")
-						var/obj/map_metadata/art_of_the_deal/GD = map
-						GD.scores[H.civilization] -= 100
+						map.scores[H.civilization] -= 100
 						qdel(D)
 					else
 						WWalert(H,"This is a real inactive disk! You gain 200 dollars.", "Real Disk")
@@ -1078,8 +1077,7 @@
 				if (0)
 					if (D.fake)
 						WWalert(H,"This is a fake disk! Since you exchanged it with a fake disk too, both factions lose 400 points.", "Fake Disk")
-						var/obj/map_metadata/art_of_the_deal/GD = map
-						GD.scores[H.civilization] -= 400
+						map.scores[H.civilization] -= 400
 						qdel(D)
 
 				if (1)

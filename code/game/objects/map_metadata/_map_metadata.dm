@@ -88,7 +88,8 @@ var/civmax_research = list(230,230,230)
 	var/next_win = -1
 	var/win_condition_spam_check = FALSE
 	var/list/awards = list()
-
+	var/list/scores = list()
+	var/list/warrants = list()
 	// lighting
 	var/list/times_of_day = list("Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night")
 	var/list/zlevels_without_lighting = list()

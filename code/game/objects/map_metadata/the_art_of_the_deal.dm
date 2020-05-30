@@ -25,7 +25,7 @@
 	faction1 = CIVILIAN
 	faction2 = PIRATES
 	gamemode = "Negociations"
-	var/list/scores = list(
+	scores = list(
 		"Red Corporation" = 0,
 		"Blue Syndicate" = 0,
 		"Green Enterprises" = 0,
@@ -338,7 +338,36 @@
 	sharp = FALSE
 	edge = FALSE
 	w_class = 3.0
+/obj/item/weapon/paper_bin/police
+	name = "incomming documents"
+	desc = "incomming documents and warrants will arrive here."
 
+/obj/item/weapon/paper/police
+	icon_state = "police_record"
+	base_icon = "police_record"
+	name = "Police Record"
+/obj/item/weapon/paper/police/warrant
+	icon_state = "police_record"
+	base_icon = "police_record"
+	name = "Arrest Warrant"
+	var/tgt = "Unknown"
+	var/tgtcmp = "Unknown"
+	New()
+		..()
+		icon_state = "police_record"
+		spawn(10)
+			info = "<center>POLICE DEPARTMENT<hr><large><b>Arrest Warrant No.[rand(1000,9999)]</b></large><hr><br>Police forces are hereby authorized and directed to detain <b>[tgt]</b>, working for <b><i>[tgtcmp]</i><b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Police forces shall bring <b>[tgt]</b> forthwith to the Police Station.<br><br><small><center>Form Model 13-B<center></small><hr>"
+
+/obj/item/weapon/paper/police/searchwarrant
+	icon_state = "police_warrant"
+	base_icon = "police_warrant"
+	name = "Search Warrant"
+	var/cmp = "Unknown"
+	New()
+		..()
+		icon_state = "police_warrant"
+		spawn(10)
+			info = "<center>POLICE DEPARTMENT<hr><large><b>Search Warrant No.[rand(100,999)]</b></large><hr><br>Police forces are hereby authorized and directed to search all and every property owned by <b>[cmp]</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center>Form Model 13-C1</center></small><hr>"
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow_aod
 	maptext = "<center><font color='yellow'>Unknown Area</font></center>"

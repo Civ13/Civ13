@@ -82,8 +82,19 @@ bullet_act
 	if (P.firer && ishuman(P.firer))
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			var/mob/living/human/Huser = P.firer
-			if (src.stat != DEAD && src.civilization == "Police")
+			if (src.stat != DEAD && src.civilization == "Police" && Huser.civilization != "Police")
 				last_harmed = Huser
+				if (!(Huser.real_name in map.warrants))
+					map.warrants += Huser.real_name
+					var/obj/item/weapon/paper_bin/police/PAR = null
+					for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+						PAR = PAR2
+						break
+					if (PAR)
+						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+						SW.tgt = Huser.real_name
+						SW.tgtcmp = Huser.civilization
+						PAR.add(SW)
 		else if (!map.civilizations && !map.nomads && !map.is_RP)
 			var/mob/living/human/Huser = P.firer
 			if (src.stat != DEAD && src.faction_text != Huser.faction_text)
