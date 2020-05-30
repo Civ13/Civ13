@@ -2151,6 +2151,18 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 	H.add_note("Role", "You are a member of the police force. Your objectives are to arrest as many businessmen as possible and aprehend money and disks!")
+	H.add_note("Police Codes", "As an officer, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
+	H.add_note("List of Police Codes", "<b>10-0:</b> On my way (shows current location)<br><br> \
+		<b>10-1:</b> Report in / share location.<br><br> \
+		<b>10-2:</b> Report in as being available.<br><br> \
+		<b>10-3:</b> Report in as being busy.<br><br> \
+		<b>10-4:</b> Roger that / Affirmative.<br><br> \
+		<b>10-5:</b> Negative / Impossible.<br><br> \
+		<b>10-6:</b> Returning to the Police Station.<br><br> \
+		<b>10-7:</b> Prisoner in custody / Arrested suspect.<br><br> \
+		<b>10-8:</b> Request immediate assistance / Officer injured - All non-busy units should answer with a <b>10-0</b> and proceed to location (shows current location)<br><br> \
+		<b>10-9:</b> Officer down, all units should answer with a <b>10-0</b> and proceed to location (shows current location) - This is automatically sent if an officer gets killed, no need for manual input, use <b>10-8</b> instead.")
+
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)

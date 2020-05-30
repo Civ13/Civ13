@@ -65,7 +65,7 @@
 				GD.scores[civilization] -= 150
 				if (ishuman(last_harmed))
 					GD.scores[last_harmed.civilization] -= 100
-					global_broadcast(FREQP,"<big>10-9: Officer down! All available units proceed to [get_coded_loc()] ([x],[y])!<big>")
+					global_broadcast(FREQP,"<big>10-9: Officer down! All available units proceed to [get_coded_loc()] ([x],[y])!</big>")
 					var/warrant = last_harmed.civilization
 					spawn(rand(300,500))
 						if (warrant != "Police")

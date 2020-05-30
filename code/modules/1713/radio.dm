@@ -811,3 +811,44 @@ var/global/FREQP = rand(81,100)
 			if (R.freq == src.freq)
 				return TRUE
 	return FALSE
+
+/proc/ten_code(message,mob/living/human/speaker)
+	if (!speaker)
+		return message
+	var/dmessage = message
+	dmessage = splittext(dmessage,"10-")
+	var/tcode = copytext(dmessage[2],1)
+	var/converted = FALSE
+	switch(tcode)
+		if ("0")
+			converted = TRUE
+			dmessage = "10-0: <b>On my way</b>, currently at [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
+		if ("1")
+			converted = TRUE
+			dmessage = "10-1: Reporting in, current location is [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
+		if ("2")
+			converted = TRUE
+			dmessage = "10-2: Reporting in, currently available."
+		if ("3")
+			converted = TRUE
+			dmessage = "10-3: Reporting in, currently busy."
+		if ("4")
+			converted = TRUE
+			dmessage = "10-4: Affirmative, I repeat, Affirmative!"
+		if ("5")
+			converted = TRUE
+			dmessage = "10-5: Negative, I repeat, Negative!"
+		if ("6")
+			converted = TRUE
+			dmessage = "10-6: Returning to the station."
+		if ("7")
+			converted = TRUE
+			dmessage = "10-7: Prisoner in custody."
+		if ("8")
+			converted = TRUE
+			dmessage = "10-8: NEED IMMEDIATE ASSISTANCE AT [speaker.get_coded_loc()] ([speaker.x],[speaker.y])!"
+
+	if (converted)
+		return dmessage
+	else
+		return message
