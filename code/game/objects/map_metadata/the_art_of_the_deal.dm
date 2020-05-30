@@ -203,8 +203,7 @@
 	/obj/item/ammo_magazine/glock17 = 50,
 	/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 5,
 	/obj/item/ammo_casing/grenade_l/teargas = 20,
-	/obj/item/weapon/grenade/flashbang = 30,
-	/obj/item/weapon/grenade/chemical/xylyl_bromide = 10,
+	/obj/item/weapon/grenade/flashbang = 20,
 
 	)
 	attack_hand(mob/user as mob)

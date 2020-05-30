@@ -577,7 +577,7 @@ var/global/redirect_all_players = null
 		var/g_nr = 0
 		var/r_nr = 0
 		var/b_nr = 0
-		var/p_nr = 0
+//		var/p_nr = 0
 		for (var/datum/job/joby in job_master.occupations)
 			if (istype(joby, /datum/job/civilian/businessman/red))
 				r_nr = joby.current_positions
@@ -587,28 +587,28 @@ var/global/redirect_all_players = null
 				g_nr = joby.current_positions
 			else if(istype(joby, /datum/job/civilian/businessman/yellow))
 				y_nr = joby.current_positions
-			else if(istype(joby, /datum/job/civilian/policeofficer))
-				p_nr = joby.current_positions
+//			else if(istype(joby, /datum/job/civilian/policeofficer))
+//				p_nr = joby.current_positions
 		if (istype(job, /datum/job/civilian/businessman/red))
-			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > p_nr)
+			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/blue))
-			if (job.current_positions > y_nr || job.current_positions > r_nr && job.current_positions > g_nr && job.current_positions > p_nr)
+			if (job.current_positions > y_nr || job.current_positions > r_nr && job.current_positions > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/green))
-			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > r_nr && job.current_positions > p_nr)
+			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > r_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/yellow))
-			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > p_nr)
+			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
-		else if(istype(job, /datum/job/civilian/policeofficer))
-			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > y_nr)
-				WWalert(usr,"Too many people playing as this role.","Error")
-				return FALSE
+//		else if(istype(job, /datum/job/civilian/policeofficer))
+//			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > y_nr)
+//				WWalert(usr,"Too many people playing as this role.","Error")
+//				return FALSE
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)

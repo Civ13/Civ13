@@ -2127,7 +2127,7 @@
 	title = "Police Officer"
 	en_meaning = ""
 	rank_abbreviation = ""
-
+	whitelisted = TRUE
 	spawn_location = "JoinLateCiv"
 
 	is_deal = TRUE
