@@ -154,8 +154,9 @@
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
 	message = replacetext(message,";", "",1,2)
-	if (findtext(message,"10-"))
+	if (findtext(message,";10-") || findtext(message,"; 10-"))
 		message = ten_code(message, speaker)
+	message = replacetext(message,";", "",1,2)
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"

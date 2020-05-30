@@ -118,7 +118,7 @@
 	for(var/obj/item/I in get_area(/area/caribbean/prison))
 		if (istype(I, /obj/item/weapon/disk))
 			var/obj/item/weapon/disk/D = I
-			if (D.faction)
+			if (D.faction && !D.used)
 				tlist2[2]+=200
 		if (istype(I, /obj/item/stack/money))
 			var/obj/item/stack/money/M = I
@@ -163,7 +163,7 @@
 		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 5,
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 5,
 		/obj/item/weapon/gun/projectile/revolver/smithwesson = 10,
-		/obj/item/weapon/gun/projectile/shotgun/remington870 = 2,
+		/obj/item/weapon/gun/projectile/shotgun/pump = 2,
 		/obj/item/weapon/gun/projectile/boltaction/m24 = 2,
 		/obj/item/weapon/attachment/silencer/pistol = 5,
 

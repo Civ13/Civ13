@@ -815,6 +815,8 @@ var/global/FREQP = rand(81,100)
 /proc/ten_code(message,mob/living/human/speaker)
 	if (!speaker)
 		return message
+	if (speaker.civilization != "Police")
+		return message
 	var/dmessage = message
 	dmessage = splittext(dmessage,"10-")
 	var/tcode = copytext(dmessage[2],1)
