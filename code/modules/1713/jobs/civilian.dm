@@ -2030,7 +2030,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 
-		H.equip_to_slot_or_del(new /obj/item/weapon/telephone/mobile(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/telephone/mobile(H), slot_r_store)
+
 	H.add_note("Role", "You are a member of the corporation. Make sure the deal goes through!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2043,7 +2044,7 @@
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 /datum/job/civilian/businessman/yellow
-	title = "Yellow Conglomerate"
+	title = "Goldstein Solutions"
 	selection_color = "#A1A181"
 	spawn_location = "JoinLateCivA"
 	min_positions = 3
@@ -2064,7 +2065,7 @@
 	return TRUE
 
 /datum/job/civilian/businessman/green
-	title = "Green Enterprises"
+	title = "Greene Traders Co-ops"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
 	min_positions = 3
@@ -2085,7 +2086,7 @@
 	return TRUE
 
 /datum/job/civilian/businessman/blue
-	title = "Blue Syndicate"
+	title = "Bluford Stock & Bonds"
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
 	min_positions = 3
@@ -2106,7 +2107,7 @@
 	return TRUE
 
 /datum/job/civilian/businessman/red
-	title = "Red Corporation"
+	title = "Reddington Arms"
 	selection_color = "#632D2D"
 	spawn_location = "JoinLateCivD"
 	min_positions = 3

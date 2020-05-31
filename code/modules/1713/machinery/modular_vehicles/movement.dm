@@ -33,13 +33,13 @@
 
 /obj/structure/vehicleparts/movement/update_icon()
 	if (broken)
-		icon_state = "[base_icon][axis.color_code]_broken"
+		icon_state = "[base_icon]_broken"
 	else
 		if (axis)
 			if (axis.moving && axis.currentspeed > 0)
-				icon_state = "[movement_icon][axis.color_code]"
+				icon_state = "[movement_icon]"
 			else
-				icon_state = "[base_icon][axis.color_code]"
+				icon_state = "[base_icon]"
 	if (connected)
 		connected.update_icon()
 		return
