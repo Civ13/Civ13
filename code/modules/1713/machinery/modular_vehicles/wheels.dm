@@ -16,7 +16,7 @@
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
-	lastdirchange = world.time+15
+	lastdirchange = world.time+control.axis.turntimer
 	if (control && control.axis && (control.axis.moving == FALSE || control.axis.currentspeed == 0))
 		return FALSE
 	if (!control || !control.axis)
@@ -77,7 +77,7 @@
 			control.axis.check_corners()
 		if (isemptylist(control.axis.matrix))
 			control.axis.check_matrix()
-		playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 2)
+		playsound(loc, control.axis.engine.starting_snd, 35, FALSE, 2)
 		spawn(40)
 			if (control.axis.engine && control.axis.engine.on)
 				control.axis.engine.running_sound()

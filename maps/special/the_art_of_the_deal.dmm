@@ -379,7 +379,7 @@
 "ho" = (/obj/roof/concrete,/obj/structure/sign/exit,/turf/wall/cement,/area/caribbean/nomads/forest)
 "hp" = (/obj/structure/vehicleparts/frame/car/rf/truck{override_color = "#7f0000"},/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 1},/obj/structure/lamp/lamp_small/tank/red/police{icon_state = "bulb"; dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest)
 "hq" = (/obj/structure/vehicleparts/frame/car/left/metal{override_color = "#7f0000"},/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/plating/road,/area/caribbean/nomads/forest)
-"hr" = (/obj/structure/vehicleparts/frame/car/lf,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/movement,/turf/floor/plating/road,/area/caribbean/nomads/forest)
+"hr" = (/obj/structure/vehicleparts/frame/car/lf,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement,/turf/floor/plating/road,/area/caribbean/nomads/forest)
 "hs" = (/obj/structure/vehicleparts/frame/car/bonnetcenter,/obj/structure/engine/internal/gasoline{enginesize = 7000},/turf/floor/plating/road,/area/caribbean/nomads/forest)
 "ht" = (/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean/nomads/forest)
 "hu" = (/obj/roof/concrete,/turf/wall/stone,/area/caribbean/nomads/forest)

@@ -72,7 +72,7 @@
 /obj/structure/vehicle/proc/running_sound()
 	if (engine)
 		if (engine.on)
-			playsound(loc, 'sound/machines/diesel_loop.ogg', 65, FALSE)
+			playsound(loc, engine.running_snd, 65, FALSE)
 			spawn(27)
 				running_sound()
 				return
@@ -221,7 +221,7 @@
 					engine.currentpower = 0
 					user << "You turn off the engine."
 					set_light(0)
-					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
+					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
 
 			visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
@@ -663,7 +663,7 @@
 					engine.currentpower = 0
 					user << "You turn off the engine."
 					set_light(0)
-					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
+					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
 
 			visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
