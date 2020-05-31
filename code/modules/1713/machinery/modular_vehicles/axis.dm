@@ -6,6 +6,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 ////////AXIS: MOVEMENT LOOP/////////
 /obj/structure/vehicleparts/axis
 	var/maxdist = 5 //the highest of length and width
+	var/turntimer = 15
 /obj/structure/vehicleparts/axis/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -37,9 +38,10 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 /obj/structure/vehicleparts/axis/proc/movementsound()
 	if (!moving)
 		return
-	playsound(loc, 'sound/machines/tank_moving.ogg',100, TRUE)
-	spawn(30)
-		movementsound()
+	if (istype(wheels[1],/obj/structure/vehicleparts/movement/tracks))
+		playsound(loc, 'sound/machines/tank_moving.ogg',100, TRUE)
+		spawn(30)
+			movementsound()
 
 /obj/structure/vehicleparts/axis/proc/movementloop()
 	if (moving == TRUE)

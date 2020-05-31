@@ -47,6 +47,7 @@
 	speeds = 3
 	maxpower = 10
 	speedlist = list(1=3,2=2,3=1)
+	turntimer = 5
 
 /obj/structure/vehicleparts/axis/boat
 	name = "boat rudder control"
@@ -127,7 +128,7 @@
 	speeds = 5
 	maxpower = 800
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
-
+	turntimer = 8
 /obj/structure/vehicleparts/axis/proc/get_speed()
 	if (currentspeed <= 0)
 		currentspeed = 0
@@ -224,7 +225,7 @@
 	if (!H.driver_vehicle.engine.on && H.driver_vehicle.fueltank.reagents.total_volume > 0)
 		H.driver_vehicle.engine.turn_on(H)
 		H.driver_vehicle.set_light(3)
-		playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 2)
+		playsound(loc, H.driver_vehicle.engine.starting_snd, 35, FALSE, 2)
 		spawn(40)
 			if (H.driver_vehicle && H.driver_vehicle.engine && H.driver_vehicle.engine.on)
 				H.driver_vehicle.running_sound()

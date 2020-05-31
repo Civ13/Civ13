@@ -42,6 +42,10 @@
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank //only used for internal combustion, but needs to be here because its checked by vehicles
 	var/on = FALSE
 
+	var/starting_snd = 'sound/machines/diesel_starting.ogg'
+	var/running_snd = 'sound/machines/diesel_loop.ogg'
+	var/ending_snd = 'sound/machines/diesel_ending.ogg'
+
 /obj/structure/engine/examine(mob/user)
 	..()
 	if (user in range(1,src))
@@ -107,7 +111,7 @@
 
 /obj/structure/engine/proc/running_sound()
 	if (on)
-		playsound(loc, 'sound/machines/diesel_loop.ogg', 35, FALSE, 2)
+		playsound(loc, running_snd, 35, FALSE, 2)
 	spawn(27)
 		running_sound()
 
@@ -116,7 +120,7 @@
 	if (on)
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
-		playsound(loc, 'sound/machines/diesel_ending.ogg', 35, FALSE, 3)
+		playsound(loc, ending_snd, 35, FALSE, 3)
 		power_off_connections()
 		currentspeed = 0
 		currentpower = 0
