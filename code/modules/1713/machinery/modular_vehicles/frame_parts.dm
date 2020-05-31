@@ -1,6 +1,6 @@
 
 //types of walls/borders
-//format: type of wall, opacity, density, armor, current health, can open/close, is open?
+//format: type of wall, opacity, density, armor, current health, can open/close, is open?, doesnt get colored
 var/global/list/vehicle_walls = list( \
 	"" = list("",FALSE,FALSE,0,40,FALSE,FALSE), \
 	"c_wall" = list("c_window",FALSE,TRUE,20,50,FALSE,FALSE), \
@@ -76,6 +76,8 @@ var/global/list/vehicle_walls = list( \
 /obj/structure/vehicleparts/frame/car/rf/truck
 	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
 	w_front = list("c_windshield",FALSE,TRUE,0,0.1,FALSE,FALSE)
+
+
 /obj/structure/vehicleparts/frame/car/front
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -145,7 +147,15 @@ var/global/list/vehicle_walls = list( \
 /obj/structure/vehicleparts/frame/car/lf
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_front = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+//"new" models
+/obj/structure/vehicleparts/frame/car/newcar/lf
+	w_front = list("truckfront2_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/newcar/rf
+	w_front = list("truckfront2_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
+//tanks
 /obj/structure/vehicleparts/frame/panzervi
 
 /obj/structure/vehicleparts/frame/panzervi/front
