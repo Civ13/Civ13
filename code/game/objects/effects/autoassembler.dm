@@ -33,7 +33,6 @@
 		for (var/obj/structure/vehicleparts/frame/A in rangeto)
 			if (!A.axis)
 				A.axis = central.axis
-				A.color_code = central.color_code
 				var/found = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in central.axis.components)
 					if (F == src)
@@ -46,7 +45,6 @@
 		for (var/obj/structure/vehicleparts/frame/AA in loc)
 			if (!AA.axis)
 				AA.axis = central.axis
-				AA.color_code = central.color_code
 				var/found = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in central.axis.components)
 					if (F == src)

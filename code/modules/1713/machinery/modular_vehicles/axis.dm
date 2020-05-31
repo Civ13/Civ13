@@ -293,7 +293,6 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 		VP.anchored = TRUE
 		components += VP
 		VP.name = "[name] axis"
-		VP.color_code = color_code
 		loc = VP
 		return
 

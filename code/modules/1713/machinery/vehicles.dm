@@ -38,8 +38,6 @@
 	var/matrix_l = 0
 	var/matrix_h = 0
 	var/list/matrix_current_locs = list()
-
-	var/color_code = ""
 	var/turret_type = "tank_turret"
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
@@ -69,7 +67,6 @@
 	name = "T-34"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
-	color_code = ""
 	color = "#3d5931"
 	New()
 		..()
@@ -113,7 +110,6 @@
 	name = "M-4 Sherman"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
-	color_code = ""
 	color = "#293822"
 	New()
 		..()

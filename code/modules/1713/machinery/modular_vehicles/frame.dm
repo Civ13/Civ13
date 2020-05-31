@@ -25,11 +25,10 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/broken = FALSE
-	var/color_code = ""
 	var/override_color = null
 	New()
 		..()
-		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=8)
+		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=8)
 		roof.override = TRUE
 		spawn(1)
 			update_icon()
@@ -67,7 +66,6 @@
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 				usr << "You connect \the [src] to \the [VP.axis]."
 				axis = VP.axis
-				color_code = VP.color_code
 				name = VP.axis.name
 				var/found = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in axis.components)

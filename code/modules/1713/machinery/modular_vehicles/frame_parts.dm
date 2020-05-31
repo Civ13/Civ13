@@ -149,12 +149,17 @@ var/global/list/vehicle_walls = list( \
 	w_front = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 //"new" models
 /obj/structure/vehicleparts/frame/car/newcar/lf
-	w_front = list("truckfront2_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_front = list("truckfront2_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/newcar/rf
-	w_front = list("truckfront2_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_front = list("truckfront2_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-
+/obj/structure/vehicleparts/frame/car/newcar/lwindshield
+	w_left = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
+	w_front = list("truckwindshield_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/newcar/rwindshield
+	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
+	w_front = list("truckwindshield_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
 //tanks
 /obj/structure/vehicleparts/frame/panzervi
 

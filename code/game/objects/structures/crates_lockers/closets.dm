@@ -435,7 +435,7 @@
 		..()
 		custom_code = REDCODE
 		locked = TRUE
-		faction = "Red Corporation"
+		faction = "Reddington Arms"
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
@@ -447,7 +447,7 @@
 		..()
 		custom_code = BLUECODE
 		locked = TRUE
-		faction = "Blue Syndicate"
+		faction = "Bluford Stock & Bonds"
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
@@ -459,7 +459,7 @@
 		..()
 		custom_code = YELLOWCODE
 		locked = TRUE
-		faction = "Yellow Conglomerate"
+		faction = "Goldstein Solutions"
 		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow(src)
@@ -471,7 +471,7 @@
 		..()
 		custom_code = GREENCODE
 		locked = TRUE
-		faction = "Green Enterprises"
+		faction = "Greene Traders Co-ops"
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)
