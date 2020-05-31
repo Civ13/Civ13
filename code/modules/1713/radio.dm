@@ -2,7 +2,7 @@
 /obj/structure/radio
 	name = "radio receiver"
 	desc = "Used to communicate with distant places. Set to 150kHz."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "radio_vintage"
 	flammable = FALSE
 	not_movable = FALSE
@@ -490,7 +490,7 @@ var/global/FREQP = rand(81,100)
 /obj/item/weapon/radio
 	name = "portable radio"
 	desc = "Used to communicate with distant places. Set to 150kHz."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "portable_radio3"
 	item_state = "portable_radio3"
 	flammable = FALSE
@@ -684,7 +684,7 @@ var/global/FREQP = rand(81,100)
 /obj/item/weapon/radio/walkietalkie
 	name = "walkie-talkie radio"
 	desc = "Used to communicate with distant places. Set to 150kHz."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "portable_radio4"
 	item_state = "portable_radio4"
 	flammable = FALSE

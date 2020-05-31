@@ -419,7 +419,7 @@
 /obj/item/weapon/reagent_containers/glass/barrel/modern
 	name = "steel barrel"
 	desc = "A steel barrel. You can put liquids inside."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "barrel"
 	amount_per_transfer_from_this = 10
 	volume = 350

@@ -3,7 +3,7 @@
 /obj/item/weapon/telephone
 	name = "telephone"
 	desc = "Used to communicate with other telephones. No number."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "telephone"
 	flammable = FALSE
 	density = FALSE
@@ -187,7 +187,14 @@ var/list/global/phone_numbers = list()
 	wireless = TRUE
 	maxrange = 40
 	w_class = 2
-
+	New()
+		..()
+		spawn(10)
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			update_icon()
+	update_icon()
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			icon_state = "celly"
 /obj/item/weapon/telephone/mobile/attack_self(var/mob/user as mob)
 	if (!connected && !ringing)
 		var/choice1 = WWinput(user, "What do you want to do?", "Mobile Phone", "Cancel", list("Call Number", "Call Contact", "Add Contact"))
@@ -287,8 +294,8 @@ var/list/global/phone_numbers = list()
 /obj/item/weapon/telephone/mobile/police
 	name = "911 terminal"
 	desc = "Emergency calls will be received here."
-	icon = 'icons/obj/modern_structures.dmi'
-	icon_state = "radio_transmitter"
+	icon = 'icons/obj/device.dmi'
+	icon_state = "police_intercom"
 	phonenumber = 911
 	anchored = TRUE
 	New()

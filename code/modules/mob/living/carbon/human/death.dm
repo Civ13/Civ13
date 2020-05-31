@@ -60,8 +60,10 @@
 					i[3]-=50
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
+			if (civilization == "Paramedics")
+				map.scores[civilization] -= 500
 			if (civilization == "Police")
-				map.scores[civilization] -= 150
+				map.scores[civilization] -= 250
 				if (ishuman(last_harmed))
 					map.scores[last_harmed.civilization] -= 100
 					global_broadcast(FREQP,"<big>10-9: Officer down! All available units proceed to [get_coded_loc()] ([x],[y])!</big>")

@@ -427,6 +427,7 @@
 #include "code\modules\1713\closets.dm"
 #include "code\modules\1713\clothing.dm"
 #include "code\modules\1713\complex_production.dm"
+#include "code\modules\1713\computers.dm"
 #include "code\modules\1713\crates.dm"
 #include "code\modules\1713\custom_apparel.dm"
 #include "code\modules\1713\doctor_handbook.dm"
