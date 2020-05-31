@@ -836,10 +836,10 @@ var/global/FREQP = rand(81,100)
 			dmessage = "10-3: Reporting in, currently busy."
 		if ("4")
 			converted = TRUE
-			dmessage = "10-4: Affirmative, I repeat, Affirmative!"
+			dmessage = "10-4: Affirmative!"
 		if ("5")
 			converted = TRUE
-			dmessage = "10-5: Negative, I repeat, Negative!"
+			dmessage = "10-5: Negative!"
 		if ("6")
 			converted = TRUE
 			dmessage = "10-6: Returning to the station."
