@@ -164,7 +164,7 @@
 	if (!off_hand_fire)
 		Fire(A,user,params) //Otherwise, fire normally.
 	else
-		Fire(A,user,params, accuracy = 0.66)
+		Fire(A,user,params, accuracy_mod = 0.66)
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/human/H = user
