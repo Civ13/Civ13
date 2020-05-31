@@ -2174,3 +2174,40 @@
 	H.setStat("medical", STAT_NORMAL)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+
+
+/datum/job/civilian/paramedic
+	title = "Paramedic"
+	en_meaning = ""
+	rank_abbreviation = "Paramedic"
+	whitelisted = TRUE
+	spawn_location = "JoinLateCivE"
+	rank_abbreviation = "Officer"
+
+	is_deal = TRUE
+
+	min_positions = 3
+	max_positions = 10
+
+/datum/job/civilian/paramedic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
+
+	H.add_note("Role", "You are a paramedic. Listen to emergency calls and bring injured to the hospital using the ambulance!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	spawn(50)
+		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")

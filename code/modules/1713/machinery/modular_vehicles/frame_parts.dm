@@ -80,15 +80,26 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/bonnetcenter
+	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/back
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+
 /obj/structure/vehicleparts/frame/car/bootleft
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,FALSE)
 /obj/structure/vehicleparts/frame/car/bootright
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,FALSE)
+/obj/structure/vehicleparts/frame/car/bootleft/closed
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/bootright/closed
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/bootcenter
 	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,FALSE)
 /obj/structure/vehicleparts/frame/car/left
 	name = "wood frame"
@@ -105,6 +116,22 @@ var/global/list/vehicle_walls = list( \
 	flammable = TRUE
 	resistance = 90
 	noroof = TRUE
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/left/metal
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon_state = "frame_steel"
+	flammable = TRUE
+	resistance = 150
+	noroof = FALSE
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/right/metal
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon_state = "frame_steel"
+	flammable = TRUE
+	resistance = 150
+	noroof = FALSE
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/rb
 	w_right = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,TRUE)

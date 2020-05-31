@@ -40,6 +40,7 @@
 			epochs = list(
 				"Chad Mode" = 0,
 				"Battle Royale" = 0,
+				"The Art of the Deal" = 0,
 				//Stone Age (?-3000 B.C.)" = 0,
 				"Bronze Age (500 B.C.-400 A.D.)" = 0,
 				//"Dark Ages (400-700)" = 0,
@@ -171,6 +172,10 @@
 			maps = list(
 				MAP_JUNGLE_OF_THE_CHADS = 0,
 			)
+		else if (epoch == "The Art of the Deal")
+			maps = list(
+				MAP_THE_ART_OF_THE_DEAL = 10,
+			)
 		else if (epoch == "Middle Ages (700-1450)")
 	//	1013 - TDM
 			maps = list(
@@ -215,6 +220,7 @@
 				MAP_TRIBES = 12,
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
+				MAP_THE_ART_OF_THE_DEAL = 10,
 //				MAP_FOUR_KINDGOMS = 16
 			)
 		else if (epoch == "Battle Royale")

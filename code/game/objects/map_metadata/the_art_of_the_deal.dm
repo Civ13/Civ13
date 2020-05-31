@@ -167,7 +167,7 @@
 		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 5,
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 5,
 		/obj/item/weapon/gun/projectile/revolver/smithwesson = 10,
-		/obj/item/weapon/gun/projectile/shotgun/pump = 2,
+//		/obj/item/weapon/gun/projectile/shotgun/pump = 2,
 		/obj/item/weapon/gun/projectile/boltaction/m24 = 2,
 		/obj/item/weapon/attachment/silencer/pistol = 5,
 
@@ -176,8 +176,8 @@
 		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
 		/obj/item/ammo_magazine/m1911 = 20,
 		/obj/item/ammo_magazine/c32 = 10,
-		/obj/item/ammo_magazine/shellbox = 10,
-		/obj/item/ammo_magazine/shellbox/slug = 10,
+//		/obj/item/ammo_magazine/shellbox = 10,
+//		/obj/item/ammo_magazine/shellbox/slug = 10,
 		/obj/item/ammo_magazine/m24 = 10,
 
 		/obj/item/clothing/glasses/nvg = 2,
