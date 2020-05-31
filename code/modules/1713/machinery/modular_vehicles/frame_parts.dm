@@ -89,10 +89,10 @@ var/global/list/vehicle_walls = list( \
 
 /obj/structure/vehicleparts/frame/car/bootleft
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,TRUE)
 /obj/structure/vehicleparts/frame/car/bootright
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,TRUE)
 /obj/structure/vehicleparts/frame/car/bootleft/closed
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -100,7 +100,7 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/bootcenter
-	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,TRUE)
 /obj/structure/vehicleparts/frame/car/left
 	name = "wood frame"
 	desc = "a wood vehicle frame."
