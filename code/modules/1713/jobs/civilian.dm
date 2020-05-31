@@ -2086,7 +2086,7 @@
 	return TRUE
 
 /datum/job/civilian/businessman/blue
-	title = "Bluford Stock & Bonds"
+	title = "Bluford Stock and Bonds"
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
 	min_positions = 3

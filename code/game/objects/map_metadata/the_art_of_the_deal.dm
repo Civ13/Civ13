@@ -27,7 +27,7 @@
 	gamemode = "Negociations"
 	scores = list(
 		"Reddington Arms" = 0,
-		"Bluford Stock & Bonds" = 0,
+		"Bluford Stock and Bonds" = 0,
 		"Greene Traders Co-ops" = 0,
 		"Goldstein Solutions" = 0,
 		"Police" = 0,)
@@ -38,7 +38,7 @@
 	spawn(3000)
 		score()
 	var/newnamea = list("Reddington Arms" = list(230,230,230,null,0,"sun","#7F0000","#7F7F7F",0,0))
-	var/newnameb = list("Bluford Stock & Bonds" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
+	var/newnameb = list("Bluford Stock and Bonds" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Greene Traders Co-ops" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Goldstein Solutions" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
 	var/newnamee = list("Police" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
@@ -78,7 +78,7 @@
 					else
 						new/obj/item/weapon/disk/red(SF)
 						new/obj/item/weapon/disk/red/fake(SF)
-				if ("Bluford Stock & Bonds")
+				if ("Bluford Stock and Bonds")
 					if (SF.opened)
 						new/obj/item/weapon/disk/blue(SF.loc)
 						new/obj/item/weapon/disk/blue/fake(SF.loc)
@@ -343,11 +343,11 @@
 	name = "blue diskette"
 	icon_state = "disk_blue"
 	item_state = "disk_blue"
-	faction = "Bluford Stock & Bonds"
+	faction = "Bluford Stock and Bonds"
 
 /obj/item/weapon/disk/blue/fake
 	name = "blue diskette"
-	faction = "Bluford Stock & Bonds"
+	faction = "Bluford Stock and Bonds"
 	fake = TRUE
 
 /obj/item/weapon/disk/yellow
