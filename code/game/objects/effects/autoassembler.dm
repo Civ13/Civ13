@@ -56,16 +56,6 @@
 				AA.anchored = TRUE
 				AA.dir = central.axis.dir
 				AA.name = central.axis.name
-		for (var/turf/T in rangeto)
-			var/doneps = FALSE
-			for (var/obj/structure/vehicleparts/frame/FRE in T)
-				if (FRE.axis)
-					doneps = TRUE
-			if (!doneps)
-				var/obj/effect/pseudovehicle/PV = new/obj/effect/pseudovehicle(T)
-				PV.link = central.axis
-				PV.dir = central.axis.dir
-				central.axis.components += PV
 		//then the engine
 		var/done2 = FALSE
 		for (var/obj/structure/engine/E in rangeto)
@@ -123,6 +113,17 @@
 		sleep(2)
 		if (isemptylist(central.axis.corners))
 			central.axis.check_corners()
+		for (var/turf/T in rangeto)
+			if (abs(T.x-central.axis.corners[1].x)<=central.axis.maxdist || abs(T.y-central.axis.corners[1].y)<=central.axis.maxdist)
+				var/doneps = FALSE
+				for (var/obj/structure/vehicleparts/frame/FRE in T)
+					if (FRE.axis)
+						doneps = TRUE
+				if (!doneps)
+					var/obj/effect/pseudovehicle/PV = new/obj/effect/pseudovehicle(T)
+					PV.link = central.axis
+					PV.dir = central.axis.dir
+					central.axis.components += PV
 		if (isemptylist(central.axis.matrix))
 			central.axis.check_matrix()
 		//and the tracks
@@ -133,7 +134,7 @@
 		for (var/obj/structure/lamp/lamp_small/tank/TL in rangeto)
 			for (var/obj/structure/vehicleparts/frame/F in TL.loc)
 				TL.connection = central.axis.engine
-		for (var/obj/structure/vehicleparts/VP in range(7,src))
+		for (var/obj/structure/vehicleparts/VP in range(3,src))
 			VP.dir = central.axis.dir
 			VP.update_icon()
 //		world.log << "[central.axis] assembly complete."
