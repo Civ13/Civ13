@@ -14,7 +14,7 @@
 
 /obj/effect/autoassembler/New()
 	..()
-	spawn(20)
+	spawn(10)
 		var/rangeto = range(rangef,loc)
 		//first we assign the axis
 		var/done1 = FALSE
