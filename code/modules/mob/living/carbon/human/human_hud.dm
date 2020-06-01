@@ -3,7 +3,6 @@
 	if (!H.client)
 		return
 
-//	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 	var/recreate_flag = FALSE
 
 	if (!check_HUDdatum())
@@ -44,8 +43,8 @@
 /mob/living/human/check_HUDdatum()//correct a datum?
 	var/mob/living/human/H = src
 
-	if (H.client.prefs.UI_style && !(H.client.prefs.UI_style == "")) //���e � e�e���a ��aa ����e�a� ��e�u\�e� o�aa
-		if (global.HUDdatums.Find(H.client.prefs.UI_style))//���e ������a��� �ae�e �e� o�aa
+	if (H.client.prefs.UI_style && !(H.client.prefs.UI_style == ""))
+		if (global.HUDdatums.Find(H.client.prefs.UI_style))
 			return TRUE
 
 	return FALSE
@@ -56,18 +55,8 @@
 			client.mouse_pointer_icon = client.prefs.cursor
 		check_HUD()
 		client.screen |= contents
-		//if (hud_used)
-			//hud_used.hidden_inventory_update() 	//Updates the screenloc of the items on the 'other' inventory bar
-
-
-
-
-
-
 
 /mob/living/human/create_HUD()
-//	var/mob/living/human/H = src
-//	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
 	create_HUDinventory()
 	create_HUDneed()
@@ -103,30 +92,23 @@
 	var/mob/living/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
-	for (var/HUDname in species.hud.ProcessHUD) //a�aaa���� �������� o�aa (�� e�a���a�u)
-		if (!(HUDdatum.HUDneed.Find(HUDname))) //e��� �ae�e a aa����
-		//	log_debug("[usr] try create a [HUDname], but it no have in HUDdatum [HUDdatum.name]")
+	for (var/HUDname in species.hud.ProcessHUD)
+		if (!(HUDdatum.HUDneed.Find(HUDname)))
 		else
 			var/HUDtype = HUDdatum.HUDneed[HUDname]["type"]
 			var/obj/screen/HUD = new HUDtype(HUDname, HUDdatum.HUDneed[HUDname]["loc"], H, HUDdatum.HUDneed[HUDname]["icon"] ? HUDdatum.HUDneed[HUDname]["icon"] : HUDdatum.icon, HUDdatum.HUDneed[HUDname]["icon_state"] ? HUDdatum.HUDneed[HUDname]["icon_state"] : null)
-/*			if (HUDdatum.HUDneed[HUDname]["icon"])//a�a�ec �a �aa��aea icon
-				HUD.icon = HUDdatum.HUDneed[HUDname]["icon"]
-			else
-				HUD.icon = HUDdatum.icon
-			if (HUDdatum.HUDneed[HUDname]["icon_state"])//a�a�ec �a �aa��aea icon_state
-				HUD.icon_state = HUDdatum.HUDneed[HUDname]["icon_state"]*/
+
 			if (HUDdatum.HUDneed[HUDname]["hideflag"])
 				HUD.hideflag = HUDdatum.HUDneed[HUDname]["hideflag"]
-			H.HUDneed[HUD.name] += HUD//a�aaa���� a ��e��e o�a�a
-			if (HUD.process_flag)//���e o�a ����� ���o���e�u
-				H.HUDprocess += HUD//a�eaa�� a ����a���a���ee ��e��e
+			H.HUDneed[HUD.name] += HUD
+			if (HUD.process_flag)
+				H.HUDprocess += HUD
 
 	return
 /mob/living/human/create_HUDfrippery()
 	var/mob/living/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
-	//a�aaa���� �������� o�aa (�e�a���e�)
 	for (var/list/whistle in HUDdatum.HUDfrippery)
 		var/obj/screen/frippery/perdelka = new (whistle["icon_state"],whistle["loc"], whistle["dir"],H)
 		perdelka.icon = HUDdatum.icon
