@@ -68,7 +68,7 @@
 						movemento.pixel_y = -22
 						overlays += movemento
 	if (!noroof && axis)
-		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=11)
+		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=10)
 		roof.overlays.Cut()
 	else
 		roof = image(icon=icon, loc=src, icon_state="", layer=1)
@@ -148,11 +148,11 @@
 		else
 			ticon = normal_icon
 		if (!(w_left[1] == "" && w_right[1] == "" && w_front[1] == "" && w_back[1] == ""))
-			roof = image(icon=icon, loc=src, icon_state="roof_steel_base", layer=11)
+			roof = image(icon=icon, loc=src, icon_state="roof_steel_base", layer=10)
 
 		//4 complete sides
 		if (w_left[1] != "" && w_right[1] != "" && w_front[1] != "" && w_back[1] != "")
-			roof = image(icon=icon, loc=src, icon_state="roof_steel_base", layer=11)
+			roof = image(icon=icon, loc=src, icon_state="roof_steel_base", layer=10)
 
 		//3 sides
 		var/image/tpimg1
@@ -254,7 +254,7 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=12, dir=SOUTH)
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10.5, dir=SOUTH)
 				if (w_back.len < 8)
 					if (axis)
 						if (override_color)
@@ -298,7 +298,7 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=12, dir=SOUTH)
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10.5, dir=SOUTH)
 				if (w_front.len < 8)
 					if (axis)
 						if (override_color)
@@ -342,7 +342,7 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=12, dir=SOUTH)
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10.5, dir=SOUTH)
 				if (w_right.len < 8)
 					if (axis)
 						if (override_color)
@@ -386,7 +386,7 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=12, dir=SOUTH)
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10.5, dir=SOUTH)
 				if (w_left.len < 8)
 					if (axis)
 						if (override_color)

@@ -226,7 +226,7 @@
 	if (istype(W, /obj/item/weapon/snowwall))
 		if (stage == 3)
 			user << "You start adding snow to the wall..."
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src) && W)
 				user << "You finish adding snow to the wall, completing it."
 				qdel(W)
 				new /obj/covers/snow_wall/blocks(loc)
