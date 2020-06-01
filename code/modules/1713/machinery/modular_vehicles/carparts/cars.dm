@@ -55,3 +55,39 @@
 /obj/structure/vehicleparts/frame/car/newcar4/rf
 	w_front = list("carfront4_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+
+//van
+/obj/structure/vehicleparts/frame/car/van/lf
+	w_front = list("vanfront_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/van/rf
+	w_front = list("vanfront_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+
+////////////////backs////////////////
+//car
+/obj/structure/vehicleparts/frame/car/newcar1/lb
+	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carback1_left"
+
+/obj/structure/vehicleparts/frame/car/newcar1/rb
+
+	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carback1_right"
+
+//car 2
+/obj/structure/vehicleparts/frame/car/newcar2/lb
+	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	New()
+		..()
+		hasoverlay = "carback2_left"
+
+/obj/structure/vehicleparts/frame/car/newcar2/rb
+	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carback2_right"
+
+

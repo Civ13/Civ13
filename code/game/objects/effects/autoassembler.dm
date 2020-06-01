@@ -135,6 +135,12 @@
 		for (var/obj/structure/vehicleparts/VP in range(3,src))
 			VP.dir = central.axis.dir
 			VP.update_icon()
+		//add a license plate, if it has one
+		if (central.axis.reg_number == "000")
+			for (var/obj/structure/vehicleparts/license_plate/LP in rangeto)
+				if (!LP.axis)
+					LP.axis = src
+			central.axis.new_number()
 //		world.log << "[central.axis] assembly complete."
 		qdel(src)
 		return TRUE

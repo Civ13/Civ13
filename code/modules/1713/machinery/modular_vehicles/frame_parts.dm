@@ -223,6 +223,103 @@ var/global/list/vehicle_walls = list( \
 		update_icon()
 	else
 		..()
+var/global/list/license_plate_numbers = list()
+
+/obj/structure/vehicleparts/license_plate
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "license_plate_us"
+	name = "license plate"
+	desc = "a vehicle registration plate."
+	layer = 12.1
+	var/reg_number = "000"
+	var/centered = FALSE
+	var/front = FALSE
+	var/obj/structure/vehicleparts/axis/axis = null
+	New()
+		..()
+//		reg_number = new_number()
+//		update_icon()
+	update_icon()
+		if (centered) //centered plates (for even number width vehicles) should be put on the LEFT side
+			switch(dir)
+				if (NORTH)
+					if (front)
+						pixel_x = 16
+						pixel_y = 28
+					else
+						pixel_x = 16
+						pixel_y = -2
+				if (SOUTH)
+					if (front)
+						pixel_x = -16
+						pixel_y = -28
+					else
+						pixel_x = -16
+						pixel_y = 2
+				if (WEST)
+					if (front)
+						pixel_x = -28
+						pixel_y = 16
+					else
+						pixel_x = 2
+						pixel_y = 16
+				if (EAST)
+					if (front)
+						pixel_x = 28
+						pixel_y = -16
+					else
+						pixel_x = -2
+						pixel_y = -16
+		else
+			..()
+/obj/structure/vehicleparts/license_plate/us
+	icon_state = "license_plate_us"
+
+/obj/structure/vehicleparts/license_plate/eu
+	icon_state = "license_plate_eur"
+
+/obj/structure/vehicleparts/license_plate/us/front
+	icon_state = "license_plate_us"
+	front = TRUE
+/obj/structure/vehicleparts/license_plate/eu/front
+	icon_state = "license_plate_eur"
+	front = TRUE
+
+/obj/structure/vehicleparts/license_plate/us/centered
+	icon_state = "license_plate_us"
+	centered = TRUE
+/obj/structure/vehicleparts/license_plate/eu/centered
+	icon_state = "license_plate_eur"
+	centered = TRUE
+
+/obj/structure/vehicleparts/license_plate/us/centered/front
+	icon_state = "license_plate_us"
+	front = TRUE
+	centered = TRUE
+/obj/structure/vehicleparts/license_plate/eu/centered/front
+	icon_state = "license_plate_eur"
+	front = TRUE
+	centered = TRUE
+
+/obj/structure/vehicleparts/axis
+	var/reg_number = "000"
+
+/obj/structure/vehicleparts/axis/proc/new_number()
+	var/tempnum = 0
+	tempnum = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][pick(alphabet_uppercase)] [rand(0,9)][rand(0,9)][rand(0,9)]"
+	if (tempnum in license_plate_numbers)
+		new_number()
+		return
+	else
+		reg_number = tempnum
+		license_plate_numbers += tempnum
+		for(var/obj/structure/vehicleparts/license_plate/LP in range(4,src))
+			if (LP.axis == src)
+				LP.reg_number = reg_number
+				LP.name = "[reg_number]"
+				LP.desc = "A vehicle registration plate reading <b>[reg_number]</b>."
+		return
+
 /*
 /obj/structure/vehicleparts/frame/verb/add_walls()
 	set category = null

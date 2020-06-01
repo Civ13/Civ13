@@ -45,6 +45,7 @@
 	speeds = 3
 	maxpower = 10
 	speedlist = list(1=3,2=2,3=1)
+	reg_number = ""
 	turntimer = 5
 
 /obj/structure/vehicleparts/axis/boat
@@ -53,6 +54,7 @@
 	speeds = 3
 	maxpower = 40
 	speedlist = list(1=8,2=6,3=4)
+	reg_number = ""
 
 /obj/structure/vehicleparts/axis/heavy
 	name = "heavy vehicle axis"
@@ -67,6 +69,7 @@
 	name = "T-34"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
 	color = "#3d5931"
 	New()
 		..()
@@ -77,6 +80,7 @@
 	name = "Panzer IV"
 	speeds = 3
 	speedlist = list(1=12,2=8,3=6)
+	reg_number = ""
 	color = "#585A5C"
 	New()
 		..()
@@ -88,6 +92,7 @@
 	speeds = 4
 	speedlist = list(1=14,2=11,3=9,4=7)
 	turret_type = "tiger_tank"
+	reg_number = ""
 	color = "#3B3F41"
 	New()
 		..()
@@ -101,6 +106,7 @@
 	speedlist = list(1=10,2=7,3=5,4=4)
 	color = "#6a5a3d"
 	turret_type = "jap_turret"
+	reg_number = ""
 	New()
 		..()
 		var/pickedname = pick(tank_names_japanese)
@@ -111,11 +117,13 @@
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
+	reg_number = ""
 	New()
 		..()
 		var/pickedname = pick(tank_names_usa)
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"
 	desc = "A powered axis from a car."
@@ -125,6 +133,7 @@
 	maxpower = 800
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 	turntimer = 8
+
 /obj/structure/vehicleparts/axis/proc/get_speed()
 	if (currentspeed <= 0)
 		currentspeed = 0
