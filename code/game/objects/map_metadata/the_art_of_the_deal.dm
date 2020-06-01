@@ -24,7 +24,7 @@
 	var/list/winner_ckeys = list()
 	faction1 = CIVILIAN
 	faction2 = PIRATES
-	gamemode = "Negociations"
+	gamemode = "Negotiations"
 	scores = list(
 		"Reddington Arms" = 0,
 		"Bluford Stock and Bonds" = 0,
