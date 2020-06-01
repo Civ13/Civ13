@@ -78,6 +78,28 @@
 	w_front = list("vanfront_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanfront_right"
+
+//piccolino
+/obj/structure/vehicleparts/frame/car/piccolino/lf
+	w_front = list("as_piccolino_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/piccolino/rf
+	w_front = list("as_piccolino_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+//erstenklasse
+/obj/structure/vehicleparts/frame/car/umek/lf
+	w_front = list("um_erstenklasse_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/umek/rf
+	w_front = list("um_erstenklasse_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+//falcon
+/obj/structure/vehicleparts/frame/car/falcon/lf
+	w_front = list("smc_falcon_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/falcon/rf
+	w_front = list("smc_falcon_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 ////////////////backs////////////////
 //car
 /obj/structure/vehicleparts/frame/car/newcar1/lb

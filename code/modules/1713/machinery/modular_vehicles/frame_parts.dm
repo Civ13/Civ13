@@ -234,11 +234,17 @@ var/global/list/license_plate_numbers = list()
 	var/reg_number = "000"
 	var/centered = FALSE
 	var/front = FALSE
-	var/obj/structure/vehicleparts/axis/axis = null
+	var/obj/structure/vehicleparts/axis/axis
+	var/do_not_initiate = FALSE
 	New()
 		..()
-//		reg_number = new_number()
-//		update_icon()
+		spawn(20)
+		if (!do_not_initiate && axis && axis.reg_number != "000")
+			reg_number = axis.reg_number
+			name = "[reg_number]"
+			desc = "A vehicle registration plate reading <b>[reg_number]</b>."
+			update_icon()
+		update_icon()
 	update_icon()
 		if (centered) //centered plates (for even number width vehicles) should be put on the LEFT side
 			switch(dir)
@@ -313,11 +319,6 @@ var/global/list/license_plate_numbers = list()
 	else
 		reg_number = tempnum
 		license_plate_numbers += tempnum
-		for(var/obj/structure/vehicleparts/license_plate/LP in range(4,src))
-			if (LP.axis == src)
-				LP.reg_number = reg_number
-				LP.name = "[reg_number]"
-				LP.desc = "A vehicle registration plate reading <b>[reg_number]</b>."
 		return
 
 /*

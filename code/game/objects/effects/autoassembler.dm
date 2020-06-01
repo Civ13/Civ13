@@ -137,10 +137,13 @@
 			VP.update_icon()
 		//add a license plate, if it has one
 		if (central.axis.reg_number == "000")
+			central.axis.new_number()
 			for (var/obj/structure/vehicleparts/license_plate/LP in rangeto)
 				if (!LP.axis || LP.axis != src)
-					LP.axis = src
-			central.axis.new_number()
+					LP.axis = central.axis
+					LP.reg_number = central.axis.reg_number
+					LP.name = "[LP.reg_number]"
+					LP.desc = "A vehicle registration plate reading <b>[LP.reg_number]</b>."
 //		world.log << "[central.axis] assembly complete."
 		qdel(src)
 		return TRUE
