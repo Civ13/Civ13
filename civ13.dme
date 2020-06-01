@@ -512,6 +512,8 @@
 #include "code\modules\1713\machinery\modular_vehicles\frame_parts.dm"
 #include "code\modules\1713\machinery\modular_vehicles\movement.dm"
 #include "code\modules\1713\machinery\modular_vehicles\wheels.dm"
+#include "code\modules\1713\machinery\modular_vehicles\carparts\cars.dm"
+#include "code\modules\1713\machinery\modular_vehicles\carparts\tanks.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\axis.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\frame.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\frame_icons.dm"
