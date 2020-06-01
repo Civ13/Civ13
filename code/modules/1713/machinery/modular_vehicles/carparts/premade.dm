@@ -33,35 +33,12 @@
 	icon_state = "3x3"
 
 	var/list/tocreate = list(
-	"1,1" = list(),
-	"1,2" = list(),
-	"1,3" = list(),
-	"1,4" = list(),
-	"1,5" = list(),
+	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/piccolino/rf),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/piccolino/lf,/obj/structure/engine/internal/gasoline/premade/piccolino),
 
-	"2,1" = list(),
-	"2,2" = list(),
-	"2,3" = list(),
-	"2,4" = list(),
-	"2,5" = list(),
+	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/piccolino/rb),
+	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/axis/car/piccolino,/obj/structure/vehicleparts/frame/car/piccolino/lb),
 
-	"3,1" = list(),
-	"3,2" = list(),
-	"3,3" = list(),
-	"3,4" = list(),
-	"3,5" = list(),
-
-	"4,1" = list(),
-	"4,2" = list(),
-	"4,3" = list(),
-	"4,4" = list(),
-	"4,5" = list(),
-
-	"5,1" = list(),
-	"5,2" = list(),
-	"5,3" = list(),
-	"5,4" = list(),
-	"5,5" = list(),
 	)
 
 /obj/effects/premadevehicles/New()

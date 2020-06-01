@@ -39,9 +39,9 @@
 		..()
 		overlays.Cut()
 		if (open)
-			dooroverlay.icon_state = "boothdor_open"
+			dooroverlay.icon_state = "boothdoor_open"
 		else
-			dooroverlay.icon_state = "boothdor_closed"
+			dooroverlay.icon_state = "boothdoor_closed"
 		overlays += dooroverlay
 /obj/item/weapon/telephone/public/verb/open()
 	set category = null
