@@ -138,7 +138,7 @@
 		//add a license plate, if it has one
 		if (central.axis.reg_number == "000")
 			for (var/obj/structure/vehicleparts/license_plate/LP in rangeto)
-				if (!LP.axis)
+				if (!LP.axis || LP.axis != src)
 					LP.axis = src
 			central.axis.new_number()
 //		world.log << "[central.axis] assembly complete."

@@ -48,6 +48,16 @@
 	w_front = list("carfront3_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
+//model 5 car
+/obj/structure/vehicleparts/frame/car/newcar5/lf
+	w_front = list("carfront5_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carfront5_left"
+/obj/structure/vehicleparts/frame/car/newcar5/rf
+	w_front = list("carfront5_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carfront5_right"
+
 //jeep 2
 /obj/structure/vehicleparts/frame/car/newcar4/lf
 	w_front = list("carfront4_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
