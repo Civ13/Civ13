@@ -14,7 +14,7 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british/ship, //it isnt in the map so nobody wins by capture
 		)
-	age = "2013"
+	age = "1994"
 	ordinal_age = 8
 	var/fac_nr = 3
 	faction_distribution_coeffs = list(CIVILIAN = 1)
@@ -24,10 +24,10 @@
 	var/list/winner_ckeys = list()
 	faction1 = CIVILIAN
 	faction2 = PIRATES
-	gamemode = "Negociations"
+	gamemode = "Negotiations"
 	scores = list(
 		"Reddington Arms" = 0,
-		"Bluford Stock & Bonds" = 0,
+		"Bluford Stock and Bonds" = 0,
 		"Greene Traders Co-ops" = 0,
 		"Goldstein Solutions" = 0,
 		"Police" = 0,)
@@ -38,7 +38,7 @@
 	spawn(3000)
 		score()
 	var/newnamea = list("Reddington Arms" = list(230,230,230,null,0,"sun","#7F0000","#7F7F7F",0,0))
-	var/newnameb = list("Bluford Stock & Bonds" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
+	var/newnameb = list("Bluford Stock and Bonds" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Greene Traders Co-ops" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Goldstein Solutions" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
 	var/newnamee = list("Police" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
@@ -78,7 +78,7 @@
 					else
 						new/obj/item/weapon/disk/red(SF)
 						new/obj/item/weapon/disk/red/fake(SF)
-				if ("Bluford Stock & Bonds")
+				if ("Bluford Stock and Bonds")
 					if (SF.opened)
 						new/obj/item/weapon/disk/blue(SF.loc)
 						new/obj/item/weapon/disk/blue/fake(SF.loc)
@@ -170,7 +170,7 @@
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 5,
 		/obj/item/weapon/gun/projectile/revolver/smithwesson = 10,
 //		/obj/item/weapon/gun/projectile/shotgun/pump = 2,
-		/obj/item/weapon/gun/projectile/boltaction/m24 = 2,
+//		/obj/item/weapon/gun/projectile/boltaction/m24 = 2,
 		/obj/item/weapon/attachment/silencer/pistol = 5,
 
 		/obj/item/weapon/plastique/c4 = 2,
@@ -180,31 +180,31 @@
 		/obj/item/ammo_magazine/c32 = 10,
 //		/obj/item/ammo_magazine/shellbox = 10,
 //		/obj/item/ammo_magazine/shellbox/slug = 10,
-		/obj/item/ammo_magazine/m24 = 10,
+//		/obj/item/ammo_magazine/m24 = 10,
 
 		/obj/item/clothing/glasses/nvg = 2,
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
 	)
 	prices = list(
-		/obj/item/weapon/gun/projectile/pistol/colthammerless = 80,
-		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 80,
-		/obj/item/weapon/gun/projectile/pistol/m1911 = 120,
-		/obj/item/weapon/gun/projectile/revolver/smithwesson = 60,
-		/obj/item/weapon/gun/projectile/shotgun/remington870 = 160,
-		/obj/item/weapon/gun/projectile/boltaction/m24 = 200,
-		/obj/item/weapon/attachment/silencer/pistol = 40,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = 300,
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 300,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 400,
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = 240,
+		/obj/item/weapon/gun/projectile/shotgun/remington870 = 500,
+		/obj/item/weapon/gun/projectile/boltaction/m24 = 600,
+		/obj/item/weapon/attachment/silencer/pistol = 120,
 
-		/obj/item/weapon/plastique/c4 = 120,
-		/obj/item/ammo_magazine/colthammerless = 20,
-		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
-		/obj/item/ammo_magazine/m1911 = 20,
-		/obj/item/ammo_magazine/c32 = 40,
-		/obj/item/ammo_magazine/shellbox = 40,
-		/obj/item/ammo_magazine/shellbox/slug = 40,
-		/obj/item/ammo_magazine/m24 = 20,
+		/obj/item/weapon/plastique/c4 = 800,
+		/obj/item/ammo_magazine/colthammerless = 40,
+		/obj/item/ammo_magazine/colthammerless/a380acp = 40,
+		/obj/item/ammo_magazine/m1911 = 40,
+		/obj/item/ammo_magazine/c32 = 80,
+		/obj/item/ammo_magazine/shellbox = 80,
+		/obj/item/ammo_magazine/shellbox/slug = 80,
+		/obj/item/ammo_magazine/m24 = 80,
 
-		/obj/item/clothing/glasses/nvg = 20,
-		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 160,
+		/obj/item/clothing/glasses/nvg = 100,
+		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 400,
 	)
 /obj/structure/vending/police_equipment
 	name = "police equipment"
@@ -343,11 +343,11 @@
 	name = "blue diskette"
 	icon_state = "disk_blue"
 	item_state = "disk_blue"
-	faction = "Bluford Stock & Bonds"
+	faction = "Bluford Stock and Bonds"
 
 /obj/item/weapon/disk/blue/fake
 	name = "blue diskette"
-	faction = "Bluford Stock & Bonds"
+	faction = "Bluford Stock and Bonds"
 	fake = TRUE
 
 /obj/item/weapon/disk/yellow

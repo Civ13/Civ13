@@ -301,7 +301,18 @@ var/list/global/phone_numbers = list()
 	New()
 		..()
 		phone_numbers += phonenumber
+	update_icon()
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			icon_state = "police_intercom"
 /obj/item/weapon/telephone/mobile/faction
+	icon_state = "telephone"
+	anchored = TRUE
+	New()
+		..()
+		phone_numbers += phonenumber
+		update_icon()
+	update_icon()
+		icon_state = "telephone"
 /obj/item/weapon/telephone/mobile/faction/red
 	name = "Red phone"
 /obj/item/weapon/telephone/mobile/faction/blue
