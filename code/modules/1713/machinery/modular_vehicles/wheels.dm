@@ -4,6 +4,8 @@
 	name = "vehicle wheel"
 	desc = "Used to steer a vehicle."
 	icon_state = "wheel_b"
+	item_state = "wheel_b"
+	worn_state = "wheel_b"
 	var/obj/structure/bed/chair/drivers/drivingchair = null
 	var/obj/structure/vehicleparts/frame/control = null
 	var/lastdirchange = 0

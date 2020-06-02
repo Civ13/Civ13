@@ -115,14 +115,29 @@
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/piccolino/lb
 	w_back = list("carback3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
 	w_front = list("carwindshield2_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback3_left"
 /obj/structure/vehicleparts/frame/car/piccolino/rb
 	w_back = list("carback3_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
 	w_front = list("carwindshield2_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback3_right"
+//quattroporte
+/obj/structure/vehicleparts/frame/car/quattroporte/lb
+	w_back = list("carback3_leftLU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carback3_leftL"
+/obj/structure/vehicleparts/frame/car/quattroporte/rb
+	w_back = list("carback3_rightLU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carback3_rightL"
+/obj/structure/vehicleparts/frame/car/quattroporte/lc
+	w_front = list("carwindshield2door_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+/obj/structure/vehicleparts/frame/car/quattroporte/rc
+	w_front = list("carwindshield2door_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
 //erstenklasse
 /obj/structure/vehicleparts/frame/car/umek/lf
 	w_front = list("um_erstenklasse_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)

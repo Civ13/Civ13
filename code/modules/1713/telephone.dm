@@ -29,7 +29,8 @@
 	wireless = TRUE
 	var/image/dooroverlay
 	var/open = TRUE
-
+	var/opening = FALSE
+	var/closing = FALSE
 	New()
 		..()
 		dooroverlay = image(icon=src.icon, icon_state="boothdoor_open", layer=8)
@@ -38,7 +39,13 @@
 	update_icon()
 		..()
 		overlays.Cut()
-		if (open)
+		if (opening)
+			dooroverlay.icon_state = "phonebooth_opening"
+			opening = FALSE
+		else if (closing)
+			dooroverlay.icon_state = "phonebooth_closing"
+			closing = FALSE
+		else if (open)
 			dooroverlay.icon_state = "boothdoor_open"
 		else
 			dooroverlay.icon_state = "boothdoor_closed"
@@ -53,12 +60,18 @@
 		return
 	open = !open
 	if (open)
+		closing = TRUE
+		opening = FALSE
 		playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
-		flick("phonebooth_opening",dooroverlay)
+		dooroverlay.icon_state = "phonebooth_opening"
 	else
+		closing = FALSE
+		opening = TRUE
 		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
-		flick("phonebooth_closing",dooroverlay)
+		dooroverlay.icon_state = "phonebooth_closing"
 	spawn(10)
+		closing = FALSE
+		opening = FALSE
 		update_icon()
 /obj/item/weapon/telephone/verb/name_telephone()
 	set category = null
