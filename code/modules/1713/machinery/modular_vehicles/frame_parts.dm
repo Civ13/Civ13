@@ -264,14 +264,14 @@ var/global/list/license_plate_numbers = list()
 						pixel_y = 2
 				if (WEST)
 					if (front)
-						pixel_x = -4
+						pixel_x = -2
 						pixel_y = 16
 					else
 						pixel_x = 30
 						pixel_y = 16
 				if (EAST)
 					if (front)
-						pixel_x = 4
+						pixel_x = 2
 						pixel_y = -16
 					else
 						pixel_x = -30

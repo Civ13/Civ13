@@ -8,6 +8,7 @@
 	flammable = FALSE
 	layer = 2.98
 	density = TRUE
+
 	var/resistance = 150
 	var/obj/structure/vehicleparts/axis/axis = null
 	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
@@ -22,6 +23,7 @@
 	var/image/roof_turret
 	var/image/movemento
 	var/noroof = FALSE
+	var/removesroof = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/broken = FALSE
@@ -256,35 +258,92 @@
 					if (w_front[7])
 						visible_message("[H] locks the door.")
 						w_front[7] = FALSE
+						if (removesroof)
+							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
+								if (VP.axis == axis && VP.removesroof && VP.w_front[6])
+									VP.w_front[7] = FALSE
+									VP.noroof = FALSE
+									VP.update_icon()
+							noroof = FALSE
 					else
 						visible_message("[H] unlocks the door.")
 						w_front[7] = TRUE
+						if (removesroof)
+							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
+								if (VP.axis == axis && VP.removesroof && VP.w_front[6])
+									VP.w_front[7] = TRUE
+									VP.noroof = TRUE
+									VP.update_icon()
+							noroof = TRUE
 					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 				if (w_back[6])
 					if (w_back[7])
 						visible_message("[H] locks the door.")
 						w_back[7] = FALSE
+						if (removesroof)
+							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
+								if (VP.axis == axis && VP.removesroof && VP.w_back[6])
+									VP.w_back[7] = FALSE
+									VP.noroof = FALSE
+									VP.update_icon()
+							noroof = FALSE
 					else
 						visible_message("[H] unlocks the door.")
 						w_back[7] = TRUE
+						if (removesroof)
+							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
+								if (VP.axis == axis && VP.removesroof && VP.w_back[6])
+									VP.w_back[7] = TRUE
+									VP.noroof = TRUE
+									VP.update_icon()
+							noroof = TRUE
 					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 				if (w_left[6])
 					if (w_left[7])
 						visible_message("[H] locks the door.")
 						w_left[7] = FALSE
+						if (removesroof)
+							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
+								if (VP.axis == axis && VP.removesroof && VP.w_left[6])
+									VP.w_left[7] = FALSE
+									VP.noroof = FALSE
+									VP.update_icon()
+							noroof = FALSE
 					else
 						visible_message("[H] unlocks the door.")
 						w_left[7] = TRUE
+						if (removesroof)
+							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
+								if (VP.axis == axis && VP.removesroof && VP.w_left[6])
+									VP.w_left[7] = TRUE
+									VP.noroof = TRUE
+									VP.update_icon()
+							noroof = TRUE
 					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 				if (w_right[6])
 					if (w_right[7])
 						visible_message("[H] locks the door.")
 						w_right[7] = FALSE
+						if (removesroof)
+							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
+								if (VP.axis == axis && VP.removesroof && VP.w_right[6])
+									VP.w_right[7] = FALSE
+									VP.noroof = FALSE
+									VP.update_icon()
+							noroof = FALSE
 					else
 						visible_message("[H] unlocks the door.")
 						w_right[7] = TRUE
+						if (removesroof)
+							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
+								if (VP.axis == axis && VP.removesroof && VP.w_right[6])
+									VP.w_right[7] = TRUE
+									VP.noroof = TRUE
+									VP.update_icon()
+							noroof = TRUE
 					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 				playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
+				update_icon()
 			else
 				H << "This key does not match this lock!"
 				return
