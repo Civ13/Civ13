@@ -26,6 +26,7 @@
 	not_disassemblable = TRUE
 	var/broken = FALSE
 	var/override_color = null
+	var/hasoverlay = null
 	New()
 		..()
 		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=8)

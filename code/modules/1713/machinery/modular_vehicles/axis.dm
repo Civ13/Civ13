@@ -7,6 +7,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 /obj/structure/vehicleparts/axis
 	var/maxdist = 5 //the highest of length and width
 	var/turntimer = 15
+	var/doorcode = 0
 /obj/structure/vehicleparts/axis/ex_act(severity)
 	switch(severity)
 		if (1.0)

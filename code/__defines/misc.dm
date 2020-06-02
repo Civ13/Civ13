@@ -12,6 +12,7 @@
 #define COLOR_BLACK  "#000000"
 #define COLOR_LIGHT_BLUE "#4242F0"
 #define COLOR_SILVER		   "#c0c0c0"
+#define COLOR_GOLD		   "#FFD700"
 #define COLOR_GRAY			 "#808080"
 #define COLOR_RED_LIGHT		"#b00000"
 #define COLOR_MAROON		   "#800000"

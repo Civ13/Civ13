@@ -21,6 +21,58 @@
 	var/maxrange = 0
 	var/list/contacts = list()
 
+/obj/item/weapon/telephone/public
+	name = "phone booth"
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "phonebooth_interior"
+	anchored = TRUE
+	wireless = TRUE
+	var/image/dooroverlay
+	var/open = TRUE
+	var/opening = FALSE
+	var/closing = FALSE
+	New()
+		..()
+		dooroverlay = image(icon=src.icon, icon_state="boothdoor_open", layer=8)
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		if (opening)
+			dooroverlay.icon_state = "phonebooth_opening"
+			opening = FALSE
+		else if (closing)
+			dooroverlay.icon_state = "phonebooth_closing"
+			closing = FALSE
+		else if (open)
+			dooroverlay.icon_state = "boothdoor_open"
+		else
+			dooroverlay.icon_state = "boothdoor_closed"
+		overlays += dooroverlay
+/obj/item/weapon/telephone/public/verb/open()
+	set category = null
+	set name = "Toggle Open"
+	set desc = "Open/Close the Booth."
+
+	set src in view(1)
+	if (!ishuman(usr))
+		return
+	open = !open
+	if (open)
+		closing = TRUE
+		opening = FALSE
+		playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
+		dooroverlay.icon_state = "phonebooth_opening"
+	else
+		closing = FALSE
+		opening = TRUE
+		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
+		dooroverlay.icon_state = "phonebooth_closing"
+	spawn(10)
+		closing = FALSE
+		opening = FALSE
+		update_icon()
 /obj/item/weapon/telephone/verb/name_telephone()
 	set category = null
 	set name = "Name"
@@ -28,6 +80,8 @@
 
 	set src in view(1)
 	if (!ishuman(usr))
+		return
+	if (istype(src, /obj/item/weapon/telephone/public))
 		return
 	var/yn = input(usr, "Name this telephone?") in list("Yes", "No")
 	if (yn == "Yes")

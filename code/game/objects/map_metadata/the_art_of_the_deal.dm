@@ -66,6 +66,18 @@
 /obj/map_metadata/art_of_the_deal/cross_message(faction)
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
+/obj/map_metadata/the_art_of_the_deal/proc/load_new_recipes() //bow ungas BTFO
+	var/F3 = file("config/material_recipes_camp.txt")
+	if (fexists(F3))
+		craftlist_list = list()
+		var/list/craftlist_temp = file2list(F3,"\n")
+		for (var/i in craftlist_temp)
+			if (findtext(i, ","))
+				var/tmpi = replacetext(i, "RECIPE: ", "")
+				var/list/current = splittext(tmpi, ",")
+				craftlist_list += list(current)
+				if (current.len != 13)
+					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 
 /obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
 	for(var/obj/structure/closet/safe/SF in world)
@@ -232,6 +244,7 @@
 		else
 		 user << "You do not have access to this."
 		 return
+
 /obj/structure/vending/police_weapons
 	name = "police weapons"
 	desc = "When the baton is not enough."

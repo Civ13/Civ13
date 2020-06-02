@@ -42,6 +42,8 @@
 				A.anchored = TRUE
 				A.dir = central.axis.dir
 				A.name = central.axis.name
+				if (central.axis.doorcode != 0)
+					A.doorcode = central.axis.doorcode
 		for (var/obj/structure/vehicleparts/frame/AA in loc)
 			if (!AA.axis)
 				AA.axis = central.axis
@@ -54,6 +56,8 @@
 				AA.anchored = TRUE
 				AA.dir = central.axis.dir
 				AA.name = central.axis.name
+				if (central.axis.doorcode != 0)
+					AA.doorcode = central.axis.doorcode
 		//then the engine
 		var/done2 = FALSE
 		for (var/obj/structure/engine/E in rangeto)
@@ -63,9 +67,15 @@
 						central.axis.engine = E
 						E.anchored = TRUE
 						if (istype(E, /obj/structure/engine/internal))
-							E.icon = 'icons/obj/vehicleparts.dmi'
-							E.engineclass = "engine"
-							E.update_icon()
+							if (istype(central.axis,/obj/structure/vehicleparts/axis/car))
+								E.icon = 'icons/obj/vehicleparts.dmi'
+								E.engineclass = "carengine"
+								E.update_icon()
+
+							else
+								E.icon = 'icons/obj/vehicleparts.dmi'
+								E.engineclass = "engine"
+								E.update_icon()
 						done2 = TRUE
 		for (var/obj/structure/vehicleparts/movement/sails/S in rangeto)
 			for (var/obj/structure/vehicleparts/frame/ship/F in S.loc)
@@ -80,6 +90,8 @@
 		var/done3 = FALSE
 		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)
 			if (!done3)
+				if (istype(central.axis,/obj/structure/vehicleparts/axis/car))
+					E.icon_state = "fueltank_incar"
 				central.axis.engine.fueltank = E
 				E.anchored = TRUE
 				done3 = TRUE
@@ -135,6 +147,15 @@
 		for (var/obj/structure/vehicleparts/VP in range(3,src))
 			VP.dir = central.axis.dir
 			VP.update_icon()
+		//add a license plate, if it has one
+		if (central.axis.reg_number == "000")
+			central.axis.new_number()
+			for (var/obj/structure/vehicleparts/license_plate/LP in rangeto)
+				if (!LP.axis || LP.axis != src)
+					LP.axis = central.axis
+					LP.reg_number = central.axis.reg_number
+					LP.name = "[LP.reg_number]"
+					LP.desc = "A vehicle registration plate reading <b>[LP.reg_number]</b>."
 //		world.log << "[central.axis] assembly complete."
 		qdel(src)
 		return TRUE

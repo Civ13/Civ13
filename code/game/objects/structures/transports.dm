@@ -780,6 +780,7 @@
 	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike
 
 /obj/structure/vehicle/motorcycle/m125/full/New()
+	name = "Yamasaki M125"
 	..()
 	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike/full
 
