@@ -148,58 +148,58 @@
 		else
 			ticon = normal_icon
 		if (!(w_left[1] == "" && w_right[1] == "" && w_front[1] == "" && w_back[1] == ""))
-			roof = image(icon=icon, loc=src, icon_state="roof_steel_base", layer=9.9)
+			roof = image(icon=icon, loc=src, icon_state="roof_steel", layer=9.9)
 
 		//4 complete sides
 		if (w_left[1] != "" && w_right[1] != "" && w_front[1] != "" && w_back[1] != "")
-			roof = image(icon=icon, loc=src, icon_state="roof_steel_base", layer=10)
+			roof = image(icon=icon, loc=src, icon_state="roof_steel_base", layer=9.9)
 
 		//3 sides
 		var/image/tpimg1
 		if (w_right[1] != "" && w_front[1] != "" && w_back[1] != "" && w_left[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3", layer=10, dir=convertdirs(WEST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3", layer=9.9, dir=convertdirs(WEST))
 
 		if (w_right[1] == "" && w_front[1] != "" && w_back[1] != "" && w_left[1] != "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3", layer=10, dir=convertdirs(EAST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3", layer=9.9, dir=convertdirs(EAST))
 
 		if (w_right[1] != "" && w_front[1] == "" && w_back[1] != "" && w_left[1] != "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3", layer=10, dir=convertdirs(SOUTH))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3", layer=9.9, dir=convertdirs(SOUTH))
 
 		if (w_right[1] != "" && w_front[1] != "" && w_back[1] == "" && w_left[1] != "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3", layer=10, dir=convertdirs(NORTH))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3", layer=9.9, dir=convertdirs(NORTH))
 
 		//2 sides
 		if (w_front[1] != "" && w_back[1] != "" && w_left[1] == "" && w_right[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partialcenter", layer=10, dir=convertdirs(NORTH))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partialcenter", layer=9.9, dir=convertdirs(NORTH))
 
 		if (w_right[1] != "" && w_back[1] != "" && w_front[1] == "" && w_back[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partialcenter", layer=10, dir=convertdirs(WEST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partialcenter", layer=9.9, dir=convertdirs(WEST))
 
 
 		if (w_left[1] == "" && w_back[1] != "" && w_front[1] == "" && w_right[1] != "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2", layer=10, dir=convertdirs(NORTHWEST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2", layer=9.9, dir=convertdirs(NORTHWEST))
 
 		if (w_front[1] != "" && w_right[1] != "" && w_left[1] == "" && w_back[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2", layer=10, dir=convertdirs(SOUTHWEST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2", layer=9.9, dir=convertdirs(SOUTHWEST))
 
 		if (w_left[1] != "" && w_back[1] != "" && w_front[1] == "" && w_right[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2", layer=10, dir=convertdirs(NORTHEAST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2", layer=9.9, dir=convertdirs(NORTHEAST))
 
 		if (w_front[1] != "" && w_left[1] != "" && w_right[1] == "" && w_back[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2", layer=10, dir=convertdirs(SOUTHEAST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2", layer=9.9, dir=convertdirs(SOUTHEAST))
 
 		// 1 side
 		if (w_front[1] != "" && w_right[1] == "" && w_back[1] == "" && w_left[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1", layer=10, dir=convertdirs(NORTH))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1", layer=9.9, dir=convertdirs(NORTH))
 
 		if (w_right[1] != "" && w_back[1] == "" && w_left[1] == "" && w_front[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1", layer=10, dir=convertdirs(EAST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1", layer=9.9, dir=convertdirs(EAST))
 
 		if (w_back[1] != "" && w_right[1] == "" && w_left[1] == "" && w_front[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1", layer=10, dir=convertdirs(SOUTH))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1", layer=9.9, dir=convertdirs(SOUTH))
 
 		if (w_left[1] != "" && w_right[1] == "" && w_back[1] == "" && w_front[1] == "")
-			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1", layer=10, dir=convertdirs(WEST))
+			tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1", layer=9.9, dir=convertdirs(WEST))
 
 		if (override_color)
 			roof.color = override_color

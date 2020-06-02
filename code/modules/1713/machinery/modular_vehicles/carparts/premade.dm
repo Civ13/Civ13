@@ -32,7 +32,7 @@
 	icon = 'icons/obj/vehicleeffects.dmi'
 	icon_state = "3x3"
 	var/custom_color = ""
-	var/axis
+	var/axis = /obj/structure/vehicleparts/axis/car
 	var/list/tocreate = list(
 
 	"1,1" = list(),
@@ -83,9 +83,11 @@
 								vmaxy = iy
 							if (ix > vmaxx)
 								vmaxx = ix
-	var/obj/structure/vehicleparts/axis/tpt = new axis(locate(x,vmaxy,z))
-	tpt.color = custom_color
-	new/obj/effect/autoassembler(locate(tpt.x+2,tpt.y-2,tpt.z))
+		var/obj/structure/vehicleparts/axis/tpt = new axis(get_turf(locate(x+vmaxx,y+1,z)))
+		if (custom_color != "")
+			tpt.color = custom_color
+		tpt.dir = 2
+		new/obj/effect/autoassembler(get_turf(locate(tpt.x-2,tpt.y+2,tpt.z)))
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +96,7 @@
 /obj/effects/premadevehicles/asno/piccolino
 	name = "ASNO Piccolino"
 	icon_state = "2x2"
+	custom_color = "#494949"
 	axis = /obj/structure/vehicleparts/axis/car/piccolino
 	tocreate = list(
 	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/piccolino/rf),
@@ -107,6 +110,7 @@
 /obj/effects/premadevehicles/asno/quattroporte
 	name = "ASNO Quattroporte"
 	icon_state = "3x3"
+	custom_color = "#076007"
 	axis = /obj/structure/vehicleparts/axis/car/quattroporte
 	tocreate = list(
 	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/piccolino/rf),
