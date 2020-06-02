@@ -165,7 +165,7 @@
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "carwindshield2door_left"
 /obj/structure/vehicleparts/frame/car/umek/rfc
-	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,TRUE,FALSE)
+	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "carwindshield2door_right"
 /obj/structure/vehicleparts/frame/car/umek/rbc
@@ -176,18 +176,21 @@
 	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/umek/lb
 	w_back = list("um_erstenklasse_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "um_erstenklasse_back_left"
+	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/umek/rb
 	w_back = list("um_erstenklasse_back_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "um_erstenklasse_back_right"
+	removesroof = TRUE
 /obj/structure/table/carboot
 	name = "boot"
 	desc = "A compartment of the car used to store stuff."
 	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "frame_wood"
 	fixedsprite = TRUE
+	layer = 3.1
 //falcon
 /obj/structure/vehicleparts/frame/car/falcon/lf
 	w_front = list("smc_falcon_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
