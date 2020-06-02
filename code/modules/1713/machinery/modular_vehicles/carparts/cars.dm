@@ -1,3 +1,4 @@
+//format: type of wall, opacity, density, armor, current health, can open/close, is open?, doesnt get colored
 /obj/structure/bed/chair/drivers/car
 	icon_state = "carseat_driver_left"
 	material = "leather"
@@ -119,12 +120,12 @@
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/piccolino/lb
 	w_back = list("carback3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_front = list("carwindshield2_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback3_leftL"
 /obj/structure/vehicleparts/frame/car/piccolino/rb
 	w_back = list("carback3_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_front = list("carwindshield2_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback3_rightL"
 //quattroporte
@@ -138,19 +139,19 @@
 	hasoverlay = "as_quattroporte_front_right"
 /obj/structure/vehicleparts/frame/car/quattroporte/lb
 	w_back = list("as_quattroporte_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "as_quattroporte_back_left"
 /obj/structure/vehicleparts/frame/car/quattroporte/rb
 	w_back = list("as_quattroporte_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "as_quattroporte_back_right"
 /obj/structure/vehicleparts/frame/car/quattroporte/lc
 	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "carwindshield2door_left"
 /obj/structure/vehicleparts/frame/car/quattroporte/rc
 	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "carwindshield2door_right"
 //erstenklasse
 /obj/structure/vehicleparts/frame/car/umek/lf
@@ -159,20 +160,34 @@
 /obj/structure/vehicleparts/frame/car/umek/rf
 	w_front = list("um_erstenklasse_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/umek/lfc
+	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "carwindshield2door_left"
+/obj/structure/vehicleparts/frame/car/umek/rfc
+	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "carwindshield2door_right"
 /obj/structure/vehicleparts/frame/car/umek/rbc
-	w_right = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,TRUE)
+	w_right = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,FALSE)
 	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/umek/lbc
-	w_left = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,TRUE)
+	w_left = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,FALSE)
 	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/umek/lb
-	w_back = list("um_erstenklasse_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_back = list("um_erstenklasse_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "um_erstenklasse_back_left"
 /obj/structure/vehicleparts/frame/car/umek/rb
-	w_back = list("um_erstenklasse_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_back = list("um_erstenklasse_back_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "um_erstenklasse_back_right"
+/obj/structure/table/carboot
+	name = "boot"
+	desc = "A compartment of the car used to store stuff."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "frame_wood"
+	fixedsprite = TRUE
 //falcon
 /obj/structure/vehicleparts/frame/car/falcon/lf
 	w_front = list("smc_falcon_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)

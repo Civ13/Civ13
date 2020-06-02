@@ -42,6 +42,8 @@
 				A.anchored = TRUE
 				A.dir = central.axis.dir
 				A.name = central.axis.name
+				if (central.axis.doorcode != 0)
+					A.doorcode = central.axis.doorcode
 		for (var/obj/structure/vehicleparts/frame/AA in loc)
 			if (!AA.axis)
 				AA.axis = central.axis
@@ -54,6 +56,8 @@
 				AA.anchored = TRUE
 				AA.dir = central.axis.dir
 				AA.name = central.axis.name
+				if (central.axis.doorcode != 0)
+					AA.doorcode = central.axis.doorcode
 		//then the engine
 		var/done2 = FALSE
 		for (var/obj/structure/engine/E in rangeto)
@@ -86,6 +90,8 @@
 		var/done3 = FALSE
 		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)
 			if (!done3)
+				if (istype(central.axis,/obj/structure/vehicleparts/axis/car))
+					E.icon_state = "fueltank_incar"
 				central.axis.engine.fueltank = E
 				E.anchored = TRUE
 				done3 = TRUE
