@@ -155,11 +155,13 @@
 	hasoverlay = "carwindshield2door_right"
 //erstenklasse
 /obj/structure/vehicleparts/frame/car/umek/lf
-	w_front = list("um_erstenklasse_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_front = list("um_erstenklasse_front_left",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/umek/rf
-	w_front = list("um_erstenklasse_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_front = list("um_erstenklasse_front_right",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/umek/lfc
 	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
