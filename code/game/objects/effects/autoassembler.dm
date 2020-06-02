@@ -63,9 +63,15 @@
 						central.axis.engine = E
 						E.anchored = TRUE
 						if (istype(E, /obj/structure/engine/internal))
-							E.icon = 'icons/obj/vehicleparts.dmi'
-							E.engineclass = "engine"
-							E.update_icon()
+							if (istype(central.axis,/obj/structure/vehicleparts/axis/car))
+								E.icon = 'icons/obj/vehicleparts.dmi'
+								E.engineclass = "carengine"
+								E.update_icon()
+
+							else
+								E.icon = 'icons/obj/vehicleparts.dmi'
+								E.engineclass = "engine"
+								E.update_icon()
 						done2 = TRUE
 		for (var/obj/structure/vehicleparts/movement/sails/S in rangeto)
 			for (var/obj/structure/vehicleparts/frame/ship/F in S.loc)

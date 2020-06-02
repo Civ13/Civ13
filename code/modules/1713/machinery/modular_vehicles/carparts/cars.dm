@@ -6,6 +6,7 @@
 		material = get_material_by_name(material)
 	update_icon()
 		if (material)
+			name = "[material] driver's seat"
 			color = material.icon_colour
 /obj/structure/bed/chair/carseat
 	name = "car seat"
@@ -18,6 +19,7 @@
 		material = get_material_by_name(material)
 	update_icon()
 		if (material)
+			name = "[material] car seat"
 			color = material.icon_colour
 
 /obj/structure/bed/chair/carseat/left
@@ -25,6 +27,14 @@
 /obj/structure/bed/chair/carseat/right
 	icon_state = "carseat_right"
 
+/obj/structure/bed/chair/drivers/car/lion
+	material = "lionpelt"
+/obj/structure/bed/chair/carseat/left/lion
+	material = "lionpelt"
+/obj/structure/bed/chair/carseat/right/lion
+	material = "lionpelt"
+/obj/structure/bed/chair/carseat/lion
+	material = "lionpelt"
 //truck
 /obj/structure/vehicleparts/frame/car/newtruck/lf
 	w_front = list("truckfront2_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
@@ -54,12 +64,6 @@
 	w_front = list("carwindshield_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
 
 //model 2 car
-/obj/structure/vehicleparts/frame/car/newcar2/lf
-	w_front = list("carfront2_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/newcar2/rf
-	w_front = list("carfront2_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/newcar2/lwindshield
 	w_left = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
 	w_front = list("carwindshield2_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
@@ -117,41 +121,66 @@
 	w_back = list("carback3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
 	w_front = list("carwindshield2_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carback3_left"
+	hasoverlay = "carback3_leftL"
 /obj/structure/vehicleparts/frame/car/piccolino/rb
 	w_back = list("carback3_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
 	w_front = list("carwindshield2_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carback3_right"
-//quattroporte
-/obj/structure/vehicleparts/frame/car/quattroporte/lb
-	w_back = list("carback3_leftLU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carback3_leftL"
-/obj/structure/vehicleparts/frame/car/quattroporte/rb
-	w_back = list("carback3_rightLU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback3_rightL"
+//quattroporte
+/obj/structure/vehicleparts/frame/car/quattroporte/lf
+	w_front = list("as_quattroporte_front_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "as_quattroporte_front_left"
+/obj/structure/vehicleparts/frame/car/quattroporte/rf
+	w_front = list("as_quattroporte_front_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "as_quattroporte_front_right"
+/obj/structure/vehicleparts/frame/car/quattroporte/lb
+	w_back = list("as_quattroporte_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	hasoverlay = "as_quattroporte_back_left"
+/obj/structure/vehicleparts/frame/car/quattroporte/rb
+	w_back = list("as_quattroporte_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	hasoverlay = "as_quattroporte_back_right"
 /obj/structure/vehicleparts/frame/car/quattroporte/lc
-	w_front = list("carwindshield2door_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	hasoverlay = "carwindshield2door_left"
 /obj/structure/vehicleparts/frame/car/quattroporte/rc
-	w_front = list("carwindshield2door_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	hasoverlay = "carwindshield2door_right"
 //erstenklasse
 /obj/structure/vehicleparts/frame/car/umek/lf
 	w_front = list("um_erstenklasse_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/umek/rf
 	w_front = list("um_erstenklasse_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/umek/rbc
+	w_right = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,TRUE)
+	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/umek/lbc
+	w_left = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,TRUE)
+	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/umek/lb
+	w_back = list("um_erstenklasse_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	hasoverlay = "um_erstenklasse_back_left"
+/obj/structure/vehicleparts/frame/car/umek/rb
+	w_back = list("um_erstenklasse_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	hasoverlay = "um_erstenklasse_back_right"
 //falcon
 /obj/structure/vehicleparts/frame/car/falcon/lf
 	w_front = list("smc_falcon_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/falcon/rf
 	w_front = list("smc_falcon_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+
 ////////////////backs////////////////
 //car
 /obj/structure/vehicleparts/frame/car/newcar1/lb
@@ -183,7 +212,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 800
-	speedlist = list(1=8,2=6,3=4,4=3)
+	speedlist = list(1=8,2=6,3=5,4=4)
 	turntimer = 7
 
 /obj/structure/vehicleparts/axis/car/quattroporte
@@ -193,7 +222,17 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = list(1=8,2=6,3=4,4=3,5=2)
+	speedlist = list(1=8,2=7,3=6,4=5,5=4)
+	turntimer = 8
+
+/obj/structure/vehicleparts/axis/car/erstenklasse
+	name = "Ubermacht Erstenklasse"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=7,2=6,3=5,4=4,5=3)
 	turntimer = 8
 
 /obj/structure/engine/internal/gasoline/premade/piccolino
@@ -201,3 +240,6 @@
 
 /obj/structure/engine/internal/gasoline/premade/quattroporte
 	enginesize = 4000
+
+/obj/structure/engine/internal/gasoline/premade/erstenklasse
+	enginesize = 5500
