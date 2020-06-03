@@ -348,11 +348,36 @@
 	powerneeded = FALSE
 	anchored = TRUE
 /obj/structure/computer/nopower/carsales/attackby(var/obj/item/D, var/mob/living/human/H)
+	var/found = FALSE
+	for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+		if (found)
+			break
+		for (var/obj/structure/ST in T)
+			found = TRUE
+			break
+		for (var/mob/living/human/HT in T)
+			found = TRUE
+			break
+	if (found)
+		H << "Clear the arrival area first."
+		return
 	if (istype(D, /obj/item/stack/money))
 		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)","ASNO Quattroporte (500)","Ubermacht Erstenklasse (900)"))
 		if (choice == "Cancel")
 			return
 		else
+			for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+				if (found)
+					break
+				for (var/obj/structure/ST in T)
+					found = TRUE
+					break
+				for (var/mob/living/human/HT in T)
+					found = TRUE
+					break
+			if (found)
+				H << "Clear the arrival area first."
+				return
 			var/obj/effects/premadevehicles/PV
 			if (choice == "Yamasaki M125 motorcycle (160)")
 				if (D.value*D.amount >= 160*4)
@@ -381,6 +406,18 @@
 						chosencolor = "#b8b537"
 					if ("Blue")
 						chosencolor = "#00007F"
+				for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+					if (found)
+						break
+					for (var/obj/structure/ST in T)
+						found = TRUE
+						break
+					for (var/mob/living/human/HT in T)
+						found = TRUE
+						break
+				if (found)
+					H << "Clear the arrival area first."
+					return
 				if (D.value*D.amount >= 500*4)
 					D.amount-=100
 				else
@@ -414,6 +451,18 @@
 						chosencolor = "#b8b537"
 					if ("Blue")
 						chosencolor = "#00007F"
+				for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+					if (found)
+						break
+					for (var/obj/structure/ST in T)
+						found = TRUE
+						break
+					for (var/mob/living/human/HT in T)
+						found = TRUE
+						break
+				if (found)
+					H << "Clear the arrival area first."
+					return
 				if (D.value*D.amount >= 900*4)
 					D.amount-=180
 				else
