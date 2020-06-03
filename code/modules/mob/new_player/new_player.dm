@@ -38,6 +38,12 @@ var/global/redirect_all_players = null
 			for (var/C in clients)
 				winset(C, null, "mainwindow.flash=1")
 				C << link(redirect_all_players)
+	spawn(20)
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
+			<BODY><iframe width=\"800\" height=\"620\" src=\"http://civ13.com/wiki/index.php/The_Art_of_the_Deal\" frameborder=\"0\" allowfullscreen></iframe></BODY></HTML>"
+			src << browse(htmlfile,"window=wiki;size=820x650")
+
 /mob/new_player/Destroy()
 	new_player_mob_list -= src
 	..()
