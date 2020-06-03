@@ -123,7 +123,7 @@
 
 /obj/item/weapon/map/examine(mob/user)
 	update_icon()
-	user << browse(getFlatIcon(img),"window=popup;size=630x630")
+	user << browse("<img src=minimap.png>Map</img>","window=popup;size=630x630")
 
 /obj/item/weapon/map/update_icon()
 	..()
