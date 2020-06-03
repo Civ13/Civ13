@@ -109,7 +109,7 @@
 "cf" = (/obj/structure/barricade/ship/wood/a4,/turf/floor/wood/ship,/area/caribbean/british/ship{name = "British Ship"})
 "cg" = (/obj/structure/barricade/ship/wood/a7,/turf/floor/wood/ship,/area/caribbean/british/ship{name = "British Ship"})
 "ch" = (/obj/structure/barricade/ship/wood/a8,/turf/floor/wood/ship,/area/caribbean/british/ship{name = "British Ship"})
-"ci" = (/obj/structure/closet/cabinet{anchored = 1; desc = "Something looks strange in this bush..."; icon = 'icons/obj/wild.dmi'; icon_closed = "small_bush"; icon_opened = "small_bush"; icon_state = "small_bush"; name = "weird bush"; opened = 1},/turf/floor/dirt,/area/caribbean/island)
+"ci" = (/obj/structure/closet/cabinet{anchored = 1; desc = "Something looks strange in this bush..."; icon = 'icons/obj/flora/wild.dmi'; icon_closed = "small_bush"; icon_opened = "small_bush"; icon_state = "small_bush"; name = "weird bush"; opened = 1},/turf/floor/dirt,/area/caribbean/island)
 "ck" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateIND"},/turf/floor/dirt,/area/caribbean/pirates/land/outside)
 "cl" = (/obj/structure/barricade/ship/wood/port0,/turf/floor/wood/ship,/area/caribbean/british/ship{name = "British Ship"})
 "cm" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean/island)

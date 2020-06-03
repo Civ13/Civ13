@@ -2,7 +2,7 @@
 /obj/structure/vehicleparts/frame
 	name = "steel frame"
 	desc = "a steel vehicle frame."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "frame_steel"
 	powerneeded = 0
 	flammable = FALSE
@@ -87,7 +87,7 @@
 		axis.engine = VP
 		VP.forceMove(loc)
 		VP.anchored = TRUE
-		E.icon = 'icons/obj/vehicleparts.dmi'
+		E.icon = 'icons/obj/vehicles/vehicleparts.dmi'
 		E.engineclass = "engine"
 		E.update_icon()
 		return

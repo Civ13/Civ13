@@ -1,6 +1,6 @@
 /obj/structure/vehicle
 	name = "vehicle"
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	desc = "A vehicle."
 	icon_state = "motorcycle"
 	var/list/ontop = list()
@@ -253,7 +253,7 @@
 /obj/structure/vehicle/raft
 	name = "raft"
 	desc = "A simple wood raft. Can be used to cross water."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "raft"
 	anchored = FALSE
 	density = FALSE
@@ -309,7 +309,7 @@
 /obj/structure/vehicle/boat
 	name = "outrigger raft"
 	desc = "A simple wood boat. Can be powered by a motor."
-	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "outrigger_frame3"
 	anchored = FALSE
 	density = FALSE
@@ -739,7 +739,7 @@
 /obj/structure/vehicle/motorcycle
 	name = "motorcycle"
 	desc = "A motorcycle."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "motorcycle"
 	anchored = FALSE
 	density = TRUE

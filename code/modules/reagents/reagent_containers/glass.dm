@@ -428,7 +428,7 @@
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank
 	name = "large fueltank"
 	desc = "A metalic fueltank. Used to connect to a engine and supply it with fuel."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "fueltank_large"
 	amount_per_transfer_from_this = 10
 	volume = 250

@@ -12,7 +12,7 @@
 /obj/structure/bed/chair/carseat
 	name = "car seat"
 	desc = "a leather car seat."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "carseat_middle"
 	material = "leather"
 	New()
@@ -189,7 +189,7 @@
 /obj/structure/table/carboot
 	name = "boot"
 	desc = "A compartment of the car used to store stuff."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "frame_wood"
 	fixedsprite = TRUE
 	layer = 3.1
@@ -228,7 +228,7 @@
 /obj/structure/vehicleparts/axis/car/piccolino
 	name = "ASNO Piccolino"
 	desc = "A powered axis from a car."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 800
@@ -238,7 +238,7 @@
 /obj/structure/vehicleparts/axis/car/quattroporte
 	name = "ASNO Quattroporte"
 	desc = "A powered axis from a car."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
@@ -248,7 +248,7 @@
 /obj/structure/vehicleparts/axis/car/erstenklasse
 	name = "Ubermacht Erstenklasse"
 	desc = "A powered axis from a car."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800

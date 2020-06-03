@@ -226,7 +226,7 @@ var/global/list/vehicle_walls = list( \
 var/global/list/license_plate_numbers = list()
 
 /obj/structure/vehicleparts/license_plate
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "license_plate_us"
 	name = "license plate"
 	desc = "a vehicle registration plate."
