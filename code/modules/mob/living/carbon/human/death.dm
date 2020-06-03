@@ -77,7 +77,6 @@
 							if (PAR)
 								var/obj/item/weapon/paper/police/searchwarrant/SW = new /obj/item/weapon/paper/police/searchwarrant(PAR.loc)
 								SW.cmp = warrant
-								PAR.add(SW)
 							global_broadcast(FREQP,"<big>Attention, warrant issued for <b>[warrant] HQ</b>, please search the premises as soon as possible.</big>")
 			else
 				map.scores[civilization] -= 200
