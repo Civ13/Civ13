@@ -20,7 +20,7 @@
 		material = get_material_by_name(material)
 	update_icon()
 		if (material)
-			name = "[material] car seat"
+			name = "[material.use_name] car seat"
 			color = material.icon_colour
 
 /obj/structure/bed/chair/carseat/left
@@ -36,6 +36,15 @@
 	material = "lionpelt"
 /obj/structure/bed/chair/carseat/lion
 	material = "lionpelt"
+
+/obj/structure/bed/chair/drivers/car/dark
+	material = "darkleather"
+/obj/structure/bed/chair/carseat/left/dark
+	material = "darkleather"
+/obj/structure/bed/chair/carseat/right/dark
+	material = "darkleather"
+/obj/structure/bed/chair/carseat/dark
+	material = "darkleather"
 //truck
 /obj/structure/vehicleparts/frame/car/newtruck/lf
 	w_front = list("truckfront2_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
@@ -110,7 +119,26 @@
 	w_front = list("vanfront_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanfront_right"
+/obj/structure/vehicleparts/frame/car/van/lfc
+	w_front = list("truckwindshield_left",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+/obj/structure/vehicleparts/frame/car/van/rfc
+	w_front = list("truckwindshield_right",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+/obj/structure/vehicleparts/frame/car/van/cfc
+	w_front = list("truckwindshield_center",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
+/obj/structure/vehicleparts/frame/car/van/lb
+	w_front = list("vanback_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "vanback_left"
+/obj/structure/vehicleparts/frame/car/van/cb
+	w_front = list("vanback_centerU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "vanback_center"
+/obj/structure/vehicleparts/frame/car/van/rb
+	w_front = list("vanback_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "vanback_right"
 //piccolino
 /obj/structure/vehicleparts/frame/car/piccolino/lf
 	w_front = list("as_piccolino_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
@@ -192,14 +220,42 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "frame_wood"
 	fixedsprite = TRUE
-	layer = 3.1
+	layer = 2.99
 //falcon
 /obj/structure/vehicleparts/frame/car/falcon/lf
-	w_front = list("smc_falcon_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_front = list("smc_falcon_front_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "smc_falcon_front_left"
+	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/falcon/rf
-	w_front = list("smc_falcon_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
+	w_front = list("smc_falcon_front_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "smc_falcon_front_left"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/falcon/lfc
+	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "carwindshield2door_left"
+/obj/structure/vehicleparts/frame/car/falcon/rfc
+	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "carwindshield2door_right"
+/obj/structure/vehicleparts/frame/car/falcon/rbc
+	w_right = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,FALSE)
+	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/falcon/lbc
+	w_left = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,FALSE)
+	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/falcon/lb
+	w_back = list("smc_falcon_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "smc_falcon_back_left"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/falcon/rb
+	w_back = list("smc_falcon_back_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "smc_falcon_back_right"
+	removesroof = TRUE
 
 ////////////////backs////////////////
 //car
@@ -255,6 +311,16 @@
 	speedlist = list(1=7,2=6,3=5,4=4,5=3)
 	turntimer = 8
 
+/obj/structure/vehicleparts/axis/car/falcon
+	name = "SMC Falcon"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=7,2=6,3=5,4=2)
+	turntimer = 7
+
 /obj/structure/engine/internal/gasoline/premade/piccolino
 	enginesize = 2800
 
@@ -263,6 +329,9 @@
 
 /obj/structure/engine/internal/gasoline/premade/erstenklasse
 	enginesize = 5500
+
+/obj/structure/engine/internal/gasoline/premade/falcon
+	enginesize = 6500
 
 /obj/structure/emergency_lights
 	name = "emergency lights control"

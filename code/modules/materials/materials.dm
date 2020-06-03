@@ -620,6 +620,11 @@ var/list/name_to_material
 	hardness = 25
 	flags = MATERIAL_PADDING
 
+/material/leather/dark
+	name = "darkleather"
+	use_name = "dark leather"
+	icon_colour = "#241C13"
+
 /material/pelt
 	name = "pelt"
 	use_name = "pelt"
