@@ -34,6 +34,7 @@
 	var/custom_color = ""
 	var/axis = /obj/structure/vehicleparts/axis/car
 	var/doorcode = 0
+	var/reg_number = "000"
 	var/list/tocreate = list(
 
 	"1,1" = list(),
@@ -89,10 +90,20 @@
 			tpt.color = custom_color
 		if (doorcode != 0)
 			tpt.doorcode = doorcode
+		tpt.reg_number = reg_number
 		tpt.dir = 2
 		new/obj/effect/autoassembler(get_turf(locate(tpt.x-2,tpt.y+2,tpt.z)))
 
-
+/obj/effects/premadevehicles/proc/new_number()
+	var/tempnum = 0
+	tempnum = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][pick(alphabet_uppercase)] [rand(0,9)][rand(0,9)][rand(0,9)]"
+	if (tempnum in license_plate_numbers)
+		new_number()
+		return
+	else
+		reg_number = tempnum
+		license_plate_numbers += tempnum
+		return tempnum
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //ASNO
@@ -134,7 +145,7 @@
 	tocreate = list(
 	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/umek/rf),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/umek/lf,/obj/structure/engine/internal/gasoline/premade/erstenklasse,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
-	
+
 	"1,2" = list(/obj/structure/vehicleparts/frame/car/umek/rfc,/obj/structure/bed/chair/carseat/right/lion),
 	"2,2" = list(/obj/structure/vehicleparts/frame/car/umek/lfc,/obj/structure/bed/chair/drivers/car/lion),
 

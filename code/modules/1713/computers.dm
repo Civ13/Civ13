@@ -389,6 +389,7 @@
 				return
 			else if (choice == "ASNO Quattroporte (500)")
 				var/chosencolor = WWinput(H,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
+				var/basecolor = chosencolor
 				switch(chosencolor)
 					if ("Black")
 						chosencolor = "#181717"
@@ -426,14 +427,18 @@
 				PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(x+3,y-3,z))
 				PV.custom_color = chosencolor
 				PV.doorcode = rand(1000,9999)
+				PV.new_number()
 				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
 				C.name = "car key"
 				C.code = PV.doorcode
 				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
 				C2.name = "car key"
 				C2.code = PV.doorcode
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Quattroporte", basecolor))
 			else if (choice == "Ubermacht Erstenklasse (900)")
 				var/chosencolor = WWinput(H,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
+				var/basecolor = chosencolor
 				switch(chosencolor)
 					if ("Black")
 						chosencolor = "#181717"
@@ -471,12 +476,16 @@
 				PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(x+3,y-3,z))
 				PV.custom_color = chosencolor
 				PV.doorcode = rand(1000,9999)
+				PV.new_number()
 				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
 				C.name = "car key"
 				C.code = PV.doorcode
 				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
 				C2.name = "car key"
 				C2.code = PV.doorcode
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Ubermacht Erstenklasse", basecolor))
+
 	else
 		..()
 
