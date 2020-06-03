@@ -263,3 +263,63 @@
 
 /obj/structure/engine/internal/gasoline/premade/erstenklasse
 	enginesize = 5500
+
+/obj/structure/emergency_lights
+	name = "emergency lights control"
+	desc = "controls the emergency lights and the wailing siren."
+	icon = 'icons/obj/device.dmi'
+	icon_state = "modern_intercom"
+	anchored = TRUE
+	opacity = FALSE
+	density = FALSE
+	var/atype = "police"
+	var/on = FALSE
+	var/pol_color = "#FF0000"
+	var/lastsoundcheck = 0
+/obj/structure/emergency_lights/ambulance
+	atype = "ambulance"
+
+/obj/structure/emergency_lights/attack_hand(mob/living/human/H)
+	if (!ishuman(H))
+		return
+	on = !on
+	if (on)
+		check_color()
+		check_sound()
+	else
+		set_light(0)
+/obj/structure/emergency_lights/update_icon()
+	switch(dir)
+		if (EAST)
+			pixel_x = 0
+			pixel_y = -16
+
+		if (WEST)
+			pixel_x = 0
+			pixel_y = 16
+
+		if (NORTH)
+			pixel_x = 16
+			pixel_y = 0
+
+		if (SOUTH)
+			pixel_x = -16
+			pixel_y = 0
+/obj/structure/emergency_lights/proc/check_sound()
+	if (world.realtime >= lastsoundcheck)
+		if (on)
+			playsound(loc,'sound/machines/police_siren.ogg',100,FALSE,15)
+			lastsoundcheck = world.realtime+48
+			spawn(50)
+				check_sound()
+/obj/structure/emergency_lights/proc/check_color()
+	if (on)
+		set_light(7,1,pol_color)
+		spawn(5)
+			if (pol_color == "#FF0000")
+				pol_color = "#00FF00"
+			else
+				pol_color = "#FF0000"
+			check_color()
+	else
+		set_light(0)

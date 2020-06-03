@@ -92,9 +92,19 @@ bullet_act
 						break
 					if (PAR)
 						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+						SW.tgt_mob = Huser
 						SW.tgt = Huser.real_name
 						SW.tgtcmp = Huser.civilization
 						PAR.add(SW)
+					for(var/obj/structure/computer/nopower/police/PLT in get_area_turfs(/area/caribbean/prison/jail/processing))
+						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+						SW.tgt_mob = Huser
+						SW.tgt = Huser.real_name
+						SW.tgtcmp = Huser.civilization
+						PLT.pending_warrants += SW
+						SW.forceMove(PLT)
+						break
+
 		else if (!map.civilizations && !map.nomads && !map.is_RP)
 			var/mob/living/human/Huser = P.firer
 			if (src.stat != DEAD && src.faction_text != Huser.faction_text)

@@ -187,9 +187,9 @@ var/list/global/phone_numbers = list()
 						visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
 						return
 		else
-			var/found_tower = FALSE
-			for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
-				found_tower = TRUE
+			var/found_tower = TRUE
+//			for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
+//				found_tower = TRUE
 			if (found_tower)
 				ring_phone(tgtnum,phonenumber, src, user)
 				spawn(200)
@@ -287,9 +287,9 @@ var/list/global/phone_numbers = list()
 				if (!callnum)
 					return
 				var/tgtnum = callnum
-				var/found_tower = FALSE
-				for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
-					found_tower = TRUE
+				var/found_tower = TRUE
+//				for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
+//					found_tower = TRUE
 				if (found_tower)
 					ring_phone(tgtnum,phonenumber, src, user)
 					spawn(200)
