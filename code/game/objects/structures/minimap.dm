@@ -123,7 +123,7 @@
 
 /obj/item/weapon/map/examine(mob/user)
 	update_icon()
-	user << browse(getFlatIcon(img),"window=popup;size=630x630")
+	user << browse("<img src=minimap.png></img>","window=popup;size=630x630")
 
 /obj/item/weapon/map/update_icon()
 	..()
@@ -138,15 +138,14 @@
 //////////////////////////////////////////
 
 /obj/structure/sign/infopanel
-	desc = "A screen with real time information on the location of the squad and vehicles."
+	desc = "A screen with real-time information on the location of the squad and vehicle registations."
 	name = "information panel"
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "info_panel"
 	var/slist = "No information available."
 	var/faction = "None"
-
+	var/mob/living/user = null
 /obj/structure/sign/infopanel/examine(mob/user)
-	update_locs()
 	do_html(user)
 
 /obj/structure/sign/infopanel/police
@@ -163,7 +162,27 @@
 				tst = "(Unresponsive)"
 			else if (H.stat == DEAD)
 				tst = "(Dead)"
-			slist += "<br><b>[H.name]</b> at <b>[H.get_coded_loc()]</b> ([H.x],[H.y]) <b><i>[tst]</i></b><br>"
+			slist += "<b>[H.name]</b> at <b>[H.get_coded_loc()]</b> ([H.x],[H.y]) <b><i>[tst]</i></b><br>"
+
+/obj/structure/sign/infopanel/proc/update_vehicles()
+	slist = ""
+	for(var/list/L in map.vehicle_registations)
+		slist += "<b>[L[1]]</b> - <b>[L[4]] [L[3]]</b> - registered to <b>[L[2]]</b><br>"
+	return
+/obj/structure/sign/infopanel/interact(var/mob/m)
+	if (user)
+		if (get_dist(src, user) > 1)
+			user = null
+	restart
+	if (user && user != m)
+		if (user.client)
+			return
+		else
+			user = null
+			goto restart
+	else
+		user = m
+		do_html(user)
 /obj/structure/sign/infopanel/proc/do_html(var/mob/m)
 
 	if (m)
@@ -178,27 +197,41 @@
 		[computer_browser_style]
 		</style>
 		</head>
-
 		<body>
-
-		<script language="javascript">
-
-		function set(input) {
-		  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-		}
-
-		</script>
-
 		<center>
 		<big><b>INFORMATION PANEL</b></big><br><br>
+		<a href='?src=\ref[src];vehicles=1'>Check Vehicle Registations</a> <a href='?src=\ref[src];squad=1'>Check Squad Locations</a>
 		</center>
 		[slist]
 		</body>
 		</html>
-		<br>
+		<br><br>
 		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 
 
+/obj/structure/sign/infopanel/Topic(href, href_list, hsrc)
+
+	var/mob/user = usr
+
+	if (!user || user.lying || !ishuman(user))
+		return
+
+	user.face_atom(src)
+
+	if (!locate(user) in range(1,src))
+		user << "<span class = 'danger'>Get next to \the [src] to use it.</span>"
+		return FALSE
+
+	if (!user.can_use_hands())
+		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		return FALSE
+
+	if (href_list["vehicles"])
+		update_vehicles()
+	if (href_list["squad"])
+		update_locs()
+	sleep(0.5)
+	do_html(user)
 /obj/structure/sign/infopanel/attack_hand(mob/user)
 	examine(user)
 

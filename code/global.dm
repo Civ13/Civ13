@@ -392,9 +392,9 @@ hr
 
 a, a:link, a:visited, a:active, .linkOn, .linkOff
 {
-	color: #0000ff;
+	color: #00ff00;
 	text-decoration: none;
-	background: #000000;
+	background: #1D1D1D;
 	border: 1px solid #2D2D2D;
 	padding: 1px 4px 1px 4px;
 	margin: 0 2px 0 0;
@@ -403,8 +403,8 @@ a, a:link, a:visited, a:active, .linkOn, .linkOff
 
 a:hover
 {
-	color: #ebebe0;
-	background: #7a7a52;
+	color: #005b1e;
+	background: #141414;
 }
 
 a.white, a.white:link, a.white:visited, a.white:active

@@ -348,11 +348,36 @@
 	powerneeded = FALSE
 	anchored = TRUE
 /obj/structure/computer/nopower/carsales/attackby(var/obj/item/D, var/mob/living/human/H)
+	var/found = FALSE
+	for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+		if (found)
+			break
+		for (var/obj/structure/ST in T)
+			found = TRUE
+			break
+		for (var/mob/living/human/HT in T)
+			found = TRUE
+			break
+	if (found)
+		H << "Clear the arrival area first."
+		return
 	if (istype(D, /obj/item/stack/money))
 		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)","ASNO Quattroporte (500)","Ubermacht Erstenklasse (900)"))
 		if (choice == "Cancel")
 			return
 		else
+			for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+				if (found)
+					break
+				for (var/obj/structure/ST in T)
+					found = TRUE
+					break
+				for (var/mob/living/human/HT in T)
+					found = TRUE
+					break
+			if (found)
+				H << "Clear the arrival area first."
+				return
 			var/obj/effects/premadevehicles/PV
 			if (choice == "Yamasaki M125 motorcycle (160)")
 				if (D.value*D.amount >= 160*4)
@@ -364,6 +389,7 @@
 				return
 			else if (choice == "ASNO Quattroporte (500)")
 				var/chosencolor = WWinput(H,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
+				var/basecolor = chosencolor
 				switch(chosencolor)
 					if ("Black")
 						chosencolor = "#181717"
@@ -381,6 +407,18 @@
 						chosencolor = "#b8b537"
 					if ("Blue")
 						chosencolor = "#00007F"
+				for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+					if (found)
+						break
+					for (var/obj/structure/ST in T)
+						found = TRUE
+						break
+					for (var/mob/living/human/HT in T)
+						found = TRUE
+						break
+				if (found)
+					H << "Clear the arrival area first."
+					return
 				if (D.value*D.amount >= 500*4)
 					D.amount-=100
 				else
@@ -389,14 +427,18 @@
 				PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(x+3,y-3,z))
 				PV.custom_color = chosencolor
 				PV.doorcode = rand(1000,9999)
+				PV.new_number()
 				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
 				C.name = "car key"
 				C.code = PV.doorcode
 				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
 				C2.name = "car key"
 				C2.code = PV.doorcode
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Quattroporte", basecolor))
 			else if (choice == "Ubermacht Erstenklasse (900)")
 				var/chosencolor = WWinput(H,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
+				var/basecolor = chosencolor
 				switch(chosencolor)
 					if ("Black")
 						chosencolor = "#181717"
@@ -414,6 +456,18 @@
 						chosencolor = "#b8b537"
 					if ("Blue")
 						chosencolor = "#00007F"
+				for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+					if (found)
+						break
+					for (var/obj/structure/ST in T)
+						found = TRUE
+						break
+					for (var/mob/living/human/HT in T)
+						found = TRUE
+						break
+				if (found)
+					H << "Clear the arrival area first."
+					return
 				if (D.value*D.amount >= 900*4)
 					D.amount-=180
 				else
@@ -422,12 +476,16 @@
 				PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(x+3,y-3,z))
 				PV.custom_color = chosencolor
 				PV.doorcode = rand(1000,9999)
+				PV.new_number()
 				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
 				C.name = "car key"
 				C.code = PV.doorcode
 				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
 				C2.name = "car key"
 				C2.code = PV.doorcode
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Ubermacht Erstenklasse", basecolor))
+
 	else
 		..()
 
@@ -467,7 +525,7 @@
 			else
 				choice = splittext(choice,":")[1]
 				for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
-					if (SW.arn == choice)
+					if (SW.arn == text2num(choice))
 						var/obj/item/weapon/paper/police/warrant/NW = new/obj/item/weapon/paper/police/warrant(loc)
 						NW.tgt_mob = SW.tgt_mob
 						NW.tgt = SW.tgt
