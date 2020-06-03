@@ -126,68 +126,6 @@
 	powerneeded = FALSE
 	anchored = TRUE
 
-/obj/structure/computer/nopower/aotd
-	name = "Desktop Computer"
-	desc = "A desktop computer running the latest version of UngaOS. Has a floppy drive."
-	powered = TRUE
-	powerneeded = FALSE
-	anchored = TRUE
-/obj/structure/computer/nopower/aotd/attackby(var/obj/item/weapon/disk/D, var/mob/living/human/H)
-	if (istype(D, /obj/item/weapon/disk))
-		if (D.faction == H.civilization)
-			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
-			return
-		else if (H.civilization == "Police")
-			H << "<span class='notice'>You do not know how to decrypt this... Should put it in the evidence room instead.</span>"
-			return
-		else if (D.used)
-			H << "<span class='notice'>This disk has already been decrypted and wiped.</span>"
-			return
-		else
-			playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
-			switch(D.exchange_state)
-				if (-1)
-					if (D.fake)
-						WWalert(H,"This is a fake inactive disk! You lose 100 points.", "Fake Disk")
-						map.scores[H.civilization] -= 100
-						D.used = TRUE
-						qdel(D)
-					else
-						WWalert(H,"This is a real inactive disk! You gain 100 dollars and 100 points.", "Real Disk")
-						map.scores[H.civilization] += 100
-						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
-						DLR.amount = 40
-						D.used = TRUE
-						qdel(D)
-				if (0)
-					if (D.fake)
-						WWalert(H,"This is a fake disk! Since you exchanged it with a fake disk too, both factions lose 400 points.", "Fake Disk")
-						map.scores[H.civilization] -= 400
-						D.used = TRUE
-						qdel(D)
-
-				if (1)
-					if (D.fake)
-						WWalert(H,"This is a fake disk! Since you exchanged it with a real disk, you gain nothing and the other faction gains 200 dollars and 200 points.", "Fake Disk")
-						D.used = TRUE
-						qdel(D)
-					else
-						WWalert(H,"This is a real disk! Since you exchanged it with a fake disk, you gain 200 dollars, 200 points and the other faction gains nothing.", "Real Disk")
-						map.scores[H.civilization] += 200
-						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
-						DLR.amount = 40
-						D.used = TRUE
-						qdel(D)
-				if (2)
-					if (!D.fake)
-						WWalert(H,"This is a real disk! Since you exchanged it with a real disk too, both factions gain 400 dollars and 400 points.", "Real Disk")
-						map.scores[H.civilization] += 400
-						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
-						DLR.amount = 80
-						D.used = TRUE
-						qdel(D)
-	else
-		..()
 /obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
@@ -338,6 +276,70 @@
 		playsound(loc, 'sound/machines/computer/key_enter.ogg', 10, TRUE)
 		display+=href_list["value"]
 
+//////////////////////////////////////////////////////////////
+
+/obj/structure/computer/nopower/aotd
+	name = "Desktop Computer"
+	desc = "A desktop computer running the latest version of UngaOS. Has a floppy drive."
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
+/obj/structure/computer/nopower/aotd/attackby(var/obj/item/weapon/disk/D, var/mob/living/human/H)
+	if (istype(D, /obj/item/weapon/disk))
+		if (D.faction == H.civilization)
+			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
+			return
+		else if (H.civilization == "Police")
+			H << "<span class='notice'>You do not know how to decrypt this... Should put it in the evidence room instead.</span>"
+			return
+		else if (D.used)
+			H << "<span class='notice'>This disk has already been decrypted and wiped.</span>"
+			return
+		else
+			playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
+			switch(D.exchange_state)
+				if (-1)
+					if (D.fake)
+						WWalert(H,"This is a fake inactive disk! You lose 100 points.", "Fake Disk")
+						map.scores[H.civilization] -= 100
+						D.used = TRUE
+						qdel(D)
+					else
+						WWalert(H,"This is a real inactive disk! You gain 100 dollars and 100 points.", "Real Disk")
+						map.scores[H.civilization] += 100
+						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
+						DLR.amount = 40
+						D.used = TRUE
+						qdel(D)
+				if (0)
+					if (D.fake)
+						WWalert(H,"This is a fake disk! Since you exchanged it with a fake disk too, both factions lose 400 points.", "Fake Disk")
+						map.scores[H.civilization] -= 400
+						D.used = TRUE
+						qdel(D)
+
+				if (1)
+					if (D.fake)
+						WWalert(H,"This is a fake disk! Since you exchanged it with a real disk, you gain nothing and the other faction gains 200 dollars and 200 points.", "Fake Disk")
+						D.used = TRUE
+						qdel(D)
+					else
+						WWalert(H,"This is a real disk! Since you exchanged it with a fake disk, you gain 200 dollars, 200 points and the other faction gains nothing.", "Real Disk")
+						map.scores[H.civilization] += 200
+						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
+						DLR.amount = 40
+						D.used = TRUE
+						qdel(D)
+				if (2)
+					if (!D.fake)
+						WWalert(H,"This is a real disk! Since you exchanged it with a real disk too, both factions gain 400 dollars and 400 points.", "Real Disk")
+						map.scores[H.civilization] += 400
+						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
+						DLR.amount = 80
+						D.used = TRUE
+						qdel(D)
+	else
+		..()
 
 /obj/structure/computer/nopower/carsales
 	name = "CARTRADER Terminal"
@@ -428,3 +430,67 @@
 				C2.code = PV.doorcode
 	else
 		..()
+
+
+/obj/structure/computer/nopower/police
+	name = "Police Processing Terminal"
+	desc = "A terminal that processes and registers warrants."
+	icon_state = "research_on"
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
+	var/list/pending_warrants = list()
+
+/obj/structure/computer/nopower/police/attack_hand(var/mob/living/human/H)
+	if (!ishuman(H))
+		return
+	var/what = WWinput(H, "Welcome to the Police Processing Terminal. Whar do you want to do?", "P.P.T.", "Quit",list("Quit","Check Warrants", "Print Warrant", "Register Suspect"))
+	switch(what)
+		if ("Quit")
+			return
+		if ("Check Warrants")
+			var/list/tlist = list()
+			for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
+				tlist += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp]"
+			tlist += "Quit"
+			var/choice = WWinput(H, "Current Warrants:","P.P.T.","Quit",tlist)
+			if (choice)
+				return
+		if ("Print Warrant")
+			var/list/tlist = list()
+			for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
+				tlist += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp]"
+			tlist += "Quit"
+			var/choice = WWinput(H, "Choose a Warrant to print:","P.P.T.","Quit",tlist)
+			if (choice == "Quit")
+				return
+			else
+				choice = splittext(choice,":")[1]
+				for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
+					if (SW.arn == choice)
+						var/obj/item/weapon/paper/police/warrant/NW = new/obj/item/weapon/paper/police/warrant(loc)
+						NW.tgt_mob = SW.tgt_mob
+						NW.tgt = SW.tgt
+						NW.tgtcmp = SW.tgtcmp
+						NW.arn = SW.arn
+						return
+		if ("Register Suspect")
+			var/done = FALSE
+			var/found = FALSE
+			for (var/mob/living/human/S in range(2,src))
+				found = TRUE
+				for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
+					if (SW.tgt_mob == S)
+						map.scores["Police"] += 300
+						done = TRUE
+						pending_warrants -= SW
+						visible_message("<big><font color='green'>Processed warrant no. [SW.arn] for [SW.tgt].</font></big>")
+						pending_warrants -= SW
+						SW.forceMove(null)
+						qdel(SW)
+			if (!done && found)
+				visible_message("<big><font color='yellow'>There are no outstanding warrants for any of the suspects.</font></big>")
+			else if (!done && !found)
+				visible_message("<big><font color='yellow'>There are no suspects present.</font></big>")
+			else if (done && found)
+				visible_message("<big><font color='green'><b>All suspects in the bench have been sucessfully registed into the system and can be released now.</b></font></big>")
