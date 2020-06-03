@@ -120,23 +120,25 @@
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanfront_right"
 /obj/structure/vehicleparts/frame/car/van/lfc
-	w_front = list("truckwindshield_left",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_front = list("vanwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	hasoverlay = "vanwindshield2door_left"
 /obj/structure/vehicleparts/frame/car/van/rfc
-	w_front = list("truckwindshield_right",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_front = list("vanwindshield2door_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	hasoverlay = "vanwindshield2door_right"
 /obj/structure/vehicleparts/frame/car/van/cfc
 	w_front = list("truckwindshield_center",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/car/van/lb
-	w_front = list("vanback_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("vanback_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanback_left"
 /obj/structure/vehicleparts/frame/car/van/cb
-	w_front = list("vanback_centerU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("vanback_centerU",TRUE,TRUE,0,0.1,TRUE,TRUE)
 	hasoverlay = "vanback_center"
 /obj/structure/vehicleparts/frame/car/van/rb
-	w_front = list("vanback_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("vanback_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanback_right"
 //piccolino
@@ -183,13 +185,15 @@
 	hasoverlay = "carwindshield2door_right"
 //erstenklasse
 /obj/structure/vehicleparts/frame/car/umek/lf
-	w_front = list("um_erstenklasse_front_left",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
+	w_front = list("um_erstenklasse_front_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	removesroof = TRUE
+	hasoverlay = "um_erstenklasse_front_left"
 /obj/structure/vehicleparts/frame/car/umek/rf
-	w_front = list("um_erstenklasse_front_right",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
+	w_front = list("um_erstenklasse_front_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	removesroof = TRUE
+	hasoverlay = "um_erstenklasse_front_right"
 /obj/structure/vehicleparts/frame/car/umek/lfc
 	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
@@ -230,7 +234,7 @@
 /obj/structure/vehicleparts/frame/car/falcon/rf
 	w_front = list("smc_falcon_front_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "smc_falcon_front_left"
+	hasoverlay = "smc_falcon_front_right"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/falcon/lfc
 	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -345,8 +349,7 @@
 	var/on = FALSE
 	var/pol_color = "#FF0000"
 	var/lastsoundcheck = 0
-/obj/structure/emergency_lights/ambulance
-	atype = "ambulance"
+	layer = 6
 
 /obj/structure/emergency_lights/attack_hand(mob/living/human/H)
 	if (!ishuman(H))
@@ -387,6 +390,27 @@
 		spawn(5)
 			if (pol_color == "#FF0000")
 				pol_color = "#00FF00"
+			else
+				pol_color = "#FF0000"
+			check_color()
+	else
+		set_light(0)
+
+/obj/structure/emergency_lights/ambulance
+	atype = "ambulance"
+/obj/structure/emergency_lights/ambulance/check_sound()
+	if (world.realtime >= lastsoundcheck)
+		if (on)
+			playsound(loc,'sound/machines/ambulance_siren.ogg',100,FALSE,15)
+			lastsoundcheck = world.realtime+25
+			spawn(27)
+				check_sound()
+/obj/structure/emergency_lights/ambulance/check_color()
+	if (on)
+		set_light(7,1,pol_color)
+		spawn(5)
+			if (pol_color == "#FF0000")
+				pol_color = "#D3D3D3"
 			else
 				pol_color = "#FF0000"
 			check_color()
