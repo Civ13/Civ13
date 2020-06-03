@@ -203,6 +203,37 @@
 	if (wheel && buckled_mob && H == buckled_mob && wheel.loc != H)
 		if (buckled_mob.put_in_active_hand(wheel))
 			H << "You grab the wheel."
+			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+				if (H.stat != DEAD && H.civilization != "Police" && H.civilization != "Paramedics")
+					for(var/list/L in map.vehicle_registations)
+						if (L[1]==wheel.control.axis.reg_number && L[2] != H.civilization)
+							if (!(H.real_name in map.warrants))
+								var/reason = "Grand Theft Auto"
+								if (L[2] == "Police")
+									reason = "Theft of a Police Vehicle"
+								if (L[2] == "Paramedics")
+									reason = "Theft of an Ambulance"
+								map.warrants += H.real_name
+								var/obj/item/weapon/paper_bin/police/PAR = null
+								for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+									PAR = PAR2
+									break
+								if (PAR)
+									var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+									SW.tgt_mob = H
+									SW.tgt = H.real_name
+									SW.tgtcmp = H.civilization
+									SW.reason = reason
+									PAR.add(SW)
+								for(var/obj/structure/computer/nopower/police/PLT in world)
+									var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PLT.loc)
+									SW.tgt_mob = H
+									SW.tgt = H.real_name
+									SW.tgtcmp = H.civilization
+									SW.reason = reason
+									PLT.pending_warrants += SW
+									SW.forceMove(PLT)
+									break
 			return
 	else
 		..()
