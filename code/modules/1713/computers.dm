@@ -516,7 +516,7 @@
 			else
 				choice = splittext(choice,":")[1]
 				for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
-					if (SW.arn == choice)
+					if (SW.arn == text2num(choice))
 						var/obj/item/weapon/paper/police/warrant/NW = new/obj/item/weapon/paper/police/warrant(loc)
 						NW.tgt_mob = SW.tgt_mob
 						NW.tgt = SW.tgt
