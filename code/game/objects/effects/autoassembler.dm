@@ -68,13 +68,13 @@
 						E.anchored = TRUE
 						if (istype(E, /obj/structure/engine/internal))
 							if (istype(central.axis,/obj/structure/vehicleparts/axis/car))
-								E.icon = 'icons/obj/vehicleparts.dmi'
+								E.icon = 'icons/obj/vehicles/vehicleparts.dmi'
 								E.engineclass = "carengine"
 								E.density = TRUE
 								E.update_icon()
 
 							else
-								E.icon = 'icons/obj/vehicleparts.dmi'
+								E.icon = 'icons/obj/vehicles/vehicleparts.dmi'
 								E.engineclass = "engine"
 								E.update_icon()
 						done2 = TRUE

@@ -29,7 +29,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 /obj/effects/premadevehicles
 	name = "premade vehicle"
-	icon = 'icons/obj/vehicleeffects.dmi'
+	icon = 'icons/obj/vehicles/vehicleeffects.dmi'
 	icon_state = "3x3"
 	var/custom_color = ""
 	var/axis = /obj/structure/vehicleparts/axis/car

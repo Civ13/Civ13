@@ -64,7 +64,7 @@
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
 	desc = "a barebones cannon made to be carried by vehicles."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "tank_cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	layer = MOB_LAYER + 1 //just above mobs

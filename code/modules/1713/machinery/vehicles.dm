@@ -2,19 +2,19 @@
 /obj/structure/vehicleparts
 	name = "vehicle part"
 	desc = "a basic vehicle part."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "part"
 	anchored = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	flammable = FALSE
-	var/broken_icon = 'icons/obj/vehicleparts_damaged.dmi'
-	var/normal_icon = 'icons/obj/vehicleparts.dmi'
+	var/broken_icon = 'icons/obj/vehicles/vehicleparts_damaged.dmi'
+	var/normal_icon = 'icons/obj/vehicles/vehicleparts.dmi'
 /////////////////////////////////AXIS/////////////////////////////////////
 /obj/structure/vehicleparts/axis
 	name = "vehicle axis"
 	desc = "supports wheels."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	var/list/wheels = list()
 	var/currentspeed = 0
@@ -59,7 +59,7 @@
 /obj/structure/vehicleparts/axis/heavy
 	name = "heavy vehicle axis"
 	desc = "A heavy and slow vehicle axis."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
 	maxpower = 2500
@@ -127,7 +127,7 @@
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"
 	desc = "A powered axis from a car."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
@@ -174,7 +174,7 @@
 /obj/item/vehicleparts/wheel
 	name = "vehicle wheel"
 	desc = "Used to steer a vehicle."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "wheel"
 	anchored = FALSE
 	flammable = FALSE
@@ -291,7 +291,7 @@
 /obj/item/vehicleparts/frame
 	name = "vehicle frame"
 	desc = "a vehicle frame."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "motorcycle_frame0"
 	var/customcolor = "#FFFFFF"
 	var/maxengine = 500
@@ -326,7 +326,7 @@
 /obj/item/vehicleparts/frame/boat
 	name = "outrigger boat frame"
 	desc = "a simple outrigger boat frame, with no engine or propulsion mode. Supports engines up to 400cc and fueltanks up to 150u"
-	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "outrigger_frame1"
 	var/base_icon = "outrigger_frame"
 	maxengine = 400
@@ -453,7 +453,7 @@
 /obj/item/sail
 	name = "small sail"
 	desc = "a small sail. Will fit a minor boat."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "sailing0"
 	anchored = FALSE
 	flammable = TRUE

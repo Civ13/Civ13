@@ -143,7 +143,7 @@
 /obj/structure/bed/chair/drivers
 	name = "driver's seat"
 	desc = "Where you drive the vehicle."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "driver_car"
 	anchored = FALSE
 	var/obj/item/vehicleparts/wheel/modular/wheel = null
@@ -228,7 +228,7 @@
 	name = "commander's seat"
 	desc = "The vehicle commander's seat, with a perisope."
 	anchored = FALSE
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "commanders_seat"
 	var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/periscope = null
 	New()

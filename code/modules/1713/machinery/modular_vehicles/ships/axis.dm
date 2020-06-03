@@ -9,7 +9,7 @@
 	speeds = 3
 	maxpower = 1200
 	speedlist = list(1=15,2=11,3=7)
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 
 /obj/structure/vehicleparts/axis/ship/heavy
