@@ -451,7 +451,7 @@
 		if ("Check Warrants")
 			var/list/tlist = list()
 			for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
-				tlist += list("[SW.arn]: [SW.tgt], working for [SW.tgtcmp]")
+				tlist += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp]"
 			tlist += "Quit"
 			var/choice = WWinput(H, "Current Warrants:","P.P.T.","Quit",tlist)
 			if (choice)
@@ -459,7 +459,7 @@
 		if ("Print Warrant")
 			var/list/tlist = list()
 			for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
-				tlist += list("[SW.arn]: [SW.tgt], working for [SW.tgtcmp]")
+				tlist += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp]"
 			tlist += "Quit"
 			var/choice = WWinput(H, "Choose a Warrant to print:","P.P.T.","Quit",tlist)
 			if (choice == "Quit")
@@ -477,7 +477,7 @@
 		if ("Register Suspect")
 			var/done = FALSE
 			var/found = FALSE
-			for (var/mob/living/human/S in get_area_turfs(/area/caribbean/prison/jail/processing))
+			for (var/mob/living/human/S in range(2,src))
 				found = TRUE
 				for(var/obj/item/weapon/paper/police/warrant/SW in pending_warrants)
 					if (SW.tgt_mob == S)
@@ -491,6 +491,6 @@
 			if (!done && found)
 				visible_message("<big><font color='yellow'>There are no outstanding warrants for any of the suspects.</font></big>")
 			else if (!done && !found)
-				visible_message("<big><font color='yellow'>None of the suspects have pending warrants.</font></big>")
+				visible_message("<big><font color='yellow'>There are no suspects present.</font></big>")
 			else if (done && found)
 				visible_message("<big><font color='green'><b>All suspects in the bench have been sucessfully registed into the system and can be released now.</b></font></big>")

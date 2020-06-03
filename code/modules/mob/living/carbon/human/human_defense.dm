@@ -96,8 +96,8 @@ bullet_act
 						SW.tgt = Huser.real_name
 						SW.tgtcmp = Huser.civilization
 						PAR.add(SW)
-					for(var/obj/structure/computer/nopower/police/PLT in get_area_turfs(/area/caribbean/prison/jail/processing))
-						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+					for(var/obj/structure/computer/nopower/police/PLT in world)
+						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PLT.loc)
 						SW.tgt_mob = Huser
 						SW.tgt = Huser.real_name
 						SW.tgtcmp = Huser.civilization
