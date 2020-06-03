@@ -387,7 +387,7 @@
 					return
 				new /obj/structure/vehicle/motorcycle/m125/full(locate(x+4,y-1,z))
 				return
-			else if (choice == "ASNO Quattroporte (500)")
+			else
 				var/chosencolor = WWinput(H,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
 				var/basecolor = chosencolor
 				switch(chosencolor)
@@ -419,73 +419,45 @@
 				if (found)
 					H << "Clear the arrival area first."
 					return
-				if (D.value*D.amount >= 500*4)
-					D.amount-=100
-				else
-					H << "<span class='warning'>Not enough money!</span>"
-					return
-				PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(x+3,y-3,z))
-				PV.custom_color = chosencolor
-				PV.doorcode = rand(1000,9999)
-				PV.new_number()
-				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
-				C.name = "car key"
-				C.code = PV.doorcode
-				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
-				C2.name = "car key"
-				C2.code = PV.doorcode
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Quattroporte", basecolor))
-			else if (choice == "Ubermacht Erstenklasse (900)")
-				var/chosencolor = WWinput(H,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
-				var/basecolor = chosencolor
-				switch(chosencolor)
-					if ("Black")
-						chosencolor = "#181717"
-					if ("Light Grey")
-						chosencolor = "#919191"
-					if ("Dark Grey")
-						chosencolor = "#616161"
-					if ("White")
-						chosencolor = "#FFFFFF"
-					if ("Green")
-						chosencolor = "#007F00"
-					if ("Red")
-						chosencolor = "#7F0000"
-					if ("Yellow")
-						chosencolor = "#b8b537"
-					if ("Blue")
-						chosencolor = "#00007F"
-				for(var/turf/T in get_area_turfs(/area/caribbean/supply))
-					if (found)
-						break
-					for (var/obj/structure/ST in T)
-						found = TRUE
-						break
-					for (var/mob/living/human/HT in T)
-						found = TRUE
-						break
-				if (found)
-					H << "Clear the arrival area first."
-					return
-				if (D.value*D.amount >= 900*4)
-					D.amount-=180
-				else
-					H << "<span class='warning'>Not enough money!</span>"
-					return
-				PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(x+3,y-3,z))
-				PV.custom_color = chosencolor
-				PV.doorcode = rand(1000,9999)
-				PV.new_number()
-				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
-				C.name = "car key"
-				C.code = PV.doorcode
-				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
-				C2.name = "car key"
-				C2.code = PV.doorcode
-				spawn(5)
-					map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Ubermacht Erstenklasse", basecolor))
+				if (choice == "ASNO Quattroporte (500)")
+					if (D.value*D.amount >= 500*4)
+						D.amount-=100
+					else
+						H << "<span class='warning'>Not enough money!</span>"
+						return
+					PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(x+3,y-3,z))
+					spawn(5)
+						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Quattroporte", basecolor))
 
+				else if (choice == "Ubermacht Erstenklasse (900)")
+					if (D.value*D.amount >= 900*4)
+						D.amount-=180
+					else
+						H << "<span class='warning'>Not enough money!</span>"
+						return
+					PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(x+3,y-3,z))
+					spawn(5)
+						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Ubermacht Erstenklasse", basecolor))
+
+				else if (choice == "SMC Falcon (750)")
+					if (D.value*D.amount >= 750*4)
+						D.amount-=150
+					else
+						H << "<span class='warning'>Not enough money!</span>"
+						return
+					PV = new /obj/effects/premadevehicles/ubermacht/falcon(locate(x+3,y-3,z))
+					spawn(5)
+						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "SMC Falcon", basecolor))
+
+				PV.custom_color = chosencolor
+				PV.doorcode = rand(1000,9999)
+				PV.new_number()
+				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
+				C.name = "car key"
+				C.code = PV.doorcode
+				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
+				C2.name = "car key"
+				C2.code = PV.doorcode
 	else
 		..()
 

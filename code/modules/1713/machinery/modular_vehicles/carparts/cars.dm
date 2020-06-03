@@ -320,10 +320,37 @@
 	desc = "A powered axis from a car."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
-	speeds = 5
+	speeds = 4
 	maxpower = 800
 	speedlist = list(1=7,2=6,3=5,4=2)
 	turntimer = 7
+
+/obj/structure/vehicleparts/axis/car/falcon/police
+	name = "SMC Falcon Police Interceptor"
+	color = "#383838"
+	New()
+		..()
+		spawn(40)
+			map.vehicle_registations += list(list("[reg_number]","Police", "SMC Falcon Police Interceptor", ""))
+
+
+/obj/structure/vehicleparts/axis/car/volle
+	name = "Ubermacht Volle"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 4
+	maxpower = 800
+	speedlist = list(1=8,2=6,3=5,4=4)
+	turntimer = 9
+
+/obj/structure/vehicleparts/axis/car/volle/ambulance
+	name = "Ubermacht Volle KW Ambulance"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(40)
+			map.vehicle_registations += list(list("[reg_number]","Paramedics", "Ubermacht Volle KW Ambulance", ""))
 
 /obj/structure/engine/internal/gasoline/premade/piccolino
 	enginesize = 2800
