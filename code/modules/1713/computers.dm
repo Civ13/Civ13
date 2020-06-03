@@ -309,6 +309,7 @@
 						map.scores[H.civilization] += 100
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 40
+						DLR.update_icon()
 						D.used = TRUE
 						qdel(D)
 				if (0)
@@ -328,6 +329,7 @@
 						map.scores[H.civilization] += 200
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 40
+						DLR.update_icon()
 						D.used = TRUE
 						qdel(D)
 				if (2)
@@ -336,6 +338,7 @@
 						map.scores[H.civilization] += 400
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 80
+						DLR.update_icon()
 						D.used = TRUE
 						qdel(D)
 	else
@@ -362,7 +365,7 @@
 		H << "Clear the arrival area first."
 		return
 	if (istype(D, /obj/item/stack/money))
-		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)","ASNO Quattroporte (500)","Ubermacht Erstenklasse (900)"))
+		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)","ASNO Quattroporte (500)","SMC Falcon (750)","Ubermacht Erstenklasse (900)"))
 		if (choice == "Cancel")
 			return
 		else
@@ -378,16 +381,19 @@
 			if (found)
 				H << "Clear the arrival area first."
 				return
-			var/obj/effects/premadevehicles/PV
+			var/c_cost = splittext(choice,"(")[2]
+			c_cost = replacetext(c_cost,"(","")
+			c_cost = text2num(c_cost)
 			if (choice == "Yamasaki M125 motorcycle (160)")
-				if (D.value*D.amount >= 160*4)
-					D.amount-=32
+				if (D.value*D.amount >= c_cost*4)
+					D.amount-=c_cost/5
 				else
 					H << "<span class='warning'>Not enough money!</span>"
 					return
 				new /obj/structure/vehicle/motorcycle/m125/full(locate(x+4,y-1,z))
 				return
 			else
+				var/obj/effects/premadevehicles/PV
 				var/chosencolor = WWinput(H,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
 				var/basecolor = chosencolor
 				switch(chosencolor)
@@ -419,33 +425,23 @@
 				if (found)
 					H << "Clear the arrival area first."
 					return
+				if (D.value*D.amount >= c_cost*4)
+					D.amount-=c_cost/5
+				else
+					H << "<span class='warning'>Not enough money!</span>"
+					return
 				if (choice == "ASNO Quattroporte (500)")
-					if (D.value*D.amount >= 500*4)
-						D.amount-=100
-					else
-						H << "<span class='warning'>Not enough money!</span>"
-						return
 					PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Quattroporte", basecolor))
 
 				else if (choice == "Ubermacht Erstenklasse (900)")
-					if (D.value*D.amount >= 900*4)
-						D.amount-=180
-					else
-						H << "<span class='warning'>Not enough money!</span>"
-						return
 					PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Ubermacht Erstenklasse", basecolor))
 
 				else if (choice == "SMC Falcon (750)")
-					if (D.value*D.amount >= 750*4)
-						D.amount-=150
-					else
-						H << "<span class='warning'>Not enough money!</span>"
-						return
-					PV = new /obj/effects/premadevehicles/ubermacht/falcon(locate(x+3,y-3,z))
+					PV = new /obj/effects/premadevehicles/smc/falcon(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "SMC Falcon", basecolor))
 
