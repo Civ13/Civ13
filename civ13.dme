@@ -292,6 +292,7 @@
 #include "code\game\objects\map_metadata\nomads_mountain.dm"
 #include "code\game\objects\map_metadata\nomads_new_world.dm"
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
+#include "code\game\objects\map_metadata\nomads_persistence_beta.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
 #include "code\game\objects\map_metadata\omaha.dm"
 #include "code\game\objects\map_metadata\pioneers.dm"
