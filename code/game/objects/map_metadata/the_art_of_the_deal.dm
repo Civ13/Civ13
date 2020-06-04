@@ -165,12 +165,36 @@
 		/obj/item/clothing/suit/storage/ghillie = 1,
 		/obj/item/flashlight/flashlight = 10,
 		/obj/item/ammo_magazine/emptyspeedloader = 20,
-//		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 10,
-//		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
-//		/obj/item/clothing/suit/storage/jacket/navy_suit = 10,
-//		/obj/item/clothing/suit/storage/jacket/burgundy_suit = 10,
-//		/obj/item/clothing/suit/storage/jacket/checkered_suit = 10,
 	)
+/obj/structure/vending/undercover_apparel
+	name = "undercover apparel"
+	desc = "All the equipment needed for undercover missions."
+	icon_state = "apparel_german2"
+	products = list(
+		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 10,
+		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
+		/obj/item/clothing/suit/storage/jacket/navy_suit = 10,
+		/obj/item/clothing/shoes/laceup = 10,
+		/obj/item/clothing/glasses/sunglasses = 10,
+		/obj/item/clothing/under/expensive/red = 10,
+		/obj/item/clothing/accessory/armband/british = 10,
+		/obj/item/clothing/under/expensive/yellow = 10,
+		/obj/item/clothing/accessory/armband/spanish = 10,
+		/obj/item/clothing/under/expensive/green = 10,
+		/obj/item/clothing/accessory/armband/portuguese = 10,
+		/obj/item/clothing/under/expensive/blue = 10,
+		/obj/item/clothing/accessory/armband/french = 10,
+		/obj/item/weapon/storage/backpack/duffel = 10,
+		/obj/item/weapon/storage/briefcase = 10,
+		/obj/item/clothing/accessory/holster/armpit = 10,
+		/obj/item/clothing/accessory/holster/chest = 10,
+	)
+	attack_hand(mob/user as mob)
+		if (user.original_job_title == "Police Officer")
+			..()
+		else
+		 user << "You do not have access to this."
+		 return
 
 /obj/structure/vending/sales/business_weapons
 	name = "weapon and ammo rack"
@@ -484,3 +508,39 @@
 		if (9 to 10)
 			a = "J"
 	return "[a][b]"
+
+/mob/living/human/proc/undercover()
+	set category = "IC"
+	set name = "Toggle Undercover"
+	set desc="Hide your identity for police operations."
+
+	if (findtext(name, "Officer"))
+		real_name = replacetext(real_name, "Officer ", "")
+		name = real_name
+		voice = real_name
+		src << "<b>You go undercover.</b>"
+		return
+	else
+		real_name = "Officer [real_name]"
+		name = "Officer [real_name]"
+		voice = "Officer [real_name]"
+		src << "<b>You are now revealing your identity again.</b>"
+		return
+
+/obj/item/clothing/accessory/armband/policebadge
+	name = "police badge"
+	desc = "a police badge in star shape, with an officer's name engraved."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "sheriff"
+	throwforce = WEAPON_FORCE_HARMLESS
+	throw_speed = TRUE
+	throw_range = 2
+	w_class = 1.0
+	flammable = FALSE
+
+	New()
+		..()
+		spawn(15)
+			if (ismob(loc))
+				name = "[loc.name]'s police badge"
+				desc = "a police badge in star shape, with <b>[loc.name]</b> engraved."

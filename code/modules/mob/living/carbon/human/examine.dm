@@ -328,7 +328,7 @@
 				if (map.custom_civs[H.civilization][4] != null)
 					if (map.custom_civs[H.civilization][4].real_name == real_name)
 						msg += "<br><b>[T.He] is the leader of your faction.</b>"
-			else if (civilization != "none") // examining someone on another team
+			else if (civilization != "none" && map.ID != MAP_THE_ART_OF_THE_DEAL) // examining someone on another team
 				msg += "<br><span class='warning'><i>[T.He] seems to be a member of [civilization].</i>"
 
 			else
