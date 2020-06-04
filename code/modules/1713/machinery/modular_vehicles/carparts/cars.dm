@@ -114,13 +114,13 @@
 /obj/structure/vehicleparts/frame/car/piccolino/lb
 	w_back = list("as_piccolino_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_front = list("thin",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("c_thin",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "as_piccolino_back_left"
 	icon_state = "frame_steel_corner_lb"
 /obj/structure/vehicleparts/frame/car/piccolino/rb
-	w_back = list("as_piccolino_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("as_piccolino_back_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_front = list("thin",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("c_thin",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "as_piccolino_back_right"
 	icon_state = "frame_steel_corner_rb"
 /obj/structure/vehicleparts/frame/car/piccolino/lc
@@ -129,7 +129,7 @@
 	hasoverlay = "vanwindshield2door_left"
 /obj/structure/vehicleparts/frame/car/piccolino/rc
 	w_front = list("vanwindshield2door_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "vanwindshield2door_right"
 //quattroporte
 /obj/structure/vehicleparts/frame/car/quattroporte/lf
@@ -205,7 +205,7 @@
 	name = "boot"
 	desc = "A compartment of the car used to store stuff."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
-	icon_state = "frame_wood"
+	icon_state = "boot"
 	fixedsprite = TRUE
 	layer = 2.99
 //falcon
@@ -323,7 +323,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 600
-	speedlist = list(1=8,2=6,4=4.5,5=3.5)
+	speedlist = list(1=8,2=6,3=4.5,4=3.5)
 	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/quattroporte
@@ -333,7 +333,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 800
-	speedlist = list(1=8,2=6,4=4.5,5=3.5)
+	speedlist = list(1=8,2=6,3=4.5,4=3.5)
 	turntimer = 7
 
 /obj/structure/vehicleparts/axis/car/erstenklasse
@@ -436,8 +436,16 @@
 	var/on = FALSE
 	var/pol_color = "#FF0000"
 	var/lastsoundcheck = 0
+	var/obj/structure/vehicleparts/frame/control = null
 	layer = 6
-
+/obj/structure/emergency_lights/New()
+	..()
+	spawn(20)
+		for(var/obj/structure/vehicleparts/frame/F in loc)
+			control = F
+			break
+		if (control)
+			control.lights = src
 /obj/structure/emergency_lights/attack_hand(mob/living/human/H)
 	if (!ishuman(H))
 		return
@@ -464,6 +472,7 @@
 		if (SOUTH)
 			pixel_x = -16
 			pixel_y = 0
+
 /obj/structure/emergency_lights/proc/check_sound()
 	if (world.realtime >= lastsoundcheck)
 		if (on)

@@ -382,6 +382,8 @@
 				overlays += tmpimg1
 	if (hasoverlay)
 		overlays += image(icon=ticon, icon_state=hasoverlay, layer=11, dir=OPPOSITE_DIR(src.dir))
+	if (lights && !noroof)
+		roof.overlays += image(icon=ticon, icon_state="police_lights[lights.on ? "_on" : ""]", layer=11.1, dir=src.dir)
 	if (axis)
 		var/image/overtracks = null
 		for (var/image/II in overlays)
