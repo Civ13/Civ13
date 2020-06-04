@@ -537,10 +537,4 @@
 	throw_range = 2
 	w_class = 1.0
 	flammable = FALSE
-
-	New()
-		..()
-		spawn(15)
-			if (ismob(loc))
-				name = "[loc.name]'s police badge"
-				desc = "a police badge in star shape, with <b>[loc.name]</b> engraved."
+	slot_flags = SLOT_POCKET|SLOT_BELT
