@@ -389,7 +389,7 @@
 			IMG.pixel_y = lights.pixel_y
 		IMG.color = ""
 		var/matrix/M = matrix()
-		M.Scale(2)
+		M.Scale(1.5)
 		IMG.transform = M
 		roof.overlays += IMG
 	if (axis)
