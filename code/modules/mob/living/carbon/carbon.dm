@@ -416,9 +416,6 @@
 		return
 	..()
 
-/mob/living/human/cannot_use_vents()
-	return
-
 /mob/living/human/slip(var/slipped_on,stun_duration=8)
 	if (buckled)
 		return FALSE

@@ -5,20 +5,12 @@
 #define GAME_STATE_PLAYING		3
 #define GAME_STATE_FINISHED		4
 
-#define CELL_VOLUME		2500 // Liters in a cell.
-#define MOLES_CELLSTANDARD (ONE_ATMOSPHERE*CELL_VOLUME/(T20C*R_IDEAL_GAS_EQUATION)) // Moles in a 2.5 m^3 cell at 101.325 kPa and 20 C.
-
 #define MAX_CHARS_PER_LINE 200
 #define MAX_CHARS_TOTAL 20000
 
 // These are for when a mob breathes poisonous air.
 #define MIN_TOXIN_DAMAGE TRUE
 #define MAX_TOXIN_DAMAGE 10
-
-#define BREATH_VOLUME	   0.5 // Liters in a normal breath.
-#define BREATH_MOLES		(ONE_ATMOSPHERE * BREATH_VOLUME / (T20C * R_IDEAL_GAS_EQUATION)) // Amount of air to take a from a tile
-#define BREATH_PERCENTAGE   (BREATH_VOLUME / CELL_VOLUME)									// Amount of air needed before pass out/suffocation commences.
-#define HUMAN_NEEDED_OXYGEN (MOLES_CELLSTANDARD * BREATH_PERCENTAGE * 0.16)
 
 #define SOUND_MINIMUM_PRESSURE 10
 
