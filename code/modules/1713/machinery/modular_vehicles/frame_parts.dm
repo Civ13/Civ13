@@ -254,30 +254,58 @@ var/global/list/license_plate_numbers = list()
 						pixel_y = 28
 					else
 						pixel_x = 16
-						pixel_y = -2
+						pixel_y = 2
 				if (SOUTH)
 					if (front)
 						pixel_x = -16
 						pixel_y = -28
 					else
 						pixel_x = -16
-						pixel_y = 2
+						pixel_y = -2
 				if (WEST)
 					if (front)
-						pixel_x = -2
+						pixel_x = 2
 						pixel_y = 16
 					else
 						pixel_x = 30
 						pixel_y = 16
 				if (EAST)
 					if (front)
-						pixel_x = 2
+						pixel_x = -2
 						pixel_y = -16
 					else
 						pixel_x = -30
 						pixel_y = -16
 		else
-			..()
+			switch(dir)
+				if (NORTH)
+					if (front)
+						pixel_x = 0
+						pixel_y = 28
+					else
+						pixel_x = 0
+						pixel_y = 2
+				if (SOUTH)
+					if (front)
+						pixel_x = 0
+						pixel_y = -28
+					else
+						pixel_x = 0
+						pixel_y = -2
+				if (WEST)
+					if (front)
+						pixel_x = 2
+						pixel_y = 0
+					else
+						pixel_x = 30
+						pixel_y = 0
+				if (EAST)
+					if (front)
+						pixel_x = -2
+						pixel_y = 0
+					else
+						pixel_x = -30
+						pixel_y = 0
 /obj/structure/vehicleparts/license_plate/us
 	icon_state = "license_plate_us"
 

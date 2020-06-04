@@ -58,55 +58,6 @@
 /obj/structure/vehicleparts/frame/car/newtruck/rwindshield
 	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
 	w_front = list("truckwindshield_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
-
-//jeep
-/obj/structure/vehicleparts/frame/car/jeep/lf
-	w_front = list("carfront_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/jeep/rf
-	w_front = list("carfront_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/jeep/lwindshield
-	w_left = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
-	w_front = list("carwindshield_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/jeep/rwindshield
-	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
-	w_front = list("carwindshield_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
-
-//model 2 car
-/obj/structure/vehicleparts/frame/car/newcar2/lwindshield
-	w_left = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
-	w_front = list("carwindshield2_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/newcar2/rwindshield
-	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
-	w_front = list("carwindshield2_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
-
-//model 3 car
-/obj/structure/vehicleparts/frame/car/newcar3/lf
-	w_front = list("carfront3_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/newcar3/rf
-	w_front = list("carfront3_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-
-//model 5 car
-/obj/structure/vehicleparts/frame/car/newcar5/lf
-	w_front = list("carfront5_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carfront5_left"
-/obj/structure/vehicleparts/frame/car/newcar5/rf
-	w_front = list("carfront5_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carfront5_right"
-
-//jeep 2
-/obj/structure/vehicleparts/frame/car/newcar4/lf
-	w_front = list("carfront4_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/newcar4/rf
-	w_front = list("carfront4_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-
 //van
 /obj/structure/vehicleparts/frame/car/van/lf
 	w_front = list("vanfront_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -145,9 +96,11 @@
 /obj/structure/vehicleparts/frame/car/piccolino/lf
 	w_front = list("as_piccolino_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/piccolino/rf
 	w_front = list("as_piccolino_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/piccolino/lb
 	w_back = list("carback3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
@@ -163,10 +116,12 @@
 	w_front = list("as_quattroporte_front_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "as_quattroporte_front_left"
+	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/quattroporte/rf
 	w_front = list("as_quattroporte_front_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "as_quattroporte_front_right"
+	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/quattroporte/lb
 	w_back = list("as_quattroporte_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
@@ -260,30 +215,66 @@
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "smc_falcon_back_right"
 	removesroof = TRUE
-
-////////////////backs////////////////
-//car
-/obj/structure/vehicleparts/frame/car/newcar1/lb
-	w_back = list("carback1_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+//shinobu
+/obj/structure/vehicleparts/frame/car/shinobu/lf
+	w_front = list("carfront5_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carfront5_left"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/shinobu/rf
+	w_front = list("carfront5_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carfront5_right"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/shinobu/lb
+	w_back = list("carback1_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback1_left"
-
-/obj/structure/vehicleparts/frame/car/newcar1/rb
-	w_back = list("carback1_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/shinobu/rb
+	w_back = list("carback1_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback1_right"
-
-//car 2
-/obj/structure/vehicleparts/frame/car/newcar2/lb
-	w_back = list("carback2_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/shinobu/lc
+	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carwindshield2door_left"
+	noroof = TRUE
+/obj/structure/vehicleparts/frame/car/shinobu/rc
+	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carwindshield2door_right"
+	noroof = TRUE
+//kazoku
+/obj/structure/vehicleparts/frame/car/kazoku/lf
+	w_front = list("carfront3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carback2_left"
-
-/obj/structure/vehicleparts/frame/car/newcar2/rb
-	w_back = list("carback2_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carfront3_left"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/kazoku/rf
+	w_front = list("carfront3_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carback2_right"
-
+	hasoverlay = "carfront3_right"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/kazoku/lb
+	w_back = list("ys_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "ys_back_left"
+/obj/structure/vehicleparts/frame/car/kazoku/rb
+	w_back = list("ys_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "ys_back_right"
+/obj/structure/vehicleparts/frame/car/kazoku/lc
+	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "carwindshield2door_left"
+/obj/structure/vehicleparts/frame/car/kazoku/rc
+	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "carwindshield2door_right"
 ///////////////axis///////////////
 /obj/structure/vehicleparts/axis/car/piccolino
 	name = "ASNO Piccolino"
@@ -291,19 +282,19 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 4
-	maxpower = 800
-	speedlist = list(1=8,2=6,3=5,4=4)
-	turntimer = 7
+	maxpower = 600
+	speedlist = list(1=8,2=6,4=4.5,5=3.5)
+	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/quattroporte
 	name = "ASNO Quattroporte"
 	desc = "A powered axis from a car."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
-	speeds = 5
+	speeds = 4
 	maxpower = 800
-	speedlist = list(1=8,2=7,3=6,4=5,5=4)
-	turntimer = 8
+	speedlist = list(1=8,2=6,4=4.5,5=3.5)
+	turntimer = 7
 
 /obj/structure/vehicleparts/axis/car/erstenklasse
 	name = "Ubermacht Erstenklasse"
@@ -311,7 +302,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 800
+	maxpower = 1100
 	speedlist = list(1=7,2=6,3=5,4=4,5=3)
 	turntimer = 8
 
@@ -321,9 +312,29 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 4
-	maxpower = 800
-	speedlist = list(1=7,2=6,3=5,4=2)
+	maxpower = 1000
+	speedlist = list(1=7,2=6,3=5,4=2.5)
 	turntimer = 7
+
+/obj/structure/vehicleparts/axis/car/shinobu
+	name = "Yamasaki Shinobu"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=6,2=5,3=4,4=3,5=2)
+	turntimer = 7
+
+/obj/structure/vehicleparts/axis/car/kazoku
+	name = "Yamasaki Kazoku"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 4
+	maxpower = 800
+	speedlist = list(1=6,2=5,3=4,4=3.5)
+	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/falcon/police
 	name = "SMC Falcon Police Interceptor"
@@ -340,7 +351,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 4
-	maxpower = 800
+	maxpower = 1200
 	speedlist = list(1=8,2=6,3=5,4=4)
 	turntimer = 9
 
@@ -352,17 +363,26 @@
 		spawn(40)
 			map.vehicle_registations += list(list("[reg_number]","Paramedics", "Ubermacht Volle KW Ambulance", ""))
 
-/obj/structure/engine/internal/gasoline/premade/piccolino
+/obj/structure/engine/internal/gasoline/ethanol/premade/piccolino
 	enginesize = 2800
 
 /obj/structure/engine/internal/gasoline/premade/quattroporte
-	enginesize = 4000
+	enginesize = 3000
 
-/obj/structure/engine/internal/gasoline/premade/erstenklasse
+/obj/structure/engine/internal/diesel/premade/erstenklasse
 	enginesize = 5500
+
+/obj/structure/engine/internal/diesel/premade/van
+	enginesize = 7000
 
 /obj/structure/engine/internal/gasoline/premade/falcon
 	enginesize = 6500
+
+/obj/structure/engine/internal/wankel/premade/shinobu
+	enginesize = 5000
+
+/obj/structure/engine/internal/gasoline/premade/kazoku
+	enginesize = 3800
 
 /obj/structure/emergency_lights
 	name = "emergency lights control"

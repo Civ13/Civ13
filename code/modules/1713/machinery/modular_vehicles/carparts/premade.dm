@@ -2,7 +2,8 @@
 //Yamasaki Industries > Japanese manufacturer of sports cars and motorcycles
 
 //Yamasaki M125 - A 125cc motorcycle
-//Yamasaki Shinobu 7000 - A fast sports car
+//Yamasaki Shinobu 5000 - A fast sports car
+//Yamasaki Kazoku - A mid-size family car
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //Stallion Motors Company > American manufacturer of Trucks and full-size cars
@@ -114,7 +115,7 @@
 	axis = /obj/structure/vehicleparts/axis/car/piccolino
 	tocreate = list(
 	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/piccolino/rf),
-	"2,1" = list(/obj/structure/vehicleparts/frame/car/piccolino/lf,/obj/structure/engine/internal/gasoline/premade/piccolino,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/piccolino/lf,/obj/structure/engine/internal/gasoline/ethanol/premade/piccolino,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
 
 	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/piccolino/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/piccolino/lb,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/eu/centered),
@@ -143,8 +144,8 @@
 	custom_color = "#1b1f1b"
 	axis = /obj/structure/vehicleparts/axis/car/erstenklasse
 	tocreate = list(
-	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/umek/rf),
-	"2,1" = list(/obj/structure/vehicleparts/frame/car/umek/lf,/obj/structure/engine/internal/gasoline/premade/erstenklasse,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
+	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/umek/rf),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/umek/lf,/obj/structure/engine/internal/diesel/premade/erstenklasse,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/car/umek/rfc,/obj/structure/bed/chair/carseat/right/lion),
 	"2,2" = list(/obj/structure/vehicleparts/frame/car/umek/lfc,/obj/structure/bed/chair/drivers/car/lion),
@@ -178,3 +179,36 @@
 
 	)
 
+//Yamasaki
+//Shinobu
+/obj/effects/premadevehicles/yamasaki/shinobu
+	name = "Yamasaki Shinobu 5000"
+	icon_state = "3x3"
+	custom_color = "#7F0000"
+	axis = /obj/structure/vehicleparts/axis/car/shinobu
+	tocreate = list(
+	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/shinobu/rf),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/shinobu/lf,/obj/structure/engine/internal/wankel/premade/shinobu,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
+
+	"1,3" = list(/obj/structure/table/carboot,/obj/structure/vehicleparts/frame/car/shinobu/rb,/obj/structure/vehicleparts/movement/reversed),
+	"2,3" = list(/obj/structure/table/carboot,/obj/structure/vehicleparts/frame/car/shinobu/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
+
+	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/shinobu/rc),
+	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/shinobu/lc),
+	)
+//Kazoku
+/obj/effects/premadevehicles/yamasaki/kazoku
+	name = "Yamasaki Kazoku"
+	icon_state = "3x3"
+	custom_color = "#3b3a3a"
+	axis = /obj/structure/vehicleparts/axis/car/kazoku
+	tocreate = list(
+	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/kazoku/rf),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/kazoku/lf,/obj/structure/engine/internal/gasoline/premade/kazoku,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/eu/centered/front),
+
+	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rb,/obj/structure/vehicleparts/movement/reversed),
+	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/kazoku/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
+
+	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rc),
+	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/kazoku/lc),
+	)
