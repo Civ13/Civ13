@@ -63,13 +63,16 @@
 	w_front = list("vanfront_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanfront_left"
+	icon_state = "frame_steel_corner_lf"
 /obj/structure/vehicleparts/frame/car/van/cf
 	w_front = list("vanfront_centerU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanfront_center"
+	icon_state = "frame_steel_corner_cf"
 /obj/structure/vehicleparts/frame/car/van/rf
 	w_front = list("vanfront_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanfront_right"
+	icon_state = "frame_steel_corner_rf"
 /obj/structure/vehicleparts/frame/car/van/lfc
 	w_front = list("vanwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
@@ -85,51 +88,62 @@
 	w_back = list("vanback_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanback_left"
+	icon_state = "frame_steel_corner_lb"
 /obj/structure/vehicleparts/frame/car/van/cb
 	w_back = list("vanback_centerU",TRUE,TRUE,0,0.1,TRUE,TRUE)
 	hasoverlay = "vanback_center"
+	icon_state = "frame_steel_corner_cb"
 /obj/structure/vehicleparts/frame/car/van/rb
 	w_back = list("vanback_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanback_right"
+	icon_state = "frame_steel_corner_rb"
 //piccolino
 /obj/structure/vehicleparts/frame/car/piccolino/lf
 	w_front = list("as_piccolino_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	removesroof = TRUE
+	icon_state = "frame_steel_corner_lf"
 /obj/structure/vehicleparts/frame/car/piccolino/rf
 	w_front = list("as_piccolino_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	removesroof = TRUE
+	icon_state = "frame_steel_corner_rf"
 /obj/structure/vehicleparts/frame/car/piccolino/lb
 	w_back = list("carback3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_front = list("carwindshield2_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback3_leftL"
+	icon_state = "frame_steel_corner_lb"
 /obj/structure/vehicleparts/frame/car/piccolino/rb
 	w_back = list("carback3_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_front = list("carwindshield2_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carback3_rightL"
+	icon_state = "frame_steel_corner_rb"
 //quattroporte
 /obj/structure/vehicleparts/frame/car/quattroporte/lf
 	w_front = list("as_quattroporte_front_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "as_quattroporte_front_left"
 	removesroof = TRUE
+	icon_state = "frame_steel_corner_lf"
 /obj/structure/vehicleparts/frame/car/quattroporte/rf
 	w_front = list("as_quattroporte_front_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "as_quattroporte_front_right"
 	removesroof = TRUE
+	icon_state = "frame_steel_corner_rf"
 /obj/structure/vehicleparts/frame/car/quattroporte/lb
 	w_back = list("as_quattroporte_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "as_quattroporte_back_left"
+	icon_state = "frame_steel_corner_lb"
 /obj/structure/vehicleparts/frame/car/quattroporte/rb
 	w_back = list("as_quattroporte_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "as_quattroporte_back_right"
+	icon_state = "frame_steel_corner_rb"
 /obj/structure/vehicleparts/frame/car/quattroporte/lc
 	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
@@ -144,10 +158,12 @@
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	removesroof = TRUE
 	hasoverlay = "um_erstenklasse_front_left"
+	icon_state = "frame_steel_corner_lf"
 /obj/structure/vehicleparts/frame/car/umek/rf
 	w_front = list("um_erstenklasse_front_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	removesroof = TRUE
+	icon_state = "frame_steel_corner_rf"
 	hasoverlay = "um_erstenklasse_front_right"
 /obj/structure/vehicleparts/frame/car/umek/lfc
 	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -164,11 +180,13 @@
 	w_left = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,FALSE)
 	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/umek/lb
+	icon_state = "frame_steel_corner_lb"
 	w_back = list("um_erstenklasse_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "um_erstenklasse_back_left"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/umek/rb
+	icon_state = "frame_steel_corner_rb"
 	w_back = list("um_erstenklasse_back_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "um_erstenklasse_back_right"
@@ -182,11 +200,13 @@
 	layer = 2.99
 //falcon
 /obj/structure/vehicleparts/frame/car/falcon/lf
+	icon_state = "frame_steel_corner_lf"
 	w_front = list("smc_falcon_front_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "smc_falcon_front_left"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/falcon/rf
+	icon_state = "frame_steel_corner_rf"
 	w_front = list("smc_falcon_front_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE,TRUE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "smc_falcon_front_right"
@@ -206,11 +226,13 @@
 	w_left = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,FALSE)
 	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/falcon/lb
+	icon_state = "frame_steel_corner_lb"
 	w_back = list("smc_falcon_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "smc_falcon_back_left"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/falcon/rb
+	icon_state = "frame_steel_corner_rb"
 	w_back = list("smc_falcon_back_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "smc_falcon_back_right"
@@ -219,21 +241,25 @@
 /obj/structure/vehicleparts/frame/car/shinobu/lf
 	w_front = list("carfront5_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	icon_state = "frame_steel_corner_lf"
 	hasoverlay = "carfront5_left"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/shinobu/rf
 	w_front = list("carfront5_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	icon_state = "frame_steel_corner_rf"
 	hasoverlay = "carfront5_right"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/shinobu/lb
 	w_back = list("carback1_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	icon_state = "frame_steel_corner_lb"
 	hasoverlay = "carback1_left"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/shinobu/rb
 	w_back = list("carback1_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	icon_state = "frame_steel_corner_rb"
 	hasoverlay = "carback1_right"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/shinobu/lc
@@ -253,20 +279,24 @@
 	w_front = list("carfront3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carfront3_left"
+	icon_state = "frame_steel_corner_lf"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/kazoku/rf
 	w_front = list("carfront3_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carfront3_right"
+	icon_state = "frame_steel_corner_rf"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/kazoku/lb
 	w_back = list("ys_back_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "ys_back_left"
+	icon_state = "frame_steel_corner_lb"
 /obj/structure/vehicleparts/frame/car/kazoku/rb
 	w_back = list("ys_back_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "ys_back_right"
+	icon_state = "frame_steel_corner_rb"
 /obj/structure/vehicleparts/frame/car/kazoku/lc
 	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
@@ -378,7 +408,7 @@
 /obj/structure/engine/internal/gasoline/premade/falcon
 	enginesize = 6500
 
-/obj/structure/engine/internal/wankel/premade/shinobu
+/obj/structure/engine/internal/gasoline/wankel/premade/shinobu
 	enginesize = 5000
 
 /obj/structure/engine/internal/gasoline/premade/kazoku
