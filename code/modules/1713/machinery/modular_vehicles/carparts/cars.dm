@@ -100,27 +100,37 @@
 	icon_state = "frame_steel_corner_rb"
 //piccolino
 /obj/structure/vehicleparts/frame/car/piccolino/lf
-	w_front = list("as_piccolino_front_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("as_piccolino_front_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "as_piccolino_front_left"
 	removesroof = TRUE
 	icon_state = "frame_steel_corner_lf"
 /obj/structure/vehicleparts/frame/car/piccolino/rf
-	w_front = list("as_piccolino_front_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("as_piccolino_front_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "as_piccolino_front_right"
 	removesroof = TRUE
 	icon_state = "frame_steel_corner_rf"
 /obj/structure/vehicleparts/frame/car/piccolino/lb
-	w_back = list("carback3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
-	w_front = list("carwindshield2_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carback3_leftL"
+	w_back = list("as_piccolino_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("thin",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "as_piccolino_back_left"
 	icon_state = "frame_steel_corner_lb"
 /obj/structure/vehicleparts/frame/car/piccolino/rb
-	w_back = list("carback3_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
-	w_front = list("carwindshield2_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
-	hasoverlay = "carback3_rightL"
+	w_back = list("as_piccolino_back_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("thin",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "as_piccolino_back_right"
 	icon_state = "frame_steel_corner_rb"
+/obj/structure/vehicleparts/frame/car/piccolino/lc
+	w_front = list("vanwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "vanwindshield2door_left"
+/obj/structure/vehicleparts/frame/car/piccolino/rc
+	w_front = list("vanwindshield2door_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "vanwindshield2door_right"
 //quattroporte
 /obj/structure/vehicleparts/frame/car/quattroporte/lf
 	w_front = list("as_quattroporte_front_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
