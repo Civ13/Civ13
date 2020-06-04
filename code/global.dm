@@ -62,7 +62,7 @@ body
 	padding: 0;
 	margin: 0;
 	background-color: #271a0c;
-	font-size: 12px;
+	font-size: 16px;
 	color: #ffffff;
 	line-height: 170%;
 }
@@ -162,22 +162,22 @@ h1, h2, h3, h4, h5, h6
 
 h1
 {
-	font-size: 15px;
+	font-size: 20px;
 }
 
 h2
 {
-	font-size: 14px;
+	font-size: 18px;
 }
 
 h3
 {
-	font-size: 13px;
+	font-size: 16px;
 }
 
 h4
 {
-	font-size: 12px;
+	font-size: 14px;
 }
 
 .uiWrapper
@@ -195,7 +195,7 @@ h4
 	border-bottom: 2px solid #3d3d29;
 	background: #383838;
 	color: #98B0C3;
-	font-size: 16px;
+	font-size: 22px;
 }
 
 .uiTitleWrapper
@@ -260,7 +260,7 @@ h4
 	position: relative;
 	background: #E9C183;
 	color: #15345A;
-	font-size: 10px;
+	font-size: 14px;
 	font-style: italic;
 	padding: 2px 4px 0 4px;
 	margin: 4px;
@@ -479,22 +479,22 @@ h1, h2, h3, h4, h5, h6
 
 h1
 {
-	font-size: 15px;
+	font-size: 20px;
 }
 
 h2
 {
-	font-size: 14px;
+	font-size: 18px;
 }
 
 h3
 {
-	font-size: 13px;
+	font-size: 16px;
 }
 
 h4
 {
-	font-size: 12px;
+	font-size: 16px;
 }
 
 .uiWrapper

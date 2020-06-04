@@ -863,23 +863,23 @@ var/global/redirect_all_players = null
 						side_name = "Israeli"
 					dat += "<br><br>[side_name]<br>"
 
-			var/extra_span = ""
-			var/end_extra_span = ""
+			var/extra_span = "<b>"
+			var/end_extra_span = "</b><br>"
 
 			if (job.is_officer && !job.is_commander)
-				extra_span = "<h3>"
-				end_extra_span = "</h3>"
+				extra_span = "<b><font size=2>"
+				end_extra_span = "</font></b><br>"
 			else if (job.is_commander)
-				extra_span = "<h2>"
-				end_extra_span = "</h2>"
+				extra_span = "<font size=3>"
+				end_extra_span = "</font></b><br><br>"
 
 			if (!job.en_meaning)
 				if (job_is_available)
-					dat += "&[job.base_type_flag()]&[extra_span]<a href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
+					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
 					++available_jobs_per_side[job.base_type_flag()]
 			else
 				if (job_is_available)
-					dat += "&[job.base_type_flag()]&[extra_span]<a href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
+					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
 					++available_jobs_per_side[job.base_type_flag()]
 
 
