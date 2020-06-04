@@ -538,3 +538,6 @@
 	w_class = 1.0
 	flammable = FALSE
 	slot_flags = SLOT_POCKET|SLOT_BELT
+
+/obj/item/clothing/accessory/armband/policebadge/secondary_attack_self(mob/living/human/user)
+	showoff(user)
