@@ -449,10 +449,12 @@
 				PV.doorcode = rand(1000,9999)
 				PV.new_number()
 				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
-				C.name = "car key"
+				C.name = "[PV.reg_number] key"
+				C.icon_state = "modern"
 				C.code = PV.doorcode
 				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
-				C2.name = "car key"
+				C2.name = "[PV.reg_number] key"
+				C2.icon_state = "modern"
 				C2.code = PV.doorcode
 	else
 		..()

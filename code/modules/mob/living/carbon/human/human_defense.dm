@@ -103,7 +103,6 @@ bullet_act
 						SW.tgt = Huser.real_name
 						SW.tgtcmp = Huser.civilization
 						SW.reason = reason
-						PAR.add(SW)
 					for(var/obj/structure/computer/nopower/police/PLT in world)
 						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PLT.loc)
 						SW.tgt_mob = Huser
