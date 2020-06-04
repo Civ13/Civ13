@@ -445,14 +445,14 @@
 					PV = new /obj/effects/premadevehicles/smc/falcon(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "SMC Falcon", basecolor))
-				
+
 				else if (choice == "Yamasaki Kazoku (600)")
 					PV = new /obj/effects/premadevehicles/yamasaki/kazoku(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Yamasaki Kazoku", basecolor))
-				
+
 				else if (choice == "Yamasaki Shinobu 5000 (900)")
-					PV = new /obj/effects/premadevehicles/Yamasaki/shinobu(locate(x+3,y-3,z))
+					PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Yamasaki Shinobu 5000", basecolor))
 
