@@ -437,6 +437,7 @@
 	var/pol_color = "#FF0000"
 	var/lastsoundcheck = 0
 	var/obj/structure/vehicleparts/frame/control = null
+	var/centered = FALSE
 	layer = 6
 /obj/structure/emergency_lights/New()
 	..()
@@ -446,6 +447,8 @@
 			break
 		if (control)
 			control.lights = src
+			update_icon()
+			control.update_icon()
 /obj/structure/emergency_lights/attack_hand(mob/living/human/H)
 	if (!ishuman(H))
 		return
@@ -494,6 +497,7 @@
 
 /obj/structure/emergency_lights/ambulance
 	atype = "ambulance"
+	centered = TRUE
 /obj/structure/emergency_lights/ambulance/check_sound()
 	if (world.realtime >= lastsoundcheck)
 		if (on)
