@@ -13,16 +13,12 @@
 	title = "Governor"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governor"
-
-
 	spawn_location = "JoinLateCivA"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-
 	is_governor = TRUE
 	is_1713 = TRUE
-
 
 	min_positions = 1
 	max_positions = 1
@@ -1987,7 +1983,6 @@
 	title = "Businessman"
 	en_meaning = ""
 	rank_abbreviation = ""
-
 	spawn_location = "JoinLateCivA"
 
 	is_deal = TRUE
@@ -2043,10 +2038,18 @@
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 /datum/job/civilian/businessman/yellow
 	title = "Goldstein Solutions"
-	selection_color = "#A1A181"
+	selection_color = "#7e7e06"
 	spawn_location = "JoinLateCivA"
 	min_positions = 3
 	max_positions = 50
+
+/datum/job/civilian/businessman/yellow/CEO
+	title = "Goldstein Solutions CEO"
+	is_officer = TRUE
+	min_positions = 1
+	max_positions = 1
+	rank_abbreviation = "CEO"
+	whitelisted = TRUE
 
 /datum/job/civilian/businessman/yellow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2068,6 +2071,13 @@
 	spawn_location = "JoinLateCivB"
 	min_positions = 3
 	max_positions = 50
+/datum/job/civilian/businessman/green/CEO
+	title = "Greene Traders Co-ops CEO"
+	is_officer = TRUE
+	min_positions = 1
+	max_positions = 1
+	rank_abbreviation = "CEO"
+	whitelisted = TRUE
 
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2090,6 +2100,14 @@
 	min_positions = 3
 	max_positions = 50
 
+/datum/job/civilian/businessman/blue/CEO
+	title = "Bluford Stock and Bonds CEO"
+	is_officer = TRUE
+	min_positions = 1
+	max_positions = 1
+	rank_abbreviation = "CEO"
+	whitelisted = TRUE
+
 /datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = title
@@ -2110,6 +2128,13 @@
 	spawn_location = "JoinLateCivD"
 	min_positions = 3
 	max_positions = 50
+/datum/job/civilian/businessman/red/CEO
+	title = "Reddington Arms CEO"
+	is_officer = TRUE
+	min_positions = 1
+	max_positions = 1
+	rank_abbreviation = "CEO"
+	whitelisted = TRUE
 
 /datum/job/civilian/businessman/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2131,6 +2156,7 @@
 	whitelisted = TRUE
 	spawn_location = "JoinLateCiv"
 	rank_abbreviation = "Officer"
+	selection_color = "#4845eb"
 
 	is_deal = TRUE
 
@@ -2189,7 +2215,7 @@
 	rank_abbreviation = "Paramedic"
 	whitelisted = TRUE
 	spawn_location = "JoinLateCivE"
-
+	selection_color = "#777777"
 	is_deal = TRUE
 
 	min_positions = 3
