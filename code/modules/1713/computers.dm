@@ -365,7 +365,7 @@
 		H << "Clear the arrival area first."
 		return
 	if (istype(D, /obj/item/stack/money))
-		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)","ASNO Quattroporte (500)","SMC Falcon (750)","Ubermacht Erstenklasse (900)"))
+		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)"))
 		if (choice == "Cancel")
 			return
 		else
@@ -391,6 +391,7 @@
 					H << "<span class='warning'>Not enough money!</span>"
 					return
 				new /obj/structure/vehicle/motorcycle/m125/full(locate(x+4,y-1,z))
+				new /obj/item/clothing/head/helmet/motorcycle(locate(x+4,y-1,z))
 				return
 			else
 				var/obj/effects/premadevehicles/PV
@@ -435,7 +436,7 @@
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Quattroporte", basecolor))
 
-				else if (choice == "Ubermacht Erstenklasse (900)")
+				else if (choice == "Ubermacht Erstenklasse (800)")
 					PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Ubermacht Erstenklasse", basecolor))
@@ -444,6 +445,16 @@
 					PV = new /obj/effects/premadevehicles/smc/falcon(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "SMC Falcon", basecolor))
+				
+				else if (choice == "Yamasaki Kazoku (600)")
+					PV = new /obj/effects/premadevehicles/yamasaki/kazoku(locate(x+3,y-3,z))
+					spawn(5)
+						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Yamasaki Kazoku", basecolor))
+				
+				else if (choice == "Yamasaki Shinobu 5000 (900)")
+					PV = new /obj/effects/premadevehicles/Yamasaki/shinobu(locate(x+3,y-3,z))
+					spawn(5)
+						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Yamasaki Shinobu 5000", basecolor))
 
 				PV.custom_color = chosencolor
 				PV.doorcode = rand(1000,9999)
