@@ -190,7 +190,6 @@ var/civmax_research = list(230,230,230)
 
 	var/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
-	var/globalmarketplacecount = 0
 
 	var/winddirection = "East"
 	var/windspeedvar = 1 // 0 to 4
