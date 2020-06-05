@@ -281,7 +281,7 @@
 		if ( findtext(pose,".",length(pose)) == FALSE && findtext(pose,"!",length(pose)) == FALSE && findtext(pose,"?",length(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
-	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13)
+	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13 && map.ID != MAP_THE_ART_OF_THE_DEAL)
 		if (original_job)
 			if (ishuman(user) && user != src)
 				var/mob/living/human/H = user
@@ -315,6 +315,12 @@
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[PT.nationality]</b>!</i>"
 				if (H.original_job_title == "Collaborator" && (original_job_title == H.original_job_title || faction_text=="RUSSIAN"))
 					msg += "<br><i>You recognize [T.him] as a fellow <b>collaborator</b>!</i>"
+	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		if (ishuman(user) && user != src)
+			var/mob/living/human/H = user
+			if (H.civilization == "Police" && src.civilization == "Police")
+				msg += "<br><i>[T.He] is a member of the Police.</i>"
+
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)
 			var/mob/living/human/H = user
@@ -328,8 +334,6 @@
 				if (map.custom_civs[H.civilization][4] != null)
 					if (map.custom_civs[H.civilization][4].real_name == real_name)
 						msg += "<br><b>[T.He] is the leader of your faction.</b>"
-			else if (civilization != "none" && map.ID != MAP_THE_ART_OF_THE_DEAL) // examining someone on another team
-				msg += "<br><span class='warning'><i>[T.He] seems to be a member of [civilization].</i>"
 
 			else
 				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"

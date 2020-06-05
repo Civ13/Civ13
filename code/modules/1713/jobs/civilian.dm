@@ -2054,12 +2054,8 @@
 /datum/job/civilian/businessman/yellow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-	H.add_language("Hebrew",TRUE)
-	for (var/datum/language/hebrew/A in H.languages)
-		H.default_language = A
 	H.name = H.species.get_random_hebrew_name(H.gender)
 	H.real_name = H.name
-	H.add_note("Known Languages", "Hebrew")
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessyellow(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionyellow(H), slot_wear_id)
@@ -2087,12 +2083,8 @@
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-	H.add_language("Gaelic",TRUE)
-	for (var/datum/language/gaelic/A in H.languages)
-		H.default_language = A
 	H.name = H.species.get_random_gaelic_name(H.gender)
 	H.real_name = H.name
-	H.add_note("Known Languages", "Gaelic")
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessgreen(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factiongreen(H), slot_wear_id)
@@ -2121,12 +2113,8 @@
 /datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-	H.add_language("Italian",TRUE)
-	for (var/datum/language/italian/A in H.languages)
-		H.default_language = A
 	H.name = H.species.get_random_italian_name(H.gender)
 	H.real_name = H.name
-	H.add_note("Known Languages", "Italian")
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/blue(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessblue(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionblue(H), slot_wear_id)
@@ -2154,12 +2142,8 @@
 /datum/job/civilian/businessman/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-	H.add_language("Russian",TRUE)
-	for (var/datum/language/russian/A in H.languages)
-		H.default_language = A
 	H.name = H.species.get_random_russian_name(H.gender)
 	H.real_name = H.name
-	H.add_note("Known Languages", "Russian")
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessred(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionred(H), slot_wear_id)

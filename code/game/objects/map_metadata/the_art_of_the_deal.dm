@@ -508,6 +508,7 @@
 		if (9 to 10)
 			a = "J"
 	return "[a][b]"
+/mob/living/human/var/hidden_name = ""
 
 /mob/living/human/proc/undercover()
 	set category = "IC"
@@ -516,15 +517,29 @@
 
 	if (findtext(name, "Officer"))
 		real_name = replacetext(real_name, "Officer ", "")
-		name = real_name
-		voice = real_name
-		src << "<b>You go undercover.</b>"
+		hidden_name = real_name
+		var/chosen_name = WWinput(src, "Which ethnicity do you want your name to be?","Choose Name","Cancel",list("Cancel","Russian","Jewish","Italian","Irish"))
+		switch(chosen_name)
+			if ("Cancel")
+				return
+			if ("Russian")
+				chosen_name =  species.get_random_russian_name(gender)
+			if ("Irish")
+				chosen_name =  species.get_random_gaelic_name(gender)
+			if ("Italian")
+				chosen_name =  species.get_random_italian_name(gender)
+			if ("Jewish")
+				chosen_name =  species.get_random_hebrew_name(gender)
+		name = chosen_name
+		real_name = chosen_name
+		voice = chosen_name
+		src << "<b><big>You go undercover.</big></b>"
 		return
 	else
-		real_name = "Officer [real_name]"
-		name = "Officer [real_name]"
-		voice = "Officer [real_name]"
-		src << "<b>You are now revealing your identity again.</b>"
+		real_name = "Officer [hidden_name]"
+		name = "Officer [hidden_name]"
+		voice = "Officer [hidden_name]"
+		src << "<b><big>You are now revealing your identity again.</big></b>"
 		return
 
 /obj/item/clothing/accessory/armband/policebadge
