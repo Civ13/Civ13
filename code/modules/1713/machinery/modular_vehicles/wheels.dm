@@ -214,6 +214,7 @@
 								if (L[2] == "Paramedics")
 									reason = "Theft of an Ambulance"
 								map.warrants += H.real_name
+								H.gun_permit = 0
 								var/obj/item/weapon/paper_bin/police/PAR = null
 								for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
 									PAR = PAR2
@@ -225,6 +226,7 @@
 									SW.tgtcmp = H.civilization
 									SW.reason = reason
 									PAR.add(SW)
+									SW.spawntimer = 12000
 								for(var/obj/structure/computer/nopower/police/PLT in world)
 									var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PLT.loc)
 									SW.tgt_mob = H

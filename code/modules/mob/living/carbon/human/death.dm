@@ -77,6 +77,7 @@
 							if (PAR)
 								var/obj/item/weapon/paper/police/searchwarrant/SW = new /obj/item/weapon/paper/police/searchwarrant(PAR.loc)
 								SW.cmp = warrant
+								SW.spawntimer = 18000
 							global_broadcast(FREQP,"<big>Attention, warrant issued for <b>[warrant] HQ</b>, please search the premises as soon as possible.</big>")
 			else
 				map.scores[civilization] -= 200

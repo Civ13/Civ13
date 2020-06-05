@@ -93,6 +93,7 @@ bullet_act
 					reason = "Attempted Murder"
 				if (!(Huser.real_name in map.warrants))
 					map.warrants += Huser.real_name
+					Huser.gun_permit = 0
 					var/obj/item/weapon/paper_bin/police/PAR = null
 					for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
 						PAR = PAR2
@@ -103,6 +104,7 @@ bullet_act
 						SW.tgt = Huser.real_name
 						SW.tgtcmp = Huser.civilization
 						SW.reason = reason
+						SW.spawntimer = 12000
 					for(var/obj/structure/computer/nopower/police/PLT in world)
 						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PLT.loc)
 						SW.tgt_mob = Huser

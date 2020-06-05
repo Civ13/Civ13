@@ -242,6 +242,13 @@
 		/obj/item/clothing/glasses/nvg = 100,
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 400,
 	)
+	attack_hand(mob/living/human/user as mob)
+		if (user.gun_permit)
+			..()
+		else
+		 user << "You do not have a valid gun permit. Get one first from your local police station."
+		 return
+
 /obj/structure/vending/police_equipment
 	name = "police equipment"
 	desc = "All the equipment to keep your officers in top shape."
@@ -433,6 +440,7 @@
 	icon_state = "police_record"
 	base_icon = "police_record"
 	name = "Police Record"
+	var/spawntimer = 0
 /obj/item/weapon/paper/police/warrant
 	icon_state = "police_record"
 	base_icon = "police_record"
@@ -448,7 +456,10 @@
 		icon_state = "police_record"
 		spawn(10)
 			info = "<center>POLICE DEPARTMENT<hr><large><b>Arrest Warrant No. [arn]</b></large><hr><br>Police forces are hereby authorized and directed to detain <b>[tgt]</b>, working for <b><i>[tgtcmp]</i></b>, for the following reasons:<br><br><i>- [reason]</i><br><br>They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf. Police forces shall bring <b>[tgt]</b> forthwith to the Police Station.<br><br><small><center><i>Form Model 13-B</i><center></small><hr>"
-
+		spawn(100)
+			if (spawntimer)
+				spawn(spawntimer)
+					qdel(src)
 /obj/item/weapon/paper/police/searchwarrant
 	icon_state = "police_warrant"
 	base_icon = "police_warrant"
@@ -556,3 +567,5 @@
 
 /obj/item/clothing/accessory/armband/policebadge/secondary_attack_self(mob/living/human/user)
 	showoff(user)
+
+/mob/living/human/var/gun_permit = FALSE

@@ -320,6 +320,8 @@
 			var/mob/living/human/H = user
 			if (H.civilization == "Police" && src.civilization == "Police")
 				msg += "<br><i>[T.He] is a member of the Police.</i>"
+			if (H.gun_permit && src.civilization == "Police")
+				msg += "<br><b>[T.He] has a valid gun permit.</b></b>"
 
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)

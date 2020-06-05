@@ -122,6 +122,7 @@
 /obj/structure/computer/nopower
 	name = "Desktop Computer"
 	desc = "A desktop computer running the latest version of UngaOS."
+	icon_state = "1980_computer_on"
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
@@ -488,7 +489,7 @@
 /obj/structure/computer/nopower/police/attack_hand(var/mob/living/human/H)
 	if (!ishuman(H))
 		return
-	var/what = WWinput(H, "Welcome to the Police Processing Terminal. Whar do you want to do?", "P.P.T.", "Quit",list("Quit","Check Warrants", "Print Warrant", "Register Suspect"))
+	var/what = WWinput(H, "Welcome to the Police Processing Terminal. What do you want to do?", "P.P.T.", "Quit",list("Quit","Check Warrants", "Print Warrant", "Register Suspect"))
 	switch(what)
 		if ("Quit")
 			return
@@ -538,3 +539,82 @@
 				visible_message("<big><font color='yellow'>There are no suspects present.</font></big>")
 			else if (done && found)
 				visible_message("<big><font color='green'><b>All suspects in the bench have been sucessfully registed into the system and can be released now.</b></font></big>")
+
+
+
+/obj/structure/computer/nopower/police_registry
+	name = "Police Registration Terminal"
+	desc = "A terminal that processes gun and car licences."
+	icon_state = "1980_computer_on"
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
+
+/obj/structure/computer/nopower/police_registry/attackby(var/obj/item/D, var/mob/living/human/H)
+	if (H.civilization == "Police" || H.civilization == "Paramedics")
+		H << "You cannot use this, it is a civilian terminal."
+		return
+	if (istype(D, /obj/item/stack/money))
+		var/choice = WWinput(H, "Welcome to the Police Registration Terminal. What do you want to do?", "P.R.T.", "Quit", list("Quit","Request Gun Licence"))
+		switch(choice)
+			if ("Quit")
+				return
+			if ("Request Gun Licence")
+				if (H.gun_permit)
+					H << "<font color='yellow'>You are already licenced.</span>"
+					return
+				else if  (H.real_name in map.warrants)
+					H << "<font color='red'>You have, or had, a warrant in your name, so your request was <b>denied</b>.</font>"
+					return
+				else
+					var/obj/item/stack/money/M = D
+					if (M.value*M.amount >= 100*4)
+						M.amount-=100/5
+					else
+						H << "<font color='red'>Not enough money!</font>"
+						return
+					H.gun_permit = TRUE
+					H << "<font color='green'>Your licence was <b>approved</b>.</span>"
+					map.scores["Police"] += 100
+	else
+		..()
+/obj/structure/computer/nopower/police_registry/attack_hand(var/mob/living/human/H)
+	if (H.civilization == "Police" || H.civilization == "Paramedics")
+		H << "You cannot use this, it is a civilian terminal."
+		return
+	var/choice = WWinput(H, "Welcome to the Police Registration Terminal. What do you want to do?", "P.R.T.", "Quit", list("Quit","Citizens Arrest"))
+	switch(choice)
+		if ("Quit")
+			return
+		if ("Citizens Arrest")
+			var/done = FALSE
+			var/found = FALSE
+			var/obj/structure/computer/nopower/police/PTER = null
+			for(var/obj/structure/computer/nopower/police/PTER2 in world)
+				PTER = PTER2
+			if (!PTER)
+				return
+			for (var/mob/living/human/S in range(2,src))
+				if (S.civilization != H.civilization && S.handcuffed && S != H)
+					found = TRUE
+					for(var/obj/item/weapon/paper/police/warrant/SW in PTER.pending_warrants)
+						if (SW.tgt_mob == S)
+							map.scores["Police"] += 100
+							var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
+							DLR.amount = 20
+							DLR.update_icon()
+							done = TRUE
+							visible_message("<big><font color='green'>Processed warrant no. [SW.arn] for [SW.tgt], as a citizens arrest. Thank you for your service.</font></big>")
+							PTER.pending_warrants -= SW
+							SW.forceMove(null)
+							qdel(SW)
+							for(var/mob/living/human/HP in player_list)
+								if (HP.civilization == "Police")
+									HP << "<big><font color='yellow'>A suspect with a pending warrant has been dropped off at the Police station by a citizens arrest.</font></big>"
+				if (!done && found)
+					visible_message("<big><font color='yellow'>There are no outstanding warrants for any of the suspects.</font></big>")
+				else if (!done && !found)
+					visible_message("<big><font color='yellow'>There are no suspects present.</font></big>")
+				else
+					visible_message("<big><font color='yellow'>There are no outstanding warrants for any of the suspects.</font></big>")
+				return
