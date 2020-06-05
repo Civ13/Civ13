@@ -26,9 +26,9 @@
 	faction2 = PIRATES
 	gamemode = "Negotiations"
 	scores = list(
-		"Reddington Arms" = 0,
-		"Bluford Stock and Bonds" = 0,
-		"Greene Traders Co-ops" = 0,
+		"Rednikov Industries" = 0,
+		"Giovanni Blu Stocks" = 0,
+		"MacGreene Traders" = 0,
 		"Goldstein Solutions" = 0,
 		"Police" = 0,)
 	required_players = 6
@@ -37,9 +37,9 @@
 	..()
 	spawn(3000)
 		score()
-	var/newnamea = list("Reddington Arms" = list(230,230,230,null,0,"sun","#7F0000","#7F7F7F",0,0))
-	var/newnameb = list("Bluford Stock and Bonds" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
-	var/newnamec = list("Greene Traders Co-ops" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
+	var/newnamea = list("Rednikov Industries" = list(230,230,230,null,0,"sun","#7F0000","#7F7F7F",0,0))
+	var/newnameb = list("Giovanni Blu Stocks" = list(230,230,230,null,0,"sun","#00007F","#7F7F7F",0,0))
+	var/newnamec = list("MacGreene Traders" = list(230,230,230,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Goldstein Solutions" = list(230,230,230,null,0,"sun","#E5E500","#7F7F7F",0,0))
 	var/newnamee = list("Police" = list(230,230,230,null,0,"star","#E5E500","#00007F",0,0))
 	var/newnamef = list("Paramedics" = list(230,230,230,null,0,"cross","#7F0000","#FFFFFF",0,0))
@@ -83,21 +83,21 @@
 	for(var/obj/structure/closet/safe/SF in world)
 		if (SF.faction)
 			switch(SF.faction)
-				if ("Reddington Arms")
+				if ("Rednikov Industries")
 					if (SF.opened)
 						new/obj/item/weapon/disk/red(SF.loc)
 						new/obj/item/weapon/disk/red/fake(SF.loc)
 					else
 						new/obj/item/weapon/disk/red(SF)
 						new/obj/item/weapon/disk/red/fake(SF)
-				if ("Bluford Stock and Bonds")
+				if ("Giovanni Blu Stocks")
 					if (SF.opened)
 						new/obj/item/weapon/disk/blue(SF.loc)
 						new/obj/item/weapon/disk/blue/fake(SF.loc)
 					else
 						new/obj/item/weapon/disk/red(SF)
 						new/obj/item/weapon/disk/red/fake(SF)
-				if ("Greene Traders Co-ops")
+				if ("MacGreene Traders")
 					if (SF.opened)
 						new/obj/item/weapon/disk/green(SF.loc)
 						new/obj/item/weapon/disk/green/fake(SF.loc)
@@ -369,22 +369,22 @@
 	name = "red diskette"
 	icon_state = "disk_red"
 	item_state = "disk_red"
-	faction = "Reddington Arms"
+	faction = "Rednikov Industries"
 
 /obj/item/weapon/disk/red/fake
 	name = "red diskette"
-	faction = "Reddington Arms"
+	faction = "Rednikov Industries"
 	fake = TRUE
 
 /obj/item/weapon/disk/blue
 	name = "blue diskette"
 	icon_state = "disk_blue"
 	item_state = "disk_blue"
-	faction = "Bluford Stock and Bonds"
+	faction = "Giovanni Blu Stocks"
 
 /obj/item/weapon/disk/blue/fake
 	name = "blue diskette"
-	faction = "Bluford Stock and Bonds"
+	faction = "Giovanni Blu Stocks"
 	fake = TRUE
 
 /obj/item/weapon/disk/yellow
@@ -402,11 +402,11 @@
 	name = "green diskette"
 	icon_state = "disk_green"
 	item_state = "disk_green"
-	faction = "Greene Traders Co-ops"
+	faction = "MacGreene Traders"
 
 /obj/item/weapon/disk/green/fake
 	name = "green diskette"
-	faction = "Greene Traders Co-ops"
+	faction = "MacGreene Traders"
 	fake = TRUE
 
 /obj/item/weapon/package

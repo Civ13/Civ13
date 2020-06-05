@@ -1,10 +1,10 @@
 #define PORTUGUESE_SYLLABLES list("ad", "al", "am", "an", "ar", "as", "ca", "co", "da", "de", "do", "el", "em", "en", "er", "es", "in", "le", "ma", "me", "nt", "om", "or", "os", "pa", "po", "qu", "ra", "re", "ri", "sa", "se", "st", "ta", "te", "ti", "to", "ue", "um", "ve", "ao", "ra", "en", "de", "ar", "es", "er", "nt", "te", "do", "os", "as", "co", "qu", "se", "re", "ta", "ma", "to", "me", "pa", "el", "or", "ue", "em", "da", "ao", "an", "ad", "in", "st", "po", "um", "al", "ve", "ri", "am", "om", "sa", "le", "ca", "ti", "ada", "ado", "ame", "and", "ant", "ara", "com", "con", "dos", "ela", "ele", "ent", "era", "eri", "est", "ida", "inh", "ito", "mas", "men", "ndo", "nha", "nte", "nto", "nao", "oce", "par", "per", "por", "qua", "que", "res", "ria", "seu", "sta", "tos", "uma", "ver", "voc", "ent", "que", "nte", "par", "ara", "men", "com", "est", "ado", "ele", "nao", "uma", "era", "voc", "sta", "nto", "ant", "oce", "con", "ver", "ria", "seu", "nha", "ame", "por", "inh", "per", "mas", "tos", "ela", "ada", "res", "eri", "dos", "and", "qua", "ito", "ndo", "ida")
 #define FRENCH_SYLLABLES list( "ai", "an", "ar", "au", "ce", "ch", "co", "de", "em", "en", "er", "es", "et", "eu", "ie", "il", "in", "is", "it", "la", "le", "ma", "me", "ne", "ns", "nt", "on", "ou", "pa", "qu", "ra", "re", "se", "te", "ti", "tr", "ue", "un", "ur", "us", "ve", "le", "en", "es", "de", "re", "ai", "ou", "nt", "on", "er", "ur", "it", "an", "te", "et", "me", "la", "is", "qu", "se", "il", "ue", "us", "eu", "co", "ra", "ne", "in", "ve", "pa", "ma", "au", "ar", "ns", "ch", "ie", "ti", "tr", "ce", "em", "un", "ain", "ais", "ait", "ans", "ant", "ati", "ava", "ave", "cha", "che", "com", "con", "dan", "des", "ell", "eme", "ent", "est", "eur", "eux", "fai", "ien", "ion", "ire", "les", "lle", "lus", "mai", "men", "mme", "nte", "omm", "ont", "our", "ous", "out", "ouv", "par", "pas", "plu", "pou", "que", "res", "son", "sur", "tai", "tio", "tou", "tre", "une", "ure", "ver", "vou", "eta", "ent", "que", "ait", "les", "our", "lle", "men", "ais", "tre", "est", "par", "ous", "mai", "ion", "ant", "eme", "tai", "ans", "pas", "ell", "vou", "tou", "pou", "res", "ont", "eur", "dan", "une", "eta", "sur", "ien", "son", "mme", "tio", "des", "ire", "ver", "omm", "com", "con", "che", "ave", "ain", "ure", "out", "plu", "cha", "eux", "ava", "ouv", "nte", "lus", "fai", "ati")
-#define SPANISH_SYLLABLES list ("ad", "al", "an", "ar", "as", "ci", "co", "de", "do", "el", "en", "er", "es", "ie", "in", "la", "lo", "me", "na", "no", "nt", "on", "or", "os", "pa", "qu", "ra", "re", "ro", "se", "st", "ta", "te", "to", "ue", "un", "en", "de", "er", "es", "ue", "la", "ra", "os", "nt", "te", "ar", "qu", "el", "ta", "do", "co", "re", "as", "on", "an", "to", "lo", "st", "un", "or", "ad", "ie", "se", "ci", "al", "pa", "na", "ro", "no", "me", "in", "aci", "ada", "ado", "ant", "ara", "ció", "com", "con", "des", "dos", "ent", "era", "ero", "est", "ido", "ien", "ier", "ión", "las", "los", "men", "nte", "nto", "par", "per", "por", "que", "res", "sta", "ste", "ten", "tra", "una", "ver", "que", "ent", "nte", "con", "est", "ado", "par", "los", "era", "ien", "men", "per", "sta", "ara", "una", "por", "ión", "tra", "ant", "nto", "ero", "ció", "aci", "las", "com", "ste", "res", "ten", "ier", "ver", "dos", "des", "ido", "ada")
+#define SPANISH_SYLLABLES list ("ad", "al", "an", "ar", "as", "ci", "co", "de", "do", "el", "en", "er", "es", "ie", "in", "la", "lo", "me", "na", "no", "nt", "on", "or", "os", "pa", "qu", "ra", "re", "ro", "se", "st", "ta", "te", "to", "ue", "un", "en", "de", "er", "es", "ue", "la", "ra", "os", "nt", "te", "ar", "qu", "el", "ta", "do", "co", "re", "as", "on", "an", "to", "lo", "st", "un", "or", "ad", "ie", "se", "ci", "al", "pa", "na", "ro", "no", "me", "in", "aci", "ada", "ado", "ant", "ara", "ciï¿½", "com", "con", "des", "dos", "ent", "era", "ero", "est", "ido", "ien", "ier", "iï¿½n", "las", "los", "men", "nte", "nto", "par", "per", "por", "que", "res", "sta", "ste", "ten", "tra", "una", "ver", "que", "ent", "nte", "con", "est", "ado", "par", "los", "era", "ien", "men", "per", "sta", "ara", "una", "por", "iï¿½n", "tra", "ant", "nto", "ero", "ciï¿½", "aci", "las", "com", "ste", "res", "ten", "ier", "ver", "dos", "des", "ido", "ada")
 #define ENGLISH_SYLLABLES list("ing", "ti", "po", "tle", "fa", "li", "ern", "er", "ri", "sion", "day", "fe", "lo", "eve", "a", "be", "vi", "ny", "gen", "men", "ly", "per", "el", "pen", "min", "ies", "ed", "to", "est", "pre", "land", "i", "pro", "la", "tive", "light", "es", "lar", "car", "out", "main", "re", "ad", "pa", "of", "tion", "ar", "ture", "mo", "pos", "ro", "in", "ers", "for", "an", "tain", "my", "e", "ment", "is", "side", "nal", "con", "ings", "ness", "y", "tions", "pe", "se", "ning", "ments", "ties", "so", "tor", "set", "ward" , "ence", "up")
-#define CARIB_SYLLABLES list("mo", "ro", "ani", "me", "ropo", "ka", "re", "ta", "sa", "po’i", "poto", "’me", "ta", "’wa", "’po", "re", "wa", "aje", "kary", "kon", "eta", "ry", "ra", "’a", "wata", "moi", "waty")
+#define CARIB_SYLLABLES list("mo", "ro", "ani", "me", "ropo", "ka", "re", "ta", "sa", "poï¿½i", "poto", "ï¿½me", "ta", "ï¿½wa", "ï¿½po", "re", "wa", "aje", "kary", "kon", "eta", "ry", "ra", "ï¿½a", "wata", "moi", "waty")
 #define DUTCH_SYLLABLES list("eek", "ti", "po", "aar", "aag", "van", "en", "mo", "gis", "ka", "de", "uur", "ok", "nen", "ken", "ge", "er", "ooi", "ijk", "le", "cht", "ij", "ont", "ond", "ag", "het", "hoe", "wel", "nee", "ens", "ijf", "ofd", "per")
-#define GREEK_SYLLABLES list("do", "rik", "ev", "ti", "on", "tí", "ka", "phi", "oú", "en", "et", "tn", "pn", "kó", "ev", "aí", "óo", "se", "pa", "na", "tes", "pan", "he", "wíd", "póm", "me", "ee", "wói", "s")
+#define GREEK_SYLLABLES list("do", "rik", "ev", "ti", "on", "tï¿½", "ka", "phi", "oï¿½", "en", "et", "tn", "pn", "kï¿½", "ev", "aï¿½", "ï¿½o", "se", "pa", "na", "tes", "pan", "he", "wï¿½d", "pï¿½m", "me", "ee", "wï¿½i", "s")
 #define LATIN_SYLLABLES list("fe", "de", "mi", "na", "be", "a", "ca", "tae", "ae", "ter", "num", "tum", "put", "ux", "tib", "dom", "er", "el", "la", "sum", "su", "per", "mem", "di", "us")
 #define ARAB_SYLLABLES list("kama", "'ana", "lah", "'ana", "hu", "kan", "'iilaa", "fi", "hi", "mae", "hum", "yakun", "fi", "wahid", "dik", "hadha", "min", "bwast", "har", "kalima", "lkn", "ma", "bed", "hu", "hu", "'ant", "'aw", "kan", "w", "min", "'iilaa", "w", "w", "fi", "nahn", "eulba", "kharij", "albaed", "w", "alty", "alqiam", "min", "alwaqt", "'iidha", "sawf", "kayf", "qal", "w", "kl", "'aqul", "la", "thlath", "turid", "hawa'", "jayid", "laeib", "saghir", "nihaya", "wade", "almanzil", "qara", "yd", "mina'", "kabir", "tahjaa", "hataa", "al'ard", "huna", "yjb", "kabir", "airtifae", "mathal", "tabie", "faeal", "limadha", "tatlub", "alrijal", "taghyir", "dhahab", "daw'", "nawe", "tahtaj", "manzil", "sur", "lana", "nuqta", "'um", "alealam", "qurb", "bina'", "alnafs", "'ard", "al'ab", "'aya", "jadida", "aleamal", "juz'", "makan", "masnue", "hayi", "hayth", "baed", "zahar", "alqlyl", "faqat", "jawla", "rajul", "eam", "ja'", "kl", "jayid", "'ana", "manh", "taht", "aism", "jiddaan", "faqat")
 #define HEBREW_SYLLABLES list("kama", "'ana", "lah", "'ana", "hu", "kan", "'iilaa", "fi", "hi", "mae", "hum", "yakun", "fi", "wahid", "dik", "hadha", "min", "bwast", "har", "kalima", "lkn", "ma", "bed", "hu", "hu", "'ant", "'aw", "kan", "w", "min", "'iilaa", "w", "w", "fi", "nahn", "eulba", "kharij", "albaed", "w", "alty", "alqiam", "min", "alwaqt", "'iidha", "sawf", "kayf", "qal", "w", "kl", "'aqul", "la", "thlath", "turid", "hawa'", "jayid", "laeib", "saghir", "nihaya", "wade", "almanzil", "qara", "yd", "mina'", "kabir", "tahjaa", "hataa", "al'ard", "huna", "yjb", "kabir", "airtifae", "mathal", "tabie", "faeal", "limadha", "tatlub", "alrijal", "taghyir", "dhahab", "daw'", "nawe", "tahtaj", "manzil", "sur", "lana", "nuqta", "'um", "alealam", "qurb", "bina'", "alnafs", "'ard", "al'ab", "'aya", "jadida", "aleamal", "juz'", "makan", "masnue", "hayi", "hayth", "baed", "zahar", "alqlyl", "faqat", "jawla", "rajul", "eam", "ja'", "kl", "jayid", "'ana", "manh", "taht", "aism", "jiddaan", "faqat")
@@ -15,7 +15,7 @@
 #define SWAHILI_SYLLABLES list("ak", "al", "am", "an", "ar", "at", "ba", "ch", "en", "ha", "hi", "ia", "ik", "il", "im", "in", "ka", "ki", "ku", "kw", "la", "li", "ma", "mb", "mi", "na", "ng", "ni", "ra", "si", "ta", "ti", "uw", "wa", "we", "ya", "ye", "wa", "ku", "ka", "na", "li", "ma", "an", "ya", "ik", "ak", "al", "am", "ni", "in", "ha", "at", "ki", "ng", "ti", "ba", "uw", "hi", "si", "kw", "ta", "ar", "ra", "il", "we", "mb", "en", "la", "mi", "ia", "ch", "im", "ye", "aka", "ake", "aki", "ali", "ama", "amb", "ana", "ang", "ani", "ara", "ari", "ata", "ati", "eye", "eza", "ika", "iki", "iku", "ili", "ing", "ini", "ish", "ita", "kam", "kat", "kut", "kuw", "kwa", "lik", "mba", "ngu", "sha", "tik", "uli", "uwa", "wak", "wal", "wam", "wan", "yak", "yey", "ali", "kuw", "uwa", "kwa", "ati", "iku", "lik", "kat", "ili", "ika", "mba", "aka", "ana", "ama", "amb", "ake", "tik", "ing", "ini", "kam", "wak", "ani", "sha", "ara", "yak", "ang", "wal", "ish", "aki", "wan", "eza", "ari", "kut", "ata", "wam", "yey", "eye", "ngu", "iki", "uli", "ita")
 #define AINU_SYLLABLES list("da", "do", "de", "ra", "ri", "ro", "re", "tsu", "me", "mi", "ma", "ka", "ki", "ko", "ke", "shi", "sho", "sha", "sa", "se", "su", "si", "ou", "na", "no", "ni", "ne", "te", "ta", "to", "ti", "wa", "wo", "wi", "we", "ho", "ga", "ge", "go", "gi", "al", "an", "bi", "vye", "vo", "go", "dye", "yel", "yen", "yer", "yet", "ka", "ko", "la", "ly", "lo", "l", "na", "nye", "ny", "no", "ov", "ol", "on", "or", "slog", "ot", "po", "pr", "ra", "rye", "ro", "st", "ta", "tye", "to", "t", "at", "bil", "vyer", "yego", "yeny", "yenn", "yest", "kak", "ln", "ova", "ogo", "ili", "oro", "ost", "oto", "pry", "pro", "sta", "stv", "tor", "chto", "eto")
 #define VIETNAMESE_SYLLABLES list("la","duoc","cua","co","va","nam","bai","mot","cac","nay","trong","thang","the","so","de","de","ho","the","lien","ngay","phan","cach","bang","la","hoc","dan","con","viet","loai","bo","ban","da","o","tham","noi","mo","rong","loai","dung","hai","hoan","van","giup","so","den","thanh","khao","quoc","chinh","phap","voi","chinh","c?p","cho","nguoi","truy","khong","phan","ve","quan","danh","tinh","thuoc","khoa","quan","do","gia","chi","ban","vao","tu","hanh","xa","cong","gioi","khi","le","huyen","lop","tai","thi","hinh","nganh","nhung","chien","tong","in","vi","do","ket","cong","boi","tren","vung","sau","cao","nha","trung","thong","phat")
-#define BLACKSPEECH_SYLLABLES list("sh","thr", "th", "m", "Kr", "gl", "sk", "zg", "mb", "mp", "rz", "nk", "dhl", "zh", "û", "a", "ûk", "ul", "ak", "na", "ul", "ag", "Ng", "gh", "h", "s", "z")
+#define BLACKSPEECH_SYLLABLES list("sh","thr", "th", "m", "Kr", "gl", "sk", "zg", "mb", "mp", "rz", "nk", "dhl", "zh", "ï¿½", "a", "ï¿½k", "ul", "ak", "na", "ul", "ag", "Ng", "gh", "h", "s", "z")
 #define ANT_SYLLABLES list("'Ch", "u'", "kra", "ko", "kre", "k'h", "cru", "ka", "tch'", "ach", "ukt", "k'tu", "v'ch", "uk", "-kh", "ak'h", "ke-ta", "kt-", "khe'", "uc", "tc'hu", "'Kh")
 #define GORILLA_SYLLABLES list("ugh", "bo", "ah", "unga", "'ga", "bunga", "agha", "ah-ah", "ho", "gru", "egh", "gah", "gu", "gch", "ba", "bu", "-cah", "ah", "ouh", "tcha", "ugga", "uk", "uck", "-gogh", "au", "tah", "boh", "teh", "oog", "u'uk", "gra", "na")
 #define WOLF_SYLLABLES list("woo", "aaf", "wof", "woof", "'wa", "wu", "we", "wi", "ai", "aw", "ae", "af", "aw", "ew")
@@ -29,6 +29,8 @@
 #define KOREAN_SYLLABLES list("gya", "ga", "geo", "gyeo", "go", "gyo", "gu", "gyu", "geu", "gi", "na", "nya", "neo", "nyeo", "no", "nyo", "nu", "nyu", "neu", "ni", "da", "dya", "deo", "dyeo", "do", "dyo", "du", "dyu", "deu", "di", "ra", "rya", "reo", "ryeo", "ro", "ryo", "ru", "ryu", "reu", "ri", "ma", "mya", "meo", "myeo", "mo", "myo", "mu", "myu", "meu", "mi", "ba", "bya", "beo", "byeo", "bo", "byo", "bu", "byu", "beu", "bi", "sa", "sya", "seo", "syeo", "so", "syo", "su", "syu", "seu", "si", "a", "ya", "eo", "yeo", "o", "yo", "u", "yu", "eu", "i", "ja", "jya", "jeo", "jyeo", "jo", "jyo", "ju", "jyu", "jeu", "ji", "cha", "chya", "cheo", "chyeo", "cho", "chyo", "chu", "chyu", "cheu", "chi", "ka", "kya", "keo", "kyeo", "ko", "kyo", "ku", "kyu", "keu", "ki", "ta", "tya", "teo", "tyeo", "to", "tyo", "tu", "tyu", "teu", "ti", "pa", "pya", "peo", "pyeo", "po", "pyo", "pu", "pyu", "peu", "pi", "ha", "hya", "heo", "hyeo", "ho", "hyo", "hu", "hyu", "heu", "hi")
 #define IROQUOIS_SYLLABLES list("a", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "s", "sa", "da", "ta", "dla", "tla", "tsa", "wa", "ya", "e", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "i", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "tli", "tsi", "twi", "wi", "yi", "ti", "o", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tio", "tso", "wo", "yo", "u", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "v", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "wv", "yv")
 #define FILIPINO_SYLLABLES list("a", "b", "da", "fa", "ga", "gra", "ha", "han", "hon", "ka", "la", "lat", "ma", "na", "nga", "pa", "pra", "ra", "sa", "sal", "ta", "tra", "wa", "e", "be", "bre", "de", "dre", "ge", "he", "ke", "le", "me", "ne", "pe", "pre", "re", "se", "te", "tre", "i", "bi", "di", "fi", "gi", "hi", "ki", "li", "mi", "ni", "pi", "pri", "ri", "si", "ti", "o", "ong", "oo", "bo", "bro", "do", "dro", "go", "ho", "ko", "lo", "mo", "no", "ngo", "po", "pro", "ro", "so", "to", "tro", "yo", "u", "bu", "du", "gu", "hu", "ku", "lu", "mu", "pu", "yu")
+#define ITALIAN_SYLLABLES list("pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va", "ta", "ra", "ga", "da", "na", "sa", "la", "te", "re", "ge", "de", "ne", "se", "le", "ti", "ri", "gi", "di", "ni", "si")
+
 /datum/language/portuguese
 	name = "Portuguese"
 	desc = "Muito bom."
@@ -36,8 +38,7 @@
 	colour = "Portuguese"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = PORTUGUESE_SYLLABLES
-	mutual_intelligibility = list(/datum/language/spanish = 75,
-		/datum/language/french = 35)
+	mutual_intelligibility = list(/datum/language/spanish = 75,/datum/language/french = 35,/datum/language/italian = 10)
 
 /datum/language/danish
 	name = "Danish"
@@ -59,8 +60,7 @@
 	colour = "Spanish"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = SPANISH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/portuguese = 50,
-		/datum/language/french = 35)
+	mutual_intelligibility = list(/datum/language/portuguese = 50,/datum/language/french = 35,/datum/language/italian = 30)
 
 /datum/language/english
 	name = "English"
@@ -78,7 +78,7 @@
 	colour = "French"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = FRENCH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/spanish = 25,/datum/language/portuguese = 10,/datum/language/dutch = 10)
+	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/spanish = 25,/datum/language/portuguese = 10,/datum/language/dutch = 10,/datum/language/italian = 10)
 
 /datum/language/dutch
 	name = "Dutch"
@@ -118,6 +118,7 @@
 	mutual_intelligibility = list(/datum/language/portuguese = 30,
 		/datum/language/french = 30,
 		/datum/language/spanish = 30,
+		/datum/language/italian = 45,
 		/datum/language/english = 10,
 		/datum/language/dutch = 10)
 
@@ -177,7 +178,7 @@
 
 /datum/language/polish
 	name = "Polish"
-	desc = "Smierc dla ciemiezców!"
+	desc = "Smierc dla ciemiezcï¿½w!"
 	key = "o"
 	colour = "Polish"
 	flags = RESTRICTED | COMMON_VERBS
@@ -301,6 +302,15 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GAELIC_SYLLABLES
 	mutual_intelligibility = list()
+
+/datum/language/italian
+	name = "Italian"
+	desc = "Cazzo!"
+	key = "I"
+	colour = "ITALIAN"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = ITALIAN_SYLLABLES
+	mutual_intelligibility = list(/datum/language/spanish = 30,/datum/language/french = 10,/datum/language/portuguese = 10)
 
 /datum/language/inuit
 	name = "inuktitut"

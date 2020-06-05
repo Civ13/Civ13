@@ -17,6 +17,7 @@
 #define ZULU "ZULU"
 #define AINU "AINU"
 #define GAELIC "GAELIC"
+#define ITALIAN "ITALIAN"
 #define CHEROKEE "CHEROKEE"
 #define INUIT "INUIT"
 #define OLDNNORSE "OLDNORSE"

@@ -435,7 +435,7 @@
 		..()
 		custom_code = REDCODE
 		locked = TRUE
-		faction = "Reddington Arms"
+		faction = "Rednikov Industries"
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
@@ -471,7 +471,7 @@
 		..()
 		custom_code = GREENCODE
 		locked = TRUE
-		faction = "Greene Traders Co-ops"
+		faction = "MacGreene Traders"
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)

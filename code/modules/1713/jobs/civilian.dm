@@ -2054,7 +2054,12 @@
 /datum/job/civilian/businessman/yellow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-
+	H.add_language("Hebrew",TRUE)
+	for (var/datum/language/hebrew/A in H.languages)
+		H.default_language = A
+	H.name = H.species.get_random_hebrew_name(H.gender)
+	H.real_name = H.name
+	H.add_note("Known Languages", "Hebrew")
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessyellow(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionyellow(H), slot_wear_id)
@@ -2066,13 +2071,13 @@
 	return TRUE
 
 /datum/job/civilian/businessman/green
-	title = "Greene Traders Co-ops"
+	title = "MacGreene Traders"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/green/CEO
-	title = "Greene Traders Co-ops CEO"
+	title = "MacGreene Traders CEO"
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2082,7 +2087,12 @@
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-
+	H.add_language("Gaelic",TRUE)
+	for (var/datum/language/gaelic/A in H.languages)
+		H.default_language = A
+	H.name = H.species.get_random_gaelic_name(H.gender)
+	H.real_name = H.name
+	H.add_note("Known Languages", "Gaelic")
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessgreen(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factiongreen(H), slot_wear_id)
@@ -2094,14 +2104,14 @@
 	return TRUE
 
 /datum/job/civilian/businessman/blue
-	title = "Bluford Stock and Bonds"
+	title = "Giovanni Blu Stocks"
 	selection_color = "#353575"
 	spawn_location = "JoinLateCivC"
 	min_positions = 3
 	max_positions = 50
 
 /datum/job/civilian/businessman/blue/CEO
-	title = "Bluford Stock and Bonds CEO"
+	title = "Giovanni Blu Stocks CEO"
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2111,7 +2121,12 @@
 /datum/job/civilian/businessman/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-
+	H.add_language("Italian",TRUE)
+	for (var/datum/language/italian/A in H.languages)
+		H.default_language = A
+	H.name = H.species.get_random_italian_name(H.gender)
+	H.real_name = H.name
+	H.add_note("Known Languages", "Italian")
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/blue(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessblue(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionblue(H), slot_wear_id)
@@ -2123,13 +2138,13 @@
 	return TRUE
 
 /datum/job/civilian/businessman/red
-	title = "Reddington Arms"
+	title = "Rednikov Industries"
 	selection_color = "#632D2D"
 	spawn_location = "JoinLateCivD"
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/red/CEO
-	title = "Reddington Arms CEO"
+	title = "Rednikov Industries CEO"
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2139,7 +2154,12 @@
 /datum/job/civilian/businessman/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-
+	H.add_language("Russian",TRUE)
+	for (var/datum/language/russian/A in H.languages)
+		H.default_language = A
+	H.name = H.species.get_random_russian_name(H.gender)
+	H.real_name = H.name
+	H.add_note("Known Languages", "Russian")
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessred(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionred(H), slot_wear_id)
