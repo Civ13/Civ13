@@ -257,10 +257,12 @@
 	name = "Jail"
 	climate = "temperate"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 
 /area/caribbean/prison/jail/processing
 	name = "Processing Area"
 	icon_state = "blue1"
+	location = AREA_INSIDE
 
 /area/caribbean/island
 	name = "Island"

@@ -133,7 +133,7 @@
 			world << "<big><font color='yellow' size=2>[tlist[1]]: [tlist[2]] points</font></big>"
 //five-o scores
 	var/list/tlist2 = list("Police",0)
-	for(var/obj/item/I in get_area(/area/caribbean/prison))
+	for(var/obj/item/I in get_area(/area/caribbean/prison/jail))
 		if (istype(I, /obj/item/weapon/disk))
 			var/obj/item/weapon/disk/D = I
 			if (D.faction && !D.used)
