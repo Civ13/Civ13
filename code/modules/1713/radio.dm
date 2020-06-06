@@ -250,9 +250,7 @@ var/global/FREQP = rand(81,100)
 			<html>
 
 			<head>
-			<style>
 			[common_browser_style]
-			</style>
 			</head>
 
 			<body>
@@ -283,9 +281,7 @@ var/global/FREQP = rand(81,100)
 				<html>
 
 				<head>
-				<style>
 				[common_browser_style]
-				</style>
 				</head>
 
 				<body>
@@ -316,9 +312,7 @@ var/global/FREQP = rand(81,100)
 				<html>
 
 				<head>
-				<style>
 				[common_browser_style]
-				</style>
 				</head>
 
 				<body>
@@ -348,9 +342,7 @@ var/global/FREQP = rand(81,100)
 				<html>
 
 				<head>
-				<style>
 				[common_browser_style]
-				</style>
 				</head>
 
 				<body>
@@ -616,9 +608,7 @@ var/global/FREQP = rand(81,100)
 		<html>
 
 		<head>
-		<style>
 		[common_browser_style]
-		</style>
 		</head>
 
 		<body>

@@ -71,7 +71,7 @@ var/global/list/valid_coordinates = list()
 	set name = "Squad Announcement"
 	set desc="Announce to everyone in your squad."
 	var/messaget = "Squad Leader Message"
-	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))
+	var/message = input("Global message to send:", "IC Announcement", null, null)
 	if (message)
 		message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
@@ -88,7 +88,7 @@ var/global/list/valid_coordinates = list()
 	set name = "Faction Announcement"
 	set desc="Announce to everyone in your faction."
 	var/messaget = "Governor Announcement"
-	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))
+	var/message = input("Global message to send:", "IC Announcement", null, null)
 	if (message)
 		message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag

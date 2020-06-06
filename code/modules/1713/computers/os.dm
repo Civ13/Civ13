@@ -31,9 +31,7 @@
 				<html>
 				<head>
 				<title>Unga OS V 0.1</title>
-				<style>
 				[computer_browser_style]
-				</style>
 				<script type="text/javascript">
 					typeFunction() {
 						if (e.keyCode == 13) {
@@ -51,12 +49,12 @@
 				</div>
 				</html>
 				"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
 	else if(operatingsystem == "ungaOS 94")
 		var/os = {"
 				<!DOCTYPE html>
 				<html>
-				<head><title>Unga OS 94</title><style>[computer_browser_style]</style></head>
+				<head><title>Unga OS 94</title>[computer_browser_style]</head>
 				<body>
 				<center>[mainmenu]</center>
 				<hr style="height:4px;border-width:0;color:gray;background-color:gray">
@@ -64,7 +62,7 @@
 				</body>
 				</html>
 				"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
+		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 /obj/structure/computer/interact(var/mob/m)
 	if (user)
 		if (get_dist(src, user) > 1)

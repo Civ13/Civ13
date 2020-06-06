@@ -12,7 +12,7 @@
 	else
 		return
 	if (map.civilizations == TRUE || map.ID == MAP_TRIBES)
-		var/choosename = russian_to_cp1251(input(U, "Choose a name for the company:") as text|null)
+		var/choosename = input(U, "Choose a name for the company:") as text|null
 		create_company_pr(choosename)
 		return
 	else

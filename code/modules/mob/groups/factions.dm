@@ -45,7 +45,7 @@
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
 			return
 		else
-			var/choosename = russian_to_cp1251(input(src, "Choose a name for the faction:") as text|null)
+			var/choosename = input(src, "Choose a name for the faction:") as text|null
 			if (choosename != null && choosename != "")
 				create_faction_pr(choosename)
 				make_commander()
@@ -259,7 +259,7 @@
 						return
 					else
 						U = choice2
-						var/inp = russian_to_cp1251(input(usr, "Choose a title to give:") as text|null)
+						var/inp = input(usr, "Choose a title to give:") as text|null
 						if (inp == "" || !inp)
 							return
 						else
