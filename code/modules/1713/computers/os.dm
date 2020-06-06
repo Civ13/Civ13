@@ -115,7 +115,7 @@
 	if (href_list["mail"])
 		mainbody = "<h2>MONKEYSOFT E-MAIL SERVER</h2><br>"
 		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br><br>"
+		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
 		if (href_list["mail"]=="99999")
 			if (islist(map.emails[uname]))
 				for(var/i, i <= map.emails[uname].len, i++)
@@ -170,7 +170,7 @@
 	if (href_list["deepnet"])
 		mainbody = "<h2>D.E.E.P.N.E.T.</h2><br>"
 		mainbody += "<b>All deliveries in a maximum of 2 minutes!</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br><br>"
+		mainbody += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
 			var/cost = (map.globalmarketplace[tcode][4])
