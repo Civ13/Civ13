@@ -71,6 +71,7 @@
 						D.used = TRUE
 						qdel(D)
 	else
+/*
 		if (istype(W, /obj/item/stack))
 			var/obj/item/stack/ST = W
 			if (ST.amount <= 0)
@@ -103,6 +104,7 @@
 				W.forceMove(locate(0,0,0))
 				H << "You place \the [W] for sale in the <b>DEEPNET</b>."
 				return
+*/
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/carsales
 	name = "CARTRADER Terminal"

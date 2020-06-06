@@ -112,12 +112,10 @@
 	var/cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
 		tmp_comp_vars["mail_snd"] = uname
-	if (href_list["deepnet"])
-		mainbody = "<b>ERROR 404</b><br>Page not found."
 	if (href_list["mail"])
 		mainbody = "<h2>MONKEYSOFT E-MAIL SERVER</h2><br>"
 		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><br><br>"
+		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br><br>"
 		if (href_list["mail"]=="99999")
 			if (islist(map.emails[uname]))
 				for(var/i, i <= map.emails[uname].len, i++)
@@ -168,7 +166,147 @@
 		map.emails[uname] += list(eml)
 		reset_tmp_vars()
 		WWalert(user,"Mail sent successfully!","E-mail Sent")
-		do_html(user)
+//DEEPNET
+	if (href_list["deepnet"])
+		mainbody = "<h2>D.E.E.P.N.E.T.</h2><br>"
+		mainbody += "<b>All deliveries in a maximum of 2 minutes!</i></b><br>"
+		mainbody += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br><br>"
+		if (findtext(href_list["deepnet"],"b"))
+			var/tcode = replacetext(href_list["deepnet"],"b","")
+			var/cost = (map.globalmarketplace[tcode][4])
+			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
+				mainbody += "<b>You need to have money in one of your hands!</b>"
+			else
+				var/obj/item/stack/money/mstack = null
+				if (istype(user.l_hand, /obj/item/stack/money))
+					mstack = user.l_hand
+				else
+					mstack = user.r_hand
+				if (mstack.value*mstack.amount >= cost)
+					mstack.amount -= (cost/mstack.value)
+					if (mstack.amount<= 0)
+						qdel(mstack)
+					var/obj/BO = map.globalmarketplace[tcode][2]
+					if (BO)
+						BO.forceMove(get_turf(src))
+					map.globalmarketplace[tcode][7] = 0
+					mainbody += "You fulfill the order."
+					var/seller = map.globalmarketplace[tcode][1]
+					map.marketplaceaccounts[seller] += cost
+					map.globalmarketplace -= map.globalmarketplace[tcode]
+				else
+					mainbody += "<b>Not enough money!</b>"
+
+		if (findtext(href_list["deepnet"],"ch"))
+			var/tcode = replacetext(href_list["deepnet"],"ch","")
+			var/cost = (map.globalmarketplace[tcode][4])
+			var/newprice = input(user, "What shall the new price be, in dollars?","DEEPNET",cost) as num|null
+			if (!isnum(newprice))
+				return
+			if (newprice <= 0)
+				return
+			map.globalmarketplace[tcode][4] = newprice*4
+			mainbody += "You update the listing's price."
+			return
+		if (findtext(href_list["deepnet"],"cn"))
+			var/tcode = replacetext(href_list["deepnet"],"cn","")
+			var/obj/BO = map.globalmarketplace[tcode][2]
+			BO.forceMove(get_turf(src))
+			map.globalmarketplace[tcode][7] = 0
+			map.globalmarketplace -= map.globalmarketplace[tcode]
+			mainbody += "You cancel your sell order and get your items back."
+			return
+		switch(href_list["deepnet"])
+			if ("2") //buy
+				var/list/currlist = list()
+				for (var/i in map.globalmarketplace)
+					if (map.globalmarketplace[i][7]==1)
+						currlist += list(list(map.globalmarketplace[i][6],"[map.globalmarketplace[i][3]] of <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+				if (isemptylist(currlist))
+					mainbody += "<b>There are no orders on the DEEPNET!</b>"
+				for (var/list/k in currlist)
+					mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a>"
+			if ("3","6","7","8") //sell
+				mainbody += "<a href='?src=\ref[src];deepnet=6'>Add New</a>&nbsp;<a href='?src=\ref[src];deepnet=7'>Change</a>&nbsp;<a href='?src=\ref[src];deepnet=8'>Cancel</a><br><br>"
+				if (href_list["deepnet"] == "6") //add
+					var/obj/item/M = user.get_active_hand()
+					if (M && istype(M))
+						if (istype(M, /obj/item/stack))
+							var/obj/item/stack/ST = M
+							if (ST.amount <= 0)
+								return
+							else
+								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars) 0 to cancel.") as num|null
+								if (!isnum(price))
+									return
+								if (price <= 0)
+									return
+								else
+									//owner, object, amount, price, sale/buy, fulfilled
+									var/idx = rand(1,999999)
+									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"sale","[idx]",1))
+									user.drop_from_inventory(ST)
+									ST.forceMove(locate(0,0,0))
+									mainbody += "You place \the [ST] for sale in the <b>DEEPNET</b>."
+									return
+						else
+							var/price = input(user, "What price do you want to place the [M] for sale in the DEEPNET? (in dollars).") as num|null
+							if (!isnum(price))
+								return
+							if (price <= 0)
+								return
+							else
+								//owner, object, amount, price, sale/buy, id number, fulfilled
+								var/idx = rand(1,999999)
+								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"sale","[idx]",1))
+								user.drop_from_inventory(M)
+								M.forceMove(locate(0,0,0))
+								mainbody += "You place \the [M] for sale in the <b>DEEPNET</b>."
+								return
+					else
+						WWalert(user,"Failed to create the order! You need to have the item in your active hand.","DEEPNET")
+				if (href_list["deepnet"] == "7") //change
+					var/list/currlist = list()
+					for (var/i in map.globalmarketplace)
+						if (map.globalmarketplace[i][1] == user.civilization)
+							currlist += list(list(map.globalmarketplace[i][6],"[map.globalmarketplace[i][3]] of <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+					if (isemptylist(currlist))
+						mainbody += "You have no orders on the market!"
+						return
+					for (var/list/k in currlist)
+						mainbody += "<a href='?src=\ref[src];deepnet=ch[k[1]]'>[k[2]]</a>"
+				if (href_list["deepnet"] == "8") //cancel
+					var/list/currlist = list()
+					for (var/i in map.globalmarketplace)
+						if (map.globalmarketplace[i][1] == user.civilization)
+							currlist += list(list(map.globalmarketplace[i][6],"[map.globalmarketplace[i][3]] of <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+					if (isemptylist(currlist))
+						mainbody += "You have no orders on the market!"
+						return
+					for (var/list/k in currlist)
+						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a>"
+
+			if ("4") //account
+				mainbody += "<big>Account: <b>[user.civilization]</b></big><br><br>"
+				var/accmoney = map.marketplaceaccounts[user.civilization]
+				if (map.marketplaceaccounts[user.civilization])
+					if (accmoney <= 0)
+						mainbody += "<b>Your account is empty!</b>"
+						map.marketplaceaccounts[user.civilization] = 0
+					else
+						mainbody += "You have [accmoney/4] dollars in your company's account.<br>"
+						mainbody += "<a href='?src=\ref[src];deepnet=5'>Withdraw</a>"
+				else
+					mainbody += "<b>Your account is empty!</b>"
+			if ("5") //withdraw
+				var/accmoney = map.marketplaceaccounts[user.civilization]
+				if (accmoney > 0)
+					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(src))
+					SC.amount = accmoney/20
+					accmoney = 0
+					map.marketplaceaccounts[user.civilization] = 0
+					do_html()
+/*
 	var/action = href_list["action"]
 	if(action == "textrecieved")
 		var/typenoise = pick('sound/machines/computer/key_1.ogg',
@@ -183,7 +321,7 @@
 	if(action == "textenter")
 		playsound(loc, 'sound/machines/computer/key_enter.ogg', 10, TRUE)
 		display+=href_list["value"]
-
+*/
 	sleep(0.5)
 	do_html(user)
 
