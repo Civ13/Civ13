@@ -85,6 +85,9 @@
 	powerneeded = FALSE
 	anchored = TRUE
 	operatingsystem = "unga 0S"
+/obj/structure/computer/nopower/carsales/attack_hand(mob/living/human/H)
+	WWalert(H,"You need to use money on it.","CARTRADER terminal")
+	return
 /obj/structure/computer/nopower/carsales/attackby(var/obj/item/D, var/mob/living/human/H)
 	var/found = FALSE
 	for(var/turf/T in get_area_turfs(/area/caribbean/supply))
