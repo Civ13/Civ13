@@ -199,7 +199,7 @@ var/list/global/phone_numbers = list()
 			else
 				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."
 				return
-	if (connected)
+	else if (connected)
 		connected = FALSE
 		if (origincall)
 			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
@@ -210,8 +210,18 @@ var/list/global/phone_numbers = list()
 			origincall.connected = FALSE
 			origincall.origincall = null
 			origincall = null
-
-	if (ringing && ringingnum)
+	else if (ringing && !ringingnum)
+		user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+		ringing = FALSE
+		if (origincall)
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
+			origincall.origincall = null
+			origincall.connected = FALSE
+			origincall = null
+	else if (ringing && ringingnum)
 		ringing = FALSE
 		connected = ringingnum
 		if (origincall)
@@ -295,6 +305,7 @@ var/list/global/phone_numbers = list()
 					spawn(200)
 						if (!connected)
 							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
+							ringing = FALSE
 							return
 				else
 					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."
@@ -326,17 +337,24 @@ var/list/global/phone_numbers = list()
 	if (!origin || !target)
 		return
 	else
+		var/found = FALSE
 		for (var/obj/item/weapon/telephone/TLG in world)
+			found = TRUE
 			if (TLG.phonenumber == target && TLG.phonenumber != origin)
-				if (!TLG.ringing)
+				if (!TLG.ringing && !TLG.connected)
 					TLG.ringing = TRUE
+					originphone.ringing = TRUE
 					TLG.ringproc(origin, originphone)
 					if (user)
 						if (targetc != "")
 							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing <b>[targetc]</b> ([target])..."
 						else
 							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing [target]..."
-
+				else
+					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number occupied."
+					return
+		if (!found)
+			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number not found."
 /obj/item/weapon/telephone/wireless
 	name = "telephone"
 	desc = "Used to communicate with other telephones. No number."
@@ -369,12 +387,16 @@ var/list/global/phone_numbers = list()
 		icon_state = "telephone"
 /obj/item/weapon/telephone/mobile/faction/red
 	name = "Red phone"
+	phonenumber = 1111
 /obj/item/weapon/telephone/mobile/faction/blue
 	name = "Blue phone"
+	phonenumber = 2222
 /obj/item/weapon/telephone/mobile/faction/green
 	name = "Green phone"
+	phonenumber = 3333
 /obj/item/weapon/telephone/mobile/faction/yellow
 	name = "Yellow phone"
+	phonenumber = 4444
 
 /obj/item/weapon/telephone/mobile/faction/New()
 	..()

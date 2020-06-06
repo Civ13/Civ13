@@ -165,6 +165,7 @@
 		/obj/item/clothing/suit/storage/ghillie = 1,
 		/obj/item/flashlight/flashlight = 10,
 		/obj/item/ammo_magazine/emptyspeedloader = 20,
+		/obj/item/weapon/handcuffs/rope = 50,
 	)
 /obj/structure/vending/undercover_apparel
 	name = "undercover apparel"
