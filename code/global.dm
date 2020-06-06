@@ -379,6 +379,7 @@ body
 	padding: 0;
 	margin: 0;
 	background-color: #161616;
+	font-family: "Lucida Console", monospace;
 	font-size: 16px;
 	color: #009933;
 	line-height: 170%;
@@ -512,7 +513,7 @@ h4
 	border-bottom: 2px solid #3d3d29;
 	background: #383838;
 	color: #98B0C3;
-	font-size: 16px;
+	font-size: 20px;
 }
 
 .uiTitleWrapper
@@ -577,7 +578,7 @@ h4
 	position: relative;
 	background: #E9C183;
 	color: #15345A;
-	font-size: 10px;
+	font-size: 14px;
 	font-style: italic;
 	padding: 2px 4px 0 4px;
 	margin: 4px;

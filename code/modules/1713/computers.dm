@@ -214,7 +214,7 @@
 		return
 /obj/structure/computer/attack_hand(var/mob/living/human/H)
 	if(!src.active)
-		load_os()
+		do_html(user)
 	else
 		H << "<span class = 'notice'>You need to turn the [src] on first!</span>"
 /obj/structure/computer/proc/power_on()
@@ -230,105 +230,7 @@
 		icon_state = "1980_computer_on"
 	else
 		icon_state = "1980_computer_off"
-/obj/structure/computer/proc/load_os(mob/user)
-	if(operatingsystem == "ungaOS")
-		var/os = {"
-				<!DOCTYPE html>
-				<html>
-				<head>
-				<title>Unga OS V 0.1</title>
-				<style>
-				[computer_browser_style]
-				</style>
-				<script type="text/javascript">
-					typeFunction() {
-						if (e.keyCode == 13) {
-							byond://?src=\ref[src]&action=textenter&value=document.getElementById('input').value
-					    }
-						byond://?src=\ref[src]&action=textrecieved&value=document.getElementById('input').value
-					}
-				</head>
-				<div class="vertical-center">
-				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
-				"}
-		os+=display
-		os+={"</textarea>
-				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
-				</div>
-				</html>
-				"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
-	else if(operatingsystem == "ungaOS 94")
-		var/os = {"
-				<!DOCTYPE html>
-				<html>
-				<head><title>Unga OS 94</title><style>[computer_browser_style]</style></head>
-				<body>
-				<center>[mainmenu]</center>
-				<hr style="height:4px;border-width:0;color:gray;background-color:gray">
-				[mainbody]
-				</body>
-				</html>
-				"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
-/obj/structure/computer/interact(var/mob/m)
-	if (user)
-		if (get_dist(src, user) > 1)
-			user = null
-	restart
-	if (user && user != m)
-		if (user.client)
-			return
-		else
-			user = null
-			goto restart
-	else
-		user = m
-		load_os(user)
-/obj/structure/computer/Topic(href, href_list, hsrc)
 
-	var/mob/user = usr
-
-	if (!user || user.lying || !ishuman(user))
-		return
-
-	user.face_atom(src)
-
-	if (!locate(user) in range(1,src))
-		user << "<span class = 'danger'>Get next to \the [src] to use it.</span>"
-		return FALSE
-
-	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
-		return FALSE
-	if (href_list["deepnet"])
-		mainbody = "<b>ERROR 404</b><br>Page not found."
-	if (href_list["mail"])
-		mainbody = "<b>ERROR 404</b><br>Page not found."
-	var/action = href_list["action"]
-	if(action == "textrecieved")
-		var/typenoise = pick('sound/machines/computer/key_1.ogg',
-							 'sound/machines/computer/key_2.ogg',
-							 'sound/machines/computer/key_3.ogg',
-							 'sound/machines/computer/key_4.ogg',
-							 'sound/machines/computer/key_5.ogg',
-							 'sound/machines/computer/key_6.ogg',
-							 'sound/machines/computer/key_7.ogg',
-							 'sound/machines/computer/key_8.ogg')
-		playsound(loc, typenoise, 10, TRUE)
-	if(action == "textenter")
-		playsound(loc, 'sound/machines/computer/key_enter.ogg', 10, TRUE)
-		display+=href_list["value"]
-	sleep(0.5)
-	load_os(user)
-
-/obj/structure/computer/proc/boot_ungos94()
-	mainmenu = {"
-	<i><h1>Unga OS 94</h1></i>
-	<hr>
-	<a href='?src=\ref[src];mail=1'>E-mail</a>&nbsp;<a href='?src=\ref[src];deepnet=1'>DEEPNET</a>
-	"}
-	mainbody = "System initialized."
 //////////////////////////////////////////////////////////////
 
 /obj/structure/computer/nopower/aotd

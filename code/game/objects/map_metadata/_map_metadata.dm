@@ -191,6 +191,8 @@ var/civmax_research = list(230,230,230)
 	var/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
 
+	var/list/emails = list("support@monkeysoft.ug" = list())
+	
 	var/winddirection = "East"
 	var/windspeedvar = 1 // 0 to 4
 	var/windspeed = "a light breeze" // calm, light breeze, moderate breeze, strong breeze, gale
