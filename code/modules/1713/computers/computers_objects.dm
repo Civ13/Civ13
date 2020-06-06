@@ -2,12 +2,12 @@
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/aotd
 	name = "Desktop Computer"
-	desc = "A desktop computer running the latest version of UngaOS. Has a floppy drive."
+	desc = "A desktop computer running the latest version of Unga OS. Has a floppy drive."
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
-	display = "<b>ungaOS 94</b>"
-	operatingsystem = "ungaOS 94"
+	display = "<b>unga OS</b>"
+	operatingsystem = "unga OS"
 /obj/structure/computer/nopower/aotd/attack_hand(var/mob/living/human/H)
 	..()
 /obj/structure/computer/nopower/aotd/attackby(var/obj/item/W, var/mob/living/human/H)
@@ -70,41 +70,7 @@
 						DLR.update_icon()
 						D.used = TRUE
 						qdel(D)
-	else
-/*
-		if (istype(W, /obj/item/stack))
-			var/obj/item/stack/ST = W
-			if (ST.amount <= 0)
-				return
-			else
-				var/price = input(H, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars).") as num|null
-				if (!isnum(price))
-					return
-				if (price <= 0)
-					return
-				else
-					//owner, object, amount, price, sale/buy, fulfilled
-					var/idx = rand(1,999999)
-					map.globalmarketplace += list("[idx]" = list(H.civilization,ST,ST.amount,price*4,"sale","[idx]",1))
-					H.drop_from_inventory(ST)
-					ST.forceMove(locate(0,0,0))
-					H << "You place \the [ST] for sale in the <b>DEEPNET</b>."
-					return
-		else
-			var/price = input(H, "What price do you want to place the [W] for sale in the DEEPNET? (in dollars).") as num|null
-			if (!isnum(price))
-				return
-			if (price <= 0)
-				return
-			else
-				//owner, object, amount, price, sale/buy, id number, fulfilled
-				var/idx = rand(1,999999)
-				map.globalmarketplace += list("[idx]" = list(H.civilization,W,1,price*4,"sale","[idx]",1))
-				H.drop_from_inventory(W)
-				W.forceMove(locate(0,0,0))
-				H << "You place \the [W] for sale in the <b>DEEPNET</b>."
-				return
-*/
+
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/carsales
 	name = "CARTRADER Terminal"
@@ -112,6 +78,7 @@
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
+	operatingsystem = "unga 0S"
 /obj/structure/computer/nopower/carsales/attackby(var/obj/item/D, var/mob/living/human/H)
 	var/found = FALSE
 	for(var/turf/T in get_area_turfs(/area/caribbean/supply))
@@ -244,11 +211,12 @@
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/police
 	name = "Police Processing Terminal"
-	desc = "A terminal that processes and registers warrants."
+	desc = "A computer running unga OS 94 Police Edition, with access to both civilians and Police."
 	icon_state = "research_on"
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
+	operatingsystem = "unga OS 94 Police Edition"
 	var/list/pending_warrants = list()
 
 /obj/structure/computer/nopower/police/attack_hand(var/mob/living/human/H)
@@ -311,6 +279,7 @@
 	name = "Police Registration Terminal"
 	desc = "A terminal that processes gun and car licences."
 	icon_state = "1980_computer_on"
+	operatingsystem = "unga OS 94 Police Edition"
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE

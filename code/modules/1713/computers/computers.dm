@@ -109,9 +109,9 @@
 	icon_state = "1980_computer_off"
 	var/peripherals = list()
 	var/internals = list()
-	var/operatingsystem = "ungaOS"
+	var/operatingsystem = "unga OS"
 	var/memory = list()
-	var/display = "UngaOS V 0.0.1"
+	var/display = "Unga OS V 0.0.1"
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -124,12 +124,11 @@
 
 /obj/structure/computer/New()
 	..()
-	if (operatingsystem == "ungaOS 94")
-		boot_ungos94()
+	boot(operatingsystem)
 
 /obj/structure/computer/nopower
 	name = "Desktop Computer"
-	desc = "A desktop computer running the latest version of UngaOS."
+	desc = "A desktop computer running the latest version of Unga OS."
 	icon_state = "1980_computer_on"
 	powered = TRUE
 	powerneeded = FALSE

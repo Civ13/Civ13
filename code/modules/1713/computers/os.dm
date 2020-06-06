@@ -27,44 +27,18 @@
 		"mail_msg" = "Message",
 	)
 /obj/structure/computer/proc/do_html(mob/user)
-	if(operatingsystem == "ungaOS")
-		var/os = {"
-				<!DOCTYPE html>
-				<html>
-				<head>
-				<title>Unga OS V 0.1</title>
-				[computer_browser_style]
-				<script type="text/javascript">
-					typeFunction() {
-						if (e.keyCode == 13) {
-							byond://?src=\ref[src]&action=textenter&value=document.getElementById('input').value
-						}
-						byond://?src=\ref[src]&action=textrecieved&value=document.getElementById('input').value
-					}
-				</head>
-				<div class="vertical-center">
-				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
-				"}
-		os+=display
-		os+={"</textarea>
-				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
-				</div>
-				</html>
-				"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
-	else if(operatingsystem == "ungaOS 94")
-		var/os = {"
-				<!DOCTYPE html>
-				<html>
-				<head>[computer_browser_style]<title>Unga OS 94</title></head>
-				<body>
-				<center>[mainmenu]</center>
-				<hr style="height:4px;border-width:0;color:gray;background-color:gray">
-				[mainbody]
-				</body>
-				</html>
-				"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+	var/os = {"
+			<!DOCTYPE html>
+			<html>
+			<head>[computer_browser_style]<title>[operatingsystem]</title></head>
+			<body>
+			<center>[mainmenu]</center>
+			<hr style="height:4px;border-width:0;color:gray;background-color:gray">
+			[mainbody]
+			</body>
+			</html>
+			"}
+	usr << browse(os,"window=opsys;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 /obj/structure/computer/interact(var/mob/m)
 	if (user)
 		if (get_dist(src, user) > 1)
@@ -325,10 +299,38 @@
 	sleep(0.5)
 	do_html(user)
 
-/obj/structure/computer/proc/boot_ungos94()
-	mainmenu = {"
-	<i><h1><img src='uos94.png'></img></h1></i>
-	<hr>
-	<a href='?src=\ref[src];mail=99999'>E-mail</a>&nbsp;<a href='?src=\ref[src];deepnet=1'>DEEPNET</a>
-	"}
-	mainbody = "System initialized."
+/obj/structure/computer/proc/boot(operatingsystem = "none")
+	if (operatingsystem == "unga OS 94")
+		mainmenu = {"
+		<i><h1><img src='uos94.png'></img></h1></i>
+		<hr>
+		<a href='?src=\ref[src];mail=99999'>E-mail</a>&nbsp;<a href='?src=\ref[src];deepnet=1'>DEEPNET</a>
+		"}
+		mainbody = "System initialized."
+	else if (operatingsystem == "unga OS 94 Police Edition")
+		mainmenu = {"
+		<i><h1><img src='uos94.png'></img><br><font color='blue'>POLICE</font> <font color='red'>EDITION</font></h1></i>
+		<hr>
+		<a href='?src=\ref[src];warrants=1'>Warrants</a>&nbsp;<a href='?src=\ref[src];permits=1'>Gun Permits</a>&nbsp;<a href='?src=\ref[src];squad=1'>Squad Status</a>&nbsp;<a href='?src=\ref[src];permits=1'>Licence Plate Registry</a>
+		"}
+		mainbody = "System initialized."
+
+	else if (operatingsystem == "unga OS")
+		mainbody = {"
+				<script type="text/javascript">
+					typeFunction() {
+						if (e.keyCode == 13) {
+							byond://?src=\ref[src]&action=textenter&value=document.getElementById('input').value
+						}
+						byond://?src=\ref[src]&action=textrecieved&value=document.getElementById('input').value
+					}
+				</head>
+				<div class="vertical-center">
+				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
+				"}
+		mainbody+=display
+		mainbody+={"</textarea>
+				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
+				</div>
+				</html>
+				"}
