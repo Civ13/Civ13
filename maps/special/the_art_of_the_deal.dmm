@@ -226,7 +226,7 @@
 "eO" = (/obj/structure/wild/smallbush,/turf/floor/beach/water,/area/caribbean/nomads/forest)
 "eP" = (/obj/covers/carpet/redcarpet,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "eR" = (/obj/structure/pot,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
-"eS" = (/obj/structure/banner/faction/banner_a{color1 = "#00007F"; faction = "Bluford Stock and Bonds"; name = "Bluford Stock and Bonds banner"; symbol = "sun"},/turf/wall/cement,/area/caribbean/roofed/temperate)
+"eS" = (/obj/structure/banner/faction/banner_a{color1 = "#00007F"; faction = "Giovanni Blu Stocks"; name = "Giovanni Blu Stocks banner"; symbol = "sun"},/turf/wall/cement,/area/caribbean/roofed/temperate)
 "eT" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/sausage,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "eU" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/chicken/breast,/obj/item/weapon/reagent_containers/food/snacks/chicken/drumstick,/obj/item/weapon/reagent_containers/food/snacks/chicken/wing,/obj/item/weapon/reagent_containers/food/snacks/chicken/wing,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "eV" = (/obj/structure/table/modern/retable,/obj/item/weapon/material/knife/butcher,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)

@@ -447,7 +447,7 @@
 		..()
 		custom_code = BLUECODE
 		locked = TRUE
-		faction = "Bluford Stock and Bonds"
+		faction = "Giovanni Blu Stocks"
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
