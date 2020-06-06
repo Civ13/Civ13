@@ -15,12 +15,14 @@
 ///////////////////////////////////////////////////////////////////
 /obj/structure/computer/var/list/tmp_comp_vars = list(
 	"mail_rec" = "Recipient",
+	"mail_snd" = "Sender",
 	"mail_subj" = "Subject",
 	"mail_msg" = "Message",
 )
 /obj/structure/computer/proc/reset_tmp_vars()
 	tmp_comp_vars = list(
 		"mail_rec" = "Recipient",
+		"mail_snd" = "Sender",
 		"mail_subj" = "Subject",
 		"mail_msg" = "Message",
 	)
@@ -54,7 +56,7 @@
 		var/os = {"
 				<!DOCTYPE html>
 				<html>
-				<head><title>Unga OS 94</title>[computer_browser_style]</head>
+				<head><img src='uos94.png'></img><title>Unga OS 94</title>[computer_browser_style]</head>
 				<body>
 				<center>[mainmenu]</center>
 				<hr style="height:4px;border-width:0;color:gray;background-color:gray">
@@ -79,7 +81,7 @@
 		do_html(user)
 /obj/structure/computer/Topic(href, href_list, hsrc)
 
-	var/mob/user = usr
+	var/mob/living/human/user = usr
 
 	if (!user || user.lying || !ishuman(user))
 		return
@@ -93,17 +95,38 @@
 	if (!user.can_use_hands())
 		user << "<span class = 'danger'>You have no hands to use this with.</span>"
 		return FALSE
-	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@monkeysoft.ug"
+	var/mdomain = "monkeysoft.ug"
+	switch(user.civilization)
+		if ("Rednikov Industries")
+			mdomain = "rednikov.ug"
+		if ("Giovanni Blu Stocks")
+			mdomain = "blu.ug"
+
+		if ("MacGreene Traders")
+			mdomain = "greene.ug"
+
+		if ("Goldstein Solutions")
+			mdomain = "goldstein.ug"
+
+	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
+	var/cname = "mail@[mdomain]"
+	var/selected_email = uname
 	if (href_list["deepnet"])
 		mainbody = "<b>ERROR 404</b><br>Page not found."
 	if (href_list["mail"])
 		mainbody = "<h2>MONKEYSOFT E-MAIL SERVER</h2><br>"
-		mainbody += "<b>Logged in as <i>[uname].</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<br><br>"
-		if (islist(map.emails[uname]))
-			for(var/datum/email/em in map.emails[uname])
-				mainbody += "From: <i>[em.sender]</i><br>To: <i>[uname]</i><br><b>[em.subject]</b><br>[em.message]<br>"
-				mainbody += "<br>"
+		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
+		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><br><br>"
+		if (href_list["mail"]=="99999")
+			if (islist(map.emails[uname]))
+				for(var/i, i <= map.emails[uname].len, i++)
+					if (istype(map.emails[uname][i], /datum/email))
+						var/datum/email/em =  map.emails[uname][i]
+						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a>"
+		else
+			var/datum/email/chosen = map.emails[uname][text2num(href_list["mail"])]
+			mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+			mainbody += "<br>"
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
@@ -112,8 +135,13 @@
 				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?") as text
 			if ("4")
 				tmp_comp_vars["mail_msg"] = input(user, "What is the message?") as message
+			if ("5")
+				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",selected_email,list(uname,cname))
+			
 		mainbody = "<h2>MONKEYSOFT E-MAIL SERVER</h2><br>"
-		mainbody += "From: [uname]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
+		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
+		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><br><br>"
+		mainbody += "From:  <a href='?src=\ref[src];sendmail=5'>[selected_email]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
@@ -150,6 +178,6 @@
 	mainmenu = {"
 	<i><h1>Unga OS 94</h1></i>
 	<hr>
-	<a href='?src=\ref[src];mail=1'>E-mail</a>&nbsp;<a href='?src=\ref[src];deepnet=1'>DEEPNET</a>
+	<a href='?src=\ref[src];mail=99999'>E-mail</a>&nbsp;<a href='?src=\ref[src];deepnet=1'>DEEPNET</a>
 	"}
 	mainbody = "System initialized."
