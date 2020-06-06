@@ -316,6 +316,7 @@
 		mainbody = "System initialized."
 
 	else if (operatingsystem == "unga OS")
+		mainmenu = "<center><h1>unga OS 0.1</h1></center>"
 		mainbody = {"
 				<script type="text/javascript">
 					typeFunction() {
@@ -324,13 +325,12 @@
 						}
 						byond://?src=\ref[src]&action=textrecieved&value=document.getElementById('input').value
 					}
-				</head>
 				<div class="vertical-center">
 				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
 				"}
 		mainbody+=display
 		mainbody+={"</textarea>
-				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
+				: <input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
 				</div>
 				</html>
 				"}

@@ -175,7 +175,40 @@
 		H << "You connect the cable to the [src]."
 
 	else
-		..()
+		if (istype(W, /obj/item/weapon/disk/os))
+			var/obj/item/weapon/disk/os/OSD = W
+			if (OSD.operatingsystem != src.operatingsystem)
+				src.operatingsystem = OSD.operatingsystem
+				src.boot(OSD.operatingsystem)
+				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
+		else
+			..()
+
+/obj/item/weapon/disk/os
+	name = "unga OS boot disk"
+	desc = "A disk used to boot unga OS."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "disk_uos0"
+	item_state = "disk_uos0"
+	var/operatingsystem = "unga OS"
+
+	attackby(obj/item/W, mob/living/M)
+		return
+
+/obj/item/weapon/disk/os/uos94
+	name = "unga OS 94 boot disk"
+	desc = "A disk used to boot unga OS 94."
+	icon_state = "disk_uos94"
+	item_state = "disk_uos94"
+	operatingsystem = "unga OS 94"
+
+/obj/item/weapon/disk/os/uos94pe
+	name = "unga OS 94 PE boot disk"
+	desc = "A disk used to boot unga OS 94 Police Edition."
+	icon_state = "disk_uos94"
+	item_state = "disk_uos94"
+	operatingsystem = "unga OS 94 Police Edition"
+
 /obj/structure/computer/verb/toggle_power(var/mob/living/human/H)
 	set category = null
 	set name = "Turn On"

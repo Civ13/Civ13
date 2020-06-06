@@ -14,6 +14,13 @@
 	if (istype(W, /obj/item/stack/money))
 		return
 	else if (istype(W, /obj/item/weapon/disk))
+		if (istype(W, /obj/item/weapon/disk/os))
+			var/obj/item/weapon/disk/os/OSD = W
+			if (OSD.operatingsystem != src.operatingsystem)
+				src.operatingsystem = OSD.operatingsystem
+				src.boot(OSD.operatingsystem)
+				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
+			return
 		var/obj/item/weapon/disk/D = W
 		if (D.faction == H.civilization)
 			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
