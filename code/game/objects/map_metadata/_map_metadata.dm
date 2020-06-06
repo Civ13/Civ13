@@ -190,7 +190,7 @@ var/civmax_research = list(230,230,230)
 
 	var/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
-
+	var/list/pending_warrants = list()
 	var/list/emails = list("support@monkeysoft.ug" = list())
 	
 	var/winddirection = "East"

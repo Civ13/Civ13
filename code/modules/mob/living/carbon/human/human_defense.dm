@@ -105,15 +105,13 @@ bullet_act
 						SW.tgtcmp = Huser.civilization
 						SW.reason = reason
 						SW.spawntimer = 12000
-					for(var/obj/structure/computer/nopower/police/PLT in world)
-						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PLT.loc)
-						SW.tgt_mob = Huser
-						SW.tgt = Huser.real_name
-						SW.tgtcmp = Huser.civilization
-						SW.reason = reason
-						PLT.pending_warrants += SW
-						SW.forceMove(PLT)
-						break
+					var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(null)
+					SW.tgt_mob = Huser
+					SW.tgt = Huser.real_name
+					SW.tgtcmp = Huser.civilization
+					SW.reason = reason
+					map.pending_warrants += SW
+					SW.forceMove(null)
 
 		else if (!map.civilizations && !map.nomads && !map.is_RP)
 			var/mob/living/human/Huser = P.firer
