@@ -358,7 +358,7 @@
 		H << "Clear the arrival area first."
 		return
 	if (istype(D, /obj/item/stack/money))
-		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)",,"ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)"))
+		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)",,"ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)"))
 		if (choice == "Cancel")
 			return
 		else
@@ -429,7 +429,7 @@
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Quattroporte", basecolor))
 
-				if (choice == "ASNO Piccolino (400)")
+				else if (choice == "ASNO Piccolino (400)")
 					PV = new /obj/effects/premadevehicles/asno/piccolino(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Piccolino", basecolor))
@@ -453,6 +453,10 @@
 					PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Yamasaki Shinobu 5000", basecolor))
+				else if  (choice == "SMC Wyoming (700)")
+							PV = new /obj/effects/premadevehicles/smc/wyoming(locate(x+3,y-3,z))
+					spawn(5)
+						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "SMC Wyoming", basecolor))
 
 				PV.custom_color = chosencolor
 				PV.doorcode = rand(1000,9999)
