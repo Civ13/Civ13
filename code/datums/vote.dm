@@ -234,7 +234,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			started_time = world.time
 			var/text = "[capitalize(mode)] vote started by [initiator]."
 			if (mode == "custom")
-				text += "\n[utf8_to_cp1251(question)]"
+				text += "\n[question]"
 
 			log_vote(text)
 			world << "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>"

@@ -23,7 +23,7 @@
 			if (U.getStatCoeff("philosophy") < 2.49)
 				usr << "<span class='danger'>Your philosophy skill is too low. You need 2.5 or more to create a religion.</span>"
 				return
-			var/choosename = russian_to_cp1251(input(src, "Choose a name for the new religion:") as text|null)
+			var/choosename = input(src, "Choose a name for the new religion:") as text|null
 			create_religion_pr(choosename)
 			return
 	else

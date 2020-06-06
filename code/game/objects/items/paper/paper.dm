@@ -48,7 +48,7 @@
 		desc = "This is a paper titled '" + name + "'."
 
 	if (info != initial(info))
-		info = rhtml_encode(info)
+		info = html_encode(info)
 		info = replacetext(info, "\n", "<BR>")
 		info = parsepencode(info)
 
