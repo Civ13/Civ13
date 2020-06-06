@@ -200,7 +200,7 @@
 		if (findtext(href_list["deepnet"],"ch"))
 			var/tcode = replacetext(href_list["deepnet"],"ch","")
 			var/cost = (map.globalmarketplace[tcode][4])
-			var/newprice = input(user, "What shall the new price be, in dollars?","DEEPNET",cost) as num|null
+			var/newprice = input(user, "What shall the new price be, in dollars?","DEEPNET",cost/4) as num|null
 			if (!isnum(newprice))
 				return
 			if (newprice <= 0)
@@ -221,7 +221,7 @@
 				var/list/currlist = list()
 				for (var/i in map.globalmarketplace)
 					if (map.globalmarketplace[i][7]==1)
-						currlist += list(list(map.globalmarketplace[i][6],"[map.globalmarketplace[i][3]] of <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 				if (isemptylist(currlist))
 					mainbody += "<b>There are no orders on the DEEPNET!</b>"
 				for (var/list/k in currlist)
@@ -269,7 +269,7 @@
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
 						if (map.globalmarketplace[i][1] == user.civilization)
-							currlist += list(list(map.globalmarketplace[i][6],"[map.globalmarketplace[i][3]] of <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
 						return
@@ -279,7 +279,7 @@
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
 						if (map.globalmarketplace[i][1] == user.civilization)
-							currlist += list(list(map.globalmarketplace[i][6],"[map.globalmarketplace[i][3]] of <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
 						return
