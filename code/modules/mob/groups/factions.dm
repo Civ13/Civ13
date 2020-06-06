@@ -334,7 +334,7 @@
 	..()
 	invisibility = 101
 	spawn(10)
-		if (faction != "none")
+		if (faction != "none" && map)
 			name = "[faction]'s banner"
 			desc = "This is a [faction] banner."
 			icon_state = bstyle

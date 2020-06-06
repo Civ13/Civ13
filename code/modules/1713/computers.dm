@@ -111,13 +111,21 @@
 	var/internals = list()
 	var/operatingsystem = "ungaOS"
 	var/memory = list()
-	var/display = "UngaOS V 0.0.1<br>"
+	var/display = "UngaOS V 0.0.1"
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	var/active = FALSE
 	powered = FALSE
 	powerneeded = 1
+	var/mainbody = ""
+	var/mainmenu = ""
+	var/mob/user
+
+/obj/structure/computer/New()
+	..()
+	if (operatingsystem == "ungaOS 94")
+		boot_ungos94()
 
 /obj/structure/computer/nopower
 	name = "Desktop Computer"
@@ -222,7 +230,7 @@
 		icon_state = "1980_computer_on"
 	else
 		icon_state = "1980_computer_off"
-/obj/structure/computer/proc/load_os()
+/obj/structure/computer/proc/load_os(mob/user)
 	if(operatingsystem == "ungaOS")
 		var/os = {"
 				<!DOCTYPE html>
@@ -230,17 +238,7 @@
 				<head>
 				<title>Unga OS V 0.1</title>
 				<style>
-				body {
-					background-color: #161610
-				}
-				.vertical-center {
-				  margin: 0;
-				  position: absolute;
-				  top: 40%;
-				  -ms-transform: translateY(-50%);
-				  transform: translateY(-50%);
-				  padding-left: 5%
-				}
+				[computer_browser_style]
 				</style>
 				<script type="text/javascript">
 					typeFunction() {
@@ -260,8 +258,53 @@
 				</html>
 				"}
 		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
+	else if(operatingsystem == "ungaOS 94")
+		var/os = {"
+				<!DOCTYPE html>
+				<html>
+				<head><title>Unga OS 94</title><style>[computer_browser_style]</style></head>
+				<body>
+				<center>[mainmenu]</center>
+				<hr style="height:4px;border-width:0;color:gray;background-color:gray">
+				[mainbody]
+				</body>
+				</html>
+				"}
+		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
+/obj/structure/computer/interact(var/mob/m)
+	if (user)
+		if (get_dist(src, user) > 1)
+			user = null
+	restart
+	if (user && user != m)
+		if (user.client)
+			return
+		else
+			user = null
+			goto restart
+	else
+		user = m
+		load_os(user)
+/obj/structure/computer/Topic(href, href_list, hsrc)
 
-/obj/structure/computer/Topic(href, list/href_list)
+	var/mob/user = usr
+
+	if (!user || user.lying || !ishuman(user))
+		return
+
+	user.face_atom(src)
+
+	if (!locate(user) in range(1,src))
+		user << "<span class = 'danger'>Get next to \the [src] to use it.</span>"
+		return FALSE
+
+	if (!user.can_use_hands())
+		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		return FALSE
+	if (href_list["deepnet"])
+		mainbody = "<b>ERROR 404</b><br>Page not found."
+	if (href_list["mail"])
+		mainbody = "<b>ERROR 404</b><br>Page not found."
 	var/action = href_list["action"]
 	if(action == "textrecieved")
 		var/typenoise = pick('sound/machines/computer/key_1.ogg',
@@ -276,7 +319,16 @@
 	if(action == "textenter")
 		playsound(loc, 'sound/machines/computer/key_enter.ogg', 10, TRUE)
 		display+=href_list["value"]
+	sleep(0.5)
+	load_os(user)
 
+/obj/structure/computer/proc/boot_ungos94()
+	mainmenu = {"
+	<i><h1>Unga OS 94</h1></i>
+	<hr>
+	<a href='?src=\ref[src];mail=1'>E-mail</a>&nbsp;<a href='?src=\ref[src];deepnet=1'>DEEPNET</a>
+	"}
+	mainbody = "System initialized."
 //////////////////////////////////////////////////////////////
 
 /obj/structure/computer/nopower/aotd
@@ -285,8 +337,15 @@
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
-/obj/structure/computer/nopower/aotd/attackby(var/obj/item/weapon/disk/D, var/mob/living/human/H)
-	if (istype(D, /obj/item/weapon/disk))
+	display = "<b>ungaOS 94</b>"
+	operatingsystem = "ungaOS 94"
+/obj/structure/computer/nopower/aotd/attack_hand(var/mob/living/human/H)
+	..()
+/obj/structure/computer/nopower/aotd/attackby(var/obj/item/W, var/mob/living/human/H)
+	if (istype(W, /obj/item/stack/money))
+		return
+	else if (istype(W, /obj/item/weapon/disk))
+		var/obj/item/weapon/disk/D = W
 		if (D.faction == H.civilization)
 			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
 			return
@@ -343,7 +402,38 @@
 						D.used = TRUE
 						qdel(D)
 	else
-		..()
+		if (istype(W, /obj/item/stack))
+			var/obj/item/stack/ST = W
+			if (ST.amount <= 0)
+				return
+			else
+				var/price = input(H, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars).") as num|null
+				if (!isnum(price))
+					return
+				if (price <= 0)
+					return
+				else
+					//owner, object, amount, price, sale/buy, fulfilled
+					var/idx = rand(1,999999)
+					map.globalmarketplace += list("[idx]" = list(H.civilization,ST,ST.amount,price*4,"sale","[idx]",1))
+					H.drop_from_inventory(ST)
+					ST.forceMove(locate(0,0,0))
+					H << "You place \the [ST] for sale in the <b>DEEPNET</b>."
+					return
+		else
+			var/price = input(H, "What price do you want to place the [W] for sale in the DEEPNET? (in dollars).") as num|null
+			if (!isnum(price))
+				return
+			if (price <= 0)
+				return
+			else
+				//owner, object, amount, price, sale/buy, id number, fulfilled
+				var/idx = rand(1,999999)
+				map.globalmarketplace += list("[idx]" = list(H.civilization,W,1,price*4,"sale","[idx]",1))
+				H.drop_from_inventory(W)
+				W.forceMove(locate(0,0,0))
+				H << "You place \the [W] for sale in the <b>DEEPNET</b>."
+				return
 
 /obj/structure/computer/nopower/carsales
 	name = "CARTRADER Terminal"

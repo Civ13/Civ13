@@ -378,7 +378,7 @@ body
 {
 	padding: 0;
 	margin: 0;
-	background-color: #2d2d2d;
+	background-color: #161616;
 	font-size: 16px;
 	color: #009933;
 	line-height: 170%;
@@ -386,7 +386,7 @@ body
 
 hr
 {
-	background-color: #2d2d2d;
+	background-color: #161616;
 	height: 1px;
 }
 
@@ -395,7 +395,7 @@ a, a:link, a:visited, a:active, .linkOn, .linkOff
 	color: #00ff00;
 	text-decoration: none;
 	background: #1D1D1D;
-	border: 1px solid #2D2D2D;
+	border: 1px solid #161616;
 	padding: 1px 4px 1px 4px;
 	margin: 0 2px 0 0;
 	cursor:default;
