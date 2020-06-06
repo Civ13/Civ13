@@ -314,7 +314,7 @@
 				spawn() playsong()
 
 		else if (href_list["newline"])
-			var/newline = rhtml_encode(input("Enter your line: ", "violin") as text|null)
+			var/newline = html_encode(input("Enter your line: ", "violin") as text|null)
 			if (!newline)
 				return
 			if (song.lines.len > MAX_CHARS_PER_LINE)
@@ -331,7 +331,7 @@
 
 		else if (href_list["modifyline"])
 			var/num = round(text2num(href_list["modifyline"]),1)
-			var/content = rhtml_encode(input("Enter your line: ", "violin", song.lines[num]) as text|null)
+			var/content = html_encode(input("Enter your line: ", "violin", song.lines[num]) as text|null)
 			if (!content)
 				return
 			if (length(content) > MAX_CHARS_PER_LINE)
@@ -352,7 +352,7 @@
 		else if (href_list["import"])
 			var/t = ""
 			do
-				t = rhtml_encode(input(usr, "Please paste the entire song, formatted:", text("[]", name), t)  as message)
+				t = html_encode(input(usr, "Please paste the entire song, formatted:", text("[]", name), t)  as message)
 				if (!in_range(src, usr))
 					return
 

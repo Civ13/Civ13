@@ -98,9 +98,7 @@ var/global/redirect_all_players = null
 	<br>
 	<html>
 	<head>
-	<style>
 	[common_browser_style]
-	</style>
 	</head>
 	<body><center>
 	PLACEHOLDER
@@ -923,9 +921,7 @@ var/global/redirect_all_players = null
 		<br>
 		<html>
 		<head>
-		<style>
 		[common_browser_style]
-		</style>
 		</head>
 		<body>
 		[data]

@@ -193,9 +193,7 @@
 		<html>
 
 		<head>
-		<style>
 		[computer_browser_style]
-		</style>
 		</head>
 		<body>
 		<center>
