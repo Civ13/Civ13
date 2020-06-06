@@ -150,6 +150,8 @@
 
 		roof = image(icon=icon, loc=src, icon_state=replacetext(src.icon_state,"frame","roof"), layer=9.9)
 
+		if (override_roof_icon)
+			roof.icon_state = override_roof_icon
 		if (override_color)
 			roof.color = override_color
 		else

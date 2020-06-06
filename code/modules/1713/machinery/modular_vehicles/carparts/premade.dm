@@ -162,6 +162,7 @@
 	)
 
 //SMC
+//falcon
 /obj/effects/premadevehicles/smc/falcon
 	name = "SMC Falcon"
 	icon_state = "4x4"
@@ -181,7 +182,25 @@
 	"2,4" = list(/obj/structure/vehicleparts/frame/car/falcon/lb,/obj/structure/table/carboot,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/us/centered),
 
 	)
+/obj/effects/premadevehicles/smc/wyoming
+	name = "SMC Wyoming"
+	icon_state = "4x4"
+	custom_color = "#392f92"
+	axis = /obj/structure/vehicleparts/axis/car/wyoming
+	tocreate = list(
+	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/wyoming/rf),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/wyoming/lf,/obj/structure/engine/internal/diesel/premade/wyoming,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/us/centered/front),
 
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/wyoming/rfc,/obj/structure/bed/chair/carseat/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/wyoming/lfc,/obj/structure/bed/chair/drivers/car),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/wyoming/rbc),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/wyoming/lbc),
+
+	"1,4" = list(/obj/structure/vehicleparts/frame/car/wyoming/rb,/obj/structure/vehicleparts/movement/reversed),
+	"2,4" = list(/obj/structure/vehicleparts/frame/car/wyoming/lb,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/us/centered),
+
+	)
 //Yamasaki
 //Shinobu
 /obj/effects/premadevehicles/yamasaki/shinobu

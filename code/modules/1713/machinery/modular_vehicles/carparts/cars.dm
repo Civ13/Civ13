@@ -45,20 +45,7 @@
 	material = "darkleather"
 /obj/structure/bed/chair/carseat/dark
 	material = "darkleather"
-//truck
-/obj/structure/vehicleparts/frame/car/newtruck/lf
-	w_front = list("truckfront2_left",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/newtruck/rf
-	w_front = list("truckfront2_right",TRUE,TRUE,0,0.1,FALSE,FALSE,TRUE)
-	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/newtruck/lwindshield
-	w_left = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
-	w_front = list("truckwindshield_left",FALSE,TRUE,0,0.1,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/car/newtruck/rwindshield
-	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
-	w_front = list("truckwindshield_right",FALSE,TRUE,0,0.1,FALSE,FALSE)
-//van
+//volle van
 /obj/structure/vehicleparts/frame/car/van/lf
 	w_front = list("vanfront_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -247,6 +234,50 @@
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "smc_falcon_back_right"
 	removesroof = TRUE
+//wyoming
+/obj/structure/vehicleparts/frame/car/wyoming/lf
+	icon_state = "frame_steel_corner_lf"
+	w_front = list("truckfront2_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "truckfront2_left"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/wyoming/rf
+	icon_state = "frame_steel_corner_rf"
+	w_front = list("truckfront2_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "truckfront2_right"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/wyoming/lfc
+	w_left = list("none",TRUE,TRUE,0,4,TRUE,FALSE)
+	w_front = list("vanwindshield2door_leftU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "vanwindshield2door_left"
+/obj/structure/vehicleparts/frame/car/wyoming/rfc
+	w_right = list("none",TRUE,TRUE,0,4,TRUE,FALSE)
+	w_front = list("vanwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "vanwindshield2door_right"
+
+/obj/structure/vehicleparts/frame/car/wyoming/rbc
+	w_right = list("c_wall",TRUE,TRUE,5,0.1,FALSE,FALSE)
+	w_front = list("c_thin",TRUE,TRUE,1,0.1,FALSE,FALSE)
+	noroof = TRUE
+/obj/structure/vehicleparts/frame/car/wyoming/lbc
+	w_left = list("c_wall",TRUE,TRUE,5,0.1,FALSE,FALSE)
+	w_front = list("c_thin",TRUE,TRUE,1,0.1,FALSE,FALSE)
+	noroof = TRUE
+/obj/structure/vehicleparts/frame/car/wyoming/lb
+	icon_state = "frame_steel_corner_lb"
+	w_back = list("truckback_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carback2_left"
+	removesroof = TRUE
+	override_roof_icon = "truckback_left_closed"
+/obj/structure/vehicleparts/frame/car/wyoming/rb
+	icon_state = "frame_steel_corner_rb"
+	w_back = list("truckback_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "carback2_right"
+	removesroof = TRUE
+	override_roof_icon = "truckback_right_closed"
 //shinobu
 /obj/structure/vehicleparts/frame/car/shinobu/lf
 	w_front = list("carfront5_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -395,6 +426,17 @@
 	speedlist = list(1=8,2=6,3=5,4=4)
 	turntimer = 9
 
+/obj/structure/vehicleparts/axis/car/wyoming
+	name = "SMC Wyoming"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 4
+	maxpower = 1300
+	speedlist = list(1=7,2=5.5,3=4.5,4=3.5)
+	turntimer = 9
+
+
 /obj/structure/vehicleparts/axis/car/volle/ambulance
 	name = "Ubermacht Volle KW Ambulance"
 	color = "#FFFFFF"
@@ -411,6 +453,9 @@
 
 /obj/structure/engine/internal/diesel/premade/erstenklasse
 	enginesize = 5500
+
+/obj/structure/engine/internal/diesel/premade/wyoming
+	enginesize = 8000
 
 /obj/structure/engine/internal/diesel/premade/van
 	enginesize = 7000
