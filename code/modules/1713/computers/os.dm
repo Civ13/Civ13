@@ -56,7 +56,7 @@
 		var/os = {"
 				<!DOCTYPE html>
 				<html>
-				<head><img src='uos94.png'></img><title>Unga OS 94</title>[computer_browser_style]</head>
+				<head>[computer_browser_style]<title>Unga OS 94</title></head>
 				<body>
 				<center>[mainmenu]</center>
 				<hr style="height:4px;border-width:0;color:gray;background-color:gray">
@@ -110,7 +110,8 @@
 
 	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
 	var/cname = "mail@[mdomain]"
-	var/selected_email = uname
+	if (tmp_comp_vars["mail_snd"]=="Sender")
+		tmp_comp_vars["mail_snd"] = uname
 	if (href_list["deepnet"])
 		mainbody = "<b>ERROR 404</b><br>Page not found."
 	if (href_list["mail"])
@@ -123,10 +124,22 @@
 					if (istype(map.emails[uname][i], /datum/email))
 						var/datum/email/em =  map.emails[uname][i]
 						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a>"
+			if (islist(map.emails[cname]))
+				for(var/i, i <= map.emails[cname].len, i++)
+					if (istype(map.emails[cname][i], /datum/email))
+						var/datum/email/em =  map.emails[cname][i]
+						mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a>"
+
 		else
-			var/datum/email/chosen = map.emails[uname][text2num(href_list["mail"])]
-			mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-			mainbody += "<br>"
+			if (findtext(href_list["mail"],"c"))
+				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
+				var/datum/email/chosen = map.emails[cname][tcode]
+				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+				mainbody += "<br>"
+			else
+				var/datum/email/chosen = map.emails[uname][text2num(href_list["mail"])]
+				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+				mainbody += "<br>"
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
@@ -136,19 +149,19 @@
 			if ("4")
 				tmp_comp_vars["mail_msg"] = input(user, "What is the message?") as message
 			if ("5")
-				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",selected_email,list(uname,cname))
+				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
 			
 		mainbody = "<h2>MONKEYSOFT E-MAIL SERVER</h2><br>"
 		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
 		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><br><br>"
-		mainbody += "From:  <a href='?src=\ref[src];sendmail=5'>[selected_email]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
+		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 	if (href_list["mail_send"])
 		var/datum/email/eml = new/datum/email
 		eml.subject = tmp_comp_vars["mail_subj"]
-		eml.sender = uname
+		eml.sender = tmp_comp_vars["mail_snd"]
 		eml.receiver = tmp_comp_vars["mail_rec"]
 		eml.message = tmp_comp_vars["mail_msg"]
 		eml.date = roundduration2text()
@@ -176,7 +189,7 @@
 
 /obj/structure/computer/proc/boot_ungos94()
 	mainmenu = {"
-	<i><h1>Unga OS 94</h1></i>
+	<i><h1><img src='uos94.png'></img></h1></i>
 	<hr>
 	<a href='?src=\ref[src];mail=99999'>E-mail</a>&nbsp;<a href='?src=\ref[src];deepnet=1'>DEEPNET</a>
 	"}
