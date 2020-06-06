@@ -454,7 +454,7 @@
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Yamasaki Shinobu 5000", basecolor))
 				else if  (choice == "SMC Wyoming (700)")
-							PV = new /obj/effects/premadevehicles/smc/wyoming(locate(x+3,y-3,z))
+					PV = new /obj/effects/premadevehicles/smc/wyoming(locate(x+3,y-3,z))
 					spawn(5)
 						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "SMC Wyoming", basecolor))
 
