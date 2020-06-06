@@ -34,9 +34,9 @@
 
 	else if (choice == "Buy")
 		var/list/currlist = list()
-		for (var/list/i in map.globalmarketplace)
-			if (i[7]==1)
-				currlist += list(list(i[6],"[i[3]] [i[2]], for [(i[4]/4)] dollars."))
+		for (var/i in map.globalmarketplace)
+			if (map.globalmarketplace[i][7]==1)
+				currlist += list(list(map.globalmarketplace[i][6],"[map.globalmarketplace[i][3]] [map.globalmarketplace[i][2]], for [(map.globalmarketplace[i][4]/4)] dollars."))
 		if (isemptylist(currlist))
 			user << "There are no orders on the DEEPNET!"
 			return
@@ -77,20 +77,20 @@
 							return
 	else if (choice == "Change Orders")
 		var/list/currlist = list()
-		for (var/list/i in map.globalmarketplace)
-			if (i[1] == user.civilization)
-				currlist += list(list(i,"[i[3]] of [i[2]], for [i[4]/4] dollars."))
+		for (var/i in map.globalmarketplace)
+			if (map.globalmarketplace[i][1] == user.civilization)
+				currlist += list(list(map.globalmarketplace[i][6],"[map.globalmarketplace[i][3]] of [map.globalmarketplace[i][2]], for [map.globalmarketplace[i][4]/4] dollars."))
 		if (isemptylist(currlist))
 			user << "You have no orders on the market!"
 			return
 		var/list/choicelist = list("Cancel")
-		for (var/list/k in currlist.len)
+		for (var/list/k in currlist)
 			choicelist += list("[k[2]]")
 		var/choice2 =  WWinput(user, "Choose a order:", "DEEPNET", "Cancel", choicelist)
 		if (choice2 == "Cancel")
 			return
 		else
-			for (var/list/k in currlist.len)
+			for (var/list/k in currlist)
 				if (choice2 == "[k[2]]")
 					var/choice3 =  WWinput(user, "What do you want to change?", "DEEPNET", "Cancel", list("Change Price", "Cancel Order", "Cancel"))
 					if (choice3 == "Cancel")
@@ -127,7 +127,7 @@
 			else
 				//owner, object, amount, price, sale/buy, fulfilled
 				var/idx = rand(1,999999)
-				map.globalmarketplace += list(idx = list(user.civilization,ST,ST.amount,price*4,"sale",idx,1))
+				map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"sale","[idx]",1))
 				user.drop_from_inventory(ST)
 				ST.forceMove(locate(0,0,0))
 				user << "You place \the [ST] for sale."
@@ -141,7 +141,7 @@
 		else
 			//owner, object, amount, price, sale/buy, id number, fulfilled
 			var/idx = rand(1,999999)
-			map.globalmarketplace += list(idx = list(user.civilization,W,1,price*4,"sale",idx,1))
+			map.globalmarketplace += list("[idx]" = list(user.civilization,W,1,price*4,"sale","[idx]",1))
 			user.drop_from_inventory(W)
 			W.forceMove(locate(0,0,0))
 			user << "You place \the [W] for sale."
