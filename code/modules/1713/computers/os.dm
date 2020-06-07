@@ -95,12 +95,12 @@
 				for(var/i, i <= map.emails[uname].len, i++)
 					if (istype(map.emails[uname][i], /datum/email))
 						var/datum/email/em =  map.emails[uname][i]
-						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a>"
+						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
 			if (islist(map.emails[cname]))
 				for(var/i, i <= map.emails[cname].len, i++)
 					if (istype(map.emails[cname][i], /datum/email))
 						var/datum/email/em =  map.emails[cname][i]
-						mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a>"
+						mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
 
 		else
 			if (findtext(href_list["mail"],"c"))
@@ -203,7 +203,7 @@
 				if (isemptylist(currlist))
 					mainbody += "<b>There are no orders on the DEEPNET!</b>"
 				for (var/list/k in currlist)
-					mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a>"
+					mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
 			if ("3","6","7","8") //sell
 				mainbody += "<a href='?src=\ref[src];deepnet=6'>Add New</a>&nbsp;<a href='?src=\ref[src];deepnet=7'>Change</a>&nbsp;<a href='?src=\ref[src];deepnet=8'>Cancel</a><br><br>"
 				if (href_list["deepnet"] == "6") //add
@@ -258,7 +258,7 @@
 						do_html(user)
 						return
 					for (var/list/k in currlist)
-						mainbody += "<a href='?src=\ref[src];deepnet=ch[k[1]]'>[k[2]]</a>"
+						mainbody += "<a href='?src=\ref[src];deepnet=ch[k[1]]'>[k[2]]</a><br>"
 				if (href_list["deepnet"] == "8") //cancel
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
@@ -270,7 +270,7 @@
 						do_html(user)
 						return
 					for (var/list/k in currlist)
-						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a>"
+						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a><br>"
 
 			if ("4") //account
 				mainbody += "<big>Account: <b>[user.civilization]</b></big><br><br>"
