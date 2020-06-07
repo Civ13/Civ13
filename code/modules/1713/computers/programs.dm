@@ -18,29 +18,25 @@
 	var/name = "program"
 	var/description = "a basic computer program."
 	var/list/compatible_os = list("unga OS 94")
-	var/list/local_vars = list() //where local vars get stored, as items in the list
+	var/list/tmp_comp_vars = list() //where local vars get stored, as items in the list
 	var/mainbody = "---"
 	var/mainmenu = "---"
 
 	var/mob/living/human/user //who is using the computer, from origin
 	var/obj/structure/computer/origin //where the program is located
 
-//commands should be put here in child datums, using if or switch conditions.
-/datum/program/proc/run_cmd(command,mob/living/human/user)
-	if (!origin)
-		return
-	if (command == "quit")
-		return
-	if (user)
-		sleep(0.5)
-		origin.do_html(user)
+/datum/program/proc/reset_tmp_vars()
+	tmp_comp_vars = list()
+
 /datum/program/proc/do_html(mob/living/human/user)
+	mainbody = "<head>[computer_browser_style]</head>[mainbody]"
 	usr << browse(mainbody,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 
 /datum/program/Topic(href, href_list, hsrc)
 	
 	if (!origin)
 		return
+	
 	var/mob/living/human/user = origin.user
 
 	if (!user || user.lying || !ishuman(user))
@@ -56,8 +52,8 @@
 		user << "<span class = 'danger'>You have no hands to use this with.</span>"
 		return FALSE
 
-////////////////////////////////////
-
+///////////////////ORION TRAIL GAME//////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 #define ORION_TRAIL_WINTURN		9
 
 //Orion Trail Events
@@ -112,8 +108,6 @@
 	var/gameStatus = ORION_STATUS_START
 	var/canContinueEvent = 0
 
-	var/obj/item/radio/Radio
-	var/list/gamers = list()
 	var/killed_crew = 0
 
 /datum/program/orion_trail/proc/Reset()
@@ -159,9 +153,9 @@
 	if(fuel <= 0 || food <=0 || settlers.len == 0)
 		gameStatus = ORION_STATUS_GAMEOVER
 		event = null
-	mainbody = "<head>[computer_browser_style]</head>"
+	mainbody = ""
 	if(gameStatus == ORION_STATUS_GAMEOVER)
-		mainbody = "<head>[computer_browser_style]</head><center><h1>Game Over</h1></center>"
+		mainbody = "<center><h1>Game Over</h1></center>"
 		mainbody += "Like many before you, your crew never made it to Orion, lost to space... <br><b>Forever</b>."
 		if(!settlers.len)
 			mainbody += "<br>Your entire crew died, and your ship joins the fleet of ghost-ships littering the galaxy."
@@ -174,7 +168,7 @@
 		mainbody += "<P ALIGN=Right><a href='?src=\ref[src];menu=1'>May They Rest In Peace</a></P>"
 
 	else if(event)
-		mainbody = "<head>[computer_browser_style]</head>[eventdat]"
+		mainbody = "[eventdat]"
 	else if(gameStatus == ORION_STATUS_NORMAL)
 		var/title = "title"
 		var/subtext = "subtext"
@@ -182,7 +176,7 @@
 			title = stops[turns]
 		if (stopblurbs.len && stopblurbs[turns])
 			subtext = stopblurbs[turns]
-		mainbody = "<head>[computer_browser_style]</head><center><h1>[title]</h1></center>"
+		mainbody = "<center><h1>[title]</h1></center>"
 		mainbody += "[subtext]"
 		mainbody += "<h3><b>Crew:</b></h3>"
 		mainbody += english_list(settlers)
@@ -195,7 +189,7 @@
 		mainbody += "<P ALIGN=Right><a href='?src=\ref[src];killcrew=1'>Kill a Crewmember</a></P>"
 		mainbody += "<P ALIGN=Right><a href='?src=\ref[src];close=1'>Close</a></P>"
 	else
-		mainbody = "<head>[computer_browser_style]</head><center><h2>The Orion Trail</h2></center>"
+		mainbody = "<center><h2>The Orion Trail</h2></center>"
 		mainbody += "<br><center><h3>Experience the journey of your descendants!</h3></center><br><br>"
 		mainbody += "<center><b><a href='?src=\ref[src];newgame=1'>New Game</a></b></center>"
 	..()
@@ -729,3 +723,106 @@
 #undef ORION_STATUS_NORMAL
 #undef ORION_STATUS_GAMEOVER
 #undef ORION_STATUS_MARKET
+
+/////////////////////////////////////////////////////////////
+/datum/program/monkeysoftmail
+	name = "MonkeySoft E-Mail Client"
+	description = "Send and Receive emails using the latest MonkeySoft Mail Client!"
+	compatible_os = list("unga OS 94","unga OS")
+	tmp_comp_vars = list(
+		"mail_rec" = "Recipient",
+		"mail_snd" = "Sender",
+		"mail_subj" = "Subject",
+		"mail_msg" = "Message",
+	)
+
+/datum/program/monkeysoftmail/reset_tmp_vars()
+	tmp_comp_vars = list(
+		"mail_rec" = "Recipient",
+		"mail_snd" = "Sender",
+		"mail_subj" = "Subject",
+		"mail_msg" = "Message",
+	)
+
+/datum/program/monkeysoftmail/do_html(mob/living/human/user)
+	mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
+	mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
+	..()
+
+/datum/program/monkeysoftmail/Topic(href, href_list, hsrc)
+	..()
+	var/mdomain = "monkeysoft.ug"
+	switch(user.civilization)
+		if ("Rednikov Industries")
+			mdomain = "rednikov.ug"
+		if ("Giovanni Blu Stocks")
+			mdomain = "blu.ug"
+
+		if ("MacGreene Traders")
+			mdomain = "greene.ug"
+
+		if ("Goldstein Solutions")
+			mdomain = "goldstein.ug"
+
+	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
+	var/cname = "mail@[mdomain]"
+	if (tmp_comp_vars["mail_snd"]=="Sender")
+		tmp_comp_vars["mail_snd"] = uname
+	mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
+	mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
+	mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
+	if (href_list["mail"])
+		mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
+		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
+		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
+		if (href_list["mail"]=="99999")
+			if (islist(map.emails[uname]))
+				for(var/i, i <= map.emails[uname].len, i++)
+					if (istype(map.emails[uname][i], /datum/email))
+						var/datum/email/em =  map.emails[uname][i]
+						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
+			if (islist(map.emails[cname]))
+				for(var/i, i <= map.emails[cname].len, i++)
+					if (istype(map.emails[cname][i], /datum/email))
+						var/datum/email/em =  map.emails[cname][i]
+						mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
+
+		else
+			if (findtext(href_list["mail"],"c"))
+				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
+				var/datum/email/chosen = map.emails[cname][tcode]
+				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+				mainbody += "<br>"
+			else
+				var/datum/email/chosen = map.emails[uname][text2num(href_list["mail"])]
+				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+				mainbody += "<br>"
+	if (href_list["sendmail"])
+		switch(href_list["sendmail"])
+			if ("2")
+				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
+			if ("3")
+				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?") as text
+			if ("4")
+				tmp_comp_vars["mail_msg"] = input(user, "What is the message?") as message
+			if ("5")
+				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
+			
+		mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
+		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
+		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><br><br>"
+		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
+		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
+		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
+		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
+	if (href_list["mail_send"])
+		var/datum/email/eml = new/datum/email
+		eml.subject = tmp_comp_vars["mail_subj"]
+		eml.sender = tmp_comp_vars["mail_snd"]
+		eml.receiver = tmp_comp_vars["mail_rec"]
+		eml.message = tmp_comp_vars["mail_msg"]
+		eml.date = roundduration2text()
+		map.emails[eml.receiver] += list(eml)
+		reset_tmp_vars()
+		WWalert(user,"Mail sent successfully!","E-mail Sent")
+

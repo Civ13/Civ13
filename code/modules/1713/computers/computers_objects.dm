@@ -278,9 +278,17 @@
 		return
 
 /obj/item/weapon/disk/program/orion_trail
-	name = "Orion Trail disk"
+	name = "Orion Trail installation disk"
 	desc = "Learn how our descendants will get to Orion, and have fun in the process!"
 	compatible_os = list("unga OS 94")
 	New()
 		..()
 		included = /datum/program/orion_trail
+
+/obj/item/weapon/disk/program/monkeysoftmail
+	name = "MonkeySoft Mail installation disk"
+	desc = "Send and Receive emails using the latest MonkeySoft Mail Client!"
+	compatible_os = list("unga OS 94", "unga OS")
+	New()
+		..()
+		included = /datum/program/monkeysoftmail
