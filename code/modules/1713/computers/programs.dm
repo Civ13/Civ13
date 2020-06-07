@@ -29,7 +29,7 @@
 	tmp_comp_vars = list()
 
 /datum/program/proc/do_html(mob/living/human/user)
-	mainbody = "<head>[computer_browser_style]</head>[mainbody]"
+	mainbody = "<head>[computer_browser_style]<title>[name]</title></head>[mainbody]"
 	usr << browse(mainbody,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 
 /datum/program/Topic(href, href_list, hsrc)
@@ -745,8 +745,9 @@
 	)
 
 /datum/program/monkeysoftmail/do_html(mob/living/human/user)
-	mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
-	mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
+	if (mainbody == "---")
+		mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
+		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
 	..()
 
 /datum/program/monkeysoftmail/Topic(href, href_list, hsrc)
@@ -757,10 +758,8 @@
 			mdomain = "rednikov.ug"
 		if ("Giovanni Blu Stocks")
 			mdomain = "blu.ug"
-
 		if ("MacGreene Traders")
 			mdomain = "greene.ug"
-
 		if ("Goldstein Solutions")
 			mdomain = "goldstein.ug"
 
@@ -810,7 +809,7 @@
 			
 		mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
 		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><br><br>"
+		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
 		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
@@ -825,4 +824,5 @@
 		map.emails[eml.receiver] += list(eml)
 		reset_tmp_vars()
 		WWalert(user,"Mail sent successfully!","E-mail Sent")
-
+	sleep(0.5)
+	do_html(user)

@@ -61,80 +61,10 @@
 		if (programs.len && programs[keyn] && istype(programs[keyn], /datum/program))
 			loadedprogram = programs[keyn]
 			loadedprogram.origin = src
+			loadedprogram.user = user
 			loadedprogram.do_html(user)
 			return
-//mail
-	var/mdomain = "monkeysoft.ug"
-	switch(user.civilization)
-		if ("Rednikov Industries")
-			mdomain = "rednikov.ug"
-		if ("Giovanni Blu Stocks")
-			mdomain = "blu.ug"
 
-		if ("MacGreene Traders")
-			mdomain = "greene.ug"
-
-		if ("Goldstein Solutions")
-			mdomain = "goldstein.ug"
-
-	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
-	var/cname = "mail@[mdomain]"
-	if (tmp_comp_vars["mail_snd"]=="Sender")
-		tmp_comp_vars["mail_snd"] = uname
-	if (href_list["mail"])
-		mainbody = "<h2>MONKEYSOFT E-MAIL SERVER</h2><br>"
-		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
-		if (href_list["mail"]=="99999")
-			if (islist(map.emails[uname]))
-				for(var/i, i <= map.emails[uname].len, i++)
-					if (istype(map.emails[uname][i], /datum/email))
-						var/datum/email/em =  map.emails[uname][i]
-						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
-			if (islist(map.emails[cname]))
-				for(var/i, i <= map.emails[cname].len, i++)
-					if (istype(map.emails[cname][i], /datum/email))
-						var/datum/email/em =  map.emails[cname][i]
-						mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
-
-		else
-			if (findtext(href_list["mail"],"c"))
-				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
-				var/datum/email/chosen = map.emails[cname][tcode]
-				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<br>"
-			else
-				var/datum/email/chosen = map.emails[uname][text2num(href_list["mail"])]
-				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<br>"
-	if (href_list["sendmail"])
-		switch(href_list["sendmail"])
-			if ("2")
-				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
-			if ("3")
-				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?") as text
-			if ("4")
-				tmp_comp_vars["mail_msg"] = input(user, "What is the message?") as message
-			if ("5")
-				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
-			
-		mainbody = "<h2>MONKEYSOFT E-MAIL SERVER</h2><br>"
-		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><br><br>"
-		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
-		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
-		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
-		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
-	if (href_list["mail_send"])
-		var/datum/email/eml = new/datum/email
-		eml.subject = tmp_comp_vars["mail_subj"]
-		eml.sender = tmp_comp_vars["mail_snd"]
-		eml.receiver = tmp_comp_vars["mail_rec"]
-		eml.message = tmp_comp_vars["mail_msg"]
-		eml.date = roundduration2text()
-		map.emails[eml.receiver] += list(eml)
-		reset_tmp_vars()
-		WWalert(user,"Mail sent successfully!","E-mail Sent")
 //DEEPNET
 	if (href_list["deepnet"])
 		mainbody = "<h2>D.E.E.P.N.E.T.</h2><br>"

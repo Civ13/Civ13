@@ -7,6 +7,12 @@
 	anchored = TRUE
 	display = "<b>unga OS</b>"
 	operatingsystem = "unga OS 94"
+
+/obj/structure/computer/nopower/aotd/New()
+	..()
+	programs += new/datum/program/monkeysoftmail
+//	programs += new/datum/program/deepnet
+	programs += new/datum/program/orion_trail
 /obj/structure/computer/nopower/aotd/attack_hand(var/mob/living/human/H)
 	..()
 /obj/structure/computer/nopower/aotd/attackby(var/obj/item/W, var/mob/living/human/H)
