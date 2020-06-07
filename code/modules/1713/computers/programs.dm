@@ -1206,14 +1206,15 @@
 
 /datum/program/permits/do_html(mob/living/human/user)
 	if (user.civilization == "Police" || user.civilization == "Paramedics")
+		mainbody = "<h2>GUN PERMITS</h2><br>"
 		mainbody += "<font color='yellow'>This service is intended for civilians.</font>"
 		..()
 		return
 	else if (mainbody == "---")
 		mainbody = "<h2>GUN PERMITS</h2><br>"
 		mainbody += "<a href='?src=\ref[src];permits=1'>Request Permit</a><hr><br>"
-		..()
-		return
+	..()
+
 /datum/program/permits/Topic(href, href_list, hsrc)
 	mainbody = "<h2>GUN PERMITS</h2><br>"
 	mainbody += "<a href='?src=\ref[src];permits=1'>Request Permit</a><hr><br>"

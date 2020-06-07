@@ -30,7 +30,7 @@
 				H << "You already have this operating system installed."
 			return
 		else if (istype(W, /obj/item/weapon/disk/program))
-			var/obj/item/weapon/disk/program/PD = W	
+			var/obj/item/weapon/disk/program/PD = W
 			if (!(operatingsystem in PD.compatible_os))
 				H << "This operating system is not supported."
 				return
@@ -59,47 +59,58 @@
 			switch(D.exchange_state)
 				if (-1)
 					if (D.fake)
-						WWalert(H,"This is a fake inactive disk! You lose 100 points.", "Fake Disk")
 						map.scores[H.civilization] -= 100
 						D.used = TRUE
 						qdel(D)
+						spawn(1)
+							WWalert(H,"This is a fake inactive disk! You lose 100 points.", "Fake Disk")
 					else
-						WWalert(H,"This is a real inactive disk! You gain 100 dollars and 100 points.", "Real Disk")
 						map.scores[H.civilization] += 100
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 40
 						DLR.update_icon()
 						D.used = TRUE
 						qdel(D)
+						spawn(1)
+							WWalert(H,"This is a real inactive disk! You gain 100 dollars and 100 points.", "Real Disk")
+
 				if (0)
 					if (D.fake)
-						WWalert(H,"This is a fake disk! Since you exchanged it with a fake disk too, both factions lose 400 points.", "Fake Disk")
 						map.scores[H.civilization] -= 400
 						D.used = TRUE
 						qdel(D)
+						spawn(1)
+							WWalert(H,"This is a fake disk! Since you exchanged it with a fake disk too, both factions lose 400 points.", "Fake Disk")
+
 
 				if (1)
 					if (D.fake)
-						WWalert(H,"This is a fake disk! Since you exchanged it with a real disk, you gain nothing and the other faction gains 200 dollars and 200 points.", "Fake Disk")
 						D.used = TRUE
 						qdel(D)
+						spawn(1)
+							WWalert(H,"This is a fake disk! Since you exchanged it with a real disk, you gain nothing and the other faction gains 200 dollars and 200 points.", "Fake Disk")
+
 					else
-						WWalert(H,"This is a real disk! Since you exchanged it with a fake disk, you gain 200 dollars, 200 points and the other faction gains nothing.", "Real Disk")
 						map.scores[H.civilization] += 200
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 40
 						DLR.update_icon()
 						D.used = TRUE
 						qdel(D)
+						spawn(1)
+							WWalert(H,"This is a real disk! Since you exchanged it with a fake disk, you gain 200 dollars, 200 points and the other faction gains nothing.", "Real Disk")
+
 				if (2)
 					if (!D.fake)
-						WWalert(H,"This is a real disk! Since you exchanged it with a real disk too, both factions gain 400 dollars and 400 points.", "Real Disk")
 						map.scores[H.civilization] += 400
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
 						DLR.amount = 80
 						DLR.update_icon()
 						D.used = TRUE
 						qdel(D)
+						spawn(1)
+							WWalert(H,"This is a real disk! Since you exchanged it with a real disk too, both factions gain 400 dollars and 400 points.", "Real Disk")
+
 
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/carsales
@@ -307,3 +318,11 @@
 	New()
 		..()
 		included = /datum/program/monkeysoftmail
+
+/obj/item/weapon/disk/program/squadtracker
+	name = "Squad-Trak installation disk"
+	desc = "Tracks the location of your squad."
+	compatible_os = list("unga OS 94","unga OS 94 Police Edition")
+	New()
+		..()
+		included = /datum/program/squadtracker
