@@ -123,7 +123,12 @@
 	anchored = TRUE
 	density = TRUE
 	operatingsystem = "unga OS 94 Police Edition"
-
+	New()
+		..()
+		programs += new/datum/program/permits
+		programs += new/datum/program/warrants
+		programs += new/datum/program/squadtracker
+		programs += new/datum/program/licenseplates
 //////////////////////////////////////////
 /////////DISKS///////////////////////////
 
