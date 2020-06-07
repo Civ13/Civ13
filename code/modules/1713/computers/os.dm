@@ -60,7 +60,9 @@
 		var/keyn = text2num(href_list["program"])
 		if (programs.len && programs[keyn] && istype(programs[keyn], /datum/program))
 			loadedprogram = programs[keyn]
+			loadedprogram.origin = src
 			loadedprogram.do_html(user)
+			return
 //mail
 	var/mdomain = "monkeysoft.ug"
 	switch(user.civilization)

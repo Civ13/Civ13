@@ -17,11 +17,12 @@
 /datum/program
 	var/name = "program"
 	var/description = "a basic computer program."
-	var/size = 0 //size in kb (unused for now)
 	var/list/compatible_os = list("unga OS 94")
 	var/list/local_vars = list() //where local vars get stored, as items in the list
 	var/mainbody = "---"
 	var/mainmenu = "---"
+
+	var/mob/living/human/user //who is using the computer, from origin
 	var/obj/structure/computer/origin //where the program is located
 
 //commands should be put here in child datums, using if or switch conditions.
@@ -37,9 +38,9 @@
 	usr << browse(mainbody,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 
 /datum/program/Topic(href, href_list, hsrc)
+	
 	if (!origin)
 		return
-
 	var/mob/living/human/user = origin.user
 
 	if (!user || user.lying || !ishuman(user))
@@ -200,24 +201,7 @@
 	..()
 
 /datum/program/orion_trail/Topic(href, href_list, hsrc)
-	if (!origin)
-		return
-
-	var/mob/living/human/user = origin.user
-
-	if (!user || user.lying || !ishuman(user))
-		return
-
-	user.face_atom(origin)
-
-	if (!locate(user) in range(1,origin))
-		user << "<span class = 'danger'>Get next to \the [origin] to use it.</span>"
-		return FALSE
-
-	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
-		return FALSE
-
+	..()
 	if(busy)
 		return
 	busy = TRUE
@@ -243,7 +227,6 @@
 				turns += 1
 
 	else if(href_list["newgame"]) //Reset everything
-		world << "found"
 		if(gameStatus == ORION_STATUS_START)
 			Reset()
 			newgame()
