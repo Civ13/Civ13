@@ -45,7 +45,7 @@ var/list/flooring_types
 	icon_base = "grass"
 	has_base_range = 3
 	damage_temperature = T0C+80
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/dirt
 	name = "dirt"
@@ -54,7 +54,7 @@ var/list/flooring_types
 	icon_base = "dirt"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/dust
 	name = "dry dirt"
@@ -63,7 +63,7 @@ var/list/flooring_types
 	icon_base = "dust"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/flooded
 	name = "flooded plains dirt"
@@ -72,7 +72,7 @@ var/list/flooring_types
 	icon_base = "flood_dirt"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/water
 	name = "water"
@@ -81,7 +81,7 @@ var/list/flooring_types
 	icon_base = "seashallow"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/water_salt
 	name = "saltwater"
@@ -90,7 +90,7 @@ var/list/flooring_types
 	icon_base = "seashallow"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/water_deep
 	name = "deep water"
@@ -99,7 +99,7 @@ var/list/flooring_types
 	icon_base = "seadeep"
 	has_base_range = 0
 	damage_temperature = T0C+8000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/water_deep_salt
 	name = "deep saltwater"
@@ -108,7 +108,7 @@ var/list/flooring_types
 	icon_base = "seadeep"
 	has_base_range = 0
 	damage_temperature = T0C+8000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/water_swamp
 	name = "swamp water"
@@ -117,7 +117,7 @@ var/list/flooring_types
 	icon_base = "seashallow_swamp"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/water_jungle1
 	name = "jungle river water"
@@ -126,7 +126,7 @@ var/list/flooring_types
 	icon_base = "seashallow_jungle1"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/water_jungle2
 	name = "jungle flooded land"
@@ -135,7 +135,7 @@ var/list/flooring_types
 	icon_base = "seashallow_jungle2"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/water_jungle3
 	name = "deep jungle river water"
@@ -144,7 +144,7 @@ var/list/flooring_types
 	icon_base = "seashallow_jungle3"
 	has_base_range = 0
 	damage_temperature = T0C+3000
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/sand
 	name = "sand"
@@ -153,7 +153,7 @@ var/list/flooring_types
 	icon_base = "sand"
 	has_base_range = 0
 	damage_temperature = T0C+200
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/sand_beach
 	name = "sand"
@@ -162,7 +162,7 @@ var/list/flooring_types
 	icon_base = "sand"
 	has_base_range = 0
 	damage_temperature = T0C+200
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/desert
 	name = "desert sand"
@@ -171,7 +171,7 @@ var/list/flooring_types
 	icon_base = "desert"
 	has_base_range = 0
 	damage_temperature = T0C+200
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 
 /decl/flooring/snow
@@ -181,7 +181,7 @@ var/list/flooring_types
 	icon_base = "snow"
 	has_base_range = 0
 	damage_temperature = T0C+30
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 
 /decl/flooring/snow_grass
@@ -191,7 +191,7 @@ var/list/flooring_types
 	icon_base = "snowgrass"
 	has_base_range = 0
 	damage_temperature = T0C+30
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 
 /decl/flooring/snow_dirt
 	name = "snowy dirt"
@@ -200,7 +200,7 @@ var/list/flooring_types
 	icon_base = "dirt"
 	has_base_range = 0
 	damage_temperature = T0C+30
-	flags = TURF_HAS_EDGES
+//	flags = TURF_HAS_EDGES
 /decl/flooring/carpet
 	name = "carpet"
 	desc = "Imported and comfy."

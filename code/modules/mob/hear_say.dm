@@ -153,7 +153,10 @@
 
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
-	message = replacetext(message,";", "")
+
+	if (findtext(message,";10-") || findtext(message,"; 10-"))
+		message = ten_code(message, speaker)
+	message = replacetext(message,";","")
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
@@ -163,20 +166,20 @@
 		if (istype(origin, /obj/structure/radio))
 			var/obj/structure/radio/RD = origin
 			if (RD)
-				full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 				if (track)
-					full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		else
 			var/obj/item/weapon/radio/RD = origin
 			if (RD)
-				full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 				if (track)
-					full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 
 
-		on_hear_radio(destination, full_message)
+		on_hear_obj(origin, full_message)
 
-/mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/source, var/obj/item/weapon/telephone/destination)
+/mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/origin, var/obj/item/weapon/telephone/destination)
 
 	if (!client || !message)
 		return
@@ -227,28 +230,24 @@
 	else
 		var/fontsize = 2
 		var/contactname = " "
-		for (var/list/L in source.contacts)
-			if (L[2] == source.phonenumber)
+		for (var/list/L in origin.contacts)
+			if (L[2] == origin.phonenumber)
 				contactname = "[L[1]] "
 				break
 		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([destination.phonenumber]):</font></b><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		if (track)
 			full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([destination.phonenumber]):</font></b><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
-		on_hear_phone(destination, full_message)
+		on_hear_obj(origin, full_message)
 
 
 /proc/say_timestamp()
 	return "<span class='say_quote'>\[[stationtime2text()]\]</span>"
 
-/mob/proc/on_hear_radio(var/obj/structure/radio/destination, var/fullmessage)
-	src << "\icon[getFlatIcon(destination)] [fullmessage]"
-
-/mob/proc/on_hear_phone(var/obj/item/weapon/telephone/destination, var/fullmessage)
-	src << "\icon[getFlatIcon(destination)] [fullmessage]"
-
-/mob/observer/ghost/on_hear_radio(var/obj/structure/radio/destination, var/fullmessage)
-	src << "\icon[getFlatIcon(destination)] [fullmessage]"
-
+/mob/proc/on_hear_obj(var/obj/destination = null, var/fullmessage)
+	if (destination)
+		src << "\icon[getFlatIcon(destination)] [fullmessage]"
+	else
+		src << fullmessage
 /mob/proc/hear_signlang(var/message, var/verb = "gestures", var/datum/language/language, var/mob/speaker = null)
 	if (!client)
 		return

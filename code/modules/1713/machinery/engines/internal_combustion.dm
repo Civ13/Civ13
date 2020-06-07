@@ -89,7 +89,7 @@
 				on = TRUE
 				if (user)
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")
-				playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 3)
+				playsound(loc, starting_snd, 35, FALSE, 3)
 				update_icon()
 				running()
 				for (var/obj/structure/cable/CB in connections)
@@ -119,7 +119,7 @@
 			return
 		if (!done)
 			visible_message("The engine stalls.")
-			playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
+			playsound(loc, ending_snd, 100, FALSE, 3)
 			on = FALSE
 			power_off_connections()
 			currentspeed = 0
@@ -157,6 +157,10 @@
 	torque = 0.9
 	fuelefficiency = 0.3
 	fuels = list("gasoline")
+
+	starting_snd = 'sound/machines/gasoline_starting.ogg'
+	running_snd = 'sound/machines/gasoline_loop.ogg'
+	ending_snd = 'sound/machines/gasoline_ending.ogg'
 
 /obj/structure/engine/internal/gasoline/twostroke
 	name = "two-stroke gasoline engine"
@@ -206,6 +210,10 @@
 	fuelefficiency = 0.37
 	fuels = list("gasoline")
 
+	starting_snd = 'sound/machines/gasoline_starting.ogg'
+	running_snd = 'sound/machines/gasoline_loop.ogg'
+	ending_snd = 'sound/machines/gasoline_ending.ogg'
+
 /obj/structure/engine/internal/turbine
 	name = "turbine engine"
 	desc = "A turbine engine using a air compressor. High Power-To-Weight ratio and can run on a lot of fuels, but has bad fuel economy."
@@ -218,6 +226,9 @@
 	fuelefficiency = 0.4
 	fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil")
 
+	starting_snd = 'sound/machines/turbine_starting.ogg'
+	running_snd = 'sound/machines/turbine_loop.ogg'
+	ending_snd = 'sound/machines/turbine_ending.ogg'
 /obj/structure/engine/internal/diesel
 	name = "diesel engine"
 	desc = "A heavy diesel engine, using compression instead of spark plugs. High torque and fuel efficiency."

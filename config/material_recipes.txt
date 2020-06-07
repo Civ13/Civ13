@@ -755,7 +755,7 @@ RECIPE: /material/plastic/,joy mask,/obj/item/clothing/mask/joy,3,55,0,1,face ma
 
 //*****************| PLASTIC SIGNS |***************************
 
-RECIPE: /material/plastic/,traffic cone,/obj/structure/sign/traffic/cone,1,35,0,1,signs,125,0,0,8,null
+RECIPE: /material/plastic/,traffic cone,/obj/item/weapon/trafficcone,1,35,0,1,signs,125,0,0,8,null
 RECIPE: /material/plastic/,do not enter sign,/obj/structure/sign/traffic/noentry,2,75,0,1,signs,125,0,0,8,null
 RECIPE: /material/plastic/,stop sign,/obj/structure/sign/traffic/stop,2,75,0,1,signs,125,0,0,8,null
 RECIPE: /material/plastic/,yeld sign,/obj/structure/sign/traffic/yeld,2,75,0,1,signs,125,0,0,8,null

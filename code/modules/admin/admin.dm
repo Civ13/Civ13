@@ -41,7 +41,7 @@ proc/admin_notice(var/message, var/rights)
 		usr << "Error: you are not an admin!"
 		return
 
-	var/body = "<html><style>[common_browser_style]</style><head><title>Options for [M.key]</title></head>"
+	var/body = "<html>[common_browser_style]<head><title>Options for [M.key]</title></head>"
 	body += "<body>Options panel for <b>[M]</b>"
 	if (M.client)
 		body += " played by <b>[M.client]</b> "
@@ -130,9 +130,9 @@ proc/admin_notice(var/message, var/rights)
 			if (!f) body += " | "
 			else f = FALSE
 			if (L in M.languages)
-				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[rhtml_encode(k)]' style='color:#006600'>[k]</a>"
+				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[html_encode(k)]' style='color:#006600'>[k]</a>"
 			else
-				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[rhtml_encode(k)]' style='color:#ff0000'>[k]</a>"
+				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[html_encode(k)]' style='color:#ff0000'>[k]</a>"
 
 	body += {"<br>
 		</body></html>
@@ -215,7 +215,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!istype(src,/datum/admins))
 		usr << "Error: you are not an admin!"
 		return
-	var/dat = "<html><style>[common_browser_style]</style><head><title>Info on [key]</title></head>"
+	var/dat = "<html>[common_browser_style]<head><title>Info on [key]</title></head>"
 	dat += "<body>"
 
 	var/p_age = "unknown"
@@ -257,9 +257,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!check_rights(R_ADMIN))	return
 
 	var/dat = {"
-		<style>
 		[common_browser_style]
-		</style>
 		<br>
 		<center><b><big>Game Panel</big></b></center><hr>\n
 		"}
@@ -314,7 +312,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc="Announce your desires to the world"
 	if (!check_rights(0))	return
 
-	var/message = russian_to_cp1251(input("Global message to send:", "Admin Announce", null, null))
+	var/message = input("Global message to send:", "Admin Announce", null, null)
 	if (message)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)
@@ -328,8 +326,8 @@ proc/admin_notice(var/message, var/rights)
 	set name = "IC Announcement"
 	set desc="Announce events"
 	if (!check_rights(0))	return
-	var/messaget = russian_to_cp1251(input("Message Title:", "IC Announcement", null, null))
-	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))
+	var/messaget = input("Message Title:", "IC Announcement", null, null)
+	var/message = input("Global message to send:", "IC Announcement", null, null)
 	if (message)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)

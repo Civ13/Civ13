@@ -4,6 +4,8 @@
 	name = "vehicle wheel"
 	desc = "Used to steer a vehicle."
 	icon_state = "wheel_b"
+	item_state = "wheel_b"
+	worn_state = "wheel_b"
 	var/obj/structure/bed/chair/drivers/drivingchair = null
 	var/obj/structure/vehicleparts/frame/control = null
 	var/lastdirchange = 0
@@ -16,7 +18,7 @@
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (world.time <= lastdirchange)
 		return FALSE
-	lastdirchange = world.time+15
+	lastdirchange = world.time+control.axis.turntimer
 	if (control && control.axis && (control.axis.moving == FALSE || control.axis.currentspeed == 0))
 		return FALSE
 	if (!control || !control.axis)
@@ -77,7 +79,7 @@
 			control.axis.check_corners()
 		if (isemptylist(control.axis.matrix))
 			control.axis.check_matrix()
-		playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 2)
+		playsound(loc, control.axis.engine.starting_snd, 35, FALSE, 2)
 		spawn(40)
 			if (control.axis.engine && control.axis.engine.on)
 				control.axis.engine.running_sound()
@@ -141,7 +143,7 @@
 /obj/structure/bed/chair/drivers
 	name = "driver's seat"
 	desc = "Where you drive the vehicle."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "driver_car"
 	anchored = FALSE
 	var/obj/item/vehicleparts/wheel/modular/wheel = null
@@ -201,6 +203,38 @@
 	if (wheel && buckled_mob && H == buckled_mob && wheel.loc != H)
 		if (buckled_mob.put_in_active_hand(wheel))
 			H << "You grab the wheel."
+			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+				if (H.stat != DEAD && H.civilization != "Police" && H.civilization != "Paramedics")
+					for(var/list/L in map.vehicle_registations)
+						if (L[1]==wheel.control.axis.reg_number && L[2] != H.civilization)
+							if (!(H.real_name in map.warrants))
+								var/reason = "Grand Theft Auto"
+								if (L[2] == "Police")
+									reason = "Theft of a Police Vehicle"
+								if (L[2] == "Paramedics")
+									reason = "Theft of an Ambulance"
+								map.warrants += H.real_name
+								H.gun_permit = 0
+								var/obj/item/weapon/paper_bin/police/PAR = null
+								for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+									PAR = PAR2
+									break
+								if (PAR)
+									var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+									SW.tgt_mob = H
+									SW.tgt = H.real_name
+									SW.tgtcmp = H.civilization
+									SW.reason = reason
+									PAR.add(SW)
+									SW.spawntimer = 12000
+								var/obj/item/weapon/paper/police/warrant/SW2 = new /obj/item/weapon/paper/police/warrant(null)
+								SW2.tgt_mob = H
+								SW2.tgt = H.real_name
+								SW2.tgtcmp = H.civilization
+								SW2.reason = reason
+								map.pending_warrants += SW2
+								SW2.forceMove(null)
+								break
 			return
 	else
 		..()
@@ -226,7 +260,7 @@
 	name = "commander's seat"
 	desc = "The vehicle commander's seat, with a perisope."
 	anchored = FALSE
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "commanders_seat"
 	var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/periscope = null
 	New()

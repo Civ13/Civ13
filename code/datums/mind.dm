@@ -127,9 +127,7 @@
 	<br>
 	<html>
 	<head>
-	<style>
 	[common_browser_style]
-	</style>
 	</head>
 	<body><center>
 	<big>PLACEHOLDER</big>

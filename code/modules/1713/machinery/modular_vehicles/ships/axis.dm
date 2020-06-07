@@ -9,7 +9,7 @@
 	speeds = 3
 	maxpower = 1200
 	speedlist = list(1=15,2=11,3=7)
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 
 /obj/structure/vehicleparts/axis/ship/heavy
@@ -270,89 +270,6 @@
 //the matrix always has to be a square with the sides being the value of largest between the length and height.
 //in this case, 1,1 is the FL, 1,3 is the FR, 4,1 is the BL, 4,3 is the BR.
 //so if we turn LEFT: we will be facing EAST, and it will change to:
-
-/obj/structure/vehicleparts/axis/ship/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none", var/mob/user = null)
-	if (olddir == 0 || newdir == 0 || tdir == "none")
-		return FALSE
-	if (isemptylist(corners))
-		check_corners()
-	if (isemptylist(matrix))
-		check_matrix()
-	matrix_current_locs = list()
-
-	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
-			var/loc2textv = "[locx],[locy]"
-			if (matrix[loc2textv][1])
-				var/turf/currloc = get_turf(matrix[loc2textv][1])
-				var/list/tmplist = list()
-				for (var/atom/movable/MV in currloc)
-					if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
-						tmplist += MV
-				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
-
-	//check if there are no other vehicles/obstacles in the destination areas
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
-			var/loc2textv = "[locx],[locy]"
-			var/dlocfinding = rotation_matrixes[tdir][loc2textv][1]
-			var/turf/T = matrix_current_locs[dlocfinding][1]
-			var/list/todestroy = list()
-			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfinding][1])
-				if (user)
-					user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
-				return FALSE
-				if (!T || T.density)
-					if (user)
-						user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
-					return FALSE
-			for (var/obj/O in T)
-				if ((!locate(O) in transporting) && (!locate(O) in components) && (!locate(O) in masts))
-					if (istype(O, /obj/structure/vehicleparts/frame))
-						var/obj/structure/vehicleparts/frame/FRM = O
-						if (FRM.axis != src)
-							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
-							return FALSE
-					else
-						todestroy += O
-			for(var/obj/OM in todestroy)
-				qdel(OM)
-	dir = newdir
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
-			var/loc2textv = "[locx],[locy]"
-			var/dlocfind = rotation_matrixes[tdir][loc2textv][1]
-			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfind][1])
-				return FALSE
-//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
-			if (islist(matrix_current_locs[loc2textv][2]))
-				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
-					var/turf/toget = matrix_current_locs[dlocfind][1]
-					for (var/mob/living/ML in toget)
-						if (!locate(ML) in transporting)
-							ML.crush()
-					for (var/obj/structure/ST in toget)
-						if (!ST.density)
-							ST.Destroy()
-				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
-					M.forceMove(matrix_current_locs[dlocfind][1])
-					if (istype(M, /obj))
-						var/obj/O = M
-						if (!istype(O, /obj/structure/cannon))
-							O.dir = dir
-						if (istype(O, /obj/structure/vehicleparts/frame))
-							var/obj/structure/vehicleparts/frame/FR = O
-							if (FR.mwheel)
-								FR.mwheel.update_icon()
-						O.update_icon()
-
-	for(var/obj/structure/vehicleparts/VP in components)
-		VP.dir = dir
-		VP.update_icon()
-	return TRUE
-
 
 /obj/structure/vehicleparts/axis/ship/attack_hand(var/mob/living/human/H)
 	if (!ishuman(H))

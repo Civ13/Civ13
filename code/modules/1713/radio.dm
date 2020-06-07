@@ -2,7 +2,7 @@
 /obj/structure/radio
 	name = "radio receiver"
 	desc = "Used to communicate with distant places. Set to 150kHz."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "radio_vintage"
 	flammable = FALSE
 	not_movable = FALSE
@@ -250,9 +250,7 @@ var/global/FREQP = rand(81,100)
 			<html>
 
 			<head>
-			<style>
 			[common_browser_style]
-			</style>
 			</head>
 
 			<body>
@@ -283,9 +281,7 @@ var/global/FREQP = rand(81,100)
 				<html>
 
 				<head>
-				<style>
 				[common_browser_style]
-				</style>
 				</head>
 
 				<body>
@@ -316,9 +312,7 @@ var/global/FREQP = rand(81,100)
 				<html>
 
 				<head>
-				<style>
 				[common_browser_style]
-				</style>
 				</head>
 
 				<body>
@@ -348,9 +342,7 @@ var/global/FREQP = rand(81,100)
 				<html>
 
 				<head>
-				<style>
 				[common_browser_style]
-				</style>
 				</head>
 
 				<body>
@@ -419,12 +411,78 @@ var/global/FREQP = rand(81,100)
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio(msg, speaker.default_language, speaker, src)
 
+//broadcasts an announcement on the Police/Emergency frequency
+/proc/global_broadcast(var/tfreq, var/msg)
+
+	var/list/tried_mobs = list()
+
+	for (var/mob/living/human/hearer in human_mob_list)
+		if (tried_mobs.Find(hearer))
+			continue
+		tried_mobs += hearer
+		var/list/used_radios = list()
+		if (hearer.stat == CONSCIOUS)
+			var/list/radios = list()
+			for (var/obj/structure/radio/radio in view(7, hearer))
+				if (radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (radio.freq == tfreq && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
+					hearer.hear_radio_broadcast(msg, radio)
+			for (var/obj/item/weapon/radio/radio in range(1,get_turf(src)))
+				if (radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (radio.freq == tfreq && radio.receiver_on)
+					hearer.hear_radio_broadcast(msg, radio)
+			for (var/obj/item/weapon/radio/radio in hearer.contents)
+				if (radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (radio.freq == tfreq && radio.receiver_on)
+					hearer.hear_radio_broadcast(msg, radio)
+	// let observers hear it
+	for (var/mob/observer/O in mob_list)
+		O.hear_radio_broadcast(msg, null)
+
+/mob/proc/hear_radio_broadcast(var/message, var/obj/origin = null)
+
+	if (!client || !message)
+		return
+
+	message = capitalize(message)
+
+	if (sleeping || stat==1) //If unconscious or sleeping
+		hear_sleep(message)
+		return
+
+	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
+		if (prob(20))
+			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
+	else
+		var/fontsize = 2
+		var/full_message = ""
+		if (istype(origin, /obj/structure/radio))
+			var/obj/structure/radio/RD = origin
+			if (RD)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
+		else
+			var/obj/item/weapon/radio/RD = origin
+			if (RD)
+				full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
+		on_hear_obj(origin, full_message)
 
 ////////////////PORTABLE RADIOS//////////////////
 /obj/item/weapon/radio
 	name = "portable radio"
 	desc = "Used to communicate with distant places. Set to 150kHz."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "portable_radio3"
 	item_state = "portable_radio3"
 	flammable = FALSE
@@ -550,9 +608,7 @@ var/global/FREQP = rand(81,100)
 		<html>
 
 		<head>
-		<style>
 		[common_browser_style]
-		</style>
 		</head>
 
 		<body>
@@ -618,7 +674,7 @@ var/global/FREQP = rand(81,100)
 /obj/item/weapon/radio/walkietalkie
 	name = "walkie-talkie radio"
 	desc = "Used to communicate with distant places. Set to 150kHz."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "portable_radio4"
 	item_state = "portable_radio4"
 	flammable = FALSE
@@ -745,3 +801,46 @@ var/global/FREQP = rand(81,100)
 			if (R.freq == src.freq)
 				return TRUE
 	return FALSE
+
+/proc/ten_code(message,mob/living/human/speaker)
+	if (!speaker)
+		return message
+	if (speaker.civilization != "Police")
+		return message
+	var/dmessage = message
+	dmessage = splittext(dmessage,"10-")
+	var/tcode = copytext(dmessage[2],1)
+	var/converted = FALSE
+	switch(tcode)
+		if ("0")
+			converted = TRUE
+			dmessage = "10-0: <b>On my way</b>, currently at [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
+		if ("1")
+			converted = TRUE
+			dmessage = "10-1: Reporting in, current location is [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
+		if ("2")
+			converted = TRUE
+			dmessage = "10-2: Reporting in, currently available."
+		if ("3")
+			converted = TRUE
+			dmessage = "10-3: Reporting in, currently busy."
+		if ("4")
+			converted = TRUE
+			dmessage = "10-4: Affirmative!"
+		if ("5")
+			converted = TRUE
+			dmessage = "10-5: Negative!"
+		if ("6")
+			converted = TRUE
+			dmessage = "10-6: Returning to the station."
+		if ("7")
+			converted = TRUE
+			dmessage = "10-7: Prisoner in custody."
+		if ("8")
+			converted = TRUE
+			dmessage = "10-8: NEED IMMEDIATE ASSISTANCE AT [speaker.get_coded_loc()] ([speaker.x],[speaker.y])!"
+
+	if (converted)
+		return dmessage
+	else
+		return message

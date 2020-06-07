@@ -120,7 +120,7 @@
 		healing_stage += 2
 
 	else if (istype(buckled, /obj/structure/medicalbed))
-		healing_stage += 0.25
+		healing_stage += 0.5
 	else
 		healing_stage = 0
 	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable) || istype(buckled, /obj/structure/medicalbed)))

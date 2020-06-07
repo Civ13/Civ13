@@ -88,7 +88,9 @@ var/civmax_research = list(230,230,230)
 	var/next_win = -1
 	var/win_condition_spam_check = FALSE
 	var/list/awards = list()
-
+	var/list/scores = list()
+	var/list/warrants = list()
+	var/list/vehicle_registations = list()
 	// lighting
 	var/list/times_of_day = list("Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night")
 	var/list/zlevels_without_lighting = list()
@@ -188,8 +190,9 @@ var/civmax_research = list(230,230,230)
 
 	var/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
-	var/globalmarketplacecount = 0
-
+	var/list/pending_warrants = list()
+	var/list/emails = list("support@monkeysoft.ug" = list())
+	
 	var/winddirection = "East"
 	var/windspeedvar = 1 // 0 to 4
 	var/windspeed = "a light breeze" // calm, light breeze, moderate breeze, strong breeze, gale

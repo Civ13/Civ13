@@ -140,7 +140,6 @@
 	return (user && user.real_name) ? user.real_name : "Anonymous"
 
 /obj/item/weapon/book/proc/parsepencode(var/t, var/obj/item/weapon/pen/P, mob/user as mob)
-	t = cp1251_to_utf8(t)
 
 	t = replacetext(t, "\[center\]", "<center>")
 	t = replacetext(t, "\[/center\]", "</center>")
