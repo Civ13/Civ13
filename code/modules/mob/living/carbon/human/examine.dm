@@ -53,8 +53,8 @@
 		if (istype(w_uniform,/obj/item/clothing/under))
 			var/obj/item/clothing/under/U = w_uniform
 			if (U.accessories.len)
-				tie_msg += ". Attached to it is [lowertext(english_list(U.accessories))]"
-
+				if (!wear_suit)
+					tie_msg += ". Attached to it is [lowertext(english_list(U.accessories))]"
 		if (w_uniform.blood_DNA)
 			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[w_uniform] [w_uniform.gender==PLURAL?"some":"a"] [(w_uniform.blood_color != "#030303") ? "blood" : "oil"]-stained [w_uniform.name][tie_msg]!</span>\n"
 		else
@@ -281,7 +281,7 @@
 		if ( findtext(pose,".",length(pose)) == FALSE && findtext(pose,"!",length(pose)) == FALSE && findtext(pose,"?",length(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
-	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13)
+	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13 && map.ID != MAP_THE_ART_OF_THE_DEAL)
 		if (original_job)
 			if (ishuman(user) && user != src)
 				var/mob/living/human/H = user
@@ -315,6 +315,14 @@
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[PT.nationality]</b>!</i>"
 				if (H.original_job_title == "Collaborator" && (original_job_title == H.original_job_title || faction_text=="RUSSIAN"))
 					msg += "<br><i>You recognize [T.him] as a fellow <b>collaborator</b>!</i>"
+	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		if (ishuman(user) && user != src)
+			var/mob/living/human/H = user
+			if (H.civilization == "Police" && src.civilization == "Police")
+				msg += "<br><i>[T.He] is a member of the Police.</i>"
+			if (src.gun_permit && H.civilization == "Police")
+				msg += "<br><b>[T.He] has a valid gun permit.</b></b>"
+
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)
 			var/mob/living/human/H = user
@@ -328,8 +336,6 @@
 				if (map.custom_civs[H.civilization][4] != null)
 					if (map.custom_civs[H.civilization][4].real_name == real_name)
 						msg += "<br><b>[T.He] is the leader of your faction.</b>"
-			else if (civilization != "none") // examining someone on another team
-				msg += "<br><span class='warning'><i>[T.He] seems to be a member of [civilization].</i>"
 
 			else
 				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"

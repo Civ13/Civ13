@@ -230,8 +230,6 @@
 		if (direct != olddir)
 			dir = olddir
 			set_dir(direct)
-
-		move_speed = world.time - l_move_time
 		l_move_time = world.time
 		m_flag = TRUE
 		if ((A != loc && A && A.z == z))

@@ -4,7 +4,10 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin")
 
 ////////AXIS: MOVEMENT LOOP/////////
-
+/obj/structure/vehicleparts/axis
+	var/maxdist = 5 //the highest of length and width
+	var/turntimer = 15
+	var/doorcode = 0
 /obj/structure/vehicleparts/axis/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -36,9 +39,10 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 /obj/structure/vehicleparts/axis/proc/movementsound()
 	if (!moving)
 		return
-	playsound(loc, 'sound/machines/tank_moving.ogg',100, TRUE)
-	spawn(30)
-		movementsound()
+	if (istype(wheels[1],/obj/structure/vehicleparts/movement/tracks))
+		playsound(loc, 'sound/machines/tank_moving.ogg',100, TRUE)
+		spawn(30)
+			movementsound()
 
 /obj/structure/vehicleparts/axis/proc/movementloop()
 	if (moving == TRUE)
@@ -290,7 +294,6 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 		VP.anchored = TRUE
 		components += VP
 		VP.name = "[name] axis"
-		VP.color_code = color_code
 		loc = VP
 		return
 
@@ -325,9 +328,9 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 		mside = abs(mside)
 	var/locx = 1
 	var/locy = 1
-	for (locx in 1 to 5)
-		for (locy in 1 to 5)
-			matrix += list("[locx],[locy]" = list(null,0,0, "[locx],[locy]"))
+	for (locx in 1 to maxdist)
+		for (locy in 1 to maxdist)
+			matrix += list("[locx],[locy]" = list(null,locx,locy, "[locx],[locy]"))
 			locy++
 		locx++
 	var/obj/FFL = corners[2]
@@ -350,15 +353,19 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 	for (var/obj/effect/pseudovehicle/PV in components)
 		var/disx = abs(PV.y-FFL.y)
 		var/disy = abs(PV.x-FFL.x)
-		switch(PV.dir)
-			if (SOUTH)
-				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
-			if (NORTH)
-				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
-			if (EAST)
-				matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
-			if (WEST)
-				matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
+		if (disx <= maxdist-1 && disy <= maxdist-1)
+			switch(PV.dir)
+				if (SOUTH)
+					matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
+				if (NORTH)
+					matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
+				if (EAST)
+					matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
+				if (WEST)
+					matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
+		else
+			components -= PV
+			qdel(PV)
 	return TRUE
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
@@ -407,6 +414,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					corners[3] = F
 				else if (dir == EAST) // FL
 					corners[2] = F
+	maxdist=1+max(abs(corners[1].x-corners[2].x),abs(corners[1].y-corners[3].y),abs(corners[1].y-corners[2].y),abs(corners[1].x-corners[3].x))
 	for(var/obj/structure/vehicleparts/frame/FM in components)
 		for(var/obj/structure/vehicleparts/movement/MV in wheels)
 			if (!MV.axis && MV.x == FM.x && MV.y == FM.y && MV.z == FM.z)
@@ -469,8 +477,8 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 	matrix_current_locs = list()
 
 	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
+	for (var/locx=1; locx<=maxdist; locx++)
+		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
 			if (matrix[loc2textv][1])
 				var/turf/currloc = get_turf(matrix[loc2textv][1])
@@ -481,12 +489,23 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
 
 	//check if there are no other vehicles/obstacles in the destination areas
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
+	for (var/locx=1; locx<=maxdist; locx++)
+		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
 			if (!matrix_current_locs[loc2textv].len)
 				return
-			var/dlocfinding = rotation_matrixes[tdir][loc2textv][1]
+			var/dlocfinding
+			switch(maxdist)
+				if (1)
+					dlocfinding = rotation_matrixes1[tdir][loc2textv][1]
+				if (2)
+					dlocfinding = rotation_matrixes2[tdir][loc2textv][1]
+				if (3)
+					dlocfinding = rotation_matrixes3[tdir][loc2textv][1]
+				if (4)
+					dlocfinding = rotation_matrixes4[tdir][loc2textv][1]
+				if (5)
+					dlocfinding = rotation_matrixes5[tdir][loc2textv][1]
 			var/turf/T = matrix_current_locs[dlocfinding][1]
 			var/list/todestroy = list()
 			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfinding][1])
@@ -516,13 +535,24 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 			OBB.dir = OPPOSITE_DIR(dir)
 		else
 			OBB.dir = dir
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
+	for (var/locx=1; locx<=maxdist; locx++)
+		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
-			var/dlocfind = rotation_matrixes[tdir][loc2textv][1]
+			var/dlocfind
+			switch(maxdist)
+				if (1)
+					dlocfind = rotation_matrixes1[tdir][loc2textv][1]
+				if (2)
+					dlocfind = rotation_matrixes2[tdir][loc2textv][1]
+				if (3)
+					dlocfind = rotation_matrixes3[tdir][loc2textv][1]
+				if (4)
+					dlocfind = rotation_matrixes4[tdir][loc2textv][1]
+				if (5)
+					dlocfind = rotation_matrixes5[tdir][loc2textv][1]
 			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfind][1])
 				return FALSE
-//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
+//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
 			if (islist(matrix_current_locs[loc2textv][2]))
 				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
 					var/turf/toget = matrix_current_locs[dlocfind][1]

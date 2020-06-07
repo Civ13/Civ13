@@ -19,7 +19,7 @@
 
 	var/total_positions = FALSE			   // How many players can be this job
 	var/current_positions = FALSE			 // How many players have this job
-	var/selection_color = "#2d2d63"	   // Selection screen color
+	var/selection_color = "#404040"	   // Selection screen color
 
 	var/spawn_location = null
 

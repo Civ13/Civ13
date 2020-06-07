@@ -598,7 +598,7 @@
 				if ("sea")
 					add_language("Gaelic",TRUE)
 					remove_language("English")
-					remove_note("Known Languages","Gaelic")
+					remove_note("Known Languages","English")
 					for (var/datum/language/gaelic/A in languages)
 						default_language = A
 					name = species.get_random_gaelic_name(gender)

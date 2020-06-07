@@ -1,20 +1,16 @@
 /datum/hud
 	var/name
-	var/list/HUDneed//для "активных" элементов (прим. здоровье)
+	var/list/HUDneed
 //	var/list/HUDprocess = list()
-	var/list/slot_data//для инвентаря
+	var/list/slot_data
 	var/icon/icon = null
 	var/list/HUDfrippery
 	var/list/HUDoverlays
-//	var/Xbags
-//	var/Ybags
 	var/list/ConteinerData
 
 /datum/hud/human
 	name = "NewStyle"
 	icon = 'icons/mob/screen/1713Style.dmi'
-	//Xbags,Ybags for space_orient_objs
-	//Others for slot_orient_objs
 	ConteinerData = list(
 		"Xspace" = 2,
 		"Yspace" = 3,
@@ -33,8 +29,6 @@
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov" = list("type" = /obj/screen/fov, "loc" = "1,1", "icon_state" = "blank"),
 
-//		"fishbed" = list("type" = /obj/screen/fishbed, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "fishbed"),
-//		"noise" = list("type" = /obj/screen/noise, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/effects/static.dmi', "icon_state" = "1 light"),
 	)
 	HUDneed = list(
 		// right side
@@ -53,18 +47,13 @@
 		"pull"		= list("type" = /obj/screen/pull,	   "loc" = "16,2"),
 		"drop"		= list("type" = /obj/screen/drop,	   "loc" = "16,2"),
 		"resist"	  = list("type" = /obj/screen/resist,	 "loc" = "16,2"),
-/*		"help"		= list("type" = /obj/screen/fastintent/help,	 "loc" = "16,2"),
-		"disarm"	  = list("type" = /obj/screen/fastintent/disarm,   "loc" = "16,2"),
-		"harm"		= list("type" = /obj/screen/fastintent/harm,	 "loc" = "16,2"),
-		"grab"		= list("type" = /obj/screen/fastintent/grab,	 "loc" = "16,2"),*/
+
 		"intent"	  = list("type" = /obj/screen/intent,	 "loc" = "16,1"),
 		// left side
-//		"equip"	   = list("type" = /obj/screen/equip,	  "loc" = "7,2"),
-//		"swap hand"   = list("type" = /obj/screen/swap,	   "loc" = "7,2"),
+
 		"toggle gun mode"   = list("type" = /obj/screen/gun/mode,	   "loc" = "-2,6"),
 		"allow movement"	= list("type" = /obj/screen/gun/move,	   "loc" = "-2,7"),
 		"allow item use" 	 = list("type" = /obj/screen/gun/item,	   "loc" = "-1,7"),
-//		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1")
 		)
 
 	slot_data = list (
@@ -93,8 +82,6 @@
 /datum/hud/human/civstyle
 	name = "1713Style"
 	icon = 'icons/mob/screen/1713Style.dmi'
-	//Xbags,Ybags for space_orient_objs
-	//Others for slot_orient_objs
 	ConteinerData = list(
 		"Xspace" = 2,
 		"Yspace" = 5,
@@ -111,9 +98,6 @@
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov" = list("type" = /obj/screen/fov, "loc" = "1,1", "icon_state" = "blank"),
-
-//		"fishbed" = list("type" = /obj/screen/fishbed, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "fishbed"),
-//		"noise" = list("type" = /obj/screen/noise, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/effects/static.dmi', "icon_state" = "1 moderate"),
 	)
 	HUDneed = list(
 		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll.dmi'),
@@ -171,8 +155,6 @@
 /datum/hud/human/litewebstyle
 	name = "LiteWebStyle"
 	icon = 'icons/mob/screen/litewebStyle.dmi'
-	//Xbags,Ybags for space_orient_objs
-	//Others for slot_orient_objs
 	ConteinerData = list(
 		"Xspace" = 2,
 		"Yspace" = 5,
@@ -189,9 +171,6 @@
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov" = list("type" = /obj/screen/fov, "loc" = "1,1", "icon_state" = "blank"),
-
-//		"fishbed" = list("type" = /obj/screen/fishbed, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "fishbed"),
-//		"noise" = list("type" = /obj/screen/noise, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/effects/static.dmi', "icon_state" = "1 moderate"),
 	)
 	HUDneed = list(
 		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,6", "icon" = 'icons/mob/screen/healthdoll_lw.dmi'),
@@ -240,8 +219,6 @@
 /datum/hud/human/fofstyle
 	name = "FoFStyle"
 	icon = 'icons/mob/screen/FoFStyle.dmi'
-	//Xbags,Ybags for space_orient_objs
-	//Others for slot_orient_objs
 	ConteinerData = list(
 		"Xspace" = 2,
 		"Yspace" = 5,
@@ -258,9 +235,6 @@
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov" = list("type" = /obj/screen/fov, "loc" = "1,1", "icon_state" = "blank"),
-
-//		"fishbed" = list("type" = /obj/screen/fishbed, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "fishbed"),
-//		"noise" = list("type" = /obj/screen/noise, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/effects/static.dmi', "icon_state" = "1 moderate"),
 	)
 	HUDneed = list(
 		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll_fof.dmi'),

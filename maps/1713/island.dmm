@@ -41,7 +41,7 @@
 "aO" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/island)
 "aP" = (/obj/structure/closet/hideout/beach,/turf/floor/grass,/area/caribbean/island)
 "aQ" = (/obj/structure/wild/tree,/turf/floor/grass,/area/caribbean/island)
-"aR" = (/obj/structure/closet/cabinet{anchored = 1; desc = "Something looks strange in this bush..."; icon = 'icons/obj/wild.dmi'; icon_closed = "small_bush"; icon_opened = "small_bush"; icon_state = "small_bush"; name = "weird bush"; opened = 1},/turf/floor/grass,/area/caribbean/island)
+"aR" = (/obj/structure/closet/cabinet{anchored = 1; desc = "Something looks strange in this bush..."; icon = 'icons/obj/flora/wild.dmi'; icon_closed = "small_bush"; icon_opened = "small_bush"; icon_state = "small_bush"; name = "weird bush"; opened = 1},/turf/floor/grass,/area/caribbean/island)
 "aS" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/island)
 "aT" = (/obj/effect/overlay/coconut,/turf/floor/grass,/area/caribbean/island)
 "aU" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/island)

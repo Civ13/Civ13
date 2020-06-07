@@ -317,10 +317,8 @@
 		usr << "It is fastened to the floor therefore you can't rotate it!"
 		return FALSE
 
-	update_nearby_tiles(need_rebuild=1) //Compel updates before
 	set_dir(turn(dir, 90))
 	updateSilicate()
-	update_nearby_tiles(need_rebuild=1)
 	return
 
 
@@ -336,10 +334,10 @@
 		usr << "It is fastened to the floor therefore you can't rotate it!"
 		return FALSE
 
-	update_nearby_tiles(need_rebuild=1) //Compel updates before
+
 	set_dir(turn(dir, 270))
 	updateSilicate()
-	update_nearby_tiles(need_rebuild=1)
+
 	return
 
 /obj/structure/window/New(Loc, start_dir=null, constructed=0)
@@ -356,22 +354,21 @@
 
 	ini_dir = dir
 
-	update_nearby_tiles(need_rebuild=1)
+
 	update_nearby_icons()
 
 /obj/structure/window/Destroy()
 	density = FALSE
-	update_nearby_tiles()
 	loc = null
 	..()
 
 
 /obj/structure/window/Move()
 	var/ini_dir = dir
-	update_nearby_tiles(need_rebuild=1)
+
 	..()
 	set_dir(ini_dir)
-	update_nearby_tiles(need_rebuild=1)
+
 
 //checks if this window is a full-tile one
 /obj/structure/window/proc/is_fulltile()
@@ -386,7 +383,7 @@
 	update_verbs()
 	update_nearby_icons()
 
-//This proc is used to update the icons of nearby windows. It should not be confused with update_nearby_tiles(), which is an atmos proc!
+//This proc is used to update the icons of nearby windows.
 /obj/structure/window/proc/update_nearby_icons()
 	update_icon()
 	for (var/obj/structure/window/W in orange(src, TRUE))

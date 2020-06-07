@@ -9,6 +9,7 @@
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "paper"
 	item_state = "paper"
+	var/base_icon = "paper"
 	throwforce = FALSE
 	w_class = TRUE
 	throw_range = TRUE
@@ -47,7 +48,7 @@
 		desc = "This is a paper titled '" + name + "'."
 
 	if (info != initial(info))
-		info = rhtml_encode(info)
+		info = html_encode(info)
 		info = replacetext(info, "\n", "<BR>")
 		info = parsepencode(info)
 
@@ -56,7 +57,7 @@
 		update_space(info)
 		updateinfolinks()
 
-	if (map)
+	if (map && base_icon == "paper")
 		if (map.ordinal_age <= 1)
 			name = "papyrus"
 			icon_state = "scrollpaper"
@@ -64,18 +65,19 @@
 
 
 /obj/item/weapon/paper/update_icon()
-	if (map && map.ordinal_age <= 1)
-		if (info)
-			icon_state = "scrollpaper1"
+	if (base_icon == "paper")
+		if (map && map.ordinal_age <= 1)
+			if (info)
+				icon_state = "scrollpaper1"
+			else
+				icon_state = "scrollpaper0"
 		else
-			icon_state = "scrollpaper0"
-	else
-		if (icon_state == "paper_talisman")
-			return
-		if (info)
-			icon_state = "paper_words"
-			return
-		icon_state = "paper"
+			if (icon_state == "paper_talisman")
+				return
+			if (info)
+				icon_state = "paper_words"
+				return
+			icon_state = "paper"
 
 /obj/item/weapon/paper/proc/update_space(var/new_text)
 	if (!new_text)
@@ -218,7 +220,6 @@
 	return (user && user.real_name) ? user.real_name : "Anonymous"
 
 /obj/item/weapon/paper/proc/parsepencode(var/t, var/obj/item/weapon/pen/P, mob/user as mob, var/iscrayon = FALSE)
-	t = cp1251_to_utf8(t)
 
 	t = replacetext(t, "\[center\]", "<center>")
 	t = replacetext(t, "\[/center\]", "</center>")

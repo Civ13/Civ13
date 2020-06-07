@@ -968,6 +968,7 @@
 					change_the_turf()
 					H.adaptStat("strength", 1)
 					return
+/*
 				else
 					if (prob(40))
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
@@ -987,6 +988,7 @@
 						change_the_turf()
 						H.adaptStat("strength", 1)
 						return
+*/
 	if (prob(5))
 		var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
 		mineral.amount = 4

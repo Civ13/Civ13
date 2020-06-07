@@ -110,9 +110,7 @@ var/list/preferences_datums = list()
 	<br>
 	<html>
 	<head>
-	<style>
 	[common_browser_style]
-	</style>
 	</head>
 	<body><center><big><b>PREFERENCES<br><br>
 	"}

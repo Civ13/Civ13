@@ -324,7 +324,7 @@
 
 /obj/item/stack/material/rags
 	name = "rags"
-	icon = 'icons/obj/toy.dmi'
+	icon = 'icons/obj/trash.dmi'
 	icon_state = "rag"
 	default_type = "rags"
 	value = 0.5

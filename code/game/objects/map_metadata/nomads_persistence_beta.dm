@@ -1,5 +1,5 @@
 /obj/map_metadata/nomads_persistence_beta
-	ID = MAP_nomads_persistence_beta
+	ID = MAP_NOMADS_PERSISTENCE_BETA
 	title = "Nomads (Persistence) (600x523x2)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."

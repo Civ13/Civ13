@@ -307,7 +307,7 @@
 "fU" = (/obj/structure/closet/cabinet,/turf/floor/wood{icon_state = "wood-broken3"},/area/caribbean/houses)
 "fV" = (/obj/structure/props/junk{icon_state = "Junk_2"},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "fW" = (/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/houses)
-"fX" = (/obj/structure/sign/traffic/cone,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
+"fX" = (/obj/item/weapon/trafficcone,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "fY" = (/obj/structure/wild/smallbush/winter,/obj/structure/barbwire,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "fZ" = (/obj/structure/sign/painting9,/turf/wall/cement{icon_state = "b_wood_wall"},/area/caribbean/houses)
 "ga" = (/obj/structure/sign/portrait/stalin,/turf/wall/cement{icon_state = "b_wood_wall"},/area/caribbean/houses)

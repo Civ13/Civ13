@@ -56,13 +56,14 @@ var/max_explosion_range = 14
 
 // "convenient" (shitcode) way to make normal windows look like nanoUI, since BYOND won't load stylesheets normally - Kachnov
 var/common_browser_style = {"
-
+<meta charset="UTF-8">
+<style>
 body
 {
 	padding: 0;
 	margin: 0;
 	background-color: #271a0c;
-	font-size: 12px;
+	font-size: 16px;
 	color: #ffffff;
 	line-height: 170%;
 }
@@ -162,22 +163,22 @@ h1, h2, h3, h4, h5, h6
 
 h1
 {
-	font-size: 15px;
+	font-size: 20px;
 }
 
 h2
 {
-	font-size: 14px;
+	font-size: 18px;
 }
 
 h3
 {
-	font-size: 13px;
+	font-size: 16px;
 }
 
 h4
 {
-	font-size: 12px;
+	font-size: 14px;
 }
 
 .uiWrapper
@@ -195,7 +196,7 @@ h4
 	border-bottom: 2px solid #3d3d29;
 	background: #383838;
 	color: #98B0C3;
-	font-size: 16px;
+	font-size: 22px;
 }
 
 .uiTitleWrapper
@@ -260,7 +261,7 @@ h4
 	position: relative;
 	background: #E9C183;
 	color: #15345A;
-	font-size: 10px;
+	font-size: 14px;
 	font-style: italic;
 	padding: 2px 4px 0 4px;
 	margin: 4px;
@@ -369,16 +370,18 @@ div.notice
 	width: 100%;
 	clear: both;
 }
-
+</style>
 "}
 //green on black
 var/computer_browser_style = {"
-
+<meta charset="UTF-8">
+<style>
 body
 {
 	padding: 0;
 	margin: 0;
-	background-color: #2d2d2d;
+	background-color: #161616;
+	font-family: "Lucida Console", monospace;
 	font-size: 16px;
 	color: #009933;
 	line-height: 170%;
@@ -386,16 +389,16 @@ body
 
 hr
 {
-	background-color: #2d2d2d;
+	background-color: #161616;
 	height: 1px;
 }
 
 a, a:link, a:visited, a:active, .linkOn, .linkOff
 {
-	color: #0000ff;
+	color: #00ff00;
 	text-decoration: none;
-	background: #000000;
-	border: 1px solid #2D2D2D;
+	background: #1D1D1D;
+	border: 1px solid #161616;
 	padding: 1px 4px 1px 4px;
 	margin: 0 2px 0 0;
 	cursor:default;
@@ -403,8 +406,8 @@ a, a:link, a:visited, a:active, .linkOn, .linkOff
 
 a:hover
 {
-	color: #ebebe0;
-	background: #7a7a52;
+	color: #005b1e;
+	background: #141414;
 }
 
 a.white, a.white:link, a.white:visited, a.white:active
@@ -479,22 +482,22 @@ h1, h2, h3, h4, h5, h6
 
 h1
 {
-	font-size: 15px;
+	font-size: 20px;
 }
 
 h2
 {
-	font-size: 14px;
+	font-size: 18px;
 }
 
 h3
 {
-	font-size: 13px;
+	font-size: 16px;
 }
 
 h4
 {
-	font-size: 12px;
+	font-size: 16px;
 }
 
 .uiWrapper
@@ -512,7 +515,7 @@ h4
 	border-bottom: 2px solid #3d3d29;
 	background: #383838;
 	color: #98B0C3;
-	font-size: 16px;
+	font-size: 20px;
 }
 
 .uiTitleWrapper
@@ -577,7 +580,7 @@ h4
 	position: relative;
 	background: #E9C183;
 	color: #15345A;
-	font-size: 10px;
+	font-size: 14px;
 	font-style: italic;
 	padding: 2px 4px 0 4px;
 	margin: 4px;
@@ -686,5 +689,5 @@ div.notice
 	width: 100%;
 	clear: both;
 }
-
+</style>
 "}

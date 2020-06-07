@@ -38,12 +38,16 @@
 	do_color()
 	updatedesc()
 
-/obj/structure/fuelpump/premade/gasoline
+/obj/structure/fuelpump/premade/gasoline/New()
+	..()
 	fueltype = "gasoline"
+	name = "[brand] [fueltype] pump"
 	updatedesc()
 
-/obj/structure/fuelpump/premade/diesel
+/obj/structure/fuelpump/premade/diesel/New()
+	..()
 	fueltype = "diesel"
+	name = "[brand] [fueltype] pump"
 	updatedesc()
 
 /obj/structure/fuelpump/premade/yamaha
@@ -51,12 +55,16 @@
 	icon_state = "oilpump1"
 	customcolor = "#7F0000"
 
-/obj/structure/fuelpump/premade/yamaha/gasoline
+/obj/structure/fuelpump/premade/yamaha/gasoline/New()
+	..()
 	fueltype = "gasoline"
+	name = "[brand] [fueltype] pump"
 	updatedesc()
 
-/obj/structure/fuelpump/premade/yamaha/diesel
+/obj/structure/fuelpump/premade/yamaha/diesel/New()
+	..()
 	fueltype = "diesel"
+	name = "[brand] [fueltype] pump"
 	updatedesc()
 
 /obj/structure/fuelpump/n

@@ -3,7 +3,7 @@
 /obj/item/weapon/telephone
 	name = "telephone"
 	desc = "Used to communicate with other telephones. No number."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "telephone"
 	flammable = FALSE
 	density = FALSE
@@ -21,6 +21,58 @@
 	var/maxrange = 0
 	var/list/contacts = list()
 
+/obj/item/weapon/telephone/public
+	name = "phone booth"
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "phonebooth_interior"
+	anchored = TRUE
+	wireless = TRUE
+	var/image/dooroverlay
+	var/open = TRUE
+	var/opening = FALSE
+	var/closing = FALSE
+	New()
+		..()
+		dooroverlay = image(icon=src.icon, icon_state="boothdoor_open", layer=8)
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		if (opening)
+			dooroverlay.icon_state = "phonebooth_opening"
+			opening = FALSE
+		else if (closing)
+			dooroverlay.icon_state = "phonebooth_closing"
+			closing = FALSE
+		else if (open)
+			dooroverlay.icon_state = "boothdoor_open"
+		else
+			dooroverlay.icon_state = "boothdoor_closed"
+		overlays += dooroverlay
+/obj/item/weapon/telephone/public/verb/open()
+	set category = null
+	set name = "Toggle Open"
+	set desc = "Open/Close the Booth."
+
+	set src in view(1)
+	if (!ishuman(usr))
+		return
+	open = !open
+	if (open)
+		closing = TRUE
+		opening = FALSE
+		playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
+		dooroverlay.icon_state = "phonebooth_opening"
+	else
+		closing = FALSE
+		opening = TRUE
+		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
+		dooroverlay.icon_state = "phonebooth_closing"
+	spawn(10)
+		closing = FALSE
+		opening = FALSE
+		update_icon()
 /obj/item/weapon/telephone/verb/name_telephone()
 	set category = null
 	set name = "Name"
@@ -28,6 +80,8 @@
 
 	set src in view(1)
 	if (!ishuman(usr))
+		return
+	if (istype(src, /obj/item/weapon/telephone/public))
 		return
 	var/yn = input(usr, "Name this telephone?") in list("Yes", "No")
 	if (yn == "Yes")
@@ -133,9 +187,9 @@ var/list/global/phone_numbers = list()
 						visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
 						return
 		else
-			var/found_tower = FALSE
-			for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
-				found_tower = TRUE
+			var/found_tower = TRUE
+//			for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
+//				found_tower = TRUE
 			if (found_tower)
 				ring_phone(tgtnum,phonenumber, src, user)
 				spawn(200)
@@ -145,7 +199,7 @@ var/list/global/phone_numbers = list()
 			else
 				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."
 				return
-	if (connected)
+	else if (connected)
 		connected = FALSE
 		if (origincall)
 			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
@@ -156,8 +210,18 @@ var/list/global/phone_numbers = list()
 			origincall.connected = FALSE
 			origincall.origincall = null
 			origincall = null
-
-	if (ringing && ringingnum)
+	else if (ringing && !ringingnum)
+		user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+		ringing = FALSE
+		if (origincall)
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
+			origincall.origincall = null
+			origincall.connected = FALSE
+			origincall = null
+	else if (ringing && ringingnum)
 		ringing = FALSE
 		connected = ringingnum
 		if (origincall)
@@ -187,7 +251,14 @@ var/list/global/phone_numbers = list()
 	wireless = TRUE
 	maxrange = 40
 	w_class = 2
-
+	New()
+		..()
+		spawn(10)
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			update_icon()
+	update_icon()
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			icon_state = "celly"
 /obj/item/weapon/telephone/mobile/attack_self(var/mob/user as mob)
 	if (!connected && !ringing)
 		var/choice1 = WWinput(user, "What do you want to do?", "Mobile Phone", "Cancel", list("Call Number", "Call Contact", "Add Contact"))
@@ -226,14 +297,15 @@ var/list/global/phone_numbers = list()
 				if (!callnum)
 					return
 				var/tgtnum = callnum
-				var/found_tower = FALSE
-				for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
-					found_tower = TRUE
+				var/found_tower = TRUE
+//				for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
+//					found_tower = TRUE
 				if (found_tower)
 					ring_phone(tgtnum,phonenumber, src, user)
 					spawn(200)
 						if (!connected)
 							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
+							ringing = FALSE
 							return
 				else
 					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>No signal."
@@ -265,17 +337,24 @@ var/list/global/phone_numbers = list()
 	if (!origin || !target)
 		return
 	else
+		var/found = FALSE
 		for (var/obj/item/weapon/telephone/TLG in world)
+			found = TRUE
 			if (TLG.phonenumber == target && TLG.phonenumber != origin)
-				if (!TLG.ringing)
+				if (!TLG.ringing && !TLG.connected)
 					TLG.ringing = TRUE
+					originphone.ringing = TRUE
 					TLG.ringproc(origin, originphone)
 					if (user)
 						if (targetc != "")
 							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing <b>[targetc]</b> ([target])..."
 						else
 							user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing [target]..."
-
+				else
+					user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number occupied."
+					return
+		if (!found)
+			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number not found."
 /obj/item/weapon/telephone/wireless
 	name = "telephone"
 	desc = "Used to communicate with other telephones. No number."
@@ -287,22 +366,37 @@ var/list/global/phone_numbers = list()
 /obj/item/weapon/telephone/mobile/police
 	name = "911 terminal"
 	desc = "Emergency calls will be received here."
-	icon = 'icons/obj/modern_structures.dmi'
-	icon_state = "radio_transmitter"
+	icon = 'icons/obj/device.dmi'
+	icon_state = "police_intercom"
 	phonenumber = 911
 	anchored = TRUE
 	New()
 		..()
 		phone_numbers += phonenumber
+	update_icon()
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			icon_state = "police_intercom"
 /obj/item/weapon/telephone/mobile/faction
+	icon_state = "telephone"
+	anchored = TRUE
+	New()
+		..()
+		phone_numbers += phonenumber
+		update_icon()
+	update_icon()
+		icon_state = "telephone"
 /obj/item/weapon/telephone/mobile/faction/red
 	name = "Red phone"
+	phonenumber = 1111
 /obj/item/weapon/telephone/mobile/faction/blue
 	name = "Blue phone"
+	phonenumber = 2222
 /obj/item/weapon/telephone/mobile/faction/green
 	name = "Green phone"
+	phonenumber = 3333
 /obj/item/weapon/telephone/mobile/faction/yellow
 	name = "Yellow phone"
+	phonenumber = 4444
 
 /obj/item/weapon/telephone/mobile/faction/New()
 	..()

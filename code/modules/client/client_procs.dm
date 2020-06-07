@@ -340,6 +340,9 @@
 /client/proc/send_resources()
 
 	getFiles(
+		'UI/minimap.png',
+		'UI/images/uos94.png',
+		'UI/images/uos.png',
 		'UI/templates/appearance_changer.tmpl',
 		'UI/templates/chem_disp.tmpl',
 		'UI/templates/layout_basic.tmpl',

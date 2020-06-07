@@ -19,7 +19,7 @@
 			if (map && map.ID != MAP_TRIBES)
 				message = pick("uh uh uh!","UH UH", "OOGA", "BOOGA")
 				animalistic = TRUE
-	message = capitalize_cp1251(sanitize(message))
+	message = capitalize(sanitize(message))
 
 	for (var/i in dictionary_list)
 		message = replacetext(message,i[1],i[2])

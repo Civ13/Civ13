@@ -1,7 +1,7 @@
 /obj/item/weapon/paper_bin
 	name = "paper bin"
 	icon = 'icons/obj/bureaucracy.dmi'
-	icon_state = "paper_bin1"
+	icon_state = "paper_bin0"
 	item_state = "sheet-metal"
 	throwforce = TRUE
 	w_class = 3
@@ -60,7 +60,14 @@
 
 	add_fingerprint(user)
 	return
-
+/obj/item/weapon/paper_bin/proc/add(obj/item/weapon/paper/i)
+	if (!istype(i))
+		return
+	i.loc = src
+	visible_message("<font color='yellow'><big>A [i] arrived in \the [src]!</big></span>")
+	papers.Add(i)
+	update_icon()
+	amount++
 
 /obj/item/weapon/paper_bin/attackby(obj/item/weapon/paper/i as obj, mob/user as mob)
 	if (!istype(i))

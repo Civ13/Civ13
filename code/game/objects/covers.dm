@@ -1443,7 +1443,7 @@
 	if (istype(W, /obj/item/weapon/barrier))
 		if (stage == 3)
 			user << "You start adding dirt to the wall..."
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src) && W)
 				user << "You finish adding dirt to the wall, completing it."
 				qdel(W)
 				new /obj/covers/dirt_wall/blocks(loc)
@@ -1583,7 +1583,7 @@
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
 		if (stage >= 2)
 			user << "You start adding clay blocks to the wall..."
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src) && W)
 				user << "You finish adding clay blocks to the wall, completing it."
 				qdel(W)
 				var/obj/covers/clay_wall/S = new /obj/covers/clay_wall(loc)
@@ -1660,7 +1660,7 @@
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
 		if (stage >= 2)
 			user << "You start adding clay to the wall..."
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src) && W)
 				user << "You finish adding clay to the wall, completing it."
 				qdel(W)
 				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
@@ -1811,7 +1811,7 @@
 /obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
 		user << "You start adding cement to the wall..."
-		if (do_after(user, 20, src))
+		if (do_after(user, 20, src) && W)
 			user << "You finish adding cement to the wall, completing it."
 			qdel(W)
 			new /obj/covers/cement_wall(loc)
@@ -1843,7 +1843,7 @@
 /obj/covers/brick_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired))
 		user << "You start adding bricks to the wall..."
-		if (do_after(user, 20, src))
+		if (do_after(user, 20, src) && W)
 			user << "You finish adding bricks to the wall, completing it."
 			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window","Full Window"))
 			if (choice == "Wall")
