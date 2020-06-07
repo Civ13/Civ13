@@ -249,7 +249,12 @@
 		else
 		 user << "You do not have a valid gun permit. Get one first from your local police station."
 		 return
-
+	attackby(obj/item/I, mob/living/human/user)
+		if (user.gun_permit)
+			..()
+		else
+		 user << "You do not have a valid gun permit. Get one first from your local police station."
+		 return
 /obj/structure/vending/police_equipment
 	name = "police equipment"
 	desc = "All the equipment to keep your officers in top shape."

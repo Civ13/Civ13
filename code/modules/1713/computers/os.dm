@@ -338,10 +338,16 @@
 			do_html(user)
 			return
 		else
-			if (istype(user.get_active_hand(),/obj/item/stack/money))
-				var/obj/item/stack/money/M = user.get_active_hand()
-				if (M.value*M.amount >= 100*4)
+			if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
+				var/obj/item/stack/money/M
+				if (istype(user.get_active_hand(),/obj/item/stack/money))
+					M = user.get_active_hand()
+				else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
+					M = user.get_inactive_hand()
+				if (M && M.value*M.amount >= 100*4)
 					M.amount-=100/5
+					if (M.amount <= 0)
+						qdel(M)
 				else
 					mainbody += "<font color='red'>Not enough money! You need to have 100 dollars in your hands to pay for the permit.</font>"
 					sleep(0.5)
