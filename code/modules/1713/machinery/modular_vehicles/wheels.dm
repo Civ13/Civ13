@@ -227,13 +227,13 @@
 									SW.reason = reason
 									PAR.add(SW)
 									SW.spawntimer = 12000
-								var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(null)
-								SW.tgt_mob = H
-								SW.tgt = H.real_name
-								SW.tgtcmp = H.civilization
-								SW.reason = reason
-								map.pending_warrants += SW
-								SW.forceMove(null)
+								var/obj/item/weapon/paper/police/warrant/SW2 = new /obj/item/weapon/paper/police/warrant(null)
+								SW2.tgt_mob = H
+								SW2.tgt = H.real_name
+								SW2.tgtcmp = H.civilization
+								SW2.reason = reason
+								map.pending_warrants += SW2
+								SW2.forceMove(null)
 								break
 			return
 	else

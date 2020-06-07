@@ -62,11 +62,11 @@
 	icon_state = "frame_steel_corner_rf"
 /obj/structure/vehicleparts/frame/car/van/lfc
 	w_front = list("vanwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "vanwindshield2door_left"
 /obj/structure/vehicleparts/frame/car/van/rfc
 	w_front = list("vanwindshield2door_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
-	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "vanwindshield2door_right"
 /obj/structure/vehicleparts/frame/car/van/cfc
 	w_front = list("truckwindshield_center",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -77,7 +77,7 @@
 	hasoverlay = "vanback_left"
 	icon_state = "frame_steel_corner_lb"
 /obj/structure/vehicleparts/frame/car/van/cb
-	w_back = list("vanback_centerU",TRUE,TRUE,0,0.1,TRUE,TRUE)
+	w_back = list("vanback_centerU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "vanback_center"
 	icon_state = "frame_steel_corner_cb"
 /obj/structure/vehicleparts/frame/car/van/rb

@@ -376,6 +376,7 @@
 						NW.tgt_mob = SW.tgt_mob
 						NW.tgt = SW.tgt
 						NW.tgtcmp = SW.tgtcmp
+						NW.reason = SW.reason
 						NW.arn = SW.arn
 						playsound(loc, 'sound/machines/printer.ogg', 100, TRUE)
 						mainbody += "Sucessfully printed warrant number [tcode]."
