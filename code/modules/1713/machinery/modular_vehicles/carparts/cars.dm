@@ -353,7 +353,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 4
-	maxpower = 600
+	maxpower = 700
 	speedlist = list(1=8,2=6,3=4.5,4=3.5)
 	turntimer = 5
 
