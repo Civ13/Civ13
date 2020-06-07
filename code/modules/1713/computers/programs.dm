@@ -826,3 +826,338 @@
 		WWalert(user,"Mail sent successfully!","E-mail Sent")
 	sleep(0.5)
 	do_html(user)
+
+/////////////////////////////////////////////////
+/////////////////////DEEPNET MARKETPLACE/////////
+/datum/program/deepnet
+	name = "D.E.E.P.N.E.T."
+	description = "The not-so-legal marketplace for all your dodgy needs."
+	compatible_os = list("unga OS 94","unga OS")
+
+/datum/program/deepnet/do_html(mob/living/human/user)
+	if (mainbody == "---")
+		mainbody = "<h2>D.E.E.P.N.E.T.</h2><br>"
+		mainbody += "<b>All deliveries in a maximum of 2 minutes!</i></b><br>"
+		mainbody += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
+	..()
+
+/datum/program/deepnet/Topic(href, href_list, hsrc)
+	..()
+	mainbody = "<h2>D.E.E.P.N.E.T.</h2><br>"
+	mainbody += "<b>All deliveries in a maximum of 2 minutes!</i></b><br>"
+	mainbody += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
+	if (href_list["deepnet"])
+		if (findtext(href_list["deepnet"],"b"))
+			var/tcode = replacetext(href_list["deepnet"],"b","")
+			var/cost = (map.globalmarketplace[tcode][4])
+			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
+				mainbody += "<b>You need to have money in one of your hands!</b>"
+			else
+				var/obj/item/stack/money/mstack = null
+				if (istype(user.l_hand, /obj/item/stack/money))
+					mstack = user.l_hand
+				else
+					mstack = user.r_hand
+				if (mstack.value*mstack.amount >= cost)
+					mstack.amount -= (cost/mstack.value)
+					if (mstack.amount<= 0)
+						qdel(mstack)
+					var/obj/BO = map.globalmarketplace[tcode][2]
+					if (BO)
+						BO.forceMove(get_turf(src))
+					map.globalmarketplace[tcode][7] = 0
+					mainbody += "You fulfill the order."
+					var/seller = map.globalmarketplace[tcode][1]
+					map.marketplaceaccounts[seller] += cost
+					map.globalmarketplace -= map.globalmarketplace[tcode]
+				else
+					mainbody += "<b>Not enough money!</b>"
+
+		if (findtext(href_list["deepnet"],"ch"))
+			var/tcode = replacetext(href_list["deepnet"],"ch","")
+			var/cost = (map.globalmarketplace[tcode][4])
+			var/newprice = input(user, "What shall the new price be, in dollars?","DEEPNET",cost/4) as num|null
+			if (!isnum(newprice))
+				return
+			if (newprice <= 0)
+				return
+			map.globalmarketplace[tcode][4] = newprice*4
+			mainbody += "You update the listing's price."
+			sleep(0.5)
+			do_html(user)
+			return
+		if (findtext(href_list["deepnet"],"cn"))
+			var/tcode = replacetext(href_list["deepnet"],"cn","")
+			var/obj/BO = map.globalmarketplace[tcode][2]
+			BO.forceMove(get_turf(src))
+			map.globalmarketplace[tcode][7] = 0
+			map.globalmarketplace -= map.globalmarketplace[tcode]
+			mainbody += "You cancel your sell order and get your items back."
+			sleep(0.5)
+			do_html(user)
+			return
+		switch(href_list["deepnet"])
+			if ("2") //buy
+				var/list/currlist = list()
+				for (var/i in map.globalmarketplace)
+					if (map.globalmarketplace[i][7]==1)
+						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+				if (isemptylist(currlist))
+					mainbody += "<b>There are no orders on the DEEPNET!</b>"
+				for (var/list/k in currlist)
+					mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
+			if ("3","6","7","8") //sell
+				mainbody += "<a href='?src=\ref[src];deepnet=6'>Add New</a>&nbsp;<a href='?src=\ref[src];deepnet=7'>Change</a>&nbsp;<a href='?src=\ref[src];deepnet=8'>Cancel</a><br><br>"
+				if (href_list["deepnet"] == "6") //add
+					var/obj/item/M = user.get_active_hand()
+					if (M && istype(M))
+						if (istype(M, /obj/item/stack))
+							var/obj/item/stack/ST = M
+							if (ST.amount <= 0)
+								return
+							else
+								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars) 0 to cancel.") as num|null
+								if (!isnum(price))
+									return
+								if (price <= 0)
+									return
+								else
+									//owner, object, amount, price, sale/buy, fulfilled
+									var/idx = rand(1,999999)
+									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"sale","[idx]",1))
+									user.drop_from_inventory(ST)
+									ST.forceMove(locate(0,0,0))
+									mainbody += "You place \the [ST] for sale in the <b>DEEPNET</b>."
+									sleep(0.5)
+									do_html(user)
+									return
+						else
+							var/price = input(user, "What price do you want to place the [M] for sale in the DEEPNET? (in dollars).") as num|null
+							if (!isnum(price))
+								return
+							if (price <= 0)
+								return
+							else
+								//owner, object, amount, price, sale/buy, id number, fulfilled
+								var/idx = rand(1,999999)
+								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"sale","[idx]",1))
+								user.drop_from_inventory(M)
+								M.forceMove(locate(0,0,0))
+								mainbody += "You place \the [M] for sale in the <b>DEEPNET</b>."
+								sleep(0.5)
+								do_html(user)
+								return
+					else
+						WWalert(user,"Failed to create the order! You need to have the item in your active hand.","DEEPNET")
+				if (href_list["deepnet"] == "7") //change
+					var/list/currlist = list()
+					for (var/i in map.globalmarketplace)
+						if (map.globalmarketplace[i][1] == user.civilization)
+							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+					if (isemptylist(currlist))
+						mainbody += "You have no orders on the market!"
+						sleep(0.5)
+						do_html(user)
+						return
+					for (var/list/k in currlist)
+						mainbody += "<a href='?src=\ref[src];deepnet=ch[k[1]]'>[k[2]]</a><br>"
+				if (href_list["deepnet"] == "8") //cancel
+					var/list/currlist = list()
+					for (var/i in map.globalmarketplace)
+						if (map.globalmarketplace[i][1] == user.civilization)
+							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+					if (isemptylist(currlist))
+						mainbody += "You have no orders on the market!"
+						sleep(0.5)
+						do_html(user)
+						return
+					for (var/list/k in currlist)
+						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a><br>"
+
+			if ("4") //account
+				mainbody += "<big>Account: <b>[user.civilization]</b></big><br><br>"
+				var/accmoney = map.marketplaceaccounts[user.civilization]
+				if (map.marketplaceaccounts[user.civilization])
+					if (accmoney <= 0)
+						mainbody += "<b>Your account is empty!</b>"
+						map.marketplaceaccounts[user.civilization] = 0
+					else
+						mainbody += "You have [accmoney/4] dollars in your company's account.<br>"
+						mainbody += "<a href='?src=\ref[src];deepnet=5'>Withdraw</a>"
+				else
+					mainbody += "<b>Your account is empty!</b>"
+			if ("5") //withdraw
+				var/accmoney = map.marketplaceaccounts[user.civilization]
+				if (accmoney > 0)
+					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(src))
+					SC.amount = accmoney/20
+					accmoney = 0
+					map.marketplaceaccounts[user.civilization] = 0
+					do_html(user)
+	sleep(0.5)
+	do_html(user)
+
+///////////////////////////////////////////////////
+/////////////////////CARTRADER MARKETPLACE/////////
+
+/datum/program/cartrader
+	name = "CARTRADER Platform"
+	description = "The number 1 online car dealership."
+	compatible_os = list("unga OS 94","unga OS")
+
+/datum/program/cartrader/do_html(mob/living/human/user)
+	if (mainbody == "---")
+		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
+		mainbody = "<h2>CARTRADER NETWORK</h2><br>"
+		for (var/i in choice)
+			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
+	..()
+
+/datum/program/cartrader/Topic(href, href_list, hsrc)
+	..()
+	if (href_list["carlist"])
+		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
+		mainbody = "<h2>CARTRADER NETWORK</h2><br>"
+		for (var/i in choice)
+			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
+		sleep(0.5)
+		do_html(user)
+	if (href_list["cartrader"])
+		var/found = FALSE
+		for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+			if (found)
+				break
+			for (var/obj/structure/ST in T)
+				found = TRUE
+				break
+			for (var/mob/living/human/HT in T)
+				found = TRUE
+				break
+		if (found)
+			mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Clear the arrival area first.</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+			sleep(0.5)
+			do_html(user)
+			return
+		var/c_cost = splittext(href_list["cartrader"],"(")[2]
+		c_cost = replacetext(href_list["cartrader"],"(","")
+		c_cost = text2num(href_list["cartrader"])
+		if (href_list["cartrader"] == "Yamasaki M125 motorcycle (160)")
+			if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
+				var/obj/item/stack/money/D
+				if (istype(user.get_active_hand(),/obj/item/stack/money))
+					D = user.get_active_hand()
+				else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
+					D = user.get_inactive_hand()
+				if (D && D.value*D.amount >= c_cost*4)
+					D.amount-=c_cost/5
+				else
+					mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+					sleep(0.5)
+					do_html(user)
+					return
+			else
+				mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+				sleep(0.5)
+				do_html(user)
+				return
+			new /obj/structure/vehicle/motorcycle/m125/full(locate(origin.x+4,origin.y-1,origin.z))
+			new /obj/item/clothing/head/helmet/motorcycle(locate(origin.x+4,origin.y-1,origin.z))
+			return
+		else
+			var/obj/effects/premadevehicles/PV
+			var/chosencolor = WWinput(user,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
+			var/basecolor = chosencolor
+			switch(chosencolor)
+				if ("Black")
+					chosencolor = "#181717"
+				if ("Light Grey")
+					chosencolor = "#919191"
+				if ("Dark Grey")
+					chosencolor = "#616161"
+				if ("White")
+					chosencolor = "#FFFFFF"
+				if ("Green")
+					chosencolor = "#007F00"
+				if ("Red")
+					chosencolor = "#7F0000"
+				if ("Yellow")
+					chosencolor = "#b8b537"
+				if ("Blue")
+					chosencolor = "#00007F"
+			for(var/turf/T in get_area_turfs(/area/caribbean/supply))
+				if (found)
+					break
+				for (var/obj/structure/ST in T)
+					found = TRUE
+					break
+				for (var/mob/living/human/HT in T)
+					found = TRUE
+					break
+			if (found)
+				mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Clear the arrival area first.</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+				sleep(0.5)
+				do_html(user)
+				return
+			if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
+				var/obj/item/stack/money/D
+				if (istype(user.get_active_hand(),/obj/item/stack/money))
+					D = user.get_active_hand()
+				else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
+					D = user.get_inactive_hand()
+				if (D && D.value*D.amount >= c_cost*4)
+					D.amount-=c_cost/5
+				else
+					mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+					sleep(0.5)
+					do_html(user)
+					return
+			else
+				mainbody = "<h2>CARTRADER NETWORK</h2><br><font color='yellow'>Not enough money!</font><br><a href='?src=\ref[src];carlist=1'>Return to List</a><br>"
+				sleep(0.5)
+				do_html(user)
+				return
+			if (href_list["cartrader"] == "ASNO Quattroporte (500)")
+				PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(origin.x+3,origin.y-3,origin.z))
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "ASNO Quattroporte", basecolor))
+
+			else if (href_list["cartrader"] == "ASNO Piccolino (400)")
+				PV = new /obj/effects/premadevehicles/asno/piccolino(locate(origin.x+3,origin.y-3,origin.z))
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "ASNO Piccolino", basecolor))
+
+			else if (href_list["cartrader"] == "Ubermacht Erstenklasse (800)")
+				PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(origin.x+3,origin.y-3,origin.z))
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Ubermacht Erstenklasse", basecolor))
+
+			else if (href_list["cartrader"] == "SMC Falcon (750)")
+				PV = new /obj/effects/premadevehicles/smc/falcon(locate(origin.x+3,origin.y-3,origin.z))
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "SMC Falcon", basecolor))
+
+			else if (href_list["cartrader"] == "Yamasaki Kazoku (600)")
+				PV = new /obj/effects/premadevehicles/yamasaki/kazoku(locate(origin.x+3,origin.y-3,origin.z))
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Kazoku", basecolor))
+
+			else if (href_list["cartrader"] == "Yamasaki Shinobu 5000 (900)")
+				PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(origin.x+3,origin.y-3,origin.z))
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Shinobu 5000", basecolor))
+			else if  (href_list["cartrader"] == "SMC Wyoming (700)")
+				PV = new /obj/effects/premadevehicles/smc/wyoming(locate(origin.x+3,origin.y-3,origin.z))
+				spawn(5)
+					map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "SMC Wyoming", basecolor))
+
+			PV.custom_color = chosencolor
+			PV.doorcode = rand(1000,9999)
+			PV.new_number()
+			var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(origin.loc)
+			C.name = "[PV.reg_number] key"
+			C.icon_state = "modern"
+			C.code = PV.doorcode
+			var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(origin.loc)
+			C2.name = "[PV.reg_number] key"
+			C2.icon_state = "modern"
+			C2.code = PV.doorcode
