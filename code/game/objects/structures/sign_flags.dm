@@ -269,6 +269,23 @@
 	desc = "A flag."
 	icon_state = "f_white"
 
+/obj/structure/sign/logo/red
+	name = "Rednikov Industries Logo"
+	desc = "A sign with the logo of Rednikov Industries"
+	icon_state = "red_logo"
+/obj/structure/sign/logo/yellow
+	name = "Goldstein Solutions"
+	desc = "A sign with the logo of Goldstein Solutions"
+	icon_state = "yellow_logo"
+/obj/structure/sign/logo/blue
+	name = "Giovanni Blu Stocks"
+	desc = "A sign with the logo of Giovanni Blu Stocks"
+	icon_state = "blue_logo"
+/obj/structure/sign/logo/green
+	name = "MacGreene Traders"
+	desc = "A sign with the logo of MacGreene Traders"
+	icon_state = "green_logo"
+
 /obj/item/flagmaker
 	name = "custom flag maker"
 	desc = "A white cotton sheet and some colored ink."
