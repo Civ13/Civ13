@@ -1,3 +1,62 @@
+///////////DATUMS////////////////////
+/datum/email
+	var/subject = "no subject"
+	var/sender = "unknown"
+	var/receiver = "unknown"
+	var/message = ""
+	var/date = "0:00"
+
+/datum/email/New(list/properties = null)
+	..()
+	if (!properties) return
+
+	for (var/propname in vars)
+		if (!isnull(properties[propname]))
+			vars[propname] = properties[propname]
+
+/datum/program
+	var/name = "program"
+	var/description = "a basic computer program."
+	var/size = 0 //size in kb (unused for now)
+	var/list/compatible_os = list("unga OS 94")
+	var/list/local_vars = list() //where local vars get stored, as items in the list
+	var/mainbody = "---"
+	var/mainmenu = "---"
+	var/obj/structure/computer/origin //where the program is located
+
+//commands should be put here in child datums, using if or switch conditions.
+/datum/program/proc/run_cmd(command,mob/living/human/user)
+	if (!origin)
+		return
+	if (command == "quit")
+		return
+	if (user)
+		sleep(0.5)
+		origin.do_html(user)
+/datum/program/proc/do_html(mob/living/human/user)
+	usr << browse(mainbody,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+
+/datum/program/Topic(href, href_list, hsrc)
+	if (!origin)
+		return
+
+	var/mob/living/human/user = origin.user
+
+	if (!user || user.lying || !ishuman(user))
+		return
+
+	user.face_atom(origin)
+
+	if (!locate(user) in range(1,origin))
+		user << "<span class = 'danger'>Get next to \the [origin] to use it.</span>"
+		return FALSE
+
+	if (!user.can_use_hands())
+		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		return FALSE
+
+////////////////////////////////////
+
 #define ORION_TRAIL_WINTURN		9
 
 //Orion Trail Events
@@ -19,9 +78,9 @@
 #define ORION_STATUS_GAMEOVER	3
 #define ORION_STATUS_MARKET		4
 
-/obj/structure/computer/orion_trail
+/datum/program/orion_trail
 	name = "The Orion Trail"
-	desc = "Learn how our ancestors got to Orion, and have fun in the process!"
+	description = "Learn how our descendants will get to Orion, and have fun in the process!"
 	var/busy = FALSE //prevent clickspam that allowed people to ~speedrun~ the game.
 	var/engine = 0
 	var/hull = 0
@@ -56,7 +115,7 @@
 	var/list/gamers = list()
 	var/killed_crew = 0
 
-/obj/structure/computer/orion_trail/proc/Reset()
+/datum/program/orion_trail/proc/Reset()
 	// Sets up the main trail
 	stops = list("Pluto","Asteroid Belt","Proxima Centauri","Dead Space","Rigel Prime","Tau Ceti Beta","Black Hole","Space Outpost Beta-9","Orion Prime")
 	stopblurbs = list(
@@ -71,7 +130,7 @@
 		"You have made it to Orion! Congratulations! Your crew is one of the few to start a new foothold for mankind!"
 		)
 
-/obj/structure/computer/orion_trail/proc/newgame()
+/datum/program/orion_trail/proc/newgame()
 	// Set names of settlers in crew
 	settlers = list()
 	for(var/i = 1; i <= 3; i++)
@@ -95,7 +154,7 @@
 	spaceport_freebie = 0
 	last_spaceport_action = ""
 
-/obj/structure/computer/orion_trail/do_html(mob/user)
+/datum/program/orion_trail/do_html(mob/living/human/user)
 	if(fuel <= 0 || food <=0 || settlers.len == 0)
 		gameStatus = ORION_STATUS_GAMEOVER
 		event = null
@@ -114,13 +173,13 @@
 		mainbody += "<P ALIGN=Right><a href='?src=\ref[src];menu=1'>May They Rest In Peace</a></P>"
 
 	else if(event)
-		mainbody = eventdat
+		mainbody = "<head>[computer_browser_style]</head>[eventdat]"
 	else if(gameStatus == ORION_STATUS_NORMAL)
 		var/title = "title"
 		var/subtext = "subtext"
-		if (stops[turns])
+		if (stops.len && stops[turns])
 			title = stops[turns]
-		if (stopblurbs[turns])
+		if (stopblurbs.len && stopblurbs[turns])
 			subtext = stopblurbs[turns]
 		mainbody = "<head>[computer_browser_style]</head><center><h1>[title]</h1></center>"
 		mainbody += "[subtext]"
@@ -136,21 +195,23 @@
 		mainbody += "<P ALIGN=Right><a href='?src=\ref[src];close=1'>Close</a></P>"
 	else
 		mainbody = "<head>[computer_browser_style]</head><center><h2>The Orion Trail</h2></center>"
-		mainbody += "<br><center><h3>Experience the journey of your ancestors!</h3></center><br><br>"
+		mainbody += "<br><center><h3>Experience the journey of your descendants!</h3></center><br><br>"
 		mainbody += "<center><b><a href='?src=\ref[src];newgame=1'>New Game</a></b></center>"
-	usr << browse(mainbody,"window=opsys;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+	..()
 
-/obj/structure/computer/orion_trail/Topic(href, href_list, hsrc)
+/datum/program/orion_trail/Topic(href, href_list, hsrc)
+	if (!origin)
+		return
 
-	var/mob/living/human/user = usr
+	var/mob/living/human/user = origin.user
 
 	if (!user || user.lying || !ishuman(user))
 		return
 
-	user.face_atom(src)
+	user.face_atom(origin)
 
-	if (!locate(user) in range(1,src))
-		user << "<span class = 'danger'>Get next to \the [src] to use it.</span>"
+	if (!locate(user) in range(1,origin))
+		user << "<span class = 'danger'>Get next to \the [origin] to use it.</span>"
 		return FALSE
 
 	if (!user.can_use_hands())
@@ -165,7 +226,7 @@
 	if (href_list["continue"]) //Continue your travels
 		if(gameStatus == ORION_STATUS_NORMAL && !event && turns != 7)
 			if(turns >= ORION_TRAIL_WINTURN)
-				win(usr)
+				win(user)
 				xp_gained += 34
 			else
 				food -= (alive+lings_aboard)*2
@@ -182,7 +243,9 @@
 				turns += 1
 
 	else if(href_list["newgame"]) //Reset everything
+		world << "found"
 		if(gameStatus == ORION_STATUS_START)
+			Reset()
 			newgame()
 	else if(href_list["menu"]) //back to the main menu
 		if(gameStatus == ORION_STATUS_GAMEOVER)
@@ -353,13 +416,10 @@
 							food -= 5
 							last_spaceport_action = "Traded Food for Fuel"
 							event()
-
-	add_fingerprint(usr)
-	updateUsrDialog()
 	busy = FALSE
 	sleep(0.5)
 	do_html()
-/obj/structure/computer/orion_trail/proc/event()
+/datum/program/orion_trail/proc/event()
 	eventdat = "<center><h1>[event]</h1></center>"
 	canContinueEvent = 0
 	switch(event)
@@ -631,7 +691,7 @@
 
 
 //Add Random/Specific crewmember
-/obj/structure/computer/orion_trail/proc/add_crewmember(var/specific = "")
+/datum/program/orion_trail/proc/add_crewmember(var/specific = "")
 	var/newcrew = ""
 	if(specific)
 		newcrew = specific
@@ -647,7 +707,7 @@
 
 
 //Remove Random/Specific crewmember
-/obj/structure/computer/orion_trail/proc/remove_crewmember(specific = "", dont_remove = "")
+/datum/program/orion_trail/proc/remove_crewmember(specific = "", dont_remove = "")
 	var/list/safe2remove = settlers
 	var/removed = ""
 	if(dont_remove)
@@ -665,10 +725,8 @@
 	return removed
 
 
-/obj/structure/computer/orion_trail/proc/win(mob/user)
+/datum/program/orion_trail/proc/win(mob/user)
 	gameStatus = ORION_STATUS_START
-	name = "The Orion Trail"
-	desc = "Learn how our ancestors got to Orion, and have fun in the process!"
 
 #undef ORION_TRAIL_WINTURN
 #undef ORION_TRAIL_RAIDERS

@@ -181,7 +181,27 @@
 			if (OSD.operatingsystem != src.operatingsystem)
 				src.operatingsystem = OSD.operatingsystem
 				src.boot(OSD.operatingsystem)
+				src.programs = list()
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
+				H << "You sucessfully install \the [src.operatingsystem] on this machine."
+			else
+				H << "You already have this operating system installed."
+				return
+		else if (istype(W, /obj/item/weapon/disk/program))
+			var/obj/item/weapon/disk/program/PD = W
+			if (!(operatingsystem in PD.compatible_os))
+				H << "This operating system is not supported."
+				return
+			if (PD.included)
+				var/datum/program/NP = new PD.included
+				for(var/datum/program/EP in programs)
+					if (istype(EP,NP))
+						H << "This program is already installed on this machine."
+						return
+				programs += NP
+				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
+				H << "You load \the [NP.name] into this machine."
+				return
 		else
 			..()
 
@@ -222,6 +242,7 @@
 		return
 /obj/structure/computer/attack_hand(var/mob/living/human/H)
 	if(!src.active)
+		boot(operatingsystem)
 		do_html(user)
 	else
 		H << "<span class = 'notice'>You need to turn the [src] on first!</span>"

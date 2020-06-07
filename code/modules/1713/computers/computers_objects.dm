@@ -10,15 +10,32 @@
 /obj/structure/computer/nopower/aotd/attack_hand(var/mob/living/human/H)
 	..()
 /obj/structure/computer/nopower/aotd/attackby(var/obj/item/W, var/mob/living/human/H)
-	if (istype(W, /obj/item/stack/money))
-		return
-	else if (istype(W, /obj/item/weapon/disk))
+	if (istype(W, /obj/item/weapon/disk))
 		if (istype(W, /obj/item/weapon/disk/os))
 			var/obj/item/weapon/disk/os/OSD = W
 			if (OSD.operatingsystem != src.operatingsystem)
 				src.operatingsystem = OSD.operatingsystem
+				src.programs = list()
 				src.boot(OSD.operatingsystem)
+				H << "You sucessfully install \the [src.operatingsystem] on this machine."
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
+			else
+				H << "You already have this operating system installed."
+			return
+		else if (istype(W, /obj/item/weapon/disk/program))
+			var/obj/item/weapon/disk/program/PD = W	
+			if (!(operatingsystem in PD.compatible_os))
+				H << "This operating system is not supported."
+				return
+			if (PD.included)
+				var/datum/program/NP = new PD.included
+				for(var/datum/program/EP in programs)
+					if (istype(EP,NP))
+						H << "This program is already installed on this machine."
+						return
+				programs += NP
+				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
+				H << "You load \the [NP.name] into this machine."
 			return
 		var/obj/item/weapon/disk/D = W
 		if (D.faction == H.civilization)
@@ -99,31 +116,6 @@
 
 //////////////////////////////////////////
 /////////DISKS///////////////////////////
-
-/obj/item/weapon/disk/os
-	name = "unga OS boot disk"
-	desc = "A disk used to boot unga OS."
-	icon = 'icons/obj/bureaucracy.dmi'
-	icon_state = "disk_uos0"
-	item_state = "disk_uos0"
-	var/operatingsystem = "unga OS"
-
-	attackby(obj/item/W, mob/living/M)
-		return
-
-/obj/item/weapon/disk/os/uos94
-	name = "unga OS 94 boot disk"
-	desc = "A disk used to boot unga OS 94."
-	icon_state = "disk_uos94"
-	item_state = "disk_uos94"
-	operatingsystem = "unga OS 94"
-
-/obj/item/weapon/disk/os/uos94pe
-	name = "unga OS 94 PE boot disk"
-	desc = "A disk used to boot unga OS 94 Police Edition."
-	icon_state = "disk_uos94"
-	item_state = "disk_uos94"
-	operatingsystem = "unga OS 94 Police Edition"
 
 /obj/item/weapon/disk
 	name = "diskette"
@@ -244,3 +236,51 @@
 	name = "green diskette"
 	faction = "MacGreene Traders"
 	fake = TRUE
+///OSes/////////////////
+
+/obj/item/weapon/disk/os
+	name = "unga OS boot disk"
+	desc = "A disk used to boot unga OS."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "disk_uos0"
+	item_state = "disk_uos0"
+	var/operatingsystem = "unga OS"
+
+	attackby(obj/item/W, mob/living/M)
+		return
+
+/obj/item/weapon/disk/os/uos94
+	name = "unga OS 94 boot disk"
+	desc = "A disk used to boot unga OS 94."
+	icon_state = "disk_uos94"
+	item_state = "disk_uos94"
+	operatingsystem = "unga OS 94"
+
+/obj/item/weapon/disk/os/uos94pe
+	name = "unga OS 94 PE boot disk"
+	desc = "A disk used to boot unga OS 94 Police Edition."
+	icon_state = "disk_uos94"
+	item_state = "disk_uos94"
+	operatingsystem = "unga OS 94 Police Edition"
+
+//////////////////programs////////////////////
+
+/obj/item/weapon/disk/program
+	name = "program disk"
+	desc = "A disk used to boot unga OS."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "disk_black"
+	item_state = "disk_black"
+	var/included
+	var/list/compatible_os = list()
+
+	attackby(obj/item/W, mob/living/M)
+		return
+
+/obj/item/weapon/disk/program/orion_trail
+	name = "Orion Trail disk"
+	desc = "Learn how our descendants will get to Orion, and have fun in the process!"
+	compatible_os = list("unga OS 94")
+	New()
+		..()
+		included = /datum/program/orion_trail

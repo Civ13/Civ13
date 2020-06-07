@@ -1,25 +1,3 @@
-/datum/email
-	var/subject = "no subject"
-	var/sender = "unknown"
-	var/receiver = "unknown"
-	var/message = ""
-	var/date = "0:00"
-
-/datum/program
-	var/name = "program"
-	var/description = "a basic computer program."
-	var/size = 0
-	var/list/local_vars = list()
-	var/mainbody = ""
-	var/mainmenu = ""
-
-/datum/email/New(list/properties = null)
-	..()
-	if (!properties) return
-
-	for (var/propname in vars)
-		if (!isnull(properties[propname]))
-			vars[propname] = properties[propname]
 ///////////////////////////////////////////////////////////////////
 /obj/structure/computer/var/list/tmp_comp_vars = list(
 	"mail_rec" = "Recipient",
@@ -77,6 +55,13 @@
 	if (!user.can_use_hands())
 		user << "<span class = 'danger'>You have no hands to use this with.</span>"
 		return FALSE
+	var/datum/program/loadedprogram
+	if (href_list["program"])
+		var/keyn = text2num(href_list["program"])
+		if (programs.len && programs[keyn] && istype(programs[keyn], /datum/program))
+			loadedprogram = programs[keyn]
+			loadedprogram.do_html(user)
+//mail
 	var/mdomain = "monkeysoft.ug"
 	switch(user.civilization)
 		if ("Rednikov Industries")
@@ -474,6 +459,11 @@
 		<hr>
 		<a href='?src=\ref[src];mail=99999'>E-mail</a>&nbsp;<a href='?src=\ref[src];deepnet=1'>DEEPNET</a>
 		"}
+		if (programs.len)
+			for(var/i=1, i<=programs.len, i++)
+				if (programs[i] && istype(programs[i],/datum/program/))
+					var/datum/program/P = programs[i]
+					mainmenu += "&nbsp;<a href='?src=\ref[src];program=[i]'>[P.name]</a>"
 		mainbody = "System initialized."
 	else if (operatingsystem == "unga OS 94 Police Edition")
 		mainmenu = {"
