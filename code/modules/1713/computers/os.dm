@@ -137,7 +137,7 @@
 		eml.receiver = tmp_comp_vars["mail_rec"]
 		eml.message = tmp_comp_vars["mail_msg"]
 		eml.date = roundduration2text()
-		map.emails[uname] += list(eml)
+		map.emails[eml.receiver] += list(eml)
 		reset_tmp_vars()
 		WWalert(user,"Mail sent successfully!","E-mail Sent")
 //DEEPNET
