@@ -852,6 +852,9 @@
 			var/cost = (map.globalmarketplace[tcode][4])
 			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
 				mainbody += "<b>You need to have money in one of your hands!</b>"
+				sleep(0.5)
+				do_html(user)
+				return
 			else
 				var/obj/item/stack/money/mstack = null
 				if (istype(user.l_hand, /obj/item/stack/money))
@@ -864,14 +867,20 @@
 						qdel(mstack)
 					var/obj/BO = map.globalmarketplace[tcode][2]
 					if (BO)
-						BO.forceMove(get_turf(src))
+						BO.forceMove(get_turf(origin))
 					map.globalmarketplace[tcode][7] = 0
 					mainbody += "You fulfill the order."
 					var/seller = map.globalmarketplace[tcode][1]
 					map.marketplaceaccounts[seller] += cost
 					map.globalmarketplace -= map.globalmarketplace[tcode]
+					sleep(0.5)
+					do_html(user)
+					return
 				else
 					mainbody += "<b>Not enough money!</b>"
+					sleep(0.5)
+					do_html(user)
+					return
 
 		if (findtext(href_list["deepnet"],"ch"))
 			var/tcode = replacetext(href_list["deepnet"],"ch","")
@@ -889,7 +898,7 @@
 		if (findtext(href_list["deepnet"],"cn"))
 			var/tcode = replacetext(href_list["deepnet"],"cn","")
 			var/obj/BO = map.globalmarketplace[tcode][2]
-			BO.forceMove(get_turf(src))
+			BO.forceMove(get_turf(origin))
 			map.globalmarketplace[tcode][7] = 0
 			map.globalmarketplace -= map.globalmarketplace[tcode]
 			mainbody += "You cancel your sell order and get your items back."
@@ -989,7 +998,7 @@
 			if ("5") //withdraw
 				var/accmoney = map.marketplaceaccounts[user.civilization]
 				if (accmoney > 0)
-					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(src))
+					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(origin))
 					SC.amount = accmoney/20
 					accmoney = 0
 					map.marketplaceaccounts[user.civilization] = 0
