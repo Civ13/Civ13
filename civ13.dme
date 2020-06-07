@@ -471,6 +471,7 @@
 #include "code\modules\1713\computers\computers.dm"
 #include "code\modules\1713\computers\computers_objects.dm"
 #include "code\modules\1713\computers\os.dm"
+#include "code\modules\1713\computers\programs.dm"
 #include "code\modules\1713\gunsmithing\gunsmith.dm"
 #include "code\modules\1713\jobs\_languages.dm"
 #include "code\modules\1713\jobs\_special.dm"

@@ -84,138 +84,7 @@
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
-	operatingsystem = "unga 0S"
-/obj/structure/computer/nopower/carsales/attack_hand(mob/living/human/H)
-	WWalert(H,"You need to use money on it.","CARTRADER terminal")
-	return
-/obj/structure/computer/nopower/carsales/attackby(var/obj/item/D, var/mob/living/human/H)
-	var/found = FALSE
-	for(var/turf/T in get_area_turfs(/area/caribbean/supply))
-		if (found)
-			break
-		for (var/obj/structure/ST in T)
-			found = TRUE
-			break
-		for (var/mob/living/human/HT in T)
-			found = TRUE
-			break
-	if (found)
-		H << "Clear the arrival area first."
-		return
-	if (istype(D, /obj/item/stack/money))
-		var/choice = WWinput(H, "Which model do you want to purchase?","Car Purchase","Cancel",list("Cancel","Yamasaki M125 motorcycle (160)",,"ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)"))
-		if (choice == "Cancel")
-			return
-		else
-			for(var/turf/T in get_area_turfs(/area/caribbean/supply))
-				if (found)
-					break
-				for (var/obj/structure/ST in T)
-					found = TRUE
-					break
-				for (var/mob/living/human/HT in T)
-					found = TRUE
-					break
-			if (found)
-				H << "Clear the arrival area first."
-				return
-			var/c_cost = splittext(choice,"(")[2]
-			c_cost = replacetext(c_cost,"(","")
-			c_cost = text2num(c_cost)
-			if (choice == "Yamasaki M125 motorcycle (160)")
-				if (D.value*D.amount >= c_cost*4)
-					D.amount-=c_cost/5
-				else
-					H << "<span class='warning'>Not enough money!</span>"
-					return
-				new /obj/structure/vehicle/motorcycle/m125/full(locate(x+4,y-1,z))
-				new /obj/item/clothing/head/helmet/motorcycle(locate(x+4,y-1,z))
-				return
-			else
-				var/obj/effects/premadevehicles/PV
-				var/chosencolor = WWinput(H,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
-				var/basecolor = chosencolor
-				switch(chosencolor)
-					if ("Black")
-						chosencolor = "#181717"
-					if ("Light Grey")
-						chosencolor = "#919191"
-					if ("Dark Grey")
-						chosencolor = "#616161"
-					if ("White")
-						chosencolor = "#FFFFFF"
-					if ("Green")
-						chosencolor = "#007F00"
-					if ("Red")
-						chosencolor = "#7F0000"
-					if ("Yellow")
-						chosencolor = "#b8b537"
-					if ("Blue")
-						chosencolor = "#00007F"
-				for(var/turf/T in get_area_turfs(/area/caribbean/supply))
-					if (found)
-						break
-					for (var/obj/structure/ST in T)
-						found = TRUE
-						break
-					for (var/mob/living/human/HT in T)
-						found = TRUE
-						break
-				if (found)
-					H << "Clear the arrival area first."
-					return
-				if (D.value*D.amount >= c_cost*4)
-					D.amount-=c_cost/5
-				else
-					H << "<span class='warning'>Not enough money!</span>"
-					return
-				if (choice == "ASNO Quattroporte (500)")
-					PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(x+3,y-3,z))
-					spawn(5)
-						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Quattroporte", basecolor))
-
-				else if (choice == "ASNO Piccolino (400)")
-					PV = new /obj/effects/premadevehicles/asno/piccolino(locate(x+3,y-3,z))
-					spawn(5)
-						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "ASNO Piccolino", basecolor))
-
-				else if (choice == "Ubermacht Erstenklasse (800)")
-					PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(x+3,y-3,z))
-					spawn(5)
-						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Ubermacht Erstenklasse", basecolor))
-
-				else if (choice == "SMC Falcon (750)")
-					PV = new /obj/effects/premadevehicles/smc/falcon(locate(x+3,y-3,z))
-					spawn(5)
-						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "SMC Falcon", basecolor))
-
-				else if (choice == "Yamasaki Kazoku (600)")
-					PV = new /obj/effects/premadevehicles/yamasaki/kazoku(locate(x+3,y-3,z))
-					spawn(5)
-						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Yamasaki Kazoku", basecolor))
-
-				else if (choice == "Yamasaki Shinobu 5000 (900)")
-					PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(x+3,y-3,z))
-					spawn(5)
-						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "Yamasaki Shinobu 5000", basecolor))
-				else if  (choice == "SMC Wyoming (700)")
-					PV = new /obj/effects/premadevehicles/smc/wyoming(locate(x+3,y-3,z))
-					spawn(5)
-						map.vehicle_registations += list(list("[PV.reg_number]",H.civilization, "SMC Wyoming", basecolor))
-
-				PV.custom_color = chosencolor
-				PV.doorcode = rand(1000,9999)
-				PV.new_number()
-				var/obj/item/weapon/key/civ/C = new /obj/item/weapon/key/civ(loc)
-				C.name = "[PV.reg_number] key"
-				C.icon_state = "modern"
-				C.code = PV.doorcode
-				var/obj/item/weapon/key/civ/C2 = new /obj/item/weapon/key/civ(loc)
-				C2.name = "[PV.reg_number] key"
-				C2.icon_state = "modern"
-				C2.code = PV.doorcode
-	else
-		..()
+	operatingsystem = "cartrader"
 
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/police
@@ -229,3 +98,149 @@
 	operatingsystem = "unga OS 94 Police Edition"
 
 //////////////////////////////////////////
+/////////DISKS///////////////////////////
+
+/obj/item/weapon/disk/os
+	name = "unga OS boot disk"
+	desc = "A disk used to boot unga OS."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "disk_uos0"
+	item_state = "disk_uos0"
+	var/operatingsystem = "unga OS"
+
+	attackby(obj/item/W, mob/living/M)
+		return
+
+/obj/item/weapon/disk/os/uos94
+	name = "unga OS 94 boot disk"
+	desc = "A disk used to boot unga OS 94."
+	icon_state = "disk_uos94"
+	item_state = "disk_uos94"
+	operatingsystem = "unga OS 94"
+
+/obj/item/weapon/disk/os/uos94pe
+	name = "unga OS 94 PE boot disk"
+	desc = "A disk used to boot unga OS 94 Police Edition."
+	icon_state = "disk_uos94"
+	item_state = "disk_uos94"
+	operatingsystem = "unga OS 94 Police Edition"
+
+/obj/item/weapon/disk
+	name = "diskette"
+	desc = "Some kind of diskette."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "disk_red"
+	item_state = "disk_red"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 4.0
+	throwforce = 3.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	w_class = 1.0
+
+	var/fake = FALSE
+	var/used = FALSE
+	var/faction = null
+	var/exchange_state = -1 //0-both fake, 1-one is real, 2-both real
+	var/datum/program/program
+/obj/item/weapon/disk/examine(mob/user)
+	..()
+	if (faction)
+		if (used)
+			user << "<font color='yellow'><i><b>The disk was already decrypted and wiped</b></i></font>."
+		if (exchange_state == -1)
+			user << "The disk is <b><font color='red'>inactive</font></b>."
+		else
+			user << "The disk is <b><font color='green'>active</font></b>."
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			if (H.civilization == faction)
+				H << "This is a <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
+		else if (isghost(user))
+			user << "This is a <b>[fake ? "<font color ='red'>fake</font>" : "<font color ='green'>real</font>"]</b> disk."
+
+/obj/item/weapon/disk/attackby(var/obj/item/weapon/disk/D, var/mob/living/human/H)
+	if (istype(D, /obj/item/weapon/disk))
+		H.setClickCooldown(20)
+		if (src.faction == D.faction)
+			H << "These disks are of the same faction, you need another faction's disk to activate them."
+			return
+		else if (src.used)
+			H << "\The [src] has already been used and wiped."
+			return
+		else if (D.used)
+			H << "\The [src] has already been used and wiped."
+			return
+		else if (src.exchange_state != -1 && D.exchange_state != -1)
+			visible_message("<big><font color='red'>Both disks are already active.</font></big>")
+			return
+		else if (src.exchange_state != -1)
+			visible_message("<big><font color='yellow'>\The [src] has already been activated.</font></big>")
+			return
+		else if (D.exchange_state != -1)
+			visible_message("<big><font color='yellow'>\The [D] has already been activated.</font></big>")
+			return
+
+		if (D.fake && src.fake) //both fake
+			D.exchange_state = 0
+			src.exchange_state = 0
+			visible_message("<big><font color='green'>Both disks get activated, completing the transaction.</font></big>")
+			return
+		else if ((D.fake && !src.fake) || (!D.fake && src.fake)) //one is fake
+			D.exchange_state = 1
+			src.exchange_state = 1
+			visible_message("<big><font color='green'>Both disks get activated, completing the transaction.</font></big>")
+			return
+		else if (!D.fake && !src.fake) //both real
+			D.exchange_state = 2
+			src.exchange_state = 2
+			visible_message("<big><font color='green'>Both disks get activated, completing the transaction.</font></big>")
+			return
+	else
+		..()
+/obj/item/weapon/disk/red
+	name = "red diskette"
+	icon_state = "disk_red"
+	item_state = "disk_red"
+	faction = "Rednikov Industries"
+
+/obj/item/weapon/disk/red/fake
+	name = "red diskette"
+	faction = "Rednikov Industries"
+	fake = TRUE
+
+/obj/item/weapon/disk/blue
+	name = "blue diskette"
+	icon_state = "disk_blue"
+	item_state = "disk_blue"
+	faction = "Giovanni Blu Stocks"
+
+/obj/item/weapon/disk/blue/fake
+	name = "blue diskette"
+	faction = "Giovanni Blu Stocks"
+	fake = TRUE
+
+/obj/item/weapon/disk/yellow
+	name = "yellow diskette"
+	icon_state = "disk_yellow"
+	item_state = "disk_yellow"
+	faction = "Goldstein Solutions"
+
+/obj/item/weapon/disk/yellow/fake
+	name = "yellow diskette"
+	faction = "Goldstein Solutions"
+	fake = TRUE
+
+/obj/item/weapon/disk/green
+	name = "green diskette"
+	icon_state = "disk_green"
+	item_state = "disk_green"
+	faction = "MacGreene Traders"
+
+/obj/item/weapon/disk/green/fake
+	name = "green diskette"
+	faction = "MacGreene Traders"
+	fake = TRUE
