@@ -29,8 +29,18 @@
 	tmp_comp_vars = list()
 
 /datum/program/proc/do_html(mob/living/human/user)
-	mainbody = "<head>[computer_browser_style]<title>[name]</title></head>[mainbody]"
-	usr << browse(mainbody,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+	var/fullpage = {"
+			<!DOCTYPE html>
+			<html>
+			<head>[computer_browser_style]<title>[name]</title></head>
+			<body>
+			<center>[mainmenu]</center>
+			<hr style="height:4px;border-width:0;color:gray;background-color:gray">
+			[mainbody]
+			</body>
+			</html>
+			"}
+	usr << browse(fullpage,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 
 /datum/program/Topic(href, href_list, hsrc)
 	
@@ -745,13 +755,14 @@
 	)
 
 /datum/program/monkeysoftmail/do_html(mob/living/human/user)
-	if (mainbody == "---")
-		mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
+	if (mainmenu == "---")
+		mainmenu = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
+		mainmenu += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a>"
 	..()
 
 /datum/program/monkeysoftmail/Topic(href, href_list, hsrc)
 	..()
+	mainbody = ""
 	var/mdomain = "monkeysoft.ug"
 	switch(user.civilization)
 		if ("Rednikov Industries")
@@ -767,13 +778,9 @@
 	var/cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
 		tmp_comp_vars["mail_snd"] = uname
-	mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
 	mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-	mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
 	if (href_list["mail"])
-		mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
 		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
 		if (href_list["mail"]=="99999")
 			if (islist(map.emails[uname]))
 				for(var/i, i <= map.emails[uname].len, i++)
@@ -807,9 +814,7 @@
 			if ("5")
 				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
 			
-		mainbody = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
 		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a><hr><br>"
 		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
@@ -835,17 +840,15 @@
 	compatible_os = list("unga OS 94","unga OS")
 
 /datum/program/deepnet/do_html(mob/living/human/user)
-	if (mainbody == "---")
-		mainbody = "<h2>D.E.E.P.N.E.T.</h2><br>"
-		mainbody += "<b>All deliveries in a maximum of 2 minutes!</i></b><br>"
-		mainbody += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
+	if (mainmenu == "---")
+		mainmenu = "<h2>D.E.E.P.N.E.T.</h2><br>"
+		mainmenu += "<b>All deliveries in a maximum of 2 minutes!</i></b><br>"
+		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
 	..()
 
 /datum/program/deepnet/Topic(href, href_list, hsrc)
 	..()
-	mainbody = "<h2>D.E.E.P.N.E.T.</h2><br>"
-	mainbody += "<b>All deliveries in a maximum of 2 minutes!</i></b><br>"
-	mainbody += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
+	mainbody = ""
 	if (href_list["deepnet"])
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
@@ -1015,18 +1018,18 @@
 	compatible_os = list("unga OS 94","unga OS")
 
 /datum/program/cartrader/do_html(mob/living/human/user)
-	if (mainbody == "---")
+	if (mainmenu == "---")
 		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
-		mainbody = "<h2>CARTRADER NETWORK</h2><br>"
+		mainmenu = "<h2>CARTRADER NETWORK</h2><br>"
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
 	..()
 
 /datum/program/cartrader/Topic(href, href_list, hsrc)
 	..()
+	mainbody = ""
 	if (href_list["carlist"])
 		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (900)")
-		mainbody = "<h2>CARTRADER NETWORK</h2><br>"
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
 		sleep(0.5)
@@ -1179,7 +1182,7 @@
 	compatible_os = list("unga OS 94","unga OS 94 Police Edition")
 
 /datum/program/squadtracker/do_html(mob/living/human/user)
-	mainbody = "<h2>SQUAD STATUS</h2><br>"
+	mainmenu = "<h2>SQUAD STATUS</h2><br>"
 	if (origin.operatingsystem == "unga OS 94 Police Edition" && user.civilization != "Police" && user.civilization != "Paramedics")
 		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 		return
@@ -1200,7 +1203,7 @@
 	compatible_os = list("unga OS 94 Police Edition")
 
 /datum/program/licenseplates/do_html(mob/living/human/user)
-	mainbody = "<h2>LICENSE PLATE DATABASE</h2><br>"
+	mainmenu = "<h2>LICENSE PLATE DATABASE</h2><br>"
 	if (user.civilization != "Police")
 		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 		return
@@ -1215,21 +1218,21 @@
 
 /datum/program/permits/do_html(mob/living/human/user)
 	if (user.civilization == "Police" || user.civilization == "Paramedics")
-		mainbody = "<h2>GUN PERMITS</h2><br>"
 		mainbody += "<font color='yellow'>This service is intended for civilians.</font>"
 		..()
 		return
-	else if (mainbody == "---")
-		mainbody = "<h2>GUN PERMITS</h2><br>"
-		mainbody += "<a href='?src=\ref[src];permits=1'>Request Permit</a><hr><br>"
+	else if (mainmenu == "---")
+		mainmenu = "<h2>GUN PERMITS</h2><br>"
+		mainmenu = "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
 	..()
 
 /datum/program/permits/Topic(href, href_list, hsrc)
-	mainbody = "<h2>GUN PERMITS</h2><br>"
-	mainbody += "<a href='?src=\ref[src];permits=1'>Request Permit</a><hr><br>"
+	mainmenu = "<h2>GUN PERMITS</h2><br>"
+	mainmenu += "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
+	mainbody = ""
 	if (href_list["permits"])
 		if (user.civilization == "Police" || user.civilization == "Paramedics")
-			mainbody = "<h2>GUN PERMITS</h2><br><font color='yellow'>This service is intended for civilians.</font>"
+			mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 			sleep(0.5)
 			do_html(user)
 			return
@@ -1280,14 +1283,13 @@
 	compatible_os = list("unga OS 94 Police Edition")
 
 /datum/program/warrants/do_html(mob/living/human/user)
-	if (mainbody == "---")
-		mainbody = "<h2>WARRANT TERMINAL</h2><br>"
-		mainbody += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a><hr><br>"
+	if (mainmenu == "---")
+		mainmenu = "<h2>WARRANT TERMINAL</h2><br>"
+		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>"
 	..()
 /datum/program/warrants/Topic(href, href_list, hsrc)
+	mainbody = ""
 	if (href_list["warrants"])
-		mainbody = "<h2>WARRANT TERMINAL</h2><br>"
-		mainbody += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a><hr><br>"
 		if (href_list["warrants"] == "2")
 			for(var/obj/item/weapon/paper/police/warrant/SW in map.pending_warrants)
 				mainbody += "[SW.arn]: [SW.tgt], working for [SW.tgtcmp] <a href='?src=\ref[src];warrants=w[SW.arn]'>(print)</a><br>"
