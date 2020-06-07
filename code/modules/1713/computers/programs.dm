@@ -1225,7 +1225,12 @@
 			do_html(user)
 			return
 		else if (user.gun_permit)
-			mainbody += "<font color='yellow'>You are already licenced.</font>"
+			mainbody += "<font color='green'>You are already licenced.</font>"
+			sleep(0.5)
+			do_html(user)
+			return
+		else if  (user.civilization in map.warrants)
+			mainbody += "<font color='red'>All the members of your company have had their gun permits revoked and the issue of new ones forbidden for murdering police officers.</font>"
 			sleep(0.5)
 			do_html(user)
 			return

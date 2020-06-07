@@ -51,6 +51,7 @@
 	custom_civs += newnamef
 	spawn(15000)
 		spawn_disks(TRUE)
+	spawn(100)
 		refill_marketplace(TRUE)
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
