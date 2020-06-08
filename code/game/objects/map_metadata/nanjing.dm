@@ -2,7 +2,7 @@
 /obj/map_metadata/nanjing
 	ID = MAP_NANJING
 	title = "Nanjing"
-	lobby_icon_state = "ww2"
+	lobby_icon_state = "china"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 
@@ -23,7 +23,7 @@
 	faction2 = CHINESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
 
 /obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
 	..()

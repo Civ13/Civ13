@@ -377,6 +377,7 @@ var/list/global/phone_numbers = list()
 		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 			icon_state = "police_intercom"
 /obj/item/weapon/telephone/mobile/faction
+	name = "telephone"
 	icon_state = "telephone"
 	anchored = TRUE
 	New()
