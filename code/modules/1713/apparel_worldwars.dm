@@ -1080,42 +1080,42 @@ obj/item/clothing/head/ww2/chicap2
 	item_state = "geruni_officer"
 	worn_state = "geruni_officer"
 
-obj/item/clothing/under/ww2/german_tanker
+/obj/item/clothing/under/ww2/german_tanker
 	name = "german tanker uniform"
 	desc = "A german feldgrau uniform, used by tankers in the Wehrmacht."
 	icon_state = "gertanker"
 	item_state = "gertanker"
 	worn_state = "gertanker"
 
-obj/item/clothing/under/ww2/german_mp
+/obj/item/clothing/under/ww2/german_mp
 	name = "german mp uniform"
 	desc = "A german feldgrau uniform, used by military police in the Wehrmacht."
 	icon_state = "geruni_mp"
 	item_state = "geruni_mp"
 	worn_state = "geruni_mp"
 
-obj/item/clothing/under/ww2/german_ss
+/obj/item/clothing/under/ww2/german_ss
 	name = "german ss uniform"
 	desc = "A german SS uniform, used by soldaten in the Schutzstaffel."
 	icon_state = "ssuni"
 	item_state = "ssuni"
 	worn_state = "ssuni"
 
-obj/item/clothing/under/ww2/german_ss_officer
+/obj/item/clothing/under/ww2/german_ss_officer
 	name = "german ss officer uniform"
 	desc = "A german SS officer uniform, used by officers in the Schutzstaffel."
 	icon_state = "ssuni_officer"
 	item_state = "ssuni_officer"
 	worn_state = "ssuni_officer"
 
-obj/item/clothing/under/ww2/german_ss_camo
+/obj/item/clothing/under/ww2/german_ss_camo
 	name = "german camo ss uniform"
 	desc = "A german SS uniform, in 1944 Erbsenmuster dot pattern."
 	icon_state = "ssuni_camo"
 	item_state = "ssuni_camo"
 	worn_state = "ssuni_camo"
 
-obj/item/clothing/under/ww2/soviet
+/obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"
 	desc = "A soviet uniform, used by infantry in the red army."
 	icon_state = "sovuni"
@@ -1124,7 +1124,7 @@ obj/item/clothing/under/ww2/soviet
 
 	var/rolled = FALSE
 
-obj/item/clothing/under/ww2/soviet/verb/roll_sleeves()
+/obj/item/clothing/under/ww2/soviet/verb/roll_sleeves()
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/under/ww2/soviet)
@@ -1144,77 +1144,84 @@ obj/item/clothing/under/ww2/soviet/verb/roll_sleeves()
 			rolled = TRUE
 	update_clothing_icon()
 
-obj/item/clothing/under/ww2/soviet_tanker
+/obj/item/clothing/under/ww2/soviet_tanker
 	name = "soviet tanker uniform"
 	desc = "A soviet tanker uniform, used by tank crewmen in the red army."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
 
-obj/item/clothing/under/ww2/soviet_officer
+/obj/item/clothing/under/ww2/soviet_officer
 	name = "soviet officer uniform"
 	desc = "A soviet officer uniform, used by officers in the red army."
 	icon_state = "sovuni_officer"
 	item_state = "sovuni_officer"
 	worn_state = "sovuni_officer"
 
-obj/item/clothing/under/ww2/soviet_nkvd
+/obj/item/clothing/under/ww2/soviet_nkvd
 	name = "nkvd uniform"
 	desc = "A soviet nkvd uniform, used by nkvd."
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
 
-obj/item/clothing/under/ww2/civ1
+/obj/item/clothing/under/ww2/civ1
 	name = "green civilian outfit"
 	desc = "A mid 20th-century civilian outfit."
 	icon_state = "ww2_civuni1"
 	item_state = "ww2_civuni1"
 	worn_state = "ww2_civuni1"
 
-obj/item/clothing/under/ww2/civ2
+/obj/item/clothing/under/ww2/civ2
 	name = "brown civilian outfit"
 	desc = "A mid 20th-century civilian outfit."
 	icon_state = "ww2_civuni2"
 	item_state = "ww2_civuni2"
 	worn_state = "ww2_civuni2"
 
-obj/item/clothing/under/ww2/hitlerjugend
+/obj/item/clothing/under/ww2/hitlerjugend
 	name = "Hitlerjugend outfit"
 	desc = "The standard uniform of the HJ."
 	icon_state = "hj_uni"
 	icon_state = "hj_uni"
 	icon_state = "hj_uni"
 
-obj/item/clothing/under/ww2/us
+/obj/item/clothing/under/ww2/us
 	name = "american uniform"
 	desc = "An american uniform, used by soldiers in the US army during WW2."
 	icon_state = "usuni2"
 	item_state = "usuni2"
 	worn_state = "usuni2"
 
-obj/item/clothing/under/ww2/us_navy
+/obj/item/clothing/under/ww2/us_tanker
+	name = "american tanker uniform"
+	desc = "An american uniform, used by tankers in the US army."
+	icon_state = "ustanker"
+	item_state = "ustanker"
+	worn_state = "ustanker"
+
+/obj/item/clothing/under/ww2/us_navy
 	name = "U.S. Navy uniform"
 	desc = "An american uniform, used by sailors in the US navy during WW2."
 	icon_state = "us_navy"
 	item_state = "us_navy"
 	worn_state = "us_navy"
 
-obj/item/clothing/under/ww2/us_cap
+/obj/item/clothing/under/ww2/us_cap
 	name = "american captain uniform"
 	desc = "An american uniform, used by captains in the US army."
 	icon_state = "usuni_cap"
 	item_state = "usuni_cap"
 	worn_state = "usuni_cap"
 
-obj/item/clothing/under/ww2/us_mp
+/obj/item/clothing/under/ww2/us_mp
 	name = "american mp uniform"
 	desc = "An american uniform, used by Military Police in the US army."
 	icon_state = "usuni_mp"
 	item_state = "usuni_mp"
 	worn_state = "usuni_mp"
 
-obj/item/clothing/under/ww2/us_shirtless
+/obj/item/clothing/under/ww2/us_shirtless
 	name = "american uniform with shirt"
 	desc = "An american uniform, used by soldiers in the US army, this one has no jacket."
 	icon_state = "us_shirtless"
@@ -1332,63 +1339,70 @@ obj/item/clothing/under/ww2/us_shirtless
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
-obj/item/clothing/head/ww2/us_nco_cap
+/obj/item/clothing/head/ww2/us_nco_cap
 	name = "us nco cap"
 	desc = "A cap worn by american NCO's."
 	icon_state = "usnco_cap"
 	item_state = "usnco_cap"
 	worn_state = "usnco_cap"
 
-obj/item/clothing/head/ww2/us_sailor_hat
+/obj/item/clothing/head/ww2/us_tanker
+	name = "US tanker cap"
+	desc = "A cap worn by american tankers."
+	icon_state = "ustanker"
+	item_state = "ustanker"
+	worn_state = "ustanker"
+
+/obj/item/clothing/head/ww2/us_sailor_hat
 	name = "us sailor hat"
 	desc = "A hat worn by american sailors."
 	icon_state = "sailor_hat"
 	item_state = "sailor_hat"
 	worn_state = "sailor_hat"
 
-obj/item/clothing/head/ww2/german_tanker
+/obj/item/clothing/head/ww2/german_tanker
 	name = "german tanker headset"
 	desc = "A cap and radio headset worn by german tank crewmen of the Wehrmacht."
 	icon_state = "gertanker"
 	item_state = "gertanker"
 	worn_state = "gertanker"
 
-obj/item/clothing/head/ww2/soviet_tanker
+/obj/item/clothing/head/ww2/soviet_tanker
 	name = "soviet tanker cap"
 	desc = "A cap and worn by soviet tank crewmen of the red army."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
 
-obj/item/clothing/head/ww2/ger_officercap
+/obj/item/clothing/head/ww2/ger_officercap
 	name = "german officer cap"
 	desc = "A cap and worn by german officers the Wehrmacht."
 	icon_state = "ger_officercap"
 	item_state = "ger_officercap"
 	worn_state = "ger_officercap"
 
-obj/item/clothing/head/ww2/ger_officercap_tanker
+/obj/item/clothing/head/ww2/ger_officercap_tanker
 	name = "german panzer officer cap"
 	desc = "A cap and worn by german officers the tank corps of the Wehrmacht."
 	icon_state = "ger_officercap_tanker"
 	item_state = "ger_officercap_tanker"
 	worn_state = "ger_officercap_tanker"
 
-obj/item/clothing/head/ww2/sov_officercap
+/obj/item/clothing/head/ww2/sov_officercap
 	name = "soviet officer cap"
 	desc = "A cap and worn by soviet officers the red army."
 	icon_state = "sov_officercap"
 	item_state = "sov_officercap"
 	worn_state = "sov_officercap"
 
-obj/item/clothing/head/ww2/sov_pilotka
+/obj/item/clothing/head/ww2/sov_pilotka
 	name = "soviet pilotka"
 	desc = "A cap and worn by soviet soldiers of the red army."
 	icon_state = "sovpilotka"
 	item_state = "sovpilotka"
 	worn_state = "sovpilotka"
 
-obj/item/clothing/head/ww2/sov_ushanka
+/obj/item/clothing/head/ww2/sov_ushanka
 	name = "soviet ushanka"
 	desc = "A soviet ushanka, used by soldiers in the red army."
 	icon_state = "ushanka_up"
@@ -1396,12 +1410,12 @@ obj/item/clothing/head/ww2/sov_ushanka
 	worn_state = "ushanka_up"
 	flags_inv = BLOCKHAIR
 
-obj/item/clothing/head/ww2/sov_ushanka/down
+/obj/item/clothing/head/ww2/sov_ushanka/down
 	icon_state = "ushanka"
 	item_state = "ushanka"
 	worn_state = "ushanka"
 
-obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
+/obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
 	if (icon_state == "ushanka")
 		icon_state = "ushanka_up"
 		item_state = "ushanka_up"
@@ -1411,28 +1425,28 @@ obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
 		item_state = "ushanka"
 		user << "You lower the ear flaps on the ushanka."
 
-obj/item/clothing/head/ww2/nkvd_cap
+/obj/item/clothing/head/ww2/nkvd_cap
 	name = "NKVD cap"
 	desc = "A cap and worn by NKVD."
 	icon_state = "nkvd_cap"
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
-obj/item/clothing/head/ww2/ss_cap
+/obj/item/clothing/head/ww2/ss_cap
 	name = "SS cap"
 	desc = "A cap and worn by officers in the Schutzstaffel."
 	icon_state = "sscap"
 	item_state = "sscap"
 	worn_state = "sscap"
 
-obj/item/clothing/head/ww2/german_fieldcap
+/obj/item/clothing/head/ww2/german_fieldcap
 	name = "german field cap"
 	desc = "A cap and worn by german Wehrmacht."
 	icon_state = "fieldcap1"
 	item_state = "fieldcap1"
 	worn_state = "fieldcap1"
 
-obj/item/clothing/head/ww2/german_fieldcap/New()
+/obj/item/clothing/head/ww2/german_fieldcap/New()
 	..()
 	if (map && map.ID == MAP_STALINGRAD)
 		var/randhead = rand(1,2)
@@ -1447,7 +1461,7 @@ obj/item/clothing/head/ww2/german_fieldcap/New()
 			worn_state = "fieldcap1_winter2"
 			item_state_slots["slot_w_uniform"] = "fieldcap1_winter2"
 
-obj/item/clothing/head/ww2/soviet_fieldcap
+/obj/item/clothing/head/ww2/soviet_fieldcap
 	name = "soviet field cap"
 	desc = "A cap and worn by soviets in the red army."
 	icon_state = "fieldcap2"
