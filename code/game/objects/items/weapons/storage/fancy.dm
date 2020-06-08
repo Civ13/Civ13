@@ -182,15 +182,15 @@
 /obj/item/weapon/storage/fancy/medal
 	name = "medal case"
 	desc = "A case for holding medals to be awarded."
-	icon_state = "cigarcase"
+	icon_state = "medalcase"
 	item_state = "cigarcase"
+	icon_type = "medal"
 	icon = 'icons/obj/cigarettes.dmi'
 	w_class = 1
 	throwforce = WEAPON_FORCE_HARMLESS
 	slot_flags = SLOT_BELT
 	storage_slots = 14
 	can_hold = list(/obj/item/clothing/accessory/medal)
-	icon_type = "cigar"
 
 /obj/item/weapon/storage/fancy/medal/german_full
 	name = "german medal case"

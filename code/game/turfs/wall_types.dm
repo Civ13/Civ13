@@ -28,7 +28,7 @@
 
 /* Wood Walls*/
 /turf/wall/wood
-	icon_state = "new_wood0"
+	icon_state = "wood0"
 /turf/wall/wood/New(var/newloc)
 	..(newloc,"hardwood")
 /turf/wall/wood/low/New(var/newloc)
