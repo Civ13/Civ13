@@ -424,6 +424,8 @@
 	amount = 50
 /obj/item/stack/money/dollar/twenty
 	amount = 20
+/obj/item/stack/money/dollar/ten
+	amount = 10
 /obj/item/stack/money/escudo/ten
 	amount = 10
 /obj/item/stack/money/doubloon/ten
