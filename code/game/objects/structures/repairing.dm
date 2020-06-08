@@ -103,7 +103,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
 /obj/item/weapon/gun/projectile/attackby(obj/item/M as obj, mob/user as mob)
-	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
 		switch(alert(user,"Ae you sure you want to scratch the serial number? This cannot be reversed and will make the gun illegal!","Serial number filing","Yes","No"))
 			if ("No")
 				return
