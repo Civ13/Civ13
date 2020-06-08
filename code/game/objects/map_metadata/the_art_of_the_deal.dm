@@ -128,7 +128,7 @@
 			var/pt = chosen1[1]
 			var/obj/item/weapon/gun/projectile/ST = new pt(locate(1,1,1))
 			ST.serial = ""
-			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 	var/num = rand(1,2) //equipment
 	for(var/i, i<=num, i++)
@@ -139,7 +139,7 @@
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
 			var/obj/item/ST = new pt(locate(1,1,1))
-			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 
 	num = rand(2,3) //ammo
@@ -151,7 +151,7 @@
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
 			var/obj/item/ST = new pt(locate(1,1,1))
-			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 
 	if (repeat)

@@ -912,7 +912,7 @@
 			if ("2") //buy
 				var/list/currlist = list()
 				for (var/i in map.globalmarketplace)
-					if (map.globalmarketplace[i][7]==1)
+					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="deepnet")
 						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 				if (isemptylist(currlist))
 					mainbody += "<b>There are no orders on the DEEPNET!</b>"
@@ -936,7 +936,7 @@
 								else
 									//owner, object, amount, price, sale/buy, fulfilled
 									var/idx = rand(1,999999)
-									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"sale","[idx]",1))
+									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"deepnet","[idx]",1))
 									user.drop_from_inventory(ST)
 									ST.forceMove(locate(0,0,0))
 									mainbody += "You place \the [ST] for sale in the <b>DEEPNET</b>."
@@ -952,7 +952,7 @@
 							else
 								//owner, object, amount, price, sale/buy, id number, fulfilled
 								var/idx = rand(1,999999)
-								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"sale","[idx]",1))
+								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"deepnet","[idx]",1))
 								user.drop_from_inventory(M)
 								M.forceMove(locate(0,0,0))
 								mainbody += "You place \the [M] for sale in the <b>DEEPNET</b>."
@@ -1377,3 +1377,250 @@
 		for(var/list/L in map.gun_registations)
 			mainbody += "<b>[L[1]] (no. [L[2]])</b> - registered to <b>[L[3]]</b><br>"
 	..()
+
+
+/////////////////////////////////////////////////////////
+/////////////////////NILE.UG MARKETPLACE/////////////////
+////////////////A legal shop for non-gun stuff///////////
+/datum/program/nilestore
+	name = "nile.ug Store"
+	description = "The internet store for all your shopping needs."
+	compatible_os = list("unga OS 94","unga OS")
+
+/datum/program/nilestore/do_html(mob/living/human/user)
+	if (mainmenu == "---")
+		mainmenu = "<h2>nile.ug</h2><br>"
+		mainmenu += "<b>We deliver worldwide!</i></b><br>"
+		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
+	..()
+
+/datum/program/nilestore/Topic(href, href_list, hsrc)
+	..()
+	mainbody = ""
+	if (href_list["deepnet"])
+		if (findtext(href_list["deepnet"],"b"))
+			var/tcode = replacetext(href_list["deepnet"],"b","")
+			var/cost = text2num(map.globalmarketplace[tcode][4])
+			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
+				mainbody += "<b>You need to have money in one of your hands!</b>"
+				sleep(0.5)
+				do_html(user)
+				return
+			else
+				var/obj/item/stack/money/mstack = null
+				if (istype(user.l_hand, /obj/item/stack/money))
+					mstack = user.l_hand
+				else
+					mstack = user.r_hand
+				if (mstack.value*mstack.amount >= cost)
+					mstack.amount -= (cost/mstack.value)
+					if (mstack.amount<= 0)
+						qdel(mstack)
+					var/obj/BO = map.globalmarketplace[tcode][2]
+					if (BO)
+						BO.forceMove(get_turf(origin))
+					map.globalmarketplace[tcode][7] = 0
+					mainbody += "You fulfill the order."
+					var/seller = map.globalmarketplace[tcode][1]
+					map.marketplaceaccounts[seller] += cost
+					map.globalmarketplace -= map.globalmarketplace[tcode]
+					sleep(0.5)
+					do_html(user)
+					return
+				else
+					mainbody += "<b>Not enough money!</b>"
+					sleep(0.5)
+					do_html(user)
+					return
+
+		if (findtext(href_list["deepnet"],"ch"))
+			var/tcode = replacetext(href_list["deepnet"],"ch","")
+			var/cost = text2num(map.globalmarketplace[tcode][4])
+			var/newprice = input(user, "What shall the new price be, in dollars?","DEEPNET",cost/4) as num|null
+			if (!isnum(newprice))
+				return
+			if (newprice <= 0)
+				return
+			map.globalmarketplace[tcode][4] = newprice*4
+			mainbody += "You update the listing's price."
+			sleep(0.5)
+			do_html(user)
+			return
+		if (findtext(href_list["deepnet"],"cn"))
+			var/tcode = replacetext(href_list["deepnet"],"cn","")
+			var/obj/BO = map.globalmarketplace[tcode][2]
+			BO.forceMove(get_turf(origin))
+			map.globalmarketplace[tcode][7] = 0
+			map.globalmarketplace -= map.globalmarketplace[tcode]
+			mainbody += "You cancel your sell order and get your items back."
+			sleep(0.5)
+			do_html(user)
+			return
+		switch(href_list["deepnet"])
+			if ("2") //buy
+				var/list/currlist = list()
+				for (var/i in map.globalmarketplace)
+					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="nile")
+						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+				if (isemptylist(currlist))
+					mainbody += "<b>There are no orders on the DEEPNET!</b>"
+				for (var/list/k in currlist)
+					mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
+			if ("3","6","7","8") //sell
+				mainbody += "<a href='?src=\ref[src];deepnet=6'>Add New</a>&nbsp;<a href='?src=\ref[src];deepnet=7'>Change</a>&nbsp;<a href='?src=\ref[src];deepnet=8'>Cancel</a><br><br>"
+				if (href_list["deepnet"] == "6") //add
+					var/obj/item/M = user.get_active_hand()
+					if (M && istype(M))
+						if (istype(M, /obj/item/stack))
+							var/obj/item/stack/ST = M
+							if (ST.amount <= 0)
+								return
+							else
+								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars) 0 to cancel.") as num|null
+								if (!isnum(price))
+									return
+								if (price <= 0)
+									return
+								else
+									//owner, object, amount, price, sale/buy, fulfilled
+									var/idx = rand(1,999999)
+									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"deepnet","[idx]",1))
+									user.drop_from_inventory(ST)
+									ST.forceMove(locate(0,0,0))
+									mainbody += "You place \the [ST] for sale in the <b>DEEPNET</b>."
+									sleep(0.5)
+									do_html(user)
+									return
+						else
+							var/price = input(user, "What price do you want to place the [M] for sale in the DEEPNET? (in dollars).") as num|null
+							if (!isnum(price))
+								return
+							if (price <= 0)
+								return
+							else
+								//owner, object, amount, price, sale/buy, id number, fulfilled
+								var/idx = rand(1,999999)
+								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"deepnet","[idx]",1))
+								user.drop_from_inventory(M)
+								M.forceMove(locate(0,0,0))
+								mainbody += "You place \the [M] for sale in the <b>DEEPNET</b>."
+								sleep(0.5)
+								do_html(user)
+								return
+					else
+						WWalert(user,"Failed to create the order! You need to have the item in your active hand.","DEEPNET")
+				if (href_list["deepnet"] == "7") //change
+					var/list/currlist = list()
+					for (var/i in map.globalmarketplace)
+						if (map.globalmarketplace[i][1] == user.civilization)
+							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+					if (isemptylist(currlist))
+						mainbody += "You have no orders on the market!"
+						sleep(0.5)
+						do_html(user)
+						return
+					for (var/list/k in currlist)
+						mainbody += "<a href='?src=\ref[src];deepnet=ch[k[1]]'>[k[2]]</a><br>"
+				if (href_list["deepnet"] == "8") //cancel
+					var/list/currlist = list()
+					for (var/i in map.globalmarketplace)
+						if (map.globalmarketplace[i][1] == user.civilization)
+							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+					if (isemptylist(currlist))
+						mainbody += "You have no orders on the market!"
+						sleep(0.5)
+						do_html(user)
+						return
+					for (var/list/k in currlist)
+						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a><br>"
+
+			if ("4") //account
+				mainbody += "<big>Account: <b>[user.civilization]</b></big><br><br>"
+				var/accmoney = map.marketplaceaccounts[user.civilization]
+				if (map.marketplaceaccounts[user.civilization])
+					if (accmoney <= 0)
+						mainbody += "<b>Your account is empty!</b>"
+						map.marketplaceaccounts[user.civilization] = 0
+					else
+						mainbody += "You have [accmoney/4] dollars in your company's account.<br>"
+						mainbody += "<a href='?src=\ref[src];deepnet=5'>Withdraw</a>"
+				else
+					mainbody += "<b>Your account is empty!</b>"
+			if ("5") //withdraw
+				var/accmoney = map.marketplaceaccounts[user.civilization]
+				if (accmoney > 0)
+					var/obj/item/stack/money/dollar/SC = new /obj/item/stack/money/dollar(get_turf(origin))
+					SC.amount = accmoney/20
+					accmoney = 0
+					map.marketplaceaccounts[user.civilization] = 0
+					do_html(user)
+	sleep(0.5)
+	do_html(user)
+
+
+/////////////////////////////////////////////////////////
+/////////////////////E-LEKTRA SHOP/////////////////////////
+////////////////Where companies can get percursors///////////
+/datum/program/elektra
+	name = "E-LEKTRA Store"
+	description = "Suppliers of the basic materials for tech production."
+	compatible_os = list("unga OS 94","unga OS")
+
+/datum/program/elektra/do_html(mob/living/human/user)
+	if (mainmenu == "---")
+		mainmenu = "<h2><font color='yellow'>E</font><font color='orange'>-LEKTRA</font> STORE</h2><br>"
+		mainmenu += "<b>We sell all the chemicals needed for advanced tech production.</i></b><br>"
+		mainmenu += "<a href='?src=\ref[src];elektra=2'>Buy</a><br>"
+	..()
+
+/datum/program/elektra/Topic(href, href_list, hsrc)
+	..()
+	mainbody = ""
+	if (href_list["elektra"])
+		if (findtext(href_list["elektra"],"b"))
+			var/tcode = replacetext(href_list["elektra"],"b","")
+			var/cost = text2num(map.globalmarketplace[tcode][4])
+			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
+				mainbody += "<b>You need to have money in one of your hands!</b>"
+				sleep(0.5)
+				do_html(user)
+				return
+			else
+				var/obj/item/stack/money/mstack = null
+				if (istype(user.l_hand, /obj/item/stack/money))
+					mstack = user.l_hand
+				else
+					mstack = user.r_hand
+				if (mstack.value*mstack.amount >= cost)
+					mstack.amount -= (cost/mstack.value)
+					if (mstack.amount<= 0)
+						qdel(mstack)
+					var/obj/BO = map.globalmarketplace[tcode][2]
+					if (BO)
+						BO.forceMove(get_turf(origin))
+					map.globalmarketplace[tcode][7] = 0
+					mainbody += "You fulfill the order."
+					var/seller = map.globalmarketplace[tcode][1]
+					map.marketplaceaccounts[seller] += cost
+					map.globalmarketplace -= map.globalmarketplace[tcode]
+					sleep(0.5)
+					do_html(user)
+					return
+				else
+					mainbody += "<b>Not enough money!</b>"
+					sleep(0.5)
+					do_html(user)
+					return
+
+		switch(href_list["deepnet"])
+			if ("2") //buy
+				var/list/currlist = list()
+				for (var/i in map.globalmarketplace)
+					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="elektra")
+						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
+				if (isemptylist(currlist))
+					mainbody += "<b>We are currently out of stock. Please visit soon!</b>"
+				for (var/list/k in currlist)
+					mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
+	sleep(0.5)
+	do_html(user)
