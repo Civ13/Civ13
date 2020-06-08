@@ -305,10 +305,11 @@
 		user << "<span class='notice'>It has \a [ammo_magazine] loaded.</span>"
 	if (!magazine_based)
 		user << "<span class='notice'>[inexactAmmo()]</span>"
-	if (serial == "")
-		user << "<span class='warning'><b>The serial number has been filed out.</b></span>"
-	else
-		user << "<i>Serial no. <b>[serial]</b></i>"
+	if (!(istype(src, /obj/item/weapon/gun/projectile/bow)))
+		if (serial == "")
+			user << "<span class='warning'><b>The serial number has been filed out.</b></span>"
+		else
+			user << "<i>Serial no. <b>[serial]</b></i>"
 /obj/item/weapon/gun/projectile/proc/getAmmo()
 	var/bullets = FALSE
 	if (loaded)
