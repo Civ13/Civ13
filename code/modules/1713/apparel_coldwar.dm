@@ -456,6 +456,7 @@
 	item_state = "balaclava"
 	worn_state = "balaclava"
 	body_parts_covered = FACE|EYES|HEAD
+	flags_inv = HIDEFACE
 	w_class = 1
 	restricts_view = 2
 	heat_protection = HEAD|FACE|EYES
