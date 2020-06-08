@@ -298,7 +298,6 @@
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\reichstag.dm"
 #include "code\game\objects\map_metadata\river_kwai.dm"
-#include "code\game\objects\map_metadata\rizal_stadium.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
 #include "code\game\objects\map_metadata\sammirhayeed.dm"
@@ -948,5 +947,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\rizal_stadium.dmm"
+#include "maps\special\the_art_of_the_deal.dmm"
 // END_INCLUDE

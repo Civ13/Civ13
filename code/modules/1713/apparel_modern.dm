@@ -769,6 +769,8 @@
 		/obj/item/stack/medical/bruise_pack,
 		/obj/item/weapon/whistle,
 		/obj/item/weapon/pen,
+		/obj/item/stack/money,
+		/obj/item/weapon/key,
 		)
 /obj/item/weapon/storage/belt/police/New()
 	..()
