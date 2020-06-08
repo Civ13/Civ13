@@ -1185,9 +1185,6 @@
 	mainmenu = "<h2>SQUAD STATUS</h2><br>"
 	if (origin.operatingsystem == "unga OS 94 Police Edition" && user.civilization != "Police" && user.civilization != "Paramedics")
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
-		sleep(0.5)
-		do_html(user)
-		return
 	else
 		mainbody = ""
 		for(var/mob/living/human/H in player_list)
@@ -1209,9 +1206,6 @@
 	mainmenu = "<h2>LICENSE PLATE DATABASE</h2><br>"
 	if (user.civilization != "Police")
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
-		sleep(0.5)
-		do_html(user)
-		return
 	else
 		mainbody = ""
 		for(var/list/L in map.vehicle_registations)
@@ -1224,11 +1218,9 @@
 
 /datum/program/permits/do_html(mob/living/human/user)
 	mainmenu = "<h2>GUN PERMITS</h2><br>"
-	mainmenu = "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
+	mainmenu += "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
 	if (user.civilization == "Police" || user.civilization == "Paramedics")
 		mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
-		..()
-		return
 	..()
 
 /datum/program/permits/Topic(href, href_list, hsrc)

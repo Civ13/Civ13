@@ -89,7 +89,7 @@
 		if (operatingsystem == "unga OS 94 Police Edition")
 			subt = "<br><font color='blue'>POLICE</font>&nbsp;<font color='red'>EDITION</font>"
 		mainmenu = {"
-		<i><h1><img src='uos94.png'></img></h1></i>[subt]
+		<i><h1><img src='uos94.png'></img>[subt]</h1></i>
 		<hr>
 		"}
 		if (programs.len)

@@ -134,13 +134,14 @@
 	for(var/i, i<=num, i++)
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
-		chosen = list(list(/obj/item/weapon/reagent_containers/pill/cocaine,rand(150,250)),list(/obj/item/weapon/disk/program/squadtracker,rand(250,350)),list(/obj/item/weapon/attachment/scope/adjustable/sniper_scope,rand(150,200)),list(/obj/item/weapon/attachment/silencer/pistol,rand(180,250)),list(/obj/item/weapon/plastique/c4,rand(750,950)))
+		chosen = list(list(/obj/item/weapon/reagent_containers/pill/cocaine,rand(150,250)),list(/obj/item/weapon/disk/program/squadtracker,rand(250,350)),list(/obj/item/weapon/attachment/scope/adjustable/sniper_scope,rand(150,200)),list(/obj/item/weapon/attachment/silencer/pistol,rand(180,250)),list(/obj/item/weapon/plastique/c4,rand(750,950)),list(/obj/item/clothing/glasses/nvg,rand(140,180)),list(/obj/item/clothing/accessory/armor/nomads/civiliankevlar,rand(400,500)))
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
 			var/obj/item/ST = new pt(locate(1,1,1))
 			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
 			ST.forceMove(locate(0,0,0))
+
 	num = rand(2,3) //ammo
 	for(var/i, i<=num, i++)
 		var/idx = rand(1,999999)
@@ -252,9 +253,6 @@
 		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
 		/obj/item/ammo_magazine/m1911 = 20,
 		/obj/item/ammo_magazine/c32 = 10,
-
-		/obj/item/clothing/glasses/nvg = 2,
-		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 4,
 	)
 	prices = list(
 		/obj/item/weapon/gun/projectile/pistol/colthammerless = 300,
@@ -272,9 +270,6 @@
 		/obj/item/ammo_magazine/shellbox = 80,
 		/obj/item/ammo_magazine/shellbox/slug = 80,
 		/obj/item/ammo_magazine/m24 = 80,
-
-		/obj/item/clothing/glasses/nvg = 100,
-		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 400,
 	)
 	attack_hand(mob/living/human/user as mob)
 		if (user.gun_permit)
