@@ -85,8 +85,11 @@
 
 /obj/structure/computer/proc/boot(operatingsystem = "none")
 	if (operatingsystem == "unga OS 94" || operatingsystem == "unga OS 94 Police Edition")
+		var/subt = ""
+		if (operatingsystem == "unga OS 94 Police Edition")
+			subt = "<br><font color='blue'>POLICE</font>&nbsp;<font color='red'>EDITION</font>"
 		mainmenu = {"
-		<i><h1><img src='uos94.png'></img></h1></i>
+		<i><h1><img src='uos94.png'></img></h1></i>[subt]
 		<hr>
 		"}
 		if (programs.len)
@@ -94,6 +97,8 @@
 				if (programs[i] && istype(programs[i],/datum/program/))
 					var/datum/program/P = programs[i]
 					mainmenu += "&nbsp;<a href='?src=\ref[src];program=[i]'>[P.name]</a>"
+					if (i % 3 == 0) // 3 items per line
+						mainmenu += "<br>"
 		mainbody = "System initialized."
 
 	else if (operatingsystem == "unga OS")

@@ -139,6 +139,7 @@
 		programs += new/datum/program/permits
 		programs += new/datum/program/warrants
 		programs += new/datum/program/squadtracker
+		programs += new/datum/program/gunregistry
 		programs += new/datum/program/licenseplates
 //////////////////////////////////////////
 /////////DISKS///////////////////////////

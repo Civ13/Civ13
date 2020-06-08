@@ -91,6 +91,7 @@ var/civmax_research = list(230,230,230)
 	var/list/scores = list()
 	var/list/warrants = list()
 	var/list/vehicle_registations = list()
+	var/list/gun_registations = list()
 	// lighting
 	var/list/times_of_day = list("Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night")
 	var/list/zlevels_without_lighting = list()
