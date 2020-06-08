@@ -51,6 +51,8 @@
 	custom_civs += newnamef
 	spawn(15000)
 		spawn_disks(TRUE)
+	spawn(100)
+		refill_marketplace(TRUE)
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
@@ -116,6 +118,44 @@
 			spawn_disks(repeat)
 	world << "<font size=2 color ='yellow'>New disks have arrived at the vaults!</font>"
 
+/obj/map_metadata/art_of_the_deal/proc/refill_marketplace(repeat = FALSE)
+	if (prob(100))
+		var/idx = rand(1,999999)
+		var/list/chosen = list()
+		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(300,500)))
+		var/chosen1 = pick(chosen)
+		if (ispath(chosen1[1]))
+			var/pt = chosen1[1]
+			var/obj/item/weapon/gun/projectile/ST = new pt(locate(1,1,1))
+			ST.serial = ""
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			ST.forceMove(locate(0,0,0))
+	var/num = rand(1,2) //equipment
+	for(var/i, i<=num, i++)
+		var/idx = rand(1,999999)
+		var/list/chosen = list()
+		chosen = list(list(/obj/item/weapon/reagent_containers/pill/cocaine,rand(150,250)),list(/obj/item/weapon/disk/program/squadtracker,rand(250,350)),list(/obj/item/weapon/attachment/scope/adjustable/sniper_scope,rand(150,200)),list(/obj/item/weapon/attachment/silencer/pistol,rand(180,250)),list(/obj/item/weapon/plastique/c4,rand(750,950)))
+		var/chosen1 = pick(chosen)
+		if (ispath(chosen1[1]))
+			var/pt = chosen1[1]
+			var/obj/item/ST = new pt(locate(1,1,1))
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			ST.forceMove(locate(0,0,0))
+	num = rand(2,3) //ammo
+	for(var/i, i<=num, i++)
+		var/idx = rand(1,999999)
+		var/list/chosen = list()
+		chosen = list(list(/obj/item/ammo_magazine/gewehr98,rand(100,120)),list(/obj/item/ammo_magazine/mosin,rand(100,120)),list(/obj/item/ammo_magazine/shellbox,rand(120,180)),list(/obj/item/ammo_magazine/walther,rand(60,90)))
+		var/chosen1 = pick(chosen)
+		if (ispath(chosen1[1]))
+			var/pt = chosen1[1]
+			var/obj/item/ST = new pt(locate(1,1,1))
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			ST.forceMove(locate(0,0,0))
+
+	if (repeat)
+		spawn(rand(12000,14000))
+			refill_marketplace(repeat)
 /obj/map_metadata/art_of_the_deal/proc/score()
 	world << "<b><font color='yellow' size=3>Scores:</font></b>"
 	for(var/obj/structure/closet/safe/SF in world)
@@ -210,7 +250,6 @@
 //		/obj/item/weapon/gun/projectile/boltaction/m24 = 2,
 		/obj/item/weapon/attachment/silencer/pistol = 5,
 
-		/obj/item/weapon/plastique/c4 = 2,
 		/obj/item/ammo_magazine/colthammerless = 20,
 		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
 		/obj/item/ammo_magazine/m1911 = 20,
@@ -231,7 +270,6 @@
 		/obj/item/weapon/gun/projectile/boltaction/m24 = 600,
 		/obj/item/weapon/attachment/silencer/pistol = 120,
 
-		/obj/item/weapon/plastique/c4 = 800,
 		/obj/item/ammo_magazine/colthammerless = 40,
 		/obj/item/ammo_magazine/colthammerless/a380acp = 40,
 		/obj/item/ammo_magazine/m1911 = 40,

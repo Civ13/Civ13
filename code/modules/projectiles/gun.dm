@@ -560,7 +560,7 @@
 			if (70 to 84)
 				user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
 			if (85 to 200)
-				user << "<font color='#245319'>Seems to be in very good condition.</font>"
+				user << "<font color='#326327'>Seems to be in very good condition.</font>"
 
 	if (firemodes.len > 1)
 		var/datum/firemode/current_mode = firemodes[sel_mode]

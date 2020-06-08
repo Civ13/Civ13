@@ -41,7 +41,9 @@
 
 	var/infinite_ammo = FALSE
 
+	var/serial = ""
 /obj/item/weapon/gun/projectile/New()
+	serial = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)]"
 	..()
 	if (map && map.civilizations)
 		loaded = list()
@@ -303,7 +305,8 @@
 		user << "<span class='notice'>It has \a [ammo_magazine] loaded.</span>"
 	if (!magazine_based)
 		user << "<span class='notice'>[inexactAmmo()]</span>"
-	return
+	if (serial == "")
+		user << "<span class='waring'><b>The serial number has been filed out.</b></span>"
 
 /obj/item/weapon/gun/projectile/proc/getAmmo()
 	var/bullets = FALSE

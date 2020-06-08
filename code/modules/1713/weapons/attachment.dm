@@ -61,7 +61,8 @@ Current Defines (_defines/attachment.dm)
 	..()
 	if (attachments.len)
 		for (var/obj/item/weapon/attachment/A in attachments)
-			user << "<span class='notice'>It has [A] attached.</span>"
+			if (!(istype(A,/obj/item/weapon/attachment/scope/iron_sights)))
+				user << "<span class='notice'>It has [A] attached.</span>"
 
 /obj/item/weapon/gun/dropped(mob/user)
 	..()
