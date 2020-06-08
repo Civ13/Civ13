@@ -397,7 +397,7 @@
 /obj/structure/assembler/proc/manufacture(var/obj/item/precursor/P)
 	on = TRUE
 	update_icon()
-	spawn(30)
+	spawn(500)
 		on = FALSE
 		update_icon()
 		for(var/obj/structure/assembler/A in locate(x+1,y,z))
