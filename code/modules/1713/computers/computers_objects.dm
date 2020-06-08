@@ -139,6 +139,7 @@
 		programs += new/datum/program/permits
 		programs += new/datum/program/warrants
 		programs += new/datum/program/squadtracker
+		programs += new/datum/program/gunregistry
 		programs += new/datum/program/licenseplates
 //////////////////////////////////////////
 /////////DISKS///////////////////////////
@@ -288,7 +289,127 @@
 	icon_state = "disk_uos94"
 	item_state = "disk_uos94"
 	operatingsystem = "unga OS 94 Police Edition"
+///////////////components/////////////////////
+/obj/item/weapon/component
+	icon = 'icons/obj/computers.dmi'
+	name = "electronic component"
+	desc = "A basic electronic chip."
+	icon_state = "generic_chip"
 
+/obj/item/weapon/component/red
+	name = "RDKV S-445 chip"
+	desc = "A highly advanced chip, manufactured by Rednikov Industries."
+	icon_state = "special_chip_c"
+
+/obj/item/weapon/component/green
+	name = "McGT S5R1 chip"
+	desc = "A highly advanced chip, manufactured by MacGreene Traders."
+	icon_state = "card_ram"
+
+/obj/item/weapon/component/blue
+	name = "GBSA-1994 chip"
+	desc = "A highly advanced chip, manufactured by Giovanni Blu Stocks."
+	icon_state = "cpu_chip_blue"
+
+/obj/item/weapon/component/yellow
+	name = "GS-IC-M3 chip"
+	desc = "A highly advanced chip, manufactured by Goldstein Solutions."
+	icon_state = "yellow_card"
+/////////////////precursors///////////////////
+///////////////components/////////////////////
+/obj/item/precursor
+	icon = 'icons/obj/mining.dmi'
+	name = "crystal"
+	desc = "A rare chemical, in crystallized form."
+	icon_state = "ore_diamond"
+
+/obj/item/precursor/red
+	name = "crimsonite crystals"
+	desc = "A rare chemical, in crystallized form. Has a red tinge."
+	icon_state = "ore_crimsonite"
+
+/obj/item/precursor/green
+	name = "verdine crystals"
+	desc = "A rare chemical, in crystallized form. Has a green tinge."
+	icon_state = "ore_verdine"
+
+/obj/item/precursor/blue
+	name = "indigon crystals"
+	desc = "A rare chemical, in crystallized form. Has a blue tinge."
+	icon_state = "cpu_indigon"
+
+/obj/item/precursor/yellow
+	name = "galdonium crystals"
+	desc = "A rare chemical, in crystallized form. Has a yellow tinge."
+	icon_state = "ore_galdonium"
+//////////////////assembler/////////////////////
+/obj/structure/assembler
+	name = "assembler"
+	desc = "An automated machine, part of a conveyor belt, that assembles a circuit."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "stacker0"
+	var/base_icon = "stacker"
+	anchored = TRUE
+	density = TRUE
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/on = FALSE
+	var/requires = /obj/item/precursor
+	var/produces = /obj/item/weapon/component
+
+/obj/structure/assembler/loader
+	name = "loader"
+	desc = "An automated machine, part of a conveyor belt, that loads the precursors."
+	icon_state = "loader0"
+	base_icon = "loader"
+
+/obj/structure/assembler/unloader
+	name = "unloader"
+	desc = "An automated machine, part of a conveyor belt, that unloads the final product."
+	icon_state = "unloader0"
+	base_icon = "unloader"
+
+/obj/structure/assembler/update_icon()
+	if (on)
+		icon_state = "[base_icon]1"
+	else
+		icon_state = "[base_icon]0"
+
+/obj/structure/assembler/loader/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (on)
+		H << "The assembler is busy, please wait..."
+		return
+	if (istype(I, requires))
+		manufacture(I)
+	else
+		..()
+/obj/structure/assembler/loader/manufacture(var/obj/item/precursor/P)
+	if (istype(P,/obj/item/precursor))
+		on = TRUE
+		update_icon()
+		spawn(20)
+			P.forceMove(locate(1,1,1))
+			on = FALSE
+			update_icon()
+			for(var/obj/structure/assembler/A in locate(x+1,y,z))
+				A.manufacture(P)
+/obj/structure/assembler/proc/manufacture(var/obj/item/precursor/P)
+	on = TRUE
+	update_icon()
+	spawn(500)
+		on = FALSE
+		update_icon()
+		for(var/obj/structure/assembler/A in locate(x+1,y,z))
+			A.manufacture(P)
+/obj/structure/assembler/unloader/manufacture(var/obj/item/precursor/P)
+	on = TRUE
+	update_icon()
+	spawn(20)
+		qdel(P)
+		new produces (loc)
+		on = FALSE
+		update_icon()
 //////////////////programs////////////////////
 
 /obj/item/weapon/disk/program

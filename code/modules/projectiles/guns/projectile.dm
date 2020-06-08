@@ -306,8 +306,9 @@
 	if (!magazine_based)
 		user << "<span class='notice'>[inexactAmmo()]</span>"
 	if (serial == "")
-		user << "<span class='waring'><b>The serial number has been filed out.</b></span>"
-
+		user << "<span class='warning'><b>The serial number has been filed out.</b></span>"
+	else
+		user << "<i>Serial no. <b>[serial]</b></i>"
 /obj/item/weapon/gun/projectile/proc/getAmmo()
 	var/bullets = FALSE
 	if (loaded)

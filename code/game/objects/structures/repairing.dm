@@ -103,7 +103,17 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
 /obj/item/weapon/gun/projectile/attackby(obj/item/M as obj, mob/user as mob)
-	if (istype(M, /obj/item/weapon/gun_cleaning_kit))
+	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife))
+		switch(alert(user,"Ae you sure you want to scratch the serial number? This cannot be reversed and will make the gun illegal!","Serial number filing","Yes","No"))
+			if ("No")
+				return
+			if ("Yes")
+				user << "You start scratching the serial number of \the [src]..."
+				if (do_after(user,100,src))
+					user << "You successfully scratch the serial number, making the gun untraceable."
+					serial = ""
+					return
+	else if (istype(M, /obj/item/weapon/gun_cleaning_kit))
 		if (!istype(src, /obj/item/weapon/gun/projectile/bow))
 			if ((health/maxhealth)<0.5)
 				visible_message("<span class='warning'>\The [src.name]is too damaged, you need a specialized firearm repairing bench!</span>")

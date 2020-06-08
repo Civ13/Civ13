@@ -141,7 +141,7 @@
 	nanomanager.update_uis(src)
 
 	spawn(vend_delay)
-		R.get_product(get_turf(src),p_amount)
+		R.get_product(get_turf(src),p_amount,user)
 		playsound(loc, 'sound/machines/vending_drop.ogg', 100, TRUE)
 		status_message = ""
 		status_error = FALSE

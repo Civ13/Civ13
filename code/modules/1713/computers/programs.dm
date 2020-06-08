@@ -1184,9 +1184,9 @@
 /datum/program/squadtracker/do_html(mob/living/human/user)
 	mainmenu = "<h2>SQUAD STATUS</h2><br>"
 	if (origin.operatingsystem == "unga OS 94 Police Edition" && user.civilization != "Police" && user.civilization != "Paramedics")
-		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
-		return
+		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
+		mainbody = ""
 		for(var/mob/living/human/H in player_list)
 			if (H.civilization == user.civilization)
 				var/tst = ""
@@ -1205,9 +1205,9 @@
 /datum/program/licenseplates/do_html(mob/living/human/user)
 	mainmenu = "<h2>LICENSE PLATE DATABASE</h2><br>"
 	if (user.civilization != "Police")
-		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
-		return
+		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
+		mainbody = ""
 		for(var/list/L in map.vehicle_registations)
 			mainbody += "<b>[L[1]]</b> - <b>[L[4]] [L[3]]</b> - registered to <b>[L[2]]</b><br>"
 	..()
@@ -1217,18 +1217,13 @@
 	compatible_os = list("unga OS 94 Police Edition")
 
 /datum/program/permits/do_html(mob/living/human/user)
+	mainmenu = "<h2>GUN PERMITS</h2><br>"
+	mainmenu += "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
 	if (user.civilization == "Police" || user.civilization == "Paramedics")
-		mainbody += "<font color='yellow'>This service is intended for civilians.</font>"
-		..()
-		return
-	else if (mainmenu == "---")
-		mainmenu = "<h2>GUN PERMITS</h2><br>"
-		mainmenu = "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
+		mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 	..()
 
 /datum/program/permits/Topic(href, href_list, hsrc)
-	mainmenu = "<h2>GUN PERMITS</h2><br>"
-	mainmenu += "<a href='?src=\ref[src];permits=1'>Request Permit</a>"
 	mainbody = ""
 	if (href_list["permits"])
 		if (user.civilization == "Police" || user.civilization == "Paramedics")
@@ -1366,3 +1361,19 @@
 					mainbody += "<font color='yellow'>There are no outstanding warrants for any of the suspects.</font>"
 	sleep(0.5)
 	do_html(user)
+
+/datum/program/gunregistry
+	name = "Firearm Database"
+	description = "Connects to the main Police server to check updated status on all legally owned guns."
+	compatible_os = list("unga OS 94 Police Edition")
+
+/datum/program/gunregistry/do_html(mob/living/human/user)
+	mainmenu = "<h2>FIREARM REGISTRY DATABASE</h2><br>"
+	mainbody = ""
+	if (user.civilization != "Police")
+		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
+		return
+	else
+		for(var/list/L in map.gun_registations)
+			mainbody += "<b>[L[1]] (no. [L[2]])</b> - registered to <b>[L[3]]</b><br>"
+	..()
