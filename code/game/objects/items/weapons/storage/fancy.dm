@@ -191,7 +191,9 @@
 	slot_flags = SLOT_BELT
 	storage_slots = 14
 	can_hold = list(/obj/item/clothing/accessory/medal)
-
+/obj/item/weapon/storage/fancy/medal/update_icon()
+	icon_state = "[initial(icon_state)][contents.len]"
+	return
 /obj/item/weapon/storage/fancy/medal/german_full
 	name = "german medal case"
 /obj/item/weapon/storage/fancy/medal/german_full/New()

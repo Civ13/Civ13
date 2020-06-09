@@ -190,7 +190,7 @@
 	fire_sound = 'sound/weapons/guns/fire/Thompson.ogg'
 	magazine_type = /obj/item/ammo_magazine/thompson
 	full_auto = TRUE
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.6, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),

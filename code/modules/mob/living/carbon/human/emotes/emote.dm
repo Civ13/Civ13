@@ -404,6 +404,8 @@ var/list/vocal_emotes = list(
 								if (AMERICAN)
 									if (map.ID == MAP_ARAB_TOWN)
 										playsound(get_turf(src), "charge_ISRAELI", 100)
+									else if (original_job_title == "Filipino Scout")
+										playsound(get_turf(src), "charge_FILIPINO", 100)
 									else
 										playsound(get_turf(src), "charge_AMERICAN", 100)
 								if (VIETNAMESE)
