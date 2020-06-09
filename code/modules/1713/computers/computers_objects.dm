@@ -492,9 +492,10 @@
 	on = TRUE
 	update_icon()
 	spawn(20)
-		qdel(P)
-		new P.produces(loc)
+		for(var/i=1, i<=P.amount,i++)
+			new P.produces(loc)
 		on = FALSE
+		qdel(P)
 		update_icon()
 //////////////////programs////////////////////
 
