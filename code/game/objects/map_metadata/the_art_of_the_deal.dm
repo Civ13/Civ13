@@ -33,6 +33,7 @@
 		"Police" = 0,)
 	required_players = 6
 	var/list/delivery_locations = list()
+	var/list/delivery_orders = list()
 
 /obj/map_metadata/proc/assign_precursors()
 	var/list/possibilities1 = list("verdine crystals","indigon crystals","galdonium crystals")
@@ -75,17 +76,46 @@
 	spawn(100)
 		refill_marketplace(TRUE)
 		assign_precursors()
-		send_buy_orders()
 	spawn(150)
 		assign_delivery_zones()
+		send_buy_orders()
 /obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
 	for(var/turf/floor/delivery/D in turfs)
-		var/list/tlist = list("[D.x],[D.y]")
+		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
 		delivery_locations += tlist
-	world << "[delivery_locations.len] and [delivery_locations[1]]"
 /obj/map_metadata/art_of_the_deal/proc/send_buy_orders()
+	for(var/i in list("mail@greene.ug","mail@rednikov.ug","mail@goldstein.ug","mail@blu.ug"))
+		var/list/tloc = pick(delivery_locations)
+		var/nr = pick(3,7)
+		var/comps = ""
+		switch(i)
+			if ("mail@greene.ug")
+				comps = pick("GBSA-1994 chip","RDKV S-445 chip","GS-IC-M3 chip")
+			if ("mail@rednikov.ug")
+				comps = pick("GBSA-1994 chip","McGT S5R1 chip","GS-IC-M3 chip")
+			if ("mail@goldstein.ug")
+				comps = pick("GBSA-1994 chip","McGT S5R1 chip","RDKV S-445 chip")
+			if ("mail@blu.ug")
+				comps = pick("McGT S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
+		var/pay = nr*rand(400,600)
+		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay)) //x,y,product,amount,payment
+		delivery_orders += tlist
+		var/needed = "[nr] [comps]s at the [tloc[4]] [tloc[1]] delivery area ([tloc[2]],[tloc[3]])"
+		var/datum/email/E = new/datum/email
+		pay/=4 //convert to dollars
+		E.subject = pick("New Order","Delivery Requested","Need Some","Ordering")
+		E.sender = "[lowertext(pick(first_names_male))][rand(1,99)]@monkeysoft.ug"
+		E.receiver = i
+		E.message = pick(
+			"Hey man, send [needed], really need it. Is [pay] ok? Will be expecting.<br>kudos from [uppertext(E.sender[1])].",
+			"Hope you guys are ok. Need [needed]. ASAP. Will pay [pay]$ for all of it. Yours trully",
+			"Hey, need a delivery of [needed] for [pay], thanks.",
+			"Send [needed]. Pay is [pay]$. Discretion as always.<br>-[uppertext(E.sender[1])]",
+			)
+		E.date = roundduration2text()
+		E.read = FALSE
+		map.emails[i] += list(E)
 	spawn(rand(5000,7000))
-
 		send_buy_orders()
 		return
 
@@ -455,9 +485,9 @@
 
 	spawn(10)
 		update()
-/mob/proc/get_coded_loc()
+/atom/proc/get_coded_loc()
 	var/a = ceil(x/22)
-	var/b = 10-ceil(y/22)
+	var/b = 10-Floor(y/22)
 	switch(a)
 		if (0 to 1)
 			a = "A"

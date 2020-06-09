@@ -816,22 +816,22 @@
 	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 	if (href_list["mail"])
 		if (href_list["mail"]=="99999")
-			if (islist(map.emails[uname]))
-				for(var/i, i <= map.emails[uname].len, i++)
+			if (islist(map.emails[uname]) && map.emails[uname].len>=1)
+				for(var/i = map.emails[uname].len, i > 0, i++)
 					if (istype(map.emails[uname][i], /datum/email))
 						var/datum/email/em =  map.emails[uname][i]
 						if (em.read)
 							mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
 						else
-							mainbody += "<b><a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
-			if (islist(map.emails[cname]))
-				for(var/i, i <= map.emails[cname].len, i++)
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+			if (islist(map.emails[cname]) && map.emails[cname].len>=1)
+				for(var/i = map.emails[cname].len, i > 0, i++)
 					if (istype(map.emails[cname][i], /datum/email))
 						var/datum/email/em =  map.emails[cname][i]
 						if (em.read)
 							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
 						else
-							mainbody += "<b><a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 
 		else
 			if (findtext(href_list["mail"],"c"))
@@ -860,7 +860,7 @@
 			
 //		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
-		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
+		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 	if (href_list["mail_send"])
@@ -879,9 +879,9 @@
 		tmp_comp_vars["mail_subj"] = "RE:[chosen.subject]"
 		tmp_comp_vars["mail_snd"] = chosen.receiver
 		tmp_comp_vars["mail_rec"] = chosen.sender
-		tmp_comp_vars["mail_msg"] = "-----<br>[chosen.message]"
+		tmp_comp_vars["mail_msg"] = "___________________<br>[chosen.message]"
 		mainbody += "From: [chosen.receiver]<br>To: [chosen.sender]<br>"
-		mainbody += "Subject: RE:[chosen.subject]<br>"
+		mainbody += "Subject: RE:[chosen.subject]<br><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 
