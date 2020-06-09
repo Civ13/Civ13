@@ -752,6 +752,22 @@
 		"mail_subj" = "Subject",
 		"mail_msg" = "Message",
 	)
+ //pre-loaded emails for companies so they get notifications
+/datum/program/monkeysoftmail/blue/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@blu.ug"
+/datum/program/monkeysoftmail/red/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@rednikov.ug"
+/datum/program/monkeysoftmail/yellow/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@goldstein.ug"
+/datum/program/monkeysoftmail/green/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@greene.ug"
+/datum/program/monkeysoftmail/police/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@police.gov"
 /datum/program/monkeysoftmail/does_checks_proc()
 	..()
 	if (tmp_comp_vars["mail_snd"] && origin)
@@ -761,7 +777,7 @@
 					var/datum/email/em =  map.emails[tmp_comp_vars["mail_snd"]][i]
 					if (!em.read)
 						playsound(origin.loc,'sound/machines/computer/mail.ogg',60)
-						origin.visible_message("<font color='yellow'>You've got mail!</font>")
+						origin.visible_message("<font color='yellow'>\icon[getFlatIcon(origin)]You've got mail!</font>")
 						return
 	return
 /datum/program/monkeysoftmail/reset_tmp_vars()
@@ -791,7 +807,8 @@
 			mdomain = "greene.ug"
 		if ("Goldstein Solutions")
 			mdomain = "goldstein.ug"
-
+		if ("Police")
+			mdomain = "police.gov"
 	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
 	var/cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
@@ -833,7 +850,7 @@
 		switch(href_list["sendmail"])
 			if ("2")
 //				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
-				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@greene.ug","mail@goldstein.ug","mail@blu.ug"))
+				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@greene.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
 			if ("3")
 				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?","e-mail",tmp_comp_vars["mail_subj"]) as text
 			if ("4")

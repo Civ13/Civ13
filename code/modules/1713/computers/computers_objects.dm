@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/aotd
-	name = "Desktop Computer"
+	name = "desktop computer"
 	desc = "A desktop computer running the latest version of Unga OS. Has a floppy drive."
 	powered = TRUE
 	powerneeded = FALSE
@@ -8,9 +8,30 @@
 	display = "<b>unga OS</b>"
 	operatingsystem = "unga OS 94"
 
-/obj/structure/computer/nopower/aotd/New()
+/obj/structure/computer/nopower/aotd/green/New()
 	..()
-	programs += new/datum/program/monkeysoftmail
+	programs += new/datum/program/monkeysoftmail/green
+	programs += new/datum/program/deepnet
+	programs += new/datum/program/elektra
+	programs += new/datum/program/orion_trail
+
+/obj/structure/computer/nopower/aotd/red/New()
+	..()
+	programs += new/datum/program/monkeysoftmail/red
+	programs += new/datum/program/deepnet
+	programs += new/datum/program/elektra
+	programs += new/datum/program/orion_trail
+
+/obj/structure/computer/nopower/aotd/yellow/New()
+	..()
+	programs += new/datum/program/monkeysoftmail/yellow
+	programs += new/datum/program/deepnet
+	programs += new/datum/program/elektra
+	programs += new/datum/program/orion_trail
+
+/obj/structure/computer/nopower/aotd/blue/New()
+	..()
+	programs += new/datum/program/monkeysoftmail/blue
 	programs += new/datum/program/deepnet
 	programs += new/datum/program/elektra
 	programs += new/datum/program/orion_trail
@@ -139,6 +160,11 @@
 		..()
 		programs += new/datum/program/permits
 		programs += new/datum/program/warrants
+
+/obj/structure/computer/nopower/police/inside
+	New()
+		..()
+		programs += new/datum/program/monkeysoftmail/police
 		programs += new/datum/program/squadtracker
 		programs += new/datum/program/gunregistry
 		programs += new/datum/program/licenseplates

@@ -129,7 +129,7 @@
 	program_checker()
 
 /obj/structure/computer/nopower
-	name = "Desktop Computer"
+	name = "desktop computer"
 	desc = "A desktop computer running the latest version of Unga OS."
 	icon_state = "1980_computer_on"
 	powered = TRUE
