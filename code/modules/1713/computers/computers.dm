@@ -126,6 +126,7 @@
 /obj/structure/computer/New()
 	..()
 	boot(operatingsystem)
+	program_checker()
 
 /obj/structure/computer/nopower
 	name = "Desktop Computer"
@@ -199,6 +200,7 @@
 						H << "This program is already installed on this machine."
 						return
 				programs += NP
+				NP.origin = src
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
 				H << "You load \the [NP.name] into this machine."
 				return
@@ -259,3 +261,12 @@
 		icon_state = "1980_computer_on"
 	else
 		icon_state = "1980_computer_off"
+
+/obj/structure/computer/proc/program_checker()
+	for(var/datum/program/P in programs)
+		if (P.does_checks)
+			P.does_checks_proc()
+	spawn(600)
+		if (src)
+			program_checker()
+			return

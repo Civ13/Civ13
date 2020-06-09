@@ -5,6 +5,7 @@
 	var/receiver = "unknown"
 	var/message = ""
 	var/date = "0:00"
+	var/read = FALSE
 
 /datum/email/New(list/properties = null)
 	..()
@@ -21,10 +22,15 @@
 	var/list/tmp_comp_vars = list() //where local vars get stored, as items in the list
 	var/mainbody = "---"
 	var/mainmenu = "---"
+	var/does_checks = FALSE //If the computer should check regularly, i.e., check for new emails to announce them.
 
 	var/mob/living/human/user //who is using the computer, from origin
 	var/obj/structure/computer/origin //where the program is located
 
+/datum/program/proc/does_checks_proc()
+	if (!does_checks)
+		return
+	
 /datum/program/proc/reset_tmp_vars()
 	tmp_comp_vars = list()
 
@@ -739,13 +745,25 @@
 	name = "MonkeySoft E-Mail Client"
 	description = "Send and Receive emails using the latest MonkeySoft Mail Client!"
 	compatible_os = list("unga OS 94","unga OS")
+	does_checks = TRUE
 	tmp_comp_vars = list(
 		"mail_rec" = "Recipient",
 		"mail_snd" = "Sender",
 		"mail_subj" = "Subject",
 		"mail_msg" = "Message",
 	)
-
+/datum/program/monkeysoftmail/does_checks_proc()
+	..()
+	if (tmp_comp_vars["mail_snd"] && origin)
+		if (islist(map.emails[tmp_comp_vars["mail_snd"]]))
+			for(var/i, i <= map.emails[tmp_comp_vars["mail_snd"]].len, i++)
+				if (istype(map.emails[tmp_comp_vars["mail_snd"]][i], /datum/email))
+					var/datum/email/em =  map.emails[tmp_comp_vars["mail_snd"]][i]
+					if (!em.read)
+						playsound(origin.loc,'sound/machines/computer/mail.ogg',60)
+						origin.visible_message("<font color='yellow'>You've got mail!</font>")
+						return
+	return
 /datum/program/monkeysoftmail/reset_tmp_vars()
 	tmp_comp_vars = list(
 		"mail_rec" = "Recipient",
@@ -785,23 +803,32 @@
 				for(var/i, i <= map.emails[uname].len, i++)
 					if (istype(map.emails[uname][i], /datum/email))
 						var/datum/email/em =  map.emails[uname][i]
-						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
+						if (em.read)
+							mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+						else
+							mainbody += "<b><a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 			if (islist(map.emails[cname]))
 				for(var/i, i <= map.emails[cname].len, i++)
 					if (istype(map.emails[cname][i], /datum/email))
 						var/datum/email/em =  map.emails[cname][i]
-						mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
+						if (em.read)
+							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+						else
+							mainbody += "<b><a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 
 		else
 			if (findtext(href_list["mail"],"c"))
 				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
 				var/datum/email/chosen = map.emails[cname][tcode]
+				chosen.read = TRUE
 				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
 				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
 			else
-				var/datum/email/chosen = map.emails[uname][text2num(href_list["mail"])]
+				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
+				var/datum/email/chosen = map.emails[uname][tcode]
+				chosen.read = TRUE
 				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<br>"
+				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
