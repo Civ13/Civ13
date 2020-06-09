@@ -140,14 +140,15 @@
 	world << "<font size=2 color ='yellow'>New disks have arrived at the vaults!</font>"
 
 /obj/map_metadata/art_of_the_deal/proc/refill_marketplace(repeat = FALSE)
-	precursor_stocks["galdonium crystals"][1] += 2
-	precursor_stocks["galdonium crystals"][2] = min(60,round(precursor_stocks["galdonium crystals"][2]*0.9))
-	precursor_stocks["indigon crystals"][1] += 2
-	precursor_stocks["indigon crystals"][2] = min(60,round(precursor_stocks["indigon crystals"][2]*0.9))
-	precursor_stocks["verdine crystals"][1] += 2
-	precursor_stocks["verdine crystals"][2] = min(60,round(precursor_stocks["verdine crystals"][2]*0.9))
-	precursor_stocks["crimsonite crystals"][1] += 2
-	precursor_stocks["crimsonite crystals"][2] = min(60,round(precursor_stocks["crimsonite crystals"][2]*0.9))
+	if (precursor_stocks.len >= 4)
+		precursor_stocks["galdonium crystals"][1] += 2
+		precursor_stocks["galdonium crystals"][2] = min(60,round(precursor_stocks["galdonium crystals"][2]*0.9))
+		precursor_stocks["indigon crystals"][1] += 2
+		precursor_stocks["indigon crystals"][2] = min(60,round(precursor_stocks["indigon crystals"][2]*0.9))
+		precursor_stocks["verdine crystals"][1] += 2
+		precursor_stocks["verdine crystals"][2] = min(60,round(precursor_stocks["verdine crystals"][2]*0.9))
+		precursor_stocks["crimsonite crystals"][1] += 2
+		precursor_stocks["crimsonite crystals"][2] = min(60,round(precursor_stocks["crimsonite crystals"][2]*0.9))
 	if (prob(100))
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
