@@ -7,7 +7,7 @@
 	is_singlefaction = TRUE
 	no_winner ="The fighting is still going."
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
 	faction_organization = list(
 		CIVILIAN)
 

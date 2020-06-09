@@ -777,8 +777,8 @@
 	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
 	var/cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
-		tmp_comp_vars["mail_snd"] = uname
-	mainbody = "<b>Logged in as <i>[uname]</i></b><br>"
+		tmp_comp_vars["mail_snd"] = cname
+	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 	if (href_list["mail"])
 		if (href_list["mail"]=="99999")
 			if (islist(map.emails[uname]))
@@ -797,7 +797,7 @@
 				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
 				var/datum/email/chosen = map.emails[cname][tcode]
 				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<br>"
+				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
 			else
 				var/datum/email/chosen = map.emails[uname][text2num(href_list["mail"])]
 				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
@@ -805,16 +805,17 @@
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
-				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
+//				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
+				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@greene.ug","mail@goldstein.ug","mail@blu.ug"))
 			if ("3")
-				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?") as text
+				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?","e-mail",tmp_comp_vars["mail_subj"]) as text
 			if ("4")
-				tmp_comp_vars["mail_msg"] = input(user, "What is the message?") as message
+				tmp_comp_vars["mail_msg"] = input(user, "What is the message?","e-mail",tmp_comp_vars["mail_msg"]) as message
 			if ("5")
 				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
 			
-		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
+//		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
+		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
@@ -828,6 +829,18 @@
 		map.emails[eml.receiver] += list(eml)
 		reset_tmp_vars()
 		WWalert(user,"Mail sent successfully!","E-mail Sent")
+	if (href_list["replymail"])
+		var/tcode = text2num(href_list["replymail"])
+		var/datum/email/chosen = map.emails[cname][tcode]
+		tmp_comp_vars["mail_subj"] = "RE:[chosen.subject]"
+		tmp_comp_vars["mail_snd"] = chosen.receiver
+		tmp_comp_vars["mail_rec"] = chosen.sender
+		tmp_comp_vars["mail_msg"] = "-----<br>[chosen.message]"
+		mainbody += "From: [chosen.receiver]<br>To: [chosen.sender]<br>"
+		mainbody += "Subject: RE:[chosen.subject]<br>"
+		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
+		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
+
 	sleep(0.5)
 	do_html(user)
 

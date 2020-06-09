@@ -300,7 +300,7 @@
 /obj/item/weapon/component/red
 	name = "RDKV S-445 chip"
 	desc = "A highly advanced chip, manufactured by Rednikov Industries."
-	icon_state = "special_chip_c"
+	icon_state = "card_red"
 
 /obj/item/weapon/component/green
 	name = "McGT S5R1 chip"
