@@ -193,6 +193,7 @@ var/civmax_research = list(230,230,230)
 	var/list/marketplaceaccounts = list()
 	var/list/pending_warrants = list()
 	var/list/emails = list("support@monkeysoft.ug" = list())
+	var/list/assign_precursors = list()
 	
 	var/winddirection = "East"
 	var/windspeedvar = 1 // 0 to 4

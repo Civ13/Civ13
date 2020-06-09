@@ -1576,8 +1576,8 @@
 /datum/program/elektra/Topic(href, href_list, hsrc)
 	..()
 	mainbody = ""
-	if (href_list["elektra"])
-		if (findtext(href_list["elektra"],"b"))
+	switch(href_list["elektra"])
+		if ("3")
 			var/tcode = replacetext(href_list["elektra"],"b","")
 			var/cost = text2num(map.globalmarketplace[tcode][4])
 			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
@@ -1612,7 +1612,6 @@
 					do_html(user)
 					return
 
-		switch(href_list["deepnet"])
 			if ("2") //buy
 				var/list/currlist = list()
 				for (var/i in map.globalmarketplace)
@@ -1620,7 +1619,22 @@
 						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 				if (isemptylist(currlist))
 					mainbody += "<b>We are currently out of stock. Please visit soon!</b>"
-				for (var/list/k in currlist)
-					mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
+				else
+					var/forsale = ""
+					switch(user.civilization)
+						if ("Rednikov Industries")
+							forsale = map.assign_precursors["Rednikov Industries"]
+						if ("Giovanni Blu Stocks")
+							forsale = map.assign_precursors["Giovanni Blu Stocks"]
+						if ("MacGreene Traders")
+							forsale = map.assign_precursors["MacGreene Traders"]
+						if ("Goldstein Solutions")
+							forsale = map.assign_precursors["Goldstein Solutions"]
+							
+					if (forsale)
+						mainbody += "<a href='?src=\ref[src];elektra=3'>[forsale] (15 dollars)</a><br>"
+					else
+						mainbody += "<b>We are currently out of stock. Please visit soon!</b>"
+
 	sleep(0.5)
 	do_html(user)
