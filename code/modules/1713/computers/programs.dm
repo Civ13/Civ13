@@ -777,7 +777,7 @@
 					var/datum/email/em =  map.emails[tmp_comp_vars["mail_snd"]][i]
 					if (!em.read)
 						playsound(origin.loc,'sound/machines/computer/mail.ogg',60)
-						origin.visible_message("<font color='yellow'>\icon[getFlatIcon(origin)]You've got mail!</font>")
+						origin.visible_message("<big><font color='yellow'>\icon[getFlatIcon(origin)]You've got mail!</font></big>")
 						return
 	return
 /datum/program/monkeysoftmail/reset_tmp_vars()
@@ -792,6 +792,30 @@
 	if (mainmenu == "---")
 		mainmenu = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
 		mainmenu += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a>"
+		var/mdomain = "monkeysoft.ug"
+		switch(user.civilization)
+			if ("Rednikov Industries")
+				mdomain = "rednikov.ug"
+			if ("Giovanni Blu Stocks")
+				mdomain = "blu.ug"
+			if ("MacGreene Traders")
+				mdomain = "greene.ug"
+			if ("Goldstein Solutions")
+				mdomain = "goldstein.ug"
+			if ("Police")
+				mdomain = "police.gov"
+		var/cname = "mail@[mdomain]"
+		if (tmp_comp_vars["mail_snd"]=="Sender")
+			tmp_comp_vars["mail_snd"] = cname
+		mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
+		if (islist(map.emails[cname]) && map.emails[cname].len>=1)
+			for(var/i = map.emails[cname].len, i > 0, i--)
+				if (istype(map.emails[cname][i], /datum/email))
+					var/datum/email/em =  map.emails[cname][i]
+					if (em.read)
+						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+					else
+						mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 	..()
 
 /datum/program/monkeysoftmail/Topic(href, href_list, hsrc)
@@ -816,22 +840,22 @@
 	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 	if (href_list["mail"])
 		if (href_list["mail"]=="99999")
-			if (islist(map.emails[uname]))
-				for(var/i, i <= map.emails[uname].len, i++)
+			if (islist(map.emails[uname]) && map.emails[uname].len>=1)
+				for(var/i = map.emails[uname].len, i > 0, i--)
 					if (istype(map.emails[uname][i], /datum/email))
 						var/datum/email/em =  map.emails[uname][i]
 						if (em.read)
 							mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
 						else
-							mainbody += "<b><a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
-			if (islist(map.emails[cname]))
-				for(var/i, i <= map.emails[cname].len, i++)
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+			if (islist(map.emails[cname]) && map.emails[cname].len>=1)
+				for(var/i = map.emails[cname].len, i > 0, i--)
 					if (istype(map.emails[cname][i], /datum/email))
 						var/datum/email/em =  map.emails[cname][i]
 						if (em.read)
 							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
 						else
-							mainbody += "<b><a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 
 		else
 			if (findtext(href_list["mail"],"c"))
@@ -860,7 +884,7 @@
 			
 //		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
-		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
+		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 	if (href_list["mail_send"])
@@ -879,9 +903,9 @@
 		tmp_comp_vars["mail_subj"] = "RE:[chosen.subject]"
 		tmp_comp_vars["mail_snd"] = chosen.receiver
 		tmp_comp_vars["mail_rec"] = chosen.sender
-		tmp_comp_vars["mail_msg"] = "-----<br>[chosen.message]"
+		tmp_comp_vars["mail_msg"] = "___________________<br>[chosen.message]"
 		mainbody += "From: [chosen.receiver]<br>To: [chosen.sender]<br>"
-		mainbody += "Subject: RE:[chosen.subject]<br>"
+		mainbody += "Subject: RE:[chosen.subject]<br><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 
@@ -1655,13 +1679,13 @@
 				var/forsale
 				switch(map.assign_precursors[user.civilization])
 					if ("indigon crystals")
-						forsale = /obj/item/precursor/blue
+						forsale = /obj/item/stack/precursor/blue
 					if ("crimsonite crystals")
-						forsale = /obj/item/precursor/red
+						forsale = /obj/item/stack/precursor/red
 					if ("verdine crystals")
-						forsale = /obj/item/precursor/green
+						forsale = /obj/item/stack/precursor/green
 					if ("galdonium crystals")
-						forsale = /obj/item/precursor/yellow
+						forsale = /obj/item/stack/precursor/yellow
 				var/obj/item/stack/money/mstack = null
 				if (istype(user.l_hand, /obj/item/stack/money))
 					mstack = user.l_hand
@@ -1675,7 +1699,7 @@
 						mainbody = "Authentication Error!"
 						sleep(0.5)
 						do_html(user)
-					var/obj/item/precursor/PR = new forsale(null)
+					var/obj/item/stack/precursor/PR = new forsale(null)
 					if (PR)
 						PR.forceMove(get_turf(origin))
 					mainbody = "You fulfill the order."

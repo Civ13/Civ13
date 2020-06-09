@@ -317,63 +317,71 @@
 	item_state = "disk_uos94"
 	operatingsystem = "unga OS 94 Police Edition"
 ///////////////components/////////////////////
-/obj/item/weapon/component
+/obj/item/stack/component
 	icon = 'icons/obj/computers.dmi'
 	name = "electronic component"
 	desc = "A basic electronic chip."
 	icon_state = "generic_chip"
+	amount = 1
+	value = 400
+	w_class = 1.0
+	max_amount = 20
 
-/obj/item/weapon/component/red
+/obj/item/stack/component/red
 	name = "RDKV S-445 chip"
 	desc = "A highly advanced chip, manufactured by Rednikov Industries."
 	icon_state = "card_red"
 
-/obj/item/weapon/component/green
+/obj/item/stack/component/green
 	name = "McGT S5R1 chip"
 	desc = "A highly advanced chip, manufactured by MacGreene Traders."
 	icon_state = "card_ram"
 
-/obj/item/weapon/component/blue
+/obj/item/stack/component/blue
 	name = "GBSA-1994 chip"
 	desc = "A highly advanced chip, manufactured by Giovanni Blu Stocks."
 	icon_state = "cpu_chip_blue"
 
-/obj/item/weapon/component/yellow
+/obj/item/stack/component/yellow
 	name = "GS-IC-M3 chip"
 	desc = "A highly advanced chip, manufactured by Goldstein Solutions."
 	icon_state = "yellow_card"
 /////////////////precursors///////////////////
 ///////////////components/////////////////////
-/obj/item/precursor
+/obj/item/stack/precursor
 	icon = 'icons/obj/mining.dmi'
 	name = "crystal"
 	desc = "A rare chemical, in crystallized form."
 	icon_state = "ore_diamond"
-	var/produces = /obj/item/weapon/component
+	var/produces = /obj/item/stack/component
+	amount = 1
+	value = 60
+	w_class = 1.0
+	max_amount = 20
 
-/obj/item/precursor/red
+/obj/item/stack/precursor/red
 	name = "crimsonite crystals"
 	desc = "A rare chemical, in crystallized form. Has a red tinge."
 	icon_state = "ore_crimsonite"
-	produces = /obj/item/weapon/component/red
+	produces = /obj/item/stack/component/red
 	
-/obj/item/precursor/green
+/obj/item/stack/precursor/green
 	name = "verdine crystals"
 	desc = "A rare chemical, in crystallized form. Has a green tinge."
 	icon_state = "ore_verdine"
-	produces = /obj/item/weapon/component/green
+	produces = /obj/item/stack/component/green
 	
-/obj/item/precursor/blue
+/obj/item/stack/precursor/blue
 	name = "indigon crystals"
 	desc = "A rare chemical, in crystallized form. Has a blue tinge."
 	icon_state = "ore_indigon"
-	produces = /obj/item/weapon/component/blue
+	produces = /obj/item/stack/component/blue
 
-/obj/item/precursor/yellow
+/obj/item/stack/precursor/yellow
 	name = "galdonium crystals"
 	desc = "A rare chemical, in crystallized form. Has a yellow tinge."
 	icon_state = "ore_galdonium"
-	produces = /obj/item/weapon/component/yellow
+	produces = /obj/item/stack/component/yellow
 	
 //////////////////assembler/////////////////////
 /obj/structure/assembler
@@ -388,7 +396,7 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/on = FALSE
-	var/requires = /obj/item/precursor
+	var/requires = /obj/item/stack/precursor
 	var/faction
 /obj/structure/assembler/processor
 
@@ -405,19 +413,19 @@
 	base_icon = "unloader"
 
 /obj/structure/assembler/loader/red
-	requires = /obj/item/precursor/red
+	requires = /obj/item/stack/precursor/red
 	faction = "Rednikov Industries"
 
 /obj/structure/assembler/loader/green
-	requires = /obj/item/precursor/green
+	requires = /obj/item/stack/precursor/green
 	faction = "MacGreene Traders"
 
 /obj/structure/assembler/loader/yellow
-	requires = /obj/item/precursor/yellow
+	requires = /obj/item/stack/precursor/yellow
 	faction = "Goldstein Solutions"
 
 /obj/structure/assembler/loader/blue
-	requires = /obj/item/precursor/blue
+	requires = /obj/item/stack/precursor/blue
 	faction = "Giovanni Blu Stocks"
 
 /obj/structure/assembler/update_icon()
@@ -449,8 +457,8 @@
 	else
 		H << "<span class='warning'>This is the wrong precursor!</span>"
 		return
-/obj/structure/assembler/loader/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
-	if (istype(P,/obj/item/precursor))
+/obj/structure/assembler/loader/manufacture(var/obj/item/stack/precursor/P,var/mob/living/human/H)
+	if (istype(P,/obj/item/stack/precursor))
 		for(var/mob/L in range(7,src))
 			L << sound('sound/machines/steam_loop.ogg', 1, 0, 987, 100)
 			spawn(520)
@@ -468,10 +476,10 @@
 				on = FALSE
 				update_icon()
 				return
-/obj/structure/assembler/proc/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
+/obj/structure/assembler/proc/manufacture(var/obj/item/stack/precursor/P,var/mob/living/human/H)
 	return
 
-/obj/structure/assembler/processor/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
+/obj/structure/assembler/processor/manufacture(var/obj/item/stack/precursor/P,var/mob/living/human/H)
 	on = TRUE
 	update_icon()
 	spawn(500)
@@ -480,7 +488,7 @@
 		for(var/obj/structure/assembler/unloader/A in locate(x+1,y,z))
 			A.manufacture(P)
 			return
-/obj/structure/assembler/unloader/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
+/obj/structure/assembler/unloader/manufacture(var/obj/item/stack/precursor/P,var/mob/living/human/H)
 	on = TRUE
 	update_icon()
 	spawn(20)

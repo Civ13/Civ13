@@ -407,11 +407,6 @@
 	icon_state = "road_1"
 	interior = FALSE
 
-/turf/floor/delivery
-	name = "delivery area"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "delivery"
-
 /turf/floor/plating/road/whiteline
 	icon_state = "road_line"
 

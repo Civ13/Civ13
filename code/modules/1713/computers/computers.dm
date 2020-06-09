@@ -264,6 +264,7 @@
 
 /obj/structure/computer/proc/program_checker()
 	for(var/datum/program/P in programs)
+		P.origin = src
 		if (P.does_checks)
 			P.does_checks_proc()
 	spawn(600)
