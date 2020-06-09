@@ -792,6 +792,30 @@
 	if (mainmenu == "---")
 		mainmenu = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
 		mainmenu += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a>"
+		var/mdomain = "monkeysoft.ug"
+		switch(user.civilization)
+			if ("Rednikov Industries")
+				mdomain = "rednikov.ug"
+			if ("Giovanni Blu Stocks")
+				mdomain = "blu.ug"
+			if ("MacGreene Traders")
+				mdomain = "greene.ug"
+			if ("Goldstein Solutions")
+				mdomain = "goldstein.ug"
+			if ("Police")
+				mdomain = "police.gov"
+		var/cname = "mail@[mdomain]"
+		if (tmp_comp_vars["mail_snd"]=="Sender")
+			tmp_comp_vars["mail_snd"] = cname
+		mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
+		if (islist(map.emails[cname]) && map.emails[cname].len>=1)
+			for(var/i = map.emails[cname].len, i > 0, i--)
+				if (istype(map.emails[cname][i], /datum/email))
+					var/datum/email/em =  map.emails[cname][i]
+					if (em.read)
+						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+					else
+						mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 	..()
 
 /datum/program/monkeysoftmail/Topic(href, href_list, hsrc)
