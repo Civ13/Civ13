@@ -22,14 +22,14 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Tokkutai Bushi (Remix):1" = 'sound/music/tokkutai_bushi.ogg',)
+		"Tokkutai Bushi (Koji Tsuruta):1" = 'sound/music/tokkutai_bushi.ogg',)
 	gamemode = "Siege"
 /obj/map_metadata/rizal_stadium/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/american))
 		if (J.is_navy == TRUE || (istype(J, /datum/job/american/sailor_ww2)) || (istype(J, /datum/job/american/mp_ww2)) || (istype(J, /datum/job/american/chef_ww2)))
 			. = FALSE
-		else if (J.is_ww2 == TRUE || J.is_tanker == TRUE)
+		else if (J.is_ww2 == TRUE || J.is_tanker == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
 			. = TRUE
 		else
 			. = FALSE
