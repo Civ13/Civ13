@@ -571,19 +571,20 @@
 	New()
 		..()
 		spawn(50)
-			new/obj/structure/mailbox(src)
+			new/obj/structure/redmailbox(src)
 
-/obj/structure/mailbox
+/obj/structure/redmailbox
 	name = "pillar postbox"
 	desc = "A red pillar postbox."
 	icon = 'icons/obj/mail.dmi'
 	icon_state = "redmailbox"
 	density = TRUE
 	opacity = FALSE
+	anchored = TRUE
 	not_disassemblable = TRUE
 	not_movable = TRUE
 
-/obj/structure/mailbox/attackby(obj/item/I,mob/living/human/H)
+/obj/structure/redmailbox/attackby(obj/item/I,mob/living/human/H)
 	if (istype(I,/obj/item/stack/component) && istype(map, /obj/map_metadata/art_of_the_deal))
 		var/obj/item/stack/component/P = I
 		var/obj/map_metadata/art_of_the_deal/map2 = map
@@ -614,7 +615,7 @@
 							else
 								var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(SF)
 								D.amount = i[5]/D.value
-					H << "<big>You fulfill the order. The payment has been sent to your company's safe.</big>"
+					H << "<big><font color='green'>You fulfill the order. The payment has been sent to your company's safe.</font></big>"
 
 	else
 		..()

@@ -777,7 +777,7 @@
 					var/datum/email/em =  map.emails[tmp_comp_vars["mail_snd"]][i]
 					if (!em.read)
 						playsound(origin.loc,'sound/machines/computer/mail.ogg',60)
-						origin.visible_message("<font color='yellow'>\icon[getFlatIcon(origin)]You've got mail!</font>")
+						origin.visible_message("<big><font color='yellow'>\icon[getFlatIcon(origin)]You've got mail!</font></big>")
 						return
 	return
 /datum/program/monkeysoftmail/reset_tmp_vars()
@@ -817,7 +817,7 @@
 	if (href_list["mail"])
 		if (href_list["mail"]=="99999")
 			if (islist(map.emails[uname]) && map.emails[uname].len>=1)
-				for(var/i = map.emails[uname].len, i > 0, i++)
+				for(var/i = map.emails[uname].len, i > 0, i--)
 					if (istype(map.emails[uname][i], /datum/email))
 						var/datum/email/em =  map.emails[uname][i]
 						if (em.read)
@@ -825,7 +825,7 @@
 						else
 							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 			if (islist(map.emails[cname]) && map.emails[cname].len>=1)
-				for(var/i = map.emails[cname].len, i > 0, i++)
+				for(var/i = map.emails[cname].len, i > 0, i--)
 					if (istype(map.emails[cname][i], /datum/email))
 						var/datum/email/em =  map.emails[cname][i]
 						if (em.read)

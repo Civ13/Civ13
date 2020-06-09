@@ -325,6 +325,7 @@
 	amount = 1
 	value = 400
 	w_class = 1.0
+	max_amount = 20
 
 /obj/item/stack/component/red
 	name = "RDKV S-445 chip"
@@ -356,6 +357,7 @@
 	amount = 1
 	value = 60
 	w_class = 1.0
+	max_amount = 20
 
 /obj/item/stack/precursor/red
 	name = "crimsonite crystals"
