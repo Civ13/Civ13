@@ -778,9 +778,8 @@
 	var/cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
 		tmp_comp_vars["mail_snd"] = uname
-	mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
+	mainbody = "<b>Logged in as <i>[uname]</i></b><br>"
 	if (href_list["mail"])
-		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
 		if (href_list["mail"]=="99999")
 			if (islist(map.emails[uname]))
 				for(var/i, i <= map.emails[uname].len, i++)
@@ -843,7 +842,7 @@
 	if (mainmenu == "---")
 		mainmenu = "<h2>D.E.E.P.N.E.T.</h2><br>"
 		mainmenu += "<b>All deliveries in a maximum of 2 minutes!</i></b><br>"
-		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
+		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><br>"
 	..()
 
 /datum/program/deepnet/Topic(href, href_list, hsrc)
@@ -1391,7 +1390,7 @@
 	if (mainmenu == "---")
 		mainmenu = "<h2>nile.ug</h2><br>"
 		mainmenu += "<b>We deliver worldwide!</i></b><br>"
-		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><hr><br>"
+		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><br>"
 	..()
 
 /datum/program/nilestore/Topic(href, href_list, hsrc)
@@ -1463,11 +1462,13 @@
 					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="nile")
 						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 				if (isemptylist(currlist))
-					mainbody += "<b>There are no orders on the DEEPNET!</b>"
-				for (var/list/k in currlist)
-					mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
+					mainbody = "<b>There are no orders on the DEEPNET!</b>"
+				else
+				
+					for (var/list/k in currlist)
+						mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
 			if ("3","6","7","8") //sell
-				mainbody += "<a href='?src=\ref[src];deepnet=6'>Add New</a>&nbsp;<a href='?src=\ref[src];deepnet=7'>Change</a>&nbsp;<a href='?src=\ref[src];deepnet=8'>Cancel</a><br><br>"
+				mainbody = "<a href='?src=\ref[src];deepnet=6'>Add New</a>&nbsp;<a href='?src=\ref[src];deepnet=7'>Change</a>&nbsp;<a href='?src=\ref[src];deepnet=8'>Cancel</a><br><br>"
 				if (href_list["deepnet"] == "6") //add
 					var/obj/item/M = user.get_active_hand()
 					if (M && istype(M))
@@ -1515,7 +1516,7 @@
 						if (map.globalmarketplace[i][1] == user.civilization)
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
-						mainbody += "You have no orders on the market!"
+						mainbody = "You have no orders on the market!"
 						sleep(0.5)
 						do_html(user)
 						return
@@ -1527,7 +1528,7 @@
 						if (map.globalmarketplace[i][1] == user.civilization)
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
-						mainbody += "You have no orders on the market!"
+						mainbody = "You have no orders on the market!"
 						sleep(0.5)
 						do_html(user)
 						return
@@ -1535,7 +1536,7 @@
 						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a><br>"
 
 			if ("4") //account
-				mainbody += "<big>Account: <b>[user.civilization]</b></big><br><br>"
+				mainbody = "<big>Account: <b>[user.civilization]</b></big><br><br>"
 				var/accmoney = map.marketplaceaccounts[user.civilization]
 				if (map.marketplaceaccounts[user.civilization])
 					if (accmoney <= 0)
@@ -1578,63 +1579,94 @@
 	mainbody = ""
 	switch(href_list["elektra"])
 		if ("3")
-			var/tcode = replacetext(href_list["elektra"],"b","")
-			var/cost = text2num(map.globalmarketplace[tcode][4])
 			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
-				mainbody += "<b>You need to have money in one of your hands!</b>"
+				mainbody = "<b>You need to have money in one of your hands!</b>"
 				sleep(0.5)
 				do_html(user)
 				return
 			else
+				var/chosenprec
+				switch(map.assign_precursors[user.civilization])
+					if ("indigon crystals")
+						chosenprec = map.precursor_stocks["indigon crystals"]
+					if ("crimsonite crystals")
+						chosenprec = map.precursor_stocks["crimsonite crystals"]
+					if ("verdine crystals")
+						chosenprec = map.precursor_stocks["verdine crystals"]
+					if ("galdonium crystals")
+						chosenprec = map.precursor_stocks["galdonium crystals"]
+				var/forsale
+				switch(map.assign_precursors[user.civilization])
+					if ("indigon crystals")
+						forsale = /obj/item/precursor/blue
+					if ("crimsonite crystals")
+						forsale = /obj/item/precursor/red
+					if ("verdine crystals")
+						forsale = /obj/item/precursor/green
+					if ("galdonium crystals")
+						forsale = /obj/item/precursor/yellow
 				var/obj/item/stack/money/mstack = null
 				if (istype(user.l_hand, /obj/item/stack/money))
 					mstack = user.l_hand
 				else
 					mstack = user.r_hand
-				if (mstack.value*mstack.amount >= cost)
-					mstack.amount -= (cost/mstack.value)
+				if (mstack.value*mstack.amount >= chosenprec[2])
+					mstack.amount -= (chosenprec[2]/mstack.value)
 					if (mstack.amount<= 0)
 						qdel(mstack)
-					var/obj/BO = map.globalmarketplace[tcode][2]
-					if (BO)
-						BO.forceMove(get_turf(origin))
-					map.globalmarketplace[tcode][7] = 0
-					mainbody += "You fulfill the order."
-					var/seller = map.globalmarketplace[tcode][1]
-					map.marketplaceaccounts[seller] += cost
-					map.globalmarketplace -= map.globalmarketplace[tcode]
+					if (!forsale)
+						mainbody = "Authentication Error!"
+						sleep(0.5)
+						do_html(user)
+					var/obj/item/precursor/PR = new forsale(null)
+					if (PR)
+						PR.forceMove(get_turf(origin))
+					mainbody = "You fulfill the order."
+					chosenprec[2] = min(360,chosenprec[2]+2)
+					chosenprec[1] -= 1
 					sleep(0.5)
 					do_html(user)
 					return
 				else
-					mainbody += "<b>Not enough money!</b>"
+					mainbody = "<b>Not enough money!</b>"
 					sleep(0.5)
 					do_html(user)
 					return
 
-			if ("2") //buy
-				var/list/currlist = list()
-				for (var/i in map.globalmarketplace)
-					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="elektra")
-						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
-				if (isemptylist(currlist))
-					mainbody += "<b>We are currently out of stock. Please visit soon!</b>"
+		if ("2") //buy
+			var/forsale
+			switch(user.civilization)
+				if ("Rednikov Industries")
+					forsale = map.assign_precursors["Rednikov Industries"]
+				if ("Giovanni Blu Stocks")
+					forsale = map.assign_precursors["Giovanni Blu Stocks"]
+				if ("MacGreene Traders")
+					forsale = map.assign_precursors["MacGreene Traders"]
+				if ("Goldstein Solutions")
+					forsale = map.assign_precursors["Goldstein Solutions"]
+					
+			if (forsale)
+				var/cost
+				var/available
+				switch(map.assign_precursors[user.civilization])
+					if ("indigon crystals")
+						cost = map.precursor_stocks["indigon crystals"][2]
+						available = map.precursor_stocks["indigon crystals"][1]
+					if ("crimsonite crystals")
+						cost = map.precursor_stocks["crimsonite crystals"][2]
+						available = map.precursor_stocks["crimsonite crystals"][1]
+					if ("verdine crystals")
+						cost = map.precursor_stocks["verdine crystals"][2]
+						available = map.precursor_stocks["verdine crystals"][1]
+					if ("galdonium crystals")
+						cost = map.precursor_stocks["galdonium crystals"][2]
+						available = map.precursor_stocks["galdonium crystals"][1]
+				if (available>0)
+					mainbody = "<a href='?src=\ref[src];elektra=3'>[forsale], [cost/4] dollars ([available] available)</a><br>"
 				else
-					var/forsale = ""
-					switch(user.civilization)
-						if ("Rednikov Industries")
-							forsale = map.assign_precursors["Rednikov Industries"]
-						if ("Giovanni Blu Stocks")
-							forsale = map.assign_precursors["Giovanni Blu Stocks"]
-						if ("MacGreene Traders")
-							forsale = map.assign_precursors["MacGreene Traders"]
-						if ("Goldstein Solutions")
-							forsale = map.assign_precursors["Goldstein Solutions"]
-							
-					if (forsale)
-						mainbody += "<a href='?src=\ref[src];elektra=3'>[forsale] (15 dollars)</a><br>"
-					else
-						mainbody += "<b>We are currently out of stock. Please visit soon!</b>"
+					mainbody = "<b>We are currently out of stock. Please visit soon!</b>"
+			else
+				mainbody = "<b>We are currently out of stock. Please visit soon!</b>"
 
 	sleep(0.5)
 	do_html(user)
