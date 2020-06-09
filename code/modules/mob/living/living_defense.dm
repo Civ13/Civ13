@@ -37,7 +37,8 @@
 	if (absorb >= 2)
 		if (istype(src, /mob/living/human))
 			var/mob/living/human/H = src
-			H.damage_armor(def_zone, dmg)
+			if(!(istype(damage_source,/obj/item/weapon/melee)))
+				H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[absorb_text]")
 		else
@@ -46,7 +47,8 @@
 	if (absorb == TRUE)
 		if (istype(src, /mob/living/human))
 			var/mob/living/human/H = src
-			H.damage_armor(def_zone, dmg)
+			if(!(istype(damage_source,/obj/item/weapon/melee)))
+				H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[soften_text]",4)
 		else

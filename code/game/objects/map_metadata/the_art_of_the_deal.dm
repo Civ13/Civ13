@@ -32,6 +32,7 @@
 		"Goldstein Solutions" = 0,
 		"Police" = 0,)
 	required_players = 6
+	var/list/delivery_locations = list()
 
 /obj/map_metadata/proc/assign_precursors()
 	var/list/possibilities1 = list("verdine crystals","indigon crystals","galdonium crystals")
@@ -74,6 +75,20 @@
 	spawn(100)
 		refill_marketplace(TRUE)
 		assign_precursors()
+		send_buy_orders()
+	spawn(150)
+		assign_delivery_zones()
+/obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
+	for(var/turf/floor/delivery/D in turfs)
+		var/list/tlist = list("[D.x],[D.y]")
+		delivery_locations += tlist
+	world << "[delivery_locations.len] and [delivery_locations[1]]"
+/obj/map_metadata/art_of_the_deal/proc/send_buy_orders()
+	spawn(rand(5000,7000))
+
+		send_buy_orders()
+		return
+
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE

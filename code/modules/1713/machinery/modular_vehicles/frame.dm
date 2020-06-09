@@ -48,7 +48,8 @@
 /obj/structure/vehicleparts/frame/proc/total_weight()
 	var/tmpsum = 10
 	for (var/obj/O in loc)
-		tmpsum+=O.w_class*2
+		if (!(istype(O, /obj/structure/rails)))
+			tmpsum+=O.w_class*2
 	for(var/mob/living/L in loc)
 		tmpsum += L.mob_size*2
 	return tmpsum
