@@ -425,6 +425,10 @@
 		return
 /obj/structure/assembler/loader/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
 	if (istype(P,/obj/item/precursor))
+		for(var/mob/L in range(7,src))
+			L << sound('sound/machines/steam_loop.ogg', 1, 0, 987, 100)
+			spawn(520)
+				L << sound(null, channel = 987)
 		on = TRUE
 		update_icon()
 		spawn(20)

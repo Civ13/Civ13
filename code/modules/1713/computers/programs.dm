@@ -1622,7 +1622,7 @@
 					if (PR)
 						PR.forceMove(get_turf(origin))
 					mainbody = "You fulfill the order."
-					chosenprec[2] = min(360,chosenprec[2]+2)
+					chosenprec[2] = min(360,round(chosenprec[2]*1.1))
 					chosenprec[1] -= 1
 					sleep(0.5)
 					do_html(user)
