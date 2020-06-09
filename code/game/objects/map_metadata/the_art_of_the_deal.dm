@@ -33,6 +33,26 @@
 		"Police" = 0,)
 	required_players = 6
 
+/obj/map_metadata/proc/assign_precursors()
+	var/list/possibilities1 = list("verdine crystals","indigon crystals","galdonium crystals")
+	var/list/picked = list()
+	assign_precursors["Rednikov Industries"] = pick(possibilities1)
+	picked += assign_precursors["Rednikov Industries"]
+	possibilities1 = list("crimsonite crystals","verdine crystals","galdonium crystals")
+	possibilities1 -= picked
+	assign_precursors["Giovanni Blu Stocks"] = pick(possibilities1)
+	picked += assign_precursors["Giovanni Blu Stocks"]
+	possibilities1 = list("crimsonite crystals","indigon crystals","galdonium crystals")
+	possibilities1 -= picked
+	if ("galdonium crystals" in possibilities1)
+		assign_precursors["MacGreene Traders"] = "galdonium crystals"
+	else
+		assign_precursors["MacGreene Traders"] = pick(possibilities1)
+	picked += assign_precursors["MacGreene Traders"]
+	possibilities1 = list("crimsonite crystals","indigon crystals","verdine crystals")
+	possibilities1 -= picked
+	assign_precursors["Goldstein Solutions"] = pick(possibilities1)
+
 /obj/map_metadata/art_of_the_deal/New()
 	..()
 	spawn(3000)
@@ -53,6 +73,7 @@
 		spawn_disks(TRUE)
 	spawn(100)
 		refill_marketplace(TRUE)
+		assign_precursors()
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
