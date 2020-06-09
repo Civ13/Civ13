@@ -632,11 +632,13 @@
 	keyslot_type = /datum/keyslot/police
 	unique_door_name = "Police Station"
 	locked = TRUE
+	health = 90000
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/police
 	unique_door_name = "jail cell"
 	locked = TRUE
 	custom_code = 13443
+	health = 90000
 
 /obj/item/weapon/key/civ/paramedics
 	code = 12443
@@ -650,3 +652,4 @@
 	keyslot_type = /datum/keyslot/paramedics
 	unique_door_name = "Hospital Key"
 	locked = TRUE
+	health = 90000

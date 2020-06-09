@@ -2016,6 +2016,8 @@
 		else
 			var/obj/item/clothing/accessory/suspenders/dark/ysuspenders = new /obj/item/clothing/accessory/suspenders/dark(null)
 			uniform.attackby(ysuspenders, H)
+
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
 //hats
 	var/randhat = pick(1,2,3)
 	if (randhat == 1)
@@ -2188,6 +2190,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_r_hand)
 	H.add_note("Role", "You are a member of the police force. Your objectives are to arrest as many businessmen as possible and aprehend money and disks!")
 	H.add_note("Undercover", "If you need to go undercover and conceal your officer status, toggle it under the IC tab.")
 	H.add_note("Police Codes", "As an officer, you can use police codes for fast broadcasting. It will be automatically converted to plaintext. Just use the radio prefix followed by the code, for example, \";10-4\" for affirmative.")
@@ -2239,6 +2242,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
 	H.add_note("Role", "You are a paramedic. Listen to emergency calls and bring injured to the hospital using the ambulance!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)

@@ -12,6 +12,7 @@
 	..()
 	programs += new/datum/program/monkeysoftmail
 	programs += new/datum/program/deepnet
+	programs += new/datum/program/elektra
 	programs += new/datum/program/orion_trail
 
 /obj/structure/computer/nopower/aotd/attack_hand(var/mob/living/human/H)
@@ -322,26 +323,32 @@
 	name = "crystal"
 	desc = "A rare chemical, in crystallized form."
 	icon_state = "ore_diamond"
+	var/produces = /obj/item/weapon/component
 
 /obj/item/precursor/red
 	name = "crimsonite crystals"
 	desc = "A rare chemical, in crystallized form. Has a red tinge."
 	icon_state = "ore_crimsonite"
-
+	produces = /obj/item/weapon/component/red
+	
 /obj/item/precursor/green
 	name = "verdine crystals"
 	desc = "A rare chemical, in crystallized form. Has a green tinge."
 	icon_state = "ore_verdine"
-
+	produces = /obj/item/weapon/component/green
+	
 /obj/item/precursor/blue
 	name = "indigon crystals"
 	desc = "A rare chemical, in crystallized form. Has a blue tinge."
-	icon_state = "cpu_indigon"
+	icon_state = "ore_indigon"
+	produces = /obj/item/weapon/component/blue
 
 /obj/item/precursor/yellow
 	name = "galdonium crystals"
 	desc = "A rare chemical, in crystallized form. Has a yellow tinge."
 	icon_state = "ore_galdonium"
+	produces = /obj/item/weapon/component/yellow
+	
 //////////////////assembler/////////////////////
 /obj/structure/assembler
 	name = "assembler"
@@ -356,7 +363,8 @@
 	not_disassemblable = TRUE
 	var/on = FALSE
 	var/requires = /obj/item/precursor
-	var/produces = /obj/item/weapon/component
+	var/faction
+/obj/structure/assembler/processor
 
 /obj/structure/assembler/loader
 	name = "loader"
@@ -370,6 +378,22 @@
 	icon_state = "unloader0"
 	base_icon = "unloader"
 
+/obj/structure/assembler/loader/red
+	requires = /obj/item/precursor/red
+	faction = "Rednikov Industries"
+
+/obj/structure/assembler/loader/green
+	requires = /obj/item/precursor/green
+	faction = "MacGreene Traders"
+
+/obj/structure/assembler/loader/yellow
+	requires = /obj/item/precursor/yellow
+	faction = "Goldstein Solutions"
+
+/obj/structure/assembler/loader/blue
+	requires = /obj/item/precursor/blue
+	faction = "Giovanni Blu Stocks"
+
 /obj/structure/assembler/update_icon()
 	if (on)
 		icon_state = "[base_icon]1"
@@ -377,37 +401,65 @@
 		icon_state = "[base_icon]0"
 
 /obj/structure/assembler/loader/attackby(var/obj/item/I, var/mob/living/human/H)
+	var/found1 = FALSE
+	var/found2 = FALSE
+	if (faction && H.civilization != faction)
+		H << "You are not trained to operate this machine."
+		return
 	if (on)
 		H << "The assembler is busy, please wait..."
 		return
+	for(var/obj/structure/assembler/processor/A in locate(x+1,y,z))
+		found1 = TRUE
+	for(var/obj/structure/assembler/unloader/A in locate(x+2,y,z))
+		found2 = TRUE
+	if (!found1 && !found2)
+		H << "The assembler is incomplete and cannot be used."
+		return
 	if (istype(I, requires))
-		manufacture(I)
+		H.drop_from_inventory(I)
+		I.forceMove(locate(1,1,1))
+		manufacture(I,H)
 	else
-		..()
-/obj/structure/assembler/loader/manufacture(var/obj/item/precursor/P)
+		H << "<span class='warning'>This is the wrong precursor!</span>"
+		return
+/obj/structure/assembler/loader/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
 	if (istype(P,/obj/item/precursor))
+		for(var/mob/L in range(7,src))
+			L << sound('sound/machines/steam_loop.ogg', 1, 0, 987, 100)
+			spawn(520)
+				L << sound(null, channel = 987)
 		on = TRUE
 		update_icon()
 		spawn(20)
-			P.forceMove(locate(1,1,1))
-			on = FALSE
-			update_icon()
-			for(var/obj/structure/assembler/A in locate(x+1,y,z))
-				A.manufacture(P)
-/obj/structure/assembler/proc/manufacture(var/obj/item/precursor/P)
+			if (P)
+				on = FALSE
+				update_icon()
+				for(var/obj/structure/assembler/processor/A in locate(x+1,y,z))
+					A.manufacture(P)
+					return
+			else
+				on = FALSE
+				update_icon()
+				return
+/obj/structure/assembler/proc/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
+	return
+
+/obj/structure/assembler/processor/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
 	on = TRUE
 	update_icon()
 	spawn(500)
 		on = FALSE
 		update_icon()
-		for(var/obj/structure/assembler/A in locate(x+1,y,z))
+		for(var/obj/structure/assembler/unloader/A in locate(x+1,y,z))
 			A.manufacture(P)
-/obj/structure/assembler/unloader/manufacture(var/obj/item/precursor/P)
+			return
+/obj/structure/assembler/unloader/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
 	on = TRUE
 	update_icon()
 	spawn(20)
 		qdel(P)
-		new produces (loc)
+		new P.produces(loc)
 		on = FALSE
 		update_icon()
 //////////////////programs////////////////////
