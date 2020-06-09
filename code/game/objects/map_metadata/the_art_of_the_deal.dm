@@ -33,6 +33,26 @@
 		"Police" = 0,)
 	required_players = 6
 
+/obj/map_metadata/proc/assign_precursors()
+	var/list/possibilities1 = list("verdine crystals","indigon crystals","galdonium crystals")
+	var/list/picked = list()
+	assign_precursors["Rednikov Industries"] = pick(possibilities1)
+	picked += assign_precursors["Rednikov Industries"]
+	possibilities1 = list("crimsonite crystals","verdine crystals","galdonium crystals")
+	possibilities1 -= picked
+	assign_precursors["Giovanni Blu Stocks"] = pick(possibilities1)
+	picked += assign_precursors["Giovanni Blu Stocks"]
+	possibilities1 = list("crimsonite crystals","indigon crystals","galdonium crystals")
+	possibilities1 -= picked
+	if ("galdonium crystals" in possibilities1)
+		assign_precursors["MacGreene Traders"] = "galdonium crystals"
+	else
+		assign_precursors["MacGreene Traders"] = pick(possibilities1)
+	picked += assign_precursors["MacGreene Traders"]
+	possibilities1 = list("crimsonite crystals","indigon crystals","verdine crystals")
+	possibilities1 -= picked
+	assign_precursors["Goldstein Solutions"] = pick(possibilities1)
+
 /obj/map_metadata/art_of_the_deal/New()
 	..()
 	spawn(3000)
@@ -53,6 +73,7 @@
 		spawn_disks(TRUE)
 	spawn(100)
 		refill_marketplace(TRUE)
+		assign_precursors()
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
@@ -119,6 +140,15 @@
 	world << "<font size=2 color ='yellow'>New disks have arrived at the vaults!</font>"
 
 /obj/map_metadata/art_of_the_deal/proc/refill_marketplace(repeat = FALSE)
+	if (precursor_stocks.len >= 4)
+		precursor_stocks["galdonium crystals"][1] += 2
+		precursor_stocks["galdonium crystals"][2] = min(60,round(precursor_stocks["galdonium crystals"][2]*0.9))
+		precursor_stocks["indigon crystals"][1] += 2
+		precursor_stocks["indigon crystals"][2] = min(60,round(precursor_stocks["indigon crystals"][2]*0.9))
+		precursor_stocks["verdine crystals"][1] += 2
+		precursor_stocks["verdine crystals"][2] = min(60,round(precursor_stocks["verdine crystals"][2]*0.9))
+		precursor_stocks["crimsonite crystals"][1] += 2
+		precursor_stocks["crimsonite crystals"][2] = min(60,round(precursor_stocks["crimsonite crystals"][2]*0.9))
 	if (prob(100))
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
@@ -128,7 +158,7 @@
 			var/pt = chosen1[1]
 			var/obj/item/weapon/gun/projectile/ST = new pt(locate(1,1,1))
 			ST.serial = ""
-			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 	var/num = rand(1,2) //equipment
 	for(var/i, i<=num, i++)
@@ -139,7 +169,7 @@
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
 			var/obj/item/ST = new pt(locate(1,1,1))
-			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 
 	num = rand(2,3) //ammo
@@ -151,7 +181,7 @@
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
 			var/obj/item/ST = new pt(locate(1,1,1))
-			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"sale","[idx]",1))
+			map.globalmarketplace += list("[idx]" = list("Anonymous",ST,1,chosen1[2],"deepnet","[idx]",1))
 			ST.forceMove(locate(0,0,0))
 
 	if (repeat)

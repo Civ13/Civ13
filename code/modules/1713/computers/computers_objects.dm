@@ -12,6 +12,7 @@
 	..()
 	programs += new/datum/program/monkeysoftmail
 	programs += new/datum/program/deepnet
+	programs += new/datum/program/elektra
 	programs += new/datum/program/orion_trail
 
 /obj/structure/computer/nopower/aotd/attack_hand(var/mob/living/human/H)
@@ -362,7 +363,7 @@
 	not_disassemblable = TRUE
 	var/on = FALSE
 	var/requires = /obj/item/precursor
-
+	var/faction
 /obj/structure/assembler/processor
 
 /obj/structure/assembler/loader
@@ -379,15 +380,19 @@
 
 /obj/structure/assembler/loader/red
 	requires = /obj/item/precursor/red
+	faction = "Rednikov Industries"
 
 /obj/structure/assembler/loader/green
 	requires = /obj/item/precursor/green
+	faction = "MacGreene Traders"
 
 /obj/structure/assembler/loader/yellow
 	requires = /obj/item/precursor/yellow
+	faction = "Goldstein Solutions"
 
 /obj/structure/assembler/loader/blue
 	requires = /obj/item/precursor/blue
+	faction = "Giovanni Blu Stocks"
 
 /obj/structure/assembler/update_icon()
 	if (on)
@@ -398,6 +403,9 @@
 /obj/structure/assembler/loader/attackby(var/obj/item/I, var/mob/living/human/H)
 	var/found1 = FALSE
 	var/found2 = FALSE
+	if (faction && H.civilization != faction)
+		H << "You are not trained to operate this machine."
+		return
 	if (on)
 		H << "The assembler is busy, please wait..."
 		return
@@ -417,6 +425,10 @@
 		return
 /obj/structure/assembler/loader/manufacture(var/obj/item/precursor/P,var/mob/living/human/H)
 	if (istype(P,/obj/item/precursor))
+		for(var/mob/L in range(7,src))
+			L << sound('sound/machines/steam_loop.ogg', 1, 0, 987, 100)
+			spawn(520)
+				L << sound(null, channel = 987)
 		on = TRUE
 		update_icon()
 		spawn(20)
