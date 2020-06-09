@@ -586,7 +586,7 @@
 /obj/structure/mailbox/attackby(obj/item/I,mob/living/human/H)
 	if (istype(I,/obj/item/stack/component) && istype(map, /obj/map_metadata/art_of_the_deal))
 		var/obj/item/stack/component/P = I
-		var/obj/map_metadata/the_art_of_the_deal/map2 = map
+		var/obj/map_metadata/art_of_the_deal/map2 = map
 		var/turf/T = get_turf(src)
 		if (istype(T, /turf/floor/delivery))
 			for(var/list/i in map2.delivery_orders)
@@ -605,7 +605,7 @@
 					P.amount-=i[4]
 					if (P.amount<=0)
 						qdel(P)
-					map2.deliveryorders -= i
+					map2.delivery_orders -= i
 					for(var/obj/structure/closet/safe/SF in world)
 						if (SF.faction == faction)
 							if (SF.opened)
