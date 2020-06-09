@@ -71,8 +71,8 @@
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
-	spawn(15000)
-		spawn_disks(TRUE)
+//	spawn(15000)
+//		spawn_disks(TRUE)
 	spawn(100)
 		refill_marketplace(TRUE)
 		assign_precursors()
@@ -98,7 +98,7 @@
 			if ("mail@blu.ug")
 				comps = pick("McGT S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
 		var/pay = nr*rand(400,600)
-		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay)) //x,y,product,amount,payment
+		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay,i)) //x,y,product,amount,payment,faction
 		delivery_orders += tlist
 		var/needed = "[nr] [comps]s at the [tloc[4]] [tloc[1]] delivery area ([tloc[2]],[tloc[3]])"
 		var/datum/email/E = new/datum/email
@@ -560,3 +560,61 @@
 	showoff(user)
 
 /mob/living/human/var/gun_permit = FALSE
+
+/////////////////////////delivery points//////////////////////
+/turf/floor/delivery
+	name = "delivery area"
+	desc = "A collection point for deliveries."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "delivery"
+
+	New()
+		..()
+		spawn(50)
+			new/obj/structure/mailbox(src)
+
+/obj/structure/mailbox
+	name = "pillar postbox"
+	desc = "A red pillar postbox."
+	icon = 'icons/obj/mail.dmi'
+	icon_state = "redmailbox"
+	density = TRUE
+	opacity = FALSE
+	not_disassemblable = TRUE
+	not_movable = TRUE
+
+/obj/structure/mailbox/attackby(obj/item/I,mob/living/human/H)
+	if (istype(I,/obj/item/stack/component) && istype(map, /obj/map_metadata/art_of_the_deal))
+		var/obj/item/stack/component/P = I
+		var/obj/map_metadata/the_art_of_the_deal/map2 = map
+		var/turf/T = get_turf(src)
+		if (istype(T, /turf/floor/delivery))
+			for(var/list/i in map2.delivery_orders)
+				//x,y,product,amount,payment,factionmail
+				var/faction
+				switch(i[6])
+					if ("mail@greene.ug")
+						faction = "MacGreene Traders"
+					if ("mail@rednikov.ug")
+						faction = "Rednikov Industries"
+					if ("mail@goldstein.ug")
+						faction = "Giovanni Blu Stocks"
+					if ("mail@blu.ug")
+						faction = "Giovanni Blu Stocks"
+				if (faction && H.civilization == faction && i[1]==src.x && i[2]==src.y && P.name == i[3] && P.amount >= i[4])
+					P.amount-=i[4]
+					if (P.amount<=0)
+						qdel(P)
+					map2.deliveryorders -= i
+					for(var/obj/structure/closet/safe/SF in world)
+						if (SF.faction == faction)
+							if (SF.opened)
+								var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(SF.loc)
+								D.amount = i[5]/D.value
+							else
+								var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(SF)
+								D.amount = i[5]/D.value
+					H << "<big>You fulfill the order. The payment has been sent to your company's safe.</big>"
+
+	else
+		..()

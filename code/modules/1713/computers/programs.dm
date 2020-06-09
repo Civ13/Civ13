@@ -1655,13 +1655,13 @@
 				var/forsale
 				switch(map.assign_precursors[user.civilization])
 					if ("indigon crystals")
-						forsale = /obj/item/precursor/blue
+						forsale = /obj/item/stack/precursor/blue
 					if ("crimsonite crystals")
-						forsale = /obj/item/precursor/red
+						forsale = /obj/item/stack/precursor/red
 					if ("verdine crystals")
-						forsale = /obj/item/precursor/green
+						forsale = /obj/item/stack/precursor/green
 					if ("galdonium crystals")
-						forsale = /obj/item/precursor/yellow
+						forsale = /obj/item/stack/precursor/yellow
 				var/obj/item/stack/money/mstack = null
 				if (istype(user.l_hand, /obj/item/stack/money))
 					mstack = user.l_hand
@@ -1675,7 +1675,7 @@
 						mainbody = "Authentication Error!"
 						sleep(0.5)
 						do_html(user)
-					var/obj/item/precursor/PR = new forsale(null)
+					var/obj/item/stack/precursor/PR = new forsale(null)
 					if (PR)
 						PR.forceMove(get_turf(origin))
 					mainbody = "You fulfill the order."
