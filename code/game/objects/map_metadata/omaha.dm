@@ -26,7 +26,7 @@
 	gamemode = "Siege"
 /obj/map_metadata/omaha/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_tanker == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE)
+	if (J.is_tanker == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
 		. = FALSE
 	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
 		. = TRUE
