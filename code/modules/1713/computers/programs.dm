@@ -30,7 +30,7 @@
 /datum/program/proc/does_checks_proc()
 	if (!does_checks)
 		return
-	
+
 /datum/program/proc/reset_tmp_vars()
 	tmp_comp_vars = list()
 
@@ -49,10 +49,10 @@
 	usr << browse(fullpage,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 
 /datum/program/Topic(href, href_list, hsrc)
-	
+
 	if (!origin)
 		return
-	
+
 	var/mob/living/human/user = origin.user
 
 	if (!user || user.lying || !ishuman(user))
@@ -865,7 +865,7 @@
 				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
 				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
 			else
-				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
+				var/tcode = text2num(href_list["mail"])
 				var/datum/email/chosen = map.emails[uname][tcode]
 				chosen.read = TRUE
 				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
@@ -881,7 +881,7 @@
 				tmp_comp_vars["mail_msg"] = input(user, "What is the message?","e-mail",tmp_comp_vars["mail_msg"]) as message
 			if ("5")
 				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
-			
+
 //		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
 		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br><br>"
@@ -1545,7 +1545,7 @@
 				if (isemptylist(currlist))
 					mainbody = "<b>There are no orders on the DEEPNET!</b>"
 				else
-				
+
 					for (var/list/k in currlist)
 						mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
 			if ("3","6","7","8") //sell
@@ -1725,7 +1725,7 @@
 					forsale = map.assign_precursors["MacGreene Traders"]
 				if ("Goldstein Solutions")
 					forsale = map.assign_precursors["Goldstein Solutions"]
-					
+
 			if (forsale)
 				var/cost
 				var/available
