@@ -807,10 +807,6 @@
 /mob/proc/IsAdvancedToolUser()
 	return FALSE
 
-/mob/proc/get_species()
-	return ""
-
-
 /mob/proc/get_visible_implants(var/class = FALSE)
 	var/list/visible_implants = list()
 	for (var/obj/item/O in embedded)

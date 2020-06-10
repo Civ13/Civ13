@@ -5,6 +5,7 @@
 	var/receiver = "unknown"
 	var/message = ""
 	var/date = "0:00"
+	var/read = FALSE
 
 /datum/email/New(list/properties = null)
 	..()
@@ -21,9 +22,14 @@
 	var/list/tmp_comp_vars = list() //where local vars get stored, as items in the list
 	var/mainbody = "---"
 	var/mainmenu = "---"
+	var/does_checks = FALSE //If the computer should check regularly, i.e., check for new emails to announce them.
 
 	var/mob/living/human/user //who is using the computer, from origin
 	var/obj/structure/computer/origin //where the program is located
+
+/datum/program/proc/does_checks_proc()
+	if (!does_checks)
+		return
 
 /datum/program/proc/reset_tmp_vars()
 	tmp_comp_vars = list()
@@ -43,10 +49,10 @@
 	usr << browse(fullpage,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 
 /datum/program/Topic(href, href_list, hsrc)
-	
+
 	if (!origin)
 		return
-	
+
 	var/mob/living/human/user = origin.user
 
 	if (!user || user.lying || !ishuman(user))
@@ -739,13 +745,41 @@
 	name = "MonkeySoft E-Mail Client"
 	description = "Send and Receive emails using the latest MonkeySoft Mail Client!"
 	compatible_os = list("unga OS 94","unga OS")
+	does_checks = TRUE
 	tmp_comp_vars = list(
 		"mail_rec" = "Recipient",
 		"mail_snd" = "Sender",
 		"mail_subj" = "Subject",
 		"mail_msg" = "Message",
 	)
-
+ //pre-loaded emails for companies so they get notifications
+/datum/program/monkeysoftmail/blue/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@blu.ug"
+/datum/program/monkeysoftmail/red/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@rednikov.ug"
+/datum/program/monkeysoftmail/yellow/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@goldstein.ug"
+/datum/program/monkeysoftmail/green/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@greene.ug"
+/datum/program/monkeysoftmail/police/New()
+	..()
+	tmp_comp_vars["mail_snd"]="mail@police.gov"
+/datum/program/monkeysoftmail/does_checks_proc()
+	..()
+	if (tmp_comp_vars["mail_snd"] && origin)
+		if (islist(map.emails[tmp_comp_vars["mail_snd"]]))
+			for(var/i, i <= map.emails[tmp_comp_vars["mail_snd"]].len, i++)
+				if (istype(map.emails[tmp_comp_vars["mail_snd"]][i], /datum/email))
+					var/datum/email/em =  map.emails[tmp_comp_vars["mail_snd"]][i]
+					if (!em.read)
+						playsound(origin.loc,'sound/machines/computer/mail.ogg',60)
+						origin.visible_message("<big><font color='yellow'>\icon[getFlatIcon(origin)]You've got mail!</font></big>")
+						return
+	return
 /datum/program/monkeysoftmail/reset_tmp_vars()
 	tmp_comp_vars = list(
 		"mail_rec" = "Recipient",
@@ -756,8 +790,32 @@
 
 /datum/program/monkeysoftmail/do_html(mob/living/human/user)
 	if (mainmenu == "---")
-		mainmenu = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
+		mainmenu = "<h2><font color=#60AFFE>MONKEYSOFT</font> E-MAIL CLIENT</h2><br>"
 		mainmenu += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a>"
+		var/mdomain = "monkeysoft.ug"
+		switch(user.civilization)
+			if ("Rednikov Industries")
+				mdomain = "rednikov.ug"
+			if ("Giovanni Blu Stocks")
+				mdomain = "blu.ug"
+			if ("MacGreene Traders")
+				mdomain = "greene.ug"
+			if ("Goldstein Solutions")
+				mdomain = "goldstein.ug"
+			if ("Police")
+				mdomain = "police.gov"
+		var/cname = "mail@[mdomain]"
+		if (tmp_comp_vars["mail_snd"]=="Sender")
+			tmp_comp_vars["mail_snd"] = cname
+		mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
+		if (islist(map.emails[cname]) && map.emails[cname].len>=1)
+			for(var/i = map.emails[cname].len, i > 0, i--)
+				if (istype(map.emails[cname][i], /datum/email))
+					var/datum/email/em =  map.emails[cname][i]
+					if (em.read)
+						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+					else
+						mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 	..()
 
 /datum/program/monkeysoftmail/Topic(href, href_list, hsrc)
@@ -773,49 +831,60 @@
 			mdomain = "greene.ug"
 		if ("Goldstein Solutions")
 			mdomain = "goldstein.ug"
-
+		if ("Police")
+			mdomain = "police.gov"
 	var/uname = "[lowertext(replacetext(user.real_name," ",""))]@[mdomain]"
 	var/cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
-		tmp_comp_vars["mail_snd"] = uname
-	mainbody = "<b>Logged in as <i>[uname]</i></b><br>"
+		tmp_comp_vars["mail_snd"] = cname
+	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 	if (href_list["mail"])
 		if (href_list["mail"]=="99999")
-			if (islist(map.emails[uname]))
-				for(var/i, i <= map.emails[uname].len, i++)
+			if (islist(map.emails[uname]) && map.emails[uname].len>=1)
+				for(var/i = map.emails[uname].len, i > 0, i--)
 					if (istype(map.emails[uname][i], /datum/email))
 						var/datum/email/em =  map.emails[uname][i]
-						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
-			if (islist(map.emails[cname]))
-				for(var/i, i <= map.emails[cname].len, i++)
+						if (em.read)
+							mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+						else
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+			if (islist(map.emails[cname]) && map.emails[cname].len>=1)
+				for(var/i = map.emails[cname].len, i > 0, i--)
 					if (istype(map.emails[cname][i], /datum/email))
 						var/datum/email/em =  map.emails[cname][i]
-						mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): <b>[em.subject]</b></a><br>"
+						if (em.read)
+							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+						else
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
 
 		else
 			if (findtext(href_list["mail"],"c"))
 				var/tcode = text2num(replacetext(href_list["mail"],"c",""))
 				var/datum/email/chosen = map.emails[cname][tcode]
+				chosen.read = TRUE
 				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<br>"
+				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
 			else
-				var/datum/email/chosen = map.emails[uname][text2num(href_list["mail"])]
+				var/tcode = text2num(href_list["mail"])
+				var/datum/email/chosen = map.emails[uname][tcode]
+				chosen.read = TRUE
 				mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
-				mainbody += "<br>"
+				mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
-				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
+//				tmp_comp_vars["mail_rec"] = input(user, "Who to send the e-mail to?") as text
+				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@greene.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
 			if ("3")
-				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?") as text
+				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?","e-mail",tmp_comp_vars["mail_subj"]) as text
 			if ("4")
-				tmp_comp_vars["mail_msg"] = input(user, "What is the message?") as message
+				tmp_comp_vars["mail_msg"] = input(user, "What is the message?","e-mail",tmp_comp_vars["mail_msg"]) as message
 			if ("5")
 				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(uname,cname))
-			
-		mainbody += "<b>Logged in as <i>[uname]</i></b><br>"
-		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
-		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br>"
+
+//		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
+		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
+		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br><br>"
 		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 	if (href_list["mail_send"])
@@ -828,6 +897,18 @@
 		map.emails[eml.receiver] += list(eml)
 		reset_tmp_vars()
 		WWalert(user,"Mail sent successfully!","E-mail Sent")
+	if (href_list["replymail"])
+		var/tcode = text2num(href_list["replymail"])
+		var/datum/email/chosen = map.emails[cname][tcode]
+		tmp_comp_vars["mail_subj"] = "RE:[chosen.subject]"
+		tmp_comp_vars["mail_snd"] = chosen.receiver
+		tmp_comp_vars["mail_rec"] = chosen.sender
+		tmp_comp_vars["mail_msg"] = "___________________<br>[chosen.message]"
+		mainbody += "From: [chosen.receiver]<br>To: [chosen.sender]<br>"
+		mainbody += "Subject: RE:[chosen.subject]<br><br>"
+		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
+		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
+
 	sleep(0.5)
 	do_html(user)
 
@@ -1388,17 +1469,17 @@
 
 /datum/program/nilestore/do_html(mob/living/human/user)
 	if (mainmenu == "---")
-		mainmenu = "<h2>nile.ug</h2><br>"
+		mainmenu = "<h2><font color=#C19A6B>nile</font>.ug</h2><br>"
 		mainmenu += "<b>We deliver worldwide!</i></b><br>"
-		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><br>"
+		mainmenu += "<a href='?src=\ref[src];nile=2'>Buy</a>&nbsp;<a href='?src=\ref[src];nile=3'>Sell</a>&nbsp;<a href='?src=\ref[src];nile=4'>Account</a><br>"
 	..()
 
 /datum/program/nilestore/Topic(href, href_list, hsrc)
 	..()
 	mainbody = ""
-	if (href_list["deepnet"])
-		if (findtext(href_list["deepnet"],"b"))
-			var/tcode = replacetext(href_list["deepnet"],"b","")
+	if (href_list["nile"])
+		if (findtext(href_list["nile"],"b"))
+			var/tcode = replacetext(href_list["nile"],"b","")
 			var/cost = text2num(map.globalmarketplace[tcode][4])
 			if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
 				mainbody += "<b>You need to have money in one of your hands!</b>"
@@ -1432,10 +1513,10 @@
 					do_html(user)
 					return
 
-		if (findtext(href_list["deepnet"],"ch"))
-			var/tcode = replacetext(href_list["deepnet"],"ch","")
+		if (findtext(href_list["nile"],"ch"))
+			var/tcode = replacetext(href_list["nile"],"ch","")
 			var/cost = text2num(map.globalmarketplace[tcode][4])
-			var/newprice = input(user, "What shall the new price be, in dollars?","DEEPNET",cost/4) as num|null
+			var/newprice = input(user, "What shall the new price be, in dollars?","nile.ug",cost/4) as num|null
 			if (!isnum(newprice))
 				return
 			if (newprice <= 0)
@@ -1445,8 +1526,8 @@
 			sleep(0.5)
 			do_html(user)
 			return
-		if (findtext(href_list["deepnet"],"cn"))
-			var/tcode = replacetext(href_list["deepnet"],"cn","")
+		if (findtext(href_list["nile"],"cn"))
+			var/tcode = replacetext(href_list["nile"],"cn","")
 			var/obj/BO = map.globalmarketplace[tcode][2]
 			BO.forceMove(get_turf(origin))
 			map.globalmarketplace[tcode][7] = 0
@@ -1455,21 +1536,21 @@
 			sleep(0.5)
 			do_html(user)
 			return
-		switch(href_list["deepnet"])
+		switch(href_list["nile"])
 			if ("2") //buy
 				var/list/currlist = list()
 				for (var/i in map.globalmarketplace)
 					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="nile")
 						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 				if (isemptylist(currlist))
-					mainbody = "<b>There are no orders on the DEEPNET!</b>"
+					mainbody = "<b>We do not currently have any stock. Sorry for the incovenience.</b>"
 				else
-				
+
 					for (var/list/k in currlist)
-						mainbody += "<a href='?src=\ref[src];deepnet=b[k[1]]'>[k[2]]</a><br>"
+						mainbody += "<a href='?src=\ref[src];nile=b[k[1]]'>[k[2]]</a><br>"
 			if ("3","6","7","8") //sell
-				mainbody = "<a href='?src=\ref[src];deepnet=6'>Add New</a>&nbsp;<a href='?src=\ref[src];deepnet=7'>Change</a>&nbsp;<a href='?src=\ref[src];deepnet=8'>Cancel</a><br><br>"
-				if (href_list["deepnet"] == "6") //add
+				mainbody = "<a href='?src=\ref[src];nile=6'>Add New</a>&nbsp;<a href='?src=\ref[src];nile=7'>Change</a>&nbsp;<a href='?src=\ref[src];nile=8'>Cancel</a><br><br>"
+				if (href_list["nile"] == "6") //add
 					var/obj/item/M = user.get_active_hand()
 					if (M && istype(M))
 						if (istype(M, /obj/item/stack))
@@ -1477,7 +1558,7 @@
 							if (ST.amount <= 0)
 								return
 							else
-								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars) 0 to cancel.") as num|null
+								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the nile? (in dollars) 0 to cancel.") as num|null
 								if (!isnum(price))
 									return
 								if (price <= 0)
@@ -1485,15 +1566,15 @@
 								else
 									//owner, object, amount, price, sale/buy, fulfilled
 									var/idx = rand(1,999999)
-									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"deepnet","[idx]",1))
+									map.globalmarketplace += list("[idx]" = list(user.civilization,ST,ST.amount,price*4,"nile","[idx]",1))
 									user.drop_from_inventory(ST)
 									ST.forceMove(locate(0,0,0))
-									mainbody += "You place \the [ST] for sale in the <b>DEEPNET</b>."
+									mainbody += "You place \the [ST] for sale at <b>nile.ug</b>."
 									sleep(0.5)
 									do_html(user)
 									return
 						else
-							var/price = input(user, "What price do you want to place the [M] for sale in the DEEPNET? (in dollars).") as num|null
+							var/price = input(user, "What price do you want to place the [M] for sale at nile.ug? (in dollars).") as num|null
 							if (!isnum(price))
 								return
 							if (price <= 0)
@@ -1501,16 +1582,16 @@
 							else
 								//owner, object, amount, price, sale/buy, id number, fulfilled
 								var/idx = rand(1,999999)
-								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"deepnet","[idx]",1))
+								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"nile","[idx]",1))
 								user.drop_from_inventory(M)
 								M.forceMove(locate(0,0,0))
-								mainbody += "You place \the [M] for sale in the <b>DEEPNET</b>."
+								mainbody += "You place \the [M] for sale in the <b>nile.ug</b>."
 								sleep(0.5)
 								do_html(user)
 								return
 					else
-						WWalert(user,"Failed to create the order! You need to have the item in your active hand.","DEEPNET")
-				if (href_list["deepnet"] == "7") //change
+						WWalert(user,"Failed to create the order! You need to have the item in your active hand.","nile.ug")
+				if (href_list["nile"] == "7") //change
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
 						if (map.globalmarketplace[i][1] == user.civilization)
@@ -1521,8 +1602,8 @@
 						do_html(user)
 						return
 					for (var/list/k in currlist)
-						mainbody += "<a href='?src=\ref[src];deepnet=ch[k[1]]'>[k[2]]</a><br>"
-				if (href_list["deepnet"] == "8") //cancel
+						mainbody += "<a href='?src=\ref[src];nile=ch[k[1]]'>[k[2]]</a><br>"
+				if (href_list["nile"] == "8") //cancel
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
 						if (map.globalmarketplace[i][1] == user.civilization)
@@ -1533,7 +1614,7 @@
 						do_html(user)
 						return
 					for (var/list/k in currlist)
-						mainbody += "<a href='?src=\ref[src];deepnet=cn[k[1]]'>[k[2]]</a><br>"
+						mainbody += "<a href='?src=\ref[src];nile=cn[k[1]]'>[k[2]]</a><br>"
 
 			if ("4") //account
 				mainbody = "<big>Account: <b>[user.civilization]</b></big><br><br>"
@@ -1544,7 +1625,7 @@
 						map.marketplaceaccounts[user.civilization] = 0
 					else
 						mainbody += "You have [accmoney/4] dollars in your company's account.<br>"
-						mainbody += "<a href='?src=\ref[src];deepnet=5'>Withdraw</a>"
+						mainbody += "<a href='?src=\ref[src];nile=5'>Withdraw</a>"
 				else
 					mainbody += "<b>Your account is empty!</b>"
 			if ("5") //withdraw
@@ -1598,13 +1679,13 @@
 				var/forsale
 				switch(map.assign_precursors[user.civilization])
 					if ("indigon crystals")
-						forsale = /obj/item/precursor/blue
+						forsale = /obj/item/stack/precursor/blue
 					if ("crimsonite crystals")
-						forsale = /obj/item/precursor/red
+						forsale = /obj/item/stack/precursor/red
 					if ("verdine crystals")
-						forsale = /obj/item/precursor/green
+						forsale = /obj/item/stack/precursor/green
 					if ("galdonium crystals")
-						forsale = /obj/item/precursor/yellow
+						forsale = /obj/item/stack/precursor/yellow
 				var/obj/item/stack/money/mstack = null
 				if (istype(user.l_hand, /obj/item/stack/money))
 					mstack = user.l_hand
@@ -1618,7 +1699,7 @@
 						mainbody = "Authentication Error!"
 						sleep(0.5)
 						do_html(user)
-					var/obj/item/precursor/PR = new forsale(null)
+					var/obj/item/stack/precursor/PR = new forsale(null)
 					if (PR)
 						PR.forceMove(get_turf(origin))
 					mainbody = "You fulfill the order."
@@ -1644,7 +1725,7 @@
 					forsale = map.assign_precursors["MacGreene Traders"]
 				if ("Goldstein Solutions")
 					forsale = map.assign_precursors["Goldstein Solutions"]
-					
+
 			if (forsale)
 				var/cost
 				var/available

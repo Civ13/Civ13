@@ -16,7 +16,7 @@
 	age = "1944"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(JAPANESE = 0.6, AMERICAN = 0.4)
-	battle_name = "Iwo Jima"
+	battle_name = "Rizal Stadium"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese Army will win if they hold out for <b>20 minutes</b>. The Americans will win if they manage to capture Japanese Command within Rizal Stadium!</font>"
 	faction1 = JAPANESE
 	faction2 = AMERICAN

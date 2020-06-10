@@ -23,7 +23,6 @@
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
 	faction1 = PIRATES
-	faction2 = CIVILIAN
 	var/message = ""
 	gamemode = "Battleroyale"
 	required_players = 6
@@ -43,9 +42,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale) && !istype(J, /datum/job/pirates/battleroyale/modern))
-		J.total_positions = latejoin_turfs["JoinLateDM"].len
-		J.min_positions = J.total_positions
-		J.max_positions = J.total_positions
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
 		. = TRUE
 	else
 		. = FALSE
@@ -443,9 +442,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale/modern))
-		J.total_positions = latejoin_turfs["JoinLateDM"].len
-		J.min_positions = J.total_positions
-		J.max_positions = J.total_positions
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
 		. = TRUE
 	else
 		. = FALSE
@@ -474,9 +473,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale/medieval))
-		J.total_positions = latejoin_turfs["JoinLateDM"].len
-		J.min_positions = J.total_positions
-		J.max_positions = J.total_positions
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
 		. = TRUE
 	else
 		. = FALSE

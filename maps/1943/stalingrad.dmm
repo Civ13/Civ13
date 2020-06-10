@@ -971,7 +971,7 @@
 "sZ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/winter,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "ta" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "tb" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
-"tc" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#3d5931"; color_code = ""; name = "GAZ-67"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
+"tc" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#3d5931"; name = "GAZ-67"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "td" = (/obj/structure/vehicleparts/frame/t34/right/door,/obj/effect/autoassembler,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "te" = (/obj/structure/table/modern/table,/obj/structure/potted_plant,/turf/floor/wood,/area/caribbean/houses)
 "tf" = (/obj/structure/barbwire,/mob/living/simple_animal/rabbit,/turf/floor/winter,/area/caribbean/nomads/forest/snow)

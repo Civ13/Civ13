@@ -7,7 +7,7 @@
 	is_singlefaction = TRUE
 	no_winner ="The fighting is still going."
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Woke Up This Morning:1" = 'sound/music/woke_up_this_morning.ogg',)
 	faction_organization = list(
 		CIVILIAN)
 
@@ -32,6 +32,8 @@
 		"Goldstein Solutions" = 0,
 		"Police" = 0,)
 	required_players = 6
+	var/list/delivery_locations = list()
+	var/list/delivery_orders = list()
 
 /obj/map_metadata/proc/assign_precursors()
 	var/list/possibilities1 = list("verdine crystals","indigon crystals","galdonium crystals")
@@ -69,11 +71,55 @@
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
-	spawn(15000)
-		spawn_disks(TRUE)
+//	spawn(15000)
+//		spawn_disks(TRUE)
 	spawn(100)
 		refill_marketplace(TRUE)
 		assign_precursors()
+	spawn(150)
+		assign_delivery_zones()
+		send_buy_orders()
+/obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
+	for(var/turf/floor/delivery/D in turfs)
+		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
+		delivery_locations += tlist
+/obj/map_metadata/art_of_the_deal/proc/send_buy_orders()
+	for(var/i in list("mail@greene.ug","mail@rednikov.ug","mail@goldstein.ug","mail@blu.ug"))
+		var/list/tloc = pick(delivery_locations)
+		var/nr = pick(3,7)
+		var/comps = ""
+		switch(i)
+			if ("mail@greene.ug")
+				comps = pick("GBSA-1994 chip","RDKV S-445 chip","GS-IC-M3 chip")
+			if ("mail@rednikov.ug")
+				comps = pick("GBSA-1994 chip","McGT S5R1 chip","GS-IC-M3 chip")
+			if ("mail@goldstein.ug")
+				comps = pick("GBSA-1994 chip","McGT S5R1 chip","RDKV S-445 chip")
+			if ("mail@blu.ug")
+				comps = pick("McGT S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
+		var/pay = nr*rand(500,700)
+		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay,i)) //x,y,product,amount,payment,faction
+		delivery_orders += tlist
+		var/needed = "[nr] [comps]s at the [tloc[4]] [tloc[1]] postbox ([tloc[2]],[tloc[3]])"
+		var/datum/email/E = new/datum/email
+		pay/=4 //convert to dollars
+		E.subject = pick("New Order","Delivery Requested","Need Some More","Ordering","URGENT: Order")
+		E.sender = "[lowertext(pick(first_names_male))][rand(1,99)]@monkeysoft.ug"
+		E.receiver = i
+		E.message = pick(
+			"Hey man, send [needed], really need it. Is [pay] ok? Will be expecting.<br>kudos from [uppertext(E.sender[1])].",
+			"Hope you guys are ok. Need [needed]. ASAP. Will pay [pay]$ for all of it. Yours trully",
+			"Hey, need a delivery of [needed] for [pay], thanks.",
+			"I heard you can get your hands on something i need. I'll pay you [pay]. Send me [needed].<br>Thanks",
+			"Send [needed]. Pay is [pay]$. Discretion as always.<br>-[uppertext(E.sender[1])]",
+			)
+		E.date = roundduration2text()
+		E.read = FALSE
+		map.emails[i] += list(E)
+	spawn(rand(5000,7000))
+		send_buy_orders()
+		return
+
 /obj/map_metadata/art_of_the_deal/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deal)
 		. = TRUE
@@ -440,9 +486,9 @@
 
 	spawn(10)
 		update()
-/mob/proc/get_coded_loc()
+/atom/proc/get_coded_loc()
 	var/a = ceil(x/22)
-	var/b = 10-ceil(y/22)
+	var/b = 10-Floor(y/22)
 	switch(a)
 		if (0 to 1)
 			a = "A"
@@ -515,3 +561,62 @@
 	showoff(user)
 
 /mob/living/human/var/gun_permit = FALSE
+
+/////////////////////////delivery points//////////////////////
+/turf/floor/delivery
+	name = "delivery area"
+	desc = "A collection point for deliveries."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "sidewalk"
+
+	New()
+		..()
+		spawn(50)
+			new/obj/structure/redmailbox(src)
+
+/obj/structure/redmailbox
+	name = "pillar postbox"
+	desc = "A red pillar postbox."
+	icon = 'icons/obj/mail.dmi'
+	icon_state = "redmailbox"
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+	not_disassemblable = TRUE
+	not_movable = TRUE
+
+/obj/structure/redmailbox/attackby(obj/item/I,mob/living/human/H)
+	if (istype(I,/obj/item/stack/component) && istype(map, /obj/map_metadata/art_of_the_deal))
+		var/obj/item/stack/component/P = I
+		var/obj/map_metadata/art_of_the_deal/map2 = map
+		var/turf/T = get_turf(src)
+		if (istype(T, /turf/floor/delivery))
+			for(var/list/i in map2.delivery_orders)
+				//x,y,product,amount,payment,factionmail
+				var/faction
+				switch(i[6])
+					if ("mail@greene.ug")
+						faction = "MacGreene Traders"
+					if ("mail@rednikov.ug")
+						faction = "Rednikov Industries"
+					if ("mail@goldstein.ug")
+						faction = "Goldstein Solutions"
+					if ("mail@blu.ug")
+						faction = "Giovanni Blu Stocks"
+				if (faction && H.civilization == faction && i[1]==src.x && i[2]==src.y && P.name == i[3] && P.amount >= i[4])
+					P.amount-=i[4]
+					if (P.amount<=0)
+						qdel(P)
+					map2.delivery_orders -= i
+					for(var/obj/structure/closet/safe/SF in world)
+						if (SF.faction == faction)
+							if (SF.opened)
+								var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(SF.loc)
+								D.amount = i[5]/D.value
+							else
+								var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(SF)
+								D.amount = i[5]/D.value
+					H << "<big><font color='green'>You fulfill the order. The payment has been sent to your company's safe.</font></big>"
+
+	else
+		..()

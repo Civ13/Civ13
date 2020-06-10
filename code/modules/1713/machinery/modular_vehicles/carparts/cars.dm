@@ -533,7 +533,7 @@
 		set_light(7,1,pol_color)
 		spawn(5)
 			if (pol_color == "#FF0000")
-				pol_color = "#00FF00"
+				pol_color = "#0000FF"
 			else
 				pol_color = "#FF0000"
 			check_color()
@@ -548,7 +548,7 @@
 		if (on)
 			playsound(loc,'sound/machines/ambulance_siren.ogg',100,FALSE,15)
 			lastsoundcheck = world.realtime+25
-			spawn(27)
+			spawn(28)
 				check_sound()
 /obj/structure/emergency_lights/ambulance/check_color()
 	if (on)

@@ -18,8 +18,8 @@
 	faction_distribution_coeffs = list(GERMAN = 0.5, AMERICAN = 0.5)
 	battle_name = "D-day: Omaha Beach"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture the airfield hangar.</font>"
-	faction1 = GERMAN
-	faction2 = AMERICAN
+	faction2 = GERMAN
+	faction1 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)

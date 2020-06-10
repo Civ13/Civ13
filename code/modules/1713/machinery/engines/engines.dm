@@ -112,8 +112,12 @@
 /obj/structure/engine/proc/running_sound()
 	if (on)
 		playsound(loc, running_snd, 35, FALSE, 2)
-	spawn(27)
-		running_sound()
+	if (running_snd == 'sound/machines/steam_loop.ogg')
+		spawn(23)
+			running_sound()
+	else
+		spawn(27)
+			running_sound()
 
 
 /obj/structure/engine/attack_hand(mob/user as mob)

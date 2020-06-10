@@ -490,7 +490,6 @@ var/global/redirect_all_players = null
 	return FALSE
 
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
-
 	if (src != usr)
 		return FALSE
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
@@ -1014,19 +1013,6 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/is_species_whitelisted(datum/species/S)
 	return FALSE
 
-/mob/new_player/get_species()
-	var/datum/species/chosen_species
-	if (client.prefs.species)
-		chosen_species = all_species[client.prefs.species]
-
-	if (!chosen_species)
-		return "Human"
-
-	if (is_species_whitelisted(chosen_species) || has_admin_rights())
-		return chosen_species.name
-
-	return "Human"
-
 /mob/new_player/get_gender()
 	if (!client || !client.prefs)
 		return ..()
@@ -1037,7 +1023,6 @@ var/global/redirect_all_players = null
 
 /mob/new_player/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null)
 	return
-
 
 /mob/new_player/MayRespawn()
 	return TRUE

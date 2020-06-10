@@ -436,45 +436,57 @@
 		custom_code = REDCODE
 		locked = TRUE
 		faction = "Rednikov Industries"
+		new /obj/item/stack/money/dollar/twenty(src)
+/*
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red(src)
 		new /obj/item/weapon/disk/red/fake(src)
 		new /obj/item/weapon/disk/red/fake(src)
+*/
 /obj/structure/closet/safe/blue
 	New()
 		..()
 		custom_code = BLUECODE
 		locked = TRUE
 		faction = "Giovanni Blu Stocks"
+		new /obj/item/stack/money/dollar/twenty(src)
+/*
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue(src)
 		new /obj/item/weapon/disk/blue/fake(src)
 		new /obj/item/weapon/disk/blue/fake(src)
+*/
 /obj/structure/closet/safe/yellow
 	New()
 		..()
 		custom_code = YELLOWCODE
 		locked = TRUE
 		faction = "Goldstein Solutions"
+		new /obj/item/stack/money/dollar/twenty(src)
+/*
 		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow(src)
 		new /obj/item/weapon/disk/yellow/fake(src)
 		new /obj/item/weapon/disk/yellow/fake(src)
+*/
 /obj/structure/closet/safe/green
 	New()
 		..()
 		custom_code = GREENCODE
 		locked = TRUE
 		faction = "MacGreene Traders"
+		new /obj/item/stack/money/dollar/twenty(src)
+/*
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green(src)
 		new /obj/item/weapon/disk/green/fake(src)
 		new /obj/item/weapon/disk/green/fake(src)
+*/
