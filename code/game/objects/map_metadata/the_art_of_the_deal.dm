@@ -97,7 +97,7 @@
 				comps = pick("GBSA-1994 chip","McGT S5R1 chip","RDKV S-445 chip")
 			if ("mail@blu.ug")
 				comps = pick("McGT S5R1 chip","RDKV S-445 chip","GS-IC-M3 chip")
-		var/pay = nr*rand(400,600)
+		var/pay = nr*rand(500,700)
 		var/list/tlist = list(list(tloc[2],tloc[3],comps,nr,pay,i)) //x,y,product,amount,payment,faction
 		delivery_orders += tlist
 		var/needed = "[nr] [comps]s at the [tloc[4]] [tloc[1]] postbox ([tloc[2]],[tloc[3]])"
