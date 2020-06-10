@@ -23,7 +23,6 @@
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
 	faction1 = PIRATES
-	faction2 = CIVILIAN
 	var/message = ""
 	gamemode = "Battleroyale"
 	required_players = 6
