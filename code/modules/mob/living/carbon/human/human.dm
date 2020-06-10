@@ -429,11 +429,6 @@ var/list/coefflist = list()
 	dna.check_integrity(src)
 	return
 
-/mob/living/human/get_species()
-	if (!species)
-		set_species()
-	return species.name
-
 /mob/living/human/proc/check_has_mouth()
 	// Todo, check stomach organ when implemented.
 	var/obj/item/organ/external/head/H = get_organ("head")

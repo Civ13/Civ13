@@ -66,7 +66,7 @@
 			return
 
 	var/action = href_list["action"]
-	if(action == "textrecieved")
+	if(action == "textreceived")
 		var/typenoise = pick('sound/machines/computer/key_1.ogg',
 							 'sound/machines/computer/key_2.ogg',
 							 'sound/machines/computer/key_3.ogg',
@@ -103,20 +103,20 @@
 
 	else if (operatingsystem == "unga OS")
 		mainmenu = "<i><h1><img src='uos.png'></img></h1></i>"
-		mainbody = {"
+		mainbody = {"<head>
 				<script type="text/javascript">
 					typeFunction() {
 						if (e.keyCode == 13) {
 							byond://?src=\ref[src]&action=textenter&value=document.getElementById('input').value
 						}
-						byond://?src=\ref[src]&action=textrecieved&value=document.getElementById('input').value
+						byond://?src=\ref[src]&action=textreceived&value=document.getElementById('input').value
 					}
-				<div class="vertical-center">
+				</head><font color='yellow'>test</font><div class="vertical-center">
 				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
-				"}
+				:_"}
 		mainbody+=display
 		mainbody+={"</textarea>
-				: <input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
+				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
 				</div>
 				</html>
 				"}

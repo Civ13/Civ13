@@ -790,7 +790,7 @@
 
 /datum/program/monkeysoftmail/do_html(mob/living/human/user)
 	if (mainmenu == "---")
-		mainmenu = "<h2>MONKEYSOFT E-MAIL CLIENT</h2><br>"
+		mainmenu = "<h2><font color=#60AFFE>MONKEYSOFT</font> E-MAIL CLIENT</h2><br>"
 		mainmenu += "<a href='?src=\ref[src];sendmail=1'>Send e-mail</a>&nbsp;<a href='?src=\ref[src];mail=99999'>Inbox</a>"
 		var/mdomain = "monkeysoft.ug"
 		switch(user.civilization)
