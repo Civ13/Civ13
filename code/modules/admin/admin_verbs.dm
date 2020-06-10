@@ -866,6 +866,22 @@ var/global/list/global_colour_matrix = null
 	return
 
 
+/client/proc/remove_dead_bodies()
+	set name = "Remove Dead Bodies"
+	set category = "Special"
+
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+	var/count=0
+	for(var/mob/living/human/H in world)
+		if (H.stat == DEAD && !H.client)
+			qdel(H)
+			count++
+	
+	message_admins("[key_name_admin(usr)] removed all the dead bodies ([count] total).")
+	return
+
 /client/proc/radiation_emission()
 	set category = "Special"
 	set name = "Radiation Emission"
