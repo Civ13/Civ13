@@ -17,6 +17,7 @@ var/list/admin_verbs_default = list(
 var/list/admin_verbs_admin = list(
 	/client/proc/enable_fov,
 	/client/proc/disable_fov,
+	/client/proc/remove_dead_bodies,
 	/client/proc/enable_approved_only,
 	/client/proc/disable_approved_only,
 	/client/proc/enable_whitelist,
@@ -878,7 +879,7 @@ var/global/list/global_colour_matrix = null
 		if (H.stat == DEAD && !H.client)
 			qdel(H)
 			count++
-	
+
 	message_admins("[key_name_admin(usr)] removed all the dead bodies ([count] total).")
 	return
 

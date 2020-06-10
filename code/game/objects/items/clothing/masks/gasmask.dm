@@ -9,7 +9,6 @@
 	item_state = "gas_alt"
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
-	var/efficiency = 95 // 0 to 100
 	siemens_coefficient = 0.9
 	var/gas_filter_strength = TRUE			//For gas mask filters
 	var/list/filtered_gases = list("plasma", "sleeping_agent")
@@ -17,12 +16,6 @@
 	blocks_scope = TRUE
 	restricts_view = 2
 	armor = list(melee = 10, arrow = FALSE, gun = FALSE, energy = 35, bomb = 15, bio = 100, rad = 80)
-
-/obj/item/clothing/mask/gas/proc/check_can_block(var/datum/reagent/r)
-	if (prob(efficiency))
-		return TRUE
-	else
-		return FALSE
 
 /obj/item/clothing/mask/gas/filter_air(datum/gas_mixture/air)
 	var/datum/gas_mixture/filtered = new
