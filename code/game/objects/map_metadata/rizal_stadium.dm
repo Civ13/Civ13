@@ -92,7 +92,7 @@ var/no_loop_riz = FALSE
 /obj/map_metadata/rizal_stadium/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
-	if (world.time >= 12000)
+	if (world.time >= 13600)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
