@@ -183,7 +183,7 @@
 	name = "medal case"
 	desc = "A case for holding medals to be awarded."
 	icon_state = "medalcase"
-	item_state = "cigarcase"
+	item_state = "medalcase"
 	icon_type = "medal"
 	icon = 'icons/obj/cigarettes.dmi'
 	w_class = 1
