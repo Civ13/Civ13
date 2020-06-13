@@ -154,6 +154,7 @@
 "cX" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/obj/item/weapon/grenade/ww2/type91,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "cY" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "cZ" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
+"da" = (/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "db" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "dc" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/arisakabox99,/obj/item/ammo_magazine/arisakabox99,/obj/item/ammo_magazine/arisakabox99,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "dd" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/arisakabox,/obj/item/ammo_magazine/arisakabox,/obj/item/ammo_magazine/arisakabox,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
@@ -428,6 +429,7 @@
 "im" = (/obj/structure/vehicleparts/frame/t34/right/door,/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "in" = (/obj/structure/vehicleparts/frame/t34/right,/obj/structure/bed/chair/commander,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "io" = (/obj/structure/wild/jungle/medpine,/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
+"ip" = (/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/turf/floor/dirt,/area/caribbean/admin)
 "iq" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean)
 "ir" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "is" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/russian/land/inside)
@@ -438,7 +440,6 @@
 "iy" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iz" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iB" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks,/turf/floor/grass,/area/caribbean/russian/land/outside)
-"iE" = (/obj/structure/closet/crate/ww2/atmines,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "iS" = (/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 
 (1,1,1) = {"
@@ -619,7 +620,7 @@ fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFcFcPcQhwcJ
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfvcFcFcFcFcFcFcFcFcFcFfWfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfscuctfsfsfvcifBfsfsctcuctfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfChxcUfDcFcFcVcFcFftfsfsfsfsfsfsfsfsfsfsfsfsfsfvfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfsfsfsfsfsfsfscFfsfsfsfsfsfsfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfCfucJfDcFcFcFencFcFcifsfsfsfsfsfsfsfsfsfsfscXcYcZfsfsfsfsfsfsfsfsfscFcFcFfsfsfsfsfsfsfsfsfsfscFfsfsfsfsfsfsfsfsfsfs
-fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFigfDfsfsfscFcFfsfsfsfsfsfsfsfscZiEcFcFcFcFdbfsdcddfsfsfscFcFdEfsfsfsfsfsfsfsfsfsfsfscFcFfsfsfsfsfsfsfsfsfs
+fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFigfDfsfsfscFcFfsfsfsfsfsfsfsfscZdacFcFcFcFdbfsdcddfsfsfscFcFdEfsfsfsfsfsfsfsfsfsfsfscFcFfsfsfsfsfsfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfvfsfsfsfsfsfscFcFfsfsfsfsfsdehycFcFcFcFcFcFcFcFcFcFcFfscFcFcFfsfsfsfsfsfsfsfsfsfsfsfsfscFfsfsfsfsfsfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsdEcFcFcicFcFcFcFcFcFcFcFcFfAcFcFcFcFcFcicFcFfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcicFcFcFcFfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFcFcFcFcFcFcFcFcFcFcFfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfs
@@ -634,7 +635,7 @@ fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscJdmdmdmdmdmdqfFdrfGdrdmdmdmdmdmdmfQfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscifsfsfsfsfs
 fsfshzhAhBhChAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAfsfsfsfsfsfsfsfvfSfHdmdmdmdmdtdmfIdmdvdmdmdmdpdmcIfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFfsfsfsfsfs
 fsfshDhAhEhFhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAfsfsfsfsfsfsfsfsdrdmdmdmdmdmdmdmdmdmdmdmdmdmdmdmfsfsfsfsfsfsfsfsfsfsfsdwehhsdydzdzdzdAfsfsfvdkfBfsfsfsfs
-fXfshAhAhGhHhAhAhAhAhAhAhAhAhAhAhAhAhAhIhIhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAfsfsfsfsfsfsfsfsfsdmdmdmdmfJdmdmdmdmdmfJdmdmdmdmfsfsfsfsfsfsfsfsfsdKcFdwcFcFcFcFcFcFcFcFcFehcFcFfsfsfsfs
+fXfsiphAhGhHhAhAhAhAhAhAhAhAhAhAhAhAhAhIhIhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAfsfsfsfsfsfsfsfsfsdmdmdmdmfJdmdmdmdmdmfJdmdmdmdmfsfsfsfsfsfsfsfsfsdKcFdwcFcFcFcFcFcFcFcFcFehcFcFfsfsfsfs
 fsfshAhAhJhKhAhIhIhAhAhAhAhAhAhAhAhAhLhMhNhOhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAfsfsfsfsfsfsfsfsfsdDdmdjfGhtihdrdmdjfGhtdrdrdmfsfsfsfsfsfsfsfsfshucFcFdwcFdGdGdGdGcFcFcFcFcFcFcFftfsfsfs
 fsfshAhAhPhQhAhNhRhShAhAhAhAhAhAhAhAhLhShOhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfvfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfLcFcFdwcFcFcFcFcFcFcFcFcFcrcrcrcFfsfsfs
 fsfshThAhAhAhAhAhUhShAhAhAhAhAhAhAhAhLhVhAhOhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAhAfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfLcFcFdwcFdHcFdHcFdHcFcFcndIcsdJcDfsfsfs

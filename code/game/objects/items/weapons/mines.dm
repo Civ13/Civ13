@@ -167,7 +167,6 @@
 	throw_range = 3
 	throw_speed = 3
 	anchored = FALSE
-
 /obj/item/mine/at/armed
 	anchored = TRUE
 	layer = TURF_LAYER + 0.01

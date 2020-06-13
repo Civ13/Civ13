@@ -132,6 +132,7 @@
 				MAP_NANJING = 20,
 //				MAP_IWO_JIMA = 70,
 				MAP_RIZAL_STADIUM = 0,
+				MAP_INTRAMUROS = 25,
 			)
 
 		else if (epoch == "Early Modern Era (1896-1933)")
