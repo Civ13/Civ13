@@ -27,7 +27,7 @@
 
 /obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_ww2ATunit))
+	if (J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_ww2ATunit) || J.is_pacific == TRUE)
 		. = FALSE
 	else if (J.is_ww2 == TRUE)
 		. = TRUE
