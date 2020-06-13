@@ -306,7 +306,7 @@
 	unload_sound = 'sound/weapons/guns/interact/GarandUnload.ogg'
 	weight = 4.9
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=2)
+		list(name="single shot",burst=1, move_delay=2, fire_delay=3)
 		)
 	force = 10
 	throwforce = 20

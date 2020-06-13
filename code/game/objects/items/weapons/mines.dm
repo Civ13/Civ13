@@ -172,6 +172,7 @@
 	anchored = TRUE
 	layer = TURF_LAYER + 0.01
 	icon_state = "mine_armed"
+	var/origin = null
 
 /obj/item/mine/at/Crossed(AM as mob|obj)
 	if (isobserver(AM)) return
