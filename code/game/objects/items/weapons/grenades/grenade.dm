@@ -440,21 +440,6 @@
 					qdel(src)
 		else
 			return
-/obj/item/weapon/grenade/antitank/type99/secondary_attack_self(mob/living/human/user)
-	if (secondary_action)
-		var/inp = WWinput(user, "Are you sure you wan't to place a mine here?", "Mining", "No", list("Yes","No"))
-		if (inp == "Yes")
-			user << "Placing the mine..."
-			if (do_after(user, 60, src))
-				if (src)
-					user << "You successfully place the mine here using \the [src]."
-					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
-					BT.origin = src.type
-					firer = user
-					qdel(src)
-		else
-			return
-
 
 /obj/item/projectile/bullet/pellet/fragment
 	damage = 18
@@ -731,6 +716,21 @@
 	desc = "A japanese anti-tank mine that can also be used as a grenade"
 	det_time = 50
 	throw_range = 8
+	secondary_action = TRUE
+/obj/item/weapon/grenade/antitank/type99/secondary_attack_self(mob/living/human/user)
+	if (secondary_action)
+		var/inp = WWinput(user, "Are you sure you wan't to place a mine here?", "Mining", "No", list("Yes","No"))
+		if (inp == "Yes")
+			user << "Placing the mine..."
+			if (do_after(user, 60, src))
+				if (src)
+					user << "You successfully place the mine here using \the [src]."
+					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
+					BT.origin = src.type
+					firer = user
+					qdel(src)
+		else
+			return
 
 /obj/item/weapon/grenade/antitank/prime()
 	set waitfor = 0
