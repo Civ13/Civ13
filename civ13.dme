@@ -265,6 +265,7 @@
 #include "code\game\objects\map_metadata\hill203.dm"
 #include "code\game\objects\map_metadata\hostages.dm"
 #include "code\game\objects\map_metadata\hunt.dm"
+#include "code\game\objects\map_metadata\intramuros.dm"
 #include "code\game\objects\map_metadata\island.dm"
 #include "code\game\objects\map_metadata\iwojima.dm"
 #include "code\game\objects\map_metadata\jungle_colony.dm"
@@ -948,5 +949,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\rizal_stadium.dmm"
+#include "maps\1943\intramuros.dmm"
 // END_INCLUDE
