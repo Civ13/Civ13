@@ -790,3 +790,22 @@
 	throw_speed = 7
 	throw_range = 11
 	allow_spin = FALSE
+
+/obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (istype(I, /obj/item/weapon/lungemine))
+		visible_message("The lunge mine hits \the [src]!")
+		message_admins("[H] used a lunge mine on a vehicle at [x], [y], [z].")
+		log_admin("[H] used a lunge mine on a vehicle at [x], [y], [z].")
+		explosion(H.loc, 1, 3, 2, 0)
+		for (var/mob/M in axis.transporting)
+			shake_camera(M, 4, 4)
+
+		w_left[5] -= 55
+		w_right[5] -= 55
+		w_front[5] -= 55
+		w_back[5] -= 55
+		try_destroy()
+		if (H)
+			H.awards["tank"]+=(heavy_armor_penetration/200)
+	else
+		..()
