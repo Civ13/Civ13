@@ -780,3 +780,14 @@
 	value = 6
 	block_chance = 20
 	cooldownw = 5
+
+/obj/item/weapon/lungemine
+	name = "lunge mine"
+	desc = "A long pole with an anti tank mine at the end, results in the users death."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "lungemine"
+	item_state = "lungemine"
+	throw_speed = 7
+	throw_range = 11
+	allow_spin = FALSE
+	block_chance = 36
