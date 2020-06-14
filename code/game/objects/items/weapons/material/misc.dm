@@ -790,4 +790,3 @@
 	throw_speed = 7
 	throw_range = 11
 	allow_spin = FALSE
-	block_chance = 36
