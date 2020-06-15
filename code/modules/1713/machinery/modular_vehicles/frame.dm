@@ -234,6 +234,7 @@
 							return TRUE
 	return FALSE
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
+
 	if (mwheel && mwheel.broken && istype(I, /obj/item/weapon/weldingtool))
 		var/cantdo = FALSE
 		for (var/obj/structure/vehicleparts/frame/FM in H.loc)
