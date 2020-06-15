@@ -2,7 +2,7 @@
 
 /obj/item/clothing/gloves
 	var/transfer_blood = FALSE
-	var/mob/living/carbon/human/bloody_hands_mob
+	var/mob/living/human/bloody_hands_mob
 
 /obj/item/clothing/shoes/
 	var/track_blood = FALSE
@@ -11,7 +11,7 @@
 	name = "rag"
 	desc = "For cleaning up messes, you suppose."
 	w_class = 1
-	icon = 'icons/obj/toy.dmi'
+	icon = 'icons/obj/trash.dmi'
 	icon_state = "rag"
 	amount_per_transfer_from_this = 5
 	possible_transfer_amounts = list(5)

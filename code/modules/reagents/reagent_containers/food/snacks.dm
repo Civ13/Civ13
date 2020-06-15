@@ -35,11 +35,11 @@
 	if (!usr)	return
 	if (raw)
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			if (!H.orc && !H.crab && !H.wolfman && !H.lizard)
 				M.reagents.add_reagent("food_poisoning", 1)
 	if (ishuman(M))
-		var/mob/living/carbon/human/HM = M
+		var/mob/living/human/HM = M
 		if (HM.orc || HM.crab || HM.wolfman)
 			HM.mood += abs(satisfaction)
 		else
@@ -68,13 +68,13 @@
 			qdel(src)
 			return FALSE
 
-	if (istype(M, /mob/living/carbon))
+	if (istype(M, /mob/living/human))
 		//TODO: replace with standard_feed_mob() call.
-		var/mob/living/carbon/C = M
+		var/mob/living/human/C = M
 		var/fullness = C.get_fullness()
 		if (C == user)								//If you're eating it yourself
-			if (istype(C,/mob/living/carbon/human))
-				var/mob/living/carbon/human/H = M
+			if (istype(C,/mob/living/human))
+				var/mob/living/human/H = M
 				if (!H.check_has_mouth())
 					user << "Where do you intend to put \the [src]? You don't have a mouth!"
 					return
@@ -82,11 +82,11 @@
 				if (blocked)
 					user << "<span class='warning'>\The [blocked] is in the way!</span>"
 					return
-				if (H.gorillaman)
+				if (H.gorillaman || H.find_trait("Vegan"))
 					if (non_vegetarian)
-						user << "<span class='warning'>You are an herbivore! You can't eat this!</span>"
+						user << "<span class='warning'>You are a vegan/herbivore! You can't eat this!</span>"
 						return
-				else if (H.wolfman || H.crab)
+				else if (H.wolfman || H.crab || H.find_trait("Carnivore"))
 					if (!non_vegetarian)
 						user << "<span class='warning'>You are a carnivore! You can't eat this!</span>"
 						return
@@ -105,8 +105,8 @@
 		else
 			if (!M.can_force_feed(user, src))
 				return
-			if (istype(M,/mob/living/carbon/human))
-				var/mob/living/carbon/human/H = M
+			if (istype(M,/mob/living/human))
+				var/mob/living/human/H = M
 				if (H.gorillaman)
 					if (non_vegetarian)
 						user << "<span class='warning'>[H] is an herbivore! They can't eat this!</span>"
@@ -190,37 +190,8 @@
 			return
 
 	else if (is_sliceable() && !istype(W, /obj/item/weapon/reagent_containers/food/drinks) && !istype(W, /obj/item/weapon/reagent_containers/glass))
-		//these are used to allow hiding edge items in food that is not on a table/tray
 
-		var/can_slice_here = FALSE
-		if (isturf(loc))
-			if (locate(/obj/structure/table) in loc)
-				can_slice_here = TRUE
-			else if (locate(/obj/structure/optable) in loc)
-				can_slice_here = TRUE
-
-		var/hide_item = (!W.edge || !can_slice_here)
-
-		if (hide_item)
-			if (contents.len)
-				user << "<span class='danger'>There's already something inside \the [src].</span>"
-				return
-			if (W.w_class >= w_class)
-				user << "<span class='warning'>\the [W] is too big to hide inside \the [src].</span>"
-				return
-
-			user << "<span class='warning'>You slip \the [W] inside \the [src].</span>"
-			user.remove_from_mob(W)
-			W.dropped(user)
-			add_fingerprint(user)
-			contents += W
-			return
-
-		else if (W.edge)
-			if (!can_slice_here)
-				user << "<span class='warning'>You cannot slice \the [src] here! You need a table or at least a tray to do it.</span>"
-				return
-
+		if (W.edge)
 			var/slices_lost = 0
 			if (W.w_class > 3)
 				user.visible_message("<span class='notice'>\The [user] crudely slices \the [src] with [W]!</span>", "<span class='notice'>You crudely slice \the [src] with your [W]!</span>")
@@ -389,11 +360,6 @@
 	satisfaction = 4
 	non_vegetarian = TRUE
 
-/obj/item/weapon/reagent_containers/food/snacks/egg/New()
-	..()
-	spawn(50)
-		process()
-
 /obj/item/weapon/reagent_containers/food/snacks/egg/afterattack(obj/O as obj, mob/user as mob, proximity)
 /*	if (istype(O,/obj/structure/microwave))
 		return ..()*/
@@ -427,10 +393,6 @@
 	non_vegetarian = TRUE
 	decay = 90*600
 	satisfaction = 2
-/obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
-	..()
-	spawn(50)
-		process()
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/afterattack(obj/O as obj, mob/user as mob, proximity)
 	if (istype(O, /obj/structure/pot))
@@ -584,21 +546,6 @@
 		qdel(src)
 	else
 		..()
-
-
-/obj/item/weapon/reagent_containers/food/snacks/meatball
-	name = "meatball"
-	desc = "A great meal all round."
-	icon_state = "meatball"
-	filling_color = "#DB0000"
-	center_of_mass = list("x"=16, "y"=16)
-	decay = 12*600
-	satisfaction = 8
-	non_vegetarian = TRUE
-	New()
-		..()
-		reagents.add_reagent("protein", 3)
-		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/sausage
 	name = "Sausage"
@@ -1704,20 +1651,6 @@
 		..()
 		reagents.add_reagent("protein", 2)
 
-/obj/item/weapon/reagent_containers/food/snacks/rawmeatball
-	name = "raw meatball"
-	desc = "A raw meatball."
-	icon = 'icons/obj/food/food_ingredients.dmi'
-	icon_state = "rawmeatball"
-	satisfaction = -2
-	bitesize = 2
-	center_of_mass = list("x"=16, "y"=15)
-	decay = 17*600
-	non_vegetarian = TRUE
-	New()
-		..()
-		reagents.add_reagent("protein", 2)
-
 /obj/item/weapon/reagent_containers/food/snacks/hotdog
 	name = "hotdog"
 	desc = "Unrelated to dogs, maybe."
@@ -1779,6 +1712,17 @@
 		..()
 		icon_state = pick("leaves1","leaves2","leaves3")
 		food_decay()
+
+/obj/item/weapon/leaves/attack_self(mob/living/user)
+	if (ishuman(user))
+		user << "You start arranging the leaves into a thatch roofing..."
+		if (do_after(user, 70, src))
+			user << "You finish the thatch roofing."
+			var/obj/item/weapon/roofbuilder/leaves/RB = new/obj/item/weapon/roofbuilder/leaves(loc)
+			user.drop_from_inventory(src)
+			user.put_in_hands(RB)
+			qdel(src)
+			return
 /obj/item/weapon/leaves/proc/food_decay()
 	spawn(600)
 		if (decay == 0)
@@ -1808,7 +1752,7 @@
 			food_decay()
 			return
 
-/obj/item/weapon/leaves/attack(mob/living/carbon/human/M as mob, mob/living/carbon/human/user as mob)
+/obj/item/weapon/leaves/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (!M || !ishuman(M) || !M.gorillaman)
 		return
 	playsound(M.loc,'sound/items/eatfood.ogg', rand(10,50), TRUE)
@@ -1819,3 +1763,25 @@
 		M << "You eat the leaves."
 	M.nutrition = min(M.nutrition+40, M.max_nutrition)
 	qdel(src)
+
+/obj/item/weapon/leaves/palm_leaves
+	name = "palm leaves"
+	desc = "A bunch of palm leaves."
+	icon_state = "palm_leaves"
+	throwforce = 0
+	force = 0
+	w_class = 3
+	decay = 35*600
+	New()
+		..()
+		icon_state = "palm_leaves"
+/obj/item/weapon/leaves/palm_leaves/attack_self(mob/living/user)
+	if (ishuman(user))
+		user << "You start arranging the leaves into a palm roofing..."
+		if (do_after(user, 70, src))
+			user << "You finish the palm roofing."
+			var/obj/item/weapon/roofbuilder/palm/RB = new/obj/item/weapon/roofbuilder/palm(loc)
+			user.drop_from_inventory(src)
+			user.put_in_hands(RB)
+			qdel(src)
+			return

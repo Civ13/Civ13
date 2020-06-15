@@ -2,8 +2,8 @@
 * Category Collection *
 **********************/
 /datum/category_collection
-	var/category_group_type                          // Type of categories to initialize
-	var/list/datum/category_group/categories         // List of initialized categories
+	var/category_group_type						  // Type of categories to initialize
+	var/list/datum/category_group/categories		 // List of initialized categories
 	var/list/datum/category_group/categories_by_name // Associative list of initialized categories, keyed by name
 
 /datum/category_collection/New()
@@ -29,10 +29,10 @@
 ******************/
 /datum/category_group
 	var/name = ""
-	var/category_item_type                      // Type of items to initialize
-	var/list/datum/category_item/items          // List of initialized items
+	var/category_item_type					  // Type of items to initialize
+	var/list/datum/category_item/items		  // List of initialized items
 	var/list/datum/category_item/items_by_name  // Associative list of initialized items, by name
-	var/datum/category_collection/collection    // The collection this group belongs to
+	var/datum/category_collection/collection	// The collection this group belongs to
 
 /datum/category_group/New(var/datum/category_collection/cc)
 	..()

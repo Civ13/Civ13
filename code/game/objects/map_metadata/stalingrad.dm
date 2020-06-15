@@ -1,17 +1,16 @@
 
 /obj/map_metadata/stalingrad
 	ID = MAP_STALINGRAD
-	title = "Stalingrad (90x250x2)"
+	title = "Stalingrad"
 	lobby_icon_state = "ww2"
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 0
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		GERMAN,
 		RUSSIAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/german/reichstag/roof/objective,
 		list(GERMAN) = /area/caribbean/german/reichstag/roof/objective,
@@ -20,10 +19,10 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Stalingrad"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><font size=3>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>50</b> points wins!</font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><font size=3>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>40</b> points wins!</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
-	valid_weather_types = list(WEATHER_NONE, WEATHER_SNOW, WEATHER_BLIZZARD)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 	gamemode = "Area Control"
@@ -32,18 +31,24 @@
 	var/a1_control = "none"
 	var/a2_control = "none"
 	var/a3_control = "none"
-obj/map_metadata/stalingrad/New()
+/obj/map_metadata/stalingrad/New()
 	..()
 	spawn(3000)
 		points_check()
 
-obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/stalingrad/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && !J.is_reichstag  && (!J.is_tanker || istype(J, /datum/job/german/tank_crew)))
+	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
 		. = TRUE
-	else
+	else if (J.is_ss_panzer == TRUE)
 		. = FALSE
-	if (J.is_tanker && istype(J, /datum/job/russian))
+	else if (J.is_tanker == TRUE)
+		. = FALSE
+	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
+		. = TRUE
+	else if (J.is_reichstag == TRUE)
+		. = FALSE
+	else
 		. = FALSE
 
 /obj/map_metadata/stalingrad/faction1_can_cross_blocks()
@@ -98,7 +103,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 		var/c1 = 0
 		var/c2 = 0
 		var/prev_control = a1_control
-		for (var/mob/living/carbon/human/H in player_list)
+		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
 				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
@@ -121,7 +126,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 		c1 = 0
 		c2 = 0
 		prev_control = a2_control
-		for (var/mob/living/carbon/human/H in player_list)
+		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
 				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
@@ -144,7 +149,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 		c1 = 0
 		c2 = 0
 		prev_control = a3_control
-		for (var/mob/living/carbon/human/H in player_list)
+		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
 				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
@@ -172,9 +177,9 @@ obj/map_metadata/stalingrad/proc/points_check()
 
 /obj/map_metadata/stalingrad/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 6000)
-		if (sov_points < 50 && ger_points < 50)
+		if (sov_points < 40 && ger_points < 40)
 			return TRUE
-		if (sov_points >= 50 && sov_points > ger_points)
+		if (sov_points >= 40 && sov_points > ger_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE
@@ -183,7 +188,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
-		if (ger_points >= 50 && ger_points > sov_points)
+		if (ger_points >= 40 && ger_points > sov_points)
 			if (win_condition_spam_check)
 				return FALSE
 			ticker.finished = TRUE

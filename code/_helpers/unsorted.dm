@@ -50,7 +50,7 @@
 	if (A > upper) return FALSE
 	return TRUE
 
-
+/*
 /proc/Get_Angle(atom/movable/start,atom/movable/end)//For beams.
 	if (!start || !end) return FALSE
 	var/dy
@@ -64,7 +64,7 @@
 		.+=180
 	else if (dx<0)
 		.+=360
-
+*/
 //Returns location. Returns null if no location was found.
 /proc/get_teleport_loc(turf/location,mob/target,distance = TRUE, density = FALSE, errorx = FALSE, errory = FALSE, eoffsetx = FALSE, eoffsety = FALSE)
 /*
@@ -485,24 +485,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 /proc/between(var/low, var/middle, var/high)
 	return max(min(middle, high), low)
 
-proc/arctan(x)
-	var/y=arcsin(x/sqrt(1+x*x))
-	return y
-
-//returns random gauss number
-proc/Gaussrand(var/sigma)
-  var/x,y,rsq
-  do
-    x=2*rand()-1
-    y=2*rand()-1
-    rsq=x*x+y*y
-  while (rsq>1 || !rsq)
-  return sigma*y*sqrt(-2*log(rsq)/rsq)
-
-//returns random gauss number, rounded to 'roundto'
-proc/GaussRandRound(var/sigma,var/roundto)
-	return round(Gaussrand(sigma),roundto)
-
 //Will return the contents of an atom recursivly to a depth of 'searchDepth'
 /atom/proc/GetAllContents(searchDepth = 5)
 	var/list/toReturn = list()
@@ -644,7 +626,7 @@ proc/DuplicateObject(obj/original, var/perfectcopy = FALSE , var/sameloc = FALSE
 	//Takes: Area. Optional: If it should copy to areas that don't have plating
 	//Returns: Nothing.
 	//Notes: Attempts to move the contents of one area to another area.
-	//       Movement based on lower left corner. Tiles that do not fit
+	//	   Movement based on lower left corner. Tiles that do not fit
 	//		 into the new area will not be moved.
 
 	// Does *not* affect gases etc; copied turfs will be changed via ChangeTurf, and the dir, icon, and icon_state copied. All other vars will remain default.
@@ -917,11 +899,11 @@ proc/is_hot(obj/item/W as obj)
 	if (W.sharp) return TRUE
 	return ( \
 		W.sharp													  || \
-		istype(W, /obj/item/weapon/hammer)                   || \
-		istype(W, /obj/item/weapon/pen)                           || \
+		istype(W, /obj/item/weapon/hammer)				   || \
+		istype(W, /obj/item/weapon/pen)						   || \
 		istype(W, /obj/item/weapon/flame/lighter/zippo)			  || \
-		istype(W, /obj/item/weapon/flame/match)            		  || \
-		istype(W, /obj/item/clothing/mask/smokable/cigarette) 		      || \
+		istype(W, /obj/item/weapon/flame/match)					  || \
+		istype(W, /obj/item/clothing/mask/smokable/cigarette) 			  || \
 		istype(W, /obj/item/weapon/shovel) \
 	)
 
@@ -935,7 +917,7 @@ proc/is_hot(obj/item/W as obj)
 	)
 
 //check if mob is lying down on something we can operate him on.
-/proc/can_operate(mob/living/carbon/M)
+/proc/can_operate(mob/living/human/M)
 	var/M_turf = get_turf(M)
 	for (var/obj/structure/optable/O in M_turf)
 		return TRUE

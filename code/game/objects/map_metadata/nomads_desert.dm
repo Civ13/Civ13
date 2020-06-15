@@ -1,17 +1,16 @@
 
 /obj/map_metadata/nomads_desert
 	ID = MAP_NOMADS_DESERT
-	title = "Nomads (Desert) (225x225x2)"
+	title = "Nomads (Desert)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
-	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+
+
 	faction_organization = list(
 		CIVILIAN,)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)

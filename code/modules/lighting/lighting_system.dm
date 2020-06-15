@@ -19,10 +19,7 @@
 
 			var/area/T_area = get_area(T)
 			if (T_area.is_void_area)
-				if (istype(T, /turf/wall/rockwall))
-					T.icon_state = "black"
-					continue
-				else if (istype(T, /turf/wall/indestructable))
+				if (istype(T, /turf/wall/indestructable))
 					var/turf/wall/W = T
 					W.icon = 'icons/turf/walls.dmi'
 					W.icon_state = "black"
@@ -78,3 +75,10 @@ var/created_lighting_corners_and_overlays = FALSE
 	processes.time_of_day_change.admincaller = admincaller
 	processes.time_of_day_change.announce = announce
 	processes.time_of_day_change.fire(TRUE)
+
+	if (_time_of_day == "Night" && map && map.ID == MAP_NOMADS_WASTELAND_2)
+		var/obj/map_metadata/nomads_wasteland/two/map2 = map
+		map2.zombies(TRUE)
+	if (_time_of_day == "Morning" && map && map.ID == MAP_NOMADS_WASTELAND_2)
+		var/obj/map_metadata/nomads_wasteland/two/map2 = map
+		map2.zombies(FALSE)

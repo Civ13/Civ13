@@ -1,17 +1,16 @@
 
 /obj/map_metadata/nomads_jungle
 	ID = MAP_NOMADS_JUNGLE
-	title = "Nomads (Jungle) (300x300x2)"
+	title = "Nomads (Jungle)"
 	lobby_icon_state = "civ13"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
-	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+
+
 	faction_organization = list(
 		CIVILIAN,)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
@@ -34,15 +33,6 @@
 	var/real_season = "wet"
 /obj/map_metadata/nomads_jungle/New()
 	..()
-	spawn(1200)
-		for (var/i = 1, i <= 180, i++)
-			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/river))
-			new/obj/structure/piranha(areaspawn)
-	spawn(600)
-		for (var/i = 1, i <= 23, i++)
-			var/turf/areaspawn2 = safepick(get_area_turfs(/area/caribbean/nomads/forest))
-			new/obj/structure/anthill(areaspawn2)
-
 	spawn(1800)
 		if (season == "SPRING") //fixes game setting the season as spring
 			season = "Wet Season"

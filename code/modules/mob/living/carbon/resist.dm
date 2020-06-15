@@ -1,9 +1,9 @@
-/proc/getHumanBreakoutTime(var/mob/living/carbon/human/H, var/time = 100)
+/proc/getHumanBreakoutTime(var/mob/living/human/H, var/time = 100)
 	if (!istype(H))
 		return time
 	return time /= (H.getStatCoeff("strength")*H.getStatCoeff("strength"))
 
-/mob/living/carbon/process_resist()
+/mob/living/human/process_resist()
 
 	//drop && roll
 	if (on_fire && !buckled)
@@ -31,7 +31,7 @@
 	else if (legcuffed)
 		spawn() escape_legcuffs()
 
-/mob/living/carbon/proc/escape_handcuffs()
+/mob/living/human/proc/escape_handcuffs()
 	//if (!(last_special <= world.time)) return
 
 	//This line represent a significant buff to grabs...
@@ -52,7 +52,7 @@
 		breakouttime = HC.breakouttime
 		displaytime = breakouttime / 600 //Minutes
 
-//	var/mob/living/carbon/human/H = src
+//	var/mob/living/human/H = src
 
 	visible_message(
 		"<span class='danger'>\The [src] attempts to remove \the [HC]!</span>",
@@ -68,7 +68,7 @@
 			)
 		drop_from_inventory(handcuffed)
 
-/mob/living/carbon/proc/escape_legcuffs()
+/mob/living/human/proc/escape_legcuffs()
 	if (!canClick())
 		return
 
@@ -105,12 +105,12 @@
 		legcuffed = null
 		update_inv_legcuffed()
 
-/mob/living/carbon/proc/can_break_cuffs()
+/mob/living/human/proc/can_break_cuffs()
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		return H.getStatCoeff("strength") >= 2.3
 
-/mob/living/carbon/proc/break_handcuffs()
+/mob/living/human/proc/break_handcuffs()
 	visible_message(
 		"<span class='danger'>[src] is trying to break \the [handcuffed]!</span>",
 		"<span class='warning'>You attempt to break your [handcuffed.name]. (This will take around 5 seconds and you need to stand still)</span>"
@@ -133,7 +133,7 @@
 			buckled.unbuckle_mob()
 		update_inv_handcuffed()
 
-/mob/living/carbon/proc/break_legcuffs()
+/mob/living/human/proc/break_legcuffs()
 	src << "<span class='warning'>You attempt to break your legcuffs. (This will take around 5 seconds and you need to stand still)</span>"
 	visible_message("<span class='danger'>[src] is trying to break the legcuffs!</span>")
 
@@ -152,7 +152,7 @@
 		legcuffed = null
 		update_inv_legcuffed()
 
-/mob/living/carbon/escape_buckle()
+/mob/living/human/escape_buckle()
 	setClickCooldown(100)
 	if (!buckled) return
 

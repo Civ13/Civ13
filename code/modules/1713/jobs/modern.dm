@@ -3,20 +3,20 @@
 /datum/job/american/usmc_lieutenant
 	title = "USMC Lieutenant"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_modernday = TRUE
 	is_radioman = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/american/usmc_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -49,19 +49,20 @@
 /datum/job/american/usmc_sergeant
 	title = "USMC Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_radioman = TRUE
 	is_modernday = TRUE
 	can_get_coordinates = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/usmc_sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -97,16 +98,17 @@
 /datum/job/american/usmc_medic
 	title = "USMC Field Medic"
 	rank_abbreviation = "Cpl."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/usmc_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -144,16 +146,17 @@
 /datum/job/american/usmc_marksman
 	title = "USMC Designated Marksman"
 	rank_abbreviation = "Spc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/american/usmc_marksman/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_marksman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -188,16 +191,16 @@
 /datum/job/american/usmc_lmg
 	title = "USMC Automatic Rifleman"
 	rank_abbreviation = "Spc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/usmc_lmg/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_lmg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -237,16 +240,17 @@
 /datum/job/american/usmc_soldier
 	title = "USMC Rifleman"
 	rank_abbreviation = "Pvt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 10
 	max_positions = 100
 
-/datum/job/american/usmc_soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/american/usmc_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -289,7 +293,7 @@
 	default_language = "Hebrew"
 	additional_languages = list("English" = 25, "Russian" = 25, "Arabic" = 10)
 
-/datum/job/american/idf/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/american/idf/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_hebrew_name(H.gender)
 	H.real_name = H.name
 	H.circumcised = TRUE
@@ -297,20 +301,20 @@
 	title = "Segen"
 	rank_abbreviation = "Seg."
 	en_meaning = "IDF Lieutenant"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_modernday = TRUE
 	is_radioman = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/american/idf/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -344,19 +348,21 @@
 	title = "Samal"
 	rank_abbreviation = "Sam."
 	en_meaning = "IDF Sergeant"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
+	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_radioman = TRUE
 	is_modernday = TRUE
 	can_get_coordinates = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/idf/sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -395,16 +401,17 @@
 	title = "Chovesh"
 	en_meaning = "IDF Field Medic"
 	rank_abbreviation = "Chovesh"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/idf/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -443,16 +450,17 @@
 	title = "Tzalaf"
 	en_meaning = "IDF Sniper"
 	rank_abbreviation = "Rav."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/idf/marksman/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/marksman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -488,16 +496,17 @@
 	title = "Miqla"
 	en_meaning = "IDF Squad LMG"
 	rank_abbreviation = "Rav."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/idf/lmg/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/lmg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -535,16 +544,17 @@
 	title = "Turai"
 	en_meaning = "IDF Private"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 10
 	max_positions = 100
 
-/datum/job/american/idf/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/american/idf/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -584,17 +594,19 @@
 	title = "Hezbollah Squad Leader"
 	en_meaning = ""
 	rank_abbreviation = "Leader"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+	is_squad_leader = TRUE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/arab/hezbollah/squad_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/hezbollah/squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -647,16 +659,17 @@
 	title = "Hezbollah Field Medic"
 	en_meaning = ""
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/arab/hezbollah/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/hezbollah/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -712,16 +725,17 @@
 	title = "Hezbollah Sniper"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 3
 	max_positions = 12
 
-/datum/job/arab/hezbollah/sniper/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/hezbollah/sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -774,16 +788,17 @@
 	title = "Hezbollah Soldier"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_coldwar = TRUE
 	is_modernday = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 12
 	max_positions = 120
 
-/datum/job/arab/hezbollah/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/hezbollah/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)

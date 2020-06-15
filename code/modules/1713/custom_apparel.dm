@@ -14,7 +14,7 @@
 			return
 		else
 			input = uppertext(input)
-			if (lentext(input) != 6)
+			if (length(input) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -48,7 +48,7 @@
 			return
 		else
 			input = uppertext(input)
-			if (lentext(input) != 6)
+			if (length(input) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -76,7 +76,7 @@
 			return
 		else
 			input = uppertext(input)
-			if (lentext(input) != 6)
+			if (length(input) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -120,6 +120,7 @@
 	icon_state = "customshendyt"
 	item_state = "customshendyt"
 	worn_state = "customshendyt"
+	heat_protection = LOWER_TORSO
 
 /obj/item/clothing/under/custom/celtic
 	name = "celtic trousers"
@@ -127,6 +128,7 @@
 	icon_state = "customceltic"
 	item_state = "customceltic"
 	worn_state = "customceltic"
+	heat_protection = LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/custom/toga/purple
 	name = "purple toga"
@@ -136,6 +138,7 @@
 	worn_state = "customtoga"
 	uncolored = FALSE
 	color = "#66023C"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO
 
 ///////////////MEDIEVAL//////////////////////////////////////
 /obj/item/clothing/under/custom/tunic
@@ -144,6 +147,7 @@
 	icon_state = "customtunic"
 	item_state = "customtunic"
 	worn_state = "customtunic"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/under/custom/haori
 	name = "haori"
@@ -165,6 +169,7 @@
 	icon_state = "customarabictunic"
 	item_state = "customarabictunic"
 	worn_state = "customarabictunic"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/suit/storage/jacket/custom/poncho
 	name = "poncho"
@@ -172,6 +177,7 @@
 	icon_state = "customponcho"
 	item_state = "customponcho"
 	worn_state = "customponcho"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/under/customren
 	name = "renaissance outfit"
@@ -197,7 +203,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -216,7 +222,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -267,7 +273,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -286,7 +292,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -304,7 +310,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -322,7 +328,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -378,7 +384,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -397,7 +403,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -415,7 +421,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -468,7 +474,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -487,7 +493,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -537,7 +543,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -556,7 +562,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -574,7 +580,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -626,7 +632,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -645,7 +651,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -681,6 +687,7 @@
 	item_state = "tribalrobe"
 	icon_state = "tribalrobe"
 	worn_state = "tribalrobe"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
 	New()
 		..()
@@ -696,7 +703,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -715,7 +722,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -748,11 +755,14 @@
 	desc = "A victorian Era uniform."
 	var/uncolored = FALSE
 	var/shirtcolor = 0
+	var/buttonscolor = 0
+	var/beltcolor = 0
+	var/bucklecolor = 0
 	var/pantscolor = 0
-	var/epaulettescolor = 0
 	item_state = "customuni"
 	icon_state = "customuni"
 	worn_state = "customuni"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
 	New()
 		..()
@@ -768,7 +778,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -781,13 +791,67 @@
 						return
 				shirtcolor = addtext("#",input)
 	//			user << "Color: [color]"
+		if (!buttonscolor)
+			var/input = input(user, "Buttons - Choose a hex color (without the #):", "Buttons Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (length(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				buttonscolor = addtext("#",input)
+		if (!beltcolor)
+			var/input = input(user, "Belt - Choose a hex color (without the #):", "Belt Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (length(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				beltcolor = addtext("#",input)
+		if (!bucklecolor)
+			var/input = input(user, "Buckle - Choose a hex color (without the #):", "Buckle Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (length(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				bucklecolor = addtext("#",input)
 		if (!pantscolor)
 			var/input = input(user, "Pants - Choose a hex color (without the #):", "Pants Color" , "FFFFFF")
 			if (input == null || input == "")
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -799,37 +863,23 @@
 					if (!(numtocheck in listallowed))
 						return
 				pantscolor = addtext("#",input)
-		if (!epaulettescolor)
-			var/input = input(user, "Epaulettes - Choose a hex color (without the #):", "Epaulettes Color" , "FFFFFF")
-			if (input == null || input == "")
-				return
-			else
-				input = uppertext(input)
-				if (lentext(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				epaulettescolor = addtext("#",input)
-		if (shirtcolor && pantscolor && epaulettescolor)
+		if (shirtcolor && buttonscolor && beltcolor && bucklecolor && pantscolor)
 			uncolored = FALSE
-			var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_pants")
-			pants.color = pantscolor
 			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_shirt")
 			shirt.color = shirtcolor
-			var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_over")
-			var/image/epaulettes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_epaulettes")
-			epaulettes.color = epaulettescolor
-			overlays += pants
+			var/image/buttons = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_buttons")
+			buttons.color = buttonscolor
+			var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_belt")
+			belt.color = beltcolor
+			var/image/buckle = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_buckle")
+			buckle.color = bucklecolor
+			var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_pants")
+			pants.color = pantscolor
 			overlays += shirt
+			overlays += buttons
 			overlays += belt
-			overlays += epaulettes
+			overlays += buckle
+			overlays += pants
 			return
 	else
 		..()
@@ -862,7 +912,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -881,7 +931,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -899,7 +949,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -942,7 +992,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -976,6 +1026,7 @@
 	icon_state = "modern_camo_custom"
 	worn_state = "modern_camo_custom"
 	color = "#FFFFFF"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	New()
 		..()
 		spawn(5)
@@ -990,7 +1041,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1008,7 +1059,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1026,7 +1077,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1073,7 +1124,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1154,7 +1205,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1201,7 +1252,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1220,7 +1271,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1271,7 +1322,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1290,7 +1341,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)
@@ -1334,7 +1385,7 @@
 				return
 			else
 				input = uppertext(input)
-				if (lentext(input) != 6)
+				if (length(input) != 6)
 					return
 				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 				for (var/i = 1, i <= 6, i++)

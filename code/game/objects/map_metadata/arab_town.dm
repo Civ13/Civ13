@@ -1,16 +1,15 @@
 /obj/map_metadata/arab_town
 	ID = MAP_ARAB_TOWN
-	title = "Arab Town (100x100x1)"
+	title = "Arab Town"
 	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/british,
 		list(ARAB) = /area/caribbean/arab
@@ -22,12 +21,12 @@
 	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within <b>40 minutes</b>!</font>"
 	faction1 = AMERICAN
 	faction2 = ARAB
-	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
+		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
-obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_modernday == TRUE && (istype(J, /datum/job/american/idf) || istype(J, /datum/job/arab/hezbollah)))
 		. = TRUE
@@ -153,16 +152,15 @@ var/no_loop_arab = FALSE
 
 /obj/map_metadata/arab_town_2
 	ID = MAP_ARAB_TOWN_2
-	title = "Arab Town II (70x90x1)"
+	title = "Arab Town II"
 	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/british,
 		list(ARAB) = /area/caribbean/arab
@@ -174,9 +172,9 @@ var/no_loop_arab = FALSE
 	mission_start_message = "<font size=4>Capture most of the town and hold the enemy base! The grace wall will go down in <b>6 minutes</b>.</font>"
 	faction1 = AMERICAN
 	faction2 = ARAB
-	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
+		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
 /obj/map_metadata/arab_town_2/job_enabled_specialcheck(var/datum/job/J)
@@ -199,18 +197,18 @@ var/no_loop_arab = FALSE
 	..()
 	switch (define)
 		if (ARAB)
-			return "Hezbollah"
+			return "Insurgent"
 /obj/map_metadata/arab_town/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (ARAB)
-			return "Hezbollah"
+			return "Insurgents"
 
 /obj/map_metadata/arab_town/army2name(army)
 	..()
 	switch (army)
-		if ("Hezbollah")
-			return "Hezbollah"
+		if ("Insurgents")
+			return "Insurgent"
 
 
 /obj/map_metadata/arab_town/cross_message(faction)

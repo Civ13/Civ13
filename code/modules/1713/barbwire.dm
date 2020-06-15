@@ -36,7 +36,7 @@
 	if (ismob(AM))
 		var/mob/M = AM
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			if (prob (33))
 				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
@@ -59,7 +59,7 @@
 			else
 				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
-				if (affecting.take_damage(15, FALSE))
+				if (affecting && affecting.take_damage(15, FALSE))
 					H.UpdateDamageIcon()
 				H.updatehealth()
 				if (!(H.species && (H.species.flags)))
@@ -97,7 +97,7 @@
 				return
 			else
 				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					var/obj/item/organ/external/affecting = null
 					if (istype(H.l_hand, /obj/item/weapon/material/knife))
 						affecting = H.get_organ("l_hand")

@@ -5,7 +5,7 @@
 	icon_state = "operating_table"
 	density = TRUE
 	anchored = 1.0
-	var/mob/living/carbon/human/victim = null
+	var/mob/living/human/victim = null
 	var/strapped = 0.0
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -61,8 +61,8 @@
 	return
 
 /obj/structure/optable/proc/check_victim()
-	if (locate(/mob/living/carbon/human, loc))
-		var/mob/living/carbon/human/M = locate(/mob/living/carbon/human, loc)
+	if (locate(/mob/living/human, loc))
+		var/mob/living/human/M = locate(/mob/living/human, loc)
 		if (M.lying)
 			return TRUE
 	victim = null
@@ -71,7 +71,7 @@
 /obj/structure/optable/process()
 	check_victim()
 
-/obj/structure/optable/proc/take_victim(mob/living/carbon/C, mob/living/carbon/user as mob)
+/obj/structure/optable/proc/take_victim(mob/living/human/C, mob/living/human/user as mob)
 	if (C == user)
 		user.visible_message("[user] climbs on \the [src].","You climb on \the [src].")
 	else
@@ -85,7 +85,7 @@
 /obj/structure/optable/MouseDrop_T(mob/target, mob/user)
 
 	var/mob/living/M = user
-	if (user.stat || user.restrained() || !check_table(user) || !iscarbon(target))
+	if (user.stat || user.restrained() || !check_table(user) || !ishuman(target))
 		return
 	if (istype(M))
 		take_victim(target,user)
@@ -102,15 +102,15 @@
 
 	take_victim(usr,usr)
 
-/obj/structure/optable/attackby(obj/item/weapon/W as obj, mob/living/carbon/user as mob)
+/obj/structure/optable/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = W
-		if (iscarbon(G.affecting) && check_table(G.affecting))
+		if (ishuman(G.affecting) && check_table(G.affecting))
 			take_victim(G.affecting,usr)
 			qdel(W)
 			return
 
-/obj/structure/optable/proc/check_table(mob/living/carbon/patient as mob)
+/obj/structure/optable/proc/check_table(mob/living/human/patient as mob)
 	check_victim()
 	if (victim && get_turf(victim) == get_turf(src) && victim.lying)
 		usr << "<span class='warning'>\The [src] is already occupied!</span>"
@@ -119,3 +119,18 @@
 		usr << "<span class='notice'>Unbuckle \the [patient] first!</span>"
 		return FALSE
 	return TRUE
+
+
+/obj/structure/medicalbed
+	name = "medical bed"
+	desc = "A bed that heals you up. The future is wonderful."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "operating_table"
+	anchored = TRUE
+	can_buckle = TRUE
+	buckle_dir = SOUTH
+	buckle_lying = TRUE
+	not_movable = FALSE
+	density = FALSE
+	opacity = FALSE
+	not_disassemblable = FALSE

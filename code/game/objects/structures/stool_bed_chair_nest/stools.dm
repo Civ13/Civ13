@@ -125,7 +125,7 @@ var/global/list/stool_cache = list() //haha stool
 			user << "\The [src] is already padded."
 			return
 		var/obj/item/stack/C = W
-		if (C.get_amount() < 1) // How??
+		if (C.amount < 1) // How??
 			user.drop_from_inventory(C)
 			qdel(C)
 			return

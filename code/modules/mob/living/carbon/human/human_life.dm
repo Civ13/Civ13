@@ -25,17 +25,18 @@
 
 //#define RADIATION_SPEED_COEFFICIENT 0.1
 
-/mob/living/carbon/human
+/mob/living/human
 	var/global/list/overlays_cache = null
 	var/heatDamageFromClothingTimer = 0
 	var/start_to_rot = FALSE
 	var/rotting_stage = 0
 
 	var/healing_stage = 0 //for beds
-/mob/living/carbon/human/Life()
+/mob/living/human/Life()
 
 	handle_zoom_stuff()
-
+	if (!map.civilizations && !map.nomads && !map.is_RP)
+		process_awards()
 	if (transforming)
 		return
 	if (werewolf + gorillaman + orc + ant + lizard + wolfman + crab > 1)
@@ -74,7 +75,15 @@
 	//TODO: seperate this out
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
-
+	if (map && map.nomads)
+		if (find_trait("Gigantism"))
+			size_multiplier = 1.3
+		else if (find_trait("Dwarfism"))
+			size_multiplier = 0.8
+		else if (find_trait("Short"))
+			size_multiplier = 0.9
+		else if (find_trait("Tall"))
+			size_multiplier = 1.1
 	if (riding && riding_mob)
 		if (!(riding_mob in range(1,src)))
 			riding = FALSE
@@ -109,14 +118,20 @@
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
 		healing_stage += 2
+
+	else if (istype(buckled, /obj/structure/medicalbed))
+		healing_stage += 0.5
 	else
 		healing_stage = 0
-	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
+	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable) || istype(buckled, /obj/structure/medicalbed)))
+		if (istype(buckled, /obj/structure/medicalbed))
+			rejuvenate()
+			src << "You feel much better."
 		healing_stage = 0
 		if (getBruteLoss() >= 15)
 			adjustBruteLoss(-2)
 			if (halloss > 40)
-				adjustHalLoss(-10)
+				adjustHalLoss(-30)
 
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
@@ -124,16 +139,20 @@
 	if (has_hunger_and_thirst)
 		var/water_m = 1
 		var/food_m = 1
+		if (find_trait("Gigantism"))
+			food_m *= 1.2
+		else if (find_trait("Dwarfism"))
+			food_m *= 0.8
 		if (orc)
-			food_m = 1.5
+			food_m *= 1.5
 		if (crab)
-			food_m = 0.8
-			water_m = 2.5
+			food_m *= 0.8
+			water_m *= 2.5
 		if (gorillaman)
-			water_m = 0.2
+			water_m *= 0.2
 		if (istype(buckled, /obj/structure/cross))
-			food_m = 1.5
-			water_m = 5
+			food_m *= 1.5
+			water_m *= 5
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
 			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
@@ -150,7 +169,6 @@
 				if (UNCONSCIOUS) // takes over an hour to starve
 					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
 					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
-			mood -= 0.02
 		else
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
@@ -159,6 +177,27 @@
 				if (UNCONSCIOUS) // takes over an hour to starve
 					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
 					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
+		if (find_trait("Extroverted"))
+			if (prob(20))
+				var/ct = 0
+				for(var/mob/living/human/HM in range(3,src))
+					if (HM.stat != DEAD)
+						ct++
+				if (ct)
+					mood += 0.12
+				else
+					mood -= 0.8
+		else if (find_trait("Introverted"))
+			if (prob(20))
+				var/ct = 0
+				for(var/mob/living/human/HM in range(3,src))
+					if (HM.stat != DEAD)
+						ct++
+				if (!ct)
+					mood += 0.12
+				else
+					mood -= 0.8
+		if (!inducedSSD)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats && stats.len)
@@ -436,26 +475,68 @@
 				bodytemperature = 310.055
 				src << "You feel much better now! The disease is finally gone!"
 				disease_treatment = 0
+		else if (disease_type == "zombie")
+			mood -= 0.15
+			if (!disease_treatment)
+				disease_progression += 0.5
+			else
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+
+			if (disease_progression == 25)
+				src << "You feel your temperature rising."
+				apply_effect(10, DROWSY, FALSE)
+				bodytemperature = 311.35
+			if (prob(1))
+				apply_effect(7, DROWSY, FALSE)
+			else if (disease_progression >= 60 && disease_progression < 140 && prob(10))
+				src << pick("You feel like your fever is getting worse!","Your head hurts so much!")
+				adjustBrainLoss(rand(2,3))
+				apply_effect(8, AGONY, FALSE)
+				bodytemperature = 313.15
+			else if (disease_progression >= 140 && disease_progression < 200 && prob(1) && !disease_treatment)
+				adjustBrainLoss(rand(7,10))
+				src << "<big>[pick("You feel your body burning up!","Your head is pounding!")]</big>"
+				apply_effect(12, AGONY, FALSE)
+				bodytemperature = 314.15
+
+			else if (disease_progression >= 200 && disease_progression < 240 && prob(8) && !disease_treatment)
+				src << "You feel your fever going down."
+				adjustBrainLoss(rand(4,6))
+				apply_effect(6, DROWSY, FALSE)
+				bodytemperature = 313.35
+			else if (disease_progression >= 240 && prob(50))
+				adjustBrainLoss(200)
+				var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
+				playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
+				visible_message("<big>[src] turns into a zombie!</big>")
+				//transferring vars.
+				playerzombie.loc = loc
+				playerzombie.name = "[real_name]'s zombie"
+				strip()
+
 
 	if (disease == TRUE)
-		if (!disease_type in disease_immunity)
-			//Do nothing
-		else
+		if (disease_type in disease_immunity)
 			disease = FALSE
-			disease_type = ""
+			disease_type = "none"
 			disease_progression = 0
 			disease_treatment = 0
 
-		for (var/mob/living/carbon/human/H in range(2,src))
-			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria") //malaria doesn't transmit from person to person.
+		for (var/mob/living/human/H in range(2,src))
+			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria" && !disease_type == "zombie") //malaria doesn't transmit from person to person.
 				if (stat != DEAD)
-					if (prob(1))
+					if (prob(1) || (prob(2) && find_trait("Weak Immune System")))
 						disease = TRUE
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
 				else if (stat == DEAD)
-					if (prob(3))
+					if (prob(3) || (prob(6) && find_trait("Weak Immune System")))
 						disease = TRUE
 						disease_type = H.disease_type
 						disease_progression = 0
@@ -463,7 +544,7 @@
 
 		if (disease == FALSE)
 			if (prob(1) && map.civilizations)
-				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
+				if ((prob(20) || (prob(40) && find_trait("Weak Immune System"))) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
@@ -521,6 +602,7 @@
 		if (!client)
 			species.handle_npc(src)
 	process_roofs()
+	process_static_roofs()
 
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
@@ -528,23 +610,26 @@
 	//Update our name based on whether our face is obscured/disfigured
 	name = get_visible_name()
 
-/mob/living/carbon/human/proc/handle_hair_growth() //hair will increase in size every ~16.666 mins
+/mob/living/human/proc/handle_hair_growth() //hair will increase in size every ~16.666 mins
 	if (gender == MALE)
 		var/currh = h_growth
 		var/currf = f_growth
-		if (h_growth < 4)
+		if (h_growth < 4 && !find_trait("Baldness"))
 			h_growth += 0.002
 		if (f_growth < 4)
 			f_growth += 0.002
-
-		if (h_growth >= 1 && currh < 1)
-			h_style = pick("Short Hair","Cut Hair","Skinhead")
-		else if (h_growth >= 2 && currh < 2)
-			h_style = pick("Parted","Bedhead","Bedhead 2","Bedhead 3","Mulder")
-		else if (h_growth >= 3 && currh < 3)
-			h_style = pick("Shoulder-length Hair","Dreadlocks","Long Emo","Gentle")
-		else if (h_growth >= 4 && currh < 4)
-			h_style = "Hime Cut"
+		if (find_trait("Baldness"))
+			h_growth = 0
+			h_style = "Bald"
+		else
+			if (h_growth >= 1 && currh < 1)
+				h_style = pick("Short Hair","Cut Hair","Skinhead")
+			else if (h_growth >= 2 && currh < 2)
+				h_style = pick("Parted","Bedhead","Bedhead 2","Bedhead 3","Mulder")
+			else if (h_growth >= 3 && currh < 3)
+				h_style = pick("Shoulder-length Hair","Dreadlocks","Long Emo","Gentle")
+			else if (h_growth >= 4 && currh < 4)
+				h_style = "Hime Cut"
 
 		if (f_growth >= 1 && currf < 1)
 			f_style = "Chinstrap"
@@ -573,12 +658,12 @@
 		return
 
 
-/mob/living/carbon/human/proc/handle_some_updates()
+/mob/living/human/proc/handle_some_updates()
 	if (life_tick > 5 && timeofdeath && (timeofdeath < 5 || world.time - timeofdeath > 6000))	//We are long dead, or we're junk mobs spawned
 		return FALSE
 	return TRUE
 
-/mob/living/carbon/human/handle_disabilities()
+/mob/living/human/handle_disabilities()
 	..()
 	//Vision
 	var/obj/item/organ/vision
@@ -587,169 +672,36 @@
 
 	if (!species.vision_organ) // Presumably if a species has no vision organs, they see via some other means.
 		eye_blind =  0
-		blinded =    0
+		blinded =	0
 		eye_blurry = 0
-	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
+	else if (!vision || (vision && vision.is_broken()) || istype(eyes,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
 		eye_blind =  1
-		blinded =    1
+		blinded =	1
 		eye_blurry = 1
 
-/mob/living/carbon/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
+/mob/living/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
 	if (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
 	if (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
 	..()
 
-/mob/living/carbon/human/handle_environment()
+/mob/living/human/handle_environment()
 
 	var/loc_temp = 20
 	var/area/mob_area = get_area(src)
 
 	if (!mob_area)
 		return
-	switch (season)
-		if ("WINTER")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = -29
-				if ("sea")
-					loc_temp = -11
-				if ("tundra")
-					loc_temp = -60
-				if ("taiga")
-					loc_temp = -53
-				if ("semiarid")
-					loc_temp = 0
-				if ("desert")
-					loc_temp = 32
-				if ("jungle")
-					loc_temp = 30
-				if ("savanna")
-					loc_temp = 27
 
-		if ("FALL")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 7
-				if ("sea")
-					loc_temp = 11
-				if ("tundra")
-					loc_temp = -50
-				if ("taiga")
-					loc_temp = -35
-				if ("semiarid")
-					loc_temp = 12
-				if ("desert")
-					loc_temp = 34
-				if ("jungle")
-					loc_temp = 32
-				if ("savanna")
-					loc_temp = 29
+	loc_temp = get_temp(src)
 
-		if ("SUMMER")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 30
-				if ("sea")
-					loc_temp = 23
-				if ("tundra")
-					loc_temp = -25
-				if ("taiga")
-					loc_temp = -10
-				if ("semiarid")
-					loc_temp = 35
-				if ("desert")
-					loc_temp = 50
-				if ("jungle")
-					loc_temp = 40
-				if ("savanna")
-					loc_temp = 35
-
-		if ("SPRING")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 10
-				if ("sea")
-					loc_temp = 14
-				if ("tundra")
-					loc_temp = -35
-				if ("taiga")
-					loc_temp = -15
-				if ("semiarid")
-					loc_temp = 28
-				if ("desert")
-					loc_temp = 40
-				if ("jungle")
-					loc_temp = 34
-				if ("savanna")
-					loc_temp = 29
-		if ("Dry Season")
-			loc_temp = 45
-		if ("Wet Season")
-			loc_temp = 30
-
-
-	switch (time_of_day)
-		if ("Midday")
-			loc_temp *= 1.03
-		if ("Afternoon")
-			loc_temp *= 1.02
-		if ("Morning")
-			loc_temp *= 1.01
-		if ("Evening")
-			loc_temp *= 1.00 // default
-		if ("Early Morning")
-			loc_temp *= 0.99
-		if ("Night")
-			loc_temp *= 0.97
-
-	switch (mob_area.weather)
-		if (WEATHER_NONE)
-			loc_temp *= 1.00
-		if (WEATHER_SNOW)
-			switch (mob_area.weather_intensity)
-				if (1.0)
-					loc_temp *= 0.87
-				if (2.0)
-					loc_temp *= 0.86
-				if (3.0)
-					loc_temp *= 0.85
-		if (WEATHER_RAIN)
-			switch (mob_area.weather_intensity)
-				if (1.0)
-					loc_temp *= 0.99
-				if (2.0)
-					loc_temp *= 0.97
-				if (3.0)
-					loc_temp *= 0.95
-		if (WEATHER_BLIZZARD)
-			loc_temp = -82
-		if (WEATHER_SANDSTORM)
-			loc_temp = 60
-	loc_temp = round(loc_temp)
-
-	for (var/obj/structure/brazier/BR in range(3, src))
-		if (BR.on == TRUE)
-			if (loc_temp < 22)
-				loc_temp = 22
-				break
-	for (var/obj/structure/heatsource/HS in range(3, src))
-		if (HS.on == TRUE)
-			if (loc_temp < 22)
-				loc_temp = 22
-				break
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
-	//inside areas have natural insulation, so the temp will be more moderate than outside.
-	if (mob_area.location == AREA_INSIDE)
-		if (loc_temp > 22)
-			loc_temp = (max(22,loc_temp-40))
-		else if (loc_temp < 18)
-			loc_temp = (min(18,loc_temp+40))
+
 	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13 || map.ID == MAP_COLONY) && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 
@@ -790,6 +742,9 @@
 	if (map && map.civilizations)
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
+
+//this is handled in the get_environment_discomfort.
+/*
 	if (bodytemperature >= species.heat_level_1 && !orc)
 		//Body temperature is too hot.
 
@@ -816,12 +771,11 @@
 			if (species.cold_level_2 to species.cold_level_1)
 				burn_dam = COLD_DAMAGE_LEVEL_1
 		take_overall_damage(burn=burn_dam, used_weapon = "Low Body Temperature")
+*/
 
-
-	// tell src they're dying
 	species.get_environment_discomfort(src)
 
-/mob/living/carbon/human/proc/stabilize_body_temperature()
+/mob/living/human/proc/stabilize_body_temperature()
 
 	var/body_temperature_difference = species.body_temperature - bodytemperature
 
@@ -839,7 +793,7 @@
 		bodytemperature -= 0.1
 
 //This proc returns a number made up of the flags for body parts which you are protected on. (such as HEAD, UPPER_TORSO, LOWER_TORSO, etc. See setup.dm for the full list)
-/mob/living/carbon/human/proc/get_heat_protection_flags(temperature) //Temperature is the temperature you're being exposed to.
+/mob/living/human/proc/get_heat_protection_flags(temperature) //Temperature is the temperature you're being exposed to.
 	. = FALSE
 	//Handle normal clothing
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
@@ -848,7 +802,7 @@
 				. |= C.heat_protection
 
 //See proc/get_heat_protection_flags(temperature) for the description of this proc.
-/mob/living/carbon/human/proc/get_cold_protection_flags(temperature)
+/mob/living/human/proc/get_cold_protection_flags(temperature)
 	. = FALSE
 	//Handle normal clothing
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
@@ -856,17 +810,17 @@
 			if (C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
 				. |= C.cold_protection
 
-/mob/living/carbon/human/get_heat_protection(temperature) //Temperature is the temperature you're being exposed to.
+/mob/living/human/get_heat_protection(temperature) //Temperature is the temperature you're being exposed to.
 	var/thermal_protection_flags = get_heat_protection_flags(temperature)
 	return get_thermal_protection(thermal_protection_flags)
 
-/mob/living/carbon/human/get_cold_protection(temperature)
+/mob/living/human/get_cold_protection(temperature)
 
 	temperature = max(temperature, 2.7) //There is an occasional bug where the temperature is miscalculated in ares with a small amount of gas on them, so this is necessary to ensure that that bug does not affect this calculation. Space's temperature is 2.7K and most suits that are intended to protect against any cold, protect down to 2.0K.
 	var/thermal_protection_flags = get_cold_protection_flags(temperature)
 	return get_thermal_protection(thermal_protection_flags)
 
-/mob/living/carbon/human/proc/get_thermal_protection(var/flags)
+/mob/living/human/proc/get_thermal_protection(var/flags)
 	.=0
 	if (flags)
 		if (flags & HEAD)
@@ -893,7 +847,7 @@
 			. += THERMAL_PROTECTION_HAND_RIGHT
 	return min(1,.)
 
-/mob/living/carbon/human/handle_chemicals_in_body()
+/mob/living/human/handle_chemicals_in_body()
 	if (reagents)
 		chem_effects.Cut()
 		analgesic = FALSE
@@ -931,7 +885,7 @@
 
 	return //TODO: DEFERRED
 
-/mob/living/carbon/human/handle_regular_status_updates()
+/mob/living/human/handle_regular_status_updates()
 	if (!handle_some_updates())
 		return FALSE
 
@@ -989,7 +943,7 @@
 				embedded_flag = FALSE
 
 		//Ears
-		if (sdisabilities & DEAF)	//disabled-deaf, doesn't get better on its own
+		if ((sdisabilities & DEAF) || find_trait("Deaf"))	//disabled-deaf, doesn't get better on its own
 			ear_deaf = max(ear_deaf, TRUE)
 		else if (ear_deaf)			//deafness, heals slowly over time
 			ear_deaf = max(ear_deaf-1, FALSE)
@@ -1027,7 +981,7 @@
 
 	return TRUE
 
-/mob/living/carbon/human/handle_regular_hud_updates()
+/mob/living/human/handle_regular_hud_updates()
 	for (var/obj/screen/H in HUDprocess)
 //		var/obj/screen/B = H
 		H.process()
@@ -1068,7 +1022,7 @@
 
 	return TRUE
 
-/mob/living/carbon/human/handle_random_events()
+/mob/living/human/handle_random_events()
 
 	// Puke if toxloss is too high
 	if (!stat)
@@ -1081,13 +1035,13 @@
 		if (T.get_lumcount() == 0)
 			playsound_local(src,pick(scarySounds),50, TRUE, -1)*/s
 
-/mob/living/carbon/human/handle_stomach()
+/mob/living/human/handle_stomach()
 	spawn(0)
 		for (var/mob/living/M in stomach_contents)
 			if (M.loc != src)
 				stomach_contents.Remove(M)
 				continue
-			if (iscarbon(M)|| isanimal(M))
+			if (ishuman(M)|| isanimal(M))
 				if (M.stat == 2)
 					M.death(1)
 					stomach_contents.Remove(M)
@@ -1123,9 +1077,9 @@
 #define STARVATION_TOX_DAMAGE 2.5
 #define STARVATION_BRAIN_DAMAGE 2.5
 
-/mob/living/carbon/human/var/list/informed_starvation[4]
+/mob/living/human/var/list/informed_starvation[4]
 
-/mob/living/carbon/human/proc/handle_starvation()//Making this it's own proc for my sanity's sake - Matt
+/mob/living/human/proc/handle_starvation()//Making this it's own proc for my sanity's sake - Matt
 
 	if (nutrition < 220 && nutrition >= 150)
 		if (prob(3))
@@ -1244,9 +1198,9 @@
 #define DEHYDRATION_TOX_DAMAGE 2.5
 #define DEHYDRATION_BRAIN_DAMAGE 2.5
 
-/mob/living/carbon/human/var/list/informed_dehydration[4]
+/mob/living/human/var/list/informed_dehydration[4]
 
-/mob/living/carbon/human/proc/handle_dehydration()//Making this it's own proc for my sanity's sake - Matt
+/mob/living/human/proc/handle_dehydration()//Making this it's own proc for my sanity's sake - Matt
 
 	if (water < 200 && water >= 150)
 		if (prob(3))
@@ -1356,7 +1310,7 @@
 				if (prob(10))
 					Weaken(15)
 
-/mob/living/carbon/human/proc/handle_shock()
+/mob/living/human/proc/handle_shock()
 	..()
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (species && species.flags & NO_PAIN) return
@@ -1414,9 +1368,13 @@
 		spawn(1200)
 			if (getBruteLoss() >= 150)
 				death()
-/mob/living/carbon/human/proc/handle_hud_list()
-
-	if (original_job && never_set_faction_huds)
+/mob/living/human/proc/handle_hud_list()
+	if (stat == DEAD)
+		hud_list[BASE_FACTION].icon_state = ""
+		hud_list[BASE_FACTION].overlays.Cut()
+		hud_list[FACTION_TO_ENEMIES].icon_state = ""
+		hud_list[FACTION_TO_ENEMIES].overlays.Cut()
+	if (original_job && never_set_faction_huds && stat != DEAD)
 
 		never_set_faction_huds = FALSE
 
@@ -1431,7 +1389,8 @@
 			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					holder2.icon_state = "pirate_basic"
+					if (map && !map.battleroyale)
+						holder2.icon_state = "pirate_basic"
 				if (BRITISH)
 					if (map.ordinal_age >= 4)
 						holder2.icon_state = "brit_basic"
@@ -1518,20 +1477,28 @@
 						holder2.icon_state = ""
 					if (map.ID == MAP_TSARITSYN)
 						holder2.icon_state = "sov_basic"
-
+			holder2.overlays.Cut()
+			if (original_job.uses_squads && squad > 0)
+				holder2.overlays += icon(holder2.icon,"squad_[squad]")
+			if (original_job.is_commander)
+				holder2.overlays += icon(holder2.icon,"commander")
+			else if (original_job.is_officer || original_job.is_squad_leader)
+				holder2.overlays += icon(holder2.icon,"officer")
+			else if (original_job.is_medic)
+				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2
 
-/mob/living/carbon/human/handle_silent()
+/mob/living/human/handle_silent()
 	if (..())
 		speech_problem_flag = TRUE
 	return silent
 
-/mob/living/carbon/human/handle_slurring()
+/mob/living/human/handle_slurring()
 	if (..())
 		speech_problem_flag = TRUE
 	return slurring
 
-/mob/living/carbon/human/handle_stunned()
+/mob/living/human/handle_stunned()
 	if (species.flags & NO_PAIN)
 		stunned = FALSE
 		return FALSE
@@ -1539,12 +1506,12 @@
 		speech_problem_flag = TRUE
 	return stunned
 
-/mob/living/carbon/human/handle_stuttering()
+/mob/living/human/handle_stuttering()
 	if (..())
 		speech_problem_flag = TRUE
 	return stuttering
 
-/mob/living/carbon/human/handle_fire()
+/mob/living/human/handle_fire()
 	if (..())
 		return
 
@@ -1554,13 +1521,13 @@
 	if (thermal_protection < 1 && bodytemperature < burn_temperature)
 		bodytemperature += round(BODYTEMP_HEATING_MAX*(1-thermal_protection), TRUE)
 
-/mob/living/carbon/human/rejuvenate()
+/mob/living/human/rejuvenate()
 	restore_blood()
 	shock_stage = 0
 	traumatic_shock = 0
 	..()
 
-/mob/living/carbon/human/handle_vision()
+/mob/living/human/handle_vision()
 
 	if (client)
 		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal)
@@ -1579,13 +1546,13 @@
 	update_equipment_vision()
 	species.handle_vision(src)
 
-/mob/living/carbon/human/update_sight()
+/mob/living/human/update_sight()
 	..()
 	if (stat == DEAD)
 		return
 
-/mob/living/carbon/human/proc/do_rotting()
-	if (!map.civilizations)
+/mob/living/human/proc/do_rotting()
+	if (map && !map.civilizations && !istype(src, /mob/living/human/corpse))
 		return
 	spawn(600)
 		if (stat == DEAD)
@@ -1597,10 +1564,26 @@
 						if (stat == DEAD)
 							visible_message("[src]'s body is visibly rotten!")
 							rotting_stage = 2
+							if (isturf(loc))
+								new/mob/living/simple_animal/crow(loc)
 							spawn(2000)
 								if (stat == DEAD)
-									var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
-									HR.name = "[src]'s remains"
+									var/found = FALSE
+									for (var/obj/item/organ/external/head/H in organs)
+										found = TRUE
+										break
+									if (map.ID == MAP_NOMADS_WASTELAND_2 && found)
+										var/mob/living/simple_animal/hostile/zombie/playerzombie //make a var for the zombie
+										playerzombie = new /mob/living/simple_animal/hostile/zombie/ //make a zombie!
+										//transferring vars.
+										playerzombie.loc = loc
+										playerzombie.name = "[real_name]'s zombie"
+										strip()
+									else
+										if (!istype(src, /mob/living/human/corpse))
+											var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+											HR.name = "[src]'s remains"
+											strip()
 									qdel(src)
 									return
 								else
@@ -1610,7 +1593,7 @@
 				else
 					return
 
-/mob/living/carbon/human/proc/ssd_hiding(var/timer = 10)
+/mob/living/human/proc/ssd_hiding(var/timer = 10)
 	if (!map.civilizations)
 		return
 	if (timer <= 0)
@@ -1625,7 +1608,7 @@
 				invisibility = 0
 				return
 
-/mob/living/carbon/human/proc/buried_proc()
+/mob/living/human/proc/buried_proc()
 	if (buriedalive)
 		spawn(300)
 			if (buriedalive && stat != DEAD)
@@ -1633,7 +1616,7 @@
 				src << "<span class='danger'>You can't breathe!</span>"
 
 
-/mob/living/carbon/human/proc/process_addictions(drug = null, value = 0)
+/mob/living/human/proc/process_addictions(drug = null, value = 0)
 	if (!drug || value == 0)
 		return
 	else
@@ -1785,14 +1768,14 @@
 							make_dizzy(6) // It is decreased at the speed of 3 per tick
 						return
 
-/mob/living/carbon/human/proc/instadeath_check()
+/mob/living/human/proc/instadeath_check()
 	if (getBrainLoss() > 60 || getTotalDmg() > 150)
 		death()
 		return
 	else
 		return
 
-/mob/living/carbon/human/proc/handle_embedded_objects()
+/mob/living/human/proc/handle_embedded_objects()
 
 	for (var/obj/item/organ/external/organ in organs)
 		if (organ.status & ORGAN_SPLINTED) //Splints prevent movement.

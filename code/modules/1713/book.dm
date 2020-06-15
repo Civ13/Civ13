@@ -23,7 +23,7 @@
 	else
 		user << "This book is completely blank!"
 
-/obj/item/weapon/book/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+/obj/item/weapon/book/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/book))
 		var/obj/item/weapon/book/B = W
 		if (!B.author && user.religious_clergy == "Monks")
@@ -109,7 +109,7 @@
 	return
 
 /obj/item/weapon/book/proc/show_content(var/mob/user, var/forceshow=0)
-	if (!(istype(user, /mob/living/carbon/human) || isghost(user) && !forceshow))
+	if (!(istype(user, /mob/living/human) || isghost(user) && !forceshow))
 		user << browse("<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[stars(dat)]</BODY></HTML>", "window=[name]")
 		onclose(user, "[name]")
 	else
@@ -140,7 +140,6 @@
 	return (user && user.real_name) ? user.real_name : "Anonymous"
 
 /obj/item/weapon/book/proc/parsepencode(var/t, var/obj/item/weapon/pen/P, mob/user as mob)
-	t = cp1251_to_utf8(t)
 
 	t = replacetext(t, "\[center\]", "<center>")
 	t = replacetext(t, "\[/center\]", "</center>")

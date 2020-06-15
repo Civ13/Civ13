@@ -33,7 +33,7 @@
 	emote_hear = list("cheeps")
 	emote_see = list("pecks at the ground","flaps its tiny wings")
 	speak_chance = 2
-	turns_per_move = 2
+	move_to_delay = 2
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = TRUE
 	response_help  = "pets"
@@ -84,7 +84,7 @@
 	emote_hear = list("clucks")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 2
 	response_help  = "pets"
@@ -100,6 +100,7 @@
 	mob_size = MOB_SMALL
 	granivore = 1
 	behaviour = "wander"
+	wandersounds = list('sound/animals/bird/chicken_1.ogg','sound/animals/bird/chicken_2.ogg')
 
 /mob/living/simple_animal/chicken/New()
 	..()
@@ -203,7 +204,7 @@
 	emote_hear = list("clucks")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 2
 	response_help  = "pets"
@@ -218,7 +219,15 @@
 	mob_size = MOB_SMALL
 	granivore = 1
 	behaviour = "wander"
-
+	wandersounds = list('sound/animals/bird/chicken_1.ogg','sound/animals/bird/chicken_2.ogg')
+	var/announced_day = TRUE
+/mob/living/simple_animal/rooster/Life()
+	..()
+	if (time_of_day == "Early Morning" && !announced_day)
+		playsound(src, 'sound/animals/bird/rooster.ogg', 60)
+		announced_day = TRUE
+	else if (time_of_day != "Early Morning" && announced_day)
+		announced_day = FALSE
 /mob/living/simple_animal/rooster/New()
 	..()
 	if (!body_color)
@@ -253,7 +262,7 @@
 	emote_hear = list("gubles")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -267,6 +276,7 @@
 	var/egg_timer = FALSE
 	granivore = 1
 	behaviour = "wander"
+	wandersounds = list('sound/animals/turkey/turkey_1.ogg','sound/animals/turkey/turkey_2.ogg','sound/animals/turkey/turkey_3.ogg')
 
 /mob/living/simple_animal/turkey_m
 	name = "\improper turkey"
@@ -279,7 +289,7 @@
 	emote_hear = list("gubles")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -292,6 +302,7 @@
 	mob_size = MOB_MEDIUM
 	granivore = 1
 	behaviour = "wander"
+	wandersounds = list('sound/animals/turkey/turkey_1.ogg','sound/animals/turkey/turkey_2.ogg','sound/animals/turkey/turkey_3.ogg')
 
 /mob/living/simple_animal/goose
 	name = "\improper goose"
@@ -304,7 +315,7 @@
 	emote_hear = list("honks")
 	emote_see = list("pecks at the ground","flaps its wings viciously")
 	speak_chance = 2
-	turns_per_move = 3
+	move_to_delay = 3
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 3
 	response_help  = "pets"
@@ -320,6 +331,91 @@
 	melee_damage_lower = 3
 	melee_damage_upper = 7
 
+/mob/living/simple_animal/pelican
+	name = "\improper pelican"
+	desc = "A common sea bird."
+	icon_state = "pelican-filled"
+	icon_living = "pelican-filled"
+	icon_dead = "pelican-dead"
+	speak = list("GRUNT!","KRRR KRRR!")
+	speak_emote = list("gruntss","hisses")
+	emote_hear = list("grunts")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	move_to_delay = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 12
+	harm_intent_damage = 7
+	pass_flags = PASSTABLE
+	mob_size = MOB_MEDIUM
+	granivore = 1
+	behaviour = "defends"
+	melee_damage_lower = 3
+	melee_damage_upper = 7
+
+/mob/living/simple_animal/seagull
+	name = "\improper seagull"
+	desc = "A common sea bird."
+	icon_state = "gull"
+	icon_living = "gull"
+	icon_dead = "gull-dead"
+	speak = list("squak!","SQUAK SQUAK!")
+	speak_emote = list("squaks")
+	emote_hear = list("squaks")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	move_to_delay = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 12
+	harm_intent_damage = 7
+	pass_flags = PASSTABLE
+	mob_size = MOB_MEDIUM
+	granivore = 1
+	scavenger = 1
+	behaviour = "wander"
+	melee_damage_lower = 2
+	melee_damage_upper = 4
+
+/mob/living/simple_animal/crow
+	name = "\improper crow"
+	desc = "A common scavenger bird."
+	icon_state = "crow"
+	icon_living = "crow"
+	icon_dead = "crow_dead"
+	speak = list("caw caw!","CA-CAW CA-CAW!")
+	speak_emote = list("caws")
+	emote_hear = list("caws")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	move_to_delay = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 12
+	harm_intent_damage = 7
+	pass_flags = PASSTABLE
+	mob_size = MOB_MEDIUM
+	granivore = 1
+	carnivore = 1
+	scavenger = 1
+	behaviour = "wander"
+	melee_damage_lower = 3
+	melee_damage_upper = 7
+	wandersounds = list('sound/animals/bird/crow_1.ogg','sound/animals/bird/crow_2.ogg','sound/animals/bird/crow_3.ogg')
+
 /mob/living/simple_animal/turkeychick
 	name = "\improper turkey chick"
 	desc = "Adorable! They make such a racket though."
@@ -332,7 +428,7 @@
 	emote_hear = list("cheeps")
 	emote_see = list("pecks at the ground","flaps its tiny wings")
 	speak_chance = 2
-	turns_per_move = 2
+	move_to_delay = 2
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = TRUE
 	response_help  = "pets"

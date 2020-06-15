@@ -73,7 +73,7 @@
 		if (istype(target, /obj/structure/pot))
 			return
 
-		if (istype(target, /obj/item/weapon/sandbag))
+		if (istype(target, /obj/item/weapon/barrier))
 			return
 
 		if (!is_open_container() || !flag)
@@ -428,7 +428,7 @@
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank
 	name = "large fueltank"
 	desc = "A metalic fueltank. Used to connect to a engine and supply it with fuel."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "fueltank_large"
 	amount_per_transfer_from_this = 10
 	volume = 250
@@ -487,6 +487,22 @@
 				var/amount_to_transfer = current.volume * part
 				reagents.remove_reagent(current.id, amount_to_transfer, TRUE)
 
+/obj/item/weapon/reagent_containers/glass/barrel/jerrycan
+	name = "steel jerrycan"
+	desc = "A steel jerrycan. Good for transporting fuel."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "jerrycan"
+	amount_per_transfer_from_this = 30
+	volume = 150
+	density = FALSE
+/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline
+	New()
+		..()
+		reagents.add_reagent("gasoline",150)
+/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel
+	New()
+		..()
+		reagents.add_reagent("diesel",150)
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
 	name = "small fueltank"
 	icon_state = "fueltank_small"
@@ -501,6 +517,11 @@
 	name = "50u motorcycle fueltank"
 	icon_state = "fueltank_bike"
 	volume = 50
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike/full
+	New()
+		..()
+		reagents.add_reagent("gasoline",50)
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike75
 	name = "75u motorcycle fueltank"

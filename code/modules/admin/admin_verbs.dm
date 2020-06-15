@@ -12,11 +12,12 @@ var/list/admin_verbs_default = list(
 	/client/proc/see_world_realtime,
 	/client/proc/see_processes,
 	/client/proc/getserverlog,			//allows us to fetch server logs (diary) for other days,
-	/client/proc/getruntimelog                     // allows us to access runtime logs to somebody,
+	/client/proc/getruntimelog					 // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
 	/client/proc/enable_fov,
 	/client/proc/disable_fov,
+	/client/proc/remove_dead_bodies,
 	/client/proc/enable_approved_only,
 	/client/proc/disable_approved_only,
 	/client/proc/enable_whitelist,
@@ -53,8 +54,7 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/show_player_info,
 	/client/proc/free_slot,			//frees slot for chosen job,
 	/client/proc/cmd_admin_change_custom_event,
-	/client/proc/allow_character_respawn,    // Allows a ghost to respawn ,
-	/client/proc/reset_roundstart_autobalance,
+	/client/proc/allow_character_respawn,	// Allows a ghost to respawn ,
 	/datum/admins/proc/ic_announce,
 	/client/proc/change_human_appearance_admin,	// Allows an admin to change the basic appearance of human-based mobs ,
 	/client/proc/change_human_appearance_self,	// Allows the human-based mob itself change its basic appearance ,
@@ -63,6 +63,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/reset_all_grace_periods,
 	/client/proc/faction_species,
 	/datum/admins/proc/paralyze_mob,
+	/datum/admins/proc/punish,
 	/client/proc/toggle_jobs,
 	/client/proc/toggle_factions,
 	/client/proc/forcibly_enable_faction,
@@ -90,7 +91,6 @@ var/list/admin_verbs_trialadmin = list(
 	/client/proc/trigger_roundend,
 	/datum/admins/proc/immreboot,
 	/client/proc/Jump,
-	/client/proc/jumptomob,
 	/client/proc/jumptocoord,
 	/datum/admins/proc/ic_announce,
 	/client/proc/start_epochswap_vote,
@@ -158,7 +158,6 @@ var/list/admin_verbs_debug = list(
 	/client/proc/callproc,
 	/client/proc/callproc_target,
 	/client/proc/Jump,
-	/client/proc/jumptomob,
 	/client/proc/jumptocoord,
 	/client/proc/dsay,
 	/client/proc/change_time_of_day,
@@ -166,9 +165,12 @@ var/list/admin_verbs_debug = list(
 	/client/proc/change_wind_spd,
 	/client/proc/randomly_change_weather,
 	/client/proc/randomly_modify_weather,
+	/client/proc/change_season,
 	/client/proc/change_colour_filter,
 	/datum/admins/proc/print_chemical_reactions,
 	/datum/admins/proc/print_crafting_recipes,
+	/datum/admins/proc/redirect_all_players,
+	/client/proc/ticklag,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(
@@ -251,7 +253,6 @@ var/list/admin_verbs_mod = list(
 	/client/proc/jumptocoord,			//we ghost and jump to a coordinate,
 	/client/proc/Jump,
 	/client/proc/jumptokey,				//allows us to jump to the location of a mob with a certain ckey,
-	/client/proc/jumptomob,				//allows us to jump to a specific mob,
 	/client/proc/jumptoturf,			//allows us to jump to a specific turf,
 	/client/proc/cmd_admin_pm_context,	// right-click adminPM interface,
 	/client/proc/cmd_admin_pm_panel,	// admin-pm list,
@@ -265,6 +266,7 @@ var/list/admin_verbs_mod = list(
 	/datum/admins/proc/show_player_panel,
 	/client/proc/cmd_admin_subtle_message, // send an message to somebody as a 'voice in their head',
 	/datum/admins/proc/paralyze_mob,
+	/datum/admins/proc/punish,
 	/client/proc/admin_memo,			//admin memo system. show/delete/write. +SERVER needed to delete admin memos of others,
 	/client/proc/player_memo,
 	/client/proc/game_panel,			//game panel, allows to change game-mode etc,
@@ -287,9 +289,9 @@ var/list/admin_verbs_mentor = list(
 )
 
 var/list/admin_verbs_manager = list(
-	/client/proc/reset_roundstart_autobalance,
 	/client/proc/toggle_BYOND_hub_visibility,
 	/client/proc/toggle_playing,
+	/client/proc/toggle_tts,
 	/client/proc/start_epochswap_vote,
 )
 
@@ -398,7 +400,7 @@ var/list/admin_verbs_host = list(
 	else
 		//ghostize
 		if (ishuman(mob))
-			var/mob/living/carbon/human/H = mob
+			var/mob/living/human/H = mob
 			H.handle_zoom_stuff(TRUE)
 
 		var/mob/body = mob
@@ -592,11 +594,11 @@ var/list/admin_verbs_host = list(
 
 	if (!check_rights(R_FUN)) return
 
-	var/mob/living/carbon/human/H = input("Select mob.", "Change Mob Appearance - Admin") as null|anything in human_mob_list
+	var/mob/living/human/H = input("Select mob.", "Change Mob Appearance - Admin") as null|anything in human_mob_list
 	if (!H) return
 
 	log_and_message_admins("is altering the appearance of [H].")
-	H.change_appearance(APPEARANCE_ALL, usr, usr, check_species_whitelist = FALSE, state = admin_state)
+	H.change_appearance(APPEARANCE_ALL, usr, usr, check_species_whitelist = FALSE, _state = admin_state)
 
 
 /client/proc/change_human_appearance_self()
@@ -606,7 +608,7 @@ var/list/admin_verbs_host = list(
 
 	if (!check_rights(R_FUN)) return
 
-	var/mob/living/carbon/human/H = input("Select mob.", "Change Mob Appearance - Self") as null|anything in human_mob_list
+	var/mob/living/human/H = input("Select mob.", "Change Mob Appearance - Self") as null|anything in human_mob_list
 	if (!H) return
 
 	if (!H.client)
@@ -638,9 +640,9 @@ var/list/admin_verbs_host = list(
 
 	if (!check_rights(R_FUN))	return
 
-	var/mob/living/carbon/human/M = WWinput(src, "Select a mob.", "Edit Appearance", WWinput_first_choice(human_mob_list), WWinput_list_or_null(human_mob_list))
+	var/mob/living/human/M = WWinput(src, "Select a mob.", "Edit Appearance", WWinput_first_choice(human_mob_list), WWinput_list_or_null(human_mob_list))
 
-	if (!istype(M, /mob/living/carbon/human))
+	if (!istype(M, /mob/living/human))
 		usr << "<span class = 'red'>You can only do this to humans!</span>"
 		return
 
@@ -864,6 +866,22 @@ var/global/list/global_colour_matrix = null
 	world << "<font size = 3>Fields of view are now <b>disabled</b>.</font>"
 	return
 
+
+/client/proc/remove_dead_bodies()
+	set name = "Remove Dead Bodies"
+	set category = "Special"
+
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+	var/count=0
+	for(var/mob/living/human/H in world)
+		if (H.stat == DEAD && !H.client)
+			qdel(H)
+			count++
+
+	message_admins("[key_name_admin(usr)] removed all the dead bodies ([count] total).")
+	return
 
 /client/proc/radiation_emission()
 	set category = "Special"

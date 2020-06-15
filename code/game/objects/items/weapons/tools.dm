@@ -47,7 +47,7 @@
 		..()
 		desc = "A red fire extinguisher filled with foam. Has [cap] units left."
 
-/obj/item/weapon/fire_extinguisher/attack_self(mob/living/carbon/human/user as mob)
+/obj/item/weapon/fire_extinguisher/attack_self(mob/living/human/user as mob)
 	if (!ishuman(user))
 		return
 	if (cap >= 1)
@@ -58,7 +58,7 @@
 		if (dest)
 			for (var/obj/effect/fire/BO in dest)
 				qdel(BO)
-			for (var/mob/living/carbon/human/H in dest)
+			for (var/mob/living/human/H in dest)
 				if (H.fire_stacks > 0)
 					H.fire_stacks = 0
 			new/obj/effect/decal/cleanable/foam(dest)
@@ -80,6 +80,23 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = WEAPON_FORCE_NORMAL + 4
+	w_class = 2.0
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 5
+	throw_range = 5
+
+	attack_verb = list("bludgeoned", "hit")
+	flammable = TRUE
+
+/obj/item/weapon/globe
+	name = "globe"
+	desc = "flat earthers hate this thing."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "globe"
+	item_state = "globe"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_NORMAL + 1
 	w_class = 2.0
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 5
@@ -130,7 +147,7 @@
 			item_state = "cutters_yellow"
 	..()
 
-/obj/item/weapon/wirecutters/attack(mob/living/carbon/C as mob, mob/user as mob)
+/obj/item/weapon/wirecutters/attack(mob/living/human/C as mob, mob/user as mob)
 	..()
 
 /*
@@ -285,7 +302,7 @@
 
 /obj/item/weapon/fishing/net
 	name = "fishing net"
-	desc = "A classic fishing net, made of hemp rope."
+	desc = "A classic fishing net, made of fiberous rope."
 	w_class = 2.0
 	icon_state = "fishing_net"
 	force = WEAPON_FORCE_WEAK

@@ -51,9 +51,9 @@ var/global/datum/controller/occupations/job_master
 		//Debug info
 	var/list/job_debug = list()
 
-	var/admin_expected_clients = 0
-
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
+	map.availablefactions = list("Human tribesman", "Crustacean tribesman", "Orc tribesman", "Lizard tribesman")
+/*
 //	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
 //	var/randomfaction_spawn = "Red Goose Tribesman"
 //	//sets 2 factions for >=10ppl, 3 factions for >=15, 4 factions for >=20, 5 factions for >=25 and 6 factions for >=30
@@ -72,7 +72,7 @@ var/global/datum/controller/occupations/job_master
 			var/d = pick(randomfaction-a-b-c)
 			map.availablefactions = list(a,b,c,d)
 //			world << "Four tribes are enabled: <b>[replacetext(a, " tribesman", "")], [replacetext(b, " tribesman", "")], [replacetext(c, " tribesman", "")], [replacetext(d, " tribesman", "")]</b>."
-
+*/
 	map.availablefactions_run = FALSE
 	return
 
@@ -101,22 +101,26 @@ var/global/datum/controller/occupations/job_master
 	map.availablefactions_run = FALSE
 	return
 
-/datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0, var/announce = TRUE)
+/datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0)
 
 	if (map)
 		map.faction_organization = map.initial_faction_organization.Copy()
+	switch(clients.len)
+		if (0 to 12)
+			map.squads = 1
+		if (13 to 24)
+			map.squads = 2
+		if (25 to 36)
+			map.squads = 3
+		if (37 to 48)
+			map.squads = 4
+		if (49 to 60)
+			map.squads = 5
+		if (61 to 1000)
+			map.squads = 6
+	_clients = max(_clients, clients.len)
 
-	_clients = max(max(_clients, (map ? map.min_autobalance_players : 0)), clients.len, admin_expected_clients)
-
-	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 50))
-
-	if (announce == TRUE)
-		world << ""
-	else if (announce == 2)
-		if (!roundstart_time)
-			world << "<span class = 'warning'>An admin has changed autobalance to be set up for [max(_clients, autobalance_for_players)] players.</span>"
-		else
-			world << "<span class = 'warning'>An admin has reset autobalance for [max(_clients, autobalance_for_players)] players.</span>"
+	var/autobalance_for_players = round(max(_clients, clients.len))
 
 	if (map && map.civilizations && map.ID != MAP_TRIBES)
 		if (map.ID == MAP_CIVILIZATIONS)
@@ -127,28 +131,24 @@ var/global/datum/controller/occupations/job_master
 		if (map && map.ID == MAP_TRIBES)
 			set_factions(autobalance_for_players)
 
-	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
-		civilians_forceEnabled = TRUE
 	for (var/datum/job/J in occupations)
-		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")
-			var/positions = round((autobalance_for_players/J.scale_to_players) * J.max_positions)
+		if (J.title != "N/A" && J.title != "generic job")
+			var/positions = J.max_positions
 			positions = max(positions, J.min_positions)
 			positions = min(positions, J.max_positions)
 			J.total_positions = positions
 		else
 			J.total_positions = 0
 
-	if (map && map.subfaction_is_main_faction)
-		announce = FALSE
+	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
+		civilians_forceEnabled = TRUE
 
 	if (map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY))
-		if (map)
-			if (announce)
-				world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
-				indians_toggled = FALSE
-				pirates_toggled = FALSE
-				spanish_toggled = FALSE
-				civilians_forceEnabled = TRUE
+		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
+		indians_toggled = FALSE
+		pirates_toggled = FALSE
+		spanish_toggled = FALSE
+		civilians_forceEnabled = TRUE
 	if (map.civilizations)
 		civilians_forceEnabled = TRUE
 
@@ -174,10 +174,38 @@ var/global/datum/controller/occupations/job_master
 			return
 
 
-/datum/controller/occupations/proc/relocate(var/mob/living/carbon/human/H)
+/datum/controller/occupations/proc/relocate(var/mob/living/human/H)
 
 	if (!H)
 		return
+
+	if (H.original_job && H.original_job.uses_squads && !H.original_job.is_squad_leader && H.squad > 0)
+		var/mob/living/human/HSL = null
+		world.log << "trying"
+		if (H.faction_text == map.faction1)
+			if (map.faction1_squad_leaders[H.squad])
+				HSL = map.faction1_squad_leaders[H.squad]
+				world.log << "found"
+		else if (H.faction_text == map.faction2)
+			if (map.faction2_squad_leaders[H.squad])
+				HSL = map.faction2_squad_leaders[H.squad]
+				world.log << "found"
+		if (HSL && HSL.stat == CONSCIOUS)
+			world.log << "[HSL]"
+			var/found = FALSE
+			for(var/mob/living/human/EN in range(6,HSL))
+				if (EN.stat == CONSCIOUS && EN.faction_text != H.faction_text)
+					found = TRUE
+					continue
+			if (!found)
+				H.forceMove(get_turf(HSL))
+				HSL << "<big><font color='green'>[H] has arrived at your squad.</font></big>"
+				// make sure we have the right ambience for our new location
+				spawn (1)
+					var/area/H_area = get_area(H)
+					if (H_area)
+						H_area.play_ambience(H)
+				return
 
 	var/spawn_location = H.job_spawn_location
 
@@ -197,17 +225,16 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateIND5"
 		else
 			spawn_location = "JoinLateIND5"
-	#ifdef SPAWNLOC_DEBUG
-	world << "[H]([H.original_job.title]) job spawn location = [H.job_spawn_location]"
-	world << "[H]([H.original_job.title]) original job spawn location = [H.original_job.spawn_location]"
-	world << "[H]([H.original_job.title]) spawn location = [spawn_location]"
-	#endif
 
+	var/turf/spawnpoint = null
 	var/list/turfs = latejoin_turfs[spawn_location]
-	var/spawnpoint = pick(turfs)
+	if (!latejoin_turfs[spawn_location].len)
+		spawnpoint = locate(48,50,1)
+	else
+		spawnpoint = pick(turfs)
 	if (!locate(/mob) in spawnpoint && !locate(/obj/structure) in spawnpoint)
 		H.loc = spawnpoint
-		if (map.ID == MAP_BATTLEROYALE) // if its the DM map, remove the "used" spawnpoint from the list
+		if (map.battleroyale) // if its the DM map, remove the "used" spawnpoint from the list
 			latejoin_turfs[spawn_location] -= spawnpoint
 
 	// make sure we have the right ambience for our new location
@@ -243,7 +270,6 @@ var/global/datum/controller/occupations/job_master
 	if (player && rank)
 		var/datum/job/job = GetJob(rank)
 		if (!job)	return FALSE
-		if (!job.player_old_enough(player.client)) return FALSE
 		var/position_limit = job.total_positions
 		if ((job.current_positions < position_limit) || position_limit == -1)
 			if (player.mind)
@@ -275,7 +301,7 @@ var/global/datum/controller/occupations/job_master
 	unassigned = list()
 	return
 
-/datum/controller/occupations/proc/EquipRank(var/mob/living/carbon/human/H, var/rank, var/joined_late = FALSE)
+/datum/controller/occupations/proc/EquipRank(var/mob/living/human/H, var/rank, var/joined_late = FALSE)
 	if (!H)	return null
 
 	var/datum/job/job = GetJob(rank)
@@ -346,13 +372,6 @@ var/global/datum/controller/occupations/job_master
 			processes.job_data.job2players[H.original_job.title] = list()
 		processes.job_data.job2players[H.original_job.title] += H
 
-		#ifdef SPAWNLOC_DEBUG
-		if (H.original_job)
-			world << "[H]'s original job: [H.original_job]"
-		else
-			world << "<span class = 'danger'>WARNING: [H] has no original job!!</span>"
-		#endif
-
 		if (map && H && (H.faction_text in map.orc))
 			H.orc = 1
 		if (map && H && (H.faction_text in map.gorilla))
@@ -367,10 +386,6 @@ var/global/datum/controller/occupations/job_master
 			H.crab = 1
 		var/spawn_location = H.original_job.spawn_location
 		H.job_spawn_location = spawn_location
-
-		#ifdef SPAWNLOC_DEBUG
-		world << "[H] ([rank]) spawn location = [spawn_location]"
-		#endif
 
 		if (!spawn_location)
 			switch (H.original_job.base_type_flag())
@@ -433,14 +448,8 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateAR"
 		H.job_spawn_location = spawn_location
 
-		#ifdef SPAWNLOC_DEBUG
-		world << "[H] ([rank]) GOT TO job spawn location = [H.job_spawn_location]"
-		#endif
-
-		var/alt_title = null
 		if (H.mind)
 			H.mind.assigned_role = rank
-			alt_title = H.mind.role_alt_title
 
 		if (istype(H)) //give humans wheelchairs, if they need them.
 			var/obj/item/organ/external/l_foot = H.get_organ("l_foot")
@@ -453,18 +462,7 @@ var/global/datum/controller/occupations/job_master
 				W.buckled_mob = H
 				W.add_fingerprint(H)
 
-
-		#ifdef SPAWNLOC_DEBUG
-		world << "[H] ([rank]) GOT TO before spawnID()"
-		#endif
-
-		spawnKeys(H, rank, alt_title)
-
-		#ifdef SPAWNLOC_DEBUG
-		world << "[H] ([rank]) GOT TO after spawnID()"
-		#endif
-
-		if (!istype(H, /mob/living/carbon/human/corpse))
+		if (!istype(H, /mob/living/human/corpse))
 			relocate(H)
 			if (H.client)
 				H.client.remove_gun_icons()
@@ -477,44 +475,6 @@ var/global/datum/controller/occupations/job_master
 				H.memory()
 
 			return H
-
-/datum/controller/occupations/proc/spawnKeys(var/mob/living/carbon/human/H, rank, title)
-
-	if (!H)	return FALSE
-
-	var/datum/job/job = null
-	for (var/datum/job/J in occupations)
-		if (J.title == rank)
-			job = J
-			break
-
-	if (job.uses_keys)
-		spawn_keys(H, rank, job)
-//		H << "<i>Click on a door with your <b>keychain</b> to open it. It will select the right key for you. To put the keychain in your hand, <b>drag</b> it.</i>"
-
-	return TRUE
-
-/datum/controller/occupations/proc/spawn_keys(var/mob/living/carbon/human/H, rank, var/datum/job/job)
-
-	var/list/_keys = job.get_keys()
-	if (!_keys.len)
-		return
-
-	var/obj/item/weapon/storage/belt/keychain/keychain = new/obj/item/weapon/storage/belt/keychain()
-
-	if (!H.wear_id) // first, try to equip it to their ID slot
-		H.equip_to_slot_or_del(keychain, slot_wear_id)
-	else if (!H.belt) // first, try to equip it as their belt
-		H.equip_to_slot_or_del(keychain, slot_belt)
-
-	var/list/keys = job.get_keys()
-
-	for (var/obj/item/weapon/key in keys)
-		if (keychain.can_be_inserted(key))
-			keychain.handle_item_insertion(key)
-			keychain.keys += key
-			keychain.update_icon_state()
-
 
 // this is a solution to 5 british and 1 pirates on lowpop.
 /datum/controller/occupations/proc/side_is_hardlocked(side)

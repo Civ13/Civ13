@@ -41,7 +41,7 @@ proc/admin_notice(var/message, var/rights)
 		usr << "Error: you are not an admin!"
 		return
 
-	var/body = "<html><head><title>Options for [M.key]</title></head>"
+	var/body = "<html>[common_browser_style]<head><title>Options for [M.key]</title></head>"
 	body += "<body>Options panel for <b>[M]</b>"
 	if (M.client)
 		body += " played by <b>[M.client]</b> "
@@ -130,9 +130,9 @@ proc/admin_notice(var/message, var/rights)
 			if (!f) body += " | "
 			else f = FALSE
 			if (L in M.languages)
-				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[rhtml_encode(k)]' style='color:#006600'>[k]</a>"
+				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[html_encode(k)]' style='color:#006600'>[k]</a>"
 			else
-				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[rhtml_encode(k)]' style='color:#ff0000'>[k]</a>"
+				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[html_encode(k)]' style='color:#ff0000'>[k]</a>"
 
 	body += {"<br>
 		</body></html>
@@ -215,7 +215,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!istype(src,/datum/admins))
 		usr << "Error: you are not an admin!"
 		return
-	var/dat = "<html><head><title>Info on [key]</title></head>"
+	var/dat = "<html>[common_browser_style]<head><title>Info on [key]</title></head>"
 	dat += "<body>"
 
 	var/p_age = "unknown"
@@ -257,9 +257,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!check_rights(R_ADMIN))	return
 
 	var/dat = {"
-		<style>
 		[common_browser_style]
-		</style>
 		<br>
 		<center><b><big>Game Panel</big></b></center><hr>\n
 		"}
@@ -314,7 +312,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc="Announce your desires to the world"
 	if (!check_rights(0))	return
 
-	var/message = russian_to_cp1251(input("Global message to send:", "Admin Announce", null, null))
+	var/message = input("Global message to send:", "Admin Announce", null, null)
 	if (message)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)
@@ -328,8 +326,8 @@ proc/admin_notice(var/message, var/rights)
 	set name = "IC Announcement"
 	set desc="Announce events"
 	if (!check_rights(0))	return
-	var/messaget = russian_to_cp1251(input("Message Title:", "IC Announcement", null, null))
-	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))
+	var/messaget = input("Message Title:", "IC Announcement", null, null)
+	var/message = input("Global message to send:", "IC Announcement", null, null)
 	if (message)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)
@@ -523,7 +521,21 @@ proc/admin_notice(var/message, var/rights)
 		world << "<big>Research has been <b>deactivated.</b></big>"
 		log_admin("[key_name(usr)] has deactivated the Research.")
 		return
-
+/datum/admins/proc/redirect_all_players()
+	set category = "Debug"
+	set desc="Redirects all players to another server."
+	set name="Server Redirection"
+	if (!usr.client.holder)
+		return
+	if (usr.client.holder.rank == "Admiral" || usr.client.holder.rank == "Host")
+		redirect_all_players = input("Where to redirect them to? Use byond://server:port format","Redirection",null) as text
+		if (redirect_all_players == null || redirect_all_players == "0" || redirect_all_players == "")
+			return
+		for (var/C in clients)
+			winset(C, null, "mainwindow.flash=1")
+			C << link(redirect_all_players)
+	else
+		return
 /datum/admins/proc/set_research_speed()
 	set category = "Special"
 	set desc="Changes research speed in Auto-Research mode."
@@ -798,7 +810,7 @@ var/list/atom_types = null
 	var/J = WWinput(usr, "Which job?", "Spawn Player", WWinput_first_choice(job_master_occupation_names), WWinput_list_or_null(job_master_occupation_names))
 	if (J != "Cancel" && G)
 		var/mob_type = job2mobtype(J)
-		var/mob/living/carbon/human/H = new mob_type(G.loc)
+		var/mob/living/human/H = new mob_type(G.loc)
 		G.mind.transfer_to(H)
 		G.reenter_corpse()
 		job_master.EquipRank(H, J)
@@ -838,7 +850,7 @@ var/list/atom_types = null
 /datum/admins/proc/output_ai_laws()
 	return FALSE
 
-/client/proc/update_mob_sprite(mob/living/carbon/human/H as mob)
+/client/proc/update_mob_sprite(mob/living/human/H as mob)
 	set category = "Admin"
 	set name = "Update Mob Sprite"
 	set desc = "Should fix any mob sprite update errors."
@@ -950,27 +962,80 @@ var/list/atom_types = null
 /datum/admins/proc/paralyze_mob(mob/living/H as mob)
 	set category = "Admin"
 	set name = "Toggle Paralyze"
-	set desc = "Paralyzes a player. Or unparalyses them."
+	set desc = "Paralyzes a player and the area around. Or unparalyses them."
 
 	var/msg
 
 	if (check_rights(R_ADMIN))
-		if (H.paralysis == FALSE)
-			H.paralysis = 8000
-			msg = "has paralyzed [key_name(H)]."
+		var/chc = WWinput(usr, "Paralyze area or player?", "Player", list("Player", "Area"))
+		if (chc == "Area")
+			var/rngd = WWinput(usr, "What range to paralyze/unparalyze?", 3, list(2,3,4,5,6))
+			if (H.paralysis == FALSE)
+				H.paralysis = 8000
+				msg = "has paralyzed [key_name(H)] and everyone in [rngd] tiles around."
+				for (var/mob/living/human/HH in range(rngd,H))
+					if (HH.paralysis == FALSE)
+						HH.paralysis = 8000
+			else
+				H.paralysis = FALSE
+				msg = "has unparalyzed [key_name(H)] and everyone in [rngd] tiles around."
+				for (var/mob/living/human/HH in range(rngd,H))
+					if (HH.paralysis == TRUE)
+						HH.paralysis = 0
 		else
-			H.paralysis = FALSE
-			msg = "has unparalyzed [key_name(H)]."
+			if (H.paralysis == FALSE)
+				H.paralysis = 8000
+				msg = "has paralyzed [key_name(H)]."
+			else
+				H.paralysis = FALSE
+				msg = "has unparalyzed [key_name(H)]."
+		log_and_message_admins(msg)
+/datum/admins/proc/punish(mob/living/human/H as mob)
+	set category = "Admin"
+	set name = "Punish"
+	set desc = "Punishes a player."
+
+	var/msg
+
+	if (check_rights(R_ADMIN))
+		var/chc = WWinput(usr, "What to do?", "Cancel", list("Cancel", "Cholera", "Brain Damage"))
+		if (chc == "Cancel")
+			return
+		else if (chc == "Cholera")
+			H.disease_progression = 0
+			H.disease_type ="cholera"
+			H.disease = 1
+			msg = "has given [key_name(H)] cholera."
+		else if (chc == "Brain Damage")
+			H.adjustBrainLoss(15)
+			msg = "has given [key_name(H)] 15 units of brain damage."
 		log_and_message_admins(msg)
 
 /client/proc/reload_admins()
-	set name = "Reload Admins"
+	set name = "Reload Lists"
 	set category = "Debug"
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually reloaded admins.")
+	message_admins("[key_name(usr)] manually reloaded admins, whitelists and approved lists.")
+
 	load_admins(1)
+
+	var/F = file("SQL/approved.txt")
+	if (fexists(F))
+		var/list/approved_list_temp = file2list(F,"\n")
+		for (var/i in approved_list_temp)
+			if (findtext(i, "="))
+				var/list/current = splittext(i, "=")
+				approved_list += current[1]
+
+	var/F2 = file("SQL/whitelist.txt")
+	if (fexists(F2))
+		var/list/whitelist_temp = file2list(F2,"\n")
+		for (var/i in whitelist_temp)
+			if (findtext(i, "="))
+				var/list/current = splittext(i, "=")
+				whitelist_list += current[1]
 
 /client/proc/reload_bans()
 	set name = "Update Bans"

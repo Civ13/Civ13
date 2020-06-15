@@ -7,24 +7,12 @@
 	world << "<big><b>You [(ticker.players_can_join) ? "can" : "can't"] join the game [(ticker.players_can_join) ? "now" : "anymore"].</b></big>"
 	message_admins("[key_name(src)] changed the playing setting.")
 
-// debugging
-/client/proc/reset_roundstart_autobalance()
+/client/proc/toggle_tts()
 	set category = "Special"
-	set name = "Reset Roundstart Autobalance"
+	set name = "Toggle TTS"
 
-	if (!check_rights(R_HOST) || (!check_rights(R_ADMIN)))
-		src << "<span class = 'danger'>You don't have the permissions.</span>"
-		return
-
-	var/_clients = input("How many clients?") as num
-
-	job_master.admin_expected_clients = 0
-	if (map.ID != MAP_TRIBES)
-		map.availablefactions_run = TRUE
-	job_master.toggle_roundstart_autobalance(_clients, announce = 2)
-	job_master.admin_expected_clients = _clients
-
-	message_admins("[key_name(src)] reset the roundstart autobalance for [_clients] players.")
+	config.tts_on = !config.tts_on
+	message_admins("[key_name(src)] changed turned the TTS setting [config.tts_on ? "on" : "off"].")
 
 /client/proc/end_all_grace_periods()
 	set category = "Special"
@@ -562,6 +550,8 @@ var/chinese_forceEnabled = FALSE
 	var/msg16 = "Vietnamese: [alive_vietnamese.len] alive, [heavily_injured_vietnamese.len] heavily injured or unconscious, [dead_vietnamese.len] deceased. Mortality rate: [mortality_vietnamese]%"
 	var/msg17 = "Chinese: [alive_chinese.len] alive, [heavily_injured_chinese.len] heavily injured or unconscious, [dead_chinese.len] deceased. Mortality rate: [mortality_chinese]%"
 
+	var/msg_npcs = "NPCs: [faction1_npcs] americans alive, [faction2_npcs] japanese alive."
+
 	var/msg_companies= ""
 	var/relpc = ""
 	var/relpc_am = 0
@@ -597,7 +587,7 @@ var/chinese_forceEnabled = FALSE
 		for (var/relf in map.facl)
 			var/curr = ""
 			map.facl[relf] = 0
-			for (var/mob/living/carbon/human/H in world)
+			for (var/mob/living/human/H in world)
 				if (relf == H.civilization)
 					map.facl[relf] += 1
 					curr = "[H.civilization]"
@@ -693,6 +683,8 @@ var/chinese_forceEnabled = FALSE
 				world << "<font size=3>[msg_factions]</font>"
 			if (map.civilizations && msg_companies != "")
 				world << "<font size=3>[msg_companies]</font>"
+			if (map.ID == MAP_IWO_JIMA)
+				world << "<font size=3>[msg_npcs]</font>"
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
 			else

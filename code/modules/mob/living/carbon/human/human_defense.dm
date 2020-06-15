@@ -5,7 +5,7 @@ bullet_act
 
 */
 
-/mob/living/carbon/human/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/mob/living/human/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
 	if (stat != DEAD)
 		return ..(W, user)
@@ -29,7 +29,7 @@ bullet_act
 				return
 	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		if (stat == DEAD)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (istype(H))
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
@@ -55,13 +55,16 @@ bullet_act
 					else if (wolfman)
 						var/obj/item/stack/material/pelt/wolfpelt/HP = new/obj/item/stack/material/pelt/wolfpelt(get_turf(src))
 						HP.amount = 3
+					else if (lizard)
+						var/obj/item/stack/material/pelt/lizardpelt/HP = new/obj/item/stack/material/pelt/lizardpelt(get_turf(src))
+						HP.amount = 3
 					else
 						var/obj/item/stack/material/pelt/humanpelt/HP = new/obj/item/stack/material/pelt/humanpelt(get_turf(src))
 						HP.amount = 3
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
-					if (istype(user, /mob/living/carbon/human))
-						var/mob/living/carbon/human/HM = user
+					if (istype(user, /mob/living/human))
+						var/mob/living/human/HM = user
 						HM.adaptStat("medical", 1)
 					for (var/obj/item/clothing/I in contents)
 						drop_from_inventory(I)
@@ -70,9 +73,57 @@ bullet_act
 	else
 		return ..(W, user)
 
-/mob/living/carbon/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
+/mob/living/human
+	var/mob/living/human/last_harmed = null
+
+/mob/living/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
 		return // fix for strange bug
+	if (P.firer && ishuman(P.firer))
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			var/mob/living/human/Huser = P.firer
+			if (src.stat != DEAD && (src.civilization == "Police" || src.civilization == "Paramedics" || prob(5)) && Huser.civilization != "Police")
+				last_harmed = Huser
+				var/reason = "Mischef"
+				if (src.civilization == "Paramedics")
+					reason = "Harming a Paramedic"
+				else if (src.civilization == "Police")
+					reason = "Harming a Police Officer"
+				else
+					reason = "Attempted Murder"
+				if (!(Huser.real_name in map.warrants))
+					map.warrants += Huser.real_name
+					Huser.gun_permit = 0
+					var/obj/item/weapon/paper_bin/police/PAR = null
+					for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+						PAR = PAR2
+						break
+					if (PAR)
+						var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
+						SW.tgt_mob = Huser
+						SW.tgt = Huser.real_name
+						SW.tgtcmp = Huser.civilization
+						SW.reason = reason
+						SW.spawntimer = 12000
+					var/obj/item/weapon/paper/police/warrant/SW2 = new /obj/item/weapon/paper/police/warrant(null)
+					SW2.tgt_mob = Huser
+					SW2.tgt = Huser.real_name
+					SW2.tgtcmp = Huser.civilization
+					SW2.reason = reason
+					map.pending_warrants += SW2
+					SW2.forceMove(null)
+
+		else if (!map.civilizations && !map.nomads && !map.is_RP)
+			var/mob/living/human/Huser = P.firer
+			if (src.stat != DEAD && src.faction_text != Huser.faction_text)
+				src.awards["wounded"]+=min(P.damage,100)
+				var/done = FALSE
+				for (var/list/i in Huser.awards["kills"])
+					if (i[1]==src.name)
+						i[2]+= min(P.damage,100)
+						done = TRUE
+				if (!done)
+					Huser.awards["kills"]+=list(list(src.name,min(P.damage,100),0))
 	if (istype(P, /obj/item/projectile/shell))
 		visible_message("<span class = 'danger'>[src] gets blown up by \the [P]!</span>")
 		gib()
@@ -97,7 +148,7 @@ bullet_act
 
 	// if we hit a client who's not on our team, increase our stats
 	if (client && stat == CONSCIOUS && P.firer && ishuman(P.firer) && P.firedfrom)
-		var/mob/living/carbon/human/H = P.firer
+		var/mob/living/human/H = P.firer
 		if (!H.original_job || !original_job || H.original_job.base_type_flag() != original_job.base_type_flag())
 			switch (P.firedfrom.gun_type)
 				if (GUN_TYPE_RIFLE)
@@ -108,6 +159,7 @@ bullet_act
 					H.adaptStat("bows", 1)
 				if (GUN_TYPE_MG)
 					H.adaptStat("machinegun", 1)
+
 
 	def_zone = check_zone(def_zone)
 
@@ -133,10 +185,12 @@ bullet_act
 				SH.health -= 2
 				//ARROW FALL STUFF HERE
 				//50% chance for the arrow not to break.
-				if(prob(50) && src.loc != null)
+				if(prob(50))
 					if(istype(P, /obj/item/projectile/arrow/arrow/stone))
 						new/obj/item/ammo_casing/arrow/stone(src.loc)
-					if(istype(P, /obj/item/projectile/arrow/arrow/sandstone))
+					else if(istype(P, /obj/item/projectile/arrow/arrow/flint))
+						new/obj/item/ammo_casing/arrow/flint(src.loc)
+					else if(istype(P, /obj/item/projectile/arrow/arrow/sandstone))
 						new/obj/item/ammo_casing/arrow/sandstone(src.loc)
 					else if(istype(P, /obj/item/projectile/arrow/arrow/copper))
 						new/obj/item/ammo_casing/arrow/copper(src.loc)
@@ -153,7 +207,6 @@ bullet_act
 					visible_message("<span class = 'warning'>The arrow falls to the ground!</span>")
 				else
 					visible_message("<span class = 'warning'>The arrow shatters!</span>")
-				return
 		else if (istype(P, /obj/item/projectile/arrow/bolt))
 			if (prob(min(SH.base_block_chance,92)))
 				visible_message("<span class = 'warning'>[src] blocks the bolt with the [SH.name]!</span>")
@@ -161,10 +214,12 @@ bullet_act
 				SH.health -= 2
 				//ARROW FALL STUFF HERE
 				//50% chance for the arrow not to break.
-				if(prob(50) && src.loc != null)
+				if(prob(50))
 					if(istype(P, /obj/item/projectile/arrow/bolt/stone))
 						new/obj/item/ammo_casing/bolt/stone(src.loc)
-					if(istype(P, /obj/item/projectile/arrow/bolt/sandstone))
+					else if(istype(P, /obj/item/projectile/arrow/bolt/flint))
+						new/obj/item/ammo_casing/bolt/flint(src.loc)
+					else if(istype(P, /obj/item/projectile/arrow/bolt/sandstone))
 						new/obj/item/ammo_casing/bolt/sandstone(src.loc)
 					else if(istype(P, /obj/item/projectile/arrow/bolt/copper))
 						new/obj/item/ammo_casing/bolt/copper(src.loc)
@@ -181,7 +236,6 @@ bullet_act
 					visible_message("<span class = 'warning'>The bolt falls to the ground!</span>")
 				else
 					visible_message("<span class = 'warning'>The bolt shatters!</span>")
-				return
 	if (shield_check)
 		if (shield_check < 0)
 			return shield_check
@@ -302,7 +356,7 @@ bullet_act
 	spawn (0.01)
 		qdel(P)
 
-/mob/living/carbon/human/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone)
+/mob/living/human/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone)
 	var/obj/item/organ/external/affected = get_organ(check_zone(def_zone))
 	var/siemens_coeff = get_siemens_coefficient_organ(affected)
 	stun_amount *= siemens_coeff
@@ -328,7 +382,7 @@ bullet_act
 
 	..(stun_amount, agony_amount, def_zone)
 
-/mob/living/carbon/human/getarmor(var/def_zone, var/type)
+/mob/living/human/getarmor(var/def_zone, var/type)
 	var/armorval = FALSE
 	var/total = FALSE
 
@@ -351,7 +405,7 @@ bullet_act
 	return (armorval/max(total, TRUE))
 
 //this proc returns the Siemens coefficient of electrical resistivity for a particular external organ.
-/mob/living/carbon/human/proc/get_siemens_coefficient_organ(var/obj/item/organ/external/def_zone)
+/mob/living/human/proc/get_siemens_coefficient_organ(var/obj/item/organ/external/def_zone)
 	if (!def_zone)
 		return 1.0
 
@@ -365,7 +419,7 @@ bullet_act
 	return siemens_coefficient
 
 //this proc returns the armor value for a particular external organ.
-/mob/living/carbon/human/proc/getarmor_organ(var/obj/item/organ/external/def_zone, var/type)
+/mob/living/human/proc/getarmor_organ(var/obj/item/organ/external/def_zone, var/type)
 	if (!type || !def_zone) return FALSE
 	var/protection = FALSE
 	if (ant)
@@ -389,7 +443,7 @@ bullet_act
 									protection += 10
 	return protection
 
-/mob/living/carbon/human/proc/damage_armor(var/obj/item/organ/external/def_zone, var/dmg = 0)
+/mob/living/human/proc/damage_armor(var/obj/item/organ/external/def_zone, var/dmg = 0)
 	if (!dmg || !def_zone) return FALSE
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
 	var/obj/item/organ/external/affecting = get_organ(def_zone)
@@ -407,7 +461,7 @@ bullet_act
 						AC.health -= dmg
 						AC.check_health()
 	return TRUE
-/mob/living/carbon/human/proc/check_head_coverage()
+/mob/living/human/proc/check_head_coverage()
 	var/list/body_parts = list(head, wear_mask, wear_suit, w_uniform)
 	for (var/bp in body_parts)
 		if (!bp)	continue
@@ -418,21 +472,21 @@ bullet_act
 	return FALSE
 
 //Used to check if they can be fed food/drinks/pills
-/mob/living/carbon/human/proc/check_mouth_coverage()
+/mob/living/human/proc/check_mouth_coverage()
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform)
 	for (var/obj/item/gear in protective_gear)
 		if (istype(gear) && (gear.body_parts_covered & FACE) && !(gear.item_flags & FLEXIBLEMATERIAL))
 			return gear
 	return null
 
-/mob/living/carbon/human/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+/mob/living/human/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	for (var/obj/item/shield in list(l_hand, r_hand, wear_suit))
 		if (!shield) continue
 		. = shield.handle_shield(src, damage, damage_source, attacker, def_zone, attack_text)
 		if (.) return
 	return FALSE
 
-/mob/living/carbon/human/resolve_item_attack(obj/item/I, mob/living/user, var/target_zone)
+/mob/living/human/resolve_item_attack(obj/item/I, mob/living/user, var/target_zone)
 	if (check_attack_throat(I, user))
 		return null
 
@@ -458,7 +512,7 @@ bullet_act
 
 	return hit_zone
 
-/mob/living/carbon/human/hit_with_weapon(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
+/mob/living/human/hit_with_weapon(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting)
 		return //should be prevented by attacked_with_item() but for sanity.
@@ -495,10 +549,21 @@ bullet_act
 	instadeath_check()
 	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
-
+	if (!map.civilizations && !map.nomads && !map.is_RP && ishuman(src) && ishuman(user))
+		var/mob/living/human/Hsrc = src
+		var/mob/living/human/Huser = user
+		if (Hsrc.stat != DEAD && Hsrc.faction_text != Huser.faction_text)
+			Hsrc.awards["wounded"]+=min(effective_force,100)
+			var/done = FALSE
+			for (var/list/i in Huser.awards["kills"])
+				if (i[1]==Hsrc.name)
+					i[2]+= min(effective_force,100)
+					done = TRUE
+			if (!done)
+				Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
 	return blocked
 
-/mob/living/carbon/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)
+/mob/living/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting)
 		return FALSE
@@ -529,13 +594,13 @@ bullet_act
 
 	//Finally if we pass all that, we cut the limb off. This should reduce the number of one hit sword kills.
 	else if(I.sharp && I.edge)
-		if (istype(user, /mob/living/carbon/human) && istype(I,/obj/item/weapon/material/sword))
+		if (istype(user, /mob/living/human) && istype(I,/obj/item/weapon/material/sword))
 			var/obj/item/weapon/material/sword/S = I
 			if (S.atk_mode == SLASH)
-				var/mob/living/carbon/human/HH = user
+				var/mob/living/human/HH = user
 				if(affecting.name != "groin" && prob((I.force * HH.getStatCoeff("strength")/6)))
 					affecting.droplimb(0, DROPLIMB_EDGE)
-					for(var/mob/living/carbon/human/NB in view(6,src))
+					for(var/mob/living/human/NB in view(6,src))
 						if (!NB.orc)
 							NB.mood -= 10
 							NB.ptsd += 1
@@ -572,7 +637,7 @@ bullet_act
 			if (istype(location, /turf))
 				location.add_blood(src)
 			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				if (get_dist(H, src) <= 1) //people with TK won't get smeared with blood
 					H.bloody_body(src)
 					H.bloody_hands(src)
@@ -588,8 +653,8 @@ bullet_act
 				if ("chest")
 					bloody_body(src)
 	if (istype(I, /obj/item/weapon/material/quarterstaff))
-		if (istype(user, /mob/living/carbon/human))
-			var/mob/living/carbon/human/HH = user
+		if (istype(user, /mob/living/human))
+			var/mob/living/human/HH = user
 			if (prob(6*HH.getStatCoeff("dexterity")))
 				visible_message("<span class='danger'>[src] has been knocked down!</span>")
 				Weaken(2)
@@ -599,7 +664,7 @@ bullet_act
 				Weaken(2)
 	instadeath_check()
 
-/mob/living/carbon/human/proc/attack_joint(var/obj/item/organ/external/organ, var/obj/item/W, var/blocked)
+/mob/living/human/proc/attack_joint(var/obj/item/organ/external/organ, var/obj/item/W, var/blocked)
 	if (!organ || (organ.dislocated == 2) || (organ.dislocated == -1) || blocked >= 2)
 		return FALSE
 	if (prob(W.force / (blocked+1)))
@@ -609,7 +674,7 @@ bullet_act
 	return FALSE
 
 //this proc handles being hit by a thrown atom
-/mob/living/carbon/human/hitby(atom/movable/AM as mob|obj,var/speed = THROWFORCE_SPEED_DIVISOR)
+/mob/living/human/hitby(atom/movable/AM as mob|obj,var/speed = THROWFORCE_SPEED_DIVISOR)
 	if (isobj(AM))
 		var/obj/O = AM
 
@@ -766,14 +831,14 @@ bullet_act
 					anchored = TRUE
 					pinned += O
 
-/mob/living/carbon/human/embed(var/obj/O, var/def_zone=null)
+/mob/living/human/embed(var/obj/O, var/def_zone=null)
 	if (!def_zone) ..()
 
 	var/obj/item/organ/external/affecting = get_organ(def_zone)
 	if (affecting)
 		affecting.embed(O)
 
-/mob/living/carbon/human/proc/bloody_hands(var/mob/living/source, var/amount = 2)
+/mob/living/human/proc/bloody_hands(var/mob/living/source, var/amount = 2)
 	if (gloves)
 		gloves.add_blood(source)
 		gloves:transfer_blood = amount
@@ -784,7 +849,7 @@ bullet_act
 		bloody_hands_mob = source
 	update_inv_gloves()		//updates on-mob overlays for bloody hands and/or bloody gloves
 
-/mob/living/carbon/human/proc/bloody_body(var/mob/living/source)
+/mob/living/human/proc/bloody_body(var/mob/living/source)
 	if (wear_suit)
 		wear_suit.add_blood(source)
 		update_inv_wear_suit(0)
@@ -792,10 +857,10 @@ bullet_act
 		w_uniform.add_blood(source)
 		update_inv_w_uniform(0)
 
-/mob/living/carbon/human/proc/handle_suit_punctures(var/damtype, var/damage, var/def_zone)
+/mob/living/human/proc/handle_suit_punctures(var/damtype, var/damage, var/def_zone)
 	return
 
-/mob/living/carbon/human/reagent_permeability()
+/mob/living/human/reagent_permeability()
 	var/perm = FALSE
 
 	var/list/perm_by_part = list(
@@ -832,7 +897,7 @@ bullet_act
 	return perm
 
 
-/mob/living/carbon/human/kick_act(var/mob/living/carbon/human/user)
+/mob/living/human/kick_act(var/mob/living/human/user)
 	if(!..())//If we can't kick then this doesn't happen.
 		return
 	if(user == src)//Can't kick yourself dummy.

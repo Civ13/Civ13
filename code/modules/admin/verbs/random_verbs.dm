@@ -184,11 +184,11 @@ Ccomp's first proc.
 
 	var/list/mobs = list()
 	var/list/ghosts = list()
-	var/list/sortmob = sortAtom(mob_list)                           // get the mob list.
+	var/list/sortmob = sortAtom(mob_list)						   // get the mob list.
 	var/any=0
 	for (var/mob/observer/ghost/M in sortmob)
-		mobs.Add(M)                                             //filter it where it's only ghosts
-		any = TRUE                                                 //if no ghosts show up, any will just be FALSE
+		mobs.Add(M)											 //filter it where it's only ghosts
+		any = TRUE												 //if no ghosts show up, any will just be FALSE
 	if (!any)
 		if (notify)
 			src << "There doesn't appear to be any ghosts for you to select."
@@ -196,7 +196,7 @@ Ccomp's first proc.
 
 	for (var/mob/M in mobs)
 		var/name = M.name
-		ghosts[name] = M                                        //get the name of the mob for the popup list
+		ghosts[name] = M										//get the name of the mob for the popup list
 	if (what==1)
 		return ghosts
 	else
@@ -252,7 +252,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		usr << "<font color='red'>There is no active key like that in the game or the person is not currently a ghost.</font>"
 		return
 
-	var/mob/living/carbon/human/new_character = new(pick(latejoin))//The mob being spawned.
+	var/mob/living/human/new_character = new(pick(latejoin))//The mob being spawned.
 
 
 	new_character.gender = pick(MALE,FEMALE)

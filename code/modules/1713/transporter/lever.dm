@@ -1,7 +1,7 @@
 /obj/structure/transport_lever // same icon as the train lever for now
 	anchored = 1.0
 	density = TRUE
-	icon = 'icons/obj/train_lever.dmi'
+	icon = 'icons/obj/vehicles/train_lever.dmi'
 	icon_state = "lever_none"
 	var/none_state = "lever_none"
 	var/pushed_state = "lever_pulled" // lever_pushed is the wrong direction
@@ -12,7 +12,7 @@
 	var/next_activation = -1;
 
 /obj/structure/transport_lever/attack_hand(var/mob/user as mob)
-//f (user && istype(user, /mob/living/carbon/human))
+//f (user && istype(user, /mob/living/human))
 //function(user)
 	if (world.time < next_activation)
 		next_activation = world.time + 50

@@ -2,27 +2,27 @@
 ///////////////////////////////////Companies////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-/mob/living/carbon/human/proc/create_company()
+/mob/living/human/proc/create_company()
 	set name = "Create Company"
 	set category = "Faction"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		U = src
 	else
 		return
-	if (map.civilizations == TRUE)
-		var/choosename = russian_to_cp1251(input(U, "Choose a name for the company:") as text|null)
+	if (map.civilizations == TRUE || map.ID == MAP_TRIBES)
+		var/choosename = input(U, "Choose a name for the company:") as text|null
 		create_company_pr(choosename)
 		return
 	else
 		U << "<span class='danger'>You cannot create a company in this map.</span>"
 		return
 
-/mob/living/carbon/human/proc/create_company_pr(var/newname = "none")
+/mob/living/human/proc/create_company_pr(var/newname = "none")
 	if (!ishuman(src))
 		return
-	var/mob/living/carbon/human/H = src
+	var/mob/living/human/H = src
 	for(var/i = 1, i <= map.custom_company_nr.len, i++)
 		if (map.custom_company_nr[i] == newname || newname == "Global")
 			usr << "<span class='danger'>That company already exists. Choose another name.</span>"
@@ -35,7 +35,7 @@
 			return
 		else
 			choosecolor1 = uppertext(choosecolor1)
-			if (lentext(choosecolor1) != 6)
+			if (length(choosecolor1) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -53,7 +53,7 @@
 			return
 		else
 			choosecolor2 = uppertext(choosecolor2)
-			if (lentext(choosecolor2) != 6)
+			if (length(choosecolor2) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -74,15 +74,15 @@
 	else
 		return
 
-/mob/living/carbon/human/proc/transfer_company_stock()
+/mob/living/human/proc/transfer_company_stock()
 	set name = "Transfer Company Stock"
 	set category = "Faction"
-	var/mob/living/carbon/human/H
-	if (istype(src, /mob/living/carbon/human))
+	var/mob/living/human/H
+	if (istype(src, /mob/living/human))
 		H = src
 	else
 		return
-	if (map.civilizations == TRUE)
+	if (map.civilizations == TRUE || map.ID == MAP_TRIBES)
 		var/found = FALSE
 		var/list/currlist = list()
 		var/list/currlist_ind = list("Cancel")
@@ -107,14 +107,14 @@
 				else if (compchoice_amt <= 0)
 					return
 				var/list/closemobs = list("Cancel")
-				for (var/mob/living/carbon/human/M in range(4,loc))
+				for (var/mob/living/human/M in range(4,loc))
 					if (M.stat != DEAD)
 						closemobs += M
 				var/choice2 = WWinput(usr, "Who to transfer the stocks to?", "Stock Transfer", "Cancel", closemobs)
 				if (choice2 == "Cancel")
 					return
 				else
-					var/mob/living/carbon/human/CM = choice2
+					var/mob/living/human/CM = choice2
 					for(var/l=1, l <= map.custom_company[compchoice].len, l++)
 						if (map.custom_company[compchoice][l][1] == H)
 							var/currb = map.custom_company[compchoice][l][2]
@@ -134,7 +134,7 @@
 		return
 
 //searches company members for a player
-/proc/find_company_member(var/mob/living/carbon/human/H, var/company)
+/proc/find_company_member(var/mob/living/human/H, var/company)
 	if (!map || !H || !company)
 		return FALSE
 
@@ -145,13 +145,14 @@
 		return FALSE
 
 	for(var/i=1,i<=map.custom_company[company].len,i++)
-		if (map.custom_company[company][i][1] == H)
+		if (map.custom_company[company][i][1] == H && map.custom_company[company][i][2] > 0)
+			world.log << "found"
 			return TRUE
 
 	return FALSE
 
 //for automated transfers e.g. stock market
-/mob/living/carbon/human/proc/transfer_stock_proc(var/companyname, var/stock, var/mob/living/carbon/human/target)
+/mob/living/human/proc/transfer_stock_proc(var/companyname, var/stock, var/mob/living/human/target)
 	if (!companyname || !stock || !target)
 		return
 
@@ -172,7 +173,7 @@
 
 //to be used when the seller does not exist (normally if he died and theres no body)
 //the stock is still for sale but "nobody" will receive the cost.
-/proc/transfer_stock_nomob(var/companyname, var/stock, var/mob/living/carbon/human/target)
+/proc/transfer_stock_nomob(var/companyname, var/stock, var/mob/living/human/target)
 	if (!companyname || !stock || !target)
 		return
 

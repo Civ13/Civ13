@@ -12,19 +12,19 @@ var/global/list/limb_icon_cache = list()
 				overlays += child.mob_icon
 		overlays += organ.mob_icon
 
-/obj/item/organ/external/proc/sync_colour_to_human(var/mob/living/carbon/human/human)
+/obj/item/organ/external/proc/sync_colour_to_human(var/mob/living/human/human_mob)
 	s_tone = null
 	s_col = null
 	h_col = null
-	if (species && human.species && species.name != human.species.name)
+	if (species && human_mob.species && species.name != human_mob.species.name)
 		return
-	if (!isnull(human.s_tone) && (human.species.appearance_flags & HAS_SKIN_TONE))
-		s_tone = human.s_tone
-	if (human.species.appearance_flags & HAS_SKIN_COLOR)
-		s_col = list(human.r_skin, human.g_skin, human.b_skin)
-	h_col = list(human.r_hair, human.g_hair, human.b_hair)
+	if (!isnull(human_mob.s_tone) && (human_mob.species.appearance_flags & HAS_SKIN_TONE))
+		s_tone = human_mob.s_tone
+	if (human_mob.species.appearance_flags & HAS_SKIN_COLOR)
+		s_col = list(human_mob.r_skin, human_mob.g_skin, human_mob.b_skin)
+	h_col = list(human_mob.r_hair, human_mob.g_hair, human_mob.b_hair)
 
-/obj/item/organ/external/head/sync_colour_to_human(var/mob/living/carbon/human/human)
+/obj/item/organ/external/head/sync_colour_to_human(var/mob/living/human/human_mob)
 	..()
 	var/obj/item/organ/eyes/eyes = owner.internal_organs_by_name["eyes"]
 	if (eyes) eyes.update_colour()
@@ -80,20 +80,14 @@ var/global/list/limb_icon_cache = list()
 /*	if (!gendered_icon)
 		gender = null
 	else */
-	if (dna && dna.GetUIState(DNA_UI_GENDER))
-		gender = "_f"
-	else if (owner && owner.gender == FEMALE)
-		gender = "_f"
+	if (!owner.ant && !owner.wolfman && !owner.orc && !owner.crab && !owner.gorillaman && !owner.lizard)
+		if (dna && dna.GetUIState(DNA_UI_GENDER))
+			gender = "_f"
+		else if (owner && owner.gender == FEMALE)
+			gender = "_f"
 
 	icon_state = "[icon_name][gender][owner.body_build.index]"
-	if (force_icon)
-		icon = force_icon
-	else if (!dna)
-		icon = 'icons/mob/human_races/r_human.dmi'
-	else if (status & ORGAN_MUTATED)
-		icon = species.deform
-	else
-		icon = species.icobase
+	icon = 'icons/mob/human_races/r_human.dmi'
 	mob_icon = new/icon(icon, icon_state)
 	if (status & ORGAN_DEAD)
 		mob_icon.ColorTone(rgb(10,50,0))

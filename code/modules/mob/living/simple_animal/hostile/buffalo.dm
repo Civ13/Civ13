@@ -11,7 +11,6 @@
 	health = 350
 	maxHealth = 350
 	move_to_delay = 5
-	turns_per_move = 4
 	attacktext = "charges into"
 	melee_damage_lower = 35
 	melee_damage_upper = 50

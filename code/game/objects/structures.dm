@@ -97,7 +97,7 @@
 	if (!climbable || !can_touch(user) || (!post_climb_check && (user in climbers)))
 		return FALSE
 
-	if (!user.Adjacent(src) && !istype(src, /obj/structure/window/sandbag))
+	if (!user.Adjacent(src) && !istype(src, /obj/structure/window/barrier))
 		user << "<span class='danger'>You can't climb there, the way is blocked.</span>"
 		return FALSE
 
@@ -141,8 +141,8 @@
 
 	var/turf/target = null
 
-	if (istype(src, /obj/structure/window/sandbag))
-		target = get_step(src, user.dir)
+	if (istype(src, /obj/structure/window/barrier))
+		target = get_step(user, user.dir)
 	else
 		target = get_turf(src)
 
@@ -195,7 +195,7 @@
 		if (prob(25))
 
 			var/damage = rand(15,30)
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			if (!istype(H))
 				H << "<span class='danger'>You land heavily!</span>"
 				M.adjustBruteLoss(damage)

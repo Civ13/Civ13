@@ -14,13 +14,13 @@
 		var/near_rainy_area = FALSE
 		var/rdist = 100
 		var/area/A = get_area(src)
-		if (A && A.weather == WEATHER_RAIN)
+		if (A && A.weather == WEATHER_WET && findtext(A.icon_state,"rain"))
 			near_rainy_area = TRUE
 			rdist = 0
 		else
 			for (var/turf/T in view(7, src))
 				var/area/T_area = get_area(T)
-				if (T_area.weather == WEATHER_RAIN)
+				if (T_area.weather == WEATHER_WET && findtext(T_area.icon_state,"rain"))
 					near_rainy_area = TRUE
 					rdist = min(rdist, get_dist(src, T))
 
@@ -140,7 +140,7 @@
 
 /mob/living/proc/handle_disabilities()
 	//Eyes
-	if (sdisabilities & BLIND || stat)	//blindness from disability or unconsciousness doesn't get better on its own
+	if ((sdisabilities & BLIND) || stat || find_trait("Blind"))	//blindness from disability or unconsciousness doesn't get better on its own
 		eye_blind = max(eye_blind, TRUE)
 	else if (eye_blind)			//blindness, heals slowly over time
 		eye_blind = max(eye_blind-1,0)
@@ -148,7 +148,7 @@
 		eye_blurry = max(eye_blurry-1, FALSE)
 
 	//Ears
-	if (sdisabilities & DEAF)		//disabled-deaf, doesn't get better on its own
+	if ((sdisabilities & DEAF) || find_trait("Deaf"))		//disabled-deaf, doesn't get better on its own
 		setEarDamage(-1, max(ear_deaf, TRUE))
 	else
 		// deafness heals slowly over time, unless ear_damage is over 100

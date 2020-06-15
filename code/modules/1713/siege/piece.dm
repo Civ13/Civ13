@@ -43,10 +43,28 @@
 	maxrange = 80
 	w_class = 35
 
+/obj/structure/cannon/modern/naval
+	name = "naval cannon"
+	desc = "A giant artillery cannon usually mounted on a ship."
+	icon = 'icons/obj/ship_cannon.dmi'
+	icon_state = "naval_cannon"
+	ammotype = /obj/item/cannon_ball/shell/tank
+	spritemod = FALSE
+	firedelay = 5
+	maxsway = 40
+	firedelay = 30
+	maxrange = 180
+	anchored = TRUE
+	density = TRUE
+	bound_height = 96
+	bound_width = 64
+	caliber = 204
+	can_assemble = FALSE
+
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
 	desc = "a barebones cannon made to be carried by vehicles."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "tank_cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	layer = MOB_LAYER + 1 //just above mobs
@@ -67,6 +85,14 @@
 /obj/structure/cannon/modern/tank/german75
 	name = "7.5 cm KwK 40"
 	desc = "a 75 mm german tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 12
+	maxrange = 25
+	caliber = 75
+
+/obj/structure/cannon/modern/tank/american75
+	name = "75 mm M3 gun"
+	desc = "a 75 mm american tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
 	maxrange = 25
@@ -367,7 +393,7 @@
 
 	user.face_atom(src)
 	var/istank = istype(src, /obj/structure/cannon/modern/tank)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
@@ -394,7 +420,7 @@
 
 	if (href_list["load"])
 		var/obj/item/cannon_ball/M = user.get_active_hand()
-		if (M && istype(M) && do_after(user, caliber/2, src, canmove = istank))
+		if (M && istype(M) && do_after(user, caliber/2, src, can_move = istank))
 			user.remove_from_mob(M)
 			M.loc = src
 			loaded = M
@@ -525,6 +551,8 @@
 							if (explosion)
 								if (istype(src,/obj/structure/cannon/mortar))
 									explosion(target, 1, 2, 2, 3)
+								else if (istype(src,/obj/structure/cannon/modern/naval))
+									explosion(target, 2, 3, 4, 5)
 								else
 									explosion(target, 1, 2, 3, 4)
 							if (nuclear)
@@ -587,9 +615,7 @@
 		<html>
 
 		<head>
-		<style>
 		[common_browser_style]
-		</style>
 		</head>
 
 		<body>

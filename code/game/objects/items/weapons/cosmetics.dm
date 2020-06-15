@@ -45,7 +45,7 @@
 	if (!istype(M, /mob))	return
 
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.lip_style)	//if they already have lipstick on
 			user << "<span class='notice'>You need to wipe off the old lipstick first!</span>"
 			return
@@ -69,14 +69,14 @@
 
 
 /obj/item/weapon/haircomb //sparklysheep's comb
-	name = "purple comb"
-	desc = "A pristine purple comb made from flexible plastic."
+	name = "comb"
+	desc = "A pristine comb made from flexible plastic."
 	w_class = 1.0
 	slot_flags = SLOT_EARS
 	icon = 'icons/obj/items.dmi'
 	icon_state = "purplecomb"
-	item_state = "purplecomb"
+	item_state = "comb"
 	flammable = TRUE
 
 /obj/item/weapon/haircomb/attack_self(mob/user)
-	user.visible_message("<span class='notice'>[user] uses [src] to comb their hair with incredible style and sophistication. What a [user.gender == FEMALE ? "lady" : "guy"].</span>")
+	user.visible_message("<span class='notice'>[user] uses [src] to comb their hair neatly a [user.gender == FEMALE ? "lady" : "guy"].</span>")

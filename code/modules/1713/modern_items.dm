@@ -190,7 +190,7 @@
 	icon_state = "ltube_broken"
 	broken = TRUE
 
-/obj/structure/lamp/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/lamp/attack_hand(mob/living/human/user as mob)
 	if (lamp_inside)
 		if (lamp_broken)
 			user << "You remove the broken lightbulb."
@@ -251,6 +251,8 @@
 /obj/structure/lamp/lamp_small/alwayson
 	powerneeded = 0
 	on = TRUE
+/obj/structure/lamp/lamp_small/alwayson/white
+	brightness_color = "#ffffff"
 /obj/structure/lamp/lamp_small/alwayson/red
 	brightness_color = "#da0205"
 
@@ -274,8 +276,44 @@
 
 /obj/structure/lamp/lamp_small/tank/red
 	brightness_color = "#da0205"
-
-
+/obj/structure/lamp/lamp_small/tank/red/police
+	name = "police lights"
+	pixel_x=32
+	update_icon()
+		..()
+		switch(dir)
+			if(NORTH)
+				pixel_x=-16
+				pixel_y=0
+			if(SOUTH)
+				pixel_x=16
+				pixel_y=0
+			if(WEST)
+				pixel_y=-16
+				pixel_x=0
+			if(EAST)
+				pixel_y=16
+				pixel_x=0
+/obj/structure/lamp/lamp_small/tank/blue
+	brightness_color = "#0202da"
+/obj/structure/lamp/lamp_small/tank/blue/police
+	name = "police lights"
+	pixel_x=-32
+	update_icon()
+		..()
+		switch(dir)
+			if(NORTH)
+				pixel_x=16
+				pixel_y=0
+			if(SOUTH)
+				pixel_x=-16
+				pixel_y=0
+			if(WEST)
+				pixel_y=16
+				pixel_x=0
+			if(EAST)
+				pixel_y=-16
+				pixel_x=0
 /obj/structure/lamp/lamp_big
 	name = "light tube"
 	desc = "A light tube."
@@ -312,7 +350,7 @@
 	var/product = "gasoline"
 	powerneeded = 1
 
-/obj/structure/refinery/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/refinery/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (isemptylist(barrel))
 			barrel += W
@@ -429,12 +467,12 @@
 			product = "diesel"
 			usr << "This refinery will now produce <b>Diesel</b>."
 			return
-/obj/structure/refinery/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/refinery/attack_hand(var/mob/living/human/H)
 	if (isemptylist(barrel))
 		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
 		return
 	if (volume < 1)
-		H << "<span class = 'notice'>The refinery is empty! Put some crude petroleum in first.</span>"
+		H << "<span class = 'notice'>The refinery is empty! Put some percursors in first.</span>"
 		return
 	if (active)
 		active = FALSE
@@ -517,7 +555,7 @@
 	maxvolume = 300
 	product = "ethanol"
 
-/obj/structure/refinery/biofuel/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/refinery/biofuel/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (isemptylist(barrel))
 			barrel += W
@@ -695,7 +733,7 @@
 	var/plastic = 0
 	powerneeded = 1
 
-/obj/structure/bakelizer/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/bakelizer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/C = W
 		if (C.reagents.has_reagent("petroleum",1))
@@ -751,9 +789,9 @@
 		..()
 
 
-/obj/structure/bakelizer/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/bakelizer/attack_hand(var/mob/living/human/H)
 	if (volume < 1)
-		H << "<span class = 'notice'>The refinery is empty! Put some crude petroleum in first.</span>"
+		H << "<span class = 'notice'>The bakelizer is empty! Put some crude petroleum in first.</span>"
 		return
 	if (active)
 		active = FALSE
@@ -867,7 +905,7 @@
 	..()
 
 /obj/structure/shopping_cart/attack_hand(mob/user as mob)
-	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+	if (istype(user, /mob/living/human) && user in range(1,src))
 		storage.open(user)
 		update_icon()
 	else

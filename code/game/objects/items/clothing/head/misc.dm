@@ -1,9 +1,11 @@
+
 /obj/item/clothing/head/hairflower
 	name = "hair flower pin"
 	icon_state = "hairflower"
 	desc = "Smells nice."
 	slot_flags = SLOT_HEAD | SLOT_EARS
 	body_parts_covered = FALSE
+	heat_protection = 0
 
 /obj/item/clothing/head/powdered_wig
 	name = "powdered wig"
@@ -35,14 +37,6 @@
 	siemens_coefficient = 2.0
 	body_parts_covered = FALSE
 	force = WEAPON_FORCE_PAINFUL
-
-/obj/item/clothing/head/plaguedoctorhat
-	name = "plague doctor's hat"
-	desc = "These were once used by Plague doctors. They're pretty much useless."
-	icon_state = "plaguedoctor"
-	permeability_coefficient = 0.01
-	siemens_coefficient = 0.9
-	body_parts_covered = FALSE
 
 /obj/item/clothing/head/pirate
 	name = "pirate hat"

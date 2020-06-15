@@ -1,16 +1,15 @@
 
 /obj/map_metadata/kursk
 	ID = MAP_KURSK
-	title = "Kursk (100x150x1)"
+	title = "Kursk"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		GERMAN,
 		RUSSIAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/russian/,
 		list(GERMAN) = /area/caribbean/german/,
@@ -22,13 +21,15 @@
 	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the ceasefire ends!<br></font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
-	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 
 /obj/map_metadata/kursk/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
+		. = TRUE
+	else if (J.is_ss_panzer == TRUE)
 		. = TRUE
 	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
 		. = TRUE

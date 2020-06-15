@@ -25,8 +25,6 @@ var/list/gamemode_cache = list()
 	var/log_hrefs = FALSE					// logs all links clicked in-game. Could be used for debugging and tracking down exploits
 	var/log_runtimes = FALSE				// logs world.log to a file
 	var/log_world_output = FALSE			// log world.log << messages
-	var/sql_enabled = TRUE					// for sql switching
-	var/allow_admin_ooccolor = FALSE		// Allows admins with relevant permissions to have their own ooc colour
 	var/allow_vote_restart = TRUE 			// allow votes to restart
 	var/ert_admin_call_only = FALSE
 	var/allow_vote_mode = TRUE				// allow votes to change mode
@@ -40,15 +38,12 @@ var/list/gamemode_cache = list()
 	var/vote_no_dead = FALSE				// dead people can't vote (tbi)
 //	var/enable_authentication = FALSE		// goon authentication
 	var/del_new_on_log = TRUE				// del's new players if they log before they spawn in
-	var/feature_object_spell_system = FALSE //spawns a spellbook which gives object-type spells instead of verb-type spells for the wizard
-	var/traitor_scaling = FALSE 			//if amount of traitors scales based on amount of players
 	var/objectives_disabled = FALSE 			//if objectives are disabled or not
 	var/protect_roles_from_antagonist = FALSE// If security and such can be traitor/cult/other
 	var/popup_admin_pm = FALSE				//adminPMs to non-admins show in a pop-up 'reply' window when set to 1.
 	var/Ticklag = 0.9
 	var/Tickcomp = FALSE
 //	var/socket_talk	= FALSE					// use socket_talk to communicate with other processes
-	var/list/resource_urls = null
 	var/list/mode_names = list()
 	var/list/modes = list()				// allowed modes
 	var/list/votable_modes = list()		// votable modes
@@ -57,7 +52,6 @@ var/list/gamemode_cache = list()
 	var/guest_jobban = TRUE
 	var/useapprovedlist = FALSE
 	var/use_job_whitelist =  FALSE
-	var/kick_inactive = FALSE				//force disconnect for inactive players after this many minutes, if non-0
 	var/show_mods = FALSE
 	var/show_mentors = FALSE
 	var/mods_can_tempban = FALSE
@@ -67,14 +61,8 @@ var/list/gamemode_cache = list()
 	var/mod_job_tempban_max = 1440
 	var/ToRban = FALSE
 	var/automute_on = FALSE					//enables automuting/spam prevention
-	var/jobs_have_minimal_access = FALSE	//determines whether jobs use minimal access or expanded access.
 
-	var/character_slots = 10				// The number of available character slots
-
-	var/disable_player_mice = FALSE
-	var/uneducated_mice = FALSE //Set to TRUE to prevent newly-spawned mice from understanding human speech
-
-	var/allow_extra_antags = FALSE
+	var/tts_on = FALSE
 	var/guests_allowed = TRUE
 	var/debugparanoid = FALSE
 
@@ -129,7 +117,6 @@ var/list/gamemode_cache = list()
 
 	var/no_respawn_delays = FALSE
 	var/allowedgamemodes = "ALL"
-	var/max_expected_players = 50 // determines autobalance
 
 	// hub stuff
 
@@ -138,7 +125,6 @@ var/list/gamemode_cache = list()
 	var/hubtesting_port = -2
 	var/open_hub_discord_in_new_window = TRUE
 	var/hub_body = ""
-	var/hub_features = ""
 	var/hub_banner_url = "https://i.imgur.com/napac0L.png"
 
 	// dumb memes
@@ -158,6 +144,8 @@ var/list/gamemode_cache = list()
 	// python
 	var/scripts_directory = null
 
+	var/daynight_on = TRUE
+	var/seasons_on = TRUE
 /datum/configuration/proc/load(filename, type = "config") //the type can also be game_options, in which case it uses a different switch. not making it separate to not copypaste code - Urist
 
 	var/list/Lines = file2list(filename)
@@ -196,8 +184,8 @@ var/list/gamemode_cache = list()
 				if ("no_respawn_delays")
 					no_respawn_delays = text2num(value)
 
-				if ("max_expected_players")
-					max_expected_players = text2num(value)
+				if ("tts_on")
+					tts_on = text2num(value)
 
 				if ("scripts_directory")
 					if (!list("null", "Null", "NULL", "nil", "Nil", "NILL").Find(value))
@@ -222,16 +210,8 @@ var/list/gamemode_cache = list()
 					config.open_hub_discord_in_new_window = text2num(value)
 				if ("hub_body")
 					config.hub_body = value
-				if ("hub_features")
-					config.hub_features = value
 				if ("hub_banner_url")
 					config.hub_banner_url = value
-
-				if ("resource_urls")
-					config.resource_urls = splittext(value, " ")
-
-				if ("jobs_have_minimal_access")
-					config.jobs_have_minimal_access = TRUE
 
 				if ("use_recursive_explosions")
 					use_recursive_explosions = TRUE
@@ -241,9 +221,6 @@ var/list/gamemode_cache = list()
 
 				if ("log_access")
 					config.log_access = TRUE
-
-				if ("sql_enabled")
-					config.sql_enabled = text2num(value)
 
 				if ("log_say")
 					config.log_say = TRUE
@@ -290,9 +267,6 @@ var/list/gamemode_cache = list()
 
 				if ("no_click_cooldown")
 					config.no_click_cooldown = TRUE
-
-				if ("allow_admin_ooccolor")
-					config.allow_admin_ooccolor = TRUE
 
 				if ("allow_vote_restart")
 					config.allow_vote_restart = TRUE
@@ -391,12 +365,6 @@ var/list/gamemode_cache = list()
 				if ("use_job_whitelist")
 					config.use_job_whitelist = TRUE
 
-				if ("feature_object_spell_system")
-					config.feature_object_spell_system = TRUE
-
-				if ("traitor_scaling")
-					config.traitor_scaling = TRUE
-
 				if ("objectives_disabled")
 					config.objectives_disabled = TRUE
 
@@ -417,9 +385,6 @@ var/list/gamemode_cache = list()
 							log_misc("Unknown game mode probability configuration definition: [prob_name].")
 					else
 						log_misc("Incorrect probability configuration definition: [prob_name]  [prob_value].")
-
-				if ("kick_inactive")
-					config.kick_inactive = text2num(value)
 
 				if ("show_mods")
 					config.show_mods = TRUE
@@ -457,25 +422,10 @@ var/list/gamemode_cache = list()
 				if ("ghost_interaction")
 					config.ghost_interaction = TRUE
 
-				if ("disable_player_mice")
-					config.disable_player_mice = TRUE
-
-				if ("uneducated_mice")
-					config.uneducated_mice = TRUE
-
-				if ("character_slots")
-					config.character_slots = text2num(value)
-
-				if ("allow_extra_antags")
-					config.allow_extra_antags = TRUE
-
 				if ("default_language_prefixes")
 					var/list/values = splittext(value, " ")
 					if (values.len > 0)
 						language_prefixes = values
-
-				if ("lobby_screens")
-					config.lobby_screens = splittext(value, ";")
 
 				if ("lobby_countdown")
 					config.lobby_countdown = text2num(value)
@@ -486,6 +436,8 @@ var/list/gamemode_cache = list()
 				if ("disable_fov")
 					config.disable_fov = TRUE
 
+				if ("redirect_all_players")
+					redirect_all_players = value
 				else
 					log_misc("Unknown setting in configuration: '[name]'")
 

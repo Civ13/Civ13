@@ -13,7 +13,7 @@
 	var/belt_icon		= 'icons/mob/belt.dmi'
 	var/backpack_icon	= 'icons/mob/back.dmi'
 	var/shoulder_icon	= 'icons/mob/back.dmi'
-	var/eyes_icon    	= 'icons/mob/eyes.dmi'
+	var/eyes_icon		= 'icons/mob/eyes.dmi'
 	var/nohair = FALSE
 	var/nofacialhair = FALSE
 
@@ -155,4 +155,13 @@
 	nofacialhair = TRUE
 
 /datum/body_build/crab/female
+	gender 			= FEMALE
+
+/datum/body_build/satyr
+	name			= "Satyr"
+	index			= "_satyr"
+	nohair = FALSE
+	nofacialhair = FALSE
+
+/datum/body_build/satyr/female
 	gender 			= FEMALE

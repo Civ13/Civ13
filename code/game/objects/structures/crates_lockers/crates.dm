@@ -92,6 +92,14 @@
 		else
 	return
 
+/obj/structure/closet/crate/footlocker
+	name = "footlocker"
+	desc = "A small metal footlocker."
+	icon_state = "footlocker"
+	icon_opened = "footlockeropen"
+	icon_closed = "footlocker"
+	storagecap = 5
+	density = FALSE
 
 /obj/structure/closet/crate/bin
 	name = "large bin"
@@ -223,7 +231,7 @@
 		else
 			icon_state = "dumpsteropen_full"
 
-/obj/structure/closet/crate/dumpster/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/closet/crate/dumpster/attack_hand(mob/living/human/user as mob)
 	if (!ishuman(user))
 		return
 	add_fingerprint(user)

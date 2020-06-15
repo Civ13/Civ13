@@ -3,6 +3,7 @@
 obj/item/weapon/gun/projectile/ancient
 	name = "ancient handgun"
 	desc = "An ancient handheld blackpowder gun"
+	icon = 'icons/obj/guns/ancient.dmi'
 	icon_state = "handcannon"
 	item_state = "musket"
 	w_class = 5
@@ -17,7 +18,7 @@ obj/item/weapon/gun/projectile/ancient
 	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/stoneball
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	accuracy = TRUE
 	gun_type = GUN_TYPE_RIFLE
 	attachment_slots = ATTACH_BARREL
@@ -30,7 +31,7 @@ obj/item/weapon/gun/projectile/ancient
 	var/lighted = FALSE
 	var/gunpowder = FALSE
 	var/bullet = FALSE
-
+	gtype = "rifle"
 
 	accuracy_list = list(
 
@@ -151,7 +152,7 @@ obj/item/weapon/gun/projectile/ancient/arquebus
 	desc = "A iron barrel attached to a wood stock, with a piece of metal in the middle to hold the arquebus still, increasing accuracy."
 	icon_state = "arquebus"
 	item_state = "arquebus"
-	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS | ATTACH_BARREL
 	fire_delay = 9
 	recoil = 4
 
@@ -205,7 +206,7 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 	desc = "A musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger."
 	icon_state = "matchlock"
 	item_state = "matchlock"
-	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS | ATTACH_BARREL
 	fire_delay = 3
 	recoil = 3
 
@@ -259,7 +260,7 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 	desc = "A musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger. This one being Japanese, introduced to them via the Portuguese."
 	icon_state = "tanegashima"
 	item_state = "tanegashima"
-	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS | ATTACH_BARREL
 	fire_delay = 3
 	recoil = 3
 
@@ -319,13 +320,13 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 			var/dirpick = 6
 			if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
 				dirpick = 4
-			if (W.dir == NORTH)
+			if (user.dir == NORTH)
 				target = locate(user.x,user.y+dirpick,user.z)
-			else if (W.dir == SOUTH)
+			else if (user.dir == SOUTH)
 				target = locate(user.x,user.y-dirpick,user.z)
-			else if (W.dir == EAST)
+			else if (user.dir == EAST)
 				target = locate(user.x+dirpick,user.y,user.z)
-			else if (W.dir == WEST)
+			else if (user.dir == WEST)
 				target = locate(user.x-dirpick,user.y,user.z)
 			if (target)
 				afterattack(target, user, FALSE)

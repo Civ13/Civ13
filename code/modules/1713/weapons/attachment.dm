@@ -9,11 +9,13 @@ Add attached bayonet sprite
 
 Current Defines (_defines/attachment.dm)
 
-#define ATTACH_IRONSIGHTS TRUE
+#define ATTACH_IRONSIGHTS 1
 #define ATTACH_SCOPE 2
 #define ATTACH_STOCK 4
 #define ATTACH_BARREL 8
-#define ATTACH_UNDER TRUE6
+#define ATTACH_UNDER 16
+#define ATTACH_ADV_SCOPE 32
+#define ATTACH_SILENCER 64
 */
 
 /obj/item/weapon/attachment
@@ -21,6 +23,7 @@ Current Defines (_defines/attachment.dm)
 	var/attachment_type //Use the 'ATTACH_' defines above (should only use one for this)
 	var/A_attached = FALSE //Is attached
 	w_class = 2
+	var/list/fits = list("pistol", "smg", "rifle", "shotgun", "mg")
 
 /obj/item/weapon/attachment/proc/attached(mob/user, obj/item/weapon/gun/G)
 	user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
@@ -58,7 +61,8 @@ Current Defines (_defines/attachment.dm)
 	..()
 	if (attachments.len)
 		for (var/obj/item/weapon/attachment/A in attachments)
-			user << "<span class='notice'>It has [A] attached.</span>"
+			if (!(istype(A,/obj/item/weapon/attachment/scope/iron_sights)))
+				user << "<span class='notice'>It has [A] attached.</span>"
 
 /obj/item/weapon/gun/dropped(mob/user)
 	..()
@@ -75,7 +79,7 @@ Current Defines (_defines/attachment.dm)
 	set name = "Field Strip"
 	set desc = "Removes any attachments."
 	set category = null
-	var/mob/living/carbon/human/user = usr
+	var/mob/living/human/user = usr
 
 	for (var/obj/item/weapon/attachment/A in attachments)
 		A.removed(user, src)
@@ -130,9 +134,16 @@ Current Defines (_defines/attachment.dm)
 				A.attached(user, src, FALSE)
 			else
 				user << "You fumble around with the attachment."
+		if (ATTACH_SILENCER)
+			if (gtype in A.fits)
+				if (attachment_slots & ATTACH_SILENCER)
+					A.attached(user, src, FALSE)
+				else
+					user << "You fumble around with the attachment."
+			else
+				user << "[A] cannot be attached to the [src]."
 		else
 			user << "[A] cannot be attached to the [src]."
-
 //ATTACHMENTS
 
 //Scope code is found in code/modules/WW2/weapons/zoom.dm
@@ -147,7 +158,7 @@ Current Defines (_defines/attachment.dm)
 	edge = TRUE
 	attack_verb = list("slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	attachment_type = ATTACH_BARREL
-	force = 20
+	force = 65
 	var/attack_sound = 'sound/weapons/slice.ogg'
 	var/weakens = 0
 	//var/datum/action/bayonet/amelee
@@ -172,30 +183,42 @@ Current Defines (_defines/attachment.dm)
 		edge = 1
 		sharp = 1
 		return
-/obj/item/weapon/attachment/bayonet/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
+/obj/item/weapon/attachment/bayonet/attached(var/mob/user = null, obj/item/weapon/gun/G, var/quick = FALSE)
 	if (quick)
-		user.unEquip(src)
+		if (user)
+			user.unEquip(src)
 		A_attached = TRUE
 		G.attachment_slots -= attachment_type
 		loc = G
 		G.actions += actions
 		G.verbs += verbs
 		G.attachments += src
-		user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+		if (user)
+			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 		G.bayonet = src
 		G.overlays += G.bayonet_ico
 	else
-		user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
+		if (user)
+			user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
 		if (do_after(user, 15, user))
-			user.unEquip(src)
 			A_attached = TRUE
 			G.attachment_slots -= attachment_type
-			loc = G
 			G.actions += actions
 			G.verbs += verbs
 			G.attachments += src
-			G.update_attachment_actions(user)
-			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			if (user)
+				user.unEquip(src)
+				G.update_attachment_actions(user)
+				user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+				if (istype(src, /obj/item/weapon/attachment/bayonet/flag) && G.bayonet_ico)
+					G.bayonet_ico.icon_state = "jap_flag"
+					G.bayonet_ico.pixel_x = 0
+					G.bayonet_ico.pixel_y = 0
+				else
+					G.bayonet_ico.icon_state = "bayonet"
+					G.bayonet_ico.pixel_x = 6
+					G.bayonet_ico.pixel_y = 6
+			loc = G
 			G.bayonet = src
 			G.overlays += G.bayonet_ico
 		else
@@ -217,9 +240,22 @@ Current Defines (_defines/attachment.dm)
 	else
 		return
 
+/obj/item/weapon/attachment/bayonet/flag
+	name = "japanese flag"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "jap_flag"
+	item_state = "jap_flag"
+	sharp = FALSE
+	edge = FALSE
+	attack_verb = list("bashed")
+	attachment_type = ATTACH_BARREL
+	force = 1
+
+/obj/item/weapon/attachment/bayonet/flag/attack_self(mob/user)
+	return
 
 /obj/item/weapon/attachment/bayonet/military
-	force = WEAPON_FORCE_ROBUST
+	force = 65
 //	weakens = 1
 	weight = 0.450
 	value = 12
@@ -455,3 +491,93 @@ Current Defines (_defines/attachment.dm)
 	acc_modifier = 1.4
 	scopeonly = FALSE
 
+/obj/item/weapon/gun
+	var/silencer_ico
+	var/obj/item/weapon/attachment/silencer/silencer = null
+
+/obj/item/weapon/attachment/silencer
+	icon = 'icons/obj/gun_att.dmi'
+	icon_state = "silencer"
+	name = "silencer"
+	desc = "a gun silencer."
+	attachment_type = ATTACH_SILENCER
+	var/image/ongun
+	var/reduction = 50
+
+	New()
+		..()
+		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
+		ongun.pixel_x = 16
+		ongun.pixel_y = 16
+		if (findtext(icon_state,"pistol"))
+			ongun.pixel_x = 20
+			ongun.pixel_y = 0
+/obj/item/weapon/attachment/silencer/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
+	if (quick)
+		A_attached = TRUE
+		G.attachment_slots -= attachment_type
+		loc = G
+		G.actions += actions
+		G.verbs += verbs
+		G.attachments += src
+		G.silencer = src
+		G.silencer_ico = ongun
+		G.overlays += G.silencer_ico
+	else
+		if (do_after(user, 15, user))
+			user.unEquip(src)
+			A_attached = TRUE
+			G.attachment_slots -= attachment_type
+			loc = G
+			G.actions += actions
+			G.verbs += verbs
+			G.attachments += src
+			G.update_attachment_actions(user)
+			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			G.silencer = src
+			G.silencer_ico = ongun
+			G.overlays += G.silencer_ico
+		else
+			return
+
+/obj/item/weapon/attachment/silencer/removed(mob/user, obj/item/weapon/gun/G)
+	if (do_after(user, 15, user))
+		G.attachments -= src
+		G.actions -= actions
+		G.verbs -= verbs
+		G.attachment_slots += attachment_type
+		dropped(user)
+		A_attached = FALSE
+		loc = get_turf(src)
+		user << "You remove [src] from the [G]."
+		G.silencer = null
+		G.overlays -= G.silencer_ico
+	else
+		return
+
+/obj/item/weapon/attachment/silencer/plastic_bottle
+	name = "plastic bottle suppressor"
+	icon_state = "plastic_bottle_suppressor"
+	desc = "a makeshift suppressor."
+	reduction = 25
+	fits = list("smg", "rifle")
+
+/obj/item/weapon/attachment/silencer/oil_filter
+	name = "oil filter suppressor"
+	icon_state = "oil_filter_suppressor"
+	desc = "a makeshift suppressor."
+	reduction = 35
+	fits = list("smg", "rifle")
+
+/obj/item/weapon/attachment/silencer/pistol
+	name = "pistol suppressor"
+	icon_state = "modern_pistol_suppressor"
+	desc = "a pistol suppressor."
+	reduction = 50
+	fits = list("pistol")
+
+/obj/item/weapon/attachment/silencer/pistol/ww2
+	name = "pistol suppressor"
+	icon_state = "ww2_pistol_suppressor"
+	desc = "a pistol suppressor."
+	reduction = 35

@@ -393,6 +393,20 @@ menu "menu"
 		can-check = true
 		group = "size"
 		saved-params = "is-checked"
+	elem "icon128"
+		name = "&128x128"
+		command = ".winset \"mapwindow.map.icon-size=128\""
+		category = "&Icons"
+		can-check = true
+		group = "size"
+		saved-params = "is-checked"
+	elem "icon96"
+		name = "&96x96"
+		command = ".winset \"mapwindow.map.icon-size=96\""
+		category = "&Icons"
+		can-check = true
+		group = "size"
+		saved-params = "is-checked"
 	elem "icon64"
 		name = "&64x64"
 		command = ".winset \"mapwindow.map.icon-size=64\""
@@ -413,11 +427,6 @@ menu "menu"
 		category = "&Icons"
 		can-check = true
 		group = "size"
-		saved-params = "is-checked"
-	elem 
-		name = ""
-		command = ""
-		category = "&Icons"
 		saved-params = "is-checked"
 	elem 
 		name = "Links"
@@ -632,7 +641,7 @@ window "mapwindow"
 		size = 640x480
 		anchor1 = 0,0
 		anchor2 = 100,100
-		font-family = "Arial Rounded MT Bold,Arial Black,Arial,sans-serif"
+		font-family = "sans-serif"
 		font-size = 7
 		is-default = true
 		saved-params = "icon-size"
@@ -718,6 +727,7 @@ window "browserwindow"
 		anchor2 = none
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Browser"
+		statusbar = false
 		is-pane = true
 	elem "browser"
 		type = BROWSER

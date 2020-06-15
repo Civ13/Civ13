@@ -27,11 +27,11 @@
 #define isliving(A) istype(A, /mob/living)
 //---------------------------------------------------
 
-#define iscarbon(A) istype(A, /mob/living/carbon)
+#define iscarbon(A) istype(A, /mob/living/human)
 
-#define isbrain(A) istype(A, /mob/living/carbon/brain)
+#define isbrain(A) istype(A, /mob/living/human/brain)
 
-#define ishuman(A) istype(A, /mob/living/carbon/human)
+#define ishuman(A) istype(A, /mob/living/human)
 //---------------------------------------------------
 
 #define isanimal(A) istype(A, /mob/living/simple_animal)
@@ -78,10 +78,15 @@
 
 #define forrange(x) for (var/v = 1 to x)
 
-#define to_chat(target, message)                            target << message
-#define to_world(message)                                   world << message
-#define to_world_log(message)                               world.log << message
-#define sound_to(target, sound)                             target << sound
+#define to_chat(target, message)							target << message
+#define to_world(message)								   world << message
+#define to_world_log(message)							   world.log << message
+#define sound_to(target, sound)							 target << sound
+#define show_browser(target, browser_content, browser_name) target << browse(browser_content, browser_name)
+#define close_browser(target, browser_name)                 target << browse(null, browser_name)
+#define show_image(target, image)                           target << (image)
+#define send_rsc(target, rsc_content, rsc_name)             target << browse_rsc(rsc_content, rsc_name)
+
 // Helper macros to aid in optimizing lazy instantiation of lists.
 // All of these are null-safe, you can use them without knowing if the list var is initialized yet
 

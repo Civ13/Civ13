@@ -1,22 +1,34 @@
-/mob/living/carbon/human/proc/getStat(statname)
+/mob/living/human/proc/getStat(statname)
 	return stats[lowertext(statname)][1]*mood_modifier
 
-/mob/living/carbon/human/proc/getMaxStat(statname)
+/mob/living/human/proc/getMaxStat(statname)
 	return stats[lowertext(statname)][2]
 
-/mob/living/carbon/human/proc/getStatCoeff(statname)
+/mob/living/human/proc/getStatCoeff(statname)
+	var/smod = 1
+	if (find_trait("Gigantism"))
+		smod = 1.5
+	else if (find_trait("Dwarfism"))
+		smod = 0.7
+	else if (find_trait("Short"))
+		smod = 0.85
+	else if (find_trait("Tall"))
+		smod = 1.15
 	if (stats[lowertext(statname)] && stats[lowertext(statname)][1])
-		return (stats[lowertext(statname)][1]/100)*mood_modifier
+		if (statname == "strength")
+			return (stats[lowertext(statname)][1]/100)*mood_modifier*smod
+		else
+			return (stats[lowertext(statname)][1]/100)*mood_modifier
 	else
 		return 0
 
 
-/mob/living/carbon/human/proc/getLesserStatCombinedCoeff(var/list/statnames = list())
+/mob/living/human/proc/getLesserStatCombinedCoeff(var/list/statnames = list())
 	. = 1 - (statnames.len/10)
 	for (var/statname in statnames)
 		. += stats[lowertext(statname)][1]/1000
 
-/mob/living/carbon/human/proc/setStat(statname, statval)
+/mob/living/human/proc/setStat(statname, statval)
 
 	statname = lowertext(statname)
 	if (!stats.Find(statname))
@@ -81,7 +93,7 @@
 
 	stats[statname] = list(statval, statval)
 
-/mob/living/carbon/human/proc/adaptStat(statname, multiplier = 1)
+/mob/living/human/proc/adaptStat(statname, multiplier = 1)
 	statname = lowertext(statname)
 	if (!stats.Find(statname))
 		return

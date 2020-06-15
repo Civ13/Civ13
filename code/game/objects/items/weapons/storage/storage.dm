@@ -29,6 +29,7 @@
 	var/allow_quick_gather	//Set this variable to allow the object to have the 'toggle mode' verb, which quickly collects all items from a tile.
 	var/collection_mode = TRUE;  //0 = pick one at a time, TRUE = pick all on tile
 	var/use_sound = "rustle"	//sound played when used. null for no sound.
+	var/base_icon = ""
 
 /obj/item/weapon/storage/Destroy()
 	close_all()
@@ -404,8 +405,8 @@
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
 				else if (W && W.w_class >= 3) //Otherwise they can only see large or normal items from a distance...
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
-		if (istype(W, /obj/item/weapon/bedroll))
-			icon_state = "backpack1"
+		if (istype(W, /obj/item/weapon/bedroll) && istype(src,/obj/item/weapon/storage/backpack))
+			icon_state = "[base_icon]1"
 		orient2hud(usr)
 		if (usr.s_active)
 			usr.s_active.show_to(usr)
@@ -436,7 +437,7 @@
 		W.loc = get_turf(src)
 
 	if (istype(W, /obj/item/weapon/bedroll))
-		icon_state = "backpack0"
+		icon_state = "[base_icon]"
 	if (usr)
 		orient2hud(usr)
 		if (usr.s_active)
@@ -475,7 +476,7 @@
 
 /obj/item/weapon/storage/attack_hand(mob/user as mob)
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.l_store == src && !H.get_active_hand())	//Prevents opening if it's in a pocket.
 			H.put_in_hands(src)
 			H.l_store = null

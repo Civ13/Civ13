@@ -88,26 +88,46 @@
 	playsound(get_turf(src), "shatter", 70, TRUE)
 	if (display_message)
 		visible_message("<span class = 'warning'>[src] shatters!</span>")
+		new/obj/item/weapon/material/shard/glass(loc)
 	if (glassed)
 		if (istype(src, /obj/structure/window/classic/shoji))
 			new/obj/structure/window_frame/shoji(loc)
-		else if (istype(src, /obj/structure/window/classic/medieval))
-			new/obj/structure/window_frame/medieval(loc)
-		else if (istype(src, /obj/structure/window/classic/brick))
-			new/obj/structure/window_frame/brick(loc)
-		else if (istype(src, /obj/structure/window/classic/stone))
-			new/obj/structure/window_frame/stone(loc)
-		else if (istype(src, /obj/structure/window/classic/sandstone))
-			new/obj/structure/window_frame/sandstone(loc)
 		else if (istype(src, /obj/structure/window/classic/metal))
 			new/obj/structure/window_frame/metal(loc)
+		else if (istype(src, /obj/structure/window/classic/portholefull))
+			new/obj/structure/window_frame/portholefull(loc)
+		else if (istype(src, /obj/structure/window/classic/medieval))
+			new/obj/structure/window_frame/medieval(loc)
+		else if (istype(src, /obj/structure/window/classic/oriental))
+			new/obj/structure/window_frame/oriental(loc)
+		else if (istype(src, /obj/structure/window/classic/bamboo))
+			new/obj/structure/window_frame/bamboo(loc)
+		else if (istype(src, /obj/structure/window/classic/clay))
+			new/obj/structure/window_frame/clay(loc)
+		else if (istype(src, /obj/structure/window/classic/redearth))
+			new/obj/structure/window_frame/redearth(loc)
+		else if (istype(src, /obj/structure/window/classic/villa))
+			new/obj/structure/window_frame/villa(loc)
+		else if (istype(src, /obj/structure/window/classic/villafull))
+			new/obj/structure/window_frame/villafull(loc)
+		else if (istype(src, /obj/structure/window/classic/brick))
+			new/obj/structure/window_frame/brick(loc)
+		else if (istype(src, /obj/structure/window/classic/brickfull))
+			new/obj/structure/window_frame/brickfull(loc)
+		else if (istype(src, /obj/structure/window/classic/stone))
+			new/obj/structure/window_frame/stone(loc)
+		else if (istype(src, /obj/structure/window/classic/stonefull))
+			new/obj/structure/window_frame/stonefull(loc)
+		else if (istype(src, /obj/structure/window/classic/sandstone))
+			new/obj/structure/window_frame/sandstone(loc)
+		else if (istype(src, /obj/structure/window/classic/sandstonefull))
+			new/obj/structure/window_frame/sandstonefull(loc)
 		else if (istype(src, /obj/structure/window/classic/sumerian))
 			new/obj/structure/window_frame/sumerian(loc)
 		else
 			new/obj/structure/window_frame(loc)
 	qdel(src)
 	return
-
 
 /obj/structure/window/bullet_act(var/obj/item/projectile/Proj)
 
@@ -201,7 +221,7 @@
 	return TRUE
 
 
-/obj/structure/window/kick_act(var/mob/living/carbon/human/user)
+/obj/structure/window/kick_act(var/mob/living/human/user)
 	if(!..())
 		return
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(10,15), 0)
@@ -297,10 +317,8 @@
 		usr << "It is fastened to the floor therefore you can't rotate it!"
 		return FALSE
 
-	update_nearby_tiles(need_rebuild=1) //Compel updates before
 	set_dir(turn(dir, 90))
 	updateSilicate()
-	update_nearby_tiles(need_rebuild=1)
 	return
 
 
@@ -316,10 +334,10 @@
 		usr << "It is fastened to the floor therefore you can't rotate it!"
 		return FALSE
 
-	update_nearby_tiles(need_rebuild=1) //Compel updates before
+
 	set_dir(turn(dir, 270))
 	updateSilicate()
-	update_nearby_tiles(need_rebuild=1)
+
 	return
 
 /obj/structure/window/New(Loc, start_dir=null, constructed=0)
@@ -336,23 +354,21 @@
 
 	ini_dir = dir
 
-	update_nearby_tiles(need_rebuild=1)
-	update_nearby_icons()
 
+	update_nearby_icons()
 
 /obj/structure/window/Destroy()
 	density = FALSE
-	update_nearby_tiles()
 	loc = null
 	..()
 
 
 /obj/structure/window/Move()
 	var/ini_dir = dir
-	update_nearby_tiles(need_rebuild=1)
+
 	..()
 	set_dir(ini_dir)
-	update_nearby_tiles(need_rebuild=1)
+
 
 //checks if this window is a full-tile one
 /obj/structure/window/proc/is_fulltile()
@@ -367,7 +383,7 @@
 	update_verbs()
 	update_nearby_icons()
 
-//This proc is used to update the icons of nearby windows. It should not be confused with update_nearby_tiles(), which is an atmos proc!
+//This proc is used to update the icons of nearby windows.
 /obj/structure/window/proc/update_nearby_icons()
 	update_icon()
 	for (var/obj/structure/window/W in orange(src, TRUE))
@@ -419,23 +435,78 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/windowglass
+	var/stucco_window = TRUE
 	icon = 'icons/obj/windows.dmi'
 
 /obj/structure/window_frame/shoji
 	icon_state = "shoji_windownew_frame"
 	name = "shoji window frame"
-	desc = "A good old window frame, only Japanese-style."
+	desc = "A good old window frame, only japanese-style."
+	stucco_window = FALSE
 
 /obj/structure/window_frame/metal
 	icon_state = "windowmetal_frame"
 	health = 500
 	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/portholefull
+	icon_state = "metal_porthole_fullframe"
+	name = "full metal porthole frame"
+	desc = "A large metal porthole with a empty space for glass."
+	health = 500
+	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/medieval
 	icon_state = "medieval_windownew_frame"
 	name = "medieval window frame"
 	desc = "A dark ages window, minus the window."
+	stucco_window = FALSE
 
+/obj/structure/window_frame/oriental
+	icon_state = "oriental_windownew_frame"
+	name = "oriental window frame"
+	desc = "A east-oriental style window, minus the window."
+	stucco_window = FALSE
+
+/obj/structure/window_frame/bamboo
+	icon_state = "bamboo_windownew_frame"
+	name = "bamboo window frame"
+	desc = "A frame for a window, made of bamboo."
+	stucco_window = FALSE
+
+/obj/structure/window_frame/clay
+	icon_state = "clay_windownew_frame"
+	name = "clay window frame"
+	desc = "A empty hole within the clay wall with no glass."
+	health = 80
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/redearth
+	icon_state = "red_earthwindownew_frame"
+	name = "red earthen window frame"
+	desc = "A empty three panelled red earthen window frame with no glass."
+	health = 120
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/villa
+	icon_state = "villa_windownew_frame"
+	name = "villa window frame"
+	desc = "A elegant roman villa window frame."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/villafull
+	icon_state = "villa_windownew_fullframe"
+	name = "villa full window frame"
+	desc = "A elegant large roman villa window frame."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/brick
 	icon_state = "brick_windownew_frame"
@@ -443,6 +514,15 @@
 	desc = "A frame for a window, made of bricks."
 	health = 200
 	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/brickfull
+	icon_state = "brick_windownew_fullframe"
+	name = "full brick window frame"
+	desc = "A frame for a full window, made of bricks."
+	health = 200
+	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/stone
 	icon_state = "stone_windownew_frame"
@@ -450,6 +530,15 @@
 	desc = "Stone carved to support a few panes of glass."
 	health = 250
 	flammable = FALSE
+	stucco_window = TRUE
+
+/obj/structure/window_frame/stonefull
+	icon_state = "stone_windownew_fullframe"
+	name = "full stone window frame"
+	desc = "Stone carved to support a large window's worth of glass."
+	health = 250
+	flammable = FALSE
+	stucco_window = TRUE
 
 /obj/structure/window_frame/sandstone
 	icon_state = "sandstone_windownew_frame"
@@ -457,15 +546,48 @@
 	desc = "Sandstone carved to support some glass.."
 	health = 250
 	flammable = FALSE
+	stucco_window = FALSE
+
+/obj/structure/window_frame/sandstonefull
+	icon_state = "sandstone_windownew_fullframe"
+	name = "sandstone window frame"
+	desc = "Sandstone carved to support a large window's worth of glass.."
+	health = 250
+	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/sumerian
 	icon_state = "sumerian_windownew_frame"
 	name = "sumerian window frame"
-	desc = "Made of clay, can hold glass."
+	desc = "A sumerian window made of clay, can hold glass."
 	health = 150
 	flammable = FALSE
+	stucco_window = FALSE
 
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/stucco/generic) && (stucco_window))
+		if (!istype(src, /obj/structure/window_frame/stonefull) && !istype(src, /obj/structure/window_frame/stone))
+			user << "You start adding stucco to the wood window frame..."
+			if (do_after(user, 20, src))
+				user << "You finish adding stucco to the wood window frame, rendering over it."
+				new /obj/structure/window_frame/redearth(loc)
+				qdel(W)
+				qdel(src)
+	if (istype(W, /obj/item/weapon/stucco/roman) && (stucco_window))
+		if (istype(src, /obj/structure/window_frame/stone))
+			user << "You start adding roman stucco to the stone window..."
+			if (do_after(user, 20, src))
+				user << "You finish adding roman stucco to the stone window, rendering over it."
+				new /obj/structure/window_frame/villa(loc)
+				qdel(W)
+				qdel(src)
+		if (istype(src, /obj/structure/window_frame/stonefull))
+			user << "You start adding roman stucco to the full stone window..."
+			if (do_after(user, 20, src))
+				user << "You finish adding roman stucco to the full stone window, rendering over it."
+				new /obj/structure/window_frame/villafull(loc)
+				qdel(W)
+				qdel(src)
 	if (istype(W, /obj/item/stack/material/glass))
 		var/obj/item/stack/S = W
 		if (S.amount >= 3)
@@ -473,16 +595,36 @@
 			if (do_after(user, 50, src))
 				if (istype(src, /obj/structure/window_frame/shoji))
 					new/obj/structure/window/classic/shoji(get_turf(src))
-				else if (istype(src, /obj/structure/window_frame/medieval))
-					new/obj/structure/window/classic/medieval(get_turf(src))
-				else if (istype(src, /obj/structure/window_frame/stone))
-					new/obj/structure/window/classic/stone(get_turf(src))
-				else if (istype(src, /obj/structure/window_frame/sandstone))
-					new/obj/structure/window/classic/sandstone(get_turf(src))
-				else if (istype(src, /obj/structure/window_frame/brick))
-					new/obj/structure/window/classic/brick(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/metal))
 					new/obj/structure/window/classic/metal(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/portholefull))
+					new/obj/structure/window/classic/portholefull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/medieval))
+					new/obj/structure/window/classic/medieval(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/oriental))
+					new/obj/structure/window/classic/oriental(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/bamboo))
+					new/obj/structure/window/classic/bamboo(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/clay))
+					new/obj/structure/window/classic/clay(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/redearth))
+					new/obj/structure/window/classic/redearth(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/villa))
+					new/obj/structure/window/classic/villa(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/villafull))
+					new/obj/structure/window/classic/villafull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/brick))
+					new/obj/structure/window/classic/brick(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/brickfull))
+					new/obj/structure/window/classic/brickfull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/stone))
+					new/obj/structure/window/classic/stone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/stonefull))
+					new/obj/structure/window/classic/stonefull(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/sandstone))
+					new/obj/structure/window/classic/sandstone(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/sandstonefull))
+					new/obj/structure/window/classic/sandstonefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sumerian))
 					new/obj/structure/window/classic/sumerian(get_turf(src))
 				else
@@ -501,7 +643,6 @@
 		visible_message("<span class = 'notice'>The window is broken by [user]!</span>")
 		qdel(src)
 		return
-
 /obj/structure/window/classic
 	desc = "A good old window."
 	icon_state = "windownew"
@@ -531,13 +672,7 @@
 	icon_state = "shoji_windownew"
 	basestate = "shoji_windownew"
 	name = "shoji window"
-	desc = "A good old window, only Japanese-style."
-
-/obj/structure/window/classic/medieval
-	icon_state = "medieval_windownew"
-	basestate = "medieval_windownew"
-	name = "medieval window"
-	desc = "A dark ages window."
+	desc = "A good old window, only japanese-style."
 
 /obj/structure/window/classic/metal
 	icon_state = "windowmetal"
@@ -546,6 +681,73 @@
 	maximal_heat = T0C + 1600
 	damage_per_fire_tick = 1.0
 	maxhealth = 300.0
+
+/obj/structure/window/classic/portholefull
+	icon_state = "metal_porthole_full"
+	name = "full metal porthole"
+	desc = "A large metal porthole, with a large stretched sheet of glass."
+	flammable = FALSE
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	maxhealth = 300.0
+
+/obj/structure/window/classic/medieval
+	icon_state = "medieval_windownew"
+	basestate = "medieval_windownew"
+	name = "medieval window"
+	desc = "A dark ages window."
+
+/obj/structure/window/classic/oriental
+	icon_state = "oriental_windownew"
+	basestate = "oriental_windownew"
+	name = "oriental window"
+	desc = "A east-oriental style window."
+
+/obj/structure/window/classic/bamboo
+	icon_state = "bamboo_windownew"
+	basestate = "bamboo_windownew"
+	name = "bamboo window"
+	desc = "A bamboo window, made of bamboo."
+
+/obj/structure/window/classic/clay
+	icon_state = "clay_windownew"
+	icon_state = "clay_windownew"
+	name = "clay window"
+	desc = "A crude empty hole within the clay wall with glass."
+	flammable = FALSE
+	maximal_heat = T0C + 1400
+	damage_per_fire_tick = 1.5
+	maxhealth = 150.0
+
+/obj/structure/window/classic/redearth
+	icon_state = "red_earthwindownew"
+	basestate = "red_earthwindownew"
+	name = "red earthen window"
+	desc = "A three panelled red earthen window."
+	flammable = FALSE
+	maximal_heat = T0C + 1400
+	damage_per_fire_tick = 1.0
+	maxhealth = 200.0
+
+/obj/structure/window/classic/villa
+	icon_state = "villa_windownew"
+	basestate = "villa_windownew"
+	name = "villa window"
+	desc = "A elegant roman villa window."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 200
+	flammable = FALSE
+
+/obj/structure/window/classic/villafull
+	icon_state = "villa_windownew_full"
+	basestate = "villa_windownew_full"
+	name = "full villa window"
+	desc = "A elegant large roman villa full-window."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 200
+	flammable = FALSE
 
 /obj/structure/window/classic/brick
 	icon_state = "brick_windownew"
@@ -556,10 +758,28 @@
 	health = 200
 	flammable = FALSE
 
+/obj/structure/window/classic/brickfull
+	icon_state = "brick_windownew_full"
+	name = "full brick window"
+	desc = "A full brick window, made of bricks."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 200
+	flammable = FALSE
+
 /obj/structure/window/classic/stone
 	icon_state = "stone_windownew"
 	name = "stone window"
-	desc = "Stone window with glass-covered holes."
+	desc = "A stone window with glass-covered holes."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
+/obj/structure/window/classic/stonefull
+	icon_state = "stone_windownew_full"
+	name = "full stone window"
+	desc = "A stone window with large glass-covered holes."
 	maximal_heat = T0C + 1600
 	damage_per_fire_tick = 1.0
 	health = 250
@@ -574,10 +794,19 @@
 	health = 250
 	flammable = FALSE
 
+/obj/structure/window/classic/sandstonefull
+	icon_state = "sandstone_windownew_full"
+	name = "full sandstone window"
+	desc = "Sandstone with large glass windows."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 250
+	flammable = FALSE
+
 /obj/structure/window/classic/sumerian
 	icon_state = "sumerian_windownew"
 	name = "sumerian window"
-	desc = "Clay wall with some glass in it."
+	desc = "Sumerian clay wall with some glass in it."
 	flammable = FALSE
 	maximal_heat = T0C + 1400
 	damage_per_fire_tick = 1.0

@@ -34,7 +34,7 @@
 			return
 	if (istype(I, /obj/item/stack/material/iron))
 		var/obj/item/stack/material/iron/M = I
-		if (M.get_amount() < 1)
+		if (M.amount < 1)
 			user << "<span class='warning'>You need one metal sheet to do this!</span>"
 			return
 		user << "<span class='notice'>You start adding [M] to [src]...</span>"
@@ -45,7 +45,7 @@
 		return
 	if (istype(I, /obj/item/stack/material/glass))
 		var/obj/item/stack/material/glass/G = I
-		if (G.get_amount() < 1)
+		if (G.amount < 1)
 			user << "<span class='warning'>You need one glass sheet to do this!</span>"
 			return
 		user << "<span class='notice'>You start adding [G] to [src]...</span>"
@@ -72,7 +72,7 @@
 		..()
 	if (istype(I, /obj/item/stack/material/wood))
 		var/obj/item/stack/material/wood/W = I
-		if (W.get_amount() < 1)
+		if (W.amount < 1)
 			user << "<span class='warning'>You need one wood sheet to do this!</span>"
 			return
 		user << "<span class='notice'>You start adding [W] to [src]...</span>"

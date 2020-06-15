@@ -1,16 +1,15 @@
 /obj/map_metadata/heraclea
 	ID = MAP_HERACLEA
-	title = "Heraclea (150x75x1)"
+	title = "Heraclea"
 	lobby_icon_state = "ancient"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
-	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+
+
 	faction_organization = list(
 		ROMAN,
 		GREEK)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(ROMAN) = /area/caribbean/roman,
 		list(GREEK) = /area/caribbean/greek

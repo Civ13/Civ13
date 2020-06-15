@@ -1,16 +1,15 @@
 
 /obj/map_metadata/nanjing
 	ID = MAP_NANJING
-	title = "Nanjing (120x200x2)"
-	lobby_icon_state = "ww2"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	title = "Nanjing"
+	lobby_icon_state = "china"
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		JAPANESE,
 		CHINESE)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		list(CHINESE) = /area/caribbean/russian/land/inside/command,
@@ -22,21 +21,25 @@
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Chinese command</b>. The Chinese will win if they manage to defend their command for <b>30 minutes!</b>.</font>"
 	faction1 = JAPANESE
 	faction2 = CHINESE
-	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
 
 /obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == FALSE)
+	if (J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_ww2ATunit) || J.is_pacific == TRUE)
+		. = FALSE
+	else if (J.is_ww2 == TRUE)
+		. = TRUE
+	else if (istype(J, /datum/job/chinese/captain) || istype(J, /datum/job/chinese/lieutenant) || istype(J, /datum/job/chinese/sergeant) || istype(J, /datum/job/chinese/doctor) || istype(J, /datum/job/chinese/infantry) || istype(J, /datum/job/chinese/sniper) || istype(J, /datum/job/japanese/ija_ww2_tanker))
 		. = TRUE
 	else
 		. = FALSE
 
-/obj/map_metadata/nanjing/faction1_can_cross_blocks()
+/obj/map_metadata/nanjing/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nanjing/faction2_can_cross_blocks()
+/obj/map_metadata/nanjing/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 
@@ -65,17 +68,20 @@
 
 
 /obj/map_metadata/nanjing/cross_message(faction)
-	if (faction == CHINESE)
-		return "<font size = 4>The Chinese may now cross the invisible wall!</font>"
-	else if (faction == JAPANESE)
+	if (faction == JAPANESE)
 		return "<font size = 4>The Japanese may now cross the invisible wall!</font>"
+	else if (faction == CHINESE)
+		return ""
+	else
+		return ""
 
 /obj/map_metadata/nanjing/reverse_cross_message(faction)
-	if (faction == CHINESE)
-		return "<span class = 'userdanger'>The Chinese may no longer cross the invisible wall!</span>"
-	else if (faction == JAPANESE)
+	if (faction == JAPANESE)
 		return "<span class = 'userdanger'>The Japanese may no longer cross the invisible wall!</span>"
-
+	else if (faction == CHINESE)
+		return ""
+	else
+		return ""
 var/no_loop_n = FALSE
 
 /obj/map_metadata/nanjing/update_win_condition()
@@ -90,7 +96,7 @@ var/no_loop_n = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_r == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_n == TRUE)
 		ticker.finished = TRUE
 		var/message = "The <b>Japanese</b> have captured the city of Nanjing! The battle for Nanjing is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"

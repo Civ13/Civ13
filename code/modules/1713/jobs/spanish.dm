@@ -2,27 +2,27 @@
 /datum/job/spanish
 	faction = "Human"
 
-/datum/job/spanish/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/spanish/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_spanish_name(H.gender)
 	H.real_name = H.name
 
 /datum/job/spanish/captain
-	title = "Capitán"
+	title = "Capitan"
 	en_meaning = "Ship Captain"
-	rank_abbreviation = "Capitán"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+	rank_abbreviation = "Capitan"
+
+
 	spawn_location = "JoinLateSPCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -53,18 +53,18 @@
 	title = "Intendente"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Intendente"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSPQM"
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/qm/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -77,7 +77,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 	world << "<b><big>[H.real_name] is the Quartermaster of the Spanish Navy ship!</big></b>"
-	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Capitán</b>.")
+	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Capitan</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -94,19 +94,19 @@
 	title = "Contramaestre"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Contramaestre"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateSPBoatswain"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/boatswain/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -137,16 +137,16 @@
 	title = "Guardiamarina"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Guardiamarina"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSPMidshipman"
 	is_officer = TRUE
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/spanish/midshipman/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -174,15 +174,14 @@
 	title = "Cirujano"
 	en_meaning = "Medic"
 	rank_abbreviation = "Cirujano"
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateSPSurgeon"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateSPSurgeon"
+	is_medic = TRUE
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/spanish/surgeon/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -211,15 +210,15 @@
 	title = "Carpintero Naval"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpintero"
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateSPCarpenter"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateSPCarpenter"
+
+
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/spanish/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -252,15 +251,15 @@
 	title = "Cocinero"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cocinero"
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateSPCook"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateSPCook"
+
+
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/spanish/cook/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
@@ -301,15 +300,15 @@
 	title = "Marinero"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateSP"
+
+
+
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/spanish/seaman/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/seaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -332,7 +331,7 @@
 	else if (randweapon == 2)
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/material/harpoon(H), slot_belt)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a simple seaman employed by the Spanish Armada Real. Follow your <b>Capitán</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a simple seaman employed by the Spanish Armada Real. Follow your <b>Capitan</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets

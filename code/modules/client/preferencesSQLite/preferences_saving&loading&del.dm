@@ -66,16 +66,20 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 /datum/preferences/proc/save_preferences(var/list/charprefs = list())
 
-	if (!client_ckey)
+	if (!client || !client_ckey || !client.key)
 		return FALSE
 
 	if (real_name == "PLACEHOLDER")
 		real_name = "[capitalize(client.key)]"
 
-	if (real_name == capitalize(client.key))
+	if (client && real_name == capitalize(client.key))
 		real_name = random_name(gender,species)
 
-	var/list/vars_to_save = list("preferences_disabled", "UI_style", "UI_file", "UI_useborder", "UI_style_color", "UI_style_alpha", "lobby_music_volume", "cursor", "real_name", "be_random_name", "be_random_body", "gender", "age", "b_type", "h_style", "hair_color", "facial_color", "eye_color", "r_hair", "g_hair", "b_hair", "f_style", "r_facial", "g_facial", "b_facial", "s_tone", "r_skin", "g_skin", "b_skin", "r_eyes", "g_eyes", "b_eyes")
+	var/list/vars_to_save = list("preferences_disabled", "UI_style", "UI_file", "UI_useborder", "UI_style_color", "UI_style_alpha", "lobby_music_volume", "cursor", "real_name", "be_random_name", "be_random_body", "gender", "age", "b_type", "h_style", "hair_color", "facial_color", "eye_color", "r_hair", "g_hair", "b_hair", "f_style", "r_facial", "g_facial", "b_facial", "s_tone", "r_skin", "g_skin", "b_skin", "r_eyes", "g_eyes", "b_eyes", "traits")
+
+	for (var/i in traits)
+		if (!(i in trait_list))
+			traits -= i
 
 	var/params = ""
 	for (var/key in vars_to_save)
@@ -97,11 +101,11 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 			params += "[key]=[val]"
 
 	if (dd_hassuffix(params, ";"))
-		params = copytext(params, 1, lentext(params))
+		params = copytext(params, 1, length(params))
 
 
 	if (dd_hassuffix(params, ";"))
-		params = copytext(params, 1, lentext(params))
+		params = copytext(params, 1, length(params))
 	var/F = file("SQL/charprefs.txt")
 	var/done1 = FALSE
 	if (isemptylist(charprefs))

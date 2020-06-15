@@ -1,17 +1,16 @@
 
 /obj/map_metadata/nomads_new_world
 	ID = MAP_NOMADS_NEW_WORLD
-	title = "Nomads (New World) (430x200x2)"
+	title = "Nomads (New World)"
 	no_winner ="The round is proceeding normally."
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/sea)
 	respawn_delay = 6000 // 10 minutes!
-	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+
+
 	faction_organization = list(
 		CIVILIAN,)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
@@ -33,20 +32,7 @@
 	var/list/arealist_g = list()
 /obj/map_metadata/nomads_new_world/New()
 	..()
-	var/list/totalturfs = get_area_turfs(/area/caribbean/nomads/forest/Jungle)
-	totalturfs += get_area_turfs(/area/caribbean/nomads/forest/savanna)
-	spawn(1200)
-		for (var/i = 1, i <= 100)
-			var/turf/areaspawn = safepick(totalturfs)
-			if (istype(areaspawn,/turf/floor/beach/water/jungle))
-				new/obj/structure/piranha(areaspawn)
-				i++
-	spawn(600)
-		for (var/i = 1, i <= 23)
-			var/turf/areaspawn2 = safepick(totalturfs)
-			if (istype(areaspawn2,/turf/floor/grass) || istype(areaspawn2,/turf/floor/dirt))
-				new/obj/structure/anthill(areaspawn2)
-				i++
+
 	spawn(18000)
 		seasons()
 

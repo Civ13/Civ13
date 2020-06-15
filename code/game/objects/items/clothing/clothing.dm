@@ -22,7 +22,7 @@
 	var/rag_amt = 1
 	secondary_action = TRUE
 
-/obj/item/clothing/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/clothing/secondary_attack_self(mob/living/human/user)
 	if (secondary_action && ripable && rag_amt > 0)
 		user << "You start ripping apart \the [src]..."
 		if (do_after(user, 100, get_turf(user)))
@@ -60,15 +60,15 @@
 	var/healthp = (health/initial(health))*100
 	switch (healthp)
 		if (-100 to 30)
-			user << "It is almost falling apart!"
+			user << "<font color='#7f0000'>Is pratically falling apart!</font>"
 		if (31 to 55)
-			user << "Seems to be in a very bad condition."
+			user << "<font color='#a74510'>Seems to be in very bad condition.</font>"
 		if (56 to 75)
-			user << "Seems to be damaged."
+			user << "<font color='#cccc00'>Seems to be in a rough condition.</font>"
 		if (76 to 90)
-			user << "Seems to be in decent condition."
+			user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
 		if (91 to 1000)
-			user << "Seems to be in very good condition!"
+			user << "<font color='#245319'>Seems to be in very good condition.</font>"
 	switch (dirtyness)
 		if (-100 to 29)
 			user << "Looks clean."
@@ -81,11 +81,15 @@
 	if (fleas)
 		user << "<b>\The [src] is infested with fleas!</b>"
 ///////////////////////////////////////////////////////////////////////
+/obj/item/clothing/head
+	heat_protection = HEAD
+
 /obj/item/clothing/head/helmet
 	restricts_view = 1
 	health = 35
 // Ears: headsets, earmuffs and tiny objects
 	ripable = FALSE
+
 /obj/item/clothing/ears
 	name = "ears"
 	w_class = 1.0
@@ -95,11 +99,11 @@
 /obj/item/clothing/ears/attack_hand(mob/user as mob)
 	if (!user) return
 
-	if (loc != user || !istype(user,/mob/living/carbon/human))
+	if (loc != user || !istype(user,/mob/living/human))
 		..()
 		return
 
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (H.l_ear != src && H.r_ear != src)
 		..()
 		return
@@ -160,8 +164,8 @@ SEE_MOBS  // can see all mobs, no matter what
 SEE_OBJS  // can see all objs, no matter what
 SEE_TURFS // can see all turfs (and areas), no matter what
 SEE_PIXELS// if an object is located on an unlit area, but some of its pixels are
-          // in a lit area (via pixel_x,y or smooth movement), can see those pixels
-BLIND     // can't see anything
+		  // in a lit area (via pixel_x,y or smooth movement), can see those pixels
+BLIND	 // can't see anything
 */
 /obj/item/clothing/glasses
 	name = "glasses"
@@ -270,8 +274,8 @@ BLIND     // can't see anything
 /obj/item/clothing/head/update_icon(var/mob/user)
 
 	overlays.Cut()
-	var/mob/living/carbon/human/H
-	if (istype(user,/mob/living/carbon/human))
+	var/mob/living/human/H
+	if (istype(user,/mob/living/human))
 		H = user
 
 	if (on)
@@ -307,6 +311,7 @@ BLIND     // can't see anything
 	var/list/say_messages
 	var/list/say_verbs
 	var/blocks_scope = FALSE
+	heat_protection = HEAD
 
 /obj/item/clothing/mask/update_clothing_icon()
 	if (ismob(loc))

@@ -1,27 +1,27 @@
 "aa" = (/turf/wall/rockwall,/area/caribbean/arab/desert)
 "ab" = (/turf/wall/rockwall,/area/caribbean/arab/caves)
 "ac" = (/turf/floor/dirt/dust,/area/caribbean/arab/desert)
-"ad" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"ad" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
 "ae" = (/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"af" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"af" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "ag" = (/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"ah" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ah" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "ai" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "aj" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "ak" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"al" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"am" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"al" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"am" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/barrier,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "an" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/arab/desert)
 "ao" = (/obj/structure/bed/roller,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"ap" = (/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
-"aq" = (/obj/structure/window/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ap" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aq" = (/obj/structure/window/barrier,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "ar" = (/obj/structure/bed/roller,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "as" = (/obj/structure/wild/rock,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "at" = (/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "au" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "av" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/dust,/area/caribbean/arab/desert)
-"aw" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"ax" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ax" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "ay" = (/obj/item/stack/farming/seeds/orange,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "az" = (/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "aA" = (/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
@@ -33,28 +33,28 @@
 "aG" = (/obj/structure/wild/junglebush,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "aH" = (/obj/structure/closet/anchored,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "aI" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"aJ" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
-"aK" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"aL" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aJ" = (/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall/desert)
+"aK" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aL" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "aM" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"aN" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/flag/us,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aN" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/structure/flag/us,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "aO" = (/obj/structure/wild/rock,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"aP" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aP" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "aQ" = (/obj/structure/roof_support,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "aR" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "aS" = (/obj/structure/wild/jungle/medpine/dead,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "aT" = (/obj/structure/wild/jungle/medpine/dead,/turf/floor/dirt/dust,/area/caribbean/arab/desert)
-"aU" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"aV" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aU" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aV" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "aW" = (/obj/structure/sign/flag/medical,/obj/structure/barricade,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "aX" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "aY" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "aZ" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "ba" = (/obj/item/weapon/stool,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bb" = (/obj/structure/roof_support,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"bc" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"bd" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"be" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bc" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bd" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"be" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
 "bf" = (/obj/structure/closet/crate,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bg" = (/obj/item/weapon/storage/firstaid/adv,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bh" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen/pencil,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
@@ -62,7 +62,7 @@
 "bj" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bk" = (/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bl" = (/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"bm" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bm" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bn" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "insurgent radio"; transmitter = 0; transmitter_on = 0},/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bo" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bp" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
@@ -83,58 +83,57 @@
 "bE" = (/obj/structure/barricade,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bF" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "bG" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"bH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"bH" = (/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bI" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "SOF radio"},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bJ" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bK" = (/obj/structure/closet/crate/empty,/obj/item/flashlight/flashlight,/obj/item/flashlight/flashlight,/obj/item/flashlight/flashlight,/obj/item/flashlight/flashlight,/obj/item/flashlight/flashlight,/obj/item/flashlight/flashlight,/obj/item/flashlight/flashlight,/obj/item/flashlight/flashlight,/obj/item/clothing/accessory/holster/hip,/obj/item/clothing/accessory/holster/hip,/obj/item/clothing/accessory/holster/hip,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bL" = (/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bM" = (/obj/structure/wild/junglebush,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "bN" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"bO" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
+"bO" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/desert)
 "bP" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"bQ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"bR" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"bS" = (/obj/item/stack/farming/seeds/wheat,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bQ" = (/obj/item/stack/farming/seeds/wheat,/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bR" = (/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bS" = (/turf/floor/beach/sand,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bT" = (/obj/structure/wild/smallbush,/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"bU" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bU" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bV" = (/obj/structure/vending/sofapparel,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bW" = (/obj/structure/vending/sofweapons,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bX" = (/obj/structure/vending/sofammo,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"bY" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bY" = (/turf/floor/dirt,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "bZ" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 4},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"ca" = (/obj/structure/wild/smallbush,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"ca" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
 "cb" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 10},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cc" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cd" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "ce" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 6},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cf" = (/turf/floor/dirt,/area/caribbean/arab/caves)
-"cg" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"cg" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "ch" = (/obj/map_metadata/hostages,/turf/wall/rockwall,/area/caribbean/arab/caves)
 "ci" = (/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/dirt,/area/caribbean/arab/caves)
 "cj" = (/turf/wall/rockwall,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "ck" = (/mob/living/simple_animal/mouse/brown,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"cl" = (/obj/structure/roof_support,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"cm" = (/obj/structure/roof_support,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"cl" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"cm" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
 "cn" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/launcher/grenadelauncher/M79,/obj/item/weapon/gun/launcher/grenadelauncher/M79,/obj/item/weapon/gun/launcher/grenadelauncher/M79,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
-"co" = (/obj/structure/roof_support,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"cp" = (/obj/structure/roof_support,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"cq" = (/obj/structure/window/sandbag/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"cr" = (/obj/structure/flag/us,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"co" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"cp" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
+"cq" = (/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cr" = (/obj/structure/flag/us,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cs" = (/obj/effect/landmark{name = "JoinLateRN"},/obj/structure/lamp/lamp_small/alwayson,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "ct" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cu" = (/obj/structure/barricade,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cv" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cw" = (/obj/effect/landmark{name = "JoinLateRN"},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cx" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/syringe/morphine,/obj/item/weapon/reagent_containers/syringe/morphine,/obj/item/weapon/reagent_containers/syringe/morphine,/obj/item/weapon/reagent_containers/syringe/morphine,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"cy" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
+"cy" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "cz" = (/obj/structure/closet/crate,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
-"cA" = (/obj/structure/wild/jungle/medpine/dead,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
+"cA" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "cB" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/glass,/obj/item/weapon/storage/fancy/cigar,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
-"cC" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
-"cD" = (/obj/structure/wild/jungle/medpine/dead,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
-"cE" = (/obj/structure/wild/junglebush,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
-"cF" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
-"cG" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall{base_turf = /turf/floor/beach/sand/desert; climate = "desert"})
+"cC" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
+"cD" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall/desert)
+"cE" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"cF" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
 "cH" = (/obj/structure/closet/crate/empty,/obj/item/clothing/mask/shemagh,/obj/item/clothing/mask/shemagh,/obj/item/clothing/mask/shemagh/greykerchief,/obj/item/clothing/mask/shemagh/greykerchief,/obj/item/clothing/mask/shemagh/greykerchief,/obj/item/clothing/mask/shemagh/redkerchief,/obj/item/clothing/mask/shemagh/redkerchief,/obj/item/clothing/mask/shemagh/redkerchief,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cI" = (/obj/structure/closet/crate/empty,/obj/item/clothing/mask/facecamo,/obj/item/clothing/mask/facecamo,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 "cJ" = (/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
@@ -149,7 +148,6 @@
 "cS" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/turf/floor/dirt,/area/caribbean/arab/caves)
 "cT" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/flashbang/m84,/obj/item/weapon/grenade/flashbang/m84,/turf/floor/dirt,/area/caribbean/arab/caves)
 "cU" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/coldwar/nonfrag/m26,/obj/item/weapon/grenade/coldwar/nonfrag/m26,/obj/item/weapon/grenade/coldwar/nonfrag/m26,/obj/item/weapon/grenade/coldwar/nonfrag/m26,/obj/item/weapon/grenade/coldwar/nonfrag/m26,/obj/item/weapon/grenade/coldwar/nonfrag/m26,/turf/floor/dirt,/area/caribbean/arab/caves)
-"cV" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "cW" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "cX" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/turf/floor/dirt,/area/caribbean/arab/caves)
 "cY" = (/obj/structure/closet/crate/empty,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/turf/floor/dirt,/area/caribbean/arab/caves)
@@ -167,23 +165,19 @@
 "dk" = (/obj/structure/sign/custom{name = "NE Armory"},/obj/structure/barricade/steel,/turf/floor/dirt,/area/caribbean/arab/caves)
 "dl" = (/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/turf/floor/dirt,/area/caribbean/arab/caves)
 "dm" = (/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98box,/turf/floor/dirt,/area/caribbean/arab/caves)
-"dn" = (/obj/structure/window/sandbag/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"do" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
-"dp" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"dq" = (/obj/structure/wild/tallgrass2,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"dr" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"ds" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
-"dt" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm{icon_state = "pkm"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
-"du" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
-"dv" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
-"dw" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/dirt,/area/caribbean/arab/caves)
-"dx" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
-"dy" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
+"dr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"ds" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
+"dt" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm{icon_state = "pkm"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
+"du" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
+"dv" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
+"dw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/dirt,/area/caribbean/arab/caves)
+"dx" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
+"dy" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
 "dz" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/dirt,/area/caribbean/arab/caves)
 "dA" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "dB" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm{icon_state = "pkm"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "dC" = (/obj/structure/sign/custom{name = "West Entrance"},/obj/structure/barricade/steel,/turf/floor/dirt,/area/caribbean/arab/caves)
-"dD" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
+"dD" = (/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
 "dE" = (/obj/item/stack/material/barbwire{amount = 10},/turf/floor/dirt,/area/caribbean/arab/caves)
 "dF" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
 "dG" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/beartrap,/turf/floor/dirt,/area/caribbean/arab/caves)
@@ -208,7 +202,7 @@
 "dZ" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "ea" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "eb" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
-"ec" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
+"ec" = (/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "ed" = (/obj/item/stack/material/barbwire{amount = 10},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "ee" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/beartrap,/obj/item/weapon/beartrap,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "ef" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
@@ -326,19 +320,19 @@
 "gn" = (/obj/structure/bed/chair,/turf/floor/dirt,/area/caribbean/arab/caves)
 "go" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
 "gp" = (/obj/structure/closet/crate/chest,/turf/floor/dirt,/area/caribbean/arab/caves)
-"gq" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
-"gr" = (/obj/structure/target_practice,/turf/floor/dirt,/area/caribbean/arab/caves)
+"gq" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
+"gr" = (/obj/structure/practice_dummy,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gs" = (/obj/item/stack/ammopart/casing/pistol,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gt" = (/obj/effect/floor_decal/industrial/warning{icon_state = "warning"; dir = 8},/obj/effect/floor_decal/industrial/outline/grey,/turf/floor/dirt,/area/caribbean/arab/caves)
-"gu" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
+"gu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "gv" = (/obj/item/stack/ammopart/casing/rifle,/turf/floor/dirt,/area/caribbean/arab/caves)
 "gw" = (/obj/effect/floor_decal/industrial/warning{icon_state = "warning"; dir = 8},/obj/item/stack/ammopart/casing/rifle,/obj/structure/table/wood,/obj/item/weapon/gun/projectile/submachinegun/ak47,/turf/floor/dirt,/area/caribbean/arab/caves)
-"gx" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
+"gx" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
 "gy" = (/obj/effect/floor_decal/industrial/warning{icon_state = "warning"; dir = 8},/obj/structure/table/wood,/obj/item/ammo_magazine/ak47,/turf/floor/dirt,/area/caribbean/arab/caves)
-"gz" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
+"gz" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "gA" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
-"gB" = (/obj/structure/barricade/vertical,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
-"gC" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
+"gB" = (/obj/structure/barricade/vertical,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/arab/caves)
+"gC" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "gD" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 8},/turf/floor/dirt,/area/caribbean/arab/caves)
 "gE" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/dirt,/area/caribbean/arab/caves)
 "gF" = (/obj/item/weapon/mop,/turf/floor/dirt,/area/caribbean/arab/caves)
@@ -375,11 +369,11 @@
 "hk" = (/obj/structure/sign/exit{icon_state = "exit"; dir = 4},/turf/wall/rockwall,/area/caribbean/arab/caves)
 "hl" = (/obj/structure/sign/exit{icon_state = "exit"; dir = 1},/turf/wall/rockwall,/area/caribbean/arab/caves)
 "hm" = (/obj/structure/sign/exit{icon_state = "exit"; dir = 8},/turf/wall/rockwall,/area/caribbean/arab/caves)
-"hn" = (/obj/structure/wild/tallgrass2,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"hn" = (/obj/structure/wild/tallgrass2,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "ho" = (/obj/structure/wild/tallgrass2,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
-"hp" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"hp" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "hq" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
-"hr" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"hr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "hs" = (/obj/structure/barbwire,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "ht" = (/obj/structure/wild/rock,/obj/structure/barbwire,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "hu" = (/obj/structure/sign/custom{name = "SE Armory"},/obj/structure/barricade/steel,/turf/floor/dirt,/area/caribbean/arab/caves)
@@ -396,61 +390,61 @@
 "hF" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/dirt,/area/caribbean/arab/caves)
 
 (1,1,1) = {"
-cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
-cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjababababababababababababababababababaaaaaaababababababababababababababababababababababababababababababababababababababababababababababababab
-cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjagagahcjcjaaaaaaaaaaaaaaaaaaaaabababababababaaaaacaaaaaaapaaaaababababababababababababababababababababababababababababababababababdHdHdUdHdUeCdHdVabab
-cjcjcjcjagcjcjcjbgcjcjcjcjcjcjcjcjcjajagagakakagagagagalamaqadacacaaaaacacaaaaaaababababaaaaaaaaacacacacacaJacaaaaaaaaaaaaabababababababababababababababababababababababababababababdHdHdWdHdHdHdHdHabab
-cjcjcjcjagagcjcjbLaraoaoarcjcjcjcjagagasatatauagagagatatawaxadaeacacaaacacacacaaaaaaaaaaaaacacacacacacacacaJacacaaacacacaaabababababababababababababababababababababababababababababepepephhhhepepepabab
-cjcjagagayaBaghwaCazaAaAaAcjagagagagatatatatatatatagatataKaLafaiaeacacacaeacacacaaaaaaaaacanaeaeaeaeaeavaDbOaeacacacaaaaaaabababababababababababababababababababababababababababababdWdUepcfcfepdVdUabab
-cjcjcjatatagaghxataHazaIaAcxagagatatatatataMatatatatataLaPaVadaeafaeacacaeacacacaEacaaacacaFaeaeaeaeaeaDaDbOaeacacacaaaaaaabababababababababababababababababababababababababababababeCdVepeaebepdUdHabab
-cjcjagagagatathxaWaQazaRaRaQatatagatatatagagatatatatataXatatafaeafaeaeaeaeaFacaeaGacacacaeaeacaeaeacaeaeaDcyacacacacacaaaaabababababababababababababababababababababababababababababdUdHhhcfcfhhdHeCabab
-cjagagagatagatatatatatatatatatatajatatasasagataCatagatbcbdatbeataNaeaeaeaeaeaiaeaeaiaeaeaeaeaOaeaeaeaeacaebOaeacacacacacaaabababababababababababababababababababababababababababababdHdHepeaebepdUdWabab
-cjagcjaQazbaazbbatatbfatczcHbkbkbkagatataBatatatatatblbmbdatatatafaeaeaeaeaSaeaeaeaeaeaeaeaeaiaeacacacacaccAaeaeacacacaaaaabababababababababababababababababababababababababababababdUdHepcfcfepepepabab
-cjcjcjbpbhbibjazatatatbqbrbrbrbrbrbsagatatbwatblblblblbwcjataCatafaeaeaeaeaiaeaeaeaeaeaSaiaeanacacaeacacacaJaeaeacacacaaaaababababababababababababababababababababababababababababababababcfcfehbAdYabab
-cjcjagaAbnaAbaboatbkbxbybBbkcsagbkbCagagbDbEbJblfhfjcjcjcjcjaUaUaYaeaeaeaeaeaeaeaeaeaeaeaeaeacaeaeacacaeacaJacanacacacaaaaababababababababababababababababababababababababababababababababcfcfcfegcfabab
-cjcjcjbpbvbaazazasbkbKbybBctcucvbkbCagcIbMbNblbDfAfBfBcjcjcjaFaeaeaeaeaeaeaeaeaeaeaeaeaeaeaZacacaeanaeaDacaJacacacacaaaaaaababababababababababababababababababababababababababababababababhihiababababab
-cjcjcjazcBbaazazatathEbPbTbkcwagagbZbkcJblblblatfCfDfDfEfEcjaiaeaeaebtaeaeaeaeaeaeaeaeaZaeaeacaeaebuaDaeacaJacacacacacaaababababababababababababababababababababababababababababababababdecfdAababababab
-cjcjagbbbIaAazbbatagagcbcccccccccdceaBblblblbDfAfAfDfDfDfEcjcjaeaZaeaeaeaOaeaeaeaFaOaeaeaeaZacbzacaeaeaeaFaJaiacacaaaaaaabababababababababababababababababababababababababababababababababcfcfababababab
-cjagagatatasascKataCbkbkbkagbkbkbkbkblblblblatfAfDfDfDfFcjcjcjaeaeaeaeaeaeaeaeaFaDaeaeaeaeaeacaeacaeaiaeaeaJacaFacaaaaaaabababababababababababababababababababababababababababababababababcfcfababababab
-cjcjcjagatataBatatataBaMbkatatbkbkbkbkblatatbDfAfDfDfEcjcjcjaiaeaeaeaeaeaeaeaeaeaeaDaeaeacaZacacacaeaiaiaebOaeaeacaaaaaaabababababababababababababababababababababababababababababababababcfdAhjabababab
-cjcjagagagatatatagagatatatatblblatbkblatatckcjfAfDfDfEcjcjaeaeaeaeaeaeaeaeaZaeaeaeaeaeaeacacacacaeaeaeaZbFbOaeacacacaaaaababababababababababababababababababababababababababababababdgdgdhcfcfcfcfdiabab
-cjcjagagatatatclbRbSbRbRbRcmblblbkbkatatatcjcjcjfEfEcjcjaeaeaeaeaSaeaeaeaeaeaeaeaOaFaeaeaeaeaeacaeaFaeaeaecCaiaeacacaaaaababababababababababababababababababababababababababababababcfcfcfegcfcfcfdiabab
-cjcjagauatatatbUazbXbXbXazbYatatbkatatatcjcjcjcjcjcjcjaeaeaZaeaeaeaeaeaDaeaeaeaeaZaeaeaeaeaGacaeaeaeaeaeaObOaeacacacaaaaababababababababababababababababababababababababababababababdjcfebdkeacfcfdiabab
-cjcjagatatatatbUazazazazbobYatbkbkaCataCcjcjcjcjcjcjaeaeaeaiaiaeaeaDaFaeaeaSaeaeaeaFaiaeaeaeaeaeaeaeaZaeaFbOacacacacacaaaaababababababababababababababababababcfcfelcfcfcfcfcfelcfcfcfcfcfefcfcfcfdlabab
-cjcjcjagaCagatazazazazazazazbkbkasataMcjcjcjbGcjaiaeaeaeaeaeaeaeaeaDaeaeacacacaeaDaeaeaeaeaeaeaeaeaeaeaeaeaJaSaeacacacaaaaababababababababababababababababababcfababababababababababdjcfcfcfcfcfcfdmabab
-cjcjcjagatatatbUazazazazbocaatatatatataXcjhnhoaeaeaeaeaeaFaFbObOcCcDbObObObObObOcCbObObOcDbObOcEbObOcybOcFbOaeaeacacacacaaababababababababababababababababababcfabababababababababababcfcfhjabcfcfababab
-cjcjcjagaMatatcobVbVbWbWazcpatagatataCatbchphqaZaeaeaeaeaeaFbOaeaeaeaeaeaZaeaeaeaDaeaeaeaeaOaeaeaeaebtaeaeaeaDaeacacaDacaaaaabababababababababababababababababcfhjababababababababababdZcfababcfcfababab
-cjcjcjasataCatawawawawawawawatatatcjcqcqcrhpbGaZaeaeaGaeaeaebOaeaeaFaeaeaeaDaDaDaeaiaeaeaeaeaFaDaDaDaeaeaeaDaDaeaDaDacacacaaabababababababababababcfcfcfcfelcfcfabababababababababababcfcfababcfdAababab
-cjcjagaBatatatbMcjatcjcjatatatcjcjcjcjhrhrbGbGaeaSaeaeaeaeaecFaeaeaeaeaeaeaDaDbtaeaeaeaeaeaeaeaDaDaDaeaeaebQbQaDaZacacacacaaabababababababababababcfcfababababababababababababababababcfcfababcfcfababab
-cjcjcjcjatcjatcjcjcjcjcjcjascjcjcjcjcjhshshthsaeaiaeaeaeacacaJacaeaDaGaeaeaeaFaeaeaeaeacaeaeacaeacacacaccgacaecVacacaaaaaaaaabababababababababababcfcfababababababababababababababababcfcfababcfcfababab
-cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjaeaZaeaeaeaeaeaeaeaeaebOaeaOaDaeaeaiaeaeaeacaeaeaeaeaeaeacacacacaccLacaccLacacaaababababababababababababababcfcfababababababababababababababababcfcfababfHcfababab
-aecjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjaeaeaeaeaFaeaOaeaeaeaeaeaebOaeaeaDaeaeaeaeaeaeaeaeaeaeaeaeacacaaaaaaaaaacMcMaaaaaaaaababababababababababababababdZcfhjabababababababababababababababdZcfababcfcfababab
-aeaeaeaecjcjcjcjcjcjcjcjcjaeaeaeaeaeaeaeaGaeaeaeaeaeaeaiaDaecGaeaeaeaeaeaeaeaeaeaeaeaeacacacacacaaaaabababcfcfababababababeQeReSeQhyeTeUababababercfcfababababababababababababababababcfcfababcfdAababab
-aeaeaeaeaeaeaeaeaeaeaeaeaeaZaeaeaeaeaeaeaeaeaeaiaeaeaDaeaeaebOaeaeacaeacacaeacacacacacacacacaaaaaaaaabababcfcfababababababeSeRcfcfcfcfcfcfcfcfdFeRcfcfababababcfcfcfabhkcffIgFababababcfcfabhjcfcfababab
-aeaeaeaeaeaeaeaeaeaeaiaeaeaeaeaeaeacaeaibtaeaeaeaeaeaTaeaeacbOaeaeaeacacacacacacacaaaaaaaaaaaaababababcfdFcfcfdFcfababababeSeRhzhzcfcfcfabababababcfcfcfcfcfdFcffIcfcfdFcffIcfabcfdFcfcfcfababcfcfababab
-aeaSaeaFaeaeaeaGaeaeaeaeaeaeaiaeaeaeaeaeaeaFaeaeaeaGaeaeaeaebOaeaeacacaaaaacacaaaaaaabababababababababcfdsgxgxducfababababeVeReSeVeSeWeXabababababdZcfcfcfcfcfcffIcfababcfcfcfcfcfcfcfcfcfababcffHababab
-aeaeaeaeaeaeaeaeaeaecDbObOcybObObObObObObObOaJbObObObOaJaJbOaJacacacacaaaaaaaaaaaaaaabababababababababcfcfcfcfcfcfababababababababababababababababfJfKababababababababababababababababababababcfcfababab
-aZaeaeaeaeaiaeaeaeaebOaeaeaFaeaeaeaeaeaOaeaeaeacaeacacacacacacacaaaaaaaaabababababababababababababababababcfdsababababababababababababababababababhiaberabababababababababababababababababababcfcfababab
-aeaeaeaeaeaeaeaeaeaebOaeaeaeaGaeaeacaeaeaeaeaeacacacacaaaaaaaaaaaaaaaaaaabababababgXgYcfgZgZhaababababababcfdvababababababeffLcffMfMefabfNfGfGfGfNcfcfcfcfcfefcffOfOfPabeffQfRcfefababababababcfdAababab
-aeaeaeaeaFaeaeaiaeaebOaeaeaeaeaeaeaeacaeacacacacaaaaaaaaabababababababababababababhbcfcfcfcfgZabhkababababcfcfcfcfdFcfcfabfSfTcfcfcfcfhicfcfcfcfcfcfcfcffUfUcffUcfcfcfhicfcfcfcfcfhicfababababfHcfababab
-aeaOaeaeaebtaeaeaeacbOaeaeacacacaeacacacacaaaaaaaaaaaaababababababababababababababcfcfcfcfcfcfcfcfcfdFcfcfcfcfcfcfcfcfcfabfSfVfWcfcfcfabfGfGcffGfGcfcffSfXfXflfYfxcfcfabfZcffTfLgaabcfababababcfcfababab
-aeaGaeaeaeaeaeaeaeaebOacacacaaacacacaaacacaaaaaaaaaaaaababababababababababababababhdhehdgZcfheabababababeqabababababcfcfabegcfcfcfcfegabcfcfcfcfcfcfcfcfgjcfcfcffXfWcfabgccfgdgdegabdAabababercfcfababab
-bObOcFbOcDbObOcycGbObOacaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababababababababababababababababababababhlcfcfababababababababgefGfGfGcfcfcffSgfcffxggcfcfebabababababababcfhicfdFghcfdAababab
+cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjabababaJabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjabababaJababababababababababababababaaaaaaababababababababababababababababababababababababababababababababababababababababababababababababab
+cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjagagahcjcjaaaaaaaJaaaaaaaaaaaaabababababababaaaaacaaaaaaaaaaaaababababababababababababababababababababababababababababababababababdHdHdUdHdUeCdHdVabab
+cjcjcjcjagcjcjcjbgcjcjcjcjcjcjcjcjcjajagagakakagagagagalamaqadacacaJaaacacaaaaaaababababaaaaaaaaacacacacacacacaaaaaaaaaaaaabababababababababababababababababababababababababababababdHdHdWdHdHdHdHdHabab
+cjcjcjcjagagcjcjbLaraoaoarcjcjcjcjagagasatatauagagagatatawaxadaeacbOaaacacacacaaaaaaaaaaaaacacacacacacacacacacacaaacacacaaabababababababababababababababababababababababababababababepepephhhhepepepabab
+cjcjagagayaBaghwaCazaAaAaAcjagagagagatatatatatatatagatataKaLapaiaebOacacaeacacacaaaaaaaaacanaeaeaeaeaeavaDaeaeacacacaaaaaaabababababababababababababababababababababababababababababdWdUepcfcfepdVdUabab
+cjcjcjatatagaghxataHazaIaAcxagagatatatatataMatatatatataLaPaVbeaeafcpacacaeacacacaEacaaacacaFaeaeaeaeaeaDaDaeaeacacacaaaaaaabababababababababababababababababababababababababababababeCdVepeaebepdUdHabab
+cjcjagagagatathxaWaQazaRaRaQatatagatatatagagatatatatataXatatapaeafcpaeaeaeaFacaeaGacacacaeaeacaeaeacaeaeaDaFacacacacacaaaaabababababababababababababababababababababababababababababdUdHhhcfcfhhdHeCabab
+cjagagagatagatatatatatatatatatatajatatasasagataCatagatbcbdatbdataNcpaeaeaeaeaiaeaeaiaeaeaeaeaOaeaeaeaeacaeaeaeacacacacacaaabababababababababababababababababababababababababababababdHdHepeaebepdUdWabab
+cjagcjaQazbaazbbatatbfatczcHbkbkbkagatataBatatatatatblbmbdatatatafcpaeaeaeaSaeaeaeaeaeaeaeaeaiaeacacacacacaTaeaeacacacaaaaabababababababababababababababababababababababababababababdUdHepcfcfepepepabab
+cjcjcjbpbhbibjazatatatbqbrbrbrbrbrbsagatatbwatblblblblbwcjataCatafcpaeaeaeaiaeaeaeaeaeaSaiaeanacacaeacacacacaeaeacacacaaaaababababababababababababababababababababababababababababababababcfcfehbAdYabab
+cjcjagaAbnaAbaboatbkbxbybBbkcsagbkbCagagbDbEbJblfhfjcjcjcjcjaUaUaYcpaeaeaeaeaeaeaeaeaeaeaeaeacaeaeacacaeacacacanacacacaaaaababababababababababababababababababababababababababababababababcfcfcfegcfabab
+cjcjcjbpbvbaazazasbkbKbybBctcucvbkbCagcIbMbNblbDfAfBfBcjcjcjaFaeaecpaeaeaeaeaeaeaeaeaeaeaeaZacacaeanaeaDacacacacacacaaaaaaababababababababababababababababababababababababababababababababhihiababababab
+cjcjcjazcBbaazazatathEbPbTbkcwagagbZbkcJblblblatfCfDfDfEfEcjaiaeaecpbtaeaeaeaeaeaeaeaeaZaeaeacaeaebuaDaeacacacacacacacaaababababababababababababababababababababababababababababababababdecfdAababababab
+cjcjagbbbIaAazbbatagagcbcccccccccdceaBblblblbDfAfAfDfDfDfEcjcjaeaZcpaeaeaOaeaeaeaFaOaeaeaeaZacbzacaeaeaeaFacaiacacaaaaaaabababababababababababababababababababababababababababababababababcfcfababababab
+cjagagatatasascKataCbkbkbkagbkbkbkbkblblblblatfAfDfDfDfFcjcjcjcpcpcpaeaeaeaeaeaFaDaeaeaeaeaeacaeacaeaiaeaeacacaFacaaaaaaabababababababababababababababababababababababababababababababababcfcfababababab
+cjcjcjagatataBatatataBaMbkatatbkbkbkbkblatatbDfAfDfDfEcjcjcjcCcpaeaeaeaeaeaeaeaeaeaDaeaeacaZacacacaeaiaiaeaeaeaeacaaaaaaabababababababababababababababababababababababababababababababababcfdAhjabababab
+cjcjagagagatatatagagatatatatblblatbkblatatckcjfAfDfDfEcjcjcpcpaeaeaeaeaeaeaZaeaeaeaeaeaeacacacacaeaeaeaZbFaeaeacacacaaaaababababababababababababababababababababababababababababababdgdgdhcfcfcfcfdiabab
+cjcjagagatazbHbHbHbQbHbHbHbHbRbSbkbkatatatcjcjcjfEfEcjcjcpcpaeaeaSaeaeaeaeaeaeaeaOaFaeaeaeaeaeacaeaFaeaeaeaDaiaeacacaaaaababababababababababababababababababababababababababababababcfcfcfegcfcfcfdiabab
+cjcjagauatbUazbXbXbXbXbXbXazbUazbkatatatcjcjcjcjcjcjcjcpcpaZaeaeaeaeaeaDaeaeaeaeaZaeaeaeaeaGacaeaeaeaeaeaOaeaeacacacaaaaababababababababababababababababababababababababababababababdjcfebdkeacfcfdiabab
+cjcjagatatbUazazazazazazboazbUbYbkaCataCcjcjcjcjcjcjcpcpaeaiaiaeaeaDaFaeaeaSaeaeaeaFaiaeaeaeaeaeaeaeaZaeaFaeacacacacacaaaaababababababababababababababababababcfcfelcfcfcfcfcfelcfcfcfcfcfefcfcfcfdlabab
+cjcjcjagaCcEazazazazazazazazbYbYasataMcjcjcjbGcjcCcpcpaeaeaeaeaeaeaDaeaeacacacaeaDaeaeaeaeaeaeaeaeaeaeaeaeacaSaeacacacaaaaababababababababababababababababababcfababababababababababdjcfcfcfcfcfcfdmabab
+cjcjcjagatbUazazazazazazbobobUazatatataXcjhnhocpcpaeaeaeaFaFaeaeaDaSaeaeaeaeaeaeaDaeaeaeaSaeaeaGaeaeaFaeaiaeaeaeacacacacaaababababababababababababababababababcfabababababababababababcfcfhjabcfcfababab
+cjcjcjagaMbUbVbVbVbVbWbWbWbWbUaAatataCatbchphqcDaeaeaeaeaeaFaeaeaeaeaeaeaZaeaeaeaDaeaeaeaeaOaeaeaeaebtaeaeaeaDaeacacaDacaaaaabababababababababababababababababcfhjababababababababababdZcfababcfcfababab
+cjcjcjasatbocFcFcFcFcFcFcFcFcFazatcjcqcqcrhpbGcDaeaeaGaeaeaeaeaeaeaFaeaeaeaDaDaDaeaiaeaeaeaeaFaDaDaDaeaeaeaDaDaeaDaDacacacaaabababababababababababcfcfcfcfelcfcfabababababababababababcfcfababcfdAababab
+cjcjagaBatatatbMcjatcjcjatatatcjcjcjcjhrhrbGbGcpaSaeaeaeaeaeaiaeaeaeaeaeaeaDaDbtaeaeaeaeaeaeaeaDaDaDaeaeaeaeaeaDaZacacacacaaabababababababababababcfcfababababababababababababababababcfcfababcfcfababab
+cjcjcjcjatcjatcjcjcjcjcjcjascjcjcjcjcjhshshthscpaiaeaeaeacacacacaeaDaeaeaeaeaFaeaeaeaeacaeaeacaeaccacacaacacaecgclcaabababababababababababababababcfcfababababababababababababababababcfcfababcfcfababab
+cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcpcDcpcpcpaeaeaeaeaeaeaeaeaOaDaeaeaiaeaeaeacaeaeaeaeaeaeaccmcoacacacacacacacacabababababababababababababababcfcfababababababababababababababababcfcfababfHcfababab
+cpcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcpcpcpaeaFaeaOaeaeaeaeaeaeaeaeaeaDaeaeaeaeaeaeaeaeaeaeaeaeacacaaaaaaaacMcMcMababababababababababababababababababdZcfhjabababababababababababababababdZcfababcfcfababab
+cpcpcpcpcjcjcjcjcjcjcjcjcjcpcpcpcpcpaeaeaGaeaeaeaeaeaeaiaDaeaZaeaeaeaeaeaeaeaeaeaeaeaeacacacacacaaaaababcfcfcfababababababeQeReSeQhyeTeUababababercfcfababababababababababababababababcfcfababcfdAababab
+aeaeaecpcpcpcpcpcpcpcpcpcpcDaeaeaeaeaeaeaeaeaeaiaeaeaDaeaeaeaeaeaeacaeacacaeacacacacacacacacaaaaaaaaababcfcfcfcfabababababeSeRcfcfcfcfcfcfcfcfdFeRcfcfababababcfcfcfabhkcffIgFababababcfcfabhjcfcfababab
+aeaeaeaeaeaeaeaeaeaeaiaeaeaeaeaeaeacaeaibtaeaeaeaeaeaTaeaeacaeaeaeaeacacacacacacacaaaaaaaaaaaaababababdFcfcfcfcfdFababababeSeRhzhzcfcfcfabababababcfcfcfcfcfdFcffIcfcfdFcffIcfabcfdFcfcfcfababcfcfababab
+aeaSaeaFaeaeaeaGaeaeaeaeaeaeaiaeaeaeaeaeaeaFaeaeaeaGaeaeaeaeaeaeaeacacaaaaacacaaaaaaabababababababababcfcfgqgqgqcfababababeVeReSeVeSeWeXabababababdZcfcfcfcfcfcffIcfababcfcfcfcfcfcfcfcfcfababcffHababab
+aeaeaeaeaeaeaeaeaeaeaSaeaeaFaeaeaeaeaeaeaeaeacaeaeaeaeacacaeacacacacacaaaaaaaaaaaaaaabababababababababcfcydsgxdudvababababababababababababababababfJfKababababababababababababababababababababcfcfababab
+aZaeaeaeaeaiaeaeaeaeaeaeaeaFaeaeaeaeaeaOaeaeaeacaeacacacacacacacaaaaaaaaabababababababababababababababcfcfcfcfcfabababababababababababababababababhiaberabababababababababababababababababababcfcfababab
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaGaeaeacaeaeaeaeaeacacacacaaaaaaaaaaaaaaaaaaabababababgXgYcfgZgZhaababababcfcfcfcfcfabababababeffLcffMfMefabfNfGfGfGfNcfcfcfcfcfefcffOfOfPabeffQfRcfefababababababcfdAababab
+aeaeaeaeaFaeaeaiaeaeaeaeaeaeaeaeaeaeacaeacacacacaaaaaaaaabababababababababababababhbcfcfcfcfgZabhkababcfcfcfcfcfcfdFcfcfabfSfTcfcfcfcfhicfcfcfcfcfcfcfcffUfUcffUcfcfcfhicfcfcfcfcfhicfababababfHcfababab
+aeaOaeaeaebtaeaeaeacaeaeaeacacacaeacacacacaaaaaaaaaaaaababababababababababababababcfcfcfcfcfcfcfcfcfdFcfcfcfcfcfcfcfcfcfabfSfVfWcfcfcfabfGfGcffGfGcfcffSfXfXflfYfxcfcfabfZcffTfLgaabcfababababcfcfababab
+aeaGaeaeaeaeaeaeaeaeaeacacacaaacacacaaacacaaaaaaaaaaaaababababababababababababababhdhehdgZcfheabababababeqabababababcfcfabegcfcfcfcfegabcfcfcfcfcfcfcfcfgjcfcfcffXfWcfabgccfgdgdegabdAabababercfcfababab
+aeaeaiaeaSaeaeaFaZaeaeacaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababababababababababababababababababababhlcfcfababababababababgefGfGfGcfcfcffSgfcffxggcfcfebabababababababcfhicfdFghcfdAababab
 aeaeaeaeaeaiaeaeaeaeaeacacaaaaaaaaaaababababababababababababababababababababababababababababababababababababababababcfebabgigafWcffQefabcfcfcfcfcfcfcffSglcfcfcfgbfWcfabeffQfQfQefabcfababababcfcfababab
 aeaeaeaeaeaeaeaeaeacacacacaaababababababababababababababababababababababababababababababababababababababababababababcfcfabfSfLfWcfcfcfabfGcffGfGfGcfcffSfXfYfxgkflcfcfabcfcfcfcfcfdXcfabababhjcfcfababab
-aeaeaeaFdndnaeaeaeacaaacaaaaababababababababababababababababababababababababababababababababababababeseueuesababababcfcfabcffTcfcfcfcfhicfcfcfcfcfcfcfcfcfgdcfgdgdcfcfdXcfcfhAfTfVababababababcfcfababab
-aeaeaeaebQdoaeaeaeacacaaaaabababababababababababababababababababababababababababababababababababababdOcfcfevababababcfcfabegcfcfcffRegabgmcffGfGgmcfcfcfcfcfegcfcfcfegabegcfcfgdegababababababcffHababab
-aeaeaedpaeaedqaeacaeacaaaaabababababababababababababababababababababababababababababababababababababeycfcfeyabhkababcfcfabababababababababababababababhiabababababababababababababababababababcfdAababab
-aeaeaFbHaeaedraeaeaeacaaaaabababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfdFcfcfcfhlababababababababababababcfcfcferabababababababababababababababababcfcfababab
-aeaeacbHaeacdraeacacacaaaaabababababababababababababababababababababababababababababababababababababcfcfcfcfeEababababcfcfabababababababababababababdZcfcfababababababababababababababababababcfcfababab
-aeacaccLacaccLacacaaaaaaaaabababababababababababababababababababababababababababababababababababababeycfcfeyabababababcfebabababababababababababababcfgncfababababababababababababababababababfHcfababab
-acacacaaacacaaaaaaaaaaabababababababababababababababababababababababababababababababababababababababevcfcfdOabababababcfcfababababababababhmababababdOfVcfabababababababababababhjababgGabgHabcfcfababab
-aaaaaaaacMcMaaaaababababababababababababababababababababababababababababababababababababababababababeycfcfeyabababababcfcfcfcfdFcfcfcfcfcfdFcfcfcfcfgogogoabababababababababababcfcfcfcfcfcfcfcfdAababab
-ababababcfcfabababababababababababababababababababababababababababababababababababababababababababeEdOcfcfevabababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfabababababababababababcfcffIcfcfcfcfcfcfababab
-abababcfcfcfcfcfcfabababababababababababababababababababababababababababababababababababababababababeycfcfeyabababababababababababfTdOcfabababababhmcfcfcfabababababababababababcfcfabgIabgIabgJabababab
-ababcfcfdsdtducfcfcfcfcfabababababababababababababababababababcfcfdFcfcfcfcfdFcfcfcfcfcfcfdFcfcfcfcfcfcfcfdOabababababababababababgEgEcfababababababdZcfcfabababababababababababcfdAabababababababababab
-ababeacfdvcfdwcfcfcfcfebabababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfabeFcfcfeFababababababababababababababababababababcfcfcfabababababababababababcfcfabababababababababab
-ababcfcfdxcfdycfcfcfcfcfababababababababababababgpgpabababababdZababababababababababababababababababababababababababababababababababababababababababgqgqcfabababababababababababcfcfabababababababababab
+aeaeaeaFaeaeaeaeaeacaaacaaaaababababababababababababababababababababababababababababababababababababeseueuesababababcfcfabcffTcfcfcfcfhicfcfcfcfcfcfcfcfcfgdcfgdgdcfcfdXcfcfhAfTfVababababababcfcfababab
+aeaeaeaeaeacaeaeaeacacaaaaabababababababababababababababababababababababababababababababababababababdOcfcfevababababcfcfabegcfcfcffRegabgmcffGfGgmcfcfcfcfcfegcfcfcfegabegcfcfgdegababababababcffHababab
+aeaecgcgcgaeaFaeacaeacaaaaabababababababababababababababababababababababababababababababababababababeycfcfeyabhkababcfcfabababababababababababababababhiabababababababababababababababababababcfdAababab
+aedrcAaeaeaeaeaeaeaeacaaaaabababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfdFcfcfcfhlababababababababababababcfcfcferabababababababababababababababababcfcfababab
+aeaeacaaaaacaeaeacaaaaaaaaabababababababababababababababababababababababababababababababababababababcfcfcfcfeEababababcfcfabababababababababababababdZcfcfababababababababababababababababababcfcfababab
+aeaaaaaaaaaacLacacaaaaaaaaabababababababababababababababababababababababababababababababababababababeycfcfeyabababababcfebabababababababababababababcfgncfababababababababababababababababababfHcfababab
+aaaaaaaaaaaacMcMcMaaaaabababababababababababababababababababababababababababababababababababababababevcfcfdOabababababcfcfababababababababhmababababdOfVcfabababababababababababhjababgGabgHabcfcfababab
+aaaaaaaaaacMcMcMcfcfababababababababababababababababababababababababababababababababababababababababeycfcfeyabababababcfcfcfcfdFcfcfcfcfcfdFcfcfcfcfgogogoabababababababababababcfcfcfcfcfcfcfcfdAababab
+abababcfcfcfcfcfcfababababababababababababababababababababababababababababababababababababababababeEdOcfcfevabababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfabababababababababababcfcffIcfcfcfcfcfcfababab
+abababcfcfcfcfcfcfcfababababababababababababababababababababababababababababababababababababababababeycfcfeyabababababababababababfTdOcfabababababhmcfcfcfabababababababababababcfcfabgIabgIabgJabababab
+abababcfcfcfdsdtducfcfcfabababababababababababababababababababcfcfdFcfcfcfcfdFcfcfcfcfcfcfdFcfcfcfcfcfcfcfdOabababababababababababgEgEcfababababababdZcfcfabababababababababababcfdAabababababababababab
+ababeacfcfcfdvcfdwcfcfebabababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfabeFcfcfeFababababababababababababababababababababcfcfcfabababababababababababcfcfabababababababababab
+ababcfcfcfcfdxcfdycfcfcfababababababababababababgpgpabababababdZababababababababababababababababababababababababababababababababababababababababababgqgqcfabababababababababababcfcfabababababababababab
 ababcfcfcfcfcfcfcfcfcfababababababgrcfcfcfcfcfgsgtcfabababcfcfcfababababababababababababababababababababababababababababababababababababcfcfdvcfcfcfcfgucfabababababhmabababababcfcfabababababababababab
 abcfcfcfcfcfcfcfcfababababababababgrcfgvcfcfgvcfgwgsabababcfababababababababababababababababababababababababababababababababababababababdZcfdxcfgugxcfgucfcfcfcfdFcfcfcfcfdFcfcfcfcfabababababababababab
 ababeacfcfcfcfcfebababababababababgrcfcfcfcfgscfgtcfabababdZababababababababdzemdzdzdBendBababababababababababeGeHeteIeJeKabababababababcfcfcfcfgucfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfdAabababababababababab

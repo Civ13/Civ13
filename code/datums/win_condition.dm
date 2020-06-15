@@ -10,7 +10,7 @@
 	var/defender_count = 0
 
 	for (var/human in human_mob_list)
-		var/mob/living/carbon/human/H = human
+		var/mob/living/human/H = human
 		if (H && H.original_job && H.client && H.stat == CONSCIOUS && !H.lying && !H.restrained() && !iscloset(H.loc))
 			var/area/H_area = get_area(H)
 			if (H_area && area_check(H_area, areas))

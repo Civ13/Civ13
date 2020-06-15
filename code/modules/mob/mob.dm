@@ -48,19 +48,19 @@
 	if (!client)	return
 
 	if (type)
-		if (type & TRUE && (sdisabilities & BLIND || blinded || paralysis) )//Vision related
+		if (type & TRUE && ((sdisabilities & BLIND) || blinded || find_trait("Blind") || paralysis) )//Vision related
 			if (!( alt ))
 				return
 			else
 				msg = alt
 				type = alt_type
-		if (type & 2 && (sdisabilities & DEAF || ear_deaf))//Hearing related
+		if (type & 2 && ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf")))//Hearing related
 			if (!( alt ))
 				return
 			else
 				msg = alt
 				type = alt_type
-				if ((type & TRUE && sdisabilities & BLIND))
+				if ((type & TRUE && (sdisabilities & BLIND)) || find_trait("Blind"))
 					return
 	// Added voice muffling for Issue 41.
 	if (stat == UNCONSCIOUS || sleeping > 0)
@@ -335,7 +335,7 @@
 	set src in usr
 	if (usr != src)
 		usr << "No."
-	var/msg = sanitize(input(usr,"Set the flavor text in your 'examine' verb. Can also be used for OOC notes about your character.","Flavor Text",rhtml_decode(flavor_text)) as message|null, extra = FALSE)
+	var/msg = sanitize(input(usr,"Set the flavor text in your 'examine' verb. Can also be used for OOC notes about your character.","Flavor Text",html_decode(flavor_text)) as message|null, extra = FALSE)
 
 	if (msg != null)
 		flavor_text = msg
@@ -344,7 +344,7 @@
 	if (flavor_text && flavor_text != "")
 		var/msg = trim(replacetext(flavor_text, "\n", " "))
 		if (!msg) return ""
-		if (lentext(msg) <= 40)
+		if (length(msg) <= 40)
 			return "<span class = 'notice'>[msg]</span>"
 		else
 			return "<span class = 'notice'>[copytext_preserve_html(msg, TRUE, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
@@ -454,7 +454,7 @@
 
 	if (href_list["flavor_more"])
 		if (src in view(usr))
-			usr << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, cp1251_to_utf8(replacetext(flavor_text, "\n", "<BR>"))), text("window=[];size=500x200", name))
+			usr << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>")), text("window=[];size=500x200", name))
 			onclose(usr, "[name]")
 	if (href_list["flavor_change"])
 		update_flavor_text()
@@ -464,7 +464,7 @@
 
 /mob/proc/pull_damage()
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.health - H.halloss <= config.health_threshold_softcrit)
 			for (var/name in H.organs_by_name)
 				var/obj/item/organ/external/e = H.organs_by_name[name]
@@ -521,7 +521,7 @@
 		// kind of mob pull value AT ALL, you will be able to pull
 		// them, so don't bother checking that explicitly.
 
-		if (!iscarbon(src))
+		if (!ishuman(src))
 			M.LAssailant = null
 		else
 			M.LAssailant = usr
@@ -546,7 +546,7 @@
 		pullin.icon_state = "pull1"*/
 /*
 	if (ishuman(AM))
-		var/mob/living/carbon/human/H = AM
+		var/mob/living/human/H = AM
 		if (H.pull_damage())
 			src << "\red <b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"
 */
@@ -593,7 +593,7 @@
 			stat(stat_header("Server"))
 			stat("")
 			stat("Players Online (Playing, Observing, Lobby):", "[clients.len] ([human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len])")
-			stat("Round Duration:", roundduration2text())
+			stat("Round Duration:", roundduration2text_days())
 
 			if (map && !map.civilizations)
 				var/grace_period_string = ""
@@ -616,9 +616,16 @@
 				stat("Grace Period Status:", grace_period_string)
 				stat("Round End Condition:", map.current_stat_message())
 			if (map)
+				var/gmd = map.gamemode
+				switch(map.gamemode)
+					if ("Normal")
+						gmd = "<font color='green'>Normal</font>"
+					if ("Competitive")
+						gmd = "<font color='yellow'>Competitive</font>"
+					if ("Hardcore")
+						gmd = "<font color='red'>Hardcore</font>"
 				stat("Map:", map.title)
-				if (map.civilizations)
-					stat("Mode:", map.gamemode)
+				stat("Mode:", gmd)
 				stat("Epoch:", map.age)
 				stat("Season:", get_season())
 				stat("Wind:", map.winddesc)
@@ -800,10 +807,6 @@
 /mob/proc/IsAdvancedToolUser()
 	return FALSE
 
-/mob/proc/get_species()
-	return ""
-
-
 /mob/proc/get_visible_implants(var/class = FALSE)
 	var/list/visible_implants = list()
 	for (var/obj/item/O in embedded)
@@ -869,7 +872,7 @@ mob/proc/yank_out_object()
 		verbs -= /mob/proc/yank_out_object
 
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		var/obj/item/organ/external/affected
 
 		for (var/obj/item/organ/external/organ in H.organs) //Grab the organ holding the implant.
@@ -887,7 +890,7 @@ mob/proc/yank_out_object()
 			H.custom_pain("Something tears wetly in your [affected] as [selection] is pulled free!", 30)
 
 		if (ishuman(U))
-			var/mob/living/carbon/human/human_user = U
+			var/mob/living/human/human_user = U
 			human_user.bloody_hands(H)
 
 	selection.forceMove(get_turf(src))
@@ -921,7 +924,9 @@ mob/proc/yank_out_object()
 	return weakened
 
 /mob/living/proc/handle_stuttering()
-	if (stuttering)
+	if (find_trait("Stutter"))
+		stuttering = 10
+	else if (stuttering)
 		stuttering = max(stuttering-1, 0)
 	return stuttering
 
@@ -965,7 +970,7 @@ mob/proc/yank_out_object()
 	else
 		usr << "You are now facing [dir2text(facing_dir)]."
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.HUDneed.Find("fixeye"))
 			var/obj/screen/tactic/I = H.HUDneed["fixeye"]
 			I.update_icon()

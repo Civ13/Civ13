@@ -70,6 +70,7 @@ proc/isDay(var/month, var/day)
 
 var/next_duration_update = FALSE
 var/last_roundduration2text = FALSE
+var/last_roundduration2text_days = FALSE
 var/round_start_time = FALSE
 
 /hook/roundstart/proc/start_timer()
@@ -82,7 +83,7 @@ var/round_start_time = FALSE
 	if (last_roundduration2text && world.time < next_duration_update)
 		return last_roundduration2text
 
-	var/mills = roundduration2text_in_ticks // TRUE/10 of a second, not real milliseconds but whatever
+	var/mills = roundduration2text_in_ticks // 1/10 of a second, not real milliseconds but whatever
 	//var/secs = ((mills % 36000) % 600) / 10 //Not really needed, but I'll leave it here for refrence.. or something
 	var/mins = round((mills % 36000) / 600)
 	var/hours = round(mills / 36000)
@@ -93,6 +94,28 @@ var/round_start_time = FALSE
 	last_roundduration2text = "[hours]:[mins]"
 	next_duration_update = world.time + 1 MINUTES
 	return last_roundduration2text
+
+/proc/roundduration2text_days()
+	if (!round_start_time)
+		return "0 mins"
+
+	if (last_roundduration2text_days && world.time < next_duration_update)
+		return last_roundduration2text_days
+
+	var/mills = roundduration2text_in_ticks // 1/10 of a second, not real milliseconds but whatever
+	var/mins = round((mills % 36000) / 600)
+	var/hours = round(mills / 36000)
+	if (hours >= 24)
+		var/t_hours = Floor(hours/24)
+		hours = hours - (t_hours*24)
+	var/days = round(hours/24)
+	if (hours >=1 && days >= 1)
+		last_roundduration2text_days = "[days] day[days >= 2 ? "s" : ""], [hours] hour[hours >= 2 ? "s" : ""], [mins] min[mins >= 2 ? "s" : ""]"
+	else if (hours >=1 && days < 1)
+		last_roundduration2text_days = "[hours] hour[hours >= 2 ? "s" : ""], [mins] min[mins >= 2 ? "s" : ""]"
+	else
+		last_roundduration2text_days = "[mins] min[mins >= 2 ? "s" : ""]"
+	return last_roundduration2text_days
 
 //Can be useful for things dependent on process timing
 /proc/process_schedule_interval(var/process_name)

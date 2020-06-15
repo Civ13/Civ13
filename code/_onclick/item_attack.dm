@@ -66,7 +66,13 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		return FALSE
 	if (M == user && user.a_intent != I_HARM)
 		return FALSE
-
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (H.stats["stamina"][1] >= (cooldownw*0.45)/H.getStatCoeff("strength"))
+			H.stats["stamina"][1] = max(0,H.stats["stamina"][1] - (cooldownw*0.45)/H.getStatCoeff("strength"))
+		else
+			H << "<span class='warning'>You need to catch your breath!</span>"
+			return
 	/////////////////////////
 	user.lastattacked = M
 	M.lastattacker = user

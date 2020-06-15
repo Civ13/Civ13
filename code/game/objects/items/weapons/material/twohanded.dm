@@ -113,7 +113,7 @@
 	force = WEAPON_FORCE_PAINFUL
 	w_class = 4.0
 	slot_flags = SLOT_BACK
-	force_wielded = 0.75           // 22 when wielded with hardness 15 (glass)
+	force_wielded = 0.75		   // 22 when wielded with hardness 15 (glass)
 	unwielded_force_divisor = 0.65 // 14 when unwielded based on above
 	thrown_force_divisor = 1.5 // 20 when thrown with weight 15 (glass)
 	throw_speed = 3

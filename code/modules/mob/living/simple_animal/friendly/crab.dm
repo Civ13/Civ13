@@ -10,7 +10,7 @@
 	emote_hear = list("clicks")
 	emote_see = list("clacks")
 	speak_chance = TRUE
-	turns_per_move = 5
+	move_to_delay = 5
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
@@ -33,13 +33,14 @@
 	maxHealth = 10
 	health = 10
 
+
 /mob/living/simple_animal/crab/Life()
 	..()
 	//CRAB movement
 	if (!ckey && !stat)
 		if (isturf(loc) && !resting && !buckled)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
-			if (turns_since_move >= turns_per_move)
+			if (turns_since_move >= move_to_delay)
 				Move(get_step(src,pick(4,8)))
 				turns_since_move = FALSE
 	regenerate_icons()
@@ -53,3 +54,8 @@
 	mob_size = MOB_MINISCULE
 	maxHealth = 40
 	health = 40
+
+/mob/living/simple_animal/crab/small/dead
+	New()
+		..()
+		death()

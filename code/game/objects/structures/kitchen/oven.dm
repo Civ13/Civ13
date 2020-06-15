@@ -13,16 +13,18 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/consume_itself = FALSE
-
+	var/looping = FALSE //for campfires
+	var/cooking_time = 50
 /obj/structure/oven/update_icon()
 	if (on)
 		icon_state = "[base_state]_on"
 	else
 		icon_state = base_state
 
-/obj/structure/oven/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/oven/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
+
 	if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot))
 		var/obj/item/weapon/reagent_containers/glass/small_pot/POT = I
 		H << "You place the [POT] on top of the [src]."
@@ -30,15 +32,44 @@
 		POT.loc = src.loc
 		POT.on_stove = TRUE
 		return
-	if (istype(I, /obj/item/stack/material/wood))
+
+	if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
 		fuel += I.amount
+		H << "You place \the [I] in \the [src], refueling it."
 		qdel(I)
 		return
-	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
-		fuel += 1
+	else if (istype(I, /obj/item/stack/material/bamboo))
+		fuel += I.amount
+		H << "You place \the [I] in \the [src], refueling it."
 		qdel(I)
 		return
-	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
+	else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
+		fuel += I.amount+0.5
+		H << "You place \the [I] in \the [src], refueling it."
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/weapon/leaves))
+		fuel += I.amount+0.5
+		H << "You place \the [I] in \the [src], refueling it."
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))	// FUEL +1
+		fuel += I.amount+1
+		H << "You place \the [I] in \the [src], refueling it."
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
+		fuel += I.amount*2.5
+		H << "You place \the [I] in \the [src], refueling it."
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
+		fuel += I.amount*3
+		H << "You place \the [I] in \the [src], refueling it."
+		qdel(I)
+		return
+
+	if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
 		if (istype(I, /obj/item/weapon/wrench))
 			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
@@ -54,18 +85,7 @@
 				empty()
 				qdel(src)
 				return
-	else if (istype(I, /obj/item/stack/ore/coal))
-		fuel += I.amount*3
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/charcoal))
-		fuel += I.amount*1
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/weapon/branch))
-		fuel += I.amount*1
-		qdel(I)
-		return
+
 	var/space = max_space
 	for (var/obj/item/II in contents)
 		space -= II.w_class
@@ -77,10 +97,16 @@
 	visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
 
 // todo: fix eggs not roasting & roasted meat sandwiches turning to burnt mess
-/obj/structure/oven/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/oven/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
+		fire_loop()
+	else
+		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
+
+/obj/structure/oven/proc/fire_loop()
+	if (on && fuel > 0)
 		fuel -=1
 		update_icon()
 		if (name == "campfire")
@@ -89,20 +115,21 @@
 			set_light(2)
 		else
 			set_light(2)
-		spawn (50)
-			on = FALSE
-			set_light(0)
-			update_icon()
-			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
-			if(prob(15))
-				var byproduct = new/obj/item/stack/ore/charcoal
-				contents += byproduct
+		spawn (cooking_time)
+			if (!looping)
+				on = FALSE
+				set_light(0)
+				update_icon()
+				if(prob(15))
+					var byproduct = new/obj/item/stack/ore/charcoal
+					contents += byproduct
 			process()
 			for (var/obj/item/weapon/reagent_containers/glass/small_pot/I in get_turf(src))
 				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
 					I.reagents.del_reagent("cholera")
+					visible_message("<span class = 'notice'>The [name] finishes boiling.</span>")
 					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
 						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))
 						NSP.reagents.add_reagent("sodiumchloride",I.reagents.get_reagent_amount("sodiumchloride"))
@@ -112,8 +139,6 @@
 				visible_message("<span class = 'warning'>\The [src] burns out.</span>")
 				new/obj/item/stack/ore/charcoal(loc)
 				qdel(src)
-	else
-		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
 
 /obj/structure/oven/process()
 	for (var/obj/item/I in contents)
@@ -242,9 +267,36 @@
 	max_space = 5
 	fuel = 4
 	consume_itself = TRUE
+	looping = TRUE
+	cooking_time = 300
+	light_power = 0.75
+	light_color = "#E38F46"
+
+/obj/structure/oven/fireplace/proc/keep_fire_on()
+	if (on && looping && fuel > 0)
+		set_light(5)
+		update_icon()
+		fire_loop()
+		spawn(600)
+			keep_fire_on()
+	else
+		on = FALSE
+		set_light(0)
+		return
+/obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
+	if (!on && fuel > 0)
+		visible_message("<span class = 'notice'>[H] lights \the [name].</span>")
+		on = TRUE
+		keep_fire_on()
+	else if (on)
+		visible_message("<span class = 'notice'>[H] puts off \the [name].</span>")
+		on = FALSE
+		set_light(0)
+		update_icon()
+	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 /obj/structure/oven/fireplace/proc/smoke_signals()
-	for (var/mob/living/carbon/human/HH in range(25,src))
+	for (var/mob/living/human/HH in range(25,src))
 		if (!HH.blinded && !HH.paralysis && HH.sleeping <= 0 && HH.stat == 0)
 			var/currdir = "somewhere"
 			if (z == HH.z)
@@ -261,15 +313,15 @@
 				if (x == HH.x)
 					currdir = ""
 			if (currdir != "somewhere" && currdir != "")
-				HH << "You see some smoke signals [currdir] of you..."
+				HH << "<b>You see some smoke signals [currdir] of you...</b>"
 
-/obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
 		H << "You produce some smoke signals."
 		smoke_signals()
 	else
 		..()
-/obj/structure/oven/fireplace/Crossed(mob/living/carbon/M as mob)
+/obj/structure/oven/fireplace/Crossed(mob/living/human/M as mob)
 	if (icon_state == "[base_state]_on" && ishuman(M))
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")
@@ -349,7 +401,7 @@
 		icon_state = base_state
 		set_light(0)
 
-/obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
@@ -369,42 +421,63 @@
 					empty()
 					qdel(src)
 					return
+
 		if (istype(I, /obj/item/stack/))
 			if (istype(I, /obj/item/stack/material/wood))
 				fuel += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/material/bamboo))
+				fuel += I.amount
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/weapon/branch))
+				fuel += I.amount+0.5
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/weapon/leaves))
+				fuel += I.amount+0.5
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
-				fuel += 0.5
+				fuel += I.amount+1
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/ore/charcoal))
+				fuel += I.amount*2.5
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/coal))
 				fuel += I.amount*3
+				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/weapon/branch))
-				fuel += I.amount*1
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				fuel += I.amount*1
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
+
+			if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
 				iron += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/copper) || istype(I, /obj/item/stack/material/copper))
 				copper += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/tin) || istype(I, /obj/item/stack/material/tin))
 				tin += I.amount
+				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
 			else
 				H << "<span class = 'warning'>You can't smelt this.</span>"
 				return
+
 			var/space = max_space
 			for (var/obj/item/II in contents)
 				space -= II.w_class
@@ -451,7 +524,7 @@
 	else
 		..()
 
-/obj/structure/furnace/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/furnace/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 1)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE

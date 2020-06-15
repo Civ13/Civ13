@@ -22,18 +22,49 @@
 	var/owner = "Global"
 
 /obj/structure/fuelpump/premade
-	name = "UngOil fuel pump"
+	name = "fuel pump"
 	price = 0.3
 	owner = "Global"
+	var/brand = "UngOil"
 	icon_state = "oilpump3"
 	customcolor = "#3cb44b"
+	maxvol = 1000
 /obj/structure/fuelpump/premade/New()
 	..()
 	fueltype = pick("gasoline","diesel","biodiesel","ethanol","petroleum")
-	vol = rand(140,290)
-	name = "UngOil [fueltype] pump"
-	price = (rand(25,45))/100
+	vol = maxvol
+	name = "[brand] [fueltype] pump"
+	price = 0.4
 	do_color()
+	updatedesc()
+
+/obj/structure/fuelpump/premade/gasoline/New()
+	..()
+	fueltype = "gasoline"
+	name = "[brand] [fueltype] pump"
+	updatedesc()
+
+/obj/structure/fuelpump/premade/diesel/New()
+	..()
+	fueltype = "diesel"
+	name = "[brand] [fueltype] pump"
+	updatedesc()
+
+/obj/structure/fuelpump/premade/yamaha
+	brand = "Yamaha Gas"
+	icon_state = "oilpump1"
+	customcolor = "#7F0000"
+
+/obj/structure/fuelpump/premade/yamaha/gasoline/New()
+	..()
+	fueltype = "gasoline"
+	name = "[brand] [fueltype] pump"
+	updatedesc()
+
+/obj/structure/fuelpump/premade/yamaha/diesel/New()
+	..()
+	fueltype = "diesel"
+	name = "[brand] [fueltype] pump"
 	updatedesc()
 
 /obj/structure/fuelpump/n
@@ -49,7 +80,10 @@
 	icon_state = "oilpump1"
 
 /obj/structure/fuelpump/proc/updatedesc()
-	desc = "This pump has [vol] units of [fueltype] available. Price: [price*10] silver coins per unit. Copper and Gold accepted too."
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		desc = "This pump has [vol] units of [fueltype] available. Price: [price/4] dollars per unit."
+	else
+		desc = "This pump has [vol] units of [fueltype] available. Price: [price*10] silver coins per unit. Copper and Gold accepted too."
 
 /obj/structure/fuelpump/proc/do_color()
 	if (customcolor)
@@ -57,7 +91,7 @@
 		colorov.color = customcolor
 		overlays += colorov
 
-/obj/structure/fuelpump/attack_hand(var/mob/living/carbon/human/user)
+/obj/structure/fuelpump/attack_hand(var/mob/living/human/user)
 	if (unlocked)
 		if (unlockedvol>0)
 			var/ch3 = WWinput("This pump still has [unlockedvol] inside! Are you sure you want to finish?","[name]","No",list("No","Yes"))
@@ -158,7 +192,7 @@
 	set category = null
 	set src in range(1, usr)
 
-	var/mob/living/carbon/human/user
+	var/mob/living/human/user
 
 	if (ishuman(usr))
 		user = usr

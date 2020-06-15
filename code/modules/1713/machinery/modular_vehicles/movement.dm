@@ -33,13 +33,13 @@
 
 /obj/structure/vehicleparts/movement/update_icon()
 	if (broken)
-		icon_state = "[base_icon][axis.color_code]_broken"
+		icon_state = "[base_icon]_broken"
 	else
 		if (axis)
 			if (axis.moving && axis.currentspeed > 0)
-				icon_state = "[movement_icon][axis.color_code]"
+				icon_state = "[movement_icon]"
 			else
-				icon_state = "[base_icon][axis.color_code]"
+				icon_state = "[base_icon]"
 	if (connected)
 		connected.update_icon()
 		return
@@ -77,7 +77,7 @@
 			VP.mwheel = src
 			forceMove(VP)
 			playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
-/obj/structure/vehicleparts/movement/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/vehicleparts/movement/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (broken && istype(I, /obj/item/weapon/weldingtool))
 		visible_message("[H] starts repairing \the [ntype]...")
 		if (do_after(H, 200, src))
@@ -126,7 +126,7 @@
 	..()
 
 
-var/global/list/rotation_matrixes = list(
+var/global/list/rotation_matrixes5 = list(
 
 	"right" = list(
 		"1,1" = list("1,5"),
@@ -190,6 +190,101 @@ var/global/list/rotation_matrixes = list(
 		"5,4" = list("2,5"),
 		"5,5" = list("1,5"),),)
 
+var/global/list/rotation_matrixes4 = list(
+
+	"right" = list(
+		"1,1" = list("1,4"),
+		"1,2" = list("2,4"),
+		"1,3" = list("3,4"),
+		"1,4" = list("4,4"),
+
+		"2,1" = list("1,3"),
+		"2,2" = list("2,3"),
+		"2,3" = list("3,3"),
+		"2,4" = list("4,3"),
+
+		"3,1" = list("1,2"),
+		"3,2" = list("2,2"),
+		"3,3" = list("3,2"),
+		"3,4" = list("4,2"),
+
+		"4,1" = list("1,1"),
+		"4,2" = list("2,1"),
+		"4,3" = list("3,1"),
+		"4,4" = list("4,1"),),
+
+	"left" = list(
+		"1,1" = list("4,1"),
+		"1,2" = list("3,1"),
+		"1,3" = list("2,1"),
+		"1,4" = list("1,1"),
+
+		"2,1" = list("4,2"),
+		"2,2" = list("3,2"),
+		"2,3" = list("2,2"),
+		"2,4" = list("1,2"),
+
+		"3,1" = list("4,3"),
+		"3,2" = list("3,3"),
+		"3,3" = list("2,3"),
+		"3,4" = list("1,3"),
+
+		"4,1" = list("4,4"),
+		"4,2" = list("3,4"),
+		"4,3" = list("2,4"),
+		"4,4" = list("1,4"),),)
+
+var/global/list/rotation_matrixes3 = list(
+
+	"right" = list(
+		"1,1" = list("1,3"),
+		"1,2" = list("2,3"),
+		"1,3" = list("3,3"),,
+
+		"2,1" = list("1,2"),
+		"2,2" = list("2,2"),
+		"2,3" = list("3,2"),
+
+		"3,1" = list("1,1"),
+		"3,2" = list("2,1"),
+		"3,3" = list("3,1"),),
+
+	"left" = list(
+		"1,1" = list("3,1"),
+		"1,2" = list("2,1"),
+		"1,3" = list("1,1"),
+
+		"2,1" = list("3,2"),
+		"2,2" = list("2,2"),
+		"2,3" = list("1,2"),
+
+		"3,1" = list("3,3"),
+		"3,2" = list("2,3"),
+		"3,3" = list("1,3"),),)
+
+var/global/list/rotation_matrixes2 = list(
+
+	"right" = list(
+		"1,1" = list("1,2"),
+		"1,2" = list("2,2"),
+
+		"2,1" = list("1,1"),
+		"2,2" = list("2,1"),),
+
+	"left" = list(
+		"1,1" = list("2,1"),
+		"1,2" = list("1,1"),
+
+		"2,1" = list("2,2"),
+		"2,2" = list("1,2"),),)
+
+var/global/list/rotation_matrixes1 = list(
+
+	"right" = list(
+		"1,1" = list("1,1"),),
+
+	"left" = list(
+			"1,1" = list("1,1"),),)
 /obj/structure/vehicleparts/frame/proc/convertdirs(var/dire)
 	if (!dire)
 		return NORTH

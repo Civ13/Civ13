@@ -1,7 +1,7 @@
 //for unfired clay stuff, i.e. unusable
 /obj/item/weapon/clay
 	name = "unfired clay"
-	desc = "unfired clay. Put it in the fire to dry it"
+	desc = "Unfired clay. Put it in the fire to dry it"
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claylump"
 	item_state = "claylump"
@@ -16,7 +16,12 @@
 /obj/item/weapon/clay/roofing
 	name = "unfired clay roof tiles"
 	icon_state = "unfired_clayroofing"
-	result = "/obj/item/weapon/roofbuilder/clay"
+	result = /obj/item/weapon/roofbuilder/clay
+
+/obj/item/weapon/clay/roofing/kerawa
+	name = "unfired black clay roof tiles"
+	icon_state = "unfired_clayroofing"
+	result = /obj/item/weapon/roofbuilder/clay/kerawa
 /obj/item/weapon/clay/vase
 	name = "unfired clay vase"
 	icon_state = "unfired_clayvase"
@@ -56,7 +61,7 @@
 
 /obj/item/weapon/clay/clayjug
 	name = "unfired clay jug"
-	icon_state = "unfired_clayjug"
+	icon_state = "unfired_bigclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug
 	New()
 		..()
@@ -68,14 +73,14 @@
 
 /obj/item/weapon/clay/smallclaypot
 	name = "unfired small clay pot"
-	icon_state = "unfired_smallclaypot"
+	icon_state = "unfired_smallclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/smallclaypot
 	New()
 		..()
 		icon_state = "unfired_smallclaypot[pick(1,2)]"
 /obj/item/weapon/clay/bigclaypot
 	name = "unfired big clay pot"
-	icon_state = "unfired_bigclaypot"
+	icon_state = "unfired_bigclaypot1"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot
 	New()
 		..()
@@ -98,21 +103,21 @@
 /obj/item/weapon/clay/claybricks/fired
 	name = "clay blocks"
 	icon_state = "claybricks"
-	desc = "clay blocks. Can be used to make clay walls."
+	desc = "Clay blocks. Can be used to make clay walls."
 	throwforce = WEAPON_FORCE_WEAK+2
 	force = WEAPON_FORCE_WEAK+4
 
 /obj/item/weapon/clay/advclaybricks/fired
 	name = "bricks"
 	icon_state = "advclaybricks"
-	desc = "modern bricks. Can be used to make brick walls."
+	desc = "Modern bricks. Can be used to make brick walls."
 	throwforce = WEAPON_FORCE_WEAK+3
 	force = WEAPON_FORCE_WEAK+5
 
 /obj/item/weapon/clay/advclaybricks/fired/cement
 	name = "cement bricks"
 	icon_state = "cementbricks"
-	desc = "modern bricks. Can be used to make cement walls."
+	desc = "Modern bricks. Can be used to make cement walls."
 	throwforce = WEAPON_FORCE_WEAK+4
 	force = WEAPON_FORCE_WEAK+6
 
@@ -187,7 +192,7 @@
 	if (blocked < 2)
 		weaken_duration = 5 + min(0, force - target.getarmor(hit_zone, "melee") + 10)
 
-	var/mob/living/carbon/human/H = target
+	var/mob/living/human/H = target
 	if (istype(H) && H.headcheck(hit_zone))
 		var/obj/item/organ/affecting = H.get_organ(hit_zone) //headcheck should ensure that affecting is not null
 		user.visible_message("<span class='danger'>[user] shatters [src] into [H]'s [affecting.name]!</span>")
@@ -237,7 +242,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/smallclaypot
 	name = "small clay pot"
-	desc = "small clay pot."
+	desc = "Small clay pot."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "smallclaypot"
 	amount_per_transfer_from_this = 5
@@ -249,7 +254,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypot
 	name = "medium clay pot"
-	desc = "medium clay pot."
+	desc = "Medium clay pot."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claypot1"
 	amount_per_transfer_from_this = 10
@@ -262,7 +267,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot
 	name = "big clay pot"
-	desc = "big clay pot."
+	desc = "Big clay pot."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "bigclaypot1"
 	amount_per_transfer_from_this = 10
@@ -274,7 +279,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug
 	name = "clay jug"
-	desc = "clay jug."
+	desc = "Clay jug."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "clayjug1"
 	amount_per_transfer_from_this = 10
@@ -286,7 +291,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claybowl
 	name = "clay bowl"
-	desc = "clay bowl."
+	desc = "Clay bowl."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claybowl"
 	amount_per_transfer_from_this = 10
@@ -295,7 +300,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claycup
 	name = "clay cup"
-	desc = "clay cup."
+	desc = "Clay cup."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claycup"
 	amount_per_transfer_from_this = 10
@@ -304,7 +309,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claywinecup
 	name = "clay wine cup"
-	desc = "clay wine cup."
+	desc = "Clay wine cup."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claywinecup"
 	amount_per_transfer_from_this = 5
@@ -313,7 +318,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayvase
 	name = "clay vase"
-	desc = "clay vase."
+	desc = "Clay vase."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "clayvase"
 	amount_per_transfer_from_this = 15
@@ -322,7 +327,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypitcher
 	name = "clay pitcher"
-	desc = "clay pitcher."
+	desc = "Clay pitcher."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claypitcher"
 	amount_per_transfer_from_this = 15
@@ -331,14 +336,14 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher
 	name = "large clay pitcher"
-	desc = "large clay pitcher."
+	desc = "Large clay pitcher."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "largeclaypitcher"
 	amount_per_transfer_from_this = 20
 	volume = 130
 	w_class = 2.0
 
-/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (istype(I, /obj/item/stack/material))
 		var/obj/item/stack/material/S = I
 		if (istype(I, /obj/item/stack/material/gold))
@@ -391,7 +396,7 @@
 
 /obj/item/weapon/clayshards
 	name = "clay shards"
-	desc = "clay shards from broken clay pottery."
+	desc = "Clay shards from broken clay pottery."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "clayshards"
 	item_state = "clayshards"
@@ -400,3 +405,32 @@
 	w_class = 1
 	throw_speed = 5
 	throw_range = 8
+
+
+/obj/item/weapon/stucco
+	name = "generic raw stucco"
+	desc = "Raw stucco. Nothing particular in its composition, ready to be applied onto a surface"
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "stucco"
+	item_state = "stucco"
+	throwforce = WEAPON_FORCE_WEAK
+	force = WEAPON_FORCE_WEAK
+	w_class = 2
+	throw_speed = 3
+	throw_range = 5
+	var/result = "none"
+	value = 1
+
+/obj/item/weapon/stucco/generic
+
+/obj/item/weapon/stucco/greek
+	name = "greek raw stucco"
+	desc = "Raw stucco. Dyed with blue streaks and clandestine white, ready to be applied onto a crude stone surface"
+	icon_state = "greek_stucco"
+	item_state = "greek_stucco"
+
+/obj/item/weapon/stucco/roman
+	name = "roman raw stucco"
+	desc = "Raw stucco. It has a creamy complexion, ready to be applied onto a crude stone surface"
+	icon_state = "roman_stucco"
+	item_state = "roman_stucco"

@@ -7,16 +7,14 @@
 
 	//Sum of all the gas moles in this mix.  Updated by update_values()
 	var/total_moles = FALSE
-	//Volume of this mix.
-	var/volume = CELL_VOLUME
+
 	//Size of the group this gas_mixture is representing.  TRUE for singletons.
 	var/group_multiplier = TRUE
 
 	//List of active tile overlays for this gas_mixture.  Updated by check_tile_graphic()
 	var/list/graphic = list()
 
-/datum/gas_mixture/New(vol = CELL_VOLUME)
-	volume = vol
+	var/volume = 2500
 
 //Takes a gas string and the amount of moles to adjust by.  Calls update_values() if update isn't 0.
 /datum/gas_mixture/proc/adjust_gas(gasid, moles, update = TRUE)

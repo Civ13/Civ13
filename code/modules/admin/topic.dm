@@ -142,9 +142,9 @@
 			if ("bear")			M.change_mob_type( /mob/living/simple_animal/hostile/bear , null, null, delmob )
 			if ("velociraptor")			M.change_mob_type( /mob/living/simple_animal/hostile/dinosaur/velociraptor , null, null, delmob )
 			if ("default")
-				var/mob/living/carbon/human/HM = M
+				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					usr << "This can only be used on instances of type /mob/living/human"
 					return
 				else
 					HM.gorillaman = 0
@@ -161,9 +161,9 @@
 					HM.update_body()
 					HM.update_hair()
 			if ("gorilla")
-				var/mob/living/carbon/human/HM = M
+				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					usr << "This can only be used on instances of type /mob/living/human"
 					return
 				else
 					HM.gorillaman = 1
@@ -174,9 +174,9 @@
 					HM.wolfman = 0
 					HM.crab = 0
 			if ("werewolf")
-				var/mob/living/carbon/human/HM = M
+				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					usr << "This can only be used on instances of type /mob/living/human"
 					return
 				else
 					HM.werewolf = 1
@@ -187,9 +187,9 @@
 					HM.wolfman = 0
 					HM.crab = 0
 			if ("orc")
-				var/mob/living/carbon/human/HM = M
+				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					usr << "This can only be used on instances of type /mob/living/human"
 					return
 				else
 					HM.orc = 1
@@ -200,9 +200,9 @@
 					HM.wolfman = 0
 					HM.crab = 0
 			if ("ant")
-				var/mob/living/carbon/human/HM = M
+				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					usr << "This can only be used on instances of type /mob/living/human"
 					return
 				else
 					HM.ant = 1
@@ -213,9 +213,9 @@
 					HM.wolfman = 0
 					HM.crab = 0
 			if ("lizard")
-				var/mob/living/carbon/human/HM = M
+				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					usr << "This can only be used on instances of type /mob/living/human"
 					return
 				else
 					HM.lizard = 1
@@ -226,9 +226,9 @@
 					HM.wolfman = 0
 					HM.crab = 0
 			if ("crab")
-				var/mob/living/carbon/human/HM = M
+				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					usr << "This can only be used on instances of type /mob/living/human"
 					return
 				else
 					HM.lizard = 0
@@ -239,9 +239,9 @@
 					HM.wolfman = 0
 					HM.crab = 1
 			if ("wolfman")
-				var/mob/living/carbon/human/HM = M
+				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					usr << "This can only be used on instances of type /mob/living/human"
 					return
 				else
 					HM.lizard = 0
@@ -292,10 +292,11 @@
 
 		var/speech = input("What will [key_name(M)] say?.", "Force speech", "")// Don't need to sanitize, since it does that in say(), we also trust our admins.
 		if (!speech)	return
-		M.say(speech)
-		speech = sanitize(speech) // Nah, we don't trust them
-		log_admin("[key_name(usr)] forced [key_name(M)] to say: [speech]")
-		message_admins("<span class = 'notice'>[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]</span>")
+		if (M)
+			M.say(speech)
+			speech = sanitize(speech) // Nah, we don't trust them
+			log_admin("[key_name(usr)] forced [key_name(M)] to say: [speech]")
+			message_admins("<span class = 'notice'>[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]</span>")
 
 	else if (href_list["revive"])
 		if (!check_rights(R_REJUVINATE))	return
@@ -397,9 +398,9 @@
 	else if (href_list["adminspawncookie"])
 		if (!check_rights(R_ADMIN|R_FUN))	return
 
-		var/mob/living/carbon/human/H = locate(href_list["adminspawncookie"])
+		var/mob/living/human/H = locate(href_list["adminspawncookie"])
 		if (!ishuman(H))
-			usr << "This can only be used on instances of type /mob/living/carbon/human"
+			usr << "This can only be used on instances of type /mob/living/human"
 			return
 
 		H.equip_to_slot_or_del( new /obj/item/weapon/reagent_containers/food/snacks/cookie(H), slot_l_hand )
@@ -577,7 +578,7 @@
 
 		switch(where)
 			if ("inhand")
-				if (!iscarbon(usr))
+				if (!ishuman(usr))
 					usr << "Can only spawn in hand when you're a carbon mob."
 					where = "onfloor"
 				target = usr
@@ -680,7 +681,7 @@
 mob/living/proc/can_centcom_reply()
 	return FALSE
 
-mob/living/carbon/human/can_centcom_reply()
+mob/living/human/can_centcom_reply()
 	return FALSE
 
 /atom/proc/extra_admin_link()

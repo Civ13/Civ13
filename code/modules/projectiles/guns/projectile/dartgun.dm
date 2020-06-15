@@ -50,10 +50,10 @@
 	fire_sound = 'sound/weapons/empty.ogg'
 	fire_sound_text = "a metallic click"
 	recoil = FALSE
-	silenced = TRUE
 	load_method = MAGAZINE
 	magazine_type = /obj/item/ammo_magazine/chemdart
 	auto_eject = FALSE
+	gtype = "none"
 
 	var/list/beakers = list() //All containers inside the gun.
 	var/list/mixing = list() //Containers being used for mixing.
@@ -130,7 +130,6 @@
 			B.reagents.trans_to_obj(dart, mix_amount)
 
 /obj/item/weapon/gun/projectile/dartgun/attack_self(mob/user)
-	user.set_machine(src)
 	var/dat = "<b>[src] mixing control:</b><br><br>"
 
 	if (beakers.len)
@@ -139,7 +138,7 @@
 			dat += "Beaker [i] contains: "
 			if(B.reagents && B.reagents.reagent_list.len)
 				for(var/datum/reagent/R in B.reagents.reagent_list)
-					dat += "<br>    [R.volume] units of [R.name], "
+					dat += "<br>	[R.volume] units of [R.name], "
 				if (check_beaker_mixing(B))
 					dat += text("<A href='?src=\ref[src];stop_mix=[i]'><font color='green'>Mixing</font></A> ")
 				else

@@ -11,7 +11,7 @@
 	emote_hear = list("barks","pants")
 	emote_see = list("sniffs the floor", "wags it's tail")
 	speak_chance = TRUE
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
@@ -44,26 +44,26 @@
 	for (var/mob/living/simple_animal/mouse/snack in oview(src,5))
 		if (snack.stat < DEAD && prob(15))
 			audible_emote(pick("growls!","barks fiercely at the [snack]!","eyes [snack] and sniffs the floor!"))
-			playsound(src.loc, 'sound/animals/dogbark1.ogg', 100, TRUE, 3)
+			playsound(src.loc, 'sound/animals/dog/dogbark1.ogg', 100, TRUE, 3)
 		break
 
 	for (var/mob/living/simple_animal/cat/cats in oview(src,5))
 		if (cats.stat < DEAD && prob(35))
 			audible_emote(pick("growls!","barks fiercely at the [cats]!","eyes [cats] attentively!"))
-			playsound(src.loc, 'sound/animals/dogbark1.ogg', 100, TRUE, 3)
+			playsound(src.loc, 'sound/animals/dog/dogbark1.ogg', 100, TRUE, 3)
 		break
 
 	for (var/mob/living/simple_animal/hostile/enemy in orange(src,15))
 		if (enemy.stat < DEAD && prob(35))
 			audible_emote(pick("barks in fear!","smells something!"))
-			playsound(src.loc, 'sound/animals/dogbark2.ogg', 100, TRUE, 3)
+			playsound(src.loc, 'sound/animals/dog/dogbark2.ogg', 100, TRUE, 3)
 		break
 	if (incapacitated())
 		return
 
 	turns_since_scan++
 	if (turns_since_scan > 5)
-		walk_to(src,0)
+		walk(src,0)
 		turns_since_scan = FALSE
 
 		if (flee_target) //fleeing takes precendence
@@ -110,7 +110,7 @@
 	if (O.force)
 		set_flee_target(user? user : loc)
 
-/mob/living/simple_animal/dog/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/dog/attack_hand(mob/living/human/M as mob)
 	. = ..()
 	if (M.a_intent == I_HARM)
 		set_flee_target(M)

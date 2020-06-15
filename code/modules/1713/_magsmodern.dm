@@ -1,5 +1,5 @@
 /obj/item/ammo_magazine/ak47
-	name = "AK-47 magazine (7.62x39mm)"
+	name = "AK Magazine (7.62x39mm)"
 	icon_state = "ak47"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
@@ -9,7 +9,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak74
-	name = "AK-74 magazine (5.45x39mm)"
+	name = "AK-74 Magazine (5.45x39mm)"
 	icon_state = "ak74"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
@@ -29,11 +29,11 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak47/makeshift
-	name = "makeshift AK-47 magazine (7.5mm)"
+	name = "Makeshift AK-47 magazine (7.62x39mm)"
 	icon_state = "makeshiftak-47"
 	mag_type = MAGAZINE
-	caliber = "intermediumrifle"
-	ammo_type = /obj/item/ammo_casing/intermediumrifle
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
 	max_ammo = 28
 	weight = 0.6
 	multiple_sprites = TRUE
@@ -48,8 +48,18 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ar10
+	name = "AR-10 magazine (7.62x51mm)"
+	icon_state = "m16"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 20
+	weight = 0.5
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/m14
-	name = "M14 magazine (7.62x51mm)"
+	name = "M14 Magazine (7.62x51mm)"
 	icon_state = "m14"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
@@ -59,7 +69,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/hk
-	name = "H&K magazine (7.62x51mm)"
+	name = "G3 Magazine (7.62x51mm)"
 	icon_state = "hk"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
@@ -84,7 +94,7 @@
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	ammo_type = /obj/item/ammo_casing/a762x51
-	max_ammo = 30
+	max_ammo = 20
 	weight = 0.75
 	multiple_sprites = TRUE
 
@@ -113,7 +123,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/m9beretta
-	name = "M9 Beretta magazine (9x19mm)"
+	name = "Beretta M9 magazine (9x19mm)"
 	icon_state = "m9beretta"
 	mag_type = MAGAZINE
 	caliber = "a9x19"
@@ -134,7 +144,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/negev
-	name = "Negev belt (5.56x45mm)"
+	name = "Negev Belt (5.56x45mm)"
 	icon_state = "b762"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
@@ -155,15 +165,14 @@
 	clip = TRUE
 
 /obj/item/ammo_magazine/p90
-	name = "P90 Magazine (a57x28mm)"
-	icon_state = "clip"
-
+	name = "P90 Magazine (5.7x28mm)"
+	icon_state = "p90"
+	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a57x28
 	caliber = "a57x28"
 	max_ammo = 50
 	weight = 0.045
 	multiple_sprites = TRUE
-	clip = TRUE
 
 /obj/item/ammo_magazine/glock17
 	name = "G17 Glock (9x19mm)"
@@ -172,6 +181,46 @@
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/sig250
+	name = "SIG 250 magazine (9x19mm)"
+	icon_state = "glock17"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/pl14
+	name = "PL-14 (9x19mm)"
+	icon_state = "p220"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 16
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/mp443
+	name = "MP-443 (9x19mm)"
+	icon_state = "glock17"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/p220
+	name = "P220 (.45)"
+	icon_state = "p220"
+	mag_type = MAGAZINE
+	caliber = "a45"
+	ammo_type = /obj/item/ammo_casing/a45
+	max_ammo = 7
 	weight = 0.33
 	multiple_sprites = TRUE
 
@@ -186,7 +235,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/colthammerless
-	name = "Colt Hammerless (9x19mm)"
+	name = "Colt Hammerless (.32)"
 	icon_state = "glock17"
 	mag_type = MAGAZINE
 	caliber = "a32acp"
@@ -195,12 +244,22 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/colthammerless/a380acp
+	name = "Colt Hammerless (.380)"
+	icon_state = "glock17"
+	mag_type = MAGAZINE
+	caliber = "a380acp"
+	ammo_type = /obj/item/ammo_casing/a380acp
+	max_ammo = 7
+	weight = 0.36
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/bergmann
-	name = "bergmann (9x19mm)"
+	name = "bergmann (8x22mm)"
 	icon_state = "bergmann_ammo"
 	mag_type = MAGAZINE
-	caliber = "a9x19"
-	ammo_type = /obj/item/ammo_casing/a9x19
+	caliber = "c8mmnambu"
+	ammo_type = /obj/item/ammo_casing/c8mmnambu
 	max_ammo = 5
 	weight = 0.33
 	multiple_sprites = TRUE
@@ -214,3 +273,13 @@
 	max_ammo = 20
 	weight = 0.5
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/sks
+	name = "clip (7.62x39mm)"
+	icon_state = "clip"
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 5
+	weight = 0.04
+	multiple_sprites = TRUE
+	clip = TRUE

@@ -1,18 +1,17 @@
 
 /obj/map_metadata/hostages
 	ID = MAP_HOSTAGES
-	title = "Hostage Rescue (100x100x1)"
+	title = "Hostage Rescue"
 	lobby_icon_state = "modern"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	min_autobalance_players = 100
 	no_winner ="The operation is still underway."
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/greek,
 		list(ARAB) = /area/caribbean/greek
@@ -24,9 +23,9 @@
 	mission_start_message = "<font size=4>The insurgents are holding <b>American</b> embassy staff hostage! The Special Forces must rescue them within <b>35 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>1</b> point per hostage kept alive and in their control by the end of the 20 minutes.</font>"
 	faction1 = AMERICAN
 	faction2 = ARAB
-	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
+		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
 	artillery_count = 0
 
 	var/total_hostages = 6
@@ -183,7 +182,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 	faction1_points = rescued_hostages*5
 	faction2_points = held_hostages*5
 
-	for (var/mob/living/carbon/human/PR in world)
+	for (var/mob/living/human/PR in world)
 		if (PR.stat != DEAD && PR.handcuffed)
 			var/area/currarea2 = get_area(PR)
 			if (istype(currarea2, /area/caribbean/british/land/inside/objective))

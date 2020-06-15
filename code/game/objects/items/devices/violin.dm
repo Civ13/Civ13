@@ -212,13 +212,13 @@
 					if (!playing || !isliving(loc))//If the violin is playing, or isn't held by a person
 						playing = FALSE
 						return
-					if (lentext(note) == FALSE)
+					if (length(note) == FALSE)
 						continue
 					//world << "Parse: [copytext(note,1,2)]"
 					var/cur_note = text2ascii(note) - 96
 					if (cur_note < 1 || cur_note > 7)
 						continue
-					for (var/i=2 to lentext(note))
+					for (var/i=2 to length(note))
 						var/ni = copytext(note,i,i+1)
 						if (!text2num(ni))
 							if (ni == "#" || ni == "b" || ni == "n")
@@ -314,12 +314,12 @@
 				spawn() playsong()
 
 		else if (href_list["newline"])
-			var/newline = rhtml_encode(input("Enter your line: ", "violin") as text|null)
+			var/newline = html_encode(input("Enter your line: ", "violin") as text|null)
 			if (!newline)
 				return
 			if (song.lines.len > MAX_CHARS_PER_LINE)
 				return
-			if (lentext(newline) > MAX_CHARS_PER_LINE)
+			if (length(newline) > MAX_CHARS_PER_LINE)
 				newline = copytext(newline, TRUE, MAX_CHARS_PER_LINE)
 			song.lines.Add(newline)
 
@@ -331,10 +331,10 @@
 
 		else if (href_list["modifyline"])
 			var/num = round(text2num(href_list["modifyline"]),1)
-			var/content = rhtml_encode(input("Enter your line: ", "violin", song.lines[num]) as text|null)
+			var/content = html_encode(input("Enter your line: ", "violin", song.lines[num]) as text|null)
 			if (!content)
 				return
-			if (lentext(content) > MAX_CHARS_PER_LINE)
+			if (length(content) > MAX_CHARS_PER_LINE)
 				content = copytext(content, TRUE, MAX_CHARS_PER_LINE)
 			if (num > song.lines.len || num < 1)
 				return
@@ -352,15 +352,15 @@
 		else if (href_list["import"])
 			var/t = ""
 			do
-				t = rhtml_encode(input(usr, "Please paste the entire song, formatted:", text("[]", name), t)  as message)
+				t = html_encode(input(usr, "Please paste the entire song, formatted:", text("[]", name), t)  as message)
 				if (!in_range(src, usr))
 					return
 
-				if (lentext(t) >= MAX_CHARS_TOTAL)
+				if (length(t) >= MAX_CHARS_TOTAL)
 					var/cont = WWinput(usr, "Your song is too long! Would you like to continue editing it?", "Error", "Yes", list("Yes", "No"))
 					if (cont == "No")
 						break
-			while (lentext(t) > MAX_CHARS_TOTAL)
+			while (length(t) > MAX_CHARS_TOTAL)
 
 			//split into lines
 			spawn()
@@ -376,7 +376,7 @@
 					lines.Cut(MAX_CHARS_PER_LINE+1)
 				var/linenum = TRUE
 				for (var/l in lines)
-					if (lentext(l) > MAX_CHARS_PER_LINE)
+					if (length(l) > MAX_CHARS_PER_LINE)
 						usr << "Line [linenum] too long!"
 						lines.Remove(l)
 					else

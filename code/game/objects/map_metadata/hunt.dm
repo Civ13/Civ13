@@ -1,16 +1,15 @@
 /obj/map_metadata/hunt
 	ID = MAP_HUNT
-	title = "Hunt (175x175x2)"
+	title = "Hunt"
 	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
-	squad_spawn_locations = FALSE
+
 	no_winner ="The round is proceeding normally."
 	faction_organization = list(
 		INDIANS,
 		PIRATES)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british,
 		list(PIRATES) = /area/caribbean/british,
@@ -26,6 +25,7 @@
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Survival RP"
+	is_RP = TRUE
 
 /obj/map_metadata/hunt/New()
 	..()

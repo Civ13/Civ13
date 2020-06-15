@@ -2,19 +2,19 @@
 	title = "GULAG Nachalnik Lagerya"
 	en_meaning = "NKVD GULAG Camp Commander"
 	rank_abbreviation = "NKVD Kom."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
 	is_commander = TRUE
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/nkvd_gulag_commander/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_gulag_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -45,25 +45,25 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.verbs += /mob/living/carbon/human/proc/Sound_Alarm
-	H.verbs += /mob/living/carbon/human/proc/Stop_Alarm
+	H.verbs += /mob/living/human/proc/Sound_Alarm
+	H.verbs += /mob/living/human/proc/Stop_Alarm
 	return TRUE
 
 /datum/job/russian/nkvd_gulag_officer
 	title = "GULAG Nachalnik Karaula"
 	en_meaning = "NKVD GULAG Squad Leader"
 	rank_abbreviation = "NKVD Str."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/russian/nkvd_gulag_officer/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_gulag_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -94,8 +94,8 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.verbs += /mob/living/carbon/human/proc/Sound_Alarm
-	H.verbs += /mob/living/carbon/human/proc/Stop_Alarm
+	H.verbs += /mob/living/human/proc/Sound_Alarm
+	H.verbs += /mob/living/human/proc/Stop_Alarm
 
 	return TRUE
 
@@ -103,16 +103,17 @@
 	title = "GULAG Medik"
 	en_meaning = "NKVD GULAG Medic"
 	rank_abbreviation = "NKVD Srj."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/russian/nkvd_gulag_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_gulag_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -144,15 +145,15 @@
 	title = "GULAG Karaulnyi"
 	en_meaning = "NKVD GULAG Guard"
 	rank_abbreviation = "NKVD"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+	whitelisted = TRUE
 	is_prison = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 50
 
-/datum/job/russian/nkvd_gulag_guard/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_gulag_guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -182,10 +183,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /datum/job/civilian/prisoner
-	SL_check_independent = TRUE
+
 	is_prison = TRUE
 	spawn_location = "JoinLateCiv"
-	selection_color = "#2d2d63"
+
 	rank_abbreviation = ""
 	title = "DO NOT USE"
 	var/nationality = "none"
@@ -194,7 +195,7 @@
 	var/original_eyes = "Black"
 	var/original_facial = "Shaved"
 	var/original_hair = "Short Hair"
-/datum/job/civilian/prisoner/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/prisoner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -231,7 +232,7 @@
 	H.give_nationality()
 	return TRUE
 
-/mob/living/carbon/human/proc/give_nationality()
+/mob/living/human/proc/give_nationality()
 	if (istype(original_job, /datum/job/civilian/prisoner))
 		var/datum/job/civilian/prisoner/PJ = original_job
 		var/randpick = rand(1,4)
@@ -301,10 +302,10 @@
 	title = "Janitor"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -320,10 +321,10 @@
 	title = "Miner"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -339,10 +340,10 @@
 	title = "Logger"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -358,10 +359,10 @@
 	title = "Builder"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 100
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -377,10 +378,10 @@
 	title = "Nurse Helper"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 30
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -396,10 +397,10 @@
 	title = "Kitchen Duty"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 25
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/custom/armband(null)
@@ -415,10 +416,10 @@
 	title = "Collaborator"
 	en_meaning = ""
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 12
-	equip(var/mob/living/carbon/human/H)
+	equip(var/mob/living/human/H)
 		..()
 		randrole = pick("Janitor", "Kitchen Duty", "Miner", "Nurse Helper",/* "Builder", "Logger"*/)
 		var/obj/item/clothing/under/uniform = H.w_uniform

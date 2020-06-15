@@ -24,7 +24,7 @@
 
 /obj/structure/wild/berrybush/attack_hand(mob/user as mob)
 	if (user.a_intent == I_GRAB && ishuman(user) && berries > 0)
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		H << "You start foraging for some berries..."
 		if (do_after(user, 80, src))
 			if (src && berries >= 1)
@@ -39,15 +39,18 @@
 	else
 		..()
 /obj/structure/wild/berrybush/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if(istype(W, /obj/item/weapon/berriesgatherer))
 		if (ishuman(user) && berries > 0)
-			//var/mob/living/carbon/human/H = user
+			//var/mob/living/human/H = user
 			H << "You start gathering some berries..."
 			if (do_after(user, 80, src))
 				if (src && berries >= 1)
 					new btype(get_turf(src))
 					new btype(get_turf(src))
+					/*if(rand(100) <= 10)
+						var/obj/item/stack/berryseeds/BS = new /obj/item/stack/berryseeds(get_turf(src))
+						BS.bushtype = src*/
 					berries--
 					berryproc()
 				else
@@ -129,6 +132,20 @@
 				if ("disgusting")
 					satisfaction = -6
 					nutriment_desc = list("disgusting food" = 1)
+
+/obj/item/berryseeds
+	name = "berry seeds"
+	desc = "Seeds of some sort of berry."
+	icon = 'icons/obj/flora/berries.dmi'
+	icon_state = "berryseeds"
+	var/bushtype = /obj/structure/wild/berrybush
+
+/obj/item/berryseeds/attack_self(mob/user)
+	new bushtype(user.loc)
+	src.amount--
+	if(src.amount <= 0)
+		qdel(src)
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries/tinto
 	name = "tinto berries"
 	icon_state = "tintoberry"

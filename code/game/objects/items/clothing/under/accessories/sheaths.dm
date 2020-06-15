@@ -83,6 +83,11 @@
 		hold.can_hold = list(/obj/item/weapon/material/sword/katana,
 		/obj/item/weapon/material/sword/wakazashi)
 
+/obj/item/clothing/accessory/storage/sheath/katana/full
+/obj/item/clothing/accessory/storage/sheath/katana/full/New()
+	..()
+	new/obj/item/weapon/material/sword/katana(src)
+
 /obj/item/clothing/accessory/storage/sheath/daisho
 	name = "daisho sheath"
 	desc = "A sheath for a daisho."
@@ -110,4 +115,17 @@
 		/obj/item/weapon/material/sword/saif,
 		/obj/item/weapon/material/sword/sabre,
 		/obj/item/weapon/material/sword/rapier,
-		/obj/item/weapon/material/sword/armingsword)
+		/obj/item/weapon/material/sword/armingsword,
+		/obj/item/weapon/material/sword/urukhaiscimitar)
+
+/obj/item/clothing/accessory/storage/sheath/knife
+	name = "knife sheath"
+	desc = "A sheath for knives."
+	icon_state = "knifeholster"
+	item_state = "short_sheath"
+	slots = 1
+	slot = "utility"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil/knife/shaggers,
+		/obj/item/weapon/material/kitchen/utensil/knife/meat, /obj/item/weapon/material/kitchen/utensil/knife/fancy, /obj/item/weapon/material/kitchen/utensil/knife/survival, /obj/item/weapon/material/kitchen/utensil/knife/bone)

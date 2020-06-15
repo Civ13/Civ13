@@ -11,19 +11,19 @@
 	plane = GAME_PLANE
 	blend_mode = BLEND_OVERLAY
 	appearance_flags = PLANE_MASTER
-	invisibility     = INVISIBILITY_LIGHTING
+	invisibility	 = INVISIBILITY_LIGHTING
 
 /obj/screen/plane_master/game_world/backdrop(mob/mymob)
 	filters = list()
 	if(istype(mymob) && mymob.client)
-		filters += filter(type="drop_shadow", x=0, y=-2, size=4, border=4, color="#04080FAA")
+		filters += filter(type="drop_shadow", x=0, y=-2, size=4, color="#04080FAA")
 
 /obj/screen/plane_master/lighting
 	name = "lighting plane master"
 	plane = LIGHTING_PLANE
 	layer = LIGHTING_LAYER
 	blend_mode = BLEND_MULTIPLY
-	invisibility     = INVISIBILITY_LEVEL_TWO
+	invisibility	 = INVISIBILITY_LEVEL_TWO
 	appearance_flags = NO_CLIENT_COLOR | PLANE_MASTER// | KEEP_TOGETHER
 	mouse_opacity = 0
 

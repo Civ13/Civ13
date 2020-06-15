@@ -51,7 +51,9 @@ var/list/preferences_datums = list()
 	var/r_eyes = FALSE						//Eye color
 	var/g_eyes = FALSE						//Eye color
 	var/b_eyes = FALSE						//Eye color
-	var/species = "Human"               //Species datum to use.
+	var/species = "Human"			   //Species datum to use.
+
+	var/list/traits = list()
 
 	//Mob preview
 	var/list/preview_icons = list()
@@ -66,12 +68,12 @@ var/list/preferences_datums = list()
 
 	var/datum/category_collection/player_setup_collection/player_setup
 
-	var/list/preferences_enabled = list("SOUND_MIDI", "SOUND_LOBBY", "SOUND_AMBIENCE",
+	var/list/preferences_enabled = list("CHAT_OVERLAY","SOUND_MIDI", "SOUND_LOBBY", "SOUND_AMBIENCE",
 		"CHAT_GHOSTEARS", "CHAT_GHOSTSIGHT", "CHAT_GHOSTRADIO", "CHAT_SHOWICONS",
 		"SHOW_TYPING", "CHAT_OOC", "CHAT_LOOC", "CHAT_DEAD", "SHOW_PROGRESS",
 		"CHAT_DEBUGLOGS", "CHAT_PRAYER", "SOUND_ADMINHELP")
 
-	var/list/preferences_disabled = list()
+	var/list/preferences_disabled = list("CHAT_TTS")
 
 /datum/preferences/New(client/C)
 
@@ -108,9 +110,7 @@ var/list/preferences_datums = list()
 	<br>
 	<html>
 	<head>
-	<style>
 	[common_browser_style]
-	</style>
 	</head>
 	<body><center><big><b>PREFERENCES<br><br>
 	"}
@@ -149,7 +149,7 @@ var/list/preferences_datums = list()
 
 	return TRUE
 
-/datum/preferences/proc/copy_to(mob/living/carbon/human/character, safety = FALSE)
+/datum/preferences/proc/copy_to(mob/living/human/character, safety = FALSE)
 	// Sanitizing rather than saving as someone might still be editing when copy_to occurs.
 	player_setup.sanitize_setup()
 	if (be_random_name)
@@ -184,6 +184,8 @@ var/list/preferences_datums = list()
 
 	character.h_style = h_style
 	character.f_style = f_style
+
+	character.traits = traits
 
 	character.all_underwear.Cut()
 

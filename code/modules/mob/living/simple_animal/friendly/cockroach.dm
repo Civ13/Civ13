@@ -13,7 +13,7 @@
 	emote_see = list("skitters around", "hops", "waves it's antennae")
 	pass_flags = PASSTABLE
 	speak_chance = TRUE
-	turns_per_move = 5
+	move_to_delay = 5
 	see_in_dark = 6
 	maxHealth = 5
 	health = 5
@@ -47,9 +47,6 @@
 		return ..()
 	if (!istype(W) || !W.sharp)
 		return ..()
-
-/mob/living/simple_animal/cockroach/cannot_use_vents()
-	return
 
 /mob/living/simple_animal/cockroach/handle_mutations_and_radiation()
 	return

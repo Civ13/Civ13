@@ -53,7 +53,7 @@ obj/item/weapon/newspaper/attackby(obj/item/weapon/W as obj, mob/user as mob)
 		if (scribble_page == curr_page)
 			user << "<span class = 'notice'>There's already a scribble in this page... You wouldn't want to make things too cluttered, would you?</span>"
 		else
-			var/s = cp1251_to_utf8(sanitize(input(user, "Write something", "Newspaper", "")))
+			var/s = sanitize(input(user, "Write something", "Newspaper", ""))
 			s = sanitize(s)
 			if (!s)
 				return

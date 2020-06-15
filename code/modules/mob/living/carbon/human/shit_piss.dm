@@ -23,7 +23,7 @@
 	icon_state = "floor1"
 	random_icon_states = list("floor1", "floor2", "floor3", "floor4", "floor5", "floor6", "floor7", "floor8")
 	var/dried = 0
-
+	decay_timer = 18000
 
 /obj/effect/decal/cleanable/poo/New()
 	icon = 'icons/effects/pooeffect.dmi'
@@ -53,8 +53,8 @@
 
 
 /obj/effect/decal/cleanable/poo/Crossed(AM as mob|obj, var/forceslip = 0)
-	if (istype(AM, /mob/living/carbon) && src.dried == 0)
-		var/mob/living/carbon/M = AM
+	if (istype(AM, /mob/living/human) && src.dried == 0)
+		var/mob/living/human/M = AM
 		if (M.m_intent == "walk")
 			return
 
@@ -72,10 +72,11 @@
 	icon_state = "pee1"
 	random_icon_states = list("pee1", "pee2", "pee3")
 	var/dried = 0
+	decay_timer = 18000
 
 /obj/effect/decal/cleanable/urine/Crossed(AM as mob|obj)
-	if (istype(AM, /mob/living/carbon))
-		var/mob/living/carbon/M =	AM
+	if (istype(AM, /mob/living/human))
+		var/mob/living/human/M =	AM
 		if (ishuman(M) && M.m_intent == "walk")
 			return
 
@@ -155,6 +156,12 @@
 	desc = "Makes good fertilizer at least."
 	icon_state = "animal1"
 
+/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer
+	name = "fertilizer"
+	desc = "Natural fertilizer for your plants (or bombs)."
+	icon_state = "fertilizer"
+	decay = 120*600
+
 /obj/item/weapon/reagent_containers/food/snacks/poo/animal/New()
 	..()
 	icon_state = pick("animal1", "animal2", "animal3")
@@ -183,7 +190,7 @@
 
 
 //#####LIFE PROCS#####
-/mob/living/carbon/human/proc/print_excrement()
+/mob/living/human/proc/print_excrement()
 	if(bowels >= 250)
 		switch(bowels)
 			if(250 to 400)
@@ -208,7 +215,7 @@
 	return
 
 //poo and pee counters. This is called in human_life.
-/mob/living/carbon/human/proc/handle_excrement()
+/mob/living/human/proc/handle_excrement()
 	if(bowels <= 0)
 		bowels = 0
 	if(bladder <= 0)
@@ -265,7 +272,7 @@
 				handle_piss()
 
 //Shitting
-/mob/living/carbon/human/proc/handle_shit()
+/mob/living/human/proc/handle_shit()
 	var/message = null
 	if (src.bowels >= 30)
 
@@ -316,7 +323,7 @@
 	visible_message("[message]")
 
 //Peeing
-/mob/living/carbon/human/proc/handle_piss()
+/mob/living/human/proc/handle_piss()
 	var/message = null
 	if (bladder < 30)
 		to_chat(src, "You don't have to.")

@@ -137,11 +137,6 @@
 			del(src)
 			return
 
-	// Change the way they should download resources.
-	if (config.resource_urls)
-		preload_rsc = pick(config.resource_urls)
-	else preload_rsc = TRUE // If config.resource_urls is not set, preload like normal.
-
 	clients += src
 	directory[ckey] = src
 
@@ -249,7 +244,7 @@
 		if (!istype(mob, /mob/new_player))
 			src << browse(null, "window=playersetup;")
 
-		if (istype(mob, /mob/living/carbon/human))
+		if (istype(mob, /mob/living/human))
 			human_clients_mob_list |= mob
 
 		else if (istype(mob, /mob/observer))
@@ -345,16 +340,16 @@
 /client/proc/send_resources()
 
 	getFiles(
-		'UI/templates/appearance_changer_WW13.tmpl',
-		'UI/templates/chem_disp_WW13.tmpl',
-		'UI/templates/freezer_WW13.tmpl',
-		'UI/templates/layout_basic_WW13.tmpl',
-		'UI/templates/layout_default_WW13.tmpl',
-		'UI/templates/nav_WW13.tmpl',
-		'UI/templates/news_browser_WW13.tmpl',
-		'UI/templates/radio_WW13.tmpl',
-		'UI/templates/smartfridge_WW13.tmpl',
-		'UI/templates/vending_machine_WW13.tmpl'
+		'UI/minimap.png',
+		'UI/images/uos94.png',
+		'UI/images/uos.png',
+		'UI/templates/appearance_changer.tmpl',
+		'UI/templates/chem_disp.tmpl',
+		'UI/templates/layout_basic.tmpl',
+		'UI/templates/layout_default.tmpl',
+		'UI/templates/vending_machine.tmpl',
+		'UI/templates/vending_machine2.tmpl',
+		'UI/templates/vending_machine_taotd.tmpl',
 		)
 
 	spawn (10) //removing this spawn causes all clients to not get verbs.

@@ -54,7 +54,7 @@
 		qdel(src)
 		return
 
-/obj/structure/bed/bedroll/proc/check_use(var/mob/living/carbon/human/H)
+/obj/structure/bed/bedroll/proc/check_use(var/mob/living/human/H)
 	if ((H in src.loc) && buckled_mob == H && used == TRUE && running == FALSE)
 		running = TRUE
 		update_icon()
@@ -114,14 +114,11 @@
 /obj/structure/tent/New()
 	..()
 	oldarea = get_area(src)
-//	var/oldclimate = oldarea.climate
 	if (oldarea.location == AREA_OUTSIDE)
-//TODO: different roofed area climates
-//		var/area/caribbean/roofed/A = new/area/caribbean/roofed(src.loc)
-//		A.climate = oldclimate
 		for(var/obj/structure/tent/T in range(1,src))
 			T.update_icon()
 		update_icon()
+		new/obj/roof/canopy(loc)
 
 /obj/item/weapon/tent/attack_self(mob/user as mob)
 	for (var/obj/O in src.loc)
@@ -149,19 +146,13 @@
 	visible_message("[usr] starts folding the [src]...","You start folding the [src]...")
 	if (do_after(usr, 35, src))
 		visible_message("[usr] finishes folding the [src].","You finish folding the [src].")
-		newareaproc()
 		new/obj/item/weapon/tent(get_turf(src))
 		for(var/obj/structure/tent/T in range(1,src))
 			T.update_icon()
-		for (var/atom/movable/lighting_overlay/LO in get_turf(src))
-			LO.update_overlay()
+		for (var/obj/roof/RF in loc)
+			qdel(RF)
 		qdel(src)
 		return
-/obj/structure/tent/proc/newareaproc()
-	if (!oldarea)
-		return
-	new oldarea.type(get_turf(src))
-	return
 
 /obj/structure/tent/update_icon()
 	..()

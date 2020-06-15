@@ -12,7 +12,7 @@
 	edge = TRUE
 	force_divisor = 0.1 // 6 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.25 // 5 when thrown with weight 20 (steel)
-	var/loaded      //Descriptive string for currently loaded food object.
+	var/loaded	  //Descriptive string for currently loaded food object.
 	var/scoop_food = TRUE
 
 /obj/item/weapon/material/kitchen/utensil/New()
@@ -22,7 +22,7 @@
 	create_reagents(5)
 	return
 
-/obj/item/weapon/material/kitchen/utensil/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+/obj/item/weapon/material/kitchen/utensil/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (!istype(M))
 		return ..()
 
@@ -118,7 +118,7 @@
 		sharp = 1
 		return
 
-/obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/human/M as mob, mob/living/user as mob)
 	if (user.a_intent == I_HELP && (M in range(user,1) || M == user) && ishuman(M) && ishuman(user))
 		visible_message("[user] starts cutting [M]'s hair...","You start cutting [M]'s hair...")
 		if (do_after(user, 80, M))
@@ -181,6 +181,17 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.6
 
+/obj/item/weapon/material/kitchen/utensil/knife/fancy
+	name = "fancy knife"
+	desc = "A expensive knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "fancyknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.3
+
 /obj/item/weapon/material/kitchen/utensil/knife/trench
 	name = "trench knife"
 	desc = "A rather large knife."
@@ -192,6 +203,116 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.7
 
+/obj/item/weapon/material/kitchen/utensil/knife/meat
+	name = "meat knife"
+	desc = "A rather medium knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "meatknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.4
+
+/obj/item/weapon/material/kitchen/utensil/knife/shaggers
+	name = "shagger knife"
+	desc = "A makeshift knife made poorly by ghetto folks."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "shagger"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.4
+
+/obj/item/weapon/material/kitchen/utensil/knife/fish
+	name = "fish knife"
+	desc = "A rather medium knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "fishknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.5
+
+/obj/item/weapon/material/kitchen/utensil/knife/tacticalknife
+	name = "tactical knife"
+	desc = "A rather tactical knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "tacticalknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
+/obj/item/weapon/material/kitchen/utensil/knife/blackknife
+	name = "black knife"
+	desc = "A rather large knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "blackknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
+/obj/item/weapon/material/kitchen/utensil/knife/military
+	name = "military knife"
+	desc = "A rather large knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "militaryknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.9
+
+/obj/item/weapon/material/kitchen/utensil/knife/shadowdagger
+	name = "shadow dagger"
+	desc = "A tactical knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "smolknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
+/obj/item/weapon/material/kitchen/utensil/knife/shadowdaggersal
+	name = "shadow dagger"
+	desc = "A tactical knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "salamon"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
+/obj/item/weapon/material/kitchen/utensil/knife/bread
+	name = "bread knife"
+	desc = "A rather large knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "breadknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.2
+
+/obj/item/weapon/material/kitchen/utensil/knife/survival
+	name = "survival knife"
+	desc = "A small compact survival knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "survivalknife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.3
+
 /obj/item/weapon/material/kitchen/utensil/knife/bone
 	name = "bone knife"
 	desc = "A small knife with a bone blade and obsidian handle."
@@ -201,7 +322,7 @@
 	applies_material_colour = FALSE
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
+	force_divisor = 0.1
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone/New()
 	..()
@@ -216,15 +337,15 @@
 	applies_material_colour = FALSE
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.35
+	force_divisor = 0.1
 
 /obj/item/weapon/material/kitchen/utensil/knife/circumcision/New()
 	..()
 	name = "circumcision knife"
 
 /obj/item/weapon/material/kitchen/utensil/knife/circumcision/attack(target as mob, mob/living/user as mob)
-	if (istype(target, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = target
+	if (istype(target, /mob/living/human))
+		var/mob/living/human/H = target
 		if (user.a_intent == I_HELP && H.gender == MALE)
 			if (H.circumcised)
 				user << "<span class = 'notice'>[H] is already circumcised!</span>"

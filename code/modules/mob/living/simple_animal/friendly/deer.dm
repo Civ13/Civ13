@@ -10,7 +10,7 @@
 	emote_hear = list("bellows")
 	emote_see = list("shakes its head", "looks attently")
 	speak_chance = TRUE
-	turns_per_move = 2
+	move_to_delay = 2
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 5
@@ -30,6 +30,7 @@
 
 	melee_damage_lower = 6
 	melee_damage_upper = 12
+	wandersounds = list('sound/animals/deer/deer_bleat_1.ogg','sound/animals/deer/deer_bleat_2.ogg','sound/animals/deer/deer_bleat_3.ogg')
 
 /mob/living/simple_animal/deer/male
 	name = "stag"
@@ -136,7 +137,7 @@
 	emote_hear = list("bellows")
 	emote_see = list("shakes its head", "looks attently")
 	speak_chance = TRUE
-	turns_per_move = 2
+	move_to_delay = 2
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 5
@@ -166,7 +167,7 @@
 	emote_hear = list("bellows")
 	emote_see = list("shakes its head", "looks attently")
 	speak_chance = TRUE
-	turns_per_move = 2
+	move_to_delay = 2
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 6

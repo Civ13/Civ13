@@ -10,7 +10,7 @@
 	speak = list("bzzzz","zzzzzzz")
 	emote_see = list("buzz around", "fly around")
 	speak_chance = TRUE
-	turns_per_move = 3
+	move_to_delay = 3
 	see_in_dark = 9
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 0
@@ -33,15 +33,15 @@
 
 /mob/living/simple_animal/mosquito/Life()
 	..()
-	if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM || season == "WINTER")
+	if (weather == WEATHER_EXTREME || weather == WEATHER_WET)
 		spawn(1000)//Wait a bit
-			if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM || season == "WINTER")//If still weather
-				visible_message("The [src] freezes to death!")
+			var/area/A = get_area(loc)
+			if (findtext(A.icon_state,"rain") || findtext(A.icon_state,"snow") || findtext(A.icon_state,"monsoon")|| findtext(A.icon_state,"sandstorm"))//If still weather
 				qdel(src)
 	if (stat != DEAD)
 		if (prob(70))
 			var/done = FALSE
-			for (var/mob/living/carbon/human/H in range(6, src))
+			for (var/mob/living/human/H in range(6, src))
 				if (done == FALSE)
 					walk_towards(src, H, 3)
 					done = TRUE
@@ -58,17 +58,20 @@
 		else
 			walk_rand(src,4)
 		if (prob(10))
-			for (var/mob/living/carbon/human/TG in range(1,src))
+			for (var/mob/living/human/TG in range(1,src))
 				visible_message("<span class = 'danger'>\The [src] bite [TG]!")
+				var/dmod = 1
+				if (TG.find_trait("Weak Immune System"))
+					dmod = 2
 				TG.adjustBruteLoss(1,2)
-				if (prob(20) && TG.disease == 0)
+				if (prob(20*dmod) && TG.disease == 0)
 					TG.disease_progression = 0
 					TG.disease_type ="malaria"
 					TG.disease = 1
 /mob/living/simple_animal/mosquito/bullet_act(var/obj/item/projectile/Proj)
 	return
 
-/mob/living/simple_animal/mosquito/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/mosquito/attack_hand(mob/living/human/M as mob)
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	if (prob(40))

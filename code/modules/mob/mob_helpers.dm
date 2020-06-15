@@ -32,15 +32,15 @@
 proc/isdeaf(A)
 	if (isliving(A))
 		var/mob/living/M = A
-		return (M.sdisabilities & DEAF) || M.ear_deaf
+		return (M.sdisabilities & DEAF) || M.ear_deaf || M.find_trait("Deaf")
 	return FALSE
 
 proc/hasorgans(A) // Fucking really??
 	return ishuman(A)
 
 proc/iscuffed(A)
-	if (istype(A, /mob/living/carbon))
-		var/mob/living/carbon/C = A
+	if (istype(A, /mob/living/human))
+		var/mob/living/human/C = A
 		if (C.handcuffed)
 			return TRUE
 	return FALSE
@@ -155,9 +155,9 @@ var/list/global/organ_rel_size = list(
 	return t
 
 proc/slur(phrase)
-	phrase = rhtml_decode(phrase)
-	var/leng=lentext(phrase)
-	var/counter=lentext(phrase)
+	phrase = html_decode(phrase)
+	var/leng=length(phrase)
+	var/counter=length(phrase)
 	var/newphrase=""
 	var/newletter=""
 	while (counter>=1)
@@ -175,10 +175,10 @@ proc/slur(phrase)
 			//if (11,12)	newletter="<big>[newletter]</big>"
 			//if (13)	newletter="<small>[newletter]</small>"
 		newphrase+="[newletter]";counter-=1
-	return rhtml_encode(newphrase)
+	return html_encode(newphrase)
 
 /proc/stutter(n)
-	var/te = rhtml_decode(n)
+	var/te = html_decode(n)
 	var/t = ""//placed before the message. Not really sure what it's for.
 	n = length(n)//length of the entire word
 	var/p = null
@@ -234,7 +234,7 @@ The difference with stutter is that this proc can stutter more than TRUE letter
 The issue here is that anything that does not have a space is treated as one word (in many instances). For instance, "LOOKING," is a word, including the comma.
 It's fairly easy to fix if dealing with single letters but not so much with compounds of letters./N
 */
-	var/te = rhtml_decode(n)
+	var/te = html_decode(n)
 	var/t = ""
 	n = length(n)
 	var/p = TRUE
@@ -318,9 +318,9 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HARM)
 
 
 proc/is_blind(A)
-	if (istype(A, /mob/living/carbon))
-		var/mob/living/carbon/C = A
-		if (C.sdisabilities & BLIND || C.blinded)
+	if (istype(A, /mob/living/human))
+		var/mob/living/human/C = A
+		if ((C.sdisabilities & BLIND) || C.blinded || C.find_trait("Blind"))
 			return TRUE
 		if (istype(C.eyes, /obj/item/clothing/glasses/sunglasses/blindfold))
 			return TRUE
@@ -424,13 +424,13 @@ proc/is_blind(A)
 
 	return FALSE
 
-/mob/living/carbon/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
+/mob/living/human/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
 	if (handcuffed)
 		return SAFE_PERP
 
 	return ..()
 
-/mob/living/carbon/human/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
+/mob/living/human/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
 	var/threatcount = ..()
 	if (. == SAFE_PERP)
 		return SAFE_PERP
@@ -484,13 +484,3 @@ proc/is_blind(A)
 	return threatcount
 
 #undef SAFE_PERP
-/*
-/mob/proc/get_multitool(var/obj/item/multitool/P)
-	if (istype(P))
-		return P
-
-/mob/observer/ghost/get_multitool()
-	return can_admin_interact() && ..(ghost_multitool)
-
-/mob/living/carbon/human/get_multitool()
-	return ..(get_active_hand())*/

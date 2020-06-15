@@ -47,7 +47,7 @@
 
 		if ("equip")
 			if (ishuman(usr))
-				var/mob/living/carbon/human/H = usr
+				var/mob/living/human/H = usr
 				H.quick_equip()
 
 		if ("Reset Machine")
@@ -474,14 +474,14 @@
 	update_icon()
 
 /obj/screen/inventory/hand/Click()
-	var/mob/living/carbon/C = parentmob
+	var/mob/living/human/C = parentmob
 	if (slot_id == slot_l_hand)
 		C.activate_hand("l")
 	else
 		C.activate_hand("r")
 
 /obj/screen/inventory/hand/update_icon()
-	if (slot_id == (parentmob.hand ? slot_l_hand : slot_r_hand)) //Если данный элемент ХУДа отображает левую
+	if (slot_id == (parentmob.hand ? slot_l_hand : slot_r_hand)) //пїЅпїЅпїЅe aaпїЅпїЅпїЅe пїЅпїЅпїЅпїЅпїЅпїЅпїЅ oпїЅaa пїЅпїЅпїЅaпїЅaпїЅaпїЅпїЅ пїЅпїЅaпїЅпїЅ
 		icon_state = "act_hand[slot_id==slot_l_hand ? "-l" : "-r"]"
 	else
 		icon_state = "hand[slot_id==slot_l_hand ? "-l" : "-r"]"
@@ -496,7 +496,7 @@
 	process_flag = TRUE
 
 /obj/screen/health/process()
-	var/mob/living/carbon/human/H = parentmob
+	var/mob/living/human/H = parentmob
 	overlays.Cut()
 	if (parentmob.stat != DEAD)
 
@@ -524,7 +524,7 @@
 
 /obj/screen/health/Click()
 	if (ishuman(parentmob))
-		var/mob/living/carbon/human/X = parentmob
+		var/mob/living/human/X = parentmob
 		X.exam_self()
 
 //--------------------------------------------------health end---------------------------------------------------------
@@ -538,11 +538,11 @@
 	process_flag = TRUE
 
 /obj/screen/nutrition/process()
-	//var/mob/living/carbon/human/H = parentmob
+	//var/mob/living/human/H = parentmob
 	update_icon()
 
 /obj/screen/nutrition/update_icon()
-	var/mob/living/carbon/human/H = parentmob
+	var/mob/living/human/H = parentmob
 
 	// show our worst status, hunger or thirst
 
@@ -554,7 +554,7 @@
 	if (!parentmob)
 		return
 
-	var/mob/living/carbon/human/H = parentmob
+	var/mob/living/human/H = parentmob
 
 	var/hungry_coeff = min(H.nutrition/H.max_nutrition, 1.0)
 	var/hungry_percentage = "[round(hungry_coeff*100)]%"
@@ -700,7 +700,7 @@
 	update_icon()
 
 /obj/screen/fixeye/update_icon()
-	var/mob/living/carbon/human/L = parentmob
+	var/mob/living/human/L = parentmob
 	if (!L.facing_dir)
 		icon_state = "fixeye"
 	else
@@ -708,7 +708,7 @@
 
 /obj/screen/fixeye/Click()
 	if (isliving(parentmob))
-		var/mob/living/carbon/human/L = parentmob
+		var/mob/living/human/L = parentmob
 
 		L.set_face_dir()
 
@@ -804,14 +804,14 @@ obj/screen/tactic
 	process_flag = TRUE
 /obj/screen/mood/Click()
 	if (ishuman(parentmob))
-		var/mob/living/carbon/human/C = parentmob
+		var/mob/living/human/C = parentmob
 		C.print_mood()
 /obj/screen/mood/process()
 	update_icon()
 
 /obj/screen/mood/update_icon()
 	if (isliving(parentmob))
-		var/mob/living/carbon/human/L = parentmob
+		var/mob/living/human/L = parentmob
 		var/old_icon = icon_state
 		var/old_mood = L.mood
 		switch(L.mood)
@@ -842,8 +842,8 @@ obj/screen/tactic
 	screen_loc = "14,1"
 
 /obj/screen/mov_intent/Click()
-//	if (iscarbon(parentmob))
-	var/mob/living/carbon/human/C = parentmob
+//	if (ishuman(parentmob))
+	var/mob/living/human/C = parentmob
 	if (C.legcuffed)
 		C << "<span class='notice'>You are legcuffed! You cannot run until you get [C.legcuffed] removed!</span>"
 		C.m_intent = "walk"	//Just incase
@@ -890,7 +890,7 @@ obj/screen/tactic
 	update_icon()
 
 /obj/screen/mov_intent/update_icon()
-	var/mob/living/carbon/C = parentmob
+	var/mob/living/human/C = parentmob
 	switch(C.m_intent)
 		if ("run")
 			icon_state = "running"
@@ -910,7 +910,7 @@ obj/screen/tactic
 
 /obj/screen/equip/Click()
 	if (ishuman(parentmob))
-		var/mob/living/carbon/human/H = parentmob
+		var/mob/living/human/H = parentmob
 		H.quick_equip()
 //-----------------------swap------------------------------
 /obj/screen/swap
@@ -1109,7 +1109,7 @@ obj/screen/tactic
 	return
 
 /obj/screen/damageoverlay/proc/UpdateHealthState()
-	var/mob/living/carbon/human/H = parentmob
+	var/mob/living/human/H = parentmob
 
 	if (H.stat == UNCONSCIOUS)
 		//Critical damage passage overlay
@@ -1355,8 +1355,8 @@ obj/screen/tactic
 /obj/screen/fov/update_icon()
 	underlays.Cut()
 	if (!config.disable_fov)
-		if (istype(parentmob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = parentmob
+		if (istype(parentmob, /mob/living/human))
+			var/mob/living/human/H = parentmob
 			var/largest = 0
 			for (var/obj/item/clothing/CM in H.contents)
 				if (CM.restricts_view > largest && (H.wear_mask == CM || H.head == CM))
@@ -1375,18 +1375,18 @@ obj/screen/tactic
 
 
 /obj/screen/toggle_inventory/proc/hidden_inventory_update(obj/screen/inventory/inv_elem)
-	var/mob/living/carbon/human/H = parentmob
+	var/mob/living/human/H = parentmob
 	switch (inv_elem.slot_id)
 		if (slot_head)
-			if (H.head)      H.head.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.head)	  H.head.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_shoes)
-			if (H.shoes)     H.shoes.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.shoes)	 H.shoes.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_l_ear)
-			if (H.l_ear)     H.l_ear.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.l_ear)	 H.l_ear.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_r_ear)
-			if (H.r_ear)     H.r_ear.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.r_ear)	 H.r_ear.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_gloves)
-			if (H.gloves)    H.gloves.screen_loc =    (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.gloves)	H.gloves.screen_loc =	(inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_w_uniform)
 			if (H.w_uniform) H.w_uniform.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_wear_suit)
@@ -1394,4 +1394,4 @@ obj/screen/tactic
 		if (slot_wear_mask)
 			if (H.wear_mask) H.wear_mask.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_eyes)
-			if (H.eyes)      H.eyes.screen_loc =      (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+			if (H.eyes)	  H.eyes.screen_loc =	  (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc

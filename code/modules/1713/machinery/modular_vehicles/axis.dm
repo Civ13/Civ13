@@ -1,9 +1,13 @@
 var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte")
 var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom")
 var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go")
+var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin")
 
 ////////AXIS: MOVEMENT LOOP/////////
-
+/obj/structure/vehicleparts/axis
+	var/maxdist = 5 //the highest of length and width
+	var/turntimer = 15
+	var/doorcode = 0
 /obj/structure/vehicleparts/axis/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -35,9 +39,10 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 /obj/structure/vehicleparts/axis/proc/movementsound()
 	if (!moving)
 		return
-	playsound(loc, 'sound/machines/tank_moving.ogg',100, TRUE)
-	spawn(30)
-		movementsound()
+	if (istype(wheels[1],/obj/structure/vehicleparts/movement/tracks))
+		playsound(loc, 'sound/machines/tank_moving.ogg',100, TRUE)
+		spawn(30)
+			movementsound()
 
 /obj/structure/vehicleparts/axis/proc/movementloop()
 	if (moving == TRUE)
@@ -134,12 +139,14 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 				if (!protec)
 					if (current_weight >= 800)
 						visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
+						for(var/obj/item/I in L)
+							qdel(I)
 						L.crush()
 						if (L)
 							qdel(L)
 					else
 						if (ishuman(L))
-							var/mob/living/carbon/human/HH = L
+							var/mob/living/human/HH = L
 							HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 							HH.Weaken(rand(2,5))
 							visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
@@ -152,7 +159,10 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 								L.forceMove(get_turf(get_step(TT,dir)))
 							else
 								visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+								for(var/obj/item/I in SA)
+									qdel(I)
 								SA.crush()
+
 			for(var/obj/structure/O in T)
 				var/done = FALSE
 				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
@@ -164,16 +174,17 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 						return FALSE
 				if (!done)
 					if (O.density == TRUE && !(O in transporting))
-						if (current_weight >= 400 && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement))
+						if (current_weight >= 400 && !istype(O, /obj/structure/mailbox) && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement)&& !istype(O, /obj/structure/barricade/stone_h)&& !istype(O, /obj/structure/barricade/stone_v)&& !istype(O, /obj/structure/barricade/jap_h) && !istype(O, /obj/structure/barricade/jap_v)&& !istype(O, /obj/structure/barricade/jap_h_l)&& !istype(O, /obj/structure/barricade/jap_h_r)&& !istype(O, /obj/structure/barricade/jap_v_b)&& !istype(O, /obj/structure/barricade/jap_v_t)&& !istype(O, /obj/structure/barricade/sandstone_h)&& !istype(O, /obj/structure/barricade/sandstone_v)&& !istype(O, /obj/structure/barricade/sandstone_v/crenelated)&& !istype(O, /obj/structure/barricade/sandstone_h/crenelated)&& !istype(O, /obj/structure/barricade/stone_v/crenelated) && !istype(O, /obj/structure/gate))
 							visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
 						else
 							visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 							return FALSE
 					else if (O.density == FALSE && !(O in transporting))
-						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/rails))
+						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/rails))
 	//						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
+
 			if (T.density == TRUE)
 				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
 				moving = FALSE
@@ -186,8 +197,9 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 						moving = FALSE
 						stopmovementloop()
 						return FALSE
-				else
-					CV.Destroy()
+			for(var/obj/item/ammo_casing/AC in T)
+				if(!AC.BB)
+					qdel(AC) //to prevent the "empty empty empty empty"... spam
 			for(var/obj/item/I in TT && !(I in transporting))
 				qdel(I)
 			for(var/obj/effect/fire/BO in T && !(BO in transporting))
@@ -272,7 +284,8 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 				if (MAT.anchored)
 					MAT.trigger(F)
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
-				transporting += M
+				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails))
+					transporting += M
 	return transporting.len
 
 /obj/structure/vehicleparts/axis/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
@@ -283,7 +296,6 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 		VP.anchored = TRUE
 		components += VP
 		VP.name = "[name] axis"
-		VP.color_code = color_code
 		loc = VP
 		return
 
@@ -318,9 +330,9 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 		mside = abs(mside)
 	var/locx = 1
 	var/locy = 1
-	for (locx in 1 to 5)
-		for (locy in 1 to 5)
-			matrix += list("[locx],[locy]" = list(null,0,0, "[locx],[locy]"))
+	for (locx in 1 to maxdist)
+		for (locy in 1 to maxdist)
+			matrix += list("[locx],[locy]" = list(null,locx,locy, "[locx],[locy]"))
 			locy++
 		locx++
 	var/obj/FFL = corners[2]
@@ -334,26 +346,28 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 		switch(FFL.dir)
 			if (SOUTH)
 				matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
-			//TODO: Directions below
 			if (NORTH)
 				matrix["[disx+1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
 			if (EAST)
-				matrix["[disx+1],[disy-1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
+				matrix["[disx+1],[disy+1]"] = list(FM, disy+1, disx+1,"[disx+1],[disy+1]")
 			if (WEST)
-				matrix["[disx-1],[disy+1]"] = list(FM, disx+1, disy+1,"[disx+1],[disy+1]")
+				matrix["[disx+1],[disy+1]"] = list(FM, disy+1, disx+1,"[disx+1],[disy+1]")
 	for (var/obj/effect/pseudovehicle/PV in components)
 		var/disx = abs(PV.y-FFL.y)
 		var/disy = abs(PV.x-FFL.x)
-		switch(PV.dir)
-			if (SOUTH)
-				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
-			//TODO: Directions below
-			if (NORTH)
-				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
-			if (EAST)
-				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy-1]")
-			if (WEST)
-				matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
+		if (disx <= maxdist-1 && disy <= maxdist-1)
+			switch(PV.dir)
+				if (SOUTH)
+					matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
+				if (NORTH)
+					matrix["[disx+1],[disy+1]"] = list(PV, disx+1, disy+1,"[disx+1],[disy+1]")
+				if (EAST)
+					matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
+				if (WEST)
+					matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disx+1],[disy+1]")
+		else
+			components -= PV
+			qdel(PV)
 	return TRUE
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
@@ -402,6 +416,7 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 					corners[3] = F
 				else if (dir == EAST) // FL
 					corners[2] = F
+	maxdist=1+max(abs(corners[1].x-corners[2].x),abs(corners[1].y-corners[3].y),abs(corners[1].y-corners[2].y),abs(corners[1].x-corners[3].x))
 	for(var/obj/structure/vehicleparts/frame/FM in components)
 		for(var/obj/structure/vehicleparts/movement/MV in wheels)
 			if (!MV.axis && MV.x == FM.x && MV.y == FM.y && MV.z == FM.z)
@@ -464,8 +479,8 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 	matrix_current_locs = list()
 
 	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
+	for (var/locx=1; locx<=maxdist; locx++)
+		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
 			if (matrix[loc2textv][1])
 				var/turf/currloc = get_turf(matrix[loc2textv][1])
@@ -476,12 +491,23 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
 
 	//check if there are no other vehicles/obstacles in the destination areas
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
+	for (var/locx=1; locx<=maxdist; locx++)
+		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
 			if (!matrix_current_locs[loc2textv].len)
 				return
-			var/dlocfinding = rotation_matrixes[tdir][loc2textv][1]
+			var/dlocfinding
+			switch(maxdist)
+				if (1)
+					dlocfinding = rotation_matrixes1[tdir][loc2textv][1]
+				if (2)
+					dlocfinding = rotation_matrixes2[tdir][loc2textv][1]
+				if (3)
+					dlocfinding = rotation_matrixes3[tdir][loc2textv][1]
+				if (4)
+					dlocfinding = rotation_matrixes4[tdir][loc2textv][1]
+				if (5)
+					dlocfinding = rotation_matrixes5[tdir][loc2textv][1]
 			var/turf/T = matrix_current_locs[dlocfinding][1]
 			var/list/todestroy = list()
 			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfinding][1])
@@ -503,40 +529,55 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 					else
 						todestroy += O
 			for(var/obj/OM in todestroy)
-				qdel(OM)
+				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails)&& !istype(OM, /obj/covers))
+					qdel(OM)
 	dir = newdir
 	for (var/obj/structure/vehicleparts/movement/OBB in wheels)
 		if (OBB.reversed)
 			OBB.dir = OPPOSITE_DIR(dir)
 		else
 			OBB.dir = dir
-	for (var/locx=1; locx<=5; locx++)
-		for (var/locy=1; locy<=5; locy++)
+	for (var/locx=1; locx<=maxdist; locx++)
+		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
-			var/dlocfind = rotation_matrixes[tdir][loc2textv][1]
+			var/dlocfind
+			switch(maxdist)
+				if (1)
+					dlocfind = rotation_matrixes1[tdir][loc2textv][1]
+				if (2)
+					dlocfind = rotation_matrixes2[tdir][loc2textv][1]
+				if (3)
+					dlocfind = rotation_matrixes3[tdir][loc2textv][1]
+				if (4)
+					dlocfind = rotation_matrixes4[tdir][loc2textv][1]
+				if (5)
+					dlocfind = rotation_matrixes5[tdir][loc2textv][1]
 			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfind][1])
 				return FALSE
-//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
+//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
 			if (islist(matrix_current_locs[loc2textv][2]))
 				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])
 					var/turf/toget = matrix_current_locs[dlocfind][1]
 					for (var/mob/living/ML in toget)
 						if (!locate(ML) in transporting)
+							for(var/obj/item/I in ML)
+								qdel(I)
 							ML.crush()
 					for (var/obj/structure/ST in toget)
 						if (!ST.density)
 							ST.Destroy()
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
-					M.forceMove(matrix_current_locs[dlocfind][1])
-					if (istype(M, /obj))
-						var/obj/O = M
-						if (!istype(O, /obj/structure/cannon))
-							O.dir = dir
-						if (istype(O, /obj/structure/vehicleparts/frame))
-							var/obj/structure/vehicleparts/frame/FR = O
-							if (FR.mwheel)
-								FR.mwheel.update_icon()
-						O.update_icon()
+					if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers))
+						M.forceMove(matrix_current_locs[dlocfind][1])
+						if (istype(M, /obj))
+							var/obj/O = M
+							if (!istype(O, /obj/structure/cannon))
+								O.dir = dir
+							if (istype(O, /obj/structure/vehicleparts/frame))
+								var/obj/structure/vehicleparts/frame/FR = O
+								if (FR.mwheel)
+									FR.mwheel.update_icon()
+							O.update_icon()
 
 	for(var/obj/structure/vehicleparts/VP in components)
 		VP.dir = dir
@@ -562,7 +603,7 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 				qdel(src)
 
 
-/obj/structure/vehicleparts/axis/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/vehicleparts/axis/attack_hand(var/mob/living/human/H)
 	if (!ishuman(H))
 		return
 	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))

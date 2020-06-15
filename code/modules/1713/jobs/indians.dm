@@ -3,7 +3,7 @@
 	var/tribe = "Carib"
 
 
-/datum/job/indians/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/indians/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_carib_name(H.gender)
 	H.real_name = H.name
 
@@ -11,15 +11,15 @@
 	title = "Carib Elder"
 	en_meaning = "Native Elder/Leader"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
-/datum/job/indians/carib_chief/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/carib_chief/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/chief_hat(H), slot_head)
@@ -50,14 +50,14 @@
 	title = "Carib Shaman"
 	en_meaning = "Native Shaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateIND"
+
+
+
 	min_positions = 2
 	max_positions = 30
-/datum/job/indians/carib_shaman/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/carib_shaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/indianshaman(H), slot_w_uniform)
@@ -93,15 +93,15 @@
 	title = "Carib Tribesman"
 	en_meaning = "Native Tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateIND"
+
+
+
 	min_positions = 20
 	max_positions = 300
 
-/datum/job/indians/carib/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/carib/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
 	var/randcloth = rand(1,3)
@@ -144,15 +144,15 @@
 	title = "Red Goose Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND1"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateIND1"
+
+
+
 	min_positions = 60
 	max_positions = 300
 
-/datum/job/indians/tribes/red/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/tribes/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
 	var/randcloth = rand(1,3)
@@ -185,15 +185,15 @@ datum/job/indians/tribes/blue
 	title = "Blue Turkey Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND2"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateIND2"
+
+
+
 	min_positions = 60
 	max_positions = 300
 
-/datum/job/indians/tribes/blue/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/tribes/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
 	var/randcloth = rand(1,3)
@@ -226,15 +226,15 @@ datum/job/indians/tribes/green
 	title = "Green Monkey Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND3"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateIND3"
+
+
+
 	min_positions = 60
 	max_positions = 300
 
-/datum/job/indians/tribes/green/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/tribes/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
 	var/randcloth = rand(1,3)
@@ -267,15 +267,15 @@ datum/job/indians/tribes/yellow
 	title = "Yellow Mouse Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateIND4"
+
+
+
 	min_positions = 60
 	max_positions = 300
 
-/datum/job/indians/tribes/yellow/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/tribes/yellow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
 	var/randcloth = rand(1,3)
@@ -308,15 +308,15 @@ datum/job/indians/tribes/white
 	title = "White Wolf Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND5"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateIND5"
+
+
+
 	min_positions = 60
 	max_positions = 300
 
-/datum/job/indians/tribes/white/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/tribes/white/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
 	var/randcloth = rand(1,3)
@@ -351,15 +351,15 @@ datum/job/indians/tribes/black
 	title = "Black Bear Tribesman"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND6"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateIND6"
+
+
+
 	min_positions = 60
 	max_positions = 300
 
-/datum/job/indians/tribes/black/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/tribes/black/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
 	var/randcloth = rand(1,3)

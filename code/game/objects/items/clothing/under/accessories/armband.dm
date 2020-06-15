@@ -193,6 +193,30 @@
 	worn_state = "patch_marksman"
 	slot = "armband"
 
+/obj/item/clothing/accessory/patch/russia
+	name = "Russia patch"
+	desc = "A patch with the flag of Russia."
+	icon_state = "patch_russia"
+	item_state = "patch_russia"
+	worn_state = "patch_russia"
+	slot = "armband"
+
+/obj/item/clothing/accessory/patch/spetsgruppaa
+	name = "Spetsgruppa A patch"
+	desc = "A special forces patch, this one is of spetsnaz."
+	icon_state = "patch_spets"
+	item_state = "patch_marksman"
+	worn_state = "patch_marksman"
+	slot = "armband"
+
+/obj/item/clothing/accessory/patch/swat
+	name = "SWAT patch"
+	desc = "A SWAT tag."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+	slot = "armband"
+
 /obj/item/clothing/accessory/patch/specialforce
 	name = "special forces patch"
 	desc = "A patch used by special forces."
@@ -224,7 +248,7 @@
 			return
 		else
 			input = uppertext(input)
-			if (lentext(input) != 6)
+			if (length(input) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)

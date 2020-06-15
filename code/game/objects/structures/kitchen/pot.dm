@@ -3,7 +3,7 @@
 #define STATE_BOILING "boiling"
 #define STATE_STEWING "stew"
 // what turns into what when we boil it?
-#define BOIL_MAP list(/obj/item/weapon/reagent_containers/food/snacks/spaghetti = /obj/item/weapon/reagent_containers/food/snacks/boiledspagetti, /obj/item/weapon/reagent_containers/food/snacks/rice = /obj/item/weapon/reagent_containers/food/snacks/boiledrice)
+#define BOIL_MAP list(/obj/item/weapon/reagent_containers/food/snacks/spaghetti = /obj/item/weapon/reagent_containers/food/snacks/boiledspagetti, /obj/item/weapon/reagent_containers/food/snacks/rice = /obj/item/weapon/reagent_containers/food/snacks/boiledrice, /obj/item/weapon/reagent_containers/food/snacks/rawlobster = /obj/item/weapon/reagent_containers/food/snacks/rawlobster/boiled)
 
 
 /obj/structure/pot
@@ -40,7 +40,7 @@
 /obj/structure/pot/update_icon()
 	icon_state = "[state][base_state]"
 
-/obj/structure/pot/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/pot/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (istype(I, /obj/item/weapon/wrench))
@@ -152,7 +152,7 @@
 			fullness = 0
 			update_icon()
 
-/obj/structure/pot/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/pot/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (state != STATE_BOILING)

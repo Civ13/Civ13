@@ -104,6 +104,57 @@
 	edge = TRUE
 	w_class = 2.0
 
+/obj/item/weapon/armorplatesswimmer
+	name = "swimmer plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "swimmerplate"
+	item_state = "swimmerplate"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/weapon/armorplatessharpshooter
+	name = "sharpshooter plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "sharpshooter"
+	item_state = "sharpshooter"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/weapon/armorplate
+	name = "armor plate"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "plate1"
+	item_state = "plate1"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
 /obj/item/clothing/accessory/armor/knee_protections
 	name = "knee protections"
 	desc = "Used to increase the protection of the legs."
@@ -125,6 +176,27 @@
 	edge = TRUE
 	w_class = 2.0
 
+/obj/item/clothing/accessory/armor/legguards
+	name = "leg guards"
+	desc = "Used to increase the protection of the legs."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "legguards"
+	item_state = "legguards"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 6.0
+	throwforce = 3.0
+	slot = "leg_armor"
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	body_parts_covered = LEGS
+	armor = list(melee = 75, arrow = 50, gun = 30, energy = 32, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.3
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
 /obj/item/clothing/accessory/armor/elbow_protections
 	name = "elbow protections"
 	desc = "Used to increase the protection of the arms."
@@ -141,6 +213,27 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	body_parts_covered = ARMS
 	armor = list(melee = 65, arrow = 45, gun = 15, energy = 25, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.1
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/clothing/accessory/armor/armguards
+	name = "arm guards"
+	desc = "Used to increase the protection of the arms."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "armguards"
+	item_state = "armguards"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 6.0
+	throwforce = 3.0
+	slot = "arm_armor"
+
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	body_parts_covered = ARMS
+	armor = list(melee = 75, arrow = 50, gun = 30, energy = 32, bomb = 55, bio = 20, rad = FALSE)
 	slowdown = 0.1
 	sharp = FALSE
 	edge = TRUE
@@ -188,6 +281,46 @@
 	icon_state = "lwh_black"
 	item_state = "lwh_black"
 	worn_state = "lwh_black"
+
+/obj/item/clothing/head/helmet/modern/sovietfacehelmet
+	name = "K6 helmet"
+	desc = "A russian heavy armoured helmet."
+	icon_state = "sovietfacehelmet"
+	item_state = "sovietfacehelmet"
+	worn_state = "sovietfacehelmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 90, arrow = 110, gun = 96, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/a6b47
+	name = "6B47 helmet"
+	desc = "A russian heavy armoured helmet."
+	icon_state = "a6b47"
+	item_state = "a6b47"
+	worn_state = "a6b47"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/zsh1
+	name = "ZSh-1 helmet"
+	desc = "A russian heavy armoured helmet."
+	icon_state = "zsh1"
+	item_state = "zsh1"
+	worn_state = "zsh1"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 80, arrow = 100, gun = 95, energy = 36, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/zsh2
+	name = "ZSh-2 helmet"
+	desc = "A russian heavy armoured helmet with a visor."
+	icon_state = "zsh2"
+	item_state = "zsh2"
+	worn_state = "zsh2"
+	body_parts_covered = HEAD|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 84, arrow = 104, gun = 98, energy = 38, bomb = 79, bio = 34, rad = FALSE)
 
 /obj/item/clothing/under/us_uni/us_camo_woodland
 	name = "woodland camouflage uniform"
@@ -282,6 +415,17 @@
 	item_state = "insurgent_leader"
 	worn_state = "insurgent_leader"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/tacti
+	name = "tactical outfit"
+	desc = "A outfit used by tactical units."
+	icon_state = "tacti"
+	item_state = "tacti"
+	worn_state = "tacti"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
 /obj/item/clothing/under/us_uni/us_lightuni_modern
 	name = "U.S. Army training uniform"
 	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
@@ -325,6 +469,19 @@
 	cooldownw = 9
 	value = 60
 
+/obj/item/weapon/material/sword/arabsword2
+	name = "arabic sword"
+	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
+	icon_state = "arabsword2"
+	item_state = "longsword"
+	throw_speed = 4
+	throw_range = 5
+	force_divisor = 0.79 // 45 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 26
+	cooldownw = 10
+	value = 60
 
 /obj/item/clothing/under/idf
 	name = "IDF olive uniform"
@@ -333,6 +490,7 @@
 	item_state = "idf_olive"
 	worn_state = "idf_olive"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 
 /obj/item/clothing/head/helmet/modern/idf
 	name = "IDF helmet"
@@ -361,6 +519,45 @@
 	slowdown = 0.3
 	w_class = 4
 	weight = 3.8
+
+/obj/item/clothing/accessory/armor/coldwar/platecarrier
+	name = "tan plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is tan."
+	icon_state = "platecarrier_tan"
+	item_state = "platecarrier_tan"
+	worn_state = "platecarrier_tan"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/coldwar/platecarriergreen
+	name = "olive plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is olive."
+	icon_state = "platecarrier_green"
+	item_state = "platecarrier_green"
+	worn_state = "platecarrier_green"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/coldwar/platecarrierblack
+	name = "black plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is black."
+	icon_state = "platecarrier_black"
+	item_state = "platecarrier_black"
+	worn_state = "platecarrier_black"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
 
 /obj/item/clothing/accessory/armor/nomads/kevlarblack
 	name = "black kevlar vest"
@@ -409,6 +606,30 @@
 	worn_state = "kevlarhelmet"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
+
+/obj/item/clothing/head/helmet/swat
+	name = "swat helmet"
+	desc = "A standard kevlar helmet used by swat officers."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+	body_parts_covered = HEAD
+	armor = list(melee = 65, arrow = 95, gun = 85, energy = 27, bomb = 64, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
+
+/obj/item/clothing/head/helmet/tactical
+	name = "tactical helmet"
+	desc = "A standard bulletproof helmet, made of polyethylene."
+	icon_state = "tacticalhelmet"
+	item_state = "tacticalhelmet"
+	worn_state = "tacticalhelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 90
@@ -468,7 +689,7 @@
 	item_state = "pcarrier_tan"
 	worn_state = "pcarrier_tan"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.35
 	w_class = 4
@@ -481,7 +702,7 @@
 	item_state = "pcarrier_black"
 	worn_state = "pcarrier_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 70, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.35
 	w_class = 4
@@ -494,7 +715,7 @@
 	item_state = "civilianvest"
 	worn_state = "civilianvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 90, gun = 68, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 90, gun = 72, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.30
 	w_class = 4
@@ -512,3 +733,66 @@
 	slowdown = 0.10
 	w_class = 3
 	weight = 3.0
+
+/obj/item/clothing/head/helmet/motorcycle
+	name = "motorcycle helmet"
+	desc = "Protects your head from injuries if you crash your bike."
+	icon_state = "motorcycle"
+	item_state = "motorcycle"
+	worn_state = "motorcycle"
+	body_parts_covered = FACE|EYES|HEAD
+	restricts_view = 2
+	flags_inv = HIDEMASK|BLOCKHAIR|BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 65, gun = 5, energy = 35, bomb = 35, bio = 30, rad = FALSE)
+
+
+/obj/item/weapon/storage/belt/police
+	name = "police belt"
+	desc = "A belt that can hold the standard issue gear of police officers."
+	icon_state = "gerbelt"
+	item_state = "gerbelt"
+	storage_slots = 10
+	max_w_class = 3
+	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/melee/nightbaton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		/obj/item/stack/money,
+		/obj/item/weapon/key,
+		)
+/obj/item/weapon/storage/belt/police/New()
+	..()
+	new /obj/item/weapon/melee/nightbaton(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/ammo_magazine/glock17(src)
+	new /obj/item/ammo_magazine/glock17(src)
+
+/obj/item/clothing/suit/storage/jacket/highvis
+	name = "high visibility jacket"
+	desc = "A yellow high visibility jacket."
+	icon_state = "high_vis_jacket_yellow"
+	item_state = "high_vis_jacket_yellow"
+	worn_state = "high_vis_jacket_yellow"
+
+/obj/item/clothing/suit/storage/jacket/highvis/paramedic
+	name = "paramedic jacket"
+	icon_state = "paramedic_jacket"
+	item_state = "paramedic_jacket"
+	worn_state = "paramedic_jacket"

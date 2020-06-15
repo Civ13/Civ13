@@ -33,8 +33,8 @@
 	clip = TRUE
 
 obj/item/ammo_magazine/type100
-	name = "Type-100 magazine"
-	icon_state = "madsen"
+	name = "Type 100 Magazine"
+	icon_state = "type100"
 	mag_type = MAGAZINE
 	caliber = "c8mmnambu"
 	ammo_type = /obj/item/ammo_casing/c8mmnambu
@@ -43,7 +43,7 @@ obj/item/ammo_magazine/type100
 	multiple_sprites = TRUE
 
 obj/item/ammo_magazine/type99
-	name = "Type-99 magazine"
+	name = "Type-99 Magazine"
 	icon_state = "type99"
 	mag_type = MAGAZINE
 	caliber = "a77x58"
@@ -114,17 +114,17 @@ obj/item/ammo_magazine/type99
 	mag_type = MAGAZINE
 	caliber = "a762x25"
 	ammo_type = /obj/item/ammo_casing/a762x25
-	max_ammo = 71
+	max_ammo = 65
 	weight = 1.3
 	multiple_sprites = TRUE
 
 obj/item/ammo_magazine/dp
-	name = "DP disk (7.62x54mmR)"
+	name = "DP pan (7.62x54mmR)"
 	icon_state = "dpdisk"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
-	max_ammo = 60
+	max_ammo = 47
 	weight = 0.40
 	multiple_sprites = FALSE
 
@@ -149,13 +149,24 @@ obj/item/ammo_magazine/dp
 	weight = 0.32
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/avtomat
-	name = "avtomat magazine (7.62x54mm)"
+/obj/item/ammo_magazine/svd
+	name = "SVD magazine (7.62x54mmR)"
 	icon_state = "g43"
 	caliber = "a762x54"
 	mag_type = MAGAZINE
 
 	ammo_type = /obj/item/ammo_casing/a762x54
+	max_ammo = 10
+	weight = 0.32
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/avtomat
+	name = "avtomat magazine (6.5x50mm)"
+	icon_state = "g43"
+	caliber = "a65x50"
+	mag_type = MAGAZINE
+
+	ammo_type = /obj/item/ammo_casing/a65x50
 	max_ammo = 25
 	weight = 0.44
 	multiple_sprites = TRUE
@@ -184,11 +195,11 @@ obj/item/ammo_magazine/dp
 	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/tt30
-	name = "TT30 magazine (7.62x25mm)"
+	name = "TT-33 magazine (7.62x25mm)"
 	icon_state = "m1911"
 	mag_type = MAGAZINE
-	ammo_type = /obj/item/ammo_casing/a765x25
-	caliber = "a765x25"
+	ammo_type = /obj/item/ammo_casing/a762x25
+	caliber = "a762x25"
 	max_ammo = 8
 	multiple_sprites = TRUE
 /obj/item/ammo_magazine/tt30/empty/New()
@@ -218,8 +229,24 @@ obj/item/ammo_magazine/dp
 	multiple_sprites = TRUE
 	clip = TRUE
 
+/obj/item/ammo_magazine/browning
+	name = "browning ammo belt"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a3006"
+	w_class = 4
+
+	ammo_type = /obj/item/ammo_casing/a3006
+	max_ammo = 250
+	multiple_sprites = TRUE
+	var/slot = "decor"
+	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
+	var/image/inv_overlay = null	//overlay used when attached to clothing.
+	var/image/mob_overlay = null
+	var/overlay_state = null
+
 /obj/item/ammo_magazine/bar
-	name = "magazine (30-06)"
+	name = "BAR magazine (30-06)"
 	icon_state = "bar"
 	caliber = "a3006_weak"
 
@@ -230,8 +257,9 @@ obj/item/ammo_magazine/dp
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/thompson
-	name = "Thomspon magazine (.45)"
+	name = "Thompson magazine (.45)"
 	icon_state = "thompson"
+	caliber = "a45acp"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a45acp
 	max_ammo = 20

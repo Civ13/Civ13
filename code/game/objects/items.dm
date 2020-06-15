@@ -155,13 +155,13 @@
 /obj/item/attack_hand(mob/user as mob)
 	if (isturf(loc) && anchored) return
 	if (!user) return
-	if (istype(user, /mob/living/carbon/human))
-		var/mob/living/carbon/human/HM = user
+	if (istype(user, /mob/living/human))
+		var/mob/living/human/HM = user
 		if (HM.werewolf && HM.body_build.name != "Default") return
 	if (do_after(user,equiptimer, src, can_move = equiptimer))
 		if (src in range(1,user))
 			if (hasorgans(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
 				if (user.hand)
 					temp = H.organs_by_name["l_hand"]
@@ -188,7 +188,7 @@
 		else
 			if (!isturf(src.loc))
 				if (hasorgans(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
 					if (user.hand)
 						temp = H.organs_by_name["l_hand"]
@@ -334,7 +334,7 @@ var/list/global/slot_flags_enumeration = list(
 
 	if (!ishuman(M)) return FALSE
 
-	var/mob/living/carbon/human/H = M
+	var/mob/living/human/H = M
 	var/list/mob_equip = list()
 	if (H.species.hud && H.species.hud.equip_slots)
 		mob_equip = H.species.hud.equip_slots
@@ -380,6 +380,11 @@ var/list/global/slot_flags_enumeration = list(
 				return FALSE
 			if ( w_class > 2 && (!(slot_flags & SLOT_POCKET) || istype(src,/obj/item/weapon/shield)))
 				return FALSE
+			if (istype(src, /obj/item/weapon/gun))
+				var/obj/item/weapon/gun/G = src
+				if (G.silencer || !G.pocket)
+					H << "<span class='warning'>[G] doesn't fit in your pockets!</span>"
+					return
 		if (slot_handcuffed)
 			if (!istype(src, /obj/item/weapon/handcuffs))
 				return FALSE
@@ -424,7 +429,7 @@ var/list/global/slot_flags_enumeration = list(
 		return
 	if (!usr.canmove || usr.stat || usr.restrained() || !Adjacent(usr))
 		return
-	if ((!istype(usr, /mob/living/carbon)))//Is humanoid, and is not a brain
+	if ((!istype(usr, /mob/living/human)))//Is humanoid, and is not a brain
 		usr << "<span class='warning'>You can't pick things up!</span>"
 		return
 	if ( usr.stat || usr.restrained() )//Is not asleep/dead and is not restrained
@@ -460,9 +465,9 @@ var/list/global/slot_flags_enumeration = list(
 /obj/item/proc/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	return FALSE
 
-/obj/item/proc/eyestab(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+/obj/item/proc/eyestab(mob/living/human/M as mob, mob/living/human/user as mob)
 
-	var/mob/living/carbon/human/H = M
+	var/mob/living/human/H = M
 	if (istype(H))
 		for (var/obj/item/protection in list(H.head, H.wear_mask))
 			if (protection && (protection.body_parts_covered & EYES))
@@ -547,7 +552,7 @@ var/list/global/slot_flags_enumeration = list(
 		blood_overlay.color = COLOR_LUMINOL
 		update_icon()
 
-/obj/item/add_blood(mob/living/carbon/human/M as mob)
+/obj/item/add_blood(mob/living/human/M as mob)
 	if (!..())
 		return FALSE
 
@@ -587,7 +592,7 @@ var/list/global/slot_flags_enumeration = list(
 	for (var/mob/M in view(user))
 		M.show_message("[user] holds up [src]. <a HREF=?src=\ref[M];lookitem=\ref[src]>Take a closer look.</a>",1)
 
-/mob/living/carbon/verb/showoff()
+/mob/living/human/verb/showoff()
 	set name = "Show Held Item"
 	set category = "IC"
 

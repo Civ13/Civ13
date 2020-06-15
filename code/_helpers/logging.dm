@@ -48,6 +48,30 @@
 	var/admindiary = file("admin.log")
 	admindiary << "__**\[[time_stamp()]] ([map.ID])** [banner] **HAS BANNED** [banned] for [duration], with the reason \"[reason]\""
 
+/proc/discord_admin_unban(banner,banned)
+	var/bans_file = null
+
+	if (fexists("SQL/bans.txt"))
+		bans_file = "SQL/bans.txt"
+
+	if (bans_file)
+		var/details = file2text(bans_file)
+		var/list/details_lines = splittext(details, "|||\n")
+		if (details_lines.len)
+			for(var/i=1,i<=details_lines.len,i++)
+				var/list/details2 = splittext(details_lines[i], ";")
+				if (findtext(details_lines[i], ";"))
+					if (details2[9] == banned)
+						details_lines -= details_lines[i]
+						fdel(bans_file)
+						for(var/L in details_lines)
+							text2file("[L]|||", bans_file)
+
+		log_admin("[banner] unbanned '[banned]' using the Discord.")
+		message_admins("[banner] unbanned '[banned]' using the Discord.")
+		for (var/client/C in clients)
+			if (C.ckey == banned)
+				C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
 /proc/attack_log(category, text)
 	attack_log << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
 

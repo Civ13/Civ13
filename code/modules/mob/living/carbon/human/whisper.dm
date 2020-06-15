@@ -1,5 +1,5 @@
 //Lallander was here
-/mob/living/carbon/human/whisper(message as text)
+/mob/living/human/whisper(message as text)
 	var/alt_name = ""
 	if (werewolf || gorillaman)
 		if (map && map.ID != MAP_TRIBES)
@@ -43,7 +43,7 @@
 
 
 //This is used by both the whisper verb and human/say() to handle whispering
-/mob/living/carbon/human/proc/whisper_say(var/message, var/datum/language/speaking = null, var/alt_name="", var/verb="whispers")
+/mob/living/human/proc/whisper_say(var/message, var/datum/language/speaking = null, var/alt_name="", var/verb="whispers")
 
 	if (istype(wear_mask, /obj/item/clothing/mask/muzzle) || istype(wear_mask, /obj/item/weapon/grenade))
 		src << "<span class='danger'>You're muzzled and cannot speak!</span>"
@@ -66,7 +66,7 @@
 	else
 		not_heard = "[verb] something" //TODO get rid of the null language and just prevent speech if language is null
 
-	message = capitalize_cp1251(trim(message))
+	message = capitalize(trim(message))
 
 	if (speech_problem_flag)
 		var/list/handle_r = handle_speech_problems(message)
@@ -102,12 +102,12 @@
 				temp_message[H] = ninjaspeak(temp_message[H])
 				pick_list -= H
 			message = jointext(temp_message, " ")
-			message = replacetext(message, "o", "¤")
-			message = replacetext(message, "p", "þ")
-			message = replacetext(message, "l", "£")
-			message = replacetext(message, "s", "§")
-			message = replacetext(message, "u", "µ")
-			message = replacetext(message, "b", "ß")
+			message = replacetext(message, "o", "ï¿½")
+			message = replacetext(message, "p", "ï¿½")
+			message = replacetext(message, "l", "ï¿½")
+			message = replacetext(message, "s", "ï¿½")
+			message = replacetext(message, "u", "ï¿½")
+			message = replacetext(message, "b", "ï¿½")
 
 	var/list/listening = hearers(message_range, src)
 	listening |= src

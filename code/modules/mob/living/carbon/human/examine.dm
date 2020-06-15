@@ -1,8 +1,8 @@
-/mob/living/carbon/human/var/list/next_look_at = list()
-/mob/living/carbon/human/examine(var/mob/user)
+/mob/living/human/var/list/next_look_at = list()
+/mob/living/human/examine(var/mob/user)
 
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (!H.next_look_at.Find(getRoundUID(TRUE)) || H.next_look_at[getRoundUID(TRUE)] <= world.time)
 			H.visible_message("<small>[H] looks at [src].</small>")
 			H.next_look_at[getRoundUID(TRUE)] = world.time + 100
@@ -53,8 +53,8 @@
 		if (istype(w_uniform,/obj/item/clothing/under))
 			var/obj/item/clothing/under/U = w_uniform
 			if (U.accessories.len)
-				tie_msg += ". Attached to it is [lowertext(english_list(U.accessories))]"
-
+				if (!wear_suit)
+					tie_msg += ". Attached to it is [lowertext(english_list(U.accessories))]"
 		if (w_uniform.blood_DNA)
 			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[w_uniform] [w_uniform.gender==PLURAL?"some":"a"] [(w_uniform.blood_color != "#030303") ? "blood" : "oil"]-stained [w_uniform.name][tie_msg]!</span>\n"
 		else
@@ -195,7 +195,7 @@
 	if (fire_stacks)
 		msg += "[T.He] [T.is] covered in some liquid.\n"
 	if (on_fire)
-		msg += "<span class='warning'>[T.He] [T.is] on fire!.</span>\n"
+		msg += "<span class='warning'>[T.He] [T.is] on fire!</span>\n"
 	msg += "<span class='warning'>"
 
 	msg += "</span>"
@@ -213,8 +213,8 @@
 
 	var/health_percentage = health
 
-	if (istype(user, /mob/living/carbon/human) && user:species)
-		var/mob/living/carbon/human/H = user
+	if (istype(user, /mob/living/human) && user:species)
+		var/mob/living/human/H = user
 		health_percentage = (health/H.species.total_health) * 100
 
 	if (health_percentage <= 75 && health_percentage > 50)//Is the person a little hurt?
@@ -278,13 +278,13 @@
 
 	msg += "*---------*</span>"
 	if (pose)
-		if ( findtext(pose,".",lentext(pose)) == FALSE && findtext(pose,"!",lentext(pose)) == FALSE && findtext(pose,"?",lentext(pose)) == FALSE )
+		if ( findtext(pose,".",length(pose)) == FALSE && findtext(pose,"!",length(pose)) == FALSE && findtext(pose,"?",length(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
-	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13)
+	if (!map.civilizations && map.ID != MAP_LITTLE_CREEK && map.ID != MAP_GULAG13 && map.ID != MAP_THE_ART_OF_THE_DEAL)
 		if (original_job)
 			if (ishuman(user) && user != src)
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				if (H.original_job)
 					if (H.original_job.base_type_flag() == original_job.base_type_flag()) // when you ghost, mind.assigned_job is set to null
 						if (original_job.en_meaning)
@@ -297,7 +297,7 @@
 				msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"
 	else if (map.ID == MAP_LITTLE_CREEK)
 		if (ishuman(user) && user != src)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (H.original_job)
 				if (H.original_job_title == original_job_title && original_job_title == "East Side Gang")
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
@@ -306,7 +306,7 @@
 
 	else if (map.ID == MAP_GULAG13)
 		if (ishuman(user) && user != src)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (istype(H.original_job, /datum/job/civilian/prisoner) && istype(original_job, /datum/job/civilian/prisoner))
 				msg += "<br><i>You recognize [T.him] as a prisoner named <b>[real_name]</b>.</i>"
 				var/datum/job/civilian/prisoner/PT = original_job
@@ -315,9 +315,17 @@
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[PT.nationality]</b>!</i>"
 				if (H.original_job_title == "Collaborator" && (original_job_title == H.original_job_title || faction_text=="RUSSIAN"))
 					msg += "<br><i>You recognize [T.him] as a fellow <b>collaborator</b>!</i>"
+	else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+		if (ishuman(user) && user != src)
+			var/mob/living/human/H = user
+			if (H.civilization == "Police" && src.civilization == "Police")
+				msg += "<br><i>[T.He] is a member of the Police.</i>"
+			if (src.gun_permit && H.civilization == "Police")
+				msg += "<br><b>[T.He] has a valid gun permit.</b></b>"
+
 	else if (map.civilizations)
 		if (ishuman(user) && user != src)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (H.religion == religion && religion_style == "Cultists" && religious_clergy == "Cultists")
 				msg += "<br><i>You recognize [T.him] as an ordained <b>Cultist</b> of your cult, <b>[religion]</b>.</i>"
 			else if (H.religion == religion && religion_style == "Cultists" && religious_clergy != "Cultists")
@@ -328,11 +336,23 @@
 				if (map.custom_civs[H.civilization][4] != null)
 					if (map.custom_civs[H.civilization][4].real_name == real_name)
 						msg += "<br><b>[T.He] is the leader of your faction.</b>"
-			else if (civilization != "none") // examining someone on another team
-				msg += "<br><span class='warning'><i>[T.He] seems to be a member of [civilization].</i>"
 
 			else
 				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
+			if (user.find_trait("Empathetic"))
+				var/md
+				switch(mood)
+					if(-5000000 to 20)
+						md = "seems to be in a horrible mood!"
+					if(20 to 40)
+						md = "seems to be in a bad mood."
+					if(40 to 60)
+						md = "seems to be in a neutral mood."
+					if(60 to 80)
+						md = "seems to be in a good mood."
+					if(80 to 10000)
+						md = "seems to be in an excellent mood!"
+				msg += "<br><i>[T.He] [md]</b>.</i>"
 		else if (isobserver(user))
 			if (civilization != "none")
 				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
@@ -340,7 +360,7 @@
 				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
 
 		else if (ishuman(user) && user == src)
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			if (H.civilization != "none")
 				msg += "<br><i>You belong to <b>[H.civilization]</b>.</i>"
 				if (map && map.custom_civs[H.civilization][4] && map.custom_civs[H.civilization][4].real_name == H.real_name)
@@ -354,7 +374,7 @@
 
 	user << msg
 
-/mob/living/carbon/human/Topic(href, href_list[], hsrc)
+/mob/living/human/Topic(href, href_list[], hsrc)
 
 	..()
 

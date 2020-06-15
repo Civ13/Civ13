@@ -115,10 +115,10 @@
 	color = "#C8A5DC"
 	affects_dead = TRUE //This can even heal dead people.
 
-/datum/reagent/adminordrazine/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/adminordrazine/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	affect_blood(M, alien, removed)
 
-/datum/reagent/adminordrazine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/adminordrazine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.setCloneLoss(0)
 	M.setOxyLoss(0)
 	M.radiation = FALSE
@@ -185,7 +185,7 @@
 			S.dirt = FALSE
 		T.clean_blood()
 
-/datum/reagent/space_cleaner/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/space_cleaner/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	if (M.r_hand)
 		M.r_hand.clean_blood()
 	if (M.l_hand)
@@ -194,7 +194,7 @@
 		if (M.wear_mask.clean_blood())
 			M.update_inv_wear_mask(0)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.head)
 			if (H.head.clean_blood())
 				H.update_inv_head(0)
@@ -271,11 +271,11 @@
 	reagent_state = SOLID
 	color = "#484753"
 
-/datum/reagent/gunpowder/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/gunpowder/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.add_chemical_effect(CE_PULSE, 2)
 
-/datum/reagent/nitroglycerin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/nitroglycerin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.add_chemical_effect(CE_PULSE, 2)
 
@@ -325,7 +325,7 @@
 	reagent_state = LIQUID
 	color = "#2C2416"
 
-/datum/reagent/petroleum/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/petroleum/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustToxLoss(10)
 
@@ -342,7 +342,7 @@
 	reagent_state = LIQUID
 	color = "#ffffe0"
 
-/datum/reagent/gasoline/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/gasoline/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustToxLoss(10)
 
@@ -365,3 +365,11 @@
 	taste_description = "diesel"
 	reagent_state = LIQUID
 	color = "#f9c901"
+
+/datum/reagent/nitric_acid
+	name = "Nitric acid"
+	id = "nitric_acid"
+	description = "A highly corrosive mineral acid."
+	taste_description = "acid"
+	reagent_state = LIQUID
+	color = "#FFFFFF"

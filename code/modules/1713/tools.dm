@@ -207,7 +207,7 @@
 
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
-	var/display = list("Tunnel", "Grave", "Pit Latrine","Cancel")
+	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine","Cancel")
 	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
 	if (input == "Cancel")
 		return
@@ -226,7 +226,7 @@
 				return
 			var/digging_tunnel_time = 400
 			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				digging_tunnel_time /= H.getStatCoeff("strength")
 				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 			visible_message("<span class='danger'>[user] starts digging up!</span>", "<span class='danger'>You start digging up.</span>")
@@ -237,7 +237,7 @@
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
 				visible_message("<span class='danger'>[user] finishes digging up.</span>")
 				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)
 					H.adaptStat("strength", 1)
 			return
@@ -248,7 +248,7 @@
 			else
 				var/digging_tunnel_time = 200
 				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					digging_tunnel_time /= H.getStatCoeff("strength")
 					digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 				visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
@@ -262,7 +262,7 @@
 						BL.ChangeTurf(/turf/floor/dirt)
 					visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
 					if (ishuman(user))
-						var/mob/living/carbon/human/H = user
+						var/mob/living/human/H = user
 						H.adaptStat("crafting", 1)
 						H.adaptStat("strength", 1)
 				return
@@ -272,6 +272,13 @@
 		else if (!TB.is_diggable)
 			user << "<span class='warning'>You cannot dig a hole here!</span>"
 			return
+	else if (input == "Irrigation Channel")
+		visible_message("<span class = 'notice'>[user] starts to dig an irrigation channel.</span>")
+		if (do_after(user, 25,src))
+			visible_message("<span class = 'notice'>[user] makes a irrigation channel.</span>")
+			TB.irrigate("empty")
+			return
+		return
 	else if  (input == "Grave")
 		if (istype(TB, /turf/open) || istype(TB, /turf/wall) || istype(TB, /turf/floor/wood) || istype(TB, /turf/floor/wood_broken) || istype(TB, /turf/floor/ship) || istype(TB, /turf/floor/carpet) || istype(TB, /turf/floor/broken_floor) || istype(TB, /turf/floor/plating/cobblestone) || istype(TB, /turf/floor/plating/concrete) || istype(TB, /turf/floor/plating/stone_old))
 			return

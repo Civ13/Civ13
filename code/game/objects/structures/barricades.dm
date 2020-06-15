@@ -43,7 +43,6 @@
 		qdel(src)
 		return
 	name = "[material.display_name] barricade"
-	desc = "This space is blocked off by a barricade made of [material.display_name]."
 	if (istype(material, /material/wood))
 		icon_state = "wood_barricade"
 		flammable = TRUE
@@ -61,7 +60,7 @@
 		if (material && D.get_material_name() != material.name)
 			return //hitting things with the wrong type of stack usually doesn't produce messages, and probably doesn't need to.
 		if (health < maxhealth)
-			if (D.get_amount() < 1)
+			if (D.amount < 1)
 				user << "<span class='warning'>You need one sheet of [material.display_name] to repair \the [src].</span>"
 				return
 			visible_message("<span class='notice'>[user] begins to repair \the [src].</span>")
@@ -147,7 +146,8 @@
 
 /obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
 	if (istype(mover, /obj/item/projectile))
-		return prob(100-protection_chance)
+		var/obj/item/projectile/P = mover
+		return prob(100-protection_chance-(P.penetrating*4))
 	else
 		return FALSE
 
@@ -188,8 +188,8 @@
 	desc = "A wall of sandstone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "sandstone_brick"
-	health = 600
-	maxhealth = 600
+	health = 300
+	maxhealth = 300
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 90
@@ -199,8 +199,8 @@
 	desc = "A wall of sandstone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "sandstone_brick2"
-	health = 600
-	maxhealth = 600
+	health = 300
+	maxhealth = 300
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 90
@@ -210,19 +210,61 @@
 	desc = "A wall of sandstone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "sandstone_brick_c"
-	health = 600
-	maxhealth = 600
+	health = 300
+	maxhealth = 300
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 75
 
+/obj/structure/barricade/sandstone_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
+/obj/structure/barricade/sandstone_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/sandstone_v/crenelated
 	name = "crenelated sandstone wall"
 	desc = "A wall of sandstone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "sandstone_brick_c2"
-	health = 600
-	maxhealth = 600
+	health = 300
+	maxhealth = 300
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 75
@@ -231,8 +273,8 @@
 	..()
 	icon_state = "sandstone_brick"
 	name = "sandstone wall"
-	health = 600
-	maxhealth = 600
+	health = 300
+	maxhealth = 300
 	material_name = "stone"
 	color = null
 
@@ -240,24 +282,24 @@
 	..()
 	icon_state = "sandstone_brick2"
 	name = "sandstone wall"
-	health = 600
-	maxhealth = 600
+	health = 300
+	maxhealth = 300
 	material_name = "stone"
 	color = null
 /obj/structure/barricade/sandstone_h/crenelated/New()
 	..()
 	icon_state = "sandstone_brick_c"
 	name = "crenelated sandstone wall"
-	health = 600
-	maxhealth = 600
+	health = 300
+	maxhealth = 300
 	material_name = "stone"
 	color = null
 /obj/structure/barricade/sandstone_v/crenelated/New()
 	..()
 	icon_state = "sandstone_brick_c2"
 	name = "crenelated sandstone wall"
-	health = 600
-	maxhealth = 600
+	health = 300
+	maxhealth = 300
 	material_name = "stone"
 	color = null
 /obj/structure/barricade/sandstone_h/ex_act(severity)
@@ -327,71 +369,151 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick"
 	material = "stone"
-	health = 2709
-	maxhealth = 2709
+	health = 300
+	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 90
-
+/obj/structure/barricade/stone_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/stone_v
 	name = "stone wall"
 	desc = "A wall of stone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick2"
 	material = "stone"
-	health = 2709
-	maxhealth = 2709
+	health = 300
+	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 90
-
+/obj/structure/barricade/stone_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/stone_h/crenelated
 	name = "crenelated stone wall"
 	desc = "A wall of stone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick_c"
 	material = "stone"
-	health = 2709
-	maxhealth = 2709
+	health = 300
+	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 75
-
+/obj/structure/barricade/stone_h/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/stone_v/crenelated
 	name = "crenelated stone wall"
 	desc = "A wall of stone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick_c2"
 	material = "stone"
-	health = 2709
-	maxhealth = 2709
+	health = 300
+	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 75
-
+/obj/structure/barricade/stone_v/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/stone_h/New()
 	..()
 	icon_state = "stone_brick"
 	name = "stone wall"
-	health = 2709
-	maxhealth = 2709
+	health = 300
+	maxhealth = 300
 	color = null
 /obj/structure/barricade/stone_v/New()
 	..()
 	icon_state = "stone_brick2"
 	name = "stone wall"
-	health = 2709
-	maxhealth = 2709
+	health = 300
+	maxhealth = 300
 	color = null
 /obj/structure/barricade/stone_h/crenelated/New()
 	..()
 	icon_state = "stone_brick_c"
 	name = "crenelated stone wall"
-	health = 2709
-	maxhealth = 2709
+	health = 300
+	maxhealth = 300
 	color = null
 /obj/structure/barricade/stone_v/crenelated/New()
 	..()
 	icon_state = "stone_brick_c2"
 	name = "crenelated stone wall"
-	health = 2709
-	maxhealth = 2709
+	health = 300
+	maxhealth = 300
 	color = null
 /obj/structure/barricade/stone_h/ex_act(severity)
 	switch(severity)
@@ -456,7 +578,27 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
-
+/obj/structure/barricade/jap_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/jap_h/New()
 	..()
 	icon_state = "jap_wall_h"
@@ -487,7 +629,27 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
-
+/obj/structure/barricade/jap_h_l/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/jap_h_l/New()
 	..()
 	icon_state = "jap_wall_h_l"
@@ -518,7 +680,27 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
-
+/obj/structure/barricade/jap_h_r/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/jap_h_r/New()
 	..()
 	icon_state = "jap_wall_h_r"
@@ -549,7 +731,27 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
-
+/obj/structure/barricade/jap_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/jap_v/New()
 	..()
 	icon_state = "jap_wall_v"
@@ -580,7 +782,27 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
-
+/obj/structure/barricade/jap_v_t/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/jap_v_t/New()
 	..()
 	icon_state = "jap_wall_v_t"
@@ -611,7 +833,27 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
-
+/obj/structure/barricade/jap_v_b/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/jap_v_b/New()
 	..()
 	icon_state = "jap_wall_v_b"
@@ -670,7 +912,7 @@
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "shelf0"
 
-/obj/structure/shelf/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+/obj/structure/shelf/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	if (user.a_intent == I_HELP)
 		user.drop_from_inventory(W)
 		W.forceMove(loc)

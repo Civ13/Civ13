@@ -41,25 +41,10 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/MouseDrop_T(mob/target, mob/user)
 
-	var/mob/living/H = user
-	if (istype(H) && can_climb(H) && target == user)
-		do_climb(target)
-	else
-		return ..()
+	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/can_climb(var/mob/living/user, post_climb_check=0)
-	if (!can_touch(user) || (!post_climb_check && (user in climbers)))
-		return FALSE
-
-	if (!user.Adjacent(src))
-		user << "<span class='danger'>You can't climb there, the way is blocked.</span>"
-		return FALSE
-
-	var/obj/occupied = turf_is_crowded()
-	if (occupied)
-		user << "<span class='danger'>There's \a [occupied] in the way.</span>"
-		return FALSE
-	return TRUE
+	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/turf_is_crowded()
 	var/turf/T = get_turf(src)
@@ -83,7 +68,7 @@
 
 	var/turf/target = null
 
-	if (istype(src, /obj/structure/window/sandbag))
+	if (istype(src, /obj/structure/window/barrier))
 		target = get_step(src, user.dir)
 	else
 		target = get_turf(src)

@@ -3,7 +3,6 @@
 	desc = "Does what he wants cause a pirate is free."
 	icon_state = "piratemelee"
 	icon_dead = "piratemelee_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -24,7 +23,7 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 
-	var/corpse = /mob/living/carbon/human/corpse/pirate
+	var/corpse = /mob/living/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass
 
 	faction = PIRATES

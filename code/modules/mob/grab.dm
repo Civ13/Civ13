@@ -18,7 +18,7 @@
 	flags = FALSE
 	var/obj/screen/grab/hud = null
 	var/mob/living/affecting = null
-	var/mob/living/carbon/human/assailant = null
+	var/mob/living/human/assailant = null
 	var/state = GRAB_PASSIVE
 
 	var/allow_upgrade = TRUE
@@ -127,8 +127,8 @@
 	if (state >= GRAB_AGGRESSIVE)
 		affecting.drop_l_hand()
 		affecting.drop_r_hand()
-
-		if (iscarbon(affecting))
+		affecting.canmove = FALSE
+		if (ishuman(affecting))
 			handle_eye_mouth_covering(affecting, assailant, assailant.targeted_organ)
 
 		if (force_down)
@@ -144,15 +144,15 @@
 			L.adjustOxyLoss(1)
 
 	if (state >= GRAB_KILL)
-		if (iscarbon(affecting))
-			var/mob/living/carbon/C = affecting
+		if (ishuman(affecting))
+			var/mob/living/human/C = affecting
 			C.apply_effect(STUTTER, 5) //It will hamper your voice, being choked and all.
 			C.Weaken(5)	//Should keep you down unless you get help.
 			C.losebreath = max(C.losebreath + 2, 3)
 
 	adjust_position()
 
-/obj/item/weapon/grab/proc/handle_eye_mouth_covering(mob/living/carbon/target, mob/user, var/target_zone)
+/obj/item/weapon/grab/proc/handle_eye_mouth_covering(mob/living/human/target, mob/user, var/target_zone)
 	var/announce = (target_zone != last_hit_zone) //only display messages when switching between different target zones
 	last_hit_zone = target_zone
 
@@ -268,8 +268,8 @@
 
 		affecting.setClickCooldown(10)
 		affecting.set_dir(WEST)
-		if (iscarbon(affecting))
-			var/mob/living/carbon/C = affecting
+		if (ishuman(affecting))
+			var/mob/living/human/C = affecting
 			C.losebreath += 1
 	adjust_position()
 
@@ -298,7 +298,7 @@
 	//clicking on the victim while grabbing them
 	if (M == affecting)
 		if (ishuman(affecting))
-			var/mob/living/carbon/human/H = affecting
+			var/mob/living/human/H = affecting
 			var/hit_zone = assailant.targeted_organ
 			flick(hud.icon_state, hud)
 			switch(assailant.a_intent)
@@ -335,6 +335,7 @@
 		var/mob/M = loc
 		M.mouth_covered = FALSE
 		M.grab_list = list()
+		M.canmove = TRUE
 	loc = null
 	if (!destroying)
 		qdel(src)
@@ -356,6 +357,7 @@
 		if (ismob(loc))
 			var/mob/M = loc
 			M.grab_list = list()
+			M.canmove = TRUE
 	if (affecting)
 		animate(affecting, pixel_x = FALSE, pixel_y = FALSE, 4, TRUE, LINEAR_EASING)
 		affecting.layer = 4

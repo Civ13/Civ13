@@ -142,9 +142,9 @@
 			"You hear the grunting and clanging of a metal ladder being used."
 		)
 
-/mob/living/carbon/human/var/laddervision = null
+/mob/living/human/var/laddervision = null
 
-/obj/structure/multiz/ladder/MouseDrop_T(var/mob/living/carbon/human/user as mob)
+/obj/structure/multiz/ladder/MouseDrop_T(var/mob/living/human/user as mob)
 	if (!user || !istype(user))
 		return
 	if (user.laddervision == src)
@@ -160,7 +160,7 @@
 		user.update_laddervision(target)
 		visible_message("<span class = 'notice'>[user] looks [user.laddervision_direction()] \the [src].</span>")
 
-/mob/living/carbon/human/proc/update_laddervision(var/obj/structure/multiz/ladder/ladder)
+/mob/living/human/proc/update_laddervision(var/obj/structure/multiz/ladder/ladder)
 	if (ladder && istype(ladder))
 		client.perspective = EYE_PERSPECTIVE
 		laddervision = ladder
@@ -176,7 +176,7 @@
 	else
 		return "down"
 
-/mob/living/carbon/human/proc/laddervision_direction()
+/mob/living/human/proc/laddervision_direction()
 	if (!laddervision)
 		return ""
 	var/obj/structure/multiz/ladder = laddervision
@@ -246,9 +246,9 @@
 	icon_state = "pine_closed"
 
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
-		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando")
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
 			H << "This tunnel is too small for you!"
 			return
 		else
@@ -263,6 +263,17 @@
 	istop = FALSE
 /obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong
 
+/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong/attack_hand(var/mob/M)
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
+			H << "This tunnel is too small for you!"
+			return
+		else
+			..()
+	else
+		..()
+
 /obj/structure/multiz/ladder/ww2/teleporter
 	name = "ladder"
 	desc = "A ladder.  You can climb it up and down."
@@ -273,13 +284,18 @@
 	istop = FALSE
 /obj/structure/multiz/ladder/ww2/teleporter/New()
 	..()
-	for (var/obj/structure/multiz/ladder/ww2/teleporter/ladder in ladder_list)
-		if (ladder_id == ladder.ladder_id && ladder != src)
-			target = ladder
-			continue
+	spawn(100)
+		for (var/obj/structure/multiz/ladder/ww2/teleporter/ladder in world)
+			if (!(ladder in ladder_list))
+				ladder_list += ladder
+			if (!(src in ladder_list))
+				ladder_list += src
+			if (area_id == ladder.area_id && ladder != src)
+				target = ladder
+				continue
 /obj/structure/multiz/ladder/ww2/teleporter/find_target()
 	for (var/obj/structure/multiz/ladder/ww2/teleporter/ladder in ladder_list)
-		if (ladder_id == ladder.ladder_id && ladder != src)
+		if (area_id == ladder.area_id && ladder != src && ((ladder.istop && !src.istop) || (!ladder.istop && src.istop)))
 			return ladder
 	return FALSE
 /obj/structure/multiz/ladder/ww2/teleporter/Crossed(var/atom/movable/AM)
@@ -324,29 +340,29 @@
 		)
 
 /obj/structure/multiz/ladder/ww2/teleporter/one
-	ladder_id = "1"
+	area_id = "1"
 /obj/structure/multiz/ladder/ww2/teleporter/up/one
-	ladder_id = "1"
+	area_id = "1"
 /obj/structure/multiz/ladder/ww2/teleporter/two
-	ladder_id = "2"
+	area_id = "2"
 /obj/structure/multiz/ladder/ww2/teleporter/up/two
-	ladder_id = "2"
+	area_id = "2"
 /obj/structure/multiz/ladder/ww2/teleporter/three
-	ladder_id = "3"
+	area_id = "3"
 /obj/structure/multiz/ladder/ww2/teleporter/up/three
-	ladder_id = "3"
+	area_id = "3"
 /obj/structure/multiz/ladder/ww2/teleporter/four
-	ladder_id = "4"
+	area_id = "4"
 /obj/structure/multiz/ladder/ww2/teleporter/up/four
-	ladder_id = "4"
+	area_id = "4"
 /obj/structure/multiz/ladder/ww2/teleporter/five
-	ladder_id = "5"
+	area_id = "5"
 /obj/structure/multiz/ladder/ww2/teleporter/up/five
-	ladder_id = "5"
+	area_id = "5"
 
 
 /obj/structure/multiz/ladder/ww2/tunneltop/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, /obj/item/weapon/sandbag))
+	if (istype(I, /obj/item/weapon/barrier))
 		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
 		filled++
 		qdel(I)
@@ -358,12 +374,12 @@
 	else
 		..()
 /obj/structure/multiz/stairs
-	name = "Stairs"
+	name = "stairs"
 	icon_state = "rampup"
 	layer = 2.4
 
 /obj/structure/multiz/stairs_wood
-	name = "Wood Stairs"
+	name = "wood stairs"
 	icon_state = "wood2_stairs"
 	layer = 2.4
 

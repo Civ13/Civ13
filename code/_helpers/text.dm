@@ -42,7 +42,7 @@
 		//In addition to processing html, html_encode removes byond formatting codes like "\ red", "\ i" and other.
 		//It is important to avoid double-encode text, it can "break" quotes and some other characters.
 		//Also, keep in mind that escaped characters don't work in the interface (window titles, lower left corner of the main window, etc.)
-		input = rhtml_encode(input)
+		input = html_encode(input)
 	else
 		//If not need encode text, simply remove < and >
 		//note: we can also remove here byond formatting codes: 0xFF + next byte
@@ -262,9 +262,9 @@
 //This is used for fingerprints
 /proc/stringmerge(var/text,var/compare,replace = "*")
 	var/newtext = text
-	if (lentext(text) != lentext(compare))
+	if (length(text) != length(compare))
 		return FALSE
-	for (var/i = TRUE, i < lentext(text), i++)
+	for (var/i = TRUE, i < length(text), i++)
 		var/a = copytext(text,i,i+1)
 		var/b = copytext(compare,i,i+1)
 		//if it isn't both the same letter, or if they are both the replacement character
@@ -284,7 +284,7 @@
 	if (!text || !character)
 		return FALSE
 	var/count = FALSE
-	for (var/i = TRUE, i <= lentext(text), i++)
+	for (var/i = TRUE, i <= length(text), i++)
 		var/a = copytext(text,i,i+1)
 		if (a == character)
 			count++
@@ -295,7 +295,7 @@
 	for (var/i = length(text); i > 0; i--)
 		new_text += copytext(text, i, i+1)
 	return new_text
-	
+
 // Converts seconds to display "less than a minute", "around 1 minute", "around x minutes"
 /proc/convert_to_textminute(displaytime)
 	displaytime = round(displaytime/600)
@@ -307,12 +307,12 @@
 	else
 		text = "less than a minute"
 	return text
-	
+
 //Used in preferences' SetFlavorText and human's set_flavor verb
 //Previews a string of len or less length
 proc/TextPreview(var/string,var/len=40)
-	if (lentext(string) <= len)
-		if (!lentext(string))
+	if (length(string) <= len)
+		if (!length(string))
 			return "\[...\]"
 		else
 			return string
@@ -321,7 +321,7 @@ proc/TextPreview(var/string,var/len=40)
 
 //alternative copytext() for encoded text, doesn't break html entities (&#34; and other)
 /proc/copytext_preserve_html(var/text, var/first, var/last)
-	return rhtml_encode(copytext(rhtml_decode(text), first, last))
+	return html_encode(copytext(html_decode(text), first, last))
 
 //For generating neat chat tag-images
 //The icon var could be local in the proc, but it's a waste of resources

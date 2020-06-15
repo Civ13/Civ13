@@ -7,6 +7,7 @@
 	throw_speed = 3
 	throw_range = 3
 	max_amount = 50
+	can_stack = TRUE
 
 	var/default_type = DEFAULT_WALL_MATERIAL
 	var/material/material
@@ -144,6 +145,12 @@
 	default_type = "stone"
 	value = 2
 
+/obj/item/stack/material/stonebrick
+	name = "stone brick"
+	icon_state = "sheet-stonebrick"
+	default_type = "stonebrick"
+	value = 1
+
 /obj/item/stack/material/clay
 	name = "clay lump"
 	icon = 'icons/obj/claystuff.dmi'
@@ -170,6 +177,13 @@
 	value = 40
 	w_class = 1.0
 
+/obj/item/stack/material/obsidian
+	name = "obsidian"
+	icon_state = "sheet-obsidian"
+	default_type = "obsidian"
+	value = 7
+	w_class = 1.0
+
 /obj/item/stack/material/rope
 	name = "Rope"
 	icon_state = "rope"
@@ -181,6 +195,13 @@
 	name = "Hemp"
 	icon_state = "hemp"
 	default_type = "hemp"
+	value = 2
+	flammable = TRUE
+
+/obj/item/stack/material/flax
+	name = "Flax"
+	icon_state = "flax"
+	default_type = "flax"
 	value = 2
 	flammable = TRUE
 
@@ -203,7 +224,7 @@
 
 /obj/item/stack/material/poppy
 	name = "poppy"
-	desc = "dried opium poppies. Opium can be extracted."
+	desc = "Dried opium poppies. Opium can be extracted."
 	icon_state = "poppy"
 	default_type = "poppy"
 	value = 5
@@ -226,7 +247,7 @@
 
 /obj/item/stack/material/rope/attack_hand(var/mob/M)
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (H.hand && H.l_hand && H.l_hand.type == /obj/item/stack/material/rope)
 			return
 		else if (!H.hand && H.r_hand && H.r_hand.type == /obj/item/stack/material/rope)
@@ -270,6 +291,14 @@
 	value = 1
 	flammable = TRUE
 
+/obj/item/stack/material/bamboo
+	name = "bamboo bundle"
+	icon_state = "sheet-bamboo"
+	default_type = "bamboo"
+	dropsound = 'sound/effects/drop_wood.ogg'
+	value = 1
+	flammable = TRUE
+
 /obj/item/stack/material/cotton
 	name = "cotton pile"
 	icon_state = "sheet-cotton"
@@ -285,9 +314,17 @@
 	w_class = 2.0
 	flammable = TRUE
 
+/obj/item/stack/material/rettedfabric
+	name = "retted fabric"
+	icon_state = "sheet-rettedfabric"
+	default_type = "rettedfabric"
+	value = 1
+	w_class = 2.0
+	flammable = TRUE
+
 /obj/item/stack/material/rags
 	name = "rags"
-	icon = 'icons/obj/toy.dmi'
+	icon = 'icons/obj/trash.dmi'
 	icon_state = "rag"
 	default_type = "rags"
 	value = 0.5
@@ -320,6 +357,16 @@
 	value = 2
 	w_class = 2.0
 	flammable = TRUE
+/*
+/obj/item/stack/material/scales/gator_scale  //placeholder for alternative scaly hide crafting
+	name = "alligator scales"
+	desc = "The fine scales of a alligator."
+	icon_state = "sheet-scales"
+	default_type = "alligator scales"
+	value = 2
+	w_class = 2.0
+	flammable = FALSE
+*/
 
 /obj/item/stack/material/pelt
 	name = "animal pelt"
@@ -338,7 +385,6 @@
 	value = 3
 	w_class = 2.0
 	flammable = TRUE
-
 /obj/item/stack/material/pelt/bearpelt/brown
 	name = "brown bear pelt"
 	desc = "A pelt from a skinned bear."
@@ -351,6 +397,7 @@
 	icon_state = "sheet-whitebearpelt"
 	default_type = "whitebearpelt"
 	value = 3
+
 /obj/item/stack/material/pelt/wolfpelt
 	name = "wolf pelt"
 	desc = "A pelt from a skinned wolf."
@@ -359,6 +406,7 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
 /obj/item/stack/material/pelt/catpelt
 	name = "cat pelt"
 	desc = "A pelt from a skinned cat."
@@ -367,6 +415,41 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+/obj/item/stack/material/pelt/pantherpelt
+	name = "panther pelt"
+	desc = "A pelt from a skinned panther."
+	icon_state = "sheet-pantherpelt"
+	default_type = "pantherpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+/obj/item/stack/material/pelt/lionpelt
+	name = "lion pelt"
+	desc = "A pelt from a skinned lion."
+	icon_state = "sheet-lionpelt"
+	default_type = "lionpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+
+/obj/item/stack/material/pelt/gatorpelt
+	name = "gator pelt"
+	desc = "A pelt from a skinned alligator."
+	icon_state = "sheet-gatorpelt"
+	default_type = "gatorpelt"
+	w_class = 2.0
+	flammable = FALSE
+	value = 3
+
+/obj/item/stack/material/pelt/lizardpelt
+	name = "lizard pelt"
+	desc = "A pelt from a skinned lizard."
+	icon_state = "sheet-lizardpelt"
+	default_type = "lizardpelt"
+	w_class = 2.0
+	flammable = FALSE
+	value = 3
+
 /obj/item/stack/material/pelt/monkeypelt
 	name = "monkey pelt"
 	desc = "A pelt from a skinned monkey."
@@ -375,6 +458,42 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+
+/obj/item/stack/material/pelt/foxpelt
+	name = "fox pelt"
+	desc = "A pelt from a skinned fox."
+	icon_state = "sheet-foxpelt"
+	default_type = "foxpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+/obj/item/stack/material/pelt/foxpelt/white
+	name = "white fox pelt"
+	desc = "A pelt from a skinned white fox."
+	icon_state = "sheet-whitefoxpelt"
+	default_type = "whitefoxpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 3
+
+/obj/item/stack/material/pelt/sheeppelt
+	name = "sheep pelt"
+	desc = "A wooly pelt from a skinned sheep."
+	icon_state = "sheet-sheeppelt"
+	default_type = "sheeppelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 2
+
+/obj/item/stack/material/pelt/goatpelt
+	name = "goat pelt"
+	desc = "A pelt from a skinned goat."
+	icon_state = "sheet-goatpelt"
+	default_type = "goatpelt"
+	w_class = 2.0
+	flammable = TRUE
+	value = 2
+
 /obj/item/stack/material/pelt/orcpelt
 	name = "Orc Pelt"
 	desc = "The skin of an Orc"
@@ -463,7 +582,7 @@
 		if (isturf(loc))
 			qdel(src)
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
-	var/mob/living/carbon/human/U = user
+	var/mob/living/human/U = user
 	recipes = material.get_recipes_civs(U.original_job_title, U)
 	..()
 

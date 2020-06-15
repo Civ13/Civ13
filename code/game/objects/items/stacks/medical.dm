@@ -10,24 +10,24 @@
 	var/heal_brute = 0
 	var/heal_burn = 0
 	value = 0
-/obj/item/stack/medical/attack(mob/living/carbon/C as mob, mob/user as mob)
+/obj/item/stack/medical/attack(mob/living/human/C as mob, mob/user as mob)
 	if (!istype(C) )
 		if (!istype(C, /mob/living/simple_animal))
 			user << "<span class='warning'>\The [src] cannot be applied to [C]!</span>"
 		return TRUE
 
-	if (!istype(user, /mob/living/carbon/human))
+	if (!istype(user, /mob/living/human))
 		user << "<span class='warning'>You don't have the dexterity to do this!</span>"
 		return TRUE
 
-	if (istype(C, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = C
+	if (istype(C, /mob/living/human))
+		var/mob/living/human/H = C
 
 		H.UpdateDamageIcon()
 
 		H.updatehealth()
 
-	else if (istype(C, /mob/living/carbon))
+	else if (istype(C, /mob/living/human))
 		C.heal_organ_damage((heal_brute/2), (heal_burn/2))
 		user.visible_message( \
 			"<span class='notice'>[C] has been applied with [src] by [user].</span>", \
@@ -48,8 +48,8 @@
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting && affecting.open == FALSE)
@@ -58,7 +58,7 @@
 				return TRUE
 			else
 				user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
-						             "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
+									 "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
 				var/used = FALSE
 				for (var/datum/wound/W in affecting.wounds)
 					if (W.internal)
@@ -73,14 +73,14 @@
 
 					if (W.current_stage <= W.max_bleeding_stage)
 						user.visible_message("<span class='notice'>\The [user] bandages \a [W.desc] on [M]'s [affecting.name].</span>", \
-						                              "<span class='notice'>You bandage \a [W.desc] on [M]'s [affecting.name].</span>" )
+													  "<span class='notice'>You bandage \a [W.desc] on [M]'s [affecting.name].</span>" )
 						//H.add_side_effect("Itch")
 					else if (W.damage_type == BRUISE)
 						user.visible_message("<span class='notice'>\The [user] places a bruise patch over \a [W.desc] on [M]'s [affecting.name].</span>", \
-						                              "<span class='notice'>You place a bruise patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
+													  "<span class='notice'>You place a bruise patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
 					else
 						user.visible_message("<span class='notice'>\The [user] places a bandaid over \a [W.desc] on [M]'s [affecting.name].</span>", \
-						                              "<span class='notice'>You place a bandaid over \a [W.desc] on [M]'s [affecting.name].</span>" )
+													  "<span class='notice'>You place a bandaid over \a [W.desc] on [M]'s [affecting.name].</span>" )
 					W.bandage()
 					used++
 				affecting.update_damages()
@@ -92,7 +92,7 @@
 				use(used)
 				H.update_bandaging(0)
 		else
-			if (can_operate(H))        //Checks if mob is lying down on table for surgery
+			if (can_operate(H))		//Checks if mob is lying down on table for surgery
 				if (do_surgery(H,user,src))
 					return
 			else
@@ -109,12 +109,12 @@
 	heal_brute = 0
 	flammable = TRUE
 
-/obj/item/stack/medical/advanced/bruise_pack/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/advanced/bruise_pack/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting && (affecting.open == FALSE || (affecting.open && !affecting.is_disinfected())))
@@ -123,7 +123,7 @@
 				return TRUE
 			else
 				user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
-						             "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
+									 "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
 				var/used = 0
 				for (var/datum/wound/W in affecting.wounds)
 					if (W.internal)
@@ -137,13 +137,13 @@
 						break
 					if (W.current_stage <= W.max_bleeding_stage)
 						user.visible_message("<span class='notice'>\The [user] cleans \a [W.desc] on [M]'s [affecting.name] and covers it with a bandage.</span>", \
-						                     "<span class='notice'>You clean and cover \a [W.desc] on [M]'s [affecting.name].</span>" )
+											 "<span class='notice'>You clean and cover \a [W.desc] on [M]'s [affecting.name].</span>" )
 					else if (W.damage_type == BRUISE)
 						user.visible_message("<span class='notice'>\The [user] places a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>", \
-						                              "<span class='notice'>You place a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
+													  "<span class='notice'>You place a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
 					else
 						user.visible_message("<span class='notice'>\The [user] smears some ointment over \a [W.desc] on [M]'s [affecting.name].</span>", \
-						                              "<span class='notice'>You smear some ointment over \a [W.desc] on [M]'s [affecting.name].</span>" )
+													  "<span class='notice'>You smear some ointment over \a [W.desc] on [M]'s [affecting.name].</span>" )
 					W.bandage()
 					W.disinfect()
 					W.heal_damage(heal_brute)
@@ -156,14 +156,14 @@
 						user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
 				use(used)
 		else
-			if (can_operate(H))        //Checks if mob is lying down on table for surgery
+			if (can_operate(H))		//Checks if mob is lying down on table for surgery
 				if (do_surgery(H,user,src))
 					return
 			else
 				if (affecting)
 					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
 
-		var/mob/living/carbon/human/H_user = user
+		var/mob/living/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
 			if (affecting && affecting.open == FALSE)
 				if (affecting.is_bandaged() && affecting.is_disinfected())
@@ -179,12 +179,12 @@
 	item_state = null
 	amount = 10
 	heal_brute = 0
-/obj/item/stack/medical/advanced/herbs/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/advanced/herbs/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting)
@@ -194,7 +194,7 @@
 
 			if (!affecting.is_disinfected() || !affecting.is_salved())
 				user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
-						             "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
+									 "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
 				var/used = 0
 				for (var/datum/wound/W in affecting.wounds)
 					if (W.internal)
@@ -208,7 +208,7 @@
 						break
 
 					user.visible_message("<span class='notice'>\The [user] rub some healing herbs over \a [W.desc] on [M]'s [affecting.name].</span>", \
-						                              "<span class='notice'>You rub some healing berbs over \a [W.desc] on [M]'s [affecting.name].</span>" )
+													  "<span class='notice'>You rub some healing berbs over \a [W.desc] on [M]'s [affecting.name].</span>" )
 					W.disinfect()
 					W.salve()
 					W.heal_damage(heal_brute)
@@ -221,14 +221,14 @@
 						user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
 				use(used)
 		else
-			if (can_operate(H))        //Checks if mob is lying down on table for surgery
+			if (can_operate(H))		//Checks if mob is lying down on table for surgery
 				if (do_surgery(H,user,src))
 					return
 			else
 				if (affecting)
 					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than some healing herbs!</span>"
 
-		var/mob/living/carbon/human/H_user = user
+		var/mob/living/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
 			if (affecting)
 				if (affecting.is_salved() && affecting.is_disinfected())
@@ -247,12 +247,12 @@
 	heal_brute = 0
 	flammable = TRUE
 
-/obj/item/stack/medical/advanced/sulfa/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/advanced/sulfa/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting.is_disinfected())
@@ -260,7 +260,7 @@
 			return TRUE
 		else
 			user.visible_message("<span class='notice'>\The [user] starts disinfecting [M]'s [affecting.name].</span>", \
-					             "<span class='notice'>You start disinfecting [M]'s [affecting.name].</span>" )
+								 "<span class='notice'>You start disinfecting [M]'s [affecting.name].</span>" )
 			var/used = 0
 			for (var/datum/wound/W in affecting.wounds)
 				if (W.internal)
@@ -273,7 +273,7 @@
 					user << "<span class='notice'>You must stand still to treat wounds.</span>"
 					break
 				user.visible_message("<span class='notice'>\The [user] spread some sulfanilamide over \a [W.desc] on [M]'s [affecting.name].</span>", \
-					                              "<span class='notice'>You spread some sulfanilamide over \a [W.desc] on [M]'s [affecting.name].</span>" )
+												  "<span class='notice'>You spread some sulfanilamide over \a [W.desc] on [M]'s [affecting.name].</span>" )
 				W.disinfect()
 				W.heal_damage(heal_brute)
 				used++
@@ -296,12 +296,12 @@
 	amount = 10
 
 
-/obj/item/stack/medical/advanced/ointment/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/advanced/ointment/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
 
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human))
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
 		if (affecting && affecting.open == FALSE)
@@ -310,7 +310,7 @@
 				return TRUE
 			else
 				user.visible_message("<span class='notice'>\The [user] starts salving wounds on [M]'s [affecting.name].</span>", \
-						             "<span class='notice'>You start salving the wounds on [M]'s [affecting.name].</span>" )
+									 "<span class='notice'>You start salving the wounds on [M]'s [affecting.name].</span>" )
 				if (!do_mob(user, M, 10))
 					user << "<span class='notice'>You must stand still to salve wounds.</span>"
 					return TRUE
@@ -320,7 +320,7 @@
 				use(1)
 				affecting.salve()
 		else
-			if (can_operate(H))        //Checks if mob is lying down on table for surgery
+			if (can_operate(H))		//Checks if mob is lying down on table for surgery
 				if (do_surgery(H,user,src))
 					return
 			else
@@ -333,11 +333,11 @@
 	amount = 5
 	max_amount = 5
 
-/obj/item/stack/medical/splint/attack(mob/living/carbon/M as mob, mob/user as mob)
+/obj/item/stack/medical/splint/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
-	if (istype(M, /mob/living/carbon/human) && user.targeted_organ != "random")
-		var/mob/living/carbon/human/H = M
+	if (istype(M, /mob/living/human) && user.targeted_organ != "random")
+		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 		var/limb = "chest"
 		if (affecting)

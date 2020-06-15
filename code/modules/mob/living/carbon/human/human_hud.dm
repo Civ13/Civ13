@@ -1,9 +1,8 @@
-/mob/living/carbon/human/check_HUD()
-	var/mob/living/carbon/human/H = src
+/mob/living/human/check_HUD()
+	var/mob/living/human/H = src
 	if (!H.client)
 		return
 
-//	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 	var/recreate_flag = FALSE
 
 	if (!check_HUDdatum())
@@ -26,8 +25,8 @@
 
 	return recreate_flag
 
-/mob/living/carbon/human/check_HUD_style()
-	var/mob/living/carbon/human/H = src
+/mob/living/human/check_HUD_style()
+	var/mob/living/human/H = src
 
 
 	for (var/obj/screen/inventory/HUDinv in H.HUDinventory)
@@ -41,33 +40,23 @@
 			return FALSE
 	return TRUE
 
-/mob/living/carbon/human/check_HUDdatum()//correct a datum?
-	var/mob/living/carbon/human/H = src
+/mob/living/human/check_HUDdatum()//correct a datum?
+	var/mob/living/human/H = src
 
-	if (H.client.prefs.UI_style && !(H.client.prefs.UI_style == "")) //если у клиента моба прописан стиль\тип ХУДа
-		if (global.HUDdatums.Find(H.client.prefs.UI_style))//Если существует такой тип ХУДА
+	if (H.client.prefs.UI_style && !(H.client.prefs.UI_style == ""))
+		if (global.HUDdatums.Find(H.client.prefs.UI_style))
 			return TRUE
 
 	return FALSE
 
-/mob/living/carbon/human/update_hud()	//TODO: do away with this if possible
+/mob/living/human/update_hud()	//TODO: do away with this if possible
 	if (client)
 		if (client.prefs && client.prefs.cursor && client.prefs.cursor != client.mouse_pointer_icon)
 			client.mouse_pointer_icon = client.prefs.cursor
 		check_HUD()
 		client.screen |= contents
-		//if (hud_used)
-			//hud_used.hidden_inventory_update() 	//Updates the screenloc of the items on the 'other' inventory bar
 
-
-
-
-
-
-
-/mob/living/carbon/human/create_HUD()
-//	var/mob/living/carbon/human/H = src
-//	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
+/mob/living/human/create_HUD()
 
 	create_HUDinventory()
 	create_HUDneed()
@@ -75,8 +64,8 @@
 	create_HUDtech()
 	recolor_HUD(client.prefs.UI_style_color, client.prefs.UI_style_alpha)
 
-/mob/living/carbon/human/create_HUDinventory()
-	var/mob/living/carbon/human/H = src
+/mob/living/human/create_HUDinventory()
+	var/mob/living/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
 	for (var/gear_slot in species.hud.gear)
@@ -99,34 +88,27 @@
 			H.HUDinventory += inv_box
 	return
 
-/mob/living/carbon/human/create_HUDneed()
-	var/mob/living/carbon/human/H = src
+/mob/living/human/create_HUDneed()
+	var/mob/living/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
-	for (var/HUDname in species.hud.ProcessHUD) //Добавляем Элементы ХУДа (не инвентарь)
-		if (!(HUDdatum.HUDneed.Find(HUDname))) //Ищем такой в датуме
-		//	log_debug("[usr] try create a [HUDname], but it no have in HUDdatum [HUDdatum.name]")
+	for (var/HUDname in species.hud.ProcessHUD)
+		if (!(HUDdatum.HUDneed.Find(HUDname)))
 		else
 			var/HUDtype = HUDdatum.HUDneed[HUDname]["type"]
 			var/obj/screen/HUD = new HUDtype(HUDname, HUDdatum.HUDneed[HUDname]["loc"], H, HUDdatum.HUDneed[HUDname]["icon"] ? HUDdatum.HUDneed[HUDname]["icon"] : HUDdatum.icon, HUDdatum.HUDneed[HUDname]["icon_state"] ? HUDdatum.HUDneed[HUDname]["icon_state"] : null)
-/*			if (HUDdatum.HUDneed[HUDname]["icon"])//Анализ на овверайд icon
-				HUD.icon = HUDdatum.HUDneed[HUDname]["icon"]
-			else
-				HUD.icon = HUDdatum.icon
-			if (HUDdatum.HUDneed[HUDname]["icon_state"])//Анализ на овверайд icon_state
-				HUD.icon_state = HUDdatum.HUDneed[HUDname]["icon_state"]*/
+
 			if (HUDdatum.HUDneed[HUDname]["hideflag"])
 				HUD.hideflag = HUDdatum.HUDneed[HUDname]["hideflag"]
-			H.HUDneed[HUD.name] += HUD//Добавляем в список худов
-			if (HUD.process_flag)//Если худ нужно процессить
-				H.HUDprocess += HUD//Вливаем в соотвествующий список
+			H.HUDneed[HUD.name] += HUD
+			if (HUD.process_flag)
+				H.HUDprocess += HUD
 
 	return
-/mob/living/carbon/human/create_HUDfrippery()
-	var/mob/living/carbon/human/H = src
+/mob/living/human/create_HUDfrippery()
+	var/mob/living/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
-	//Добавляем Элементы ХУДа (украшения)
 	for (var/list/whistle in HUDdatum.HUDfrippery)
 		var/obj/screen/frippery/perdelka = new (whistle["icon_state"],whistle["loc"], whistle["dir"],H)
 		perdelka.icon = HUDdatum.icon
@@ -135,8 +117,8 @@
 		H.HUDfrippery += perdelka
 	return
 
-/mob/living/carbon/human/create_HUDtech()
-	var/mob/living/carbon/human/H = src
+/mob/living/human/create_HUDtech()
+	var/mob/living/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
 	for (var/techobject in HUDdatum.HUDoverlays)
@@ -166,7 +148,7 @@ the HUD updates properly! */
 	if (!ishuman(M))
 		return
 
-	var/mob/living/carbon/human/viewer = M
+	var/mob/living/human/viewer = M
 	if (!viewer.original_job)
 		return
 
@@ -175,7 +157,7 @@ the HUD updates properly! */
 	#endif
 
 	var/datum/arranged_hud_process/P = arrange_hud_process(M, Alt, faction_hud_users)
-	for (var/mob/living/carbon/human/perp in P.Mob.in_view(P.Turf))
+	for (var/mob/living/human/perp in P.Mob.in_view(P.Turf))
 
 		if (P.Mob.see_invisible < perp.invisibility)
 			continue
@@ -188,8 +170,8 @@ the HUD updates properly! */
 			shared_job_check = TRUE
 		else if (viewer.original_job.base_type_flag() == perp.original_job.base_type_flag())
 			shared_job_check = TRUE
-		if (istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/HM = src
+		if (istype(src, /mob/living/human))
+			var/mob/living/human/HM = src
 			if (HM.original_job_title != perp.original_job_title && map.civilizations == TRUE)
 				shared_job_check = FALSE
 			else if (HM.original_job_title == perp.original_job_title && map.civilizations == TRUE && perp.original_job_title != "Nomad")
@@ -253,7 +235,7 @@ the HUD updates properly! */
 
 /mob/observer/eye/in_view(var/turf/T)
 	var/list/viewed = new
-	for (var/mob/living/carbon/human/H in mob_list)
+	for (var/mob/living/human/H in mob_list)
 		if (get_dist(H, T) <= 7)
 			viewed += H
 	return viewed

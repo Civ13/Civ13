@@ -92,7 +92,7 @@
 
 	user.face_atom(src)
 
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
@@ -263,9 +263,7 @@
 		<html>
 
 		<head>
-		<style>
 		[common_browser_style]
-		</style>
 		</head>
 
 		<body>

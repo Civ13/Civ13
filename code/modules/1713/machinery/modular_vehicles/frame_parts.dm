@@ -1,6 +1,6 @@
 
 //types of walls/borders
-//format: type of wall, opacity, density, armor, current health, can open/close, is open?
+//format: type of wall, opacity, density, armor, current health, can open/close, is open?, doesnt get colored
 var/global/list/vehicle_walls = list( \
 	"" = list("",FALSE,FALSE,0,40,FALSE,FALSE), \
 	"c_wall" = list("c_window",FALSE,TRUE,20,50,FALSE,FALSE), \
@@ -76,14 +76,33 @@ var/global/list/vehicle_walls = list( \
 /obj/structure/vehicleparts/frame/car/rf/truck
 	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
 	w_front = list("c_windshield",FALSE,TRUE,0,0.1,FALSE,FALSE)
+
+
 /obj/structure/vehicleparts/frame/car/front
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/bonnetcenter
 	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/back
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/car/bootleft
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,TRUE)
+/obj/structure/vehicleparts/frame/car/bootright
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,TRUE)
+/obj/structure/vehicleparts/frame/car/bootleft/closed
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/bootright/closed
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/bootcenter
+	w_back = list("c_door",TRUE,TRUE,0,0.1,TRUE,TRUE)
 /obj/structure/vehicleparts/frame/car/left
 	name = "wood frame"
 	desc = "a wood vehicle frame."
@@ -100,6 +119,22 @@ var/global/list/vehicle_walls = list( \
 	resistance = 90
 	noroof = TRUE
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/left/metal
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon_state = "frame_steel"
+	flammable = TRUE
+	resistance = 150
+	noroof = FALSE
+	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/right/metal
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon_state = "frame_steel"
+	flammable = TRUE
+	resistance = 150
+	noroof = FALSE
+	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/rb
 	w_right = list("c_windoweddoor",TRUE,TRUE,5,0.1,TRUE,TRUE)
 	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -113,123 +148,9 @@ var/global/list/vehicle_walls = list( \
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_front = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
-/obj/structure/vehicleparts/frame/panzervi
-
-/obj/structure/vehicleparts/frame/panzervi/front
-	w_front = list("c_armoredwall",FALSE,TRUE,102,130,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzervi/back
-	w_back = list("c_wall",TRUE,TRUE,50,70,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzervi/left
-	w_left = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzervi/right
-	w_right = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzervi/back/door
-	w_back = list("c_door",TRUE,TRUE,45,50,TRUE,TRUE)
-	doorcode = 11940
-/obj/structure/vehicleparts/frame/panzervi/rb
-	w_right = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,50,70,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzervi/lb
-	w_left = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,50,70,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzervi/rf
-	w_right = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
-	w_front = list("c_armoredfront2",FALSE,TRUE,102,130,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzervi/lf
-	w_left = list("c_wall",TRUE,TRUE,70,80,FALSE,FALSE)
-	w_front = list("c_armoredfront2",FALSE,TRUE,102,130,FALSE,FALSE)
-
-/obj/structure/vehicleparts/frame/panzeriv
-
-/obj/structure/vehicleparts/frame/panzeriv/front
-	w_front = list("c_wall",TRUE,TRUE,45,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzeriv/back
-	w_back = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzeriv/left
-	w_left = list("c_wall",TRUE,TRUE,30,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzeriv/right
-	w_right = list("c_wall",TRUE,TRUE,30,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzeriv/left/door
-	w_left = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
-	doorcode = 11940
-/obj/structure/vehicleparts/frame/panzeriv/right/door
-	w_right = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
-	doorcode = 11940
-/obj/structure/vehicleparts/frame/panzeriv/rb
-	w_right = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzeriv/lb
-	w_left = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzeriv/rf
-	w_right = list("c_wall",TRUE,TRUE,35,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,45,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/panzeriv/lf
-	w_left = list("c_wall",TRUE,TRUE,35,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,45,50,FALSE,FALSE)
-
-/obj/structure/vehicleparts/frame/t34
-
-/obj/structure/vehicleparts/frame/t34/front
-	w_front = list("c_wall",TRUE,TRUE,50,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/t34/back
-	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/t34/left
-	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/t34/right
-	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/t34/left/door
-	w_left = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
-	doorcode = 4975
-/obj/structure/vehicleparts/frame/t34/right/door
-	w_right = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
-	doorcode = 4975
-/obj/structure/vehicleparts/frame/t34/rb
-	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/t34/lb
-	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/t34/rf
-	w_right = list("c_wall",TRUE,TRUE,40,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,50,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/t34/lf
-	w_left = list("c_wall",TRUE,TRUE,40,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,50,50,FALSE,FALSE)
-
-
-/obj/structure/vehicleparts/frame/i_go
-
-/obj/structure/vehicleparts/frame/i_go/front
-	w_front = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/i_go/back
-	w_back = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/i_go/left
-	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/i_go/right
-	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/i_go/left/door
-	w_left = list("c_door",TRUE,TRUE,17,50,TRUE,TRUE)
-	doorcode = 1011
-/obj/structure/vehicleparts/frame/i_go/right/door
-	w_right = list("c_door",TRUE,TRUE,17,50,TRUE,TRUE)
-	doorcode = 1011
-/obj/structure/vehicleparts/frame/i_go/rb
-	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/i_go/lb
-	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/i_go/rf
-	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,17,50,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/i_go/lf
-	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,17,50,FALSE,FALSE)
-
 /obj/structure/vehicleparts/frame/proc/adding_walls()
 
-/obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !H)
 		return
 	if (istype (I, /obj/item/stack/material/steel))
@@ -302,6 +223,132 @@ var/global/list/vehicle_walls = list( \
 		update_icon()
 	else
 		..()
+var/global/list/license_plate_numbers = list()
+
+/obj/structure/vehicleparts/license_plate
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "license_plate_us"
+	name = "license plate"
+	desc = "a vehicle registration plate."
+	layer = 12.1
+	var/reg_number = "000"
+	var/centered = FALSE
+	var/front = FALSE
+	var/obj/structure/vehicleparts/axis/axis
+	var/do_not_initiate = FALSE
+	New()
+		..()
+		spawn(20)
+		if (!do_not_initiate && axis && axis.reg_number != "000")
+			reg_number = axis.reg_number
+			name = "[reg_number]"
+			desc = "A vehicle registration plate reading <b>[reg_number]</b>."
+			update_icon()
+		update_icon()
+	update_icon()
+		if (centered) //centered plates (for even number width vehicles) should be put on the LEFT side
+			switch(dir)
+				if (NORTH)
+					if (front)
+						pixel_x = 16
+						pixel_y = 28
+					else
+						pixel_x = 16
+						pixel_y = 2
+				if (SOUTH)
+					if (front)
+						pixel_x = -16
+						pixel_y = -28
+					else
+						pixel_x = -16
+						pixel_y = -2
+				if (WEST)
+					if (front)
+						pixel_x = 2
+						pixel_y = 16
+					else
+						pixel_x = 30
+						pixel_y = 16
+				if (EAST)
+					if (front)
+						pixel_x = -2
+						pixel_y = -16
+					else
+						pixel_x = -30
+						pixel_y = -16
+		else
+			switch(dir)
+				if (NORTH)
+					if (front)
+						pixel_x = 0
+						pixel_y = 28
+					else
+						pixel_x = 0
+						pixel_y = 2
+				if (SOUTH)
+					if (front)
+						pixel_x = 0
+						pixel_y = -28
+					else
+						pixel_x = 0
+						pixel_y = -2
+				if (WEST)
+					if (front)
+						pixel_x = 2
+						pixel_y = 0
+					else
+						pixel_x = 30
+						pixel_y = 0
+				if (EAST)
+					if (front)
+						pixel_x = -2
+						pixel_y = 0
+					else
+						pixel_x = -30
+						pixel_y = 0
+/obj/structure/vehicleparts/license_plate/us
+	icon_state = "license_plate_us"
+
+/obj/structure/vehicleparts/license_plate/eu
+	icon_state = "license_plate_eur"
+
+/obj/structure/vehicleparts/license_plate/us/front
+	icon_state = "license_plate_us"
+	front = TRUE
+/obj/structure/vehicleparts/license_plate/eu/front
+	icon_state = "license_plate_eur"
+	front = TRUE
+
+/obj/structure/vehicleparts/license_plate/us/centered
+	icon_state = "license_plate_us"
+	centered = TRUE
+/obj/structure/vehicleparts/license_plate/eu/centered
+	icon_state = "license_plate_eur"
+	centered = TRUE
+
+/obj/structure/vehicleparts/license_plate/us/centered/front
+	icon_state = "license_plate_us"
+	front = TRUE
+	centered = TRUE
+/obj/structure/vehicleparts/license_plate/eu/centered/front
+	icon_state = "license_plate_eur"
+	front = TRUE
+	centered = TRUE
+
+/obj/structure/vehicleparts/axis
+	var/reg_number = "000"
+
+/obj/structure/vehicleparts/axis/proc/new_number()
+	var/tempnum = 0
+	tempnum = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][pick(alphabet_uppercase)] [rand(0,9)][rand(0,9)][rand(0,9)]"
+	if (tempnum in license_plate_numbers)
+		new_number()
+		return
+	else
+		reg_number = tempnum
+		license_plate_numbers += tempnum
+		return
+
 /*
 /obj/structure/vehicleparts/frame/verb/add_walls()
 	set category = null

@@ -33,16 +33,17 @@
 	//var/list/icon_keys = list()		//keys
 	//var/list/ammo_states = list()	//values
 	var/magazine_based = TRUE
-	attachment_slots = ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 
 	var/load_shell_sound = 'sound/weapons/empty.ogg'
-	var/load_magazine_sound = 'sound/weapons/flipblade.ogg'
 
 	var/executing = FALSE
 
 	var/infinite_ammo = FALSE
 
+	var/serial = ""
 /obj/item/weapon/gun/projectile/New()
+	serial = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)]"
 	..()
 	if (map && map.civilizations)
 		loaded = list()
@@ -121,7 +122,7 @@
 
 	// Aurora forensics port, gunpowder residue.
 	if (chambered.leaves_residue)
-		var/mob/living/carbon/human/H = loc
+		var/mob/living/human/H = loc
 		if (istype(H))
 			if (!H.gloves)
 				H.gunshot_residue = chambered.caliber
@@ -218,7 +219,10 @@
 
 	else if (istype(A, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = A
-		if (!(load_method & SINGLE_CASING) || caliber != C.caliber)
+		if (!(load_method & SINGLE_CASING))
+			user << "<span class='warning'>You can't load \the [src] with a single casing!</span>"
+			return
+		if (caliber != C.caliber)
 			user << "<span class='warning'>\The [C] is of the wrong caliber!</span>"
 			return //incompatible
 		if (loaded.len >= max_shells)
@@ -301,8 +305,11 @@
 		user << "<span class='notice'>It has \a [ammo_magazine] loaded.</span>"
 	if (!magazine_based)
 		user << "<span class='notice'>[inexactAmmo()]</span>"
-	return
-
+	if (!(istype(src, /obj/item/weapon/gun/projectile/bow)))
+		if (serial == "")
+			user << "<span class='warning'><b>The serial number has been filed out.</b></span>"
+		else
+			user << "<i>Serial no. <b>[serial]</b></i>"
 /obj/item/weapon/gun/projectile/proc/getAmmo()
 	var/bullets = FALSE
 	if (loaded)

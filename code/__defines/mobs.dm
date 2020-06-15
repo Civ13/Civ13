@@ -22,8 +22,8 @@
 #define MOB_MINISCULE	1
 
 // Gluttony levels.
-#define GLUT_TINY 1       // Eat anything tiny and smaller
-#define GLUT_SMALLER 2    // Eat anything smaller than we are
+#define GLUT_TINY 1	   // Eat anything tiny and smaller
+#define GLUT_SMALLER 2	// Eat anything smaller than we are
 #define GLUT_ANYTHING 3   // Eat anything, ever
 
 #define TINT_NONE 0
@@ -56,7 +56,7 @@
 
 #define MOVED_DROP 1
 
-//carbon taste sensitivity defines, used in mob/living/carbon/proc/ingest
+//carbon taste sensitivity defines, used in mob/living/human/proc/ingest
 #define TASTE_HYPERSENSITIVE 3 //anything below 5%
 #define TASTE_SENSITIVE 2 //anything below 7%
 #define TASTE_NORMAL 1 //anything below 15%
@@ -70,6 +70,6 @@
 #define HYGIENE_LEVEL_CLEAN 250
 #define HYGIENE_LEVEL_NORMAL 200
 #define HYGIENE_LEVEL_DIRTY 75
-#define HYGIENE_FACTOR_LOWEST 0.09
-#define HYGIENE_FACTOR 0.05
-#define HYGIENE_FACTOR_HIGHEST 0.110
+#define HYGIENE_FACTOR_LOWEST 0.045
+#define HYGIENE_FACTOR 0.025
+#define HYGIENE_FACTOR_HIGHEST 0.55

@@ -20,7 +20,7 @@
 
 	usr.say(message)
 
-/mob/living/carbon/human/verb/howl_verb(message as text)
+/mob/living/human/verb/howl_verb(message as text)
 	set name = "Howl"
 	set category = "IC"
 
@@ -41,7 +41,7 @@
 	set name = "Me"
 	set category = "IC"
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if ((H.werewolf || H.gorillaman) && H.body_build.name != "Default")
 			if (map && map.ID != MAP_TRIBES)
 				usr << "<span class = 'red'>You can't emote.</span>"
@@ -111,14 +111,14 @@
 */
 
 /mob/proc/say_quote(var/message, var/datum/language/speaking = null)
-        var/verb = "says"
-        var/ending = copytext(message, length(message))
-        if (ending=="!")
-                verb=pick("exclaims","shouts","yells")
-        else if (ending=="?")
-                verb="asks"
+		var/verb = "says"
+		var/ending = copytext(message, length(message))
+		if (ending=="!")
+				verb=pick("exclaims","shouts","yells")
+		else if (ending=="?")
+				verb="asks"
 
-        return verb
+		return verb
 
 
 /mob/proc/emote(var/act, var/type, var/message)
@@ -150,7 +150,7 @@
 
 	if (length(message) >= 2 && is_language_prefix(prefix))
 		var/language_prefix = lowertext(copytext(message, 2 ,3))
-		var/datum/language/L = language_keys[rkey2key(language_prefix)]
+		var/datum/language/L = language_keys[language_prefix]
 		if (can_speak(L))
 			return L
 

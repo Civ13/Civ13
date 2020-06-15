@@ -9,7 +9,6 @@
 	item_state = "gas_alt"
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
-	var/efficiency = 95 // 0 to 100
 	siemens_coefficient = 0.9
 	var/gas_filter_strength = TRUE			//For gas mask filters
 	var/list/filtered_gases = list("plasma", "sleeping_agent")
@@ -17,12 +16,6 @@
 	blocks_scope = TRUE
 	restricts_view = 2
 	armor = list(melee = 10, arrow = FALSE, gun = FALSE, energy = 35, bomb = 15, bio = 100, rad = 80)
-
-/obj/item/clothing/mask/gas/proc/check_can_block(var/datum/reagent/r)
-	if (prob(efficiency))
-		return TRUE
-	else
-		return FALSE
 
 /obj/item/clothing/mask/gas/filter_air(datum/gas_mixture/air)
 	var/datum/gas_mixture/filtered = new
@@ -65,6 +58,16 @@
 /obj/item/clothing/mask/gas/modern2
 	icon_state = "moderngasmask"
 	item_state = "moderngasmask"
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
+
+/obj/item/clothing/mask/gas/russia
+	icon_state = "russiamask"
+	item_state = "russiamask"
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
+
+/obj/item/clothing/mask/gas/swat
+	icon_state = "swatmask"
+	item_state = "swatmask"
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
 
 /obj/item/clothing/mask/gas/modern

@@ -1,4 +1,4 @@
-/mob/living/carbon/human/say(var/message, var/howling = FALSE)
+/mob/living/human/say(var/message, var/howling = FALSE)
 
 	// workaround for language bug that happens when you're spawned in
 	if (!languages.len)
@@ -19,7 +19,7 @@
 			if (map && map.ID != MAP_TRIBES)
 				message = pick("uh uh uh!","UH UH", "OOGA", "BOOGA")
 				animalistic = TRUE
-	message = capitalize_cp1251(sanitize(message))
+	message = capitalize(sanitize(message))
 
 	for (var/i in dictionary_list)
 		message = replacetext(message,i[1],i[2])
@@ -34,16 +34,16 @@
 	var/normal_message = message
 	for (var/rp in radio_prefixes)
 		if (dd_hasprefix(normal_message, rp))
-			normal_message = copytext(normal_message, lentext(rp)+1, lentext(normal_message)+1)
+			normal_message = copytext(normal_message, length(rp)+1, length(normal_message)+1)
 
 	var/normal_message_without_html = message_without_html
 	for (var/rp in radio_prefixes)
 		if (dd_hasprefix(normal_message_without_html, rp))
-			normal_message_without_html = copytext(normal_message_without_html, lentext(rp)+1, lentext(normal_message_without_html)+1)
+			normal_message_without_html = copytext(normal_message_without_html, length(rp)+1, length(normal_message_without_html)+1)
 	if (wolfman && howling)
-		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = TRUE)
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = TRUE, original_message = message_without_html)
 	else
-		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic)
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = FALSE, original_message = message_without_html)
 
 	for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, src))
 		D.hear_command(message_without_html, src)
@@ -67,7 +67,7 @@
 			if (TL.connected)
 				TL.broadcast(message_without_html, src)
 
-/mob/living/carbon/human/proc/forcesay(list/append)
+/mob/living/human/proc/forcesay(list/append)
 	if (stat == CONSCIOUS)
 		if (client)
 			var/virgin = TRUE	//has the text been modified yet?
@@ -99,30 +99,30 @@
 					say(temp)
 				winset(client, "input", "text=[null]")
 
-/mob/living/carbon/human/say_understands(var/mob/other,var/datum/language/speaking = null)
+/mob/living/human/say_understands(var/mob/other,var/datum/language/speaking = null)
 
 	if (species.can_understand(other))
 		return TRUE
 
 	return ..()
 
-/mob/living/carbon/human/GetVoice()
+/mob/living/human/GetVoice()
 	return real_name
 
-/mob/living/carbon/human/proc/SetSpecialVoice(var/new_voice)
+/mob/living/human/proc/SetSpecialVoice(var/new_voice)
 	if (new_voice)
 		special_voice = new_voice
 	return
 
-/mob/living/carbon/human/proc/UnsetSpecialVoice()
+/mob/living/human/proc/UnsetSpecialVoice()
 	special_voice = ""
 	return
 
-/mob/living/carbon/human/proc/GetSpecialVoice()
+/mob/living/human/proc/GetSpecialVoice()
 	return special_voice
 
 
-/mob/living/carbon/human/say_quote(var/message, var/datum/language/speaking = null)
+/mob/living/human/say_quote(var/message, var/datum/language/speaking = null)
 	var/verb = "says"
 	var/ending = copytext(message, length(message))
 
@@ -136,8 +136,8 @@
 
 	return verb
 
-/mob/living/carbon/human/handle_speech_problems(var/message, var/verb)
-	if (silent || (sdisabilities & MUTE))
+/mob/living/human/handle_speech_problems(var/message, var/verb)
+	if (silent || (sdisabilities & MUTE) || find_trait("Mute"))
 		message = ""
 		speech_problem_flag = TRUE
 	else if (istype(wear_mask, /obj/item/clothing/mask))
@@ -160,7 +160,7 @@
 	returns[3] = speech_problem_flag
 	return returns
 
-/mob/living/carbon/human/handle_speech_sound()
+/mob/living/human/handle_speech_sound()
 	if (species.speech_sounds && prob(species.speech_chance))
 		var/list/returns[2]
 		returns[1] = sound(pick(species.speech_sounds))

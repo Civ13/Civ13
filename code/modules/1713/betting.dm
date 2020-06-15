@@ -63,7 +63,7 @@
 			tmptotal_transfer = BB.process_totals()
 	return tmptotal_transfer
 
-/obj/structure/betting_box/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/betting_box/attack_hand(var/mob/living/human/H)
 	if (!ishuman(H))
 		return
 	for(var/i in payvalues)
@@ -74,7 +74,7 @@
 			i[2]=0
 			H << "You withdraw [RB] rubles."
 			return
-/obj/structure/betting_box/attackby(var/obj/item/I,var/mob/living/carbon/human/H)
+/obj/structure/betting_box/attackby(var/obj/item/I,var/mob/living/human/H)
 	if (!istype(I, /obj/item/stack/money))
 		return
 	else if (match_running)
@@ -107,8 +107,8 @@
 	opacity = FALSE
 	var/match_running = FALSE
 	var/area/curr_area = null
-	var/mob/living/carbon/human/red_player = null
-	var/mob/living/carbon/human/blue_player = null
+	var/mob/living/human/red_player = null
+	var/mob/living/human/blue_player = null
 
 /obj/effect/bet_processor/New()
 	..()
@@ -121,7 +121,7 @@
 		var/found_players = 0
 		red_player = null
 		blue_player = null
-		for(var/mob/living/carbon/human/H in curr_area)
+		for(var/mob/living/human/H in curr_area)
 			found++
 			if (istype(H.w_uniform, /obj/item/clothing/under/blue_shorts))
 				found_players++
@@ -151,7 +151,7 @@
 
 /obj/effect/bet_processor/proc/process_match()
 	if (match_running)
-		for(var/mob/living/carbon/human/H in curr_area)
+		for(var/mob/living/human/H in curr_area)
 			if (H.stat != CONSCIOUS || H.surrendered)
 				if (H == red_player)
 					H.visible_message("<big>The <font color='blue'>Blue Player</font> ([blue_player.real_name]) wins!</big>")

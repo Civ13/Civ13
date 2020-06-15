@@ -49,7 +49,7 @@
 			if (!istype(T, /turf/floor/beach))
 				T.ChangeTurf(/turf/floor/dirt/burned)
 			explosion(T, 0, 0, 1, 3)
-	spawn(25)
+	spawn(50)
 		if (src)
 			qdel(src)
 	return TRUE
@@ -68,12 +68,12 @@
 		if (EAST)
 			curloc = locate(launcher.x+4, launcher.y, launcher.z)
 	var/turf/targloc = get_turf(target)
-
 	if (!istype(targloc) || !istype(curloc))
 		qdel(src)
 		return TRUE
 
 	firer = user
+	firer_loc = get_turf(src)
 	firer_original_dir = firer.dir
 	firedfrom = launcher
 
@@ -83,7 +83,6 @@
 
 	yo = targloc.y - curloc.y + y_offset
 	xo = targloc.x - curloc.x + x_offset
-
 	shot_from = launcher
 	silenced = FALSE
 

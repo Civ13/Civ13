@@ -37,29 +37,30 @@
 				if (prob(80))
 					visible_message("The mine is unstable! Some rocks get loose and fall around!")
 					playsound(src,'sound/effects/rocksfalling.ogg',75,0,2)
-					for (var/mob/living/carbon/human/M in range(1, src))
+					for (var/mob/living/human/M in range(1, src))
 						M.adjustBruteLoss(rand(9,21))
 						M.Weaken(12)
 					var/turf/floor/dirt/underground/DT = get_turf(src)
-					DT.ChangeTurf(/turf/floor/dirt/underground/empty)
+					if (!istype(DT, /turf/floor/dirt/underground))
+						DT.ChangeTurf(/turf/floor/dirt/underground/empty)
 				else
 					visible_message("The mine starts to cave in!")
 					playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
-					for (var/mob/living/carbon/human/M in range(2, src))
+					for (var/mob/living/human/M in range(2, src))
 						M.adjustBruteLoss(rand(28,39))
 						M.Weaken(23)
 					for (var/turf/floor/UT in range (1))
 						if (!istype(UT, /turf/floor/dirt/underground))
 							UT.ChangeTurf(/turf/floor/dirt/underground/empty)
 					new/obj/effect/effect/smoke(src)
-			var/area/A = get_area(src)
+			/*var/area/A = get_area(src) //Removed this, caused a very big glitch, this code seems unnecessary.
 			if (supportfound)
 				if(map.ID == MAP_NOMADS_DESERT)
 					ChangeTurf(/turf/floor/dirt/dust)
 				else if (A.climate == "jungle" || A.climate == "savanna")
 					ChangeTurf(/turf/floor/dirt/jungledirt)
 				else
-					ChangeTurf(/turf/floor/dirt)
+					ChangeTurf(/turf/floor/dirt)*/
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
@@ -108,17 +109,18 @@
 				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
 				"<span class='notice'>You wash \a [C] using \the [src].</span>")
 
-	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal))
-		user << "You start fertilizing the ploughed field..."
-		var/mob/living/carbon/human/H = user
-		if (do_after(user, 60/H.getStatCoeff("farming"), src))
-			user << "You fertilize the ploughed field around this plot."
-			for (var/obj/structure/farming/plant/P in range(1,src))
-				P.fertilized = TRUE
-			qdel(C)
-			if (ishuman(user))
-				H.adaptStat("farming", 1)
-			return
+	if (istype(src, /turf/floor/dirt/ploughed))
+		if ((istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal) || istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)))
+			user << "You start fertilizing the ploughed field..."
+			var/mob/living/human/H = user
+			if (do_after(user, 60/H.getStatCoeff("farming"), src))
+				user << "You fertilize the ploughed field around this plot."
+				for (var/obj/structure/farming/plant/P in range(1,src))
+					P.fertilized = TRUE
+				qdel(C)
+				if (ishuman(user))
+					H.adaptStat("farming", 1)
+				return
 
 	if ((flooring && istype(C, /obj/item/stack/rods)))
 		return ..(C, user)
@@ -147,7 +149,7 @@
 
 	else if (istype(C, /obj/item/weapon/shovel))
 		var/turf/T = get_turf(src)
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		var/obj/item/weapon/shovel/SH = C
 		if (H.a_intent != I_DISARM)
 
@@ -183,7 +185,7 @@
 						H.shoveling_dirt = FALSE
 						H.adaptStat("strength", 1)
 						T.available_dirt -= 1
-						new /obj/item/weapon/sandbag(T)
+						new /obj/item/weapon/barrier(T)
 					else
 						H.shoveling_dirt = FALSE
 				else
@@ -249,18 +251,20 @@
 	else if (istype(C, /obj/item/weapon/pickaxe))
 		var/obj/item/weapon/pickaxe/SH = C
 		var/turf/T = get_turf(src)
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					var/turf/floor/dirt/underground/empty/TT = src
+					TT.mining_clear_debris()
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
 		if (ET.reagents.total_volume > 0)
 			H << "<span class = 'notice'>Empty \the [ET] first.</span>"
@@ -274,8 +278,8 @@
 		else
 			return ..(C, user)
 
-	else if (istype(C, /obj/item/weapon/sandbag/sandbag))
-		var/obj/item/weapon/sandbag/sandbag/bag = C
+	else if (istype(C, /obj/item/weapon/barrier/sandbag))
+		var/obj/item/weapon/barrier/sandbag/bag = C
 		if (bag.sand_amount <= 0)
 			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
 		var/your_dir = "NORTH"
@@ -293,7 +297,7 @@
 		var/sandbag_time = 50
 
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			sandbag_time /= H.getStatCoeff("strength")
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
@@ -303,15 +307,15 @@
 				if (do_after(user, sandbag_time, user.loc))
 					var/progress = bag.sand_amount
 					qdel(C)
-					var/obj/structure/window/sandbag/sandbag/incomplete/sb = new/obj/structure/window/sandbag/sandbag/incomplete(src, user)
+					var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
 					sb.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
 					if (ishuman(user))
-						var/mob/living/carbon/human/H = user
+						var/mob/living/human/H = user
 						H.adaptStat("crafting", 3)
 				return
 
-	else if (istype(C, /obj/item/weapon/sandbag))
+	else if (istype(C, /obj/item/weapon/barrier))
 
 		var/your_dir = "NORTH"
 
@@ -328,7 +332,7 @@
 		var/sandbag_time = 50
 
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			sandbag_time /= H.getStatCoeff("strength")
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
@@ -336,14 +340,14 @@
 			if (WWinput(user, "This will start building a dirt barricade [your_dir] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
-					var/obj/item/weapon/sandbag/bag = C
+					var/obj/item/weapon/barrier/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
-					var/obj/structure/window/sandbag/incomplete/sandbag = new/obj/structure/window/sandbag/incomplete(src, user)
+					var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user)
 					sandbag.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
 					if (ishuman(user))
-						var/mob/living/carbon/human/H = user
+						var/mob/living/human/H = user
 						H.adaptStat("crafting", 3)
 				return
 
@@ -364,7 +368,7 @@
 		var/sandbag_time = 50
 
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			sandbag_time /= H.getStatCoeff("strength")
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
@@ -379,11 +383,11 @@
 					sandbag.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>")
 					if (ishuman(user))
-						var/mob/living/carbon/human/H = user
+						var/mob/living/human/H = user
 						H.adaptStat("crafting", 3)
 				return
 	else if (istype(C, /obj/item/stack/farming/seeds)) //Note - I hate this so much a single list of seeds to reference the plants result would be better, follows the ordering of structure/wild.dm for consistency.
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
 			if (locate(/obj/structure/farming/plant) in src)
 				user << "<span class='notice'>There already is something planted here.</span>"
@@ -414,9 +418,25 @@
 				else
 					qdel(C)
 				return
+			else if (istype(C, /obj/item/stack/farming/seeds/beans))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/beans(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 			else if (istype(C, /obj/item/stack/farming/seeds/hemp))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/hemp(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/flax))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/flax(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else
@@ -433,6 +453,22 @@
 			else if (istype(C, /obj/item/stack/farming/seeds/wheat))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/wheat(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/barley))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/barley(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/oat))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/oat(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else
@@ -512,6 +548,14 @@
 			else if (istype(C, /obj/item/stack/farming/seeds/tree))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/tree(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/bamboo))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/bamboo(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else
@@ -637,7 +681,7 @@
 		var/obj/item/weapon/plough/PL = C
 		var/turf/T = get_turf(src)
 		if (user.a_intent == I_DISARM)
-			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach) || istype(T, /turf/floor/winter))
+			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach/sand) || istype(T, /turf/floor/winter))
 				for(var/obj/covers/CV in T)
 					user << "<span class='danger'>You can't make a dirt road here.</span>"
 					return
@@ -669,7 +713,7 @@
 					ChangeTurf(/turf/floor/dirt)
 					return
 			else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				if (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))
 					if (istype(T, /turf/floor/dirt/flooded))
 						ChangeTurf(/turf/floor/dirt/ploughed/flooded)
@@ -706,7 +750,7 @@
 		var/covers_time = 80
 
 		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+			var/mob/living/human/H = user
 			covers_time /= H.getStatCoeff("strength")
 			covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
@@ -719,7 +763,7 @@
 						new/obj/covers/repairedfloor(src, user)
 						visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
 						if (ishuman(user))
-							var/mob/living/carbon/human/H = user
+							var/mob/living/human/H = user
 							H.adaptStat("crafting", 3)
 				return
 
@@ -773,7 +817,7 @@
 			if (!use_flooring)
 				return
 			// Do we have enough?
-			if (use_flooring.build_cost && S.get_amount() < use_flooring.build_cost)
+			if (use_flooring.build_cost && S.amount < use_flooring.build_cost)
 				user << "<span class='warning'>You require at least [use_flooring.build_cost] [S.name] to complete the [use_flooring.descriptor].</span>"
 				return
 			// Stay still and focus...
@@ -790,7 +834,7 @@
 
 /turf/floor/mining/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/pickaxe))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rocky floor with the [C.name].</span>", "<span class = 'notice'>You start to break the rocky floor with the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
@@ -800,7 +844,7 @@
 		else
 			return ..(C, user)
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
 		if (ET.reagents.total_volume > 0)
 			H << "<span class = 'notice'>Empty \the [ET] first.</span>"
@@ -814,11 +858,18 @@
 		else
 			return ..(C, user)
 
-/turf/proc/extracting_proc(var/mob/living/carbon/human/H, var/obj/item/weapon/reagent_containers/glass/extraction_kit/E)
+/turf/proc/extracting_proc(var/mob/living/human/H, var/obj/item/weapon/reagent_containers/glass/extraction_kit/E)
 	if (!H || !src || !E)
 		return
 	var/list/elements = list("hydrogen", "helium", "lithium", "nitrogen", "oxygen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine")
+	var/list/elements1 = list("nitrogen", "phosphorus", "chlorine", "potassium", "iodine")
+	var/list/elements2 = list("hydrogen", "helium", "lithium", "oxygen", "fluorine", "magnesium", "aluminum", "silicon", "calcium", "arsenic", "tungsten", "radium", "thorium", "bromine")
+
 	var/randreg = pick(elements)
+	if (prob(70))
+		randreg = pick(elements1)
+	else
+		randreg = pick(elements2)
 	if (E.reagents.total_volume <= 0)
 		E.reagents.add_reagent(randreg,5)
 		E.update_icon()
@@ -833,7 +884,7 @@
 		ChangeTurf(/turf/floor/dirt)
 	is_mineable = FALSE
 
-/turf/proc/mining_proc(var/mob/living/carbon/human/H)
+/turf/proc/mining_proc(var/mob/living/human/H)
 	if (!H || !src)
 		return
 	var/turf/T = get_turf(src)
@@ -917,6 +968,7 @@
 					change_the_turf()
 					H.adaptStat("strength", 1)
 					return
+/*
 				else
 					if (prob(40))
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
@@ -936,6 +988,7 @@
 						change_the_turf()
 						H.adaptStat("strength", 1)
 						return
+*/
 	if (prob(5))
 		var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
 		mineral.amount = 4
@@ -989,6 +1042,12 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
+	else if(prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3)
+		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
+		mineral.amount = rand(8,12)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		H << "<span class='danger'>You found some <font color=#060606><b>obsidian</font> rocks</b>!</span>"
 	else if(istype(T, /turf/floor/dirt/underground/icy) || (area_above && area_above.climate == "tundra"))
 		//TODO ADD ICE AND FOSSILS
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
@@ -1009,13 +1068,15 @@
 /turf/floor/dirt/underground/attack_hand(mob/user)
 	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))
 		var/turf/floor/dirt/underground/U = src
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
 			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
 				U.collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					var/turf/floor/dirt/underground/empty/T = src
+					T.mining_clear_debris()
 					return TRUE
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
@@ -1028,7 +1089,7 @@
 /turf/floor/attack_hand(mob/user)
 	if (!istype(src, /turf/floor/dirt/underground) && !istype(src, /turf/floor/dirt/underground/empty) && ishuman(user))
 		var/turf/floor/T = src
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
 			if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
 				if (T.available_snow >= 1)
@@ -1062,7 +1123,7 @@
 						H.shoveling_dirt = FALSE
 						H.adaptStat("strength", 1)
 						T.available_dirt -= 1
-						new /obj/item/weapon/sandbag(T)
+						new /obj/item/weapon/barrier(T)
 					else
 						H.shoveling_dirt = FALSE
 				else
@@ -1091,7 +1152,7 @@
 	set category = null
 	set src in range(1, usr)
 
-	var/mob/living/carbon/human/user
+	var/mob/living/human/user
 
 	if (ishuman(usr))
 		user = usr
@@ -1105,6 +1166,9 @@
 				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
 					user << "<span class='notice'>You can't dig up here, there is something blocking the way!</span>"
 					return
+			if (istype(TB, /turf/floor/beach/water) || istype(TB, /turf/floor/lava))
+				user << "<span class='notice'>You can't dig down here, there is something blocking the way!</span>"
+				return
 			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
 				user << "<span class='notice'>You can't dig up on that type of floor!</span>"
 				return
@@ -1119,7 +1183,7 @@
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
 				visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
 				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)
 					H.adaptStat("strength", 1)
 			return
@@ -1141,7 +1205,7 @@
 					BL.ChangeTurf(/turf/floor/dirt)
 				visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
 				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
+					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)
 					H.adaptStat("strength", 1)
 			return
@@ -1152,12 +1216,12 @@
 		user << "<span class='warning'>You cannot dig a hole here!</span>"
 		return
 
-/turf/floor/beach/water/attack_hand(var/mob/living/carbon/human/H)
+/turf/floor/beach/water/attack_hand(var/mob/living/human/H)
 	if (!ishuman(H))
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			H << "<span class='warning'>ItÂ´s probably not a good idea to drink saltwater.</span>"
 			return
 		H << "You start drinking some water from ground..."
 		if (do_after(H,50,src))
@@ -1167,7 +1231,10 @@
 			if (watertype == "irradiated_water")
 				H.rad_act(5)
 			else
-				if (prob(sickness*15) && !H.orc && !H.crab)
+				var/dmod = 1
+				if (H.find_trait("Weak Immune System"))
+					dmod = 2
+				if (prob(sickness*15*dmod) && !H.orc && !H.crab)
 					if (H.disease == 0)
 						H.disease_progression = 0
 						H.disease_type ="cholera"

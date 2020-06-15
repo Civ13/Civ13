@@ -16,6 +16,24 @@
 	icon_state = "latex"
 	item_state = "latex"
 
+/obj/item/clothing/gloves/watch/watch
+	name = "watch"
+	desc = "A watch you wear on your hand."
+	icon_state = "watch"
+	item_state = "watch"
+
+/obj/item/clothing/gloves/watch/specialwatch
+	name = "expensive watch"
+	desc = "A watch you wear on your hand. Looks quite expensive."
+	icon_state = "specialwatch"
+	item_state = "watch"
+
+/obj/item/clothing/gloves/watch/goldwatch
+	name = "gold watch"
+	desc = "A watch you wear on your hand. This one is plated in gold."
+	icon_state = "goldwatch"
+	item_state = "watch"
+
 /obj/item/clothing/gloves/color/yellow
 	name = "yellow gloves"
 	initial_name = "yellow gloves"

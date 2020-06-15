@@ -1,7 +1,7 @@
 /obj/item/weapon/flamethrower
 	name = "M2 Flamethrower hoose"
 	desc = "Use with a flamethrower fuel tank to set your enemies on fire."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "m2_flamethrower"
 	item_state = "m2_flamethrower"
 	var/base_icon = "m2_flamethrower"
@@ -32,7 +32,7 @@
 		update_icon()
 		L << "<span class='danger'>You light \the [src].</span>"
 
-/obj/item/weapon/flamethrower/proc/fire(var/mob/living/carbon/human/L,var/cdir=null)
+/obj/item/weapon/flamethrower/proc/fire(var/mob/living/human/L,var/cdir=null)
 	if (!active || !L)
 		return
 	if (world.time<=lastfire)
@@ -55,7 +55,7 @@
 		L << "<span class='warning'>The fuel tank doesn't have enough fuel to operate the flamethrower!</span>"
 		return
 
-/obj/item/weapon/flamethrower/proc/process_fire(var/mob/living/carbon/human/L,var/obj/item/weapon/reagent_containers/glass/flamethrower/FM,var/cdir = null)
+/obj/item/weapon/flamethrower/proc/process_fire(var/mob/living/human/L,var/obj/item/weapon/reagent_containers/glass/flamethrower/FM,var/cdir = null)
 	if (!cdir || !(cdir in list(NORTH,SOUTH,EAST,WEST)))
 		cdir = L.dir
 	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 5)
@@ -180,7 +180,7 @@
 /obj/item/weapon/reagent_containers/glass/flamethrower
 	name = "M2 Flamethrower backpack"
 	desc = "A flamethrower backpack. Up to 100 liters of gasoline."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "m2_flamethrower_back"
 	item_state = "m2_flamethrower"
 	flags = CONDUCT

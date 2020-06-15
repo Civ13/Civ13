@@ -1,0 +1,188 @@
+"aa" = (/turf/floor/grass,/area/caribbean/colonies/jungle)
+"ab" = (/turf/floor/grass,/area/caribbean)
+"ac" = (/turf/floor/grass,/turf/floor/trench,/area/caribbean/colonies/jungle)
+"ad" = (/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/trench,/area/caribbean/roofed)
+"ae" = (/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/trench,/area/caribbean/roofed)
+"af" = (/obj/structure/closet/crate/ww1/grenades_british,/turf/floor/trench,/area/caribbean/roofed)
+"ag" = (/turf/floor/trench,/area/caribbean/roofed)
+"ah" = (/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 4},/turf/floor/trench,/area/caribbean/roofed)
+"ai" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/trench,/area/caribbean/roofed)
+"aj" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/turf/floor/trench,/area/caribbean/roofed)
+"ak" = (/obj/item/weapon/wrench,/turf/floor/trench,/area/caribbean/roofed)
+"al" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/trench,/area/caribbean/roofed)
+"am" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/trench,/area/caribbean/roofed)
+"an" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 4},/turf/floor/trench,/area/caribbean/roofed)
+"ao" = (/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/trench,/area/caribbean/roofed)
+"ap" = (/obj/structure/cannon/mortar,/turf/floor/trench,/area/caribbean/roofed)
+"aq" = (/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/structure/closet/crate/wood,/turf/floor/trench,/area/caribbean/roofed)
+"ar" = (/obj/effect/floor_decal/dirtwall,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/trench,/area/caribbean/roofed)
+"as" = (/obj/effect/floor_decal/dirtwall,/turf/floor/trench,/area/caribbean/roofed)
+"at" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/obj/effect/floor_decal/dirtwall,/turf/floor/trench,/area/caribbean/roofed)
+"au" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/obj/effect/floor_decal/dirtwall,/obj/structure/sign/flag/vietcong,/turf/floor/trench,/area/caribbean/roofed)
+"av" = (/obj/effect/floor_decal/dirtwall,/obj/structure/sign/flag/vietcong,/turf/floor/trench,/area/caribbean/roofed)
+"aw" = (/obj/effect/floor_decal/dirtwall,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 4},/turf/floor/trench,/area/caribbean/roofed)
+"ax" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"ay" = (/turf/floor/grass,/area/caribbean/british/land/outside{name = "American Camp"})
+"az" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean/british/land/outside{name = "American Camp"})
+"aA" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean/british/land/outside{name = "American Camp"})
+"aB" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aC" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aD" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers,/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aE" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aF" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/grass,/area/caribbean/british/land/outside{name = "American Camp"})
+"aG" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aH" = (/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aJ" = (/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/turf/floor/trench,/area/caribbean/roofed)
+"aK" = (/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/turf/floor/trench,/area/caribbean/roofed)
+"aL" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/turf/floor/trench,/area/caribbean/roofed)
+"aM" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/turf/floor/trench,/area/caribbean/roofed)
+"aN" = (/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 1},/turf/floor/trench,/area/caribbean/roofed)
+"aO" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers{icon_state = "vickers"; dir = 4},/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aP" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/turf/floor/trench,/area/caribbean/roofed)
+"aQ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"aR" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"aS" = (/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"aT" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/sign/flag/medical,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"aU" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"aV" = (/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/obj/structure/sign/flag/vietcong,/turf/floor/trench,/area/caribbean/roofed)
+"aW" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers{icon_state = "vickers"; dir = 8},/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"aX" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"aY" = (/obj/structure/bed/roller,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"aZ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"ba" = (/obj/structure/table,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bb" = (/obj/structure/table,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/advsmall,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bc" = (/obj/structure/table,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bd" = (/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"be" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/trench,/area/caribbean/roofed)
+"bf" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/turf/floor/trench,/area/caribbean/roofed)
+"bg" = (/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bh" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/british/land/outside/objective)
+"bi" = (/obj/structure/simple_door/key_door/american,/turf/floor/wood,/area/caribbean/british/land/outside/objective)
+"bj" = (/turf/floor/wood,/area/caribbean/british/land/outside/objective)
+"bk" = (/obj/structure/potted_plant,/turf/floor/wood,/area/caribbean/british/land/outside/objective)
+"bm" = (/obj/structure/table/wood,/obj/item/weapon/key/american,/turf/floor/wood,/area/caribbean/british/land/outside/objective)
+"bn" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/british/land/outside/objective)
+"bo" = (/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/dirt,/area/caribbean/british/land/outside/objective)
+"bp" = (/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bq" = (/obj/effect/floor_decal/dirtwall{icon_state = "dirt_wall"; dir = 8},/obj/effect/floor_decal/dirtwall,/turf/floor/trench,/area/caribbean/roofed)
+"br" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/obj/effect/floor_decal/dirtwall,/turf/floor/trench,/area/caribbean/roofed)
+"bs" = (/obj/structure/closet/crate/coldwar/m26,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bt" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bu" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bv" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"bw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean/british/land/outside{name = "American Camp"})
+"bx" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"by" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"bz" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers{icon_state = "vickers"; dir = 1},/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"bA" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"bB" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean/british/land/outside{name = "American Camp"})
+"bC" = (/obj/effect/floor_decal/dirtwall,/turf/floor/grass,/area/caribbean/colonies/jungle)
+"bD" = (/obj/effect/floor_decal/dirtwall,/obj/structure/sign/flag/vietcong,/turf/floor/grass,/area/caribbean/colonies/jungle)
+"bE" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/turf/floor/trench,/area/caribbean/roofed)
+"bF" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/turf/floor/trench,/area/caribbean/roofed)
+"bG" = (/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/structure/closet/crate,/turf/floor/trench,/area/caribbean/british/land/outside{name = "American Camp"})
+"bH" = (/turf/floor/dirt,/area/caribbean/colonies/jungle)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacadaeaeaeaeaeaeaeaeaeaeafafagagagagagagagagagagagagagagagagagagagagagahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaiajajajajajajajajajajagagagakakagagagagagagagagagagagagagagagagagagahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacalagamagamagamagamagamagamagamagamagamagamagamagamagamagamagamagamaganaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaoagagagagagagagagagagagapaqaqapapaqaqagapagagagagagagagagagagagagagahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarasasasasasasasasasasasasasasasasasatauagagavasasasasasasasasasasasawaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxabababababababababababababababababababababababababababababababababababababababababababababababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababayazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazayababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaBaCaCaCaCaDaCaCaCaCaCaCaCaCaCaCaCaCaDaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaDaCaCaCaCaEaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaHaHaHaHaHaHaHbGbGbGbGbGaHaHaHaHaHaHbGbGbGbGbGaHaHaHaHaHaHaHaHaHaHaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaJaKaKaKaLaMaN
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaOaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagagagagaPae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagaqagamaPae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagaqagagaPae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaabHaQaRaRaRaRaRaRaRaRaRaSaSaSaSaSaRaRaRaRaRaRaTaRaRaRaRaUaaaaaaaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVagapagamaPae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaWaHaHaHaaaaaaaXaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaYaSaSaSaYaSaSaZaaaaaaaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagagagagagaPae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaaaaaXaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSbabbbcaSaSaSaZaaaaaaaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagagapagamaPae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHbGaaaaaaaXaSaSbdaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaYaSaSaSaYaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabeagagagagaPae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHbGaaaaaaaXaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabeagagagambfae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaWaHaHbGaaaaaaaXaSaSbdaSaSaSaSbgbhbhbhbhbhbibhbhbhbhbhbhaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagagapagagagae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHbGaaaaaaaXaSaSaSaSaSaSaSbgbhbjbjbjbjbjbjbjbjbjbkbhaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVagagagamakae
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHbGaaaaaaaXaSaSbdaSaSaSaSbgbhbjbjbjbjbjbjbjbjbjbjbhaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagapagagagaf
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaHaHaHaSaSaSaSaSaSaSaSbgbhbjbjbjbjbjbjbjbjbjbjbhaSaSaSaSaSaSaHaHaHaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagaqagamagaf
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaHaHaHaSaSaSbdaSaSaSaSbgbhbjbjbnbmbnbnbnbnbnbnbhaSaSaSaSaSaSaHaHaHaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagaqagagagag
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaHaHaHaSaSaSaSaSaSaSaSbgbhbjbjbnbjbjbobjbjbjbjbhaSaSaSaSaSaSaHaHaHaHaHaHaOaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagagagamagag
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaWaHaHaHaHaHaHaSaSaSbdaSaSaSaSbgbhbjbjbnbjbjbjbjbjbjbjbhaSaSaSaSaSaSaHaHaHaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagagagagagag
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaHaHaHaSaSaSaSaSaSaSaSbgbhbjbjbnbjbjbjbjbjbjbjbhaSaSaSaSaSaSaHaHaHaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagagagamagag
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHbGaaaaaaaXaSaSbdaSaSaSaSbgbhbjbjbnbjbjbjbjbjbjbjbhaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagagagagagag
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHbGaaaaaaaXaSaSaSaSaSaSaSbpbhbjbjbjbjbjbjbjbjbjbjbhaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabqasasasbrasas
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaZaGaHaHbGaaaaaaaXaSaSbdaSaSaSaSbpbhbjbjbnbjbjbjbjbjbjbjbhaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHbGaaaaaaaXaSaSaSaSaSaSaSbsbhbhbhbhbhbhbhbhbhbhbhbhaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaWaHaHbGaaaaaaaXaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaZaaaaaabGaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaaaabtbububububububububuaSaSaSaSaSbubububububububububububvaaaaaaaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaOaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaHaHaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaAaGaHaHaHaHaHaHaHaHaHaHaHbGbGbGbGbGaHaHaHaHaHbGbGbGbGbGaHaHaHaHaHaHaHaHaHaHaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababbwaGaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaHaIaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababbwbxbybzbybybybybybybybybybybybybybybybybzbybybybybybybybybybybybybybybybybybzbybybAaFababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxababaybBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBayababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxabababababababababababababababababababababababababababababababababababababababababababababababaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabCbCbCbCbCbCbCbCbCbCbCbDaaaaaaaaaabDbCbCbCbCbCbCbCbCbCbCbCbCbCbCbCbCbCbCaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagagagagagagagagagagagagbebeagagagagagagagagagagagagagagagagagagagagahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoagagagagagagagagagagagagagagagagapaqaqakakapaqaqapagagagagagagagagagahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoamagamagamagamagamagamagamagamagamagamagamagamagamagamagamagamagamaganaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaobEbEbEbEbEbEbEbEaPbFagagagagagagagagagagagagagagagagagagagagagagagagahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaeaeaeaeaeaeaeaeaeaeaeaeafafagagagagagagagagagagagagagagagagagagagagahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}

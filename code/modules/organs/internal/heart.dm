@@ -114,7 +114,7 @@
 					if(W.bleeding())
 						if(temp.applied_pressure)
 							if(ishuman(temp.applied_pressure))
-								var/mob/living/carbon/human/H = temp.applied_pressure
+								var/mob/living/human/H = temp.applied_pressure
 								H.bloody_hands(src, 0)
 							//somehow you can apply pressure to every wound on the organ at the same time
 							//you're basically forced to do nothing at all, so let's make it pretty effective
@@ -126,11 +126,14 @@
 			if(temp.status & ORGAN_ARTERY_CUT)
 				var/bleed_amount = Floor((owner.vessel.total_volume / (temp.applied_pressure ? 500 : 250))*temp.arterial_bleed_severity)
 				if(bleed_amount)
+					var/dmod = 1
+					if (owner.find_trait("Hemophilia"))
+						dmod = 1.25
 					if(open_wound)
 						blood_max += bleed_amount
 						do_spray += "the [temp.artery_name] in \the [owner]'s [temp.name]"
 					else
-						owner.vessel.remove_reagent("blood", bleed_amount)
+						owner.vessel.remove_reagent("blood", bleed_amount*dmod)
 
 		switch(pulse)
 			if(PULSE_SLOW)

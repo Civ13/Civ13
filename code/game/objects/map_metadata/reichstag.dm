@@ -1,17 +1,16 @@
 
 /obj/map_metadata/reichstag
 	ID = MAP_REICHSTAG
-	title = "Reichstag (100x100x1)"
+	title = "Reichstag"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	no_winner ="The reichstag is under German control."
 	faction_organization = list(
 		GERMAN,
 		RUSSIAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/british,
 		list(GERMAN) = /area/caribbean/german/reichstag/roof/objective,
@@ -23,19 +22,25 @@
 	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Soviets will win if they manage to reach the top of the Reichstag.</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
-	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 	gamemode = "Siege"
 obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/german))
-		if (J.is_ww2 == TRUE && J.is_reichstag == TRUE)
+		if (J.is_ss_panzer == TRUE || J.is_tanker == TRUE)
+			. = FALSE
+		else if (J.is_ww2 == TRUE && J.is_reichstag == TRUE)
 			. = TRUE
 		else
 			. = FALSE
 	else
-		if (J.is_ww2 == TRUE || J.is_reichstag == TRUE)
+		if (J.is_ss_panzer == TRUE || J.is_tanker == TRUE)
+			. = FALSE
+		else if (J.is_ww2 == TRUE)
+			. = TRUE
+		else if (istype(J, /datum/job/russian/doctor))
 			. = TRUE
 		else
 			. = FALSE

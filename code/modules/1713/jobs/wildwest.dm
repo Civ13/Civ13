@@ -1,20 +1,20 @@
 /datum/job/civilian/sheriff
 	title = "Sheriff"
 	rank_abbreviation = "Sheriff"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	head_position = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/sheriff/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/sheriff/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -67,16 +67,16 @@
 /datum/job/civilian/deputy
 	title = "Deputy"
 	rank_abbreviation = "Dep."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 16
 
-/datum/job/civilian/deputy/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -126,16 +126,16 @@
 /datum/job/civilian/deputy2
 	title = "Sheriffs Deputy"
 	rank_abbreviation = "Dep."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 100
 
-/datum/job/civilian/deputy2/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/deputy2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -184,16 +184,16 @@
 /datum/job/civilian/bank
 	title = "Bank Worker"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/civilian/bank/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/bank/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
@@ -222,16 +222,16 @@
 /datum/job/civilian/townsmen
 	title = "Townsmen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 100
 
-/datum/job/civilian/townsmen/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townsmen/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -280,11 +280,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
@@ -302,16 +302,16 @@
 /datum/job/civilian/towndoctor
 	title = "Town Doctor"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+	is_medic = TRUE
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/civilian/towndoctor/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/towndoctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -343,11 +343,11 @@
 	else if (randcloth2 == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 	if (prob(50))
-		var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+		var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	else
-		var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	H.add_note("Role", "You are the <b>Town's Doctor</b>, living in Little Creek. Take care of the (many) wounded...")
@@ -365,16 +365,16 @@
 /datum/job/civilian/townbartender
 	title = "Town Bartender"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/civilian/townbartender/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townbartender/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -398,16 +398,16 @@
 /datum/job/civilian/townrancher
 	title = "Town Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/civilian/townrancher/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townrancher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -432,11 +432,11 @@
 	else if (randcloth4 == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
-		var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+		var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	else
-		var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
@@ -458,16 +458,16 @@
 /datum/job/civilian/townprospector
 	title = "Town Prospector"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/civilian/townprospector/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townprospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -488,11 +488,11 @@
 	else if (randcloth4 == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
-		var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+		var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	else
-		var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
@@ -512,16 +512,16 @@
 /datum/job/civilian/townpriest
 	title = "Town Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/townpriest/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townpriest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -548,16 +548,16 @@
 /datum/job/civilian/townblacksmith
 	title = "Town Blacksmith"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/civilian/townblacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/townblacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -582,11 +582,11 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.add_note("Role", "You are the <b>Town's Blacksmith</b>, living in Little Creek. Take care of the blacksmith and the stables!")
@@ -605,15 +605,15 @@
 /datum/job/civilian/outlaw
 	title = "Outlaw"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 100
 
-/datum/job/civilian/outlaw/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/outlaw/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -662,11 +662,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
@@ -685,15 +685,15 @@
 /datum/job/civilian/outlaw1
 	title = "West Side Gang"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 9
 
-/datum/job/civilian/outlaw1/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/outlaw1/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -742,11 +742,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	if (prob(20))
@@ -766,15 +766,15 @@
 /datum/job/civilian/outlaw2
 	title = "East Side Gang"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_cowboy = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 9
 
-/datum/job/civilian/outlaw2/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/outlaw2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -823,11 +823,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
 	if (prob(50))
 		if (prob(50))
-			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/accessory/suspenders/red_a = new /obj/item/clothing/accessory/suspenders(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 		else
-			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 	if (prob(20))

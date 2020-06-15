@@ -3,7 +3,6 @@
 	desc = "Scary, spooky skeletons!"
 	icon_state = "skeleton1"
 	icon_dead = "skeleton_remains1"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"

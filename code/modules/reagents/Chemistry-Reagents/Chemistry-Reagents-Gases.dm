@@ -1,19 +1,17 @@
 #define CHEMNERF 2 // divide the power of all chems by this for BALANCE - Kachnov
 
-var/mob/living/carbon/human/next_gas_eye_message = -1
-var/mob/living/carbon/human/next_gas_skin_message = -1
-var/mob/living/carbon/human/next_gas_lung_message = -1
-var/mob/living/carbon/human/next_gas_flesh_message = -1
+var/mob/living/human/next_gas_eye_message = -1
+var/mob/living/human/next_gas_skin_message = -1
+var/mob/living/human/next_gas_lung_message = -1
+var/mob/living/human/next_gas_flesh_message = -1
 
-/datum/reagent/proc/mask_check(var/mob/living/carbon/human/m)
+/datum/reagent/proc/mask_check(var/mob/living/human/m)
 	if (m && istype(m))
 		if (m.wear_mask && istype(m.wear_mask, /obj/item/clothing/mask/gas))
-			var/obj/item/clothing/mask/gas/mask = m.wear_mask
-			if (mask.check_can_block(src))
-				return TRUE
+			return TRUE
 	return FALSE
 
-/datum/reagent/proc/eye_damage(var/mob/living/carbon/human/m, var/severity = TRUE) // damage eyes
+/datum/reagent/proc/eye_damage(var/mob/living/human/m, var/severity = TRUE) // damage eyes
 	if (mask_check(m)) return
 	for (var/obj/item/clothing/C in m.get_equipped_items())
 		if (C.body_parts_covered & EYES)
@@ -30,7 +28,7 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 			m.Weaken(rand(2,3))
 			m.eye_blurry = max(m.eye_blurry+2, FALSE)
 
-/datum/reagent/proc/external_damage(var/mob/living/carbon/human/m, var/severity = TRUE) // damage skin
+/datum/reagent/proc/external_damage(var/mob/living/human/m, var/severity = TRUE) // damage skin
 	if (m && istype(m) && severity)
 		var/base = ((rand(2,3)) * severity)/CHEMNERF
 		if (base >= 2)
@@ -79,7 +77,7 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 			else if (pts == "feet")
 				m.adjustFireLossByPart(base, "l_foot")
 				m.adjustFireLossByPart(base, "r_foot")
-/datum/reagent/proc/internal_damage(var/mob/living/carbon/human/m, var/severity = TRUE) // damage things like lungs
+/datum/reagent/proc/internal_damage(var/mob/living/human/m, var/severity = TRUE) // damage things like lungs
 	if (mask_check(m)) return
 	if (m && istype(m) && severity)
 		var/base = ((rand(2,3)) * severity)/CHEMNERF
@@ -93,7 +91,7 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 			if (prob(70))
 				m.Weaken(rand(3,4))
 
-/datum/reagent/proc/suffocation(var/mob/living/carbon/human/m, var/severity = TRUE)
+/datum/reagent/proc/suffocation(var/mob/living/human/m, var/severity = TRUE)
 	if (mask_check(m)) return
 	if (m && istype(m) && severity)
 		var/base = ((rand(2,3)) * severity)/CHEMNERF
@@ -106,7 +104,7 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 			m.adjustOxyLoss(base)
 
 
-/datum/reagent/proc/open_wound_damage(var/mob/living/carbon/human/m, var/severity = TRUE) // damage wounded skin
+/datum/reagent/proc/open_wound_damage(var/mob/living/human/m, var/severity = TRUE) // damage wounded skin
 	if (m && istype(m) && severity)
 		var/base = ((m.getBruteLoss() + m.getFireLoss())/10) * severity
 		base += rand(1,2)
@@ -231,15 +229,15 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 	if (istype(L, /mob/living/simple_animal/cockroach) || istype(L, /mob/living/simple_animal/mosquito) || istype(L, /mob/living/simple_animal/fly))
 		L.death()
 
-/datum/reagent/toxin/zyklon_b/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/zyklon_b/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 
 	..(M, alien, removed)
 
-/datum/reagent/toxin/zyklon_b/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/zyklon_b/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 
 
 	..(M, alien, removed)
 
-/datum/reagent/toxin/zyklon_b/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/zyklon_b/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 
 	..(M, alien, removed)

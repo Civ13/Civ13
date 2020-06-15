@@ -86,7 +86,17 @@
 		O.forceMove(loc)
 	else
 		..()
-
+/obj/structure/barricade/wood_pole/attack_hand(mob/living/user as mob)
+	if (!isliving(user))
+		return
+	if (attached_ob && istype(attached_ob, /obj/item/flashlight/lantern))
+		user << "You remove \the [attached_ob] from \the [src]."
+		var/obj/item/flashlight/lantern/O = attached_ob
+		O.anchored = FALSE
+		O.forceMove(user.loc)
+		user.put_in_hands(O)
+		attached_ob = null
+		return
 /obj/structure/barricade/wood_pole/Destroy()
 	if (attached_ob != null)
 		if (istype(attached_ob, /obj/item/flashlight/lantern))
@@ -143,8 +153,8 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	density = TRUE
-	opacity = FALSE
+	density = FALSE
+	opacity = TRUE
 	anchored = TRUE
 /obj/structure/props/junk/New()
 	..()
@@ -191,7 +201,7 @@
 	name = "sofa"
 	desc = "A sofa."
 	icon = 'icons/obj/junk.dmi'
-	icon_state = "sofa"
+	icon_state = "sofa_forward_left"
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -200,7 +210,7 @@
 	anchored = TRUE
 
 /obj/structure/props/sofa/p2
-	icon_state = "sofa2"
+	icon_state = "sofa_forward_right"
 
 /obj/structure/props/sofa/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
 	if (istype(mover, /obj/item/projectile))
@@ -253,7 +263,6 @@
 	name = "Pirate Flag"
 	desc = "A black and white pirate flags with skull and bones."
 
-
 /obj/structure/flag/black
 	icon_state = "black"
 	name = "Black Flag"
@@ -262,12 +271,33 @@
 /obj/structure/flag/french
 	icon_state = "french"
 	name = "French Flag"
-	desc = "The French flag, white with golden fleur-de-lys"
+	desc = "The French flag, white with golden fleur-de-lys."
+
+/obj/structure/flag/french_modern
+	icon_state = "french2"
+	name = "French Flag"
+	desc = "The modern french tricoleur."
+
+/obj/structure/flag/french_monarchist
+	icon_state = "french3"
+	name = "French Flag"
+	desc = "The french monarchist flag."
+
 
 /obj/structure/flag/spanish
 	icon_state = "spanish"
 	name = "Spanish Flag"
 	desc = "The Spanish flag, white with a red cross of burgundy."
+
+/obj/structure/flag/spanish_modern
+	icon_state = "spanish2"
+	name = "Spanish Flag"
+	desc = "The modern yellow and red spanish flag."
+
+/obj/structure/flag/italian
+	icon_state = "italian"
+	name = "Italian Flag"
+	desc = "The modern italian flag."
 
 /obj/structure/flag/british
 	icon_state = "british"
@@ -314,6 +344,12 @@
 	name = "German Flag"
 	desc = "The German flag."
 
+/obj/structure/flag/german_modern
+	icon_state = "german2"
+	name = "German Flag"
+	desc = "The German flag."
+
+
 /obj/structure/flag/confed
 	icon_state = "confed"
 	name = "Confederate flag"
@@ -328,10 +364,120 @@
 	icon_state = "chinese"
 	name = "Republic of China Flag"
 	desc = "The Republic of China flag."
+/obj/structure/flag/pole
+	icon_state = "flagpole_blank"
+	name = "Flagpole"
+	desc = "Flagless, apply cloth or a flag."
+
+/obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
+	if(istype(W, /obj/item/stack/material/cloth))
+		if(W.amount >= 5)
+			W.amount -= 5
+			new /obj/structure/flag/pole/custom(src.loc)
+			if(W.amount <= 0)
+				qdel(W)
+			qdel(src)
+		else
+			H << "You need atleast five cloth to do that!"
+	else if(istype(W, /obj/item/flagmaker))
+		new /obj/structure/flag/pole/custom(src.loc)
+		qdel(src)
+	else
+		..()
+	..()
+/obj/structure/flag/pole/custom
+	icon_state = "cust_flag"
+	name = "Flag"
+	desc = "A flag."
+	var/uncolored = TRUE
+	var/flagcolor = null
+	var/symbol = "Moon"
+	var/symbolcolor = null
+
+
+/obj/structure/flag/pole/custom/attackby(obj/item/W as obj, var/mob/living/human/H)
+	if(istype(W, /obj/item/weapon))
+		if(W.sharp)
+			H << "You tear down the flag!"
+			new/obj/structure/flag/pole(src.loc)
+			qdel(src)
+/obj/structure/flag/pole/custom/attack_hand(var/mob/living/human/H)
+	if (uncolored)
+		var/input = input(H, "Flag Color - Choose a hex color (without the # | default is white):", "Flag Color" , "FFFFFF")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (length(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			flagcolor = addtext("#",input)
+	if (!symbol)
+		var/display = list("Moon", "Cross", "Star", "Sun", "Plus", "Saltire", "None", "Cancel")
+		var/input =  WWinput(H, "What symbol would you like?", "Flag Making", "Cancel", display)
+		playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
+		if (input == "Cancel")
+			return
+		else if(input == "Moon")
+			symbol = "cust_f_moon"
+		else if(input == "Cross")
+			symbol = "cust_f_cross"
+		else if(input == "Star")
+			symbol = "cust_f_star"
+		else if(input == "Sun")
+			symbol = "cust_f_sun"
+		else if(input == "Plus")
+			symbol = "cust_f_plus"
+		else if(input == "Saltire")
+			symbol = "cust_f_saltire"
+		else if(input == "None")
+			symbol = "cust_f_blank"
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+	if (!symbolcolor)
+		var/input = input(H, "Symbol Color - Choose a hex color (without the # | default is black):", "Symbol Color" , "000000")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (length(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			symbolcolor = addtext("#",input)
+	if (flagcolor && symbol && symbolcolor)
+		uncolored = FALSE
+		var/image/flag = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_cloth")
+		flag.color = flagcolor
+		var/image/border = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_outline")
+		var/image/csymbol = image("icon" = 'icons/obj/flags.dmi', "icon_state" = symbol)
+		csymbol.color = symbolcolor
+		overlays += flag
+		overlays += border
+		overlays += csymbol
+		return
+	else
+		..()
+	..()
 
 /obj/structure/wallframe
 	name = "wall frame"
-	desc = "A wooden wall frame, add something like paper or wood to it."
+	desc = "A wooden wall frame, add something like paper, bamboo bundles or wood to it.."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wall_frame"
 	flammable = TRUE
@@ -341,7 +487,7 @@
 	density = FALSE
 	opacity = FALSE
 
-/obj/structure/wallframe/attackby(obj/item/W as obj, var/mob/living/carbon/human/H)
+/obj/structure/wallframe/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/wood))
 		var/input
 		var/display = list("Medieval Window - 4", "Medieval Wall - 6", "Medieval Crossbraced Wall (X) - 6", "Medieval Braced Wall (\\) - 6", "Medieval Braced Wall (/) - 6", "Cancel")
@@ -414,5 +560,167 @@
 					qdel(W)
 		else
 			H << "<span class='notice'>That does not exist!</span>"
-	else
-		..()
+	else if(istype(W, /obj/item/stack/material/bamboo))
+		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Doorway - 2", "Bamboo Window - 2", "Cancel"))
+		if (input == "Cancel")
+			return
+		if(input == "Bamboo Wall - 3")
+			if(W.amount >= 3)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/bamboo(src.loc)
+					qdel(src)
+					W.amount -= 3
+		else if(input == "Bamboo Doorway - 2")
+			if(W.amount >= 2)
+				if (do_after(H, 40, src))
+					var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
+					S.icon_state = "bamboo-door"
+					S.name = "bamboo doorway"
+					S.desc = "A doorway made from bamboo."
+					S.density = FALSE
+					S.opacity = FALSE
+					qdel(src)
+					W.amount -= 2
+		else if(input == "Bamboo Window - 2")
+			if(W.amount >= 2)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/bamboo(src.loc)
+					qdel(src)
+					W.amount -= 2
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+
+/* Bamboo Wall-Frame*/
+
+/obj/structure/wallframe/bamboo
+	name = "bamboo wall frame"
+	desc = "A bamboo wall frame, add something like paper, bamboo bundles or wood to it."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "wall_frame_bamboo"
+
+/obj/structure/wallframe/bamboo/attackby(obj/item/W as obj, var/mob/living/human/H)
+	if(istype(W, /obj/item/stack/material/wood))
+		var/input
+		var/display = list("Oriental Window - 4", "Oriental Wall - 6","Oriental Braced Wall (--) - 6", "Oriental Doorway - 6", "Oriental Two Panelled Wall (|) - 6", "Oriental Two Panelled Braced Wall (-|-)", "Oriental Three Panelled Wall (||) - 6",  "Oriental Three Panelled Braced Wall (-|-|-) - 6", "Cancel")
+		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
+		playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
+		if (input == "Cancel")
+			return
+		else if(input == "Oriental Window - 4")
+			if(W.amount >= 4)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/oriental(src.loc)
+					qdel(src)
+					W.amount -= 4
+		else if(input == "Oriental Wall - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 41, src))
+					new/obj/covers/wood_wall/oriental(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Braced Wall (--) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 43, src))
+					new/obj/covers/wood_wall/oriental/b(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Doorway - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 40, src))
+					var/obj/covers/wood_wall/oriental/S = new /obj/covers/wood_wall/oriental(loc)
+					S.icon_state = "oriental-door"
+					S.name = "oriental doorway"
+					S.desc = "A east-oriental style doorway."
+					S.density = FALSE
+					S.opacity = FALSE
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Two Panelled Wall (|) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/oriental/twop(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Two Panelled Braced Wall (-|-)")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/oriental/twop/b(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Three Panelled Wall (||) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/oriental/threep(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else if(input == "Oriental Three Panelled Braced Wall (-|-|-) - 6")
+			if(W.amount >= 6)
+				if (do_after(H, 42, src))
+					new/obj/covers/wood_wall/oriental/threep/b(src.loc)
+					qdel(src)
+					W.amount -= 6
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+	else if(istype(W, /obj/item/weapon/paper))
+		var/input
+		var/display = list("Shoji Door - 1", "Shoji Wall - 1", "Shoji Divider - 1", "Shoji Window - 1", "Cancel")
+		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
+		playsound(src.loc,'sound/effects/rip_pack.ogg',40)
+		if (input == "Cancel")
+			return
+		else if(input == "Shoji Door - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/structure/simple_door/key_door/anyone/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else if(input == "Shoji Wall - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else if(input == "Shoji Divider - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/shoji_divider(src.loc)
+					qdel(src)
+					qdel(W)
+		else if(input == "Shoji Window - 1")
+			if(W.amount >= 1)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/shoji(src.loc)
+					qdel(src)
+					qdel(W)
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+	else if(istype(W, /obj/item/stack/material/bamboo))
+		var/input = WWinput(H, "What wall would you like to make?", "Building", "Cancel",list ("Bamboo Wall - 3", "Bamboo Doorway - 2", "Bamboo Window - 2", "Cancel"))
+		if (input == "Cancel")
+			return
+		if(input == "Bamboo Wall - 3")
+			if(W.amount >= 3)
+				if (do_after(H, 40, src))
+					new/obj/covers/wood_wall/bamboo(src.loc)
+					qdel(src)
+					W.amount -= 3
+		else if(input == "Bamboo Doorway - 2")
+			if(W.amount >= 2)
+				if (do_after(H, 40, src))
+					var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
+					S.icon_state = "bamboo-door"
+					S.name = "bamboo doorway"
+					S.desc = "A doorway made from bamboo."
+					S.density = FALSE
+					S.opacity = FALSE
+					qdel(src)
+					W.amount -= 2
+		else if(input == "Bamboo Window - 2")
+			if(W.amount >= 2)
+				if (do_after(H, 40, src))
+					new/obj/structure/window_frame/bamboo(src.loc)
+					qdel(src)
+					W.amount -= 2
+		else
+			H << "<span class='notice'>That does not exist!</span>"
+

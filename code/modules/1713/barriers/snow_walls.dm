@@ -202,6 +202,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	buildstack = /obj/item/weapon/snowwall
 
 /obj/covers/snow_wall/blocks/incomplete
 	name = "snow blocks wall"
@@ -225,7 +226,7 @@
 	if (istype(W, /obj/item/weapon/snowwall))
 		if (stage == 3)
 			user << "You start adding snow to the wall..."
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src) && W)
 				user << "You finish adding snow to the wall, completing it."
 				qdel(W)
 				new /obj/covers/snow_wall/blocks(loc)
@@ -234,10 +235,11 @@
 		else if (stage <= 2)
 			user << "You start adding snow to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish adding snow to the wall."
-				stage = (stage+1)
-				icon_state = "igloo_wall_inc[stage]"
-				health = (20*stage)
-				qdel(W)
-				return
+				if (stage <= 2)
+					user << "You finish adding snow to the wall."
+					stage = (stage+1)
+					icon_state = "igloo_wall_inc[stage]"
+					health = (20*stage)
+					qdel(W)
+					return
 	..()

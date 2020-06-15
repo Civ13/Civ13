@@ -1,17 +1,16 @@
 
 /obj/map_metadata/little_creek
 	ID = MAP_LITTLE_CREEK
-	title = "Big Trouble in Little Creek (RP) (140x140x2)"
+	title = "Big Trouble in Little Creek (RP)"
 	lobby_icon_state = "wildwest"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1800
-	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+
+
 	faction_organization = list(
 		CIVILIAN,)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
@@ -23,12 +22,15 @@
 	faction1 = CIVILIAN
 	ambience = list('sound/ambience/desert.ogg')
 	gamemode = "Bank Robbery (RP)"
+	is_RP = TRUE
 	songs = list(
 		"The Good, the Bad, and the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg',)
 obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_cowboy == TRUE)
 		if (J.title == "Outlaw" || J.title == "Sheriffs Deputy")
+			. = FALSE
+		else if (J.is_civil_war == TRUE)
 			. = FALSE
 		else
 			. = TRUE

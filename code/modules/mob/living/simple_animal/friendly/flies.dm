@@ -10,7 +10,7 @@
 	speak = list("bzzzz","zzzzzzz")
 	emote_see = list("buzz around", "fly around")
 	speak_chance = TRUE
-	turns_per_move = 3
+	move_to_delay = 3
 	see_in_dark = 9
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	meat_amount = 0
@@ -41,7 +41,7 @@
 /mob/living/simple_animal/fly/bullet_act(var/obj/item/projectile/Proj)
 	return
 
-/mob/living/simple_animal/fly/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/fly/attack_hand(mob/living/human/M as mob)
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	if (prob(40))

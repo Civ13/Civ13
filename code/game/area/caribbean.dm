@@ -20,6 +20,38 @@
 	icon_state = "blue1"
 	location = AREA_INSIDE
 
+/area/caribbean/roofed/tundra
+	climate = "tundra"
+	base_turf = /turf/floor/dirt/winter
+
+/area/caribbean/roofed/taiga
+	climate = "taiga"
+	base_turf = /turf/floor/dirt/winter
+
+/area/caribbean/roofed/temperate
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/roofed/sea
+	climate = "sea"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/roofed/desert
+	climate = "desert"
+	base_turf = /turf/floor/beach/sand/desert
+
+/area/caribbean/roofed/semiarid
+	climate = "semiarid"
+	base_turf = /turf/floor/dirt/dust
+
+/area/caribbean/roofed/savanna
+	climate = "savanna"
+	base_turf = /turf/floor/dirt/jungledirt
+
+/area/caribbean/roofed/jungle
+	climate = "jungle"
+	base_turf = /turf/floor/dirt/jungledirt
+
 /area/caribbean/treasury
 	name = "Colony Treasury"
 	base_turf = /turf/floor/dirt
@@ -160,6 +192,25 @@
 	icon_state = "green1"
 	climate = "jungle"
 
+//lava paths
+/area/caribbean/nomads/forest/Jungle/lava_west
+	icon_state = "green3"
+/area/caribbean/nomads/forest/Jungle/lava_west/one
+
+/area/caribbean/nomads/forest/Jungle/lava_west/two
+
+/area/caribbean/nomads/forest/Jungle/lava_east
+	icon_state = "green3"
+/area/caribbean/nomads/forest/Jungle/lava_east/one
+
+/area/caribbean/nomads/forest/Jungle/lava_east/two
+
+/area/caribbean/nomads/forest/Jungle/lava_south
+	icon_state = "green3"
+/area/caribbean/nomads/forest/Jungle/lava_south/one
+
+/area/caribbean/nomads/forest/Jungle/lava_south/two
+
 /area/caribbean/nomads/forest/savanna
 	name = "Savanna"
 	base_turf = /turf/floor/grass/jungle/savanna
@@ -201,6 +252,17 @@
 	base_turf = /turf/floor/dirt/winter
 	icon_state = "blue2"
 	climate = "tundra"
+
+/area/caribbean/prison/jail
+	name = "Jail"
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
+
+/area/caribbean/prison/jail/processing
+	name = "Processing Area"
+	icon_state = "blue1"
+	location = AREA_INSIDE
 
 /area/caribbean/island
 	name = "Island"
@@ -251,6 +313,89 @@
 	name = "No Man's Land"
 	icon_state = "purple1"
 	base_turf = /turf/floor/dirt
+
+/area/caribbean/no_mans_land/battleroyale
+	name = "Area 1"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/no_mans_land/battleroyale/one
+	name = "North-Western Area"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/no_mans_land/battleroyale/one/inside
+	location = AREA_INSIDE
+	icon_state = "purple1"
+
+/area/caribbean/no_mans_land/battleroyale/one/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/one/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
+/area/caribbean/no_mans_land/battleroyale/two
+	name = "North-Eastern Area"
+	icon_state = "blue1"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/battleroyale/two/inside
+	location = AREA_INSIDE
+	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/two/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/two/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
+/area/caribbean/no_mans_land/battleroyale/three
+	name = "Western Area"
+	icon_state = "green1"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/battleroyale/three/inside
+	location = AREA_INSIDE
+	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/three/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/three/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
+/area/caribbean/no_mans_land/battleroyale/four
+	name = "Eastern Area"
+	icon_state = "green2"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/battleroyale/four/inside
+	location = AREA_INSIDE
+	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/four/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/four/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
+/area/caribbean/no_mans_land/battleroyale/five
+	name = "South-Western Area"
+	icon_state = "red2"
+/area/caribbean/no_mans_land/battleroyale/five/inside
+	location = AREA_INSIDE
+	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/five/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/five/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
+
+/area/caribbean/no_mans_land/battleroyale/six
+	name = "South-Eastern Area"
+	icon_state = "blue2"
+/area/caribbean/no_mans_land/battleroyale/six/inside
+	location = AREA_INSIDE
+	icon_state = "purple1"
+/area/caribbean/no_mans_land/battleroyale/six/border
+	icon_state = "black1"
+/area/caribbean/no_mans_land/battleroyale/six/border/inside
+	icon_state = "black1"
+	location = AREA_INSIDE
 
 /area/caribbean/no_mans_land/capturable
 	base_turf = /turf/floor/dirt/burned

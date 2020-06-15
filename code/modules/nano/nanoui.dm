@@ -75,7 +75,7 @@ nanoui is used to open and update nano browser uis
 /datum/nanoui/New(nuser, nsrc_object, nui_key, ntemplate_filename, ntitle = FALSE, nwidth = FALSE, nheight = FALSE, var/atom/nref = null, var/datum/nanoui/_master_ui = null, var/datum/topic_state/_state = default_state)
 
 	// unique file names that don't get overwritten by other servers' tmpls
-	ntemplate_filename = "[replacetext(ntemplate_filename, ".tmpl", "")]_WW13.tmpl"
+	ntemplate_filename = "[replacetext(ntemplate_filename, ".tmpl", "")].tmpl"
 
 	user = nuser
 	src_object = nsrc_object
@@ -266,8 +266,8 @@ nanoui is used to open and update nano browser uis
   * Set the layout key for use in the frontend Javascript
   * The layout key is the basic layout key for the page
   * Two files are loaded on the client based on the layout key varable:
-  *     -> a template in /UI/templates with the filename "layout_<layout_key>.tmpl
-  *     -> a CSS stylesheet in /UI/css with the filename "layout_<layout_key>.css
+  *	 -> a template in /UI/templates with the filename "layout_<layout_key>.tmpl
+  *	 -> a CSS stylesheet in /UI/css with the filename "layout_<layout_key>.css
   *
   * @param nlayout string The layout key to use
   *
@@ -345,7 +345,7 @@ nanoui is used to open and update nano browser uis
 
 	// before the UI opens, add the layout files based on the layout key
 	add_stylesheet("layout_[layout_key].css")
-	add_template("layout", "layout_[layout_key]_WW13.tmpl")
+	add_template("layout", "layout_[layout_key].tmpl")
 
 	var/head_content = ""
 
@@ -368,7 +368,7 @@ nanoui is used to open and update nano browser uis
 	return {"
 <!DOCTYPE html>
 <html>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<script type='text/javascript'>

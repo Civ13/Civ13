@@ -10,7 +10,6 @@
 	emote_hear = list("clatters","creaks","shivers")
 	emote_see = list("looks hungry", "starts drooling")
 	speak_chance = TRUE
-	turns_per_move = 5
 	move_to_delay = 5
 	see_in_dark = 8
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/bearmeat

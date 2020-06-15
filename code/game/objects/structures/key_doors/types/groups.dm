@@ -1,3 +1,8 @@
+/var/global/REDCODE = rand(1000,1999)
+/var/global/BLUECODE = rand(2000,2999)
+/var/global/YELLOWCODE = rand(3000,3999)
+/var/global/GREENCODE = rand(4000,4999)
+
 /////////313 stuff//////////
 
 #define AN_CODE 1000
@@ -80,7 +85,7 @@
 
 /obj/item/weapon/key/civ/hall
 	code = CV_CODE2
-	name = "Colony Hall Key"
+	name = "Gaurd's Key"
 
 /obj/structure/simple_door/key_door/civ/hall
 	keyslot_type = /datum/keyslot/civ/hall
@@ -92,7 +97,7 @@
 
 /obj/item/weapon/key/civ/gov
 	code = CV_CODE3
-	name = "Governor's Office Key"
+	name = "Leader's Key"
 
 /obj/structure/simple_door/key_door/civ/gov
 	keyslot_type = /datum/keyslot/civ/gov
@@ -215,6 +220,58 @@
 	unique_door_name = "Private Inn Key"
 #undef CV_INN
 
+/datum/keyslot/civ/businessred/New()
+	..()
+	code = REDCODE
+
+/obj/item/weapon/key/civ/businessred/New()
+	..()
+	code = REDCODE
+	name = "Headquarters key"
+
+/obj/structure/simple_door/key_door/civ/businessred
+	keyslot_type = /datum/keyslot/civ/businessred
+	unique_door_name = "Headquarters"
+
+/datum/keyslot/civ/businessblue/New()
+	..()
+	code = BLUECODE
+
+/obj/item/weapon/key/civ/businessblue/New()
+	..()
+	code = BLUECODE
+	name = "Headquarters key"
+
+/obj/structure/simple_door/key_door/civ/businessblue
+	keyslot_type = /datum/keyslot/civ/businessblue
+	unique_door_name = "Headquarters"
+
+/datum/keyslot/civ/businessgreen/New()
+	..()
+	code = GREENCODE
+
+/obj/item/weapon/key/civ/businessgreen/New()
+	..()
+	code = GREENCODE
+	name = "Headquarters key"
+
+/obj/structure/simple_door/key_door/civ/businessgreen
+	keyslot_type = /datum/keyslot/civ/businessgreen
+	unique_door_name = "Headquarters"
+
+/datum/keyslot/civ/businessyellow/New()
+	..()
+	code = YELLOWCODE
+
+/obj/item/weapon/key/civ/businessyellow/New()
+	..()
+	code = YELLOWCODE
+	name = "Headquarters key"
+
+/obj/structure/simple_door/key_door/civ/businessyellow
+	keyslot_type = /datum/keyslot/civ/businessyellow
+	unique_door_name = "Headquarters"
+
 #define CV_BANK 82111
 /datum/keyslot/civ/bank
 	code = CV_BANK
@@ -333,11 +390,11 @@
 /obj/item/weapon/key/soviet/guard
 	code = RU_CODE
 	name = "GULAG guard key"
-
+	health = 90000
 /obj/item/weapon/key/soviet/guard/max
 	code = RU_CODE+2
 	name = "Maximum Security guard key"
-	health = 2000
+	health = 90000
 /obj/structure/simple_door/key_door/soviet
 	keyslot_type = /datum/keyslot/soviet
 	unique_door_name = "Soviet locked"
@@ -349,7 +406,6 @@
 /obj/structure/simple_door/key_door/soviet/guard/max
 	keyslot_type = /datum/keyslot/soviet/guard/max
 	unique_door_name = "Maximum Security locked"
-
 /obj/structure/simple_door/key_door/custom/jail/steeljail/guard
 	unique_door_name = "GULAG locked"
 	locked = TRUE
@@ -397,6 +453,19 @@
 /obj/item/weapon/key/japanese/german////yeah ik i'm just lazy and already mapped so stfu bish
 	name = "German Officer key"
 
+#define JP_OFF_CODE 995 * 7
+/datum/keyslot/japanese_officer
+	code = JP_OFF_CODE
+
+/obj/item/weapon/key/japanese_officer
+	code = JP_OFF_CODE
+	name = "Japanese Officer key"
+
+/obj/structure/simple_door/key_door/japanese_officer
+	keyslot_type = /datum/keyslot/japanese_officer
+	unique_door_name = "Japanese locked"
+#undef JP_OFF_CODE
+
 #define DE_CODE 995 * 12
 /datum/keyslot/german
 	code = DE_CODE
@@ -408,7 +477,95 @@
 /obj/structure/simple_door/key_door/german
 	keyslot_type = /datum/keyslot/german
 	unique_door_name = "German locked"
+
+/obj/structure/simple_door/key_door/german/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/key))
+		if (W.code == DE_CODE)
+			locked = !locked
+			if (locked == 1)
+				visible_message("<span class = 'notice'>[user] locks the door.</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+			else if (locked == 0)
+				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+		if (W.code != DE_CODE)
+			user << "This key does not match this lock!"
+	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
+		for (var/obj/item/weapon/key/KK in W.contents)
+			if (KK.code == DE_CODE)
+				locked = !locked
+				if (locked == 1)
+					visible_message("<span class = 'notice'>[user] locks the door.</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+				else if (locked == 0)
+					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+		if (W.code != 0)
+			user << "None of the keys match this lock!"
+	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You pound the door uselessly!"//sucker
+	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
+		user << "<span class='notice'>You start disassembling the [src]...</span>"
+		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+		return
+	else
+		attack_hand(user)//keys!
+	return TRUE // for key_doors
 #undef DE_CODE
+
+#define DE_CODE_OFF 995 * 1
+/datum/keyslot/german/officer
+	code = DE_CODE_OFF
+
+/obj/item/weapon/key/german/officer
+	code = DE_CODE_OFF
+	name = "German Officer key"
+
+/obj/structure/simple_door/key_door/german/officer
+	keyslot_type = /datum/keyslot/german/officer
+	unique_door_name = "German locked"
+/obj/structure/simple_door/key_door/german/officer/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/key))
+		if (W.code == DE_CODE_OFF)
+			locked = !locked
+			if (locked == 1)
+				visible_message("<span class = 'notice'>[user] locks the door.</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+			else if (locked == 0)
+				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+		if (W.code != DE_CODE_OFF)
+			user << "This key does not match this lock!"
+	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
+		for (var/obj/item/weapon/key/KK in W.contents)
+			if (KK.code == DE_CODE_OFF)
+				locked = !locked
+				if (locked == 1)
+					visible_message("<span class = 'notice'>[user] locks the door.</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+				else if (locked == 0)
+					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+		if (W.code != 0)
+			user << "None of the keys match this lock!"
+	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You pound the door uselessly!"//sucker
+	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
+		user << "<span class='notice'>You start disassembling the [src]...</span>"
+		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+		return
+	else
+		attack_hand(user)//keys!
+	return TRUE // for key_doors
+#undef DE_CODE_OFF
 
 #define VC_CODE 995 * 8
 /datum/keyslot/vietnamese
@@ -461,3 +618,38 @@
 	keyslot_type = /datum/keyslot/american
 	unique_door_name = "American locked"
 #undef US_CODE
+
+
+/obj/item/weapon/key/civ/police
+	code = 13443
+	name = "Police Officer key"
+	health = 90000
+
+/datum/keyslot/police
+	code = 13443
+
+/obj/structure/simple_door/key_door/civ/police
+	keyslot_type = /datum/keyslot/police
+	unique_door_name = "Police Station"
+	locked = TRUE
+	health = 90000
+
+/obj/structure/simple_door/key_door/custom/jail/steeljail/police
+	unique_door_name = "jail cell"
+	locked = TRUE
+	custom_code = 13443
+	health = 90000
+
+/obj/item/weapon/key/civ/paramedics
+	code = 12443
+	name = "Hospital key"
+	health = 90000
+
+/datum/keyslot/paramedics
+	code = 12443
+
+/obj/structure/simple_door/key_door/civ/paramedics
+	keyslot_type = /datum/keyslot/paramedics
+	unique_door_name = "Hospital Key"
+	locked = TRUE
+	health = 90000

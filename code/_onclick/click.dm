@@ -68,11 +68,7 @@
 
 	// can't click on stuff when we're lying, unless it's a bed
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
-		if (H.lying)
-			if (ismob(A) || (A.loc && istype(A.loc, /turf)))
-				if (!istype(A, /obj/structure/bed))
-					return
+		var/mob/living/human/H = src
 
 		if (istype(H.get_active_hand(),/obj/item/weapon/flamethrower))
 			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
@@ -120,7 +116,7 @@
 
 	// stop looking down a ladder
 	if (istype(A, /obj/structure/multiz/ladder/ww2))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (istype(H) && H.laddervision)
 			H.update_laddervision(null)
 			H.visible_message("<span class = 'notice'>[H] stops looking [H.laddervision_direction()] the ladder.</span>")
@@ -182,7 +178,7 @@
 			skip
 
 
-	if (W == A) // Handle attack_self
+	if (W && W == A) // Handle attack_self
 		W.attack_self(src)
 		if (hand)
 			update_inv_l_hand(0)
@@ -205,14 +201,19 @@
 	// A is your location but is not a turf; or is on you (backpack); or is on something on you (box in backpack); sdepth is needed here because contents depth does not equate inventory storage depth.
 	var/sdepth = A.storage_depth(src)
 	if ((!isturf(A) && A == loc) || (sdepth != -1 && sdepth <= 1))
-		// faster access to objects already on you
-	//	if (A.loc != src)
-	//		setMoveCooldown(10) //getting something out of a backpack
-
 		if (W)
 			var/resolved = W.resolve_attackby(A, src)
 			if (!resolved && A && W)
-				W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+				if (istype(W, /obj/item/weapon/gun))
+					var/obj/item/weapon/gun/G = W
+					if (G.full_auto)
+						var/datum/firemode/F = G.firemodes[G.sel_mode]
+						spawn(F.burst_delay)
+							W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+					else
+						W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+				else
+					W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
 		else
 			if (ismob(A)) // No instant mob attacking
 				setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -226,15 +227,15 @@
 	// A is a turf or is on a turf, or in something on a turf (pen in a box); but not something in something on a turf (pen in a box in a backpack)
 	sdepth = A.storage_depth_turf()
 	if (isturf(A) || isturf(A.loc) || (sdepth != -1 && sdepth <= 1))
-		if (A.Adjacent(src) || (W && W == get_active_hand() && (istype(W, /obj/item/weapon/sandbag))) && A.rangedAdjacent(src)) // see adjacent.dm
+		if (A.Adjacent(src) || (W && W == get_active_hand() && (istype(W, /obj/item/weapon/barrier))) && A.rangedAdjacent(src)) // see adjacent.dm
 
 			dir = get_dir(src, A)
 
-			if (W && istype(W, /obj/item/weapon/sandbag) && A.rangedAdjacent(src) && (isturf(A) || istype(A, /obj/structure/window/sandbag/incomplete)))
+			if (W && istype(W, /obj/item/weapon/barrier) && A.rangedAdjacent(src) && (isturf(A) || istype(A, /obj/structure/window/barrier/incomplete)))
 				if (get_active_hand() != W)
 					return
 
-				if (!istype(A, /obj/structure/window/sandbag/incomplete))
+				if (!istype(A, /obj/structure/window/barrier/incomplete))
 					A = get_turf(A)
 				else
 					if (!A.Adjacent(src)) // if we're adding to a sandbag wall, let us stand anywhere in range(1)
@@ -252,7 +253,16 @@
 				// Return TRUE in attackby() to prevent afterattack() effects (when safely moving items for example)
 				var/resolved = W.resolve_attackby(A,src)
 				if (!resolved && A && W)
-					W.afterattack(A, src, TRUE, params) // TRUE: clicking something Adjacent
+					if (istype(W, /obj/item/weapon/gun))
+						var/obj/item/weapon/gun/G = W
+						if (G.full_auto)
+							var/datum/firemode/F = G.firemodes[G.sel_mode]
+							spawn(F.burst_delay)
+								W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+						else
+							W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+					else
+						W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
 			else
 				if (ismob(A)) // No instant mob attacking
 					setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -260,7 +270,16 @@
 			return
 		else // non-adjacent click
 			if (W)
-				W.afterattack(A, src, FALSE, params) // FALSE: not Adjacent
+				if (istype(W, /obj/item/weapon/gun))
+					var/obj/item/weapon/gun/G = W
+					if (G.full_auto)
+						var/datum/firemode/F = G.firemodes[G.sel_mode]
+						spawn(F.burst_delay)
+							W.afterattack(A, src, FALSE, params)
+					else
+						W.afterattack(A, src, FALSE, params)
+				else
+					W.afterattack(A, src, FALSE, params)
 			else
 				RangedAttack(A, params)
 	return TRUE

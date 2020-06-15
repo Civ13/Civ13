@@ -32,8 +32,8 @@
 	if (!istype(victim))
 		return
 
-	if (istype(victim, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = victim
+	if (istype(victim, /mob/living/human))
+		var/mob/living/human/H = victim
 		if (!issmall(H))
 			return FALSE
 		meat_type = H.species.meat_type

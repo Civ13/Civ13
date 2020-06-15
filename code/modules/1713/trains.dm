@@ -1,7 +1,7 @@
 /obj/structure/rails
 	name = "rails"
 	desc = "Rails used by trains."
-	icon = 'icons/obj/trains.dmi'
+	icon = 'icons/obj/vehicles/trains.dmi'
 	icon_state = "rails"
 	anchored = TRUE
 	density = FALSE
@@ -129,7 +129,7 @@
 
 	set src in view(1)
 
-	if (!istype(usr, /mob/living/carbon/human))
+	if (!istype(usr, /mob/living/human))
 		return
 
 	switch(dir)
@@ -166,7 +166,7 @@
 /obj/structure/train_lever
 	name = "rail switch lever"
 	desc = "A lever used to switch between tracks."
-	icon = 'icons/obj/train_lever.dmi'
+	icon = 'icons/obj/vehicles/train_lever.dmi'
 	icon_state = "lever_none"
 	anchored = TRUE
 	density = FALSE
@@ -206,7 +206,7 @@
 /obj/structure/trains
 	name = "wagon"
 	desc = "A wagon meant to be used on rails."
-	icon = 'icons/obj/trains.dmi'
+	icon = 'icons/obj/vehicles/trains.dmi'
 	icon_state = "miningcar"
 	flammable = FALSE
 	not_movable = TRUE
@@ -230,7 +230,7 @@
 
 	set src in view(1)
 
-	if (!istype(usr, /mob/living/carbon/human))
+	if (!istype(usr, /mob/living/human))
 		return
 
 
@@ -473,7 +473,7 @@
 	..()
 
 /obj/structure/trains/storage/attack_hand(mob/user as mob)
-	if (istype(user, /mob/living/carbon/human) && user in range(1,src))
+	if (istype(user, /mob/living/human) && user in range(1,src))
 		storage.open(user)
 		update_icon()
 	else

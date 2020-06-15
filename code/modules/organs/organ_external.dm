@@ -25,7 +25,6 @@
 	var/body_part = null
 	var/icon_position = FALSE
 	var/model
-	var/force_icon
 	var/damage_state = "00"
 	var/brute_dam = FALSE //sum of blunt, pierce and cut damage
 	var/burn_dam = FALSE
@@ -59,13 +58,13 @@
 	var/wound_update_accuracy = TRUE 	// how often wounds should be updated, a higher number means less often
 	var/joint = "joint"   // Descriptive string used in dislocation.
 	var/amputation_point  // Descriptive string used in amputation.
-	var/dislocated = FALSE    // If you target a joint, you can dislocate the limb, causing temporary damage to the organ.
+	var/dislocated = FALSE	// If you target a joint, you can dislocate the limb, causing temporary damage to the organ.
 	var/can_grasp //It would be more appropriate if these two were named "affects_grasp" and "affects_stand" at this point
 	var/can_stand
 	var/pain = FALSE
 	var/fracturetimer = 0
-	var/artery_name = "artery"         // Flavour text for carotid artery, aorta, etc.
-	var/arterial_bleed_severity = 1    // Multiplier for bleeding in a limb.
+	var/artery_name = "artery"		 // Flavour text for carotid artery, aorta, etc.
+	var/arterial_bleed_severity = 1	// Multiplier for bleeding in a limb.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
@@ -170,7 +169,7 @@
 			dislocated = 2
 		else
 			dislocated = TRUE
-	owner.verbs |= /mob/living/carbon/human/proc/undislocate
+	owner.verbs |= /mob/living/human/proc/undislocate
 	if (children && children.len)
 		for (var/obj/item/organ/external/child in children)
 			child.dislocate()
@@ -187,7 +186,7 @@
 		for (var/obj/item/organ/external/limb in owner.organs)
 			if (limb.dislocated == 2)
 				return
-		owner.verbs -= /mob/living/carbon/human/proc/undislocate
+		owner.verbs -= /mob/living/human/proc/undislocate
 
 /obj/item/organ/external/update_health()
 	damage = min(max_damage, (brute_dam + burn_dam))
@@ -195,14 +194,14 @@
 	if (damage > max_damage)
 		if (prob(20))
 			droplimb(0,DROPLIMB_EDGE)
-			for(var/mob/living/carbon/human/NB in view(6,src))
+			for(var/mob/living/human/NB in view(6,src))
 				if (!NB.orc)
 					NB.mood -= 9
 					NB.ptsd += 1
 	return
 
 
-/obj/item/organ/external/New(var/mob/living/carbon/holder)
+/obj/item/organ/external/New(var/mob/living/human/holder)
 	..(holder, FALSE)
 	if (owner)
 		replaced(owner)
@@ -210,7 +209,7 @@
 	spawn(1)
 		get_icon()
 
-/obj/item/organ/external/replaced(var/mob/living/carbon/human/target)
+/obj/item/organ/external/replaced(var/mob/living/human/target)
 	owner = target
 	forceMove(owner)
 	if (istype(owner))
@@ -238,7 +237,7 @@
 ****************************************************/
 
 /obj/item/organ/external/proc/is_damageable(var/additional_damage = FALSE)
-	return (vital || brute_dam + burn_dam + additional_damage < max_damage)
+	return (vital || brute_dam + burn_dam + additional_damage <= max_damage)
 
 
 /obj/item/organ/external/take_damage(brute, burn, sharp, edge, used_weapon = null)
@@ -344,28 +343,28 @@
 				if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
 					if (prob(20))
 						droplimb(0, DROPLIMB_EDGE)
-						for(var/mob/living/carbon/human/NB in view(6,src))
+						for(var/mob/living/human/NB in view(6,src))
 							if (!NB.orc)
 								NB.mood -= 10
 								NB.ptsd += 1
 				else if(burn >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(burn/3))
 					if (prob(20))
 						droplimb(0, DROPLIMB_BURN)
-						for(var/mob/living/carbon/human/NB in view(6,src))
+						for(var/mob/living/human/NB in view(6,src))
 							if (!NB.orc)
 								NB.mood -= 10
 								NB.ptsd += 1
 				else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
 					if (prob(20))
 						droplimb(0, DROPLIMB_BLUNT)
-						for(var/mob/living/carbon/human/NB in view(6,src))
+						for(var/mob/living/human/NB in view(6,src))
 							if (!NB.orc)
 								NB.mood -= 10
 								NB.ptsd += 1
 				else if(brute >= max_damage / DROPLIMB_THRESHOLD_TEAROFF && prob(brute/3))
 					if (prob(20))
 						droplimb(0, DROPLIMB_BLUNT)
-						for(var/mob/living/carbon/human/NB in view(6,src))
+						for(var/mob/living/human/NB in view(6,src))
 							if (!NB.orc)
 								NB.mood -= 10
 								NB.ptsd += 1
@@ -376,7 +375,11 @@
 	return created_wound
 
 
-/obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE)
+/obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE, var/mob/living/human/healer = null)
+
+	if (healer && healer != owner)
+		healer.awards["medic"]+=(brute+burn)
+		owner.awards["wounded"]+=(brute+burn)
 
 	//Heal damage on the individual wounds
 	for (var/datum/wound/W in wounds)
@@ -416,7 +419,8 @@ This function completely restores a damaged organ to perfect condition.
 	germ_level = FALSE
 	pain = FALSE
 	for(var/datum/wound/wound in wounds)
-		wound.embedded_objects.Cut()
+		if (wound.embedded_objects)
+			wound.embedded_objects.Cut()
 	wounds.Cut()
 	number_wounds = FALSE
 
@@ -678,8 +682,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	status &= ~ORGAN_BLEEDING
 	var/clamped = FALSE
 
-	var/mob/living/carbon/human/H
-	if (istype(owner,/mob/living/carbon/human))
+	var/mob/living/human/H
+	if (istype(owner,/mob/living/human))
 		H = owner
 
 	//update damage counts
@@ -793,7 +797,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 				owner.death()
 				playsound(owner, "chop", 100 , FALSE)//Splat.
 
-	var/mob/living/carbon/human/victim = owner //Keep a reference for post-removed().
+	var/mob/living/human/victim = owner //Keep a reference for post-removed().
 	var/obj/item/organ/external/parent_organ = parent
 
 	if (disintegrate != DROPLIMB_BLUNT)
@@ -871,7 +875,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/is_stump()
 	return FALSE
 
-/obj/item/organ/external/proc/release_restraints(var/mob/living/carbon/human/holder)
+/obj/item/organ/external/proc/release_restraints(var/mob/living/human/holder)
 	if (!holder)
 		holder = owner
 	if (!holder)
@@ -938,7 +942,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		W.germ_level = FALSE
 	return rval
 
-/obj/item/organ/external/proc/clamp()
+/obj/item/organ/external/proc/clamping()
 	var/rval = FALSE
 	status &= ~ORGAN_BLEEDING
 	for (var/datum/wound/W in wounds)
@@ -1015,7 +1019,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if (!owner)
 		return
 
-	var/mob/living/carbon/human/victim = owner
+	var/mob/living/human/victim = owner
 
 	..()
 

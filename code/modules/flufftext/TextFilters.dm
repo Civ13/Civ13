@@ -1,9 +1,9 @@
 //This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:32
 
 proc/Intoxicated(phrase)
-	phrase = rhtml_decode(phrase)
-	var/leng=lentext(phrase)
-	var/counter=lentext(phrase)
+	phrase = html_decode(phrase)
+	var/leng=length(phrase)
+	var/counter=length(phrase)
 	var/newphrase=""
 	var/newletter=""
 	while (counter>=1)
@@ -24,7 +24,7 @@ proc/Intoxicated(phrase)
 	return newphrase
 
 proc/NewStutter(phrase,stunned)
-	phrase = rhtml_decode(phrase)
+	phrase = html_decode(phrase)
 
 	var/list/split_phrase = splittext(phrase," ") //Split it up into words.
 

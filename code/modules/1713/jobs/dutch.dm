@@ -1,7 +1,7 @@
 /datum/job/dutch
 	faction = "Human"
 
-/datum/job/dutch/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/dutch/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_dutch_name(H.gender)
 	H.real_name = H.name
 
@@ -9,19 +9,19 @@
 	title = "Kapitein"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Kapitein"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/dutch/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -52,18 +52,18 @@
 	title = " Onderofficier"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Onderofficier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNQM"
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/dutch/qm/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -94,19 +94,19 @@
 	title = "Kwartiermeester"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Kwartiermeester"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/dutch/boatswain/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -138,16 +138,16 @@
 	title = "Adelborst"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Adelborst"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/dutch/midshipman/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -158,7 +158,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	H.add_note("Role", "You are a <b>[title]</b>, a petty officer in the ship. Organize your group according to the <b>Chef d'équipage</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a petty officer in the ship. Organize your group according to the <b>Chef d'equipage</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -175,15 +175,16 @@
 	title = "Chirurg"
 	en_meaning = "Medic"
 	rank_abbreviation = "Chirurg"
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRNSurgeon"
+
+
+	is_medic = TRUE
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/dutch/surgeon/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
@@ -213,15 +214,15 @@
 	title = "Timmerman"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Timmerman"
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRNCarpenter"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRNCarpenter"
+
+
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/dutch/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -237,7 +238,7 @@
 
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/hatchet(H), slot_belt)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/wrench(H), slot_l_store)
-	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the ship in good condition. Work with the <b>Quartier-maître</b> to ensure everyting is in good conditions!")
+	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the ship in good condition. Work with the <b>Quartier-maï¿½tre</b> to ensure everyting is in good conditions!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
@@ -255,15 +256,15 @@
 	title = "Kok"
 	en_meaning = "Cook"
 	rank_abbreviation = "Kok"
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRNCook"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRNCook"
+
+
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/dutch/cook/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
@@ -282,7 +283,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
 
-	H.add_note("Role", "You are the cook of the ship. Feed the whole crew according to the <b>Quartier-maître</b> orders!")
+	H.add_note("Role", "You are the cook of the ship. Feed the whole crew according to the <b>Quartier-maï¿½tre</b> orders!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
@@ -304,15 +305,15 @@
 	title = "Matroos"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRN" //for testing!
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRN" //for testing!
+
+
+
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/dutch/seaman/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/seaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
@@ -353,18 +354,18 @@
 	title = "Luitenant"
 	en_meaning = "Infantry Commander"
 	rank_abbreviation = "Luit."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 	is_commander = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/dutch/army_commander/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/army_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -396,17 +397,17 @@
 	title = "Sergeant"
 	en_meaning = "Infantry Squad Leader"
 	rank_abbreviation = "Srg."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 20
 
-/datum/job/dutch/army_officer/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/army_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -436,16 +437,17 @@
 	title = "Veld Dokter"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "V. Dk."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/dutch/field_medic/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/field_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -474,16 +476,16 @@
 	title = "Soldaat"
 	en_meaning = "Infantry Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 100
 
-/datum/job/dutch/soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -516,16 +518,16 @@
 	title = "Jager"
 	en_meaning = "Light Infantry"
 	rank_abbreviation = "Jag."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_army = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 4
 	max_positions = 20
 
-/datum/job/dutch/chasseur/equip(var/mob/living/carbon/human/H)
+/datum/job/dutch/chasseur/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)

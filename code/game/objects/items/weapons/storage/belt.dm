@@ -115,6 +115,16 @@
 	new /obj/item/stack/farming/seeds/tomato(src)
 	new /obj/item/stack/farming/seeds/potato(src)
 	new /obj/item/stack/farming/seeds/hemp(src)
+	new /obj/item/stack/farming/seeds/flax(src)
+
+/obj/item/weapon/storage/belt/gator_belt //doesn't hold anything
+	name = "alligator scale belt"
+	desc = "A purely decorative alligator scale thin belt. It has no pockets or attachments for items"
+	icon_state = "gator_belt"
+	item_state = "gator_belt"
+	storage_slots = 0
+	max_w_class = 1
+	max_storage_space = 0
 
 /obj/item/weapon/storage/belt/throwing
 	name = "throwing belt"

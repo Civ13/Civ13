@@ -2,7 +2,7 @@
 
 /obj/structure/vehicleparts/movement/sails
 	name = "wood mast"
-	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "sail0"
 	base_icon = "sail1"
 	movement_icon = "sail2"
@@ -31,7 +31,7 @@
 		forceMove(VP)
 		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
 
-/obj/structure/vehicleparts/movement/sails/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+/obj/structure/vehicleparts/movement/sails/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (istype(I, /obj/item/weapon/weldingtool))
 		return
 	else

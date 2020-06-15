@@ -4,20 +4,20 @@
 	title = "British Governor"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governor"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/civilian/governor/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/governor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -49,18 +49,18 @@
 	title = "British Architect"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architect"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/civilian/architect/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/architect/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -114,18 +114,18 @@
 	title = "British Town Guard Officer"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officer"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/civilian/officer/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -161,15 +161,15 @@
 	title = "British Town Guard"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
-/datum/job/british/civilian/veteran/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/veteran/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -206,15 +206,16 @@
 	title = "British Doctor"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/british/civilian/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -265,16 +266,16 @@
 	title = "British Merchant"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Merchant"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/british/civilian/merchant/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/merchant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -325,16 +326,16 @@
 	title = "British Priest"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/british/civilian/priest/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -366,15 +367,15 @@
 	title = "British Prospector"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
-/datum/job/british/civilian/prospector/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/prospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -423,15 +424,15 @@
 	title = "British Farmer"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/british/civilian/farmer/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/farmer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -482,15 +483,15 @@
 	title = "British Carpenter"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/british/civilian/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -556,17 +557,17 @@
 	title = "British Blacksmith"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Blacksmith"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/british/civilian/blacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/blacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -631,15 +632,15 @@
 	title = "British Inkeeper"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Innkeeper"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/british/civilian/inkeeper/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/inkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -707,15 +708,15 @@
 	title = "British Colonist"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
-/datum/job/british/civilian/worker/equip(var/mob/living/carbon/human/H)
+/datum/job/british/civilian/worker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -781,20 +782,20 @@
 	title = "Gobernador"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Gobernador"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateSP"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/civilian/governor/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/governor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -826,18 +827,18 @@
 	title = "Arquitecto"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Arquitecto"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/civilian/architect/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/architect/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -891,18 +892,18 @@
 	title = "Oficial de la Milicia"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Oficial"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/spanish/civilian/officer/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -938,15 +939,15 @@
 	title = "Milicia"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
-/datum/job/spanish/civilian/veteran/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/veteran/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -983,15 +984,16 @@
 	title = "Curandero"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/spanish/civilian/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1042,16 +1044,16 @@
 	title = "Comerciante"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Comerciante"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/spanish/civilian/merchant/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/merchant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1100,16 +1102,16 @@
 	title = "Cura"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/spanish/civilian/priest/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -1141,15 +1143,15 @@
 	title = "Minero"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
-/datum/job/spanish/civilian/prospector/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/prospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1199,15 +1201,15 @@
 	title = "Granjero"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/spanish/civilian/farmer/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/farmer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1258,15 +1260,15 @@
 	title = "Carpintero"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/spanish/civilian/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1331,17 +1333,17 @@
 	title = "Ferrero"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Ferrero"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	whitelisted = TRUE
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/spanish/civilian/blacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/blacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1406,15 +1408,15 @@
 	title = "Ventero"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Ventero"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/spanish/civilian/inkeeper/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/inkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1482,15 +1484,15 @@
 	title = "Colonista"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
-/datum/job/spanish/civilian/worker/equip(var/mob/living/carbon/human/H)
+/datum/job/spanish/civilian/worker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1558,20 +1560,20 @@
 	title = "Governador"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governador"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLatePT"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/portuguese/civilian/governor/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/governor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -1603,18 +1605,18 @@
 	title = "Arquiteto"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Arquiteto"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/portuguese/civilian/architect/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/architect/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1665,21 +1667,21 @@
 	return TRUE
 
 /datum/job/portuguese/civilian/officer
-	title = "Comandante da Milícia"
+	title = "Comandante da Milï¿½cia"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Comandante"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/portuguese/civilian/officer/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1715,15 +1717,15 @@
 	title = "Miliciano"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
-/datum/job/portuguese/civilian/veteran/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/veteran/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1757,18 +1759,19 @@
 
 
 /datum/job/portuguese/civilian/medic
-	title = "Médico"
+	title = "Medico"
 	en_meaning = "Colony Medic"
-	rank_abbreviation = "Médico"
-	selection_color = "#2d2d63"
+	rank_abbreviation = "Medico"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/portuguese/civilian/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1819,16 +1822,16 @@
 	title = "Mercador"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Mercador"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_merchant = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/portuguese/civilian/merchant/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/merchant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1878,16 +1881,16 @@
 	title = "Padre"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_religious = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/portuguese/civilian/priest/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -1919,15 +1922,15 @@
 	title = "Mineiro"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
-/datum/job/portuguese/civilian/prospector/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/prospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -1977,15 +1980,15 @@
 	title = "Fazendeiro"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/portuguese/civilian/farmer/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/farmer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2036,15 +2039,15 @@
 	title = "Carpinteiro"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpinteiro"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/portuguese/civilian/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2110,17 +2113,17 @@
 	title = "Ferreiro"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Ferreiro"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/portuguese/civilian/blacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/blacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2185,15 +2188,15 @@
 	title = "Taberneiro"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Taberneiro"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/portuguese/civilian/inkeeper/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/inkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2261,15 +2264,15 @@
 	title = "Colono"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
-/datum/job/portuguese/civilian/worker/equip(var/mob/living/carbon/human/H)
+/datum/job/portuguese/civilian/worker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2336,20 +2339,20 @@
 	title = "Governeur"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governeur"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLatePirate"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_governor = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/french/civilian/governor/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/governor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -2381,18 +2384,18 @@
 	title = "Architecte"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architecte"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_officer = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/french/civilian/architect/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/architect/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2446,18 +2449,18 @@
 	title = "Officier de la Garde"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/french/civilian/officer/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2493,15 +2496,15 @@
 	title = "Garde"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 30
 
-/datum/job/french/civilian/veteran/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/veteran/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2538,15 +2541,16 @@
 	title = "Docteur"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Docteur"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/french/civilian/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2597,16 +2601,16 @@
 	title = "Marchand"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Marchand"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_merchant = TRUE
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/french/civilian/merchant/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/merchant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2653,19 +2657,19 @@
 	H.make_businessman()
 	return TRUE
 /datum/job/french/civilian/priest
-	title = "Prêtre"
+	title = "Pretre"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/french/civilian/priest/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -2697,15 +2701,15 @@
 	title = "Mineur"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 40
 
-/datum/job/french/civilian/prospector/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/prospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2755,15 +2759,15 @@
 	title = "Fermier"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/french/civilian/farmer/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/farmer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2814,15 +2818,15 @@
 	title = "Charpentier"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Charpentier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 3
 	max_positions = 50
 
-/datum/job/french/civilian/carpenter/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2888,17 +2892,17 @@
 	title = "Forgeron"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Forgeron"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/french/civilian/blacksmith/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/blacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -2963,15 +2967,15 @@
 	title = "Aubergiste"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Aubergiste"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/french/civilian/inkeeper/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/inkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -3039,15 +3043,15 @@
 	title = "Coloniste"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
-	SL_check_independent = TRUE
+
 	is_RP = TRUE
-	// AUTOBALANCE
+
 	min_positions = 10
 	max_positions = 150
 
-/datum/job/french/civilian/worker/equip(var/mob/living/carbon/human/H)
+/datum/job/french/civilian/worker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes

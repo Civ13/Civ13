@@ -40,7 +40,7 @@ What is the naming convention for planes or layers?
 
 */
 
-#define SPACE_PLANE     -10
+#define SPACE_PLANE	 -10
 
 #define PARALLAX_PLANE  -9
 
@@ -48,9 +48,13 @@ What is the naming convention for planes or layers?
 
 #define OVER_OPENSPACE_PLANE -7
 
+#define CHAT_PLANE 14
+
 #define HUD_PLANE 15
 
-#define LIGHTING_PLANE 2
+#define LIGHTING_PLANE 3
+
+#define ROOF_PLANE 2
 
 #define GAME_PLANE 1
 

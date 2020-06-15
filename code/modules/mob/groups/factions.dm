@@ -1,26 +1,28 @@
-/mob/living/carbon/human/proc/make_nomad()
+/mob/living/human/proc/make_nomad()
 	if (map.nomads)
-		verbs += /mob/living/carbon/human/proc/create_faction
-		verbs += /mob/living/carbon/human/proc/abandon_faction
-		verbs += /mob/living/carbon/human/proc/transfer_faction
-		verbs += /mob/living/carbon/human/proc/become_leader
+		verbs += /mob/living/human/proc/create_faction
+		verbs += /mob/living/human/proc/abandon_faction
+		verbs += /mob/living/human/proc/transfer_faction
+		verbs += /mob/living/human/proc/become_leader
 		verbs += /mob/proc/faction_list
 		verbs += /mob/proc/religion_list
-		verbs += /mob/living/carbon/human/proc/create_company
-		verbs += /mob/living/carbon/human/proc/transfer_company_stock
+		verbs += /mob/living/human/proc/create_company
+		verbs += /mob/living/human/proc/transfer_company_stock
 
-/mob/living/carbon/human/proc/make_tribesman()
-	verbs += /mob/living/carbon/human/proc/transfer_faction
-	verbs += /mob/living/carbon/human/proc/become_leader
+/mob/living/human/proc/make_tribesman()
+	verbs += /mob/living/human/proc/transfer_faction
+	verbs += /mob/living/human/proc/become_leader
 	verbs += /mob/proc/faction_list
 	verbs += /mob/proc/religion_list
-	verbs += /mob/living/carbon/human/proc/create_religion
-	verbs += /mob/living/carbon/human/proc/abandon_religion
-	verbs += /mob/living/carbon/human/proc/clergy
+	verbs += /mob/living/human/proc/create_religion
+	verbs += /mob/living/human/proc/abandon_religion
+	verbs += /mob/living/human/proc/clergy
+	verbs += /mob/living/human/proc/create_company
+	verbs += /mob/living/human/proc/transfer_company_stock
 
-/mob/living/carbon/human/proc/make_businessman()
-	verbs += /mob/living/carbon/human/proc/create_company
-	verbs += /mob/living/carbon/human/proc/transfer_company_stock
+/mob/living/human/proc/make_businessman()
+	verbs += /mob/living/human/proc/create_company
+	verbs += /mob/living/human/proc/transfer_company_stock
 
 /mob/New()
 	..()
@@ -28,12 +30,12 @@
 		verbs += /mob/proc/faction_list
 		verbs += /mob/proc/religion_list
 /////////////FACTIONS////////////////////////////
-/mob/living/carbon/human/proc/create_faction()
+/mob/living/human/proc/create_faction()
 	set name = "Create Faction"
 	set category = "Faction"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		U = src
 	else
 		return
@@ -43,7 +45,7 @@
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
 			return
 		else
-			var/choosename = russian_to_cp1251(input(src, "Choose a name for the faction:") as text|null)
+			var/choosename = input(src, "Choose a name for the faction:") as text|null
 			if (choosename != null && choosename != "")
 				create_faction_pr(choosename)
 				make_commander()
@@ -53,10 +55,10 @@
 		usr << "<span class='danger'>You cannot create a faction in this map.</span>"
 		return
 
-/mob/living/carbon/human/proc/create_faction_pr(var/newname = "none")
+/mob/living/human/proc/create_faction_pr(var/newname = "none")
 	if (!ishuman(src))
 		return
-	var/mob/living/carbon/human/H = src
+	var/mob/living/human/H = src
 	for(var/i = 1, i <= map.custom_faction_nr.len, i++)
 		if (map.custom_faction_nr[i] == newname)
 			usr << "<span class='danger'>That faction already exists. Choose another name.</span>"
@@ -73,7 +75,7 @@
 			return
 		else
 			choosecolor1 = uppertext(choosecolor1)
-			if (lentext(choosecolor1) != 6)
+			if (length(choosecolor1) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -91,7 +93,7 @@
 			return
 		else
 			choosecolor2 = uppertext(choosecolor2)
-			if (lentext(choosecolor2) != 6)
+			if (length(choosecolor2) != 6)
 				return
 			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
 			for (var/i = 1, i <= 6, i++)
@@ -116,12 +118,12 @@
 		return
 
 
-/mob/living/carbon/human/proc/abandon_faction()
+/mob/living/human/proc/abandon_faction()
 	set name = "Abandon Faction"
 	set category = "Faction"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		U = src
 	else
 		return
@@ -140,7 +142,7 @@
 		return
 
 
-/mob/living/carbon/human/proc/faction_leaving_proc()
+/mob/living/human/proc/faction_leaving_proc()
 	if (civilization == null || civilization == "none")
 		return FALSE
 	left_factions += list(list(civilization,world.realtime+864000)) //24 hours
@@ -156,12 +158,12 @@
 	remove_commander()
 	return TRUE
 
-/mob/living/carbon/human/proc/transfer_faction()
+/mob/living/human/proc/transfer_faction()
 	set name = "Transfer Faction Leadership"
 	set category = "Faction"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		U = src
 	else
 		return
@@ -173,7 +175,7 @@
 			if (map.custom_civs[U.civilization][4] != null)
 				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
 					var/list/closemobs = list("Cancel")
-					for (var/mob/living/carbon/human/M in range(4,loc))
+					for (var/mob/living/human/M in range(4,loc))
 						if (M.civilization == U.civilization)
 							closemobs += M
 					var/choice2 = WWinput(usr, "Who to nominate as the new Leader?", "Faction Leadership", "Cancel", closemobs)
@@ -182,7 +184,7 @@
 					else
 						map.custom_civs[U.civilization][4] = choice2
 						visible_message("<big>[choice2] is the new leader of [U.civilization]!</big>")
-						var/mob/living/carbon/human/CM = choice2
+						var/mob/living/human/CM = choice2
 						CM.make_commander()
 						CM.make_title_changer()
 						CM.leader = TRUE
@@ -201,12 +203,12 @@
 		usr << "<span class='danger'>You cannot transfer leadership of a faction in this map.</span>"
 		return
 
-/mob/living/carbon/human/proc/become_leader()
+/mob/living/human/proc/become_leader()
 	set name = "Become Faction Leader"
 	set category = "Faction"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
-	if (istype(src, /mob/living/carbon/human))
+	if (istype(src, /mob/living/human))
 		U = src
 	else
 		return
@@ -231,14 +233,14 @@
 		return
 
 
-/mob/living/carbon/human/proc/Add_Title()
+/mob/living/human/proc/Add_Title()
 	set name = "Give Faction Title"
 	set category = "Officer"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
 	if (map.civilizations == TRUE)
-		if (istype(usr, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = usr
+		if (istype(usr, /mob/living/human))
+			var/mob/living/human/H = usr
 			if (H.civilization == "none")
 				usr << "You are not part of any faction."
 				return
@@ -249,7 +251,7 @@
 
 				else
 					var/list/closemobs = list("Cancel")
-					for (var/mob/living/carbon/human/M in range(4,loc))
+					for (var/mob/living/human/M in range(4,loc))
 						if (M.civilization == H.civilization)
 							closemobs += M
 					var/choice2 = WWinput(usr, "Who to give a title to?", "Faction Title", "Cancel", closemobs)
@@ -257,7 +259,7 @@
 						return
 					else
 						U = choice2
-						var/inp = russian_to_cp1251(input(usr, "Choose a title to give:") as text|null)
+						var/inp = input(usr, "Choose a title to give:") as text|null
 						if (inp == "" || !inp)
 							return
 						else
@@ -269,14 +271,14 @@
 		usr << "<span class='danger'>You cannot give titles in this map.</span>"
 		return
 
-/mob/living/carbon/human/proc/Remove_Title()
+/mob/living/human/proc/Remove_Title()
 	set name = "Remove Faction Title"
 	set category = "Officer"
-	var/mob/living/carbon/human/U
+	var/mob/living/human/U
 
 	if (map.civilizations == TRUE)
-		if (istype(usr, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = usr
+		if (istype(usr, /mob/living/human))
+			var/mob/living/human/H = usr
 			if (H.civilization == "none")
 				usr << "You are not part of any faction."
 				return
@@ -287,7 +289,7 @@
 
 				else
 					var/list/closemobs = list("Cancel")
-					for (var/mob/living/carbon/human/M in range(4,loc))
+					for (var/mob/living/human/M in range(4,loc))
 						if (M.civilization == H.civilization && M.title != "")
 							closemobs += M
 					var/choice2 = WWinput(usr, "Who to remove a title from?", "Faction Title", "Cancel", closemobs)
@@ -332,7 +334,7 @@
 	..()
 	invisibility = 101
 	spawn(10)
-		if (faction != "none")
+		if (faction != "none" && map)
 			name = "[faction]'s banner"
 			desc = "This is a [faction] banner."
 			icon_state = bstyle
@@ -436,7 +438,7 @@
 
 		for (var/relf in map.facl)
 			map.facl[relf] = 0
-			for (var/mob/living/carbon/human/H in world)
+			for (var/mob/living/human/H in world)
 				if (relf == H.civilization && H.stat != DEAD)
 					map.facl[relf] += 1
 

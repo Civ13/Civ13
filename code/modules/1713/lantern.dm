@@ -120,9 +120,9 @@
 	fuel = 100000
 
 /obj/item/flashlight/lantern/on/anchored
-	on_state = "lantern-on_a"
-	off_state = "lantern_a"
-	icon_state = "lantern-on_a"
+	on_state = "lantern-on"
+	off_state = "lantern_on"
+	icon_state = "lantern-on"
 	anchored = TRUE
 	unlimited = TRUE
 	fuel = 10
@@ -155,6 +155,38 @@
 	unlimited = TRUE
 	anchored = TRUE
 
+
+/obj/item/flashlight/tiki_torch
+	name = "tiki torch"
+	icon_state = "tiki torch"
+	desc = "A tiki style torch."
+	brightness_on = 8			// luminosity when on
+	light_color = rgb(254, 200, 200) // red tint
+	on_state = "tikitorch-on"
+	off_state = "tikitorch"
+	item_state = "torch"
+	value = 10
+	fuel = 600 // 10 mins
+	anchored = FALSE
+	flammable = TRUE
+
+/obj/item/flashlight/tiki_torch/update_icon()
+	..()
+	if (on)
+		item_state = "tikitorch-on"
+	else
+		item_state = "tikitorch"
+
+/obj/item/flashlight/tiki_torch/attack_hand(var/mob/living/human/user)
+	attack_self(user)
+
+/obj/item/flashlight/tiki_torch/verb_pickup()
+	set src in oview(1)
+	set category = null
+	set name = "Pick up"
+
+	return
+
 /obj/item/flashlight/proc/do_torch()
 	spawn(10)
 		if (fuel == 50 && on)
@@ -166,7 +198,7 @@
 			do_torch()
 		else if (fuel <= 0 && on)
 			visible_message("\The [src] goes off.")
-			if (istype(src, /obj/item/flashlight/torch))
+			if (istype(src, /obj/item/flashlight/torch) || istype(src, /obj/item/flashlight/tiki_torch))
 				qdel(src)
 				return
 			else
@@ -184,4 +216,13 @@
 	icon_state = "flashlight_off"
 	on_state = "flashlight_on"
 	off_state = "flashlight_off"
+	slot_flags = SLOT_BELT|SLOT_MASK
+
+/obj/item/flashlight/modern
+	unlimited = TRUE
+	name = "flashlight"
+	desc = "an electrical flashlight."
+	icon_state = "modernlight_off"
+	on_state = "modernlight_on"
+	off_state = "modernlight_off"
 	slot_flags = SLOT_BELT|SLOT_MASK

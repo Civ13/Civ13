@@ -18,7 +18,7 @@
 	user << "\red Shooting yourself with \a [src] is pretty tricky. You can't seem to manage it."
 	return
 
-/obj/item/weapon/gun/launcher/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/weapon/gun/launcher/secondary_attack_self(mob/living/human/user)
 	if (gun_safety)
 		if (safetyon)
 			safetyon = FALSE
@@ -38,6 +38,9 @@
 	projectile.loc = get_turf(user)
 	projectile.throw_at(target, throw_distance, release_force, user)
 	projectile.dir = get_dir(src.loc, target.loc)
+	if (ishuman(user) && istype(projectile, /obj/item/missile))
+		var/obj/item/missile/MS = projectile
+		MS.firer = user
 	if (istype(projectile, /obj/item/missile))
 		var/obj/item/missile/M = projectile
 		M.startingturf = get_turf(user)
@@ -211,19 +214,22 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "missile"
 	var/primed = null
+	var/mob/living/human/firer = null
 	var/turf/startingturf = null
 	throwforce = 15
 	heavy_armor_penetration = 12
 	allow_spin = FALSE
+	var/explosive = TRUE
 	throw_impact(atom/hit_atom)
 		if(primed)
-			explosion(hit_atom, 0, 1, 2, 4)
-			handle_vehicle_hit(hit_atom)
-			qdel(src)
+			if (explosive)
+				explosion(hit_atom, 0, 1, 2, 4)
+				handle_vehicle_hit(hit_atom,firer)
+				qdel(src)
 		else
 			..()
 		return
-/obj/item/missile/proc/handle_vehicle_hit(hit_atom)
+/obj/item/missile/proc/handle_vehicle_hit(hit_atom, var/mob/living/human/firer = null)
 	for(var/obj/structure/vehicleparts/frame/F in range(1,hit_atom))
 		for (var/mob/M in F.axis.transporting)
 			shake_camera(M, 3, 3)
@@ -274,13 +280,15 @@
 			MV.broken = TRUE
 			MV.update_icon()
 		F.update_icon()
+		if (firer)
+			firer.awards["tank"]+=(heavy_armor_penetration/150)
 
 /obj/item/missile/explosive
 	heavy_armor_penetration = 50
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
-			handle_vehicle_hit(hit_atom)
+			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else
 			..()
@@ -291,7 +299,7 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 3)
-			handle_vehicle_hit(hit_atom)
+			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else
 			..()
@@ -306,7 +314,7 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom,0,1,3,1)
-			handle_vehicle_hit(hit_atom)
+			handle_vehicle_hit(hit_atom,firer)
 			var/turf/T = get_turf(hit_atom)
 			if(!T) return
 			var/list/target_turfs = getcircle(T, spread_range)
@@ -341,7 +349,7 @@
 	force = 5.0
 	flags =  CONDUCT
 	slot_flags = 0
-	fire_sound = 'sound/effects/bang.ogg'
+	fire_sound = 'sound/weapons/guns/fire/M79.ogg'
 	var/max_rockets = 1
 	var/list/rockets = new/list()
 	release_force = 9
@@ -363,14 +371,14 @@
 			user.drop_item()
 			I.loc = src
 			rockets += I
-			user << "You put the grenade in \the [src]."
+			user << "You put \the [I] in \the [src]."
 		else
 			usr << "\The [src] cannot hold more grenades."
 
 /obj/item/weapon/gun/launcher/grenadelauncher/consume_next_projectile()
 	if(rockets.len)
 		var/obj/item/ammo_casing/rocket/I = rockets[1]
-		var/obj/item/missile/grenade/M = new (src)
+		var/obj/item/missile/M = new I.projectile_type(src)
 		M.primed = 1
 		rockets -= I
 		return M
@@ -413,6 +421,48 @@
 	caliber = "g40"
 	w_class = 4
 	slot_flags = SLOT_POCKET
+
+/obj/item/ammo_casing/grenade_l/teargas
+	name = "40mm tear gas canister"
+	desc = "A canister of tear gas, to be fired from a launcher."
+	icon_state = "g40mm_gas"
+	projectile_type = /obj/item/missile/teargas
+
+/obj/item/missile/teargas
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "g40mm_gas"
+	heavy_armor_penetration = 0
+	explosive = FALSE
+	primed = null
+	throwforce = 6
+	allow_spin = TRUE
+	var/datum/effect/effect/system/smoke_spread/bad/smoke
+	var/stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/xylyl_bromide
+	throw_impact(atom/hit_atom)
+		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
+		if (smoke)
+			smoke.set_up(10, FALSE, usr ? usr.loc : loc)
+			spawn(0)
+				smoke.start()
+				sleep(10)
+				smoke.start()
+				sleep(10)
+				smoke.start()
+				sleep(10)
+				smoke.start()
+		sleep(80)
+		qdel(src)
+		return
+
+/obj/item/missile/teargas/New()
+	..()
+	smoke = PoolOrNew(stype)
+	smoke.attach(src)
+
+/obj/item/missile/teargas/Destroy()
+	qdel(smoke)
+	smoke = null
+	return ..()
 
 /obj/item/missile/grenade
 	icon = 'icons/obj/grenade.dmi'

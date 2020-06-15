@@ -24,7 +24,18 @@
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK+1
-	weakens = 5
+	weakens = 3
+	flammable = TRUE
+
+/obj/item/weapon/melee/nightbaton
+	name = "police baton"
+	desc = "A stick used by police officers."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "nightbaton"
+	item_state = "nightbaton"
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_WEAK+2
+	weakens = 6
 	flammable = TRUE
 
 /obj/item/weapon/melee/classic_baton/club
@@ -41,6 +52,7 @@
 	name = "whip"
 	desc = "A leather whip. To keep your slaves in order."
 	icon = 'icons/obj/items.dmi'
+	hitsound = 'sound/weapons/whipcrack.ogg'
 	icon_state = "whip"
 	item_state = "whip"
 	slot_flags = SLOT_BELT
@@ -112,6 +124,20 @@
 
 	force = initial(force)
 
+/obj/item/weapon/macuahuitl
+	name = "macuahuitl"
+	desc = "A Mesoamerican wooden club with obsidian blades."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "macuahuitl"
+	item_state = "macuahuitl"
+	attack_verb = list("smacked", "hit", "bludgeoned")
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_ROBUST
+	sharp = 1
+	edge = 1
+	sharpness = 15
+	w_class = 3.0
+	flammable = FALSE
 
 ////////////////GARROTE/////////////////////
 /obj/item/garrote
@@ -138,16 +164,16 @@
 	return ..()
 
 /obj/item/garrote/update_icon()
-    icon_state = "garrote[garroting ? "_w" : ""]"
+	icon_state = "garrote[garroting ? "_w" : ""]"
 
-/obj/item/garrote/attack(mob/living/carbon/human/target as mob, mob/living/carbon/human/user as mob)
+/obj/item/garrote/attack(mob/living/human/target as mob, mob/living/human/user as mob)
 	if (garroting)
 		stop_garroting(user,target)
 		return
 	else
 		start_garroting(user,target)
 		return
-/obj/item/garrote/proc/start_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
+/obj/item/garrote/proc/start_garroting(mob/living/human/user,mob/living/human/target)
 	if (!user.has_empty_hand())
 		user << "<span class='notice'>You need a free hand to use the garrote!</span>"
 		return
@@ -167,18 +193,18 @@
 			"<span class='danger'>You grab \the [target] with \the [src]!</span>",\
 			"You hear some struggling and muffled cries of surprise")
 		return
-/obj/item/garrote/proc/stop_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
+/obj/item/garrote/proc/stop_garroting(mob/living/human/user,mob/living/human/target)
 	garroting = FALSE
 	user << "<span class='notice'>You release the garrote on your victim.</span>" //Not the grab, though. Only the garrote.
 	update_icon()
 	return
-/obj/item/garrote/attack_self(mob/living/carbon/human/user)
+/obj/item/garrote/attack_self(mob/living/human/user)
 	if(world.time <= next_garrote) 	return
 	if(garroting)
 		stop_garroting(user)
 		return
 
-/obj/item/garrote/proc/garroting_process(mob/living/carbon/human/user,mob/living/carbon/human/target,obj/item/weapon/grab/GB)
+/obj/item/garrote/proc/garroting_process(mob/living/human/user,mob/living/human/target,obj/item/weapon/grab/GB)
 	if (!ishuman(user) || !ishuman(target) || !GB)
 		return FALSE
 	if(ishuman(user))

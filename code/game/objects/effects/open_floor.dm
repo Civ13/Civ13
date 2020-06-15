@@ -69,9 +69,9 @@ var/process/open_floor/OS2_controller = null
 		if (istype(A, /mob))
 			A.z -= 1
 			A.visible_message("[A] falls from the level above and slams into \the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch.")
-			if (istype(A, /mob/living/carbon/human))
+			if (istype(A, /mob/living/human))
 				playsound(A.loc, 'sound/effects/gore/fallsmash.ogg', 50, TRUE)
-				var/mob/living/carbon/human/H = A
+				var/mob/living/human/H = A
 				H.Stun(6)
 				var/damage = 40
 				H.apply_damage(rand(0, damage), BRUTE, "head")
@@ -147,7 +147,7 @@ var/process/open_floor/OS2_controller = null
 	var/covers_time = 80
 
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
@@ -158,7 +158,7 @@ var/process/open_floor/OS2_controller = null
 			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
 			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
+				var/mob/living/human/H = user
 				H.adaptStat("crafting", 3)
 		return
 	return

@@ -35,18 +35,20 @@
 		else
 			dmg = 0.8
 	if (absorb >= 2)
-		if (istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = src
-			H.damage_armor(def_zone, dmg)
+		if (istype(src, /mob/living/human))
+			var/mob/living/human/H = src
+			if(!(istype(damage_source,/obj/item/weapon/melee)))
+				H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[absorb_text]")
 		else
 			show_message("<span class='warning'>Your armor absorbs the blow!</span>")
 		return 2
 	if (absorb == TRUE)
-		if (istype(src, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = src
-			H.damage_armor(def_zone, dmg)
+		if (istype(src, /mob/living/human))
+			var/mob/living/human/H = src
+			if(!(istype(damage_source,/obj/item/weapon/melee)))
+				H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[soften_text]",4)
 		else
@@ -72,7 +74,7 @@
 	var/damage = P.damage
 
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.takes_less_damage)
 			damage /= H.getStatCoeff("strength")
 		var/instadeath = 0
@@ -151,7 +153,9 @@
 		var/obj/O = AM
 		var/dtype = O.damtype
 		var/throw_damage = O.throwforce*(speed/THROWFORCE_SPEED_DIVISOR)
-		var/mob/living/carbon/human/M = O.thrower
+		var/mob/living/human/M = null
+		if (ishuman(O.thrower))
+			M = O.thrower
 		var/miss_chance = 15
 		if (M)
 			miss_chance = 15 - M.getStat("throwing")/100
@@ -172,7 +176,7 @@
 
 		O.throwing = FALSE		//it hit, so stop moving
 
-		if (ismob(O.thrower))
+		if (ismob(O.thrower) && M && M.client)
 			var/client/assailant = M.client
 			if (assailant)
 				attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been hit with a [O], thrown by [M.name] ([assailant.ckey])</font>")
@@ -267,7 +271,7 @@
 	return
 
 /mob/living/proc/adjust_fire_stacks(add_fire_stacks) //Adjusting the amount of fire_stacks we have on person
-    fire_stacks = Clamp(fire_stacks + add_fire_stacks, FIRE_MIN_STACKS, FIRE_MAX_STACKS)
+	fire_stacks = Clamp(fire_stacks + add_fire_stacks, FIRE_MIN_STACKS, FIRE_MAX_STACKS)
 
 var/obj/generic_living_fire_overlay = null
 var/obj/human_fire_overlay = null
@@ -320,7 +324,7 @@ var/obj/human_fire_overlay_lying = null
 		Weaken(fire_stacks+1)
 
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (H.lying)
 			overlays += human_fire_overlay_lying
 		else

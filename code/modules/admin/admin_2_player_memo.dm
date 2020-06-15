@@ -16,7 +16,7 @@
 /client/proc/player_memo_write()
 	var/savefile/F = new(get_player_memo_file_dir())
 	if (F)
-		var/memo = russian_to_cp1251(input(src,"Type your memo\n(Leaving it blank will delete your current memo):","Write Memo",null) as null|message)
+		var/memo = input(src,"Type your memo\n(Leaving it blank will delete your current memo):","Write Memo",null) as null|message
 		switch(memo)
 			if (null)
 				return

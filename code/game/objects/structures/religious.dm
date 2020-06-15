@@ -29,11 +29,396 @@
 /obj/structure/religious/olmec_head
 	name = "large stone head"
 	desc = "A large stone head."
-	icon = 'icons/obj/cross.dmi'
+	icon = 'icons/obj/statue.dmi'
 	icon_state = "olmec_head"
 	density = TRUE
 	anchored = TRUE
 	layer = 3.2
+
+/obj/structure/religious/moai
+	name = "moai statue"
+	desc = "A large stone statue."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = "moai2_bottom"
+	density = TRUE
+	anchored = TRUE
+	layer = 6
+	var/image/top = null
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "moai2_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/moai/long
+	name = "long moai statue"
+	icon_state = "moai1_bottom"
+
+	New()
+		..()
+		top.icon_state = "moai1_top"
+		update_icon()
+
+
+obj/structure/religious/monument
+	name = "monumental construction"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = null
+	density = TRUE
+	anchored = TRUE
+	health = 500
+	layer = 6
+	var/image/top = null
+
+	New()
+		..()
+		top.icon_state = null
+		update_icon()
+
+/obj/structure/religious/monument/obelisk
+	name = "monumental sandstone obelisk"
+	desc = "A large sandstone obelisk."
+	icon_state = "obelisk_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "obelisk_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/megalith
+	name = "monumental stone megalith"
+	desc = "A enormous rough stone megalith planted into the ground."
+	icon_state = "megalith_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "megalith_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/pillar_monument
+	name = "monumental stone pillar"
+	desc = "A tall pillar that stands triumphantly and is easy to the eye."
+	icon_state = "monumental_pillar_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "monumental_pillar_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/crucero
+	name = "monumental crucero cross"
+	desc = "A large edifice of a cross, as if to impact a statement."
+	icon_state = "crucero_bottom"
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "crucero_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/venus
+	name = "monumental marble statue of venus"
+	desc = "A chiselled marble statue of the classical goddess venus, she is barely covered for modesty."
+	icon_state = "venus_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "venus_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/karl_marx
+	name = "monumental bronze statue of karl marx"
+	desc = "The father of communism himself, enshrined in bronze."
+	icon_state = "communist_santa_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "communist_santa_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/* Religious Monuments*/
+
+/obj/structure/religious/monument/cultist
+	name = "monumental cultist statue"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon_state = null
+	var/religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/cthulu
+	name = "monumental ominous statue of the deep-one"
+	desc = "A large seated statue of creature, its visage is unsettling and the inscription on the base is written in a cryptic set of symbols."
+	icon_state = "cthulu_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "cthulu_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/moloch
+	name = "monumental ominous statue of the evil-one"
+	desc = "A statue of a demonic being, its lifelike wings and features are prominently displayed in the stone."
+	icon_state = "moloch_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "moloch_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/outsider
+	name = "monumental ominous statue of the outsider"
+	desc = "A statue of a extra-dimensional creature, it is baffling to look with strange physiology for dramatic effect."
+	icon_state = "outsider_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "outsider_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/sauron
+	name = "monumental ominous statue of the ruler"
+	desc = "A statue of a tall armored figure, sceptre clutched firmly in hand, it radiates a area of uneasyness and authority."
+	icon_state = "sauron_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "sauron_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/sauron/reverse //for mapping
+	name = "monumental ominous statue of the ruler"
+	desc = "A statue of a tall armored figure, sceptre clutched firmly in hand, it radiates a area of uneasyness and authority."
+	icon_state = "reverse_sauron_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "reverse_sauron_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/cultist/sauron/examine(var/mob/living/L)
+	if (L.original_job_title == "Orc tribesman")
+		name = "monumental ominous statue of morgoth"
+		desc = "A statue of a the dark lord morgoth, sceptre clutched firmly in hand, it cuts a impressive fiugure of authority."
+		return
+
+/obj/structure/religious/monument/cultist/sauron/reverse/examine(var/mob/living/L)
+	if (L.original_job_title == "Orc tribesman")
+		name = "monumental ominous statue of morgoth"
+		desc = "A statue of a the dark lord morgoth, sceptre clutched firmly in hand, it cuts a impressive fiugure of authority."
+		return
+
+/obj/structure/religious/monument/monk
+	name = "monumental monk statue"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon_state = null
+	var/religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/monk/quangshi
+	name = "monumental stone buddha"
+	desc = "This large stone statue of bhudda, it extrubes a exceptional feeling of tranqulity and harmonious nature."
+	icon_state = "quangshi_bottom"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "quangshi_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/priesthood
+	name = "monumental priesthood statue"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon_state = null
+	var/religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/priesthood/saint
+	name = "monumental saint statue"
+	desc = "A enormous stone statue of a angellic saint, with a sword firmly gripped in hand."
+	icon_state = "saint_bottom"
+	religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "saint_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/shaman
+	name = "monumental shaman statue"
+	desc = "ping a @contributor or sergeant on the discord if you can see this."
+	icon_state = null
+	var/religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/shaman/ape
+	name = "monumental statue of a giant ape"
+	desc = "A enormous stone statue of a fearsome ape, it is beating its chest furiously."
+	icon_state = "great_ape_bottom"
+	religion = "none"
+
+	New()
+		..()
+		top = image(icon='icons/obj/statue.dmi', icon_state = "great_ape_top", layer=3.2)
+		top.pixel_y = 32
+		update_icon()
+
+	update_icon()
+		..()
+		overlays.Cut()
+		overlays += top
+
+/obj/structure/religious/monument/shaman/ape/examine(var/mob/living/L)
+	if (L.original_job_title == "Gorilla tribesman")
+		desc = "A enormous stone statue of a fearsome ape, it is a exemplar specimen of our kind, a real adonis."
+		return
+
+/*-Religious Monuments*/
+
+
+/obj/structure/religious/aztec_statue
+	name = "aztec statue"
+	desc = "An aztec-style statue."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = "aztec_statue"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
+
+/obj/structure/religious/tiki_statue
+	name = "tiki statue"
+	desc = "A tiki style statue."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = "tikistatue1"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
+	flammable = TRUE
+
+/obj/structure/religious/tiki_statue/small
+	name = "tiki statue"
+	icon_state = "tikistatue2"
 
 /obj/structure/religious/totem_pole
 	name = "wood totem pole"
@@ -44,6 +429,24 @@
 	anchored = TRUE
 	layer = 3.2
 	flammable = TRUE
+
+/obj/structure/religious/gargoyle
+	name = "gargoyle statue"
+	desc = "A statue of a watchful gargoyle."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = "gargoyle"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
+
+/obj/structure/religious/angel
+	name = "angel statue"
+	desc = "A statue of a watchful angel."
+	icon = 'icons/obj/statue.dmi'
+	icon_state = "angel"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
 
 /obj/structure/religious/totem/New()
 	..()
@@ -126,6 +529,7 @@
 	density = FALSE
 	anchored = TRUE
 	var/open = TRUE
+	var/filled = 0
 	not_disassemblable = TRUE
 	not_movable = TRUE
 /obj/structure/religious/grave/attackby(obj/item/W as obj, mob/user as mob)
@@ -147,8 +551,8 @@
 					if (ML.stat != 0)
 						ML.forceMove(src)
 					else
-						if (istype(ML, /mob/living/carbon/human))
-							var/mob/living/carbon/human/H = ML
+						if (istype(ML, /mob/living/human))
+							var/mob/living/human/H = ML
 							H.buriedalive = TRUE
 							H.buried_proc()
 							ML.anchored = TRUE
@@ -159,7 +563,7 @@
 							ML.stat = DEAD
 						ML.forceMove(src)
 				for (var/obj/structure/closet/coffin/CF in src.loc)
-					for (var/mob/living/carbon/human/HM in CF)
+					for (var/mob/living/human/HM in CF)
 						HM.buriedalive = TRUE
 						HM.buried_proc()
 						if (HM.client)
@@ -186,8 +590,8 @@
 					if (ML.stat != 0)
 						ML.forceMove(src.loc)
 					else
-						if (istype(ML, /mob/living/carbon/human))
-							var/mob/living/carbon/human/H = ML
+						if (istype(ML, /mob/living/human))
+							var/mob/living/human/H = ML
 							H.buriedalive = FALSE
 							ML.anchored = FALSE
 							if (H.client)
@@ -197,12 +601,20 @@
 							ML.stat = DEAD
 						ML.forceMove(src.loc)
 				for (var/obj/structure/closet/coffin/CF in src)
-					for (var/mob/living/carbon/human/HM in CF)
+					for (var/mob/living/human/HM in CF)
 						HM.buriedalive = FALSE
 						if (HM.client)
 							HM.client.eye = HM.client.mob
 							HM.client.perspective = MOB_PERSPECTIVE
 					CF.forceMove(src.loc)
+	if (istype(W, /obj/item/weapon/barrier) && open)
+		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
+		filled++
+		qdel(W)
+		if (filled >= 2)
+			visible_message("The grave gets covered.")
+			qdel(src)
+			return
 	else
 		return
 
@@ -307,7 +719,7 @@
 			visible_message("The gods are angry, sending heavy rains!")
 			if (prob(100-power))
 				var/diseasedone = FALSE
-				for (var/mob/living/carbon/human/HH in range(10,loc))
+				for (var/mob/living/human/HH in range(10,loc))
 					if (diseasedone == FALSE)
 						HH.disease = TRUE
 						if (99)
@@ -338,12 +750,12 @@
 		//pleased
 		else if (power >= 150 && power < 250)
 			if (prob(power/250))
-				if (weather == WEATHER_RAIN || WEATHER_SNOW)
+				if (weather == WEATHER_WET)
 					change_weather_somehow()
 					visible_message("The gods have blessed us with good weather!")
 		//very pleased
 		else if (power >= 250)
-			if (weather == WEATHER_RAIN || WEATHER_SNOW)
+			if (weather == WEATHER_WET)
 				change_weather_somehow()
 			visible_message("The gods have blessed us with good weather!")
 			if (prob(50) && human_clients_mob_list.len>0)

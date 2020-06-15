@@ -4,7 +4,7 @@
 
 	var/can_ride = FALSE
 	var/ride = FALSE
-	var/mob/living/carbon/human/rider = null
+	var/mob/living/human/rider = null
 
 /mob/living/simple_animal/New()
 	..()
@@ -25,9 +25,9 @@
 		else
 			overlays -= cover_overlay
 
-/mob/living/simple_animal/MouseDrop_T(mob/living/M, mob/living/carbon/human/user)
+/mob/living/simple_animal/MouseDrop_T(mob/living/M, mob/living/human/user)
 	if (can_ride && isnull(rider) && M == user && !user.lying && !user.prone && (!user.werewolf || user.body_build.name == "Default"))
-		var/mob/living/carbon/human/MM = M
+		var/mob/living/human/MM = M
 		visible_message("<div class='notice'>[M] starts getting on the [src]'s back...</div>","<div class='notice'>You start going on \the [src]'s back...</div>")
 		if (do_after(MM, 40, src))
 			visible_message("<div class='notice'>[M] sucessfully climbs into the [src]'s back.</div>","<div class='notice'>You sucessfully climb into \the [src]'s back.</div>")
@@ -44,7 +44,7 @@
 	else
 		..()
 
-/mob/living/simple_animal/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	if (can_ride && ride == TRUE && !isnull(rider))
 		if (rider == M)
 			visible_message("<div class='notice'>[M] starts to get off \the [src]...</div>","<div class='notice'>You start to get off \the [src]...</div>")

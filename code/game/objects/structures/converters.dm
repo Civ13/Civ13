@@ -9,6 +9,7 @@
 	anchored = TRUE
 	var/delay = 10 //Time to wait for the conversion to complete.
 	var/input = /obj/item/stack/material/lead //Input material
+	var/input1 = /obj/item/stack/material/lead //Just for you fwoosh!
 	var/inputamount = 1 //How much material is required
 	var/output = /obj/item/stack/material/gold //Finished material
 	var/outputamount = 1 //How much material is produced.
@@ -22,7 +23,7 @@
 
 /obj/structure/converter/attackby(obj/item/M as obj, mob/user as mob)
 	if(!filled)
-		if(istype(M, input))
+		if(istype(M, input) || istype(M, input1))
 			if(M.amount >= inputamount)
 				M.amount -= inputamount
 				if(M.amount <= 0)
@@ -36,7 +37,7 @@
 				filled = TRUE
 				spawn(delay)
 					visible_message("<span class='alert'>The [name] finishes [actiontext]ing.</span>")
-					for(var/i=0,i<=outputamount,i++)
+					for(var/i=1,i<=outputamount,i++)
 						new output(src.loc)
 					icon_state = idlesprite
 					if(overlayed)
@@ -82,4 +83,20 @@
 	output = /obj/item/stack/material/leather
 	outputamount = 3
 	actiontext = "tann"
+	overlayed = FALSE
+
+/obj/structure/converter/retting_trough
+	name = "retting trough"
+	desc = "Soaks fiberous plants over time into retted fabric. Requires at least two seperate hemp or flax at a time."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "retting_trough"
+	idlesprite = "retting_trough"
+	activesprite = "retting_trough_full"
+	delay = 250
+	input = /obj/item/stack/material/hemp
+	input1 = /obj/item/stack/material/flax
+	inputamount = 2
+	output = /obj/item/stack/material/rettedfabric
+	outputamount = 1
+	actiontext = "soak"
 	overlayed = FALSE

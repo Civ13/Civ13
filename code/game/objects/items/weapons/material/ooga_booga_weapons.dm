@@ -18,7 +18,7 @@
 	icon_state = "cleared_stick"
 	leaves = FALSE
 
-/obj/structure/branch/attack_hand(mob/living/carbon/human/H)
+/obj/structure/branch/attack_hand(mob/living/human/H)
 	if (H.a_intent == I_GRAB && leaves)
 		H << "You start picking the leaves from the branch..."
 		if (do_after(H, 60, src))
@@ -52,7 +52,6 @@
 	icon = 'icons/obj/old_weapons.dmi'
 	force = 7
 	attack_verb = list("hit","bashed","poked")
-	item_state = "spear"
 	sharp = FALSE
 	edge = FALSE
 	slot_flags = SLOT_BELT
@@ -64,6 +63,24 @@
 	flammable = TRUE
 	var/sharpened = FALSE
 
+	var/ants = FALSE
+
+/obj/item/weapon/branch/attack_self(mob/living/human/user as mob)
+	if (ants)
+		user << "You start licking some ants off the stick..."
+		if (do_after(user, 50, src))
+			if (src && ants)
+				user << "You finish eating some ants."
+				icon_state = "sharpened_stick"
+				ants = FALSE
+				if (user.gorillaman)
+					user.mood += 10
+				else
+					user.mood -= 10
+				user.nutrition += 80
+				return
+	else
+		..()
 /obj/item/weapon/branch/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.edge && !sharpened)
 		user << "You start sharpening the stick..."

@@ -68,7 +68,7 @@
 	qdel(info)
 
 /proc/show_player_info_irc(var/key as text)
-	var/dat = "          Info on [key]\n"
+	var/dat = "		  Info on [key]\n"
 	var/savefile/info = new("[get_player_notes_file_dir()][copytext(key, TRUE, 2)]/[key]/info.sav")
 	var/list/infos
 	info >> infos

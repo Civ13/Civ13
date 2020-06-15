@@ -1,8 +1,8 @@
-/mob/living/carbon/human/proc/give_random_civ_name()
+/mob/living/human/proc/give_random_civ_name()
 	name = species.get_random_english_name(gender)
 	real_name = name
 
-/mob/living/carbon/human/proc/give_clothes()
+/mob/living/human/proc/give_clothes()
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
@@ -23,6 +23,8 @@
 	if (!map.chad_mode)
 
 //knives and other tools/////////////////////////////////////////////////
+//knives removed since flint was introduced
+/*
 		if (map.civilizations && map.ID != MAP_NOMADS_MOUNTAIN)
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_belt)
@@ -32,10 +34,16 @@
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_belt)
 			else if (map.ordinal_age >= 3)
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_belt)
-
+*/
 //clothes/////////////////////////////////////////////////
 		if (map.ordinal_age == 0)
-			equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
+			if (map && map.ID == MAP_NOMADS_ISLAND)
+				if (gender=="male")
+					equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt/long(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
 
 		else if (map.ordinal_age == 1)
 			equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(src), slot_w_uniform)
@@ -45,7 +53,6 @@
 		else if (map.ordinal_age == 2)
 			if (map && map.ID == MAP_CIVILIZATIONS)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 				spawn(5)
 					if (gender == "male")
 						if (civilization == "West Kingdom")
@@ -92,9 +99,9 @@
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (map.ID == MAP_CIVILIZATIONS)
 				spawn(5)
 					make_nomad()
@@ -116,8 +123,8 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-		else if (map.ordinal_age == 4)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+		else if (map.ordinal_age == 4)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(src), slot_w_uniform)
@@ -125,38 +132,39 @@
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 		else if (map.ordinal_age == 5)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 		else if (map.ordinal_age == 6)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 		else if (map.ordinal_age == 7)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-		else if (map.ordinal_age == 8)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+		else if (map.ordinal_age == 8)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern7(src), slot_w_uniform)
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 //coats/////////////////////////////////////////////////
 		spawn(5)
 			var/area/mob_area = get_area(src)
@@ -169,10 +177,50 @@
 					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
 				else if (map.ordinal_age >= 5)
 					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+				update_inv_wear_suit(1)
+			else if (mob_area.climate == "desert")
+				if (map.ordinal_age == 0)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+				w_uniform = null
+				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
+				update_inv_w_uniform(1)
+			if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
+				var/f_res = FALSE
+				var/f_sens = FALSE
+				for (var/i in traits)
+					if (i == "Cold Sensitivity")
+						f_sens = TRUE
+					else if (i == "Heat Tolerance")
+						f_res = TRUE
+					else if (i == "Heat Sensitivity")
+						traits -= i
+					else if (i == "Cold Tolerance")
+						traits -= i
+				if (!f_res)
+					traits += "Heat Tolerance"
+				if (!f_sens)
+					traits += "Cold Sensitivity"
+			else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
+				var/f_res = FALSE
+				var/f_sens = FALSE
+				for (var/i in traits)
+					if (i == "Heat Sensitivity")
+						f_sens = TRUE
+					else if (i == "Cold Tolerance")
+						f_res = TRUE
+					else if (i == "Cold Sensitivity")
+						traits -= i
+					else if (i == "Heat Tolerance")
+						traits -= i
+				if (!f_res)
+					traits += "Cold Tolerance"
+				if (!f_sens)
+					traits += "Heat Sensitivity"
+
 
 ///////////////LANGUAGE PROC/////////////////////////
 
-/mob/living/carbon/human/proc/give_languages()
+/mob/living/human/proc/give_languages()
 	if (map && map.civilizations)
 		if (map.ID == MAP_NOMADS_CONTINENTAL)
 			spawn(5)
@@ -351,7 +399,7 @@
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
-		else if (map.ID == MAP_NOMADS_KARAFUTA)
+		else if (map.ID == MAP_NOMADS_KARAFUTO)
 			spawn(5)
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)
@@ -398,6 +446,7 @@
 				if (original_job_title == "Orc tribesman")
 					orc = 1
 					civilization = "Orc Horde"
+					religion = "Followers of Morgoth"
 					add_language("Black Speech",TRUE)
 					remove_language("English")
 					for (var/datum/language/blackspeech/A in languages)
@@ -409,6 +458,7 @@
 				else if (original_job_title == "Ant tribesman")
 					ant = 1
 					civilization = "Ant Colony"
+					religion = "Followers of the Hive Mother"
 					add_language("Antspeak",TRUE)
 					remove_language("English")
 					for (var/datum/language/ant/A in languages)
@@ -420,6 +470,7 @@
 				else if (original_job_title == "Gorilla tribesman")
 					gorillaman = 1
 					civilization = "Gorilla Tribe"
+					religion = "Order of the Great Tree"
 					add_language("Ape Speech",TRUE)
 					remove_language("English")
 					for (var/datum/language/ape/A in languages)
@@ -431,6 +482,7 @@
 				else if (original_job_title == "Wolf tribesman")
 					wolfman = 1
 					civilization = "Wolfpack"
+					religion = "Moon Worshippers"
 					add_language("Wolf Howling",TRUE)
 					remove_language("English")
 					for (var/datum/language/wolf/A in languages)
@@ -442,6 +494,7 @@
 				else if (original_job_title == "Lizard tribesman")
 					lizard = 1
 					civilization = "Lizard Clan"
+					religion = "The Great Serpent"
 					add_language("Lizard Hissing",TRUE)
 					remove_language("English")
 					for (var/datum/language/lizard/A in languages)
@@ -453,6 +506,7 @@
 				else if (original_job_title == "Crustacean tribesman")
 					crab = 1
 					civilization = "Crustacean Union"
+					religion = "Cthulhu"
 					add_language("Clack Tongue",TRUE)
 					remove_language("English")
 					for (var/datum/language/crab/A in languages)
@@ -463,6 +517,7 @@
 					return
 				else
 					civilization = "Human Kingdom"
+					religion = "Father in the Sky"
 					name = species.get_random_english_name(gender)
 					real_name = name
 					give_clothes()
@@ -486,7 +541,7 @@
 						else
 							var/input_name = input(src, "Choose the new name: (Max 15 characters, please keep it language appropriate)","Custom Name", name) as text
 							input_name = sanitizeName(input_name, 15, FALSE)
-							if (input_name != "")
+							if (input_name && input_name != "" && input_name != null)
 								name = input_name
 								real_name = input_name
 								return
@@ -495,15 +550,15 @@
 /datum/job/civilian/civa
 	title = "Civilization A Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivA"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civa/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civa/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_a
 	H.give_clothes()
@@ -529,15 +584,15 @@
 /datum/job/civilian/civb
 	title = "Civilization B Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivB"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civb/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civb/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_b
 	H.give_clothes()
@@ -563,15 +618,15 @@
 /datum/job/civilian/civc
 	title = "Civilization C Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivC"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civc/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_c
 	H.give_clothes()
@@ -596,15 +651,15 @@
 /datum/job/civilian/civd
 	title = "Civilization D Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivD"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civd/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civd/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_d
 	H.give_clothes()
@@ -629,15 +684,15 @@
 /datum/job/civilian/cive
 	title = "Civilization E Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivE"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/cive/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/cive/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_e
 	H.give_clothes()
@@ -662,15 +717,15 @@
 /datum/job/civilian/civf
 	title = "Civilization F Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivF"
-	SL_check_independent = TRUE
+
 	is_civilizations = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civf/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civf/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_f
 	H.give_clothes()
@@ -695,15 +750,15 @@
 /datum/job/civilian/civnomad
 	title = "Nomad"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
-	SL_check_independent = TRUE
+
 	is_nomad = TRUE
-	// AUTOBALANCE
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/civnomad/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/civnomad/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_clothes()
 	H.make_nomad()
@@ -729,18 +784,19 @@
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND1"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/orc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Orc Host"
+	H.religion = "Followers of Morgoth"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
 	H.add_note("Race Mechanics", "- Stronger than humans, good starting strength and average construction skills.<br>- Second most advanced after humans, but no gunpowder.<br>- Radioactive resistance, can't get cholera or food posioning from raw meat, no bad mood from raw meat, gore, or hygiene.<br>- Need to eat more often.<br>- Can handle extreme heat better.")
@@ -762,18 +818,19 @@
 /datum/job/civilian/fantasy/ant
 	title = "Ant tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND2"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/ant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Ant Colony"
+	H.religion = "Followers of the Hive Mother"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
 	H.add_note("Race Mechanics", "- Very good strength and dexterity, decent construction skills.<br>- Lowest technology of all races. Can't build walls besides dirt walls, can't build doors.<br>- Can dig holes, mine, and collect dirt/sand without tools use grab intent and click on a floor. To dig a hole, right click and use the Dig verb.<br>- Natural armoured skin gives some melee and radioactive defense.<br>- Can't handle the extreme cold or extreme heat.")
@@ -796,18 +853,19 @@
 /datum/job/civilian/fantasy/gorilla
 	title = "Gorilla tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND3"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/gorilla/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Gorilla Tribe"
+	H.religion = "Order of the Great Tree"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Very high strength, dexterity, and stamina. Good on unarmed fights.<br>- Can jump further than other races. <br>- Doesn't need to drink as often as other races, as they get water from their food.<br>- Since you are an herbivore, you cannot eat meat, eggs, and so on. You can use grab intent to collect and eat leaves from trees.")
@@ -829,18 +887,19 @@
 /datum/job/civilian/fantasy/human
 	title = "Human tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/human/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Human Kingdom"
+	H.religion = "Father in the Sky"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Advanced technology compared to all other races (can build crude gunpowder weapons like arquebuses)<br>- Good crafting and intelligence.<br>- The weakest race physically, compared to other races.")
@@ -861,18 +920,19 @@
 /datum/job/civilian/fantasy/wolf
 	title = "Wolf tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/wolf/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/wolf/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Wolfpack"
+	H.religion = "Moon Worshippers"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
 	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
@@ -894,18 +954,19 @@
 /datum/job/civilian/fantasy/lizard
 	title = "Lizard tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/lizard/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/lizard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Lizard Clan"
+	H.religion = "The Great Serpent"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have a poisonous bite and faster movement in rough terrain.")
 	H.add_note("Race Mechanics", "- Not slowed down by rough terrain (mud, snow). <br>- Poisonous bite gives toxic damage. <br>- Not attacked by wild reptiles.<br>- Can't handle the extreme cold or extreme heat.")
@@ -925,18 +986,19 @@
 /datum/job/civilian/fantasy/crab
 	title = "Crustacean tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
-	SL_check_independent = TRUE
-	// AUTOBALANCE
+
+
 	min_positions = 9999
 	max_positions = 9999
 
-/datum/job/civilian/fantasy/crab/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/fantasy/crab/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
 	H.make_tribesman()
 	H.civilization = "Crustacean Union"
+	H.religion = "Cthulhu"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have a very hard shell and strong claws, but need water to survive.")
 	H.add_note("Race Mechanics", "- Natural armoured skin gives good melee and radioactive defense.<br>- Cannot wear shoes or gloves.<br>- Can only eat meat (including rotten, doesn't get food poisoning).<br>- No movement delay on water or sand.")

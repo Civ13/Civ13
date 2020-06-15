@@ -119,8 +119,8 @@
 
 /area/proc/play_ambience(var/mob/living/L, var/override = FALSE)
 
-    // Ambience goes down here -- make sure to list each area seperately for ease of adding things in later, thanks! Note: areas adjacent to each other should have the same sounds to prevent cutoff when possible.- LastyScratch
-//	if (!(L && L.is_preference_enabled(/datum/client_preference/play_ambiance)))    return
+	// Ambience goes down here -- make sure to list each area seperately for ease of adding things in later, thanks! Note: areas adjacent to each other should have the same sounds to prevent cutoff when possible.- LastyScratch
+//	if (!(L && L.is_preference_enabled(/datum/client_preference/play_ambiance)))	return
 	if (!L || !istype(L) || !L.loc)
 		return
 
@@ -175,8 +175,8 @@
 		M.update_floating( M.Check_Dense_Object() )
 
 /area/proc/thunk(mob)
-	if (istype(mob,/mob/living/carbon/human/))
-		var/mob/living/carbon/human/H = mob
+	if (istype(mob,/mob/living/human/))
+		var/mob/living/human/H = mob
 		if (istype(H.shoes, /obj/item/clothing/shoes/magboots) && (H.shoes.item_flags & NOSLIP))
 			return
 

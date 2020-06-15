@@ -72,7 +72,7 @@
   */
 /obj/structure/chemical_dispenser/ui_interact(mob/user, ui_key = "main",var/datum/nanoui/ui = null, var/force_open = TRUE)
 	if (user.stat || user.restrained()) return
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return
@@ -108,7 +108,7 @@
 	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		// the ui does not exist, so we'll create a new() one
-        // for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
+		// for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
 		ui = new(user, src, ui_key, "chem_disp.tmpl", ui_title, 390, 655)
 		// when the ui is first opened this is the data it will use
 		ui.set_initial_data(data)
@@ -116,8 +116,6 @@
 		ui.open()
 
 /obj/structure/chemical_dispenser/Topic(href, href_list)
-	if (stat & (NOPOWER|BROKEN))
-		return FALSE // don't update UIs attached to this object
 
 	if (href_list["amount"])
 		amount = round(text2num(href_list["amount"]), 5) // round to nearest 5
@@ -155,10 +153,6 @@
 				for (var/list/r in dispensable_reagents)
 					if (R.id == r[1])
 						r[2] += B.reagents.get_reagent_amount(R.id)
-						done = TRUE
-						break
-					else
-						dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
 						done = TRUE
 						break
 				if (!done)
@@ -225,7 +219,7 @@
 	if (on)
 		icon_state = "distill_on"
 
-/obj/structure/lab_distillery/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/lab_distillery/attack_hand(var/mob/living/human/H)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return
@@ -241,7 +235,7 @@
 		update_icon()
 		process_distillery()
 	..()
-/obj/structure/lab_distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/lab_distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/human/H as mob)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return

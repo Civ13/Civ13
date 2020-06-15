@@ -42,6 +42,10 @@
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank //only used for internal combustion, but needs to be here because its checked by vehicles
 	var/on = FALSE
 
+	var/starting_snd = 'sound/machines/diesel_starting.ogg'
+	var/running_snd = 'sound/machines/diesel_loop.ogg'
+	var/ending_snd = 'sound/machines/diesel_ending.ogg'
+
 /obj/structure/engine/examine(mob/user)
 	..()
 	if (user in range(1,src))
@@ -107,16 +111,20 @@
 
 /obj/structure/engine/proc/running_sound()
 	if (on)
-		playsound(loc, 'sound/machines/diesel_loop.ogg', 35, FALSE, 2)
-	spawn(27)
-		running_sound()
+		playsound(loc, running_snd, 35, FALSE, 2)
+	if (running_snd == 'sound/machines/steam_loop.ogg')
+		spawn(23)
+			running_sound()
+	else
+		spawn(27)
+			running_sound()
 
 
 /obj/structure/engine/attack_hand(mob/user as mob)
 	if (on)
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
-		playsound(loc, 'sound/machines/diesel_ending.ogg', 35, FALSE, 3)
+		playsound(loc, ending_snd, 35, FALSE, 3)
 		power_off_connections()
 		currentspeed = 0
 		currentpower = 0
@@ -131,6 +139,20 @@
 
 /obj/structure/engine/update_icon()
 	..()
+	if (engineclass == "carengine")
+		switch(dir)
+			if (NORTH)
+				pixel_x = 16
+				pixel_y = 0
+			if (SOUTH)
+				pixel_x = -16
+				pixel_y = 0
+			if (WEST)
+				pixel_x = 0
+				pixel_y = 16
+			if (EAST)
+				pixel_x = 0
+				pixel_y = -16
 	if (broken)
 		icon_state = "engine_broken"
 		return
@@ -211,7 +233,7 @@
 	var/enginesize = 0
 
 
-/obj/item/weapon/enginemaker/attack_self(mob/living/carbon/human/H)
+/obj/item/weapon/enginemaker/attack_self(mob/living/human/H)
 	if (!istype(H.l_hand, /obj/item/stack/material/steel) && !istype(H.r_hand, /obj/item/stack/material/steel))
 		H << "<span class = 'warning'>You need to have a steel stack in one of your hands in order to make this.</span>"
 		return

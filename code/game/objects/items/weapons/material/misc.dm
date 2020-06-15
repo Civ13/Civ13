@@ -37,8 +37,82 @@
 	block_chance = 10
 	cooldownw = 7
 
+/obj/item/weapon/material/trowel
+	name = "planting trowel"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A short spade used for gardening activities like emptying or filling plant-pots."
+	icon_state = "trowel"
+	item_state = "trowel"
+	default_material = "iron"
+	throw_speed = 4
+	throw_range = 4
+	allow_spin = FALSE
+	force_divisor = 0.2 // 12 with hardness 60 (steel)
+	thrown_force_divisor = 0.2 // 8 with weight 20 (steel)
+	attack_verb = list("jabbed","hit","bashed")
+	cooldownw = 7
+
+
+/obj/item/weapon/material/bust
+	name = "stone bust"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A stone bust of a person"
+	icon_state = "bust"
+	item_state = "bust"
+	default_material = "stone"
+	throw_speed = 3
+	throw_range = 3
+	allow_spin = FALSE
+	force_divisor = 0.35
+	thrown_force_divisor = 0.35
+	attack_verb = list("bludgeoned","hit","bashed")
+	value = 15
+	block_chance = 10
+	cooldownw = 7
+
+/obj/item/weapon/material/hippocratic
+	name = "stone bust of hippocrates"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A stone bust of hippocrates"
+	icon_state = "hippocratic"
+	item_state = "hippocratic"
+	default_material = "stone"
+	throw_speed = 3
+	throw_range = 3
+	allow_spin = FALSE
+	force_divisor = 0.35
+	thrown_force_divisor = 0.35
+	attack_verb = list("bludgeoned","hit","bashed")
+	value = 15
+	block_chance = 10
+	cooldownw = 7
+
+/obj/item/weapon/material/marx
+	name = "bronze bust of karl marx"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A bronze bust of karl marx"
+	icon_state = "marx"
+	item_state = "marx"
+	default_material = "bronze"
+	throw_speed = 3
+	throw_range = 3
+	allow_spin = FALSE
+	force_divisor = 0.35
+	thrown_force_divisor = 0.35
+	attack_verb = list("bludgeoned","hit","bashed")
+	value = 50
+	block_chance = 10
+	cooldownw = 7
+
+
 /obj/item/weapon/material/pitchfork
 	name = "pitchfork"
+	sharp = TRUE
+	edge = FALSE
 	desc = "It's used for removing weeds or scratching your back."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "rake"
@@ -48,9 +122,32 @@
 	force_divisor = 0.35 // 5 with weight 20 (steel)
 	thrown_force_divisor = 0.35 // as above
 	w_class = 3
-	attack_verb = list("slashed", "clawed")
+	attack_verb = list("slashed", "clawed", "forked")
 	cooldownw = 9
 
+/turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype(C, /obj/item/weapon/material/pitchfork))
+		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
+		if (!do_after(user, (C.cooldownw * C.force)))
+			return
+		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
+		var/area/AREA = get_area(src)
+		if(map.ID == MAP_NOMADS_DESERT)
+			ChangeTurf(/turf/floor/dirt/dust)
+		else if (AREA.climate == "jungle" || AREA.climate == "savanna")
+			ChangeTurf(/turf/floor/dirt/jungledirt)
+		else
+			ChangeTurf(/turf/floor/dirt)
+	..()
+/obj/structure/wild/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype(src, /obj/structure/wild/junglebush) || istype(src, /obj/structure/wild/smallbush/) || istype(src, /obj/structure/wild/burnedbush/) || istype(src, /obj/structure/wild/tallgrass2) || istype(src, /obj/structure/wild/tallgrass) || istype(src, /obj/structure/wild/flowers) || istype(src, /obj/structure/wild/bush/big) || istype(src, /obj/structure/wild/bush))
+		if (istype(C, /obj/item/weapon/material/pitchfork))
+			visible_message("<span class = 'notice'>[user] starts to uproot [src].</span>")
+			if (!do_after(user, (C.cooldownw * C.force)))
+				return
+			visible_message("<span class = 'notice'>[user] uproots [src].</span>")
+			qdel(src)
+	..()
 /obj/item/weapon/material/spear
 	name = "spear"
 	sharp = TRUE
@@ -197,7 +294,45 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 5
-	var/chopping_speed = 1
+	var/chopping_speed = 1.90
+
+/obj/item/weapon/material/machete
+	name = "machete"
+	desc = "A small sized machete used by wood cutters."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "machete"
+	force_divisor = 0.7 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
+	w_class = 2
+	sharp = TRUE
+	edge = TRUE
+	material = "iron"
+	attack_verb = list("chopped", "torn", "cut")
+	applies_material_colour = FALSE
+	value = 15
+	slot_flags = SLOT_BELT
+	block_chance = 15
+	cooldownw = 5
+	var/chopping_speed = 1.50
+
+/obj/item/weapon/material/machete1
+	name = "machete"
+	desc = "A small sized machete used by wood cutters."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "machete1"
+	force_divisor = 0.6 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
+	w_class = 2
+	sharp = TRUE
+	edge = TRUE
+	material = "iron"
+	attack_verb = list("chopped", "torn", "cut")
+	applies_material_colour = FALSE
+	value = 15
+	slot_flags = SLOT_BELT
+	block_chance = 15
+	cooldownw = 5
+	var/chopping_speed = 1.0
 
 /obj/item/weapon/material/hatchet/tribal
 	name = "hatchet"
@@ -292,10 +427,10 @@
 	cooldownw = 7
 
 /obj/item/weapon/material/roman_standard
-	name = "Roman Standard"
+	name = "roman standard"
 	sharp = TRUE
 	edge = TRUE
-	desc = "A golden standard of a Roman Legion, with the Aquila on top."
+	desc = "A standard of a roman legion, with the aquila on top."
 	slot_flags = SLOT_SHOULDER
 	icon_state = "roman_standard"
 	item_state = "roman_standard"
@@ -312,7 +447,53 @@
 
 /obj/item/weapon/material/roman_standard/New()
 	..()
-	name = "Roman Standard"
+	name = "roman standard"
+
+/obj/item/weapon/material/greek_standard
+	name = "greek standard"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A standard of the hellenic armies. It is laquered in red carrying red feathers."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "greek_standard"
+	item_state = "greek_standard"
+	default_material = "wood"
+	throw_speed = 3
+	throw_range = 5
+	allow_spin = FALSE
+	force_divisor = 0.4 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 0
+	block_chance = 15
+	cooldownw = 10
+
+/obj/item/weapon/material/greek_standard/New()
+	..()
+	name = "greek standard"
+
+/obj/item/weapon/material/egyptian_standard
+	name = "egyptian standard"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A standard of the phaoroic armies with a mighty lion in gold attached upon it."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "egyptian_standard"
+	item_state = "egyptian_standard"
+	default_material = "wood"
+	throw_speed = 3
+	throw_range = 5
+	allow_spin = FALSE
+	force_divisor = 0.4 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 0
+	block_chance = 15
+	cooldownw = 10
+
+/obj/item/weapon/material/egyptian_standard/New()
+	..()
+	name = "egyptian standard"
 
 /obj/item/weapon/material/spear/dory
 	name = "dory"
@@ -447,12 +628,12 @@
 
 /obj/item/weapon/material/spear/sarissa/update_icon()
 // yes, i know this is horrible shitcode. Pls no bully
-	if (!istype(loc, /mob/living/carbon/human))
+	if (!istype(loc, /mob/living/human))
 		deployed = FALSE
 		item_state = "dory"
 		worn_state = "dory"
 	else
-		var/mob/living/carbon/human/US = loc
+		var/mob/living/human/US = loc
 		if (deployed)
 			item_state = ""
 			worn_state = ""
@@ -563,8 +744,8 @@
 	cooldownw = 11
 
 /obj/item/weapon/material/hatchet/bone_battleaxe
-	name = "bone battle axe"
-	desc = "A very sharpened bone axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	name = "battle axe"
+	desc = "A very sharp bone axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "bone_battleaxe"
 	item_state = "bone_battleaxe"
@@ -599,3 +780,32 @@
 	value = 6
 	block_chance = 20
 	cooldownw = 5
+
+/obj/item/weapon/lungemine
+	name = "lunge mine"
+	desc = "A long pole with an anti tank mine at the end, results in the users death."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "lungemine"
+	item_state = "lungemine"
+	throw_speed = 7
+	throw_range = 11
+	allow_spin = FALSE
+
+/obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (istype(I, /obj/item/weapon/lungemine))
+		visible_message("The lunge mine hits \the [src]!")
+		message_admins("[H] used a lunge mine on a vehicle at [x], [y], [z].")
+		log_admin("[H] used a lunge mine on a vehicle at [x], [y], [z].")
+		explosion(H.loc, 1, 3, 2, 0)
+		for (var/mob/M in axis.transporting)
+			shake_camera(M, 4, 4)
+
+		w_left[5] -= 55
+		w_right[5] -= 55
+		w_front[5] -= 55
+		w_back[5] -= 55
+		try_destroy()
+		if (H)
+			H.awards["tank"]+=(heavy_armor_penetration/200)
+	else
+		..()

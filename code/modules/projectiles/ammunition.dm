@@ -95,7 +95,7 @@
 	// are we an ammo box
 	var/is_box = FALSE
 
-/obj/item/ammo_magazine/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/ammo_magazine/secondary_attack_self(mob/living/human/user)
 	if (stored_ammo.len >= max_ammo)
 		user << "<span class='warning'>[src] is full!</span>"
 		return
@@ -122,7 +122,6 @@
 	max_ammo = 20
 	weight = 0.70
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
 	pouch = TRUE
 
 /obj/item/ammo_magazine/emptyclip
@@ -138,7 +137,7 @@
 /obj/item/ammo_magazine/emptyspeedloader
 	name = "speedloader (6)"
 	mag_type = SPEEDLOADER
-	icon_state = "38"
+	icon_state = "38-0"
 	ammo_type = null
 	caliber = null
 	max_ammo = 6
@@ -174,6 +173,15 @@
 	max_ammo = 15
 	weight = 0.2
 	multiple_sprites = TRUE
+
+
+/obj/item/ammo_magazine/emptymagazine/pistol/filled
+	name = "pistol magazine (9mm)"
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 17
+	weight = 0.34
+
 /obj/item/ammo_magazine/emptymagazine/pistol/a45
 	name = "pistol magazine (8)"
 	mag_type = MAGAZINE
@@ -224,7 +232,7 @@
 	else
 		return ..()
 
-/obj/item/ammo_magazine/proc/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
+/obj/item/ammo_magazine/proc/unload_ammo(var/mob/living/human/user, allow_dump=0)
 	if (stored_ammo.len > 0)
 		if (allow_dump)
 			var/count = FALSE

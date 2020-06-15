@@ -12,10 +12,10 @@
 
 	var/mob/living/aiming_at   // Who are we currently targeting, if anyone?
 	var/obj/item/aiming_with   // What are we targeting with?
-	var/mob/living/owner       // Who do we belong to?
-	var/locked =    FALSE          // Have we locked on?
-	var/lock_time = FALSE          // When -will- we lock on?
-	var/active =    FALSE          // Is our owner intending to take hostages?
+	var/mob/living/owner	   // Who do we belong to?
+	var/locked =	FALSE		  // Have we locked on?
+	var/lock_time = FALSE		  // When -will- we lock on?
+	var/active =	FALSE		  // Is our owner intending to take hostages?
 	var/target_permissions = FALSE // Permission bitflags.
 
 /obj/aiming_overlay/New(var/newowner)
@@ -90,7 +90,7 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 			if (S.zoomed)
 				gun_view += S.zoom_amt
 
-	if (!(aiming_with in owner) || (istype(owner, /mob/living/carbon/human) && (owner.l_hand != aiming_with && owner.r_hand != aiming_with)))
+	if (!(aiming_with in owner) || (istype(owner, /mob/living/human) && (owner.l_hand != aiming_with && owner.r_hand != aiming_with)))
 		owner << "<span class='warning'>You must keep hold of your weapon!</span>"
 	else if (owner.eye_blind)
 		owner << "<span class='warning'>You are blind and cannot see your target!</span>"

@@ -25,3 +25,8 @@ config/host.txt
 .vscode/launch.json
 cfg/admin.txt
 nullobj.txt
+maps/1943/backup/nanjing.dmm
+maps/1943/nanjing.dmm
+maps/1943/nanjing.dmm
+*.code-workspace
+tts/amazontts.py

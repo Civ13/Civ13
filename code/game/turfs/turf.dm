@@ -32,11 +32,11 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/heat_capacity = TRUE
 
 	//Properties for both
-	var/temperature = T20C      // Initial turf temperature.
+	var/temperature = T20C	  // Initial turf temperature.
 
 	// General properties.
 	var/icon_old = null
-	var/pathweight = TRUE          // How much does it cost to pathfind over this turf?
+	var/pathweight = TRUE		  // How much does it cost to pathfind over this turf?
 
 	var/list/decals
 	var/move_delay = 0
@@ -141,16 +141,18 @@ var/list/interior_areas = list(/area/caribbean/houses,
 		return FALSE
 	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))
 		var/turf/floor/dirt/underground/U = src
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.ant)
 			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
 				U.collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					var/turf/floor/dirt/underground/empty/T = src
+					T.mining_clear_debris()
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H, U.rocktype)
+					mining_proc(H)
 				return TRUE
 	if (world.time >= user.next_push)
 		if (ismob(user.pulling))
@@ -337,8 +339,8 @@ var/const/enterloopsanity = 100
 			return ..()
 
 
-		if (istype(M, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = M
+		if (istype(M, /mob/living/human))
+			var/mob/living/human/H = M
 			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
 				if (H.overlays_standing[25])
 					H.overlays_standing[25] = null
@@ -450,7 +452,7 @@ var/const/enterloopsanity = 100
 	..()
 
 //returns TRUE if made bloody, returns FALSE otherwise
-/turf/add_blood(mob/living/carbon/human/M as mob)
+/turf/add_blood(mob/living/human/M as mob)
 	if (!..())
 		return FALSE
 

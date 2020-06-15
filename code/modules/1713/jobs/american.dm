@@ -1,19 +1,19 @@
 /datum/job/american/captain_ww2
 	title = "US Captain"
 	rank_abbreviation = "Cpt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = FALSE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/american/captain_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/captain_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -24,6 +24,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_cap(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -43,19 +44,19 @@
 /datum/job/american/lieutenant_ww2
 	title = "US Lieutenant"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNBoatswain"
-	SL_check_independent = TRUE
+
 	is_officer = TRUE
 	is_commander = FALSE
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/american/lieutenant_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/lieutenant_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -63,9 +64,10 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_lt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_1lt(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -85,19 +87,20 @@
 /datum/job/american/sergeant_ww2
 	title = "US Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
 	is_ww2 = TRUE
 	is_officer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/american/sergeant_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/sergeant_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -105,7 +108,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_sgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_2lt(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt(H), slot_belt)
@@ -129,15 +132,16 @@
 /datum/job/american/medic_ww2
 	title = "US Field Medic"
 	rank_abbreviation = "Cpl."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+	is_medic = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/medic_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/medic_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -172,15 +176,16 @@
 /datum/job/american/doctor_ww2
 	title = "US Doctor"
 	rank_abbreviation = "2lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
-	SL_check_independent = TRUE
+
+	is_medic = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/american/doctor_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/doctor_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -216,15 +221,16 @@
 /datum/job/american/sniper_ww2
 	title = "US Sniper"
 	rank_abbreviation = "Pfc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/sniper_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/sniper_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -232,7 +238,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/springfield/sniper, slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper(H), slot_belt)
@@ -255,15 +261,16 @@
 /datum/job/american/machine_gunner_ww2
 	title = "US Machine Gunner"
 	rank_abbreviation = "Pfc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/american/machine_gunner_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/machine_gunner_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -271,7 +278,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/bar(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner(H), slot_belt)
@@ -296,15 +303,16 @@
 /datum/job/american/soldier_ww2
 	title = "US Rifleman"
 	rank_abbreviation = "Pvt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+
 	min_positions = 8
 	max_positions = 100
 
-/datum/job/american/soldier_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/soldier_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -312,7 +320,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
@@ -330,19 +338,59 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/american/tanker_ww2
+	title = "US Tanker"
+	rank_abbreviation = "Cpl."
+
+	spawn_location = "JoinLateRN"
+
+	is_ww2 = TRUE
+	is_tanker = TRUE
+	uses_squads = FALSE
+
+	min_positions = 4
+	max_positions = 12
+
+/datum/job/american/tanker_ww2/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_tanker(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_tanker(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a crewman. Follow orders and use your armor to defeat the enemy!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
 /datum/job/american/mp_ww2
 	title = "US Military Police"
 	rank_abbreviation = "Ssgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
-	SL_check_independent = TRUE
+	is_officer = TRUE
 	is_ww2 = TRUE
 	whitelisted = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/american/mp_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/mp_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -350,9 +398,12 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_mp(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us_mp(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1mpblack(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, an MP. Follow orders of your CO, stay at base, and arrest the soldiers commiting war crimes or not following protocol!")
 	H.setStat("strength", STAT_NORMAL)
@@ -369,15 +420,15 @@
 /datum/job/american/chef_ww2
 	title = "US Chef"
 	rank_abbreviation = "Pfc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCook"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/american/chef_ww2/equip(var/mob/living/carbon/human/H)
+/datum/job/american/chef_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -393,6 +444,116 @@
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL) //not used
 	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
+
+/datum/job/american/soldier_ww2_filipino/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_filipino_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/american/soldier_ww2_filipino
+	title = "Filipino Scout"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRN"
+	is_pacific = TRUE
+	is_ww2 = TRUE
+	uses_squads = TRUE
+
+	min_positions = 4
+	max_positions = 24
+	default_language = "Filipino"
+	additional_languages = list("English" = 95, "Spanish" = 45, "Japanese" = 25)
+
+/datum/job/american/soldier_ww2_filipino/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	var/pickuni = rand(1,5)
+	if (pickuni == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
+	if (pickuni == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_shirtless(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
+	if (pickuni == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
+	if (pickuni == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
+	if (pickuni == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
+	if (pickuni == 6)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
+	if (pickuni == 7)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_shirtless(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
+//back
+	if (prob(65))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/springfield(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper(H), slot_belt)
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	give_random_name(H)
+	H.s_tone = rand(-65,-75)
+	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+////////////////////////NAVY/////////////////////////////
+/datum/job/american/sailor_ww2
+	title = "US Sailor"
+	rank_abbreviation = "Pvt."
+
+	spawn_location = "JoinLateRNNavy"
+
+	is_ww2 = TRUE
+	whitelisted = TRUE
+
+	is_navy = TRUE
+
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/american/sailor_ww2/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_navy(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_sailor_hat(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a US Navy Sailor. Follow orders of your CO, stay at base, and provide covering artillery fire for the army and marines!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)

@@ -3,6 +3,7 @@
 	var/safetyon = FALSE
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/specialoptics = null
 	var/obj/item/weapon/attachment/under/under = null
+	var/pocket = FALSE
 
 /obj/item/weapon/gun/Destroy()
 	attachments = null
@@ -101,11 +102,11 @@
 	)
 
 	var/aim_miss_chance_divider = 1.50
-	var/mob/living/carbon/human/firer = null
+	var/mob/living/human/firer = null
 	var/blackpowder = FALSE
 	secondary_action = TRUE
 	var/sniper_scope = FALSE
-/obj/item/weapon/gun/projectile/secondary_attack_self(mob/living/carbon/human/user)
+/obj/item/weapon/gun/projectile/secondary_attack_self(mob/living/human/user)
 	if (gun_safety)
 		if (safetyon)
 			safetyon = FALSE

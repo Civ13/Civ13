@@ -47,7 +47,7 @@
 
 
 
-/obj/item/weapon/book/research/attack_self(var/mob/living/carbon/human/user as mob)
+/obj/item/weapon/book/research/attack_self(var/mob/living/human/user as mob)
 	if (completed == 0)
 		var/list/display = list("Cancel")
 		if (map.ordinal_age < 3)
@@ -250,7 +250,7 @@
 	icon_state = "scrolls[map.ordinal_age]"
 
 
-/obj/item/weapon/book/research/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+/obj/item/weapon/book/research/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O, /obj/item/weapon/researchkit))
 
 		if (user.original_job_title == "Nomad" && map.civilizations && map.ID != MAP_TRIBES)

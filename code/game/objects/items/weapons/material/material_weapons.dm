@@ -20,6 +20,8 @@
 	var/drops_debris = TRUE
 	var/block_chance = 15
 
+	var/crafting_quality = 1
+
 	dropsound = 'sound/effects/drop_knife.ogg'
 
 /obj/item/weapon/material/New(var/newloc, var/material_key)
@@ -51,8 +53,8 @@
 		force = material.get_edge_damage()
 	else
 		force = material.get_blunt_damage()
-	force = round(force*force_divisor)
-	throwforce = round(material.get_blunt_damage()*thrown_force_divisor)
+	force = round(force*force_divisor)*min(crafting_quality,2)
+	throwforce = round(material.get_blunt_damage()*thrown_force_divisor)*min(crafting_quality,2)
 	//spawn(1)
 	//	world << "[src] has force [force] and throwforce [throwforce] when made from default material [material.name]"
 
@@ -66,8 +68,6 @@
 		maxhealth = health
 		if (applies_material_colour)
 			color = material.icon_colour
-		if (material.products_need_process())
-			processing_objects |= src
 		update_force()
 
 /obj/item/weapon/material/Destroy()
@@ -101,7 +101,7 @@
 /obj/item/weapon/material/handle_shield(mob/living/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
 	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
-	var/mob/living/carbon/human/H_user = user
+	var/mob/living/human/H_user = user
 	var/isdefend = 1 //the defend tactic modifier
 	var/modif = 1
 	if (H_user.religion_check() == "Combat")
@@ -110,7 +110,7 @@
 		isdefend = 1.2
 	if(default_parry_check(user, attacker, damage_source) && prob(isdefend*(min(block_chance * modif*(0.66*H_user.getStatCoeff("strength")+0.34*H_user.getStatCoeff("dexterity")),87))) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
 		user.visible_message("<font color='#E55300'><big>\The [user] parries [attack_text] with \the [src]!</big></font>")
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (prob(50))
 			H.adaptStat("dexterity", 1)
 		else
@@ -128,3 +128,29 @@
 
 		return 1
 	return 0
+
+/obj/item/weapon/material/examine(mob/user)
+	..()
+	switch(crafting_quality)
+		if (-100 to 0.85)
+			user << "<b>Quality:</b> Very Crude"
+		if (0.850001 to 0.95)
+			user << "<b>Quality:</b> Below Average"
+		if (0.950001 to 1.15)
+			user << "<b>Quality:</b> Decent"
+		if (1.150001 to 100)
+			user << "<b>Quality:</b> Excellent"
+	if (health > 0 && maxhealth > 0)
+		var/health_percentage = (health/maxhealth)*100
+		switch (health_percentage)
+			if (-100 to 21)
+				user << "<font color='#7f0000'>Is pratically falling apart!</font>"
+			if (22 to 49)
+				user << "<font color='#a74510'>Seems to be in very bad condition.</font>"
+			if (50 to 69)
+				user << "<font color='#cccc00'>Seems to be in a rough condition.</font>"
+			if (70 to 84)
+				user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
+			if (85 to 200)
+				user << "<font color='#245319'>Seems to be in very good condition.</font>"
+

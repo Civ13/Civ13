@@ -53,7 +53,10 @@
 	var/adminlog = data.adminlog
 	var/z_transfer = data.z_transfer
 	var/power = data.rec_pow
+	var/sound = data.sound
 
+	if (!sound)
+		sound = get_sfx("explosion")
 	if (config.use_recursive_explosions)
 		explosion_rec(epicenter, power)
 		return
@@ -160,21 +163,24 @@
 					if (data.objects_with_immunity.Find(AM))
 						continue
 					if (AM && AM.simulated)	AM.ex_act(dist)
-					if (istype(AM, /mob/living/carbon/human))
-						var/mob/living/carbon/human/H = AM
+					if (istype(AM, /mob/living/human))
+						var/mob/living/human/H = AM
 						if (H)
 							switch(dist)
 								if (1)
-									H.maim()
-									H.maim()
-									H.adjustFireLoss(rand(35,70))
-								if (2)
-									if (prob(50))
+									if (H)
 										H.maim()
-									H.adjustFireLoss(rand(25,35))
+										H.maim()
+										H.adjustFireLoss(rand(35,70))
+								if (2)
+									if (H)
+										if (prob(50))
+											H.maim()
+										H.adjustFireLoss(rand(25,35))
 								if (3)
-									if (prob(50))
-										H.adjustFireLoss(rand(15,20))
+									if (H)
+										if (prob(50))
+											H.adjustFireLoss(rand(15,20))
 	if (prob(25))
 		new/obj/effect/fire(epicenter)
 
@@ -264,3 +270,4 @@
 	var/is_rec
 	var/rec_pow
 	var/list/objects_with_immunity = list()
+	var/sound = null

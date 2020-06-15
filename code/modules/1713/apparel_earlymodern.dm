@@ -339,7 +339,38 @@
 	desc = "A cap worn by russian army officers."
 	icon_state = "rusoffcap"
 	item_state = "rusoffcap"
-
+/obj/item/weapon/storage/belt/russian
+	name = "RussianSoldier belt"
+	desc = "A belt that can hold gear like pistols, ammo and other things."
+	icon_state = "japbelt"
+	item_state = "japbelt"
+	storage_slots = 12
+	max_w_class = 3
+	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/shovel,
+		/obj/item/weapon/key,
+		/obj/item/weapon/melee/classic_baton
+		)
+/obj/item/weapon/storage/belt/russian/soldier
+/obj/item/weapon/storage/belt/russian/soldier/New()
+	..()
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/ammo_magazine/mosin(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
 /obj/item/weapon/storage/belt/jap
 	name = "Japanese Soldier belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
@@ -358,7 +389,9 @@
 		/obj/item/weapon/handcuffs,
 		/obj/item/ammo_casing,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
-		/obj/item/weapon/shovel
+		/obj/item/weapon/shovel,
+		/obj/item/weapon/key,
+		/obj/item/weapon/melee/classic_baton
 		)
 /obj/item/weapon/storage/belt/jap/soldier
 /obj/item/weapon/storage/belt/jap/soldier/New()
@@ -400,9 +433,41 @@
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
 
+/obj/item/weapon/storage/belt/jap/camp_guard
+/obj/item/weapon/storage/belt/jap/camp_guard/New()
+	..()
+	new /obj/item/weapon/key/japanese(src)
+	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
 
+/obj/item/weapon/storage/belt/jap/camp_guard_SS
+/obj/item/weapon/storage/belt/jap/camp_guard_SS/New()
+	..()
+	new /obj/item/weapon/key/german(src)
+	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+
+/obj/item/weapon/storage/belt/jap/camp_officer
+/obj/item/weapon/storage/belt/jap/camp_officer/New()
+	..()
+	new /obj/item/weapon/key/japanese(src)
+	new /obj/item/weapon/key/japanese_officer(src)
+	new /obj/item/weapon/melee/classic_baton(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/ammo_magazine/c8mmnambu(src)
+	new /obj/item/ammo_magazine/c8mmnambu(src)
 /////////////////////////////////////////////////////////////////////////////////
 //////////////CIVILIAN STUFF/////////////////////////////////////////////////////
+
 /obj/item/clothing/head/top_hat
 	name = "top hat"
 	desc = "A high top hat."
@@ -427,6 +492,21 @@
 	icon_state = "flatcap3"
 	item_state = "flatcap3"
 
+/obj/item/clothing/head/fedora
+	name = "fedora hat"
+	desc = "A wide brim hat."
+	icon_state = "fedora"
+	item_state = "fedora"
+
+/obj/item/clothing/head/helmet/constable
+	name = "constable helmet"
+	desc = "A typical plastic helmet worn by constable's of law enforcement. Protects the head from petty battery and assault."
+	icon_state = "constable"
+	item_state = "constable"
+	worn_state = "constable"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 60, gun = 5, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
 /obj/item/clothing/under/modern1
 	name = "light brown outfit"
@@ -441,6 +521,41 @@
 	icon_state = "modern2"
 	item_state = "modern2"
 	worn_state = "modern2"
+
+/obj/item/clothing/under/expensive
+	name = "shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers."
+	icon_state = "bman"
+	item_state = "bman"
+	worn_state = "bman"
+
+/obj/item/clothing/under/expensive/green
+	name = "green tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a green tie."
+	icon_state = "bman_green"
+	item_state = "bman_green"
+	worn_state = "bman_green"
+
+/obj/item/clothing/under/expensive/blue
+	name = "blue tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a blue tie."
+	icon_state = "bman_blue"
+	item_state = "bman_blue"
+	worn_state = "bman_blue"
+
+/obj/item/clothing/under/expensive/red
+	name = "red tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a red tie."
+	icon_state = "bman_red"
+	item_state = "bman_red"
+	worn_state = "bman_red"
+
+/obj/item/clothing/under/expensive/yellow
+	name = "yellow tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a yellow tie."
+	icon_state = "bman_yellow"
+	item_state = "bman_yellow"
+	worn_state = "bman_yellow"
 
 /obj/item/clothing/under/modern3
 	name = "grey outfit"
@@ -463,12 +578,82 @@
 	item_state = "modern7"
 	worn_state = "modern7"
 
+/obj/item/clothing/under/swat
+	name = "swat outfit"
+	desc = "A uniform used by police special forces."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+
+/obj/item/clothing/under/combat
+	name = "combat outfit"
+	desc = "A combat uniform plated with kevlar."
+	icon_state = "combat"
+	item_state = "combat"
+	worn_state = "combat"
+
+/obj/item/clothing/under/police
+	name = "police outfit"
+	desc = "A uniform used by police forces."
+	icon_state = "police"
+	item_state = "police"
+	worn_state = "police"
+
+/obj/item/clothing/under/prisoner
+	name = "prison outfit"
+	desc = "Normally worn by criminals and scum."
+	icon_state = "prisoner"
+	item_state = "prisoner"
+	worn_state = "prisoner"
+
+/obj/item/clothing/under/milrus2
+	name = "russian military outfit"
+	desc = "An outfit composed of camo pants and shirt."
+	icon_state = "milrus2"
+	item_state = "milrus2"
+	worn_state = "milrus2"
+
 /obj/item/clothing/under/baily
 	name = "security outfit"
 	desc = "An outfit composed of a green jacket and black pants."
 	icon_state = "baily"
 	item_state = "baily"
 	worn_state = "baily"
+
+/obj/item/clothing/under/tactical1
+	name = "tactical outfit"
+	desc = "An outfit composed of a camo cargo pants and tan ubac."
+	icon_state = "tactical1"
+	item_state = "tactical1"
+	worn_state = "tactical1"
+
+/obj/item/clothing/under/pmc
+	name = "pmc outfit"
+	desc = "A outfit used by PMC units."
+	icon_state = "pmc"
+	item_state = "pmc"
+	worn_state = "pmc"
+
+/obj/item/clothing/under/mafia
+	name = "fancy outfit"
+	desc = "A outfit that is expensive and has style."
+	icon_state = "mafia"
+	item_state = "mafia"
+	worn_state = "mafia"
+
+/obj/item/clothing/under/engi
+	name = "worker outfit"
+	desc = "A outfit used by construction workers."
+	icon_state = "pmc"
+	item_state = "pmc"
+	worn_state = "pmc"
+
+/obj/item/clothing/under/gorka
+	name = "gorka outfit"
+	desc = "A gorka outfit used by Spetsnaz."
+	icon_state = "gorka"
+	item_state = "gorka"
+	worn_state = "gorka"
 
 /obj/item/clothing/under/modern8
 	name = "modern skirt"
@@ -497,6 +682,13 @@
 	icon_state = "peakyblinder"
 	item_state = "peakyblinder"
 	worn_state = "peakyblinder"
+
+/obj/item/clothing/under/constable
+	name = "constable outfit"
+	desc = "An black outfit used by enforcers of the law."
+	icon_state = "constable"
+	item_state = "constable"
+	worn_state = "constable"
 
 /obj/item/clothing/under/oldfirefighter
 	name = "fire fighter uniform"
@@ -555,21 +747,21 @@
 	worn_state = "really_black_suit"
 
 /obj/item/clothing/suit/storage/jacket/charcoal_suit
-	name = "black suit"
+	name = "charcoal suit"
 	desc = "A formal charcoal grey suit."
 	icon_state = "charcoal_suit"
 	item_state = "charcoal_suit"
 	worn_state = "charcoal_suit"
 
 /obj/item/clothing/suit/storage/jacket/navy_suit
-	name = "black suit"
+	name = "navy suit"
 	desc = "A formal navy blue suit."
 	icon_state = "navy_suit"
 	item_state = "navy_suit"
 	worn_state = "navy_suit"
 
 /obj/item/clothing/suit/storage/jacket/checkered_suit
-	name = "black suit"
+	name = "checkered suit"
 	desc = "A formal grey checkered suit."
 	icon_state = "checkered_suit"
 	item_state = "checkered_suit"
@@ -691,6 +883,12 @@
 	item_state = "labcoat"
 	worn_state = "labcoat"
 
+/obj/item/clothing/suit/storage/jacket/surgeon
+	name = "surgery apron"
+	desc = "A blue plastic surgery apron."
+	icon_state = "surgical"
+	item_state = "surgical"
+	worn_state = "surgical"
 
 /obj/item/weapon/storage/belt/largepouches
 	name = "large pouches"

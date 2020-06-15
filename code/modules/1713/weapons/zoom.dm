@@ -85,7 +85,7 @@ Parts of code courtesy of Super3222
 	w_class = 5
 	var/checking = FALSE
 
-/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/proc/rangecheck(var/mob/living/carbon/human/H, var/atom/target)
+/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/proc/rangecheck(var/mob/living/human/H, var/atom/target)
 	if (checking)
 		return
 
@@ -103,14 +103,14 @@ Parts of code courtesy of Super3222
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"
 	set category = null
-	var/mob/living/carbon/human/user = usr
+	var/mob/living/human/user = usr
 	if (istype(src, /obj/item/weapon/gun))
 		var/obj/item/weapon/gun/G = src
 		for (var/obj/item/weapon/attachment/scope/adjustable/A in G.attachments)
 			src = A
 	adjust_scope(user)
 
-/obj/item/weapon/attachment/scope/adjustable/proc/adjust_scope(mob/living/carbon/human/user)
+/obj/item/weapon/attachment/scope/adjustable/proc/adjust_scope(mob/living/human/user)
 
 	if (!Adjacent(user))
 		return
@@ -161,7 +161,11 @@ Parts of code courtesy of Super3222
 //	silent: boolean controlling whether it should tell the user why they can't zoom in or not
 // I am sorry for creating this abomination -- Irra
 /obj/item/weapon/attachment/scope/proc/can_zoom(mob/living/user, var/silent = FALSE)
-	var/mob/living/carbon/human/H = user
+	var/mob/living/human/H = user
+	var/obj/item/weapon/gun/ogun = null
+	if (istype(loc, /obj/item/weapon/gun))
+		ogun = loc
+
 	if (user.stat || !ishuman(user))
 		if (!silent) user << "You are unable to focus through \the [src]."
 		return FALSE
@@ -187,6 +191,9 @@ Parts of code courtesy of Super3222
 			return FALSE
 	else if (user.get_active_hand() != loc)
 		if (!silent) user << "You are too distracted to look through \the [src]."
+		return FALSE
+	else if (ogun && ogun.silencer)
+		if (!silent) user << "The silencer is blocking the view."
 		return FALSE
 	else
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
@@ -281,7 +288,7 @@ Parts of code courtesy of Super3222
 	// make other buttons invisible
 	var/moved = 0
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		if (H.using_zoom())
 			for (var/obj/screen/movable/action_button/AB in user.client.screen)
 				if (AB.name == "Toggle Sights" && AB != azoom.button && azoom.button.screen_loc)
@@ -366,12 +373,12 @@ Parts of code courtesy of Super3222
 	if (azoom)
 		azoom.Remove(user)
 
-/mob/living/carbon/human/Move()
+/mob/living/human/Move()
 	..()
 	handle_zooms_with_movement()
 
 // resets zoom on movement
-/mob/living/carbon/human/proc/handle_zooms_with_movement()
+/mob/living/human/proc/handle_zooms_with_movement()
 
 	if (client && actions.len)
 		if (client.pixel_x || client.pixel_y) //Cancel currently scoped weapons
@@ -384,7 +391,7 @@ Parts of code courtesy of Super3222
 			M.stopped_using(src)
 			M.last_user = null
 // reset all zooms - called from Life(), Weaken(), ghosting and more
-/mob/living/carbon/human/proc/handle_zoom_stuff(var/forced = FALSE)
+/mob/living/human/proc/handle_zoom_stuff(var/forced = FALSE)
 
 	var/success = FALSE
 
@@ -407,7 +414,7 @@ Parts of code courtesy of Super3222
 		client.pixel_y = 0
 		client.view = world.view
 
-/mob/living/carbon/human/proc/using_zoom()
+/mob/living/human/proc/using_zoom()
 	if (using_MG)
 		return TRUE
 	if (stat == CONSCIOUS)

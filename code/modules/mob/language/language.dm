@@ -6,18 +6,18 @@
 
 /datum/language
 	var/name = "an unknown language"  // Fluff name of language if any.
-	var/desc = "A language."          // Short description for 'Check Languages'.
-	var/difficulty = 175              // Difficulty of a language. If you wanted Japanese to be harder than English, for example
-	var/speech_verb = "says"          // 'says', 'hisses', 'farts'.
-	var/ask_verb = "asks"             // Used when sentence ends in a ?
-	var/exclaim_verb = "exclaims"     // Used when sentence ends in a !
-	var/whisper_verb = "whispers"     // Optional. When not specified speech_verb + quietly/softly is used instead.
+	var/desc = "A language."		  // Short description for 'Check Languages'.
+	var/difficulty = 175			  // Difficulty of a language. If you wanted Japanese to be harder than English, for example
+	var/speech_verb = "says"		  // 'says', 'hisses', 'farts'.
+	var/ask_verb = "asks"			 // Used when sentence ends in a ?
+	var/exclaim_verb = "exclaims"	 // Used when sentence ends in a !
+	var/whisper_verb = "whispers"	 // Optional. When not specified speech_verb + quietly/softly is used instead.
 	var/signlang_verb = list("signs") // list of emotes that might be displayed if this language has NONVERBAL or SIGNLANG flags
-	var/colour = "body"               // CSS style to use for strings in this language.
-	var/key = "x"                     // Character used to speak in language eg. :o for Unathi.
-	var/flags = 0                     // Various language flags.
-	var/native                        // If set, non-native speakers will have trouble speaking.
-	var/list/syllables                // Used when scrambling text for a non-speaker.
+	var/colour = "body"			   // CSS style to use for strings in this language.
+	var/key = "x"					 // Character used to speak in language eg. :o for Unathi.
+	var/flags = 0					 // Various language flags.
+	var/native						// If set, non-native speakers will have trouble speaking.
+	var/list/syllables				// Used when scrambling text for a non-speaker.
 	var/list/mutual_intelligibility = list()
 
 /datum/language/proc/get_random_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
@@ -132,7 +132,7 @@
 	var/full_name = "Yuri Davidenko"
 	return full_name
 
-datum/language/proc/get_random_gaelic_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_gaelic_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_gaelic)) + " " + capitalize(pick(last_names_gaelic))
@@ -142,7 +142,18 @@ datum/language/proc/get_random_gaelic_name(var/gender, name_count=2, syllable_co
 	var/full_name = "Sean Mcloughlin"
 	return full_name
 
-datum/language/proc/get_random_oldnorse_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_italian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_italian)) + " " + capitalize(pick(last_names_italian))
+		else
+			return capitalize(pick(first_names_male_italian)) + " " + capitalize(pick(last_names_italian))
+
+	var/full_name = "Giovanni Basso"
+	return full_name
+
+
+/datum/language/proc/get_random_oldnorse_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
@@ -152,7 +163,7 @@ datum/language/proc/get_random_oldnorse_name(var/gender, name_count=2, syllable_
 	var/full_name = "Dovahkiin"
 	return full_name
 
-datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_inuit))
@@ -162,7 +173,7 @@ datum/language/proc/get_random_inuit_name(var/gender, name_count=2, syllable_cou
 	var/full_name = "Epawig"
 	return full_name
 
-datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_cherokee))
@@ -243,6 +254,46 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 	return full_name
 
 
+/datum/language/proc/get_random_egyptian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+		else
+			return capitalize(pick(first_names_male_egyptian)) + " " + capitalize(pick(last_names_egyptian))
+
+	var/full_name = "Isis"
+	return full_name
+
+/datum/language/proc/get_random_korean_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_korean)) + " " + capitalize(pick(last_names_korean))
+		else
+			return capitalize(pick(first_names_male_korean)) + " " + capitalize(pick(last_names_korean))
+
+	var/full_name = "Hyung Do Seong"
+	return full_name
+
+/datum/language/proc/get_random_iroquois_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_iroquois)) + " " + capitalize(pick(last_names_iroquois))
+		else
+			return capitalize(pick(first_names_male_iroquois)) + " " + capitalize(pick(last_names_iroquois))
+
+	var/full_name = "At'tawig"
+	return full_name
+
+/datum/language/proc/get_random_filipino_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_filipino)) + " " + capitalize(pick(last_names_filipino))
+		else
+			return capitalize(pick(first_names_male_filipino)) + " " + capitalize(pick(last_names_filipino))
+
+	var/full_name = "Hyung Do Seong"
+	return full_name
+
 /datum/language
 	var/list/scramble_cache = list()
 
@@ -262,7 +313,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 	var/scrambled_text = ""
 	var/list/original_words = splittext(input, " ")
 
-	var/mob/living/carbon/human/H = hearer
+	var/mob/living/human/H = hearer
 	if (!ishuman(H))
 		return
 	var/capitalize = TRUE
@@ -334,6 +385,10 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 /datum/language/proc/format_message_plain(message, verb)
 	return "[verb], \"[capitalize(message)]\""
+
+/datum/language/proc/format_message_overlay(message)
+	return "[capitalize(message)]"
+
 
 /datum/language/proc/format_message_radio(message, verb)
 	return "[verb], <span class='[colour]'>\"[capitalize(message)]\"</span>"
@@ -430,14 +485,14 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_english_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 		if (istype(new_language, /datum/language/spanish))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_spanish_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -445,7 +500,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/portuguese))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_portuguese_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -453,7 +508,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/french))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_french_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -461,7 +516,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/dutch))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_dutch_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -469,7 +524,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/japanese))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_japanese_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -477,7 +532,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/chinese))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_chinese_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -485,7 +540,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/russian))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_russian_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -493,7 +548,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/carib))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_carib_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -501,7 +556,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/latin))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_roman_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -509,7 +564,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/greek))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_greek_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -517,7 +572,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/arab))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_arab_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -525,7 +580,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/polish))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_polish_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -533,7 +588,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/ukrainian))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_ukrainian_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -541,7 +596,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/gaelic))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_gaelic_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -549,7 +604,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/oldnorse))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_oldnorse_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -557,7 +612,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/inuit))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_inuit_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -565,7 +620,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 		if (istype(new_language, /datum/language/cherokee))
 			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
+				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_cherokee_name(H.gender, FALSE)
 					H.name = H.real_name
@@ -577,14 +632,14 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 
 	// If they don't have a default language, set it
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		if (!H.default_language)
 			H.default_language = new_language
 
 	// Set partial_language values to mutual_intelligibility scores for the added language
 	// Someone who knows Russian understands N% of Ukrainian
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		var/list/m_int = new_language.mutual_intelligibility
 		for (var/lname in all_languages)
 			var/datum/language/L = all_languages[lname]
@@ -603,7 +658,7 @@ datum/language/proc/get_random_cherokee_name(var/gender, name_count=2, syllable_
 	if (default_language == L)
 		default_language = null
 	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
+		var/mob/living/human/H = src
 		// Remove partial_language values
 		H.partial_languages[rem_language] = 0
 		var/list/m_int = L.mutual_intelligibility

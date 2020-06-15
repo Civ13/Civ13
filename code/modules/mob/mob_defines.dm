@@ -63,10 +63,10 @@
 	var/canmove = TRUE
 	//Allows mobs to move through dense areas without restriction. For instance, in space or out of holder objects.
 	var/incorporeal_move = FALSE //0 is off, TRUE is normal, 2 is for ninjas.
-	var/
-	var/list/pinned = list()            // List of things pinning this creature to walls (see living_defense.dm)
-	var/list/embedded = list()          // Embedded items, since simple mobs don't have organs.
-	var/list/languages = list()         // For speaking/listening.
+
+	var/list/pinned = list()			// List of things pinning this creature to walls (see living_defense.dm)
+	var/list/embedded = list()		  // Embedded items, since simple mobs don't have organs.
+	var/list/languages = list()		 // For speaking/listening.
 	var/list/speak_emote = list("says") // Verbs used when speaking. Defaults to 'say' if speak_emote is null.
 	var/emote_type = TRUE		// Define emote default type, TRUE for seen emotes, 2 for heard emotes
 	var/facing_dir = null   // Used for the ancient art of moonwalking.
@@ -113,7 +113,7 @@
 	var/original_job_title = "Sailor"
 	var/special_job_title = -1
 
-	var/can_pull_size = 10              // Maximum w_class the mob can pull.
+	var/can_pull_size = 10			  // Maximum w_class the mob can pull.
 	var/can_pull_mobs = MOB_PULL_LARGER // Whether or not the mob can pull other mobs.
 
 	var/datum/dna/dna = null//Carbon
@@ -129,8 +129,8 @@
 	var/blinded = null
 	var/ear_deaf = null		//Carbon
 
-//The last mob/living/carbon to push/drag/grab this mob (mostly used by slimes friend recognition)
-	var/mob/living/carbon/LAssailant = null
+//The last mob/living/human to push/drag/grab this mob (mostly used by slimes friend recognition)
+	var/mob/living/human/LAssailant = null
 
 //Wizard mode, but can be used in other modes thanks to the brand new "Give Spell" badmin button
 	var/spell/list/spell_list = list()
@@ -171,7 +171,7 @@
 
 	var/list/HUDneed = list() // What HUD object need see
 	var/list/HUDinventory = list()
-	var/list/HUDfrippery = list()//свестелки и перделки
+	var/list/HUDfrippery = list()//пїЅaпїЅпїЅпїЅпїЅпїЅee e пїЅпїЅпїЅaпїЅпїЅee
 	var/list/HUDprocess = list() //What HUD object need process
 	var/list/HUDtech = list()
 	var/defaultHUD = "" //Default mob hud

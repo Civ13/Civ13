@@ -1,15 +1,14 @@
 /obj/map_metadata/omaha
 	ID = MAP_OMAHA
-	title = "Omaha Beach (100x100x1)"
+	title = "Omaha Beach"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
-	squad_spawn_locations = FALSE
+
 	faction_organization = list(
 		GERMAN,
 		AMERICAN)
-	available_subfactions = list(
-		)
+
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/british,
 		list(GERMAN) = /area/caribbean/german/inside/objective,
@@ -19,19 +18,19 @@
 	faction_distribution_coeffs = list(GERMAN = 0.5, AMERICAN = 0.5)
 	battle_name = "D-day: Omaha Beach"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture the airfield hangar.</font>"
-	faction1 = GERMAN
-	faction2 = AMERICAN
-	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
+	faction2 = GERMAN
+	faction1 = AMERICAN
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 	gamemode = "Siege"
 /obj/map_metadata/omaha/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == FALSE)
+	if (J.is_tanker == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
+		. = FALSE
+	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
 		. = TRUE
 	else
-		. = FALSE
-	if (J.is_reichstag == TRUE)
 		. = FALSE
 
 /obj/map_metadata/omaha/faction1_can_cross_blocks()

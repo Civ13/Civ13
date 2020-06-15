@@ -1,7 +1,7 @@
 /datum/job/russian
 	faction = "Human"
 
-/datum/job/russian/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/russian/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_russian_name(H.gender)
 	H.real_name = H.name
 
@@ -9,19 +9,16 @@
 	title = "Kapitan"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Kpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -34,7 +31,8 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
-
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -58,19 +56,19 @@
 	title = "Poruchik"
 	en_meaning = "Lieutenant"
 	rank_abbreviation = "Po."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -81,8 +79,9 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/rusoffcap(H), slot_head)
 //weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
-
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -107,19 +106,17 @@
 	title = "Podporuchik"
 	en_meaning = "Sub-Lieutenant"
 	rank_abbreviation = "Ppo."
-	head_position = TRUE
-	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_commander = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/second_lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/second_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -130,8 +127,9 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/rusoffcap(H), slot_head)
 //weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
-
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -156,16 +154,17 @@
 	title = "Feldvebel"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Fv."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 
-	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 10
 
-/datum/job/russian/sergeant/equip(var/mob/living/carbon/human/H)
+	min_positions = 2
+	max_positions = 12
+
+/datum/job/russian/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -177,9 +176,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/rusoffcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
-
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -202,15 +201,14 @@
 	title = "Medik"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRUDoc"
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRUDoc"
+
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/russian/doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -242,15 +240,15 @@
 	title = "Yefreytor"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Ye."
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU" //for testing!
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRU" //for testing!
+	uses_squads = TRUE
+
+
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/russian/infantry_first_class/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/infantry_first_class/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -265,7 +263,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 
-	H.equip_to_slot_or_del(new 	/obj/item/ammo_magazine/mosin(H), slot_belt)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier first-class employed by the Imperial Russian Army. Follow your <b>Officer's</b> orders!")
@@ -284,15 +282,15 @@
 	title = "Ryadovoy"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ry."
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU" //for testing!
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRU" //for testing!
+	uses_squads = TRUE
+
+
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/russian/infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -307,7 +305,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
 
-	H.equip_to_slot_or_del(new 	/obj/item/ammo_magazine/mosin(H), slot_belt)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class employed by the Imperial Russian Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -328,19 +326,18 @@
 	title = "K.A. Kapitan"
 	en_meaning = "Red Army Captain"
 	rank_abbreviation = "Kpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/captain_soviet/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/captain_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -378,18 +375,18 @@
 	title = "NKVD Leytenant"
 	en_meaning = "NKVD Officer"
 	rank_abbreviation = "NKVD Leyt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/nkvd_soviet/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/nkvd_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -422,17 +419,18 @@
 	title = "K.A. Serjant"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srj."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
-	SL_check_independent = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_ww2 = TRUE
 
-	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 6
 
-/datum/job/russian/sergeant_soviet/equip(var/mob/living/carbon/human/H)
+	min_positions = 2
+	max_positions = 12
+
+/datum/job/russian/sergeant_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -467,16 +465,15 @@
 	title = "K.A. Voynenvrach"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Srj."
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRUDoc"
-	SL_check_independent = TRUE
-	is_ww2 = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRUDoc"
+
+	is_ww2 = TRUE
+	is_medic = TRUE
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/russian/doctor_soviet/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/doctor_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -508,16 +505,17 @@
 	title = "K.A. Pulemetchik"
 	en_meaning = "Red Army Machinegunner"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
+	uses_squads = TRUE
 
-	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 8
 
-/datum/job/russian/machinegunner_soviet/equip(var/mob/living/carbon/human/H)
+	min_positions = 2
+	max_positions = 12
+
+/datum/job/russian/machinegunner_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -552,16 +550,17 @@
 	title = "K.A. Soldat"
 	en_meaning = "Red Army Private"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
-	is_ww2 = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRU"
+
+	is_ww2 = TRUE
+	uses_squads = TRUE
+
+
 	min_positions = 20
 	max_positions = 100
 
-/datum/job/russian/soldier_soviet/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/soldier_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -613,20 +612,20 @@
 	title = "Belaya Armiya Kapitan"
 	en_meaning = "White Army Captain"
 	rank_abbreviation = "Kpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
 	is_rcw = TRUE
-	SL_check_independent = TRUE
 
-	// AUTOBALANCE
+
+
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/russian/rcw_captain/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/rcw_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -661,18 +660,19 @@
 	title = "Belaya Armiya Feldvebel"
 	en_meaning = "White Army Sergeant"
 	rank_abbreviation = "Fv."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_squad_leader = TRUE
-	SL_check_independent = TRUE
+	uses_squads = TRUE
+
 	is_rcw = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/russian/rcw_sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/rcw_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -706,16 +706,16 @@
 	title = "Belaya Armiya Medik"
 	en_meaning = "White Army Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
-	is_rcw = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRU"
+
+	is_rcw = TRUE
+	is_medic = TRUE
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/russian/rcw_doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/rcw_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -751,16 +751,17 @@
 	title = "Belaya Armiya Soldat"
 	en_meaning = "White Army Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU" //for testing!
-	SL_check_independent = TRUE
-	is_rcw = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRU" //for testing!
+
+	is_rcw = TRUE
+	uses_squads = TRUE
+
+
 	min_positions = 6
 	max_positions = 100
 
-/datum/job/russian/rcw_infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/rcw_infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -800,19 +801,20 @@
 	title = "Kazachy Vakhmistr"
 	en_meaning = "Cossack Leader"
 	rank_abbreviation = "Vakhmistr"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU2"
-	SL_check_independent = TRUE
+
 	is_rcw = TRUE
+	uses_squads = TRUE
 	is_squad_leader = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/russian/cossack_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/cossack_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
@@ -849,16 +851,16 @@
 	title = "Kazak"
 	en_meaning = "Cossack Soldier"
 	rank_abbreviation = "Kazak"
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU2"
-	SL_check_independent = TRUE
-	is_rcw = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRU2"
+
+	is_rcw = TRUE
+	uses_squads = TRUE
+
 	min_positions = 6
 	max_positions = 70
 
-/datum/job/russian/cossack_soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/cossack_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
@@ -890,7 +892,7 @@
 
 /datum/job/civilian/russian
 	default_language = "Russian"
-/datum/job/civilian/russian/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/civilian/russian/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_russian_name(H.gender)
 	H.real_name = H.name
 
@@ -899,18 +901,18 @@
 	title = "Chekist"
 	en_meaning = "VChEKA Political Comissar"
 	rank_abbreviation = "Chekist"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU3"
-	SL_check_independent = TRUE
+
 	is_rcw = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 3
 
-/datum/job/civilian/russian/cheka_comissar/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/russian/cheka_comissar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
@@ -945,18 +947,19 @@
 	title = "Krasny Armiya Kommander"
 	en_meaning = "Red Army Squad Leader"
 	rank_abbreviation = "Kom."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU3"
-	SL_check_independent = TRUE
+
+	uses_squads = TRUE
 	is_rcw = TRUE
 	is_squad_leader = TRUE
 	is_officer = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/civilian/russian/red_army_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/russian/red_army_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new/obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -992,16 +995,15 @@
 	title = "Krasny Armiya Medik"
 	en_meaning = "Red Army Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU3"
-	SL_check_independent = TRUE
-	is_rcw = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRU3"
+	is_rcw = TRUE
+	is_medic = TRUE
+
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/civilian/russian/red_army_doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/russian/red_army_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -1035,16 +1037,17 @@
 	title = "Krasny Armiya Strelok"
 	en_meaning = "Red Army Rifleman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU3"
-	SL_check_independent = TRUE
-	is_rcw = TRUE
 
-	// AUTOBALANCE
+	spawn_location = "JoinLateRU3"
+
+	is_rcw = TRUE
+	uses_squads = TRUE
+
+
 	min_positions = 10
 	max_positions = 100
 
-/datum/job/civilian/russian/red_army_soldier/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/russian/red_army_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -1088,20 +1091,21 @@
 	title = "Komandir Tanka"
 	en_meaning = "Armored Squad Leader"
 	rank_abbreviation = "Kom."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
+	uses_squads = TRUE
 	is_tanker = TRUE
 	whitelisted = TRUE
 	is_squad_leader = TRUE
 	is_officer = TRUE
-	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 8
 
-/datum/job/russian/tank_crew_leader/equip(var/mob/living/carbon/human/H)
+	min_positions = 2
+	max_positions = 6
+
+/datum/job/russian/tank_crew_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1134,17 +1138,18 @@
 	title = "Tankist"
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_tanker = TRUE
-	// AUTOBALANCE
-	min_positions = 4
-	max_positions = 64
+	uses_squads = TRUE
 
-/datum/job/russian/tank_crew/equip(var/mob/living/carbon/human/H)
+	min_positions = 4
+	max_positions = 32
+
+/datum/job/russian/tank_crew/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1179,18 +1184,19 @@
 	title = "Gvardii Serjant"
 	en_meaning = "Guards Mechanized Squad Leader"
 	rank_abbreviation = "Srj."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+	is_ss_panzer = TRUE
+
 	is_ww2 = TRUE
-	is_tanker = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_officer = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 6
 
-/datum/job/russian/guards_mechanized_squad_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/guards_mechanized_squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1223,16 +1229,17 @@
 	title = "Gvardii Krasnoarmeyets"
 	en_meaning = "Guards Mechanized Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
-	SL_check_independent = TRUE
+
 	is_ww2 = TRUE
-	is_tanker = TRUE
-	// AUTOBALANCE
+	uses_squads = TRUE
+	is_ss_panzer = TRUE
+
 	min_positions = 6
 	max_positions = 30
 
-/datum/job/russian/guards_mechanized_infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/guards_mechanized_infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1273,16 +1280,16 @@
 	title = "Gvardii Sapyor"
 	en_meaning = "Guards Sapper"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUSap"
-	SL_check_independent = TRUE
+	is_ss_panzer = TRUE
+
 	is_ww2 = TRUE
-	is_tanker = TRUE
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 12
 
-/datum/job/russian/guards_sapper/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/guards_sapper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -1295,7 +1302,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/pilot(H), slot_eyes)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/sapper(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/sapper(H), slot_back)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)

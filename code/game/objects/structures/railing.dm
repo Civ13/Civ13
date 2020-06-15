@@ -6,26 +6,29 @@
 	throwpass = TRUE
 	climbable = TRUE
 	layer = 3.2//Just above doors
-	//pressure_resistance = 4*ONE_ATMOSPHERE
 	anchored = TRUE
 	flags = ON_BORDER
 	icon_state = "railing0"
 	var/broken = FALSE
 	var/health=70
 	var/maxhealth=70
-	//var/LeftSide = list(0,0,0)// Нужны для хранения данных
-	//var/RightSide = list(0,0,0)
 	var/check = FALSE
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
+/obj/structure/railing/steel
+	name = "steel railing"
+	desc = "An ordinary steel railing. Prevents from human stupidity."
+	icon = 'icons/obj/railing_white.dmi'
+	color = "#697585"
+	flammable = FALSE
+
 /obj/structure/railing/New(loc, constructed=0)
 	..()
 	if (constructed)	//player-constructed railings
 		anchored = FALSE
-/*	if (climbable)
-		verbs += /obj/structure/proc/climb_on*/
+
 	if (anchored)
 		spawn(5)
 			update_icon(0)
@@ -48,7 +51,7 @@
 		return !density
 	else
 		return TRUE
-//32 и 4 - в той же клетке
+//32 e 4 - a пїЅпїЅe пїЅпїЅ eпїЅпїЅпїЅeпїЅ
 
 /obj/structure/railing/examine(mob/user)
 	. = ..()
@@ -75,37 +78,37 @@
 	var/Rturn = turn(dir, -90)
 	var/Lturn = turn(dir, 90)
 
-	for (var/obj/structure/railing/R in loc)// Анализ клетки, где находится сам объект
-		if ((R.dir == Lturn) && R.anchored)//Проверка левой стороны
+	for (var/obj/structure/railing/R in loc)// aпїЅaпїЅec eпїЅпїЅпїЅee, aaпїЅ пїЅaoпїЅaeпїЅпїЅпїЅ пїЅaпїЅ пїЅaпїЅпїЅeпїЅ
+		if ((R.dir == Lturn) && R.anchored)//пїЅпїЅпїЅaпїЅпїЅea пїЅпїЅaпїЅe пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			//LeftSide[1] = TRUE
 			check |= 32
 			if (UpdateNeighbors)
 				R.update_icon(0)
-		if ((R.dir == Rturn) && R.anchored)//Проверка правой стороны
+		if ((R.dir == Rturn) && R.anchored)//пїЅпїЅпїЅaпїЅпїЅea пїЅпїЅaaпїЅe пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			//RightSide[1] = TRUE
 			check |= 2
 			if (UpdateNeighbors)
 				R.update_icon(0)
 
-	for (var/obj/structure/railing/R in get_step(src, Lturn))//Анализ левой клетки от направления объекта
+	for (var/obj/structure/railing/R in get_step(src, Lturn))//aпїЅaпїЅec пїЅпїЅaпїЅe eпїЅпїЅпїЅee пїЅпїЅ пїЅaпїЅпїЅaaпїЅпїЅпїЅeпїЅ пїЅaпїЅпїЅeпїЅa
 		if ((R.dir == dir) && R.anchored)
 			//LeftSide[2] = TRUE
 			check |= 16
 			if (UpdateNeighbors)
 				R.update_icon(0)
-	for (var/obj/structure/railing/R in get_step(src, Rturn))//Анализ правой клетки от направления объекта
+	for (var/obj/structure/railing/R in get_step(src, Rturn))//aпїЅaпїЅec пїЅпїЅaaпїЅe eпїЅпїЅпїЅee пїЅпїЅ пїЅaпїЅпїЅaaпїЅпїЅпїЅeпїЅ пїЅaпїЅпїЅeпїЅa
 		if ((R.dir == dir) && R.anchored)
 			//RightSide[2] = TRUE
 			check |= TRUE
 			if (UpdateNeighbors)
 				R.update_icon(0)
 
-	for (var/obj/structure/railing/R in get_step(src, (Lturn + dir)))//Анализ передней-левой диагонали относительно направления объекта.
+	for (var/obj/structure/railing/R in get_step(src, (Lturn + dir)))//aпїЅaпїЅec пїЅпїЅпїЅпїЅaпїЅпїЅe-пїЅпїЅaпїЅe aeaaпїЅпїЅaпїЅe пїЅпїЅпїЅпїЅпїЅeпїЅпїЅпїЅuпїЅпїЅ пїЅaпїЅпїЅaaпїЅпїЅпїЅeпїЅ пїЅaпїЅпїЅeпїЅa.
 		if ((R.dir == Rturn) && R.anchored)
 			check |= 64
 			if (UpdateNeighbors)
 				R.update_icon(0)
-	for (var/obj/structure/railing/R in get_step(src, (Rturn + dir)))//Анализ передней-правой диагонали относительно направления объекта.
+	for (var/obj/structure/railing/R in get_step(src, (Rturn + dir)))//aпїЅaпїЅec пїЅпїЅпїЅпїЅaпїЅпїЅe-пїЅпїЅaaпїЅe aeaaпїЅпїЅaпїЅe пїЅпїЅпїЅпїЅпїЅeпїЅпїЅпїЅuпїЅпїЅ пїЅaпїЅпїЅaaпїЅпїЅпїЅeпїЅ пїЅaпїЅпїЅeпїЅa.
 		if ((R.dir == Lturn) && R.anchored)
 			check |= 4
 			if (UpdateNeighbors)
@@ -113,9 +116,9 @@
 
 
 /*	for (var/obj/structure/railing/R in get_step(src, dir))
-		if ((R.dir == Lturn) && R.anchored)//Проверка левой стороны
+		if ((R.dir == Lturn) && R.anchored)//пїЅпїЅпїЅaпїЅпїЅea пїЅпїЅaпїЅe пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			LeftSide[3] = TRUE
-		if ((R.dir == Rturn) && R.anchored)//Проверка правой стороны
+		if ((R.dir == Rturn) && R.anchored)//пїЅпїЅпїЅaпїЅпїЅea пїЅпїЅaaпїЅe пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			RightSide[3] = TRUE*/
 	//check <<"check: [check]"
 	//world << "dir = [dir]"
@@ -129,7 +132,7 @@
 		icon_state = "railing0"
 	else
 		icon_state = "railing1"
-		//левая сторона
+		//пїЅпїЅaaпїЅ пїЅпїЅпїЅпїЅпїЅпїЅa
 		if (check & 32)
 			overlays += image ('icons/obj/railing.dmi', src, "corneroverlay")
 			//world << "32 check"

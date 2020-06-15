@@ -4,10 +4,10 @@
 /datum/data/vending_product
 	var/product_name = "generic" // Display name for the product
 	var/product_path = null
-	var/amount = 0            // The original amount held in the vending machine
-	var/price = 0              // Price to buy one
+	var/amount = 0			// The original amount held in the vending machine
+	var/price = 0			  // Price to buy one
 	var/display_color = null   // Display color for vending machine listing
-	var/vending_machine        // The vending machine we belong to
+	var/vending_machine		// The vending machine we belong to
 	var/image/product_image			//an image to be used as an overlay in the vending machine
 	var/list/product_item = list()	//the actual objects
 	var/is_stack = FALSE
@@ -45,7 +45,7 @@
 	vending_machine = null
 	. = ..()
 
-/datum/data/vending_product/proc/get_product(var/product_location, var/p_amount=1)
+/datum/data/vending_product/proc/get_product(var/product_location, var/p_amount=1, var/mob/user)
 	if (istype(vending_machine, /obj/structure/vending/sales))
 		if (amount <= 0 || amount < p_amount || !product_location)
 			return
@@ -68,6 +68,10 @@
 					if (product)
 						product.forceMove(product_location)
 						amount--
+						if (istype(vending_machine,/obj/structure/vending/sales/business_weapons) && istype(product, /obj/item/weapon/gun/projectile) && ishuman(user))
+							var/obj/item/weapon/gun/projectile/G = product
+							var/mob/living/human/H = user
+							map.gun_registations += list(list(G.name,G.serial,H.real_name))
 		return TRUE
 	else
 		if (amount <= 0 || amount < p_amount || !product_location)

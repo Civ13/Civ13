@@ -13,7 +13,7 @@
 	..(gibbed,deathmessage)
 	icon_state = dead_state
 
-/mob/living/simple_animal/complex_animal/proc/taming(var/mob/living/carbon/human/H, var/value = 0)
+/mob/living/simple_animal/complex_animal/proc/taming(var/mob/living/human/H, var/value = 0)
 	if (!can_be_tamed)
 		return
 	if (!tamed)
@@ -30,7 +30,7 @@
 				return
 	else
 		return
-/mob/living/simple_animal/complex_animal/proc/check_tame_stat(var/mob/living/carbon/human/H)
+/mob/living/simple_animal/complex_animal/proc/check_tame_stat(var/mob/living/human/H)
 	if (!can_be_tamed)
 		return
 	if (friendly_mobs[H.name] && friendly_mobs[H.name][1] == H)
@@ -46,11 +46,11 @@
 			if (findtext(name, "Wild"))
 				name = replacetext(name,"Wild", "[H]'s")
 		return
-/mob/living/simple_animal/complex_animal/attack_hand(var/mob/living/carbon/human/H as mob)
+/mob/living/simple_animal/complex_animal/attack_hand(var/mob/living/human/H as mob)
 	..(H)
 	onTouchedBy(H, H.a_intent)
 
-/mob/living/simple_animal/complex_animal/attackby(var/obj/item/weapon/W as obj, var/mob/living/carbon/human/H as mob)
+/mob/living/simple_animal/complex_animal/attackby(var/obj/item/weapon/W as obj, var/mob/living/human/H as mob)
 	if (can_be_tamed)
 		if (H.a_intent == I_HELP)
 			if (istype(W, /obj/item/weapon/reagent_containers/food))

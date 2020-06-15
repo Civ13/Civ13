@@ -1,4 +1,4 @@
-/mob/living/carbon/human
+/mob/living/human
 
 	//Hair colour and style
 	var/r_hair = FALSE
@@ -89,6 +89,7 @@
 	var/datum/faction/base_faction = null
 	var/datum/faction/squad/squad_faction = null
 	var/faction_text = null
+	var/squad = 0
 
 	var/list/faction_images[100] // names are keys, values are images
 
@@ -191,7 +192,7 @@
 	var/riding = FALSE // if riding a horse
 	var/mob/living/simple_animal/riding_mob = null
 /*
-/mob/living/carbon/human/New()
+/mob/living/human/New()
 	if(map.ID == MAP_TRIBES)
 		stats.Add("magic" = list(0,100))
 	..()*/

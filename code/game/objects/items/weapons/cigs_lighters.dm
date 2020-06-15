@@ -81,7 +81,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/zippomes = "USER lights NAME with FLAME"
 	var/weldermes = "USER lights NAME with FLAME"
 	var/ignitermes = "USER lights NAME with FLAME"
-
+	heat_protection = 0
 /obj/item/clothing/mask/smokable/New()
 	..()
 	flags |= NOREACT // so it doesn't react until you light it
@@ -94,7 +94,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		return
 	if (reagents && reagents.total_volume) // check if it has any reagents at all
 		if (ishuman(loc))
-			var/mob/living/carbon/human/C = loc
+			var/mob/living/human/C = loc
 			if (src == C.wear_mask && C.check_has_mouth()) // if it's in the human/monkey mouth, transfer reagents to the mob
 				reagents.trans_to_mob(C, REM, CHEM_INGEST, 0.2, FALSE, TRUE) // Most of it is not inhaled... balance reasons.
 		else // else just remove some of the reagents
@@ -252,18 +252,18 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		..()
 		reagents.add_reagent("nicotine",30)
 
-/obj/item/clothing/mask/smokable/cigarette/joint/joint
+/obj/item/clothing/mask/smokable/cigarette/joint
 	name = "joint"
 	desc = "A joint filled with weed."
 	icon_state = "joint"
-	icon_on = "joint-on"
+	icon_on = "jointon"
 	icon_off = "joint"
 	smoketime = 200
 	chem_volume = 70
 	value = 28
 	New()
 		..()
-		reagents.add_reagent("thc",60)
+		reagents.add_reagent("thc",30)
 
 /obj/item/clothing/mask/smokable/cigarette/cigar/havana
 	name = "Cuban cigar"
@@ -450,6 +450,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/sound_toggleOFF = 'sound/items/lighter_off.ogg'
 	flammable = TRUE
 
+/obj/item/weapon/flame/lighter/bullet
+	name = "bullet lighter"
+	desc = "A casing that is now a lighter, cheeki breeki."
+	icon_state = "bullet"
+	item_state = "bullet"
+	sound_toggleON = 'sound/items/zippo_on.ogg'
+	sound_toggleOFF = 'sound/items/zippo_off.ogg'
+
 /obj/item/weapon/flame/lighter/zippo
 	name = "\improper Zippo lighter"
 	desc = "The zippo."
@@ -496,7 +504,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	return
 
 
-/obj/item/weapon/flame/lighter/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
+/obj/item/weapon/flame/lighter/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (!istype(M, /mob))
 		return
 	M.IgniteMob()

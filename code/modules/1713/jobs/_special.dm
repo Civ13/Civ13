@@ -37,13 +37,21 @@
 /datum/job/var/is_rcw = FALSE
 /datum/job/var/is_tanker = FALSE
 /datum/job/var/is_prison = FALSE
+/datum/job/var/is_navy = FALSE
+/datum/job/var/is_rp = FALSE
+/datum/job/var/is_medic = FALSE
+/datum/job/var/is_ss_panzer = FALSE
+/datum/job/var/is_civil_war = FALSE
+/datum/job/var/is_deal = FALSE
+/datum/job/var/is_pacific = FALSE
+
+/datum/job/var/squad = 0
+/datum/job/var/uses_squads = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold
-/datum/job/var/player_threshold = 0 // number of players who have to be on for this job to be open
-/datum/job/var/scale_to_players = 50 // as we approach this, our open positions approach max_positions. Does nothing if min_positions == max_positions, so just don't touch it
 
 /* type_flag() replaces flag, and base_type_flag() replaces department_flag
  * this is a better solution than bit constants, in my opinion */
@@ -102,7 +110,7 @@
 /datum/job/proc/get_side_name()
 	return capitalize(lowertext(base_type_flag()))
 
-/datum/job/proc/assign_faction(var/mob/living/carbon/human/user)
+/datum/job/proc/assign_faction(var/mob/living/human/user)
 
 	if (istype(src, /datum/job/pirates))
 		user.faction_text = "PIRATES"
@@ -170,7 +178,7 @@
 		return "Pirate crew"
 	return null
 
-/datum/job/update_character(var/mob/living/carbon/human/H)
+/datum/job/update_character(var/mob/living/human/H)
 	..()
 	if (is_officer || can_get_coordinates)
 		H.make_artillery_officer()
@@ -183,12 +191,13 @@
 
 	// hack to make scope icons immediately appear - Kachnov
 	spawn (20)
-		for (var/obj/item/weapon/gun/G in H.contents)
-			if (list(H.l_hand, H.r_hand).Find(G))
-				for (var/obj/item/weapon/attachment/scope/S in G.contents)
+		if (H)
+			for (var/obj/item/weapon/gun/G in H.contents)
+				if (list(H.l_hand, H.r_hand).Find(G))
+					for (var/obj/item/weapon/attachment/scope/S in G.contents)
+						if (S.azoom)
+							S.azoom.Grant(H)
+			for (var/obj/item/weapon/attachment/scope/S in H.contents)
+				if (list(H.l_hand, H.r_hand).Find(S))
 					if (S.azoom)
 						S.azoom.Grant(H)
-		for (var/obj/item/weapon/attachment/scope/S in H.contents)
-			if (list(H.l_hand, H.r_hand).Find(S))
-				if (S.azoom)
-					S.azoom.Grant(H)

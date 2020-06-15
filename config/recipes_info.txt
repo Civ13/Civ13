@@ -17,6 +17,12 @@
 format:
 material, name, path, cost, building time, only one per turf?, on the floor?, category, research 1 needed, research 2 needed, research 3 needed, max ordinal age (inclusive), material name (optional - use null if not necessary)
 
+// Research //
+
+1 - Industrial
+2 - Military
+3 - Medicine
+
 // HERES THE GODDAMN ORDINAL AGES//
 0 stone age
 1 bronze

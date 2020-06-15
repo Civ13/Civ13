@@ -4,7 +4,7 @@
 	icon_state = ""
 	layer = MOB_LAYER + 1.0
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -67,8 +67,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -85,7 +85,7 @@
 			spawn(10)
 				target.update_icons()
 
-/obj/structure/noose/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/noose/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 
@@ -110,7 +110,7 @@
 	icon_state = "gallows0"
 	layer = MOB_LAYER + 1.0
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	var/roped = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -184,8 +184,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -202,7 +202,7 @@
 					target.update_icons()
 					target.anchored = 1
 
-/obj/structure/gallows/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/gallows/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (!hanging && roped)
@@ -231,7 +231,7 @@
 				hanging = null
 				icon_state = "gallows1"
 
-/obj/structure/gallows/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/gallows/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon))
 		if (W.sharp == TRUE && hanging && roped)
 			visible_message("<span class = 'danger'>[H] starts to cut the noose with the [W]...</span>")
@@ -273,7 +273,7 @@
 	var/base_icon = "greekcross"
 	layer = MOB_LAYER - 0.1
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	var/image/crossoverlay
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -323,8 +323,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -345,7 +345,7 @@
 				target.anchored = 1
 			overlays += crossoverlay
 
-/obj/structure/cross/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/cross/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 
@@ -374,7 +374,7 @@
 	icon_state = "pillory"
 	layer = MOB_LAYER - 0.1
 	anchored = TRUE
-	var/mob/living/carbon/human/hanging = null
+	var/mob/living/human/hanging = null
 	var/image/poverlay
 	var/icon/hoverlay
 	not_movable = FALSE
@@ -419,8 +419,8 @@
 	if (hanging)
 		return
 
-	var/mob/living/carbon/human/target = dropping
-	var/mob/living/carbon/human/hangman = user
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
 
 	if (!istype(target) || !istype(hangman))
 		return
@@ -442,7 +442,7 @@
 					hoverlay.Blend(rgb(-target.s_tone,  -target.s_tone,  -target.s_tone), ICON_SUBTRACT)
 					overlays += hoverlay
 
-/obj/structure/pillory/attack_hand(var/mob/living/carbon/human/H)
+/obj/structure/pillory/attack_hand(var/mob/living/human/H)
 	if (!istype(H))
 		return
 
@@ -479,3 +479,101 @@
 		return
 	else
 		..()
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////EXECUTION POST///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/obj/structure/post_execution
+	icon = 'icons/obj/structures.dmi'
+	name = "execution post"
+	desc = "a wood stock with a rope to tie prisoners to in preparation for a firing squad."
+	icon_state = "post_execution"
+	layer = MOB_LAYER - 0.11
+	anchored = TRUE
+	var/mob/living/human/hanging = null
+	var/image/poverlay
+	var/icon/hoverlay
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	New()
+		..()
+		poverlay = image(icon=src.icon, icon_state="post_execution",layer=MOB_LAYER+1)
+		hoverlay = icon(icon=src.icon, icon_state="post_execution_rope")
+/obj/structure/post_execution/New()
+	..()
+	processing_objects |= src
+
+/obj/structure/post_execution/Del()
+	processing_objects -= src
+	..()
+
+/obj/structure/post_execution/bullet_act(var/obj/item/projectile/P)
+	if (hanging && prob(30))
+		hanging.bullet_act(P)
+		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+	else
+		..()
+
+/obj/structure/post_execution/process()
+	fire()
+
+// call this instead of process() if you want to do direct calls, I think its better - Kachnov
+/obj/structure/post_execution/proc/fire()
+	if (hanging)
+		hanging.forceMove(loc)
+		hanging.lying = 0
+		hanging.dir = SOUTH
+
+	else
+		overlays.Cut()
+		hoverlay = icon(icon=src.icon, icon_state="post_execution_rope")
+
+/obj/structure/post_execution/MouseDrop_T(var/atom/dropping, var/mob/user as mob)
+	if (!ismob(dropping))
+		return
+
+	if (hanging)
+		return
+
+	var/mob/living/human/target = dropping
+	var/mob/living/human/hangman = user
+
+	if (!istype(target) || !istype(hangman))
+		return
+	visible_message("<span class = 'danger'>[hangman] starts to tie [target == hangman ? "themselves" : target] to the post...</span>")
+	if (do_after(hangman, 60, target))
+		if (src)
+			visible_message("<span class = 'danger'>[hangman] ties [target == hangman ? "themselves" : target] to the post!</span>")
+			hanging = target
+			target.loc = get_turf(src)
+			target.dir = SOUTH
+			spawn(10)
+				target.update_icons()
+				target.anchored = 1
+			overlays += poverlay
+			if (target.s_tone)
+				if (target.s_tone >= 0)
+					hoverlay.Blend(rgb(target.s_tone, target.s_tone, target.s_tone), ICON_ADD)
+				else
+					hoverlay.Blend(rgb(-target.s_tone,  -target.s_tone,  -target.s_tone), ICON_SUBTRACT)
+					overlays += hoverlay
+
+/obj/structure/post_execution/attack_hand(var/mob/living/human/H)
+	if (!istype(H))
+		return
+
+	if (!hanging)
+		return
+
+	if (hanging == H)
+		return
+
+	visible_message("<span class = 'danger'>[H] starts to untie [hanging] from the post...</span>")
+	if (do_after(H, 60, src))
+		if (src && hanging)
+			visible_message("<span class = 'danger'>[H] unties [hanging] from the post!</span>")
+			hanging.pixel_x = 0
+			hanging.pixel_y = 0
+			hanging.anchored = 0
+			hanging = null
+			overlays.Cut()

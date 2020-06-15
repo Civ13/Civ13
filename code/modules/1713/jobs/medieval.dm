@@ -3,20 +3,20 @@
 	title = "Seigneur"
 	en_meaning = "Lord"
 	rank_abbreviation = "Seigneur"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/french/medieval_lord/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -49,18 +49,18 @@
 	title = "Chevalier"
 	en_meaning = "Knight"
 	rank_abbreviation = "Chevalier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/french/medieval_knight/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -90,16 +90,16 @@
 	title = "Homme dArme"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 25
 
-/datum/job/french/medieval_swordsman/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -136,16 +136,16 @@
 	title = "Paysan avec Pique"
 	en_meaning = "Levy Pikeman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/french/medieval_spearman/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -191,16 +191,16 @@
 	title = "Paysan Archer"
 	en_meaning = "Levy Archer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
-/datum/job/french/medieval_archer/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -240,16 +240,16 @@
 	title = "Milice"
 	en_meaning = "Levy Militia"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 18
 	max_positions = 100
 
-/datum/job/french/medieval_militia/equip(var/mob/living/carbon/human/H)
+/datum/job/french/medieval_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(65))
@@ -309,21 +309,21 @@
 	title = "Grand Master"
 	en_meaning = "Crusader Leader"
 	rank_abbreviation = "Grand Master"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/french/crusader_lord/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -356,19 +356,19 @@
 	title = "Templar Knight"
 	en_meaning = "Crusader Noble Knight"
 	rank_abbreviation = "Templar Knight"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/french/crusader_templar/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_templar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -401,17 +401,17 @@
 	title = "Crusader Sergeant"
 	en_meaning = "Crusader Heavy Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 8
 	max_positions = 50
 
-/datum/job/french/crusader_heavy/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_heavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -446,16 +446,16 @@
 	title = "Crusader Squire"
 	en_meaning = "Crusader Light Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/french/crusader_light/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_light/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -496,17 +496,17 @@
 	title = "Templar Priest"
 	en_meaning = "Priest"
 	rank_abbreviation = "Father"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_crusader = TRUE
 	is_religious = TRUE
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/french/crusader_priest/equip(var/mob/living/carbon/human/H)
+/datum/job/french/crusader_priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -536,20 +536,20 @@
 	title = "Lord"
 	en_meaning = "Lord"
 	rank_abbreviation = "Lord"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/british/medieval_lord/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -582,18 +582,18 @@
 	title = "Knight"
 	en_meaning = "Knight"
 	rank_abbreviation = "Knight"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/british/medieval_knight/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -623,16 +623,16 @@
 	title = "Men-at-Arms"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 5
 	max_positions = 25
 
-/datum/job/british/medieval_swordsman/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -669,16 +669,16 @@
 	title = "Levy Pikeman"
 	en_meaning = "Levy Pikeman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/british/medieval_spearman/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -724,16 +724,16 @@
 	title = "Levy Archer"
 	en_meaning = "Levy Archer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
-/datum/job/british/medieval_archer/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
@@ -772,16 +772,16 @@
 	title = "Levy Militia"
 	en_meaning = "Levy Militia"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 18
 	max_positions = 100
 
-/datum/job/british/medieval_militia/equip(var/mob/living/carbon/human/H)
+/datum/job/british/medieval_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(65))
@@ -840,7 +840,7 @@
 /datum/job/arab
 	faction = "Human"
 
-/datum/job/arab/give_random_name(var/mob/living/carbon/human/H)
+/datum/job/arab/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_arab_name()
 	H.real_name = H.name
 
@@ -848,20 +848,20 @@
 	title = "Emir"
 	en_meaning = "Lord"
 	rank_abbreviation = "Emir"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/arab/medieval_lord/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -893,18 +893,18 @@
 	title = "Mamluk"
 	en_meaning = "Heavy Infantry"
 	rank_abbreviation = "Mamluk"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
 	whitelisted = TRUE
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/arab/medieval_knight/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
@@ -938,16 +938,16 @@
 	title = "Sayaf"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/arab/medieval_swordsman/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -984,16 +984,16 @@
 	title = "Alraamih"
 	en_meaning = "Spearman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 12
 	max_positions = 80
 
-/datum/job/arab/medieval_spearman/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -1038,16 +1038,16 @@
 	title = "Rami Alsiham"
 	en_meaning = "Archer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 6
 	max_positions = 40
 
-/datum/job/arab/medieval_archer/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -1088,17 +1088,17 @@
 	title = "Imam"
 	en_meaning = "Priest"
 	rank_abbreviation = "Imam"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
-	SL_check_independent = TRUE
+
 	is_medieval = TRUE
 	is_religious = TRUE
 
-	// AUTOBALANCE
+
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/arab/imam/equip(var/mob/living/carbon/human/H)
+/datum/job/arab/imam/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
@@ -1121,5 +1121,722 @@
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	give_random_name(H)
+
+	return TRUE
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/german/lord
+	title = "Freiherr"
+	en_meaning = "Baron"
+	rank_abbreviation = "Freiherr"
+
+
+	spawn_location = "JoinLateGECap"
+	whitelisted = TRUE
+
+	is_commander = TRUE
+	is_officer = TRUE
+	is_ww1 = FALSE
+	is_rp = TRUE
+	is_medieval = TRUE
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/german/lord/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
+	world << "<b><big>[H.real_name] is the Bohemian Lord!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this state. Organize your subjects!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/german/retainer
+	title = "Dienstmann"
+	en_meaning = "Retainer"
+	rank_abbreviation = "Dienstmann"
+
+	spawn_location = "JoinLateGECap"
+	whitelisted = TRUE
+
+	is_commander = TRUE
+	is_officer = TRUE
+	is_ww1 = FALSE
+	is_rp = TRUE
+	is_medieval = TRUE
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/german/retainer/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
+//jacket
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
+
+	world << "<b><big>[H.real_name] is the Bohemian Retainer!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, the retainer to the Lord of this state. Recruit staff to serve the lord in the castle and keep them well mannered! Keep the lord safe!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/german/medieval_knight
+	title = "Ritter"
+	en_meaning = "Knight"
+	rank_abbreviation = "Herr"
+
+	spawn_location = "JoinLateGE"
+	is_officer = TRUE
+	whitelisted = TRUE
+
+	is_medieval = TRUE
+	is_rp = TRUE
+	is_squad_leader = TRUE
+
+
+	min_positions = 1
+	max_positions = 3
+
+/datum/job/german/medieval_knight/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/red(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/escudo/ten(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a landed citizen of the Realm. You are a heavy soldier, so protect the Lord!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/german/medieval_swordsman
+	title = "Wachmann"
+	en_meaning = "Guardsman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+
+	is_medieval = TRUE
+	is_rp = TRUE
+
+
+	min_positions = 5
+	max_positions = 15
+
+/datum/job/german/medieval_swordsman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red2(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
+
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet2(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
+
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
+
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_r_store)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies. Protect the Lord and his city!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/german/priest
+	title = "Pfaffe"
+	en_meaning = "Church Priest"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCivC"
+
+	is_religious = TRUE
+	is_medieval = TRUE
+	is_rp = TRUE
+
+	min_positions = 1
+	max_positions = 20
+
+/datum/job/german/priest/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+
+	if (H.gender == "male")
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/chaplain_hood(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/chaplain(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/nun(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/nun_hood(H), slot_head)
+
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, in charge of the colony's religious affairs, assisting the doctor, and if possible, of converting the natives...")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_HIGH)
+
+	return TRUE
+
+/datum/job/german/prospector
+	title = "Kumpel"
+	en_meaning = "Miner/Explorer"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCiv"
+
+	is_medieval = TRUE
+	is_rp = TRUE
+
+	min_positions = 2
+	max_positions = 10
+
+/datum/job/german/prospector/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+
+	H.equip_to_slot_or_del(new/obj/item/weapon/pickaxe(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
+	H.add_note("Role", "You are a <b>[title]</b>, a miner who is tasked with collecting metals for the local lord and smithy. Explore the area, mine, and sell to the <b>Merchant or Blacksmith</b> what you find!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/german/farmer
+	title = "Bauer"
+	en_meaning = "Farmer/Rancher"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCiv"
+
+	is_medieval = TRUE
+	is_rp = TRUE
+
+	min_positions = 3
+	max_positions = 10
+
+/datum/job/german/farmer/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+
+	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/plough(H), slot_l_hand)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, specialized in plant growth, animal husbandry, and cooking. Keep the colony fed!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("farming", STAT_VERY_HIGH)
+
+	return TRUE
+
+/datum/job/german/blacksmith
+	title = "Schmied"
+	en_meaning = "Blacksmith"
+	rank_abbreviation = "Blacksmith"
+
+	spawn_location = "JoinLateCivB"
+	whitelisted = TRUE
+
+	is_medieval = TRUE
+	is_rp = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/german/blacksmith/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/hammer(H), slot_belt)
+	H.equip_to_slot_or_del(new 	/obj/item/stack/material/iron/twentyfive(H), slot_l_hand)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft weapons and guns. However, you probably should follow the <b>Governor's</b> orders!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_VERY_VERY_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_VERY_LOW)
+	H.setStat("medical", STAT_VERY_LOW)
+
+	return TRUE
+
+/datum/job/german/inkeeper
+	title = "Gastwirst"
+	en_meaning = "Innkeeper"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCivD"
+
+	is_medieval = TRUE
+	is_rp = TRUE
+
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/german/inkeeper/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to run an Inn and house tired customers!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	return TRUE
+
+/datum/job/german/barkeep
+	title = "Kneiper"
+	en_meaning = "Taverner/Barkeeper"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCiv"
+
+	is_medieval = TRUE
+	is_rp = TRUE
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/german/barkeep/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>Barkeeper</b>. Your job is to man the Tavern to supply the people with wine and food!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+
+
+	return TRUE
+
+/datum/job/german/worker
+	title = "Kleinbauer"
+	en_meaning = "Basic Peasant"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateCiv"
+
+	is_medieval = TRUE
+	is_rp = TRUE
+
+
+	min_positions = 10
+	max_positions = 50
+
+/datum/job/german/worker/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
+
+	H.add_note("Role", "You are a simple <b>Peasant</b>. Live your life!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/german/merchant
+	title = "Kaufmann"
+	en_meaning = "Merchant/Trader"
+	rank_abbreviation = "Kaufmann"
+
+	spawn_location = "JoinLateCivA"
+	is_merchant = TRUE
+
+	whitelisted = TRUE
+	is_medieval = TRUE
+	is_rp = TRUE
+
+	min_positions = 1
+	max_positions = 3
+
+/datum/job/german/merchant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_r_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a trader who decided to move in to the new colony to get rich. Establish your trading post and deal with both the Natives and the Colonists!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.make_businessman()
+
+	return TRUE
+
+/datum/job/german/medic
+	title = "Arzt"
+	en_meaning = "Doctor"
+	rank_abbreviation = "Arzt"
+
+	spawn_location = "JoinLateRNSurgeon"
+
+	is_medic = TRUE
+	is_medieval = TRUE
+	is_rp = TRUE
+
+
+	min_positions = 1
+	max_positions = 20
+
+/datum/job/german/medic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_r_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the people and peasants healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_VERY_HIGH)
+
 
 	return TRUE

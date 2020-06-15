@@ -49,6 +49,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner
 	icon_state = "corner_white"
 
+/* Decal Corner (Black)*/
+
 /obj/effect/floor_decal/corner/black
 	name = "black corner"
 	color = "#505050"
@@ -73,6 +75,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/corner/black/bordercee
 	icon_state = "bordercolorcee"
+
+/* Decal Corner (Blue)*/
 
 /obj/effect/floor_decal/corner/blue
 	name = "blue corner"
@@ -99,6 +103,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/blue/bordercee
 	icon_state = "bordercolorcee"
 
+/* Decal Corner (Pale-Blue)*/
+
 /obj/effect/floor_decal/corner/paleblue
 	name = "pale blue corner"
 	color = COLOR_PALE_BLUE_GRAY
@@ -123,6 +129,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/corner/paleblue/bordercee
 	icon_state = "bordercolorcee"
+
+/* Decal Corner (Green)*/
 
 /obj/effect/floor_decal/corner/green
 	name = "green corner"
@@ -149,6 +157,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/green/bordercee
 	icon_state = "bordercolorcee"
 
+/* Decal Corner (Lime)*/
+
 /obj/effect/floor_decal/corner/lime
 	name = "lime corner"
 	color = "#C0E9AD"
@@ -173,6 +183,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/corner/lime/bordercee
 	icon_state = "bordercolorcee"
+
+/* Decal Corner (Yellow)*/
 
 /obj/effect/floor_decal/corner/yellow
 	name = "yellow corner"
@@ -202,6 +214,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/yellow/bordercee
 	icon_state = "bordercolorcee"
 
+/* Decal Corner (Beige)*/
+
 /obj/effect/floor_decal/corner/beige
 	name = "beige corner"
 	color = COLOR_BEIGE
@@ -226,6 +240,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/corner/beige/bordercee
 	icon_state = "bordercolorcee"
+
+/* Decal Corner (Red)*/
 
 /obj/effect/floor_decal/corner/red
 	name = "red corner"
@@ -255,6 +271,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/red/bordercee
 	icon_state = "bordercolorcee"
 
+/* Decal Corner (Pink)*/
+
 /obj/effect/floor_decal/corner/pink
 	name = "pink corner"
 	color = COLOR_PALE_RED_GRAY
@@ -279,6 +297,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/corner/pink/bordercee
 	icon_state = "bordercolorcee"
+
+/* Decal Corner (Purple)*/
 
 /obj/effect/floor_decal/corner/purple
 	name = "purple corner"
@@ -305,6 +325,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/purple/bordercee
 	icon_state = "bordercolorcee"
 
+/* Decal Corner (Mauve)*/
+
 /obj/effect/floor_decal/corner/mauve
 	name = "mauve corner"
 	color = COLOR_PALE_PURPLE_GRAY
@@ -329,6 +351,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/corner/mauve/bordercee
 	icon_state = "bordercolorcee"
+
+/* Decal Corner (Orange)*/
 
 /obj/effect/floor_decal/corner/orange
 	name = "orange corner"
@@ -355,6 +379,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/orange/bordercee
 	icon_state = "bordercolorcee"
 
+/* Decal Corner (Brown)*/
+
 /obj/effect/floor_decal/corner/brown
 	name = "brown corner"
 	color = COLOR_BROWN
@@ -380,6 +406,7 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/brown/bordercee
 	icon_state = "bordercolorcee"
 
+/* Decal Corner (White)*/
 
 /obj/effect/floor_decal/corner/white
 	name = "white corner"
@@ -407,6 +434,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/white/bordercee
 	icon_state = "bordercolorcee"
 
+/* Decal Corner (Grey)*/
+
 /obj/effect/floor_decal/corner/grey
 	name = "grey corner"
 	color = "#8D8C8C"
@@ -431,6 +460,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/corner/grey/bordercee
 	icon_state = "bordercolorcee"
+
+/* Decal Corner (Light-Grey)*/
 
 /obj/effect/floor_decal/corner/lightgrey
 	name = "lightgrey corner"
@@ -457,6 +488,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/lightgrey/bordercee
 	icon_state = "bordercolorcee"
 
+/* Spline Decal*/
+
 /obj/effect/floor_decal/spline/plain
 	name = "spline - plain"
 	icon_state = "spline_plain"
@@ -478,6 +511,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/spline/fancy/wood/three_quarters
 	icon_state = "spline_fancy_full"
 
+/* Industrial Warning Decal*/
+
 /obj/effect/floor_decal/industrial/warning
 	name = "hazard stripes"
 	icon_state = "warning"
@@ -490,6 +525,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/industrial/warning/cee
 	icon_state = "warningcee"
+
+/* Industrial Warning Decal (Danger)*/
 
 /obj/effect/floor_decal/industrial/danger
 	name = "hazard stripes"
@@ -504,6 +541,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/industrial/danger/cee
 	icon_state = "dangercee"
 
+/* Industrial Warning Decal (Dust)*/
+
 /obj/effect/floor_decal/industrial/warning/dust
 	name = "hazard stripes"
 	icon_state = "warning_dust"
@@ -512,12 +551,16 @@ var/list/floor_decals = list()
 	name = "hazard stripes"
 	icon_state = "warningcorner_dust"
 
+/* Hatch Decal*/
+
 /obj/effect/floor_decal/industrial/hatch
 	name = "hatched marking"
 	icon_state = "delivery"
 
 /obj/effect/floor_decal/industrial/hatch/yellow
 	color = "#CFCF55"
+
+/* Industrial Outline Decal*/
 
 /obj/effect/floor_decal/industrial/outline
 	name = "white outline"
@@ -535,9 +578,13 @@ var/list/floor_decals = list()
 	name = "grey outline"
 	color = "#808080"
 
+/* Industrial Loading Decal*/
+
 /obj/effect/floor_decal/industrial/loading
 	name = "loading area"
 	icon_state = "loadingarea"
+
+/* Signage Decal*/
 
 /obj/effect/floor_decal/safensound
 	name = "SafeNSound"
@@ -551,6 +598,8 @@ var/list/floor_decals = list()
 	name = "Wash it"
 	icon_state = "washit"
 
+/* Dirt wall Decal*/
+
 /obj/effect/floor_decal/dirtwall
 	name = "dirt wall"
 	icon = 'icons/obj/structures.dmi'
@@ -560,10 +609,14 @@ var/list/floor_decals = list()
 	name = "dirt wall"
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "dirt_wall_66%"
+
 /obj/effect/floor_decal/dirtwall/inc33
 	name = "dirt wall"
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "dirt_wall_33%"
+
+/* Carpet Floor Decal*/
+
 /obj/effect/floor_decal/carpet
 	name = "carpet"
 	icon = 'icons/turf/flooring/carpet.dmi'
@@ -579,13 +632,19 @@ var/list/floor_decals = list()
 	icon = 'icons/turf/flooring/carpet.dmi'
 	icon_state = "carpet_corners"
 
+/* Chapel Floor*/
+
 /obj/effect/floor_decal/chapel
 	name = "chapel"
 	icon_state = "chapel"
 
+/* Rust Floor*/
+
 /obj/effect/floor_decal/rust
 	name = "rust"
 	icon_state = "rust"
+
+/* Rust Floor - Mono*/
 
 /obj/effect/floor_decal/rust/mono_rusted1
 	icon_state = "mono_rusted1"
@@ -596,6 +655,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/rust/mono_rusted3
 	icon_state = "mono_rusted3"
 
+/* Rust Floor - Part Rusted*/
+
 /obj/effect/floor_decal/rust/part_rusted1
 	icon_state = "part_rusted1"
 
@@ -604,6 +665,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/rust/part_rusted3
 	icon_state = "part_rusted3"
+
+/* Rust Floor - Color Rusted*/
 
 /obj/effect/floor_decal/rust/color_rusted
 	icon_state = "color_rusted"
@@ -617,17 +680,25 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/rust/color_rustedcee
 	icon_state = "color_rustedcee"
 
+/* Rust Floor - Steel Rusted*/
+
 /obj/effect/floor_decal/rust/steel_decals_rusted1
 	icon_state = "steel_decals_rusted1"
 
 /obj/effect/floor_decal/rust/steel_decals_rusted2
 	icon_state = "steel_decals_rusted2"
 
-//Old tile
+//////////////////////////////////////////////|
+/* Old-Tile Floor Decal (and colors, see index)
+
+- Regular Old-Tile Floor | White Old-Tile Floor | Blue Old-Tile Floor | Yellow Old-Tile Floor | Grey Old-Tile Floor |
+| Beige Old-Tile Floor | Red Old-Tile Floor | Purple Old-Tile Floor | Green Old-Tile Floor |*/
 
 /obj/effect/floor_decal/corner_oldtile
 	name = "corner oldtile"
 	icon_state = "corner_oldtile"
+
+/* Old-Tile Floor Decal (White)*/
 
 /obj/effect/floor_decal/corner_oldtile/white
 	name = "corner oldtile"
@@ -642,6 +713,8 @@ var/list/floor_decals = list()
 	name = "corner oldtile full"
 	icon_state = "corner_oldtile_full"
 
+/* Old-Tile Floor Decal (Blue)*/
+
 /obj/effect/floor_decal/corner_oldtile/blue
 	name = "corner oldtile"
 	icon_state = "corner_oldtile"
@@ -654,6 +727,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner_oldtile/blue/full
 	name = "corner oldtile full"
 	icon_state = "corner_oldtile_full"
+
+/* Old-Tile Floor Decal (Yellow)*/
 
 /obj/effect/floor_decal/corner_oldtile/yellow
 	name = "corner oldtile"
@@ -668,6 +743,8 @@ var/list/floor_decals = list()
 	name = "corner oldtile full"
 	icon_state = "corner_oldtile_full"
 
+/* Old-Tile Floor Decal (Grey)*/
+
 /obj/effect/floor_decal/corner_oldtile/gray
 	name = "corner oldtile"
 	icon_state = "corner_oldtile"
@@ -680,6 +757,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner_oldtile/gray/full
 	name = "corner oldtile full"
 	icon_state = "corner_oldtile_full"
+
+/* Old-Tile Floor Decal (Beige)*/
 
 /obj/effect/floor_decal/corner_oldtile/beige
 	name = "corner oldtile"
@@ -694,6 +773,8 @@ var/list/floor_decals = list()
 	name = "corner oldtile full"
 	icon_state = "corner_oldtile_full"
 
+/* Old-Tile Floor Decal (Red)*/
+
 /obj/effect/floor_decal/corner_oldtile/red
 	name = "corner oldtile"
 	icon_state = "corner_oldtile"
@@ -706,6 +787,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner_oldtile/red/full
 	name = "corner oldtile full"
 	icon_state = "corner_oldtile_full"
+
+/* Old-Tile Floor Decal (Purple)*/
 
 /obj/effect/floor_decal/corner_oldtile/purple
 	name = "corner oldtile"
@@ -720,6 +803,8 @@ var/list/floor_decals = list()
 	name = "corner oldtile full"
 	icon_state = "corner_oldtile_full"
 
+/* Old-Tile Floor Decal (Green)*/
+
 /obj/effect/floor_decal/corner_oldtile/green
 	name = "corner oldtile"
 	icon_state = "corner_oldtile"
@@ -733,11 +818,16 @@ var/list/floor_decals = list()
 	name = "corner oldtile full"
 	icon_state = "corner_oldtile_full"
 
-//Kafel
+///////////////////////////////////////////|
+/* Kafel Floor Decal (and colors, see index)
+
+- Regular Kafel | White Kafel | Blue Kafel | Yellow Kafel | Grey Kafel | Beige Kafel | Red Kafel | Purple Kafel | Green Kafel |*/
 
 /obj/effect/floor_decal/corner_kafel
 	name = "corner kafel"
 	icon_state = "corner_kafel"
+
+/* Kafel Floor (White) Decal*/
 
 /obj/effect/floor_decal/corner_kafel/white
 	name = "corner kafel"
@@ -752,6 +842,8 @@ var/list/floor_decals = list()
 	name = "corner kafel full"
 	icon_state = "corner_kafel_full"
 
+/* Kafel Floor (Blue) Decal*/
+
 /obj/effect/floor_decal/corner_kafel/blue
 	name = "corner kafel"
 	icon_state = "corner_kafel"
@@ -764,6 +856,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner_kafel/blue/full
 	name = "corner kafel full"
 	icon_state = "corner_kafel_full"
+
+/* Kafel Floor (Yellow) Decal*/
 
 /obj/effect/floor_decal/corner_kafel/yellow
 	name = "corner kafel"
@@ -778,6 +872,8 @@ var/list/floor_decals = list()
 	name = "corner kafel full"
 	icon_state = "corner_kafel_full"
 
+/* Kafel Floor (Grey) Decal*/
+
 /obj/effect/floor_decal/corner_kafel/gray
 	name = "corner kafel"
 	icon_state = "corner_kafel"
@@ -790,6 +886,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner_kafel/gray/full
 	name = "corner kafel full"
 	icon_state = "corner_kafel_full"
+
+/* Kafel Floor (Beige) Decal*/
 
 /obj/effect/floor_decal/corner_kafel/beige
 	name = "corner kafel"
@@ -804,6 +902,8 @@ var/list/floor_decals = list()
 	name = "corner kafel full"
 	icon_state = "corner_kafel_full"
 
+/* Kafel Floor (Red) Decal*/
+
 /obj/effect/floor_decal/corner_kafel/red
 	name = "corner kafel"
 	icon_state = "corner_kafel"
@@ -816,6 +916,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner_kafel/red/full
 	name = "corner kafel full"
 	icon_state = "corner_kafel_full"
+
+/* Kafel Floor (Purple) Decal*/
 
 /obj/effect/floor_decal/corner_kafel/purple
 	name = "corner kafel"
@@ -830,6 +932,8 @@ var/list/floor_decals = list()
 	name = "corner kafel full"
 	icon_state = "corner_kafel_full"
 
+/* Kafel Floor (Green) Decal*/
+
 /obj/effect/floor_decal/corner_kafel/green
 	name = "corner kafel"
 	icon_state = "corner_kafel"
@@ -843,7 +947,37 @@ var/list/floor_decals = list()
 	name = "corner kafel full"
 	icon_state = "corner_kafel_full"
 
-//Techfloor
+/* Tech-Floor*/
+
+/obj/effect/floor_decal/techfloor
+	name = "techfloor edges"
+	icon_state = "techfloor_edges"
+
+/obj/effect/floor_decal/techfloor/corner
+	name = "techfloor corner"
+	icon_state = "techfloor_corners"
+
+/* Tech-Floor - Orange*/
+
+/obj/effect/floor_decal/techfloor/orange
+	name = "techfloor edges"
+	icon_state = "techfloororange_edges"
+
+/obj/effect/floor_decal/techfloor/orange/corner
+	name = "techfloor corner"
+	icon_state = "techfloororange_corners"
+
+/* Tech-Floor - Hole*/
+
+/obj/effect/floor_decal/techfloor/hole
+	name = "hole left"
+	icon_state = "techfloor_hole_left"
+
+/obj/effect/floor_decal/techfloor/hole/right
+	name = "hole right"
+	icon_state = "techfloor_hole_right"
+
+/* Tech-Floor - Grey*/
 
 /obj/effect/floor_decal/corner_techfloor_gray
 	name = "corner techfloorgray"
@@ -857,6 +991,8 @@ var/list/floor_decals = list()
 	name = "corner techfloorgray full"
 	icon_state = "corner_techfloor_gray_full"
 
+/* Tech-Floor - Grid*/
+
 /obj/effect/floor_decal/corner_techfloor_grid
 	name = "corner techfloorgrid"
 	icon_state = "corner_techfloor_grid"
@@ -869,17 +1005,7 @@ var/list/floor_decals = list()
 	name = "corner techfloorgrid full"
 	icon_state = "corner_techfloor_grid_full"
 
-/obj/effect/floor_decal/corner_steel_grid
-	name = "corner steel_grid"
-	icon_state = "steel_grid"
-
-/obj/effect/floor_decal/corner_steel_grid/diagonal
-	name = "corner tsteel_grid diagonal"
-	icon_state = "steel_grid_diagonal"
-
-/obj/effect/floor_decal/corner_steel_grid/full
-	name = "corner steel_grid full"
-	icon_state = "steel_grid_full"
+/* Border-Floor*/
 
 /obj/effect/floor_decal/borderfloor
 	name = "border floor"
@@ -897,6 +1023,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/borderfloor/cee
 	icon_state = "borderfloorcee"
 
+/* Border-Floor Black*/
+
 /obj/effect/floor_decal/borderfloorblack
 	name = "border floor"
 	icon_state = "borderfloor_black"
@@ -913,6 +1041,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/borderfloorblack/cee
 	icon_state = "borderfloorcee_black"
 
+/* Border-Floor White*/
+
 /obj/effect/floor_decal/borderfloorwhite
 	name = "border floor"
 	icon_state = "borderfloor_white"
@@ -928,6 +1058,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/borderfloorwhite/cee
 	icon_state = "borderfloorcee_white"
+
+/* Steel Decal*/
 
 /obj/effect/floor_decal/steeldecal
 	name = "steel decal"
@@ -963,6 +1095,8 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/steeldecal/steel_decals10
 	icon_state = "steel_decals10"
 
+/* Steel Decal - Central*/
+
 /obj/effect/floor_decal/steeldecal/steel_decals_central1
 	icon_state = "steel_decals_central1"
 
@@ -984,33 +1118,21 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/steeldecal/steel_decals_central7
 	icon_state = "steel_decals_central7"
 
+/* Steel Decal - Grid*/
 
-/obj/effect/floor_decal/techfloor
-	name = "techfloor edges"
-	icon_state = "techfloor_edges"
+/obj/effect/floor_decal/corner_steel_grid
+	name = "corner steel_grid"
+	icon_state = "steel_grid"
 
-/obj/effect/floor_decal/techfloor/corner
-	name = "techfloor corner"
-	icon_state = "techfloor_corners"
+/obj/effect/floor_decal/corner_steel_grid/diagonal
+	name = "corner tsteel_grid diagonal"
+	icon_state = "steel_grid_diagonal"
 
-/obj/effect/floor_decal/techfloor/orange
-	name = "techfloor edges"
-	icon_state = "techfloororange_edges"
+/obj/effect/floor_decal/corner_steel_grid/full
+	name = "corner steel_grid full"
+	icon_state = "steel_grid_full"
 
-/obj/effect/floor_decal/techfloor/orange/corner
-	name = "techfloor corner"
-	icon_state = "techfloororange_corners"
-
-/obj/effect/floor_decal/techfloor/hole
-	name = "hole left"
-	icon_state = "techfloor_hole_left"
-
-/obj/effect/floor_decal/techfloor/hole/right
-	name = "hole right"
-	icon_state = "techfloor_hole_right"
-
-
-//Grass for lands scapes
+/* Grass (Landscaping)*/
 
 /obj/effect/floor_decal/grass_edge
 	name = "grass edge"
@@ -1027,3 +1149,20 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/grass_edge/corner/dead
 	name = "dead grass edge"
 	icon_state = "dead_grass_edge_corner"
+
+/* Tatami (Bamboo Floor Bordering For Mats)*/
+
+/obj/effect/floor_decal/tatami
+	icon_state = "tatami_frame"
+
+/obj/effect/floor_decal/tatami/angle
+	icon_state = "tatami_frame_angle"
+
+/obj/effect/floor_decal/tatami/full
+	icon_state = "tatami_frame_full"
+
+/obj/effect/floor_decal/tatami/corner
+	icon_state = "tatami_frame_corner"
+
+/obj/effect/floor_decal/tatami/cee
+	icon_state = "tatami_frame_cee"

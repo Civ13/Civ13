@@ -7,7 +7,7 @@
 // .info					{color: #E1E1FF;} -> this is removed because it was the same as .notice
 
 client/script = {"<style>
-body					{font-family: "Book Antiqua", Verdana, sans-serif; font-size: 0.75em; background-color: #271a0c; color: #E1E1D7}
+body					{font-family: "Book Antiqua", Verdana, sans-serif; font-size: 1em; background-color: #271a0c; color: #E1E1D7}
 
 h1, h2, h3, h4, h5, h6	{color: #E1E1FF; font-family: "Book Antiqua", Georgia, Verdana, sans-serif;}
 
@@ -92,8 +92,8 @@ h1.alert, h2.alert		{color: #ff0000;}
 
 .interface				{color: #704C70;}
 
-.good                   {color: #839E69; font-weight: bold;}
-.bad                    {color: #ff3737; font-weight: bold;}
+.good				   {color: #839E69; font-weight: bold;}
+.bad					{color: #ff3737; font-weight: bold;}
 
 BIG IMG.icon 			{width: 32px; height: 32px;}
 

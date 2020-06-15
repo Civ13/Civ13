@@ -120,7 +120,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 /obj/item/ammo_magazine/sharps
 	name = "ammo box (.45-70 Government)"
 	icon_state = "oldbox"
-	mag_type = SPEEDLOADER
 	caliber = "a4570"
 	w_class = 3
 
@@ -132,7 +131,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 /obj/item/ammo_magazine/c577
 	name = "ammo box (.577/450 Martini-Henry)"
 	icon_state = "mhbox"
-	mag_type = SPEEDLOADER
 	caliber = "a577"
 	w_class = 3
 
@@ -314,11 +312,11 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/mauser
-	name = "Mauser clip (9x19mm)"
+	name = "Mauser clip (7.63mm)"
 	icon_state = "mauser"
-	caliber = "a9x19"
+	caliber = "a762x25"
 
-	ammo_type = /obj/item/ammo_casing/a9x19
+	ammo_type = /obj/item/ammo_casing/a762x25
 	max_ammo = 10
 	weight = 0.06
 	multiple_sprites = TRUE
@@ -335,7 +333,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 21
 	weight = 0.4
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c8x27
@@ -346,7 +344,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 24
 	weight = 0.5
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c9mm_jap_revolver
@@ -358,11 +356,11 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.70
 
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c32
-	name = "bullet pouch (.33 long)"
+	name = "bullet pouch (.32 S&W Long)"
 	desc = "a pouch of 26 .32 bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a32
@@ -370,7 +368,19 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 26
 	weight = 0.9
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
+	pouch = TRUE
+
+/obj/item/ammo_magazine/c32acp
+	name = "bullet pouch (.32 ACP)"
+	desc = "a pouch of 26 .32 ACP bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a32acp
+	caliber = "a32"
+	max_ammo = 26
+	weight = 0.9
+	multiple_sprites = TRUE
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c38
@@ -382,7 +392,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 26
 	weight = 0.9
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c45
@@ -394,7 +404,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 24
 	weight = 0.9
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c455
@@ -406,7 +416,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 24
 	weight = 0.95
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c41
@@ -418,7 +428,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 10
 	weight = 0.1
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/webly445
@@ -430,7 +440,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 10
 	weight = 0.1
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c44
@@ -442,7 +452,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 30
 	weight = 1.1
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c44magnum
@@ -454,7 +464,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 30
 	weight = 1.1
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c8x50
@@ -466,7 +476,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 24
 	weight = 0.95
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	pouch = TRUE
 
 /obj/item/ammo_magazine/murata
@@ -542,7 +552,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 18
 	weight = 0.4
 	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
+
 	desc = "A pouch containing 18 .44 pistol rounds."
 
 /obj/item/ammo_magazine/shellbox
@@ -566,3 +576,8 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "shotgun beanbag box (.12 gauge)"
 	icon_state = "beanbox"
 	ammo_type = /obj/item/ammo_casing/shotgun/beanbag
+
+/obj/item/ammo_magazine/shellbox/rubber
+	name = "shotgun rubber box (.12 gauge)"
+	icon_state = "beanbox"
+	ammo_type = /obj/item/ammo_casing/shotgun/rubber

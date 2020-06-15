@@ -64,6 +64,26 @@
 			cistern = !cistern
 			update_icon()
 			return
+	
+	if (istype(src, /obj/structure/toilet/pit_latrine)) 
+		if (istype(I, /obj/item/weapon/barrier))
+			var/obj/structure/toilet/pit_latrine/PT = src
+			visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
+			PT.filled++
+			qdel(I)
+			if (PT.filled >= 4)
+				visible_message("The pit latrine gets covered.")
+				qdel(src)
+				return
+				
+	if (istype(src, /obj/structure/toilet/outhouse))
+		if (istype(I, /obj/item/weapon/hammer))
+			visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
+			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+			if (do_after(user,50,src))
+				visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
+				qdel(src)
+				return
 
 	if (istype(I, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = I
@@ -119,12 +139,11 @@
 	open = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	var/filled = 0
 
 /obj/structure/toilet/pit_latrine/New()
 	open = TRUE
 
-/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
-	return
 /obj/structure/toilet/pit_latrine/attack_hand(mob/living/user as mob)
 	return
 
@@ -149,9 +168,6 @@
 
 /obj/structure/toilet/outhouse/New()
 	open = FALSE
-
-/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
-	return
 
 /obj/structure/toilet/outhouse/attack_hand(mob/living/user as mob)
 	if(open == FALSE)
@@ -312,7 +328,7 @@
 	icon_state = "w_bathtub"
 	cleanliness = 100
 
-	            //STONE AGE WOODEN BATHTUB//
+				//STONE AGE WOODEN BATHTUB//
 
 			// EARLY COPPER AGE
 /obj/structure/shower/bathtub/stone
@@ -498,7 +514,7 @@
 				mymist = null
 				ismist = FALSE
 
-/mob/living/carbon/human/proc/is_nude()
+/mob/living/human/proc/is_nude()
 	return (!w_uniform) ? 1 : 0
 
 //Yes, showers are super powerful as far as washing goes.
@@ -510,8 +526,8 @@
 		L.ExtinguishMob()
 		L.fire_stacks = -20 //Douse ourselves with water to avoid fire more easily
 
-	if (iscarbon(O))
-		var/mob/living/carbon/M = O
+	if (ishuman(O))
+		var/mob/living/human/M = O
 		if (M.r_hand)
 			M.r_hand.clean_blood()
 		if (M.l_hand)
@@ -528,7 +544,7 @@
 			M.touching.remove_any(remove_amount)
 
 		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+			var/mob/living/human/H = M
 			H.color = initial(H.color)
 
 			var/washgloves = TRUE
@@ -635,7 +651,7 @@
 	M.bodytemperature += temp_adj
 
 	if (ishuman(M))
-		var/mob/living/carbon/human/H = M
+		var/mob/living/human/H = M
 		if (temperature >= H.species.heat_level_1)
 			H << "<span class='danger'>The water is searing hot!</span>"
 		else if (temperature <= H.species.cold_level_1)
@@ -704,7 +720,7 @@
 	if (!Adjacent(user))
 		return
 	if (ishuman(user))
-		var/mob/living/carbon/human/H = user
+		var/mob/living/human/H = user
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
 		if (user.hand)
 			temp = H.organs_by_name["l_hand"]
@@ -721,7 +737,10 @@
 					H.rad_act(5)
 				else
 					if (!istype(src, /obj/structure/sink/well))
-						if (prob(15) && !H.orc && !H.crab)
+						var/dmod = 1
+						if (H.find_trait("Weak Immune System"))
+							dmod = 2
+						if (prob(15*dmod) && !H.orc && !H.crab)
 							if (H.disease == 0)
 								H.disease_progression = 0
 								H.disease_type ="cholera"
@@ -875,6 +894,7 @@
 	sound = 'sound/effects/watersplash.ogg'
 	max_volume = 750
 	volume = 750
+	mosquito_limit = 0
 
 /obj/structure/sink/well/sandstone
 	name = "sandstone well"
@@ -931,10 +951,11 @@
 
 	spawn(2000)
 		if (map.chad_mode)
+			mosquito_limit = 1
 			mosquito_proc()
 
 /obj/structure/sink/proc/mosquito_proc()
-	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
+	if (istype(src, /obj/structure/sink/puddle))
 		if (mosquito_count < mosquito_limit && mosquito_limit != 0)
 			var/mob/living/simple_animal/mosquito/NM = new/mob/living/simple_animal/mosquito(src.loc)
 			if(NM != null)//Fix for mosquito weather death.

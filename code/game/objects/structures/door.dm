@@ -7,6 +7,7 @@
 	var/locked = FALSE //for customized locks in RP
 
 	var/override_material = FALSE
+	var/override_opacity = FALSE
 
 	icon = 'icons/obj/doors/material_doors.dmi'
 	icon_state = "metal"
@@ -58,15 +59,23 @@
 
 /obj/structure/simple_door/New(var/newloc, var/material_name)
 	..()
+	opacity = TRUE
 	update_material(material_name)
 	door_list += src
 	if (material)
 		if (get_material_name() == "wood")
 			flammable = TRUE
+	for(var/obj/roof/R in range(1,src))
+		R.update_transparency(0)
+
 /obj/structure/simple_door/Destroy()
 	door_list -= src
 	..()
-
+	spawn(1)
+		for(var/obj/roof/R in loc)
+			R.collapse_check()
+		for(var/obj/roof/R in range(1,src))
+			R.update_transparency(0)
 /obj/structure/simple_door/proc/update_material(var/material_name)
 	if (!material_name)
 		material_name = DEFAULT_WALL_MATERIAL
@@ -86,13 +95,9 @@
 		opacity = FALSE
 	else
 		opacity = TRUE
-	if (material.products_need_process())
-		processing_objects |= src
-	update_nearby_tiles(need_rebuild=1)
 
 /obj/structure/simple_door/Destroy()
 	processing_objects -= src
-	update_nearby_tiles()
 	..()
 
 /obj/structure/simple_door/get_material()
@@ -118,8 +123,8 @@
 		if (world.time - user.last_bumped <= 60)
 			return FALSE
 		if (M.client)
-			if (iscarbon(M))
-				var/mob/living/carbon/C = M
+			if (ishuman(M))
+				var/mob/living/human/C = M
 				if (!C.handcuffed)
 					SwitchState()
 			else
@@ -156,9 +161,10 @@
 		state = TRUE
 		update_icon()
 		isSwitchingStates = FALSE
-		update_nearby_tiles()
 		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
+		for(var/obj/roof/R in range(1,src))
+			R.update_transparency(1)
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
@@ -169,14 +175,17 @@
 	flick("[basic_icon]closing",src)
 	spawn (10)
 		density = TRUE
-		opacity = TRUE
+		if(override_opacity)
+			opacity = FALSE
+		else
+			opacity = TRUE
 		state = FALSE
 		update_icon()
 		isSwitchingStates = FALSE
-		update_nearby_tiles()
 		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
-
+		for(var/obj/roof/R in range(1,src))
+			R.update_transparency(0)
 /obj/structure/simple_door/Destroy()
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
@@ -265,15 +274,11 @@
 			CheckHardness()
 	return
 
-/obj/structure/simple_door/process()
-	if (!material.radioactivity)
-		return
-	for (var/mob/living/L in range(1,src))
-		L.apply_effect(round(material.radioactivity/3),IRRADIATE,0)
-
 /obj/structure/simple_door/key_door/custom/jail/
 	var/buildstackamount = 0//How much mats it takes to make it.
 	var/buildstack = /obj/item/stack/rods //the item it is made with.
+	override_opacity = TRUE
+	opacity = FALSE
 
 /obj/structure/simple_door/key_door/custom/jail/woodjail/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
@@ -370,13 +375,14 @@
 	..(newloc, "wood")
 	basic_icon = "fence"
 	icon_state = "fence"
-	name = "Fence Gate"
+	name = "fence gate"
+	override_opacity = TRUE
 	opacity = FALSE
 /obj/structure/simple_door/fence/picket/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	basic_icon = "picketfence"
 	icon_state = "picketfence"
-	name = "Picket Fence Gate"
+	name = "picket fence gate"
 /obj/structure/simple_door/cell/New(var/newloc,var/material_name)
 	..(newloc, "iron")
 /obj/structure/simple_door/stone/New(var/newloc,var/material_name)

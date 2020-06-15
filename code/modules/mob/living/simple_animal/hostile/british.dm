@@ -3,7 +3,6 @@
 	desc = "A british soldier."
 	icon_state = "britishmelee"
 	icon_dead = "britishmelee_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -25,7 +24,7 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 	mob_size = MOB_MEDIUM
 
-	var/corpse = /mob/living/carbon/human/corpse/british
+	var/corpse = /mob/living/human/corpse/british
 
 	faction = BRITISH
 
@@ -42,7 +41,6 @@
 	desc = "A british town militia."
 	icon_state = "britishmelee"
 	icon_dead = "britishmelee_dead"
-	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -63,7 +61,7 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 
 
-	var/corpse = /mob/living/carbon/human/corpse/british
+	var/corpse = /mob/living/human/corpse/british
 	faction = CIVILIAN
 
 

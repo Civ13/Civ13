@@ -1,8 +1,8 @@
 /datum/reagents/metabolism
 	var/metabolism_class //CHEM_TOUCH, CHEM_INGEST, or CHEM_BLOOD
-	var/mob/living/carbon/parent
+	var/mob/living/human/parent
 
-/datum/reagents/metabolism/New(var/max = 100, mob/living/carbon/parent_mob, var/met_class)
+/datum/reagents/metabolism/New(var/max = 100, mob/living/human/parent_mob, var/met_class)
 	..(max, parent_mob)
 
 	metabolism_class = met_class
@@ -13,7 +13,7 @@
 
 	var/metabolism_type = FALSE //non-human mobs
 	if (ishuman(parent))
-		var/mob/living/carbon/human/H = parent
+		var/mob/living/human/H = parent
 		metabolism_type = H.species.reagent_tag
 
 	for (var/datum/reagent/current in reagent_list)

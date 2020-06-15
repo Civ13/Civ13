@@ -1,4 +1,4 @@
-/mob/living/carbon/human/var/next_emote = list(
+/mob/living/human/var/next_emote = list(
 	"surrender" = -1,
 	"vocal" = -1,
 	"special" = -1,
@@ -16,7 +16,7 @@ var/list/vocal_emotes = list(
 	"charge",
 	"gasp")
 
-/mob/living/carbon/human/emote(var/act,var/m_type=1,var/message = null)
+/mob/living/human/emote(var/act,var/m_type=1,var/message = null)
 
 	if (!vocal_emotes.Find(act) && world.time < next_emote["normal"])
 		return
@@ -404,6 +404,8 @@ var/list/vocal_emotes = list(
 								if (AMERICAN)
 									if (map.ID == MAP_ARAB_TOWN)
 										playsound(get_turf(src), "charge_ISRAELI", 100)
+									else if (original_job_title == "Filipino Scout")
+										playsound(get_turf(src), "charge_FILIPINO", 100)
 									else
 										playsound(get_turf(src), "charge_AMERICAN", 100)
 								if (VIETNAMESE)

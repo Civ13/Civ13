@@ -1,6 +1,8 @@
 /obj/item/weapon/gun/projectile/shotgun
+	maxhealth = 45
 	gun_type = GUN_TYPE_SHOTGUN
-	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon = 'icons/obj/guns/rifles.dmi'
 	// 15% more accurate than SMGs
 	equiptimer = 17
 	accuracy_list = list(
@@ -53,9 +55,11 @@
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
 
+	gtype = "shotgun"
+
 /obj/item/weapon/gun/projectile/shotgun/pump
-	name = "pump-action shotgun"
-	desc = "A pump-action shotgun chambered in 12 gauge rounds."
+	name = "Pump-Action Shotgun"
+	desc = "A placeholder shotgun chambered in 12 gauge rounds."
 	icon_state = "shotgun"
 	item_state = "shotgun"
 	max_shells = 6
@@ -83,7 +87,7 @@
 		recentpump = world.time
 
 /obj/item/weapon/gun/projectile/shotgun/pump/proc/pump(mob/M as mob)
-	playsound(M, 'sound/weapons/shotgunpump.ogg', 60, TRUE)
+	playsound(M, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, TRUE)
 
 	if (chambered)//We have a shell in the chamber
 		chambered.loc = get_turf(src)//Eject casing
@@ -98,8 +102,8 @@
 	update_icon()
 
 /obj/item/weapon/gun/projectile/shotgun/coachgun
-	name = "coach gun"
-	desc = "a double-barreled shotgun, commonly used by messengers and on stagecoaches."
+	name = "Coach Gun"
+	desc = "A double-barreled shotgun, commonly used by messengers and on stagecoaches."
 	icon_state = "doublebarreled"
 	item_state = "shotgun"
 	max_shells = 2
@@ -173,3 +177,48 @@
 			new/obj/effect/effect/smoke/chem(get_step(src, dir))
 		spawn (6)
 			new/obj/effect/effect/smoke/chem(get_step(src, dir))
+
+
+/obj/item/weapon/gun/projectile/shotgun/remington870
+	name = "Remington 870 Express"
+	desc = "A pump-action shotgun with a 3in 12 gauge chamber."
+	icon_state = "remington870"
+	item_state = "shotgun"
+	max_shells = 7
+	w_class = 4.0
+	force = 10
+	flags =  CONDUCT
+	slot_flags = SLOT_SHOULDER
+	caliber = "12gauge"
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/shotgun
+	handle_casings = HOLD_CASINGS
+	stat = "rifle"
+	move_delay = 4
+	var/recentpump = FALSE // to prevent spammage
+	load_delay = 5
+
+/obj/item/weapon/gun/projectile/shotgun/remington870/consume_next_projectile()
+	if (chambered)
+		return chambered.BB
+	return null
+
+/obj/item/weapon/gun/projectile/shotgun/remington870/attack_self(mob/living/user as mob)
+	if (world.time >= recentpump + 10)
+		pump(user)
+		recentpump = world.time
+
+/obj/item/weapon/gun/projectile/shotgun/remington870/proc/pump(mob/M as mob)
+	playsound(M, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, TRUE)
+
+	if (chambered)//We have a shell in the chamber
+		chambered.loc = get_turf(src)//Eject casing
+		chambered.randomrotation()
+		chambered = null
+
+	if (loaded.len)
+		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
+		loaded -= AC //Remove casing from loaded list.
+		chambered = AC
+
+	update_icon()

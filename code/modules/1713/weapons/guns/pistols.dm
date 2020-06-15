@@ -1,6 +1,7 @@
 /obj/item/weapon/gun/projectile/pistol
 	// less accurate than rifles against still targets, but better against moving targets
 	// less accurate than semiautos but with the same ratios
+	icon = 'icons/obj/guns/pistols.dmi'
 	move_delay = 1
 	fire_delay = 3
 	item_state = "pistol"
@@ -8,6 +9,10 @@
 	gun_safety = TRUE
 	gun_type = GUN_TYPE_PISTOL
 	handle_casings = EJECT_CASINGS
+	silencer_fire_sound = 'sound/weapons/guns/fire/Glock17-SD.ogg'
+	maxhealth = 45
+	gtype = "pistol"
+
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(
@@ -54,7 +59,7 @@
 
 	accuracy_increase_mod = 1.50
 	accuracy_decrease_mod = 2.00
-	KD_chance = KD_CHANCE_LOW
+	KD_chance = KD_CHANCE_MEDIUM
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
 
@@ -66,12 +71,12 @@
 		return ..()
 
 /obj/item/weapon/gun/projectile/pistol/nambu
-	name = "Nambu Pistol"
-	desc = "Standard issue Japanese pistol. Chambered in 8mm nambu ammunition."
-	icon_state = "nambu"
+	name = "Type A Nambu"
+	desc = "Standard issue Japanese pistol. Chambered in 8x22mm Nambu."
+	icon_state = "nambu_ww2"
 	w_class = 2
 	caliber = "c8mmnambu"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
 	magazine_type = /obj/item/ammo_magazine/c8mmnambu
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/c8mmnambu
@@ -81,18 +86,18 @@
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
 	if (ammo_magazine)
-		icon_state = "nambu"
+		icon_state = "nambu_ww2"
 	else
-		icon_state = "nambu0"
+		icon_state = "nambu_ww20"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu
-	name = "Nambu Type 14"
-	desc = "Standard issue Japanese pistol. Chambered in 8mm nambu ammunition."
+	name = "Type 14 Nambu"
+	desc = "Standard issue Japanese pistol. Chambered in 8x22mm Nambu."
 	icon_state = "nambu_ww2"
 	w_class = 2
 	caliber = "c8mmnambu"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
 	magazine_type = /obj/item/ammo_magazine/c8mmnambu
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/c8mmnambu
@@ -113,7 +118,7 @@
 	icon_state = "luger"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/luger
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -134,7 +139,7 @@
 	icon_state = "waltherp38"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/walther
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -156,7 +161,7 @@
 	fire_delay = 2.3
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
@@ -164,6 +169,11 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
+
+/obj/item/weapon/gun/projectile/pistol/glock17/standardized
+	magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+
+
 /obj/item/weapon/gun/projectile/pistol/glock17/update_icon()
 	..()
 	if (ammo_magazine)
@@ -172,14 +182,123 @@
 		icon_state = "glock170"
 	return
 
+/obj/item/weapon/gun/projectile/pistol/sig250
+	name = "SIG 250"
+	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
+	icon_state = "sig250"
+	item_state = "sig250"
+	fire_delay = 2.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
+	magazine_type = /obj/item/ammo_magazine/sig250
+	weight = 0.594
+	max_shells = 17 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/sig250/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "sig250"
+	else
+		icon_state = "sig250_open"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/pl14
+	name = "PL-14"
+	desc = "A modern experimental pistol made by Kalashnikov (chambered in 9x19mm)."
+	icon_state = "pl14"
+	fire_delay = 1.8
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
+	magazine_type = /obj/item/ammo_magazine/pl14
+	weight = 0.594
+	max_shells = 16 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.15
+
+/obj/item/weapon/gun/projectile/pistol/mp443
+	name = "MP-443"
+	desc = "A modern pistol, loaded on 9x19mm, made by Russia."
+	icon_state = "colt"
+	fire_delay = 3.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
+	magazine_type = /obj/item/ammo_magazine/mp443
+	weight = 0.594
+	max_shells = 17
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/mp443/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "mp443"
+	else
+		icon_state = "mp443_open"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/tarus
+	name = "Tarus G3"
+	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
+	icon_state = "tarusg3"
+	fire_delay = 2.3
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
+	magazine_type = /obj/item/ammo_magazine/glock17
+	weight = 0.594
+	max_shells = 17 //Glock 17 real capacity
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.9
+/obj/item/weapon/gun/projectile/pistol/tarus/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "tarusg3"
+	else
+		icon_state = "tarusg3_open"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/p220
+	name = "SIG Sauer P220"
+	desc = "The SIG Sauer P220 is a semi-automatic pistol. Designed in 1975."
+	icon_state = "p220"
+	fire_delay = 3.7
+	w_class = 2
+	caliber = "a45"
+	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
+	magazine_type = /obj/item/ammo_magazine/p220
+	weight = 0.594
+	max_shells = 7
+	ammo_type = /obj/item/ammo_casing/a45
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.40
+/obj/item/weapon/gun/projectile/pistol/p220/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "p220"
+	else
+		icon_state = "p220_open"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/iogb7
 	name = "IOQ B-72"
-	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
+	desc = "Some retarded fake shit invented by Re1taz."
 	icon_state = "iogb7"
 	fire_delay = 1.1
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
 	weight = 0.594
 	max_shells = 17 //Glock 17 real capacity
@@ -196,16 +315,17 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/mauser
-	name = "Mauser c96"
-	desc = "A Mauser c96 chambered in 9x19mm parabellum, german design."
+	name = "Mauser C96"
+	desc = "An early German pistol that can chamber 7.62x25mm TT."
 	icon_state = "mauser"
 	w_class = 2
-	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	caliber = "a762x25"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/mauser
 	weight = 0.794
 	max_shells = 10
-	ammo_type = /obj/item/ammo_casing/a9x19
+	ammo_type = /obj/item/ammo_casing/a762x25
+	damage_modifier = 0.98
 	load_method = SINGLE_CASING | SPEEDLOADER
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
@@ -218,12 +338,12 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/borchardt
-	name = "Borchardt c93"
-	desc = "A Borchardt c93 semi-automatic pistol chambered in 7.65x25mm parabellum, german design."
+	name = "Borchardt C93"
+	desc = "A German semi-automatic pistol chambered in 7.65x25mm Borchardt."
 	icon_state = "borchardt"
 	w_class = 2
 	caliber = "a765x25"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/borchardt
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a765x25
@@ -239,18 +359,35 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/colthammerless
-	name = "Colt Hammerless"
-	desc = "A Colt pistol which does indeed have a hammer, Just hidden."
+	name = "Colt M1903 Pocket Hammerless"
+	desc = "An early, compact Colt pistol chambered in .32 ACP."
 	icon_state = "coltpockethammerless"
 	w_class = 2
+	equiptimer = 4
 	caliber = "a32acp"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless
-	weight = 0.794
+	weight = 0.680
 	ammo_type = /obj/item/ammo_casing/a32acp
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.95
+	pocket = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908
+	name = "Colt M1908 Pocket Hammerless"
+	desc = "A later version of the compact Colt pistol, chambered in .380 ACP."
+	icon_state = "coltpockethammerless"
+	w_class = 2
+	caliber = "a380acp"
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/colthammerless/a380acp
+	weight = 0.720
+	ammo_type = /obj/item/ammo_casing/a380acp
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
+
 /obj/item/weapon/gun/projectile/pistol/colthammerless/update_icon()
 	..()
 	if (ammo_magazine)
@@ -260,15 +397,15 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/bergmann
-	name = "Bergmann no.2"
-	desc = "A semi automatic pistol made in 1896."
+	name = "Bergmann No.2"
+	desc = "A particularly unique-in-appearance early German semi-automatic pistol."
 	icon_state = "bergmann"
 	w_class = 2
-	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	caliber = "c8mmnambu"
+	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
 	magazine_type = /obj/item/ammo_magazine/bergmann
 	weight = 0.794
-	ammo_type = /obj/item/ammo_casing/a9x19
+	ammo_type = /obj/item/ammo_casing/c8mmnambu
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
@@ -281,12 +418,26 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/m1911
-	name = "Colt M1911"
-	desc = "The standard issue pistol of the US Army. Chambered in .45 ACP."
+	name = "M1911A1"
+	desc = "The standard issue pistol of the US Armed forces from 1911 to 1985. Chambered in .45 ACP."
 	icon_state = "colt"
 	w_class = 2
 	caliber = "a45acp"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
+	magazine_type = /obj/item/ammo_magazine/m1911
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a45acp
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.02
+
+/obj/item/weapon/gun/projectile/pistol/blackm1911
+	name = "Colt Mark IV"
+	desc = "A slightly upgraded model of the M1911A1. Chambered in .45 ACP."
+	icon_state = "colt"
+	w_class = 2
+	caliber = "a45acp"
+	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/m1911
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a45acp
@@ -295,26 +446,26 @@
 	effectiveness_mod = 1.02
 
 /obj/item/weapon/gun/projectile/pistol/tt30
-	name = "TT-30"
+	name = "TT-33"
 	desc = "The standard issue pistol of the Soviet Union. Chambered in 7.62x25mm Tokarev."
 	icon_state = "tt30"
 	w_class = 2
-	caliber = "a765x25"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	caliber = "a762x25"
+	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/tt30
 	weight = 0.794
-	ammo_type = /obj/item/ammo_casing/a765x25
+	ammo_type = /obj/item/ammo_casing/a762x25
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.98
 
 /obj/item/weapon/gun/projectile/pistol/m9beretta
-	name = "M9 Beretta"
-	desc = "The standard issue pistol of the US Army of the late 20th century. Chambered in 9mm Parabellum."
+	name = "Beretta M9"
+	desc = "The standard issue pistol of US Armed Forces from 1985 to 2017. Chambered in 9mm Luger."
 	icon_state = "m9beretta"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/m9beretta
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -328,7 +479,7 @@
 	icon_state = "jericho941"
 	w_class = 2
 	caliber = "a9x19"
-	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/jericho
 	weight = 0.85
 	ammo_type = /obj/item/ammo_casing/a9x19
