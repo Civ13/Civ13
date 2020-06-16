@@ -40,6 +40,36 @@
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
 
+/obj/item/clothing/suit/storage/coat/chinese
+	name = "chinese coat"
+	desc = "A chinese winter coat."
+	icon_state = "chi_korea_coat"
+	item_state = "chi_korea_coat"
+	worn_state = "chi_korea_coat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 75
+
+/obj/item/clothing/suit/storage/coat/chinese/officer
+	name = "chinese officer coat"
+	desc = "A chinese winter coat, designed for officers."
+	icon_state = "chi_korea_offcoat"
+	item_state = "chi_korea_offcoat"
+	worn_state = "chi_korea_offcoat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
+/obj/item/clothing/suit/storage/coat/american
+	name = "american coat"
+	desc = "An american winter coat."
+	icon_state = "us_coat_korea"
+	item_state = "us_coat_korea"
+	worn_state = "us_coat_korea"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 /* Cold War Accessories*/
 
 /obj/item/clothing/mask/facecamo
@@ -151,6 +181,14 @@
 	worn_state = "us_jacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/chinese_winter
+	name = "chinese uniform"
+	desc = "The standard winter chinese uniform."
+	icon_state = "korea_china"
+	item_state = "korea_china"
+	worn_state = "korea_china"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 /* US Army Armor & Helmets*/
 
 /obj/item/clothing/head //why is this HERE? @fantasticfwoosh
@@ -264,6 +302,40 @@
 	item_state = "rice_hat"
 	body_parts_covered = HEAD
 
+/obj/item/clothing/head/chinese_ushanka
+	name = "chinese ushanka"
+	desc = "A chinese ushanka, used by soldiers in the chinese army."
+	icon_state = "chinese_ushanka_up"
+	item_state = "chinese_ushanka_up"
+	worn_state = "chinese_ushanka_up"
+
+/obj/item/clothing/head/chinese_ushanka/down
+	icon_state = "chinese_ushanka"
+	item_state = "chinese_ushanka"
+	worn_state = "chinese_ushanka"
+	flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/chinese_ushanka/attack_self(mob/user as mob)
+	if (icon_state == "ushanka")
+		icon_state = "ushanka_up"
+		item_state = "ushanka_up"
+		user << "You raise the ear flaps on the ushanka."
+	else
+		icon_state = "chinese_ushanka"
+		item_state = "chinese_ushanka"
+		flags_inv = BLOCKHAIR
+		user << "You lower the ear flaps on the ushanka."
+
+/obj/item/clothing/head/helmet/modern/chi_korea_helmet
+	name = "Chinese helmet"
+	desc = "A leftover japanese helmet repurposed for the People's Liberation Army."
+	icon_state = "chi_korea_helm"
+	item_state = "chi_korea_helm"
+	worn_state = "chi_korea_helm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	health = 24
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
