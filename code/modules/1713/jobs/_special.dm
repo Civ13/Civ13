@@ -44,6 +44,7 @@
 /datum/job/var/is_civil_war = FALSE
 /datum/job/var/is_deal = FALSE
 /datum/job/var/is_pacific = FALSE
+/datum/job/var/is_korean_war = FALSE
 
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE

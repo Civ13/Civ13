@@ -298,6 +298,7 @@
 #include "code\game\objects\map_metadata\port_arthur.dm"
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\reichstag.dm"
+#include "code\game\objects\map_metadata\retreat.dm"
 #include "code\game\objects\map_metadata\river_kwai.dm"
 #include "code\game\objects\map_metadata\rizal_stadium.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
@@ -949,5 +950,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\intramuros.dmm"
+#include "maps\1969\retreat.dmm"
 // END_INCLUDE
