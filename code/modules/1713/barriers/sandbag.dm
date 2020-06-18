@@ -11,6 +11,7 @@
 	anchored = TRUE
 	climbable = TRUE
 	mouse_drop_zone = TRUE
+	var/incomplete = FALSE
 	maxhealth = 30
 	health = 30
 	New()
@@ -87,11 +88,13 @@
 	name = "incomplete dirt barricade"
 	icon_state = "dirt_wall_33%"
 	var/progress = FALSE
+	incomplete = TRUE
 
 /obj/structure/window/barrier/sandbag/incomplete
 	name = "incomplete sandbag wall"
 	icon_state = "sandbag_33%"
 	var/progress = FALSE
+	incomplete = TRUE
 
 /obj/structure/window/barrier/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
 	user.dir = get_dir(user, src)
