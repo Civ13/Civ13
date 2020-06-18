@@ -946,6 +946,14 @@
 	new/obj/item/ammo_magazine/garand(src)
 	new/obj/item/ammo_magazine/garand(src)
 
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_grease
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_grease/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green
 	icon_state = "smallpouches_green"
 	item_state = "smallpouches_green"

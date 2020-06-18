@@ -222,6 +222,36 @@
 		/obj/item/weapon/attachment/bayonet/military = 15,
 	)
 
+/obj/structure/vending/chineseweapons_korean_war
+	name = "Chinese Weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "equipment_japan"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese = 15,
+		/obj/item/ammo_magazine/gewehr98box = 10,
+		/obj/item/ammo_magazine/gewehr98 = 50,
+		/obj/item/ammo_magazine/c762x25_ppsh = 15,
+		/obj/item/ammo_magazine/dp = 15,
+		/obj/item/ammo_magazine/mauser = 10,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+/obj/structure/vending/chineseapparel_korean_war
+	name = "Chinese apparel rack"
+	desc = "Basic wear for soldiers of the People's Liberation Army."
+	icon_state = "apparel_china"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/chinese_winter = 15,
+		/obj/item/clothing/suit/storage/coat/chinese = 15,
+		/obj/item/clothing/head/chinese_ushanka = 15,
+		/obj/item/clothing/head/ww2/chicap = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+	)
+
+
 /obj/structure/vending/chineseapparel
 	name = "Chinese apparel rack"
 	desc = "Basic wear for soldiers of the Chinese Army."
@@ -252,6 +282,22 @@
 		/obj/item/clothing/head/helmet/ww2/usgreennet = 5,
 		/obj/item/clothing/head/helmet/ww2/ustannet = 5,
 		/obj/item/clothing/head/helmet/ww2/usm1 = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+	)
+
+/obj/structure/vending/usa_apparel_korean_war
+	name = "US Army apparel rack"
+	desc = "Basic wear for soldiers of the US Army."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/us_uni_korean = 15,
+		/obj/item/clothing/head/helmet/korean/usgreennet = 5,
+		/obj/item/clothing/head/helmet/korean/ustannet = 5,
+		/obj/item/clothing/head/helmet/korean/usm1 = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,

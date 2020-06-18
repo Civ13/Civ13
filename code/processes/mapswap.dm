@@ -38,9 +38,9 @@
 		map.save_awards()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
+				"The Art of the Deal" = 0,
 				"Chad Mode" = 0,
 				"Battle Royale" = 0,
-				"The Art of the Deal" = 0,
 				//Stone Age (?-3000 B.C.)" = 0,
 				"Bronze Age (500 B.C.-400 A.D.)" = 0,
 				//"Dark Ages (400-700)" = 0,

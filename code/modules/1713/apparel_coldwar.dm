@@ -180,6 +180,15 @@
 	item_state = "us_jacket"
 	worn_state = "us_jacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+//korean war//
+/obj/item/clothing/under/us_uni_korean
+	name = "american uniform"
+	desc = "The standard us army uniform of the korean war, this one outfitted for winter."
+	icon_state = "usuni_korea"
+	item_state = "usuni_korea"
+	worn_state = "usuni_korea"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
 /obj/item/clothing/under/chinese_winter
 	name = "chinese uniform"
@@ -236,20 +245,6 @@
 			attachments += chosen
 			optlist -= chosen
 
-/obj/item/clothing/head/helmet/modern/ushelmet/late
-	name = "M1 helmet"
-	desc = "A typical us army helmet."
-	icon_state = "m1_standard"
-	item_state = "m1_standard"
-	worn_state = "m1_standard"
-
-/obj/item/clothing/head/helmet/modern/ushelmet/medical
-	name = "M1 medical helmet"
-	desc = "A typical us army helmet, with a red cross on a white background."
-	icon_state = "m1_medic"
-	item_state = "m1_medic"
-	worn_state = "m1_medic"
-
 /obj/item/clothing/head/helmet/modern/ushelmet/late/New()
 	..()
 	var/numb = rand(0,2)
@@ -260,6 +255,110 @@
 			attachments += chosen
 			optlist -= chosen
 
+/* Korean war Helmets */
+/obj/item/clothing/head/helmet/korean/usm1
+	name = "M1 Helmet"
+	desc = "The typical rounded steel helmet of the US Army."
+	icon_state = "korea_m1_standard"
+	item_state = "korea_m1_standard"
+	worn_state = "korea_m1_standard"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/usm1/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/stack/material/rope))
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You put netting on the helmet.</span>"
+		new/obj/item/clothing/head/helmet/korean/ustannet(user.loc)
+		qdel(src)
+		qdel(W)
+
+/obj/item/clothing/head/helmet/korean/ustannet
+	name = "M1 Helmet with netting"
+	desc = "The typical rounded steel helmet of the US Army, with tan netting."
+	icon_state = "korea_m1_tan_netting"
+	item_state = "korea_m1_tan_netting"
+	worn_state = "korea_m1_tan_netting"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/ustannet/verb/toggle_color()
+	set category = null
+	set src in usr
+	set name = "Toggle Color"
+	if (color)
+		icon_state = "korea_m1_tan_netting"
+		item_state = "korea_m1_tan_netting"
+		worn_state = "korea_m1_tan_netting"
+		body_parts_covered = HEAD
+		item_state_slots["slot_wear_head"] = "m1_tan_netting"
+		usr << "<span class = 'danger'>You switch out your tan netting for green netting.</span>"
+		update_icon()
+		color = FALSE
+		usr.update_inv_head(1)
+	else if (!color)
+		icon_state = "korea_m1_green_netting"
+		item_state = "korea_m1_green_netting"
+		worn_state = "korea_m1_green_netting"
+		body_parts_covered = HEAD
+		item_state_slots["slot_wear_head"] = "m1_green_netting"
+		usr << "<span class = 'danger'>You switch out your green netting for tan netting.</span>"
+		update_icon()
+		color = TRUE
+		usr.update_inv_head(1)
+
+/obj/item/clothing/head/helmet/korean/usgreennet
+	name = "M1 Helmet with green netting"
+	desc = "The typical rounded steel helmet of the US Army, with green netting."
+	icon_state = "korea_m1_green_netting"
+	item_state = "korea_m1_green_netting"
+	worn_state = "korea_m1_green_netting"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/us_medic
+	name = "M1 Medic Helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one for medics"
+	icon_state = "korea_m1_medic"
+	item_state = "korea_m1_medic"
+	worn_state = "korea_m1_medic"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/us_2lt
+	name = "M1 2nd LT Helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of 2nd Lieutenant."
+	icon_state = "korea_m1_2nd_lt"
+	item_state = "korea_m1_2nd_lt"
+	worn_state = "korea_m1_2nd_lt"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/us_1lt
+	name = "M1 1st LT Helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of 1st Lieutenant."
+	icon_state = "korea_m1_1st_lt"
+	item_state = "korea_m1_1st_lt"
+	worn_state = "korea_m1_1st_lt"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/us_cap
+	name = "M1 Captain Helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of Captain."
+	icon_state = "korea_m1_cpt"
+	item_state = "korea_m1_cpt"
+	worn_state = "korea_m1_cpt"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 /* Ghillie Suits*/
 
 /obj/item/clothing/suit/storage/ghillie
@@ -316,11 +415,11 @@
 	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/chinese_ushanka/attack_self(mob/user as mob)
-	if (icon_state == "ushanka")
-		icon_state = "ushanka_up"
-		item_state = "ushanka_up"
+	if (icon_state == "chinese_ushanka")
+		icon_state = "chinese_ushanka_up"
+		item_state = "chinese_ushanka_up"
 		user << "You raise the ear flaps on the ushanka."
-	else
+	else if (icon_state == "chinese_ushanka_up")
 		icon_state = "chinese_ushanka"
 		item_state = "chinese_ushanka"
 		flags_inv = BLOCKHAIR
@@ -518,6 +617,22 @@
 	..()
 	new/obj/item/ammo_magazine/pkm/c100(src)
 	new/obj/item/ammo_magazine/pkm/c100(src)
+
+/obj/item/weapon/storage/belt/smallpouches/soviet_ppsh
+/obj/item/weapon/storage/belt/smallpouches/soviet_ppsh/New()
+	..()
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+
+/obj/item/weapon/storage/belt/smallpouches/chinese_rifle
+/obj/item/weapon/storage/belt/smallpouches/chinese_rifle/New()
+	..()
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
 
 /* Cold War Balaclavas*/
 
