@@ -22,7 +22,10 @@
 	if (ismob(P.original)) // what the firer clicked
 		var/mob/m = P.original
 		if (m.lying || m.prone)
-			extra_chance += 60
+			if (incomplete)
+				extra_chance += 20
+			else
+				extra_chance += 60
 		if (ishuman(m))
 			var/mob/living/human/H = m
 			if (H.crouching && !H.lying)
@@ -60,7 +63,7 @@
 			var/obj/item/projectile/proj = mover
 			proj.throw_source = proj.starting
 
-			if (ishuman(proj.firer) && (proj.firer.lying || proj.firer.prone))
+			if (ishuman(proj.firer) && !incomplete && (proj.firer.lying || proj.firer.prone))
 				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 				if (istype(mover, /obj/item/projectile))
 					var/obj/item/projectile/B = mover

@@ -379,7 +379,7 @@
 					var/obj/item/weapon/snowwall/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
-					var/obj/structure/window/snowwall/sandbag = new/obj/structure/window/snowwall/incomplete(src, user)
+					var/obj/structure/window/barrier/snowwall/sandbag = new/obj/structure/window/barrier/snowwall/incomplete(src, user)
 					sandbag.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>")
 					if (ishuman(user))
