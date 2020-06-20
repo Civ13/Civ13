@@ -10,9 +10,9 @@
 		//"Renaissance (1450-1650)" = 0,
 		"Imperial Age (1650-1780)" = 0,
 		"Industrial Age (1850-1895)" = 0,
-		"Early Modern Era (1896-1933)" = 0,
-		"World War II (1934-1957)" = 0,
-		"Cold War Era (1958-1984)" = 0,
+		"Early Modern Era (1896-1930)" = 0,
+		"World War II (1931-1948)" = 0,
+		"Cold War Era (1949-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
 		"Civilization 13 (Nomads)" = 0,
 		"Civilization 13 (Colony & Pioneers)" = 0,
@@ -48,9 +48,9 @@
 				//"Renaissance (1450-1650)" = 0,
 				"Imperial Age (1650-1780)" = 0,
 				"Industrial Age (1850-1895)" = 0,
-				"Early Modern Era (1896-1933)" = 0,
-				"World War II (1934-1957)" = 0,
-				"Cold War Era (1958-1984)" = 0,
+				"Early Modern Era (1896-1930)" = 0,
+				"World War II (1931-1948)" = 0,
+				"Cold War Era (1949-1984)" = 0,
 				"Modern Era (1985-2020)" = 0,
 			)
 		else if (config.allowedgamemodes == "RP" || config.allowedgamemodes == "PERSISTENCE")
@@ -121,7 +121,7 @@
 				MAP_ROAD_TO_DAK_TO = 0,
 //				MAP_RETREAT = 0,
 			)
-		else if (epoch == "World War II (1931-1945)")
+		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,

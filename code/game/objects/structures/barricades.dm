@@ -217,8 +217,32 @@
 	protection_chance = 75
 
 /obj/structure/barricade/sandstone_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
+
+/obj/structure/barricade/sandstone_h/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -238,8 +262,9 @@
 	else
 		..()
 /obj/structure/barricade/sandstone_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -268,7 +293,28 @@
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 75
-
+/obj/structure/barricade/sandstone_v/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+		return
+	if (istype(W, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+			"<span class='danger'>You start deploying \the [W.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			qdel(W)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+			return
+	else
+		..()
 /obj/structure/barricade/sandstone_h/New()
 	..()
 	icon_state = "sandstone_brick"
@@ -374,8 +420,9 @@
 	material_name = "stone"
 	protection_chance = 90
 /obj/structure/barricade/stone_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -405,8 +452,9 @@
 	material_name = "stone"
 	protection_chance = 90
 /obj/structure/barricade/stone_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -436,8 +484,9 @@
 	material_name = "stone"
 	protection_chance = 75
 /obj/structure/barricade/stone_h/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -467,8 +516,9 @@
 	material_name = "stone"
 	protection_chance = 75
 /obj/structure/barricade/stone_v/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -579,8 +629,9 @@
 	material_name = "stone"
 	protection_chance = 100
 /obj/structure/barricade/jap_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -630,8 +681,9 @@
 	material_name = "stone"
 	protection_chance = 100
 /obj/structure/barricade/jap_h_l/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -681,8 +733,9 @@
 	material_name = "stone"
 	protection_chance = 100
 /obj/structure/barricade/jap_h_r/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -732,7 +785,7 @@
 	material_name = "stone"
 	protection_chance = 100
 /obj/structure/barricade/jap_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
@@ -783,8 +836,9 @@
 	material_name = "stone"
 	protection_chance = 100
 /obj/structure/barricade/jap_v_t/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -834,8 +888,9 @@
 	material_name = "stone"
 	protection_chance = 100
 /obj/structure/barricade/jap_v_b/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
+		return
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
