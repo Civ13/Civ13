@@ -120,6 +120,12 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 			for (var/obj/item/mine/at/MAT in T)
 				if (MAT.anchored)
 					MAT.trigger(FR)
+				else
+					qdel(MAT)
+					visible_message("<span class='warning'>\the [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
+			for (var/obj/item/mine/boobytrap/MAT in T)
+				if (MAT.anchored)
+					qdel(MAT)
 			var/turf/TT = get_turf(get_step(T, dir))
 			if (reverse)
 				TT = get_turf(get_step(T,OPPOSITE_DIR(dir)))
@@ -283,6 +289,14 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 				var/obj/item/mine/at/MAT = M
 				if (MAT.anchored)
 					MAT.trigger(F)
+				else
+					qdel(MAT)
+					visible_message("<span class='warning'>\the [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
+			else if (istype(M, /obj/item/mine/boobytrap))
+				var/obj/item/mine/boobytrap/BAT = M
+				if (BAT.anchored)
+					qdel(BAT)
+					visible_message("<span class='warning'>\the [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails))
 					transporting += M
