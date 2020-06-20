@@ -40,11 +40,10 @@
 					else if (M.z == 2)
 						M.z = 1
 				for (var/obj/O in range(5, src))
-					if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
-						if (O.z == 1)
-							O.z = 2
-						else if (O.z == 2)
-							O.z = 1
+					if (O.z == 1)
+						O.z = 2
+					else if (O.z == 2)
+						O.z = 1
 				visible_message("The Landing Craft has arrived.</span>")
 				spawn(5)
 					for (var/turf/floor/plating/concrete/T in range(8, src))

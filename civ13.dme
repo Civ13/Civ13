@@ -298,6 +298,7 @@
 #include "code\game\objects\map_metadata\port_arthur.dm"
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\reichstag.dm"
+#include "code\game\objects\map_metadata\retreat.dm"
 #include "code\game\objects\map_metadata\river_kwai.dm"
 #include "code\game\objects\map_metadata\rizal_stadium.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
