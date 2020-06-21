@@ -10,6 +10,7 @@
 			icon = normal_icon
 		movemento = image(icon=mwheel.icon, loc=src, icon_state=mwheel.icon_state, layer=6, dir=mwheel.dir)
 		if (mwheel.ntype == "track")
+			movemento.color = axis.color
 			if (axis.corners[1] == src || axis.corners[2] == src)
 				switch(dir)
 					if (NORTH)
