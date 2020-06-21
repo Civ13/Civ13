@@ -432,6 +432,9 @@
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard
 /obj/item/weapon/storage/belt/jap/camp_guard/New()

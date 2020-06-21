@@ -588,6 +588,18 @@ obj/structure/closet/crate/ww2/artillery_shells
 	name = "HE artillery shells"
 	paths = list(/obj/item/cannon_ball/shell = 10)
 
+obj/structure/closet/crate/ww2/artillery_shells/HE57
+	name = "57 mm HE shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/HE57 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/AP57
+	name = "57 mm AP shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/AP57 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/APCR57
+	name = "57 mm APCR shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/APCR57 = 10)
+
 obj/structure/closet/crate/ww2/artillery_shells/HE75
 	name = "75 mm HE shells crate"
 	paths = list(/obj/item/cannon_ball/shell/tank/HE75 = 10)

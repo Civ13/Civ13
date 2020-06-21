@@ -607,13 +607,13 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
 	uniform.attackby(fullh, H)
+	fullh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
@@ -662,8 +662,6 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -706,8 +704,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -757,8 +753,6 @@
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -803,8 +797,6 @@
 
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, an Anti Tank Suicide Unit  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -853,8 +845,56 @@
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier99(H), slot_belt)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee")
+	H.add_note("Role", "You are a <b>[title]</b>, a machine gunner, first-class,  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders! Provide support and supressing fire for your comrades!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_HIGH)
+
+
+	return TRUE
+
+/datum/job/japanese/ija_machinegunner_assistant
+	title = " Fuku Taiho"
+	en_meaning = "Assistant Machinegunner"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateJP"
+	uses_squads = TRUE
+	is_ww2 = TRUE
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/japanese/ija_machinegunner_assistant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
+
+//head
+	var/randhead = rand(1,3)
+	if (randhead == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
+	else if (randhead == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_bandana(H), slot_head)
+	else if (randhead == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate/full(H), slot_back)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/rank/jap_ittoheih = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
+	uniform.attackby(jap_ittoheih, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a machine gunner, first-class,  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders! Provide support and supressing fire for your comrades!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -902,8 +942,6 @@
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, a sniper, 1st class, employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders and take out valuable targets from a range!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -941,9 +979,8 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
@@ -951,6 +988,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
 	uniform.attackby(fullh, H)
+	fullh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading an armored squad. Organize your group according to the <b>Captain or Leiutenant's</b> orders!")
@@ -1386,22 +1424,20 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_l_hand)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
 	uniform.attackby(fullh, H)
+	fullh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	var/obj/item/clothing/accessory/rank/jap_gunsoh = new /obj/item/clothing/accessory/rank/jap_gunso(null)
 	uniform.attackby(jap_gunsoh, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your group according to the <b>Captain or Leiutenant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1450,8 +1486,6 @@
 	uniform.attackby(jap_2lth, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -1499,8 +1533,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/rank/jap_jotoheih = new /obj/item/clothing/accessory/rank/jap_jotohei(null)
 	uniform.attackby(jap_jotoheih, H)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -1555,8 +1587,6 @@
 	var/obj/item/clothing/accessory/rank/jap_nitoheih = new /obj/item/clothing/accessory/rank/jap_nitohei(null)
 	uniform.attackby(jap_nitoheih, H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -1607,8 +1637,58 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/rank/jap_ittoheih = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
 	uniform.attackby(jap_ittoheih, H)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee")
+	H.add_note("Role", "You are a <b>[title]</b>, a machine gunner, first-class,  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders! Provide support and supressing fire for your comrades!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_HIGH)
+
+
+	return TRUE
+
+/datum/job/japanese/ija_pacific_machinegunner_assistant
+	title = "Fuku Taiho"
+	en_meaning = "Assistant Machinegunner"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateJP"
+	uses_squads = TRUE
+	is_ww2 = TRUE
+	is_pacific = TRUE
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/japanese/ija_pacific_machinegunner_assistant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_summer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
+
+//head
+	var/randhead = rand(1,3)
+	if (randhead == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
+	else if (randhead == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_bandana(H), slot_head)
+	else if (randhead == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate/full(H), slot_back)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/rank/jap_ittoheih = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
+	uniform.attackby(jap_ittoheih, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a machine gunner, first-class,  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders! Provide support and supressing fire for your comrades!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -1661,9 +1741,475 @@
 	var/obj/item/clothing/accessory/rank/jap_jotoheih = new /obj/item/clothing/accessory/rank/jap_jotohei(null)
 	uniform.attackby(jap_jotoheih, H)
 	H.s_tone = rand(-32,-24)
-	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard" && H.f_style != "Dwarf Beard" && H.f_style != "Volaju" && H.f_style != "Abraham Lincoln Beard" && H.f_style != "Van Dyke Mustache" && H.f_style != "Hulk Hogan Mustache")
-		H.f_style = pick("Shaved","Hipster Beard","Goatee","Watson Mustache")
 	H.add_note("Role", "You are a <b>[title]</b>, a sniper, 1st class, employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders and take out valuable targets from a range!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////NAVY////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/japanese/ijn_captain
+	title = "Kaigun-Dai-i"
+	en_meaning = "Navy Lieutenant"
+	rank_abbreviation = "Ka-Dai"
+
+
+	spawn_location = "JoinLateJPCap"
+	is_officer = TRUE
+	is_commander = TRUE
+	whitelisted = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/japanese/ijn_captain/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	world << "<b><big>[H.real_name] is the Lieutenant of the Japanese Forces!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/japanese/ijn_lieutenant
+	title = "Kaigun-Chui"
+	en_meaning = "Sub-Lieutenant"
+	rank_abbreviation = "Slt."
+
+
+	spawn_location = "JoinLateJPLT"
+	whitelisted = TRUE
+	is_commander = TRUE
+	is_officer = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/japanese/ijn_lieutenant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	world << "<b><big>[H.real_name] is the Sub-Lieutenant of the Japanese Forces!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, the 2nd highest ranking officer present. Your job is to command half of the forces.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/japanese/ijn_lieutenant2
+	title = "Kaigun-Shoi"
+	en_meaning = "Ensign"
+	rank_abbreviation = "En."
+
+
+	spawn_location = "JoinLateJPLT"
+	whitelisted = TRUE
+	is_commander = TRUE
+	is_officer = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/japanese/ijn_lieutenant2/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	world << "<b><big>[H.real_name] is the Ensign of the Japanese Forces!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, the 3rd highest ranking officer present. Your job is to command half of the forces.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/japanese/ijn_sergeant
+	title = "Kaigun Nitoheiso"
+	en_meaning = "Petty Officer 2nd Class"
+	rank_abbreviation = "Niso."
+
+	spawn_location = "JoinLateJP"
+	is_officer = TRUE
+	uses_squads = TRUE
+	is_squad_leader = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/japanese/ijn_sergeant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
+	uniform.attackby(fullh, H)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	H.add_note("Role", "You are a <b>[title]</b>, a petty officer leading a squad. Organize your group according to your <b>Superiors</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/japanese/ijn_doctor
+	title = "Kaigun Gun-i"
+	en_meaning = "Doctor"
+	rank_abbreviation = "Gun-i"
+
+	spawn_location = "JoinLateJPDoc"
+
+	is_medic = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/japanese/ijn_doctor/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform) // for now
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_VERY_HIGH)
+
+	return TRUE
+/datum/job/japanese/ijn_medic
+	title = "Kaigun Sento-i"
+	en_meaning = "Medic"
+	rank_abbreviation = "Sen-i"
+
+	spawn_location = "JoinLateJPDoc"
+	uses_squads = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+
+
+	is_medic = TRUE
+	min_positions = 2
+	max_positions = 6
+
+/datum/job/japanese/ijn_medic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform) // for now
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
+
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/firstaid/adv(H), slot_back)
+//other
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	H.add_note("Role", "You are a <b>[title]</b>, one of the most qualified medics present, and you are in charge of keeping the soldiers healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_VERY_HIGH)
+	return TRUE
+
+/datum/job/japanese/ijn_ww2infantry
+	title = "Santosuihei"
+	en_meaning = "Seaman First Class"
+	rank_abbreviation = "San."
+
+	spawn_location = "JoinLateJP"
+	uses_squads = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+
+	min_positions = 20
+	max_positions = 100
+
+/datum/job/japanese/ijn_ww2infantry/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+
+//head
+	var/randhead = rand(1,2)
+	if (randhead == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_snlf(H), slot_head)
+	else if (randhead == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	H.add_note("Role", "You are a <b>[title]</b>, a simple seaman third-class  employed by the Imperial Japanese Navy. Follow your <b>Officer's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/japanese/ijn_machinegunner
+	title = "Hoshu"
+	en_meaning = "Machinegunner"
+	rank_abbreviation = "Nisu."
+
+	spawn_location = "JoinLateJP"
+	uses_squads = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/japanese/ijn_machinegunner/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+
+//head
+	var/randhead = rand(1,2)
+	if (randhead == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_snlf(H), slot_head)
+	else if (randhead == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type99(H), slot_shoulder)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier99(H), slot_belt)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/rank/jap_ittoheih = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
+	uniform.attackby(jap_ittoheih, H)
+	H.add_note("Role", "You are a <b>[title]</b>, a machine gunner, second-class,  employed by the Imperial Japanese Navy. Follow your <b>Officer's</b> orders! Provide support and supressing fire for your comrades!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_VERY_HIGH)
+
+
+	return TRUE
+
+/datum/job/japanese/ijn_machinegunner_assistant
+	title = "Fuku Hoshu"
+	en_meaning = "Assistant Machinegunner"
+	rank_abbreviation = "Nisu."
+
+	spawn_location = "JoinLateJP"
+	uses_squads = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/japanese/ijn_machinegunner_assistant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+
+//head
+	var/randhead = rand(1,2)
+	if (randhead == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_snlf(H), slot_head)
+	else if (randhead == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate/full(H), slot_back)
+	give_random_name(H)
+	H.s_tone = rand(-32,-24)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/rank/jap_ittoheih = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
+	uniform.attackby(jap_ittoheih, H)
+	H.add_note("Role", "You are a <b>[title]</b>, an assistant machine gunner, second-class,  employed by the Imperial Japanese Navy. Follow your <b>Officer's</b> orders! Provide support to the machine gunner! Carry the ammo!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_VERY_HIGH)
+
+
+	return TRUE
+
+/datum/job/japanese/ijn_sniper
+	title = "Kaigun Senmeina no Hito"
+	en_meaning = "Sniper"
+	rank_abbreviation = "Nisu."
+
+	spawn_location = "JoinLateJP"
+	uses_squads = TRUE
+	is_ww2 = TRUE
+	is_navy = TRUE
+
+	min_positions = 1
+	max_positions = 8
+
+/datum/job/japanese/ijn_sniper/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+
+//head
+	var/randhead = rand(1,2)
+	if (randhead == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_snlf(H), slot_head)
+	else if (randhead == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper(H), slot_shoulder)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	give_random_name(H)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/rank/jap_jotoheih = new /obj/item/clothing/accessory/rank/jap_jotohei(null)
+	uniform.attackby(jap_jotoheih, H)
+	H.s_tone = rand(-32,-24)
+	H.add_note("Role", "You are a <b>[title]</b>, a sniper, 2nd class, employed by the Imperial Japanese Navy. Follow your <b>Officer's</b> orders and take out valuable targets from a range!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_VERY_HIGH) //muskets
