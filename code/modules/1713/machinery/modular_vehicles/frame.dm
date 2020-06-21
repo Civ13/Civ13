@@ -35,6 +35,7 @@
 	New()
 		..()
 		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=8)
+		roof_turret = image(icon=icon, loc=src, icon_state="", layer=1)
 		roof.override = TRUE
 		spawn(1)
 			update_icon()
