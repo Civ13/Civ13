@@ -12,7 +12,10 @@ with open("imglist.txt", "w") as writing:
 				if(file.endswith(".dmi") or file.endswith(".ogg")):
 					# if it has one of the extensions, split it so we get the filename without dirs
 					filesp = file.split("\\")
-					writing.write(filesp[len(filesp)-1]+"\n") # return the last value of the splitted array and write to the file
+					rep = str(root)+"\\"+filesp[len(filesp)-1]
+					rep = rep.replace("..\\","")
+					rep = rep.replace("\\","/")
+					writing.write(rep+"\n") # return the last value of the splitted array and write to the file
 				#moving on to the code file listing...
 				elif(file.endswith(".dm") or file.endswith(".js")): #search code files
 					filesp = str(root)+"\\"+str(file) # get the absolute directory
@@ -28,18 +31,16 @@ with open("unused.txt","w") as unusedfile: # this is where we will list all the 
 		for imgline in reading3:
 			found = False
 			imgline_parsed = imgline.replace("\n","") # remove the paragraph
-			imgline_noext = imgline_parsed.split(".")[0] #lets find it without the extension too
 			print("Checking {}".format(imgline_parsed))
 			with open("jslist.txt", "r") as reading:
 				for jsline in reading:
 					jsline_parsed = jsline.replace("\n","")
 					with open(jsline_parsed, "r") as reading2: # opening the files in jslist.txt...
-						print("    Checking in {}".format(jsline_parsed))
+						#print("    Checking in {}".format(jsline_parsed))
 						for line in reading2: # checking each line
-							#print("        :::{}".format(line))
-							if line.find(imgline_parsed) != -1 or line.find(imgline_noext) != -1: #if either of the img names found
+							if line.find(imgline_parsed) != -1: #if the img name is found
 								found = True
-								print("        Found! {}".format(line)) # break out of the condition (no need to search the rest of the files)
+								print("    Found! {}".format(line)) # break out of the condition (no need to search the rest of the files)
 								break
 					if found == True:
 						break
