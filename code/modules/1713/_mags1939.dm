@@ -32,7 +32,7 @@
 	multiple_sprites = TRUE
 	clip = TRUE
 
-obj/item/ammo_magazine/type100
+/obj/item/ammo_magazine/type100
 	name = "Type 100 Magazine"
 	icon_state = "type100"
 	mag_type = MAGAZINE
@@ -42,7 +42,7 @@ obj/item/ammo_magazine/type100
 	weight = 0.38
 	multiple_sprites = TRUE
 
-obj/item/ammo_magazine/type99
+/obj/item/ammo_magazine/type99
 	name = "Type-99 Magazine"
 	icon_state = "type99"
 	mag_type = MAGAZINE

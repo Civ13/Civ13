@@ -369,6 +369,38 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/ww2/japhelm_snlf
+	name = "japanese helmet"
+	desc = "A typical rounded steel helmet."
+	icon_state = "japhelm_snlf"
+	item_state = "japhelm_snlf"
+	worn_state = "japhelm_snlf"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/ww2/japhelm_snlf/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_snlf)
+		return
+	else
+		if (toggled)
+			item_state = "japhelm_snlf"
+			worn_state = "japhelm_snlf"
+			item_state_slots["slot_w_uniform"] = "japhelm_snlf"
+			usr << "<span class = 'danger'>You put down your helmet's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "japhelm_snlf_extended"
+			worn_state = "japhelm_snlf_extended"
+			item_state_slots["slot_w_uniform"] = "japhelm_snlf_extended"
+			usr << "<span class = 'danger'>You put up your helmet's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+
 /obj/item/clothing/head/helmet/ww2/japhelm_med
 	name = "japanese medic helmet"
 	desc = "A typical rounded steel helmet, this one bearing the marks of a medic."
@@ -466,6 +498,35 @@
 			toggled = TRUE
 			update_clothing_icon()
 
+/obj/item/clothing/head/ww2/japcap_snlf
+	name = "japanese cap"
+	desc = "A cap worn by japanese soldiers in the SNLF."
+	icon_state = "ww2_japcap_snlf"
+	item_state = "ww2_japcap_snlf"
+	worn_state = "ww2_japcap_snlf"
+	var/toggled = FALSE
+
+/obj/item/clothing/head/ww2/japcap_snlf/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/ww2/japcap_snlf)
+		return
+	else
+		if (toggled)
+			item_state = "ww2_japcap_snlf"
+			worn_state = "ww2_japcap_snlf"
+			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "ww2_japcap_snlf_extended"
+			worn_state = "ww2_japcap_snlf_extended"
+			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf_extended"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+
 /obj/item/clothing/under/ww2/japoffuni
 	name = "japanese officer uniform"
 	desc = "A imperial japanese army officer uniform."
@@ -520,6 +581,35 @@
 			item_state = "ww2_japuni_rolled"
 			worn_state = "ww2_japuni_rolled"
 			item_state_slots["slot_w_uniform"] = "ww2_japuni_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			update_clothing_icon()
+
+/obj/item/clothing/under/ww2/japuni_snlf
+	name = "japanese uniform"
+	desc = "A imperial japanese SNLF uniform."
+	icon_state = "ww2_japuni_snlf"
+	item_state = "ww2_japuni_snlf"
+	worn_state = "ww2_japuni_snlf"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/japuni_snlf/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/japuni_snlf)
+		return
+	else
+		if (rolled)
+			item_state = "ww2_japuni_snlf"
+			worn_state = "ww2_japuni_snlf"
+			item_state_slots["slot_w_uniform"] = "ww2_japuni_snlf"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "ww2_japuni_snlf_rolled"
+			worn_state = "ww2_japuni_snlf_rolled"
+			item_state_slots["slot_w_uniform"] = "ww2_japuni_snlf_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
 			update_clothing_icon()
@@ -1114,6 +1204,41 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "ssuni_camo"
 	item_state = "ssuni_camo"
 	worn_state = "ssuni_camo"
+
+/obj/item/weapon/storage/ammo_can
+	name = "ammunition can"
+	desc = "It's a metal box designed for easy carrying of ammo."
+	icon_state = "ammo_can"
+	item_state = "ammo_can"
+	worn_state = "ammo_can"
+	throw_speed = 2
+	throw_range = 8
+	max_storage_space = 14
+	max_w_class = 4
+	slot_flags = SLOT_BELT
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/key,
+		)
+
+/obj/item/weapon/storage/ammo_can/german_mg
+/obj/item/weapon/storage/ammo_can/german_mg/New()
+	..()
+	new/obj/item/ammo_magazine/mg34belt(src)
+	new/obj/item/ammo_magazine/mg34belt(src)
+	new/obj/item/ammo_magazine/mg34belt(src)
+	new/obj/item/ammo_magazine/mg34belt(src)
+
+/obj/item/weapon/storage/ammo_can/german_mg_drum
+/obj/item/weapon/storage/ammo_can/german_mg_drum/New()
+	..()
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
 
 /obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"

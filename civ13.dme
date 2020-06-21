@@ -313,6 +313,7 @@
 #include "code\game\objects\map_metadata\tribes.dm"
 #include "code\game\objects\map_metadata\tsaritsyn.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
+#include "code\game\objects\map_metadata\wake_island.dm"
 #include "code\game\objects\map_metadata\ypres.dm"
 #include "code\game\objects\structures\appliances.dm"
 #include "code\game\objects\structures\barricades.dm"
@@ -950,5 +951,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\intramuros.dmm"
+#include "maps\1943\wake_island.dmm"
 // END_INCLUDE
