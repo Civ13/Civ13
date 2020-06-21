@@ -10,6 +10,7 @@
 			icon = normal_icon
 		movemento = image(icon=mwheel.icon, loc=src, icon_state=mwheel.icon_state, layer=6, dir=mwheel.dir)
 		if (mwheel.ntype == "track")
+			movemento.color = axis.color
 			if (axis.corners[1] == src || axis.corners[2] == src)
 				switch(dir)
 					if (NORTH)
@@ -79,6 +80,8 @@
 			roof_turret = image(icon='icons/obj/vehicles/vehicles96x96.dmi',loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
 		else
 			roof_turret = image(icon='icons/obj/vehicles/vehicles96x96.dmi',loc=src, icon_state="", layer=11.1, dir=C.dir)
+		if (roof_turret)
+			roof_turret.color = axis.color
 		if (C.dir == NORTH)
 			if (dir == NORTH)
 				roof_turret.pixel_y = 0
