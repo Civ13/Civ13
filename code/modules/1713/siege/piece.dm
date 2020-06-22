@@ -272,7 +272,7 @@
 	icon_state = "mortar"
 	bound_height = 32
 	bound_width = 32
-	anchored = FALSE
+	anchored = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	ammotype = /obj/item/cannon_ball/mortar_shell
