@@ -108,7 +108,10 @@
 	worn_state = "germanpack"
 	base_icon = "germanpack"
 	max_storage_space = 24
-
+/*
+/obj/item/weapon/storage/backpack/german/paratrooper
+	desc = "A German paratrooper's backpack. Parachute built in."
+*/
 /obj/item/weapon/storage/backpack/ww2/german/sapper
 	New()
 		..()

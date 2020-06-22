@@ -2020,6 +2020,9 @@
 //other
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	give_random_name(H)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/redcross = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(redcross, H)
 	H.s_tone = rand(-32,-24)
 	H.add_note("Role", "You are a <b>[title]</b>, one of the most qualified medics present, and you are in charge of keeping the soldiers healthy.")
 	H.setStat("strength", STAT_NORMAL)
