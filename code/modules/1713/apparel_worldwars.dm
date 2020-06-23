@@ -368,6 +368,29 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	var/toggled = FALSE
+/obj/item/clothing/head/helmet/ww2/japhelm/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/ww2/japhelm)
+		return
+	else
+		if (toggled)
+			item_state = "japhelm"
+			icon_state = "japhelm"
+			worn_state = "japhelm"
+			item_state_slots["slot_w_uniform"] = "japhelm"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "japhelm_extended"
+			icon_state = "japhelm_extended"
+			worn_state = "japhelm_extended"
+			item_state_slots["slot_w_uniform"] = "japhelm_extended"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
 
 /obj/item/clothing/head/helmet/ww2/japhelm_snlf
 	name = "japanese helmet"
@@ -412,6 +435,31 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/ww2/japhelm_med/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_med)
+		return
+	else
+		if (toggled)
+			item_state = "japhelm_medic"
+			icon_state = "japhelm_medic"
+			worn_state = "japhelm_medic"
+			item_state_slots["slot_w_uniform"] = "japhelm_medic"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "japhelm_medic_extended"
+			icon_state = "japhelm_medic_extended"
+			worn_state = "japhelm_medic_extended"
+			item_state_slots["slot_w_uniform"] = "japhelm_medic_extended"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+
 
 /obj/item/clothing/head/helmet/ww2/japhelm_tanker
 	name = "japanese tanker helmet"
@@ -441,6 +489,30 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/ww2/japhelm_bandana/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_bandana)
+		return
+	else
+		if (toggled)
+			item_state = "japhelm_bandana"
+			icon_state = "japhelm_bandana"
+			worn_state = "japhelm_bandana"
+			item_state_slots["slot_w_uniform"] = "japhelm_bandana"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "japhelm_bandana_extended"
+			icon_state = "japhelm_bandana_extended"
+			worn_state = "japhelm_bandana_extended"
+			item_state_slots["slot_w_uniform"] = "japhelm_bandana_extended"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
 
 /obj/item/clothing/head/ww2/japcap
 	name = "japanese cap"

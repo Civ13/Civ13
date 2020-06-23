@@ -458,6 +458,7 @@
 	item_state = "arisaka99"
 	base_icon = "arisaka99"
 	caliber = "a77x58"
+	ammo_type = /obj/item/ammo_casing/a77x58
 	weight = 3.8
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05

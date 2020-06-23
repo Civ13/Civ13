@@ -1652,8 +1652,8 @@
 	return TRUE
 
 /datum/job/japanese/ija_pacific_machinegunner_assistant
-	title = "Fuku Taiho"
-	en_meaning = "Assistant Machinegunner"
+	title = "Dan'yaku Mochinushi"
+	en_meaning = "Ammo Bearer"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateJP"
@@ -2129,8 +2129,8 @@
 	return TRUE
 
 /datum/job/japanese/ijn_machinegunner_assistant
-	title = "Fuku Hoshu"
-	en_meaning = "Assistant Machinegunner"
+	title = " Dan'yaku Mochinushi"
+	en_meaning = "Ammo Bearer"
 	rank_abbreviation = "Nisu."
 
 	spawn_location = "JoinLateJP"
