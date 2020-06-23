@@ -83,6 +83,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
+	bad_magazine_types = list(/obj/item/weapon/gun/projectile/submachinegun/type100)
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
 	if (ammo_magazine)
@@ -104,6 +105,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
+	bad_magazine_types = list(/obj/item/weapon/gun/projectile/submachinegun/type100)
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu/update_icon()
 	..()
 	if (ammo_magazine)
@@ -125,6 +127,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.96
+	bad_magazine_types = list(/obj/item/ammo_magazine/mp40)
 /obj/item/weapon/gun/projectile/pistol/luger/update_icon()
 	..()
 	if (ammo_magazine)
@@ -146,6 +149,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.96
+	bad_magazine_types = list(/obj/item/ammo_magazine/mp40)
 /obj/item/weapon/gun/projectile/pistol/waltherp38/update_icon()
 	..()
 	if (ammo_magazine)
@@ -430,6 +434,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.02
+	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
 
 /obj/item/weapon/gun/projectile/pistol/blackm1911
 	name = "Colt Mark IV"
@@ -458,6 +463,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.98
+	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 
 /obj/item/weapon/gun/projectile/pistol/m9beretta
 	name = "Beretta M9"
