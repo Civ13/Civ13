@@ -29,16 +29,20 @@
 		if (rolled)
 			item_state = "japuni"
 			worn_state = "japuni"
-			item_state_slots["slot_w_uniform"] = "japuni"
+			item_state_slots["w_uniform"] = "japuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "japunirolled"
 			worn_state = "japunirolled"
-			item_state_slots["slot_w_uniform"] = "japunirolled"
+			item_state_slots["w_uniform"] = "japunirolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
 /obj/item/clothing/under/japoffuni
 	name = "Japanese Officer Uniform"
@@ -57,16 +61,19 @@
 		if (rolled)
 			item_state = "japoffuni"
 			worn_state = "japoffuni"
-			item_state_slots["slot_w_uniform"] = "japoffuni"
+			item_state_slots["w_uniform"] = "japoffuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		else if (!rolled)
 			item_state = "japoffunirolled"
 			worn_state = "japoffunirolled"
-			item_state_slots["slot_w_uniform"] = "japoffunirolled"
+			item_state_slots["w_uniform"] = "japoffunirolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
 
 /obj/item/clothing/accessory/white_sash
@@ -114,16 +121,20 @@
 		if (rolled)
 			item_state = "rusuni"
 			worn_state = "rusuni"
-			item_state_slots["slot_w_uniform"] = "rusuni"
+			item_state_slots["w_uniform"] = "rusuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "rusunirolled"
 			worn_state = "rusunirolled"
-			item_state_slots["slot_w_uniform"] = "rusunirolled"
+			item_state_slots["w_uniform"] = "rusunirolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
 /obj/item/clothing/suit/storage/coat/cheka
 	name = "Cheka leather coat"
@@ -432,6 +443,9 @@
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard
 /obj/item/weapon/storage/belt/jap/camp_guard/New()

@@ -306,12 +306,12 @@
 	unload_sound = 'sound/weapons/guns/interact/GarandUnload.ogg'
 	weight = 4.9
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=3)
+		list(name="single shot",burst=1, move_delay=2, fire_delay=4)
 		)
 	force = 10
 	throwforce = 20
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-	effectiveness_mod = 1.05
+	effectiveness_mod = 1.01
 
 /obj/item/weapon/gun/projectile/semiautomatic/ar15
 	name = "Bushmaster XM-15"

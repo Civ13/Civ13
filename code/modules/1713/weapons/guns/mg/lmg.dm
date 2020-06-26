@@ -130,7 +130,7 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
-
+	bad_magazine_types = list(/obj/item/ammo_magazine/maxim)
 /obj/item/weapon/gun/projectile/automatic/bar
 	name = "M1918A2 BAR"
 	desc = "The BAR, is a light machine gun (LMG) This one is chambered in .30-06 rounds."
@@ -143,6 +143,7 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
+	bad_magazine_types = list(/obj/item/ammo_magazine/browning)
 ////////////////////////////MG34/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/mg34
 	name = "MG34"

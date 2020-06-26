@@ -67,6 +67,39 @@
 	base_icon = "jappack"
 	max_storage_space = 24
 
+/obj/item/weapon/storage/backpack/ww2/jap/ammo_crate
+	name = "japanese ammo crate"
+	desc = "It's a crate equipped with straps for carrying, often used by assistant gunners."
+	icon_state = "japammo"
+	item_state = "japammo"
+	worn_state = "japammo"
+	base_icon = "japammo"
+	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/shovel,
+		/obj/item/weapon/key,
+		)
+
+/obj/item/weapon/storage/backpack/ww2/jap/ammo_crate/full
+	New()
+		..()
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+		new /obj/item/ammo_magazine/type99(src)
+
 /obj/item/weapon/storage/backpack/ww2/german
 	name = "german backpack"
 	desc = "It's a standard issue backpack for german military personel"
@@ -75,7 +108,10 @@
 	worn_state = "germanpack"
 	base_icon = "germanpack"
 	max_storage_space = 24
-
+/*
+/obj/item/weapon/storage/backpack/german/paratrooper
+	desc = "A German paratrooper's backpack. Parachute built in."
+*/
 /obj/item/weapon/storage/backpack/ww2/german/sapper
 	New()
 		..()

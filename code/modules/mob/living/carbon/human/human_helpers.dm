@@ -252,13 +252,21 @@
 		if (found)
 			if (FR.axis != found.axis && FR != found)
 				client.images += FR.roof
+				if (FR.roof_turret)
+					client.images += FR.roof_turret
 			else
 				client.images -= FR.roof
+				if (FR.roof_turret)
+					client.images -= FR.roof_turret
 		else
 			if (locate(FR) in view(client))
 				client.images += FR.roof
+				if (FR.roof_turret)
+					client.images += FR.roof_turret
 			else
 				client.images -= FR.roof
+				if (FR.roof_turret)
+					client.images -= FR.roof_turret
 
 /mob/living/human
 	var/roofs_removed = TRUE

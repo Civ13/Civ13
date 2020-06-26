@@ -313,6 +313,7 @@
 #include "code\game\objects\map_metadata\tribes.dm"
 #include "code\game\objects\map_metadata\tsaritsyn.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
+#include "code\game\objects\map_metadata\wake_island.dm"
 #include "code\game\objects\map_metadata\ypres.dm"
 #include "code\game\objects\structures\appliances.dm"
 #include "code\game\objects\structures\barricades.dm"
@@ -446,6 +447,7 @@
 #include "code\modules\1713\officer.dm"
 #include "code\modules\1713\oil_fires.dm"
 #include "code\modules\1713\ores.dm"
+#include "code\modules\1713\plating.dm"
 #include "code\modules\1713\production.dm"
 #include "code\modules\1713\punishment.dm"
 #include "code\modules\1713\radiation.dm"
@@ -950,5 +952,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\intramuros.dmm"
+#include "maps\1943\khalkhyn_gol.dmm"
 // END_INCLUDE
