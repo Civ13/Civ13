@@ -494,7 +494,18 @@ var/global/list/damage_icon_parts = list()
 		//need to append _s to the icon state for legacy compatibility
 		var/image/standing = image(icon = under_icon, icon_state = under_state)
 		standing.color = w_uniform.color
-		if (istype(w_uniform, /obj/item/clothing/under/customtribalrobe))
+		if (istype(w_uniform, /obj/item/clothing/under/customuniform))
+			var/obj/item/clothing/under/customuniform/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "[CU.base_icon]_pants")
+				pants.color = CU.pantscolor
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "[CU.base_icon]_shirt")
+				shirt.color = CU.shirtcolor
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custom_belt")
+				standing.overlays += pants
+				standing.overlays += shirt
+				standing.overlays += belt
+		else if (istype(w_uniform, /obj/item/clothing/under/customtribalrobe))
 			var/obj/item/clothing/under/customtribalrobe/CU = w_uniform
 			if (!CU.uncolored)
 				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_decoration")
@@ -505,7 +516,7 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += pants
 				standing.overlays += shirt
 				standing.overlays += belt
-		if (istype(w_uniform, /obj/item/clothing/under/crinoline_dress))
+		else if (istype(w_uniform, /obj/item/clothing/under/crinoline_dress))
 			var/obj/item/clothing/under/crinoline_dress/CU = w_uniform
 			if (!CU.uncolored)
 				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_dress")
@@ -516,8 +527,8 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += pants
 				standing.overlays += shirt
 				standing.overlays += belt
-		if (istype(w_uniform, /obj/item/clothing/under/customuniform))
-			var/obj/item/clothing/under/customuniform/CU = w_uniform
+		else if (istype(w_uniform, /obj/item/clothing/under/customvicuniform))
+			var/obj/item/clothing/under/customvicuniform/CU = w_uniform
 			if (!CU.uncolored)
 				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
 				shirt.color = CU.shirtcolor
