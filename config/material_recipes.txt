@@ -1204,7 +1204,7 @@ RECIPE: /material/glass/,glass bottle,/obj/item/weapon/reagent_containers/food/d
 RECIPE: /material/glass/,teapot,/obj/item/weapon/reagent_containers/food/drinks/teapot,4,70,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,teacup,/obj/item/weapon/reagent_containers/food/drinks/tea/empty,2,50,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,wine glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,49,0,0,8,null
-RECIPE: /material/glass/,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,beer mug,2,25,0,1,drinks,75,0,0,8,null
+RECIPE: /material/glass/,beer mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,2,25,0,1,drinks,75,0,0,8,null
 //*************| GLASS ELECTRICAL |***************
 
 RECIPE: /material/glass/,small lightbulb frame,/obj/structure/lamp/lamp_small,2,35,0,1,electrical,115,0,0,8,null
