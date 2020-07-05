@@ -909,3 +909,4 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
+
