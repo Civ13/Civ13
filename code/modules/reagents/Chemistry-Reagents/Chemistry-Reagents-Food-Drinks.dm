@@ -990,7 +990,7 @@
 	description = "A strange yet pleasurable mixture made of wine, and coca leaves."
 	taste_description = "A sweet taste with a hint of something strange"
 	color = "#7E4043" // rgb: 126, 64, 67
-	strength = 45
+	strength = 55
 
 /datum/reagent/ethanol/booger
 	name = "Booger"
