@@ -494,6 +494,7 @@ RECIPE: /material/cloth/,bandages,/obj/item/stack/medical/bruise_pack/bint,1,75,
 RECIPE: /material/cloth/,surgery kit,/obj/item/weapon/storage/firstaid/surgery_empty,6,90,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/cloth/,burn kit,/obj/item/stack/medical/advanced/ointment,1,90,0,1,healthcare,0,0,43,8,null
 RECIPE: /material/cloth/,trauma kit,/obj/item/stack/medical/advanced/bruise_pack,2,105,0,1,healthcare,0,0,56,8,null
+RECIPE: /material/cloth/,surgical mask,/obj/item/clothing/mask/sterile,1,140,0,1,healthcare,0,0,108,8,null
 
 //*****************| CLOTH CARPETS |***************************
 
@@ -783,8 +784,8 @@ RECIPE: /material/plastic/,plastic bottle,/obj/item/weapon/reagent_containers/fo
 //*****************| PLASTIC CLOTHING & ARMOR |***************************
 
 RECIPE: /material/plastic/,constable helmet,/obj/item/clothing/head/helmet/constable,6,165,0,1,none,0,0,138,8,null
-
 RECIPE: /material/plastic/,surgical apron,/obj/item/clothing/suit/storage/jacket/surgeon,8,140,0,1,jackets & vests,0,0,138,8,null
+RECIPE: /material/plastic/,surgical mask,/obj/item/clothing/mask/sterile,1,140,0,1,none,0,0,108,8,null
 
 //**************************************************************
 //*********************| CHITIN |*******************************
