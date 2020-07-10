@@ -2167,6 +2167,8 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "r_strapbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 /obj/item/clothing/under/red/bandbikini
 	name = "Red Band Bikini"
@@ -2176,15 +2178,19 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "r_bandbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 /obj/item/clothing/under/red/swimtrunks
 	name = "Red Swimtrunks"
 	desc = "Seems to be pants made for swiming in."
-	icon_state = "r_bandbikini"
-	item_state = "r_bandbikini"
-	worn_state = "r_bandbikini"
+	icon_state = "r_swimtrunks"
+	item_state = "r_swimtrunks"
+	worn_state = "r_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 /obj/item/clothing/under/blue/strappedbikini
 	name = "Blue Strap Bikini"
@@ -2194,6 +2200,8 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "b_strapbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 /obj/item/clothing/under/blue/bandbikini
 	name = "Blue Band Bikini"
@@ -2203,6 +2211,8 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "b_bandbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 /obj/item/clothing/under/blue/swimtrunks
 	name = "Blue Swimtrunks"
@@ -2212,6 +2222,8 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "b_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 /obj/item/clothing/under/green/strappedbikini
 	name = "Green Strap Bikini"
@@ -2221,6 +2233,8 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "g_strapbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 /obj/item/clothing/under/green/bandbikini
 	name = "Green Band Bikini"
@@ -2230,6 +2244,8 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "g_bandbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 /obj/item/clothing/under/green/swimtrunks
 	name = "Green Swimtrunks"
@@ -2239,6 +2255,8 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "g_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+armor = list(melee = 5, arrow = 0, gun = FALSE, energy = 5, bomb = 2, bio = 1, rad = 1)
+	value = 50
 
 
 
