@@ -2177,14 +2177,16 @@ obj/item/clothing/head/ww2/chicap2
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
+
 /obj/item/clothing/under/red/swimtrunks
 	name = "Red Swimtrunks"
 	desc = "Seems to be pants made for swiming in."
-	icon_state = "r_bandbikini"
-	item_state = "r_bandbikini"
-	worn_state = "r_bandbikini"
+	icon_state = "r_swimtrunks"
+	item_state = "r_swimtrunks"
+	worn_state = "r_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
 
 /obj/item/clothing/under/blue/strappedbikini
 	name = "Blue Strap Bikini"
@@ -2230,6 +2232,7 @@ obj/item/clothing/head/ww2/chicap2
 	worn_state = "g_bandbikini"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
 
 /obj/item/clothing/under/green/swimtrunks
 	name = "Green Swimtrunks"
