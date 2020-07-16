@@ -141,8 +141,9 @@
 
 /obj/item/weapon/gun/projectile/flintlock/handle_post_fire()
 	..()
-	loaded = list()
-	chambered = null
+	if (max_shells == 1)
+		loaded = list()
+		chambered = null
 	cocked = FALSE
 	spawn (1)
 		new/obj/effect/effect/smoke/chem(get_step(src, dir))
@@ -156,6 +157,17 @@
 	effectiveness_mod = 0.97
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
+
+/obj/item/weapon/gun/projectile/flintlock/double
+	name = "double flintlock musket"
+	desc = "A flintlock that fits two shells inside."
+	force = 12
+	caliber = "musketball"
+	weight = 6.0
+	effectiveness_mod = 0.97
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	max_shells = 2
 
 /obj/item/weapon/gun/projectile/flintlock/plexico
 	name = "flintlock musket"
