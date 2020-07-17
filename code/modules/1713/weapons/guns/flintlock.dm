@@ -141,8 +141,9 @@
 
 /obj/item/weapon/gun/projectile/flintlock/handle_post_fire()
 	..()
-	loaded = list()
-	chambered = null
+	if (max_shells == 1)
+		loaded = list()
+		chambered = null
 	cocked = FALSE
 	spawn (1)
 		new/obj/effect/effect/smoke/chem(get_step(src, dir))
@@ -241,7 +242,6 @@
 	item_state = "springfield"
 	icon_state = "springfield"
 	load_delay = 100
-
 
 /obj/item/weapon/gun/projectile/flintlock/springfield1795
 	name = "Springfield 1795 Musket"
