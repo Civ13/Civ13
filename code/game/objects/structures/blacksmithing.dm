@@ -90,7 +90,7 @@ obj/structure/anvil/New()
 				display2 = list("Small Sword (10)", "Arming Sword (15)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)", "Cancel")
 		else if (choice == "Guns")
 			if (map.ordinal_age == 4)
-				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (50)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (30)", "Cancel")
+				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Repeater (50)", "Evans Repeater (60)","Henry Repeater (60)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (30)", "Cancel")
 			if (map.ordinal_age == 8)
 				display2 = list("Makeshift AK-47 (32)", "Cancel")
 		else if (choice == "Armor")
@@ -151,7 +151,7 @@ obj/structure/anvil/New()
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
-		if (choice2 == "Winchester Rifle (50)")
+		if (choice2 == "Winchester Repeater (50)")
 			if (steel_amt >= 50)
 				user << "You begin crafting a Winchester..."
 				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -161,6 +161,34 @@ obj/structure/anvil/New()
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
 					new/obj/item/weapon/gun/projectile/leveraction/winchester(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "Evans Repeater (60)")
+			if (steel_amt >= 65)
+				user << "You begin crafting a Evans Repeater..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,220,src) && steel_amt >= 60)
+					user << "You craft a Evans Repeater."
+					steel_amt -= 60
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/leveraction/evansrepeater(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "Henry Repeater (55)")
+			if (steel_amt >= 55)
+				user << "You begin crafting a Henry Repeater..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,220,src) && steel_amt >= 55)
+					user << "You craft a Henry Repeater."
+					steel_amt -= 55
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/leveraction/henryrepeater(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"

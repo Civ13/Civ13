@@ -214,7 +214,7 @@
 /obj/item/weapon/gun/projectile/revolver/peacemaker
 	name = "Colt Peacemaker"
 	desc = "Officialy the M1873 Colt Single Action Army Revolver."
-	icon_state = "peacemaker"
+	icon_state = "coltsaa"
 	base_icon = "peacemaker"
 	w_class = 2
 	caliber = "a45"
@@ -223,6 +223,70 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
 	weight = 2.3
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker/ivory
+	name = "Colt Peacemaker Ivory"
+	desc = "Officialy the M1873 Colt Single Action Army Revolver with an Ivory grip."
+	icon_state = "coltsaa_ivory"
+	base_icon = "peacemaker"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 2.4
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker/storekeeper
+	name = "Colt Storekeeper"
+	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver."
+	icon_state = "coltsaa_storekeeper"
+	base_icon = "peacemaker"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 1.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker/ivory
+	name = "Colt Storekeeper Ivory"
+	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
+	icon_state = "coltsaa_bankerspecial"
+	base_icon = "peacemaker"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 1.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker
+	name = "Colt Peace Ivory"
+	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
+	icon_state = "coltsaa_artillery"
+	base_icon = "peacemaker"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 1.6
 	single_action = TRUE
 	blackpowder = TRUE
 	cocked = FALSE
@@ -312,8 +376,8 @@
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/graysonfito12
-	name = "Grayson Fito 12"
-	desc = "A expensive revolver made by Grayson."
+	name = "Mckellen M12"
+	desc = "A expensive revolver made by Mckellen."
 	icon_state = "graysonfito"
 	base_icon = "graysonfito"
 	w_class = 2
@@ -890,9 +954,9 @@
 	update_icon()
 
 /obj/item/weapon/gun/projectile/capnball/dragoon
-	name = "Colt Dragoon"
+	name = "Colt Dragoon M1848"
 	desc = "Officialy the M1848 Colt Percussion Cap Revolver."
-	icon_state = "dragoon"
+	icon_state = "colt_dragoon1848"
 	base_icon = "dragoon"
 	w_class = 2
 	caliber = "musketball_pistol"
@@ -905,3 +969,122 @@
 	blackpowder = TRUE
 	cocked = FALSE
 	load_delay = 40
+
+/obj/item/weapon/gun/projectile/capnball/babydragoon
+	name = "Colt Baby Dragoon M1848"
+	desc = "Officialy the Baby M1848 Colt Percussion Cap Revolver."
+	icon_state = "dragoon"
+	base_icon = "colt_babydragoon1848"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 1.9
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 45
+
+/obj/item/weapon/gun/projectile/capnball/pocketpistol
+	name = "Colt Pocket-Pistol M1849"
+	desc = "Officialy the M1849 Colt Percussion Cap Pocket-Pistol."
+	icon_state = "dragoon"
+	base_icon = "colt_pocketmodel1849"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 1.5
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 30
+
+/obj/item/weapon/gun/projectile/capnball/walker
+	name = "Colt Walker M1846"
+	desc = "Officialy the M1846 Colt Percussion Cap Walker."
+	icon_state = "peacemaker2"
+	base_icon = "colt_walker1846"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 2.2
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 40
+
+/obj/item/weapon/gun/projectile/capnball/pocketm1849
+	name = "Colt Police Pocket-Pistol M1849"
+	desc = "Officialy the M1849 Colt Percussion Cap Pocket-Pistol used by police."
+	icon_state = "peacemaker2"
+	base_icon = "colt_pocketpolice1849"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 1.5
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 38
+
+/obj/item/weapon/gun/projectile/capnball/navym1851
+	name = "Colt Navy Revolver M1851"
+	desc = "Officialy the M1851 Colt Navy Percussion Cap Revolver."
+	icon_state = "peacemaker2"
+	base_icon = "colt_navy1851"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 2.5
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 40
+
+/obj/item/weapon/gun/projectile/capnball/navym1861
+	name = "Colt Navy Revolver M1861"
+	desc = "Officialy the M1861 Colt Navy Percussion Cap Revolver."
+	icon_state = "peacemaker2"
+	base_icon = "colt_navy1861"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 2.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 37
+
+/obj/item/weapon/gun/projectile/capnball/
+	name = "Colt Army Revolver M1860"
+	desc = "Officialy the M1860 Colt Army Percussion Cap Revolver."
+	icon_state = "peacemaker2"
+	base_icon = "colt_army1860"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 2.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 37
