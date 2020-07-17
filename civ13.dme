@@ -953,5 +953,4 @@
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
 #include "maps\1943\khalkhyn_gol.dmm"
-#include "maps\special\battleroyale_imperial.dmm"
 // END_INCLUDE
