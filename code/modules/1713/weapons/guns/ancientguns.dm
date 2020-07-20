@@ -141,6 +141,190 @@ obj/item/weapon/gun/projectile/ancient/firelance
 
 	load_delay = 150
 	aim_miss_chance_divider = 1.50
+
+obj/item/weapon/gun/projectile/ancient/culverin
+	name = "Culverin"
+	desc = "A boomstick with a long barrel which can be filled with gunpowder and projectiles."
+	icon_state = "culverin0"
+	item_state = "culverin"
+	recoil = 5
+	throw_speed = 4
+	throw_range = 7
+	cooldownw = 11
+	force = 28
+	throwforce = 12
+	sharp = TRUE
+	edge = TRUE
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 54*0.78,
+			SHORT_RANGE_MOVING = 22*0.78,
+
+			MEDIUM_RANGE_STILL = 44*0.73,
+			MEDIUM_RANGE_MOVING = 12*0.73,
+
+			LONG_RANGE_STILL = 23*0.65,
+			LONG_RANGE_MOVING = 8*0.65,
+
+			VERY_LONG_RANGE_STILL = 8*0.5,
+			VERY_LONG_RANGE_MOVING = 4*0.5),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 70*0.78,
+			SHORT_RANGE_MOVING = 39*0.78,
+
+			MEDIUM_RANGE_STILL = 48*0.73,
+			MEDIUM_RANGE_MOVING = 19*0.73,
+
+			LONG_RANGE_STILL = 24*0.65,
+			LONG_RANGE_MOVING = 8*0.65,
+
+			VERY_LONG_RANGE_STILL = 22*0.5,
+			VERY_LONG_RANGE_MOVING = 5*0.5),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 72*0.78,
+			SHORT_RANGE_MOVING = 36*0.78,
+
+			MEDIUM_RANGE_STILL = 85*0.73,
+			MEDIUM_RANGE_MOVING = 29*0.73,
+
+			LONG_RANGE_STILL = 50*0.65,
+			LONG_RANGE_MOVING = 19*0.65,
+
+			VERY_LONG_RANGE_STILL = 41*0.5,
+			VERY_LONG_RANGE_MOVING = 12*0.5),
+	)
+
+	load_delay = 145
+	aim_miss_chance_divider = 1.45
+
+obj/item/weapon/gun/projectile/ancient/mysorerocket
+	name = "Mysore Rocket"
+	desc = "A primitive rocket made by the kingdom of Mysore, the weapon can be filled with gunpowder and a projectile."
+	icon_state = "mysorerocket0"
+	item_state = "mysorerocket"
+	recoil = 7
+	throw_speed = 4
+	throw_range = 7
+	cooldownw = 11
+	force = 45
+	throwforce = 12
+	sharp = TRUE
+	edge = TRUE
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 74*0.78,
+			SHORT_RANGE_MOVING = 32*0.78,
+
+			MEDIUM_RANGE_STILL = 54*0.73,
+			MEDIUM_RANGE_MOVING = 12*0.73,
+
+			LONG_RANGE_STILL = 33*0.65,
+			LONG_RANGE_MOVING = 8*0.65,
+
+			VERY_LONG_RANGE_STILL = 45*0.5,
+			VERY_LONG_RANGE_MOVING = 4*0.5),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 90*0.78,
+			SHORT_RANGE_MOVING = 49*0.78,
+
+			MEDIUM_RANGE_STILL = 68*0.73,
+			MEDIUM_RANGE_MOVING = 19*0.73,
+
+			LONG_RANGE_STILL = 44*0.65,
+			LONG_RANGE_MOVING = 8*0.65,
+
+			VERY_LONG_RANGE_STILL = 32*0.5,
+			VERY_LONG_RANGE_MOVING = 5*0.5),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 92*0.78,
+			SHORT_RANGE_MOVING = 36*0.78,
+
+			MEDIUM_RANGE_STILL = 85*0.73,
+			MEDIUM_RANGE_MOVING = 29*0.73,
+
+			LONG_RANGE_STILL = 70*0.65,
+			LONG_RANGE_MOVING = 19*0.65,
+
+			VERY_LONG_RANGE_STILL = 51*0.5,
+			VERY_LONG_RANGE_MOVING = 12*0.5),
+	)
+
+	load_delay = 140
+	aim_miss_chance_divider = 1.40
+
+obj/item/weapon/gun/projectile/ancient/congreverocket
+	name = "Congreve Rocket"
+	desc = "A rocket made by the British after they found the Mysore-Rocket, the weapon can be filled with gunpowder and a projectile."
+	icon_state = "congreverocket0"
+	item_state = "congreverocket"
+	recoil = 6
+	throw_speed = 4
+	throw_range = 7
+	cooldownw = 11
+	force = 55
+	throwforce = 12
+	sharp = TRUE
+	edge = TRUE
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 75*0.78,
+			SHORT_RANGE_MOVING = 32*0.78,
+
+			MEDIUM_RANGE_STILL = 55*0.73,
+			MEDIUM_RANGE_MOVING = 12*0.73,
+
+			LONG_RANGE_STILL = 35*0.65,
+			LONG_RANGE_MOVING = 8*0.65,
+
+			VERY_LONG_RANGE_STILL = 45*0.5,
+			VERY_LONG_RANGE_MOVING = 4*0.5),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 91*0.78,
+			SHORT_RANGE_MOVING = 49*0.78,
+
+			MEDIUM_RANGE_STILL = 68*0.73,
+			MEDIUM_RANGE_MOVING = 19*0.73,
+
+			LONG_RANGE_STILL = 44*0.65,
+			LONG_RANGE_MOVING = 8*0.65,
+
+			VERY_LONG_RANGE_STILL = 32*0.5,
+			VERY_LONG_RANGE_MOVING = 5*0.5),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 98*0.78,
+			SHORT_RANGE_MOVING = 36*0.78,
+
+			MEDIUM_RANGE_STILL = 85*0.73,
+			MEDIUM_RANGE_MOVING = 29*0.73,
+
+			LONG_RANGE_STILL = 70*0.65,
+			LONG_RANGE_MOVING = 19*0.65,
+
+			VERY_LONG_RANGE_STILL = 51*0.5,
+			VERY_LONG_RANGE_MOVING = 12*0.5),
+	)
+
+	load_delay = 140
+	aim_miss_chance_divider = 1.40
+
 obj/item/weapon/gun/projectile/ancient/handcannon
 	name = "handcannon"
 	desc = "A crude handcannon, consisting on a iron barrel with a wood stock attached."

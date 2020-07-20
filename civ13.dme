@@ -301,6 +301,7 @@
 #include "code\game\objects\map_metadata\retreat.dm"
 #include "code\game\objects\map_metadata\river_kwai.dm"
 #include "code\game\objects\map_metadata\rizal_stadium.dm"
+#include "code\game\objects\map_metadata\federal_city_2.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
 #include "code\game\objects\map_metadata\sammirhayeed.dm"
