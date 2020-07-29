@@ -556,11 +556,10 @@ var/civmax_research = list(230,230,230)
 		if (!H.original_job)
 			return FALSE
 		else
-			switch (H.original_job.base_type_flag())
-				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, RUSSIAN, AMERICAN, CHINESE)
-					return !faction1_can_cross_blocks()
-				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB, GERMAN, JAPANESE, VIETNAMESE)
-					return !faction2_can_cross_blocks()
+			if (H.faction_text == faction1)
+				return !faction1_can_cross_blocks()
+			if (H.faction_text == faction2)
+				return !faction2_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/proc/faction1_can_cross_blocks()

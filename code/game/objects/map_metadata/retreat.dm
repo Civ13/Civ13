@@ -6,8 +6,8 @@
 	respawn_delay = 1200
 
 	faction_organization = list(
-		CHINESE,
-		AMERICAN)
+		AMERICAN,
+		CHINESE)
 
 	roundend_condition_sides = list(
 		list(AMERICAN) = /area/caribbean/japanese/land,
@@ -94,7 +94,7 @@ var/no_loop_ret = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Chinese</b> have successfuly deterred the Withdrawl! The Americans have halted the Retreat!"
+		var/message = "The <b>Chinese</b> have successfuly deterred the withdrawal! The Americans have halted the Retreat!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

@@ -141,8 +141,9 @@
 
 /obj/item/weapon/gun/projectile/flintlock/handle_post_fire()
 	..()
-	loaded = list()
-	chambered = null
+	if (max_shells == 1)
+		loaded = list()
+		chambered = null
 	cocked = FALSE
 	spawn (1)
 		new/obj/effect/effect/smoke/chem(get_step(src, dir))
@@ -156,6 +157,66 @@
 	effectiveness_mod = 0.97
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
+
+/obj/item/weapon/gun/projectile/flintlock/m1752
+	name = "M1752 mosquete"
+	desc = "A simple spanish musket of the early XVIII century."
+	force = 11.5
+	caliber = "musketball"
+	weight = 6.0
+	effectiveness_mod = 0.98
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	item_state = "plexciomusket"
+	icon_state = "mosquete1752"
+
+/obj/item/weapon/gun/projectile/flintlock/jezail
+	name = "Jezail musket"
+	desc = "A very simple Arabic musket of the early XVIII century."
+	force = 10
+	caliber = "musketball"
+	weight = 5.0
+	effectiveness_mod = 0.97
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	item_state = "plexciomusket"
+	icon_state = "jezail"
+
+/obj/item/weapon/gun/projectile/flintlock/kabyle
+	name = "Kabyle musket"
+	desc = "A very simple North-African musket of the early XVIII century."
+	force = 10.2
+	caliber = "musketball"
+	weight = 4.7
+	effectiveness_mod = 0.93
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	item_state = "plexciomusket"
+	icon_state = "moukalla"
+
+/obj/item/weapon/gun/projectile/flintlock/brownbess
+	name = "Brownbess musket"
+	desc = "A simple english musket of the early XVIII century."
+	force = 11
+	caliber = "musketball"
+	weight = 5.9
+	effectiveness_mod = 0.98
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	item_state = "plexciomusket"
+	icon_state = "brownbess"
+
+/obj/item/weapon/gun/projectile/flintlock/charleville
+	name = "Charleville mousquet"
+	desc = "A simple french musket of the early XVIII century."
+	force = 11.3
+	caliber = "musketball"
+	weight = 5.6
+	effectiveness_mod = 0.98
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	item_state = "plexciomusket"
+	icon_state = "charleville_mousquet"
 
 /obj/item/weapon/gun/projectile/flintlock/plexico
 	name = "flintlock musket"
@@ -181,7 +242,6 @@
 	item_state = "springfield"
 	icon_state = "springfield"
 	load_delay = 100
-
 
 /obj/item/weapon/gun/projectile/flintlock/springfield1795
 	name = "Springfield 1795 Musket"
@@ -340,6 +400,7 @@
 	aim_miss_chance_divider = 2.00
 
 
+
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss
 	gun_type = GUN_TYPE_SHOTGUN
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
@@ -352,8 +413,8 @@
 			SHORT_RANGE_STILL = 56,
 			SHORT_RANGE_MOVING = 45,
 
-			MEDIUM_RANGE_STILL = 45,
-			MEDIUM_RANGE_MOVING = 36,
+			MEDIUM_RANGE_STILL = 55,
+			MEDIUM_RANGE_MOVING = 46,
 
 			LONG_RANGE_STILL = 16,
 			LONG_RANGE_MOVING = 13,
@@ -363,11 +424,11 @@
 
 		// medium body parts: limbs
 		"medium" = list(
-			SHORT_RANGE_STILL = 68,
-			SHORT_RANGE_MOVING = 54,
+			SHORT_RANGE_STILL = 65,
+			SHORT_RANGE_MOVING = 56,
 
-			MEDIUM_RANGE_STILL = 45,
-			MEDIUM_RANGE_MOVING = 36,
+			MEDIUM_RANGE_STILL = 55,
+			MEDIUM_RANGE_MOVING = 46,
 
 			LONG_RANGE_STILL = 18,
 			LONG_RANGE_MOVING = 15,
@@ -380,8 +441,8 @@
 			SHORT_RANGE_STILL = 91,
 			SHORT_RANGE_MOVING = 72,
 
-			MEDIUM_RANGE_STILL = 68,
-			MEDIUM_RANGE_MOVING = 54,
+			MEDIUM_RANGE_STILL = 69,
+			MEDIUM_RANGE_MOVING = 64,
 
 			LONG_RANGE_STILL = 45,
 			LONG_RANGE_MOVING = 36,
@@ -390,11 +451,242 @@
 			VERY_LONG_RANGE_MOVING = 15),
 	)
 
-	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 1.00
+	accuracy_increase_mod = 1.05
+	accuracy_decrease_mod = 1.10
 	KD_chance = KD_CHANCE_HIGH
+
+/obj/item/weapon/gun/projectile/flintlock/pistoletmodelean1733
+	name = "Pistolet modèle An 1733"
+	desc = "A typical French pistol. Used by Calvary units."
+	icon_state = "pistolet_modele1733"
+	item_state = "pistol"
+	recoil = 2.1
+	force = 6.1
+	w_class = 2
+	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
+	caliber = "musketball_pistol"
+	weight = 2.5
+	effectiveness_mod = 1
+	attachment_slots = ATTACH_IRONSIGHTS
+	ammo_type = /obj/item/ammo_casing/musketball_pistol
+	move_delay = 3
+	fire_delay = 3
+	load_delay = 102
+	value = 70
+	stat = "pistol"
+	gtype = "pistol"
+	equiptimer = 7
+	accuracy_list = list(
+
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 40,
+
+			MEDIUM_RANGE_STILL = 55,
+			MEDIUM_RANGE_MOVING = 55,
+
+			LONG_RANGE_STILL = 45,
+			LONG_RANGE_MOVING = 30,
+
+			VERY_LONG_RANGE_STILL = 38,
+			VERY_LONG_RANGE_MOVING = 25),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 64,
+			SHORT_RANGE_MOVING = 42,
+
+			MEDIUM_RANGE_STILL = 54,
+			MEDIUM_RANGE_MOVING = 48,
+
+			LONG_RANGE_STILL = 49,
+			LONG_RANGE_MOVING = 32,
+
+			VERY_LONG_RANGE_STILL = 41,
+			VERY_LONG_RANGE_MOVING = 27),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 68,
+			SHORT_RANGE_MOVING = 44,
+
+			MEDIUM_RANGE_STILL = 60,
+			MEDIUM_RANGE_MOVING = 40,
+
+			LONG_RANGE_STILL = 53,
+			LONG_RANGE_MOVING = 35,
+
+			VERY_LONG_RANGE_STILL = 45,
+			VERY_LONG_RANGE_MOVING = 30),
+	)
+
+	accuracy_increase_mod = 1.40
+	accuracy_decrease_mod = 2.00
+	KD_chance = KD_CHANCE_LOW
+	stat = "pistol"
+	aim_miss_chance_divider = 1.70
+
+/obj/item/weapon/gun/projectile/flintlock/duellingpistol
+	name = "Duelling Flintlock "
+	desc = "A typical Duelling Pistol. Used by gentlemen who take part in duels."
+	icon_state = "flintlock_duelingpistol"
+	item_state = "pistol"
+	recoil = 2.5
+	force = 8
+	w_class = 2
+	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
+	caliber = "musketball_pistol"
+	weight = 2.9
+	effectiveness_mod = 1
+	attachment_slots = ATTACH_IRONSIGHTS
+	ammo_type = /obj/item/ammo_casing/musketball_pistol
+	move_delay = 3.4
+	fire_delay = 3.1
+	load_delay = 105
+	value = 70
+	stat = "pistol"
+	gtype = "pistol"
+	equiptimer = 7
+	accuracy_list = list(
+
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 50,
+
+			MEDIUM_RANGE_STILL = 65,
+			MEDIUM_RANGE_MOVING = 65,
+
+			LONG_RANGE_STILL = 45,
+			LONG_RANGE_MOVING = 30,
+
+			VERY_LONG_RANGE_STILL = 42,
+			VERY_LONG_RANGE_MOVING = 25),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 64,
+			SHORT_RANGE_MOVING = 42,
+
+			MEDIUM_RANGE_STILL = 55,
+			MEDIUM_RANGE_MOVING = 58,
+
+			LONG_RANGE_STILL = 49,
+			LONG_RANGE_MOVING = 32,
+
+			VERY_LONG_RANGE_STILL = 41,
+			VERY_LONG_RANGE_MOVING = 27),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 68,
+			SHORT_RANGE_MOVING = 44,
+
+			MEDIUM_RANGE_STILL = 60,
+			MEDIUM_RANGE_MOVING = 40,
+
+			LONG_RANGE_STILL = 63,
+			LONG_RANGE_MOVING = 35,
+
+			VERY_LONG_RANGE_STILL = 47,
+			VERY_LONG_RANGE_MOVING = 35),
+	)
+
+
+/obj/item/weapon/gun/projectile/flintlock/pistoletmodeleanxiii
+	name = "Pistolet modèle An XIII"
+	desc = "A typical French pistol. Used by Calvary units."
+	icon_state = "pistolet_modele13"
+	item_state = "pistol"
+	recoil = 2.1
+	force = 6.1
+	w_class = 2
+	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
+	caliber = "musketball_pistol"
+	weight = 2.5
+	effectiveness_mod = 1
+	attachment_slots = ATTACH_IRONSIGHTS
+	ammo_type = /obj/item/ammo_casing/musketball_pistol
+	move_delay = 3
+	fire_delay = 3
+	load_delay = 102
+	value = 70
+	stat = "pistol"
+	gtype = "pistol"
+	equiptimer = 7
+	accuracy_list = list(
+
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 40,
+
+			MEDIUM_RANGE_STILL = 55,
+			MEDIUM_RANGE_MOVING = 55,
+
+			LONG_RANGE_STILL = 45,
+			LONG_RANGE_MOVING = 30,
+
+			VERY_LONG_RANGE_STILL = 38,
+			VERY_LONG_RANGE_MOVING = 25),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 64,
+			SHORT_RANGE_MOVING = 42,
+
+			MEDIUM_RANGE_STILL = 54,
+			MEDIUM_RANGE_MOVING = 48,
+
+			LONG_RANGE_STILL = 49,
+			LONG_RANGE_MOVING = 32,
+
+			VERY_LONG_RANGE_STILL = 41,
+			VERY_LONG_RANGE_MOVING = 27),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 68,
+			SHORT_RANGE_MOVING = 44,
+
+			MEDIUM_RANGE_STILL = 60,
+			MEDIUM_RANGE_MOVING = 40,
+
+			LONG_RANGE_STILL = 53,
+			LONG_RANGE_MOVING = 35,
+
+			VERY_LONG_RANGE_STILL = 45,
+			VERY_LONG_RANGE_MOVING = 30),
+	)
+
+	accuracy_increase_mod = 1.40
+	accuracy_decrease_mod = 2.00
+	KD_chance = KD_CHANCE_LOW
+	stat = "pistol"
+	aim_miss_chance_divider = 1.70
+
 	stat = "heavy"
-	name = "blunderbuss"
+	name = "Blunderbuss Pistol"
+	desc = "A enlarged version of the musketoon, it can fire bigger bullets. Useless at long range."
+	icon_state = "flintlock_blunderbusspistol"
+	item_state = "pistol"
+	recoil = 5
+	force = 14
+	load_delay = 125
+	caliber = "blunderbuss"
+	stat = "rifle"
+	weight = 2.5
+	value = 80
+	effectiveness_mod = 0.6
+	attachment_slots = ATTACH_IRONSIGHTS
+	ammo_type = /obj/item/ammo_casing/blunderbuss
+
+	stat = "heavy"
+	name = "Blunderbuss"
 	desc = "A enlarged version of the musketoon, it can fire bigger bullets. Useless at long range."
 	icon_state = "blunderbuss"
 	item_state = "blunderbuss"

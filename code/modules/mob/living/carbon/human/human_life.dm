@@ -528,27 +528,30 @@
 			disease_treatment = 0
 
 		for (var/mob/living/human/H in range(2,src))
-			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria" && !disease_type == "zombie") //malaria doesn't transmit from person to person.
-				if (stat != DEAD)
+			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !H.disease_type == "malaria" && !H.disease_type == "zombie") //malaria doesn't transmit from person to person.
+				if (H.stat != DEAD)
 					if (prob(1) || (prob(2) && find_trait("Weak Immune System")))
-						disease = TRUE
-						disease_type = H.disease_type
-						disease_progression = 0
-						disease_treatment = 0
-				else if (stat == DEAD)
+						if ((prob(50) && istype(wear_mask, /obj/item/clothing/mask/sterile)) || !istype(wear_mask, /obj/item/clothing/mask/sterile))
+							if ((H.disease_type == "flu" && !istype(H.wear_mask, /obj/item/clothing/mask/sterile)) || H.disease_type != "flu")
+								disease = TRUE
+								disease_type = H.disease_type
+								disease_progression = 0
+								disease_treatment = 0
+				else if (H.stat == DEAD)
 					if (prob(3) || (prob(6) && find_trait("Weak Immune System")))
-						disease = TRUE
-						disease_type = H.disease_type
-						disease_progression = 0
-						disease_treatment = 0
+						if ((prob(50) && istype(wear_mask, /obj/item/clothing/mask/sterile)) || !istype(wear_mask, /obj/item/clothing/mask/sterile))
+							disease = TRUE
+							disease_type = H.disease_type
+							disease_progression = 0
+							disease_treatment = 0
 
-		if (disease == FALSE)
-			if (prob(1) && map.civilizations)
-				if ((prob(20) || (prob(40) && find_trait("Weak Immune System"))) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
-					disease = TRUE
-					disease_type = "flu"
-					disease_progression = 0
-					disease_treatment = 0
+	else if (disease == FALSE)
+		if (prob(1) && map.civilizations)
+			if ((prob(20) || (prob(40) && find_trait("Weak Immune System"))) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
+				disease = TRUE
+				disease_type = "flu"
+				disease_progression = 0
+				disease_treatment = 0
 
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)

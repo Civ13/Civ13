@@ -400,7 +400,13 @@ RECIPE: /material/woolcloth/,light artisan clothing,/obj/item/clothing/under/art
 RECIPE: /material/woolcloth/,customizable renaissance clothing,/obj/item/clothing/under/customren,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
-RECIPE: /material/woolcloth/,custom uniform,/obj/item/clothing/under/customuniform,3,75,0,1,clothing,0,0,98,8,null
+RECIPE: /material/woolcloth/,custom victorian uniform,/obj/item/clothing/under/customvicuniform,3,75,0,1,clothing,0,0,98,8,null
+RECIPE: /material/woolccloth/,lederhosen,/obj/item/clothing/under/lederhosen,4,75,0,1,clothing,0,0,80,8,null
+RECIPE: /material/woolccloth/,custom modern outfit,/obj/item/clothing/under/customuniform,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/woolccloth/,custom baggy modern outfit,/obj/item/clothing/under/customuniform/baggy,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/woolccloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/woolccloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
+RECIPE: /material/woolccloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
 
 //*****************| WOOLCLOTH SUITS & COATS |***************************
 
@@ -488,6 +494,7 @@ RECIPE: /material/cloth/,bandages,/obj/item/stack/medical/bruise_pack/bint,1,75,
 RECIPE: /material/cloth/,surgery kit,/obj/item/weapon/storage/firstaid/surgery_empty,6,90,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/cloth/,burn kit,/obj/item/stack/medical/advanced/ointment,1,90,0,1,healthcare,0,0,43,8,null
 RECIPE: /material/cloth/,trauma kit,/obj/item/stack/medical/advanced/bruise_pack,2,105,0,1,healthcare,0,0,56,8,null
+RECIPE: /material/cloth/,surgical mask,/obj/item/clothing/mask/sterile,1,140,0,1,healthcare,0,0,108,8,null
 
 //*****************| CLOTH CARPETS |***************************
 
@@ -690,9 +697,15 @@ RECIPE: /material/cloth/,grey outfit,/obj/item/clothing/under/modern3,4,75,0,1,c
 RECIPE: /material/cloth/,brown outfit,/obj/item/clothing/under/modern4,4,75,0,1,clothing,112,0,0,8,null
 RECIPE: /material/cloth/,farmer outfit,/obj/item/clothing/under/farmer_outfit,4,75,0,1,clothing,112,0,0,8,null
 RECIPE: /material/cloth/,mechanic outfit,/obj/item/clothing/under/mechanic_outfit,4,75,0,1,clothing,112,0,0,8,null
-RECIPE: /material/cloth/,custom uniform,/obj/item/clothing/under/customuniform,3,75,0,1,clothing,0,0,112,8,null
+RECIPE: /material/cloth/,custom victorian uniform,/obj/item/clothing/under/customvicuniform,3,75,0,1,clothing,0,0,112,8,null
 RECIPE: /material/cloth/,worker outfit,/obj/item/clothing/under/industrial5,3,75,0,1,clothing,0,0,112,6,null
 RECIPE: /material/cloth/,texan shirt outfit,/obj/item/clothing/under/texan,5,75,0,1,clothing,0,0,112,8,null
+RECIPE: /material/cloth/,lederhosen,/obj/item/clothing/under/lederhosen,4,75,0,1,clothing,0,0,80,8,null
+RECIPE: /material/cloth/,custom modern outfit,/obj/item/clothing/under/customuniform,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/cloth/,custom baggy modern outfit,/obj/item/clothing/under/customuniform/baggy,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/cloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
+RECIPE: /material/cloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
+RECIPE: /material/cloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
 
 //*****************| CLOTH MILITARY & LAW ENFORCMENT UNIFORMS |***************************
 
@@ -771,8 +784,8 @@ RECIPE: /material/plastic/,plastic bottle,/obj/item/weapon/reagent_containers/fo
 //*****************| PLASTIC CLOTHING & ARMOR |***************************
 
 RECIPE: /material/plastic/,constable helmet,/obj/item/clothing/head/helmet/constable,6,165,0,1,none,0,0,138,8,null
-
 RECIPE: /material/plastic/,surgical apron,/obj/item/clothing/suit/storage/jacket/surgeon,8,140,0,1,jackets & vests,0,0,138,8,null
+RECIPE: /material/plastic/,surgical mask,/obj/item/clothing/mask/sterile,1,140,0,1,none,0,0,108,8,null
 
 //**************************************************************
 //*********************| CHITIN |*******************************
@@ -1192,7 +1205,7 @@ RECIPE: /material/glass/,glass bottle,/obj/item/weapon/reagent_containers/food/d
 RECIPE: /material/glass/,teapot,/obj/item/weapon/reagent_containers/food/drinks/teapot,4,70,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,teacup,/obj/item/weapon/reagent_containers/food/drinks/tea/empty,2,50,0,1,drinks,49,0,24,8,null
 RECIPE: /material/glass/,wine glass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,2,25,0,1,drinks,49,0,0,8,null
-
+RECIPE: /material/glass/,beer mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,2,25,0,1,drinks,75,0,0,8,null
 //*************| GLASS ELECTRICAL |***************
 
 RECIPE: /material/glass/,small lightbulb frame,/obj/structure/lamp/lamp_small,2,35,0,1,electrical,115,0,0,8,null

@@ -49,16 +49,19 @@
 				"World War II (1931-1948)" = 0,
 				"Cold War Era (1949-1984)" = 0,
 				"Modern Era (1985-2020)" = 0,
-				"The Art of the Deal" = 10,
 				"Chad Mode" = 0,
 				"Battle Royale" = 6,
 			)
-		else if (config.allowedgamemodes == "RP" || config.allowedgamemodes == "PERSISTENCE")
+		else if (config.allowedgamemodes == "RP")
 			epochs = list(
+				"The Art of the Deal" = 10,
 				"Civilization 13 (Nomads)" = 0,
 				"Civilization 13 (Colony & Pioneers)" = 0,
 				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
+		else if (config.allowedgamemodes == "PERSISTENCE")
+			epochs = list(
+				"Civilization 13 (Nomads)" = 0,)
 		else if (config.allowedgamemodes == "BR")
 			epochs = list(
 				"Battle Royale" = 6,)
