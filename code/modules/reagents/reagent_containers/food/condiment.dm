@@ -112,6 +112,14 @@
 					name = "flour sack"
 					desc = "A sack of wheat flour."
 					center_of_mass = list("x"=16, "y"=6)
+				if ("barleyflour")
+					name = "barley flour sack"
+					desc = "A sack of barley flour."
+					center_of_mass = list("x"=16, "y"=6)
+				if ("oatflour")
+					name = "oat flour sack"
+					desc = "A sack of oat flour."
+					center_of_mass = list("x"=16, "y"=6)
 				else
 					name = "Misc Condiment Bottle"
 					if (reagents.reagent_list.len==1)
@@ -197,9 +205,19 @@
 	volume = 10
 	New()
 		..()
-		reagents.add_reagent("flour", 10)
+		if (istype(src, /obj/item/weapon/reagent_containers/food/condiment/flour/oatflour))
+			reagents.add_reagent("oatflour", 10)
+		else if (istype(src, /obj/item/weapon/reagent_containers/food/condiment/flour/barleyflour))
+			reagents.add_reagent("barleyflour", 10)
+		else
+			reagents.add_reagent("flour", 10)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
+
+/obj/item/weapon/reagent_containers/food/condiment/flour/barleyflour
+	name = "small barley flour sack"
+/obj/item/weapon/reagent_containers/food/condiment/flour/oatflour
+	name = "small oat flour sack"
 /obj/item/weapon/reagent_containers/food/condiment/flour/attack_self(mob/user)
 	var/obj/item/weapon/reagent_containers/glass/WW
 	if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))

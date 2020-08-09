@@ -2158,6 +2158,93 @@ obj/item/clothing/head/ww2/chicap2
 		/obj/item/weapon/pen,
 		)
 
+//swimwear//
+/obj/item/clothing/under/red/strappedbikini
+	name = "Red Strap Bikini"
+	desc = "Seems to be two piece red Bikini, the top is held up by straps."
+	icon_state = "r_strapbikini"
+	item_state = "r_strapbikini"
+	worn_state = "r_strapbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/red/bandbikini
+	name = "Red Band Bikini"
+	desc = "Seems to be two piece red Bikini, the top is held up by a tight horizontal band."
+	icon_state = "r_bandbikini"
+	item_state = "r_bandbikini"
+	worn_state = "r_bandbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+
+/obj/item/clothing/under/red/swimtrunks
+	name = "Red Swimtrunks"
+	desc = "Seems to be pants made for swiming in."
+	icon_state = "r_swimtrunks"
+	item_state = "r_swimtrunks"
+	worn_state = "r_swimtrunks"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+
+/obj/item/clothing/under/blue/strappedbikini
+	name = "Blue Strap Bikini"
+	desc = "Seems to be two piece blue Bikini, the top is held up by straps."
+	icon_state = "b_strapbikini"
+	item_state = "b_strapbikini"
+	worn_state = "b_strapbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/blue/bandbikini
+	name = "Blue Band Bikini"
+	desc = "Seems to be two piece blue Bikini, the top is held up by a tight horizontal band."
+	icon_state = "b_bandbikini"
+	item_state = "b_bandbikini"
+	worn_state = "b_bandbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/blue/swimtrunks
+	name = "Blue Swimtrunks"
+	desc = "Seems to be pants made for swiming in."
+	icon_state = "b_swimtrunks"
+	item_state = "b_swimtrunks"
+	worn_state = "b_swimtrunks"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/green/strappedbikini
+	name = "Green Strap Bikini"
+	desc = "Seems to be two piece green Bikini, the top is held up by straps."
+	icon_state = "g_strapbikini"
+	item_state = "g_strapbikini"
+	worn_state = "g_strapbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/green/bandbikini
+	name = "Green Band Bikini"
+	desc = "Seems to be two piece green Bikini, the top is held up by a tight horizontal cloth."
+	icon_state = "g_bandbikini"
+	item_state = "g_bandbikini"
+	worn_state = "g_bandbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+
+/obj/item/clothing/under/green/swimtrunks
+	name = "Green Swimtrunks"
+	desc = "Seems to be pants made for swiming in."
+	icon_state = "g_swimtrunks"
+	item_state = "g_swimtrunks"
+	worn_state = "g_swimtrunks"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+
+
 /obj/item/weapon/storage/belt/gulagguard/filled/New()
 	..()
 	new /obj/item/weapon/melee/classic_baton(src)

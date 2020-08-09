@@ -797,6 +797,13 @@ datum/admins/proc/print_chemical_reactions()
 	catalysts = list("enzyme" = 5)
 	result_amount = 5
 
+/datum/chemical_reaction/coca_wine
+	name = "Coca Wine"
+	id = "cocawine"
+	result = "cocawine"
+	required_reagents = list("wine"= 10, "cocaine" = 5)
+	result_amount = 15
+
 /datum/chemical_reaction/sake
 	name = "Sake"
 	id = "sake"

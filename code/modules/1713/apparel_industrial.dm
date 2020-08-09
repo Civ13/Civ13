@@ -242,6 +242,13 @@
 	item_state = "texas"
 	worn_state = "texas"
 
+/obj/item/clothing/under/lederhosen
+	name = "lederhosen"
+	desc = "The traditional south german attire."
+	icon_state = "lederhosen"
+	item_state = "lederhosen"
+	worn_state = "lederhosen"
+
 /obj/item/clothing/under/gang_leader // Welcome to sauce or loss with the Van Derlinde Gang
 	name = "classy outlaw outfit"
 	desc = "A well made black and red outfit with white arms and gold buttons. Often worn by self styled leaders, always with a plan."

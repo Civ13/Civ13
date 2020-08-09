@@ -750,7 +750,7 @@
 		..()
 
 /////////////////UNIFORMS////////////////////////////////////
-/obj/item/clothing/under/customuniform
+/obj/item/clothing/under/customvicuniform
 	name = "uniform"
 	desc = "A victorian Era uniform."
 	var/uncolored = FALSE
@@ -770,7 +770,7 @@
 			uncolored = TRUE
 
 
-/obj/item/clothing/under/customuniform/attack_self(mob/user as mob)
+/obj/item/clothing/under/customvicuniform/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!shirtcolor)
 			var/input = input(user, "Shirt - Choose a hex color (without the #):", "Shirt Color" , "FFFFFF")
@@ -1407,3 +1407,104 @@
 			return
 	else
 		..()
+
+/////////////////CUSTOM GENERIC UNIFORMS////////////////////////////////////
+/obj/item/clothing/under/customuniform
+	name = "modern outfit"
+	desc = "A generic outfit."
+	var/uncolored = FALSE
+	var/shirtcolor = 0
+	var/pantscolor = 0
+	item_state = "custom_mod_full"
+	icon_state = "custom_mod_full"
+	worn_state = "custom_mod_full"
+	var/base_icon = "custom_mod"
+	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/customuniform/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!shirtcolor)
+			var/input = input(user, "Shirt - Choose a hex color (without the #):", "Shirt Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (length(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				shirtcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (!pantscolor)
+			var/input = input(user, "Pants - Choose a hex color (without the #):", "Pants Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (length(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				pantscolor = addtext("#",input)
+
+		if (shirtcolor && pantscolor)
+			uncolored = FALSE
+			var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[base_icon]_pants")
+			pants.color = pantscolor
+			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[base_icon]_shirt")
+			shirt.color = shirtcolor
+			var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custom_belt")
+			overlays += pants
+			overlays += shirt
+			overlays += belt
+			return
+	else
+		..()
+
+/obj/item/clothing/under/customuniform/baggy
+	name = "baggy modern outfit"
+	item_state = "custom_modbaggy_full"
+	icon_state = "custom_modbaggy_full"
+	worn_state = "custom_modbaggy_full"
+	base_icon = "custom_modbaggy"
+
+/obj/item/clothing/under/customuniform/short
+	name = "short modern outfit"
+	item_state = "custom_modshort_full"
+	icon_state = "custom_modshort_full"
+	worn_state = "custom_modshort_full"
+	base_icon = "custom_modshort"
+
+/obj/item/clothing/under/customuniform/colonial
+	name = "colonial outfit"
+	item_state = "custom_col_full"
+	icon_state = "custom_col_full"
+	worn_state = "custom_col_full"
+	base_icon = "custom_col"
+
+/obj/item/clothing/under/customuniform/colonial/short
+	name = "short colonial outfit"
+	item_state = "custom_col_short_full"
+	icon_state = "custom_col_short_full"
+	worn_state = "custom_col_short_full"
+	base_icon = "custom_col_short"
