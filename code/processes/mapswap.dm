@@ -137,6 +137,7 @@
 //				MAP_IWO_JIMA = 70,
 				MAP_RIZAL_STADIUM = 0,
 				MAP_INTRAMUROS = 25,
+				MAP_WAKE_ISLAND = 20,
 			)
 
 		else if (epoch == "Early Modern Era (1896-1930)")
