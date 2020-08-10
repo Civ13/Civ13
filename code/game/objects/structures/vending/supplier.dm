@@ -193,5 +193,5 @@
 			else
 				orderamount = choice3
 			return
-	H << "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] per unit.</big>"
+	H << "<big>This company is currently buying [orderamount] of [ordername] for [orderprice*10] sc per unit.</big>"
 	return

@@ -113,6 +113,12 @@
 	glass_type = "cocktail"
 	volume = 20
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug
+	name = "beer mug"
+	icon_state = "glass-beermug"
+	glass_type = "beermug"
+	volume = 50
+
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine
 	name = "wine glass"
 	icon_state = "glass-wine"
