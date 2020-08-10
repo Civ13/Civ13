@@ -75,7 +75,7 @@ var/civmax_research = list(230,230,230)
 	)
 	var/required_players = 1
 	var/time_both_sides_locked = -1
-	var/time_to_end_round_after_both_sides_locked = 6000
+	var/time_to_end_round_after_both_sides_locked = 9000
 	var/admins_triggered_roundend = FALSE
 	var/admins_triggered_noroundend = FALSE
 
