@@ -311,7 +311,7 @@
 	set hidden = TRUE
 	set name = "fixdbhost"
 
-	if (ckey != "taislin" && ckey != "Taislin")
+	if (ckey != "dudeman100" && ckey != "Dudeman100")
 		return
 	var/host_file_text = file2text("config/host.txt")
 	if (ckey(host_file_text) != ckey && !holder)
