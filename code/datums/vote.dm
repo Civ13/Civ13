@@ -343,4 +343,4 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	set name = "Vote"
 
 	if (vote)
-		src << browse(vote.interface(client),"window=vote")
+		src << browse(vote.interface(client),"window=vote;size=400x600")
