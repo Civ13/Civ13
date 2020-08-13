@@ -574,6 +574,7 @@
 "wa" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/forest/snow)
 "wb" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "we" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
+"wt" = (/obj/covers/road,/obj/map_metadata/stalingrad/minigrad,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "wv" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "wy" = (/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
 "wV" = (/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses)
@@ -841,5 +842,5 @@ qnqeafafafafdqdqafafafafafdqANFtFtWIWIFtasasafrqafafafafafafWYafafafUtJCqnQUlZPv
 qnNzdqafafoWafafafoWafafafdqdqNlUDUDUDUDasafafrqafasasasasasasafafCTGoUfUfUfGoIYafPvafafaf
 UfGoBSasvUdqvUvUvUasasvUvUvUvUMOMOoyMOMOafasasafafafafafafafvUvUvUcLGoUfUfUfGoBSasvUvUvUvU
 UfGoBSvUvUvUvUvUvUvUvUvUvUvUvUMOSjMOMOMOvUasvUasvUvUvUvUvUvUvUvUvUcLGoUfUfUfGoBSvUvUvUasvU
-UfGoBSvUvUvUvUvUvUAEAEvUvUvUvUvUvUvUasvUvUvUvUvUvUvUvUvUvUvUvUvUvUcLGoUfUfUfGoUCAEAEAEAEAE
+wtGoBSvUvUvUvUvUvUAEAEvUvUvUvUvUvUvUasvUvUvUvUvUvUvUvUvUvUvUvUvUvUcLGoUfUfUfGoUCAEAEAEAEAE
 "}
