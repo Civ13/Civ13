@@ -246,6 +246,7 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 		var/c1 = 0
 		var/c2 = 0
 		var/cust_color = "white"
+		var/prev_control = "none"
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
