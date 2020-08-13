@@ -186,6 +186,7 @@
 "fK" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/radio{anchored = 1; powered = 1; powerneeded = 0},/turf/floor/wood,/area/caribbean/houses)
 "fL" = (/turf/floor/winter/grass{icon_state = "grass0"},/area/caribbean/nomads/forest/snow)
 "fM" = (/obj/structure/phoneline,/obj/structure/phonecable/vertical/v2,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
+"fN" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
 "fP" = (/turf/floor/wood{icon_state = "wood-broken6"},/area/caribbean/houses)
 "fS" = (/obj/covers/carpet/redcarpet,/obj/structure/bed/chair/wood/red{dir = 1; icon_state = "wooden_chair_red"},/turf/floor/plating/steel,/area/caribbean/nomads/forest/snow)
 "fV" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/tundra)
@@ -776,7 +777,7 @@
 "yo" = (/obj/structure/sink{pixel_y = 12},/turf/floor/plating/white,/area/caribbean/houses)
 "yu" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/one)
 "yz" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
-"yJ" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
+"yJ" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
 "yS" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/white,/area/caribbean/houses)
 "za" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire,/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "zf" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/ammo_magazine/c762x38mmR,/turf/floor/wood,/area/caribbean/houses)
@@ -868,6 +869,7 @@
 "Ss" = (/obj/structure/bed/chair/wood/wings{dir = 8; icon_state = "wooden_chair_wings"},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/one)
 "SR" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/tundra/two)
 "SV" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
+"Td" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/snow)
 "Ts" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/four)
 "TK" = (/obj/structure/toilet{dir = 4; icon_state = "toilet00"},/turf/floor/plating/white,/area/caribbean/houses)
 "TO" = (/obj/structure/toilet{dir = 1; icon_state = "toilet00"},/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/white,/area/caribbean/houses)
@@ -1023,10 +1025,10 @@ qnqnqnqnqnqnqnqnqnqnqnqnqnewqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnqnew
 qeqeqeqeqeqeqeaaqnqnqnaaqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqeqnewqnZuaiauiiiiauaiTXTOaiqeaiTKTXUQauckaulSauaitpauaiauauauai
 afasasafafafqeqeqnqnqnqeqeafafafafafafafdqafafdqafasasdqafafafafafafafafafafafafafafafqeqeqnqnqnZuaiaiaiaiaiaiaiaiaiqeaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiaiai
 afafafafafasasqeqnqnqnqeafdqdqafasafafFUafdqdqafafafasafafdqafrcafafafoWafguafafjUjUjUjUqeqnqnqnZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuFXZuZuZuZuZuZuZuZuZu
-afrcafoWafasdqqeqnqnqnqeafafafguafafafafdqdqafafafafafafafoWafdqafoWafafafafafafafafafafqevRvRvRqejUafafafjUjUasasafafafqLafafafafafasjUafafafPJPJPJPJPJ
-afafafdqasuCafqeqnqnqnqeafafafafafafdqdqafafdqafafafafafafafafasafafafafasasasafafafafaflsxaCJqOjxjUjUafjUafjUjUafasasafafafafasasjUjUasasafafXZXZXZXZXZ
+afrcafoWafasdqqeqnqnqnqeafafafguafafafafdqdqafafafafafafafoWafdqafoWafafafafafafafafafafqevRvRvRqejUafafafjUjUasasafafafqLafmMmMmMmMmMmMmMmMmMPJPJPJPJPJ
+afafafdqasuCafqeqnqnqnqeafafafafafafdqdqafafdqafafafafafafafafasafafafafasasasafafafafaflsxaCJqOjxjUjUafjUafjUjUafasasafafafafasasjUjUmMasafmMfNfNXZXZfN
 afafafafdqafafqeqnqnqnqeafafafafdqdqafafafafafdqDzafafafafasasasafafafafafafafafFUafafafPvNiqnYmCEjUjUjUafafgujUafafafasasafafafjUafafafafqLafIqyJyJyJyJ
-vUvUvUasvUvUasuEqnqnqnuEdqafafoWafafafoWafafafdqdqafafafafWKasafafafafasasasasasasafafuLvWvXvXvXvWOLafjUafafafafjUjUjUafafafasafafafafvUasvUvUCoCoCoCoCo
+vUvUvUasvUvUasuEqnqnqnuEdqafafoWafafafoWafafafdqdqafafafafWKasafafafafasasasasasasafafuLvWvXvXvXvWOLafjUafafafafjUjUjUafafafasafafafafvUasvUvUCoCoTdCoCo
 vUvUvUvUvUvUuLvWvXvXvXvWvYasvUdqvUvUvUasasvUvUvUvUvUasafasasafasasafafafafafafafvUvUvUvZvWvXvXvXvWvYasvUvUvUvUvUvUvUvUvUvUasvUvUvUasasasasvUvUCoccCoCoCo
 vUvUvUvUvUvUvZvWvXvXvXvWvYvUvUvUvUvUvUvUvUvUvUvUvUvUvUvUvUvUvUasvUasvUvUvUvUvUvUvUvUvUvZvWvXvXvXvWvYvUvUvUasvUvUvUvUvUvUvUvUvUvUvUvUvUasvUasvUvUvUvUvUvU
 AEvUAEAEAEvUwavWvXvXvXvWvYvUvUvUvUvUvUAEAEvUvUvUvUvUvUvUasvUvUvUvUvUvUvUvUvUvUvUvUvUvUvZvWvXvXvXvWwbAEAEAEAEAEAEAEvUAEAEAEvUvUvUvUvUvUvUvUvUvUvUvUAEvUAE
