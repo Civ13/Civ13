@@ -245,7 +245,6 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 	if (processes.ticker.playtime_elapsed > 3000)
 		var/c1 = 0
 		var/c2 = 0
-		var/prev_control = a1_control
 		var/cust_color = "white"
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
