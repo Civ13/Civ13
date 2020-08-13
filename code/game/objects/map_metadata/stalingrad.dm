@@ -218,7 +218,7 @@ obj/map_metadata/stalingrad/proc/points_check()
 
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Stalingrad"
-	mission_start_message = "<font size=4>All factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Train Station, Telephone Central, Library, Hospital, and City Hall</b>.<br>First team to reach <b>40</b> points wins!</font>"
+	mission_start_message = "<font size=4>All factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Train Station, Telephone Central, Hospital, and City Hall</b>.<br>First team to reach <b>40</b> points wins!</font>"
 
 /obj/map_metadata/stalingrad/minigrad/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -264,16 +264,10 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 			a1_control = "Soviets"
 			cust_color="red"
 			sov_points++
-		if (a1_control != prev_control)
-			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Telephone Central</b>!</big>"
-			else
-				world << "<big><font color='[cust_color]'>[a1_control]</font> captured the <b>Telephone Central</b>!</big>"
+		if (a1_control != "none")
+			world << "<big><font color='[cust_color]'><b>Telephone Central</b>: [a1_control]</font></big>"
 		else
-			if (a1_control != "none")
-				world << "<big><font color='[cust_color]'>[a1_control]</font> control the <b>Telephone Central</b>.</big>"
-			else
-				world << "<big><b>Nobody</b> controls the <b>Telephone Central</b>.</big>"
+			world << "<big><b>Telephone Central</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
 		prev_control = a2_control
@@ -294,16 +288,10 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 			a2_control = "Soviets"
 			cust_color="red"
 			sov_points++
-		if (a2_control != prev_control)
-			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Train Station</b>!</big>"
-			else
-				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Train Station</b>!</big>"
+		if (a2_control != "none")
+			world << "<big><font color='[cust_color]'><b>Train Station</b>: [a2_control]</font></big>"
 		else
-			if (a2_control != "none")
-				world << "<big><font color='[cust_color]'>[a2_control]</font> control the <b>Train Station</b>.</big>"
-			else
-				world << "<big><b>Nobody</b> controls the <b>Train Station</b>.</big>"
+			world << "<big><b>Train Station</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
 		prev_control = a3_control
@@ -324,16 +312,10 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 			a3_control = "Soviets"
 			cust_color="red"
 			sov_points++
-		if (a3_control != prev_control)
-			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>City Hall</b>!</big>"
-			else
-				world << "<big><font color='[cust_color]'>[a3_control]</font> captured the <b>City Hall</b>!</big>"
+		if (a3_control != "none")
+			world << "<big><font color='[cust_color]'><b>City Hall</b>: [a3_control]</font></big>"
 		else
-			if (a3_control != "none")
-				world << "<big><font color='[cust_color]'>[a3_control]</font> control the <b>City Hall</b>.</big>"
-			else
-				world << "<big><b>Nobody</b> controls the <b>City Hall</b>.</big>"
+			world << "<big><b>City Hall</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
 		prev_control = a4_control
@@ -354,16 +336,10 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 			a4_control = "Soviets"
 			cust_color="red"
 			sov_points++
-		if (a4_control != prev_control)
-			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Hospital</b>!</big>"
-			else
-				world << "<big><font color='[cust_color]'>[a4_control]</font> captured the <b>Hospital</b>!</big>"
+		if (a4_control != "none")
+			world << "<big><font color='[cust_color]'><b>Hospital</b>: [a4_control]</font></big>"
 		else
-			if (a4_control != "none")
-				world << "<big><font color='[cust_color]'>[a4_control]</font> control the <b>Hospital</b>.</big>"
-			else
-				world << "<big><b>Nobody</b> controls the <b>Hospital</b>.</big>"
+			world << "<big><b>Hospital</b>: Nobody</big>"
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Germans: [ger_points]</big>"
 	world << "<big>Soviets: [sov_points]</big>"
