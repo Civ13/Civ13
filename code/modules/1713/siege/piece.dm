@@ -114,6 +114,20 @@
 	maxrange = 35
 	caliber = 88
 
+/obj/structure/cannon/modern/tank/german88/field
+	name = "8.8 cm Pak 43 cannon"
+	desc = "a 88 mm german anti-tank cannon."
+	icon_state = "feldkanone18"
+	icon = 'icons/obj/cannon.dmi'
+	maxsway = 18
+	maxrange = 38
+	assembled = FALSE
+	can_assemble = TRUE
+	New()
+		..()
+		loader_chair = new /obj/structure/bed/chair/loader(src)
+		gunner_chair = new /obj/structure/bed/chair/gunner(src)
+
 /obj/structure/cannon/modern/tank/russian76
 	name = "76 mm M1940 F-34"
 	desc = "a 76.2 mm russian tank-based cannon."

@@ -32,7 +32,6 @@
 	var/a2_control = "none"
 	var/a3_control = "none"
 	var/a4_control = "none"
-	var/a5_control = "none"
 /obj/map_metadata/stalingrad/New()
 	..()
 	spawn(3000)
@@ -365,36 +364,6 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 				world << "<big><font color='[cust_color]'>[a4_control]</font> control the <b>Hospital</b>.</big>"
 			else
 				world << "<big><b>Nobody</b> controls the <b>Hospital</b>.</big>"
-		c1 = 0
-		c2 = 0
-		prev_control = a5_control
-		for (var/mob/living/human/H in player_list)
-			var/area/temp_area = get_area(H)
-			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/five))
-				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
-					c1++
-				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
-					c2++
-		if (c1+c2<=0 || c1 == c2)
-			a5_control = "none"
-		else if (c1 > c2)
-			a5_control = "Germans"
-			cust_color="blue"
-			ger_points++
-		else if (c2 > c1)
-			a5_control = "Soviets"
-			cust_color="red"
-			sov_points++
-		if (a5_control != prev_control)
-			if (prev_control != "none")
-				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Library</b>!</big>"
-			else
-				world << "<big><font color='[cust_color]'>[a5_control]</font> captured the <b>Library</b>!</big>"
-		else
-			if (a5_control != "none")
-				world << "<big><font color='[cust_color]'>[a5_control]</font> control the <b>Library</b>.</big>"
-			else
-				world << "<big><b>Nobody</b> controls the <b>Library</b>.</big>"
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Germans: [ger_points]</big>"
 	world << "<big>Soviets: [sov_points]</big>"
