@@ -31,6 +31,8 @@
 	var/a1_control = "none"
 	var/a2_control = "none"
 	var/a3_control = "none"
+	var/a4_control = "none"
+	var/a5_control = "none"
 /obj/map_metadata/stalingrad/New()
 	..()
 	spawn(3000)
@@ -198,3 +200,185 @@ obj/map_metadata/stalingrad/proc/points_check()
 			win_condition_spam_check = TRUE
 			return FALSE
 	return TRUE
+
+///////////////////////////////////////////////////////////
+////////////////////////////////MINIGRAD///////////////////
+///////////////////////////////////////////////////////////
+
+/obj/map_metadata/stalingrad/minigrad
+	ID = MAP_SMALLINGRAD
+	title = "Central Stalingrad"
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra, /area/caribbean/no_mans_land/invisible_wall/tundra/two)
+
+	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
+	battle_name = "battle of Stalingrad"
+	mission_start_message = "<font size=4>All factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font><br><font size=3>Points are added to each team for each minute they control the <b>Train Station, Telephone Central, Library, Hospital, and City Hall</b>.<br>First team to reach <b>40</b> points wins!</font>"
+
+/obj/map_metadata/stalingrad/minigrad/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
+		. = FALSE
+	else if (J.is_ss_panzer == TRUE)
+		. = FALSE
+	else if (J.is_tanker == TRUE)
+		. = FALSE
+	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
+		. = TRUE
+	else if (J.is_reichstag == TRUE)
+		. = FALSE
+	else
+		. = FALSE
+
+/obj/map_metadata/stalingrad/minigrad/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/stalingrad/minigrad/faction2_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+
+obj/map_metadata/stalingrad/minigrad/points_check()
+	if (processes.ticker.playtime_elapsed > 3000)
+		var/c1 = 0
+		var/c2 = 0
+		var/prev_control = a1_control
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
+				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
+		if (c1+c2<=0 || c1 == c2)
+			a1_control = "none"
+		else if (c1 > c2)
+			a1_control = "Germans"
+			ger_points++
+		else if (c2 > c1)
+			a1_control = "Soviets"
+			sov_points++
+		if (a1_control != prev_control)
+			if (prev_control != "none")
+				world << "<font size=3>The [prev_control] have lost the <b>Telephone Central!</b><font>"
+			else
+				world << "<font size=3>The [a1_control] have captured the <b>Telephone Central!</b><font>"
+		else
+			if (a1_control != "none")
+				world << "<font size=3>The [a1_control] still control the <b>Telephone Central</b>.<font>"
+			else
+				world << "<font size=3>The <b>Telephone Central</b> is not under anyone's control.<font>"
+		c1 = 0
+		c2 = 0
+		prev_control = a2_control
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
+				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
+		if (c1+c2<=0 || c1 == c2)
+			a2_control = "none"
+		else if (c1 > c2)
+			a2_control = "Germans"
+			ger_points++
+		else if (c2 > c1)
+			a2_control = "Soviets"
+			sov_points++
+		if (a2_control != prev_control)
+			if (prev_control != "none")
+				world << "<font size=3>The [prev_control] have lost the <b>Train Station!</b><font>"
+			else
+				world << "<font size=3>The [a2_control] have captured the <b>Train Station!</b><font>"
+		else
+			if (a2_control != "none")
+				world << "<font size=3>The [a2_control] still control the <b>Train Station</b>.<font>"
+			else
+				world << "<font size=3>The <b>Train Station</b> is not under anyone's control.<font>"
+		c1 = 0
+		c2 = 0
+		prev_control = a3_control
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
+				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
+		if (c1+c2<=0 || c1 == c2)
+			a3_control = "none"
+		else if (c1 > c2)
+			a3_control = "Germans"
+			ger_points++
+		else if (c2 > c1)
+			a3_control = "Soviets"
+			sov_points++
+		if (a3_control != prev_control)
+			if (prev_control != "none")
+				world << "<font size=3>The [prev_control] have lost the <b>City Hall!</b><font>"
+			else
+				world << "<font size=3>The [a3_control] have captured the <b>City Hall!</b><font>"
+		else
+			if (a3_control != "none")
+				world << "<font size=3>The [a3_control] still control the <b>City Hall</b>.<font>"
+			else
+				world << "<font size=3>The <b>City Hall</b> is not under anyone's control.<font>"
+		c1 = 0
+		c2 = 0
+		prev_control = a4_control
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/four))
+				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
+		if (c1+c2<=0 || c1 == c2)
+			a4_control = "none"
+		else if (c1 > c2)
+			a4_control = "Germans"
+			ger_points++
+		else if (c2 > c1)
+			a4_control = "Soviets"
+			sov_points++
+		if (a4_control != prev_control)
+			if (prev_control != "none")
+				world << "<font size=3>The [prev_control] have lost the <b>Hospital!</b><font>"
+			else
+				world << "<font size=3>The [a4_control] have captured the <b>Hospital!</b><font>"
+		else
+			if (a4_control != "none")
+				world << "<font size=3>The [a4_control] still control the <b>Hospital</b>.<font>"
+			else
+				world << "<font size=3>The <b>Hospital</b> is not under anyone's control.<font>"
+		c1 = 0
+		c2 = 0
+		prev_control = a5_control
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/five))
+				if (H.faction_text == "GERMAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
+		if (c1+c2<=0 || c1 == c2)
+			a5_control = "none"
+		else if (c1 > c2)
+			a5_control = "Germans"
+			ger_points++
+		else if (c2 > c1)
+			a5_control = "Soviets"
+			sov_points++
+		if (a5_control != prev_control)
+			if (prev_control != "none")
+				world << "<font size=3>The [prev_control] have lost the <b>Library!</b><font>"
+			else
+				world << "<font size=3>The [a5_control] have captured the <b>Library!</b><font>"
+		else
+			if (a5_control != "none")
+				world << "<font size=3>The [a5_control] still control the <b>Library</b>.<font>"
+			else
+				world << "<font size=3>The <b>Library</b> is not under anyone's control.<font>"
+	world << "<big><b>Current Points:</big></b>"
+	world << "<big>Germans: [ger_points]</big>"
+	world << "<big>Soviets: [sov_points]</big>"
+	spawn(300)
+		points_check()
