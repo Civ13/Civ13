@@ -241,12 +241,11 @@ obj/map_metadata/stalingrad/proc/points_check()
 /obj/map_metadata/stalingrad/minigrad/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
-obj/map_metadata/stalingrad/minigrad/points_check()
+/obj/map_metadata/stalingrad/minigrad/points_check()
 	if (processes.ticker.playtime_elapsed > 3000)
 		var/c1 = 0
 		var/c2 = 0
 		var/cust_color = "white"
-		var/prev_control = "none"
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
@@ -270,7 +269,6 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 			world << "<big><b>Telephone Central</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a2_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
@@ -294,7 +292,6 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 			world << "<big><b>Train Station</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a3_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
@@ -318,7 +315,6 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 			world << "<big><b>City Hall</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a4_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/four))
