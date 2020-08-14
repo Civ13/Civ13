@@ -340,6 +340,7 @@ obj/map_metadata/stalingrad/minigrad/points_check()
 			world << "<big><font color='[cust_color]'><b>Hospital</b>: [a4_control]</font></big>"
 		else
 			world << "<big><b>Hospital</b>: Nobody</big>"
+	prev_control = "none"
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Germans: [ger_points]</big>"
 	world << "<big>Soviets: [sov_points]</big>"
