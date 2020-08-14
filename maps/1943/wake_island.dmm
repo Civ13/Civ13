@@ -589,11 +589,11 @@
 "lq" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass,/area/caribbean)
 "lr" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass,/area/caribbean)
 "ls" = (/obj/covers/cement_wall,/obj/structure/window/barrier/sandbag,/turf/wall/cement,/area/caribbean/houses/nml_two)
-"lt" = (/obj/structure/cannon/modern/naval{dir = 1; icon_state = "naval_cannon"; pixel_y = -16},/obj/covers/jail/steeljail,/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses/nml_two)
+"lt" = (/obj/structure/cannon/modern/naval{dir = 1; icon_state = "naval_cannon"; pixel_y = -16},/obj/covers/jail/steeljail,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses/nml_two)
 "lu" = (/obj/covers/jail/steeljail,/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses/nml_two)
 "lv" = (/obj/covers/cement_wall,/obj/structure/window/barrier/sandbag,/turf/wall/cement,/area/caribbean/houses/nml_one)
-"lw" = (/obj/structure/cannon/modern/naval{dir = 1; icon_state = "naval_cannon"; pixel_y = -16},/obj/covers/jail/steeljail,/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses/nml_one)
-"lx" = (/obj/covers/jail/steeljail,/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses/nml_one)
+"lw" = (/obj/covers/jail/steeljail,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses/nml_two)
+"lx" = (/obj/structure/cannon/modern/naval{dir = 1; icon_state = "naval_cannon"; pixel_y = -16},/obj/covers/jail/steeljail,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses/nml_one)
 "ly" = (/obj/structure/wild/jungle,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass,/area/caribbean)
 "lz" = (/obj/covers/cement_wall,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/wall/cement,/area/caribbean/houses/nml_two)
 "lA" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/structure/closet/crate/ww2,/turf/floor/plating/cobblestone/vertical,/area/caribbean/houses/nml_two)
@@ -692,8 +692,8 @@ asasasasasasasarararasarasararasararararasasararasasararasararasasararasarasasas
 asasaMasasasasasasasarasarasasasasasasasasasasasararasarararasararasasasasasasasasasasasaMasasasasasasasasasasasasasasasasasararasarasarasarasarasarasasasasasasasasaMasasasasasasasasasasasasasasasasas
 aBaBaBaBaBaBaBaCaBaBaBaBbJaBaBbJaBaBaBaBbJaBaBbJaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBbJaBaBbJaBaBaBaBbJaBaBbJaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaBaCaBaBaBaBaBaBaBaB
 asasaNaUaVaVaVaUaWasaKaKaKaKaKceaKaKaKaKaKaKaKaKaKaKasasasasasasasasasasasasasasaXaUaVaVaVaUbeasasasasasasasaMasasasasasgVaKaKaKaKaKaKaKaKaKaKaKaKaKaKaKgVasasasasasasasasaNaUaVaVaVaUaWasasasasaMasasas
-asasbfbgbnbobsbxbDcfchdfdfdfdfdfdfdfdfhedfdfdfdfdfchlnasasasasasasasasasasasaMasbfbgbnbobsbxbDasasaMasasasasasasasasasascflolplplplplplplplplplplplplplplqlrasasasasasasasbfbgbnbobsbxbDasasasasasasasas
-asasbEbFbGbGbGbHbTcflqcdlslsltlulslululsltlulslscdlqlrgVasasasasasasasasasasasasbEbFbGbGbGbHbTasasasasasasasasasasasasascflqcglvlvlwlxlvcicilvlwlxlvlvcglylrasasasasaMasasbEbFbGbGbGbHbTasasasasasasasas
+asasbfbgbsbsbsbxbDcfchdfdfdfdfdfdfdfdfhedfdfdfdfdfchlnasasasasasasasasasasasaMasbfbgbnbobsbxbDasasaMasasasasasasasasasascflolplplplplplplplplplplplplplplqlrasasasasasasasbfbgbsbsbsbxbDasasasasasasasas
+asasbEbFbGbGbGbHbTcflqcdlslsltlwlslululsltlwlslscdlqlrgVasasasasasasasasasasasasbEbFbGbGbGbHbTasasasasasasasasasasasasascflqcglvlvlxcilvcicilvlxcilvlvcglylrasasasasaMasasbEbFbGbGbGbHbTasasasasasasasas
 asasbEbFbGbGbGbHbTcflqlzcmcmcmcmcLlAlBcLcmcmcmcmlClqlrasaMasasasasasasaMasasasasbEbFbGbGbGbHbTasasasasasasaMasasasasasaMcflqlDcncncncncRlElFcRcncncncnlGlqlrasasasasasasasbEbFbGbGbGbHbTasasasasasasasas
 asasbfcocpbGcpcwbDcflqlzcmcmcxcxcmcmcmcmcxcxcmcmlClqlrasasasasasasasasasasasasasbfcocpbGcpcwbDasasasasasasasasasasasasascflqlDcncncEcEcncncncncEcEcncnlGlqlrasasasasasasasbfcocpbGcpcwbDaMasasasasasasas
 cFcFcFcGcHbGcIcGcFlHlIlzcmcJcKcLcmcmcmcmcLcMcNcmlClIlJcFcFcOcFcFcFcOcFcFcFcOcFcFcFcGcHbGcIcGcFcFcFcOcFcFcFcOcFcFcFcOcFcFlHlKlDcncPcQcRcncncncncRcScTcnlGlKlLcFcOcFcFcOcFcFcFcGcHbGcIcGcFcFcFcFcOcUcFcFcO
