@@ -970,7 +970,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/korean/usm1(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_grease(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 
 	give_random_name(H)
