@@ -780,6 +780,22 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
+/obj/item/weapon/gun/projectile/revolving/spencer
+	name = "Spencer Revolving Rifle"
+	desc = "Officialy the M1865 Spencer Single Action Revolving Carbine."
+	icon_state = "revolving"
+	item_state = "spencer_repeater"
+	w_class = 2
+	caliber = "a44"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 7
+	magazine_type = /obj/item/ammo_magazine/c44
+	weight = 5.5
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
 ///////////////////cap n ball revolvers/////////////////
 
 /obj/item/weapon/gun/projectile/capnball
