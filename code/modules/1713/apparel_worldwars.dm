@@ -1215,7 +1215,7 @@ obj/item/clothing/head/ww2/chicap2
 /*
 /obj/item/clothing/under/ww2/german/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		icon_state = "geruni_ww2_winter"
 		item_state = "geruni_ww2_winter"
 		worn_state = "geruni_ww2_winter"
@@ -1228,7 +1228,7 @@ obj/item/clothing/head/ww2/chicap2
 		return
 	else
 /*
-		if (map && map.ID == MAP_STALINGRAD)
+		if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 			if (rolled)
 				item_state = "geruni_ww2_winter"
 				worn_state = "geruni_ww2_winter"
@@ -1524,7 +1524,7 @@ obj/item/clothing/head/ww2/chicap2
 /*
 /obj/item/clothing/suit/storage/coat/ww2/german/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		icon_state = "gerparka_winter"
 		item_state = "gerparka_winter"
 		worn_state = "gerparka_winter"
@@ -1731,7 +1731,7 @@ obj/item/clothing/head/ww2/chicap2
 
 /obj/item/clothing/head/ww2/german_fieldcap/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		var/randhead = rand(1,2)
 		if (randhead == 1)
 			icon_state = "fieldcap1_winter"
@@ -1763,7 +1763,7 @@ obj/item/clothing/head/ww2/chicap2
 
 /obj/item/clothing/head/helmet/ww2/gerhelm/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		var/randhead = rand(1,2)
 		if (randhead == 1)
 			icon_state = "gerhelm_winter"
@@ -1834,7 +1834,7 @@ obj/item/clothing/head/ww2/chicap2
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 /obj/item/clothing/head/helmet/ww2/soviet/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		icon_state = "sovhelm_winter"
 		item_state = "sovhelm_winter"
 		worn_state = "sovhelm_winter"
