@@ -411,6 +411,12 @@
 /area/caribbean/no_mans_land/capturable/three
 	name = "City Hall"
 
+/area/caribbean/no_mans_land/capturable/four
+	name = "Hospital"
+
+/area/caribbean/no_mans_land/capturable/five
+	name = "Library"
+
 /area/caribbean/no_mans_land/tundra
 	name = "No Man's Land"
 	icon_state = "purple1"
@@ -448,6 +454,9 @@
 /area/caribbean/no_mans_land/invisible_wall/tundra
 	climate = "tundra"
 	base_turf = /turf/floor/dirt/winter
+
+/area/caribbean/no_mans_land/invisible_wall/tundra/two
+
 /area/caribbean/no_mans_land/invisible_wall/taiga
 	climate = "taiga"
 	base_turf = /turf/floor/dirt/winter

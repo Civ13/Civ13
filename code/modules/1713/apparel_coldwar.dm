@@ -412,7 +412,7 @@
 	icon_state = "chinese_ushanka"
 	item_state = "chinese_ushanka"
 	worn_state = "chinese_ushanka"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/chinese_ushanka/attack_self(mob/user as mob)
 	if (icon_state == "chinese_ushanka")
@@ -422,7 +422,7 @@
 	else if (icon_state == "chinese_ushanka_up")
 		icon_state = "chinese_ushanka"
 		item_state = "chinese_ushanka"
-		flags_inv = BLOCKHAIR
+		flags_inv = BLOCKHEADHAIR
 		user << "You lower the ear flaps on the ushanka."
 
 /obj/item/clothing/head/helmet/modern/chi_korea_helmet

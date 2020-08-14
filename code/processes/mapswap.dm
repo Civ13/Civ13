@@ -49,7 +49,7 @@
 				"World War II (1931-1948)" = 0,
 				"Cold War Era (1949-1984)" = 0,
 				"Modern Era (1985-2020)" = 0,
-				"Chad Mode" = 0,
+//				"Chad Mode" = 0,
 				"Battle Royale" = 6,
 			)
 		else if (config.allowedgamemodes == "RP")
@@ -122,7 +122,7 @@
 			maps = list(
 				MAP_COMPOUND = 0,
 				MAP_ROAD_TO_DAK_TO = 0,
-//				MAP_RETREAT = 0,
+				MAP_RETREAT = 0,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
@@ -133,10 +133,12 @@
 				MAP_KURSK = 10,
 //				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
+				MAP_SMALLINGRAD = 0,
 				MAP_NANJING = 20,
 //				MAP_IWO_JIMA = 70,
 				MAP_RIZAL_STADIUM = 0,
 				MAP_INTRAMUROS = 25,
+				MAP_WAKE_ISLAND = 20,
 			)
 
 		else if (epoch == "Early Modern Era (1896-1930)")
