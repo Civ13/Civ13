@@ -241,12 +241,12 @@ obj/map_metadata/stalingrad/proc/points_check()
 /obj/map_metadata/stalingrad/minigrad/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
-obj/map_metadata/stalingrad/minigrad/points_check()
+/obj/map_metadata/stalingrad/minigrad/points_check()
+	var/prev_control = "none"
 	if (processes.ticker.playtime_elapsed > 3000)
 		var/c1 = 0
 		var/c2 = 0
 		var/cust_color = "white"
-		var/prev_control = "none"
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
