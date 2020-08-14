@@ -1691,7 +1691,7 @@ obj/item/clothing/head/ww2/chicap2
 	icon_state = "ushanka_up"
 	item_state = "ushanka_up"
 	worn_state = "ushanka_up"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/ww2/sov_ushanka/down
 	icon_state = "ushanka"

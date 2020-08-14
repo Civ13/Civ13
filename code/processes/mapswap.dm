@@ -49,7 +49,7 @@
 				"World War II (1931-1948)" = 0,
 				"Cold War Era (1949-1984)" = 0,
 				"Modern Era (1985-2020)" = 0,
-				"Chad Mode" = 0,
+//				"Chad Mode" = 0,
 				"Battle Royale" = 6,
 			)
 		else if (config.allowedgamemodes == "RP")
@@ -122,7 +122,7 @@
 			maps = list(
 				MAP_COMPOUND = 0,
 				MAP_ROAD_TO_DAK_TO = 0,
-//				MAP_RETREAT = 0,
+				MAP_RETREAT = 0,
 			)
 		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
