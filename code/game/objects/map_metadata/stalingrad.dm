@@ -242,7 +242,6 @@ obj/map_metadata/stalingrad/proc/points_check()
 	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/stalingrad/minigrad/points_check()
-	var/prev_control = "none"
 	if (processes.ticker.playtime_elapsed > 3000)
 		var/c1 = 0
 		var/c2 = 0
@@ -270,7 +269,6 @@ obj/map_metadata/stalingrad/proc/points_check()
 			world << "<big><b>Telephone Central</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a2_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
@@ -294,7 +292,6 @@ obj/map_metadata/stalingrad/proc/points_check()
 			world << "<big><b>Train Station</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a3_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
@@ -318,7 +315,6 @@ obj/map_metadata/stalingrad/proc/points_check()
 			world << "<big><b>City Hall</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
-		prev_control = a4_control
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/four))
@@ -340,7 +336,6 @@ obj/map_metadata/stalingrad/proc/points_check()
 			world << "<big><font color='[cust_color]'><b>Hospital</b>: [a4_control]</font></big>"
 		else
 			world << "<big><b>Hospital</b>: Nobody</big>"
-	prev_control = "none"
 	world << "<big><b>Current Points:</big></b>"
 	world << "<big>Germans: [ger_points]</big>"
 	world << "<big>Soviets: [sov_points]</big>"
