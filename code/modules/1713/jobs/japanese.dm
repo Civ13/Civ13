@@ -1610,7 +1610,7 @@
 	is_ww2 = TRUE
 	is_pacific = TRUE
 	min_positions = 4
-	max_positions = 15
+	max_positions = 8
 
 /datum/job/japanese/ija_pacific_machinegunner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1650,9 +1650,8 @@
 
 
 	return TRUE
-
 /datum/job/japanese/ija_pacific_machinegunner_assistant
-	title = "Dan'yaku Mochinushi"
+	title = "Danyaku Mochinushi"
 	en_meaning = "Ammo Bearer"
 	rank_abbreviation = ""
 
@@ -2129,8 +2128,8 @@
 	return TRUE
 
 /datum/job/japanese/ijn_machinegunner_assistant
-	title = " Dan'yaku Mochinushi"
-	en_meaning = "Ammo Bearer"
+	title = " Danyaku Mochinushi"
+	en_meaning = " Ammo Bearer"
 	rank_abbreviation = "Nisu."
 
 	spawn_location = "JoinLateJP"

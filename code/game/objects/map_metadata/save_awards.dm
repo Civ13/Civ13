@@ -31,6 +31,7 @@ AWARDS:
 			else if (awards["tank"]>=4 && !("tank destroyer gold badge" in awarded))
 				map.give_award(client.ckey, name, "tank destroyer gold badge", capitalize(faction_text),src)
 				map.remove_award(client.ckey, name, "tank destroyer silver badge")
+/**
 			if (awards["wounded"]>=300 && !("wounded gold badge" in awarded))
 				map.give_award(client.ckey, name, "wounded gold badge", capitalize(faction_text),src)
 				map.remove_award(client.ckey, name, "wounded silver badge")
@@ -40,7 +41,7 @@ AWARDS:
 				map.remove_award(client.ckey, name, "wounded badge")
 			else if (awards["wounded"]>=150 && !("wounded badge" in awarded))
 				map.give_award(client.ckey, name,"wounded badge", capitalize(faction_text),src)
-
+**/
 			for(var/list/i in awards["kills"])
 				if (islist(i) && i[1] != "" && i[2] >= 100 && i[3]==0)
 					i[3]=1

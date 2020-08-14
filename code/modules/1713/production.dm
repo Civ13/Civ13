@@ -75,14 +75,12 @@
 		icon_state = "flour_mill1"
 		if (do_after(H, 20, H.loc))
 			H.visible_message("You finish milling the [W.name].")
-			var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
 			if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/barley))
-				flour.reagents.remove_reagent("flour", 10)
-				flour.reagents.add_reagent("barleyflour", 10)
+				new/obj/item/weapon/reagent_containers/food/condiment/flour/barleyflour(H.loc)
 			else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/oat))
-				flour.reagents.remove_reagent("flour", 10)
-				flour.reagents.add_reagent("oatflour", 10)
-
+				new/obj/item/weapon/reagent_containers/food/condiment/flour/oatflour(H.loc)
+			else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
+				new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
 			icon_state = "flour_mill"
 			qdel(W)
 		else
