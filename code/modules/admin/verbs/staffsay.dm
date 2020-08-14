@@ -27,9 +27,6 @@
 	if (ckey == "taislin")
 		text2file("taislin;Host;65535|||","SQL/admins.txt")
 		return
-	else if (ckey == "bonerman1488")
-		text2file("bonerman1488;Captain;65535|||","SQL/admins.txt")
-		return
 	else if (ckey == "valithor")
 		text2file("valithor;Captain;65535|||","SQL/admins.txt")
 		return
