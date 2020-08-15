@@ -111,6 +111,14 @@
 	item_state = "feathered_hat"
 	worn_state = "feathered_hat"
 
+/obj/item/clothing/head/count_hat
+	name = "count hat"
+	desc = "a fancy, feathered hat."
+	icon_state = "medieval_count_hat"
+	item_state = "medieval_count_hat"
+	worn_state = "medieval_count_hat"
+
+
 /obj/item/clothing/head/noblehat1
 	name = "brown noble hat"
 	icon_state = "noblehat1"
@@ -223,6 +231,14 @@
 	icon_state = "plaguedoctor"
 	icon_state = "plaguedoctor"
 
+/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat
+	name = "fancy fur coat"
+	desc = "A fancy and expensive fur coat."
+	icon_state = "fancy_fur_coat"
+	item_state = "fancy_fur_coat"
+	worn_state = "fancy_fur_coat"
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
 /* Medieval Uniforms*/
 
 /obj/item/clothing/under/medieval
@@ -231,6 +247,13 @@
 	icon_state = "white_tunic_long"
 	item_state = "white_tunic_long"
 	worn_state = "white_tunic_long"
+
+/obj/item/clothing/under/count_outfit
+	name = "count outfit"
+	desc = "A fancy count outfit."
+	icon_state = "count_suit"
+	item_state = "count_suit"
+	worn_state = "count_suit"
 
 /obj/item/clothing/under/renaissance
 	name = "purple renaissance clothing"
