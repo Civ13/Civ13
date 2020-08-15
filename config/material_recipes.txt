@@ -370,6 +370,7 @@ RECIPE: /material/woolcloth/,grey flatcap,/obj/item/clothing/head/flatcap3,2,55,
 RECIPE: /material/woolcloth/,custom officer cap,/obj/item/clothing/head/custom_off_cap,4,95,0,1,hats,0,0,109,8,null
 RECIPE: /material/woolcloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats,0,0,109,8,null
 RECIPE: /material/woolcloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats,0,0,109,8,null
+RECIPE: /material/woolcloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0,1,hats,0,0,35,8,null
 
 //*****************| WOOLCLOTH MASKS & EYEWEAR |***************************
 
@@ -394,6 +395,8 @@ RECIPE: /material/woolcloth/,red haori,/obj/item/clothing/under/haori/red,3,100,
 RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
+RECIPE: /material/woolcloth/,merchant outfit,/obj/item/clothing/under/merchant_suit,5,85,0,1,clothing,0,0,75,8,null
+RECIPE: /material/woolcloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
 RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
 RECIPE: /material/woolcloth/,dark artisan clothing,/obj/item/clothing/under/artisan/dark,3,100,0,1,clothing,0,0,38,3,null
 RECIPE: /material/woolcloth/,light artisan clothing,/obj/item/clothing/under/artisan/light,3,100,0,1,clothing,0,0,38,3,null
@@ -401,7 +404,7 @@ RECIPE: /material/woolcloth/,customizable renaissance clothing,/obj/item/clothin
 RECIPE: /material/woolcloth/,baggy renaissance clothing,/obj/item/clothing/under/renaissance,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,pontifical renaissance clothing,/obj/item/clothing/under/renaissance_pontifical,6,105,0,1,clothing,0,0,59,3,null
 RECIPE: /material/woolcloth/,custom victorian uniform,/obj/item/clothing/under/customvicuniform,3,75,0,1,clothing,0,0,98,8,null
-RECIPE: /material/woolccloth/,lederhosen,/obj/item/clothing/under/lederhosen,4,75,0,1,clothing,0,0,80,8,null
+RECIPE: /material/woolccloth/,lederhosen,/obj/item/clothing/under/lederhosen,4,75,0,1,clothing,0,0,50,8,null
 RECIPE: /material/woolccloth/,custom modern outfit,/obj/item/clothing/under/customuniform,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/woolccloth/,custom baggy modern outfit,/obj/item/clothing/under/customuniform/baggy,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/woolccloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
@@ -618,7 +621,7 @@ RECIPE: /material/cloth/,custom officer cap,/obj/item/clothing/head/custom_off_c
 RECIPE: /material/cloth/,custom field cap,/obj/item/clothing/head/custom/fieldcap,3,70,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,black balaclava,/obj/item/clothing/mask/balaclava,2,130,0,1,hats,0,0,109,8,null
 RECIPE: /material/cloth/,customizable beanie,/obj/item/clothing/head/custom/custom_beanie,2,130,0,1,hats,0,0,109,8,null
-
+RECIPE: /material/cloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0,1,hats,0,0,35,8,null
 RECIPE: /material/cloth/,police cap,/obj/item/clothing/head/traffic_police,4,75,0,1,military & law enforcement clothes,0,0,160,8,null
 
 //*****************| CLOTH MASKS & EYEWEAR |***************************
@@ -659,6 +662,8 @@ RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,clothin
 RECIPE: /material/cloth/,black priest outfit,/obj/item/clothing/under/christian_priest,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
+RECIPE: /material/cloth/,merchant outfit,/obj/item/clothing/under/merchant_suit,5,85,0,1,clothing,0,0,75,8,null
+RECIPE: /material/cloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
 RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/tunic,4,85,0,1,clothing,0,0,38,5,null
 RECIPE: /material/cloth/,customizable crinoline dress,/obj/item/clothing/under/crinoline_dress,4,85,0,1,clothing,0,0,38,5,null
 RECIPE: /material/cloth/,customizable arabic tunic,/obj/item/clothing/under/custom/arabictunic,4,85,0,1,clothing,0,0,38,5,null
@@ -801,6 +806,7 @@ RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,1
 //*****************| BROWN BEARPELT CLOTHES|***************************
 
 RECIPE: /material/bearpelt/brown/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/brown/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat,10,200,0,1,none,0,0,0,25,null
 RECIPE: /material/bearpelt/brown/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/brown/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/brown/,bear pelt headcover,/obj/item/clothing/head/bearpelt/brown,4,150,0,1,none,0,0,0,8,null
@@ -827,6 +833,7 @@ RECIPE: /material/bearpelt/white/,white napoleonic bearskin hat,/obj/item/clothi
 //*****************| BLACK BEARPELT CLOTHES |***************************
 
 RECIPE: /material/bearpelt/black/,fur coat,/obj/item/clothing/suit/storage/coat/fur/black,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/black/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat,10,200,0,1,none,0,0,0,25,null
 RECIPE: /material/bearpelt/black/,fur boots,/obj/item/clothing/shoes/fur/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/black/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/black/,bear pelt headcover,/obj/item/clothing/head/bearpelt/black,4,150,0,1,none,0,0,0,8,null
@@ -1659,7 +1666,11 @@ RECIPE: /material/wood/,wood wall,/obj/covers/wood_wall/adjustable,7,130,1,1,con
 RECIPE: /material/wood/,nordic wall,/obj/covers/wood_wall/nordic,8,170,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/,aztec wall,/obj/covers/wood_wall/aztec,8,170,1,1,construction,35,0,0,8,null
 
-RECIPE: /material/wood/,custom sign,/obj/structure/sign/custom,3,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,custom rustic sign,/obj/structure/sign/custom,2.5,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,custom wood sign,/obj/structure/sign/custom/plaque,3,40,1,1,construction,25,0,0,8,null
+RECIPE: /material/wood/,custom metallic sign,/obj/structure/sign/custom/metallic,4,40,1,1,construction,35,0,0,8,null
+RECIPE: /material/wood/,custom golden sign,/obj/structure/sign/custom/golden,6,40,1,1,construction,35,0,0,8,null
+
 RECIPE: /material/wood/,signpost,/obj/structure/sign/signpost,4,40,1,1,construction,0,0,0,8,null
 
 RECIPE: /material/wood/,wood jail bars,/obj/covers/jail/woodjail,8,30,1,1,construction,55,0,0,8,null
@@ -1805,6 +1816,7 @@ RECIPE: /material/wood/,visa (empty),/obj/item/weapon/visa,1,40,0,1,paper & prin
 RECIPE: /material/wood/,passport,/obj/item/clothing/accessory/storage/passport,3,150,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,official faction paper,/obj/item/weapon/paper/official,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/,book,/obj/item/weapon/book,4,75,0,1,paper & printing,45,0,0,8,null
 RECIPE: /material/wood/,grey folder,/obj/item/weapon/folder,1,75,0,1,paper & printing,120,0,0,8,null
 RECIPE: /material/wood/,yellow folder,/obj/item/weapon/folder/yellow,1,75,0,1,paper & printing,120,0,0,8,null
