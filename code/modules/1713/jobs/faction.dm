@@ -26,6 +26,7 @@
 #define TEAM_US 15
 #define TEAM_VI 16
 #define TEAM_CH 17
+#define TEAM_FP 18
 var/global/soldiers[17]
 
 /datum/faction
@@ -149,6 +150,14 @@ var/global/soldiers[17]
 	icon_state = ""
 	title = "Chinese Soldier"
 	team = TEAM_CH
+
+/datum/faction/filipino/base_type()
+	return "/datum/faction/filipino"
+
+/datum/faction/filipino
+	icon_state = ""
+	title = "Filipino Soldier"
+	team = TEAM_FP
 
 /datum/faction/american/base_type()
 	return "/datum/faction/american"
