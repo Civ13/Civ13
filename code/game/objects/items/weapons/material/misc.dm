@@ -168,6 +168,9 @@
 	block_chance = 15
 	cooldownw = 9
 
+/obj/item/weapon/material/spear/iron
+	name = "iron spear"
+	default_material = "iron"
 /obj/item/weapon/material/spear/attack(atom/A, mob/living/user, def_zone)
 	..()
 	if (isliving(A) && prob(33))
