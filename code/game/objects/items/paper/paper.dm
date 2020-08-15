@@ -35,6 +35,28 @@
 	var/const/signfont = "Times New Roman"
 	var/const/crayonfont = "Comic Sans MS"
 
+/obj/item/weapon/paper/official
+	base_icon = "official"
+	name = "official paper"
+	icon_state = "Decree_empty"
+	var/faction = ""
+	var/color1 = "#000000"
+	var/color2 = "#FFFFFF"
+
+/obj/item/weapon/paper/official/New()
+	..()
+	spawn(30)
+		name = "official [faction] paper"
+
+/obj/item/weapon/paper/official/update_icon()
+	..()
+	overlays.Cut()
+	var/image/i1 = image(icon=src.icon, icon_state="Decree_Overlay_1")
+	var/image/i2 = image(icon=src.icon, icon_state="Decree_Overlay_2")
+	i1.color = color1
+	i2.color = color2
+	overlays += i1
+	overlays += i2
 
 //lipstick wiping is in code/game/objects/items/weapons/cosmetics.dm!
 
@@ -62,7 +84,10 @@
 			name = "papyrus"
 			icon_state = "scrollpaper"
 			desc = "A blank parchement scroll."
-
+		else if (map.ordinal_age <= 3)
+			name = "paper"
+			icon_state = "Colonial_Paper_Empty"
+			desc = "A blank paper sheet."
 
 /obj/item/weapon/paper/update_icon()
 	if (base_icon == "paper")
@@ -71,6 +96,11 @@
 				icon_state = "scrollpaper1"
 			else
 				icon_state = "scrollpaper0"
+		else if (map && map.ordinal_age <= 3)
+			if (info)
+				icon_state = "Colonial_Paper"
+			else
+				icon_state = "Colonial_Paper_Empty"
 		else
 			if (icon_state == "paper_talisman")
 				return
@@ -78,6 +108,11 @@
 				icon_state = "paper_words"
 				return
 			icon_state = "paper"
+	else if (base_icon == "official")
+		if (info)
+			icon_state = "Decree"
+		else
+			icon_state = "Decree_empty"
 
 /obj/item/weapon/paper/proc/update_space(var/new_text)
 	if (!new_text)

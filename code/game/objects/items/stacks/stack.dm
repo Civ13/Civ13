@@ -651,7 +651,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
 			return
-	else if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner"))
+	else if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner") || findtext(recipe.title, "official faction paper"))
 		if (H.civilization == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>"
 			return
@@ -1767,7 +1767,12 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			C.brand = "[customname] "
 			C.name = "empty [C.brand]can"
 			C.do_color()
-
+		else if (istype(O, /obj/item/weapon/paper/official))
+			var/obj/item/weapon/paper/official/C = O
+			C.faction = H.civilization
+			C.color1 = map.custom_civs[H.civilization][7]
+			C.color2 = map.custom_civs[H.civilization][8]
+			C.update_icon()
 		else if (istype(O, /obj/structure/religious/statue))
 			var/obj/structure/religious/statue/RB = O
 			RB.statue_material = recipe.use_material
