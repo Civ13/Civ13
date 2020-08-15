@@ -392,7 +392,7 @@
 	max_storage_space = 24
 	can_hold = list(
 		/obj/item/ammo_magazine,
-		/obj/item/weapon/material,
+		/obj/item/weapon/material/knife,
 		/obj/item/weapon/grenade,
 		/obj/item/weapon/attachment,
 		/obj/item/weapon/gun/projectile/pistol,

@@ -77,6 +77,13 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
 	w_front = list("c_windshield",FALSE,TRUE,0,0.1,FALSE,FALSE)
 
+/obj/structure/vehicleparts/frame/car/lf/truck/armored
+	w_left = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
+	w_front = list("c_armoredfront",FALSE,TRUE,15,30,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/rf/truck/armored
+	w_right = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
+	w_front = list("c_armoredfront",FALSE,TRUE,15,30,FALSE,FALSE)
+
 
 /obj/structure/vehicleparts/frame/car/front
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -119,6 +126,22 @@ var/global/list/vehicle_walls = list( \
 	resistance = 90
 	noroof = TRUE
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/left/armored
+	name = "wood frame"
+	desc = "a wood vehicle frame."
+	icon_state = "frame_wood"
+	flammable = TRUE
+	resistance = 90
+	noroof = TRUE
+	w_left = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/right/armored
+	name = "wood frame"
+	desc = "a wood vehicle frame."
+	icon_state = "frame_wood"
+	flammable = TRUE
+	resistance = 90
+	noroof = TRUE
+	w_right = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/left/metal
 	name = "steel frame"
 	desc = "a steel vehicle frame."
@@ -147,6 +170,19 @@ var/global/list/vehicle_walls = list( \
 /obj/structure/vehicleparts/frame/car/lf
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_front = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/car/rb/armored
+	w_right = list("c_windoweddoor",TRUE,TRUE,5,30,TRUE,TRUE)
+	w_back = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/lb/armored
+	w_left = list("c_windoweddoor",TRUE,TRUE,5,30,TRUE,TRUE)
+	w_back = list("c_wall",TRUE,TRUE,10,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/rf/armored
+	w_right = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
+	w_front = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/lf/armored
+	w_left = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
+	w_front = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/proc/adding_walls()
 

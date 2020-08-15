@@ -1455,6 +1455,8 @@
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
 					holder2.icon_state = "vc_basic"
+				if (FILIPINO)
+					holder2.icon_state = "fp_basic"
 				if (CHINESE)
 					holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
