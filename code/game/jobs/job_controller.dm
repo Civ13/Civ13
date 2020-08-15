@@ -36,6 +36,7 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[VIETNAMESE]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CHINESE]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[AMERICAN]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[FILIPINO]
 	else
 		for (var/faction in map.faction_organization)
 			if (job_master)
@@ -423,6 +424,8 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateRU"
 				if (AMERICAN)
 					spawn_location = "JoinLateRN"
+				if (FILIPINO)
+					spawn_location = "JoinLateFP"
 		// fixes spawning at 1,1,1
 
 		if (!spawn_location)
@@ -497,6 +500,7 @@ var/global/datum/controller/occupations/job_master
 	var/american = alive_n_of_side(AMERICAN)
 	var/vietnamese = alive_n_of_side(VIETNAMESE)
 	var/chinese = alive_n_of_side(CHINESE)
+	var/filipino = alive_n_of_side(FILIPINO)
 
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
@@ -516,6 +520,7 @@ var/global/datum/controller/occupations/job_master
 	var/max_american = INFINITY
 	var/max_vietnamese = INFINITY
 	var/max_chinese = INFINITY
+	var/max_filipino = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -572,6 +577,8 @@ var/global/datum/controller/occupations/job_master
 			max_vietnamese = ceil(relevant_clients * map.faction_distribution_coeffs[VIETNAMESE])
 		if (map.faction_distribution_coeffs.Find(CHINESE))
 			max_chinese = ceil(relevant_clients * map.faction_distribution_coeffs[CHINESE])
+		if (map.faction_distribution_coeffs.Find(FILIPINO))
+			max_chinese = ceil(relevant_clients * map.faction_distribution_coeffs[FILIPINO])
 	switch (side)
 		if (CIVILIAN)
 			if (civilians_forceEnabled)
@@ -671,5 +678,10 @@ var/global/datum/controller/occupations/job_master
 			if (chinese_forceEnabled)
 				return FALSE
 			if (chinese >= max_chinese)
+				return TRUE
+		if (FILIPINO)
+			if (filipino_forceEnabled)
+				return FALSE
+			if (filipino >= max_filipino)
 				return TRUE
 	return FALSE
