@@ -108,7 +108,7 @@
 */
 /obj/item/weapon/gun/projectile/leveraction/special_check(mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (gun_safety && safetyon)

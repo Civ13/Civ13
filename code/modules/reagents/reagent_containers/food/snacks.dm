@@ -113,7 +113,7 @@
 						return
 				else if (H.wolfman || H.crab)
 					if (!non_vegetarian)
-						user << "<span class='warning'>You are a carnivore! You can't eat this!</span>"
+						user << "<span class='warning'>[H] is a carnivore! They can't eat this!</span>"
 						return
 			if (fullness <= 580)
 				user.visible_message("<span class='danger'>[user] attempts to feed [M] [src].</span>")
