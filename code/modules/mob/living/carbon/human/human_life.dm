@@ -1442,7 +1442,9 @@
 					else
 						holder2.icon_state = "ru_basic"
 				if (GERMAN)
-					if (map.ordinal_age <= 5)
+					if (map.ordinal_age <= 1)
+						holder2.icon_state = "ger0_basic"
+					else if (map.ordinal_age <= 5)
 						holder2.icon_state = "ger_basic"
 					else if (map.ordinal_age == 6)
 						holder2.icon_state = "ger2_basic"

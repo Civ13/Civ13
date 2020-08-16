@@ -162,7 +162,7 @@
 	throw_range = 11
 	allow_spin = FALSE
 	force_divisor = 0.7 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
+	thrown_force_divisor = 2 // 40 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 6
 	block_chance = 15
@@ -423,7 +423,7 @@
 	throw_range = 14
 	allow_spin = FALSE
 	force_divisor = 0.7 // 28 with hardness 40 (wood)
-	thrown_force_divisor = 1.5 // 27 with weight 18 (wood)
+	thrown_force_divisor = 2.5 // 45 with weight 18 (wood)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 10
@@ -512,7 +512,7 @@
 	throw_range = 8
 	allow_spin = FALSE
 	force_divisor = 0.85 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 1.1 // 24 with weight 20 (steel)
+	thrown_force_divisor = 1.5 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 15
@@ -722,7 +722,7 @@
 	allow_spin = FALSE
 	block_chance = 12
 	force_divisor = 0.85 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	thrown_force_divisor = 1 // 20 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 18
 	cooldownw = 13
