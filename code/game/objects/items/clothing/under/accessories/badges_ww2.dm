@@ -17,6 +17,35 @@
 	icon_state = "gold"
 	worn_state = "gold"
 	name = "Gold Medal"
+// Philippine American War
+/obj/item/clothing/accessory/rank/fp_cpt
+	icon_state = "fp_cpt"
+	item_state = "fp_cpt"
+	worn_state = "fp_cpt"
+	name = "Kapitan rank epaulettes"
+	desc = "the rank of Kapitan, Captain, epaulettes."
+
+/obj/item/clothing/accessory/rank/fp_lt
+	icon_state = "fp_lt"
+	item_state = "fp_lt"
+	worn_state = "fp_lt"
+	name = "Tenyente rank epaulettes"
+	desc = "the rank of Tenyente, Lieutenant, epaulettes."
+
+/obj/item/clothing/accessory/rank/fp_sgt
+	icon_state = "fp_sgt"
+	item_state = "fp_sgt"
+	worn_state = "fp_sgt"
+	name = "Sarhente rank patch"
+	desc = "the rank of Sarhente, Sergeant, sleeve patches."
+
+/obj/item/clothing/accessory/rank/fp_cpl
+	icon_state = "fp_cpl"
+	item_state = "fp_cpl"
+	worn_state = "fp_cpl"
+	name = "Kabo rank patch"
+	desc = "the rank of Kabo, Corporal, sleeve patches."
+
 
 // Western Front -----------------------------------------
 

@@ -243,6 +243,37 @@
 	max_shells = 1
 	load_delay = 7
 
+/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock
+	name = "Rolling-Block Rifle"
+	desc = "A single-shot, rolling block rifle, with a long range. Uses .45-70 Gov cartridges."
+	icon_state ="rollingblock"
+	item_state ="rollingblock"
+	base_icon = "rollingblock"
+	force = 13
+	caliber = "a4570"
+	weight = 5
+	effectiveness_mod = 1
+	bolt_safety = FALSE
+	value = 90
+	recoil = 3
+	slot_flags = SLOT_SHOULDER
+	throwforce = 17
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a4570
+	magazine_type = /obj/item/ammo_magazine/sharps
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	max_shells = 1
+	load_delay = 7
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/spanish
+	name = "Rolling-Block Rifle"
+	desc = "A single-shot, rolling block rifle, with a long range. This Spanish one uses .43 cartridges."
+	caliber = "a43"
+	effectiveness_mod = 1.05
+	ammo_type = /obj/item/ammo_casing/a43
+	magazine_type = /obj/item/ammo_magazine/c43
+
 /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt
 	name = "Makeshift Bolt"
 	desc = "A single-shot, makeshift bolt rifle."

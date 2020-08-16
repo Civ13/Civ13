@@ -431,6 +431,17 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c43
+	name = "bullet pouch (.43 Spanish)"
+	desc = "a pouch of .43 Spanish bullets, mostly used on the spanish rolling block rifle."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a43
+	caliber = "a43"
+	max_ammo = 30
+	weight = 0.1
+	multiple_sprites = TRUE
+	pouch = TRUE
+
 /obj/item/ammo_magazine/webly445
 	name = "bullet pouch (.445 webly)"
 	desc = "a pouch of .445 webly."
