@@ -303,6 +303,20 @@ obj/item/weapon/material/sword/armingsword/bronze
 	block_chance = 35
 	cooldownw = 7
 
+/obj/item/weapon/material/sword/bolo
+	name = "bolo"
+	desc = "A very common filipino machete like sword."
+	icon_state = "bolo"
+	item_state = "bolo"
+	throw_speed = 3
+	throw_range = 6
+	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 37
+	cooldownw = 9
+	value = 50
+
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"
 	desc = "A medium-sized, curved sword, preferred by pirates."

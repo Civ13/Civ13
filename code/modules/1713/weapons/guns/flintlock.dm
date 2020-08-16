@@ -203,7 +203,7 @@
 	effectiveness_mod = 0.98
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
-	item_state = "plexciomusket"
+	item_state = "musket"
 	icon_state = "brownbess"
 
 /obj/item/weapon/gun/projectile/flintlock/charleville
