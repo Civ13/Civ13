@@ -27,7 +27,7 @@
 	availablefactions_run = TRUE
 	civilizations = TRUE
 	is_RP = TRUE
-	force_mapgen = TRUE
+	force_mapgen = FALSE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Faction-Based RP"
