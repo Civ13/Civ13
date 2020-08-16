@@ -387,7 +387,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			if (findtext(recipe.title, "wall") || findtext(recipe.title, "door"))
 				H << "<span class = 'danger'>You don't know how to make this.</span>"
 				return
-	if (findtext(recipe.title, "custom sign"))
+	if (istype(recipe.result_type, /obj/structure/sign/custom))
 		customname = input(user, "Choose a name for this sign:") as text|null
 		if (customname == null)
 			customname = "Sign"

@@ -58,7 +58,7 @@
 "bf" = (/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
 "bg" = (/obj/effect/spawner/objspawner/palm,/turf/floor/beach/sand/desert,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "bh" = (/obj/structure/sink/puddle,/turf/floor/beach/sand/desert,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
-"bi" = (/obj/structure/wild/tree/cactus{icon_state = "cactus"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
+"bi" = (/obj/structure/wild/tree/cactus{dir = 4; icon_state = "cactus"},/turf/floor/beach/sand/desert,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "bj" = (/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "bk" = (/obj/item/stack/farming/seeds/potato,/turf/floor/beach/sand/desert,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "bl" = (/turf/floor/beach/water/flooded,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
@@ -133,11 +133,11 @@
 "cC" = (/turf/floor/beach/sand,/area/caribbean/nomads/taiga)
 "cD" = (/obj/item/stack/farming/seeds/wheat,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cE" = (/turf/floor/beach/water/ice{icon_state = "seashallow_frozen"; water_level = 65},/area/caribbean/nomads/taiga)
-"cF" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"cF" = (/obj/structure/window/barrier/railing{dir = 4; icon_state = "sandstone"},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "cG" = (/obj/structure/religious/monument/cultist/sauron{icon_state = "reverse_sauron_top"},/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/desert)
 "cH" = (/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/desert)
 "cI" = (/obj/structure/altar/iron,/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/desert)
-"cJ" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"cJ" = (/obj/structure/window/barrier/railing{dir = 8; icon_state = "sandstone"},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "cK" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/taiga)
 "cL" = (/obj/structure/religious/monument/cultist/sauron,/obj/covers/sandstone,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/desert)
 "cM" = (/obj/covers/sandstone/stairs,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
@@ -149,7 +149,7 @@
 "cS" = (/obj/structure/farming/plant/mushroom,/turf/floor/dirt,/area/caribbean/void/caves)
 "cT" = (/obj/item/stack/farming/seeds/grapes,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cU" = (/obj/structure/wild/burnedbush,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
-"cV" = (/obj/covers/cobblestone/stairs{icon_state = "rampup"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"cV" = (/obj/covers/cobblestone/stairs{dir = 1; icon_state = "rampup"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "cW" = (/obj/roof/mayan,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest/Jungle)
 "cX" = (/mob/living/simple_animal/turkey_m,/turf/floor/grass,/area/caribbean/nomads/forest)
 "cY" = (/obj/item/stack/farming/seeds/cotton,/turf/floor/grass,/area/caribbean/nomads/forest)
@@ -157,7 +157,7 @@
 "da" = (/obj/item/stack/farming/seeds/corn,/turf/floor/grass,/area/caribbean/nomads/forest)
 "db" = (/obj/effect/spawner/mobspawner/rabbits,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "dc" = (/obj/item/stack/farming/seeds/olives,/turf/floor/grass,/area/caribbean/nomads/forest)
-"dd" = (/obj/covers/cobblestone/stairs{icon_state = "rampup"; dir = 1},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"dd" = (/obj/covers/cobblestone/stairs{dir = 1; icon_state = "rampup"},/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "de" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "df" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/nomads/forest)
 "dg" = (/mob/living/simple_animal/hostile/bear,/turf/floor/grass,/area/caribbean/nomads/forest)
@@ -168,15 +168,15 @@
 "dl" = (/obj/covers/stone_wall/mayan,/turf/wall/old_stone,/area/caribbean/nomads/forest/Jungle)
 "dm" = (/obj/item/stack/farming/seeds/apple,/turf/floor/grass,/area/caribbean/nomads/forest)
 "dn" = (/obj/covers/stone_wall/mayan,/obj/roof/mayan,/turf/wall/old_stone,/area/caribbean/nomads/forest/Jungle)
-"do" = (/obj/structure/wild/tree/cactus{icon_state = "cactus"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
-"dp" = (/obj/covers/cobblestone/stairs{icon_state = "rampup"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"do" = (/obj/structure/wild/tree/cactus{dir = 8; icon_state = "cactus"},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"dp" = (/obj/covers/cobblestone/stairs{dir = 8; icon_state = "rampup"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "dq" = (/obj/effect/spawner/mobspawner/reindeer_m,/turf/floor/winter,/area/caribbean/nomads/snow)
-"dr" = (/obj/structure/wild/tree/cactus{icon_state = "cactus"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"dr" = (/obj/structure/wild/tree/cactus{dir = 4; icon_state = "cactus"},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "ds" = (/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/nomads/forest/Jungle)
 "dt" = (/obj/item/stack/farming/seeds/hemp,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "du" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "dv" = (/obj/item/stack/farming/seeds/tree,/turf/floor/grass,/area/caribbean/nomads/forest)
-"dw" = (/obj/covers/cobblestone/stairs{icon_state = "rampup"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"dw" = (/obj/covers/cobblestone/stairs{dir = 4; icon_state = "rampup"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "dx" = (/obj/item/stack/farming/seeds/cabbage,/turf/floor/winter,/area/caribbean/nomads/taiga)
 "dy" = (/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest)
 "dz" = (/obj/roof/mayan,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
@@ -195,7 +195,7 @@
 "dM" = (/obj/covers/stone_wall/mayan,/obj/roof/mayan,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "dN" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "dO" = (/mob/living/simple_animal/turkey_m,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"dP" = (/obj/covers/cobblestone/stairs{icon_state = "rampup"; dir = 8},/mob/living/simple_animal/turkey_f,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"dP" = (/obj/covers/cobblestone/stairs{dir = 8; icon_state = "rampup"},/mob/living/simple_animal/turkey_f,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "dQ" = (/mob/living/simple_animal/frog,/turf/floor/grass,/area/caribbean/nomads/forest)
 "dR" = (/obj/item/stack/farming/seeds/orange,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "dS" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/nomads/desert)
@@ -331,9 +331,9 @@
 "ha" = (/mob/living/simple_animal/complex_animal/dog/beagle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "hc" = (/obj/structure/fish,/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
 "hf" = (/mob/living/simple_animal/horse,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"hg" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"hh" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"hi" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"hg" = (/obj/structure/window/barrier/rock{dir = 8; icon_state = "rock_barricade"},/obj/structure/window/barrier/rock{dir = 1; icon_state = "rock_barricade"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"hh" = (/obj/structure/window/barrier/rock{dir = 1; icon_state = "rock_barricade"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"hi" = (/obj/structure/window/barrier/rock{dir = 8; icon_state = "rock_barricade"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "hk" = (/obj/effect/spawner/objspawner/tree,/turf/floor/grass,/area/caribbean/nomads/forest)
 "hl" = (/obj/item/stack/farming/seeds/cabbage,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
 "hm" = (/turf/floor/beach/water/deep,/area/caribbean/nomads/desert)
@@ -886,7 +886,6 @@ bebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaa
 cBcBbebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaabebebeaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebe
 aEcBbebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaabebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebebe
 "}
-
 (1,1,2) = {"
 azazazaOazaNazazazazazaNazazazazazazazaOazazazazazazazazazazazazazaOaOaOaOaOaAaAaAaOaOaOaOaOaOaOaOaOazazazazazazazazazazazazazazazazazazazbbbbbbazazazazazazazazazazazaAaAazazazazazazazazazazazazazazazazazazazazazazazaAazazazaNazaNaNaNazaNazazazaNaNaNaNaNaNawawawawawawawawawawawawawawawawawawaNaNaNaNazaNazazazazazazazazazazazazazbbbbazazaAaAaAazazazazazazazaOaOaOazazazazazazazazaOaOazazazazazazazaz
 azazazaAazaNazazazazaNaNazazazazazazazazazaOaOazazazazazazazazazazaOaOaOaOaOaOaOaOaOaOaOaOaOaOfLaAaOazazazazazaOazazazazazazazazazazazazazazbbbbbbazazazazazaAazazazazazazaAaAazazazazazazazazazazaAaAazazazazfEazazazazaAazazazazazazaNazazazazazazazaNaNaNaNaNawawawawawawawawfdawawawawawawawawawaNaNaNaNazazazazazazazaAazazazazazazazazazazazazazazazazazazazazazaAazbbbbazazazazazazazazazazazazazazaAaAaz
@@ -1326,7 +1325,7 @@ akakakalakalalalauauauaualalalakakakakakakakakakakalalaldsdsaaaaaaaaaaaaaaaaaaaa
 akakakakakalalalalalauaualalakakalalakakakakakakakalaldsdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadsdsdsalalalalakakakakakakakakakakakakakakakakgAakakakakakalakakakakalakakakakakakakakalalakakalarargLgLgugugugLgLgLgLgLarararalakakalakakakakakakakhiakakakakakakakakakakakakakalakdnakakakakakalalalauauaualalalakakalalakakakakakakakakakakakakakakakakak
 akakakakgGakakakakalauauaualalalakakakakakakgvakakalaldsdsdsdsdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadsdsdsalakalakakakakakakgGakakakakakakakakakakakakakakakakakalakakakakakakakakakakakakalalalalalalarargLgLgugugugLgLgLgLgLgLararalalakakakakakakakakakakakakakakakakakakakakakakakalakdlakakgBakdlakalalauauaualakakakakakakakakakakakakakakakakakakakakakakak
 akakakakakalakakalalalauaualakakalakakakakalalalakalalalalaldsdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadsdsalalalakakakakakalakakakakakakakhyakakakakakakakakakakakakalakakakakfhakakakakakakalalalalalarararargLgLgugugugugLgLgLgLarararalalalakakakakakalakakakakdndnakakakdldlakakalakakakakdldldlakdldlakakalauauaualakakakakakakakakakakakakakakakakakakakakakakak
-akakakakakakakalalalauauaualakalakakakakakalalalakakalakalaldsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadsdsalalalakakalalakakakakakakakakakakakakakakakakakakakhvakakakakakakakakakakakakakakakakakalalarararargLgLgLgugugugLgLgLararalalalakalakakalakakakakakakakdVdVdhakdhalakakakakakalakakakakakalakakalalalalauaualalalakakakakakakakakakakakakakakakakakakakakak
+akakakakakakakalalalauauaualakalakakakakakalalalakakalakalaldsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadsdsalalalakakalalakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakalalarararargLgLgLgugugugLgLgLararalalalakalakakalakakakakakakakdVdVdhakdhalakakakakakalakakakakakalakakalalalalauaualalalakakakakakakakakakakakakakakakakakakakakak
 akakakakakakakalalalauauauaualalakakakakakalakakakakakakakdsdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadsdsdsdsdsdsdsdsdsdsdsalalakakakakakakakakakakakakakakakakakakakakakakakakakakdtakakakakakakakakakakakalalalalakalararargLgLgLgLgugugugugLgLgLararalakakakakalakakakakakakhiakdndzakakaldhakalakakakalalakakakakakakakalauauauauaualalakakakakakakakakakakakakakakakakakakakakakak
 akakakakakakakakalalauauaualalakalakalalalakakakalakakakalaldsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadsdsdsdsalalalalalalalalalalakakakakakakakakakakakakakakakakakakakakakakakakakakakgqakakakakakakakakakakakakakalakalakalararargLgLgLgLgugugugugLgLgLararalalalakalakakakalakakakakakdndValakaldhalakalalakakakakakakakalalalalauauauauaualakakakakakakhEakgNakakakakakakakakakakakakakak
 akakakalakakakakalauauauauaualakakakakakakakakakakakakalalaldsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadsalalalalalalalalalalalalalakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakalalakalalararargLgLgLgLgLgLgugugugugugLgLarararalalalakakakakakakakhiakdVdVdhalaldzdnakalalakalakalakalalalaualalalauauauaualakakakakakakakakakakakakakakakakakakakakakakak

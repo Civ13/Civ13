@@ -921,7 +921,7 @@
 	title = "Wolf tribesman"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateIND4"
+	spawn_location = "JoinLateIND5"
 
 
 	min_positions = 9999
@@ -935,7 +935,7 @@
 	H.religion = "Moon Worshippers"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
-	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
+	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Powerful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
 
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_LOW)
@@ -955,7 +955,7 @@
 	title = "Lizard tribesman"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateIND4"
+	spawn_location = "JoinLateIND6"
 
 
 	min_positions = 9999
@@ -987,7 +987,7 @@
 	title = "Crustacean tribesman"
 	rank_abbreviation = ""
 
-	spawn_location = "JoinLateIND4"
+	spawn_location = "JoinLateIND7"
 
 
 	min_positions = 9999

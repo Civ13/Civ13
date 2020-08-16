@@ -75,7 +75,9 @@
 				ants = FALSE
 				if (user.gorillaman)
 					user.mood += 10
-				else
+				else if (user.ant)
+					user.mood -= 20
+				else if (!user.orc && !user.crab)
 					user.mood -= 10
 				user.nutrition += 80
 				return

@@ -192,7 +192,7 @@ obj/item/weapon/material/sword/wakazashi
 	..()
 	var/mob/living/human/H = user
 	if(istype(A, H))
-		if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+		if (istype(H) && (H.faction_text == "INDIANS"))
 			user << "<span class = 'danger'>You have no idea how to do this.</span>"
 			return
 		if (A == user)
