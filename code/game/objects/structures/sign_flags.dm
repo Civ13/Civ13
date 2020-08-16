@@ -264,6 +264,16 @@
 	desc = "The yellow and green flag of the Shia Hezbollah organization."
 	icon_state = "flag_hezbollah"
 
+/obj/structure/sign/flag/philippine
+	name = "Filipino flag"
+	desc = "The flag of the Philippines."
+	icon_state = "flag_fp"
+
+/obj/structure/sign/flag/philippine_war
+	name = "Filipino flag"
+	desc = "The flag of the Philippines. Flipped for wartime."
+	icon_state = "flag_fp_war"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."

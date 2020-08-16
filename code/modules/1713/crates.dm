@@ -584,6 +584,14 @@ obj/structure/closet/crate/coldwar/m26
 	name = "M26 grenade crate"
 	paths = list(/obj/item/weapon/grenade/coldwar/m26 = 10)
 
+obj/structure/closet/crate/coldwar/m18
+	name = "M18 smoke grenade crate"
+	paths = list(/obj/item/weapon/grenade/smokebomb/m18smoke = 10)
+
+obj/structure/closet/crate/ww2/mortar_shells
+	name = "mortar shells"
+	paths = list(/obj/item/cannon_ball/mortar_shell = 15)
+
 obj/structure/closet/crate/ww2/artillery_shells
 	name = "HE artillery shells"
 	paths = list(/obj/item/cannon_ball/shell = 10)

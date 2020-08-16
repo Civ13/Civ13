@@ -138,6 +138,20 @@
 	desc = "Signs something."
 	icon_state = "woodsign2"
 
+/obj/structure/sign/custom/plaque
+	name = "sign"
+	desc = "Signs something."
+	icon_state = "Colonial_Sign"
+
+/obj/structure/sign/custom/golden
+	name = "sign"
+	desc = "Signs something."
+	icon_state = "customsign2"
+
+/obj/structure/sign/custom/metallic
+	name = "sign"
+	desc = "Signs something."
+	icon_state = "customsign"
 /obj/structure/sign/signpost
 	name = "signpost"
 	desc = "Signs something."

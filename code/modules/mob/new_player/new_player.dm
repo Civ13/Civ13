@@ -745,6 +745,8 @@ var/global/redirect_all_players = null
 		dat += "[alive_vietnamese.len] Vietnamese "
 	if (CHINESE in map.faction_organization)
 		dat += "[alive_chinese.len] Chinese "
+	if (FILIPINO in map.faction_organization)
+		dat += "[alive_chinese.len] Chinese "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"

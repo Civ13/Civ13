@@ -1045,11 +1045,18 @@
 	worn_state = "nap_portuguese_army"
 
 /obj/item/clothing/under/napoleonic/satsuma
-	name = "napoleonic portuguese soldier uniform"
+	name = "japanese soldier uniform"
 	desc = "A uniform of the imperial japanese army. It has a black buttoned shirt and blue trousers with a white harness."
 	icon_state = "nap_satsuma"
 	item_state = "nap_satsuma"
 	worn_state = "nap_satsuma"
+
+/obj/item/clothing/under/merchant_suit
+	name = "merchant suit"
+	desc = "A fancy imperial merchant suit."
+	icon_state = "merchant_suit"
+	item_state = "merchant_suit"
+	worn_state = "merchant_suit"
 
 /* Napoleonic Armor*/
 // Can't add these helmets to blacksmithing.dm until code seperation of the napoleonic era or new functions make them inaccessible to early colonial settlers. @FantasticFwoosh

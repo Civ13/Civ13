@@ -364,6 +364,17 @@
 	icon_state = "chinese"
 	name = "Republic of China Flag"
 	desc = "The Republic of China flag."
+
+/obj/structure/flag/filipino
+	icon_state = "filipino"
+	name = "Philippines Republic"
+	desc = "The Republic of the Philippines flag."
+
+/obj/structure/flag/filipino_war
+	icon_state = "filipino"
+	name = "Philippines Republic"
+	desc = "The Republic of the Philippines flag. This one flipped for wartime."
+
 /obj/structure/flag/pole
 	icon_state = "flagpole_blank"
 	name = "Flagpole"

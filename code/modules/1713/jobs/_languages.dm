@@ -122,6 +122,12 @@
 	male_tts_voice = "Takumi" //jap
 	female_tts_voice = "Zhiyu" //chinese
 
+/datum/job/filipino
+	default_language = "Filipino"
+	additional_languages = list("English" = 20, "Chinese" = 5, "Japanese" = 15)
+	male_tts_voice = "Takumi" //jap
+	female_tts_voice = "Zhiyu" //chinese
+
 /datum/job/npc
 	default_language = "English"
 
