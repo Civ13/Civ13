@@ -410,6 +410,8 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_AMERICAN", 100)
 								if (VIETNAMESE)
 									playsound(get_turf(src), "charge_VIETNAMESE", 100)
+								if (FILIPINO)
+									playsound(get_turf(src), "charge_FILIPINO", 100)
 					else
 						message = "makes a weak noise."
 						m_type = 2

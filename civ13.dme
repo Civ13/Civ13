@@ -304,6 +304,7 @@
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
 #include "code\game\objects\map_metadata\sammirhayeed.dm"
+#include "code\game\objects\map_metadata\santo_tomas.dm"
 #include "code\game\objects\map_metadata\save_awards.dm"
 #include "code\game\objects\map_metadata\siege.dm"
 #include "code\game\objects\map_metadata\stalingrad.dm"
@@ -499,6 +500,7 @@
 #include "code\modules\1713\jobs\modern.dm"
 #include "code\modules\1713\jobs\nomads.dm"
 #include "code\modules\1713\jobs\npc.dm"
+#include "code\modules\1713\jobs\ph_us_war.dm"
 #include "code\modules\1713\jobs\pirates.dm"
 #include "code\modules\1713\jobs\portuguese.dm"
 #include "code\modules\1713\jobs\prison.dm"
@@ -952,5 +954,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\smallingrad.dmm"
+#include "maps\1903\santo_tomas.dmm"
 // END_INCLUDE

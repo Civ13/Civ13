@@ -371,7 +371,7 @@
 	desc = "The Republic of the Philippines flag."
 
 /obj/structure/flag/filipino_war
-	icon_state = "filipino"
+	icon_state = "filipino_wartime"
 	name = "Philippines Republic"
 	desc = "The Republic of the Philippines flag. This one flipped for wartime."
 
