@@ -527,7 +527,7 @@
 	rank_abbreviation = "Jarl"
 
 	spawn_location = "JoinLateGE"
-
+	is_ancient = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
@@ -540,12 +540,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_red(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/bronze_chestplate(H), slot_wear_suit)
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/asterix/conspicious(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword/iron(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword/iron(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword/iron(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword/iron(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, the chieftain of your tribe. Lead your men to victory!")
 
 	H.setStat("strength", STAT_HIGH)
@@ -602,6 +602,46 @@
 
 	return TRUE
 
+/datum/job/german/axeman
+	title = "Teceitos"
+	en_meaning = "Axeman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ancient = TRUE
+
+	min_positions = 10
+	max_positions = 100
+
+/datum/job/german/axeman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(H), slot_w_uniform)
+		//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/foxpelt(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/wolfpelt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/blue_buckler(H), slot_back)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a celtic axeman. Use your speed to manouver around the enemy and your axe to destroy their armor and shields.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	give_random_name(H)
+
+	return TRUE
+
 
 /datum/job/german/spearman
 	title = "Framaharjoz"
@@ -626,18 +666,19 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/leather(H), slot_wear_suit)
 		//head
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/wolfpelt(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt/brown(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt/black(H), slot_head)
 		//weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a germanic spearman.")
 
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_LOW)
@@ -664,7 +705,7 @@
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_green(H), slot_w_uniform)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/shortbow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 		//head
@@ -677,7 +718,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_LOW)
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_HIGH)
