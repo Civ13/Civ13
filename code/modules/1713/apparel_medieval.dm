@@ -653,7 +653,7 @@
 /* Medieval Helmets*/
 
 /obj/item/clothing/head/helmet/brown_eisenbruck
-	name = "brown eisenbruck"
+	name = "brown padded head-cap"
 	desc = "a padded brown coif, applies practical if modest protection."
 	icon_state = "brown_eisenbruck"
 	item_state = "brown_eisenbruck"
@@ -663,7 +663,7 @@
 	health = 20
 
 /obj/item/clothing/head/helmet/grey_eisenbruck
-	name = "grey eisenbruck"
+	name = "grey padded head-cap"
 	desc = "a padded grey coif, applies practical if modest protection."
 	icon_state = "grey_eisenbruck"
 	item_state = "grey_eisenbruck"
@@ -673,7 +673,7 @@
 	health = 20
 
 /obj/item/clothing/head/helmet/aged_eisenbruck
-	name = "ratty old eisenbruck"
+	name = "ratty old padded head-cap"
 	desc = "a ratty, old padded coif, its color faded but remains protective."
 	icon_state = "aged_eisenbruck"
 	item_state = "aged_eisenbruck"
@@ -693,6 +693,45 @@
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
 	health = 55
+	slowdown = 0.26
+
+/obj/item/clothing/head/helmet/sallet0
+	name = "Italian Sallet without visor"
+	desc = "A very protective helmet used by archers and crossbowmen in the 14th century throughout europe, providing moderate protection."
+	icon_state = "italian_sallet_o"
+	item_state = "italian_sallet_o"
+	worn_state = "italian_sallet_o"
+	body_parts_covered = HEAD|FACE|EYES
+	armor = list(melee = 71, arrow = 91, gun = 11, energy = 15, bomb = 61, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 56
+	slowdown = 0.23
+
+/obj/item/clothing/head/helmet/sallet1
+	name = "Italian Sallet with visor"
+	desc = "A very protective helmet used by light and heavy infantry in the 14th century throughout europe, providing protection over visual ability."
+	icon_state = "italian_sallet"
+	item_state = "italian_sallet"
+	worn_state = "italian_sallet"
+	body_parts_covered = HEAD|FACE|EYES
+	armor = list(melee = 75, arrow = 95, gun = 12, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 58
+	slowdown = 0.25
+
+/obj/item/clothing/head/helmet/sallet2
+	name = "German Sallet with visor"
+	desc = "A very protective helmet used by light and heavy infantry in the 14th century, providing slight protection over visual ability."
+	icon_state = "german_sallet"
+	item_state = "german_sallet"
+	worn_state = "german_sallet"
+	body_parts_covered = HEAD|FACE|EYES
+	armor = list(melee = 74, arrow = 92, gun = 11, energy = 15, bomb = 62, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 57
 	slowdown = 0.25
 
 /obj/item/clothing/head/helmet/medieval/helmet1
