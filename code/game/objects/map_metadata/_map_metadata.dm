@@ -462,7 +462,8 @@ var/civmax_research = list(230,230,230)
 					set_ordinal_age()
 					age1_done = TRUE
 					age2_timer = (world.time + age2_timer)
-					default_research = 25
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 25
 					break
 
 		else if (age2_done == FALSE)
@@ -475,7 +476,8 @@ var/civmax_research = list(230,230,230)
 					set_ordinal_age()
 					age2_done = TRUE
 					age3_timer = (world.time + age3_timer)
-					default_research = 50
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 50
 					break
 
 		else if (age3_done == FALSE)
@@ -487,7 +489,8 @@ var/civmax_research = list(230,230,230)
 					age = "1713"
 					set_ordinal_age()
 					age3_done = TRUE
-					default_research = 80
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 80
 					break
 
 		else if (age4_done == FALSE)
@@ -499,7 +502,8 @@ var/civmax_research = list(230,230,230)
 					age = "1873"
 					set_ordinal_age()
 					age4_done = TRUE
-					default_research = 105
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 105
 					break
 		else if (age5_done == FALSE)
 			var/count = 0
@@ -510,7 +514,8 @@ var/civmax_research = list(230,230,230)
 					age = "1903"
 					set_ordinal_age()
 					age5_done = TRUE
-					default_research = 120
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 120
 					break
 		else if (age6_done == FALSE)
 			var/count = 0
@@ -521,7 +526,8 @@ var/civmax_research = list(230,230,230)
 					age = "1943"
 					set_ordinal_age()
 					age6_done = TRUE
-					default_research = 145
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 145
 					break
 		else if (age7_done == FALSE)
 			var/count = 0
@@ -532,7 +538,8 @@ var/civmax_research = list(230,230,230)
 					age = "1969"
 					set_ordinal_age()
 					age7_done = TRUE
-					default_research = 175
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 175
 					break
 		else if (age8_done == FALSE)
 			var/count = 0
@@ -543,7 +550,8 @@ var/civmax_research = list(230,230,230)
 					age = "2013"
 					set_ordinal_age()
 					age8_done = TRUE
-					default_research = 210
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 210
 					break
 /obj/map_metadata/proc/check_events()
 	return TRUE

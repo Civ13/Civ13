@@ -20,7 +20,7 @@
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_l_store)
 			equip_to_slot_or_del(new /obj/item/weapon/pickaxe(src), slot_back)
 			equip_to_slot_or_del(new /obj/item/weapon/shovel(src), slot_belt)
-	if (!map.chad_mode)
+	if (!map.chad_mode || map.ID == MAP_NOMADS_ICE_AGE)
 
 //knives and other tools/////////////////////////////////////////////////
 //knives removed since flint was introduced
