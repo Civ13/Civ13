@@ -904,6 +904,38 @@
 	item_state = "surgical"
 	worn_state = "surgical"
 
+/obj/item/clothing/suit/storage/jacket/coveralls
+	name = "coveralls"
+	desc = "A blue pair of coveralls, protects against heat."
+	icon_state = "coveralls"
+	item_state = "coveralls"
+	worn_state = "coveralls"
+	var/rolled = FALSE
+
+/obj/item/clothing/suit/storage/jacket/coveralls/verb/roll_down_suit()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/suit/storage/jacket/coveralls)
+		return
+	else
+		if (rolled)
+			item_state = "coveralls"
+			worn_state = "coveralls"
+			item_state_slots["w_uniform"] = "coveralls"
+			usr << "<span class = 'danger'>You roll down your coveralls.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			heat_protection = ARMS|UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "coveralls_down"
+			worn_state = "coveralls_down"
+			item_state_slots["w_uniform"] = "coveralls_down"
+			usr << "<span class = 'danger'>You roll up your coveralls.</span>"
+			rolled = TRUE
+			heat_protection = UPPER_TORSO|ARMS
+			cold_protection = LOWER_TORSO|LEGS
+			update_clothing_icon()
 /obj/item/weapon/storage/belt/largepouches
 	name = "large pouches"
 	desc = "A belt with two large pouches, that can fit large items like machinegun belts."
