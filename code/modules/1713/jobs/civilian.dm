@@ -2069,13 +2069,13 @@
 	return TRUE
 
 /datum/job/civilian/businessman/green
-	title = "MacGreene Traders"
+	title = "Kogama Kraftsmen"
 	selection_color = "#2D632D"
 	spawn_location = "JoinLateCivB"
 	min_positions = 3
 	max_positions = 50
 /datum/job/civilian/businessman/green/CEO
-	title = "MacGreene Traders CEO"
+	title = "Kogama Kraftsmen CEO"
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2085,7 +2085,7 @@
 /datum/job/civilian/businessman/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = replacetext(title," CEO", "")
-	H.name = H.species.get_random_gaelic_name(H.gender)
+	H.name = H.species.get_random_japanese_name(H.gender)
 	H.real_name = H.name
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/green(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessgreen(H), slot_l_store)

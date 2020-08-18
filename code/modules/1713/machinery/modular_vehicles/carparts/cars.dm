@@ -72,7 +72,7 @@
 	w_front = list("truckwindshield_center",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/car/van/lb
-	w_back = list("vanback_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("vanback_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanback_left"
 	icon_state = "frame_steel_corner_lb"
@@ -81,7 +81,7 @@
 	hasoverlay = "vanback_center"
 	icon_state = "frame_steel_corner_cb"
 /obj/structure/vehicleparts/frame/car/van/rb
-	w_back = list("vanback_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_back = list("vanback_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "vanback_right"
 	icon_state = "frame_steel_corner_rb"
@@ -303,18 +303,20 @@
 	icon_state = "frame_steel_corner_rb"
 	hasoverlay = "carback1_right"
 	removesroof = TRUE
-/obj/structure/vehicleparts/frame/car/shinobu/lc
+/obj/structure/vehicleparts/frame/car/shinobu/lcf
 	w_front = list("carwindshield2door_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
-	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carwindshield2door_left"
-	noroof = TRUE
-/obj/structure/vehicleparts/frame/car/shinobu/rc
+/obj/structure/vehicleparts/frame/car/shinobu/rcf
 	w_front = list("carwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
-	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "carwindshield2door_right"
-	noroof = TRUE
+/obj/structure/vehicleparts/frame/car/shinobu/rbc
+	w_right = list("c_windoweddoor",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/shinobu/lbc
+	w_left = list("c_windoweddoor",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_back = list("c_thin",TRUE,TRUE,0,0.1,FALSE,FALSE)
 //kazoku
 /obj/structure/vehicleparts/frame/car/kazoku/lf
 	w_front = list("carfront3_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -354,7 +356,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 700
-	speedlist = list(1=8,2=6,3=4.5,4=3.5)
+	speedlist = list(1=8,2=6,3=4.5,4=3)
 	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/quattroporte
@@ -364,7 +366,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 800
-	speedlist = list(1=8,2=6,3=4.5,4=3.5)
+	speedlist = list(1=7,2=5,3=3.5,4=2.5)
 	turntimer = 7
 
 /obj/structure/vehicleparts/axis/car/erstenklasse
@@ -375,7 +377,7 @@
 	speeds = 5
 	maxpower = 1100
 	speedlist = list(1=7,2=6,3=5,4=4,5=3)
-	turntimer = 8
+	turntimer = 6
 
 /obj/structure/vehicleparts/axis/car/falcon
 	name = "SMC Falcon"
@@ -384,8 +386,8 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 1000
-	speedlist = list(1=7,2=6,3=5,4=2.5)
-	turntimer = 7
+	speedlist = list(1=7,2=6,3=5,4=2)
+	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/shinobu
 	name = "Yamasaki Shinobu"
@@ -394,8 +396,8 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = list(1=6,2=5,3=4,4=3,5=2)
-	turntimer = 7
+	speedlist = list(1=5,2=4,3=3,4=2,5=1.2)
+	turntimer = 4
 
 /obj/structure/vehicleparts/axis/car/kazoku
 	name = "Yamasaki Kazoku"
@@ -404,8 +406,8 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 800
-	speedlist = list(1=6,2=5,3=4,4=3.5)
-	turntimer = 8
+	speedlist = list(1=6,2=5,3=4,4=2.5)
+	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/falcon/police
 	name = "SMC Falcon Police Interceptor"
@@ -423,7 +425,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 1200
-	speedlist = list(1=8,2=6,3=5,4=4)
+	speedlist = list(1=8,2=6.5,3=4.5,4=2.5)
 	turntimer = 9
 
 /obj/structure/vehicleparts/axis/car/wyoming
@@ -433,7 +435,7 @@
 	icon_state = "axis_powered"
 	speeds = 4
 	maxpower = 1300
-	speedlist = list(1=7,2=5.5,3=4.5,4=3.5)
+	speedlist = list(1=7,2=5.5,3=4.5,4=3)
 	turntimer = 9
 
 
@@ -464,7 +466,7 @@
 	enginesize = 6500
 
 /obj/structure/engine/internal/gasoline/wankel/premade/shinobu
-	enginesize = 5000
+	enginesize = 7000
 
 /obj/structure/engine/internal/gasoline/premade/kazoku
 	enginesize = 3800
@@ -542,7 +544,6 @@
 
 /obj/structure/emergency_lights/ambulance
 	atype = "ambulance"
-	centered = TRUE
 /obj/structure/emergency_lights/ambulance/check_sound()
 	if (world.realtime >= lastsoundcheck)
 		if (on)
