@@ -387,14 +387,14 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			if (findtext(recipe.title, "wall") || findtext(recipe.title, "door"))
 				H << "<span class = 'danger'>You don't know how to make this.</span>"
 				return
-	if (istype(recipe.result_type, /obj/structure/sign/custom))
+	if (findtext(recipe.title, "custom") && findtext(recipe.title, "sign"))
 		customname = input(user, "Choose a name for this sign:") as text|null
 		if (customname == null)
 			customname = "Sign"
 		customdesc = input(user, "Choose a description for this sign:") as text|null
 		if (customdesc == null)
 			customdesc = "An empty sign."
-	if (findtext(recipe.title, "signpost"))
+	else if (findtext(recipe.title, "signpost"))
 		var/indesc = input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")
 			customdesc = "<b>West:</b> [indesc]"
@@ -410,7 +410,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		indesc = input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "") as text|null
 		if (indesc != null && indesc != "")
 			customdesc += "<br><b>South:</b> [indesc]"
-	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
+	else if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -447,7 +447,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			build_override_door.name = keyname
 			build_override_door.custom_code = key.code
 
-	if (findtext(recipe.title, "tin can"))
+	else if (findtext(recipe.title, "tin can"))
 		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
 		if (customname == "" || customname == null)
 			customname = ""
