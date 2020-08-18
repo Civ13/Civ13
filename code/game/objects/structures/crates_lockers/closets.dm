@@ -480,7 +480,7 @@
 		..()
 		custom_code = GREENCODE
 		locked = TRUE
-		faction = "MacGreene Traders"
+		faction = "Kogama Kraftsmen"
 		new /obj/item/stack/money/dollar/twenty(src)
 /*
 		new /obj/item/weapon/disk/green(src)

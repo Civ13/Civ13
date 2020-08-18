@@ -292,8 +292,8 @@
 	desc = "A sign with the logo of Giovanni Blu Stocks"
 	icon_state = "blue_logo"
 /obj/structure/sign/logo/green
-	name = "MacGreene Traders"
-	desc = "A sign with the logo of MacGreene Traders"
+	name = "Kogama Kraftsmen"
+	desc = "A sign with the logo of Kogama Kraftsmen Traders"
 	icon_state = "green_logo"
 
 /obj/item/flagmaker
