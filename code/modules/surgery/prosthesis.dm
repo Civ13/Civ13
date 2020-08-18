@@ -41,7 +41,7 @@
 					return
 				var/obj/item/organ/external/LL = C.get_organ("l_leg")
 				var/obj/item/organ/external/RL = C.get_organ("r_leg")
-				if (LL.is_stump() && LL.prosthesis == FALSE)
+				if ((LL && LL.is_stump() && LL.prosthesis == FALSE || !LL))
 					visible_message("[user] starts to attatch \the [src] to [C]'s left leg stump...","You start attaching \the [src] to [C]'s left leg stump...")
 					if (do_after(user, 150*user.getStatCoeff("medical"), C))
 						visible_message("[user] finishes attaching \the [src] to [C]'s left leg stump.","You finish attaching \the [src] to [C]'s left leg stump.")
@@ -64,8 +64,8 @@
 			if ("foot")
 				var/obj/item/organ/external/LL = C.get_organ("l_leg")
 				var/obj/item/organ/external/RL = C.get_organ("r_leg")
-				if (RL.is_stump() && RL.prosthesis == FALSE)
-					if (LL.is_stump() && LL.prosthesis == FALSE)
+				if ((RL && RL.is_stump() && RL.prosthesis == FALSE) || !RL)
+					if ((LL && LL.is_stump() && LL.prosthesis == FALSE) || !LL)
 						user << "Both legs are missing! There is nowhere to attach the [src]!"
 						return
 
