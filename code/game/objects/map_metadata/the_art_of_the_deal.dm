@@ -198,7 +198,7 @@
 	if (prob(100))
 		var/idx = rand(1,999999)
 		var/list/chosen = list()
-		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(300,500)))
+		chosen = list(list(/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30,rand(1200,1500)),list(/obj/item/weapon/gun/projectile/shotgun/pump,rand(1400,1700)),list(/obj/item/weapon/gun/projectile/pistol/waltherp38,rand(300,500)), list(/obj/item/weapon/material/sword/katana,rand(300,500)))
 		var/chosen1 = pick(chosen)
 		if (ispath(chosen1[1]))
 			var/pt = chosen1[1]
