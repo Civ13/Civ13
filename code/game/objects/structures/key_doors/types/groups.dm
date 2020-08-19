@@ -653,3 +653,17 @@
 	unique_door_name = "Hospital Key"
 	locked = TRUE
 	health = 90000
+
+/obj/item/weapon/key/civ/mechanic
+	code = 12448
+	name = "Hospital key"
+	health = 90000
+
+/datum/keyslot/mechanic
+	code = 12448
+
+/obj/structure/simple_door/key_door/civ/mechanic
+	keyslot_type = /datum/keyslot/mechanic
+	unique_door_name = "Mechanic Key"
+	locked = TRUE
+	health = 90000
