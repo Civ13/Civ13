@@ -894,7 +894,7 @@ obj/structure/anvil/New()
 			else if (map.ordinal_age == 4)
 				display4 = list("Picklehaube (7)", "Pith (7)", "Cancel")
 			else if (map.ordinal_age == 3)
-				display4 = list("Iron Chestplate (12)", "Conical Helmet (6)", "Protective Conical Helmet (10)", "Cancel")
+				display4 = list("Imperial Chestplate(14)", "Conical Helmet (6)", "Protective Conical Helmet (10)", "Morion Helmet (10)", "Cancel")
 			else if (map.ordinal_age == 2)
 				if (H.orc)
 					display4 = list("Grunt Armor (10)", "Urukhai Armor (12)", "Grunt Helmet (10)", "Spearman Helmet (12)", "Berserker Helmet (15)", "Orkish Gauntlets (10)", "Orkish Sabatons (10)","Cancel")
@@ -1205,6 +1205,20 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
+			if (choice4 == "Imperial Chestplate(14)")
+				if (iron_amt >= 14)
+					user << "You begin crafting the imperial chestplate..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,160,src) && iron_amt >= 14)
+						user << "You craft the imperial chestplate."
+						iron_amt -= 14
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/suit/armor/imperial/imperial_chestplate(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
 			if (choice4 == "Plated Armor (16)")
 				if (iron_amt >= 16)
 					user << "You begin crafting the plated armor..."
@@ -1258,6 +1272,20 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/clothing/head/helmet/medieval/helmet1(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Morion Helmet (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the morion helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 10)
+						user << "You craft the morion helmet."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/imperial/morion(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
