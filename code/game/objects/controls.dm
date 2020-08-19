@@ -6,7 +6,7 @@
 	anchored = TRUE
 	var/open = FALSE
 	var/cooldown = 0
-	var/distance = 6
+	var/distance = 3
 	density = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
