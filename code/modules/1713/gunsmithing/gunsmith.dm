@@ -364,34 +364,43 @@
 		var/list/possible_list = list("Cancel")
 		switch (choice_receiver)
 			if ("Pump-Action")
+				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "shotgun", "remington870", "remington11", "winchester1873")
 			if ("Bolt-Action")
+				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "gewehr71", "gewehr98", "lebel", "mosin", "murata", "enfield", "p14enfield", "carcano", "arisaka30", "arisaka35")
 				if (map.ordinal_age >= 6)
 					possible_list = list("Cancel", "gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfieldww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
 			if("Semi-Auto (large)")
+				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "svt", "g41", "g43", "m1garand")
 				if (map.ordinal_age >= 7)
 					possible_list += "m14"
 					possible_list += "sks"
 			if ("Open-Bolt (large)")
+				current_gun.override_icon = 'icons/obj/guns/mgs.dmi'
 				possible_list = list("Cancel", "madsen", "mg34", "type99lmg", "bar", "dp")
 				if (map.ordinal_age >= 7)
 					possible_list += "pkmp"
 					possible_list += "negev"
 					possible_list += "m60"
 			if ("Open-Bolt (small)")
+				current_gun.override_icon = 'icons/obj/guns/automatic.dmi'
 				possible_list = list("Cancel", "pps", "ppsh", "mp40", "greasegun", "tommygun", "thompson", "avtomat")
 				if (map.ordinal_age >= 8)
 					possible_list += "victor"
 					possible_list += "p90"
 			if ("Revolver")
+				current_gun.override_icon = 'icons/obj/guns/pistols.dmi'
 				possible_list = list("Cancel", "revolver", "t26revolver", "nagant", "panther", "detective", "detective_leopard", "detective_gold", "goldrevolver", "mateba", "peacemaker", "colt1877", "dragoon", "coltnewpolice", "enfield02", "smithwesson32", "graysonfito", "magnum58", "webley4", "m1892")
 			if ("Semi-Auto (small)")
+				current_gun.override_icon = 'icons/obj/guns/pistols.dmi'
 				possible_list = list("Cancel", "p220", "nambu", "mauser", "luger", "borchardt", "colt", "m9beretta", "tanm9", "black1911","tt30", "waltherp38", "jericho941", "glock17", "coltpockethammerles", "tarusg3", "mp443", "chinese_ms14", "chinese_plastic", "pl14", "sig250")
 			if ("Dual Selective Fire")
+				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
 				possible_list = list("Cancel", "stg", "g3", "ar12", "ak47", "ak74", "aks74", "aks", "ak74m", "az58", "whiteaz58", "blackaz58", "chinese_assault_rifle")
 			if ("Triple Selective Fire")
+				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
 				possible_list = list("Cancel", "m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
 		var/dst = WWinput(user, "Choose the gun's look:", "Gunsmithing", "Cancel", possible_list)
 		if (dst != "Cancel" && dst != null)
@@ -437,6 +446,7 @@
 			newgunbp.barrel_type = current_gun.barrel_type
 			newgunbp.feeding_type = current_gun.feeding_type
 			newgunbp.override_sprite = current_gun.override_sprite
+			newgunbp.override_icon = current_gun.override_icon
 			newgunbp.cost_wood = using_wood
 			newgunbp.cost_steel = using_steel
 		else
@@ -501,6 +511,7 @@
 		NEWGUN.barrel_type = bpsource.barrel_type
 		NEWGUN.feeding_type = bpsource.feeding_type
 		NEWGUN.override_sprite = bpsource.override_sprite
+		NEWGUN.override_icon = bpsource.override_icon
 		NEWGUN.step = 4
 		NEWGUN.finish()
 
@@ -525,6 +536,7 @@
 	var/image/barrel_img = null
 
 	var/override_sprite = null
+	var/override_icon = 'icons/obj/guns/gun.dmi'
 
 	gun_safety = TRUE
 	//bolt action
@@ -573,7 +585,7 @@
 			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
 			overlays += feeding_img
 	else
-		icon = 'icons/obj/guns/gun.dmi'
+		icon = override_icon
 		icon_state = override_sprite
 	switch(stock_type)
 		if ("Rifle Wooden Stock")

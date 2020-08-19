@@ -12,6 +12,7 @@
 	var/barrel_type = "none"
 	var/custom_name = "gun"
 	var/override_sprite = null
+	var/override_icon = 'icons/obj/guns/gun.dmi'
 	var/caliber = ""
 	var/ammo_type = null
 
