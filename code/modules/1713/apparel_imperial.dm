@@ -1,7 +1,9 @@
 /*Index*/
 /*   * 1 - Colonial Suits
+     * 1a - Colonial Armor
      * 2 - Colonial Uniforms
      * 3 - Colonial Hats
+     * 3a - Colonial Helmets
      * 4 - Colonial Boots
      * 5 - Colonial Accessories & Items
      * 6 - Colonial Pirate Clothing
@@ -27,6 +29,21 @@
 /* Colonial Suits*/
 
 //pending, due to recently rebased content.
+
+	/* Colonial Armor*/
+
+/obj/item/clothing/suit/armor/imperial/imperial_chestplate
+	name = "imperial chestplate"
+	desc = "An iron chestplate made in a imperial style, it is not wholly protective against bullets but allows more maneuverability to avoid them."
+	icon_state = "imperial_chestplate"
+	item_state = "imperial_chestplate"
+	worn_state = "imperial_chestplate"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 50, arrow = 50, gun = 12, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	value = 20
+	slowdown = 0.4
+	health = 50
+
 
 /* Colonial Uniforms*/
 
@@ -113,6 +130,20 @@
 	item_state = "dressr"
 	worn_state = "dressr"
 
+/obj/item/clothing/under/conquistador
+	name = "conquistador uniform"
+	desc = "A regal uniform often worn by a class of explorers known as conquistadors in search of wealth."
+	icon_state = "conquistador"
+	item_state = "conquistador"
+	worn_state = "conquistador"
+
+/obj/item/clothing/under/pilgrim
+	name = "pilgrim clothing"
+	desc = "A set of plain black and grey clothes worn by transient followers of faith."
+	icon_state = "pilgrim"
+	item_state = "pilgrim"
+	worn_state = "pilgrim"
+
 /* Colonial Hats*/
 
 /obj/item/clothing/head/furhat
@@ -179,6 +210,33 @@
 	icon_state = "tricorne_black"
 	item_state = "tricorne_black"
 
+/obj/item/clothing/head/capotain
+	name = "capotain"
+	desc = "A black capotain, high fashion amongst the courts of nobilty."
+	icon_state = "capotain"
+	item_state = "capotain"
+	worn_state = "capotain"
+
+/obj/item/clothing/head/capotain/pilgrim
+	name = "capotain"
+	desc = "A stylized capotain, often worn by transient pilgrims."
+	icon_state = "pilgrim"
+	item_state = "pilgrim"
+	worn_state = "pilgrim"
+
+	/* Colonial Helmets*/
+
+/obj/item/clothing/head/helmet/imperial/morion
+	name = "morion helmet"
+	desc = "A protective and hardy morion helmet covering the dome of the head and ears."
+	icon_state = "morion_helmet"
+	item_state = "morion_helmet"
+	worn_state = "morion_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 32
+
 /* Colonial Boots*/
 
 /obj/item/clothing/shoes/blackboots1
@@ -221,6 +279,12 @@
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 /* Colonial Accessories & Items*/
+
+/obj/item/clothing/accessory/ruffle/neck
+	name = "neck ruffle"
+	desc = "A ruffle neck collar made of soft material."
+	icon_state = "ruffle_neck"
+	item_state = "ruffle_neck"
 
 // WEBBING - can hold everything but clothing
 /obj/item/clothing/accessory/storage/webbing
@@ -1122,9 +1186,9 @@
 /obj/item/clothing/head/helmet/napoleonic/bearskin
 	name = "black napoleonic bearskin hat"
 	desc = "A decorative parade hat felted from bear skin and bronze. Often worn by napoleonic grenadiers."
-	icon_state = "napoleonic_bearskin_hat"
-	item_state = "napoleonic_bearskin_hat"
-	worn_state = "napoleonic_bearskin_hat"
+	icon_state = "nap_bearskin_hat"
+	item_state = "nap_bearskin_hat"
+	worn_state = "nap_bearskin_hat"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 40, gun = 8, energy = 15, bomb = 45, bio = 20, rad = FALSE)
@@ -1132,15 +1196,15 @@
 
 /obj/item/clothing/head/helmet/napoleonic/bearskin/brown
 	name = "brown napoleonic bearskin hat"
-	icon_state = "brown_napoleonic_bearskin_hat"
-	item_state = "brown_napoleonic_bearskin_hat"
-	worn_state = "brown_napoleonic_bearskin_hat"
+	icon_state = "b_nap_bearskin_hat"
+	item_state = "b_nap_bearskin_hat"
+	worn_state = "b_nap_bearskin_hat"
 
 /obj/item/clothing/head/helmet/napoleonic/bearskin/white
 	name = "white napoleonic bearskin hat"
-	icon_state = "white_napoleonic_bearskin_hat"
-	item_state = "white_napoleonic_bearskin_hat"
-	worn_state = "white_napoleonic_bearskin_hat"
+	icon_state = "w_nap_bearskin_hat"
+	item_state = "w_nap_bearskin_hat"
+	worn_state = "w_nap_bearskin_hat"
 
 /* Miscallaneous*/
 

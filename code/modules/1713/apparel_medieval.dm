@@ -118,6 +118,12 @@
 	item_state = "medieval_count_hat"
 	worn_state = "medieval_count_hat"
 
+/obj/item/clothing/head/cavalier
+	name = "cavalier hat"
+	desc = "a free willled and fanciful leather feathered hat."
+	icon_state = "cavalier"
+	item_state = "cavalier"
+	worn_state = "cavalier"
 
 /obj/item/clothing/head/noblehat1
 	name = "brown noble hat"
@@ -408,6 +414,27 @@
 	item_state = "christian_priest"
 	worn_state = "christian_priest"
 
+/obj/item/clothing/under/landschneckt
+	name = "green landschneckt uniform"
+	desc = "A ornate and bright uniform often worn by elite mercenaries & central european troops during the 15th century."
+	icon_state = "landschneckt"
+	item_state = "landschneckt"
+	worn_state = "landschneckt"
+
+/obj/item/clothing/under/landschneckt/blue
+	name = "blue landschneckt uniform"
+	desc = "A ornate and bright uniform often worn by elite mercenaries & central european troops during the 15th century."
+	icon_state = "b_landschneckt"
+	item_state = "b_landschneckt"
+	worn_state = "b_landschneckt"
+
+/obj/item/clothing/under/landschneckt/red
+	name = "red landschneckt uniform"
+	desc = "A ornate and bright uniform often worn by elite mercenaries & central european troops during the 15th century."
+	icon_state = "r_landschneckt"
+	item_state = "r_landschneckt"
+	worn_state = "r_landschneckt"
+
 /* Medieval Armor*/
 
 /obj/item/clothing/suit/armor/medieval
@@ -682,44 +709,84 @@
 	armor = list(melee = 24, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
 	health = 20
 
-/obj/item/clothing/head/helmet/sallet0
-	name = "Italian Sallet without visor"
+/obj/item/clothing/head/helmet/sallet/italian
+	name = "italian sallet"
+	desc = "A very protective helmet used by archers and crossbowmen in the 15th century throughout europe."
+	icon_state = "italian_sallet_o"
+	item_state = "italian_sallet_o"
+	worn_state = "italian_sallet_o"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 45
+	slowdown = 0.15
+
+/obj/item/clothing/head/helmet/sallet/german
+	name = "german sallet"
+	desc = "A very protective helmet used by archers and crossbowmen in the 15th century throughout europe."
+	icon_state = "german_sallet_o"
+	item_state = "german_sallet_o"
+	worn_state = "german_sallet_o"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 45
+	slowdown = 0.15
+
+/* - Note - Odis needs to consult coders before adding open-shut states because without code preparation, opening & shutting will reset its health
+and it already in its unaltered state, as strong as a knight helm (which i've brought it down to the power level of). I've seperated the
+
+/obj/item/clothing/head/helmet/sallet/italian/visorless
+	name = "visorless italian sallet"
 	desc = "A very protective helmet used by archers and crossbowmen in the 14th century throughout europe, providing moderate protection."
 	icon_state = "italian_sallet_o"
 	item_state = "italian_sallet_o"
 	worn_state = "italian_sallet_o"
-	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 71, arrow = 91, gun = 11, energy = 15, bomb = 61, bio = 20, rad = FALSE)
-	flags_inv = BLOCKHAIR
-	restricts_view = 2
-	health = 56
-	slowdown = 0.23
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 45
+	slowdown = 0.15
 
-/obj/item/clothing/head/helmet/sallet1
-	name = "Italian Sallet with visor"
-	desc = "A very protective helmet used by light and heavy infantry in the 14th century throughout europe, providing protection over visual ability."
+/obj/item/clothing/head/helmet/sallet/italian/visored
+	name = "visored italian sallet"
+	desc = "A very protective helmet used by light and heavy infantry in the 15th century throughout europe, providing protection over visual ability."
 	icon_state = "italian_sallet"
 	item_state = "italian_sallet"
 	worn_state = "italian_sallet"
 	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 75, arrow = 95, gun = 12, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
-	health = 58
+	health = 55
 	slowdown = 0.25
 
-/obj/item/clothing/head/helmet/sallet2
-	name = "German Sallet with visor"
-	desc = "A very protective helmet used by light and heavy infantry in the 14th century, providing slight protection over visual ability."
+/obj/item/clothing/head/helmet/sallet/german/visorless
+	name = "visorless german sallet"
+	desc = "A very protective helmet used by light and heavy infantry in the 15th century, providing slight protection over visual ability."
+	icon_state = "german_sallet_o"
+	item_state = "german_sallet_o"
+	worn_state = "german_sallet_o"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 45
+	slowdown = 0.15
+
+/obj/item/clothing/head/helmet/sallet/german/visored
+	name = "visored german sallet"
+	desc = "A very protective helmet used by light and heavy infantry in the 15th century, providing slight protection over visual ability."
 	icon_state = "german_sallet"
 	item_state = "german_sallet"
 	worn_state = "german_sallet"
 	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 74, arrow = 92, gun = 11, energy = 15, bomb = 62, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
-	health = 57
+	health = 55
 	slowdown = 0.25
+*/
+
 /obj/item/clothing/head/helmet/medieval
 	name = "knight helmet"
 	desc = "A thick knight helmet."
