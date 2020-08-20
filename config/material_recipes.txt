@@ -8,10 +8,10 @@
 //**| CLAY |**| CLAY ROOFING |**| CLAY KITCHEN OBJECTS |**| CLAY BUILDING MATERIALS, FLOORS & STRUCTURES |**| CLAY STUCCO |**| CLAY PLANT POTS |**
 //************************************************************************************************************************************************
 
-//**| LEATHER |**| LEATHER WEAPONS & TOOLS |**| LEATHER FURNITURE |**| LEATHER STORAGE |**| LEATHER HEALTHCARE |**| LEATHER UNIFORMS & JACKETS |**| LEATHER SHOES |**| LEATHER ARMOR |**| LEATHER ACCESSORIES |**
-//*****************************************************************************************************************************************************************************************************
-//**| LEATHER WEAPON ACCESSORIES |
-//********************************
+//**| LEATHER |**| LEATHER WEAPONS & TOOLS |**| LEATHER FURNITURE |**| LEATHER STORAGE |**| LEATHER HEALTHCARE |**| LEATHER UNIFORMS & JACKETS |**| LEATHER HATS |**| LEATHER SHOES |**| LEATHER ARMOR |**
+//********************************************************************************************************************************************************************************************************
+//**| LEATHER ACCESSORIES |**| LEATHER WEAPON ACCESSORIES |
+//*********************************************************
 
 //**| ELECTRONICS |**| ELECTRONICS RADIO & COMMUNICATION |**| ELECTRONICS CAMERAS |**| ELECTRONICS FURNITURE |**
 //**************************************************************************************************************
@@ -240,6 +240,7 @@ RECIPE: /material/leather/,80's jacket,/obj/item/clothing/suit/storage/coat/oldy
 
 //*****************| LEATHER HATS |***************************
 
+RECIPE: /material/leather/,cavalier hat,/obj/item/clothing/head/cavalier,3,55,0,1,hats,0,0,52,3,null
 RECIPE: /material/leather/,cowboy hat,/obj/item/clothing/head/cowboyhat,3,55,0,1,hats,0,0,98,8,null
 RECIPE: /material/leather/,dark cowboy hat,/obj/item/clothing/head/cowboyhat2,3,55,0,1,hats,0,0,98,8,null
 
@@ -720,6 +721,9 @@ RECIPE: /material/cloth/,custom short colonial outfit,/obj/item/clothing/under/c
 
 //*****************| CLOTH MILITARY & LAW ENFORCMENT UNIFORMS |***************************
 
+RECIPE: /material/cloth/,green landschneckt uniform,/obj/item/clothing/under/landschneckt,6,105,0,1,clothing,0,0,48,2,null
+RECIPE: /material/cloth/,blue landschneckt uniform,/obj/item/clothing/under/landschneckt/blue,6,105,0,1,clothing,0,0,48,2,null
+RECIPE: /material/cloth/,red landschneckt uniform,/obj/item/clothing/under/landschneckt/red,6,105,0,1,clothing,0,0,48,2,null
 RECIPE: /material/cloth/,conquistador uniform,/obj/item/clothing/under/conquistador,5,75,0,1,military & law enforcement clothes,0,0,78,4,null
 RECIPE: /material/cloth/,constable outfit,/obj/item/clothing/under/constable,5,75,0,1,military & law enforcement clothes,0,0,138,8,null
 RECIPE: /material/cloth/,police outfit,/obj/item/clothing/under/traffic_police,5,75,0,1,military & law enforcement clothes,0,0,160,8,null

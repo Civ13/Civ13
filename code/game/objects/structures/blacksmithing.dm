@@ -1706,7 +1706,7 @@ obj/structure/anvil/New()
 				if (H.orc)
 					display7 = list("Horned Helmet (10)", "Boss Jaw (7)", "Cancel")
 				else
-					display7 = list("Varangian Lamellar Armor (12)", "Viking Helmet (10)", "Valkyrie Helmet (10)", "Mamluk Conical Helmet (10)", "Mamluk Coif Helmet(12)", "Arabic Long Helmet (15)", "Varangian Helmet (15)", "Cancel")
+					display7 = list("Varangian Lamellar Armor (12)", "Viking Helmet (10)", "Valkyrie Helmet (10)", "Mamluk Conical Helmet (10)", "Mamluk Coif Helmet(12)", "Arabic Long Helmet (15)", "Varangian Helmet (15)", "Sallet Helmets (12)", "Cancel")
 			var/choice7 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display7)
 			if (choice7 == "Varangian Lamellar Armor (12)")
 				if (iron_amt >= 12)
@@ -1838,28 +1838,69 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
+			if (choice7 == "Sallet Helmets (12)")
+				var/list/display8 = list("Cancel")
+				if (map.ordinal_age == 2)
+					display8 = list("Italian Sallet Helmet (12)", "German Sallet Helmet(12)", "Cancel")
+				var/choice8 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display8)
+
+				if (choice8 == "Italian Sallet Helmet (12)")
+					if (iron_amt >= 12)
+						user << "You begin crafting the italian sallet helmet..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,130,src) && iron_amt >= 12)
+							user << "You craft the italian sallet helmet."
+							iron_amt -= 12
+							if (iron_amt <= 0)
+								icon_state = "anvil1"
+							new/obj/item/clothing/head/helmet/sallet/italian(user.loc)
+							return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+				if (choice8 == "German Sallet Helmet (12)")
+					if (iron_amt >= 12)
+						user << "You begin crafting the italian sallet helmet..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,130,src) && iron_amt >= 12)
+							user << "You craft the german sallet helmet."
+							iron_amt -= 12
+							if (iron_amt <= 0)
+								icon_state = "anvil1"
+							new/obj/item/clothing/head/helmet/sallet/german(user.loc)
+							return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
 					if (choice7 == "Cancel")
 						return
 
+					if (choice8 == "Cancel")
+						return
+
+
 		else if (choice == "Shields & Tools")
-			var/list/display8 = list("Cancel")
+			var/list/display9 = list("Cancel")
 			if (map.ordinal_age == 2)
 				if (H.orc)
-					display8 = list( "Orkish Shield (16)", "Cancel")
+					display9 = list( "Orkish Shield (16)", "Cancel")
 				else
-					display8 = list("Semi Oval Shield(16)", "Semi Oval Templar Shield(16)", "Cancel")
+					display9 = list("Semi Oval Shield(16)", "Semi Oval Templar Shield(16)", "Cancel")
 			else if (map.ordinal_age == 0)
-				display8 = list("Cancel")
+				display9 = list("Cancel")
 			else
-				display8 = list("Classic Era Standards(10)", "Athenian Aspis Shield(13)", "Spartan Aspis Shield(13)", "Pegasus Aspis Shield(13)", "Owl Aspis Shield(13)", "Egyptian Shield(13)", "Scutum Shield(14)", "Roman Shields(14)", "Cancel")
-			var/choice8 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display8)
+				display9 = list("Classic Era Standards(10)", "Athenian Aspis Shield(13)", "Spartan Aspis Shield(13)", "Pegasus Aspis Shield(13)", "Owl Aspis Shield(13)", "Egyptian Shield(13)", "Scutum Shield(14)", "Roman Shields(14)", "Cancel")
+			var/choice9 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display9)
 
-			if (choice8 == "Classic Era Standards(10)")
-				var/list/display9 = list("Cancel")
+			if (choice9 == "Classic Era Standards(10)")
+				var/list/display10 = list("Cancel")
 				if (map.ordinal_age == 1)
-					display9 = list("Roman Standard(10)", "Greek Standard(10)", "Egyptian Standard(10)", "Cancel")
-				var/choice9 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display9)
-				if (choice9 == "Roman Standard(10)")
+					display10 = list("Roman Standard(10)", "Greek Standard(10)", "Egyptian Standard(10)", "Cancel")
+				var/choice10 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display10)
+
+				if (choice10 == "Roman Standard(10)")
 					if (iron_amt >= 10)
 						user << "You begin crafting the roman standard..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1873,7 +1914,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-				if (choice9 == "Greek Standard(10)")
+				if (choice10 == "Greek Standard(10)")
 					if (iron_amt >= 10)
 						user << "You begin crafting the greek standard..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1887,7 +1928,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-				if (choice9 == "Egyptian Standard(10)")
+				if (choice10 == "Egyptian Standard(10)")
 					if (iron_amt >= 10)
 						user << "You begin crafting the egyptian standard..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1901,10 +1942,11 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-				if (choice9 == "Cancel")
+
+				if (choice10 == "Cancel")
 					return
 
-			if (choice8 == "Athenian Aspis Shield(13)")
+			if (choice9 == "Athenian Aspis Shield(13)")
 				if (iron_amt >= 13)
 					user << "You begin crafting the athenian aspis shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1918,7 +1960,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice8 == "Spartan Aspis Shield(13)")
+			if (choice9 == "Spartan Aspis Shield(13)")
 				if (iron_amt >= 13)
 					user << "You begin crafting the spartan aspis shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1932,7 +1974,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice8 == "Pegasus Aspis Shield(13)")
+			if (choice9 == "Pegasus Aspis Shield(13)")
 				if (iron_amt >= 13)
 					user << "You begin crafting the pegasus aspis shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1946,7 +1988,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice8 == "Owl Aspis Shield(13)")
+			if (choice9 == "Owl Aspis Shield(13)")
 				if (iron_amt >= 13)
 					user << "You begin crafting the owl aspis shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1961,7 +2003,7 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
-			if (choice8 == "Egyptian Shield(13)")
+			if (choice9 == "Egyptian Shield(13)")
 				if (iron_amt >= 13)
 					user << "You begin crafting the egyptian shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1975,7 +2017,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice8 == "Scutum Shield(14)")
+			if (choice9 == "Scutum Shield(14)")
 				if (iron_amt >= 14)
 					user << "You begin crafting the scutum shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -1990,12 +2032,12 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
-			if (choice8 == "Roman Shields(14)")
-				var/list/display10 = list("Cancel")
+			if (choice9 == "Roman Shields(14)")
+				var/list/display11 = list("Cancel")
 				if (map.ordinal_age == 1)
-					display10 = list("Roman Shield(14)", "Blue Roman Shield(14)", "Praetorian Roman Shield(16)", "Cancel")
-				var/choice10 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display10)
-				if (choice10 == "Roman Shield(14)")
+					display11 = list("Roman Shield(14)", "Blue Roman Shield(14)", "Praetorian Roman Shield(16)", "Cancel")
+				var/choice11 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display11)
+				if (choice11 == "Roman Shield(14)")
 					if (iron_amt >= 14)
 						user << "You begin crafting the roman shield..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2009,7 +2051,7 @@ obj/structure/anvil/New()
 					else
 						user << "<span class='notice'>You need more iron to make this!</span>"
 						return
-				if (choice10 == "Blue Roman Shield(14)")
+				if (choice11 == "Blue Roman Shield(14)")
 					if (iron_amt >= 14)
 						user << "You begin crafting the roman shield..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2023,7 +2065,7 @@ obj/structure/anvil/New()
 					else
 						user << "<span class='notice'>You need more iron to make this!</span>"
 						return
-				if (choice10 == "Praetorian Roman Shield(16)")
+				if (choice11 == "Praetorian Roman Shield(16)")
 					if (iron_amt >= 16)
 						user << "You begin crafting the praetorian roman shield..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2038,10 +2080,10 @@ obj/structure/anvil/New()
 						user << "<span class='notice'>You need more iron to make this!</span>"
 						return
 
-				if (choice10 == "Cancel")
+				if (choice11 == "Cancel")
 					return
 
-			if (choice8 == "Semi Oval Shield(16)")
+			if (choice9 == "Semi Oval Shield(16)")
 				if (iron_amt >= 16)
 					user << "You begin crafting the semi oval shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2056,7 +2098,7 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
-			if (choice8 == "Semi Oval Templar Shield(16)")
+			if (choice9 == "Semi Oval Templar Shield(16)")
 				if (iron_amt >= 16)
 					user << "You begin crafting the semi oval templar shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2070,7 +2112,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice8 == "Orkish Shield (16)")
+			if (choice9 == "Orkish Shield (16)")
 				if (iron_amt >= 13)
 					user << "You begin crafting the orkish shield..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2084,22 +2126,22 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice8 == "Cancel")
+			if (choice9 == "Cancel")
 				return
 
 		else if (choice == "Japanese Armor & Masks")
-			var/list/display11 = list("Cancel")
+			var/list/display12 = list("Cancel")
 			if (map.ordinal_age == 3)
-				display11 = list("Kote Bracer Gauntlets (10)", "Tsuranuki Shinguard Boots (10)", "Metal Samurai Helmet (15)", "Red Metal Samurai Helmet (15)", "Blue Metal Samurai Helmet (15)", "Black Metal Samurai Helmet (15)", "Samurai Mask (8)", "Red Samurai Mask (8)", "Blue Samurai Mask (8)", "Metal Samurai Armor (16)", "Red Metal Samurai Armor (16)", "Blue Metal Samurai Armor (16)", "Black Metal Samurai Armor (16)", "Cancel")
+				display12 = list("Kote Bracer Gauntlets (10)", "Tsuranuki Shinguard Boots (10)", "Metal Samurai Helmet (15)", "Red Metal Samurai Helmet (15)", "Blue Metal Samurai Helmet (15)", "Black Metal Samurai Helmet (15)", "Samurai Mask (8)", "Red Samurai Mask (8)", "Blue Samurai Mask (8)", "Metal Samurai Armor (16)", "Red Metal Samurai Armor (16)", "Blue Metal Samurai Armor (16)", "Black Metal Samurai Armor (16)", "Cancel")
 			else if (map.ordinal_age == 0)
-				display11 = list("Cancel")
+				display12 = list("Cancel")
 			else if (map.ordinal_age == 2)
 				if (H.orc)
-					display11 = list("Cancel")
+					display12 = list("Cancel")
 				else
-					display11 = list("Kote Bracer Gauntlets (10)", "Tsuranuki Shinguard Boots (10)", "Samurai Helmet (15)", "Red Samurai Helmet (15)", "Blue Samurai Helmet (15)", "Black Samurai Helmet (15)", "Samurai Mask (8)", "Red Samurai Mask (8)", "Blue Samurai Mask (8)", "Metal Samurai Armor (16)", "Red Metal Samurai Armor (16)", "Blue Metal Samurai Armor (16)", "Black Metal Samurai Armor (16)", "Cancel")
-			var/choice11 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display11)
-			if (choice11 == "Kote Bracer Gauntlets (10)")
+					display12 = list("Kote Bracer Gauntlets (10)", "Tsuranuki Shinguard Boots (10)", "Samurai Helmet (15)", "Red Samurai Helmet (15)", "Blue Samurai Helmet (15)", "Black Samurai Helmet (15)", "Samurai Mask (8)", "Red Samurai Mask (8)", "Blue Samurai Mask (8)", "Metal Samurai Armor (16)", "Red Metal Samurai Armor (16)", "Blue Metal Samurai Armor (16)", "Black Metal Samurai Armor (16)", "Cancel")
+			var/choice12 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display12)
+			if (choice12 == "Kote Bracer Gauntlets (10)")
 				if (iron_amt >= 10)
 					user << "You begin crafting the kote gauntlets..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2113,7 +2155,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice11 == "Tsuranuki Shinguard Boots (10)")
+			if (choice12 == "Tsuranuki Shinguard Boots (10)")
 				if (iron_amt >= 10)
 					user << "You begin crafting the tsuranuki boots..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2128,7 +2170,7 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
-			if(choice11 == "Samurai Helmet (15)")
+			if(choice12 == "Samurai Helmet (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting the samurai helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2142,7 +2184,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if(choice11 == "Red Samurai Helmet (15)")
+			if(choice12 == "Red Samurai Helmet (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting the samurai helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2156,7 +2198,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if(choice11 == "Blue Samurai Helmet (15)")
+			if(choice12 == "Blue Samurai Helmet (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting the samurai helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2170,7 +2212,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if(choice11 == "Black Samurai Helmet (15)")
+			if(choice12 == "Black Samurai Helmet (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting the samurai helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2185,7 +2227,7 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
-			if (choice11 == "Samurai Mask (8)")
+			if (choice12 == "Samurai Mask (8)")
 				if (iron_amt >= 8)
 					user << "You begin crafting the samurai mask..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2199,7 +2241,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice11 == "Red Samurai Mask (8)")
+			if (choice12 == "Red Samurai Mask (8)")
 				if (iron_amt >= 8)
 					user << "You begin crafting the samurai mask..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2213,7 +2255,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice11 == "Blue Samurai Mask (8)")
+			if (choice12 == "Blue Samurai Mask (8)")
 				if (iron_amt >= 8)
 					user << "You begin crafting the samurai mask..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2228,7 +2270,7 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
-			if (choice11 == "Metal Samurai Armor (16)")
+			if (choice12 == "Metal Samurai Armor (16)")
 				if (iron_amt >= 16)
 					user << "You begin crafting the samurai armor..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2242,7 +2284,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice11 == "Red Metal Samurai Armor (16)")
+			if (choice12 == "Red Metal Samurai Armor (16)")
 				if (iron_amt >= 16)
 					user << "You begin crafting the samurai armor..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2256,7 +2298,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice11 == "Blue Metal Samurai Armor (16)")
+			if (choice12 == "Blue Metal Samurai Armor (16)")
 				if (iron_amt >= 16)
 					user << "You begin crafting the samurai armor..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -2270,7 +2312,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice11 == "Black Metal Samurai Armor (16)")
+			if (choice12 == "Black Metal Samurai Armor (16)")
 				if (iron_amt >= 16)
 					user << "You begin crafting the samurai armor..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
