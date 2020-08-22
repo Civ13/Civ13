@@ -588,3 +588,17 @@
 	on = FALSE
 	max_space = 9
 	fuel = 4
+
+/obj/structure/oven/grill
+	name = "metal grill"
+	desc = "A grill with a raised inner fire-pit for refuelling."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "grill"
+	layer = 2.9
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "grill"
+	on = FALSE
+	max_space = 4
+	fuel = 0
