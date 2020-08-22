@@ -1983,9 +1983,11 @@ RECIPE: /material/iron/,handcuffs,/obj/item/weapon/handcuffs,1,50,0,1,tools,0,61
 RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
 
 RECIPE: /material/iron/,cooking pot,/obj/structure/pot,8,180,1,1,production,33,0,0,8,null
-RECIPE: /material/iron/,oven,/obj/structure/oven,8,150,1,1,production,33,0,0,8,null
 
 RECIPE: /material/iron/,brazier,/obj/structure/brazier,4,90,1,1,production,33,0,0,8,null
+
+RECIPE: /material/iron/,oven,/obj/structure/oven,8,150,1,1,production,45,0,0,8,null
+RECIPE: /material/iron/,grill,/obj/structure/oven/grill,8,150,1,1,production,150,0,0,8,null
 
 RECIPE: /material/iron/,iron altar,/obj/structure/altar/iron,12,200,1,1,furniture,0,0,0,8,null
 
