@@ -2070,8 +2070,8 @@ RECIPE: /material/sandstone/,egyptian wall,/obj/covers/stone_wall/egyptian,6,125
 
 RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
 
-RECIPE: /material/stone/,castle gate,/obj/structure/gate/sandstone,15,210,1,1,construction,30,30,0,8,null
-RECIPE: /material/stone/,castle gate control,/obj/structure/gatecontrol/sandstone,5,100,1,1,construction,30,30,0,8,null
+RECIPE: /material/sandstone/,castle gate,/obj/structure/gate/sandstone,15,210,1,1,construction,30,30,0,8,null
+RECIPE: /material/sandstone/,castle gate control,/obj/structure/gatecontrol/sandstone,5,100,1,1,construction,30,30,0,8,null
 
 RECIPE: /material/sandstone/,egyptian archway,/obj/covers/stone_wall/egyptian/archway,6,125,1,1,construction,0,0,0,1,null
 RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone
