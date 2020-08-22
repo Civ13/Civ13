@@ -257,9 +257,9 @@
 /obj/item/clothing/under/count_outfit
 	name = "count outfit"
 	desc = "A fancy count outfit."
-	icon_state = "count_suit"
-	item_state = "count_suit"
-	worn_state = "count_suit"
+	icon_state = "count_outfit"
+	item_state = "count_outfit"
+	worn_state = "count_outfit"
 
 /obj/item/clothing/under/renaissance
 	name = "purple renaissance clothing"
