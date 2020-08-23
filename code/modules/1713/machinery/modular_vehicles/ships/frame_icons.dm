@@ -1,5 +1,4 @@
 /obj/structure/vehicleparts/frame/ship/update_icon()
-	..()
 	overlays.Cut()
 	if (!axis)
 		dir = 1

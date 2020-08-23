@@ -30,41 +30,14 @@
 	if (newname != null && newname != "none")
 		var/choosecolor1 = "#000000"
 		var/choosecolor2 = "#FFFFFF"
-		choosecolor1 = input(H, "Choose the main hex color (without the #):", "Color" , "000000")
+		choosecolor1 = input(H, "Choose the main/symbol color:", "Main Color" , "#000000", "color")
 		if (choosecolor1 == null || choosecolor1 == "")
 			return
-		else
-			choosecolor1 = uppertext(choosecolor1)
-			if (length(choosecolor1) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor1,i,i+1)
-				else
-					numtocheck = copytext(choosecolor1,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			choosecolor1 = addtext("#",choosecolor1)
 
-		choosecolor2 = input(H, "Choose the secondary/background hex color (without the #):", "Color" , "FFFFFF")
+		choosecolor2 = WWinput(H, "Choose the secondary/background color:", "Secondary Color" , "#FFFFFF", "color")
 		if (choosecolor2 == null || choosecolor2 == "")
 			return
-		else
-			choosecolor2 = uppertext(choosecolor2)
-			if (length(choosecolor2) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor2,i,i+1)
-				else
-					numtocheck = copytext(choosecolor2,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			choosecolor2 = addtext("#",choosecolor2)
+
 		map.custom_company_nr += newname
 		var/list/newnamev = list("[newname]" = list(list(H,100,0)))
 		map.custom_company += newnamev
