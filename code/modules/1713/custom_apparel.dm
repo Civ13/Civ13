@@ -9,24 +9,11 @@
 
 /obj/item/clothing/under/custom/attack_self(mob/user as mob)
 	if (uncolored)
-		var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+		var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 		if (input == null || input == "")
 			return
 		else
-			input = uppertext(input)
-			if (length(input) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(input,i,i+1)
-				else
-					numtocheck = copytext(input,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			color = addtext("#",input)
-//			user << "Color: [color]"
+			color = input
 			uncolored = FALSE
 			return
 	else
@@ -43,23 +30,12 @@
 
 /obj/item/clothing/head/custom/attack_self(mob/user as mob)
 	if (uncolored1)
-		var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+		var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 		if (input == null || input == "")
 			return
 		else
-			input = uppertext(input)
-			if (length(input) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(input,i,i+1)
-				else
-					numtocheck = copytext(input,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			color = addtext("#",input)
+
+			color = input
 //			user << "Color: [color]"
 			uncolored1 = FALSE
 			return
@@ -71,23 +47,12 @@
 
 /obj/item/clothing/suit/storage/jacket/custom/attack_self(mob/user as mob)
 	if (uncolored)
-		var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+		var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 		if (input == null || input == "")
 			return
 		else
-			input = uppertext(input)
-			if (length(input) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(input,i,i+1)
-				else
-					numtocheck = copytext(input,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			color = addtext("#",input)
+
+			color = input
 			uncolored = FALSE
 			return
 	else
@@ -198,42 +163,18 @@
 /obj/item/clothing/under/customren/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!topcolor)
-			var/input = input(user, "Top - Choose a hex color (without the #):", "Top Color" , "FFFFFF")
+			var/input = WWinput(user, "Top - Choose a color:", "Top Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				topcolor = addtext("#",input)
+				topcolor = input
 
 		if (!undercolor)
-			var/input = input(user, "Lining - Choose a hex color (without the #):", "Lining Color" , "FFFFFF")
+			var/input = WWinput(user, "Lining - Choose a color:", "Lining Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				undercolor = addtext("#",input)
+				undercolor = input
 
 		if (topcolor && undercolor)
 			uncolored = FALSE
@@ -268,78 +209,30 @@
 /obj/item/clothing/under/custompontifical/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!topcolor)
-			var/input = input(user, "Top Decore - Choose a hex color (without the #):", "Top Decore Color" , "FFFFFF")
+			var/input = WWinput(user, "Top Decore - Choose a color:", "Top Decore Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				topcolor = addtext("#",input)
+				topcolor = input
 
 		if (!undercolor)
-			var/input = input(user, "Leggings - Choose a hex color (without the #):", "Leggings Color" , "FFFFFF")
+			var/input = WWinput(user, "Leggings - Choose a color:", "Leggings Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				undercolor = addtext("#",input)
+				undercolor = input
 		if (!linescolor)
-			var/input = input(user, "Top Lines - Choose a hex color (without the #):", "Top Lines Color" , "FFFFFF")
+			var/input = WWinput(user, "Top Lines - Choose a color:", "Top Lines Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				linescolor = addtext("#",input)
+				linescolor = input
 		if (!handcolor)
-			var/input = input(user, "Hand Decore - Choose a hex color (without the #):", "Hand Decore Color" , "FFFFFF")
+			var/input = WWinput(user, "Hand Decore - Choose a color:", "Hand Decore Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				handcolor = addtext("#",input)
+				handcolor = input
 
 		if (topcolor && undercolor && linescolor && handcolor)
 			uncolored = FALSE
@@ -379,60 +272,24 @@
 /obj/item/clothing/under/customdress/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!topcolor)
-			var/input = input(user, "Top - Choose a hex color (without the #):", "Top Color" , "FFFFFF")
+			var/input = WWinput(user, "Top - Choose a color:", "Top Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				topcolor = addtext("#",input)
+				topcolor = input
 
 		if (!undercolor)
-			var/input = input(user, "Under Bottom - Choose a hex color (without the #):", "Under Bottom Color" , "FFFFFF")
+			var/input = WWinput(user, "Under Bottom - Choose a color:", "Under Bottom Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				undercolor = addtext("#",input)
+				undercolor = input
 		if (!overcolor)
-			var/input = input(user, "Over Bottom - Choose a hex color (without the #):", "Over Bottom Color" , "FFFFFF")
+			var/input = WWinput(user, "Over Bottom - Choose a color:", "Over Bottom Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				overcolor = addtext("#",input)
+				overcolor = input
 		if (topcolor && undercolor && overcolor)
 			uncolored = FALSE
 			var/image/top = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customdress_top")
@@ -469,42 +326,18 @@
 /obj/item/clothing/under/customdress2/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!topcolor)
-			var/input = input(user, "Top - Choose a hex color (without the #):", "Sleeves/Skirt Color" , "FFFFFF")
+			var/input = WWinput(user, "Top - Choose a color:", "Sleeves/Skirt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				topcolor = addtext("#",input)
+				topcolor = input
 
 		if (!undercolor)
-			var/input = input(user, "Under Bottom - Choose a hex color (without the #):", "Vest/Skirt Line Color" , "FFFFFF")
+			var/input = WWinput(user, "Under Bottom - Choose a color:", "Vest/Skirt Line Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				undercolor = addtext("#",input)
+				undercolor = input
 		if (topcolor && undercolor)
 			uncolored = FALSE
 			var/image/top = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custombuttonup_lines")
@@ -538,60 +371,24 @@
 /obj/item/clothing/suit/storage/jacket/customcolonialcoat/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!topcolor)
-			var/input = input(user, "Main - Choose a hex color (without the #):", "Main Color" , "FFFFFF")
+			var/input = WWinput(user, "Main - Choose a color:", "Main Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				topcolor = addtext("#",input)
+				topcolor = input
 	//			user << "Color: [color]"
 		if (!deccolor)
-			var/input = input(user, "Decorations - Choose a hex color (without the #):", "Decorations Color" , "FFFFFF")
+			var/input = WWinput(user, "Decorations - Choose a color:", "Decorations Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				deccolor = addtext("#",input)
+				deccolor = input
 		if (!linescolor)
-			var/input = input(user, "Lines - Choose a hex color (without the #):", "Lines Color" , "FFFFFF")
+			var/input = WWinput(user, "Lines - Choose a color:", "Lines Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				linescolor = addtext("#",input)
+				linescolor = input
 		if (topcolor && deccolor && linescolor)
 			uncolored = FALSE
 			var/image/top = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customcolonialcoat_top")
@@ -627,42 +424,18 @@
 /obj/item/clothing/suit/storage/jacket/customcolonial/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!jacketcolor)
-			var/input = input(user, "Jacket - Choose a hex color (without the #):", "Jacket Color" , "FFFFFF")
+			var/input = WWinput(user, "Jacket - Choose a color:", "Jacket Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				jacketcolor = addtext("#",input)
+				jacketcolor = input
 	//			user << "Color: [color]"
 		if (!crosscolor)
-			var/input = input(user, "Pants - Choose a cross bandolier color (without the #):", "Bandolier Color" , "FFFFFF")
+			var/input = WWinput(user, "Bandolier - Choose a cross bandolier color:", "Bandolier Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				crosscolor = addtext("#",input)
+				crosscolor = input
 		if (jacketcolor && crosscolor)
 			uncolored = FALSE
 			var/image/jacket = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customcolonial_jacket")
@@ -698,42 +471,18 @@
 /obj/item/clothing/under/customtribalrobe/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!shirtcolor)
-			var/input = input(user, "Robe - Choose a hex color (without the #):", "Robe Color" , "FFFFFF")
+			var/input = WWinput(user, "Robe - Choose a color:", "Robe Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				shirtcolor = addtext("#",input)
+				shirtcolor = input
 	//			user << "Color: [color]"
 		if (!pantscolor)
-			var/input = input(user, "Decoration - Choose a hex color (without the #):", "Decoration Color" , "FFFFFF")
+			var/input = WWinput(user, "Decoration - Choose a color:", "Decoration Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				pantscolor = addtext("#",input)
+				pantscolor = input
 
 		if (shirtcolor && pantscolor)
 			uncolored = FALSE
@@ -773,96 +522,36 @@
 /obj/item/clothing/under/customvicuniform/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!shirtcolor)
-			var/input = input(user, "Shirt - Choose a hex color (without the #):", "Shirt Color" , "FFFFFF")
+			var/input = WWinput(user, "Shirt - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				shirtcolor = addtext("#",input)
+				shirtcolor = input
 	//			user << "Color: [color]"
 		if (!buttonscolor)
-			var/input = input(user, "Buttons - Choose a hex color (without the #):", "Buttons Color" , "FFFFFF")
+			var/input = WWinput(user, "Buttons - Choose a color:", "Buttons Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				buttonscolor = addtext("#",input)
+				buttonscolor = input
 		if (!beltcolor)
-			var/input = input(user, "Belt - Choose a hex color (without the #):", "Belt Color" , "FFFFFF")
+			var/input = WWinput(user, "Belt - Choose a color:", "Belt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				beltcolor = addtext("#",input)
+				beltcolor = input
 		if (!bucklecolor)
-			var/input = input(user, "Buckle - Choose a hex color (without the #):", "Buckle Color" , "FFFFFF")
+			var/input = WWinput(user, "Buckle - Choose a color:", "Buckle Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				bucklecolor = addtext("#",input)
+				bucklecolor = input
 		if (!pantscolor)
-			var/input = input(user, "Pants - Choose a hex color (without the #):", "Pants Color" , "FFFFFF")
+			var/input = WWinput(user, "Pants - Choose a color:", "Pants Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				pantscolor = addtext("#",input)
+				pantscolor = input
 		if (shirtcolor && buttonscolor && beltcolor && bucklecolor && pantscolor)
 			uncolored = FALSE
 			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_shirt")
@@ -907,60 +596,24 @@
 /obj/item/clothing/head/custom_off_cap/attack_self(mob/user as mob)
 	if (uncolored1)
 		if (!capcolor)
-			var/input = input(user, "Cap - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			var/input = WWinput(user, "Cap - Choose a color:", "Cap Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				capcolor = addtext("#",input)
+				capcolor = input
 	//			user << "Color: [color]"
 		if (!bandcolor)
-			var/input = input(user, "Band - Choose a hex color (without the #):", "Band Color" , "FFFFFF")
+			var/input = WWinput(user, "Band - Choose a color:", "Band Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				bandcolor = addtext("#",input)
+				bandcolor = input
 		if (!symbolcolor)
-			var/input = input(user, "Symbol - Choose a hex color (without the #):", "Symbol Color" , "FFFFFF")
+			var/input = WWinput(user, "Symbol - Choose a color:", "Symbol Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				symbolcolor = addtext("#",input)
+				symbolcolor = input
 		if (bandcolor && capcolor && symbolcolor)
 			uncolored1 = FALSE
 			var/image/band = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l2")
@@ -987,23 +640,11 @@
 /obj/item/clothing/head/custom/fieldcap/attack_self(mob/user as mob)
 	if (uncolored1)
 		if (!capcolor)
-			var/input = input(user, "Cap - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			var/input = WWinput(user, "Cap - Choose a color:", "Cap Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				capcolor = addtext("#",input)
+				capcolor = input
 	//			user << "Color: [color]"
 		if (capcolor)
 			uncolored1 = FALSE
@@ -1036,59 +677,23 @@
 /obj/item/clothing/under/customuniform_modern/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!browncolor)
-			var/input = input(user, "First Camo Color - Choose a hex color (without the # | default is brown):", "First Camo Color" , "58493d")
+			var/input = WWinput(user, "First Camo Color - Choose a color (default is brown):", "First Camo Color" , "#58493d", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				browncolor = addtext("#",input)
+				browncolor = input
 		if (!greencolor)
-			var/input = input(user, "Second Camo Color - Choose a hex color (without the # | default is green):", "Second Camo Color" , "5b6142")
+			var/input = WWinput(user, "Second Camo Color - Choose a color (default is green):", "Second Camo Color" , "#5b6142", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				greencolor = addtext("#",input)
+				greencolor = input
 		if (!blackcolor)
-			var/input = input(user, "Third Camo Color - Choose a hex color (without the # | default is dark grey):", "First Camo Color" , "2f323b")
+			var/input = WWinput(user, "Third Camo Color - Choose a color (default is dark grey):", "First Camo Color" , "#2f323b", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				blackcolor = addtext("#",input)
+				blackcolor = input
 		if (greencolor && browncolor && blackcolor)
 			uncolored = FALSE
 			var/image/brown = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l1")
@@ -1119,23 +724,11 @@
 /obj/item/clothing/under/custompyjamas/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!stripescolor)
-			var/input = input(user, "Stripes - Choose a hex color (without the #):", "Stripes Color" , "FFFFFF")
+			var/input = WWinput(user, "Stripes - Choose a color:", "Stripes Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				stripescolor = addtext("#",input)
+				stripescolor = input
 
 		if (stripescolor)
 			uncolored = FALSE
@@ -1200,23 +793,11 @@
 /obj/item/clothing/head/custom_keffiyeh/attack_self(mob/user as mob)
 	if (uncolored1)
 		if (!patterncolor)
-			var/input = input(user, "Pattern - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			var/input = WWinput(user, "Pattern - Choose a color:", "Cap Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				patterncolor = addtext("#",input)
+				patterncolor = input
 	//			user << "Color: [color]"
 
 		if (patterncolor)
@@ -1247,42 +828,18 @@
 /obj/item/clothing/head/custom_feathered_hat/attack_self(mob/user as mob)
 	if (uncolored1)
 		if (!capcolor)
-			var/input = input(user, "Cap - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			var/input = WWinput(user, "Cap - Choose a color:", "Cap Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				capcolor = addtext("#",input)
+				capcolor = input
 	//			user << "Color: [color]"
 		if (!bandcolor)
-			var/input = input(user, "Feather - Choose a hex color (without the #):", "Feather Color" , "FFFFFF")
+			var/input = WWinput(user, "Feather - Choose a color:", "Feather Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				bandcolor = addtext("#",input)
+				bandcolor = input
 		if (bandcolor && capcolor)
 			uncolored1 = FALSE
 			var/image/band = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "custfeathercap_f_hat")
@@ -1317,42 +874,18 @@
 /obj/item/clothing/under/crinoline_dress/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!topcolor)
-			var/input = input(user, "Top - Choose a hex color (without the #):", "Dress Color" , "FFFFFF")
+			var/input = WWinput(user, "Top - Choose a color:", "Dress Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				topcolor = addtext("#",input)
+				topcolor = input
 
 		if (!undercolor)
-			var/input = input(user, "Under Bottom - Choose a hex color (without the #):", "Vest/Skirt Line Color" , "FFFFFF")
+			var/input = WWinput(user, "Under Bottom - Choose a color:", "Vest/Skirt Line Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				undercolor = addtext("#",input)
+				undercolor = input
 		if (topcolor && undercolor)
 			uncolored = FALSE
 			var/image/top = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "crinoline_dress_dress")
@@ -1380,23 +913,11 @@
 /obj/item/clothing/head/custom_hennin/attack_self(mob/user as mob)
 	if (uncolored1)
 		if (!patterncolor)
-			var/input = input(user, "Pattern - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			var/input = WWinput(user, "Pattern - Choose a color:", "Cap Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				patterncolor = addtext("#",input)
+				patterncolor = input
 	//			user << "Color: [color]"
 
 		if (patterncolor)
@@ -1430,42 +951,18 @@
 /obj/item/clothing/under/customuniform/attack_self(mob/user as mob)
 	if (uncolored)
 		if (!shirtcolor)
-			var/input = input(user, "Shirt - Choose a hex color (without the #):", "Shirt Color" , "FFFFFF")
+			var/input = WWinput(user, "Shirt - Choose a color:", "Shirt Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				shirtcolor = addtext("#",input)
+				shirtcolor = input
 	//			user << "Color: [color]"
 		if (!pantscolor)
-			var/input = input(user, "Pants - Choose a hex color (without the #):", "Pants Color" , "FFFFFF")
+			var/input = WWinput(user, "Pants - Choose a color:", "Pants Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				pantscolor = addtext("#",input)
+				pantscolor = input
 
 		if (shirtcolor && pantscolor)
 			uncolored = FALSE
