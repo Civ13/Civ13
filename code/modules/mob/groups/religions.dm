@@ -59,41 +59,13 @@
 		choosesymbol = WWinput(src, "Choose a symbol for the new religion:", "Religion Creation", "Cancel", list("Cancel","Star","Sun","Moon","Skull","Hammer","Scales","Cross","Tree"))
 		if (choosesymbol == "Cancel")
 			return
-		choosecolor1 = input(H, "Choose the main/symbol hex color (without the #):", "Color" , "000000")
+		choosecolor1 = WWinput(H, "Choose main/symbol color:", "Color" , "#000000", "color")
 		if (choosecolor1 == null || choosecolor1 == "")
 			return
-		else
-			choosecolor1 = uppertext(choosecolor1)
-			if (length(choosecolor1) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor1,i,i+1)
-				else
-					numtocheck = copytext(choosecolor1,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			choosecolor1 = addtext("#",choosecolor1)
 
-		choosecolor2 = input(H, "Choose the secondary/background hex color (without the #):", "Color" , "FFFFFF")
+		choosecolor2 = input(H, "Choose the secondary/background color:", "Color" , "#FFFFFF", "color")
 		if (choosecolor2 == null || choosecolor2 == "")
 			return
-		else
-			choosecolor2 = uppertext(choosecolor2)
-			if (length(choosecolor2) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor2,i,i+1)
-				else
-					numtocheck = copytext(choosecolor2,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			choosecolor2 = addtext("#",choosecolor2)
 
 		H.religion = newname
 		H.religious_leader = TRUE

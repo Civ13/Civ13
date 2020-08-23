@@ -20,9 +20,9 @@
 	var/real_value = 1
 	value = 1
 	var/can_stack = FALSE //Determines if stacks should be auto-merged.
-	var/customcolor = "FFFFFF"
-	var/customcolor1 = "000000"
-	var/customcolor2 = "FFFFFF"
+	var/customcolor = "#FFFFFF"
+	var/customcolor1 = "#000000"
+	var/customcolor2 = "#FFFFFF"
 	var/customcode = "0000"
 	var/customname = ""
 
@@ -49,7 +49,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 //Merging two stacks, logic to avoid going over the max_amount cap.
 //If we get stack with amount 0, we delete it.
-/obj/item/proc/merge(obj/item/stack/S)
+/obj/item/stack/proc/merge(obj/item/stack/S)
+	if(S.amount == S.max_amount || src.amount == src.max_amount)
+		return
 	var/transfer = src.amount
 	transfer = min(transfer, S.max_amount - S.amount)
 	if(pulledby)
@@ -455,59 +457,21 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
 		if (customname == "" || customname == null)
 			customname = ""
-		customcolor1 = input(user, "Choose a main hex color (without the #):", "Tin Can Main Color" , "000000")
+		customcolor1 = input(user, "Choose a main color:", "Tin Can Main Color" , "#000000")
 		if (customcolor1 == null || customcolor1 == "")
 			customcolor1 = "#000000"
-		else
-			customcolor1 = uppertext(customcolor1)
-			if (length(customcolor1) != 6)
-				customcolor1 = "#000000"
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor1,i,i+1)
-				else
-					numtocheck = copytext(customcolor1,i,0)
-				if (!(numtocheck in listallowed))
-					customcolor1 = "#000000"
-		customcolor2 = input(user, "Choose a secondary hex color (without the #):", "Tin Can Secondary Color" , "FFFFFF")
+
+		customcolor2 = WWinput(user, "Choose a secondary color:", "Tin Can Secondary Color" , "#FFFFFF", "color")
 		if (customcolor2 == null || customcolor2 == "")
 			customcolor2 = "#FFFFFF"
-		else
-			customcolor2 = uppertext(customcolor2)
-			if (length(customcolor2) != 6)
-				customcolor2 = "#FFFFFF"
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor2,i,i+1)
-				else
-					numtocheck = copytext(customcolor2,i,0)
-				if (!(numtocheck in listallowed))
-					customcolor2 = "#FFFFFF"
 
 	else if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
 			customname = "cigarette pack"
-		customcolor = input(user, "Choose a hex color (without the #):", "Cigarette Pack Color" , "000000")
+		customcolor = input(user, "Choose a color:", "Cigarette Pack Color" , "#000000")
 		if (customcolor == null || customcolor == "")
 			return
-		else
-			customcolor = uppertext(customcolor)
-			if (length(customcolor) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor,i,i+1)
-				else
-					numtocheck = copytext(customcolor,i,0)
-				if (!(numtocheck in listallowed))
-					return
 
 	else if (recipe.result_type == /obj/structure/religious/statue)
 		customname = input("What name to give to the statue?", "Statue", "[recipe.use_material] statue") as text
@@ -544,22 +508,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		customname = input(user, "Choose a name for this vehicle:", "Vehicle Name" , "motorcycle")
 		if (customname == "" || customname == null)
 			customname = "motorcycle"
-		customcolor = input(user, "Choose a hex color (without the #):", "Vehicle Color" , "FFFFFF")
+		customcolor = WWinput(user, "Choose a color:", "Vehicle Color" , "#FFFFFF", "color")
 		if (customcolor == null || customcolor == "")
 			return
-		else
-			customcolor = uppertext(customcolor)
-			if (length(customcolor) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor,i,i+1)
-				else
-					numtocheck = copytext(customcolor,i,0)
-				if (!(numtocheck in listallowed))
-					return
 
 	else if (findtext(recipe.title, "locomotive"))
 		if (H.getStatCoeff("crafting") < 1.9)
@@ -585,22 +536,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		customname = input(user, "Choose a name for this pump:", "Fuel Pump Name" , "fuel pump")
 		if (customname == "" || customname == null)
 			customname = "fuel pump"
-		customcolor = input(user, "Fuel Pump - Choose a hex color (without the #):", "Fuel Pump Color" , "FFFFFF")
+		customcolor = input(user, "Fuel Pump - Choose a color:", "Fuel Pump Color" , "#FFFFFF")
 		if (customcolor == null || customcolor == "")
 			return
-		else
-			customcolor = uppertext(customcolor)
-			if (length(customcolor) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(customcolor,i,i+1)
-				else
-					numtocheck = copytext(customcolor,i,0)
-				if (!(numtocheck in listallowed))
-					return
+
 	else if (findtext(recipe.title, "oil deposit"))
 		if (H.civilization == null || H.civilization == "none")
 			user << "You need to be part of a faction to build this!"
@@ -1595,23 +1534,11 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			T.name = "[T.caliber]mm cannon casing"
 
 		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))
-			var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
 				return
 			else
-				input = uppertext(input)
-				if (length(input) != 6)
-					return
-				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-				for (var/i = 1, i <= 6, i++)
-					var/numtocheck = 0
-					if (i < 6)
-						numtocheck = copytext(input,i,i+1)
-					else
-						numtocheck = copytext(input,i,0)
-					if (!(numtocheck in listallowed))
-						return
-				O.color = addtext("#",input)
+				O.color = input
 				return
 		if (build_override_firelance)
 			build_override_firelance.loc = get_turf(O)
@@ -1750,24 +1677,24 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 		else if (istype(O, /obj/structure/fuelpump))
 			var/obj/structure/fuelpump/FP = O
-			FP.customcolor = addtext("#",customcolor)
+			FP.customcolor = customcolor
 			FP.owner = customvar
 			FP.name = customname
 			FP.do_color()
 		else if (istype(O, /obj/item/vehicleparts/frame))
 			var/obj/item/vehicleparts/frame/FF = O
-			FF.customcolor = addtext("#",customcolor)
+			FF.customcolor = customcolor
 			FF.name = customname
 			FF.do_color()
 		else if (istype(O, /obj/item/weapon/storage/fancy/cigarettes))
 			var/obj/item/weapon/storage/fancy/cigarettes/C = O
-			C.customcolor = addtext("#",customcolor)
+			C.customcolor = customcolor
 			C.name = customname
 			C.do_color()
 		else if (istype(O, /obj/item/weapon/can))
 			var/obj/item/weapon/can/C = O
-			C.customcolor1 = addtext("#",customcolor1)
-			C.customcolor2 = addtext("#",customcolor2)
+			C.customcolor1 = customcolor1
+			C.customcolor2 = customcolor2
 			C.brand = "[customname] "
 			C.name = "empty [C.brand]can"
 			C.do_color()
@@ -1920,21 +1847,21 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			new/obj/item/ammo_casing/bolt(get_turf(O))
 		else if (istype(O, /obj/item/weapon/can))
 			var/obj/item/weapon/can/C1 = new/obj/item/weapon/can(get_turf(O))
-			C1.customcolor1 = addtext("#",customcolor1)
-			C1.customcolor2 = addtext("#",customcolor2)
+			C1.customcolor1 = customcolor1
+			C1.customcolor2 = customcolor2
 			C1.brand = "[customname] "
 			C1.name = "empty [C1.brand]can"
 			C1.do_color()
 		else if (istype(O, /obj/item/weapon/can/small))
 			var/obj/item/weapon/can/small/C1 = new/obj/item/weapon/can/small(get_turf(O))
-			C1.customcolor1 = addtext("#",customcolor1)
-			C1.customcolor2 = addtext("#",customcolor2)
+			C1.customcolor1 = customcolor1
+			C1.customcolor2 = customcolor2
 			C1.brand = "[customname] "
 			C1.name = "empty [C1.brand]can"
 			C1.do_color()
 			var/obj/item/weapon/can/small/C2 = new/obj/item/weapon/can/small(get_turf(O))
-			C2.customcolor1 = addtext("#",customcolor1)
-			C2.customcolor2 = addtext("#",customcolor2)
+			C2.customcolor1 = customcolor1
+			C2.customcolor2 = customcolor2
 			C2.brand = "[customname] "
 			C2.name = "empty [C2.brand]can"
 			C2.do_color()
