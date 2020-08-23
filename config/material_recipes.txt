@@ -8,10 +8,10 @@
 //**| CLAY |**| CLAY ROOFING |**| CLAY KITCHEN OBJECTS |**| CLAY BUILDING MATERIALS, FLOORS & STRUCTURES |**| CLAY STUCCO |**| CLAY PLANT POTS |**
 //************************************************************************************************************************************************
 
-//**| LEATHER |**| LEATHER WEAPONS & TOOLS |**| LEATHER FURNITURE |**| LEATHER STORAGE |**| LEATHER HEALTHCARE |**| LEATHER UNIFORMS & JACKETS |**| LEATHER SHOES |**| LEATHER ARMOR |**| LEATHER ACCESSORIES |**
-//*****************************************************************************************************************************************************************************************************
-//**| LEATHER WEAPON ACCESSORIES |
-//********************************
+//**| LEATHER |**| LEATHER WEAPONS & TOOLS |**| LEATHER FURNITURE |**| LEATHER STORAGE |**| LEATHER HEALTHCARE |**| LEATHER UNIFORMS & JACKETS |**| LEATHER HATS |**| LEATHER SHOES |**| LEATHER ARMOR |**
+//********************************************************************************************************************************************************************************************************
+//**| LEATHER ACCESSORIES |**| LEATHER WEAPON ACCESSORIES |
+//*********************************************************
 
 //**| ELECTRONICS |**| ELECTRONICS RADIO & COMMUNICATION |**| ELECTRONICS CAMERAS |**| ELECTRONICS FURNITURE |**
 //**************************************************************************************************************
@@ -240,6 +240,7 @@ RECIPE: /material/leather/,80's jacket,/obj/item/clothing/suit/storage/coat/oldy
 
 //*****************| LEATHER HATS |***************************
 
+RECIPE: /material/leather/,cavalier hat,/obj/item/clothing/head/cavalier,3,55,0,1,hats,0,0,52,3,null
 RECIPE: /material/leather/,cowboy hat,/obj/item/clothing/head/cowboyhat,3,55,0,1,hats,0,0,98,8,null
 RECIPE: /material/leather/,dark cowboy hat,/obj/item/clothing/head/cowboyhat2,3,55,0,1,hats,0,0,98,8,null
 
@@ -720,6 +721,9 @@ RECIPE: /material/cloth/,custom short colonial outfit,/obj/item/clothing/under/c
 
 //*****************| CLOTH MILITARY & LAW ENFORCMENT UNIFORMS |***************************
 
+RECIPE: /material/cloth/,green landschneckt uniform,/obj/item/clothing/under/landschneckt,6,105,0,1,clothing,0,0,48,2,null
+RECIPE: /material/cloth/,blue landschneckt uniform,/obj/item/clothing/under/landschneckt/blue,6,105,0,1,clothing,0,0,48,2,null
+RECIPE: /material/cloth/,red landschneckt uniform,/obj/item/clothing/under/landschneckt/red,6,105,0,1,clothing,0,0,48,2,null
 RECIPE: /material/cloth/,conquistador uniform,/obj/item/clothing/under/conquistador,5,75,0,1,military & law enforcement clothes,0,0,78,4,null
 RECIPE: /material/cloth/,constable outfit,/obj/item/clothing/under/constable,5,75,0,1,military & law enforcement clothes,0,0,138,8,null
 RECIPE: /material/cloth/,police outfit,/obj/item/clothing/under/traffic_police,5,75,0,1,military & law enforcement clothes,0,0,160,8,null
@@ -1979,9 +1983,11 @@ RECIPE: /material/iron/,handcuffs,/obj/item/weapon/handcuffs,1,50,0,1,tools,0,61
 RECIPE: /material/iron/,table,/obj/structure/table,4,80,1,1,furniture,33,0,0,8,iron
 
 RECIPE: /material/iron/,cooking pot,/obj/structure/pot,8,180,1,1,production,33,0,0,8,null
-RECIPE: /material/iron/,oven,/obj/structure/oven,8,150,1,1,production,33,0,0,8,null
 
 RECIPE: /material/iron/,brazier,/obj/structure/brazier,4,90,1,1,production,33,0,0,8,null
+
+RECIPE: /material/iron/,oven,/obj/structure/oven,8,150,1,1,production,45,0,0,8,null
+RECIPE: /material/iron/,grill,/obj/structure/oven/grill,8,150,1,1,production,150,0,0,8,null
 
 RECIPE: /material/iron/,iron altar,/obj/structure/altar/iron,12,200,1,1,furniture,0,0,0,8,null
 
@@ -2066,8 +2072,8 @@ RECIPE: /material/sandstone/,egyptian wall,/obj/covers/stone_wall/egyptian,6,125
 
 RECIPE: /material/sandstone/,sandstone brick wall,/obj/covers/sandstone_wall,8,25,1,1,construction,0,0,0,8,null
 
-RECIPE: /material/stone/,castle gate,/obj/structure/gate/sandstone,15,210,1,1,construction,30,30,0,8,null
-RECIPE: /material/stone/,castle gate control,/obj/structure/gatecontrol/sandstone,5,100,1,1,construction,30,30,0,8,null
+RECIPE: /material/sandstone/,castle gate,/obj/structure/gate/sandstone,15,210,1,1,construction,30,30,0,8,null
+RECIPE: /material/sandstone/,castle gate control,/obj/structure/gatecontrol/sandstone,5,100,1,1,construction,30,30,0,8,null
 
 RECIPE: /material/sandstone/,egyptian archway,/obj/covers/stone_wall/egyptian/archway,6,125,1,1,construction,0,0,0,1,null
 RECIPE: /material/sandstone/,sandstone statue,/obj/structure/religious/statue,15,250,1,1,religious & decoration,10,0,0,8,sandstone

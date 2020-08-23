@@ -178,7 +178,26 @@
 			visible_message("[user] sucessfully repairs \the [src].")
 			broken = FALSE
 			return
-	if (istype(W, /obj/item/stack/cable_coil))
+	else if (istype(W,/obj/item/weapon/wrench) && !not_movable)
+		if (powersource)
+			user << "<span class='notice'>Remove the cables first.</span>"
+			return
+		if (!isemptylist(connections))
+			user << "<span class='notice'>Remove the cables first.</span>"
+			return
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+		for(var/obj/structure/vehicleparts/frame/F in src.loc)
+			if (F.axis)
+				if (anchored)
+					if (!F.axis.engine)
+						F.axis.engine = src
+				else
+					if (F.axis && F.axis.engine && F.axis.engine == src)
+						F.axis.engine = null
+		return
+	else if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
 			user << "<span class='notice'>Fix the engine in place with a wrench first.</span>"
 			return
