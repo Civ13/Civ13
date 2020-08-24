@@ -415,19 +415,30 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/filipino/filuni (H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/bolo(H), slot_belt)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/filipino/baliwag(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mauser1893(H), slot_shoulder)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/filipinoh = new /obj/item/clothing/accessory/storage/webbing/filipino(null)
-	uniform.attackby(filipinoh, H)
-	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
-	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
-	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
-	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
-	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893box, H)
+	if (prob(90))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mauser1893(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/bolo(H), slot_belt)
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/storage/webbing/filipinoh = new /obj/item/clothing/accessory/storage/webbing/filipino(null)
+		uniform.attackby(filipinoh, H)
+		filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
+		filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
+		filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
+		filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
+		filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893box, H)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/bolo(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/spanish(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/bolo(H), slot_belt)
+		var/obj/item/clothing/under/uniform = H.w_uniform
+		var/obj/item/clothing/accessory/storage/webbing/filipinoh = new /obj/item/clothing/accessory/storage/webbing/filipino(null)
+		uniform.attackby(filipinoh, H)
+		filipinoh.attackby(new/obj/item/ammo_magazine/c43, H)
+		filipinoh.attackby(new/obj/item/ammo_magazine/c43, H)
 	give_random_name(H)
 	H.s_tone = rand(-65,-75)
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
@@ -492,12 +503,14 @@
 
 /datum/job/filipino/sniper
 	title = "Tiradores"
+	en_meaning = "Sharp Shooter"
 	rank_abbreviation = "Ko."
 
 	spawn_location = "JoinLateFP"
 	is_ww2 = FALSE
 	uses_squads = TRUE
 	is_ph_us_war = TRUE
+	whitelisted = TRUE
 
 	min_positions = 8
 	max_positions = 100
@@ -513,14 +526,18 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/filipino/baliwag(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/spanish(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mauser1893(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/bolo(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/rank/fp_cplh = new /obj/item/clothing/accessory/rank/fp_cpl(null)
-	uniform.attackby(fp_cplh, H)
 	var/obj/item/clothing/accessory/storage/webbing/filipinoh = new /obj/item/clothing/accessory/storage/webbing/filipino(null)
 	uniform.attackby(filipinoh, H)
-	filipinoh.attackby(new/obj/item/ammo_magazine/c43, H)
-	filipinoh.attackby(new/obj/item/ammo_magazine/c43, H)
+	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
+	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
+	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
+	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893, H)
+	filipinoh.attackby(new/obj/item/ammo_magazine/mauser1893box, H)
+	var/obj/item/clothing/accessory/rank/fp_cplh = new /obj/item/clothing/accessory/rank/fp_cpl(null)
+	uniform.attackby(fp_cplh, H)
 	give_random_name(H)
 	H.s_tone = rand(-65,-75)
 	H.add_note("Role", "You are a <b>[title]</b>, a well trained sniper. Follow orders and take out priority targets from a distance!")

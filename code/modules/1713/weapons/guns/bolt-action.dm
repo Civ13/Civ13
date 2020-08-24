@@ -252,7 +252,7 @@
 	force = 13
 	caliber = "a4570"
 	weight = 5
-	effectiveness_mod = 1
+	effectiveness_mod = 1.02
 	bolt_safety = FALSE
 	value = 90
 	recoil = 3
