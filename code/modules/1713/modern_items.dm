@@ -345,6 +345,8 @@
 	not_disassemblable = TRUE
 	var/list/barrel = list()
 	var/volume = 0
+	var/volume_et = 0
+	var/volume_di = 0
 	var/maxvolume = 300
 	var/active = FALSE
 	var/product = "gasoline"
@@ -471,7 +473,7 @@
 	if (isemptylist(barrel))
 		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
 		return
-	if (volume < 1)
+	if (volume <= 0 && volume_di <= 0 && volume_et <= 0)
 		H << "<span class = 'notice'>The refinery is empty! Put some percursors in first.</span>"
 		return
 	if (active)
@@ -499,7 +501,7 @@
 		H << "<span class = 'notice'>There is not enough power to start the refinery.</span>"
 		return
 /obj/structure/refinery/proc/power_on()
-	if (powered && active)
+	if (active)
 		update_icon()
 		spawn(600)
 			refine()
@@ -550,10 +552,8 @@
 /obj/structure/refinery/biofuel
 	name = "biofuel refinery"
 	desc = "A biofuel refinery, used to produce ethanol and biodiesel."
-	var/volume_et = 0
-	var/volume_di = 0
 	maxvolume = 300
-	product = "ethanol"
+	product = "biodiesel"
 
 /obj/structure/refinery/biofuel/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
@@ -679,7 +679,7 @@
 
 
 /obj/structure/refinery/biofuel/refine()
-	if (powered && active && volume >= 1 && !isemptylist(barrel))
+	if (powered && active && (volume_di > 0 || volume_et > 0) && !isemptylist(barrel))
 		if (!barrel[1])
 			active = FALSE
 			update_icon()

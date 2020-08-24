@@ -681,6 +681,19 @@
 		..()
 		reagents.add_reagent("petroleum",200)
 
+/obj/item/weapon/reagent_containers/glass/barrel/olive_oil
+	name = "olive oil barrel"
+	desc = "A barrel filled with olive oil."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+	New()
+		..()
+		reagents.add_reagent("olive_oil",200)
+
+
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder
 	name = "gunpowder barrel"
 	desc = "A barrel of gunpowder. Don't light it on fire."
