@@ -143,11 +143,11 @@
 			var/obj/item/weapon/grab/G = W
 			var/mob/living/human/affecting = G.affecting
 			if(istype(affecting, /mob/living/human))
-				marketval = 15
-				moneyin = 15
-			else if(istype(affecting, /mob/living/human/corpse))
 				marketval = 10
 				moneyin = 10
+			else if(istype(affecting, /mob/living/human/corpse))
+				marketval = 5
+				moneyin = 5
 			else
 				H << "<span class='alert'>That is not a human!</span>"
 				return
