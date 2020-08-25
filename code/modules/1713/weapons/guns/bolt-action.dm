@@ -270,7 +270,7 @@
 	name = "Rolling-Block Rifle"
 	desc = "A single-shot, rolling block rifle, with a long range. This Spanish one uses .43 cartridges."
 	caliber = "a43"
-	effectiveness_mod = 1.05
+	effectiveness_mod = 0.98
 	ammo_type = /obj/item/ammo_casing/a43
 	magazine_type = /obj/item/ammo_magazine/c43
 
