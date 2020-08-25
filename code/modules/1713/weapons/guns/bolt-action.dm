@@ -13,7 +13,7 @@
 	max_shells = 5
 	slot_flags = SLOT_SHOULDER
 	caliber = "a762x54"
-	recoil = 2 //extra kickback
+	recoil = 0 //extra kickback
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
@@ -209,7 +209,7 @@
 	effectiveness_mod = 0.99
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -232,7 +232,7 @@
 	effectiveness_mod = 0.98
 	bolt_safety = FALSE
 	value = 90
-	recoil = 4
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
@@ -255,7 +255,7 @@
 	effectiveness_mod = 1.02
 	bolt_safety = FALSE
 	value = 90
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
@@ -286,7 +286,7 @@
 	effectiveness_mod = 0.98
 	bolt_safety = FALSE
 	value = 90
-	recoil = 6
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
@@ -343,7 +343,7 @@
 	effectiveness_mod = 0.96
 	bolt_safety = FALSE
 	value = 100
-	recoil = 2
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -380,7 +380,7 @@
 	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -438,7 +438,7 @@
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -496,7 +496,7 @@
 	value = 100
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/arisaka99
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -571,7 +571,7 @@
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 1
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -627,7 +627,7 @@
 	effectiveness_mod = 0.85
 	value = 90
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -650,7 +650,7 @@
 	effectiveness_mod = 0.85
 	value = 90
 	slot_flags = SLOT_SHOULDER
-	recoil = 1
+	recoil = 0
 	force = 10
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -674,7 +674,7 @@
 	effectiveness_mod = 0.89
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -697,7 +697,7 @@
 	effectiveness_mod = 0.91
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -729,7 +729,7 @@
 	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -783,7 +783,7 @@
 	weight = 4.2
 	bolt_safety = FALSE
 	value = 80
-	recoil = 2
+	recoil = 0
 	throwforce = 16
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
@@ -807,7 +807,7 @@
 	effectiveness_mod = 0.85
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -827,7 +827,7 @@
 	effectiveness_mod = 0.98
 	value = 120
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 12
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -849,7 +849,7 @@
 	effectiveness_mod = 0.75
 	value = 120
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 12
 	throwforce = 20
 	max_shells = 8
@@ -881,7 +881,7 @@
 	effectiveness_mod = 0.96
 	bolt_safety = FALSE
 	value = 100
-	recoil = 2
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -913,7 +913,7 @@
 	effectiveness_mod = 0.99
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -935,7 +935,7 @@
 	effectiveness_mod = 0.97
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -957,7 +957,7 @@
 	effectiveness_mod = 0.94
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -1006,7 +1006,7 @@
 	effectiveness_mod = 1.15
 	value = 130
 	slot_flags = SLOT_SHOULDER
-	recoil = 1.8
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -1031,7 +1031,7 @@
 	effectiveness_mod = 1.2
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS

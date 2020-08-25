@@ -3,7 +3,7 @@
 	desc = "A gun that fires bullets."
 	icon_state = "musket"
 	w_class = 3
-	recoil = 1
+	recoil = 0
 
 	var/caliber = "musketball"		//determines which casings will fit
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled
