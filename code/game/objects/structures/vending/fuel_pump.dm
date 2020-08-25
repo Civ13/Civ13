@@ -23,7 +23,7 @@
 
 /obj/structure/fuelpump/premade
 	name = "fuel pump"
-	price = 0.3
+	price = 3
 	owner = "Global"
 	var/brand = "UngOil"
 	icon_state = "oilpump3"
@@ -83,7 +83,7 @@
 	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 		desc = "This pump has [vol] units of [fueltype] available. Price: [price/4] dollars per unit."
 	else
-		desc = "This pump has [vol] units of [fueltype] available. Price: [price*10] silver coins per unit. Copper and Gold accepted too."
+		desc = "This pump has [vol] units of [fueltype] available. Price: [price] silver coins per unit. Copper and Gold accepted too."
 
 /obj/structure/fuelpump/proc/do_color()
 	if (customcolor)
@@ -230,14 +230,14 @@
 					return
 
 		else if (input == "Change Price")
-			var/custp = input(user, "What should the price be, in silver coins? Will be automatically converted. (Default: 3. Min: 0, Max: 500):") as num|null
+			var/custp = input(user, "What should the price be, in silver coins? Will be automatically converted. (Default: 0.3, Min: 0, Max: 50):") as num|null
 			if (!isnum(custp))
 				return
 			if (custp < 0)
 				custp = 0
-			else if (custp > 500)
-				custp = 500
-			price = (custp/10) //to standartize
+			else if (custp > 50)
+				custp = 50
+			price = (custp) //to standartize
 			updatedesc()
 		else
 			return

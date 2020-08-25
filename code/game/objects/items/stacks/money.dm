@@ -388,10 +388,10 @@
 	singular_name = "copper coin"
 	icon_state = "coppercoin_pile"
 	amount = 1
-	value = 0.01
+	value = 0.1
 
 /obj/item/stack/money/coppercoin/twohundred
-	amount = 200
+	amount = 20
 
 /obj/item/stack/money/silvercoin
 	name = "silver coins"
@@ -399,10 +399,10 @@
 	singular_name = "silver coin"
 	icon_state = "silvercoin_pile"
 	amount = 1
-	value = 0.1
+	value = 1
 
 /obj/item/stack/money/silvercoin/twohundred
-	amount = 200
+	amount = 20
 
 /obj/item/stack/money/goldcoin
 	name = "gold coins"
@@ -410,7 +410,7 @@
 	singular_name = "gold coin"
 	icon_state = "goldcoin_pile"
 	amount = 1
-	value = 0.4
+	value = 4
 
 /obj/item/stack/money/bitcoin
 	name = "bitcoin"

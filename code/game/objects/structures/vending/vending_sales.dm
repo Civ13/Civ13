@@ -110,7 +110,7 @@
 			else
 				for(var/datum/data/vending_product/VP in product_records)
 					if (VP.product_name == choice2)
-						var/input3 = input("The current price for [VP.product_name] is [VP.price*10] silver coins. What should the new price be?", "Product Price", VP.price*10) as num
+						var/input3 = input("The current price for [VP.product_name] is [VP.price] silver coins. What should the new price be?", "Product Price", VP.price*10) as num
 						if (input3 < 0 || input3 == null)
 							return FALSE
 						else
