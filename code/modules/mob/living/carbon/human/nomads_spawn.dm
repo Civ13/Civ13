@@ -160,7 +160,7 @@
 				else if (s_tone < abs(possible_s_list[1]))
 					s_tone = abs(possible_s_list[1])
 				s_tone = -s_tone
-				var/list/sec_lang_list = list("Randomize","Russian","Zulu","Arabic","Latin")
+/*				var/list/sec_lang_list = list("Randomize","Russian","Zulu","Arabic","Latin")
 				sec_lang_list -= choice1
 				var/sec_lang = WWinput(src, "Choose your secondary language:","Character Customization","Randomize",sec_lang_list)
 				if (sec_lang == "Randomize")
@@ -168,6 +168,7 @@
 					sec_lang = pick(sec_lang_list)
 				add_language(sec_lang,TRUE)
 				add_note("Known Languages", sec_lang)
+*/
 		else if (choices == "Biome Appropriate")
 			var/list/possible_h_list = list("Black")
 			var/list/possible_e_list = list("Black")
