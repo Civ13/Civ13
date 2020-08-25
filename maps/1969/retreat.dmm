@@ -55,7 +55,7 @@
 "bc" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean)
 "bd" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean)
 "be" = (/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/obj/structure/vehicleparts/frame/car/left/armored,/turf/floor/dirt/winter,/area/caribbean)
-"bf" = (/obj/structure/vehicleparts/frame/car/right/armored,/turf/floor/dirt/winter,/area/caribbean)
+"bf" = (/obj/structure/vehicleparts/frame/car/right/armored,/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt/winter,/area/caribbean)
 "bg" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/obj/item/ammo_magazine/gewehr98,/turf/floor/winter,/area/caribbean)
 "bh" = (/obj/structure/vehicleparts/frame/car/left/armored,/turf/floor/dirt/winter,/area/caribbean)
 "bi" = (/obj/effect/autoassembler,/turf/floor/dirt/winter,/area/caribbean)
@@ -67,7 +67,7 @@
 "bo" = (/obj/structure/closet/crate/ww2/rgd33,/turf/floor/winter,/area/caribbean)
 "bp" = (/obj/structure/closet/crate/ww2/ppsh,/turf/floor/winter,/area/caribbean)
 "bq" = (/obj/structure/vehicleparts/movement/reversed,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{icon_state = "browning"; dir = 1},/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/structure/vehicleparts/frame/car/rb/armored,/turf/floor/dirt/winter,/area/caribbean)
-"br" = (/obj/structure/vehicleparts/movement/reversed,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/lb/armored,/turf/floor/dirt/winter,/area/caribbean)
+"br" = (/obj/structure/vehicleparts/frame/car/left/armored,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/turf/floor/dirt/winter,/area/caribbean)
 "bs" = (/obj/structure/bed/chair/office/dark,/obj/item/weapon/storage/toolbox/mechanical,/obj/structure/vehicleparts/frame/car/rf/truck/armored,/turf/floor/dirt/winter,/area/caribbean)
 "bt" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#293822"; name = "GMC M35 Truck"},/obj/structure/vehicleparts/frame/car/lf/truck/armored,/turf/floor/dirt/winter,/area/caribbean)
 "bu" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#293822"; name = "GMC Willys Jeep"},/obj/structure/vehicleparts/frame/car/lf/truck/armored,/turf/floor/dirt/winter,/area/caribbean)
@@ -116,7 +116,7 @@
 "cl" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean)
 "cm" = (/obj/structure/window/barrier/sandbag,/obj/structure/roof_support,/turf/floor/trench,/area/caribbean)
 "cn" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/winter,/area/caribbean)
-"co" = (/turf/floor/winter,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean)
+"co" = (/obj/structure/vehicleparts/movement/reversed,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/lb/armored,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/turf/floor/dirt/winter,/area/caribbean)
 "cp" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/obj/structure/bed/bedroll,/turf/floor/trench,/area/caribbean)
 "cq" = (/obj/structure/vending/chineseweapons_korean_war,/turf/floor/trench,/area/caribbean)
 "cr" = (/obj/structure/vending/chineseapparel_korean_war,/turf/floor/trench,/area/caribbean)
@@ -140,7 +140,7 @@
 "cJ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "cK" = (/obj/structure/simple_door/key_door/american,/turf/floor/wood,/area/caribbean)
 "cL" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean)
-"cM" = (/turf/floor/winter,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean)
+"cM" = (/turf/floor/winter,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean)
 "cN" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/turf/floor/wood,/area/caribbean)
 "cO" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/wood,/area/caribbean)
 "cP" = (/obj/structure/sign/flag/usa,/turf/wall/wood,/area/caribbean)
@@ -170,6 +170,7 @@
 "dn" = (/obj/structure/curtain/medical,/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/wood,/area/caribbean)
 "do" = (/obj/structure/iv_drip,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/wood,/area/caribbean)
 "dp" = (/obj/map_metadata/retreat,/turf/wall/wood,/area/caribbean)
+"dq" = (/turf/floor/winter,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean)
 "dJ" = (/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/structure/closet/crate/ww2,/obj/item/weapon/gun/projectile/semiautomatic/svt,/turf/floor/winter,/area/caribbean)
 "dL" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/gun/projectile/automatic/type99,/obj/item/weapon/gun/projectile/automatic/type99,/turf/floor/winter,/area/caribbean)
 "dM" = (/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/item/ammo_magazine/type99,/obj/structure/closet/crate/ww2,/turf/floor/winter,/area/caribbean)
@@ -506,7 +507,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababalababababababbZababababababaRaRaR
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababababababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababababalababababababababaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababaRaSaTaRaRaRaRaUaVaRaRaRaRaYaZaRaRaRaRbbbeaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababbibfbhaRaRaRbibjbkaRaRaRbiblbmaRaRaRbibnbhaRaRaRaRaRbibqbraRaRaRbibqbraRaRababbZababababababababababababaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababbibfbraRaRaRbibjbkaRaRaRbiblbmaRaRaRbibnbhaRaRaRaRaRbibqcoaRaRaRbibqcoaRaRababbZababababababababababababaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababaRbsbtaRaRaRaRbsbtaRaRaRaRbsbtaRaRaRaRbsbtaRaRaRaRaRaRbsbuaRaRaRaRbsbtaRaRabababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababbZabababababababababababaRbvecaRaRaRaRbvecaRaRaRaRbvecaRaRaRaRbvecaRaRaRaRaRaRbvecaRaRaRaRbvecaRaRabababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababababababababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRabababababababbZabababababababaaaaaaaaaaaaaaaaaaaaaa
@@ -717,9 +718,9 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcbc
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaararararararararararababababababababababararababaaaaabababbLabaaaaaaababababababaRaRbSbSbSbSaRabababababababaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababababababababababababababababababaaaaaaaaabbLababaaaaabababababaRbSbSbSbSbSaRaRabababababababaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababaoaoaoaoababababababababaaaaaaaaaaaaaaababababababababaRaRbSbSbSaRaRabababababalabababaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababaMaNaNaLaLaLaEcoababababababaaaaaaaaaaaaaaaaaaabababababababaRbSbSaRaRabababababababababababaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababaNcpaNcpaNcpaXcoabababababaaaaaaaaaaaaaaaaabababababababaRbSbSbSbSaRaRababababababababababaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababaNcqcrcqcrcqaXcoababababaaaaaaaaaaaaaaabababbZabababaRaRaRbSbSbSaRaRabababababababababababaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababaMaNaNaLaLaLaEcMababababababaaaaaaaaaaaaaaaaaaabababababababaRbSbSaRaRabababababababababababaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababaNcpaNcpaNcpaXcMabababababaaaaaaaaaaaaaaaaabababababababaRbSbSbSbSaRaRababababababababababaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababaNcqcrcqcrcqaXcMababababaaaaaaaaaaaaaaabababbZabababaRaRaRbSbSbSaRaRabababababababababababaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababaRbSbSbSbSbSabababababababababababababaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababaRbSbSbSaRaRabababababababababababababaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababbZababababababaRbSbSbSaRababababababalabababababababaaaaaaaaaaaaaaaaaa
@@ -776,9 +777,9 @@ ababababababbZabababababababaRaRaRababababaNaNapaNaNaXbxababababcscscscscscscscs
 ababababababababababababaRaRaRaRaRaRaRababaNaNapaNaNaXbxabababapbFaLaLaLaLaLaLaLcxcyaLaLaLaLaLaLbTasbSbSbSbSapaKaLaLaLaLaLaLaLaLaLcxcyaLaLaLaLaLaLaLaLaLaLaLaLaLaLaLaLaLaLaLaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 czczczczczczczczczczababaRaRbSbSbSaRaRababaNaNapaNaNaXbxabababapaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaXasbSbSbSbSapaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 czcAcAcAcBcAcAcAcCczababaRaRbSbSbSbSaRaRabaNaNapaNaNaXbxababbZapaOaNcDcEaNcFcGcGcGcGcGcEaNcFaWaNaXasbSbSbSbSapaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-czcAcHcIcAcAcAcAcAcKabaRaRbSbSbSbSbSbSaRabaNaNaNaNaNaXbxabababapaOaNcLaNaNaNaNaNaNaNaNaNaNaNcLaNaXasbSbSbSaRcMaOaNaNcDaraNarararararararararaNarararararararararaNarararaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-czcAcAcNcAcAcAcAcOcPcRaRbSbSbSbSbSbSbSaRabaNaNapaNaNaXbxabababapaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaXasaRbSbSaRcMaOaNaNasaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-czcAcScTcAcAcAcAcUczabaRbSbSbSbSbSbSbSaRabaNaNapaNaNaXbxababababaNaNabababababababababababababaNaNabaRbSbSaRcMaOaNaNasaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+czcAcHcIcAcAcAcAcAcKabaRaRbSbSbSbSbSbSaRabaNaNaNaNaNaXbxabababapaOaNcLaNaNaNaNaNaNaNaNaNaNaNcLaNaXasbSbSbSaRdqaOaNaNcDaraNarararararararararaNarararararararararaNarararaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+czcAcAcNcAcAcAcAcOcPcRaRbSbSbSbSbSbSbSaRabaNaNapaNaNaXbxabababapaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaXasaRbSbSaRdqaOaNaNasaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+czcAcScTcAcAcAcAcUczabaRbSbSbSbSbSbSbSaRabaNaNapaNaNaXbxababababaNaNabababababababababababababaNaNabaRbSbSaRdqaOaNaNasaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 czcVcAcWcYcAcAcAcUczabaRbSbSbSbSbSbSaRaRabaNaNapaNaNaNaNaNaNaNaNaNaNababababababababbZababababaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 czczczczczczczczczczabaRbSbSbSbSbSbSaRabababababaNaNaNaNaNaNaNaNaNaNabbZabababababababababababaNaNaNaNaNaNaNaNaNaNaNabababababababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 czcZdacZdadbcAcAcCczababaRbSbSbSbSbSaRabbZabababababababababababababababababababababababababababababaRbSaRaRabababababababbZabababababababbZababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
