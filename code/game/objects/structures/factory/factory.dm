@@ -296,7 +296,7 @@
 				return				  //INPUT 1
 
 			else if (istype(I, /obj/item/stack/money/goldcoin))
-				gold += I.amount/50
+				gold += I.amount/5
 				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
@@ -307,7 +307,7 @@
 				return
 
 			else if (istype(I, /obj/item/stack/money/coppercoin))
-				copper += I.amount/50
+				copper += I.amount/5
 				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
@@ -318,7 +318,7 @@
 				return
 
 			else if (istype(I, /obj/item/stack/money/silvercoin))
-				silver += I.amount/100
+				silver += I.amount/10
 				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
 				return
