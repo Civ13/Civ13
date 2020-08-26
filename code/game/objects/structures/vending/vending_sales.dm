@@ -175,14 +175,14 @@
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			data["moneyin"] = moneyin/4
 		else
-			data["moneyin"] = moneyin*10
+			data["moneyin"] = moneyin
 	else
 		data["mode"] = FALSE
 		data["company"] = owner
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			data["moneyin"] = moneyin/4
 		else
-			data["moneyin"] = moneyin*10
+			data["moneyin"] = moneyin
 		var/list/listed_products = list()
 
 		for (var/key = TRUE to product_records.len)

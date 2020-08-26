@@ -337,8 +337,10 @@
 					if (map.custom_civs[H.civilization][4].real_name == real_name)
 						msg += "<br><b>[T.He] is the leader of your faction.</b>"
 
-			else
+			else if (civilization == "none")
 				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
+			else
+				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
 			if (user.find_trait("Empathetic"))
 				var/md
 				switch(mood)
