@@ -676,8 +676,8 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
+		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
@@ -702,8 +702,8 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
+		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
@@ -724,8 +724,8 @@
 	equiptimer = 10
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		list(name="semi auto",	burst=1, burst_delay=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
@@ -748,8 +748,8 @@
 	effectiveness_mod = 1.05
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
+		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
 		)
 	effectiveness_mod = 1.06
 	sel_mode = 1
@@ -770,9 +770,9 @@
 	effectiveness_mod = 1.46
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
+		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
 		)
 	effectiveness_mod = 1.60
 	sel_mode = 1
@@ -793,9 +793,9 @@
 	equiptimer = 13
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
+		list(name="semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
@@ -814,8 +814,8 @@
 	equiptimer = 8
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="full auto",	burst=1, burst_delay=1.0, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
+		list(name="semi auto",	burst=1, burst_delay=0.4, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1.0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
 		)
 	effectiveness_mod = 1.15
 	sel_mode = 1
@@ -834,9 +834,9 @@
 	equiptimer = 4
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
-		list(name="full auto",	burst=1, burst_delay=1.0, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
+		list(name="semi auto",	burst=1, burst_delay=0.4, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
 		)
 	effectiveness_mod = 1.15
 	sel_mode = 1
@@ -855,7 +855,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.7, recoil=0, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		list(name="full auto",	burst=1, burst_delay=1.7, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
 	effectiveness_mod = 0.85
 	sel_mode = 1
@@ -874,9 +874,9 @@
 	equiptimer = 10
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
-		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		list(name="semi auto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
 	effectiveness_mod = 1
 	sel_mode = 1
@@ -898,8 +898,8 @@
 	equiptimer = 12
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		list(name="semi auto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
 	effectiveness_mod = 1.20
 	sel_mode = 1

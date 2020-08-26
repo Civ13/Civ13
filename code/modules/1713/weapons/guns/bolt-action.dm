@@ -686,7 +686,7 @@
 	name = "Mauser M1893"
 	desc = "A german bolt-action rifle commonly known as the \"Spanish Mauser\", chambered in 7x57mm Mauser ammunition."
 	icon_state = "mauser93"
-	item_state = "gewehr98"
+	item_state = "mauser93"
 	base_icon = "mauser93"
 	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	caliber = "a7x57"
