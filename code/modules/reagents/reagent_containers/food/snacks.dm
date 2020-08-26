@@ -689,7 +689,26 @@
 	New()
 		..()
 		bitesize = 1
+/obj/item/weapon/reagent_containers/food/snacks/spaghetti/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (W.sharp || W.edge)
+		user << "You make some noodles from the long spaghetti."
+		for (var/v in 1 to pick(1,2))
+			new /obj/item/weapon/reagent_containers/food/snacks/noodles(get_turf(src))
+		qdel(src)
 
+/obj/item/weapon/reagent_containers/food/snacks/noodles
+	name = "Noodles"
+	desc = "A bundle of raw noodles."
+	icon_state = "noodles"
+	filling_color = "#EDDD00"
+	center_of_mass = list("x"=16, "y"=16)
+	nutriment_desc = list("noodles" = 2)
+	nutriment_amt = 1
+	decay = 60*600
+	satisfaction = 3
+	New()
+		..()
+		bitesize = 1
 /obj/item/weapon/reagent_containers/food/snacks/badrecipe
 	name = "Burned mess"
 	desc = "Someone should be demoted from chef for this."
@@ -919,7 +938,7 @@
 	satisfaction = 5
 	New()
 		..()
-		bitesize = 2
+		bitesize = 4
 
 /obj/item/weapon/reagent_containers/food/snacks/boiledspagetti/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/meatball))
@@ -927,6 +946,24 @@
 		qdel(I)
 		new/obj/item/weapon/reagent_containers/food/snacks/meatballspagetti(get_turf(src))
 		qdel(src)
+
+/obj/item/weapon/reagent_containers/food/snacks/ramen
+	name = "Ramen"
+	desc = "A combination of meat, noodles, and egg all in a savoury broth!"
+	icon_state = "ramen"
+	trash = null
+	filling_color = "#DE4545"
+	center_of_mass = list("x"=16, "y"=10)
+	nutriment_desc = list("noodles" = 4, "meat" = 2, "egg" = 1)
+	satisfaction = 12
+	nutriment_amt = 6
+	decay = 11*600
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("water", 30)
+		satisfaction = 6
+		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/boiledrice
 	name = "boiled rice"
