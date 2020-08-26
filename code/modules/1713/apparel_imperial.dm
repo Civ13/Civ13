@@ -35,9 +35,9 @@
 /obj/item/clothing/suit/armor/imperial/imperial_chestplate
 	name = "imperial chestplate"
 	desc = "An iron chestplate made in a imperial style, it is not wholly protective against bullets but allows more maneuverability to avoid them."
-	icon_state = "imperial_chestplate"
-	item_state = "imperial_chestplate"
-	worn_state = "imperial_chestplate"
+	icon_state = "imperial_breastplate"
+	item_state = "imperial_breastplate"
+	worn_state = "imperial_breastplate"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 50, gun = 12, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 20
