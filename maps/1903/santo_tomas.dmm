@@ -148,7 +148,7 @@
 "cR" = (/obj/structure/simple_door/key_door/anyone/rustic,/obj/covers/wood_wall/bamboo/door,/turf/floor/wood,/area/caribbean/japanese/land/inside/command)
 "cS" = (/obj/covers/thatch,/obj/structure/sign/flag/philippine_war{pixel_x = 30},/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "cT" = (/obj/covers/thatch,/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood,/area/caribbean/roofed)
-"cU" = (/obj/covers/thatch,/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/revolver/sw3,/obj/item/ammo_magazine/c43,/turf/floor/wood,/area/caribbean/roofed)
+"cU" = (/obj/covers/thatch,/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/revolver/sw3,/obj/item/ammo_magazine/c32,/turf/floor/wood,/area/caribbean/roofed)
 "cV" = (/obj/covers/thatch,/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/roofed)
 "cW" = (/obj/covers/thatch,/obj/structure/table/wood,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/japanese/land/inside/command)
 "cX" = (/obj/covers/thatch2,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside/command)

@@ -121,7 +121,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "ammo box (.45-70 Government)"
 	icon_state = "oldbox"
 	caliber = "a4570"
-	w_class = 3
+	w_class = 2
 
 	ammo_type = /obj/item/ammo_casing/a4570
 	max_ammo = 15

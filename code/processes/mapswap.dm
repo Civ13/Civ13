@@ -149,6 +149,7 @@
 				MAP_TSARITSYN = 10,
 				MAP_PORT_ARTHUR = 10,
 				MAP_SANTO_TOMAS = 0,
+				MAP_CALOOCAN = 0,
 			)
 
 		else if (epoch == "Industrial Age (1850-1895)")
