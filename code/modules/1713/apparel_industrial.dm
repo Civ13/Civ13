@@ -2,6 +2,7 @@
 /* 1 - Industrial Headpieces
    2 - Industrial Accessories
    3 - Industrial Uniforms
+   3a - Womens Fashion
    4 - Industrial Suits
    5 - Industrial Boots*/
 
@@ -264,11 +265,78 @@
 	worn_state = "arthur_morgan"
 
 /obj/item/clothing/under/bartender
-	name = "bartender Outfit"
-	desc = "A stilish bartender outfit."
+	name = "bartender outfit"
+	desc = "A stylish bartender outfit."
 	icon_state = "bartender"
 	item_state = "bartender"
 	worn_state = "bartender"
+
+/obj/item/clothing/under/victorian_vest
+	name = "black victorian shirt and vest"
+	desc = "A no nonsense black shirt & vest with gold buttons, made in victorian style."
+	icon_state = "victorianvest"
+	item_state = "victorianvest"
+	worn_state = "victorianvest"
+
+/obj/item/clothing/under/victorian_vest/redvest
+	name = "black victorian shirt and red vest"
+	desc = "A no nonsense black shirt & red vest with gold buttons, made in victorian style."
+	icon_state = "victorianredvest"
+	item_state = "victorianredvest"
+	worn_state = "victorianredvest"
+
+/obj/item/clothing/under/victorian_vest/redshirt
+	name = "red victorian shirt and black vest"
+	desc = "A no nonsense red shirt & black vest with gold buttons, made in victorian style."
+	icon_state = "victorianblred"
+	item_state = "victorianblred"
+	worn_state = "victorianblred"
+
+/* Womens Fashion*/
+
+/obj/item/clothing/under/saloondress
+	name = "saloon dress outfit"
+	desc = "A eye catching dress often worn by frontier damsels looking to drum up business."
+	icon_state = "dress_saloon"
+	item_state = "dress_saloon"
+	worn_state = "dress_saloon"
+
+/obj/item/clothing/under/cheongsam
+	name = "cheongsam dress"
+	desc = "A tight fitting and attractive dress commmonly worn by women hailing from the orient."
+	icon_state = "cheongsam"
+	item_state = "cheongsam"
+	worn_state = "cheongsam"
+
+/obj/item/clothing/under/blackdress/short
+	name = "short black dress"
+	desc = "A plain black dress for women, this one is notably shorter and less modest."
+	icon_state = "dress_black_short"
+	item_state = "dress_black_short"
+	worn_state = "dress_black_short"
+
+/obj/item/clothing/under/wedding
+	name = "white wedding dress"
+	desc = "A cermonial white wedding dress. Something old, something new, something borrowed, something blue."
+	icon_state = "bride_white"
+	item_state = "bride_white"
+	worn_state = "bride_white"
+
+/obj/item/clothing/under/victorian_dress
+	name = "victorian black dress"
+	desc = "A black dress for a lady, made in a victorian style."
+	icon_state = "victorianblackdress"
+	item_state = "victorianblackdress"
+	worn_state = "victorianblackdress"
+
+/obj/item/clothing/under/victorian_dress/red
+	name = "victorian red dress"
+	desc = "A red dress for a lady, made in a victorian style."
+	icon_state = "victorianreddress"
+	item_state = "victorianreddress"
+	worn_state = "victorianreddress"
+
+/* Womens Fashion - End*/
 
 /obj/item/clothing/under/union_uniform
 	name = "union uniform"
