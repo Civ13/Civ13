@@ -63,6 +63,11 @@
 	desc = "It's a fork. Sure is pointy."
 	icon_state = "fork"
 
+/obj/item/weapon/material/kitchen/utensil/chopsticks
+	name = "chopsticks"
+	desc = "It's pair of chopsticks. Wan' sum rice muhda fukka?"
+	icon_state = "chopsticks"
+
 /obj/item/weapon/material/kitchen/utensil/spoon
 	name = "spoon"
 	desc = "It's a spoon. You can see your own upside-down face in it."

@@ -80,20 +80,6 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/colt_browningm1895
-	name = "M1895 Colt-Browning machine gun"
-	desc = "American Colt-Browning M1895 machine gun nicknamed 'potato digger', on a tripod. Uses 30-06 rounds."
-	icon_state = "m1895colt"
-	base_icon = "m1895colt"
-	caliber = "a3006"
-	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
-	magazine_type = /obj/item/ammo_magazine/browning
-	firemodes = list(
-		list(name="full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
-		)
-	ammo_type = /obj/item/ammo_casing/a3006/weak
-
-
 obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	name = "Maxim"
 	desc = "Russian version of the original Maxim machinegun, on cart mount. Uses Russian 7.62x54mm rounds."
