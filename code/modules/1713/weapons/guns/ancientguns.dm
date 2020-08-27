@@ -255,6 +255,60 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 			VERY_LONG_RANGE_MOVING = 32*0.85),
 	)
 
+obj/item/weapon/gun/projectile/ancient/jezailmatchlock
+	name = "Jezail matchlock musket"
+	desc = "A Arabic musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger."
+	icon_state = "matchlock"
+	item_state = "matchlock_jezail"
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS | ATTACH_BARREL
+	fire_delay = 3.2
+	recoil = 2.8
+
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 84*0.9,
+			SHORT_RANGE_MOVING = 38*0.9,
+
+			MEDIUM_RANGE_STILL = 75*0.9,
+			MEDIUM_RANGE_MOVING = 27*0.9,
+
+			LONG_RANGE_STILL = 53*0.9,
+			LONG_RANGE_MOVING = 22*0.9,
+
+			VERY_LONG_RANGE_STILL = 43*0.85,
+			VERY_LONG_RANGE_MOVING = 17*0.85),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 89*0.9,
+			SHORT_RANGE_MOVING = 48*0.9,
+
+			MEDIUM_RANGE_STILL = 69*0.9,
+			MEDIUM_RANGE_MOVING = 27*0.9,
+
+			LONG_RANGE_STILL = 68*0.9,
+			LONG_RANGE_MOVING = 34*0.9,
+
+			VERY_LONG_RANGE_STILL = 55*0.85,
+			VERY_LONG_RANGE_MOVING = 14*0.85),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 93*0.9,
+			SHORT_RANGE_MOVING = 47*0.9,
+
+			MEDIUM_RANGE_STILL = 83*0.9,
+			MEDIUM_RANGE_MOVING = 42*0.9,
+
+			LONG_RANGE_STILL = 73*0.9,
+			LONG_RANGE_MOVING = 37*0.9,
+
+			VERY_LONG_RANGE_STILL = 63*0.85,
+			VERY_LONG_RANGE_MOVING = 32*0.85),
+	)
+
 obj/item/weapon/gun/projectile/ancient/tanegashima
 	name = "tanegashima"
 	desc = "A musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger. This one being Japanese, introduced to them via the Portuguese."
