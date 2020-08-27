@@ -81,6 +81,16 @@
 	maxpower = 45
 	torque = 1.4
 
+/obj/structure/engine/external/aeolipile
+	name = "aeolipile"
+	desc = "A big steam-powered device. Low Power-To-Weight ratio, but iffy for static operations."
+	icon = 'icons/obj/engines32.dmi'
+	icon_state = "aeolipile_static"
+	engineclass = "steam"
+
+	maxpower = 25
+	torque = 1.1
+
 /obj/structure/engine/external/stirling
 	name = "Stirling engine"
 	desc = "A large Stirling cycle engine. Very low Power-To-Weight ratio, but good for static operations, and can run on any source of heat or temperature difference, not just combustion."
