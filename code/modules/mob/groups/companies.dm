@@ -30,7 +30,7 @@
 	if (newname != null && newname != "none")
 		var/choosecolor1 = "#000000"
 		var/choosecolor2 = "#FFFFFF"
-		choosecolor1 = input(H, "Choose the main/symbol color:", "Main Color" , "#000000", "color")
+		choosecolor1 = WWinput(H, "Choose the main/symbol color:", "Main Color" , "#000000", "color")
 		if (choosecolor1 == null || choosecolor1 == "")
 			return
 

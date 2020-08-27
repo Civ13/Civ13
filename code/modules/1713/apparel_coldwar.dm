@@ -13,8 +13,9 @@
    11 - Cold War Balaclavas
    12 - Cold War Webbing
    13 - NBC &  Hazmat Suits
-   14 - Miscallaneous*/
-
+   14 - Miscallaneous
+   14a - John Toughguy - Jungle Commando
+   14b - Swinging Sixties*/
 
 /* Coldwar Coats*/
 
@@ -70,6 +71,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
 /* Cold War Accessories*/
 
 /obj/item/clothing/mask/facecamo
@@ -198,6 +200,7 @@
 	worn_state = "korea_china"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
 /* US Army Armor & Helmets*/
 
 /obj/item/clothing/head //why is this HERE? @fantasticfwoosh
@@ -359,6 +362,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
 /* Ghillie Suits*/
 
 /obj/item/clothing/suit/storage/ghillie
@@ -383,6 +387,7 @@
 
 /obj/item/clothing/head/jungle_hat
 	name = "black boonie"
+	desc = "A wide brim, soft jungle hat."
 	icon_state = "black_boonie"
 	item_state = "black_boonie"
 	body_parts_covered = HEAD
@@ -435,6 +440,7 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
+
 /* Vietcong Clothes*/
 
 /obj/item/clothing/under/localnlf1
@@ -815,6 +821,83 @@
 	ripable = FALSE
 
 /* Miscallaneous*/
+
+	/* John Toughguy - Jungle Commando defintiely does not rhyme with a certain movie franchise*/
+
+/* Woodland Face Paint Recommended*/
+
+/obj/item/clothing/head/bandana/toughguy
+	name = "specialist bandana"
+	desc = "A red bandana, the preferred headwear of seasoned jungle fighters."
+	icon_state = "toughguy"
+	item_state = "toughguy"
+	worn_state = "toughguy"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/under/toughguy
+	name = "specialist pants with woodland pattern paint"
+	desc = "A army issued pair of pants and woodland pattern body-paint; to blend seamlessly into the enviroment"
+	icon_state = "toughguy"
+	item_state = "toughguy"
+	worn_state = "toughguy"
+
+/obj/item/clothing/gloves/toughguy
+	name = "specialist leather gloves"
+	icon_state = "toughguy"
+	item_state = "toughguy"
+	worn_state = "toughguy"
+	body_parts_covered = HANDS
+	slot_flags = SLOT_GLOVES
+
+/obj/item/clothing/shoes/toughguy
+	name = "specialist boots"
+	desc = "A well made and importantly quiet treading pair of army-issue leather boots.."
+	icon_state = "toughguy"
+	item_state = "toughguy"
+	worn_state = "toughguy"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 20, arrow = 40, gun = FALSE, energy = 10, bomb = 40, bio = 20, rad = 40)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+	/* Swinging 60's*/
+
+/obj/item/clothing/under/sundress
+	name = "yellow sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_yellow"
+	item_state = "sundress_yellow"
+	worn_state = "sundress_yellow"
+
+/obj/item/clothing/under/sundress/blue
+	name = "blue sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_blue"
+	item_state = "sundress_blue"
+	worn_state = "sundress_blue"
+
+/obj/item/clothing/under/sundress/orange
+	name = "orange sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_orange"
+	item_state = "sundress_orange"
+	worn_state = "sundress_orange"
+
+/obj/item/clothing/under/sundress/purple
+	name = "purple sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_purple"
+	item_state = "sundress_purple"
+	worn_state = "sundress_purple"
+
+/obj/item/clothing/under/sundress/red
+	name = "red sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_red"
+	item_state = "sundress_red"
+	worn_state = "sundress_red"
 
 /obj/item/clothing/under/gatorpants
 	name = "shirtless gator pants"

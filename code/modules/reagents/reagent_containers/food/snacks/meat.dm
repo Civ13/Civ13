@@ -14,7 +14,7 @@
 		..()
 		reagents.add_reagent("protein", 5)
 		bitesize = 3
-	satisfaction = -6
+	satisfaction = -4
 /obj/item/weapon/reagent_containers/food/snacks/meat/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
@@ -155,7 +155,7 @@
 	rotten_icon_state = "rotraw_crabmeat"
 	rots = TRUE
 	non_vegetarian = TRUE
-	satisfaction = -15
+	satisfaction = -10
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
@@ -173,7 +173,7 @@
 	rotten_icon_state = "lobster_rottenraw"
 	rots = TRUE
 	non_vegetarian = TRUE
-	satisfaction = -15
+	satisfaction = -10
 	New()
 		..()
 		reagents.add_reagent("protein", 4)

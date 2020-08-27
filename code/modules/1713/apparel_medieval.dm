@@ -15,8 +15,9 @@
    * - 10 Extra-Cultural Medieval Clothes
    * - 10a Medieval Mayan
    * - 10b Medieval Norse Armor
-   * - 10c Medieval Mamluk Armor
-   * - 10d Medieval Steppe Clothes & Armor
+   * - 10c Medieval Chinese Armor
+   * - 10d Medieval Mamluk Armor
+   * - 10e Medieval Steppe Clothes & Armor
    /////////////////////////////////////
    * - 11 Medieval Japanese
    * - 11a Medieval Japanese Armor
@@ -207,6 +208,19 @@
 	item_state = "turban_w"
 	worn_state = "turban_w"
 
+/obj/item/clothing/head/turban/sultan
+	name = "grand turban"
+	desc = "a large turban often worn by figures of importance.."
+	icon_state = "sultan"
+	item_state = "sultan"
+	worn_state = "sultan"
+	heat_protection = HEAD
+/obj/item/clothing/head/turban/sultan/New()
+	..()
+	icon_state = "sultan"
+	item_state = "sultan"
+	worn_state = "sultan"
+
 /obj/item/clothing/head/keffiyeh
 	name = "keffiyeh"
 	desc = "A headdress fashioned from a scarf with a checkered pattern."
@@ -243,7 +257,7 @@
 	icon_state = "fancy_fur_coat"
 	item_state = "fancy_fur_coat"
 	worn_state = "fancy_fur_coat"
-	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /* Medieval Uniforms*/
 
@@ -434,6 +448,27 @@
 	icon_state = "r_landschneckt"
 	item_state = "r_landschneckt"
 	worn_state = "r_landschneckt"
+
+/obj/item/clothing/under/blackdress
+	name = "plain black dress"
+	desc = "A plain black dress for women to properly uphold their modesty"
+	icon_state = "dress_black"
+	item_state = "dress_black"
+	worn_state = "dress_black"
+
+/obj/item/clothing/under/sari/blue
+	name = "blue sari"
+	desc = "A satin layered piece of clothing for women, made in indian style"
+	icon_state = "blue_sari"
+	item_state = "blue_sari"
+	worn_state = "blue_sari"
+
+/obj/item/clothing/under/sari/red
+	name = "red sari"
+	desc = "A satin layered piece of clothing for women, made in indian style"
+	icon_state = "red_sari"
+	item_state = "red_sari"
+	worn_state = "red_sari"
 
 /* Medieval Armor*/
 
@@ -709,6 +744,8 @@
 	armor = list(melee = 24, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
 	health = 20
 
+/*Sallets*/
+
 /obj/item/clothing/head/helmet/sallet/italian
 	name = "italian sallet"
 	desc = "A very protective helmet used by archers and crossbowmen in the 15th century throughout europe."
@@ -719,6 +756,7 @@
 	health = 45
 	slowdown = 0.15
 	var/toggled = FALSE
+
 /obj/item/clothing/head/helmet/sallet/italian/verb/toggle_visor()
 	set category = null
 	set src in usr
@@ -745,6 +783,7 @@
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
 			flags_inv = BLOCKHAIR
+
 /obj/item/clothing/head/helmet/sallet/german
 	name = "german sallet"
 	desc = "A very protective helmet used by archers and crossbowmen in the 15th century throughout europe."
@@ -782,59 +821,46 @@
 			update_clothing_icon()
 			body_parts_covered = HEAD|FACE
 			flags_inv = BLOCKHAIR
-/* - Note - Odis needs to consult coders before adding open-shut states because without code preparation, opening & shutting will reset its health
-and it already in its unaltered state, as strong as a knight helm (which i've brought it down to the power level of). I've seperated the
 
-/obj/item/clothing/head/helmet/sallet/italian/visorless
-	name = "visorless italian sallet"
-	desc = "A very protective helmet used by archers and crossbowmen in the 14th century throughout europe, providing moderate protection."
-	icon_state = "italian_sallet_o"
-	item_state = "italian_sallet_o"
-	worn_state = "italian_sallet_o"
-	body_parts_covered = HEAD|FACE
-	flags_inv = BLOCKHEADHAIR
+/obj/item/clothing/head/helmet/sallet/burg
+	name = "burgundian sallet"
+	desc = "A very protective helmet used by archers and crossbowmen in the 15th century throughout europe, providing moderate protection."
+	icon_state = "burg_sallet_o"
+	item_state = "burg_sallet_o"
+	worn_state = "burg_sallet_o"
 	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 	health = 45
 	slowdown = 0.15
+	var/toggled = FALSE
 
-/obj/item/clothing/head/helmet/sallet/italian/visored
-	name = "visored italian sallet"
-	desc = "A very protective helmet used by light and heavy infantry in the 15th century throughout europe, providing protection over visual ability."
-	icon_state = "italian_sallet"
-	item_state = "italian_sallet"
-	worn_state = "italian_sallet"
-	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	flags_inv = BLOCKHAIR
-	restricts_view = 2
-	health = 55
-	slowdown = 0.25
+/obj/item/clothing/head/helmet/sallet/burg/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/sallet/burg)
+		return
+	else
+		if (toggled)
+			item_state = "burg_sallet_o"
+			icon_state = "burg_sallet_o"
+			worn_state = "burg_sallet_o"
+			item_state_slots["slot_head"] = "burg_sallet_o"
+			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "burg_sallet"
+			icon_state = "burg_sallet"
+			worn_state = "burg_sallet"
+			item_state_slots["slot_head"] = "burg_sallet"
+			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
 
-/obj/item/clothing/head/helmet/sallet/german/visorless
-	name = "visorless german sallet"
-	desc = "A very protective helmet used by light and heavy infantry in the 15th century, providing slight protection over visual ability."
-	icon_state = "german_sallet_o"
-	item_state = "german_sallet_o"
-	worn_state = "german_sallet_o"
-	body_parts_covered = HEAD|FACE
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
-	health = 45
-	slowdown = 0.15
-
-/obj/item/clothing/head/helmet/sallet/german/visored
-	name = "visored german sallet"
-	desc = "A very protective helmet used by light and heavy infantry in the 15th century, providing slight protection over visual ability."
-	icon_state = "german_sallet"
-	item_state = "german_sallet"
-	worn_state = "german_sallet"
-	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	flags_inv = BLOCKHAIR
-	restricts_view = 2
-	health = 55
-	slowdown = 0.25
-*/
+/* Sallets End*/
 
 /obj/item/clothing/head/helmet/medieval
 	name = "knight helmet"
@@ -1371,6 +1397,7 @@ and it already in its unaltered state, as strong as a knight helm (which i've br
 	item_state = "varangian_guard"
 	worn_state = "varangian_guard"
 	flags_inv = BLOCKHAIR
+	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	restricts_view = 2
 	health = 55
@@ -1386,6 +1413,32 @@ and it already in its unaltered state, as strong as a knight helm (which i've br
 	armor = list(melee = 60, arrow = 55, gun = 10, energy = 20, bomb = 40, bio = 30, rad = FALSE)
 	slowdown = 0.75
 	health = 60
+
+/* Medieval Chinese Armor*/
+
+/obj/item/clothing/head/helmet/medieval/imperial_chinese
+	name = "imperial chinese helmet"
+	desc = "A iron helmet with a quilted neck covering and a decorative red plume, made in a imperial chinese style. "
+	icon_state = "imperial_chinese"
+	item_state = "imperial_chinese"
+	worn_state = "imperial_chinese"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 45
+	slowdown = 0.25
+
+/obj/item/clothing/suit/armor/medieval/imperial_chinese
+	name = "imperial chinese armor"
+	desc = "A well built & laquered armor with iron plates concealed inwardly and outwardly protecting the body, made in imperial chinese style"
+	icon_state = "imperial_chinese"
+	item_state = "imperial_chinese"
+	worn_state = "imperial_chinese"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 55, arrow = 50, gun = 10, energy = 20, bomb = 40, bio = 30, rad = FALSE)
+	value = 35
+	slowdown = 0.50
+	health = 50
 
 
 /* Medieval Mamluk Armor*/
@@ -1486,7 +1539,7 @@ and it already in its unaltered state, as strong as a knight helm (which i've br
 	icon_state = "steppe_wool_tunic"
 	item_state = "steppe_wool_tunic"
 	worn_state = "steppe_wool_tunic"
-	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/shoes/steppe_shoes
 	name = "steppe wool shoe"
@@ -1832,6 +1885,19 @@ obj/item/clothing/head/helmet/samurai/black
 	worn_state = "gat"
 
 /* Fantasy Medieval Clothes*/ //tell admins to iconswap preferencially to spawning in the piece itself if engaging in a event duel, since these are more op than they appear.
+
+/obj/item/clothing/head/turban/toadstool
+	name = "toadstool hat"
+	desc = "The princess is in another castle."
+	icon_state = "toadstool"
+	item_state = "toadstool"
+	worn_state = "toadstool"
+	heat_protection = HEAD
+/obj/item/clothing/head/turban/toadstool/New()
+	..()
+	icon_state = "toadstool"
+	item_state = "toadstool"
+	worn_state = "toadstool"
 
 	/* Fantasy Crusader Helmets */
 
