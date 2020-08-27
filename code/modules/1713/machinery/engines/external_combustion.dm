@@ -83,7 +83,7 @@
 
 /obj/structure/engine/external/aeolipile
 	name = "aeolipile"
-	desc = "A big steam-powered device. Low Power-To-Weight ratio, but iffy for static operations."
+	desc = "A small steam-powered device. Low Power-To-Weight ratio, but iffy for static operations."
 	icon = 'icons/obj/engines32.dmi'
 	icon_state = "aeolipile_static"
 	engineclass = "steam"
