@@ -130,6 +130,41 @@
 	item_state = "dressr"
 	worn_state = "dressr"
 
+/obj/item/clothing/under/debutante/blue
+	name = "blue debutante gown"
+	desc = "A long and elegant debutante gown, often worn by women of high status at societal events."
+	icon_state = "gown_blue"
+	item_state = "gown_blue"
+	worn_state = "gown_blue"
+
+/obj/item/clothing/under/debutante/orange
+	name = "orange debutante gown"
+	desc = "A long and elegant debutante gown, often worn by women of high status at societal events."
+	icon_state = "gown_orange"
+	item_state = "gown_orange"
+	worn_state = "gown_orange"
+
+/obj/item/clothing/under/debutante/purple
+	name = "purple debutante gown"
+	desc = "A long and elegant debutante gown, often worn by women of high status at societal events."
+	icon_state = "gown_purple"
+	item_state = "gown_purple"
+	worn_state = "gown_purple"
+
+/obj/item/clothing/under/debutante/red
+	name = "red debutante gown"
+	desc = "A long and elegant debutante gown, often worn by women of high status at societal events."
+	icon_state = "gown_red"
+	item_state = "gown_red"
+	worn_state = "gown_red"
+
+/obj/item/clothing/under/debutante/yellow
+	name = "red debutante gown"
+	desc = "A long and elegant debutante gown, often worn by women of high status at societal events."
+	icon_state = "gown_yellow"
+	item_state = "gown_yellow"
+	worn_state = "gown_yellow"
+
 /obj/item/clothing/under/conquistador
 	name = "conquistador uniform"
 	desc = "A regal uniform often worn by a class of explorers known as conquistadors in search of wealth."
