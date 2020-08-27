@@ -273,6 +273,36 @@
 	blackpowder = TRUE
 	load_delay = 4
 
+/obj/item/weapon/gun/projectile/leveraction/marlinmodel1888
+	name = "Marlin M1888 Carbine"
+	desc = "A lever-action rifle with a 10-round tube, chambered in .44-40 rounds."
+	force = 9.5
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon_state = "marlin1888_carbine"
+	caliber = "a44"
+	max_shells = 10
+	weight = 5.2
+	effectiveness_mod = 0.97
+	ammo_type = /obj/item/ammo_casing/a44
+	value = 150
+	blackpowder = TRUE
+	load_delay = 4.1
+
+/obj/item/weapon/gun/projectile/leveraction/spencer
+	name = "Spencer Repeating Rifle"
+	desc = "Officialy the M1865 Spencer Lever-action rifle."
+	icon_state = "revolving"
+	item_state = "spencer_repeater"
+	w_class = 2
+	caliber = "a44"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 7
+	magazine_type = /obj/item/ammo_magazine/c44
+	weight = 5.5
+	blackpowder = TRUE
+	load_delay = 3.6
+
 /obj/item/weapon/gun/projectile/leveraction/evansrepeater
 	name = "Evans repeating rifle"
 	desc = "A lever-action rifle with a 28-round tube, chambered in .44-40 rounds."
