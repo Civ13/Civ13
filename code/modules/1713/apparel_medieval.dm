@@ -715,24 +715,73 @@
 	icon_state = "italian_sallet_o"
 	item_state = "italian_sallet_o"
 	worn_state = "italian_sallet_o"
-	body_parts_covered = HEAD|FACE
-	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 	health = 45
 	slowdown = 0.15
-
+	var/toggled = FALSE
+/obj/item/clothing/head/helmet/sallet/italian/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/sallet/italian)
+		return
+	else
+		if (toggled)
+			item_state = "italian_sallet_o"
+			icon_state = "italian_sallet_o"
+			worn_state = "italian_sallet_o"
+			item_state_slots["slot_head"] = "italian_sallet_o"
+			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "italian_sallet"
+			icon_state = "italian_sallet"
+			worn_state = "italian_sallet"
+			item_state_slots["slot_head"] = "italian_sallet"
+			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
 /obj/item/clothing/head/helmet/sallet/german
 	name = "german sallet"
 	desc = "A very protective helmet used by archers and crossbowmen in the 15th century throughout europe."
 	icon_state = "german_sallet_o"
 	item_state = "german_sallet_o"
 	worn_state = "german_sallet_o"
-	body_parts_covered = HEAD|FACE
-	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 	health = 45
 	slowdown = 0.15
+	var/toggled = FALSE
 
+/obj/item/clothing/head/helmet/sallet/german/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/sallet/german)
+		return
+	else
+		if (toggled)
+			item_state = "german_sallet_o"
+			icon_state = "german_sallet_o"
+			worn_state = "german_sallet_o"
+			item_state_slots["slot_head"] = "german_sallet_o"
+			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "german_sallet"
+			icon_state = "german_sallet"
+			worn_state = "german_sallet"
+			item_state_slots["slot_head"] = "german_sallet"
+			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
 /* - Note - Odis needs to consult coders before adding open-shut states because without code preparation, opening & shutting will reset its health
 and it already in its unaltered state, as strong as a knight helm (which i've brought it down to the power level of). I've seperated the
 
