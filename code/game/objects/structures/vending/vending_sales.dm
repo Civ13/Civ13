@@ -70,7 +70,7 @@
 				inputp = 0
 			if (inputp < 0)
 				inputp = 0
-			product.price = inputp/10
+			product.price = inputp
 			if (istype(W, /obj/item/stack))
 				var/obj/item/stack/S = W
 				product.amount = S.amount
