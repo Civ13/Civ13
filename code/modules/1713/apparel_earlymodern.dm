@@ -746,6 +746,43 @@
 	item_state = "mechanic_outfit"
 	worn_state = "mechanic_outfit"
 
+/*Feminine Clothing*/
+
+/obj/item/clothing/under/tradwife
+	name = "blue traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_blue"
+	item_state = "tradwife_blue"
+	worn_state = "tradwife_blue"
+
+/obj/item/clothing/under/tradwife/yellow
+	name = "yellow traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_yellow"
+	item_state = "tradwife_yellow"
+	worn_state = "tradwife_yellow"
+
+/obj/item/clothing/under/tradwife/orange
+	name = "orange traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_orange"
+	item_state = "tradwife_orange"
+	worn_state = "tradwife_orange"
+
+/obj/item/clothing/under/tradwife/purple
+	name = "purple traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_purple"
+	item_state = "tradwife_purple"
+	worn_state = "tradwife_purple"
+
+/obj/item/clothing/under/tradwife/red
+	name = "red traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_red"
+	item_state = "tradwife_red"
+	worn_state = "tradwife_red"
+
 /obj/item/clothing/suit/storage/jacket/black_suit
 	name = "black suit"
 	desc = "A formal black suit."

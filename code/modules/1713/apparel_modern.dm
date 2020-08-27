@@ -734,6 +734,8 @@
 	w_class = 3
 	weight = 3.0
 
+/* Motorist*/
+
 /obj/item/clothing/head/helmet/motorcycle
 	name = "motorcycle helmet"
 	desc = "Protects your head from injuries if you crash your bike."
@@ -745,6 +747,84 @@
 	flags_inv = HIDEMASK|BLOCKHAIR|BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 65, gun = 5, energy = 35, bomb = 35, bio = 30, rad = FALSE)
 
+/obj/item/clothing/under/motorist
+	name = "motorist outfit"
+	desc = "A casual jeans and white shirt combo, often worn by tofu deliveryboy's"
+	icon_state = "motorist"
+	item_state = "motorist"
+	worn_state = "motorist"
+
+/obj/item/clothing/gloves/motorist
+	name = "black motorist gloves"
+	icon_state = "motorist"
+	item_state = "motorist"
+	worn_state = "motorist"
+	body_parts_covered = HANDS
+	slot_flags = SLOT_GLOVES
+
+/obj/item/clothing/shoes/sneakers/courier
+	name = "courier sneakers"
+	desc = "A pair of simple, thin grey sneakers."
+	icon_state = "courier_sneakers"
+	item_state = "courier_sneakers"
+	worn_state = "courier_sneakers"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 10, arrow = 10, gun = FALSE, energy = 8, bomb = 10, bio = 10, rad = 25)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/suit/storage/jacket/motorist
+	name = "motorist jacket"
+	desc = "A jacket often worn by enthusiasts of vehicles, speed and the smell of burning rubber."
+	icon_state = "motorist_jacket"
+	item_state = "motorist_jacket"
+	worn_state = "motorist_jacket"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
+/* Punk */
+
+/obj/item/clothing/under/punk
+	name = "punk outfit"
+	desc = "A rowdy alternative culture purple sleeveless shirt and purple trousers for bringing down the establishment."
+	icon_state = "punk"
+	item_state = "punk"
+	worn_state = "punk"
+
+/obj/item/clothing/accessory/armband/punk
+	name = "spiked bracers"
+	desc = "A pair of punkish spiked bracers."
+	icon_state = "spiked_bracer"
+	item_state = "spiked_bracer"
+	worn_state = "spiked_bracer"
+
+/obj/item/clothing/shoes/punk
+	name = "punk boots"
+	desc = "A pair of stylized high leather boots for kicking the snot out of 'The Man'."
+	icon_state = "punk"
+	item_state = "punk"
+	worn_state = "punk"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 20, arrow = 10, gun = FALSE, energy = 8, bomb = 10, bio = 10, rad = 25)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/suit/storage/jacket/punk
+	name = "punk jacket"
+	desc = "A loose jacket often worn by counter-cultural types, commonly additional inscriptions can be found on the back."
+	icon_state = "punk_vest"
+	item_state = "punk_vest"
+	worn_state = "punk_vest"
+	body_parts_covered = UPPER_TORSO
+	cold_protection = UPPER_TORSO
+	armor = list(melee = 15, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
+/* Emergency Services*/
 
 /obj/item/weapon/storage/belt/police
 	name = "police belt"

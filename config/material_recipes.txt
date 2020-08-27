@@ -237,6 +237,7 @@ RECIPE: /material/leather/,leather overcoat,/obj/item/clothing/suit/storage/jack
 RECIPE: /material/leather/,black leather overcoat,/obj/item/clothing/suit/storage/jacket/leatherovercoat2,6,120,0,1,jackets & vests,0,0,89,8,null
 RECIPE: /material/leather/,biker jacket,/obj/item/clothing/suit/storage/coat/ww2/biker,6,110,0,1,jackets & vests,150,0,175,8,null
 RECIPE: /material/leather/,80's jacket,/obj/item/clothing/suit/storage/coat/oldyjacket,6,110,0,1,jackets & vests,185,0,175,7,null
+RECIPE: /material/leather/,punk jacket,/obj/item/clothing/suit/storage/jacket/punk,5,110,0,1,jackets & vests,175,0,180,8,null
 
 //*****************| LEATHER HATS |***************************
 
@@ -259,11 +260,14 @@ RECIPE: /material/leather/,riding boots,/obj/item/clothing/shoes/riding2,3,50,0,
 RECIPE: /material/leather/,work boots,/obj/item/clothing/shoes/workboots,4,80,0,1,foot wear,120,0,112,8,null
 RECIPE: /material/leather/,laceup shoes,/obj/item/clothing/shoes/laceup,3,60,0,1,foot wear,112,0,112,8,null
 RECIPE: /material/leather/,plain leather shoes,/obj/item/clothing/shoes/leather,3,60,0,1,foot wear,112,0,112,8,null
+RECIPE: /material/leather/,punk boots,/obj/item/clothing/shoes/punk,4,110,0,1,foot wear,175,0,180,8,null
 
 //*****************| LEATHER ARMOR |***************************
 
 RECIPE: /material/leather/,leather armor,/obj/item/clothing/suit/armor/medieval/leather,6,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,hats & masks,0,16,21,3,null
+RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,armor,0,16,21,3,null
+
+RECIPE: /material/leather/,hatchigane headband,/obj/item/clothing/head/helmet/hatchigane,3,90,0,1,armor,0,16,21,3,null
 
 RECIPE: /material/leather/,khepresh war crown,/obj/item/clothing/head/helmet/khepresh,3,90,0,1,armor,0,16,22,2,null
 
@@ -345,10 +349,14 @@ RECIPE: /material/electronics/,television,/obj/structure/TV/television,3,80,1,1,
 //**************************************************************
 
 RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,jackets & vests,0,0,0,8,null
-RECIPE: /material/woolcloth/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,foot wear,0,0,0,8,null
-RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
 
-RECIPE: /material/woolcloth/,steppe wool shoes,/obj/item/clothing/shoes/steppe_shoes,3,80,0,1,none,0,0,33,3,null
+RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
+RECIPE: /material/woolcloth/,motorist gloves,/obj/item/clothing/gloves/motorist,3,80,0,1,gloves,0,0,180,8,null
+
+RECIPE: /material/woolcloth/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,foot wear,0,0,0,8,null
+RECIPE: /material/woolcloth/,steppe wool shoes,/obj/item/clothing/shoes/steppe_shoes,3,80,0,1,foot wear,0,0,33,3,null
+RECIPE: /material/woolcloth/,courier sneakers,/obj/item/clothing/shoes/sneakers/courier,3,80,0,1,foot wear,0,0,180,8,null
+
 
 //*****************| WOOLCLOTH HATS |***************************
 
@@ -357,6 +365,7 @@ RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,
 RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/customhood,2,40,0,1,hats,0,0,26,8,null
 RECIPE: /material/woolcloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
 RECIPE: /material/woolcloth/,steppe shaman hat,/obj/item/clothing/head/steppe_shaman,4,70,0,1,hats,0,0,33,3,null
+RECIPE: /material/woolcloth/,nun hood,/obj/item/clothing/head/nun_hood,4,65,0,1,hats,0,0,38,3,null
 RECIPE: /material/woolcloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
 RECIPE: /material/woolcloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,2,null
 RECIPE: /material/woolcloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,2,null
@@ -394,8 +403,6 @@ RECIPE: /material/woolcloth/,black haori,/obj/item/clothing/under/haori,3,100,0,
 RECIPE: /material/woolcloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,0,0,38,6,null
 RECIPE: /material/woolcloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,6,null
-RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
-RECIPE: /material/woolcloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/woolcloth/,merchant outfit,/obj/item/clothing/under/merchant_suit,5,85,0,1,clothing,0,0,75,8,null
 RECIPE: /material/woolcloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
 RECIPE: /material/woolcloth/,artisan clothing,/obj/item/clothing/under/artisan,3,100,0,1,clothing,0,0,38,3,null
@@ -412,7 +419,14 @@ RECIPE: /material/woolccloth/,custom baggy modern outfit,/obj/item/clothing/unde
 RECIPE: /material/woolccloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/woolccloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
 RECIPE: /material/woolccloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
+RECIPE: /material/woolcloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
+RECIPE: /material/woolcloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
 
+RECIPE: /material/woolcloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/woolcloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
+RECIPE: /material/woolcloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/woolcloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/woolcloth/,short black dress,/obj/item/clothing/under/blackdress/short,4,75,0,1,feminine clothing,0,0,98,6,null
 //*****************| WOOLCLOTH SUITS & COATS |***************************
 
 RECIPE: /material/woolcloth/,steppe shaman wool coat,/obj/item/clothing/suit/storage/jacket/steppe_shaman,6,140,0,1,jackets & vests,0,0,33,3,null
@@ -435,6 +449,7 @@ RECIPE: /material/woolcloth/,burgundy suit,/obj/item/clothing/suit/storage/jacke
 RECIPE: /material/woolcloth/,checkered suit,/obj/item/clothing/suit/storage/jacket/checkered_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/woolcloth/,navy suit,/obj/item/clothing/suit/storage/jacket/navy_suit,15,200,0,1,jackets & vests,0,0,112,8,null
 RECIPE: /material/woolcloth/,grey parka,/obj/item/clothing/suit/storage/coat/ww2/german/civ,8,100,0,1,jackets & vests,0,0,112,8,null
+RECIPE: /material/woolcloth/,motorist jacket,/obj/item/clothing/suit/storage/jacket/motorist,6,110,0,1,jackets & vests,180,0,0,8,null
 
 //*****************| WOOLCLOTH ACCESSORIES |***************************
 
@@ -465,6 +480,9 @@ RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1
 RECIPE: /material/cloth/,small sail,/obj/item/sail,15,125,0,1,none,0,0,22,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
 RECIPE: /material/cloth/,sandbag,/obj/item/weapon/barrier/sandbag/empty,1,105,0,1,none,0,0,90,8,null
+
+RECIPE: /material/cloth/,courier sneakers,/obj/item/clothing/shoes/sneakers/courier,3,80,0,1,foot wear,0,0,180,8,null
+RECIPE: /material/cloth/,motorist gloves,/obj/item/clothing/gloves/motorist,3,80,0,1,gloves,0,0,180,8,null
 
 //*****************| CLOTH ACCESSORIES |***************************
 
@@ -558,6 +576,7 @@ RECIPE: /material/cloth/,blue hawaiian shirt,/obj/item/clothing/suit/hawaiian,3,
 RECIPE: /material/cloth/,orange hawaiian shirt,/obj/item/clothing/suit/hawaiian/orange,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,purple hawaiian shirt,/obj/item/clothing/suit/hawaiian/purple,3,100,0,1,jackets & vests,0,0,165,8,null
 RECIPE: /material/cloth/,green hawaiian shirt,/obj/item/clothing/suit/hawaiian/green,3,100,0,1,jackets & vests,0,0,165,8,null
+RECIPE: /material/cloth/,motorist jacket,/obj/item/clothing/under/motorist,6,110,0,1,jackets & vests,0,0,180,8,null
 
 //*****************| CLOTH ARMOR |***************************
 
@@ -591,6 +610,7 @@ RECIPE: /material/cloth/,ratty old padded head-cap,/obj/item/clothing/head/helme
 RECIPE: /material/cloth/,hooded cape,/obj/item/clothing/head/hooded_cape,6,100,0,1,hats,0,0,35,3,null
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,0,38,8,null
+RECIPE: /material/cloth/,grand turban,/obj/item/clothing/head/turban/sultan,5,110,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,custom keffiyeh,/obj/item/clothing/head/custom_keffiyeh,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,phrigian hat,/obj/item/clothing/head/phrigian_hat,4,55,0,1,hats,0,0,38,2,null
 RECIPE: /material/cloth/,red phrigian hat,/obj/item/clothing/head/phrigian_hat/red,4,55,0,1,hats,0,0,38,2,null
@@ -650,6 +670,7 @@ RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loinclot
 RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,12,8,null
 RECIPE: /material/cloth/,huipil,/obj/item/clothing/under/huipil,3,55,0,1,clothing,0,0,18,4,null
 RECIPE: /material/cloth/,half huipil,/obj/item/clothing/under/halfhuipil,2,45,0,1,clothing,0,0,18,4,null
+RECIPE: /material/cloth/,white kimono,/obj/item/clothing/under/kimono,4,85,0,1,clothing,0,0,18,8,null
 RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/roman,4,85,0,1,clothing,0,0,18,8,null
 RECIPE: /material/cloth/,customizable toga,/obj/item/clothing/under/custom/toga,3,65,0,1,clothing,0,0,18,2,null
 RECIPE: /material/cloth/,customizable shendyt,/obj/item/clothing/under/custom/shendyt,2,45,0,1,clothing,0,0,18,2,null
@@ -664,10 +685,7 @@ RECIPE: /material/cloth/,blue haori,/obj/item/clothing/under/haori/blue,3,100,0,
 RECIPE: /material/cloth/,red haori,/obj/item/clothing/under/haori/red,3,100,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable haori,/obj/item/clothing/under/haori,3,100,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,beggar clothing,/obj/item/clothing/under/medieval/beggar_clothing,2,100,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,black priest outfit,/obj/item/clothing/under/christian_priest,4,85,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,clothing,0,0,38,8,null
-RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,clothing,0,0,38,8,null
 RECIPE: /material/cloth/,merchant outfit,/obj/item/clothing/under/merchant_suit,5,85,0,1,clothing,0,0,75,8,null
 RECIPE: /material/cloth/,count outfit,/obj/item/clothing/under/count_outfit,6,85,0,1,clothing,0,0,35,8,null
 RECIPE: /material/cloth/,customizable tunic,/obj/item/clothing/under/custom/tunic,4,85,0,1,clothing,0,0,38,5,null
@@ -698,7 +716,6 @@ RECIPE: /material/cloth/,blue stripes clothing,/obj/item/clothing/under/pirate3,
 RECIPE: /material/cloth/,customizable pyjamas,/obj/item/clothing/under/custompyjamas,3,100,0,1,clothing,0,0,78,8,null
 RECIPE: /material/cloth/,pilgrim uniform,/obj/item/clothing/under/pilgrim,4,75,0,1,clothing,0,0,80,4,null
 RECIPE: /material/cloth/,lederhosen,/obj/item/clothing/under/lederhosen,4,75,0,1,clothing,0,0,80,8,null
-RECIPE: /material/cloth/,nightingale dress,/obj/item/clothing/under/nightingale,4,90,0,1,clothing,0,0,88,5,null
 RECIPE: /material/cloth/,pioneer outfit,/obj/item/clothing/under/industrial1,3,75,0,1,clothing,0,0,98,5,null
 RECIPE: /material/cloth/,rancher outfit,/obj/item/clothing/under/industrial2,3,75,0,1,clothing,0,0,98,6,null
 RECIPE: /material/cloth/,cowboy outfit,/obj/item/clothing/under/industrial3,3,75,0,1,clothing,0,0,98,8,null
@@ -713,11 +730,49 @@ RECIPE: /material/cloth/,mechanic outfit,/obj/item/clothing/under/mechanic_outfi
 RECIPE: /material/cloth/,custom victorian uniform,/obj/item/clothing/under/customvicuniform,3,75,0,1,clothing,0,0,112,8,null
 RECIPE: /material/cloth/,worker outfit,/obj/item/clothing/under/industrial5,3,75,0,1,clothing,0,0,112,6,null
 RECIPE: /material/cloth/,texan shirt outfit,/obj/item/clothing/under/texan,5,75,0,1,clothing,0,0,112,8,null
+RECIPE: /material/cloth/,black victorian shirt and vest,/obj/item/clothing/under/victorian_vest,5,75,0,1,clothing & vests,0,0,112,6,null
+RECIPE: /material/cloth/,black victorian shirt and red vest,/obj/item/clothing/under/victorian_vest/redvest,5,75,0,1,clothing,0,0,112,6,null
+RECIPE: /material/cloth/,red victorian shirt and black vest,/obj/item/clothing/under/victorian_vest/redshirt,5,75,0,1,clothing,0,0,112,6,null
 RECIPE: /material/cloth/,custom modern outfit,/obj/item/clothing/under/customuniform,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/cloth/,custom baggy modern outfit,/obj/item/clothing/under/customuniform/baggy,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/cloth/,custom short modern outfit,/obj/item/clothing/under/customuniform/short,4,75,0,1,clothing,0,0,120,8,null
 RECIPE: /material/cloth/,custom colonial outfit,/obj/item/clothing/under/customuniform/colonial,4,75,0,1,clothing,0,0,70,8,null
 RECIPE: /material/cloth/,custom short colonial outfit,/obj/item/clothing/under/customuniform/colonial/short,4,75,0,1,clothing,0,0,70,8,null
+RECIPE: /material/cloth/,motorist outfit,/obj/item/clothing/under/motorist,4,75,0,1,clothing,0,0,180,8,null
+RECIPE: /material/cloth/,punk outfit,/obj/item/clothing/under/punk,3,75,0,1,clothing,0,0,180,8,null
+
+RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/cloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
+RECIPE: /material/cloth/,blue sari,/obj/item/clothing/under/sari/blue,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/cloth/,red sari,/obj/item/clothing/under/sari/red,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/cloth/,dark dress,/obj/item/clothing/under/civf1,3,75,0,1,feminine clothing,0,0,78,4,null
+RECIPE: /material/cloth/,blue dress,/obj/item/clothing/under/civf2,3,75,0,1,feminine clothing,0,0,78,4,null
+RECIPE: /material/cloth/,brown dress,/obj/item/clothing/under/civf3,3,75,0,1,feminine clothing,0,0,78,4,null
+RECIPE: /material/cloth/,green dress,/obj/item/clothing/under/civfg,3,75,0,1,feminine clothing,0,0,78,4,null
+RECIPE: /material/cloth/,red dress,/obj/item/clothing/under/civfr,3,75,0,1,feminine clothing,0,0,78,4,null
+RECIPE: /material/cloth/,blue debutante gown,/obj/item/clothing/under/debutante/blue,8,130,0,1,feminine clothing,0,0,80,8,null
+RECIPE: /material/cloth/,orange debutante gown,/obj/item/clothing/under/debutante/orange,8,130,0,1,feminine clothing,0,0,80,8,null
+RECIPE: /material/cloth/,purple debutante gown,/obj/item/clothing/under/debutante/purple,8,130,0,1,feminine clothing,0,0,80,8,null
+RECIPE: /material/cloth/,red debutante gown,/obj/item/clothing/under/debutante/red,8,130,0,1,feminine clothing,0,0,80,8,null
+RECIPE: /material/cloth/,yellow debutante gown,/obj/item/clothing/under/debutante/yellow,8,130,0,1,feminine clothing,0,0,80,8,null
+RECIPE: /material/cloth/,nightingale dress,/obj/item/clothing/under/nightingale,4,90,0,1,feminine clothing,0,0,88,5,null
+RECIPE: /material/cloth/,saloon dress outfit,/obj/item/clothing/under/saloondress,4,75,0,1,feminine clothing,0,0,98,6,null
+RECIPE: /material/cloth/,cheongsam dress,/obj/item/clothing/under/cheongsam,5,100,0,1,feminine clothing,0,0,98,8,null
+RECIPE: /material/cloth/,short black dress,/obj/item/clothing/under/blackdress/short,4,75,0,1,feminine clothing,0,0,98,6,null
+RECIPE: /material/cloth/,wedding dress,/obj/item/clothing/under/wedding,10,160,0,1,feminine clothing,0,0,98,8,null
+RECIPE: /material/cloth/,victorian black dress,/obj/item/clothing/under/victorian_dress,5,75,0,1,feminine clothing,0,0,112,6,null
+RECIPE: /material/cloth/,blue traditional dress,/obj/item/clothing/under/tradwife,5,75,0,1,feminine clothing,0,0,112,6,null
+RECIPE: /material/cloth/,yellow traditional dress,/obj/item/clothing/under/tradwife/yellow,4,75,0,1,feminine clothing,0,0,128,8,null
+RECIPE: /material/cloth/,orange traditional dress,/obj/item/clothing/under/tradwife/orange,4,75,0,1,feminine clothing,0,0,128,8,null
+RECIPE: /material/cloth/,purple traditional dress,/obj/item/clothing/under/tradwife/purple,4,75,0,1,feminine clothing,0,0,128,8,null
+RECIPE: /material/cloth/,red traditional dress,/obj/item/clothing/under/tradwife/red,4,75,0,1,feminine clothing,0,0,128,8,null
+RECIPE: /material/cloth/,yellow sundress,/obj/item/clothing/under/sundress,3,75,0,1,feminine clothing,0,0,128,8,null
+RECIPE: /material/cloth/,blue sundress,/obj/item/clothing/under/sundress/blue,3,75,0,1,feminine clothing,0,0,128,8,null
+RECIPE: /material/cloth/,orange sundress,/obj/item/clothing/under/sundress/orange,3,75,0,1,feminine clothing,0,0,128,8,null
+RECIPE: /material/cloth/,purple sundress,/obj/item/clothing/under/sundress/purple,3,75,0,1,feminine clothing,0,0,128,8,null
+RECIPE: /material/cloth/,red sundress,/obj/item/clothing/under/sundress/red,3,75,0,1,feminine clothing,0,0,128,8,null
 
 //*****************| CLOTH MILITARY & LAW ENFORCMENT UNIFORMS |***************************
 
@@ -1597,6 +1652,7 @@ RECIPE: /material/bronze/,bronze scalpel,/obj/item/weapon/surgery/scalpel/bronze
 //*********************| BRONZE CLOTHING & ACCESSORIES |*************************
 
 RECIPE: /material/bronze/,bronze arm bangles,/obj/item/clothing/accessory/armband/armbangle/bronze,2,95,0,1,none,0,0,0,8,null
+RECIPE: /material/bronze/,spiked bracers,/obj/item/clothing/accessory/armband/punk,3,95,0,1,none,180,0,0,8,null
 
 //*********************| BRONZE DECORATION & MONUMENTS |*************************
 

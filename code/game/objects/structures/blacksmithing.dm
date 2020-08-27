@@ -903,7 +903,7 @@ obj/structure/anvil/New()
 			else if (map.ordinal_age == 0)
 				display4 = list("Cancel")
 			else
-				display4 = list("Egyptian Lamellar Armor (8)", "Scale Armor (14)", "Roman Helmet (10)", "Centurion Helmet (14)", "Decurion Helmet (14)", "Gladiator Helmet (10)", "Sol Invictus Helmet (18)", "Greek Helmet (10)", "Dimoerites helmet (14)", "Lochagos helmet (14)", "Anax helmet (18)", "Egyptian War Headdress (11)", "Horned Helmet (10)", "Winged Helmet (10)", "Conspicious Gaelic Helmet (14)", "Cancel")
+				display4 = list("Egyptian Lamellar Armor (8)", "Chinese Lamellar Armor (8)", "Scale Armor (14)", "Roman Helmet (10)", "Centurion Helmet (14)", "Decurion Helmet (14)", "Gladiator Helmet (10)", "Sol Invictus Helmet (18)", "Chinese Warrior Helmet (10)", "Greek Helmet (10)", "Dimoerites helmet (14)", "Lochagos helmet (14)", "Anax helmet (18)", "Egyptian War Headdress (11)", "Horned Helmet (10)", "Winged Helmet (10)", "Conspicious Gaelic Helmet (14)", "Cancel")
 			var/choice4 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display4)
 			if (choice4 == "Egyptian Lamellar Armor (8)")
 				if (iron_amt >= 8)
@@ -919,6 +919,36 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
+
+			if (choice4 == "Chinese Lamellar Armor (8)")
+				if (iron_amt >= 8)
+					user << "You begin crafting the chinese lamellar armor..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,100,src) && iron_amt >= 8)
+						user << "You craft the chinese lamellar armor."
+						iron_amt -= 8
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/suit/armor/ancient/bronze_lamellar/chinese(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Chinese Warrior Helmet (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the chinese warrior helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 10)
+						user << "You craft the chinese warrior helmet."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/chinese_warrior(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
 			if (choice4 == "Scale Armor (14)")
 				if (iron_amt >= 14)
 					user << "You begin crafting the scale armor..."
@@ -1706,7 +1736,9 @@ obj/structure/anvil/New()
 				if (H.orc)
 					display7 = list("Horned Helmet (10)", "Boss Jaw (7)", "Cancel")
 				else
-					display7 = list("Varangian Lamellar Armor (12)", "Viking Helmet (10)", "Valkyrie Helmet (10)", "Mamluk Conical Helmet (10)", "Mamluk Coif Helmet(12)", "Arabic Long Helmet (15)", "Varangian Helmet (15)", "Sallet Helmets (12)", "Cancel")
+					display7 = list("Varangian Lamellar Armor (12)", "Viking Helmet (10)", "Valkyrie Helmet (10)","Imperial Chinese Armor (13)", "Imperial Chinese Helmet (10)", "Mamluk Conical Helmet (10)", "Mamluk Coif Helmet(12)", "Arabic Long Helmet (15)", "Varangian Helmet (15)", "Sallet Helmets (12)", "Cancel")
+			else if (map.ordinal_age == 3)
+				display7 = list("Imperial Chinese Armor (13)", "Imperial Chinese Helmet (10)", "Cancel")
 			var/choice7 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display7)
 			if (choice7 == "Varangian Lamellar Armor (12)")
 				if (iron_amt >= 12)
@@ -1718,6 +1750,35 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/clothing/suit/armor/medieval/varangian(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice7 == "Imperial Chinese Armor (13)")
+				if (iron_amt >= 11)
+					user << "You begin crafting the imperial chinese armor..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 11)
+						user << "You craft the imperial chinese armor."
+						iron_amt -= 11
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/suit/armor/medieval/imperial_chinese(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice7 == "Imperial Chinese Helmet (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the imperial chinese helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 10)
+						user << "You craft the imperial chinese helmet."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/medieval/imperial_chinese(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -1861,7 +1922,7 @@ obj/structure/anvil/New()
 
 				if (choice8 == "German Sallet Helmet (12)")
 					if (iron_amt >= 12)
-						user << "You begin crafting the italian sallet helmet..."
+						user << "You begin crafting the german sallet helmet..."
 						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 						if (do_after(user,130,src) && iron_amt >= 12)
 							user << "You craft the german sallet helmet."
@@ -1869,6 +1930,21 @@ obj/structure/anvil/New()
 							if (iron_amt <= 0)
 								icon_state = "anvil1"
 							new/obj/item/clothing/head/helmet/sallet/german(user.loc)
+							return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+				if (choice8 == "Burgundian Sallet Helmet (12)")
+					if (iron_amt >= 12)
+						user << "You begin crafting the burgundian sallet helmet..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,130,src) && iron_amt >= 12)
+							user << "You craft the burgundian sallet helmet."
+							iron_amt -= 12
+							if (iron_amt <= 0)
+								icon_state = "anvil1"
+							new/obj/item/clothing/head/helmet/sallet/burg(user.loc)
 							return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
