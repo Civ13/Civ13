@@ -362,6 +362,21 @@ obj/structure/vending/japweapons_ww2
 		/obj/item/weapon/attachment/bayonet/military = 15,
 	)
 
+/obj/structure/vending/yakuza
+	name = "yakuza equipment rack"
+	desc = "Basic gear for the yakuza."
+	icon_state = "apparel_german2"
+	products = list(
+		/obj/item/clothing/shoes/laceup = 15,
+		/obj/item/clothing/under/modern2 = 15,
+		/obj/item/clothing/head/fedora = 15,
+		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 15,
+		/obj/item/clothing/mask/balaclava = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
+		/obj/item/clothing/suit/storage/jacket/blackvest = 10,
+	)
+
 /obj/structure/vending/russianapparel
 	name = "Russian Army apparel rack"
 	desc = "Basic wear for russian soldiers."
