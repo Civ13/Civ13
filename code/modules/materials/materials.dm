@@ -589,6 +589,34 @@ var/list/name_to_material
 	sheet_plural_name = "bundles"
 	stack_type = /obj/item/stack/material/rettedfabric
 
+/material/rawkevlar
+	name = "rawkevlar"
+	display_name = "raw kevlar"
+	icon_colour = "#fafad2"
+	hardness = 7
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
+	stack_type = /obj/item/stack/material/rawkevlar
+
+/material/preparedkevlar
+	name = "preparedkevlar"
+	display_name = "prepared kevlar"
+	icon_colour = "#fafad2" //goldenrod faint yellow
+	hardness = 7
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
+	stack_type = /obj/item/stack/material/preparedkevlar
+
+/material/kevlar
+	name = "kevlar"
+	display_name = "kevlar"
+	icon_colour = "#696969" //dim grey
+	hardness = 45
+	weight = 15
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
+	stack_type = /obj/item/stack/material/kevlar
+
 /material/woolcloth
 	name = "woolcloth"
 	hardness = 10

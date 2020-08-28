@@ -33,6 +33,9 @@
 //**| PLASTIC |**| PLASTIC STORAGE |**| PLASTIC GAS MASKS |**| PLASTIC FACE MASKS |**| PLASTIC SIGNS |**| PLASTIC DRINKS |**| PLASTIC CLOTHING & ARMOR |**
 //********************************************************************************************************************************************************
 
+//**| KEVLAR |**
+//**************
+
 //**| CHITIN |**
 //**************
 
@@ -860,6 +863,15 @@ RECIPE: /material/plastic/,surgical apron,/obj/item/clothing/suit/storage/jacket
 RECIPE: /material/plastic/,surgical mask,/obj/item/clothing/mask/sterile,1,140,0,1,none,0,0,108,8,null
 
 //**************************************************************
+//**********************| KEVLAR |******************************
+//**************************************************************
+
+RECIPE: /material/kevlar/,black kevlar helmet,/obj/item/clothing/accessory/armor/nomads/civiliankevlar,10,210,0,1,none,180,0,185,8,null
+
+RECIPE: /material/kevlar/,black kevlar helmet,/obj/item/clothing/head/helmet/kevlarhelmet,7,175,0,1,none,180,0,185,8,null
+RECIPE: /material/kevlar/,swat helmet,/obj/item/clothing/head/helmet/swat,7,175,0,1,none,180,0,185,8,null
+
+//**************************************************************
 //*********************| CHITIN |*******************************
 //**************************************************************
 
@@ -1573,6 +1585,7 @@ RECIPE: /material/steel/,450u huge fuel tank,/obj/item/weapon/reagent_containers
 RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,production,86,0,0,8,null
 
 RECIPE: /material/steel/,bakelizer,/obj/structure/bakelizer,18,300,1,1,production,90,0,0,8,null
+RECIPE: /material/steel/,industrial acidic bath,/obj/structure/converter/acid_bath,12,200,1,1,jackets & vests,175,0,180,8,null
 
 RECIPE: /material/steel/,petroleum refinery,/obj/structure/refinery,22,230,1,1,production,110,0,0,8,null
 RECIPE: /material/steel/,biofuel refinery,/obj/structure/refinery/biofuel,18,200,1,1,production,115,0,0,8,null
