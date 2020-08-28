@@ -99,9 +99,9 @@ obj/structure/anvil/New()
 			else if (map.ordinal_age == 6)
 				display2 = list("M-1952 Flak Jacket (12)","Cancel")
 			else if (map.ordinal_age == 7)
-				display2 = list("M-1969 Flak Jacket (12)","woodland PASGT (15)","khaki PASGT (15)", "Tan Carrier vest (12)", "Black Carrier vest (12)", "Civilian Kevlar Vest (10)", "Cancel")
+				display2 = list("M-1969 Flak Jacket (12)","woodland PASGT (15)","khaki PASGT (15)", "Tan Carrier vest (12)", "Black Carrier vest (12)", "Cancel")
 			else if (map.ordinal_age == 8)
-				display2 = list("Interceptor body armor (16)", "Tan Carrier vest (12)", "Black Carrier vest (12)", "Civilian Kevlar Vest (10)", "Cancel")
+				display2 = list("Interceptor body armor (16)", "Tan Carrier vest (12)", "Black Carrier vest (12)", "Cancel")
 		//else if (choice == "Other")
 			//if (map.ordinal_age >= 4)
 			//	display2 = list("Steel rods (2)", "Cancel")
@@ -543,20 +543,6 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more steel to make this!</span>"
 					return
-		if (choice2 == "Civilian Kevlar Vest (10)")
-			if (steel_amt >= 10)
-				user << "You begin crafting a Civilian Kevlar Vest..."
-				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-				if (do_after(user,150,src) && steel_amt >= 10)
-					user << "You craft a Civilian Kevlar Vest."
-					steel_amt -= 10
-					if (steel_amt <= 0)
-						icon_state = "anvil1"
-					new/obj/item/clothing/accessory/armor/nomads/civiliankevlar(user.loc)
-					return
-			else
-				user << "<span class='notice'>You need more steel to make this!</span>"
-				return
 		if (choice2 == "Interceptor body armor (16)")
 			if (steel_amt >= 16)
 				user << "You begin crafting a Interceptor body armor..."
