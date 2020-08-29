@@ -1,18 +1,18 @@
 ## Server name: This appears at the top of the screen in-game and in the BYOND hub. Remove the # infront of SERVERNAME and replace 'tgstation' with the name of your choice.
 ## IMPORTANT: Don't include special characters such as ' in here
-SERVER_NAME Civilization 13
+SERVER_NAME The Chadlands
 
 ## Where is the game folder located?
 MASTER_DIRECTORY /home/1713
 
 ## If this server is running: Persistence mode, RP maps only, TDM only, or both (PERSISTENCE RP TDM ALL).
-ALLOWED_GAMEMODES ALL
+ALLOWED_GAMEMODES PERSISTENCE
 
 ## The main content of your hub message
-#HUB_BODY From the Stone Age to the Industrial Age
+#HUB_BODY Civilization rebased for realism.
 
 ## Use a link to a banner on your hub message? Comment out if not
-HUB_BANNER_URL https://i.imgur.com/napac0L.png
+##HUB_BANNER_URL https://i.imgur.com/napac0L.png
 
 ## Open the hub discord link in a new window? 1 = yes, 0 = no
 OPEN_HUB_DISCORD_IN_NEW_WINDOW 1
@@ -127,22 +127,22 @@ USE_JOB_WHITELIST
 SERVER 192.210.161.174:23999
 
 ## donation address
-DONATIONURL https://www.patreon.com/1713ad
+## DONATIONURL https://www.patreon.com/1713ad
 
 ## rules address
 RULESURL http://civ13.com/wiki/index.php?title=Rules
 
 ## discord address
-DISCORDURL https://discord.gg/hBEtg4x
+## DISCORDURL https://discord.gg/hBEtg4x
 
 ## Wiki address
-WIKIURL http://civ13.com/wiki/index.php/Main_Page
+## WIKIURL http://civ13.com/wiki/index.php/Main_Page
 
 ## Website address
-WEBSITEURL http://civ13.com/
+## WEBSITEURL http://civ13.com/
 
 ##Github address
-GITHUBURL https://github.com/civ13/civ13/
+## GITHUBURL https://github.com/civ13/civ13/
 
 ##Github repo id
 ##This can be found by going to https://api.github.com/users/<user name here>/repos
@@ -150,7 +150,7 @@ GITHUBURL https://github.com/civ13/civ13/
 # GITHUBREPOID 3234987
 
 ## Ban appeals URL - usually for a forum or wherever people should go to contact your admins.
-# BANAPPEALS https://discord.gg/hBEtg4x
+## BANAPPEALS https://discord.gg/hBEtg4x
 
 ## Remove the # to show a popup 'reply to' window to every non-admin that recieves an adminPM.
 ## The intention is to make adminPMs more visible. (although I fnd popups annoying so this defaults to off)
@@ -211,6 +211,3 @@ SHOW_MENTORS 1
 
 #disables field of view if uncommented
 DISABLE_FOV
-
-#if uncommented, redirects all players to the target server
-#REDIRECT_ALL_PLAYERS byond://civ13.com:1714
