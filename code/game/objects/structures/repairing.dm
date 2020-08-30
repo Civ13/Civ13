@@ -66,7 +66,7 @@
 		user << "<span class='notice'>You cannot repair this with a [src.name]!</span>"
 		return
 /obj/structure/repair/grindstone
-	name = "Grindstone"
+	name = "grindstone"
 	desc = "for sharpening blades."
 	icon_state = "grindstone"
 	idlesprite = "grindstone"
@@ -80,7 +80,7 @@
 	delay = 100
 
 /obj/structure/repair/workbench
-	name = "workbench"
+	name = "armor repair workbench"
 	desc = "for repairing pieces of armor."
 	icon_state = "workbench"
 	idlesprite = "workbench"
