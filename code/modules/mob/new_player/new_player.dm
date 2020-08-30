@@ -41,7 +41,7 @@ var/global/redirect_all_players = null
 	spawn(20)
 		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
-			<BODY><iframe src=\"http://civ13.com/wiki/index.php/The_Art_of_the_Deal\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
+			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/The_Art_of_the_Deal\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
 			src << browse(htmlfile,"window=wiki;size=820x650")
 
 /mob/new_player/Destroy()

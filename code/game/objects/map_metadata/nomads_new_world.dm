@@ -19,7 +19,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>Human population is expanding fast, and this continent feels small to you - Maybe there is more land to the West? What dangers will it hold? It's up to you to find out, if you dare...</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>Human population is expanding fast, and this continent feels small to you - Maybe there is more land to the West? What dangers will it hold? It's up to you to find out, if you dare...</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
