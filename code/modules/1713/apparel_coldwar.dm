@@ -563,7 +563,27 @@
 			mob_overlay = image("icon" = 'icons/mob/ties.dmi', "icon_state" = "[tmp_icon_state]")
 	return mob_overlay
 
-/obj/item/clothing/accessory/armor/coldwar/flakjacket
+/obj/item/clothing/head/helmet/modern/ssh_68 //1960 precursor to the 6B47 helmet on apparel_modern.dm
+	name = "SSh-68 helmet"
+	desc = "A mass produced metal helmet often used by USSR infantry forces in the mid 20th century."
+	icon_state = "ssh_68_sovhelm"
+	item_state = "ssh_68_sovhelm"
+	worn_state = "ssh_68_sovhelm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 100, gun = 76, energy = 24, bomb = 66, bio = 25, rad = FALSE)
+
+/obj/item/clothing/suit/b3 //need checking these assets before path name change, but i've updated the name to a real B3 russian armor circa 1980's
+	name = "USSR 6B3 body armor"
+	desc = "A russian body armor, made with glory."
+	icon_state = "b3vest"
+	item_state = "b3vest"
+	worn_state = "b3vest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
+	ripable = FALSE
+
+/obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.
 	name = "M-1952 Flak Jacket"
 	desc = "Wearable armor meant to protect against shrapnel and light hits. Won't do much against large caliber weapons."
 	icon_state = "flakjacket"
@@ -574,7 +594,7 @@
 	value = 60
 	slowdown = 0.2
 
-/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969
+/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969 // see note above, this highly likely isn't real article.
 	name = "M-1969 Flak Jacket"
 	desc = "Wearable armor with neck protection meant to protect against shrapnel and light hits. Won't do much against large caliber weapons."
 	icon_state = "flakjacket1969"
@@ -917,7 +937,7 @@
 	armor = list(melee = 140, arrow = 200, gun = 150, energy = 100, bomb = 100, bio = 100, rad = 80)
 	ripable = FALSE
 
-/obj/item/clothing/suit/a6b45 //isn't this armor?
+/obj/item/clothing/suit/a6b45 //isn't this armor? || Note @FantasticFwoosh- (29/08/2020) Ratnik Programme russian armor is developed in 2016 this is classified in the wrong era.
 	name = "6B45 heavy vest"
 	desc = "6B45 is a modular bullet-resistant vest. It comprises frontal and rear section and soft-armour shoulder and side protection."
 	icon_state = "a6b45"
@@ -928,7 +948,7 @@
 	var/slots = 4
 	ripable = FALSE
 
-/obj/item/clothing/suit/heavyvest1
+/obj/item/clothing/suit/heavyvest1 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "heavy vest"
 	desc = "a heavy NIJ level IV vest."
 	icon_state = "heavypolice"
@@ -939,7 +959,7 @@
 	var/slots = 6
 	ripable = FALSE
 
-/obj/item/clothing/suit/medvest
+/obj/item/clothing/suit/medvest // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "medium vest"
 	desc = "a heavy NIJ level III vest."
 	icon_state = "mediumvest"
@@ -950,7 +970,7 @@
 	var/slots = 6
 	ripable = FALSE
 
-/obj/item/clothing/suit/a6b44
+/obj/item/clothing/suit/a6b44 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "6B44 vest"
 	desc = "6B44 is a modular bullet-resistant vest."
 	icon_state = "a6b44"
@@ -961,7 +981,7 @@
 	var/slots = 4
 	ripable = FALSE
 
-/obj/item/clothing/suit/a6b28
+/obj/item/clothing/suit/a6b28 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "6B28 plate carrier"
 	desc = "6B28 is a level III plate carrier."
 	icon_state = "a6b28"
@@ -970,16 +990,6 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 74, arrow = 87, gun = 83, energy = 67, bomb = 56, bio = 40, rad = 36)
 	var/slots = 3
-	ripable = FALSE
-
-/obj/item/clothing/suit/b3
-	name = "B3A1 vest"
-	desc = "A russian bulletproof vest, made with glory."
-	icon_state = "b3vest"
-	item_state = "b3vest"
-	worn_state = "b3vest"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
-	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
 	ripable = FALSE
 
 /obj/item/clothing/head/helmet/modern/vchelmet
@@ -992,4 +1002,3 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
-

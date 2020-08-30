@@ -1,3 +1,40 @@
+/*Index*/
+/* * - 1 Armor Plates
+   * - 1a Armored Plate Suits
+   * - 1b Carrier & Plate Carrier Vests
+   /////////////////////////////////////
+   * - 2 Us Army
+   * - 2a Us Army Armor
+   * - 2a1 PASGT Armor
+   * - 2a2 US Lightwieght Helmets
+   * - 2b US Army Clothing
+   /////////////////////////////////////
+   * - 3 USSR helmets
+   * - 4 Hezbollah
+   /////////////////////////////////////
+   * - 5 Insurgents
+   * - 5a Insurgent Clothing
+   * - 5b Insurgent Objects
+   * - 6 IDF Armor & Clothing
+   /////////////////////////////////////
+   * - 7 Kevlar Suits & Helmets
+   * - 8 Motorist
+   * - 9 Punk
+   /////////////////////////////////////
+   * - 10 Emergency Services
+   * - 10a Emergency Services Armor
+   * - 10b Emergency Services Clothing
+   * - 10c Emergency Services Objects
+   /////////////////////////////////////
+   * - 11 Miscallenous
+   * - 11a Tactical
+   * - 11b IOG armor
+   * - 11c Scrap Armor*/
+   /////////////////////////////////////
+
+// Foreword - Objects of this Category are typically late Cold War to present, in a range of 1960 - 2013
+// as such, more thing need to be properly distributed to apparel_coldwar.dm when time allows.
+
 /obj/item/clothing/accessory/armor/coldwar/plates
 	var/slots = 2
 	var/obj/item/weapon/storage/internal/hold
@@ -38,54 +75,7 @@
 		hold.remove_from_storage(I, T)
 	add_fingerprint(user)
 
-//late coldwar stuff
-
-/obj/item/clothing/accessory/armor/coldwar/pasgt
-	name = "woodland PASGT body armor"
-	desc = "Wearable armor that can stop most pistol rounds. This one is in U.S. Woodland pattern."
-	icon_state = "pasgt_woodland"
-	item_state = "pasgt_woodland"
-	worn_state = "pasgt_woodland"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
-	value = 90
-	slowdown = 0.3
-	w_class = 4
-	weight = 3.8
-
-/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki
-	name = "khaki PASGT body armor"
-	desc = "Wearable armor that can stop most pistol rounds. This one is khaki colored."
-	icon_state = "pasgt_khaki"
-	item_state = "pasgt_khaki"
-	worn_state = "pasgt_khaki"
-
-/obj/item/clothing/accessory/armor/coldwar/plates/interceptor
-	name = "black Interceptor Body Armor"
-	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection."
-	icon_state = "iba_black"
-	item_state = "iba_black"
-	worn_state = "iba_black"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 75, arrow = 100, gun = 65, energy = 25, bomb = 65, bio = 20, rad = FALSE)
-	value = 120
-	slowdown = 0.4
-	w_class = 4
-	weight = 6
-
-/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ucp
-	name = "UCP Interceptor Body Armor"
-	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection. This one has the Universal Camouflage Pattern."
-	icon_state = "iba_ucp"
-	item_state = "iba_ucp"
-	worn_state = "iba_ucp"
-
-/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp
-	name = "OCP Interceptor Body Armor"
-	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection. This one has the Operational Camouflage Pattern."
-	icon_state = "iba_ocp"
-	item_state = "iba_ocp"
-	worn_state = "iba_ocp"
+/* Armor Plates*/
 
 /obj/item/weapon/armorplates
 	name = "ballistic plates"
@@ -239,6 +229,121 @@
 	edge = TRUE
 	w_class = 2.0
 
+	/* Armored Plate Suits*/
+
+/obj/item/clothing/accessory/armor/coldwar/plates/interceptor
+	name = "black Interceptor Body Armor"
+	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection."
+	icon_state = "iba_black"
+	item_state = "iba_black"
+	worn_state = "iba_black"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 75, arrow = 100, gun = 65, energy = 25, bomb = 65, bio = 20, rad = FALSE)
+	value = 120
+	slowdown = 0.4
+	w_class = 4
+	weight = 6
+
+/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ucp
+	name = "UCP Interceptor Body Armor"
+	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection. This one has the Universal Camouflage Pattern."
+	icon_state = "iba_ucp"
+	item_state = "iba_ucp"
+	worn_state = "iba_ucp"
+
+/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp
+	name = "OCP Interceptor Body Armor"
+	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection. This one has the Operational Camouflage Pattern."
+	icon_state = "iba_ocp"
+	item_state = "iba_ocp"
+	worn_state = "iba_ocp"
+
+	/* Carrier & Plate Carrier Vests */
+
+/obj/item/clothing/accessory/armor/coldwar/platecarrier
+	name = "tan plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is tan."
+	icon_state = "platecarrier_tan"
+	item_state = "platecarrier_tan"
+	worn_state = "platecarrier_tan"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/coldwar/platecarriergreen
+	name = "olive plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is olive."
+	icon_state = "platecarrier_green"
+	item_state = "platecarrier_green"
+	worn_state = "platecarrier_green"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/coldwar/platecarrierblack
+	name = "black plate carrier"
+	desc = "A plate carrier that can store magazines and pouches. This one is black."
+	icon_state = "platecarrier_black"
+	item_state = "platecarrier_black"
+	worn_state = "platecarrier_black"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.1
+	w_class = 4
+	weight = 1.0
+
+/obj/item/clothing/accessory/armor/nomads/pcarriertan
+	name = "tan carrier vest"
+	desc = "A kevlar vest with pouches, it is tan."
+	icon_state = "pcarrier_tan"
+	item_state = "pcarrier_tan"
+	worn_state = "pcarrier_tan"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.35
+	w_class = 4
+	weight = 3.8
+
+/obj/item/clothing/accessory/armor/nomads/pcarrierblack
+	name = "black carrier vest"
+	desc = "A kevlar vest with pouches, it is black."
+	icon_state = "pcarrier_black"
+	item_state = "pcarrier_black"
+	worn_state = "pcarrier_black"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.35
+	w_class = 4
+	weight = 3.8
+
+/obj/item/clothing/accessory/armor/nomads/thickcarrier
+	name = "heavy carrier vest"
+	desc = "A tan carrier vest for holding various items."
+	icon_state = "thickcarrier"
+	item_state = "thickcarrier"
+	worn_state = "thickcarrier"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 30, gun = 78, energy = 16, bomb = 30, bio = 15, rad = FALSE)
+	value = 90
+	slowdown = 0.10
+	w_class = 3
+	weight = 3.0
+
+
+/* Us Army*/
+
+	/* Us Army Armor*/
+
+		/* PASGT Armor*/
 
 /obj/item/clothing/head/helmet/modern/pasgt
 	name = "PASGT helmet"
@@ -265,6 +370,28 @@
 		worn_state = "pasgt_desert_attachments"
 		update_icon()
 
+/obj/item/clothing/accessory/armor/coldwar/pasgt
+	name = "woodland PASGT body armor"
+	desc = "Wearable armor that can stop most pistol rounds. This one is in U.S. Woodland pattern."
+	icon_state = "pasgt_woodland"
+	item_state = "pasgt_woodland"
+	worn_state = "pasgt_woodland"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.3
+	w_class = 4
+	weight = 3.8
+
+/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki
+	name = "khaki PASGT body armor"
+	desc = "Wearable armor that can stop most pistol rounds. This one is khaki colored."
+	icon_state = "pasgt_khaki"
+	item_state = "pasgt_khaki"
+	worn_state = "pasgt_khaki"
+
+		/* US Lightwieght Helmets*/
+
 /obj/item/clothing/head/helmet/modern/lwh
 	name = "LWH helmet"
 	desc = "A typical US Army LightWeight Helmet. This one is in beige color."
@@ -282,45 +409,15 @@
 	item_state = "lwh_black"
 	worn_state = "lwh_black"
 
-/obj/item/clothing/head/helmet/modern/sovietfacehelmet
-	name = "K6 helmet"
-	desc = "A russian heavy armoured helmet."
-	icon_state = "sovietfacehelmet"
-	item_state = "sovietfacehelmet"
-	worn_state = "sovietfacehelmet"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 90, arrow = 110, gun = 96, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+	/* US Army Clothing*/
 
-/obj/item/clothing/head/helmet/modern/a6b47
-	name = "6B47 helmet"
-	desc = "A russian heavy armoured helmet."
-	icon_state = "a6b47"
-	item_state = "a6b47"
-	worn_state = "a6b47"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
-
-/obj/item/clothing/head/helmet/modern/zsh1
-	name = "ZSh-1 helmet"
-	desc = "A russian heavy armoured helmet."
-	icon_state = "zsh1"
-	item_state = "zsh1"
-	worn_state = "zsh1"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 80, arrow = 100, gun = 95, energy = 36, bomb = 76, bio = 30, rad = FALSE)
-
-/obj/item/clothing/head/helmet/modern/zsh2
-	name = "ZSh-2 helmet"
-	desc = "A russian heavy armoured helmet with a visor."
-	icon_state = "zsh2"
-	item_state = "zsh2"
-	worn_state = "zsh2"
-	body_parts_covered = HEAD|EYES
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 84, arrow = 104, gun = 98, energy = 38, bomb = 79, bio = 34, rad = FALSE)
+/obj/item/clothing/under/us_uni/us_camo_dcu
+	name = "desert camouflage uniform"
+	desc = "The standard US Army desert camo uniform the late 20th century."
+	icon_state = "us_camo_dcu"
+	item_state = "us_camo_dcu"
+	worn_state = "us_camo_dcu"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/us_camo_woodland
 	name = "woodland camouflage uniform"
@@ -328,26 +425,6 @@
 	icon_state = "us_camo_woodland"
 	item_state = "us_camo_woodland"
 	worn_state = "us_camo_woodland"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-
-/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah
-	name = "woodland camouflage uniform"
-	desc = "The standard US Army camo uniform the late 20th century, with Hezbollah insiginia."
-	icon_state = "us_camo_woodland_hez"
-	item_state = "us_camo_woodland_hez"
-	worn_state = "us_camo_woodland_hez"
-/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah/officer
-	name = "woodland camouflage uniform"
-	desc = "The standard US Army camo uniform the late 20th century, with Hezbollah insiginia of an officer."
-	icon_state = "us_camo_woodland_hez_officer"
-	item_state = "us_camo_woodland_hez_officer"
-	worn_state = "us_camo_woodland_hez_officer"
-/obj/item/clothing/under/us_uni/us_camo_dcu
-	name = "desert camouflage uniform"
-	desc = "The standard US Army desert camo uniform the late 20th century."
-	icon_state = "us_camo_dcu"
-	item_state = "us_camo_dcu"
-	worn_state = "us_camo_dcu"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/us_camo_ucp
@@ -358,7 +435,6 @@
 	worn_state = "us_camo_ucp"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
-
 /obj/item/clothing/under/us_uni/us_camo_ocp
 	name = "OCP camo uniform"
 	desc = "The standard US Army camo uniform from 2018 onwards."
@@ -367,6 +443,169 @@
 	worn_state = "us_camo_ocp"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/us_uni/us_lightuni_modern
+	name = "U.S. Army training uniform"
+	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
+	icon_state = "us_lightuni_modern"
+	item_state = "us_lightuni_modern"
+	worn_state = "us_lightuni_modern"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+/obj/item/clothing/gloves/fingerless
+	name = "fingerless black gloves"
+	icon_state = "fingerless"
+	item_state = "fingerless"
+	body_parts_covered = HANDS
+	slot_flags = SLOT_GLOVES
+
+/* USSR Helmets*/
+
+/obj/item/clothing/head/helmet/modern/sovietfacehelmet
+	name = "MASKA 1 helmet"
+	desc = "A USSR heavy armoured helmet with a slitted facemask."
+	icon_state = "sovietfacehelmet"
+	item_state = "sovietfacehelmet"
+	worn_state = "sovietfacehelmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 90, arrow = 110, gun = 96, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding
+	name = "K6-3 helmet"
+	desc = "A USSR heavy armoured helmet with a welding visor facemask."
+	icon_state = "sovietfacehelmet" //wip
+	item_state = "sovietfacehelmet"
+	worn_state = "sovietfacehelmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 90, arrow = 110, gun = 96, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/sovietfacehelmet/nomads
+	name = "MASKA 1 helmet"
+	desc = "A USSR heavy armoured helmet with a slitted facemask."
+	icon_state = "sovietfacehelmet_o"
+	item_state = "sovietfacehelmet_o"
+	worn_state = "sovietfacehelmet_o"
+	armor = list(melee = 85, arrow = 110, gun = 95, energy = 25, bomb = 75, bio = 30, rad = FALSE)
+	health = 80
+	slowdown = 0.45
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/modern/sovietfacehelmet/nomads/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/modern/sovietfacehelmet/nomads)
+		return
+	else
+		if (toggled)
+			item_state = "sovietfacehelmet_o"
+			icon_state = "sovietfacehelmet_o"
+			worn_state = "sovietfacehelmet_o"
+			item_state_slots["slot_head"] = "sovietfacehelmet_o"
+			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "sovietfacehelmet"
+			icon_state = "sovietfacehelmet"
+			worn_state = "sovietfacehelmet"
+			item_state_slots["slot_head"] = "sovietfacehelmet"
+			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding/nomads //also known as the
+	name = "K6-3 helmet"
+	desc = "A russian heavy armoured helmet with a welding visor facemask."
+	icon_state = "sovietface_weldhelmet"
+	item_state = "sovietface_weldhelmet"
+	worn_state = "sovietface_weldhelmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 85, arrow = 110, gun = 95, energy = 25, bomb = 75, bio = 30, rad = FALSE)
+	health = 80
+	slowdown = 0.45
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding/nomads/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding/nomads)
+		return
+	else
+		if (toggled)
+			item_state = "sovietface_weldhelmet_o"
+			icon_state = "sovietface_weldhelmet_o"
+			worn_state = "sovietface_weldhelmet_o"
+			item_state_slots["slot_head"] = "sovietface_weldhelmet_o"
+			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "sovietface_weldhelmet"
+			icon_state = "sovietface_weldhelmet"
+			worn_state = "sovietface_weldhelmet"
+			item_state_slots["slot_head"] = "sovietface_weldhelmet"
+			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE|EYES
+			flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/helmet/modern/a6b47 //Post 2000 helmet more modern.
+	name = "6B47 helmet"
+	desc = "A russian heavy armoured helmet often used by russian infantry forces in the 21st century."
+	icon_state = "a6b47"
+	item_state = "a6b47"
+	worn_state = "a6b47"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/zsh1 //1990's helmet for reference, specific date unknown.
+	name = "ZSh-1 helmet"
+	desc = "A russian heavy armoured helmet, often used by USSR infantry forces in the late 20th century."
+	icon_state = "zsh1"
+	item_state = "zsh1"
+	worn_state = "zsh1"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 80, arrow = 100, gun = 95, energy = 36, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/zsh2 //Post 2000 helmet like description suggests
+	name = "ZSh-2 helmet"
+	desc = "A russian heavy armoured helmet with a visor; often used by russian infantry forces in the 21st century."
+	icon_state = "zsh2"
+	item_state = "zsh2"
+	worn_state = "zsh2"
+	body_parts_covered = HEAD|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 84, arrow = 104, gun = 98, energy = 38, bomb = 79, bio = 34, rad = FALSE)
+
+/* Hezbollah*/
+
+/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah
+	name = "woodland camouflage uniform"
+	desc = "The standard US Army camo uniform the late 20th century, with Hezbollah insiginia."
+	icon_state = "us_camo_woodland_hez"
+	item_state = "us_camo_woodland_hez"
+	worn_state = "us_camo_woodland_hez"
+
+/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah/officer
+	name = "woodland camouflage uniform"
+	desc = "The standard US Army camo uniform the late 20th century, with Hezbollah insiginia of an officer."
+	icon_state = "us_camo_woodland_hez_officer"
+	item_state = "us_camo_woodland_hez_officer"
+	worn_state = "us_camo_woodland_hez_officer"
+
+/* Insurgents*/
+	/* Insurgent Clothing*/
 
 /obj/item/clothing/under/insurgent_black
 	name = "black tunic"
@@ -416,31 +655,6 @@
 	worn_state = "insurgent_leader"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
-/obj/item/clothing/under/tacti
-	name = "tactical outfit"
-	desc = "A outfit used by tactical units."
-	icon_state = "tacti"
-	item_state = "tacti"
-	worn_state = "tacti"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS
-	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-
-/obj/item/clothing/under/us_uni/us_lightuni_modern
-	name = "U.S. Army training uniform"
-	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
-	icon_state = "us_lightuni_modern"
-	item_state = "us_lightuni_modern"
-	worn_state = "us_lightuni_modern"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
-
-/obj/item/clothing/gloves/fingerless
-	name = "fingerless black gloves"
-	icon_state = "fingerless"
-	item_state = "fingerless"
-	body_parts_covered = HANDS
-	slot_flags = SLOT_GLOVES
-
 /obj/item/clothing/head/black_bandana
 	name = "black bandana"
 	desc = "A light black piece of cloth worn wrapped around the head."
@@ -455,6 +669,9 @@
 	item_state = "black_shemagh"
 	body_parts_covered = HEAD
 	heat_protection = HEAD|FACE|EYES
+
+	/* Insurgent Objects*/
+
 /obj/item/weapon/material/sword/arabsword
 	name = "arabic sword"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
@@ -482,6 +699,8 @@
 	block_chance = 26
 	cooldownw = 10
 	value = 60
+
+	/* IDF Armor & Clothing*/
 
 /obj/item/clothing/under/idf
 	name = "IDF olive uniform"
@@ -520,44 +739,7 @@
 	w_class = 4
 	weight = 3.8
 
-/obj/item/clothing/accessory/armor/coldwar/platecarrier
-	name = "tan plate carrier"
-	desc = "A plate carrier that can store magazines and pouches. This one is tan."
-	icon_state = "platecarrier_tan"
-	item_state = "platecarrier_tan"
-	worn_state = "platecarrier_tan"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
-	value = 130
-	slowdown = 0.1
-	w_class = 4
-	weight = 1.0
-
-/obj/item/clothing/accessory/armor/coldwar/platecarriergreen
-	name = "olive plate carrier"
-	desc = "A plate carrier that can store magazines and pouches. This one is olive."
-	icon_state = "platecarrier_green"
-	item_state = "platecarrier_green"
-	worn_state = "platecarrier_green"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
-	value = 130
-	slowdown = 0.1
-	w_class = 4
-	weight = 1.0
-
-/obj/item/clothing/accessory/armor/coldwar/platecarrierblack
-	name = "black plate carrier"
-	desc = "A plate carrier that can store magazines and pouches. This one is black."
-	icon_state = "platecarrier_black"
-	item_state = "platecarrier_black"
-	worn_state = "platecarrier_black"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 30, arrow = 20, gun = 0, energy = 20, bomb = 30, bio = 20, rad = FALSE)
-	value = 130
-	slowdown = 0.1
-	w_class = 4
-	weight = 1.0
+/* Kevlar Suits & Helmets*/
 
 /obj/item/clothing/accessory/armor/nomads/kevlarblack
 	name = "black kevlar vest"
@@ -569,142 +751,6 @@
 	armor = list(melee = 80, arrow = 95, gun = 95, energy = 35, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.4
-	w_class = 4
-	weight = 3.8
-
-/obj/item/clothing/accessory/armor/nomads/baily
-	name = "baily vest"
-	desc = "A vest used by baily security units."
-	icon_state = "bailyvest"
-	item_state = "bailyvest"
-	worn_state = "bailyvest"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
-	armor = list(melee = 40, arrow = 95, gun = 82, energy = 30, bomb = 35, bio = 20, rad = FALSE)
-	value = 90
-	slowdown = 0.2
-	w_class = 3
-	weight = 2
-
-/obj/item/clothing/accessory/armor/nomads/iogsuit
-	name = "IOG heavy vest B-7"
-	desc = "A heavy suit made of strong materials."
-	icon_state = "iogsuit"
-	item_state = "iogsuit"
-	worn_state = "iogsuit"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
-	armor = list(melee = 110, arrow = 100, gun = 130, energy = 50, bomb = 90, bio = 100, rad = FALSE)
-	value = 160
-	slowdown = 0.2
-	w_class = 4
-	weight = 3.4
-
-/obj/item/clothing/head/helmet/kevlarhelmet
-	name = "black kevlar helmet"
-	desc = "A standard bulletproof helmet, made of kevlar."
-	icon_state = "kevlarhelmet"
-	item_state = "kevlarhelmet"
-	worn_state = "kevlarhelmet"
-	body_parts_covered = HEAD
-	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
-	flags_inv = BLOCKHAIR
-	restricts_view = 2
-	health = 90
-
-/obj/item/clothing/head/helmet/swat
-	name = "swat helmet"
-	desc = "A standard kevlar helmet used by swat officers."
-	icon_state = "swat"
-	item_state = "swat"
-	worn_state = "swat"
-	body_parts_covered = HEAD
-	armor = list(melee = 65, arrow = 95, gun = 85, energy = 27, bomb = 64, bio = 20, rad = FALSE)
-	flags_inv = BLOCKHAIR
-	restricts_view = 2
-	health = 90
-
-/obj/item/clothing/head/helmet/tactical
-	name = "tactical helmet"
-	desc = "A standard bulletproof helmet, made of polyethylene."
-	icon_state = "tacticalhelmet"
-	item_state = "tacticalhelmet"
-	worn_state = "tacticalhelmet"
-	body_parts_covered = HEAD
-	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
-	flags_inv = BLOCKHAIR
-	restricts_view = 2
-	health = 90
-
-/obj/item/clothing/head/helmet/ioghelmet
-	name = "IOG helmet"
-	desc = "A strong helmet."
-	icon_state = "ioghelmet"
-	item_state = "ioghelmet"
-	worn_state = "ioghelmet"
-	body_parts_covered = HEAD
-	armor = list(melee = 95, arrow = 100, gun = 110, energy = 50, bomb = 90, bio = 45, rad = FALSE)
-	flags_inv = BLOCKHAIR
-	restricts_view = 1
-	health = 200
-
-/obj/item/clothing/head/helmet/iogmask1
-	name = "IOG helmet"
-	desc = "A strong helmet."
-	icon_state = "iogmask1"
-	item_state = "iogmask1"
-	worn_state = "iogmask1"
-	body_parts_covered = HEAD
-	armor = list(melee = 95, arrow = 100, gun = 100, energy = 50, bomb = 90, bio = 45, rad = 100)
-	flags_inv = BLOCKHAIR
-	restricts_view = 2
-	health = 200
-
-/obj/item/clothing/suit/armor/scrap
-	name = "scrap plate armor"
-	desc = "A ramshackle suit of armor, reminiscence of medieval times."
-	icon_state = "scraparmor"
-	item_state = "scraparmor"
-	worn_state = "scraparmor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
-	value = 50
-	slowdown = 1.5
-	health = 65
-
-/obj/item/clothing/head/helmet/scrap
-	name = "scrap metal helmet"
-	desc = "A makeshift helmet made of random metal."
-	icon_state = "scraphelmet"
-	item_state = "scraphelmet"
-	worn_state = "scraphelmet"
-	body_parts_covered = HEAD|FACE
-	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
-	flags_inv = BLOCKHAIR
-	restricts_view = 2
-	health = 60
-
-/obj/item/clothing/accessory/armor/nomads/pcarriertan
-	name = "tan carrier vest"
-	desc = "A kevlar vest with pouches, it is tan."
-	icon_state = "pcarrier_tan"
-	item_state = "pcarrier_tan"
-	worn_state = "pcarrier_tan"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
-	value = 90
-	slowdown = 0.35
-	w_class = 4
-	weight = 3.8
-
-/obj/item/clothing/accessory/armor/nomads/pcarrierblack
-	name = "black carrier vest"
-	desc = "A kevlar vest with pouches, it is black."
-	icon_state = "pcarrier_black"
-	item_state = "pcarrier_black"
-	worn_state = "pcarrier_black"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
-	value = 90
-	slowdown = 0.35
 	w_class = 4
 	weight = 3.8
 
@@ -721,18 +767,17 @@
 	w_class = 4
 	weight = 3.6
 
-/obj/item/clothing/accessory/armor/nomads/thickcarrier
-	name = "heavy carrier vest"
-	desc = "A tan carrier vest for holding various items."
-	icon_state = "thickcarrier"
-	item_state = "thickcarrier"
-	worn_state = "thickcarrier"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 30, arrow = 30, gun = 78, energy = 16, bomb = 30, bio = 15, rad = FALSE)
-	value = 90
-	slowdown = 0.10
-	w_class = 3
-	weight = 3.0
+/obj/item/clothing/head/helmet/kevlarhelmet
+	name = "black kevlar helmet"
+	desc = "A standard bulletproof helmet, made of kevlar."
+	icon_state = "kevlarhelmet"
+	item_state = "kevlarhelmet"
+	worn_state = "kevlarhelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
 
 /* Motorist*/
 
@@ -826,6 +871,37 @@
 
 /* Emergency Services*/
 
+	/* Emergency Services Armor*/
+
+/obj/item/clothing/head/helmet/swat
+	name = "swat helmet"
+	desc = "A standard kevlar helmet used by swat officers."
+	icon_state = "swat"
+	item_state = "swat"
+	worn_state = "swat"
+	body_parts_covered = HEAD
+	armor = list(melee = 65, arrow = 95, gun = 85, energy = 27, bomb = 64, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
+
+	/* Emergency Services Clothing*/
+
+/obj/item/clothing/suit/storage/jacket/highvis
+	name = "high visibility jacket"
+	desc = "A yellow high visibility jacket."
+	icon_state = "high_vis_jacket_yellow"
+	item_state = "high_vis_jacket_yellow"
+	worn_state = "high_vis_jacket_yellow"
+
+/obj/item/clothing/suit/storage/jacket/highvis/paramedic
+	name = "paramedic jacket"
+	icon_state = "paramedic_jacket"
+	item_state = "paramedic_jacket"
+	worn_state = "paramedic_jacket"
+
+	/* Emergency Services Objects*/
+
 /obj/item/weapon/storage/belt/police
 	name = "police belt"
 	desc = "A belt that can hold the standard issue gear of police officers."
@@ -864,15 +940,107 @@
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
 
-/obj/item/clothing/suit/storage/jacket/highvis
-	name = "high visibility jacket"
-	desc = "A yellow high visibility jacket."
-	icon_state = "high_vis_jacket_yellow"
-	item_state = "high_vis_jacket_yellow"
-	worn_state = "high_vis_jacket_yellow"
+/* Miscallenous*/
 
-/obj/item/clothing/suit/storage/jacket/highvis/paramedic
-	name = "paramedic jacket"
-	icon_state = "paramedic_jacket"
-	item_state = "paramedic_jacket"
-	worn_state = "paramedic_jacket"
+/obj/item/clothing/accessory/armor/nomads/baily //too broad, can't make out what detail this is actually meant to be associated with.
+	name = "baily vest"
+	desc = "A vest used by baily security units."
+	icon_state = "bailyvest"
+	item_state = "bailyvest"
+	worn_state = "bailyvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	armor = list(melee = 40, arrow = 95, gun = 82, energy = 30, bomb = 35, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.2
+	w_class = 3
+	weight = 2
+
+	/* Tactical*/
+
+/obj/item/clothing/head/helmet/tactical //unsure, but a white helmet is good for peacekeeper corps until a legit code entry is made.
+	name = "tactical helmet"
+	desc = "A standard bulletproof helmet, made of polyethylene."
+	icon_state = "tacticalhelmet"
+	item_state = "tacticalhelmet"
+	worn_state = "tacticalhelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 90
+
+/obj/item/clothing/under/tacti
+	name = "tactical outfit"
+	desc = "A outfit used by tactical units."
+	icon_state = "tacti"
+	item_state = "tacti"
+	worn_state = "tacti"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+	/* IOG armor*/
+
+/obj/item/clothing/accessory/armor/nomads/iogsuit //too broad, this is meant to be some sort of extreme sports armorwear or something.
+	name = "IOG heavy vest B-7"
+	desc = "A heavy suit made of strong materials."
+	icon_state = "iogsuit"
+	item_state = "iogsuit"
+	worn_state = "iogsuit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	armor = list(melee = 110, arrow = 100, gun = 130, energy = 50, bomb = 90, bio = 100, rad = FALSE)
+	value = 160
+	slowdown = 0.2
+	w_class = 4
+	weight = 3.4
+
+/obj/item/clothing/head/helmet/ioghelmet //too broad, this is meant to be some sort of extreme sports armorwear or something.
+	name = "IOG helmet"
+	desc = "A strong helmet."
+	icon_state = "ioghelmet"
+	item_state = "ioghelmet"
+	worn_state = "ioghelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 95, arrow = 100, gun = 110, energy = 50, bomb = 90, bio = 45, rad = FALSE)
+	flags_inv = BLOCKHAIR
+	restricts_view = 1
+	health = 200
+
+/obj/item/clothing/head/helmet/iogmask1 //too broad, this is meant to be some sort of extreme sports armorwear or something.
+	name = "IOG helmet"
+	desc = "A strong helmet."
+	icon_state = "iogmask1"
+	item_state = "iogmask1"
+	worn_state = "iogmask1"
+	body_parts_covered = HEAD
+	armor = list(melee = 95, arrow = 100, gun = 100, energy = 50, bomb = 90, bio = 45, rad = 100)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 200
+
+	/* Scrap Armor*/
+
+/obj/item/clothing/suit/armor/scrap
+	name = "scrap plate armor"
+	desc = "A ramshackle suit of armor, reminiscence of medieval times."
+	icon_state = "scraparmor"
+	item_state = "scraparmor"
+	worn_state = "scraparmor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
+	value = 50
+	slowdown = 1.5
+	health = 65
+
+/obj/item/clothing/head/helmet/scrap
+	name = "scrap metal helmet"
+	desc = "A makeshift helmet made of random metal."
+	icon_state = "scraphelmet"
+	item_state = "scraphelmet"
+	worn_state = "scraphelmet"
+	body_parts_covered = HEAD|FACE
+	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
+	flags_inv = BLOCKHAIR
+	restricts_view = 2
+	health = 60
+

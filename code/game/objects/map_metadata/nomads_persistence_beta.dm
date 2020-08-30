@@ -18,7 +18,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>Your world faded to black as you sink into the darkness of the storm-tossed sea with the remains of your craft. You opened your eyes to find yourself in a new unknown land. You did not come alone, others continually wash up on the island to meet the same fate. You must obtain food, shelter, tools, and security, for surely there will be many that will not want to co-exist peacefully in this new world...</big><br><b>Wiki Guide: http://civ13.com/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>Your world faded to black as you sink into the darkness of the storm-tossed sea with the remains of your craft. You opened your eyes to find yourself in a new unknown land. You did not come alone, others continually wash up on the island to meet the same fate. You must obtain food, shelter, tools, and security, for surely there will be many that will not want to co-exist peacefully in this new world...</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")

@@ -32,6 +32,17 @@
 			qdel(W)
 		else
 			icon_state = "loom"
+	if (istype(W, /obj/item/stack/material/preparedkevlar))
+		H.visible_message("You start to produce the kevlar.")
+		icon_state = "loom1"
+		if (do_after(H, min(W.amount*20, 200), H.loc))
+			H.visible_message("You finish producing the kevlar.")
+			icon_state = "loom"
+			var/obj/item/stack/material/kevlar/clothes = new/obj/item/stack/material/kevlar(H.loc)
+			clothes.amount = W.amount
+			qdel(W)
+		else
+			icon_state = "loom"
 	if (istype(W, /obj/item/stack/material/wool))
 		H.visible_message("You start to produce the wool cloth.")
 		icon_state = "loom1"

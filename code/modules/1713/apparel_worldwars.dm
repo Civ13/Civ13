@@ -315,14 +315,14 @@
 		qdel(W)
 
 /obj/item/clothing/head/helmet/ww/mk2brodietannetf
-	name = "Camoflauged Mk2 Brodie Helmet"
+	name = "camouflaged Mk2 Brodie Helmet"
 	desc = "A typical british helmet in WW2, this one being having tan netting and foliage for camoflauge."
 	icon_state = "brodie_mk2_nettanf"
 	item_state = "brodie_mk2_nettanf"
 	worn_state = "brodie_mk2_nettanf"
 
 /obj/item/clothing/head/helmet/ww/mk2brodiegreennetf
-	name = "Camoflauged Mk2 Brodie Helmet"
+	name = "camouflaged Mk2 Brodie Helmet"
 	desc = "A typical british helmet in WW2, this one being having green netting and foliage for camoflauge."
 	icon_state = "brodie_mk2_netgreenf"
 	item_state = "brodie_mk2_netgreenf"
