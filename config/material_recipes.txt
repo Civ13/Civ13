@@ -585,7 +585,6 @@ RECIPE: /material/cloth/,motorist jacket,/obj/item/clothing/under/motorist,6,110
 //*****************| CLOTH ARMOR |***************************
 
 RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,3,null
-RECIPE: /material/cloth/,B-3 vest,/obj/item/clothing/suit/b3,45,300,0,1,jackets & vests,0,0,145,8,null
 
 RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,armor,0,0,38,3,null
 RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,armor,0,0,38,3,null
@@ -866,10 +865,10 @@ RECIPE: /material/plastic/,surgical mask,/obj/item/clothing/mask/sterile,1,140,0
 //**********************| KEVLAR |******************************
 //**************************************************************
 
-RECIPE: /material/kevlar/,black kevlar helmet,/obj/item/clothing/accessory/armor/nomads/civiliankevlar,10,210,0,1,none,180,0,185,8,null
+RECIPE: /material/kevlar/,rubber wheel,/obj/structure/vehicleparts/movement,1,20,0,1,none,175,0,0,8,null
 
-RECIPE: /material/kevlar/,black kevlar helmet,/obj/item/clothing/head/helmet/kevlarhelmet,7,175,0,1,none,180,0,185,8,null
-RECIPE: /material/kevlar/,swat helmet,/obj/item/clothing/head/helmet/swat,7,175,0,1,none,180,0,185,8,null
+RECIPE: /material/kevlar/,civilian kevlar armor,/obj/item/clothing/accessory/armor/nomads/civiliankevlar,10,210,0,1,none,180,0,185,8,null
+RECIPE: /material/kevlar/,USSR 6B3 body armor,/obj/item/clothing/suit/b3,12,260,0,1,none,175,0,175,7,null
 
 //**************************************************************
 //*********************| CHITIN |*******************************
@@ -912,7 +911,7 @@ RECIPE: /material/bearpelt/white/,white napoleonic bearskin hat,/obj/item/clothi
 //*****************| BLACK BEARPELT CLOTHES |***************************
 
 RECIPE: /material/bearpelt/black/,fur coat,/obj/item/clothing/suit/storage/coat/fur/black,6,150,0,1,none,0,0,0,8,null
-RECIPE: /material/bearpelt/black/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat,10,200,0,1,none,0,0,0,25,null
+RECIPE: /material/bearpelt/black/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fancy_fur_coat,10,200,0,1,none,0,0,0,25,null
 RECIPE: /material/bearpelt/black/,fur boots,/obj/item/clothing/shoes/fur/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/black/,fur gloves,/obj/item/clothing/gloves/thick/leather/black,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bearpelt/black/,bear pelt headcover,/obj/item/clothing/head/bearpelt/black,4,150,0,1,none,0,0,0,8,null
@@ -1709,6 +1708,7 @@ RECIPE: /material/wood/,small mill,/obj/structure/mill,4,90,1,1,economy & produc
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,armorbench,/obj/structure/anvil/armorbench,10,150,1,1,economy & production,25,0,0,8,null
 RECIPE: /material/wood/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,economy & production,105,0,0,8,null
@@ -2012,7 +2012,8 @@ RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,2
 //*********************| IRON PRODUCTION & ECONOMY |**************************
 
 RECIPE: /material/iron/,anvil,/obj/structure/anvil,25,150,1,1,production,25,0,0,8,null
-RECIPE: /material/iron/,armor workbench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
+RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
+RECIPE: /material/wood/,specialist armorbench,/obj/structure/anvil/armorbench/specialist,15,210,1,1,production,120,0,0,8,null
 
 RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null
 

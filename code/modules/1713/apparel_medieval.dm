@@ -251,7 +251,7 @@
 	icon_state = "plaguedoctor"
 	icon_state = "plaguedoctor"
 
-/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat
+/obj/item/clothing/suit/storage/coat/fancy_fur_coat
 	name = "fancy fur coat"
 	desc = "A fancy and expensive fur coat."
 	icon_state = "fancy_fur_coat"
@@ -861,6 +861,44 @@
 			flags_inv = BLOCKHAIR
 
 /* Sallets End*/
+
+/obj/item/clothing/head/helmet/bascinet
+	name = "hounskull bascinet"
+	desc = "A bascinet helmet with a large outward faceguard; used by knights & heavy infantry in the 14th century."
+	icon_state = "bascinet_o"
+	item_state = "bascinet_o"
+	worn_state = "bascinet_o"
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	health = 45
+	slowdown = 0.15
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/bascinet/verb/toggle_visor()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/bascinet)
+		return
+	else
+		if (toggled)
+			item_state = "bascinet_o"
+			icon_state = "bascinet_o"
+			worn_state = "bascinet_o"
+			item_state_slots["slot_head"] = "bascinet_o"
+			usr << "<span class = 'danger'>You put up your helmet's visor.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+			body_parts_covered = HEAD
+			flags_inv = BLOCKHEADHAIR
+		else if (!toggled)
+			item_state = "bascinet_hounskull"
+			icon_state = "bascinet_hounskull"
+			worn_state = "bascinet_hounskull"
+			item_state_slots["slot_head"] = "bascinet_hounskull"
+			usr << "<span class = 'danger'>You put down your helmet's visor.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+			body_parts_covered = HEAD|FACE
+			flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/helmet/medieval
 	name = "knight helmet"
