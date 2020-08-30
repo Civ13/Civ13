@@ -641,9 +641,9 @@
 /obj/item/clothing/head/helmet/chinese_warrior
 	name = "chinese warrior helmet"
 	desc = "A bronze helmet, used by early chinese dynasties."
-	icon_state = "chinese_warrior"
-	item_state = "chinese_warrior"
-	worn_state = "chinese_warrior"
+	icon_state = "bronze_chinese"
+	item_state = "bronze_chinese"
+	worn_state = "bronze_chinese"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 30, gun = FALSE, energy = 15, bomb = 40, bio = 20, rad = FALSE)
