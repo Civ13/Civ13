@@ -33,8 +33,9 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+	H.civilization = "Yamaguchi-Gumi"
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Underboss of the Yamaguchi-gumi!</big></b>"
+	world << "<b><big>[H.real_name] is the Underboss of the Yamaguchi-Gumi!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -87,6 +88,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+	H.civilization = "Yamaguchi-Gumi"
+	give_random_name(H)
 	world << "<b><big>[H.real_name] is the Deputy Underboss of the Yamaguchi-Gumi Gang!!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. Second to underboss. The whole operation relies on you and your orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -138,7 +141,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Yamaguch-Gumi Clan. Follow your <b>Underboss'</b> orders!")
+	H.civilization = "Yamaguchi-Gumi"
+	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Yamaguchi-Gumi Clan. Follow your <b>Underboss'</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
@@ -184,6 +188,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
+	H.civilization = "Ichiwa-Kai"
 	world << "<b><big>[H.real_name] is the Underboss of the Ichiwa-Kai!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -237,6 +242,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+	H.civilization = "Ichiwa-Kai"
+	give_random_name(H)
 	world << "<b><big>[H.real_name] is the Deputy Underboss of the Ichiwa-Kai Gang!!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. Second to underboss. The whole operation relies on you and your orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -284,6 +291,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+	H.civilization = "Ichiwa-Kai"
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Ichiwa-Kai Clan. Follow your <b>Underboss'</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

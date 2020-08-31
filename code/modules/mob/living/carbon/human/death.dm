@@ -58,6 +58,14 @@
 			for(var/i in GD.points)
 				if (i[1]==PJ.nationality)
 					i[3]-=50
+	else if (map && map.ID == MAP_ALLEYWAY)
+		if (civilization && civilization in map.scores)
+			if (civilization == "Yamaguchi-Gumi")
+				map.scores["Yamaguchi-Gumi"] -= 2
+				map.scores["Ichiwa-Kai"] += 1
+			else
+				map.scores["Ichiwa-Kai"] -= 2
+				map.scores["Yamaguchi-Gumi"] += 1
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Paramedics")
