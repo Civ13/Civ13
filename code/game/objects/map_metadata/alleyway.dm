@@ -24,7 +24,10 @@
 		"Yamaguchi-Gumi" = 0,
 		"Ichiwa-Kai" = 0,
 	)
-
+	New()
+		..()
+		spawn(600)
+			points_check()
 /obj/map_metadata/alleyway/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_yakuza == TRUE)
@@ -37,7 +40,7 @@
 
 /obj/map_metadata/alleyway/proc/points_check()
 	world << "<big><b>Current Points:</big></b>"
-	world << "<big>Yamaguchi-Gumi: [scores["yamaguchi-gumi"]]</big>"
+	world << "<big>Yamaguchi-Gumi: [scores["Yamaguchi-Gumi"]]</big>"
 	world << "<big>Ichiwa-Kai: [scores["Ichiwa-Kai"]]</big>"
 	spawn(300)
 		points_check()
