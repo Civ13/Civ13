@@ -99,7 +99,7 @@
 	else
 		return ""
 
-obj/map_metadata/stalingrad/proc/points_check()
+/obj/map_metadata/stalingrad/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 6000)
 		var/c1 = 0
 		var/c2 = 0
