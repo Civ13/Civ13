@@ -4,6 +4,7 @@
 	lobby_icon_state = "taotd"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
+	no_winner ="The fighting for the street is still going on."
 	faction_organization = list(
 		JAPANESE,)
 
@@ -41,7 +42,7 @@
 	spawn(300)
 		points_check()
 
-/obj/map_metadata/stalingrad/update_win_condition()
+/obj/map_metadata/alleyway/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 6000)
 		if (sov_points < 40 && ger_points < 40)
 			return TRUE
@@ -64,3 +65,11 @@
 			win_condition_spam_check = TRUE
 			return FALSE
 	return TRUE
+/obj/map_metadata/alleyway/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/alleyway/cross_message(faction)
+	return "<font size = 4>The grace wall is lifted!</font>"
+
+/obj/map_metadata/alleyway/reverse_cross_message(faction)
+	return ""
