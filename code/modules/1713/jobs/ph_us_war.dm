@@ -222,7 +222,7 @@
 	is_ph_us_war = TRUE
 
 	min_positions = 8
-	max_positions = 100
+	max_positions = 16
 
 /datum/job/american/fp_sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

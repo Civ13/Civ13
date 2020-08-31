@@ -375,6 +375,8 @@ obj/structure/vending/japweapons_ww2
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
 		/obj/item/clothing/suit/storage/jacket/blackvest = 10,
+		/obj/item/ammo_magazine/m9beretta = 15,
+		/obj/item/weapon/material/knife/tanto = 5,
 	)
 
 /obj/structure/vending/russianapparel

@@ -670,7 +670,7 @@
 	filling_color = "#dcdcdc"
 	nutriment_desc = list("rice" = TRUE)
 	nutriment_amt = 2
-	decay = 60*600
+	decay = 600*600
 	satisfaction = 3
 	New()
 		..()

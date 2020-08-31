@@ -247,6 +247,7 @@
 #include "code\game\objects\items\weapons\storage\storage.dm"
 #include "code\game\objects\items\weapons\storage\toolbox.dm"
 #include "code\game\objects\map_metadata\_map_metadata.dm"
+#include "code\game\objects\map_metadata\alleyway.dm"
 #include "code\game\objects\map_metadata\arab_town.dm"
 #include "code\game\objects\map_metadata\battleroyale.dm"
 #include "code\game\objects\map_metadata\bohemia.dm"
@@ -510,6 +511,7 @@
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
 #include "code\modules\1713\jobs\wildwest.dm"
+#include "code\modules\1713\jobs\yakuza.dm"
 #include "code\modules\1713\machinery\cables.dm"
 #include "code\modules\1713\machinery\cables_types.dm"
 #include "code\modules\1713\machinery\vehicles.dm"
@@ -956,5 +958,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1903\caloocan.dmm"
+#include "maps\2013\alleyway.dmm"
 // END_INCLUDE
