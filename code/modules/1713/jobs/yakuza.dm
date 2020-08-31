@@ -22,7 +22,7 @@
 	if (prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_l_store)
+		H.equip_to_slot_or_del(new null(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
@@ -77,7 +77,7 @@
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_l_store)
+		H.equip_to_slot_or_del(new null(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
@@ -124,7 +124,7 @@
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_l_store)
+		H.equip_to_slot_or_del(new null(H), slot_head)
 //jacket
 
 	var/randjack = rand(1,2)
@@ -177,7 +177,7 @@
 	if (prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_l_store)
+		H.equip_to_slot_or_del(new null(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
 	if (prob(35))
@@ -231,7 +231,7 @@
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_l_store)
+		H.equip_to_slot_or_del(new null(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
@@ -281,7 +281,7 @@
 	if (randjack == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 	else if (randjack == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
 //back
 	if (prob(5))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/silencer/pistol(H), slot_l_store)
