@@ -124,13 +124,11 @@
 		H.equip_to_slot_or_del(new null(H), slot_l_store)
 //jacket
 
-	var/randjack = rand(1,3)
+	var/randjack = rand(1,2)
 	if (randjack == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 	else if (randjack == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
-	else if (randjack == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_head)
 //back
 	if (prob(5))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/silencer/pistol(H), slot_l_store)
@@ -272,12 +270,10 @@
 //head
 //jacket
 
-	var/randjack = rand(1,3)
+	var/randjack = rand(1,2)
 	if (randjack == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
-	else if (randjack == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
-	else if (randjack == 3)
+	else if (randjack == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_head)
 //back
 	if (prob(5))
