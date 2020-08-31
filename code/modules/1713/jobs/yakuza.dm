@@ -8,6 +8,7 @@
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
+	is_yakuza = TRUE
 
 /datum/job/japanese/yakuza_underboss/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -59,7 +60,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	is_squad_leader = TRUE
-
+	is_yakuza = TRUE
 	min_positions = 1
 	max_positions = 2
 
@@ -107,7 +108,7 @@
 	spawn_location = "JoinLateJP"
 	min_positions = 6
 	max_positions = 24
-
+	is_yakuza = TRUE
 /datum/job/japanese/yakuza/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -139,7 +140,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	H.add_note("Role", "You are a <b>[title]</b>, a gang mebmer employed by Yamaguch-Gumi Clan. Follow your <b>Underboss'</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Yamaguch-Gumi Clan. Follow your <b>Underboss'</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
@@ -160,7 +161,7 @@
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
-
+	is_yakuza = TRUE
 /datum/job/japanese/yakuza_underboss_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -214,7 +215,7 @@
 
 	min_positions = 1
 	max_positions = 2
-
+	is_yakuza = TRUE
 /datum/job/japanese/yakuza_underboss_deputy_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -259,7 +260,7 @@
 	spawn_location = "JoinLateRN"
 	min_positions = 6
 	max_positions = 24
-
+	is_yakuza = TRUE
 /datum/job/japanese/yakuza_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -287,7 +288,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	H.add_note("Role", "You are a <b>[title]</b>, a gang mebmer employed by Ichiwa-Kai Clan. Follow your <b>Underboss'</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Ichiwa-Kai Clan. Follow your <b>Underboss'</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets

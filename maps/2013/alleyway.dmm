@@ -33,9 +33,8 @@
 "aG" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/tiled,/area/caribbean/roofed)
 "aH" = (/obj/structure/shelf,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
 "aI" = (/obj/structure/grille/ironfence{icon_state = "iron_fence"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
-"aJ" = (/obj/effects/premadevehicles/yamasaki/shinobu{dir = 4},/turf/floor/plating/road,/area/caribbean)
+"aJ" = (/obj/effects/premadevehicles/yamasaki/shinobu{custom_color = "#222222"},/turf/floor/plating/road/whiteline{icon_state = "road_line"; dir = 8},/area/caribbean)
 "aK" = (/turf/floor/grass,/area/caribbean)
-"aL" = (/obj/effects/premadevehicles/yamasaki/shinobu,/turf/floor/plating/road/whiteline{icon_state = "road_line"; dir = 8},/area/caribbean)
 "aM" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
 "aN" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
 "aO" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/wood,/area/caribbean/roofed)
@@ -93,7 +92,6 @@
 "bO" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
 "bP" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
 "bQ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/full,/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/roofed)
-"bR" = (/obj/effects/premadevehicles/yamasaki/shinobu{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "bS" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
 "bT" = (/obj/structure/potted_plant{dir = 6; icon_state = "potted_plant"; pixel_x = 10},/obj/covers/wood{layer = 1; pixel_x = 16},/turf/floor/broken_floor,/area/caribbean)
 "bU" = (/obj/structure/potted_plant{dir = 4; icon_state = "potted_plant"; pixel_x = 10},/obj/covers/wood{layer = 1; pixel_x = 16},/turf/floor/broken_floor,/area/caribbean)
@@ -355,7 +353,7 @@ ababababababababababababababababababababababacacadaeacacabababaIaKaKaKaKajalalaq
 abababababababababababababababababababababcYacacadaeacacabababaIaKaKaKaKajalalaqalalalaralanaoaoajab
 acacacacacacacacacacacacacacacacacacacacacacacacadaeacacabababafabbebebeajalalasatalalaralalalalajab
 acacacacacacacacacacacacacacacacacacacacacacacacadaeacacabababababdldldlaralalaqaualalajalalalalajab
-acacacacaJacacacacacacacacacacacacacacacacacacacadaLacacabababababdldldlaralalalalalalajalalalalajab
+acacacacacacacacacacacacacacacacacacacacacacacacadaJacacabababababdldldlaralalalalalalajalalalalajab
 abababababababababababababababababababababcYacacadaeacacabababafabbmbmbmajavawawaxawayajalalalazajab
 ababababababababababababababababababababababacacadaeacacabababaIaKaKaKaKajajajajajajajajalalalalajab
 abahahahahahabahahahahahahahahahahahahahababacacadaeacacabababaIaKaKaKaKajaAaBaCaDaEaFaGalalalalajab
@@ -406,13 +404,13 @@ abababababababahahahahahahahahahahahahahababacacadaeacacababahbpbqbpbqesetesetbF
 ababababababababciababahbEbEevaHbdahababababacacadaeacacababcTbiblbiblcsbtbrbtcEcEewahabahcBcBcBcBcB
 abababababababababababbKbfbfbfbfbfahababababacacadaeacacababahbLbMbMcZcEcFexdpcEeycoahabahcBcBcBcBcB
 abababababababababababahbfbfbfbfbfahababababacacadaeacacababahdebZdfdgcEezeAeBcEdkbtahabahcBcBcBcBcB
-abababababababababababaheCbveDeEeEahababababacacadaeacacababahahahahahahahahahahahahahabahahahahahah
+abababababababababababaheCbveDeEeEahababababacacadaJacacababahahahahahahahahahahahahahabahahahahahah
 abahahahahaheFahahahahahahahahahahahahahababacacadaeacacabababababababababababababababababababababab
 abaheGeHaheIcBeJeKeLcEeMcBcBcBcBcBcBeNahababacacadaeacaccYababababababababababababababababababababab
 abaheHeHaheOcBcBcBcBcEcBcBdwdwdwcBcBcBahababacacadaeacacacacacacacacacacacacacacacacacacacacacacacac
 abaheHeHahePcBcBcBcBcEcBdzdzdydzdwcBcBdDababacacadaeacacacacacacacacacacacacacacacacacacacacacacacac
 abahcBcBeQeRcBcBcBcBeScBcBcBcBdzdwcBcBdDababacacadaeacacacacacacacacacacacacacacacacacacacacacacacac
-abahcBcBeTcBcBcBcBeUcEeMcBcBcBdydwcBcBdDababbRacadaeacaccYababababababababababababababababababababab
+abahcBcBeTcBcBcBcBeUcEeMcBcBcBdydwcBcBdDababacacadaeacaccYababababababababababababababababababababab
 abahcBcBcBcBcBcBcBeVcEcBcBcBcBdzdwcBcBdDababacacadaeacacabababababababababababababababababababababab
 abaheWcBcBcBcBcBcBeXcEeYcBcBcBdydwcBcBdDababacacadaeacacababahahahahahahahahahahahahagahahahahahcBah
 abaheZfafafbfbfcdzfdcEfeffdzdLdzdwcBdKdDababacacadaeacacababahcBcBcBcBcBcBcBcBcBcBahagahfgcBdtcBcBcB
