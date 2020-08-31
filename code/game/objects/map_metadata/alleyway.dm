@@ -48,7 +48,7 @@
 /obj/map_metadata/alleyway/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
-	if (processes.ticker.playtime_elapsed >= 18000 || processes.ticker.finished = TRUE)
+	if (processes.ticker.playtime_elapsed >= 18000 || processes.ticker.finished == TRUE)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
