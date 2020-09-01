@@ -2,8 +2,8 @@
 	title = "GULAG Nachalnik Lagerya"
 	en_meaning = "NKVD GULAG Camp Commander"
 	rank_abbreviation = "NKVD Kom."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -53,7 +53,7 @@
 	title = "GULAG Nachalnik Karaula"
 	en_meaning = "NKVD GULAG Squad Leader"
 	rank_abbreviation = "NKVD Str."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -103,7 +103,7 @@
 	title = "GULAG Medik"
 	en_meaning = "NKVD GULAG Medic"
 	rank_abbreviation = "NKVD Srj."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
 
@@ -145,7 +145,7 @@
 	title = "GULAG Karaulnyi"
 	en_meaning = "NKVD GULAG Guard"
 	rank_abbreviation = "NKVD"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
 	is_prison = TRUE
@@ -186,7 +186,7 @@
 
 	is_prison = TRUE
 	spawn_location = "JoinLateCiv"
-	selection_color = "#2d2d63"
+
 	rank_abbreviation = ""
 	title = "DO NOT USE"
 	var/nationality = "none"

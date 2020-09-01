@@ -2,6 +2,7 @@
 /* 1 - Industrial Headpieces
    2 - Industrial Accessories
    3 - Industrial Uniforms
+   3a - Womens Fashion
    4 - Industrial Suits
    5 - Industrial Boots*/
 
@@ -18,24 +19,28 @@
 	desc = "a curved leather hat."
 	icon_state = "cowboy"
 	item_state = "cowboy"
+	heat_protection = HEAD
 
 /obj/item/clothing/head/cowboyhat2
 	name = "dark cowboy hat"
 	desc = "a grayish, curved leather hat."
 	icon_state = "cowboy2"
 	item_state = "cowboy2"
+	heat_protection = HEAD
 
 /obj/item/clothing/head/vaquerohat
 	name = "vaquero hat"
-	desc = "a wide brimmed hat with a feather in the top, favored by mexican cowboys."
+	desc = "a wide brimmed hat with a feather in the top, favored by mexican cowboys. The wide brim helps keep the sun off the wearer's face."
 	icon_state = "vaquerohat"
 	item_state = "vaquerohat"
+	heat_protection = HEAD|EYES
 
 /obj/item/clothing/head/bandit
 	name = "bandit hat"
-	desc = "a dark and long brimmed cowboy hat with a grim presence."
+	desc = "a dark and long brimmed cowboy hat with a grim presence. Despite the dark colors, it helps keep the sun off the wearer's face."
 	icon_state = "bandit"
 	item_state = "bandit"
+	heat_protection = HEAD|EYES
 
 /obj/item/clothing/head/unionhat
 	name = "dark union hat"
@@ -118,10 +123,19 @@
 
 
 /obj/item/clothing/head/sombrero
-	name = "cowboy hat"
-	desc = "Ay caramba!"
+	name = "sombrero"
+	desc = "Ay caramba! The wide brim helps keep the sun off the wearer's face"
 	icon_state = "sombrero"
 	item_state = "sombrero"
+	heat_protection = HEAD|EYES
+
+/obj/item/clothing/head/ten_gallon
+	name = "white ten gallon hat"
+	desc = "Hat of choice of made-men and those aspiring to wealth & greatness. Its white wide brim helps keep the sun off wearer's face."
+	icon_state = "ten_gallon_hat_white"
+	item_state = "ten_gallon_hat_white"
+	heat_protection = HEAD|EYES
+
 /* Industrial Accessories & Items*/
 
 /obj/item/clothing/accessory/armband/blue_scarf
@@ -152,14 +166,14 @@
 	item_state = "yellow_scarf"
 	slot = "decor"
 
-/obj/item/clothing/accessory/armband/suspenders1
+/obj/item/clothing/accessory/suspenders
 	name = "suspenders"
 	desc = "Leather suspenders."
 	icon_state = "suspenders1"
 	item_state = "suspenders1"
 	slot = "sash"
 
-/obj/item/clothing/accessory/armband/suspenders2
+/obj/item/clothing/accessory/suspenders/dark
 	name = "dark suspenders"
 	desc = "Dark leather suspenders."
 	icon_state = "suspenders2"
@@ -222,12 +236,107 @@
 	item_state = "worker_outfit"
 	worn_state = "worker_outfit"
 
+/obj/item/clothing/under/texan
+	name = "texan shirt outfit"
+	desc = "A white undershirt with beige briefs. it has texan style bowtie."
+	icon_state = "texas"
+	item_state = "texas"
+	worn_state = "texas"
+
+/obj/item/clothing/under/lederhosen
+	name = "lederhosen"
+	desc = "The traditional south german attire."
+	icon_state = "lederhosen"
+	item_state = "lederhosen"
+	worn_state = "lederhosen"
+
+/obj/item/clothing/under/gang_leader // Welcome to sauce or loss with the Van Derlinde Gang
+	name = "classy outlaw outfit"
+	desc = "A well made black and red outfit with white arms and gold buttons. Often worn by self styled leaders, always with a plan."
+	icon_state = "gang_leader"
+	item_state = "gang_leader"
+	worn_state = "gang_leader"
+
+/obj/item/clothing/under/outlaw //alright arthur, show us what you got
+	name = "outlaw outfit"
+	desc = "A blue shirt with blue denim trousers and white suspenders. Often worn by people at arms length with the wrong side of the law, clothes sense is no judicator of character however."
+	icon_state = "arthur_morgan"
+	item_state = "arthur_morgan"
+	worn_state = "arthur_morgan"
+
 /obj/item/clothing/under/bartender
-	name = "bartender Outfit"
-	desc = "A stilish bartender outfit."
+	name = "bartender outfit"
+	desc = "A stylish bartender outfit."
 	icon_state = "bartender"
 	item_state = "bartender"
 	worn_state = "bartender"
+
+/obj/item/clothing/under/victorian_vest
+	name = "black victorian shirt and vest"
+	desc = "A no nonsense black shirt & vest with gold buttons, made in victorian style."
+	icon_state = "victorianvest"
+	item_state = "victorianvest"
+	worn_state = "victorianvest"
+
+/obj/item/clothing/under/victorian_vest/redvest
+	name = "black victorian shirt and red vest"
+	desc = "A no nonsense black shirt & red vest with gold buttons, made in victorian style."
+	icon_state = "victorianredvest"
+	item_state = "victorianredvest"
+	worn_state = "victorianredvest"
+
+/obj/item/clothing/under/victorian_vest/redshirt
+	name = "red victorian shirt and black vest"
+	desc = "A no nonsense red shirt & black vest with gold buttons, made in victorian style."
+	icon_state = "victorianblred"
+	item_state = "victorianblred"
+	worn_state = "victorianblred"
+
+/* Womens Fashion*/
+
+/obj/item/clothing/under/saloondress
+	name = "saloon dress outfit"
+	desc = "A eye catching dress often worn by frontier damsels looking to drum up business."
+	icon_state = "dress_saloon"
+	item_state = "dress_saloon"
+	worn_state = "dress_saloon"
+
+/obj/item/clothing/under/cheongsam
+	name = "cheongsam dress"
+	desc = "A tight fitting and attractive dress commmonly worn by women hailing from the orient."
+	icon_state = "cheongsam"
+	item_state = "cheongsam"
+	worn_state = "cheongsam"
+
+/obj/item/clothing/under/blackdress/short
+	name = "short black dress"
+	desc = "A plain black dress for women, this one is notably shorter and less modest."
+	icon_state = "dress_black_short"
+	item_state = "dress_black_short"
+	worn_state = "dress_black_short"
+
+/obj/item/clothing/under/wedding
+	name = "white wedding dress"
+	desc = "A cermonial white wedding dress. Something old, something new, something borrowed, something blue."
+	icon_state = "bride_white"
+	item_state = "bride_white"
+	worn_state = "bride_white"
+
+/obj/item/clothing/under/victorian_dress
+	name = "victorian black dress"
+	desc = "A black dress for a lady, made in a victorian style."
+	icon_state = "victorianblackdress"
+	item_state = "victorianblackdress"
+	worn_state = "victorianblackdress"
+
+/obj/item/clothing/under/victorian_dress/red
+	name = "victorian red dress"
+	desc = "A red dress for a lady, made in a victorian style."
+	icon_state = "victorianreddress"
+	item_state = "victorianreddress"
+	worn_state = "victorianreddress"
+
+/* Womens Fashion - End*/
 
 /obj/item/clothing/under/union_uniform
 	name = "union uniform"
@@ -308,6 +417,13 @@ obj/item/clothing/under/confederate_uniform/New()
 	icon_state = "bluevest"
 	item_state = "bluevest"
 	worn_state = "bluevest"
+
+/obj/item/clothing/suit/storage/jacket/texan
+	name = "cream short jacket"
+	desc = "A cream colored short jacket."
+	icon_state = "texas"
+	item_state = "texas"
+	worn_state = "texas"
 
 /* Industrial Boots*/
 
@@ -466,6 +582,13 @@ obj/item/clothing/under/confederate_uniform/New()
 	item_state = "kool_kids_klub"
 	worn_state = "kool_kids_klub"
 	body_parts_covered = FULL_BODY
+
+/obj/item/clothing/under/dimmadome
+	name = "eccentric businessman outfit"
+	desc = "A cream jacket with white undershirt, the jacket and the shirt seem to be sown into one piece for convenience and it has texan style bowtie. This person probably has a lot of money.."
+	icon_state = "doug_dimmadome"
+	item_state = "doug_dimmadome"
+	worn_state = "doug_dimmadome"
 
 /obj/item/clothing/accessory/storage/webbing/civil_war
 	name = "cartridge rigging"

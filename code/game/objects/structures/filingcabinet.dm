@@ -31,12 +31,12 @@
 
 /obj/structure/filingcabinet/initialize()
 	for (var/obj/item/I in loc)
-		if (istype(I, /obj/item/weapon/paper) || istype(I, /obj/item/weapon/paper_bundle))
+		if (istype(I, /obj/item/weapon/paper) || istype(I, /obj/item/weapon/paper_bundle) || istype(I, /obj/item/weapon/folder))
 			I.loc = src
 
 
 /obj/structure/filingcabinet/attackby(obj/item/P as obj, mob/user as mob)
-	if (istype(P, /obj/item/weapon/paper) || istype(P, /obj/item/weapon/paper_bundle))
+	if (istype(P, /obj/item/weapon/paper) || istype(P, /obj/item/weapon/paper_bundle) || istype(P, /obj/item/weapon/folder))
 		user << "<span class='notice'>You put [P] in [src].</span>"
 		user.drop_item()
 		P.loc = src

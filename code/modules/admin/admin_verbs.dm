@@ -17,6 +17,7 @@ var/list/admin_verbs_default = list(
 var/list/admin_verbs_admin = list(
 	/client/proc/enable_fov,
 	/client/proc/disable_fov,
+	/client/proc/remove_dead_bodies,
 	/client/proc/enable_approved_only,
 	/client/proc/disable_approved_only,
 	/client/proc/enable_whitelist,
@@ -169,6 +170,7 @@ var/list/admin_verbs_debug = list(
 	/datum/admins/proc/print_chemical_reactions,
 	/datum/admins/proc/print_crafting_recipes,
 	/datum/admins/proc/redirect_all_players,
+	/client/proc/ticklag,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(
@@ -864,6 +866,22 @@ var/global/list/global_colour_matrix = null
 	world << "<font size = 3>Fields of view are now <b>disabled</b>.</font>"
 	return
 
+
+/client/proc/remove_dead_bodies()
+	set name = "Remove Dead Bodies"
+	set category = "Special"
+
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+	var/count=0
+	for(var/mob/living/human/H in world)
+		if (H.stat == DEAD && !H.client)
+			qdel(H)
+			count++
+
+	message_admins("[key_name_admin(usr)] removed all the dead bodies ([count] total).")
+	return
 
 /client/proc/radiation_emission()
 	set category = "Special"

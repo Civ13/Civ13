@@ -13,8 +13,8 @@
 	title = "Royal Navy Captain"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Captain"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -55,7 +55,7 @@
 	title = "Royal Navy Quartermaster"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Quartermaster"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNQM"
 	is_commander = TRUE
 	is_officer = TRUE
@@ -95,8 +95,8 @@
 	title = "Royal Navy Boatswain"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
 
@@ -138,7 +138,7 @@
 	title = "Royal Navy Midshipman"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Midshipman"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
 
@@ -175,7 +175,7 @@
 	title = "Royal Navy Surgeon"
 	en_meaning = "Medic"
 	rank_abbreviation = "Surgeon"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 	is_medic = TRUE
 
@@ -211,7 +211,7 @@
 	title = "Royal Navy Carpenter"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpenter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCarpenter"
 
 
@@ -258,7 +258,7 @@
 	title = "Royal Navy Cook"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cook"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCook"
 
 
@@ -307,7 +307,7 @@
 	title = "Royal Navy Seaman"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 
@@ -362,7 +362,7 @@
 	title = "British Lieutenant"
 	en_meaning = "Infantry Commander"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 
@@ -405,7 +405,7 @@
 	title = "British Sergeant"
 	en_meaning = "Infantry Squad Leader"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
 
@@ -445,7 +445,7 @@
 	title = "British Army Doctor"
 	en_meaning = "Infantry Field Medic"
 	rank_abbreviation = "Doc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
@@ -484,7 +484,7 @@
 	title = "British Army Soldier"
 	en_meaning = "Infantry Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_army = TRUE
@@ -526,7 +526,7 @@
 	title = "British Light Infantry"
 	en_meaning = "Light Infantry"
 	rank_abbreviation = "Cha."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_army = TRUE
@@ -567,8 +567,8 @@
 /datum/job/british/ww1captain
 	title = "Army Captain"
 	rank_abbreviation = "Cap."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -589,7 +589,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
@@ -614,8 +614,8 @@
 /datum/job/british/ww1lieutenant
 	title = "Army 1st Lieutenant"
 	rank_abbreviation = "1Lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
@@ -637,7 +637,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -660,8 +660,8 @@
 /datum/job/british/ww1second_lieutenant
 	title = "Army 2nd Lieutenant"
 	rank_abbreviation = "2Lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
@@ -683,7 +683,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -706,7 +706,7 @@
 /datum/job/british/ww1sergeant
 	title = "Army Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -727,7 +727,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/mk1brodieag(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_r_store)
@@ -751,7 +751,7 @@
 /datum/job/british/ww1doctor
 	title = "Army Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_ww1 = TRUE
@@ -794,7 +794,7 @@
 /datum/job/british/ww1shocktroop
 	title = "Shock Troop"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE
 
@@ -836,7 +836,7 @@
 /datum/job/british/ww1infantry
 	title = "Army Private"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN" //for testing!
 	uses_squads = TRUE
 
@@ -880,8 +880,8 @@
 /datum/job/british/ww2lieutenant_pow
 	title = "POW Lieutenant"
 	rank_abbreviation = "Lt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
@@ -920,7 +920,7 @@
 /datum/job/british/ww2sergeant_pow
 	title = "POW Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 
@@ -957,7 +957,7 @@
 /datum/job/british/ww2pow
 	title = "British P.O.W."
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN" //for testing!
 
 	is_ww2 = TRUE
@@ -1000,7 +1000,7 @@
 /datum/job/british/ww2doctor_pow
 	title = "POW Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE

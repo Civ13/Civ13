@@ -441,7 +441,6 @@
 		else
 			return
 
-
 /obj/item/projectile/bullet/pellet/fragment
 	damage = 18
 	range_step = 2
@@ -557,7 +556,7 @@
 	throw_speed = 1
 	throw_range = 2
 	flags = CONDUCT
-	slot_flags = SLOT_BELT|SLOT_OCLOTHING
+	slot_flags = SLOT_BELT
 	det_time = 1
 	heavy_armor_penetration = 22
 	var/armed1 = "disarmed"
@@ -710,6 +709,28 @@
 	icon_state = "rpg40"
 	det_time = 50
 	throw_range = 5
+
+/obj/item/weapon/grenade/antitank/type99
+	name = "Type 99 AT mine"
+	icon_state = "type99"
+	desc = "A japanese anti-tank mine that can also be used as a grenade"
+	det_time = 50
+	throw_range = 8
+	secondary_action = TRUE
+/obj/item/weapon/grenade/antitank/type99/secondary_attack_self(mob/living/human/user)
+	if (secondary_action)
+		var/inp = WWinput(user, "Are you sure you wan't to place a mine here?", "Mining", "No", list("Yes","No"))
+		if (inp == "Yes")
+			user << "Placing the mine..."
+			if (do_after(user, 60, src))
+				if (src)
+					user << "You successfully place the mine here using \the [src]."
+					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
+					BT.origin = src.type
+					firer = user
+					qdel(src)
+		else
+			return
 
 /obj/item/weapon/grenade/antitank/prime()
 	set waitfor = 0

@@ -7,6 +7,15 @@
 	sending.Cut()
 	src << "<span class = 'good'>Cache successfully cleared!</span>"
 
+/client/verb/open_embed_wiki()
+	set category = "OOC"
+	set name = "Open Wiki"
+	if (mob)
+		var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Civ13 Wiki</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
+		<BODY><iframe src=\"http://civ13.com/wiki/index.php\" style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
+		src << browse(htmlfile,"window=wiki;size=820x650")
+
+
 /client/verb/MOTD()
 	set category = "OOC"
 	set name = "See MOTD"

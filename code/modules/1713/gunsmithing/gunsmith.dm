@@ -136,14 +136,14 @@
 	var/found = FALSE
 	if (istype(user.l_hand, /obj/item/stack/money))
 		var/obj/item/stack/money/M = user.l_hand
-		if (M.value*M.amount >= 200)
+		if (M.value*M.amount >= 20)
 			found = TRUE
 	else if (istype(user.r_hand, /obj/item/stack/money))
 		var/obj/item/stack/money/M = user.r_hand
-		if (M.value*M.amount >= 200)
+		if (M.value*M.amount >= 20)
 			found = TRUE
 	if (!found)
-		user << "You don't have enough money to make a new blueprint! You need 500 gold or equivalent in one of your hands."
+		user << "You don't have enough money to make a new blueprint! You need 50 gold or equivalent in one of your hands."
 		return FALSE
 ////////////////STOCK///////////////////////////////
 	var/list/display = list("Cancel")
@@ -364,34 +364,43 @@
 		var/list/possible_list = list("Cancel")
 		switch (choice_receiver)
 			if ("Pump-Action")
+				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "shotgun", "remington870", "remington11", "winchester1873")
 			if ("Bolt-Action")
+				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "gewehr71", "gewehr98", "lebel", "mosin", "murata", "enfield", "p14enfield", "carcano", "arisaka30", "arisaka35")
 				if (map.ordinal_age >= 6)
 					possible_list = list("Cancel", "gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfieldww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
 			if("Semi-Auto (large)")
+				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "svt", "g41", "g43", "m1garand")
 				if (map.ordinal_age >= 7)
 					possible_list += "m14"
 					possible_list += "sks"
 			if ("Open-Bolt (large)")
+				current_gun.override_icon = 'icons/obj/guns/mgs.dmi'
 				possible_list = list("Cancel", "madsen", "mg34", "type99lmg", "bar", "dp")
 				if (map.ordinal_age >= 7)
 					possible_list += "pkmp"
 					possible_list += "negev"
 					possible_list += "m60"
 			if ("Open-Bolt (small)")
+				current_gun.override_icon = 'icons/obj/guns/automatic.dmi'
 				possible_list = list("Cancel", "pps", "ppsh", "mp40", "greasegun", "tommygun", "thompson", "avtomat")
 				if (map.ordinal_age >= 8)
 					possible_list += "victor"
 					possible_list += "p90"
 			if ("Revolver")
+				current_gun.override_icon = 'icons/obj/guns/pistols.dmi'
 				possible_list = list("Cancel", "revolver", "t26revolver", "nagant", "panther", "detective", "detective_leopard", "detective_gold", "goldrevolver", "mateba", "peacemaker", "colt1877", "dragoon", "coltnewpolice", "enfield02", "smithwesson32", "graysonfito", "magnum58", "webley4", "m1892")
 			if ("Semi-Auto (small)")
+				current_gun.override_icon = 'icons/obj/guns/pistols.dmi'
 				possible_list = list("Cancel", "p220", "nambu", "mauser", "luger", "borchardt", "colt", "m9beretta", "tanm9", "black1911","tt30", "waltherp38", "jericho941", "glock17", "coltpockethammerles", "tarusg3", "mp443", "chinese_ms14", "chinese_plastic", "pl14", "sig250")
 			if ("Dual Selective Fire")
-				possible_list = list("Cancel", "stg", "g3", "ar12", "ak47", "ak74", "aks74", "aks", "ak74m", "az58", "whiteaz58", "blackaz58", "chinese_assault_rifle")
+				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
+				possible_list = list("Cancel", "stg", "g3", "ar12", "ak47", "ak74", "aks74", "akms", "ak74m", "az58", "whiteaz58", "blackaz58", "chinese_assault_rifle")
 			if ("Triple Selective Fire")
+				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
 				possible_list = list("Cancel", "m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
 		var/dst = WWinput(user, "Choose the gun's look:", "Gunsmithing", "Cancel", possible_list)
 		if (dst != "Cancel" && dst != null)
@@ -437,6 +446,7 @@
 			newgunbp.barrel_type = current_gun.barrel_type
 			newgunbp.feeding_type = current_gun.feeding_type
 			newgunbp.override_sprite = current_gun.override_sprite
+			newgunbp.override_icon = current_gun.override_icon
 			newgunbp.cost_wood = using_wood
 			newgunbp.cost_steel = using_steel
 		else
@@ -501,6 +511,7 @@
 		NEWGUN.barrel_type = bpsource.barrel_type
 		NEWGUN.feeding_type = bpsource.feeding_type
 		NEWGUN.override_sprite = bpsource.override_sprite
+		NEWGUN.override_icon = bpsource.override_icon
 		NEWGUN.step = 4
 		NEWGUN.finish()
 
@@ -525,6 +536,7 @@
 	var/image/barrel_img = null
 
 	var/override_sprite = null
+	var/override_icon = 'icons/obj/guns/gun.dmi'
 
 	gun_safety = TRUE
 	//bolt action
@@ -573,7 +585,7 @@
 			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
 			overlays += feeding_img
 	else
-		icon = 'icons/obj/gun.dmi'
+		icon = override_icon
 		icon_state = override_sprite
 	switch(stock_type)
 		if ("Rifle Wooden Stock")
@@ -595,6 +607,7 @@
 	switch(receiver_type)
 		if ("Bolt-Action")
 			item_state = "mosin"
+			gtype = "rifle"
 			w_class = 4
 			force = 10
 			throwforce = 20
@@ -606,7 +619,7 @@
 			load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 			accuracy = TRUE
 			gun_type = GUN_TYPE_RIFLE
-			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 			accuracy_increase_mod = 2.00
 			accuracy_decrease_mod = 6.00
 			KD_chance = KD_CHANCE_HIGH
@@ -661,6 +674,7 @@
 			load_delay = 4
 			aim_miss_chance_divider = 3.00
 		if ("Revolver")
+			gtype = "pistol"
 			stat = "pistol"
 			w_class = 2
 			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
@@ -727,6 +741,7 @@
 		if ("Semi-Auto (small)")
 			item_state = "pistol"
 			stat = "pistol"
+			gtype = "pistol"
 			move_delay = 1
 			fire_delay = 3
 			equiptimer -= 1
@@ -783,6 +798,7 @@
 		if ("Semi-Auto (large)")
 			item_state = "g41"
 			stat = "rifle"
+			gtype = "rifle"
 			w_class = 4
 			slot_flags = SLOT_SHOULDER
 			accuracy_list = list(
@@ -847,11 +863,12 @@
 		if ("Open-Bolt (small)")
 			item_state = "greasegun"
 			stat = "machinegun"
+			gtype = "smg"
 			w_class = 3
 			slot_flags = SLOT_SHOULDER|SLOT_BELT
 			sel_mode = 1
 			full_auto = TRUE
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			firemodes = list(
 				list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
 				)
@@ -907,13 +924,14 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Open-Bolt (large)")
 			item_state = "negev"
 			stat = "machinegun"
+			gtype = "mg"
 			w_class = 5
 			heavy = TRUE
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			firemodes = list(
 				list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),
 				)
@@ -978,9 +996,10 @@
 			load_method = MAGAZINE
 			sel_mode = 1
 			full_auto = TRUE
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Dual Selective Fire")
 			item_state = "ak47"
+			gtype = "rifle"
 			stat = "rifle"
 			w_class = 3
 			sel_mode = 1
@@ -993,7 +1012,7 @@
 				list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 				)
 			sel_mode = 1
-			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 			load_delay = 8
 			gun_type = GUN_TYPE_RIFLE
 			accuracy_list = list(
@@ -1044,9 +1063,10 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Triple Selective Fire")
 			item_state = "m16"
+			gtype = "rifle"
 			stat = "rifle"
 			w_class = 3
 			sel_mode = 1
@@ -1060,7 +1080,7 @@
 				list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 				)
 			sel_mode = 1
-			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 			load_delay = 8
 			gun_type = GUN_TYPE_RIFLE
 			accuracy_list = list(
@@ -1111,10 +1131,11 @@
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_MEDIUM
-			attachment_slots = ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 		if ("Pump-Action")
 			item_state = "shotgun-f"
 			stat = "rifle"
+			gtype = "shotgun"
 			gun_type = GUN_TYPE_SHOTGUN
 			fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 			// 15% more accurate than SMGs

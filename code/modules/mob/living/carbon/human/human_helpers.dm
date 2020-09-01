@@ -244,7 +244,7 @@
 	var/obj/structure/vehicleparts/frame/found = null
 
 	for (var/image/tmpimg in client.images)
-		if (tmpimg.icon == 'icons/obj/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles96x96.dmi')
+		if (tmpimg.icon == 'icons/obj/vehicles/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles96x96.dmi')
 			client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
@@ -252,13 +252,21 @@
 		if (found)
 			if (FR.axis != found.axis && FR != found)
 				client.images += FR.roof
+				if (FR.roof_turret)
+					client.images += FR.roof_turret
 			else
 				client.images -= FR.roof
+				if (FR.roof_turret)
+					client.images -= FR.roof_turret
 		else
 			if (locate(FR) in view(client))
 				client.images += FR.roof
+				if (FR.roof_turret)
+					client.images += FR.roof_turret
 			else
 				client.images -= FR.roof
+				if (FR.roof_turret)
+					client.images -= FR.roof_turret
 
 /mob/living/human
 	var/roofs_removed = TRUE

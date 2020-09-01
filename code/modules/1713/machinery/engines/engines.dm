@@ -42,6 +42,10 @@
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank //only used for internal combustion, but needs to be here because its checked by vehicles
 	var/on = FALSE
 
+	var/starting_snd = 'sound/machines/diesel_starting.ogg'
+	var/running_snd = 'sound/machines/diesel_loop.ogg'
+	var/ending_snd = 'sound/machines/diesel_ending.ogg'
+
 /obj/structure/engine/examine(mob/user)
 	..()
 	if (user in range(1,src))
@@ -107,16 +111,20 @@
 
 /obj/structure/engine/proc/running_sound()
 	if (on)
-		playsound(loc, 'sound/machines/diesel_loop.ogg', 35, FALSE, 2)
-	spawn(27)
-		running_sound()
+		playsound(loc, running_snd, 35, FALSE, 2)
+	if (running_snd == 'sound/machines/steam_loop.ogg')
+		spawn(23)
+			running_sound()
+	else
+		spawn(27)
+			running_sound()
 
 
 /obj/structure/engine/attack_hand(mob/user as mob)
 	if (on)
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
-		playsound(loc, 'sound/machines/diesel_ending.ogg', 35, FALSE, 3)
+		playsound(loc, ending_snd, 35, FALSE, 3)
 		power_off_connections()
 		currentspeed = 0
 		currentpower = 0
@@ -131,6 +139,20 @@
 
 /obj/structure/engine/update_icon()
 	..()
+	if (engineclass == "carengine")
+		switch(dir)
+			if (NORTH)
+				pixel_x = 16
+				pixel_y = 0
+			if (SOUTH)
+				pixel_x = -16
+				pixel_y = 0
+			if (WEST)
+				pixel_x = 0
+				pixel_y = 16
+			if (EAST)
+				pixel_x = 0
+				pixel_y = -16
 	if (broken)
 		icon_state = "engine_broken"
 		return
@@ -156,7 +178,26 @@
 			visible_message("[user] sucessfully repairs \the [src].")
 			broken = FALSE
 			return
-	if (istype(W, /obj/item/stack/cable_coil))
+	else if (istype(W,/obj/item/weapon/wrench) && !not_movable)
+		if (powersource)
+			user << "<span class='notice'>Remove the cables first.</span>"
+			return
+		if (!isemptylist(connections))
+			user << "<span class='notice'>Remove the cables first.</span>"
+			return
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+		for(var/obj/structure/vehicleparts/frame/F in src.loc)
+			if (F.axis)
+				if (anchored)
+					if (!F.axis.engine)
+						F.axis.engine = src
+				else
+					if (F.axis && F.axis.engine && F.axis.engine == src)
+						F.axis.engine = null
+		return
+	else if (istype(W, /obj/item/stack/cable_coil))
 		if (!anchored)
 			user << "<span class='notice'>Fix the engine in place with a wrench first.</span>"
 			return

@@ -2,6 +2,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction
 	name = "bolt-action rifle"
+	icon = 'icons/obj/guns/rifles.dmi'
 	desc = "A bolt-action rifle of true ww2 (You shouldn't be seeing this)"
 	icon_state = "mosin"
 	item_state = "mosin" //placeholder
@@ -12,8 +13,7 @@
 	max_shells = 5
 	slot_flags = SLOT_SHOULDER
 	caliber = "a762x54"
-	recoil = 2 //extra kickback
-	//fire_sound = 'sound/weapons/sniper.ogg'
+	recoil = 0 //extra kickback
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a762x54
@@ -24,7 +24,7 @@
 	accuracy = TRUE
 //	scoped_accuracy = 2
 	gun_type = GUN_TYPE_RIFLE
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
 	KD_chance = KD_CHANCE_HIGH
@@ -34,6 +34,7 @@
 	equiptimer = 15
 	gun_safety = TRUE
 	maxhealth = 20
+	gtype = "rifle"
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 
@@ -208,7 +209,7 @@
 	effectiveness_mod = 0.99
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -218,7 +219,7 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 1
 	gun_safety = FALSE
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 /obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry
 	name = "Martini-Henry Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .577/450 cartridges."
@@ -231,7 +232,7 @@
 	effectiveness_mod = 0.98
 	bolt_safety = FALSE
 	value = 90
-	recoil = 4
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
@@ -241,6 +242,37 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	max_shells = 1
 	load_delay = 7
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock
+	name = "Rolling-Block Rifle"
+	desc = "A single-shot, rolling block rifle, with a long range. Uses .45-70 Gov cartridges."
+	icon_state ="rollingblock"
+	item_state ="rollingblock"
+	base_icon = "rollingblock"
+	force = 13
+	caliber = "a4570"
+	weight = 5
+	effectiveness_mod = 1.02
+	bolt_safety = FALSE
+	value = 90
+	recoil = 0
+	slot_flags = SLOT_SHOULDER
+	throwforce = 17
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a4570
+	magazine_type = /obj/item/ammo_magazine/sharps
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	max_shells = 1
+	load_delay = 7
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/spanish
+	name = "Rolling-Block Rifle"
+	desc = "A single-shot, rolling block rifle, with a long range. This Spanish one uses .43 cartridges."
+	caliber = "a43"
+	effectiveness_mod = 0.98
+	ammo_type = /obj/item/ammo_casing/a43
+	magazine_type = /obj/item/ammo_magazine/c43
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt
 	name = "Makeshift Bolt"
@@ -254,7 +286,7 @@
 	effectiveness_mod = 0.98
 	bolt_safety = FALSE
 	value = 90
-	recoil = 6
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
@@ -311,7 +343,7 @@
 	effectiveness_mod = 0.96
 	bolt_safety = FALSE
 	value = 100
-	recoil = 2
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -348,14 +380,14 @@
 	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka30/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
@@ -406,14 +438,14 @@
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka38/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
@@ -457,20 +489,21 @@
 	item_state = "arisaka99"
 	base_icon = "arisaka99"
 	caliber = "a77x58"
+	ammo_type = /obj/item/ammo_casing/a77x58
 	weight = 3.8
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/arisaka99
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
@@ -511,7 +544,7 @@
 	name = "Arisaka Type 99"
 	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
 	effectiveness_mod = 1.06
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 /obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
@@ -538,14 +571,14 @@
 	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 1
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 18
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_UNDER
 /obj/item/weapon/gun/projectile/boltaction/arisaka99_training/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
 		check_bolt++
@@ -594,12 +627,12 @@
 	effectiveness_mod = 0.85
 	value = 90
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 19
 
@@ -617,12 +650,12 @@
 	effectiveness_mod = 0.85
 	value = 90
 	slot_flags = SLOT_SHOULDER
-	recoil = 1
+	recoil = 0
 	force = 10
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 20
 
@@ -641,7 +674,7 @@
 	effectiveness_mod = 0.89
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -653,7 +686,7 @@
 	name = "Mauser M1893"
 	desc = "A german bolt-action rifle commonly known as the \"Spanish Mauser\", chambered in 7x57mm Mauser ammunition."
 	icon_state = "mauser93"
-	item_state = "gewehr98"
+	item_state = "mauser93"
 	base_icon = "mauser93"
 	fire_sound = 'sound/weapons/guns/fire/Kar98k.ogg'
 	caliber = "a7x57"
@@ -664,7 +697,7 @@
 	effectiveness_mod = 0.91
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 10
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -696,7 +729,7 @@
 	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -723,7 +756,7 @@
 	weight = 3.5
 	effectiveness_mod = 0.97
 	equiptimer = 12
-	
+
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k
 	name = "Karabiner 98k"
 	desc = "A shortened, modernized carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition."
@@ -733,7 +766,7 @@
 	weight = 3.7
 	effectiveness_mod = 1.05
 	equiptimer = 12
-	
+
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese
@@ -750,7 +783,7 @@
 	weight = 4.2
 	bolt_safety = FALSE
 	value = 80
-	recoil = 2
+	recoil = 0
 	throwforce = 16
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
@@ -774,7 +807,7 @@
 	effectiveness_mod = 0.85
 	value = 100
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -794,7 +827,7 @@
 	effectiveness_mod = 0.98
 	value = 120
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 12
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -816,7 +849,7 @@
 	effectiveness_mod = 0.75
 	value = 120
 	slot_flags = SLOT_SHOULDER
-	recoil = 2
+	recoil = 0
 	force = 12
 	throwforce = 20
 	max_shells = 8
@@ -848,7 +881,7 @@
 	effectiveness_mod = 0.96
 	bolt_safety = FALSE
 	value = 100
-	recoil = 2
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
@@ -880,7 +913,7 @@
 	effectiveness_mod = 0.99
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -902,7 +935,7 @@
 	effectiveness_mod = 0.97
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -924,7 +957,7 @@
 	effectiveness_mod = 0.94
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
@@ -947,7 +980,7 @@
 	item_state ="pistol"
 	base_icon = "obrez"
 	force = 5
-	attachment_slots = ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	caliber = "a762x54"
 	damage_modifier = 0.8
 	weight = 1.4
@@ -973,7 +1006,7 @@
 	effectiveness_mod = 1.15
 	value = 130
 	slot_flags = SLOT_SHOULDER
-	recoil = 1.8
+	recoil = 0
 	force = 11
 	throwforce = 25
 	handle_casings = HOLD_CASINGS
@@ -998,7 +1031,7 @@
 	effectiveness_mod = 1.2
 	bolt_safety = FALSE
 	value = 80
-	recoil = 3
+	recoil = 0
 	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS

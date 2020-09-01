@@ -8,6 +8,9 @@
 	desc = "A basic engine."
 	weight = 30
 	var/defaultmaxpower = 0
+	starting_snd = 'sound/machines/steam_starting.ogg'
+	running_snd = 'sound/machines/steam_loop.ogg'
+	ending_snd = 'sound/machines/steam_ending.ogg'
 /obj/structure/engine/external/turn_on(var/mob/user = null)
 	var/pwd=0
 	var/hts=0
@@ -18,7 +21,7 @@
 	if (pwd && hts)
 		if(!on)
 			visible_message("[user] turns \the [src] on.","You turn \the [src] on.")
-			playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 3)
+			playsound(loc, starting_snd, 35, FALSE, 3)
 			on = TRUE
 			update_icon()
 			running()
@@ -41,7 +44,7 @@
 			pwd=1
 	if (!pwd)
 		visible_message("The engine stalls.")
-		playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
+		playsound(loc, ending_snd, 100, FALSE, 3)
 		on = FALSE
 		power_off_connections()
 		currentspeed = 0
@@ -77,6 +80,16 @@
 
 	maxpower = 45
 	torque = 1.4
+
+/obj/structure/engine/external/aeolipile
+	name = "aeolipile"
+	desc = "A small steam-powered device. Low Power-To-Weight ratio, but iffy for static operations."
+	icon = 'icons/obj/engines32.dmi'
+	icon_state = "aeolipile_static"
+	engineclass = "steam"
+
+	maxpower = 25
+	torque = 1.1
 
 /obj/structure/engine/external/stirling
 	name = "Stirling engine"

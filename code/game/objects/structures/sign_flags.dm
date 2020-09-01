@@ -14,7 +14,10 @@
 		qdel(src)
 	not_movable = FALSE
 	not_disassemblable = TRUE
-
+/obj/structure/sign/flag/green
+	name = "\improper green banner"
+	desc = "A green linen banner."
+	icon_state = "green_banner"
 /obj/structure/sign/flag/red
 	name = "\improper red banner"
 	desc = "A red linen banner."
@@ -70,10 +73,12 @@
 	icon_state = "jihad4"
 
 /obj/structure/sign/clock
-	name = "\improper Broken clock"
-	desc = "Stopped at 5 o'clock."
+	name = "\improper clock"
+	desc = "A clock."
 	icon_state = "clock"
-
+/obj/structure/sign/clock/examine(mob/user)
+	..()
+	user << "<big>It is now [clock_time()].</big>"
 /obj/structure/sign/wide
 	icon = 'icons/obj/decals_wide.dmi'
 	bound_x = 32
@@ -132,6 +137,22 @@
 	name = "yeld sign"
 	icon_state = "yeld"
 
+/obj/structure/sign/traffic/gas
+	name = "gas station sign"
+	icon_state = "gasolinesign"
+
+/obj/structure/sign/traffic/cafe
+	name = "cafe sign"
+	icon_state = "cafesign"
+
+/obj/structure/sign/traffic/parking
+	name = "parking sign"
+	icon_state = "parking"
+
+/obj/structure/sign/traffic/waysign
+	name = "intersection sign"
+	icon_state = "waysign"
+
 /obj/structure/sign/traffic/zebracrossing
 	name = "pedestrian crossing"
 	icon_state = "zebra"
@@ -147,12 +168,14 @@
 	icon_state = "sideline"
 	layer = 2
 
-/obj/structure/sign/traffic/cone
+/obj/item/weapon/trafficcone
 	name = "traffic cone"
+	icon = 'icons/obj/decals.dmi'
 	icon_state = "cone1"
 	anchored = FALSE
+	w_class = 4
 
-/obj/structure/sign/traffic/cone/New()
+/obj/item/weapon/trafficcone/New()
 	..()
 	icon_state = pick("cone1","cone2")
 
@@ -241,10 +264,37 @@
 	desc = "The yellow and green flag of the Shia Hezbollah organization."
 	icon_state = "flag_hezbollah"
 
+/obj/structure/sign/flag/philippine
+	name = "Filipino flag"
+	desc = "The flag of the Philippines."
+	icon_state = "flag_fp"
+
+/obj/structure/sign/flag/philippine_war
+	name = "Filipino flag"
+	desc = "The flag of the Philippines. Flipped for wartime."
+	icon_state = "flag_fp_war"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."
 	icon_state = "f_white"
+
+/obj/structure/sign/logo/red
+	name = "Rednikov Industries Logo"
+	desc = "A sign with the logo of Rednikov Industries"
+	icon_state = "red_logo"
+/obj/structure/sign/logo/yellow
+	name = "Goldstein Solutions"
+	desc = "A sign with the logo of Goldstein Solutions"
+	icon_state = "yellow_logo"
+/obj/structure/sign/logo/blue
+	name = "Giovanni Blu Stocks"
+	desc = "A sign with the logo of Giovanni Blu Stocks"
+	icon_state = "blue_logo"
+/obj/structure/sign/logo/green
+	name = "Kogama Kraftsmen"
+	desc = "A sign with the logo of Kogama Kraftsmen Traders"
+	icon_state = "green_logo"
 
 /obj/item/flagmaker
 	name = "custom flag maker"

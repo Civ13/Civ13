@@ -72,8 +72,12 @@ var/list/time_of_day2ticks = list(
 		sleep (100)
 
 /proc/clock_time()
+	if (game_hour > 780)
+		game_hour -= 720
 	var/hr = Floor(game_hour/60)
 	var/min = game_hour-hr
+	if (min >= 60)
+		min -= 60
 	var/ampm = "AM"
 	switch(time_of_day)
 		if ("Early Morning") //03-07
@@ -83,27 +87,27 @@ var/list/time_of_day2ticks = list(
 			hr+=7
 			ampm = "AM"
 		if ("Midday") //11-15
-			if (hr<1)
+			hr+=11
+			if (hr<12)
 				ampm = "AM"
 			else
 				ampm = "PM"
-			if (hr<2)
-				hr+=11
-			else
-				hr-=2
+			if (hr>=13)
+				hr -= 12
 		if ("Afternoon") //15-19
 			ampm = "PM"
+			hr+=3
 		if ("Evening") //19-23
+			hr+=7
 			ampm = "PM"
 		if ("Night") //23-03
-			if (hr<1)
+			hr+=11
+			if (hr<12)
 				ampm = "PM"
 			else
 				ampm = "AM"
-			if (hr<=1)
-				hr+=11
-			else
-				hr-=1
+			if (hr>=12)
+				hr -= 12
 	var/str_min = "[min]"
 	var/str_hr = "[hr]"
 	if (min < 10)

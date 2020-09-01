@@ -32,7 +32,7 @@
 	multiple_sprites = TRUE
 	clip = TRUE
 
-obj/item/ammo_magazine/type100
+/obj/item/ammo_magazine/type100
 	name = "Type 100 Magazine"
 	icon_state = "type100"
 	mag_type = MAGAZINE
@@ -42,7 +42,7 @@ obj/item/ammo_magazine/type100
 	weight = 0.38
 	multiple_sprites = TRUE
 
-obj/item/ammo_magazine/type99
+/obj/item/ammo_magazine/type99
 	name = "Type-99 Magazine"
 	icon_state = "type99"
 	mag_type = MAGAZINE
@@ -228,6 +228,22 @@ obj/item/ammo_magazine/dp
 	weight = 0.038
 	multiple_sprites = TRUE
 	clip = TRUE
+
+/obj/item/ammo_magazine/browning
+	name = "browning ammo belt"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a3006"
+	w_class = 4
+
+	ammo_type = /obj/item/ammo_casing/a3006
+	max_ammo = 250
+	multiple_sprites = TRUE
+	var/slot = "decor"
+	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
+	var/image/inv_overlay = null	//overlay used when attached to clothing.
+	var/image/mob_overlay = null
+	var/overlay_state = null
 
 /obj/item/ammo_magazine/bar
 	name = "BAR magazine (30-06)"

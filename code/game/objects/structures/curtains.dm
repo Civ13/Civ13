@@ -23,6 +23,9 @@
 	icon_state = "open"
 	opacity = FALSE
 
+/obj/structure/curtain/open/black
+	color = "#222222"
+
 /obj/structure/curtain/bullet_act(obj/item/projectile/P, def_zone)
 	if (!P.nodamage)
 		visible_message("<span class='warning'>[P] tears [src] down!</span>")
@@ -82,6 +85,14 @@
 	name = "leather curtain"
 	color = "#624a2e"
 
+/obj/structure/curtain/open/red
+	color = "#7F0000"
+/obj/structure/curtain/open/green
+	color = "#007F00"
+/obj/structure/curtain/open/blue
+	color = "#00007F"
+/obj/structure/curtain/open/yellow
+	color = "#FFD700"
 /obj/structure/curtain/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (user.a_intent == I_HELP)
 		if ((istype(W, /obj/item/weapon/material/kitchen/utensil/knife)))

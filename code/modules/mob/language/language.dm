@@ -142,6 +142,17 @@
 	var/full_name = "Sean Mcloughlin"
 	return full_name
 
+/datum/language/proc/get_random_italian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_italian)) + " " + capitalize(pick(last_names_italian))
+		else
+			return capitalize(pick(first_names_male_italian)) + " " + capitalize(pick(last_names_italian))
+
+	var/full_name = "Giovanni Basso"
+	return full_name
+
+
 /datum/language/proc/get_random_oldnorse_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)

@@ -188,14 +188,14 @@ var/list/slot_equipment_priority = list( \
 		else if (istype(W, /obj/item/vehicleparts/wheel))
 			var/obj/item/vehicleparts/wheel/MD = W
 			if (!locate(MD.origin) in range(1,src))
-				if ((src in MD.origin.ontop) && src == MD.origin.driver && MD.origin.engine && MD.origin.engine.on)
+				if (MD && MD.origin && (src in MD.origin.ontop) && src == MD.origin.driver && MD.origin.engine && MD.origin.engine.on)
 					MD.origin.engine.on = FALSE
 					MD.origin.engine.power_off_connections()
 					MD.origin.engine.currentspeed = 0
 					MD.origin.engine.currentpower = 0
 					src << "You turn off the engine."
 					MD.origin.set_light(0)
-					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
+					playsound(loc, MD.origin.engine.ending_snd, 65, FALSE, 2)
 					MD.origin.attackby(MD,src)
 					return TRUE
 		if (W.nodrop || W.nodrop_special_check() || ignore_nodrop)

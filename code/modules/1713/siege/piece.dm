@@ -64,7 +64,7 @@
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
 	desc = "a barebones cannon made to be carried by vehicles."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "tank_cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	layer = MOB_LAYER + 1 //just above mobs
@@ -90,6 +90,14 @@
 	maxrange = 25
 	caliber = 75
 
+/obj/structure/cannon/modern/tank/american75
+	name = "75 mm M3 gun"
+	desc = "a 75 mm american tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 12
+	maxrange = 25
+	caliber = 75
+
 /obj/structure/cannon/modern/tank/japanese57
 	name = "Type 90 Cannon"
 	desc = "a 57 mm japanese tank-based cannon."
@@ -105,6 +113,20 @@
 	maxsway = 14
 	maxrange = 35
 	caliber = 88
+
+/obj/structure/cannon/modern/tank/german88/field
+	name = "8.8 cm Pak 43 cannon"
+	desc = "a 88 mm german anti-tank cannon."
+	icon_state = "feldkanone18"
+	icon = 'icons/obj/cannon.dmi'
+	maxsway = 18
+	maxrange = 38
+	assembled = FALSE
+	can_assemble = TRUE
+	New()
+		..()
+		loader_chair = new /obj/structure/bed/chair/loader(src)
+		gunner_chair = new /obj/structure/bed/chair/gunner(src)
 
 /obj/structure/cannon/modern/tank/russian76
 	name = "76 mm M1940 F-34"
@@ -607,9 +629,7 @@
 		<html>
 
 		<head>
-		<style>
 		[common_browser_style]
-		</style>
 		</head>
 
 		<body>

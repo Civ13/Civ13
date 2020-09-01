@@ -85,9 +85,6 @@ var/list/name_to_material
 
 	// Attributes
 	var/cut_delay = FALSE			// Delay in ticks when cutting through this wall.
-	var/radioactivity			// Radiation var. Used in wall and object processing to irradiate surroundings.
-	var/ignition_point		   // K, point at which the material catches on fire.
-	var/melting_point = 1800	 // K, walls will take damage if they're next to a fire hotter than this
 	var/integrity = 150		  // General-use HP value for products.
 	var/opacity = TRUE			  // Is the material transparent? 0.5< makes transparent walls/doors.
 	var/explosion_resistance = 5 // Only used by walls currently.
@@ -175,10 +172,6 @@ var/list/name_to_material
 // As above.
 /material/proc/get_edge_damage()
 	return hardness //todo
-
-// Currently used for weapons and objects made of uranium to irradiate things.
-/material/proc/products_need_process()
-	return (radioactivity>0) //todo
 
 // Used by walls when qdel()ing to avoid neighbor merging.
 /material/placeholder
@@ -377,8 +370,7 @@ var/list/name_to_material
 
 /material/sandstone
 	name = "sandstone"
-	icon_base = "stone"
-	icon_reinf = "reinf_stone"
+	icon_base = "new_stonebrick"
 	icon_colour = "#D9C179"
 	hardness = 45
 	integrity = 500
@@ -391,8 +383,7 @@ var/list/name_to_material
 
 /material/stone
 	name = "stone"
-	icon_base = "stone"
-	icon_reinf = "reinf_stone"
+	icon_base = "stone_block_wall"
 	icon_colour = "#808080"
 	hardness = 50
 	integrity = 500
@@ -403,9 +394,20 @@ var/list/name_to_material
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/stone
 
+/material/concrete
+	name = "concrete"
+	icon_base = "cement_wall"
+	icon_colour = null
+	hardness = 50
+	integrity = 400
+	weight = 18
+	sheet_singular_name = "block"
+	sheet_plural_name = "blocks"
+
 /material/stonebrick
 	name = "stonebrick"
 	display_name = "stone brick"
+	icon_base = "new_stonebrick"
 	icon_colour = "#808080"
 	hardness = 50
 	integrity = 450
@@ -413,6 +415,16 @@ var/list/name_to_material
 	sheet_singular_name = "brick"
 	sheet_plural_name = "bricks"
 	stack_type = /obj/item/stack/material/stonebrick
+/material/brick
+	name = "brick"
+	display_name = "brick"
+	icon_base = "new_brick"
+	icon_colour = null
+	hardness = 40
+	integrity = 350
+	weight = 8
+	sheet_singular_name = "brick"
+	sheet_plural_name = "bricks"
 
 /material/flint
 	name = "flint"
@@ -430,13 +442,6 @@ var/list/name_to_material
 	sheet_singular_name = "piece"
 	sheet_plural_name = "pieces"
 	stack_type = /obj/item/stack/material/bone
-
-/* /material/stone/stonebrick
-	name = "brick"
-	icon_base = "newbrick"
-	icon_colour = "#808080"
-	stack_type = /obj/item/stack/material/marble
-*/
 
 /material/stone/marble
 	name = "marble"
@@ -493,7 +498,6 @@ var/list/name_to_material
 	icon_base = "metal"
 	integrity = 1000000
 	hardness = 1000000
-	melting_point = 1000000
 
 /material/wood
 	name = "wood"
@@ -505,8 +509,6 @@ var/list/name_to_material
 	explosion_resistance = 2
 	shard_type = SHARD_SPLINTER
 	shard_can_repair = FALSE // you can't weld splinters back into planks
-	melting_point = T0C+300 //okay, not melting in this case, but hot enough to destroy wood
-	ignition_point = T0C+288
 	door_icon_base = "wood"
 	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	destruction_desc = "splinters"
@@ -519,6 +521,8 @@ var/list/name_to_material
 	name = "hardwood"
 	hardness = 200
 	integrity = 175
+	icon_base = "wood"
+	icon_colour = null
 
 /material/wood/soft
 	name = "softwood"
@@ -536,8 +540,6 @@ var/list/name_to_material
 	explosion_resistance = 2
 	shard_type = SHARD_SPLINTER
 	shard_can_repair = FALSE
-	melting_point = T0C+300
-	ignition_point = T0C+288
 	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	door_icon_base = "wood"
 	hitsound = 'sound/effects/woodhit.ogg'
@@ -569,16 +571,12 @@ var/list/name_to_material
 	name = "paper"
 	hardness = 25
 	integrity = 35
-	melting_point = T0C+300
-	ignition_point = T0C+288
 	door_icon_base = "shoji"
 	hitsound = 'sound/effects/cardboardpunch.ogg'
 
 /material/cloth
 	name = "cloth"
 	hardness = 10
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	door_icon_base = "wood"
 	flags = MATERIAL_PADDING
 
@@ -591,11 +589,37 @@ var/list/name_to_material
 	sheet_plural_name = "bundles"
 	stack_type = /obj/item/stack/material/rettedfabric
 
+/material/rawkevlar
+	name = "rawkevlar"
+	display_name = "raw kevlar"
+	icon_colour = "#fafad2"
+	hardness = 7
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
+	stack_type = /obj/item/stack/material/rawkevlar
+
+/material/preparedkevlar
+	name = "preparedkevlar"
+	display_name = "prepared kevlar"
+	icon_colour = "#fafad2" //goldenrod faint yellow
+	hardness = 7
+	sheet_singular_name = "bundle"
+	sheet_plural_name = "bundles"
+	stack_type = /obj/item/stack/material/preparedkevlar
+
+/material/kevlar
+	name = "kevlar"
+	display_name = "kevlar"
+	icon_colour = "#696969" //dim grey
+	hardness = 45
+	weight = 15
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
+	stack_type = /obj/item/stack/material/kevlar
+
 /material/woolcloth
 	name = "woolcloth"
 	hardness = 10
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	door_icon_base = "wood"
 	flags = MATERIAL_PADDING
 
@@ -622,26 +646,18 @@ var/list/name_to_material
 	name = "leather"
 	icon_colour = "#5C4831"
 	hardness = 25
-	ignition_point = T0C+300
-	melting_point = T0C+300
 	flags = MATERIAL_PADDING
-/*
-/material/gatorscale // In preparation, snakes and other reptiles have other sorts.
-	name = "alligator scale"
-	icon_colour = "#443d36"
 
-	flags = MATERIAL_PADDING
-	ignition_point = T0C+300
-	melting_point = T0C+300
-	hardness = 25
-*/
+/material/leather/dark
+	name = "darkleather"
+	use_name = "dark leather"
+	icon_colour = "#241C13"
+
 /material/pelt
 	name = "pelt"
 	use_name = "pelt"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt
@@ -651,8 +667,6 @@ var/list/name_to_material
 	use_name = "bear"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/bearpelt/black
@@ -662,8 +676,6 @@ var/list/name_to_material
 	use_name = "white bear"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/bearpelt/white
@@ -673,8 +685,6 @@ var/list/name_to_material
 	use_name = "brown bear"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/bearpelt/brown
@@ -684,8 +694,6 @@ var/list/name_to_material
 	use_name = "wolf"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/wolfpelt
@@ -695,8 +703,6 @@ var/list/name_to_material
 	use_name = "cat"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/catpelt
@@ -706,8 +712,6 @@ var/list/name_to_material
 	use_name = "panther"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/pantherpelt
@@ -717,8 +721,6 @@ var/list/name_to_material
 	use_name = "lion"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/lionpelt
@@ -728,8 +730,6 @@ var/list/name_to_material
 	use_name = "alligator"
 	icon_colour = "#443d36"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/gatorpelt
@@ -739,8 +739,6 @@ var/list/name_to_material
 	use_name = "lizard"
 	icon_colour = "#6b8e23" 	//olive drab
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/lizardpelt
@@ -750,8 +748,6 @@ var/list/name_to_material
 	use_name = "monkey"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/monkeypelt
@@ -761,8 +757,6 @@ var/list/name_to_material
 	use_name = "fox"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/foxpelt
@@ -772,8 +766,6 @@ var/list/name_to_material
 	use_name = "white fox"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/foxpelt/white
@@ -783,8 +775,8 @@ var/list/name_to_material
 	use_name = "sheep"
 	icon_colour = "#8C7E6E" 	//white
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
+
+
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/sheeppelt
@@ -794,8 +786,6 @@ var/list/name_to_material
 	use_name = "goat"
 	icon_colour = "#f5f5dc" 	//beige
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/goatpelt
@@ -805,8 +795,6 @@ var/list/name_to_material
 	use_name = "hairless hide"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/hairlesshide
@@ -815,20 +803,27 @@ var/list/name_to_material
 	name = "scalelesshide"
 	use_name = "scaleless hide"
 	icon_colour = "#443d36"
-	ignition_point = T0C+400
-	melting_point = T0C+400
+
+
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/scalelesshide*/
+	/*
+/material/gatorscale // In preparation, snakes and other reptiles have other sorts.
+	name = "alligator scale"
+	icon_colour = "#443d36"
 
+	flags = MATERIAL_PADDING
+	ignition_point = T0C+300
+
+	hardness = 25
+*/
 /material/humanpelt
 	name = "humanpelt"
 	use_name = "human"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
 	sheet_singular_name = "skin"
 	sheet_plural_name = "skins"
 	stack_type = /obj/item/stack/material/pelt/humanpelt
@@ -838,8 +833,6 @@ var/list/name_to_material
 	use_name = "ant"
 	icon_colour = "#0C0000"
 	hardness = 50
-	ignition_point = T0C+700
-	melting_point = T0C+700
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/antpelt
@@ -849,8 +842,6 @@ var/list/name_to_material
 	use_name = "chitin"
 	icon_colour = "#3F0000"
 	hardness = 51
-	ignition_point = T0C+800
-	melting_point = T0C+800
 	sheet_singular_name = "sheet"
 	sheet_plural_name = "sheets"
 	stack_type = /obj/item/stack/material/chitin
@@ -860,8 +851,8 @@ var/list/name_to_material
 	use_name = "gorilla"
 	icon_colour = "#8C7E6E"
 	hardness = 30
-	ignition_point = T0C+400
-	melting_point = T0C+400
+
+
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/gorillapelt
@@ -871,8 +862,6 @@ var/list/name_to_material
 	use_name = "orc"
 	icon_colour = "#013220"
 	hardness = 45
-	ignition_point = T0C+700
-	melting_point = T0C+700
 	sheet_singular_name = "skin"
 	sheet_plural_name = "skins"
 	stack_type = /obj/item/stack/material/pelt/orcpelt
@@ -883,8 +872,6 @@ var/list/name_to_material
 	use_name = "red upholstery"
 	icon_colour = "#DA020A"
 	hardness = 12
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	sheet_singular_name = "tile"
 	sheet_plural_name = "tiles"
 	flags = MATERIAL_PADDING
@@ -894,8 +881,6 @@ var/list/name_to_material
 	display_name ="cotton"
 	icon_colour = "#FFFFFF"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	sheet_singular_name = "stack"
 	sheet_plural_name = "stacks"
 	stack_type = /obj/item/stack/material/cotton
@@ -906,8 +891,6 @@ var/list/name_to_material
 	display_name ="wool"
 	icon_colour = "#F1F1F1"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	sheet_singular_name = "pile"
 	sheet_plural_name = "piles"
 	stack_type = /obj/item/stack/material/wool
@@ -919,8 +902,6 @@ var/list/name_to_material
 	use_name = "teal cloth"
 	icon_colour = "#00EAFA"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
 /material/cloth_black
@@ -929,8 +910,6 @@ var/list/name_to_material
 	use_name = "black cloth"
 	icon_colour = "#505050"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
 /material/cloth_green
@@ -939,8 +918,6 @@ var/list/name_to_material
 	use_name = "green cloth"
 	icon_colour = "#01C608"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
 /material/cloth_puple
@@ -949,8 +926,6 @@ var/list/name_to_material
 	use_name = "purple cloth"
 	icon_colour = "#9C56C4"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
 /material/cloth_blue
@@ -959,8 +934,6 @@ var/list/name_to_material
 	use_name = "blue cloth"
 	icon_colour = "#6B6FE3"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
 /material/cloth_beige
@@ -969,8 +942,6 @@ var/list/name_to_material
 	use_name = "beige cloth"
 	icon_colour = "#E8E7C8"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
 /material/cloth_lime
@@ -979,6 +950,4 @@ var/list/name_to_material
 	use_name = "lime cloth"
 	icon_colour = "#62E36C"
 	hardness = 6
-	ignition_point = T0C+232
-	melting_point = T0C+300
 	flags = MATERIAL_PADDING

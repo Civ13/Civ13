@@ -10,8 +10,8 @@
 	title = "Capitan"
 	en_meaning = "Ship Captain"
 	rank_abbreviation = "Capitan"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateSPCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -53,7 +53,7 @@
 	title = "Intendente"
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Intendente"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSPQM"
 	is_commander = TRUE
 	is_officer = TRUE
@@ -94,8 +94,8 @@
 	title = "Contramaestre"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Contramaestre"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateSPBoatswain"
 	whitelisted = TRUE
 
@@ -137,7 +137,7 @@
 	title = "Guardiamarina"
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Guardiamarina"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSPMidshipman"
 	is_officer = TRUE
 
@@ -174,7 +174,7 @@
 	title = "Cirujano"
 	en_meaning = "Medic"
 	rank_abbreviation = "Cirujano"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSPSurgeon"
 	is_medic = TRUE
 
@@ -210,7 +210,7 @@
 	title = "Carpintero Naval"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpintero"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSPCarpenter"
 
 
@@ -251,7 +251,7 @@
 	title = "Cocinero"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cocinero"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSPCook"
 
 
@@ -300,7 +300,7 @@
 	title = "Marinero"
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 

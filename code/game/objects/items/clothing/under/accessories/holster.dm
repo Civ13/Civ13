@@ -20,7 +20,11 @@
 	if (!(I.slot_flags & SLOT_HOLSTER))
 		user << "<span class='warning'>[I] won't fit in [src]!</span>"
 		return
-
+	if (istype(I, /obj/item/weapon/gun))
+		var/obj/item/weapon/gun/G = I
+		if (G.silencer)
+			user << "<span class='warning'>[I] won't fit in [src]!</span>"
+			return
 	if (istype(user))
 		user.stop_aiming(no_message=1)
 	if (capacity == 1)
@@ -210,16 +214,7 @@
 	desc = "A handgun holster with slung around the chest."
 	icon_state = "waist_holster"
 	overlay_state = "waist_holster"
-/obj/item/clothing/accessory/holster/chest/get_mob_overlay()
-	if (!mob_overlay)
-		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
-		if (icon_override)
-			if ("[tmp_icon_state]_mob" in icon_states(icon_override))
-				tmp_icon_state = "[tmp_icon_state]_mob"
-			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]", layer = 4.1)
-		else
-			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]", layer = 4.1)
-	return mob_overlay
+
 /obj/item/clothing/accessory/holster/hip
 	name = "hip holster"
 	desc = "A handgun holster slung low on the hip."

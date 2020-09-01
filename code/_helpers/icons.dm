@@ -766,10 +766,7 @@ proc/getFlatIcon(image/A, defdir=2, deficon=null, defstate="", defblend=BLEND_DE
 					// Pull the default direction.
 					add = icon(I:icon, I:icon_state)
 		else // 'I' is an appearance object.
-		/*	if (istype(A,/obj/machinery/atmospherics) && I in A.underlays)
-				var/image/Im = I
-				add = getFlatIcon(new/image(I), Im.dir, curicon, curstate, curblend, TRUE)
-			else*/
+		
 			add = getFlatIcon(new/image(I), curdir, curicon, curstate, curblend, always_use_defdir)
 
 		// Find the new dimensions of the flat icon to fit the added overlay

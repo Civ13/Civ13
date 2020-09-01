@@ -10,4 +10,4 @@
 	satisfaction = -3
 	New()
 		..()
-		reagents.add_reagent("solanine", 2)
+		reagents.add_reagent("solanine", 10)

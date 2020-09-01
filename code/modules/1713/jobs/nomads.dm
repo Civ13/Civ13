@@ -166,56 +166,56 @@
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 //coats/////////////////////////////////////////////////
-		spawn(5)
-			var/area/mob_area = get_area(src)
-			if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
-				if (map.ordinal_age < 4)
-					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
-					if (map.ordinal_age == 0)
-						equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
-				else if (map.ordinal_age == 4)
-					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-				else if (map.ordinal_age >= 5)
-					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-				update_inv_wear_suit(1)
-			else if (mob_area.climate == "desert")
+	spawn(5)
+		var/area/mob_area = get_area(src)
+		if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
+			if (map.ordinal_age < 4)
+				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 				if (map.ordinal_age == 0)
-					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-				w_uniform = null
-				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
-				update_inv_w_uniform(1)
-			if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
-				var/f_res = FALSE
-				var/f_sens = FALSE
-				for (var/i in traits)
-					if (i == "Cold Sensitivity")
-						f_sens = TRUE
-					else if (i == "Heat Tolerance")
-						f_res = TRUE
-					else if (i == "Heat Sensitivity")
-						traits -= i
-					else if (i == "Cold Tolerance")
-						traits -= i
-				if (!f_res)
-					traits += "Heat Tolerance"
-				if (!f_sens)
-					traits += "Cold Sensitivity"
-			else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
-				var/f_res = FALSE
-				var/f_sens = FALSE
-				for (var/i in traits)
-					if (i == "Heat Sensitivity")
-						f_sens = TRUE
-					else if (i == "Cold Tolerance")
-						f_res = TRUE
-					else if (i == "Cold Sensitivity")
-						traits -= i
-					else if (i == "Heat Tolerance")
-						traits -= i
-				if (!f_res)
-					traits += "Cold Tolerance"
-				if (!f_sens)
-					traits += "Heat Sensitivity"
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+			else if (map.ordinal_age == 4)
+				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+			else if (map.ordinal_age >= 5)
+				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+			update_inv_wear_suit(1)
+		else if (mob_area.climate == "desert")
+			if (map.ordinal_age == 0)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			w_uniform = null
+			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
+			update_inv_w_uniform(1)
+		if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
+			var/f_res = FALSE
+			var/f_sens = FALSE
+			for (var/i in traits)
+				if (i == "Cold Sensitivity")
+					f_sens = TRUE
+				else if (i == "Heat Tolerance")
+					f_res = TRUE
+				else if (i == "Heat Sensitivity")
+					traits -= i
+				else if (i == "Cold Tolerance")
+					traits -= i
+			if (!f_res)
+				traits += "Heat Tolerance"
+			if (!f_sens)
+				traits += "Cold Sensitivity"
+		else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
+			var/f_res = FALSE
+			var/f_sens = FALSE
+			for (var/i in traits)
+				if (i == "Heat Sensitivity")
+					f_sens = TRUE
+				else if (i == "Cold Tolerance")
+					f_res = TRUE
+				else if (i == "Cold Sensitivity")
+					traits -= i
+				else if (i == "Heat Tolerance")
+					traits -= i
+			if (!f_res)
+				traits += "Cold Tolerance"
+			if (!f_sens)
+				traits += "Heat Sensitivity"
 
 
 ///////////////LANGUAGE PROC/////////////////////////
@@ -550,7 +550,7 @@
 /datum/job/civilian/civa
 	title = "Civilization A Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivA"
 
 	is_civilizations = TRUE
@@ -584,7 +584,7 @@
 /datum/job/civilian/civb
 	title = "Civilization B Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivB"
 
 	is_civilizations = TRUE
@@ -618,7 +618,7 @@
 /datum/job/civilian/civc
 	title = "Civilization C Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivC"
 
 	is_civilizations = TRUE
@@ -651,7 +651,7 @@
 /datum/job/civilian/civd
 	title = "Civilization D Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivD"
 
 	is_civilizations = TRUE
@@ -684,7 +684,7 @@
 /datum/job/civilian/cive
 	title = "Civilization E Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivE"
 
 	is_civilizations = TRUE
@@ -717,7 +717,7 @@
 /datum/job/civilian/civf
 	title = "Civilization F Citizen"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivF"
 
 	is_civilizations = TRUE
@@ -750,7 +750,7 @@
 /datum/job/civilian/civnomad
 	title = "Nomad"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_nomad = TRUE
@@ -784,7 +784,7 @@
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND1"
 
 
@@ -818,7 +818,7 @@
 /datum/job/civilian/fantasy/ant
 	title = "Ant tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND2"
 
 
@@ -853,7 +853,7 @@
 /datum/job/civilian/fantasy/gorilla
 	title = "Gorilla tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND3"
 
 
@@ -887,7 +887,7 @@
 /datum/job/civilian/fantasy/human
 	title = "Human tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateIND4"
 
 
@@ -920,8 +920,8 @@
 /datum/job/civilian/fantasy/wolf
 	title = "Wolf tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND4"
+
+	spawn_location = "JoinLateIND5"
 
 
 	min_positions = 9999
@@ -935,7 +935,7 @@
 	H.religion = "Moon Worshippers"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
-	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
+	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Powerful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
 
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_LOW)
@@ -954,8 +954,8 @@
 /datum/job/civilian/fantasy/lizard
 	title = "Lizard tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND4"
+
+	spawn_location = "JoinLateIND6"
 
 
 	min_positions = 9999
@@ -986,8 +986,8 @@
 /datum/job/civilian/fantasy/crab
 	title = "Crustacean tribesman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND4"
+
+	spawn_location = "JoinLateIND7"
 
 
 	min_positions = 9999

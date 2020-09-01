@@ -32,6 +32,17 @@
 			qdel(W)
 		else
 			icon_state = "loom"
+	if (istype(W, /obj/item/stack/material/preparedkevlar))
+		H.visible_message("You start to produce the kevlar.")
+		icon_state = "loom1"
+		if (do_after(H, min(W.amount*20, 200), H.loc))
+			H.visible_message("You finish producing the kevlar.")
+			icon_state = "loom"
+			var/obj/item/stack/material/kevlar/clothes = new/obj/item/stack/material/kevlar(H.loc)
+			clothes.amount = W.amount
+			qdel(W)
+		else
+			icon_state = "loom"
 	if (istype(W, /obj/item/stack/material/wool))
 		H.visible_message("You start to produce the wool cloth.")
 		icon_state = "loom1"
@@ -75,14 +86,12 @@
 		icon_state = "flour_mill1"
 		if (do_after(H, 20, H.loc))
 			H.visible_message("You finish milling the [W.name].")
-			var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
 			if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/barley))
-				flour.reagents.remove_reagent("flour", 10)
-				flour.reagents.add_reagent("barleyflour", 10)
+				new/obj/item/weapon/reagent_containers/food/condiment/flour/barleyflour(H.loc)
 			else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/oat))
-				flour.reagents.remove_reagent("flour", 10)
-				flour.reagents.add_reagent("oatflour", 10)
-
+				new/obj/item/weapon/reagent_containers/food/condiment/flour/oatflour(H.loc)
+			else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
+				new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
 			icon_state = "flour_mill"
 			qdel(W)
 		else

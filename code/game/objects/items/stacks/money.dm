@@ -57,7 +57,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age == 4)
+	else if (map.ordinal_age == 3)
 		name = "spanish reales"
 		desc = "A small silver coin."
 		singular_name = "real"
@@ -128,7 +128,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age == 4)
+	else if (map.ordinal_age == 3)
 		name = "spanish escudos"
 		desc = "A gold coin. Worth 16 reales."
 		singular_name = "escudo"
@@ -159,7 +159,7 @@
 		novariants = FALSE
 		update_icon()
 		return ..()
-	else if (map.ordinal_age == 4)
+	else if (map.ordinal_age == 3)
 		name = "spanish doubloons"
 		desc = "A large gold coin, the largest in circulation. Worth 32 reales."
 		singular_name = "doubloon"
@@ -388,10 +388,10 @@
 	singular_name = "copper coin"
 	icon_state = "coppercoin_pile"
 	amount = 1
-	value = 0.01
+	value = 0.1
 
 /obj/item/stack/money/coppercoin/twohundred
-	amount = 200
+	amount = 20
 
 /obj/item/stack/money/silvercoin
 	name = "silver coins"
@@ -399,10 +399,10 @@
 	singular_name = "silver coin"
 	icon_state = "silvercoin_pile"
 	amount = 1
-	value = 0.1
+	value = 1
 
 /obj/item/stack/money/silvercoin/twohundred
-	amount = 200
+	amount = 20
 
 /obj/item/stack/money/goldcoin
 	name = "gold coins"
@@ -410,7 +410,7 @@
 	singular_name = "gold coin"
 	icon_state = "goldcoin_pile"
 	amount = 1
-	value = 0.4
+	value = 4
 
 /obj/item/stack/money/bitcoin
 	name = "bitcoin"
@@ -424,6 +424,8 @@
 	amount = 50
 /obj/item/stack/money/dollar/twenty
 	amount = 20
+/obj/item/stack/money/dollar/ten
+	amount = 10
 /obj/item/stack/money/escudo/ten
 	amount = 10
 /obj/item/stack/money/doubloon/ten

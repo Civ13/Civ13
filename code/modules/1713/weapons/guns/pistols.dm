@@ -1,6 +1,7 @@
 /obj/item/weapon/gun/projectile/pistol
 	// less accurate than rifles against still targets, but better against moving targets
 	// less accurate than semiautos but with the same ratios
+	icon = 'icons/obj/guns/pistols.dmi'
 	move_delay = 1
 	fire_delay = 3
 	item_state = "pistol"
@@ -8,7 +9,10 @@
 	gun_safety = TRUE
 	gun_type = GUN_TYPE_PISTOL
 	handle_casings = EJECT_CASINGS
+	silencer_fire_sound = 'sound/weapons/guns/fire/Glock17-SD.ogg'
 	maxhealth = 45
+	gtype = "pistol"
+
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(
@@ -79,6 +83,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
+	bad_magazine_types = list(/obj/item/weapon/gun/projectile/submachinegun/type100)
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
 	if (ammo_magazine)
@@ -100,6 +105,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
+	bad_magazine_types = list(/obj/item/weapon/gun/projectile/submachinegun/type100)
 /obj/item/weapon/gun/projectile/pistol/ww2/nambu/update_icon()
 	..()
 	if (ammo_magazine)
@@ -121,6 +127,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.96
+	bad_magazine_types = list(/obj/item/ammo_magazine/mp40)
 /obj/item/weapon/gun/projectile/pistol/luger/update_icon()
 	..()
 	if (ammo_magazine)
@@ -142,6 +149,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.96
+	bad_magazine_types = list(/obj/item/ammo_magazine/mp40)
 /obj/item/weapon/gun/projectile/pistol/waltherp38/update_icon()
 	..()
 	if (ammo_magazine)
@@ -355,18 +363,35 @@
 	return
 
 /obj/item/weapon/gun/projectile/pistol/colthammerless
-	name = "Colt Pocket Hammerless"
+	name = "Colt M1903 Pocket Hammerless"
 	desc = "An early, compact Colt pistol chambered in .32 ACP."
 	icon_state = "coltpockethammerless"
 	w_class = 2
+	equiptimer = 4
 	caliber = "a32acp"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless
-	weight = 0.794
+	weight = 0.680
 	ammo_type = /obj/item/ammo_casing/a32acp
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.95
+	pocket = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908
+	name = "Colt M1908 Pocket Hammerless"
+	desc = "A later version of the compact Colt pistol, chambered in .380 ACP."
+	icon_state = "coltpockethammerless"
+	w_class = 2
+	caliber = "a380acp"
+	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
+	magazine_type = /obj/item/ammo_magazine/colthammerless/a380acp
+	weight = 0.720
+	ammo_type = /obj/item/ammo_casing/a380acp
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.9
+
 /obj/item/weapon/gun/projectile/pistol/colthammerless/update_icon()
 	..()
 	if (ammo_magazine)
@@ -409,6 +434,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.02
+	bad_magazine_types = list(/obj/item/ammo_magazine/thompson)
 
 /obj/item/weapon/gun/projectile/pistol/blackm1911
 	name = "Colt Mark IV"
@@ -437,6 +463,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.98
+	bad_magazine_types = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 
 /obj/item/weapon/gun/projectile/pistol/m9beretta
 	name = "Beretta M9"

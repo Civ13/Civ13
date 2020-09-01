@@ -1,7 +1,7 @@
 /obj/item/weapon/flamethrower
 	name = "M2 Flamethrower hoose"
 	desc = "Use with a flamethrower fuel tank to set your enemies on fire."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "m2_flamethrower"
 	item_state = "m2_flamethrower"
 	var/base_icon = "m2_flamethrower"
@@ -180,7 +180,7 @@
 /obj/item/weapon/reagent_containers/glass/flamethrower
 	name = "M2 Flamethrower backpack"
 	desc = "A flamethrower backpack. Up to 100 liters of gasoline."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "m2_flamethrower_back"
 	item_state = "m2_flamethrower"
 	flags = CONDUCT

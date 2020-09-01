@@ -8,9 +8,7 @@ var/mob/living/human/next_gas_flesh_message = -1
 /datum/reagent/proc/mask_check(var/mob/living/human/m)
 	if (m && istype(m))
 		if (m.wear_mask && istype(m.wear_mask, /obj/item/clothing/mask/gas))
-			var/obj/item/clothing/mask/gas/mask = m.wear_mask
-			if (mask.check_can_block(src))
-				return TRUE
+			return TRUE
 	return FALSE
 
 /datum/reagent/proc/eye_damage(var/mob/living/human/m, var/severity = TRUE) // damage eyes

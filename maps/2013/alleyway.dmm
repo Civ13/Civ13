@@ -1,0 +1,499 @@
+"aa" = (/obj/structure/grille/ironfence,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"ab" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"ac" = (/turf/floor/plating/road,/area/caribbean)
+"ad" = (/turf/floor/plating/road/whiteline{icon_state = "road_line"; dir = 4},/area/caribbean)
+"ae" = (/turf/floor/plating/road/whiteline{icon_state = "road_line"; dir = 8},/area/caribbean)
+"af" = (/turf/wall/brick,/area/caribbean)
+"ag" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
+"ah" = (/turf/wall/wood,/area/caribbean/roofed)
+"ai" = (/turf/floor/wood,/area/caribbean)
+"aj" = (/turf/wall/brick,/area/caribbean/roofed)
+"ak" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"al" = (/turf/floor/plating/tiled,/area/caribbean/roofed)
+"am" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/closet/crate/bin,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"an" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"ao" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"ap" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aq" = (/obj/structure/table/modern/table,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"ar" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"as" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"at" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 8},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"au" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"av" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aw" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"ax" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"ay" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"az" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aA" = (/obj/structure/oven/stove,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aB" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aC" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aD" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aE" = (/obj/structure/pot,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aF" = (/obj/structure/sink/kitchen,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aG" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"aH" = (/obj/structure/shelf,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"aI" = (/obj/structure/grille/ironfence{icon_state = "iron_fence"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"aJ" = (/obj/effects/premadevehicles/yamasaki/shinobu{custom_color = "#222222"},/turf/floor/plating/road/whiteline{icon_state = "road_line"; dir = 8},/area/caribbean)
+"aK" = (/turf/floor/grass,/area/caribbean)
+"aL" = (/obj/structure/vending/yakuza,/turf/floor/wood,/area/caribbean/roofed)
+"aM" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"aN" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"aO" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/wood,/area/caribbean/roofed)
+"aP" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"aQ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/roofed)
+"aR" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"aS" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"aT" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"aU" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/pot,/turf/floor/wood,/area/caribbean/roofed)
+"aV" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/table/wood,/obj/structure/sink/kitchen,/turf/floor/wood,/area/caribbean/roofed)
+"aW" = (/turf/floor/beach/water,/area/caribbean)
+"aX" = (/obj/structure/grille/ironfence{icon_state = "iron_fence"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"aY" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/roofed)
+"aZ" = (/obj/structure/sign/torii,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"ba" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"bb" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/roofed)
+"bc" = (/obj/structure/window/classic/brickfull,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"bd" = (/obj/structure/shelf,/obj/item/weapon/storage/toolbox/electrical,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"be" = (/obj/structure/window/barrier/railing/stone,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"bf" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"bg" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"bh" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"bi" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/turf/floor/wood,/area/caribbean/roofed)
+"bj" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami,/turf/floor/wood,/area/caribbean/roofed)
+"bk" = (/obj/structure/sign/torii{icon_state = "torii"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"bl" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"bm" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"bn" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"bo" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/turf/floor/wood,/area/caribbean/roofed)
+"bp" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"bq" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"br" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/turf/floor/wood,/area/caribbean/roofed)
+"bs" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami,/turf/floor/wood,/area/caribbean/roofed)
+"bt" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"bu" = (/turf/floor/broken_floor,/area/caribbean)
+"bv" = (/obj/structure/shelf,/obj/item/weapon/storage/toolbox/mechanical,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"bw" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/roofed)
+"bx" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"by" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"bz" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"bA" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/full,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/roofed)
+"bB" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"bC" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/ramen,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"bD" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"bE" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"bF" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"bG" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"bH" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"bI" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"bJ" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/closet/crate/bin,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"bK" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"bL" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"bM" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"bN" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
+"bO" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
+"bP" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
+"bQ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/full,/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/roofed)
+"bR" = (/obj/roof/clay/kerawa,/obj/structure/roof_support/admin,/turf/floor/broken_floor,/area/caribbean)
+"bS" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"bT" = (/obj/structure/potted_plant{dir = 6; icon_state = "potted_plant"; pixel_x = 10},/obj/covers/wood{layer = 1; pixel_x = 16},/turf/floor/broken_floor,/area/caribbean)
+"bU" = (/obj/structure/potted_plant{dir = 4; icon_state = "potted_plant"; pixel_x = 10},/obj/covers/wood{layer = 1; pixel_x = 16},/turf/floor/broken_floor,/area/caribbean)
+"bV" = (/obj/structure/potted_plant{pixel_x = 10},/obj/covers/wood{layer = 1; pixel_x = 16},/turf/floor/broken_floor,/area/caribbean)
+"bW" = (/obj/structure/potted_plant{dir = 1; icon_state = "potted_plant"; pixel_x = 10},/obj/covers/wood{layer = 1; pixel_x = 16},/turf/floor/broken_floor,/area/caribbean)
+"bX" = (/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/covers/tatami,/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"bY" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami,/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"bZ" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"ca" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"cb" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"cc" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"cd" = (/obj/structure/potted_plant{pixel_x = -10},/obj/covers/wood{layer = 1; pixel_x = -16},/turf/floor/broken_floor,/area/caribbean)
+"ce" = (/obj/structure/potted_plant{dir = 5; icon_state = "potted_plant"; pixel_x = -10},/obj/covers/wood{layer = 1; pixel_x = -16},/turf/floor/broken_floor,/area/caribbean)
+"cf" = (/obj/structure/potted_plant{dir = 8; icon_state = "potted_plant"; pixel_x = -10},/obj/covers/wood{layer = 1; pixel_x = -16},/turf/floor/broken_floor,/area/caribbean)
+"cg" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/full,/obj/structure/window/classic/reinforced,/turf/floor/wood,/area/caribbean/roofed)
+"ch" = (/obj/structure/potted_plant{dir = 9; icon_state = "potted_plant"; pixel_x = -10},/obj/covers/wood{layer = 1; pixel_x = -16},/turf/floor/broken_floor,/area/caribbean)
+"ci" = (/obj/structure/closet/crate/dumpster,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"cj" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/sink{pixel_y = 16},/turf/floor/wood,/area/caribbean/roofed)
+"ck" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"cl" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"cm" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"cn" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"co" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"cp" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/toilet{icon_state = "toilet00"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cq" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"cr" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"cs" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"ct" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami,/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cu" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cv" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cw" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/lamp/lamp_big/alwayson,/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/roofed)
+"cx" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/roofed)
+"cy" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cz" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 4},/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"cA" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 8},/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"cB" = (/turf/floor/wood,/area/caribbean/roofed)
+"cC" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"cD" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami,/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"cE" = (/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"cF" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"cG" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"cH" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/roofed)
+"cI" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cJ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cK" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cL" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"cM" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"cN" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/sink/kitchen{dir = 4; icon_state = "sink_alt"; pixel_x = -12},/turf/floor/wood,/area/caribbean/roofed)
+"cO" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"cP" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/full,/turf/floor/wood,/area/caribbean/roofed)
+"cQ" = (/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 4},/obj/covers/tatami,/turf/floor/wood,/area/caribbean/roofed)
+"cR" = (/obj/structure/railing,/turf/floor/broken_floor,/area/caribbean)
+"cS" = (/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 8},/obj/covers/tatami,/turf/floor/wood,/area/caribbean/roofed)
+"cT" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/full,/obj/structure/window/classic/reinforced,/turf/floor/wood,/area/caribbean/roofed)
+"cU" = (/obj/roof/clay/kerawa,/obj/structure/roof_support/admin,/turf/floor/wood{icon = 'icons/turf/roofs.dmi'; icon_state = "black_slateroof_dm"},/area/caribbean)
+"cV" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/cee,/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/roofed)
+"cW" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
+"cX" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
+"cY" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"cZ" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/wood,/area/caribbean/roofed)
+"da" = (/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/turf/floor/wood,/area/caribbean)
+"db" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/sink{pixel_y = 16},/turf/floor/wood,/area/caribbean/roofed)
+"dc" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"dd" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"de" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/roofed)
+"df" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/roofed)
+"dg" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/pot,/turf/floor/wood,/area/caribbean/roofed)
+"dh" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/wood,/area/caribbean/roofed)
+"di" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"dj" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/roofed)
+"dk" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/toilet{icon_state = "toilet00"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"dl" = (/obj/covers/cobblestone/stairs{icon_state = "rampup"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"dm" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"dn" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"do" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"dp" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"dq" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"dr" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"ds" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"dt" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"du" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/turf/floor/wood,/area/caribbean/roofed)
+"dv" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"dw" = (/obj/item/weapon/stool/padded,/turf/floor/wood,/area/caribbean/roofed)
+"dx" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"dy" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/ramen,/obj/item/weapon/material/kitchen/utensil/chopsticks,/turf/floor/wood,/area/caribbean/roofed)
+"dz" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/roofed)
+"dA" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/item/weapon/stool/wood,/turf/floor/wood,/area/caribbean/roofed)
+"dB" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/wood,/area/caribbean/roofed)
+"dC" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/storage/fancy/candle_box,/obj/item/weapon/matchbox,/turf/floor/wood,/area/caribbean/roofed)
+"dD" = (/obj/structure/curtain/black,/turf/floor/wood,/area/caribbean/roofed)
+"dE" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"dF" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/table/wood,/obj/item/weapon/flame/candle/on,/turf/floor/wood,/area/caribbean/roofed)
+"dG" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"dH" = (/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/wood,/area/caribbean/roofed)
+"dI" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/roofed)
+"dJ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/altar{color1 = "#FF0000"; pixel_y = -16; symbol = "Sun"},/turf/floor/wood,/area/caribbean/roofed)
+"dK" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"dL" = (/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/roofed)
+"dM" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/roofed)
+"dN" = (/obj/structure/pot,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"dO" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/closet/cabinet,/obj/item/weapon/material/sword/wakazashi,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/wood,/area/caribbean/roofed)
+"dP" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/wood,/area/caribbean/roofed)
+"dQ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"dR" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/toilet{icon_state = "toilet00"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"dS" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/altar{color1 = "#FF0000"; pixel_y = 16; symbol = "Sun"},/turf/floor/wood,/area/caribbean/roofed)
+"dT" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/sign/torii{icon_state = "torii"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"dU" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/table/wood,/obj/item/weapon/flame/candle/on,/turf/floor/wood,/area/caribbean/roofed)
+"dV" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/roofed)
+"dW" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/toilet,/turf/floor/wood,/area/caribbean/roofed)
+"dX" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/item/weapon/bedsheet/brown,/obj/structure/medicalbed,/turf/floor/wood,/area/caribbean/roofed)
+"dY" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/wood,/area/caribbean/roofed)
+"dZ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/covers/wood_wall/shoji_divider,/turf/wall/wood,/area/caribbean/roofed)
+"ea" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/cee,/turf/floor/wood,/area/caribbean/roofed)
+"eb" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"ec" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/full,/turf/floor/wood,/area/caribbean/roofed)
+"ed" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
+"ee" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/roofed)
+"ef" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/closet/cabinet,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/wood,/area/caribbean/roofed)
+"eg" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/roofed)
+"eh" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"ei" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/roofed)
+"ej" = (/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 8},/obj/covers/tatami,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"ek" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"el" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"em" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"en" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/wood,/area/caribbean/roofed)
+"eo" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"ep" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/toilet{icon_state = "toilet00"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"eq" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"er" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"es" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"et" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"eu" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"ev" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"ew" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/roofed)
+"ex" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/bed/chair/office/dark,/turf/floor/wood,/area/caribbean/roofed)
+"ey" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/sink{pixel_y = 16},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"ez" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/wood,/area/caribbean/roofed)
+"eA" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/roofed)
+"eB" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/roofed)
+"eC" = (/obj/structure/shelf,/obj/item/weapon/storage/backpack/duffel,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"eD" = (/obj/structure/lamp/lamp_big/alwayson,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"eE" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
+"eF" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/roofed)
+"eG" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"eH" = (/obj/structure/multiz/ladder/ww2/stairsup{icon_state = "wood2_stairs"},/turf/floor/wood,/area/caribbean/roofed)
+"eI" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/bearmeat,/obj/item/weapon/reagent_containers/food/snacks/bearmeat,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"eJ" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/obj/item/weapon/reagent_containers/food/snacks/grown/rice,/turf/floor/wood,/area/caribbean/roofed)
+"eK" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/obj/item/weapon/reagent_containers/food/condiment/bsugar,/turf/floor/wood,/area/caribbean/roofed)
+"eL" = (/obj/structure/closet/cabinet/ceiling{pixel_y = 12},/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"eM" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"eN" = (/obj/structure/closet/crate/bin,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"eO" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/mince,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/obj/item/weapon/reagent_containers/food/snacks/meatball,/turf/floor/wood,/area/caribbean/roofed)
+"eP" = (/obj/structure/closet/fridge{powerneeded = 0},/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/weapon/reagent_containers/food/snacks/patty,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/obj/item/stack/sausagecasing,/turf/floor/wood,/area/caribbean/roofed)
+"eQ" = (/obj/structure/drying_rack,/turf/floor/wood,/area/caribbean/roofed)
+"eR" = (/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/roofed)
+"eS" = (/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/roofed)
+"eT" = (/obj/structure/salting_container,/turf/floor/wood,/area/caribbean/roofed)
+"eU" = (/obj/structure/table/modern/table,/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/wood,/area/caribbean/roofed)
+"eV" = (/obj/structure/table/modern/table,/obj/structure/mill,/turf/floor/wood,/area/caribbean/roofed)
+"eW" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood,/area/caribbean/roofed)
+"eX" = (/obj/structure/meat_grinder,/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/roofed)
+"eY" = (/obj/structure/sink/kitchen{dir = 4; icon_state = "sink_alt"; pixel_x = -12},/turf/floor/wood,/area/caribbean/roofed)
+"eZ" = (/obj/structure/closet/crate/rations/vegetables,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"fa" = (/obj/item/weapon/reagent_containers/glass/barrel/beer,/turf/floor/wood,/area/caribbean/roofed)
+"fb" = (/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/wood,/area/caribbean/roofed)
+"fc" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/wood,/area/caribbean/roofed)
+"fd" = (/obj/structure/table/modern/table,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"fe" = (/obj/structure/pot,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"ff" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/roofed)
+"fg" = (/obj/structure/multiz/ladder/ww2/up,/turf/floor/wood,/area/caribbean/roofed)
+"fh" = (/obj/map_metadata/alleyway,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"fi" = (/obj/structure/medicalbed,/turf/floor/wood,/area/caribbean/roofed)
+"fj" = (/obj/structure/table/modern/table,/obj/structure/potted_plant,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fk" = (/obj/structure/bed/chair/wood/bleacher/r,/obj/effect/landmark{name = "JoinLateJP"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fl" = (/obj/structure/bed/chair/wood/bleacher,/obj/effect/landmark{name = "JoinLateJP"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fm" = (/obj/structure/bed/chair/wood/bleacher/l,/obj/effect/landmark{name = "JoinLateJP"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fn" = (/obj/structure/table/modern/table,/obj/structure/potted_plant,/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fo" = (/obj/structure/multiz/ladder/ww2/stairsdown{dir = 1; icon_state = "wood2_stairs"},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fp" = (/obj/structure/multiz/ladder/ww2/stairsdown{dir = 1; icon_state = "wood2_stairs"},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fq" = (/obj/structure/bed/chair/wood/bleacher/l{icon_state = "bleacher_l"; dir = 4},/obj/effect/landmark{name = "JoinLateJP"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fr" = (/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fs" = (/obj/structure/bed/chair/wood/bleacher{icon_state = "bleacher"; dir = 4},/obj/effect/landmark{name = "JoinLateJP"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"ft" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fu" = (/obj/structure/table/modern/table,/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fv" = (/obj/structure/bed/chair/wood/bleacher/r{icon_state = "bleacher_r"; dir = 4},/obj/effect/landmark{name = "JoinLateJP"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"fw" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/closet/crate/bin,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fx" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fy" = (/obj/structure/vending/yakuza,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fz" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fA" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 4},/obj/effect/landmark{name = "JoinLateJPCap"},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fB" = (/obj/structure/simple_door/key_door/japanese{unique_door_name = "Boss locked"},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fC" = (/obj/structure/closet/cabinet,/obj/item/ammo_magazine/m9beretta,/obj/item/ammo_magazine/m9beretta,/obj/item/clothing/suit/storage/jacket/charcoal_suit,/obj/item/clothing/under/peakyblinder,/obj/item/clothing/head/fedora,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake{icon_state = "sake_closed"},/turf/floor/plating/tiled,/area/caribbean/roofed)
+"fD" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"fE" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 4},/obj/structure/multiz/ladder/ww2/stairsdown{icon_state = "wood2_stairs"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"fF" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 8},/obj/structure/multiz/ladder/ww2/stairsdown{icon_state = "wood2_stairs"; dir = 8},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"fG" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"fH" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"fI" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami,/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"fJ" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/obj/structure/window/classic/reinforced,/turf/floor/wood,/area/caribbean/roofed)
+"fK" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/obj/structure/window/classic/reinforced,/turf/floor/wood,/area/caribbean/roofed)
+"fL" = (/obj/effect/floor_decal/tatami/full,/obj/covers/tatami,/turf/floor/wood,/area/caribbean/roofed)
+"fM" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/roofed)
+"fN" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/roofed)
+"fO" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami,/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/roofed)
+"fP" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/roofed)
+"fQ" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"fR" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/obj/structure/multiz/ladder/ww2/stairsdown{icon_state = "wood2_stairs"; dir = 2},/turf/floor/wood,/area/caribbean/roofed)
+"fS" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/sink{pixel_y = 16},/turf/floor/wood,/area/caribbean/roofed)
+"fT" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/toilet{icon_state = "toilet00"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"fU" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/roofed)
+"fV" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/roofed)
+"fW" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/roofed)
+"fX" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/obj/structure/multiz/ladder/ww2/stairsdown{icon_state = "wood2_stairs"; dir = 2},/turf/floor/wood,/area/caribbean/roofed)
+"fY" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"fZ" = (/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 4},/obj/covers/tatami,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed)
+"ga" = (/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 8},/obj/covers/tatami,/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/wood,/area/caribbean/roofed)
+"gb" = (/obj/structure/multiz/ladder/ww2/stairsdown{dir = 1; icon_state = "wood2_stairs"},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"gc" = (/obj/structure/multiz/ladder/ww2/stairsdown{dir = 1; icon_state = "wood2_stairs"},/turf/floor/wood,/area/caribbean/roofed)
+"gd" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
+"ge" = (/obj/structure/bed/sofa/left,/turf/floor/wood,/area/caribbean/roofed)
+"gf" = (/obj/structure/bed/sofa,/turf/floor/wood,/area/caribbean/roofed)
+"gg" = (/obj/structure/bed/sofa/right,/turf/floor/wood,/area/caribbean/roofed)
+"gh" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/roofed)
+"gi" = (/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/roofed)
+"gj" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/obj/structure/closet/crate/bin,/turf/floor/wood,/area/caribbean/roofed)
+"gk" = (/obj/structure/simple_door/key_door/japanese_officer{unique_door_name = "Boss locked"},/turf/floor/wood,/area/caribbean/roofed)
+"gl" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"gm" = (/obj/structure/window/classic/reinforced,/turf/floor/wood,/area/caribbean/roofed)
+"gn" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 8},/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/wood,/area/caribbean/roofed)
+"go" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/coffee,/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"gp" = (/obj/structure/bed/chair/wood/bleacher/l{icon_state = "bleacher_l"; dir = 8},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"gq" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/coffee,/turf/floor/wood,/area/caribbean/roofed)
+"gr" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/turf/floor/wood,/area/caribbean/roofed)
+"gs" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/roofed)
+"gt" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/h_chocolate,/turf/floor/wood,/area/caribbean/roofed)
+"gu" = (/obj/structure/bed/chair/wood/bleacher{icon_state = "bleacher"; dir = 8},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"gv" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
+"gw" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/roofed)
+"gx" = (/obj/structure/bed/chair/wood/bleacher/r{icon_state = "bleacher_r"; dir = 8},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"gy" = (/obj/structure/bed/chair/wood/bleacher/l{icon_state = "bleacher_l"; dir = 1},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"gz" = (/obj/structure/bed/chair/wood/bleacher{icon_state = "bleacher"; dir = 1},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"gA" = (/obj/structure/bed/chair/wood/bleacher/r{icon_state = "bleacher_r"; dir = 1},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"gB" = (/obj/structure/table/modern/table,/obj/structure/potted_plant,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
+"gC" = (/obj/structure/closet/cabinet,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/roofed)
+"gD" = (/obj/item/weapon/gun/projectile/semiautomatic/svd,/obj/item/weapon/attachment/silencer,/turf/floor/wood,/area/caribbean)
+"gE" = (/obj/structure/multiz/ladder/ww2,/turf/floor/wood,/area/caribbean/roofed)
+"gF" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall)
+"gG" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
+"gH" = (/turf/floor/plating/road/whiteline{icon_state = "road_line"; dir = 4},/area/caribbean/no_mans_land/invisible_wall)
+"gI" = (/turf/floor/plating/road/whiteline{icon_state = "road_line"; dir = 8},/area/caribbean/no_mans_land/invisible_wall)
+"gJ" = (/obj/roof/clay/kerawa,/turf/floor/broken_floor,/area/caribbean)
+"gK" = (/obj/roof/clay/kerawa,/turf/floor/wood{icon = 'icons/turf/roofs.dmi'; icon_state = "black_slateroof_dm"},/area/caribbean)
+"gL" = (/obj/roof/clay/kerawa,/obj/structure/closet/crate/wood,/turf/floor/wood{icon = 'icons/turf/roofs.dmi'; icon_state = "black_slateroof_dm"},/area/caribbean)
+"gM" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/closet/crate/wood,/turf/floor/wood,/area/caribbean/roofed)
+"gN" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/roof/clay/kerawa,/turf/floor/wood{icon = 'icons/turf/roofs.dmi'; icon_state = "black_slateroof_dm"},/area/caribbean)
+"gO" = (/obj/structure/closet/crate/wood,/turf/floor/wood,/area/caribbean)
+
+(1,1,1) = {"
+agagagagagahababahagagagagagagagagagagahababacacadaeacacabababababababababababababababababababababab
+agagagagagahababahagagagagagagagagagagahababacacadaeacacabababafaaaaaaaaajajajajajajajajajajajajajab
+ahahahahahahababahahahahahahahahahahahahababacacadaeacacabababaIaKaKaKaKajakalalalalamajalanaoapajab
+ababababababababababababababababababababababacacadaeacacabababaIaKaKaKaKajalalaqaqalalajalanaoaoajab
+abababababababababababababababababababababcYacacadaeacacabababaIaKaKaKaKajalalaqalalalaralanaoaoajab
+acacacacacacacacacacacacacacacacacacacacacacacacadaeacacabababafabbebebeajalalasatalalaralalalalajab
+acacacacacacacacacacacacacacacacacacacacacacacacadaeacacabababababdldldlaralalaqaualalajalalalalajab
+acacacacacacacacacacacacacacacacacacacacacacacacadaJacacabababababdldldlaralalalalalalajalalalalajab
+abababababababababababababababababababababcYacacadaeacacabababafabbmbmbmajavawawaxawayajalalalazajab
+ababababababababababababababababababababababacacadaeacacabababaIaKaKaKaKajajajajajajajajalalalalajab
+abahahahahahabahahahahahahahahahahahahahababacacadaeacacabababaIaKaKaKaKajaAaBaCaDaEaFaGalalalalajab
+abahaHaMaNahabahaOaPaQaRaSaTaUaVaYbabbahababacacadaeacacabababaIaKaKaKaKbcalalalalalalalalalalalajab
+abahbdbfbfahabahbibjblbnbobpbqbrbsbsbtahababacacadaeacacabababaIaKaKaKaKbcalalalalalalalalalalalajab
+abahbvbfbfahabahaRbwbxbnbybpbqaTbzaTbzbAababacacadaeacacabababaIaKaKaKaKajbBbCaqbDbBaqbCbDalalalajab
+abahbEbfbfahabahbybobFbGbobiblbpbqbpbqahababacacadaeacacabababaIaKaKaKaKajbHaqbIbDbBbCaqbDalalbJajab
+abahahbKahahabahbobFbGbLbMbNbObPbqbpbqahababacacadaeacacabababafaaaaaaaaajajajajajajajajajajajajajab
+abababababababahbQbSbXbrbYbZcacbccbiblcgababacacadaeacacababababababababababababababababciababababab
+abababababababahaTcjbXbLckbaclcmcnbMcoahababacacadaeacacabababababababababababababababababababababab
+abababababababahcpcqcrcsbsctcucvbsbscwahababacacadaeacacabababababababababababababababababababababab
+abababababababahahahahahahahahahahahahahababacacadaeacacababahahahahahahahahahahahahahabahahahahahah
+ababababababababababababababababababababababacacadaeacacababahcxckbaclcmcnbMcybyczcAahabahcBcBcBcBcB
+abababababababahahahahahahahahahahahahahababacacadaeacacababahbrbYbZcacCcDbsbtbocEcEahabahcBcBcBcBcB
+abababababababahaOaPaQaRaOaPaQaRcFcGcHahababacacadaeacacababbAaTbzcIcJcKbMbMcoaTcLbzahabahcBcBcBcBcB
+abababababababahbibjblbnbibjblcMcNbjblahababacacadaeacacababahbpbqbpbqcsbsbsbtbibjblahabahcBcBcBcBcB
+abababababababahcObwbSbnbSbwbSaRbyaTbzcgababacacadaeacacababahbpbqbpbqcEbFbGbybFbGbyahabahcBcBcBcBcB
+abababababababahbobocPbiblbocQcSbobpbqahababacacadaeacacababcTbiblbiblcEcEcEcVcEcEcVahabahcBcBcBcBcB
+abababababababahbobFbGbLbMbMbOcWcXbpbqahababacacadaeacacababahbLbMbMcZcEaTcLbzcEdbcoahabahcBcBcBcBcB
+abababababababahbQbSbXbrbsbYcacbdcddblbAababacacadaeacacababahdedfbZdgcEdhdidjcEdkbtahabahcBcBcBcBcB
+abababababababahaTcjbXdmdndodpcmbacncoahababacacadaeacacababahahahahahahahahahahahahahabahahahahahah
+abababababababahcpcqcrdqdrbjdscvctbscwahababacacadaeacacabababababababababababababababababababababab
+abababababababahahahahahahahahahahahahahababacacadaeacacabababababababababababababababababababababab
+gFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgGgGgHgIacacababahahahahahahahahahahahbAahahahababababab
+ababajajajajajaaaaaaaaaaaaaaaaaaaaaaaaafababacacadgIacacababahdtcBcBcBcBcBdtcEdubzaTbzaSahababababab
+ababajaTbzaTdvaKaKaKaKaKaKaKaWaWaKaKabaXababacacadgIacacababahcBcBdwdwdwcBcBcEbpbqbpbqboahababababab
+ababajbpbqbpdxaKaKaKaKaKaKaWaZabaWaKaKaXababacacadgIacacababahcBdwdydydydzcBcEbpdAdBdAbyahababababab
+ababajdCbqbpdxaKaKaKaKaKaWababababaWaKaXababacacadgIacacababdDcBdwdycBcBcBcBbQbiblbibldEahababababab
+ababajdFblbidGaWaWaWaWaWababbebeababaWafababacacadgIacacababdDcBdwdycBcBcBdHcEaTcLbzbxdIahciabababab
+ababajdJcLcLbzababababababbgaWaWbhabababababacacadgIacacababdDdKdwdydLdzdMdNcEdObjdPdQdRahababababab
+ababajdSbjbjdTababababababbgaWaWbhababbkababacacadgIacacababahahahahahahahahahahahahahahahababababab
+ababajdUbzaTdvaWaWaWaWaWababbmbmababaWafababacacadgIgGgGgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgF
+ababajdCbqbpdxaKaKaKaKaKaWababababaWaKaXababacacadgIacacababahahahahahahahahahahahahahababababababab
+ababajbpbqbpdxaKaKaKaKaKaKaWaZabaWaKaKaXababacacadgIacacababahdVbabaclaRdbdWbxdXaPaQahabahahahahahah
+ababajbiblbidGaKaKaKaKaKaKaKaWaWaKaKabaXababacacadgIacacababahbrbsbsdYcMcsbtdQbibjblahabahcBcBcBcBcB
+ababajajajajajaaaaaaaaaaaaaaaaaaaaaaaaafababacacadgIacacababbAaTbzaTbzaRdZbwbxaRbwbxahabahcBcBcBcBcB
+gFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgFgGgGgHgIacacababahbpbqbpbqbFbGeaebbGeaecahabahcBcBcBcBcB
+abababababababahahahahahahahahahahahahahababacacadaeacacababahbpbqbPedeebMbMcoaTcLbzahabahcBcBcBcBcB
+abababababababahdXaPaQaRaOaPefaRcFegcHahababacacadaeacacababcTbiehcbdccCcDbsbtbibjblahabahcBcBcBcBcB
+abababababababahbibjblbnbibjblcMcNbjblahababacacadaeacacababahbLckbaclcmcnbMcoaTcLbzahabahcBcBcBcBcB
+abababababababahcObwbSbnbSbwbSaRbyaTbzbAababacacadaeacacababaheibsctcucvbsbsbtbibjcqahabahcBcBcBcBcB
+abababababababahbobocPbiblbocQejbobpbqahababacacadaeacacababahahahahahahahahahahahahahabahahahahahah
+abababababababahbobFbGbLbMbNbOcWbzbpbqahababacacadaeacacababahcxbMbMbOeebNbMcyaRaObzahababababababab
+abababababababahbQbSbXbrbYbZcacbccbiblcgababacacadaeacacababahbrbsbYcacCbZcDbtcMekbqahabahahahahahah
+abababababababahaTcjbXbLckbaclcmcnbMcoahababacacadaeacacababbAaTbzeldpcFdpembzaRenbtahabahcBcBcBcBcB
+abababababababaheoepcrcsbsctcucvbsbscwahababacacadaeacacababahbpbqbpeqereqbpbqcMcEbwahabahcBcBcBcBcB
+abababababababahahahahahahahahahahahahahababacacadaeacacababahbpbqbpbqesetesetbFbGeuahabahcBcBcBcBcB
+ababababababababciababahbEbEevaHbdahababababacacadaeacacababcTbiblbiblcsbtbrbtcEcEewahabahcBcBcBcBcB
+abababababababababababbKbfbfbfbfbfahababababacacadaeacacababahbLbMbMcZcEcFexdpcEeycoahabahcBcBcBcBcB
+abababababababababababahbfbfbfbfbfahababababacacadaeacacababahdebZdfdgcEezeAeBcEdkbtahabahcBcBcBcBcB
+abababababababababababaheCbveDeEeEahababababacacadaJacacababahahahahahahahahahahahahahabahahahahahah
+abahahahahaheFahahahahahahahahahahahahahababacacadaeacacabababababababababababababababababababababab
+abaheGeHaheIcBeJeKeLcEeMcBcBcBcBcBcBeNahababacacadaeacaccYababababababababababababababababababababab
+abaheHeHaheOcBcBcBcBcEcBcBdwdwdwcBcBcBahababacacadaeacacacacacacacacacacacacacacacacacacacacacacacac
+abaheHeHahePcBcBcBcBcEcBdzdzdydzdwcBcBdDababacacadaeacacacacacacacacacacacacacacacacacacacacacacacac
+abahcBcBeQeRcBcBcBcBeScBcBcBcBdzdwcBcBdDababacacadaeacacacacacacacacacacacacacacacacacacacacacacacac
+abahcBcBeTcBcBcBcBeUcEeMcBcBcBdydwcBcBdDababacacadaeacaccYababababababababababababababababababababab
+abahcBcBcBcBcBcBcBeVcEcBcBcBcBdzdwcBcBdDababacacadaeacacabababababababababababababababababababababab
+abaheWcBcBcBcBcBcBeXcEeYcBcBcBdydwcBcBdDababacacadaeacacababahahahahahahahahahahahahagahahahahahcBah
+abaheZfafafbfbfcdzfdcEfeffdzdLdzdwcBdKdDababacacadaeacacababahcBcBcBcBcBcBcBcBcBcBahagahfgcBdtcBcBcB
+abahahahahahahahahahahahahahahahahahahahababacacadaeacacababahcBcBcBcBcBcBcBcBcBcBahagahcBcBcBcBcBcB
+fhabababababababababababababababababababababacacadaeacacababahcBcBcBcBcBcBcBcBcBcBahagahficBcBcBcBcB
+"}
+
+(1,1,2) = {"
+cUgKgKgKgKgKgKgKgKgJgJgKgKgKgKgKgKgKgKgKgJbububububububububububububububububububububububububububububu
+gKgKgKcUgKgKgKgKgKbRgJgKgKcUcUgKgKgKcUgKgJbububububububububububububububuajajajajajajajajajajajajajbu
+gKgKgKgKgKgKgKgKgKgJgJgKgKgKgKgKgKgKgKgKgJbububububububububububububububTajfjfkflfmfnalalalanfofpajbu
+gJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJbububububububububububububububUbcfqfrfrfrfralalalanfofoajbu
+bubububububububububububububububububububububububububububububububububububVbcfsfrftfufralalalanfofoajbu
+bubububububububububububububububububububububububububububububububububububWajfvfrfufufralalalalalalajbu
+bubububububububububububububububububububububububububububububububububububuajfnfrfrfrfralalalalalalajbu
+bubububububububububububububububububububububububububububububububububububuajalalalalalalalalalalalajbu
+bubububububububububububububububububububububububububububububububububububuajfwalalalalfxalalalalazajbu
+gJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJbububububububububububububububuajajajajajajajakalalalfyajbu
+gJgKgKgKgKgKgJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbububububububububububububububuajakalalalazajalalalalfyajbu
+gJgKcUgKcUgKgJgKcUgKgKgKgKcUgKgKgKgKcUgKgJbubububububububububububububububcalaqfzbDalajalalalalalajbu
+gJgKgKgKgKgKgJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububububububububububcalfAasalalfBalalalalalajbu
+gJgKgKgKgKgKgJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububububububububububcalaqaubDalajalalalalalajbu
+gJgKcUgKcUgKgJgKgKgKcUgKgKgKgKgKcUgKgKgKgJbububububububububububububububuajakalalalfCajakalalalazajbu
+gJgKgKgKgKgKgJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbububububububububububububububuajajajajajajajajajajajajajbu
+gJgJgJgJgJgJgJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbububububububububububububububububububububububububububububu
+bubububububugJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbububububububububububububububububububububububububububububu
+bubububububugJgKcUgKgKgKgKcUgKgKgKgKcUgKgJbubububububububububububububububububububububugJgJgJgJgJgJgJ
+bubububububugJgKgKgKgKgKgKgKgLgLgKgKgKgKgJbububububububububuahahahahahahahahahahahahahgJgKgKgKgKgKgK
+bubububububugJgJgJgJgJgJgJgJgJgJgJgJgJgJgJbububububububububuahcxbMbNbOeefDbMcobyfEfFahgJgKcUgKgKcUgK
+bububububububuahahahahahahahahahahahahahbubububububububububuahbrbYbZcacCcDbsbtbocEcEahgJgKgKgKgKgKgK
+bububububububuahaOaPaQaRaOaPaQaRcFfGdpahcdbububububububububuahaTfHcFdpcmcnbMcoaTcLbzahgJgKgKgKgKgKgK
+bububububububuahbibjblbnbibjblcMcbfIblfJcebububububububububTahbpbqereqcvbsbsbtbibjblahgJgKgKgKcUgKgK
+bububububububuahcObwbSbnbSbwbSaRbyaTbzfKcfbububububububububUcTbpbqbpbqfLbFbGbybFbGbyahgJgKgKcUgKgKgK
+bububububububuahbobocPbiblbocQcSbobpbqahchbububububububububVcTbiblbiblcEcEcEcVcEcEcVahgJgKgKgKgKgKgK
+bububububububuahbyaTbzbLbMbMcocQcSgMfMahbubububububububububWahbLbMbMcocEaTcLbzcEdbcoahgJgKgKgKgKgKgK
+bububububububuahbobpbqbrbsbsbtbycEcEcEahbubububububububububuahfNfOfOfPcEdhdidjcEdkfQahgJgKcUgKgKcUgK
+bububububububuahbybpdxfRdncLbzbodZfSfTahbubububububububububuahahahahahahahahahahahahahgJgKgKgKgKgKgK
+bububububububuahfUfVfWfXfYbjblfZgaeoblahbububububububububububububububububububububububugJgJgJgJgJgJgJ
+bububububububuahahahahahahahahahahahahahbububububububububugJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJbububu
+bugJgJgJgJgJgJgJbububububububububububububububububububububugJgJgKgKgKgKgKgKgKgKgKgKgKgKgKgKgJgJbububu
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgJcUgKgKgKgKgKgKcUgKgKgKgKgKcUgJgJbububu
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgJgKgKgKgKgKgKgKgKgKgKgKgKgKgKgJgJbububu
+bugJgKcUgKgKgKgJbububububububububububububububububububububugJgJgKgKgKgKgKgKgKgKgKgKgKgKgKgKgJgJbububu
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgJgKgKgKgKgKgKgKgKgKgKgKgKgKgKgJgJbububu
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgJgKgKgKgKgKgKgKgKgKgKgKgKgKgKgJgJbububu
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgJcUgKgKgKgKgKgKcUgKgKgKgKgKcUgJgJbububu
+bugJgKgKgKcUgKgJbububububububububububububububububububububugJgJgKgKgKgKgKgKgKgKgKgKgKgKgKgKgJgJbububu
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJbububu
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJ
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgKcUgKgKgKgKcUgKgKgKgKcUgJgJgJgJgJgJgJgJ
+bugJgKcUgKgKgKgJbububububububububububububububububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJcUgKgKcUgJ
+bugJgKgKgKgKgKgJbububububububububububububububububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bugJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bubububububugJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bubububububugJgKcUgKgKgKgKcUgKgKgKgKcUgKgJbubububububububugJgKcUgKgKgKgKcUgKgKgKgKcUgJgJgJgKgKgKgKgJ
+bubububububugJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bubububububugJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJcUgKgKcUgJ
+bubububububugJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bubububububugJgKgKgKcUgKgKgKgKgKcUgKgKgKgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bubububububugJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububugJgKcUgKgKgKgKcUgKgKgKgKcUgJgJgJgKgKgKgKgJ
+bubububububugJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJcUgKgKcUgJ
+bubububububugJgKcUgKgKgKgKcUgKgKgKgKcUgKgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bubububububugJgKgKgKgKgKgKgKgKgKgKgKgKgKgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bubububububugJgJgJgJgJgJgJgJgJgJgJgJgJgJgJbubububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bububububububububububububububububububububububububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgKgKgKgKgJ
+bububububububububububububububububububububububububububububugJgKcUgKgKgKgKcUgKgKgKgKcUgJgJgJcUgKgKcUgJ
+bububububububububububububububububububububububububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgJgJgJgJgJgJgJgJ
+buahahahahahahahahahahahahahahahahahahahbububububububububugJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJgJ
+buahgbgcgdcBgegfggaLaLcBghaheMgigigigjahbubububububububububububububububububububububububububububububu
+buahgcgcgdcBcBcBcBcBcBcBcBahcBcBcBcBcBahbubububububububububububububububububububububububububububububu
+buahgcgcgdcBcBcBcBcBcBcBcBgkcBgldzdzcBgmbubububububububububububububububububububububububububububububu
+buahcBcBcBcBcBcBfrfrfrfrfnahcBcBdzgncBgmbubububububububububububububububububububububububububububububu
+buahcBcBcBcBcBcBfrgofufrgpahcBglgqdzcBgmbubububububububububububububububububububububububububububububu
+buahgrgsgtcBcBcBfrfufufrguahcBcBcBcBcBgmbububububububububugJgJgJgJgJgJgJgJgJgJgJgJgJgJcRcRbububububu
+buahcBgvgwcBcBcBfrfrfrfrgxahcBcBcBcBcBahbububububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgNaiaiahahahahah
+buahdKcBcBcBcBcBfngygzgAgBaheMcBcBcBgCahbububububububububugJgKcUgKgKgKgKcUgKgKgKcUgKgNgDdaahgEcBcBcB
+buahahahahahahahahahahahahahahahahahahahbububububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgNaiaicBcBcBcBcB
+bububububububububububububububububububububububububububububugJgKgKgKgKgKgKgKgKgKgKgKgKgNgOgOahcBcBcBcB
+"}

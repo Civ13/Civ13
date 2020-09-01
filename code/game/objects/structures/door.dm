@@ -95,13 +95,9 @@
 		opacity = FALSE
 	else
 		opacity = TRUE
-	if (material.products_need_process())
-		processing_objects |= src
-	update_nearby_tiles(need_rebuild=1)
 
 /obj/structure/simple_door/Destroy()
 	processing_objects -= src
-	update_nearby_tiles()
 	..()
 
 /obj/structure/simple_door/get_material()
@@ -165,7 +161,6 @@
 		state = TRUE
 		update_icon()
 		isSwitchingStates = FALSE
-		update_nearby_tiles()
 		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
 		for(var/obj/roof/R in range(1,src))
@@ -187,7 +182,6 @@
 		state = FALSE
 		update_icon()
 		isSwitchingStates = FALSE
-		update_nearby_tiles()
 		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
 		for(var/obj/roof/R in range(1,src))
@@ -279,12 +273,6 @@
 			hardness -= 0.1
 			CheckHardness()
 	return
-
-/obj/structure/simple_door/process()
-	if (!material.radioactivity)
-		return
-	for (var/mob/living/L in range(1,src))
-		L.apply_effect(round(material.radioactivity/3),IRRADIATE,0)
 
 /obj/structure/simple_door/key_door/custom/jail/
 	var/buildstackamount = 0//How much mats it takes to make it.

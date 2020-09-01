@@ -42,6 +42,14 @@
 /datum/job/var/is_medic = FALSE
 /datum/job/var/is_ss_panzer = FALSE
 /datum/job/var/is_civil_war = FALSE
+/datum/job/var/is_deal = FALSE
+/datum/job/var/is_pacific = FALSE
+/datum/job/var/is_korean_war = FALSE
+/datum/job/var/is_ancient = FALSE
+/datum/job/var/is_ph_us_war = FALSE
+/datum/job/var/is_yakuza = FALSE
+/datum/job/var/is_yama = FALSE
+/datum/job/var/is_ichi = FALSE
 
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE
@@ -102,6 +110,8 @@
 		. = VIETNAMESE
 	else if (istype(src, /datum/job/chinese))
 		. = CHINESE
+	else if (istype(src, /datum/job/filipino))
+		. = FILIPINO
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -161,6 +171,9 @@
 	else if (istype(src, /datum/job/chinese))
 		user.faction_text = "CHINESE"
 		user.base_faction = new/datum/faction/chinese(user, src)
+	else if (istype(src, /datum/job/filipino))
+		user.faction_text = "FILIPINO"
+		user.base_faction = new/datum/faction/filipino(user, src)
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
 		return "British Empire"

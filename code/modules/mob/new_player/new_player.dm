@@ -38,6 +38,12 @@ var/global/redirect_all_players = null
 			for (var/C in clients)
 				winset(C, null, "mainwindow.flash=1")
 				C << link(redirect_all_players)
+	spawn(20)
+		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
+			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/The_Art_of_the_Deal\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
+			src << browse(htmlfile,"window=wiki;size=820x650")
+
 /mob/new_player/Destroy()
 	new_player_mob_list -= src
 	..()
@@ -92,9 +98,7 @@ var/global/redirect_all_players = null
 	<br>
 	<html>
 	<head>
-	<style>
 	[common_browser_style]
-	</style>
 	</head>
 	<body><center>
 	PLACEHOLDER
@@ -485,29 +489,7 @@ var/global/redirect_all_players = null
 		return TRUE
 	return FALSE
 
-/mob/new_player/proc/LateSpawnForced(rank, needs_random_name = FALSE)
-
-	spawning = TRUE
-	close_spawn_windows()
-
-	job_master.AssignRole(src, rank, TRUE)
-	var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
-	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
-
-	job_master.relocate(character)
-
-	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
-		character.buckled.loc = character.loc
-		character.buckled.set_dir(character.dir)
-
-	ticker.minds += character.mind
-
-	character.lastarea = get_area(loc)
-
-	qdel(src)
-
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
-
 	if (src != usr)
 		return FALSE
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
@@ -593,6 +575,43 @@ var/global/redirect_all_players = null
 		if (client.prefs.gender == FEMALE)
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
+	if (job.is_deal)
+		var/y_nr = 0
+		var/g_nr = 0
+		var/r_nr = 0
+		var/b_nr = 0
+//		var/p_nr = 0
+		for (var/datum/job/joby in job_master.occupations)
+			if (istype(joby, /datum/job/civilian/businessman/red))
+				r_nr = joby.current_positions
+			else if(istype(joby, /datum/job/civilian/businessman/blue))
+				b_nr = joby.current_positions
+			else if(istype(joby, /datum/job/civilian/businessman/green))
+				g_nr = joby.current_positions
+			else if(istype(joby, /datum/job/civilian/businessman/yellow))
+				y_nr = joby.current_positions
+//			else if(istype(joby, /datum/job/civilian/policeofficer))
+//				p_nr = joby.current_positions
+		if (istype(job, /datum/job/civilian/businessman/red))
+			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > g_nr)
+				WWalert(usr,"Too many people playing as this role.","Error")
+				return FALSE
+		else if(istype(job, /datum/job/civilian/businessman/blue))
+			if (job.current_positions > y_nr || job.current_positions > r_nr && job.current_positions > g_nr)
+				WWalert(usr,"Too many people playing as this role.","Error")
+				return FALSE
+		else if(istype(job, /datum/job/civilian/businessman/green))
+			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > r_nr)
+				WWalert(usr,"Too many people playing as this role.","Error")
+				return FALSE
+		else if(istype(job, /datum/job/civilian/businessman/yellow))
+			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr)
+				WWalert(usr,"Too many people playing as this role.","Error")
+				return FALSE
+//		else if(istype(job, /datum/job/civilian/policeofficer))
+//			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > y_nr)
+//				WWalert(usr,"Too many people playing as this role.","Error")
+//				return FALSE
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
@@ -726,6 +745,8 @@ var/global/redirect_all_players = null
 		dat += "[alive_vietnamese.len] Vietnamese "
 	if (CHINESE in map.faction_organization)
 		dat += "[alive_chinese.len] Chinese "
+	if (FILIPINO in map.faction_organization)
+		dat += "[alive_chinese.len] Chinese "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -841,30 +862,25 @@ var/global/redirect_all_players = null
 						side_name = "Israeli"
 					dat += "<br><br>[side_name]<br>"
 
-			var/extra_span = ""
-			var/end_extra_span = ""
+			var/extra_span = "<b>"
+			var/end_extra_span = "</b><br>"
 
 			if (job.is_officer && !job.is_commander)
-				extra_span = "<h3>"
-				end_extra_span = "</h3>"
+				extra_span = "<b><font size=2>"
+				end_extra_span = "</font></b><br>"
 			else if (job.is_commander)
-				extra_span = "<h2>"
-				end_extra_span = "</h2>"
+				extra_span = "<font size=3>"
+				end_extra_span = "</font></b><br><br>"
 
 			if (!job.en_meaning)
 				if (job_is_available)
-					dat += "&[job.base_type_flag()]&[extra_span]<a href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
+					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
 					++available_jobs_per_side[job.base_type_flag()]
-			/*	else
-					dat += "&[job.base_type_flag()]&[unavailable_message]<span style = 'color:red'><strike>[job.title] ([job.current_positions]/[job.total_positions]) (Active: [active])</strike></span><br>"
-				*/
 			else
 				if (job_is_available)
-					dat += "&[job.base_type_flag()]&[extra_span]<a href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
+					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
 					++available_jobs_per_side[job.base_type_flag()]
-		/*		else
-					dat += "&[job.base_type_flag()]&[unavailable_message]<span style = 'color:red'><strike>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</strike></span><br>"
-				*/
+
 
 	dat += "</center>"
 
@@ -906,9 +922,7 @@ var/global/redirect_all_players = null
 		<br>
 		<html>
 		<head>
-		<style>
 		[common_browser_style]
-		</style>
 		</head>
 		<body>
 		[data]
@@ -1001,19 +1015,6 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/is_species_whitelisted(datum/species/S)
 	return FALSE
 
-/mob/new_player/get_species()
-	var/datum/species/chosen_species
-	if (client.prefs.species)
-		chosen_species = all_species[client.prefs.species]
-
-	if (!chosen_species)
-		return "Human"
-
-	if (is_species_whitelisted(chosen_species) || has_admin_rights())
-		return chosen_species.name
-
-	return "Human"
-
 /mob/new_player/get_gender()
 	if (!client || !client.prefs)
 		return ..()
@@ -1024,7 +1025,6 @@ var/global/redirect_all_players = null
 
 /mob/new_player/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null)
 	return
-
 
 /mob/new_player/MayRespawn()
 	return TRUE

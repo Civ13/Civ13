@@ -1,6 +1,7 @@
 /obj/item/weapon/gun/projectile/revolver
 	move_delay = 1
 	fire_delay = 3
+	icon = 'icons/obj/guns/pistols.dmi'
 	name = "revolver"
 	desc = "A simple revolver."
 	icon_state = "revolver"
@@ -13,6 +14,7 @@
 	reload_sound 	= 'sound/weapons/guns/interact/rev_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/rev_cock.ogg'
 	fire_sound = 'sound/weapons/guns/fire/revolver.ogg'
+	silencer_fire_sound = 'sound/weapons/guns/fire/Glock17-SD.ogg'
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	magazine_based = FALSE
 	var/single_action = FALSE
@@ -21,6 +23,8 @@
 	equiptimer = 5
 	gun_type = GUN_TYPE_PISTOL
 	maxhealth = 55
+	gtype = "pistol"
+	load_method = SINGLE_CASING|SPEEDLOADER
 
 	accuracy_list = list(
 		// small body parts: head, hand, feet
@@ -127,7 +131,7 @@
 	if (gun_safety && safetyon)
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
@@ -180,7 +184,6 @@
 	icon_state = "nagant"
 	w_class = 2
 	caliber = "a762x38"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c762x38mmR
@@ -198,7 +201,6 @@
 	icon_state = "m1892"
 	w_class = 2
 	caliber = "a8x27"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c8x27
@@ -212,7 +214,7 @@
 /obj/item/weapon/gun/projectile/revolver/peacemaker
 	name = "Colt Peacemaker"
 	desc = "Officialy the M1873 Colt Single Action Army Revolver."
-	icon_state = "peacemaker"
+	icon_state = "coltsaa"
 	base_icon = "peacemaker"
 	w_class = 2
 	caliber = "a45"
@@ -223,6 +225,86 @@
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker/ivory
+	name = "Colt Peacemaker Ivory"
+	desc = "Officialy the M1873 Colt Single Action Army Revolver with an Ivory grip."
+	icon_state = "coltsaa_ivory"
+	base_icon = "peacemaker"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 2.4
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker/storekeeper
+	name = "Colt Storekeeper"
+	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver."
+	icon_state = "coltsaa_storekeeper"
+	base_icon = "peacemaker"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 1.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker/ivory
+	name = "Colt Storekeeper Ivory"
+	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
+	icon_state = "coltsaa_bankerspecial"
+	base_icon = "peacemaker"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 1.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker
+	name = "Colt Peace Ivory"
+	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
+	icon_state = "coltsaa_artillery"
+	base_icon = "peacemaker"
+	w_class = 2
+	caliber = "a45"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c45
+	weight = 1.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+
+/obj/item/weapon/gun/projectile/revolver/colt1892
+	name = "Colt M1892"
+	desc = "Officialy the M1892 Colt Single Action Army Revolver."
+	icon_state = "colt1892"
+	base_icon = "colt1892"
+	w_class = 2
+	caliber = "a38"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c38
+	weight = 2.3
+	single_action = TRUE
+	blackpowder = FALSE
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/makeshift
@@ -240,24 +322,28 @@
 	single_action = TRUE
 	blackpowder = TRUE
 	cocked = FALSE
+	pocket = TRUE
 
-/obj/item/weapon/gun/projectile/revolver/coltnewpolice
-	name = "Colt New Police"
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive
+	name = "Colt Police Positive"
 	desc = "Common revolver used by police."
 	icon_state = "coltnewpolice"
 	w_class = 2
 	caliber = "a32"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
+	equiptimer = 4
 	magazine_type = /obj/item/ammo_magazine/c32
+	ammo_type = /obj/item/ammo_casing/a32
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
 	cocked = FALSE
+	pocket = TRUE
+	effectiveness_mod = 0.93
 
-/obj/item/weapon/gun/projectile/revolver/coltnewpolice/standardized
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized
 
 /obj/item/weapon/gun/projectile/revolver/enfieldno2
 	name = "Enfield No. 2"
@@ -265,7 +351,6 @@
 	icon_state = "enfield02"
 	w_class = 2
 	caliber = "a41"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c41
@@ -281,7 +366,6 @@
 	w_class = 2
 	caliber = "a455"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c455
@@ -308,13 +392,12 @@
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/graysonfito12
-	name = "Grayson Fito 12"
-	desc = "A expensive revolver made by Grayson."
+	name = "Mckellen M12"
+	desc = "A expensive revolver made by Mckellen."
 	icon_state = "graysonfito"
 	base_icon = "graysonfito"
 	w_class = 2
 	caliber = "a44magnum"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
@@ -330,26 +413,9 @@
 	base_icon = "biggi"
 	w_class = 2
 	caliber = "a45"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
-	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
-	cocked = FALSE
-
-/obj/item/weapon/gun/projectile/revolver/black
-	name = "Salamon 47"
-	desc = "A gold plated revolver chambered in (.44 magnum)."
-	icon_state = "salamonblack"
-	base_icon = "salamonblack"
-	w_class = 3
-	caliber = "a44magnum"
-	load_method = SINGLE_CASING
-	handle_casings = CYCLE_CASINGS
-	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c44magnum
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -362,7 +428,6 @@
 	base_icon = "magnum58"
 	w_class = 2
 	caliber = "a44magnum"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
@@ -372,21 +437,44 @@
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/smithwesson
-	name = "Smith Wesson 32"
-	desc = "A smith 'n Wesson revolver, chambered in (.32)."
+	name = "Smith & Wesson Model 30"
+	desc = "A smith 'n Wesson revolver, chambered in .32 S&W."
 	icon_state = "smithwesson32"
 	base_icon = "smithwesson32"
 	w_class = 1
 	caliber = "a32"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c32
+	ammo_type = /obj/item/ammo_casing/a32
 	weight = 1.6
-	single_action = TRUE
-	blackpowder = TRUE
+	equiptimer = 3
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
+	pocket = TRUE
+	effectiveness_mod = 0.9
+
+/obj/item/weapon/gun/projectile/revolver/sw3
+	name = "Orbea Hermanos"
+	desc = "A smith 'n Wesson revolver, chambered in .32 S&W. This being the spanish copy cat."
+	icon_state = "snw3"
+	base_icon = "snw3"
+	w_class = 1
+	caliber = "a32"
+	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c32
+	ammo_type = /obj/item/ammo_casing/a32
+	weight = 1.6
+	equiptimer = 3
+	single_action = TRUE
+	blackpowder = FALSE
+	cocked = FALSE
+	pocket = FALSE
+	effectiveness_mod = 0.9
 
 /obj/item/weapon/gun/projectile/revolver/t26_revolver
 	name = "Type 26 revolver"
@@ -394,7 +482,6 @@
 	icon_state = "t26revolver"
 	w_class = 2
 	caliber = "c9mm_jap_revolver"
-	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c9mm_jap_revolver
@@ -404,25 +491,6 @@
 	blackpowder = TRUE
 	cocked = FALSE
 	load_delay = 5
-
-/obj/item/weapon/gun/projectile/revolver/webley
-	name = "Webley Revolver"
-	desc = "British officer's revolver."
-	icon_state = "webley"
-	w_class = 2
-	caliber = "a455"
-	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
-	load_method = SINGLE_CASING
-	handle_casings = CYCLE_CASINGS
-	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c455
-	ammo_type = /obj/item/ammo_casing/a455
-	weight = 1.6
-	single_action = FALSE
-	blackpowder = FALSE
-	cocked = FALSE
-	load_delay = 5
-	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/panther
 	name = "Panther revolver"
@@ -436,7 +504,6 @@
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c44p
 	weight = 0.8
-	load_method = SINGLE_CASING
 	load_delay = 6
 	gun_safety = TRUE
 
@@ -461,6 +528,7 @@
 	var/recentpump = FALSE // to prevent spammage
 	load_delay = 6
 	blackpowder = TRUE
+	pocket = TRUE
 
 	accuracy_list = list(
 
@@ -568,6 +636,7 @@
 /obj/item/weapon/gun/projectile/revolving
 	move_delay = 1
 	fire_delay = 3
+	icon = 'icons/obj/guns/rifles.dmi'
 	name = "revolving rifle"
 	desc = "A simple revolving rifle."
 	icon_state = "revolver"
@@ -586,6 +655,7 @@
 	var/single_action = FALSE
 	var/cocked = FALSE
 	maxhealth = 45
+	gtype = "rifle"
 
 	accuracy_list = list(
 
@@ -681,7 +751,7 @@
 
 /obj/item/weapon/gun/projectile/revolving/special_check(mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
@@ -756,6 +826,7 @@
 	icon_state = "revolver"
 	item_state = "revolver"
 	caliber = "musketball_pistol"
+	icon = 'icons/obj/guns/pistols.dmi'
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
@@ -768,6 +839,7 @@
 	var/single_action = FALSE
 	var/cocked = FALSE
 	var/base_icon = null
+	gtype = "pistol"
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -871,7 +943,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/special_check(mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
@@ -918,9 +990,9 @@
 	update_icon()
 
 /obj/item/weapon/gun/projectile/capnball/dragoon
-	name = "Colt Dragoon"
+	name = "Colt Dragoon M1848"
 	desc = "Officialy the M1848 Colt Percussion Cap Revolver."
-	icon_state = "dragoon"
+	icon_state = "colt_dragoon1848"
 	base_icon = "dragoon"
 	w_class = 2
 	caliber = "musketball_pistol"
@@ -933,3 +1005,122 @@
 	blackpowder = TRUE
 	cocked = FALSE
 	load_delay = 40
+
+/obj/item/weapon/gun/projectile/capnball/babydragoon
+	name = "Colt Baby Dragoon M1848"
+	desc = "Officialy the Baby M1848 Colt Percussion Cap Revolver."
+	icon_state = "dragoon"
+	base_icon = "colt_babydragoon1848"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 1.9
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 45
+
+/obj/item/weapon/gun/projectile/capnball/pocketpistol
+	name = "Colt Pocket-Pistol M1849"
+	desc = "Officialy the M1849 Colt Percussion Cap Pocket-Pistol."
+	icon_state = "dragoon"
+	base_icon = "colt_pocketmodel1849"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 1.5
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 30
+
+/obj/item/weapon/gun/projectile/capnball/walker
+	name = "Colt Walker M1846"
+	desc = "Officialy the M1846 Colt Percussion Cap Walker."
+	icon_state = "peacemaker2"
+	base_icon = "colt_walker1846"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 2.2
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 40
+
+/obj/item/weapon/gun/projectile/capnball/pocketm1849
+	name = "Colt Police Pocket-Pistol M1849"
+	desc = "Officialy the M1849 Colt Percussion Cap Pocket-Pistol used by police."
+	icon_state = "peacemaker2"
+	base_icon = "colt_pocketpolice1849"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 1.5
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 38
+
+/obj/item/weapon/gun/projectile/capnball/navym1851
+	name = "Colt Navy Revolver M1851"
+	desc = "Officialy the M1851 Colt Navy Percussion Cap Revolver."
+	icon_state = "peacemaker2"
+	base_icon = "colt_navy1851"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 2.5
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 40
+
+/obj/item/weapon/gun/projectile/capnball/navym1861
+	name = "Colt Navy Revolver M1861"
+	desc = "Officialy the M1861 Colt Navy Percussion Cap Revolver."
+	icon_state = "peacemaker2"
+	base_icon = "colt_navy1861"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 2.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 37
+
+/obj/item/weapon/gun/projectile/capnball/
+	name = "Colt Army Revolver M1860"
+	desc = "Officialy the M1860 Colt Army Percussion Cap Revolver."
+	icon_state = "peacemaker2"
+	base_icon = "colt_army1860"
+	w_class = 2
+	caliber = "musketball_pistol"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_casing/musketball_pistol
+	weight = 2.6
+	single_action = TRUE
+	blackpowder = TRUE
+	cocked = FALSE
+	load_delay = 37

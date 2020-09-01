@@ -3,7 +3,7 @@
 /datum/job/american/usmc_lieutenant
 	title = "USMC Lieutenant"
 	rank_abbreviation = "Lt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 
 	is_coldwar = TRUE
@@ -49,7 +49,7 @@
 /datum/job/american/usmc_sergeant
 	title = "USMC Sergeant"
 	rank_abbreviation = "Sgt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNCap"
 
 	is_coldwar = TRUE
@@ -98,7 +98,7 @@
 /datum/job/american/usmc_medic
 	title = "USMC Field Medic"
 	rank_abbreviation = "Cpl."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
@@ -146,7 +146,7 @@
 /datum/job/american/usmc_marksman
 	title = "USMC Designated Marksman"
 	rank_abbreviation = "Spc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -191,7 +191,7 @@
 /datum/job/american/usmc_lmg
 	title = "USMC Automatic Rifleman"
 	rank_abbreviation = "Spc."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -240,7 +240,7 @@
 /datum/job/american/usmc_soldier
 	title = "USMC Rifleman"
 	rank_abbreviation = "Pvt."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -301,7 +301,7 @@
 	title = "Segen"
 	rank_abbreviation = "Seg."
 	en_meaning = "IDF Lieutenant"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -348,7 +348,7 @@
 	title = "Samal"
 	rank_abbreviation = "Sam."
 	en_meaning = "IDF Sergeant"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -401,7 +401,7 @@
 	title = "Chovesh"
 	en_meaning = "IDF Field Medic"
 	rank_abbreviation = "Chovesh"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
@@ -450,7 +450,7 @@
 	title = "Tzalaf"
 	en_meaning = "IDF Sniper"
 	rank_abbreviation = "Rav."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -496,7 +496,7 @@
 	title = "Miqla"
 	en_meaning = "IDF Squad LMG"
 	rank_abbreviation = "Rav."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -544,7 +544,7 @@
 	title = "Turai"
 	en_meaning = "IDF Private"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_coldwar = TRUE
@@ -594,7 +594,7 @@
 	title = "Hezbollah Squad Leader"
 	en_meaning = ""
 	rank_abbreviation = "Leader"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE
@@ -659,7 +659,7 @@
 	title = "Hezbollah Field Medic"
 	en_meaning = ""
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_medic = TRUE
@@ -725,7 +725,7 @@
 	title = "Hezbollah Sniper"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE
@@ -788,7 +788,7 @@
 	title = "Hezbollah Soldier"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_coldwar = TRUE

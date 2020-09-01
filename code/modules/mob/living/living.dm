@@ -632,23 +632,11 @@ default behaviour is:
 	resting = !resting
 	src << "<span class='notice'>You are [resting ? "now resting" : "no longer resting"].</span>"
 
-/mob/living/proc/is_allowed_vent_crawl_item(var/obj/item/carried_item)
-	return isnull(get_inventory_slot(carried_item))
-
-/mob/living/proc/handle_ventcrawl(var/obj/machinery/atmospherics/unary/vent_pump/vent_found = null, var/ignore_items = FALSE) // -- TLE -- Merged by Carn
-	return FALSE
-
-/mob/living/proc/cannot_use_vents()
-	return "You can't fit into that vent."
-
 /mob/living/proc/has_brain()
 	return TRUE
 
 /mob/living/proc/has_eyes()
 	return TRUE
-
-/mob/living/proc/slip(var/slipped_on,stun_duration=8)
-	return FALSE
 
 /mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in internal_organs)
@@ -834,7 +822,8 @@ default behaviour is:
 		life_forced = FALSE
 	else
 		return
-
+/mob/living/proc/slip(var/slipped_on,stun_duration=8)
+	return FALSE
 //Code to handle merging stacks when they are in mob's direct inventory.
 //Called when object enters the contents of a mob. Storage items not supported yet.
 //Not used because people don't like it. Might be useful for merging in containers.

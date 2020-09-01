@@ -10,9 +10,9 @@
 		//"Renaissance (1450-1650)" = 0,
 		"Imperial Age (1650-1780)" = 0,
 		"Industrial Age (1850-1895)" = 0,
-		"Early Modern Era (1896-1933)" = 0,
-		"World War II (1934-1957)" = 0,
-		"Cold War Era (1958-1984)" = 0,
+		"Early Modern Era (1896-1930)" = 0,
+		"World War II (1931-1948)" = 0,
+		"Cold War Era (1949-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
 		"Civilization 13 (Nomads)" = 0,
 		"Civilization 13 (Colony & Pioneers)" = 0,
@@ -38,8 +38,6 @@
 		map.save_awards()
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
-				"Chad Mode" = 0,
-				"Battle Royale" = 0,
 				//Stone Age (?-3000 B.C.)" = 0,
 				"Bronze Age (500 B.C.-400 A.D.)" = 0,
 				//"Dark Ages (400-700)" = 0,
@@ -47,20 +45,26 @@
 				//"Renaissance (1450-1650)" = 0,
 				"Imperial Age (1650-1780)" = 0,
 				"Industrial Age (1850-1895)" = 0,
-				"Early Modern Era (1896-1933)" = 0,
-				"World War II (1934-1957)" = 0,
-				"Cold War Era (1958-1984)" = 0,
+				"Early Modern Era (1896-1930)" = 0,
+				"World War II (1931-1948)" = 0,
+				"Cold War Era (1949-1984)" = 0,
 				"Modern Era (1985-2020)" = 0,
+//				"Chad Mode" = 0,
+				"Battle Royale" = 6,
 			)
-		else if (config.allowedgamemodes == "RP" || config.allowedgamemodes == "PERSISTENCE")
+		else if (config.allowedgamemodes == "RP")
 			epochs = list(
+				"The Art of the Deal" = 10,
 				"Civilization 13 (Nomads)" = 0,
 				"Civilization 13 (Colony & Pioneers)" = 0,
 				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
+		else if (config.allowedgamemodes == "PERSISTENCE")
+			epochs = list(
+				"Civilization 13 (Nomads)" = 0,)
 		else if (config.allowedgamemodes == "BR")
 			epochs = list(
-				"Battle Royale" = 0,)
+				"Battle Royale" = 6,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
 
@@ -112,14 +116,16 @@
 				MAP_HOSTAGES = 0,
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
+				MAP_ALLEYWAY = 0,
 			)
-		else if (epoch == "Cold War Era (1958-1984)")
+		else if (epoch == "Cold War Era (1949-1984)")
 	// 1969 - TDM
 			maps = list(
 				MAP_COMPOUND = 0,
 				MAP_ROAD_TO_DAK_TO = 0,
+				MAP_RETREAT = 0,
 			)
-		else if (epoch == "World War II (1934-1957)")
+		else if (epoch == "World War II (1931-1948)")
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,
@@ -128,17 +134,23 @@
 				MAP_KURSK = 10,
 //				MAP_GULAG13 = 15,
 				MAP_STALINGRAD = 20,
+				MAP_SMALLINGRAD = 0,
 				MAP_NANJING = 20,
 //				MAP_IWO_JIMA = 70,
+				MAP_RIZAL_STADIUM = 0,
+				MAP_INTRAMUROS = 25,
+				MAP_WAKE_ISLAND = 20,
 			)
 
-		else if (epoch == "Early Modern Era (1896-1933)")
+		else if (epoch == "Early Modern Era (1896-1930)")
 	// 1903 - TDM
 			maps = list(
 				MAP_HILL_203 = 0,
 				MAP_YPRES = 0,
 				MAP_TSARITSYN = 10,
 				MAP_PORT_ARTHUR = 10,
+				MAP_SANTO_TOMAS = 0,
+				MAP_CALOOCAN = 0,
 			)
 
 		else if (epoch == "Industrial Age (1850-1895)")
@@ -170,6 +182,10 @@
 	// chad mode group for TDM
 			maps = list(
 				MAP_JUNGLE_OF_THE_CHADS = 0,
+			)
+		else if (epoch == "The Art of the Deal")
+			maps = list(
+				MAP_THE_ART_OF_THE_DEAL = 10,
 			)
 		else if (epoch == "Middle Ages (700-1450)")
 	//	1013 - TDM
@@ -215,6 +231,7 @@
 				MAP_TRIBES = 12,
 				MAP_HUNT = 0,
 				MAP_LITTLE_CREEK = 10,
+				MAP_THE_ART_OF_THE_DEAL = 10,
 //				MAP_FOUR_KINDGOMS = 16
 			)
 		else if (epoch == "Battle Royale")

@@ -185,7 +185,7 @@
 						H.shoveling_dirt = FALSE
 						H.adaptStat("strength", 1)
 						T.available_dirt -= 1
-						new /obj/item/weapon/sandbag(T)
+						new /obj/item/weapon/barrier(T)
 					else
 						H.shoveling_dirt = FALSE
 				else
@@ -278,8 +278,8 @@
 		else
 			return ..(C, user)
 
-	else if (istype(C, /obj/item/weapon/sandbag/sandbag))
-		var/obj/item/weapon/sandbag/sandbag/bag = C
+	else if (istype(C, /obj/item/weapon/barrier/sandbag))
+		var/obj/item/weapon/barrier/sandbag/bag = C
 		if (bag.sand_amount <= 0)
 			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
 		var/your_dir = "NORTH"
@@ -307,7 +307,7 @@
 				if (do_after(user, sandbag_time, user.loc))
 					var/progress = bag.sand_amount
 					qdel(C)
-					var/obj/structure/window/sandbag/sandbag/incomplete/sb = new/obj/structure/window/sandbag/sandbag/incomplete(src, user)
+					var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
 					sb.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
 					if (ishuman(user))
@@ -315,7 +315,7 @@
 						H.adaptStat("crafting", 3)
 				return
 
-	else if (istype(C, /obj/item/weapon/sandbag))
+	else if (istype(C, /obj/item/weapon/barrier))
 
 		var/your_dir = "NORTH"
 
@@ -340,10 +340,10 @@
 			if (WWinput(user, "This will start building a dirt barricade [your_dir] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
-					var/obj/item/weapon/sandbag/bag = C
+					var/obj/item/weapon/barrier/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
-					var/obj/structure/window/sandbag/incomplete/sandbag = new/obj/structure/window/sandbag/incomplete(src, user)
+					var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user)
 					sandbag.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
 					if (ishuman(user))
@@ -379,7 +379,7 @@
 					var/obj/item/weapon/snowwall/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
-					var/obj/structure/window/snowwall/sandbag = new/obj/structure/window/snowwall/incomplete(src, user)
+					var/obj/structure/window/barrier/snowwall/sandbag = new/obj/structure/window/barrier/snowwall/incomplete(src, user)
 					sandbag.progress = progress
 					visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>")
 					if (ishuman(user))
@@ -968,6 +968,7 @@
 					change_the_turf()
 					H.adaptStat("strength", 1)
 					return
+/*
 				else
 					if (prob(40))
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
@@ -987,6 +988,7 @@
 						change_the_turf()
 						H.adaptStat("strength", 1)
 						return
+*/
 	if (prob(5))
 		var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
 		mineral.amount = 4
@@ -1046,13 +1048,6 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		H << "<span class='danger'>You found some <font color=#060606><b>obsidian</font> rocks</b>!</span>"
-	else if(istype(T, /turf/floor/dirt/underground/icy) || (area_above && area_above.climate == "tundra"))
-		//TODO ADD ICE AND FOSSILS
-		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-		mineral.amount = rand(8,16)
-		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
-		H << "<span class='danger'>You found some usable <font color=[get_material_by_name("stone").icon_colour]><b>stone</font> rocks</b>!</span>"
 	else
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)
@@ -1121,7 +1116,7 @@
 						H.shoveling_dirt = FALSE
 						H.adaptStat("strength", 1)
 						T.available_dirt -= 1
-						new /obj/item/weapon/sandbag(T)
+						new /obj/item/weapon/barrier(T)
 					else
 						H.shoveling_dirt = FALSE
 				else

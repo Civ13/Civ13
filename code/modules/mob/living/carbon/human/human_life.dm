@@ -118,9 +118,15 @@
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
 		healing_stage += 2
+
+	else if (istype(buckled, /obj/structure/medicalbed))
+		healing_stage += 0.5
 	else
 		healing_stage = 0
-	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
+	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable) || istype(buckled, /obj/structure/medicalbed)))
+		if (istype(buckled, /obj/structure/medicalbed))
+			rejuvenate()
+			src << "You feel much better."
 		healing_stage = 0
 		if (getBruteLoss() >= 15)
 			adjustBruteLoss(-2)
@@ -522,27 +528,30 @@
 			disease_treatment = 0
 
 		for (var/mob/living/human/H in range(2,src))
-			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria" && !disease_type == "zombie") //malaria doesn't transmit from person to person.
-				if (stat != DEAD)
+			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !H.disease_type == "malaria" && !H.disease_type == "zombie") //malaria doesn't transmit from person to person.
+				if (H.stat != DEAD)
 					if (prob(1) || (prob(2) && find_trait("Weak Immune System")))
-						disease = TRUE
-						disease_type = H.disease_type
-						disease_progression = 0
-						disease_treatment = 0
-				else if (stat == DEAD)
+						if ((prob(50) && istype(wear_mask, /obj/item/clothing/mask/sterile)) || !istype(wear_mask, /obj/item/clothing/mask/sterile))
+							if ((H.disease_type == "flu" && !istype(H.wear_mask, /obj/item/clothing/mask/sterile)) || H.disease_type != "flu")
+								disease = TRUE
+								disease_type = H.disease_type
+								disease_progression = 0
+								disease_treatment = 0
+				else if (H.stat == DEAD)
 					if (prob(3) || (prob(6) && find_trait("Weak Immune System")))
-						disease = TRUE
-						disease_type = H.disease_type
-						disease_progression = 0
-						disease_treatment = 0
+						if ((prob(50) && istype(wear_mask, /obj/item/clothing/mask/sterile)) || !istype(wear_mask, /obj/item/clothing/mask/sterile))
+							disease = TRUE
+							disease_type = H.disease_type
+							disease_progression = 0
+							disease_treatment = 0
 
-		if (disease == FALSE)
-			if (prob(1) && map.civilizations)
-				if ((prob(20) || (prob(40) && find_trait("Weak Immune System"))) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
-					disease = TRUE
-					disease_type = "flu"
-					disease_progression = 0
-					disease_treatment = 0
+	else if (disease == FALSE)
+		if (prob(1) && map.civilizations)
+			if ((prob(20) || (prob(40) && find_trait("Weak Immune System"))) && !inducedSSD && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
+				disease = TRUE
+				disease_type = "flu"
+				disease_progression = 0
+				disease_treatment = 0
 
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
@@ -1424,7 +1433,12 @@
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
 				if (JAPANESE)
-					holder2.icon_state = "jp_basic"
+					if (original_job.is_yakuza && original_job.is_yama)
+						holder2.icon_state = "yamaguchi"
+					else if (original_job.is_yakuza && original_job.is_ichi)
+						holder2.icon_state = "ichiwa"
+					else
+						holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ru_basic"
@@ -1433,7 +1447,9 @@
 					else
 						holder2.icon_state = "ru_basic"
 				if (GERMAN)
-					if (map.ordinal_age <= 5)
+					if (map.ordinal_age <= 1)
+						holder2.icon_state = "ger0_basic"
+					else if (map.ordinal_age <= 5)
 						holder2.icon_state = "ger_basic"
 					else if (map.ordinal_age == 6)
 						holder2.icon_state = "ger2_basic"
@@ -1446,6 +1462,8 @@
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
 					holder2.icon_state = "vc_basic"
+				if (FILIPINO)
+					holder2.icon_state = "fp_basic"
 				if (CHINESE)
 					holder2.icon_state = "roc_basic"
 				if (CIVILIAN)
@@ -1546,7 +1564,7 @@
 		return
 
 /mob/living/human/proc/do_rotting()
-	if (!map.civilizations && !istype(src, /mob/living/human/corpse))
+	if (map && !map.civilizations && !istype(src, /mob/living/human/corpse))
 		return
 	spawn(600)
 		if (stat == DEAD)

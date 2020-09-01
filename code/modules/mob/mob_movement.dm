@@ -230,8 +230,6 @@
 		if (direct != olddir)
 			dir = olddir
 			set_dir(direct)
-
-		move_speed = world.time - l_move_time
 		l_move_time = world.time
 		m_flag = TRUE
 		if ((A != loc && A && A.z == z))
@@ -949,11 +947,7 @@
 				if (MW && MW.control && MW.control.axis && MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
 					H << "You switch into forward."
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
-					MW.control.axis.currentspeed = 1
 					MW.control.axis.reverse = FALSE
-					MW.control.axis.moving = TRUE
-					MW.control.axis.add_transporting()
-					MW.control.axis.startmovementloop()
 			if (H.driver && H.driver_vehicle)
 				H.dir = NORTH
 				H.driver_vehicle.dir = NORTH
@@ -990,11 +984,7 @@
 				if (MW && MW.control && MW.control.axis && !MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
 					H << "You switch into reverse."
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
-					MW.control.axis.currentspeed = 1
 					MW.control.axis.reverse = TRUE
-					MW.control.axis.moving = TRUE
-					MW.control.axis.add_transporting()
-					MW.control.axis.startmovementloop()
 			if (H.driver && H.driver_vehicle)
 				H.dir = SOUTH
 				H.driver_vehicle.dir = SOUTH

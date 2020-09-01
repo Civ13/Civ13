@@ -48,9 +48,6 @@
 	if (!istype(W) || !W.sharp)
 		return ..()
 
-/mob/living/simple_animal/cockroach/cannot_use_vents()
-	return
-
 /mob/living/simple_animal/cockroach/handle_mutations_and_radiation()
 	return
 

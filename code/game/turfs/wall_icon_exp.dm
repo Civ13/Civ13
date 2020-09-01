@@ -51,7 +51,8 @@
 
 	if (!wall_cache["[new_state]-[material.icon_colour]"])
 		var/image/I = image(icon='icons/turf/wall_masks.dmi',icon_state="[new_state]")
-		I.color = material.icon_colour
+		if (material.icon_colour)
+			I.color = material.icon_colour
 		wall_cache["[new_state]-[material.icon_colour]"] = I
 		ref_state = "[new_state]"
 	overlays |= wall_cache["[new_state]-[material.icon_colour]"]

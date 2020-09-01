@@ -66,7 +66,7 @@
 		user << "<span class='notice'>You cannot repair this with a [src.name]!</span>"
 		return
 /obj/structure/repair/grindstone
-	name = "Grindstone"
+	name = "grindstone"
 	desc = "for sharpening blades."
 	icon_state = "grindstone"
 	idlesprite = "grindstone"
@@ -80,7 +80,7 @@
 	delay = 100
 
 /obj/structure/repair/workbench
-	name = "workbench"
+	name = "armor repair workbench"
 	desc = "for repairing pieces of armor."
 	icon_state = "workbench"
 	idlesprite = "workbench"
@@ -96,14 +96,24 @@
 /obj/item/weapon/gun_cleaning_kit
 	name = "gun cleaning kit"
 	desc = "A kit of tools used to clean firearms."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "guncleaningkit_open"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
 /obj/item/weapon/gun/projectile/attackby(obj/item/M as obj, mob/user as mob)
-	if (istype(M, /obj/item/weapon/gun_cleaning_kit))
+	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
+		switch(alert(user,"Ae you sure you want to scratch the serial number? This cannot be reversed and will make the gun illegal!","Serial number filing","Yes","No"))
+			if ("No")
+				return
+			if ("Yes")
+				user << "You start scratching the serial number of \the [src]..."
+				if (do_after(user,100,src))
+					user << "You successfully scratch the serial number, making the gun untraceable."
+					serial = ""
+					return
+	else if (istype(M, /obj/item/weapon/gun_cleaning_kit))
 		if (!istype(src, /obj/item/weapon/gun/projectile/bow))
 			if ((health/maxhealth)<0.5)
 				visible_message("<span class='warning'>\The [src.name]is too damaged, you need a specialized firearm repairing bench!</span>")

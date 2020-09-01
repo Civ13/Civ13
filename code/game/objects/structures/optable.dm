@@ -119,3 +119,18 @@
 		usr << "<span class='notice'>Unbuckle \the [patient] first!</span>"
 		return FALSE
 	return TRUE
+
+
+/obj/structure/medicalbed
+	name = "medical bed"
+	desc = "A bed that heals you up. The future is wonderful."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "operating_table"
+	anchored = TRUE
+	can_buckle = TRUE
+	buckle_dir = SOUTH
+	buckle_lying = TRUE
+	not_movable = FALSE
+	density = FALSE
+	opacity = FALSE
+	not_disassemblable = FALSE

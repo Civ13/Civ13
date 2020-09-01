@@ -2,6 +2,7 @@
 	maxhealth = 45
 	gun_type = GUN_TYPE_SHOTGUN
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon = 'icons/obj/guns/rifles.dmi'
 	// 15% more accurate than SMGs
 	equiptimer = 17
 	accuracy_list = list(
@@ -53,6 +54,8 @@
 	accuracy_decrease_mod = 1.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
+
+	gtype = "shotgun"
 
 /obj/item/weapon/gun/projectile/shotgun/pump
 	name = "Pump-Action Shotgun"

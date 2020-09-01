@@ -33,7 +33,6 @@
 		for (var/obj/structure/vehicleparts/frame/A in rangeto)
 			if (!A.axis)
 				A.axis = central.axis
-				A.color_code = central.color_code
 				var/found = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in central.axis.components)
 					if (F == src)
@@ -41,12 +40,13 @@
 				if (!found)
 					central.axis.components += A
 				A.anchored = TRUE
-				A.dir = central.axis.components
+				A.dir = central.axis.dir
 				A.name = central.axis.name
+				if (central.axis.doorcode != 0)
+					A.doorcode = central.axis.doorcode
 		for (var/obj/structure/vehicleparts/frame/AA in loc)
 			if (!AA.axis)
 				AA.axis = central.axis
-				AA.color_code = central.color_code
 				var/found = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in central.axis.components)
 					if (F == src)
@@ -54,18 +54,10 @@
 				if (!found)
 					central.axis.components += AA
 				AA.anchored = TRUE
-				AA.dir = central.axis.components
+				AA.dir = central.axis.dir
 				AA.name = central.axis.name
-		for (var/turf/T in rangeto)
-			var/doneps = FALSE
-			for (var/obj/structure/vehicleparts/frame/FRE in T)
-				if (FRE.axis)
-					doneps = TRUE
-			if (!doneps)
-				var/obj/effect/pseudovehicle/PV = new/obj/effect/pseudovehicle(T)
-				PV.link = central.axis
-				PV.dir = central.axis.dir
-				central.axis.components += PV
+				if (central.axis.doorcode != 0)
+					AA.doorcode = central.axis.doorcode
 		//then the engine
 		var/done2 = FALSE
 		for (var/obj/structure/engine/E in rangeto)
@@ -75,9 +67,16 @@
 						central.axis.engine = E
 						E.anchored = TRUE
 						if (istype(E, /obj/structure/engine/internal))
-							E.icon = 'icons/obj/vehicleparts.dmi'
-							E.engineclass = "engine"
-							E.update_icon()
+							if (istype(central.axis,/obj/structure/vehicleparts/axis/car))
+								E.icon = 'icons/obj/vehicles/vehicleparts.dmi'
+								E.engineclass = "carengine"
+								E.density = TRUE
+								E.update_icon()
+
+							else
+								E.icon = 'icons/obj/vehicles/vehicleparts.dmi'
+								E.engineclass = "engine"
+								E.update_icon()
 						done2 = TRUE
 		for (var/obj/structure/vehicleparts/movement/sails/S in rangeto)
 			for (var/obj/structure/vehicleparts/frame/ship/F in S.loc)
@@ -92,6 +91,8 @@
 		var/done3 = FALSE
 		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/E in rangeto)
 			if (!done3)
+				if (istype(central.axis,/obj/structure/vehicleparts/axis/car))
+					E.icon_state = "fueltank_incar"
 				central.axis.engine.fueltank = E
 				E.anchored = TRUE
 				done3 = TRUE
@@ -105,7 +106,7 @@
 				for (var/obj/structure/vehicleparts/frame/F in D.loc)
 					if (!done4)
 						D.anchored = TRUE
-						D.dir = dir
+						D.dir = central.axis.dir
 						central.axis.wheel = D.wheel
 						central.axis.wheel.control = F
 						done4 = TRUE
@@ -114,7 +115,7 @@
 				for (var/obj/structure/vehicleparts/frame/ship/F in D.loc)
 					if (!done4)
 						D.anchored = TRUE
-						D.dir = dir
+						D.dir = central.axis.dir
 						D.ship = central.axis
 						done4 = TRUE
 //		if (!done4)
@@ -123,6 +124,17 @@
 		sleep(2)
 		if (isemptylist(central.axis.corners))
 			central.axis.check_corners()
+		for (var/turf/T in rangeto)
+			if (abs(T.x-central.axis.corners[1].x)<=central.axis.maxdist || abs(T.y-central.axis.corners[1].y)<=central.axis.maxdist)
+				var/doneps = FALSE
+				for (var/obj/structure/vehicleparts/frame/FRE in T)
+					if (FRE.axis)
+						doneps = TRUE
+				if (!doneps)
+					var/obj/effect/pseudovehicle/PV = new/obj/effect/pseudovehicle(T)
+					PV.link = central.axis
+					PV.dir = central.axis.dir
+					central.axis.components += PV
 		if (isemptylist(central.axis.matrix))
 			central.axis.check_matrix()
 		//and the tracks
@@ -133,9 +145,18 @@
 		for (var/obj/structure/lamp/lamp_small/tank/TL in rangeto)
 			for (var/obj/structure/vehicleparts/frame/F in TL.loc)
 				TL.connection = central.axis.engine
-		for (var/obj/structure/vehicleparts/VP in range(7,src))
+		for (var/obj/structure/vehicleparts/VP in range(3,src))
 			VP.dir = central.axis.dir
 			VP.update_icon()
+		//add a license plate, if it has one
+		if (central.axis.reg_number == "000")
+			central.axis.new_number()
+		for (var/obj/structure/vehicleparts/license_plate/LP in rangeto)
+			if (!LP.axis || LP.axis != src)
+				LP.axis = central.axis
+				LP.reg_number = central.axis.reg_number
+				LP.name = "[LP.reg_number]"
+				LP.desc = "A vehicle registration plate reading <b>[LP.reg_number]</b>."
 //		world.log << "[central.axis] assembly complete."
 		qdel(src)
 		return TRUE

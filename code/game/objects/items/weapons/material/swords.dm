@@ -192,7 +192,7 @@ obj/item/weapon/material/sword/wakazashi
 	..()
 	var/mob/living/human/H = user
 	if(istype(A, H))
-		if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+		if (istype(H) && (H.faction_text == "INDIANS"))
 			user << "<span class = 'danger'>You have no idea how to do this.</span>"
 			return
 		if (A == user)
@@ -302,6 +302,20 @@ obj/item/weapon/material/sword/armingsword/bronze
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 35
 	cooldownw = 7
+
+/obj/item/weapon/material/sword/bolo
+	name = "bolo"
+	desc = "A very common filipino machete like sword."
+	icon_state = "bolo"
+	item_state = "bolo"
+	throw_speed = 3
+	throw_range = 6
+	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 37
+	cooldownw = 9
+	value = 50
 
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"

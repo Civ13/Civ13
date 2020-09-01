@@ -13,8 +13,9 @@
    11 - Cold War Balaclavas
    12 - Cold War Webbing
    13 - NBC &  Hazmat Suits
-   14 - Miscallaneous*/
-
+   14 - Miscallaneous
+   14a - John Toughguy - Jungle Commando
+   14b - Swinging Sixties*/
 
 /* Coldwar Coats*/
 
@@ -39,6 +40,37 @@
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 100
+
+/obj/item/clothing/suit/storage/coat/chinese
+	name = "chinese coat"
+	desc = "A chinese winter coat."
+	icon_state = "chi_korea_coat"
+	item_state = "chi_korea_coat"
+	worn_state = "chi_korea_coat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 75
+
+/obj/item/clothing/suit/storage/coat/chinese/officer
+	name = "chinese officer coat"
+	desc = "A chinese winter coat, designed for officers."
+	icon_state = "chi_korea_offcoat"
+	item_state = "chi_korea_offcoat"
+	worn_state = "chi_korea_offcoat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
+/obj/item/clothing/suit/storage/coat/american
+	name = "american coat"
+	desc = "An american winter coat."
+	icon_state = "us_coat_korea"
+	item_state = "us_coat_korea"
+	worn_state = "us_coat_korea"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 
 /* Cold War Accessories*/
 
@@ -78,6 +110,20 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 60, arrow = 20, gun = 74, energy = 40, bomb = 20, bio = 32, rad = 20)
 	ripable = FALSE
+
+/obj/item/clothing/under/traffic_police
+	name = "police outfit"
+	desc = "An outfit composed of a blue emergency services shirt and denim trousers. It has a police badge attached"
+	icon_state = "traffic_cop"
+	item_state = "traffic_cop"
+	worn_state = "traffic_cop"
+
+/obj/item/clothing/head/traffic_police
+	name = "police cap"
+	desc = "A blue cap often worn by members of the police and security guards."
+	icon_state = "traffic_cop"
+	item_state = "traffic_cop"
+	worn_state = "traffic_cop"
 
 /* US Army Clothes*/
 
@@ -136,6 +182,24 @@
 	item_state = "us_jacket"
 	worn_state = "us_jacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+//korean war//
+/obj/item/clothing/under/us_uni_korean
+	name = "american uniform"
+	desc = "The standard us army uniform of the korean war, this one outfitted for winter."
+	icon_state = "usuni_korea"
+	item_state = "usuni_korea"
+	worn_state = "usuni_korea"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/chinese_winter
+	name = "chinese uniform"
+	desc = "The standard winter chinese uniform."
+	icon_state = "korea_china"
+	item_state = "korea_china"
+	worn_state = "korea_china"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
 /* US Army Armor & Helmets*/
 
@@ -184,20 +248,6 @@
 			attachments += chosen
 			optlist -= chosen
 
-/obj/item/clothing/head/helmet/modern/ushelmet/late
-	name = "M1 helmet"
-	desc = "A typical us army helmet."
-	icon_state = "m1_standard"
-	item_state = "m1_standard"
-	worn_state = "m1_standard"
-
-/obj/item/clothing/head/helmet/modern/ushelmet/medical
-	name = "M1 medical helmet"
-	desc = "A typical us army helmet, with a red cross on a white background."
-	icon_state = "m1_medic"
-	item_state = "m1_medic"
-	worn_state = "m1_medic"
-
 /obj/item/clothing/head/helmet/modern/ushelmet/late/New()
 	..()
 	var/numb = rand(0,2)
@@ -207,6 +257,111 @@
 			var/chosen = pick(optlist)
 			attachments += chosen
 			optlist -= chosen
+
+/* Korean war Helmets */
+/obj/item/clothing/head/helmet/korean/usm1
+	name = "M1 Helmet"
+	desc = "The typical rounded steel helmet of the US Army."
+	icon_state = "korea_m1_standard"
+	item_state = "korea_m1_standard"
+	worn_state = "korea_m1_standard"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/usm1/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/stack/material/rope))
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You put netting on the helmet.</span>"
+		new/obj/item/clothing/head/helmet/korean/ustannet(user.loc)
+		qdel(src)
+		qdel(W)
+
+/obj/item/clothing/head/helmet/korean/ustannet
+	name = "M1 Helmet with netting"
+	desc = "The typical rounded steel helmet of the US Army, with tan netting."
+	icon_state = "korea_m1_tan_netting"
+	item_state = "korea_m1_tan_netting"
+	worn_state = "korea_m1_tan_netting"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/ustannet/verb/toggle_color()
+	set category = null
+	set src in usr
+	set name = "Toggle Color"
+	if (color)
+		icon_state = "korea_m1_tan_netting"
+		item_state = "korea_m1_tan_netting"
+		worn_state = "korea_m1_tan_netting"
+		body_parts_covered = HEAD
+		item_state_slots["slot_wear_head"] = "m1_tan_netting"
+		usr << "<span class = 'danger'>You switch out your tan netting for green netting.</span>"
+		update_icon()
+		color = FALSE
+		usr.update_inv_head(1)
+	else if (!color)
+		icon_state = "korea_m1_green_netting"
+		item_state = "korea_m1_green_netting"
+		worn_state = "korea_m1_green_netting"
+		body_parts_covered = HEAD
+		item_state_slots["slot_wear_head"] = "m1_green_netting"
+		usr << "<span class = 'danger'>You switch out your green netting for tan netting.</span>"
+		update_icon()
+		color = TRUE
+		usr.update_inv_head(1)
+
+/obj/item/clothing/head/helmet/korean/usgreennet
+	name = "M1 Helmet with green netting"
+	desc = "The typical rounded steel helmet of the US Army, with green netting."
+	icon_state = "korea_m1_green_netting"
+	item_state = "korea_m1_green_netting"
+	worn_state = "korea_m1_green_netting"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/us_medic
+	name = "M1 Medic Helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one for medics"
+	icon_state = "korea_m1_medic"
+	item_state = "korea_m1_medic"
+	worn_state = "korea_m1_medic"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/us_2lt
+	name = "M1 2nd LT Helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of 2nd Lieutenant."
+	icon_state = "korea_m1_2nd_lt"
+	item_state = "korea_m1_2nd_lt"
+	worn_state = "korea_m1_2nd_lt"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/us_1lt
+	name = "M1 1st LT Helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of 1st Lieutenant."
+	icon_state = "korea_m1_1st_lt"
+	item_state = "korea_m1_1st_lt"
+	worn_state = "korea_m1_1st_lt"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/korean/us_cap
+	name = "M1 Captain Helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of Captain."
+	icon_state = "korea_m1_cpt"
+	item_state = "korea_m1_cpt"
+	worn_state = "korea_m1_cpt"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /* Ghillie Suits*/
 
@@ -232,6 +387,7 @@
 
 /obj/item/clothing/head/jungle_hat
 	name = "black boonie"
+	desc = "A wide brim, soft jungle hat."
 	icon_state = "black_boonie"
 	item_state = "black_boonie"
 	body_parts_covered = HEAD
@@ -249,6 +405,41 @@
 	icon_state = "rice_hat"
 	item_state = "rice_hat"
 	body_parts_covered = HEAD
+
+/obj/item/clothing/head/chinese_ushanka
+	name = "chinese ushanka"
+	desc = "A chinese ushanka, used by soldiers in the chinese army."
+	icon_state = "chinese_ushanka_up"
+	item_state = "chinese_ushanka_up"
+	worn_state = "chinese_ushanka_up"
+
+/obj/item/clothing/head/chinese_ushanka/down
+	icon_state = "chinese_ushanka"
+	item_state = "chinese_ushanka"
+	worn_state = "chinese_ushanka"
+	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/head/chinese_ushanka/attack_self(mob/user as mob)
+	if (icon_state == "chinese_ushanka")
+		icon_state = "chinese_ushanka_up"
+		item_state = "chinese_ushanka_up"
+		user << "You raise the ear flaps on the ushanka."
+	else if (icon_state == "chinese_ushanka_up")
+		icon_state = "chinese_ushanka"
+		item_state = "chinese_ushanka"
+		flags_inv = BLOCKHEADHAIR
+		user << "You lower the ear flaps on the ushanka."
+
+/obj/item/clothing/head/helmet/modern/chi_korea_helmet
+	name = "Chinese helmet"
+	desc = "A leftover japanese helmet repurposed for the People's Liberation Army."
+	icon_state = "chi_korea_helm"
+	item_state = "chi_korea_helm"
+	worn_state = "chi_korea_helm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	health = 24
 
 /* Vietcong Clothes*/
 
@@ -372,7 +563,27 @@
 			mob_overlay = image("icon" = 'icons/mob/ties.dmi', "icon_state" = "[tmp_icon_state]")
 	return mob_overlay
 
-/obj/item/clothing/accessory/armor/coldwar/flakjacket
+/obj/item/clothing/head/helmet/modern/ssh_68 //1960 precursor to the 6B47 helmet on apparel_modern.dm
+	name = "SSh-68 helmet"
+	desc = "A mass produced metal helmet often used by USSR infantry forces in the mid 20th century."
+	icon_state = "ssh_68_sovhelm"
+	item_state = "ssh_68_sovhelm"
+	worn_state = "ssh_68_sovhelm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 100, gun = 76, energy = 24, bomb = 66, bio = 25, rad = FALSE)
+
+/obj/item/clothing/suit/b3 //need checking these assets before path name change, but i've updated the name to a real B3 russian armor circa 1980's
+	name = "USSR 6B3 body armor"
+	desc = "A russian body armor, made with glory."
+	icon_state = "b3vest"
+	item_state = "b3vest"
+	worn_state = "b3vest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
+	ripable = FALSE
+
+/obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.
 	name = "M-1952 Flak Jacket"
 	desc = "Wearable armor meant to protect against shrapnel and light hits. Won't do much against large caliber weapons."
 	icon_state = "flakjacket"
@@ -383,7 +594,7 @@
 	value = 60
 	slowdown = 0.2
 
-/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969
+/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969 // see note above, this highly likely isn't real article.
 	name = "M-1969 Flak Jacket"
 	desc = "Wearable armor with neck protection meant to protect against shrapnel and light hits. Won't do much against large caliber weapons."
 	icon_state = "flakjacket1969"
@@ -433,6 +644,22 @@
 	new/obj/item/ammo_magazine/pkm/c100(src)
 	new/obj/item/ammo_magazine/pkm/c100(src)
 
+/obj/item/weapon/storage/belt/smallpouches/soviet_ppsh
+/obj/item/weapon/storage/belt/smallpouches/soviet_ppsh/New()
+	..()
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+
+/obj/item/weapon/storage/belt/smallpouches/chinese_rifle
+/obj/item/weapon/storage/belt/smallpouches/chinese_rifle/New()
+	..()
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+
 /* Cold War Balaclavas*/
 
 /obj/item/clothing/mask/balaclava
@@ -442,6 +669,7 @@
 	item_state = "balaclava"
 	worn_state = "balaclava"
 	body_parts_covered = FACE|EYES|HEAD
+	flags_inv = HIDEFACE
 	w_class = 1
 	restricts_view = 2
 	heat_protection = HEAD|FACE|EYES
@@ -614,6 +842,83 @@
 
 /* Miscallaneous*/
 
+	/* John Toughguy - Jungle Commando defintiely does not rhyme with a certain movie franchise*/
+
+/* Woodland Face Paint Recommended*/
+
+/obj/item/clothing/head/bandana/toughguy
+	name = "specialist bandana"
+	desc = "A red bandana, the preferred headwear of seasoned jungle fighters."
+	icon_state = "toughguy"
+	item_state = "toughguy"
+	worn_state = "toughguy"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/under/toughguy
+	name = "specialist pants with woodland pattern paint"
+	desc = "A army issued pair of pants and woodland pattern body-paint; to blend seamlessly into the enviroment"
+	icon_state = "toughguy"
+	item_state = "toughguy"
+	worn_state = "toughguy"
+
+/obj/item/clothing/gloves/toughguy
+	name = "specialist leather gloves"
+	icon_state = "toughguy"
+	item_state = "toughguy"
+	worn_state = "toughguy"
+	body_parts_covered = HANDS
+	slot_flags = SLOT_GLOVES
+
+/obj/item/clothing/shoes/toughguy
+	name = "specialist boots"
+	desc = "A well made and importantly quiet treading pair of army-issue leather boots.."
+	icon_state = "toughguy"
+	item_state = "toughguy"
+	worn_state = "toughguy"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 20, arrow = 40, gun = FALSE, energy = 10, bomb = 40, bio = 20, rad = 40)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+	/* Swinging 60's*/
+
+/obj/item/clothing/under/sundress
+	name = "yellow sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_yellow"
+	item_state = "sundress_yellow"
+	worn_state = "sundress_yellow"
+
+/obj/item/clothing/under/sundress/blue
+	name = "blue sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_blue"
+	item_state = "sundress_blue"
+	worn_state = "sundress_blue"
+
+/obj/item/clothing/under/sundress/orange
+	name = "orange sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_orange"
+	item_state = "sundress_orange"
+	worn_state = "sundress_orange"
+
+/obj/item/clothing/under/sundress/purple
+	name = "purple sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_purple"
+	item_state = "sundress_purple"
+	worn_state = "sundress_purple"
+
+/obj/item/clothing/under/sundress/red
+	name = "red sundress"
+	desc = "A mid century style dress often worn outside in fair weather associated with a new generation of independent women"
+	icon_state = "sundress_red"
+	item_state = "sundress_red"
+	worn_state = "sundress_red"
+
 /obj/item/clothing/under/gatorpants
 	name = "shirtless gator pants"
 	desc = "A tight fitting pair of alligator scale pants. When you're this on-point; wearing a shirt would just cramp your style."
@@ -632,7 +937,7 @@
 	armor = list(melee = 140, arrow = 200, gun = 150, energy = 100, bomb = 100, bio = 100, rad = 80)
 	ripable = FALSE
 
-/obj/item/clothing/suit/a6b45 //isn't this armor?
+/obj/item/clothing/suit/a6b45 //isn't this armor? || Note @FantasticFwoosh- (29/08/2020) Ratnik Programme russian armor is developed in 2016 this is classified in the wrong era.
 	name = "6B45 heavy vest"
 	desc = "6B45 is a modular bullet-resistant vest. It comprises frontal and rear section and soft-armour shoulder and side protection."
 	icon_state = "a6b45"
@@ -643,7 +948,7 @@
 	var/slots = 4
 	ripable = FALSE
 
-/obj/item/clothing/suit/heavyvest1
+/obj/item/clothing/suit/heavyvest1 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "heavy vest"
 	desc = "a heavy NIJ level IV vest."
 	icon_state = "heavypolice"
@@ -654,7 +959,7 @@
 	var/slots = 6
 	ripable = FALSE
 
-/obj/item/clothing/suit/medvest
+/obj/item/clothing/suit/medvest // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "medium vest"
 	desc = "a heavy NIJ level III vest."
 	icon_state = "mediumvest"
@@ -665,7 +970,7 @@
 	var/slots = 6
 	ripable = FALSE
 
-/obj/item/clothing/suit/a6b44
+/obj/item/clothing/suit/a6b44 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "6B44 vest"
 	desc = "6B44 is a modular bullet-resistant vest."
 	icon_state = "a6b44"
@@ -676,7 +981,7 @@
 	var/slots = 4
 	ripable = FALSE
 
-/obj/item/clothing/suit/a6b28
+/obj/item/clothing/suit/a6b28 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "6B28 plate carrier"
 	desc = "6B28 is a level III plate carrier."
 	icon_state = "a6b28"
@@ -685,16 +990,6 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 74, arrow = 87, gun = 83, energy = 67, bomb = 56, bio = 40, rad = 36)
 	var/slots = 3
-	ripable = FALSE
-
-/obj/item/clothing/suit/b3
-	name = "B3A1 vest"
-	desc = "A russian bulletproof vest, made with glory."
-	icon_state = "b3vest"
-	item_state = "b3vest"
-	worn_state = "b3vest"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
-	armor = list(melee = 65, arrow = 100, gun = 69, energy = 30, bomb = 40, bio = 10, rad = 30)
 	ripable = FALSE
 
 /obj/item/clothing/head/helmet/modern/vchelmet

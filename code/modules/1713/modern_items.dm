@@ -251,6 +251,8 @@
 /obj/structure/lamp/lamp_small/alwayson
 	powerneeded = 0
 	on = TRUE
+/obj/structure/lamp/lamp_small/alwayson/white
+	brightness_color = "#ffffff"
 /obj/structure/lamp/lamp_small/alwayson/red
 	brightness_color = "#da0205"
 
@@ -274,8 +276,44 @@
 
 /obj/structure/lamp/lamp_small/tank/red
 	brightness_color = "#da0205"
-
-
+/obj/structure/lamp/lamp_small/tank/red/police
+	name = "police lights"
+	pixel_x=32
+	update_icon()
+		..()
+		switch(dir)
+			if(NORTH)
+				pixel_x=-16
+				pixel_y=0
+			if(SOUTH)
+				pixel_x=16
+				pixel_y=0
+			if(WEST)
+				pixel_y=-16
+				pixel_x=0
+			if(EAST)
+				pixel_y=16
+				pixel_x=0
+/obj/structure/lamp/lamp_small/tank/blue
+	brightness_color = "#0202da"
+/obj/structure/lamp/lamp_small/tank/blue/police
+	name = "police lights"
+	pixel_x=-32
+	update_icon()
+		..()
+		switch(dir)
+			if(NORTH)
+				pixel_x=16
+				pixel_y=0
+			if(SOUTH)
+				pixel_x=-16
+				pixel_y=0
+			if(WEST)
+				pixel_y=16
+				pixel_x=0
+			if(EAST)
+				pixel_y=-16
+				pixel_x=0
 /obj/structure/lamp/lamp_big
 	name = "light tube"
 	desc = "A light tube."
@@ -307,6 +345,8 @@
 	not_disassemblable = TRUE
 	var/list/barrel = list()
 	var/volume = 0
+	var/volume_et = 0
+	var/volume_di = 0
 	var/maxvolume = 300
 	var/active = FALSE
 	var/product = "gasoline"
@@ -433,7 +473,7 @@
 	if (isemptylist(barrel))
 		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
 		return
-	if (volume < 1)
+	if (volume <= 0 && volume_di <= 0 && volume_et <= 0)
 		H << "<span class = 'notice'>The refinery is empty! Put some percursors in first.</span>"
 		return
 	if (active)
@@ -461,7 +501,7 @@
 		H << "<span class = 'notice'>There is not enough power to start the refinery.</span>"
 		return
 /obj/structure/refinery/proc/power_on()
-	if (powered && active)
+	if (active)
 		update_icon()
 		spawn(600)
 			refine()
@@ -512,10 +552,8 @@
 /obj/structure/refinery/biofuel
 	name = "biofuel refinery"
 	desc = "A biofuel refinery, used to produce ethanol and biodiesel."
-	var/volume_et = 0
-	var/volume_di = 0
 	maxvolume = 300
-	product = "ethanol"
+	product = "biodiesel"
 
 /obj/structure/refinery/biofuel/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
@@ -641,7 +679,7 @@
 
 
 /obj/structure/refinery/biofuel/refine()
-	if (powered && active && volume >= 1 && !isemptylist(barrel))
+	if (powered && active && (volume_di > 0 || volume_et > 0) && !isemptylist(barrel))
 		if (!barrel[1])
 			active = FALSE
 			update_icon()
@@ -881,273 +919,3 @@
 	..()
 	storage.attackby(W, user)
 	update_icon()
-
-/////////////////////////////////////////
-////////////////COMPUTERS////////////////
-/////////////////////////////////////////
-
-//BASE ELECTRONIC FOR COPY AND PASTING LMAO
-/*/obj/structure/base_powered_object
-	name = "Powered Object"
-	desc = "This is meant to be copy-pasted to make more cool stuff with the power system."
-	icon = 'icons/obj/modern_structures.dmi'
-	icon_state = "off"
-	flammable = FALSE
-	not_movable = FALSE
-	not_disassemblable = TRUE
-	var/active = FALSE
-	powerneeded = 1
-
-/obj/structure/base_powered_object/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (istype(W, /obj/item/stack/cable_coil))
-		if (!anchored)
-			H << "<span class='notice'>Fix the [src] in place with a wrench first.</span>"
-			return
-		if (powersource)
-			H << "There's already a cable connected here! Split it further from the [src]."
-			return
-		var/obj/item/stack/cable_coil/CC = W
-		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
-		powersource.connections += src
-
-		var/opdir1 = 0
-		var/opdir2 = 0
-		if (powersource.tiledir == "horizontal")
-			opdir1 = 4
-			opdir2 = 8
-		else if  (powersource.tiledir == "vertical")
-			opdir1 = 1
-			opdir2 = 2
-		powersource.update_icon()
-
-		if (opdir1 != 0 && opdir2 != 0)
-			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
-				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
-					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						NCOO.connections += powersource
-					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						powersource.connections += NCOO
-					H << "You connect the two cables."
-
-			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
-					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						NCOC.connections += powersource
-					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						powersource.connections += NCOC
-					H << "You connect the two cables."
-		H << "You connect the cable to the [src]."
-
-	else
-		..()
-
-
-/obj/structure/base_powered_object/attack_hand(var/mob/living/human/H)
-	if (active)
-		active = FALSE
-		powered = FALSE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow -= powerneeded
-		powersource.lastupdate2 = world.time
-		H << "You power off the [src]."
-		update_icon()
-		return
-
-	else if (!active && !powersource.powered)
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
-		update_icon()
-		return
-	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
-		active = TRUE
-		powered = TRUE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow += powerneeded
-		powersource.lastupdate2 = world.time
-		power_on()
-		H << "You power the [src]."
-		update_icon()
-		return
-	else
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
-		return
-
-/obj/structure/base_powered_object/proc/power_on()
-	if (powered && active)
-		update_icon()
-		//do something here.
-	else
-		update_icon()
-		return
-
-/obj/structure/base_powered_object/update_icon()
-	if (active)
-		icon_state = "on"
-	else
-		icon_state = "off"*/
-
-/obj/structure/computer/
-	name = "Parent Computer"
-	desc = "A simplistic computer. This is the parent object"
-	icon = 'icons/obj/computers.dmi'
-	icon_state = "1980_computer_off"
-	var/peripherals = list()
-	var/internals = list()
-	var/operatingsystem = "ungaOS"
-	var/memory = list()
-	var/display = "UngaOS V 0.0.1<br>"
-	flammable = FALSE
-	not_movable = FALSE
-	not_disassemblable = TRUE
-	var/active = FALSE
-	powered = FALSE
-	powerneeded = 1
-
-/obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (istype(W, /obj/item/stack/cable_coil))
-		if (!anchored)
-			H << "<span class='notice'>Fix the [src] in place with a wrench first.</span>"
-			return
-		if (powersource)
-			H << "There's already a cable connected here! Split it further from the [src]."
-			return
-		var/obj/item/stack/cable_coil/CC = W
-		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
-		powersource.connections += src
-
-		var/opdir1 = 0
-		var/opdir2 = 0
-		if (powersource.tiledir == "horizontal")
-			opdir1 = 4
-			opdir2 = 8
-		else if  (powersource.tiledir == "vertical")
-			opdir1 = 1
-			opdir2 = 2
-		powersource.update_icon()
-
-		if (opdir1 != 0 && opdir2 != 0)
-			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
-				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
-					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						NCOO.connections += powersource
-					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						powersource.connections += NCOO
-					H << "You connect the two cables."
-
-			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
-					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						NCOC.connections += powersource
-					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						powersource.connections += NCOC
-					H << "You connect the two cables."
-		H << "You connect the cable to the [src]."
-
-	else
-		..()
-/obj/structure/computer/verb/toggle_power(var/mob/living/human/H)
-	set category = null
-	set name = "Turn On"
-	set src in range(1, usr)
-	if(src.active)
-		name = "Turn Off"
-	if(!powersource)
-		H << "<span class = 'notice'>You need to plug in the [src].</span>"
-		return
-	if (active)
-		active = FALSE
-		powered = FALSE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow -= powerneeded
-		powersource.lastupdate2 = world.time
-		H << "You power off the [src]."
-		update_icon()
-		return
-	else if (!active && !powersource.powered)
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
-		update_icon()
-		return
-	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
-		active = TRUE
-		powered = TRUE
-		powersource.update_power(powerneeded,1)
-		powersource.currentflow += powerneeded
-		powersource.lastupdate2 = world.time
-		power_on()
-		H << "You power the [src]."
-		update_icon()
-		return
-	else
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
-		return
-/obj/structure/computer/attack_hand(var/mob/living/human/H)
-	if(!src.active)
-		load_os()
-	else
-		H << "<span class = 'notice'>You need to turn the [src] on first!</span>"
-/obj/structure/computer/proc/power_on()
-	if (powered && active)
-		update_icon()
-		//do somethin
-	else
-		update_icon()
-		return
-
-/obj/structure/computer/update_icon()
-	if (active)
-		icon_state = "1980_computer_on"
-	else
-		icon_state = "1980_computer_off"
-/obj/structure/computer/proc/load_os()
-	if(operatingsystem == "ungaOS")
-		var/os = {"
-				<!DOCTYPE html>
-				<html>
-				<head>
-				<title>Unga OS V 0.1</title>
-				<style>
-				body {
-					background-color: #161610
-				}
-				.vertical-center {
-				  margin: 0;
-				  position: absolute;
-				  top: 40%;
-				  -ms-transform: translateY(-50%);
-				  transform: translateY(-50%);
-				  padding-left: 5%
-				}
-				</style>
-				<script type="text/javascript">
-					typeFunction() {
-						if (e.keyCode == 13) {
-							byond://?src=\ref[src]&action=textenter&value=document.getElementById('input').value
-					    }
-						byond://?src=\ref[src]&action=textrecieved&value=document.getElementById('input').value
-					}
-				</head>
-				<div class="vertical-center">
-				<textarea id="display" name="display" rows="25" cols="60" readonly="true" style="resize: none; background-color: black; color: lime; border-style: inset inset inset inset; border-color: #161610; overflow: hidden;">
-				"}
-		os+=display
-		os+={"</textarea>
-				<input type="text" id="input" name="input" style="resize: none; background-color: black; color: lime; border-style: none inset inset inset; border-color: #161610; overflow: hidden;" onkeypress="typeFunction()"></input>
-				</div>
-				</html>
-				"}
-		usr << browse(os,"window=ungaos;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=500x500")
-
-/obj/structure/computer/Topic(href, list/href_list)
-	var/action = href_list["action"]
-	if(action == "textrecieved")
-		var/typenoise = pick('sound/machines/computer/key_1.ogg',
-							 'sound/machines/computer/key_2.ogg',
-							 'sound/machines/computer/key_3.ogg',
-							 'sound/machines/computer/key_4.ogg',
-							 'sound/machines/computer/key_5.ogg',
-							 'sound/machines/computer/key_6.ogg',
-							 'sound/machines/computer/key_7.ogg',
-							 'sound/machines/computer/key_8.ogg')
-		playsound(loc, typenoise, 10, TRUE)
-	if(action == "textenter")
-		playsound(loc, 'sound/machines/computer/key_enter.ogg', 10, TRUE)
-		display+=href_list["value"]

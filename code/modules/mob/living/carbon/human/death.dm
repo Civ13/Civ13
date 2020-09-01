@@ -58,6 +58,42 @@
 			for(var/i in GD.points)
 				if (i[1]==PJ.nationality)
 					i[3]-=50
+	else if (map && map.ID == MAP_ALLEYWAY)
+		if (civilization && civilization in map.scores)
+			if (civilization == "Yamaguchi-Gumi")
+				map.scores["Yamaguchi-Gumi"] -= 2
+				map.scores["Ichiwa-Kai"] += 1
+			else
+				map.scores["Ichiwa-Kai"] -= 2
+				map.scores["Yamaguchi-Gumi"] += 1
+	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+		if (civilization && civilization in map.scores)
+			if (civilization == "Paramedics")
+				map.scores[civilization] -= 500
+			if (civilization == "Police")
+				map.scores[civilization] -= 250
+				if (ishuman(last_harmed))
+					map.scores[last_harmed.civilization] -= 100
+					global_broadcast(FREQP,"<big>10-9: Officer down! All available units proceed to [get_coded_loc()] ([x],[y])!</big>")
+					var/warrant = last_harmed.civilization
+					spawn(rand(300,500))
+						if (warrant != "Police")
+							var/obj/item/weapon/paper_bin/police/PAR = null
+							for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
+								PAR = PAR2
+								break
+							if (PAR)
+								var/obj/item/weapon/paper/police/searchwarrant/SW = new /obj/item/weapon/paper/police/searchwarrant(PAR.loc)
+								SW.cmp = warrant
+								SW.spawntimer = 18000
+							global_broadcast(FREQP,"<big>Attention, warrant issued for <b>[warrant] HQ</b>, please search the premises as soon as possible.</big>")
+							map.warrants += warrant
+							spawn(30)
+								for(var/mob/living/human/HMN in player_list)
+									if (HMN.civilization == warrant)
+										HMN.gun_permit = FALSE
+			else
+				map.scores[civilization] -= 200
 	handle_piss()
 	handle_shit()
 	if (squad > 0 && original_job && original_job.uses_squads)

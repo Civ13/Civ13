@@ -3,8 +3,6 @@
 	plane = GAME_PLANE
 	var/last_move = null
 	var/anchored = FALSE
-	// var/elevation = 2	- not used anywhere
-	var/move_speed = 10
 	var/l_move_time = TRUE
 	var/m_flag = TRUE
 	var/throwing = FALSE
@@ -92,16 +90,6 @@
 	// bug abusers btfo
 	if (map.check_caribbean_block(mob, get_turf(mob)))
 		return FALSE
-
-	return TRUE
-
-//Convenience function for atoms to update turfs they occupy
-/atom/movable/proc/update_nearby_tiles(need_rebuild)
-/*	if (!air_master)
-		return FALSE
-
-	for (var/turf/turf in locs)
-		air_master.mark_for_update(turf)*/
 
 	return TRUE
 
@@ -206,11 +194,11 @@
 			if (istype(A,/mob/living))
 				if (A:lying) continue
 				if (A == thrower)
-					if (locate(/obj/structure/window/sandbag) in get_turf(src))
+					if (locate(/obj/structure/window/barrier) in get_turf(src))
 						continue
 				throw_impact(A,speed)
 			else if (isobj(A))
-				var/obj/structure/window/sandbag/S = A
+				var/obj/structure/window/barrier/S = A
 				if (istype(S) && S.CanPass(src, get_turf(src)))
 					continue
 				else if (A.density && !A.throwpass)	// **TODO: Better behaviour for windows which are dense, but shouldn't always stop movement
@@ -247,7 +235,6 @@
 		dy = SOUTH
 
 	dist_travelled = 0
-//	var/dist_since_sleep = 0
 	a = get_area(loc)
 	if (dist_x > dist_y)
 		error = dist_x/2 - dist_y
@@ -292,31 +279,6 @@
 	if (master)
 		return master.attack_hand(a, b, c)
 	return
-
-/atom/movable/proc/touch_map_edge()
-
-	var/move_to_z = get_transit_zlevel()
-	if (move_to_z)
-		z = move_to_z
-
-		if (x <= TRANSITIONEDGE)
-			x = world.maxx - TRANSITIONEDGE - 2
-			y = rand(TRANSITIONEDGE + 2, world.maxy - TRANSITIONEDGE - 2)
-
-		else if (x >= (world.maxx - TRANSITIONEDGE + 1))
-			x = TRANSITIONEDGE + 1
-			y = rand(TRANSITIONEDGE + 2, world.maxy - TRANSITIONEDGE - 2)
-
-		else if (y <= TRANSITIONEDGE)
-			y = world.maxy - TRANSITIONEDGE -2
-			x = rand(TRANSITIONEDGE + 2, world.maxx - TRANSITIONEDGE - 2)
-
-		else if (y >= (world.maxy - TRANSITIONEDGE + 1))
-			y = TRANSITIONEDGE + 1
-			x = rand(TRANSITIONEDGE + 2, world.maxx - TRANSITIONEDGE - 2)
-
-		spawn(0)
-			if (loc) loc.Entered(src)
 
 //This list contains the z-level numbers which can be accessed via space travel and the percentile chances to get there.
 var/list/accessible_z_levels = list("1" = 5, "3" = 10, "4" = 15, "6" = 60)

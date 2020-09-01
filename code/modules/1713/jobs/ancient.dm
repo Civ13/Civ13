@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /datum/job/roman
 	faction = "Human"
-
+	is_ancient = TRUE
 /datum/job/roman/give_random_name(var/mob/living/human/H)
 	if (title != "Gladiator")
 		H.name = H.species.get_random_roman_name()
@@ -16,11 +16,11 @@
 	title = "Centurion"
 	en_meaning = "Roman Commander"
 	rank_abbreviation = "Cen."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRO"
 
 	is_commander = TRUE
-	head_position = TRUE
+
 	is_officer = TRUE
 
 	min_positions = 1
@@ -56,7 +56,7 @@
 	title = "Decurion"
 	en_meaning = "Roman Squad Leader"
 	rank_abbreviation = "Dec."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRO"
 
 	is_officer = TRUE
@@ -94,7 +94,7 @@
 	title = "Signifer"
 	en_meaning = "Roman Standard Bearer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRO"
 
 
@@ -129,7 +129,7 @@
 	title = "Legionarius"
 	en_meaning = "Main Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRO"
 
 
@@ -168,7 +168,7 @@
 	title = "Saggitarius"
 	en_meaning = "Light Archer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRO"
 
 
@@ -203,6 +203,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /datum/job/greek
 	faction = "Human"
+	is_ancient = TRUE
 
 /datum/job/greek/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_greek_name()
@@ -213,11 +214,11 @@
 	title = "Lochagos"
 	en_meaning = "Greek Commander"
 	rank_abbreviation = "Lo."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGR"
 
 	is_commander = TRUE
-	head_position = TRUE
+
 	is_officer = TRUE
 
 	min_positions = 1
@@ -250,7 +251,7 @@
 	title = "Dimoerites"
 	en_meaning = "Greek Squad Leader"
 	rank_abbreviation = "Di."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGR"
 
 	is_officer = TRUE
@@ -292,7 +293,7 @@
 	title = "Hoplites"
 	en_meaning = "Greek Spear Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGR"
 
 
@@ -336,7 +337,7 @@
 	title = "Toxotai"
 	en_meaning = "Greek Light Archer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGR"
 
 
@@ -374,7 +375,7 @@
 	title = "Gladiator"
 	en_meaning = ""
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRO"
 
 	is_gladiator = TRUE
@@ -412,7 +413,7 @@
 	title = "Medicus"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Medicus"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateROG"
 
 	is_medic = TRUE
@@ -446,7 +447,7 @@
 	title = "Custos"
 	en_meaning = "Arena Guard"
 	rank_abbreviation = "Custos"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateROG"
 
 	is_officer = TRUE
@@ -483,12 +484,12 @@
 	title = "Imperator"
 	en_meaning = "Emperor"
 	rank_abbreviation = "Imperator"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateROG"
 
 	is_gladiator = TRUE
 	is_commander = TRUE
-	head_position = TRUE
+
 	is_officer = TRUE
 	whitelisted = TRUE
 
@@ -516,4 +517,212 @@
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_VERY_HIGH)
 	give_random_name(H)
+	return TRUE
+
+////////////////Germanic Tribes///////////////////
+
+/datum/job/german/chieftain
+	title = "Jarl"
+	en_meaning = "Chieftain"
+	rank_abbreviation = "Jarl"
+
+	spawn_location = "JoinLateGE"
+	is_ancient = TRUE
+	is_commander = TRUE
+	is_officer = TRUE
+
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/german/chieftain/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_red(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/bronze_chestplate(H), slot_wear_suit)
+		//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/asterix/conspicious(H), slot_head)
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword/iron(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword/iron(H), slot_l_hand)
+	H.add_note("Role", "You are a <b>[title]</b>, the chieftain of your tribe. Lead your men to victory!")
+
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+
+/datum/job/german/swordsman
+	title = "Sahsnotoz"
+	en_meaning = "Swordsman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ancient = TRUE
+
+	min_positions = 10
+	max_positions = 100
+
+/datum/job/german/swordsman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/bronze_lamellar(H), slot_wear_suit)
+		//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/asterix(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/horned(H), slot_head)
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword/iron(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_back)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a germanic swordsman.")
+
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/german/axeman
+	title = "Teceitos"
+	en_meaning = "Axeman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ancient = TRUE
+
+	min_positions = 10
+	max_positions = 100
+
+/datum/job/german/axeman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(H), slot_w_uniform)
+		//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/foxpelt(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/wolfpelt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/blue_buckler(H), slot_back)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a celtic axeman. Use your speed to manouver around the enemy and your axe to destroy their armor and shields.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+
+/datum/job/german/spearman
+	title = "Framaharjoz"
+	en_meaning = "Spearman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ancient = TRUE
+
+	min_positions = 20
+	max_positions = 200
+
+/datum/job/german/spearman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_long_braccae(H), slot_w_uniform)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/steppe_leather(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/leather(H), slot_wear_suit)
+		//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt/brown(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt/black(H), slot_head)
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, a germanic spearman.")
+
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/german/skirmisher
+	title = "Swainoz"
+	en_meaning = "Skirmisher"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ancient = TRUE
+
+	min_positions = 10
+	max_positions = 100
+
+/datum/job/german/skirmisher/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_green(H), slot_w_uniform)
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/shortbow(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
+		//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/sheeppelt(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/goatpelt(H), slot_head)
+	H.add_note("Role", "You are a <b>[title]</b>, a germanic skirmisher.")
+
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_HIGH)
+	H.setStat("medical", STAT_LOW)
+	give_random_name(H)
+
 	return TRUE

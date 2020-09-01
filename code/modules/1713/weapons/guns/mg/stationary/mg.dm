@@ -163,6 +163,24 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 		)
 	ammo_type = /obj/item/ammo_casing/a77x58
 	attachment_slots = ATTACH_SCOPE
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98/update_icon()
+	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "-empty"]"
+
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning
+	name = "M1919A1 browning machine gun"
+	desc = "An american heavy machinegun. Uses 30-06. rounds."
+	icon_state = "browning"
+	base_icon = "browning"
+	caliber = "a3006"
+	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
+	magazine_type = /obj/item/ammo_magazine/browning
+	firemodes = list(
+		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a3006
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning/update_icon()
+	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "-empty"]"
+
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"

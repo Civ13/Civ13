@@ -2,7 +2,7 @@
 
 /obj/structure/vehicleparts/movement/sails
 	name = "wood mast"
-	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "sail0"
 	base_icon = "sail1"
 	movement_icon = "sail2"

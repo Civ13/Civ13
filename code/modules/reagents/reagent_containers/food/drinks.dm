@@ -109,7 +109,7 @@
 		..()
 		base_name = name
 		spawn (1)
-			if (!istype(src, /obj/item/weapon/reagent_containers/food/drinks/bottle))
+			if (reagents && !istype(src, /obj/item/weapon/reagent_containers/food/drinks/bottle))
 				amount_per_transfer_from_this = max(amount_per_transfer_from_this, ceil(reagents.total_volume/5))
 
 
@@ -152,7 +152,7 @@
 //	Formatting is the same as food.
 
 /obj/item/weapon/reagent_containers/food/drinks/coffee
-	name = "Robust Coffee"
+	name = "Coffee"
 	desc = "Careful, the beverage you're about to enjoy is extremely hot."
 	icon_state = "coffee"
 	center_of_mass = list("x"=15, "y"=10)

@@ -3,8 +3,8 @@
 	title = "Seigneur"
 	en_meaning = "Lord"
 	rank_abbreviation = "Seigneur"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -49,7 +49,7 @@
 	title = "Chevalier"
 	en_meaning = "Knight"
 	rank_abbreviation = "Chevalier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -90,7 +90,7 @@
 	title = "Homme dArme"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 
 	is_medieval = TRUE
@@ -136,7 +136,7 @@
 	title = "Paysan avec Pique"
 	en_meaning = "Levy Pikeman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 
 	is_medieval = TRUE
@@ -191,7 +191,7 @@
 	title = "Paysan Archer"
 	en_meaning = "Levy Archer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 
 	is_medieval = TRUE
@@ -240,7 +240,7 @@
 	title = "Milice"
 	en_meaning = "Levy Militia"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 
 	is_medieval = TRUE
@@ -309,8 +309,8 @@
 	title = "Grand Master"
 	en_meaning = "Crusader Leader"
 	rank_abbreviation = "Grand Master"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -356,7 +356,7 @@
 	title = "Templar Knight"
 	en_meaning = "Crusader Noble Knight"
 	rank_abbreviation = "Templar Knight"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -401,7 +401,7 @@
 	title = "Crusader Sergeant"
 	en_meaning = "Crusader Heavy Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 
 	is_medieval = TRUE
@@ -446,7 +446,7 @@
 	title = "Crusader Squire"
 	en_meaning = "Crusader Light Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 
 	is_medieval = TRUE
@@ -496,7 +496,7 @@
 	title = "Templar Priest"
 	en_meaning = "Priest"
 	rank_abbreviation = "Father"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateFR"
 
 	is_medieval = TRUE
@@ -536,8 +536,8 @@
 	title = "Lord"
 	en_meaning = "Lord"
 	rank_abbreviation = "Lord"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -582,7 +582,7 @@
 	title = "Knight"
 	en_meaning = "Knight"
 	rank_abbreviation = "Knight"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -623,7 +623,7 @@
 	title = "Men-at-Arms"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medieval = TRUE
@@ -669,7 +669,7 @@
 	title = "Levy Pikeman"
 	en_meaning = "Levy Pikeman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medieval = TRUE
@@ -724,7 +724,7 @@
 	title = "Levy Archer"
 	en_meaning = "Levy Archer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medieval = TRUE
@@ -772,7 +772,7 @@
 	title = "Levy Militia"
 	en_meaning = "Levy Militia"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medieval = TRUE
@@ -848,8 +848,8 @@
 	title = "Emir"
 	en_meaning = "Lord"
 	rank_abbreviation = "Emir"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -893,7 +893,7 @@
 	title = "Mamluk"
 	en_meaning = "Heavy Infantry"
 	rank_abbreviation = "Mamluk"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -938,7 +938,7 @@
 	title = "Sayaf"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_medieval = TRUE
@@ -984,7 +984,7 @@
 	title = "Alraamih"
 	en_meaning = "Spearman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_medieval = TRUE
@@ -1038,7 +1038,7 @@
 	title = "Rami Alsiham"
 	en_meaning = "Archer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_medieval = TRUE
@@ -1088,7 +1088,7 @@
 	title = "Imam"
 	en_meaning = "Priest"
 	rank_abbreviation = "Imam"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateAR"
 
 	is_medieval = TRUE
@@ -1130,8 +1130,8 @@
 	title = "Freiherr"
 	en_meaning = "Baron"
 	rank_abbreviation = "Freiherr"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
 
@@ -1180,7 +1180,7 @@
 	title = "Dienstmann"
 	en_meaning = "Retainer"
 	rank_abbreviation = "Dienstmann"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
 
@@ -1229,7 +1229,7 @@
 	title = "Ritter"
 	en_meaning = "Knight"
 	rank_abbreviation = "Herr"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -1275,7 +1275,7 @@
 	title = "Wachmann"
 	en_meaning = "Guardsman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateGE"
 
 	is_medieval = TRUE
@@ -1326,7 +1326,7 @@
 	title = "Pfaffe"
 	en_meaning = "Church Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivC"
 
 	is_religious = TRUE
@@ -1367,7 +1367,7 @@
 	title = "Kumpel"
 	en_meaning = "Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_medieval = TRUE
@@ -1425,7 +1425,7 @@
 	title = "Bauer"
 	en_meaning = "Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_medieval = TRUE
@@ -1486,7 +1486,7 @@
 	title = "Schmied"
 	en_meaning = "Blacksmith"
 	rank_abbreviation = "Blacksmith"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivB"
 	whitelisted = TRUE
 
@@ -1546,7 +1546,7 @@
 	title = "Gastwirst"
 	en_meaning = "Innkeeper"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivD"
 
 	is_medieval = TRUE
@@ -1605,7 +1605,7 @@
 	title = "Kneiper"
 	en_meaning = "Taverner/Barkeeper"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_medieval = TRUE
@@ -1665,7 +1665,7 @@
 	title = "Kleinbauer"
 	en_meaning = "Basic Peasant"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCiv"
 
 	is_medieval = TRUE
@@ -1723,7 +1723,7 @@
 	title = "Kaufmann"
 	en_meaning = "Merchant/Trader"
 	rank_abbreviation = "Kaufmann"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateCivA"
 	is_merchant = TRUE
 
@@ -1783,7 +1783,7 @@
 	title = "Arzt"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Arzt"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE

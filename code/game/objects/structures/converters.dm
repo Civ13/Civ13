@@ -100,3 +100,18 @@
 	outputamount = 1
 	actiontext = "soak"
 	overlayed = FALSE
+
+/obj/structure/converter/acid_bath
+	name = "industrial acidic bath"
+	desc = "Soaks man-made fibres over time into usuable material. It would not be big or deep enough to fit say... a human body inside."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "kevlar_trough"
+	idlesprite = "kevlar_trough"
+	activesprite = "kevlar_trough_full"
+	delay = 250
+	input = /obj/item/stack/material/rawkevlar
+	inputamount = 1
+	output = /obj/item/stack/material/preparedkevlar
+	outputamount = 1
+	actiontext = "soak"
+	overlayed = FALSE

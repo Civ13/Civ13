@@ -70,7 +70,7 @@
 				inputp = 0
 			if (inputp < 0)
 				inputp = 0
-			product.price = inputp/10
+			product.price = inputp
 			if (istype(W, /obj/item/stack))
 				var/obj/item/stack/S = W
 				product.amount = S.amount
@@ -110,7 +110,7 @@
 			else
 				for(var/datum/data/vending_product/VP in product_records)
 					if (VP.product_name == choice2)
-						var/input3 = input("The current price for [VP.product_name] is [VP.price*10] silver coins. What should the new price be?", "Product Price", VP.price*10) as num
+						var/input3 = input("The current price for [VP.product_name] is [VP.price] silver coins. What should the new price be?", "Product Price", VP.price*10) as num
 						if (input3 < 0 || input3 == null)
 							return FALSE
 						else
@@ -141,7 +141,7 @@
 	nanomanager.update_uis(src)
 
 	spawn(vend_delay)
-		R.get_product(get_turf(src),p_amount)
+		R.get_product(get_turf(src),p_amount,user)
 		playsound(loc, 'sound/machines/vending_drop.ogg', 100, TRUE)
 		status_message = ""
 		status_error = FALSE
@@ -165,32 +165,51 @@
 		data["mode"] = TRUE
 		data["company"] = owner
 		data["product"] = currently_vending.product_name
-		data["price"] = currently_vending.price*10
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			data["price"] = currently_vending.price/4
+		else
+			data["price"] = currently_vending.price*10
 		data["message_err"] = FALSE
 		data["message"] = status_message
 		data["message_err"] = status_error
-		data["moneyin"] = moneyin*10
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			data["moneyin"] = moneyin/4
+		else
+			data["moneyin"] = moneyin
 	else
 		data["mode"] = FALSE
 		data["company"] = owner
-		data["moneyin"] = moneyin*10
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			data["moneyin"] = moneyin/4
+		else
+			data["moneyin"] = moneyin
 		var/list/listed_products = list()
 
 		for (var/key = TRUE to product_records.len)
 			var/datum/data/vending_product/I = product_records[key]
-
-			listed_products.Add(list(list(
-				"key" = key,
-				"name" = I.product_name,
-				"price" = I.price*10,
-				"color" = I.display_color,
-				"amount" = I.amount)))
+			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+				listed_products.Add(list(list(
+					"key" = key,
+					"name" = I.product_name,
+					"price" = I.price/4,
+					"color" = I.display_color,
+					"amount" = I.amount)))
+			else
+				listed_products.Add(list(list(
+					"key" = key,
+					"name" = I.product_name,
+					"price" = I.price*10,
+					"color" = I.display_color,
+					"amount" = I.amount)))
 
 		data["products"] = listed_products
 
 	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
-		ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
+		else
+			ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
 		ui.set_initial_data(data)
 		ui.open()
 
@@ -241,21 +260,27 @@
 							map.custom_company_value[owner] += price_with_tax*inp
 							if (map.custom_civs[H.civilization])
 								map.custom_civs[H.civilization][5] += salestax*inp
-						if (moneyin > 0 && moneyin <= 3)
-							var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-							NM.amount = moneyin/NM.value
-							if (NM.amount <= 0)
-								qdel(NM)
-						else if (moneyin > 3 && moneyin <= 40)
-							var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-							NM.amount = moneyin/NM.value
-							if (NM.amount <= 0)
-								qdel(NM)
+						if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
+							D.amount = moneyin/D.value
+							if (D.amount == 0)
+								qdel(D)
 						else
-							var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-							NM.amount = moneyin/NM.value
-							if (NM.amount <= 0)
-								qdel(NM)
+							if (moneyin > 0 && moneyin <= 3)
+								var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
+								NM.amount = moneyin/NM.value
+								if (NM.amount <= 0)
+									qdel(NM)
+							else if (moneyin > 3 && moneyin <= 40)
+								var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
+								NM.amount = moneyin/NM.value
+								if (NM.amount <= 0)
+									qdel(NM)
+							else
+								var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
+								NM.amount = moneyin/NM.value
+								if (NM.amount <= 0)
+									qdel(NM)
 						moneyin = 0
 						vend(R, usr, inp)
 						nanomanager.update_uis(src)
@@ -264,10 +289,16 @@
 			currently_vending = null
 
 		else if (href_list["remove_money"])
-			var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-			GC.amount = moneyin/0.4
-			if (GC.amount == 0)
-				qdel(GC)
+			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+				var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
+				D.amount = moneyin/D.value
+				if (D.amount == 0)
+					qdel(D)
+			else
+				var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
+				GC.amount = moneyin/GC.value
+				if (GC.amount == 0)
+					qdel(GC)
 			moneyin = 0
 			nanomanager.update_uis(src)
 			return
@@ -289,6 +320,66 @@
 		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
 	)
 
+/obj/structure/vending/sales/food
+	name = "fruit vending machine"
+	desc = "Basic food products."
+	icon_state = "nutrimat"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/banana = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/orange = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cherry = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apricot = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 15,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/banana = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/orange = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/cherry = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/apricot = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 8,
+	)
+/obj/structure/vending/sales/food/snacks
+	name = "baker's vending machine"
+	desc = "Basic food products."
+	icon_state = "snack"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/toastedsandwich = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/sandwich = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/creamcheesebreadslice = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/applecakeslice = 15,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/toastedsandwich = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/sandwich = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/creamcheesebreadslice = 16,
+		/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice = 16,
+		/obj/item/weapon/reagent_containers/food/snacks/applecakeslice = 16,
+	)
+/obj/structure/vending/sales/food/hot
+	name = "hot meal vending machine"
+	desc = "Basic food products."
+	icon_state = "games"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/snacks/meatballspagetti = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/coffee = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/tea = 15,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/snacks/meatballspagetti = 24,
+		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup = 20,
+		/obj/item/weapon/reagent_containers/food/drinks/coffee = 12,
+		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 12,
+		/obj/item/weapon/reagent_containers/food/drinks/tea = 8,
+	)
 /obj/structure/vending/sales/market_stall/prepared
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."

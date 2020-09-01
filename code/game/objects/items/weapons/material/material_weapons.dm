@@ -68,8 +68,6 @@
 		maxhealth = health
 		if (applies_material_colour)
 			color = material.icon_colour
-		if (material.products_need_process())
-			processing_objects |= src
 		update_force()
 
 /obj/item/weapon/material/Destroy()

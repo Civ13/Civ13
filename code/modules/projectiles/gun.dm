@@ -21,7 +21,7 @@
 /obj/item/weapon/gun
 	name = "gun"
 	desc = "Its a gun. It's pretty terrible, though."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/items/lefthand_guns.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand_guns.dmi',
@@ -39,11 +39,10 @@
 
 	var/full_auto = FALSE
 	var/fire_delay = 5 	//delay after shooting before the gun can be used again
-	var/burst_delay = 2	//delay between shots, if firing in bursts
 	var/fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
+	var/silencer_fire_sound = 'sound/weapons/guns/fire/AKM-SD.ogg'
 	var/fire_sound_text = "gunshot"
 	var/recoil = 0		//screen shake
-	var/silenced = FALSE
 	var/muzzle_flash = 3
 	var/accuracy = 0   //accuracy is measured in tiles. +1 accuracy means that everything is effectively one tile closer for the purpose of miss chance, -1 means the opposite. launchers are not supported, at the moment.
 //	var/scoped_accuracy = null
@@ -146,28 +145,30 @@
 
 	//DUAL WIELDING: only works with pistols edition
 	var/obj/item/weapon/gun/off_hand = null
-	if (ishuman(user) && user.a_intent == "harm")
+	var/off_hand_fire = FALSE
+	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (istype(H.l_hand, /obj/item/weapon/gun) && istype(H.r_hand, /obj/item/weapon/gun))
 			var/obj/item/weapon/gun/LH = H.l_hand
 			var/obj/item/weapon/gun/RH = H.r_hand
-			if (RH == "pistol")
-				if (LH == "pistol")
+			if (RH.gtype == "pistol" || RH.gtype == "revolver")
+				if (LH.gtype == "pistol" || LH.gtype == "revolver")
 					if (H.r_hand == src)
 						off_hand = H.l_hand
-
 					else if (H.l_hand == src)
 						off_hand = H.r_hand
-
-					if (off_hand && off_hand.can_hit(user))
-						spawn(1)
-							off_hand.Fire(A,user,params)
-
-	Fire(A,user,params) //Otherwise, fire normally.
+					if (off_hand)
+						off_hand_fire = TRUE
+						spawn(3)
+							off_hand.Fire(A,user,params, accuracy_mod = 0.66)
+	if (!off_hand_fire)
+		Fire(A,user,params) //Otherwise, fire normally.
+	else
+		Fire(A,user,params, accuracy_mod = 0.66)
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return
 	if (A == user)
@@ -218,7 +219,7 @@
 				return FALSE
 	..()
 
-/obj/item/weapon/gun/proc/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE)
+/obj/item/weapon/gun/proc/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE, accuracy_mod = 1)
 
 	if (!user || !target) return
 
@@ -246,7 +247,7 @@
 	//unpack firemode data
 	var/datum/firemode/firemode = firemodes[sel_mode]
 	var/_burst = firemode.burst
-	var/_burst_delay = isnull(firemode.burst_delay)? burst_delay : firemode.burst_delay
+	var/_burst_delay = isnull(firemode.burst_delay)? 2 : firemode.burst_delay
 	var/_fire_delay = isnull(firemode.fire_delay) ? fire_delay : firemode.fire_delay
 	var/_move_delay = firemode.move_delay
 
@@ -274,7 +275,6 @@
 		health_check(user)
 		health -= 0.2
 
-		var/acc = 0 // calculated in projectile code
 		var/disp = firemode.dispersion[min(i, firemode.dispersion.len)]
 
 		if (istype(projectile, /obj/item/projectile))
@@ -284,7 +284,7 @@
 				var/obj/item/weapon/gun/projectile/proj = P.firedfrom
 				P.KD_chance = proj.KD_chance
 
-		process_accuracy(projectile, user, target, acc, disp)
+		process_accuracy(projectile, user, target, accuracy_mod, disp)
 
 		if (pointblank)
 			if (istype(projectile, /obj/item/projectile))
@@ -343,8 +343,8 @@
 
 //called after successfully firing
 /obj/item/weapon/gun/proc/handle_post_fire(mob/user, atom/target, var/pointblank=0, var/reflex=0)
-	if (silenced)
-		playsound(get_turf(user), fire_sound, 10, TRUE, 100)
+	if (silencer)
+		playsound(get_turf(user), silencer_fire_sound, 100-silencer.reduction, TRUE, 100-silencer.reduction)
 	else
 		playsound(get_turf(user), fire_sound, 100, TRUE, 100)
 
@@ -396,7 +396,7 @@
 		return //default behaviour only applies to true projectiles
 
 	//Accuracy modifiers
-	P.accuracy = accuracy + acc_mod
+	P.accuracy = accuracy*acc_mod
 	P.dispersion = dispersion
 /*
 	//accuracy bonus from aiming
@@ -451,10 +451,10 @@
 	var/obj/item/projectile/in_chamber = consume_next_projectile()
 	if (in_chamber && istype(in_chamber))
 		user.visible_message("<span class = 'warning'>[user] pulls the trigger.</span>")
-		if (silenced)
-			playsound(user, fire_sound, 10, TRUE)
+		if (silencer)
+			playsound(user, silencer_fire_sound, 50-(silencer.reduction/2), TRUE,50-(silencer.reduction/2))
 		else
-			playsound(user, fire_sound, 50, TRUE)
+			playsound(user, fire_sound, 50, TRUE,50)
 
 		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> shot themselves in the mouth (tried to commit suicide)"
 
@@ -519,10 +519,10 @@
 					damage_multiplier = 3.0
 
 			user.visible_message("<span class = 'red'>[user] shoots \himself in \the [organ_name]!</span>")
-			if (silenced)
-				playsound(user, fire_sound, 20, TRUE)
+			if (silencer)
+				playsound(user, silencer_fire_sound, 100-silencer.reduction, TRUE,100-silencer.reduction)
 			else
-				playsound(user, fire_sound, 100, TRUE)
+				playsound(user, fire_sound, 100, TRUE,100)
 
 			user.attack_log += "\[[time_stamp()]\] [user]/[user.ckey]</b> shot themselves in the [organ_name]"
 
@@ -560,7 +560,7 @@
 			if (70 to 84)
 				user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
 			if (85 to 200)
-				user << "<font color='#245319'>Seems to be in very good condition.</font>"
+				user << "<font color='#326327'>Seems to be in very good condition.</font>"
 
 	if (firemodes.len > 1)
 		var/datum/firemode/current_mode = firemodes[sel_mode]

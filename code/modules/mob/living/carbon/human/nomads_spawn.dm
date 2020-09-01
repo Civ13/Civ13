@@ -6,15 +6,14 @@
 		var/area/mob_area = get_area(src)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
-		var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Biome Appropriate",list("Biome Appropriate","Randomize","Customize"))
+		var/choices = WWinput(src, "Welcome to the Old World! As your new life starts, you can choose if you want to customize your character. Do you want to?","Character Customization","Randomize",list(/*"Biome Appropriate",*/"Randomize","Customize"))
 		if (choices == "Customize")
 //				var/choice_race = WWinput(src, "Which race do you want to be?","Character Customization","Randomize",list("Randomize","Human","Ant","Lizard","Crustacean","Orc","Gorilla"))
 //				if (choice_race == "Randomize")
 //					choice_race = pick("Human","Ant","Lizard","Crustacean","Orc","Gorilla")
-
-			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","German","Greek",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
+			var/choice1 = WWinput(src, "Which ethnicity do you want to be?","Character Customization","Randomize",list("Randomize","Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin"))
 			if (choice1 == "Randomize")
-				choice1 = pick("Russian","German","Greek",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin")
+				choice1 = pick("Russian","Zulu","Arabic",/*"Japanese","Chinese","Portuguese","Arabic",*/"Latin")
 			else
 				var/list/possible_h_list = list("Black")
 				var/list/possible_e_list = list("Black")
@@ -161,7 +160,7 @@
 				else if (s_tone < abs(possible_s_list[1]))
 					s_tone = abs(possible_s_list[1])
 				s_tone = -s_tone
-				var/list/sec_lang_list = list("Randomize","Russian","German","Greek","Latin")
+				var/list/sec_lang_list = list("Randomize","Russian","Zulu","Arabic","Latin")
 				sec_lang_list -= choice1
 				var/sec_lang = WWinput(src, "Choose your secondary language:","Character Customization","Randomize",sec_lang_list)
 				if (sec_lang == "Randomize")
@@ -232,17 +231,17 @@
 			new_hair = pick(possible_h_list)
 			new_eyes = pick(possible_e_list)
 			s_tone = -rand(possible_s_list[1],possible_s_list[2])
-			var/list/sec_lang_list = list("Russian","German","Greek","Latin")
+			var/list/sec_lang_list = list("Russian","Arabic","Zulu","Latin")
 			sec_lang_list -= choices
 			var/sec_lang = pick(sec_lang_list)
-			add_language(sec_lang,TRUE)
+			add_language(sec_lang,FALSE)
 			add_note("Known Languages", sec_lang)
 
 		else
 			var/list/possible_h_list = list("Black")
 			var/list/possible_e_list = list("Black")
 			var/list/possible_s_list = list(10,60)
-			var/choice1 = pick("Russian","German","Greek","Latin")
+			var/choice1 = pick("Russian","Latin","Zulu","Arabic")
 			switch(choice1)
 				if ("Russian")
 					add_language("Russian",TRUE)
@@ -384,10 +383,10 @@
 			new_hair = pick(possible_h_list)
 			new_eyes = pick(possible_e_list)
 			s_tone = -rand(possible_s_list[1],possible_s_list[2])
-			var/list/sec_lang_list = list("Russian","German","Greek","Latin")
+			var/list/sec_lang_list = list("Russian","Arabic","Zulu","Latin")
 			sec_lang_list -= choices
 			var/sec_lang = pick(sec_lang_list)
-			add_language(sec_lang,TRUE)
+			add_language(sec_lang,FALSE)
 			add_note("Known Languages", sec_lang)
 
 		var/hex_hair = hair_colors[new_hair]
@@ -598,7 +597,7 @@
 				if ("sea")
 					add_language("Gaelic",TRUE)
 					remove_language("English")
-					remove_note("Known Languages","Gaelic")
+					remove_note("Known Languages","English")
 					for (var/datum/language/gaelic/A in languages)
 						default_language = A
 					name = species.get_random_gaelic_name(gender)

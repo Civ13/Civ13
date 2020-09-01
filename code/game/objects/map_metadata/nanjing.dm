@@ -2,7 +2,7 @@
 /obj/map_metadata/nanjing
 	ID = MAP_NANJING
 	title = "Nanjing"
-	lobby_icon_state = "ww2"
+	lobby_icon_state = "china"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 
@@ -23,11 +23,11 @@
 	faction2 = CHINESE
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
+		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',)
 
 /obj/map_metadata/nanjing/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_ww2ATunit))
+	if (J.is_prison == TRUE || istype(J, /datum/job/japanese/ija_ww2ATunit) || J.is_pacific == TRUE || J.is_navy == TRUE)
 		. = FALSE
 	else if (J.is_ww2 == TRUE)
 		. = TRUE
@@ -96,7 +96,7 @@ var/no_loop_n = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_r == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_n == TRUE)
 		ticker.finished = TRUE
 		var/message = "The <b>Japanese</b> have captured the city of Nanjing! The battle for Nanjing is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"

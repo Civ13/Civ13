@@ -39,7 +39,7 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/civilian))
 		if (J.is_pioneer == TRUE)
 			. = TRUE
-		else if (J.is_civil_war == TRUE)
+		else if (J.is_civil_war == TRUE || J.is_deal == TRUE)
 			. = FALSE
 		else
 			. = FALSE

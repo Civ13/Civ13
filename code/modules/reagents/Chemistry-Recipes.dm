@@ -670,6 +670,45 @@ datum/admins/proc/print_chemical_reactions()
 	holder.clear_reagents()
 	return
 
+/datum/chemical_reaction/kevlar/gasoline
+	name = "Gasoline Kevlar"
+	id = "gas_kevlar"
+	result = "gas_kevlar"
+	required_reagents = list("sacid" = 5, "gasoline" = 5)
+	result_amount = 1
+
+/datum/chemical_reaction/kevlar/gasoline/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/location = get_turf(holder.my_atom)
+	for (var/i = TRUE, i <= created_volume, i++)
+		new/obj/item/stack/material/rawkevlar(location)
+	return
+
+/datum/chemical_reaction/kevlar/diesel
+	name = "Diesel Kevlar"
+	id = "diesel_kevlar"
+	result = "diesel_kevlar"
+	required_reagents = list("sacid" = 5, "diesel" = 5)
+	result_amount = 1
+
+/datum/chemical_reaction/kevlar/diesel/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/location = get_turf(holder.my_atom)
+	for (var/i = TRUE, i <= created_volume, i++)
+		new/obj/item/stack/material/rawkevlar(location)
+	return
+
+/datum/chemical_reaction/kevlar/biodiesel
+	name = "Biodiesel Kevlar"
+	id = "biodiesel_kevlar"
+	result = "biodiesel_kevlar"
+	required_reagents = list("sacid" = 5, "biodiesel" = 5)
+	result_amount = 1
+
+/datum/chemical_reaction/kevlar/biodiesel/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/location = get_turf(holder.my_atom)
+	for (var/i = TRUE, i <= created_volume, i++)
+		new/obj/item/stack/material/rawkevlar(location)
+	return
+
 /* Food */
 
 /datum/chemical_reaction/hot_coco
@@ -796,6 +835,13 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("potato" = 10)
 	catalysts = list("enzyme" = 5)
 	result_amount = 5
+
+/datum/chemical_reaction/coca_wine
+	name = "Coca Wine"
+	id = "cocawine"
+	result = "cocawine"
+	required_reagents = list("wine"= 10, "cocaine" = 5)
+	result_amount = 15
 
 /datum/chemical_reaction/sake
 	name = "Sake"

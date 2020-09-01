@@ -75,7 +75,7 @@ var/civmax_research = list(230,230,230)
 	)
 	var/required_players = 1
 	var/time_both_sides_locked = -1
-	var/time_to_end_round_after_both_sides_locked = 6000
+	var/time_to_end_round_after_both_sides_locked = 9000
 	var/admins_triggered_roundend = FALSE
 	var/admins_triggered_noroundend = FALSE
 
@@ -88,7 +88,10 @@ var/civmax_research = list(230,230,230)
 	var/next_win = -1
 	var/win_condition_spam_check = FALSE
 	var/list/awards = list()
-
+	var/list/scores = list()
+	var/list/warrants = list()
+	var/list/vehicle_registations = list()
+	var/list/gun_registations = list()
 	// lighting
 	var/list/times_of_day = list("Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night")
 	var/list/zlevels_without_lighting = list()
@@ -149,37 +152,37 @@ var/civmax_research = list(230,230,230)
 
 	var/age2_lim = 135
 	var/age2_done = 0
-	var/age2_timer = 40000
+	var/age2_timer = 24*36000
 	var/age2_top = 65
 
 	var/age3_lim = 230
 	var/age3_done = 0
-	var/age3_timer = 42000
+	var/age3_timer = 2*24*36000
 	var/age3_top = 95
 
 	var/age4_lim = 290
 	var/age4_done = 0
-	var/age4_timer = 44000
+	var/age4_timer = 3*24*36000
 	var/age4_top = 105
 
 	var/age5_lim = 335
 	var/age5_done = 0
-	var/age5_timer = 46000
+	var/age5_timer = 4*24*36000
 	var/age5_top = 125
 
 	var/age6_lim = 420
 	var/age6_done = 0
-	var/age6_timer = 48000
+	var/age6_timer = 5*24*36000
 	var/age6_top = 178
 
 	var/age7_lim = 540
 	var/age7_done = 0
-	var/age7_timer = 50000
+	var/age7_timer = 6*24*36000
 	var/age7_top = 195
 
 	var/age8_lim = 620
 	var/age8_done = 0
-	var/age8_timer = 52000
+	var/age8_timer = 7*24*36000
 	var/age8_top = 230
 
 	var/orespawners = 0
@@ -188,8 +191,16 @@ var/civmax_research = list(230,230,230)
 
 	var/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
-	var/globalmarketplacecount = 0
+	var/list/pending_warrants = list()
+	var/list/emails = list("support@monkeysoft.ug" = list())
 
+	var/list/assign_precursors = list()
+	var/list/precursor_stocks = list(
+		"indigon crystals" = list(7,60),
+		"crimsonite crystals" = list(7,60),
+		"verdine crystals" = list(,60),
+		"galdonium crystals" = list(7,60),
+	)
 	var/winddirection = "East"
 	var/windspeedvar = 1 // 0 to 4
 	var/windspeed = "a light breeze" // calm, light breeze, moderate breeze, strong breeze, gale
@@ -451,7 +462,8 @@ var/civmax_research = list(230,230,230)
 					set_ordinal_age()
 					age1_done = TRUE
 					age2_timer = (world.time + age2_timer)
-					default_research = 25
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 25
 					break
 
 		else if (age2_done == FALSE)
@@ -464,7 +476,8 @@ var/civmax_research = list(230,230,230)
 					set_ordinal_age()
 					age2_done = TRUE
 					age3_timer = (world.time + age3_timer)
-					default_research = 50
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 50
 					break
 
 		else if (age3_done == FALSE)
@@ -476,7 +489,8 @@ var/civmax_research = list(230,230,230)
 					age = "1713"
 					set_ordinal_age()
 					age3_done = TRUE
-					default_research = 80
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 80
 					break
 
 		else if (age4_done == FALSE)
@@ -488,7 +502,8 @@ var/civmax_research = list(230,230,230)
 					age = "1873"
 					set_ordinal_age()
 					age4_done = TRUE
-					default_research = 105
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 105
 					break
 		else if (age5_done == FALSE)
 			var/count = 0
@@ -499,7 +514,8 @@ var/civmax_research = list(230,230,230)
 					age = "1903"
 					set_ordinal_age()
 					age5_done = TRUE
-					default_research = 120
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 120
 					break
 		else if (age6_done == FALSE)
 			var/count = 0
@@ -510,7 +526,8 @@ var/civmax_research = list(230,230,230)
 					age = "1943"
 					set_ordinal_age()
 					age6_done = TRUE
-					default_research = 145
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 145
 					break
 		else if (age7_done == FALSE)
 			var/count = 0
@@ -521,7 +538,8 @@ var/civmax_research = list(230,230,230)
 					age = "1969"
 					set_ordinal_age()
 					age7_done = TRUE
-					default_research = 175
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 175
 					break
 		else if (age8_done == FALSE)
 			var/count = 0
@@ -532,7 +550,8 @@ var/civmax_research = list(230,230,230)
 					age = "2013"
 					set_ordinal_age()
 					age8_done = TRUE
-					default_research = 210
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 210
 					break
 /obj/map_metadata/proc/check_events()
 	return TRUE
@@ -545,11 +564,10 @@ var/civmax_research = list(230,230,230)
 		if (!H.original_job)
 			return FALSE
 		else
-			switch (H.original_job.base_type_flag())
-				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, RUSSIAN, AMERICAN, CHINESE)
-					return !faction1_can_cross_blocks()
-				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB, GERMAN, JAPANESE, VIETNAMESE)
-					return !faction2_can_cross_blocks()
+			if (H.faction_text == faction1)
+				return !faction1_can_cross_blocks()
+			if (H.faction_text == faction2)
+				return !faction2_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/proc/faction1_can_cross_blocks()
@@ -700,7 +718,8 @@ var/civmax_research = list(230,230,230)
 		GERMAN = 0,
 		AMERICAN = 0,
 		VIETNAMESE = 0,
-		CHINESE = 0,)
+		CHINESE = 0,
+		FILIPINO = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -810,6 +829,8 @@ var/civmax_research = list(230,230,230)
 			return "Vietnamese"
 		if (CHINESE)
 			return "Chinese"
+		if (FILIPINO)
+			return "Filipino"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -846,6 +867,8 @@ var/civmax_research = list(230,230,230)
 			return "Vietcong group"
 		if (CHINESE)
 			return "Poeple's Liberation Army"
+		if (FILIPINO)
+			return "Philippine Revolutionary Army"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -882,6 +905,8 @@ var/civmax_research = list(230,230,230)
 			return "Vietnamese"
 		if ("People's Liberation Army")
 			return "Chinese"
+		if ("Philippine Revolutionary Army")
+			return "Filipino"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 
@@ -998,7 +1023,7 @@ var/civmax_research = list(230,230,230)
 						G.ChangeTurf(/turf/floor/grass)
 			spawn(150)
 				change_weather(WEATHER_NONE)
-				for (var/obj/structure/window/snowwall/SW1 in world)
+				for (var/obj/structure/window/barrier/snowwall/SW1 in world)
 					if (get_area(get_turf(SW1)).climate != "tundra" && get_area(get_turf(SW1)).climate != "taiga")
 						if (prob(60))
 							qdel(SW1)
@@ -1025,7 +1050,7 @@ var/civmax_research = list(230,230,230)
 						if (prob(40))
 							D.ChangeTurf(/turf/floor/grass)
 
-				for (var/obj/structure/window/snowwall/SW1 in world)
+				for (var/obj/structure/window/barrier/snowwall/SW1 in world)
 					if (get_area(get_turf(SW1)).climate != "tundra" && get_area(get_turf(SW1)).climate != "taiga")
 						qdel(SW1)
 				for (var/obj/covers/snow_wall/SW2 in world)

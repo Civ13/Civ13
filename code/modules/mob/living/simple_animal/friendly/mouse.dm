@@ -165,9 +165,6 @@
 	// Change my name back, don't want to be named Tom (666)
 	name = initial(name)
 
-/mob/living/simple_animal/mouse/cannot_use_vents()
-	return
-
 //Here temporarally until animals act as reagent containers.
 /obj/item/weapon/reagent_containers/food/snacks/attack_generic(var/mob/living/user)
 	/*

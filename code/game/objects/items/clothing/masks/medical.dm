@@ -45,7 +45,6 @@
 	desc = "A thin surgical mask, worn by medical professionals to stop the spread of disease or transmission."
 	icon_state = "sterile"
 	item_state = "sterile"
-	flags_inv = HIDEFACE
 	body_parts_covered = FACE
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = 75, rad = FALSE)
 	w_class = 1

@@ -25,6 +25,7 @@
 	is_RP = TRUE
 	songs = list(
 		"The Good, the Bad, and the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg',)
+	is_singlefaction = TRUE
 obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_cowboy == TRUE)

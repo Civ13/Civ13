@@ -9,14 +9,11 @@
 	title = "Kapitan"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Kpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-
-
 
 	min_positions = 1
 	max_positions = 1
@@ -59,8 +56,8 @@
 	title = "Poruchik"
 	en_meaning = "Lieutenant"
 	rank_abbreviation = "Po."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
 
@@ -109,8 +106,6 @@
 	title = "Podporuchik"
 	en_meaning = "Sub-Lieutenant"
 	rank_abbreviation = "Ppo."
-	head_position = TRUE
-	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
 
@@ -159,7 +154,7 @@
 	title = "Feldvebel"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Fv."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -206,7 +201,7 @@
 	title = "Medik"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUDoc"
 
 	is_medic = TRUE
@@ -245,7 +240,7 @@
 	title = "Yefreytor"
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Ye."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
 
@@ -287,7 +282,7 @@
 	title = "Ryadovoy"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ry."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU" //for testing!
 	uses_squads = TRUE
 
@@ -331,8 +326,8 @@
 	title = "K.A. Kapitan"
 	en_meaning = "Red Army Captain"
 	rank_abbreviation = "Kpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -380,8 +375,8 @@
 	title = "NKVD Leytenant"
 	en_meaning = "NKVD Officer"
 	rank_abbreviation = "NKVD Leyt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -424,7 +419,7 @@
 	title = "K.A. Serjant"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srj."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -470,7 +465,7 @@
 	title = "K.A. Voynenvrach"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Srj."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUDoc"
 
 	is_ww2 = TRUE
@@ -510,7 +505,7 @@
 	title = "K.A. Pulemetchik"
 	en_meaning = "Red Army Machinegunner"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = TRUE
@@ -555,7 +550,7 @@
 	title = "K.A. Soldat"
 	en_meaning = "Red Army Private"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = TRUE
@@ -617,8 +612,8 @@
 	title = "Belaya Armiya Kapitan"
 	en_meaning = "White Army Captain"
 	rank_abbreviation = "Kpt."
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -665,7 +660,7 @@
 	title = "Belaya Armiya Feldvebel"
 	en_meaning = "White Army Sergeant"
 	rank_abbreviation = "Fv."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	is_squad_leader = TRUE
@@ -711,7 +706,7 @@
 	title = "Belaya Armiya Medik"
 	en_meaning = "White Army Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 
 	is_rcw = TRUE
@@ -756,7 +751,7 @@
 	title = "Belaya Armiya Soldat"
 	en_meaning = "White Army Soldier"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU" //for testing!
 
 	is_rcw = TRUE
@@ -806,7 +801,7 @@
 	title = "Kazachy Vakhmistr"
 	en_meaning = "Cossack Leader"
 	rank_abbreviation = "Vakhmistr"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU2"
 
 	is_rcw = TRUE
@@ -856,7 +851,7 @@
 	title = "Kazak"
 	en_meaning = "Cossack Soldier"
 	rank_abbreviation = "Kazak"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU2"
 
 	is_rcw = TRUE
@@ -906,7 +901,7 @@
 	title = "Chekist"
 	en_meaning = "VChEKA Political Comissar"
 	rank_abbreviation = "Chekist"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU3"
 
 	is_rcw = TRUE
@@ -952,7 +947,7 @@
 	title = "Krasny Armiya Kommander"
 	en_meaning = "Red Army Squad Leader"
 	rank_abbreviation = "Kom."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU3"
 
 	uses_squads = TRUE
@@ -1000,7 +995,7 @@
 	title = "Krasny Armiya Medik"
 	en_meaning = "Red Army Doctor"
 	rank_abbreviation = "Dr."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU3"
 	is_rcw = TRUE
 	is_medic = TRUE
@@ -1042,7 +1037,7 @@
 	title = "Krasny Armiya Strelok"
 	en_meaning = "Red Army Rifleman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU3"
 
 	is_rcw = TRUE
@@ -1096,7 +1091,7 @@
 	title = "Komandir Tanka"
 	en_meaning = "Armored Squad Leader"
 	rank_abbreviation = "Kom."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = TRUE
@@ -1143,7 +1138,7 @@
 	title = "Tankist"
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = TRUE
@@ -1189,7 +1184,7 @@
 	title = "Gvardii Serjant"
 	en_meaning = "Guards Mechanized Squad Leader"
 	rank_abbreviation = "Srj."
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 	is_ss_panzer = TRUE
 
@@ -1234,7 +1229,7 @@
 	title = "Gvardii Krasnoarmeyets"
 	en_meaning = "Guards Mechanized Infantry"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = TRUE
@@ -1285,7 +1280,7 @@
 	title = "Gvardii Sapyor"
 	en_meaning = "Guards Sapper"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRUSap"
 	is_ss_panzer = TRUE
 

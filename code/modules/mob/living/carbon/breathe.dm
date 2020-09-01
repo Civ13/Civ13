@@ -1,19 +1,5 @@
 //Common breathing procs
 
-//Start of a breath chain, calls breathe()
-/mob/living/human/handle_breathing()
-	if (life_tick%2==0 || failed_last_breath || (health < config.health_threshold_crit)) 	//First, resolve location and get a breath
-		breathe()
-
-/mob/living/human/proc/breathe()
-	return TRUE
-
-/mob/living/human/proc/get_breath_from_internal(var/volume_needed=BREATH_VOLUME) //hopefully this will allow overrides to specify a different default volume without breaking any cases where volume is passed in.
-	return TRUE
-
-/mob/living/human/proc/get_breath_from_environment(var/volume_needed=BREATH_VOLUME)
-	return volume_needed
-
 //Handle possble chem smoke effect
 /mob/living/human/proc/handle_chemical_smoke(var/datum/gas_mixture/environment)
 /*	if (species && environment.return_pressure() < species.breath_pressure/5)

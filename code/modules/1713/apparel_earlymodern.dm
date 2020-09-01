@@ -29,16 +29,20 @@
 		if (rolled)
 			item_state = "japuni"
 			worn_state = "japuni"
-			item_state_slots["slot_w_uniform"] = "japuni"
+			item_state_slots["w_uniform"] = "japuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "japunirolled"
 			worn_state = "japunirolled"
-			item_state_slots["slot_w_uniform"] = "japunirolled"
+			item_state_slots["w_uniform"] = "japunirolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
 /obj/item/clothing/under/japoffuni
 	name = "Japanese Officer Uniform"
@@ -57,16 +61,19 @@
 		if (rolled)
 			item_state = "japoffuni"
 			worn_state = "japoffuni"
-			item_state_slots["slot_w_uniform"] = "japoffuni"
+			item_state_slots["w_uniform"] = "japoffuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		else if (!rolled)
 			item_state = "japoffunirolled"
 			worn_state = "japoffunirolled"
-			item_state_slots["slot_w_uniform"] = "japoffunirolled"
+			item_state_slots["w_uniform"] = "japoffunirolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
 
 /obj/item/clothing/accessory/white_sash
@@ -114,16 +121,20 @@
 		if (rolled)
 			item_state = "rusuni"
 			worn_state = "rusuni"
-			item_state_slots["slot_w_uniform"] = "rusuni"
+			item_state_slots["w_uniform"] = "rusuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "rusunirolled"
 			worn_state = "rusunirolled"
-			item_state_slots["slot_w_uniform"] = "rusunirolled"
+			item_state_slots["w_uniform"] = "rusunirolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
 /obj/item/clothing/suit/storage/coat/cheka
 	name = "Cheka leather coat"
@@ -381,7 +392,7 @@
 	max_storage_space = 24
 	can_hold = list(
 		/obj/item/ammo_magazine,
-		/obj/item/weapon/material,
+		/obj/item/weapon/material/knife,
 		/obj/item/weapon/grenade,
 		/obj/item/weapon/attachment,
 		/obj/item/weapon/gun/projectile/pistol,
@@ -432,6 +443,9 @@
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard
 /obj/item/weapon/storage/belt/jap/camp_guard/New()
@@ -467,6 +481,7 @@
 	new /obj/item/ammo_magazine/c8mmnambu(src)
 /////////////////////////////////////////////////////////////////////////////////
 //////////////CIVILIAN STUFF/////////////////////////////////////////////////////
+
 /obj/item/clothing/head/top_hat
 	name = "top hat"
 	desc = "A high top hat."
@@ -491,6 +506,21 @@
 	icon_state = "flatcap3"
 	item_state = "flatcap3"
 
+/obj/item/clothing/head/fedora
+	name = "fedora hat"
+	desc = "A wide brim hat."
+	icon_state = "fedora"
+	item_state = "fedora"
+
+/obj/item/clothing/head/helmet/constable
+	name = "constable helmet"
+	desc = "A typical plastic helmet worn by constable's of law enforcement. Protects the head from petty battery and assault."
+	icon_state = "constable"
+	item_state = "constable"
+	worn_state = "constable"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, arrow = 60, gun = 5, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
 /obj/item/clothing/under/modern1
 	name = "light brown outfit"
@@ -512,6 +542,34 @@
 	icon_state = "bman"
 	item_state = "bman"
 	worn_state = "bman"
+
+/obj/item/clothing/under/expensive/green
+	name = "green tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a green tie."
+	icon_state = "bman_green"
+	item_state = "bman_green"
+	worn_state = "bman_green"
+
+/obj/item/clothing/under/expensive/blue
+	name = "blue tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a blue tie."
+	icon_state = "bman_blue"
+	item_state = "bman_blue"
+	worn_state = "bman_blue"
+
+/obj/item/clothing/under/expensive/red
+	name = "red tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a red tie."
+	icon_state = "bman_red"
+	item_state = "bman_red"
+	worn_state = "bman_red"
+
+/obj/item/clothing/under/expensive/yellow
+	name = "yellow tie shirt outfit"
+	desc = "An outfit composed of a expensive white shirt and black trousers, with a yellow tie."
+	icon_state = "bman_yellow"
+	item_state = "bman_yellow"
+	worn_state = "bman_yellow"
 
 /obj/item/clothing/under/modern3
 	name = "grey outfit"
@@ -639,6 +697,13 @@
 	item_state = "peakyblinder"
 	worn_state = "peakyblinder"
 
+/obj/item/clothing/under/constable
+	name = "constable outfit"
+	desc = "An black outfit used by enforcers of the law."
+	icon_state = "constable"
+	item_state = "constable"
+	worn_state = "constable"
+
 /obj/item/clothing/under/oldfirefighter
 	name = "fire fighter uniform"
 	desc = "An outfit used by fire fighters. Damn hot."
@@ -681,6 +746,43 @@
 	item_state = "mechanic_outfit"
 	worn_state = "mechanic_outfit"
 
+/*Feminine Clothing*/
+
+/obj/item/clothing/under/tradwife
+	name = "blue traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_blue"
+	item_state = "tradwife_blue"
+	worn_state = "tradwife_blue"
+
+/obj/item/clothing/under/tradwife/yellow
+	name = "yellow traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_yellow"
+	item_state = "tradwife_yellow"
+	worn_state = "tradwife_yellow"
+
+/obj/item/clothing/under/tradwife/orange
+	name = "orange traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_orange"
+	item_state = "tradwife_orange"
+	worn_state = "tradwife_orange"
+
+/obj/item/clothing/under/tradwife/purple
+	name = "purple traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_purple"
+	item_state = "tradwife_purple"
+	worn_state = "tradwife_purple"
+
+/obj/item/clothing/under/tradwife/red
+	name = "red traditional dress"
+	desc = "A early 20th century style dress made to be well fitting, often worn by housewives"
+	icon_state = "tradwife_red"
+	item_state = "tradwife_red"
+	worn_state = "tradwife_red"
+
 /obj/item/clothing/suit/storage/jacket/black_suit
 	name = "black suit"
 	desc = "A formal black suit."
@@ -696,21 +798,21 @@
 	worn_state = "really_black_suit"
 
 /obj/item/clothing/suit/storage/jacket/charcoal_suit
-	name = "black suit"
+	name = "charcoal suit"
 	desc = "A formal charcoal grey suit."
 	icon_state = "charcoal_suit"
 	item_state = "charcoal_suit"
 	worn_state = "charcoal_suit"
 
 /obj/item/clothing/suit/storage/jacket/navy_suit
-	name = "black suit"
+	name = "navy suit"
 	desc = "A formal navy blue suit."
 	icon_state = "navy_suit"
 	item_state = "navy_suit"
 	worn_state = "navy_suit"
 
 /obj/item/clothing/suit/storage/jacket/checkered_suit
-	name = "black suit"
+	name = "checkered suit"
 	desc = "A formal grey checkered suit."
 	icon_state = "checkered_suit"
 	item_state = "checkered_suit"
@@ -832,7 +934,45 @@
 	item_state = "labcoat"
 	worn_state = "labcoat"
 
+/obj/item/clothing/suit/storage/jacket/surgeon
+	name = "surgery apron"
+	desc = "A blue plastic surgery apron."
+	icon_state = "surgical"
+	item_state = "surgical"
+	worn_state = "surgical"
 
+/obj/item/clothing/suit/storage/jacket/coveralls
+	name = "coveralls"
+	desc = "A blue pair of coveralls, protects against heat."
+	icon_state = "coveralls"
+	item_state = "coveralls"
+	worn_state = "coveralls"
+	var/rolled = FALSE
+
+/obj/item/clothing/suit/storage/jacket/coveralls/verb/roll_down_suit()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/suit/storage/jacket/coveralls)
+		return
+	else
+		if (rolled)
+			item_state = "coveralls"
+			worn_state = "coveralls"
+			item_state_slots["w_uniform"] = "coveralls"
+			usr << "<span class = 'danger'>You roll down your coveralls.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			heat_protection = ARMS|UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "coveralls_down"
+			worn_state = "coveralls_down"
+			item_state_slots["w_uniform"] = "coveralls_down"
+			usr << "<span class = 'danger'>You roll up your coveralls.</span>"
+			rolled = TRUE
+			heat_protection = UPPER_TORSO|ARMS
+			cold_protection = LOWER_TORSO|LEGS
+			update_clothing_icon()
 /obj/item/weapon/storage/belt/largepouches
 	name = "large pouches"
 	desc = "A belt with two large pouches, that can fit large items like machinegun belts."
@@ -889,6 +1029,14 @@
 	new/obj/item/ammo_magazine/garand(src)
 	new/obj/item/ammo_magazine/garand(src)
 
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_grease
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_grease/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+	new/obj/item/ammo_magazine/greasegun(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green
 	icon_state = "smallpouches_green"
 	item_state = "smallpouches_green"
@@ -912,3 +1060,183 @@
 	icon_state = "shorts_red"
 	item_state = "shorts_red"
 	worn_state = "shorts_red"
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////PHILIPPINE-AMERICAN WAR///////////////////////////////////////////////////////////////////////
+/obj/item/clothing/head/ph_us_war/filipino
+/obj/item/clothing/head/ph_us_war/filipino/fil_off_cap
+	name = "Filipino Officer Cap"
+	desc = "A cap worn by Filipino Officers of the Philippine Republic Army."
+	icon_state = "fil_off_cap"
+	item_state = "fil_off_cap"
+
+/obj/item/clothing/head/ph_us_war/filipino/baliwag
+	name = "Baliwag"
+	desc = "A common hat worn by the spanish and filipinos, this one bearing the mark of the Philippine Republic Army."
+	icon_state = "baliwag"
+	item_state = "baliwag"
+	var/adjusted = FALSE
+/obj/item/clothing/head/ph_us_war/filipino/baliwag/verb/adjust()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/ph_us_war/filipino/baliwag)
+		return
+	else
+		if (adjusted)
+			item_state = "baliwag"
+			worn_state = "baliwag"
+			item_state_slots["slot_head"] = "baliwag"
+			usr << "<span class = 'danger'>You pull your hat down.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "baliwag_down"
+			worn_state = "baliwag_down"
+			item_state_slots["slot_head"] = "baliwag_down"
+			usr << "<span class = 'danger'>You push up your hat.</span>"
+			adjusted = TRUE
+	update_clothing_icon()
+/obj/item/clothing/under/ph_us_war/filipino
+/obj/item/clothing/under/ph_us_war/filipino/filuni
+	name = "Philippine Republic Army Uniform"
+	desc = "A standard philippine republic army uniform."
+	icon_state = "filuni"
+	item_state = "filuni"
+	worn_state = "filuni"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ph_us_war/filipino/filuni/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ph_us_war/filipino/filuni)
+		return
+	else
+		if (rolled)
+			item_state = "filuni"
+			worn_state = "filuni"
+			item_state_slots["w_uniform"] = "filuni"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "filuni_rolled"
+			worn_state = "filuni_rolled"
+			item_state_slots["w_uniform"] = "filuni_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/ph_us_war/filipino/tiradores
+	name = "Tiradores de Muerta Uniform"
+	desc = "A standard philippine republic army uniform."
+	icon_state = "filuni_sniper"
+	item_state = "filuni_sniper"
+	worn_state = "filuni_sniper"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ph_us_war/filipino/tiradores/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ph_us_war/filipino/tiradores)
+		return
+	else
+		if (rolled)
+			item_state = "filuni_sniper"
+			worn_state = "filuni_sniper"
+			item_state_slots["w_uniform"] = "filuni_sniper"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "filuni_sniper_rolled"
+			worn_state = "filuni_sniper_rolled"
+			item_state_slots["w_uniform"] = "filuni_sniper_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/ph_us_war/american
+/obj/item/clothing/under/ph_us_war/american/us_uni
+	name = "US Army Uniform"
+	desc = "A standard tropical US army uniform."
+	icon_state = "us_fp"
+	item_state = "us_fp"
+	worn_state = "us_fp"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ph_us_war/american/us_uni/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ph_us_war/american/us_uni)
+		return
+	else
+		if (rolled)
+			item_state = "us_fp"
+			worn_state = "us_fp"
+			item_state_slots["w_uniform"] = "us_fp"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "us_fp_rolled"
+			worn_state = "us_fp_rolled"
+			item_state_slots["w_uniform"] = "us_fp_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/ph_us_war/american/us_off_uni
+	name = "US Army Officer Uniform"
+	desc = "A standard tropical US army officer uniform."
+	icon_state = "us_fp_off"
+	item_state = "us_fp_off"
+	worn_state = "us_fp_off"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ph_us_war/american/us_off_uni/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ph_us_war/american/us_off_uni)
+		return
+	else
+		if (rolled)
+			item_state = "us_fp_off"
+			worn_state = "us_fp_off"
+			item_state_slots["w_uniform"] = "us_fp_off"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "us_fp_off_rolled"
+			worn_state = "us_fp_off_rolled"
+			item_state_slots["w_uniform"] = "us_fp_off_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/head/ph_us_war/american
+/obj/item/clothing/head/ph_us_war/american/infantry_hat
+	name = "US Army Hat"
+	desc = "A worn by enlisted men of the US Army in tropical climates."
+	icon_state = "us_fp_hat"
+	item_state = "us_fp_hat"
+
+/obj/item/clothing/accessory/storage/webbing/filipino
+	name = "filipino webbing"
+	desc = "8 black leather pouches."
+	icon_state = "fp_webbing"
+	item_state = "fp_webbing"
+	slots = 8
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_magazine, /obj/item/weapon/material/knife, /obj/item/weapon/grenade, /obj/item/weapon/attachment, /obj/item/weapon/handcuffs, /obj/item/ammo_casing, /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen, /obj/item/weapon/shovel, /obj/item/weapon/key)

@@ -40,11 +40,11 @@
 
 		// large body parts: chest, groin
 		"large" = list(
-			SHORT_RANGE_STILL = 45,
-			SHORT_RANGE_MOVING = 41,
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 51,
 
-			MEDIUM_RANGE_STILL = 38,
-			MEDIUM_RANGE_MOVING = 34,
+			MEDIUM_RANGE_STILL = 45,
+			MEDIUM_RANGE_MOVING = 36,
 
 			LONG_RANGE_STILL = 30,
 			LONG_RANGE_MOVING = 27,
@@ -63,9 +63,9 @@
 	slot_flags = SLOT_SHOULDER
 	sel_mode = 1
 	full_auto = TRUE
-	attachment_slots = ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.3), recoil = 1.0),)
+		list(name="full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.3), recoil = 0),)
 
 	var/jammed_until = -1
 	var/jamcheck = 0
@@ -115,7 +115,7 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
 
 /obj/item/weapon/gun/projectile/automatic/dp28
@@ -130,7 +130,7 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
-
+	bad_magazine_types = list(/obj/item/ammo_magazine/maxim)
 /obj/item/weapon/gun/projectile/automatic/bar
 	name = "M1918A2 BAR"
 	desc = "The BAR, is a light machine gun (LMG) This one is chambered in .30-06 rounds."
@@ -143,6 +143,7 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
+	bad_magazine_types = list(/obj/item/ammo_magazine/browning)
 ////////////////////////////MG34/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/mg34
 	name = "MG34"
@@ -218,7 +219,7 @@
 	magazine_type = /obj/item/ammo_magazine/b762
 	weight = 10.5
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),)
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
 	slot_flags = 0
 	force = 20
 	nothrow = TRUE
@@ -238,7 +239,7 @@
 	magazine_type = /obj/item/ammo_magazine/m249
 	weight = 10
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 2),)
+		list(name="full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
 	slot_flags = 0
 	force = 20
 	nothrow = TRUE
@@ -271,7 +272,7 @@
 	magazine_type = /obj/item/ammo_magazine/pkm/c100
 	weight = 7.5
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 1.8),)
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = 0
 	force = 20
 	nothrow = TRUE
@@ -290,7 +291,7 @@
 	magazine_type = /obj/item/ammo_magazine/negev
 	weight = 8
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 2),)
+		list(name="full auto",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
 	slot_flags = 0
 	force = 20
 	nothrow = TRUE

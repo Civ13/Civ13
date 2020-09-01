@@ -1,6 +1,6 @@
 /obj/structure/vehicle
 	name = "vehicle"
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	desc = "A vehicle."
 	icon_state = "motorcycle"
 	var/list/ontop = list()
@@ -72,7 +72,7 @@
 /obj/structure/vehicle/proc/running_sound()
 	if (engine)
 		if (engine.on)
-			playsound(loc, 'sound/machines/diesel_loop.ogg', 65, FALSE)
+			playsound(loc, engine.running_snd, 65, FALSE)
 			spawn(27)
 				running_sound()
 				return
@@ -221,7 +221,7 @@
 					engine.currentpower = 0
 					user << "You turn off the engine."
 					set_light(0)
-					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
+					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
 
 			visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
@@ -253,7 +253,7 @@
 /obj/structure/vehicle/raft
 	name = "raft"
 	desc = "A simple wood raft. Can be used to cross water."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "raft"
 	anchored = FALSE
 	density = FALSE
@@ -309,7 +309,7 @@
 /obj/structure/vehicle/boat
 	name = "outrigger raft"
 	desc = "A simple wood boat. Can be powered by a motor."
-	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "outrigger_frame3"
 	anchored = FALSE
 	density = FALSE
@@ -663,7 +663,7 @@
 					engine.currentpower = 0
 					user << "You turn off the engine."
 					set_light(0)
-					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
+					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
 
 			visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
@@ -739,7 +739,7 @@
 /obj/structure/vehicle/motorcycle
 	name = "motorcycle"
 	desc = "A motorcycle."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "motorcycle"
 	anchored = FALSE
 	density = TRUE
@@ -778,6 +778,11 @@
 			dwheel.forceMove(src)
 
 	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike
+
+/obj/structure/vehicle/motorcycle/m125/full/New()
+	name = "Yamasaki M125"
+	..()
+	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike/full
 
 /obj/structure/vehicle/motorcycle/New()
 	..()

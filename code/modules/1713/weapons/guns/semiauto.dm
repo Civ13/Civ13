@@ -1,6 +1,7 @@
 /obj/item/weapon/gun/projectile/semiautomatic
 	maxhealth = 60
 	fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
+	icon = 'icons/obj/guns/rifles.dmi'
 	// pistol accuracy, rifle skill & decent KD chance
 	accuracy_list = list(
 
@@ -56,6 +57,8 @@
 
 	headshot_kill_chance = 35
 	KO_chance = 30
+
+	gtype = "rifle"
 
 	var/jammed_until = -1
 	var/jamcheck = 0
@@ -133,7 +136,7 @@
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.03
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/avtomat
 	name = "Fedorov Avtomat"
@@ -151,15 +154,15 @@
 	weight = 3.85
 	load_delay = 8
 	firemodes = list(
-		list(name="single shot",	burst=1, burst_delay=0.8, recoil=0.1, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0.2, 0.3)),
-		list(name="full auto",	burst=1, burst_delay=1.1, recoil=1.0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.2, 1.3)),
+		list(name="single shot",	burst=1, burst_delay=0.8, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0.2, 0.3)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.2, 1.3)),
 		)
 
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.80
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/remington11
 	name = "Remington 11"
@@ -205,7 +208,7 @@
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.03
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/svd
 	name = "SVD"
@@ -231,36 +234,12 @@
 	force = 10
 	throwforce = 20
 	effectiveness_mod = 1.03
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/svd/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
-
-/obj/item/weapon/gun/projectile/semiautomatic/makeshiftaksniper
-	name = "Makeshift AKD"
-	desc = "Some retarded fake shit invented by Re1taz."
-	icon_state = "makeshiftaksniper"
-	item_state = "makeshiftaksniper"
-	base_icon = "makeshiftaksniper"
-	w_class = 4
-	load_method = SINGLE_CASING|SPEEDLOADER
-	max_shells = 5
-	caliber = "a762x54"
-	ammo_type = /obj/item/ammo_casing/a762x54
-	slot_flags = SLOT_SHOULDER
-	magazine_type = /obj/item/ammo_magazine/mosin
-	weight = 3.85
-	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=8)
-		)
-
-	gun_type = GUN_TYPE_RIFLE
-	force = 10
-	throwforce = 20
-	effectiveness_mod = 1.03
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/g41
 	name = "Gewehr 41"
@@ -282,7 +261,7 @@
 		)
 	force = 10
 	throwforce = 20
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/semiautomatic/g43
@@ -306,31 +285,8 @@
 		)
 	force = 10
 	throwforce = 20
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	effectiveness_mod = 1.07
-
-/obj/item/weapon/gun/projectile/semiautomatic/stg
-	name = "StG-44"
-	desc = "German assault rifle chambered in 7.92x33mm Kurz, 30 round magazine."
-	icon_state = "stg"
-	item_state = "stg"
-	base_icon = "stg"
-	load_method = MAGAZINE
-	slot_flags = SLOT_SHOULDER|SLOT_BELT
-	w_class = 4
-	caliber = "a792x33"
-	fire_sound = 'sound/weapons/guns/fire/stg.ogg'
-	reload_sound = 'sound/weapons/guns/interact/stg_reload.ogg'
-	magazine_type = /obj/item/ammo_magazine/stg
-	weight = 4.6
-	load_delay = 8
-	equiptimer = 15
-	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.2, 0.3, 0.3, 0.4, 0.5)),
-		list(name="full auto",	burst=1, burst_delay=1.5, move_delay=4, dispersion = list(1.2, 1.4, 1.4, 1.4, 1.7)),
-		)
-
-	sel_mode = 1
 
 /obj/item/weapon/gun/projectile/semiautomatic/m1garand
 	name = "M1 Garand"
@@ -350,16 +306,17 @@
 	unload_sound = 'sound/weapons/guns/interact/GarandUnload.ogg'
 	weight = 4.9
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=2)
+		list(name="single shot",burst=1, move_delay=2, fire_delay=4)
 		)
 	force = 10
 	throwforce = 20
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
-	effectiveness_mod = 1.05
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	effectiveness_mod = 1.01
 
 /obj/item/weapon/gun/projectile/semiautomatic/ar15
 	name = "Bushmaster XM-15"
 	desc = "A civilian semi-automatic rifle chambered in 5.56x45mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "m4"
 	item_state = "m4"
 	base_icon = "m4"

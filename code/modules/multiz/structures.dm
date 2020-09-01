@@ -248,7 +248,7 @@
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/H = M
-		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE" && (map.ID == MAP_RETREAT && H.faction_text != "CHINESE"))
 			H << "This tunnel is too small for you!"
 			return
 		else
@@ -266,7 +266,7 @@
 /obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong/attack_hand(var/mob/M)
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/H = M
-		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE" && (map.ID == MAP_RETREAT && H.faction_text != "CHINESE"))
 			H << "This tunnel is too small for you!"
 			return
 		else
@@ -362,7 +362,7 @@
 
 
 /obj/structure/multiz/ladder/ww2/tunneltop/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, /obj/item/weapon/sandbag))
+	if (istype(I, /obj/item/weapon/barrier))
 		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
 		filled++
 		qdel(I)

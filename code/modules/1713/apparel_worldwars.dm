@@ -315,14 +315,14 @@
 		qdel(W)
 
 /obj/item/clothing/head/helmet/ww/mk2brodietannetf
-	name = "Camoflauged Mk2 Brodie Helmet"
+	name = "camouflaged Mk2 Brodie Helmet"
 	desc = "A typical british helmet in WW2, this one being having tan netting and foliage for camoflauge."
 	icon_state = "brodie_mk2_nettanf"
 	item_state = "brodie_mk2_nettanf"
 	worn_state = "brodie_mk2_nettanf"
 
 /obj/item/clothing/head/helmet/ww/mk2brodiegreennetf
-	name = "Camoflauged Mk2 Brodie Helmet"
+	name = "camouflaged Mk2 Brodie Helmet"
 	desc = "A typical british helmet in WW2, this one being having green netting and foliage for camoflauge."
 	icon_state = "brodie_mk2_netgreenf"
 	item_state = "brodie_mk2_netgreenf"
@@ -368,6 +368,63 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	var/toggled = FALSE
+/obj/item/clothing/head/helmet/ww2/japhelm/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/ww2/japhelm)
+		return
+	else
+		if (toggled)
+			item_state = "japhelm"
+			icon_state = "japhelm"
+			worn_state = "japhelm"
+			item_state_slots["slot_w_uniform"] = "japhelm"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "japhelm_extended"
+			icon_state = "japhelm_extended"
+			worn_state = "japhelm_extended"
+			item_state_slots["slot_w_uniform"] = "japhelm_extended"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+
+/obj/item/clothing/head/helmet/ww2/japhelm_snlf
+	name = "japanese helmet"
+	desc = "A typical rounded steel helmet."
+	icon_state = "japhelm_snlf"
+	item_state = "japhelm_snlf"
+	worn_state = "japhelm_snlf"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/ww2/japhelm_snlf/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_snlf)
+		return
+	else
+		if (toggled)
+			icon_state = "japhelm_snlf"
+			item_state = "japhelm_snlf"
+			worn_state = "japhelm_snlf"
+			item_state_slots["slot_w_uniform"] = "japhelm_snlf"
+			usr << "<span class = 'danger'>You put down your helmet's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			icon_state = "japhelm_snlf_extended"
+			item_state = "japhelm_snlf_extended"
+			worn_state = "japhelm_snlf_extended"
+			item_state_slots["slot_w_uniform"]= "japhelm_snlf_extended"
+			usr << "<span class = 'danger'>You put up your helmet's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
 
 /obj/item/clothing/head/helmet/ww2/japhelm_med
 	name = "japanese medic helmet"
@@ -378,6 +435,31 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/ww2/japhelm_med/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_med)
+		return
+	else
+		if (toggled)
+			item_state = "japhelm_medic"
+			icon_state = "japhelm_medic"
+			worn_state = "japhelm_medic"
+			item_state_slots["slot_w_uniform"] = "japhelm_medic"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "japhelm_medic_extended"
+			icon_state = "japhelm_medic_extended"
+			worn_state = "japhelm_medic_extended"
+			item_state_slots["slot_w_uniform"] = "japhelm_medic_extended"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+
 
 /obj/item/clothing/head/helmet/ww2/japhelm_tanker
 	name = "japanese tanker helmet"
@@ -407,6 +489,30 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	var/toggled = FALSE
+
+/obj/item/clothing/head/helmet/ww2/japhelm_bandana/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/helmet/ww2/japhelm_bandana)
+		return
+	else
+		if (toggled)
+			item_state = "japhelm_bandana"
+			icon_state = "japhelm_bandana"
+			worn_state = "japhelm_bandana"
+			item_state_slots["slot_w_uniform"] = "japhelm_bandana"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "japhelm_bandana_extended"
+			icon_state = "japhelm_bandana_extended"
+			worn_state = "japhelm_bandana_extended"
+			item_state_slots["slot_w_uniform"] = "japhelm_bandana_extended"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
 
 /obj/item/clothing/head/ww2/japcap
 	name = "japanese cap"
@@ -424,16 +530,18 @@
 	else
 		if (toggled)
 			item_state = "ww2_japcap"
+			icon_state = "ww2_japcap"
 			worn_state = "ww2_japcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = FALSE
 			update_clothing_icon()
 		else if (!toggled)
 			item_state = "ww2_japcap_extended"
+			icon_state = "ww2_japcap_extended"
 			worn_state = "ww2_japcap_extended"
 			item_state_slots["slot_w_uniform"] = "ww2_japcap_extended"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = TRUE
 			update_clothing_icon()
 
@@ -454,6 +562,7 @@
 		if (toggled)
 			item_state = "ww2_japoffcap"
 			worn_state = "ww2_japoffcap"
+			icon_state = "ww2_japoffcap"
 			item_state_slots["slot_w_uniform"] = "ww2_japoffcap"
 			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = FALSE
@@ -461,7 +570,39 @@
 		else if (!toggled)
 			item_state = "ww2_japoffcap_extended"
 			worn_state = "ww2_japoffcap_extended"
+			icon_state = "ww2_japoffcap_extended"
 			item_state_slots["slot_w_uniform"] = "ww2_japoffcap_extended"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			toggled = TRUE
+			update_clothing_icon()
+
+/obj/item/clothing/head/ww2/japcap_snlf
+	name = "japanese cap"
+	desc = "A cap worn by japanese soldiers in the SNLF."
+	icon_state = "ww2_japcap_snlf"
+	item_state = "ww2_japcap_snlf"
+	worn_state = "ww2_japcap_snlf"
+	var/toggled = FALSE
+
+/obj/item/clothing/head/ww2/japcap_snlf/verb/toggle_flaps()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/ww2/japcap_snlf)
+		return
+	else
+		if (toggled)
+			item_state = "ww2_japcap_snlf"
+			worn_state = "ww2_japcap_snlf"
+			icon_state = "ww2_japcap_snlf"
+			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			toggled = FALSE
+			update_clothing_icon()
+		else if (!toggled)
+			item_state = "ww2_japcap_snlf_extended"
+			worn_state = "ww2_japcap_snlf_extended"
+			icon_state = "ww2_japcap_snlf_extended"
+			item_state_slots["slot_w_uniform"] = "ww2_japcap_snlf_extended"
 			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = TRUE
 			update_clothing_icon()
@@ -483,16 +624,21 @@
 		if (rolled)
 			item_state = "ww2_japoffuni"
 			worn_state = "ww2_japoffuni"
-			item_state_slots["slot_w_uniform"] = "ww2_japoffuni"
+			icon_state = "ww2_japoffuni"
+			item_state_slots["w_uniform"] = "ww2_japoffuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_japoffuni_rolled"
 			worn_state = "ww2_japoffuni_rolled"
-			item_state_slots["slot_w_uniform"] = "ww2_japoffuni_rolled"
+			icon_state = "ww2_japoffuni_rolled"
+			item_state_slots["w_uniform"] = "ww2_japoffuni_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/japuni
@@ -510,18 +656,57 @@
 		return
 	else
 		if (rolled)
-			item_state = "ww2_japuni"
 			worn_state = "ww2_japuni"
-			item_state_slots["slot_w_uniform"] = "ww2_japuni"
+			item_state = "ww2_japuni"
+			icon_state = "ww2_japuni"
+			item_state_slots["w_uniform"] = "ww2_japuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 			update_clothing_icon()
 		else if (!rolled)
-			item_state = "ww2_japuni_rolled"
 			worn_state = "ww2_japuni_rolled"
-			item_state_slots["slot_w_uniform"] = "ww2_japuni_rolled"
+			item_state = "ww2_japuni_rolled"
+			icon_state = "ww2_japuni_rolled"
+			item_state_slots["w_uniform"] = "ww2_japuni_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/ww2/japuni_snlf
+	name = "japanese uniform"
+	desc = "A imperial japanese SNLF uniform."
+	icon_state = "ww2_japuni_snlf"
+	item_state = "ww2_japuni_snlf"
+	worn_state = "ww2_japuni_snlf"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/japuni_snlf/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/japuni_snlf)
+		return
+	else
+		if (rolled)
+			worn_state = "ww2_japuni_snlf"
+			item_state = "ww2_japuni_snlf"
+			icon_state = "ww2_japuni_snlf"
+			item_state_slots["w_uniform"] = "ww2_japuni_snlf"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			worn_state = "ww2_japuni_snlf_rolled"
+			item_state = "ww2_japuni_snlf_rolled"
+			icon_state = "ww2_japuni_snlf_rolled"
+			item_state_slots["w_uniform"] = "ww2_japuni_snlf_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/japuni_summer
@@ -530,6 +715,7 @@
 	icon_state = "japuni_summer"
 	item_state = "ww2_japuni"
 	worn_state = "ww2_japuni"
+	heat_protection = ARMS|UPPER_TORSO|LOWER_TORSO|LEGS
 
 obj/item/clothing/under/ww2/japuni_med
 	name = "japanese medic uniform"
@@ -546,16 +732,18 @@ obj/item/clothing/under/ww2/japuni_med/verb/roll_sleeves()
 		return
 	else
 		if (rolled)
-			item_state = "japuni_med"
 			worn_state = "japuni_med"
-			item_state_slots["slot_w_uniform"] = "japuni_med"
+			item_state = "japuni_med"
+			icon_state = "japuni_med"
+			item_state_slots["w_uniform"] = "japuni_med"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
 			update_clothing_icon()
 		else if (!rolled)
-			item_state = "japuni_med_rolled"
 			worn_state = "japuni_med_rolled"
-			item_state_slots["slot_w_uniform"] = "japuni_med_rolled"
+			item_state = "japuni_med_rolled"
+			icon_state = "japuni_med_rolled"
+			item_state_slots["w_uniform"] = "japuni_med_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
 			update_clothing_icon()
@@ -655,17 +843,20 @@ obj/item/clothing/head/ww2/jap_mp
 	else
 		if (toggled)
 			item_state = "ww2_british_officer"
+			icon_state = "ww2_british_officer"
 			worn_state = "ww2_british_officer"
 			item_state_slots["slot_w_uniform"] = "ww2_british_officer"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = FALSE
+			update_clothing_icon()
 		else if (!toggled)
 			item_state = "ww2_british_officer_flap"
+			icon_state = "ww2_british_officer_flap"
 			worn_state = "ww2_british_officer_flap"
 			item_state_slots["slot_w_uniform"] = "ww2_british_officer_flap"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/head/ww2/britishoffcap_tropical
 	name = "british officer cap"
@@ -684,16 +875,19 @@ obj/item/clothing/head/ww2/jap_mp
 		if (toggled)
 			item_state = "ww2_british_officer_tropical"
 			worn_state = "ww2_british_officer_tropical"
+			icon_state = "ww2_british_officer_tropical"
 			item_state_slots["slot_w_uniform"] = "ww2_british_officer_tropical"
-			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
 			toggled = FALSE
+			update_clothing_icon()
 		else if (!toggled)
 			item_state = "ww2_british_officer_tropical_flap"
 			worn_state = "ww2_british_officer_tropical_flap"
+			icon_state = "ww2_british_officer_tropical_flap"
 			item_state_slots["slot_w_uniform"] = "ww2_british_officer_tropical_flap"
-			usr << "<span class = 'danger'>You put up your cap's flaps.</span>"
+			usr << "<span class = 'danger'>You put down your cap's flaps.</span>"
 			toggled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/british
 	name = "british uniform"
@@ -711,17 +905,20 @@ obj/item/clothing/head/ww2/jap_mp
 	else
 		if (rolled)
 			item_state = "ww2_british_tropical"
+			icon_state = "ww2_british_tropical"
 			worn_state = "ww2_british_tropical"
-			item_state_slots["slot_w_uniform"] = "ww2_british_tropical"
+			item_state_slots["w_uniform"] = "ww2_british_tropical"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_british_tropical_rolled"
 			worn_state = "ww2_british_tropical_rolled"
-			item_state_slots["slot_w_uniform"] = "ww2_british_tropical_rolled"
+			icon_state = "ww2_british_tropical_rolled"
+			item_state_slots["w_uniform"] = "ww2_british_tropical_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/british_off
 	name = "british officer uniform"
@@ -740,16 +937,19 @@ obj/item/clothing/head/ww2/jap_mp
 		if (rolled)
 			item_state = "ww2_british_off_tropical"
 			worn_state = "ww2_british_off_tropical"
-			item_state_slots["slot_w_uniform"] = "ww2_british_off_tropical"
+			icon_state = "ww2_british_off_tropical"
+			item_state_slots["w_uniform"] = "ww2_british_off_tropical"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_british_off_tropical_rolled"
 			worn_state = "ww2_british_off_tropical_rolled"
-			item_state_slots["slot_w_uniform"] = "ww2_british_off_tropical_rolled"
+			icon_state = "ww2_british_off_tropical_rolled"
+			item_state_slots["w_uniform"] = "ww2_british_off_tropical_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/head/ww2/british_hat
 	name = "british hat"
@@ -788,17 +988,20 @@ obj/item/clothing/head/ww2/jap_mp
 	else
 		if (rolled)
 			item_state = "ww2_china"
+			icon_state = "ww2_china"
 			worn_state = "ww2_china"
-			item_state_slots["slot_w_uniform"] = "ww2_china"
+			item_state_slots["w_uniform"] = "ww2_china"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_china_rolled"
 			worn_state = "ww2_china_rolled"
-			item_state_slots["slot_w_uniform"] = "ww2_china_rolled"
+			icon_state = "ww2_china_rolled"
+			item_state_slots["w_uniform"] = "ww2_china_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/chiuni_off
 	name = "chinese uniform"
@@ -817,16 +1020,19 @@ obj/item/clothing/head/ww2/jap_mp
 		if (rolled)
 			item_state = "ww2_china_off"
 			worn_state = "ww2_china_off"
-			item_state_slots["slot_w_uniform"] = "ww2_china_off"
+			icon_state = "ww2_china_off"
+			item_state_slots["w_uniform"] = "ww2_china_off"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_china_off_rolled"
 			worn_state = "ww2_china_off_rolled"
-			item_state_slots["slot_w_uniform"] = "ww2_china_off_rolled"
+			icon_state = "ww2_china_off_rolled"
+			item_state_slots["w_uniform"] = "ww2_china_off_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/chiuni2
 	name = "chinese uniform"
@@ -844,17 +1050,20 @@ obj/item/clothing/head/ww2/jap_mp
 	else
 		if (rolled)
 			item_state = "ww2_china2"
+			icon_state = "ww2_china2"
 			worn_state = "ww2_china2"
-			item_state_slots["slot_w_uniform"] = "ww2_china2"
+			item_state_slots["w_uniform"] = "ww2_china2"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_china2_rolled"
 			worn_state = "ww2_china2_rolled"
-			item_state_slots["slot_w_uniform"] = "ww2_china2_rolled"
+			icon_state = "ww2_china2_rolled"
+			item_state_slots["w_uniform"] = "ww2_china2_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/chiuni2_off
 	name = "chinese uniform"
@@ -873,16 +1082,19 @@ obj/item/clothing/head/ww2/jap_mp
 		if (rolled)
 			item_state = "ww2_china_off"
 			worn_state = "ww2_china_off"
-			item_state_slots["slot_w_uniform"] = "ww2_china_off"
+			icon_state = "ww2_china_off"
+			item_state_slots["w_uniform"] = "ww2_china_off"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "ww2_china_off_rolled"
+			icon_state = "ww2_china_off_rolled"
 			worn_state = "ww2_china_off_rolled"
-			item_state_slots["slot_w_uniform"] = "ww2_china_off_rolled"
+			item_state_slots["w_uniform"] = "ww2_china_off_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			update_clothing_icon()
 
 obj/item/clothing/head/ww2/chicap
 	name = "chinese cap"
@@ -1003,7 +1215,7 @@ obj/item/clothing/head/ww2/chicap2
 /*
 /obj/item/clothing/under/ww2/german/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		icon_state = "geruni_ww2_winter"
 		item_state = "geruni_ww2_winter"
 		worn_state = "geruni_ww2_winter"
@@ -1016,7 +1228,7 @@ obj/item/clothing/head/ww2/chicap2
 		return
 	else
 /*
-		if (map && map.ID == MAP_STALINGRAD)
+		if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 			if (rolled)
 				item_state = "geruni_ww2_winter"
 				worn_state = "geruni_ww2_winter"
@@ -1032,18 +1244,24 @@ obj/item/clothing/head/ww2/chicap2
 		else
 */
 		if (rolled)
-			item_state = "geruni_ww2"
 			worn_state = "geruni_ww2"
-			item_state_slots["slot_w_uniform"] = "geruni_ww2"
+			item_state = "geruni_ww2"
+			icon_state = "geruni_ww2"
+			item_state_slots["w_uniform"] = "geruni_ww2"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
 		else if (!rolled)
-			item_state = "geruni_ww2_rolled"
 			worn_state = "geruni_ww2_rolled"
-			item_state_slots["slot_w_uniform"] = "geruni_ww2_rolled"
+			item_state = "geruni_ww2_rolled"
+			icon_state = "geruni_ww2_rolled"
+			item_state_slots["w_uniform"] = "geruni_ww2_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/german_doctor
 	name = "german doctor uniform"
@@ -1060,18 +1278,24 @@ obj/item/clothing/head/ww2/chicap2
 		return
 	else
 		if (rolled)
-			item_state = "geruni_doctor"
 			worn_state = "geruni_doctor"
-			item_state_slots["slot_w_uniform"] = "geruni_doctor"
+			item_state = "geruni_doctor"
+			icon_state = "geruni_doctor"
+			item_state_slots["w_uniform"] = "geruni_doctor"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
 		else if (!rolled)
-			item_state = "geruni_doctor_rolled"
 			worn_state = "geruni_doctor_rolled"
-			item_state_slots["slot_w_uniform"] = "geruni_doctor_rolled"
+			item_state = "geruni_doctor_rolled"
+			icon_state = "geruni_doctor_rolled"
+			item_state_slots["w_uniform"] = "geruni_doctor_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
 /obj/item/clothing/under/ww2/german_officer
 	name = "german officer uniform"
@@ -1080,42 +1304,95 @@ obj/item/clothing/head/ww2/chicap2
 	item_state = "geruni_officer"
 	worn_state = "geruni_officer"
 
-obj/item/clothing/under/ww2/german_tanker
+/obj/item/clothing/under/ww2/german_tanker
 	name = "german tanker uniform"
 	desc = "A german feldgrau uniform, used by tankers in the Wehrmacht."
 	icon_state = "gertanker"
 	item_state = "gertanker"
 	worn_state = "gertanker"
 
-obj/item/clothing/under/ww2/german_mp
+/obj/item/clothing/under/ww2/german_mp
 	name = "german mp uniform"
 	desc = "A german feldgrau uniform, used by military police in the Wehrmacht."
 	icon_state = "geruni_mp"
 	item_state = "geruni_mp"
 	worn_state = "geruni_mp"
 
-obj/item/clothing/under/ww2/german_ss
+/obj/item/clothing/under/ww2/german_ss
 	name = "german ss uniform"
 	desc = "A german SS uniform, used by soldaten in the Schutzstaffel."
 	icon_state = "ssuni"
 	item_state = "ssuni"
 	worn_state = "ssuni"
 
-obj/item/clothing/under/ww2/german_ss_officer
+/obj/item/clothing/under/ww2/german_ss_officer
 	name = "german ss officer uniform"
 	desc = "A german SS officer uniform, used by officers in the Schutzstaffel."
 	icon_state = "ssuni_officer"
 	item_state = "ssuni_officer"
 	worn_state = "ssuni_officer"
 
-obj/item/clothing/under/ww2/german_ss_camo
+/obj/item/clothing/under/ww2/german_ss_camo
 	name = "german camo ss uniform"
 	desc = "A german SS uniform, in 1944 Erbsenmuster dot pattern."
 	icon_state = "ssuni_camo"
 	item_state = "ssuni_camo"
 	worn_state = "ssuni_camo"
 
-obj/item/clothing/under/ww2/soviet
+/obj/item/weapon/storage/ammo_can
+	name = "ammunition can"
+	desc = "It's a metal box designed for easy carrying of ammo."
+	icon_state = "ammo_can"
+	item_state = "ammo_can"
+	worn_state = "ammo_can"
+	throw_speed = 2
+	throw_range = 8
+	max_storage_space = 14
+	max_w_class = 4
+	slot_flags = SLOT_BELT
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/key,
+		)
+
+/obj/item/weapon/storage/ammo_can/german_mg
+/obj/item/weapon/storage/ammo_can/german_mg/New()
+	..()
+	new/obj/item/ammo_magazine/mg34belt(src)
+	new/obj/item/ammo_magazine/mg34belt(src)
+	new/obj/item/ammo_magazine/mg34belt(src)
+	new/obj/item/ammo_magazine/mg34belt(src)
+
+/obj/item/weapon/storage/ammo_can/german_mg_drum
+/obj/item/weapon/storage/ammo_can/german_mg_drum/New()
+	..()
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+	new/obj/item/ammo_magazine/mg34(src)
+
+/obj/item/weapon/storage/ammo_can/american_bar
+/obj/item/weapon/storage/ammo_can/american_bar/New()
+	..()
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
+
+/obj/item/weapon/storage/ammo_can/american_mg
+/obj/item/weapon/storage/ammo_can/american_mg/New()
+	..()
+	new/obj/item/ammo_magazine/browning(src)
+	new/obj/item/ammo_magazine/browning(src)
+	new/obj/item/ammo_magazine/browning(src)
+	new/obj/item/ammo_magazine/browning(src)
+
+/obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"
 	desc = "A soviet uniform, used by infantry in the red army."
 	icon_state = "sovuni"
@@ -1124,7 +1401,7 @@ obj/item/clothing/under/ww2/soviet
 
 	var/rolled = FALSE
 
-obj/item/clothing/under/ww2/soviet/verb/roll_sleeves()
+/obj/item/clothing/under/ww2/soviet/verb/roll_sleeves()
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/under/ww2/soviet)
@@ -1133,88 +1410,101 @@ obj/item/clothing/under/ww2/soviet/verb/roll_sleeves()
 		if (rolled)
 			item_state = "sovuni"
 			worn_state = "sovuni"
-			item_state_slots["slot_w_uniform"] = "sovuni"
+			icon_state = "sovuni"
+			item_state_slots["w_uniform"] = "sovuni"
 			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
 		else if (!rolled)
 			item_state = "sovuni_rolled"
 			worn_state = "sovuni_rolled"
-			item_state_slots["slot_w_uniform"] = "sovuni_rolled"
+			icon_state = "sovuni_rolled"
+			item_state_slots["w_uniform"] = "sovuni_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
-	update_clothing_icon()
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
 
-obj/item/clothing/under/ww2/soviet_tanker
+/obj/item/clothing/under/ww2/soviet_tanker
 	name = "soviet tanker uniform"
 	desc = "A soviet tanker uniform, used by tank crewmen in the red army."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
 
-obj/item/clothing/under/ww2/soviet_officer
+/obj/item/clothing/under/ww2/soviet_officer
 	name = "soviet officer uniform"
 	desc = "A soviet officer uniform, used by officers in the red army."
 	icon_state = "sovuni_officer"
 	item_state = "sovuni_officer"
 	worn_state = "sovuni_officer"
 
-obj/item/clothing/under/ww2/soviet_nkvd
+/obj/item/clothing/under/ww2/soviet_nkvd
 	name = "nkvd uniform"
 	desc = "A soviet nkvd uniform, used by nkvd."
 	icon_state = "nkvd_uni"
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
 
-obj/item/clothing/under/ww2/civ1
+/obj/item/clothing/under/ww2/civ1
 	name = "green civilian outfit"
 	desc = "A mid 20th-century civilian outfit."
 	icon_state = "ww2_civuni1"
 	item_state = "ww2_civuni1"
 	worn_state = "ww2_civuni1"
 
-obj/item/clothing/under/ww2/civ2
+/obj/item/clothing/under/ww2/civ2
 	name = "brown civilian outfit"
 	desc = "A mid 20th-century civilian outfit."
 	icon_state = "ww2_civuni2"
 	item_state = "ww2_civuni2"
 	worn_state = "ww2_civuni2"
 
-obj/item/clothing/under/ww2/hitlerjugend
+/obj/item/clothing/under/ww2/hitlerjugend
 	name = "Hitlerjugend outfit"
 	desc = "The standard uniform of the HJ."
 	icon_state = "hj_uni"
 	icon_state = "hj_uni"
 	icon_state = "hj_uni"
 
-obj/item/clothing/under/ww2/us
+/obj/item/clothing/under/ww2/us
 	name = "american uniform"
 	desc = "An american uniform, used by soldiers in the US army during WW2."
 	icon_state = "usuni2"
 	item_state = "usuni2"
 	worn_state = "usuni2"
 
-obj/item/clothing/under/ww2/us_navy
+/obj/item/clothing/under/ww2/us_tanker
+	name = "american tanker uniform"
+	desc = "An american uniform, used by tankers in the US army."
+	icon_state = "ustanker"
+	item_state = "ustanker"
+	worn_state = "ustanker"
+
+/obj/item/clothing/under/ww2/us_navy
 	name = "U.S. Navy uniform"
 	desc = "An american uniform, used by sailors in the US navy during WW2."
 	icon_state = "us_navy"
 	item_state = "us_navy"
 	worn_state = "us_navy"
 
-obj/item/clothing/under/ww2/us_cap
+/obj/item/clothing/under/ww2/us_cap
 	name = "american captain uniform"
 	desc = "An american uniform, used by captains in the US army."
 	icon_state = "usuni_cap"
 	item_state = "usuni_cap"
 	worn_state = "usuni_cap"
 
-obj/item/clothing/under/ww2/us_mp
+/obj/item/clothing/under/ww2/us_mp
 	name = "american mp uniform"
 	desc = "An american uniform, used by Military Police in the US army."
 	icon_state = "usuni_mp"
 	item_state = "usuni_mp"
 	worn_state = "usuni_mp"
 
-obj/item/clothing/under/ww2/us_shirtless
+/obj/item/clothing/under/ww2/us_shirtless
 	name = "american uniform with shirt"
 	desc = "An american uniform, used by soldiers in the US army, this one has no jacket."
 	icon_state = "us_shirtless"
@@ -1234,7 +1524,7 @@ obj/item/clothing/under/ww2/us_shirtless
 /*
 /obj/item/clothing/suit/storage/coat/ww2/german/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		icon_state = "gerparka_winter"
 		item_state = "gerparka_winter"
 		worn_state = "gerparka_winter"
@@ -1332,76 +1622,83 @@ obj/item/clothing/under/ww2/us_shirtless
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
-obj/item/clothing/head/ww2/us_nco_cap
+/obj/item/clothing/head/ww2/us_nco_cap
 	name = "us nco cap"
 	desc = "A cap worn by american NCO's."
 	icon_state = "usnco_cap"
 	item_state = "usnco_cap"
 	worn_state = "usnco_cap"
 
-obj/item/clothing/head/ww2/us_sailor_hat
+/obj/item/clothing/head/ww2/us_tanker
+	name = "US tanker cap"
+	desc = "A cap worn by american tankers."
+	icon_state = "ustanker"
+	item_state = "ustanker"
+	worn_state = "ustanker"
+
+/obj/item/clothing/head/ww2/us_sailor_hat
 	name = "us sailor hat"
 	desc = "A hat worn by american sailors."
 	icon_state = "sailor_hat"
 	item_state = "sailor_hat"
 	worn_state = "sailor_hat"
 
-obj/item/clothing/head/ww2/german_tanker
+/obj/item/clothing/head/ww2/german_tanker
 	name = "german tanker headset"
 	desc = "A cap and radio headset worn by german tank crewmen of the Wehrmacht."
 	icon_state = "gertanker"
 	item_state = "gertanker"
 	worn_state = "gertanker"
 
-obj/item/clothing/head/ww2/soviet_tanker
+/obj/item/clothing/head/ww2/soviet_tanker
 	name = "soviet tanker cap"
 	desc = "A cap and worn by soviet tank crewmen of the red army."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
 
-obj/item/clothing/head/ww2/ger_officercap
+/obj/item/clothing/head/ww2/ger_officercap
 	name = "german officer cap"
 	desc = "A cap and worn by german officers the Wehrmacht."
 	icon_state = "ger_officercap"
 	item_state = "ger_officercap"
 	worn_state = "ger_officercap"
 
-obj/item/clothing/head/ww2/ger_officercap_tanker
+/obj/item/clothing/head/ww2/ger_officercap_tanker
 	name = "german panzer officer cap"
 	desc = "A cap and worn by german officers the tank corps of the Wehrmacht."
 	icon_state = "ger_officercap_tanker"
 	item_state = "ger_officercap_tanker"
 	worn_state = "ger_officercap_tanker"
 
-obj/item/clothing/head/ww2/sov_officercap
+/obj/item/clothing/head/ww2/sov_officercap
 	name = "soviet officer cap"
 	desc = "A cap and worn by soviet officers the red army."
 	icon_state = "sov_officercap"
 	item_state = "sov_officercap"
 	worn_state = "sov_officercap"
 
-obj/item/clothing/head/ww2/sov_pilotka
+/obj/item/clothing/head/ww2/sov_pilotka
 	name = "soviet pilotka"
 	desc = "A cap and worn by soviet soldiers of the red army."
 	icon_state = "sovpilotka"
 	item_state = "sovpilotka"
 	worn_state = "sovpilotka"
 
-obj/item/clothing/head/ww2/sov_ushanka
+/obj/item/clothing/head/ww2/sov_ushanka
 	name = "soviet ushanka"
 	desc = "A soviet ushanka, used by soldiers in the red army."
 	icon_state = "ushanka_up"
 	item_state = "ushanka_up"
 	worn_state = "ushanka_up"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
-obj/item/clothing/head/ww2/sov_ushanka/down
+/obj/item/clothing/head/ww2/sov_ushanka/down
 	icon_state = "ushanka"
 	item_state = "ushanka"
 	worn_state = "ushanka"
 
-obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
+/obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
 	if (icon_state == "ushanka")
 		icon_state = "ushanka_up"
 		item_state = "ushanka_up"
@@ -1411,30 +1708,30 @@ obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
 		item_state = "ushanka"
 		user << "You lower the ear flaps on the ushanka."
 
-obj/item/clothing/head/ww2/nkvd_cap
+/obj/item/clothing/head/ww2/nkvd_cap
 	name = "NKVD cap"
 	desc = "A cap and worn by NKVD."
 	icon_state = "nkvd_cap"
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
-obj/item/clothing/head/ww2/ss_cap
+/obj/item/clothing/head/ww2/ss_cap
 	name = "SS cap"
 	desc = "A cap and worn by officers in the Schutzstaffel."
 	icon_state = "sscap"
 	item_state = "sscap"
 	worn_state = "sscap"
 
-obj/item/clothing/head/ww2/german_fieldcap
+/obj/item/clothing/head/ww2/german_fieldcap
 	name = "german field cap"
 	desc = "A cap and worn by german Wehrmacht."
 	icon_state = "fieldcap1"
 	item_state = "fieldcap1"
 	worn_state = "fieldcap1"
 
-obj/item/clothing/head/ww2/german_fieldcap/New()
+/obj/item/clothing/head/ww2/german_fieldcap/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		var/randhead = rand(1,2)
 		if (randhead == 1)
 			icon_state = "fieldcap1_winter"
@@ -1447,7 +1744,7 @@ obj/item/clothing/head/ww2/german_fieldcap/New()
 			worn_state = "fieldcap1_winter2"
 			item_state_slots["slot_w_uniform"] = "fieldcap1_winter2"
 
-obj/item/clothing/head/ww2/soviet_fieldcap
+/obj/item/clothing/head/ww2/soviet_fieldcap
 	name = "soviet field cap"
 	desc = "A cap and worn by soviets in the red army."
 	icon_state = "fieldcap2"
@@ -1466,7 +1763,7 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 
 /obj/item/clothing/head/helmet/ww2/gerhelm/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		var/randhead = rand(1,2)
 		if (randhead == 1)
 			icon_state = "gerhelm_winter"
@@ -1537,7 +1834,7 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 /obj/item/clothing/head/helmet/ww2/soviet/New()
 	..()
-	if (map && map.ID == MAP_STALINGRAD)
+	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
 		icon_state = "sovhelm_winter"
 		item_state = "sovhelm_winter"
 		worn_state = "sovhelm_winter"
@@ -1878,6 +2175,93 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 		/obj/item/weapon/whistle,
 		/obj/item/weapon/pen,
 		)
+
+//swimwear//
+/obj/item/clothing/under/red/strappedbikini
+	name = "Red Strap Bikini"
+	desc = "Seems to be two piece red Bikini, the top is held up by straps."
+	icon_state = "r_strapbikini"
+	item_state = "r_strapbikini"
+	worn_state = "r_strapbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/red/bandbikini
+	name = "Red Band Bikini"
+	desc = "Seems to be two piece red Bikini, the top is held up by a tight horizontal band."
+	icon_state = "r_bandbikini"
+	item_state = "r_bandbikini"
+	worn_state = "r_bandbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+
+/obj/item/clothing/under/red/swimtrunks
+	name = "Red Swimtrunks"
+	desc = "Seems to be pants made for swiming in."
+	icon_state = "r_swimtrunks"
+	item_state = "r_swimtrunks"
+	worn_state = "r_swimtrunks"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+
+/obj/item/clothing/under/blue/strappedbikini
+	name = "Blue Strap Bikini"
+	desc = "Seems to be two piece blue Bikini, the top is held up by straps."
+	icon_state = "b_strapbikini"
+	item_state = "b_strapbikini"
+	worn_state = "b_strapbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/blue/bandbikini
+	name = "Blue Band Bikini"
+	desc = "Seems to be two piece blue Bikini, the top is held up by a tight horizontal band."
+	icon_state = "b_bandbikini"
+	item_state = "b_bandbikini"
+	worn_state = "b_bandbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/blue/swimtrunks
+	name = "Blue Swimtrunks"
+	desc = "Seems to be pants made for swiming in."
+	icon_state = "b_swimtrunks"
+	item_state = "b_swimtrunks"
+	worn_state = "b_swimtrunks"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/green/strappedbikini
+	name = "Green Strap Bikini"
+	desc = "Seems to be two piece green Bikini, the top is held up by straps."
+	icon_state = "g_strapbikini"
+	item_state = "g_strapbikini"
+	worn_state = "g_strapbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/under/green/bandbikini
+	name = "Green Band Bikini"
+	desc = "Seems to be two piece green Bikini, the top is held up by a tight horizontal cloth."
+	icon_state = "g_bandbikini"
+	item_state = "g_bandbikini"
+	worn_state = "g_bandbikini"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+
+/obj/item/clothing/under/green/swimtrunks
+	name = "Green Swimtrunks"
+	desc = "Seems to be pants made for swiming in."
+	icon_state = "g_swimtrunks"
+	item_state = "g_swimtrunks"
+	worn_state = "g_swimtrunks"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+
 
 /obj/item/weapon/storage/belt/gulagguard/filled/New()
 	..()

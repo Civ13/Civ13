@@ -122,6 +122,36 @@
 	male_tts_voice = "Takumi" //jap
 	female_tts_voice = "Zhiyu" //chinese
 
+/datum/job/filipino
+	default_language = "Filipino"
+	additional_languages = list("English" = 20, "Chinese" = 5, "Japanese" = 15)
+	male_tts_voice = "Takumi" //jap
+	female_tts_voice = "Zhiyu" //chinese
+
+/datum/job/civilian/businessman/green
+	default_language = "English"
+	additional_languages = list("Japanese" = 100, "Chinese" = 15)
+	male_tts_voice = "Takumi"
+	female_tts_voice = "Mizuki"
+
+/datum/job/civilian/businessman/red
+	default_language = "English"
+	additional_languages = list("Russian" = 100, "Ukrainian" = 15)
+	male_tts_voice = "Maxim"
+	female_tts_voice = "Tatyana"
+
+/datum/job/civilian/businessman/yellow
+	default_language = "English"
+	additional_languages = list("Hebrew" = 100, "Arabic" = 15)
+	male_tts_voice = "Maxim"
+	female_tts_voice = "Tatyana"
+
+/datum/job/civilian/businessman/blue
+	default_language = "English"
+	additional_languages = list("Latin" = 100)
+	male_tts_voice = "Giorgio" //italian
+	female_tts_voice = "Bianca" //italian
+
 /datum/job/npc
 	default_language = "English"
 

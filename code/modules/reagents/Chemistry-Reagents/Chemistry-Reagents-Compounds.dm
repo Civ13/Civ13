@@ -270,6 +270,15 @@
 	reagent_state = SOLID
 	color = "#FFFFFF"
 
+/datum/reagent/cocaine
+	name = "Cocaine"
+	id = "cocaine"
+	description = "A recreational drug made from coca leaves,tastes great ."
+	taste_description = "very powdery and sweet"
+	reagent_state = SOLID
+	color = "#FFFFFF"
+
+
 /datum/reagent/sugar/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.nutrition += removed * 2
 	M.bowels += removed/12

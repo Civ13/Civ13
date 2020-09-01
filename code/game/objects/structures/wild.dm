@@ -1,7 +1,7 @@
 /obj/structure/wild
-	icon = 'icons/obj/wild.dmi'
+	icon = 'icons/obj/flora/wild.dmi'
 	icon_state = "tree"
-	var/deadicon = "icons/obj/wild.dmi"//Rad stuff what to turn into
+	var/deadicon = "icons/obj/flora/wild.dmi"//Rad stuff what to turn into
 	var/deadicon_state = "burnedtree1"//Rad stuff what to turn into
 	anchored = TRUE
 	var/sways = FALSE
@@ -150,7 +150,7 @@
 /obj/structure/wild/tree
 	name = "small tree"
 	icon_state = "tree"
-	deadicon = "icons/obj/wild.dmi"
+	deadicon = "icons/obj/flora/wild.dmi"
 	deadicon_state = "burnedtree2"
 	opacity = TRUE
 	density = TRUE
@@ -455,7 +455,7 @@
 /obj/structure/wild/bush
 	name = "bush"
 	icon_state = "small_bush"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
@@ -472,13 +472,13 @@
 /obj/structure/wild/bush/big
 	name = "large bush"
 	icon_state = "big_bush"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "burnedbush1"
 
 /obj/structure/wild/burnedbush
 	name = "dead twigs"
 	icon_state = "burnedbush1"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
@@ -507,7 +507,7 @@
 	name = "small bush"
 	icon = 'icons/obj/flora/ausflora.dmi'
 	icon_state = "smallbush1"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
@@ -558,7 +558,7 @@
 /obj/structure/wild/burnedtree
 	name = "burned tree"
 	icon_state = "burnedtree1"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "burnedtree1"
 	opacity = FALSE
 	density = FALSE
@@ -568,9 +568,9 @@
 
 /obj/structure/wild/tallgrass
 	name = "tall grass"
-	icon = 'icons/obj/wild.dmi'
+	icon = 'icons/obj/flora/wild.dmi'
 	icon_state = "tall_grass_1"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "dead_tall_grass_1"
 	opacity = FALSE
 	density = FALSE
@@ -600,9 +600,9 @@
 
 /obj/structure/wild/tallgrass2
 	name = "tall grass"
-	icon = 'icons/obj/wild.dmi'
+	icon = 'icons/obj/flora/wild.dmi'
 	icon_state = "tall_grass_6"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "tall_grass_6"
 	opacity = FALSE
 	density = FALSE
@@ -615,13 +615,13 @@
 /obj/structure/wild/tallgrass/New()
 	..()
 	icon_state = "tall_grass_[rand(1,5)]"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "dead_tall_grass_1"
 
 /obj/structure/wild/tallgrass2/New()
 	..()
 	icon_state = "tall_grass_[rand(6,9)]"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "tall_grass_[rand(6,9)]"
 
 
@@ -655,7 +655,7 @@
 /obj/structure/wild/burnedtree/New()
 	..()
 	icon_state = "burnedtree[rand(1,5)]"
-	deadicon = 'icons/obj/wild.dmi'
+	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "burnedtree[rand(1,5)]"
 
 /obj/structure/wild/jungle

@@ -253,6 +253,17 @@
 	icon_state = "blue2"
 	climate = "tundra"
 
+/area/caribbean/prison/jail
+	name = "Jail"
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
+
+/area/caribbean/prison/jail/processing
+	name = "Processing Area"
+	icon_state = "blue1"
+	location = AREA_INSIDE
+
 /area/caribbean/island
 	name = "Island"
 	base_turf = /turf/floor/beach/sand
@@ -400,6 +411,12 @@
 /area/caribbean/no_mans_land/capturable/three
 	name = "City Hall"
 
+/area/caribbean/no_mans_land/capturable/four
+	name = "Hospital"
+
+/area/caribbean/no_mans_land/capturable/five
+	name = "Library"
+
 /area/caribbean/no_mans_land/tundra
 	name = "No Man's Land"
 	icon_state = "purple1"
@@ -437,6 +454,9 @@
 /area/caribbean/no_mans_land/invisible_wall/tundra
 	climate = "tundra"
 	base_turf = /turf/floor/dirt/winter
+
+/area/caribbean/no_mans_land/invisible_wall/tundra/two
+
 /area/caribbean/no_mans_land/invisible_wall/taiga
 	climate = "taiga"
 	base_turf = /turf/floor/dirt/winter
@@ -1098,3 +1118,23 @@
 	icon_state = "blue3"
 	location = AREA_INSIDE
 	climate = "desert"
+/////////////////////////////////////////////////////////////
+/////////////leben paratooper code///////////////////////////
+/*
+/area/caribbean/void/sky
+	icon_state = "purple1"
+	name = "The Sky"
+	dynamic_lighting = FALSE
+	var/corresponding_area_type = null
+	var/corresponding_area_allow_subtypes = FALSE
+
+/area/caribbean/void/sky/paratrooper_drop_zone
+	corresponding_area_type = /area/caribbean/forest
+	corresponding_area_allow_subtypes = TRUE
+	name = "The Sky"
+
+/area/caribbean/void/sky/paratrooper_drop_zone/plane
+	corresponding_area_type = /area/caribbean/forest
+	corresponding_area_allow_subtypes = TRUE
+	name = "Fallschirmjager Plane"
+*/

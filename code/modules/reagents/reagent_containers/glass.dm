@@ -73,7 +73,7 @@
 		if (istype(target, /obj/structure/pot))
 			return
 
-		if (istype(target, /obj/item/weapon/sandbag))
+		if (istype(target, /obj/item/weapon/barrier))
 			return
 
 		if (!is_open_container() || !flag)
@@ -428,7 +428,7 @@
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank
 	name = "large fueltank"
 	desc = "A metalic fueltank. Used to connect to a engine and supply it with fuel."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "fueltank_large"
 	amount_per_transfer_from_this = 10
 	volume = 250
@@ -517,6 +517,11 @@
 	name = "50u motorcycle fueltank"
 	icon_state = "fueltank_bike"
 	volume = 50
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike/full
+	New()
+		..()
+		reagents.add_reagent("gasoline",50)
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike75
 	name = "75u motorcycle fueltank"
@@ -675,6 +680,19 @@
 	New()
 		..()
 		reagents.add_reagent("petroleum",200)
+
+/obj/item/weapon/reagent_containers/glass/barrel/olive_oil
+	name = "olive oil barrel"
+	desc = "A barrel filled with olive oil."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+	New()
+		..()
+		reagents.add_reagent("olive_oil",200)
+
 
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder
 	name = "gunpowder barrel"

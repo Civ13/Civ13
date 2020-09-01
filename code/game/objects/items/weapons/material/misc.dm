@@ -162,12 +162,15 @@
 	throw_range = 11
 	allow_spin = FALSE
 	force_divisor = 0.7 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
+	thrown_force_divisor = 2 // 40 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 6
 	block_chance = 15
 	cooldownw = 9
 
+/obj/item/weapon/material/spear/iron
+	name = "iron spear"
+	default_material = "iron"
 /obj/item/weapon/material/spear/attack(atom/A, mob/living/user, def_zone)
 	..()
 	if (isliving(A) && prob(33))
@@ -263,8 +266,8 @@
 	throw_speed = 7
 	throw_range = 11
 	allow_spin = FALSE
-	force_divisor = 0.4 // 30 with hardness 60 (steel)
-	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	force_divisor = 0.85 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.95 // 16 with weight 20 (steel)
 	attack_verb = list("bashed","impaled","beaten")
 	value = 30
 	block_chance = 36
@@ -420,7 +423,7 @@
 	throw_range = 14
 	allow_spin = FALSE
 	force_divisor = 0.7 // 28 with hardness 40 (wood)
-	thrown_force_divisor = 1.5 // 27 with weight 18 (wood)
+	thrown_force_divisor = 2.5 // 45 with weight 18 (wood)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 10
@@ -509,7 +512,7 @@
 	throw_range = 8
 	allow_spin = FALSE
 	force_divisor = 0.85 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 1.1 // 24 with weight 20 (steel)
+	thrown_force_divisor = 1.5 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 15
@@ -719,7 +722,7 @@
 	allow_spin = FALSE
 	block_chance = 12
 	force_divisor = 0.85 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	thrown_force_divisor = 1 // 20 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 18
 	cooldownw = 13
@@ -780,3 +783,32 @@
 	value = 6
 	block_chance = 20
 	cooldownw = 5
+
+/obj/item/weapon/lungemine
+	name = "lunge mine"
+	desc = "A long pole with an anti tank mine at the end, results in the users death."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "lungemine"
+	item_state = "lungemine"
+	throw_speed = 7
+	throw_range = 11
+	allow_spin = FALSE
+
+/obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (istype(I, /obj/item/weapon/lungemine))
+		visible_message("The lunge mine hits \the [src]!")
+		message_admins("[H] used a lunge mine on a vehicle at [x], [y], [z].")
+		log_admin("[H] used a lunge mine on a vehicle at [x], [y], [z].")
+		explosion(H.loc, 1, 3, 2, 0)
+		for (var/mob/M in axis.transporting)
+			shake_camera(M, 4, 4)
+
+		w_left[5] -= 55
+		w_right[5] -= 55
+		w_front[5] -= 55
+		w_back[5] -= 55
+		try_destroy()
+		if (H)
+			H.awards["tank"]+=(heavy_armor_penetration/200)
+	else
+		..()

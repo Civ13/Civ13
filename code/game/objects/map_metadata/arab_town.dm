@@ -26,7 +26,7 @@
 		"Al-Qussam:1" = 'sound/music/alqassam.ogg',)
 	artillery_count = 3
 	valid_artillery = list("Explosive")
-obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_modernday == TRUE && (istype(J, /datum/job/american/idf) || istype(J, /datum/job/arab/hezbollah)))
 		. = TRUE

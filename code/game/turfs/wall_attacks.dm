@@ -25,14 +25,11 @@
 	update_icon()
 
 /turf/wall/attack_hand(var/mob/user)
-
-	radiate()
 	add_fingerprint(user)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 
 /turf/wall/attack_generic(var/mob/user, var/damage, var/attack_message, var/wallbreaker)
-	radiate()
 	if (!istype(user))
 		return
 
@@ -58,7 +55,6 @@
 	if (!istype(user.loc, /turf))	return	//can't do this stuff whilst inside objects and such
 
 	if (W)
-		radiate()
 		if (is_hot(W))
 			burn(is_hot(W))
 

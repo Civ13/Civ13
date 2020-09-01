@@ -18,18 +18,18 @@
 	faction_distribution_coeffs = list(GERMAN = 0.5, AMERICAN = 0.5)
 	battle_name = "D-day: Omaha Beach"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture the airfield hangar.</font>"
-	faction1 = GERMAN
-	faction2 = AMERICAN
+	faction2 = GERMAN
+	faction1 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 	gamemode = "Siege"
 /obj/map_metadata/omaha/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE || J.is_reichstag == FALSE)
-		. = TRUE
-	else if (J.is_tanker == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE)
+	if (J.is_tanker == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE || (istype(J, /datum/job/american/soldier_ww2_filipino)))
 		. = FALSE
+	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
+		. = TRUE
 	else
 		. = FALSE
 

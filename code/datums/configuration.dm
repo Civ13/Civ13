@@ -125,7 +125,6 @@ var/list/gamemode_cache = list()
 	var/hubtesting_port = -2
 	var/open_hub_discord_in_new_window = TRUE
 	var/hub_body = ""
-	var/hub_features = ""
 	var/hub_banner_url = "https://i.imgur.com/napac0L.png"
 
 	// dumb memes
@@ -211,8 +210,6 @@ var/list/gamemode_cache = list()
 					config.open_hub_discord_in_new_window = text2num(value)
 				if ("hub_body")
 					config.hub_body = value
-				if ("hub_features")
-					config.hub_features = value
 				if ("hub_banner_url")
 					config.hub_banner_url = value
 

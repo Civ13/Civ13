@@ -167,11 +167,11 @@
 	throw_range = 3
 	throw_speed = 3
 	anchored = FALSE
-
 /obj/item/mine/at/armed
 	anchored = TRUE
 	layer = TURF_LAYER + 0.01
 	icon_state = "mine_armed"
+	var/origin = null
 
 /obj/item/mine/at/Crossed(AM as mob|obj)
 	if (isobserver(AM)) return

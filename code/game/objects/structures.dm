@@ -97,7 +97,7 @@
 	if (!climbable || !can_touch(user) || (!post_climb_check && (user in climbers)))
 		return FALSE
 
-	if (!user.Adjacent(src) && !istype(src, /obj/structure/window/sandbag))
+	if (!user.Adjacent(src) && !istype(src, /obj/structure/window/barrier))
 		user << "<span class='danger'>You can't climb there, the way is blocked.</span>"
 		return FALSE
 
@@ -141,7 +141,7 @@
 
 	var/turf/target = null
 
-	if (istype(src, /obj/structure/window/sandbag))
+	if (istype(src, /obj/structure/window/barrier))
 		target = get_step(user, user.dir)
 	else
 		target = get_turf(src)

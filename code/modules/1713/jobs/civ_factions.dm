@@ -4,8 +4,8 @@
 	title = "British Governor"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governor"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateRN"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -49,7 +49,7 @@
 	title = "British Architect"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architect"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_commander = TRUE
@@ -114,7 +114,7 @@
 	title = "British Town Guard Officer"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officer"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_officer = TRUE
@@ -161,7 +161,7 @@
 	title = "British Town Guard"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -206,7 +206,7 @@
 	title = "British Doctor"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_medic = TRUE
@@ -266,7 +266,7 @@
 	title = "British Merchant"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Merchant"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -326,7 +326,7 @@
 	title = "British Priest"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -367,7 +367,7 @@
 	title = "British Prospector"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -424,7 +424,7 @@
 	title = "British Farmer"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -483,7 +483,7 @@
 	title = "British Carpenter"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -557,7 +557,7 @@
 	title = "British Blacksmith"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Blacksmith"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	whitelisted = TRUE
@@ -632,7 +632,7 @@
 	title = "British Inkeeper"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Innkeeper"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -708,7 +708,7 @@
 	title = "British Colonist"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateRN"
 
 	is_RP = TRUE
@@ -782,8 +782,8 @@
 	title = "Gobernador"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Gobernador"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLateSP"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -827,7 +827,7 @@
 	title = "Arquitecto"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Arquitecto"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_commander = TRUE
@@ -892,7 +892,7 @@
 	title = "Oficial de la Milicia"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Oficial"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_officer = TRUE
@@ -939,7 +939,7 @@
 	title = "Milicia"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -984,7 +984,7 @@
 	title = "Curandero"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Doctor"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_medic = TRUE
@@ -1044,7 +1044,7 @@
 	title = "Comerciante"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Comerciante"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1102,7 +1102,7 @@
 	title = "Cura"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1143,7 +1143,7 @@
 	title = "Minero"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1201,7 +1201,7 @@
 	title = "Granjero"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1260,7 +1260,7 @@
 	title = "Carpintero"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpenter"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1333,7 +1333,7 @@
 	title = "Ferrero"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Ferrero"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	whitelisted = TRUE
@@ -1408,7 +1408,7 @@
 	title = "Ventero"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Ventero"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1484,7 +1484,7 @@
 	title = "Colonista"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLateSP"
 
 	is_RP = TRUE
@@ -1560,8 +1560,8 @@
 	title = "Governador"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governador"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLatePT"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -1605,7 +1605,7 @@
 	title = "Arquiteto"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Arquiteto"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_commander = TRUE
@@ -1670,7 +1670,7 @@
 	title = "Comandante da Mil�cia"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Comandante"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_officer = TRUE
@@ -1717,7 +1717,7 @@
 	title = "Miliciano"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -1762,7 +1762,7 @@
 	title = "Medico"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Medico"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_medic = TRUE
@@ -1822,7 +1822,7 @@
 	title = "Mercador"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Mercador"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -1881,7 +1881,7 @@
 	title = "Padre"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_religious = TRUE
@@ -1922,7 +1922,7 @@
 	title = "Mineiro"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -1980,7 +1980,7 @@
 	title = "Fazendeiro"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2039,7 +2039,7 @@
 	title = "Carpinteiro"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Carpinteiro"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2113,7 +2113,7 @@
 	title = "Ferreiro"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Ferreiro"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 	whitelisted = TRUE
 
@@ -2188,7 +2188,7 @@
 	title = "Taberneiro"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Taberneiro"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2264,7 +2264,7 @@
 	title = "Colono"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePT"
 
 	is_RP = TRUE
@@ -2339,8 +2339,8 @@
 	title = "Governeur"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governeur"
-	head_position = TRUE
-	selection_color = "#2d2d63"
+
+
 	spawn_location = "JoinLatePirate"
 	is_officer = TRUE
 	is_commander = TRUE
@@ -2384,7 +2384,7 @@
 	title = "Architecte"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architecte"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_commander = TRUE
@@ -2449,7 +2449,7 @@
 	title = "Officier de la Garde"
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_officer = TRUE
@@ -2496,7 +2496,7 @@
 	title = "Garde"
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2541,7 +2541,7 @@
 	title = "Docteur"
 	en_meaning = "Colony Medic"
 	rank_abbreviation = "Docteur"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_medic = TRUE
@@ -2601,7 +2601,7 @@
 	title = "Marchand"
 	en_meaning = "Colony Trader"
 	rank_abbreviation = "Marchand"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_merchant = TRUE
@@ -2660,7 +2660,7 @@
 	title = "Pretre"
 	en_meaning = "Colony Priest"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2701,7 +2701,7 @@
 	title = "Mineur"
 	en_meaning = "Colony Miner/Explorer"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2759,7 +2759,7 @@
 	title = "Fermier"
 	en_meaning = "Colony Farmer/Rancher"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2818,7 +2818,7 @@
 	title = "Charpentier"
 	en_meaning = "Colony Carpenter/Craftsman"
 	rank_abbreviation = "Charpentier"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -2892,7 +2892,7 @@
 	title = "Forgeron"
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Forgeron"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 	whitelisted = TRUE
 
@@ -2967,7 +2967,7 @@
 	title = "Aubergiste"
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Aubergiste"
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE
@@ -3043,7 +3043,7 @@
 	title = "Coloniste"
 	en_meaning = "Basic Colonist"
 	rank_abbreviation = ""
-	selection_color = "#2d2d63"
+
 	spawn_location = "JoinLatePirate"
 
 	is_RP = TRUE

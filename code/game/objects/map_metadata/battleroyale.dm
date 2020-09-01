@@ -23,7 +23,6 @@
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
 	faction1 = PIRATES
-	faction2 = CIVILIAN
 	var/message = ""
 	gamemode = "Battleroyale"
 	required_players = 6
@@ -43,9 +42,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale) && !istype(J, /datum/job/pirates/battleroyale/modern))
-		J.total_positions = latejoin_turfs["JoinLateDM"].len
-		J.min_positions = J.total_positions
-		J.max_positions = J.total_positions
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
 		. = TRUE
 	else
 		. = FALSE
@@ -218,18 +217,15 @@
 				ar_to_close_string = "South-Eastern"
 			if ("none")
 				ar_to_close_string = "None"
-		world << "<big><b>The [ar_to_close_string] Area will close in 90 seconds!</big></b>"
-		ar_to_close_timeleft = 45
+		ar_to_close_timeleft = 30
+		world << "<big><b>The [ar_to_close_string] Area will close in 60 seconds!</big></b>"
 		spawn(300)
-			ar_to_close_timeleft = 30
-			world << "<big><b>The [ar_to_close_string] Area will close in 60 seconds!</big></b>"
+			ar_to_close_timeleft = 15
+			world << "<big><b>The [ar_to_close_string] Area will close in 30 seconds!</big></b>"
 			spawn(300)
-				ar_to_close_timeleft = 15
-				world << "<big><b>The [ar_to_close_string] Area will close in 30 seconds!</big></b>"
-				spawn(300)
-					close_area(ar_to_close)
-					closing_areas()
-					return ar_to_close_string
+				close_area(ar_to_close)
+				closing_areas()
+				return ar_to_close_string
 	else
 		return "too many areas closed"
 
@@ -443,9 +439,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale/modern))
-		J.total_positions = latejoin_turfs["JoinLateDM"].len
-		J.min_positions = J.total_positions
-		J.max_positions = J.total_positions
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
 		. = TRUE
 	else
 		. = FALSE
@@ -474,9 +470,9 @@
 	else if (J.is_marooned == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale/medieval))
-		J.total_positions = latejoin_turfs["JoinLateDM"].len
-		J.min_positions = J.total_positions
-		J.max_positions = J.total_positions
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
 		. = TRUE
 	else
 		. = FALSE

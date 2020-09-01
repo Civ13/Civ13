@@ -63,7 +63,7 @@
 			var/obj/item/stack/money/M = W
 			moneyin += M.value*M.amount
 			qdel(W)
-			user << "You add the money to the stall. It now has [moneyin*10] silver coins to fulfill orders."
+			user << "You add the money to the stall. It now has [moneyin] silver coins to fulfill orders."
 			return
 		else if (!ordertype)
 			var/choice = WWinput(user,"Do you want to add a buying order for [W]?", "Stall Management", "Yes", list("Yes","No"))
@@ -145,7 +145,7 @@
 	if (find_company_member(H,owner))
 		var/choice = WWinput(H,"What do you want to do?", "Stall Management", "Cancel", list("Change Name", "Remove Products Inside", "Change Amount", "Change Price", "Remove Order", "Remove Money", "Cancel"))
 		if (choice == "Cancel")
-			H << "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] per unit. It has [moneyin*10] silver coins inside.</big>"
+			H << "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] per unit. It has [moneyin] silver coins inside.</big>"
 			return
 		else if (choice == "Remove Products Inside")
 			for(var/obj/item/I in src)
@@ -193,5 +193,5 @@
 			else
 				orderamount = choice3
 			return
-	H << "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] per unit.</big>"
+	H << "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] sc per unit.</big>"
 	return

@@ -45,7 +45,7 @@
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
 			return
 		else
-			var/choosename = russian_to_cp1251(input(src, "Choose a name for the faction:") as text|null)
+			var/choosename = input(src, "Choose a name for the faction:") as text|null
 			if (choosename != null && choosename != "")
 				create_faction_pr(choosename)
 				make_commander()
@@ -70,41 +70,14 @@
 		choosesymbol = WWinput(src, "Choose a symbol for the new faction:", "Faction Creation", "Cancel", list("Cancel","star","sun","moon","cross","big cross","saltire"))
 		if (choosesymbol == "Cancel")
 			return
-		choosecolor1 = input(H, "Choose the main/symbol hex color (without the #):", "Color" , "000000")
+		choosecolor1 = WWinput(H, "Choose main/symbol color:", "Color" , "#000000", "color")
 		if (choosecolor1 == null || choosecolor1 == "")
 			return
-		else
-			choosecolor1 = uppertext(choosecolor1)
-			if (length(choosecolor1) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor1,i,i+1)
-				else
-					numtocheck = copytext(choosecolor1,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			choosecolor1 = addtext("#",choosecolor1)
 
-		choosecolor2 = input(H, "Choose the secondary/background hex color (without the #):", "Color" , "FFFFFF")
+		choosecolor2 = WWinput(H, "Choose the secondary/background color:", "Color" , "#FFFFFF", "color")
 		if (choosecolor2 == null || choosecolor2 == "")
 			return
-		else
-			choosecolor2 = uppertext(choosecolor2)
-			if (length(choosecolor2) != 6)
-				return
-			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
-			for (var/i = 1, i <= 6, i++)
-				var/numtocheck = 0
-				if (i < 6)
-					numtocheck = copytext(choosecolor2,i,i+1)
-				else
-					numtocheck = copytext(choosecolor2,i,0)
-				if (!(numtocheck in listallowed))
-					return
-			choosecolor2 = addtext("#",choosecolor2)
+
 		H.civilization = newname
 		H.leader = TRUE
 		H.faction_perms = list(1,1,1,1)
@@ -259,7 +232,7 @@
 						return
 					else
 						U = choice2
-						var/inp = russian_to_cp1251(input(usr, "Choose a title to give:") as text|null)
+						var/inp = input(usr, "Choose a title to give:") as text|null
 						if (inp == "" || !inp)
 							return
 						else
@@ -334,7 +307,7 @@
 	..()
 	invisibility = 101
 	spawn(10)
-		if (faction != "none")
+		if (faction != "none" && map)
 			name = "[faction]'s banner"
 			desc = "This is a [faction] banner."
 			icon_state = bstyle

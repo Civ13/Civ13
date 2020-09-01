@@ -209,7 +209,7 @@ obj/structure/closet/crate/empty
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/weapon/sandbag/sandbag = 20)
+	paths = list(/obj/item/weapon/barrier/sandbag = 20)
 	cratevalue = 90
 
 /obj/structure/closet/crate/wood
@@ -584,9 +584,29 @@ obj/structure/closet/crate/coldwar/m26
 	name = "M26 grenade crate"
 	paths = list(/obj/item/weapon/grenade/coldwar/m26 = 10)
 
+obj/structure/closet/crate/coldwar/m18
+	name = "M18 smoke grenade crate"
+	paths = list(/obj/item/weapon/grenade/smokebomb/m18smoke = 10)
+
+obj/structure/closet/crate/ww2/mortar_shells
+	name = "mortar shells"
+	paths = list(/obj/item/cannon_ball/mortar_shell = 15)
+
 obj/structure/closet/crate/ww2/artillery_shells
 	name = "HE artillery shells"
 	paths = list(/obj/item/cannon_ball/shell = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/HE57
+	name = "57 mm HE shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/HE57 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/AP57
+	name = "57 mm AP shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/AP57 = 10)
+
+obj/structure/closet/crate/ww2/artillery_shells/APCR57
+	name = "57 mm APCR shells crate"
+	paths = list(/obj/item/cannon_ball/shell/tank/APCR57 = 10)
 
 obj/structure/closet/crate/ww2/artillery_shells/HE75
 	name = "75 mm HE shells crate"

@@ -380,6 +380,11 @@ var/list/global/slot_flags_enumeration = list(
 				return FALSE
 			if ( w_class > 2 && (!(slot_flags & SLOT_POCKET) || istype(src,/obj/item/weapon/shield)))
 				return FALSE
+			if (istype(src, /obj/item/weapon/gun))
+				var/obj/item/weapon/gun/G = src
+				if (G.silencer || !G.pocket)
+					H << "<span class='warning'>[G] doesn't fit in your pockets!</span>"
+					return
 		if (slot_handcuffed)
 			if (!istype(src, /obj/item/weapon/handcuffs))
 				return FALSE

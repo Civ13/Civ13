@@ -42,7 +42,7 @@
 		if (prob(65))
 			gun = new/obj/item/weapon/gun/projectile/pistol/glock17/standardized(src)
 		else
-			gun = new/obj/item/weapon/gun/projectile/revolver/coltnewpolice/standardized(src)
+			gun = new/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized(src)
 
 /mob/living/simple_animal/hostile/human/bandit/death()
 	..()

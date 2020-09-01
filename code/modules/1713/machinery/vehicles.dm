@@ -2,19 +2,19 @@
 /obj/structure/vehicleparts
 	name = "vehicle part"
 	desc = "a basic vehicle part."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "part"
 	anchored = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	flammable = FALSE
-	var/broken_icon = 'icons/obj/vehicleparts_damaged.dmi'
-	var/normal_icon = 'icons/obj/vehicleparts.dmi'
+	var/broken_icon = 'icons/obj/vehicles/vehicleparts_damaged.dmi'
+	var/normal_icon = 'icons/obj/vehicles/vehicleparts.dmi'
 /////////////////////////////////AXIS/////////////////////////////////////
 /obj/structure/vehicleparts/axis
 	name = "vehicle axis"
 	desc = "supports wheels."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	var/list/wheels = list()
 	var/currentspeed = 0
@@ -38,8 +38,6 @@
 	var/matrix_l = 0
 	var/matrix_h = 0
 	var/list/matrix_current_locs = list()
-
-	var/color_code = ""
 	var/turret_type = "tank_turret"
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
@@ -47,6 +45,8 @@
 	speeds = 3
 	maxpower = 10
 	speedlist = list(1=3,2=2,3=1)
+	reg_number = ""
+	turntimer = 5
 
 /obj/structure/vehicleparts/axis/boat
 	name = "boat rudder control"
@@ -54,11 +54,12 @@
 	speeds = 3
 	maxpower = 40
 	speedlist = list(1=8,2=6,3=4)
+	reg_number = ""
 
 /obj/structure/vehicleparts/axis/heavy
 	name = "heavy vehicle axis"
 	desc = "A heavy and slow vehicle axis."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
 	maxpower = 2500
@@ -68,7 +69,7 @@
 	name = "T-34"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
-	color_code = ""
+	reg_number = ""
 	color = "#3d5931"
 	New()
 		..()
@@ -79,6 +80,7 @@
 	name = "Panzer IV"
 	speeds = 3
 	speedlist = list(1=12,2=8,3=6)
+	reg_number = ""
 	color = "#585A5C"
 	New()
 		..()
@@ -90,6 +92,7 @@
 	speeds = 4
 	speedlist = list(1=14,2=11,3=9,4=7)
 	turret_type = "tiger_tank"
+	reg_number = ""
 	color = "#3B3F41"
 	New()
 		..()
@@ -103,19 +106,46 @@
 	speedlist = list(1=10,2=7,3=5,4=4)
 	color = "#6a5a3d"
 	turret_type = "jap_turret"
+	reg_number = ""
 	New()
 		..()
 		var/pickedname = pick(tank_names_japanese)
 		tank_names_japanese -= pickedname
 		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/chi_ha
+	name = "Type 97 Chi-Ha"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	color = "#6a5a3d"
+	turret_type = "jap_turret"
+	reg_number = ""
+	New()
+		..()
+		var/pickedname = pick(tank_names_japanese)
+		tank_names_japanese -= pickedname
+		name = "[name] \'[pickedname]\'"
+/obj/structure/vehicleparts/axis/heavy/m4
+	name = "M-4 Sherman"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	color = "#293822"
+	reg_number = ""
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"
 	desc = "A powered axis from a car."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
+	turntimer = 8
 
 /obj/structure/vehicleparts/axis/proc/get_speed()
 	if (currentspeed <= 0)
@@ -157,7 +187,7 @@
 /obj/item/vehicleparts/wheel
 	name = "vehicle wheel"
 	desc = "Used to steer a vehicle."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "wheel"
 	anchored = FALSE
 	flammable = FALSE
@@ -213,7 +243,7 @@
 	if (!H.driver_vehicle.engine.on && H.driver_vehicle.fueltank.reagents.total_volume > 0)
 		H.driver_vehicle.engine.turn_on(H)
 		H.driver_vehicle.set_light(3)
-		playsound(loc, 'sound/machines/diesel_starting.ogg', 35, FALSE, 2)
+		playsound(loc, H.driver_vehicle.engine.starting_snd, 35, FALSE, 2)
 		spawn(40)
 			if (H.driver_vehicle && H.driver_vehicle.engine && H.driver_vehicle.engine.on)
 				H.driver_vehicle.running_sound()
@@ -274,7 +304,7 @@
 /obj/item/vehicleparts/frame
 	name = "vehicle frame"
 	desc = "a vehicle frame."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "motorcycle_frame0"
 	var/customcolor = "#FFFFFF"
 	var/maxengine = 500
@@ -309,7 +339,7 @@
 /obj/item/vehicleparts/frame/boat
 	name = "outrigger boat frame"
 	desc = "a simple outrigger boat frame, with no engine or propulsion mode. Supports engines up to 400cc and fueltanks up to 150u"
-	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "outrigger_frame1"
 	var/base_icon = "outrigger_frame"
 	maxengine = 400
@@ -436,7 +466,7 @@
 /obj/item/sail
 	name = "small sail"
 	desc = "a small sail. Will fit a minor boat."
-	icon = 'icons/obj/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "sailing0"
 	anchored = FALSE
 	flammable = TRUE

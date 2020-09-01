@@ -222,6 +222,36 @@
 		/obj/item/weapon/attachment/bayonet/military = 15,
 	)
 
+/obj/structure/vending/chineseweapons_korean_war
+	name = "Chinese Weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "equipment_japan"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese = 15,
+		/obj/item/ammo_magazine/gewehr98box = 10,
+		/obj/item/ammo_magazine/gewehr98 = 50,
+		/obj/item/ammo_magazine/c762x25_ppsh = 15,
+		/obj/item/ammo_magazine/dp = 15,
+		/obj/item/ammo_magazine/mauser = 10,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+/obj/structure/vending/chineseapparel_korean_war
+	name = "Chinese apparel rack"
+	desc = "Basic wear for soldiers of the People's Liberation Army."
+	icon_state = "apparel_china"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/chinese_winter = 15,
+		/obj/item/clothing/suit/storage/coat/chinese = 15,
+		/obj/item/clothing/head/chinese_ushanka = 15,
+		/obj/item/clothing/head/ww2/chicap = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+	)
+
+
 /obj/structure/vending/chineseapparel
 	name = "Chinese apparel rack"
 	desc = "Basic wear for soldiers of the Chinese Army."
@@ -258,6 +288,22 @@
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 	)
 
+/obj/structure/vending/usa_apparel_korean_war
+	name = "US Army apparel rack"
+	desc = "Basic wear for soldiers of the US Army."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/us_uni_korean = 15,
+		/obj/item/clothing/head/helmet/korean/usgreennet = 5,
+		/obj/item/clothing/head/helmet/korean/ustannet = 5,
+		/obj/item/clothing/head/helmet/korean/usm1 = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+	)
+
 /obj/structure/vending/usa_equipment_ww2
 	name = "US Army equipment rack"
 	desc = "Basic gear for soldiers of the US Army."
@@ -287,6 +333,22 @@
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
+
+/obj/structure/vending/japaneseapparel_ww2_snlf
+	name = "Imperial Japanese Army apparel rack"
+	desc = "Basic wear for soldiers of the Imperial Japanese Special Navy Landing Force."
+	icon_state = "apparel_japan_ww2"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/ww2/japuni_snlf = 15,
+		/obj/item/clothing/head/ww2/japcap_snlf = 15,
+		/obj/item/clothing/head/helmet/ww2/japhelm_snlf = 15,
+		/obj/item/clothing/head/ww2/jap_headband = 10,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
+	)
 obj/structure/vending/japweapons_ww2
 	name = "Japanese Weapon rack"
 	desc = "A rack of war equipment."
@@ -298,6 +360,23 @@ obj/structure/vending/japweapons_ww2
 		/obj/item/ammo_magazine/arisaka = 50,
 		/obj/item/ammo_magazine/arisaka99 = 40,
 		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+
+/obj/structure/vending/yakuza
+	name = "yakuza equipment rack"
+	desc = "Basic gear for the yakuza."
+	icon_state = "apparel_german2"
+	products = list(
+		/obj/item/clothing/shoes/laceup = 15,
+		/obj/item/clothing/under/modern2 = 15,
+		/obj/item/clothing/head/fedora = 15,
+		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 15,
+		/obj/item/clothing/mask/balaclava = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
+		/obj/item/clothing/suit/storage/jacket/blackvest = 10,
+		/obj/item/ammo_magazine/m9beretta = 15,
+		/obj/item/weapon/material/knife/tanto = 5,
 	)
 
 /obj/structure/vending/russianapparel
@@ -355,7 +434,6 @@ obj/structure/vending/japweapons_ww2
 		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/m14 = 15,
-		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/scarl = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/scarh = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/hk417 = 15,
@@ -374,7 +452,6 @@ obj/structure/vending/sofammo
 	desc = "ammunition and attachments for U.S. Special Operations Forces."
 	icon_state = "ammo_crates"
 	products = list(
-		/obj/item/ammo_magazine/ak74 = 20,
 		/obj/item/ammo_magazine/m16 = 50,
 		/obj/item/ammo_magazine/m14 = 50,
 		/obj/item/ammo_magazine/hk = 20,

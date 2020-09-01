@@ -1,10 +1,10 @@
 #define SANDBAG_BLOCK_ITEMS_CHANCE 40
 
-/obj/structure/window/sandbag/incomplete/check_cover(obj/item/projectile/P, turf/from)
+/obj/structure/window/barrier/incomplete/check_cover(obj/item/projectile/P, turf/from)
 	return prob(..() * round(progress/3))
 
 // how much do we cover mobs behind full sandbags?
-/obj/structure/window/sandbag/proc/check_cover(obj/item/projectile/P, turf/from)
+/obj/structure/window/barrier/proc/check_cover(obj/item/projectile/P, turf/from)
 	var/turf/cover = get_turf(src)
 	if (!cover)
 		return FALSE
@@ -22,7 +22,10 @@
 	if (ismob(P.original)) // what the firer clicked
 		var/mob/m = P.original
 		if (m.lying || m.prone)
-			extra_chance += 60
+			if (incomplete)
+				extra_chance += 20
+			else
+				extra_chance += 60
 		if (ishuman(m))
 			var/mob/living/human/H = m
 			if (H.crouching && !H.lying)
@@ -45,7 +48,7 @@
 	return base - min(15, proj.accuracy)
 
 // procedure for both incomplete and complete sandbags
-/obj/structure/window/sandbag/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+/obj/structure/window/barrier/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
@@ -60,7 +63,7 @@
 			var/obj/item/projectile/proj = mover
 			proj.throw_source = proj.starting
 
-			if (ishuman(proj.firer) && (proj.firer.lying || proj.firer.prone))
+			if (ishuman(proj.firer) && !incomplete && (proj.firer.lying || proj.firer.prone))
 				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 				if (istype(mover, /obj/item/projectile))
 					var/obj/item/projectile/B = mover

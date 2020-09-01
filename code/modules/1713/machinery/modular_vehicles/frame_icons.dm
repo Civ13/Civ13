@@ -1,6 +1,7 @@
 /obj/structure/vehicleparts/frame/update_icon()
 	..()
 	overlays.Cut()
+	var/ticon = normal_icon
 	if (!axis)
 		dir = 1
 	if (axis && mwheel)
@@ -10,6 +11,7 @@
 			icon = normal_icon
 		movemento = image(icon=mwheel.icon, loc=src, icon_state=mwheel.icon_state, layer=6, dir=mwheel.dir)
 		if (mwheel.ntype == "track")
+			movemento.color = axis.color
 			if (axis.corners[1] == src || axis.corners[2] == src)
 				switch(dir)
 					if (NORTH)
@@ -68,137 +70,97 @@
 						movemento.pixel_y = -22
 						overlays += movemento
 	if (!noroof && axis)
-		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)][color_code]", layer=11)
+		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=10)
 		roof.overlays.Cut()
 	else
 		roof = image(icon=icon, loc=src, icon_state="", layer=1)
 		roof.overlays.Cut()
 	var/turf/T = get_turf(src)
-	for(var/obj/structure/cannon/C in T)
+	if (!noroof)
+		for(var/obj/structure/cannon/C in T)
+			if (axis)
+				roof_turret = image(icon='icons/obj/vehicles/vehicles96x96.dmi',loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
+			else
+				roof_turret = image(icon='icons/obj/vehicles/vehicles96x96.dmi',loc=src, icon_state="", layer=11.1, dir=C.dir)
+			if (roof_turret)
+				roof_turret.color = axis.color
+			if (C.dir == NORTH)
+				if (dir == NORTH)
+					roof_turret.pixel_y = 0
+					roof_turret.pixel_x = -32
+				else if (dir == SOUTH)
+					roof_turret.pixel_y = -16
+					roof_turret.pixel_x = -32
+				else if (dir == WEST)
+					roof_turret.pixel_x = -48
+					roof_turret.pixel_y = -48
+				else if (dir == EAST)
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = 0
+			else if (C.dir == SOUTH)
+				if (dir == NORTH)
+					roof_turret.pixel_y = -32
+					roof_turret.pixel_x = -32
+				else if (dir == SOUTH)
+					roof_turret.pixel_y = -64
+					roof_turret.pixel_x = -32
+				else if (dir == WEST)
+					roof_turret.pixel_x = -48
+					roof_turret.pixel_y = -48
+				else if (dir == EAST)
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -48
+			else if (C.dir == WEST)
+				if (dir == NORTH)
+					roof_turret.pixel_y = -16
+					roof_turret.pixel_x = -64
+				else if (dir == SOUTH)
+					roof_turret.pixel_y = -32
+					roof_turret.pixel_x = -64
+				else if (dir == WEST)
+					roof_turret.pixel_x = -32
+					roof_turret.pixel_y = -32
+				else if (dir == EAST)
+					roof_turret.pixel_x = -64
+					roof_turret.pixel_y = -16
+			else if (C.dir == EAST)
+				if (dir == NORTH)
+					roof_turret.pixel_y = -16
+					roof_turret.pixel_x = 0
+				else if (dir == SOUTH)
+					roof_turret.pixel_y = -32
+					roof_turret.pixel_x = 0
+				else if (dir == WEST)
+					roof_turret.pixel_x = 0
+					roof_turret.pixel_y = -16
+				else if (dir == EAST)
+					roof_turret.pixel_x = -16
+					roof_turret.pixel_y = -16
+			roof.overlays += roof_turret
+		for (var/obj/CC in T)
+			if (istype(CC, /obj/structure/bed/chair/drivers) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
+				roof.icon_state = "roof_steel_hatch_driver"
+			else if (istype(CC, /obj/structure/bed/chair) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
+				roof.icon_state = "roof_steel_hatch"
+			else if (istype(CC, /obj/structure/engine) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
+				roof.icon_state = "roof_steel_exhaust"
+			else if (istype(CC, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
+				roof.icon_state = "roof_steel_closedhatch"
 		if (axis)
-			roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="[axis.turret_type][color_code][broken]", layer=11.1, dir=C.dir)
-		else
-			roof_turret = image(icon='icons/obj/vehicles96x96.dmi',loc=src, icon_state="", layer=11.1, dir=C.dir)
-		if (C.dir == NORTH)
-			if (dir == NORTH)
-				roof_turret.pixel_y = 0
-				roof_turret.pixel_x = -32
-			else if (dir == SOUTH)
-				roof_turret.pixel_y = -16
-				roof_turret.pixel_x = -32
-			else if (dir == WEST)
-				roof_turret.pixel_x = -48
-				roof_turret.pixel_y = -48
-			else if (dir == EAST)
-				roof_turret.pixel_x = -32
-				roof_turret.pixel_y = 0
-		else if (C.dir == SOUTH)
-			if (dir == NORTH)
-				roof_turret.pixel_y = -32
-				roof_turret.pixel_x = -32
-			else if (dir == SOUTH)
-				roof_turret.pixel_y = -64
-				roof_turret.pixel_x = -32
-			else if (dir == WEST)
-				roof_turret.pixel_x = -48
-				roof_turret.pixel_y = -48
-			else if (dir == EAST)
-				roof_turret.pixel_x = -32
-				roof_turret.pixel_y = -48
-		else if (C.dir == WEST)
-			if (dir == NORTH)
-				roof_turret.pixel_y = -16
-				roof_turret.pixel_x = -64
-			else if (dir == SOUTH)
-				roof_turret.pixel_y = -32
-				roof_turret.pixel_x = -64
-			else if (dir == WEST)
-				roof_turret.pixel_x = -32
-				roof_turret.pixel_y = -32
-			else if (dir == EAST)
-				roof_turret.pixel_x = -64
-				roof_turret.pixel_y = -16
-		else if (C.dir == EAST)
-			if (dir == NORTH)
-				roof_turret.pixel_y = -16
-				roof_turret.pixel_x = 0
-			else if (dir == SOUTH)
-				roof_turret.pixel_y = -32
-				roof_turret.pixel_x = 0
-			else if (dir == WEST)
-				roof_turret.pixel_x = 0
-				roof_turret.pixel_y = -16
-			else if (dir == EAST)
-				roof_turret.pixel_x = -16
-				roof_turret.pixel_y = -16
-		roof.overlays += roof_turret
-	for (var/obj/CC in T)
-		if (istype(CC, /obj/structure/bed/chair/drivers) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
-			roof.icon_state = "roof_steel_hatch_driver[color_code]"
-		else if (istype(CC, /obj/structure/bed/chair) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
-			roof.icon_state = "roof_steel_hatch[color_code]"
-		else if (istype(CC, /obj/structure/engine) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
-			roof.icon_state = "roof_steel_exhaust[color_code]"
-		else if (istype(CC, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
-			roof.icon_state = "roof_steel_closedhatch[color_code]"
-	var/ticon = normal_icon
-	if (!noroof && axis)
-		if (broken)
-			ticon = broken_icon
-		else
-			ticon = normal_icon
-		if (!(w_left[1] == "" && w_right[1] == "" && w_front[1] == "" && w_back[1] == ""))
-			roof = image(icon=icon, loc=src, icon_state="roof_steel_base[color_code]", layer=11)
+			if (broken)
+				ticon = broken_icon
+			else
+				ticon = normal_icon
 
-		//4 complete sides
-		if (w_left[1] != "" && w_right[1] != "" && w_front[1] != "" && w_back[1] != "")
-			roof = image(icon=icon, loc=src, icon_state="roof_steel_base[color_code]", layer=11)
-		//3 sides
-		if (w_right[1] != "" && w_front[1] != "" && w_back[1] != "" && w_left[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3[color_code]", layer=10, dir=convertdirs(WEST))
-			roof.overlays += tpimg1
-		if (w_right[1] == "" && w_front[1] != "" && w_back[1] != "" && w_left[1] != "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3[color_code]", layer=10, dir=convertdirs(EAST))
-			roof.overlays += tpimg1
-		if (w_right[1] != "" && w_front[1] == "" && w_back[1] != "" && w_left[1] != "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3[color_code]", layer=10, dir=convertdirs(SOUTH))
-			roof.overlays += tpimg1
-		if (w_right[1] != "" && w_front[1] != "" && w_back[1] == "" && w_left[1] != "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial3[color_code]", layer=10, dir=convertdirs(NORTH))
-			roof.overlays += tpimg1
-		//2 sides
-		if (w_front[1] != "" && w_back[1] != "" && w_left[1] == "" && w_right[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partialcenter[color_code]", layer=10, dir=convertdirs(NORTH))
-			roof.overlays += tpimg1
-		if (w_right[1] != "" && w_back[1] != "" && w_front[1] == "" && w_back[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partialcenter[color_code]", layer=10, dir=convertdirs(WEST))
-			roof.overlays += tpimg1
+		roof = image(icon=icon, loc=src, icon_state=replacetext(src.icon_state,"frame","roof"), layer=9.9)
 
-		if (w_left[1] == "" && w_back[1] != "" && w_front[1] == "" && w_right[1] != "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2[color_code]", layer=10, dir=convertdirs(NORTHWEST))
-			roof.overlays += tpimg1
-		if (w_front[1] != "" && w_right[1] != "" && w_left[1] == "" && w_back[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2[color_code]", layer=10, dir=convertdirs(SOUTHWEST))
-			roof.overlays += tpimg1
-		if (w_left[1] != "" && w_back[1] != "" && w_front[1] == "" && w_right[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2[color_code]", layer=10, dir=convertdirs(NORTHEAST))
-			roof.overlays += tpimg1
-		if (w_front[1] != "" && w_left[1] != "" && w_right[1] == "" && w_back[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial2[color_code]", layer=10, dir=convertdirs(SOUTHEAST))
-			roof.overlays += tpimg1
-		// 1 side
-		if (w_front[1] != "" && w_right[1] == "" && w_back[1] == "" && w_left[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1[color_code]", layer=10, dir=convertdirs(NORTH))
-			roof.overlays += tpimg1
-		if (w_right[1] != "" && w_back[1] == "" && w_left[1] == "" && w_front[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1[color_code]", layer=10, dir=convertdirs(EAST))
-			roof.overlays += tpimg1
-		if (w_back[1] != "" && w_right[1] == "" && w_left[1] == "" && w_front[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1[color_code]", layer=10, dir=convertdirs(SOUTH))
-			roof.overlays += tpimg1
-		if (w_left[1] != "" && w_right[1] == "" && w_back[1] == "" && w_front[1] == "")
-			var/image/tpimg1 = image(icon=ticon, icon_state="roof_steel_partial1[color_code]", layer=10, dir=convertdirs(WEST))
-			roof.overlays += tpimg1
+		if (override_roof_icon)
+			roof.icon_state = override_roof_icon
+		if (override_color)
+			roof.color = override_color
+		else
+			roof.color = axis.color
+
 	switch (dir)
 		if (NORTH)
 			if (w_left[1] != "")
@@ -206,51 +168,56 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=WEST)
-				overlays += tmpimg3
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10, dir=WEST)
+				if (w_left.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=EAST)
-				overlays += tmpimg4
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10, dir=EAST)
+				if (w_right.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]][color_code]", layer=10, dir=NORTH)
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10, dir=NORTH)
+				if (w_front.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
 				overlays += tmpimg1
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=SOUTH)
-				overlays += tmpimg2
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10.5, dir=SOUTH)
+				if (w_back.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			ticon = normal_icon
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
 
 		if (SOUTH)
 			if (w_left[1] != "")
@@ -258,142 +225,185 @@
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=EAST)
-				overlays += tmpimg3
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10, dir=EAST)
+				if (w_left.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=WEST)
-				overlays += tmpimg4
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10, dir=WEST)
+				if (w_right.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]][color_code]", layer=10, dir=SOUTH)
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10.5, dir=SOUTH)
+				if (w_front.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
 				overlays += tmpimg1
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=NORTH)
-				overlays += tmpimg2
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=NORTH)
+				if (w_back.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			ticon = normal_icon
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
+
 		if (EAST)
 			if (w_left[1] != "")
 				if (w_left[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=NORTH)
-				overlays += tmpimg3
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10, dir=NORTH)
+				if (w_left.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=SOUTH)
-				overlays += tmpimg4
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10.5, dir=SOUTH)
+				if (w_right.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]][color_code]", layer=10, dir=EAST)
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10, dir=EAST)
+				if (w_front.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
 				overlays += tmpimg1
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=WEST)
-				overlays += tmpimg2
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=WEST)
+				if (w_back.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 			ticon = normal_icon
-			if (axis && axis.corners.len >= 4)
-				if (axis.corners[1] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=SOUTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[2] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=NORTH)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[3] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=EAST)
-					overlays += corn
-					roof.overlays += corn
-				else if (axis.corners[4] == src)
-					var/image/corn = image(icon=ticon, icon_state="corner[color_code]", layer=11.02, dir=WEST)
-					overlays += corn
-					roof.overlays += corn
+
 		if (WEST)
 			if (w_left[1] != "")
 				if (w_left[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg3 = image(icon=ticon, icon_state="[w_left[1]][color_code]", layer=10, dir=SOUTH)
-				overlays += tmpimg3
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_left[1]]", layer=10.5, dir=SOUTH)
+				if (w_left.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 			if (w_right[1] != "")
 				if (w_right[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg4 = image(icon=ticon, icon_state="[w_right[1]][color_code]", layer=10, dir=NORTH)
-				overlays += tmpimg4
-				var/image/doub = image(icon=ticon, icon_state="c_lim[color_code]", layer=11.01, dir=NORTH)
-				roof.overlays += doub
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_right[1]]", layer=10, dir=NORTH)
+				if (w_right.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
 			if (w_front[1] != "")
 				if (w_front[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]][color_code]", layer=10, dir=WEST)
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_front[1]]", layer=10, dir=WEST)
+				if (w_front.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
 				overlays += tmpimg1
 			if (w_back[1] != "")
 				if (w_back[5]<=0)
 					ticon = broken_icon
 				else
 					ticon = normal_icon
-				var/image/tmpimg2 = image(icon=ticon, icon_state="[w_back[1]][color_code]", layer=10, dir=EAST)
-				overlays += tmpimg2
+				var/image/tmpimg1 = image(icon=ticon, icon_state="[w_back[1]]", layer=10, dir=EAST)
+				if (w_back.len < 8)
+					if (axis)
+						if (override_color)
+							tmpimg1.color = override_color
+						else
+							tmpimg1.color = axis.color
+				overlays += tmpimg1
+	if (hasoverlay)
+		overlays += image(icon=ticon, icon_state=hasoverlay, layer=11, dir=OPPOSITE_DIR(src.dir))
+	if (lights && !noroof)
+		var/image/IMG = image(icon=ticon, icon_state="[lights.atype]_lights[lights.on ? "_on" : ""]", layer=11.1, dir=src.dir)
+		if (!lights.centered)
+			IMG.pixel_x = lights.pixel_x
+			IMG.pixel_y = lights.pixel_y
+		IMG.color = ""
+		var/matrix/M = matrix()
+		M.Scale(1.5)
+		IMG.transform = M
+		roof.overlays += IMG
 	if (axis)
-		color = axis.color
 		var/image/overtracks = null
 		for (var/image/II in overlays)
 			if (mwheel && II.icon==mwheel.icon)
 				II.color = axis.color
 				overtracks = image(icon=mwheel.icon, loc=src, icon_state="[mwheel.icon_state]_u", layer=6, dir=mwheel.dir)
 				overtracks.color = ""
-			else
-				II.color = axis.color
 		if (overtracks)
 			overlays += overtracks

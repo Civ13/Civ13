@@ -3,6 +3,7 @@
 
 /obj/item/weapon/gun/projectile/leveraction
 	name = "leveraction rifle"
+	icon = 'icons/obj/guns/rifles.dmi'
 	desc = "A simple rifle using a lever-action mechanism."
 	icon_state = "winchester"
 	item_state = "shotgun"
@@ -14,7 +15,7 @@
 	max_shells = 15
 	slot_flags = SLOT_SHOULDER
 	caliber = "a44"
-	recoil = 2 //extra kickback
+	recoil = 0 //extra kickback
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a44
 //	magazine_type = /obj/item/ammo_magazine/musketball
@@ -34,6 +35,7 @@
 	blackpowder = FALSE
 	handle_casings = HOLD_CASINGS
 	equiptimer = 15
+	gtype = "rifle"
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 
@@ -106,7 +108,7 @@
 */
 /obj/item/weapon/gun/projectile/leveraction/special_check(mob/user)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+	if (istype(H) && (H.faction_text == "INDIANS"))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (gun_safety && safetyon)
@@ -181,6 +183,21 @@
 	update_icon()
 
 */
+/obj/item/weapon/gun/projectile/leveraction/winchesteryellowboy
+	name = "Winchester M1866 'Yellow Boy'"
+	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
+	force = 7
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon_state = "winchester1866_yellowboy"
+	caliber = "a44"
+	max_shells = 15
+	weight = 6.0
+	effectiveness_mod = 0.97
+	ammo_type = /obj/item/ammo_casing/a44
+	value = 150
+	blackpowder = TRUE
+	load_delay = 4.1
+
 /obj/item/weapon/gun/projectile/leveraction/winchester
 	name = "Winchester M1873"
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
@@ -196,6 +213,51 @@
 	blackpowder = TRUE
 	load_delay = 4
 
+/obj/item/weapon/gun/projectile/leveraction/winchesterm1876
+	name = "Winchester M1876"
+	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
+	force = 9
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon_state = "winchester1876"
+	caliber = "a44"
+	max_shells = 15
+	weight = 6.0
+	effectiveness_mod = 0.97
+	ammo_type = /obj/item/ammo_casing/a44
+	value = 150
+	blackpowder = TRUE
+	load_delay = 4.2
+
+/obj/item/weapon/gun/projectile/leveraction/winchesterm1886
+	name = "Winchester M1886"
+	desc = "A lever-action rifle with a 15-round tube, chambered in .45-70 rounds."
+	force = 9
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon_state = "winchester1886"
+	caliber = "a4570"
+	max_shells = 15
+	weight = 6.1
+	effectiveness_mod = 0.99
+	ammo_type = /obj/item/ammo_casing/a4570
+	value = 150
+	blackpowder = TRUE
+	load_delay = 4.4
+
+/obj/item/weapon/gun/projectile/leveraction/winchesterm1892
+	name = "Winchester M1892"
+	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
+	force = 9
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon_state = "winchester1886"
+	caliber = "a44"
+	max_shells = 15
+	weight = 5.6
+	effectiveness_mod = 0.97
+	ammo_type = /obj/item/ammo_casing/a44
+	value = 150
+	blackpowder = TRUE
+	load_delay = 4.1
+
 /obj/item/weapon/gun/projectile/leveraction/goldchester
 	name = "Golden Winchester M1873"
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
@@ -210,3 +272,33 @@
 	value = 150
 	blackpowder = TRUE
 	load_delay = 4
+
+/obj/item/weapon/gun/projectile/leveraction/evansrepeater
+	name = "Evans repeating rifle"
+	desc = "A lever-action rifle with a 28-round tube, chambered in .44-40 rounds."
+	force = 9
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon_state = "evans_repeating_rifle"
+	caliber = "a44"
+	max_shells = 28
+	weight = 5.9
+	effectiveness_mod = 0.87
+	ammo_type = /obj/item/ammo_casing/a44
+	value = 150
+	blackpowder = TRUE
+	load_delay = 4.2
+
+/obj/item/weapon/gun/projectile/leveraction/henryrepeater
+	name = "Henry repeating rifle"
+	desc = "A lever-action rifle with a 16-round tube, chambered in .44-40 rounds."
+	force = 8
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	icon_state = "henry_rifle"
+	caliber = "a44"
+	max_shells = 16
+	weight = 5.5
+	effectiveness_mod = 0.94
+	ammo_type = /obj/item/ammo_casing/a44
+	value = 150
+	blackpowder = TRUE
+	load_delay = 3.5

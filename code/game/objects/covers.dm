@@ -1384,7 +1384,7 @@
 	flammable = FALSE
 	explosion_resistance = 3
 	hardness = 65
-	buildstack = /obj/item/weapon/sandbag
+	buildstack = /obj/item/weapon/barrier
 
 /obj/covers/straw_wall
 	name = "straw wall"
@@ -1440,10 +1440,10 @@
 	flammable = FALSE
 
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/sandbag))
+	if (istype(W, /obj/item/weapon/barrier))
 		if (stage == 3)
 			user << "You start adding dirt to the wall..."
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src) && W)
 				user << "You finish adding dirt to the wall, completing it."
 				qdel(W)
 				new /obj/covers/dirt_wall/blocks(loc)
@@ -1482,7 +1482,7 @@
 	hardness = 75
 	buildstack = /obj/item/weapon/clay/claybricks/fired
 
-/obj/covers/claydoorway
+/obj/covers/clay_wall/claydoorway //if you actually wanted to summon one.
 	name = "clay block doorway"
 	desc = "A clay block doorway."
 	icon = 'icons/obj/claystuff.dmi'
@@ -1491,16 +1491,6 @@
 	not_movable = TRUE
 	density = FALSE
 	opacity = FALSE
-	amount = 0
-	layer = 3
-	health = 150
-	wood = FALSE
-	wall = TRUE
-	flammable = FALSE
-	explosion_resistance = 6
-	material = "Stone"
-	hardness = 75
-	buildstack = /obj/item/weapon/clay/claybricks/fired
 
 /obj/covers/clay_wall/redearth
 	name = "red earthern bordered wall"
@@ -1593,7 +1583,7 @@
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
 		if (stage >= 2)
 			user << "You start adding clay blocks to the wall..."
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src) && W)
 				user << "You finish adding clay blocks to the wall, completing it."
 				qdel(W)
 				var/obj/covers/clay_wall/S = new /obj/covers/clay_wall(loc)
@@ -1605,8 +1595,8 @@
 					S.icon_state = "clay_block_alt"
 					base_icon_state = icon_state
 					S.name = "clay block wall"
-				else if (choice == "Doorway") //until a solution can be found
-					new /obj/covers/claydoorway(S.loc)
+				else if (choice == "Doorway")
+					new /obj/covers/clay_wall/claydoorway(S.loc)
 					qdel(S)
 				return
 		else if (stage <= 1)
@@ -1670,7 +1660,7 @@
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
 		if (stage >= 2)
 			user << "You start adding clay to the wall..."
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src) && W)
 				user << "You finish adding clay to the wall, completing it."
 				qdel(W)
 				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
@@ -1821,7 +1811,7 @@
 /obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
 		user << "You start adding cement to the wall..."
-		if (do_after(user, 20, src))
+		if (do_after(user, 20, src) && W)
 			user << "You finish adding cement to the wall, completing it."
 			qdel(W)
 			new /obj/covers/cement_wall(loc)
@@ -1853,7 +1843,7 @@
 /obj/covers/brick_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired))
 		user << "You start adding bricks to the wall..."
-		if (do_after(user, 20, src))
+		if (do_after(user, 20, src) && W)
 			user << "You finish adding bricks to the wall, completing it."
 			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window","Full Window"))
 			if (choice == "Wall")

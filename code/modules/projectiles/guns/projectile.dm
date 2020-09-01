@@ -3,7 +3,6 @@
 	desc = "A gun that fires bullets."
 	icon_state = "musket"
 	w_class = 3
-	recoil = 1
 
 	var/caliber = "musketball"		//determines which casings will fit
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled
@@ -33,7 +32,7 @@
 	//var/list/icon_keys = list()		//keys
 	//var/list/ammo_states = list()	//values
 	var/magazine_based = TRUE
-	attachment_slots = ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 
 	var/load_shell_sound = 'sound/weapons/empty.ogg'
 
@@ -41,7 +40,9 @@
 
 	var/infinite_ammo = FALSE
 
+	var/serial = ""
 /obj/item/weapon/gun/projectile/New()
+	serial = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)]"
 	..()
 	if (map && map.civilizations)
 		loaded = list()
@@ -303,8 +304,11 @@
 		user << "<span class='notice'>It has \a [ammo_magazine] loaded.</span>"
 	if (!magazine_based)
 		user << "<span class='notice'>[inexactAmmo()]</span>"
-	return
-
+	if (!(istype(src, /obj/item/weapon/gun/projectile/bow)))
+		if (serial == "")
+			user << "<span class='warning'><b>The serial number has been filed out.</b></span>"
+		else
+			user << "<i>Serial no. <b>[serial]</b></i>"
 /obj/item/weapon/gun/projectile/proc/getAmmo()
 	var/bullets = FALSE
 	if (loaded)

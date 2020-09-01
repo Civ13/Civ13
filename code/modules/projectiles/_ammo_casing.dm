@@ -563,6 +563,16 @@
 	caliber = "a41"
 	value = 7
 
+/obj/item/ammo_casing/a43
+	name = ".43 Spanish cartridge"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/a43
+	caliber = "a43"
+	value = 7
+
 /obj/item/ammo_casing/a50cal
 	name = ".50 caliber cartridge"
 	desc = "A brass casing."
@@ -574,7 +584,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a32
-	name = ".32 cartridge"
+	name = ".32 S&W cartridge"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -592,6 +602,15 @@
 	projectile_type = /obj/item/projectile/bullet/pistol/a38
 	caliber = "a38"
 	value = 5
+/obj/item/ammo_casing/a380acp
+    name = ".380 ACP Cartridge"
+    desc = "A short but medium sized pistol cartridge."
+    icon_state = "pistol_bullet_anykind"
+    spent_icon = "pistolcasing"
+    weight = 0.05
+    projectile_type = /obj/item/projectile/bullet/pistol/a380acp
+    caliber = "a380acp"
+    value = 5
 
 /obj/item/ammo_casing/a45
 	name = ".45 Long Colt cartridge"

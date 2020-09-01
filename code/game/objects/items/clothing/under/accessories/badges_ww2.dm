@@ -17,6 +17,37 @@
 	icon_state = "gold"
 	worn_state = "gold"
 	name = "Gold Medal"
+// Philippine American War
+/obj/item/clothing/accessory/rank/fp_cpt
+	icon_state = "fp_cpt"
+	item_state = "fp_cpt"
+	worn_state = "fp_cpt"
+	name = "Kapitan rank epaulettes"
+	desc = "the rank of Kapitan, Captain, epaulettes."
+
+/obj/item/clothing/accessory/rank/fp_lt
+	icon_state = "fp_lt"
+	item_state = "fp_lt"
+	worn_state = "fp_lt"
+	name = "Tenyente rank epaulettes"
+	desc = "the rank of Tenyente, Lieutenant, epaulettes."
+
+/obj/item/clothing/accessory/rank/fp_sgt
+	icon_state = "fp_sgt"
+	item_state = "fp_sgt"
+	worn_state = "fp_sgt"
+	name = "Sarhente rank patch"
+	desc = "the rank of Sarhente, Sergeant, sleeve patches."
+
+/obj/item/clothing/accessory/rank/fp_cpl
+	icon_state = "fp_cpl"
+	item_state = "fp_cpl"
+	worn_state = "fp_cpl"
+	name = "Kabo rank patch"
+	desc = "the rank of Kabo, Corporal, sleeve patches."
+
+
+// Western Front -----------------------------------------
 
 /obj/item/clothing/accessory/medal/american/combat_medical_badge
 	icon_state = "combat_medical_badge"
@@ -168,6 +199,7 @@
 	name = "NSDAP pin"
 	desc = "A pin displaying the symbol of the NSDAP"
 
+//Eastern Front --------------------------------------------
 
 /obj/item/clothing/accessory/medal/japanese/ww2/east_asia
 	icon_state = "east_asia_war"
@@ -246,6 +278,8 @@
 	name = "Tai-i rank patch"
 	desc = "the rank of Rikugun Tai-i, Captain, to be sewn into the collar of a uniform."
 
+//---------------------------------------------------------------------------
+
 /obj/item/clothing/accessory/rank/germ_schutze
 	icon_state = "germ_shtz"
 	item_state = "germ_shtz"
@@ -308,3 +342,271 @@
 	worn_state = "germ_hptmn"
 	name = "Hauptmann rank patch"
 	desc = "the rank of Captain, to be sewn into the collar of a uniform."
+
+/obj/item/clothing/accessory/medal/soviet/ww2/delegate_supreme_soviet
+	icon_state = "delegate_supreme_soviet"
+	worn_state = "delegate_supreme_soviet, on body"
+	name = "Supreme Soviet of the Soviet Union"
+	desc = "A Soviet flag pin signifying that the wearer is part of the supreme council as a delegate."
+
+/obj/item/clothing/accessory/medal/soviet/ww2/nkvd
+	icon_state = "nkvd"
+	worn_state = "NKVD, on body"
+	name = "People's Commissariat of Internal Affairs Pin"
+	desc = "A pin used by the interior ministry of the soviet union."
+
+/obj/item/clothing/accessory/medal/soviet/ww2/Hero_of_the_Soviet_Union
+	icon_state = "Hero of the Soviet Union"
+	worn_state = "GSS, on body"
+	name = "Hero of the Soviet Union Medal"
+	desc = "A medal given to soldiers of the soviet union who have achevied heroic feats in service to the Soviet state and society."
+
+/obj/item/clothing/accessory/medal/soviet/ww2/Order_of_the_Red_Star
+	icon_state = "Order of the Red Star"
+	worn_state = "ORS, on body"
+	name = "Order of the Red Star Medal"
+	desc = "The Order of the Red Star was awarded to soldiers of the Soviet Army, Navy, border and internal security forces, employees of the State Security Committee of the USSR, as well as NCOs and officers of the bodies of internal affairs; to units, warships, associations, enterprises, institutions and organizations; as well as to military personnel of foreign countries."
+
+/obj/item/clothing/accessory/medal/soviet/ww2/For_the_defence_of_Stalingrad
+	icon_state = "For the Defence of Stalingrad"
+	worn_state = "FDS, on body"
+	name = "For the Defence of Stalingrad Medal"
+	desc = "Given to soldiers who have defended Stalingrad during the harsh war against the german invaders."
+
+/obj/item/clothing/accessory/medal/soviet/ww2/For_the_defence_of_Leningrad
+	icon_state = "For the Defence of Leningrad"
+	worn_state = "FDL, on body"
+	name = "For the Defence of Leningrad Medal"
+	desc = "Given to soldiers who have defended Leningrad during the harsh war against the german invaders."
+
+/obj/item/clothing/accessory/medal/soviet/ww2/Guards_Unit_Badge
+	icon_state = "Guards Unit Badge"
+	worn_state = "Gvardiya, on body"
+	name = "Guards Unit Badge"
+	desc = "Given to soldiers who have shown that they are to be distinguished from basic infantry and are now under the rank of Guard."
+
+/obj/item/clothing/accessory/medal/italian/ww2/Fascist_pin
+	icon_state = "Fascist pin"
+	worn_state = "Fascist pin, on body"
+	name = "Fascist Party Pin"
+	desc = "Given to members of the Italian Fascist party."
+
+/obj/item/clothing/accessory/medal/italian/ww2/Commanders_Colonial_Order_of_the_Star_of_Italy
+	icon_state = "Commander's Colonial Order of the Star of Italy"
+	worn_state = "Colonial Order of Italy, Commander, on body"
+	name = "Commander's Colonial Order of the Star of Italy Medal"
+	desc = "Given to members of the Italian millitary who have served in the colonies of the Kingdom of Italy, showing the rank of Commander ."
+
+/obj/item/clothing/accessory/medal/italian/ww2/Commanders_Colonial_Order_of_the_Star_of_Italy
+	icon_state = "Officer's Colonial Order of the Star of Italy"
+	worn_state = "Colonial Order of Italy, Officer, on body"
+	name = "Officer's Colonial Order of the Star of Italy Medal"
+	desc = "Given to members of the Italian millitary who have served in the colonies of the Kingdom of Italy, showing the rank of Officer ."
+
+/obj/item/clothing/accessory/medal/italian/ww2/Knights_Colonial_Order_of_the_Star_of_Italy
+	icon_state = "Knight's Colonial Order of the Star of Italy"
+	worn_state = "Colonial Order of Italy, Knight, on body"
+	name = "Knight's Colonial Order of the Star of Italy Medal"
+	desc = "Given to members of the Italian millitary who have served in the colonies of the Kingdom of Italy, showing the rank of Knight ."
+
+
+// Political Party and Union Pins ----------------------------------------
+
+/obj/item/clothing/accessory/medal/pin/communist
+	icon_state = "communist_party_pin"
+	worn_state = "communist_party_pin"
+	name = "Communist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Communism."
+
+/obj/item/clothing/accessory/medal/pin/anarchocommunist
+	icon_state = "ancom_party_pin"
+	worn_state = "ancom_party_pin"
+	name = "Anarcho-communist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Anarcho-communism."
+
+/obj/item/clothing/accessory/medal/pin/anarchist
+	icon_state = "anarchist_party_pin"
+	worn_state = "anarchist_party_pin"
+	name = "Anarchist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Anarchy."
+
+/obj/item/clothing/accessory/medal/pin/monarchist
+	icon_state = "monarchist_party_pin"
+	worn_state = "monarchist_party_pin"
+	name = "Monarchist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of a Monarchy."
+
+/obj/item/clothing/accessory/medal/pin/republicanist
+	icon_state = "republicanist_party_pin"
+	worn_state = "republicanist_party_pin"
+	name = "Republican Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of a Republic."
+
+/obj/item/clothing/accessory/medal/pin/fascist
+	icon_state = "fascist_party_pin"
+	worn_state = "fascist_party_pin"
+	name = "Fascist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Fascism."
+
+/obj/item/clothing/accessory/medal/pin/nazi
+	icon_state = "nazi_party_pin"
+	worn_state = "nazi_party_pin"
+	name = "National-socialist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of National-Socialism."
+
+
+/obj/item/clothing/accessory/medal/pin/minarchist
+	icon_state = "minarchist_party_pin"
+	worn_state = "minarchist_party_pin"
+	name = "Minarchist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Minarchism."
+
+/obj/item/clothing/accessory/medal/pin/anarchocapitalist
+	icon_state = "ancap_party_pin"
+	worn_state = "ancap_party_pin"
+	name = "Anarcho-capitalist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Anarcho-capitalism."
+
+/obj/item/clothing/accessory/medal/pin/libertarian
+	icon_state = "libertarian_party_pin"
+	worn_state = "libertarian_party_pin"
+	name = "Libertarian Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Libertarianism."
+
+/obj/item/clothing/accessory/medal/pin/msf
+	icon_state = "msf_flag_pin"
+	worn_state = "msf_flag_pin"
+	name = "MSF Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Muslim-Students-Front."
+
+/obj/item/clothing/accessory/medal/pin/liberal
+	icon_state = "liberal_party_pin"
+	worn_state = "liberal_party_pin"
+	name = "Liberal Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Liberalism."
+
+/obj/item/clothing/accessory/medal/pin/anarcholiberal
+	icon_state = "anlib_party_pin"
+	worn_state = "anlib_party_pin"
+	name = "Anarcho-liberal Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Anarcho-liberalism."
+
+/obj/item/clothing/accessory/medal/pin/anarchoprimitist
+	icon_state = "anprim_party_pin"
+	worn_state = "anprim_party_pin"
+	name = "Anarcho-primitist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Anarcho-primitism."
+
+/obj/item/clothing/accessory/medal/pin/environmentalist
+	icon_state = "environmentalist_party_pin"
+	worn_state = "environmentalist_party_pin"
+	name = "Evironmentalist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Evironmentalism."
+
+/obj/item/clothing/accessory/medal/pin/christian
+	icon_state = "christian_party_pin"
+	worn_state = "christian_party_pin"
+	name = "Christian Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Christ."
+
+/obj/item/clothing/accessory/medal/pin/mbh
+	icon_state = "muslim_brotherhood_party_pin"
+	worn_state = "christian_party_pin"
+	name = "Muslim Brotherhood Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Muhammad."
+
+/obj/item/clothing/accessory/medal/pin/conservative
+	icon_state = "conservative_party_pin"
+	worn_state = "conservative_party_pin"
+	name = "Conservative Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Conservatism."
+
+/obj/item/clothing/accessory/medal/pin/nationalist
+	icon_state = "nationalist_party_pin"
+	worn_state = "nationalist_party_pin"
+	name = "Nationalist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Nationalism."
+
+/obj/item/clothing/accessory/medal/pin/egatarian
+	icon_state = "egalitarian_party_pin"
+	worn_state = "egalitarian_party_pin"
+	name = "Egalitarian Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Egalitarianism."
+
+/obj/item/clothing/accessory/medal/pin/egatarian
+	icon_state = "egalitarian_party_pin"
+	worn_state = "egalitarian_party_pin"
+	name = "Egalitarian Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Egalitarianism."
+
+/obj/item/clothing/accessory/medal/pin/globalist
+	icon_state = "globalist_flag_pin"
+	worn_state = "globalist_flag_pin"
+	name = "Globalist Party Pin"
+	desc = "A political pin signifying that the wearer supports the beliefs of Globalism."
+
+/obj/item/clothing/accessory/medal/pin/worker/farmer
+	icon_state = "farmers_union_pin"
+	worn_state = "farmers_union_pin"
+	name = "Farmer's Union Pin"
+	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further farmer's rights."
+
+/obj/item/clothing/accessory/medal/pin/worker/miner
+	icon_state = "miners_union_pin"
+	worn_state = "miners_union_pin"
+	name = "Miner's Union Pin"
+	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further miner's rights."
+
+/obj/item/clothing/accessory/medal/pin/worker/factory
+	icon_state = "factory_workers_union_pin"
+	worn_state = "factory_workers_union_pin"
+	name = "Factory Worker's Union Pin"
+	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further miner's rights."
+
+/obj/item/clothing/accessory/medal/pin/worker/labour
+	icon_state = "workers_union_pin"
+	worn_state = "workers_union_pin"
+	name = "Labour Worker's Union Pin"
+	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further Labourer's rights."
+
+/obj/item/clothing/accessory/medal/pin/worker/office
+	icon_state = "medics_guild_pin"
+	worn_state = "medics_guild_pin"
+	name = "Medical Worker's Union Pin"
+	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further Medical Worker's rights."
+
+/obj/item/clothing/accessory/medal/pin/worker/office
+	icon_state = "corporate_pin"
+	worn_state = "corporate_pin"
+	name = "Office Worker's Union Pin"
+	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further Office Worker's rights."
+
+/obj/item/clothing/accessory/medal/pin/aristocrat
+	icon_state = "aristocratic_league_pin"
+	worn_state = "aristocratic_league_pin"
+	name = "Aristocrat Party Pin"
+	desc = "A Political pin signifying that the wearer supports the beliefs of working to protect and further Aristocrat's rights."
+
+/obj/item/clothing/accessory/medal/pin/lumberjack
+	icon_state = "lumberjacks_union_pin"
+	worn_state = "lumberjacks_union_pin"
+	name = "Lumberjack's Union Pin"
+	desc = "A Union pin signifying that the wearer supports the beliefs of working to protect and further Lumberjack's rights."
+
+/obj/item/clothing/accessory/medal/pin/merchant
+	icon_state = "zionist_party_pin"
+	worn_state = "zionist_party_pin"
+	name = "Merchant's Guild Pin"
+	desc = "A Guild pin signifying that the wearer supports the beliefs of working to protect and further the Guild's rights."
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,7 +1,7 @@
 /obj/structure/telegraph
 	name = "telegraph"
 	desc = "Used to communicate with distant places."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "telegraph"
 	flammable = FALSE
 	not_movable = FALSE
@@ -72,7 +72,7 @@
 /obj/structure/teleprinter
 	name = "teleprinter"
 	desc = "Will convert telegraph messages to paper."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "teleprinter0"
 	flammable = FALSE
 	not_movable = FALSE
@@ -249,7 +249,7 @@
 /obj/structure/radiorecorder
 	name = "voice recorder"
 	desc = "Used to record programs to be broadcast by radio."
-	icon = 'icons/obj/modern_structures.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "recorder"
 	flammable = TRUE
 	not_movable = FALSE
