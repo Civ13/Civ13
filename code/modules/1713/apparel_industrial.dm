@@ -87,6 +87,12 @@
 			adjusted = TRUE
 	update_clothing_icon()
 
+/obj/item/clothing/head/furhat/bison
+	name = "bisonhead fur hat"
+	desc = "A hat made of bison fur with little decorative horns and a fur lined interior."
+	icon_state = "bison_fur_hat"
+	item_state = "bison_fur_hat"
+
 /obj/item/clothing/suit/storage/jacket/vict_tailcoat
 	name = "victorian tailcoat"
 	desc = "Also known as a butler suit."
