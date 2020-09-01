@@ -48,6 +48,8 @@
 /datum/job/var/is_ancient = FALSE
 /datum/job/var/is_ph_us_war = FALSE
 /datum/job/var/is_yakuza = FALSE
+/datum/job/var/is_yama = FALSE
+/datum/job/var/is_ichi = FALSE
 
 /datum/job/var/squad = 0
 /datum/job/var/uses_squads = FALSE
