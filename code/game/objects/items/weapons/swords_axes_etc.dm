@@ -5,8 +5,32 @@
 	var/weakens = 0
 
 /obj/item/weapon/melee/mace
-	name = "mace"
+	name = "iron mace"
 	desc = "A iron mace, good for breaking bones and armor."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "mace"
+	item_state = "mace"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_WEAK+2
+	weakens = 1
+	w_class = 2.0
+	flammable = FALSE
+
+/obj/item/weapon/melee/mace/kanabo
+	name = "iron kanabo"
+	desc = "A iron kanabo, this large blunt weapon of japanese origin pulps its victims under its weight & form."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "kanabo"
+	item_state = "kanabo"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_WEAK+3
+	weakens = 1
+	w_class = 3.0
+	flammable = FALSE
+
+/obj/item/weapon/melee/mace/mauler
+	name = "heavy mauler"
+	desc = "A intimidatingly large morningstar, could easily pulverize any person; let alone one head to toe in armor."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "maul"
 	item_state = "mauler1"
