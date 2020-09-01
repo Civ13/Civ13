@@ -68,6 +68,7 @@
 	desc = "It's pair of chopsticks. Wan' sum rice muhda fukka?"
 	icon_state = "chopsticks"
 	material = "wood"
+	color = null
 
 /obj/item/weapon/material/kitchen/utensil/spoon
 	name = "spoon"

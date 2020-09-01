@@ -22,7 +22,7 @@
 	if (prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_head)
+		return
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
@@ -77,7 +77,7 @@
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_head)
+		return
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
@@ -124,7 +124,7 @@
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_head)
+		return
 //jacket
 
 	var/randjack = rand(1,2)
@@ -177,7 +177,7 @@
 	if (prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_head)
+		return
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
 	if (prob(35))
@@ -231,7 +231,7 @@
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new null(H), slot_head)
+		return
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)

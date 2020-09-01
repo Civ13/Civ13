@@ -266,8 +266,8 @@
 	throw_speed = 7
 	throw_range = 11
 	allow_spin = FALSE
-	force_divisor = 0.4 // 30 with hardness 60 (steel)
-	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	force_divisor = 0.85 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.95 // 16 with weight 20 (steel)
 	attack_verb = list("bashed","impaled","beaten")
 	value = 30
 	block_chance = 36
