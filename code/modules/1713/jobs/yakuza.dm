@@ -24,10 +24,6 @@
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 //head
-	if (prob(35))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
-	else
-		return
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
@@ -50,6 +46,10 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	if (prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
+	else
+		return
 
 
 	return TRUE
@@ -80,10 +80,6 @@
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 //head
-	if (prob(25))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
-	else
-		return
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
@@ -106,6 +102,10 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
+	else
+		return
 
 
 	return TRUE
@@ -128,10 +128,6 @@
 	H.equip_to_slot_or_del(new/obj/item/clothing/under/modern2(H), slot_w_uniform)
 
 //head
-	if (prob(25))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
-	else
-		return
 //jacket
 
 	var/randjack = rand(1,2)
@@ -158,6 +154,10 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
+	else
+		return
 	return TRUE
 /////////////////////////////////////////////////////////////////////////ICHI/////////////////////////////////////////////////////
 /datum/job/japanese/yakuza_underboss_ichi
@@ -182,10 +182,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 //head
 //weapons
-	if (prob(35))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
-	else
-		return
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
 	if (prob(35))
@@ -207,8 +203,10 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
+	if (prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
+	else
+		return
 	return TRUE
 
 /datum/job/japanese/yakuza_underboss_deputy_ichi
@@ -237,10 +235,6 @@
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
 //head
-	if (prob(25))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
-	else
-		return
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
@@ -263,8 +257,10 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
+	else
+		return
 	return TRUE
 
 /datum/job/japanese/yakuza_ichi
