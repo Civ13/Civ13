@@ -30,7 +30,7 @@
 			points_check()
 /obj/map_metadata/alleyway/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_yakuza == TRUE && J.is_yama == TRUE && J.is_ichi == TRUE)
+	if ((J.is_yakuza == TRUE && J.is_yama == TRUE) || (J.is_yakuza == TRUE && J.is_ichi == TRUE))
 		. = TRUE
 	else
 		. = FALSE
