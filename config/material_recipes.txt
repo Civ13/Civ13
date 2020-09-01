@@ -54,6 +54,9 @@
 //**| SHEEPPELT |**| GOATPELT |**
 //*******************************
 
+//**| COWPELT |**| BISONPELT |**
+//******************************
+
 //**| MONKEYPELT |**
 //******************
 
@@ -947,9 +950,15 @@ RECIPE: /material/catpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,
 
 RECIPE: /material/pantherpelt/,panther pelt headcover,/obj/item/clothing/head/pantherpelt,3,150,0,1,none,0,0,0,8,null
 
+RECIPE: /material/pantherpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
+RECIPE: /material/pantherpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
+
 //*****************| LIONPELT |***************************
 
 RECIPE: /material/lionpelt/,lion pelt headcover,/obj/item/clothing/head/lionpelt,3,150,0,1,none,0,0,0,8,null
+
+RECIPE: /material/lionpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
+RECIPE: /material/lionpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
 
 //***************************************************************
 //*********************| LIZARDPELT |***************************
@@ -991,6 +1000,29 @@ RECIPE: /material/sheeppelt/,raw wool,/obj/item/stack/material/wool,1,20,0,0,non
 //*********************| GOATPELT |***************************
 
 RECIPE: /material/goatpelt/,goat pelt headcover,/obj/item/clothing/head/goatpelt,3,150,0,1,none,0,0,0,8,null
+
+//**************************************************************
+//*********************| COWPELT |***************************
+//**************************************************************
+
+RECIPE: /material/cowpelt/,slene cowfur loincloth,/obj/item/clothing/under/zulu_slene,2,80,0,1,none,0,0,0,3,null
+RECIPE: /material/cowpelt/,nguni shield,/obj/item/weapon/shield/nguni_shield,6,160,0,1,none,0,0,0,3,null
+
+RECIPE: /material/cowpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/cowpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
+
+//*********************| BISONPELT |*************************
+
+RECIPE: /material/bisonpelt/,bison pelt headcover,/obj/item/clothing/head/bisonpelt,3,150,0,1,none,0,0,0,8,null
+
+RECIPE: /material/bisonpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/bisonpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/bisonpelt/,bisonhead furhat,/obj/item/clothing/head/furhat/bison,3,100,0,1,none,0,0,89,8,null
+
+RECIPE: /material/bisonpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/brown,6,150,0,1,none,0,0,0,8,null
+RECIPE: /material/bisonpelt/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fur/fancy_fur_coat,10,200,0,1,none,0,0,0,8,null
+RECIPE: /material/bisonpelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bisonpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
 
 //**************************************************************
 //*********************| MONKEYPELT |***************************
@@ -1078,7 +1110,7 @@ RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0
 RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,1,null
 RECIPE: /material/bone/,bone hatchet,/obj/item/weapon/material/hatchet/tribal/bone,2,35,0,1,none,0,0,0,8,bone
 RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,0,1,none,0,0,0,4,bone
-RECIPE: /material/bone/,bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,4,null
+RECIPE: /material/bone/,tribal bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,4,null
 RECIPE: /material/bone/,bone pickaxe,/obj/item/weapon/pickaxe/bone,2,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone shovel,/obj/item/weapon/shovel/bone,2,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,4,null
@@ -1783,6 +1815,7 @@ RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,3,50,0,1,weapons,0,0,0,3,wood
+RECIPE: /material/wood/,assagai spear,/obj/item/weapon/material/spear/assagai,4,90,0,1,weapons,0,22,0,3,wood
 RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,4,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,4,90,0,1,weapons,0,22,0,2,wood

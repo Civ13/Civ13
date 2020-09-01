@@ -33,6 +33,7 @@ var/game_hour = 0
 var/chicken_count = 0
 var/turkey_count = 0
 var/cow_count = 0
+var/bison_count = 0
 var/goat_count = 0
 var/sheep_count = 0
 var/pig_count = 0

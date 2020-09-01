@@ -775,8 +775,6 @@ var/list/name_to_material
 	use_name = "sheep"
 	icon_colour = "#8C7E6E" 	//white
 	hardness = 30
-
-
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/sheeppelt
@@ -789,6 +787,24 @@ var/list/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt/goatpelt
+
+/material/cowpelt
+	name = "cowpelt"
+	use_name = "cow"
+	icon_colour = "#f5f5dc" 	//beige
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/cowpelt
+
+/material/bisonpelt
+	name = "bisonpelt"
+	use_name = "bison"
+	icon_colour = "#8C7E6E" 	//beige
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt/bisonpelt
 
 /material/hairlesshide
 	name = "hairlesshide"

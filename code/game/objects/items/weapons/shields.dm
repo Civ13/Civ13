@@ -48,6 +48,14 @@
 	..()
 	if (get_material_name() == "wood")
 		flammable = TRUE
+
+/obj/item/weapon/shield/nguni_shield
+	name = "nguni shield"
+	icon_state = "nguni_shield"
+	item_state = "nguni_shield"
+	base_block_chance = 25
+	health = 25
+
 /obj/item/weapon/shield/steel
 	name = "steel shield"
 	icon_state = "steel_shield"

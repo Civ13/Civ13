@@ -823,6 +823,15 @@
 	heat_protection = HEAD|ARMS
 	var/colortype = "beige" //erm...
 
+/obj/item/clothing/head/bisonpelt
+	name = "bisonpelt headcover"
+	desc = "A bison pelt turned into a headcover. The thick matted fur keeps the cold off your body; the horns are just for show."
+	icon_state = "bisonpelt"
+	item_state = "bisonpelt"
+	worn_state = "bisonpelt"
+	cold_protection = HEAD|ARMS
+	var/colortype = "brown"
+
 /*Fur Coats*/
 
 /obj/item/clothing/suit/storage/coat
