@@ -1,3 +1,7 @@
+/datum/job/japanese/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_japanese_name(H.gender)
+	H.real_name = H.name
+
 /datum/job/japanese/yakuza_underboss
 	title = "Yama Wakagashira"
 	en_meaning = "Underboss"
@@ -9,6 +13,7 @@
 	min_positions = 1
 	max_positions = 1
 	is_yakuza = TRUE
+	is_yama = TRUE
 
 /datum/job/japanese/yakuza_underboss/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -64,6 +69,7 @@
 	is_yakuza = TRUE
 	min_positions = 1
 	max_positions = 2
+	is_yama = TRUE
 
 /datum/job/japanese/yakuza_underboss_deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -112,6 +118,7 @@
 	min_positions = 6
 	max_positions = 24
 	is_yakuza = TRUE
+	is_yama = TRUE
 /datum/job/japanese/yakuza/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -164,6 +171,7 @@
 	min_positions = 1
 	max_positions = 1
 	is_yakuza = TRUE
+	is_ichi = TRUE
 /datum/job/japanese/yakuza_underboss_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -219,6 +227,7 @@
 	min_positions = 1
 	max_positions = 2
 	is_yakuza = TRUE
+	is_ichi = TRUE
 /datum/job/japanese/yakuza_underboss_deputy_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -266,6 +275,7 @@
 	min_positions = 6
 	max_positions = 24
 	is_yakuza = TRUE
+	is_ichi = TRUE
 /datum/job/japanese/yakuza_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes

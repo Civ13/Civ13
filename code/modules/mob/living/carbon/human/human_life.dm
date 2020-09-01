@@ -1433,7 +1433,12 @@
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
 				if (JAPANESE)
-					holder2.icon_state = "jp_basic"
+					if (original_job.is_yakuza && original_job.is_yama)
+						holder2.icon_state = "yamaguchi"
+					else if (original_job.is_yakuza && original_job.is_ichi)
+						holder2.icon_state = "ichiwa"
+					else
+						holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ru_basic"
