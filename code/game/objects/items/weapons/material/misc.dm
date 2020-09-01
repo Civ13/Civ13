@@ -216,6 +216,15 @@
 			if (B.buckled_mob == TARGETMOB)
 				return
 
+/obj/item/weapon/material/spear/assagai
+	name = "assagai spear"
+	desc = "A long hafted wood spear with a finely sharpened iron point; rewnown for being the weapon of choice of zulu warriors."
+	icon_state = "assagai"
+	item_state = "assagai"
+	worn_state = "assagai"
+	force_divisor = 0.8 // 32 with hardness 40 (wood)
+	thrown_force_divisor = 1.6 // 29 with weight 18 (wood)
+
 /obj/item/weapon/material/quarterstaff
 	name = "quarterstaff"
 	sharp = FALSE
