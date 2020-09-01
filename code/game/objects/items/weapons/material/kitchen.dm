@@ -321,8 +321,8 @@
 	force_divisor = 0.3
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone
-	name = "bone knife"
-	desc = "A small knife with a bone blade and obsidian handle."
+	name = "tribal bone knife"
+	desc = "A small knife with a bone blade and ridged handle."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "boneknife"
 	item_state = "knife"
