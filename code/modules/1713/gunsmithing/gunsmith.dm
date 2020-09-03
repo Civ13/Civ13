@@ -1537,6 +1537,7 @@
 	if (receiver_type == "Revolver")
 		if (user.get_inactive_hand() == src)
 			unload_ammo(user, allow_dump=0)
+			update_icon()
 		else
 			return ..()
 	..()

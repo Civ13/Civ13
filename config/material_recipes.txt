@@ -2104,12 +2104,9 @@ RECIPE: /material/iron/,mechanical trap,/obj/item/weapon/beartrap,5,140,0,1,weap
 RECIPE: /material/iron/,iron-tipped spear,/obj/item/weapon/material/spear,2,50,0,1,weapons,27,16,0,3,iron
 RECIPE: /material/iron/,battle axe,/obj/item/weapon/material/hatchet/battleaxe,8,70,0,1,weapons,27,16,0,8,iron
 RECIPE: /material/iron/,iron shield,/obj/item/weapon/shield/iron,4,85,0,1,weapons,27,27,0,4,null
-RECIPE: /material/iron/,halberd,/obj/item/weapon/material/halberd,2,60,0,1,weapons,33,39,0,8,iron
-RECIPE: /material/iron/,pike,/obj/item/weapon/material/pike,3,75,0,1,weapons,33,39,0,8,iron
 RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,throwing knife,/obj/item/weapon/material/thrown/throwing_knife,4,20,0,1,weapons,0,39,0,8,iron
-RECIPE: /material/iron/,naginata,/obj/item/weapon/material/naginata,12,60,0,1,weapons,39,40,0,3,iron
 
 RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,weapons,0,90,0,8,null
 

@@ -61,11 +61,17 @@
 	else if (map && map.ID == MAP_ALLEYWAY)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Yamaguchi-Gumi")
-				map.scores["Yamaguchi-Gumi"] -= 2
-				map.scores["Ichiwa-Kai"] += 1
+				if (original_job && original_job.title == "Yama Wakagashira")
+					map.scores["Ichiwa-Kai"] += 10
+					world << "<font color='red' size=3>The <b>Yamaguchi-Gumi</b> underboss has been killed!</font>"
+				else
+					map.scores["Ichiwa-Kai"] += 1
 			else
-				map.scores["Ichiwa-Kai"] -= 2
-				map.scores["Yamaguchi-Gumi"] += 1
+				if (original_job && original_job.title == "Ichi Wakagashira")
+					map.scores["Yamaguchi-Gumi"] += 10
+					world << "<font color='red' size=3>The <b>Ichiwa-Kai</b> underboss has been killed!</font>"
+				else
+					map.scores["Yamaguchi-Gumi"] += 1
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		if (civilization && civilization in map.scores)
 			if (civilization == "Paramedics")

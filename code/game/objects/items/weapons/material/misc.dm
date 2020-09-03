@@ -18,6 +18,10 @@
 	block_chance = 12
 	cooldownw = 7
 
+/obj/item/weapon/material/harpoon/iron
+	name = "iron harpoon"
+	default_material = "iron"
+
 /obj/item/weapon/material/handle
 	name = "handle"
 	sharp = FALSE
@@ -716,6 +720,10 @@
 	value = 15
 	cooldownw = 12
 
+/obj/item/weapon/material/halberd/steel
+	default_material = "steel"
+	value = 20
+
 /obj/item/weapon/material/pike
 	name = "pike"
 	sharp = TRUE
@@ -735,6 +743,10 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 18
 	cooldownw = 13
+
+/obj/item/weapon/material/pike/steel
+	default_material = "steel"
+	value = 23
 
 /obj/item/weapon/material/hatchet/battleaxe
 	name = "battle axe"
