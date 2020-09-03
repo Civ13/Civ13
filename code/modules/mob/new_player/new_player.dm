@@ -428,6 +428,19 @@ var/global/redirect_all_players = null
 		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP && map.ID != MAP_HILL_203)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
+//prevent boss spawns if there are enemies in the building
+		if (map && map.ID == MAP_ALLEYWAY)
+			if (actual_job && actual_job.title == "Yama Wakagashira")
+				for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_two))
+					if (HM.original_job.is_ichi)
+						WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
+						return
+			if (actual_job.title == "Ichi Wakagashira")
+				for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_one))
+					if (HM.original_job.is_yama)
+						WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
+						return
+		/area/caribbean/houses/nml_one
 /* "Old" whitelisting proccess
 		if (actual_job.whitelisted)
 			if (!actual_job.validate(client))

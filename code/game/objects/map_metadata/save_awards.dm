@@ -17,6 +17,17 @@ AWARDS:
 /mob/living/human/proc/process_awards()
 	if (!client)
 		return FALSE
+	if (map.ID == MAP_ALLEYWAY && stat != DEAD)
+		if (original_job && (original_job.title == "Yama Wakagashira" || original_job.title ==  "Ichi Wakagashira"))
+			awards["service"]++
+			if (awards["service"]>=60)
+				if (original_job && original_job.title == "Yama Wakagashira")
+					map.scores["Yamaguchi-Gumi"] += 1
+					awards["service"]=0
+				else if (original_job && original_job.title == "Ichi Wakagashira")
+					map.scores["Ichiwa-Kai"] += 1
+					awards["service"]=0
+
 	if (map.gamemode == "Hardcore")
 		if (map.ordinal_age>=5)
 			awards["service"]++
