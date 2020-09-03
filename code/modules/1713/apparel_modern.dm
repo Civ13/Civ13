@@ -673,8 +673,8 @@
 	/* Insurgent Objects*/
 
 /obj/item/weapon/material/sword/arabsword
-	name = "arabic sword"
-	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
+	name = "ceremonial saif sword"
+	desc = "A ceremonial reproduction of a saif with a thin, stright blade. Commonly used by officers and nobility."
 	icon_state = "arabsword1"
 	item_state = "longsword"
 	throw_speed = 4
@@ -687,8 +687,8 @@
 	value = 60
 
 /obj/item/weapon/material/sword/arabsword2
-	name = "arabic sword"
-	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
+	name = "ceremonial scimitar sword"
+	desc = "A ceremonial reproduction of a scimitar with thin, curved blade. Commonly used by officers and nobility."
 	icon_state = "arabsword2"
 	item_state = "longsword"
 	throw_speed = 4

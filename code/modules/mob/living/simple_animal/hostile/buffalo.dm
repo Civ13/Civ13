@@ -35,11 +35,12 @@
 	maxHealth = 350
 	move_to_delay = 5
 	attacktext = "charges into"
-	melee_damage_lower = 35
-	melee_damage_upper = 50
+	melee_damage_lower = 25
+	melee_damage_upper = 30
 	response_help  = "pets"
 	response_disarm = "shoos"
-	response_harm   = "punches"
+	response_harm   = "gores"
+	attacktext = "gores"
 	var/calf = FALSE
 	var/datum/reagents/udder = null
 	var/pregnant = FALSE
@@ -48,6 +49,8 @@
 	faction = list("bison")
 	mob_size = MOB_LARGE
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	wandersounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_2.ogg')
+	hostilesounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_3.ogg')
 	behaviour = "wander"
 
 /mob/living/simple_animal/bisonbull
@@ -68,11 +71,14 @@
 	melee_damage_upper = 50
 	response_help  = "pets"
 	response_disarm = "shoos"
-	response_harm   = "punches"
+	response_harm   = "gores"
+	attacktext = "gores"
 	var/calf = FALSE
 	faction = list("bison")
 	mob_size = MOB_LARGE
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	wandersounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_2.ogg')
+	hostilesounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_3.ogg')
 	behaviour = "wander"
 
 /mob/living/simple_animal/bison/death()
