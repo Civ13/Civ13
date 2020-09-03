@@ -63,13 +63,13 @@
 			if (civilization == "Yamaguchi-Gumi")
 				if (original_job && original_job.title == "Yama Wakagashira")
 					map.scores["Ichiwa-Kai"] += 10
-					world << "<font color='red' size=2>The <b>Yamaguchi-Gumi</b> underboss has been killed!</font>"
+					world << "<font color='red' size=3>The <b>Yamaguchi-Gumi</b> underboss has been killed!</font>"
 				else
 					map.scores["Ichiwa-Kai"] += 1
 			else
 				if (original_job && original_job.title == "Ichi Wakagashira")
 					map.scores["Yamaguchi-Gumi"] += 10
-					world << "<font color='red' size=2>The <b>Ichiwa-Kai</b> underboss has been killed!</font>"
+					world << "<font color='red' size=3>The <b>Ichiwa-Kai</b> underboss has been killed!</font>"
 				else
 					map.scores["Yamaguchi-Gumi"] += 1
 	else if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
