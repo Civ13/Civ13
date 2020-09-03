@@ -606,21 +606,38 @@ var/global/redirect_all_players = null
 //			else if(istype(joby, /datum/job/civilian/policeofficer))
 //				p_nr = joby.current_positions
 		if (istype(job, /datum/job/civilian/businessman/red))
-			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > g_nr)
+			if (job.current_positions > y_nr || job.current_positions > b_nr || job.current_positions > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/blue))
-			if (job.current_positions > y_nr || job.current_positions > r_nr && job.current_positions > g_nr)
+			if (job.current_positions > y_nr || job.current_positions > r_nr || job.current_positions > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/green))
-			if (job.current_positions > y_nr || job.current_positions > b_nr && job.current_positions > r_nr)
+			if (job.current_positions > y_nr || job.current_positions > b_nr || job.current_positions > r_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
 		else if(istype(job, /datum/job/civilian/businessman/yellow))
-			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr)
+			if (job.current_positions > r_nr || job.current_positions > b_nr || job.current_positions > g_nr)
 				WWalert(usr,"Too many people playing as this role.","Error")
 				return FALSE
+	if (job.is_yakuza)
+		var/yy_nr = 0
+		var/yi_nr = 0
+		for (var/datum/job/joby in job_master.occupations)
+			if (istype(joby, /datum/job/japanese/yakuza))
+				yy_nr = joby.current_positions
+			else if(istype(joby, /datum/job/japanese/yakuza_ichi))
+				yi_nr = joby.current_positions
+		if (istype(job, /datum/job/japanese/yakuza_ichi))
+			if (job.current_positions > yy_nr)
+				WWalert(usr,"Too many people playing as this faction.","Error")
+				return FALSE
+		else if(istype(job, /datum/job/japanese/yakuza))
+			if (job.current_positions > yi_nr)
+				WWalert(usr,"Too many people playing as this faction.","Error")
+				return FALSE
+
 //		else if(istype(job, /datum/job/civilian/policeofficer))
 //			if (job.current_positions > r_nr || job.current_positions > b_nr && job.current_positions > g_nr && job.current_positions > y_nr)
 //				WWalert(usr,"Too many people playing as this role.","Error")
