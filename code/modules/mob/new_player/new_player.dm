@@ -631,11 +631,11 @@ var/global/redirect_all_players = null
 				yi_nr = joby.current_positions
 		if (istype(job, /datum/job/japanese/yakuza_ichi))
 			if (job.current_positions > yy_nr)
-				WWalert(usr,"Too many people playing as Ichiwa: [yi] Ichiwa, [yy] Yamaguchi","Error")
+				WWalert(usr,"Too many people playing as Ichiwa: [yi_nr] Ichiwa, [yy_nr] Yamaguchi","Error")
 				return FALSE
 		else if(istype(job, /datum/job/japanese/yakuza))
 			if (job.current_positions > yi_nr)
-				WWalert(usr,"Too many people playing as Yamaguchi: [yi] Ichiwa, [yy] Yamaguchi","Error")
+				WWalert(usr,"Too many people playing as Yamaguchi: [yi_nr] Ichiwa, [yy_nr] Yamaguchi","Error")
 				return FALSE
 
 //		else if(istype(job, /datum/job/civilian/policeofficer))
