@@ -642,9 +642,12 @@
 				else if (istype(src, /mob/living/simple_animal/goat))
 					var/obj/item/stack/material/pelt/goatpelt/NP = new/obj/item/stack/material/pelt/goatpelt(get_turf(src))
 					NP.amount = 2
-				else if (istype(src, /mob/living/simple_animal/cow) && !istype(src, /mob/living/simple_animal/bull))
+				else if (istype(src, /mob/living/simple_animal/cow))
 					var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(get_turf(src))
 					NP.amount = 2
+				else if (istype(src, /mob/living/simple_animal/bull))
+					var/obj/item/stack/material/pelt/cowpelt/NP = new/obj/item/stack/material/pelt/cowpelt(get_turf(src))
+					NP.amount = 3
 				else if (istype(src, /mob/living/simple_animal/bison))
 					var/obj/item/stack/material/pelt/bisonpelt/NP = new/obj/item/stack/material/pelt/bisonpelt(get_turf(src))
 					NP.amount = 3

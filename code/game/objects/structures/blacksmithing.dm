@@ -71,12 +71,20 @@ obj/structure/anvil/New()
 		return
 	else if (steel_amt > 0)
 		var/list/display = list("Swords", "Cancel")
-		if (map.ordinal_age == 3)
-			display = list("Swords", "Cancel")
+		if (map.ordinal_age == 2)
+			display = list("Swords", "Other Weapons", "Arabic Weapons", "Cancel")
+		else if (map.ordinal_age == 3)
+			display = list("Swords", "Other Weapons", "Arabic Weapons", "Cancel")
 		else if (map.ordinal_age == 4)
-			display = list("Swords", "Guns", "Cancel")
+			display = list("Swords", "Guns", "Other Weapons", "Arabic Weapons", "Cancel")
 		else if (map.ordinal_age >= 5)
-			display = list("Swords", "Guns", "Cancel")
+			display = list("Swords", "Guns", "Other Weapons", "Arabic Weapons", "Cancel")
+		else if (map.ordinal_age >= 6)
+			display = list("Guns", "Other Weapons", "Arabic Weapons", "Cancel")
+		else if (map.ordinal_age >= 7)
+			display = list("Guns", "Other Weapons", "Arabic Weapons", "Cancel")
+		else if (map.ordinal_age >= 8)
+			display = list("Guns", "Other Weapons", "Arabic Weapons", "Cancel")
 		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display)
 		var/list/display2 = list("Cancel")
 		if (choice == "Cancel")
@@ -87,18 +95,52 @@ obj/structure/anvil/New()
 			else if (map.ordinal_age == 4)
 				display2 = list("Sabre (15)", "Rapier (18)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)","Cancel")
 			else if (map.ordinal_age == 3)
-				display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)", "Cancel")
+				display2 = list("Small Sword (10)", "Longquan (12)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)", "Cancel")
 			else if (map.ordinal_age <= 2)
-				display2 = list("Small Sword (10)", "Arming Sword (15)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)", "Cancel")
+				display2 = list("Small Sword (10)", "Longquan (12)", "Arming Sword (15)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)", "Cancel")
 		else if (choice == "Guns")
 			if (map.ordinal_age == 4)
 				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Repeater (50)", "Evans Repeater (60)","Henry Repeater (60)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (30)", "Cancel")
 			if (map.ordinal_age == 8)
 				display2 = list("Makeshift AK-47 (32)", "Cancel")
-	/*	else if (choice == "Other")
-			if(map.ordinal_age >= 4)
-				display2 = list("Steel rods (2)", "Cancel")*/
+		else if (choice == "Other Weapons")
+			if (map.ordinal_age == 8)
+				display2 = list("Large Machetes", "Tanto (10)", "Wakazashi (20)", "Katana (30)","Cancel") //x2 rate of inflation on later era samurai weapons
+			else if (map.ordinal_age == 7)
+				display2 = list("Large Machetes", "Tanto (10)", "Wakazashi (20)", "Katana (30)","Cancel")
+			else if (map.ordinal_age == 6)
+				display2 = list("Large Machetes", "Tanto (10)", "Wakazashi (20)", "Katana (30)","Cancel")
+			else if (map.ordinal_age == 5)
+				display2 = list("Large Machetes", "Tanto (10)", "Wakazashi (20)", "Katana (30)","Cancel")
+			else if (map.ordinal_age == 4)
+				display2 = list("Large Machetes", "Tanto (10)", "Wakazashi (20)", "Katana (30)", "Cancel")
+			else if (map.ordinal_age == 3)
+				display2 = list("Boarding Axe (8)", "Halberd (14)", "Naginata (16)", "Cancel")
+			else if (map.ordinal_age == 2)
+				display2 = list("Halberd (14)", "Naginata (16)", "Pike (16)", "Cancel")
+			if (H.orc)
+				display2 = list("Cancel")
+		else if (choice == "Arabic Weapons")
+			if (map.ordinal_age == 8)
+				display2 = list("Ceremonial Saif (20)", "Ceremonial Scimitar", "Cancel")
+			else if (map.ordinal_age == 7)
+				display2 = list("Ceremonial Saif (20)", "Ceremonial Scimitar", "Cancel")
+			else if (map.ordinal_age == 6)
+				display2 = list("Ceremonial Saif (20)", "Ceremonial Scimitar", "Cancel")
+			else if (map.ordinal_age == 5)
+				display2 = list("Ceremonial Saif (20)", "Ceremonial Scimitar", "Cancel")
+			else if (map.ordinal_age == 4)
+				display2 = list("Ceremonial Saif (20)", "Scimitar (20)", "Cancel")
+			else if (map.ordinal_age == 3)
+				display2 = list("Saif (15)", "Scimitar (12)", "Cancel")
+			else if (map.ordinal_age == 2)
+				display2 = list("Saif (15)", "Scimitar (12)", "Cancel")
+			if (H.orc)
+				display2 = list("Cancel")
 		var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display2)
+	/*	else if (choice == "Other")
+		if(map.ordinal_age >= 4)
+			display2 = list("Steel rods (2)", "Cancel")*/
 		if (choice2 == "Cancel")
 			return
 
@@ -300,6 +342,23 @@ obj/structure/anvil/New()
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
+		if (choice2 == "Longquan (12)")
+			if (steel_amt >= 12)
+				user << "You begin crafting a longquan..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,100,src) && steel_amt >= 12)
+					user << "You craft a longquan."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/longquan(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
 		if (choice2 == "Rapier (18)")
 			if (steel_amt >= 18)
 				user << "You begin crafting a rapier..."
@@ -422,6 +481,389 @@ obj/structure/anvil/New()
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
+
+/* Additional & Price Inflated Weapons*/
+
+		if (choice2 == "Katana (30)")
+			if (steel_amt >= 30)
+				user << "You begin crafting a katana..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,280,src) && steel_amt >= 30)
+					user << "You craft a katana."
+					steel_amt -= 30
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/katana(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Wakazashi (20)")
+			if (steel_amt >= 20)
+				user << "You begin crafting a wakazashi..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,280,src) && steel_amt >= 20)
+					user << "You craft a wakazashi."
+					steel_amt -= 20
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/wakazashi(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Tanto (10)")
+			if (steel_amt >= 10)
+				user << "You begin crafting a tanto..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,130,src) && steel_amt >= 10)
+					user << "You craft a tanto."
+					steel_amt -= 10
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/knife/SW = new/obj/item/weapon/material/knife/tanto(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Boarding Axe (8)")
+			if (steel_amt >= 8)
+				user << "You begin crafting the boarding axe..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,160,src) && steel_amt >= 8)
+					user << "You craft the iron kanobo mace."
+					steel_amt -= 8
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/boarding_axe(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Halberd (14)")
+			if (steel_amt >= 14)
+				user << "You begin crafting the halberd..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,130,src) && steel_amt >= 14)
+					user << "You craft the halberd."
+					steel_amt -= 14
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/halberd/steel(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "Pike (16)")
+			if (steel_amt >= 16)
+				user << "You begin crafting the pike..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 16)
+					user << "You craft the pike."
+				steel_amt -= 16
+				if (steel_amt <= 0)
+					icon_state = "anvil1"
+				new/obj/item/weapon/material/pike/steel(user.loc)
+				return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "Naginata (16)")
+			if (steel_amt >= 16)
+				user << "You begin crafting the naginata..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 16)
+					user << "You craft the naginata."
+				steel_amt -= 16
+				if (steel_amt <= 0)
+					icon_state = "anvil1"
+				new/obj/item/weapon/material/naginata/steel(user.loc)
+				return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Large Machetes")
+			var/list/display3 = list("Cancel")
+			if (map.ordinal_age == 4)
+				display3 = list("Bolo Machete (12)", "Kukri Machete (12)", "Cancel")//rate of steel inflation +4
+			if (map.ordinal_age == 5)
+				display3 = list("Bolo Machete (16)", "Kukri Machete (16)", "Cancel")
+			if (map.ordinal_age == 6)
+				display3 = list("Bolo Machete (16)", "Kukri Machete (16)", "Cancel")
+			if (map.ordinal_age == 7)
+				display3 = list("Bolo Machete (16)", "Kukri Machete (16)", "Cancel")
+			if (map.ordinal_age == 8)
+				display3 = list("Bolo Machete (16)", "Kukri Machete (16)", "Cancel")
+			var/choice3 = WWinput(user, "Which varient?", "Blacksmith - [steel_amt] steel", "Cancel", display3)
+			if (choice3 == "Cancel")
+				return
+
+			if (choice3 == "Bolo Machete (12)")
+				if (steel_amt >= 12)
+					user << "You begin crafting the bolo machete..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && steel_amt >= 12)
+						user << "You craft the bolo machete."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/bolo(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+			if (choice3 == "Kukri Machete (12)")
+				if (steel_amt >= 12)
+					user << "You begin crafting the kukri machete..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && steel_amt >= 12)
+						user << "You craft the kukri machete."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/kukri(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+			if (choice3 == "Bolo Machete (16)")
+				if (steel_amt >= 16)
+					user << "You begin crafting the bolo machete..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,180,src) && steel_amt >= 16)
+						user << "You craft the bolo machete."
+					steel_amt -= 16
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/bolo(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+			if (choice3 == "Kukri Machete (16)")
+				if (steel_amt >= 16)
+					user << "You begin crafting the kukri machete..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,180,src) && steel_amt >= 16)
+						user << "You craft the kukri machete."
+					steel_amt -= 16
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/kukri(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+		if (choice2 == "Large Knives")
+			var/list/display4 = list("Cancel")
+			if (map.ordinal_age == 4)
+				display4 = list("Bowie Knife (8)", "Cancel")
+			if (map.ordinal_age == 5)
+				display4 = list("Bowie Knife (8)", "Trench Knife (10)", "Cancel")
+			if (map.ordinal_age == 6)
+				display4 = list("Bowie Knife (8)", "Trench Knife (10)", "Military Knife (14)", "Cancel")
+			if (map.ordinal_age == 7)
+				display4 = list("Bowie Knife (12)", "Trench Knife (14)", "Military Knife (18)", "Cancel") //rate of steel inflation +4
+			if (map.ordinal_age == 8)
+				display4 = list("Bowie Knife (12)", "Military Knife (18)","Cancel")
+			var/choice4 = WWinput(user, "Which varient?", "Blacksmith - [steel_amt] steel", "Cancel", display4)
+			if (choice4 == "Cancel")
+				return
+
+			if (choice4 == "Bowie Knife (8)")
+				if (steel_amt >= 8)
+					user << "You begin crafting the bowie knife..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,100,src) && steel_amt >= 8)
+						user << "You craft the bowie knife."
+					iron_amt -= 8
+					if (iron_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/kitchen/utensil/knife/bowie(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+			if (choice4 == "Trench Knife (10)")
+				if (steel_amt >= 10)
+					user << "You begin crafting the trench knife..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,100,src) && steel_amt >= 10)
+						user << "You craft the trench knife."
+					steel_amt -= 10
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/kitchen/utensil/knife/trench(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+			if (choice4 == "Military Knife (14)")
+				if (steel_amt >= 14)
+					user << "You begin crafting the military knife..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,180,src) && iron_amt >= 14)
+						user << "You craft the miltiary knife."
+					iron_amt -= 14
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/kitchen/utensil/knife/military(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+			if (choice4 == "Bowie Knife (12)")
+				if (steel_amt >= 12)
+					user << "You begin crafting the bowie knife..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && steel_amt >= 12)
+						user << "You craft the bowie knife."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/kitchen/utensil/knife/bowie(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+			if (choice4 == "Trench Knife (14)")
+				if (steel_amt >= 10)
+					user << "You begin crafting the trench knife..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,100,src) && steel_amt >= 10)
+						user << "You craft the trench knife."
+					steel_amt -= 10
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/kitchen/utensil/knife/trench(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+			if (choice4 == "Military Knife (18)")
+				if (steel_amt >= 18)
+					user << "You begin crafting the military knife..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,180,src) && steel_amt >= 18)
+						user << "You craft the miltiary knife."
+					steel_amt -= 18
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/kitchen/utensil/knife/military(user.loc)
+					return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+
+
+/* Arabic Weapons & Ceremonial Price inflated weapons*/
+
+		if (choice2 == "Scimitar (12)")
+			if (steel_amt >= 12)
+				user << "You begin crafting a scimitar..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,130,src) && steel_amt >= 12)
+					user << "You craft a scimitar."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/scimitar(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Saif (15)")
+			if (steel_amt >= 5)
+				user << "You begin crafting a saif..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,130,src) && steel_amt >= 15)
+					user << "You craft a saif."
+					steel_amt -= 15
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/saif(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Scimitar (20)") //price inflated by +8
+			if (steel_amt >= 20)
+				user << "You begin crafting a scimitar..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,130,src) && steel_amt >= 20)
+					user << "You craft a scimitar."
+					steel_amt -= 20
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/scimitar(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Ceremonial Saif (20)")
+			if (steel_amt >= 20)
+				user << "You begin crafting a ceremonial saif..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,130,src) && steel_amt >= 20)
+					user << "You craft a ceremonial saif."
+					steel_amt -= 20
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/arabsword(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Ceremonial Scimitar (23)")
+			if (steel_amt >= 23)
+				user << "You begin crafting a scimitar..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,130,src) && steel_amt >= 23)
+					user << "You craft a scimitar."
+					steel_amt -= 23
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/arabsword2(user.loc)
+					SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+					SW.health = SW.maxhealth
+					SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+
 //Other crafting, more to add here later.
 /*		if (choice2 == "Steel rods (2)")
 			if (steel_amt >= 2)
@@ -440,15 +882,11 @@ obj/structure/anvil/New()
 				return*/
 //iron smelting stuff.  //anvil timing list (8 iron 100 or less || <10 metal = 130 || <13 - 15 = 160 || 16 - 17 = 180 || 18 - 20 = 200 || 21 - 30 = 250)
 	else if (iron_amt > 0)
-		var/list/display = list("Swords", "Armor", "Cancel")
-		if (map.ordinal_age >= 5)
-			display = list("Cancel")
-		else if (map.ordinal_age == 4)
-			display = list("Swords","Cancel")
-		else if (map.ordinal_age == 3)
-			display = list("Swords","Guns", "Cancel")
+		var/list/display = list("Swords", "Other Weapons", "Cancel")
+		if (map.ordinal_age == 3)
+			display = list("Swords","Guns", "Other Weapons", "Arabic Weapons", "Cancel")
 		else if (map.ordinal_age == 2)
-			display = list("Swords", "Shields & Tools", "Cancel")
+			display = list("Swords", "Shields & Tools", "Other Weapons", "Arabic Weapons", "Cancel")
 		else
 			display = list("Swords", "Shields & Tools", "Cancel")
 		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display)
@@ -550,6 +988,23 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/cutlass/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice2 == "Longquan (12)")
+				if (iron_amt >= 12)
+					user << "You begin crafting a longquan..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 12)
+						user << "You craft a longquan."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/longquan/iron(user.loc)
 						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
 						SW.health = SW.maxhealth
 						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
@@ -981,6 +1436,240 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
+
+		else if (choice == "Other Weapons")
+			var/list/display7 = list("Cancel")
+			if (map.ordinal_age == 8)
+				display7 = list("Large Machetes", "Large Knives", "Cancel")
+			if (map.ordinal_age == 7)
+				display7 = list("Large Machetes", "Large Knives", "Cancel")
+			if (map.ordinal_age == 6)
+				display7 = list("Large Machetes", "Large Knives", "Cancel")
+			if (map.ordinal_age == 5)
+				display7 = list("Large Machetes", "Large Knives", "Cancel")
+			if (map.ordinal_age == 4)
+				display7 = list("Large Machetes", "Large Knives", "Cancel")
+			else if (map.ordinal_age == 3)
+				display7 = list("Halberd (10)", "Naginata (15)", "Iron Whaling Harpoon (15)", "Cancel")
+			else if (map.ordinal_age == 2)
+				display7 = list("Halberd (10)", "Pike (12)", "Naginata (15)", "Cancel")
+			if (H.orc)
+				display7 = list("Pike (12)", "Iron Mace (12)", "Cancel")
+			var/choice7 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display7)
+			if (choice7 == "Cancel")
+				return
+
+			if (choice7 == "Naginata (15)")
+				if (iron_amt >= 15)
+					user << "You begin crafting the naginata..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,100,src) && iron_amt >= 15)
+						user << "You craft the naginata."
+						iron_amt -= 15
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/naginata(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice7 == "Halberd (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the halberd..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,100,src) && iron_amt >= 10)
+						user << "You craft the halberd."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/halberd(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice7 == "Pike (12)")
+				if (iron_amt >= 12)
+					user << "You begin crafting the pike..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 12)
+						user << "You craft the halberd."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/pike(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice7 == "Large Machetes")
+				var/list/display8 = list("Cancel")
+				if (map.ordinal_age == 4)
+					display8 = list("Cancel")
+				if (map.ordinal_age == 5)
+					display8 = list("Cancel")
+				if (map.ordinal_age == 6)
+					display8 = list("Cancel")
+				if (map.ordinal_age == 7)
+					display8 = list("Cancel")
+				if (map.ordinal_age == 8)
+					display8 = list("Cancel")
+				var/choice8 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display8)
+				if (choice8 == "Cancel")
+					return
+
+				if (choice8 == "Bolo Machete (12)")
+					if (iron_amt >= 12)
+						user << "You begin crafting the bolo machete..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,160,src) && iron_amt >= 12)
+							user << "You craft the bolo machete."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/sword/bolo/iron(user.loc)
+						return
+					else
+						user << "<span class='notice'>You need more iron to make this!</span>"
+						return
+				if (choice8 == "Kukri Machete (12)")
+					if (iron_amt >= 12)
+						user << "You begin crafting the kukri machete..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,180,src) && iron_amt >= 12)
+							user << "You craft the kukri machete."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/sword/kukri/iron(user.loc)
+						return
+					else
+						user << "<span class='notice'>You need more iron to make this!</span>"
+						return
+
+			if (choice7 == "Large Knives")
+				var/list/display9 = list("Cancel")
+				if (map.ordinal_age == 4)
+					display9 = list("Bowie Knife (8)", "Cancel")
+				if (map.ordinal_age == 5)
+					display9 = list("Bowie Knife (8)", "Trench Knife (10)", "Cancel")
+				if (map.ordinal_age == 6)
+					display9 = list("Bowie Knife (8)", "Trench Knife (10)", "Military Knife (14)", "Cancel")
+				if (map.ordinal_age == 7)
+					display9 = list("Bowie Knife (8)", "Military Knife (14)", "Cancel")
+				if (map.ordinal_age == 8)
+					display9 = list("Bowie Knife (8)", "Military Knife (14)", "Cancel")
+				var/choice9 = WWinput(user, "Which varient?", "Blacksmith - [iron_amt] iron", "Cancel", display9)
+				if (choice9 == "Cancel")
+					return
+
+				if (choice9 == "Bowie Knife (8)")
+					if (iron_amt >= 8)
+						user << "You begin crafting the bowie knife..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,100,src) && iron_amt >= 8)
+							user << "You craft the bowie knife."
+						iron_amt -= 8
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/kitchen/utensil/knife/bowie/iron(user.loc)
+						return
+					else
+						user << "<span class='notice'>You need more iron to make this!</span>"
+						return
+				if (choice9 == "Trench Knife (10)")
+					if (iron_amt >= 10)
+						user << "You begin crafting the trench knife..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,100,src) && iron_amt >= 10)
+							user << "You craft the trench knife."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/kitchen/utensil/knife/trench/iron(user.loc)
+						return
+					else
+						user << "<span class='notice'>You need more iron to make this!</span>"
+						return
+				if (choice9 == "Military Knife (14)")
+					if (iron_amt >= 14)
+						user << "You begin crafting the military knife..."
+						playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+						if (do_after(user,180,src) && iron_amt >= 14)
+							user << "You craft the miltiary knife."
+						iron_amt -= 14
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/kitchen/utensil/knife/military/iron(user.loc)
+						return
+					else
+						user << "<span class='notice'>You need more iron to make this!</span>"
+						return
+
+			if (choice7 == "Iron Whaling Harpoon (15)")
+				if (iron_amt >= 15)
+					user << "You begin crafting the whaling harpoon..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,210,src) && iron_amt >= 15)
+						user << "You craft the whaling harpoon."
+						iron_amt -= 15
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/harpoon/iron(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+		else if (choice == "Arabic Weapons")
+			var/list/display10 = list("Cancel")
+			if (map.ordinal_age == 3)
+				display10 = list("Saif (15)", "Scimitar (12)", "Cancel")
+			else if (map.ordinal_age == 2)
+				display10 = list("Saif (15)", "Scimitar (12)", "Cancel")
+			if (H.orc)
+				display10 = list("Cancel")
+			var/choice10 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display10)
+			if (choice10 == "Cancel")
+				return
+
+			if (choice10 == "Scimitar (12)")
+				if (iron_amt >= 12)
+					user << "You begin crafting a scimitar..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 12)
+						user << "You craft a scimitar."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/scimitar/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+						return
+					else
+						user << "<span class='notice'>You need more iron to make this!</span>"
+						return
+
+			if (choice10 == "Saif (15)")
+				if (iron_amt >= 15)
+					user << "You begin crafting a saif..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 15)
+						user << "You craft a saif."
+						iron_amt -= 15
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						var/obj/item/weapon/material/sword/SW = new/obj/item/weapon/material/sword/saif/iron(user.loc)
+						SW.maxhealth = SW.maxhealth*(H.getStatCoeff("Crafting")/2.2)
+						SW.health = SW.maxhealth
+						SW.crafting_quality = H.getStatCoeff("Crafting")/2.2
+						return
+					else
+						user << "<span class='notice'>You need more iron to make this!</span>"
+						return
+
 
 	else if (iron_amt <= 0 || steel_amt <= 0)
 		user << "There is no hot iron or steel on top of this anvil. Smite some first."

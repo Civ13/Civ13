@@ -188,6 +188,9 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.6
 
+/obj/item/weapon/material/kitchen/utensil/knife/bowie/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/kitchen/utensil/knife/fancy
 	name = "fancy knife"
 	desc = "A expensive knife."
@@ -209,6 +212,9 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.7
+
+/obj/item/weapon/material/kitchen/utensil/knife/trench/iron
+	default_material = "iron"
 
 /obj/item/weapon/material/kitchen/utensil/knife/meat
 	name = "meat knife"
@@ -275,6 +281,9 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.9
+
+/obj/item/weapon/material/kitchen/utensil/knife/military/iron
+	default_material = "iron"
 
 /obj/item/weapon/material/kitchen/utensil/knife/shadowdagger
 	name = "shadow dagger"
