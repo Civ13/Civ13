@@ -31,6 +31,9 @@
 "E" = (/obj/item/clothing/shoes/football,/turf/floor/grass{name = "pitch"},/area/caribbean)
 "F" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
 "G" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"H" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/item/football,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"I" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/effect/landmark{name = "JoinLateCivB"},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"J" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCivA"},/turf/floor/grass{name = "pitch"},/area/caribbean)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -73,11 +76,11 @@ aaaaaaaaaaaaaaaaaadkbbbbbbbbbbdjbbbbbbbbbbljaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadjbbbbbbbbbbdjbbbbbbbbbbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadjbbbbbbbbbbdjbbbbbbbbbbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadmccbbbbbbbbnmbbbbbbbbccojaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadkghmbbbbbbopqrbbbbbbnfghjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadjbdsmbbbbofdjhrbbbbntjbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadjbdjujbbdvbdjbwjbbdxdjbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadjbdykbbbbhrdjofbbbblzjbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadmcokbbAbbbhBCfbbDbbblrcojaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaIkghmbbbbbbopqrbbbbbbnfghJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaIjbdsmbbbbofdjhrbbbbntjbdJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaIjbdjujbbdvbHjbwjbbdxdjbdJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaIjbdykbbbbhrdjofbbbblzjbdJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaImcokbbAbbbhBCfbbDbbblrcoJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadkggbbbEbbbblkbbbEbbbbgghjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadjbbbbbbbbbbdjbbbbbbbbbbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadjbbbbbbbbbbdjbbbbbbbbbbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

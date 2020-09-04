@@ -30,7 +30,7 @@
 			points_check()
 /obj/map_metadata/football/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if ((J.is_football == TRUE)
+	if (J.is_football == TRUE)
 		. = TRUE
 	else
 		. = FALSE
@@ -57,19 +57,19 @@
 			message = "<b>Unga Bunga United</b> have won the match!"
 			world << "<font size = 4 color='#AE001A'><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
-            points_check()
+			points_check()
 			return FALSE
 		else if (scores["C.T.F.C."] > scores["U.B.U."])
 			message = "<b>Chad Town Football Club</b> have won the match!"
 			world << "<font size = 4 color='#84A2CE'><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
-            points_check()
+			points_check()
 			return FALSE
 		else
 			message = "The match ended in a draw!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
-            points_check()
+			points_check()
 			return FALSE
 		last_win_condition = win_condition.hash
 		return TRUE
@@ -93,6 +93,14 @@
 	max_positions = 10
 	is_football = TRUE
 
+/datum/job/civilian/football_red/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Unga Bunga United"
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/football_red(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+	..()
+	return TRUE
+
 /datum/job/civilian/football_blue
 	title = "Chad Town Football Club"
 	en_meaning = ""
@@ -101,3 +109,12 @@
 	min_positions = 10
 	max_positions = 10
 	is_football = TRUE
+
+
+/datum/job/civilian/football_blue/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.civilization = "Chad Town Football Club"
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/football_blue(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+	..()
+	return TRUE
