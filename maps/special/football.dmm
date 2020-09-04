@@ -1,0 +1,111 @@
+"a" = (/turf/floor/dirt,/area/caribbean)
+"b" = (/turf/floor/grass{name = "pitch"},/area/caribbean)
+"c" = (/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"d" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"e" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"f" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"g" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"h" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"i" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"j" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"k" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"l" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"m" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"n" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"o" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"p" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"q" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"r" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"s" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"t" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"u" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"v" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"w" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"x" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"y" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"z" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"A" = (/obj/item/clothing/under/football_blue,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"B" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"C" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"D" = (/obj/item/clothing/under/football_red,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"E" = (/obj/item/clothing/shoes/football,/turf/floor/grass{name = "pitch"},/area/caribbean)
+"F" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean)
+"G" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabccccccccccccccccccccccccbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadefggggggggghfggggggggghijaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadkbbbbbbbbbbdjbbbbbbbbbbljaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadjbbbbbbbbbbdjbbbbbbbbbbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadjbbbbbbbbbbdjbbbbbbbbbbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadmccbbbbbbbbnmbbbbbbbbccojaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadkghmbbbbbbopqrbbbbbbnfghjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadjbdsmbbbbofdjhrbbbbntjbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadjbdjujbbdvbdjbwjbbdxdjbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadjbdykbbbbhrdjofbbbblzjbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadmcokbbAbbbhBCfbbDbbblrcojaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadkggbbbEbbbblkbbbEbbbbgghjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadjbbbbbbbbbbdjbbbbbbbbbbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadjbbbbbbbbbbdjbbbbbbbbbbdjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadmbbbbbbbbbbdjbbbbbbbbbbnjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadFrcccccccccorcccccccccoGjaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabggggggggggggggggggggggggbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}

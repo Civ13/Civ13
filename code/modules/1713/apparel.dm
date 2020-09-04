@@ -105,13 +105,6 @@
 			toggled = TRUE
 	update_clothing_icon()
 
-/obj/item/clothing/under/flamengo
-	name = "flamengo shirt with yellow shorts"
-	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
-	icon_state = "flamengo"
-	item_state = "flamengo"
-	worn_state = "flamengo"
-
 /obj/item/clothing/shoes/heavyboots/wrappedboots
 	name = "\improper wrapped boots"
 	icon_state = "wrappedboots"

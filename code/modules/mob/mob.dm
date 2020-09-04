@@ -498,7 +498,7 @@
 	if ( !AM || !usr || src==AM || !isturf(loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
 		return
 
-	if (AM.anchored)
+	if (AM.anchored || istype(AM, /obj/item/football))
 		src << "<span class='warning'>It won't budge!</span>"
 		return
 
@@ -528,7 +528,7 @@
 
 	else if (isobj(AM))
 		var/obj/I = AM
-		if (!can_pull_size || can_pull_size < I.w_class)
+		if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
 			src << "<span class='warning'>It won't budge!</span>"
 			return
 
