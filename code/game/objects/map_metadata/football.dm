@@ -40,7 +40,7 @@
 
 /obj/map_metadata/football/proc/points_check()
 	world << "<font size=4 color='yellow'><b>Current Score:</font></b>"
-	world << "<font size=3 color='#AE001A'><b>UBU [scores["U.B.U."]]</font><font size=3 color='#FFF'> - </font><font size=3 color='#84A2CE'[scores["C.T.F.C."]] CTFC</b></font>"
+	world << "<font size=3 color='#AE001A'><b>UBU [scores["U.B.U."]]</font><font size=3 color='#FFF'> - </font><font size=3 color='#84A2CE'>[scores["C.T.F.C."]] CTFC</b></font>"
 	spawn(300)
 		points_check()
 

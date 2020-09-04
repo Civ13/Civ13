@@ -30,9 +30,10 @@
 	force = 0.0
 	throwforce = 0.0
 	throw_speed = 2
-	throw_range = 7
+	throw_range = 10
 	item_state = "football"
 	w_class = 4.0
+	layer = 6
 	opacity = FALSE
 	density = TRUE
 	allow_spin = FALSE
@@ -41,13 +42,13 @@
 	switch(dir)
 		if (NORTH)
 			pixel_x = 0
-			pixel_y = -32
+			pixel_y = 32
 		if (SOUTH)
 			pixel_x = 0
-			pixel_y = 32
+			pixel_y = -32
 		if (WEST)
-			pixel_x = -32
+			pixel_x = 32
 			pixel_y = 0
 		if (EAST)
-			pixel_x = 32
+			pixel_x = -32
 			pixel_y = 0
