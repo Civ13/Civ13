@@ -35,3 +35,19 @@
 	w_class = 4.0
 	opacity = FALSE
 	density = TRUE
+	allow_spin = FALSE
+
+/obj/item/football/update_icon()
+	switch(dir)
+		if (NORTH)
+			pixel_x = 0
+			pixel_y = -32
+		if (SOUTH)
+			pixel_x = 0
+			pixel_y = 32
+		if (WEST)
+			pixel_x = -32
+			pixel_y = 0
+		if (EAST)
+			pixel_x = 32
+			pixel_y = 0
