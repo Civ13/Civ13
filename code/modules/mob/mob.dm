@@ -264,7 +264,7 @@
 				Weaken(1)
 				for (var/mob/living/human/HM in get_step(src.loc, dir))
 					if (HM.civilization != H.civilization) //no tackling on same team
-						if (prob(33))
+						if (prob(60))
 							visible_message("<span color='red'>[src] tackles [HM]!</span>")
 							playsound(loc, 'sound/weapons/punch1.ogg', 50, 1)
 							HM.Weaken(1)

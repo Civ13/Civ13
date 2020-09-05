@@ -677,7 +677,11 @@ bullet_act
 /mob/living/human/hitby(atom/movable/AM as mob|obj,var/speed = THROWFORCE_SPEED_DIVISOR)
 	if (isobj(AM))
 		var/obj/O = AM
-
+		if (istype(O, /obj/item/football))
+			var/obj/item/football/FB = O
+			if (!src.football)
+				src.football = FB
+				FB.owner = src
 		if (in_throw_mode && !get_active_hand() && speed <= THROWFORCE_SPEED_DIVISOR && prob(round(75/O.w_class)))	//empty active hand and we're in throw mode
 			if (canmove && !restrained())
 				if (isturf(O.loc))

@@ -493,11 +493,19 @@
 	scrambling = FALSE
 
 /atom/proc/middle_click_intent_check(var/mob/M)
-	if(M.middle_click_intent == "kick")
-		return kick_act(M)
-	else if(M.middle_click_intent == "jump")
+	if (map && map.ID == MAP_FOOTBALL)
+		if (ishuman(M))
+			var/mob/living/human/H = M
+			if (M.football)
+				M.football.owner = null
+				M.football = null
 		jump_act(src, M)
-	else if(M.middle_click_intent == "bite")
-		bite_act(M)
 	else
-		M.swap_hand()
+		if(M.middle_click_intent == "kick")
+			return kick_act(M)
+		else if(M.middle_click_intent == "jump")
+			jump_act(src, M)
+		else if(M.middle_click_intent == "bite")
+			bite_act(M)
+		else
+			M.swap_hand()

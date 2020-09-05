@@ -59,7 +59,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 					var/obj/item/football/opponent_has_ball = null
 					if (HM.football)
 						opponent_has_ball = HM.football
-					if (prob(20) && opponent_has_ball)
+					if (prob(35) && opponent_has_ball)
 						H.visible_message("<span color='red'>[H] takes the ball from [HM]!</span>")
 						playsound(H.loc, 'sound/weapons/punch1.ogg', 50, 1)
 						opponent_has_ball.owner = H
@@ -67,7 +67,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 						HM.football = null
 						opponent_has_ball.forceMove(H.loc)
 					else
-						H.visible_message("<span color='yellow'>[H] puts pressure on [HM]!</span>")
+						H.visible_message("<span color='yellow'>[H] pressures [HM]!</span>")
 						playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
 					return
 	else
