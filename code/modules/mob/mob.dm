@@ -241,6 +241,7 @@
 	set category = null
 	set src = usr
 	if (map && map.ID == MAP_FOOTBALL)
+		var/found_ball = FALSE
 		for (var/obj/item/football/FB in get_step(src.loc, dir))
 			var/turf/target = get_turf(FB.loc)
 			var/range = FB.throw_range
@@ -252,6 +253,20 @@
 					break
 			FB.throw_at(target, range, FB.throw_speed, src)
 			visible_message("[src] kicks \the [FB.name].")
+			found_ball = TRUE
+			return
+		if (!found_ball) //proceed to takle whoever is in front
+			for (var/mob/living/human/HM in get_step(src.loc, dir))
+				if (HM.civilization != src.civilization) //no tackling on same team
+					stats["stamina"][1] = max(stats["stamina"][1] - 15, 0)
+					if (prob(33))
+						visible_message("<span color='red'>[src] tackles [HM]!</span>")
+						playsound(loc, 'sound/weapons/punch.ogg', 50, 1)
+						HM.Weaken(1)
+					else
+						visible_message("<span color='yellow'>[src] tries to tackle [HM] but fails!</span>")
+						playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+					return
 		return
 	if (hand)
 		var/obj/item/W = l_hand
