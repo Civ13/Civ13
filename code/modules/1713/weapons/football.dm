@@ -1,3 +1,10 @@
+/obj/item/clothing/under/flamengo
+	name = "flamengo shirt with yellow shorts"
+	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
+	icon_state = "flamengo"
+	item_state = "flamengo"
+	worn_state = "flamengo"
+
 /obj/item/clothing/under/football_red
 	name = "Unga Bunga jersey"
 	desc = "A football jersey of the Unga Bunga United, U.B.U."
@@ -22,6 +29,8 @@
 	armor = list(melee = 60, arrow = 5, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	siemens_coefficient = 0.6
 
+/mob/living/human/var/obj/item/football/football = null
+
 /obj/item/football
 	name = "football"
 	desc = "A classic black and white football."
@@ -38,17 +47,10 @@
 	density = TRUE
 	allow_spin = FALSE
 
-/obj/item/football/update_icon()
-	switch(dir)
-		if (NORTH)
-			pixel_x = 0
-			pixel_y = 32
-		if (SOUTH)
-			pixel_x = 0
-			pixel_y = -32
-		if (WEST)
-			pixel_x = 32
-			pixel_y = 0
-		if (EAST)
-			pixel_x = -32
-			pixel_y = 0
+	var/mob/living/human/owner = null
+
+/obj/item/football/proc/update_movement()
+	if (owner)
+		src.dir = owner.dir
+		src.forceMove(owner.loc)
+	return

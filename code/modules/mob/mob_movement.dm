@@ -1046,6 +1046,8 @@
 		catch (var/E)
 			pass(E)
 		if (istype(mob, /mob/living/human))
+			if (football)
+				football.update_movement()
 			var/mob/living/human/H = mob
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir("left")
