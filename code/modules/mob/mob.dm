@@ -246,7 +246,7 @@
 			if (H.football)
 				var/turf/target = get_turf(H.football.loc)
 				var/range = H.football.throw_range
-				var/throw_dir = get_dir(src, H.football)
+				var/throw_dir = H.dir
 				for(var/i = 1; i < range; i++)
 					var/turf/new_turf = get_step(target, throw_dir)
 					target = new_turf

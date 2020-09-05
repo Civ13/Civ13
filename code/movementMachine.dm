@@ -59,6 +59,10 @@ var/movementMachine/movementMachine = null
 									diag = TRUE
 							// hack to let other clients Move() earlier
 							do_movement(M, movedir, diag)
+							if (ishuman(M))
+								var/mob/living/human/H = M
+								if (H.football && H.football.owner == H)
+									H.football.update_movement()	
 					else
 						mob_list -= M
 				else

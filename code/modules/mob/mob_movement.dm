@@ -943,6 +943,8 @@
 			pass(E)
 		if (istype(mob, /mob/living/human))
 			var/mob/living/human/H = mob
+			if (H.football && H.football.owner == H)
+				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				if (MW && MW.control && MW.control.axis && MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
 					H << "You switch into forward."
@@ -980,6 +982,8 @@
 			pass(E)
 		if (istype(mob, /mob/living/human))
 			var/mob/living/human/H = mob
+			if (H.football && H.football.owner == H)
+				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				if (MW && MW.control && MW.control.axis && !MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving)
 					H << "You switch into reverse."
@@ -1015,6 +1019,8 @@
 			pass(E)
 		if (istype(mob, /mob/living/human))
 			var/mob/living/human/H = mob
+			if (H.football && H.football.owner == H)
+				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"right")
 			if (H.driver && H.driver_vehicle)
@@ -1047,7 +1053,7 @@
 			pass(E)
 		if (istype(mob, /mob/living/human))
 			var/mob/living/human/H = mob
-			if (H.football)
+			if (H.football && H.football.owner == H)
 				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir("left")
