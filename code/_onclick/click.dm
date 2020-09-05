@@ -496,9 +496,9 @@
 	if (map && map.ID == MAP_FOOTBALL)
 		if (ishuman(M))
 			var/mob/living/human/H = M
-			if (M.football)
-				M.football.owner = null
-				M.football = null
+			if (H.football)
+				H.football.owner = null
+				H.football = null
 		jump_act(src, M)
 	else
 		if(M.middle_click_intent == "kick")
