@@ -68,4 +68,6 @@
 	if (istype(A, /area/caribbean/football/blue) || istype(A, /area/caribbean/football/red) || istype(A, /area/caribbean/football/midfield))
 		return
 	else
+		owner.football = null
+		owner = null
 		..()
