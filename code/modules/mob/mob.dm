@@ -240,7 +240,19 @@
 	set name = "Activate Held Object"
 	set category = null
 	set src = usr
-
+	if (map && map.ID == MAP_FOOTBALL)
+		for (var/obj/item/football/FB in get_step(src.loc, dir))
+			var/turf/target = get_turf(FB.loc)
+			var/range = 7
+			var/throw_dir = get_dir(src, FB)
+			for(var/i = 1; i < range; i++)
+				var/turf/new_turf = get_step(target, throw_dir)
+				target = new_turf
+				if(new_turf && new_turf.density)
+					break
+			throw_at(target, rand(1,3), FB.throw_speed)
+			visible_message("[src] kicks \the [FB.name].")
+		return
 	if (hand)
 		var/obj/item/W = l_hand
 		if (W)
