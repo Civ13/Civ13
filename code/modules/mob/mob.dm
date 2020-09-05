@@ -250,7 +250,7 @@
 				target = new_turf
 				if(new_turf && new_turf.density)
 					break
-			throw_at(target, rand(1,3), FB.throw_speed)
+			FB.throw_at(target, range, FB.throw_speed, src)
 			visible_message("[src] kicks \the [FB.name].")
 		return
 	if (hand)
