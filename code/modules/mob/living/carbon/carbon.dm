@@ -412,6 +412,12 @@
 	return
 
 /mob/living/human/Bump(var/atom/movable/AM, yes)
+	if (istype(AM, /obj/item/football))
+		var/obj/item/football/FB = AM
+		if (!FB.owner && !src.football)
+			FB.owner = src
+			src.football = FB
+			FB.update_movement()
 	if (now_pushing || !yes)
 		return
 	..()

@@ -44,7 +44,7 @@
 	w_class = 4.0
 	layer = 6
 	opacity = FALSE
-	density = TRUE
+	density = FALSE
 	allow_spin = FALSE
 
 	var/mob/living/human/owner = null
@@ -54,3 +54,18 @@
 		src.dir = owner.dir
 		src.forceMove(owner.loc)
 	return
+
+/obj/item/football/Crossed(mob/user)
+	if (!owner && !user.football)
+		owner = user
+		user.football = src
+		return
+	else
+		..()
+
+/obj/item/football/attack_hand(mob/user as mob)
+	var/area/A = get_area(src)
+	if (istype(A, /area/caribbean/football/blue) || istype(A, /area/caribbean/football/red) || istype(A, /area/caribbean/football/midfield))
+		return
+	else
+		..()

@@ -2,7 +2,7 @@
 	ID = MAP_FOOTBALL
 	title = "Football Match"
 	lobby_icon_state = "civ13-logo"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/football/midfield, /area/caribbean/football/nopass)
 	respawn_delay = 0
 	no_winner ="The game is still going on."
 	faction_organization = list(

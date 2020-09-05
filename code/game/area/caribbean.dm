@@ -1118,6 +1118,25 @@
 	icon_state = "blue3"
 	location = AREA_INSIDE
 	climate = "desert"
+
+/area/caribbean/football
+	name = "Football Field"
+	icon_state = "green1"
+	climate = "temperate"
+
+/area/caribbean/football/red
+	name = "Football Field"
+	icon_state = "red1"
+
+/area/caribbean/football/blue
+	name = "Football Field"
+	icon_state = "blue2"
+
+/area/caribbean/football/midfield
+	icon_state = "green1"
+
+/area/caribbean/football/nopass
+	icon_state = "green1"
 /////////////////////////////////////////////////////////////
 /////////////leben paratooper code///////////////////////////
 /*
