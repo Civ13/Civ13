@@ -1128,9 +1128,17 @@
 	name = "Football Field"
 	icon_state = "red1"
 
+/area/caribbean/football/red/score
+	name = "Football Field"
+	icon_state = "red2"
+
 /area/caribbean/football/blue
 	name = "Football Field"
 	icon_state = "blue2"
+
+/area/caribbean/football/blue/score
+	name = "Football Field"
+	icon_state = "blue3"
 
 /area/caribbean/football/midfield
 	icon_state = "green1"
