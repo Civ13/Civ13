@@ -251,14 +251,16 @@
 				target = new_turf
 				if(new_turf && new_turf.density)
 					break
+			src.do_attack_animation(FB)
 			FB.throw_at(target, range, FB.throw_speed, src)
 			visible_message("[src] kicks \the [FB.name].")
 			found_ball = TRUE
 			return
 		if (!found_ball) //proceed to takle whoever is in front
+			stats["stamina"][1] = max(stats["stamina"][1] - 15, 0)
+			src.do_attack_animation(HM)
 			for (var/mob/living/human/HM in get_step(src.loc, dir))
 				if (HM.civilization != src.civilization) //no tackling on same team
-					stats["stamina"][1] = max(stats["stamina"][1] - 15, 0)
 					if (prob(33))
 						visible_message("<span color='red'>[src] tackles [HM]!</span>")
 						playsound(loc, 'sound/weapons/punch.ogg', 50, 1)
