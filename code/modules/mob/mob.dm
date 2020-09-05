@@ -256,19 +256,22 @@
 			visible_message("[src] kicks \the [FB.name].")
 			found_ball = TRUE
 			return
-		if (!found_ball) //proceed to takle whoever is in front
-			stats["stamina"][1] = max(stats["stamina"][1] - 15, 0)
-			src.do_attack_animation(HM)
-			for (var/mob/living/human/HM in get_step(src.loc, dir))
-				if (HM.civilization != src.civilization) //no tackling on same team
-					if (prob(33))
-						visible_message("<span color='red'>[src] tackles [HM]!</span>")
-						playsound(loc, 'sound/weapons/punch.ogg', 50, 1)
-						HM.Weaken(1)
-					else
-						visible_message("<span color='yellow'>[src] tries to tackle [HM] but fails!</span>")
-						playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
-					return
+		if (!found_ball) //proceed to tackle whoever is in front
+			if (ishuman(src))
+				var/mob/living/human/H = src
+				H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
+				src.do_attack_animation(get_step(src,dir))
+				Weaken(1)
+				for (var/mob/living/human/HM in get_step(src.loc, dir))
+					if (HM.civilization != H.civilization) //no tackling on same team
+						if (prob(33))
+							visible_message("<span color='red'>[src] tackles [HM]!</span>")
+							playsound(loc, 'sound/weapons/punch1.ogg', 50, 1)
+							HM.Weaken(1)
+						else
+							visible_message("<span color='yellow'>[src] tries to tackle [HM] but fails!</span>")
+							playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+						return
 		return
 	if (hand)
 		var/obj/item/W = l_hand
