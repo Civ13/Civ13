@@ -55,7 +55,7 @@
 		src.forceMove(owner.loc)
 	return
 
-/obj/item/football/Crossed(mob/user)
+/obj/item/football/Crossed(mob/living/human/user)
 	if (!owner && !user.football)
 		owner = user
 		user.football = src
