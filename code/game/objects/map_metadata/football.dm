@@ -1,7 +1,7 @@
 /obj/map_metadata/football
 	ID = MAP_FOOTBALL
 	title = "Football Match"
-	lobby_icon_state = "taotd"
+	lobby_icon_state = "civ13-logo"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
 	no_winner ="The game is still going on."

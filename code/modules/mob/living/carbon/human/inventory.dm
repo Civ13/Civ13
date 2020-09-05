@@ -40,7 +40,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (H.football) //if we have the ball, pass it in the direction we face
 			var/turf/target = get_turf(get_step(H,H.dir))
 			var/throw_dir = H.dir
-			for(var/i = 1; i < range; i++)
+			for(var/i = 1; i < 3; i++)
 				var/turf/new_turf = get_step(target, throw_dir)
 				target = new_turf
 				if(new_turf && new_turf.density)
