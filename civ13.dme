@@ -259,6 +259,7 @@
 #include "code\game\objects\map_metadata\compound.dm"
 #include "code\game\objects\map_metadata\cursed_island.dm"
 #include "code\game\objects\map_metadata\fields.dm"
+#include "code\game\objects\map_metadata\football.dm"
 #include "code\game\objects\map_metadata\four_colonies.dm"
 #include "code\game\objects\map_metadata\four_kingdoms.dm"
 #include "code\game\objects\map_metadata\gladiators.dm"
@@ -542,6 +543,7 @@
 #include "code\modules\1713\transporter\lever.dm"
 #include "code\modules\1713\weapons\attachment.dm"
 #include "code\modules\1713\weapons\flamethrower.dm"
+#include "code\modules\1713\weapons\football.dm"
 #include "code\modules\1713\weapons\zoom.dm"
 #include "code\modules\1713\weapons\guns\__readme.dm"
 #include "code\modules\1713\weapons\guns\_gun.dm"
@@ -958,5 +960,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\2013\alleyway.dmm"
+#include "maps\special\football.dmm"
 // END_INCLUDE
