@@ -117,7 +117,8 @@
 		return 0
 	else
 		if (football)
-			tally *= 1.5
+			tally *= 1.35
+			return tally
 		else
 			return tally
 
