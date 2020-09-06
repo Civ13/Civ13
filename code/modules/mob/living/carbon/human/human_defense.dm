@@ -695,8 +695,8 @@ bullet_act
 					if (FB.owner)
 						FB.owner.football = null
 						FB.owner = null
-					FB.throw_at(get_step(src,newdir), pick(3,4), FB.throw_speed, src)
-					src.do_attack_animation(get_step(src,src.dir))
+					FB.throw_at(get_step(loc,newdir), pick(3,4), FB.throw_speed, src)
+					src.do_attack_animation(get_step(loc,src.dir))
 				else
 					src.football = FB
 					FB.owner = src
