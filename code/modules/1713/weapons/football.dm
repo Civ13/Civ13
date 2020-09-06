@@ -91,12 +91,14 @@
 
 /obj/item/football/attack_hand(mob/user as mob)
 	var/area/A = get_area(src)
-	if (istype(A, /area/caribbean/football/blue) || istype(A, /area/caribbean/football/red) || istype(A, /area/caribbean/football/midfield))
-		return
-	else
-		owner.football = null
-		owner = null
-		..()
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if (!istype(A, /area/caribbean/football/blue/goalkeeper) && !istype(A, /area/caribbean/football/red/goalkeeper) && !(findtext(H.original_job_title, "goalkeeper")))
+			return
+		else
+			owner.football = null
+			owner = null
+			..()
 //goal posts
 /obj/effect/step_trigger/goal
 	name = "goalpost"
