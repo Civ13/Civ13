@@ -420,7 +420,7 @@
 			FB.update_movement()
 	else if (istype(AM, /mob/living/human))
 		var/mob/living/human/HM = AM
-		if (HM.civilization != src.civilization && HM.dir == OPPOSITE_DIR(src.dir))
+		if (HM.civilization != src.civilization && (HM.dir == OPPOSITE_DIR(src.dir) || findtext(HM.original_job_title, "goalkeeper") || findtext(src.original_job_title, "goalkeeper")))
 			if (src.football)
 				src.football.owner = null
 				src.football = null
