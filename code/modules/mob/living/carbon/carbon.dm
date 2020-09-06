@@ -418,6 +418,17 @@
 			FB.owner = src
 			src.football = FB
 			FB.update_movement()
+	else if (istype(AM, /mob/living/human))
+		var/mob/living/human/HM = AM
+		if (HM.civilization != src.civilization && HM.dir == OPPOSITE_DIR(src.dir))
+			if (src.football)
+				src.football.owner = null
+				src.football = null
+				visible_message("[src] bumps into [HM] and loses controll of the ball!")
+			else if (HM.football)
+				HM.football.owner = null
+				HM.football = null
+				visible_message("[HM] bumps into [src] and loses controll of the ball!")
 	if (now_pushing || !yes)
 		return
 	..()
