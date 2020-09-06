@@ -1,9 +1,10 @@
-/obj/item/clothing/under/flamengo
+/obj/item/clothing/under/football/flamengo
 	name = "flamengo shirt with yellow shorts"
 	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
 	icon_state = "flamengo"
 	item_state = "flamengo"
 	worn_state = "flamengo"
+	player_number = 10
 
 /obj/item/clothing/under/football
 	name = "Unga Bunga jersey"
@@ -15,11 +16,6 @@
 	throwforce = 0.0
 	var/player_number = 0
 
-	update_icon()
-		..()
-		if (player_number != 0)
-			overlays.Cut()
-			overlays += image(src.icon, "u_[player_number]")
 /obj/item/clothing/under/football/red
 	name = "Unga Bunga jersey"
 	desc = "A football jersey of the Unga Bunga United, U.B.U."

@@ -603,6 +603,10 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += shirt
 				standing.overlays += belt
 				standing.overlays += epaulettes
+		else if (istype(w_uniform, /obj/item/clothing/under/football))
+			var/obj/item/clothing/under/football/FB = w_uniform
+			if (FB.player_number != 0)
+				standing.overlays += image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "u_[FB.player_number]")
 		//apply blood overlay
 		if (w_uniform.blood_DNA)
 			var/image/bloodsies	= image(icon = species.blood_mask, icon_state = "uniformblood")
