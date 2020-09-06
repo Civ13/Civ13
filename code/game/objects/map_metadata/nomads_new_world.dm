@@ -6,7 +6,7 @@
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/sea)
 	respawn_delay = 6000 // 10 minutes!
-
+	has_hunger = TRUE
 
 	faction_organization = list(
 		CIVILIAN,)

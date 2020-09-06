@@ -14,6 +14,8 @@ var/GRACE_PERIOD_LENGTH = 7
 		spawn (0)
 			while (ticker.current_state != GAME_STATE_PLAYING)
 				sleep(1)
+			if (map && map.ID == MAP_FOOTBALL)
+				time_of_day = "Midday"
 			update_lighting(time_of_day, null, FALSE)
 			if (!map || !map.meme)
 				spawn (0)

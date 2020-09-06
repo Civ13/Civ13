@@ -240,7 +240,45 @@
 	set name = "Activate Held Object"
 	set category = null
 	set src = usr
-
+	if (map && map.ID == MAP_FOOTBALL)
+		if (ishuman(src))
+			var/mob/living/human/H = src
+			if (H.football)
+				var/turf/target = get_turf(H.football.loc)
+				var/range = H.football.throw_range
+				var/throw_dir = H.dir
+				for(var/i = 1; i < range; i++)
+					var/turf/new_turf = get_step(target, throw_dir)
+					target = new_turf
+					if(new_turf && new_turf.density)
+						break
+				src.do_attack_animation(H.football)
+				H.football.owner = null
+				H.football.throw_at(target, range, H.football.throw_speed, src)
+				H.do_attack_animation(get_step(H,H.dir))
+				visible_message("[src] kicks \the [H.football.name].")
+				H.football = null
+				return
+			else if (!H.football && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
+				H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
+				src.do_attack_animation(get_step(src,dir))
+				Weaken(1)
+				for (var/mob/living/human/HM in get_step(src.loc, dir))
+					if (HM.civilization != H.civilization) //no tackling on same team
+						if (prob(60))
+							visible_message("<span color='red'>[src] tackles [HM]!</span>")
+							playsound(loc, 'sound/weapons/punch1.ogg', 50, 1)
+							H.do_attack_animation(get_step(H,H.dir))
+							HM.Weaken(1)
+							if (HM.football)
+								HM.football.owner = null
+								HM.football.throw_at(get_step(HM.loc,HM.dir), 1, 1, HM)
+								HM.football = null
+						else
+							visible_message("<span color='yellow'>[src] tries to tackle [HM] but fails!</span>")
+							playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+						return
+		return
 	if (hand)
 		var/obj/item/W = l_hand
 		if (W)
@@ -498,7 +536,7 @@
 	if ( !AM || !usr || src==AM || !isturf(loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
 		return
 
-	if (AM.anchored)
+	if (AM.anchored || istype(AM, /obj/item/football))
 		src << "<span class='warning'>It won't budge!</span>"
 		return
 
@@ -528,7 +566,7 @@
 
 	else if (isobj(AM))
 		var/obj/I = AM
-		if (!can_pull_size || can_pull_size < I.w_class)
+		if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
 			src << "<span class='warning'>It won't budge!</span>"
 			return
 

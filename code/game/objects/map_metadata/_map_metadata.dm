@@ -115,6 +115,7 @@ var/civmax_research = list(230,230,230)
 	//civ stuff
 	var/civilizations = FALSE
 	var/nomads = FALSE
+	var/has_hunger = FALSE
 	var/list/custom_faction_nr = list()
 	var/list/custom_civs = list()
 	var/list/custom_religions = list()

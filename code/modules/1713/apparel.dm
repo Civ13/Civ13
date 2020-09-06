@@ -16,13 +16,6 @@
 	worn_state = "chad"
 	force = WEAPON_FORCE_WEAK
 
-/obj/item/clothing/under/flamengo
-	name = "flamengo shirt with yellow shorts"
-	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
-	icon_state = "flamengo"
-	item_state = "flamengo"
-	worn_state = "flamengo"
-
 /obj/item/clothing/shoes/flipflops
 	name = "flip-flops"
 	desc = "Brazilian style flip-flops."
@@ -104,13 +97,6 @@
 			usr << "<span class = 'danger'>you put up your robe's hood.</span>"
 			toggled = TRUE
 	update_clothing_icon()
-
-/obj/item/clothing/under/flamengo
-	name = "flamengo shirt with yellow shorts"
-	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
-	icon_state = "flamengo"
-	item_state = "flamengo"
-	worn_state = "flamengo"
 
 /obj/item/clothing/shoes/heavyboots/wrappedboots
 	name = "\improper wrapped boots"
