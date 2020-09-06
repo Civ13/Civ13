@@ -100,6 +100,8 @@
 		var/turf/spawnpoint = null
 		var/list/turfs = latejoin_turfs["football"]
 		spawnpoint = pick(turfs)
+		FB.owner.football = null
+		FB.owner = null
 		FB.loc = spawnpoint
 	spawn(300)
 		stopped = FALSE
