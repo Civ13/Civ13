@@ -255,6 +255,7 @@
 				src.do_attack_animation(H.football)
 				H.football.owner = null
 				H.football.throw_at(target, range, H.football.throw_speed, src)
+				H.do_attack_animation(get_step(H,H.dir))
 				visible_message("[src] kicks \the [H.football.name].")
 				H.football = null
 				return
@@ -267,6 +268,7 @@
 						if (prob(60))
 							visible_message("<span color='red'>[src] tackles [HM]!</span>")
 							playsound(loc, 'sound/weapons/punch1.ogg', 50, 1)
+							H.do_attack_animation(get_step(H,H.dir))
 							HM.Weaken(1)
 							if (HM.football)
 								HM.football.owner = null

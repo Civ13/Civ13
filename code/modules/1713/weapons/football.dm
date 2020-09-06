@@ -64,7 +64,7 @@
 	icon_state = "football"
 	force = 0.0
 	throwforce = 0.0
-	throw_speed = 4
+	throw_speed = 2
 	throw_range = 7
 	item_state = "football"
 	w_class = 4.0
