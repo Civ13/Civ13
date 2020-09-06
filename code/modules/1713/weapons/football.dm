@@ -101,7 +101,6 @@
 			if (owner)
 				owner.football = null
 				owner = null
-			return
 	..()
 //goal posts
 /obj/effect/step_trigger/goal
