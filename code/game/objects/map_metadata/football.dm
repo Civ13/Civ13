@@ -89,7 +89,7 @@
 /obj/map_metadata/football/reverse_cross_message(faction)
 	return ""
 
-/obj/map_metadata/football/reset_ball()
+/obj/map_metadata/football/proc/reset_ball()
 	stopped = TRUE
 	for (var/mob/living/human/H in player_list)
 		var/turf/spawnpoint = null
