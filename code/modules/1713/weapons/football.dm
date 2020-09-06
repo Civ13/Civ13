@@ -5,14 +5,29 @@
 	item_state = "flamengo"
 	worn_state = "flamengo"
 
-/obj/item/clothing/under/football_red
+/obj/item/clothing/under/football
+	name = "Unga Bunga jersey"
+	desc = "A football jersey of the Unga Bunga United, U.B.U."
+	icon_state = "football_red"
+	item_state = "football_red"
+	worn_state = "football_red"
+	force = 0.0
+	throwforce = 0.0
+	var/player_number = 0
+
+	update_icon()
+		..()
+		if (player_number != 0)
+			overlays.Cut()
+			overlays += image(src.icon, "u_[player_number]")
+/obj/item/clothing/under/football/red
 	name = "Unga Bunga jersey"
 	desc = "A football jersey of the Unga Bunga United, U.B.U."
 	icon_state = "football_red"
 	item_state = "football_red"
 	worn_state = "football_red"
 
-/obj/item/clothing/under/football_blue
+/obj/item/clothing/under/football/blue
 	name = "Chad Town jersey"
 	desc = "A football jersey of the Chad Town Football Club, C.T.F.C."
 	icon_state = "football_blue"
@@ -25,9 +40,10 @@
 	icon_state = "football"
 	item_state = "football"
 	worn_state = "football"
-	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 60, arrow = 5, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	siemens_coefficient = 0.6
+	force = 0.0
+	throwforce = 0.0
 
 /mob/living/human/var/obj/item/football/football = null
 

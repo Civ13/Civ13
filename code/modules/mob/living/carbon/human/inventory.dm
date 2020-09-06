@@ -53,7 +53,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			return
 		else if (!H.football) //if we dont have the ball, try to apply pressure and take the ball without tackling
 			for (var/mob/living/human/HM in get_step(H.loc, dir))
-				if (HM.civilization != H.civilization) //no pressure on same team
+				if (HM.civilization != H.civilization && H.stats["stamina"][1] >= 7) //no pressure on same team
 					H.stats["stamina"][1] = max(H.stats["stamina"][1] - 7, 0)
 					H.do_attack_animation(get_step(H,dir))
 					var/obj/item/football/opponent_has_ball = null

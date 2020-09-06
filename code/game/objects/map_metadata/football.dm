@@ -24,6 +24,8 @@
 		"U.B.U." = 0,
 		"C.T.F.C." = 0,
 	)
+	var/list/player_count_red = list(1,2,3,4,5,6,7,8,9,10,11)
+	var/list/player_count_blue = list(1,2,3,4,5,6,7,8,9,10,11)
 	New()
 		..()
 		spawn(600)
@@ -96,8 +98,14 @@
 /datum/job/civilian/football_red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Unga Bunga United"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/football_red(H), slot_w_uniform)
+	var/obj/item/clothing/under/football/red/FR = new /obj/item/clothing/under/football/red(H)
+	H.equip_to_slot_or_del(FR, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+	if (map && map.ID == MAP_FOOTBALL)
+		var/obj/map_metadata/football/tmap = map
+		if (!isemptylist(tmap.player_count_red))
+			FR.player_number = pick(tmap.player_count_red)
+			FR.update_icon()
 	..()
 	return TRUE
 
@@ -114,7 +122,14 @@
 /datum/job/civilian/football_blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Chad Town Football Club"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/football_blue(H), slot_w_uniform)
+	var/obj/item/clothing/under/football/blue/FB = new /obj/item/clothing/under/football/blue(H)
+	H.equip_to_slot_or_del(FB, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/football(H), slot_shoes)
+	if (map && map.ID == MAP_FOOTBALL)
+		var/obj/map_metadata/football/tmap = map
+		if (!isemptylist(tmap.player_count_blue))
+			FB.player_number = pick(tmap.player_count_blue)
+			FB.update_icon()
+
 	..()
 	return TRUE

@@ -258,7 +258,7 @@
 				visible_message("[src] kicks \the [H.football.name].")
 				H.football = null
 				return
-			else if (!H.football) //proceed to tackle whoever is in front
+			else if (!H.football && H.stats["stamina"][1] >= 15) //proceed to tackle whoever is in front
 				H.stats["stamina"][1] = max(H.stats["stamina"][1] - 15, 0)
 				src.do_attack_animation(get_step(src,dir))
 				Weaken(1)
