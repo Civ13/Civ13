@@ -96,6 +96,11 @@
 		var/list/turfs = latejoin_turfs[H.original_job.spawn_location]
 		spawnpoint = pick(turfs)
 		H.loc = spawnpoint
+	for (var/obj/item/football/FB in world)
+		var/turf/spawnpoint = null
+		var/list/turfs = latejoin_turfs["football"]
+		spawnpoint = pick(turfs)
+		FB.loc = spawnpoint
 	spawn(300)
 		stopped = FALSE
 
